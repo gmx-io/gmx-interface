@@ -1,0 +1,31 @@
+.GlpSwap-content {
+  display: grid;
+  grid-template-columns: 1fr 28rem;
+  grid-gap: 1rem;
+  margin-top: 0.5rem;
+  padding: 2rem;
+  padding-top: 1rem;
+}
+
+.GlpSwap-token-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 1rem;
+  margin-top: 0.5rem;
+  padding: 2rem;
+  padding-top: 1rem;
+}
+
+.GlpSwap-box {
+  padding: 1rem;
+}
+
+.GlpSwap-cta {
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .GlpSwap-content {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,41 @@
+.DashboardV2-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
+  margin-top: 0.5rem;
+  padding: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.DashboardV2-token-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 1rem;
+  margin-top: 0.5rem;
+  padding: 2rem;
+  padding-top: 1rem;
+}
+
+.DashboardV2-projects {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
+  margin-top: 0.5rem;
+  padding: 2rem;
+  padding-top: 1rem;
+}
+
+@media (max-width: 900px) {
+  .DashboardV2-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .DashboardV2-token-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .DashboardV2-projects {
+    grid-template-columns: 1fr;
+  }
+}

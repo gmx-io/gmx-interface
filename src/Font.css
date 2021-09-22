@@ -1,0 +1,23 @@
+@font-face {
+  font-family: 'RelativeMono';
+  font-style: normal;
+  font-weight: 400;
+  src: url('./fonts/relative/relative-faux-book-pro.eot'); /* IE9 Compat Modes */
+  src: local(''),
+       url('./fonts/relative/relative-faux-book-pro.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('./fonts/relative/relative-faux-book-pro.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./fonts/relative/relative-faux-book-pro.woff') format('woff'), /* Modern Browsers */
+       url('./fonts/relative/relative-faux-book-pro.ttf') format('truetype'); /* Safari, Android, iOS */
+}
+
+@font-face {
+  font-family: 'RelativeMono';
+  font-style: bold;
+  font-weight: 500;
+  src: url('./fonts/relative/relative-bold-pro.eot'); /* IE9 Compat Modes */
+  src: local(''),
+       url('./fonts/relative/relative-bold-pro.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('./fonts/relative/relative-bold-pro.woff2') format('woff2'), /* Super Modern Browsers */
+       url('./fonts/relative/relative-bold-pro.woff') format('woff'), /* Modern Browsers */
+       url('./fonts/relative/relative-bold-pro.ttf') format('truetype'); /* Safari, Android, iOS */
+}

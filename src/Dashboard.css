@@ -1,0 +1,82 @@
+.Dashboard-title {
+}
+
+.Dashboard-volumes-header {
+}
+
+.Dashboard-volumes {
+}
+
+.Dashboard-fee-info {
+  text-align: center;
+  line-height: 1.5rem;
+}
+
+.Dashboard-token-card-bottom {
+}
+
+.Dashboard-title-primary {
+}
+
+.Dashboard-note {
+  text-align: center;
+}
+
+.Dashboard-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  padding: 2rem;
+  grid-gap: 1rem;
+}
+
+.Dashboard-fees-list {
+}
+
+.Dashboard-volume-list {
+}
+
+.Dashboard-token-card .Dashboard-token-title-options {
+  opacity: 0.5;
+  filter: sepia(100%) hue-rotate(190deg);
+}
+
+.Dashboard-token-card:hover .Dashboard-token-title-options {
+  opacity: 1;
+  filter: none;
+}
+
+.Dashboard-token-card.usdg {
+}
+
+.Dashboard-token-title {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.Dashboard-token-title-options {
+  text-align: right;
+}
+
+.Dashboard-token-title img {
+  cursor: pointer;
+  height: 1.2rem;
+  margin-left: 0.3rem;
+  opacity: 0.9;
+}
+
+.Dashboard-token-title img:hover {
+  opacity: 1;
+}
+
+.Dashboard-token-info {
+}
+
+.Dashboard-fees {
+  padding-bottom: 3rem;
+}
+
+@media (max-width: 700px) {
+  .Dashboard-list {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,9 @@
+.Checkbox-icon {
+  margin-right: 0.3rem;
+  font-size: 0.8rem;
+  color: #3d51ff;
+}
+
+.Checkbox-icon.inactive {
+  color: rgba(255,255,255,0.7);
+}

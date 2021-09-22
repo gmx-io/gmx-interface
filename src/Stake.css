@@ -1,0 +1,36 @@
+.Stake {
+}
+
+.Stake-note {
+  text-align: center;
+  margin-bottom: 0.3rem;
+}
+
+.Stake-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 2rem;
+  grid-gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.Stake-info {
+}
+
+.StakeModal .Modal-content {
+  width: 20rem;
+}
+
+.Stake-warning {
+  text-align: center;
+  margin-top: 0.3rem;
+}
+
+@media (max-width: 800px) {
+  .StakeModal .Modal-content {
+    width: auto;
+  }
+  .Stake-cards {
+    grid-template-columns: 1fr;
+  }
+}

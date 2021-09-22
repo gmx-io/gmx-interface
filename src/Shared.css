@@ -1,0 +1,142 @@
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  color: white;
+  font-family: "RelativeMono";
+  letter-spacing: 0.5px;
+  font-size: 15.5px;
+  background: #0b0b0f;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #1c1c1c;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #383838;
+  border-radius: 1rem;
+  border: 1px solid #212121;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #4a4a4a;
+}
+
+a {
+  color: white;
+}
+
+.Card-title {
+  font-size: 2rem;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+input {
+  font-size: 1.3rem;
+  color: white;
+  outline: none;
+  background: none;
+  border: none;
+  padding: 0.8rem;
+  font-family: "RelativeMono";
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+button {
+  outline: none;
+  cursor: pointer;
+  font-family: "RelativeMono";
+}
+
+button:disabled, button.App-cta:disabled {
+  cursor: not-allowed;
+  opacity: 0.9;
+  box-shadow: none;
+}
+
+table {
+  margin: 0;
+  padding: 0;
+}
+
+tr {
+  margin: 0;
+  padding: 0;
+}
+
+td {
+  margin: 0;
+  padding: 0;
+  padding-right: 0.3rem;
+}
+
+.border {
+  border: 1px solid rgba(163,165,196,0.2);
+}
+
+.align-right {
+  text-align: right;
+}
+
+.muted {
+  opacity: 0.7;
+}
+
+.strong {
+  font-weight: bold;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.margin-bottom {
+  margin-bottom: 0.3rem;
+}
+
+.transition-arrow {
+  vertical-align: middle;
+  margin-top: -0.2rem;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.label,
+.label a {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+a.plain {
+  text-decoration: none;
+}
+
+.checkbox:checked:before{
+  background-color:green;
+}

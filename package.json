@@ -1,0 +1,62 @@
+{
+  "name": "gambit-interface",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@apollo/client": "^3.3.19",
+    "@ethersproject/providers": "^5.0.23",
+    "@ethersproject/units": "^5.0.10",
+    "@sentry/react": "^6.5.1",
+    "@sentry/tracing": "^6.5.1",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@uniswap/sdk-core": "^3.0.1",
+    "@uniswap/v3-sdk": "^3.3.2",
+    "@web3-react/core": "^6.1.9",
+    "@web3-react/injected-connector": "^6.0.7",
+    "bigdecimal": "^0.6.1",
+    "classnames": "^2.2.6",
+    "date-fns": "^2.18.0",
+    "ethers": "^5.0.31",
+    "framer-motion": "^4.1.9",
+    "graphql": "^15.5.0",
+    "krasulya-lightweight-charts": "^3.4.3",
+    "lodash": "^4.17.21",
+    "rc-slider": "^9.7.2",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-icons": "^4.2.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.3",
+    "react-toastify": "6.0.9",
+    "react-use": "^17.2.4",
+    "recharts": "^2.0.9",
+    "swr": "^0.4.2",
+    "web-vitals": "^1.0.1"
+  },
+  "scripts": {
+    "start": "PORT=3010 react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
