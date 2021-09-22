@@ -5,9 +5,13 @@ import './Tooltip.css'
 
 const isTouch = 'ontouchstart' in window
 
+const OPEN_DELAY = 0
+const CLOSE_DELAY = 100
+
 export default function Tooltip(props) {
   const [visible, setVisible] = useState(false)
-  const intervalRef = useRef(null)
+  const intervalCloseRef = useRef(null)
+  const intervalOpenRef = useRef(null)
 
   const position = props.position ?? 'left-bottom'
   const trigger = props.trigger ?? 'hover'
@@ -15,36 +19,49 @@ export default function Tooltip(props) {
   const onMouseEnter = useCallback(() => {
     if (trigger !== 'hover' || isTouch) return
 
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current)
-      intervalRef.current = null
+    if (intervalCloseRef.current) {
+      clearInterval(intervalCloseRef.current)
+      intervalCloseRef.current = null
     }
-    setVisible(true)
-  }, [setVisible, intervalRef, trigger])
+    if (!intervalOpenRef.current) {
+      intervalOpenRef.current = setTimeout(() => {
+        setVisible(true)
+        intervalOpenRef.current = null
+      }, OPEN_DELAY)
+    }
+  }, [setVisible, intervalCloseRef, intervalOpenRef, trigger])
 
   const onMouseClick = useCallback(() => {
     if (trigger !== 'click' && !isTouch) return
 
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current)
-      intervalRef.current = null
+    if (intervalCloseRef.current) {
+      clearInterval(intervalCloseRef.current)
+      intervalCloseRef.current = null
+    }
+    if (intervalOpenRef.current) {
+      clearInterval(intervalOpenRef.current)
+      intervalOpenRef.current = null
     }
     setVisible(true)
-  }, [setVisible, intervalRef, trigger])
+  }, [setVisible, intervalCloseRef, trigger])
 
   const onMouseLeave = useCallback(() => {
-    intervalRef.current = setTimeout(() => {
+    intervalCloseRef.current = setTimeout(() => {
       setVisible(false)
-      intervalRef.current = null
-    }, 150)
-  }, [setVisible, intervalRef])
+      intervalCloseRef.current = null
+    }, CLOSE_DELAY)
+    if (intervalOpenRef.current) {
+      clearInterval(intervalOpenRef.current)
+      intervalOpenRef.current = null
+    }
+  }, [setVisible, intervalCloseRef])
 
   return (
     <span className="Tooltip" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
       <span className={cx({'Tooltip-handle': !props.disableHandleStyle, [props.handleClassName]: true})}>
         {props.handle}
        </span>
-      {visible && 
+      {visible &&
         <div className={cx(['Tooltip-popup', position])}>
           {props.children}
         </div>
