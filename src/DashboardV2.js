@@ -499,15 +499,15 @@ export default function DashboardV2() {
                     </div>
                   </div>
                   <div className="App-card-row">
-                    <div className="label">Utilization</div>
-                    <div>
-                      {formatAmount(utilization, 2, 2, false)}%
-                    </div>
-                  </div>
-                  <div className="App-card-row">
                     <div className="label">Weight</div>
                     <div>
                       {getWeightText(tokenInfo)}
+                    </div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Utilization</div>
+                    <div>
+                      {formatAmount(utilization, 2, 2, false)}%
                     </div>
                   </div>
                 </div>
