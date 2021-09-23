@@ -121,7 +121,7 @@ export default function ConfirmationBox(props) {
         : "Create Order"
 
       if (hasExistingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)) {
-        return isLong ? `Accept entry price and ${action}` : `Accept entry price and Short`
+        return isLong ? `Accept reduction and ${action}` : `Accept reduction and Short`
       }
 
       return isLong ? `Accept minimum and ${action}` : `Accept minimum and ${action}`
@@ -215,10 +215,10 @@ export default function ConfirmationBox(props) {
       if (hasExistingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)) {
         return (
           <div className="Confirmation-box-warning">
-            NOTE: You have a&nbsp;
+            WARNING: You have a&nbsp;
             <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
               pending profit
-            </a> of {existingPosition.deltaStr}, please check that the Entry Price is acceptable.
+            </a> of {existingPosition.deltaStr}, this will be reduced to zero if you increase your position now.
           </div>
         );
       }

@@ -84,6 +84,8 @@ export const DECREASE_ORDER_EXECUTION_GAS_FEE = ORDER_EXECUTION_GAS_PRICE.mul(55
 export const TRIGGER_PREFIX_ABOVE = '>'
 export const TRIGGER_PREFIX_BELOW = '<'
 
+export const PROFIT_THRESHOLD_BASIS_POINTS = 150
+
 const supportedChainIds = [
   ARBITRUM
 ];
@@ -628,8 +630,7 @@ export function calculatePositionDelta({ size, collateral, isLong, averagePrice,
   const pendingDelta = delta
 
   const hasProfit = isLong ? price.gt(averagePrice) : price.lt(averagePrice)
-  const minBps = 150
-  if (hasProfit && delta.mul(BASIS_POINTS_DIVISOR).lte(size.mul(minBps))) {
+  if (hasProfit && delta.mul(BASIS_POINTS_DIVISOR).lte(size.mul(PROFIT_THRESHOLD_BASIS_POINTS))) {
     delta = bigNumberify(0)
   }
 
