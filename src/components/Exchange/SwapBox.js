@@ -569,6 +569,10 @@ export default function SwapBox(props) {
         toTokenInfo.availableAmount && toAmount.gt(toTokenInfo.availableAmount)) {
       return "Insufficient liquidity"
     }
+    if (toAmount && toTokenInfo.bufferAmount && toTokenInfo.poolAmount && toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(toAmount))) {
+      return "Insufficient liquidity"
+    }
+
 
     if (!isV2 && toToken && toTokenAddress === USDG_ADDRESS && maxUsdg && fromTokenInfo && fromTokenInfo.usdgAmount) {
       const mintable = maxUsdg.sub(fromTokenInfo.usdgAmount)
@@ -650,6 +654,10 @@ export default function SwapBox(props) {
         stableTokenAmount = nextToAmount
         if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
           return `Insufficient liquidity`
+        }
+
+        if (shortCollateralToken.bufferAmount && shortCollateralToken.poolAmount && shortCollateralToken.bufferAmount.gt(shortCollateralToken.poolAmount.sub(stableTokenAmount))) {
+          return "Insufficient liquidity"
         }
       }
       if (!shortCollateralToken || !fromTokenInfo || !toTokenInfo || !toTokenInfo.maxPrice || !shortCollateralToken.availableAmount) {

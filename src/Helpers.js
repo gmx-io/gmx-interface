@@ -1507,7 +1507,7 @@ export const getConnectWalletHandler = (activate) => {
   return fn
 }
 
-export function getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo, vaultPropsLength) {
+export function getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo, vaultPropsLength, bufferAmounts) {
   if (!vaultPropsLength) {
     vaultPropsLength = 10
   }
@@ -1545,6 +1545,8 @@ export function getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTok
 
       token.managedUsd = token.availableUsd.add(token.guaranteedUsd)
       token.managedAmount = token.managedUsd.mul(expandDecimals(1, token.decimals)).div(token.minPrice)
+
+      token.bufferAmount = (bufferAmounts && bufferAmounts[token.address]) || bigNumberify(0)
     }
 
     if (fundingRateInfo) {
