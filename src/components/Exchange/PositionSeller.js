@@ -27,6 +27,7 @@ import {
 	PRECISION,
 	MARKET,
 	STOP,
+  PROFIT_THRESHOLD_BASIS_POINTS,
   useLocalStorageSerializeKey,
   calculatePositionDelta,
   getDeltaStr
@@ -451,8 +452,8 @@ export default function PositionSeller(props) {
       const priceDelta = closePrice.gt(position.averagePrice) ? closePrice.sub(position.averagePrice) : position.averagePrice.sub(closePrice)
       priceMovementPercentage = priceDelta.mul(BASIS_POINTS_DIVISOR).div(position.averagePrice)
       profitPrice = position.isLong
-        ? position.averagePrice.mul(BASIS_POINTS_DIVISOR + 150).div(BASIS_POINTS_DIVISOR)
-        : position.averagePrice.mul(BASIS_POINTS_DIVISOR - 150).div(BASIS_POINTS_DIVISOR)
+        ? position.averagePrice.mul(BASIS_POINTS_DIVISOR + PROFIT_THRESHOLD_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
+        : position.averagePrice.mul(BASIS_POINTS_DIVISOR - PROFIT_THRESHOLD_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
     }
   }
 
@@ -465,7 +466,7 @@ export default function PositionSeller(props) {
     <div className="PositionEditor">
       {(position) &&
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
-          {(profitPrice && position.delta.eq(0) && position.pendingDelta.gt(0)) &&
+          {(profitPrice && nextDelta.eq(0) && nextHasProfit) &&
             <div className="Confirmation-box-warning">
               WARNING: You {orderType === MARKET ? 'have' : 'will have'} a&nbsp;
               <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
