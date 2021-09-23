@@ -109,7 +109,7 @@ export default function GlpSwap(props) {
   const tokensForBalanceAndSupplyQuery = [stakedGlpTrackerAddress, usdgAddress]
 
   const whitelistedTokenAddresses = whitelistedTokens.map(token => token.address)
-  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR([`GlpSwap:getVaultTokenInfo:${active}`, chainId, readerAddress, "getVaultTokenInfo"], {
+  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR([`GlpSwap:getVaultTokenInfo:${active}`, chainId, readerAddress, "getFullVaultTokenInfo"], {
     fetcher: fetcher(library, ReaderV2, [vaultAddress, nativeTokenAddress, expandDecimals(1, 18), whitelistedTokenAddresses]),
   })
 
