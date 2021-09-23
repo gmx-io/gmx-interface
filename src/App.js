@@ -29,7 +29,9 @@ import {
   getConnectWalletHandler,
   useEagerConnect,
   useInactiveListener,
-  shortenAddress
+  shortenAddress,
+  usePrevious,
+  getExplorerUrl
 } from './Helpers'
 
 import Home from './Home'
@@ -194,7 +196,7 @@ function AppHeaderUser({ openSettings, small }) {
 }
 
 function FullApp() {
-  const { connector } = useWeb3React()
+  const { connector, account, library } = useWeb3React()
   const { chainId } = useChainId()
   const [activatingConnector, setActivatingConnector] = useState()
   useEffect(() => {
@@ -254,6 +256,60 @@ function FullApp() {
     setSavedSlippageAmount(basisPoints)
     setIsSettingsVisible(false)
   }
+
+  const [pendingTxns, setPendingTxns] = useState([])
+  const prevAccount = usePrevious(account)
+
+  useEffect(() => {
+    if (prevAccount !== account) {
+      setPendingTxns([])
+    }
+  }, [prevAccount, account, setPendingTxns])
+
+  useEffect(() => {
+    setPendingTxns([])
+  }, [chainId, setPendingTxns])
+
+  useEffect(() => {
+    const checkPendingTxns = async () => {
+      const updatedPendingTxns = []
+      for (let i = 0; i < pendingTxns.length; i++) {
+        const pendingTxn = pendingTxns[i]
+        const receipt = await library.getTransactionReceipt(pendingTxn.hash)
+        if (receipt) {
+          if (receipt.status === 0) {
+            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash
+            toast.error(
+              <div>
+              Txn failed. <a href={txUrl} target="_blank" rel="noopener noreferrer">View</a>
+              <br/>
+              </div>
+            )
+          }
+          if (receipt.status === 1 && pendingTxn.message) {
+            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash
+            toast.success(
+              <div>
+              {pendingTxn.message}. <a href={txUrl} target="_blank" rel="noopener noreferrer">View</a>
+              <br/>
+              </div>
+            )
+          }
+          continue
+        }
+        updatedPendingTxns.push(pendingTxn)
+      }
+
+      if (updatedPendingTxns.length !== pendingTxns.length) {
+        setPendingTxns(updatedPendingTxns)
+      }
+    }
+
+    const interval = setInterval(() => {
+      checkPendingTxns()
+    }, 2 * 1000)
+    return () => clearInterval(interval);
+  }, [library, pendingTxns, chainId])
 
   return (
     <Router>
@@ -333,6 +389,8 @@ function FullApp() {
                 savedIsPnlInLeverage={savedIsPnlInLeverage}
                 setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
                 savedSlippageAmount={savedSlippageAmount}
+                setPendingTxns={setPendingTxns}
+                pendingTxns={pendingTxns}
               />
             </Route>
             <Route exact path="/presale">
@@ -342,13 +400,13 @@ function FullApp() {
               <Dashboard />
             </Route>
             <Route exact path="/earn">
-              <Stake />
+              <Stake setPendingTxns={setPendingTxns} />
             </Route>
             <Route exact path="/buy_glp">
-              <BuyGlp savedSlippageAmount={savedSlippageAmount} />
+              <BuyGlp savedSlippageAmount={savedSlippageAmount} setPendingTxns={setPendingTxns} />
             </Route>
             <Route exact path="/sell_glp">
-              <SellGlp savedSlippageAmount={savedSlippageAmount} />
+              <SellGlp savedSlippageAmount={savedSlippageAmount} setPendingTxns={setPendingTxns} />
             </Route>
             <Route exact path="/about">
               <Home />

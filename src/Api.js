@@ -398,7 +398,7 @@ export async function callContract(chainId, contract, method, params, opts) {
     if (opts.setPendingTxns) {
       const pendingTxn = {
         hash: res.hash,
-        message: opts.successMsg || "Transaction sent"
+        message: opts.successMsg || "Transaction done"
       }
       opts.setPendingTxns(pendingTxns => [...pendingTxns, pendingTxn])
     }

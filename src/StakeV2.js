@@ -189,7 +189,7 @@ function getProcessedData(balanceData, supplyData, depositBalanceData, stakingDa
 function StakeModal(props) {
   const { isVisible, setIsVisible, chainId, title, maxAmount, value, setValue,
     active, account, library, stakingTokenSymbol, stakingTokenAddress,
-    farmAddress, rewardRouterAddress, stakeMethodName } = props
+    farmAddress, rewardRouterAddress, stakeMethodName, setPendingTxns } = props
   const [isStaking, setIsStaking] = useState(false)
   const [isApproving, setIsApproving] = useState(false)
 
@@ -235,7 +235,8 @@ function StakeModal(props) {
 
     callContract(chainId, contract, stakeMethodName, [amount], {
       sentMsg: "Stake submitted!",
-      failMsg: "Stake failed."
+      failMsg: "Stake failed.",
+      setPendingTxns
     })
     .then(async (res) => {
       setIsVisible(false)
@@ -297,7 +298,7 @@ function UnstakeModal(props) {
   const { isVisible, setIsVisible, chainId, title,
     maxAmount, value, setValue, library, unstakingTokenSymbol,
     rewardRouterAddress, unstakeMethodName, multiplierPointsAmount,
-    bonusGmxInFeeGmx } = props
+    bonusGmxInFeeGmx, setPendingTxns } = props
   const [isUnstaking, setIsUnstaking] = useState(false)
 
   let amount = parseValue(value, 18)
@@ -325,7 +326,9 @@ function UnstakeModal(props) {
     const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner())
     callContract(chainId, contract, unstakeMethodName, [amount], {
       sentMsg: "Unstake submitted!",
-      failMsg: "Unstake failed."
+      failMsg: "Unstake failed.",
+      successMsg: "Unstake done.",
+      setPendingTxns
     })
     .then(async (res) => {
       setIsVisible(false)
@@ -386,7 +389,7 @@ function UnstakeModal(props) {
 }
 
 function CompoundModal(props) {
-  const { isVisible, setIsVisible, rewardRouterAddress, library, chainId } = props
+  const { isVisible, setIsVisible, rewardRouterAddress, library, chainId, setPendingTxns } = props
   const [isCompounding, setIsCompounding] = useState(false)
 
   const isPrimaryEnabled = () => {
@@ -399,7 +402,9 @@ function CompoundModal(props) {
     const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner())
     callContract(chainId, contract, "compound", {
       sentMsg: "Compound submitted!",
-      failMsg: "Compound failed."
+      failMsg: "Compound failed.",
+      successMsg: "Compound done.",
+      setPendingTxns
     })
     .then(async (res) => {
       setIsVisible(false)
@@ -427,7 +432,7 @@ function CompoundModal(props) {
   )
 }
 
-export default function StakeV2() {
+export default function StakeV2({ setPendingTxns }) {
   const { active, library, account, activate } = useWeb3React()
   const chainId = 42161 // set chain to Arbitrum
 
@@ -714,7 +719,9 @@ export default function StakeV2() {
     const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner())
     callContract(chainId, contract, "claim", {
       sentMsg: "Claim submitted!",
-      failMsg: "Claim failed."
+      failMsg: "Claim failed.",
+      successMsg: "Rewards are claimed",
+      setPendingTxns
     })
   }
 
@@ -764,8 +771,10 @@ export default function StakeV2() {
         rewardRouterAddress={rewardRouterAddress}
         stakeMethodName={stakeMethodName}
         hasMultiplierPoints={hasMultiplierPoints}
+        setPendingTxns={setPendingTxns}
       />
       <UnstakeModal
+        setPendingTxns={setPendingTxns}
         isVisible={isUnstakeModalVisible}
         setIsVisible={setIsUnstakeModalVisible}
         chainId={chainId}
@@ -781,6 +790,7 @@ export default function StakeV2() {
         bonusGmxInFeeGmx={bonusGmxInFeeGmx}
       />
       <CompoundModal
+        setPendingTxns={setPendingTxns}
         isVisible={isCompoundModalVisible}
         setIsVisible={setIsCompoundModalVisible}
         rewardRouterAddress={rewardRouterAddress}
