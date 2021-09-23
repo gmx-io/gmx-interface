@@ -81,7 +81,7 @@ function getStakingData(stakingInfo) {
 }
 
 export default function GlpSwap(props) {
-  const { savedSlippageAmount, isBuying } = props
+  const { savedSlippageAmount, isBuying, setPendingTxns } = props
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp"
   const { active, library, account, activate } = useWeb3React()
   const chainId = 42161 // set chain to Arbitrum
@@ -114,7 +114,7 @@ export default function GlpSwap(props) {
   })
 
   const tokenAddresses = tokens.map(token => token.address)
-  const { data: tokenBalances, mutate: updateTokenBalances } = useSWR([`GlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account], {
+  const { data: tokenBalances, mutate: updateTokenBalances } = useSWR([`GlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account || AddressZero], {
     fetcher: fetcher(library, ReaderV2, [tokenAddresses]),
   })
 
@@ -131,11 +131,11 @@ export default function GlpSwap(props) {
   })
 
   const tokenAllowanceAddress = swapTokenAddress === AddressZero ? nativeTokenAddress : swapTokenAddress
-  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR([active, chainId, tokenAllowanceAddress, "allowance", account, glpManagerAddress], {
+  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR([active, chainId, tokenAllowanceAddress, "allowance", account || AddressZero, glpManagerAddress], {
     fetcher: fetcher(library, Token),
   })
 
-  const { data: lastPurchaseTime, mutate: updateLastPurchaseTime } = useSWR([`GlpSwap:lastPurchaseTime:${active}`, chainId, glpManagerAddress, "lastAddedAt", account], {
+  const { data: lastPurchaseTime, mutate: updateLastPurchaseTime } = useSWR([`GlpSwap:lastPurchaseTime:${active}`, chainId, glpManagerAddress, "lastAddedAt", account || AddressZero], {
     fetcher: fetcher(library, GlpManager),
   })
 
@@ -421,7 +421,8 @@ export default function GlpSwap(props) {
     callContract(chainId, contract, method, params, {
       value,
       sentMsg: "Buy submitted!",
-      failMsg: "Buy failed."
+      failMsg: "Buy failed.",
+      setPendingTxns
     })
     .then(async () => {
       handleFulfilled();
@@ -442,7 +443,8 @@ export default function GlpSwap(props) {
 
     callContract(chainId, contract, method, params, {
       sentMsg: "Sell submitted!",
-      failMsg: "Sell failed."
+      failMsg: "Sell failed.",
+      setPendingTxns
     })
     .then(async () => {
       handleFulfilled();
