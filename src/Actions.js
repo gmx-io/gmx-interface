@@ -25,6 +25,8 @@ export default function Actions() {
   const vaultAddress = getContract(chainId, "Vault")
   const readerAddress = getContract(chainId, "Reader")
 
+  const shouldShowPnl = false
+
   let checkSummedAccount = ""
   if (ethers.utils.isAddress(account)) {
     checkSummedAccount = ethers.utils.getAddress(account)
@@ -76,7 +78,7 @@ export default function Actions() {
       {checkSummedAccount.length > 0 && <div className="Actions-section">
         Account: {checkSummedAccount}
       </div>}
-      <div className="Actions-section">
+      {shouldShowPnl && <div className="Actions-section">
         <div className="Actions-title">PnL</div>
         {(!pnlData || pnlData.length === 0) && <div>No PnLs found</div>}
         {(pnlData && pnlData.length > 0) && pnlData.map((pnlRow, index) => {
@@ -88,7 +90,7 @@ export default function Actions() {
             </div>
           )
         })}
-      </div>
+      </div>}
       {checkSummedAccount.length > 0 && <div className="Actions-section">
         <div className="Actions-title">Positions</div>
           <PositionsList
