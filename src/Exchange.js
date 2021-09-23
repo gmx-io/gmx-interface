@@ -475,6 +475,14 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     fetcher: fetcher(library, Reader, [tokenAddresses]),
   })
 
+  const usdcToken = getTokenBySymbol(chainId, "USDC")
+  const { data: usdcBufferAmount, mutate: updateUsdcBufferAmount } = useSWR(active && [active, chainId, vaultAddress, "bufferAmounts"], {
+    fetcher: fetcher(library, VaultV2, [usdcToken.address])
+  })
+  const bufferAmounts = {
+    [usdcToken.address]: usdcBufferAmount
+  }
+
   const { data: positionData, mutate: updatePositionData } = useSWR(active && [active, chainId, readerAddress, "getPositions", vaultAddress, account], {
     fetcher: fetcher(library, Reader, [positionQuery.collateralTokens, positionQuery.indexTokens, positionQuery.isLong]),
   })
@@ -541,17 +549,18 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
         updateFundingRateInfo(undefined, true)
         updateTotalTokenWeights(undefined, true)
         updateUsdgSupply(undefined, true)
+        updateUsdcBufferAmount(undefined, true)
       }
       library.on('block', onBlock)
       return () => {
         library.removeListener('block', onBlock)
       }
     }
-  }, [active, library, chainId,
+  }, [active, library, chainId, updateUsdcBufferAmount,
       updateVaultTokenInfo, updateTokenBalances, updatePositionData,
       updateFundingRateInfo, updateTotalTokenWeights, updateUsdgSupply])
 
-  const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo)
+  const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo, undefined, bufferAmounts)
   const { positions, positionsMap } = getPositions(chainId, positionQuery, positionData, infoTokens, savedIsPnlInLeverage)
 
   const [flagOrdersEnabled] = useLocalStorageSerializeKey(
