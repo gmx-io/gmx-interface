@@ -461,7 +461,9 @@ export default function SwapBox(props) {
   let leverage = bigNumberify(0)
 	if (fromUsdMin && toUsdMax && fromUsdMin.gt(0)) {
 		const fees = toUsdMax.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
-		leverage = toUsdMax.mul(BASIS_POINTS_DIVISOR).div(fromUsdMin.sub(fees))
+    if (fromUsdMin.sub(fees).gt(0)) {
+  		leverage = toUsdMax.mul(BASIS_POINTS_DIVISOR).div(fromUsdMin.sub(fees))
+    }
 	}
 
   let nextAveragePrice = isMarketOrder ? entryMarkPrice : triggerPriceUsd
