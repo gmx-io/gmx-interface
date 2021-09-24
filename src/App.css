@@ -285,6 +285,16 @@ button.App-connect-wallet:hover {
   padding: 0 0.3rem;
 }
 
+.Toastify-debug {
+  margin-top: 0.3rem;
+  font-size: 0.8rem; 
+  opacity: 0.7;
+}
+.Toastify-debug-button {
+  border-bottom: 1px dashed;
+  cursor: pointer;
+}
+
 .App-icon {
   vertical-align: middle;
   margin-bottom: 0.3rem;
