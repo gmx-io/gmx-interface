@@ -48,7 +48,7 @@ export const PRECISION = expandDecimals(1, 30)
 export const GLP_DECIMALS = 18
 export const GMX_DECIMALS = 18
 
-export const TAX_BASIS_POINTS = 60
+export const TAX_BASIS_POINTS = 80
 export const STABLE_TAX_BASIS_POINTS = 5
 export const MINT_BURN_FEE_BASIS_POINTS = 0
 export const SWAP_FEE_BASIS_POINTS = 80
