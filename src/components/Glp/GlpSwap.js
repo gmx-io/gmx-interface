@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { Pool } from '@uniswap/v3-sdk'
 import { Token as UniToken } from '@uniswap/sdk-core'
@@ -29,11 +29,13 @@ import {
   getConnectWalletHandler,
   approveTokens,
   getUsd,
+  adjustForDecimals,
   GLP_DECIMALS,
   USD_DECIMALS,
   BASIS_POINTS_DIVISOR,
   GLP_COOLDOWN_DURATION,
-  SECONDS_PER_YEAR
+  SECONDS_PER_YEAR,
+  USDG_DECIMALS
 } from '../../Helpers'
 
 import { callContract } from '../../Api'
@@ -42,6 +44,7 @@ import TokenSelector from '../Exchange/TokenSelector'
 import InputSection from "../InputSection/InputSection"
 import Tooltip from '../Tooltip/Tooltip'
 import Footer from "../../Footer"
+import Modal from '../Modal/Modal'
 
 import ReaderV2 from '../../abis/ReaderV2.json'
 import RewardReader from '../../abis/RewardReader.json'
@@ -96,6 +99,7 @@ export default function GlpSwap(props) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [anchorOnSwapAmount, setAnchorOnSwapAmount] = useState(true)
   const [feeBasisPoints, setFeeBasisPoints] = useState("")
+  const [modalError, setModalError] = useState(false)
 
   const readerAddress = getContract(chainId, "Reader")
   const rewardReaderAddress = getContract(chainId, "RewardReader")
@@ -333,37 +337,61 @@ export default function GlpSwap(props) {
 
   const getError = () => {
     if (!isBuying && inCooldownWindow) {
-        return `Redemption time not yet reached`
+        return [`Redemption time not yet reached`]
     }
 
-    if (!swapAmount || swapAmount.eq(0)) { return "Enter an amount" }
-    if (!glpAmount || glpAmount.eq(0)) { return "Enter an amount" }
+    if (!swapAmount || swapAmount.eq(0)) { return ["Enter an amount"] }
+    if (!glpAmount || glpAmount.eq(0)) { return ["Enter an amount"] }
 
     if (isBuying) {
       const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress)
       if (swapTokenInfo && swapTokenInfo.balance && swapAmount && swapAmount.gt(swapTokenInfo.balance)) {
-        return `Insufficient ${swapTokenInfo.symbol} balance`
+        return [`Insufficient ${swapTokenInfo.symbol} balance`]
+      }
+
+      if (swapTokenInfo.maxUsdgAmount && swapTokenInfo.usdgAmount && swapUsdMin) {
+        const usdgFromAmount = adjustForDecimals(swapUsdMin, USD_DECIMALS, USDG_DECIMALS)
+        const nextUsdgAmount = swapTokenInfo.usdgAmount.add(usdgFromAmount)
+        if (nextUsdgAmount.gt(swapTokenInfo.maxUsdgAmount)) {
+          return [`${swapTokenInfo.symbol} pool exceeded, try different token`, true]
+        }
       }
     }
 
     if (!isBuying) {
       if (glpBalance && glpAmount && glpAmount.gt(glpBalance)) {
-        return `Insufficient GLP balance`
+        return [`Insufficient GLP balance`]
       }
 
       const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress)
       if (swapTokenInfo && swapTokenInfo.availableAmount && swapAmount && swapAmount.gt(swapTokenInfo.availableAmount)) {
-        return `Insufficient liquidity`
+        return [`Insufficient liquidity`]
       }
     }
 
-    return false
+    return [false]
   }
+
+  const renderErrorModal = useCallback(() => {
+    const inputCurrency = swapToken.address
+    const uniswapUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}`
+    const label = `${swapToken.symbol} limit exceeded`
+    return (
+      <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal">
+        <p>
+          Try to use other token to buy GLP.
+        </p>
+        <p>
+          You can buy it on&nbsp;<a href={uniswapUrl} target="_blank" rel="noreferrer">Uniswap</a>
+        </p>
+      </Modal>
+    )
+  }, [modalError, setModalError, swapToken.symbol, swapToken.address])
 
   const isPrimaryEnabled = () => {
     if (!active) { return true }
-    const error = getError()
-    if (error) { return false }
+    const [error, modal] = getError()
+    if (error && !modal) { return false }
     if ((needApproval && isWaitingForApproval) || isApproving) { return false }
     if (isApproving) { return false }
     if (isSubmitting) { return false }
@@ -373,8 +401,8 @@ export default function GlpSwap(props) {
 
   const getPrimaryText = () => {
     if (!active) { return "Connect Wallet" }
-    const error = getError()
-    if (error) { return error }
+    const [error, modal] = getError()
+    if (error && !modal) { return error }
 
     if (needApproval && isWaitingForApproval) { return "Waiting for Approval" }
     if (isApproving) { return `Approving ${swapToken.symbol}...` }
@@ -467,6 +495,13 @@ export default function GlpSwap(props) {
       return
     }
 
+    const [, modal] = getError()
+
+    if (modal) {
+      setModalError(true)
+      return
+    }
+
     if (isBuying) {
       buyGlp()
     } else {
@@ -503,8 +538,9 @@ export default function GlpSwap(props) {
     feePercentageText += "%"
   }
 
-  return(
+  return (
     <div className="GlpSwap Page">
+      {renderErrorModal()}
       <div className="Page-title-section">
         <div className="Page-title">{isBuying ? "Buy GLP" : "Sell GLP"}</div>
         {isBuying && <div className="Page-description">

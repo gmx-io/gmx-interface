@@ -58,7 +58,7 @@ export default function Tooltip(props) {
 
   return (
     <span className="Tooltip" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
-      <span className={cx({'Tooltip-handle': !props.disableHandleStyle, [props.handleClassName]: true})}>
+      <span className={cx({'Tooltip-handle': !props.disableHandleStyle}, [props.handleClassName])}>
         {props.handle}
        </span>
       {visible &&
