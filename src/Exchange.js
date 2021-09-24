@@ -397,9 +397,8 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     window.scrollTo(0, 0)
   }, [])
 
-  let { activate, active, account, library } = useWeb3React()
+  const { activate, active, account, library } = useWeb3React()
   const { chainId } = useChainId()
-  account = "0xd92DecD5C50FD1E3bd039C1770770247F1CABD2e"
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
 
