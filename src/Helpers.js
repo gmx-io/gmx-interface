@@ -1509,7 +1509,7 @@ export const getConnectWalletHandler = (activate) => {
 
 export function getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo, vaultPropsLength) {
   if (!vaultPropsLength) {
-    vaultPropsLength = 12 // need to update reader address
+    vaultPropsLength = 12
   }
   const fundingRatePropsLength = 2
   const infoTokens = {}
@@ -1536,10 +1536,10 @@ export function getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTok
       token.redemptionAmount = vaultTokenInfo[i * vaultPropsLength + 3]
       token.weight = vaultTokenInfo[i * vaultPropsLength + 4]
       token.bufferAmount = vaultTokenInfo[i * vaultPropsLength + 5]
-      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 6]
-      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 7]
-      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 8]
-      token.maxUsdgAmount = vaultTokenInfo[i * vaultPropsLength + 11]
+      token.maxUsdgAmount = vaultTokenInfo[i * vaultPropsLength + 6]
+      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 7]
+      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 8]
+      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 9]
 
       token.availableUsd = token.isStable
         ? token.poolAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals))
