@@ -569,7 +569,7 @@ export default function SwapBox(props) {
       return ["Insufficient liquidity"]
     }
 
-    if (fromTokenInfo.maxUsdgAmount && fromTokenInfo.usdgAmount && fromTokenInfo.maxPrice) {
+    if (fromTokenInfo.maxUsdgAmount && fromTokenInfo.maxUsdgAmount.gt(0) && fromTokenInfo.usdgAmount && fromTokenInfo.maxPrice) {
       const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS)
       const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount)
 
@@ -619,11 +619,10 @@ export default function SwapBox(props) {
           && toTokenInfo.bufferAmount
           && toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(swapAmount))
         ) {
-          // suggest swapping to indexToken somewhere?
           return ["Insufficient liquidity", true, "BUFFER"]
         }
 
-        if (fromTokenInfo.maxUsdgAmount && fromTokenInfo.minPrice && fromTokenInfo.usdgAmount) {
+        if (fromTokenInfo.maxUsdgAmount && fromTokenInfo.maxUsdgAmount.gt(0) && fromTokenInfo.minPrice && fromTokenInfo.usdgAmount) {
           const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS)
           const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount)
           if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
@@ -651,7 +650,7 @@ export default function SwapBox(props) {
           return ["Insufficient liquidity", true, "BUFFER"]
         }
 
-        if (fromTokenInfo.maxUsdgAmount && fromTokenInfo.minPrice && fromTokenInfo.usdgAmount) {
+        if (fromTokenInfo.maxUsdgAmount && fromTokenInfo.maxUsdgAmount.gt(0) && fromTokenInfo.minPrice && fromTokenInfo.usdgAmount) {
           const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS)
           const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount)
           if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
