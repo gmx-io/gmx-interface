@@ -352,7 +352,7 @@ export default function GlpSwap(props) {
       if (swapTokenInfo.maxUsdgAmount && swapTokenInfo.usdgAmount && swapUsdMin) {
         const usdgFromAmount = adjustForDecimals(swapUsdMin, USD_DECIMALS, USDG_DECIMALS)
         const nextUsdgAmount = swapTokenInfo.usdgAmount.add(usdgFromAmount)
-        if (swapTokenInfo.maxUsdgAmount.gt(0) && nextUsdgAmount.gt(swapTokenInfo.maxUsdgAmount)) {
+        if (nextUsdgAmount.gt(swapTokenInfo.maxUsdgAmount)) {
           return [`${swapTokenInfo.symbol} pool exceeded, try different token`, true]
         }
       }
@@ -375,14 +375,17 @@ export default function GlpSwap(props) {
   const renderErrorModal = useCallback(() => {
     const inputCurrency = swapToken.address
     const uniswapUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}`
-    const label = `${swapToken.symbol} limit exceeded`
+    const label = `${swapToken.symbol} Capacity Reached`
     return (
       <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal">
         <p>
-          Try to use other token to buy GLP.
+          The pool's capacity has been reached for {swapToken.symbol}. Please use another token to buy GLP.
         </p>
         <p>
-          You can buy it on&nbsp;<a href={uniswapUrl} target="_blank" rel="noreferrer">Uniswap</a>
+          Check the "Save on Fees" section for tokens with the lowest fees.
+        </p>
+        <p>
+          <a href={uniswapUrl} target="_blank" rel="noreferrer">Swap on Uniswap</a>
         </p>
       </Modal>
     )
