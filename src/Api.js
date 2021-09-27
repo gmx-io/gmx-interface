@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { toast } from 'react-toastify'
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client'
+import { useState } from 'react'
 import useSWR from 'swr'
 
 import OrderBook from './abis/OrderBook.json'
@@ -376,6 +377,43 @@ export function executeDecreaseOrder(chainId, library, account, index, feeReceiv
   _executeOrder(chainId, library, 'executeDecreaseOrder', account, index, feeReceiver, opts);
 }
 
+const NOT_ENOUGH_FUNDS = 'NOT_ENOUGH_FUNDS'
+const USER_DENIED = 'USER_DENIED'
+const SLIPPAGE = 'SLIPPAGE'
+const TX_ERROR_PATTERNS = {
+  [NOT_ENOUGH_FUNDS]: ["not enough funds for gas", "failed to execute call with revert code InsufficientGasFunds"],
+  [USER_DENIED]: ["User denied transaction signature"],
+  [SLIPPAGE]: ["Router: mark price lower than limit", "Router: mark price higher than limit"]
+}
+export function extractError(ex) {
+  const message = ex.data?.message || ex.message
+  if (!message) {
+    return []
+  }
+  for (const [type, patterns] of Object.entries(TX_ERROR_PATTERNS)) {
+    for (const pattern of patterns) {
+      if (message.includes(pattern)) {
+        return [message, type]
+      }
+    }
+  }
+  return []
+}
+
+function ToastifyDebug(props) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="Toastify-debug">
+      {!open &&
+        <span className="Toastify-debug-button" onClick={() => setOpen(true)}>show error</span>
+      }
+      {open &&
+        props.children
+      }
+    </div>
+  )
+}
+
 export async function callContract(chainId, contract, method, params, opts) {
   try {
     if (!Array.isArray(params) && typeof params === 'object' && opts === undefined) {
@@ -404,18 +442,31 @@ export async function callContract(chainId, contract, method, params, opts) {
     }
     return res;
   } catch (e) {
-    console.error(e)
     let failMsg
-    if (["not enough funds for gas", "failed to execute call with revert code InsufficientGasFunds"].includes(e.data?.message)) {
-      failMsg = (<div>
-        There is not enough ETH in your account on Arbitrum to send this transaction.<br/>
-        <br/>
-        <a href={"https://arbitrum.io/bridge-tutorial/"} target="_blank" rel="noopener noreferrer">Bridge ETH to Arbitrum</a>
-      </div>)
-    } else if (e.message?.includes("User denied transaction signature")) {
-      failMsg = "Transaction was cancelled."
-    } else {
-      failMsg = opts.failMsg || "Transaction failed."
+    const [message, type] = extractError(e)
+    switch (type) {
+      case NOT_ENOUGH_FUNDS:
+        failMsg = (<div>
+          There is not enough ETH in your account on Arbitrum to send this transaction.<br/>
+          <br/>
+          <a href={"https://arbitrum.io/bridge-tutorial/"} target="_blank" rel="noopener noreferrer">Bridge ETH to Arbitrum</a>
+        </div>)
+        break
+      case USER_DENIED:
+        failMsg = "Transaction was cancelled."
+        break
+      case SLIPPAGE:
+        failMsg = "The mark price has changed, consider increasing your Slippage Tolerance by clicking on the \"...\" icon next to your address."
+        break
+      default:
+        failMsg = (<div>
+          {opts.failMsg || "Transaction failed."}<br/>
+          {message &&
+            <ToastifyDebug>
+              {message}
+            </ToastifyDebug>
+          }
+        </div>)
     }
     toast.error(failMsg);
     throw e
