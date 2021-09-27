@@ -395,7 +395,7 @@ export function extractError(ex) {
       if (message.includes(pattern)) {
         return [message, type]
       }
-    } 
+    }
   }
   return []
 }
@@ -405,7 +405,7 @@ function ToastifyDebug(props) {
   return (
     <div className="Toastify-debug">
       {!open &&
-        <span className="Toastify-debug-button" onClick={() => setOpen(true)}>show error</span> 
+        <span className="Toastify-debug-button" onClick={() => setOpen(true)}>show error</span>
       }
       {open &&
         props.children
@@ -456,7 +456,7 @@ export async function callContract(chainId, contract, method, params, opts) {
         failMsg = "Transaction was cancelled."
         break
       case SLIPPAGE:
-        failMsg = "Price has changed, try to increase slippage in settings or try again later"
+        failMsg = "The mark price has changed, consider increasing your Slippage Tolerance by clicking on the \"...\" icon next to your address."
         break
       default:
         failMsg = (<div>
