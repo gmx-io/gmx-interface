@@ -12,7 +12,7 @@ export default function Footer() {
       <a className="App-social-link" href="https://medium.com/@gmx.io" target="_blank" rel="noopener noreferrer">
         <FaMediumM />
       </a>
-      <a className="App-social-link" href="https://github.com/xvi10" target="_blank" rel="noopener noreferrer">
+      <a className="App-social-link" href="https://github.com/gmx-io" target="_blank" rel="noopener noreferrer">
         <FaGithub />
       </a>
       <a className="App-social-link" href="https://t.me/GMX_IO" target="_blank" rel="noopener noreferrer">

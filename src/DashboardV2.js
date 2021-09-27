@@ -330,8 +330,8 @@ export default function DashboardV2() {
       <div className="Page-title-section">
         <div className="Page-title">Stats</div>
         <div className="Page-description">
-          Total Stats start from 01 Sep 2021.&nbsp;
-          View BSC stats on <a href="https://gambit.financial/dashboard"  target="_blank" rel="noopener noreferrer">Gambit</a>.
+          Total Stats start from 01 Sep 2021.&nbsp;<br/>
+          For detailed stats: <a href="https://stats.gmx.io/"  target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
         </div>
       </div>
       <div className="DashboardV2-content">
@@ -579,7 +579,7 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">Unofficial GMX Yield List</div>
+            <div className="App-card-title">GMX Yield List</div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -601,6 +601,34 @@ export default function DashboardV2() {
                 <div>
                   <a href="https://gist.github.com/gmxyield" target="_blank" rel="noopener noreferrer">
                     @gmxyield
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">GMX Charts</div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://tokenfeeds.info/gmx-chart" target="_blank" rel="noopener noreferrer">
+                    https://tokenfeeds.info/gmx-chart
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  GMX price and staking charts
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Creator</div>
+                <div>
+                  <a href="https://gist.github.com/atomist" target="_blank" rel="noopener noreferrer">
+                    @atomist
                   </a>
                 </div>
               </div>
