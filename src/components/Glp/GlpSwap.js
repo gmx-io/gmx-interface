@@ -352,7 +352,7 @@ export default function GlpSwap(props) {
       if (swapTokenInfo.maxUsdgAmount && swapTokenInfo.usdgAmount && swapUsdMin) {
         const usdgFromAmount = adjustForDecimals(swapUsdMin, USD_DECIMALS, USDG_DECIMALS)
         const nextUsdgAmount = swapTokenInfo.usdgAmount.add(usdgFromAmount)
-        if (nextUsdgAmount.gt(swapTokenInfo.maxUsdgAmount)) {
+        if (swapTokenInfo.maxUsdgAmount.gt(0) && nextUsdgAmount.gt(swapTokenInfo.maxUsdgAmount)) {
           return [`${swapTokenInfo.symbol} pool exceeded, try different token`, true]
         }
       }
