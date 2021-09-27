@@ -316,6 +316,10 @@
   font-weight: normal;
 }
 
+.Error-modal .Modal-content {
+  width: 20rem;
+}
+
 .PositionEditor .Modal-content {
   width: 23rem;
 }
