@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 
 import Tooltip from '../Tooltip/Tooltip'
+import Modal from '../Modal/Modal'
 import Slider, { SliderTooltip } from 'rc-slider'
 import 'rc-slider/assets/index.css'
 
@@ -16,6 +17,7 @@ import {
 	formatAmount,
 	bigNumberify,
 	USD_DECIMALS,
+  USDG_DECIMALS,
 	LONG,
 	SHORT,
 	SWAP,
@@ -51,7 +53,8 @@ import {
   getMostAbundantStableToken,
   useLocalStorageSerializeKey,
   calculatePositionDelta,
-  replaceNativeTokenAddress
+  replaceNativeTokenAddress,
+  adjustForDecimals
 } from '../../Helpers'
 import { getConstant } from '../../Constants'
 import * as Api from '../../Api'
@@ -123,7 +126,6 @@ export default function SwapBox(props) {
     swapOption,
     setSwapOption,
     positionsMap,
-    maxUsdg,
     pendingTxns,
     setPendingTxns,
     tokenSelection,
@@ -148,9 +150,9 @@ export default function SwapBox(props) {
   const [isApproving, setIsApproving] = useState(false)
   const [isWaitingForApproval, setIsWaitingForApproval] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [modalError, setModalError] = useState(false)
 
   const defaultCollateralSymbol = getConstant(chainId, "defaultCollateralSymbol")
-  const isV2 = getConstant(chainId, "v2")
   // TODO hack with useLocalStorageSerializeKey
   const [shortCollateralAddress, setShortCollateralAddress] = useLocalStorageSerializeKey(
     [chainId, "Short-Collateral-Address"],
@@ -529,112 +531,82 @@ export default function SwapBox(props) {
 	}
 
   const getSwapError = () => {
-    if (fromTokenAddress === toTokenAddress) { return "Select different tokens" }
+    if (fromTokenAddress === toTokenAddress) { return ["Select different tokens"] }
 
     if (!isMarketOrder) {
       if ((toToken.isStable || toToken.isUsdg) && (fromToken.isStable || fromToken.isUsdg)) {
-        return "Select different tokens"
+        return ["Select different tokens"]
       }
 
       if (fromToken.isNative && toToken.isWrapped) {
-        return "Select different tokens"
+        return ["Select different tokens"]
       }
 
       if (toToken.isNative && fromToken.isWrapped) {
-        return "Select different tokens"
+        return ["Select different tokens"]
       }
     }
 
-    if (!fromAmount || fromAmount.eq(0)) { return "Enter an amount" }
-    if (!toAmount || toAmount.eq(0)) { return "Enter an amount" }
-    if (!isMarketOrder && (!triggerRatioValue || triggerRatio.eq(0))) { return "Enter a price" }
+    if (!fromAmount || fromAmount.eq(0)) { return ["Enter an amount"] }
+    if (!toAmount || toAmount.eq(0)) { return ["Enter an amount"] }
+    if (!isMarketOrder && (!triggerRatioValue || triggerRatio.eq(0))) { return ["Enter a price"] }
 
     const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress)
     if (!fromTokenInfo || !fromTokenInfo.minPrice) {
-      return "Incorrect network"
+      return ["Incorrect network"]
     }
     if (fromTokenInfo && fromTokenInfo.balance && fromAmount && fromAmount.gt(fromTokenInfo.balance)) {
-      return `Insufficient ${fromTokenInfo.symbol} balance`
-    }
-
-    if (!isV2 && maxUsdg.gt(0) && fromTokenInfo && fromTokenInfo.usdgAmount && fromTokenInfo.minPrice && toTokenAddress !== USDG_ADDRESS) {
-      const usdgAmount = fromTokenInfo.minPrice.mul(fromAmount).div(PRECISION)
-      const mintable = maxUsdg.sub(fromTokenInfo.usdgAmount)
-      if (usdgAmount.gt(mintable)) {
-        return `${fromTokenInfo.symbol} system cap exceeded`
-      }
+      return [`Insufficient ${fromTokenInfo.symbol} balance`]
     }
 
     const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress)
     const isWrapOrUnwrap = (fromToken.isNative && toToken.isWrapped) || (fromToken.isWrapped && toToken.isNative)
     if (!isWrapOrUnwrap && toToken && toTokenAddress !== USDG_ADDRESS && toTokenInfo &&
         toTokenInfo.availableAmount && toAmount.gt(toTokenInfo.availableAmount)) {
-      return "Insufficient liquidity"
+      return ["Insufficient liquidity"]
     }
     if (toAmount && toTokenInfo.bufferAmount && toTokenInfo.poolAmount && toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(toAmount))) {
-      return "Insufficient liquidity"
+      return ["Insufficient liquidity"]
     }
 
+    if (fromTokenInfo.maxUsdgAmount && fromTokenInfo.maxUsdgAmount.gt(0) && fromTokenInfo.usdgAmount && fromTokenInfo.maxPrice) {
+      const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS)
+      const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount)
 
-    if (!isV2 && toToken && toTokenAddress === USDG_ADDRESS && maxUsdg && fromTokenInfo && fromTokenInfo.usdgAmount) {
-      const mintable = maxUsdg.sub(fromTokenInfo.usdgAmount)
-      if (toAmount.gt(mintable)) {
-        let alternativeToken
-        let alternativeAmount = bigNumberify(0)
-        for (let i = 0; i < whitelistedTokens.length; i++) {
-          const tokenInfo = getTokenInfo(infoTokens, whitelistedTokens[i].address)
-          if (i === 0) {
-            alternativeToken = tokenInfo
-            alternativeAmount = tokenInfo.usdgAmount
-            continue
-          }
-          if (tokenInfo.usdgAmount.lt(alternativeAmount)) {
-            alternativeAmount = tokenInfo.usdgAmount
-            alternativeToken = tokenInfo
-          }
-        }
-
-        return `${fromTokenInfo.symbol} mint cap reached, try ${alternativeToken.symbol} instead`
+      if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
+        return [`${fromTokenInfo.symbol} pool exceeded`]
       }
     }
 
-    return false
+    return [false]
   }
 
-  const getLeverageError = () => {
-    if (!toAmount || toAmount.eq(0)) { return "Enter an amount" }
+  const getLeverageError = useCallback(() => {
+    if (!toAmount || toAmount.eq(0)) { return ["Enter an amount"] }
 
     let toTokenInfo = getTokenInfo(infoTokens, toTokenAddress)
     if (toTokenInfo && toTokenInfo.isStable) {
-      return `${swapOption === LONG ? "Longing" : "Shorting"} ${toTokenInfo.symbol} not supported`
+      return [`${swapOption === LONG ? "Longing" : "Shorting"} ${toTokenInfo.symbol} not supported`]
     }
 
     const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress)
     if (fromTokenInfo && fromTokenInfo.balance && fromAmount && fromAmount.gt(fromTokenInfo.balance)) {
-      return `Insufficient ${fromTokenInfo.symbol} balance`
+      return [`Insufficient ${fromTokenInfo.symbol} balance`]
     }
 
-    if (leverage && leverage.eq(0)) { return "Enter an amount" }
-    if (!isMarketOrder && (!triggerPriceValue || triggerPriceUsd.eq(0))) { return "Enter a price" }
+    if (leverage && leverage.eq(0)) { return ["Enter an amount"] }
+    if (!isMarketOrder && (!triggerPriceValue || triggerPriceUsd.eq(0))) { return ["Enter a price"] }
 
     if (!hasExistingPosition && fromUsdMin && fromUsdMin.lt(expandDecimals(10, USD_DECIMALS))) {
-      return "Min order: 10 USD"
+      return ["Min order: 10 USD"]
     }
 
     if (leverage && leverage.lt(1.1 * BASIS_POINTS_DIVISOR)) {
-      return "Min leverage: 1.1x"
+      return ["Min leverage: 1.1x"]
     }
 
     if (leverage && leverage.gt(30.5 * BASIS_POINTS_DIVISOR)) {
-      return "Max leverage: 30.5x"
-    }
-
-    if (!isV2 && fromAmount && fromTokenAddress !== toTokenAddress && fromTokenInfo && fromTokenInfo.usdgAmount && fromTokenInfo.minPrice) {
-      const usdgAmount = fromTokenInfo.minPrice.mul(fromAmount).div(PRECISION)
-      const mintable = maxUsdg.sub(fromTokenInfo.usdgAmount)
-      if (usdgAmount.gt(mintable)) {
-        return `${fromTokenInfo.symbol} cap exceeded, try USDG instead`
-      }
+      return ["Max leverage: 30.5x"]
     }
 
     if (isLong) {
@@ -642,10 +614,25 @@ export default function SwapBox(props) {
       if (fromTokenAddress !== toTokenAddress) {
         const { amount: swapAmount } = getNextToAmount(chainId, fromAmount, fromTokenAddress, toTokenAddress, infoTokens, undefined, undefined, usdgSupply, totalTokenWeights)
         requiredAmount = requiredAmount.add(swapAmount)
+
+        if (toTokenInfo.poolAmount
+          && toTokenInfo.bufferAmount
+          && toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(swapAmount))
+        ) {
+          return ["Insufficient liquidity", true, "BUFFER"]
+        }
+
+        if (fromTokenInfo.maxUsdgAmount && fromTokenInfo.maxUsdgAmount.gt(0) && fromTokenInfo.minPrice && fromTokenInfo.usdgAmount) {
+          const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS)
+          const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount)
+          if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
+            return [`${fromTokenInfo.symbol} pool exceeded, try different token`, true, "MAX_USDG"]
+          }
+        }
       }
       if (toToken && toTokenAddress !== USDG_ADDRESS &&
           toTokenInfo.availableAmount && requiredAmount.gt(toTokenInfo.availableAmount)) {
-        return "Insufficient liquidity"
+        return ["Insufficient liquidity"]
       }
     }
 
@@ -655,15 +642,24 @@ export default function SwapBox(props) {
         const { amount: nextToAmount } = getNextToAmount(chainId, fromAmount, fromTokenAddress, shortCollateralAddress, infoTokens, undefined, undefined, usdgSupply, totalTokenWeights)
         stableTokenAmount = nextToAmount
         if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
-          return `Insufficient liquidity`
+          return [`Insufficient liquidity`]
         }
 
         if (shortCollateralToken.bufferAmount && shortCollateralToken.poolAmount && shortCollateralToken.bufferAmount.gt(shortCollateralToken.poolAmount.sub(stableTokenAmount))) {
-          return "Insufficient liquidity"
+          // suggest swapping to collateralToken
+          return ["Insufficient liquidity", true, "BUFFER"]
+        }
+
+        if (fromTokenInfo.maxUsdgAmount && fromTokenInfo.maxUsdgAmount.gt(0) && fromTokenInfo.minPrice && fromTokenInfo.usdgAmount) {
+          const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS)
+          const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount)
+          if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
+            return [`${fromTokenInfo.symbol} pool exceeded, try different token`, true, "MAX_USDG"]
+          }
         }
       }
       if (!shortCollateralToken || !fromTokenInfo || !toTokenInfo || !toTokenInfo.maxPrice || !shortCollateralToken.availableAmount) {
-        return "Fetching token info..."
+        return ["Fetching token info..."]
       }
 
       const sizeUsd = toAmount.mul(toTokenInfo.maxPrice).div(expandDecimals(1, toTokenInfo.decimals))
@@ -671,12 +667,15 @@ export default function SwapBox(props) {
 
       stableTokenAmount = stableTokenAmount.add(sizeTokens)
       if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
-        return `Insufficient liquidity`
+        return [`Insufficient liquidity`]
       }
     }
 
-    return false
-  }
+    return [false]
+  }, [chainId, fromAmount, fromTokenAddress, fromUsdMin, hasExistingPosition,
+    infoTokens, isLong, isMarketOrder, isShort, leverage, shortCollateralAddress,
+    shortCollateralToken, swapOption, toAmount, toToken, toTokenAddress,
+    totalTokenWeights, triggerPriceUsd, triggerPriceValue, usdgSupply])
 
   const getToLabel = () => {
     if (isSwap) { return "Receive" }
@@ -691,10 +690,31 @@ export default function SwapBox(props) {
     return getLeverageError()
   }
 
+  const renderErrorModal = useCallback(() => {
+    const inputCurrency = fromToken.address === AddressZero ? "ETH" : fromToken.address
+    let outputCurrency
+    if (isLong) {
+      outputCurrency = toToken.address === AddressZero ? "ETH" : toToken.address
+    } else {
+      outputCurrency = shortCollateralToken.address
+    }
+    let uniswapUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}`
+    const label = modalError === "BUFFER" ? `${shortCollateralToken.symbol} Required` : `${fromToken.symbol} Capacity Reached`
+    const swapTokenSymbol = isLong ? toToken.symbol : shortCollateralToken.symbol
+    return (
+      <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal">
+        You will need to select {swapTokenSymbol} as the "Pay" token to initiate this trade.<br/>
+        <br/>
+        <a href={uniswapUrl} target="_blank" rel="noreferrer">Buy {swapTokenSymbol} on Uniswap</a>
+      </Modal>
+    )
+  }, [modalError, setModalError, fromToken.address, toToken.address, shortCollateralToken.address, isLong,
+    shortCollateralToken.symbol, toToken.symbol, fromToken.symbol])
+
   const isPrimaryEnabled = () => {
     if (!active) { return true }
-    const error = getError()
-    if (error) { return false }
+    const [error, modal] = getError()
+    if (error && !modal) { return false }
     if (needOrderBookApproval && isWaitingForPluginApproval) { return false }
     if ((needApproval && isWaitingForApproval) || isApproving) { return false }
     if (isApproving) { return false }
@@ -706,8 +726,8 @@ export default function SwapBox(props) {
   const getPrimaryText = () => {
     if (!active) { return "Connect Wallet" }
     if (!isSupportedChain(chainId)) { return "Incorrect Network" }
-    const error = getError()
-    if (error) { return error }
+    const [error, modal] = getError()
+    if (error && !modal) { return error }
 
     if (needApproval && isWaitingForApproval) { return "Waiting for Approval" }
     if (isApproving) { return `Approving ${fromToken.symbol}...` }
@@ -1161,6 +1181,13 @@ export default function SwapBox(props) {
       return
     }
 
+    const [, modal, errorCode] = getError()
+
+    if (modal) {
+      setModalError(errorCode)
+      return
+    }
+
     if (isSwap) {
       if (fromTokenAddress === AddressZero && toTokenAddress === nativeTokenAddress) {
         wrap()
@@ -1273,7 +1300,6 @@ export default function SwapBox(props) {
                     onSelectToken={onSelectFromToken}
                     tokens={fromTokens}
                     infoTokens={infoTokens}
-                    mintingCap={maxUsdg}
                     showMintingCap={false}
                   />
                 </div>
@@ -1582,6 +1608,7 @@ export default function SwapBox(props) {
           </div>
         </div>
       </div>
+      {renderErrorModal()}
       {isConfirming &&
         <ConfirmationBox
           orders={orders}

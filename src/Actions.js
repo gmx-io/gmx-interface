@@ -13,6 +13,7 @@ import { getPositions, getPositionQuery, PositionsList } from './Exchange'
 
 import TradeHistory from './components/Exchange/TradeHistory'
 import Reader from './abis/Reader.json'
+import ReaderV2 from './abis/ReaderV2.json'
 
 const USD_DECIMALS = 30
 
@@ -50,8 +51,8 @@ export default function Actions() {
     fetcher: fetcher(library, Reader, [positionQuery.collateralTokens, positionQuery.indexTokens, positionQuery.isLong]),
   })
 
-  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR([active, chainId, readerAddress, "getVaultTokenInfo"], {
-    fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, expandDecimals(1, 18), whitelistedTokenAddresses]),
+  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR([active, chainId, readerAddress, "getFullVaultTokenInfo"], {
+    fetcher: fetcher(library, ReaderV2, [vaultAddress, nativeTokenAddress, expandDecimals(1, 18), whitelistedTokenAddresses]),
   })
 
   const { data: fundingRateInfo, mutate: updateFundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
