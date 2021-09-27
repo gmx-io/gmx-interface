@@ -327,7 +327,7 @@ function UnstakeModal(props) {
     callContract(chainId, contract, unstakeMethodName, [amount], {
       sentMsg: "Unstake submitted!",
       failMsg: "Unstake failed.",
-      successMsg: "Unstake done.",
+      successMsg: "Unstake completed.",
       setPendingTxns
     })
     .then(async (res) => {
@@ -403,7 +403,7 @@ function CompoundModal(props) {
     callContract(chainId, contract, "compound", {
       sentMsg: "Compound submitted!",
       failMsg: "Compound failed.",
-      successMsg: "Compound done.",
+      successMsg: "Compound completed.",
       setPendingTxns
     })
     .then(async (res) => {
@@ -720,7 +720,7 @@ export default function StakeV2({ setPendingTxns }) {
     callContract(chainId, contract, "claim", {
       sentMsg: "Claim submitted!",
       failMsg: "Claim failed.",
-      successMsg: "Rewards are claimed",
+      successMsg: "Claim completed.",
       setPendingTxns
     })
   }

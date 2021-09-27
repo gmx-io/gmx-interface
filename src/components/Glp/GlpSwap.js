@@ -422,6 +422,7 @@ export default function GlpSwap(props) {
       value,
       sentMsg: "Buy submitted!",
       failMsg: "Buy failed.",
+      successMsg: "GLP bought!",
       setPendingTxns
     })
     .then(async () => {
@@ -444,6 +445,7 @@ export default function GlpSwap(props) {
     callContract(chainId, contract, method, params, {
       sentMsg: "Sell submitted!",
       failMsg: "Sell failed.",
+      successMsg: "GLP sold!",
       setPendingTxns
     })
     .then(async () => {
