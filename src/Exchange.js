@@ -17,7 +17,6 @@ import {
   fetcher,
   formatAmount,
   expandDecimals,
-  usePrevious,
   getExplorerUrl,
   getPositionKey,
   getUsd,
@@ -392,7 +391,7 @@ export function PositionsList(props) {
   )
 }
 
-export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage, savedSlippageAmount }) {
+export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage, savedSlippageAmount, pendingTxns, setPendingTxns }) {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -410,8 +409,6 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   const whitelistedTokenAddresses = whitelistedTokens.map(token => token.address)
 
   const positionQuery = getPositionQuery(whitelistedTokens, nativeTokenAddress)
-
-  const [pendingTxns, setPendingTxns] = useState([])
 
   const defaultCollateralSymbol = getConstant(chainId, "defaultCollateralSymbol")
   const defaultTokenSelection = useMemo(() => ({
@@ -453,17 +450,6 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
 
   const connectWallet = getConnectWalletHandler(activate)
-
-  const prevAccount = usePrevious(account)
-  useEffect(() => {
-    if (prevAccount !== account) {
-      setPendingTxns([])
-    }
-  }, [prevAccount, account])
-
-  useEffect(() => {
-    setPendingTxns([])
-  }, [chainId])
 
   const tokens = getTokens(chainId)
   const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR([active, chainId, readerAddress, "getVaultTokenInfo"], {
@@ -538,7 +524,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
       checkPendingTxns()
     }, 2 * 1000)
     return () => clearInterval(interval);
-  }, [library, pendingTxns, chainId])
+  }, [library, pendingTxns, chainId, setPendingTxns])
 
   useEffect(() => {
     if (active) {
