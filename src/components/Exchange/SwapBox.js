@@ -696,19 +696,16 @@ export default function SwapBox(props) {
     if (isLong) {
       outputCurrency = toToken.address === AddressZero ? "ETH" : toToken.address
     } else {
-      outputCurrency = shortCollateralToken.address 
+      outputCurrency = shortCollateralToken.address
     }
     let uniswapUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}`
-    const label = modalError === "BUFFER" ? "Insufficient liquidity" : `${fromToken.symbol} limit exceeded`
+    const label = modalError === "BUFFER" ? `${shortCollateralToken.symbol} Required` : `${fromToken.symbol} Capacity Reached`
     const swapTokenSymbol = isLong ? toToken.symbol : shortCollateralToken.symbol
     return (
       <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal">
-        <p>
-          Try to use {swapTokenSymbol} or other token for opening position.
-        </p>
-        <p>
-          You can buy it on&nbsp;<a href={uniswapUrl} target="_blank" rel="noreferrer">Uniswap</a>
-        </p>
+        You will need to select {swapTokenSymbol} as the "Pay" token to initiate this trade.<br/>
+        <br/>
+        <a href={uniswapUrl} target="_blank" rel="noreferrer">Buy {swapTokenSymbol} on Uniswap</a>
       </Modal>
     )
   }, [modalError, setModalError, fromToken.address, toToken.address, shortCollateralToken.address, isLong,
