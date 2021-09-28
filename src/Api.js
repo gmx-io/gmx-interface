@@ -49,7 +49,7 @@ async function getChartPricesFromStats(marketName, chainId) {
   }
   const hostname = document.location.hostname === 'localhost' && false
     ? 'http://localhost:3105/'
-    : 'https://stats.gambit.financial/'
+    : 'https://stats.gmx.io/'
   const from = Math.floor((Date.now() - 86400 * 1000 * 60) / 1000) // 2 months
   const url = `${hostname}api/chart/${symbol}?from=${from}&preferableChainId=${chainId}`
   const TIMEOUT = 5000
