@@ -251,7 +251,7 @@ export default function PositionSeller(props) {
     maxAmount = position.size
     maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true)
     maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2)
-    if (fromAmount) {
+    if (fromAmount && collateralToken.maxPrice) {
       convertedAmount = fromAmount.mul(expandDecimals(1, collateralToken.decimals)).div(collateralToken.maxPrice)
       convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true)
     }
