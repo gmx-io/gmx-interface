@@ -693,7 +693,7 @@ function CompoundModal(props) {
           </div>
           <div>
   					<Checkbox isChecked={shouldStakeGmx} setIsChecked={setShouldStakeGmx}>
-  						Stake GMX Rewards
+  						Compound GMX Rewards
   					</Checkbox>
           </div>
           <div>
@@ -703,12 +703,12 @@ function CompoundModal(props) {
           </div>
           <div>
   					<Checkbox isChecked={shouldStakeEsGmx} setIsChecked={setShouldStakeEsGmx}>
-  						Stake esGMX Rewards
+  						Compound esGMX Rewards
   					</Checkbox>
           </div>
           <div>
   					<Checkbox isChecked={shouldStakeMultiplierPoints} setIsChecked={setShouldStakeMultiplierPoints}>
-  						Stake Multiplier Points
+  						Compound Multiplier Points
   					</Checkbox>
           </div>
           <div>
