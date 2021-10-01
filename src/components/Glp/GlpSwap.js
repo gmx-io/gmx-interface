@@ -50,6 +50,8 @@ import ReaderV2 from '../../abis/ReaderV2.json'
 import RewardReader from '../../abis/RewardReader.json'
 import VaultV2 from '../../abis/VaultV2.json'
 import GlpManager from '../../abis/GlpManager.json'
+import RewardTracker from '../../abis/RewardTracker.json'
+import Vester from '../../abis/Vester.json'
 import RewardRouter from '../../abis/RewardRouter.json'
 import Token from '../../abis/Token.json'
 import UniPool from '../../abis/UniPool.json'
@@ -143,6 +145,15 @@ export default function GlpSwap(props) {
     fetcher: fetcher(library, GlpManager),
   })
 
+  const { data: glpBalance, mutate: updateGlpBalance } = useSWR([`GlpSwap:glpBalance:${active}`, chainId, feeGlpTrackerAddress, "stakedAmounts", account || AddressZero], {
+    fetcher: fetcher(library, RewardTracker),
+  })
+
+  const glpVesterAddress = getContract(chainId, "GlpVester")
+  const { data: reservedAmount, mutate: updateReservedAmount } = useSWR([`GlpSwap:reservedAmount:${active}`, chainId, glpVesterAddress, "pairAmounts", account || AddressZero], {
+    fetcher: fetcher(library, Vester),
+  })
+
   const rewardTrackersForStakingInfo = [
     stakedGlpTrackerAddress,
     feeGlpTrackerAddress
@@ -161,7 +172,6 @@ export default function GlpSwap(props) {
   const redemptionTime = lastPurchaseTime ? lastPurchaseTime.add(GLP_COOLDOWN_DURATION) : undefined
   const inCooldownWindow = redemptionTime && parseInt(Date.now() / 1000) < redemptionTime
 
-  const glpBalance = balancesAndSupplies ? balancesAndSupplies[0] : bigNumberify(0)
   const glpSupply = balancesAndSupplies ? balancesAndSupplies[1] : bigNumberify(0)
   const usdgSupply = balancesAndSupplies ? balancesAndSupplies[3] : bigNumberify(0)
   let aum
@@ -169,8 +179,16 @@ export default function GlpSwap(props) {
     aum = isBuying ? aums[0] : aums[1]
   }
   const glpPrice = (aum && aum.gt(0) && glpSupply.gt(0)) ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(glpSupply) : expandDecimals(1, USD_DECIMALS)
-  const glpBalanceUsd = glpBalance.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS))
+  let glpBalanceUsd
+  if (glpBalance) {
+    glpBalanceUsd = glpBalance.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS))
+  }
   const glpSupplyUsd = glpSupply.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS))
+
+  let reserveAmountUsd
+  if (reservedAmount) {
+    reserveAmountUsd = reservedAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS))
+  }
 
   const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, undefined)
   const swapToken = getToken(chainId, swapTokenAddress)
@@ -258,6 +276,8 @@ export default function GlpSwap(props) {
         updateLastPurchaseTime(undefined, true)
         updateStakingInfo(undefined, true)
         updateUniPoolSlot0(undefined, true)
+        updateReservedAmount(undefined, true)
+        updateGlpBalance(undefined, true)
       })
       return () => {
         library.removeAllListeners('block')
@@ -266,7 +286,8 @@ export default function GlpSwap(props) {
   }, [active, library,  chainId,
       updateVaultTokenInfo, updateTokenBalances, updateBalancesAndSupplies,
       updateAums, updateTotalTokenWeights, updateTokenAllowance,
-      updateLastPurchaseTime, updateStakingInfo, updateUniPoolSlot0])
+      updateLastPurchaseTime, updateStakingInfo, updateUniPoolSlot0,
+      updateReservedAmount, updateGlpBalance])
 
   useEffect(() => {
     const updateSwapAmounts = () => {
@@ -332,7 +353,7 @@ export default function GlpSwap(props) {
     }
 
     setAnchorOnSwapAmount(false)
-    setGlpValue(formatAmountFree(glpBalance, GLP_DECIMALS, GLP_DECIMALS))
+    setGlpValue(formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS))
   }
 
   const getError = () => {
@@ -359,7 +380,7 @@ export default function GlpSwap(props) {
     }
 
     if (!isBuying) {
-      if (glpBalance && glpAmount && glpAmount.gt(glpBalance)) {
+      if (maxSellAmount && glpAmount && glpAmount.gt(maxSellAmount)) {
         return [`Insufficient GLP balance`]
       }
 
@@ -541,6 +562,11 @@ export default function GlpSwap(props) {
     feePercentageText += "%"
   }
 
+  let maxSellAmount = glpBalance
+  if (glpBalance && reservedAmount) {
+    maxSellAmount = glpBalance.sub(reservedAmount)
+  }
+
   return (
     <div className="GlpSwap Page">
       {renderErrorModal()}
@@ -577,6 +603,14 @@ export default function GlpSwap(props) {
                 {formatAmount(glpBalance, GLP_DECIMALS, 4, true)} GLP (${formatAmount(glpBalanceUsd, USD_DECIMALS, 2, true)})
               </div>
             </div>
+            {!isBuying && <div className="App-card-row">
+              <div className="label">Reserved</div>
+              <div>
+                <Tooltip handle={`${formatAmount(reservedAmount, 18, 4, true)} GLP ($${formatAmount(reserveAmountUsd, USD_DECIMALS, 2, true)})`} position="right-bottom">
+                  {formatAmount(reservedAmount, 18, 4, true)} GLP have been reserved for vesting.
+                </Tooltip>
+              </div>
+            </div>}
             <div className="App-card-divider"></div>
             <div className="App-card-row">
               <div className="label">APR</div>
@@ -626,10 +660,10 @@ export default function GlpSwap(props) {
 
           {!isBuying && <InputSection
             topLeftLabel={payLabel}
-            topRightLabel={`Balance: ${formatAmount(glpBalance, GLP_DECIMALS, 4, true)}`}
+            topRightLabel={`Available: ${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
             inputValue={glpValue}
             onInputValueChange={onGlpValueChange}
-            showMaxButton={glpValue !== formatAmountFree(glpBalance, GLP_DECIMALS, GLP_DECIMALS)}
+            showMaxButton={glpValue !== formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS)}
             onClickTopRightLabel={fillMaxAmount}
             onClickMax={fillMaxAmount}
           >
