@@ -447,7 +447,7 @@ function VesterDepositModal(props) {
       return "Max amount exceeded"
     }
     if (nextReserveAmount.gt(maxReserveAmount)) {
-      return "Capacity exceeded"
+      return "Insufficient staked tokens"
     }
   }
 
@@ -914,10 +914,35 @@ export default function StakeV2({ setPendingTxns }) {
     setVesterDepositAddress(gmxVesterAddress)
   }
 
+  const showGlpVesterDepositModal = () => {
+    let remainingVestableAmount = vestingData.glpVester.maxVestableAmount.sub(vestingData.glpVester.escrowedBalance)
+    if (processedData.esGmxBalance.lt(remainingVestableAmount)) {
+      remainingVestableAmount = processedData.esGmxBalance
+    }
+
+    setIsVesterDepositModalVisible(true)
+    setVesterDepositTitle("GLP Vault")
+    setVesterDepositMaxAmount(remainingVestableAmount)
+    setVesterDepositBalance(processedData.esGmxBalance)
+    setVesterDepositEscrowedBalance(vestingData.glpVester.escrowedBalance)
+    setVesterDepositMaxVestableAmount(vestingData.glpVester.maxVestableAmount)
+    setVesterDepositAverageStakedAmount(vestingData.glpVester.averageStakedAmount)
+    setVesterDepositReserveAmount(vestingData.glpVester.pairAmount)
+    setVesterDepositMaxReserveAmount(processedData.glpBalance)
+    setVesterDepositValue("")
+    setVesterDepositAddress(glpVesterAddress)
+  }
+
   const showGmxVesterWithdrawModal = () => {
     setIsVesterWithdrawModalVisible(true)
     setVesterWithdrawTitle("Withdraw and Reset GMX Vault")
     setVesterWithdrawAddress(gmxVesterAddress)
+  }
+
+  const showGlpVesterWithdrawModal = () => {
+    setIsVesterWithdrawModalVisible(true)
+    setVesterWithdrawTitle("Withdraw and Reset GLP Vault")
+    setVesterWithdrawAddress(glpVesterAddress)
   }
 
   const showUnstakeGmxModal = () => {
@@ -1447,6 +1472,47 @@ export default function StakeV2({ setPendingTxns }) {
                 {!active && <button className="App-button-option App-card-option" onClick={() => connectWallet()}>Connect Wallet</button>}
                 {active && <button className="App-button-option App-card-option" onClick={() => showGmxVesterDepositModal()}>Deposit</button>}
                 {active && <button className="App-button-option App-card-option" onClick={() => showGmxVesterWithdrawModal()}>Withdraw</button>}
+              </div>
+            </div>
+          </div>
+          <div className="App-card StakeV2-gmx-card">
+            <div className="App-card-title">GLP Vault</div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Staked Tokens</div>
+                <div>
+                  {formatAmount(processedData.glpBalance, 18, 2, true)} GLP
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Reserved for Vesting</div>
+                <div>
+                  {formatKeyAmount(vestingData, "glpVesterPairAmount", 18, 2, true)} / {formatAmount(processedData.glpBalance, 18, 2, true)}
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Vesting Status</div>
+                <div>
+                  <Tooltip handle={`${formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} / ${formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)}`} position="right-bottom">
+                    {formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} tokens have been converted to GMX from the&nbsp;
+                    {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)} esGMX deposited for vesting.
+                  </Tooltip>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Claimable</div>
+                <div>
+                  <Tooltip handle={`${formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX`} position="right-bottom">
+                    {formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX tokens can be claimed, use the options under the Total Rewards section to claim them.
+                  </Tooltip>
+                </div>
+              </div>
+              <div className="App-card-divider"></div>
+              <div className="App-card-options">
+                {!active && <button className="App-button-option App-card-option" onClick={() => connectWallet()}>Connect Wallet</button>}
+                {active && <button className="App-button-option App-card-option" onClick={() => showGlpVesterDepositModal()}>Deposit</button>}
+                {active && <button className="App-button-option App-card-option" onClick={() => showGlpVesterWithdrawModal()}>Withdraw</button>}
               </div>
             </div>
           </div>
