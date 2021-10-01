@@ -337,7 +337,7 @@ function UnstakeModal(props) {
   const { isVisible, setIsVisible, chainId, title,
     maxAmount, value, setValue, library, unstakingTokenSymbol,
     rewardRouterAddress, unstakeMethodName, multiplierPointsAmount,
-    bonusGmxInFeeGmx, setPendingTxns } = props
+    reservedAmount, bonusGmxInFeeGmx, setPendingTxns } = props
   const [isUnstaking, setIsUnstaking] = useState(false)
 
   let amount = parseValue(value, 18)
@@ -412,6 +412,9 @@ function UnstakeModal(props) {
             </div>
           </div>
         </div>
+        {reservedAmount && reservedAmount.gt(0) && <div className="Modal-note">
+          You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.
+        </div>}
         {(burnAmount && burnAmount.gt(0) && rewardReductionBasisPoints && rewardReductionBasisPoints.gt(0)) && <div className="Modal-note">
           Unstaking will burn&nbsp;
           <a href="https://gmxio.gitbook.io/gmx/rewards" target="_blank" rel="noopener noreferrer">{formatAmount(burnAmount, 18, 4, true)} Multiplier Points</a>.&nbsp;
@@ -430,7 +433,7 @@ function UnstakeModal(props) {
 function VesterDepositModal(props) {
   const { isVisible, setIsVisible, chainId, title, maxAmount, value, setValue,
     balance, escrowedBalance, averageStakedAmount, maxVestableAmount, library,
-    reserveAmount, maxReserveAmount, vesterAddress, setPendingTxns } = props
+    stakeTokenLabel, reserveAmount, maxReserveAmount, vesterAddress, setPendingTxns } = props
   const [isDepositing, setIsDepositing] = useState(false)
 
   let amount = parseValue(value, 18)
@@ -534,7 +537,8 @@ function VesterDepositModal(props) {
             <div className="align-right">
               <Tooltip handle={`${formatAmount(nextReserveAmount, 18, 2, true)} / ${formatAmount(maxReserveAmount, 18, 2, true)}`} position="right-bottom">
                 Current Reserved: {formatAmount(reserveAmount, 18, 2, true)}<br/>
-                Reserve Required: {formatAmount(additionalReserveAmount, 18, 2, true)}
+                Reserve Required: {formatAmount(additionalReserveAmount, 18, 2, true)}<br/>
+                {amount && <div><br/>You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)} {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.</div>}
               </Tooltip>
             </div>
           </div>
@@ -832,12 +836,14 @@ export default function StakeV2({ setPendingTxns }) {
   const [isUnstakeModalVisible, setIsUnstakeModalVisible] = useState(false)
   const [unstakeModalTitle, setUnstakeModalTitle] = useState("")
   const [unstakeModalMaxAmount, setUnstakeModalMaxAmount] = useState(undefined)
+  const [unstakeModalReservedAmount, setUnstakeModalReservedAmount] = useState(undefined)
   const [unstakeValue, setUnstakeValue] = useState("")
   const [unstakingTokenSymbol, setUnstakingTokenSymbol] = useState("")
   const [unstakeMethodName, setUnstakeMethodName] = useState("")
 
   const [isVesterDepositModalVisible, setIsVesterDepositModalVisible] = useState(false)
   const [vesterDepositTitle, setVesterDepositTitle] = useState("")
+  const [vesterDepositStakeTokenLabel, setVesterDepositStakeTokenLabel] = useState("")
   const [vesterDepositMaxAmount, setVesterDepositMaxAmount] = useState("")
   const [vesterDepositBalance, setVesterDepositBalance] = useState("")
   const [vesterDepositEscrowedBalance, setVesterDepositEscrowedBalance] = useState("")
@@ -1019,6 +1025,17 @@ export default function StakeV2({ setPendingTxns }) {
     stakedGmxSupplyUsd = stakedGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18))
   }
 
+  let maxUnstakeableGmx = bigNumberify(0)
+  if (totalRewardTokens && vestingData && vestingData.gmxVesterPairAmount &&
+      multiplierPointsAmount && processedData.bonusGmxInFeeGmx) {
+    const availableTokens = totalRewardTokens.sub(vestingData.gmxVesterPairAmount)
+    const stakedTokens = processedData.bonusGmxInFeeGmx
+    const divisor = multiplierPointsAmount.add(stakedTokens)
+    if (divisor.gt(0)) {
+      maxUnstakeableGmx = availableTokens.mul(stakedTokens).div(divisor)
+    }
+  }
+
   useEffect(() => {
     if (active) {
       library.on('block', () => {
@@ -1076,6 +1093,7 @@ export default function StakeV2({ setPendingTxns }) {
 
     setIsVesterDepositModalVisible(true)
     setVesterDepositTitle("GMX Vault")
+    setVesterDepositStakeTokenLabel("staked GMX + esGMX + Multiplier Points")
     setVesterDepositMaxAmount(remainingVestableAmount)
     setVesterDepositBalance(processedData.esGmxBalance)
     setVesterDepositEscrowedBalance(vestingData.gmxVester.escrowedBalance)
@@ -1095,6 +1113,7 @@ export default function StakeV2({ setPendingTxns }) {
 
     setIsVesterDepositModalVisible(true)
     setVesterDepositTitle("GLP Vault")
+    setVesterDepositStakeTokenLabel("staked GLP")
     setVesterDepositMaxAmount(remainingVestableAmount)
     setVesterDepositBalance(processedData.esGmxBalance)
     setVesterDepositEscrowedBalance(vestingData.glpVester.escrowedBalance)
@@ -1125,7 +1144,12 @@ export default function StakeV2({ setPendingTxns }) {
     }
     setIsUnstakeModalVisible(true)
     setUnstakeModalTitle("Unstake GMX")
-    setUnstakeModalMaxAmount(processedData.gmxInStakedGmx)
+    let maxAmount = processedData.gmxInStakedGmx
+    if (processedData.gmxInStakedGmx && maxUnstakeableGmx && maxUnstakeableGmx.lt(processedData.gmxInStakedGmx)) {
+      maxAmount = maxUnstakeableGmx
+    }
+    setUnstakeModalMaxAmount(maxAmount)
+    setUnstakeModalReservedAmount(vestingData.gmxVesterPairAmount)
     setUnstakeValue("")
     setUnstakingTokenSymbol("GMX")
     setUnstakeMethodName("unstakeGmx")
@@ -1134,7 +1158,12 @@ export default function StakeV2({ setPendingTxns }) {
   const showUnstakeEsGmxModal = () => {
     setIsUnstakeModalVisible(true)
     setUnstakeModalTitle("Unstake esGMX")
-    setUnstakeModalMaxAmount(processedData.esGmxInStakedGmx)
+    let maxAmount = processedData.esGmxInStakedGmx
+    if (processedData.esGmxInStakedGmx && maxUnstakeableGmx && maxUnstakeableGmx.lt(processedData.esGmxInStakedGmx)) {
+      maxAmount = maxUnstakeableGmx
+    }
+    setUnstakeModalMaxAmount(maxAmount)
+    setUnstakeModalReservedAmount(vestingData.gmxVesterPairAmount)
     setUnstakeValue("")
     setUnstakingTokenSymbol("esGMX")
     setUnstakeMethodName("unstakeEsGmx")
@@ -1208,6 +1237,7 @@ export default function StakeV2({ setPendingTxns }) {
         chainId={chainId}
         title={unstakeModalTitle}
         maxAmount={unstakeModalMaxAmount}
+        reservedAmount={unstakeModalReservedAmount}
         value={unstakeValue}
         setValue={setUnstakeValue}
         library={library}
@@ -1222,6 +1252,7 @@ export default function StakeV2({ setPendingTxns }) {
         setIsVisible={setIsVesterDepositModalVisible}
         chainId={chainId}
         title={vesterDepositTitle}
+        stakeTokenLabel={vesterDepositStakeTokenLabel}
         maxAmount={vesterDepositMaxAmount}
         balance={vesterDepositBalance}
         escrowedBalance={vesterDepositEscrowedBalance}
