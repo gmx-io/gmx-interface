@@ -3,6 +3,10 @@
   z-index: 2;
 }
 
+.VesterDepositModal-info-rows {
+  margin-bottom: 0.5rem;
+}
+
 .StakeV2-address-input {
   padding: 1rem 2.2rem;
   padding-bottom: 0;

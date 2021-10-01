@@ -408,7 +408,7 @@ function ToastifyDebug(props) {
   return (
     <div className="Toastify-debug">
       {!open &&
-        <span className="Toastify-debug-button" onClick={() => setOpen(true)}>show error</span>
+        <span className="Toastify-debug-button" onClick={() => setOpen(true)}>Show error</span>
       }
       {open &&
         props.children
