@@ -1111,12 +1111,63 @@ export default function StakeV2({ setPendingTxns }) {
                   {formatAmount(esGmxSupply, 18, 0, true)} esGMX (${formatAmount(esGmxSupplyUsd, USD_DECIMALS, 0, true)})
                 </div>
               </div>
-
               <div className="App-card-divider"></div>
               <div className="App-card-options">
                 {active && <button className="App-button-option App-card-option" onClick={() => showStakeEsGmxModal()}>Stake</button>}
                 {active && <button className="App-button-option App-card-option" onClick={() => showUnstakeEsGmxModal()}>Unstake</button>}
                 {!active && <button className="App-button-option App-card-option" onClick={() => connectWallet()}>Connect Wallet</button>}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="Page-title-section">
+        <div className="Page-title">Vest</div>
+        <div className="Page-description">
+          Convert esGMX tokens to GMX tokens.
+        </div>
+      </div>
+      <div>
+        <div className="StakeV2-cards">
+          <div className="App-card StakeV2-gmx-card">
+            <div className="App-card-title">GMX Vault</div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Staked Tokens</div>
+                <div>
+                  ...
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Reserved for Vesting</div>
+                <div>
+                  ...
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Escrowed Tokens</div>
+                <div>
+                  ...
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Vesting Rate</div>
+                <div>
+                  ...
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Claimable</div>
+                <div>
+                  ...
+                </div>
+              </div>
+              <div className="App-card-divider"></div>
+              <div className="App-card-options">
+                {!active && <button className="App-button-option App-card-option" onClick={() => connectWallet()}>Connect Wallet</button>}
+                {active && <button className="App-button-option App-card-option" onClick={() => showStakeEsGmxModal()}>Deposit</button>}
+                {active && <button className="App-button-option App-card-option" onClick={() => showUnstakeEsGmxModal()}>Withdraw</button>}
               </div>
             </div>
           </div>
