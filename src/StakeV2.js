@@ -1629,7 +1629,10 @@ export default function StakeV2({ setPendingTxns }) {
       <div className="Page-title-section">
         <div className="Page-title">Vest</div>
         <div className="Page-description">
-          Convert esGMX tokens to GMX tokens.
+          Convert esGMX tokens to GMX tokens.<br/>
+          Please read the <a href="https://gmxio.gitbook.io/gmx/rewards#vesting" target="_blank" rel="noopener noreferrer">
+            vesting details
+          </a> before using the vaults.
         </div>
       </div>
       <div>
