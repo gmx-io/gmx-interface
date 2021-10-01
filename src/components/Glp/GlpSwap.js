@@ -482,10 +482,6 @@ export default function GlpSwap(props) {
     .then(async () => {
       handleFulfilled();
     })
-    .catch((e) => {
-      console.error(e)
-      toast.error("Sell failed.")
-    })
     .finally(() => {
       setIsSubmitting(false)
     })
