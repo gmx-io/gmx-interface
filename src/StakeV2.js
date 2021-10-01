@@ -661,12 +661,12 @@ function CompoundModal(props) {
 
     const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner())
     callContract(chainId, contract, "handleRewards", [
-      shouldClaimGmx,
+      shouldClaimGmx || shouldStakeGmx,
       shouldStakeGmx,
-      shouldClaimEsGmx,
+      shouldClaimEsGmx || shouldStakeEsGmx,
       shouldStakeEsGmx,
       shouldStakeMultiplierPoints,
-      shouldClaimWeth,
+      shouldClaimWeth || shouldConvertWeth,
       shouldConvertWeth
     ], {
       sentMsg: "Compound submitted!",
