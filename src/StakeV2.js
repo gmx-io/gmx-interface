@@ -115,7 +115,9 @@ function getProcessedData(balanceData, supplyData, depositBalanceData, stakingDa
 
   data.gmxBalance = balanceData.gmx
   data.gmxBalanceUsd = balanceData.gmx.mul(gmxPrice).div(expandDecimals(1, 18))
-  data.gmxSupply = supplyData.gmx
+
+  let gmxSupply = bigNumberify("6500429318655280000000001")
+  data.gmxSupply = gmxSupply
 
   data.gmxSupplyUsd = supplyData.gmx.mul(gmxPrice).div(expandDecimals(1, 18))
   data.stakedGmxSupply = stakedGmxSupply
