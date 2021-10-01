@@ -6,6 +6,7 @@ import { Pool } from '@uniswap/v3-sdk'
 import { Token as UniToken } from '@uniswap/sdk-core'
 
 import Modal from './components/Modal/Modal'
+import Checkbox from './components/Checkbox/Checkbox'
 import Tooltip from './components/Tooltip/Tooltip'
 import Footer from "./Footer"
 
@@ -30,6 +31,7 @@ import {
   approveTokens,
   getConnectWalletHandler,
   switchNetwork,
+  useLocalStorageSerializeKey,
   ARBITRUM,
   GLP_DECIMALS,
   USD_DECIMALS,
@@ -138,8 +140,8 @@ function getStakingData(stakingInfo) {
   return data
 }
 
-function getProcessedData(balanceData, supplyData, depositBalanceData, stakingData, aum, nativeTokenPrice, stakedGmxSupply, gmxPrice) {
-  if (!balanceData || !supplyData || !depositBalanceData || !stakingData || !aum || !nativeTokenPrice || !stakedGmxSupply || !gmxPrice) {
+function getProcessedData(balanceData, supplyData, depositBalanceData, stakingData, vestingData, aum, nativeTokenPrice, stakedGmxSupply, gmxPrice) {
+  if (!balanceData || !supplyData || !depositBalanceData || !stakingData || !vestingData || !aum || !nativeTokenPrice || !stakedGmxSupply || !gmxPrice) {
     return {}
   }
 
@@ -210,10 +212,15 @@ function getProcessedData(balanceData, supplyData, depositBalanceData, stakingDa
   data.totalEsGmxRewards = data.stakedGmxTrackerRewards.add(data.stakedGlpTrackerRewards)
   data.totalEsGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(data.stakedGlpTrackerRewardsUsd)
 
+  data.gmxVesterRewards = vestingData.gmxVester.claimable
+  data.glpVesterRewards = vestingData.glpVester.claimable
+  data.totalVesterRewards = data.gmxVesterRewards.add(data.glpVesterRewards)
+  data.totalVesterRewardsUsd = data.totalVesterRewards.mul(gmxPrice).div(expandDecimals(1, 18))
+
   data.totalETHRewards = data.feeGmxTrackerRewards.add(data.feeGlpTrackerRewards)
   data.totalETHRewardsUsd = data.feeGmxTrackerRewardsUsd.add(data.feeGlpTrackerRewardsUsd)
 
-  data.totalRewardsUsd = data.totalEsGmxRewardsUsd.add(data.totalETHRewardsUsd)
+  data.totalRewardsUsd = data.totalEsGmxRewardsUsd.add(data.totalETHRewardsUsd).add(data.totalGmxRewardsUsd)
 
   return data
 }
@@ -589,18 +596,73 @@ function VesterWithdrawModal(props) {
 }
 
 function CompoundModal(props) {
-  const { isVisible, setIsVisible, rewardRouterAddress, library, chainId, setPendingTxns } = props
+  const { isVisible, setIsVisible, rewardRouterAddress, active, account, library, chainId, setPendingTxns, totalVesterRewards } = props
   const [isCompounding, setIsCompounding] = useState(false)
+	const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey([chainId, "StakeV2-compound-should-claim-gmx"], true)
+	const [shouldStakeGmx, setShouldStakeGmx] = useLocalStorageSerializeKey([chainId, "StakeV2-compound-should-stake-gmx"], true)
+	const [shouldClaimEsGmx, setShouldClaimEsGmx] = useLocalStorageSerializeKey([chainId, "StakeV2-compound-should-claim-es-gmx"], true)
+	const [shouldStakeEsGmx, setShouldStakeEsGmx] = useLocalStorageSerializeKey([chainId, "StakeV2-compound-should-stake-es-gmx"], true)
+	const [shouldStakeMultiplierPoints, setShouldStakeMultiplierPoints] = useLocalStorageSerializeKey([chainId, "StakeV2-compound-should-stake-multiplier-points"], true)
+	const [shouldClaimWeth, setShouldClaimWeth] = useLocalStorageSerializeKey([chainId, "StakeV2-compound-should-claim-weth"], true)
+	const [shouldConvertWeth, setShouldConvertWeth] = useLocalStorageSerializeKey([chainId, "StakeV2-compound-should-convert-weth"], true)
+
+  const gmxAddress = getContract(chainId, "GMX")
+  const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker")
+
+  const [isApproving, setIsApproving] = useState(false)
+
+  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR([active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress], {
+    fetcher: fetcher(library, Token),
+  })
+
+  const needApproval = shouldStakeGmx && tokenAllowance && totalVesterRewards && totalVesterRewards.gt(tokenAllowance)
+
+  useEffect(() => {
+    if (active) {
+      library.on('block', () => {
+        updateTokenAllowance(undefined, true)
+      })
+      return () => {
+        library.removeAllListeners('block')
+      }
+    }
+  }, [active, library, updateTokenAllowance])
 
   const isPrimaryEnabled = () => {
-    return !isCompounding
+    return !isCompounding && !isApproving && !isCompounding
+  }
+
+  const getPrimaryText = () => {
+    if (isApproving) { return `Approving GMX...` }
+    if (needApproval) { return `Approve GMX` }
+    if (isCompounding) { return "Confirming..." }
+    return "Confirm"
   }
 
   const onClickPrimary = () => {
+    if (needApproval) {
+      approveTokens({
+        setIsApproving,
+        library,
+        tokenAddress: gmxAddress,
+        spender: stakedGmxTrackerAddress,
+        chainId
+      })
+      return
+    }
+
     setIsCompounding(true)
 
     const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner())
-    callContract(chainId, contract, "compound", {
+    callContract(chainId, contract, "handleRewards", [
+      shouldClaimGmx,
+      shouldStakeGmx,
+      shouldClaimEsGmx,
+      shouldStakeEsGmx,
+      shouldStakeMultiplierPoints,
+      shouldClaimWeth,
+      shouldConvertWeth
+    ], {
       sentMsg: "Compound submitted!",
       failMsg: "Compound failed.",
       successMsg: "Compound completed.",
@@ -617,14 +679,124 @@ function CompoundModal(props) {
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label="Compound Rewards">
-        <div className="Modal-note">
-          Compounding will claim and stake your Escrowed GMX and Multiplier Point rewards.<br/>
-          <br/>
-          If you do not wish to stake your Escrowed GMX rewards, you should click "Claim" first then "Compound".
+        <div className="CompoundModal-menu">
+          <div>
+  					<Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx}>
+  						Claim GMX Rewards
+  					</Checkbox>
+          </div>
+          <div>
+  					<Checkbox isChecked={shouldStakeGmx} setIsChecked={setShouldStakeGmx}>
+  						Stake GMX Rewards
+  					</Checkbox>
+          </div>
+          <div>
+  					<Checkbox isChecked={shouldClaimEsGmx} setIsChecked={setShouldClaimEsGmx}>
+  						Claim esGMX Rewards
+  					</Checkbox>
+          </div>
+          <div>
+  					<Checkbox isChecked={shouldStakeEsGmx} setIsChecked={setShouldStakeEsGmx}>
+  						Stake esGMX Rewards
+  					</Checkbox>
+          </div>
+          <div>
+  					<Checkbox isChecked={shouldStakeMultiplierPoints} setIsChecked={setShouldStakeMultiplierPoints}>
+  						Stake Multiplier Points
+  					</Checkbox>
+          </div>
+          <div>
+  					<Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth}>
+  						Claim WETH Rewards
+  					</Checkbox>
+          </div>
+          <div>
+  					<Checkbox isChecked={shouldConvertWeth} setIsChecked={setShouldConvertWeth}>
+  						Convert WETH to ETH
+  					</Checkbox>
+          </div>
         </div>
         <div className="Exchange-swap-button-container">
           <button className="App-cta Exchange-swap-button" onClick={ onClickPrimary } disabled={!isPrimaryEnabled()}>
-            Confirm
+            {getPrimaryText()}
+          </button>
+        </div>
+      </Modal>
+    </div>
+  )
+}
+
+function ClaimModal(props) {
+  const { isVisible, setIsVisible, rewardRouterAddress, library, chainId, setPendingTxns } = props
+  const [isClaiming, setIsClaiming] = useState(false)
+	const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey([chainId, "StakeV2-claim-should-claim-gmx"], true)
+	const [shouldClaimEsGmx, setShouldClaimEsGmx] = useLocalStorageSerializeKey([chainId, "StakeV2-claim-should-claim-es-gmx"], true)
+	const [shouldClaimWeth, setShouldClaimWeth] = useLocalStorageSerializeKey([chainId, "StakeV2-claim-should-claim-weth"], true)
+	const [shouldConvertWeth, setShouldConvertWeth] = useLocalStorageSerializeKey([chainId, "StakeV2-claim-should-convert-weth"], true)
+
+  const isPrimaryEnabled = () => {
+    return !isClaiming
+  }
+
+  const getPrimaryText = () => {
+    if (isClaiming) { return `Claiming...` }
+    return "Claim"
+  }
+
+  const onClickPrimary = () => {
+    setIsClaiming(true)
+
+    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner())
+    callContract(chainId, contract, "handleRewards", [
+      shouldClaimGmx,
+      false, // shouldStakeGmx
+      shouldClaimEsGmx,
+      false, // shouldStakeEsGmx
+      false, // shouldStakeMultiplierPoints
+      shouldClaimWeth,
+      shouldConvertWeth
+    ], {
+      sentMsg: "Claim submitted!",
+      failMsg: "Claim failed.",
+      successMsg: "Claim completed.",
+      setPendingTxns
+    })
+    .then(async (res) => {
+      setIsVisible(false)
+    })
+    .finally(() => {
+      setIsClaiming(false)
+    })
+  }
+
+  return (
+    <div className="StakeModal">
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label="Claim Rewards">
+        <div className="CompoundModal-menu">
+          <div>
+  					<Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx}>
+  						Claim GMX Rewards
+  					</Checkbox>
+          </div>
+          <div>
+  					<Checkbox isChecked={shouldClaimEsGmx} setIsChecked={setShouldClaimEsGmx}>
+  						Claim esGMX Rewards
+  					</Checkbox>
+          </div>
+          <div>
+  					<Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth}>
+  						Claim WETH Rewards
+  					</Checkbox>
+          </div>
+          <div>
+  					<Checkbox isChecked={shouldConvertWeth} setIsChecked={setShouldConvertWeth}>
+  						Convert WETH to ETH
+  					</Checkbox>
+          </div>
+        </div>
+        <div className="Exchange-swap-button-container">
+          <button className="App-cta Exchange-swap-button" onClick={ onClickPrimary } disabled={!isPrimaryEnabled()}>
+            {getPrimaryText()}
           </button>
         </div>
       </Modal>
@@ -681,6 +853,7 @@ export default function StakeV2({ setPendingTxns }) {
   const [vesterWithdrawAddress, setVesterWithdrawAddress] = useState("")
 
   const [isCompoundModalVisible, setIsCompoundModalVisible] = useState(false)
+  const [isClaimModalVisible, setIsClaimModalVisible] = useState(false)
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter")
   const rewardReaderAddress = getContract(chainId, "RewardReader")
@@ -812,9 +985,9 @@ export default function StakeV2({ setPendingTxns }) {
   const { balanceData, supplyData } = getBalanceAndSupplyData(walletBalances)
   const depositBalanceData = getDepositBalanceData(depositBalances)
   const stakingData = getStakingData(stakingInfo)
-  const processedData = getProcessedData(balanceData, supplyData, depositBalanceData, stakingData, aum, nativeTokenPrice, stakedGmxSupply, gmxPrice)
-
   const vestingData = getVestingData(vestingInfo)
+
+  const processedData = getProcessedData(balanceData, supplyData, depositBalanceData, stakingData, vestingData, aum, nativeTokenPrice, stakedGmxSupply, gmxPrice)
 
   let hasMultiplierPoints = false
   let multiplierPointsAmount
@@ -980,25 +1153,6 @@ export default function StakeV2({ setPendingTxns }) {
     )
   }, [])
 
-  const claim = () => {
-    if (!active || !account) {
-      toast.error("Wallet not connected")
-      return
-    }
-    if (!processedData || !processedData.totalRewardsUsd || processedData.totalRewardsUsd.eq(0)) {
-      toast.error("No rewards to claim yet")
-      return
-    }
-
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner())
-    callContract(chainId, contract, "claim", {
-      sentMsg: "Claim submitted!",
-      failMsg: "Claim failed.",
-      successMsg: "Claim completed.",
-      setPendingTxns
-    })
-  }
-
   let earnMsg
   if (totalRewardTokens && totalRewardTokens.gt(0)) {
     let gmxAmountStr
@@ -1091,12 +1245,25 @@ export default function StakeV2({ setPendingTxns }) {
         setPendingTxns={setPendingTxns}
       />
       <CompoundModal
+        active={active}
+        account={account}
         setPendingTxns={setPendingTxns}
         isVisible={isCompoundModalVisible}
         setIsVisible={setIsCompoundModalVisible}
         rewardRouterAddress={rewardRouterAddress}
+        totalVesterRewards={processedData.totalVesterRewards}
         library={library}
+        chainId={chainId}
+      />
+      <ClaimModal
+        active={active}
         account={account}
+        setPendingTxns={setPendingTxns}
+        isVisible={isClaimModalVisible}
+        setIsVisible={setIsClaimModalVisible}
+        rewardRouterAddress={rewardRouterAddress}
+        totalVesterRewards={processedData.totalVesterRewards}
+        library={library}
         chainId={chainId}
       />
       <Modal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} className="StakeV2-buy-gmx-modal" label="To Buy GMX">
@@ -1237,6 +1404,12 @@ export default function StakeV2({ setPendingTxns }) {
                 </div>
               </div>
               <div className="App-card-row">
+                <div className="label">GMX</div>
+                <div>
+                  {formatKeyAmount(processedData, "totalVesterRewards", 18, 4, true)} (${formatKeyAmount(processedData, "totalVesterRewardsUsd", USD_DECIMALS, 2, true)})
+                </div>
+              </div>
+              <div className="App-card-row">
                 <div className="label">Escrowed GMX</div>
                 <div>
                   {formatKeyAmount(processedData, "totalEsGmxRewards", 18, 4, true)} (${formatKeyAmount(processedData, "totalEsGmxRewardsUsd", USD_DECIMALS, 2, true)})
@@ -1272,7 +1445,7 @@ export default function StakeV2({ setPendingTxns }) {
                 <div className="App-card-divider"></div>
                 <div className="App-card-options">
                   {active && <button className="App-button-option App-card-option" onClick={() => setIsCompoundModalVisible(true)}>Compound</button>}
-                  {active && <button className="App-button-option App-card-option" onClick={() => claim()}>Claim</button>}
+                  {active && <button className="App-button-option App-card-option" onClick={() => setIsClaimModalVisible(true)}>Claim</button>}
                   {!active && <button className="App-button-option App-card-option" onClick={() => connectWallet()}>Connect Wallet</button>}
                 </div>
               </div>
