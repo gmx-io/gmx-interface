@@ -10,7 +10,7 @@ import Tooltip from './components/Tooltip/Tooltip'
 import Footer from "./Footer"
 
 import Vault from './abis/Vault.json'
-import Reader from './abis/Reader.json'
+import ReaderV2 from './abis/ReaderV2.json'
 import RewardRouter from './abis/RewardRouter.json'
 import RewardReader from './abis/RewardReader.json'
 import Token from './abis/Token.json'
@@ -516,7 +516,7 @@ export default function StakeV2({ setPendingTxns }) {
   ]
 
   const { data: walletBalances, mutate: updateWalletBalances } = useSWR(["StakeV2:walletBalances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero], {
-    fetcher: fetcher(library, Reader, [walletTokens]),
+    fetcher: fetcher(library, ReaderV2, [walletTokens]),
   })
 
   const { data: depositBalances, mutate: updateDepositBalances } = useSWR(["StakeV2:depositBalances", chainId, rewardReaderAddress, "getDepositBalances", account || AddressZero], {
@@ -540,7 +540,7 @@ export default function StakeV2({ setPendingTxns }) {
   })
 
   const { data: esGmxSupply, mutate: updateEsGmxSupply } = useSWR([`StakeV2:esGmxSupply:${active}`, chainId, readerAddress, "getTokenSupply", esGmxAddress], {
-    fetcher: fetcher(library, Reader, [excludedEsGmxAccounts]),
+    fetcher: fetcher(library, ReaderV2, [excludedEsGmxAccounts]),
   })
 
   const poolAddress = "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E" // GMX/WETH
@@ -1136,31 +1136,29 @@ export default function StakeV2({ setPendingTxns }) {
               <div className="App-card-row">
                 <div className="label">Staked Tokens</div>
                 <div>
-                  ...
+                  <Tooltip handle={formatAmount(totalRewardTokens, 18, 2, true)} position="right-bottom">
+                    {formatAmount(processedData.gmxInStakedGmx, 18, 2, true)} GMX<br/>
+                    {formatAmount(processedData.esGmxInStakedGmx, 18, 2, true)} esGMX<br/>
+                    {formatAmount(processedData.bnGmxInFeeGmx, 18, 2, true)} Multiplier Points
+                  </Tooltip>
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Reserved for Vesting</div>
                 <div>
-                  ...
+                  0.00 / {formatAmount(totalRewardTokens, 18, 2, true)}
                 </div>
               </div>
               <div className="App-card-row">
-                <div className="label">Escrowed Tokens</div>
+                <div className="label">Vesting Status</div>
                 <div>
-                  ...
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">Vesting Rate</div>
-                <div>
-                  ...
+                   0.00 / 0.00
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Claimable</div>
                 <div>
-                  ...
+                  0.0000
                 </div>
               </div>
               <div className="App-card-divider"></div>
