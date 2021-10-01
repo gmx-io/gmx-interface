@@ -226,9 +226,10 @@ export default function DashboardV2() {
     gmxPrice = poolTokenPriceAmount.mul(eth.minPrice).div(expandDecimals(1, 18))
   }
 
+  let gmxSupply = bigNumberify("6500429318655280000000001")
   let gmxMarketCap
-  if (gmxPrice && totalSupplies && totalSupplies[1]) {
-    gmxMarketCap = gmxPrice.mul(totalSupplies[1]).div(expandDecimals(1, GMX_DECIMALS))
+  if (gmxPrice && gmxSupply) {
+    gmxMarketCap = gmxPrice.mul(gmxSupply).div(expandDecimals(1, GMX_DECIMALS))
   }
 
   let stakedGmxSupplyUsd
