@@ -540,7 +540,7 @@ function VesterDepositModal(props) {
               <Tooltip handle={`${formatAmount(nextReserveAmount, 18, 2, true)} / ${formatAmount(maxReserveAmount, 18, 2, true)}`} position="right-bottom">
                 Current Reserved: {formatAmount(reserveAmount, 18, 2, true)}<br/>
                 Reserve Required: {formatAmount(additionalReserveAmount, 18, 2, true)}<br/>
-                {amount && <div><br/>You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)} {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.</div>}
+                {(amount && nextReserveAmount.gt(maxReserveAmount)) && <div><br/>You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)} {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.</div>}
               </Tooltip>
             </div>
           </div>
