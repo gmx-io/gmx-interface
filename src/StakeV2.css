@@ -7,6 +7,14 @@
   margin-bottom: 0.5rem;
 }
 
+.CompoundModal-menu {
+  margin-bottom: 0.5rem;
+}
+
+.CompoundModal-menu .Checkbox {
+  margin-bottom: 0.3rem;
+}
+
 .StakeV2-address-input {
   padding: 1rem 2.2rem;
   padding-bottom: 0;
