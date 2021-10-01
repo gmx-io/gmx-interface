@@ -386,6 +386,9 @@ const TX_ERROR_PATTERNS = {
   [SLIPPAGE]: ["Router: mark price lower than limit", "Router: mark price higher than limit"]
 }
 export function extractError(ex) {
+  if (!ex) {
+    return []
+  }
   const message = ex.data?.message || ex.message
   if (!message) {
     return []
@@ -397,7 +400,7 @@ export function extractError(ex) {
       }
     }
   }
-  return []
+  return [message]
 }
 
 function ToastifyDebug(props) {
@@ -420,6 +423,10 @@ export async function callContract(chainId, contract, method, params, opts) {
       opts = params
       params = []
     }
+    if (!opts) {
+      opts = {}
+    }
+
     if (!opts.gasLimit) {
       opts.gasLimit = await getGasLimit(contract, method, params, opts.value)
     }
