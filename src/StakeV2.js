@@ -1090,7 +1090,7 @@ export default function StakeV2({ setPendingTxns }) {
   }
 
   const showGmxVesterDepositModal = () => {
-    let remainingVestableAmount = vestingData.gmxVester.maxVestableAmount.sub(vestingData.gmxVester.escrowedBalance)
+    let remainingVestableAmount = vestingData.gmxVester.maxVestableAmount.sub(vestingData.gmxVester.vestedAmount)
     if (processedData.esGmxBalance.lt(remainingVestableAmount)) {
       remainingVestableAmount = processedData.esGmxBalance
     }
@@ -1110,7 +1110,7 @@ export default function StakeV2({ setPendingTxns }) {
   }
 
   const showGlpVesterDepositModal = () => {
-    let remainingVestableAmount = vestingData.glpVester.maxVestableAmount.sub(vestingData.glpVester.escrowedBalance)
+    let remainingVestableAmount = vestingData.glpVester.maxVestableAmount.sub(vestingData.glpVester.vestedAmount)
     if (processedData.esGmxBalance.lt(remainingVestableAmount)) {
       remainingVestableAmount = processedData.esGmxBalance
     }
