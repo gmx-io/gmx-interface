@@ -222,7 +222,7 @@ function getProcessedData(balanceData, supplyData, depositBalanceData, stakingDa
   data.totalETHRewards = data.feeGmxTrackerRewards.add(data.feeGlpTrackerRewards)
   data.totalETHRewardsUsd = data.feeGmxTrackerRewardsUsd.add(data.feeGlpTrackerRewardsUsd)
 
-  data.totalRewardsUsd = data.totalEsGmxRewardsUsd.add(data.totalETHRewardsUsd).add(data.totalGmxRewardsUsd)
+  data.totalRewardsUsd = data.totalEsGmxRewardsUsd.add(data.totalETHRewardsUsd).add(data.totalVesterRewardsUsd)
 
   return data
 }
