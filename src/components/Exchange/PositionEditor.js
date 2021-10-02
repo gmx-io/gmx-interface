@@ -222,7 +222,7 @@ export default function PositionEditor(props) {
 
     if (shouldRaiseGasError(getTokenInfo(infoTokens, collateralTokenAddress), fromAmount)) {
       setIsSwapping(false)
-      toast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} BNB for gas`)
+      toast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ETH for gas`)
       return
     }
 
