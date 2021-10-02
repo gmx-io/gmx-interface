@@ -1149,7 +1149,7 @@ export default function StakeV2({ setPendingTxns }) {
     setIsUnstakeModalVisible(true)
     setUnstakeModalTitle("Unstake GMX")
     let maxAmount = processedData.gmxInStakedGmx
-    if (processedData.gmxInStakedGmx && maxUnstakeableGmx && maxUnstakeableGmx.lt(processedData.gmxInStakedGmx)) {
+    if (processedData.gmxInStakedGmx && vestingData && vestingData.gmxVesterPairAmount.gt(0) && maxUnstakeableGmx && maxUnstakeableGmx.lt(processedData.gmxInStakedGmx)) {
       maxAmount = maxUnstakeableGmx
     }
     setUnstakeModalMaxAmount(maxAmount)
@@ -1163,7 +1163,7 @@ export default function StakeV2({ setPendingTxns }) {
     setIsUnstakeModalVisible(true)
     setUnstakeModalTitle("Unstake esGMX")
     let maxAmount = processedData.esGmxInStakedGmx
-    if (processedData.esGmxInStakedGmx && maxUnstakeableGmx && maxUnstakeableGmx.lt(processedData.esGmxInStakedGmx)) {
+    if (processedData.esGmxInStakedGmx && vestingData && vestingData.gmxVesterPairAmount.gt(0) && maxUnstakeableGmx && maxUnstakeableGmx.lt(processedData.esGmxInStakedGmx)) {
       maxAmount = maxUnstakeableGmx
     }
     setUnstakeModalMaxAmount(maxAmount)
