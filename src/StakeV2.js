@@ -441,16 +441,18 @@ function VesterDepositModal(props) {
   let amount = parseValue(value, 18)
 
   let nextReserveAmount = reserveAmount
-  let additionalReserveAmount = bigNumberify(0)
 
   let nextDepositAmount = escrowedBalance
   if (amount) {
     nextDepositAmount = escrowedBalance.add(amount)
   }
 
+  let additionalReserveAmount = bigNumberify(0)
   if (amount && averageStakedAmount && maxVestableAmount && maxVestableAmount.gt(0)) {
-    additionalReserveAmount = amount.mul(averageStakedAmount).div(maxVestableAmount)
-    nextReserveAmount = nextReserveAmount.add(additionalReserveAmount)
+    nextReserveAmount = nextDepositAmount.mul(averageStakedAmount).div(maxVestableAmount)
+    if (nextReserveAmount.gt(reserveAmount)) {
+      additionalReserveAmount = nextReserveAmount.sub(reserveAmount)
+    }
   }
 
   const getError = () => {
