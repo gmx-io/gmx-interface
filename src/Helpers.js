@@ -75,7 +75,7 @@ export const DEFAULT_SLIPPAGE_AMOUNT = 20;
 
 export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3"
 
-const ORDER_EXECUTION_GAS_PRICE = expandDecimals(30, 9)
+const ORDER_EXECUTION_GAS_PRICE = expandDecimals(3, 9)
 
 export const SWAP_ORDER_EXECUTION_GAS_FEE = ORDER_EXECUTION_GAS_PRICE.mul(450000)
 export const INCREASE_ORDER_EXECUTION_GAS_FEE = ORDER_EXECUTION_GAS_PRICE.mul(1000000)

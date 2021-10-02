@@ -340,7 +340,7 @@ export default function PositionSeller(props) {
   const onClickPrimary = async () => {
     setIsSubmitting(true)
 
-    const collateralTokenAddress = position.collateralToken.address
+    const collateralTokenAddress = position.collateralToken.isNative ? nativeTokenAddress : position.collateralToken.address
     const indexTokenAddress = position.indexToken.isNative ? nativeTokenAddress : position.indexToken.address
 
     let params;
@@ -353,6 +353,7 @@ export default function PositionSeller(props) {
       const triggerAboveThreshold = triggerPriceUsd.gt(position.markPrice)
 
       createDecreaseOrder(
+        chainId,
         library,
         indexTokenAddress,
         sizeDelta,
@@ -373,6 +374,7 @@ export default function PositionSeller(props) {
       }).finally(() => {
         setIsSubmitting(false)
       })
+      return
     }
 
     const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress
@@ -439,7 +441,7 @@ export default function PositionSeller(props) {
     }
     return (
       <ExchangeInfoRow label="Execution Fees">
-        {formatAmount(DECREASE_ORDER_EXECUTION_GAS_FEE, 18, 4)} BNB
+        {formatAmount(DECREASE_ORDER_EXECUTION_GAS_FEE, 18, 4)} ETH
       </ExchangeInfoRow>
     );
   }

@@ -270,7 +270,7 @@ export function createIncreaseOrder(
   return callContract(chainId, contract, 'createIncreaseOrder', params, opts)
 }
 
-export function createDecreaseOrder(
+export async function createDecreaseOrder(
   chainId,
   library,
   indexTokenAddress,
