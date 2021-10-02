@@ -14,7 +14,6 @@ import { getFeeHistory } from './data/Fees'
 import {
   fetcher,
   formatAmount,
-  formatArrayAmount,
   formatKeyAmount,
   parseValue,
   getInfoTokens,
@@ -428,7 +427,7 @@ export default function DashboardV2() {
               <div className="App-card-row">
                 <div className="label">Supply</div>
                 <div>
-                  {formatArrayAmount(totalSupplies, 1, GMX_DECIMALS, 0, true)} GMX
+                  {formatAmount(gmxSupply, GMX_DECIMALS, 0, true)} GMX
                 </div>
               </div>
               <div className="App-card-row">
@@ -458,7 +457,7 @@ export default function DashboardV2() {
               <div className="App-card-row">
                 <div className="label">Supply</div>
                 <div>
-                  {formatArrayAmount(totalSupplies, 3, GMX_DECIMALS, 0, true)} GLP
+                  {formatAmount(glpSupply, GLP_DECIMALS, 0, true)} GLP
                 </div>
               </div>
               <div className="App-card-row">
