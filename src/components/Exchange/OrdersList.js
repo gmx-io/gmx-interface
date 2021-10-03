@@ -463,7 +463,7 @@ function OrderEditor(props) {
   }
 
   function renderTriggerPriceWarning() {
-    if (swapOption === SWAP) {
+    if (swapOption === SWAP || !indexTokenEntryMarkPrice) {
       return null;
     }
 

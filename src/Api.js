@@ -163,9 +163,7 @@ export function useChartPrices(marketName, chainId) {
   return [prices, updatePrices];
 }
 
-export function approvePlugin(chainId, pluginAddress, { setIsApproving, library, onApproveSubmitted, pendingTxns, setPendingTxns }) {
-  setIsApproving(true);
-
+export async function approvePlugin(chainId, pluginAddress, { library, pendingTxns, setPendingTxns }) {
   const routerAddress = getContract(chainId, "Router")
   const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner())
   return callContract(chainId, contract, 'approvePlugin', [pluginAddress], {
@@ -175,21 +173,16 @@ export function approvePlugin(chainId, pluginAddress, { setIsApproving, library,
     pendingTxns,
     setPendingTxns
   })
-  .then(() => {
-    if (onApproveSubmitted) { onApproveSubmitted() }
-  })
-  .finally(() => {
-    setIsApproving(false)
-  })
 }
 
-export function createSwapOrder(
+export async function createSwapOrder(
   chainId,
   library,
   path,
   amountIn,
   minOut,
   triggerRatio,
+  nativeTokenAddress,
   opts = {}
 ) {
   const executionFee = SWAP_ORDER_EXECUTION_GAS_FEE
@@ -205,7 +198,7 @@ export function createSwapOrder(
   if (path[path.length - 1] === AddressZero) {
     shouldUnwrap = true
   }
-  path = replaceNativeTokenAddress(path)
+  path = replaceNativeTokenAddress(path, nativeTokenAddress)
 
   const params = [
     path,
@@ -224,7 +217,7 @@ export function createSwapOrder(
   return callContract(chainId, contract, 'createSwapOrder', params, opts)
 }
 
-export function createIncreaseOrder(
+export async function createIncreaseOrder(
   chainId,
   library,
   nativeTokenAddress,
@@ -304,7 +297,7 @@ export async function createDecreaseOrder(
   return callContract(chainId, contract, 'createDecreaseOrder', params, opts)
 }
 
-export function cancelSwapOrder(chainId, library, index, opts) {
+export async function cancelSwapOrder(chainId, library, index, opts) {
   const params = [index];
   const method = 'cancelSwapOrder';
   const orderBookAddress = getContract(chainId, "OrderBook")
@@ -313,7 +306,7 @@ export function cancelSwapOrder(chainId, library, index, opts) {
   return callContract(chainId, contract, method, params, opts);
 }
 
-export function cancelDecreaseOrder(chainId, library, index, opts) {
+export async function cancelDecreaseOrder(chainId, library, index, opts) {
   const params = [index];
   const method = 'cancelDecreaseOrder';
   const orderBookAddress = getContract(chainId, "OrderBook")
@@ -322,7 +315,7 @@ export function cancelDecreaseOrder(chainId, library, index, opts) {
   return callContract(chainId, contract, method, params, opts);
 }
 
-export function cancelIncreaseOrder(chainId, library, index, opts) {
+export async function cancelIncreaseOrder(chainId, library, index, opts) {
   const params = [index];
   const method = 'cancelIncreaseOrder';
   const orderBookAddress = getContract(chainId, "OrderBook")
@@ -331,7 +324,7 @@ export function cancelIncreaseOrder(chainId, library, index, opts) {
   return callContract(chainId, contract, method, params, opts);
 }
 
-export function updateDecreaseOrder(chainId, library, index, collateralDelta, sizeDelta, triggerPrice, triggerAboveThreshold, opts) {
+export async function updateDecreaseOrder(chainId, library, index, collateralDelta, sizeDelta, triggerPrice, triggerAboveThreshold, opts) {
   const params = [index, collateralDelta, sizeDelta, triggerPrice, triggerAboveThreshold]
   const method = 'updateDecreaseOrder';
   const orderBookAddress = getContract(chainId, "OrderBook")
@@ -340,7 +333,7 @@ export function updateDecreaseOrder(chainId, library, index, collateralDelta, si
   return callContract(chainId, contract, method, params, opts);
 }
 
-export function updateIncreaseOrder(chainId, library, index, sizeDelta, triggerPrice, triggerAboveThreshold, opts) {
+export async function updateIncreaseOrder(chainId, library, index, sizeDelta, triggerPrice, triggerAboveThreshold, opts) {
   const params = [index, sizeDelta, triggerPrice, triggerAboveThreshold];
   const method = 'updateIncreaseOrder';
   const orderBookAddress = getContract(chainId, "OrderBook")
@@ -349,7 +342,7 @@ export function updateIncreaseOrder(chainId, library, index, sizeDelta, triggerP
   return callContract(chainId, contract, method, params, opts);
 }
 
-export function updateSwapOrder(chainId, library, index, minOut, triggerRatio, triggerAboveThreshold, opts) {
+export async function updateSwapOrder(chainId, library, index, minOut, triggerRatio, triggerAboveThreshold, opts) {
   const params = [index, minOut, triggerRatio, triggerAboveThreshold];
   const method = 'updateSwapOrder';
   const orderBookAddress = getContract(chainId, "OrderBook")
@@ -358,7 +351,7 @@ export function updateSwapOrder(chainId, library, index, minOut, triggerRatio, t
   return callContract(chainId, contract, method, params, opts);
 }
 
-export function _executeOrder(chainId, library, method, account, index, feeReceiver, opts) {
+export async function _executeOrder(chainId, library, method, account, index, feeReceiver, opts) {
   const params = [account, index, feeReceiver];
   const orderBookAddress = getContract(chainId, "OrderBook")
   const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner())
@@ -366,15 +359,15 @@ export function _executeOrder(chainId, library, method, account, index, feeRecei
 }
 
 export function executeSwapOrder(chainId, library, account, index, feeReceiver, opts) {
-  _executeOrder(chainId, library, 'executeSwapOrder', account, index, feeReceiver, opts);
+  return _executeOrder(chainId, library, 'executeSwapOrder', account, index, feeReceiver, opts);
 }
 
 export function executeIncreaseOrder(chainId, library, account, index, feeReceiver, opts) {
-  _executeOrder(chainId, library, 'executeIncreaseOrder', account, index, feeReceiver, opts);
+  return _executeOrder(chainId, library, 'executeIncreaseOrder', account, index, feeReceiver, opts);
 }
 
 export function executeDecreaseOrder(chainId, library, account, index, feeReceiver, opts) {
-  _executeOrder(chainId, library, 'executeDecreaseOrder', account, index, feeReceiver, opts);
+  return _executeOrder(chainId, library, 'executeDecreaseOrder', account, index, feeReceiver, opts);
 }
 
 const NOT_ENOUGH_FUNDS = 'NOT_ENOUGH_FUNDS'
