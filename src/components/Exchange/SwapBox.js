@@ -141,7 +141,12 @@ export default function SwapBox(props) {
     totalTokenWeights,
     usdgSupply,
     orders,
-    savedIsPnlInLeverage
+    savedIsPnlInLeverage,
+    orderBookApproved,
+    isWaitingForPluginApproval,
+    approveOrderBook,
+    setIsWaitingForPluginApproval,
+    isPluginApproving
   } = props
 
   const [fromValue, setFromValue] = useState("")
@@ -213,7 +218,17 @@ export default function SwapBox(props) {
   const indexTokens = whitelistedTokens.filter(token => !token.isStable && !token.isWrapped)
   const toTokens = isSwap ? tokens : indexTokens
 
-  const orderBookAddress = getContract(chainId, "OrderBook")
+  const needOrderBookApproval = !isMarketOrder && !orderBookApproved
+  const prevNeedOrderBookApproval = usePrevious(needOrderBookApproval)
+
+  useEffect(() => {
+    if (!needOrderBookApproval && prevNeedOrderBookApproval && isWaitingForPluginApproval) {
+      setIsWaitingForPluginApproval(false)
+      toast.success(<div>
+        Order Book approved!
+      </div>)
+    }
+  }, [needOrderBookApproval, prevNeedOrderBookApproval, setIsWaitingForPluginApproval, isWaitingForPluginApproval])
 
   const routerAddress = getContract(chainId, "Router")
   const tokenAllowanceAddress = fromTokenAddress === AddressZero ? nativeTokenAddress : fromTokenAddress
@@ -265,10 +280,6 @@ export default function SwapBox(props) {
     return ratio
   }, [triggerRatioValue, triggerRatioInverted])
 
-  const { data: orderBookApproved, mutate: updateOrderBookApproved } = useSWR(active && [active, chainId, routerAddress, "approvedPlugins", account, orderBookAddress], {
-    fetcher: fetcher(library, Router)
-  });
-
   useEffect(() => {
     if (fromToken && fromTokenAddress === prevFromTokenAddress && !needApproval && prevNeedApproval && isWaitingForApproval) {
       setIsWaitingForApproval(false)
@@ -299,18 +310,6 @@ export default function SwapBox(props) {
   }, [active, library, updateTokenAllowance])
 
   useEffect(() => {
-    function onBlock() {
-      updateOrderBookApproved(undefined, true)
-    }
-    if (active) {
-      library.on('block', onBlock)
-      return () => {
-        library.removeListener('block', onBlock)
-      }
-    }
-  }, [active, library, updateOrderBookApproved])
-
-  useEffect(() => {
     if (swapOption !== SHORT) { return }
 		if (toTokenAddress === prevToTokenAddress) { return }
     for (let i = 0; i < stableTokens.length; i++) {
@@ -323,20 +322,6 @@ export default function SwapBox(props) {
       }
     }
   }, [toTokenAddress, prevToTokenAddress, swapOption, positionsMap, stableTokens, nativeTokenAddress, shortCollateralAddress, setShortCollateralAddress])
-
-  const needOrderBookApproval = !isMarketOrder && !orderBookApproved
-  const prevNeedOrderBookApproval = usePrevious(needOrderBookApproval)
-  const [isWaitingForPluginApproval, setIsWaitingForPluginApproval] = useState(false);
-  const [isPluginApproving, setIsPluginApproving] = useState(false);
-
-  useEffect(() => {
-    if (!needOrderBookApproval && prevNeedOrderBookApproval && isWaitingForPluginApproval) {
-      setIsWaitingForPluginApproval(false)
-      toast.success(<div>
-        Order Book approved!
-      </div>)
-    }
-  }, [needOrderBookApproval, prevNeedOrderBookApproval, setIsWaitingForPluginApproval, isWaitingForPluginApproval])
 
   useEffect(() => {
     const updateSwapAmounts = () => {
@@ -913,7 +898,7 @@ export default function SwapBox(props) {
 
     if (!isMarketOrder) {
       minOut = toAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR)
-      return Api.createSwapOrder(library, path, fromAmount, minOut, triggerRatio, {
+      Api.createSwapOrder(chainId, library, path, fromAmount, minOut, triggerRatio, nativeTokenAddress, {
         sentMsg: "Swap Order submitted!",
         successMsg: "Swap Order created!",
         failMsg: "Swap Order creation failed",
@@ -928,6 +913,7 @@ export default function SwapBox(props) {
         setIsSubmitting(false)
         setIsPendingConfirmation(false)
       })
+      return
     }
 
     path = replaceNativeTokenAddress(path, nativeTokenAddress)
@@ -1106,20 +1092,6 @@ export default function SwapBox(props) {
       const stableToken = getMostAbundantStableToken(chainId, infoTokens)
       setShortCollateralAddress(stableToken.address)
     }
-  }
-
-  const approveOrderBook = () => {
-    Api.approvePlugin(chainId, orderBookAddress, {
-      setIsApproving: setIsPluginApproving,
-      library,
-      onApproveSubmitted: () => {
-        setIsWaitingForPluginApproval(true)
-      },
-      pendingTxns,
-      setPendingTxns
-    }).then(() => {
-      updateOrderBookApproved(undefined, true);
-    })
   }
 
   const onConfirmationClick = () => {

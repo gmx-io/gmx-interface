@@ -29,6 +29,7 @@ import {
   useOrders
 } from './Helpers'
 import { getConstant } from './Constants'
+import { approvePlugin } from './Api'
 
 import { getContract } from './Addresses'
 import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from './data/Tokens'
@@ -36,6 +37,7 @@ import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from './d
 import Reader from './abis/ReaderV2.json'
 import VaultV2 from './abis/VaultV2.json'
 import Token from './abis/Token.json'
+import Router from './abis/Router.json'
 
 import SwapBox from './components/Exchange/SwapBox'
 import ExchangeTVChart from './components/Exchange/ExchangeTVChart'
@@ -173,7 +175,13 @@ export function PositionsList(props) {
     savedIsPnlInLeverage,
     chainId,
     nativeTokenAddress,
-    orders
+    orders,
+    setIsWaitingForPluginApproval,
+    approveOrderBook,
+    isPluginApproving,
+    isWaitingForPluginApproval,
+    updateOrderBookApproved,
+    orderBookApproved
   } = props
   const [positionToEditKey, setPositionToEditKey] = useState(undefined)
   const [positionToSellKey, setPositionToSellKey] = useState(undefined)
@@ -214,6 +222,12 @@ export function PositionsList(props) {
       />
       {isPositionSellerVisible &&
         <PositionSeller
+          setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
+          approveOrderBook={approveOrderBook}
+          isPluginApproving={isPluginApproving}
+          isWaitingForPluginApproval={isWaitingForPluginApproval}
+          updateOrderBookApproved={updateOrderBookApproved}
+          orderBookApproved={orderBookApproved}
           positionsMap={positionsMap}
           positionKey={positionToSellKey}
           isVisible={isPositionSellerVisible}
@@ -518,6 +532,12 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     return () => clearInterval(interval);
   }, [library, pendingTxns, chainId, setPendingTxns])
 
+  const orderBookAddress = getContract(chainId, "OrderBook")
+  const routerAddress = getContract(chainId, "Router")
+  const { data: orderBookApproved, mutate: updateOrderBookApproved } = useSWR(active && [active, chainId, routerAddress, "approvedPlugins", account, orderBookAddress], {
+    fetcher: fetcher(library, Router)
+  });
+
   useEffect(() => {
     if (active) {
       function onBlock() {
@@ -527,6 +547,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
         updateFundingRateInfo(undefined, true)
         updateTotalTokenWeights(undefined, true)
         updateUsdgSupply(undefined, true)
+        updateOrderBookApproved(undefined, true)
       }
       library.on('block', onBlock)
       return () => {
@@ -535,7 +556,8 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     }
   }, [active, library, chainId,
       updateVaultTokenInfo, updateTokenBalances, updatePositionData,
-      updateFundingRateInfo, updateTotalTokenWeights, updateUsdgSupply])
+      updateFundingRateInfo, updateTotalTokenWeights, updateUsdgSupply,
+      updateOrderBookApproved])
 
   const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo)
   const { positions, positionsMap } = getPositions(chainId, positionQuery, positionData, infoTokens, savedIsPnlInLeverage)
@@ -545,6 +567,23 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     getConstant(chainId, "defaultFlagOrdersEnabled")
   );
   const [orders, updateOrders] = useOrders(flagOrdersEnabled)
+
+  const [isWaitingForPluginApproval, setIsWaitingForPluginApproval] = useState(false);
+  const [isPluginApproving, setIsPluginApproving] = useState(false);
+
+  const approveOrderBook = () => {
+    setIsPluginApproving(true)
+    approvePlugin(chainId, orderBookAddress, {
+      library,
+      pendingTxns,
+      setPendingTxns
+    }).then(() => {
+      setIsWaitingForPluginApproval(true)
+      updateOrderBookApproved(undefined, true);
+    }).finally(() => {
+      setIsPluginApproving(false)
+    })
+  }
 
   const LIST_SECTIONS = [
     'Positions',
@@ -577,6 +616,12 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
         />
         {listSection === 'Positions' &&
           <PositionsList
+            setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
+            approveOrderBook={approveOrderBook}
+            isPluginApproving={isPluginApproving}
+            isWaitingForPluginApproval={isWaitingForPluginApproval}
+            updateOrderBookApproved={updateOrderBookApproved}
+            orderBookApproved={orderBookApproved}
             positions={positions}
             positionsMap={positionsMap}
             infoTokens={infoTokens}
@@ -645,6 +690,12 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
         </div>
         <div className="Exchange-right">
           <SwapBox
+            setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
+            approveOrderBook={approveOrderBook}
+            isPluginApproving={isPluginApproving}
+            isWaitingForPluginApproval={isWaitingForPluginApproval}
+            updateOrderBookApproved={updateOrderBookApproved}
+            orderBookApproved={orderBookApproved}
             orders={orders}
             flagOrdersEnabled={flagOrdersEnabled}
             chainId={chainId}

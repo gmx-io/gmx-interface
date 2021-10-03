@@ -154,21 +154,21 @@ export default function ConfirmationBox(props) {
   }, [isMarketOrder, spread])
 
   const renderTriggerRatioWarning = useCallback(() => {
-    if (!isSwap) {
+    if (!isSwap || !triggerRatio) {
       return null;
     }
     const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
-    if (orderType === LIMIT && !currentRate.gt(triggerRatio)) {
+    if (orderType === LIMIT && currentRate && !currentRate.gt(triggerRatio)) {
       return (
         <div className="Confirmation-box-warning">
-          WARNING: Limit Price is {triggerRatioInverted ? "lower": "higher"} then current price, the order will be executed immediatelly
+          WARNING: Price is {triggerRatioInverted ? "lower": "higher"} then current price, the order will be executed immediatelly
         </div>
       );
     }
   }, [isSwap, fromTokenInfo, toTokenInfo, orderType, triggerRatio, triggerRatioInverted])
 
   const renderTriggerPriceWarning = useCallback(() => {
-    if (isSwap || orderType === MARKET) {
+    if (isSwap || orderType === MARKET || !entryMarkPrice || !triggerPriceUsd) {
       return null;
     }
     if ((isLong && entryMarkPrice.gte(triggerPriceUsd))
@@ -179,13 +179,13 @@ export default function ConfirmationBox(props) {
 
     return (
       <div className="Confirmation-box-warning">
-        WARNING: Limit Price is {isLong ? "higher" : "lower"} then Mark Price, the order will be executed immediatelly
+        WARNING: Price is {isLong ? "higher" : "lower"} then Mark Price, the order will be executed immediatelly
       </div>
     );
   }, [isLong, isSwap, orderType, entryMarkPrice, triggerPriceUsd])
 
   const renderFeeWarning = useCallback(() => {
-    if (!feeBps || feeBps < 50) {
+    if (orderType === LIMIT || !feeBps || feeBps < 50) {
       return null
     }
 
@@ -208,7 +208,7 @@ export default function ConfirmationBox(props) {
         {collateralToken.symbol} is needed for collateral.
       </div>
     )
-  }, [feeBps, isSwap, collateralTokenAddress, chainId, fromToken.symbol, toToken.symbol])
+  }, [feeBps, isSwap, collateralTokenAddress, chainId, fromToken.symbol, toToken.symbol, orderType])
 
   const renderMinProfitWarning = useCallback(() => {
     if (!isSwap) {

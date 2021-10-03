@@ -82,7 +82,11 @@ export default function PositionSeller(props) {
     savedIsPnlInLeverage,
     chainId,
     nativeTokenAddress,
-    orders
+    orders,
+    isWaitingForPluginApproval,
+    isPluginApproving,
+    orderBookApproved,
+    approveOrderBook
   } = props
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT)
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true)
@@ -160,6 +164,8 @@ export default function PositionSeller(props) {
       }
     }
   }, [position, orders])
+  
+  const needOrderBookApproval = orderType === STOP && !orderBookApproved
 
   let collateralToken
   let maxAmount
@@ -319,6 +325,11 @@ export default function PositionSeller(props) {
     if (orderType === STOP) {
       if (isSubmitting) return "Creating Order...";
       if (nextHasProfit && nextDelta.eq(0)) return "Create Order without profit"
+
+      if (needOrderBookApproval && isWaitingForPluginApproval) { return "Waiting for Approval" }
+      if (isPluginApproving) { return "Enabling Trigger Orders..." }
+      if (needOrderBookApproval) { return "Enable Trigger Orders" }
+
       return "Create Trigger Order"
     }
     if (position.delta.eq(0) && position.pendingDelta.gt(0)) {
@@ -338,6 +349,11 @@ export default function PositionSeller(props) {
   }, [prevIsVisible, isVisible])
 
   const onClickPrimary = async () => {
+    if (needOrderBookApproval) {
+      approveOrderBook();
+      return
+    }
+
     setIsSubmitting(true)
 
     const collateralTokenAddress = position.collateralToken.isNative ? nativeTokenAddress : position.collateralToken.address
