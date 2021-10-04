@@ -585,16 +585,16 @@ function VesterWithdrawModal(props) {
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
         <div>
-          WARNING: This will withdraw all vested and reserved tokens.<br/>
+          This will withdraw and unreserve all tokens as well as pause vesting.<br/>
           <br/>
-          If you deposit after this, the vesting timer would start from the time of the new deposit.<br/>
+          esGMX tokens that have been converted to GMX will remain as GMX tokens.<br/>
           <br/>
-          To claim GMX tokens without resetting, use the "Claim" button under the Total Rewards section.<br/>
+          To claim GMX tokens without withdrawing, use the "Claim" button under the Total Rewards section.<br/>
           <br/>
         </div>
         <div className="Exchange-swap-button-container">
           <button className="App-cta Exchange-swap-button" onClick={ onClickPrimary } disabled={isWithdrawing}>
-            {!isWithdrawing && "Confirm Reset"}
+            {!isWithdrawing && "Confirm Withdraw"}
             {isWithdrawing && "Confirming..."}
           </button>
         </div>
@@ -1131,13 +1131,13 @@ export default function StakeV2({ setPendingTxns }) {
 
   const showGmxVesterWithdrawModal = () => {
     setIsVesterWithdrawModalVisible(true)
-    setVesterWithdrawTitle("Withdraw and Reset GMX Vault")
+    setVesterWithdrawTitle("Withdraw from GMX Vault")
     setVesterWithdrawAddress(gmxVesterAddress)
   }
 
   const showGlpVesterWithdrawModal = () => {
     setIsVesterWithdrawModalVisible(true)
-    setVesterWithdrawTitle("Withdraw and Reset GLP Vault")
+    setVesterWithdrawTitle("Withdraw from GLP Vault")
     setVesterWithdrawAddress(glpVesterAddress)
   }
 
