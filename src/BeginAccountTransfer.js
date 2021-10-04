@@ -140,11 +140,11 @@ export default function BeginAccountTransfer(props) {
       return "Invalid Receiver"
     }
     if ((parsedReceiver || "").toString().toLowerCase() === (account || "").toString().toLowerCase()) {
-      return "Invalid Receiver"
+      return "Self-transfer not supported"
     }
 
     if ((parsedReceiver || "").length > 0 && (parsedReceiver || "").toString().toLowerCase() === (pendingReceiver || "").toString().toLowerCase()) {
-      return "Invalid Receiver"
+      return "Transfer already initiated"
     }
   }
 
