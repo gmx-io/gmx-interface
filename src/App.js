@@ -30,7 +30,6 @@ import {
   useEagerConnect,
   useInactiveListener,
   shortenAddress,
-  usePrevious,
   getExplorerUrl
 } from './Helpers'
 
@@ -199,7 +198,7 @@ function AppHeaderUser({ openSettings, small }) {
 }
 
 function FullApp() {
-  const { connector, account, library } = useWeb3React()
+  const { connector, library } = useWeb3React()
   const { chainId } = useChainId()
   const [activatingConnector, setActivatingConnector] = useState()
   useEffect(() => {
