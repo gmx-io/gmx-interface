@@ -20,7 +20,7 @@ export default function Home() {
               Exchange
             </div>
             <div className="Home-description">
-              Trade BTC, ETH and BNB with up to 30x leverage directly from your wallet
+              Trade BTC, ETH and other top cryptocurrencies with up to 30x leverage directly from your wallet
             </div>
           </div>
         </div>

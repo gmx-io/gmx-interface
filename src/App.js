@@ -30,7 +30,6 @@ import {
   useEagerConnect,
   useInactiveListener,
   shortenAddress,
-  usePrevious,
   getExplorerUrl
 } from './Helpers'
 
@@ -42,8 +41,10 @@ import Exchange from './Exchange'
 import Actions from './Actions'
 import BuyGlp from './BuyGlp'
 import SellGlp from './SellGlp'
-import Debug from './Debug'
 import NftWallet from './NftWallet'
+import BeginAccountTransfer from './BeginAccountTransfer'
+import CompleteAccountTransfer from './CompleteAccountTransfer'
+import Debug from './Debug'
 
 import cx from "classnames";
 import { cssTransition } from 'react-toastify'
@@ -60,6 +61,7 @@ import { BsThreeDots }  from 'react-icons/bs'
 import './Font.css'
 import './Shared.css'
 import './App.css';
+import './Input.css';
 import './AppOrder.css';
 
 import logoImg from './img/gmx-logo-final-white-small.png'
@@ -196,7 +198,7 @@ function AppHeaderUser({ openSettings, small }) {
 }
 
 function FullApp() {
-  const { connector, account, library } = useWeb3React()
+  const { connector, library } = useWeb3React()
   const { chainId } = useChainId()
   const [activatingConnector, setActivatingConnector] = useState()
   useEffect(() => {
@@ -258,17 +260,6 @@ function FullApp() {
   }
 
   const [pendingTxns, setPendingTxns] = useState([])
-  const prevAccount = usePrevious(account)
-
-  useEffect(() => {
-    if (prevAccount !== account) {
-      setPendingTxns([])
-    }
-  }, [prevAccount, account, setPendingTxns])
-
-  useEffect(() => {
-    setPendingTxns([])
-  }, [chainId, setPendingTxns])
 
   useEffect(() => {
     const checkPendingTxns = async () => {
@@ -403,16 +394,19 @@ function FullApp() {
               <Stake setPendingTxns={setPendingTxns} />
             </Route>
             <Route exact path="/buy_glp">
-              <BuyGlp savedSlippageAmount={savedSlippageAmount} setPendingTxns={setPendingTxns} />
+              <BuyGlp
+                savedSlippageAmount={savedSlippageAmount}
+                setPendingTxns={setPendingTxns}
+              />
             </Route>
             <Route exact path="/sell_glp">
-              <SellGlp savedSlippageAmount={savedSlippageAmount} setPendingTxns={setPendingTxns} />
+              <SellGlp
+                savedSlippageAmount={savedSlippageAmount}
+                setPendingTxns={setPendingTxns}
+              />
             </Route>
             <Route exact path="/about">
               <Home />
-            </Route>
-            <Route exact path="/debug">
-              <Debug />
             </Route>
             <Route exact path="/nft_wallet">
               <NftWallet />
@@ -422,6 +416,19 @@ function FullApp() {
             </Route>
             <Route exact path="/actions">
               <Actions />
+            </Route>
+            <Route exact path="/begin_account_transfer">
+              <BeginAccountTransfer
+                setPendingTxns={setPendingTxns}
+              />
+            </Route>
+            <Route exact path="/complete_account_transfer/:sender/:receiver">
+              <CompleteAccountTransfer
+                setPendingTxns={setPendingTxns}
+              />
+            </Route>
+            <Route exact path="/debug">
+              <Debug />
             </Route>
           </Switch>
         </div>

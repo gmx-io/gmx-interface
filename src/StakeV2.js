@@ -39,7 +39,6 @@ import {
   SECONDS_PER_YEAR
 } from './Helpers'
 import { callContract } from './Api'
-import { BONUS_LIST, GLP_LIST } from "./data/BonusEsGmx"
 
 import useSWR from 'swr'
 
@@ -585,16 +584,16 @@ function VesterWithdrawModal(props) {
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
         <div>
-          WARNING: This will withdraw all vested and reserved tokens.<br/>
+          This will withdraw and unreserve all tokens as well as pause vesting.<br/>
           <br/>
-          If you deposit after this, the vesting timer would start from the time of the new deposit.<br/>
+          esGMX tokens that have been converted to GMX will remain as GMX tokens.<br/>
           <br/>
-          To claim GMX tokens without resetting, use the "Claim" button under the Total Rewards section.<br/>
+          To claim GMX tokens without withdrawing, use the "Claim" button under the Total Rewards section.<br/>
           <br/>
         </div>
         <div className="Exchange-swap-button-container">
           <button className="App-cta Exchange-swap-button" onClick={ onClickPrimary } disabled={isWithdrawing}>
-            {!isWithdrawing && "Confirm Reset"}
+            {!isWithdrawing && "Confirm Withdraw"}
             {isWithdrawing && "Confirming..."}
           </button>
         </div>
@@ -815,15 +814,6 @@ function ClaimModal(props) {
 export default function StakeV2({ setPendingTxns }) {
   const { active, library, account, activate } = useWeb3React()
   const chainId = 42161 // set chain to Arbitrum
-
-  const bonusEsGmx = account ? BONUS_LIST[account.toLowerCase()] : undefined
-  let glpForBonusEsGmx = account ? GLP_LIST[account.toLowerCase()] : undefined
-  if (glpForBonusEsGmx) {
-    glpForBonusEsGmx = parseFloat(glpForBonusEsGmx)
-    if (glpForBonusEsGmx > 1.1) {
-      glpForBonusEsGmx = glpForBonusEsGmx - 1
-    }
-  }
 
   const connectWallet = getConnectWalletHandler(activate)
 
@@ -1131,13 +1121,13 @@ export default function StakeV2({ setPendingTxns }) {
 
   const showGmxVesterWithdrawModal = () => {
     setIsVesterWithdrawModalVisible(true)
-    setVesterWithdrawTitle("Withdraw and Reset GMX Vault")
+    setVesterWithdrawTitle("Withdraw from GMX Vault")
     setVesterWithdrawAddress(gmxVesterAddress)
   }
 
   const showGlpVesterWithdrawModal = () => {
     setIsVesterWithdrawModalVisible(true)
-    setVesterWithdrawTitle("Withdraw and Reset GLP Vault")
+    setVesterWithdrawTitle("Withdraw from GLP Vault")
     setVesterWithdrawAddress(glpVesterAddress)
   }
 
@@ -1325,12 +1315,6 @@ export default function StakeV2({ setPendingTxns }) {
           </a> to earn rewards.
         </div>
         {earnMsg && <div className="Page-description">{earnMsg}</div>}
-        {bonusEsGmx && <div className="Page-description">
-          You have a pending bonus of&nbsp;
-          <Tooltip handle={`${parseFloat(bonusEsGmx).toFixed(2)} Escrowed GMX`} position="right-bottom">
-            To qualify for this bonus, you must hold {parseFloat(glpForBonusEsGmx).toFixed(2)} GLP or more in your account for at least 25 of the 30 days from 01 Sep 2021 to 30 Sep 2021.
-          </Tooltip>.
-        </div>}
       </div>
       <div className="StakeV2-content">
         <div className="StakeV2-cards">
@@ -1425,6 +1409,7 @@ export default function StakeV2({ setPendingTxns }) {
                 <button className="App-button-option App-card-option" onClick={() => setIsBuyGmxModalVisible(true)}>Buy GMX</button>
                 {active && <button className="App-button-option App-card-option" onClick={() => showStakeGmxModal()}>Stake</button>}
                 {active && <button className="App-button-option App-card-option" onClick={() => showUnstakeGmxModal()}>Unstake</button>}
+                {active && <Link className="App-button-option App-card-option" to="/begin_account_transfer">Transfer</Link>}
               </div>
             </div>
           </div>

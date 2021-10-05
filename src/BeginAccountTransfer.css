@@ -1,0 +1,27 @@
+.ValidationRow {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
+.ValidationRow-icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ValidationRow-icon {
+  margin-right: 1rem;
+}
+
+.BeginAccountTransfer .ValidationRow {
+  margin-bottom: 1rem;
+}
+
+.BeginAccountTransfer-validations {
+  margin-bottom: 1.5rem;
+}
+
+.BeginAccountTransfer .Modal .App-cta {
+  display: block;
+  text-align: center;
+}
