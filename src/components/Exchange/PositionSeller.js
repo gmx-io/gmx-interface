@@ -27,6 +27,7 @@ import {
 	PRECISION,
 	MARKET,
 	STOP,
+  LONG,
   PROFIT_THRESHOLD_BASIS_POINTS,
   useLocalStorageSerializeKey,
   calculatePositionDelta,
@@ -156,14 +157,20 @@ export default function PositionSeller(props) {
   }, [position, orderType, triggerPriceUsd])
 
   const existingOrder = useMemo(() => {
+    if (!triggerPriceUsd || triggerPriceUsd.eq(0)) {
+      return null
+    }
+    const triggerAboveThreshold = triggerPriceUsd.gt(position.markPrice)
     for (const order of orders) {
-      if (order.orderType !== "Stop") continue
-      if ((order.swapOption === "Long") === position.isLong
-        && order.indexToken === position.indexToken.address) {
+      if (order.orderType !== STOP) continue
+      if ((order.swapOption === LONG) === position.isLong
+        && order.indexToken === position.indexToken.address
+        && order.triggerAboveThreshold === triggerAboveThreshold
+      ) {
         return order
       }
     }
-  }, [position, orders])
+  }, [position, orders, triggerPriceUsd])
   
   const needOrderBookApproval = orderType === STOP && !orderBookApproved
 
@@ -429,9 +436,10 @@ export default function PositionSeller(props) {
     }
     const indexToken = getTokenInfo(infoTokens, existingOrder.indexToken)
     const sizeInToken = formatAmount(existingOrder.sizeDelta.mul(PRECISION).div(existingOrder.triggerPrice), USD_DECIMALS, 4, true)
+    const prefix = existingOrder.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW
     return (
       <div className="Confirmation-box-warning">
-        NOTE: You have an active Trigger Order to Decrease {existingOrder.swapOption} {sizeInToken} {indexToken.symbol} (${formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at price ${formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
+        NOTE: You have an active Trigger Order to Decrease {existingOrder.swapOption} {sizeInToken} {indexToken.symbol} (${formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at Price {prefix} {formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
       </div>
     );
   }, [existingOrder, infoTokens])

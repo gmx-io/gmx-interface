@@ -288,12 +288,6 @@
 .length-1 .ExchangeChart-bottom-stats-value {
   width: 1.6rem;
 }
-.ExchangeChart-bottom-stats.positive .ExchangeChart-bottom-stats-value {
-}
-.ExchangeChart-bottom-stats.negative .ExchangeChart-bottom-stats-value {
-}
-.ExchangeChart-bottom-stats-value.total {
-}
 
 .ExchangeChart.tv .ExchangeChart-bottom-content {
   position: absolute;
@@ -347,6 +341,12 @@
 
 .Exchange-list {
   width: 100%;
+}
+
+.Exchange-list-item-error {
+  color: #fa3c58;
+  margin-top: 0.3rem;
+  font-size: 0.9rem;
 }
 
 .Exchange-list.small {
