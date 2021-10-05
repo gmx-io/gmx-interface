@@ -51,7 +51,9 @@ export default function OrdersList(props) {
     setPendingTxns,
     pendingTxns,
     infoTokens,
-    positionsMap
+    positionsMap,
+    totalTokenWeights,
+    usdgSupply
   } = props;
 
   const { chainId } = useChainId()
@@ -320,6 +322,8 @@ export default function OrdersList(props) {
           setPendingTxns={setPendingTxns}
           updateOrders={updateOrders}
           library={library}
+          totalTokenWeights={totalTokenWeights}
+          usdgSupply={usdgSupply}
         />
       }
     </React.Fragment>
@@ -337,7 +341,9 @@ function OrderEditor(props) {
     pendingTxns,
     setPendingTxns,
     updateOrders,
-    library
+    library,
+    totalTokenWeights,
+    usdgSupply
   } = props;
 
   const { chainId } = useChainId()
@@ -391,12 +397,15 @@ function OrderEditor(props) {
   }, [infoTokens, order])
 
   const { amount: toAmount } = getNextToAmount(
+    chainId,
     order.amountIn,
     order.fromTokenAddress,
     order.toTokenAddress,
     infoTokens,
     undefined,
-    triggerRatio
+    triggerRatio,
+    usdgSupply,
+    totalTokenWeights
   )
 
   const onClickPrimary = () => {
@@ -487,7 +496,7 @@ function OrderEditor(props) {
     const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
     if (!currentRate.gt(triggerRatio)) {
       return (
-        <div className="Exchange-list-modal-warning ">
+        <div className="Confirmation-box-warning">
           WARNING: Trigger Price is {triggerRatioInverted ? "lower" : "higher"} then current price and order will be executed immediatelly
         </div>
       );
