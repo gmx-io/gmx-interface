@@ -549,8 +549,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   ].filter(Boolean)
   let [listSection, setListSection] = useLocalStorageSerializeKey([chainId, 'List-section'], LIST_SECTIONS[0]);
   const LIST_SECTIONS_LABELS = {
-    'Positions': "Positions",
-    'Orders': orders.length ? `Orders (${orders.length})` : undefined
+    "Orders": orders.length ? `Orders (${orders.length})` : undefined
   }
   if (!LIST_SECTIONS.includes(listSection)) {
     listSection = LIST_SECTIONS[0]
@@ -606,6 +605,8 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
             chainId={chainId}
             orders={orders}
             updateOrders={updateOrders}
+            totalTokenWeights={totalTokenWeights}
+            usdgSupply={usdgSupply}
           />
         }
         {listSection === 'Trades' &&
