@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 
-import { toast } from 'react-toastify'
 import { useWeb3React } from '@web3-react/core'
 import cx from "classnames";
 import useSWR from 'swr'
@@ -17,7 +16,6 @@ import {
   fetcher,
   formatAmount,
   expandDecimals,
-  getExplorerUrl,
   getPositionKey,
   getUsd,
   getLiquidationPrice,
