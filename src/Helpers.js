@@ -47,11 +47,12 @@ export const DUST_USD = expandDecimals(1, USD_DECIMALS)
 export const PRECISION = expandDecimals(1, 30)
 export const GLP_DECIMALS = 18
 export const GMX_DECIMALS = 18
+export const DEFAULT_MAX_USDG_AMOUNT = expandDecimals(100 * 1000 * 1000, 18)
 
-export const TAX_BASIS_POINTS = 80
+export const TAX_BASIS_POINTS = 60
 export const STABLE_TAX_BASIS_POINTS = 5
 export const MINT_BURN_FEE_BASIS_POINTS = 0
-export const SWAP_FEE_BASIS_POINTS = 80
+export const SWAP_FEE_BASIS_POINTS = 60
 export const STABLE_SWAP_FEE_BASIS_POINTS = 1
 export const MARGIN_FEE_BASIS_POINTS = 10
 
