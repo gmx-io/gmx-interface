@@ -39,7 +39,6 @@ import {
   SECONDS_PER_YEAR
 } from './Helpers'
 import { callContract } from './Api'
-import { BONUS_LIST, GLP_LIST } from "./data/BonusEsGmx"
 
 import useSWR from 'swr'
 
@@ -816,15 +815,6 @@ export default function StakeV2({ setPendingTxns }) {
   const { active, library, account, activate } = useWeb3React()
   const chainId = 42161 // set chain to Arbitrum
 
-  const bonusEsGmx = account ? BONUS_LIST[account.toLowerCase()] : undefined
-  let glpForBonusEsGmx = account ? GLP_LIST[account.toLowerCase()] : undefined
-  if (glpForBonusEsGmx) {
-    glpForBonusEsGmx = parseFloat(glpForBonusEsGmx)
-    if (glpForBonusEsGmx > 1.1) {
-      glpForBonusEsGmx = glpForBonusEsGmx - 1
-    }
-  }
-
   const connectWallet = getConnectWalletHandler(activate)
 
   const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false)
@@ -1325,12 +1315,6 @@ export default function StakeV2({ setPendingTxns }) {
           </a> to earn rewards.
         </div>
         {earnMsg && <div className="Page-description">{earnMsg}</div>}
-        {bonusEsGmx && <div className="Page-description">
-          You have a pending bonus of&nbsp;
-          <Tooltip handle={`${parseFloat(bonusEsGmx).toFixed(2)} Escrowed GMX`} position="right-bottom">
-            To qualify for this bonus, you must hold {parseFloat(glpForBonusEsGmx).toFixed(2)} GLP or more in your account for at least 25 of the 30 days from 01 Sep 2021 to 30 Sep 2021.
-          </Tooltip>.
-        </div>}
       </div>
       <div className="StakeV2-content">
         <div className="StakeV2-cards">
