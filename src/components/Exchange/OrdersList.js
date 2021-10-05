@@ -38,7 +38,7 @@ import {
 import './OrdersList.css';
 
 function hasPositionForOrder(order, positionsMap) {
-  const key = getPositionKey(order.collateralToken, order.indexToken, order.swapOption === "Long")
+  const key = getPositionKey(order.collateralToken, order.indexToken, order.swapOption === LONG)
   const position = positionsMap[key]
   return position && position.size && position.size.gt(0)
 }
@@ -184,17 +184,17 @@ export default function OrdersList(props) {
       const indexTokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol
 
       let error
-      if (order.orderType === "Stop" && !hasPositionForOrder(order, positionsMap)) {
+      if (order.orderType === STOP && !hasPositionForOrder(order, positionsMap)) {
         error = "There is no open position for the order, it can't be executed"  
       }
 
       return (
         <tr className="Exchange-list-item" key={`${order.orderType}-${order.swapOption}-${order.index}`}>
           <td className="Exchange-list-item-type">
-            {order.orderType === "Limit" ? "Limit" : "Trigger"}
+            {order.orderType === LIMIT ? "Limit" : "Trigger"}
           </td>
           <td>
-            {order.orderType === "Limit" ? "Increase" : "Decrease"} {order.swapOption} {sizeInToken} {indexTokenSymbol}
+            {order.orderType === LIMIT ? "Increase" : "Decrease"} {order.swapOption} {sizeInToken} {indexTokenSymbol}
             &nbsp;(${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)})
             {error &&
               <div className="Exchange-list-item-error">
@@ -259,14 +259,14 @@ export default function OrdersList(props) {
       const indexTokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol
 
       let error
-      if (order.orderType === "Stop" && !hasPositionForOrder(order, positionsMap)) {
+      if (order.orderType === STOP && !hasPositionForOrder(order, positionsMap)) {
         error = "There is no open position for the order, it can't be executed"  
       }
 
       return (
         <tr className="Exchange-list-item" key={`${order.orderType}-${order.swapOption}-${order.index}`}>
           <td>
-            {order.orderType === "Limit" ? "Limit" : "Trigger"} {order.swapOption} {sizeInToken} {indexTokenSymbol}
+            {order.orderType === LIMIT ? "Limit" : "Trigger"} {order.swapOption} {sizeInToken} {indexTokenSymbol}
             &nbsp;(${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)})
             {error &&
               <div className="Exchange-list-item-error">
