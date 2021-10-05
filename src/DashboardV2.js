@@ -25,7 +25,8 @@ import {
   USD_DECIMALS,
   GMX_DECIMALS,
   GLP_DECIMALS,
-  BASIS_POINTS_DIVISOR
+  BASIS_POINTS_DIVISOR,
+  DEFAULT_MAX_USDG_AMOUNT
 } from './Helpers'
 
 import { getContract } from './Addresses'
@@ -480,6 +481,10 @@ export default function DashboardV2() {
             if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
               utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount)
             }
+            let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT
+            if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+              maxUsdgAmount = tokenInfo.maxUsdgAmount
+            }
 
             return (
               <div className="App-card" key={token.symbol}>
@@ -495,7 +500,11 @@ export default function DashboardV2() {
                   <div className="App-card-row">
                     <div className="label">Pool</div>
                     <div>
-                      {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol} (${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)})
+                      <Tooltip handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`} position="right-bottom">
+                        Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol}<br/>
+                        <br/>
+                        Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                      </Tooltip>
                     </div>
                   </div>
                   <div className="App-card-row">

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 
-import { toast } from 'react-toastify'
 import { useWeb3React } from '@web3-react/core'
 import cx from "classnames";
 import useSWR from 'swr'
@@ -17,7 +16,6 @@ import {
   fetcher,
   formatAmount,
   expandDecimals,
-  getExplorerUrl,
   getPositionKey,
   getUsd,
   getLiquidationPrice,
@@ -490,47 +488,6 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   const { data: usdgSupply, mutate: updateUsdgSupply } = useSWR([`Exchange:usdgSupply:${active}`, chainId, usdgAddress, "totalSupply"], {
     fetcher: fetcher(library, Token),
   })
-
-  useEffect(() => {
-    const checkPendingTxns = async () => {
-      const updatedPendingTxns = []
-      for (let i = 0; i < pendingTxns.length; i++) {
-        const pendingTxn = pendingTxns[i]
-        const receipt = await library.getTransactionReceipt(pendingTxn.hash)
-        if (receipt) {
-          if (receipt.status === 0) {
-            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash
-            toast.error(
-              <div>
-              Txn failed. <a href={txUrl} target="_blank" rel="noopener noreferrer">View</a>
-              <br/>
-              </div>
-            )
-          }
-          if (receipt.status === 1 && pendingTxn.message) {
-            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash
-            toast.success(
-              <div>
-              {pendingTxn.message}. <a href={txUrl} target="_blank" rel="noopener noreferrer">View</a>
-              <br/>
-              </div>
-            )
-          }
-          continue
-        }
-        updatedPendingTxns.push(pendingTxn)
-      }
-
-      if (updatedPendingTxns.length !== pendingTxns.length) {
-        setPendingTxns(updatedPendingTxns)
-      }
-    }
-
-    const interval = setInterval(() => {
-      checkPendingTxns()
-    }, 2 * 1000)
-    return () => clearInterval(interval);
-  }, [library, pendingTxns, chainId, setPendingTxns])
 
   const orderBookAddress = getContract(chainId, "OrderBook")
   const routerAddress = getContract(chainId, "Router")
