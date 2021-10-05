@@ -35,7 +35,8 @@ import {
   BASIS_POINTS_DIVISOR,
   GLP_COOLDOWN_DURATION,
   SECONDS_PER_YEAR,
-  USDG_DECIMALS
+  USDG_DECIMALS,
+  DEFAULT_MAX_USDG_AMOUNT
 } from '../../Helpers'
 
 import { callContract } from '../../Api'
@@ -759,6 +760,12 @@ export default function GlpSwap(props) {
           if (tokenInfo && tokenInfo.minPrice && tokenInfo.balance) {
             balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals))
           }
+
+          let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT
+          if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+            maxUsdgAmount = tokenInfo.maxUsdgAmount
+          }
+
           return (
             <div className="App-card" key={token.symbol}>
               <div className="App-card-title">{token.name}</div>
@@ -779,7 +786,11 @@ export default function GlpSwap(props) {
                 {isBuying && <div className="App-card-row">
                   <div className="label">Pool</div>
                   <div>
-                    {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol} (${formatAmount(poolAmountUsd, USD_DECIMALS, 2, true)})
+                    <Tooltip handle={`$${formatAmount(poolAmountUsd, USD_DECIMALS, 2, true)}`} position="right-bottom">
+                        Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol}<br/>
+                        <br/>
+                        Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                    </Tooltip>
                   </div>
                 </div>}
                 {!isBuying && <div className="App-card-row">

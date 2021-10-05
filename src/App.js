@@ -261,17 +261,6 @@ function FullApp() {
   }
 
   const [pendingTxns, setPendingTxns] = useState([])
-  const prevAccount = usePrevious(account)
-
-  useEffect(() => {
-    if (prevAccount !== account) {
-      setPendingTxns([])
-    }
-  }, [prevAccount, account, setPendingTxns])
-
-  useEffect(() => {
-    setPendingTxns([])
-  }, [chainId, setPendingTxns])
 
   useEffect(() => {
     const checkPendingTxns = async () => {

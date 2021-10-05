@@ -478,47 +478,6 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   })
 
   useEffect(() => {
-    const checkPendingTxns = async () => {
-      const updatedPendingTxns = []
-      for (let i = 0; i < pendingTxns.length; i++) {
-        const pendingTxn = pendingTxns[i]
-        const receipt = await library.getTransactionReceipt(pendingTxn.hash)
-        if (receipt) {
-          if (receipt.status === 0) {
-            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash
-            toast.error(
-              <div>
-              Txn failed. <a href={txUrl} target="_blank" rel="noopener noreferrer">View</a>
-              <br/>
-              </div>
-            )
-          }
-          if (receipt.status === 1 && pendingTxn.message) {
-            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash
-            toast.success(
-              <div>
-              {pendingTxn.message}. <a href={txUrl} target="_blank" rel="noopener noreferrer">View</a>
-              <br/>
-              </div>
-            )
-          }
-          continue
-        }
-        updatedPendingTxns.push(pendingTxn)
-      }
-
-      if (updatedPendingTxns.length !== pendingTxns.length) {
-        setPendingTxns(updatedPendingTxns)
-      }
-    }
-
-    const interval = setInterval(() => {
-      checkPendingTxns()
-    }, 2 * 1000)
-    return () => clearInterval(interval);
-  }, [library, pendingTxns, chainId, setPendingTxns])
-
-  useEffect(() => {
     if (active) {
       function onBlock() {
         updateVaultTokenInfo(undefined, true)
