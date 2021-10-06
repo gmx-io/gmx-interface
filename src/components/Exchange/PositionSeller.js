@@ -40,6 +40,7 @@ import Checkbox from "../Checkbox/Checkbox"
 import Tab from "../Tab/Tab"
 import Modal from "../Modal/Modal"
 import ExchangeInfoRow from './ExchangeInfoRow'
+import { getTokenBySymbol } from '../../data/Tokens'
 
 const { AddressZero } = ethers.constants
 
@@ -161,16 +162,20 @@ export default function PositionSeller(props) {
       return null
     }
     const triggerAboveThreshold = triggerPriceUsd.gt(position.markPrice)
+    const WETH = getTokenBySymbol(chainId, "WETH")
     for (const order of orders) {
       if (order.orderType !== STOP) continue
+      const sameToken = order.indexToken === WETH.address
+        ? position.indexToken.isNative 
+        : order.indexToken === position.indexToken.address
       if ((order.swapOption === LONG) === position.isLong
-        && order.indexToken === position.indexToken.address
+        && sameToken
         && order.triggerAboveThreshold === triggerAboveThreshold
       ) {
         return order
       }
     }
-  }, [position, orders, triggerPriceUsd])
+  }, [position, orders, triggerPriceUsd, chainId])
   
   const needOrderBookApproval = orderType === STOP && !orderBookApproved
 
