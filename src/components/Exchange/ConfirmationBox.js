@@ -404,7 +404,7 @@ export default function ConfirmationBox(props) {
       </div>
     </>
   }, [renderMain, renderTriggerRatioWarning, renderSpreadWarning, fromTokenInfo, toTokenInfo,
-      showSpread, spread, feesUsd, renderExecutionFee, fromTokenUsd, toTokenUsd,
+      showSpread, spread, feesUsd, feeBps, renderExecutionFee, fromTokenUsd, toTokenUsd,
       triggerRatio, fees, isMarketOrder, minOut, renderFeeWarning])
 
   return <div className="Confirmation-box">
