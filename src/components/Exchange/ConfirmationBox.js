@@ -185,7 +185,7 @@ export default function ConfirmationBox(props) {
   }, [isLong, isSwap, orderType, entryMarkPrice, triggerPriceUsd])
 
   const renderFeeWarning = useCallback(() => {
-    if (!feeBps || feeBps < 50) {
+    if (!feeBps || feeBps < 80) {
       return null
     }
 
@@ -362,7 +362,7 @@ export default function ConfirmationBox(props) {
         {renderFeeWarning()}
         {renderTriggerRatioWarning()}
         {renderSpreadWarning()}
-        <ExchangeInfoRow label="Minimum received">
+        <ExchangeInfoRow label="Min. Receive">
           {formatAmount(minOut, toTokenInfo.decimals, 4, true)} {toTokenInfo.symbol}
         </ExchangeInfoRow>
         <ExchangeInfoRow label="Price">
@@ -384,19 +384,20 @@ export default function ConfirmationBox(props) {
         <div className="Exchange-info-row">
           <div className="Exchange-info-label">Fees</div>
           <div className="align-right">
-           {formatAmount(fees, fromTokenInfo.decimals, 4, true)} {fromTokenInfo.symbol} (${formatAmount(feesUsd, USD_DECIMALS, 2, true)})
-           </div>
+            {formatAmount(feeBps, 2, 2, true)}%
+            ({formatAmount(fees, fromTokenInfo.decimals, 4, true)} {fromTokenInfo.symbol}: ${formatAmount(feesUsd, USD_DECIMALS, 2, true)})
+          </div>
         </div>
         {renderExecutionFee()}
         {fromTokenUsd &&
           <div className="Exchange-info-row">
-            <div className="Exchange-info-label">{fromTokenInfo.symbol} price</div>
+            <div className="Exchange-info-label">{fromTokenInfo.symbol} Price</div>
             <div className="align-right">{fromTokenUsd} USD</div>
           </div>
         }
         {toTokenUsd &&
           <div className="Exchange-info-row">
-            <div className="Exchange-info-label">{toTokenInfo.symbol} price</div>
+            <div className="Exchange-info-label">{toTokenInfo.symbol} Price</div>
             <div className="align-right">{toTokenUsd} USD</div>
           </div>
         }
