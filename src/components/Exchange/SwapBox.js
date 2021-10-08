@@ -1419,9 +1419,8 @@ export default function SwapBox(props) {
 								{!fees && "-"}
 								{fees &&
 									<div>
-				            {formatAmount(fees, fromToken.decimals, 4, true)} {fromToken.symbol}
-				            &nbsp;
-				            (${formatAmount(feesUsd, USD_DECIMALS, 2, true)})
+                    {formatAmount(feeBps, 2, 2, false)}%&nbsp;
+				            ({formatAmount(fees, fromToken.decimals, 4, true)} {fromToken.symbol}: ${formatAmount(feesUsd, USD_DECIMALS, 2, true)})
 									</div>
 								}
 							</div>
