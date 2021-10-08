@@ -9,7 +9,8 @@ import './Actions.css';
 import { getContract } from './Addresses'
 import { formatAmount, expandDecimals, fetcher, getInfoTokens, getTokenInfo, getServerBaseUrl } from './Helpers'
 import { getToken, getTokens, getWhitelistedTokens } from './data/Tokens'
-import { getPositions, getPositionQuery, PositionsList } from './Exchange'
+import { getPositions, getPositionQuery } from './Exchange'
+import PositionsList from './components/Exchange/PositionsList'
 
 import TradeHistory from './components/Exchange/TradeHistory'
 import Reader from './abis/Reader.json'

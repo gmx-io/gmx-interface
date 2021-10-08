@@ -20,7 +20,7 @@ import {
 import { BsArrowRight } from 'react-icons/bs'
 import Modal from '../Modal/Modal'
 import ExchangeInfoRow from './ExchangeInfoRow'
-import { getToken } from '../../data/Tokens'
+import { getToken, getTokenBySymbol } from '../../data/Tokens'
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -98,18 +98,18 @@ export default function ConfirmationBox(props) {
   const title = getTitle();
 
   const existingOrder = useMemo(() => {
-    if (!hasExistingPosition) {
-      return null
-    }
-
+    const WETH = getTokenBySymbol(chainId, "WETH")
     for (const order of orders) {
       if (order.orderType !== LIMIT) continue
-      if ((order.swapOption === LONG) === existingPosition.isLong
-        && order.indexToken === existingPosition.indexToken.address) {
+      const sameToken = order.indexToken === WETH.address
+        ? toToken.isNative 
+        : order.indexToken === toToken.address
+      if ((order.swapOption === LONG) === isLong
+        && sameToken) {
         return order
       }
     }
-  }, [hasExistingPosition, existingPosition, orders])
+  }, [orders, chainId, isLong, toToken.address, toToken.isNative])
 
   const getPrimaryText = () => {
     if (!isPendingConfirmation) {
@@ -246,7 +246,7 @@ export default function ConfirmationBox(props) {
     );
   }, [existingOrder, isSwap, chainId])
 
-  // TODO handle unaprproved order plugin
+  // TODO handle unaprproved order plugin (very unlikely case)
   const renderMain = useCallback(() => {
     if (isSwap) {
       return (

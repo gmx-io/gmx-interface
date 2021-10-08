@@ -561,6 +561,7 @@ table.Exchange-list th {
 
 .Exchange-swap-input-container {
   position: relative;
+  overflow: hidden;
 }
 
 .Exchange-swap-max {
@@ -591,6 +592,7 @@ table.Exchange-list th {
 
 input.Exchange-swap-input {
   padding: 0;
+  max-width: 100%;
   font-size: 1.5rem;
 }
 input.Exchange-swap-input.small {

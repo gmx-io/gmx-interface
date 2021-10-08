@@ -35,6 +35,12 @@
   top: 100%;
 }
 
+.Tooltip-popup.center-bottom {
+  left: 50%;
+  transform: translateY(5px) translateX(-50%);
+  top: 100%;
+}
+
 .Tooltip-handle {
   cursor: help;
   position: relative;
@@ -47,4 +53,10 @@
   right: 0;
   border-bottom: 1px dashed;
   opacity: 0.6;
+}
+
+@media (max-width: 700px) {
+  .Tooltip-popup {
+    min-width: 200px;
+  }
 }

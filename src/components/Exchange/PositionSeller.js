@@ -499,7 +499,7 @@ export default function PositionSeller(props) {
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           {(profitPrice && nextDelta.eq(0) && nextHasProfit) &&
             <div className="Confirmation-box-warning">
-              WARNING: You {orderType === MARKET ? 'have' : 'will have'} a&nbsp;
+              WARNING: You {orderType === MARKET ? "have" : "will have"} a&nbsp;
               <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
                 pending profit
               </a> of {deltaStr}. <br/>
@@ -509,7 +509,6 @@ export default function PositionSeller(props) {
           }
           {renderPnlWarning()}
 
-          {/*TODO handle unapproved orderbook*/}
           {flagOrdersEnabled &&
             <Tab options={orderTypes} className="Confirmation-box-tabs" option={orderType} optionLabels={orderOptionLabels} onChange={onOrderOptionChange} type="inline" />
           }
