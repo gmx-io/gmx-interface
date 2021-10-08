@@ -170,15 +170,16 @@ export default function OrderEditor(props) {
       return null;
     }
 
-    if ((order.triggerAboveThreshold && indexTokenEntryMarkPrice.lt(triggerPrice))
-      || (!order.triggerAboveThreshold && indexTokenEntryMarkPrice.gt(triggerPrice))
+    // mul or div by 0.9999 to avoid unnecessary warnings wher users clicks "Mark Price"
+    if ((order.triggerAboveThreshold && indexTokenEntryMarkPrice.lt(triggerPrice.mul(10000).div(9999)))
+      || (!order.triggerAboveThreshold && indexTokenEntryMarkPrice.gt(triggerPrice.mul(9999).div(10000)))
     ) {
       return null;
     }
 
     return (
       <div className="Confirmation-box-warning">
-        WARNING: Trigger Price is {order.triggerAboveThreshold ? "lower" : "higher"} then Mark Price and order will be executed immediatelly
+        WARNING: Trigger Price is {order.triggerAboveThreshold ? "lower" : "higher"} then Mark Price and order will be executed immediatelly at Mark Price
       </div>
     );
   }

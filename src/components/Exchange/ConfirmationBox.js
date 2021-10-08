@@ -161,7 +161,7 @@ export default function ConfirmationBox(props) {
     if (orderType === LIMIT && currentRate && !currentRate.gt(triggerRatio)) {
       return (
         <div className="Confirmation-box-warning">
-          WARNING: Price is {triggerRatioInverted ? "lower": "higher"} then Mark Price, the order will be executed immediatelly
+          WARNING: Price is {triggerRatioInverted ? "lower": "higher"} then Mark Price, the order will be executed immediatelly at Mark Price
         </div>
       );
     }
