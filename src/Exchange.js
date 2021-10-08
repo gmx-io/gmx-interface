@@ -1,24 +1,19 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
-import cx from "classnames";
 import useSWR from 'swr'
 import { ethers } from 'ethers'
 
 import {
   BASIS_POINTS_DIVISOR,
-  USD_DECIMALS,
   getTokenInfo,
   SWAP,
   LONG,
   SHORT,
   getConnectWalletHandler,
   fetcher,
-  formatAmount,
   expandDecimals,
   getPositionKey,
-  getUsd,
-  getLiquidationPrice,
   getLeverage,
   useLocalStorageSerializeKey,
   getDeltaStr,
