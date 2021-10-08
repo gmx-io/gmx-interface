@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { BsArrowRight } from 'react-icons/bs'
 
 import Modal from '../Modal/Modal'
+import Tooltip from '../Tooltip/Tooltip'
 import {
   SWAP,
   LONG,
@@ -168,7 +169,9 @@ export default function OrdersList(props) {
               Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, (fromTokenInfo.isStable || fromTokenInfo.isUsdg) ? 2 : 6, true)} {fromTokenInfo.symbol} for {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 6, true)} {toTokenInfo.symbol}
             </td>
             <td>
-              {getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}
+              <Tooltip handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}>
+                Execution price may vary slightly depending on exact fees at the time the order is executed.
+              </Tooltip>
             </td>
             <td>
               {getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo, true)}
@@ -235,7 +238,9 @@ export default function OrdersList(props) {
               Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)} {fromTokenInfo.symbol} for {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)} {toTokenInfo.symbol}
             </td>
             <td>
-              {getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}
+              <Tooltip position="center-bottom" handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}>
+                Execution price may vary slightly depending on exact fees at the time the order is executed.
+              </Tooltip>
             </td>
             <td>
               {getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo)}
