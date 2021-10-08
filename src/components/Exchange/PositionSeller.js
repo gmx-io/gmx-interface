@@ -505,6 +505,7 @@ export default function PositionSeller(props) {
               </a> of {deltaStr}. <br/>
               Profit price: ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
               Current movement: {formatAmount(priceMovementPercentage, 2, 2, true)}%.
+              {orderType === STOP && " In case order will be executed in less than 24 hours after position was opened you will lose profit."}
             </div>
           }
           {renderPnlWarning()}
