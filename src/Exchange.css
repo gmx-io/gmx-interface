@@ -376,6 +376,10 @@ table.Exchange-list th, table.Exchange-list td {
   padding: 0.7rem;
   padding-left: 1rem;
 }
+table.Exchange-list.Orders th, table.Exchange-list.Orders td {
+  padding-top: 0.9rem;
+  padding-bottom: 0.9rem;
+}
 
 table.Exchange-list tr {
   border-bottom: 1px solid #23263b;

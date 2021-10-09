@@ -9,7 +9,6 @@ import {
   USD_DECIMALS,
   PRECISION,
   formatAmount,
-  useOrders,
   TRIGGER_PREFIX_ABOVE,
   TRIGGER_PREFIX_BELOW,
   getExchangeRateDisplay,
@@ -42,18 +41,19 @@ export default function OrdersList(props) {
   const { 
     active, 
     library, 
-    account,
     setPendingTxns,
     pendingTxns,
     infoTokens,
     positionsMap,
     totalTokenWeights,
-    usdgSupply
+    usdgSupply,
+    orders,
+    updateOrders,
+    hideActions
   } = props;
 
   const { chainId } = useChainId()
 
-  const [orders, updateOrders] = useOrders(active, library, account);
   const [editingOrder, setEditingOrder] = useState(null);
 
   useEffect(() => {
@@ -170,7 +170,7 @@ export default function OrdersList(props) {
             <td>
               {getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo, true)}
             </td>
-            {renderActions(order)}
+            {!hideActions && renderActions(order)}
           </tr>
         );
       }
@@ -212,11 +212,11 @@ export default function OrdersList(props) {
           <td>
             {formatAmount(markPrice, USD_DECIMALS, 2, true)}
           </td>
-          {renderActions(order)}
+          {!hideActions && renderActions(order)}
         </tr>
       )
     })
-  }, [orders, renderActions, infoTokens, positionsMap])
+  }, [orders, renderActions, infoTokens, positionsMap, hideActions])
 
   const renderSmallList = useCallback(() => {
     if (!orders || !orders.length) {
@@ -245,14 +245,18 @@ export default function OrdersList(props) {
               {getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo)}
             </td>
             <td>
-              <button className="Exchange-list-action" onClick={() => onEditClick(order)}>
-                Edit
-              </button>
-              <br />
-              <button className="Exchange-list-action" onClick={() => onCancelClick(order)}>
-                Cancel
-              </button>
-          </td>
+              {!hideActions &&
+                <>
+                  <button className="Exchange-list-action" onClick={() => onEditClick(order)}>
+                    Edit
+                  </button>
+                  <br />
+                  <button className="Exchange-list-action" onClick={() => onCancelClick(order)}>
+                    Cancel
+                  </button>
+                </>
+              }
+            </td>
           </tr>
         );
       }
@@ -290,29 +294,33 @@ export default function OrdersList(props) {
             {formatAmount(markPrice, USD_DECIMALS, 2, true)}
           </td>
           <td>
-            <button className="Exchange-list-action" onClick={() => onEditClick(order)}>
-              Edit
-            </button>
-            <br />
-            <button className="Exchange-list-action" onClick={() => onCancelClick(order)}>
-              Cancel
-            </button>
+            {!hideActions &&
+              <>
+                <button className="Exchange-list-action" onClick={() => onEditClick(order)}>
+                  Edit
+                </button>
+                <br />
+                <button className="Exchange-list-action" onClick={() => onCancelClick(order)}>
+                  Cancel
+                </button>
+              </>
+            }
           </td>
         </tr>
       )
     })
-  }, [orders, onEditClick, onCancelClick, infoTokens, positionsMap])
+  }, [orders, onEditClick, onCancelClick, infoTokens, positionsMap, hideActions])
 
 	return (
     <React.Fragment>
-  		<table className="Exchange-list App-box large">
+  		<table className="Exchange-list Orders App-box large">
         <tbody>
           {renderHead()}
           {renderEmptyRow()}
           {renderLargeList()}
         </tbody>
       </table>
-      <table className="Exchange-list small">
+      <table className="Exchange-list Orders small">
         <tbody>
           {renderHead(false)}
           {renderEmptyRow()}
