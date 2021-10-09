@@ -32,10 +32,10 @@ import OrderEditor from './OrderEditor'
 
 import './OrdersList.css';
 
-function hasPositionForOrder(order, positionsMap) {
+function getPositionForOrder(order, positionsMap) {
   const key = getPositionKey(order.collateralToken, order.indexToken, order.swapOption === LONG)
   const position = positionsMap[key]
-  return position && position.size && position.size.gt(0)
+  return (position && position.size && position.size.gt(0)) ? position : null
 }
 
 export default function OrdersList(props) {
@@ -183,8 +183,13 @@ export default function OrdersList(props) {
       const indexTokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol
 
       let error
-      if (order.orderType === STOP && !hasPositionForOrder(order, positionsMap)) {
-        error = "There is no open position for the order, it can't be executed"  
+      if (order.orderType === STOP) {
+        const positionForOrder = getPositionForOrder(order, positionsMap)
+        if (!positionForOrder) {
+          error = "There is no open position for the order, it can't be executed"  
+        } else if (positionForOrder.size.lt(order.sizeDelta)) {
+          error = "The order size is bigger than position, it can't be executed"
+        }
       }
 
       return (
@@ -260,8 +265,13 @@ export default function OrdersList(props) {
       const indexTokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol
 
       let error
-      if (order.orderType === STOP && !hasPositionForOrder(order, positionsMap)) {
-        error = "There is no open position for the order, it can't be executed"  
+      if (order.orderType === STOP) {
+        const positionForOrder = getPositionForOrder(order, positionsMap)
+        if (!positionForOrder) {
+          error = "There is no open position for the order, it can't be executed"  
+        } else if (positionForOrder.size.lt(order.sizeDelta)) {
+          error = "The order size is bigger than position, it can't be executed"
+        }
       }
 
       return (
