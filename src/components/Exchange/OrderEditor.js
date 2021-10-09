@@ -179,7 +179,7 @@ export default function OrderEditor(props) {
 
     return (
       <div className="Confirmation-box-warning">
-        WARNING: Trigger Price is {order.triggerAboveThreshold ? "lower" : "higher"} then Mark Price and order will be executed immediatelly at Mark Price
+        WARNING: Trigger Price is {order.triggerAboveThreshold ? "lower" : "higher"} then Mark Price and order will be executed immediatelly
       </div>
     );
   }
