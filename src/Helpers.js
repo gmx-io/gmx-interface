@@ -1183,8 +1183,10 @@ function _useOrdersByType(shouldRequest, chainId, method, indexProp, parseFunc, 
   ]
 }
 
-export function useOrders(flagOrdersEnabled) {
-  const { account, active } = useWeb3React()
+export function useOrders(flagOrdersEnabled, overrideAccount) {
+  const { account: connectedAccount, active } = useWeb3React()
+  const account = overrideAccount || connectedAccount
+
   const { chainId } = useChainId()
   const ordersIndicesUrl = `${getServerBaseUrl(chainId)}/orders_indices?account=${account}`
   const shouldRequest = active && account && flagOrdersEnabled

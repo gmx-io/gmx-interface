@@ -161,6 +161,9 @@ export default function PositionSeller(props) {
     if (orderType === STOP && (!triggerPriceUsd || triggerPriceUsd.eq(0))) {
       return null
     }
+    if (!orders) {
+      return null
+    }
     const WETH = getTokenBySymbol(chainId, "WETH")
     for (const order of orders) {
       // only Stop orders can't be executed without corresponding opened position

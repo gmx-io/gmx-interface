@@ -347,7 +347,6 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
           <OrdersList
             active={active}
             library={library}
-            account={account}
             pendingTxns={pendingTxns}
             setPendingTxns={setPendingTxns}
             infoTokens={infoTokens}
