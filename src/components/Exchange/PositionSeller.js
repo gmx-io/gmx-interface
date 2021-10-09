@@ -158,24 +158,28 @@ export default function PositionSeller(props) {
   }, [position, orderType, triggerPriceUsd])
 
   const existingOrder = useMemo(() => {
-    if (!triggerPriceUsd || triggerPriceUsd.eq(0)) {
+    if (orderType === STOP && (!triggerPriceUsd || triggerPriceUsd.eq(0))) {
       return null
     }
-    const triggerAboveThreshold = triggerPriceUsd.gt(position.markPrice)
     const WETH = getTokenBySymbol(chainId, "WETH")
     for (const order of orders) {
+      // only Stop orders can't be executed without corresponding opened position
       if (order.orderType !== STOP) continue
+
+      // if user creates Stop-Loss we need only Stop-Loss orders and vice versa
+      if (orderType === STOP) {
+        const triggerAboveThreshold = triggerPriceUsd.gt(position.markPrice)
+        if (triggerAboveThreshold !== order.triggerAboveThreshold) continue
+      }
+
       const sameToken = order.indexToken === WETH.address
         ? position.indexToken.isNative 
         : order.indexToken === position.indexToken.address
-      if ((order.swapOption === LONG) === position.isLong
-        && sameToken
-        && order.triggerAboveThreshold === triggerAboveThreshold
-      ) {
+      if ((order.swapOption === LONG) === position.isLong && sameToken) {
         return order
       }
     }
-  }, [position, orders, triggerPriceUsd, chainId])
+  }, [position, orders, triggerPriceUsd, chainId, orderType])
   
   const needOrderBookApproval = orderType === STOP && !orderBookApproved
 
