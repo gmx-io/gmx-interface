@@ -271,7 +271,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
 
   const [flagOrdersEnabled] = useLocalStorageSerializeKey(
     [chainId, "Flag-orders-enabled"],
-    getConstant(chainId, "defaultFlagOrdersEnabled")
+    getConstant(chainId, "defaultFlagOrdersEnabled") || document.location.hostname.includes("deploy-preview") || document.location.hostname === "localhost"
   );
   const [orders, updateOrders] = useOrders(flagOrdersEnabled)
 
