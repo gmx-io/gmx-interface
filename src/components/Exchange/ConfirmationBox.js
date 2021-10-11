@@ -158,7 +158,7 @@ export default function ConfirmationBox(props) {
       return null;
     }
     const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
-    if (orderType === LIMIT && currentRate && !currentRate.gt(triggerRatio)) {
+    if (orderType === LIMIT && currentRate && currentRate.lt(triggerRatio)) {
       return (
         <div className="Confirmation-box-warning">
           WARNING: Price is {triggerRatioInverted ? "lower": "higher"} then Mark Price, the order will be executed immediatelly
