@@ -1519,7 +1519,11 @@ export default function SwapBox(props) {
             <ExchangeInfoRow label="Fees">
 							<div>
 								{!feesUsd && "-"}
-								{feesUsd && `${formatAmount(feesUsd, USD_DECIMALS, 2, true)} USD`}
+								{feesUsd &&
+                  <Tooltip handle={`${formatAmount(MARGIN_FEE_BASIS_POINTS, 2, 2, false)}% (${formatAmount(feesUsd, USD_DECIMALS, 2, true)} USD)`} position="right-bottom">
+                    Fees are calculated based on your position size.
+                  </Tooltip>
+                }
 							</div>
             </ExchangeInfoRow>
           </div>
