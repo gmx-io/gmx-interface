@@ -641,8 +641,36 @@ export default function DashboardV2() {
               <div className="App-card-row">
                 <div className="label">Creator</div>
                 <div>
-                  <a href="https://gist.github.com/atomist" target="_blank" rel="noopener noreferrer">
+                  <a href="https://t.me/atomist" target="_blank" rel="noopener noreferrer">
                     @atomist
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">GMX Feedback</div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://gmx-fider.herokuapp.com" target="_blank" rel="noopener noreferrer">
+                    https://gmx-fider.herokuapp.com
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  GMX feedback and feature requests
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Creator</div>
+                <div>
+                  <a href="https://t.me/sevpants" target="_blank" rel="noopener noreferrer">
+                    @sevpants
                   </a>
                 </div>
               </div>
