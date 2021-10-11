@@ -171,7 +171,8 @@ export default function OrderEditor(props) {
     }
 
     // mul or div by 0.9999 to avoid unnecessary warnings wher users clicks "Mark Price"
-    if ((order.triggerAboveThreshold && indexTokenEntryMarkPrice.lt(triggerPrice.mul(10000).div(9999)))
+    if (!triggerPrice
+      || (order.triggerAboveThreshold && indexTokenEntryMarkPrice.lt(triggerPrice.mul(10000).div(9999)))
       || (!order.triggerAboveThreshold && indexTokenEntryMarkPrice.gt(triggerPrice.mul(9999).div(10000)))
     ) {
       return null;
@@ -296,7 +297,7 @@ export default function OrderEditor(props) {
       </ExchangeInfoRow>
       <ExchangeInfoRow label="Trigger Price">
         {getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo, { omitSymbols: !triggerRatio || !triggerRatio.eq(order.triggerRatio) })}
-        {triggerRatio && !triggerRatio.eq(order.triggerRatio) &&
+        {triggerRatio && !triggerRatio.eq(0) && !triggerRatio.eq(order.triggerRatio) &&
           <React.Fragment>
             &nbsp;
             <BsArrowRight />
