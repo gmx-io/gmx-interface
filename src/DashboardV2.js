@@ -123,6 +123,11 @@ export default function DashboardV2() {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
 
+  const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
+  const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
+    fetcher: (...args) => fetch(...args).then(res => res.text())
+  })
+
   let totalLongPositionSizes
   let totalShortPositionSizes
   if (positionStats && positionStats.totalLongPositionSizes && positionStats.totalShortPositionSizes) {
@@ -226,7 +231,6 @@ export default function DashboardV2() {
     gmxPrice = poolTokenPriceAmount.mul(eth.minPrice).div(expandDecimals(1, 18))
   }
 
-  let gmxSupply = bigNumberify("6500429318655280000000001")
   let gmxMarketCap
   if (gmxPrice && gmxSupply) {
     gmxMarketCap = gmxPrice.mul(gmxSupply).div(expandDecimals(1, GMX_DECIMALS))
@@ -313,6 +317,7 @@ export default function DashboardV2() {
         updateFees(undefined, true)
         updateUniPoolSlot0(undefined, true)
         updateStakedGmxSupply(undefined, true)
+        updateGmxSupply(undefined, true)
 
         updateTotalTokenWeights(undefined, true)
       })
@@ -324,7 +329,7 @@ export default function DashboardV2() {
       updatePositionStats, updateDailyVolume, updateTotalVolume,
       updateTotalSupplies, updateAums, updateVaultTokenInfo,
       updateFees, updateUniPoolSlot0, updateStakedGmxSupply,
-      updateTotalTokenWeights])
+      updateTotalTokenWeights, updateGmxSupply])
 
   return (
     <div className="DashboardV2 Page">
