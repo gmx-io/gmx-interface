@@ -170,10 +170,9 @@ export default function OrderEditor(props) {
       return null;
     }
 
-    // mul or div by 0.9999 to avoid unnecessary warnings wher users clicks "Mark Price"
     if (!triggerPrice
-      || (order.triggerAboveThreshold && indexTokenEntryMarkPrice.lt(triggerPrice.mul(10000).div(9999)))
-      || (!order.triggerAboveThreshold && indexTokenEntryMarkPrice.gt(triggerPrice.mul(9999).div(10000)))
+      || (order.triggerAboveThreshold && indexTokenEntryMarkPrice.lte(triggerPrice))
+      || (!order.triggerAboveThreshold && indexTokenEntryMarkPrice.gte(triggerPrice))
     ) {
       return null;
     }
@@ -190,7 +189,7 @@ export default function OrderEditor(props) {
       return null;
     }
     const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
-    if (!currentRate.gt(triggerRatio)) {
+    if (!currentRate.gte(triggerRatio)) {
       return (
         <div className="Confirmation-box-warning">
           WARNING: Trigger Price is {triggerRatioInverted ? "lower" : "higher"} then current price and order will be executed immediatelly
