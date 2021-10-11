@@ -170,9 +170,10 @@ export default function OrderEditor(props) {
       return null;
     }
 
+    // mul or div by 0.99999 to avoid unnecessary warnings wher users clicks "Mark Price"
     if (!triggerPrice
-      || (order.triggerAboveThreshold && indexTokenEntryMarkPrice.lte(triggerPrice))
-      || (!order.triggerAboveThreshold && indexTokenEntryMarkPrice.gte(triggerPrice))
+      || (order.triggerAboveThreshold && indexTokenEntryMarkPrice.lte(triggerPrice.mul(100000).div(99999)))
+      || (!order.triggerAboveThreshold && indexTokenEntryMarkPrice.gte(triggerPrice.mul(99999).div(100000)))
     ) {
       return null;
     }
@@ -189,7 +190,8 @@ export default function OrderEditor(props) {
       return null;
     }
     const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
-    if (!currentRate.gte(triggerRatio)) {
+    // mul or div by 0.99999 to avoid unnecessary warnings wher users clicks "Mark Price"
+    if (!currentRate.gte(triggerRatio.mul(99999).div(100000))) {
       return (
         <div className="Confirmation-box-warning">
           WARNING: Trigger Price is {triggerRatioInverted ? "lower" : "higher"} then current price and order will be executed immediatelly
@@ -204,7 +206,7 @@ export default function OrderEditor(props) {
         <div className="Exchange-swap-section">
           <div className="Exchange-swap-section-top">
             <div className="muted">
-              Trigger Price
+              Price
             </div>
             <div
               className="muted align-right clickable"
@@ -223,7 +225,7 @@ export default function OrderEditor(props) {
           </div>
         </div>
         {renderTriggerPriceWarning()}
-        <ExchangeInfoRow label="Trigger Price">
+        <ExchangeInfoRow label="Price">
           {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
           {triggerPrice && !triggerPrice.eq(order.triggerPrice) &&
             <React.Fragment>
@@ -256,14 +258,14 @@ export default function OrderEditor(props) {
       <div className="Exchange-swap-section">
         <div className="Exchange-swap-section-top">
           <div className="muted">
-            Trigger Price
+            Price
           </div>
           {fromTokenInfo && toTokenInfo &&
             <div
               className="muted align-right clickable"
               onClick={() => {setTriggerRatioValue(formatAmountFree(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 10))}}
             >
-              Price: {formatAmount(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 2)}
+              Mark Price: {formatAmount(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 2)}
             </div>
           }
         </div>
@@ -294,7 +296,7 @@ export default function OrderEditor(props) {
         }
         &nbsp;{toTokenInfo.symbol}
       </ExchangeInfoRow>
-      <ExchangeInfoRow label="Trigger Price">
+      <ExchangeInfoRow label="Price">
         {getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo, { omitSymbols: !triggerRatio || !triggerRatio.eq(order.triggerRatio) })}
         {triggerRatio && !triggerRatio.eq(0) && !triggerRatio.eq(order.triggerRatio) &&
           <React.Fragment>
