@@ -77,7 +77,6 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
       cumulativeFundingRate: collateralToken.cumulativeFundingRate,
       hasRealisedProfit: positionData[i * propsLength + 4].eq(1),
       realisedPnl: positionData[i * propsLength + 5],
-      // TODO for Gambit we need different indexes
       lastIncreasedTime: positionData[i * propsLength + 6],
       hasProfit: positionData[i * propsLength + 7].eq(1),
       delta: positionData[i * propsLength + 8],

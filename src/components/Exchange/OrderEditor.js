@@ -151,16 +151,16 @@ export default function OrderEditor(props) {
 
   const getPrimaryText = () => {
     if (isSubmitting) {
-      return "Updating order...";
+      return "Updating Order...";
     }
     if (!triggerRatio && !triggerPrice) {
-      return "Enter a trigger price";
+      return "Enter Price";
     }
     if (order.swapOption === SWAP && triggerRatio.eq(order.triggerRatio)) {
-      return "Enter a new trigger price";
+      return "Enter different Price";
     }
     if (order.swapOption !== SWAP && triggerPrice.eq(order.triggerPrice)) {
-      return "Enter a new trigger price";
+      return "Enter different Price";
     }
     return "Update Order";
   }

@@ -409,7 +409,7 @@ export function getNextFromAmount(chainId, toAmount, fromTokenAddress, toTokenAd
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress)
   const toToken = getTokenInfo(infoTokens, toTokenAddress)
 
-  if (!fromToken || !toToken) { return defaultValue }
+  if (!fromToken || !fromToken.minPrice || !toToken || !toToken.maxPrice) { return defaultValue }
 
   const adjustDecimals = adjustForDecimalsFactory(fromToken.decimals - toToken.decimals)
 
@@ -491,7 +491,6 @@ export function getNextFromAmount(chainId, toAmount, fromTokenAddress, toTokenAd
     }
   }
 
-  // const feeBasisPoints = getSwapFeeBasisPoints(fromToken.isStable && toToken.isStable)
   const fromAmount = ratio && !ratio.isZero()
     ? fromAmountBasedOnRatio
     : toAmount.mul(toToken.maxPrice).div(fromToken.minPrice)
