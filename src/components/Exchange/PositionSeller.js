@@ -309,7 +309,7 @@ export default function PositionSeller(props) {
   const getError = () => {
     if (!fromAmount) { return "Enter an amount" }
     if (nextLeverage && nextLeverage.eq(0)) { return "Enter an amount" }
-    if (orderType === STOP && !triggerPriceUsd) { return "Enter a trigger price" }
+    if (orderType === STOP && !triggerPriceUsd) { return "Enter Price" }
 
     if (!isClosing && position && position.size && fromAmount) {
       if (position.size.sub(fromAmount).lt(expandDecimals(10, USD_DECIMALS))) {
@@ -466,7 +466,7 @@ export default function PositionSeller(props) {
 
     return (
       <div className="Confirmation-box-warning">
-        WARNING: The position will be liquidated before reaching the Trigger Price
+        WARNING: The position will be liquidated before reaching the Price
       </div>
     );
   }
