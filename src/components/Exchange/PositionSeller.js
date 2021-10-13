@@ -250,7 +250,7 @@ export default function PositionSeller(props) {
 
     receiveAmount = receiveAmount.add(collateralDelta)
 
-    if (sizeDelta) {
+    if (sizeDelta && positionFee && fundingFee) {
       totalFees = positionFee.add(fundingFee)
       if (receiveAmount.gt(totalFees)) {
         receiveAmount = receiveAmount.sub(totalFees)
