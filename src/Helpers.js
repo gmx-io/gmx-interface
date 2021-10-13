@@ -498,7 +498,7 @@ export function getNextFromAmount(chainId, toAmount, fromTokenAddress, toTokenAd
   let usdgAmount = fromAmount.mul(fromToken.minPrice).div(PRECISION)
   usdgAmount = adjustForDecimals(usdgAmount, toToken.decimals, USDG_DECIMALS)
   const swapFeeBasisPoints = fromToken.isStable && toToken.isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS
-  const taxBasisPoints = fromToken.isStable && toToken.isStable ? STABLE_TAX_BASIS_POINTS : SWAP_FEE_BASIS_POINTS
+  const taxBasisPoints = fromToken.isStable && toToken.isStable ? STABLE_TAX_BASIS_POINTS : TAX_BASIS_POINTS
   const feeBasisPoints0 = getFeeBasisPoints(fromToken, usdgAmount, swapFeeBasisPoints, taxBasisPoints, true, usdgSupply, totalTokenWeights)
   const feeBasisPoints1 = getFeeBasisPoints(toToken, usdgAmount, swapFeeBasisPoints, taxBasisPoints, false, usdgSupply, totalTokenWeights)
   const feeBasisPoints = feeBasisPoints0 > feeBasisPoints1 ? feeBasisPoints0 : feeBasisPoints1;
@@ -622,7 +622,7 @@ export function getNextToAmount(chainId, fromAmount, fromTokenAddress, toTokenAd
   let usdgAmount = fromAmount.mul(fromToken.minPrice).div(PRECISION)
   usdgAmount = adjustForDecimals(usdgAmount, fromToken.decimals, USDG_DECIMALS)
   const swapFeeBasisPoints = fromToken.isStable && toToken.isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS
-  const taxBasisPoints = fromToken.isStable && toToken.isStable ? STABLE_TAX_BASIS_POINTS : SWAP_FEE_BASIS_POINTS
+  const taxBasisPoints = fromToken.isStable && toToken.isStable ? STABLE_TAX_BASIS_POINTS : TAX_BASIS_POINTS
   const feeBasisPoints0 = getFeeBasisPoints(fromToken, usdgAmount, swapFeeBasisPoints, taxBasisPoints, true, usdgSupply, totalTokenWeights)
   const feeBasisPoints1 = getFeeBasisPoints(toToken, usdgAmount, swapFeeBasisPoints, taxBasisPoints, false, usdgSupply, totalTokenWeights)
   const feeBasisPoints = feeBasisPoints0 > feeBasisPoints1 ? feeBasisPoints0 : feeBasisPoints1;
