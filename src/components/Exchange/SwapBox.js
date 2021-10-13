@@ -719,15 +719,8 @@ export default function SwapBox(props) {
     if (needApproval) { return `Approve ${fromToken.symbol}` }
 
     if (needOrderBookApproval && isWaitingForPluginApproval) { return "Waiting for Approval" }
-    if (isPluginApproving) { return "Enabling Trigger Orders..." }
-    if (needOrderBookApproval) { return "Enable Trigger Orders" }
-
-    if (isSubmitting) {
-      if (!isMarketOrder) { return "Creating order..." }
-      if (isSwap) { return "Swap..." }
-      if (isLong) { return "Longing..." }
-      return "Shorting..."
-    }
+    if (isPluginApproving) { return "Enabling Orders..." }
+    if (needOrderBookApproval) { return "Enable Orders" }
 
     if (!isMarketOrder) return `Create ${orderType.toLowerCase()} order`;
 
