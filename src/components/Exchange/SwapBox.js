@@ -733,15 +733,8 @@ export default function SwapBox(props) {
     if (needApproval) { return `Approve ${fromToken.symbol}` }
 
     if (needOrderBookApproval && isWaitingForPluginApproval) { return "Waiting for Approval" }
-    if (isPluginApproving) { return "Enabling Trigger Orders..." }
-    if (needOrderBookApproval) { return "Enable Trigger Orders" }
-
-    if (isSubmitting) {
-      if (!isMarketOrder) { return "Creating order..." }
-      if (isSwap) { return "Swap..." }
-      if (isLong) { return "Longing..." }
-      return "Shorting..."
-    }
+    if (isPluginApproving) { return "Enabling Orders..." }
+    if (needOrderBookApproval) { return "Enable Orders" }
 
     if (!isMarketOrder) return `Create ${orderType.charAt(0) + orderType.substring(1).toLowerCase()} Order`;
 
@@ -911,7 +904,7 @@ export default function SwapBox(props) {
     }
 
     if (!isMarketOrder) {
-      minOut = toAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR)
+      minOut = toAmount
       Api.createSwapOrder(chainId, library, path, fromAmount, minOut, triggerRatio, nativeTokenAddress, {
         sentMsg: "Swap Order submitted!",
         successMsg: "Swap Order created!",
@@ -978,8 +971,7 @@ export default function SwapBox(props) {
     const minOut = 0
     const indexToken = getToken(chainId, indexTokenAddress)
     const successMsg = `
-      Created limit order for ${indexToken.symbol} ${isLong ? "Long" : "Short"}
-      by ${formatAmount(toUsdMax, USD_DECIMALS, 2)} USD
+      Created limit order for ${indexToken.symbol} ${isLong ? "Long" : "Short"}: ${formatAmount(toUsdMax, USD_DECIMALS, 2)} USD
     `
     return Api.createIncreaseOrder(
       chainId,
@@ -1505,7 +1497,11 @@ export default function SwapBox(props) {
             <ExchangeInfoRow label="Fees">
 							<div>
 								{!feesUsd && "-"}
-								{feesUsd && `${formatAmount(feesUsd, USD_DECIMALS, 2, true)} USD`}
+								{feesUsd &&
+                  <Tooltip handle={`${formatAmount(MARGIN_FEE_BASIS_POINTS, 2, 2, false)}% (${formatAmount(feesUsd, USD_DECIMALS, 2, true)} USD)`} position="right-bottom">
+                    Fees are calculated based on your position size.
+                  </Tooltip>
+                }
 							</div>
             </ExchangeInfoRow>
           </div>

@@ -176,14 +176,14 @@ export default function PositionSeller(props) {
       }
 
       const sameToken = order.indexToken === WETH.address
-        ? position.indexToken.isNative 
+        ? position.indexToken.isNative
         : order.indexToken === position.indexToken.address
       if ((order.swapOption === LONG) === position.isLong && sameToken) {
         return order
       }
     }
   }, [position, orders, triggerPriceUsd, chainId, orderType])
-  
+
   const needOrderBookApproval = orderType === STOP && !orderBookApproved
 
   let collateralToken
@@ -250,7 +250,7 @@ export default function PositionSeller(props) {
 
     receiveAmount = receiveAmount.add(collateralDelta)
 
-    if (sizeDelta) {
+    if (sizeDelta && positionFee && fundingFee) {
       totalFees = positionFee.add(fundingFee)
       if (receiveAmount.gt(totalFees)) {
         receiveAmount = receiveAmount.sub(totalFees)
@@ -350,10 +350,10 @@ export default function PositionSeller(props) {
       if (nextHasProfit && nextDelta.eq(0)) return "Create Order without profit"
 
       if (needOrderBookApproval && isWaitingForPluginApproval) { return "Waiting for Approval" }
-      if (isPluginApproving) { return "Enabling Trigger Orders..." }
-      if (needOrderBookApproval) { return "Enable Trigger Orders" }
+      if (isPluginApproving) { return "Enabling Orders..." }
+      if (needOrderBookApproval) { return "Enable Orders" }
 
-      return "Create Trigger Order"
+      return "Create Order"
     }
     if (position.delta.eq(0) && position.pendingDelta.gt(0)) {
       return "Close without profit"
@@ -628,11 +628,26 @@ export default function PositionSeller(props) {
                 </div>}
               </div>
             </div>}
+            {orderType === STOP && <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Trigger Price</div>
+              <div className="align-right">
+                {!triggerPriceUsd && '-'}
+                {triggerPriceUsd &&
+                  `${triggerPricePrefix} ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}`
+                }
+              </div>
+            </div>}
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Mark Price</div>
+              <div className="align-right">
+                ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
+              </div>
+            </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">Liq. Price</div>
               <div className="align-right">
-                {isClosing && "-"}
-                {!isClosing && <div>
+                {(isClosing && orderType !== STOP) && "-"}
+                {(!isClosing || orderType === STOP) && <div>
                   {!nextLiquidationPrice && <div>
                     {`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}
                   </div>}
@@ -646,21 +661,6 @@ export default function PositionSeller(props) {
                 </div>}
               </div>
             </div>
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Mark Price</div>
-              <div className="align-right">
-                ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
-              </div>
-            </div>
-            {orderType === STOP && <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Price</div>
-              <div className="align-right">
-                {!triggerPriceUsd && '-'}
-                {triggerPriceUsd &&
-                  `${triggerPricePrefix} ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}`
-                }
-              </div>
-            </div>}
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">PnL</div>
               <div className="align-right">
