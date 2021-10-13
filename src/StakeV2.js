@@ -29,6 +29,7 @@ import {
   expandDecimals,
   parseValue,
   approveTokens,
+  getServerUrl,
   getConnectWalletHandler,
   switchNetwork,
   useLocalStorageSerializeKey,
@@ -139,8 +140,8 @@ function getStakingData(stakingInfo) {
   return data
 }
 
-function getProcessedData(balanceData, supplyData, depositBalanceData, stakingData, vestingData, aum, nativeTokenPrice, stakedGmxSupply, gmxPrice) {
-  if (!balanceData || !supplyData || !depositBalanceData || !stakingData || !vestingData || !aum || !nativeTokenPrice || !stakedGmxSupply || !gmxPrice) {
+function getProcessedData(balanceData, supplyData, depositBalanceData, stakingData, vestingData, aum, nativeTokenPrice, stakedGmxSupply, gmxPrice, gmxSupply) {
+  if (!balanceData || !supplyData || !depositBalanceData || !stakingData || !vestingData || !aum || !nativeTokenPrice || !stakedGmxSupply || !gmxPrice || !gmxSupply) {
     return {}
   }
 
@@ -149,8 +150,7 @@ function getProcessedData(balanceData, supplyData, depositBalanceData, stakingDa
   data.gmxBalance = balanceData.gmx
   data.gmxBalanceUsd = balanceData.gmx.mul(gmxPrice).div(expandDecimals(1, 18))
 
-  let gmxSupply = bigNumberify("6500429318655280000000001")
-  data.gmxSupply = gmxSupply
+  data.gmxSupply = bigNumberify(gmxSupply)
 
   data.gmxSupplyUsd = supplyData.gmx.mul(gmxPrice).div(expandDecimals(1, 18))
   data.stakedGmxSupply = stakedGmxSupply
@@ -948,6 +948,11 @@ export default function StakeV2({ setPendingTxns }) {
     fetcher: fetcher(library, UniPool),
   })
 
+  const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
+  const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
+    fetcher: (...args) => fetch(...args).then(res => res.text())
+  })
+
   const isGmxTransferEnabled = true
 
   let gmxPrice
@@ -987,7 +992,7 @@ export default function StakeV2({ setPendingTxns }) {
   const stakingData = getStakingData(stakingInfo)
   const vestingData = getVestingData(vestingInfo)
 
-  const processedData = getProcessedData(balanceData, supplyData, depositBalanceData, stakingData, vestingData, aum, nativeTokenPrice, stakedGmxSupply, gmxPrice)
+  const processedData = getProcessedData(balanceData, supplyData, depositBalanceData, stakingData, vestingData, aum, nativeTokenPrice, stakedGmxSupply, gmxPrice, gmxSupply)
 
   let hasMultiplierPoints = false
   let multiplierPointsAmount
@@ -1042,6 +1047,7 @@ export default function StakeV2({ setPendingTxns }) {
         updateEsGmxSupply(undefined, true)
         updateUniPoolSlot0(undefined, true)
         updateVestingInfo(undefined, true)
+        updateGmxSupply(undefined, true)
       })
       return () => {
         library.removeAllListeners('block')
@@ -1050,7 +1056,7 @@ export default function StakeV2({ setPendingTxns }) {
   }, [library, active, updateWalletBalances, updateDepositBalances,
       updateStakingInfo, updateAums, updateNativeTokenPrice,
       updateStakedGmxSupply, updateEsGmxSupply, updateUniPoolSlot0,
-      updateVestingInfo])
+      updateVestingInfo, updateGmxSupply])
 
   const showStakeGmxModal = () => {
     if (!isGmxTransferEnabled) {

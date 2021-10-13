@@ -153,10 +153,10 @@ export default function OrderEditor(props) {
       return "Enter Price";
     }
     if (order.swapOption === SWAP && triggerRatio.eq(order.triggerRatio)) {
-      return "Enter different Price";
+      return "Enter Price";
     }
     if (order.swapOption !== SWAP && triggerPrice.eq(order.triggerPrice)) {
-      return "Enter different Price";
+      return "Enter Price";
     }
     if (position) {
       if (position.isLong && triggerPrice.lte(liquidationPrice)) { return "Price below Liq. Price" }
