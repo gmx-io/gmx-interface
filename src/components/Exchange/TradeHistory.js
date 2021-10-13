@@ -112,7 +112,7 @@ export default function TradeHistory(props) {
       const sizeDeltaDisplay = `${order.type === "Increase" ? "+" : "-"}${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}`;
       return `
         Execute ${typeDisplay} Order, ${indexToken.symbol} ${longShortDisplay},
-        ${sizeDeltaDisplay} USD, Trigger Price: ${triggerPriceDisplay} USD
+        ${sizeDeltaDisplay} USD, Price: ${triggerPriceDisplay} USD
       `
     }
 

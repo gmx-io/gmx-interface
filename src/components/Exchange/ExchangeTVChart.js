@@ -377,9 +377,10 @@ export default function ExchangeTVChart(props) {
     }
   }, [priceData, currentSeries, chartInited, scaleChart])
 
+  const shouldShowOrderLines = false
   useEffect(() => {
     const lines = [];
-    if (currentSeries && currentOrders && currentOrders.length) {
+    if (currentSeries && currentOrders && currentOrders.length && shouldShowOrderLines) {
       currentOrders.forEach(order => {
         const indexToken = getToken(chainId, order.indexToken)
         let tokenSymbol
@@ -398,7 +399,7 @@ export default function ExchangeTVChart(props) {
     return () => {
       lines.forEach(line => currentSeries.removePriceLine(line))
     }
-  }, [currentOrders, currentSeries, chainId])
+  }, [currentOrders, currentSeries, chainId, shouldShowOrderLines])
 
   const candleStatsHtml = useMemo(() => {
     if (!priceData) {

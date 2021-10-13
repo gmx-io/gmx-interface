@@ -957,8 +957,7 @@ export default function SwapBox(props) {
     const minOut = 0
     const indexToken = getToken(chainId, indexTokenAddress)
     const successMsg = `
-      Created limit order for ${indexToken.symbol} ${isLong ? "Long" : "Short"}
-      by ${formatAmount(toUsdMax, USD_DECIMALS, 2)} USD
+      Created limit order for ${indexToken.symbol} ${isLong ? "Long" : "Short"}: ${formatAmount(toUsdMax, USD_DECIMALS, 2)} USD
     `
     return Api.createIncreaseOrder(
       chainId,
