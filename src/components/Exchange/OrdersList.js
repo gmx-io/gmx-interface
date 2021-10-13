@@ -337,6 +337,8 @@ export default function OrdersList(props) {
           updateDecreaseOrder={updateDecreaseOrder}
           pendingTxns={pendingTxns}
           setPendingTxns={setPendingTxns}
+          getPositionForOrder={getPositionForOrder}
+          positionsMap={positionsMap}
           updateOrders={updateOrders}
           library={library}
           totalTokenWeights={totalTokenWeights}

@@ -309,7 +309,11 @@ export default function PositionSeller(props) {
   const getError = () => {
     if (!fromAmount) { return "Enter an amount" }
     if (nextLeverage && nextLeverage.eq(0)) { return "Enter an amount" }
-    if (orderType === STOP && !triggerPriceUsd) { return "Enter Price" }
+    if (orderType === STOP) {
+      if (!triggerPriceUsd) { return "Enter Price" }
+      if (position.isLong && triggerPriceUsd.lte(liquidationPrice)) { return "Price below Liq. Price" }
+      if (!position.isLong && triggerPriceUsd.gte(liquidationPrice)) { return "Price above Liq. Price" }
+    }
 
     if (!isClosing && position && position.size && fromAmount) {
       if (position.size.sub(fromAmount).lt(expandDecimals(10, USD_DECIMALS))) {
@@ -464,11 +468,11 @@ export default function PositionSeller(props) {
       return null
     }
 
-    return (
-      <div className="Confirmation-box-warning">
-        WARNING: The position will be liquidated before reaching the Price
-      </div>
-    );
+    // return (
+    //   <div className="Confirmation-box-warning">
+    //     WARNING: PNL
+    //   </div>
+    // );
   }
 
   function renderExecutionFee() {

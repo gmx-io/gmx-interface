@@ -19,7 +19,8 @@ import {
   getNextToAmount,
   getExchangeRate,
   formatAmount,
-  getExchangeRateDisplay
+  getExchangeRateDisplay,
+  getLiquidationPrice
 } from "../../Helpers"
 import Modal from '../Modal/Modal'
 import ExchangeInfoRow from './ExchangeInfoRow'
@@ -37,7 +38,9 @@ export default function OrderEditor(props) {
     updateOrders,
     library,
     totalTokenWeights,
-    usdgSupply
+    usdgSupply,
+    getPositionForOrder,
+    positionsMap
   } = props;
 
   const { chainId } = useChainId()
@@ -47,6 +50,9 @@ export default function OrderEditor(props) {
     toTokenAddress,
     swapOption
   } = order;
+
+  const position = order.orderType === STOP ? getPositionForOrder(order, positionsMap) : null
+  const liquidationPrice = position ? getLiquidationPrice(position) : null
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -69,7 +75,6 @@ export default function OrderEditor(props) {
   const triggerPrice = useMemo(() => {
     return triggerPriceValue ? parseValue(triggerPriceValue, USD_DECIMALS) : 0
   }, [triggerPriceValue])
-
 
   const triggerRatio = useMemo(() => {
     if (!triggerRatioValue) {
@@ -135,12 +140,6 @@ export default function OrderEditor(props) {
     })
   }
 
-  const isPrimaryEnabled = () => {
-    if (isSubmitting) { return false }
-    if (order.swapOption === SWAP) { return !!triggerRatio && !triggerRatio.eq(order.triggerRatio) }
-    return !!triggerPrice && !triggerPrice.eq(order.triggerPrice)
-  }
-
   const onTriggerRatioChange = evt => {
     setTriggerRatioValue(evt.target.value || '')
   }
@@ -149,10 +148,7 @@ export default function OrderEditor(props) {
     setTriggerPriceValue(evt.target.value || '')
   }
 
-  const getPrimaryText = () => {
-    if (isSubmitting) {
-      return "Updating Order...";
-    }
+  const getError = () => {
     if (!triggerRatio && !triggerPrice) {
       return "Enter Price";
     }
@@ -161,6 +157,27 @@ export default function OrderEditor(props) {
     }
     if (order.swapOption !== SWAP && triggerPrice.eq(order.triggerPrice)) {
       return "Enter different Price";
+    }
+    if (position) {
+      if (position.isLong && triggerPrice.lte(liquidationPrice)) { return "Price below Liq. Price" }
+      if (!position.isLong && triggerPrice.gte(liquidationPrice)) { return "Price above Liq. Price" }
+    }
+  }
+
+  const isPrimaryEnabled = () => {
+    if (isSubmitting) { return false }
+    const error = getError()
+    if (error) { return false }
+
+    return true
+  }
+
+  const getPrimaryText = () => {
+    const error = getError()
+    if (error) { return error }
+
+    if (isSubmitting) {
+      return "Updating Order...";
     }
     return "Update Order";
   }
@@ -191,7 +208,7 @@ export default function OrderEditor(props) {
     }
     const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
     // mul or div by 0.99999 to avoid unnecessary warnings wher users clicks "Mark Price"
-    if (!currentRate.gte(triggerRatio.mul(99999).div(100000))) {
+    if (currentRate && !currentRate.gte(triggerRatio.mul(99999).div(100000))) {
       return (
         <div className="Confirmation-box-warning">
           WARNING: Trigger Price is {triggerRatioInverted ? "lower" : "higher"} then current price and order will be executed immediatelly
@@ -245,6 +262,14 @@ export default function OrderEditor(props) {
           {(!toAmount && leverage && leverage.gt(0)) && `-`}
           {(leverage && leverage.eq(0)) && `-`}
         </ExchangeInfoRow>*/}
+        {liquidationPrice &&
+          <div className="Exchange-info-row">
+            <div className="Exchange-info-label">Liq. Price</div>
+            <div className="align-right">
+              {`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}
+            </div>
+          </div>
+        }
         <div className="Exchange-swap-button-container">
           <button className="App-cta Exchange-swap-button Exchange-list-modal-button" onClick={ onClickPrimary } disabled={!isPrimaryEnabled()}>
             {getPrimaryText()}
