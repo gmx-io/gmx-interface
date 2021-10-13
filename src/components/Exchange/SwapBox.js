@@ -890,7 +890,6 @@ export default function SwapBox(props) {
     }
 
     if (!isMarketOrder) {
-      minOut = toAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR)
       Api.createSwapOrder(chainId, library, path, fromAmount, minOut, triggerRatio, nativeTokenAddress, {
         sentMsg: "Swap Order submitted!",
         successMsg: "Swap Order created!",
