@@ -176,14 +176,14 @@ export default function PositionSeller(props) {
       }
 
       const sameToken = order.indexToken === WETH.address
-        ? position.indexToken.isNative 
+        ? position.indexToken.isNative
         : order.indexToken === position.indexToken.address
       if ((order.swapOption === LONG) === position.isLong && sameToken) {
         return order
       }
     }
   }, [position, orders, triggerPriceUsd, chainId, orderType])
-  
+
   const needOrderBookApproval = orderType === STOP && !orderBookApproved
 
   let collateralToken
@@ -346,10 +346,10 @@ export default function PositionSeller(props) {
       if (nextHasProfit && nextDelta.eq(0)) return "Create Order without profit"
 
       if (needOrderBookApproval && isWaitingForPluginApproval) { return "Waiting for Approval" }
-      if (isPluginApproving) { return "Enabling Trigger Orders..." }
-      if (needOrderBookApproval) { return "Enable Trigger Orders" }
+      if (isPluginApproving) { return "Enabling Orders..." }
+      if (needOrderBookApproval) { return "Enable Orders" }
 
-      return "Create Trigger Order"
+      return "Create Order"
     }
     if (position.delta.eq(0) && position.pendingDelta.gt(0)) {
       return "Close without profit"
