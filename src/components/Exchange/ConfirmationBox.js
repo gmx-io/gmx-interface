@@ -3,7 +3,6 @@ import {
 	USD_DECIMALS,
 	PRECISION,
 	BASIS_POINTS_DIVISOR,
-  MARKET,
   LIMIT,
   LONG,
   SWAP_ORDER_EXECUTION_GAS_FEE,
@@ -59,7 +58,6 @@ export default function ConfirmationBox(props) {
     existingPosition,
     existingLiquidationPrice,
     displayLiquidationPrice,
-    entryMarkPrice,
     shortCollateralToken,
     isPendingConfirmation,
     triggerPriceUsd,
@@ -69,7 +67,6 @@ export default function ConfirmationBox(props) {
     isSubmitting,
     fromUsdMin,
     toUsdMax,
-    triggerRatioInverted,
     nextAveragePrice,
     collateralTokenAddress,
     feeBps,
@@ -152,37 +149,6 @@ export default function ConfirmationBox(props) {
       );
     }
   }, [isMarketOrder, spread])
-
-  const renderTriggerRatioWarning = useCallback(() => {
-    if (!isSwap || !triggerRatio) {
-      return null;
-    }
-    const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
-    if (orderType === LIMIT && currentRate && currentRate.lt(triggerRatio)) {
-      return (
-        <div className="Confirmation-box-warning">
-          WARNING: Price is {triggerRatioInverted ? "lower": "higher"} then Mark Price, the order will be executed immediatelly
-        </div>
-      );
-    }
-  }, [isSwap, fromTokenInfo, toTokenInfo, orderType, triggerRatio, triggerRatioInverted])
-
-  const renderTriggerPriceWarning = useCallback(() => {
-    if (isSwap || orderType === MARKET || !entryMarkPrice || !triggerPriceUsd) {
-      return null;
-    }
-    if ((isLong && entryMarkPrice.gte(triggerPriceUsd))
-      || (!isLong && entryMarkPrice.lte(triggerPriceUsd))
-    ) {
-      return null;
-    }
-
-    return (
-      <div className="Confirmation-box-warning">
-        WARNING: Price is {isLong ? "higher" : "lower"} then Mark Price, the order will be executed immediatelly
-      </div>
-    );
-  }, [isLong, isSwap, orderType, entryMarkPrice, triggerPriceUsd])
 
   const renderFeeWarning = useCallback(() => {
     if (orderType === LIMIT || !feeBps || feeBps < 80) {
@@ -289,7 +255,6 @@ export default function ConfirmationBox(props) {
     return <>
       <div className="Confirmation-box-info">
         {renderMain()}
-        {renderTriggerPriceWarning()}
         {renderFeeWarning()}
         {renderMinProfitWarning()}
         {renderExistingOrderWarning()}
@@ -350,7 +315,7 @@ export default function ConfirmationBox(props) {
         {renderExecutionFee()}
       </div>
     </>
-  }, [renderMain, renderTriggerPriceWarning, renderMinProfitWarning, shortCollateralAddress,
+  }, [renderMain, renderMinProfitWarning, shortCollateralAddress,
       isShort, isLong, toTokenInfo, nextAveragePrice, toAmount, hasExistingPosition, existingPosition,
       isMarketOrder, triggerPriceUsd, showSpread, spread, displayLiquidationPrice, existingLiquidationPrice,
       feesUsd, leverage, renderExecutionFee, shortCollateralToken, renderExistingOrderWarning, chainId, renderFeeWarning])
@@ -360,7 +325,6 @@ export default function ConfirmationBox(props) {
       <div className="Confirmation-box-info">
         {renderMain()}
         {renderFeeWarning()}
-        {renderTriggerRatioWarning()}
         {renderSpreadWarning()}
         <ExchangeInfoRow label="Min. Receive">
           {formatAmount(minOut, toTokenInfo.decimals, 4, true)} {toTokenInfo.symbol}
@@ -403,7 +367,7 @@ export default function ConfirmationBox(props) {
         }
       </div>
     </>
-  }, [renderMain, renderTriggerRatioWarning, renderSpreadWarning, fromTokenInfo, toTokenInfo,
+  }, [renderMain, renderSpreadWarning, fromTokenInfo, toTokenInfo,
       showSpread, spread, feesUsd, feeBps, renderExecutionFee, fromTokenUsd, toTokenUsd,
       triggerRatio, fees, isMarketOrder, minOut, renderFeeWarning])
 

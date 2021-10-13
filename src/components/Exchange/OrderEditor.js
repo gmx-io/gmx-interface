@@ -162,6 +162,22 @@ export default function OrderEditor(props) {
       if (position.isLong && triggerPrice.lte(liquidationPrice)) { return "Price below Liq. Price" }
       if (!position.isLong && triggerPrice.gte(liquidationPrice)) { return "Price above Liq. Price" }
     }
+
+    if (swapOption !== SWAP && indexTokenEntryMarkPrice) {
+      if (order.triggerAboveThreshold && indexTokenEntryMarkPrice.gt(triggerPrice)) {
+        return "Price below Mark Price"
+      }
+      if (!order.triggerAboveThreshold && indexTokenEntryMarkPrice.lt(triggerPrice)) {
+        return "Price above Mark Price"
+      }
+    }
+
+    if (swapOption === SWAP) {
+      const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
+      if (currentRate && !currentRate.gte(triggerRatio)) {
+        return `Price is ${triggerRatioInverted ? "below" : "above"} Mark Price`
+      }
+    }
   }
 
   const isPrimaryEnabled = () => {
@@ -180,41 +196,6 @@ export default function OrderEditor(props) {
       return "Updating Order...";
     }
     return "Update Order";
-  }
-
-  function renderTriggerPriceWarning() {
-    if (swapOption === SWAP || !indexTokenEntryMarkPrice) {
-      return null;
-    }
-
-    // mul or div by 0.99999 to avoid unnecessary warnings wher users clicks "Mark Price"
-    if (!triggerPrice
-      || (order.triggerAboveThreshold && indexTokenEntryMarkPrice.lte(triggerPrice.mul(100000).div(99999)))
-      || (!order.triggerAboveThreshold && indexTokenEntryMarkPrice.gte(triggerPrice.mul(99999).div(100000)))
-    ) {
-      return null;
-    }
-
-    return (
-      <div className="Confirmation-box-warning">
-        WARNING: Trigger Price is {order.triggerAboveThreshold ? "lower" : "higher"} then Mark Price and order will be executed immediatelly
-      </div>
-    );
-  }
-
-  function renderTriggerRatioWarning() {
-    if (swapOption !== SWAP) {
-      return null;
-    }
-    const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
-    // mul or div by 0.99999 to avoid unnecessary warnings wher users clicks "Mark Price"
-    if (currentRate && !currentRate.gte(triggerRatio.mul(99999).div(100000))) {
-      return (
-        <div className="Confirmation-box-warning">
-          WARNING: Trigger Price is {triggerRatioInverted ? "lower" : "higher"} then current price and order will be executed immediatelly
-        </div>
-      );
-    }
   }
 
   if (order.swapOption !== SWAP) {
@@ -241,7 +222,6 @@ export default function OrderEditor(props) {
             </div>
           </div>
         </div>
-        {renderTriggerPriceWarning()}
         <ExchangeInfoRow label="Price">
           {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
           {triggerPrice && !triggerPrice.eq(order.triggerPrice) &&
@@ -308,7 +288,6 @@ export default function OrderEditor(props) {
           })()}
         </div>
       </div>
-      {renderTriggerRatioWarning()}
       <ExchangeInfoRow label="Minimum received">
         {formatAmount(order.minOut, toTokenInfo.decimals, 4, true)}
         {triggerRatio && !triggerRatio.eq(order.triggerRatio) &&

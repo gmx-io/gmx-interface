@@ -534,7 +534,6 @@ export default function SwapBox(props) {
 
     if (!fromAmount || fromAmount.eq(0)) { return ["Enter an amount"] }
     if (!toAmount || toAmount.eq(0)) { return ["Enter an amount"] }
-    if (!isMarketOrder && (!triggerRatioValue || triggerRatio.eq(0))) { return ["Enter a price"] }
 
     const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress)
     if (!fromTokenInfo || !fromTokenInfo.minPrice) {
@@ -545,6 +544,16 @@ export default function SwapBox(props) {
     }
 
     const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress)
+
+    if (!isMarketOrder) {
+      if (!triggerRatioValue || triggerRatio.eq(0)) { return ["Enter a price"] }
+
+      const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
+      if (currentRate && currentRate.lt(triggerRatio)) {
+        return [`Price ${triggerRatioInverted ? "below": "above"} Mark Price`]
+      }
+    }
+
     const isWrapOrUnwrap = (fromToken.isNative && toToken.isWrapped) || (fromToken.isWrapped && toToken.isNative)
     if (!isWrapOrUnwrap && toToken && toTokenAddress !== USDG_ADDRESS && toTokenInfo &&
         toTokenInfo.availableAmount && toAmount.gt(toTokenInfo.availableAmount)) {
@@ -592,6 +601,11 @@ export default function SwapBox(props) {
 
     if (leverage && leverage.gt(30.5 * BASIS_POINTS_DIVISOR)) {
       return ["Max leverage: 30.5x"]
+    }
+
+    if (!isMarketOrder && entryMarkPrice && triggerPriceUsd) {
+      if (isLong && entryMarkPrice.lt(triggerPriceUsd)) { return ["Price above Mark Price"] }
+      if (!isLong && entryMarkPrice.gt(triggerPriceUsd)) { return ["Price below Mark Price"] }
     }
 
     if (isLong) {
@@ -660,7 +674,7 @@ export default function SwapBox(props) {
   }, [chainId, fromAmount, fromTokenAddress, fromUsdMin, hasExistingPosition,
     infoTokens, isLong, isMarketOrder, isShort, leverage, shortCollateralAddress,
     shortCollateralToken, swapOption, toAmount, toToken, toTokenAddress,
-    totalTokenWeights, triggerPriceUsd, triggerPriceValue, usdgSupply])
+    totalTokenWeights, triggerPriceUsd, triggerPriceValue, usdgSupply, entryMarkPrice])
 
   const getToLabel = () => {
     if (isSwap) { return "Receive" }
@@ -729,7 +743,7 @@ export default function SwapBox(props) {
       return "Shorting..."
     }
 
-    if (!isMarketOrder) return `Create ${orderType.toLowerCase()} order`;
+    if (!isMarketOrder) return `Create ${orderType.charAt(0) + orderType.substring(1).toLowerCase()} Order`;
 
     if (isSwap) {
       if (toUsdMax && toUsdMax.lt(fromUsdMin.mul(95).div(100))) {
@@ -1604,7 +1618,6 @@ export default function SwapBox(props) {
           existingPosition={existingPosition}
           existingLiquidationPrice={existingLiquidationPrice}
           displayLiquidationPrice={displayLiquidationPrice}
-          entryMarkPrice={entryMarkPrice}
           nextAveragePrice={nextAveragePrice}
           triggerPriceUsd={triggerPriceUsd}
           triggerRatio={triggerRatio}
@@ -1614,7 +1627,6 @@ export default function SwapBox(props) {
           isPendingConfirmation={isPendingConfirmation}
           fromUsdMin={fromUsdMin}
           toUsdMax={toUsdMax}
-          triggerRatioInverted={triggerRatioInverted}
           collateralTokenAddress={collateralTokenAddress}
           infoTokens={infoTokens}
           chainId={chainId}
