@@ -15,6 +15,7 @@ import {
   SLIPPAGE_BPS_KEY,
   TRIGGER_PREFIX_BELOW,
   TRIGGER_PREFIX_ABOVE,
+  MIN_PROFIT_TIME,
 	usePrevious,
 	formatAmountFree,
 	parseValue,
@@ -31,7 +32,8 @@ import {
   PROFIT_THRESHOLD_BASIS_POINTS,
   useLocalStorageSerializeKey,
   calculatePositionDelta,
-  getDeltaStr
+  getDeltaStr,
+  formatDateTime
 } from "../../Helpers"
 import { createDecreaseOrder, callContract } from "../../Api"
 import { getContract } from "../../Addresses"
@@ -124,10 +126,7 @@ export default function PositionSeller(props) {
       return ["-", "-"]
     }
 
-    const { pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta({
-      price: triggerPriceUsd,
-      ...position
-    })
+    const { pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta(triggerPriceUsd, position)
 
     const { deltaStr, deltaPercentageStr } = getDeltaStr({
       delta: pendingDelta,
@@ -137,7 +136,7 @@ export default function PositionSeller(props) {
     return [deltaStr, deltaPercentageStr]
   }, [position, triggerPriceUsd, orderType])
 
-  const [nextDelta, nextHasProfit, nextDeltaPercentage = bigNumberify(0)] = useMemo(() => {
+  const [nextDelta, nextHasProfit = bigNumberify(0)] = useMemo(() => {
     if (!position) {
       return [bigNumberify(0), false]
     }
@@ -150,10 +149,7 @@ export default function PositionSeller(props) {
       return [bigNumberify(0), false]
     }
 
-    const { delta, hasProfit, deltaPercentage } = calculatePositionDelta({
-      price: triggerPriceUsd,
-      ...position
-    })
+    const { delta, hasProfit, deltaPercentage } = calculatePositionDelta(triggerPriceUsd, position)
     return [delta, hasProfit, deltaPercentage]
   }, [position, orderType, triggerPriceUsd])
 
@@ -347,7 +343,6 @@ export default function PositionSeller(props) {
     if (error) { return error }
     if (orderType === STOP) {
       if (isSubmitting) return "Creating Order...";
-      if (nextHasProfit && nextDelta.eq(0)) return "Create Order without profit"
 
       if (needOrderBookApproval && isWaitingForPluginApproval) { return "Waiting for Approval" }
       if (isPluginApproving) { return "Enabling Orders..." }
@@ -460,19 +455,35 @@ export default function PositionSeller(props) {
     );
   }, [existingOrder, infoTokens])
 
-  function renderPnlWarning() {
-    if (orderType === MARKET) {
-      return null;
-    }
-    if (nextHasProfit || nextDeltaPercentage.lt(BASIS_POINTS_DIVISOR)) {
-      return null
-    }
+  function renderMinProfitWarning() {
+    if (profitPrice && nextDelta.eq(0) && nextHasProfit) {
+      const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME
 
-    // return (
-    //   <div className="Confirmation-box-warning">
-    //     WARNING: PNL
-    //   </div>
-    // );
+      if (orderType === MARKET) {
+        return (
+          <div className="Confirmation-box-warning">
+            WARNING: You have a&nbsp;
+            <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
+              pending profit
+            </a> of {deltaStr}. <br/>
+            Profit price: ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
+            Current movement: {formatAmount(priceMovementPercentage, 2, 2, true)}%.
+            This requirement expires on {formatDateTime(minProfitExpiration)}
+          </div>
+        )
+      }
+      return (
+        <div className="Confirmation-box-warning">
+          WARNING: You may have a&nbsp;
+          <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
+            pending profit
+          </a> of {deltaStr}. <br/>
+          Profit price: ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
+          Current movement: {formatAmount(priceMovementPercentage, 2, 2, true)}%.
+          This requirement expires on {formatDateTime(minProfitExpiration)}
+        </div>
+      )
+    }
   }
 
   function renderExecutionFee() {
@@ -508,19 +519,6 @@ export default function PositionSeller(props) {
     <div className="PositionEditor">
       {(position) &&
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
-          {(profitPrice && nextDelta.eq(0) && nextHasProfit) &&
-            <div className="Confirmation-box-warning">
-              WARNING: You {orderType === MARKET ? "have" : "will have"} a&nbsp;
-              <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
-                pending profit
-              </a> of {deltaStr}. <br/>
-              Profit price: ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
-              Current movement: {formatAmount(priceMovementPercentage, 2, 2, true)}%.
-              {orderType === STOP && " In case order will be executed in less than 24 hours after position was opened you will lose profit."}
-            </div>
-          }
-          {renderPnlWarning()}
-
           {flagOrdersEnabled &&
             <Tab options={orderTypes} className="Confirmation-box-tabs" option={orderType} optionLabels={orderOptionLabels} onChange={onOrderOptionChange} type="inline" />
           }
@@ -575,6 +573,7 @@ export default function PositionSeller(props) {
 	            </div>
 	          </div>
           }
+          {renderMinProfitWarning()}
           {renderExistingOrderWarning()}
           <div className="PositionEditor-info-box">
             <div className="PositionEditor-keep-leverage-settings">

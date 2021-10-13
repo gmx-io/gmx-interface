@@ -25,6 +25,8 @@ export const ARBITRUM = 42161
 export const DEFAULT_CHAIN_ID = ARBITRUM
 export const CHAIN_ID = DEFAULT_CHAIN_ID
 
+export const MIN_PROFIT_TIME = 60 * 60 * 24 // 24 hours
+
 const CHAIN_NAMES_MAP = {
   [MAINNET]: "BSC",
   [TESTNET]: "BSC Testnet",
@@ -633,13 +635,14 @@ export function getNextToAmount(chainId, fromAmount, fromTokenAddress, toTokenAd
   }
 }
 
-export function calculatePositionDelta({ size, collateral, isLong, averagePrice, price }) {
+export function calculatePositionDelta(price, { size, collateral, isLong, averagePrice, lastIncreasedTime }) {
   const priceDelta = averagePrice.gt(price) ? averagePrice.sub(price) : price.sub(averagePrice)
   let delta = size.mul(priceDelta).div(averagePrice)
   const pendingDelta = delta
 
+  const minProfitExpired = lastIncreasedTime + MIN_PROFIT_TIME < Date.now () / 1000
   const hasProfit = isLong ? price.gt(averagePrice) : price.lt(averagePrice)
-  if (hasProfit && delta.mul(BASIS_POINTS_DIVISOR).lte(size.mul(PROFIT_THRESHOLD_BASIS_POINTS))) {
+  if (!minProfitExpired && hasProfit && delta.mul(BASIS_POINTS_DIVISOR).lte(size.mul(PROFIT_THRESHOLD_BASIS_POINTS))) {
     delta = bigNumberify(0)
   }
 

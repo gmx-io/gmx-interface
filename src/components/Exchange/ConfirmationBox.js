@@ -7,13 +7,16 @@ import {
   LONG,
   SWAP_ORDER_EXECUTION_GAS_FEE,
   INCREASE_ORDER_EXECUTION_GAS_FEE,
+  MIN_PROFIT_TIME,
 	expandDecimals,
   getExchangeRate,
   formatAmount,
   useLocalStorageSerializeKey,
   getExchangeRateDisplay,
   DEFAULT_SLIPPAGE_AMOUNT,
-  SLIPPAGE_BPS_KEY
+  SLIPPAGE_BPS_KEY,
+  formatDateTime,
+  calculatePositionDelta
 } from '../../Helpers'
 
 import { BsArrowRight } from 'react-icons/bs'
@@ -178,26 +181,41 @@ export default function ConfirmationBox(props) {
 
   const renderMinProfitWarning = useCallback(() => {
     if (!isSwap) {
-      if (hasExistingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)) {
-        return (
-          <div className="Confirmation-box-warning">
-            WARNING: You have a&nbsp;
-            <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
-              pending profit
-            </a> of {existingPosition.deltaStr}, this will be reduced to zero if you increase your position now.
-          </div>
-        );
+      if (hasExistingPosition) {
+        const minProfitExpiration = existingPosition.lastIncreasedTime + MIN_PROFIT_TIME
+        if (isMarketOrder && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)) {
+          return (
+            <div className="Confirmation-box-warning">
+              WARNING: You have a&nbsp;
+              <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
+                pending profit
+              </a> of {existingPosition.deltaStr}, this will be reduced to zero if you increase your position now. This requirement expires on {formatDateTime(minProfitExpiration)}
+            </div>
+          );
+        }
+        if (!isMarketOrder) {
+          const { delta, hasProfit } = calculatePositionDelta(triggerPriceUsd, existingPosition)
+          if (hasProfit && delta.eq(0)) {
+            return <div className="Confirmation-box-warning">
+              WARNING: You may have a&nbsp;
+              <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
+                pending profit
+              </a> of {existingPosition.deltaStr}, this will be reduced to zero if order is executed before {formatDateTime(minProfitExpiration)}
+            </div>
+          }
+        }
       }
+
       return (
         <div className="Confirmation-box-warning">
           NOTE: A minimum price change of&nbsp;
           <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
             1.5%
-          </a> is required for a position to be in profit.
+          </a> is required for a position to be in profit. This requirement only lasts for {parseInt(MIN_PROFIT_TIME / 60 / 60)} hours position is opened or increased
         </div>
       );
     }
-  }, [isSwap, hasExistingPosition, existingPosition])
+  }, [isSwap, hasExistingPosition, existingPosition, isMarketOrder, triggerPriceUsd])
 
   const renderExistingOrderWarning = useCallback(() => {
     if (isSwap || !existingOrder) {

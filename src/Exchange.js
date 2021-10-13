@@ -77,7 +77,7 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
       cumulativeFundingRate: collateralToken.cumulativeFundingRate,
       hasRealisedProfit: positionData[i * propsLength + 4].eq(1),
       realisedPnl: positionData[i * propsLength + 5],
-      lastIncreasedTime: positionData[i * propsLength + 6],
+      lastIncreasedTime: positionData[i * propsLength + 6].toNumber(),
       hasProfit: positionData[i * propsLength + 7].eq(1),
       delta: positionData[i * propsLength + 8],
       markPrice: isLong[i] ? indexToken.minPrice : indexToken.maxPrice

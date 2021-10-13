@@ -461,10 +461,7 @@ export default function SwapBox(props) {
       nextDelta = existingPosition.delta
       nextHasProfit = existingPosition.hasProfit
     } else {
-      const data = calculatePositionDelta({
-        price: triggerPriceUsd || bigNumberify(0),
-        ...existingPosition
-      })
+      const data = calculatePositionDelta(triggerPriceUsd || bigNumberify(0), existingPosition)
       nextDelta = data.delta
       nextHasProfit = data.hasProfit
     }
