@@ -215,7 +215,8 @@ export default function BeginAccountTransfer(props) {
       <div className="Page-title-section">
         <div className="Page-title">Transfer Account</div>
         <div className="Page-description">
-          This will transfer all GMX, esGMX, GLP and Multiplier Points to your new account.<br/>
+          Please only use this for full account transfers.<br/>
+          This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<br/>
           Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<br/>
           Transfers are one-way, you will not be able to transfer staked tokens back to the sending account.
         </div>
