@@ -38,9 +38,9 @@ function getPositionForOrder(order, positionsMap) {
 }
 
 export default function OrdersList(props) {
-  const { 
-    active, 
-    library, 
+  const {
+    active,
+    library,
     setPendingTxns,
     pendingTxns,
     infoTokens,
@@ -70,7 +70,7 @@ export default function OrdersList(props) {
 
   const onCancelClick = useCallback(order => {
     let func;
-    if (order.swapOption === SWAP) { 
+    if (order.swapOption === SWAP) {
       func = cancelSwapOrder;
     } else if (order.orderType === LIMIT) {
       func = cancelIncreaseOrder;
@@ -80,8 +80,8 @@ export default function OrdersList(props) {
 
     return func(chainId, library, order.index, {
       successMsg: "Order cancelled",
-      failMsg: "Order cancel failed",
-      sentMsg: "Cancel order",
+      failMsg: "Cancel failed",
+      sentMsg: "Cancel submitted",
       pendingTxns,
       setPendingTxns
     }).then(() => {
@@ -186,7 +186,7 @@ export default function OrdersList(props) {
       if (order.orderType === STOP) {
         const positionForOrder = getPositionForOrder(order, positionsMap)
         if (!positionForOrder) {
-          error = "There is no open position for the order, it can't be executed"  
+          error = "There is no open position for the order, it can't be executed"
         } else if (positionForOrder.size.lt(order.sizeDelta)) {
           error = "The order size is bigger than position, it can't be executed"
         }
@@ -272,7 +272,7 @@ export default function OrdersList(props) {
       if (order.orderType === STOP) {
         const positionForOrder = getPositionForOrder(order, positionsMap)
         if (!positionForOrder) {
-          error = "There is no open position for the order, it can't be executed"  
+          error = "There is no open position for the order, it can't be executed"
         } else if (positionForOrder.size.lt(order.sizeDelta)) {
           error = "The order size is bigger than position, it can't be executed"
         }
@@ -327,11 +327,11 @@ export default function OrdersList(props) {
           {renderSmallList()}
          </tbody>
       </table>
-      {editingOrder && 
+      {editingOrder &&
         <OrderEditor
           order={editingOrder}
-          setEditingOrder={setEditingOrder} 
-          infoTokens={infoTokens} 
+          setEditingOrder={setEditingOrder}
+          infoTokens={infoTokens}
           updateSwapOrder={updateSwapOrder}
           updateIncreaseOrder={updateIncreaseOrder}
           updateDecreaseOrder={updateDecreaseOrder}
@@ -346,4 +346,3 @@ export default function OrdersList(props) {
     </React.Fragment>
 	);
 }
-

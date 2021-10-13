@@ -624,11 +624,26 @@ export default function PositionSeller(props) {
                 </div>}
               </div>
             </div>}
+            {orderType === STOP && <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Trigger Price</div>
+              <div className="align-right">
+                {!triggerPriceUsd && '-'}
+                {triggerPriceUsd &&
+                  `${triggerPricePrefix} ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}`
+                }
+              </div>
+            </div>}
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Mark Price</div>
+              <div className="align-right">
+                ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
+              </div>
+            </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">Liq. Price</div>
               <div className="align-right">
-                {isClosing && "-"}
-                {!isClosing && <div>
+                {(isClosing && orderType !== STOP) && "-"}
+                {(!isClosing || orderType === STOP) && <div>
                   {!nextLiquidationPrice && <div>
                     {`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}
                   </div>}
@@ -642,21 +657,6 @@ export default function PositionSeller(props) {
                 </div>}
               </div>
             </div>
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Mark Price</div>
-              <div className="align-right">
-                ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
-              </div>
-            </div>
-            {orderType === STOP && <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Price</div>
-              <div className="align-right">
-                {!triggerPriceUsd && '-'}
-                {triggerPriceUsd &&
-                  `${triggerPricePrefix} ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}`
-                }
-              </div>
-            </div>}
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">PnL</div>
               <div className="align-right">
