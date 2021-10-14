@@ -77,6 +77,8 @@ export const SWAP_OPTIONS = [LONG, SHORT, SWAP]
 export const DEFAULT_SLIPPAGE_AMOUNT = 20;
 
 export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3"
+export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage"
+export const SHOULD_SHOW_ORDER_LINES_KEY = "Exchange-swap-should-show-order-lines"
 
 const ORDER_EXECUTION_GAS_PRICE = expandDecimals(1, 9) // 1 gwei
 
@@ -183,7 +185,7 @@ export function getServerBaseUrl(chainId) {
     // return "http://localhost:8080"
     return "https://gambit-server-devnet.uc.r.appspot.com"
   }
-  if (document.location.hostname.includes("deploy-preview")) { 
+  if (document.location.hostname.includes("deploy-preview")) {
     return "https://gambit-server-devnet.uc.r.appspot.com"
   }
   if (chainId === MAINNET) {
@@ -635,9 +637,12 @@ export function getNextToAmount(chainId, fromAmount, fromTokenAddress, toTokenAd
   }
 }
 
-export function calculatePositionDelta(price, { size, collateral, isLong, averagePrice, lastIncreasedTime }) {
+export function calculatePositionDelta(price, { size, collateral, isLong, averagePrice, lastIncreasedTime }, sizeDelta) {
+  if (!sizeDelta) {
+    sizeDelta = size
+  }
   const priceDelta = averagePrice.gt(price) ? averagePrice.sub(price) : price.sub(averagePrice)
-  let delta = size.mul(priceDelta).div(averagePrice)
+  let delta = sizeDelta.mul(priceDelta).div(averagePrice)
   const pendingDelta = delta
 
   const minProfitExpired = lastIncreasedTime + MIN_PROFIT_TIME < Date.now () / 1000
