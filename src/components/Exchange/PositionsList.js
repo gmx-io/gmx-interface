@@ -112,8 +112,9 @@ export default function PositionsList(props) {
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="App-card-row">
-                  <div className="label">Side</div>
+                  <div className="label">Leverage</div>
                   <div>
+                    {formatAmount(position.leverage, 4, 2, true)}x&nbsp;
                     <span className={cx("Exchange-list-side", { positive: position.isLong, negative: !position.isLong })}>
                       {position.isLong ? "Long" : "Short" }
                     </span>
@@ -126,23 +127,17 @@ export default function PositionsList(props) {
                   </div>
                 </div>
                 <div className="App-card-row">
+                  <div className="label">Collateral</div>
+                  <div>
+                     ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                  </div>
+                </div>
+                <div className="App-card-row">
                   <div className="label">PnL</div>
                   <div>
                     <span className={cx({ positive: position.hasProfit && position.pendingDelta.gt(0), negative: !position.hasProfit && position.pendingDelta.gt(0) })}>
                       {position.deltaStr} ({position.deltaPercentageStr})
                     </span>
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Leverage</div>
-                  <div>
-                     {formatAmount(position.leverage, 4, 2, true)}x
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Collateral</div>
-                  <div>
-                     ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
                   </div>
                 </div>
                 <div className="App-card-row">
