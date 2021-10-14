@@ -115,27 +115,6 @@ export default function PositionSeller(props) {
   const [triggerPriceValue, setTriggerPriceValue] = useState('');
   const triggerPriceUsd = orderType === MARKET ? 0 : parseValue(triggerPriceValue, USD_DECIMALS);
 
-  const [deltaStr, deltaPercentageStr] = useMemo(() => {
-    if (!position) {
-      return ["-", "-"]
-    }
-    if (orderType !== STOP) {
-      return [position.deltaStr, position.deltaPercentageStr]
-    }
-    if (!triggerPriceUsd) {
-      return ["-", "-"]
-    }
-
-    const { pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta(triggerPriceUsd, position)
-
-    const { deltaStr, deltaPercentageStr } = getDeltaStr({
-      delta: pendingDelta,
-      deltaPercentage: pendingDeltaPercentage,
-      hasProfit
-  })
-    return [deltaStr, deltaPercentageStr]
-  }, [position, triggerPriceUsd, orderType])
-
   const [nextDelta, nextHasProfit = bigNumberify(0)] = useMemo(() => {
     if (!position) {
       return [bigNumberify(0), false]
@@ -301,6 +280,34 @@ export default function PositionSeller(props) {
       }
     }
   }
+
+  const [deltaStr, deltaPercentageStr] = useMemo(() => {
+    if (!position) {
+      return ["-", "-"]
+    }
+    if (orderType !== STOP) {
+      const { pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta(position.markPrice, position, fromAmount)
+      const { deltaStr, deltaPercentageStr } = getDeltaStr({
+        delta: pendingDelta,
+        deltaPercentage: pendingDeltaPercentage,
+        hasProfit
+      })
+      return [deltaStr, deltaPercentageStr]
+    }
+    if (!triggerPriceUsd) {
+      return ["-", "-"]
+    }
+
+    const { pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta(triggerPriceUsd, position, fromAmount)
+
+    const { deltaStr, deltaPercentageStr } = getDeltaStr({
+      delta: pendingDelta,
+      deltaPercentage: pendingDeltaPercentage,
+      hasProfit
+    })
+    return [deltaStr, deltaPercentageStr]
+  }, [position, triggerPriceUsd, orderType, fromAmount])
+
 
   const getError = () => {
     if (!fromAmount) { return "Enter an amount" }
@@ -581,7 +588,46 @@ export default function PositionSeller(props) {
 								<span className="muted">Keep leverage at {formatAmount(position.leverage, 4, 2)}x</span>
 							</Checkbox>
             </div>
+            {orderType === STOP && <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Trigger Price</div>
+              <div className="align-right">
+                {!triggerPriceUsd && '-'}
+                {triggerPriceUsd &&
+                  `${triggerPricePrefix} ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}`
+                }
+              </div>
+            </div>}
+            <div className="Exchange-info-row top-line">
+              <div className="Exchange-info-label">Entry Price</div>
+              <div className="align-right">
+                ${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}
+              </div>
+            </div>
             <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Mark Price</div>
+              <div className="align-right">
+                ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
+              </div>
+            </div>
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Liq. Price</div>
+              <div className="align-right">
+                {(isClosing && orderType !== STOP) && "-"}
+                {(!isClosing || orderType === STOP) && <div>
+                  {!nextLiquidationPrice && <div>
+                    {`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}
+                  </div>}
+                  {nextLiquidationPrice && <div>
+                    <div className="inline-block muted">
+                      ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
+                      <BsArrowRight className="transition-arrow" />
+                    </div>
+                    ${formatAmount(nextLiquidationPrice, USD_DECIMALS, 2, true)}
+                  </div>}
+                </div>}
+              </div>
+            </div>
+            <div className="Exchange-info-row top-line">
               <div className="Exchange-info-label">Size</div>
               <div className="align-right">
                 {position && position.size && fromAmount && <div>
@@ -627,46 +673,13 @@ export default function PositionSeller(props) {
                 </div>}
               </div>
             </div>}
-            {orderType === STOP && <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Trigger Price</div>
-              <div className="align-right">
-                {!triggerPriceUsd && '-'}
-                {triggerPriceUsd &&
-                  `${triggerPricePrefix} ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}`
-                }
-              </div>
-            </div>}
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Mark Price</div>
-              <div className="align-right">
-                ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
-              </div>
-            </div>
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Liq. Price</div>
-              <div className="align-right">
-                {(isClosing && orderType !== STOP) && "-"}
-                {(!isClosing || orderType === STOP) && <div>
-                  {!nextLiquidationPrice && <div>
-                    {`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}
-                  </div>}
-                  {nextLiquidationPrice && <div>
-                    <div className="inline-block muted">
-                      ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
-                      <BsArrowRight className="transition-arrow" />
-                    </div>
-                    ${formatAmount(nextLiquidationPrice, USD_DECIMALS, 2, true)}
-                  </div>}
-                </div>}
-              </div>
-            </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">PnL</div>
               <div className="align-right">
                 {deltaStr} ({deltaPercentageStr})
               </div>
             </div>
-            <div className="Exchange-info-row">
+            <div className="Exchange-info-row top-line">
               <div className="Exchange-info-label">Borrow Fee</div>
               <div className="align-right">
                 ${formatAmount(fundingFee, USD_DECIMALS, 2, true)}
