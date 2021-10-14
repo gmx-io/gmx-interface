@@ -637,9 +637,12 @@ export function getNextToAmount(chainId, fromAmount, fromTokenAddress, toTokenAd
   }
 }
 
-export function calculatePositionDelta(price, { size, collateral, isLong, averagePrice, lastIncreasedTime }) {
+export function calculatePositionDelta(price, { size, collateral, isLong, averagePrice, lastIncreasedTime }, sizeDelta) {
+  if (!sizeDelta) {
+    sizeDelta = size
+  }
   const priceDelta = averagePrice.gt(price) ? averagePrice.sub(price) : price.sub(averagePrice)
-  let delta = size.mul(priceDelta).div(averagePrice)
+  let delta = sizeDelta.mul(priceDelta).div(averagePrice)
   const pendingDelta = delta
 
   const minProfitExpired = lastIncreasedTime + MIN_PROFIT_TIME < Date.now () / 1000
