@@ -316,6 +316,8 @@
 
 .PositionEditor .Modal-content {
   width: 23rem;
+  max-height: 80vh;
+  overflow: auto;
 }
 
 .PositionEditor .Tab {
@@ -343,6 +345,10 @@
   width: 100%;
 }
 
+.Exchange-list .App-card {
+  margin-bottom: 1rem;
+}
+
 .Exchange-list-item-error {
   color: #fa3c58;
   margin-top: 0.3rem;
@@ -368,6 +374,9 @@ button.Exchange-list-action:hover {
 
 table.Exchange-list {
   border-collapse: collapse;
+}
+
+table.Exchange-list.Exchange-positions-list td {
 }
 
 table.Exchange-list th, table.Exchange-list td {
@@ -404,7 +413,6 @@ table.Exchange-list tr.Exchange-list-header th {
 }
 
 table.Exchange-list th {
-  opacity: 0.7;
 }
 
 .Exchange-leverage-box {
@@ -674,12 +682,10 @@ table.Exchange-list-small th, table.Exchange-list-small td {
   width: 2.5rem;
   text-align: center;
   margin-left: 0.5rem;
-  font-size: 0.8rem;
-  opacity: 0.7;
 }
 
-.Exchange-list-leverage-container {
-  display: inline-block;
+.Exchange-list-muted {
+  font-size: 0.9rem;
 }
 
 .Exchange-list-card .Exchange-list-side {
@@ -695,10 +701,6 @@ table.Exchange-list-small th, table.Exchange-list-small td {
 
 .Confirmation-box {
   font-size: 20px;
-}
-
-.Confirmation-box-tabs {
-  margin-top: 0.5rem;
 }
 
 .Confirmation-box-main {
@@ -737,10 +739,6 @@ table.Exchange-list-small th, table.Exchange-list-small td {
 }
 
 @media (max-width: 1500px) {
-  .Exchange-list-leverage-container {
-    display: block;
-  }
-
   .Exchange-list-leverage {
     margin-top: 0.3rem;
     margin-left: 0;
@@ -803,10 +801,6 @@ table.Exchange-list-small th, table.Exchange-list-small td {
 
   .Exchange-list-leverage {
     margin-top: 0;
-  }
-
-  .Exchange-list-extra-info {
-    display: none;
   }
 
   .Exchange-swap-box .TokenSelector .Modal {
