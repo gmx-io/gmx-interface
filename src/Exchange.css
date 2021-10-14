@@ -699,10 +699,6 @@ table.Exchange-list-small th, table.Exchange-list-small td {
   font-size: 20px;
 }
 
-.Confirmation-box-tabs {
-  margin-top: 0.5rem;
-}
-
 .Confirmation-box-main {
   text-align: center;
   display: flex;
