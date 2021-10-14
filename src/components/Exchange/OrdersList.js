@@ -84,10 +84,8 @@ export default function OrdersList(props) {
       sentMsg: "Cancel submitted",
       pendingTxns,
       setPendingTxns
-    }).then(() => {
-      updateOrders(undefined, true);
     });
-  }, [library, pendingTxns, setPendingTxns, updateOrders, chainId])
+  }, [library, pendingTxns, setPendingTxns, chainId])
 
   const onEditClick = useCallback((order) => {
     setEditingOrder(order);

@@ -947,15 +947,6 @@ export function getProvider(library, chainId) {
   return new ethers.providers.JsonRpcProvider(provider)
 }
 
-const ordersFetcher = (library, contractInfo, ...params) => (active, chainId, address, method) => {
-  if (!ethers.utils.isAddress(address)) {
-    return;
-  }
-  const provider = getProvider(library, chainId)
-  const contract = new ethers.Contract(address, contractInfo.abi, provider)
-  return contract[method](...params).catch(console.error)
-}
-
 export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
   // eslint-disable-next-line
   const [id, chainId, arg0, arg1, ...params] = args
@@ -1051,7 +1042,7 @@ export const formatArrayAmount = (arr, index, tokenDecimals, displayDecimals, us
   return formatAmount(arr[index], tokenDecimals, displayDecimals, useCommas)
 }
 
-function _parseOrdersData(ordersData, account, indices, extractor, uintPropsLength, addressPropsLength) {
+function _parseOrdersData(ordersData, account, indexes, extractor, uintPropsLength, addressPropsLength) {
   if (!ordersData || ordersData.length === 0) {
     return [];
   }
@@ -1071,7 +1062,7 @@ function _parseOrdersData(ordersData, account, indices, extractor, uintPropsLeng
     }
 
     const order = extractor(sliced);
-    order.index = indices[i];
+    order.index = indexes[i];
     order.account = account;
     orders.push(order);
   }
@@ -1079,7 +1070,7 @@ function _parseOrdersData(ordersData, account, indices, extractor, uintPropsLeng
   return orders;
 }
 
-function parseDecreaseOrdersData(decreaseOrdersData, account, indices) {
+function parseDecreaseOrdersData(decreaseOrdersData, account, indexes) {
   const extractor = sliced => {
     const swapOption = sliced[4].toString() === "1" ? LONG : SHORT
     return {
@@ -1093,10 +1084,10 @@ function parseDecreaseOrdersData(decreaseOrdersData, account, indices) {
       orderType: STOP
     }
   }
-  return _parseOrdersData(decreaseOrdersData, account, indices, extractor, 5, 2)
+  return _parseOrdersData(decreaseOrdersData, account, indexes, extractor, 5, 2)
 }
 
-function parseIncreaseOrdersData(increaseOrdersData, account, indices) {
+function parseIncreaseOrdersData(increaseOrdersData, account, indexes) {
   const extractor = sliced => {
     const swapOption = sliced[5].toString() === "1" ? LONG : SHORT
     return {
@@ -1111,10 +1102,10 @@ function parseIncreaseOrdersData(increaseOrdersData, account, indices) {
       orderType: LIMIT
     }
   }
-  return _parseOrdersData(increaseOrdersData, account, indices, extractor, 5, 3)
+  return _parseOrdersData(increaseOrdersData, account, indexes, extractor, 5, 3)
 }
 
-function parseSwapOrdersData(swapOrdersData, account, indices) {
+function parseSwapOrdersData(swapOrdersData, account, indexes) {
   if (!swapOrdersData || !swapOrdersData.length) {
     return [];
   }
@@ -1132,121 +1123,102 @@ function parseSwapOrdersData(swapOrdersData, account, indices) {
       orderType: triggerAboveThreshold ? STOP : LIMIT
     }
   }
-  return _parseOrdersData(swapOrdersData, account, indices, extractor, 4, 3)
-}
-
-function _useOrdersByType(shouldRequest, chainId, method, indexProp, parseFunc, indices = []) {
-  const { active, library, account } = useWeb3React();
-  const LIMIT = 10;
-  const orderBookReaderAddress = getContract(chainId, "OrderBookReader")
-  const getKey = (method, index) => {
-    if (!(active && account && index && index.gt(0))) {
-      return false;
-    }
-    // using `index.toString()` because BigNumber(0) !== BigNumber(0)
-    // and useSWR tries to retrieve data again
-    return [active, chainId, orderBookReaderAddress, method, orderBookAddress, account, index.toString()];
-  }
-
-  const getIndicesRange = (to, from) => {
-    const _indices = []
-    from = from || Math.max(to - LIMIT, 0)
-    for (let i = to - 1; i >= from; i--) {
-      _indices.push(i);
-    }
-    return _indices;
-  }
-
-  const orderBookAddress = getContract(chainId, "OrderBook")
-
-  const { data: currentOrderIndex = bigNumberify(0), mutate: updateOrderIndex } = useSWR(
-    shouldRequest ? [active, chainId, orderBookAddress, indexProp, account] : false,
-    { fetcher: fetcher(library, OrderBook) }
-  );
-
-  if (indices.length === 0) {
-    indices = getIndicesRange(currentOrderIndex)
-  } else if (indices[indices.length - 1] < currentOrderIndex - 1) {
-    indices = [...indices, ...getIndicesRange(currentOrderIndex, indices[indices.length - 1] + 1)].sort((a, b) => b - a)
-  }
-
-  const ordersKey = getKey(method, currentOrderIndex);
-  const { data: ordersData, mutate: updateOrders } = useSWR(ordersKey, {
-    fetcher: ordersFetcher(library, OrderBookReader, orderBookAddress, account, indices)
-  })
-  const orders = parseFunc(ordersData, account, indices)
-
-  return [
-    orders,
-    (orders, shouldRevalidate) => {
-      updateOrderIndex(undefined, shouldRevalidate);
-      updateOrders(undefined, shouldRevalidate)
-    }
-  ]
+  return _parseOrdersData(swapOrdersData, account, indexes, extractor, 4, 3)
 }
 
 export function useOrders(flagOrdersEnabled, overrideAccount) {
-  const { account: connectedAccount, active } = useWeb3React()
+  const { active, library, account: connectedAccount } = useWeb3React();
   const account = overrideAccount || connectedAccount
 
   const { chainId } = useChainId()
-  const ordersIndicesUrl = `${getServerBaseUrl(chainId)}/orders_indices?account=${account}`
   const shouldRequest = active && account && flagOrdersEnabled
 
-  const { data: indicesGroups = {} } = useSWR(shouldRequest ? ordersIndicesUrl : undefined, {
-    dedupingInterval: 60000,
-    fetcher: (...args) => {
-      return fetch(...args)
-        .then(res => {
-          const json = res.json()
-          for (const key of json) {
-            json[key] = json[key].map(deserialize)
-          }
-          return json
-        })
+  const orderBookAddress = getContract(chainId, "OrderBook")
+  const orderBookReaderAddress = getContract(chainId, "OrderBookReader")
+  const key = shouldRequest ? [active, chainId, orderBookAddress, account] : false
+  const { data: orders = [], mutate: updateOrders } = useSWR(key, {
+    dedupingInterval: 5000,
+    fetcher: async (active, chainId, orderBookAddress, account) => {
+      const provider = getProvider(library, chainId);
+      const orderBookContract = new ethers.Contract(orderBookAddress, OrderBook.abi, provider)
+      const orderBookReaderContract = new ethers.Contract(orderBookReaderAddress, OrderBookReader.abi, provider)
+
+      const fetchIndexesFromServer = () => {
+        const ordersIndexesUrl = `${getServerBaseUrl(chainId)}/orders_indices?account=${account}`
+        return fetch(ordersIndexesUrl)
+          .then(async res => {
+            const json = await res.json()
+            const ret = {}
+            for (const key of Object.keys(json)) {
+              ret[key.toLowerCase()] = json[key].map(val => parseInt(val.value))
+            }
+
+            return ret
+          })
+          .catch(() => ({ swap: [], increase: [], decrease: [] }))
+      }
+
+      const fetchLastIndex = async (type) => {
+        const method = type.toLowerCase() + "OrdersIndex"
+        return await orderBookContract[method](account).then(res => bigNumberify(res._hex).toNumber())
+      }
+
+      const fetchLastIndexes = async () => {
+        const [swap, increase, decrease] = await Promise.all([
+          fetchLastIndex("swap"),
+          fetchLastIndex("increase"),
+          fetchLastIndex("decrease")
+        ])
+
+        return { swap, increase, decrease }
+      }
+
+      const getRange = (to, from) => {
+        const LIMIT = 10
+        const _indexes = []
+        from = from || Math.max(to - LIMIT, 0)
+        for (let i = to - 1; i >= from; i--) {
+          _indexes.push(i);
+        }
+        return _indexes;
+      }
+
+      const getIndexes = (knownIndexes, lastIndex) => {
+        if (knownIndexes.length === 0) {
+          return getRange(lastIndex)
+        }
+        return [
+          ...knownIndexes,
+          ...getRange(lastIndex, knownIndexes[knownIndexes.length - 1] + 1).sort((a, b) => b - a)
+        ]
+      }
+
+      const getOrders = async (method, knownIndexes, lastIndex, parseFunc) => {
+        const indexes = getIndexes(knownIndexes, lastIndex)
+        const ordersData = await orderBookReaderContract[method](orderBookAddress, account, indexes) 
+        const orders = parseFunc(ordersData, account, indexes)
+        return orders
+      }
+
+      const [serverIndexes, lastIndexes] = await Promise.all([
+        fetchIndexesFromServer(),
+        fetchLastIndexes()
+      ])
+
+      try {
+        const [swapOrders = [], increaseOrders = [], decreaseOrders = []] = await Promise.all([
+          getOrders("getSwapOrders", serverIndexes.swap, lastIndexes.swap, parseSwapOrdersData),
+          getOrders("getIncreaseOrders", serverIndexes.increase, lastIndexes.increase, parseIncreaseOrdersData),
+          getOrders("getDecreaseOrders", serverIndexes.decrease, lastIndexes.decrease, parseDecreaseOrdersData),
+        ])
+        return [...swapOrders, ...increaseOrders, ...decreaseOrders]
+      } catch (ex) {
+        console.error(ex)
+      }
     }
   })
 
-  const [swapOrders, updateSwapOrders] = _useOrdersByType(
-    shouldRequest,
-    chainId,
-    "getSwapOrders",
-    "swapOrdersIndex",
-    parseSwapOrdersData,
-    indicesGroups.Swap
-  )
-  const [increaseOrders, updateIncreaseOrders] = _useOrdersByType(
-    shouldRequest,
-    chainId,
-    "getIncreaseOrders",
-    "increaseOrdersIndex",
-    parseIncreaseOrdersData,
-    indicesGroups.Increase
-  )
-  const [decreaseOrders, updateDecreaseOrders] = _useOrdersByType(
-    shouldRequest,
-    chainId,
-    "getDecreaseOrders",
-    "decreaseOrdersIndex",
-    parseDecreaseOrdersData,
-    indicesGroups.Decrease
-  )
-
-  return [
-    [
-      ...swapOrders,
-      ...increaseOrders,
-      ...decreaseOrders
-    ],
-    // `_` arg to keep common signature for mutate functions...
-    (_, shouldRevalidate) => {
-      if (shouldRevalidate) {
-        updateSwapOrders(undefined, true)
-        updateIncreaseOrders(undefined, true)
-        updateDecreaseOrders(undefined, true)
-      }
-    }
-  ];
+  return [orders, updateOrders];
 }
 
 export const formatAmount = (amount, tokenDecimals, displayDecimals, useCommas, defaultValue) => {
