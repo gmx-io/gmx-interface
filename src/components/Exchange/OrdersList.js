@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
+import throttle from 'lodash/throttle'
 
 import {
   SWAP,
@@ -57,9 +58,9 @@ export default function OrdersList(props) {
   const [editingOrder, setEditingOrder] = useState(null);
 
   useEffect(() => {
-    function onBlock() {
-      updateOrders(undefined, true)
-    }
+    const onBlock = throttle(function () {
+      updateOrders()
+    }, 5000)
     if (active) {
       library.on('block', onBlock)
       return () => {
