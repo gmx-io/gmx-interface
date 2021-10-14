@@ -345,6 +345,10 @@
   width: 100%;
 }
 
+.Exchange-list .App-card {
+  margin-bottom: 1rem;
+}
+
 .Exchange-list-item-error {
   color: #fa3c58;
   margin-top: 0.3rem;
