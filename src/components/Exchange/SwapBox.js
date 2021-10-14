@@ -1224,7 +1224,7 @@ export default function SwapBox(props) {
   } else if (toUsdMax) {
     feesUsd = toUsdMax.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
 
-    const { feeBasisPoints } = getNextToAmount(chainId, fromAmount, collateralTokenAddress, indexTokenAddress, infoTokens, undefined, undefined, usdgSupply, totalTokenWeights)
+    const { feeBasisPoints } = getNextToAmount(chainId, fromAmount, fromTokenAddress, collateralTokenAddress, infoTokens, undefined, undefined, usdgSupply, totalTokenWeights)
     if (feeBasisPoints) {
       const swapFees = fromUsdMin.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR)
       feesUsd = feesUsd.add(swapFees)
