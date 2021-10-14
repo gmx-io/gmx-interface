@@ -349,6 +349,10 @@
   width: 100%;
 }
 
+.Exchange-list .App-card {
+  margin-bottom: 1rem;
+}
+
 .Exchange-list.small {
   display: none;
 }
