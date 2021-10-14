@@ -1,18 +1,45 @@
 import React, { useEffect, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import {
+  USD_DECIMALS,
 	formatAmount,
-	bigNumberify,
-	USD_DECIMALS,
 	getExplorerUrl,
 	formatDateTime,
-  deserialize
+  deserialize,
+  getExchangeRateDisplay
 } from '../../Helpers'
 import {
   useTrades
 } from '../../Api'
 
 import './TradeHistory.css';
+
+function getPositionDisplay(increase, indexToken, isLong, sizeDelta) {
+  return `
+    ${increase ? "Increase" : "Decrease"} ${indexToken?.symbol || ""} ${isLong ? "Long" : "Short"}
+    ${increase ? "+" : "-"}${formatAmount(sizeDelta, USD_DECIMALS, 2, true)} USD`
+}
+
+function getOrderActionTitle(action) {
+  let actionDisplay
+  let typeDisplay
+
+  if (action.startsWith("Create")) {
+    actionDisplay = "Create"
+  } else if (action.startsWith("Cancel")) {
+    actionDisplay = "Cancel"
+  } else {
+    actionDisplay = "Update"
+  }
+
+  if (action.includes("Decrease")) {
+    typeDisplay = "Trigger"
+  } else {
+    typeDisplay = "Limit"
+  }
+
+  return `${actionDisplay} ${typeDisplay} Order`
+}
 
 export default function TradeHistory(props) {
   const {
@@ -37,68 +64,68 @@ export default function TradeHistory(props) {
     const params = JSON.parse(tradeData.params);
     const defaultMsg = ""
 
-    if (tradeData.action === "BuyUSDG") {
-      const token = getTokenInfo(infoTokens, params.token, true, nativeTokenAddress)
-      if (!token) {
-        return defaultMsg
-      }
-      return `Swap ${formatAmount(params.tokenAmount, token.decimals, 4, true)} ${token.symbol} for ${formatAmount(params.usdgAmount, 18, 4, true)} USDG`
-    }
+    // if (tradeData.action === "BuyUSDG") {
+    //   const token = getTokenInfo(infoTokens, params.token, true, nativeTokenAddress)
+    //   if (!token) {
+    //     return defaultMsg
+    //   }
+    //   return `Swap ${formatAmount(params.tokenAmount, token.decimals, 4, true)} ${token.symbol} for ${formatAmount(params.usdgAmount, 18, 4, true)} USDG`
+    // }
 
-    if (tradeData.action === "SellUSDG") {
-      const token = getTokenInfo(infoTokens, params.token, true, nativeTokenAddress)
-      if (!token) {
-        return defaultMsg
-      }
-      return `Swap ${formatAmount(params.usdgAmount, 18, 4, true)} USDG for ${formatAmount(params.tokenAmount, token.decimals, 4, true)} ${token.symbol}`
-    }
+    // if (tradeData.action === "SellUSDG") {
+    //   const token = getTokenInfo(infoTokens, params.token, true, nativeTokenAddress)
+    //   if (!token) {
+    //     return defaultMsg
+    //   }
+    //   return `Swap ${formatAmount(params.usdgAmount, 18, 4, true)} USDG for ${formatAmount(params.tokenAmount, token.decimals, 4, true)} ${token.symbol}`
+    // }
 
-    if (tradeData.action === "Swap") {
-      const tokenIn = getTokenInfo(infoTokens, params.tokenIn, true, nativeTokenAddress)
-      const tokenOut = getTokenInfo(infoTokens, params.tokenOut, true, nativeTokenAddress)
-      if (!tokenIn || !tokenOut) {
-        return defaultMsg
-      }
-      return `Swap ${formatAmount(params.amountIn, tokenIn.decimals, 4, true)} ${tokenIn.symbol} for ${formatAmount(params.amountOut, tokenOut.decimals, 4, true)} ${tokenOut.symbol}`
-    }
+    // if (tradeData.action === "Swap") {
+    //   const tokenIn = getTokenInfo(infoTokens, params.tokenIn, true, nativeTokenAddress)
+    //   const tokenOut = getTokenInfo(infoTokens, params.tokenOut, true, nativeTokenAddress)
+    //   if (!tokenIn || !tokenOut) {
+    //     return defaultMsg
+    //   }
+    //   return `Swap ${formatAmount(params.amountIn, tokenIn.decimals, 4, true)} ${tokenIn.symbol} for ${formatAmount(params.amountOut, tokenOut.decimals, 4, true)} ${tokenOut.symbol}`
+    // }
 
-    if (tradeData.action === "IncreasePosition-Long" || tradeData.action === "IncreasePosition-Short") {
-      const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress)
-      if (!indexToken) {
-        return defaultMsg
-      }
-      if (bigNumberify(params.sizeDelta).eq(0)) {
-        return `Deposit ${formatAmount(params.collateralDelta, USD_DECIMALS, 2, true)} USD into ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`
-      }
-      return `Increase ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}, +${formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)} USD, ${indexToken.symbol} Price: ${formatAmount(params.price, USD_DECIMALS, 2, true)} USD`
-    }
+    // if (tradeData.action === "IncreasePosition-Long" || tradeData.action === "IncreasePosition-Short") {
+    //   const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress)
+    //   if (!indexToken) {
+    //     return defaultMsg
+    //   }
+    //   if (bigNumberify(params.sizeDelta).eq(0)) {
+    //     return `Deposit ${formatAmount(params.collateralDelta, USD_DECIMALS, 2, true)} USD into ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`
+    //   }
+    //   return `Increase ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}, +${formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)} USD, ${indexToken.symbol} Price: ${formatAmount(params.price, USD_DECIMALS, 2, true)} USD`
+    // }
 
-    if (tradeData.action === "DecreasePosition-Long" || tradeData.action === "DecreasePosition-Short") {
-      const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress)
-      if (!indexToken) {
-        return defaultMsg
-      }
-      if (bigNumberify(params.sizeDelta).eq(0)) {
-        return `Withdraw ${formatAmount(params.collateralDelta, USD_DECIMALS, 2, true)} USD from ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`
-      }
-      return `
-        Decrease ${indexToken.symbol} ${params.isLong ? "Long" : "Short"},
-        -${formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)} USD,
-        ${indexToken.symbol} Price: ${formatAmount(params.price, USD_DECIMALS, 2, true)} USD
-      `
-    }
+    // if (tradeData.action === "DecreasePosition-Long" || tradeData.action === "DecreasePosition-Short") {
+    //   const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress)
+    //   if (!indexToken) {
+    //     return defaultMsg
+    //   }
+    //   if (bigNumberify(params.sizeDelta).eq(0)) {
+    //     return `Withdraw ${formatAmount(params.collateralDelta, USD_DECIMALS, 2, true)} USD from ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`
+    //   }
+    //   return `
+    //     Decrease ${indexToken.symbol} ${params.isLong ? "Long" : "Short"},
+    //     -${formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)} USD,
+    //     ${indexToken.symbol} Price: ${formatAmount(params.price, USD_DECIMALS, 2, true)} USD
+    //   `
+    // }
 
-    if (tradeData.action === "LiquidatePosition-Long" || tradeData.action === "LiquidatePosition-Short") {
-      const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress)
-      if (!indexToken) {
-        return defaultMsg
-      }
-      return `
-        Liquidated ${indexToken.symbol} ${params.isLong ? "Long" : "Short"},
-        ${formatAmount(params.size, USD_DECIMALS, 2, true)} USD,
-        ${indexToken.symbol} Price: ${formatAmount(params.markPrice, USD_DECIMALS, 2, true)} USD
-      `
-    }
+    // if (tradeData.action === "LiquidatePosition-Long" || tradeData.action === "LiquidatePosition-Short") {
+    //   const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress)
+    //   if (!indexToken) {
+    //     return defaultMsg
+    //   }
+    //   return `
+    //     Liquidated ${indexToken.symbol} ${params.isLong ? "Long" : "Short"},
+    //     ${formatAmount(params.size, USD_DECIMALS, 2, true)} USD,
+    //     ${indexToken.symbol} Price: ${formatAmount(params.markPrice, USD_DECIMALS, 2, true)} USD
+    //   `
+    // }
 
     if (["ExecuteIncreaseOrder", "ExecuteDecreaseOrder"].includes(tradeData.action)) {
       const order = deserialize(params.order);
@@ -108,11 +135,23 @@ export default function TradeHistory(props) {
       }
       const typeDisplay = order.type === "Increase" ? "Limit" : "Trigger";
       const longShortDisplay = order.isLong ? "Long" : "Short";
-      const triggerPriceDisplay = formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)
+      const executionPriceDisplay = formatAmount(order.executionPrice, USD_DECIMALS, 2, true)
       const sizeDeltaDisplay = `${order.type === "Increase" ? "+" : "-"}${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}`;
       return `
         Execute ${typeDisplay} Order, ${indexToken.symbol} ${longShortDisplay},
-        ${sizeDeltaDisplay} USD, Price: ${triggerPriceDisplay} USD
+        ${sizeDeltaDisplay} USD, Price: ${executionPriceDisplay} USD
+      `
+    }
+
+    if (["CreateIncreaseOrder", "CancelIncreaseOrder", "UpdateIncreaseOrder", "CreateDecreaseOrder", "CancelDecreaseOrder", "UpdateDecreaseOrder"].includes(tradeData.action)) {
+      const order = deserialize(params.order);
+      const indexToken = getTokenInfo(infoTokens, order.indexToken)
+      const increase = tradeData.action.includes("Increase")
+      const priceDisplay = `${order.triggerAboveThreshold ? ">" : "<"} ${formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}`
+      return `
+        ${getOrderActionTitle(tradeData.action)}, 
+        ${getPositionDisplay(increase, indexToken, order.isLong, order.sizeDelta)},
+        Price: ${priceDisplay}
       `
     }
 
@@ -127,6 +166,19 @@ export default function TradeHistory(props) {
       return `
         Execute Limit Order, Swap ${fromAmountDisplay} ${fromToken.symbol} for ${toToken.symbol}
       `;
+    }
+
+    if (["CreateSwapOrder", "UpdateSwapOrder", "CancelSwapOrder"].includes(tradeData.action)) {
+      const order = deserialize(params.order);
+      const fromToken = getTokenInfo(infoTokens, order.path[0])
+      const amountInDisplay = fromToken ? formatAmount(order.amountIn, fromToken.decimals, fromToken.isStable ? 2 : 4, true) : ""
+      const toToken = getTokenInfo(infoTokens, order.path[order.path.length - 1])
+      const minOutDisplay = toToken ? formatAmount(order.minOut, toToken.decimals, toToken.isStable ? 2 : 4, true) : ""
+
+      return `
+        ${getOrderActionTitle(tradeData.action)},
+        Swap ${amountInDisplay} ${fromToken?.symbol || ""} for ${minOutDisplay} ${toToken?.symbol || ""},
+        Price: ${getExchangeRateDisplay(order.triggerRatio, fromToken, toToken)}`
     }
   }, [getTokenInfo, infoTokens, nativeTokenAddress])
 
