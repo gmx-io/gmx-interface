@@ -100,7 +100,7 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
       position.deltaStr = deltaStr
       position.deltaPercentageStr = deltaPercentageStr
 
-      position.netValue = position.hasProfit ? position.collateral.add(position.delta) : position.collateral.sub(position.delta)
+      position.netValue = position.hasProfit ? position.collateral.add(position.pendingDelta) : position.collateral.sub(position.pendingDelta)
     }
 
     position.leverage = getLeverage({
