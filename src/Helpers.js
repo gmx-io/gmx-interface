@@ -1205,12 +1205,11 @@ export function useOrders(flagOrdersEnabled, overrideAccount) {
         return orders
       }
 
-      const [serverIndexes, lastIndexes] = await Promise.all([
-        fetchIndexesFromServer(),
-        fetchLastIndexes()
-      ])
-
       try {
+        const [serverIndexes, lastIndexes] = await Promise.all([
+          fetchIndexesFromServer(),
+          fetchLastIndexes()
+        ])
         const [swapOrders = [], increaseOrders = [], decreaseOrders = []] = await Promise.all([
           getOrders("getSwapOrders", serverIndexes.swap, lastIndexes.swap, parseSwapOrdersData),
           getOrders("getIncreaseOrders", serverIndexes.increase, lastIndexes.increase, parseIncreaseOrdersData),
