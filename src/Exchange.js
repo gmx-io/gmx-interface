@@ -152,7 +152,7 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
   return { collateralTokens, indexTokens, isLong }
 }
 
-export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage, savedSlippageAmount, pendingTxns, setPendingTxns }) {
+export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage, savedSlippageAmount, pendingTxns, setPendingTxns, savedShouldShowOrderLines }) {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -382,6 +382,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
       swapOption={swapOption}
       flagOrdersEnabled={flagOrdersEnabled}
       chainId={chainId}
+      savedShouldShowOrderLines={savedShouldShowOrderLines}
     />
   }
 

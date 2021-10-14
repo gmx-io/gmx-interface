@@ -102,7 +102,7 @@ export default function ConfirmationBox(props) {
     for (const order of orders) {
       if (order.orderType !== LIMIT) continue
       const sameToken = order.indexToken === WETH.address
-        ? toToken.isNative 
+        ? toToken.isNative
         : order.indexToken === toToken.address
       if ((order.swapOption === LONG) === isLong
         && sameToken) {
@@ -211,7 +211,7 @@ export default function ConfirmationBox(props) {
           NOTE: A minimum price change of&nbsp;
           <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
             1.5%
-          </a> is required for a position to be in profit. This requirement only lasts for {parseInt(MIN_PROFIT_TIME / 60 / 60)} hours after a position is opened or increased
+          </a> is required for a position to be in profit.
         </div>
       );
     }
@@ -248,11 +248,11 @@ export default function ConfirmationBox(props) {
 
     return (
       <div className="Confirmation-box-main">
-        <span>Pay&nbsp;{formatAmount(fromAmount, fromToken.decimals, 4, true)} {fromToken.symbol} </span>
+        <span>Pay&nbsp;{formatAmount(fromAmount, fromToken.decimals, 4, true)} {fromToken.symbol} (${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)})</span>
         <div className="Confirmation-box-main-icon"></div>
         <div>
           {isLong ? 'Long' : 'Short'}&nbsp;
-          {formatAmount(toAmount, toToken.decimals, 4, true)} {toToken.symbol}
+          {formatAmount(toAmount, toToken.decimals, 4, true)} {toToken.symbol} (${formatAmount(toUsdMax, USD_DECIMALS, 2, true)})
         </div>
       </div>
     );

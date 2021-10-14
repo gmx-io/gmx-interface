@@ -249,7 +249,8 @@ export default function ExchangeTVChart(props) {
     toTokenAddress,
     infoTokens,
     flagOrdersEnabled,
-    chainId
+    chainId,
+    savedShouldShowOrderLines
   } = props
   const [currentChart, setCurrentChart] = useState();
   const [currentSeries, setCurrentSeries] = useState();
@@ -377,10 +378,9 @@ export default function ExchangeTVChart(props) {
     }
   }, [priceData, currentSeries, chartInited, scaleChart])
 
-  const shouldShowOrderLines = false
   useEffect(() => {
     const lines = [];
-    if (currentSeries && currentOrders && currentOrders.length && shouldShowOrderLines) {
+    if (currentSeries && currentOrders && currentOrders.length && savedShouldShowOrderLines) {
       currentOrders.forEach(order => {
         const indexToken = getToken(chainId, order.indexToken)
         let tokenSymbol
@@ -388,7 +388,7 @@ export default function ExchangeTVChart(props) {
           tokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol
         }
         const title = `${order.orderType === LIMIT ? "Increase" : "Decrease"} ${tokenSymbol} ${order.swapOption}`
-        const color = '#2d42fc'
+        const color = '#3a3e5e'
         lines.push(currentSeries.createPriceLine({
           price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, 2)),
           color,
@@ -399,7 +399,7 @@ export default function ExchangeTVChart(props) {
     return () => {
       lines.forEach(line => currentSeries.removePriceLine(line))
     }
-  }, [currentOrders, currentSeries, chainId, shouldShowOrderLines])
+  }, [currentOrders, currentSeries, chainId, savedShouldShowOrderLines])
 
   const candleStatsHtml = useMemo(() => {
     if (!priceData) {
