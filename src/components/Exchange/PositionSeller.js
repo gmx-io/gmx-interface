@@ -527,7 +527,7 @@ export default function PositionSeller(props) {
       {(position) &&
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           {flagOrdersEnabled &&
-            <Tab options={orderTypes} className="Confirmation-box-tabs" option={orderType} optionLabels={orderOptionLabels} onChange={onOrderOptionChange} type="inline" />
+            <Tab options={orderTypes} option={orderType} optionLabels={orderOptionLabels} onChange={onOrderOptionChange} />
           }
           <div className="Exchange-swap-section">
             <div className="Exchange-swap-section-top">
