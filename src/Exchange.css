@@ -372,6 +372,9 @@ table.Exchange-list {
   border-collapse: collapse;
 }
 
+table.Exchange-list.Exchange-positions-list td {
+}
+
 table.Exchange-list th, table.Exchange-list td {
   font-weight: normal;
   text-align: left;
@@ -406,7 +409,6 @@ table.Exchange-list tr.Exchange-list-header th {
 }
 
 table.Exchange-list th {
-  opacity: 0.7;
 }
 
 .Exchange-leverage-box {
@@ -676,12 +678,10 @@ table.Exchange-list-small th, table.Exchange-list-small td {
   width: 2.5rem;
   text-align: center;
   margin-left: 0.5rem;
-  font-size: 0.8rem;
-  opacity: 0.7;
 }
 
-.Exchange-list-leverage-container {
-  display: inline-block;
+.Exchange-list-muted {
+  font-size: 0.9rem;
 }
 
 .Exchange-list-card .Exchange-list-side {
@@ -735,10 +735,6 @@ table.Exchange-list-small th, table.Exchange-list-small td {
 }
 
 @media (max-width: 1500px) {
-  .Exchange-list-leverage-container {
-    display: block;
-  }
-
   .Exchange-list-leverage {
     margin-top: 0.3rem;
     margin-left: 0;
@@ -801,10 +797,6 @@ table.Exchange-list-small th, table.Exchange-list-small td {
 
   .Exchange-list-leverage {
     margin-top: 0;
-  }
-
-  .Exchange-list-extra-info {
-    display: none;
   }
 
   .Exchange-swap-box .TokenSelector .Modal {
