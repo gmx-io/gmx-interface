@@ -211,7 +211,7 @@ export default function ConfirmationBox(props) {
           NOTE: A minimum price change of&nbsp;
           <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
             1.5%
-          </a> is required for a position to be in profit. This requirement only lasts for {parseInt(MIN_PROFIT_TIME / 60 / 60)} hours position is opened or increased
+          </a> is required for a position to be in profit. This requirement only lasts for {parseInt(MIN_PROFIT_TIME / 60 / 60)} hours after a position is opened or increased
         </div>
       );
     }
