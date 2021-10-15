@@ -246,6 +246,9 @@
   right: 0;
   top: 4.5rem;
 }
+.ExchangeChart-bottom-controls {
+  display: inline-block;
+}
 .ExchangeChart-bottom-controls .Tab .Tab-option {
   width: 3rem;
   padding: 0.5rem 0;
@@ -255,12 +258,13 @@
   display: flex;
   top: 1rem;
   left: 1rem;
+  right: 1rem;
   z-index: 5;
 }
 .ExchangeChart.tv .ExchangeChart-bottom-stats {
   font-size: 14px;
   padding: 0.5rem 0;
-  margin-left: 1.5rem;
+  margin-left: 2rem;
   white-space: nowrap;
   z-index: 2;
 }
@@ -742,7 +746,7 @@ table.Exchange-list-small th, table.Exchange-list-small td {
   }
 }
 
-@media (max-width: 1250px) {
+@media (max-width: 1350px) {
   .Exchange-list.large {
     display: none;
   }
@@ -757,9 +761,22 @@ table.Exchange-list-small th, table.Exchange-list-small td {
     width: auto;
   }
 
-  .ExchangeChart-bottom-stats {
-    display: none;
+  .ExchangeChart.tv .ExchangeChart-bottom-header {
+    display: block;
   }
+
+  .ExchangeChart.tv .ExchangeChart-bottom-stats {
+    margin-left: 0;
+  }
+
+  .ExchangeChart.tv .ExchangeChart-bottom-content {
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0;
+    right: 0;
+    top: 2.5rem;
+  }
+
   .Exchange-list-tabs {
     margin-top: 0;
   }
@@ -773,7 +790,7 @@ table.Exchange-list-small th, table.Exchange-list-small td {
   }
 
   .ExchangeChart {
-    height: 20rem;
+    height: 25rem;
   }
 
   .Exchange-content {
