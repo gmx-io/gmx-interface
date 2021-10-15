@@ -316,7 +316,7 @@
 
 .PositionEditor .Modal-content {
   width: 23rem;
-  max-height: 80vh;
+  max-height: 90vh;
   overflow: auto;
 }
 
@@ -677,11 +677,9 @@ table.Exchange-list-small th, table.Exchange-list-small td {
   display: inline-block;
 }
 
-.Exchange-list-leverage {
-  display: inline-block;
-  width: 2.5rem;
-  text-align: center;
-  margin-left: 0.5rem;
+.Exchange-list-info-label {
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
 }
 
 .Exchange-list-muted {
@@ -739,12 +737,6 @@ table.Exchange-list-small th, table.Exchange-list-small td {
 }
 
 @media (max-width: 1500px) {
-  .Exchange-list-leverage {
-    margin-top: 0.3rem;
-    margin-left: 0;
-    width: auto;
-  }
-
   .Exchange-swap-box {
     width: 25rem;
   }
@@ -797,10 +789,6 @@ table.Exchange-list-small th, table.Exchange-list-small td {
   }
 
   .Exchange-list-title {
-  }
-
-  .Exchange-list-leverage {
-    margin-top: 0;
   }
 
   .Exchange-swap-box .TokenSelector .Modal {

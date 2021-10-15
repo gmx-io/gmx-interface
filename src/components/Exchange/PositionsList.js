@@ -182,37 +182,22 @@ export default function PositionsList(props) {
           })}
         </div>
       </div>}
-      <table className="Exchange-list Exchange-positions-list large App-box">
+      <table className="Exchange-list large App-box">
         <tbody>
           <tr className="Exchange-list-header">
-            <th>
-              Position
-              <div className="muted Exchange-list-muted">Leverage</div>
-            </th>
-            <th>
-              Size
-              <div className="muted Exchange-list-muted">Collateral</div>
-            </th>
-            <th>
-              Entry Price
-              <div className="muted Exchange-list-muted">Liq. Price</div>
-            </th>
-            <th>
-              Mark Price
-              <div className="muted Exchange-list-muted">PnL</div>
-            </th>
-            <th>
-              Net Value
-            </th>
-            <th>
-              Orders
-            </th>
+            <th>Position</th>
+            <th>Size</th>
+            <th>Collateral</th>
+            <th>Entry Price</th>
+            <th>Liq. Price</th>
+            <th>Mark Price</th>
+            <th>PnL</th>
             <th></th>
             <th></th>
           </tr>
         {positions.length === 0 &&
           <tr>
-            <td>
+            <td colSpan="15">
               <div className="Exchange-empty-positions-list-note">
                 No open positions
               </div>
@@ -224,35 +209,41 @@ export default function PositionsList(props) {
           return (
             <tr key={position.key}>
               <td>
-                <div>{position.indexToken.symbol}</div>
-                <div>
-                  <span className="muted Exchange-list-muted">{formatAmount(position.leverage, 4, 2, true)}x</span>&nbsp;
-                  <span className={cx("Exchange-list-muted", { positive: position.isLong, negative: !position.isLong })}>
+                <div className="Exchange-list-title">{position.indexToken.symbol}</div>
+                <div className="Exchange-list-info-label">
+                  <span className="muted">
+                      {formatAmount(position.leverage, 4, 2, true)}x
+                  </span>&nbsp;
+                  <span className={cx({ positive: position.isLong, negative: !position.isLong })}>
                     {position.isLong ? "Long" : "Short" }
                   </span>
                 </div>
               </td>
               <td>
-                <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
-                <div className="muted Exchange-list-muted">${formatAmount(position.collateral, USD_DECIMALS, 2, true)}</div>
+                ${formatAmount(position.size, USD_DECIMALS, 2, true)}
               </td>
               <td>
-                <div>${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}</div>
-                <div className="muted Exchange-list-muted">${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}</div>
+                ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
               </td>
+              <td>${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}</td>
+              <td>${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}</td>
               <td>
                 <div>${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
-                <div className={cx("Exchange-list-muted", { positive: position.hasProfit && position.pendingDelta.gt(0), negative: !position.hasProfit && position.pendingDelta.gt(0) })}>
-                  {position.deltaStr} ({position.deltaPercentageStr})
+                <div>
+                  <Tooltip handle={`Orders(0)`} position="right-bottom" handleClassName="Exchange-list-info-label muted">
+                    Click the "Close" button to set stop-loss or take-profit orders.
+                  </Tooltip>
                 </div>
               </td>
               <td>
-                ${formatAmount(position.netValue, USD_DECIMALS, 2, true)}
-              </td>
-              <td>
-                <Tooltip handle={"None"} position="right-bottom" handleClassName="muted">
-                  Set a stop-loss or take-profit order by clicking on the "Close" button.
-                </Tooltip>
+                <div className={cx({ positive: position.hasProfit && position.pendingDelta.gt(0), negative: !position.hasProfit && position.pendingDelta.gt(0) })}>
+                  {position.deltaStr} ({position.deltaPercentageStr})
+                </div>
+                <div>
+                  <Tooltip handle={`Net: $${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`} position="right-bottom" handleClassName="Exchange-list-info-label muted">
+                    Total of Collateral + PnL
+                  </Tooltip>
+                </div>
               </td>
               <td>
                 <button className="Exchange-list-action" onClick={() => editPosition(position)}>
