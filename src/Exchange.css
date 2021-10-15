@@ -746,7 +746,7 @@ table.Exchange-list-small th, table.Exchange-list-small td {
   }
 }
 
-@media (max-width: 1350px) {
+@media (max-width: 1300px) {
   .Exchange-list.large {
     display: none;
   }
