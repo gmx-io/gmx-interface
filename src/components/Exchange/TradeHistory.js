@@ -24,7 +24,6 @@ function getPositionDisplay(increase, indexToken, isLong, sizeDelta) {
 
 function getOrderActionTitle(action) {
   let actionDisplay
-  let typeDisplay
 
   if (action.startsWith("Create")) {
     actionDisplay = "Create"
@@ -34,13 +33,7 @@ function getOrderActionTitle(action) {
     actionDisplay = "Update"
   }
 
-  if (action.includes("Decrease")) {
-    typeDisplay = "Trigger"
-  } else {
-    typeDisplay = "Limit"
-  }
-
-  return `${actionDisplay} ${typeDisplay} Order`
+  return `${actionDisplay} Order`
 }
 
 export default function TradeHistory(props) {
@@ -135,12 +128,12 @@ export default function TradeHistory(props) {
       if (!indexToken) {
         return defaultMsg
       }
-      const typeDisplay = order.type === "Increase" ? "Limit" : "Trigger";
       const longShortDisplay = order.isLong ? "Long" : "Short";
       const executionPriceDisplay = formatAmount(order.executionPrice, USD_DECIMALS, 2, true)
       const sizeDeltaDisplay = `${order.type === "Increase" ? "+" : "-"}${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}`;
+
       return `
-        Execute ${typeDisplay} Order, ${indexToken.symbol} ${longShortDisplay},
+        Execute Order: ${order.type} ${indexToken.symbol} ${longShortDisplay}
         ${sizeDeltaDisplay} USD, Price: ${executionPriceDisplay} USD
       `
     }
@@ -151,7 +144,7 @@ export default function TradeHistory(props) {
       const increase = tradeData.action.includes("Increase")
       const priceDisplay = `${order.triggerAboveThreshold ? ">" : "<"} ${formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}`
       return `
-        ${getOrderActionTitle(tradeData.action)}, 
+        ${getOrderActionTitle(tradeData.action)}:
         ${getPositionDisplay(increase, indexToken, order.isLong, order.sizeDelta)},
         Price: ${priceDisplay}
       `
@@ -167,7 +160,7 @@ export default function TradeHistory(props) {
       const toToken = getTokenInfo(infoTokens, order.path[order.path.length - 1])
       const toAmountDisplay = formatAmount(order.amountOut, toToken.decimals, toToken.isStable ? 2 : 4, true)
       return `
-        Execute Limit Order, Swap ${fromAmountDisplay} ${fromToken.symbol} for ${toAmountDisplay} ${toToken.symbol}
+        Execute Order: Swap ${fromAmountDisplay} ${fromToken.symbol} for ${toAmountDisplay} ${toToken.symbol}
       `;
     }
 
@@ -179,7 +172,7 @@ export default function TradeHistory(props) {
       const minOutDisplay = toToken ? formatAmount(order.minOut, toToken.decimals, toToken.isStable ? 2 : 4, true) : ""
 
       return `
-        ${getOrderActionTitle(tradeData.action)},
+        ${getOrderActionTitle(tradeData.action)}:
         Swap ${amountInDisplay} ${fromToken?.symbol || ""} for ${minOutDisplay} ${toToken?.symbol || ""},
         Price: ${getExchangeRateDisplay(order.triggerRatio, fromToken, toToken)}`
     }
@@ -190,7 +183,32 @@ export default function TradeHistory(props) {
       return [];
     }
 
-    return trades.map(trade => ({
+    const executeOrderTxns = {}
+    for (let i = 0; i < trades.length; i++) {
+      const trade = trades[i]
+      const tradeData = trade.data
+      if (["ExecuteIncreaseOrder", "ExecuteDecreaseOrder"].includes(tradeData.action)) {
+        executeOrderTxns[tradeData.txhash] = true
+      }
+    }
+
+    const filteredTrades = []
+    for (let i = 0; i < trades.length; i++) {
+      const trade = trades[i]
+      const tradeData = trade.data
+      // exclude duplicate order actions
+      if (["IncreasePosition-Long", "IncreasePosition-Short", "DecreasePosition-Long", "DecreasePosition-short"].includes(tradeData.action) &&
+          executeOrderTxns[tradeData.txhash]) {
+        continue
+      }
+      filteredTrades.push(trade)
+    }
+
+    if (!filteredTrades) {
+      return [];
+    }
+
+    return filteredTrades.map(trade => ({
       msg: getMsg(trade),
       ...trade
     })).filter(trade => trade.msg)
