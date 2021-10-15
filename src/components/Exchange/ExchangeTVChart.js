@@ -417,17 +417,12 @@ export default function ExchangeTVChart(props) {
     })
 
     const toFixedNumbers = 2
-    const delta = candlestick.close - candlestick.open
-    const deltaDisplay = delta.toFixed(toFixedNumbers)
-    const deltaPercentage = (delta / candlestick.close * 100).toFixed(2)
-    const sign = delta > 0 ? "+" : ""
 
     return <div className={className}>
       <span className="ExchangeChart-bottom-stats-label">O</span><span className="ExchangeChart-bottom-stats-value">{candlestick.open.toFixed(toFixedNumbers)}</span>
       <span className="ExchangeChart-bottom-stats-label">H</span><span className="ExchangeChart-bottom-stats-value">{candlestick.high.toFixed(toFixedNumbers)}</span>
       <span className="ExchangeChart-bottom-stats-label">L</span><span className="ExchangeChart-bottom-stats-value">{candlestick.low.toFixed(toFixedNumbers)}</span>
       <span className="ExchangeChart-bottom-stats-label">C</span><span className="ExchangeChart-bottom-stats-value">{candlestick.close.toFixed(toFixedNumbers)}</span>
-      <span className="ExchangeChart-bottom-stats-label">Δ</span><span className="ExchangeChart-bottom-stats-value total">{sign}{deltaDisplay} ({sign}{deltaPercentage}%)</span>
     </div>
   }, [hoveredCandlestick, priceData])
 
