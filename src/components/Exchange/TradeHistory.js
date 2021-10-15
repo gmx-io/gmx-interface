@@ -163,10 +163,11 @@ export default function TradeHistory(props) {
       if (!fromToken) {
         return defaultMsg
       }
-      const fromAmountDisplay = formatAmount(order.amountIn, fromToken.decimals, fromToken.isStable ? 2 : 4, true, nativeTokenAddress)
+      const fromAmountDisplay = formatAmount(order.amountIn, fromToken.decimals, fromToken.isStable ? 2 : 4, true)
       const toToken = getTokenInfo(infoTokens, order.path[order.path.length - 1])
+      const toAmountDisplay = formatAmount(order.amountOut, toToken.decimals, toToken.isStable ? 2 : 4, true)
       return `
-        Execute Limit Order, Swap ${fromAmountDisplay} ${fromToken.symbol} for ${toToken.symbol}
+        Execute Limit Order, Swap ${fromAmountDisplay} ${fromToken.symbol} for ${toAmountDisplay} ${toToken.symbol}
       `;
     }
 
