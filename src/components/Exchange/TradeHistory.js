@@ -1,5 +1,7 @@
 import React, { useEffect, useCallback, useMemo } from 'react'
+import { ethers } from 'ethers'
 import { Link } from 'react-router-dom'
+
 import {
   USD_DECIMALS,
 	formatAmount,
@@ -12,8 +14,11 @@ import {
 import {
   useTrades
 } from '../../Api'
+import { getContract } from '../../Addresses'
 
 import './TradeHistory.css';
+
+const { AddressZero } = ethers.constants
 
 function getPositionDisplay(increase, indexToken, isLong, sizeDelta) {
   const symbol = indexToken ? (indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol) : ""
@@ -152,12 +157,13 @@ export default function TradeHistory(props) {
 
     if (tradeData.action === "ExecuteSwapOrder") {
       const order = deserialize(params.order);
-      const fromToken = getTokenInfo(infoTokens, order.path[0])
-      if (!fromToken) {
+      const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
+      const fromToken = getTokenInfo(infoTokens, order.path[0] === nativeTokenAddress ? AddressZero : order.path[0]);
+      const toToken = getTokenInfo(infoTokens, order.shouldUnwrap ? AddressZero : order.path[order.path.length - 1]);
+      if (!fromToken || !toToken) {
         return defaultMsg
       }
       const fromAmountDisplay = formatAmount(order.amountIn, fromToken.decimals, fromToken.isStable ? 2 : 4, true)
-      const toToken = getTokenInfo(infoTokens, order.path[order.path.length - 1])
       const toAmountDisplay = formatAmount(order.amountOut, toToken.decimals, toToken.isStable ? 2 : 4, true)
       return `
         Execute Order: Swap ${fromAmountDisplay} ${fromToken.symbol} for ${toAmountDisplay} ${toToken.symbol}
@@ -166,9 +172,10 @@ export default function TradeHistory(props) {
 
     if (["CreateSwapOrder", "UpdateSwapOrder", "CancelSwapOrder"].includes(tradeData.action)) {
       const order = deserialize(params.order);
-      const fromToken = getTokenInfo(infoTokens, order.path[0])
+      const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
+      const fromToken = getTokenInfo(infoTokens, order.path[0] === nativeTokenAddress ? AddressZero : order.path[0]);
+      const toToken = getTokenInfo(infoTokens, order.shouldUnwrap ? AddressZero : order.path[order.path.length - 1]);
       const amountInDisplay = fromToken ? formatAmount(order.amountIn, fromToken.decimals, fromToken.isStable ? 2 : 4, true) : ""
-      const toToken = getTokenInfo(infoTokens, order.path[order.path.length - 1])
       const minOutDisplay = toToken ? formatAmount(order.minOut, toToken.decimals, toToken.isStable ? 2 : 4, true) : ""
 
       return `
@@ -176,7 +183,7 @@ export default function TradeHistory(props) {
         Swap ${amountInDisplay} ${fromToken?.symbol || ""} for ${minOutDisplay} ${toToken?.symbol || ""},
         Price: ${getExchangeRateDisplay(order.triggerRatio, fromToken, toToken)}`
     }
-  }, [getTokenInfo, infoTokens, nativeTokenAddress])
+  }, [getTokenInfo, infoTokens, nativeTokenAddress, chainId])
 
   const tradesWithMessages = useMemo(() => {
     if (!trades) {

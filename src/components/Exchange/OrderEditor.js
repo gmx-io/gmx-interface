@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react"
 import { BsArrowRight } from 'react-icons/bs'
+import { ethers } from 'ethers'
 
 import {
   PRECISION,
@@ -22,17 +23,22 @@ import {
   getExchangeRateDisplay,
   getLiquidationPrice
 } from "../../Helpers"
+import {
+  updateSwapOrder,
+  updateIncreaseOrder,
+  updateDecreaseOrder
+} from '../../Api'
 import Modal from '../Modal/Modal'
 import ExchangeInfoRow from './ExchangeInfoRow'
+import { getContract } from '../../Addresses'
+
+const { AddressZero } = ethers.constants
 
 export default function OrderEditor(props) {
   const {
     order,
     setEditingOrder,
     infoTokens,
-    updateSwapOrder,
-    updateIncreaseOrder,
-    updateDecreaseOrder,
     pendingTxns,
     setPendingTxns,
     updateOrders,
@@ -45,19 +51,16 @@ export default function OrderEditor(props) {
 
   const { chainId } = useChainId()
 
-  const {
-    fromTokenAddress,
-    toTokenAddress,
-    swapOption
-  } = order;
+  const { swapOption } = order;
 
   const position = order.orderType === STOP ? getPositionForOrder(order, positionsMap) : null
   const liquidationPrice = position ? getLiquidationPrice(position) : null
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress)
-  const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress)
+  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
+  const fromTokenInfo = getTokenInfo(infoTokens, order.fromTokenAddress === nativeTokenAddress ? AddressZero : order.fromTokenAddress);
+  const toTokenInfo = getTokenInfo(infoTokens, order.shouldUnwrap ? AddressZero : order.toTokenAddress);
 
   const triggerRatioInverted = useMemo(() => {
     return isTriggerRatioInverted(fromTokenInfo, toTokenInfo)

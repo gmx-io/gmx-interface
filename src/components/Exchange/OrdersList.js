@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import throttle from 'lodash/throttle'
+import { ethers } from 'ethers'
 
 import {
   SWAP,
@@ -21,16 +22,16 @@ import {
 import {
   cancelSwapOrder,
   cancelIncreaseOrder,
-  cancelDecreaseOrder,
-  updateSwapOrder,
-  updateIncreaseOrder,
-  updateDecreaseOrder
+  cancelDecreaseOrder
 } from '../../Api'
+import { getContract } from '../../Addresses'
 
 import Tooltip from '../Tooltip/Tooltip'
 import OrderEditor from './OrderEditor'
 
 import './OrdersList.css';
+
+const { AddressZero } = ethers.constants
 
 function getPositionForOrder(order, positionsMap) {
   const key = getPositionKey(order.collateralToken, order.indexToken, order.swapOption === LONG)
@@ -145,8 +146,9 @@ export default function OrdersList(props) {
 
     return orders.map(order => {
       if (order.swapOption === SWAP) {
-        const fromTokenInfo = getTokenInfo(infoTokens, order.fromTokenAddress);
-        const toTokenInfo = getTokenInfo(infoTokens, order.toTokenAddress);
+        const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
+        const fromTokenInfo = getTokenInfo(infoTokens, order.fromTokenAddress === nativeTokenAddress ? AddressZero : order.fromTokenAddress);
+        const toTokenInfo = getTokenInfo(infoTokens, order.shouldUnwrap ? AddressZero : order.toTokenAddress);
 
         const markExchangeRate = getExchangeRate(
           fromTokenInfo,
@@ -215,7 +217,7 @@ export default function OrdersList(props) {
         </tr>
       )
     })
-  }, [orders, renderActions, infoTokens, positionsMap, hideActions])
+  }, [orders, renderActions, infoTokens, positionsMap, hideActions, chainId])
 
   const renderSmallList = useCallback(() => {
     if (!orders || !orders.length) {
@@ -224,8 +226,9 @@ export default function OrdersList(props) {
 
     return orders.map(order => {
       if (order.swapOption === SWAP) {
-        const fromTokenInfo = getTokenInfo(infoTokens, order.fromTokenAddress);
-        const toTokenInfo = getTokenInfo(infoTokens, order.toTokenAddress);
+        const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
+        const fromTokenInfo = getTokenInfo(infoTokens, order.fromTokenAddress === nativeTokenAddress ? AddressZero : order.fromTokenAddress);
+        const toTokenInfo = getTokenInfo(infoTokens, order.shouldUnwrap ? AddressZero : order.toTokenAddress);
         const markExchangeRate = getExchangeRate(
           fromTokenInfo,
           toTokenInfo
@@ -308,7 +311,7 @@ export default function OrdersList(props) {
         </tr>
       )
     })
-  }, [orders, onEditClick, onCancelClick, infoTokens, positionsMap, hideActions])
+  }, [orders, onEditClick, onCancelClick, infoTokens, positionsMap, hideActions, chainId])
 
 	return (
     <React.Fragment>
@@ -331,9 +334,6 @@ export default function OrdersList(props) {
           order={editingOrder}
           setEditingOrder={setEditingOrder}
           infoTokens={infoTokens}
-          updateSwapOrder={updateSwapOrder}
-          updateIncreaseOrder={updateIncreaseOrder}
-          updateDecreaseOrder={updateDecreaseOrder}
           pendingTxns={pendingTxns}
           setPendingTxns={setPendingTxns}
           getPositionForOrder={getPositionForOrder}

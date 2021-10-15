@@ -1117,6 +1117,8 @@ function parseSwapOrdersData(swapOrdersData, account, indexes) {
 
   const extractor = sliced => {
     const triggerAboveThreshold = sliced[6].toString() === '1';
+    const shouldUnwrap = sliced[7]?.toString() === '1'
+
     return {
       fromTokenAddress: sliced[0],
       toTokenAddress: sliced[2] === AddressZero ? sliced[1] : sliced[2],
@@ -1125,7 +1127,8 @@ function parseSwapOrdersData(swapOrdersData, account, indexes) {
       triggerRatio: sliced[5],
       triggerAboveThreshold,
       swapOption: SWAP,
-      orderType: triggerAboveThreshold ? STOP : LIMIT
+      orderType: triggerAboveThreshold ? STOP : LIMIT,
+      shouldUnwrap
     }
   }
   return _parseOrdersData(swapOrdersData, account, indexes, extractor, 4, 3)
