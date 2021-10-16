@@ -161,11 +161,11 @@ export default function OrdersList(props) {
               {order.orderType}
             </td>
             <td>
-              Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, (fromTokenInfo.isStable || fromTokenInfo.isUsdg) ? 2 : 6, true)} {fromTokenInfo.symbol} for {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 6, true)} {toTokenInfo.symbol}
+              Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, (fromTokenInfo.isStable || fromTokenInfo.isUsdg) ? 2 : 4, true)} {fromTokenInfo.symbol} for {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} {toTokenInfo.symbol}
             </td>
             <td>
               <Tooltip handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}>
-                Execution price may vary slightly depending on exact fees at the time the order is executed.
+                You will receive at least {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} {toTokenInfo.symbol}. Exact execution price may vary slightly depending on fees at the time the order is executed.
               </Tooltip>
             </td>
             <td>
@@ -240,7 +240,7 @@ export default function OrdersList(props) {
             </td>
             <td>
               <Tooltip position="center-bottom" handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}>
-                Execution price may vary slightly depending on exact fees at the time the order is executed.
+                You will receive at least {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} {toTokenInfo.symbol}. Exact execution price may vary slightly depending on fees at the time the order is executed.
               </Tooltip>
             </td>
             <td>
