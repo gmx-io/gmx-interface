@@ -90,6 +90,10 @@ export default function TradeHistory(props) {
     }
 
     if (tradeData.action === "IncreasePosition-Long" || tradeData.action === "IncreasePosition-Short") {
+      if (params.flags?.isOrderExecution) {
+        return
+      }
+
       const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress)
       if (!indexToken) {
         return defaultMsg
@@ -101,6 +105,10 @@ export default function TradeHistory(props) {
     }
 
     if (tradeData.action === "DecreasePosition-Long" || tradeData.action === "DecreasePosition-Short") {
+      if (params.flags?.isOrderExecution) {
+        return
+      }
+      
       const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress)
       if (!indexToken) {
         return defaultMsg
@@ -190,32 +198,7 @@ export default function TradeHistory(props) {
       return [];
     }
 
-    const executeOrderTxns = {}
-    for (let i = 0; i < trades.length; i++) {
-      const trade = trades[i]
-      const tradeData = trade.data
-      if (["ExecuteIncreaseOrder", "ExecuteDecreaseOrder"].includes(tradeData.action)) {
-        executeOrderTxns[tradeData.txhash] = true
-      }
-    }
-
-    const filteredTrades = []
-    for (let i = 0; i < trades.length; i++) {
-      const trade = trades[i]
-      const tradeData = trade.data
-      // exclude duplicate order actions
-      if (["IncreasePosition-Long", "IncreasePosition-Short", "DecreasePosition-Long", "DecreasePosition-short"].includes(tradeData.action) &&
-          executeOrderTxns[tradeData.txhash]) {
-        continue
-      }
-      filteredTrades.push(trade)
-    }
-
-    if (!filteredTrades) {
-      return [];
-    }
-
-    return filteredTrades.map(trade => ({
+    return trades.map(trade => ({
       msg: getMsg(trade),
       ...trade
     })).filter(trade => trade.msg)
