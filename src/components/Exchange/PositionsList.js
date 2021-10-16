@@ -10,8 +10,24 @@ import {
   getUsd,
   getLeverage,
   formatAmount,
-  USD_DECIMALS
+  USD_DECIMALS,
+  STOP,
+  LONG
 } from "../../Helpers"
+
+const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
+  /* eslint-disable array-callback-return */
+  return orders.filter(order => {
+    if (order.orderType !== STOP) { return false }
+    const sameToken = order.indexToken === nativeTokenAddress
+      ? position.indexToken.isNative
+      : order.indexToken === position.indexToken.address
+    if ((order.swapOption === LONG) === position.isLong
+      && sameToken) {
+      return true
+    }
+  })
+}
 
 export default function PositionsList(props) {
   const {
@@ -206,6 +222,7 @@ export default function PositionsList(props) {
         }
         {positions.map(position => {
           const liquidationPrice = getLiquidationPrice(position)
+          const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress)
           return (
             <tr key={position.key}>
               <td>
@@ -230,8 +247,9 @@ export default function PositionsList(props) {
               <td>
                 <div>${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
                 <div>
-                  <Tooltip handle={`Orders(0)`} position="right-bottom" handleClassName="Exchange-list-info-label muted">
-                    Click the "Close" button to set stop-loss or take-profit orders.
+                  <Tooltip handle={`Orders(${positionOrders.length})`} position="right-bottom" handleClassName="Exchange-list-info-label muted">
+                    {positionOrders.length === 0 && "Click the \"Close\" button to set stop-loss or take-profit orders."}
+                    {positionOrders.length !== 0 && "You have active Trigger Orders for this position"}
                   </Tooltip>
                 </div>
               </td>
