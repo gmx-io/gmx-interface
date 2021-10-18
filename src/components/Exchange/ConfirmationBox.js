@@ -185,7 +185,7 @@ export default function ConfirmationBox(props) {
   }, [isLong, isSwap, orderType, entryMarkPrice, triggerPriceUsd])
 
   const renderFeeWarning = useCallback(() => {
-    if (!feeBps || feeBps < 80) {
+    if (!feeBps || feeBps < 50) {
       return null
     }
 
