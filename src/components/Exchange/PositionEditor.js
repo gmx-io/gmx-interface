@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import useSWR from 'swr'
 import { ethers } from 'ethers'
-import { toast } from 'react-toastify'
 import { BsArrowRight } from 'react-icons/bs'
 
 import {
 	USD_DECIMALS,
 	BASIS_POINTS_DIVISOR,
 	DUST_BNB,
+  helperToast,
   formatAmount,
   bigNumberify,
 	usePrevious,
@@ -227,7 +227,7 @@ export default function PositionEditor(props) {
 
     if (shouldRaiseGasError(getTokenInfo(infoTokens, collateralTokenAddress), fromAmount)) {
       setIsSwapping(false)
-      toast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ETH for gas`)
+      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ETH for gas`)
       return
     }
 

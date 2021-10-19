@@ -25,6 +25,7 @@ import {
   SHOULD_SHOW_ORDER_LINES_KEY,
   BASIS_POINTS_DIVISOR,
   switchNetwork,
+  helperToast,
   getChainName,
   useChainId,
   getAccountUrl,
@@ -50,7 +51,7 @@ import Debug from './Debug'
 
 import cx from "classnames";
 import { cssTransition } from 'react-toastify'
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Selector from './components/Selector/Selector'
 import Modal from './components/Modal/Modal'
@@ -79,7 +80,6 @@ function getLibrary(provider) {
 
 const Zoom = cssTransition({
   enter: 'zoomIn',
-  exit: 'zoomOut',
   duration: 300
 })
 
@@ -249,17 +249,17 @@ function FullApp() {
   const saveAndCloseSettings = () => {
     const slippage = parseFloat(slippageAmount)
     if (isNaN(slippage)) {
-      toast.error("Invalid slippage value")
+      helperToast.error("Invalid slippage value")
       return
     }
     if (slippage > 5) {
-      toast.error("Slippage should be less than 5%")
+      helperToast.error("Slippage should be less than 5%")
       return
     }
 
     const basisPoints = slippage * BASIS_POINTS_DIVISOR / 100
     if (parseInt(basisPoints) !== parseFloat(basisPoints)) {
-      toast.error("Max slippage precision is 0.01%")
+      helperToast.error("Max slippage precision is 0.01%")
       return
     }
 
@@ -280,7 +280,7 @@ function FullApp() {
         if (receipt) {
           if (receipt.status === 0) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash
-            toast.error(
+            helperToast.error(
               <div>
               Txn failed. <a href={txUrl} target="_blank" rel="noopener noreferrer">View</a>
               <br/>
@@ -289,7 +289,7 @@ function FullApp() {
           }
           if (receipt.status === 1 && pendingTxn.message) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash
-            toast.success(
+            helperToast.success(
               <div>
               {pendingTxn.message}. <a href={txUrl} target="_blank" rel="noopener noreferrer">View</a>
               <br/>
@@ -445,7 +445,7 @@ function FullApp() {
         </div>
       </div>
       <ToastContainer
-        limit={2}
+        limit={1}
         transition={Zoom}
         position="bottom-right"
         autoClose={7000}

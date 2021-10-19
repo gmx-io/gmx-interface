@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { toast } from 'react-toastify'
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
 import { ethers } from 'ethers'
 
 import { getConnectWalletHandler,
   fetcher, formatKeyAmount, formatAmount, formatAmountFree, parseValue, useChainId,
-  expandDecimals, getExplorerUrl, approveTokens, bigNumberify, CHAIN_ID, USD_DECIMALS, PRECISION } from './Helpers'
+  expandDecimals, getExplorerUrl, approveTokens, bigNumberify, helperToast, CHAIN_ID, USD_DECIMALS, PRECISION } from './Helpers'
 
 import { getContract, XGMT_EXCLUDED_ACCOUNTS } from './Addresses'
 import { getTokenBySymbol } from './data/Tokens'
@@ -255,7 +254,7 @@ function StakeModal(props) {
     contract.stake(amount)
     .then(async (res) => {
       const txUrl = getExplorerUrl(CHAIN_ID) + "tx/" + res.hash
-      toast.success(
+      helperToast.success(
         <div>
         Stake submitted! <a href={txUrl} target="_blank" rel="noopener noreferrer">View status.</a>
         <br/>
@@ -265,7 +264,7 @@ function StakeModal(props) {
     })
     .catch((e) => {
       console.error(e)
-      toast.error("Stake failed.")
+      helperToast.error("Stake failed.")
     })
     .finally(() => {
       setIsStaking(false)
@@ -339,7 +338,7 @@ function UnstakeModal(props) {
     contract.unstake(amount)
     .then(async (res) => {
       const txUrl = getExplorerUrl(CHAIN_ID) + "tx/" + res.hash
-      toast.success(
+      helperToast.success(
         <div>
         Unstake submitted! <a href={txUrl} target="_blank" rel="noopener noreferrer">View status.</a>
         <br/>
@@ -349,7 +348,7 @@ function UnstakeModal(props) {
     })
     .catch((e) => {
       console.error(e)
-      toast.error("Unstake failed.")
+      helperToast.error("Unstake failed.")
     })
     .finally(() => {
       setIsUnstaking(false)
@@ -537,15 +536,15 @@ export default function StakeV1() {
 
   const claim = (farmAddress, rewards) => {
     if (!active || !account) {
-      toast.error("Wallet not yet connected")
+      helperToast.error("Wallet not yet connected")
       return
     }
     if (chainId !== CHAIN_ID) {
-      toast.error("Incorrect Network")
+      helperToast.error("Incorrect Network")
       return
     }
     if (!rewards || rewards.eq(0)) {
-      toast.error("No rewards to claim yet")
+      helperToast.error("No rewards to claim yet")
       return
     }
 
@@ -553,7 +552,7 @@ export default function StakeV1() {
     contract.claim(account)
     .then(async (res) => {
       const txUrl = getExplorerUrl(CHAIN_ID) + "tx/" + res.hash
-      toast.success(
+      helperToast.success(
         <div>
         Claim submitted! <a href={txUrl} target="_blank" rel="noopener noreferrer">View status.</a>
         <br/>
@@ -562,7 +561,7 @@ export default function StakeV1() {
     })
     .catch((e) => {
       console.error(e)
-      toast.error("Claim failed.")
+      helperToast.error("Claim failed.")
     })
   }
 

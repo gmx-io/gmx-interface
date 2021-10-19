@@ -6,7 +6,6 @@ import Slider, { SliderTooltip } from 'rc-slider'
 import 'rc-slider/assets/index.css'
 
 import cx from "classnames";
-import { toast } from 'react-toastify'
 import useSWR from 'swr'
 import { ethers } from 'ethers'
 
@@ -14,6 +13,7 @@ import { IoMdSwap } from 'react-icons/io'
 import { BsArrowRight } from 'react-icons/bs'
 
 import {
+  helperToast,
 	formatAmount,
 	bigNumberify,
 	USD_DECIMALS,
@@ -224,7 +224,7 @@ export default function SwapBox(props) {
   useEffect(() => {
     if (!needOrderBookApproval && prevNeedOrderBookApproval && isWaitingForPluginApproval) {
       setIsWaitingForPluginApproval(false)
-      toast.success(<div>
+      helperToast.success(<div>
         Order Book approved!
       </div>)
     }
@@ -283,7 +283,7 @@ export default function SwapBox(props) {
   useEffect(() => {
     if (fromToken && fromTokenAddress === prevFromTokenAddress && !needApproval && prevNeedApproval && isWaitingForApproval) {
       setIsWaitingForApproval(false)
-      toast.success(<div>
+      helperToast.success(<div>
         {fromToken.symbol} approved!
       </div>)
     }
@@ -896,7 +896,7 @@ export default function SwapBox(props) {
     let minOut;
     if (shouldRaiseGasError(getTokenInfo(infoTokens, fromTokenAddress), fromAmount)) {
       setIsSubmitting(false)
-      toast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "networkTokenSymbol")} for gas`)
+      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "networkTokenSymbol")} for gas`)
       return
     }
 
@@ -1031,7 +1031,7 @@ export default function SwapBox(props) {
     if (fromAmount && fromAmount.gt(0) && fromTokenAddress === USDG_ADDRESS && isLong) {
       const { amount: nextToAmount, path: multiPath } = getNextToAmount(chainId, fromAmount, fromTokenAddress, indexTokenAddress, infoTokens, undefined, undefined, usdgSupply, totalTokenWeights)
       if (nextToAmount.eq(0)) {
-        toast.error("Insufficient liquidity")
+        helperToast.error("Insufficient liquidity")
         return
       }
       if (multiPath) {
@@ -1051,7 +1051,7 @@ export default function SwapBox(props) {
 
     if (shouldRaiseGasError(getTokenInfo(infoTokens, fromTokenAddress), fromAmount)) {
       setIsSubmitting(false)
-      toast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "networkTokenSymbol")} for gas`)
+      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "networkTokenSymbol")} for gas`)
       return
     }
 

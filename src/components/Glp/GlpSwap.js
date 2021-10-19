@@ -6,11 +6,11 @@ import { Token as UniToken } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
 import { ethers } from 'ethers'
-import { toast } from 'react-toastify'
 
 import { getToken, getTokens, getWhitelistedTokens } from '../../data/Tokens'
 import { getContract } from '../../Addresses'
 import {
+  helperToast,
   useLocalStorageSerializeKey,
   getInfoTokens,
   getTokenInfo,
@@ -555,7 +555,7 @@ export default function GlpSwap(props) {
   const selectToken = (token) => {
     setAnchorOnSwapAmount(false)
     setSwapTokenAddress(token.address)
-    toast.success(`${token.symbol} selected in order form`)
+    helperToast.success(`${token.symbol} selected in order form`)
   }
 
   let feePercentageText = formatAmount(feeBasisPoints, 2, 2, true, "-")

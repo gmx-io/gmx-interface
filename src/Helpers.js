@@ -115,6 +115,17 @@ export function deserialize(data) {
   return data;
 }
 
+export const helperToast = {
+  success: (content) => {
+    toast.dismiss()
+    toast.success(content)
+  },
+  error: (content) => {
+    toast.dismiss()
+    toast.error(content)
+  }
+}
+
 export function useLocalStorageSerializeKey(key, value, opts) {
   key = JSON.stringify(key);
   return useLocalStorage(key, value, opts);
@@ -1203,7 +1214,7 @@ export function useOrders(flagOrdersEnabled, overrideAccount) {
 
       const getOrders = async (method, knownIndexes, lastIndex, parseFunc) => {
         const indexes = getIndexes(knownIndexes, lastIndex)
-        const ordersData = await orderBookReaderContract[method](orderBookAddress, account, indexes) 
+        const ordersData = await orderBookReaderContract[method](orderBookAddress, account, indexes)
         const orders = parseFunc(ordersData, account, indexes)
         return orders
       }
@@ -1342,7 +1353,7 @@ export function approveTokens({ setIsApproving, library, tokenAddress, spender, 
   contract.approve(spender, ethers.constants.MaxUint256)
   .then(async (res) => {
     const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash
-    toast.success(
+    helperToast.success(
       <div>
       Approval submitted! <a href={txUrl} target="_blank" rel="noopener noreferrer">View status.</a>
       <br/>
@@ -1374,7 +1385,7 @@ export function approveTokens({ setIsApproving, library, tokenAddress, spender, 
     } else {
       failMsg = "Approval failed."
     }
-    toast.error(failMsg)
+    helperToast.error(failMsg)
   })
   .finally(() => {
     setIsApproving(false)
@@ -1459,8 +1470,7 @@ export const switchNetwork = async (chainId) => {
       method: "wallet_switchEthereumChain",
       params: [{ chainId: chainIdHex }]
     })
-    toast.dismiss()
-    toast.success("Wallet connected!")
+    helperToast.success("Wallet connected!")
   } catch (ex) {
     // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
     // This error code indicates that the chain has not been added to MetaMask.
@@ -1476,14 +1486,14 @@ export const getConnectWalletHandler = (activate) => {
   const fn = async () => {
     activate(getInjectedConnector(), (e) => {
       if (e.message.includes("No Ethereum provider")) {
-        toast.error(<div>
+        helperToast.error(<div>
           Could not find a wallet to connect to.<br/>
           <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">Add a wallet</a> to start using the app.
         </div>)
         return
       }
       if (e instanceof UnsupportedChainIdError) {
-        toast.error(<div>
+        helperToast.error(<div>
           <div>Your wallet is not connected to {getChainName(DEFAULT_CHAIN_ID)}.</div><br/>
           <div className="clickable underline margin-bottom" onClick={() => switchNetwork(DEFAULT_CHAIN_ID)}>
             Switch to {getChainName(DEFAULT_CHAIN_ID)}
@@ -1494,7 +1504,7 @@ export const getConnectWalletHandler = (activate) => {
         </div>)
         return
       }
-      toast.error(e.toString())
+      helperToast.error(e.toString())
     })
   }
   return fn
