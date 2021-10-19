@@ -11,6 +11,7 @@ import {
   LIMIT,
   TRIGGER_PREFIX_ABOVE,
   TRIGGER_PREFIX_BELOW,
+  MIN_PROFIT_TIME,
   useChainId,
   getTokenInfo,
   isTriggerRatioInverted,
@@ -21,7 +22,11 @@ import {
   getExchangeRate,
   formatAmount,
   getExchangeRateDisplay,
-  getLiquidationPrice
+  calculatePositionDelta,
+  getLiquidationPrice,
+  formatDateTime,
+  getDeltaStr,
+  getProfitPrice
 } from "../../Helpers"
 import {
   updateSwapOrder,
@@ -164,6 +169,11 @@ export default function OrderEditor(props) {
     if (position) {
       if (position.isLong && triggerPrice.lte(liquidationPrice)) { return "Price below Liq. Price" }
       if (!position.isLong && triggerPrice.gte(liquidationPrice)) { return "Price above Liq. Price" }
+
+      const { delta, hasProfit } = calculatePositionDelta(triggerPrice, position)
+      if (hasProfit && delta.eq(0)) {
+        return "Invalid price, see warning"
+      }
     }
 
     if (swapOption !== SWAP && indexTokenEntryMarkPrice) {
@@ -180,6 +190,32 @@ export default function OrderEditor(props) {
       if (currentRate && !currentRate.gte(triggerRatio)) {
         return `Price is ${triggerRatioInverted ? "below" : "above"} Mark Price`
       }
+    }
+  }
+
+  const renderMinProfitWarning = () => {
+    if (!position) { return null }
+
+    const { delta, pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta(triggerPrice, position)
+    if (hasProfit && delta.eq(0)) {
+      const { deltaStr } = getDeltaStr({
+        delta: pendingDelta,
+        deltaPercentage: pendingDeltaPercentage,
+        hasProfit
+      })
+      const [profitPrice, priceMovementPercentage] = getProfitPrice(triggerPrice, position)
+      const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME
+      return (
+        <div className="Confirmation-box-warning">
+          WARNING: You may have a&nbsp;
+          <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
+            pending profit
+          </a> of {deltaStr}. <br/>
+          Profit price: ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
+          Current movement: {formatAmount(priceMovementPercentage, 2, 2, true)}%.
+          This requirement expires on {formatDateTime(minProfitExpiration)}
+        </div>
+      )
     }
   }
 
@@ -204,61 +240,62 @@ export default function OrderEditor(props) {
   if (order.swapOption !== SWAP) {
     const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW
     return  <Modal isVisible={true} className="Exchange-list-modal" setIsVisible={() => setEditingOrder(null)} label="Edit order">
-        <div className="Exchange-swap-section">
-          <div className="Exchange-swap-section-top">
-            <div className="muted">
-              Price
-            </div>
-            <div
-              className="muted align-right clickable"
-              onClick={() => {setTriggerPriceValue(formatAmountFree(indexTokenEntryMarkPrice, USD_DECIMALS, 2))}}
-            >
-              Mark: {formatAmount(indexTokenEntryMarkPrice, USD_DECIMALS, 2)}
-            </div>
+      {renderMinProfitWarning()}
+      <div className="Exchange-swap-section">
+        <div className="Exchange-swap-section-top">
+          <div className="muted">
+            Price
           </div>
-          <div className="Exchange-swap-section-bottom">
-            <div className="Exchange-swap-input-container">
-              <input type="number" min="0" placeholder="0.0" className="Exchange-swap-input" value={triggerPriceValue} onChange={onTriggerPriceChange} />
-            </div>
-            <div className="PositionEditor-token-symbol">
-              USD
-            </div>
+          <div
+            className="muted align-right clickable"
+            onClick={() => {setTriggerPriceValue(formatAmountFree(indexTokenEntryMarkPrice, USD_DECIMALS, 2))}}
+          >
+            Mark: {formatAmount(indexTokenEntryMarkPrice, USD_DECIMALS, 2)}
           </div>
         </div>
-        <ExchangeInfoRow label="Price">
-          {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
-          {triggerPrice && !triggerPrice.eq(order.triggerPrice) &&
-            <React.Fragment>
-              &nbsp;
-              <BsArrowRight />
-              &nbsp;
-              {triggerPricePrefix} {formatAmount(triggerPrice, USD_DECIMALS, 2, true)}
-            </React.Fragment>
-          }
-        </ExchangeInfoRow>
-        {/*<ExchangeInfoRow label="Leverage">
-          {hasExistingPosition && toAmount && toAmount.gt(0) && <div className="inline-block muted">
-            {formatAmount(existingPosition.leverage, 4, 2)}x
-            <BsArrowRight className="transition-arrow" />
-          </div>}
-          {(toAmount && leverage && leverage.gt(0)) && `${formatAmount(leverage, 4, 2)}x`}
-          {(!toAmount && leverage && leverage.gt(0)) && `-`}
-          {(leverage && leverage.eq(0)) && `-`}
-        </ExchangeInfoRow>*/}
-        {liquidationPrice &&
-          <div className="Exchange-info-row">
-            <div className="Exchange-info-label">Liq. Price</div>
-            <div className="align-right">
-              {`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}
-            </div>
+        <div className="Exchange-swap-section-bottom">
+          <div className="Exchange-swap-input-container">
+            <input type="number" min="0" placeholder="0.0" className="Exchange-swap-input" value={triggerPriceValue} onChange={onTriggerPriceChange} />
           </div>
+          <div className="PositionEditor-token-symbol">
+            USD
+          </div>
+        </div>
+      </div>
+      <ExchangeInfoRow label="Price">
+        {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
+        {triggerPrice && !triggerPrice.eq(order.triggerPrice) &&
+          <React.Fragment>
+            &nbsp;
+            <BsArrowRight />
+            &nbsp;
+            {triggerPricePrefix} {formatAmount(triggerPrice, USD_DECIMALS, 2, true)}
+          </React.Fragment>
         }
-        <div className="Exchange-swap-button-container">
-          <button className="App-cta Exchange-swap-button Exchange-list-modal-button" onClick={ onClickPrimary } disabled={!isPrimaryEnabled()}>
-            {getPrimaryText()}
-          </button>
+      </ExchangeInfoRow>
+      {/*<ExchangeInfoRow label="Leverage">
+        {hasExistingPosition && toAmount && toAmount.gt(0) && <div className="inline-block muted">
+          {formatAmount(existingPosition.leverage, 4, 2)}x
+          <BsArrowRight className="transition-arrow" />
+        </div>}
+        {(toAmount && leverage && leverage.gt(0)) && `${formatAmount(leverage, 4, 2)}x`}
+        {(!toAmount && leverage && leverage.gt(0)) && `-`}
+        {(leverage && leverage.eq(0)) && `-`}
+      </ExchangeInfoRow>*/}
+      {liquidationPrice &&
+        <div className="Exchange-info-row">
+          <div className="Exchange-info-label">Liq. Price</div>
+          <div className="align-right">
+            {`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}
+          </div>
         </div>
-      </Modal>
+      }
+      <div className="Exchange-swap-button-container">
+        <button className="App-cta Exchange-swap-button Exchange-list-modal-button" onClick={ onClickPrimary } disabled={!isPrimaryEnabled()}>
+          {getPrimaryText()}
+        </button>
+      </div>
+    </Modal>
   }
 
   return (

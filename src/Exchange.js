@@ -332,7 +332,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
           />
           <div className="align-right Exchange-should-show-position-lines">
 						<Checkbox isChecked={savedShouldShowPositionLines} setIsChecked={setSavedShouldShowPositionLines}>
-							<span className="muted">Chart positions</span>
+							<span className="muted">Chart orders</span>
 						</Checkbox>
           </div>
         </div>

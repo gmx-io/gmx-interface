@@ -29,10 +29,10 @@ import {
 	MARKET,
 	STOP,
   LONG,
-  PROFIT_THRESHOLD_BASIS_POINTS,
   useLocalStorageSerializeKey,
   calculatePositionDelta,
   getDeltaStr,
+  getProfitPrice,
   formatDateTime
 } from "../../Helpers"
 import { createDecreaseOrder, callContract } from "../../Api"
@@ -316,6 +316,8 @@ export default function PositionSeller(props) {
       if (!triggerPriceUsd) { return "Enter Price" }
       if (position.isLong && triggerPriceUsd.lte(liquidationPrice)) { return "Price below Liq. Price" }
       if (!position.isLong && triggerPriceUsd.gte(liquidationPrice)) { return "Price above Liq. Price" }
+
+      if (profitPrice && nextDelta.eq(0) && nextHasProfit) { return "Invalid price, see warning" }
     }
 
     if (!isClosing && position && position.size && fromAmount) {
@@ -504,18 +506,7 @@ export default function PositionSeller(props) {
     );
   }
 
-  let priceMovementPercentage
-  let profitPrice
-  if (position && position.markPrice && position.averagePrice) {
-    if (orderType === MARKET || triggerPriceUsd) {
-      const closePrice = orderType === MARKET ? position.markPrice : triggerPriceUsd
-      const priceDelta = closePrice.gt(position.averagePrice) ? closePrice.sub(position.averagePrice) : position.averagePrice.sub(closePrice)
-      priceMovementPercentage = priceDelta.mul(BASIS_POINTS_DIVISOR).div(position.averagePrice)
-      profitPrice = position.isLong
-        ? position.averagePrice.mul(BASIS_POINTS_DIVISOR + PROFIT_THRESHOLD_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
-        : position.averagePrice.mul(BASIS_POINTS_DIVISOR - PROFIT_THRESHOLD_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
-    }
-  }
+  const [profitPrice, priceMovementPercentage] = getProfitPrice(orderType === MARKET ? position.markPrice : triggerPriceUsd, position)
 
   let triggerPricePrefix
   if (triggerPriceUsd) {
