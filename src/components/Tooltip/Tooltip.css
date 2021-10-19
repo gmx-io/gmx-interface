@@ -55,6 +55,10 @@
   opacity: 0.6;
 }
 
+.Tooltip-handle.plain:after {
+  border-bottom: none;
+}
+
 @media (max-width: 700px) {
   .Tooltip-popup {
     min-width: 200px;

@@ -209,6 +209,13 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     })
   }, [swapOption, setTokenSelection])
 
+  const setMarket = (newSwapOption, toTokenAddress) => {
+    setSwapOption(newSwapOption)
+    const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
+    newTokenSelection[newSwapOption].to = toTokenAddress
+    setTokenSelection(newTokenSelection)
+  }
+
   const [isConfirming, setIsConfirming] = useState(false);
   const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
 
@@ -341,6 +348,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
             savedIsPnlInLeverage={savedIsPnlInLeverage}
             chainId={chainId}
             nativeTokenAddress={nativeTokenAddress}
+            setMarket={setMarket}
             orders={orders}
           />
         }
