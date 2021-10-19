@@ -1,6 +1,24 @@
 .Exchange {
 }
 
+.Exchange-list-tab-container {
+  display: grid;
+  grid-template-columns: auto auto;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.Exchange-should-show-position-lines {
+  padding-top: 0.2rem;
+  font-size: 0.9rem;
+}
+
+.Exchange-should-show-position-lines .Checkbox-icon {
+  margin-top: 0.05rem;
+}
+
 .Exchange-empty-positions-list-note {
   padding-bottom: 0.3rem;
 }
@@ -30,9 +48,6 @@
 }
 
 .Exchange-list-tabs {
-  padding-left: 0.5rem;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
 }
 
 .Exchange-right {

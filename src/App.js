@@ -22,8 +22,8 @@ import {
   DEFAULT_SLIPPAGE_AMOUNT,
   SLIPPAGE_BPS_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
-  SHOULD_SHOW_ORDER_LINES_KEY,
   BASIS_POINTS_DIVISOR,
+  SHOULD_SHOW_POSITION_LINES_KEY,
   switchNetwork,
   helperToast,
   getChainName,
@@ -226,15 +226,14 @@ function FullApp() {
   )
   const [slippageAmount, setSlippageAmount] = useState(0)
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false)
-  const [shouldShowOrderLines, setShouldShowOrderLines] = useState(false)
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorage(
     IS_PNL_IN_LEVERAGE_KEY,
     false
   )
 
-  const [savedShouldShowOrderLines, setSavedShouldShowOrderLines] = useLocalStorage(
-    SHOULD_SHOW_ORDER_LINES_KEY,
+  const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorage(
+    SHOULD_SHOW_POSITION_LINES_KEY,
     false
   )
 
@@ -242,7 +241,6 @@ function FullApp() {
     const slippage = parseInt(savedSlippageAmount)
     setSlippageAmount(slippage / BASIS_POINTS_DIVISOR * 100)
     setIsPnlInLeverage(savedIsPnlInLeverage)
-    setShouldShowOrderLines(savedShouldShowOrderLines)
     setIsSettingsVisible(true)
   }
 
@@ -265,7 +263,6 @@ function FullApp() {
 
     setSavedIsPnlInLeverage(isPnlInLeverage)
     setSavedSlippageAmount(basisPoints)
-    setSavedShouldShowOrderLines(shouldShowOrderLines)
     setIsSettingsVisible(false)
   }
 
@@ -390,9 +387,10 @@ function FullApp() {
                 savedIsPnlInLeverage={savedIsPnlInLeverage}
                 setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
                 savedSlippageAmount={savedSlippageAmount}
-                savedShouldShowOrderLines={savedShouldShowOrderLines}
                 setPendingTxns={setPendingTxns}
                 pendingTxns={pendingTxns}
+                savedShouldShowPositionLines={savedShouldShowPositionLines}
+                setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
               />
             </Route>
             <Route exact path="/presale">
@@ -464,11 +462,6 @@ function FullApp() {
             <input type="number" className="App-slippage-tolerance-input" min="0" value={slippageAmount} onChange={(e) => setSlippageAmount(e.target.value)} />
             <div className="App-slippage-tolerance-input-percent">%</div>
           </div>
-        </div>
-        <div className="Exchange-settings-row">
-          <Checkbox isChecked={shouldShowOrderLines} setIsChecked={setShouldShowOrderLines}>
-            Show order lines
-          </Checkbox>
         </div>
         <div className="Exchange-settings-row">
           <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
