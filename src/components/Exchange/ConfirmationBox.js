@@ -111,8 +111,23 @@ export default function ConfirmationBox(props) {
     }
   }, [orders, chainId, isLong, toToken.address, toToken.isNative])
 
+  const getError = () => {
+    if (!isSwap && hasExistingPosition && !isMarketOrder) {
+      const { delta, hasProfit } = calculatePositionDelta(triggerPriceUsd, existingPosition)
+      if (hasProfit && delta.eq(0)) {
+        return "Invalid price, see warning"
+      }
+    }
+    return false
+  }
+
   const getPrimaryText = () => {
     if (!isPendingConfirmation) {
+      const error = getError()
+      if (error) {
+        return error
+      }
+
       if (isSwap) {
         return title
       }
@@ -134,6 +149,9 @@ export default function ConfirmationBox(props) {
   }
 
   const isPrimaryEnabled = () => {
+    if (getError()) {
+      return false
+    }
     return !isPendingConfirmation && !isSubmitting;
   }
 
