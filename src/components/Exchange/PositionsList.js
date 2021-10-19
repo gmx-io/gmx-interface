@@ -1,12 +1,12 @@
 import React, { useState } from "react"
 import cx from "classnames"
-import { toast } from 'react-toastify'
 
 import Tooltip from '../Tooltip/Tooltip'
 import PositionSeller from "./PositionSeller"
 import PositionEditor from "./PositionEditor"
 
 import {
+  helperToast,
   getLiquidationPrice,
   getUsd,
   getLeverage,
@@ -73,7 +73,7 @@ export default function PositionsList(props) {
   }
 
   const onPositionClick = (position) => {
-    toast.success(`${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol} market selected`)
+    helperToast.success(`${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol} market selected`)
     setMarket(position.isLong ? LONG : SHORT, position.indexToken.address)
   }
 

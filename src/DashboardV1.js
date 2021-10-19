@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react'
 import useSWR from 'swr'
 import { useWeb3React } from '@web3-react/core'
-import { toast } from 'react-toastify'
 
 import cx from "classnames";
 import { bigNumberify, expandDecimals, formatAmount,
   fetcher, formatDate, numberWithCommas,
-  getTokenUrl, useChainId, getServerUrl } from './Helpers'
+  getTokenUrl, useChainId, getServerUrl, helperToast } from './Helpers'
 import { getContract, XGMT_EXCLUDED_ACCOUNTS } from './Addresses'
 import { getToken, getTokens } from './data/Tokens'
 import { getFeeHistory } from './data/Fees'
@@ -370,7 +369,7 @@ export default function DashboardV1() {
 
   const addToken = async (token) => {
     if (!window.ethereum) {
-      toast.error("Could not add token to MetaMask")
+      helperToast.error("Could not add token to MetaMask")
       return
     }
 
@@ -389,7 +388,7 @@ export default function DashboardV1() {
         },
       })
     } catch (error) {
-      toast.error("Could not add token to MetaMask")
+      helperToast.error("Could not add token to MetaMask")
     }
   }
 

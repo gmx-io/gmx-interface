@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { toast } from 'react-toastify'
+import { helperToast } from "./Helpers"
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client'
 import { useState } from 'react'
 import useSWR from 'swr'
@@ -427,7 +427,7 @@ export async function callContract(chainId, contract, method, params, opts) {
     const res = await contract[method](...params, { gasLimit: opts.gasLimit, value: opts.value })
     const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash
     const sentMsg = opts.sentMsg || "Transaction sent."
-    toast.success(
+    helperToast.success(
       <div>
         {sentMsg} <a href={txUrl} target="_blank" rel="noopener noreferrer">View status.</a>
         <br/>
@@ -468,7 +468,7 @@ export async function callContract(chainId, contract, method, params, opts) {
           }
         </div>)
     }
-    toast.error(failMsg);
+    helperToast.error(failMsg);
     throw e
   }
 }
