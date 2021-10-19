@@ -522,6 +522,8 @@ export default function PositionSeller(props) {
     triggerPricePrefix = triggerPriceUsd.gt(position.markPrice) ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW
   }
 
+  const shouldShowExistingOrderWarning = false
+
   return (
     <div className="PositionEditor">
       {(position) &&
@@ -581,7 +583,7 @@ export default function PositionSeller(props) {
 	          </div>
           }
           {renderMinProfitWarning()}
-          {renderExistingOrderWarning()}
+          {shouldShowExistingOrderWarning && renderExistingOrderWarning()}
           <div className="PositionEditor-info-box">
             <div className="PositionEditor-keep-leverage-settings">
 							<Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>

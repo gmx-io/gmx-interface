@@ -1,5 +1,5 @@
 @font-face {
-  font-family: 'RelativeMono';
+  font-family: 'Relative';
   font-style: normal;
   font-weight: 400;
   src: url('./fonts/relative/relative-faux-book-pro.eot'); /* IE9 Compat Modes */
@@ -11,7 +11,7 @@
 }
 
 @font-face {
-  font-family: 'RelativeMono';
+  font-family: 'Relative';
   font-style: bold;
   font-weight: 500;
   src: url('./fonts/relative/relative-bold-pro.eot'); /* IE9 Compat Modes */
