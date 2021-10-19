@@ -1155,7 +1155,7 @@ function parseSwapOrdersData(swapOrdersData, account, indexes) {
       shouldUnwrap
     }
   }
-  return _parseOrdersData(swapOrdersData, account, indexes, extractor, 4, 3)
+  return _parseOrdersData(swapOrdersData, account, indexes, extractor, 5, 3)
 }
 
 export function useOrders(flagOrdersEnabled, overrideAccount) {

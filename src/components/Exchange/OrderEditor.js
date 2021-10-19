@@ -58,8 +58,8 @@ export default function OrderEditor(props) {
 
   const { swapOption } = order;
 
-  const position = order.orderType === STOP ? getPositionForOrder(order, positionsMap) : null
-  const liquidationPrice = position ? getLiquidationPrice(position) : null
+  const position = order.orderType !== SWAP ? getPositionForOrder(order, positionsMap) : null
+  const liquidationPrice = (order.orderType === STOP && position) ? getLiquidationPrice(position) : null
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -157,7 +157,7 @@ export default function OrderEditor(props) {
   }
 
   const getError = () => {
-    if (!triggerRatio && !triggerPrice) {
+    if ((!triggerRatio || triggerRatio.eq(0)) && (!triggerPrice || triggerPrice.eq(0))) {
       return "Enter Price";
     }
     if (order.swapOption === SWAP && triggerRatio.eq(order.triggerRatio)) {
@@ -167,8 +167,10 @@ export default function OrderEditor(props) {
       return "Enter new Price";
     }
     if (position) {
-      if (position.isLong && triggerPrice.lte(liquidationPrice)) { return "Price below Liq. Price" }
-      if (!position.isLong && triggerPrice.gte(liquidationPrice)) { return "Price above Liq. Price" }
+      if (order.orderType === STOP) {
+        if (position.isLong && triggerPrice.lte(liquidationPrice)) { return "Price below Liq. Price" }
+        if (!position.isLong && triggerPrice.gte(liquidationPrice)) { return "Price above Liq. Price" }
+      }
 
       const { delta, hasProfit } = calculatePositionDelta(triggerPrice, position)
       if (hasProfit && delta.eq(0)) {
@@ -194,7 +196,7 @@ export default function OrderEditor(props) {
   }
 
   const renderMinProfitWarning = () => {
-    if (!position) { return null }
+    if (order.orderType === SWAP || !position || !triggerPrice || triggerPrice.eq(0)) { return null }
 
     const { delta, pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta(triggerPrice, position)
     if (hasProfit && delta.eq(0)) {
