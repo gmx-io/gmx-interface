@@ -11,6 +11,7 @@ import {
 	formatAmount,
 	formatDateTime,
   usePrevious,
+  getLiquidationPrice,
   useOrders,
   useLocalStorageSerializeKey
 } from '../../Helpers'
@@ -23,6 +24,8 @@ import Tab from '../Tab/Tab'
 import { getTokens } from '../../data/Tokens'
 
 const IS_CANDLESTICKS = true
+
+const PRICE_LINE_TEXT_WIDTH = 15
 
 function getChartToken(swapOption, fromToken, toToken, chainId) {
   if (!fromToken || !toToken) { return }
@@ -199,7 +202,7 @@ const getChartOptions = (width, height) => ({
   layout: {
     backgroundColor: 'rgba(255, 255, 255, 0)',
     textColor: '#ccc',
-    fontFamily: 'Relative'
+    fontFamily: 'RelativeMono'
   },
   localization: {
     // https://github.com/tradingview/lightweight-charts/blob/master/docs/customization.md#time-format
@@ -250,7 +253,8 @@ export default function ExchangeTVChart(props) {
     infoTokens,
     flagOrdersEnabled,
     chainId,
-    savedShouldShowOrderLines
+    positions,
+    savedShouldShowPositionLines
   } = props
   const [currentChart, setCurrentChart] = useState();
   const [currentSeries, setCurrentSeries] = useState();
@@ -380,26 +384,47 @@ export default function ExchangeTVChart(props) {
 
   useEffect(() => {
     const lines = [];
-    if (currentSeries && currentOrders && currentOrders.length && savedShouldShowOrderLines) {
-      currentOrders.forEach(order => {
-        const indexToken = getToken(chainId, order.indexToken)
-        let tokenSymbol
-        if (indexToken && indexToken.symbol) {
-          tokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol
-        }
-        const title = `${order.orderType === LIMIT ? "Increase" : "Decrease"} ${tokenSymbol} ${order.swapOption}`
+    if (currentSeries && savedShouldShowPositionLines) {
+      if (currentOrders && currentOrders.length > 0) {
+        currentOrders.forEach(order => {
+          const indexToken = getToken(chainId, order.indexToken)
+          let tokenSymbol
+          if (indexToken && indexToken.symbol) {
+            tokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol
+          }
+          const title = `${order.orderType === LIMIT ? "Inc." : "Dec."} ${tokenSymbol} ${order.swapOption}`
+          // const color = order.swapOption === "Long" ? '#0f8a5b' : '#8f1f30'
+          const color = '#3a3e5e'
+          lines.push(currentSeries.createPriceLine({
+            price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, 2)),
+            color,
+            title: title.padEnd(PRICE_LINE_TEXT_WIDTH, " ")
+          }))
+        })
+      }
+      if (positions && positions.length > 0) {
         const color = '#3a3e5e'
-        lines.push(currentSeries.createPriceLine({
-          price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, 2)),
-          color,
-          title
-        }));
-      })
+
+        positions.forEach(position => {
+          lines.push(currentSeries.createPriceLine({
+            price: parseFloat(formatAmount(position.averagePrice, USD_DECIMALS, 2)),
+            color,
+            title: (`Open ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}`).padEnd(PRICE_LINE_TEXT_WIDTH, " ")
+          }))
+
+          const liquidationPrice = getLiquidationPrice(position)
+          lines.push(currentSeries.createPriceLine({
+            price: parseFloat(formatAmount(liquidationPrice, USD_DECIMALS, 2)),
+            color,
+            title: (`Liq. ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}`).padEnd(PRICE_LINE_TEXT_WIDTH, " ")
+          }))
+        })
+      }
     }
     return () => {
       lines.forEach(line => currentSeries.removePriceLine(line))
     }
-  }, [currentOrders, currentSeries, chainId, savedShouldShowOrderLines])
+  }, [currentOrders, positions, currentSeries, chainId, savedShouldShowPositionLines])
 
   const candleStatsHtml = useMemo(() => {
     if (!priceData) {

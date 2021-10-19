@@ -6,10 +6,10 @@ import { ethers } from 'ethers'
 
 import {
   BASIS_POINTS_DIVISOR,
-  getTokenInfo,
   SWAP,
   LONG,
   SHORT,
+  getTokenInfo,
   getConnectWalletHandler,
   fetcher,
   expandDecimals,
@@ -32,6 +32,7 @@ import VaultV2 from './abis/VaultV2.json'
 import Token from './abis/Token.json'
 import Router from './abis/Router.json'
 
+import Checkbox from './components/Checkbox/Checkbox'
 import SwapBox from './components/Exchange/SwapBox'
 import ExchangeTVChart from './components/Exchange/ExchangeTVChart'
 import PositionsList from './components/Exchange/PositionsList'
@@ -154,7 +155,7 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
   return { collateralTokens, indexTokens, isLong }
 }
 
-export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage, savedSlippageAmount, pendingTxns, setPendingTxns, savedShouldShowOrderLines }) {
+export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage, savedSlippageAmount, pendingTxns, setPendingTxns, savedShouldShowPositionLines, setSavedShouldShowPositionLines }) {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -320,14 +321,21 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   const getListSection = () => {
     return (
       <div>
-        <Tab
-          options={LIST_SECTIONS}
-          optionLabels={LIST_SECTIONS_LABELS}
-          option={listSection}
-          onChange={section => setListSection(section)}
-          type="inline"
-          className="Exchange-list-tabs"
-        />
+        <div className="Exchange-list-tab-container">
+          <Tab
+            options={LIST_SECTIONS}
+            optionLabels={LIST_SECTIONS_LABELS}
+            option={listSection}
+            onChange={section => setListSection(section)}
+            type="inline"
+            className="Exchange-list-tabs"
+          />
+          <div className="align-right Exchange-should-show-position-lines">
+						<Checkbox isChecked={savedShouldShowPositionLines} setIsChecked={setSavedShouldShowPositionLines}>
+							<span className="muted">Chart positions</span>
+						</Checkbox>
+          </div>
+        </div>
         {listSection === 'Positions' &&
           <PositionsList
             setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
@@ -392,7 +400,8 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
       swapOption={swapOption}
       flagOrdersEnabled={flagOrdersEnabled}
       chainId={chainId}
-      savedShouldShowOrderLines={savedShouldShowOrderLines}
+      positions={positions}
+      savedShouldShowPositionLines={savedShouldShowPositionLines}
     />
   }
 

@@ -78,7 +78,7 @@ export const DEFAULT_SLIPPAGE_AMOUNT = 20;
 
 export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3"
 export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage"
-export const SHOULD_SHOW_ORDER_LINES_KEY = "Exchange-swap-should-show-order-lines"
+export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-position-lines"
 
 const ORDER_EXECUTION_GAS_PRICE = expandDecimals(1, 9) // 1 gwei
 
