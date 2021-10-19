@@ -313,7 +313,7 @@ export default function PositionSeller(props) {
     if (!fromAmount) { return "Enter an amount" }
     if (nextLeverage && nextLeverage.eq(0)) { return "Enter an amount" }
     if (orderType === STOP) {
-      if (!triggerPriceUsd) { return "Enter Price" }
+      if (!triggerPriceUsd || triggerPriceUsd.eq(0)) { return "Enter Price" }
       if (position.isLong && triggerPriceUsd.lte(liquidationPrice)) { return "Price below Liq. Price" }
       if (!position.isLong && triggerPriceUsd.gte(liquidationPrice)) { return "Price above Liq. Price" }
 
