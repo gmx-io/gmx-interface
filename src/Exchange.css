@@ -1,4 +1,6 @@
 .Exchange {
+  max-width: 100rem;
+  margin: auto;
 }
 
 .Exchange-list-tab-container {
