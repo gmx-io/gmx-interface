@@ -25,7 +25,7 @@ export const ARBITRUM = 42161
 export const DEFAULT_CHAIN_ID = ARBITRUM
 export const CHAIN_ID = DEFAULT_CHAIN_ID
 
-export const MIN_PROFIT_TIME = 60 * 60 * 24 // 24 hours
+export const MIN_PROFIT_TIME = 60 * 60 * 12 // 12 hours
 
 const CHAIN_NAMES_MAP = {
   [MAINNET]: "BSC",
@@ -879,6 +879,17 @@ export function shortenAddress(address) {
 
 export function formatDateTime(time) {
   return formatDateFn(time * 1000, "dd MMM yyyy, h:mm a")
+}
+
+export function getTimeRemaining(time) {
+  const now = parseInt(Date.now() / 1000)
+  if (time < now) {
+    return "0h 0m"
+  }
+  const diff = time - now
+  const hours = parseInt(diff / (60 * 60))
+  const minutes = parseInt((diff - hours * 60 * 60) / 60)
+  return `${hours}h ${minutes}m`
 }
 
 export function formatDate(time) {

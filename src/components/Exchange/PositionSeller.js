@@ -33,7 +33,8 @@ import {
   calculatePositionDelta,
   getDeltaStr,
   getProfitPrice,
-  formatDateTime
+  formatDateTime,
+  getTimeRemaining
 } from "../../Helpers"
 import { createDecreaseOrder, callContract } from "../../Api"
 import { getContract } from "../../Addresses"
@@ -96,6 +97,7 @@ export default function PositionSeller(props) {
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true)
   const position = (positionsMap && positionKey) ? positionsMap[positionKey] : undefined
   const [fromValue, setFromValue] = useState("")
+  const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const prevIsVisible = usePrevious(isVisible)
   const routerAddress = getContract(chainId, "Router")
@@ -337,6 +339,10 @@ export default function PositionSeller(props) {
     if (nextLeverage && nextLeverage.gt(30.5 * BASIS_POINTS_DIVISOR)) {
       return "Max leverage: 30.5x"
     }
+
+    if (hasPendingProfit && orderType !== STOP && !isProfitWarningAccepted) {
+      return "Forfeit profit not checked"
+    }
   }
 
   const isPrimaryEnabled = () => {
@@ -346,6 +352,8 @@ export default function PositionSeller(props) {
 
     return true
   }
+
+  const hasPendingProfit = position.delta.eq(0) && position.pendingDelta.gt(0)
 
   const getPrimaryText = () => {
     const error = getError()
@@ -359,7 +367,7 @@ export default function PositionSeller(props) {
 
       return "Create Order"
     }
-    if (position.delta.eq(0) && position.pendingDelta.gt(0)) {
+    if (hasPendingProfit) {
       return "Close without profit"
     }
     return isSubmitting ? "Closing..." : "Close"
@@ -367,6 +375,7 @@ export default function PositionSeller(props) {
 
   const resetForm = () => {
     setFromValue("")
+    setIsProfitWarningAccepted(false)
   }
 
   useEffect(() => {
@@ -471,25 +480,23 @@ export default function PositionSeller(props) {
       if (orderType === MARKET) {
         return (
           <div className="Confirmation-box-warning">
-            WARNING: You have a&nbsp;
+            You have a&nbsp;
             <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
               pending profit
             </a> of {deltaStr}. <br/>
-            Profit price: ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
-            Current movement: {formatAmount(priceMovementPercentage, 2, 2, true)}%.
-            This requirement expires on {formatDateTime(minProfitExpiration)}
+            Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
+            This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
           </div>
         )
       }
       return (
         <div className="Confirmation-box-warning">
-          WARNING: You may have a&nbsp;
+          This order will forfeit a&nbsp;
           <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
-            pending profit
+            profit
           </a> of {deltaStr}. <br/>
-          Profit price: ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
-          Current movement: {formatAmount(priceMovementPercentage, 2, 2, true)}%.
-          This requirement expires on {formatDateTime(minProfitExpiration)}
+          Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
+          This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
         </div>
       )
     }
@@ -506,7 +513,7 @@ export default function PositionSeller(props) {
     );
   }
 
-  const [profitPrice, priceMovementPercentage] = getProfitPrice(orderType === MARKET ? position.markPrice : triggerPriceUsd, position)
+  const [profitPrice] = getProfitPrice(orderType === MARKET ? position.markPrice : triggerPriceUsd, position)
 
   let triggerPricePrefix
   if (triggerPriceUsd) {
@@ -576,6 +583,13 @@ export default function PositionSeller(props) {
           {renderMinProfitWarning()}
           {shouldShowExistingOrderWarning && renderExistingOrderWarning()}
           <div className="PositionEditor-info-box">
+            {(hasPendingProfit && orderType !== STOP) &&
+              <div className="PositionEditor-accept-profit-warning">
+                <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
+                  <span className="muted">Forfeit profit</span>
+                </Checkbox>
+              </div>
+            }
             <div className="PositionEditor-keep-leverage-settings">
 							<Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
 								<span className="muted">Keep leverage at {formatAmount(position.leverage, 4, 2)}x</span>
