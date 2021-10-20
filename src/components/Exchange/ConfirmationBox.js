@@ -165,7 +165,7 @@ export default function ConfirmationBox(props) {
     if (spread && spread.isHigh) {
       return (
         <div className="Confirmation-box-warning">
-          WARNING: the spread is > 1%, please ensure the trade details are acceptable before comfirming
+          The spread is > 1%, please ensure the trade details are acceptable before comfirming
         </div>
       );
     }
@@ -179,7 +179,7 @@ export default function ConfirmationBox(props) {
     if (isSwap) {
       return (
         <div className="Confirmation-box-warning">
-          WARNING: Fees are high to swap from {fromToken.symbol} to {toToken.symbol}.
+          Fees are high to swap from {fromToken.symbol} to {toToken.symbol}.
         </div>
       )
     }
@@ -191,7 +191,7 @@ export default function ConfirmationBox(props) {
     const collateralToken = getToken(chainId, collateralTokenAddress)
     return (
       <div className="Confirmation-box-warning">
-        WARNING: Fees are high to swap from {fromToken.symbol} to {collateralToken.symbol}. <br/>
+        Fees are high to swap from {fromToken.symbol} to {collateralToken.symbol}. <br/>
         {collateralToken.symbol} is needed for collateral.
       </div>
     )
@@ -204,7 +204,7 @@ export default function ConfirmationBox(props) {
         if (isMarketOrder && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)) {
           return (
             <div className="Confirmation-box-warning">
-              WARNING: You have a&nbsp;
+              You have a&nbsp;
               <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
                 pending profit
               </a> of {existingPosition.deltaStr}, this will be reduced to zero if you increase your position now. This requirement expires on {formatDateTime(minProfitExpiration)}
@@ -215,7 +215,7 @@ export default function ConfirmationBox(props) {
           const { delta, hasProfit } = calculatePositionDelta(triggerPriceUsd, existingPosition)
           if (hasProfit && delta.eq(0)) {
             return <div className="Confirmation-box-warning">
-              WARNING: You may have a&nbsp;
+              You may have a&nbsp;
               <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
                 pending profit
               </a> of {existingPosition.deltaStr}, this will be reduced to zero if order is executed before {formatDateTime(minProfitExpiration)}
@@ -226,10 +226,10 @@ export default function ConfirmationBox(props) {
 
       return (
         <div className="Confirmation-box-warning">
-          NOTE: A minimum price change of&nbsp;
+          A minimum price change of&nbsp;
           <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
             1.5%
-          </a> is required for a position to be in profit.
+          </a> is required for a position to be in profit. This applies for the first 12 hours after opening a position.
         </div>
       );
     }
@@ -243,7 +243,7 @@ export default function ConfirmationBox(props) {
     const sizeInToken = formatAmount(existingOrder.sizeDelta.mul(PRECISION).div(existingOrder.triggerPrice), USD_DECIMALS, 4, true)
     return (
       <div className="Confirmation-box-warning">
-        NOTE: You have an active Limit Order to Increase {existingOrder.swapOption} {sizeInToken} {indexToken.symbol} (${formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at price ${formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
+        You have an active Limit Order to Increase {existingOrder.swapOption} {sizeInToken} {indexToken.symbol} (${formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at price ${formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
       </div>
     );
   }, [existingOrder, isSwap, chainId])
