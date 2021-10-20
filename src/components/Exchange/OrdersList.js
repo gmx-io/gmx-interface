@@ -93,14 +93,12 @@ export default function OrdersList(props) {
     setEditingOrder(order);
   }, [setEditingOrder])
 
-	const renderHead = useCallback((renderType = true) => {
+	const renderHead = useCallback(() => {
 		return (
       <tr className="Exchange-list-header">
-        {renderType &&
-          <th>
-            <div>Type</div>
-          </th>
-        }
+        <th>
+          <div>Type</div>
+        </th>
         <th>
           <div>Order</div>
         </th>
@@ -110,8 +108,7 @@ export default function OrdersList(props) {
         <th>
           <div>Mark Price</div>
         </th>
-        {renderType && <th colSpan="2"></th>}
-        {!renderType && <th></th>}
+        <th colSpan="2"></th>
       </tr>
 		);
 	}, [])
@@ -194,7 +191,7 @@ export default function OrdersList(props) {
       }
 
       return (
-        <tr className="Exchange-list-item" key={`${order.orderType}-${order.swapOption}-${order.index}`}>
+        <tr className="Exchange-list-item" key={`${order.swapOption}-${order.orderType}-${order.index}`}>
           <td className="Exchange-list-item-type">
             {order.orderType === LIMIT ? "Limit" : "Trigger"}
           </td>
@@ -233,34 +230,42 @@ export default function OrdersList(props) {
           fromTokenInfo,
           toTokenInfo
         )
-        return (
-          <tr className="Exchange-list-item" key={`${order.orderType}-${order.index}`}>
-            <td>
-              Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)} {fromTokenInfo.symbol} for {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)} {toTokenInfo.symbol}
-            </td>
-            <td>
-              <Tooltip position="center-bottom" handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}>
-                You will receive at least {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} {toTokenInfo.symbol}. Exact execution price may vary slightly depending on fees at the time the order is executed.
-              </Tooltip>
-            </td>
-            <td>
-              {getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo)}
-            </td>
-            <td>
-              {!hideActions &&
-                <>
-                  <button className="Exchange-list-action" onClick={() => onEditClick(order)}>
+
+        return (<div key={`${order.swapOption}-${order.orderType}-${order.index}`} className="App-card">
+          <div className="App-card-title">
+            Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)} {fromTokenInfo.symbol} for {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)} {toTokenInfo.symbol}
+          </div>
+          <div className="App-card-divider"></div>
+          <div className="App-card-content">
+            <div className="App-card-row">
+              <div className="label">Price</div>
+              <div>
+                <Tooltip position="right-bottom" handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}>
+                  You will receive at least {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} {toTokenInfo.symbol}. Exact execution price may vary slightly depending on fees at the time the order is executed.
+                </Tooltip>
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">Mark Price</div>
+              <div>
+                {getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo)}
+              </div>
+            </div>
+            {!hideActions &&
+              <>
+                <div className="App-card-divider"></div>
+                <div className="App-card-options">
+                  <button className="App-button-option App-card-option" onClick={() => onEditClick(order)}>
                     Edit
                   </button>
-                  <br />
-                  <button className="Exchange-list-action" onClick={() => onCancelClick(order)}>
+                  <button className="App-button-option App-card-option" onClick={() => onCancelClick(order)}>
                     Cancel
                   </button>
-                </>
-              }
-            </td>
-          </tr>
-        );
+                </div>
+              </>
+            }
+          </div>
+        </div>)
       }
 
       const indexToken = getTokenInfo(infoTokens, order.indexToken);
@@ -280,36 +285,45 @@ export default function OrdersList(props) {
         }
       }
 
-      return (
-        <tr className="Exchange-list-item" key={`${order.orderType}-${order.swapOption}-${order.index}`}>
-          <td>
-            {order.orderType === LIMIT ? "Limit" : "Trigger"} {order.swapOption} {sizeInToken} {indexTokenSymbol}
-            &nbsp;(${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)})
-            {error &&
-              <div className="Exchange-list-item-error">
-                {error}
-              </div>
-            }
-          </td>
-          <td>{triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}</td>
-          <td>
-            {formatAmount(markPrice, USD_DECIMALS, 2, true)}
-          </td>
-          <td>
-            {!hideActions &&
-              <>
-                <button className="Exchange-list-action" onClick={() => onEditClick(order)}>
+      return (<div key={`${order.swapOption}-${order.orderType}-${order.index}`} className="App-card">
+        <div className="App-card-title">
+          {order.orderType === LIMIT ? "Limit" : "Trigger"} {order.swapOption} {sizeInToken} {indexTokenSymbol}
+          &nbsp;(${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)})
+          {error &&
+            <div className="Exchange-list-item-error">
+              {error}
+            </div>
+          }
+        </div>
+        <div className="App-card-divider"></div>
+        <div className="App-card-content">
+          <div className="App-card-row">
+            <div className="label">Price</div>
+            <div>
+              {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
+            </div>
+          </div>
+          <div className="App-card-row">
+            <div className="label">Mark Price</div>
+            <div>
+              {formatAmount(markPrice, USD_DECIMALS, 2, true)}
+            </div>
+          </div>
+          {!hideActions &&
+            <>
+              <div className="App-card-divider"></div>
+              <div className="App-card-options">
+                <button className="App-button-option App-card-option" onClick={() => onEditClick(order)}>
                   Edit
                 </button>
-                <br />
-                <button className="Exchange-list-action" onClick={() => onCancelClick(order)}>
+                <button className="App-button-option App-card-option" onClick={() => onCancelClick(order)}>
                   Cancel
                 </button>
-              </>
-            }
-          </td>
-        </tr>
-      )
+              </div>
+            </>
+          }
+        </div>
+      </div>)
     })
   }, [orders, onEditClick, onCancelClick, infoTokens, positionsMap, hideActions, chainId])
 
@@ -322,13 +336,14 @@ export default function OrdersList(props) {
           {renderLargeList()}
         </tbody>
       </table>
-      <table className="Exchange-list Orders small">
-        <tbody>
-          {renderHead(false)}
-          {renderEmptyRow()}
-          {renderSmallList()}
-         </tbody>
-      </table>
+      <div className="Exchange-list Orders small">
+        {(!orders || orders.length === 0) &&
+          <div className="Exchange-empty-positions-list-note App-card">
+            No open orders
+          </div>
+        }
+        {renderSmallList()}
+      </div>
       {editingOrder &&
         <OrderEditor
           order={editingOrder}
