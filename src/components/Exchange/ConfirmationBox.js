@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useState, useMemo } from 'react'
 import {
 	USD_DECIMALS,
 	PRECISION,
@@ -10,6 +10,8 @@ import {
   MIN_PROFIT_TIME,
 	expandDecimals,
   getExchangeRate,
+  getProfitPrice,
+  getTimeRemaining,
   formatAmount,
   useLocalStorageSerializeKey,
   getExchangeRateDisplay,
@@ -21,6 +23,7 @@ import {
 
 import { BsArrowRight } from 'react-icons/bs'
 import Modal from '../Modal/Modal'
+import Checkbox from '../Checkbox/Checkbox'
 import ExchangeInfoRow from './ExchangeInfoRow'
 import { getToken, getTokenBySymbol } from '../../data/Tokens'
 
@@ -78,6 +81,7 @@ export default function ConfirmationBox(props) {
   } = props;
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT)
+  const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false)
 
   let minOut;
   let fromTokenUsd;
@@ -118,6 +122,9 @@ export default function ConfirmationBox(props) {
         return "Invalid price, see warning"
       }
     }
+    if (isMarketOrder && hasPendingProfit && !isProfitWarningAccepted) {
+      return "Forfeit profit not checked"
+    }
     return false
   }
 
@@ -136,7 +143,7 @@ export default function ConfirmationBox(props) {
         : "Create Order"
 
       if (hasExistingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)) {
-        return isLong ? `Accept reduction and ${action}` : `Accept reduction and Short`
+        return isLong ? `Forfeit profit and ${action}` : `Forfeit profit and Short`
       }
 
       return isLong ? `Accept minimum and ${action}` : `Accept minimum and ${action}`
@@ -197,28 +204,36 @@ export default function ConfirmationBox(props) {
     )
   }, [feeBps, isSwap, collateralTokenAddress, chainId, fromToken.symbol, toToken.symbol, orderType])
 
+  const hasPendingProfit = existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)
+
   const renderMinProfitWarning = useCallback(() => {
     if (!isSwap) {
       if (hasExistingPosition) {
         const minProfitExpiration = existingPosition.lastIncreasedTime + MIN_PROFIT_TIME
         if (isMarketOrder && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)) {
+          const [profitPrice] = getProfitPrice(existingPosition.markPrice, existingPosition)
           return (
             <div className="Confirmation-box-warning">
-              You have a&nbsp;
+              This will forfeit a&nbsp;
               <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
                 pending profit
-              </a> of {existingPosition.deltaStr}, this will be reduced to zero if you increase your position now. This requirement expires on {formatDateTime(minProfitExpiration)}
+              </a> of {existingPosition.deltaStr}.<br/>
+              Profit price: {existingPosition.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
+              This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
             </div>
           );
         }
         if (!isMarketOrder) {
           const { delta, hasProfit } = calculatePositionDelta(triggerPriceUsd, existingPosition)
           if (hasProfit && delta.eq(0)) {
+            const [profitPrice] = getProfitPrice(existingPosition.markPrice, existingPosition)
             return <div className="Confirmation-box-warning">
-              You may have a&nbsp;
+              This order will forfeit a&nbsp;
               <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
-                pending profit
-              </a> of {existingPosition.deltaStr}, this will be reduced to zero if order is executed before {formatDateTime(minProfitExpiration)}
+                profit
+              </a> of {existingPosition.deltaStr}.<br/>
+              Profit price: {existingPosition.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
+              This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
             </div>
           }
         }
@@ -294,6 +309,14 @@ export default function ConfirmationBox(props) {
         {renderFeeWarning()}
         {renderMinProfitWarning()}
         {renderExistingOrderWarning()}
+        {(hasPendingProfit && isMarketOrder) &&
+          <div className="PositionEditor-accept-profit-warning">
+            <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
+              <span className="muted">Forfeit profit</span>
+            </Checkbox>
+          </div>
+        }
+
         {(isShort) &&
           <ExchangeInfoRow label="Profits In">
               {getToken(chainId, shortCollateralAddress).symbol}
