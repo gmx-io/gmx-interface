@@ -377,7 +377,8 @@ export default function ConfirmationBox(props) {
   }, [renderMain, renderMinProfitWarning, shortCollateralAddress,
       isShort, isLong, toTokenInfo, nextAveragePrice, toAmount, hasExistingPosition, existingPosition,
       isMarketOrder, triggerPriceUsd, showSpread, spread, displayLiquidationPrice, existingLiquidationPrice,
-      feesUsd, leverage, renderExecutionFee, shortCollateralToken, renderExistingOrderWarning, chainId, renderFeeWarning])
+      feesUsd, leverage, renderExecutionFee, shortCollateralToken, renderExistingOrderWarning, chainId, renderFeeWarning,
+      hasPendingProfit, isProfitWarningAccepted])
 
   const renderSwapSection = useCallback(() => {
     return <>
