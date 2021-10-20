@@ -142,11 +142,11 @@ export default function ConfirmationBox(props) {
         ? (isLong ? "Long" : "Short")
         : "Create Order"
 
-      if (hasExistingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)) {
+      if (isMarketOrder && hasExistingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)) {
         return isLong ? `Forfeit profit and ${action}` : `Forfeit profit and Short`
       }
 
-      return isLong ? `Accept minimum and ${action}` : `Accept minimum and ${action}`
+      return isMarketOrder ? `Accept minimum and ${action}` : action
     }
 
     if (!isMarketOrder) { return "Creating Order..." }
