@@ -172,7 +172,7 @@ export default function ConfirmationBox(props) {
   }, [isMarketOrder, spread])
 
   const renderFeeWarning = useCallback(() => {
-    if (orderType === LIMIT || !feeBps || feeBps < 80) {
+    if (orderType === LIMIT || !feeBps || feeBps < 50) {
       return null
     }
 
