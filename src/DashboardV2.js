@@ -627,8 +627,8 @@ export default function DashboardV2() {
               <div className="App-card-row">
                 <div className="label">Link</div>
                 <div>
-                  <a href="https://tokenfeeds.info/gmx-chart" target="_blank" rel="noopener noreferrer">
-                    https://tokenfeeds.info/gmx-chart
+                  <a href="https://app.tokenfeeds.info/gmx-chart" target="_blank" rel="noopener noreferrer">
+                    https://app.tokenfeeds.info/gmx-chart
                   </a>
                 </div>
               </div>
