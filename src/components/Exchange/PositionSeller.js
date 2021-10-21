@@ -91,7 +91,7 @@ export default function PositionSeller(props) {
     isWaitingForPluginApproval,
     isPluginApproving,
     orderBookApproved,
-    approveOrderBook
+    setOrdersToaOpen
   } = props
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT)
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true)
@@ -284,7 +284,7 @@ export default function PositionSeller(props) {
   }
 
   const [deltaStr, deltaPercentageStr] = useMemo(() => {
-    if (!position || !position.markPrice || !fromAmount || fromAmount.eq(0)) {
+    if (!position || !position.markPrice) {
       return ["-", "-"]
     }
     if (orderType !== STOP) {
@@ -296,7 +296,7 @@ export default function PositionSeller(props) {
       })
       return [deltaStr, deltaPercentageStr]
     }
-    if (!triggerPriceUsd) {
+    if (!triggerPriceUsd || triggerPriceUsd.eq(0)) {
       return ["-", "-"]
     }
 
@@ -309,7 +309,6 @@ export default function PositionSeller(props) {
     })
     return [deltaStr, deltaPercentageStr]
   }, [position, triggerPriceUsd, orderType, fromAmount])
-
 
   const getError = () => {
     if (!fromAmount) { return "Enter an amount" }
@@ -349,6 +348,8 @@ export default function PositionSeller(props) {
     const error = getError()
     if (error) { return false }
     if (isSubmitting) { return false }
+    if (needOrderBookApproval && isWaitingForPluginApproval) { return false }
+    if (isPluginApproving) { return false }
 
     return true
   }
@@ -386,7 +387,7 @@ export default function PositionSeller(props) {
 
   const onClickPrimary = async () => {
     if (needOrderBookApproval) {
-      approveOrderBook();
+      setOrdersToaOpen(true)
       return
     }
 

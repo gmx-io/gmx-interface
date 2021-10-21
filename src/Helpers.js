@@ -651,7 +651,7 @@ export function getNextToAmount(chainId, fromAmount, fromTokenAddress, toTokenAd
 
 export function getProfitPrice(closePrice, position) {
   let profitPrice
-  if (position && position.markPrice && position.averagePrice && closePrice) {
+  if (position && position.averagePrice && closePrice) {
     profitPrice = position.isLong
       ? position.averagePrice.mul(BASIS_POINTS_DIVISOR + PROFIT_THRESHOLD_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
       : position.averagePrice.mul(BASIS_POINTS_DIVISOR - PROFIT_THRESHOLD_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
