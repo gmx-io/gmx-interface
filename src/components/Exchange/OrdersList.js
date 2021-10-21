@@ -9,7 +9,6 @@ import {
   STOP,
   LIMIT,
   USD_DECIMALS,
-  PRECISION,
   formatAmount,
   TRIGGER_PREFIX_ABOVE,
   TRIGGER_PREFIX_BELOW,
@@ -174,7 +173,6 @@ export default function OrdersList(props) {
       }
 
       const indexToken = getTokenInfo(infoTokens, order.indexToken);
-      const sizeInToken = formatAmount(order.sizeDelta.mul(PRECISION).div(order.triggerPrice), USD_DECIMALS, 4, true)
       const maximisePrice = (order.orderType === LIMIT && order.swapOption === LONG) || (order.orderType === STOP && !order.swapOption === SHORT)
       const markPrice = maximisePrice ? indexToken.maxPrice : indexToken.minPrice
       const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW
@@ -196,8 +194,8 @@ export default function OrdersList(props) {
             {order.orderType === LIMIT ? "Limit" : "Trigger"}
           </td>
           <td>
-            {order.orderType === LIMIT ? "Increase" : "Decrease"} {order.swapOption} {sizeInToken} {indexTokenSymbol}
-            &nbsp;(${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)})
+            {order.orderType === LIMIT ? "Increase" : "Decrease"} {indexTokenSymbol} {order.swapOption}
+            &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
             {error &&
               <div className="Exchange-list-item-error">
                 {error}
@@ -269,7 +267,6 @@ export default function OrdersList(props) {
       }
 
       const indexToken = getTokenInfo(infoTokens, order.indexToken);
-      const sizeInToken = formatAmount(order.sizeDelta.mul(PRECISION).div(order.triggerPrice), USD_DECIMALS, 4, true)
       const maximisePrice = (order.orderType === LIMIT && order.swapOption === LONG) || (order.orderType === STOP && !order.swapOption === SHORT)
       const markPrice = maximisePrice ? indexToken.maxPrice : indexToken.minPrice
       const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW
@@ -287,8 +284,8 @@ export default function OrdersList(props) {
 
       return (<div key={`${order.swapOption}-${order.orderType}-${order.index}`} className="App-card">
         <div className="App-card-title">
-          {order.orderType === LIMIT ? "Limit" : "Trigger"} {order.swapOption} {sizeInToken} {indexTokenSymbol}
-          &nbsp;(${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)})
+          {order.orderType === LIMIT ? "Increase" : "Decrease"} {indexTokenSymbol} {order.swapOption}
+          &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
           {error &&
             <div className="Exchange-list-item-error">
               {error}

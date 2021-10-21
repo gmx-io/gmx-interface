@@ -416,8 +416,8 @@ export default function PositionSeller(props) {
         triggerPriceUsd,
         triggerAboveThreshold,
         {
-          sentMsg: "Trigger Order submitted!",
-          successMsg: "Trigger Order created!",
+          sentMsg: "Order submitted!",
+          successMsg: "Order created!",
           failMsg: "Order creation failed",
           setPendingTxns
         },
@@ -469,7 +469,7 @@ export default function PositionSeller(props) {
     const prefix = existingOrder.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW
     return (
       <div className="Confirmation-box-warning">
-        NOTE: You have an active Trigger Order to Decrease {existingOrder.swapOption} {sizeInToken} {indexToken.symbol} (${formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at Price {prefix} {formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
+        You have an active order to decrease {existingOrder.swapOption} {sizeInToken} {indexToken.symbol} (${formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at {prefix} {formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
       </div>
     );
   }, [existingOrder, infoTokens])
