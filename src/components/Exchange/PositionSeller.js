@@ -480,10 +480,11 @@ export default function PositionSeller(props) {
       if (orderType === MARKET) {
         return (
           <div className="Confirmation-box-warning">
-            You have a&nbsp;
+            Reducing the position at the current price will forfeit a&nbsp;
             <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
               pending profit
             </a> of {deltaStr}. <br/>
+            <br/>
             Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
             This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
           </div>
