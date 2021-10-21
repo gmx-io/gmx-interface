@@ -26,7 +26,8 @@ import {
   getLiquidationPrice,
   formatDateTime,
   getDeltaStr,
-  getProfitPrice
+  getProfitPrice,
+  getTimeRemaining
 } from "../../Helpers"
 import {
   updateSwapOrder,
@@ -205,17 +206,16 @@ export default function OrderEditor(props) {
         deltaPercentage: pendingDeltaPercentage,
         hasProfit
       })
-      const [profitPrice, priceMovementPercentage] = getProfitPrice(triggerPrice, position)
+      const profitPrice = getProfitPrice(triggerPrice, position)
       const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME
       return (
         <div className="Confirmation-box-warning">
-          WARNING: You may have a&nbsp;
+          This order will forfeit a&nbsp;
           <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
-            pending profit
+            profit
           </a> of {deltaStr}. <br/>
-          Profit price: ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
-          Current movement: {formatAmount(priceMovementPercentage, 2, 2, true)}%.
-          This requirement expires on {formatDateTime(minProfitExpiration)}
+          Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
+          This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
         </div>
       )
     }
