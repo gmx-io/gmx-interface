@@ -40,7 +40,7 @@ export function getChainName(chainId) {
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG")
 const MAX_LEVERAGE = 50 * 10000
 
-export const DEFAULT_GAS_LIMIT = 3 * 1000 * 1000
+export const DEFAULT_GAS_LIMIT = 5 * 1000 * 1000
 export const SECONDS_PER_YEAR = 31536000
 export const USDG_DECIMALS = 18
 export const USD_DECIMALS = 30
