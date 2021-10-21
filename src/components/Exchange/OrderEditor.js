@@ -265,25 +265,15 @@ export default function OrderEditor(props) {
         </div>
       </div>
       <ExchangeInfoRow label="Price">
-        {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
-        {triggerPrice && !triggerPrice.eq(order.triggerPrice) &&
-          <React.Fragment>
+        {(triggerPrice && !triggerPrice.eq(order.triggerPrice)) ? <>
+            <span className="muted">{triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}</span>
             &nbsp;
             <BsArrowRight />
             &nbsp;
             {triggerPricePrefix} {formatAmount(triggerPrice, USD_DECIMALS, 2, true)}
-          </React.Fragment>
+          </> : <span>{triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}</span>
         }
       </ExchangeInfoRow>
-      {/*<ExchangeInfoRow label="Leverage">
-        {hasExistingPosition && toAmount && toAmount.gt(0) && <div className="inline-block muted">
-          {formatAmount(existingPosition.leverage, 4, 2)}x
-          <BsArrowRight className="transition-arrow" />
-        </div>}
-        {(toAmount && leverage && leverage.gt(0)) && `${formatAmount(leverage, 4, 2)}x`}
-        {(!toAmount && leverage && leverage.gt(0)) && `-`}
-        {(leverage && leverage.eq(0)) && `-`}
-      </ExchangeInfoRow>*/}
       {liquidationPrice &&
         <div className="Exchange-info-row">
           <div className="Exchange-info-label">Liq. Price</div>
@@ -331,26 +321,27 @@ export default function OrderEditor(props) {
         </div>
       </div>
       <ExchangeInfoRow label="Minimum received">
-        {formatAmount(order.minOut, toTokenInfo.decimals, 4, true)}
-        {triggerRatio && !triggerRatio.eq(order.triggerRatio) &&
-          <React.Fragment>
+        {(triggerRatio && !triggerRatio.eq(order.triggerRatio)) ? <>
+            <span className="muted">{formatAmount(order.minOut, toTokenInfo.decimals, 4, true)}</span>
             &nbsp;
             <BsArrowRight />
             &nbsp;
             {formatAmount(toAmount, toTokenInfo.decimals, 4, true)}
-          </React.Fragment>
+          </> : formatAmount(order.minOut, toTokenInfo.decimals, 4, true)
         }
         &nbsp;{toTokenInfo.symbol}
       </ExchangeInfoRow>
       <ExchangeInfoRow label="Price">
-        {getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo, { omitSymbols: !triggerRatio || !triggerRatio.eq(order.triggerRatio) })}
-        {triggerRatio && !triggerRatio.eq(0) && !triggerRatio.eq(order.triggerRatio) &&
-          <React.Fragment>
+        {(triggerRatio && !triggerRatio.eq(0) && !triggerRatio.eq(order.triggerRatio)) ?
+          <>
+            <span className="muted">
+              {getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo, { omitSymbols: !triggerRatio || !triggerRatio.eq(order.triggerRatio) })}
+            </span>
             &nbsp;
             <BsArrowRight />
             &nbsp;
             {getExchangeRateDisplay(triggerRatio, fromTokenInfo, toTokenInfo)}
-          </React.Fragment>
+          </> : getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo, { omitSymbols: !triggerRatio || !triggerRatio.eq(order.triggerRatio) })
         }
       </ExchangeInfoRow>
       {fromTokenInfo &&

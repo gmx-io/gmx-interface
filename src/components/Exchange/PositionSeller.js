@@ -284,7 +284,7 @@ export default function PositionSeller(props) {
   }
 
   const [deltaStr, deltaPercentageStr] = useMemo(() => {
-    if (!position) {
+    if (!position || !position.markPrice || !fromAmount || fromAmount.eq(0)) {
       return ["-", "-"]
     }
     if (orderType !== STOP) {
