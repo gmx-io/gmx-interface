@@ -475,7 +475,7 @@ export default function GlpSwap(props) {
       value,
       sentMsg: "Buy submitted!",
       failMsg: "Buy failed.",
-      successMsg: "GLP bought!",
+      successMsg: `${formatAmount(glpAmount, 18, 4, true)} GLP bought with ${formatAmount(swapAmount, swapTokenInfo.decimals, 4, true)} ${swapTokenInfo.symbol}.`,
       setPendingTxns
     })
     .then(async () => {
@@ -498,7 +498,7 @@ export default function GlpSwap(props) {
     callContract(chainId, contract, method, params, {
       sentMsg: "Sell submitted!",
       failMsg: "Sell failed.",
-      successMsg: "GLP sold!",
+      successMsg: `${formatAmount(glpAmount, 18, 4, true)} GLP sold for ${formatAmount(swapAmount, swapTokenInfo.decimals, 4, true)} ${swapTokenInfo.symbol}.`,
       setPendingTxns
     })
     .then(async () => {
