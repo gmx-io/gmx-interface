@@ -25,19 +25,25 @@
 
 .Tooltip-popup.left-bottom {
   left: 0;
-  transform: translateY(5px);
+  transform: translateY(0.5rem);
   top: 100%;
 }
 
 .Tooltip-popup.right-bottom {
   right: 0;
-  transform: translateY(5px);
+  transform: translateY(0.5rem);
   top: 100%;
+}
+
+.Tooltip-popup.right-top {
+  right: 0;
+  transform: translateY(-0.5rem);
+  bottom: 100%;
 }
 
 .Tooltip-popup.center-bottom {
   left: 50%;
-  transform: translateY(5px) translateX(-50%);
+  transform: translateY(0.5rem) translateX(-50%);
   top: 100%;
 }
 
