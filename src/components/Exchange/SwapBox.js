@@ -928,6 +928,7 @@ export default function SwapBox(props) {
         setAnchorOnFromAmount(true)
         setFromValue("")
         setToValue("")
+        setTriggerRatioValue("")
       }).finally(() => {
         setIsSubmitting(false)
         setIsPendingConfirmation(false)
@@ -1008,6 +1009,7 @@ export default function SwapBox(props) {
       setAnchorOnFromAmount(true)
       setFromValue("")
       setToValue("")
+      setTriggerPriceValue("")
     }).finally(() => {
       setIsSubmitting(false)
       setIsPendingConfirmation(false)
@@ -1105,6 +1107,7 @@ export default function SwapBox(props) {
     setFromValue("")
     setToValue("")
     setTriggerPriceValue("")
+    setTriggerRatioValue("")
 
     if (opt === SHORT && infoTokens) {
       const stableToken = getMostAbundantStableToken(chainId, infoTokens)
