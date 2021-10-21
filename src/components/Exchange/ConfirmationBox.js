@@ -23,6 +23,7 @@ import {
 
 import { BsArrowRight } from 'react-icons/bs'
 import Modal from '../Modal/Modal'
+import Tooltip from '../Tooltip/Tooltip'
 import Checkbox from '../Checkbox/Checkbox'
 import ExchangeInfoRow from './ExchangeInfoRow'
 import { getToken, getTokenBySymbol } from '../../data/Tokens'
@@ -303,6 +304,48 @@ export default function ConfirmationBox(props) {
       </ExchangeInfoRow>
     );
   }, [isMarketOrder, isSwap])
+
+  const renderAvailableLiquidity = useCallback(() => {
+    let token
+    let availableLiquidity
+    const riskThresholdBps = 5000
+    let isLiquidityRisk
+
+    if (isSwap) {
+      token = toTokenInfo
+      const poolWithoutBuffer = token.poolAmount.sub(token.bufferAmount)
+      availableLiquidity = token.availableAmount.gt(poolWithoutBuffer) ? poolWithoutBuffer : token.availableAmount
+      isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(toAmount)
+    } else {
+      if (isShort) {
+        token = shortCollateralToken
+        availableLiquidity = token.availableAmount
+
+        const sizeTokens = toUsdMax.mul(expandDecimals(1, token.decimals)).div(token.minPrice)
+        isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(sizeTokens)
+      } else {
+        token = toTokenInfo
+        availableLiquidity = token.availableAmount
+        isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(toAmount)
+      }
+    }
+
+    if (!token || !availableLiquidity) {
+      return null
+    }
+
+    return <ExchangeInfoRow label="Available Liquidity">
+      <Tooltip
+        position="right-top"
+        handleClassName={isLiquidityRisk ? "negative" : null}
+        handle={<>{formatAmount(availableLiquidity, token.decimals, token.isStable ? 0 : 2, true)} {token.symbol}</>
+      }>
+        {!isLiquidityRisk && "The order will execute if the price conditions are met and there is sufficient liquidity"}
+        {isLiquidityRisk && "There may not be sufficient liquidity to execute your order when the price conditions are met"}
+      </Tooltip>
+    </ExchangeInfoRow>
+  }, [toTokenInfo, shortCollateralToken, isShort, isSwap, toAmount, toUsdMax])
+
   const renderMarginSection = useCallback(() => {
     return <>
       <div className="Confirmation-box-info">
@@ -373,13 +416,14 @@ export default function ConfirmationBox(props) {
           {((isLong && toTokenInfo && toTokenInfo.fundingRate) || (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) && "% / 1h"}
         </ExchangeInfoRow>
         {renderExecutionFee()}
+        {orderType === LIMIT && renderAvailableLiquidity()}
       </div>
     </>
   }, [renderMain, renderMinProfitWarning, shortCollateralAddress,
       isShort, isLong, toTokenInfo, nextAveragePrice, toAmount, hasExistingPosition, existingPosition,
       isMarketOrder, triggerPriceUsd, showSpread, spread, displayLiquidationPrice, existingLiquidationPrice,
       feesUsd, leverage, renderExecutionFee, shortCollateralToken, renderExistingOrderWarning, chainId, renderFeeWarning,
-      hasPendingProfit, isProfitWarningAccepted])
+      hasPendingProfit, isProfitWarningAccepted, renderAvailableLiquidity, orderType])
 
   const renderSwapSection = useCallback(() => {
     return <>
@@ -426,11 +470,12 @@ export default function ConfirmationBox(props) {
             <div className="align-right">{toTokenUsd} USD</div>
           </div>
         }
+        {orderType === LIMIT && renderAvailableLiquidity()}
       </div>
     </>
-  }, [renderMain, renderSpreadWarning, fromTokenInfo, toTokenInfo,
+  }, [renderMain, renderSpreadWarning, fromTokenInfo, toTokenInfo, orderType,
       showSpread, spread, feesUsd, feeBps, renderExecutionFee, fromTokenUsd, toTokenUsd,
-      triggerRatio, fees, isMarketOrder, minOut, renderFeeWarning])
+      triggerRatio, fees, isMarketOrder, minOut, renderFeeWarning, renderAvailableLiquidity])
 
   return <div className="Confirmation-box">
     <Modal isVisible={true} setIsVisible={() => setIsConfirming(false)} label={title}>
