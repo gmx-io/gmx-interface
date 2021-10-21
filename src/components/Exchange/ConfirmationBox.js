@@ -211,7 +211,7 @@ export default function ConfirmationBox(props) {
       if (hasExistingPosition) {
         const minProfitExpiration = existingPosition.lastIncreasedTime + MIN_PROFIT_TIME
         if (isMarketOrder && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)) {
-          const [profitPrice] = getProfitPrice(existingPosition.markPrice, existingPosition)
+          const profitPrice = getProfitPrice(existingPosition.markPrice, existingPosition)
           return (
             <div className="Confirmation-box-warning">
               This will forfeit a&nbsp;
@@ -226,7 +226,7 @@ export default function ConfirmationBox(props) {
         if (!isMarketOrder) {
           const { delta, hasProfit } = calculatePositionDelta(triggerPriceUsd, existingPosition)
           if (hasProfit && delta.eq(0)) {
-            const [profitPrice] = getProfitPrice(existingPosition.markPrice, existingPosition)
+            const profitPrice = getProfitPrice(existingPosition.markPrice, existingPosition)
             return <div className="Confirmation-box-warning">
               This order will forfeit a&nbsp;
               <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">

@@ -513,7 +513,7 @@ export default function PositionSeller(props) {
     );
   }
 
-  const [profitPrice] = getProfitPrice(orderType === MARKET ? position.markPrice : triggerPriceUsd, position)
+  const profitPrice = getProfitPrice(orderType === MARKET ? position.markPrice : triggerPriceUsd, position)
 
   let triggerPricePrefix
   if (triggerPriceUsd) {

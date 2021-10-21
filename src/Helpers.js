@@ -650,16 +650,13 @@ export function getNextToAmount(chainId, fromAmount, fromTokenAddress, toTokenAd
 }
 
 export function getProfitPrice(closePrice, position) {
-  let priceMovementPercentage
   let profitPrice
   if (position && position.markPrice && position.averagePrice && closePrice) {
-    const priceDelta = closePrice.gt(position.averagePrice) ? closePrice.sub(position.averagePrice) : position.averagePrice.sub(closePrice)
-    priceMovementPercentage = priceDelta.mul(BASIS_POINTS_DIVISOR).div(position.averagePrice)
     profitPrice = position.isLong
       ? position.averagePrice.mul(BASIS_POINTS_DIVISOR + PROFIT_THRESHOLD_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
       : position.averagePrice.mul(BASIS_POINTS_DIVISOR - PROFIT_THRESHOLD_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
   }
-  return [profitPrice, priceMovementPercentage]
+  return profitPrice
 }
 
 export function calculatePositionDelta(price, { size, collateral, isLong, averagePrice, lastIncreasedTime }, sizeDelta) {
