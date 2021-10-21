@@ -214,10 +214,11 @@ export default function ConfirmationBox(props) {
           const [profitPrice] = getProfitPrice(existingPosition.markPrice, existingPosition)
           return (
             <div className="Confirmation-box-warning">
-              This will forfeit a&nbsp;
+              Increasing this position at the current price will forfeit a&nbsp;
               <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
                 pending profit
               </a> of {existingPosition.deltaStr}.<br/>
+              <br/>
               Profit price: {existingPosition.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
               This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
             </div>
