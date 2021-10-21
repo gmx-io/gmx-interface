@@ -1348,7 +1348,7 @@ export async function getGasLimit(contract, method, params = [], value, gasBuffe
 export function approveTokens({ setIsApproving, library, tokenAddress, spender, chainId, onApproveSubmitted, getTokenInfo, infoTokens, pendingTxns, setPendingTxns, includeMessage }) {
   setIsApproving(true)
   const contract = new ethers.Contract(tokenAddress, Token.abi, library.getSigner())
-  contract.approve(spender, ethers.constants.MaxUint256)
+  contract.approve(spender, ethers.constants.MaxUint256, { gasLimit: DEFAULT_GAS_LIMIT })
   .then(async (res) => {
     const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash
     toast.success(
