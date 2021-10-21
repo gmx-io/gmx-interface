@@ -204,7 +204,7 @@ export default function ConfirmationBox(props) {
     )
   }, [feeBps, isSwap, collateralTokenAddress, chainId, fromToken.symbol, toToken.symbol, orderType])
 
-  const hasPendingProfit = existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)
+  const hasPendingProfit = existingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)
 
   const renderMinProfitWarning = useCallback(() => {
     if (!isSwap) {
