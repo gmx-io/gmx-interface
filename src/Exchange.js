@@ -289,7 +289,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
 
   const approveOrderBook = () => {
     setIsPluginApproving(true)
-    approvePlugin(chainId, orderBookAddress, {
+    return approvePlugin(chainId, orderBookAddress, {
       library,
       pendingTxns,
       setPendingTxns

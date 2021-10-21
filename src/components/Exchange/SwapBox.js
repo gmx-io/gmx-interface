@@ -65,6 +65,7 @@ import Tab from '../Tab/Tab'
 import TokenSelector from './TokenSelector'
 import ExchangeInfoRow from './ExchangeInfoRow'
 import ConfirmationBox from './ConfirmationBox'
+import OrdersToa from './OrdersToa'
 
 import { getTokens, getWhitelistedTokens, getToken, getTokenBySymbol } from '../../data/Tokens'
 import Token from '../../abis/Token.json'
@@ -170,6 +171,8 @@ export default function SwapBox(props) {
 	const [isLeverageSliderEnabled, setIsLeverageSliderEnabled] = useLocalStorageSerializeKey([chainId, "Exchange-swap-leverage-slider-enabled"], true)
 
 	const hasLeverageOption = isLeverageSliderEnabled && !isNaN(parseFloat(leverageOption))
+
+  const [ordersToaOpen, setOrdersToaOpen] = useState(false)
 
   let [orderType, setOrderType] = useLocalStorageSerializeKey([chainId, 'Order-option'], MARKET);
   if (!flagOrdersEnabled) {
@@ -686,6 +689,18 @@ export default function SwapBox(props) {
     return getLeverageError()
   }
 
+  const renderOrdersToa = useCallback(() => {
+    if (!ordersToaOpen) {
+      return null
+    }
+
+    return <OrdersToa
+      setIsVisible={setOrdersToaOpen}
+      approveOrderBook={approveOrderBook}
+      isPluginApproving={isPluginApproving}
+    />
+  }, [ordersToaOpen, setOrdersToaOpen, isPluginApproving, approveOrderBook])
+
   const renderErrorModal = useCallback(() => {
     const inputCurrency = fromToken.address === AddressZero ? "ETH" : fromToken.address
     let outputCurrency
@@ -1104,7 +1119,7 @@ export default function SwapBox(props) {
     }
 
     if (needOrderBookApproval) {
-      approveOrderBook();
+      approveOrderBook()
       return
     }
 
@@ -1147,7 +1162,7 @@ export default function SwapBox(props) {
     }
 
     if (needOrderBookApproval) {
-      approveOrderBook();
+      setOrdersToaOpen(true)
       return;
     }
 
@@ -1587,6 +1602,7 @@ export default function SwapBox(props) {
         </div>
       </div>
       {renderErrorModal()}
+      {renderOrdersToa()}
       {isConfirming &&
         <ConfirmationBox
           orders={orders}

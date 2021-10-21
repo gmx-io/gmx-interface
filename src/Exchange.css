@@ -13,12 +13,7 @@
 }
 
 .Exchange-should-show-position-lines {
-  padding-top: 0.2rem;
   font-size: 0.9rem;
-}
-
-.Exchange-should-show-position-lines .Checkbox-icon {
-  margin-top: 0.05rem;
 }
 
 .Exchange-empty-positions-list-note {

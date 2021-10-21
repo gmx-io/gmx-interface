@@ -4,6 +4,7 @@ import cx from "classnames"
 import Tooltip from '../Tooltip/Tooltip'
 import PositionSeller from "./PositionSeller"
 import PositionEditor from "./PositionEditor"
+import OrdersToa from "./OrdersToa"
 
 import {
   helperToast,
@@ -60,6 +61,7 @@ export default function PositionsList(props) {
   const [isPositionEditorVisible, setIsPositionEditorVisible] = useState(undefined)
   const [isPositionSellerVisible, setIsPositionSellerVisible] = useState(undefined)
   const [collateralTokenAddress, setCollateralTokenAddress] = useState(undefined)
+  const [ordersToaOpen, setOrdersToaOpen] = useState(false)
 
   const editPosition = (position) => {
     setCollateralTokenAddress(position.collateralToken.address)
@@ -97,7 +99,14 @@ export default function PositionsList(props) {
         savedIsPnlInLeverage={savedIsPnlInLeverage}
         chainId={chainId}
       />
-      {isPositionSellerVisible &&
+      {ordersToaOpen &&
+        <OrdersToa
+          setIsVisible={setOrdersToaOpen}
+          approveOrderBook={approveOrderBook}
+          isPluginApproving={isPluginApproving}
+        />
+      }
+      {(isPositionSellerVisible) &&
         <PositionSeller
           setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
           approveOrderBook={approveOrderBook}
@@ -120,6 +129,7 @@ export default function PositionsList(props) {
           savedIsPnlInLeverage={savedIsPnlInLeverage}
           chainId={chainId}
           nativeTokenAddress={nativeTokenAddress}
+          setOrdersToaOpen={setOrdersToaOpen}
         />
       }
       {(positions) && <div className="Exchange-list small">
