@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { helperToast } from "./Helpers"
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import useSWR from 'swr'
 
 import OrderBook from './abis/OrderBook.json'
@@ -16,7 +16,8 @@ import {
   getExplorerUrl,
   getServerBaseUrl,
   getGasLimit,
-  replaceNativeTokenAddress
+  replaceNativeTokenAddress,
+  getProvider
 } from './Helpers'
 
 const { AddressZero } = ethers.constants
@@ -41,6 +42,85 @@ const chainlinkClient = new ApolloClient({
   uri: CHAINLINK_GRAPH_API_URL,
   cache: new InMemoryCache()
 });
+
+const ORDERS_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/gkrasulya/gmx-orders"
+const ordersGraphClient = new ApolloClient({
+  uri: ORDERS_GRAPH_API_URL,
+  cache: new InMemoryCache()
+});
+
+export function useAllOrdersStats() {
+  const query = gql(`{
+    orderStat(id: "total") {
+      openSwap
+      openIncrease
+      openDecrease
+      executedSwap
+      executedIncrease
+      executedDecrease
+      cancelledSwap
+      cancelledIncrease
+      cancelledDecrease
+    }
+  }`)
+
+  const [res, setRes] = useState()
+
+  useEffect(() => {
+    ordersGraphClient.query({ query }).then(setRes)
+  }, [setRes, query])
+
+  return res ? res.data.orderStat : null
+}
+
+export function useAllOrders(chainId, library) {
+  const query = gql(`{
+    orders(
+      first: 100,
+      orderBy: createdTimestamp,
+      orderDirection: desc,
+      where: {status: "open"}
+    ) {
+      type
+      account
+      index
+      status
+      createdTimestamp
+    }
+  }`)
+
+  const [res, setRes] = useState()
+
+  useEffect(() => {
+    ordersGraphClient.query({ query }).then(setRes)
+  }, [setRes, query])
+
+  const key = res ? res.data.orders.map(order => `${order.type}-${order.account}-${order.index}`) : null
+  const { data: orders = [] } = useSWR(key, () => {
+    const provider = getProvider(library, chainId)
+    const orderBookAddress = getContract(chainId, "OrderBook")
+    const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, provider)
+    return Promise.all(res.data.orders.map(async order => {
+      try {
+        const method = `get${order.type.charAt(0).toUpperCase() + order.type.substring(1)}Order`
+        const orderFromChain = await contract[method](order.account, order.index)
+        const ret = {}
+        for (const [key, val] of Object.entries(orderFromChain)) {
+          ret[key] = val
+        }
+        ret.type = order.type
+        ret.index = order.index
+        ret.account = order.account
+        ret.createdTimestamp = order.createdTimestamp
+        return ret
+      } catch (ex) {
+        console.error(ex)
+      }
+    }))
+  })
+
+  return orders.filter(Boolean)
+}
 
 async function getChartPricesFromStats(marketName, chainId) {
   let symbol = marketName.split('_')[0]
