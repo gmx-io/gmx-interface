@@ -675,8 +675,16 @@ button.App-button {
   color: #0ecc83;
 }
 
+.positive-background {
+  background: linear-gradient(45deg, rgba(10,115,75,1) 0%, rgba(12,154,100,1) 100%);
+}
+
 .negative {
   color: #fa3c58;
+}
+
+.negative-background {
+  background: linear-gradient(45deg, rgba(115,30,43,1) 0%, rgba(174,43,63,1) 100%);
 }
 
 .App-warning, .App-warning a {

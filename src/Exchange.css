@@ -439,6 +439,7 @@ table.Exchange-list tr.Exchange-list-header th {
 }
 
 table.Exchange-list th {
+  opacity: 0.7;
 }
 
 .Exchange-leverage-box {
@@ -703,8 +704,17 @@ table.Exchange-list-small th, table.Exchange-list-small td {
   display: inline-block;
 }
 
-.Exchange-list-info-label {
+.Exchange-position-tag {
+  margin-top: 0.2rem;
   font-size: 0.9rem;
+  text-align: center;
+  border-radius: 3px;
+  padding: 0.2rem;
+  /* font-size: 0.8rem; */
+}
+
+.Exchange-list-info-label {
+  font-size: 0.8rem;
   margin-top: 0.2rem;
 }
 
