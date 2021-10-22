@@ -117,6 +117,7 @@ export default function Actions() {
             flagOrdersEnabled={false}
             savedIsPnlInLeverage={false}
             chainId={chainId}
+            orders={orders}
             nativeTokenAddress={nativeTokenAddress}
           />
       </div>}

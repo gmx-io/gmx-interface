@@ -20,6 +20,9 @@ import {
 } from "../../Helpers"
 
 const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
+  if (!orders || orders.length === 0) {
+    return []
+  }
   /* eslint-disable array-callback-return */
   return orders.filter(order => {
     if (order.swapOption === SWAP) { return false }
