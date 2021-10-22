@@ -338,6 +338,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
         </div>
         {listSection === 'Positions' &&
           <PositionsList
+            setListSection={setListSection}
             setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
             approveOrderBook={approveOrderBook}
             isPluginApproving={isPluginApproving}
