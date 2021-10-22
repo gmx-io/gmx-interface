@@ -1,0 +1,24 @@
+.Orders-bo {
+  font-size: 0.9rem;
+  margin: 1rem 2rem;
+}
+
+.Orders-bo-stats {
+  line-height: 1.5;
+}
+
+.Orders-bo-table {
+  border-collapse: collapse;
+}
+
+.Orders-bo th {
+  opacity: 0.5;
+  font-weight: normal;
+  text-align: left;
+  padding: 0.5rem 1rem 0.5rem 0;
+}
+
+.Orders-bo td {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem 0.5rem 0;
+}
