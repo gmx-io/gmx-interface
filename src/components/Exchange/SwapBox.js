@@ -252,7 +252,8 @@ export default function SwapBox(props) {
   const fromAmount = parseValue(fromValue, fromToken && fromToken.decimals)
   const toAmount = parseValue(toValue, toToken && toToken.decimals)
 
-  const needApproval = fromTokenAddress !== AddressZero && tokenAllowance && fromAmount && fromAmount.gt(tokenAllowance)
+  const isWrapOrUnwrap = (fromToken.isNative && toToken.isWrapped) || (fromToken.isWrapped && toToken.isNative)
+  const needApproval = fromTokenAddress !== AddressZero && tokenAllowance && fromAmount && fromAmount.gt(tokenAllowance) && !isWrapOrUnwrap
   const prevFromTokenAddress = usePrevious(fromTokenAddress)
   const prevNeedApproval = usePrevious(needApproval)
 	const prevToTokenAddress = usePrevious(toTokenAddress)
@@ -554,7 +555,6 @@ export default function SwapBox(props) {
       }
     }
 
-    const isWrapOrUnwrap = (fromToken.isNative && toToken.isWrapped) || (fromToken.isWrapped && toToken.isNative)
     if (!isWrapOrUnwrap && toToken && toTokenAddress !== USDG_ADDRESS && toTokenInfo &&
         toTokenInfo.availableAmount && toAmount.gt(toTokenInfo.availableAmount)) {
       return ["Insufficient liquidity"]
