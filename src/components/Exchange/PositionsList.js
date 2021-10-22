@@ -275,7 +275,7 @@ export default function PositionsList(props) {
                 <div>
                   ${formatAmount(position.size, USD_DECIMALS, 2, true)}
                 </div>
-                {positionOrders.length > 0 && <div onClick={() => setListSection("Orders")}>
+                {positionOrders.length > 0 && <div onClick={() => setListSection && setListSection("Orders")}>
                   <Tooltip handle={`Orders (${positionOrders.length})`} position="left-bottom" handleClassName="Exchange-list-info-label muted plain clickable">
                     <strong>Active Orders</strong>
                     {positionOrders.map(order => {
