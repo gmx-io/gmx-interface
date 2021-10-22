@@ -22,7 +22,7 @@ export default function OrdersToa(props) {
 
   const getPrimaryText = () => {
     if (isPluginApproving) { return "Enabling Orders..." }
-    if (!isChecked) { return "Accept terms to enable Orders" }
+    if (!isChecked) { return "Accept terms to enable orders" }
     return "Enable Orders"
   }
 
@@ -32,7 +32,9 @@ export default function OrdersToa(props) {
   }
 
   return <Modal setIsVisible={setIsVisible} isVisible={true} label="Enable Orders" className="Orders-toa" zIndex="30">
-    Orders are in beta and are not guaranteed to execute. Additionally if there is insufficient liquidity to execute an order it will not be executed even if price conditions are met
+    Note that orders may not execute if there is insufficient liquidity.<br/>
+    <br/>
+    Additionally, since the mark price is based on an aggregate of exchanges, an order may not execute even if the specified price was reached on another exchange.
     <div className="Orders-toa-accept-rules">
       <Checkbox isChecked={isChecked} setIsChecked={setIsChecked}>
         <span className="muted">Accept that orders are not guaranteed to&nbsp;execute</span>
