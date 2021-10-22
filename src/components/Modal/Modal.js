@@ -7,7 +7,7 @@ import { FaTimes } from 'react-icons/fa'
 import './Modal.css';
 
 export default function Modal(props) {
-  const { isVisible, setIsVisible, className } = props
+  const { isVisible, setIsVisible, className, zIndex } = props
 
   const fadeVariants = {
     hidden: { opacity: 0 },
@@ -16,7 +16,9 @@ export default function Modal(props) {
 
   return (
     <AnimatePresence>
-      {isVisible && <motion.div className={cx("Modal", className)}
+      {isVisible && <motion.div
+          className={cx("Modal", className)}
+          style={{zIndex}}
           initial="hidden"
           animate="visible"
           exit="hidden"

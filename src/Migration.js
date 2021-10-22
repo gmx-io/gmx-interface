@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
 import { useWeb3React } from '@web3-react/core'
 import cx from "classnames";
 import useSWR from 'swr'
@@ -12,7 +11,7 @@ import './Migration.css';
 
 import { getConnectWalletHandler, useEagerConnect, useInactiveListener,
   fetcher, formatArrayAmount, formatAmount, formatAmountFree, parseValue,
-  expandDecimals, getExplorerUrl, approveTokens, bigNumberify, CHAIN_ID } from './Helpers'
+  expandDecimals, getExplorerUrl, approveTokens, bigNumberify, helperToast, CHAIN_ID } from './Helpers'
 import { getContract } from './Addresses'
 
 import Reader from './abis/Reader.json'
@@ -141,7 +140,7 @@ function MigrationModal(props) {
     contract.migrate(token.address, amount)
     .then(async (res) => {
       const txUrl = getExplorerUrl(CHAIN_ID) + "tx/" + res.hash
-      toast.success(
+      helperToast.success(
         <div>
         Migration submitted! <a href={txUrl} target="_blank" rel="noopener noreferrer">View status.</a>
         <br/>
@@ -151,7 +150,7 @@ function MigrationModal(props) {
     })
     .catch((e) => {
       console.error(e)
-      toast.error("Migration failed.")
+      helperToast.error("Migration failed.")
     })
     .finally(() => {
       setIsMigrating(false)

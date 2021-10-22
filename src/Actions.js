@@ -7,13 +7,25 @@ import { useParams } from 'react-router-dom'
 import './Actions.css';
 
 import { getContract } from './Addresses'
-import { formatAmount, expandDecimals, fetcher, getInfoTokens, getTokenInfo, getServerBaseUrl } from './Helpers'
+import {
+  formatAmount,
+  expandDecimals,
+  fetcher,
+  getInfoTokens,
+  getTokenInfo,
+  getServerBaseUrl,
+  useOrders,
+  useLocalStorageSerializeKey
+} from './Helpers'
 import { getToken, getTokens, getWhitelistedTokens } from './data/Tokens'
-import { getPositions, getPositionQuery, PositionsList } from './Exchange'
+import { getPositions, getPositionQuery } from './Exchange'
+import PositionsList from './components/Exchange/PositionsList'
+import OrdersList from './components/Exchange/OrdersList'
 
 import TradeHistory from './components/Exchange/TradeHistory'
 import Reader from './abis/Reader.json'
 import ReaderV2 from './abis/ReaderV2.json'
+import { getConstant } from './Constants'
 
 const USD_DECIMALS = 30
 
@@ -62,6 +74,12 @@ export default function Actions() {
   const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo)
   const { positions, positionsMap } = getPositions(chainId, positionQuery, positionData, infoTokens, false)
 
+  const [flagOrdersEnabled] = useLocalStorageSerializeKey(
+    [chainId, "Flag-orders-enabled"],
+    getConstant(chainId, "defaultFlagOrdersEnabled") || document.location.hostname.includes("deploy-preview") || document.location.hostname === "localhost"
+  );
+  const [orders, updateOrders] = useOrders(flagOrdersEnabled, checkSummedAccount)
+
   useEffect(() => {
     const interval = setInterval(() => {
       updatePnlData(undefined, true)
@@ -107,6 +125,19 @@ export default function Actions() {
             nativeTokenAddress={nativeTokenAddress}
           />
       </div>}
+      {flagOrdersEnabled && <div className="Actions-section">
+        <div className="Actions-title">Orders</div>
+        <OrdersList
+          account={checkSummedAccount}
+          infoTokens={infoTokens}
+          positionsMap={positionsMap}
+          chainId={chainId}
+          orders={orders}
+          updateOrders={updateOrders}
+          hideActions
+        />
+      </div>
+      }
       <div className="Actions-section">
         <div className="Actions-title">Actions</div>
         <TradeHistory

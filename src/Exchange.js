@@ -1,24 +1,19 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
-import cx from "classnames";
 import useSWR from 'swr'
 import { ethers } from 'ethers'
 
 import {
   BASIS_POINTS_DIVISOR,
-  USD_DECIMALS,
-  getTokenInfo,
   SWAP,
   LONG,
   SHORT,
+  getTokenInfo,
   getConnectWalletHandler,
   fetcher,
-  formatAmount,
   expandDecimals,
   getPositionKey,
-  getUsd,
-  getLiquidationPrice,
   getLeverage,
   useLocalStorageSerializeKey,
   getDeltaStr,
@@ -27,6 +22,7 @@ import {
   useOrders
 } from './Helpers'
 import { getConstant } from './Constants'
+import { approvePlugin } from './Api'
 
 import { getContract } from './Addresses'
 import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from './data/Tokens'
@@ -34,13 +30,14 @@ import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from './d
 import Reader from './abis/ReaderV2.json'
 import VaultV2 from './abis/VaultV2.json'
 import Token from './abis/Token.json'
+import Router from './abis/Router.json'
 
+import Checkbox from './components/Checkbox/Checkbox'
 import SwapBox from './components/Exchange/SwapBox'
 import ExchangeTVChart from './components/Exchange/ExchangeTVChart'
-import PositionSeller from './components/Exchange/PositionSeller'
+import PositionsList from './components/Exchange/PositionsList'
 import OrdersList from './components/Exchange/OrdersList'
 import TradeHistory from './components/Exchange/TradeHistory'
-import PositionEditor from './components/Exchange/PositionEditor'
 import ExchangeWalletTokens from './components/Exchange/ExchangeWalletTokens'
 import Tab from './components/Tab/Tab'
 import Footer from "./Footer"
@@ -81,8 +78,7 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
       cumulativeFundingRate: collateralToken.cumulativeFundingRate,
       hasRealisedProfit: positionData[i * propsLength + 4].eq(1),
       realisedPnl: positionData[i * propsLength + 5],
-      // TODO for Gambit we need different indexes
-      lastIncreasedTime: positionData[i * propsLength + 6],
+      lastIncreasedTime: positionData[i * propsLength + 6].toNumber(),
       hasProfit: positionData[i * propsLength + 7].eq(1),
       delta: positionData[i * propsLength + 8],
       markPrice: isLong[i] ? indexToken.minPrice : indexToken.maxPrice
@@ -104,6 +100,8 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
 
       position.deltaStr = deltaStr
       position.deltaPercentageStr = deltaPercentageStr
+
+      position.netValue = position.hasProfit ? position.collateral.add(position.pendingDelta) : position.collateral.sub(position.pendingDelta)
     }
 
     position.leverage = getLeverage({
@@ -157,239 +155,7 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
   return { collateralTokens, indexTokens, isLong }
 }
 
-export function PositionsList(props) {
-  const {
-    positions,
-    positionsMap,
-    infoTokens,
-    active,
-    account,
-    library,
-    pendingTxns,
-    setPendingTxns,
-    flagOrdersEnabled,
-    savedIsPnlInLeverage,
-    chainId,
-    nativeTokenAddress,
-    orders
-  } = props
-  const [positionToEditKey, setPositionToEditKey] = useState(undefined)
-  const [positionToSellKey, setPositionToSellKey] = useState(undefined)
-  const [isPositionEditorVisible, setIsPositionEditorVisible] = useState(undefined)
-  const [isPositionSellerVisible, setIsPositionSellerVisible] = useState(undefined)
-  const [collateralTokenAddress, setCollateralTokenAddress] = useState(undefined)
-
-  const editPosition = (position) => {
-    setCollateralTokenAddress(position.collateralToken.address)
-    setPositionToEditKey(position.key)
-    setIsPositionEditorVisible(true)
-  }
-
-  const sellPosition = (position) => {
-    setPositionToSellKey(position.key)
-    setIsPositionSellerVisible(true)
-  }
-
-  return (
-    <div>
-      <PositionEditor
-        positionsMap={positionsMap}
-        positionKey={positionToEditKey}
-        isVisible={isPositionEditorVisible}
-        setIsVisible={setIsPositionEditorVisible}
-        infoTokens={infoTokens}
-        active={active}
-        account={account}
-        library={library}
-        collateralTokenAddress={collateralTokenAddress}
-        pendingTxns={pendingTxns}
-        setPendingTxns={setPendingTxns}
-        getLiquidationPrice={getLiquidationPrice}
-        getUsd={getUsd}
-        getLeverage={getLeverage}
-        savedIsPnlInLeverage={savedIsPnlInLeverage}
-        chainId={chainId}
-      />
-      {isPositionSellerVisible &&
-        <PositionSeller
-          positionsMap={positionsMap}
-          positionKey={positionToSellKey}
-          isVisible={isPositionSellerVisible}
-          setIsVisible={setIsPositionSellerVisible}
-          infoTokens={infoTokens}
-          active={active}
-          account={account}
-          orders={orders}
-          library={library}
-          pendingTxns={pendingTxns}
-          setPendingTxns={setPendingTxns}
-          flagOrdersEnabled={flagOrdersEnabled}
-          savedIsPnlInLeverage={savedIsPnlInLeverage}
-          chainId={chainId}
-          nativeTokenAddress={nativeTokenAddress}
-        />
-      }
-      {(positions) && <div className="Exchange-list small">
-        <div>
-          {positions.length === 0 && (
-            <div className="Exchange-empty-positions-list-note App-card">
-              No open positions
-            </div>
-          )}
-          {positions.map(position => {
-            const liquidationPrice = getLiquidationPrice(position)
-            return (<div key={position.key} className="App-card">
-              <div className="App-card-title">
-                <span className="Exchange-list-title">{position.indexToken.symbol}</span>
-              </div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-content">
-                <div className="App-card-row">
-                  <div className="label">Side</div>
-                  <div>
-                    <span className={cx("Exchange-list-side", { positive: position.isLong, negative: !position.isLong })}>
-                      {position.isLong ? "Long" : "Short" }
-                    </span>
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Size</div>
-                  <div>
-                     ${formatAmount(position.size, USD_DECIMALS, 2, true)}
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">PnL</div>
-                  <div>
-                    <span className={cx({ positive: position.hasProfit && position.pendingDelta.gt(0), negative: !position.hasProfit && position.pendingDelta.gt(0) })}>
-                      {position.deltaStr} ({position.deltaPercentageStr})
-                    </span>
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Leverage</div>
-                  <div>
-                     {formatAmount(position.leverage, 4, 2, true)}x
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Collateral</div>
-                  <div>
-                     ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Entry Price</div>
-                  <div>
-                    ${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Mark Price</div>
-                  <div>
-                    ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Liq. Price</div>
-                  <div>
-                    ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
-                  </div>
-                </div>
-              </div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-options">
-                <button className="App-button-option App-card-option" onClick={() => editPosition(position)}>
-                  Edit
-                </button>
-                <button  className="App-button-option App-card-option" onClick={() => sellPosition(position)}>
-                  Close
-                </button>
-              </div>
-            </div>)
-          })}
-        </div>
-      </div>}
-      <table className="Exchange-list large App-box">
-        <tbody>
-          <tr className="Exchange-list-header">
-            <th>Position</th>
-            <th>Side</th>
-            <th>Size</th>
-            <th>Collateral</th>
-            <th className="Exchange-list-extra-info">Entry Price</th>
-            <th className="Exchange-list-extra-info">Mark Price</th>
-            <th className="Exchange-list-extra-info">Liq. Price</th>
-            <th>PnL</th>
-            <th></th>
-            <th></th>
-          </tr>
-        {positions.length === 0 &&
-          <tr>
-            <td>
-              <div className="Exchange-empty-positions-list-note">
-                No open positions
-              </div>
-            </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td className="Exchange-list-extra-info"></td>
-            <td className="Exchange-list-extra-info"></td>
-            <td className="Exchange-list-extra-info"></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-        }
-        {positions.map(position => {
-          const liquidationPrice = getLiquidationPrice(position)
-          return (
-            <tr key={position.key}>
-              <td>
-                <div className="Exchange-list-title">{position.indexToken.symbol}</div>
-                <div className="Exchange-list-leverage-container">
-                  <div className="Exchange-list-leverage">
-                      {formatAmount(position.leverage, 4, 2, true)}x
-                  </div>
-                </div>
-              </td>
-              <td className={cx({ positive: position.isLong, negative: !position.isLong })}>
-                {position.isLong ? "Long" : "Short" }
-              </td>
-              <td>
-                ${formatAmount(position.size, USD_DECIMALS, 2, true)}
-              </td>
-              <td>
-                ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-              </td>
-              <td className="Exchange-list-extra-info">${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}</td>
-              <td className="Exchange-list-extra-info">${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</td>
-              <td className="Exchange-list-extra-info">${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}</td>
-              <td className={cx({ positive: position.hasProfit && position.pendingDelta.gt(0), negative: !position.hasProfit && position.pendingDelta.gt(0) })}>
-                  {position.deltaStr} ({position.deltaPercentageStr})
-              </td>
-              <td>
-                <button className="Exchange-list-action" onClick={() => editPosition(position)}>
-                  Edit
-                </button>
-              </td>
-              <td>
-                <button  className="Exchange-list-action" onClick={() => sellPosition(position)}>
-                  Close
-                </button>
-              </td>
-            </tr>
-          )
-        })
-        }
-        </tbody>
-      </table>
-    </div>
-  )
-}
-
-export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage, savedSlippageAmount, pendingTxns, setPendingTxns }) {
+export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage, savedSlippageAmount, pendingTxns, setPendingTxns, savedShouldShowPositionLines, setSavedShouldShowPositionLines }) {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
@@ -444,6 +210,13 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     })
   }, [swapOption, setTokenSelection])
 
+  const setMarket = (newSwapOption, toTokenAddress) => {
+    setSwapOption(newSwapOption)
+    const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
+    newTokenSelection[newSwapOption].to = toTokenAddress
+    setTokenSelection(newTokenSelection)
+  }
+
   const [isConfirming, setIsConfirming] = useState(false);
   const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
 
@@ -475,6 +248,12 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     fetcher: fetcher(library, Token),
   })
 
+  const orderBookAddress = getContract(chainId, "OrderBook")
+  const routerAddress = getContract(chainId, "Router")
+  const { data: orderBookApproved, mutate: updateOrderBookApproved } = useSWR(active && [active, chainId, routerAddress, "approvedPlugins", account, orderBookAddress], {
+    fetcher: fetcher(library, Router)
+  });
+
   useEffect(() => {
     if (active) {
       function onBlock() {
@@ -484,6 +263,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
         updateFundingRateInfo(undefined, true)
         updateTotalTokenWeights(undefined, true)
         updateUsdgSupply(undefined, true)
+        updateOrderBookApproved(undefined, true)
       }
       library.on('block', onBlock)
       return () => {
@@ -492,16 +272,34 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     }
   }, [active, library, chainId,
       updateVaultTokenInfo, updateTokenBalances, updatePositionData,
-      updateFundingRateInfo, updateTotalTokenWeights, updateUsdgSupply])
+      updateFundingRateInfo, updateTotalTokenWeights, updateUsdgSupply,
+      updateOrderBookApproved])
 
   const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo)
   const { positions, positionsMap } = getPositions(chainId, positionQuery, positionData, infoTokens, savedIsPnlInLeverage)
 
   const [flagOrdersEnabled] = useLocalStorageSerializeKey(
     [chainId, "Flag-orders-enabled"],
-    getConstant(chainId, "defaultFlagOrdersEnabled")
+    getConstant(chainId, "defaultFlagOrdersEnabled") || document.location.hostname.includes("deploy-preview") || document.location.hostname === "localhost"
   );
   const [orders, updateOrders] = useOrders(flagOrdersEnabled)
+
+  const [isWaitingForPluginApproval, setIsWaitingForPluginApproval] = useState(false);
+  const [isPluginApproving, setIsPluginApproving] = useState(false);
+
+  const approveOrderBook = () => {
+    setIsPluginApproving(true)
+    return approvePlugin(chainId, orderBookAddress, {
+      library,
+      pendingTxns,
+      setPendingTxns
+    }).then(() => {
+      setIsWaitingForPluginApproval(true)
+      updateOrderBookApproved(undefined, true);
+    }).finally(() => {
+      setIsPluginApproving(false)
+    })
+  }
 
   const LIST_SECTIONS = [
     'Positions',
@@ -510,8 +308,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   ].filter(Boolean)
   let [listSection, setListSection] = useLocalStorageSerializeKey([chainId, 'List-section'], LIST_SECTIONS[0]);
   const LIST_SECTIONS_LABELS = {
-    'Positions': "Positions",
-    'Orders': orders.length ? `Orders (${orders.length})` : undefined
+    "Orders": orders.length ? `Orders (${orders.length})` : undefined
   }
   if (!LIST_SECTIONS.includes(listSection)) {
     listSection = LIST_SECTIONS[0]
@@ -524,16 +321,29 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   const getListSection = () => {
     return (
       <div>
-        <Tab
-          options={LIST_SECTIONS}
-          optionLabels={LIST_SECTIONS_LABELS}
-          option={listSection}
-          onChange={section => setListSection(section)}
-          type="inline"
-          className="Exchange-list-tabs"
-        />
+        <div className="Exchange-list-tab-container">
+          <Tab
+            options={LIST_SECTIONS}
+            optionLabels={LIST_SECTIONS_LABELS}
+            option={listSection}
+            onChange={section => setListSection(section)}
+            type="inline"
+            className="Exchange-list-tabs"
+          />
+          <div className="align-right Exchange-should-show-position-lines">
+						<Checkbox isChecked={savedShouldShowPositionLines} setIsChecked={setSavedShouldShowPositionLines}>
+							<span className="muted">Chart positions</span>
+						</Checkbox>
+          </div>
+        </div>
         {listSection === 'Positions' &&
           <PositionsList
+            setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
+            approveOrderBook={approveOrderBook}
+            isPluginApproving={isPluginApproving}
+            isWaitingForPluginApproval={isWaitingForPluginApproval}
+            updateOrderBookApproved={updateOrderBookApproved}
+            orderBookApproved={orderBookApproved}
             positions={positions}
             positionsMap={positionsMap}
             infoTokens={infoTokens}
@@ -546,6 +356,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
             savedIsPnlInLeverage={savedIsPnlInLeverage}
             chainId={chainId}
             nativeTokenAddress={nativeTokenAddress}
+            setMarket={setMarket}
             orders={orders}
           />
         }
@@ -553,7 +364,6 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
           <OrdersList
             active={active}
             library={library}
-            account={account}
             pendingTxns={pendingTxns}
             setPendingTxns={setPendingTxns}
             infoTokens={infoTokens}
@@ -561,6 +371,8 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
             chainId={chainId}
             orders={orders}
             updateOrders={updateOrders}
+            totalTokenWeights={totalTokenWeights}
+            usdgSupply={usdgSupply}
           />
         }
         {listSection === 'Trades' &&
@@ -588,6 +400,8 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
       swapOption={swapOption}
       flagOrdersEnabled={flagOrdersEnabled}
       chainId={chainId}
+      positions={positions}
+      savedShouldShowPositionLines={savedShouldShowPositionLines}
     />
   }
 
@@ -602,6 +416,12 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
         </div>
         <div className="Exchange-right">
           <SwapBox
+            setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
+            approveOrderBook={approveOrderBook}
+            isPluginApproving={isPluginApproving}
+            isWaitingForPluginApproval={isWaitingForPluginApproval}
+            updateOrderBookApproved={updateOrderBookApproved}
+            orderBookApproved={orderBookApproved}
             orders={orders}
             flagOrdersEnabled={flagOrdersEnabled}
             chainId={chainId}

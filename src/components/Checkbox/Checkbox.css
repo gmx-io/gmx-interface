@@ -1,9 +1,27 @@
-.Checkbox-icon {
-  margin-right: 0.3rem;
+.Checkbox {
+  user-select: none;
+}
+
+.Checkbox-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  position: relative;
+  top: 0.05rem;
+}
+
+.Checkbox .Checkbox-icon {
   font-size: 0.8rem;
   color: #3d51ff;
+  margin-right: 0.3rem;
+  margin-bottom: 0;
 }
 
 .Checkbox-icon.inactive {
   color: rgba(255,255,255,0.7);
+}
+
+.Checkbox-label {
+  display: inline-block;
+  vertical-align: middle;
 }

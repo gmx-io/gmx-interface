@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { toast } from 'react-toastify'
 import { useWeb3React } from '@web3-react/core'
 import { Pool } from '@uniswap/v3-sdk'
 import { Token as UniToken } from '@uniswap/sdk-core'
@@ -21,6 +20,7 @@ import UniPool from './abis/UniPool.json'
 
 import { ethers } from 'ethers'
 import {
+  helperToast,
   bigNumberify,
   fetcher,
   formatAmount,
@@ -1060,7 +1060,7 @@ export default function StakeV2({ setPendingTxns }) {
 
   const showStakeGmxModal = () => {
     if (!isGmxTransferEnabled) {
-      toast.error("GMX transfers not yet enabled")
+      helperToast.error("GMX transfers not yet enabled")
       return
     }
 
@@ -1139,7 +1139,7 @@ export default function StakeV2({ setPendingTxns }) {
 
   const showUnstakeGmxModal = () => {
     if (!isGmxTransferEnabled) {
-      toast.error("GMX transfers not yet enabled")
+      helperToast.error("GMX transfers not yet enabled")
       return
     }
     setIsUnstakeModalVisible(true)

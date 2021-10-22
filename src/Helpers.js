@@ -25,6 +25,8 @@ export const ARBITRUM = 42161
 export const DEFAULT_CHAIN_ID = ARBITRUM
 export const CHAIN_ID = DEFAULT_CHAIN_ID
 
+export const MIN_PROFIT_TIME = 60 * 60 * 12 // 12 hours
+
 const CHAIN_NAMES_MAP = {
   [MAINNET]: "BSC",
   [TESTNET]: "BSC Testnet",
@@ -67,21 +69,27 @@ export const SWAP = "Swap"
 export const LONG = "Long"
 export const SHORT = "Short"
 
-export const MARKET = 'Market';
-export const LIMIT = 'Limit';
-export const STOP = 'Stop';
+export const MARKET = "Market";
+export const LIMIT = "Limit";
+export const STOP = "Stop";
 export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_OPTIONS = [LONG, SHORT, SWAP]
 export const DEFAULT_SLIPPAGE_AMOUNT = 20;
 
 export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3"
+export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage"
+export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-position-lines"
 
-const ORDER_EXECUTION_GAS_PRICE = expandDecimals(30, 9)
+const ORDER_EXECUTION_GAS_PRICE = expandDecimals(1, 9) // 1 gwei
 
-export const SWAP_ORDER_EXECUTION_GAS_FEE = ORDER_EXECUTION_GAS_PRICE.mul(450000)
-export const INCREASE_ORDER_EXECUTION_GAS_FEE = ORDER_EXECUTION_GAS_PRICE.mul(1000000)
-export const DECREASE_ORDER_EXECUTION_GAS_FEE = ORDER_EXECUTION_GAS_PRICE.mul(550000)
+const INCREASE_ORDER_EXECUTION_GAS_LIMIT = 2500000 // https://arbiscan.io/tx/0x63e08dab7044af40f074c1458734ad6aba61061c9161a002f02cb65a23e518db
+const DECREASE_ORDER_EXECUTION_GAS_LIMIT = 1300000 // https://arbiscan.io/tx/0xa27b456717e0d092992ff013a93d106043e5d9dbdd5761ddebd06d9c9dc6cd39
+const SWAP_ORDER_EXECUTION_GAS_LIMIT = 1130000 // https://arbiscan.io/tx/0x18070f49e94d428bf3c7d3c249b8e4cdb18ea6a3f4945de52b705187827a6b73
+
+export const SWAP_ORDER_EXECUTION_GAS_FEE = ORDER_EXECUTION_GAS_PRICE.mul(SWAP_ORDER_EXECUTION_GAS_LIMIT)
+export const INCREASE_ORDER_EXECUTION_GAS_FEE = ORDER_EXECUTION_GAS_PRICE.mul(INCREASE_ORDER_EXECUTION_GAS_LIMIT)
+export const DECREASE_ORDER_EXECUTION_GAS_FEE = ORDER_EXECUTION_GAS_PRICE.mul(DECREASE_ORDER_EXECUTION_GAS_LIMIT)
 
 export const TRIGGER_PREFIX_ABOVE = '>'
 export const TRIGGER_PREFIX_BELOW = '<'
@@ -106,6 +114,17 @@ export function deserialize(data) {
     }
   }
   return data;
+}
+
+export const helperToast = {
+  success: (content) => {
+    toast.dismiss()
+    toast.success(content)
+  },
+  error: (content) => {
+    toast.dismiss()
+    toast.error(content)
+  }
 }
 
 export function useLocalStorageSerializeKey(key, value, opts) {
@@ -174,7 +193,12 @@ export function getServerBaseUrl(chainId) {
     throw new Error("chainId is not provided")
   }
   if (document.location.hostname === "localhost") {
+    // TODO remove
     // return "http://localhost:8080"
+    // return "https://gambit-server-devnet.uc.r.appspot.com"
+  }
+  if (document.location.hostname.includes("deploy-preview")) {
+    return "https://gambit-server-devnet.uc.r.appspot.com"
   }
   if (chainId === MAINNET) {
     return "https://gambit-server-staging.uc.r.appspot.com"
@@ -401,7 +425,7 @@ export function getNextFromAmount(chainId, toAmount, fromTokenAddress, toTokenAd
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress)
   const toToken = getTokenInfo(infoTokens, toTokenAddress)
 
-  if (!fromToken || !toToken) { return defaultValue }
+  if (!fromToken || !fromToken.minPrice || !toToken || !toToken.maxPrice) { return defaultValue }
 
   const adjustDecimals = adjustForDecimalsFactory(fromToken.decimals - toToken.decimals)
 
@@ -483,7 +507,6 @@ export function getNextFromAmount(chainId, toAmount, fromTokenAddress, toTokenAd
     }
   }
 
-  // const feeBasisPoints = getSwapFeeBasisPoints(fromToken.isStable && toToken.isStable)
   const fromAmount = ratio && !ratio.isZero()
     ? fromAmountBasedOnRatio
     : toAmount.mul(toToken.maxPrice).div(fromToken.minPrice)
@@ -626,13 +649,27 @@ export function getNextToAmount(chainId, fromAmount, fromTokenAddress, toTokenAd
   }
 }
 
-export function calculatePositionDelta({ size, collateral, isLong, averagePrice, price }) {
+export function getProfitPrice(closePrice, position) {
+  let profitPrice
+  if (position && position.averagePrice && closePrice) {
+    profitPrice = position.isLong
+      ? position.averagePrice.mul(BASIS_POINTS_DIVISOR + PROFIT_THRESHOLD_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
+      : position.averagePrice.mul(BASIS_POINTS_DIVISOR - PROFIT_THRESHOLD_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
+  }
+  return profitPrice
+}
+
+export function calculatePositionDelta(price, { size, collateral, isLong, averagePrice, lastIncreasedTime }, sizeDelta) {
+  if (!sizeDelta) {
+    sizeDelta = size
+  }
   const priceDelta = averagePrice.gt(price) ? averagePrice.sub(price) : price.sub(averagePrice)
-  let delta = size.mul(priceDelta).div(averagePrice)
+  let delta = sizeDelta.mul(priceDelta).div(averagePrice)
   const pendingDelta = delta
 
+  const minProfitExpired = lastIncreasedTime + MIN_PROFIT_TIME < Date.now () / 1000
   const hasProfit = isLong ? price.gt(averagePrice) : price.lt(averagePrice)
-  if (hasProfit && delta.mul(BASIS_POINTS_DIVISOR).lte(size.mul(PROFIT_THRESHOLD_BASIS_POINTS))) {
+  if (!minProfitExpired && hasProfit && delta.mul(BASIS_POINTS_DIVISOR).lte(size.mul(PROFIT_THRESHOLD_BASIS_POINTS))) {
     delta = bigNumberify(0)
   }
 
@@ -842,6 +879,17 @@ export function formatDateTime(time) {
   return formatDateFn(time * 1000, "dd MMM yyyy, h:mm a")
 }
 
+export function getTimeRemaining(time) {
+  const now = parseInt(Date.now() / 1000)
+  if (time < now) {
+    return "0h 0m"
+  }
+  const diff = time - now
+  const hours = parseInt(diff / (60 * 60))
+  const minutes = parseInt((diff - hours * 60 * 60) / 60)
+  return `${hours}h ${minutes}m`
+}
+
 export function formatDate(time) {
   return formatDateFn(time * 1000, "dd MMM yyyy")
 }
@@ -935,15 +983,6 @@ export function getProvider(library, chainId) {
   }
   provider = _.sample(RPC_PROVIDERS[chainId])
   return new ethers.providers.JsonRpcProvider(provider)
-}
-
-const ordersFetcher = (library, contractInfo, ...params) => (active, chainId, address, method) => {
-  if (!ethers.utils.isAddress(address)) {
-    return;
-  }
-  const provider = getProvider(library, chainId)
-  const contract = new ethers.Contract(address, contractInfo.abi, provider)
-  return contract[method](...params).catch(console.error)
 }
 
 export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
@@ -1041,7 +1080,7 @@ export const formatArrayAmount = (arr, index, tokenDecimals, displayDecimals, us
   return formatAmount(arr[index], tokenDecimals, displayDecimals, useCommas)
 }
 
-function _parseOrdersData(ordersData, account, indices, extractor, uintPropsLength, addressPropsLength) {
+function _parseOrdersData(ordersData, account, indexes, extractor, uintPropsLength, addressPropsLength) {
   if (!ordersData || ordersData.length === 0) {
     return [];
   }
@@ -1061,7 +1100,7 @@ function _parseOrdersData(ordersData, account, indices, extractor, uintPropsLeng
     }
 
     const order = extractor(sliced);
-    order.index = indices[i];
+    order.index = indexes[i];
     order.account = account;
     orders.push(order);
   }
@@ -1069,7 +1108,7 @@ function _parseOrdersData(ordersData, account, indices, extractor, uintPropsLeng
   return orders;
 }
 
-function parseDecreaseOrdersData(decreaseOrdersData, account, indices) {
+function parseDecreaseOrdersData(decreaseOrdersData, account, indexes) {
   const extractor = sliced => {
     const swapOption = sliced[4].toString() === "1" ? LONG : SHORT
     return {
@@ -1083,10 +1122,10 @@ function parseDecreaseOrdersData(decreaseOrdersData, account, indices) {
       orderType: STOP
     }
   }
-  return _parseOrdersData(decreaseOrdersData, account, indices, extractor, 5, 2)
+  return _parseOrdersData(decreaseOrdersData, account, indexes, extractor, 5, 2)
 }
 
-function parseIncreaseOrdersData(increaseOrdersData, account, indices) {
+function parseIncreaseOrdersData(increaseOrdersData, account, indexes) {
   const extractor = sliced => {
     const swapOption = sliced[5].toString() === "1" ? LONG : SHORT
     return {
@@ -1101,16 +1140,18 @@ function parseIncreaseOrdersData(increaseOrdersData, account, indices) {
       orderType: LIMIT
     }
   }
-  return _parseOrdersData(increaseOrdersData, account, indices, extractor, 5, 3)
+  return _parseOrdersData(increaseOrdersData, account, indexes, extractor, 5, 3)
 }
 
-function parseSwapOrdersData(swapOrdersData, account, indices) {
+function parseSwapOrdersData(swapOrdersData, account, indexes) {
   if (!swapOrdersData || !swapOrdersData.length) {
     return [];
   }
 
   const extractor = sliced => {
     const triggerAboveThreshold = sliced[6].toString() === '1';
+    const shouldUnwrap = sliced[7]?.toString() === '1'
+
     return {
       fromTokenAddress: sliced[0],
       toTokenAddress: sliced[2] === AddressZero ? sliced[1] : sliced[2],
@@ -1119,122 +1160,105 @@ function parseSwapOrdersData(swapOrdersData, account, indices) {
       triggerRatio: sliced[5],
       triggerAboveThreshold,
       swapOption: SWAP,
-      orderType: triggerAboveThreshold ? STOP : LIMIT
+      orderType: triggerAboveThreshold ? STOP : LIMIT,
+      shouldUnwrap
     }
   }
-  return _parseOrdersData(swapOrdersData, account, indices, extractor, 4, 3)
+  return _parseOrdersData(swapOrdersData, account, indexes, extractor, 5, 3)
 }
 
-function _useOrdersByType(shouldRequest, chainId, method, indexProp, parseFunc, indices = []) {
-  const { active, library, account } = useWeb3React();
-  const LIMIT = 10;
-  const orderBookReaderAddress = getContract(chainId, "OrderBookReader")
-  const getKey = (method, index) => {
-    if (!(active && account && index && index.gt(0))) {
-      return false;
-    }
-    // using `index.toString()` because BigNumber(0) !== BigNumber(0)
-    // and useSWR tries to retrieve data again
-    return [active, chainId, orderBookReaderAddress, method, orderBookAddress, account, index.toString()];
-  }
+export function useOrders(flagOrdersEnabled, overrideAccount) {
+  const { active, library, account: connectedAccount } = useWeb3React();
+  const account = overrideAccount || connectedAccount
 
-  const getIndicesRange = (to, from) => {
-    const _indices = []
-    from = from || Math.max(to - LIMIT, 0)
-    for (let i = to - 1; i >= from; i--) {
-      _indices.push(i);
-    }
-    return _indices;
-  }
-
-  const orderBookAddress = getContract(chainId, "OrderBook")
-
-  const { data: currentOrderIndex = bigNumberify(0), mutate: updateOrderIndex } = useSWR(
-    shouldRequest ? [active, chainId, orderBookAddress, indexProp, account] : false,
-    { fetcher: fetcher(library, OrderBook) }
-  );
-
-  if (indices.length === 0) {
-    indices = getIndicesRange(currentOrderIndex)
-  } else if (indices[indices.length - 1] < currentOrderIndex - 1) {
-    indices = [...indices, ...getIndicesRange(currentOrderIndex, indices[indices.length - 1] + 1)].sort((a, b) => b - a)
-  }
-
-  const ordersKey = getKey(method, currentOrderIndex);
-  const { data: ordersData, mutate: updateOrders } = useSWR(ordersKey, {
-    fetcher: ordersFetcher(library, OrderBookReader, orderBookAddress, account, indices)
-  })
-  const orders = parseFunc(ordersData, account, indices)
-
-  return [
-    orders,
-    (orders, shouldRevalidate) => {
-      updateOrderIndex(undefined, shouldRevalidate);
-      updateOrders(undefined, shouldRevalidate)
-    }
-  ]
-}
-
-export function useOrders(flagOrdersEnabled) {
-  const { account, active } = useWeb3React()
   const { chainId } = useChainId()
-  const ordersIndicesUrl = `${getServerBaseUrl(chainId)}/orders_indices?account=${account}`
   const shouldRequest = active && account && flagOrdersEnabled
 
-  const { data: indicesGroups = {} } = useSWR(shouldRequest ? ordersIndicesUrl : undefined, {
-    dedupingInterval: 60000,
-    fetcher: (...args) => {
-      return fetch(...args)
-        .then(res => {
-          const json = res.json()
-          for (const key of json) {
-            json[key] = json[key].map(deserialize)
-          }
-          return json
-        })
+  const orderBookAddress = getContract(chainId, "OrderBook")
+  const orderBookReaderAddress = getContract(chainId, "OrderBookReader")
+  const key = shouldRequest ? [active, chainId, orderBookAddress, account] : false
+  const { data: orders = [], mutate: updateOrders } = useSWR(key, {
+    dedupingInterval: 5000,
+    fetcher: async (active, chainId, orderBookAddress, account) => {
+      const provider = getProvider(library, chainId);
+      const orderBookContract = new ethers.Contract(orderBookAddress, OrderBook.abi, provider)
+      const orderBookReaderContract = new ethers.Contract(orderBookReaderAddress, OrderBookReader.abi, provider)
+
+      const fetchIndexesFromServer = () => {
+        const ordersIndexesUrl = `${getServerBaseUrl(chainId)}/orders_indices?account=${account}`
+        return fetch(ordersIndexesUrl)
+          .then(async res => {
+            const json = await res.json()
+            const ret = {}
+            for (const key of Object.keys(json)) {
+              ret[key.toLowerCase()] = json[key].map(val => parseInt(val.value))
+            }
+
+            return ret
+          })
+          .catch(() => ({ swap: [], increase: [], decrease: [] }))
+      }
+
+      const fetchLastIndex = async (type) => {
+        const method = type.toLowerCase() + "OrdersIndex"
+        return await orderBookContract[method](account).then(res => bigNumberify(res._hex).toNumber())
+      }
+
+      const fetchLastIndexes = async () => {
+        const [swap, increase, decrease] = await Promise.all([
+          fetchLastIndex("swap"),
+          fetchLastIndex("increase"),
+          fetchLastIndex("decrease")
+        ])
+
+        return { swap, increase, decrease }
+      }
+
+      const getRange = (to, from) => {
+        const LIMIT = 10
+        const _indexes = []
+        from = from || Math.max(to - LIMIT, 0)
+        for (let i = to - 1; i >= from; i--) {
+          _indexes.push(i);
+        }
+        return _indexes;
+      }
+
+      const getIndexes = (knownIndexes, lastIndex) => {
+        if (knownIndexes.length === 0) {
+          return getRange(lastIndex)
+        }
+        return [
+          ...knownIndexes,
+          ...getRange(lastIndex, knownIndexes[knownIndexes.length - 1] + 1).sort((a, b) => b - a)
+        ]
+      }
+
+      const getOrders = async (method, knownIndexes, lastIndex, parseFunc) => {
+        const indexes = getIndexes(knownIndexes, lastIndex)
+        const ordersData = await orderBookReaderContract[method](orderBookAddress, account, indexes)
+        const orders = parseFunc(ordersData, account, indexes)
+        return orders
+      }
+
+      try {
+        const [serverIndexes, lastIndexes] = await Promise.all([
+          fetchIndexesFromServer(),
+          fetchLastIndexes()
+        ])
+        const [swapOrders = [], increaseOrders = [], decreaseOrders = []] = await Promise.all([
+          getOrders("getSwapOrders", serverIndexes.swap, lastIndexes.swap, parseSwapOrdersData),
+          getOrders("getIncreaseOrders", serverIndexes.increase, lastIndexes.increase, parseIncreaseOrdersData),
+          getOrders("getDecreaseOrders", serverIndexes.decrease, lastIndexes.decrease, parseDecreaseOrdersData),
+        ])
+        return [...swapOrders, ...increaseOrders, ...decreaseOrders]
+      } catch (ex) {
+        console.error(ex)
+      }
     }
   })
 
-  const [swapOrders, updateSwapOrders] = _useOrdersByType(
-    shouldRequest,
-    chainId,
-    "getSwapOrders",
-    "swapOrdersIndex",
-    parseSwapOrdersData,
-    indicesGroups.Swap
-  )
-  const [increaseOrders, updateIncreaseOrders] = _useOrdersByType(
-    shouldRequest,
-    chainId,
-    "getIncreaseOrders",
-    "increaseOrdersIndex",
-    parseIncreaseOrdersData,
-    indicesGroups.Increase
-  )
-  const [decreaseOrders, updateDecreaseOrders] = _useOrdersByType(
-    shouldRequest,
-    chainId,
-    "getDecreaseOrders",
-    "decreaseOrdersIndex",
-    parseDecreaseOrdersData,
-    indicesGroups.Decrease
-  )
-
-  return [
-    [
-      ...swapOrders,
-      ...increaseOrders,
-      ...decreaseOrders
-    ],
-    // `_` arg to keep common signature for mutate functions...
-    (_, shouldRevalidate) => {
-      if (shouldRevalidate) {
-        updateSwapOrders(undefined, true)
-        updateIncreaseOrders(undefined, true)
-        updateDecreaseOrders(undefined, true)
-      }
-    }
-  ];
+  return [orders, updateOrders];
 }
 
 export const formatAmount = (amount, tokenDecimals, displayDecimals, useCommas, defaultValue) => {
@@ -1351,7 +1375,7 @@ export function approveTokens({ setIsApproving, library, tokenAddress, spender, 
   contract.approve(spender, ethers.constants.MaxUint256, { gasLimit: DEFAULT_GAS_LIMIT })
   .then(async (res) => {
     const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash
-    toast.success(
+    helperToast.success(
       <div>
       Approval submitted! <a href={txUrl} target="_blank" rel="noopener noreferrer">View status.</a>
       <br/>
@@ -1383,7 +1407,7 @@ export function approveTokens({ setIsApproving, library, tokenAddress, spender, 
     } else {
       failMsg = "Approval failed."
     }
-    toast.error(failMsg)
+    helperToast.error(failMsg)
   })
   .finally(() => {
     setIsApproving(false)
@@ -1468,8 +1492,7 @@ export const switchNetwork = async (chainId) => {
       method: "wallet_switchEthereumChain",
       params: [{ chainId: chainIdHex }]
     })
-    toast.dismiss()
-    toast.success("Wallet connected!")
+    helperToast.success("Wallet connected!")
   } catch (ex) {
     // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
     // This error code indicates that the chain has not been added to MetaMask.
@@ -1485,14 +1508,14 @@ export const getConnectWalletHandler = (activate) => {
   const fn = async () => {
     activate(getInjectedConnector(), (e) => {
       if (e.message.includes("No Ethereum provider")) {
-        toast.error(<div>
+        helperToast.error(<div>
           Could not find a wallet to connect to.<br/>
           <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">Add a wallet</a> to start using the app.
         </div>)
         return
       }
       if (e instanceof UnsupportedChainIdError) {
-        toast.error(<div>
+        helperToast.error(<div>
           <div>Your wallet is not connected to {getChainName(DEFAULT_CHAIN_ID)}.</div><br/>
           <div className="clickable underline margin-bottom" onClick={() => switchNetwork(DEFAULT_CHAIN_ID)}>
             Switch to {getChainName(DEFAULT_CHAIN_ID)}
@@ -1503,7 +1526,7 @@ export const getConnectWalletHandler = (activate) => {
         </div>)
         return
       }
-      toast.error(e.toString())
+      helperToast.error(e.toString())
     })
   }
   return fn
