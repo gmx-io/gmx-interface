@@ -278,10 +278,8 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo)
   const { positions, positionsMap } = getPositions(chainId, positionQuery, positionData, infoTokens, savedIsPnlInLeverage)
 
-  const [flagOrdersEnabled] = useLocalStorageSerializeKey(
-    [chainId, "Flag-orders-enabled"],
-    getConstant(chainId, "defaultFlagOrdersEnabled") || document.location.hostname.includes("deploy-preview") || document.location.hostname === "localhost"
-  );
+
+  const flagOrdersEnabled = true
   const [orders, updateOrders] = useOrders(flagOrdersEnabled)
 
   const [isWaitingForPluginApproval, setIsWaitingForPluginApproval] = useState(false);

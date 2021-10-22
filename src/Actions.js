@@ -14,8 +14,7 @@ import {
   getInfoTokens,
   getTokenInfo,
   getServerBaseUrl,
-  useOrders,
-  useLocalStorageSerializeKey
+  useOrders
 } from './Helpers'
 import { getToken, getTokens, getWhitelistedTokens } from './data/Tokens'
 import { getPositions, getPositionQuery } from './Exchange'
@@ -25,7 +24,6 @@ import OrdersList from './components/Exchange/OrdersList'
 import TradeHistory from './components/Exchange/TradeHistory'
 import Reader from './abis/Reader.json'
 import ReaderV2 from './abis/ReaderV2.json'
-import { getConstant } from './Constants'
 
 const USD_DECIMALS = 30
 
@@ -74,10 +72,7 @@ export default function Actions() {
   const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo)
   const { positions, positionsMap } = getPositions(chainId, positionQuery, positionData, infoTokens, false)
 
-  const [flagOrdersEnabled] = useLocalStorageSerializeKey(
-    [chainId, "Flag-orders-enabled"],
-    getConstant(chainId, "defaultFlagOrdersEnabled") || document.location.hostname.includes("deploy-preview") || document.location.hostname === "localhost"
-  );
+  const flagOrdersEnabled = true
   const [orders, updateOrders] = useOrders(flagOrdersEnabled, checkSummedAccount)
 
   useEffect(() => {
