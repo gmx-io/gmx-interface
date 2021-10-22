@@ -336,11 +336,11 @@ export default function ConfirmationBox(props) {
 
     return <ExchangeInfoRow label="Available Liquidity">
       <Tooltip
-        position="right-top"
+        position="right-bottom"
         handleClassName={isLiquidityRisk ? "negative" : null}
         handle={<>{formatAmount(availableLiquidity, token.decimals, token.isStable ? 0 : 2, true)} {token.symbol}</>
       }>
-        {!isLiquidityRisk && "The order will execute if the price conditions are met and there is sufficient liquidity"}
+        {!isLiquidityRisk && "The order will only execute if the price conditions are met and there is sufficient liquidity"}
         {isLiquidityRisk && "There may not be sufficient liquidity to execute your order when the price conditions are met"}
       </Tooltip>
     </ExchangeInfoRow>
@@ -360,7 +360,7 @@ export default function ConfirmationBox(props) {
             </Checkbox>
           </div>
         }
-
+        {orderType === LIMIT && renderAvailableLiquidity()}
         {(isShort) &&
           <ExchangeInfoRow label="Profits In">
               {getToken(chainId, shortCollateralAddress).symbol}
@@ -416,7 +416,6 @@ export default function ConfirmationBox(props) {
           {((isLong && toTokenInfo && toTokenInfo.fundingRate) || (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) && "% / 1h"}
         </ExchangeInfoRow>
         {renderExecutionFee()}
-        {orderType === LIMIT && renderAvailableLiquidity()}
       </div>
     </>
   }, [renderMain, renderMinProfitWarning, shortCollateralAddress,
@@ -431,6 +430,7 @@ export default function ConfirmationBox(props) {
         {renderMain()}
         {renderFeeWarning()}
         {renderSpreadWarning()}
+        {orderType === LIMIT && renderAvailableLiquidity()}
         <ExchangeInfoRow label="Min. Receive">
           {formatAmount(minOut, toTokenInfo.decimals, 4, true)} {toTokenInfo.symbol}
         </ExchangeInfoRow>
@@ -470,7 +470,6 @@ export default function ConfirmationBox(props) {
             <div className="align-right">{toTokenUsd} USD</div>
           </div>
         }
-        {orderType === LIMIT && renderAvailableLiquidity()}
       </div>
     </>
   }, [renderMain, renderSpreadWarning, fromTokenInfo, toTokenInfo, orderType,
