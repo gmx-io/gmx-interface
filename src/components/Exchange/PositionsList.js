@@ -244,7 +244,7 @@ export default function PositionsList(props) {
           const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress)
           return (
             <tr key={position.key}>
-              <td>
+              <td className="clickable" onClick={() => onPositionClick(position)}>
                 <div className="Exchange-list-title">{position.indexToken.symbol}</div>
                 <div className="Exchange-list-info-label">
                   <span className="muted">
