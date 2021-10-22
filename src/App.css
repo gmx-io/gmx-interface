@@ -210,6 +210,11 @@ button.App-connect-wallet:hover {
   margin-bottom: 1rem;
 }
 
+.App-card-title-small {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
 .App-card-content {
   display: grid;
   grid-row-gap: 0.5rem;
