@@ -15,6 +15,7 @@ import {
   SLIPPAGE_BPS_KEY,
   TRIGGER_PREFIX_BELOW,
   TRIGGER_PREFIX_ABOVE,
+  MIN_PROFIT_TIME,
 	usePrevious,
 	formatAmountFree,
 	parseValue,
@@ -27,10 +28,13 @@ import {
 	PRECISION,
 	MARKET,
 	STOP,
-  PROFIT_THRESHOLD_BASIS_POINTS,
+  LONG,
   useLocalStorageSerializeKey,
   calculatePositionDelta,
-  getDeltaStr
+  getDeltaStr,
+  getProfitPrice,
+  formatDateTime,
+  getTimeRemaining
 } from "../../Helpers"
 import { createDecreaseOrder, callContract } from "../../Api"
 import { getContract } from "../../Addresses"
@@ -39,6 +43,7 @@ import Checkbox from "../Checkbox/Checkbox"
 import Tab from "../Tab/Tab"
 import Modal from "../Modal/Modal"
 import ExchangeInfoRow from './ExchangeInfoRow'
+import { getTokenBySymbol } from '../../data/Tokens'
 
 const { AddressZero } = ethers.constants
 
@@ -82,12 +87,17 @@ export default function PositionSeller(props) {
     savedIsPnlInLeverage,
     chainId,
     nativeTokenAddress,
-    orders
+    orders,
+    isWaitingForPluginApproval,
+    isPluginApproving,
+    orderBookApproved,
+    setOrdersToaOpen
   } = props
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT)
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true)
   const position = (positionsMap && positionKey) ? positionsMap[positionKey] : undefined
   const [fromValue, setFromValue] = useState("")
+  const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const prevIsVisible = usePrevious(isVisible)
   const routerAddress = getContract(chainId, "Router")
@@ -107,31 +117,7 @@ export default function PositionSeller(props) {
   const [triggerPriceValue, setTriggerPriceValue] = useState('');
   const triggerPriceUsd = orderType === MARKET ? 0 : parseValue(triggerPriceValue, USD_DECIMALS);
 
-  const [deltaStr, deltaPercentageStr] = useMemo(() => {
-    if (!position) {
-      return ["-", "-"]
-    }
-    if (orderType !== STOP) {
-      return [position.deltaStr, position.deltaPercentageStr]
-    }
-    if (!triggerPriceUsd) {
-      return ["-", "-"]
-    }
-
-    const { pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta({
-      price: triggerPriceUsd,
-      ...position
-    })
-
-    const { deltaStr, deltaPercentageStr } = getDeltaStr({
-      delta: pendingDelta,
-      deltaPercentage: pendingDeltaPercentage,
-      hasProfit
-  })
-    return [deltaStr, deltaPercentageStr]
-  }, [position, triggerPriceUsd, orderType])
-
-  const [nextDelta, nextHasProfit, nextDeltaPercentage = bigNumberify(0)] = useMemo(() => {
+  const [nextDelta, nextHasProfit = bigNumberify(0)] = useMemo(() => {
     if (!position) {
       return [bigNumberify(0), false]
     }
@@ -144,22 +130,38 @@ export default function PositionSeller(props) {
       return [bigNumberify(0), false]
     }
 
-    const { delta, hasProfit, deltaPercentage } = calculatePositionDelta({
-      price: triggerPriceUsd,
-      ...position
-    })
+    const { delta, hasProfit, deltaPercentage } = calculatePositionDelta(triggerPriceUsd, position)
     return [delta, hasProfit, deltaPercentage]
   }, [position, orderType, triggerPriceUsd])
 
   const existingOrder = useMemo(() => {
+    if (orderType === STOP && (!triggerPriceUsd || triggerPriceUsd.eq(0))) {
+      return null
+    }
+    if (!orders) {
+      return null
+    }
+    const WETH = getTokenBySymbol(chainId, "WETH")
     for (const order of orders) {
-      if (order.orderType !== "Stop") continue
-      if ((order.swapOption === "Long") === position.isLong
-        && order.indexToken === position.indexToken.address) {
+      // only Stop orders can't be executed without corresponding opened position
+      if (order.orderType !== STOP) continue
+
+      // if user creates Stop-Loss we need only Stop-Loss orders and vice versa
+      if (orderType === STOP) {
+        const triggerAboveThreshold = triggerPriceUsd.gt(position.markPrice)
+        if (triggerAboveThreshold !== order.triggerAboveThreshold) continue
+      }
+
+      const sameToken = order.indexToken === WETH.address
+        ? position.indexToken.isNative
+        : order.indexToken === position.indexToken.address
+      if ((order.swapOption === LONG) === position.isLong && sameToken) {
         return order
       }
     }
-  }, [position, orders])
+  }, [position, orders, triggerPriceUsd, chainId, orderType])
+
+  const needOrderBookApproval = orderType === STOP && !orderBookApproved
 
   let collateralToken
   let maxAmount
@@ -225,7 +227,7 @@ export default function PositionSeller(props) {
 
     receiveAmount = receiveAmount.add(collateralDelta)
 
-    if (sizeDelta) {
+    if (sizeDelta && positionFee && fundingFee) {
       totalFees = positionFee.add(fundingFee)
       if (receiveAmount.gt(totalFees)) {
         receiveAmount = receiveAmount.sub(totalFees)
@@ -281,10 +283,43 @@ export default function PositionSeller(props) {
     }
   }
 
+  const [deltaStr, deltaPercentageStr] = useMemo(() => {
+    if (!position || !position.markPrice) {
+      return ["-", "-"]
+    }
+    if (orderType !== STOP) {
+      const { pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta(position.markPrice, position, fromAmount)
+      const { deltaStr, deltaPercentageStr } = getDeltaStr({
+        delta: pendingDelta,
+        deltaPercentage: pendingDeltaPercentage,
+        hasProfit
+      })
+      return [deltaStr, deltaPercentageStr]
+    }
+    if (!triggerPriceUsd || triggerPriceUsd.eq(0)) {
+      return ["-", "-"]
+    }
+
+    const { pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta(triggerPriceUsd, position, fromAmount)
+
+    const { deltaStr, deltaPercentageStr } = getDeltaStr({
+      delta: pendingDelta,
+      deltaPercentage: pendingDeltaPercentage,
+      hasProfit
+    })
+    return [deltaStr, deltaPercentageStr]
+  }, [position, triggerPriceUsd, orderType, fromAmount])
+
   const getError = () => {
     if (!fromAmount) { return "Enter an amount" }
     if (nextLeverage && nextLeverage.eq(0)) { return "Enter an amount" }
-    if (orderType === STOP && !triggerPriceUsd) { return "Enter a trigger price" }
+    if (orderType === STOP) {
+      if (!triggerPriceUsd || triggerPriceUsd.eq(0)) { return "Enter Price" }
+      if (position.isLong && triggerPriceUsd.lte(liquidationPrice)) { return "Price below Liq. Price" }
+      if (!position.isLong && triggerPriceUsd.gte(liquidationPrice)) { return "Price above Liq. Price" }
+
+      if (profitPrice && nextDelta.eq(0) && nextHasProfit) { return "Invalid price, see warning" }
+    }
 
     if (!isClosing && position && position.size && fromAmount) {
       if (position.size.sub(fromAmount).lt(expandDecimals(10, USD_DECIMALS))) {
@@ -303,25 +338,37 @@ export default function PositionSeller(props) {
     if (nextLeverage && nextLeverage.gt(30.5 * BASIS_POINTS_DIVISOR)) {
       return "Max leverage: 30.5x"
     }
+
+    if (hasPendingProfit && orderType !== STOP && !isProfitWarningAccepted) {
+      return "Forfeit profit not checked"
+    }
   }
 
   const isPrimaryEnabled = () => {
     const error = getError()
     if (error) { return false }
     if (isSubmitting) { return false }
+    if (needOrderBookApproval && isWaitingForPluginApproval) { return false }
+    if (isPluginApproving) { return false }
 
     return true
   }
+
+  const hasPendingProfit = position.delta.eq(0) && position.pendingDelta.gt(0)
 
   const getPrimaryText = () => {
     const error = getError()
     if (error) { return error }
     if (orderType === STOP) {
       if (isSubmitting) return "Creating Order...";
-      if (nextHasProfit && nextDelta.eq(0)) return "Create Order without profit"
-      return "Create Trigger Order"
+
+      if (needOrderBookApproval && isWaitingForPluginApproval) { return "Enabling Orders..." }
+      if (isPluginApproving) { return "Enabling Orders..." }
+      if (needOrderBookApproval) { return "Enable Orders" }
+
+      return "Create Order"
     }
-    if (position.delta.eq(0) && position.pendingDelta.gt(0)) {
+    if (hasPendingProfit) {
       return "Close without profit"
     }
     return isSubmitting ? "Closing..." : "Close"
@@ -329,6 +376,7 @@ export default function PositionSeller(props) {
 
   const resetForm = () => {
     setFromValue("")
+    setIsProfitWarningAccepted(false)
   }
 
   useEffect(() => {
@@ -338,9 +386,14 @@ export default function PositionSeller(props) {
   }, [prevIsVisible, isVisible])
 
   const onClickPrimary = async () => {
+    if (needOrderBookApproval) {
+      setOrdersToaOpen(true)
+      return
+    }
+
     setIsSubmitting(true)
 
-    const collateralTokenAddress = position.collateralToken.address
+    const collateralTokenAddress = position.collateralToken.isNative ? nativeTokenAddress : position.collateralToken.address
     const indexTokenAddress = position.indexToken.isNative ? nativeTokenAddress : position.indexToken.address
 
     let params;
@@ -353,6 +406,7 @@ export default function PositionSeller(props) {
       const triggerAboveThreshold = triggerPriceUsd.gt(position.markPrice)
 
       createDecreaseOrder(
+        chainId,
         library,
         indexTokenAddress,
         sizeDelta,
@@ -362,8 +416,8 @@ export default function PositionSeller(props) {
         triggerPriceUsd,
         triggerAboveThreshold,
         {
-          sentMsg: "Trigger Order submitted!",
-          successMsg: "Trigger Order created!",
+          sentMsg: "Order submitted!",
+          successMsg: "Order created!",
           failMsg: "Order creation failed",
           setPendingTxns
         },
@@ -373,6 +427,7 @@ export default function PositionSeller(props) {
       }).finally(() => {
         setIsSubmitting(false)
       })
+      return
     }
 
     const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress
@@ -411,26 +466,42 @@ export default function PositionSeller(props) {
     }
     const indexToken = getTokenInfo(infoTokens, existingOrder.indexToken)
     const sizeInToken = formatAmount(existingOrder.sizeDelta.mul(PRECISION).div(existingOrder.triggerPrice), USD_DECIMALS, 4, true)
+    const prefix = existingOrder.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW
     return (
       <div className="Confirmation-box-warning">
-        NOTE: You have an active Trigger Order to Decrease {existingOrder.swapOption} {sizeInToken} {indexToken.symbol} (${formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at price ${formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
+        You have an active order to decrease {existingOrder.swapOption} {sizeInToken} {indexToken.symbol} (${formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at {prefix} {formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
       </div>
     );
   }, [existingOrder, infoTokens])
 
-  function renderPnlWarning() {
-    if (orderType === MARKET) {
-      return null;
-    }
-    if (nextHasProfit || nextDeltaPercentage.lt(BASIS_POINTS_DIVISOR)) {
-      return null
-    }
+  function renderMinProfitWarning() {
+    if (profitPrice && nextDelta.eq(0) && nextHasProfit) {
+      const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME
 
-    return (
-      <div className="Confirmation-box-warning">
-        WARNING: The position will be liquidated before reaching the Trigger Price
-      </div>
-    );
+      if (orderType === MARKET) {
+        return (
+          <div className="Confirmation-box-warning">
+            Reducing the position at the current price will forfeit a&nbsp;
+            <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
+              pending profit
+            </a> of {deltaStr}. <br/>
+            <br/>
+            Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
+            This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
+          </div>
+        )
+      }
+      return (
+        <div className="Confirmation-box-warning">
+          This order will forfeit a&nbsp;
+          <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
+            profit
+          </a> of {deltaStr}. <br/>
+          Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
+          This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
+        </div>
+      )
+    }
   }
 
   function renderExecutionFee() {
@@ -439,48 +510,26 @@ export default function PositionSeller(props) {
     }
     return (
       <ExchangeInfoRow label="Execution Fees">
-        {formatAmount(DECREASE_ORDER_EXECUTION_GAS_FEE, 18, 4)} BNB
+        {formatAmount(DECREASE_ORDER_EXECUTION_GAS_FEE, 18, 4)} ETH
       </ExchangeInfoRow>
     );
   }
 
-  let priceMovementPercentage
-  let profitPrice
-  if (position && position.markPrice && position.averagePrice) {
-    if (orderType === MARKET || triggerPriceUsd) {
-      const closePrice = orderType === MARKET ? position.markPrice : triggerPriceUsd
-      const priceDelta = closePrice.gt(position.averagePrice) ? closePrice.sub(position.averagePrice) : position.averagePrice.sub(closePrice)
-      priceMovementPercentage = priceDelta.mul(BASIS_POINTS_DIVISOR).div(position.averagePrice)
-      profitPrice = position.isLong
-        ? position.averagePrice.mul(BASIS_POINTS_DIVISOR + PROFIT_THRESHOLD_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
-        : position.averagePrice.mul(BASIS_POINTS_DIVISOR - PROFIT_THRESHOLD_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
-    }
-  }
+  const profitPrice = getProfitPrice(orderType === MARKET ? position.markPrice : triggerPriceUsd, position)
 
   let triggerPricePrefix
   if (triggerPriceUsd) {
     triggerPricePrefix = triggerPriceUsd.gt(position.markPrice) ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW
   }
 
+  const shouldShowExistingOrderWarning = false
+
   return (
     <div className="PositionEditor">
       {(position) &&
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
-          {(profitPrice && nextDelta.eq(0) && nextHasProfit) &&
-            <div className="Confirmation-box-warning">
-              WARNING: You {orderType === MARKET ? 'have' : 'will have'} a&nbsp;
-              <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
-                pending profit
-              </a> of {deltaStr}. <br/>
-              Profit price: ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
-              Current movement: {formatAmount(priceMovementPercentage, 2, 2, true)}%.
-            </div>
-          }
-          {renderPnlWarning()}
-
-          {/*TODO handle unapproved orderbook*/}
           {flagOrdersEnabled &&
-            <Tab options={orderTypes} className="Confirmation-box-tabs" option={orderType} optionLabels={orderOptionLabels} onChange={onOrderOptionChange} type="inline" />
+            <Tab options={orderTypes} option={orderType} optionLabels={orderOptionLabels} onChange={onOrderOptionChange} />
           }
           <div className="Exchange-swap-section">
             <div className="Exchange-swap-section-top">
@@ -533,14 +582,61 @@ export default function PositionSeller(props) {
 	            </div>
 	          </div>
           }
-          {renderExistingOrderWarning()}
+          {renderMinProfitWarning()}
+          {shouldShowExistingOrderWarning && renderExistingOrderWarning()}
           <div className="PositionEditor-info-box">
+            {(hasPendingProfit && orderType !== STOP) &&
+              <div className="PositionEditor-accept-profit-warning">
+                <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
+                  <span className="muted">Forfeit profit</span>
+                </Checkbox>
+              </div>
+            }
             <div className="PositionEditor-keep-leverage-settings">
 							<Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
 								<span className="muted">Keep leverage at {formatAmount(position.leverage, 4, 2)}x</span>
 							</Checkbox>
             </div>
+            {orderType === STOP && <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Trigger Price</div>
+              <div className="align-right">
+                {!triggerPriceUsd && '-'}
+                {triggerPriceUsd &&
+                  `${triggerPricePrefix} ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}`
+                }
+              </div>
+            </div>}
+            <div className="Exchange-info-row top-line">
+              <div className="Exchange-info-label">Mark Price</div>
+              <div className="align-right">
+                ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
+              </div>
+            </div>
             <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Entry Price</div>
+              <div className="align-right">
+                ${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}
+              </div>
+            </div>
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Liq. Price</div>
+              <div className="align-right">
+                {(isClosing && orderType !== STOP) && "-"}
+                {(!isClosing || orderType === STOP) && <div>
+                  {!nextLiquidationPrice && <div>
+                    {`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}
+                  </div>}
+                  {nextLiquidationPrice && <div>
+                    <div className="inline-block muted">
+                      ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
+                      <BsArrowRight className="transition-arrow" />
+                    </div>
+                    ${formatAmount(nextLiquidationPrice, USD_DECIMALS, 2, true)}
+                  </div>}
+                </div>}
+              </div>
+            </div>
+            <div className="Exchange-info-row top-line">
               <div className="Exchange-info-label">Size</div>
               <div className="align-right">
                 {position && position.size && fromAmount && <div>
@@ -587,45 +683,12 @@ export default function PositionSeller(props) {
               </div>
             </div>}
             <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Liq. Price</div>
-              <div className="align-right">
-                {isClosing && "-"}
-                {!isClosing && <div>
-                  {!nextLiquidationPrice && <div>
-                    {`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}
-                  </div>}
-                  {nextLiquidationPrice && <div>
-                    <div className="inline-block muted">
-                      ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
-                      <BsArrowRight className="transition-arrow" />
-                    </div>
-                    ${formatAmount(nextLiquidationPrice, USD_DECIMALS, 2, true)}
-                  </div>}
-                </div>}
-              </div>
-            </div>
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Mark Price</div>
-              <div className="align-right">
-                ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
-              </div>
-            </div>
-            {orderType === STOP && <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Price</div>
-              <div className="align-right">
-                {!triggerPriceUsd && '-'}
-                {triggerPriceUsd &&
-                  `${triggerPricePrefix} ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}`
-                }
-              </div>
-            </div>}
-            <div className="Exchange-info-row">
               <div className="Exchange-info-label">PnL</div>
               <div className="align-right">
                 {deltaStr} ({deltaPercentageStr})
               </div>
             </div>
-            <div className="Exchange-info-row">
+            <div className="Exchange-info-row top-line">
               <div className="Exchange-info-label">Borrow Fee</div>
               <div className="align-right">
                 ${formatAmount(fundingFee, USD_DECIMALS, 2, true)}

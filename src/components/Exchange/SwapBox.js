@@ -6,7 +6,6 @@ import Slider, { SliderTooltip } from 'rc-slider'
 import 'rc-slider/assets/index.css'
 
 import cx from "classnames";
-import { toast } from 'react-toastify'
 import useSWR from 'swr'
 import { ethers } from 'ethers'
 
@@ -14,6 +13,7 @@ import { IoMdSwap } from 'react-icons/io'
 import { BsArrowRight } from 'react-icons/bs'
 
 import {
+  helperToast,
 	formatAmount,
 	bigNumberify,
 	USD_DECIMALS,
@@ -65,6 +65,7 @@ import Tab from '../Tab/Tab'
 import TokenSelector from './TokenSelector'
 import ExchangeInfoRow from './ExchangeInfoRow'
 import ConfirmationBox from './ConfirmationBox'
+import OrdersToa from './OrdersToa'
 
 import { getTokens, getWhitelistedTokens, getToken, getTokenBySymbol } from '../../data/Tokens'
 import Token from '../../abis/Token.json'
@@ -141,7 +142,12 @@ export default function SwapBox(props) {
     totalTokenWeights,
     usdgSupply,
     orders,
-    savedIsPnlInLeverage
+    savedIsPnlInLeverage,
+    orderBookApproved,
+    isWaitingForPluginApproval,
+    approveOrderBook,
+    setIsWaitingForPluginApproval,
+    isPluginApproving
   } = props
 
   const [fromValue, setFromValue] = useState("")
@@ -165,6 +171,8 @@ export default function SwapBox(props) {
 	const [isLeverageSliderEnabled, setIsLeverageSliderEnabled] = useLocalStorageSerializeKey([chainId, "Exchange-swap-leverage-slider-enabled"], true)
 
 	const hasLeverageOption = isLeverageSliderEnabled && !isNaN(parseFloat(leverageOption))
+
+  const [ordersToaOpen, setOrdersToaOpen] = useState(false)
 
   let [orderType, setOrderType] = useLocalStorageSerializeKey([chainId, 'Order-option'], MARKET);
   if (!flagOrdersEnabled) {
@@ -213,7 +221,17 @@ export default function SwapBox(props) {
   const indexTokens = whitelistedTokens.filter(token => !token.isStable && !token.isWrapped)
   const toTokens = isSwap ? tokens : indexTokens
 
-  const orderBookAddress = getContract(chainId, "OrderBook")
+  const needOrderBookApproval = !isMarketOrder && !orderBookApproved
+  const prevNeedOrderBookApproval = usePrevious(needOrderBookApproval)
+
+  useEffect(() => {
+    if (!needOrderBookApproval && prevNeedOrderBookApproval && isWaitingForPluginApproval) {
+      setIsWaitingForPluginApproval(false)
+      helperToast.success(<div>
+        Orders enabled!
+      </div>)
+    }
+  }, [needOrderBookApproval, prevNeedOrderBookApproval, setIsWaitingForPluginApproval, isWaitingForPluginApproval])
 
   const routerAddress = getContract(chainId, "Router")
   const tokenAllowanceAddress = fromTokenAddress === AddressZero ? nativeTokenAddress : fromTokenAddress
@@ -234,7 +252,8 @@ export default function SwapBox(props) {
   const fromAmount = parseValue(fromValue, fromToken && fromToken.decimals)
   const toAmount = parseValue(toValue, toToken && toToken.decimals)
 
-  const needApproval = fromTokenAddress !== AddressZero && tokenAllowance && fromAmount && fromAmount.gt(tokenAllowance)
+  const isWrapOrUnwrap = (fromToken.isNative && toToken.isWrapped) || (fromToken.isWrapped && toToken.isNative)
+  const needApproval = fromTokenAddress !== AddressZero && tokenAllowance && fromAmount && fromAmount.gt(tokenAllowance) && !isWrapOrUnwrap
   const prevFromTokenAddress = usePrevious(fromTokenAddress)
   const prevNeedApproval = usePrevious(needApproval)
 	const prevToTokenAddress = usePrevious(toTokenAddress)
@@ -265,14 +284,10 @@ export default function SwapBox(props) {
     return ratio
   }, [triggerRatioValue, triggerRatioInverted])
 
-  const { data: orderBookApproved, mutate: updateOrderBookApproved } = useSWR(active && [active, chainId, routerAddress, "approvedPlugins", account, orderBookAddress], {
-    fetcher: fetcher(library, Router)
-  });
-
   useEffect(() => {
     if (fromToken && fromTokenAddress === prevFromTokenAddress && !needApproval && prevNeedApproval && isWaitingForApproval) {
       setIsWaitingForApproval(false)
-      toast.success(<div>
+      helperToast.success(<div>
         {fromToken.symbol} approved!
       </div>)
     }
@@ -299,18 +314,6 @@ export default function SwapBox(props) {
   }, [active, library, updateTokenAllowance])
 
   useEffect(() => {
-    function onBlock() {
-      updateOrderBookApproved(undefined, true)
-    }
-    if (active) {
-      library.on('block', onBlock)
-      return () => {
-        library.removeListener('block', onBlock)
-      }
-    }
-  }, [active, library, updateOrderBookApproved])
-
-  useEffect(() => {
     if (swapOption !== SHORT) { return }
 		if (toTokenAddress === prevToTokenAddress) { return }
     for (let i = 0; i < stableTokens.length; i++) {
@@ -323,20 +326,6 @@ export default function SwapBox(props) {
       }
     }
   }, [toTokenAddress, prevToTokenAddress, swapOption, positionsMap, stableTokens, nativeTokenAddress, shortCollateralAddress, setShortCollateralAddress])
-
-  const needOrderBookApproval = !isMarketOrder && !orderBookApproved
-  const prevNeedOrderBookApproval = usePrevious(needOrderBookApproval)
-  const [isWaitingForPluginApproval, setIsWaitingForPluginApproval] = useState(false);
-  const [isPluginApproving, setIsPluginApproving] = useState(false);
-
-  useEffect(() => {
-    if (!needOrderBookApproval && prevNeedOrderBookApproval && isWaitingForPluginApproval) {
-      setIsWaitingForPluginApproval(false)
-      toast.success(<div>
-        Order Book approved!
-      </div>)
-    }
-  }, [needOrderBookApproval, prevNeedOrderBookApproval, setIsWaitingForPluginApproval, isWaitingForPluginApproval])
 
   useEffect(() => {
     const updateSwapAmounts = () => {
@@ -476,10 +465,7 @@ export default function SwapBox(props) {
       nextDelta = existingPosition.delta
       nextHasProfit = existingPosition.hasProfit
     } else {
-      const data = calculatePositionDelta({
-        price: triggerPriceUsd || bigNumberify(0),
-        ...existingPosition
-      })
+      const data = calculatePositionDelta(triggerPriceUsd || bigNumberify(0), existingPosition)
       nextDelta = data.delta
       nextHasProfit = data.hasProfit
     }
@@ -549,7 +535,6 @@ export default function SwapBox(props) {
 
     if (!fromAmount || fromAmount.eq(0)) { return ["Enter an amount"] }
     if (!toAmount || toAmount.eq(0)) { return ["Enter an amount"] }
-    if (!isMarketOrder && (!triggerRatioValue || triggerRatio.eq(0))) { return ["Enter a price"] }
 
     const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress)
     if (!fromTokenInfo || !fromTokenInfo.minPrice) {
@@ -560,7 +545,16 @@ export default function SwapBox(props) {
     }
 
     const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress)
-    const isWrapOrUnwrap = (fromToken.isNative && toToken.isWrapped) || (fromToken.isWrapped && toToken.isNative)
+
+    if (!isMarketOrder) {
+      if (!triggerRatioValue || triggerRatio.eq(0)) { return ["Enter a price"] }
+
+      const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
+      if (currentRate && currentRate.lt(triggerRatio)) {
+        return [`Price ${triggerRatioInverted ? "below": "above"} Mark Price`]
+      }
+    }
+
     if (!isWrapOrUnwrap && toToken && toTokenAddress !== USDG_ADDRESS && toTokenInfo &&
         toTokenInfo.availableAmount && toAmount.gt(toTokenInfo.availableAmount)) {
       return ["Insufficient liquidity"]
@@ -569,7 +563,7 @@ export default function SwapBox(props) {
       return ["Insufficient liquidity"]
     }
 
-    if (fromTokenInfo.maxUsdgAmount && fromTokenInfo.maxUsdgAmount.gt(0) && fromTokenInfo.usdgAmount && fromTokenInfo.maxPrice) {
+    if (fromUsdMin && fromTokenInfo.maxUsdgAmount && fromTokenInfo.maxUsdgAmount.gt(0) && fromTokenInfo.usdgAmount && fromTokenInfo.maxPrice) {
       const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS)
       const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount)
 
@@ -607,6 +601,11 @@ export default function SwapBox(props) {
 
     if (leverage && leverage.gt(30.5 * BASIS_POINTS_DIVISOR)) {
       return ["Max leverage: 30.5x"]
+    }
+
+    if (!isMarketOrder && entryMarkPrice && triggerPriceUsd) {
+      if (isLong && entryMarkPrice.lt(triggerPriceUsd)) { return ["Price above Mark Price"] }
+      if (!isLong && entryMarkPrice.gt(triggerPriceUsd)) { return ["Price below Mark Price"] }
     }
 
     if (isLong) {
@@ -675,7 +674,7 @@ export default function SwapBox(props) {
   }, [chainId, fromAmount, fromTokenAddress, fromUsdMin, hasExistingPosition,
     infoTokens, isLong, isMarketOrder, isShort, leverage, shortCollateralAddress,
     shortCollateralToken, swapOption, toAmount, toToken, toTokenAddress,
-    totalTokenWeights, triggerPriceUsd, triggerPriceValue, usdgSupply])
+    totalTokenWeights, triggerPriceUsd, triggerPriceValue, usdgSupply, entryMarkPrice])
 
   const getToLabel = () => {
     if (isSwap) { return "Receive" }
@@ -689,6 +688,18 @@ export default function SwapBox(props) {
     }
     return getLeverageError()
   }
+
+  const renderOrdersToa = useCallback(() => {
+    if (!ordersToaOpen) {
+      return null
+    }
+
+    return <OrdersToa
+      setIsVisible={setOrdersToaOpen}
+      approveOrderBook={approveOrderBook}
+      isPluginApproving={isPluginApproving}
+    />
+  }, [ordersToaOpen, setOrdersToaOpen, isPluginApproving, approveOrderBook])
 
   const renderErrorModal = useCallback(() => {
     const inputCurrency = fromToken.address === AddressZero ? "ETH" : fromToken.address
@@ -733,18 +744,11 @@ export default function SwapBox(props) {
     if (isApproving) { return `Approving ${fromToken.symbol}...` }
     if (needApproval) { return `Approve ${fromToken.symbol}` }
 
-    if (needOrderBookApproval && isWaitingForPluginApproval) { return "Waiting for Approval" }
-    if (isPluginApproving) { return "Enabling Trigger Orders..." }
-    if (needOrderBookApproval) { return "Enable Trigger Orders" }
+    if (needOrderBookApproval && isWaitingForPluginApproval) { return "Enabling Orders..." }
+    if (isPluginApproving) { return "Enabling Orders..." }
+    if (needOrderBookApproval) { return "Enable Orders" }
 
-    if (isSubmitting) {
-      if (!isMarketOrder) { return "Creating order..." }
-      if (isSwap) { return "Swap..." }
-      if (isLong) { return "Longing..." }
-      return "Shorting..."
-    }
-
-    if (!isMarketOrder) return `Create ${orderType.toLowerCase()} order`;
+    if (!isMarketOrder) return `Create ${orderType.charAt(0) + orderType.substring(1).toLowerCase()} Order`;
 
     if (isSwap) {
       if (toUsdMax && toUsdMax.lt(fromUsdMin.mul(95).div(100))) {
@@ -831,13 +835,6 @@ export default function SwapBox(props) {
     setTokenSelection(updatedTokenSelection)
   }
 
-  const handleFulfilled = () => {
-    setIsConfirming(false)
-    setAnchorOnFromAmount(true)
-    setFromValue("")
-    setToValue("")
-  }
-
   const wrap = async () => {
     setIsSubmitting(true)
 
@@ -850,9 +847,6 @@ export default function SwapBox(props) {
       setPendingTxns
      })
     .then(async (res) => {
-      setAnchorOnFromAmount(true)
-      setFromValue("")
-      setToValue("")
     })
     .finally(() => {
       setIsSubmitting(false)
@@ -870,9 +864,6 @@ export default function SwapBox(props) {
       setPendingTxns
     })
     .then(async (res) => {
-      setAnchorOnFromAmount(true)
-      setFromValue("")
-      setToValue("")
     })
     .finally(() => {
       setIsSubmitting(false)
@@ -907,13 +898,13 @@ export default function SwapBox(props) {
     let minOut;
     if (shouldRaiseGasError(getTokenInfo(infoTokens, fromTokenAddress), fromAmount)) {
       setIsSubmitting(false)
-      toast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "networkTokenSymbol")} for gas`)
+      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "networkTokenSymbol")} for gas`)
       return
     }
 
     if (!isMarketOrder) {
-      minOut = toAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR)
-      return Api.createSwapOrder(library, path, fromAmount, minOut, triggerRatio, {
+      minOut = toAmount
+      Api.createSwapOrder(chainId, library, path, fromAmount, minOut, triggerRatio, nativeTokenAddress, {
         sentMsg: "Swap Order submitted!",
         successMsg: "Swap Order created!",
         failMsg: "Swap Order creation failed",
@@ -921,13 +912,11 @@ export default function SwapBox(props) {
         setPendingTxns
       }).then(() => {
         setIsConfirming(false)
-        setAnchorOnFromAmount(true)
-        setFromValue("")
-        setToValue("")
       }).finally(() => {
         setIsSubmitting(false)
         setIsPendingConfirmation(false)
       })
+      return
     }
 
     path = replaceNativeTokenAddress(path, nativeTokenAddress)
@@ -954,7 +943,7 @@ export default function SwapBox(props) {
       setPendingTxns
     })
     .then(async () => {
-      handleFulfilled();
+      setIsConfirming(false)
     })
     .finally(() => {
       setIsSubmitting(false)
@@ -978,8 +967,7 @@ export default function SwapBox(props) {
     const minOut = 0
     const indexToken = getToken(chainId, indexTokenAddress)
     const successMsg = `
-      Created limit order for ${indexToken.symbol} ${isLong ? "Long" : "Short"}
-      by ${formatAmount(toUsdMax, USD_DECIMALS, 2)} USD
+      Created limit order for ${indexToken.symbol} ${isLong ? "Long" : "Short"}: ${formatAmount(toUsdMax, USD_DECIMALS, 2)} USD
     `
     return Api.createIncreaseOrder(
       chainId,
@@ -1001,9 +989,6 @@ export default function SwapBox(props) {
         failMsg: "Limit order creation failed."
     }).then(() => {
       setIsConfirming(false)
-      setAnchorOnFromAmount(true)
-      setFromValue("")
-      setToValue("")
     }).finally(() => {
       setIsSubmitting(false)
       setIsPendingConfirmation(false)
@@ -1042,7 +1027,7 @@ export default function SwapBox(props) {
     if (fromAmount && fromAmount.gt(0) && fromTokenAddress === USDG_ADDRESS && isLong) {
       const { amount: nextToAmount, path: multiPath } = getNextToAmount(chainId, fromAmount, fromTokenAddress, indexTokenAddress, infoTokens, undefined, undefined, usdgSupply, totalTokenWeights)
       if (nextToAmount.eq(0)) {
-        toast.error("Insufficient liquidity")
+        helperToast.error("Insufficient liquidity")
         return
       }
       if (multiPath) {
@@ -1062,7 +1047,7 @@ export default function SwapBox(props) {
 
     if (shouldRaiseGasError(getTokenInfo(infoTokens, fromTokenAddress), fromAmount)) {
       setIsSubmitting(false)
-      toast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "networkTokenSymbol")} for gas`)
+      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "networkTokenSymbol")} for gas`)
       return
     }
 
@@ -1079,7 +1064,7 @@ export default function SwapBox(props) {
       successMsg
     })
     .then(async () => {
-      handleFulfilled();
+      setIsConfirming(false)
     })
     .finally(() => {
       setIsSubmitting(false)
@@ -1101,25 +1086,12 @@ export default function SwapBox(props) {
     setFromValue("")
     setToValue("")
     setTriggerPriceValue("")
+    setTriggerRatioValue("")
 
     if (opt === SHORT && infoTokens) {
       const stableToken = getMostAbundantStableToken(chainId, infoTokens)
       setShortCollateralAddress(stableToken.address)
     }
-  }
-
-  const approveOrderBook = () => {
-    Api.approvePlugin(chainId, orderBookAddress, {
-      setIsApproving: setIsPluginApproving,
-      library,
-      onApproveSubmitted: () => {
-        setIsWaitingForPluginApproval(true)
-      },
-      pendingTxns,
-      setPendingTxns
-    }).then(() => {
-      updateOrderBookApproved(undefined, true);
-    })
   }
 
   const onConfirmationClick = () => {
@@ -1129,7 +1101,7 @@ export default function SwapBox(props) {
     }
 
     if (needOrderBookApproval) {
-      approveOrderBook();
+      approveOrderBook()
       return
     }
 
@@ -1172,7 +1144,7 @@ export default function SwapBox(props) {
     }
 
     if (needOrderBookApproval) {
-      approveOrderBook();
+      setOrdersToaOpen(true)
       return;
     }
 
@@ -1398,7 +1370,7 @@ export default function SwapBox(props) {
                   className="muted align-right clickable"
                   onClick={() => {setTriggerRatioValue(formatAmountFree(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 10))}}
                 >
-                  {formatAmount(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 6)}
+                  {formatAmount(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 4)}
                 </div>
               }
             </div>
@@ -1612,6 +1584,7 @@ export default function SwapBox(props) {
         </div>
       </div>
       {renderErrorModal()}
+      {renderOrdersToa()}
       {isConfirming &&
         <ConfirmationBox
           orders={orders}
@@ -1636,7 +1609,6 @@ export default function SwapBox(props) {
           existingPosition={existingPosition}
           existingLiquidationPrice={existingLiquidationPrice}
           displayLiquidationPrice={displayLiquidationPrice}
-          entryMarkPrice={entryMarkPrice}
           nextAveragePrice={nextAveragePrice}
           triggerPriceUsd={triggerPriceUsd}
           triggerRatio={triggerRatio}
@@ -1646,7 +1618,6 @@ export default function SwapBox(props) {
           isPendingConfirmation={isPendingConfirmation}
           fromUsdMin={fromUsdMin}
           toUsdMax={toUsdMax}
-          triggerRatioInverted={triggerRatioInverted}
           collateralTokenAddress={collateralTokenAddress}
           infoTokens={infoTokens}
           chainId={chainId}

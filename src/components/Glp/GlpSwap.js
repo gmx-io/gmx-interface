@@ -6,11 +6,11 @@ import { Token as UniToken } from '@uniswap/sdk-core'
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
 import { ethers } from 'ethers'
-import { toast } from 'react-toastify'
 
 import { getToken, getTokens, getWhitelistedTokens } from '../../data/Tokens'
 import { getContract } from '../../Addresses'
 import {
+  helperToast,
   useLocalStorageSerializeKey,
   getInfoTokens,
   getTokenInfo,
@@ -455,12 +455,6 @@ export default function GlpSwap(props) {
     })
   }
 
-  const handleFulfilled = () => {
-    setAnchorOnSwapAmount(true)
-    setSwapValue("")
-    setGlpValue("")
-  }
-
   const buyGlp = () => {
     setIsSubmitting(true)
 
@@ -475,11 +469,10 @@ export default function GlpSwap(props) {
       value,
       sentMsg: "Buy submitted!",
       failMsg: "Buy failed.",
-      successMsg: "GLP bought!",
+      successMsg: `${formatAmount(glpAmount, 18, 4, true)} GLP bought with ${formatAmount(swapAmount, swapTokenInfo.decimals, 4, true)} ${swapTokenInfo.symbol}.`,
       setPendingTxns
     })
     .then(async () => {
-      handleFulfilled();
     })
     .finally(() => {
       setIsSubmitting(false)
@@ -498,11 +491,10 @@ export default function GlpSwap(props) {
     callContract(chainId, contract, method, params, {
       sentMsg: "Sell submitted!",
       failMsg: "Sell failed.",
-      successMsg: "GLP sold!",
+      successMsg: `${formatAmount(glpAmount, 18, 4, true)} GLP sold for ${formatAmount(swapAmount, swapTokenInfo.decimals, 4, true)} ${swapTokenInfo.symbol}.`,
       setPendingTxns
     })
     .then(async () => {
-      handleFulfilled();
     })
     .finally(() => {
       setIsSubmitting(false)
@@ -555,7 +547,7 @@ export default function GlpSwap(props) {
   const selectToken = (token) => {
     setAnchorOnSwapAmount(false)
     setSwapTokenAddress(token.address)
-    toast.success(`${token.symbol} selected in order form`)
+    helperToast.success(`${token.symbol} selected in order form`)
   }
 
   let feePercentageText = formatAmount(feeBasisPoints, 2, 2, true, "-")

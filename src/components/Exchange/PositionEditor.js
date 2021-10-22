@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import useSWR from 'swr'
 import { ethers } from 'ethers'
-import { toast } from 'react-toastify'
 import { BsArrowRight } from 'react-icons/bs'
 
 import {
 	USD_DECIMALS,
 	BASIS_POINTS_DIVISOR,
 	DUST_BNB,
+  helperToast,
   formatAmount,
   bigNumberify,
 	usePrevious,
@@ -81,8 +81,10 @@ export default function PositionEditor(props) {
   let nextLeverage
   let liquidationPrice
   let nextLiquidationPrice
+  let nextCollateral
 
   let title
+  let collateralDelta
   if (position) {
     title = `Edit ${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol}`
     collateralToken = position.collateralToken
@@ -110,10 +112,11 @@ export default function PositionEditor(props) {
     needApproval = isDeposit && tokenAllowance && fromAmount && fromAmount.gt(tokenAllowance)
 
     if (fromAmount) {
+      collateralDelta = isDeposit ? convertedAmount : fromAmount
       nextLeverage = getLeverage({
         size: position.size,
         collateral: position.collateral,
-        collateralDelta: isDeposit ? convertedAmount : fromAmount,
+        collateralDelta,
         increaseCollateral: isDeposit,
         entryFundingRate: position.entryFundingRate,
         cumulativeFundingRate: position.cumulativeFundingRate,
@@ -129,9 +132,11 @@ export default function PositionEditor(props) {
         averagePrice: position.averagePrice,
         entryFundingRate: position.entryFundingRate,
         cumulativeFundingRate: position.cumulativeFundingRate,
-        collateralDelta: isDeposit ? convertedAmount : fromAmount,
+        collateralDelta,
         increaseCollateral: isDeposit
       })
+
+      nextCollateral = isDeposit ? position.collateral.add(collateralDelta) : position.collateral.sub(collateralDelta)
     }
   }
 
@@ -222,7 +227,7 @@ export default function PositionEditor(props) {
 
     if (shouldRaiseGasError(getTokenInfo(infoTokens, collateralTokenAddress), fromAmount)) {
       setIsSwapping(false)
-      toast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} BNB for gas`)
+      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ETH for gas`)
       return
     }
 
@@ -338,7 +343,16 @@ export default function PositionEditor(props) {
                 <div className="Exchange-info-row">
                   <div className="Exchange-info-label">Collateral</div>
                   <div className="align-right">
-                    {formatAmount(position.collateral, USD_DECIMALS, 2, true)} USD
+                    {!nextCollateral && <div>
+                      ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                    </div>}
+                    {nextCollateral && <div>
+                      <div className="inline-block muted">
+                        ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                        <BsArrowRight className="transition-arrow" />
+                      </div>
+                      ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
+                    </div>}
                   </div>
                 </div>
                 <div className="Exchange-info-row">
@@ -357,6 +371,12 @@ export default function PositionEditor(props) {
                   </div>
                 </div>
                 <div className="Exchange-info-row">
+                  <div className="Exchange-info-label">Mark Price</div>
+                  <div className="align-right">
+                    ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
+                  </div>
+                </div>
+                <div className="Exchange-info-row">
                   <div className="Exchange-info-label">Liq. Price</div>
                   <div className="align-right">
                     {!nextLiquidationPrice && <div>
@@ -370,12 +390,6 @@ export default function PositionEditor(props) {
                       </div>
                       ${formatAmount(nextLiquidationPrice, USD_DECIMALS, 2, true)}
                     </div>}
-                  </div>
-                </div>
-                <div className="Exchange-info-row">
-                  <div className="Exchange-info-label">Mark Price</div>
-                  <div className="align-right">
-                    ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
                   </div>
                 </div>
               </div>

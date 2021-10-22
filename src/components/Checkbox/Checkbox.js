@@ -8,9 +8,13 @@ export default function Checkbox(props) {
 
   return (
     <div className="Checkbox clickable" onClick={() => setIsChecked(!isChecked)}>
-      {isChecked && <ImCheckboxChecked className="App-icon Checkbox-icon active" />}
-      {!isChecked && <ImCheckboxUnchecked className="App-icon Checkbox-icon inactive" />}
-      {props.children}
+      <span className="Checkbox-icon-wrapper">
+        {isChecked && <ImCheckboxChecked className="App-icon Checkbox-icon active" />}
+        {!isChecked && <ImCheckboxUnchecked className="App-icon Checkbox-icon inactive" />}
+      </span>
+      <span className="Checkbox-label">
+        {props.children}
+      </span>
     </div>
   )
 }

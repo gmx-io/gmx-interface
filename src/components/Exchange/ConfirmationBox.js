@@ -1,26 +1,32 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useState, useMemo } from 'react'
 import {
 	USD_DECIMALS,
 	PRECISION,
 	BASIS_POINTS_DIVISOR,
-  MARKET,
   LIMIT,
   LONG,
   SWAP_ORDER_EXECUTION_GAS_FEE,
   INCREASE_ORDER_EXECUTION_GAS_FEE,
+  MIN_PROFIT_TIME,
 	expandDecimals,
   getExchangeRate,
+  getProfitPrice,
+  getTimeRemaining,
   formatAmount,
   useLocalStorageSerializeKey,
   getExchangeRateDisplay,
   DEFAULT_SLIPPAGE_AMOUNT,
-  SLIPPAGE_BPS_KEY
+  SLIPPAGE_BPS_KEY,
+  formatDateTime,
+  calculatePositionDelta
 } from '../../Helpers'
 
 import { BsArrowRight } from 'react-icons/bs'
 import Modal from '../Modal/Modal'
+import Tooltip from '../Tooltip/Tooltip'
+import Checkbox from '../Checkbox/Checkbox'
 import ExchangeInfoRow from './ExchangeInfoRow'
-import { getToken } from '../../data/Tokens'
+import { getToken, getTokenBySymbol } from '../../data/Tokens'
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -59,7 +65,6 @@ export default function ConfirmationBox(props) {
     existingPosition,
     existingLiquidationPrice,
     displayLiquidationPrice,
-    entryMarkPrice,
     shortCollateralToken,
     isPendingConfirmation,
     triggerPriceUsd,
@@ -69,7 +74,6 @@ export default function ConfirmationBox(props) {
     isSubmitting,
     fromUsdMin,
     toUsdMax,
-    triggerRatioInverted,
     nextAveragePrice,
     collateralTokenAddress,
     feeBps,
@@ -78,6 +82,7 @@ export default function ConfirmationBox(props) {
   } = props;
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT)
+  const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false)
 
   let minOut;
   let fromTokenUsd;
@@ -98,21 +103,39 @@ export default function ConfirmationBox(props) {
   const title = getTitle();
 
   const existingOrder = useMemo(() => {
-    if (!hasExistingPosition) {
-      return null
-    }
-
+    const WETH = getTokenBySymbol(chainId, "WETH")
     for (const order of orders) {
       if (order.orderType !== LIMIT) continue
-      if ((order.swapOption === LONG) === existingPosition.isLong
-        && order.indexToken === existingPosition.indexToken.address) {
+      const sameToken = order.indexToken === WETH.address
+        ? toToken.isNative
+        : order.indexToken === toToken.address
+      if ((order.swapOption === LONG) === isLong
+        && sameToken) {
         return order
       }
     }
-  }, [hasExistingPosition, existingPosition, orders])
+  }, [orders, chainId, isLong, toToken.address, toToken.isNative])
+
+  const getError = () => {
+    if (!isSwap && hasExistingPosition && !isMarketOrder) {
+      const { delta, hasProfit } = calculatePositionDelta(triggerPriceUsd, existingPosition)
+      if (hasProfit && delta.eq(0)) {
+        return "Invalid price, see warning"
+      }
+    }
+    if (isMarketOrder && hasPendingProfit && !isProfitWarningAccepted) {
+      return "Forfeit profit not checked"
+    }
+    return false
+  }
 
   const getPrimaryText = () => {
     if (!isPendingConfirmation) {
+      const error = getError()
+      if (error) {
+        return error
+      }
+
       if (isSwap) {
         return title
       }
@@ -120,11 +143,11 @@ export default function ConfirmationBox(props) {
         ? (isLong ? "Long" : "Short")
         : "Create Order"
 
-      if (hasExistingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)) {
-        return isLong ? `Accept reduction and ${action}` : `Accept reduction and Short`
+      if (isMarketOrder && hasExistingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)) {
+        return isLong ? `Forfeit profit and ${action}` : `Forfeit profit and Short`
       }
 
-      return isLong ? `Accept minimum and ${action}` : `Accept minimum and ${action}`
+      return isMarketOrder ? `Accept minimum and ${action}` : action
     }
 
     if (!isMarketOrder) { return "Creating Order..." }
@@ -134,6 +157,9 @@ export default function ConfirmationBox(props) {
   }
 
   const isPrimaryEnabled = () => {
+    if (getError()) {
+      return false
+    }
     return !isPendingConfirmation && !isSubmitting;
   }
 
@@ -147,52 +173,21 @@ export default function ConfirmationBox(props) {
     if (spread && spread.isHigh) {
       return (
         <div className="Confirmation-box-warning">
-          WARNING: the spread is > 1%, please ensure the trade details are acceptable before comfirming
+          The spread is > 1%, please ensure the trade details are acceptable before comfirming
         </div>
       );
     }
   }, [isMarketOrder, spread])
 
-  const renderTriggerRatioWarning = useCallback(() => {
-    if (!isSwap) {
-      return null;
-    }
-    const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
-    if (orderType === LIMIT && !currentRate.gt(triggerRatio)) {
-      return (
-        <div className="Confirmation-box-warning">
-          WARNING: Limit Price is {triggerRatioInverted ? "lower": "higher"} then current price, the order will be executed immediatelly
-        </div>
-      );
-    }
-  }, [isSwap, fromTokenInfo, toTokenInfo, orderType, triggerRatio, triggerRatioInverted])
-
-  const renderTriggerPriceWarning = useCallback(() => {
-    if (isSwap || orderType === MARKET) {
-      return null;
-    }
-    if ((isLong && entryMarkPrice.gte(triggerPriceUsd))
-      || (!isLong && entryMarkPrice.lte(triggerPriceUsd))
-    ) {
-      return null;
-    }
-
-    return (
-      <div className="Confirmation-box-warning">
-        WARNING: Limit Price is {isLong ? "higher" : "lower"} then Mark Price, the order will be executed immediatelly
-      </div>
-    );
-  }, [isLong, isSwap, orderType, entryMarkPrice, triggerPriceUsd])
-
   const renderFeeWarning = useCallback(() => {
-    if (!feeBps || feeBps < 50) {
+    if (orderType === LIMIT || !feeBps || feeBps < 50) {
       return null
     }
 
     if (isSwap) {
       return (
         <div className="Confirmation-box-warning">
-          WARNING: Fees are high to swap from {fromToken.symbol} to {toToken.symbol}.
+          Fees are high to swap from {fromToken.symbol} to {toToken.symbol}.
         </div>
       )
     }
@@ -204,34 +199,58 @@ export default function ConfirmationBox(props) {
     const collateralToken = getToken(chainId, collateralTokenAddress)
     return (
       <div className="Confirmation-box-warning">
-        WARNING: Fees are high to swap from {fromToken.symbol} to {collateralToken.symbol}. <br/>
+        Fees are high to swap from {fromToken.symbol} to {collateralToken.symbol}. <br/>
         {collateralToken.symbol} is needed for collateral.
       </div>
     )
-  }, [feeBps, isSwap, collateralTokenAddress, chainId, fromToken.symbol, toToken.symbol])
+  }, [feeBps, isSwap, collateralTokenAddress, chainId, fromToken.symbol, toToken.symbol, orderType])
+
+  const hasPendingProfit = existingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)
 
   const renderMinProfitWarning = useCallback(() => {
     if (!isSwap) {
-      if (hasExistingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)) {
-        return (
-          <div className="Confirmation-box-warning">
-            WARNING: You have a&nbsp;
-            <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
-              pending profit
-            </a> of {existingPosition.deltaStr}, this will be reduced to zero if you increase your position now.
-          </div>
-        );
+      if (hasExistingPosition) {
+        const minProfitExpiration = existingPosition.lastIncreasedTime + MIN_PROFIT_TIME
+        if (isMarketOrder && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)) {
+          const profitPrice = getProfitPrice(existingPosition.markPrice, existingPosition)
+          return (
+            <div className="Confirmation-box-warning">
+              Increasing this position at the current price will forfeit a&nbsp;
+              <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
+                pending profit
+              </a> of {existingPosition.deltaStr}.<br/>
+              <br/>
+              Profit price: {existingPosition.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
+              This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
+            </div>
+          );
+        }
+        if (!isMarketOrder) {
+          const { delta, hasProfit } = calculatePositionDelta(triggerPriceUsd, existingPosition)
+          if (hasProfit && delta.eq(0)) {
+            const profitPrice = getProfitPrice(existingPosition.markPrice, existingPosition)
+            return <div className="Confirmation-box-warning">
+              This order will forfeit a&nbsp;
+              <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
+                profit
+              </a> of {existingPosition.deltaStr}.<br/>
+              Profit price: {existingPosition.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
+              This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
+            </div>
+          }
+        }
       }
+
       return (
         <div className="Confirmation-box-warning">
-          NOTE: A minimum price change of&nbsp;
+          A minimum price change of&nbsp;
           <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
             1.5%
-          </a> is required for a position to be in profit.
+          </a> is required for a position to be in profit. This applies for the first 12 hours after increasing a position.
         </div>
       );
     }
-  }, [isSwap, hasExistingPosition, existingPosition])
+  }, [isSwap, hasExistingPosition, existingPosition, isMarketOrder, triggerPriceUsd])
 
   const renderExistingOrderWarning = useCallback(() => {
     if (isSwap || !existingOrder) {
@@ -241,12 +260,12 @@ export default function ConfirmationBox(props) {
     const sizeInToken = formatAmount(existingOrder.sizeDelta.mul(PRECISION).div(existingOrder.triggerPrice), USD_DECIMALS, 4, true)
     return (
       <div className="Confirmation-box-warning">
-        NOTE: You have an active Limit Order to Increase {existingOrder.swapOption} {sizeInToken} {indexToken.symbol} (${formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at price ${formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
+        You have an active Limit Order to Increase {existingOrder.swapOption} {sizeInToken} {indexToken.symbol} (${formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at price ${formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
       </div>
     );
   }, [existingOrder, isSwap, chainId])
 
-  // TODO handle unaprproved order plugin
+  // TODO handle unaprproved order plugin (very unlikely case)
   const renderMain = useCallback(() => {
     if (isSwap) {
       return (
@@ -264,11 +283,11 @@ export default function ConfirmationBox(props) {
 
     return (
       <div className="Confirmation-box-main">
-        <span>Pay&nbsp;{formatAmount(fromAmount, fromToken.decimals, 4, true)} {fromToken.symbol} </span>
+        <span>Pay&nbsp;{formatAmount(fromAmount, fromToken.decimals, 4, true)} {fromToken.symbol} (${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)})</span>
         <div className="Confirmation-box-main-icon"></div>
         <div>
           {isLong ? 'Long' : 'Short'}&nbsp;
-          {formatAmount(toAmount, toToken.decimals, 4, true)} {toToken.symbol}
+          {formatAmount(toAmount, toToken.decimals, 4, true)} {toToken.symbol} (${formatAmount(toUsdMax, USD_DECIMALS, 2, true)})
         </div>
       </div>
     );
@@ -285,14 +304,63 @@ export default function ConfirmationBox(props) {
       </ExchangeInfoRow>
     );
   }, [isMarketOrder, isSwap])
+
+  const renderAvailableLiquidity = useCallback(() => {
+    let token
+    let availableLiquidity
+    const riskThresholdBps = 5000
+    let isLiquidityRisk
+
+    if (isSwap) {
+      token = toTokenInfo
+      const poolWithoutBuffer = token.poolAmount.sub(token.bufferAmount)
+      availableLiquidity = token.availableAmount.gt(poolWithoutBuffer) ? poolWithoutBuffer : token.availableAmount
+      isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(toAmount)
+    } else {
+      if (isShort) {
+        token = shortCollateralToken
+        availableLiquidity = token.availableAmount
+
+        const sizeTokens = toUsdMax.mul(expandDecimals(1, token.decimals)).div(token.minPrice)
+        isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(sizeTokens)
+      } else {
+        token = toTokenInfo
+        availableLiquidity = token.availableAmount
+        isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(toAmount)
+      }
+    }
+
+    if (!token || !availableLiquidity) {
+      return null
+    }
+
+    return <ExchangeInfoRow label="Available Liquidity">
+      <Tooltip
+        position="right-bottom"
+        handleClassName={isLiquidityRisk ? "negative" : null}
+        handle={<>{formatAmount(availableLiquidity, token.decimals, token.isStable ? 0 : 2, true)} {token.symbol}</>
+      }>
+        {!isLiquidityRisk && "The order will only execute if the price conditions are met and there is sufficient liquidity"}
+        {isLiquidityRisk && "There may not be sufficient liquidity to execute your order when the price conditions are met"}
+      </Tooltip>
+    </ExchangeInfoRow>
+  }, [toTokenInfo, shortCollateralToken, isShort, isSwap, toAmount, toUsdMax])
+
   const renderMarginSection = useCallback(() => {
     return <>
       <div className="Confirmation-box-info">
         {renderMain()}
-        {renderTriggerPriceWarning()}
         {renderFeeWarning()}
         {renderMinProfitWarning()}
         {renderExistingOrderWarning()}
+        {(hasPendingProfit && isMarketOrder) &&
+          <div className="PositionEditor-accept-profit-warning">
+            <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
+              <span className="muted">Forfeit profit</span>
+            </Checkbox>
+          </div>
+        }
+        {orderType === LIMIT && renderAvailableLiquidity()}
         {(isShort) &&
           <ExchangeInfoRow label="Profits In">
               {getToken(chainId, shortCollateralAddress).symbol}
@@ -350,18 +418,19 @@ export default function ConfirmationBox(props) {
         {renderExecutionFee()}
       </div>
     </>
-  }, [renderMain, renderTriggerPriceWarning, renderMinProfitWarning, shortCollateralAddress,
+  }, [renderMain, renderMinProfitWarning, shortCollateralAddress,
       isShort, isLong, toTokenInfo, nextAveragePrice, toAmount, hasExistingPosition, existingPosition,
       isMarketOrder, triggerPriceUsd, showSpread, spread, displayLiquidationPrice, existingLiquidationPrice,
-      feesUsd, leverage, renderExecutionFee, shortCollateralToken, renderExistingOrderWarning, chainId, renderFeeWarning])
+      feesUsd, leverage, renderExecutionFee, shortCollateralToken, renderExistingOrderWarning, chainId, renderFeeWarning,
+      hasPendingProfit, isProfitWarningAccepted, renderAvailableLiquidity, orderType])
 
   const renderSwapSection = useCallback(() => {
     return <>
       <div className="Confirmation-box-info">
         {renderMain()}
         {renderFeeWarning()}
-        {renderTriggerRatioWarning()}
         {renderSpreadWarning()}
+        {orderType === LIMIT && renderAvailableLiquidity()}
         <ExchangeInfoRow label="Min. Receive">
           {formatAmount(minOut, toTokenInfo.decimals, 4, true)} {toTokenInfo.symbol}
         </ExchangeInfoRow>
@@ -403,9 +472,9 @@ export default function ConfirmationBox(props) {
         }
       </div>
     </>
-  }, [renderMain, renderTriggerRatioWarning, renderSpreadWarning, fromTokenInfo, toTokenInfo,
+  }, [renderMain, renderSpreadWarning, fromTokenInfo, toTokenInfo, orderType,
       showSpread, spread, feesUsd, feeBps, renderExecutionFee, fromTokenUsd, toTokenUsd,
-      triggerRatio, fees, isMarketOrder, minOut, renderFeeWarning])
+      triggerRatio, fees, isMarketOrder, minOut, renderFeeWarning, renderAvailableLiquidity])
 
   return <div className="Confirmation-box">
     <Modal isVisible={true} setIsVisible={() => setIsConfirming(false)} label={title}>

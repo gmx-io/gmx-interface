@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
 import { ethers } from 'ethers'
@@ -12,7 +11,7 @@ import GMT from './abis/GMT.json'
 import { ImCheckboxUnchecked, ImCheckboxChecked } from 'react-icons/im'
 
 import { getInjectedConnector, useEagerConnect, useInactiveListener,
-  fetcher, formatAmount, numberWithCommas, getExplorerUrl, CHAIN_ID } from './Helpers'
+  fetcher, formatAmount, numberWithCommas, getExplorerUrl, helperToast, CHAIN_ID } from './Helpers'
 import { getContract } from './Addresses'
 
 import './Presale.css';
@@ -33,7 +32,7 @@ export default function Presale() {
   }, [activatingConnector, connector])
   const triedEager = useEagerConnect()
   useInactiveListener(!triedEager || !!activatingConnector)
-  const activateMetamask = async () => { activate(getInjectedConnector(), (e) => { toast.error(e.toString()) }) }
+  const activateMetamask = async () => { activate(getInjectedConnector(), (e) => { helperToast.error(e.toString()) }) }
 
   const treasury = getContract(CHAIN_ID, "Treasury")
   const busd = getContract(CHAIN_ID, "BUSD")
@@ -106,7 +105,7 @@ export default function Presale() {
     contract.approve(treasury, ethers.constants.MaxUint256)
       .then(async (res) => {
         const txUrl = getExplorerUrl(CHAIN_ID) + "tx/" + res.hash
-        toast.success(
+        helperToast.success(
           <div>
             Approval submitted! <a href={txUrl} target="_blank" rel="noopener noreferrer">View status.</a>
             <br/>
@@ -115,7 +114,7 @@ export default function Presale() {
       })
       .catch((e) => {
         console.error(e)
-        toast.error("Approval failed.")
+        helperToast.error("Approval failed.")
       })
       .finally(() => {
         setIsApproving(false)
@@ -127,7 +126,7 @@ export default function Presale() {
     contract.swap(busdQty)
       .then(async (res) => {
         const txUrl = getExplorerUrl(CHAIN_ID) + "tx/" + res.hash
-        toast.success(
+        helperToast.success(
           <div>
             Buy submitted! <a href={txUrl} target="_blank" rel="noopener noreferrer">View status.</a>
             <br/>
@@ -136,7 +135,7 @@ export default function Presale() {
       })
       .catch((e) => {
         console.error(e)
-        toast.error("Buy failed.")
+        helperToast.error("Buy failed.")
       })
       .finally(() => {
       })
