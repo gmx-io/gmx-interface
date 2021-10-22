@@ -228,7 +228,7 @@ export default function SwapBox(props) {
     if (!needOrderBookApproval && prevNeedOrderBookApproval && isWaitingForPluginApproval) {
       setIsWaitingForPluginApproval(false)
       helperToast.success(<div>
-        Order Book approved!
+        Orders enabled!
       </div>)
     }
   }, [needOrderBookApproval, prevNeedOrderBookApproval, setIsWaitingForPluginApproval, isWaitingForPluginApproval])
@@ -744,7 +744,7 @@ export default function SwapBox(props) {
     if (isApproving) { return `Approving ${fromToken.symbol}...` }
     if (needApproval) { return `Approve ${fromToken.symbol}` }
 
-    if (needOrderBookApproval && isWaitingForPluginApproval) { return "Waiting for Approval" }
+    if (needOrderBookApproval && isWaitingForPluginApproval) { return "Enabling Orders..." }
     if (isPluginApproving) { return "Enabling Orders..." }
     if (needOrderBookApproval) { return "Enable Orders" }
 

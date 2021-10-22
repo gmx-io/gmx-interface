@@ -362,7 +362,7 @@ export default function PositionSeller(props) {
     if (orderType === STOP) {
       if (isSubmitting) return "Creating Order...";
 
-      if (needOrderBookApproval && isWaitingForPluginApproval) { return "Waiting for Approval" }
+      if (needOrderBookApproval && isWaitingForPluginApproval) { return "Enabling Orders..." }
       if (isPluginApproving) { return "Enabling Orders..." }
       if (needOrderBookApproval) { return "Enable Orders" }
 

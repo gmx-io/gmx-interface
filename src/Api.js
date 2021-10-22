@@ -169,9 +169,8 @@ export async function approvePlugin(chainId, pluginAddress, { library, pendingTx
   const routerAddress = getContract(chainId, "Router")
   const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner())
   return callContract(chainId, contract, 'approvePlugin', [pluginAddress], {
-    sentMsg: 'Approval Sent',
-    successMsg: 'Plugin Approved',
-    failMsg: 'Approval failed',
+    sentMsg: 'Enable orders sent',
+    failMsg: 'Enable orders failed',
     pendingTxns,
     setPendingTxns
   })
