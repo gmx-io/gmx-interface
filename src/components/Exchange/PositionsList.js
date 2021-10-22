@@ -263,7 +263,7 @@ export default function PositionsList(props) {
                     PnL: {position.deltaStr} ({position.deltaPercentageStr})
                   </Tooltip>
                 </div>
-                <div className={cx("Exchange-list-info-label", { "positive": position.hasProfit && position.pendingDelta.gt(0), "negative": !position.hasProfit && position.pendingDelta.gt(0) })}>
+                <div className={cx("Exchange-list-info-label", { "positive": position.hasProfit && position.pendingDelta.gt(0), "negative": !position.hasProfit && position.pendingDelta.gt(0), "muted": position.pendingDelta.eq(0) })}>
                   {position.deltaStr} ({position.deltaPercentageStr})
                 </div>
               </td>
