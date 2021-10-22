@@ -1003,12 +1003,6 @@ export default function SwapBox(props) {
     if (toTokenAddress !== fromTokenAddress) {
       path = [tokenAddress0, indexTokenAddress]
     }
-    if (isShort) {
-      path = [shortCollateralAddress]
-      if (tokenAddress0 !== shortCollateralAddress) {
-        path = [tokenAddress0, shortCollateralAddress]
-      }
-    }
 
     if (fromTokenAddress === AddressZero && toTokenAddress === nativeTokenAddress) {
       path = [nativeTokenAddress]
@@ -1016,6 +1010,13 @@ export default function SwapBox(props) {
 
     if (fromTokenAddress === nativeTokenAddress && toTokenAddress === AddressZero) {
       path = [nativeTokenAddress]
+    }
+
+    if (isShort) {
+      path = [shortCollateralAddress]
+      if (tokenAddress0 !== shortCollateralAddress) {
+        path = [tokenAddress0, shortCollateralAddress]
+      }
     }
 
     const refPrice = isLong ? toTokenInfo.maxPrice : toTokenInfo.minPrice
