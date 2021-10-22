@@ -300,7 +300,6 @@ export function getFeeBasisPoints(token, usdgDelta, feeBasisPoints, taxBasisPoin
   if (!token || !token.usdgAmount || !usdgSupply || !totalTokenWeights) {
     return 0
   }
-
   feeBasisPoints = bigNumberify(feeBasisPoints)
   taxBasisPoints = bigNumberify(taxBasisPoints)
 
@@ -427,22 +426,22 @@ export function getNextFromAmount(chainId, toAmount, fromTokenAddress, toTokenAd
 
   if (!fromToken || !fromToken.minPrice || !toToken || !toToken.maxPrice) { return defaultValue }
 
-  const adjustDecimals = adjustForDecimalsFactory(fromToken.decimals - toToken.decimals)
+  const adjustedToAmount = adjustForDecimals(toAmount, toToken.decimals, fromToken.decimals)
 
   let fromAmountBasedOnRatio;
   if (ratio && !ratio.isZero()) {
-    fromAmountBasedOnRatio = toAmount.mul(ratio).div(PRECISION);
+    fromAmountBasedOnRatio = adjustedToAmount.mul(ratio).div(PRECISION);
   }
 
   if (toTokenAddress === USDG_ADDRESS) {
     const feeBasisPoints = getSwapFeeBasisPoints(fromToken.isStable)
 
     if (ratio && !ratio.isZero()) {
-      return { amount: adjustDecimals(fromAmountBasedOnRatio.mul(BASIS_POINTS_DIVISOR + feeBasisPoints).div(BASIS_POINTS_DIVISOR)) }
+      return { amount: fromAmountBasedOnRatio.mul(BASIS_POINTS_DIVISOR + feeBasisPoints).div(BASIS_POINTS_DIVISOR) }
     }
-    const fromAmount = toAmount.mul(PRECISION).div(fromToken.maxPrice)
+    const fromAmount = adjustedToAmount.mul(PRECISION).div(fromToken.maxPrice)
     return {
-      amount: adjustDecimals(fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints).div(BASIS_POINTS_DIVISOR))
+      amount: fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints).div(BASIS_POINTS_DIVISOR)
     }
   }
 
@@ -453,14 +452,14 @@ export function getNextFromAmount(chainId, toAmount, fromTokenAddress, toTokenAd
 
       const fromAmount = ratio && !ratio.isZero()
         ? fromAmountBasedOnRatio
-        : toAmount.mul(expandDecimals(1, toToken.decimals)).div(toToken.redemptionAmount)
+        : adjustedToAmount.mul(expandDecimals(1, toToken.decimals)).div(toToken.redemptionAmount)
 
       return {
-        amount: adjustDecimals(fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints).div(BASIS_POINTS_DIVISOR))
+        amount: fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints).div(BASIS_POINTS_DIVISOR)
       }
     }
 
-    const expectedAmount = toAmount.mul(toToken.maxPrice).div(PRECISION)
+    const expectedAmount = adjustedToAmount.mul(toToken.maxPrice).div(PRECISION)
 
     const stableToken = getMostAbundantStableToken(chainId, infoTokens)
     if (!stableToken || stableToken.availableAmount.lt(expectedAmount)) {
@@ -468,10 +467,10 @@ export function getNextFromAmount(chainId, toAmount, fromTokenAddress, toTokenAd
 
       const fromAmount = ratio && !ratio.isZero()
         ? fromAmountBasedOnRatio
-        : toAmount.mul(expandDecimals(1, toToken.decimals)).div(toToken.redemptionAmount);
+        : adjustedToAmount.mul(expandDecimals(1, toToken.decimals)).div(toToken.redemptionAmount);
 
       return {
-        amount: adjustDecimals(fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints).div(BASIS_POINTS_DIVISOR))
+        amount: fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints).div(BASIS_POINTS_DIVISOR)
       }
     }
 
@@ -484,13 +483,13 @@ export function getNextFromAmount(chainId, toAmount, fromTokenAddress, toTokenAd
         .mul(BASIS_POINTS_DIVISOR + feeBasisPoints0 + feeBasisPoints1)
         .div(BASIS_POINTS_DIVISOR)
       return {
-        amount: adjustDecimals(fromAmount),
+        amount: fromAmount,
         path: [USDG_ADDRESS, stableToken.address, toToken.address]
       }
     }
 
     // get fromAmount for stableToken => toToken
-    let fromAmount = toAmount.mul(toToken.maxPrice).div(stableToken.minPrice)
+    let fromAmount = adjustedToAmount.mul(toToken.maxPrice).div(stableToken.minPrice)
 
     // apply stableToken => toToken fees
     fromAmount = fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints1).div(BASIS_POINTS_DIVISOR)
@@ -502,14 +501,14 @@ export function getNextFromAmount(chainId, toAmount, fromTokenAddress, toTokenAd
     fromAmount = fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints0).div(BASIS_POINTS_DIVISOR)
 
     return {
-      amount: adjustDecimals(fromAmount),
+      amount: fromAmount,
       path: [USDG_ADDRESS, stableToken.address, toToken.address]
     }
   }
 
   const fromAmount = ratio && !ratio.isZero()
     ? fromAmountBasedOnRatio
-    : toAmount.mul(toToken.maxPrice).div(fromToken.minPrice)
+    : adjustedToAmount.mul(toToken.maxPrice).div(fromToken.minPrice)
 
   let usdgAmount = fromAmount.mul(fromToken.minPrice).div(PRECISION)
   usdgAmount = adjustForDecimals(usdgAmount, toToken.decimals, USDG_DECIMALS)
@@ -519,7 +518,8 @@ export function getNextFromAmount(chainId, toAmount, fromTokenAddress, toTokenAd
   const feeBasisPoints1 = getFeeBasisPoints(toToken, usdgAmount, swapFeeBasisPoints, taxBasisPoints, false, usdgSupply, totalTokenWeights)
   const feeBasisPoints = feeBasisPoints0 > feeBasisPoints1 ? feeBasisPoints0 : feeBasisPoints1;
 
-  return { amount: adjustDecimals(fromAmount.mul(BASIS_POINTS_DIVISOR).div(BASIS_POINTS_DIVISOR - feeBasisPoints)), feeBasisPoints }
+  const amount = fromAmount.mul(BASIS_POINTS_DIVISOR).div(BASIS_POINTS_DIVISOR - feeBasisPoints)
+  return { amount, feeBasisPoints }
 }
 
 export function getNextToAmount(chainId, fromAmount, fromTokenAddress, toTokenAddress, infoTokens, toTokenPriceUsd, ratio, usdgSupply, totalTokenWeights) {
