@@ -455,12 +455,6 @@ export default function GlpSwap(props) {
     })
   }
 
-  const handleFulfilled = () => {
-    setAnchorOnSwapAmount(true)
-    setSwapValue("")
-    setGlpValue("")
-  }
-
   const buyGlp = () => {
     setIsSubmitting(true)
 
@@ -479,7 +473,6 @@ export default function GlpSwap(props) {
       setPendingTxns
     })
     .then(async () => {
-      handleFulfilled();
     })
     .finally(() => {
       setIsSubmitting(false)
@@ -502,7 +495,6 @@ export default function GlpSwap(props) {
       setPendingTxns
     })
     .then(async () => {
-      handleFulfilled();
     })
     .finally(() => {
       setIsSubmitting(false)

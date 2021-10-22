@@ -835,13 +835,6 @@ export default function SwapBox(props) {
     setTokenSelection(updatedTokenSelection)
   }
 
-  const handleFulfilled = () => {
-    setIsConfirming(false)
-    setAnchorOnFromAmount(true)
-    setFromValue("")
-    setToValue("")
-  }
-
   const wrap = async () => {
     setIsSubmitting(true)
 
@@ -854,9 +847,6 @@ export default function SwapBox(props) {
       setPendingTxns
      })
     .then(async (res) => {
-      setAnchorOnFromAmount(true)
-      setFromValue("")
-      setToValue("")
     })
     .finally(() => {
       setIsSubmitting(false)
@@ -874,9 +864,6 @@ export default function SwapBox(props) {
       setPendingTxns
     })
     .then(async (res) => {
-      setAnchorOnFromAmount(true)
-      setFromValue("")
-      setToValue("")
     })
     .finally(() => {
       setIsSubmitting(false)
@@ -925,10 +912,6 @@ export default function SwapBox(props) {
         setPendingTxns
       }).then(() => {
         setIsConfirming(false)
-        setAnchorOnFromAmount(true)
-        setFromValue("")
-        setToValue("")
-        setTriggerRatioValue("")
       }).finally(() => {
         setIsSubmitting(false)
         setIsPendingConfirmation(false)
@@ -960,7 +943,7 @@ export default function SwapBox(props) {
       setPendingTxns
     })
     .then(async () => {
-      handleFulfilled();
+      setIsConfirming(false)
     })
     .finally(() => {
       setIsSubmitting(false)
@@ -1006,10 +989,6 @@ export default function SwapBox(props) {
         failMsg: "Limit order creation failed."
     }).then(() => {
       setIsConfirming(false)
-      setAnchorOnFromAmount(true)
-      setFromValue("")
-      setToValue("")
-      setTriggerPriceValue("")
     }).finally(() => {
       setIsSubmitting(false)
       setIsPendingConfirmation(false)
@@ -1085,7 +1064,7 @@ export default function SwapBox(props) {
       successMsg
     })
     .then(async () => {
-      handleFulfilled();
+      setIsConfirming(false)
     })
     .finally(() => {
       setIsSubmitting(false)
