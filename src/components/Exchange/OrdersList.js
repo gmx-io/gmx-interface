@@ -161,7 +161,7 @@ export default function OrdersList(props) {
             </td>
             <td>
               <Tooltip handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}>
-                You will receive at least {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} {toTokenInfo.symbol}. Exact execution price may vary slightly depending on fees at the time the order is executed.
+                You will receive at least {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} {toTokenInfo.symbol} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed.
               </Tooltip>
             </td>
             <td>
@@ -230,7 +230,7 @@ export default function OrdersList(props) {
         )
 
         return (<div key={`${order.swapOption}-${order.orderType}-${order.index}`} className="App-card">
-          <div className="App-card-title">
+          <div className="App-card-title-small">
             Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)} {fromTokenInfo.symbol} for {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)} {toTokenInfo.symbol}
           </div>
           <div className="App-card-divider"></div>
@@ -239,7 +239,7 @@ export default function OrdersList(props) {
               <div className="label">Price</div>
               <div>
                 <Tooltip position="right-bottom" handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}>
-                  You will receive at least {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} {toTokenInfo.symbol}. Exact execution price may vary slightly depending on fees at the time the order is executed.
+                  You will receive at least {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} {toTokenInfo.symbol} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed.
                 </Tooltip>
               </div>
             </div>
@@ -283,7 +283,7 @@ export default function OrdersList(props) {
       }
 
       return (<div key={`${order.swapOption}-${order.orderType}-${order.index}`} className="App-card">
-        <div className="App-card-title">
+        <div className="App-card-title-small">
           {order.orderType === LIMIT ? "Increase" : "Decrease"} {indexTokenSymbol} {order.swapOption}
           &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
           {error &&
