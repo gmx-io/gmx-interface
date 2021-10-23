@@ -22,3 +22,10 @@
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0.5rem 1rem 0.5rem 0;
 }
+
+.Orders-bo .near {
+  color: orange;
+}
+.Orders-bo .near.negative {
+  color: #fa3c58;
+}
