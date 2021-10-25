@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import useSWR from 'swr'
 
 import OrderBook from './abis/OrderBook.json'
+import Vault from './abis/Vault.json'
 import Router from './abis/Router.json'
 import { getContract } from './Addresses'
 import {
@@ -17,7 +18,8 @@ import {
   getServerBaseUrl,
   getGasLimit,
   replaceNativeTokenAddress,
-  getProvider
+  getProvider,
+  getOrderKey
 } from './Helpers'
 
 const { AddressZero } = ethers.constants
@@ -120,6 +122,32 @@ export function useAllOrders(chainId, library) {
   })
 
   return orders.filter(Boolean)
+}
+
+export function usePositionsForOrders(chainId, library, orders) {
+  const key = orders ? orders.map(order => getOrderKey(order) + '____') : null
+  const { data: positions = {} } = useSWR(key, async () => {
+    const provider = getProvider(library, chainId)
+    const vaultAddress = getContract(chainId, "Vault")
+    const contract = new ethers.Contract(vaultAddress, Vault.abi, provider)
+    const data = await Promise.all(orders.map(async order => {
+      try {
+        const position = await contract.getPosition(order.account, order.collateralToken, order.indexToken, order.isLong)
+        if (position[0].eq(0)) {
+          return [null, order]
+        }
+        return [position, order]
+      } catch (ex) {
+        console.error(ex)
+      }
+    }))
+    return data.reduce((memo, [position, order]) => {
+      memo[getOrderKey(order)] = position
+      return memo
+    }, {})
+  })
+
+  return positions
 }
 
 async function getChartPricesFromStats(marketName, chainId) {
