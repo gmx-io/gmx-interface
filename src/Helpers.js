@@ -1167,6 +1167,10 @@ function parseSwapOrdersData(swapOrdersData, account, indexes) {
   return _parseOrdersData(swapOrdersData, account, indexes, extractor, 5, 3)
 }
 
+export function getOrderKey(order) {
+  return `${order.type}-${order.account}-${order.index}`
+}
+
 export function useOrders(flagOrdersEnabled, overrideAccount) {
   const { active, library, account: connectedAccount } = useWeb3React();
   const account = overrideAccount || connectedAccount

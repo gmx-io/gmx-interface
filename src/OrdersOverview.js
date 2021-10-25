@@ -1,14 +1,14 @@
 import { useWeb3React } from "@web3-react/core"
-import useSWR from 'swr'
+import useSWR from "swr"
 import cx from "classnames";
 
 import {
   NavLink
-} from 'react-router-dom'
+} from "react-router-dom"
 
-import { getContract } from './Addresses'
-import { useAllOrders, useAllOrdersStats } from "./Api"
-import { getTokens, getWhitelistedTokens } from './data/Tokens'
+import { getContract } from "./Addresses"
+import { useAllOrders, useAllOrdersStats, usePositionsForOrders } from "./Api"
+import { getTokens, getWhitelistedTokens } from "./data/Tokens"
 import {
   USD_DECIMALS,
   useChainId,
@@ -21,9 +21,10 @@ import {
   getExchangeRateDisplay,
   getExchangeRate,
   shouldInvertTriggerRatio,
-  formatDateTime
+  formatDateTime,
+  getOrderKey
 } from "./Helpers"
-import ReaderV2 from './abis/ReaderV2.json'
+import ReaderV2 from "./abis/ReaderV2.json"
 
 import "./OrdersOverview.css"
 
@@ -47,6 +48,8 @@ export default function OrdersOverview() {
 
   const orders = useAllOrders(chainId, library)
   const stats = useAllOrdersStats()
+
+  const positionsForOrders = usePositionsForOrders(chainId, library, orders.filter(order => order.type === "decrease"))
 
   let openTotal
   let executedTotal
@@ -84,7 +87,8 @@ export default function OrdersOverview() {
       </thead>
       <tbody>
         {orders.map(order => {
-          const { type, account, index } = order
+          const { type } = order
+          const key = getOrderKey(order)
           if (type === "swap") {
             const fromToken = getTokenInfo(infoTokens, order.path0, true, nativeTokenAddress)
             const toToken = getTokenInfo(infoTokens, "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8", order.shoudUnwrap, nativeTokenAddress)
@@ -101,7 +105,7 @@ export default function OrdersOverview() {
               diffPercent = diff.mul(10000).div(markExchangeRate)
             }
 
-            return <tr key={`${type}-${account}-${index}`}>
+            return <tr key={key}>
               <td>Swap</td>
               <td colSpan="2">
                 {formatAmount(order.amountIn, fromToken.decimals, 4, true)} {fromToken.symbol}
@@ -142,7 +146,19 @@ export default function OrdersOverview() {
               diffPercent = diff.mul(10000).div(markPrice)
             }
 
-            return <tr key={`${type}-${account}-${index}`}>
+            let error
+            if (type === "decrease") {
+              if (positionsForOrders && key in positionsForOrders) {
+                const position = positionsForOrders[key]
+                if (!position) {
+                  error = "No position"
+                } else if (order.sizeDelta.gt(position[0])) {
+                  error = `Order size exceeds position`
+                }
+              }
+            }
+
+            return <tr key={key}>
               <td>{type.charAt(0).toUpperCase() + type.substring(1)}</td>
               <td>{order.isLong ? "Long" : "Short"} {indexToken.symbol}</td>
               <td>{type === "increase" ? "+" : "-"}${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}</td>
@@ -161,6 +177,9 @@ export default function OrdersOverview() {
               </td>
               <td>{formatDateTime(order.createdTimestamp)}</td>
               <td>{order.index}</td>
+              <td className="negative">
+                {error}
+              </td>
             </tr>
           }
         })}
