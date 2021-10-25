@@ -25,9 +25,9 @@ import {
 } from "./Helpers"
 import ReaderV2 from './abis/ReaderV2.json'
 
-import "./OrdersBo.css"
+import "./OrdersOverview.css"
 
-export default function OrdersBo() {
+export default function OrdersOverview() {
   const { chainId } = useChainId()
   const { library } = useWeb3React()
 
@@ -60,16 +60,16 @@ export default function OrdersBo() {
 
   const NEAR_TRESHOLD = 98
 
-  return <div className="Orders-bo">
+  return <div className="Orders-overview">
     {stats &&
-      <p className="Orders-bo-stats">
+      <p className="Orders-overview-stats">
         Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}<br/>
         Increase active: {stats.openIncrease}, executed: {stats.executedIncrease}, cancelled: {stats.cancelledIncrease}<br/>
         Decrease active: {stats.openDecrease}, executed: {stats.executedDecrease}, cancelled: {stats.cancelledDecrease}<br/>
         Swap active: {stats.openSwap}, executed: {stats.executedSwap}, cancelled: {stats.cancelledSwap}<br/>
       </p>
     }
-    <table className="Orders-bo-table">
+    <table className="Orders-overview-table">
       <thead>
         <tr>
           <th>Type</th>
