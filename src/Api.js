@@ -51,6 +51,12 @@ const ordersGraphClient = new ApolloClient({
   cache: new InMemoryCache()
 });
 
+const NISSOH_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault"
+const nissohGraphClient = new ApolloClient({
+  uri: NISSOH_GRAPH_API_URL,
+  cache: new InMemoryCache()
+});
+
 export function useAllOrdersStats() {
   const query = gql(`{
     orderStat(id: "total") {
@@ -73,6 +79,69 @@ export function useAllOrdersStats() {
   }, [setRes, query])
 
   return res ? res.data.orderStat : null
+}
+
+export function useAllPositions(chainId, library) {
+  const count = 1000
+  const query = gql(`{
+    aggregatedTradeOpens(
+      first: ${count}
+    ) {
+      account
+      initialPosition{
+        indexToken
+        collateralToken
+        isLong
+        sizeDelta
+      }
+      increaseList {
+        sizeDelta
+      }
+      decreaseList {
+        sizeDelta
+      }
+    }
+  }`)
+
+  const [res, setRes] = useState()
+
+  useEffect(() => {
+    nissohGraphClient.query({ query }).then(setRes)
+  }, [setRes, query])
+
+  const key = res ? `allPositions${count}__` : false
+  const { data: positions = [] } = useSWR(key, async () => {
+    const provider = getProvider(library, chainId)
+    const vaultAddress = getContract(chainId, "Vault")
+    const contract = new ethers.Contract(vaultAddress, Vault.abi, provider)
+    const ret = await Promise.all(res.data.aggregatedTradeOpens.map(async dataItem => {
+      try {
+        const { indexToken, collateralToken, isLong } = dataItem.initialPosition
+        const positionData = await contract.getPosition(dataItem.account, collateralToken, indexToken, isLong)
+        const position = {
+          size: bigNumberify(positionData[0]),
+          collateral: bigNumberify(positionData[1]),
+          entryFundingRate: bigNumberify(positionData[3]),
+          account: dataItem.account
+        }
+        position.fundingFee = await contract.getFundingFee(collateralToken, position.size, position.entryFundingRate)
+        position.marginFee = position.size.div(1000)
+        position.fee = position.fundingFee.add(position.marginFee)
+
+        const THRESHOLD = 5000
+        const collateralDiffPercent = position.fee.mul(10000).div(position.collateral)
+        position.danger = collateralDiffPercent.gt(THRESHOLD)
+
+        return position
+      } catch (ex) {
+        console.error(ex)
+      }
+    }))
+
+    return ret.filter(Boolean)
+  })
+
+  return positions
 }
 
 export function useAllOrders(chainId, library) {
