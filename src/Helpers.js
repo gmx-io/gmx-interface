@@ -788,7 +788,7 @@ export function getLiquidationPrice(data) {
   let positionFee = getPositionFee(size).add(LIQUIDATION_FEE)
   if (entryFundingRate && cumulativeFundingRate) {
     const fundingFee = size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION)
-    positionFee.add(fundingFee)
+    positionFee = positionFee.add(fundingFee)
   }
 
   const liquidationPriceForFees = getLiquidationPriceFromDelta({
