@@ -42,7 +42,8 @@ import Dashboard from './Dashboard'
 import Stake from './Stake'
 import Exchange from './Exchange'
 import Actions from './Actions'
-import OrdersBo from './OrdersBo'
+import OrdersOverview from './OrdersOverview'
+import PositionsOverview from './PositionsOverview'
 import BuyGlp from './BuyGlp'
 import SellGlp from './SellGlp'
 import NftWallet from './NftWallet'
@@ -424,8 +425,11 @@ function FullApp() {
             <Route exact path="/actions/:account">
               <Actions />
             </Route>
-            <Route exact path="/orders-bo">
-              <OrdersBo />
+            <Route exact path="/orders_overview">
+              <OrdersOverview />
+            </Route>
+            <Route exact path="/positions_overview">
+              <PositionsOverview />
             </Route>
             <Route exact path="/actions">
               <Actions />
