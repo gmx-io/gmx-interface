@@ -12,7 +12,7 @@ import {
   SWAP_ORDER_EXECUTION_GAS_FEE,
   INCREASE_ORDER_EXECUTION_GAS_FEE,
   DECREASE_ORDER_EXECUTION_GAS_FEE,
-  DEFAULT_GAS_LIMIT,
+  // DEFAULT_GAS_LIMIT,
   bigNumberify,
   getExplorerUrl,
   getServerBaseUrl,
@@ -602,9 +602,9 @@ export async function callContract(chainId, contract, method, params, opts) {
       opts.gasLimit = await getGasLimit(contract, method, params, opts.value)
     }
 
-    if (opts.gasLimit.lt(DEFAULT_GAS_LIMIT)) {
-      opts.gasLimit = bigNumberify(DEFAULT_GAS_LIMIT)
-    }
+    // if (opts.gasLimit.lt(DEFAULT_GAS_LIMIT)) {
+    //   opts.gasLimit = bigNumberify(DEFAULT_GAS_LIMIT)
+    // }
 
     const res = await contract[method](...params, { gasLimit: opts.gasLimit, value: opts.value })
     const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash
