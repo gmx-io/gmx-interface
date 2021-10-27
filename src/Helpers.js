@@ -40,7 +40,7 @@ export function getChainName(chainId) {
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG")
 const MAX_LEVERAGE = 50 * 10000
 
-export const DEFAULT_GAS_LIMIT = 5 * 1000 * 1000
+export const DEFAULT_GAS_LIMIT = 1 * 1000 * 1000
 export const SECONDS_PER_YEAR = 31536000
 export const USDG_DECIMALS = 18
 export const USD_DECIMALS = 30
@@ -1376,7 +1376,7 @@ export async function getGasLimit(contract, method, params = [], value, gasBuffe
 export function approveTokens({ setIsApproving, library, tokenAddress, spender, chainId, onApproveSubmitted, getTokenInfo, infoTokens, pendingTxns, setPendingTxns, includeMessage }) {
   setIsApproving(true)
   const contract = new ethers.Contract(tokenAddress, Token.abi, library.getSigner())
-  contract.approve(spender, ethers.constants.MaxUint256, { gasLimit: DEFAULT_GAS_LIMIT })
+  contract.approve(spender, ethers.constants.MaxUint256)
   .then(async (res) => {
     const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash
     helperToast.success(
