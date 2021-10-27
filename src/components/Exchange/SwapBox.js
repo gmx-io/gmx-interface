@@ -252,7 +252,8 @@ export default function SwapBox(props) {
   const fromAmount = parseValue(fromValue, fromToken && fromToken.decimals)
   const toAmount = parseValue(toValue, toToken && toToken.decimals)
 
-  const isWrapOrUnwrap = (fromToken.isNative && toToken.isWrapped) || (fromToken.isWrapped && toToken.isNative)
+  const isPotentialWrap = (fromToken.isNative && toToken.isWrapped) || (fromToken.isWrapped && toToken.isNative)
+  const isWrapOrUnwrap = isSwap && isPotentialWrap
   const needApproval = fromTokenAddress !== AddressZero && tokenAllowance && fromAmount && fromAmount.gt(tokenAllowance) && !isWrapOrUnwrap
   const prevFromTokenAddress = usePrevious(fromTokenAddress)
   const prevNeedApproval = usePrevious(needApproval)
