@@ -1,4 +1,5 @@
 import { useWeb3React } from "@web3-react/core"
+import { ethers } from "ethers"
 import useSWR from "swr"
 import cx from "classnames";
 
@@ -27,6 +28,8 @@ import {
 import ReaderV2 from "./abis/ReaderV2.json"
 
 import "./OrdersOverview.css"
+
+const { AddressZero } = ethers.constants
 
 export default function OrdersOverview() {
   const { chainId } = useChainId()
@@ -91,7 +94,7 @@ export default function OrdersOverview() {
           const key = getOrderKey(order)
           if (type === "swap") {
             const fromToken = getTokenInfo(infoTokens, order.path0, true, nativeTokenAddress)
-            const toToken = getTokenInfo(infoTokens, "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8", order.shoudUnwrap, nativeTokenAddress)
+            const toToken = getTokenInfo(infoTokens, order.path2 === AddressZero ? order.path1 : order.path2, order.shoudUnwrap, nativeTokenAddress)
 
             const invert = shouldInvertTriggerRatio(fromToken, toToken)
             const markExchangeRate = getExchangeRate(fromToken, toToken)
