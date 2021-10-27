@@ -1,14 +1,14 @@
 import { useWeb3React } from "@web3-react/core"
-import useSWR from 'swr'
+import useSWR from "swr"
 import cx from "classnames";
 
 import {
   NavLink
-} from 'react-router-dom'
+} from "react-router-dom"
 
-import { getContract } from './Addresses'
-import { useAllOrders, useAllOrdersStats } from "./Api"
-import { getTokens, getWhitelistedTokens } from './data/Tokens'
+import { getContract } from "./Addresses"
+import { useAllOrders, useAllOrdersStats, usePositionsForOrders } from "./Api"
+import { getTokens, getWhitelistedTokens } from "./data/Tokens"
 import {
   USD_DECIMALS,
   useChainId,
@@ -21,13 +21,14 @@ import {
   getExchangeRateDisplay,
   getExchangeRate,
   shouldInvertTriggerRatio,
-  formatDateTime
+  formatDateTime,
+  getOrderKey
 } from "./Helpers"
-import ReaderV2 from './abis/ReaderV2.json'
+import ReaderV2 from "./abis/ReaderV2.json"
 
-import "./OrdersBo.css"
+import "./OrdersOverview.css"
 
-export default function OrdersBo() {
+export default function OrdersOverview() {
   const { chainId } = useChainId()
   const { library } = useWeb3React()
 
@@ -48,6 +49,8 @@ export default function OrdersBo() {
   const orders = useAllOrders(chainId, library)
   const stats = useAllOrdersStats()
 
+  const positionsForOrders = usePositionsForOrders(chainId, library, orders.filter(order => order.type === "decrease"))
+
   let openTotal
   let executedTotal
   let cancelledTotal
@@ -60,16 +63,16 @@ export default function OrdersBo() {
 
   const NEAR_TRESHOLD = 98
 
-  return <div className="Orders-bo">
+  return <div className="Orders-overview">
     {stats &&
-      <p className="Orders-bo-stats">
+      <p className="Orders-overview-stats">
         Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}<br/>
         Increase active: {stats.openIncrease}, executed: {stats.executedIncrease}, cancelled: {stats.cancelledIncrease}<br/>
         Decrease active: {stats.openDecrease}, executed: {stats.executedDecrease}, cancelled: {stats.cancelledDecrease}<br/>
         Swap active: {stats.openSwap}, executed: {stats.executedSwap}, cancelled: {stats.cancelledSwap}<br/>
       </p>
     }
-    <table className="Orders-bo-table">
+    <table className="Orders-overview-table">
       <thead>
         <tr>
           <th>Type</th>
@@ -84,7 +87,8 @@ export default function OrdersBo() {
       </thead>
       <tbody>
         {orders.map(order => {
-          const { type, account, index } = order
+          const { type } = order
+          const key = getOrderKey(order)
           if (type === "swap") {
             const fromToken = getTokenInfo(infoTokens, order.path0, true, nativeTokenAddress)
             const toToken = getTokenInfo(infoTokens, "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8", order.shoudUnwrap, nativeTokenAddress)
@@ -101,7 +105,7 @@ export default function OrdersBo() {
               diffPercent = diff.mul(10000).div(markExchangeRate)
             }
 
-            return <tr key={`${type}-${account}-${index}`}>
+            return <tr key={key}>
               <td>Swap</td>
               <td colSpan="2">
                 {formatAmount(order.amountIn, fromToken.decimals, 4, true)} {fromToken.symbol}
@@ -142,7 +146,19 @@ export default function OrdersBo() {
               diffPercent = diff.mul(10000).div(markPrice)
             }
 
-            return <tr key={`${type}-${account}-${index}`}>
+            let error
+            if (type === "decrease") {
+              if (positionsForOrders && key in positionsForOrders) {
+                const position = positionsForOrders[key]
+                if (!position) {
+                  error = "No position"
+                } else if (order.sizeDelta.gt(position[0])) {
+                  error = `Order size exceeds position`
+                }
+              }
+            }
+
+            return <tr key={key}>
               <td>{type.charAt(0).toUpperCase() + type.substring(1)}</td>
               <td>{order.isLong ? "Long" : "Short"} {indexToken.symbol}</td>
               <td>{type === "increase" ? "+" : "-"}${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}</td>
@@ -161,6 +177,9 @@ export default function OrdersBo() {
               </td>
               <td>{formatDateTime(order.createdTimestamp)}</td>
               <td>{order.index}</td>
+              <td className="negative">
+                {error}
+              </td>
             </tr>
           }
         })}

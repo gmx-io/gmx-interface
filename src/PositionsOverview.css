@@ -1,0 +1,31 @@
+.Positions-overview {
+  font-size: 0.9rem;
+  margin: 1rem 2rem;
+}
+
+.Positions-overview-stats {
+  line-height: 1.5;
+}
+
+.Positions-overview-table {
+  border-collapse: collapse;
+}
+
+.Positions-overview th {
+  opacity: 0.5;
+  font-weight: normal;
+  text-align: left;
+  padding: 0.5rem 1rem 0.5rem 0;
+}
+
+.Positions-overview td {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem 0.5rem 0;
+}
+
+.Positions-overview .near {
+  color: orange;
+}
+.Positions-overview .near.negative {
+  color: #fa3c58;
+}
