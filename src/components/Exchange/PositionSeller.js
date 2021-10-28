@@ -436,7 +436,7 @@ export default function PositionSeller(props) {
     const priceLimit = refPrice.mul(priceBasisPoints).div(10000)
 
     params = [tokenAddress0, indexTokenAddress, collateralDelta, sizeDelta, position.isLong, account, priceLimit]
-    method = collateralTokenAddress === AddressZero ? "decreasePositionETH" : "decreasePosition"
+    method = (collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress) ? "decreasePositionETH" : "decreasePosition"
     contractAddress = routerAddress;
 
     const successMsg = `Decreased ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"} by ${formatAmount(sizeDelta, USD_DECIMALS, 2)} USD.`
