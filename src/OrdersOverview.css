@@ -29,3 +29,10 @@
 .Orders-overview .near.negative {
   color: #fa3c58;
 }
+
+.Orders-overview-action {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  color: #fff;
+}
