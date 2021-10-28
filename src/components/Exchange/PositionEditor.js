@@ -256,7 +256,7 @@ export default function PositionEditor(props) {
     const priceLimit = position.indexToken.maxPrice.mul(priceBasisPoints).div(10000)
 
     let params = [tokenAddress0, indexTokenAddress, fromAmount, 0, position.isLong, account, priceLimit]
-    let method = collateralTokenAddress === AddressZero ? "decreasePositionETH" : "decreasePosition"
+    let method = (collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress) ? "decreasePositionETH" : "decreasePosition"
 
     const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner())
     callContract(chainId, contract, method, params, {
