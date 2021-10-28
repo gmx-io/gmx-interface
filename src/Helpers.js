@@ -13,7 +13,7 @@ import useSWR from 'swr'
 import OrderBookReader from './abis/OrderBookReader.json'
 import OrderBook from './abis/OrderBook.json'
 
-import { getWhitelistedTokens } from './data/Tokens'
+import { getWhitelistedTokens, isValidToken } from './data/Tokens'
 
 const { AddressZero } = ethers.constants
 
@@ -258,7 +258,7 @@ export function shouldInvertTriggerRatio(tokenA, tokenB) {
 }
 
 export function getExchangeRateDisplay(rate, tokenA, tokenB, opts = {}) {
-  if (!rate) return '...';
+  if (!rate || !tokenA || !tokenB) return '...';
   if (shouldInvertTriggerRatio(tokenA, tokenB)) {
     [tokenA, tokenB] = [tokenB, tokenA]
     rate = PRECISION.mul(PRECISION).div(rate)
@@ -1108,7 +1108,7 @@ function _parseOrdersData(ordersData, account, indexes, extractor, uintPropsLeng
   return orders;
 }
 
-function parseDecreaseOrdersData(decreaseOrdersData, account, indexes) {
+function parseDecreaseOrdersData(chainId, decreaseOrdersData, account, indexes) {
   const extractor = sliced => {
     const swapOption = sliced[4].toString() === "1" ? LONG : SHORT
     return {
@@ -1122,10 +1122,12 @@ function parseDecreaseOrdersData(decreaseOrdersData, account, indexes) {
       orderType: STOP
     }
   }
-  return _parseOrdersData(decreaseOrdersData, account, indexes, extractor, 5, 2)
+  return _parseOrdersData(decreaseOrdersData, account, indexes, extractor, 5, 2).filter(order => {
+    return isValidToken(chainId, order.collateralToken) && isValidToken(chainId, order.indexToken)
+  })
 }
 
-function parseIncreaseOrdersData(increaseOrdersData, account, indexes) {
+function parseIncreaseOrdersData(chainId, increaseOrdersData, account, indexes) {
   const extractor = sliced => {
     const swapOption = sliced[5].toString() === "1" ? LONG : SHORT
     return {
@@ -1140,10 +1142,16 @@ function parseIncreaseOrdersData(increaseOrdersData, account, indexes) {
       orderType: LIMIT
     }
   }
-  return _parseOrdersData(increaseOrdersData, account, indexes, extractor, 5, 3)
+  return _parseOrdersData(increaseOrdersData, account, indexes, extractor, 5, 3).filter(order => {
+    return (
+      isValidToken(chainId, order.purchaseToken)
+      && isValidToken(chainId, order.collateralToken)
+      && isValidToken(chainId, order.indexToken)
+    )
+  })
 }
 
-function parseSwapOrdersData(swapOrdersData, account, indexes) {
+function parseSwapOrdersData(chainId, swapOrdersData, account, indexes) {
   if (!swapOrdersData || !swapOrdersData.length) {
     return [];
   }
@@ -1164,14 +1172,16 @@ function parseSwapOrdersData(swapOrdersData, account, indexes) {
       shouldUnwrap
     }
   }
-  return _parseOrdersData(swapOrdersData, account, indexes, extractor, 5, 3)
+  return _parseOrdersData(swapOrdersData, account, indexes, extractor, 5, 3).filter(order => {
+    return isValidToken(chainId, order.fromTokenAddress) && isValidToken(chainId, order.toTokenAddress)
+  })
 }
 
 export function getOrderKey(order) {
   return `${order.type}-${order.account}-${order.index}`
 }
 
-export function useOrders(flagOrdersEnabled, overrideAccount) {
+export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
   const { active, library, account: connectedAccount } = useWeb3React();
   const account = overrideAccount || connectedAccount
 
@@ -1241,7 +1251,8 @@ export function useOrders(flagOrdersEnabled, overrideAccount) {
       const getOrders = async (method, knownIndexes, lastIndex, parseFunc) => {
         const indexes = getIndexes(knownIndexes, lastIndex)
         const ordersData = await orderBookReaderContract[method](orderBookAddress, account, indexes)
-        const orders = parseFunc(ordersData, account, indexes)
+        const orders = parseFunc(chainId, ordersData, account, indexes)
+
         return orders
       }
 
