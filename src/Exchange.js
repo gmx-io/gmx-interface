@@ -19,7 +19,7 @@ import {
   getDeltaStr,
   useChainId,
   getInfoTokens,
-  useOrders
+  useAccountOrders
 } from './Helpers'
 import { getConstant } from './Constants'
 import { approvePlugin } from './Api'
@@ -280,7 +280,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
 
 
   const flagOrdersEnabled = true
-  const [orders, updateOrders] = useOrders(flagOrdersEnabled)
+  const [orders, updateOrders] = useAccountOrders(flagOrdersEnabled)
 
   const [isWaitingForPluginApproval, setIsWaitingForPluginApproval] = useState(false);
   const [isPluginApproving, setIsPluginApproving] = useState(false);
@@ -397,10 +397,10 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
       toTokenAddress={toTokenAddress}
       infoTokens={infoTokens}
       swapOption={swapOption}
-      flagOrdersEnabled={flagOrdersEnabled}
       chainId={chainId}
       positions={positions}
       savedShouldShowPositionLines={savedShouldShowPositionLines}
+      orders={orders}
     />
   }
 
