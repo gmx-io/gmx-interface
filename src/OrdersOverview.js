@@ -26,6 +26,7 @@ import {
   getOrderKey
 } from "./Helpers"
 import ReaderV2 from "./abis/ReaderV2.json"
+import * as Api from "./Api"
 
 import "./OrdersOverview.css"
 
@@ -33,7 +34,7 @@ const { AddressZero } = ethers.constants
 
 export default function OrdersOverview() {
   const { chainId } = useChainId()
-  const { library } = useWeb3React()
+  const { library, account } = useWeb3React()
 
   const readerAddress = getContract(chainId, "Reader")
   const vaultAddress = getContract(chainId, "Vault")
@@ -66,6 +67,21 @@ export default function OrdersOverview() {
 
   const NEAR_TRESHOLD = 98
 
+  const executeOrder = (evt, order) => {
+    evt.preventDefault()
+
+    const params = [chainId, library, order.account, order.index, account]
+    let method
+    if (order.type === 'swap') {
+      method = 'executeSwapOrder'
+    } else if (order.type === 'increase') {
+      method = 'executeIncreaseOrder'
+    } else {
+      method = 'executeDecreaseOrder'
+    }
+    return Api[method](...params)
+  }
+
   return <div className="Orders-overview">
     {stats &&
       <p className="Orders-overview-stats">
@@ -86,6 +102,7 @@ export default function OrdersOverview() {
           <th>Account</th>
           <th>Created At</th>
           <th>Index</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -129,6 +146,10 @@ export default function OrdersOverview() {
               </td>
               <td>{formatDateTime(order.createdTimestamp)}</td>
               <td>{order.index}</td>
+              <td></td>
+              <td>
+                <button className="Orders-overview-action" onClick={evt => executeOrder(evt, order)}>Execute</button>
+              </td>
             </tr>
           } else {
             const indexToken = getTokenInfo(infoTokens, order.indexToken, true, nativeTokenAddress)
@@ -182,6 +203,9 @@ export default function OrdersOverview() {
               <td>{order.index}</td>
               <td className="negative">
                 {error}
+              </td>
+              <td>
+                <button className="Orders-overview-action" onClick={evt => executeOrder(evt, order)}>Execute</button>
               </td>
             </tr>
           }
