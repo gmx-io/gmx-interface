@@ -280,26 +280,28 @@ export default function DashboardV2() {
     const weightText = `${formatAmount(currentWeightBps, 2, 2, false)}% / ${formatAmount(targetWeightBps, 2, 2, false)}%`
 
     return (
-      <Tooltip handle={weightText} position="right-bottom">
-        Current Weight: {formatAmount(currentWeightBps, 2, 2, false)}%<br/>
-        Target Weight: {formatAmount(targetWeightBps, 2, 2, false)}%<br/>
-        <br/>
-        {currentWeightBps.lt(targetWeightBps) && <div>
-          {tokenInfo.symbol} is below its target weight.<br/>
+      <Tooltip handle={weightText} position="right-bottom" renderContent={() => {
+        return <>
+          Current Weight: {formatAmount(currentWeightBps, 2, 2, false)}%<br/>
+          Target Weight: {formatAmount(targetWeightBps, 2, 2, false)}%<br/>
           <br/>
-          Get lower fees to <Link to="/buy_glp" target="_blank" rel="noopener noreferrer">buy GLP</Link> with {tokenInfo.symbol},&nbsp;
-          and to <Link to="/trade" target="_blank" rel="noopener noreferrer">swap</Link> {tokenInfo.symbol} for other tokens.
-        </div>}
-        {currentWeightBps.gt(targetWeightBps) && <div>
-          {tokenInfo.symbol} is above its target weight.<br/>
+          {currentWeightBps.lt(targetWeightBps) && <div>
+            {tokenInfo.symbol} is below its target weight.<br/>
+            <br/>
+            Get lower fees to <Link to="/buy_glp" target="_blank" rel="noopener noreferrer">buy GLP</Link> with {tokenInfo.symbol},&nbsp;
+            and to <Link to="/trade" target="_blank" rel="noopener noreferrer">swap</Link> {tokenInfo.symbol} for other tokens.
+          </div>}
+          {currentWeightBps.gt(targetWeightBps) && <div>
+            {tokenInfo.symbol} is above its target weight.<br/>
+            <br/>
+            Get lower fees to <Link to="/trade" target="_blank" rel="noopener noreferrer">swap</Link> tokens for {tokenInfo.symbol}.
+          </div>}
           <br/>
-          Get lower fees to <Link to="/trade" target="_blank" rel="noopener noreferrer">swap</Link> tokens for {tokenInfo.symbol}.
-        </div>}
-        <br/>
-        <div>
-          <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">More Info</a>
-        </div>
-      </Tooltip>
+          <div>
+            <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">More Info</a>
+          </div>
+        </>
+      }} />
     )
   }
 
@@ -349,17 +351,13 @@ export default function DashboardV2() {
               <div className="App-card-row">
                 <div className="label">AUM</div>
                 <div>
-                  <Tooltip handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`} position="right-bottom">
-                    Assets Under Management: GLP pool + GMX staked
-                  </Tooltip>
+                  <Tooltip handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`} position="right-bottom" renderContent={() => "Assets Under Management: GLP pool + GMX staked"} />
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">GLP Pool</div>
                 <div>
-                  <Tooltip handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`} position="right-bottom">
-                    Total value of tokens in GLP pool
-                  </Tooltip>
+                  <Tooltip handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`} position="right-bottom" renderContent={() => "Total value of tokens in GLP pool"} />
                 </div>
               </div>
               <div className="App-card-row">
@@ -505,11 +503,13 @@ export default function DashboardV2() {
                   <div className="App-card-row">
                     <div className="label">Pool</div>
                     <div>
-                      <Tooltip handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`} position="right-bottom">
-                        Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol}<br/>
-                        <br/>
-                        Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
-                      </Tooltip>
+                      <Tooltip handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`} position="right-bottom" renderContent={() => {
+                        return <>
+                          Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol}<br/>
+                          <br/>
+                          Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                        </>
+                      }} />
                     </div>
                   </div>
                   <div className="App-card-row">

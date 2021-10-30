@@ -261,11 +261,18 @@ export default function PositionsList(props) {
               </td>
               <td>
                 <div>
-                  <Tooltip handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`} position="left-bottom" handleClassName="plain">
-                    Net Value: Collateral + PnL<br/>
-                    Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}<br/>
-                    PnL: {position.deltaStr} ({position.deltaPercentageStr})
-                  </Tooltip>
+                  <Tooltip
+                    handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
+                    position="left-bottom"
+                    handleClassName="plain"
+                    renderContent={() => {
+                      return <>
+                        Net Value: Collateral + PnL<br/>
+                        Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}<br/>
+                        PnL: {position.deltaStr} ({position.deltaPercentageStr})
+                      </>
+                    }}
+                  />
                 </div>
                 <div className={cx("Exchange-list-info-label", { "positive": position.hasProfit && position.pendingDelta.gt(0), "negative": !position.hasProfit && position.pendingDelta.gt(0), "muted": position.pendingDelta.eq(0) })}>
                   {position.deltaStr} ({position.deltaPercentageStr})
@@ -276,28 +283,45 @@ export default function PositionsList(props) {
                   ${formatAmount(position.size, USD_DECIMALS, 2, true)}
                 </div>
                 {positionOrders.length > 0 && <div onClick={() => setListSection && setListSection("Orders")}>
-                  <Tooltip handle={`Orders (${positionOrders.length})`} position="left-bottom" handleClassName="Exchange-list-info-label muted plain clickable">
-                    <strong>Active Orders</strong>
-                    {positionOrders.map(order => {
-                      return <div key={`${order.orderType}-${order.index}`}>
-                        {order.triggerAboveThreshold ? ">" : "<"} {formatAmount(order.triggerPrice, 30, 2, true)}:
-                        {order.orderType === LIMIT ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
-                      </div>
-                    })}
-                  </Tooltip>
+                  <Tooltip
+                    handle={`Orders (${positionOrders.length})`}
+                    position="left-bottom"
+                    handleClassName="Exchange-list-info-label muted plain clickable"
+                    renderContent={() => {
+                      return <>
+                        <strong>Active Orders</strong>
+                        {positionOrders.map(order => {
+                          return <div key={`${order.orderType}-${order.index}`}>
+                            {order.triggerAboveThreshold ? ">" : "<"} {formatAmount(order.triggerPrice, 30, 2, true)}:
+                            {order.orderType === LIMIT ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
+                          </div>
+                        })}
+                      </>
+                    }}
+                  />
                 </div>}
               </td>
               <td>
-                <Tooltip handle={`$${formatAmount(position.collateral, USD_DECIMALS, 2, true)}`} position="left-bottom" handleClassName="plain">
-                  Use the "Edit" button to deposit or withdraw collateral.
-                </Tooltip>
+                <Tooltip
+                  handle={`$${formatAmount(position.collateral, USD_DECIMALS, 2, true)}`}
+                  position="left-bottom"
+                  handleClassName="plain"
+                  renderContent={() => "Use the \"Edit\" button to deposit or withdraw collateral."}
+                />
               </td>
               <td className="clickable" onClick={() => onPositionClick(position)}>
-                <Tooltip handle={`$${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}`} position="left-bottom" handleClassName="plain clickable">
-                  Click on a row to select the position's market, then use the swap box to increase your position size if needed.<br/>
-                  <br/>
-                  Use the "Close" button to reduce your position size, or to set stop-loss / take-profit orders.
-                </Tooltip>
+                <Tooltip
+                  handle={`$${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}`}
+                  position="left-bottom"
+                  handleClassName="plain clickable"
+                  renderContent={() => {
+                    return <>
+                      Click on a row to select the position's market, then use the swap box to increase your position size if needed.<br/>
+                      <br/>
+                      Use the "Close" button to reduce your position size, or to set stop-loss / take-profit orders.
+                    </>
+                  }}
+                />
               </td>
               <td className="clickable" onClick={() => onPositionClick(position)}>
                 ${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}
