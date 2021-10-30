@@ -338,11 +338,12 @@ export default function ConfirmationBox(props) {
       <Tooltip
         position="right-bottom"
         handleClassName={isLiquidityRisk ? "negative" : null}
-        handle={<>{formatAmount(availableLiquidity, token.decimals, token.isStable ? 0 : 2, true)} {token.symbol}</>
-      }>
-        {!isLiquidityRisk && "The order will only execute if the price conditions are met and there is sufficient liquidity"}
-        {isLiquidityRisk && "There may not be sufficient liquidity to execute your order when the price conditions are met"}
-      </Tooltip>
+        handle={<>{formatAmount(availableLiquidity, token.decimals, token.isStable ? 0 : 2, true)} {token.symbol}</>}
+        renderContent={() => isLiquidityRisk
+            ? "There may not be sufficient liquidity to execute your order when the price conditions are met"
+            : "The order will only execute if the price conditions are met and there is sufficient liquidity"
+        }
+      />
     </ExchangeInfoRow>
   }, [toTokenInfo, shortCollateralToken, isShort, isSwap, toAmount, toUsdMax])
 

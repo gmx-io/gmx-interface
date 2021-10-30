@@ -160,9 +160,12 @@ export default function OrdersList(props) {
               Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, (fromTokenInfo.isStable || fromTokenInfo.isUsdg) ? 2 : 4, true)} {fromTokenInfo.symbol} for {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} {toTokenInfo.symbol}
             </td>
             <td>
-              <Tooltip handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}>
-                You will receive at least {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} {toTokenInfo.symbol} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed.
-              </Tooltip>
+              <Tooltip
+                handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}
+                renderContent={() => `
+                  You will receive at least ${formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} ${toTokenInfo.symbol} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed.
+                `}
+              />
             </td>
             <td>
               {getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo, true)}
@@ -238,9 +241,13 @@ export default function OrdersList(props) {
             <div className="App-card-row">
               <div className="label">Price</div>
               <div>
-                <Tooltip position="right-bottom" handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}>
-                  You will receive at least {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} {toTokenInfo.symbol} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed.
-                </Tooltip>
+                <Tooltip
+                  position="right-bottom"
+                  handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}
+                  renderContent={() => `
+                    You will receive at least ${formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} ${toTokenInfo.symbol} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed.
+                  `}
+                />
               </div>
             </div>
             <div className="App-card-row">

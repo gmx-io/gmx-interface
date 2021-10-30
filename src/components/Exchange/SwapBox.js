@@ -1494,9 +1494,11 @@ export default function SwapBox(props) {
 							<div>
 								{!feesUsd && "-"}
 								{feesUsd &&
-                  <Tooltip handle={`${formatAmount(MARGIN_FEE_BASIS_POINTS, 2, 2, false)}% (${formatAmount(feesUsd, USD_DECIMALS, 2, true)} USD)`} position="right-bottom">
-                    Fees are calculated based on your position size.
-                  </Tooltip>
+                  <Tooltip
+                    handle={`${formatAmount(MARGIN_FEE_BASIS_POINTS, 2, 2, false)}% (${formatAmount(feesUsd, USD_DECIMALS, 2, true)} USD)`}
+                    position="right-bottom"
+                    renderContent={() => "Fees are calculated based on your position size."}
+                  />
                 }
 							</div>
             </ExchangeInfoRow>
@@ -1538,36 +1540,52 @@ export default function SwapBox(props) {
           <div className="Exchange-info-row">
             <div className="Exchange-info-label">Entry Price</div>
             <div className="align-right">
-              <Tooltip handle={`${formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD`} position="right-bottom">
-                The position will be opened at {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD with a max slippage of {parseFloat(savedSlippageAmount / 100.0).toFixed(2)}%.<br/>
-                <br/>
-                The slippage amount can be configured by clicking on the "..." icon in the top right of the page after connecting your wallet.<br/>
-                <br/>
-                <a href="https://gmxio.gitbook.io/gmx/trading#opening-a-position" target="_blank" rel="noopener noreferrer">More Info</a>
-              </Tooltip>
+              <Tooltip
+                handle={`${formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD`}
+                position="right-bottom"
+                renderContent={() => {
+                  return <>
+                    The position will be opened at {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD with a max slippage of {parseFloat(savedSlippageAmount / 100.0).toFixed(2)}%.<br/>
+                    <br/>
+                    The slippage amount can be configured by clicking on the "..." icon in the top right of the page after connecting your wallet.<br/>
+                    <br/>
+                    <a href="https://gmxio.gitbook.io/gmx/trading#opening-a-position" target="_blank" rel="noopener noreferrer">More Info</a>
+                    }}>
+                  </>
+                }}
+              />
             </div>
           </div>
           <div className="Exchange-info-row">
             <div className="Exchange-info-label">Exit Price</div>
             <div className="align-right">
-              <Tooltip handle={`${formatAmount(exitMarkPrice, USD_DECIMALS, 2, true)} USD`} position="right-bottom">
-                If you have an existing position, the position will be closed at {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD.<br/>
-                <br/>
-                This exit price will change with the price of the asset.
-                <br/>
-                <br/>
-                <a href="https://gmxio.gitbook.io/gmx/trading#opening-a-position" target="_blank" rel="noopener noreferrer">More Info</a>
-              </Tooltip>
+              <Tooltip
+                handle={`${formatAmount(exitMarkPrice, USD_DECIMALS, 2, true)} USD`}
+                position="right-bottom"
+                renderContent={() => {
+                  return <>
+                    If you have an existing position, the position will be closed at {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD.<br/>
+                    <br/>
+                    This exit price will change with the price of the asset.
+                    <br/>
+                    <br/>
+                    <a href="https://gmxio.gitbook.io/gmx/trading#opening-a-position" target="_blank" rel="noopener noreferrer">More Info</a>
+                    }}>
+                  </>
+                }}
+              />
             </div>
           </div>
           <div className="Exchange-info-row">
             <div className="Exchange-info-label">Borrow Fee</div>
             <div className="align-right">
-              <Tooltip handle={borrowFeeText} position="right-bottom">
-                The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour.<br/>
-                <br/>
-                <a href="https://gmxio.gitbook.io/gmx/trading#opening-a-position" target="_blank" rel="noopener noreferrer">More Info</a>
-              </Tooltip>
+              <Tooltip handle={borrowFeeText} position="right-bottom" renderContent={() => {
+                return <>
+                  The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour.<br/>
+                  <br/>
+                  <a href="https://gmxio.gitbook.io/gmx/trading#opening-a-position" target="_blank" rel="noopener noreferrer">More Info</a>
+                </>
+              }} />
             </div>
           </div>
         </div>
