@@ -147,7 +147,7 @@ export function useAllPositions(chainId, library) {
 export function useAllOrders(chainId, library) {
   const query = gql(`{
     orders(
-      first: 100,
+      first: 1000,
       orderBy: createdTimestamp,
       orderDirection: desc,
       where: {status: "open"}
@@ -173,13 +173,17 @@ export function useAllOrders(chainId, library) {
     const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, provider)
     return Promise.all(res.data.orders.map(async order => {
       try {
-        const method = `get${order.type.charAt(0).toUpperCase() + order.type.substring(1)}Order`
+        const type = order.type.charAt(0).toUpperCase() + order.type.substring(1)
+        const method = `get${type}Order`
         const orderFromChain = await contract[method](order.account, order.index)
         const ret = {}
         for (const [key, val] of Object.entries(orderFromChain)) {
           ret[key] = val
         }
-        ret.type = order.type
+        if (order.type === "swap") {
+          ret.path = [ret.path0, ret.path1, ret.path2].filter(address => address !== AddressZero)
+        }
+        ret.type = type
         ret.index = order.index
         ret.account = order.account
         ret.createdTimestamp = order.createdTimestamp
