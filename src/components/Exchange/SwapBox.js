@@ -1220,12 +1220,19 @@ export default function SwapBox(props) {
     return null
   }
 
+  let hasZeroBorrowFee = false
   let borrowFeeText
   if (isLong && toTokenInfo && toTokenInfo.fundingRate) {
     borrowFeeText = formatAmount(toTokenInfo.fundingRate, 4, 4) + "% / 1h"
+    if (toTokenInfo.fundingRate.eq(0)) {
+      hasZeroBorrowFee = true
+    }
   }
   if (isShort && shortCollateralToken && shortCollateralToken.fundingRate) {
     borrowFeeText = formatAmount(shortCollateralToken.fundingRate, 4, 4) + "% / 1h"
+    if (shortCollateralToken.fundingRate.eq(0)) {
+      hasZeroBorrowFee = true
+    }
   }
 
   return (
@@ -1564,7 +1571,13 @@ export default function SwapBox(props) {
             <div className="Exchange-info-label">Borrow Fee</div>
             <div className="align-right">
               <Tooltip handle={borrowFeeText} position="right-bottom">
-                The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour.<br/>
+                {hasZeroBorrowFee && <div>
+                  {isLong && "There are more shorts than longs, borrow fees for longing is currently zero"}
+                  {isShort && "There are more longs than shorts, borrow fees for shorting is currently zero"}
+                </div>}
+                {!hasZeroBorrowFee && <div>
+                  The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour.
+                </div>}
                 <br/>
                 <a href="https://gmxio.gitbook.io/gmx/trading#opening-a-position" target="_blank" rel="noopener noreferrer">More Info</a>
               </Tooltip>
