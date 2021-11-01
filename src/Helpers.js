@@ -143,18 +143,19 @@ function getTriggerPrice(tokenAddress, max, info, orderType, triggerPriceUsd) {
   return max ? info.maxPrice : info.minPrice;
 }
 
-function getLiquidationPriceFromDelta({ liquidationAmount, size, collateral, averagePrice, isLong }) {
+export function getLiquidationPriceFromDelta({ liquidationAmount, size, collateral, averagePrice, isLong }) {
   if (!size || size.eq(0)) { return }
-  if (liquidationAmount.gt(collateral)) { return }
+
+  if (liquidationAmount.gt(collateral)) {
+    const liquidationDelta = liquidationAmount.sub(collateral)
+    const priceDelta = liquidationDelta.mul(averagePrice).div(size)
+    return !isLong ? averagePrice.sub(priceDelta) : averagePrice.add(priceDelta)
+  }
 
   const liquidationDelta = collateral.sub(liquidationAmount)
   const priceDelta = liquidationDelta.mul(averagePrice).div(size)
 
-  if (isLong) {
-    return averagePrice.sub(priceDelta)
-  }
-
-  return averagePrice.add(priceDelta)
+  return isLong ? averagePrice.sub(priceDelta) : averagePrice.add(priceDelta)
 }
 
 export const replaceNativeTokenAddress = (path, nativeTokenAddress) => {
@@ -788,7 +789,7 @@ export function getLiquidationPrice(data) {
   let positionFee = getPositionFee(size).add(LIQUIDATION_FEE)
   if (entryFundingRate && cumulativeFundingRate) {
     const fundingFee = size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION)
-    positionFee.add(fundingFee)
+    positionFee = positionFee.add(fundingFee)
   }
 
   const liquidationPriceForFees = getLiquidationPriceFromDelta({

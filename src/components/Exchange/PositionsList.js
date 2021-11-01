@@ -84,7 +84,7 @@ export default function PositionsList(props) {
   }
 
   return (
-    <div>
+    <div className="PositionsList">
       <PositionEditor
         positionsMap={positionsMap}
         positionKey={positionToEditKey}
@@ -169,7 +169,18 @@ export default function PositionsList(props) {
                 <div className="App-card-row">
                   <div className="label">Collateral</div>
                   <div>
-                     ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                    <Tooltip handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`} position="right-bottom" handleClassName={cx("plain", { "negative": position.hasLowCollateral })}>
+                      {position.hasLowCollateral && <div>
+                        WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk.
+                        <br/>
+                        <br/>
+                      </div>}
+
+                      Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}<br/>
+                      Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}<br/>
+                      <br/>
+                      Use the "Edit" button to deposit or withdraw collateral.
+                    </Tooltip>
                   </div>
                 </div>
                 <div className="App-card-row">
@@ -183,7 +194,13 @@ export default function PositionsList(props) {
                 <div className="App-card-row">
                   <div className="label">Net Value</div>
                   <div>
-                    ${formatAmount(position.netValue, USD_DECIMALS, 2, true)}
+                    <Tooltip handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`} position="right-bottom" handleClassName="plain">
+                      Net Value: Initial Collateral - Borrow Fee + PnL<br/>
+                      <br/>
+                      Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}<br/>
+                      Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}<br/>
+                      PnL: {position.deltaStr} ({position.deltaPercentageStr})<br/>
+                    </Tooltip>
                   </div>
                 </div>
               </div>
@@ -262,9 +279,11 @@ export default function PositionsList(props) {
               <td>
                 <div>
                   <Tooltip handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`} position="left-bottom" handleClassName="plain">
-                    Net Value: Collateral + PnL<br/>
-                    Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}<br/>
-                    PnL: {position.deltaStr} ({position.deltaPercentageStr})
+                    Net Value: Initial Collateral - Borrow Fee + PnL<br/>
+                    <br/>
+                    Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}<br/>
+                    Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}<br/>
+                    PnL: {position.deltaStr} ({position.deltaPercentageStr})<br/>
                   </Tooltip>
                 </div>
                 <div className={cx("Exchange-list-info-label", { "positive": position.hasProfit && position.pendingDelta.gt(0), "negative": !position.hasProfit && position.pendingDelta.gt(0), "muted": position.pendingDelta.eq(0) })}>
@@ -288,7 +307,16 @@ export default function PositionsList(props) {
                 </div>}
               </td>
               <td>
-                <Tooltip handle={`$${formatAmount(position.collateral, USD_DECIMALS, 2, true)}`} position="left-bottom" handleClassName="plain">
+                <Tooltip handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`} position="left-bottom" handleClassName={cx("plain", { "negative": position.hasLowCollateral })}>
+                  {position.hasLowCollateral && <div>
+                    WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk.
+                    <br/>
+                    <br/>
+                  </div>}
+
+                  Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}<br/>
+                  Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}<br/>
+                  <br/>
                   Use the "Edit" button to deposit or withdraw collateral.
                 </Tooltip>
               </td>
