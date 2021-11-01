@@ -5,10 +5,12 @@ import useSWR from 'swr'
 import { ethers } from 'ethers'
 
 import {
+  FUNDING_RATE_PRECISION,
   BASIS_POINTS_DIVISOR,
   SWAP,
   LONG,
   SHORT,
+  bigNumberify,
   getTokenInfo,
   getConnectWalletHandler,
   fetcher,
@@ -45,6 +47,14 @@ import Footer from "./Footer"
 import './Exchange.css';
 
 const { AddressZero } = ethers.constants
+
+function getFundingFee(data) {
+  let { entryFundingRate, cumulativeFundingRate, size } = data
+  if (entryFundingRate && cumulativeFundingRate) {
+    return size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION)
+  }
+  return
+}
 
 const getTokenAddress = (token, nativeTokenAddress) => {
   if (token.address === AddressZero) {
@@ -84,6 +94,12 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
       markPrice: isLong[i] ? indexToken.minPrice : indexToken.maxPrice
     }
 
+    let fundingFee = getFundingFee(position)
+    position.fundingFee = fundingFee ? fundingFee : bigNumberify(0)
+    position.collateralAfterFee = position.collateral.sub(position.fundingFee)
+
+    position.hasLowCollateral = position.collateralAfterFee.lte(0) || position.size.div(position.collateralAfterFee.abs()).gt(50)
+
     position.pendingDelta = position.delta
     if (position.collateral.gt(0)) {
       if (position.delta.eq(0) && position.averagePrice && position.markPrice) {
@@ -101,7 +117,8 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
       position.deltaStr = deltaStr
       position.deltaPercentageStr = deltaPercentageStr
 
-      position.netValue = position.hasProfit ? position.collateral.add(position.pendingDelta) : position.collateral.sub(position.pendingDelta)
+      let netValue = position.hasProfit ? position.collateral.add(position.pendingDelta) : position.collateral.sub(position.pendingDelta)
+      position.netValue = netValue.sub(position.fundingFee)
     }
 
     position.leverage = getLeverage({
