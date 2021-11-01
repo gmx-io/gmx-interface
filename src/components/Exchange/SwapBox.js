@@ -174,13 +174,13 @@ export default function SwapBox(props) {
 
   const [ordersToaOpen, setOrdersToaOpen] = useState(false)
 
-  let [orderType, setOrderType] = useLocalStorageSerializeKey([chainId, 'Order-option'], MARKET);
+  let [orderOption, setOrderOption] = useLocalStorageSerializeKey([chainId, 'Order-option'], MARKET);
   if (!flagOrdersEnabled) {
-    orderType = MARKET;
+    orderOption = MARKET;
   }
 
   const onOrderOptionChange = option => {
-    setOrderType(option);
+    setOrderOption(option);
   }
 
   const [sellValue, setSellValue] = useState('');
@@ -189,8 +189,8 @@ export default function SwapBox(props) {
     setSellValue(evt.target.value || '');
   }
 
-  const isMarketOrder = orderType === MARKET;
-  const orderTypes = isSwap ? SWAP_ORDER_OPTIONS : LEVERAGE_ORDER_OPTIONS;
+  const isMarketOrder = orderOption === MARKET;
+  const orderOptions = isSwap ? SWAP_ORDER_OPTIONS : LEVERAGE_ORDER_OPTIONS;
 
   const [triggerPriceValue, setTriggerPriceValue] = useState('');
   const triggerPriceUsd = isMarketOrder ? 0 : parseValue(triggerPriceValue, USD_DECIMALS);
@@ -260,7 +260,7 @@ export default function SwapBox(props) {
 	const prevToTokenAddress = usePrevious(toTokenAddress)
 
   const fromUsdMin = getUsd(fromAmount, fromTokenAddress, false, infoTokens)
-  const toUsdMax = getUsd(toAmount, toTokenAddress, true, infoTokens, orderType, triggerPriceUsd)
+  const toUsdMax = getUsd(toAmount, toTokenAddress, true, infoTokens, orderOption, triggerPriceUsd)
 
   const indexTokenAddress = toTokenAddress === AddressZero ? nativeTokenAddress : toTokenAddress
   const collateralTokenAddress = isLong ? indexTokenAddress : shortCollateralAddress;
@@ -749,7 +749,7 @@ export default function SwapBox(props) {
     if (isPluginApproving) { return "Enabling Orders..." }
     if (needOrderBookApproval) { return "Enable Orders" }
 
-    if (!isMarketOrder) return `Create ${orderType.charAt(0) + orderType.substring(1).toLowerCase()} Order`;
+    if (!isMarketOrder) return `Create ${orderOption.charAt(0) + orderOption.substring(1).toLowerCase()} Order`;
 
     if (isSwap) {
       if (toUsdMax && toUsdMax.lt(fromUsdMin.mul(95).div(100))) {
@@ -1114,7 +1114,7 @@ export default function SwapBox(props) {
       return
     }
 
-    if (orderType === LIMIT) {
+    if (orderOption === LIMIT) {
       createIncreaseOrder();
       return;
     }
@@ -1177,8 +1177,8 @@ export default function SwapBox(props) {
     setIsConfirming(true);
   }
 
-  const showFromAndToSection = orderType !== STOP;
-  const showSizeSection = orderType === STOP;
+  const showFromAndToSection = orderOption !== STOP;
+  const showSizeSection = orderOption === STOP;
   const showTriggerPriceSection = !isSwap && !isMarketOrder;
   const showTriggerRatioSection = isSwap && !isMarketOrder;
 
@@ -1238,7 +1238,7 @@ export default function SwapBox(props) {
         <div>
           <Tab icons={SWAP_ICONS} options={SWAP_OPTIONS} option={swapOption} onChange={onSwapOptionChange} className="Exchange-swap-option-tabs" />
           {flagOrdersEnabled &&
-            <Tab options={orderTypes} className="Exchange-swap-order-type-tabs" type="inline" option={orderType} onChange={onOrderOptionChange} />
+            <Tab options={orderOptions} className="Exchange-swap-order-type-tabs" type="inline" option={orderOption} onChange={onOrderOptionChange} />
           }
         </div>
         {showFromAndToSection &&
@@ -1593,7 +1593,7 @@ export default function SwapBox(props) {
           isSwap={isSwap}
           isLong={isLong}
           isMarketOrder={isMarketOrder}
-          orderType={orderType}
+          orderOption={orderOption}
           isShort={isShort}
           fromToken={fromToken}
           fromTokenInfo={fromTokenInfo}

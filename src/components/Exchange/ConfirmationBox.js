@@ -4,10 +4,10 @@ import {
 	PRECISION,
 	BASIS_POINTS_DIVISOR,
   LIMIT,
-  LONG,
   SWAP_ORDER_EXECUTION_GAS_FEE,
   INCREASE_ORDER_EXECUTION_GAS_FEE,
   MIN_PROFIT_TIME,
+  INCREASE,
 	expandDecimals,
   getExchangeRate,
   getProfitPrice,
@@ -53,7 +53,7 @@ export default function ConfirmationBox(props) {
     isSwap,
     isLong,
     isMarketOrder,
-    orderType,
+    orderOption,
     isShort,
     toAmount,
     fromAmount,
@@ -105,12 +105,11 @@ export default function ConfirmationBox(props) {
   const existingOrder = useMemo(() => {
     const WETH = getTokenBySymbol(chainId, "WETH")
     for (const order of orders) {
-      if (order.orderType !== LIMIT) continue
+      if (order.type !== INCREASE) continue
       const sameToken = order.indexToken === WETH.address
         ? toToken.isNative
         : order.indexToken === toToken.address
-      if ((order.swapOption === LONG) === isLong
-        && sameToken) {
+      if (order.isLong === isLong && sameToken) {
         return order
       }
     }
@@ -180,7 +179,7 @@ export default function ConfirmationBox(props) {
   }, [isMarketOrder, spread])
 
   const renderFeeWarning = useCallback(() => {
-    if (orderType === LIMIT || !feeBps || feeBps < 50) {
+    if (orderOption === LIMIT || !feeBps || feeBps < 50) {
       return null
     }
 
@@ -203,7 +202,7 @@ export default function ConfirmationBox(props) {
         {collateralToken.symbol} is needed for collateral.
       </div>
     )
-  }, [feeBps, isSwap, collateralTokenAddress, chainId, fromToken.symbol, toToken.symbol, orderType])
+  }, [feeBps, isSwap, collateralTokenAddress, chainId, fromToken.symbol, toToken.symbol, orderOption])
 
   const hasPendingProfit = existingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)
 
@@ -260,7 +259,7 @@ export default function ConfirmationBox(props) {
     const sizeInToken = formatAmount(existingOrder.sizeDelta.mul(PRECISION).div(existingOrder.triggerPrice), USD_DECIMALS, 4, true)
     return (
       <div className="Confirmation-box-warning">
-        You have an active Limit Order to Increase {existingOrder.swapOption} {sizeInToken} {indexToken.symbol} (${formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at price ${formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
+        You have an active Limit Order to Increase {existingOrder.isLong ? "Long" : "Short"} {sizeInToken} {indexToken.symbol} (${formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at price ${formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
       </div>
     );
   }, [existingOrder, isSwap, chainId])
@@ -306,31 +305,32 @@ export default function ConfirmationBox(props) {
   }, [isMarketOrder, isSwap])
 
   const renderAvailableLiquidity = useCallback(() => {
-    let token
     let availableLiquidity
     const riskThresholdBps = 5000
     let isLiquidityRisk
+    const token = (isSwap || isLong) ? toTokenInfo : shortCollateralToken
+
+    if (!token || !token.poolAmount || !token.availableAmount) {
+      return null
+    }
 
     if (isSwap) {
-      token = toTokenInfo
       const poolWithoutBuffer = token.poolAmount.sub(token.bufferAmount)
       availableLiquidity = token.availableAmount.gt(poolWithoutBuffer) ? poolWithoutBuffer : token.availableAmount
       isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(toAmount)
     } else {
       if (isShort) {
-        token = shortCollateralToken
         availableLiquidity = token.availableAmount
 
         const sizeTokens = toUsdMax.mul(expandDecimals(1, token.decimals)).div(token.minPrice)
         isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(sizeTokens)
       } else {
-        token = toTokenInfo
         availableLiquidity = token.availableAmount
         isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(toAmount)
       }
     }
 
-    if (!token || !availableLiquidity) {
+    if (!availableLiquidity) {
       return null
     }
 
@@ -344,7 +344,7 @@ export default function ConfirmationBox(props) {
         {isLiquidityRisk && "There may not be sufficient liquidity to execute your order when the price conditions are met"}
       </Tooltip>
     </ExchangeInfoRow>
-  }, [toTokenInfo, shortCollateralToken, isShort, isSwap, toAmount, toUsdMax])
+  }, [toTokenInfo, shortCollateralToken, isShort, isLong, isSwap, toAmount, toUsdMax])
 
   const renderMarginSection = useCallback(() => {
     return <>
@@ -360,7 +360,7 @@ export default function ConfirmationBox(props) {
             </Checkbox>
           </div>
         }
-        {orderType === LIMIT && renderAvailableLiquidity()}
+        {orderOption === LIMIT && renderAvailableLiquidity()}
         {(isShort) &&
           <ExchangeInfoRow label="Profits In">
               {getToken(chainId, shortCollateralAddress).symbol}
@@ -422,7 +422,7 @@ export default function ConfirmationBox(props) {
       isShort, isLong, toTokenInfo, nextAveragePrice, toAmount, hasExistingPosition, existingPosition,
       isMarketOrder, triggerPriceUsd, showSpread, spread, displayLiquidationPrice, existingLiquidationPrice,
       feesUsd, leverage, renderExecutionFee, shortCollateralToken, renderExistingOrderWarning, chainId, renderFeeWarning,
-      hasPendingProfit, isProfitWarningAccepted, renderAvailableLiquidity, orderType])
+      hasPendingProfit, isProfitWarningAccepted, renderAvailableLiquidity, orderOption])
 
   const renderSwapSection = useCallback(() => {
     return <>
@@ -430,7 +430,7 @@ export default function ConfirmationBox(props) {
         {renderMain()}
         {renderFeeWarning()}
         {renderSpreadWarning()}
-        {orderType === LIMIT && renderAvailableLiquidity()}
+        {orderOption === LIMIT && renderAvailableLiquidity()}
         <ExchangeInfoRow label="Min. Receive">
           {formatAmount(minOut, toTokenInfo.decimals, 4, true)} {toTokenInfo.symbol}
         </ExchangeInfoRow>
@@ -472,7 +472,7 @@ export default function ConfirmationBox(props) {
         }
       </div>
     </>
-  }, [renderMain, renderSpreadWarning, fromTokenInfo, toTokenInfo, orderType,
+  }, [renderMain, renderSpreadWarning, fromTokenInfo, toTokenInfo, orderOption,
       showSpread, spread, feesUsd, feeBps, renderExecutionFee, fromTokenUsd, toTokenUsd,
       triggerRatio, fees, isMarketOrder, minOut, renderFeeWarning, renderAvailableLiquidity])
 

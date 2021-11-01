@@ -1,17 +1,15 @@
 import React, { useState, useMemo } from "react"
 import { BsArrowRight } from 'react-icons/bs'
-import { ethers } from 'ethers'
 
 import {
   PRECISION,
   USD_DECIMALS,
   SWAP,
-  LONG,
-  STOP,
-  LIMIT,
   TRIGGER_PREFIX_ABOVE,
   TRIGGER_PREFIX_BELOW,
   MIN_PROFIT_TIME,
+  DECREASE,
+  INCREASE,
   useChainId,
   getTokenInfo,
   isTriggerRatioInverted,
@@ -38,8 +36,6 @@ import Modal from '../Modal/Modal'
 import ExchangeInfoRow from './ExchangeInfoRow'
 import { getContract } from '../../Addresses'
 
-const { AddressZero } = ethers.constants
-
 export default function OrderEditor(props) {
   const {
     order,
@@ -57,20 +53,22 @@ export default function OrderEditor(props) {
 
   const { chainId } = useChainId()
 
-  const { swapOption } = order;
-
-  const position = order.orderType !== SWAP ? getPositionForOrder(order, positionsMap) : null
-  const liquidationPrice = (order.orderType === STOP && position) ? getLiquidationPrice(position) : null
+  const position = order.type !== SWAP ? getPositionForOrder(order, positionsMap) : null
+  const liquidationPrice = (order.type === DECREASE && position) ? getLiquidationPrice(position) : null
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
-  const fromTokenInfo = getTokenInfo(infoTokens, order.fromTokenAddress === nativeTokenAddress ? AddressZero : order.fromTokenAddress);
-  const toTokenInfo = getTokenInfo(infoTokens, order.shouldUnwrap ? AddressZero : order.toTokenAddress);
+  const fromTokenInfo = order.type === SWAP ? getTokenInfo(infoTokens, order.path[0], true, nativeTokenAddress) : null
+  const toTokenInfo = order.type === SWAP ? getTokenInfo(infoTokens, order.path[order.path.length - 1], order.shouldUnwrap, nativeTokenAddress) : null
 
   const triggerRatioInverted = useMemo(() => {
+    if (order.type !== SWAP) {
+      return null
+    }
+
     return isTriggerRatioInverted(fromTokenInfo, toTokenInfo)
-  }, [toTokenInfo, fromTokenInfo])
+  }, [toTokenInfo, fromTokenInfo, order.type])
 
   let initialRatio = 0;
   if (order.triggerRatio) {
@@ -96,25 +94,29 @@ export default function OrderEditor(props) {
     return ratio
   }, [triggerRatioValue, triggerRatioInverted])
 
-  const indexTokenEntryMarkPrice = useMemo(() => {
-    if (order.swapOption === SWAP) {
+  const indexTokenMarkPrice = useMemo(() => {
+    if (order.type === SWAP) {
       return;
     }
     const toTokenInfo = getTokenInfo(infoTokens, order.indexToken)
-    return order.swapOption === LONG ? toTokenInfo.maxPrice : toTokenInfo.minPrice
+    return order.isLong ? toTokenInfo.maxPrice : toTokenInfo.minPrice
   }, [infoTokens, order])
 
-  const { amount: toAmount } = getNextToAmount(
-    chainId,
-    order.amountIn,
-    order.fromTokenAddress,
-    order.toTokenAddress,
-    infoTokens,
-    undefined,
-    triggerRatio,
-    usdgSupply,
-    totalTokenWeights
-  )
+  let toAmount
+  if (order.type === SWAP) {
+    const { amount } = getNextToAmount(
+      chainId,
+      order.amountIn,
+      order.path[0],
+      order.path[order.path.length - 1],
+      infoTokens,
+      undefined,
+      triggerRatio,
+      usdgSupply,
+      totalTokenWeights
+    )
+    toAmount = amount
+  }
 
   const onClickPrimary = () => {
     setIsSubmitting(true);
@@ -122,13 +124,13 @@ export default function OrderEditor(props) {
     let func;
     let params;
 
-    if (order.swapOption === SWAP) {
+    if (order.type === SWAP) {
       func = updateSwapOrder;
       params = [chainId, library, order.index, toAmount, triggerRatio, order.triggerAboveThreshold];
-    } else if (order.orderType === STOP) {
+    } else if (order.type === DECREASE) {
       func = updateDecreaseOrder;
       params = [chainId, library, order.index, order.collateralDelta, order.sizeDelta, triggerPrice, order.triggerAboveThreshold];
-    } else if (order.orderType === LIMIT) {
+    } else if (order.type === INCREASE) {
       func = updateIncreaseOrder;
       params = [chainId, library, order.index, order.sizeDelta, triggerPrice, order.triggerAboveThreshold];
     }
@@ -161,14 +163,14 @@ export default function OrderEditor(props) {
     if ((!triggerRatio || triggerRatio.eq(0)) && (!triggerPrice || triggerPrice.eq(0))) {
       return "Enter Price";
     }
-    if (order.swapOption === SWAP && triggerRatio.eq(order.triggerRatio)) {
+    if (order.type === SWAP && triggerRatio.eq(order.triggerRatio)) {
       return "Enter new Price";
     }
-    if (order.swapOption !== SWAP && triggerPrice.eq(order.triggerPrice)) {
+    if (order.type !== SWAP && triggerPrice.eq(order.triggerPrice)) {
       return "Enter new Price";
     }
     if (position) {
-      if (order.orderType === STOP) {
+      if (order.type === DECREASE) {
         if (position.isLong && triggerPrice.lte(liquidationPrice)) { return "Price below Liq. Price" }
         if (!position.isLong && triggerPrice.gte(liquidationPrice)) { return "Price above Liq. Price" }
       }
@@ -179,16 +181,16 @@ export default function OrderEditor(props) {
       }
     }
 
-    if (swapOption !== SWAP && indexTokenEntryMarkPrice) {
-      if (order.triggerAboveThreshold && indexTokenEntryMarkPrice.gt(triggerPrice)) {
+    if (order.type !== SWAP && indexTokenMarkPrice) {
+      if (order.triggerAboveThreshold && indexTokenMarkPrice.gt(triggerPrice)) {
         return "Price below Mark Price"
       }
-      if (!order.triggerAboveThreshold && indexTokenEntryMarkPrice.lt(triggerPrice)) {
+      if (!order.triggerAboveThreshold && indexTokenMarkPrice.lt(triggerPrice)) {
         return "Price above Mark Price"
       }
     }
 
-    if (swapOption === SWAP) {
+    if (order.type === SWAP) {
       const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
       if (currentRate && !currentRate.gte(triggerRatio)) {
         return `Price is ${triggerRatioInverted ? "below" : "above"} Mark Price`
@@ -197,7 +199,7 @@ export default function OrderEditor(props) {
   }
 
   const renderMinProfitWarning = () => {
-    if (order.orderType === SWAP || !position || !triggerPrice || triggerPrice.eq(0)) { return null }
+    if (order.type === SWAP || !position || !triggerPrice || triggerPrice.eq(0)) { return null }
 
     const { delta, pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta(triggerPrice, position)
     if (hasProfit && delta.eq(0)) {
@@ -239,9 +241,9 @@ export default function OrderEditor(props) {
     return "Update Order";
   }
 
-  if (order.swapOption !== SWAP) {
+  if (order.type !== SWAP) {
     const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW
-    return  <Modal isVisible={true} className="Exchange-list-modal" setIsVisible={() => setEditingOrder(null)} label="Edit order">
+    return <Modal isVisible={true} className="Exchange-list-modal" setIsVisible={() => setEditingOrder(null)} label="Edit order">
       {renderMinProfitWarning()}
       <div className="Exchange-swap-section">
         <div className="Exchange-swap-section-top">
@@ -250,9 +252,9 @@ export default function OrderEditor(props) {
           </div>
           <div
             className="muted align-right clickable"
-            onClick={() => {setTriggerPriceValue(formatAmountFree(indexTokenEntryMarkPrice, USD_DECIMALS, 2))}}
+            onClick={() => {setTriggerPriceValue(formatAmountFree(indexTokenMarkPrice, USD_DECIMALS, 2))}}
           >
-            Mark: {formatAmount(indexTokenEntryMarkPrice, USD_DECIMALS, 2)}
+            Mark: {formatAmount(indexTokenMarkPrice, USD_DECIMALS, 2)}
           </div>
         </div>
         <div className="Exchange-swap-section-bottom">

@@ -16,7 +16,7 @@ import {
   SWAP,
   LONG,
   SHORT,
-  LIMIT
+  INCREASE
 } from "../../Helpers"
 
 const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
@@ -25,11 +25,11 @@ const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
   }
   /* eslint-disable array-callback-return */
   return orders.filter(order => {
-    if (order.swapOption === SWAP) { return false }
+    if (order.type === SWAP) { return false }
     const sameToken = order.indexToken === nativeTokenAddress
       ? position.indexToken.isNative
       : order.indexToken === position.indexToken.address
-    if ((order.swapOption === LONG) === position.isLong
+    if (order.isLong === position.isLong
       && sameToken) {
       return true
     }
@@ -279,9 +279,9 @@ export default function PositionsList(props) {
                   <Tooltip handle={`Orders (${positionOrders.length})`} position="left-bottom" handleClassName="Exchange-list-info-label muted plain clickable">
                     <strong>Active Orders</strong>
                     {positionOrders.map(order => {
-                      return <div key={`${order.orderType}-${order.index}`}>
+                      return <div key={`${order.isLong}-${order.type}-${order.index}`}>
                         {order.triggerAboveThreshold ? ">" : "<"} {formatAmount(order.triggerPrice, 30, 2, true)}:
-                        {order.orderType === LIMIT ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
+                        {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
                       </div>
                     })}
                   </Tooltip>

@@ -1,5 +1,4 @@
 import { useWeb3React } from "@web3-react/core"
-import { ethers } from "ethers"
 import useSWR from "swr"
 import cx from "classnames";
 
@@ -12,6 +11,8 @@ import { useAllOrders, useAllOrdersStats, usePositionsForOrders } from "./Api"
 import { getTokens, getWhitelistedTokens } from "./data/Tokens"
 import {
   USD_DECIMALS,
+  DECREASE,
+  SWAP,
   useChainId,
   getInfoTokens,
   formatAmount,
@@ -28,8 +29,6 @@ import {
 import ReaderV2 from "./abis/ReaderV2.json"
 
 import "./OrdersOverview.css"
-
-const { AddressZero } = ethers.constants
 
 export default function OrdersOverview() {
   const { chainId } = useChainId()
@@ -52,7 +51,7 @@ export default function OrdersOverview() {
   const orders = useAllOrders(chainId, library)
   const stats = useAllOrdersStats()
 
-  const positionsForOrders = usePositionsForOrders(chainId, library, orders.filter(order => order.type === "decrease"))
+  const positionsForOrders = usePositionsForOrders(chainId, library, orders.filter(order => order.type === DECREASE))
 
   let openTotal
   let executedTotal
@@ -92,9 +91,9 @@ export default function OrdersOverview() {
         {orders.map(order => {
           const { type } = order
           const key = getOrderKey(order)
-          if (type === "swap") {
-            const fromToken = getTokenInfo(infoTokens, order.path0, true, nativeTokenAddress)
-            const toToken = getTokenInfo(infoTokens, order.path2 === AddressZero ? order.path1 : order.path2, order.shoudUnwrap, nativeTokenAddress)
+          if (type === SWAP) {
+            const fromToken = getTokenInfo(infoTokens, order.path[0], true, nativeTokenAddress)
+            const toToken = getTokenInfo(infoTokens, order.path[order.path.length - 1], order.shoudUnwrap, nativeTokenAddress)
 
             const invert = shouldInvertTriggerRatio(fromToken, toToken)
             const markExchangeRate = getExchangeRate(fromToken, toToken)
@@ -150,7 +149,7 @@ export default function OrdersOverview() {
             }
 
             let error
-            if (type === "decrease") {
+            if (type === DECREASE) {
               if (positionsForOrders && key in positionsForOrders) {
                 const position = positionsForOrders[key]
                 if (!position) {
@@ -162,9 +161,9 @@ export default function OrdersOverview() {
             }
 
             return <tr key={key}>
-              <td>{type.charAt(0).toUpperCase() + type.substring(1)}</td>
+              <td>{order.type}</td>
               <td>{order.isLong ? "Long" : "Short"} {indexToken.symbol}</td>
-              <td>{type === "increase" ? "+" : "-"}${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}</td>
+              <td>{type === DECREASE ? "+" : "-"}${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}</td>
               <td className={cx({negative: shouldExecute, near: nearExecute})}>
                 {order.triggerAboveThreshold ? "> " : "< "}
                 {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
