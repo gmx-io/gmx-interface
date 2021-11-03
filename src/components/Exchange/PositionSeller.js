@@ -227,10 +227,6 @@ export default function PositionSeller(props) {
       }
     }
 
-    if (collateralDelta && totalFees && collateralDelta.gt(totalFees)) {
-      collateralDelta = collateralDelta.sub(totalFees)
-    }
-
     convertedReceiveAmount = getTokenAmount(receiveAmount, collateralToken.address, false, infoTokens)
 
     if (isClosing) {
