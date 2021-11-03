@@ -144,6 +144,11 @@ const FEES = {
       from: 1635301669 - SECONDS_PER_WEEK,
       to: 1635301669,
       feeUsd: "727989.27"
+    },
+    {
+      from: 1635914306 - SECONDS_PER_WEEK,
+      to: 1635914306,
+      feeUsd: "815838.37"
     }
   ]
 }
