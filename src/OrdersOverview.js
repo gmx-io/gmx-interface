@@ -206,7 +206,7 @@ export default function OrdersOverview() {
               diffPercent = diff.mul(10000).div(markPrice)
             }
 
-            if (type === "decrease") {
+            if (!error && type === "decrease") {
               if (positionsForOrders && key in positionsForOrders) {
                 const position = positionsForOrders[key]
                 if (!position) {
