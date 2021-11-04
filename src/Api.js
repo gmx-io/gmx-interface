@@ -417,9 +417,12 @@ export async function createIncreaseOrder(
   invariant(indexTokenAddress !== AddressZero, "indexToken is 0")
   invariant(collateralTokenAddress !== AddressZero, "collateralToken is 0")
 
+  const fromETH = path[0] === AddressZero
+
+  path = replaceNativeTokenAddress(path, nativeTokenAddress)
+  const shouldWrap = fromETH
   const triggerAboveThreshold = !isLong
   const executionFee = INCREASE_ORDER_EXECUTION_GAS_FEE
-  const shouldWrap = path[0] === nativeTokenAddress
 
   const params = [
     path,
@@ -436,7 +439,7 @@ export async function createIncreaseOrder(
   ]
 
   if (!opts.value) {
-    opts.value = path[0] === nativeTokenAddress ? amountIn.add(executionFee) : executionFee
+    opts.value = fromETH ? amountIn.add(executionFee) : executionFee
   }
 
   const orderBookAddress = getContract(chainId, "OrderBook")

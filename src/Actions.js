@@ -14,7 +14,7 @@ import {
   getInfoTokens,
   getTokenInfo,
   getServerBaseUrl,
-  useOrders
+  useAccountOrders
 } from './Helpers'
 import { getToken, getTokens, getWhitelistedTokens } from './data/Tokens'
 import { getPositions, getPositionQuery } from './Exchange'
@@ -73,7 +73,7 @@ export default function Actions() {
   const { positions, positionsMap } = getPositions(chainId, positionQuery, positionData, infoTokens, false)
 
   const flagOrdersEnabled = true
-  const [orders, updateOrders] = useOrders(flagOrdersEnabled, checkSummedAccount)
+  const [orders, updateOrders] = useAccountOrders(flagOrdersEnabled, checkSummedAccount)
 
   useEffect(() => {
     const interval = setInterval(() => {

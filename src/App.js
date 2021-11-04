@@ -130,6 +130,11 @@ function AppHeaderLinks({ small, openSettings }) {
           ABOUT
         </a>
       </div>
+      <div className="App-header-link-container">
+        <a href="https://www.gmx.house/p/leaderboard" target="_blank" rel="noopener noreferrer">
+          LEADERBOARD
+        </a>
+      </div>
       {small &&
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}

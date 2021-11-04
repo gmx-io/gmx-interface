@@ -16,3 +16,11 @@
   padding: 0;
   margin-left: 0.5rem;
 }
+
+.Actions .PositionsList .Exchange-list-action {
+  display: none;
+}
+
+.Actions .PositionsList .App-button-option {
+  display: none;
+}

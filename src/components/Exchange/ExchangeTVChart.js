@@ -12,7 +12,6 @@ import {
 	formatDateTime,
   usePrevious,
   getLiquidationPrice,
-  useOrders,
   useLocalStorageSerializeKey
 } from '../../Helpers'
 import {
@@ -251,10 +250,10 @@ export default function ExchangeTVChart(props) {
     fromTokenAddress,
     toTokenAddress,
     infoTokens,
-    flagOrdersEnabled,
     chainId,
     positions,
-    savedShouldShowPositionLines
+    savedShouldShowPositionLines,
+    orders
   } = props
   const [currentChart, setCurrentChart] = useState();
   const [currentSeries, setCurrentSeries] = useState();
@@ -274,7 +273,6 @@ export default function ExchangeTVChart(props) {
   const marketName = chartToken ? symbol + "_USD" : undefined
   const previousMarketName = usePrevious(marketName)
 
-  const [orders] = useOrders(flagOrdersEnabled)
   const currentOrders = useMemo(() => {
     if (swapOption === SWAP || !chartToken) {
       return [];

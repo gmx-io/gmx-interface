@@ -24,7 +24,6 @@ import {
 	getLiquidationPrice,
 	getLeverage,
 	getPositionFee,
-	FUNDING_RATE_PRECISION,
 	PRECISION,
 	MARKET,
 	STOP,
@@ -50,14 +49,6 @@ const { AddressZero } = ethers.constants
 const orderOptionLabels = {
   [MARKET]: "Market",
   [STOP]: "Trigger"
-}
-
-function getFundingFee(data) {
-  let { entryFundingRate, cumulativeFundingRate, size } = data
-  if (entryFundingRate && cumulativeFundingRate) {
-    return size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION)
-  }
-  return
 }
 
 function getTokenAmount(usdAmount, tokenAddress, max, infoTokens) {
@@ -189,7 +180,7 @@ export default function PositionSeller(props) {
   let positionFee
   let totalFees
   if (position) {
-    fundingFee = getFundingFee(position)
+    fundingFee = position.fundingFee
     fromAmount = parseValue(fromValue, USD_DECIMALS)
     sizeDelta = fromAmount
 
@@ -234,10 +225,6 @@ export default function PositionSeller(props) {
       } else {
         receiveAmount = bigNumberify(0)
       }
-    }
-
-    if (collateralDelta && totalFees && collateralDelta.gt(totalFees)) {
-      collateralDelta = collateralDelta.sub(totalFees)
     }
 
     convertedReceiveAmount = getTokenAmount(receiveAmount, collateralToken.address, false, infoTokens)
