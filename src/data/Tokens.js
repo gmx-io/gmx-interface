@@ -229,6 +229,13 @@ export function getTokens(chainId) {
   return TOKENS[chainId]
 }
 
+export function isValidToken(chainId, address) {
+  if (!TOKENS_MAP[chainId]) {
+    throw new Error(`Incorrect chainId ${chainId}`);
+  }
+  return address in TOKENS_MAP[chainId]
+}
+
 export function getToken(chainId, address) {
   if (!TOKENS_MAP[chainId]) {
     throw new Error(`Incorrect chainId ${chainId}`);

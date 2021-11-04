@@ -88,6 +88,11 @@ export default function ConfirmationBox(props) {
   let fromTokenUsd;
   let toTokenUsd;
 
+  let collateralAfterFees = fromUsdMin
+  if (feesUsd) {
+    collateralAfterFees = fromUsdMin.sub(feesUsd)
+  }
+
   if (isSwap) {
     minOut = toAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR);
 
@@ -388,7 +393,16 @@ export default function ConfirmationBox(props) {
           {!displayLiquidationPrice && `-`}
         </ExchangeInfoRow>
         <ExchangeInfoRow label="Fees">
-          {formatAmount(feesUsd, USD_DECIMALS, 2, true)} USD
+          ${formatAmount(feesUsd, USD_DECIMALS, 2, true)}
+        </ExchangeInfoRow>
+        <ExchangeInfoRow label="Collateral">
+          <Tooltip handle={`$${formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}`} position="right-bottom">
+            Your position's collateral after deducting fees.
+            <br/>
+            <br/>
+            Pay amount: ${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}<br/>
+            Fees: ${formatAmount(feesUsd, USD_DECIMALS, 2, true)}<br/>
+          </Tooltip>
         </ExchangeInfoRow>
         {showSpread &&
           <ExchangeInfoRow label="Spread" isWarning={spread.isHigh} isTop={true}>
@@ -422,7 +436,7 @@ export default function ConfirmationBox(props) {
       isShort, isLong, toTokenInfo, nextAveragePrice, toAmount, hasExistingPosition, existingPosition,
       isMarketOrder, triggerPriceUsd, showSpread, spread, displayLiquidationPrice, existingLiquidationPrice,
       feesUsd, leverage, renderExecutionFee, shortCollateralToken, renderExistingOrderWarning, chainId, renderFeeWarning,
-      hasPendingProfit, isProfitWarningAccepted, renderAvailableLiquidity, orderOption])
+      hasPendingProfit, isProfitWarningAccepted, renderAvailableLiquidity, orderOption, fromUsdMin, collateralAfterFees])
 
   const renderSwapSection = useCallback(() => {
     return <>

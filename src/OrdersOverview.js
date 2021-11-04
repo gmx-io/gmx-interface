@@ -12,6 +12,7 @@ import { getTokens, getWhitelistedTokens } from "./data/Tokens"
 import {
   USD_DECIMALS,
   DECREASE,
+  INCREASE,
   SWAP,
   useChainId,
   getInfoTokens,
@@ -27,12 +28,13 @@ import {
   getOrderKey
 } from "./Helpers"
 import ReaderV2 from "./abis/ReaderV2.json"
+import * as Api from "./Api"
 
 import "./OrdersOverview.css"
 
 export default function OrdersOverview() {
   const { chainId } = useChainId()
-  const { library } = useWeb3React()
+  const { library, account } = useWeb3React()
 
   const readerAddress = getContract(chainId, "Reader")
   const vaultAddress = getContract(chainId, "Vault")
@@ -65,6 +67,21 @@ export default function OrdersOverview() {
 
   const NEAR_TRESHOLD = 98
 
+  const executeOrder = (evt, order) => {
+    evt.preventDefault()
+
+    const params = [chainId, library, order.account, order.index, account]
+    let method
+    if (order.type === 'swap') {
+      method = 'executeSwapOrder'
+    } else if (order.type === 'increase') {
+      method = 'executeIncreaseOrder'
+    } else {
+      method = 'executeDecreaseOrder'
+    }
+    return Api[method](...params)
+  }
+
   return <div className="Orders-overview">
     {stats &&
       <p className="Orders-overview-stats">
@@ -74,6 +91,11 @@ export default function OrdersOverview() {
         Swap active: {stats.openSwap}, executed: {stats.executedSwap}, cancelled: {stats.cancelledSwap}<br/>
       </p>
     }
+    <p>
+      <span className="positive">Price conditions are met</span><br />
+      <span style={{color: "orange"}}>Close to execution price</span><br />
+      <span className="negative">Can't execute because of an error</span>
+    </p>
     <table className="Orders-overview-table">
       <thead>
         <tr>
@@ -85,6 +107,7 @@ export default function OrdersOverview() {
           <th>Account</th>
           <th>Created At</th>
           <th>Index</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -93,34 +116,50 @@ export default function OrdersOverview() {
           const key = getOrderKey(order)
           if (type === SWAP) {
             const fromToken = getTokenInfo(infoTokens, order.path[0], true, nativeTokenAddress)
-            const toToken = getTokenInfo(infoTokens, order.path[order.path.length - 1], order.shoudUnwrap, nativeTokenAddress)
+            const toTokenAddress = order.path[order.path.length - 1]
+            const toToken = getTokenInfo(infoTokens, toTokenAddress, order.shoudUnwrap, nativeTokenAddress)
 
-            const invert = shouldInvertTriggerRatio(fromToken, toToken)
-            const markExchangeRate = getExchangeRate(fromToken, toToken)
-            const prefix = (order.triggerAboveThreshold && !invert) || (!order.triggerAboveThreshold && invert) ? "> " : "< "
-            const shouldExecute = markExchangeRate && markExchangeRate.lt(order.triggerRatio)
-            const nearExecute = markExchangeRate && markExchangeRate.lt(order.triggerRatio.mul(100).div(NEAR_TRESHOLD))
+            let markExchangeRate
+            let prefix
+            let shouldExecute
+            let nearExecute
             let diffPercent
+            let invalidToken = false
+            let error
+            if (fromToken && toToken) {
+              const invert = shouldInvertTriggerRatio(fromToken, toToken)
+              markExchangeRate = getExchangeRate(fromToken, toToken)
+              prefix = (order.triggerAboveThreshold && !invert) || (!order.triggerAboveThreshold && invert) ? "> " : "< "
+              shouldExecute = markExchangeRate && markExchangeRate.lt(order.triggerRatio)
+              nearExecute = markExchangeRate && markExchangeRate.lt(order.triggerRatio.mul(100).div(NEAR_TRESHOLD))
 
-            if (markExchangeRate) {
-              const diff = order.triggerRatio.gt(markExchangeRate) ? order.triggerRatio.sub(markExchangeRate) : markExchangeRate.sub(order.triggerRatio)
-              diffPercent = diff.mul(10000).div(markExchangeRate)
+              if (markExchangeRate) {
+                const diff = order.triggerRatio.gt(markExchangeRate) ? order.triggerRatio.sub(markExchangeRate) : markExchangeRate.sub(order.triggerRatio)
+                diffPercent = diff.mul(10000).div(markExchangeRate)
+              }
+            } else {
+              invalidToken = true
+              error = `Invalid token fromToken: "${order.path0}" toToken: "${toTokenAddress}"`
             }
 
             return <tr key={key}>
               <td>Swap</td>
               <td colSpan="2">
-                {formatAmount(order.amountIn, fromToken.decimals, 4, true)} {fromToken.symbol}
-                &nbsp;for&nbsp;
-                {formatAmount(order.minOut, toToken.decimals, 4, true)} {toToken.symbol}
+                {!invalidToken &&
+                  <>
+                    {formatAmount(order.amountIn, fromToken.decimals, 4, true)} {fromToken.symbol}
+                    &nbsp;for&nbsp;
+                    {formatAmount(order.minOut, toToken.decimals, 4, true)} {toToken.symbol}
+                  </>
+                }
               </td>
-              <td className={cx({negative: shouldExecute, near: nearExecute})}>
-                {prefix}{getExchangeRateDisplay(order.triggerRatio, fromToken, toToken)}
+              <td className={cx({positive: shouldExecute, near: !shouldExecute && nearExecute})}>
+                {!invalidToken && prefix}{getExchangeRateDisplay(order.triggerRatio, fromToken, toToken)}
               </td>
-              <td className={cx({negative: shouldExecute, near: nearExecute})}>
+              <td className={cx({positive: shouldExecute, near: !shouldExecute && nearExecute})}>
                 {getExchangeRateDisplay(markExchangeRate, fromToken, toToken)}
               </td>
-              <td className={cx({negative: shouldExecute, near: nearExecute})}>
+              <td className={cx({positive: shouldExecute, near: !shouldExecute && nearExecute})}>
                 {formatAmount(diffPercent, 2, 2)}%
               </td>
               <td>
@@ -128,10 +167,29 @@ export default function OrdersOverview() {
               </td>
               <td>{formatDateTime(order.createdTimestamp)}</td>
               <td>{order.index}</td>
+              <td className="negative">
+                {error}
+              </td>
+              <td>
+                <button className="Orders-overview-action" onClick={evt => executeOrder(evt, order)}>Execute</button>
+              </td>
             </tr>
           } else {
             const indexToken = getTokenInfo(infoTokens, order.indexToken, true, nativeTokenAddress)
-            const markPrice = order.triggerAboveThreshold ? indexToken.minPrice : indexToken.maxPrice
+            const collateralToken = getTokenInfo(infoTokens, order.collateralToken, true, nativeTokenAddress)
+            const purchaseToken = getTokenInfo(infoTokens, order.purchaseToken)
+
+            let markPrice
+            let error
+            if (indexToken && collateralToken && (order.type === DECREASE || purchaseToken)) {
+              markPrice = order.triggerAboveThreshold ? indexToken.minPrice : indexToken.maxPrice
+            } else {
+              error = `Invalid token indexToken: "${order.indexToken}" collateralToken: "${order.collateralToken}"`
+              if (order.type === 'increase') {
+                error += ` purchaseToken: ${order.purchaseToken}`
+              }
+            }
+
             let shouldExecute
             let nearExecute
             let diffPercent
@@ -148,8 +206,7 @@ export default function OrdersOverview() {
               diffPercent = diff.mul(10000).div(markPrice)
             }
 
-            let error
-            if (type === DECREASE) {
+            if (!error && type === DECREASE) {
               if (positionsForOrders && key in positionsForOrders) {
                 const position = positionsForOrders[key]
                 if (!position) {
@@ -162,16 +219,16 @@ export default function OrdersOverview() {
 
             return <tr key={key}>
               <td>{order.type}</td>
-              <td>{order.isLong ? "Long" : "Short"} {indexToken.symbol}</td>
-              <td>{type === DECREASE ? "+" : "-"}${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}</td>
-              <td className={cx({negative: shouldExecute, near: nearExecute})}>
+              <td>{order.isLong ? "Long" : "Short"} {indexToken && indexToken.symbol}</td>
+              <td>{type === INCREASE ? "+" : "-"}${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}</td>
+              <td className={cx({positive: shouldExecute, near: !shouldExecute && nearExecute})}>
                 {order.triggerAboveThreshold ? "> " : "< "}
                 {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
               </td>
-              <td className={cx({negative: shouldExecute, near: nearExecute})}>
+              <td className={cx({positive: shouldExecute, near: !shouldExecute && nearExecute})}>
                 ${formatAmount(markPrice, USD_DECIMALS, 2, true)}
               </td>
-              <td className={cx({negative: shouldExecute, near: nearExecute})}>
+              <td className={cx({positive: shouldExecute, near: !shouldExecute && nearExecute})}>
                 {formatAmount(diffPercent, 2, 2)}%
               </td>
               <td>
@@ -181,6 +238,9 @@ export default function OrdersOverview() {
               <td>{order.index}</td>
               <td className="negative">
                 {error}
+              </td>
+              <td>
+                <button className="Orders-overview-action" onClick={evt => executeOrder(evt, order)}>Execute</button>
               </td>
             </tr>
           }

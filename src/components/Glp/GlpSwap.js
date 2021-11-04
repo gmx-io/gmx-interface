@@ -740,9 +740,9 @@ export default function GlpSwap(props) {
             tokenFeeBps = feeBps
           }
           const tokenInfo = getTokenInfo(infoTokens, token.address)
-          let poolAmountUsd
-          if (tokenInfo && tokenInfo.minPrice && tokenInfo.poolAmount) {
-            poolAmountUsd = tokenInfo.poolAmount.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals))
+          let managedUsd
+          if (tokenInfo && tokenInfo.managedUsd) {
+            managedUsd = tokenInfo.managedUsd
           }
           let availableAmountUsd
           if (tokenInfo && tokenInfo.minPrice && tokenInfo.availableAmount) {
@@ -778,7 +778,7 @@ export default function GlpSwap(props) {
                 {isBuying && <div className="App-card-row">
                   <div className="label">Pool</div>
                   <div>
-                    <Tooltip handle={`$${formatAmount(poolAmountUsd, USD_DECIMALS, 2, true)}`} position="right-bottom">
+                    <Tooltip handle={`$${formatAmount(managedUsd, USD_DECIMALS, 2, true)}`} position="right-bottom">
                         Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol}<br/>
                         <br/>
                         Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
