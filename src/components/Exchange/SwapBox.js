@@ -953,8 +953,7 @@ export default function SwapBox(props) {
   }
 
   const createIncreaseOrder = () => {
-    const tokenAddress0 = fromTokenAddress === AddressZero ? nativeTokenAddress : fromTokenAddress
-    let path = [tokenAddress0];
+    let path = [fromTokenAddress];
 
     if (path[0] === USDG_ADDRESS) {
       if (isLong) {
