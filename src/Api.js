@@ -147,7 +147,7 @@ export function useAllPositions(chainId, library) {
 export function useAllOrders(chainId, library) {
   const query = gql(`{
     orders(
-      first: 100,
+      first: 1000,
       orderBy: createdTimestamp,
       orderDirection: desc,
       where: {status: "open"}

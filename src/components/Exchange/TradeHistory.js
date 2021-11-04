@@ -154,6 +154,9 @@ export default function TradeHistory(props) {
     if (["CreateIncreaseOrder", "CancelIncreaseOrder", "UpdateIncreaseOrder", "CreateDecreaseOrder", "CancelDecreaseOrder", "UpdateDecreaseOrder"].includes(tradeData.action)) {
       const order = deserialize(params.order);
       const indexToken = getTokenInfo(infoTokens, order.indexToken)
+      if (!indexToken) {
+        return defaultMsg
+      }
       const increase = tradeData.action.includes("Increase")
       const priceDisplay = `${order.triggerAboveThreshold ? ">" : "<"} ${formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}`
       return `
@@ -183,6 +186,9 @@ export default function TradeHistory(props) {
       const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
       const fromToken = getTokenInfo(infoTokens, order.path[0] === nativeTokenAddress ? AddressZero : order.path[0]);
       const toToken = getTokenInfo(infoTokens, order.shouldUnwrap ? AddressZero : order.path[order.path.length - 1]);
+      if (!fromToken || !toToken) {
+        return defaultMsg
+      }
       const amountInDisplay = fromToken ? formatAmount(order.amountIn, fromToken.decimals, fromToken.isStable ? 2 : 4, true) : ""
       const minOutDisplay = toToken ? formatAmount(order.minOut, toToken.decimals, toToken.isStable ? 2 : 4, true) : ""
 
