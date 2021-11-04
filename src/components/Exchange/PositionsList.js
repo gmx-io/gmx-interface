@@ -16,7 +16,8 @@ import {
   SWAP,
   LONG,
   SHORT,
-  INCREASE
+  INCREASE,
+  DECREASE
 } from "../../Helpers"
 
 const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
@@ -33,6 +34,11 @@ const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
       && sameToken) {
       return true
     }
+  }).map(order => {
+    if (order.type === DECREASE && order.sizeDelta.add(10000).gt(position.size)) {
+      order.error = "order size exceeds position"
+    }
+    return order
   })
 }
 
@@ -263,6 +269,7 @@ export default function PositionsList(props) {
         {positions.map(position => {
           const liquidationPrice = getLiquidationPrice(position)
           const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress)
+          const hasOrderError = !!positionOrders.find(order => order.error)
           return (
             <tr key={position.key}>
               <td className="clickable" onClick={() => onPositionClick(position)}>
@@ -295,12 +302,16 @@ export default function PositionsList(props) {
                   ${formatAmount(position.size, USD_DECIMALS, 2, true)}
                 </div>
                 {positionOrders.length > 0 && <div onClick={() => setListSection && setListSection("Orders")}>
-                  <Tooltip handle={`Orders (${positionOrders.length})`} position="left-bottom" handleClassName="Exchange-list-info-label muted plain clickable">
+                  <Tooltip
+                    handle={`Orders (${positionOrders.length})`} position="left-bottom" handleClassName={cx(['Exchange-list-info-label', 'plain', 'clickable'], {muted: !hasOrderError, negative: hasOrderError})}>
                     <strong>Active Orders</strong>
                     {positionOrders.map(order => {
-                      return <div key={`${order.isLong}-${order.type}-${order.index}`}>
+                      return <div key={`${order.isLong}-${order.type}-${order.index}`} className="Position-list-order">
                         {order.triggerAboveThreshold ? ">" : "<"} {formatAmount(order.triggerPrice, 30, 2, true)}:
                         {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
+                        {order.error &&
+                          <>, <span className="negative">{order.error}</span></>
+                        }
                       </div>
                     })}
                   </Tooltip>

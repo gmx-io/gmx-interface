@@ -370,6 +370,10 @@
   width: 100%;
 }
 
+.Position-list-order {
+  white-space: nowrap;
+}
+
 .Exchange-list .App-card {
   margin-bottom: 1rem;
 }
