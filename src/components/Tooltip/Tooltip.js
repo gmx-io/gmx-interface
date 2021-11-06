@@ -63,7 +63,7 @@ export default function Tooltip(props) {
        </span>
       {visible &&
         <div className={cx(['Tooltip-popup', position])}>
-          {props.children}
+          {props.renderContent()}
         </div>
       }
     </span>

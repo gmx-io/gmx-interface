@@ -343,11 +343,12 @@ export default function ConfirmationBox(props) {
       <Tooltip
         position="right-bottom"
         handleClassName={isLiquidityRisk ? "negative" : null}
-        handle={<>{formatAmount(availableLiquidity, token.decimals, token.isStable ? 0 : 2, true)} {token.symbol}</>
-      }>
-        {!isLiquidityRisk && "The order will only execute if the price conditions are met and there is sufficient liquidity"}
-        {isLiquidityRisk && "There may not be sufficient liquidity to execute your order when the price conditions are met"}
-      </Tooltip>
+        handle={<>{formatAmount(availableLiquidity, token.decimals, token.isStable ? 0 : 2, true)} {token.symbol}</>}
+        renderContent={() => isLiquidityRisk
+            ? "There may not be sufficient liquidity to execute your order when the price conditions are met"
+            : "The order will only execute if the price conditions are met and there is sufficient liquidity"
+        }
+      />
     </ExchangeInfoRow>
   }, [toTokenInfo, shortCollateralToken, isShort, isLong, isSwap, toAmount, toUsdMax])
 
@@ -396,13 +397,19 @@ export default function ConfirmationBox(props) {
           ${formatAmount(feesUsd, USD_DECIMALS, 2, true)}
         </ExchangeInfoRow>
         <ExchangeInfoRow label="Collateral">
-          <Tooltip handle={`$${formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}`} position="right-bottom">
-            Your position's collateral after deducting fees.
-            <br/>
-            <br/>
-            Pay amount: ${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}<br/>
-            Fees: ${formatAmount(feesUsd, USD_DECIMALS, 2, true)}<br/>
-          </Tooltip>
+          <Tooltip
+            handle={`$${formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}`}
+            position="right-bottom"
+            renderContent={() => {
+              return <>
+                Your position's collateral after deducting fees.
+                <br/>
+                <br/>
+                Pay amount: ${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}<br/>
+                Fees: ${formatAmount(feesUsd, USD_DECIMALS, 2, true)}<br/>
+              </>
+            }}
+          />
         </ExchangeInfoRow>
         {showSpread &&
           <ExchangeInfoRow label="Spread" isWarning={spread.isHigh} isTop={true}>
