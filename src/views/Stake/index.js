@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { getConstant } from './Constants'
+import { getConstant } from '../../Constants'
 
 import StakeV1 from './StakeV1'
 import StakeV2 from './StakeV2'

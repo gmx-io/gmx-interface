@@ -4,12 +4,12 @@ import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
 import { Pool } from '@uniswap/v3-sdk'
 import { Token as UniToken } from '@uniswap/sdk-core'
-import Tooltip from './components/Tooltip/Tooltip'
+import Tooltip from '../../components/Tooltip/Tooltip'
 
 import { ethers } from 'ethers'
 
-import { getTokens, getWhitelistedTokens } from './data/Tokens'
-import { getFeeHistory } from './data/Fees'
+import { getTokens, getWhitelistedTokens } from '../../data/Tokens'
+import { getFeeHistory } from '../../data/Fees'
 
 import {
   fetcher,
@@ -27,17 +27,17 @@ import {
   GLP_DECIMALS,
   BASIS_POINTS_DIVISOR,
   DEFAULT_MAX_USDG_AMOUNT
-} from './Helpers'
+} from '../../Helpers'
 
-import { getContract } from './Addresses'
+import { getContract } from '../../Addresses'
 
-import VaultV2 from './abis/VaultV2.json'
-import ReaderV2 from './abis/ReaderV2.json'
-import GlpManager from './abis/GlpManager.json'
-import UniPool from './abis/UniPool.json'
-import Token from './abis/Token.json'
+import VaultV2 from '../../abis/VaultV2.json'
+import ReaderV2 from '../../abis/ReaderV2.json'
+import GlpManager from '../../abis/GlpManager.json'
+import UniPool from '../../abis/UniPool.json'
+import Token from '../../abis/Token.json'
 
-import Footer from "./Footer"
+import Footer from "../../Footer"
 
 import "./DashboardV2.css"
 

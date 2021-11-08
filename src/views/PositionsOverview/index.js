@@ -1,15 +1,15 @@
 import { useWeb3React } from "@web3-react/core"
 import cx from "classnames";
 
-import { useAllPositions } from "./Api"
+import { useAllPositions } from "../../Api"
 import {
   USD_DECIMALS,
   useChainId,
   formatAmount,
   getTimeRemaining
-} from "./Helpers"
+} from "../../Helpers"
 
-import "./PositionsOverview.css"
+import "./style.css"
 
 export default function PositionsOverview() {
   const { chainId } = useChainId()
