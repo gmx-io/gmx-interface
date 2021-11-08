@@ -4,17 +4,17 @@ import useSWR from 'swr'
 import { ethers } from 'ethers'
 import cx from "classnames";
 
-import Treasury from './abis/Treasury.json'
-import Token from './abis/Token.json'
-import GMT from './abis/GMT.json'
+import Treasury from '../../abis/Treasury.json'
+import Token from '../../abis/Token.json'
+import GMT from '../../abis/GMT.json'
 
 import { ImCheckboxUnchecked, ImCheckboxChecked } from 'react-icons/im'
 
 import { getInjectedConnector, useEagerConnect, useInactiveListener,
-  fetcher, formatAmount, numberWithCommas, getExplorerUrl, helperToast, CHAIN_ID } from './Helpers'
-import { getContract } from './Addresses'
+  fetcher, formatAmount, numberWithCommas, getExplorerUrl, helperToast, CHAIN_ID } from '../../Helpers'
+import { getContract } from '../../Addresses'
 
-import './Presale.css';
+import './style.css';
 
 const PRECISION = 1000000
 

@@ -4,19 +4,19 @@ import { useWeb3React } from '@web3-react/core'
 import { Pool } from '@uniswap/v3-sdk'
 import { Token as UniToken } from '@uniswap/sdk-core'
 
-import Modal from './components/Modal/Modal'
-import Checkbox from './components/Checkbox/Checkbox'
-import Tooltip from './components/Tooltip/Tooltip'
-import Footer from "./Footer"
+import Modal from '../../components/Modal/Modal'
+import Checkbox from '../../components/Checkbox/Checkbox'
+import Tooltip from '../../components/Tooltip/Tooltip'
+import Footer from "../../Footer"
 
-import Vault from './abis/Vault.json'
-import ReaderV2 from './abis/ReaderV2.json'
-import Vester from './abis/Vester.json'
-import RewardRouter from './abis/RewardRouter.json'
-import RewardReader from './abis/RewardReader.json'
-import Token from './abis/Token.json'
-import GlpManager from './abis/GlpManager.json'
-import UniPool from './abis/UniPool.json'
+import Vault from '../../abis/Vault.json'
+import ReaderV2 from '../../abis/ReaderV2.json'
+import Vester from '../../abis/Vester.json'
+import RewardRouter from '../../abis/RewardRouter.json'
+import RewardReader from '../../abis/RewardReader.json'
+import Token from '../../abis/Token.json'
+import GlpManager from '../../abis/GlpManager.json'
+import UniPool from '../../abis/UniPool.json'
 
 import { ethers } from 'ethers'
 import {
@@ -38,12 +38,12 @@ import {
   USD_DECIMALS,
   BASIS_POINTS_DIVISOR,
   SECONDS_PER_YEAR
-} from './Helpers'
-import { callContract } from './Api'
+} from '../../Helpers'
+import { callContract } from '../../Api'
 
 import useSWR from 'swr'
 
-import { getContract } from './Addresses'
+import { getContract } from '../../Addresses'
 
 import './StakeV2.css';
 

@@ -6,9 +6,9 @@ import {
   NavLink
 } from "react-router-dom"
 
-import { getContract } from "./Addresses"
-import { useAllOrders, useAllOrdersStats, usePositionsForOrders } from "./Api"
-import { getTokens, getWhitelistedTokens } from "./data/Tokens"
+import { getContract } from "../../Addresses"
+import { useAllOrders, useAllOrdersStats, usePositionsForOrders } from "../../Api"
+import { getTokens, getWhitelistedTokens } from "../../data/Tokens"
 import {
   USD_DECIMALS,
   DECREASE,
@@ -26,11 +26,11 @@ import {
   shouldInvertTriggerRatio,
   formatDateTime,
   getOrderKey
-} from "./Helpers"
-import ReaderV2 from "./abis/ReaderV2.json"
-import * as Api from "./Api"
+} from "../../Helpers"
+import ReaderV2 from "../../abis/ReaderV2.json"
+import * as Api from "../../Api"
 
-import "./OrdersOverview.css"
+import "./style.css"
 
 export default function OrdersOverview() {
   const { chainId } = useChainId()

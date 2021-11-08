@@ -22,27 +22,27 @@ import {
   useChainId,
   getInfoTokens,
   useAccountOrders
-} from './Helpers'
-import { getConstant } from './Constants'
-import { approvePlugin } from './Api'
+} from '../../Helpers'
+import { getConstant } from '../../Constants'
+import { approvePlugin } from '../../Api'
 
-import { getContract } from './Addresses'
-import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from './data/Tokens'
+import { getContract } from '../../Addresses'
+import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from '../../data/Tokens'
 
-import Reader from './abis/ReaderV2.json'
-import VaultV2 from './abis/VaultV2.json'
-import Token from './abis/Token.json'
-import Router from './abis/Router.json'
+import Reader from '../../abis/ReaderV2.json'
+import VaultV2 from '../../abis/VaultV2.json'
+import Token from '../../abis/Token.json'
+import Router from '../../abis/Router.json'
 
-import Checkbox from './components/Checkbox/Checkbox'
-import SwapBox from './components/Exchange/SwapBox'
-import ExchangeTVChart from './components/Exchange/ExchangeTVChart'
-import PositionsList from './components/Exchange/PositionsList'
-import OrdersList from './components/Exchange/OrdersList'
-import TradeHistory from './components/Exchange/TradeHistory'
-import ExchangeWalletTokens from './components/Exchange/ExchangeWalletTokens'
-import Tab from './components/Tab/Tab'
-import Footer from "./Footer"
+import Checkbox from '../../components/Checkbox/Checkbox'
+import SwapBox from '../../components/Exchange/SwapBox'
+import ExchangeTVChart from '../../components/Exchange/ExchangeTVChart'
+import PositionsList from '../../components/Exchange/PositionsList'
+import OrdersList from '../../components/Exchange/OrdersList'
+import TradeHistory from '../../components/Exchange/TradeHistory'
+import ExchangeWalletTokens from '../../components/Exchange/ExchangeWalletTokens'
+import Tab from '../../components/Tab/Tab'
+import Footer from "../../Footer"
 
 import './Exchange.css';
 
