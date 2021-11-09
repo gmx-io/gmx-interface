@@ -68,8 +68,8 @@ export const FUNDING_RATE_PRECISION = 1000000
 export const SWAP = "Swap"
 export const INCREASE = "Increase"
 export const DECREASE = "Decrease"
-export const LONG = "Long" // remove
-export const SHORT = "Short" // remove
+export const LONG = "Long"
+export const SHORT = "Short"
 
 export const MARKET = "Market";
 export const LIMIT = "Limit";
@@ -1174,7 +1174,7 @@ function parseSwapOrdersData(chainId, swapOrdersData, account, indexes) {
     }
   }
   return _parseOrdersData(swapOrdersData, account, indexes, extractor, 5, 3).filter(order => {
-    return isValidToken(chainId, order.path[0]) && isValidToken(chainId, order.path[order.path.length - 1])
+    return order.path.every(token => isValidToken(chainId, token))
   })
 }
 
