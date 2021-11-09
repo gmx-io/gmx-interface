@@ -552,7 +552,6 @@ function VesterDepositModal(props) {
                     Current Reserved: {formatAmount(reserveAmount, 18, 2, true)}<br/>
                     Reserve Required: {formatAmount(additionalReserveAmount, 18, 2, true)}<br/>
                     {(amount && nextReserveAmount.gt(maxReserveAmount)) && <div><br/>You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)} {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.</div>}
-                    }}
                   </>
                 }}
               />
