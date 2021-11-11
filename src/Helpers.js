@@ -66,6 +66,8 @@ export const THRESHOLD_REDEMPTION_VALUE = expandDecimals(993, 27) // 0.993
 export const FUNDING_RATE_PRECISION = 1000000
 
 export const SWAP = "Swap"
+export const INCREASE = "Increase"
+export const DECREASE = "Decrease"
 export const LONG = "Long"
 export const SHORT = "Short"
 
@@ -132,9 +134,9 @@ export function useLocalStorageSerializeKey(key, value, opts) {
   return useLocalStorage(key, value, opts);
 }
 
-function getTriggerPrice(tokenAddress, max, info, orderType, triggerPriceUsd) {
+function getTriggerPrice(tokenAddress, max, info, orderOption, triggerPriceUsd) {
   // Limit/stop orders are executed with price specified by user
-  if (orderType && orderType !== MARKET && triggerPriceUsd) { return triggerPriceUsd; }
+  if (orderOption && orderOption !== MARKET && triggerPriceUsd) { return triggerPriceUsd; }
 
   // Market orders are executed with current market price
   if (!info) { return }
@@ -812,13 +814,13 @@ export function getLiquidationPrice(data) {
   return liquidationPriceForFees.lt(liquidationPriceForMaxLeverage) ? liquidationPriceForFees : liquidationPriceForMaxLeverage
 }
 
-export function getUsd(amount, tokenAddress, max, infoTokens, orderType, triggerPriceUsd) {
+export function getUsd(amount, tokenAddress, max, infoTokens, orderOption, triggerPriceUsd) {
   if (!amount) { return }
   if (tokenAddress === USDG_ADDRESS) {
     return amount.mul(PRECISION).div(expandDecimals(1, 18))
   }
   const info = getTokenInfo(infoTokens, tokenAddress)
-  const price = getTriggerPrice(tokenAddress, max, info, orderType, triggerPriceUsd);
+  const price = getTriggerPrice(tokenAddress, max, info, orderOption, triggerPriceUsd);
   if (!price) { return }
 
   return amount.mul(price).div(expandDecimals(1, info.decimals))
@@ -1111,16 +1113,16 @@ function _parseOrdersData(ordersData, account, indexes, extractor, uintPropsLeng
 
 function parseDecreaseOrdersData(chainId, decreaseOrdersData, account, indexes) {
   const extractor = sliced => {
-    const swapOption = sliced[4].toString() === "1" ? LONG : SHORT
+    const isLong = sliced[4].toString() === "1"
     return {
       collateralToken: sliced[0],
       indexToken: sliced[1],
       collateralDelta: sliced[2],
       sizeDelta: sliced[3],
-      swapOption,
+      isLong,
       triggerPrice: sliced[5],
       triggerAboveThreshold: sliced[6].toString() === "1",
-      orderType: STOP
+      type: DECREASE
     }
   }
   return _parseOrdersData(decreaseOrdersData, account, indexes, extractor, 5, 2).filter(order => {
@@ -1130,17 +1132,17 @@ function parseDecreaseOrdersData(chainId, decreaseOrdersData, account, indexes) 
 
 function parseIncreaseOrdersData(chainId, increaseOrdersData, account, indexes) {
   const extractor = sliced => {
-    const swapOption = sliced[5].toString() === "1" ? LONG : SHORT
+    const isLong = sliced[5].toString() === "1"
     return {
       purchaseToken: sliced[0],
       collateralToken: sliced[1],
       indexToken: sliced[2],
       purchaseTokenAmount: sliced[3],
       sizeDelta: sliced[4],
-      swapOption,
+      isLong,
       triggerPrice: sliced[6],
       triggerAboveThreshold: sliced[7].toString() === "1",
-      orderType: LIMIT
+      type: INCREASE
     }
   }
   return _parseOrdersData(increaseOrdersData, account, indexes, extractor, 5, 3).filter(order => {
@@ -1159,22 +1161,20 @@ function parseSwapOrdersData(chainId, swapOrdersData, account, indexes) {
 
   const extractor = sliced => {
     const triggerAboveThreshold = sliced[6].toString() === '1';
-    const shouldUnwrap = sliced[7]?.toString() === '1'
+    const shouldUnwrap = sliced[7].toString() === '1'
 
     return {
-      fromTokenAddress: sliced[0],
-      toTokenAddress: sliced[2] === AddressZero ? sliced[1] : sliced[2],
+      path: [sliced[0], sliced[1], sliced[2]].filter(address => address !== AddressZero),
       amountIn: sliced[3],
       minOut: sliced[4],
       triggerRatio: sliced[5],
       triggerAboveThreshold,
-      swapOption: SWAP,
-      orderType: triggerAboveThreshold ? STOP : LIMIT,
+      type: SWAP,
       shouldUnwrap
     }
   }
   return _parseOrdersData(swapOrdersData, account, indexes, extractor, 5, 3).filter(order => {
-    return isValidToken(chainId, order.fromTokenAddress) && isValidToken(chainId, order.toTokenAddress)
+    return order.path.every(token => isValidToken(chainId, token))
   })
 }
 

@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import throttle from 'lodash/throttle'
-import { ethers } from 'ethers'
 
 import {
   SWAP,
-  LONG,
-  SHORT,
-  STOP,
-  LIMIT,
+  INCREASE,
+  DECREASE,
   USD_DECIMALS,
   formatAmount,
   TRIGGER_PREFIX_ABOVE,
@@ -30,10 +27,8 @@ import OrderEditor from './OrderEditor'
 
 import './OrdersList.css';
 
-const { AddressZero } = ethers.constants
-
 function getPositionForOrder(order, positionsMap) {
-  const key = getPositionKey(order.collateralToken, order.indexToken, order.swapOption === LONG)
+  const key = getPositionKey(order.collateralToken, order.indexToken, order.isLong)
   const position = positionsMap[key]
   return (position && position.size && position.size.gt(0)) ? position : null
 }
@@ -71,11 +66,11 @@ export default function OrdersList(props) {
 
   const onCancelClick = useCallback(order => {
     let func;
-    if (order.swapOption === SWAP) {
+    if (order.type === SWAP) {
       func = cancelSwapOrder;
-    } else if (order.orderType === LIMIT) {
+    } else if (order.type === INCREASE) {
       func = cancelIncreaseOrder;
-    } else if (order.orderType === STOP) {
+    } else if (order.type === DECREASE) {
       func = cancelDecreaseOrder;
     }
 
@@ -141,10 +136,10 @@ export default function OrdersList(props) {
     }
 
     return orders.map(order => {
-      if (order.swapOption === SWAP) {
+      if (order.type === SWAP) {
         const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
-        const fromTokenInfo = getTokenInfo(infoTokens, order.fromTokenAddress === nativeTokenAddress ? AddressZero : order.fromTokenAddress);
-        const toTokenInfo = getTokenInfo(infoTokens, order.shouldUnwrap ? AddressZero : order.toTokenAddress);
+        const fromTokenInfo = getTokenInfo(infoTokens, order.path[0], true, nativeTokenAddress);
+        const toTokenInfo = getTokenInfo(infoTokens, order.path[order.path.length - 1], order.shouldUnwrap, nativeTokenAddress);
 
         const markExchangeRate = getExchangeRate(
           fromTokenInfo,
@@ -152,17 +147,20 @@ export default function OrdersList(props) {
         )
 
         return (
-          <tr className="Exchange-list-item" key={`${order.swapOption}-${order.orderType}-${order.index}`}>
+          <tr className="Exchange-list-item" key={`${order.type}-${order.index}`}>
             <td className="Exchange-list-item-type">
-              {order.orderType}
+              Limit
             </td>
             <td>
               Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, (fromTokenInfo.isStable || fromTokenInfo.isUsdg) ? 2 : 4, true)} {fromTokenInfo.symbol} for {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} {toTokenInfo.symbol}
             </td>
             <td>
-              <Tooltip handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}>
-                You will receive at least {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} {toTokenInfo.symbol} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed.
-              </Tooltip>
+              <Tooltip
+                handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}
+                renderContent={() => `
+                  You will receive at least ${formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} ${toTokenInfo.symbol} if this order is executed. The execution price may vary depending on swap fees at the time the order is executed.
+                `}
+              />
             </td>
             <td>
               {getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo, true)}
@@ -173,13 +171,13 @@ export default function OrdersList(props) {
       }
 
       const indexToken = getTokenInfo(infoTokens, order.indexToken);
-      const maximisePrice = (order.orderType === LIMIT && order.swapOption === LONG) || (order.orderType === STOP && !order.swapOption === SHORT)
+      const maximisePrice = (order.type === INCREASE && order.isLong) || (order.type === DECREASE && !order.isLong)
       const markPrice = maximisePrice ? indexToken.maxPrice : indexToken.minPrice
       const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW
       const indexTokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol
 
       let error
-      if (order.orderType === STOP) {
+      if (order.type === DECREASE) {
         const positionForOrder = getPositionForOrder(order, positionsMap)
         if (!positionForOrder) {
           error = "There is no open position for the order, it can't be executed"
@@ -189,12 +187,12 @@ export default function OrdersList(props) {
       }
 
       return (
-        <tr className="Exchange-list-item" key={`${order.swapOption}-${order.orderType}-${order.index}`}>
+        <tr className="Exchange-list-item" key={`${order.isLong}-${order.type}-${order.index}`}>
           <td className="Exchange-list-item-type">
-            {order.orderType === LIMIT ? "Limit" : "Trigger"}
+            {order.type === INCREASE ? "Limit" : "Trigger"}
           </td>
           <td>
-            {order.orderType === LIMIT ? "Increase" : "Decrease"} {indexTokenSymbol} {order.swapOption}
+            {order.type === INCREASE ? "Increase" : "Decrease"} {indexTokenSymbol} {order.isLong ? "Long" : "Short"}
             &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
             {error &&
               <div className="Exchange-list-item-error">
@@ -220,16 +218,16 @@ export default function OrdersList(props) {
     }
 
     return orders.map(order => {
-      if (order.swapOption === SWAP) {
+      if (order.type === SWAP) {
         const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
-        const fromTokenInfo = getTokenInfo(infoTokens, order.fromTokenAddress === nativeTokenAddress ? AddressZero : order.fromTokenAddress);
-        const toTokenInfo = getTokenInfo(infoTokens, order.shouldUnwrap ? AddressZero : order.toTokenAddress);
+        const fromTokenInfo = getTokenInfo(infoTokens, order.path[0], true, nativeTokenAddress);
+        const toTokenInfo = getTokenInfo(infoTokens, order.path[order.path.length - 1], order.shouldUnwrap, nativeTokenAddress);
         const markExchangeRate = getExchangeRate(
           fromTokenInfo,
           toTokenInfo
         )
 
-        return (<div key={`${order.swapOption}-${order.orderType}-${order.index}`} className="App-card">
+        return (<div key={`${order.type}-${order.index}`} className="App-card">
           <div className="App-card-title-small">
             Swap {formatAmount(order.amountIn, fromTokenInfo.decimals, fromTokenInfo.isStable ? 2 : 4, true)} {fromTokenInfo.symbol} for {formatAmount(order.minOut, toTokenInfo.decimals, toTokenInfo.isStable ? 2 : 4, true)} {toTokenInfo.symbol}
           </div>
@@ -238,9 +236,13 @@ export default function OrdersList(props) {
             <div className="App-card-row">
               <div className="label">Price</div>
               <div>
-                <Tooltip position="right-bottom" handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}>
-                  You will receive at least {formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} {toTokenInfo.symbol} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed.
-                </Tooltip>
+                <Tooltip
+                  position="right-bottom"
+                  handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}
+                  renderContent={() => `
+                    You will receive at least ${formatAmount(order.minOut, toTokenInfo.decimals, (toTokenInfo.isStable || toTokenInfo.isUsdg) ? 2 : 4, true)} ${toTokenInfo.symbol} if this order is executed. The exact execution price may vary depending on fees at the time the order is executed.
+                  `}
+                />
               </div>
             </div>
             <div className="App-card-row">
@@ -267,13 +269,13 @@ export default function OrdersList(props) {
       }
 
       const indexToken = getTokenInfo(infoTokens, order.indexToken);
-      const maximisePrice = (order.orderType === LIMIT && order.swapOption === LONG) || (order.orderType === STOP && !order.swapOption === SHORT)
+      const maximisePrice = (order.type === INCREASE && order.isLong) || (order.type === DECREASE && !order.isLong)
       const markPrice = maximisePrice ? indexToken.maxPrice : indexToken.minPrice
       const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW
       const indexTokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol
 
       let error
-      if (order.orderType === STOP) {
+      if (order.type === DECREASE) {
         const positionForOrder = getPositionForOrder(order, positionsMap)
         if (!positionForOrder) {
           error = "There is no open position for the order, it can't be executed"
@@ -282,9 +284,9 @@ export default function OrdersList(props) {
         }
       }
 
-      return (<div key={`${order.swapOption}-${order.orderType}-${order.index}`} className="App-card">
+      return (<div key={`${order.isLong}-${order.type}-${order.index}`} className="App-card">
         <div className="App-card-title-small">
-          {order.orderType === LIMIT ? "Increase" : "Decrease"} {indexTokenSymbol} {order.swapOption}
+          {order.type === INCREASE ? "Increase" : "Decrease"} {indexTokenSymbol} {order.isLong ? "Long" : "Short"}
           &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
           {error &&
             <div className="Exchange-list-item-error">
