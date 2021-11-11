@@ -6,7 +6,7 @@ import { createChart } from 'krasulya-lightweight-charts'
 import {
 	USD_DECIMALS,
 	SWAP,
-  LIMIT,
+  INCREASE,
 	getTokenInfo,
 	formatAmount,
 	formatDateTime,
@@ -279,7 +279,7 @@ export default function ExchangeTVChart(props) {
     }
 
     return orders.filter(order => {
-      if (order.swapOption === SWAP) {
+      if (order.type === SWAP) {
         // we can't show non-stable to non-stable swap orders with existing charts
         // so to avoid users confusion we'll show only long/short orders
         return false;
@@ -390,8 +390,7 @@ export default function ExchangeTVChart(props) {
           if (indexToken && indexToken.symbol) {
             tokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol
           }
-          const title = `${order.orderType === LIMIT ? "Inc." : "Dec."} ${tokenSymbol} ${order.swapOption}`
-          // const color = order.swapOption === "Long" ? '#0f8a5b' : '#8f1f30'
+          const title = `${order.type === INCREASE ? "Inc." : "Dec."} ${tokenSymbol} ${order.isLong ? "Long" : "Short"}`
           const color = '#3a3e5e'
           lines.push(currentSeries.createPriceLine({
             price: parseFloat(formatAmount(order.triggerPrice, USD_DECIMALS, 2)),

@@ -599,25 +599,29 @@ export default function GlpSwap(props) {
             {!isBuying && <div className="App-card-row">
               <div className="label">Reserved</div>
               <div>
-                <Tooltip handle={`${formatAmount(reservedAmount, 18, 4, true)} GLP ($${formatAmount(reserveAmountUsd, USD_DECIMALS, 2, true)})`} position="right-bottom">
-                  {formatAmount(reservedAmount, 18, 4, true)} GLP have been reserved for vesting.
-                </Tooltip>
+                <Tooltip
+                  handle={`${formatAmount(reservedAmount, 18, 4, true)} GLP ($${formatAmount(reserveAmountUsd, USD_DECIMALS, 2, true)})`}
+                  position="right-bottom"
+                  renderContent={() => `${formatAmount(reservedAmount, 18, 4, true)} GLP have been reserved for vesting.`}
+                />
               </div>
             </div>}
             <div className="App-card-divider"></div>
             <div className="App-card-row">
               <div className="label">APR</div>
               <div>
-                <Tooltip handle={`${formatAmount(totalApr, 2, 2, true)}%`} position="right-bottom">
-                  <div className="Tooltip-row">
-                    <span className="label">ETH (WETH) APR</span>
-                    <span>{formatAmount(feeGlpTrackerApr, 2, 2, false)}%</span>
-                  </div>
-                  <div className="Tooltip-row">
-                    <span className="label">Escrowed GMX APR</span>
-                    <span>{formatAmount(stakedGlpTrackerApr, 2, 2, false)}%</span>
-                  </div>
-                </Tooltip>
+                <Tooltip handle={`${formatAmount(totalApr, 2, 2, true)}%`} position="right-bottom" renderContent={() => {
+                  return <>
+                    <div className="Tooltip-row">
+                      <span className="label">ETH (WETH) APR</span>
+                      <span>{formatAmount(feeGlpTrackerApr, 2, 2, false)}%</span>
+                    </div>
+                    <div className="Tooltip-row">
+                      <span className="label">Escrowed GMX APR</span>
+                      <span>{formatAmount(stakedGlpTrackerApr, 2, 2, false)}%</span>
+                    </div>
+                  </>
+                }} />
               </div>
             </div>
             <div className="App-card-row">
@@ -700,14 +704,18 @@ export default function GlpSwap(props) {
                 {feeBasisPoints > 50 ? "WARNING: High Fees" : "Fees"}
               </div>
               <div className="align-right">
-                {isBuying && <Tooltip handle={feePercentageText} position="right-bottom">
-                  {feeBasisPoints > 50 && <div>To reduce fees, select a different asset to pay with.</div>}
-                  Check the "Save on Fees" section below to get the lowest fee percentages.
-                </Tooltip>}
-                {!isBuying && <Tooltip handle={feePercentageText} position="right-bottom">
-                  {feeBasisPoints > 50 && <div>To reduce fees, select a different asset to receive.</div>}
-                  Check the "Save on Fees" section below to get the lowest fee percentages.
-                </Tooltip>}
+                {isBuying && <Tooltip handle={feePercentageText} position="right-bottom" renderContent={() => {
+                  return <>
+                    {feeBasisPoints > 50 && <div>To reduce fees, select a different asset to pay with.</div>}
+                    Check the "Save on Fees" section below to get the lowest fee percentages.
+                  </>
+                }} />}
+                {!isBuying && <Tooltip handle={feePercentageText} position="right-bottom" renderContent={() => {
+                  return <>
+                    {feeBasisPoints > 50 && <div>To reduce fees, select a different asset to receive.</div>}
+                    Check the "Save on Fees" section below to get the lowest fee percentages.
+                  </>
+                }} />}
               </div>
             </div>
           </div>
@@ -778,11 +786,17 @@ export default function GlpSwap(props) {
                 {isBuying && <div className="App-card-row">
                   <div className="label">Pool</div>
                   <div>
-                    <Tooltip handle={`$${formatAmount(managedUsd, USD_DECIMALS, 2, true)}`} position="right-bottom">
-                        Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol}<br/>
-                        <br/>
-                        Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
-                    </Tooltip>
+                    <Tooltip
+                      handle={`$${formatAmount(managedUsd, USD_DECIMALS, 2, true)}`}
+                      position="right-bottom"
+                      renderContent={() => {
+                        return <>
+                          Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol}<br/>
+                          <br/>
+                          Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                        </>
+                      }}
+                    />
                   </div>
                 </div>}
                 {!isBuying && <div className="App-card-row">
