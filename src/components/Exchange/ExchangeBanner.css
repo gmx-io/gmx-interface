@@ -1,0 +1,31 @@
+.ExchangeBanner {
+    background: linear-gradient(90deg, #105461, #28156e);
+    border-radius: 5px;
+    margin-bottom: 15px;
+    padding: 12px 24px;
+    padding-right: 40px;
+    position: relative;
+}
+
+.ExchangeBanner-text {
+    color: #8084ae;
+    font-size: 18px;
+    line-height: 23px;
+    margin: 0;
+}
+
+.ExchangeBanner-price {
+    color: #50d0fe;
+}
+
+.ExchangeBanner-link {
+    color: #4e09f8;
+    text-decoration: none;
+}
+
+.ExchangeBanner-close {
+    position: absolute;
+    top: 12px;
+    right: 24px;
+    cursor: pointer;
+}
