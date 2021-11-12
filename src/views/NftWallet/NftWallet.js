@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 import ERC721 from '../../abis/ERC721.json'
 
 import { callContract } from '../../Api'
-import "./style.css"
+import "./NftWallet.css"
 
 export default function NftWallet() {
   const [nftAddress, setNftAddress] = useState("")
