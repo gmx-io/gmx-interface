@@ -35,7 +35,7 @@ const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
       return true
     }
   }).map(order => {
-    if (order.type === DECREASE && order.sizeDelta.add(10000).gt(position.size)) {
+    if (order.type === DECREASE && order.sizeDelta.gt(position.size)) {
       order.error = "order size exceeds position"
     }
     return order
@@ -175,18 +175,25 @@ export default function PositionsList(props) {
                 <div className="App-card-row">
                   <div className="label">Collateral</div>
                   <div>
-                    <Tooltip handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`} position="right-bottom" handleClassName={cx("plain", { "negative": position.hasLowCollateral })}>
-                      {position.hasLowCollateral && <div>
-                        WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk.
-                        <br/>
-                        <br/>
-                      </div>}
+                    <Tooltip
+                      handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
+                      position="right-bottom"
+                      handleClassName={cx("plain", { "negative": position.hasLowCollateral })}
+                      renderContent={() => {
+                        return <>
+                          {position.hasLowCollateral && <div>
+                            WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk.
+                            <br/>
+                            <br/>
+                          </div>}
 
-                      Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}<br/>
-                      Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}<br/>
-                      <br/>
-                      Use the "Edit" button to deposit or withdraw collateral.
-                    </Tooltip>
+                          Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}<br/>
+                          Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}<br/>
+                          <br/>
+                          Use the "Edit" button to deposit or withdraw collateral.
+                        </>
+                      }}
+                    />
                   </div>
                 </div>
                 <div className="App-card-row">
@@ -200,13 +207,20 @@ export default function PositionsList(props) {
                 <div className="App-card-row">
                   <div className="label">Net Value</div>
                   <div>
-                    <Tooltip handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`} position="right-bottom" handleClassName="plain">
-                      Net Value: Initial Collateral - Borrow Fee + PnL<br/>
-                      <br/>
-                      Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}<br/>
-                      Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}<br/>
-                      PnL: {position.deltaStr} ({position.deltaPercentageStr})<br/>
-                    </Tooltip>
+                    <Tooltip
+                      handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
+                      position="right-bottom"
+                      handleClassName="plain"
+                      renderContent={() => {
+                        return <>
+                          Net Value: Initial Collateral - Borrow Fee + PnL<br/>
+                          <br/>
+                          Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}<br/>
+                          Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}<br/>
+                          PnL: {position.deltaStr} ({position.deltaPercentageStr})<br/>
+                        </>
+                      }}
+                    />
                   </div>
                 </div>
               </div>
@@ -285,13 +299,20 @@ export default function PositionsList(props) {
               </td>
               <td>
                 <div>
-                  <Tooltip handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`} position="left-bottom" handleClassName="plain">
-                    Net Value: Initial Collateral - Borrow Fee + PnL<br/>
-                    <br/>
-                    Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}<br/>
-                    Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}<br/>
-                    PnL: {position.deltaStr} ({position.deltaPercentageStr})<br/>
-                  </Tooltip>
+                  <Tooltip
+                    handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
+                    position="left-bottom"
+                    handleClassName="plain"
+                    renderContent={() => {
+                      return <>
+                        Net Value: Initial Collateral - Borrow Fee + PnL<br/>
+                        <br/>
+                        Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}<br/>
+                        Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}<br/>
+                        PnL: {position.deltaStr} ({position.deltaPercentageStr})<br/>
+                      </>
+                    }}
+                  />
                 </div>
                 <div className={cx("Exchange-list-info-label", { "positive": position.hasProfit && position.pendingDelta.gt(0), "negative": !position.hasProfit && position.pendingDelta.gt(0), "muted": position.pendingDelta.eq(0) })}>
                   {position.deltaStr} ({position.deltaPercentageStr})
@@ -303,40 +324,60 @@ export default function PositionsList(props) {
                 </div>
                 {positionOrders.length > 0 && <div onClick={() => setListSection && setListSection("Orders")}>
                   <Tooltip
-                    handle={`Orders (${positionOrders.length})`} position="left-bottom" handleClassName={cx(['Exchange-list-info-label', 'plain', 'clickable'], {muted: !hasOrderError, negative: hasOrderError})}>
-                    <strong>Active Orders</strong>
-                    {positionOrders.map(order => {
-                      return <div key={`${order.isLong}-${order.type}-${order.index}`} className="Position-list-order">
-                        {order.triggerAboveThreshold ? ">" : "<"} {formatAmount(order.triggerPrice, 30, 2, true)}:
-                        {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
-                        {order.error &&
-                          <>, <span className="negative">{order.error}</span></>
-                        }
-                      </div>
-                    })}
-                  </Tooltip>
+                    handle={`Orders (${positionOrders.length})`}
+                    position="left-bottom"
+                    handleClassName={cx(['Exchange-list-info-label', 'plain', 'clickable'], {muted: !hasOrderError, negative: hasOrderError})}
+                    renderContent={() => {
+                      return <>
+                        <strong>Active Orders</strong>
+                        {positionOrders.map(order => {
+                          return <div key={`${order.isLong}-${order.type}-${order.index}`} className="Position-list-order">
+                            {order.triggerAboveThreshold ? ">" : "<"} {formatAmount(order.triggerPrice, 30, 2, true)}:
+                            {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
+                            {order.error &&
+                              <>, <span className="negative">{order.error}</span></>
+                            }
+                          </div>
+                        })}
+                      </>
+                    }}
+                  />
                 </div>}
               </td>
               <td>
-                <Tooltip handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`} position="left-bottom" handleClassName={cx("plain", { "negative": position.hasLowCollateral })}>
-                  {position.hasLowCollateral && <div>
-                    WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk.
-                    <br/>
-                    <br/>
-                  </div>}
+                <Tooltip
+                  handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
+                  position="left-bottom"
+                  handleClassName={cx("plain", { "negative": position.hasLowCollateral })}
+                  renderContent={() => {
+                    return <>
+                      {position.hasLowCollateral && <div>
+                        WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk.
+                        <br/>
+                        <br/>
+                      </div>}
 
-                  Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}<br/>
-                  Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}<br/>
-                  <br/>
-                  Use the "Edit" button to deposit or withdraw collateral.
-                </Tooltip>
+                      Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}<br/>
+                      Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}<br/>
+                      <br/>
+                      Use the "Edit" button to deposit or withdraw collateral.
+                    </>
+                  }}
+                />
               </td>
               <td className="clickable" onClick={() => onPositionClick(position)}>
-                <Tooltip handle={`$${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}`} position="left-bottom" handleClassName="plain clickable">
-                  Click on a row to select the position's market, then use the swap box to increase your position size if needed.<br/>
-                  <br/>
-                  Use the "Close" button to reduce your position size, or to set stop-loss / take-profit orders.
-                </Tooltip>
+                <Tooltip
+                  handle={`$${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}`}
+                  position="left-bottom"
+                  handleClassName="plain clickable"
+                  renderContent={() => {
+                    return <>
+                      Click on a row to select the position's market, then use the swap box to increase your position size if needed.<br/>
+                      <br/>
+                      Use the "Close" button to reduce your position size, or to set stop-loss / take-profit orders.
+                    </>
+                  }}
+                />
               </td>
               <td className="clickable" onClick={() => onPositionClick(position)}>
                 ${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}
