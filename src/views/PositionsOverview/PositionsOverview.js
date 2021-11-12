@@ -9,7 +9,7 @@ import {
   getTimeRemaining
 } from "../../Helpers"
 
-import "./style.css"
+import "./PositionsOverview.css"
 
 export default function PositionsOverview() {
   const { chainId } = useChainId()

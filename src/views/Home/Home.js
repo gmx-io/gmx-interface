@@ -2,7 +2,7 @@ import React from 'react'
 import Footer from "../../Footer"
 import { Link } from 'react-router-dom'
 
-import './style.css';
+import './Home.css';
 
 import { ImDroplet } from 'react-icons/im'
 import { IoMdSwap } from 'react-icons/io'

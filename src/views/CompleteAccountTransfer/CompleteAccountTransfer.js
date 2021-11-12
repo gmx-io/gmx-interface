@@ -10,7 +10,7 @@ import Modal from '../../components/Modal/Modal'
 
 import RewardRouter from '../../abis/RewardRouter.json'
 
-import "./style.css"
+import "./CompleteAccountTransfer.css"
 
 export default function CompleteAccountTransfer(props) {
   const { sender, receiver } = useParams()

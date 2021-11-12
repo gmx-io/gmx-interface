@@ -30,7 +30,7 @@ import {
 import ReaderV2 from "../../abis/ReaderV2.json"
 import * as Api from "../../Api"
 
-import "./style.css"
+import "./OrdersOverview.css"
 
 export default function OrdersOverview() {
   const { chainId } = useChainId()

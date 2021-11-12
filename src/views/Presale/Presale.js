@@ -14,7 +14,7 @@ import { getInjectedConnector, useEagerConnect, useInactiveListener,
   fetcher, formatAmount, numberWithCommas, getExplorerUrl, helperToast, CHAIN_ID } from '../../Helpers'
 import { getContract } from '../../Addresses'
 
-import './style.css';
+import './Presale.css';
 
 const PRECISION = 1000000
 

@@ -4,7 +4,7 @@ import { ethers } from 'ethers'
 import { useWeb3React } from '@web3-react/core'
 import { useParams } from 'react-router-dom'
 
-import './style.css';
+import './Actions.css';
 
 import { getContract } from '../../Addresses'
 import {
@@ -17,7 +17,7 @@ import {
   useAccountOrders
 } from '../../Helpers'
 import { getToken, getTokens, getWhitelistedTokens } from '../../data/Tokens'
-import { getPositions, getPositionQuery } from '../Exchange'
+import { getPositions, getPositionQuery } from '../Exchange/Exchange'
 import PositionsList from '../../components/Exchange/PositionsList'
 import OrdersList from '../../components/Exchange/OrdersList'
 

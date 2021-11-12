@@ -21,7 +21,7 @@ import {
   approveTokens
 } from '../../Helpers'
 
-import "./style.css"
+import "./BeginAccountTransfer.css"
 
 function ValidationRow({ isValid, children }) {
   return (<div className="ValidationRow">
