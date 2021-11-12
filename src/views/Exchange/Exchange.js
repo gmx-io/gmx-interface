@@ -41,6 +41,7 @@ import PositionsList from '../../components/Exchange/PositionsList'
 import OrdersList from '../../components/Exchange/OrdersList'
 import TradeHistory from '../../components/Exchange/TradeHistory'
 import ExchangeWalletTokens from '../../components/Exchange/ExchangeWalletTokens'
+import ExchangeBanner from '../../components/Exchange/ExchangeBanner'
 import Tab from '../../components/Tab/Tab'
 import Footer from "../../Footer"
 
@@ -173,8 +174,23 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
 }
 
 export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage, savedSlippageAmount, pendingTxns, setPendingTxns, savedShouldShowPositionLines, setSavedShouldShowPositionLines }) {
+  const [bannerHidden, setBannerHidden] = useState(false);
+
+  const hideBanner = (e) => {
+    const hiddenLimit = new Date(new Date().getTime()+(2*5*24*60*60*1000));
+    localStorage.setItem('bannerHidden', hiddenLimit)
+    setBannerHidden(true)
+  }
+
   useEffect(() => {
     window.scrollTo(0, 0)
+    const banner = localStorage.getItem('bannerHidden')
+    if (banner && new Date(banner) <= new Date()) {
+      setBannerHidden(true)
+    } else {
+      setBannerHidden(false)
+      localStorage.removeItem('bannerHidden')
+    }
   }, [])
 
   const { activate, active, account, library } = useWeb3React()
@@ -421,10 +437,15 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     />
   }
 
+  
+
   return (
     <div className="Exchange">
       <div className="Exchange-content">
         <div className="Exchange-left">
+          {
+            !bannerHidden && <ExchangeBanner hideBanner={hideBanner} />
+          }
           {renderChart()}
           <div className="Exchange-lists large">
             {getListSection()}
