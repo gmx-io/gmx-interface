@@ -8,7 +8,7 @@
 }
 
 .ExchangeBanner-text {
-    color: #8084ae;
+    color: white;
     font-size: 18px;
     line-height: 23px;
     margin: 0;
@@ -19,8 +19,7 @@
 }
 
 .ExchangeBanner-link {
-    color: #4e09f8;
-    text-decoration: none;
+    color: white;
 }
 
 .ExchangeBanner-close {
