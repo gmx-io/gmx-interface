@@ -174,24 +174,22 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
 }
 
 export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage, savedSlippageAmount, pendingTxns, setPendingTxns, savedShouldShowPositionLines, setSavedShouldShowPositionLines }) {
-  const [bannerHidden, setBannerHidden] = useState(false);
+  const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey('bannerHidden', null)
 
   const hideBanner = (e) => {
-    const hiddenLimit = new Date(new Date().getTime()+(2*5*24*60*60*1000));
-    localStorage.setItem('bannerHidden', hiddenLimit)
-    setBannerHidden(true)
+    const hiddenLimit = new Date(new Date().getTime()+(2*24*60*60*1000));
+    setBannerHidden(hiddenLimit)
   }
 
   useEffect(() => {
     window.scrollTo(0, 0)
-    const banner = localStorage.getItem('bannerHidden')
-    if (banner && new Date(banner) <= new Date()) {
-      setBannerHidden(true)
-    } else {
-      setBannerHidden(false)
-      localStorage.removeItem('bannerHidden')
-    }
   }, [])
+
+  useEffect(() => {
+    if (bannerHidden && new Date(bannerHidden) <= new Date() && new Date() > new Date('2021-11-30')) {
+      setBannerHidden(null)
+    }
+  }, [bannerHidden, setBannerHidden])
 
   const { activate, active, account, library } = useWeb3React()
   const { chainId } = useChainId()
