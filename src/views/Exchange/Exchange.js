@@ -174,11 +174,13 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
 }
 
 export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage, savedSlippageAmount, pendingTxns, setPendingTxns, savedShouldShowPositionLines, setSavedShouldShowPositionLines }) {
+  const [showBanner, setShowBanner] = useLocalStorageSerializeKey('showBanner', true)
   const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey('bannerHidden', null)
 
-  const hideBanner = (e) => {
+  const hideBanner = () => {
     const hiddenLimit = new Date(new Date().getTime()+(2*24*60*60*1000));
     setBannerHidden(hiddenLimit)
+    setShowBanner(false)
   }
 
   useEffect(() => {
@@ -186,10 +188,18 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   }, [])
 
   useEffect(() => {
-    if (bannerHidden && new Date(bannerHidden) <= new Date() && new Date() > new Date('2021-11-30')) {
-      setBannerHidden(null)
+    if (new Date() > new Date('2021-11-30')) {
+      // show banner
+      setShowBanner(false)
+    } else {
+      if (bannerHidden && new Date(bannerHidden) > new Date()) {
+        setShowBanner(false)
+      } else {
+        setBannerHidden(null)
+        setShowBanner(true)
+      }
     }
-  }, [bannerHidden, setBannerHidden])
+  }, [showBanner, bannerHidden, setBannerHidden, setShowBanner])
 
   const { activate, active, account, library } = useWeb3React()
   const { chainId } = useChainId()
@@ -442,7 +452,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
       <div className="Exchange-content">
         <div className="Exchange-left">
           {
-            !bannerHidden && <ExchangeBanner hideBanner={hideBanner} />
+            showBanner && <ExchangeBanner hideBanner={hideBanner} />
           }
           {renderChart()}
           <div className="Exchange-lists large">
