@@ -24,10 +24,6 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="Home-title-color-container">
-          <div className="App-highlight-box"></div>
-        </div>
-        <div className="App-highlight-box small"></div>
       </div>
       <div className="Home-benefits-section">
         <div className='Home-benefits'>
