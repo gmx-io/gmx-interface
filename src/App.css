@@ -20,10 +20,14 @@
 }
 
 .App-header.large {
+  height: 62px;
+  background: #16182E 0% 0% no-repeat padding-box;
+  backdrop-filter: blur(4px);
   display: flex;
   justify-content: space-between;
   position: relative;
-  padding: 0.3rem 2rem 0;
+  padding-left: 32px;
+  padding-right: 32px;
   grid-template-columns: 1fr auto;
 }
 
@@ -57,6 +61,7 @@
 
 .App-header-container-left {
   display: flex;
+  align-items: center;
 }
 
 .App-header-top {
@@ -120,21 +125,42 @@
   margin-bottom: 1.2rem;
 }
 
-button.App-connect-wallet {
+button.App-cta.App-connect-wallet {
   cursor: pointer;
   display: inline-block;
   border: none;
-  font-size: 1rem;
-  color: white;
-  margin-top: 0.4rem;
-  padding: 0.5rem 1rem;
-  padding-top: 0.3rem;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  padding: 11px 24px;
+  height: 40px;
+  color: #17182C;
+  background: #03CFCD 0% 0% no-repeat padding-box;
+  border-radius: 4px;
 }
 
 button.App-connect-wallet:hover {
   opacity: 1;
 }
 
+.App-header-user-link {
+  margin-right: 24px;
+}
+
+.App-header-user-link a {
+  width: 68px;
+  height: 40px;
+  background: #303FD0 0% 0% no-repeat padding-box;
+  border-radius: 4px;
+  opacity: 1;
+  color: #FFFFFF;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  display: inline-flex!important;
+  align-items: center;
+  justify-content: center;
+}
 
 .App-card-divider {
   height: 1px;
@@ -250,15 +276,13 @@ button.App-connect-wallet:hover {
 
 .App-header a.App-header-link-main, .App-header .App-header-link-main {
   font-size: 1.1rem;
-  margin-top: 1rem;
   margin-right: 1rem;
 }
+
 .App-header-link-main img {
   display: inline-block;
   height: 1.3rem;
   vertical-align: middle;
-  margin-right: 0.5rem;
-  margin-top: -0.3rem;
 }
 
 .App-header a {
@@ -278,8 +302,12 @@ button.App-connect-wallet:hover {
 }
 
 .App-header-link-container a {
-  padding: 1rem 1.5rem;
+  padding: 5px 17px;
   display: block;
+  color: #83849B;
+  font-size: 14px;
+  line-height: 19px;
+  font-weight: bold;
 }
 
 .Toastify {
@@ -466,10 +494,12 @@ button.App-button-option:disabled {
   cursor: not-allowed;
 }
 
+.App-header-container-right {
+  display: flex;
+  align-items: center;
+}
 
 .App-header-user {
-  margin-top: 0.3rem;
-  margin-right: 1rem;
   display: flex;
 }
 
@@ -798,6 +828,7 @@ button.App-button {
 
   .App-header-container-right {
     display: flex;
+    align-items: center;
   }
 
   .App-header-link-desktop {

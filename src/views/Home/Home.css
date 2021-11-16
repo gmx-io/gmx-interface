@@ -1,15 +1,18 @@
 .Home {
-  padding: 1rem;
+  /* padding: 1rem; */
 }
 
 .Home-top {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  margin-top: 5rem;
+  padding-top: 5rem;
   height: 25rem;
-  margin-bottom: 7rem;
+  padding-bottom: 7rem;
   grid-gap: 2rem;
+  background: url('../../img/Artwork.svg');
+  background-repeat: no-repeat;
+  margin-top: -62px;
 }
 
 .Home-title {

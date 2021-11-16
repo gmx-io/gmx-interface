@@ -69,7 +69,7 @@ import './App.css';
 import './Input.css';
 import './AppOrder.css';
 
-import logoImg from './img/gmx-logo-final-white-small.png'
+import logoImg from './img/logo_GMX.svg'
 
 if ('ethereum' in window) {
   window.ethereum.autoRefreshOnNetworkChange = false
@@ -114,27 +114,27 @@ function AppHeaderLinks({ small, openSettings }) {
   return (
     <div className="App-header-links">
       <div className="App-header-link-container App-header-link-home">
-        <NavLink activeClassName="active" exact to="/">HOME</NavLink>
+        <NavLink activeClassName="active" exact to="/">Home</NavLink>
       </div>
       <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/trade">TRADE</NavLink>
+        <NavLink activeClassName="active" to="/dashboard">Dashboard</NavLink>
       </div>
       <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/dashboard">DASHBOARD</NavLink>
-      </div>
-      <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/earn">EARN</NavLink>
+        <NavLink activeClassName="active" to="/earn">Earn</NavLink>
       </div>
       <div className="App-header-link-container">
         <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
-          ABOUT
+          About
         </a>
       </div>
       <div className="App-header-link-container">
+        <NavLink activeClassName="active" to="/earn">Buy GMX</NavLink>
+      </div>
+      {/* <div className="App-header-link-container">
         <a href="https://www.gmx.house/p/leaderboard" target="_blank" rel="noopener noreferrer">
           LEADERBOARD
         </a>
-      </div>
+      </div> */}
       {small &&
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
@@ -171,6 +171,9 @@ function AppHeaderUser({ openSettings, small }) {
 
     return (
       <div className="App-header-user">
+        <div className="App-header-user-link">
+          <NavLink activeClassName="active" to="/trade">Trade</NavLink>
+        </div>
         <button target="_blank" rel="noopener noreferrer" className="App-cta App-connect-wallet" onClick={connectWallet}>
           Connect Wallet
         </button>
@@ -345,7 +348,6 @@ function FullApp() {
               <div className="App-header-container-left">
                 <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
                   <img src={logoImg} alt="MetaMask" />
-                  GMX
                 </NavLink>
                 <AppHeaderLinks />
               </div>
