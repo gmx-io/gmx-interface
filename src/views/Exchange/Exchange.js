@@ -189,7 +189,6 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
 
   useEffect(() => {
     if (new Date() > new Date('2021-11-30')) {
-      // show banner
       setShowBanner(false)
     } else {
       if (bannerHidden && new Date(bannerHidden) > new Date()) {
