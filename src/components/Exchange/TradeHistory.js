@@ -108,7 +108,7 @@ export default function TradeHistory(props) {
       if (params.flags?.isOrderExecution) {
         return
       }
-      
+
       const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress)
       if (!indexToken) {
         return defaultMsg
@@ -116,8 +116,10 @@ export default function TradeHistory(props) {
       if (bigNumberify(params.sizeDelta).eq(0)) {
         return `Withdraw ${formatAmount(params.collateralDelta, USD_DECIMALS, 2, true)} USD from ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`
       }
+      const isLiquidation = params.flags?.isLiquidation
+      const actionDisplay = isLiquidation ? "Partially Liquidated" : "Decrease"
       return `
-        Decrease ${indexToken.symbol} ${params.isLong ? "Long" : "Short"},
+        ${actionDisplay} ${indexToken.symbol} ${params.isLong ? "Long" : "Short"},
         -${formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)} USD,
         ${indexToken.symbol} Price: ${formatAmount(params.price, USD_DECIMALS, 2, true)} USD
       `
