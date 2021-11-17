@@ -174,24 +174,31 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
 }
 
 export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage, savedSlippageAmount, pendingTxns, setPendingTxns, savedShouldShowPositionLines, setSavedShouldShowPositionLines }) {
-  const [bannerHidden, setBannerHidden] = useState(false);
+  const [showBanner, setShowBanner] = useLocalStorageSerializeKey('showBanner', true)
+  const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey('bannerHidden', null)
 
-  const hideBanner = (e) => {
-    const hiddenLimit = new Date(new Date().getTime()+(2*5*24*60*60*1000));
-    localStorage.setItem('bannerHidden', hiddenLimit)
-    setBannerHidden(true)
+  const hideBanner = () => {
+    const hiddenLimit = new Date(new Date().getTime()+(2*24*60*60*1000));
+    setBannerHidden(hiddenLimit)
+    setShowBanner(false)
   }
 
   useEffect(() => {
     window.scrollTo(0, 0)
-    const banner = localStorage.getItem('bannerHidden')
-    if (banner && new Date(banner) <= new Date()) {
-      setBannerHidden(true)
-    } else {
-      setBannerHidden(false)
-      localStorage.removeItem('bannerHidden')
-    }
   }, [])
+
+  useEffect(() => {
+    if (new Date() > new Date('2021-11-30')) {
+      setShowBanner(false)
+    } else {
+      if (bannerHidden && new Date(bannerHidden) > new Date()) {
+        setShowBanner(false)
+      } else {
+        setBannerHidden(null)
+        setShowBanner(true)
+      }
+    }
+  }, [showBanner, bannerHidden, setBannerHidden, setShowBanner])
 
   const { activate, active, account, library } = useWeb3React()
   const { chainId } = useChainId()
@@ -444,7 +451,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
       <div className="Exchange-content">
         <div className="Exchange-left">
           {
-            !bannerHidden && <ExchangeBanner hideBanner={hideBanner} />
+            showBanner && <ExchangeBanner hideBanner={hideBanner} />
           }
           {renderChart()}
           <div className="Exchange-lists large">
