@@ -6,18 +6,18 @@ import { ethers } from 'ethers'
 
 import { getConnectWalletHandler,
   fetcher, formatKeyAmount, formatAmount, formatAmountFree, parseValue, useChainId,
-  expandDecimals, getExplorerUrl, approveTokens, bigNumberify, helperToast, CHAIN_ID, USD_DECIMALS, PRECISION } from './Helpers'
+  expandDecimals, getExplorerUrl, approveTokens, bigNumberify, helperToast, CHAIN_ID, USD_DECIMALS, PRECISION } from '../../Helpers'
 
-import { getContract, XGMT_EXCLUDED_ACCOUNTS } from './Addresses'
-import { getTokenBySymbol } from './data/Tokens'
+import { getContract, XGMT_EXCLUDED_ACCOUNTS } from '../../Addresses'
+import { getTokenBySymbol } from '../../data/Tokens'
 
-import Reader from './abis/Reader.json'
-import Token from './abis/Token.json'
-import YieldToken from './abis/YieldToken.json'
-import YieldFarm from './abis/YieldFarm.json'
+import Reader from '../../abis/Reader.json'
+import Token from '../../abis/Token.json'
+import YieldToken from '../../abis/YieldToken.json'
+import YieldFarm from '../../abis/YieldFarm.json'
 
-import Modal from './components/Modal/Modal'
-import Footer from "./Footer"
+import Modal from '../../components/Modal/Modal'
+import Footer from "../../Footer"
 
 import './Stake.css';
 

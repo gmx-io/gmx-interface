@@ -5,21 +5,21 @@ import { useWeb3React } from '@web3-react/core'
 import cx from "classnames";
 import { bigNumberify, expandDecimals, formatAmount,
   fetcher, formatDate, numberWithCommas,
-  getTokenUrl, useChainId, getServerUrl, helperToast } from './Helpers'
-import { getContract, XGMT_EXCLUDED_ACCOUNTS } from './Addresses'
-import { getToken, getTokens } from './data/Tokens'
-import { getFeeHistory } from './data/Fees'
+  getTokenUrl, useChainId, getServerUrl, helperToast } from '../../Helpers'
+import { getContract, XGMT_EXCLUDED_ACCOUNTS } from '../../Addresses'
+import { getToken, getTokens } from '../../data/Tokens'
+import { getFeeHistory } from '../../data/Fees'
 
-import Footer from "./Footer"
+import Footer from "../../Footer"
 
-import Reader from './abis/Reader.json'
-import YieldToken from './abis/YieldToken.json'
+import Reader from '../../abis/Reader.json'
+import YieldToken from '../../abis/YieldToken.json'
 
 import './Dashboard.css';
 
-import metamaskImg from './img/metamask.png'
-import coingeckoImg from './img/coingecko.png'
-import bscscanImg from './img/bscscan.png'
+import metamaskImg from '../../img/metamask.png'
+import coingeckoImg from '../../img/coingecko.png'
+import bscscanImg from '../../img/bscscan.png'
 
 const USD_DECIMALS = 30
 const PRECISION = expandDecimals(1, 30)

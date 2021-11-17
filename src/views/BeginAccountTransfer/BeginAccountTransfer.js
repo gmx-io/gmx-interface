@@ -4,22 +4,22 @@ import useSWR from 'swr'
 import { ethers } from 'ethers'
 import { useWeb3React } from '@web3-react/core'
 
-import { getContract } from './Addresses'
-import { callContract } from './Api'
+import { getContract } from '../../Addresses'
+import { callContract } from '../../Api'
 
-import Modal from './components/Modal/Modal'
+import Modal from '../../components/Modal/Modal'
 
-import Token from './abis/Token.json'
-import Vester from './abis/Vester.json'
-import RewardTracker from './abis/RewardTracker.json'
-import RewardRouter from './abis/RewardRouter.json'
+import Token from '../../abis/Token.json'
+import Vester from '../../abis/Vester.json'
+import RewardTracker from '../../abis/RewardTracker.json'
+import RewardRouter from '../../abis/RewardRouter.json'
 
 import { FaCheck, FaTimes } from 'react-icons/fa'
 
 import {
   fetcher,
   approveTokens
-} from './Helpers'
+} from '../../Helpers'
 
 import "./BeginAccountTransfer.css"
 

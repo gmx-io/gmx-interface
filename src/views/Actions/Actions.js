@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom'
 
 import './Actions.css';
 
-import { getContract } from './Addresses'
+import { getContract } from '../../Addresses'
 import {
   formatAmount,
   expandDecimals,
@@ -15,15 +15,15 @@ import {
   getTokenInfo,
   getServerBaseUrl,
   useAccountOrders
-} from './Helpers'
-import { getToken, getTokens, getWhitelistedTokens } from './data/Tokens'
-import { getPositions, getPositionQuery } from './Exchange'
-import PositionsList from './components/Exchange/PositionsList'
-import OrdersList from './components/Exchange/OrdersList'
+} from '../../Helpers'
+import { getToken, getTokens, getWhitelistedTokens } from '../../data/Tokens'
+import { getPositions, getPositionQuery } from '../Exchange/Exchange'
+import PositionsList from '../../components/Exchange/PositionsList'
+import OrdersList from '../../components/Exchange/OrdersList'
 
-import TradeHistory from './components/Exchange/TradeHistory'
-import Reader from './abis/Reader.json'
-import ReaderV2 from './abis/ReaderV2.json'
+import TradeHistory from '../../components/Exchange/TradeHistory'
+import Reader from '../../abis/Reader.json'
+import ReaderV2 from '../../abis/ReaderV2.json'
 
 const USD_DECIMALS = 30
 

@@ -22,27 +22,28 @@ import {
   useChainId,
   getInfoTokens,
   useAccountOrders
-} from './Helpers'
-import { getConstant } from './Constants'
-import { approvePlugin } from './Api'
+} from '../../Helpers'
+import { getConstant } from '../../Constants'
+import { approvePlugin } from '../../Api'
 
-import { getContract } from './Addresses'
-import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from './data/Tokens'
+import { getContract } from '../../Addresses'
+import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from '../../data/Tokens'
 
-import Reader from './abis/ReaderV2.json'
-import VaultV2 from './abis/VaultV2.json'
-import Token from './abis/Token.json'
-import Router from './abis/Router.json'
+import Reader from '../../abis/ReaderV2.json'
+import VaultV2 from '../../abis/VaultV2.json'
+import Token from '../../abis/Token.json'
+import Router from '../../abis/Router.json'
 
-import Checkbox from './components/Checkbox/Checkbox'
-import SwapBox from './components/Exchange/SwapBox'
-import ExchangeTVChart from './components/Exchange/ExchangeTVChart'
-import PositionsList from './components/Exchange/PositionsList'
-import OrdersList from './components/Exchange/OrdersList'
-import TradeHistory from './components/Exchange/TradeHistory'
-import ExchangeWalletTokens from './components/Exchange/ExchangeWalletTokens'
-import Tab from './components/Tab/Tab'
-import Footer from "./Footer"
+import Checkbox from '../../components/Checkbox/Checkbox'
+import SwapBox from '../../components/Exchange/SwapBox'
+import ExchangeTVChart from '../../components/Exchange/ExchangeTVChart'
+import PositionsList from '../../components/Exchange/PositionsList'
+import OrdersList from '../../components/Exchange/OrdersList'
+import TradeHistory from '../../components/Exchange/TradeHistory'
+import ExchangeWalletTokens from '../../components/Exchange/ExchangeWalletTokens'
+import ExchangeBanner from '../../components/Exchange/ExchangeBanner'
+import Tab from '../../components/Tab/Tab'
+import Footer from "../../Footer"
 
 import './Exchange.css';
 
@@ -173,9 +174,31 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
 }
 
 export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage, savedSlippageAmount, pendingTxns, setPendingTxns, savedShouldShowPositionLines, setSavedShouldShowPositionLines }) {
+  const [showBanner, setShowBanner] = useLocalStorageSerializeKey('showBanner', true)
+  const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey('bannerHidden', null)
+
+  const hideBanner = () => {
+    const hiddenLimit = new Date(new Date().getTime()+(2*24*60*60*1000));
+    setBannerHidden(hiddenLimit)
+    setShowBanner(false)
+  }
+
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
+
+  useEffect(() => {
+    if (new Date() > new Date('2021-11-30')) {
+      setShowBanner(false)
+    } else {
+      if (bannerHidden && new Date(bannerHidden) > new Date()) {
+        setShowBanner(false)
+      } else {
+        setBannerHidden(null)
+        setShowBanner(true)
+      }
+    }
+  }, [showBanner, bannerHidden, setBannerHidden, setShowBanner])
 
   const { activate, active, account, library } = useWeb3React()
   const { chainId } = useChainId()
@@ -421,10 +444,15 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     />
   }
 
+  
+
   return (
     <div className="Exchange">
       <div className="Exchange-content">
         <div className="Exchange-left">
+          {
+            showBanner && <ExchangeBanner hideBanner={hideBanner} />
+          }
           {renderChart()}
           <div className="Exchange-lists large">
             {getListSection()}
