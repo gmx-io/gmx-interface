@@ -161,7 +161,7 @@
   right: 1rem;
   top: 1rem;
   bottom: 1rem;
-  mask-image: url(./img/wave-01.png);
+  mask-image: url(../../img/wave-01.png);
   mask-size: 90% 90%;
   mask-repeat: no-repeat;
   mask-position: center;

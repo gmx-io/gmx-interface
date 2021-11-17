@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
-import UniPool from './abis/UniPool.json'
+import UniPool from '../../abis/UniPool.json'
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
 import {
   fetcher
-} from './Helpers'
+} from '../../Helpers'
 
 export default function Debug() {
   const { active, library } = useWeb3React()

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { getConstant } from './Constants'
+import { getConstant } from '../../Constants'
 
 import DashboardV1 from './DashboardV1'
 import DashboardV2 from './DashboardV2'

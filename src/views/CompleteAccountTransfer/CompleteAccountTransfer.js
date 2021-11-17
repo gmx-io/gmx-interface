@@ -3,12 +3,12 @@ import { Link, useParams } from 'react-router-dom'
 import { ethers } from 'ethers'
 import { useWeb3React } from '@web3-react/core'
 
-import { getContract } from './Addresses'
-import { callContract } from './Api'
+import { getContract } from '../../Addresses'
+import { callContract } from '../../Api'
 
-import Modal from './components/Modal/Modal'
+import Modal from '../../components/Modal/Modal'
 
-import RewardRouter from './abis/RewardRouter.json'
+import RewardRouter from '../../abis/RewardRouter.json'
 
 import "./CompleteAccountTransfer.css"
 
