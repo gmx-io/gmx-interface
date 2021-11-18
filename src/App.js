@@ -360,7 +360,6 @@ function FullApp() {
                 <div className="App-header-container-left">
                   <div className="App-header-link-main">
                     <img src={logoImg} alt="MetaMask" />
-                    GMX
                   </div>
                 </div>
                 <div className="App-header-container-right">

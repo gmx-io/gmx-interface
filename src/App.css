@@ -21,7 +21,6 @@
 
 .App-header.large {
   height: 62px;
-  background: #16182E 0% 0% no-repeat padding-box;
   backdrop-filter: blur(4px);
   display: flex;
   justify-content: space-between;
@@ -29,6 +28,17 @@
   padding-left: 32px;
   padding-right: 32px;
   grid-template-columns: 1fr auto;
+  background: transparent 0% 0% no-repeat padding-box;
+  border-bottom: 1px solid #ffffff10;
+}
+
+.App-header.large::after {
+  height: 13px;
+  width: 100%;
+  content: " ";
+  background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
+  position: absolute;
+  bottom: -13px;
 }
 
 .App-header.large .App-header-links {
@@ -443,7 +453,7 @@ a.App-cta, button.App-cta {
   color: white;
   text-decoration: none;
   background: linear-gradient(90deg, rgba(45,66,252,1) 0%, rgba(46,61,205,1) 100%);
-  box-shadow: 0 0 4px 6px rgba(45,66,252,0.15);
+  /* box-shadow: 0 0 4px 6px rgba(45,66,252,0.15); */
 }
 
 a.App-cta:hover, button.App-cta:hover:enabled {
