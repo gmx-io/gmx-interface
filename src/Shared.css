@@ -10,6 +10,10 @@ html, body, #root {
   background: #0b0b0f;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -139,4 +143,27 @@ a.plain {
 
 .checkbox:checked:before{
   background-color:green;
+}
+
+.default-btn {
+  background: #303FD0 0% 0% no-repeat padding-box;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  font-family: Relative;
+  font-weight: 500;
+  letter-spacing: 0px;
+  color: #FFFFFF;
+  padding: 11px 18px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.default-btn:hover {
+  box-shadow: 0 0 4px 6px rgba(45,66,252,0.2);
+}
+
+.default-container {
+  max-width: 1200px;
+  margin: 0 auto;
 }
