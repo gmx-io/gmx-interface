@@ -45,14 +45,8 @@
   display: flex;
 }
 
-.App-header.large .App-header-links.preview {
-}
-
 .App-header.small {
   display: none;
-}
-
-.App-header.small.active {
 }
 
 .App-header-link-home {
@@ -82,9 +76,6 @@
   z-index: 2;
 }
 
-.App-header-top.active {
-}
-
 .App-header-menu-icon-block {
   margin-right: 12px;
 }
@@ -112,12 +103,6 @@
   border-radius: 3px;
   box-shadow: inset 0px 0px 10px 5px rgba(27, 30, 46, 0.2);
   background: linear-gradient(90deg, rgba(20,23,38,0.9) 0%, rgba(25,30,47,0.9) 100%);
-}
-
-.App-card.primary {
-  /* background: linear-gradient(45deg, rgba(80,10,245,0.8) 0%, rgba(43,118,224,0.8) 35%, rgba(7,157,250,0.8) 77%, rgba(2,207,207,0.8) 100%);
-  background: rgb(32,5,110); */
-  /* background: linear-gradient(45deg, rgba(80,10,245,1) 0%, rgba(43,118,224,1) 35%, rgba(7,157,250,1) 77%, rgba(2,207,207,1) 100%); */
 }
 
 .App-card-bottom-placeholder {
@@ -184,9 +169,6 @@ button.App-connect-wallet:hover {
   background: linear-gradient(90deg, rgba(20,21,38,1) 0%, rgba(25,27,47,1) 100%);
 }
 
-.App-box-border {
-}
-
 .Page {
   max-width: 70rem;
   margin: auto;
@@ -238,9 +220,6 @@ button.App-connect-wallet:hover {
 .App-card {
   padding: 1rem;
   padding-bottom: 1.2rem;
-}
-
-.App-card.primary {
 }
 
 .App-card-title {
