@@ -16,6 +16,7 @@ import {
   TRIGGER_PREFIX_BELOW,
   TRIGGER_PREFIX_ABOVE,
   MIN_PROFIT_TIME,
+  MAX_INITIAL_LEVERAGE,
 	usePrevious,
 	formatAmountFree,
 	parseValue,
@@ -322,8 +323,8 @@ export default function PositionSeller(props) {
       return "Min leverage: 1.1x"
     }
 
-    if (nextLeverage && nextLeverage.gt(30.5 * BASIS_POINTS_DIVISOR)) {
-      return "Max leverage: 30.5x"
+    if (nextLeverage && nextLeverage.gt(MAX_INITIAL_LEVERAGE)) {
+      return `Max leverage: ${(MAX_INITIAL_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`
     }
 
     if (hasPendingProfit && orderOption !== STOP && !isProfitWarningAccepted) {

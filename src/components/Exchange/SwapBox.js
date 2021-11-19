@@ -24,6 +24,7 @@ import {
 	MARKET,
 	SWAP_ORDER_OPTIONS,
 	LEVERAGE_ORDER_OPTIONS,
+  MAX_INITIAL_LEVERAGE,
 	getPositionKey,
 	getUsd,
 	BASIS_POINTS_DIVISOR,
@@ -600,8 +601,8 @@ export default function SwapBox(props) {
       return ["Min leverage: 1.1x"]
     }
 
-    if (leverage && leverage.gt(30.5 * BASIS_POINTS_DIVISOR)) {
-      return ["Max leverage: 30.5x"]
+    if (leverage && leverage.gt(MAX_INITIAL_LEVERAGE)) {
+      return [`Max leverage: ${(MAX_INITIAL_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`]
     }
 
     if (!isMarketOrder && entryMarkPrice && triggerPriceUsd) {
@@ -1212,7 +1213,11 @@ export default function SwapBox(props) {
 		15: "15x",
 		20: "20x",
 		25: "25x",
-		30: "30x"
+		30: "30x",
+    35: "35x",
+    40: "40x",
+    45: "45x",
+    50: "50x"
 	}
 
   if (!fromToken || !toToken) {
@@ -1443,7 +1448,7 @@ export default function SwapBox(props) {
 							</Checkbox>
 						</div>
 						{isLeverageSliderEnabled && <div className={cx("Exchange-leverage-slider", "App-slider", { positive: isLong, negative: isShort })}>
-							<Slider min={1.1} max={30.5} step={0.1} marks={leverageMarks} handle={leverageSliderHandle} onChange={(value) => setLeverageOption(value)} defaultValue={leverageOption} />
+							<Slider min={1.1} max={MAX_INITIAL_LEVERAGE / BASIS_POINTS_DIVISOR} step={0.1} marks={leverageMarks} handle={leverageSliderHandle} onChange={(value) => setLeverageOption(value)} defaultValue={leverageOption} />
 						</div>}
             {(isShort) &&
               <div className="Exchange-info-row">

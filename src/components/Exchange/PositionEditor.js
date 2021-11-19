@@ -7,6 +7,7 @@ import {
 	USD_DECIMALS,
 	BASIS_POINTS_DIVISOR,
 	DUST_BNB,
+  MAX_INITIAL_LEVERAGE,
   helperToast,
   formatAmount,
   bigNumberify,
@@ -157,8 +158,8 @@ export default function PositionEditor(props) {
       return "Min leverage: 1.1x"
     }
 
-    if (nextLeverage && nextLeverage.gt(30.5 * BASIS_POINTS_DIVISOR)) {
-      return "Max leverage: 30x"
+    if (nextLeverage && nextLeverage.gt(MAX_INITIAL_LEVERAGE)) {
+      return `Max leverage: ${(MAX_INITIAL_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`
     }
   }
 

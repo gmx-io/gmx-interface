@@ -38,13 +38,15 @@ export function getChainName(chainId) {
 }
 
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG")
-const MAX_LEVERAGE = 100 * 10000
+
+export const BASIS_POINTS_DIVISOR = 10000
+const MAX_LEVERAGE = 100 * BASIS_POINTS_DIVISOR
+export const MAX_INITIAL_LEVERAGE = 50 * BASIS_POINTS_DIVISOR
 
 export const DEFAULT_GAS_LIMIT = 1 * 1000 * 1000
 export const SECONDS_PER_YEAR = 31536000
 export const USDG_DECIMALS = 18
 export const USD_DECIMALS = 30
-export const BASIS_POINTS_DIVISOR = 10000
 export const DUST_BNB = "2000000000000000"
 export const DUST_USD = expandDecimals(1, USD_DECIMALS)
 export const PRECISION = expandDecimals(1, 30)
