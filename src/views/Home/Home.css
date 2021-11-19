@@ -11,6 +11,8 @@
   grid-gap: 2rem;
   background: url('../../img/Artwork.svg');
   background-repeat: no-repeat;
+  background-size: cover;
+  background-position: right;
   margin-top: -62px;
 }
 
@@ -25,9 +27,7 @@
 .Home-title-section-container {
   position: relative;
   z-index: 2;
-  max-width: 1200px;
   width: 100%;
-  margin: 0 auto;
 }
 
 .Home-title-section {
@@ -42,20 +42,6 @@
   margin-bottom: 1.677rem;
 }
 
-.Home-title-color-container {
-  z-index: 1;
-  height: 100%;
-  position: relative;
-}
-
-.Home-title-color-container .App-highlight-box {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-}
-
 .Home-benefits-section {
   background: #17182C;
 }
@@ -63,11 +49,13 @@
 .Home-benefits {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
+  padding: 5.162rem 0;
 }
 
 .Home-benefit {
-  padding: 5.162rem 0;
+  padding: 0;
 }
 
 .Home-benefit-title {
@@ -99,9 +87,8 @@
 .Home-cta-container {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   padding: 5.161rem 0;
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 .Home-cta-info {
@@ -121,6 +108,7 @@
   line-height: 1.484rem;
   letter-spacing: 0;
   color: #A0A3C4;
+  margin-bottom: 3.226rem;
 }
 
 .Home-cta-options {
@@ -189,6 +177,7 @@
 .Home-latest-info-container {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   padding: 5.161rem 0;
 }
 
@@ -254,6 +243,12 @@
 
 .Home-faqs-container {
   display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.Home-faqs-documentation {
+  margin-bottom: 3.163rem;
 }
 
 .Home-faqs-introduction__title {
@@ -269,84 +264,91 @@
   font-size: 1.161rem;
   line-height: 1.484rem;
   margin-bottom: 2.387rem;
+  max-width: 19.226rem;
 }
 
-.App-highlight-box.small {
-  display: none;
-  height: 2px;
-  margin: 2rem;
-  margin-bottom: 0;
-  margin-top: 5rem;
-  box-shadow: none;
+.Home-faqs-content-block {
+  max-width: 52rem;
+  width: 100%;
 }
 
-.Home-top .App-highlight-box.small {
-  background: linear-gradient(45deg, rgba(80,10,245,0) 0%, rgba(80,10,245,1) 25%, rgba(43,118,224,1) 50%, rgba(7,157,250,1) 75%, rgba(7,157,250,0) 100%);
+.Home-faqs-content {
+  background: #17182C;
+  border: 1px solid #1E2136;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 2.387rem 3.226rem;
+  width: 100%;
+  max-width: 52rem;
 }
 
-.Home-benefits-section .App-highlight-box.small {
-  background: linear-gradient(45deg, rgba(43,118,224,0) 0%, rgba(43,118,224,1) 25%, rgba(7,157,250,1) 40%, rgba(2,207,207,1) 60%, rgba(2,207,207,0) 100%);
+.Home-faqs-content + .Home-faqs-content {
+  margin-top: 1rem;
+}
+
+.Home-faqs-content-header {
+  display: flex;
+}
+
+.Home-faqs-content-header__icon {
+  display: flex;
+  align-items: center;
+  margin-right: 1.139rem;
+  font-size: 0.89rem;
+  color: #3041DA;
+}
+
+.Home-faqs-content-header__text {
+  font-size: 1.097rem;
+  line-height: 1.419rem;
+  letter-spacing: 0px;
+  color: #FFFFFF;
+}
+
+.Home-faqs-content-main {
+  height: 0;
+  overflow: hidden;
+}
+
+.Home-faqs-content-main.opened {
+  height: fit-content;
+  padding: 1rem 2.387rem 0;
+  color: #A0A3C4;
+  letter-spacing: 0px;
 }
 
 @media (max-width: 1200px) {
-  .Home-benefits {
-    padding-left: 1rem;
-    padding-right: 1rem;
+  .Home-benefit + .Home-benefit {
+    margin-top: 3.097rem;
   }
-  .Home-cta-options {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-}
 
-@media (max-width: 1000px) {
-  .Home-benefits {
-    grid-template-columns: 1fr;
-  }
-  .Home-top {
-    height: auto;
-    grid-template-columns: 1fr;
-    margin-bottom: 5.5rem;
-  }
-  .Home-benefits-section {
-    margin-bottom: 5.5rem;
-  }
-  .Home-title-section {
-    margin-left: 2rem;
-  }
-  .Home-title-color-container {
-    display: none;
-  }
-  .App-highlight-box.small {
-    display: block;
-  }
-}
-
-@media (max-width: 600px) {
-  .Home-benefit-icon {
-    display: none;
-  }
-  .Home-cta-options {
-    grid-template-columns: 1fr;
+  .Home-cta-option {
+    padding-left: 2.129rem;
   }
 }
 
 @media (max-width: 500px) {
-  .Home-title {
-    font-size: 3rem;
-    line-height: 3.2rem;
+  .Home-top {
+    background-position-x: 70%;
+  }
+
+  .Home-cta-option-info {
+    width: 50%;
+  }
+
+  .Home-cta-option-subtitle {
+    margin-bottom: 4px;
+  }
+
+  .Home-cta-option-title {
+    line-height: 1.548rem;
+  }
+
+  .Home-latest-info-block + .Home-latest-info-block {
+    margin-top: 32px;
   }
 }
 
 @media (max-width: 400px) {
-  .Home-title {
-    font-size: 2.5rem;
-    line-height: 2.7rem;
-  }
-  .Home-description {
-    font-size: 1.1rem;
-  }
-  .Home-cta-title {
-    font-size: 2rem;
-  }
+  
 }
