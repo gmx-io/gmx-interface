@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Footer from "../../Footer"
 import { Link, NavLink } from 'react-router-dom'
+import { FiPlus, FiMinus } from "react-icons/fi"
 
 import './Home.css';
 
@@ -14,13 +15,40 @@ import arbitrumIcon from '../../img/lg_arbitrum.svg'
 import cashIcon from '../../img/ic_cash.svg'
 import statsIcon from '../../img/ic_stats.svg'
 import tradingIcon from '../../img/ic_trading.svg'
-import gmxBigIcon from '../../img/ic_gmx_big.svg'
+// import gmxBigIcon from '../../img/ic_gmx_big.svg'
 
 export default function Home() {
+  const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
+  const faqContent = [{
+    id: 1,
+    question: "What's the goal of this project?",
+    answer: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+  }, {
+    id: 2,
+    question: "What's the goal of this project?",
+    answer: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+  }, {
+    id: 3,
+    question: "What's the goal of this project?",
+    answer: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+  }, {
+    id: 4,
+    question: "What's the goal of this project?",
+    answer: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+  }]
+
+  const toggleFAQContent = function(index) {
+    if (openedFAQIndex === index) {
+      setOpenedFAQIndex(null)
+    } else {
+      setOpenedFAQIndex(index)
+    }
+  }
+
   return (
     <div className="Home">
       <div className="Home-top">
-        <div className="Home-title-section-container">
+        <div className="Home-title-section-container default-container">
           <div className="Home-title-section">
             <div className="Home-title">
               Decentralized<br />
@@ -65,10 +93,9 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="App-highlight-box small"></div>
       </div>
       <div className="Home-cta-section">
-        <div className="Home-cta-container">
+        <div className="Home-cta-container default-container">
           <div className="Home-cta-info">
             <div className="Home-cta-info__title">Available on your preferred network</div>
             <div className="Home-cta-info__description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce a vestibulum enim. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam malesuada fermentum massa, nec mollis orci.</div>
@@ -131,22 +158,42 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="Home-video-section">
+      {/* <div className="Home-video-section">
         <div className="Home-video-container default-container">
           <div className="Home-video-block">
             <img src={gmxBigIcon} alt="gmxbig" />
           </div>
         </div>
-      </div>
+      </div> */}
       <div className="Home-faqs-section">
         <div className="Home-faqs-container default-container">
           <div className="Home-faqs-introduction">
             <div className="Home-faqs-introduction__title">FAQs</div>
             <div className="Home-faqs-introduction__description">Get quick answers to common questions, orhead to the documentation to learn more</div>
-            <a href="/" className="default-btn">Documentation</a>
+            <a href="https://gmxio.gitbook.io/gmx/" className="default-btn Home-faqs-documentation">Documentation</a>
           </div>
-          <div className="Home-faqs-content">
-
+          <div className="Home-faqs-content-block">
+            {
+              faqContent.map((content, index) => (
+                <div className="Home-faqs-content" key={index} onClick={() => toggleFAQContent(index)}>
+                  <div className="Home-faqs-content-header">
+                    <div className="Home-faqs-content-header__icon">
+                      {
+                        openedFAQIndex === index ? <FiMinus className="opened" /> : <FiPlus className="closed" />
+                      }
+                    </div>
+                    <div className="Home-faqs-content-header__text">
+                      { content.question }
+                    </div>
+                  </div>
+                  <div className={ openedFAQIndex === index ? "Home-faqs-content-main opened" : "Home-faqs-content-main" }>
+                    <div className="Home-faqs-content-main__text">
+                      { content.answer }
+                    </div>
+                  </div>
+                </div>
+              ))
+            }
           </div>
         </div>
       </div>

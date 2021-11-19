@@ -27,7 +27,6 @@
   position: relative;
   padding-left: 32px;
   padding-right: 32px;
-  grid-template-columns: 1fr auto;
   background: transparent 0% 0% no-repeat padding-box;
   border-bottom: 1px solid #ffffff10;
 }
@@ -39,6 +38,7 @@
   background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
   position: absolute;
   bottom: -13px;
+  left: 0;
 }
 
 .App-header.large .App-header-links {
@@ -65,7 +65,7 @@
   z-index: 1;
   left: 0;
   right: 0;
-  top: 3rem;
+  top: 62px;
   padding-bottom: 0.5rem;
 }
 
@@ -75,16 +75,18 @@
 }
 
 .App-header-top {
-  background: #0b0b0f;
-  padding: 0 1.2rem;
-  padding-bottom: 0.8rem;
+  width: 100%;
   position: relative;
-  display: grid;
-  grid-template-columns: 1fr auto;
+  display: flex;
+  justify-content: space-between;
   z-index: 2;
 }
 
 .App-header-top.active {
+}
+
+.App-header-menu-icon-block {
+  margin-right: 12px;
 }
 
 .App-header-menu-icon {
@@ -92,7 +94,7 @@
   font-size: 1.3rem;
   cursor: pointer;
   opacity: 0.7;
-  margin: 0 0.5rem 0 0;
+  margin: 9px 10px;
 }
 
 .App-header-menu-icon:hover {
@@ -793,9 +795,6 @@ button.App-button {
 }
 
 @media (max-width: 900px) {
-  .App-header-top {
-    padding-bottom: 0.3rem;
-  }
   button.App-connect-wallet {
     margin-top: 0.3rem;
     margin-bottom: 0.3rem;
@@ -813,21 +812,17 @@ button.App-button {
   .App-header-user {
     padding-bottom: 0;
   }
+
   a.App-header-user-account {
     display: none;
   }
-  .App-header-link-container {
-  }
+  
   .App-header a.App-header-link-main, .App-header a {
     background: #0b0b0f;
     display: flex;
     position: relative;
     z-index: 2;
     justify-content: space-between;
-  }
-  .App-header-menu-icon {
-    margin-top: 0.9rem;
-    margin-left: 0.2rem;
   }
 
   .App-header-user-netowork .Selector-box {
@@ -850,6 +845,7 @@ button.App-button {
   }
 
   .App-header-link-main img {
+    height: 1.355rem;
   }
 
   .App-header.large {
@@ -857,7 +853,25 @@ button.App-button {
   }
 
   .App-header.small {
-    display: block;
+    height: 62px;
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    padding-left: 32px;
+    padding-right: 32px;
+    background: transparent 0% 0% no-repeat padding-box;
+    border-bottom: 1px solid #ffffff10;
+  }
+  
+  .App-header.small::after {
+    height: 13px;
+    width: 100%;
+    content: " ";
+    background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
+    position: absolute;
+    bottom: -13px;
+    left: 0;
   }
 
   .Page-title-section {

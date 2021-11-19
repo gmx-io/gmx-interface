@@ -61,7 +61,7 @@ import Checkbox from './components/Checkbox/Checkbox'
 
 import { RiMenuLine } from 'react-icons/ri'
 import { FaTimes } from 'react-icons/fa'
-import { BsThreeDots }  from 'react-icons/bs'
+import { BsThreeDots } from 'react-icons/bs'
 
 import './Font.css'
 import './Shared.css'
@@ -171,9 +171,11 @@ function AppHeaderUser({ openSettings, small }) {
 
     return (
       <div className="App-header-user">
-        <div className="App-header-user-link">
-          <NavLink activeClassName="active" to="/trade">Trade</NavLink>
-        </div>
+        {!small &&
+          <div className="App-header-user-link">
+            <NavLink activeClassName="active" to="/trade">Trade</NavLink>
+          </div>
+        }
         <button target="_blank" rel="noopener noreferrer" className="App-cta App-connect-wallet" onClick={connectWallet}>
           Connect Wallet
         </button>
@@ -201,9 +203,9 @@ function AppHeaderUser({ openSettings, small }) {
         modalText="Or you can switch network manually in&nbsp;Metamask"
       />}
       {!small &&
-          <button className="App-header-user-settings" onClick={openSettings}>
-            <BsThreeDots />
-          </button>
+        <button className="App-header-user-settings" onClick={openSettings}>
+          <BsThreeDots />
+        </button>
       }
     </div>
   )
@@ -289,8 +291,8 @@ function FullApp() {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash
             helperToast.error(
               <div>
-              Txn failed. <a href={txUrl} target="_blank" rel="noopener noreferrer">View</a>
-              <br/>
+                Txn failed. <a href={txUrl} target="_blank" rel="noopener noreferrer">View</a>
+                <br />
               </div>
             )
           }
@@ -298,8 +300,8 @@ function FullApp() {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash
             helperToast.success(
               <div>
-              {pendingTxn.message}. <a href={txUrl} target="_blank" rel="noopener noreferrer">View</a>
-              <br/>
+                {pendingTxn.message}. <a href={txUrl} target="_blank" rel="noopener noreferrer">View</a>
+                <br />
               </div>
             )
           }
@@ -339,7 +341,7 @@ function FullApp() {
                   variants={fadeVariants}
                   transition={{ duration: 0.2 }}
                   onClick={() => setIsDrawerVisible(!isDrawerVisible)}
-                  >
+                >
                 </motion.div>}
             </AnimatePresence>
           }
@@ -358,16 +360,16 @@ function FullApp() {
             <div className={cx("App-header", "small", { active: isDrawerVisible })}>
               <div className={cx("App-header-link-container", "App-header-top", { active: isDrawerVisible })}>
                 <div className="App-header-container-left">
+                  <div className="App-header-menu-icon-block" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
+                    {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
+                    {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
+                  </div>
                   <div className="App-header-link-main">
                     <img src={logoImg} alt="MetaMask" />
                   </div>
                 </div>
                 <div className="App-header-container-right">
                   <AppHeaderUser openSettings={openSettings} small />
-                  <div onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
-                    {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
-                    {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
-                  </div>
                 </div>
               </div>
               <AnimatePresence>
@@ -380,9 +382,9 @@ function FullApp() {
                     exit="hidden"
                     variants={slideVariants}
                     transition={{ duration: 0.2 }}
-                    >
-                  <AppHeaderLinks small openSettings={openSettings} />
-                </motion.div>}
+                  >
+                    <AppHeaderLinks small openSettings={openSettings} />
+                  </motion.div>}
               </AnimatePresence>
             </div>
           </header>
@@ -519,7 +521,7 @@ function PreviewApp() {
                   variants={fadeVariants}
                   transition={{ duration: 0.2 }}
                   onClick={() => setIsDrawerVisible(!isDrawerVisible)}
-                  >
+                >
                 </motion.div>}
             </AnimatePresence>
           }
@@ -540,7 +542,6 @@ function PreviewApp() {
                 <div className="App-header-container-left">
                   <div className="App-header-link-main">
                     <img src={logoImg} alt="MetaMask" />
-                    GMX
                   </div>
                 </div>
                 <div className="App-header-container-right">
@@ -560,9 +561,9 @@ function PreviewApp() {
                     exit="hidden"
                     variants={slideVariants}
                     transition={{ duration: 0.2 }}
-                    >
-                  <AppHeaderLinks small />
-                </motion.div>}
+                  >
+                    <AppHeaderLinks small />
+                  </motion.div>}
               </AnimatePresence>
             </div>
           </header>

@@ -164,6 +164,8 @@ a.plain {
 }
 
 .default-container {
-  max-width: 1200px;
+  max-width: 1264px;
+  padding-left: 32px;
+  padding-right: 32px;
   margin: 0 auto;
 }

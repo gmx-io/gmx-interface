@@ -1,5 +1,42 @@
 .Footer {
   text-align: center;
-  padding-top: 2rem;
-  height: 5rem;
+  padding-top: 2.348rem;
+}
+
+.Footer-logo {
+  margin-bottom: 4.549rem;
+}
+
+.Footer-logo img {
+  height: 2.580rem;
+}
+
+.Footer-social-link-block {
+  padding-bottom: 1.906rem;
+  border-bottom: 1px solid #2F2F31;
+  max-width: 71.613rem;
+  margin: 0 auto;
+}
+
+.Footer-social-link-block .App-social-link {
+  margin: 0 2.226rem;
+  display: inline-flex;
+}
+
+.Footer-copyright {
+  padding: 1.903rem;
+}
+
+.Footer-copyright__text {
+  font-family: Circular Std;
+  font-size: 0.839rem;
+  line-height: 0.839rem;
+  letter-spacing: -0.41px;
+  color: #A0A3C4;
+}
+
+@media (max-width: 900px) {
+  .Footer-social-link-block .App-social-link {
+    margin: 0 1.034rem;
+  }
 }
