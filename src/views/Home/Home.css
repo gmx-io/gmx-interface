@@ -47,11 +47,11 @@
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: center;
-  padding: 5.162rem 0;
+  padding: 3.6135rem 0;
 }
 
 .Home-benefit {
-  padding: 0;
+  padding: 1.5485rem 0;
 }
 
 .Home-benefit-title {
@@ -174,7 +174,7 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  padding: 5.161rem 0;
+  padding: 4.129rem 0;
 }
 
 .Home-latest-info-block {
@@ -188,6 +188,7 @@
   align-items: center;
   padding-top: 1.806rem;
   padding-bottom: 1.806rem;
+  margin: 1.032rem 0;
 }
 
 .Home-latest-info__icon {
@@ -314,10 +315,6 @@
 }
 
 @media (max-width: 1200px) {
-  .Home-benefit + .Home-benefit {
-    margin-top: 3.097rem;
-  }
-
   .Home-cta-option {
     padding-left: 2.129rem;
   }
