@@ -12,7 +12,7 @@ import liquidityIcon from '../../img/ic_liquidity.svg'
 import bscIcon from '../../img/ic_bsc.svg'
 import arbitrumIcon from '../../img/lg_arbitrum.svg'
 
-import cashIcon from '../../img/ic_cash.svg'
+import cashIcon from '../../img/ic_cash.png'
 import statsIcon from '../../img/ic_stats.svg'
 import tradingIcon from '../../img/ic_trading.svg'
 // import gmxBigIcon from '../../img/ic_gmx_big.svg'
