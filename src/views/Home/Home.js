@@ -16,8 +16,59 @@ import cashIcon from '../../img/ic_cash.png'
 import statsIcon from '../../img/ic_stats.svg'
 import tradingIcon from '../../img/ic_trading.svg'
 // import gmxBigIcon from '../../img/ic_gmx_big.svg'
+import useSWR from 'swr'
+import { useWeb3React } from '@web3-react/core'
+import {
+  fetcher,
+  formatAmount,
+  getInfoTokens,
+  expandDecimals,
+  bigNumberify,
+  numberWithCommas,
+  getServerUrl,
+  USD_DECIMALS
+} from '../../Helpers'
+
+import { getTokens, getWhitelistedTokens } from '../../data/Tokens'
+import { getFeeHistory } from '../../data/Fees'
+import { getContract } from '../../Addresses'
+import ReaderV2 from '../../abis/ReaderV2.json'
+
+function getTotalVolumeSum(volumes) {
+  if (!volumes || volumes.length === 0) {
+    return
+  }
+
+  let volume = bigNumberify(0)
+  for (let i = 0; i < volumes.length; i++) {
+    volume = volume.add(volumes[i].data.volume)
+  }
+
+  return volume
+}
+
+function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
+  if (!fees || !infoTokens) {
+    return bigNumberify(0)
+  }
+
+  let currentFeesUsd = bigNumberify(0)
+  for (let i = 0; i < tokenAddresses.length; i++) {
+    const tokenAddress = tokenAddresses[i]
+    const tokenInfo = infoTokens[tokenAddress]
+    if (!tokenInfo || !tokenInfo.minPrice) {
+      continue
+    }
+
+    const feeUsd = fees[i].mul(tokenInfo.minPrice).div(expandDecimals(1, tokenInfo.decimals))
+    currentFeesUsd = currentFeesUsd.add(feeUsd)
+  }
+
+  return currentFeesUsd
+}
 
 export default function Home() {
+  const { active, library } = useWeb3React()
   const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
   const faqContent = [{
     id: 1,
@@ -43,6 +94,58 @@ export default function Home() {
     } else {
       setOpenedFAQIndex(index)
     }
+  }
+
+  const chainId = 42161 // set chain to Arbitrum
+
+  const positionStatsUrl = getServerUrl(chainId, "/position_stats")
+  const { data: positionStats } = useSWR([positionStatsUrl], {
+    fetcher: (...args) => fetch(...args).then(res => res.json())
+  })
+
+  const totalVolumeUrl = getServerUrl(chainId, "/total_volume")
+  const { data: totalVolume } = useSWR([totalVolumeUrl], {
+    fetcher: (...args) => fetch(...args).then(res => res.json())
+  })
+
+  // Total Volume
+
+  const totalVolumeSum = getTotalVolumeSum(totalVolume)
+
+  // Open Interest
+
+  let openInterest = bigNumberify(0)
+  if (positionStats && positionStats.totalLongPositionSizes && positionStats.totalShortPositionSizes) {
+    openInterest = openInterest.add(positionStats.totalLongPositionSizes)
+    openInterest = openInterest.add(positionStats.totalShortPositionSizes)
+  }
+
+  // Total Fee
+  const readerAddress = getContract(chainId, "Reader")
+  const vaultAddress = getContract(chainId, "Vault")
+  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
+
+  const tokens = getTokens(chainId)
+  const whitelistedTokens = getWhitelistedTokens(chainId)
+  const whitelistedTokenAddresses = whitelistedTokens.map(token => token.address)
+
+  const { data: vaultTokenInfo } = useSWR([`Dashboard:vaultTokenInfo:${active}`, chainId, readerAddress, "getFullVaultTokenInfo"], {
+    fetcher: fetcher(library, ReaderV2, [vaultAddress, nativeTokenAddress, expandDecimals(1, 18), whitelistedTokenAddresses]),
+  })
+
+  const { data: fees } = useSWR([`Dashboard:fees:${active}`, chainId, readerAddress, "getFees", vaultAddress], {
+    fetcher: fetcher(library, ReaderV2, [whitelistedTokenAddresses]),
+  })
+
+  const infoTokens = getInfoTokens(tokens, undefined, whitelistedTokens, vaultTokenInfo, undefined)
+
+  const currentFeesUsd = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokens)
+
+  const feeHistory = getFeeHistory(chainId)
+  const shouldIncludeCurrrentFees = (parseInt(Date.now() / 1000) - feeHistory[0].to) > 60 * 60
+  let totalFeesDistributed = shouldIncludeCurrrentFees ? parseFloat(bigNumberify(formatAmount(currentFeesUsd, USD_DECIMALS - 2, 0, false)).toNumber()) / 100 : 0
+  for (let i = 0; i < feeHistory.length; i++) {
+    totalFeesDistributed += parseFloat(feeHistory[i].feeUsd)
   }
 
   return (
@@ -136,7 +239,7 @@ export default function Home() {
             <img src={tradingIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
               <div className="Home-latest-info__title">Trading Volume</div>
-              <div className="Home-latest-info__value">$1,458,234,134</div>
+              <div className="Home-latest-info__value">${formatAmount(totalVolumeSum, USD_DECIMALS, 0, true)}</div>
               <div className="Home-latest-info__description">LAST 24H</div>
             </div>
           </div>
@@ -144,7 +247,7 @@ export default function Home() {
             <img src={statsIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
               <div className="Home-latest-info__title">Open Interest</div>
-              <div className="Home-latest-info__value">$1,458,234,134</div>
+              <div className="Home-latest-info__value">${formatAmount(openInterest, USD_DECIMALS, 0, true)}</div>
               <div className="Home-latest-info__description">LAST 24H</div>
             </div>
           </div>
@@ -152,7 +255,7 @@ export default function Home() {
             <img src={cashIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
               <div className="Home-latest-info__title">Fees Collected</div>
-              <div className="Home-latest-info__value">$1,458,234,134</div>
+              <div className="Home-latest-info__value">${numberWithCommas(totalFeesDistributed.toFixed(0))}</div>
               <div className="Home-latest-info__description">LAST 24H</div>
             </div>
           </div>
@@ -169,7 +272,7 @@ export default function Home() {
         <div className="Home-faqs-container default-container">
           <div className="Home-faqs-introduction">
             <div className="Home-faqs-introduction__title">FAQs</div>
-            <div className="Home-faqs-introduction__description">Get quick answers to common questions, orhead to the documentation to learn more</div>
+            <div className="Home-faqs-introduction__description">Most asked questions. If you wish to learn more, please head to our Documentation page.</div>
             <a href="https://gmxio.gitbook.io/gmx/" className="default-btn Home-faqs-documentation">Documentation</a>
           </div>
           <div className="Home-faqs-content-block">
