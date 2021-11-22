@@ -28,6 +28,9 @@
 
 .Home-title-section {
   max-width: 33.677rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .Home-description {
@@ -125,6 +128,11 @@
   letter-spacing: 0px;
   color: #6B6D84;
   margin-bottom: 1.161rem;
+}
+
+.Home-cta-option-action {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .Home-cta-button {
@@ -277,6 +285,10 @@
   padding: 2.387rem 3.226rem;
   width: 100%;
   max-width: 52rem;
+}
+
+.Home-faqs-content:hover {
+  background: #17182C55;
 }
 
 .Home-faqs-content + .Home-faqs-content {

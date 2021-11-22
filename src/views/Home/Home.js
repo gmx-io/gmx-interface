@@ -211,7 +211,7 @@ export default function Home() {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Arbitrum</div>
                 <div className="Home-cta-option-subtitle">GMX</div>
-                <div>
+                <div className="Home-cta-option-action">
                   <Link to="/trade" className="default-btn">Launch App</Link>
                 </div>
               </div>
@@ -223,7 +223,7 @@ export default function Home() {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Binance Smart Chain</div>
                 <div className="Home-cta-option-subtitle">Gambit</div>
-                <div>
+                <div className="Home-cta-option-action">
                   <a href="https://gambit.financial/" target="_blank" rel="noopener noreferrer" className="default-btn">
                     Launch App
                   </a>
