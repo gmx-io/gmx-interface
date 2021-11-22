@@ -239,15 +239,16 @@ export function getExchangeRate(tokenAInfo, tokenBInfo, inverted) {
 export function getMostAbundantStableToken(chainId, infoTokens) {
   const whitelistedTokens = getWhitelistedTokens(chainId)
   let availableAmount
-  let stableToken
+  let stableToken = whitelistedTokens.find(t => t.isStable)
   for (let i = 0; i < whitelistedTokens.length; i++) {
     const info = getTokenInfo(infoTokens, whitelistedTokens[i].address)
-    if (!info.isStable) {
+    if (!info.isStable || !info.availableAmount) {
       continue
     }
 
-    if (!availableAmount || info.availableAmount.gt(availableAmount)) {
-      availableAmount = info.availableAmount
+    const adjustedAvailableAmount = adjustForDecimals(info.availableAmount, info.decimals, USD_DECIMALS)
+    if (!availableAmount || adjustedAvailableAmount.gt(availableAmount)) {
+      availableAmount = adjustedAvailableAmount
       stableToken = info
     }
   }
