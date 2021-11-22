@@ -238,25 +238,22 @@ export default function Home() {
           <div className="Home-latest-info-block">
             <img src={tradingIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">Trading Volume</div>
+              <div className="Home-latest-info__title">Total Trading Volume</div>
               <div className="Home-latest-info__value">${formatAmount(totalVolumeSum, USD_DECIMALS, 0, true)}</div>
-              <div className="Home-latest-info__description">LAST 24H</div>
             </div>
           </div>
           <div className="Home-latest-info-block">
             <img src={statsIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">Open Interest</div>
+              <div className="Home-latest-info__title">Current Open Interest</div>
               <div className="Home-latest-info__value">${formatAmount(openInterest, USD_DECIMALS, 0, true)}</div>
-              <div className="Home-latest-info__description">LAST 24H</div>
             </div>
           </div>
           <div className="Home-latest-info-block">
             <img src={cashIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">Fees Collected</div>
+              <div className="Home-latest-info__title">Total Fees Collected</div>
               <div className="Home-latest-info__value">${numberWithCommas(totalFeesDistributed.toFixed(0))}</div>
-              <div className="Home-latest-info__description">LAST 24H</div>
             </div>
           </div>
         </div>

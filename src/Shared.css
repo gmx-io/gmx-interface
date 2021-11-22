@@ -12,6 +12,7 @@ html, body, #root {
 
 * {
   box-sizing: border-box;
+  font-family: "Relative";
 }
 
 ::-webkit-scrollbar {
@@ -146,7 +147,8 @@ a.plain {
 }
 
 .default-btn {
-  background: #303FD0 0% 0% no-repeat padding-box;
+  /* #4E09F8 */
+  background: #4e09f8 0% 0% no-repeat padding-box;
   border-radius: 4px;
   font-size: 14px;
   line-height: 20px;
@@ -154,13 +156,47 @@ a.plain {
   font-weight: 500;
   letter-spacing: 0px;
   color: #FFFFFF;
-  padding: 11px 18px;
+  padding: 9px 16px;
   text-decoration: none;
   display: inline-block;
+  box-sizing: border-box;
+  position: relative;
+  height: 36px;
 }
 
 .default-btn:hover {
-  box-shadow: 0 0 4px 6px rgba(45,66,252,0.2);
+  background: #5c1cf9 0% 0% no-repeat padding-box;
+}
+
+.default-btn:focus {
+  background: #6a31f9 0% 0% no-repeat padding-box;
+  border: 1px solid #8554FC;
+  box-sizing: border-box;
+  padding: 8px 15px;
+}
+
+.default-btn:active {
+  background: #6a31f9 0% 0% no-repeat padding-box;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.default-btn:active::after {
+  opacity: 0.239;
+  content: " ";
+  width: 52px;
+  height: 52px;
+  position: absolute;
+  left: calc(50% - 26px);
+  top: -8px;
+  border-radius: 0;
+  background: white;
+  border-radius: 50%;
+}
+
+.default-btn:disabled {
+  background: #2d2e3f 0% 0% no-repeat padding-box;
+  color: #FFFFFF61;
 }
 
 .default-container {
