@@ -148,7 +148,7 @@ a.plain {
 
 .default-btn {
   /* #4E09F8 */
-  background: #4e09f8 0% 0% no-repeat padding-box;
+  background: #4e09f8;
   border-radius: 4px;
   font-size: 14px;
   line-height: 20px;
@@ -165,18 +165,17 @@ a.plain {
 }
 
 .default-btn:hover {
-  background: #5c1cf9 0% 0% no-repeat padding-box;
+  background: #5c1cf9;
 }
 
 .default-btn:focus {
-  background: #6a31f9 0% 0% no-repeat padding-box;
+  background: #6a31f9;
   border: 1px solid #8554FC;
   box-sizing: border-box;
-  padding: 8px 15px;
 }
 
 .default-btn:active {
-  background: #6a31f9 0% 0% no-repeat padding-box;
+  background: #6a31f9;
   box-sizing: border-box;
   overflow: hidden;
 }
