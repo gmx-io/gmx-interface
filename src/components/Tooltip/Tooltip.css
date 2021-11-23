@@ -47,6 +47,12 @@
   top: 100%;
 }
 
+.Tooltip-popup.center-top {
+  left: 50%;
+  transform: translateY(-0.5rem) translateX(-50%);
+  bottom: 100%;
+}
+
 .Tooltip-handle {
   cursor: help;
   position: relative;
