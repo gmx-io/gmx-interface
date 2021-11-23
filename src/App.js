@@ -12,7 +12,6 @@ import {
   Route,
   NavLink
 } from 'react-router-dom'
-import { useLocalStorage } from 'react-use'
 
 import {
   MAINNET,
@@ -31,6 +30,7 @@ import {
   getAccountUrl,
   getConnectWalletHandler,
   useEagerConnect,
+  useLocalStorageSerializeKey,
   useInactiveListener,
   shortenAddress,
   getExplorerUrl
@@ -227,20 +227,20 @@ function FullApp() {
   }
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false)
-  const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorage(
-    SLIPPAGE_BPS_KEY,
+  const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
+    [chainId, SLIPPAGE_BPS_KEY],
     DEFAULT_SLIPPAGE_AMOUNT
   )
   const [slippageAmount, setSlippageAmount] = useState(0)
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false)
 
-  const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorage(
-    IS_PNL_IN_LEVERAGE_KEY,
+  const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
+    [chainId, IS_PNL_IN_LEVERAGE_KEY],
     false
   )
 
-  const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorage(
-    SHOULD_SHOW_POSITION_LINES_KEY,
+  const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
+    [chainId, SHOULD_SHOW_POSITION_LINES_KEY],
     false
   )
 
