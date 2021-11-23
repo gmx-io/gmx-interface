@@ -46,7 +46,7 @@ function getOrderActionTitle(action) {
 }
 
 function renderLiquidationTooltip(liquidationData) {
-  const minCollateral = bigNumberify(liquidationData.size).mul(BASIS_POINTS_DIVISOR).div(MAX_LEVERAGE)
+  const minCollateral = liquidationData.size.mul(BASIS_POINTS_DIVISOR).div(MAX_LEVERAGE)
   const text = liquidationData.type === "full"
     ? "This position was liquidated as the max leverage of 100x was exceeded"
     : "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
@@ -179,14 +179,14 @@ export default function TradeHistory(props) {
       const liquidationData = getLiquidationData(liquidationsDataMap, params.key, tradeData.timestamp)
       if (liquidationData) {
         return <>
-          Liquidated {indexToken.symbol} {params.isLong ? "Long" : "Short"},&nbsp;
-          {formatAmount(params.size, USD_DECIMALS, 2, true)} USD,&nbsp;
+          Liquidated {indexToken.symbol} {params.isLong ? "Long" : "Short"},
+          -{formatAmount(params.size, USD_DECIMALS, 2, true)} USD,&nbsp;
           {indexToken.symbol} {renderLiquidationTooltip(liquidationData)}
         </>
       }
       return `
         Liquidated ${indexToken.symbol} ${params.isLong ? "Long" : "Short"},
-        ${formatAmount(params.size, USD_DECIMALS, 2, true)} USD,
+        -${formatAmount(params.size, USD_DECIMALS, 2, true)} USD,
         ${indexToken.symbol} Price: ${formatAmount(params.markPrice, USD_DECIMALS, 2, true)} USD
       `
     }
