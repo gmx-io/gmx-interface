@@ -89,6 +89,9 @@ export function useLiquidationsData(chainId, account) {
       const query = gql(`{
          liquidatedPositions(
            where: {account: "${account.toLowerCase()}"}
+           first: 100
+           orderBy: timestamp
+           orderDirection: desc
          ) {
            key
            timestamp
@@ -101,7 +104,15 @@ export function useLiquidationsData(chainId, account) {
          }
       }`)
       gmxGraphClient.query({ query }).then(res => {
-        setData(res.data.liquidatedPositions)
+        const _data = res.data.liquidatedPositions.map(item => {
+          return {
+            ...item,
+            size: bigNumberify(item.size),
+            collateral: bigNumberify(item.collateral),
+            markPrice: bigNumberify(item.markPrice)
+          }
+        })
+        setData(_data)
       }).catch(console.warn)
     }
   }, [setData, chainId, account])
@@ -134,7 +145,7 @@ export function useAllPositions(chainId, library) {
   const [res, setRes] = useState()
 
   useEffect(() => {
-    nissohGraphClient.query({ query }).then(setRes)
+    nissohGraphClient.query({ query }).then(setRes).catch(console.warn)
   }, [setRes, query])
 
   const key = res ? `allPositions${count}__` : false
