@@ -129,8 +129,8 @@ button.App-cta.App-connect-wallet {
   font-size: 14px;
   line-height: 20px;
   font-weight: 500;
-  padding: 11px 24px;
-  height: 40px;
+  padding: 9px 24px;
+  height: 36px;
   color: #17182C;
   background: #03CFCD 0% 0% no-repeat padding-box;
   border-radius: 4px;
@@ -146,7 +146,7 @@ button.App-connect-wallet:hover {
 
 .App-header-user-link a {
   width: 68px;
-  height: 40px;
+  height: 36px;
   background: #303FD0 0% 0% no-repeat padding-box;
   border-radius: 4px;
   opacity: 1;
@@ -267,7 +267,8 @@ button.App-connect-wallet:hover {
 
 .App-header a.App-header-link-main, .App-header .App-header-link-main {
   font-size: 1.1rem;
-  margin-right: 1rem;
+  padding: 1rem;
+  margin-left: -1rem;
 }
 
 .App-header-link-main img {
@@ -293,12 +294,16 @@ button.App-connect-wallet:hover {
 }
 
 .App-header-link-container a {
-  padding: 5px 17px;
+  padding: 16px 17px;
   display: block;
   color: #83849B;
   font-size: 14px;
   line-height: 19px;
   font-weight: bold;
+}
+
+.App-header-link-container a.active {
+  color: white;
 }
 
 .Toastify {
