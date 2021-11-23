@@ -269,6 +269,7 @@
   font-size: 1.161rem;
   line-height: 1.484rem;
   margin-bottom: 2.387rem;
+  margin-top: 1rem;
   max-width: 19.226rem;
 }
 
@@ -315,15 +316,20 @@
 }
 
 .Home-faqs-content-main {
-  height: 0;
   overflow: hidden;
+  height: 0;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 1s ease;
+  padding: 0 2.387rem;
 }
 
 .Home-faqs-content-main.opened {
-  height: fit-content;
+  height: unset;
   padding: 1rem 2.387rem 0;
   color: #A0A3C4;
   letter-spacing: 0px;
+  transform: scaleY(1);
 }
 
 @media (max-width: 1200px) {

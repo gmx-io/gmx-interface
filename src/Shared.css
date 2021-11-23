@@ -147,8 +147,7 @@ a.plain {
 }
 
 .default-btn {
-  /* #4E09F8 */
-  background: #4e09f8;
+  background: #3546EE;
   border-radius: 4px;
   font-size: 14px;
   line-height: 20px;
@@ -165,17 +164,17 @@ a.plain {
 }
 
 .default-btn:hover {
-  background: #5c1cf9;
+  background: #4555ef;
 }
 
 .default-btn:focus {
-  background: #6a31f9;
+  background: #5564f1;
   border: 1px solid #8554FC;
   box-sizing: border-box;
 }
 
 .default-btn:active {
-  background: #6a31f9;
+  background: #5564f1;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -203,4 +202,56 @@ a.plain {
   padding-left: 32px;
   padding-right: 32px;
   margin: 0 auto;
+}
+
+.secondary-btn {
+  background: #03D1CFFC;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  font-family: Relative;
+  font-weight: 500;
+  letter-spacing: 0px;
+  color: black;
+  padding: 9px 16px;
+  text-decoration: none;
+  display: inline-block;
+  box-sizing: border-box;
+  position: relative;
+  height: 36px;
+  border: none;
+}
+
+.secondary-btn:hover {
+  background: #17d3d1;
+}
+
+.secondary-btn:focus {
+  background: #3fdad9;
+  border: 1px solid #1CB5B4FC;
+  box-sizing: border-box;
+}
+
+.secondary-btn:active {
+  background: #3fdad9;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.secondary-btn:active::after {
+  opacity: 0.239;
+  content: " ";
+  width: 52px;
+  height: 52px;
+  position: absolute;
+  left: calc(50% - 26px);
+  top: -8px;
+  border-radius: 0;
+  background: white;
+  border-radius: 50%;
+}
+
+.secondary-btn:disabled {
+  background: #2d2e3f 0% 0% no-repeat padding-box;
+  color: #FFFFFF61;
 }

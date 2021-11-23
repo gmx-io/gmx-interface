@@ -128,7 +128,7 @@ function AppHeaderLinks({ small, openSettings }) {
         </a>
       </div>
       <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/earn">Buy GMX</NavLink>
+        <NavLink activeClassName="active" to="/earn">Buy GMX/GLP</NavLink>
       </div>
       {/* <div className="App-header-link-container">
         <a href="https://www.gmx.house/p/leaderboard" target="_blank" rel="noopener noreferrer">
@@ -176,7 +176,7 @@ function AppHeaderUser({ openSettings, small }) {
             <NavLink activeClassName="active" to="/trade">Trade</NavLink>
           </div>
         }
-        <button target="_blank" rel="noopener noreferrer" className="App-cta App-connect-wallet" onClick={connectWallet}>
+        <button target="_blank" rel="noopener noreferrer" className="secondary-btn" onClick={connectWallet}>
           Connect Wallet
         </button>
       </div>
