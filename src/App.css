@@ -149,14 +149,35 @@ button.App-connect-wallet:hover {
   height: 36px;
   background: #303FD0 0% 0% no-repeat padding-box;
   border-radius: 4px;
-  opacity: 1;
-  color: #FFFFFF;
+  opacity: 1!important;
+  color: #FFFFFF!important;
   font-size: 14px;
   line-height: 20px;
   font-weight: 500;
   display: inline-flex!important;
   align-items: center;
   justify-content: center;
+  position: relative;
+}
+
+.App-header-user-link a:active {
+  /* background: #3fdad9; */
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.App-header-user-link a:active::after {
+  opacity: 0.239;
+  content: " ";
+  width: 52px;
+  height: 52px;
+  position: absolute;
+  left: calc(50% - 26px);
+  top: -8px;
+  background: white;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 500ms linear;
 }
 
 .App-card-divider {
@@ -269,6 +290,7 @@ button.App-connect-wallet:hover {
   font-size: 1.1rem;
   padding: 1rem;
   margin-left: -1rem;
+  display: flex;
 }
 
 .App-header-link-main img {
@@ -281,16 +303,17 @@ button.App-connect-wallet:hover {
   text-decoration: none;
   vertical-align: middle;
   display: inline-block;
-  opacity: 0.8;
 }
 
 .App-header a.active {
   pointer-events: none;
   opacity: 1;
+  color: #eee;
 }
 
 .App-header a:hover {
   opacity: 1;
+  color: #eee;
 }
 
 .App-header-link-container a {
@@ -304,6 +327,11 @@ button.App-connect-wallet:hover {
 
 .App-header-link-container a.active {
   color: white;
+}
+
+.App-header-link-container a.disabled {
+  cursor: not-allowed;
+  color: #FFFFFF61;
 }
 
 .Toastify {
@@ -779,6 +807,10 @@ button.App-button {
 }
 
 @media (max-width: 900px) {
+  .App-header-user-link {
+    margin-right: 16px;
+  }
+
   button.App-connect-wallet {
     margin-top: 0.3rem;
     margin-bottom: 0.3rem;
@@ -799,14 +831,6 @@ button.App-button {
 
   a.App-header-user-account {
     display: none;
-  }
-  
-  .App-header a.App-header-link-main, .App-header a {
-    background: #0b0b0f;
-    display: flex;
-    position: relative;
-    z-index: 2;
-    justify-content: space-between;
   }
 
   .App-header-user-netowork .Selector-box {
@@ -842,8 +866,8 @@ button.App-button {
     display: flex;
     justify-content: space-between;
     position: relative;
-    padding-left: 32px;
-    padding-right: 32px;
+    padding-left: 16px;
+    padding-right: 16px;
     background: transparent 0% 0% no-repeat padding-box;
     border-bottom: 1px solid #ffffff10;
   }
