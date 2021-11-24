@@ -187,9 +187,10 @@ a.plain {
   position: absolute;
   left: calc(50% - 26px);
   top: -8px;
-  border-radius: 0;
   background: white;
   border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 600ms linear;
 }
 
 .default-btn:disabled {
@@ -205,7 +206,7 @@ a.plain {
 }
 
 .secondary-btn {
-  background: #03D1CFFC;
+  background: #03cfcd;
   border-radius: 4px;
   font-size: 14px;
   line-height: 20px;
@@ -246,12 +247,20 @@ a.plain {
   position: absolute;
   left: calc(50% - 26px);
   top: -8px;
-  border-radius: 0;
   background: white;
   border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 500ms linear;
 }
 
 .secondary-btn:disabled {
   background: #2d2e3f 0% 0% no-repeat padding-box;
   color: #FFFFFF61;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(2);
+    opacity: 0.4;
+  }
 }

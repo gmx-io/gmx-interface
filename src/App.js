@@ -94,6 +94,9 @@ function inPreviewMode() {
 }
 
 function AppHeaderLinks({ small, openSettings }) {
+  const handleDiabledClick = (e) => {
+    e.preventDefault()
+  }
   if (inPreviewMode()) {
     return (
       <div className="App-header-links preview">
@@ -128,7 +131,7 @@ function AppHeaderLinks({ small, openSettings }) {
         </a>
       </div>
       <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/earn">Buy GMX/GLP</NavLink>
+        <NavLink activeClassName="active" className="disabled" to="/gmxglp" onClick={handleDiabledClick}>Buy GMX/GLP</NavLink>
       </div>
       {/* <div className="App-header-link-container">
         <a href="https://www.gmx.house/p/leaderboard" target="_blank" rel="noopener noreferrer">
@@ -171,11 +174,9 @@ function AppHeaderUser({ openSettings, small }) {
 
     return (
       <div className="App-header-user">
-        {!small &&
-          <div className="App-header-user-link">
-            <NavLink activeClassName="active" to="/trade">Trade</NavLink>
-          </div>
-        }
+        <div className="App-header-user-link">
+          <NavLink activeClassName="active" to="/trade">Trade</NavLink>
+        </div>
         <button target="_blank" rel="noopener noreferrer" className="secondary-btn" onClick={connectWallet}>
           Connect Wallet
         </button>
