@@ -423,7 +423,7 @@ export default function PositionSeller(props) {
     let priceLimit = refPrice.mul(priceBasisPoints).div(BASIS_POINTS_DIVISOR)
     const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME
     const minProfitTimeExpired = parseInt(Date.now() / 1000) > minProfitExpiration
-    if (!minProfitTimeExpired && !isProfitWarningAccepted) {
+    if (nextHasProfit && !minProfitTimeExpired && !isProfitWarningAccepted) {
       if ((position.isLong && priceLimit.lt(profitPrice)) || (!position.isLong && priceLimit.gt(profitPrice))) {
         priceLimit = profitPrice
       }
