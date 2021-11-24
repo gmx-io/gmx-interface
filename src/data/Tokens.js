@@ -193,13 +193,6 @@ const TOKENS = {
       isStable: false
     },
     {
-      name: "Magic Internet Money",
-      symbol: "MIM",
-      decimals: 18,
-      address: "0xFEa7a6a0B346362BF88A9e4A88416B77a57D6c2A",
-      isStable: true
-    },
-    {
       name: "USD Coin",
       symbol: "USDC",
       decimals: 6,
@@ -211,6 +204,13 @@ const TOKENS = {
       symbol: "USDT",
       decimals: 6,
       address: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+      isStable: true
+    },
+    {
+      name: "Magic Internet Money",
+      symbol: "MIM",
+      decimals: 18,
+      address: "0xFEa7a6a0B346362BF88A9e4A88416B77a57D6c2A",
       isStable: true
     }
   ]
