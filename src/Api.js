@@ -12,6 +12,7 @@ import {
   SWAP_ORDER_EXECUTION_GAS_FEE,
   INCREASE_ORDER_EXECUTION_GAS_FEE,
   DECREASE_ORDER_EXECUTION_GAS_FEE,
+  ARBITRUM,
   // DEFAULT_GAS_LIMIT,
   bigNumberify,
   getExplorerUrl,
@@ -75,10 +76,48 @@ export function useAllOrdersStats() {
   const [res, setRes] = useState()
 
   useEffect(() => {
-    gmxGraphClient.query({ query }).then(setRes)
+    gmxGraphClient.query({ query }).then(setRes).catch(console.warn)
   }, [setRes, query])
 
   return res ? res.data.orderStat : null
+}
+
+export function useLiquidationsData(chainId, account) {
+  const [data, setData] = useState(null)
+  useEffect(() => {
+    if (chainId === ARBITRUM && account) {
+      const query = gql(`{
+         liquidatedPositions(
+           where: {account: "${account.toLowerCase()}"}
+           first: 100
+           orderBy: timestamp
+           orderDirection: desc
+         ) {
+           key
+           timestamp
+           borrowFee
+           loss
+           collateral
+           size
+           markPrice
+           type
+         }
+      }`)
+      gmxGraphClient.query({ query }).then(res => {
+        const _data = res.data.liquidatedPositions.map(item => {
+          return {
+            ...item,
+            size: bigNumberify(item.size),
+            collateral: bigNumberify(item.collateral),
+            markPrice: bigNumberify(item.markPrice)
+          }
+        })
+        setData(_data)
+      }).catch(console.warn)
+    }
+  }, [setData, chainId, account])
+
+  return data
 }
 
 export function useAllPositions(chainId, library) {
@@ -106,7 +145,7 @@ export function useAllPositions(chainId, library) {
   const [res, setRes] = useState()
 
   useEffect(() => {
-    nissohGraphClient.query({ query }).then(setRes)
+    nissohGraphClient.query({ query }).then(setRes).catch(console.warn)
   }, [setRes, query])
 
   const key = res ? `allPositions${count}__` : false
@@ -245,12 +284,12 @@ async function getChartPricesFromStats(marketName, chainId) {
   }
   const json = await res.json()
 
-  const OBSOLETE_THRESHOLD = 60 * 60 * 2 // chainlink updates on Arbitrum are not too frequent
+  const OBSOLETE_THRESHOLD = 60 * 60 * 3 // chainlink updates on Arbitrum are not too frequent
   if (json && json.length) {
     const lastTs = json[json.length - 1][0]
     const diff = Date.now() / 1000 - lastTs
     if (diff > OBSOLETE_THRESHOLD) {
-      throw new Error('chart data is obsolete')
+      throw new Error('chart data is obsolete, last price record at ' + new Date(lastTs * 1000))
     }
   }
   return json
