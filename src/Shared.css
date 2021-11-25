@@ -169,12 +169,13 @@ a.plain {
 
 .default-btn:focus {
   background: #5564f1;
-  border: 1px solid #8554FC;
+  border: 1px solid #3D4FFE;
   box-sizing: border-box;
 }
 
 .default-btn:active {
   background: #5564f1;
+  border: none;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -206,7 +207,7 @@ a.plain {
 }
 
 .secondary-btn {
-  background: #03cfcd;
+  background: #03d1cf;
   border-radius: 4px;
   font-size: 14px;
   line-height: 20px;
@@ -224,17 +225,18 @@ a.plain {
 }
 
 .secondary-btn:hover {
-  background: #17d3d1;
+  background: #3fdad9;
 }
 
 .secondary-btn:focus {
-  background: #3fdad9;
+  background: #54dedd;
   border: 1px solid #1CB5B4FC;
   box-sizing: border-box;
 }
 
 .secondary-btn:active {
-  background: #3fdad9;
+  background: #54dedd;
+  border: none;
   box-sizing: border-box;
   overflow: hidden;
 }

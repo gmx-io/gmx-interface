@@ -62,6 +62,7 @@ import Checkbox from './components/Checkbox/Checkbox'
 import { RiMenuLine } from 'react-icons/ri'
 import { FaTimes } from 'react-icons/fa'
 import { BsThreeDots } from 'react-icons/bs'
+import { FiX } from "react-icons/fi"
 
 import './Font.css'
 import './Shared.css'
@@ -93,7 +94,7 @@ function inPreviewMode() {
   return false
 }
 
-function AppHeaderLinks({ small, openSettings }) {
+function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
   const handleDiabledClick = (e) => {
     e.preventDefault()
   }
@@ -116,6 +117,16 @@ function AppHeaderLinks({ small, openSettings }) {
   }
   return (
     <div className="App-header-links">
+      { small &&
+        <div className="App-header-links-header">
+          <div className="App-header-menu-icon-block" onClick={() => clickCloseIcon()}>
+            <FiX className="App-header-menu-icon" />
+          </div>
+          <div className="App-header-link-main">
+            <img src={logoImg} alt="MetaMask" />
+          </div>
+        </div>
+      }
       <div className="App-header-link-container App-header-link-home">
         <NavLink activeClassName="active" exact to="/">Home</NavLink>
       </div>
@@ -146,6 +157,7 @@ function AppHeaderLinks({ small, openSettings }) {
           </a>
         </div>
       }
+      
     </div>
   )
 }
@@ -191,6 +203,9 @@ function AppHeaderUser({ openSettings, small }) {
 
   return (
     <div className="App-header-user">
+      <div className="App-header-user-link">
+        <NavLink activeClassName="active" to="/trade">Trade</NavLink>
+      </div>
       <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="App-cta small transparent App-header-user-account">
         {shortenAddress(account, small ? 11 : 13)}
       </a>
@@ -228,8 +243,8 @@ function FullApp() {
     visible: { opacity: 1 }
   }
   const slideVariants = {
-    hidden: { y: "-100%" },
-    visible: { y: 0 }
+    hidden: { x: "-100%" },
+    visible: { x: 0 }
   }
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false)
@@ -325,12 +340,12 @@ function FullApp() {
   return (
     <Router>
       <div className="App">
-        <div className="App-background-side-1"></div>
+        {/* <div className="App-background-side-1"></div>
         <div className="App-background-side-2"></div>
         <div className="App-background"></div>
         <div className="App-background-ball-1"></div>
         <div className="App-background-ball-2"></div>
-        <div className="App-highlight"></div>
+        <div className="App-highlight"></div> */}
         <div className="App-content">
           {isDrawerVisible &&
             <AnimatePresence>
@@ -373,22 +388,22 @@ function FullApp() {
                   <AppHeaderUser openSettings={openSettings} small />
                 </div>
               </div>
-              <AnimatePresence>
-                {isDrawerVisible &&
-                  <motion.div
-                    onClick={() => setIsDrawerVisible(false)}
-                    className="App-header-links-container App-header-drawer"
-                    initial="hidden"
-                    animate="visible"
-                    exit="hidden"
-                    variants={slideVariants}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <AppHeaderLinks small openSettings={openSettings} />
-                  </motion.div>}
-              </AnimatePresence>
             </div>
           </header>
+          <AnimatePresence>
+            {isDrawerVisible &&
+              <motion.div
+                onClick={() => setIsDrawerVisible(false)}
+                className="App-header-links-container App-header-drawer"
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                variants={slideVariants}
+                transition={{ duration: 0.2 }}
+              >
+                <AppHeaderLinks small openSettings={openSettings} clickCloseIcon={() => setIsDrawerVisible(false)} />
+              </motion.div>}
+          </AnimatePresence>
           <Switch>
             <Route exact path="/">
               <Home />
@@ -498,8 +513,8 @@ function PreviewApp() {
     visible: { opacity: 1 }
   }
   const slideVariants = {
-    hidden: { y: "-100%" },
-    visible: { y: 0 }
+    hidden: { x: "-100%" },
+    visible: { x: 0 }
   }
 
   return (
