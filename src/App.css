@@ -11,12 +11,11 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.9);
 }
 
 .App-content header {
   position: relative;
-  z-index: 20;
+  /* z-index: 20; */
 }
 
 .App-header.large {
@@ -54,13 +53,41 @@
 }
 
 .App-header-drawer {
-  background: #0b0b0f;
-  position: absolute;
-  z-index: 1;
+  background: #17182C88 0% 0% no-repeat padding-box;
+  box-shadow: 8px 3px 6px #00000029;
+  opacity: 1;
+  backdrop-filter: blur(27px);
+  position: fixed;
+  z-index: 11;
   left: 0;
   right: 0;
-  top: 62px;
-  padding-bottom: 0.5rem;
+  top: 0;
+  height: 100vh;
+  width: 304px;
+}
+
+.App-header-drawer .App-header-link-container a {
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: normal;
+  letter-spacing: 0.1px;
+  color: #6B6D84;
+  padding: 15px 16px;
+  text-decoration: none;
+}
+
+.App-header-drawer .App-header-link-container a:hover,
+.App-header-drawer .App-header-link-container a:focus,
+.App-header-drawer .App-header-link-container a.active {
+  background: #303FD024;
+  color: white;
+}
+
+.App-header-links-header {
+  height: 62px;
+  display: flex;
+  align-items: center;
+  z-index: 3;
 }
 
 .App-header-container-left {
@@ -73,11 +100,12 @@
   position: relative;
   display: flex;
   justify-content: space-between;
-  z-index: 2;
+  /* z-index: 2; */
 }
 
 .App-header-menu-icon-block {
   margin-right: 12px;
+  margin-left: 16px;
 }
 
 .App-header-menu-icon {

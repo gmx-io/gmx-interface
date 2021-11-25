@@ -22,7 +22,7 @@
 
 .Home-title-section-container {
   position: relative;
-  z-index: 2;
+  /* z-index: 2; */
   width: 100%;
 }
 
@@ -317,19 +317,18 @@
 
 .Home-faqs-content-main {
   overflow: hidden;
-  height: 0;
-  transform: scaleY(0);
-  transform-origin: top;
-  transition: transform 1s ease;
+  height: 0px;
+  visibility: hidden;
   padding: 0 2.387rem;
+  letter-spacing: 0px;
+  color: #A0A3C4;
 }
 
 .Home-faqs-content-main.opened {
-  height: unset;
+  height: fit-content;
+  visibility: visible;
   padding: 1rem 2.387rem 0;
-  color: #A0A3C4;
-  letter-spacing: 0px;
-  transform: scaleY(1);
+  transition: all 0.3s ease-in-out 0s;
 }
 
 @media (max-width: 1200px) {

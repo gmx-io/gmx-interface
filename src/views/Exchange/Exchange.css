@@ -232,7 +232,6 @@
   grid-template-columns: auto auto auto auto auto 1fr;
   grid-column-gap: 3rem;
   align-items: center;
-  padding-bottom: 1rem;
   padding-left: 1rem;
 }
 
@@ -251,7 +250,7 @@
   left: 0;
   right: 0;
   top: 0;
-  height: 2.5rem;
+  height: auto;
   z-index: 2;
 }
 
