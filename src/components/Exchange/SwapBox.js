@@ -219,7 +219,14 @@ export default function SwapBox(props) {
   const fromTokens = tokens
   const stableTokens = tokens.filter(token => token.isStable)
   const indexTokens = whitelistedTokens.filter(token => !token.isStable && !token.isWrapped)
-  const toTokens = isSwap ? tokens : indexTokens
+  const shortableTokens = indexTokens.filter(token => token.isShortable)
+  let toTokens = tokens
+  if (isLong) {
+    toTokens = indexTokens
+  }
+  if (isShort) {
+    toTokens = shortableTokens
+  }
 
   const needOrderBookApproval = !isMarketOrder && !orderBookApproved
   const prevNeedOrderBookApproval = usePrevious(needOrderBookApproval)
