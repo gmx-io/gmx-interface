@@ -1,7 +1,7 @@
 .ExchangeBanner {
     background: linear-gradient(90deg, #105461, #28156e);
     border-radius: 5px;
-    margin-bottom: 15px;
+    margin: 1.935rem 2rem 1rem;
     padding: 12px 24px;
     padding-right: 40px;
     position: relative;
@@ -27,4 +27,11 @@
     top: 12px;
     right: 24px;
     cursor: pointer;
+}
+
+@media (max-width: 700px) {
+    .ExchangeBanner {
+        margin: 1rem;
+        margin-top: 0.5rem;
+    }
 }

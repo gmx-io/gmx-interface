@@ -380,9 +380,9 @@ function FullApp() {
                     {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
                     {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
                   </div>
-                  <div className="App-header-link-main">
+                  <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
                     <img src={logoImg} alt="MetaMask" />
-                  </div>
+                  </NavLink>
                 </div>
                 <div className="App-header-container-right">
                   <AppHeaderUser openSettings={openSettings} small />

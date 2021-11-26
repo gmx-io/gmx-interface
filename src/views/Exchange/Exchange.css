@@ -871,10 +871,6 @@ table.Exchange-list-small th, table.Exchange-list-small td {
     width: 80vw;
   }
 
-  .ExchangeChart-top {
-    margin-top: 1rem;
-  }
-
   .ExchangeChart-top-inner {
     grid-template-columns: auto auto auto;
     grid-column-gap: 0.5rem;
