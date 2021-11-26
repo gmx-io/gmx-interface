@@ -122,9 +122,9 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
           <div className="App-header-menu-icon-block" onClick={() => clickCloseIcon()}>
             <FiX className="App-header-menu-icon" />
           </div>
-          <div className="App-header-link-main">
+          <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
             <img src={logoImg} alt="MetaMask" />
-          </div>
+          </NavLink>
         </div>
       }
       <div className="App-header-link-container App-header-link-home">

@@ -106,6 +106,8 @@
 .App-header-menu-icon-block {
   margin-right: 12px;
   margin-left: 16px;
+  display: flex;
+  align-items: center;
 }
 
 .App-header-menu-icon {
