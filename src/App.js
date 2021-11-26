@@ -33,7 +33,8 @@ import {
   useLocalStorageSerializeKey,
   useInactiveListener,
   shortenAddress,
-  getExplorerUrl
+  getExplorerUrl,
+  getWalletConnectHandler
 } from './Helpers'
 
 import Home from './views/Home/Home'
@@ -157,7 +158,7 @@ function NetworkIcon({ chainId }) {
   return <img src={url} alt={getChainName(chainId)} className="Network-icon" />
 }
 
-function AppHeaderUser({ openSettings, small }) {
+function AppHeaderUser({ openSettings, small, setActivatingConnector }) {
   const { chainId } = useChainId()
   const { active, account, activate } = useWeb3React()
   const showSelector = false
@@ -168,9 +169,13 @@ function AppHeaderUser({ openSettings, small }) {
 
   if (!active) {
     const connectWallet = getConnectWalletHandler(activate)
+    const activateWalletConnect = getWalletConnectHandler(activate, setActivatingConnector)
 
     return (
       <div className="App-header-user">
+        <button target="_blank" rel="noopener noreferrer" className="App-cta App-connect-wallet" onClick={activateWalletConnect}>
+          Wallet Connect
+        </button>
         <button target="_blank" rel="noopener noreferrer" className="App-cta App-connect-wallet" onClick={connectWallet}>
           Connect Wallet
         </button>
@@ -350,7 +355,7 @@ function FullApp() {
                 <AppHeaderLinks />
               </div>
               <div className="App-header-container-right">
-                <AppHeaderUser openSettings={openSettings} />
+                <AppHeaderUser openSettings={openSettings} setActivatingConnector={setActivatingConnector} />
               </div>
             </div>
             <div className={cx("App-header", "small", { active: isDrawerVisible })}>

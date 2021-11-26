@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { InjectedConnector } from '@web3-react/injected-connector'
+import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { toast } from 'react-toastify'
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core'
 import { useLocalStorage } from 'react-use'
@@ -33,6 +34,11 @@ const CHAIN_NAMES_MAP = {
   [ARBITRUM_TESTNET]: "Arbitrum Testnet",
   [ARBITRUM]: "Arbitrum"
 }
+
+const ARBITRUM_RPC_PROVIDERS = [
+  "https://arb1.arbitrum.io/rpc"
+]
+
 export function getChainName(chainId) {
   return CHAIN_NAMES_MAP[chainId]
 }
@@ -103,6 +109,11 @@ const supportedChainIds = [
 ];
 const injected = new InjectedConnector({
   supportedChainIds
+})
+
+const walletconnect = new WalletConnectConnector({
+  rpc: { [ARBITRUM]: ARBITRUM_RPC_PROVIDERS },
+  qrcode: true
 })
 
 export function isSupportedChain(chainId) {
@@ -864,10 +875,6 @@ export const BSC_RPC_PROVIDERS = [
   "https://bsc-dataseed4.binance.org"
 ]
 
-const ARBITRUM_RPC_PROVIDERS = [
-  "https://arb1.arbitrum.io/rpc"
-]
-
 const RPC_PROVIDERS = {
   [MAINNET]: BSC_RPC_PROVIDERS,
   [ARBITRUM]: ARBITRUM_RPC_PROVIDERS
@@ -1519,6 +1526,14 @@ export const switchNetwork = async (chainId) => {
 
     console.error(ex)
   }
+}
+
+export const getWalletConnectHandler = (activate, setActivatingConnector) => {
+  const fn = async () => {
+    setActivatingConnector(walletconnect)
+    activate(walletconnect)
+  }
+  return fn
 }
 
 export const getConnectWalletHandler = (activate) => {
