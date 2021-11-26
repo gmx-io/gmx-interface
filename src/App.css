@@ -636,6 +636,7 @@ a.App-header-user-account {
 .App-content {
   position: relative;
   z-index: 2;
+  background-color: #0D0E1F;
 }
 
 .App-footer {
