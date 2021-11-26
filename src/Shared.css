@@ -157,10 +157,11 @@ a.plain {
   color: #FFFFFF;
   padding: 9px 16px;
   text-decoration: none;
-  display: inline-block;
   box-sizing: border-box;
   position: relative;
   height: 36px;
+  display: flex;
+  align-items: center;
 }
 
 .default-btn:hover {
@@ -217,11 +218,12 @@ a.plain {
   color: black;
   padding: 9px 16px;
   text-decoration: none;
-  display: inline-block;
   box-sizing: border-box;
   position: relative;
   height: 36px;
   border: none;
+  display: flex;
+  align-items: center;
 }
 
 .secondary-btn:hover {
