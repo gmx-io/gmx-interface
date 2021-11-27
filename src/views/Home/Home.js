@@ -72,20 +72,20 @@ export default function Home() {
   const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
   const faqContent = [{
     id: 1,
-    question: "What's the goal of this project?",
-    answer: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    question: "What is GMX?",
+    answer: "GMX is a decentralized spot and perpetual exchange that supports low swap fees and zero price impact trades.<br><br>Trading is supported by a unique multi-asset pool that earns liquidity providers fees from market making, swap fees, leverage trading (spreads, funding fees & liquidations), and asset rebalancing.<br><br>Dynamic pricing is supported by <a href='https://chain.link/' target='_blank' >Chainlink Oracles</a> along with TWAP pricing from leading volume DEXs."
   }, {
     id: 2,
-    question: "What's the goal of this project?",
-    answer: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    question: "What is the GMX Governance Token? ",
+    answer: "The GMX token is the governance token of the GMX ecosystem, it provides the token owner voting rights on the direction of the GMX platform. Additionally, when GMX is staked you will earn 30% of the platform generated fees, Escrowed GMX and Multiplier Points. "
   }, {
     id: 3,
-    question: "What's the goal of this project?",
-    answer: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    question: "What is the GLP Token? ",
+    answer: "The GLP token represents the liquidity users provide to the GMX platform for Swaps and Margin Trading. To provide liquidity to the GLP you trade your crypto asset BTC, ETH, LINK, UNI, USDC, USDT or MIM to the liquidity pool, in exchange, you gain exposure to a diversified index of tokens while earning 50% of the platform trading fees and esGMX."
   }, {
     id: 4,
-    question: "What's the goal of this project?",
-    answer: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    question: "What can I trade on GMX? ",
+    answer: "On GMX you can swap or margin trade any of the following assets: ETH, BTC, LINK, UNI, USDC, USDT, MIM, FRAX, with others to be added. "
   }]
 
   const toggleFAQContent = function(index) {
@@ -288,7 +288,8 @@ export default function Home() {
                   </div>
                   <div className={ openedFAQIndex === index ? "Home-faqs-content-main opened" : "Home-faqs-content-main" }>
                     <div className="Home-faqs-content-main__text">
-                      { content.answer }
+                      <div dangerouslySetInnerHTML={{__html: content.answer}} >
+                      </div>
                     </div>
                   </div>
                 </div>
