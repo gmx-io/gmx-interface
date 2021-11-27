@@ -360,5 +360,29 @@
 }
 
 @media (max-width: 400px) {
-  
+  .Home-title {
+    font-size: 3rem;
+    line-height: 3.8rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    letter-spacing: 0;
+  }
+
+  .Home-description {
+    font-size: 1rem;
+    line-height: 1.4rem;
+    max-width: 28.645rem;
+    color: #A0A3C4;
+    margin-bottom: 1.677rem;
+  }
+}
+
+@media (max-width: 350px) {
+  .Home-title {
+    font-size: 2.7rem;
+    line-height: 3.3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    letter-spacing: 0;
+  }
 }
