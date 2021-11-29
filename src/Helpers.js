@@ -919,6 +919,10 @@ export function useChainId() {
   return { chainId }
 }
 
+export function clearWalletConnectData() {
+  localStorage.removeItem(WALLET_CONNECT_LOCALSTORAGE_KEY)
+}
+
 export function useEagerConnect() {
   const injected = getInjectedConnector()
   const { activate, active } = useWeb3React()
@@ -926,21 +930,44 @@ export function useEagerConnect() {
   const [tried, setTried] = useState(false)
 
   useEffect(() => {
-    if (localStorage.getItem(WALLET_CONNECT_LOCALSTORAGE_KEY)) {
-      activate(walletConnect, undefined, true).catch(() => {
-        setTried(true)
-      })
-      return
-    }
-    injected.isAuthorized().then((isAuthorized) => {
-      if (isAuthorized) {
-        activate(injected, undefined, true).catch(() => {
-          setTried(true)
-        })
-      } else {
-        setTried(true)
+    (async function () {
+      let shouldTryWalletConnect = false
+      try {
+        // naive validation to not trigger Wallet Connect if data is corrupted
+        const rawData = localStorage.getItem(WALLET_CONNECT_LOCALSTORAGE_KEY)
+        if (rawData) {
+          const data = JSON.parse(rawData)
+          if (data && data.connected) {
+            shouldTryWalletConnect = true
+          }
+        }
+      } catch (ex) {
+        if (ex instanceof SyntaxError) {
+          // rawData is not a valid json
+          clearWalletConnectData()
+        }
       }
-    })
+
+      if (shouldTryWalletConnect) {
+        try {
+          await activate(walletConnect, undefined, true)
+          // in case Wallet Connect is activated no need to check injected wallet
+          return
+        } catch (ex) {
+          // assume data in localstorage is corrupted and delete it to not retry on next page load
+          clearWalletConnectData()
+        }
+      }
+
+      try {
+        const authorized = await injected.isAuthorized()
+        if (authorized) {
+          await activate(injected, undefined, true)
+        }
+      } catch (ex) {}
+
+      setTried(true)
+    })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []) // intentionally only running on mount (make sure it's only mounted once :))
 
@@ -958,7 +985,7 @@ export function useInactiveListener(suppress: boolean = false) {
   const injected = getInjectedConnector()
   const { active, error, activate } = useWeb3React()
 
-  useEffect((): any => {
+  useEffect(() => {
     const { ethereum } = window
     if (ethereum && ethereum.on && !active && !error && !suppress) {
       const handleConnect = () => {
