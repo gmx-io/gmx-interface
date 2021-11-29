@@ -861,10 +861,6 @@ button.App-button {
     padding-bottom: 0;
   }
 
-  a.App-header-user-account {
-    display: none;
-  }
-
   .App-header-user-netowork .Selector-box {
     padding-left: 0.1rem;
     padding-right: 0.1rem;
