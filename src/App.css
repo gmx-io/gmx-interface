@@ -913,4 +913,38 @@ button.App-button {
   .Page-title-section {
     margin-top: 2rem;
   }
+
+  a.App-header-user-account {
+    margin-right: 0;
+  }
+}
+
+@media (max-width: 410px) {
+  .App-header-user-link {
+    margin-right: 6px;
+  }
+
+  .App-header-menu-icon-block {
+    margin-left: 0;
+    margin-right: 4px;
+  }
+}
+
+@media (max-width: 410px) {
+  .App-header-menu-icon {
+    margin: 4px 5px;
+  }
+
+  .App-header-user-account {
+    font-size: 0.8rem;
+  }
+
+  .App-header.small {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  .Home-faqs-content {
+    padding-left: 1rem;
+  }
 }
