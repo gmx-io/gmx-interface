@@ -74,6 +74,7 @@
   color: #6B6D84;
   padding: 15px 16px;
   text-decoration: none;
+  display: block;
 }
 
 .App-header-drawer .App-header-link-container a:hover,
@@ -345,7 +346,7 @@ button.App-connect-wallet:hover {
   color: #eee;
 }
 
-.App-header-link-container a {
+.App-header-container-left a {
   padding: 16px 17px;
   display: block;
   color: #83849B;
@@ -354,11 +355,11 @@ button.App-connect-wallet:hover {
   font-weight: bold;
 }
 
-.App-header-link-container a.active {
+.App-header-container-left a.active {
   color: white;
 }
 
-.App-header-link-container a.disabled {
+.App-header-container-left a.disabled {
   cursor: not-allowed;
   color: #FFFFFF61;
 }
@@ -554,6 +555,7 @@ button.App-button-option:disabled {
 
 .App-header-user {
   display: flex;
+  align-items: center;
 }
 
 a.App-header-user-account {
