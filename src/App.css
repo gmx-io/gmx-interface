@@ -865,3 +865,9 @@ button.App-button {
 .walletconnect-modal__mobile__toggle a {
   color: #000;
 }
+.walletconnect-modal__base {
+  max-height: 100%;
+}
+.walletconnect-qrcode__image {
+  max-height: 50vh;
+}

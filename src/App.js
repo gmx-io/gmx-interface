@@ -3,9 +3,8 @@ import { SWRConfig } from 'swr'
 
 import { motion, AnimatePresence } from "framer-motion"
 
-import { Web3ReactProvider, useWeb3React, UnsupportedChainIdError } from '@web3-react/core'
+import { Web3ReactProvider, useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
-import { UserRejectedRequestError } from '@web3-react/walletconnect-connector'
 
 import {
   BrowserRouter as Router,
@@ -228,7 +227,7 @@ function FullApp() {
       setActivatingConnector(undefined)
     }
   }, [activatingConnector, connector, chainId])
-  const triedEager = useEagerConnect()
+  const triedEager = useEagerConnect(setActivatingConnector)
   useInactiveListener(!triedEager || !!activatingConnector)
 
   const disconnectAccount = useCallback(() => {
@@ -242,22 +241,8 @@ function FullApp() {
     setIsSettingsVisible(false)
   }
 
-  const onWalletConnectError = useCallback(ex => {
-    if (ex instanceof UnsupportedChainIdError) {
-      helperToast.error("Unsupported chain. Switch to Arbitrum network on your wallet and try again")
-      console.warn(ex)
-    } else if (!(ex instanceof UserRejectedRequestError)) {
-      helperToast.error(ex.message)
-      console.warn(ex)
-    }
-
-    // need to manually clear walletconnect cache and deactivate wallet
-    // otherwise it won't show QR code at all
-    disconnectAccount()
-  }, [disconnectAccount])
-
   const connectInjectedWallet = getInjectedHandler(activate)
-  const activateWalletConnect = getWalletConnectHandler(activate, setActivatingConnector, onWalletConnectError)
+  const activateWalletConnect = getWalletConnectHandler(activate, deactivate, setActivatingConnector)
 
   const [walletModalVisible, setWalletModalVisible] = useState()
   const connectWallet = () => setWalletModalVisible(true)
