@@ -1,15 +1,15 @@
 .Footer {
   text-align: center;
-  padding-top: 2.348rem;
+  padding-top: 2.452rem;
   background: #16182E;
 }
 
 .Footer-logo {
-  margin-bottom: 4.549rem;
+  margin-bottom: 2.358rem;
 }
 
 .Footer-logo img {
-  height: 2.580rem;
+  height: 1.674rem;
 }
 
 .Footer-social-link-block {
@@ -25,15 +25,16 @@
 }
 
 .Footer-copyright {
-  padding: 1.903rem;
+  padding: 1rem;
 }
 
 .Footer-copyright__text {
   font-family: Circular Std;
-  font-size: 0.839rem;
-  line-height: 0.839rem;
+  font-size: 0.8387rem;
+  line-height: 0.8387rem;
   letter-spacing: -0.41px;
   color: #A0A3C4;
+  display: block;
 }
 
 @media (max-width: 900px) {
