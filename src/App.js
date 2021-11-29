@@ -187,7 +187,7 @@ function AppHeaderUser({ openSettings, small }) {
     return (
       <div className="App-header-user">
         <div className="App-header-user-link">
-          <NavLink activeClassName="active" to="/trade">Trade</NavLink>
+          <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
         </div>
         <button target="_blank" rel="noopener noreferrer" className="secondary-btn" onClick={connectWallet}>
           Connect Wallet
