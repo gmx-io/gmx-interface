@@ -12,7 +12,6 @@ import {
   SHORT,
   bigNumberify,
   getTokenInfo,
-  getConnectWalletHandler,
   fetcher,
   expandDecimals,
   getPositionKey,
@@ -173,7 +172,7 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
   return { collateralTokens, indexTokens, isLong }
 }
 
-export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage, savedSlippageAmount, pendingTxns, setPendingTxns, savedShouldShowPositionLines, setSavedShouldShowPositionLines }) {
+export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage, savedSlippageAmount, pendingTxns, setPendingTxns, savedShouldShowPositionLines, setSavedShouldShowPositionLines, connectWallet }) {
   const [showBanner, setShowBanner] = useLocalStorageSerializeKey('showBanner', true)
   const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey('bannerHidden', null)
 
@@ -200,7 +199,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     }
   }, [showBanner, bannerHidden, setBannerHidden, setShowBanner])
 
-  const { activate, active, account, library } = useWeb3React()
+  const { active, account, library } = useWeb3React()
   const { chainId } = useChainId()
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
@@ -259,8 +258,6 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
 
   const [isConfirming, setIsConfirming] = useState(false);
   const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
-
-  const connectWallet = getConnectWalletHandler(activate)
 
   const tokens = getTokens(chainId)
   const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR([active, chainId, readerAddress, "getFullVaultTokenInfo"], {

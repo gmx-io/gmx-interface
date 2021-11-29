@@ -38,6 +38,7 @@ const CHAIN_NAMES_MAP = {
 const ARBITRUM_RPC_PROVIDERS = [
   "https://arb1.arbitrum.io/rpc"
 ]
+export const WALLET_CONNECT_LOCALSTORAGE_KEY = 'walletconnect'
 
 export function getChainName(chainId) {
   return CHAIN_NAMES_MAP[chainId]
@@ -107,12 +108,12 @@ export const PROFIT_THRESHOLD_BASIS_POINTS = 150
 const supportedChainIds = [
   ARBITRUM
 ];
-const injected = new InjectedConnector({
+const injectedConnector = new InjectedConnector({
   supportedChainIds
 })
 
-const walletconnect = new WalletConnectConnector({
-  rpc: { [ARBITRUM]: ARBITRUM_RPC_PROVIDERS },
+const walletConnect = new WalletConnectConnector({
+  rpc: { [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0] },
   qrcode: true
 })
 
@@ -906,7 +907,7 @@ export function formatDate(time) {
 }
 
 export function getInjectedConnector() {
-  return injected
+  return injectedConnector
 }
 
 export function useChainId() {
@@ -925,6 +926,12 @@ export function useEagerConnect() {
   const [tried, setTried] = useState(false)
 
   useEffect(() => {
+    if (localStorage.getItem(WALLET_CONNECT_LOCALSTORAGE_KEY)) {
+      activate(walletConnect, undefined, true).catch(() => {
+        setTried(true)
+      })
+      return
+    }
     injected.isAuthorized().then((isAuthorized) => {
       if (isAuthorized) {
         activate(injected, undefined, true).catch(() => {
@@ -1528,15 +1535,15 @@ export const switchNetwork = async (chainId) => {
   }
 }
 
-export const getWalletConnectHandler = (activate, setActivatingConnector) => {
+export const getWalletConnectHandler = (activate, setActivatingConnector, onError) => {
   const fn = async () => {
-    setActivatingConnector(walletconnect)
-    activate(walletconnect)
+    setActivatingConnector(walletConnect)
+    activate(walletConnect, onError)
   }
   return fn
 }
 
-export const getConnectWalletHandler = (activate) => {
+export const getInjectedHandler = (activate) => {
   const fn = async () => {
     activate(getInjectedConnector(), (e) => {
       if (e.message.includes("No Ethereum provider")) {

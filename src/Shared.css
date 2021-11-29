@@ -31,7 +31,7 @@ html, body, #root {
   background: #4a4a4a;
 }
 
-a {
+#root a {
   color: white;
 }
 
