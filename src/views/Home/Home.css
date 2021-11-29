@@ -319,7 +319,7 @@
   overflow: hidden;
   height: 0px;
   visibility: hidden;
-  padding: 0 2.387rem;
+  padding: 0 0rem 0 2.387rem;
   letter-spacing: 0px;
   color: #A0A3C4;
 }
@@ -327,7 +327,7 @@
 .Home-faqs-content-main.opened {
   height: fit-content;
   visibility: visible;
-  padding: 1rem 2.387rem 0;
+  padding: 1rem 0rem 0 2.387rem;
   transition: all 0.3s ease-in-out 0s;
 }
 
