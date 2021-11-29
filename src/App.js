@@ -204,7 +204,7 @@ function AppHeaderUser({ openSettings, small }) {
   return (
     <div className="App-header-user">
       <div className="App-header-user-link">
-        <NavLink activeClassName="active" to="/trade">Trade</NavLink>
+        <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
       </div>
       <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="App-cta small transparent App-header-user-account">
         {shortenAddress(account, small ? 11 : 13)}
