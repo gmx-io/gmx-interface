@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { InjectedConnector } from '@web3-react/injected-connector'
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
+import { InjectedConnector, UserRejectedRequestError as UserRejectedRequestErrorInjected } from '@web3-react/injected-connector'
+import { WalletConnectConnector, UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from '@web3-react/walletconnect-connector'
 import { toast } from 'react-toastify'
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core'
 import { useLocalStorage } from 'react-use'
@@ -112,10 +112,13 @@ const injectedConnector = new InjectedConnector({
   supportedChainIds
 })
 
-const walletConnect = new WalletConnectConnector({
-  rpc: { [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0] },
-  qrcode: true
-})
+const getWalletConnectConnector = () => {
+  return new WalletConnectConnector({
+    rpc: { [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0] },
+    chainId: ARBITRUM,
+    qrcode: true
+  })
+}
 
 export function isSupportedChain(chainId) {
   return supportedChainIds.includes(chainId);
@@ -923,8 +926,7 @@ export function clearWalletConnectData() {
   localStorage.removeItem(WALLET_CONNECT_LOCALSTORAGE_KEY)
 }
 
-export function useEagerConnect() {
-  const injected = getInjectedConnector()
+export function useEagerConnect(setActivatingConnector) {
   const { activate, active } = useWeb3React()
 
   const [tried, setTried] = useState(false)
@@ -950,7 +952,9 @@ export function useEagerConnect() {
 
       if (shouldTryWalletConnect) {
         try {
-          await activate(walletConnect, undefined, true)
+          const connector = getWalletConnectConnector()
+          setActivatingConnector(connector)
+          await activate(connector, undefined, true)
           // in case Wallet Connect is activated no need to check injected wallet
           return
         } catch (ex) {
@@ -960,9 +964,11 @@ export function useEagerConnect() {
       }
 
       try {
-        const authorized = await injected.isAuthorized()
+        const connector = getInjectedConnector()
+        const authorized = await connector.isAuthorized()
         if (authorized) {
-          await activate(injected, undefined, true)
+          setActivatingConnector(connector)
+          await activate(connector, undefined, true)
         }
       } catch (ex) {}
 
@@ -981,7 +987,7 @@ export function useEagerConnect() {
   return tried
 }
 
-export function useInactiveListener(suppress: boolean = false) {
+export function useInactiveListener(suppress = false) {
   const injected = getInjectedConnector()
   const { active, error, activate } = useWeb3React()
 
@@ -1562,10 +1568,21 @@ export const switchNetwork = async (chainId) => {
   }
 }
 
-export const getWalletConnectHandler = (activate, setActivatingConnector, onError) => {
+export const getWalletConnectHandler = (activate, deactivate, setActivatingConnector) => {
   const fn = async () => {
+    const walletConnect = getWalletConnectConnector()
     setActivatingConnector(walletConnect)
-    activate(walletConnect, onError)
+    activate(walletConnect, ex => {
+      if (ex instanceof UnsupportedChainIdError) {
+        helperToast.error("Unsupported chain. Switch to Arbitrum network on your wallet and try again")
+        console.warn(ex)
+      } else if (!(ex instanceof UserRejectedRequestErrorWalletConnect)) {
+        helperToast.error(ex.message)
+        console.warn(ex)
+      }
+      clearWalletConnectData()
+      deactivate()
+    })
   }
   return fn
 }
@@ -1578,6 +1595,9 @@ export const getInjectedHandler = (activate) => {
           Could not find a wallet to connect to.<br/>
           <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">Add a wallet</a> to start using the app.
         </div>)
+        return
+      }
+      if (e instanceof UserRejectedRequestErrorInjected) {
         return
       }
       if (e instanceof UnsupportedChainIdError) {
