@@ -73,15 +73,15 @@ export default function Home() {
   const faqContent = [{
     id: 1,
     question: "What is GMX?",
-    answer: "GMX is a decentralized spot and perpetual exchange that supports low swap fees and zero price impact trades.<br><br>Trading is supported by a unique multi-asset pool that earns liquidity providers fees from market making, swap fees, leverage trading (spreads, funding fees & liquidations), and asset rebalancing.<br><br>Dynamic pricing is supported by <a href='https://chain.link/' target='_blank' >Chainlink Oracles</a> along with TWAP pricing from leading volume DEXs."
+    answer: "GMX is a decentralized spot and perpetual exchange that supports low swap fees and zero price impact trades.<br><br>Trading is supported by a unique multi-asset pool that earns liquidity providers fees from market making, swap fees, leverage trading (spreads, funding fees & liquidations), and asset rebalancing.<br><br>Dynamic pricing is supported by Chainlink Oracles along with TWAP pricing from leading volume DEXs."
   }, {
     id: 2,
     question: "What is the GMX Governance Token? ",
-    answer: "The GMX token is the governance token of the GMX ecosystem, it provides the token owner voting rights on the direction of the GMX platform. Additionally, when GMX is staked you will earn 30% of the platform generated fees, Escrowed GMX and Multiplier Points. "
+    answer: "The GMX token is the governance token of the GMX ecosystem, it provides the token owner voting rights on the direction of the GMX platform.<br><br>Additionally, when GMX is staked you will earn 30% of the platform-generated fees, Escrowed GMX, and Multiplier Points."
   }, {
     id: 3,
     question: "What is the GLP Token? ",
-    answer: "The GLP token represents the liquidity users provide to the GMX platform for Swaps and Margin Trading. To provide liquidity to the GLP you trade your crypto asset BTC, ETH, LINK, UNI, USDC, USDT or MIM to the liquidity pool, in exchange, you gain exposure to a diversified index of tokens while earning 50% of the platform trading fees and esGMX."
+    answer: "The GLP token represents the liquidity users provide to the GMX platform for Swaps and Margin Trading.<br><br>To provide liquidity to the GLP you trade your crypto asset BTC, ETH, LINK, UNI, USDC, USDT, MIM, or FRAX to the liquidity pool, in exchange, you gain exposure to a diversified index of tokens while earning 50% of the platform trading fees and esGMX."
   }, {
     id: 4,
     question: "What can I trade on GMX? ",
