@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 
 import { Web3ReactProvider, useWeb3React, UnsupportedChainIdError } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
+import { UserRejectedRequestError } from '@web3-react/walletconnect-connector'
 
 import {
   BrowserRouter as Router,
@@ -244,6 +245,10 @@ function FullApp() {
   const onWalletConnectError = useCallback(ex => {
     if (ex instanceof UnsupportedChainIdError) {
       helperToast.error("Unsupported chain. Switch to Arbitrum network on your wallet and try again")
+      console.warn(ex)
+    } else if (!(ex instanceof UserRejectedRequestError)) {
+      helperToast.error(ex.message)
+      console.warn(ex)
     }
 
     // need to manually clear walletconnect cache and deactivate wallet
