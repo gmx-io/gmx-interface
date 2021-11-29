@@ -182,7 +182,8 @@ a.plain {
 .default-btn:active {
   background: #515ed8;
   border: none;
-  padding: 9px 16px;
+  padding-left: 16px;
+  padding-right: 16px;
   box-sizing: border-box;
   overflow: hidden;
 }
