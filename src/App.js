@@ -23,7 +23,7 @@ import {
   IS_PNL_IN_LEVERAGE_KEY,
   BASIS_POINTS_DIVISOR,
   SHOULD_SHOW_POSITION_LINES_KEY,
-  WALLET_CONNECT_LOCALSTORAGE_KEY,
+  clearWalletConnectData,
   switchNetwork,
   helperToast,
   getChainName,
@@ -223,14 +223,16 @@ function FullApp() {
   const { chainId } = useChainId()
   const [activatingConnector, setActivatingConnector] = useState()
   useEffect(() => {
-    if (activatingConnector && activatingConnector === connector) { setActivatingConnector(undefined) }
+    if (activatingConnector && activatingConnector === connector) {
+      setActivatingConnector(undefined)
+    }
   }, [activatingConnector, connector, chainId])
   const triedEager = useEagerConnect()
   useInactiveListener(!triedEager || !!activatingConnector)
 
   const disconnectAccount = useCallback(() => {
     // only works with WalletConnect
-    localStorage.removeItem(WALLET_CONNECT_LOCALSTORAGE_KEY)
+    clearWalletConnectData()
     deactivate()
   }, [deactivate])
 
