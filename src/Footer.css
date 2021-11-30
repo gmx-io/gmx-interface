@@ -1,11 +1,14 @@
 .Footer {
   text-align: center;
-  padding-top: 2.452rem;
+  padding-top: 2.581rem;
   background: #16182E;
 }
 
 .Footer-logo {
-  margin-bottom: 2.358rem;
+  margin-bottom: 2.067rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .Footer-logo img {
@@ -13,7 +16,7 @@
 }
 
 .Footer-social-link-block {
-  padding-bottom: 1.906rem;
+  padding-bottom: 1.549rem;
   border-bottom: 1px solid #2F2F31;
   max-width: 71.613rem;
   margin: 0 auto;
@@ -22,10 +25,18 @@
 .Footer-social-link-block .App-social-link {
   margin: 0 2.226rem;
   display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+}
+
+.Footer-social-link-block .App-social-link:hover img {
+  filter: brightness(0) invert(1);
 }
 
 .Footer-copyright {
-  padding: 1rem;
+  padding: 1.1rem;
 }
 
 .Footer-copyright__text {
