@@ -144,11 +144,11 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
       <div className="App-header-link-container">
         <NavLink activeClassName="active" className="disabled" to="/gmxglp" onClick={handleDiabledClick}>Buy GMX/GLP</NavLink>
       </div>
-      {/* <div className="App-header-link-container">
+      <div className="App-header-link-container">
         <a href="https://www.gmx.house/p/leaderboard" target="_blank" rel="noopener noreferrer">
-          LEADERBOARD
+          Leaderboard
         </a>
-      </div> */}
+      </div>
       {small &&
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
