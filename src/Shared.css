@@ -171,13 +171,13 @@ a.plain {
   background: #404ed4;
 }
 
-.default-btn:focus {
+/* .default-btn:focus {
   background: #515ed8;
   border: 1px solid #3D4FFE;
   box-sizing: border-box;
   padding-left: 15px;
   padding-right: 15px;
-}
+} */
 
 .default-btn:active {
   background: #515ed8;
