@@ -45,14 +45,14 @@ function getOrderActionTitle(action) {
   return `${actionDisplay} Order`
 }
 
-function renderLiquidationTooltip(liquidationData) {
+function renderLiquidationTooltip(liquidationData, label) {
   const minCollateral = liquidationData.size.mul(BASIS_POINTS_DIVISOR).div(MAX_LEVERAGE)
   const text = liquidationData.type === "full"
     ? "This position was liquidated as the max leverage of 100x was exceeded"
     : "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
   return <Tooltip
-    position="center-top"
-    handle={`Price: ${formatAmount(liquidationData.markPrice, USD_DECIMALS, 2, true)} USD`}
+    position="left-top"
+    handle={label}
     renderContent={() => <>
       {text}<br/><br/>
       Initial collateral: ${formatAmount(liquidationData.collateral, USD_DECIMALS, 2, true)}<br />
@@ -158,9 +158,9 @@ export default function TradeHistory(props) {
 
       if (isLiquidation && liquidationData) {
         return <>
-          Partially Liquidated {indexToken.symbol} {params.isLong ? "Long" : "Short"},
+          {renderLiquidationTooltip(liquidationData, "Partial Liquidation")} {indexToken.symbol} {params.isLong ? "Long" : "Short"},
           -{formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)} USD, {indexToken.symbol}&nbsp;
-          {renderLiquidationTooltip(liquidationData)}
+          Price: ${formatAmount(params.price, USD_DECIMALS, 2, true)} USD
         </>
       }
       const actionDisplay = isLiquidation ? "Partially Liquidated" : "Decreased"
@@ -179,9 +179,9 @@ export default function TradeHistory(props) {
       const liquidationData = getLiquidationData(liquidationsDataMap, params.key, tradeData.timestamp)
       if (liquidationData) {
         return <>
-          Liquidated {indexToken.symbol} {params.isLong ? "Long" : "Short"},
+          {renderLiquidationTooltip(liquidationData, "Liquidated")} {indexToken.symbol} {params.isLong ? "Long" : "Short"},
           -{formatAmount(params.size, USD_DECIMALS, 2, true)} USD,&nbsp;
-          {indexToken.symbol} {renderLiquidationTooltip(liquidationData)}
+          {indexToken.symbol} Price: ${formatAmount(params.markPrice, USD_DECIMALS, 2, true)} USD
         </>
       }
       return `
