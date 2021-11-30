@@ -33,7 +33,7 @@
   grid-template-columns: 1fr auto;
   grid-gap: 1rem;
   padding: 2rem;
-  padding-top: 0.5rem;
+  padding-top: 1rem;
 }
 
 .Exchange-lists.large {
@@ -886,6 +886,6 @@ table.Exchange-list-small th, table.Exchange-list-small td {
 
   .Exchange-content {
     padding: 1rem;
-    padding-top: 0.5rem;
+    padding-top: 1rem;
   }
 }
