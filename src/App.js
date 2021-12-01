@@ -153,7 +153,7 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
           <a href="#" onClick={openSettings}>
-            SETTINGS
+            Settings
           </a>
         </div>
       }

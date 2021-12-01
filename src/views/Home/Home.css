@@ -126,7 +126,7 @@
   font-size: 1.161rem;
   line-height: 1.484rem;
   letter-spacing: 0px;
-  color: #6B6D84;
+  color: #A0A3C4;
   margin-bottom: 1.161rem;
 }
 
@@ -322,6 +322,7 @@
   padding: 0 0rem 0 2rem;
   letter-spacing: 0px;
   color: #A0A3C4;
+  transition: all 0.3s ease-in-out 0s;
 }
 
 .Home-faqs-content-main.opened {
@@ -342,6 +343,17 @@
     background-position-x: 70%;
   }
 
+  .Home-cta-options {
+    width: calc(100% + 32px);
+    margin-left: -16px;
+    margin-right: -16px;
+  }
+
+  .Home-cta-option {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
   .Home-cta-option-info {
     width: 50%;
   }
@@ -352,6 +364,15 @@
 
   .Home-cta-option-title {
     line-height: 1.548rem;
+  }
+
+  .Home-latest-info-container {
+    padding-left: 16px!important;
+    padding-right: 16px!important;
+  }
+
+  .Home-latest-info__icon {
+    margin-right: 1.903rem;
   }
 
   .Home-latest-info-block + .Home-latest-info-block {
