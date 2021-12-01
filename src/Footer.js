@@ -30,9 +30,6 @@ export default function Footer() {
           <img src={discordIcon} alt="Discord" />
         </a>
       </div>
-      <div className="Footer-copyright">
-        <span className="Footer-copyright__text">© 2021 GMX</span>
-      </div>
     </div>
   )
 }
