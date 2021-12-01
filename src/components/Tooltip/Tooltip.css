@@ -41,10 +41,22 @@
   bottom: 100%;
 }
 
+.Tooltip-popup.left-top {
+  left: 0;
+  transform: translateY(-0.5rem);
+  bottom: 100%;
+}
+
 .Tooltip-popup.center-bottom {
   left: 50%;
   transform: translateY(0.5rem) translateX(-50%);
   top: 100%;
+}
+
+.Tooltip-popup.center-top {
+  left: 50%;
+  transform: translateY(-0.5rem) translateX(-50%);
+  bottom: 100%;
 }
 
 .Tooltip-handle {

@@ -420,7 +420,14 @@ export default function PositionSeller(props) {
     const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress
     const priceBasisPoints = position.isLong ? (BASIS_POINTS_DIVISOR - savedSlippageAmount) : (BASIS_POINTS_DIVISOR + savedSlippageAmount)
     const refPrice = position.isLong ? position.indexToken.minPrice : position.indexToken.maxPrice
-    const priceLimit = refPrice.mul(priceBasisPoints).div(10000)
+    let priceLimit = refPrice.mul(priceBasisPoints).div(BASIS_POINTS_DIVISOR)
+    const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME
+    const minProfitTimeExpired = parseInt(Date.now() / 1000) > minProfitExpiration
+    if (nextHasProfit && !minProfitTimeExpired && !isProfitWarningAccepted) {
+      if ((position.isLong && priceLimit.lt(profitPrice)) || (!position.isLong && priceLimit.gt(profitPrice))) {
+        priceLimit = profitPrice
+      }
+    }
 
     params = [tokenAddress0, indexTokenAddress, collateralDelta, sizeDelta, position.isLong, account, priceLimit]
     method = (collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress) ? "decreasePositionETH" : "decreasePosition"
