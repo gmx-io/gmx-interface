@@ -38,7 +38,7 @@ export function getChainName(chainId) {
 }
 
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG")
-const MAX_LEVERAGE = 100 * 10000
+export const MAX_LEVERAGE = 100 * 10000
 
 export const DEFAULT_GAS_LIMIT = 1 * 1000 * 1000
 export const SECONDS_PER_YEAR = 31536000
@@ -201,7 +201,7 @@ export function getServerBaseUrl(chainId) {
     // return "https://gambit-server-devnet.uc.r.appspot.com"
   }
   if (document.location.hostname.includes("deploy-preview")) {
-    return "https://gambit-server-devnet.uc.r.appspot.com"
+    return "https://gmx-server-mainnet.uw.r.appspot.com"
   }
   if (chainId === MAINNET) {
     return "https://gambit-server-staging.uc.r.appspot.com"
@@ -212,7 +212,7 @@ export function getServerBaseUrl(chainId) {
   if (chainId === ARBITRUM) {
     return "https://gmx-server-mainnet.uw.r.appspot.com"
   }
-  return "https://gambit-server-devnet.uc.r.appspot.com"
+  return "https://gmx-server-mainnet.uw.r.appspot.com"
 }
 
 export function getServerUrl(chainId, path) {
@@ -239,15 +239,16 @@ export function getExchangeRate(tokenAInfo, tokenBInfo, inverted) {
 export function getMostAbundantStableToken(chainId, infoTokens) {
   const whitelistedTokens = getWhitelistedTokens(chainId)
   let availableAmount
-  let stableToken
+  let stableToken = whitelistedTokens.find(t => t.isStable)
   for (let i = 0; i < whitelistedTokens.length; i++) {
     const info = getTokenInfo(infoTokens, whitelistedTokens[i].address)
-    if (!info.isStable) {
+    if (!info.isStable || !info.availableAmount) {
       continue
     }
 
-    if (!availableAmount || info.availableAmount.gt(availableAmount)) {
-      availableAmount = info.availableAmount
+    const adjustedAvailableAmount = adjustForDecimals(info.availableAmount, info.decimals, USD_DECIMALS)
+    if (!availableAmount || adjustedAvailableAmount.gt(availableAmount)) {
+      availableAmount = adjustedAvailableAmount
       stableToken = info
     }
   }

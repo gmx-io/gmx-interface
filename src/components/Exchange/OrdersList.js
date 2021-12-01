@@ -12,8 +12,7 @@ import {
   getExchangeRateDisplay,
   getTokenInfo,
   getExchangeRate,
-  getPositionKey,
-  useChainId
+  getPositionKey
 } from '../../Helpers.js';
 import {
   cancelSwapOrder,
@@ -45,10 +44,9 @@ export default function OrdersList(props) {
     usdgSupply,
     orders,
     updateOrders,
-    hideActions
+    hideActions,
+    chainId
   } = props;
-
-  const { chainId } = useChainId()
 
   const [editingOrder, setEditingOrder] = useState(null);
 

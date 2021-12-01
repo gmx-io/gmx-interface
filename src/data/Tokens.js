@@ -162,7 +162,8 @@ const TOKENS = {
       symbol: "ETH",
       decimals: 18,
       address: ethers.constants.AddressZero,
-      isNative: true
+      isNative: true,
+      isShortable: true
     },
     {
       name: "Wrapped Ethereum",
@@ -177,6 +178,7 @@ const TOKENS = {
       symbol: "BTC",
       decimals: 8,
       address: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      isShortable: true
     },
     {
       name: "Chainlink",
@@ -193,13 +195,6 @@ const TOKENS = {
       isStable: false
     },
     {
-      name: "Magic Internet Money",
-      symbol: "MIM",
-      decimals: 18,
-      address: "0xFEa7a6a0B346362BF88A9e4A88416B77a57D6c2A",
-      isStable: true
-    },
-    {
       name: "USD Coin",
       symbol: "USDC",
       decimals: 6,
@@ -211,6 +206,20 @@ const TOKENS = {
       symbol: "USDT",
       decimals: 6,
       address: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+      isStable: true
+    },
+    {
+      name: "Magic Internet Money",
+      symbol: "MIM",
+      decimals: 18,
+      address: "0xFEa7a6a0B346362BF88A9e4A88416B77a57D6c2A",
+      isStable: true
+    },
+    {
+      name: "Frax",
+      symbol: "FRAX",
+      decimals: 18,
+      address: "0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F",
       isStable: true
     }
   ]
