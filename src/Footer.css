@@ -1,7 +1,16 @@
 .Footer {
+  position: relative;
+  height: 158px;
+}
+
+.Footer-wrapper {
   text-align: center;
   padding-top: 2.581rem;
   background: #16182E;
+  width: 100vw;
+  position: absolute;
+  transform: translateX(-50%);
+  left: 50%;
 }
 
 .Footer-logo {
