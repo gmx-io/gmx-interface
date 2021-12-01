@@ -201,7 +201,7 @@ export function getServerBaseUrl(chainId) {
     // return "https://gambit-server-devnet.uc.r.appspot.com"
   }
   if (document.location.hostname.includes("deploy-preview")) {
-    return "https://gambit-server-devnet.uc.r.appspot.com"
+    return "https://gmx-server-mainnet.uw.r.appspot.com"
   }
   if (chainId === MAINNET) {
     return "https://gambit-server-staging.uc.r.appspot.com"
@@ -212,7 +212,7 @@ export function getServerBaseUrl(chainId) {
   if (chainId === ARBITRUM) {
     return "https://gmx-server-mainnet.uw.r.appspot.com"
   }
-  return "https://gambit-server-devnet.uc.r.appspot.com"
+  return "https://gmx-server-mainnet.uw.r.appspot.com"
 }
 
 export function getServerUrl(chainId, path) {
