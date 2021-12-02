@@ -1,0 +1,133 @@
+.BuyGMXGLP {
+    background: #101124;
+    min-height: calc(100vh - 62px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.BuyGMXGLP-container {
+    padding: 5.161rem 0;
+    text-align: center;
+}
+
+.BuyGMXGLP-title {
+    font-size: 2.452rem;
+    line-height: 3.097rem;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    margin-bottom: 1.5484rem;
+}
+
+.BuyGMXGLP-description {
+    font-size: 1.161rem;
+    line-height: 1.484rem;
+    letter-spacing: 0px;
+    color: #A0A3C4;
+}
+
+.better-rates-description {
+    margin-top: 1.548rem;
+    margin-bottom: 1.032rem;
+    letter-spacing: 0;
+}
+
+.BuyGMXGLP-description a {
+    color: #303FD0;
+    text-decoration: none;
+    position: relative;
+}
+
+.alternative-bridges {
+    margin: 0 auto 1.548rem;
+    max-width: 528px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.alternative-bridges a {
+    display: flex;
+}
+
+.BuyGMXGLP-purchase-block {
+    background-image: url('../../img/btn_big_purchasegmx.png');
+    padding-top: 2.1897rem;
+    padding-left: 2.826rem;
+    max-width: 397px;
+    width: 100%;
+    min-height: 120px;
+    margin: 4.129rem auto;
+    display: flex;
+    box-shadow: 0px 9px 12px #00000054;
+    border: 1px solid #1E2136;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.BuyGMXGLP-purchase-block-info {
+    margin-left: 2.461rem;
+    text-align: left;
+}
+
+.BuyGMXGLP-purchase-block-info__title {
+    font-size: 1.677rem;
+    line-height: 2.129rem;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+}
+
+.BuyGMXGLP-purchase-block-info__subtitle {
+    color: #6B6D84;
+    font-size: 1.161rem;
+    line-height: 1.484rem;
+    letter-spacing: 0px;
+}
+
+@media (max-width: 600px) {
+    .alternative-bridges {
+        margin: 0 auto 1.548rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .alternative-bridges a + a {
+        margin-top: 1.548rem;
+    }
+    
+    .BuyGMXGLP-purchase-block {
+        padding-left: 1.859rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .BuyGMXGLP-container {
+        padding-left: 16px!important;
+        padding-right: 16px!important;
+    }
+
+    .BuyGMXGLP-description {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    .BuyGMXGLP-purchase-block {
+        padding-left: 1.5rem;
+    }
+
+    .BuyGMXGLP-purchase-block-info {
+        margin-left: 1.5rem;
+        text-align: left;
+    }
+
+    .BuyGMXGLP-purchase-block-info__title {
+        font-size: 1.5rem;
+        line-height: 2rem;
+    }
+    
+    .BuyGMXGLP-purchase-block-info__subtitle {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+}
