@@ -46,6 +46,7 @@ import OrdersOverview from './views/OrdersOverview/OrdersOverview'
 import PositionsOverview from './views/PositionsOverview/PositionsOverview'
 import BuyGlp from './views/BuyGlp/BuyGlp'
 import SellGlp from './views/SellGlp/SellGlp'
+import BuyGMXGLP from './views/BuyGMXGLP/BuyGMXGLP'
 import NftWallet from './views/NftWallet/NftWallet'
 import BeginAccountTransfer from './views/BeginAccountTransfer/BeginAccountTransfer'
 import CompleteAccountTransfer from './views/CompleteAccountTransfer/CompleteAccountTransfer'
@@ -95,9 +96,6 @@ function inPreviewMode() {
 }
 
 function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
-  const handleDiabledClick = (e) => {
-    e.preventDefault()
-  }
   if (inPreviewMode()) {
     return (
       <div className="App-header-links preview">
@@ -137,12 +135,12 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
         <NavLink activeClassName="active" to="/earn">Earn</NavLink>
       </div>
       <div className="App-header-link-container">
+        <NavLink activeClassName="active" to="/buy_gmx_glp">Buy GMX/GLP</NavLink>
+      </div>
+      <div className="App-header-link-container">
         <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
           About
         </a>
-      </div>
-      <div className="App-header-link-container">
-        <NavLink activeClassName="active" className="disabled" to="/gmxglp" onClick={handleDiabledClick}>Buy GMX/GLP</NavLink>
       </div>
       <div className="App-header-link-container">
         <a href="https://www.gmx.house/p/leaderboard" target="_blank" rel="noopener noreferrer">
@@ -427,6 +425,9 @@ function FullApp() {
             </Route>
             <Route exact path="/earn">
               <Stake setPendingTxns={setPendingTxns} />
+            </Route>
+            <Route exact path="/buy_gmx_glp">
+              <BuyGMXGLP />
             </Route>
             <Route exact path="/buy_glp">
               <BuyGlp
