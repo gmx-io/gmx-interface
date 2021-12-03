@@ -120,42 +120,45 @@
   margin-bottom: 1.2rem;
 }
 
-.Connect-wallet-modal button + button {
-  margin-top: 1rem;
-}
-
 .WalletConnect-btn,
 .MetaMask-btn {
   display: block;
-  background: linear-gradient(90deg, rgba(205, 213, 255, 1) 0%, rgba(233, 233, 233, 1) 100%);
-  box-shadow: 0 0 4px 6px rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0px 0px 10px 5px rgba(27, 30, 46, 0.2);
+  background: linear-gradient(90deg, rgba(20,23,38,0.9) 0%, rgba(25,30,47,0.9) 100%);
   height: 3.3rem;
   width: 17rem;
-  appearance: none;
-  border: none;
+  border: 1px solid #23263b;
   border-radius: 3px;
   position: relative;
+  color: white;
+  /* font-weight: bold; */
+  font-size: 1.3rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  text-align: left;
+  padding-left: 1.2rem;
+  padding-top: 0.7rem;
 }
 .WalletConnect-btn:hover,
 .MetaMask-btn:hover {
-  background: linear-gradient(90deg, rgba(211, 222, 255, 1) 0%, rgba(255, 255, 255, 1) 100%);
-  box-shadow: 0 0 4px 6px rgba(255, 255, 255, 0.1);
+  background: linear-gradient(90deg, rgba(20,23,38,1) 0%, rgba(25,30,47,1) 100%);
+  border-color: rgba(45,66,252,1);
 }
-.WalletConnect-btn:after,
-.MetaMask-btn:after {
-  content: '';
-  display: block;
-  width: 100%;
-  height: 100%;
-  background-repeat: no-repeat;
-  background-size: 80%;
-  background-position: 50% 50%;
+
+.MetaMask-btn {
+  margin-bottom: 0.7rem;
 }
-.MetaMask-btn:after {
-  background-image: url(./img/metamask-text.svg);
+
+.MetaMask-btn img {
+  display: inline-block;
+  height: 1.5rem;
+  margin-right: 1.2rem;
 }
-.WalletConnect-btn:after {
-  background-image: url(./img/wallet-connect-text.svg);
+
+.WalletConnect-btn img {
+  display: inline-block;
+  height: 1.8rem;
+  margin-right: 1.2rem;
 }
 
 button.App-connect-wallet {
