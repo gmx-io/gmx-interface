@@ -152,7 +152,7 @@ a.plain {
   font-size: 14px;
   line-height: 20px;
   font-family: Relative;
-  font-weight: 500;
+  font-weight: normal;
   letter-spacing: 0px;
   color: #FFFFFF!important;
   padding-left: 16px;
@@ -220,7 +220,7 @@ a.plain {
   font-size: 14px;
   line-height: 20px;
   font-family: Relative;
-  font-weight: 500;
+  font-weight: normal;
   letter-spacing: 0px;
   color: black;
   padding-left: 16px;
