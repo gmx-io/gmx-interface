@@ -85,7 +85,9 @@
     position: relative;
 }
 
-.BuyGMXGLP-purchase-block:active::before {
+.BuyGMXGLP-purchase-block:active::before,
+.BuyGMXGLP-purchase-block:focus-within::before,
+.BuyGMXGLP-purchase-block:visited::before {
     content: " ";
     position: absolute;
     background: #50D0FE3d;

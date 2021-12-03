@@ -311,3 +311,11 @@ button.btn-link:hover {
 button.btn-link:hover .logout-icon {
   opacity: 1;
 }
+
+a {
+  color: #303FD0;
+}
+
+a:visited {
+  color: #03D1CFFC;
+}
