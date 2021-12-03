@@ -33,13 +33,8 @@
 }
 
 .BuyGMXGLP-description a {
-    color: #303FD0;
     text-decoration: none;
     position: relative;
-}
-
-.BuyGMXGLP-description a:visited {
-    color: #03D1CFFC;
 }
 
 .alternative-bridges {
@@ -87,6 +82,7 @@
 
 .BuyGMXGLP-purchase-block:active::before,
 .BuyGMXGLP-purchase-block:focus-within::before,
+.BuyGMXGLP-purchase-block:target::before,
 .BuyGMXGLP-purchase-block:visited::before {
     content: " ";
     position: absolute;

@@ -40,7 +40,7 @@ export default function BuyGMXGLP() {
               <div className="BuyGMXGLP-purchase-block-info__subtitle">Uniswap Arbitrum</div>
             </div>
           </a>
-          <div className="BuyGMXGLP-description">If you wish to buy GLP instead, please read <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">https://gmxio.gitbook.io/gmx/glp</a></div>
+          <div className="BuyGMXGLP-description">If you wish to buy GLP instead, you can find more info at <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">https://gmxio.gitbook.io/gmx/glp</a></div>
         </div>
       </div>
       <Footer />
