@@ -662,7 +662,6 @@ input.Exchange-swap-input.small {
 .Exchange-swap-ball-icon {
   text-align: center;
   display: block;
-  padding-bottom: 1.1rem;
   transform: rotate(90deg);
   font-size: 1.3rem;
   opacity: 0.7;
@@ -679,6 +678,9 @@ input.Exchange-swap-input.small {
   cursor: pointer;
   user-select: none;
   background: linear-gradient(90deg, rgba(45,66,252,1) 0%, rgba(46,61,205,1) 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .Exchange-swap-ball:hover {
