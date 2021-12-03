@@ -140,3 +140,27 @@ a.plain {
 .checkbox:checked:before{
   background-color:green;
 }
+
+button.btn-link {
+  margin-top: 1rem;
+  background: none;
+  color: white;
+  border: none;
+  padding: 0;
+  font-size: 1rem;
+  display: block;
+  text-align: left;
+}
+
+.logout-icon {
+  vertical-align: middle;
+  font-size: 1.1rem;
+  margin-top: -0.2rem;
+  margin-right: 0.35rem;
+  margin-left: -0.3rem;
+  opacity: 0.8;
+}
+
+button.btn-link:hover {
+  text-decoration: underline;
+}

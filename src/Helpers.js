@@ -1592,8 +1592,8 @@ export const getInjectedHandler = (activate) => {
     activate(getInjectedConnector(), (e) => {
       if (e.message.includes("No Ethereum provider")) {
         helperToast.error(<div>
-          Could not find a wallet to connect to.<br/>
-          <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">Add a wallet</a> to start using the app.
+          MetaMask not yet installed.<br/>
+          <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">Install MetaMask</a> to start using the app.
         </div>)
         return
       }

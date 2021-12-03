@@ -63,6 +63,7 @@ import Checkbox from './components/Checkbox/Checkbox'
 import { RiMenuLine } from 'react-icons/ri'
 import { FaTimes } from 'react-icons/fa'
 import { BsThreeDots }  from 'react-icons/bs'
+import { BiLogOut }  from 'react-icons/bi'
 
 import './Font.css'
 import './Shared.css'
@@ -71,6 +72,8 @@ import './Input.css';
 import './AppOrder.css';
 
 import logoImg from './img/gmx-logo-final-white-small.png'
+import metamaskImg from './img/metamask.png'
+import walletConnectImg from './img/walletconnect-circle-blue.svg'
 
 if ('ethereum' in window) {
   window.ethereum.autoRefreshOnNetworkChange = false
@@ -512,8 +515,14 @@ function FullApp() {
         pauseOnHover
       />
       <Modal className="Connect-wallet-modal" isVisible={walletModalVisible} setIsVisible={setWalletModalVisible} label="Connect Wallet">
-        <button className="MetaMask-btn" onClick={connectInjectedWallet}></button>
-        <button className="WalletConnect-btn" onClick={activateWalletConnect}></button>
+        <button className="MetaMask-btn" onClick={connectInjectedWallet}>
+          <img src={metamaskImg} alt="MetaMask"/>
+          <div>MetaMask</div>
+        </button>
+        <button className="WalletConnect-btn" onClick={activateWalletConnect}>
+          <img src={walletConnectImg} alt="WalletConnect"/>
+          <div>WalletConnect</div>
+        </button>
       </Modal>
       <Modal className="App-settings" isVisible={isSettingsVisible} setIsVisible={setIsSettingsVisible} label="Settings">
         <div className="App-settings-row">
@@ -531,7 +540,10 @@ function FullApp() {
           </Checkbox>
         </div>
         <div className="Exchange-settings-row">
-          <button className="App-cta small" onClick={disconnectAccountAndCloseSettings}>Disconnect Wallet Connect</button>
+          <button className="btn-link" onClick={disconnectAccountAndCloseSettings}>
+            <BiLogOut className="logout-icon" />
+            Logout from Account
+          </button>
         </div>
         <button className="App-cta Exchange-swap-button" onClick={saveAndCloseSettings}>Save</button>
       </Modal>
