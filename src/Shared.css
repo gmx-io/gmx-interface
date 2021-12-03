@@ -313,9 +313,5 @@ button.btn-link:hover .logout-icon {
 }
 
 a {
-  color: #303FD0;
-}
-
-a:visited {
   color: #03D1CFFC;
 }
