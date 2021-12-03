@@ -30,7 +30,6 @@ import {
   parseValue,
   approveTokens,
   getServerUrl,
-  getConnectWalletHandler,
   switchNetwork,
   useLocalStorageSerializeKey,
   ARBITRUM,
@@ -823,11 +822,9 @@ function ClaimModal(props) {
   )
 }
 
-export default function StakeV2({ setPendingTxns }) {
-  const { active, library, account, activate } = useWeb3React()
+export default function StakeV2({ setPendingTxns, connectWallet }) {
+  const { active, library, account } = useWeb3React()
   const chainId = 42161 // set chain to Arbitrum
-
-  const connectWallet = getConnectWalletHandler(activate)
 
   const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false)
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false)
@@ -1497,7 +1494,7 @@ export default function StakeV2({ setPendingTxns }) {
                 <div className="App-card-options">
                   {active && <button className="App-button-option App-card-option">Compound</button>}
                   {active && <button className="App-button-option App-card-option">Claim</button>}
-                  {!active && <button className="App-button-option App-card-option">Connect Wallet</button>}
+                  {!active && <button className="App-button-option App-card-option" onClick={() => connectWallet()}>Connect Wallet</button>}
                 </div>
               </div>
               <div className="App-card-bottom">

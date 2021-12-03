@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
 import { ethers } from 'ethers'
 
-import { getConnectWalletHandler,
+import { getInjectedHandler,
   fetcher, formatKeyAmount, formatAmount, formatAmountFree, parseValue, useChainId,
   expandDecimals, getExplorerUrl, approveTokens, bigNumberify, helperToast, CHAIN_ID, USD_DECIMALS, PRECISION } from '../../Helpers'
 
@@ -416,7 +416,7 @@ export default function StakeV1() {
   const [unstakingFarmAddress, setUnstakingFarmAddress] = useState("")
 
   const { activate, active, account, library } = useWeb3React()
-  const connectWallet = getConnectWalletHandler(activate)
+  const connectWallet = getInjectedHandler(activate)
 
   const readerAddress = getContract(CHAIN_ID, "Reader")
   const ammFactoryAddressV2 = getContract(CHAIN_ID, "AmmFactoryV2")
