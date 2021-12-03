@@ -366,6 +366,10 @@
     line-height: 1.548rem;
   }
 
+  .Home-cta-option-action {
+    margin-top: 0.5rem;
+  }
+
   .Home-latest-info-container {
     padding-left: 16px!important;
     padding-right: 16px!important;
