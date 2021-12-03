@@ -4,8 +4,8 @@ import Footer from "../../Footer"
 import './BuyGMXGLP.css';
 
 import Synapse from '../../img/Synapse.svg'
-import Anyswap from '../../img/Anyswap.svg'
-import Hop from '../../img/Hop.svg'
+import Anyswap from '../../img/Anyswap.png'
+import Hop from '../../img/Hop.png'
 import logo from '../../img/gmx_logo.svg'
 
 export default function BuyGMXGLP() {
@@ -20,10 +20,10 @@ export default function BuyGMXGLP() {
           </div>
           <p className="BuyGMXGLP-description better-rates-description">You can also check these alternative bridges for better rates:</p>
           <div className="alternative-bridges">
-            <a href="https://synapseprotocol.com/?inputCurrency=ETH&outputCurrency=ETH&outputChain=42161" target="_blank" rel="noopener noreferrer">
+            <a href="https://synapseprotocol.com/?inputCurrency=ETH&outputCurrency=ETH&outputChain=42161" target="_blank" rel="noopener noreferrer" className="Synapse">
               <img src={Synapse} alt="Synapse" />
             </a>
-            <a href="https://anyswap.exchange/bridge#/bridge" target="_blank" rel="noopener noreferrer">
+            <a href="https://anyswap.exchange/bridge#/bridge" target="_blank" rel="noopener noreferrer" className="Anyswap">
               <img src={Anyswap} alt="Anyswap" />
             </a>
             <a href="https://app.hop.exchange/send?token=USDC&sourceNetwork=ethereum&destNetwork=arbitrum" target="_blank" rel="noopener noreferrer">
