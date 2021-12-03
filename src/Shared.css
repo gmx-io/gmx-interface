@@ -164,3 +164,7 @@ button.btn-link {
 button.btn-link:hover {
   text-decoration: underline;
 }
+
+button.btn-link:hover .logout-icon {
+  opacity: 1;
+}
