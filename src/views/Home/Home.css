@@ -1,10 +1,11 @@
 .Home-top {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  padding-top: 5rem;
-  height: 52.581rem;
-  padding-bottom: 7rem;
-  grid-gap: 2rem;
+  justify-content: flex-end;
+  padding-top: 62px;
+  /* height: 52.581rem; */
+  padding-bottom: 4.129rem;
   background: url('../../img/Artwork.svg');
   background-repeat: no-repeat;
   background-size: cover;
@@ -14,7 +15,7 @@
 
 .Home-title {
   font-size: 3.677rem;
-  line-height: 4.065rem;
+  line-height: 4.387rem;
   font-weight: bold;
   margin-bottom: 1rem;
   letter-spacing: 0;
@@ -24,6 +25,7 @@
   position: relative;
   /* z-index: 2; */
   width: 100%;
+  padding-top: 7.548rem;
 }
 
 .Home-title-section {
@@ -38,7 +40,7 @@
   line-height: 1.613rem;
   max-width: 28.645rem;
   color: #A0A3C4;
-  margin-bottom: 1.677rem;
+  margin-bottom: 1.807rem;
 }
 
 .Home-benefits-section {
@@ -174,22 +176,22 @@
   background-image: url('../../img/btn_big_bsc.png');
 }
 
-.Home-latest-info-section {
-  background: #17182C;
-}
-
 .Home-latest-info-container {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  padding: 4.129rem 0;
+  padding: 6.645rem 0 0;
+  width: 100%;
 }
 
 .Home-latest-info-block {
-  background: #17182C 0% 0% no-repeat padding-box;
-  box-shadow: 0px 7px 12px #0000002B;
-  border: 2px solid #1E2136;
-  border-radius: 8px;
+  /* background: #17182C 0% 0% no-repeat padding-box; */
+  box-shadow: 0px 5px 22px #0000001F;
+  box-shadow: 0px 12px 17px #00000024;
+  box-shadow: 0px 7px 8px #00000033;
+  /* mix-blend-mode: multiply; */
+  border: 1px solid #FFFFFF14;
+  border-radius: 4px;
   max-width: 24.526rem;
   width: 100%;
   display: flex;
@@ -197,6 +199,7 @@
   padding-top: 1.806rem;
   padding-bottom: 1.806rem;
   margin: 1.032rem 0;
+  backdrop-filter: blur(4px);
 }
 
 .Home-latest-info__icon {
@@ -340,7 +343,11 @@
 
 @media (max-width: 500px) {
   .Home-top {
-    background-position-x: 70%;
+    /* background-position-x: 70%; */
+  }
+
+  .Home-title-section-container {
+    padding-top: 4.774rem;
   }
 
   .Home-cta-options {
@@ -373,6 +380,7 @@
   .Home-latest-info-container {
     padding-left: 16px!important;
     padding-right: 16px!important;
+    padding-top: 9rem;
   }
 
   .Home-latest-info__icon {
@@ -380,7 +388,7 @@
   }
 
   .Home-latest-info-block + .Home-latest-info-block {
-    margin-top: 32px;
+    margin-top: 16px;
   }
 
   .Home-faqs-content {
@@ -413,5 +421,9 @@
     font-weight: bold;
     margin-bottom: 1rem;
     letter-spacing: 0;
+  }
+
+  .Home-latest-info__icon {
+    margin: 0 1rem;
   }
 }

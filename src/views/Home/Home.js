@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Footer from "../../Footer"
 import { Link, NavLink } from 'react-router-dom'
-import { FiPlus, FiMinus } from "react-icons/fi"
+// import { FiPlus, FiMinus } from "react-icons/fi"
 
 import './Home.css';
 
@@ -69,32 +69,32 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
 
 export default function Home() {
   const { active, library } = useWeb3React()
-  const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
-  const faqContent = [{
-    id: 1,
-    question: "What is GMX?",
-    answer: "GMX is a decentralized spot and perpetual exchange that supports low swap fees and zero price impact trades.<br><br>Trading is supported by a unique multi-asset pool that earns liquidity providers fees from market making, swap fees, leverage trading (spreads, funding fees & liquidations), and asset rebalancing.<br><br>Dynamic pricing is supported by Chainlink Oracles along with TWAP pricing from leading volume DEXs."
-  }, {
-    id: 2,
-    question: "What is the GMX Governance Token? ",
-    answer: "The GMX token is the governance token of the GMX ecosystem, it provides the token owner voting rights on the direction of the GMX platform.<br><br>Additionally, when GMX is staked you will earn 30% of the platform-generated fees, you will also earn Escrowed GMX tokens and Multiplier Points."
-  }, {
-    id: 3,
-    question: "What is the GLP Token? ",
-    answer: "The GLP token represents the liquidity users provide to the GMX platform for Swaps and Margin Trading.<br><br>To provide liquidity to GLP you <a href='https://gmx.io/buy_glp' target='_blank'>trade</a> your crypto asset BTC, ETH, LINK, UNI, USDC, USDT, MIM, or FRAX to the liquidity pool, in exchange, you gain exposure to a diversified index of tokens while earning 50% of the platform trading fees and esGMX."
-  }, {
-    id: 4,
-    question: "What can I trade on GMX? ",
-    answer: "On GMX you can swap or margin trade any of the following assets: ETH, BTC, LINK, UNI, USDC, USDT, MIM, FRAX, with others to be added. "
-  }]
+  // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
+  // const faqContent = [{
+  //   id: 1,
+  //   question: "What is GMX?",
+  //   answer: "GMX is a decentralized spot and perpetual exchange that supports low swap fees and zero price impact trades.<br><br>Trading is supported by a unique multi-asset pool that earns liquidity providers fees from market making, swap fees, leverage trading (spreads, funding fees & liquidations), and asset rebalancing.<br><br>Dynamic pricing is supported by Chainlink Oracles along with TWAP pricing from leading volume DEXs."
+  // }, {
+  //   id: 2,
+  //   question: "What is the GMX Governance Token? ",
+  //   answer: "The GMX token is the governance token of the GMX ecosystem, it provides the token owner voting rights on the direction of the GMX platform.<br><br>Additionally, when GMX is staked you will earn 30% of the platform-generated fees, you will also earn Escrowed GMX tokens and Multiplier Points."
+  // }, {
+  //   id: 3,
+  //   question: "What is the GLP Token? ",
+  //   answer: "The GLP token represents the liquidity users provide to the GMX platform for Swaps and Margin Trading.<br><br>To provide liquidity to GLP you <a href='https://gmx.io/buy_glp' target='_blank'>trade</a> your crypto asset BTC, ETH, LINK, UNI, USDC, USDT, MIM, or FRAX to the liquidity pool, in exchange, you gain exposure to a diversified index of tokens while earning 50% of the platform trading fees and esGMX."
+  // }, {
+  //   id: 4,
+  //   question: "What can I trade on GMX? ",
+  //   answer: "On GMX you can swap or margin trade any of the following assets: ETH, BTC, LINK, UNI, USDC, USDT, MIM, FRAX, with others to be added. "
+  // }]
 
-  const toggleFAQContent = function(index) {
-    if (openedFAQIndex === index) {
-      setOpenedFAQIndex(null)
-    } else {
-      setOpenedFAQIndex(index)
-    }
-  }
+  // const toggleFAQContent = function(index) {
+  //   if (openedFAQIndex === index) {
+  //     setOpenedFAQIndex(null)
+  //   } else {
+  //     setOpenedFAQIndex(index)
+  //   }
+  // }
 
   const chainId = 42161 // set chain to Arbitrum
 
@@ -161,6 +161,29 @@ export default function Home() {
               Trade BTC, ETH and other top cryptocurrencies with up to 30x leverage directly from your wallet
             </div>
             <NavLink activeClassName="active" to="/trade" className="default-btn">Launch exchange</NavLink>
+          </div>
+        </div>
+        <div className="Home-latest-info-container default-container">
+          <div className="Home-latest-info-block">
+            <img src={tradingIcon} alt="trading" className="Home-latest-info__icon" />
+            <div className="Home-latest-info-content">
+              <div className="Home-latest-info__title">Total Trading Volume</div>
+              <div className="Home-latest-info__value">${formatAmount(totalVolumeSum, USD_DECIMALS, 0, true)}</div>
+            </div>
+          </div>
+          <div className="Home-latest-info-block">
+            <img src={statsIcon} alt="trading" className="Home-latest-info__icon" />
+            <div className="Home-latest-info-content">
+              <div className="Home-latest-info__title">Current Open Interest</div>
+              <div className="Home-latest-info__value">${formatAmount(openInterest, USD_DECIMALS, 0, true)}</div>
+            </div>
+          </div>
+          <div className="Home-latest-info-block">
+            <img src={cashIcon} alt="trading" className="Home-latest-info__icon" />
+            <div className="Home-latest-info-content">
+              <div className="Home-latest-info__title">Total Fees Collected</div>
+              <div className="Home-latest-info__value">${numberWithCommas(totalFeesDistributed.toFixed(0))}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -233,31 +256,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="Home-latest-info-section">
-        <div className="Home-latest-info-container default-container">
-          <div className="Home-latest-info-block">
-            <img src={tradingIcon} alt="trading" className="Home-latest-info__icon" />
-            <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">Total Trading Volume</div>
-              <div className="Home-latest-info__value">${formatAmount(totalVolumeSum, USD_DECIMALS, 0, true)}</div>
-            </div>
-          </div>
-          <div className="Home-latest-info-block">
-            <img src={statsIcon} alt="trading" className="Home-latest-info__icon" />
-            <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">Current Open Interest</div>
-              <div className="Home-latest-info__value">${formatAmount(openInterest, USD_DECIMALS, 0, true)}</div>
-            </div>
-          </div>
-          <div className="Home-latest-info-block">
-            <img src={cashIcon} alt="trading" className="Home-latest-info__icon" />
-            <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">Total Fees Collected</div>
-              <div className="Home-latest-info__value">${numberWithCommas(totalFeesDistributed.toFixed(0))}</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      
       {/* <div className="Home-video-section">
         <div className="Home-video-container default-container">
           <div className="Home-video-block">
@@ -265,7 +264,7 @@ export default function Home() {
           </div>
         </div>
       </div> */}
-      <div className="Home-faqs-section">
+      {/* <div className="Home-faqs-section">
         <div className="Home-faqs-container default-container">
           <div className="Home-faqs-introduction">
             <div className="Home-faqs-introduction__title">FAQs</div>
@@ -297,7 +296,7 @@ export default function Home() {
             }
           </div>
         </div>
-      </div>
+      </div> */}
       <Footer />
     </div>
   )

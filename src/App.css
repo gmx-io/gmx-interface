@@ -265,6 +265,10 @@ button.App-connect-wallet:hover {
 .Page {
   max-width: 70rem;
   margin: auto;
+  min-height: calc(100vh - 62px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .Page-content {
@@ -313,6 +317,8 @@ button.App-connect-wallet:hover {
 .App-card {
   padding: 1rem;
   padding-bottom: 1.2rem;
+  border: 1px solid #1E2136;
+  border-radius: 4px;
 }
 
 .App-card-title {
@@ -679,7 +685,7 @@ a.App-header-user-account {
 .App-content {
   position: relative;
   z-index: 2;
-  background-color: #0D0E1F;
+  background-color: #101124;
 }
 
 .App-footer {
