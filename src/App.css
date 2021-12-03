@@ -154,7 +154,48 @@
   margin-bottom: 1.2rem;
 }
 
-button.App-cta.App-connect-wallet {
+.WalletConnect-btn,
+.MetaMask-btn {
+  display: block;
+  box-shadow: inset 0px 0px 10px 5px rgba(27, 30, 46, 0.2);
+  background: linear-gradient(90deg, rgba(20,23,38,0.9) 0%, rgba(25,30,47,0.9) 100%);
+  height: 3.3rem;
+  width: 17rem;
+  border: 1px solid #23263b;
+  border-radius: 3px;
+  position: relative;
+  color: white;
+  /* font-weight: bold; */
+  font-size: 1.3rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  text-align: left;
+  padding-left: 1.2rem;
+  padding-top: 0.7rem;
+}
+.WalletConnect-btn:hover,
+.MetaMask-btn:hover {
+  background: linear-gradient(90deg, rgba(20,23,38,1) 0%, rgba(25,30,47,1) 100%);
+  border-color: rgba(45,66,252,1);
+}
+
+.MetaMask-btn {
+  margin-bottom: 0.7rem;
+}
+
+.MetaMask-btn img {
+  display: inline-block;
+  height: 1.5rem;
+  margin-right: 1.2rem;
+}
+
+.WalletConnect-btn img {
+  display: inline-block;
+  height: 1.8rem;
+  margin-right: 1.2rem;
+}
+
+button.App-connect-wallet {
   cursor: pointer;
   display: inline-block;
   border: none;
@@ -948,4 +989,14 @@ button.App-button {
   .Home-faqs-content {
     padding-left: 1rem;
   }
+}
+
+.walletconnect-modal__mobile__toggle a {
+  color: #000;
+}
+.walletconnect-modal__base {
+  max-height: 100%;
+}
+.walletconnect-qrcode__image {
+  max-height: 50vh;
 }

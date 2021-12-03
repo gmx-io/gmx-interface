@@ -26,7 +26,6 @@ import {
   getSellGlpFromAmount,
   getSellGlpToAmount,
   parseValue,
-  getConnectWalletHandler,
   approveTokens,
   getUsd,
   adjustForDecimals,
@@ -87,9 +86,9 @@ function getStakingData(stakingInfo) {
 }
 
 export default function GlpSwap(props) {
-  const { savedSlippageAmount, isBuying, setPendingTxns } = props
+  const { savedSlippageAmount, isBuying, setPendingTxns, connectWallet } = props
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp"
-  const { active, library, account, activate } = useWeb3React()
+  const { active, library, account } = useWeb3React()
   const chainId = 42161 // set chain to Arbitrum
   const tokens = getTokens(chainId)
   const whitelistedTokens = getWhitelistedTokens(chainId)
@@ -437,8 +436,6 @@ export default function GlpSwap(props) {
 
     return isBuying ? "Buy GLP" : "Sell GLP"
   }
-
-  const connectWallet = getConnectWalletHandler(activate)
 
   const approveFromToken = () => {
     approveTokens({

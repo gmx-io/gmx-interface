@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { SWRConfig } from 'swr'
 
 import { motion, AnimatePresence } from "framer-motion"
@@ -23,17 +23,19 @@ import {
   IS_PNL_IN_LEVERAGE_KEY,
   BASIS_POINTS_DIVISOR,
   SHOULD_SHOW_POSITION_LINES_KEY,
+  clearWalletConnectData,
   switchNetwork,
   helperToast,
   getChainName,
   useChainId,
   getAccountUrl,
-  getConnectWalletHandler,
+  getInjectedHandler,
   useEagerConnect,
   useLocalStorageSerializeKey,
   useInactiveListener,
   shortenAddress,
-  getExplorerUrl
+  getExplorerUrl,
+  getWalletConnectHandler
 } from './Helpers'
 
 import Home from './views/Home/Home'
@@ -53,8 +55,7 @@ import CompleteAccountTransfer from './views/CompleteAccountTransfer/CompleteAcc
 import Debug from './views/Debug/Debug'
 
 import cx from "classnames";
-import { cssTransition } from 'react-toastify'
-import { ToastContainer } from 'react-toastify'
+import { cssTransition, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Selector from './components/Selector/Selector'
 import Modal from './components/Modal/Modal'
@@ -64,6 +65,7 @@ import { RiMenuLine } from 'react-icons/ri'
 import { FaTimes } from 'react-icons/fa'
 import { BsThreeDots } from 'react-icons/bs'
 import { FiX } from "react-icons/fi"
+import { BiLogOut }  from 'react-icons/bi'
 
 import './Font.css'
 import './Shared.css'
@@ -72,6 +74,9 @@ import './Input.css';
 import './AppOrder.css';
 
 import logoImg from './img/logo_GMX.svg'
+// import logoImg from './img/gmx-logo-final-white-small.png'
+import metamaskImg from './img/metamask.png'
+import walletConnectImg from './img/walletconnect-circle-blue.svg'
 
 if ('ethereum' in window) {
   window.ethereum.autoRefreshOnNetworkChange = false
@@ -170,24 +175,34 @@ function NetworkIcon({ chainId }) {
   return <img src={url} alt={getChainName(chainId)} className="Network-icon" />
 }
 
-function AppHeaderUser({ openSettings, small }) {
+function AppHeaderUser({
+  openSettings,
+  small,
+  setActivatingConnector,
+  walletModalVisible,
+  setWalletModalVisible
+}) {
   const { chainId } = useChainId()
-  const { active, account, activate } = useWeb3React()
+  const { active, account } = useWeb3React()
   const showSelector = false
   const networkOptions = [
     { label: "Arbitrum", value: ARBITRUM },
     { label: "Binance Smart Chain (BSC)", value: MAINNET }
   ]
 
-  if (!active) {
-    const connectWallet = getConnectWalletHandler(activate)
+  useEffect(() => {
+    if (active) {
+      setWalletModalVisible(false)
+    }
+  }, [active, setWalletModalVisible])
 
+  if (!active) {
     return (
       <div className="App-header-user">
         <div className="App-header-user-link">
           <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
         </div>
-        <button target="_blank" rel="noopener noreferrer" className="secondary-btn" onClick={connectWallet}>
+        <button target="_blank" rel="noopener noreferrer" className="secondary-btn" onClick={() => setWalletModalVisible(true)}>
           Connect Wallet
         </button>
       </div>
@@ -226,14 +241,34 @@ function AppHeaderUser({ openSettings, small }) {
 }
 
 function FullApp() {
-  const { connector, library } = useWeb3React()
+  const { connector, library, deactivate, activate } = useWeb3React()
+
   const { chainId } = useChainId()
   const [activatingConnector, setActivatingConnector] = useState()
   useEffect(() => {
-    if (activatingConnector && activatingConnector === connector) { setActivatingConnector(undefined) }
+    if (activatingConnector && activatingConnector === connector) {
+      setActivatingConnector(undefined)
+    }
   }, [activatingConnector, connector, chainId])
-  const triedEager = useEagerConnect()
+  const triedEager = useEagerConnect(setActivatingConnector)
   useInactiveListener(!triedEager || !!activatingConnector)
+
+  const disconnectAccount = useCallback(() => {
+    // only works with WalletConnect
+    clearWalletConnectData()
+    deactivate()
+  }, [deactivate])
+
+  const disconnectAccountAndCloseSettings = () => {
+    disconnectAccount()
+    setIsSettingsVisible(false)
+  }
+
+  const connectInjectedWallet = getInjectedHandler(activate)
+  const activateWalletConnect = getWalletConnectHandler(activate, deactivate, setActivatingConnector)
+
+  const [walletModalVisible, setWalletModalVisible] = useState()
+  const connectWallet = () => setWalletModalVisible(true)
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(undefined)
   const fadeVariants = {
@@ -368,7 +403,12 @@ function FullApp() {
                 <AppHeaderLinks />
               </div>
               <div className="App-header-container-right">
-                <AppHeaderUser openSettings={openSettings} />
+                <AppHeaderUser
+                  openSettings={openSettings}
+                  setActivatingConnector={setActivatingConnector}
+                  walletModalVisible={walletModalVisible}
+                  setWalletModalVisible={setWalletModalVisible}
+                />
               </div>
             </div>
             <div className={cx("App-header", "small", { active: isDrawerVisible })}>
@@ -383,7 +423,13 @@ function FullApp() {
                   </NavLink>
                 </div>
                 <div className="App-header-container-right">
-                  <AppHeaderUser openSettings={openSettings} small />
+                  <AppHeaderUser
+                    openSettings={openSettings}
+                    small
+                    setActivatingConnector={setActivatingConnector}
+                    walletModalVisible={walletModalVisible}
+                    setWalletModalVisible={setWalletModalVisible}
+                  />
                 </div>
               </div>
             </div>
@@ -415,6 +461,7 @@ function FullApp() {
                 pendingTxns={pendingTxns}
                 savedShouldShowPositionLines={savedShouldShowPositionLines}
                 setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
+                connectWallet={connectWallet}
               />
             </Route>
             <Route exact path="/presale">
@@ -424,7 +471,7 @@ function FullApp() {
               <Dashboard />
             </Route>
             <Route exact path="/earn">
-              <Stake setPendingTxns={setPendingTxns} />
+              <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
             </Route>
             <Route exact path="/buy_gmx_glp">
               <BuyGMXGLP />
@@ -433,12 +480,14 @@ function FullApp() {
               <BuyGlp
                 savedSlippageAmount={savedSlippageAmount}
                 setPendingTxns={setPendingTxns}
+                connectWallet={connectWallet}
               />
             </Route>
             <Route exact path="/sell_glp">
               <SellGlp
                 savedSlippageAmount={savedSlippageAmount}
                 setPendingTxns={setPendingTxns}
+                connectWallet={connectWallet}
               />
             </Route>
             <Route exact path="/about">
@@ -486,6 +535,16 @@ function FullApp() {
         draggable={false}
         pauseOnHover
       />
+      <Modal className="Connect-wallet-modal" isVisible={walletModalVisible} setIsVisible={setWalletModalVisible} label="Connect Wallet">
+        <button className="MetaMask-btn" onClick={connectInjectedWallet}>
+          <img src={metamaskImg} alt="MetaMask"/>
+          <div>MetaMask</div>
+        </button>
+        <button className="WalletConnect-btn" onClick={activateWalletConnect}>
+          <img src={walletConnectImg} alt="WalletConnect"/>
+          <div>WalletConnect</div>
+        </button>
+      </Modal>
       <Modal className="App-settings" isVisible={isSettingsVisible} setIsVisible={setIsSettingsVisible} label="Settings">
         <div className="App-settings-row">
           <div>
@@ -500,6 +559,12 @@ function FullApp() {
           <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
             Include PnL in leverage display
           </Checkbox>
+        </div>
+        <div className="Exchange-settings-row">
+          <button className="btn-link" onClick={disconnectAccountAndCloseSettings}>
+            <BiLogOut className="logout-icon" />
+            Logout from Account
+          </button>
         </div>
         <button className="App-cta Exchange-swap-button" onClick={saveAndCloseSettings}>Save</button>
       </Modal>
