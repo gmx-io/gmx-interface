@@ -38,6 +38,10 @@
     position: relative;
 }
 
+.BuyGMXGLP-description a:visited {
+    color: #03D1CFFC;
+}
+
 .alternative-bridges {
     margin: 0 auto 1.548rem;
     max-width: 528px;
@@ -48,6 +52,21 @@
 
 .alternative-bridges a {
     display: flex;
+    position: relative;
+}
+
+.alternative-bridges a.Synapse:hover::before,
+.alternative-bridges a.Synapse:focus::before,
+.alternative-bridges a.Anyswap:hover::before,
+.alternative-bridges a.Anyswap:focus::before {
+    content: " ";
+    position: absolute;
+    background: #FFFFFF1F;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
 }
 
 .BuyGMXGLP-purchase-block {
@@ -63,6 +82,29 @@
     border: 1px solid #1E2136;
     border-radius: 4px;
     text-decoration: none;
+    position: relative;
+}
+
+.BuyGMXGLP-purchase-block:active::before {
+    content: " ";
+    position: absolute;
+    background: #50D0FE3d;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+}
+
+.BuyGMXGLP-purchase-block:hover::before {
+    content: " ";
+    position: absolute;
+    background: #50D0FE19;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
 }
 
 .BuyGMXGLP-purchase-block-info {
