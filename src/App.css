@@ -131,7 +131,8 @@
 
 .App-box, .App-card, .App-card-primary, .App-box-highlight, .App-box-solid {
   position: relative;
-  border-radius: 3px;
+  border: 1px solid #1E2136;
+  border-radius: 4px;
   box-shadow: inset 0px 0px 10px 5px rgba(27, 30, 46, 0.2);
   background: #17182C;
   /* background: linear-gradient(90deg, rgba(20,23,38,0.9) 0%, rgba(25,30,47,0.9) 100%); */
@@ -400,7 +401,7 @@ button.App-connect-wallet:hover {
   color: #A0A3C4;
   font-size: 15px;
   line-height: 19px;
-  font-weight: bold;
+  font-weight: normal;
 }
 
 .App-header-container-left a.active {
