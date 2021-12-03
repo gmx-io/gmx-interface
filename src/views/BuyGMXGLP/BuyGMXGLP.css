@@ -80,13 +80,10 @@
     position: relative;
 }
 
-.BuyGMXGLP-purchase-block:active::before,
-.BuyGMXGLP-purchase-block:focus-within::before,
-.BuyGMXGLP-purchase-block:target::before,
-.BuyGMXGLP-purchase-block:visited::before {
+.BuyGMXGLP-purchase-block:hover::before {
     content: " ";
     position: absolute;
-    background: #50D0FE3d;
+    background: #50D0FE19;
     width: 100%;
     height: 100%;
     top: 0;
@@ -94,10 +91,10 @@
     border-radius: 4px;
 }
 
-.BuyGMXGLP-purchase-block:hover::before {
+.BuyGMXGLP-purchase-block:active::before {
     content: " ";
     position: absolute;
-    background: #50D0FE19;
+    background: #50D0FE3d;
     width: 100%;
     height: 100%;
     top: 0;
