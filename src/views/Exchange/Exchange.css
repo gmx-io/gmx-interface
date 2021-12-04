@@ -409,9 +409,6 @@ table.Exchange-list {
   border-collapse: collapse;
 }
 
-table.Exchange-list.Exchange-positions-list td {
-}
-
 table.Exchange-list th, table.Exchange-list td {
   font-weight: normal;
   text-align: left;

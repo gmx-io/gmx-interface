@@ -39,7 +39,7 @@ export default function BuyGMXGLP() {
               <img src={logo} alt="logo" height="53px" />
             </div>
             <div className="BuyGMXGLP-purchase-block-info">
-              <div className="BuyGMXGLP-purchase-block-info__title">Purchase GMX</div>
+              <div className="BuyGMXGLP-purchase-block-info__title">Buy GMX</div>
               <div className="BuyGMXGLP-purchase-block-info__subtitle">Uniswap Arbitrum</div>
             </div>
           </a>
@@ -49,7 +49,7 @@ export default function BuyGMXGLP() {
               <div className="GLP-block-icon">
                 <img src={glpIcon} alt="glpIcon" height="40px" />
               </div>
-              <div className="GLP-block-label">Purchase GLP</div>
+              <div className="GLP-block-label">Buy GLP</div>
             </NavLink>
             <NavLink to="/sell_glp" className="GLP-block">
               <div className="GLP-block-icon">

@@ -57,7 +57,7 @@ import Debug from './views/Debug/Debug'
 import cx from "classnames";
 import { cssTransition, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import Selector from './components/Selector/Selector'
+import NetworkSelector from './components/NetworkSelector/NetworkSelector'
 import Modal from './components/Modal/Modal'
 import Checkbox from './components/Checkbox/Checkbox'
 
@@ -205,7 +205,7 @@ function AppHeaderUser({
         <div className="App-header-user-link">
           <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
         </div>
-        {showSelector && <Selector
+        {showSelector && <NetworkSelector
           options={networkOptions}
           label={selectorLabel}
           onSelect={onNetworkSelect}
@@ -228,7 +228,7 @@ function AppHeaderUser({
       <div className="App-header-user-link">
         <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
       </div>
-      {showSelector && <Selector
+      {showSelector && <NetworkSelector
         options={networkOptions}
         label={selectorLabel}
         onSelect={onNetworkSelect}
