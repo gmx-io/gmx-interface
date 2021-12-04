@@ -539,10 +539,6 @@ table.Exchange-list th {
   padding: 0.7rem;
 }
 
-.Exchange-swap-box-approve-button {
-
-}
-
 .Exchange-swap-box .TokenSelector .Modal,
 .Selector .Modal {
   align-items: flex-start;
@@ -557,6 +553,7 @@ table.Exchange-list th {
   bottom: 0;
   overflow: auto;
   border: none;
+  height: max-content;
 }
 
 .Exchange-swap-box .Tab {
