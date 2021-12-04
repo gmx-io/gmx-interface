@@ -1243,10 +1243,10 @@ export default function SwapBox(props) {
 
   return (
     <div className="Exchange-swap-box">
-      <div className="Exchange-swap-wallet-box App-box">
+      {/* <div className="Exchange-swap-wallet-box App-box">
         {active && <div className="Exchange-swap-account" >
         </div>}
-      </div>
+      </div> */}
       <div className="Exchange-swap-box-inner App-box-highlight">
         <div>
           <Tab icons={SWAP_ICONS} options={SWAP_OPTIONS} option={swapOption} onChange={onSwapOptionChange} className="Exchange-swap-option-tabs" />
