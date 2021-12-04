@@ -7,6 +7,7 @@ import Synapse from '../../img/Synapse.svg'
 import Anyswap from '../../img/Anyswap.png'
 import Hop from '../../img/Hop.png'
 import logo from '../../img/gmx_logo.svg'
+import glpIcon from '../../img/glp_icon.svg'
 
 export default function BuyGMXGLP() {
 
@@ -41,6 +42,20 @@ export default function BuyGMXGLP() {
             </div>
           </a>
           <div className="BuyGMXGLP-description">If you wish to buy GLP instead, you can find more info at <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">https://gmxio.gitbook.io/gmx/glp</a></div>
+          <div className="GLP-block-section">
+            <a href="https://gmx.io/buy_glp" target="_blank" rel="noopener noreferrer" className="GLP-block">
+              <div className="GLP-block-icon">
+                <img src={glpIcon} alt="glpIcon" height="40px" />
+              </div>
+              <div className="GLP-block-label">Purchase GLP</div>
+            </a>
+            <a href="https://gmx.io/sell_glp" target="_blank" rel="noopener noreferrer" className="GLP-block">
+              <div className="GLP-block-icon">
+                <img src={glpIcon} alt="glpIcon" height="40px" />
+              </div>
+              <div className="GLP-block-label">Sell GLP</div>
+            </a>
+          </div>
         </div>
       </div>
       <Footer />
