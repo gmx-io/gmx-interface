@@ -1,6 +1,8 @@
 import React from 'react'
 import Footer from "../../Footer"
-
+import {
+  NavLink
+} from 'react-router-dom'
 import './BuyGMXGLP.css';
 
 import Synapse from '../../img/Synapse.svg'
@@ -43,18 +45,18 @@ export default function BuyGMXGLP() {
           </a>
           <div className="BuyGMXGLP-description">If you wish to buy GLP instead, you can find more info at <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">https://gmxio.gitbook.io/gmx/glp</a></div>
           <div className="GLP-block-section">
-            <a href="https://gmx.io/buy_glp" target="_blank" rel="noopener noreferrer" className="GLP-block">
+            <NavLink to="/buy_glp" className="GLP-block">
               <div className="GLP-block-icon">
                 <img src={glpIcon} alt="glpIcon" height="40px" />
               </div>
               <div className="GLP-block-label">Purchase GLP</div>
-            </a>
-            <a href="https://gmx.io/sell_glp" target="_blank" rel="noopener noreferrer" className="GLP-block">
+            </NavLink>
+            <NavLink to="/sell_glp" className="GLP-block">
               <div className="GLP-block-icon">
                 <img src={glpIcon} alt="glpIcon" height="40px" />
               </div>
               <div className="GLP-block-label">Sell GLP</div>
-            </a>
+            </NavLink>
           </div>
         </div>
       </div>

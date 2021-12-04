@@ -196,12 +196,24 @@ function AppHeaderUser({
     }
   }, [active, setWalletModalVisible])
 
+  const icon = <NetworkIcon chainId={chainId} />
+  const selectorLabel = <span>{icon}&nbsp;{getChainName(chainId)}</span>
+
   if (!active) {
     return (
       <div className="App-header-user">
         <div className="App-header-user-link">
           <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
         </div>
+        {showSelector && <Selector
+          options={networkOptions}
+          label={selectorLabel}
+          onSelect={onNetworkSelect}
+          className="App-header-user-netowork"
+          showCaret={true}
+          modalLabel="Switch Network"
+          modalText="Or you can switch network manually in&nbsp;Metamask"
+        />}
         <button target="_blank" rel="noopener noreferrer" className="secondary-btn" onClick={() => setWalletModalVisible(true)}>
           Connect Wallet
         </button>
@@ -211,17 +223,11 @@ function AppHeaderUser({
 
   const accountUrl = getAccountUrl(chainId, account)
 
-  const icon = <NetworkIcon chainId={chainId} />
-  const selectorLabel = <span>{icon}&nbsp;{getChainName(chainId)}</span>
-
   return (
     <div className="App-header-user">
       <div className="App-header-user-link">
         <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
       </div>
-      <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="App-cta small transparent App-header-user-account">
-        {shortenAddress(account, small ? 11 : 13)}
-      </a>
       {showSelector && <Selector
         options={networkOptions}
         label={selectorLabel}
@@ -231,6 +237,9 @@ function AppHeaderUser({
         modalLabel="Switch Network"
         modalText="Or you can switch network manually in&nbsp;Metamask"
       />}
+      <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="App-cta small transparent App-header-user-account">
+        {shortenAddress(account, small ? 11 : 13)}
+      </a>
       {!small &&
         <button className="App-header-user-settings" onClick={openSettings}>
           <BsThreeDots />
