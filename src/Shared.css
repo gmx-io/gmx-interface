@@ -311,3 +311,7 @@ button.btn-link:hover {
 button.btn-link:hover .logout-icon {
   opacity: 1;
 }
+
+.page-container {
+  padding-top: 5.1613rem;
+}

@@ -21,9 +21,8 @@ export default function BuyGMXGLP() {
           <div className="BuyGMXGLP-description">
             To purchase GMX please ensure your wallet network is set to Arbitrum and you have some ETH for gas on the Arbitrum Network.
             <br/><br/>
-            You can learn how to bridge ETH to Arbitrum using this <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">tutorial.</a>
+            You can learn how to bridge ETH to Arbitrum using this <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">tutorial</a>, and also check these alternative bridges for better rates:
           </div>
-          <p className="BuyGMXGLP-description better-rates-description">You can also check these alternative bridges for better rates:</p>
           <div className="alternative-bridges">
             <a href="https://synapseprotocol.com/?inputCurrency=ETH&outputCurrency=ETH&outputChain=42161" target="_blank" rel="noopener noreferrer" className="Synapse">
               <img src={Synapse} alt="Synapse" />
