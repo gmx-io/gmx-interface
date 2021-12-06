@@ -550,6 +550,9 @@ table.Exchange-list th {
   bottom: 0;
   overflow: auto;
   border: none;
+}
+
+.Selector .Modal-content {
   height: max-content;
 }
 
@@ -634,6 +637,7 @@ input.Exchange-swap-input {
   padding: 0;
   max-width: 100%;
   font-size: 1.5rem;
+  width: 100%;
 }
 input.Exchange-swap-input.small {
   max-width:  9.5rem;

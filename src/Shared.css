@@ -36,8 +36,8 @@ html, body, #root {
   background: #4a4a4a;
 }
 
-#root a {
-  /* color: white; */
+a {
+  color: white;
 }
 
 .Card-title {
@@ -310,8 +310,4 @@ button.btn-link:hover {
 
 button.btn-link:hover .logout-icon {
   opacity: 1;
-}
-
-a {
-  color: #03D1CFFC;
 }
