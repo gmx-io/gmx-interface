@@ -165,6 +165,9 @@ a.plain {
   display: inline-flex!important;
   align-items: center;
   text-align: center;
+  cursor: pointer;
+  border: none;
+  appearance: none;
 }
 
 .default-btn:hover {
