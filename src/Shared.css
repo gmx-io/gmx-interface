@@ -147,7 +147,7 @@ a.plain {
 }
 
 .default-btn {
-  background: #303fd0;
+  background: #2d42fc;
   border-radius: 4px;
   font-size: 14px;
   line-height: 20px;
@@ -171,7 +171,7 @@ a.plain {
 }
 
 .default-btn:hover {
-  background: #404ed4;
+  background: #4f60fc;
 }
 
 /* .default-btn:focus {
@@ -183,7 +183,7 @@ a.plain {
 } */
 
 .default-btn:active {
-  background: #515ed8;
+  background: #5f6ffd;
   border: none;
   padding-left: 16px;
   padding-right: 16px;

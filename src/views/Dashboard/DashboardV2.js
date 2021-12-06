@@ -43,6 +43,7 @@ import "./DashboardV2.css"
 
 import statsBigIcon from '../../img/ic_stats_big.svg'
 import tokensBigIcon from '../../img/ic_tokens.svg'
+import communityBigIcon from '../../img/ic-communityproject.svg'
 
 const { AddressZero } = ethers.constants
 
@@ -354,7 +355,7 @@ export default function DashboardV2() {
       <div className="page-main-content">
         <div className="DashboardV2-cards">
           <div className="App-card">
-            <div className="App-card-title">Overview</div>
+            <div className="App-card-title">OVERVIEW</div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -362,7 +363,7 @@ export default function DashboardV2() {
                 <div>
                   <Tooltip
                     handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
-                    position="right-bottom"
+                    position="left"
                     renderContent={() => "Assets Under Management: GLP pool + GMX staked"}
                   />
                 </div>
@@ -404,7 +405,7 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">Total Stats</div>
+            <div className="App-card-title">TOTAL STATS</div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -438,7 +439,6 @@ export default function DashboardV2() {
               Platform and GLP index tokens.
             </div>
           </div>
-          
         </div>
         <div className="DashboardV2-token-cards">
           <div className="App-card">
@@ -556,10 +556,15 @@ export default function DashboardV2() {
             )
           })}
         </div>
-        <div className="Page-title-section">
-          <div className="Page-title">Community Projects</div>
-          <div className="Page-description">
-            Projects developed by the GMX community.
+        <div className="section-title-block">
+          <div className="section-title-icon">
+            <img src={communityBigIcon} alt="communityBigIcon" />
+          </div>
+          <div className="section-title-content">
+            <div className="section-title-content__title">Community Projects</div>
+            <div className="section-title-content__description">
+              Projects developed by the GMX community.
+            </div>
           </div>
         </div>
         <div className="DashboardV2-projects">
