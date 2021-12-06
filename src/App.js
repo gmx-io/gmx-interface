@@ -214,7 +214,7 @@ function AppHeaderUser({
           modalLabel="Switch Network"
           modalText="Or you can switch network manually in&nbsp;Metamask"
         />}
-        <button target="_blank" rel="noopener noreferrer" className="secondary-btn" onClick={() => setWalletModalVisible(true)}>
+        <button target="_blank" rel="noopener noreferrer" className="default-btn header-connect-btn" onClick={() => setWalletModalVisible(true)}>
           Connect Wallet
         </button>
       </div>

@@ -917,6 +917,26 @@ button.App-button {
   border-top-color: #303652;
 }
 
+.header-connect-btn {
+  background: #3b43e3;
+}
+
+.header-connect-btn:hover {
+  background: #6a70ea;
+}
+
+.header-connect-btn:focus {
+  background: #7a7fec;
+  border: 1px solid #3B43E3;
+  box-sizing: border-box;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.header-connect-btn:active {
+  background: #7a7fec;
+}
+
 @media (max-width: 900px) {
   .App-header-user-link {
     margin-right: 16px;
