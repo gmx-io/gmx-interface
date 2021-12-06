@@ -17,9 +17,11 @@ export default function BuyGMXGLP() {
     <div className="BuyGMXGLP">
       <div className="BuyGMXGLP-container default-container">
         <div className="BuyGMXGLP-title-section">
-          <div className="BuyGMXGLP-title">Buy GMX/GLP</div>
+          <div className="BuyGMXGLP-title">Buy GMX</div>
           <div className="BuyGMXGLP-description">
-            To purchase GMX please ensure your wallet network is set to Arbitrum and you have some ETH for gas on the Arbitrum Network. You can learn how to bridge some of your ETH from the Ethereum Network to Arbitrum using this <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">Arbitrum Bridge tutorial.</a>
+            To purchase GMX please ensure your wallet network is set to Arbitrum and you have some ETH for gas on the Arbitrum Network.
+            <br/><br/>
+            You can learn how to bridge ETH to Arbitrum using this <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">tutorial.</a>
           </div>
           <p className="BuyGMXGLP-description better-rates-description">You can also check these alternative bridges for better rates:</p>
           <div className="alternative-bridges">

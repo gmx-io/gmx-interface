@@ -1,6 +1,7 @@
 .Footer {
   position: relative;
   height: 158px;
+  margin-top: auto;
 }
 
 .Footer-wrapper {
