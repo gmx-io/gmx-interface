@@ -353,7 +353,11 @@ button.App-connect-wallet:hover {
 }
 
 .App-card-title {
-  font-size: 1.35rem;
+  font-size: 1.032rem;
+  line-height: 1.355rem;
+  font-weight: normal;
+  letter-spacing: 0px;
+  color: #FFFFFF;
   margin-bottom: 1rem;
 }
 
