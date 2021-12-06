@@ -1,42 +1,11 @@
-.page-main-content {
-  padding-bottom: 5.1613rem;
-}
-
 .DashboardV2-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 1rem;
   margin-top: 0.5rem;
+  padding: 2rem;
   padding-top: 1rem;
   padding-bottom: 1rem;
-}
-
-.DashboardV2-cards .App-card-content {
-  margin-left: -1rem;
-  margin-right: -1rem;
-  grid-row-gap: 0;
-}
-
-.DashboardV2-cards .App-card-divider {
-  margin-bottom: 0;
-}
-
-.DashboardV2-cards .App-card-row {
-  padding: 0.581rem 1.032rem;
-}
-
-.DashboardV2 .label {
-  font-size: 0.903rem;
-  line-height: 1.161rem;
-  letter-spacing: 0.25px;
-  color: #A0A3C4;
-}
-
-.DashboardV2 .Tooltip-handle {
-  font-size: 0.903rem;
-  line-height: 1.161rem;
-  letter-spacing: 0.25px;
-  color: #FFFFFFDE;
 }
 
 .DashboardV2-token-cards {
@@ -44,6 +13,7 @@
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 1rem;
   margin-top: 0.5rem;
+  padding: 2rem;
   padding-top: 1rem;
 }
 
@@ -52,6 +22,7 @@
   grid-template-columns: 1fr 1fr;
   grid-gap: 1rem;
   margin-top: 0.5rem;
+  padding: 2rem;
   padding-top: 1rem;
 }
 
