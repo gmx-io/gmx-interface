@@ -1,9 +1,12 @@
+.page-main-content {
+  padding-bottom: 5.1613rem;
+}
+
 .DashboardV2-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 1rem;
   margin-top: 0.5rem;
-  padding: 2rem;
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
@@ -13,7 +16,6 @@
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: 1rem;
   margin-top: 0.5rem;
-  padding: 2rem;
   padding-top: 1rem;
 }
 
@@ -22,7 +24,6 @@
   grid-template-columns: 1fr 1fr;
   grid-gap: 1rem;
   margin-top: 0.5rem;
-  padding: 2rem;
   padding-top: 1rem;
 }
 

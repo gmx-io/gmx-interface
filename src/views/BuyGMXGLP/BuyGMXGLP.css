@@ -9,6 +9,7 @@
 .BuyGMXGLP-container {
     padding: 5.161rem 0;
     text-align: center;
+    max-width: 70rem!important;
 }
 
 .BuyGMXGLP-title {
@@ -38,7 +39,7 @@
 }
 
 .alternative-bridges {
-    margin: 0 auto 1.548rem;
+    margin: 1.032rem auto 1.548rem;
     max-width: 528px;
     display: flex;
     align-items: center;

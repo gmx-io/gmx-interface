@@ -274,6 +274,39 @@ button.App-connect-wallet:hover {
   padding-top: 1rem;
 }
 
+.section-title-block {
+  display: flex;
+}
+
+.section-title-icon {
+  margin-right: 0.774rem;
+}
+
+.section-title-icon img {
+  display: flex;
+}
+
+.section-title-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.section-title-content .section-title-content__title {
+  font-size: 1.548rem;
+  line-height: 2rem;
+  color: white;
+  letter-spacing: 0px;
+}
+
+.section-title-content .section-title-content__description {
+  font-size: 1.161rem;
+  line-height: 1.484rem;
+  letter-spacing: 0px;
+  color: #A0A3C4;
+  margin-top: 4px;
+}
+
 .Page-title-section {
   padding-left: 3rem;
   padding-right: 1rem;

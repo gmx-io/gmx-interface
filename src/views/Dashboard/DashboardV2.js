@@ -41,6 +41,9 @@ import Footer from "../../Footer"
 
 import "./DashboardV2.css"
 
+import statsBigIcon from '../../img/ic_stats_big.svg'
+import tokensBigIcon from '../../img/ic_tokens.svg'
+
 const { AddressZero } = ethers.constants
 
 function getTotalVolumeSum(volumes) {
@@ -260,8 +263,8 @@ export default function DashboardV2() {
     glpMarketCap = glpPrice.mul(glpSupply).div(expandDecimals(1, GLP_DECIMALS))
   }
 
-  const hourValue = parseInt((new Date() - new Date().setUTCHours(0,0,0,0)) / (60 * 60 * 1000))
-  const minuteValue = parseInt((new Date() - new Date().setUTCHours(0,0,0,0)) / (60 * 1000))
+  const hourValue = parseInt((new Date() - new Date().setUTCHours(0, 0, 0, 0)) / (60 * 60 * 1000))
+  const minuteValue = parseInt((new Date() - new Date().setUTCHours(0, 0, 0, 0)) / (60 * 1000))
   let volumeLabel = hourValue > 0 ? `${hourValue}h` : `${minuteValue}m`
 
   let usdgSupply
@@ -282,21 +285,21 @@ export default function DashboardV2() {
     return (
       <Tooltip handle={weightText} position="right-bottom" renderContent={() => {
         return <>
-          Current Weight: {formatAmount(currentWeightBps, 2, 2, false)}%<br/>
-          Target Weight: {formatAmount(targetWeightBps, 2, 2, false)}%<br/>
-          <br/>
+          Current Weight: {formatAmount(currentWeightBps, 2, 2, false)}%<br />
+          Target Weight: {formatAmount(targetWeightBps, 2, 2, false)}%<br />
+          <br />
           {currentWeightBps.lt(targetWeightBps) && <div>
-            {tokenInfo.symbol} is below its target weight.<br/>
-            <br/>
+            {tokenInfo.symbol} is below its target weight.<br />
+            <br />
             Get lower fees to <Link to="/buy_glp" target="_blank" rel="noopener noreferrer">buy GLP</Link> with {tokenInfo.symbol},&nbsp;
             and to <Link to="/trade" target="_blank" rel="noopener noreferrer">swap</Link> {tokenInfo.symbol} for other tokens.
           </div>}
           {currentWeightBps.gt(targetWeightBps) && <div>
-            {tokenInfo.symbol} is above its target weight.<br/>
-            <br/>
+            {tokenInfo.symbol} is above its target weight.<br />
+            <br />
             Get lower fees to <Link to="/trade" target="_blank" rel="noopener noreferrer">swap</Link> tokens for {tokenInfo.symbol}.
           </div>}
-          <br/>
+          <br />
           <div>
             <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">More Info</a>
           </div>
@@ -327,22 +330,28 @@ export default function DashboardV2() {
         library.removeAllListeners('block')
       }
     }
-  }, [active, library,  chainId,
-      updatePositionStats, updateDailyVolume, updateTotalVolume,
-      updateTotalSupplies, updateAums, updateVaultTokenInfo,
-      updateFees, updateUniPoolSlot0, updateStakedGmxSupply,
-      updateTotalTokenWeights, updateGmxSupply])
+  }, [active, library, chainId,
+    updatePositionStats, updateDailyVolume, updateTotalVolume,
+    updateTotalSupplies, updateAums, updateVaultTokenInfo,
+    updateFees, updateUniPoolSlot0, updateStakedGmxSupply,
+    updateTotalTokenWeights, updateGmxSupply])
 
   return (
-    <div className="DashboardV2 Page">
-      <div className="Page-title-section">
-        <div className="Page-title">Stats</div>
-        <div className="Page-description">
-          Total Stats start from 01 Sep 2021.&nbsp;<br/>
-          For detailed stats: <a href="https://stats.gmx.io/"  target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
+    <div className="DashboardV2 default-container page-container">
+      <div className="section-title-block">
+        <div className="section-title-icon">
+          <img src={statsBigIcon} alt="statsBigIcon" />
+        </div>
+        <div className="section-title-content">
+          <div className="section-title-content__title">
+            Stats
+          </div>
+          <div className="section-title-content__description">
+            Total Stats start from 01 Sep 2021. For detailed stats: <a href="https://stats.gmx.io/" target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
+          </div>
         </div>
       </div>
-      <div className="DashboardV2-content">
+      <div className="page-main-content">
         <div className="DashboardV2-cards">
           <div className="App-card">
             <div className="App-card-title">Overview</div>
@@ -419,11 +428,17 @@ export default function DashboardV2() {
             </div>
           </div>
         </div>
-        <div className="Page-title-section">
-          <div className="Page-title">Tokens</div>
-          <div className="Page-description">
-            Platform and GLP index tokens.
+        <div className="section-title-block">
+          <div className="section-title-icon">
+            <img src={tokensBigIcon} alt="tokensBigIcon" />
           </div>
+          <div className="section-title-content">
+            <div className="section-title-content__title">Tokens</div>
+            <div className="section-title-content__description">
+              Platform and GLP index tokens.
+            </div>
+          </div>
+          
         </div>
         <div className="DashboardV2-token-cards">
           <div className="App-card">
@@ -516,8 +531,8 @@ export default function DashboardV2() {
                         position="right-bottom"
                         renderContent={() => {
                           return <>
-                            Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol}<br/>
-                            <br/>
+                            Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol}<br />
+                            <br />
                             Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
                           </>
                         }}
