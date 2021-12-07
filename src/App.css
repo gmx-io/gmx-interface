@@ -686,6 +686,7 @@ a.App-header-user-account {
   border: 1px solid rgba(255, 255, 255, 0.1);
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+  width: 100%;
 }
 
 .App-slippage-tolerance-input-percent {
