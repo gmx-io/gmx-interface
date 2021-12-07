@@ -1621,13 +1621,6 @@ export default function SwapBox(props) {
             </a>
           </div>
         </div>
-        <div className="Exchange-info-row">
-          <div className="Exchange-info-label-button">
-            <a href="https://medium.com/@gmx.io/gmx-trading-competition-win-250-000-usd-in-prizes-1346504b96f6" target="_blank" rel="noopener noreferrer">
-              How to Win $250,000 in Prizes
-            </a>
-          </div>
-        </div>
       </div>
       {renderErrorModal()}
       {renderOrdersToa()}
