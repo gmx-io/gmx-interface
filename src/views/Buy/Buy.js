@@ -19,10 +19,10 @@ export default function BuyGMXGLP() {
         <div className="BuyGMXGLP-title-section">
           <div className="BuyGMXGLP-title">Buy GMX</div>
           <div className="BuyGMXGLP-description">
-            To purchase GMX please ensure your wallet network is set to Arbitrum and you have some ETH for gas on it.
-            </div>
+            To purchase GMX you must transfer ETH to Arbitrum.
+          </div>
           <div className="BuyGMXGLP-description better-rates-description">
-            You can learn how to bridge ETH to Arbitrum using this <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">tutorial</a>, and also check these alternative bridges for better rates:
+            Follow this <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">tutorial</a> and also check these alternative bridges for better transfer rates:
           </div>
           <div className="alternative-bridges">
             <a href="https://synapseprotocol.com/?inputCurrency=ETH&outputCurrency=ETH&outputChain=42161" target="_blank" rel="noopener noreferrer" className="Synapse">
@@ -36,6 +36,9 @@ export default function BuyGMXGLP() {
             </a>
           </div>
           <p className="BuyGMXGLP-description">Learn more at <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">https://gmxio.gitbook.io/gmx/tokenomics</a></p>
+          <div className="BuyGMXGLP-description better-rates-description">
+            Once you have ETH on Arbitrum, ensure that your wallet network is set to Arbitrum then click on the button below.
+          </div>
           <a href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" target="_blank" rel="noopener noreferrer" className="BuyGMXGLP-purchase-block">
             <div className="BuyGMXGLP-purchase-block-icon">
               <img src={logo} alt="logo" height="53px" />
