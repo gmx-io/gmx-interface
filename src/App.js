@@ -48,7 +48,7 @@ import OrdersOverview from './views/OrdersOverview/OrdersOverview'
 import PositionsOverview from './views/PositionsOverview/PositionsOverview'
 import BuyGlp from './views/BuyGlp/BuyGlp'
 import SellGlp from './views/SellGlp/SellGlp'
-import BuyGMXGLP from './views/BuyGMXGLP/BuyGMXGLP'
+import Buy from './views/Buy/Buy'
 import NftWallet from './views/NftWallet/NftWallet'
 import BeginAccountTransfer from './views/BeginAccountTransfer/BeginAccountTransfer'
 import CompleteAccountTransfer from './views/CompleteAccountTransfer/CompleteAccountTransfer'
@@ -140,7 +140,7 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
         <NavLink activeClassName="active" to="/earn">Earn</NavLink>
       </div>
       <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/buy_gmx_glp">Buy GMX</NavLink>
+        <NavLink activeClassName="active" to="/buy">Buy</NavLink>
       </div>
       <div className="App-header-link-container">
         <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
@@ -482,8 +482,8 @@ function FullApp() {
             <Route exact path="/earn">
               <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
             </Route>
-            <Route exact path="/buy_gmx_glp">
-              <BuyGMXGLP />
+            <Route exact path="/buy">
+              <Buy />
             </Route>
             <Route exact path="/buy_glp">
               <BuyGlp

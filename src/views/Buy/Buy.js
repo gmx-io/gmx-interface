@@ -3,7 +3,7 @@ import Footer from "../../Footer"
 import {
   NavLink
 } from 'react-router-dom'
-import './BuyGMXGLP.css';
+import './Buy.css';
 
 import Synapse from '../../img/Synapse.svg'
 import Anyswap from '../../img/Anyswap.png'

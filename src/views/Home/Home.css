@@ -25,7 +25,8 @@
   position: relative;
   /* z-index: 2; */
   width: 100%;
-  padding-top: 7.548rem;
+  /* padding-top: 7.548rem; */
+  padding-top: 4rem;
 }
 
 .Home-title-section {
