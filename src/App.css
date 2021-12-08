@@ -691,9 +691,9 @@ a.App-header-user-account {
 
 .App-slippage-tolerance-input-percent {
   position: absolute;
-  right: 0.5rem;
+  right: 0.7rem;
   width: 2rem;
-  top: 1.2rem;
+  top: 1.5rem;
   bottom: 0;
   text-align: right;
 }
