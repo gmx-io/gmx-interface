@@ -5,9 +5,9 @@ import { BiChevronDown } from 'react-icons/bi'
 
 import Modal from '../Modal/Modal'
 
-import './Selector.css';
+import './NetworkSelector.css';
 
-export default function Selector(props) {
+export default function NetworkSelector(props) {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const { options, disabled, label, modalLabel, modalText, className, showCaret = true } = props
 

@@ -1,6 +1,10 @@
 .Exchange {
   max-width: 100rem;
   margin: auto;
+  min-height: calc(100vh - 62px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .Exchange-list-tab-container {
@@ -33,7 +37,7 @@
   grid-template-columns: 1fr auto;
   grid-gap: 1rem;
   padding: 2rem;
-  padding-top: 0.5rem;
+  padding-top: 4rem;
 }
 
 .Exchange-lists.large {
@@ -232,7 +236,6 @@
   grid-template-columns: auto auto auto auto auto 1fr;
   grid-column-gap: 3rem;
   align-items: center;
-  padding-bottom: 1rem;
   padding-left: 1rem;
 }
 
@@ -251,7 +254,7 @@
   left: 0;
   right: 0;
   top: 0;
-  height: 2.5rem;
+  height: auto;
   z-index: 2;
 }
 
@@ -406,9 +409,6 @@ table.Exchange-list {
   border-collapse: collapse;
 }
 
-table.Exchange-list.Exchange-positions-list td {
-}
-
 table.Exchange-list th, table.Exchange-list td {
   font-weight: normal;
   text-align: left;
@@ -536,10 +536,6 @@ table.Exchange-list th {
   padding: 0.7rem;
 }
 
-.Exchange-swap-box-approve-button {
-
-}
-
 .Exchange-swap-box .TokenSelector .Modal,
 .Selector .Modal {
   align-items: flex-start;
@@ -554,6 +550,10 @@ table.Exchange-list th {
   bottom: 0;
   overflow: auto;
   border: none;
+}
+
+.Selector .Modal-content {
+  height: max-content;
 }
 
 .Exchange-swap-box .Tab {
@@ -637,6 +637,7 @@ input.Exchange-swap-input {
   padding: 0;
   max-width: 100%;
   font-size: 1.5rem;
+  width: 100%;
 }
 input.Exchange-swap-input.small {
   max-width:  9.5rem;
@@ -659,7 +660,6 @@ input.Exchange-swap-input.small {
 .Exchange-swap-ball-icon {
   text-align: center;
   display: block;
-  padding-bottom: 1.1rem;
   transform: rotate(90deg);
   font-size: 1.3rem;
   opacity: 0.7;
@@ -676,6 +676,9 @@ input.Exchange-swap-input.small {
   cursor: pointer;
   user-select: none;
   background: linear-gradient(90deg, rgba(45,66,252,1) 0%, rgba(46,61,205,1) 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .Exchange-swap-ball:hover {
@@ -872,10 +875,6 @@ table.Exchange-list-small th, table.Exchange-list-small td {
     width: 80vw;
   }
 
-  .ExchangeChart-top {
-    margin-top: 1rem;
-  }
-
   .ExchangeChart-top-inner {
     grid-template-columns: auto auto auto;
     grid-column-gap: 0.5rem;
@@ -891,6 +890,6 @@ table.Exchange-list-small th, table.Exchange-list-small td {
 
   .Exchange-content {
     padding: 1rem;
-    padding-top: 0.5rem;
+    padding-top: 1rem;
   }
 }
