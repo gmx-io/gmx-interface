@@ -19,11 +19,10 @@
     color: #FFFFFF;
     margin-bottom: 1.5484rem;
     font-family: 'Relative Bold';
-    /* font-weight: 500; */
 }
 
 .BuyGMXGLP-description {
-    font-size: 1.161rem;
+    /* font-size: 1.161rem; */
     line-height: 1.484rem;
     letter-spacing: 0px;
     color: #A0A3C4;
@@ -40,7 +39,7 @@
 }
 
 .alternative-bridges {
-    margin: 1.032rem auto 1.548rem;
+    margin: 1.032rem auto 1.032rem;
     max-width: 528px;
     display: flex;
     align-items: center;
@@ -73,7 +72,8 @@
     max-width: 397px;
     width: 100%;
     min-height: 120px;
-    margin: 2.4516rem auto;
+    margin: 1.548rem auto;
+    margin-bottom: 3rem;
     display: flex;
     box-shadow: 0px 9px 12px #00000054;
     border: 1px solid #1E2136;
