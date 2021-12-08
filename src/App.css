@@ -650,6 +650,7 @@ button.App-button-option:disabled {
 a.App-header-user-account {
   margin-top: 0;
   margin-right: 0.5rem;
+  font-size: 0.9rem;
 }
 
 .App-header-user-settings {
