@@ -90,7 +90,7 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  padding: 5.161rem 0;
+  padding: 5.161rem 0 3rem 0;  
 }
 
 .Home-cta-info {
