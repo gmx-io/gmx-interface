@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Footer from "../../Footer"
 import {
   NavLink
@@ -12,6 +12,10 @@ import logo from '../../img/gmx_logo.svg'
 import glpIcon from '../../img/glp_icon.svg'
 
 export default function BuyGMXGLP() {
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
 
   return (
     <div className="BuyGMXGLP">
@@ -19,10 +23,8 @@ export default function BuyGMXGLP() {
         <div className="BuyGMXGLP-title-section">
           <div className="BuyGMXGLP-title">Buy GMX</div>
           <div className="BuyGMXGLP-description">
-            To purchase GMX you must first transfer ETH to Arbitrum.
-          </div>
-          <div className="BuyGMXGLP-description better-rates-description">
-            Follow this <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">tutorial</a> and also check these alternative bridges for better transfer rates:
+            To purchase GMX you must first transfer ETH to Arbitrum.<br/>
+            Follow this <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">tutorial</a> and check the options below for better transfer rates.
           </div>
           <div className="alternative-bridges">
             <a href="https://synapseprotocol.com/?inputCurrency=ETH&outputCurrency=ETH&outputChain=42161" target="_blank" rel="noopener noreferrer" className="Synapse">
@@ -37,7 +39,7 @@ export default function BuyGMXGLP() {
           </div>
           <p className="BuyGMXGLP-description">Learn more at <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">https://gmxio.gitbook.io/gmx/tokenomics</a></p>
           <div className="BuyGMXGLP-description better-rates-description">
-            Once you have ETH on Arbitrum, ensure that your wallet network is set to Arbitrum then click on the button below:
+            After transferring, set your wallet network to <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">Arbitrum</a> then click on the button below:
           </div>
           <a href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" target="_blank" rel="noopener noreferrer" className="BuyGMXGLP-purchase-block">
             <div className="BuyGMXGLP-purchase-block-icon">
@@ -48,7 +50,7 @@ export default function BuyGMXGLP() {
               <div className="BuyGMXGLP-purchase-block-info__subtitle">Uniswap Arbitrum</div>
             </div>
           </a>
-          <div className="BuyGMXGLP-description">If you wish to buy GLP instead, you can find more info at <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">https://gmxio.gitbook.io/gmx/glp</a></div>
+          <div className="BuyGMXGLP-description">If you wish to buy GLP instead, you can find more info at <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">https://gmxio.gitbook.io/gmx/glp</a>.</div>
           <div className="GLP-block-section">
             <NavLink to="/buy_glp" className="GLP-block">
               <div className="GLP-block-icon">
