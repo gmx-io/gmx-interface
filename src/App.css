@@ -267,7 +267,7 @@ button.App-connect-wallet:hover {
   min-height: calc(100vh - 62px);
   display: flex;
   flex-direction: column;
-  padding-top: 4rem;
+  padding-top: 3rem;
 }
 
 .Page-content {
@@ -320,7 +320,7 @@ button.App-connect-wallet:hover {
 }
 
 .Page-title {
-  font-size: 2rem;
+  font-size: 2.2rem;
   font-weight: 500;
   margin-bottom: 0.5rem;
   font-family: 'Relative Bold';
@@ -1009,7 +1009,7 @@ button.App-button {
     background: transparent 0% 0% no-repeat padding-box;
     border-bottom: 1px solid #ffffff10;
   }
-  
+
   .App-header.small::after {
     height: 13px;
     width: 100%;

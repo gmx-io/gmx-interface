@@ -37,7 +37,7 @@
   grid-template-columns: 1fr auto;
   grid-gap: 1rem;
   padding: 2rem;
-  padding-top: 4rem;
+  padding-top: 2rem;
 }
 
 .Exchange-lists.large {
