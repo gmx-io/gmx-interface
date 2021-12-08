@@ -1,5 +1,64 @@
 .Footer {
+  position: relative;
+  height: 158px;
+  margin-top: auto;
+}
+
+.Footer-wrapper {
   text-align: center;
-  padding-top: 2rem;
-  height: 5rem;
+  padding-top: 2.581rem;
+  background: #16182E;
+  width: 100vw;
+  position: absolute;
+  transform: translateX(-50%);
+  left: 50%;
+}
+
+.Footer-logo {
+  margin-bottom: 2.067rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.Footer-logo img {
+  height: 1.674rem;
+}
+
+.Footer-social-link-block {
+  padding-bottom: 1.549rem;
+  max-width: 71.613rem;
+  margin: 0 auto;
+}
+
+.Footer-social-link-block .App-social-link {
+  margin: 0 2.226rem;
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+}
+
+.Footer-social-link-block .App-social-link:hover img {
+  filter: brightness(0) invert(1);
+}
+
+.Footer-copyright {
+  padding: 1.1rem;
+}
+
+.Footer-copyright__text {
+  font-family: Circular Std;
+  font-size: 0.8387rem;
+  line-height: 0.8387rem;
+  letter-spacing: -0.41px;
+  color: #A0A3C4;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .Footer-social-link-block .App-social-link {
+    margin: 0 1.034rem;
+  }
 }

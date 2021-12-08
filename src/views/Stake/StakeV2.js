@@ -1323,7 +1323,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           For more info: <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noreferrer">https://gmxio.gitbook.io/gmx/tokenomics</a>.
         </p>
       </Modal>
-      <div className="Page-title-section">
+      <div className="Page-title-section mt-0">
         <div className="Page-title">Earn</div>
         <div className="Page-description">
           Stake <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">
