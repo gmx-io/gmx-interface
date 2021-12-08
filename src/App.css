@@ -323,7 +323,8 @@ button.App-connect-wallet:hover {
   font-size: 2.2rem;
   font-weight: 500;
   margin-bottom: 0.5rem;
-  font-family: 'Relative Bold';
+  font-family: 'Inter';
+  font-weight: 600;
 }
 
 .Page-description {
@@ -650,6 +651,7 @@ button.App-button-option:disabled {
 a.App-header-user-account {
   margin-top: 0;
   margin-right: 0.5rem;
+  font-size: 0.9rem;
 }
 
 .App-header-user-settings {

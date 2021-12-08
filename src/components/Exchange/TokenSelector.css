@@ -21,6 +21,7 @@
   border-radius: 6px;
   text-align: right;
   white-space: nowrap;
+  padding-top: 0.1rem;
 }
 
 .TokenSelector-box:hover {
