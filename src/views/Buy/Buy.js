@@ -19,7 +19,7 @@ export default function BuyGMXGLP() {
         <div className="BuyGMXGLP-title-section">
           <div className="BuyGMXGLP-title">Buy GMX</div>
           <div className="BuyGMXGLP-description">
-            To purchase GMX you must transfer ETH to Arbitrum.
+            To purchase GMX you must first transfer ETH to Arbitrum.
           </div>
           <div className="BuyGMXGLP-description better-rates-description">
             Follow this <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">tutorial</a> and also check these alternative bridges for better transfer rates:
