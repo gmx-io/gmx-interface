@@ -1,29 +1,54 @@
 .DashboardV2-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: 1rem;
-  margin-top: 0.5rem;
-  padding: 2rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  grid-gap: 2.064rem;
 }
 
-.DashboardV2-token-cards {
+.DashboardV2-cards .App-card {
+  padding-bottom: 0.580rem;
+}
+
+.DashboardV2-cards .App-card-row {
+  padding-top: 0.5806rem;
+  padding-bottom: 0.5806rem;
+}
+
+.DashboardV2-cards .App-card-row {
+  padding-top: 0.5806rem;
+  padding-bottom: 0.5806rem;
+}
+
+.DashboardV2-cards .App-card-row:nth-child(odd) {
+  background: #1E1F37;
+}
+
+.DashboardV2-cards .App-card-row .label {
+  font-size: 0.903rem;
+  line-height: 1.1613rem;
+  font-weight: normal;
+  letter-spacing: 0.25px;
+  color: #A0A3C4;
+}
+
+.DashboardV2-cards .App-card-row .value {
+  font-size: 0.903rem;
+  line-height: 1.161rem;
+  font-weight: normal;
+  letter-spacing: 0.25px;
+  color: #FFFFFFDE;
+}
+
+.App-card-long-content.card-list {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 1rem;
-  margin-top: 0.5rem;
-  padding: 2rem;
-  padding-top: 1rem;
+  padding: 0 1.5484rem 1.5484rem;
+  grid-gap: 1.5484rem;
 }
 
 .DashboardV2-projects {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: 1rem;
-  margin-top: 0.5rem;
-  padding: 2rem;
-  padding-top: 1rem;
+  grid-gap: 2.064rem;
 }
 
 @media (max-width: 900px) {

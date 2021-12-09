@@ -132,7 +132,7 @@
 .App-box, .App-card, .App-card-primary, .App-box-highlight, .App-box-solid {
   position: relative;
   border: 1px solid #1E2136;
-  border-radius: 4px;
+  border-radius: 8px;
   background: #17182C;
 }
 
@@ -151,6 +151,128 @@
 
 .App-card-bottom .App-card-divider, .App-card-bottom-placeholder .App-card-divider {
   margin-bottom: 1.2rem;
+}
+
+.App-card-long {
+  background: #16182E;
+  margin-bottom: 1.5484rem;
+}
+
+.App-card-long-content {
+  display: flex;
+  padding: 1.032rem 0;
+}
+
+.App-card-long_sub {
+  width: 20%;
+  padding: 0 1.032rem;
+}
+
+.App-card-long_sub__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 0.5rem;
+}
+
+.App-card-long_sub__info___title {
+  font-size: 1.032rem;
+  line-height: 1.3548rem;
+  font-weight: normal;
+  letter-spacing: 0px;
+  color: #FFFFFF;
+}
+
+.App-card-long_sub__info___subtitle {
+  font-size: 0.774rem;
+  line-height: 0.9677rem;
+  font-weight: normal;
+  letter-spacing: 0px;
+  color: #A0A3C4;
+}
+
+.App-card-long-sub-left {
+  display: flex;
+}
+
+.App-card-long_sub-icon {
+  display: flex;
+}
+
+.App-card-long_sub__iconlist .App-card-long_sub__iconlist___icon {
+  margin-left: 8px;
+}
+
+.App-card-long_sub__iconlist {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.App-card-divider-vertical {
+  width: 1px;
+  height: 5.6774rem;
+  background: #A0A3C4;
+}
+
+.App-card-long_sub:first-child {
+  display: flex;
+  align-items: center;
+}
+
+.App-card-long_sub__title {
+  color: #A0A3C4;
+  font-size: 0.903rem;
+  line-height: 1.1613rem;
+  font-weight: normal;
+  letter-spacing: 0.25px;
+  margin-bottom: 0.516rem;
+}
+
+.App-card-long_sub__subtitle {
+  letter-spacing: 0.36px;
+  color: #FFFFFFDE;
+  font-size: 1.2903rem;
+  line-height: 1.6774rem;
+  font-weight: normal;
+}
+
+.App-card-title-block {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.032rem;
+}
+
+.App-card-title-info-icon {
+  display: flex;
+  margin-right: 8px;
+}
+
+.App-card-title-info {
+  display: flex;
+}
+
+.App-card-info-title {
+  font-size: 1.032rem;
+  line-height: 1.3548rem;
+  font-weight: normal;
+  letter-spacing: 0px;
+  color: #FFFFFF;
+}
+
+.App-card-info-subtitle {
+  font-size: 0.774rem;
+  line-height: 0.9677rem;
+  font-weight: normal;
+  letter-spacing: 0px;
+  color: #A0A3C4;
+}
+
+.App-card-title-iconlist {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-column-gap: 8px;
+  grid-row-gap: 8px;
 }
 
 .WalletConnect-btn,
@@ -254,7 +376,6 @@ button.App-connect-wallet:hover {
 .App-card-divider {
   height: 1px;
   background: #23263b;
-  margin: 0.7rem -1rem;
 }
 
 .App-box-solid {
@@ -277,6 +398,11 @@ button.App-connect-wallet:hover {
 
 .section-title-block {
   display: flex;
+  margin-bottom: 1.5483rem;
+}
+
+.page-main-content .section-title-block {
+  margin-top: 4rem;
 }
 
 .section-title-icon {
@@ -352,10 +478,8 @@ button.App-connect-wallet:hover {
 }
 
 .App-card {
-  padding: 1rem;
-  padding-bottom: 1.2rem;
   border: 1px solid #1E2136;
-  border-radius: 4px;
+  border-radius: 8px;
 }
 
 .App-card-title {
@@ -364,7 +488,7 @@ button.App-connect-wallet:hover {
   font-weight: normal;
   letter-spacing: 0px;
   color: #FFFFFF;
-  margin-bottom: 1rem;
+  padding: 1.0323rem;
 }
 
 .App-card-title-small {
@@ -374,13 +498,13 @@ button.App-connect-wallet:hover {
 
 .App-card-content {
   display: grid;
-  grid-row-gap: 0.5rem;
 }
 
 .App-card-row {
   display: grid;
   grid-template-columns: 1fr auto;
   grid-column-gap: 1rem;
+  padding: 0.452rem 1.032rem;
 }
 .App-card-row.inner {
   padding-left: 1rem;
