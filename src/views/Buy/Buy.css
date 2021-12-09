@@ -39,7 +39,7 @@
 }
 
 .alternative-bridges {
-    margin: 1.032rem auto 1.032rem;
+    margin: 1rem auto;
     max-width: 528px;
     display: flex;
     align-items: center;
@@ -128,7 +128,7 @@
     max-width: 416px;
     justify-content: space-between;
     margin: 0 auto;
-    margin-top: 1.871rem;
+    margin-top: 1.548rem;
 }
 
 .GLP-block-section .GLP-block {
@@ -181,7 +181,6 @@
 
 @media (max-width: 600px) {
     .alternative-bridges {
-        margin: 0 auto 1.548rem;
         display: flex;
         flex-direction: column;
         align-items: center;
