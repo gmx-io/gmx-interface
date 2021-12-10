@@ -2,6 +2,7 @@ import cx from "classnames";
 import { useCallback, useState, useRef } from 'react'
 
 import './Tooltip.css'
+import infoIcon from '../../img/ic_info.svg'
 
 const isTouch = 'ontouchstart' in window
 
@@ -57,12 +58,13 @@ export default function Tooltip(props) {
   }, [setVisible, intervalCloseRef])
 
   return (
-    <span className="Tooltip" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
-      <span className={cx({'Tooltip-handle': !props.disableHandleStyle}, [props.handleClassName])}>
-        {props.handle}
-       </span>
+    <span className="Tooltip">
+      <span className={cx({'Tooltip-handle': !props.disableHandleStyle}, [props.handleClassName])} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
+        <img src={infoIcon} alt="infoIcon" />
+      </span>
+      {props.handle}
       {visible &&
-        <div className={cx(['Tooltip-popup', position])}>
+        <div className={cx(['Tooltip-popup', position])} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
           {props.renderContent()}
         </div>
       }

@@ -1,18 +1,22 @@
 .Tooltip {
   position: relative;
+  display: flex;
 }
 
 .Tooltip-popup {
-  font-size: 0.9rem;
+  font-size: 0.774rem;
+  line-height: 1.032rem;
   position: absolute;
-  border-radius: 3px;
-  padding: 0.7rem 1rem;
-  line-height: 1.3;
+  background: #353651 0% 0% no-repeat padding-box;
+  box-shadow: 0px 3px 6px #0000005C;
+  border: 1px solid #484B6E;
+  border-radius: 4px;
+  padding: 3px 0.774rem;
+  letter-spacing: 0.4px;
+  color: #FFFFFFDE;
   min-width: 250px;
   text-align: left;
   z-index: 1;
-  box-shadow: 2px 2px 3px #0b0b0f;
-  background:  linear-gradient(90deg, #0b0b0f 0%, rgba(10,13,28,1) 100%)
 }
 
 .Tooltip-popup :first-child {
@@ -62,15 +66,21 @@
 .Tooltip-handle {
   cursor: help;
   position: relative;
+  display: inline-flex;
+  margin-right: 4px;
 }
-.Tooltip-handle:after {
+
+.Tooltip-handle:before {
   position: absolute;
   content: '';
-  bottom: -1px;
-  left: 0;
+  /* left: -17.4px; */
+  top: 2px;
   right: 0;
-  border-bottom: 1px dashed;
-  opacity: 0.6;
+  /* background-image: url('../../img/ic_info.svg'); */
+  /* border-bottom: 1px dashed; */
+  /* opacity: 0.6; */
+  /* width: 13px; */
+  /* height: 13px; */
 }
 
 .Tooltip-handle.plain:after {
