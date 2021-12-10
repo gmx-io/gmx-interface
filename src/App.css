@@ -541,6 +541,10 @@ button.App-connect-wallet:hover {
   text-align: right;
 }
 
+.App-card-options {
+  padding: 0.452rem 1.032rem;
+}
+
 .App-card-option {
   margin-right: 0.8rem;
 }
