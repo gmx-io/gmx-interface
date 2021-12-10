@@ -203,6 +203,14 @@
   margin-left: 8px;
 }
 
+.App-card-long_sub__iconlist .App-card-long_sub__iconlist___icon img {
+  filter: grayscale(1);
+}
+
+.App-card-long_sub__iconlist .App-card-long_sub__iconlist___icon img:hover {
+  filter: unset;
+}
+
 .App-card-long_sub__iconlist {
   display: flex;
   align-items: center;
@@ -273,6 +281,14 @@
   grid-template-columns: 1fr 1fr 1fr;
   grid-column-gap: 8px;
   grid-row-gap: 8px;
+}
+
+.App-card-title-iconlist___icon img {
+  filter: grayscale(1);
+}
+
+.App-card-title-iconlist___icon img:hover {
+  filter: unset;
 }
 
 .WalletConnect-btn,
