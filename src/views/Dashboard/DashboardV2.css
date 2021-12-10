@@ -51,6 +51,11 @@
   grid-gap: 2.064rem;
 }
 
+.App-card.token-card {
+  background: #17182C;
+  border: 2px solid #A0A3C433;
+}
+
 @media (max-width: 900px) {
   .DashboardV2-cards {
     grid-template-columns: 1fr;

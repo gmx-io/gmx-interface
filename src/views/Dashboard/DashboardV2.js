@@ -636,7 +636,7 @@ export default function DashboardV2() {
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">Link</div>
-                <div>
+                <div className="value">
                   <a href="https://t.me/GMXPositions" target="_blank" rel="noopener noreferrer">
                     https://t.me/GMXPositions
                   </a>
@@ -644,13 +644,13 @@ export default function DashboardV2() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
+                <div className="value">
                   Telegram bot for GMX position updates
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
-                <div>
+                <div className="value">
                   <a href="https://t.me/zhongfu" target="_blank" rel="noopener noreferrer">
                     @zhongfu
                   </a>
@@ -664,7 +664,7 @@ export default function DashboardV2() {
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">Link</div>
-                <div>
+                <div className="value">
                   <a href="https://www.gmx.house/" target="_blank" rel="noopener noreferrer">
                     https://www.gmx.house
                   </a>
@@ -672,13 +672,13 @@ export default function DashboardV2() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
+                <div className="value">
                   Leaderboard for GMX traders
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
-                <div>
+                <div className="value">
                   <a href="https://t.me/Itburnz" target="_blank" rel="noopener noreferrer">
                     @Itburnz
                   </a>
@@ -692,7 +692,7 @@ export default function DashboardV2() {
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">Link</div>
-                <div>
+                <div className="value">
                   <a href="https://gist.github.com/gmxyield/3c2941634ce42cf24b57bdba6f99067f" target="_blank" rel="noopener noreferrer">
                     https://gist.github.com/gmxyield
                   </a>
@@ -700,13 +700,13 @@ export default function DashboardV2() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
+                <div className="value">
                   List of rewards from external projects
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
-                <div>
+                <div className="value">
                   <a href="https://gist.github.com/gmxyield" target="_blank" rel="noopener noreferrer">
                     @gmxyield
                   </a>
@@ -720,7 +720,7 @@ export default function DashboardV2() {
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">Link</div>
-                <div>
+                <div className="value">
                   <a href="https://app.tokenfeeds.info/gmx-chart" target="_blank" rel="noopener noreferrer">
                     https://app.tokenfeeds.info/gmx-chart
                   </a>
@@ -728,13 +728,13 @@ export default function DashboardV2() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
+                <div className="value">
                   GMX price and staking charts
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
-                <div>
+                <div className="value">
                   <a href="https://t.me/atomist" target="_blank" rel="noopener noreferrer">
                     @atomist
                   </a>
@@ -748,7 +748,7 @@ export default function DashboardV2() {
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">Link</div>
-                <div>
+                <div className="value">
                   <a href="https://gmx-fider.herokuapp.com" target="_blank" rel="noopener noreferrer">
                     https://gmx-fider.herokuapp.com
                   </a>
@@ -756,13 +756,13 @@ export default function DashboardV2() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
+                <div className="value">
                   GMX feedback and feature requests
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
-                <div>
+                <div className="value">
                   <a href="https://t.me/sevpants" target="_blank" rel="noopener noreferrer">
                     @sevpants
                   </a>
