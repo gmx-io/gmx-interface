@@ -145,12 +145,12 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 1rem;
-  padding-bottom: 1.2rem;
+  /* padding: 1rem; */
+  /* padding-bottom: 1.2rem; */
 }
 
 .App-card-bottom .App-card-divider, .App-card-bottom-placeholder .App-card-divider {
-  margin-bottom: 1.2rem;
+  /* margin-bottom: 1.2rem; */
 }
 
 .App-card-long {
