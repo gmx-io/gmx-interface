@@ -9,8 +9,9 @@ import simpleSwapIcon from '../../img/ic_simpleswaps.svg'
 import costIcon from '../../img/ic_cost.svg'
 import liquidityIcon from '../../img/ic_liquidity.svg'
 
-import bscIcon from '../../img/ic_bsc.svg'
-import arbitrumIcon from '../../img/lg_arbitrum.svg'
+// import bscIcon from '../../img/ic_bsc.svg'
+import arbitrumIcon from '../../img/ic_arbitrum_96.svg'
+import avaIcon from '../../img/ic_avalanche_96.svg'
 
 import cashIcon from '../../img/ic_cash.png'
 import statsIcon from '../../img/ic_stats.svg'
@@ -239,13 +240,13 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="Home-cta-option Home-cta-option-bsc">
+            <div className="Home-cta-option Home-cta-option-ava">
               <div className="Home-cta-option-icon">
-                <img src={bscIcon} alt="bsc" />
+                <img src={avaIcon} alt="ava" />
               </div>
               <div className="Home-cta-option-info">
-                <div className="Home-cta-option-title">Binance Smart Chain</div>
-                <div className="Home-cta-option-subtitle">Gambit</div>
+                <div className="Home-cta-option-title">Avalanche</div>
+                <div className="Home-cta-option-subtitle">GMX</div>
                 <div className="Home-cta-option-action">
                   <a href="https://gambit.financial/" target="_blank" rel="noopener noreferrer" className="default-btn">
                     Launch exchange
