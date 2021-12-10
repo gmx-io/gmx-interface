@@ -462,13 +462,13 @@ export default function DashboardV2() {
                 </div>
                 <div className="App-card-long_sub__iconlist">
                   <div className="App-card-long_sub__iconlist___icon">
-                    <img src={arbitrumXSIcon} alt="arbitrumXSIcon" />
+                    <img src={metamaskXSIcon} alt="metamaskXSIcon" />
                   </div>
                   <div className="App-card-long_sub__iconlist___icon">
                     <img src={coingeckoXSIcon} alt="coingeckoXSIcon" />
                   </div>
                   <div className="App-card-long_sub__iconlist___icon">
-                    <img src={metamaskXSIcon} alt="metamaskXSIcon" />
+                    <img src={arbitrumXSIcon} alt="arbitrumXSIcon" />
                   </div>
                 </div>
               </div>
@@ -508,13 +508,10 @@ export default function DashboardV2() {
                 </div>
                 <div className="App-card-long_sub__iconlist">
                   <div className="App-card-long_sub__iconlist___icon">
-                    <img src={arbitrumXSIcon} alt="arbitrumXSIcon" />
-                  </div>
-                  <div className="App-card-long_sub__iconlist___icon">
-                    <img src={coingeckoXSIcon} alt="coingeckoXSIcon" />
-                  </div>
-                  <div className="App-card-long_sub__iconlist___icon">
                     <img src={metamaskXSIcon} alt="metamaskXSIcon" />
+                  </div>
+                  <div className="App-card-long_sub__iconlist___icon">
+                    <img src={arbitrumXSIcon} alt="arbitrumXSIcon" />
                   </div>
                 </div>
               </div>
@@ -565,13 +562,13 @@ export default function DashboardV2() {
                       </div>
                       <div className="App-card-title-iconlist">
                         <div className="App-card-title-iconlist___icon">
-                          <img src={arbitrumXSIcon} alt="arbitrumXSIcon" />
+                          <img src={metamaskXSIcon} alt="metamaskXSIcon" />
                         </div>
                         <div className="App-card-title-iconlist___icon">
                           <img src={coingeckoXSIcon} alt="coingeckoXSIcon" />
                         </div>
                         <div className="App-card-title-iconlist___icon">
-                          <img src={metamaskXSIcon} alt="metamaskXSIcon" />
+                          <img src={arbitrumXSIcon} alt="arbitrumXSIcon" />
                         </div>
                       </div>
                     </div>
