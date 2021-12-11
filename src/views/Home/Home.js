@@ -225,7 +225,7 @@ export default function Home() {
         <div className="Home-cta-container default-container">
           <div className="Home-cta-info">
             <div className="Home-cta-info__title">Available on your preferred network</div>
-            <div className="Home-cta-info__description">GMX is currently deployed to Arbitrum and Binance Smart Chain.</div>
+            <div className="Home-cta-info__description">GMX is currently live on Arbitrum and will be launching on Avalanche shortly.</div>
           </div>
           <div className="Home-cta-options">
             <div className="Home-cta-option Home-cta-option-arbitrum">
@@ -234,7 +234,6 @@ export default function Home() {
               </div>
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Arbitrum</div>
-                <div className="Home-cta-option-subtitle">GMX</div>
                 <div className="Home-cta-option-action">
                   <Link to="/trade" className="default-btn">Launch exchange</Link>
                 </div>
@@ -246,18 +245,17 @@ export default function Home() {
               </div>
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Avalanche</div>
-                <div className="Home-cta-option-subtitle">GMX</div>
                 <div className="Home-cta-option-action">
-                  <a href="https://gambit.financial/" target="_blank" rel="noopener noreferrer" className="default-btn">
-                    Launch exchange
-                  </a>
+                  <button className="default-btn">
+                    Coming soon
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      
+
       {/* <div className="Home-video-section">
         <div className="Home-video-container default-container">
           <div className="Home-video-block">
