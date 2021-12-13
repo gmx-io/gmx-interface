@@ -199,17 +199,6 @@ export default function DashboardV2() {
     totalFeesDistributed += parseFloat(feeHistory[i].feeUsd)
   }
 
-  const busdFloorPriceFundUsd = expandDecimals(1000000, 30)
-  const ethFloorPriceFund = expandDecimals(800 + 270, 18)
-
-  let ethFloorPriceFundUsd
-  let totalFloorPriceFundUsd
-
-  if (eth && eth.minPrice) {
-    ethFloorPriceFundUsd = ethFloorPriceFund.mul(eth.minPrice).div(expandDecimals(1, eth.decimals))
-    totalFloorPriceFundUsd = busdFloorPriceFundUsd.add(ethFloorPriceFundUsd)
-  }
-
   let gmxPrice
 
   if (uniPoolSlot0 && eth && eth.minPrice) {
@@ -258,6 +247,18 @@ export default function DashboardV2() {
     glpSupply = totalSupplies[3]
     glpPrice = (aum && aum.gt(0) && glpSupply.gt(0)) ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(glpSupply) : expandDecimals(1, USD_DECIMALS)
     glpMarketCap = glpPrice.mul(glpSupply).div(expandDecimals(1, GLP_DECIMALS))
+  }
+
+  const ethFloorPriceFund = expandDecimals(600 + 148 + 371, 18)
+  const glpFloorPriceFund = expandDecimals(660001, 18)
+
+  let totalFloorPriceFundUsd
+
+  if (eth && eth.minPrice && glpPrice) {
+    const ethFloorPriceFundUsd = ethFloorPriceFund.mul(eth.minPrice).div(expandDecimals(1, eth.decimals))
+    const glpFloorPriceFundUsd = glpFloorPriceFund.mul(glpPrice).div(expandDecimals(1, 18))
+
+    totalFloorPriceFundUsd = ethFloorPriceFundUsd.add(glpFloorPriceFundUsd)
   }
 
   const hourValue = parseInt((new Date() - new Date().setUTCHours(0,0,0,0)) / (60 * 60 * 1000))
