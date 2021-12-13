@@ -359,6 +359,14 @@
     padding-top: 4.774rem;
   }
 
+  .Home-title {
+    font-size: 2.8rem;
+    line-height: 3.6rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    letter-spacing: 0;
+  }
+
   .Home-cta-options {
     width: calc(100% + 32px);
     margin-left: -16px;
@@ -401,14 +409,6 @@
 }
 
 @media (max-width: 400px) {
-  .Home-title {
-    font-size: 2.8rem;
-    line-height: 3.6rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-    letter-spacing: 0;
-  }
-
   .Home-description {
     font-size: 1rem;
     line-height: 1.4rem;
