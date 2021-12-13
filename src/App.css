@@ -106,7 +106,7 @@
 
 .App-header-menu-icon-block {
   margin-right: 12px;
-  margin-left: 16px;
+  margin-left: 0px;
   display: flex;
   align-items: center;
 }
@@ -1039,9 +1039,7 @@ button.App-button {
     margin-left: 0;
     margin-right: 4px;
   }
-}
-
-@media (max-width: 410px) {
+  
   .App-header-menu-icon {
     margin: 4px 5px;
   }
@@ -1057,6 +1055,21 @@ button.App-button {
 
   .Home-faqs-content {
     padding-left: 1rem;
+  }
+
+  .header-connect-btn {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .header-connect-btn:focus {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .App-header .App-header-link-main {
+    padding: 0.1rem!important;
+    margin-left: 0rem!important;
   }
 }
 
