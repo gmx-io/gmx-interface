@@ -1,0 +1,10 @@
+<svg id="ic_gmx_24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.536" y1="0.026" x2="0.011" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#03d1cf" stop-opacity="0.988"/>
+      <stop offset="1" stop-color="#4e09f8"/>
+    </linearGradient>
+  </defs>
+  <rect id="Base_ic" width="24" height="24" fill="none"/>
+  <path id="Path_1450" data-name="Path 1450" d="M549.963,712.375,538.835,696l-11.168,16.375h15.554l-4.386-6.25-2.224,3.265h-2.3l4.521-6.547,6.557,9.532Z" transform="translate(-526.815 -692.219)" fill="url(#linear-gradient)"/>
+</svg>
