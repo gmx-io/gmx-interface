@@ -48,6 +48,7 @@ import OrdersOverview from './views/OrdersOverview/OrdersOverview'
 import PositionsOverview from './views/PositionsOverview/PositionsOverview'
 import BuyGlp from './views/BuyGlp/BuyGlp'
 import SellGlp from './views/SellGlp/SellGlp'
+import Buy from './views/Buy/Buy'
 import NftWallet from './views/NftWallet/NftWallet'
 import BeginAccountTransfer from './views/BeginAccountTransfer/BeginAccountTransfer'
 import CompleteAccountTransfer from './views/CompleteAccountTransfer/CompleteAccountTransfer'
@@ -56,13 +57,14 @@ import Debug from './views/Debug/Debug'
 import cx from "classnames";
 import { cssTransition, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import Selector from './components/Selector/Selector'
+import NetworkSelector from './components/NetworkSelector/NetworkSelector'
 import Modal from './components/Modal/Modal'
 import Checkbox from './components/Checkbox/Checkbox'
 
 import { RiMenuLine } from 'react-icons/ri'
 import { FaTimes } from 'react-icons/fa'
-import { BsThreeDots }  from 'react-icons/bs'
+import { BsThreeDots } from 'react-icons/bs'
+import { FiX } from "react-icons/fi"
 import { BiLogOut }  from 'react-icons/bi'
 
 import './Font.css'
@@ -71,7 +73,8 @@ import './App.css';
 import './Input.css';
 import './AppOrder.css';
 
-import logoImg from './img/gmx-logo-final-white-small.png'
+import logoImg from './img/logo_GMX.svg'
+// import logoImg from './img/gmx-logo-final-white-small.png'
 import metamaskImg from './img/metamask.png'
 import walletConnectImg from './img/walletconnect-circle-blue.svg'
 
@@ -97,7 +100,7 @@ function inPreviewMode() {
   return false
 }
 
-function AppHeaderLinks({ small, openSettings }) {
+function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
   if (inPreviewMode()) {
     return (
       <div className="App-header-links preview">
@@ -117,36 +120,47 @@ function AppHeaderLinks({ small, openSettings }) {
   }
   return (
     <div className="App-header-links">
+      { small &&
+        <div className="App-header-links-header">
+          <div className="App-header-menu-icon-block" onClick={() => clickCloseIcon()}>
+            <FiX className="App-header-menu-icon" />
+          </div>
+          <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
+            <img src={logoImg} alt="MetaMask" />
+          </NavLink>
+        </div>
+      }
       <div className="App-header-link-container App-header-link-home">
-        <NavLink activeClassName="active" exact to="/">HOME</NavLink>
+        <NavLink activeClassName="active" exact to="/">Home</NavLink>
       </div>
       <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/trade">TRADE</NavLink>
+        <NavLink activeClassName="active" to="/dashboard">Dashboard</NavLink>
       </div>
       <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/dashboard">DASHBOARD</NavLink>
+        <NavLink activeClassName="active" to="/earn">Earn</NavLink>
       </div>
       <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/earn">EARN</NavLink>
+        <NavLink activeClassName="active" to="/buy">Buy</NavLink>
       </div>
       <div className="App-header-link-container">
         <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
-          ABOUT
+          About
         </a>
       </div>
       <div className="App-header-link-container">
         <a href="https://www.gmx.house/p/leaderboard" target="_blank" rel="noopener noreferrer">
-          LEADERBOARD
+          Leaderboard
         </a>
       </div>
       {small &&
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
           <a href="#" onClick={openSettings}>
-            SETTINGS
+            Settings
           </a>
         </div>
       }
+      
     </div>
   )
 }
@@ -182,10 +196,25 @@ function AppHeaderUser({
     }
   }, [active, setWalletModalVisible])
 
+  const icon = <NetworkIcon chainId={chainId} />
+  const selectorLabel = <span>{icon}&nbsp;{getChainName(chainId)}</span>
+
   if (!active) {
     return (
       <div className="App-header-user">
-        <button target="_blank" rel="noopener noreferrer" className="App-cta App-connect-wallet" onClick={() => setWalletModalVisible(true)}>
+        <div className="App-header-user-link">
+          <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
+        </div>
+        {showSelector && <NetworkSelector
+          options={networkOptions}
+          label={selectorLabel}
+          onSelect={onNetworkSelect}
+          className="App-header-user-netowork"
+          showCaret={true}
+          modalLabel="Switch Network"
+          modalText="Or you can switch network manually in&nbsp;Metamask"
+        />}
+        <button target="_blank" rel="noopener noreferrer" className="default-btn header-connect-btn" onClick={() => setWalletModalVisible(true)}>
           Connect Wallet
         </button>
       </div>
@@ -194,15 +223,12 @@ function AppHeaderUser({
 
   const accountUrl = getAccountUrl(chainId, account)
 
-  const icon = <NetworkIcon chainId={chainId} />
-  const selectorLabel = <span>{icon}&nbsp;{getChainName(chainId)}</span>
-
   return (
     <div className="App-header-user">
-      <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="App-cta small transparent App-header-user-account">
-        {shortenAddress(account, small ? 11 : 13)}
-      </a>
-      {showSelector && <Selector
+      <div className="App-header-user-link">
+        <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
+      </div>
+      {showSelector && <NetworkSelector
         options={networkOptions}
         label={selectorLabel}
         onSelect={onNetworkSelect}
@@ -211,6 +237,9 @@ function AppHeaderUser({
         modalLabel="Switch Network"
         modalText="Or you can switch network manually in&nbsp;Metamask"
       />}
+      <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="App-cta small transparent App-header-user-account">
+        {shortenAddress(account, small ? 11 : 13)}
+      </a>
       {!small &&
         <button className="App-header-user-settings" onClick={openSettings}>
           <BsThreeDots />
@@ -256,8 +285,8 @@ function FullApp() {
     visible: { opacity: 1 }
   }
   const slideVariants = {
-    hidden: { y: "-100%" },
-    visible: { y: 0 }
+    hidden: { x: "-100%" },
+    visible: { x: 0 }
   }
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false)
@@ -320,8 +349,8 @@ function FullApp() {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash
             helperToast.error(
               <div>
-              Txn failed. <a href={txUrl} target="_blank" rel="noopener noreferrer">View</a>
-              <br/>
+                Txn failed. <a href={txUrl} target="_blank" rel="noopener noreferrer">View</a>
+                <br />
               </div>
             )
           }
@@ -329,8 +358,8 @@ function FullApp() {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash
             helperToast.success(
               <div>
-              {pendingTxn.message}. <a href={txUrl} target="_blank" rel="noopener noreferrer">View</a>
-              <br/>
+                {pendingTxn.message}. <a href={txUrl} target="_blank" rel="noopener noreferrer">View</a>
+                <br />
               </div>
             )
           }
@@ -353,12 +382,12 @@ function FullApp() {
   return (
     <Router>
       <div className="App">
-        <div className="App-background-side-1"></div>
+        {/* <div className="App-background-side-1"></div>
         <div className="App-background-side-2"></div>
         <div className="App-background"></div>
         <div className="App-background-ball-1"></div>
         <div className="App-background-ball-2"></div>
-        <div className="App-highlight"></div>
+        <div className="App-highlight"></div> */}
         <div className="App-content">
           {isDrawerVisible &&
             <AnimatePresence>
@@ -370,7 +399,7 @@ function FullApp() {
                   variants={fadeVariants}
                   transition={{ duration: 0.2 }}
                   onClick={() => setIsDrawerVisible(!isDrawerVisible)}
-                  >
+                >
                 </motion.div>}
             </AnimatePresence>
           }
@@ -379,7 +408,6 @@ function FullApp() {
               <div className="App-header-container-left">
                 <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
                   <img src={logoImg} alt="MetaMask" />
-                  GMX
                 </NavLink>
                 <AppHeaderLinks />
               </div>
@@ -395,10 +423,13 @@ function FullApp() {
             <div className={cx("App-header", "small", { active: isDrawerVisible })}>
               <div className={cx("App-header-link-container", "App-header-top", { active: isDrawerVisible })}>
                 <div className="App-header-container-left">
-                  <div className="App-header-link-main">
-                    <img src={logoImg} alt="MetaMask" />
-                    GMX
+                  <div className="App-header-menu-icon-block" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
+                    {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
+                    {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
                   </div>
+                  <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
+                    <img src={logoImg} alt="MetaMask" />
+                  </NavLink>
                 </div>
                 <div className="App-header-container-right">
                   <AppHeaderUser
@@ -408,28 +439,24 @@ function FullApp() {
                     walletModalVisible={walletModalVisible}
                     setWalletModalVisible={setWalletModalVisible}
                   />
-                  <div onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
-                    {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
-                    {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
-                  </div>
                 </div>
               </div>
-              <AnimatePresence>
-                {isDrawerVisible &&
-                  <motion.div
-                    onClick={() => setIsDrawerVisible(false)}
-                    className="App-header-links-container App-header-drawer"
-                    initial="hidden"
-                    animate="visible"
-                    exit="hidden"
-                    variants={slideVariants}
-                    transition={{ duration: 0.2 }}
-                    >
-                  <AppHeaderLinks small openSettings={openSettings} />
-                </motion.div>}
-              </AnimatePresence>
             </div>
           </header>
+          <AnimatePresence>
+            {isDrawerVisible &&
+              <motion.div
+                onClick={() => setIsDrawerVisible(false)}
+                className="App-header-links-container App-header-drawer"
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                variants={slideVariants}
+                transition={{ duration: 0.2 }}
+              >
+                <AppHeaderLinks small openSettings={openSettings} clickCloseIcon={() => setIsDrawerVisible(false)} />
+              </motion.div>}
+          </AnimatePresence>
           <Switch>
             <Route exact path="/">
               <Home />
@@ -454,6 +481,9 @@ function FullApp() {
             </Route>
             <Route exact path="/earn">
               <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
+            </Route>
+            <Route exact path="/buy">
+              <Buy />
             </Route>
             <Route exact path="/buy_glp">
               <BuyGlp
@@ -558,8 +588,8 @@ function PreviewApp() {
     visible: { opacity: 1 }
   }
   const slideVariants = {
-    hidden: { y: "-100%" },
-    visible: { y: 0 }
+    hidden: { x: "-100%" },
+    visible: { x: 0 }
   }
 
   return (
@@ -582,7 +612,7 @@ function PreviewApp() {
                   variants={fadeVariants}
                   transition={{ duration: 0.2 }}
                   onClick={() => setIsDrawerVisible(!isDrawerVisible)}
-                  >
+                >
                 </motion.div>}
             </AnimatePresence>
           }
@@ -603,7 +633,6 @@ function PreviewApp() {
                 <div className="App-header-container-left">
                   <div className="App-header-link-main">
                     <img src={logoImg} alt="MetaMask" />
-                    GMX
                   </div>
                 </div>
                 <div className="App-header-container-right">
@@ -623,9 +652,9 @@ function PreviewApp() {
                     exit="hidden"
                     variants={slideVariants}
                     transition={{ duration: 0.2 }}
-                    >
-                  <AppHeaderLinks small />
-                </motion.div>}
+                  >
+                    <AppHeaderLinks small />
+                  </motion.div>}
               </AnimatePresence>
             </div>
           </header>
