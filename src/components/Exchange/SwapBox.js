@@ -649,12 +649,12 @@ export default function SwapBox(props) {
         const { amount: nextToAmount } = getNextToAmount(chainId, fromAmount, fromTokenAddress, shortCollateralAddress, infoTokens, undefined, undefined, usdgSupply, totalTokenWeights)
         stableTokenAmount = nextToAmount
         if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
-          return [`Insufficient liquidity`]
+          return [`Insufficient liquidity, change "Profits In"`]
         }
 
         if (shortCollateralToken.bufferAmount && shortCollateralToken.poolAmount && shortCollateralToken.bufferAmount.gt(shortCollateralToken.poolAmount.sub(stableTokenAmount))) {
           // suggest swapping to collateralToken
-          return ["Insufficient liquidity", true, "BUFFER"]
+          return [`Insufficient liquidity, change "Profits In"`, true, "BUFFER"]
         }
 
         if (fromTokenInfo.maxUsdgAmount && fromTokenInfo.maxUsdgAmount.gt(0) && fromTokenInfo.minPrice && fromTokenInfo.usdgAmount) {
@@ -674,7 +674,7 @@ export default function SwapBox(props) {
 
       stableTokenAmount = stableTokenAmount.add(sizeTokens)
       if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
-        return [`Insufficient liquidity`]
+        return [`Insufficient liquidity, change "Profits In"`]
       }
     }
 
@@ -796,6 +796,10 @@ export default function SwapBox(props) {
       to: toTokenAddress
     }
     setTokenSelection(updatedTokenSelection)
+
+    if (isShort && fromToken && fromToken.isStable) {
+      setShortCollateralAddress(token.address)
+    }
   }
 
   const onSelectShortCollateralAddress = (token) => {
@@ -1097,8 +1101,13 @@ export default function SwapBox(props) {
     setTriggerRatioValue("")
 
     if (opt === SHORT && infoTokens) {
-      const stableToken = getMostAbundantStableToken(chainId, infoTokens)
-      setShortCollateralAddress(stableToken.address)
+      const fromToken = getToken(chainId, tokenSelection[opt].from)
+      if (fromToken && fromToken.isStable) {
+        setShortCollateralAddress(fromToken.address)
+      } else {
+        const stableToken = getMostAbundantStableToken(chainId, infoTokens)
+        setShortCollateralAddress(stableToken.address)
+      }
     }
   }
 
