@@ -2,18 +2,52 @@
   display: grid;
   grid-template-columns: 1fr 28rem;
   grid-gap: 1rem;
-  margin-top: 0.5rem;
-  padding: 2rem;
-  padding-top: 1rem;
+  padding: 1rem;
+  background: #16182E;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.Tab-title-section {
+  padding: 1.0967rem 1.032rem 0;
+  margin-bottom: 24px;
+}
+
+.Tab-description {
+  font-size: 0.903rem;
+  line-height: 1.2903rem;
+  letter-spacing: 0px;
+  color: #A0A3C4;
+}
+
+.GlpSwap-content .GlpSwap-stats-card, .GlpSwap-content .GlpSwap-box {
+  border: 2px solid #A0A3C433;
+  border-radius: 8px;
+  background: unset;
+}
+
+.GlpSwap-stats-card .App-card-row:nth-child(odd) {
+  background: #1E1F37;
 }
 
 .GlpSwap-token-list {
+  margin-top: 0.5rem;
+  background: #16182E;
+  border-radius: 8px;
+}
+
+.GlpSwap-token-list-content {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 1rem;
-  margin-top: 0.5rem;
-  padding: 2rem;
-  padding-top: 1rem;
+  padding: 1rem;
+  padding-top: 0;
+}
+
+.GlpSwap-token-list-content .App-card {
+  background: #17182C;
+  border: 2px solid #A0A3C433;
+  border-radius: 8px;
 }
 
 .GlpSwap-box {

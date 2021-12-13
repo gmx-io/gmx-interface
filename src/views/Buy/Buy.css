@@ -8,8 +8,50 @@
 
 .BuyGMXGLP-container {
     padding: 3rem 0 2rem 0;
+    width: 100%;
+}
+
+.BuyGMXGLP-container .react-tabs__tab-list {
+    height: 56px;
+    margin-bottom: 0;
+    border-bottom: 1px solid #1E2136;
+}
+
+.BuyGMXGLP-container .react-tabs__tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 25%;
+}
+
+.BuyGMXGLP-container .react-tabs__tab.react-tabs__tab--selected {
+    background: #37527B33;
+    color: white;
+    border: none;
+}
+
+.BuyGMXGLP-container .react-tabs__tab:focus:after {
+    content: unset;
+}
+
+.BuyGMXGLP-Tabitem-content {
+    display: flex;
+    align-items: center;
+}
+
+.BuyGMXGLP-Tabitem-content span {
+    font-size: 1.2903rem;
+    line-height: 1.6774rem;
+    margin-left: 8px;
+}
+
+.BuyGMXGLP-container .react-tabs__tab:first-child {
+    width: 50%;
+}
+
+.BuyGMXGLP-title-section {
     text-align: center;
-    max-width: 70rem!important;
 }
 
 .BuyGMXGLP-title {

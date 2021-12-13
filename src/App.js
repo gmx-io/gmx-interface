@@ -483,7 +483,11 @@ function FullApp() {
               <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
             </Route>
             <Route exact path="/buy">
-              <Buy />
+              <Buy
+                savedSlippageAmount={savedSlippageAmount}
+                setPendingTxns={setPendingTxns}
+                connectWallet={connectWallet}
+              />
             </Route>
             <Route exact path="/buy_glp">
               <BuyGlp
