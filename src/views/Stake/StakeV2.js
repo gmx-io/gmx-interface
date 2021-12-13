@@ -30,9 +30,7 @@ import {
   parseValue,
   approveTokens,
   getServerUrl,
-  switchNetwork,
   useLocalStorageSerializeKey,
-  ARBITRUM,
   GLP_DECIMALS,
   USD_DECIMALS,
   BASIS_POINTS_DIVISOR,
@@ -826,7 +824,6 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   const { active, library, account } = useWeb3React()
   const chainId = 42161 // set chain to Arbitrum
 
-  const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false)
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false)
   const [stakeModalTitle, setStakeModalTitle] = useState("")
   const [stakeModalMaxAmount, setStakeModalMaxAmount] = useState(undefined)
@@ -1216,11 +1213,6 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     earnMsg = <div>You are earning ETH rewards with {formatAmount(totalRewardTokensAndGlp, 18, 2, true)} tokens.<br/>Tokens: {amountStr}.</div>
   }
 
-  const onNetworkClick = evt => {
-    evt.preventDefault()
-    switchNetwork(ARBITRUM)
-  }
-
   return (
     <div className="StakeV2 Page">
       <StakeModal
@@ -1309,21 +1301,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         library={library}
         chainId={chainId}
       />
-      <Modal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} className="StakeV2-buy-gmx-modal" label="To Buy GMX">
-        <p>
-          1. Transfer ETH to Arbitrum using the <a href="https://bridge.arbitrum.io/" target="_blank" rel="noreferrer">Arbitrum Bridge</a>.
-        </p>
-        <p>
-          2. <a href="/" onClick={onNetworkClick}>Click here</a> to ensure your wallet is connected to the Arbitrum network.
-        </p>
-        <p>
-          3. Buy GMX on <a href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" target="_blank" rel="noreferrer">Uniswap</a>.
-        </p>
-        <p>
-          For more info: <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noreferrer">https://gmxio.gitbook.io/gmx/tokenomics</a>.
-        </p>
-      </Modal>
-      <div className="Page-title-section">
+      <div className="Page-title-section mt-0">
         <div className="Page-title">Earn</div>
         <div className="Page-description">
           Stake <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">
@@ -1442,7 +1420,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-options">
-                <button className="App-button-option App-card-option" onClick={() => setIsBuyGmxModalVisible(true)}>Buy GMX</button>
+                <Link className="App-button-option App-card-option" to="/buy">Buy GMX</Link>
                 {active && <button className="App-button-option App-card-option" onClick={() => showStakeGmxModal()}>Stake</button>}
                 {active && <button className="App-button-option App-card-option" onClick={() => showUnstakeGmxModal()}>Unstake</button>}
                 {active && <Link className="App-button-option App-card-option" to="/begin_account_transfer">Transfer</Link>}

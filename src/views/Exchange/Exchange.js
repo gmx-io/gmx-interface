@@ -445,11 +445,12 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
 
   return (
     <div className="Exchange">
+      {
+        showBanner && <ExchangeBanner hideBanner={hideBanner} />
+      }
       <div className="Exchange-content">
         <div className="Exchange-left">
-          {
-            showBanner && <ExchangeBanner hideBanner={hideBanner} />
-          }
+          
           {renderChart()}
           <div className="Exchange-lists large">
             {getListSection()}
