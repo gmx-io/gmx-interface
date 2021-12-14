@@ -4,13 +4,14 @@
   align-items: center;
   justify-content: flex-end;
   padding-top: 62px;
+  position: relative;
+  z-index: -1;
   /* height: 52.581rem; */
   padding-bottom: 4.129rem;
   background: url('../../img/Artwork_gmx.svg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: right;
-  margin-top: -62px;
 }
 
 .Home-title {
