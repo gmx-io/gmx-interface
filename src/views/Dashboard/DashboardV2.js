@@ -56,18 +56,19 @@ function getTotalVolumeSum(volumes) {
   return volume
 }
 
-function getVolumeInfo(dailyVolume) {
-  if (!dailyVolume || dailyVolume.length === 0) {
+function getVolumeInfo(hourlyVolume) {
+  if (!hourlyVolume || hourlyVolume.length === 0) {
     return {}
   }
 
-  const timestamp = dailyVolume[0].data.timestamp
+  const secondsPerHour = 60 * 60
+  const minTime = parseInt(Date.now() / 1000 / secondsPerHour) * secondsPerHour - 24 * secondsPerHour
 
   const info = {}
   let totalVolume = bigNumberify(0)
-  for (let i = 0; i < dailyVolume.length; i++) {
-    const item = dailyVolume[i].data
-    if (item.timestamp !== timestamp) {
+  for (let i = 0; i < hourlyVolume.length; i++) {
+    const item = hourlyVolume[i].data
+    if (parseInt(item.timestamp) < minTime) {
       break
     }
 
@@ -113,8 +114,8 @@ export default function DashboardV2() {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
 
-  const dailyVolumeUrl = getServerUrl(chainId, "/daily_volume")
-  const { data: dailyVolume, mutate: updateDailyVolume } = useSWR([dailyVolumeUrl], {
+  const hourlyVolumeUrl = getServerUrl(chainId, "/hourly_volume")
+  const { data: hourlyVolume, mutate: updateHourlyVolume } = useSWR([hourlyVolumeUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
 
@@ -135,7 +136,7 @@ export default function DashboardV2() {
     totalShortPositionSizes = bigNumberify(positionStats.totalShortPositionSizes)
   }
 
-  const volumeInfo = getVolumeInfo(dailyVolume)
+  const volumeInfo = getVolumeInfo(hourlyVolume)
 
   const totalVolumeSum = getTotalVolumeSum(totalVolume)
 
@@ -261,10 +262,6 @@ export default function DashboardV2() {
     totalFloorPriceFundUsd = ethFloorPriceFundUsd.add(glpFloorPriceFundUsd)
   }
 
-  const hourValue = parseInt((new Date() - new Date().setUTCHours(0,0,0,0)) / (60 * 60 * 1000))
-  const minuteValue = parseInt((new Date() - new Date().setUTCHours(0,0,0,0)) / (60 * 1000))
-  let volumeLabel = hourValue > 0 ? `${hourValue}h` : `${minuteValue}m`
-
   let usdgSupply
   if (totalSupplies && totalSupplies[5]) {
     usdgSupply = totalSupplies[5]
@@ -310,7 +307,7 @@ export default function DashboardV2() {
     if (active) {
       library.on('block', () => {
         updatePositionStats(undefined, true)
-        updateDailyVolume(undefined, true)
+        updateHourlyVolume(undefined, true)
         updateTotalVolume(undefined, true)
 
         updateTotalSupplies(undefined, true)
@@ -329,7 +326,7 @@ export default function DashboardV2() {
       }
     }
   }, [active, library,  chainId,
-      updatePositionStats, updateDailyVolume, updateTotalVolume,
+      updatePositionStats, updateHourlyVolume, updateTotalVolume,
       updateTotalSupplies, updateAums, updateVaultTokenInfo,
       updateFees, updateUniPoolSlot0, updateStakedGmxSupply,
       updateTotalTokenWeights, updateGmxSupply])
@@ -370,7 +367,7 @@ export default function DashboardV2() {
                 </div>
               </div>
               <div className="App-card-row">
-                <div className="label">{volumeLabel} Volume</div>
+                <div className="label">24h Volume</div>
                 <div>
                   ${formatAmount(volumeInfo.totalVolume, USD_DECIMALS, 0, true)}
                 </div>
