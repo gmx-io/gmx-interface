@@ -4,13 +4,27 @@
   align-items: center;
   justify-content: flex-end;
   padding-top: 62px;
+  position: relative;
+  z-index: -1;
   /* height: 52.581rem; */
   padding-bottom: 4.129rem;
+  margin-top: -62px;
+}
+
+.Home-top-image {
+  z-index: -1;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  -webkit-transform: scaleY(-1);
+  transform: scaleY(-1);
   background: url('../../img/Artwork.svg');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: right;
-  margin-top: -62px;
 }
 
 .Home-title {

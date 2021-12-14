@@ -152,6 +152,7 @@ export default function Home() {
   return (
     <div className="Home">
       <div className="Home-top">
+        <div className="Home-top-image"></div>
         <div className="Home-title-section-container default-container">
           <div className="Home-title-section">
             <div className="Home-title">
