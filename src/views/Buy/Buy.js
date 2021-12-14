@@ -25,7 +25,7 @@ export default function BuyGMXGLP() {
           <div className="BuyGMXGLP-description">
             To purchase <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">GMX</a> you must first transfer ETH to Arbitrum.<br/>
             Follow this <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">tutorial</a> and check the options below for better rates.<br/>
-            Transfers will take a few minutes.
+            Transfers using the below options will take a few minutes.
           </div>
           <div className="alternative-bridges">
             <a href="https://synapseprotocol.com/?inputCurrency=ETH&outputCurrency=ETH&outputChain=42161" target="_blank" rel="noopener noreferrer" className="Synapse">
