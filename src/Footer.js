@@ -2,7 +2,7 @@ import React from 'react'
 
 import './Footer.css';
 
-import logoImg from './img/ic_gmx_footer.svg'
+import logoImg from './img/ic_gmx.svg'
 import twitterIcon from './img/ic_twitter.svg'
 import discordIcon from './img/ic_discord.svg'
 import telegramIcon from './img/ic_telegram.svg'
