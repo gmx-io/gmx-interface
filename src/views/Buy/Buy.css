@@ -181,14 +181,14 @@
 
 @media (max-width: 600px) {
     .alternative-bridges {
-        margin: 0 auto 1.548rem;
+        margin: 1.032rem auto 1.032rem;
         display: flex;
         flex-direction: column;
         align-items: center;
     }
 
     .alternative-bridges a + a {
-        margin-top: 1.548rem;
+        margin-top: 1rem;
     }
 
     .BuyGMXGLP-purchase-block {
