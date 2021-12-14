@@ -182,7 +182,7 @@ export default function Home() {
           <div className="Home-latest-info-block">
             <img src={cashIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">Total Users</div>
+              <div className="Home-latest-info__title">Total Fees Collected</div>
               <div className="Home-latest-info__value">${numberWithCommas(totalFeesDistributed.toFixed(0))}</div>
             </div>
           </div>
