@@ -418,6 +418,10 @@ button.App-connect-wallet:hover {
   vertical-align: middle;
 }
 
+.App-header-link-main img.small {
+  display: none;
+}
+
 .App-header a {
   text-decoration: none;
   vertical-align: middle;
@@ -1031,6 +1035,14 @@ button.App-button {
 }
 
 @media (max-width: 410px) {
+  .App-header-link-main img.big {
+    display: none;
+  }
+
+  .App-header-link-main img.small {
+    display: inline-block;
+  }
+
   .App-header-user-link {
     margin-right: 6px;
   }
