@@ -15,8 +15,6 @@ import {
 
 import {
   MAINNET,
-  TESTNET,
-  ARBITRUM_TESTNET,
   ARBITRUM,
   DEFAULT_SLIPPAGE_AMOUNT,
   SLIPPAGE_BPS_KEY,
@@ -167,16 +165,6 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
   )
 }
 
-function NetworkIcon({ chainId }) {
-  let url
-  if (chainId === MAINNET || chainId === TESTNET) {
-    url = "/binance.svg"
-  } else if (chainId === ARBITRUM_TESTNET || chainId === ARBITRUM) {
-    url = "/arbitrum.svg"
-  }
-  return <img src={url} alt={getChainName(chainId)} className="Network-icon" />
-}
-
 function AppHeaderUser({
   openSettings,
   small,
@@ -186,10 +174,10 @@ function AppHeaderUser({
 }) {
   const { chainId } = useChainId()
   const { active, account } = useWeb3React()
-  const showSelector = false
+  const showSelector = true
   const networkOptions = [
-    { label: "Arbitrum", value: ARBITRUM },
-    { label: "Binance Smart Chain (BSC)", value: MAINNET }
+    { label: "Arbitrum", value: ARBITRUM, icon: 'ic_arbitrum_24.svg' },
+    { label: "Avalanche", value: MAINNET, icon: 'ic_avalanche_24.svg' }
   ]
 
   useEffect(() => {
@@ -198,15 +186,11 @@ function AppHeaderUser({
     }
   }, [active, setWalletModalVisible])
 
-  const icon = <NetworkIcon chainId={chainId} />
-  const selectorLabel = <span>{icon}&nbsp;{getChainName(chainId)}</span>
+  const selectorLabel = getChainName(chainId)
 
   if (!active) {
     return (
       <div className="App-header-user">
-        <div className="App-header-user-link">
-          <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
-        </div>
         {showSelector && <NetworkSelector
           options={networkOptions}
           label={selectorLabel}
@@ -216,6 +200,9 @@ function AppHeaderUser({
           modalLabel="Switch Network"
           modalText="Or you can switch network manually in&nbsp;Metamask"
         />}
+        <div className="App-header-user-link">
+          <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
+        </div>
         <button target="_blank" rel="noopener noreferrer" className="default-btn header-connect-btn" onClick={() => setWalletModalVisible(true)}>
           Connect Wallet
         </button>
@@ -227,9 +214,6 @@ function AppHeaderUser({
 
   return (
     <div className="App-header-user">
-      <div className="App-header-user-link">
-        <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
-      </div>
       {showSelector && <NetworkSelector
         options={networkOptions}
         label={selectorLabel}
@@ -239,6 +223,9 @@ function AppHeaderUser({
         modalLabel="Switch Network"
         modalText="Or you can switch network manually in&nbsp;Metamask"
       />}
+      <div className="App-header-user-link">
+        <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
+      </div>
       <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="App-cta small transparent App-header-user-account">
         {shortenAddress(account, small ? 11 : 13)}
       </a>

@@ -709,24 +709,8 @@ a.App-header-user-account {
   height: 1.2rem;
 }
 
-.App-header-user-netowork .Selector-box {
-  cursor: pointer;
-  display: inline-block;
-  padding: 0.6rem 0.7rem;
-  border-radius: 3px;
-  color: rgba(255, 255, 255, 0.7);
-  text-decoration: none;
-  border: none;
-  margin-right: 0.5rem;
-  font-size: 1rem;
-  background: none;
-}
-.App-header-user-netowork .Selector-box .Network-icon {
-  margin: -0.2rem 0.2rem 0 0;
-}
-
-.App-header-user-netowork .Selector-box:hover {
-  color: white;
+.App-header-user-netowork {
+  margin-right: 24px;
 }
 
 .App-content {
@@ -958,6 +942,10 @@ button.App-button {
     margin-right: 16px;
   }
 
+  .App-header-user-netowork {
+    margin-right: 16px;
+  }
+
   button.App-connect-wallet {
     margin-top: 0.3rem;
     margin-bottom: 0.3rem;
@@ -1034,13 +1022,7 @@ button.App-button {
   }
 }
 
-@media (max-width: 500px) {
-  .header-connect-btn {
-    margin-right: 4px;
-  }
-}
-
-@media (max-width: 410px) {
+@media (max-width: 600px) {
   .App-header-link-main img.big {
     display: none;
   }
@@ -1048,7 +1030,15 @@ button.App-button {
   .App-header-link-main img.small {
     display: inline-block;
   }
+}
 
+@media (max-width: 500px) {
+  .header-connect-btn {
+    margin-right: 4px;
+  }
+}
+
+@media (max-width: 410px) {
   .App-header-user-link {
     margin-right: 6px;
   }
