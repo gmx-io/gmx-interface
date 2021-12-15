@@ -126,7 +126,7 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
             <FiX className="App-header-menu-icon" />
           </div>
           <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
-            <img src={logoImg} alt="MetaMask" />
+            <img src={logoImg} alt="GMX Logo" />
           </NavLink>
         </div>
       }
@@ -160,7 +160,6 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
           </a>
         </div>
       }
-      
     </div>
   )
 }
@@ -407,7 +406,7 @@ function FullApp() {
             <div className="App-header large">
               <div className="App-header-container-left">
                 <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
-                  <img src={logoImg} alt="MetaMask" />
+                  <img src={logoImg} alt="GMX Logo" />
                 </NavLink>
                 <AppHeaderLinks />
               </div>
@@ -427,9 +426,9 @@ function FullApp() {
                     {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
                     {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
                   </div>
-                  <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
-                    <img src={logoImg} alt="MetaMask" />
-                  </NavLink>
+                  <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
+                    <img src={logoImg} alt="GMX Logo" />
+                  </div>
                 </div>
                 <div className="App-header-container-right">
                   <AppHeaderUser
@@ -620,7 +619,7 @@ function PreviewApp() {
             <div className="App-header large preview">
               <div className="App-header-container-left">
                 <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
-                  <img src={logoImg} alt="MetaMask" />
+                  <img src={logoImg} alt="GMX Logo" />
                   GMX
                 </NavLink>
               </div>
@@ -632,7 +631,7 @@ function PreviewApp() {
               <div className={cx("App-header-link-container", "App-header-top", { active: isDrawerVisible })}>
                 <div className="App-header-container-left">
                   <div className="App-header-link-main">
-                    <img src={logoImg} alt="MetaMask" />
+                    <img src={logoImg} alt="GMX Logo" />
                   </div>
                 </div>
                 <div className="App-header-container-right">
