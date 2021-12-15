@@ -649,12 +649,12 @@ export default function SwapBox(props) {
         const { amount: nextToAmount } = getNextToAmount(chainId, fromAmount, fromTokenAddress, shortCollateralAddress, infoTokens, undefined, undefined, usdgSupply, totalTokenWeights)
         stableTokenAmount = nextToAmount
         if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
-          return [`Insufficient liquidity`]
+          return [`Insufficient liquidity, change "Profits In"`]
         }
 
         if (shortCollateralToken.bufferAmount && shortCollateralToken.poolAmount && shortCollateralToken.bufferAmount.gt(shortCollateralToken.poolAmount.sub(stableTokenAmount))) {
           // suggest swapping to collateralToken
-          return ["Insufficient liquidity", true, "BUFFER"]
+          return [`Insufficient liquidity, change "Profits In"`, true, "BUFFER"]
         }
 
         if (fromTokenInfo.maxUsdgAmount && fromTokenInfo.maxUsdgAmount.gt(0) && fromTokenInfo.minPrice && fromTokenInfo.usdgAmount) {
@@ -674,7 +674,7 @@ export default function SwapBox(props) {
 
       stableTokenAmount = stableTokenAmount.add(sizeTokens)
       if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
-        return [`Insufficient liquidity`]
+        return [`Insufficient liquidity, change "Profits In"`]
       }
     }
 
@@ -796,6 +796,10 @@ export default function SwapBox(props) {
       to: toTokenAddress
     }
     setTokenSelection(updatedTokenSelection)
+
+    if (isShort && fromToken && fromToken.isStable) {
+      setShortCollateralAddress(token.address)
+    }
   }
 
   const onSelectShortCollateralAddress = (token) => {
@@ -906,6 +910,7 @@ export default function SwapBox(props) {
     let minOut;
     if (shouldRaiseGasError(getTokenInfo(infoTokens, fromTokenAddress), fromAmount)) {
       setIsSubmitting(false)
+      setIsPendingConfirmation(true)
       helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "networkTokenSymbol")} for gas`)
       return
     }
@@ -1055,6 +1060,7 @@ export default function SwapBox(props) {
 
     if (shouldRaiseGasError(getTokenInfo(infoTokens, fromTokenAddress), fromAmount)) {
       setIsSubmitting(false)
+      setIsPendingConfirmation(false)
       helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "networkTokenSymbol")} for gas`)
       return
     }
@@ -1097,8 +1103,13 @@ export default function SwapBox(props) {
     setTriggerRatioValue("")
 
     if (opt === SHORT && infoTokens) {
-      const stableToken = getMostAbundantStableToken(chainId, infoTokens)
-      setShortCollateralAddress(stableToken.address)
+      const fromToken = getToken(chainId, tokenSelection[opt].from)
+      if (fromToken && fromToken.isStable) {
+        setShortCollateralAddress(fromToken.address)
+      } else {
+        const stableToken = getMostAbundantStableToken(chainId, infoTokens)
+        setShortCollateralAddress(stableToken.address)
+      }
     }
   }
 
@@ -1241,6 +1252,24 @@ export default function SwapBox(props) {
     }
   }
 
+  function setFromValueToMaximumAvailable() {
+    if (!fromToken || !fromBalance) {
+      return
+    }
+
+    const maxAvailableAmount = fromToken.isNative ? fromBalance.sub(bigNumberify(DUST_BNB).mul(2)) : fromBalance
+    setFromValue(formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals))
+    setAnchorOnFromAmount(true)
+  }
+
+  function shouldShowMaxButton() {
+    if (!fromToken || !fromBalance) {
+      return false
+    }
+    const maxAvailableAmount = fromToken.isNative ? fromBalance.sub(bigNumberify(DUST_BNB).mul(2)) : fromBalance
+    return fromValue !== formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals)
+  }
+
   return (
     <div className="Exchange-swap-box">
       {/* <div className="Exchange-swap-wallet-box App-box">
@@ -1267,14 +1296,16 @@ export default function SwapBox(props) {
                   {!fromUsdMin && "Pay"}
                 </div>
                 {fromBalance &&
-                  <div className="muted align-right clickable" onClick={() => {setFromValue(formatAmountFree(fromBalance, fromToken.decimals, fromToken.decimals)); setAnchorOnFromAmount(true)}}>Balance: {formatAmount(fromBalance, fromToken.decimals, 4, true)}</div>
+                  <div className="muted align-right clickable" onClick={setFromValueToMaximumAvailable}>
+                    Balance: {formatAmount(fromBalance, fromToken.decimals, 4, true)}
+                  </div>
                 }
               </div>
               <div className="Exchange-swap-section-bottom">
                 <div className="Exchange-swap-input-container">
                   <input type="number" min="0" placeholder="0.0" className="Exchange-swap-input" value={fromValue} onChange={onFromValueChange} />
-                  {fromValue !== formatAmountFree(fromBalance, fromToken.decimals, fromToken.decimals) &&
-                    <div className="Exchange-swap-max" onClick={() => {setFromValue(formatAmountFree(fromBalance, fromToken.decimals, fromToken.decimals)); setAnchorOnFromAmount(true)}}>
+                  {shouldShowMaxButton() &&
+                    <div className="Exchange-swap-max" onClick={setFromValueToMaximumAvailable}>
                       MAX
                     </div>
                   }

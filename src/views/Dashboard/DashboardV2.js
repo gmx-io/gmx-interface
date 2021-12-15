@@ -41,17 +41,6 @@ import Footer from "../../Footer"
 
 import "./DashboardV2.css"
 
-import statsBigIcon from '../../img/ic_stats_big.svg'
-import tokensBigIcon from '../../img/ic_tokens.svg'
-import communityBigIcon from '../../img/ic-communityproject.svg'
-
-import gmxSmallIcon from '../../img/ic_gmx_40.svg'
-import glpSmallIcon from '../../img/ic_glp_40.svg'
-
-import arbitrumXSIcon from '../../img/ic_arbitrum_hover_16.svg'
-import coingeckoXSIcon from '../../img/ic_coingecko_hover_16.svg'
-import metamaskXSIcon from '../../img/ic_metamask_hover_16.svg'
-
 const { AddressZero } = ethers.constants
 
 function getTotalVolumeSum(volumes) {
@@ -67,18 +56,19 @@ function getTotalVolumeSum(volumes) {
   return volume
 }
 
-function getVolumeInfo(dailyVolume) {
-  if (!dailyVolume || dailyVolume.length === 0) {
+function getVolumeInfo(hourlyVolume) {
+  if (!hourlyVolume || hourlyVolume.length === 0) {
     return {}
   }
 
-  const timestamp = dailyVolume[0].data.timestamp
+  const secondsPerHour = 60 * 60
+  const minTime = parseInt(Date.now() / 1000 / secondsPerHour) * secondsPerHour - 24 * secondsPerHour
 
   const info = {}
   let totalVolume = bigNumberify(0)
-  for (let i = 0; i < dailyVolume.length; i++) {
-    const item = dailyVolume[i].data
-    if (item.timestamp !== timestamp) {
+  for (let i = 0; i < hourlyVolume.length; i++) {
+    const item = hourlyVolume[i].data
+    if (parseInt(item.timestamp) < minTime) {
       break
     }
 
@@ -124,8 +114,8 @@ export default function DashboardV2() {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
 
-  const dailyVolumeUrl = getServerUrl(chainId, "/daily_volume")
-  const { data: dailyVolume, mutate: updateDailyVolume } = useSWR([dailyVolumeUrl], {
+  const hourlyVolumeUrl = getServerUrl(chainId, "/hourly_volume")
+  const { data: hourlyVolume, mutate: updateHourlyVolume } = useSWR([hourlyVolumeUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
 
@@ -146,7 +136,7 @@ export default function DashboardV2() {
     totalShortPositionSizes = bigNumberify(positionStats.totalShortPositionSizes)
   }
 
-  const volumeInfo = getVolumeInfo(dailyVolume)
+  const volumeInfo = getVolumeInfo(hourlyVolume)
 
   const totalVolumeSum = getTotalVolumeSum(totalVolume)
 
@@ -210,17 +200,6 @@ export default function DashboardV2() {
     totalFeesDistributed += parseFloat(feeHistory[i].feeUsd)
   }
 
-  const busdFloorPriceFundUsd = expandDecimals(1000000, 30)
-  const ethFloorPriceFund = expandDecimals(800 + 270, 18)
-
-  let ethFloorPriceFundUsd
-  let totalFloorPriceFundUsd
-
-  if (eth && eth.minPrice) {
-    ethFloorPriceFundUsd = ethFloorPriceFund.mul(eth.minPrice).div(expandDecimals(1, eth.decimals))
-    totalFloorPriceFundUsd = busdFloorPriceFundUsd.add(ethFloorPriceFundUsd)
-  }
-
   let gmxPrice
 
   if (uniPoolSlot0 && eth && eth.minPrice) {
@@ -271,9 +250,17 @@ export default function DashboardV2() {
     glpMarketCap = glpPrice.mul(glpSupply).div(expandDecimals(1, GLP_DECIMALS))
   }
 
-  const hourValue = parseInt((new Date() - new Date().setUTCHours(0,0,0,0)) / (60 * 60 * 1000))
-  const minuteValue = parseInt((new Date() - new Date().setUTCHours(0,0,0,0)) / (60 * 1000))
-  let volumeLabel = hourValue > 0 ? `${hourValue}h` : `${minuteValue}m`
+  const ethFloorPriceFund = expandDecimals(600 + 148 + 371, 18)
+  const glpFloorPriceFund = expandDecimals(660001, 18)
+
+  let totalFloorPriceFundUsd
+
+  if (eth && eth.minPrice && glpPrice) {
+    const ethFloorPriceFundUsd = ethFloorPriceFund.mul(eth.minPrice).div(expandDecimals(1, eth.decimals))
+    const glpFloorPriceFundUsd = glpFloorPriceFund.mul(glpPrice).div(expandDecimals(1, 18))
+
+    totalFloorPriceFundUsd = ethFloorPriceFundUsd.add(glpFloorPriceFundUsd)
+  }
 
   let usdgSupply
   if (totalSupplies && totalSupplies[5]) {
@@ -320,7 +307,7 @@ export default function DashboardV2() {
     if (active) {
       library.on('block', () => {
         updatePositionStats(undefined, true)
-        updateDailyVolume(undefined, true)
+        updateHourlyVolume(undefined, true)
         updateTotalVolume(undefined, true)
 
         updateTotalSupplies(undefined, true)
@@ -339,35 +326,29 @@ export default function DashboardV2() {
       }
     }
   }, [active, library,  chainId,
-      updatePositionStats, updateDailyVolume, updateTotalVolume,
+      updatePositionStats, updateHourlyVolume, updateTotalVolume,
       updateTotalSupplies, updateAums, updateVaultTokenInfo,
       updateFees, updateUniPoolSlot0, updateStakedGmxSupply,
       updateTotalTokenWeights, updateGmxSupply])
 
   return (
-    <div className="DashboardV2 default-container page-container">
-      <div className="section-title-block">
-        <div className="section-title-icon">
-          <img src={statsBigIcon} alt="statsBigIcon" />
-        </div>
-        <div className="section-title-content">
-          <div className="section-title-content__title">
-            Stats
-          </div>
-          <div className="section-title-content__description">
-            Total Stats start from 01 Sep 2021. For detailed stats: <a href="https://stats.gmx.io/" target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
-          </div>
+    <div className="DashboardV2 Page">
+      <div className="Page-title-section">
+        <div className="Page-title">Stats</div>
+        <div className="Page-description">
+          Total Stats start from 01 Sep 2021.&nbsp;<br/>
+          For detailed stats: <a href="https://stats.gmx.io/"  target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
         </div>
       </div>
-      <div className="page-main-content">
+      <div className="DashboardV2-content">
         <div className="DashboardV2-cards">
           <div className="App-card">
-            <div className="App-card-title">OVERVIEW</div>
+            <div className="App-card-title">Overview</div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">AUM</div>
-                <div className="value">
+                <div>
                   <Tooltip
                     handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                     position="right-bottom"
@@ -377,7 +358,7 @@ export default function DashboardV2() {
               </div>
               <div className="App-card-row">
                 <div className="label">GLP Pool</div>
-                <div className="value">
+                <div>
                   <Tooltip
                     handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
                     position="right-bottom"
@@ -386,244 +367,182 @@ export default function DashboardV2() {
                 </div>
               </div>
               <div className="App-card-row">
-                <div className="label">{volumeLabel} Volume</div>
-                <div className="value">
+                <div className="label">24h Volume</div>
+                <div>
                   ${formatAmount(volumeInfo.totalVolume, USD_DECIMALS, 0, true)}
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Long Positions</div>
-                <div className="value">
+                <div>
                   ${formatAmount(totalLongPositionSizes, USD_DECIMALS, 0, true)}
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Short Positions</div>
-                <div className="value">
+                <div>
                   ${formatAmount(totalShortPositionSizes, USD_DECIMALS, 0, true)}
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Fees since {formatDate(feeHistory[0].to)}</div>
-                <div className="value">
+                <div>
                   ${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}
                 </div>
               </div>
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">TOTAL STATS</div>
+            <div className="App-card-title">Total Stats</div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">Total Fees</div>
-                <div className="value">
+                <div>
                   ${numberWithCommas(totalFeesDistributed.toFixed(0))}
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Total Volume</div>
-                <div className="value">
+                <div>
                   ${formatAmount(totalVolumeSum, USD_DECIMALS, 0, true)}
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Floor Price Fund</div>
-                <div className="value">
+                <div>
                   ${formatAmount(totalFloorPriceFundUsd, 30, 0, true)}
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="section-title-block">
-          <div className="section-title-icon">
-            <img src={tokensBigIcon} alt="tokensBigIcon" />
-          </div>
-          <div className="section-title-content">
-            <div className="section-title-content__title">Tokens</div>
-            <div className="section-title-content__description">
-              Platform and GLP index tokens.
-            </div>
+        <div className="Page-title-section">
+          <div className="Page-title">Tokens</div>
+          <div className="Page-description">
+            Platform and GLP index tokens.
           </div>
         </div>
         <div className="DashboardV2-token-cards">
-          <div className="App-card-long App-card">
-            <div className="App-card-long-content">
-              <div className="App-card-long_sub">
-                <div className="App-card-long-sub-left">
-                  <div className="App-card-long_sub-icon">
-                    <img src={gmxSmallIcon} alt="gmxSmallIcon" />
-                  </div>
-                  <div className="App-card-long_sub__info">
-                    <div className="App-card-long_sub__info___title">GMX</div>
-                    <div className="App-card-long_sub__info___subtitle">GMX</div>
-                  </div>
-                </div>
-                <div className="App-card-long_sub__iconlist">
-                  <div className="App-card-long_sub__iconlist___icon">
-                    <img src={metamaskXSIcon} alt="metamaskXSIcon" />
-                  </div>
-                  <div className="App-card-long_sub__iconlist___icon">
-                    <img src={coingeckoXSIcon} alt="coingeckoXSIcon" />
-                  </div>
-                  <div className="App-card-long_sub__iconlist___icon">
-                    <img src={arbitrumXSIcon} alt="arbitrumXSIcon" />
-                  </div>
+          <div className="App-card">
+            <div className="App-card-title">GMX</div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Price</div>
+                <div>
+                  ${formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
                 </div>
               </div>
-              <div className="App-card-divider-vertical"></div>
-              <div className="App-card-long_sub">
-                <div className="App-card-long_sub__title">Price</div>
-                <div className="App-card-long_sub__subtitle">${formatAmount(gmxPrice, USD_DECIMALS, 2, true)}</div>
+              <div className="App-card-row">
+                <div className="label">Supply</div>
+                <div>
+                  {formatAmount(gmxSupply, GMX_DECIMALS, 0, true)} GMX
+                </div>
               </div>
-              <div className="App-card-divider-vertical"></div>
-              <div className="App-card-long_sub">
-                <div className="App-card-long_sub__title">Supply</div>
-                <div className="App-card-long_sub__subtitle">{formatAmount(gmxSupply, GMX_DECIMALS, 0, true)} GMX</div>
+              <div className="App-card-row">
+                <div className="label">Total Staked</div>
+                <div>
+                  ${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}
+                </div>
               </div>
-              <div className="App-card-divider-vertical"></div>
-              <div className="App-card-long_sub">
-                <div className="App-card-long_sub__title">Total Staked</div>
-                <div className="App-card-long_sub__subtitle">${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}</div>
-              </div>
-              <div className="App-card-divider-vertical"></div>
-              <div className="App-card-long_sub">
-                <div className="App-card-long_sub__title">Market Cap</div>
-                <div className="App-card-long_sub__subtitle">${formatAmount(gmxMarketCap, USD_DECIMALS, 0, true)}</div>
+              <div className="App-card-row">
+                <div className="label">Market Cap</div>
+                <div>
+                  ${formatAmount(gmxMarketCap, USD_DECIMALS, 0, true)}
+                </div>
               </div>
             </div>
           </div>
-          <div className="App-card-long App-card">
-            <div className="App-card-long-content">
-              <div className="App-card-long_sub">
-                <div className="App-card-long-sub-left">
-                  <div className="App-card-long_sub-icon">
-                    <img src={glpSmallIcon} alt="glpSmallIcon" />
-                  </div>
-                  <div className="App-card-long_sub__info">
-                    <div className="App-card-long_sub__info___title">GLP</div>
-                    <div className="App-card-long_sub__info___subtitle">GLP</div>
-                  </div>
-                </div>
-                <div className="App-card-long_sub__iconlist">
-                  <div className="App-card-long_sub__iconlist___icon">
-                    <img src={metamaskXSIcon} alt="metamaskXSIcon" />
-                  </div>
-                  <div className="App-card-long_sub__iconlist___icon">
-                    <img src={arbitrumXSIcon} alt="arbitrumXSIcon" />
-                  </div>
+          <div className="App-card">
+            <div className="App-card-title">GLP</div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Price</div>
+                <div>
+                  ${formatAmount(glpPrice, USD_DECIMALS, 2, true)}
                 </div>
               </div>
-              <div className="App-card-divider-vertical"></div>
-              <div className="App-card-long_sub">
-                <div className="App-card-long_sub__title">Price</div>
-                <div className="App-card-long_sub__subtitle">${formatAmount(glpPrice, USD_DECIMALS, 2, true)}</div>
+              <div className="App-card-row">
+                <div className="label">Supply</div>
+                <div>
+                  {formatAmount(glpSupply, GLP_DECIMALS, 0, true)} GLP
+                </div>
               </div>
-              <div className="App-card-divider-vertical"></div>
-              <div className="App-card-long_sub">
-                <div className="App-card-long_sub__title">Supply</div>
-                <div className="App-card-long_sub__subtitle">{formatAmount(glpSupply, GLP_DECIMALS, 0, true)} GLP</div>
+              <div className="App-card-row">
+                <div className="label">Total Staked</div>
+                <div>
+                  ${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}
+                </div>
               </div>
-              <div className="App-card-divider-vertical"></div>
-              <div className="App-card-long_sub">
-                <div className="App-card-long_sub__title">Total Staked</div>
-                <div className="App-card-long_sub__subtitle">${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}</div>
+              <div className="App-card-row">
+                <div className="label">Market Cap</div>
+                <div>
+                  ${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}
+                </div>
               </div>
-              <div className="App-card-divider-vertical"></div>
-              <div className="App-card-long_sub">
-                <div className="App-card-long_sub__title">Market Cap</div>
-                <div className="App-card-long_sub__subtitle">${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}</div>
-              </div>
-            </div>
-            <div className="App-card-long-content card-list">
-              {tokenList.map((token) => {
-                const tokenInfo = infoTokens[token.address]
-                let utilization = bigNumberify(0)
-                if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
-                  utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount)
-                }
-                let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT
-                if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
-                  maxUsdgAmount = tokenInfo.maxUsdgAmount
-                }
-                var tokenImage = require('../../img/ic_' + token.symbol.toLowerCase() + '_40.svg')
-                return (
-                  <div className="App-card token-card" key={token.symbol}>
-                    <div className="App-card-title-block">
-                      <div className="App-card-title-info">
-                        <div className="App-card-title-info-icon">
-                          <img src={tokenImage.default} alt={token.symbol} />
-                        </div>
-                        <div className="App-card-title-info-text">
-                          <div className="App-card-info-title">{token.symbol}</div>
-                          <div className="App-card-info-subtitle">{token.symbol}</div>
-                        </div>
-                      </div>
-                      <div className="App-card-title-iconlist">
-                        <div className="App-card-title-iconlist___icon">
-                          <img src={metamaskXSIcon} alt="metamaskXSIcon" />
-                        </div>
-                        <div className="App-card-title-iconlist___icon">
-                          <img src={coingeckoXSIcon} alt="coingeckoXSIcon" />
-                        </div>
-                        <div className="App-card-title-iconlist___icon">
-                          <img src={arbitrumXSIcon} alt="arbitrumXSIcon" />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="App-card-divider"></div>
-                    <div className="App-card-content">
-                      <div className="App-card-row">
-                        <div className="label">Price</div>
-                        <div className="value">
-                          ${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}
-                        </div>
-                      </div>
-                      <div className="App-card-row">
-                        <div className="label">Pool</div>
-                        <div className="value">
-                          <Tooltip
-                            handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
-                            position="right-bottom"
-                            renderContent={() => {
-                              return <>
-                                Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol}<br/>
-                                <br/>
-                                Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
-                              </>
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="App-card-row">
-                        <div className="label">Weight</div>
-                        <div className="value">
-                          {getWeightText(tokenInfo)}
-                        </div>
-                      </div>
-                      <div className="App-card-row">
-                        <div className="label">Utilization</div>
-                        <div className="value">
-                          {formatAmount(utilization, 2, 2, false)}%
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
             </div>
           </div>
+          {tokenList.map((token) => {
+            const tokenInfo = infoTokens[token.address]
+            let utilization = bigNumberify(0)
+            if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
+              utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount)
+            }
+            let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT
+            if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+              maxUsdgAmount = tokenInfo.maxUsdgAmount
+            }
+
+            return (
+              <div className="App-card" key={token.symbol}>
+                <div className="App-card-title">{token.symbol}</div>
+                <div className="App-card-divider"></div>
+                <div className="App-card-content">
+                  <div className="App-card-row">
+                    <div className="label">Price</div>
+                    <div>
+                      ${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}
+                    </div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Pool</div>
+                    <div>
+                      <Tooltip
+                        handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
+                        position="right-bottom"
+                        renderContent={() => {
+                          return <>
+                            Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol}<br/>
+                            <br/>
+                            Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                          </>
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Weight</div>
+                    <div>
+                      {getWeightText(tokenInfo)}
+                    </div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Utilization</div>
+                    <div>
+                      {formatAmount(utilization, 2, 2, false)}%
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
         </div>
-        <div className="section-title-block">
-          <div className="section-title-icon">
-            <img src={communityBigIcon} alt="communityBigIcon" />
-          </div>
-          <div className="section-title-content">
-            <div className="section-title-content__title">Community Projects</div>
-            <div className="section-title-content__description">
-              Projects developed by the GMX community.
-            </div>
+        <div className="Page-title-section">
+          <div className="Page-title">Community Projects</div>
+          <div className="Page-description">
+            Projects developed by the GMX community.
           </div>
         </div>
         <div className="DashboardV2-projects">
@@ -633,7 +552,7 @@ export default function DashboardV2() {
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">Link</div>
-                <div className="value">
+                <div>
                   <a href="https://t.me/GMXPositions" target="_blank" rel="noopener noreferrer">
                     https://t.me/GMXPositions
                   </a>
@@ -641,13 +560,13 @@ export default function DashboardV2() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div className="value">
+                <div>
                   Telegram bot for GMX position updates
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
-                <div className="value">
+                <div>
                   <a href="https://t.me/zhongfu" target="_blank" rel="noopener noreferrer">
                     @zhongfu
                   </a>
@@ -661,7 +580,7 @@ export default function DashboardV2() {
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">Link</div>
-                <div className="value">
+                <div>
                   <a href="https://www.gmx.house/" target="_blank" rel="noopener noreferrer">
                     https://www.gmx.house
                   </a>
@@ -669,13 +588,13 @@ export default function DashboardV2() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div className="value">
+                <div>
                   Leaderboard for GMX traders
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
-                <div className="value">
+                <div>
                   <a href="https://t.me/Itburnz" target="_blank" rel="noopener noreferrer">
                     @Itburnz
                   </a>
@@ -689,7 +608,7 @@ export default function DashboardV2() {
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">Link</div>
-                <div className="value">
+                <div>
                   <a href="https://gist.github.com/gmxyield/3c2941634ce42cf24b57bdba6f99067f" target="_blank" rel="noopener noreferrer">
                     https://gist.github.com/gmxyield
                   </a>
@@ -697,13 +616,13 @@ export default function DashboardV2() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div className="value">
+                <div>
                   List of rewards from external projects
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
-                <div className="value">
+                <div>
                   <a href="https://gist.github.com/gmxyield" target="_blank" rel="noopener noreferrer">
                     @gmxyield
                   </a>
@@ -717,7 +636,7 @@ export default function DashboardV2() {
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">Link</div>
-                <div className="value">
+                <div>
                   <a href="https://app.tokenfeeds.info/gmx-chart" target="_blank" rel="noopener noreferrer">
                     https://app.tokenfeeds.info/gmx-chart
                   </a>
@@ -725,13 +644,13 @@ export default function DashboardV2() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div className="value">
+                <div>
                   GMX price and staking charts
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
-                <div className="value">
+                <div>
                   <a href="https://t.me/atomist" target="_blank" rel="noopener noreferrer">
                     @atomist
                   </a>
@@ -745,7 +664,7 @@ export default function DashboardV2() {
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">Link</div>
-                <div className="value">
+                <div>
                   <a href="https://gmx-fider.herokuapp.com" target="_blank" rel="noopener noreferrer">
                     https://gmx-fider.herokuapp.com
                   </a>
@@ -753,13 +672,13 @@ export default function DashboardV2() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div className="value">
+                <div>
                   GMX feedback and feature requests
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
-                <div className="value">
+                <div>
                   <a href="https://t.me/sevpants" target="_blank" rel="noopener noreferrer">
                     @sevpants
                   </a>
