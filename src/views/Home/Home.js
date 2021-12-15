@@ -9,8 +9,9 @@ import simpleSwapIcon from '../../img/ic_simpleswaps.svg'
 import costIcon from '../../img/ic_cost.svg'
 import liquidityIcon from '../../img/ic_liquidity.svg'
 
-import bscIcon from '../../img/ic_bsc.svg'
-import arbitrumIcon from '../../img/lg_arbitrum.svg'
+// import bscIcon from '../../img/ic_bsc.svg'
+import arbitrumIcon from '../../img/ic_arbitrum_96.svg'
+import avaIcon from '../../img/ic_avalanche_96.svg'
 
 import cashIcon from '../../img/ic_cash.png'
 import statsIcon from '../../img/ic_stats.svg'
@@ -151,6 +152,7 @@ export default function Home() {
   return (
     <div className="Home">
       <div className="Home-top">
+        <div className="Home-top-image"></div>
         <div className="Home-title-section-container default-container">
           <div className="Home-title-section">
             <div className="Home-title">
@@ -224,7 +226,7 @@ export default function Home() {
         <div className="Home-cta-container default-container">
           <div className="Home-cta-info">
             <div className="Home-cta-info__title">Available on your preferred network</div>
-            <div className="Home-cta-info__description">GMX is currently deployed to Arbitrum and Binance Smart Chain.</div>
+            <div className="Home-cta-info__description">GMX is currently live on Arbitrum and will be launching on Avalanche shortly.</div>
           </div>
           <div className="Home-cta-options">
             <div className="Home-cta-option Home-cta-option-arbitrum">
@@ -233,30 +235,28 @@ export default function Home() {
               </div>
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Arbitrum</div>
-                <div className="Home-cta-option-subtitle">GMX</div>
                 <div className="Home-cta-option-action">
                   <Link to="/trade" className="default-btn">Launch exchange</Link>
                 </div>
               </div>
             </div>
-            <div className="Home-cta-option Home-cta-option-bsc">
+            <div className="Home-cta-option Home-cta-option-ava">
               <div className="Home-cta-option-icon">
-                <img src={bscIcon} alt="bsc" />
+                <img src={avaIcon} alt="ava" />
               </div>
               <div className="Home-cta-option-info">
-                <div className="Home-cta-option-title">Binance Smart Chain</div>
-                <div className="Home-cta-option-subtitle">Gambit</div>
+                <div className="Home-cta-option-title">Avalanche</div>
                 <div className="Home-cta-option-action">
-                  <a href="https://gambit.financial/" target="_blank" rel="noopener noreferrer" className="default-btn">
-                    Launch exchange
-                  </a>
+                  <button className="default-btn">
+                    Coming soon
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      
+
       {/* <div className="Home-video-section">
         <div className="Home-video-container default-container">
           <div className="Home-video-block">
