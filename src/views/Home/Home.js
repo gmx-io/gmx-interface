@@ -18,22 +18,15 @@ import statsIcon from '../../img/ic_stats.svg'
 import tradingIcon from '../../img/ic_trading.svg'
 // import gmxBigIcon from '../../img/ic_gmx_big.svg'
 import useSWR from 'swr'
-import { useWeb3React } from '@web3-react/core'
 import {
-  fetcher,
   formatAmount,
-  getInfoTokens,
-  expandDecimals,
   bigNumberify,
   numberWithCommas,
   getServerUrl,
   USD_DECIMALS
 } from '../../Helpers'
 
-import { getTokens, getWhitelistedTokens } from '../../data/Tokens'
-import { getFeeHistory } from '../../data/Fees'
-import { getContract } from '../../Addresses'
-import ReaderV2 from '../../abis/ReaderV2.json'
+import { useUserStat } from "../../Api"
 
 function getTotalVolumeSum(volumes) {
   if (!volumes || volumes.length === 0) {
@@ -48,28 +41,7 @@ function getTotalVolumeSum(volumes) {
   return volume
 }
 
-function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
-  if (!fees || !infoTokens) {
-    return bigNumberify(0)
-  }
-
-  let currentFeesUsd = bigNumberify(0)
-  for (let i = 0; i < tokenAddresses.length; i++) {
-    const tokenAddress = tokenAddresses[i]
-    const tokenInfo = infoTokens[tokenAddress]
-    if (!tokenInfo || !tokenInfo.minPrice) {
-      continue
-    }
-
-    const feeUsd = fees[i].mul(tokenInfo.minPrice).div(expandDecimals(1, tokenInfo.decimals))
-    currentFeesUsd = currentFeesUsd.add(feeUsd)
-  }
-
-  return currentFeesUsd
-}
-
 export default function Home() {
-  const { active, library } = useWeb3React()
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
   // const faqContent = [{
   //   id: 1,
@@ -121,33 +93,8 @@ export default function Home() {
     openInterest = openInterest.add(positionStats.totalShortPositionSizes)
   }
 
-  // Total Fee
-  const readerAddress = getContract(chainId, "Reader")
-  const vaultAddress = getContract(chainId, "Vault")
-  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
-
-  const tokens = getTokens(chainId)
-  const whitelistedTokens = getWhitelistedTokens(chainId)
-  const whitelistedTokenAddresses = whitelistedTokens.map(token => token.address)
-
-  const { data: vaultTokenInfo } = useSWR([`Dashboard:vaultTokenInfo:${active}`, chainId, readerAddress, "getFullVaultTokenInfo"], {
-    fetcher: fetcher(library, ReaderV2, [vaultAddress, nativeTokenAddress, expandDecimals(1, 18), whitelistedTokenAddresses]),
-  })
-
-  const { data: fees } = useSWR([`Dashboard:fees:${active}`, chainId, readerAddress, "getFees", vaultAddress], {
-    fetcher: fetcher(library, ReaderV2, [whitelistedTokenAddresses]),
-  })
-
-  const infoTokens = getInfoTokens(tokens, undefined, whitelistedTokens, vaultTokenInfo, undefined)
-
-  const currentFeesUsd = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokens)
-
-  const feeHistory = getFeeHistory(chainId)
-  const shouldIncludeCurrrentFees = (parseInt(Date.now() / 1000) - feeHistory[0].to) > 60 * 60
-  let totalFeesDistributed = shouldIncludeCurrrentFees ? parseFloat(bigNumberify(formatAmount(currentFeesUsd, USD_DECIMALS - 2, 0, false)).toNumber()) / 100 : 0
-  for (let i = 0; i < feeHistory.length; i++) {
-    totalFeesDistributed += parseFloat(feeHistory[i].feeUsd)
-  }
+  // user stat
+  const userStats = useUserStat()
 
   return (
     <div className="Home">
@@ -183,8 +130,8 @@ export default function Home() {
           <div className="Home-latest-info-block">
             <img src={cashIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">Total Fees Collected</div>
-              <div className="Home-latest-info__value">${numberWithCommas(totalFeesDistributed.toFixed(0))}</div>
+              <div className="Home-latest-info__title">Total Users</div>
+              <div className="Home-latest-info__value">{numberWithCommas(userStats && userStats.uniqueCount.toFixed(0))}</div>
             </div>
           </div>
         </div>
