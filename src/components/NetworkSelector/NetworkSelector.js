@@ -1,45 +1,89 @@
-import React, { useState } from 'react'
+import React from 'react'
 import cx from "classnames";
-
-import { BiChevronDown } from 'react-icons/bi'
-
-import Modal from '../Modal/Modal'
 
 import './NetworkSelector.css';
 
+import selectorDropdowns from '../../img/ic_selector_dropdowns.svg';
+
+import Select, { components } from 'react-select';
+import { find } from 'lodash';
+
 export default function NetworkSelector(props) {
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const { options, disabled, label, modalLabel, modalText, className, showCaret = true } = props
+  const { options, disabled, label, className } = props
 
   const onSelect = (token) => {
-    setIsModalVisible(false)
     props.onSelect(token)
   }
 
-  function renderOption(option) {
+  const DropdownIndicator = (props) => {
     return (
-      <div className="Selector-option" onClick={() => onSelect(option)} key={option.value}>
-        {option.label}
-      </div>
-    )
+      <components.DropdownIndicator {...props}>
+        <img src={selectorDropdowns} alt="selectorDropdowns" />
+      </components.DropdownIndicator>
+    );
+  };
+
+  const customStyles = {
+    option: (provided, state) => ({
+      ...provided,
+      margin: 0,
+      paddingLeft: 8,
+      backgroundColor: state.isFocused  && '#E8414229'
+    }),
+    control: () => ({
+      // none of react-select's styles are passed to <Control />
+      width: 144,
+      height: 36,
+      backgroundColor: '#28A0F052',
+      display: 'flex',
+      border: '1px solid #FFFFFF17',
+      borderRadius: 4
+    }),
+    indicatorSeparator: () => ({
+      display: 'none'
+    }),
+    dropdownIndicator: () => ({
+      padding: 0,
+      display: 'flex'
+    }),
+    menu: (provided) => ({
+      ...provided,
+      background: '#16182E',
+      boxShadow: '0px 5px 12px #00000052',
+      border: '1px solid #32344C',
+      borderRadius: 4
+    }),
+    singleValue: (provided, state) => ({
+      ...provided,
+      color: 'white',
+      margin: 0
+    }),
+    valueContainer: (provided, state) => ({
+      ...provided,
+      paddingRight: 0
+    }),
   }
+
+  var value = find(options, (o) => { return o.label === label })
 
   return (
     <div className={cx("Selector", className, { disabled })}>
-      <Modal isVisible={isModalVisible} setIsVisible={setIsModalVisible} label={modalLabel}>
-        <div className="Selector-options">
-          {options.map(renderOption)}
-        </div>
-        {modalText &&
-          <div className="Selector-text">
-            {modalText}
-          </div>
-        }
-      </Modal>
-      <div className="Selector-box" onClick={() => setIsModalVisible(true)}>
-        {label}
-        {showCaret && <BiChevronDown className="Selector-caret" />}
-      </div>
+      <Select
+        value={value}
+        options={options}
+        components={{ DropdownIndicator }}
+        onChange={onSelect}
+        isSearchable={false}
+        className="network-select"
+        styles={customStyles}
+        getOptionLabel={e => {
+          var optionIcon = require('../../img/' + e.icon);
+          return (<div style={{ display: 'flex', alignItems: 'center' }}>
+            <img src={optionIcon.default} alt={e.icon} className="network-icon" />
+            <span style={{ marginLeft: 5 }}>{e.label}</span>
+          </div>)
+        }}
+      />
     </div>
   )
 }
