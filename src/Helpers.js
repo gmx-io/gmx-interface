@@ -33,11 +33,16 @@ const CHAIN_NAMES_MAP = {
   [MAINNET]: "BSC",
   [TESTNET]: "BSC Testnet",
   [ARBITRUM_TESTNET]: "Arbitrum Testnet",
-  [ARBITRUM]: "Arbitrum"
+  [ARBITRUM]: "Arbitrum",
+  [AVALANCHE]: "Avalanche"
 }
 
 const ARBITRUM_RPC_PROVIDERS = [
   "https://arb1.arbitrum.io/rpc"
+]
+
+const AVALANCHE_RPC_PROVIDERS = [
+  "https://api.avax.network/ext/bc/C/rpc"
 ]
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = 'walletconnect'
 
@@ -107,7 +112,8 @@ export const TRIGGER_PREFIX_BELOW = '<'
 export const PROFIT_THRESHOLD_BASIS_POINTS = 150
 
 const supportedChainIds = [
-  ARBITRUM
+  ARBITRUM,
+  AVALANCHE
 ];
 const injectedConnector = new InjectedConnector({
   supportedChainIds
@@ -1392,6 +1398,9 @@ export function getExplorerUrl(chainId) {
   if (chainId === ARBITRUM) {
     return "https://arbiscan.io/"
   }
+  if (chainId === AVALANCHE) {
+    return "https://snowtrace.io/"
+  }
   return "https://etherscan.io/"
 }
 
@@ -1540,6 +1549,17 @@ const NETWORK_METADATA = {
     rpcUrls: ARBITRUM_RPC_PROVIDERS,
     blockExplorerUrls: [getExplorerUrl(ARBITRUM)],
   },
+  [AVALANCHE]: {
+    chainId: '0x' + AVALANCHE.toString(16),
+    chainName: 'Avalanche Network',
+    nativeCurrency: {
+      name: 'AVAX',
+      symbol: 'AVAX',
+      decimals: 18
+    },
+    rpcUrls: AVALANCHE_RPC_PROVIDERS,
+    blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
+  },
 }
 
 export const addBscNetwork = async () => {
@@ -1557,7 +1577,7 @@ export const switchNetwork = async (chainId) => {
       method: "wallet_switchEthereumChain",
       params: [{ chainId: chainIdHex }]
     })
-    helperToast.success("Wallet connected!")
+    helperToast.success("Connected to " + getChainName(chainId))
   } catch (ex) {
     // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
     // This error code indicates that the chain has not been added to MetaMask.

@@ -8,6 +8,11 @@ import selectorDropdowns from '../../img/ic_selector_dropdowns.svg';
 import Select, { components } from 'react-select';
 import { find } from 'lodash';
 
+import {
+  ARBITRUM,
+  AVALANCHE
+} from '../../Helpers'
+
 export default function NetworkSelector(props) {
   const { options, disabled, label, className } = props
 
@@ -24,12 +29,15 @@ export default function NetworkSelector(props) {
   };
 
   const customStyles = {
-    option: (provided, state) => ({
-      ...provided,
-      margin: 0,
-      paddingLeft: 8,
-      backgroundColor: state.isFocused  && '#E8414229'
-    }),
+    option: (provided, state) => {
+      const backgroundColor = (state.value === ARBITRUM && state.isFocused) ? '#5f6ffd29' : ((state.value === AVALANCHE && state.isFocused) ? '#E8414229' : '')
+      return {
+        ...provided,
+        margin: 0,
+        paddingLeft: 8,
+        backgroundColor
+      }
+    },
     control: () => ({
       // none of react-select's styles are passed to <Control />
       width: 144,
@@ -37,7 +45,9 @@ export default function NetworkSelector(props) {
       backgroundColor: '#28A0F052',
       display: 'flex',
       border: '1px solid #FFFFFF17',
-      borderRadius: 4
+      borderRadius: 4,
+      cursor: 'pointer',
+      fontSize: '14px'
     }),
     indicatorSeparator: () => ({
       display: 'none'
@@ -51,12 +61,14 @@ export default function NetworkSelector(props) {
       background: '#16182E',
       boxShadow: '0px 5px 12px #00000052',
       border: '1px solid #32344C',
-      borderRadius: 4
+      borderRadius: 4,
+      fontSize: '14px'
     }),
     singleValue: (provided, state) => ({
       ...provided,
       color: 'white',
-      margin: 0
+      margin: 0,
+      fontSize: '14px'
     }),
     valueContainer: (provided, state) => ({
       ...provided,
