@@ -19,6 +19,7 @@ import { getWhitelistedTokens, isValidToken } from './data/Tokens'
 const { AddressZero } = ethers.constants
 
 export const MAINNET = 56;
+export const AVALANCHE = 43114;
 export const TESTNET = 97;
 export const ARBITRUM_TESTNET = 421611
 export const ARBITRUM = 42161
