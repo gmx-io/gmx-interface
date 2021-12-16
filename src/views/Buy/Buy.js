@@ -51,10 +51,10 @@ export default function BuyGMXGLP(props) {
 
           <TabPanel>
             <div className="BuyGMXGLP-title-section">
-              <div className="BuyGMXGLP-title">Buy GMX</div>
               <div className="BuyGMXGLP-description">
-                To purchase GMX you must first transfer ETH to Arbitrum.<br/>
-                Follow this <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">tutorial</a> and check the options below for better transfer rates.
+                To purchase <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">GMX</a> you must first transfer ETH to Arbitrum.<br/>
+                Follow this <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">tutorial</a> and check the options below for better rates. <br/>
+                Transfers using the below options will take a few minutes.
               </div>
               <div className="alternative-bridges">
                 <a href="https://synapseprotocol.com/?inputCurrency=ETH&outputCurrency=ETH&outputChain=42161" target="_blank" rel="noopener noreferrer" className="Synapse">
@@ -67,7 +67,6 @@ export default function BuyGMXGLP(props) {
                   <img src={Hop} alt="Hop" />
                 </a>
               </div>
-              <p className="BuyGMXGLP-description">Learn more at <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">https://gmxio.gitbook.io/gmx/tokenomics</a></p>
               <div className="BuyGMXGLP-description better-rates-description">
                 After transferring ETH, set your wallet network to <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">Arbitrum</a> then click on the button below:
               </div>

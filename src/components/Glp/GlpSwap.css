@@ -1,6 +1,6 @@
 .GlpSwap-content {
   display: grid;
-  grid-template-columns: 1fr 28rem;
+  grid-template-columns: 1fr 1fr;
   grid-gap: 1rem;
   padding: 1rem;
   background: #16182E;
@@ -28,6 +28,11 @@
 
 .GlpSwap-stats-card .App-card-row:nth-child(odd) {
   background: #1E1F37;
+}
+
+.GlpSwap-stats-card .App-card-content {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .GlpSwap-token-list {
