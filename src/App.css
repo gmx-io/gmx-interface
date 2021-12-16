@@ -410,11 +410,12 @@ button.App-connect-wallet:hover {
   padding: 1rem;
   margin-left: -1rem;
   display: flex;
+  margin-right: 0.7742rem;
 }
 
 .App-header-link-main img {
   display: inline-block;
-  height: 1.3rem;
+  height: 1.4rem;
   vertical-align: middle;
 }
 
