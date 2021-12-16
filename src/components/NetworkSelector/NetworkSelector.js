@@ -16,8 +16,8 @@ import {
 export default function NetworkSelector(props) {
   const { options, disabled, label, className } = props
 
-  const onSelect = (token) => {
-    props.onSelect(token)
+  const onSelect = async (token) => {
+    await props.onSelect(token)
   }
 
   const DropdownIndicator = (props) => {
@@ -30,25 +30,29 @@ export default function NetworkSelector(props) {
 
   const customStyles = {
     option: (provided, state) => {
-      const backgroundColor = (state.value === ARBITRUM && state.isFocused) ? '#5f6ffd29' : ((state.value === AVALANCHE && state.isFocused) ? '#E8414229' : '')
+      const backgroundColor = (state.value === ARBITRUM && state.isFocused) ? '#1d446b' : ((state.value === AVALANCHE && state.isFocused) ? '#371e32' : '')
       return {
         ...provided,
         margin: 0,
         paddingLeft: 8,
-        backgroundColor
+        backgroundColor,
+        cursor: 'pointer',
+        height: 36,
+        paddingTop: 6
       }
     },
-    control: () => ({
-      // none of react-select's styles are passed to <Control />
-      width: 144,
-      height: 36,
-      backgroundColor: '#28A0F052',
-      display: 'flex',
-      border: '1px solid #FFFFFF17',
-      borderRadius: 4,
-      cursor: 'pointer',
-      fontSize: '14px'
-    }),
+    control: (provided, state) => {
+      return {
+        width: 144,
+        height: 36,
+        backgroundColor: state.selectProps.value.value === ARBITRUM ? '#1d446b' : '#371e32',
+        display: 'flex',
+        border: '1px solid #FFFFFF17',
+        borderRadius: 4,
+        cursor: 'pointer',
+        fontSize: '14px'
+      }
+    },
     indicatorSeparator: () => ({
       display: 'none'
     }),
@@ -73,7 +77,7 @@ export default function NetworkSelector(props) {
     valueContainer: (provided, state) => ({
       ...provided,
       paddingRight: 0
-    }),
+    })
   }
 
   var value = find(options, (o) => { return o.label === label })
