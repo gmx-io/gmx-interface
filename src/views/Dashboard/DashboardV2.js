@@ -250,8 +250,9 @@ export default function DashboardV2() {
     glpMarketCap = glpPrice.mul(glpSupply).div(expandDecimals(1, GLP_DECIMALS))
   }
 
-  const ethFloorPriceFund = expandDecimals(600 + 148 + 371, 18)
+  const ethFloorPriceFund = expandDecimals(400 + 148 + 384, 18)
   const glpFloorPriceFund = expandDecimals(660001, 18)
+  const usdcFloorPriceFund = expandDecimals(784598, 30)
 
   let totalFloorPriceFundUsd
 
@@ -259,7 +260,7 @@ export default function DashboardV2() {
     const ethFloorPriceFundUsd = ethFloorPriceFund.mul(eth.minPrice).div(expandDecimals(1, eth.decimals))
     const glpFloorPriceFundUsd = glpFloorPriceFund.mul(glpPrice).div(expandDecimals(1, 18))
 
-    totalFloorPriceFundUsd = ethFloorPriceFundUsd.add(glpFloorPriceFundUsd)
+    totalFloorPriceFundUsd = ethFloorPriceFundUsd.add(glpFloorPriceFundUsd).add(usdcFloorPriceFund)
   }
 
   let usdgSupply
@@ -547,28 +548,28 @@ export default function DashboardV2() {
         </div>
         <div className="DashboardV2-projects">
           <div className="App-card">
-            <div className="App-card-title">GMX Positions Bot</div>
+            <div className="App-card-title">GMX Blueberry Club</div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">Link</div>
                 <div>
-                  <a href="https://t.me/GMXPositions" target="_blank" rel="noopener noreferrer">
-                    https://t.me/GMXPositions
+                  <a href="https://www.blueberry.club/" target="_blank" rel="noopener noreferrer">
+                    https://www.blueberry.club
                   </a>
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
                 <div>
-                  Telegram bot for GMX position updates
+                  GMX Blueberry NFTs
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
                 <div>
-                  <a href="https://t.me/zhongfu" target="_blank" rel="noopener noreferrer">
-                    @zhongfu
+                  <a href="https://t.me/xm92boi" target="_blank" rel="noopener noreferrer">
+                    @xm92boi
                   </a>
                 </div>
               </div>
@@ -597,6 +598,34 @@ export default function DashboardV2() {
                 <div>
                   <a href="https://t.me/Itburnz" target="_blank" rel="noopener noreferrer">
                     @Itburnz
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">GMX Positions Bot</div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://t.me/GMXPositions" target="_blank" rel="noopener noreferrer">
+                    https://t.me/GMXPositions
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  Telegram bot for GMX position updates
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Creator</div>
+                <div>
+                  <a href="https://t.me/zhongfu" target="_blank" rel="noopener noreferrer">
+                    @zhongfu
                   </a>
                 </div>
               </div>

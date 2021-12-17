@@ -8,12 +8,12 @@ import './Home.css';
 import simpleSwapIcon from '../../img/ic_simpleswaps.svg'
 import costIcon from '../../img/ic_cost.svg'
 import liquidityIcon from '../../img/ic_liquidity.svg'
+import totaluserIcon from '../../img/ic_totaluser.svg'
 
 // import bscIcon from '../../img/ic_bsc.svg'
 import arbitrumIcon from '../../img/ic_arbitrum_96.svg'
 import avaIcon from '../../img/ic_avalanche_96.svg'
 
-import cashIcon from '../../img/ic_cash.png'
 import statsIcon from '../../img/ic_stats.svg'
 import tradingIcon from '../../img/ic_trading.svg'
 // import gmxBigIcon from '../../img/ic_gmx_big.svg'
@@ -128,7 +128,7 @@ export default function Home() {
             </div>
           </div>
           <div className="Home-latest-info-block">
-            <img src={cashIcon} alt="trading" className="Home-latest-info__icon" />
+            <img src={totaluserIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
               <div className="Home-latest-info__title">Total Users</div>
               <div className="Home-latest-info__value">{numberWithCommas(userStats && userStats.uniqueCount.toFixed(0))}</div>
