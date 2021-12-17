@@ -1,5 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import cx from "classnames";
+
+
+import Modal from '../Modal/Modal'
 
 import './NetworkSelector.css';
 
@@ -14,9 +17,21 @@ import {
 } from '../../Helpers'
 
 export default function NetworkSelector(props) {
-  const { options, disabled, label, className } = props
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const { small, options, disabled, label, modalLabel, className, showCaret = true } = props
+
+  function renderOption(option) {
+    var optionIcon = require('../../img/' + option.icon);
+    return (
+      <div className={cx("Selector-option", option.label)} onClick={() => onSelect(option)} key={option.value}>
+        <img src={optionIcon.default} alt={option.icon} className="Selector-option_icon" />
+        <span className="Selector-option_label">{option.label}</span>
+      </div>
+    )
+  }
 
   const onSelect = async (token) => {
+    setIsModalVisible(false)
     await props.onSelect(token)
   }
 
@@ -75,12 +90,7 @@ export default function NetworkSelector(props) {
       ...provided,
       color: 'white',
       margin: 0,
-      fontSize: '14px',
-      "@media only screen and (max-width: 1200px)": {
-        "& > span": {
-          display: 'none'
-        },
-      },
+      fontSize: '14px'
     }),
     valueContainer: (provided, state) => ({
       ...provided,
@@ -90,24 +100,44 @@ export default function NetworkSelector(props) {
 
   var value = find(options, (o) => { return o.label === label })
 
+  var valueIcon = require('../../img/' + value.icon);
+
   return (
     <div className={cx("Selector", className, { disabled })}>
-      <Select
-        value={value}
-        options={options}
-        components={{ DropdownIndicator }}
-        onChange={onSelect}
-        isSearchable={false}
-        className="network-select"
-        styles={customStyles}
-        getOptionLabel={e => {
-          var optionIcon = require('../../img/' + e.icon);
-          return (<div style={{ display: 'flex', alignItems: 'center' }}>
-            <img src={optionIcon.default} alt={e.icon} className="network-icon" />
-            <span style={{ marginLeft: 5 }} className="network-label">{e.label}</span>
+      {
+        isModalVisible &&
+        <div>
+          <Modal isVisible={isModalVisible} setIsVisible={setIsModalVisible} label={modalLabel}>
+            <div className="Selector-options">
+              {options.map(renderOption)}
+            </div>
+          </Modal>
+        </div>
+      }
+      {
+        small ?
+          (<div className={cx("Selector-box", value.label)} onClick={() => setIsModalVisible(true)}>
+            <img src={valueIcon.default} alt="valueIcon" />
+            {showCaret && <img src={selectorDropdowns} alt="selectorDropdowns" />}
           </div>)
-        }}
-      />
+          :
+          (<Select
+            value={value}
+            options={options}
+            components={{ DropdownIndicator }}
+            onChange={onSelect}
+            isSearchable={false}
+            className="network-select"
+            styles={customStyles}
+            getOptionLabel={e => {
+              var optionIcon = require('../../img/' + e.icon);
+              return (<div style={{ display: 'flex', alignItems: 'center' }}>
+                <img src={optionIcon.default} alt={e.icon} className="network-icon" />
+                <span style={{ marginLeft: 5 }} className="network-label">{e.label}</span>
+              </div>)
+            }}
+          />)
+      }
     </div>
   )
 }

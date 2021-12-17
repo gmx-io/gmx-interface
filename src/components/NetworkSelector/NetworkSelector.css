@@ -6,6 +6,105 @@
   display: none;
 }
 
+.Selector .Modal-backdrop {
+  height: 100vh;
+  backdrop-filter: blur(4px);
+  background: #101124aa;
+}
+
+.Selector-box {
+  width: 72px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 7px 8px;
+}
+
+.Selector-box.Arbitrum {
+  background-color: #1d446b;
+  border: 1px solid #FFFFFF17;
+}
+
+.Selector-box.Avalanche {
+  background-color: #371e32;
+  border: 1px solid #FFFFFF17;
+}
+
+.Selector-caret {
+  vertical-align: middle;
+  display: inline-block;
+  font-size: 1.5rem;
+  margin-top: -0.2rem;
+}
+
+.Selector-option {
+  cursor: pointer;
+  background: #FFFFFF0A 0% 0% no-repeat padding-box;
+  border: 1px solid #FFFFFF08;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.Selector-option + .Selector-option {
+  margin-top: 0.5rem;
+}
+
+.Selector-option .Selector-option_icon {
+  width: 32px;
+  margin-right: 1rem;
+}
+
+.Selector-option .Selector-option_label {
+  font-size: 16px;
+  line-height: 20px;
+  letter-spacing: 0.29px;
+  color: #FFFFFF;
+}
+
+.Selector-option.Arbitrum:hover {
+  background-color: #1d446b;
+  border: 1px solid #4275a8;
+}
+
+.Selector-option.Avalanche:hover {
+  background-color: #E841424D;
+  border: 1px solid #E84142;
+}
+
+.Selector .Modal {
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.Selector .Modal-title {
+  color: white;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+  opacity: 1;
+}
+
+.Selector .Modal-content {
+  width: 100%;
+  max-width: 19.1rem;
+  margin: auto;
+  background: #16182E 0% 0% no-repeat padding-box;
+  border: 1px solid #262638;
+  border-radius: 4px;
+}
+
 @media (max-width: 900px) {
   .Selector .network-label {
     display: none;

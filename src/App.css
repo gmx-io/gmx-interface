@@ -965,12 +965,6 @@ button.App-button {
     padding-bottom: 0;
   }
 
-  .App-header-user-netowork .Selector-box {
-    padding-left: 0.1rem;
-    padding-right: 0.1rem;
-    margin-right: 0;
-  }
-
   .App-header-container-right {
     display: flex;
     align-items: center;

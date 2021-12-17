@@ -196,8 +196,9 @@ function AppHeaderUser({
           onSelect={onNetworkSelect}
           className="App-header-user-netowork"
           showCaret={true}
-          modalLabel="Switch Network"
+          modalLabel="Select Network"
           modalText="Or you can switch network manually in&nbsp;Metamask"
+          small={small}
         />}
         <div className="App-header-user-link">
           <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
@@ -219,8 +220,9 @@ function AppHeaderUser({
         onSelect={onNetworkSelect}
         className="App-header-user-netowork"
         showCaret={true}
-        modalLabel="Switch Network"
+        modalLabel="Select Network"
         modalText="Or you can switch network manually in&nbsp;Metamask"
+        small={small}
       />}
       <div className="App-header-user-link">
         <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
