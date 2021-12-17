@@ -50,7 +50,10 @@ export default function NetworkSelector(props) {
         border: '1px solid #FFFFFF17',
         borderRadius: 4,
         cursor: 'pointer',
-        fontSize: '14px'
+        fontSize: '14px',
+        "@media (max-width: 900px)": {
+          width: 72,
+        },
       }
     },
     indicatorSeparator: () => ({
@@ -72,7 +75,12 @@ export default function NetworkSelector(props) {
       ...provided,
       color: 'white',
       margin: 0,
-      fontSize: '14px'
+      fontSize: '14px',
+      "@media only screen and (max-width: 1200px)": {
+        "& > span": {
+          display: 'none'
+        },
+      },
     }),
     valueContainer: (provided, state) => ({
       ...provided,
@@ -96,7 +104,7 @@ export default function NetworkSelector(props) {
           var optionIcon = require('../../img/' + e.icon);
           return (<div style={{ display: 'flex', alignItems: 'center' }}>
             <img src={optionIcon.default} alt={e.icon} className="network-icon" />
-            <span style={{ marginLeft: 5 }}>{e.label}</span>
+            <span style={{ marginLeft: 5 }} className="network-label">{e.label}</span>
           </div>)
         }}
       />

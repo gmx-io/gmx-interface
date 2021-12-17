@@ -203,7 +203,7 @@ function AppHeaderUser({
           <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
         </div>
         <button target="_blank" rel="noopener noreferrer" className="default-btn header-connect-btn" onClick={() => setWalletModalVisible(true)}>
-          Connect Wallet
+          { small ? 'Connect' : 'Connect Wallet' }
         </button>
       </div>
     )
@@ -395,8 +395,8 @@ function FullApp() {
             <div className="App-header large">
               <div className="App-header-container-left">
                 <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
-                  <img src={logoImg} className="big" alt="GMX Logo" />
-                  <img src={logoSmallImg} className="small" alt="GMX Logo" />
+                  <img src={logoImg} className="big" alt="MetaMask" />
+                  <img src={logoSmallImg} className="small" alt="MetaMask" />
                 </NavLink>
                 <AppHeaderLinks />
               </div>
