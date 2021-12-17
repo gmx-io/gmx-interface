@@ -49,6 +49,7 @@
   padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .Selector-option + .Selector-option {
@@ -75,6 +76,22 @@
 .Selector-option.Avalanche:hover {
   background-color: #E841424D;
   border: 1px solid #E84142;
+}
+
+.Selector-option .selected-icon {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  right: 1rem;
+}
+
+.Selector-option.Arbitrum .selected-icon {
+  background-color: #4275a8;
+}
+
+.Selector-option.Avalanche .selected-icon {
+  background-color: #E84142;
 }
 
 .Selector .Modal {

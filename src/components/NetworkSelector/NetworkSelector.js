@@ -27,6 +27,9 @@ export default function NetworkSelector(props) {
       <div className={cx("Selector-option", option.label)} onClick={() => onSelect(option)} key={option.value}>
         <img src={optionIcon.default} alt={option.icon} className="Selector-option_icon" />
         <span className="Selector-option_label">{option.label}</span>
+        {
+          selectedLabel === option.label && <div className="selected-icon"></div>
+        }
       </div>
     )
   }
