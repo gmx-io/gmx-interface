@@ -93,7 +93,7 @@ const Zoom = cssTransition({
 })
 
 const onNetworkSelect = option => {
-  switchNetwork(option.value)
+  return switchNetwork(option.value)
 }
 
 function inPreviewMode() {
@@ -197,7 +197,6 @@ function AppHeaderUser({
           className="App-header-user-netowork"
           showCaret={true}
           modalLabel="Select Network"
-          modalText="Or you can switch network manually in&nbsp;Metamask"
           small={small}
         />}
         <div className="App-header-user-link">
@@ -221,7 +220,6 @@ function AppHeaderUser({
         className="App-header-user-netowork"
         showCaret={true}
         modalLabel="Select Network"
-        modalText="Or you can switch network manually in&nbsp;Metamask"
         small={small}
       />}
       <div className="App-header-user-link">
