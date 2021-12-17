@@ -1578,6 +1578,7 @@ export const switchNetwork = async (chainId) => {
       params: [{ chainId: chainIdHex }]
     })
     helperToast.success("Connected to " + getChainName(chainId))
+    return getChainName(chainId)
   } catch (ex) {
     // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
     // This error code indicates that the chain has not been added to MetaMask.
@@ -1585,7 +1586,7 @@ export const switchNetwork = async (chainId) => {
       return await addNetwork(NETWORK_METADATA[chainId])
     }
 
-    console.error(ex)
+    console.error('error', ex)
   }
 }
 

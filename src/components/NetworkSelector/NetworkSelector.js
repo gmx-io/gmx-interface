@@ -13,12 +13,13 @@ import { find } from 'lodash';
 
 import {
   ARBITRUM,
-  AVALANCHE
+  AVALANCHE,
 } from '../../Helpers'
 
 export default function NetworkSelector(props) {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const { small, options, disabled, label, modalLabel, className, showCaret = true } = props
+  const [selectedLabel, setSelectedLabel] = useState(label)
 
   function renderOption(option) {
     var optionIcon = require('../../img/' + option.icon);
@@ -32,7 +33,8 @@ export default function NetworkSelector(props) {
 
   const onSelect = async (token) => {
     setIsModalVisible(false)
-    await props.onSelect(token)
+    const network = await props.onSelect(token)
+    setSelectedLabel(network)
   }
 
   const DropdownIndicator = (props) => {
@@ -98,7 +100,7 @@ export default function NetworkSelector(props) {
     })
   }
 
-  var value = find(options, (o) => { return o.label === label })
+  var value = find(options, (o) => { return o.label === selectedLabel })
 
   var valueIcon = require('../../img/' + value.icon);
 
