@@ -16,7 +16,6 @@
 .App-content header {
   position: relative;
   z-index: 2;
-  /* z-index: 20; */
 }
 
 .App-header.large {
@@ -107,7 +106,7 @@
 
 .App-header-menu-icon-block {
   margin-right: 12px;
-  margin-left: 16px;
+  margin-left: 0px;
   display: flex;
   align-items: center;
 }
@@ -411,12 +410,17 @@ button.App-connect-wallet:hover {
   padding: 1rem;
   margin-left: -1rem;
   display: flex;
+  margin-right: 0.7742rem;
 }
 
 .App-header-link-main img {
   display: inline-block;
-  height: 1.3rem;
+  height: 1.4rem;
   vertical-align: middle;
+}
+
+.App-header-link-main img.small {
+  display: none;
 }
 
 .App-header a {
@@ -437,7 +441,7 @@ button.App-connect-wallet:hover {
 }
 
 .App-header-container-left a {
-  padding: 16px 17px;
+  padding: 18px 17px;
   display: block;
   color: #A0A3C4;
   font-size: 15px;
@@ -1031,7 +1035,21 @@ button.App-button {
   }
 }
 
+@media (max-width: 500px) {
+  .header-connect-btn {
+    margin-right: 4px;
+  }
+}
+
 @media (max-width: 410px) {
+  .App-header-link-main img.big {
+    display: none;
+  }
+
+  .App-header-link-main img.small {
+    display: inline-block;
+  }
+
   .App-header-user-link {
     margin-right: 6px;
   }
@@ -1040,9 +1058,7 @@ button.App-button {
     margin-left: 0;
     margin-right: 4px;
   }
-}
-
-@media (max-width: 410px) {
+  
   .App-header-menu-icon {
     margin: 4px 5px;
   }
@@ -1058,6 +1074,21 @@ button.App-button {
 
   .Home-faqs-content {
     padding-left: 1rem;
+  }
+
+  .header-connect-btn {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .header-connect-btn:focus {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .App-header .App-header-link-main {
+    padding: 0.1rem!important;
+    margin-left: 0rem!important;
   }
 }
 
