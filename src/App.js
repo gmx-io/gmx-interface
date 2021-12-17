@@ -74,6 +74,8 @@ import './Input.css';
 import './AppOrder.css';
 
 import logoImg from './img/logo_GMX.svg'
+import logoSmallImg from './img/logo_GMX_small.svg'
+
 // import logoImg from './img/gmx-logo-final-white-small.png'
 import metamaskImg from './img/metamask.png'
 import walletConnectImg from './img/walletconnect-circle-blue.svg'
@@ -406,7 +408,8 @@ function FullApp() {
             <div className="App-header large">
               <div className="App-header-container-left">
                 <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
-                  <img src={logoImg} alt="GMX Logo" />
+                  <img src={logoImg} className="big" alt="MetaMask" />
+                  <img src={logoSmallImg} className="small" alt="MetaMask" />
                 </NavLink>
                 <AppHeaderLinks />
               </div>
@@ -427,7 +430,8 @@ function FullApp() {
                     {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
                   </div>
                   <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
-                    <img src={logoImg} alt="GMX Logo" />
+                    <img src={logoImg} className="big" alt="MetaMask" />
+                    <img src={logoSmallImg} className="small" alt="MetaMask" />
                   </div>
                 </div>
                 <div className="App-header-container-right">

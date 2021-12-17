@@ -9,7 +9,7 @@ import Synapse from '../../img/Synapse.svg'
 import Anyswap from '../../img/Anyswap.png'
 import Hop from '../../img/Hop.png'
 import logo from '../../img/gmx_logo.svg'
-import glpIcon from '../../img/glp_icon.svg'
+import glpIcon from '../../img/ic_glp_40.svg'
 
 export default function BuyGMXGLP() {
   useEffect(() => {

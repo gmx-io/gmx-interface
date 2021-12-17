@@ -82,6 +82,23 @@ export function useAllOrdersStats() {
   return res ? res.data.orderStat : null
 }
 
+export function useUserStat() {
+  const query = gql(`{
+    userStat(id: "total") {
+      id
+      uniqueCount
+    }
+  }`)
+
+  const [res, setRes] = useState()
+
+  useEffect(() => {
+    gmxGraphClient.query({ query }).then(setRes).catch(console.warn)
+  }, [setRes, query])
+
+  return res ? res.data.userStat : null
+}
+
 export function useLiquidationsData(chainId, account) {
   const [data, setData] = useState(null)
   useEffect(() => {
