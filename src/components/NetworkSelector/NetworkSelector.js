@@ -65,7 +65,6 @@ export default function NetworkSelector(props) {
       return {
         width: 144,
         height: 36,
-        backgroundColor: state.selectProps.value.value === ARBITRUM ? '#1d446b' : '#371e32',
         display: 'flex',
         border: '1px solid #FFFFFF17',
         borderRadius: 4,
