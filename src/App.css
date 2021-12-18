@@ -652,10 +652,11 @@ button.App-button-option:disabled {
   align-items: center;
 }
 
-a.App-header-user-account {
+a.App-cta.App-header-user-account {
   margin-top: 0;
   margin-right: 0.5rem;
   font-size: 0.9rem;
+  padding-left: 0;
 }
 
 .App-header-user-settings {
@@ -1058,7 +1059,7 @@ button.App-button {
     margin-left: 0;
     margin-right: 4px;
   }
-  
+
   .App-header-menu-icon {
     margin: 4px 5px;
   }
