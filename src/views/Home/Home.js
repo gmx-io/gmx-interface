@@ -123,7 +123,7 @@ export default function Home() {
           <div className="Home-latest-info-block">
             <img src={statsIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">Current Open Interest</div>
+              <div className="Home-latest-info__title">Open Interest</div>
               <div className="Home-latest-info__value">${formatAmount(openInterest, USD_DECIMALS, 0, true)}</div>
             </div>
           </div>
