@@ -395,8 +395,8 @@ function FullApp() {
             <div className="App-header large">
               <div className="App-header-container-left">
                 <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
-                  <img src={logoImg} className="big" alt="MetaMask" />
-                  <img src={logoSmallImg} className="small" alt="MetaMask" />
+                  <img src={logoImg} className="big" alt="GMX Logo" />
+                  <img src={logoSmallImg} className="small" alt="GMX Logo" />
                 </NavLink>
                 <AppHeaderLinks />
               </div>
@@ -417,8 +417,8 @@ function FullApp() {
                     {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
                   </div>
                   <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
-                    <img src={logoImg} className="big" alt="MetaMask" />
-                    <img src={logoSmallImg} className="small" alt="MetaMask" />
+                    <img src={logoImg} className="big" alt="GMX Logo" />
+                    <img src={logoSmallImg} className="small" alt="GMX Logo" />
                   </div>
                 </div>
                 <div className="App-header-container-right">
