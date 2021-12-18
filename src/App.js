@@ -169,7 +169,8 @@ function AppHeaderUser({
   small,
   setActivatingConnector,
   walletModalVisible,
-  setWalletModalVisible
+  setWalletModalVisible,
+  showNetworkSelectorModal
 }) {
   const { chainId } = useChainId()
   const { active, account } = useWeb3React()
@@ -198,12 +199,16 @@ function AppHeaderUser({
           showCaret={true}
           modalLabel="Select Network"
           small={small}
+          showModal={showNetworkSelectorModal}
         />}
         <div className="App-header-user-link">
           <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
         </div>
-        <button target="_blank" rel="noopener noreferrer" className="default-btn header-connect-btn" onClick={() => setWalletModalVisible(true)}>
-          { small ? 'Connect' : 'Connect Wallet' }
+        <button target="_blank" rel="noopener noreferrer" className="default-btn header-connect-btn long-label" onClick={() => setWalletModalVisible(true)}>
+          Connect Wallet
+        </button>
+        <button target="_blank" rel="noopener noreferrer" className="default-btn header-connect-btn short-label" onClick={() => setWalletModalVisible(true)}>
+          Connect
         </button>
       </div>
     )
@@ -221,6 +226,7 @@ function AppHeaderUser({
         showCaret={true}
         modalLabel="Select Network"
         small={small}
+        showModal={showNetworkSelectorModal}
       />}
       <div className="App-header-user-link">
         <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
@@ -268,6 +274,7 @@ function FullApp() {
   const connectWallet = () => setWalletModalVisible(true)
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(undefined)
+  const [isNetworkSelectorModalVisible, setIsNetworkSelectorModalVisible] = useState(false)
   const fadeVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 }
@@ -300,6 +307,10 @@ function FullApp() {
     setSlippageAmount(slippage / BASIS_POINTS_DIVISOR * 100)
     setIsPnlInLeverage(savedIsPnlInLeverage)
     setIsSettingsVisible(true)
+  }
+
+  const showNetworkSelectorModal = () => {
+    setIsNetworkSelectorModalVisible(!isNetworkSelectorModalVisible)
   }
 
   const saveAndCloseSettings = () => {
@@ -391,6 +402,20 @@ function FullApp() {
                 </motion.div>}
             </AnimatePresence>
           }
+          {isNetworkSelectorModalVisible &&
+            <AnimatePresence>
+              {isNetworkSelectorModalVisible &&
+                <motion.div className="selector-backdrop"
+                  initial="hidden"
+                  animate="visible"
+                  exit="hidden"
+                  variants={fadeVariants}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => setIsNetworkSelectorModalVisible(!isNetworkSelectorModalVisible)}
+                >
+                </motion.div>}
+            </AnimatePresence>
+          }
           <header>
             <div className="App-header large">
               <div className="App-header-container-left">
@@ -406,6 +431,7 @@ function FullApp() {
                   setActivatingConnector={setActivatingConnector}
                   walletModalVisible={walletModalVisible}
                   setWalletModalVisible={setWalletModalVisible}
+                  showNetworkSelectorModal={showNetworkSelectorModal}
                 />
               </div>
             </div>
@@ -428,6 +454,7 @@ function FullApp() {
                     setActivatingConnector={setActivatingConnector}
                     walletModalVisible={walletModalVisible}
                     setWalletModalVisible={setWalletModalVisible}
+                    showNetworkSelectorModal={showNetworkSelectorModal}
                   />
                 </div>
               </div>

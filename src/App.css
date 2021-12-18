@@ -15,7 +15,7 @@
 
 .App-content header {
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
 .App-header.large {
@@ -939,7 +939,29 @@ button.App-button {
   background: #7a7fec;
 }
 
-@media (max-width: 900px) {
+.header-connect-btn.short-label {
+  display: none!important;
+}
+
+.selector-backdrop {
+  opacity: 1;
+  height: 100vh;
+  z-index: 2;
+  backdrop-filter: blur(17px);
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+@media (max-width: 1033px) {
+  .header-connect-btn.long-label {
+    display: none!important;
+  }
+
+  .header-connect-btn.short-label {
+    display: flex!important;
+  }
+
   .App-header-user-link {
     margin-right: 16px;
   }

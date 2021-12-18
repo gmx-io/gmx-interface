@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import cx from "classnames";
 
 
@@ -20,6 +20,13 @@ export default function NetworkSelector(props) {
   const [isModalVisible, setIsModalVisible] = useState(false)
   const { small, options, disabled, label, modalLabel, className, showCaret = true } = props
   const [selectedLabel, setSelectedLabel] = useState(label)
+  const [networkChanged, setNetworkChanged] = useState(false)
+
+  useEffect(() => {
+    if (!networkChanged) {
+      setSelectedLabel(label)
+    }
+  }, [label, networkChanged])
 
   function renderOption(option) {
     var optionIcon = require('../../img/' + option.icon);
@@ -36,8 +43,10 @@ export default function NetworkSelector(props) {
 
   const onSelect = async (token) => {
     setIsModalVisible(false)
+    props.showModal(false)
     const network = await props.onSelect(token)
     setSelectedLabel(network)
+    setNetworkChanged(true)
   }
 
   const DropdownIndicator = (props) => {
@@ -102,16 +111,21 @@ export default function NetworkSelector(props) {
     })
   }
 
+  const showModal = function () {
+    setIsModalVisible(true)
+    props.showModal(true)
+  }
+
   var value = find(options, (o) => { return o.label === selectedLabel })
 
-  var valueIcon = require('../../img/' + value.icon);
+  const valueIcon = require('../../img/' + value.icon);
 
   return (
     <div className={cx("Selector", className, { disabled })}>
       {
         isModalVisible &&
         <div>
-          <Modal isVisible={isModalVisible} setIsVisible={setIsModalVisible} label={modalLabel}>
+          <Modal className="selector-modal" isVisible={isModalVisible} setIsVisible={setIsModalVisible} label={modalLabel}>
             <div className="Selector-options">
               {options.map(renderOption)}
             </div>
@@ -120,7 +134,7 @@ export default function NetworkSelector(props) {
       }
       {
         small ?
-          (<div className={cx("Selector-box", value.label)} onClick={() => setIsModalVisible(true)}>
+          (<div className={cx("Selector-box", value.label)} onClick={() => showModal()}>
             <img src={valueIcon.default} alt="valueIcon" />
             {showCaret && <img src={selectorDropdowns} alt="selectorDropdowns" />}
           </div>)
