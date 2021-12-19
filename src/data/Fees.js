@@ -180,7 +180,8 @@ const FEES = {
       to: 1639538283,
       feeUsd: "638755.06"
     }
-  ]
+  ],
+  43114: []
 }
 
 export function getFeeHistory(chainId) {

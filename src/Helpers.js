@@ -24,7 +24,7 @@ export const TESTNET = 97;
 export const ARBITRUM_TESTNET = 421611
 export const ARBITRUM = 42161
 // TODO take it from web3
-export const DEFAULT_CHAIN_ID = ARBITRUM
+export const DEFAULT_CHAIN_ID = AVALANCHE
 export const CHAIN_ID = DEFAULT_CHAIN_ID
 
 export const MIN_PROFIT_TIME = 60 * 60 * 12 // 12 hours
@@ -40,7 +40,6 @@ const CHAIN_NAMES_MAP = {
 const ARBITRUM_RPC_PROVIDERS = [
   "https://arb1.arbitrum.io/rpc"
 ]
-
 const AVALANCHE_RPC_PROVIDERS = [
   "https://api.avax.network/ext/bc/C/rpc"
 ]
@@ -121,8 +120,8 @@ const injectedConnector = new InjectedConnector({
 
 const getWalletConnectConnector = () => {
   return new WalletConnectConnector({
-    rpc: { [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0] },
-    chainId: ARBITRUM,
+    rpc: { [AVALANCHE]: AVALANCHE_RPC_PROVIDERS[0] },
+    chainId: AVALANCHE,
     qrcode: true
   })
 }
@@ -224,15 +223,14 @@ export function getServerBaseUrl(chainId) {
   }
   if (document.location.hostname.includes("deploy-preview")) {
     return "https://gmx-server-mainnet.uw.r.appspot.com"
-  }
-  if (chainId === MAINNET) {
+  } else if (chainId === MAINNET) {
     return "https://gambit-server-staging.uc.r.appspot.com"
-  }
-  if (chainId === ARBITRUM_TESTNET) {
+  } else if (chainId === ARBITRUM_TESTNET) {
     return "https://gambit-l2.as.r.appspot.com"
-  }
-  if (chainId === ARBITRUM) {
+  } else if (chainId === ARBITRUM) {
     return "https://gmx-server-mainnet.uw.r.appspot.com"
+  } else if (chainId === AVALANCHE) {
+    return "https://gmx-avax-server.uw.r.appspot.com"
   }
   return "https://gmx-server-mainnet.uw.r.appspot.com"
 }
@@ -888,7 +886,8 @@ export const BSC_RPC_PROVIDERS = [
 
 const RPC_PROVIDERS = {
   [MAINNET]: BSC_RPC_PROVIDERS,
-  [ARBITRUM]: ARBITRUM_RPC_PROVIDERS
+  [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
+  [AVALANCHE]: AVALANCHE_RPC_PROVIDERS
 }
 
 export function shortenAddress(address) {
@@ -1050,6 +1049,16 @@ export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
 
   const method = ethers.utils.isAddress(arg0) ? arg1 : arg0
 
+  // console.log('id: %s, chainId: %s, arg0: %s, arg1: %s, params: %s, additionalArgs: %s',
+  //   id,
+  //   chainId,
+  //   arg0,
+  //   arg1,
+  //   JSON.stringify(params),
+  //   JSON.stringify(additionalArgs),
+  //   provider,
+  // )
+
   function onError(e) {
       console.error(contractInfo.contractName, method, e)
   }
@@ -1064,6 +1073,7 @@ export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
       }
       return contract[method](...params).catch(onError)
     } catch (e) {
+      // id === "Dashboard:vaultTokenInfo:false" && console.log(4)
       onError(e)
     }
   }
@@ -1382,21 +1392,18 @@ export function numberWithCommas(x) {
 export function getExplorerUrl(chainId) {
   if (chainId === 3) {
     return "https://ropsten.etherscan.io/"
-  }
-  if (chainId === 42) {
+  } else if (chainId === 42) {
     return "https://kovan.etherscan.io/"
-  }
-  if (chainId === MAINNET) {
+  } else if (chainId === MAINNET) {
     return "https://bscscan.com/"
-  }
-  if (chainId === TESTNET) {
+  } else if (chainId === TESTNET) {
     return "https://testnet.bscscan.com/"
-  }
-  if (chainId === ARBITRUM_TESTNET) {
+  } else if (chainId === ARBITRUM_TESTNET) {
     return "https://rinkeby-explorer.arbitrum.io/"
-  }
-  if (chainId === ARBITRUM) {
+  } else if (chainId === ARBITRUM) {
     return "https://arbiscan.io/"
+  } else if (chainId === AVALANCHE) {
+    return "https://snowtrace.io/"
   }
   if (chainId === AVALANCHE) {
     return "https://snowtrace.io/"

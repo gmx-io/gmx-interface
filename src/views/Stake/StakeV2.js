@@ -34,7 +34,8 @@ import {
   GLP_DECIMALS,
   USD_DECIMALS,
   BASIS_POINTS_DIVISOR,
-  SECONDS_PER_YEAR
+  SECONDS_PER_YEAR,
+  AVALANCHE
 } from '../../Helpers'
 import { callContract } from '../../Api'
 
@@ -822,7 +823,7 @@ function ClaimModal(props) {
 
 export default function StakeV2({ setPendingTxns, connectWallet }) {
   const { active, library, account } = useWeb3React()
-  const chainId = 42161 // set chain to Arbitrum
+  const chainId = AVALANCHE
 
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false)
   const [stakeModalTitle, setStakeModalTitle] = useState("")

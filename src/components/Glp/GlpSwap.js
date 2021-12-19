@@ -35,7 +35,8 @@ import {
   GLP_COOLDOWN_DURATION,
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
-  DEFAULT_MAX_USDG_AMOUNT
+  DEFAULT_MAX_USDG_AMOUNT,
+  AVALANCHE
 } from '../../Helpers'
 
 import { callContract } from '../../Api'
@@ -89,7 +90,7 @@ export default function GlpSwap(props) {
   const { savedSlippageAmount, isBuying, setPendingTxns, connectWallet } = props
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp"
   const { active, library, account } = useWeb3React()
-  const chainId = 42161 // set chain to Arbitrum
+  const chainId = AVALANCHE
   const tokens = getTokens(chainId)
   const whitelistedTokens = getWhitelistedTokens(chainId)
   const tokenList = whitelistedTokens.filter(t => !t.isWrapped)

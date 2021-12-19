@@ -229,10 +229,49 @@ const TOKENS = {
       address: "0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F",
       isStable: true
     }
+  ],
+  43114: [
+    {
+      name: "Avalanche",
+      symbol: "AVAX",
+      decimals: 18,
+      address: ethers.constants.AddressZero,
+      isNative: true,
+      isShortable: true
+    },
+    {
+      name: "Wrapped AVAX",
+      symbol: "WAVAX",
+      decimals: 18,
+      address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+      isWrapped: true,
+      baseSymbol: "AVAX"
+    },
+    {
+      name: "Ether",
+      symbol: "ETH",
+      address: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+      decimals: 18,
+      isShortable: true
+    },
+    {
+      name: "Bitcoin",
+      symbol: "BTC",
+      address: "0x50b7545627a5162F82A992c33b87aDc75187B218",
+      decimals: 8,
+      isShortable: true
+    },
+    {
+      name: "Magic Internet Money",
+      symbol: "MIM",
+      address: "0x130966628846BFd36ff31a822705796e8cb8C18D",
+      decimals: 18,
+      isStable: true
+    }
   ]
 }
 
-const CHAIN_IDS = [56, 97, 42161, 421611]
+const CHAIN_IDS = [56, 97, 42161, 421611, 43114]
 
 const TOKENS_MAP = {}
 const TOKENS_BY_SYMBOL_MAP = {}

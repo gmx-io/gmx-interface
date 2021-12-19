@@ -23,7 +23,8 @@ import {
   bigNumberify,
   numberWithCommas,
   getServerUrl,
-  USD_DECIMALS
+  USD_DECIMALS,
+  AVALANCHE
 } from '../../Helpers'
 
 import { useUserStat } from "../../Api"
@@ -69,7 +70,7 @@ export default function Home() {
   //   }
   // }
 
-  const chainId = 42161 // set chain to Arbitrum
+  const chainId = AVALANCHE
 
   const positionStatsUrl = getServerUrl(chainId, "/position_stats")
   const { data: positionStats } = useSWR([positionStatsUrl], {
