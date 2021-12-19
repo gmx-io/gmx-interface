@@ -8,7 +8,7 @@ import Tooltip from '../../components/Tooltip/Tooltip'
 
 import { ethers } from 'ethers'
 
-import { getTokens, getWhitelistedTokens } from '../../data/Tokens'
+import { getTokens, getWhitelistedTokens, getTokenBySymbol } from '../../data/Tokens'
 import { getFeeHistory } from '../../data/Fees'
 
 import {
@@ -27,7 +27,8 @@ import {
   GLP_DECIMALS,
   BASIS_POINTS_DIVISOR,
   DEFAULT_MAX_USDG_AMOUNT,
-  AVALANCHE
+  AVALANCHE,
+  ARBITRUM
 } from '../../Helpers'
 
 import { getContract } from '../../Addresses'
@@ -177,10 +178,9 @@ export default function DashboardV2() {
     fetcher: fetcher(library, VaultV2),
   })
 
-  const poolAddress = "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E" // GMX/WETH
-
-  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR([`StakeV2:uniPoolSlot0:${active}`, chainId, poolAddress, "slot0"], {
-    fetcher: fetcher(library, UniPool),
+  const poolAddress = getContract(ARBITRUM, "UniswapGmxEthPool")
+  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR([`StakeV2:uniPoolSlot0:${active}`, ARBITRUM, poolAddress, "slot0"], {
+    fetcher: fetcher(undefined, UniPool),
   })
 
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker")
@@ -191,7 +191,7 @@ export default function DashboardV2() {
 
   const infoTokens = getInfoTokens(tokens, undefined, whitelistedTokens, vaultTokenInfo, undefined)
 
-  const eth = infoTokens[nativeTokenAddress]
+  const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address]
   const currentFeesUsd = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokens)
 
   const feeHistory = getFeeHistory(chainId)
@@ -202,10 +202,9 @@ export default function DashboardV2() {
   }
 
   let gmxPrice
-
   if (uniPoolSlot0 && eth && eth.minPrice) {
-    const tokenA = new UniToken(chainId, nativeTokenAddress, 18, "SYMBOL", "NAME")
-    const tokenB = new UniToken(chainId, gmxAddress, 18, "SYMBOL", "NAME")
+    const tokenA = new UniToken(ARBITRUM, eth.address, 18, "SYMBOL", "NAME")
+    const tokenB = new UniToken(ARBITRUM, gmxAddress, 18, "SYMBOL", "NAME")
 
     const pool = new Pool(
       tokenA, // tokenA
