@@ -110,8 +110,6 @@ export default function DashboardV2() {
   const { active, library } = useWeb3React()
   const chainId = 43114 // set chain to Arbitrum
 
-  // console.log('DashboardV2 library', library, active)
-
   const positionStatsUrl = getServerUrl(chainId, "/position_stats")
   const { data: positionStats, mutate: updatePositionStats } = useSWR([positionStatsUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
@@ -162,12 +160,6 @@ export default function DashboardV2() {
   const { data: aums, mutate: updateAums } = useSWR([`Dashboard:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
     fetcher: fetcher(library, GlpManager),
   })
-
-  console.log('chainId: %s, vaultAddress: %s, readerAddress: %s',
-    chainId,
-    vaultAddress,
-    readerAddress
-  )
 
   const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR([`Dashboard:vaultTokenInfo:${active}`, chainId, readerAddress, "getFullVaultTokenInfo"], {
     fetcher: fetcher(library, ReaderV2, [vaultAddress, nativeTokenAddress, expandDecimals(1, 18), whitelistedTokenAddresses]),

@@ -1049,16 +1049,6 @@ export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
 
   const method = ethers.utils.isAddress(arg0) ? arg1 : arg0
 
-  // console.log('id: %s, chainId: %s, arg0: %s, arg1: %s, params: %s, additionalArgs: %s',
-  //   id,
-  //   chainId,
-  //   arg0,
-  //   arg1,
-  //   JSON.stringify(params),
-  //   JSON.stringify(additionalArgs),
-  //   provider,
-  // )
-
   function onError(e) {
       console.error(contractInfo.contractName, method, e)
   }
@@ -1073,7 +1063,6 @@ export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
       }
       return contract[method](...params).catch(onError)
     } catch (e) {
-      // id === "Dashboard:vaultTokenInfo:false" && console.log(4)
       onError(e)
     }
   }
