@@ -35,7 +35,8 @@ const FEED_ID_MAP = {
   "SUSHI_USD": "0x7213536a36094cd8a768a5e45203ec286cba2d74",
   "AVAX_USD": "0x0fc3657899693648bba4dbd2d8b33b82e875105d",
   "AAVE_USD": "0xe3f0dede4b499c07e12475087ab1a084b5f93bc0",
-  "YFI_USD": "0x8a4d74003870064d41d4f84940550911fbfccf04"
+  "YFI_USD": "0x8a4d74003870064d41d4f84940550911fbfccf04",
+  "SPELL_USD": "0x8640b23468815902e011948f3ab173e1e83f9879"
 };
 
 const CHAINLINK_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/deividask/chainlink";
