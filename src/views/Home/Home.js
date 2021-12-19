@@ -95,7 +95,7 @@ export default function Home() {
   }
 
   // user stat
-  const userStats = useUserStat()
+  const userStats = useUserStat(chainId)
 
   return (
     <div className="Home">

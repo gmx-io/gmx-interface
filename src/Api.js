@@ -13,6 +13,7 @@ import {
   INCREASE_ORDER_EXECUTION_GAS_FEE,
   DECREASE_ORDER_EXECUTION_GAS_FEE,
   ARBITRUM,
+  AVALANCHE,
   // DEFAULT_GAS_LIMIT,
   bigNumberify,
   getExplorerUrl,
@@ -45,9 +46,15 @@ const chainlinkClient = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-const GMX_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-stats"
-const gmxGraphClient = new ApolloClient({
-  uri: GMX_GRAPH_API_URL,
+const ARBITRUM_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-stats"
+const arbitrumGraphClient = new ApolloClient({
+  uri: ARBITRUM_GRAPH_API_URL,
+  cache: new InMemoryCache()
+});
+
+const AVALANCHE_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/gdev8317/gmx-avalanche-staging"
+const avalancheGraphClient = new ApolloClient({
+  uri: AVALANCHE_GRAPH_API_URL,
   cache: new InMemoryCache()
 });
 
@@ -57,7 +64,16 @@ const nissohGraphClient = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-export function useAllOrdersStats() {
+function getGmxGraphClient(chainId) {
+  if (chainId === ARBITRUM) {
+    return arbitrumGraphClient
+  } else if (chainId === AVALANCHE) {
+    return avalancheGraphClient
+  }
+  throw new Error(`Unsupported chain ${chainId}`)
+}
+
+export function useAllOrdersStats(chainId) {
   const query = gql(`{
     orderStat(id: "total") {
       openSwap
@@ -75,13 +91,13 @@ export function useAllOrdersStats() {
   const [res, setRes] = useState()
 
   useEffect(() => {
-    gmxGraphClient.query({ query }).then(setRes).catch(console.warn)
-  }, [setRes, query])
+    getGmxGraphClient(chainId).query({ query }).then(setRes).catch(console.warn)
+  }, [setRes, query, chainId])
 
   return res ? res.data.orderStat : null
 }
 
-export function useUserStat() {
+export function useUserStat(chainId) {
   const query = gql(`{
     userStat(id: "total") {
       id
@@ -92,8 +108,8 @@ export function useUserStat() {
   const [res, setRes] = useState()
 
   useEffect(() => {
-    gmxGraphClient.query({ query }).then(setRes).catch(console.warn)
-  }, [setRes, query])
+    getGmxGraphClient(chainId).query({ query }).then(setRes).catch(console.warn)
+  }, [setRes, query, chainId])
 
   return res ? res.data.userStat : null
 }
@@ -119,7 +135,8 @@ export function useLiquidationsData(chainId, account) {
            type
          }
       }`)
-      gmxGraphClient.query({ query }).then(res => {
+      const graphClient = getGmxGraphClient(chainId)
+      graphClient.query({ query }).then(res => {
         const _data = res.data.liquidatedPositions.map(item => {
           return {
             ...item,
@@ -218,8 +235,8 @@ export function useAllOrders(chainId, library) {
   const [res, setRes] = useState()
 
   useEffect(() => {
-    gmxGraphClient.query({ query }).then(setRes)
-  }, [setRes, query])
+    getGmxGraphClient(chainId).query({ query }).then(setRes)
+  }, [setRes, query, chainId])
 
   const key = res ? res.data.orders.map(order => `${order.type}-${order.account}-${order.index}`) : null
   const { data: orders = [] } = useSWR(key, () => {
@@ -278,37 +295,26 @@ export function usePositionsForOrders(chainId, library, orders) {
   return positions
 }
 
-async function getChartPricesFromStats(marketName, chainId) {
-  let symbol = marketName.split('_')[0]
-  if (symbol === 'WBTC') {
-    symbol = 'BTC'
-  } else if (symbol === 'WETH') {
-    symbol = 'ETH'
-  }
-  const hostname = document.location.hostname === 'localhost' && false
-    ? 'http://localhost:3105/'
-    : 'https://stats2.gmx.io/'
-  const from = Math.floor((Date.now() - 86400 * 1000 * 60) / 1000) // 2 months
-  const url = `${hostname}api/chart/${symbol}?from=${from}&preferableChainId=${chainId}`
-  const TIMEOUT = 5000
-  const res = await new Promise((resolve, reject) => {
-    fetch(url).then(resolve)
-    setTimeout(() => reject(new Error(`${url} request timeout`)), TIMEOUT)
-  })
-  if (!res.ok) {
-    throw new Error(`${res.status} ${res.statusText}`)
-  }
-  const json = await res.json()
+async function getChartPricesFromGmxGraph(tokenAddress, chainId) {
+  const graphClient = getGmxGraphClient(chainId)
 
-  const OBSOLETE_THRESHOLD = 60 * 60 * 3 // chainlink updates on Arbitrum are not too frequent
-  if (json && json.length) {
-    const lastTs = json[json.length - 1][0]
-    const diff = Date.now() / 1000 - lastTs
-    if (diff > OBSOLETE_THRESHOLD) {
-      throw new Error('chart data is obsolete, last price record at ' + new Date(lastTs * 1000))
+  const query = gql(`{
+    chainlinkPrices(first: 1000 orderBy: timestamp orderDirection: desc where: {token: "${tokenAddress}"}) {
+      timestamp
+      value
     }
+  }`)
+  const response = await graphClient.query({query})
+
+  const prices = response.data.chainlinkPrices.map(price => {
+    return [price.timestamp, Number(price.value) / 1e8]
+  })
+
+  if (prices.length < 300) {
+    throw new Error(`Not enough price data for token ${tokenAddress} chainId: ${chainId}`)
   }
-  return json
+
+  return prices.sort(([timeA], [timeB]) => timeA - timeB)
 }
 
 function getChartPricesFromGraph(marketName) {
@@ -378,11 +384,11 @@ export function useTrades(chainId, account) {
   return { trades, updateTrades }
 }
 
-export function useChartPrices(marketName, chainId) {
+export function useChartPrices(marketName, tokenAddress, chainId) {
   const { data: prices = [], mutate: updatePrices } = useSWR(['getChartPrices', marketName, chainId], {
     fetcher: async () => {
       try {
-        return await getChartPricesFromStats(marketName, chainId)
+        return await getChartPricesFromGmxGraph(tokenAddress, chainId)
       } catch (ex) {
         console.warn('chart request failed')
         console.warn(ex)
