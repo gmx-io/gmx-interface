@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { ethers } from 'ethers'
 import { useWeb3React } from '@web3-react/core'
+import { AVALANCHE } from '../../Helpers'
 
 import ERC721 from '../../abis/ERC721.json'
 
@@ -14,7 +15,7 @@ export default function NftWallet() {
   const [isSubmitting, setIsSubmitting] = useState("")
 
   const { active, account, library } = useWeb3React()
-  const chainId = 42161 // set chain to Arbitrum
+  const chainId = AVALANCHE
 
   function getTransferError() {
     if (!active) {

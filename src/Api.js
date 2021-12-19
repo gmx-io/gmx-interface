@@ -26,18 +26,16 @@ import {
 const { AddressZero } = ethers.constants
 
 // Ethereum network, Chainlink Aggregator contracts
-const BTC_USD_FEED_ID = "0xae74faa92cb67a95ebcab07358bc222e33a34da7";
-const BNB_USD_FEED_ID = "0xc45ebd0f901ba6b2b8c7e70b717778f055ef5e6d";
-const ETH_USD_FEED_ID = "0x37bc7498f4ff12c19678ee8fe19d713b87f6a9e6";
-const LINK_USD_FEED_ID = "0xdfd03bfc3465107ce570a0397b247f546a42d0fa";
-const UNI_USD_FEED_ID = "0x68577f915131087199fe48913d8b416b3984fd38";
-
 const FEED_ID_MAP = {
-  "BTC_USD": BTC_USD_FEED_ID,
-  "ETH_USD": ETH_USD_FEED_ID,
-  "BNB_USD": BNB_USD_FEED_ID,
-  "LINK_USD": LINK_USD_FEED_ID,
-  "UNI_USD": UNI_USD_FEED_ID
+  "BTC_USD": "0xae74faa92cb67a95ebcab07358bc222e33a34da7",
+  "ETH_USD": "0x37bc7498f4ff12c19678ee8fe19d713b87f6a9e6",
+  "BNB_USD": "0xc45ebd0f901ba6b2b8c7e70b717778f055ef5e6d",
+  "LINK_USD": "0xdfd03bfc3465107ce570a0397b247f546a42d0fa",
+  "UNI_USD": "0x68577f915131087199fe48913d8b416b3984fd38",
+  "SUSHI_USD": "0x7213536a36094cd8a768a5e45203ec286cba2d74",
+  "AVAX_USD": "0x0fc3657899693648bba4dbd2d8b33b82e875105d",
+  "AAVE_USD": "0xe3f0dede4b499c07e12475087ab1a084b5f93bc0",
+  "YFI_USD": "0x8a4d74003870064d41d4f84940550911fbfccf04"
 };
 
 const CHAINLINK_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/deividask/chainlink";
@@ -288,7 +286,7 @@ async function getChartPricesFromStats(marketName, chainId) {
   }
   const hostname = document.location.hostname === 'localhost' && false
     ? 'http://localhost:3105/'
-    : 'https://stats.gmx.io/'
+    : 'https://stats2.gmx.io/'
   const from = Math.floor((Date.now() - 86400 * 1000 * 60) / 1000) // 2 months
   const url = `${hostname}api/chart/${symbol}?from=${from}&preferableChainId=${chainId}`
   const TIMEOUT = 5000
@@ -313,7 +311,7 @@ async function getChartPricesFromStats(marketName, chainId) {
 }
 
 function getChartPricesFromGraph(marketName) {
-  if (marketName.startsWith('WBTC') || marketName.startsWith('WETH') || marketName.startsWith('WBNB')) {
+  if (marketName.startsWith('WBTC') || marketName.startsWith('WETH') || marketName.startsWith('WBNB') || marketName.startsWith('WAVAX')) {
     marketName = marketName.substr(1)
   }
   const feedId = FEED_ID_MAP[marketName];
@@ -388,7 +386,7 @@ export function useChartPrices(marketName, chainId) {
         console.warn('chart request failed')
         console.warn(ex)
         try {
-          return await getChartPricesFromGraph(marketName)
+          return await getChartPricesFromGraph(marketName, chainId)
         } catch (ex2) {
           console.warn('fallback chart request failed')
           console.warn(ex2)

@@ -26,7 +26,8 @@ import {
   GMX_DECIMALS,
   GLP_DECIMALS,
   BASIS_POINTS_DIVISOR,
-  DEFAULT_MAX_USDG_AMOUNT
+  DEFAULT_MAX_USDG_AMOUNT,
+  AVALANCHE
 } from '../../Helpers'
 
 import { getContract } from '../../Addresses'
@@ -107,7 +108,9 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
 
 export default function DashboardV2() {
   const { active, library } = useWeb3React()
-  const chainId = 42161 // set chain to Arbitrum
+  const chainId = 43114 // set chain to Arbitrum
+
+  // console.log('DashboardV2 library', library, active)
 
   const positionStatsUrl = getServerUrl(chainId, "/position_stats")
   const { data: positionStats, mutate: updatePositionStats } = useSWR([positionStatsUrl], {
@@ -160,6 +163,12 @@ export default function DashboardV2() {
     fetcher: fetcher(library, GlpManager),
   })
 
+  console.log('chainId: %s, vaultAddress: %s, readerAddress: %s',
+    chainId,
+    vaultAddress,
+    readerAddress
+  )
+
   const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR([`Dashboard:vaultTokenInfo:${active}`, chainId, readerAddress, "getFullVaultTokenInfo"], {
     fetcher: fetcher(library, ReaderV2, [vaultAddress, nativeTokenAddress, expandDecimals(1, 18), whitelistedTokenAddresses]),
   })
@@ -194,7 +203,7 @@ export default function DashboardV2() {
   const currentFeesUsd = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokens)
 
   const feeHistory = getFeeHistory(chainId)
-  const shouldIncludeCurrrentFees = (parseInt(Date.now() / 1000) - feeHistory[0].to) > 60 * 60
+  const shouldIncludeCurrrentFees = feeHistory.length && (parseInt(Date.now() / 1000) - feeHistory[0].to) > 60 * 60
   let totalFeesDistributed = shouldIncludeCurrrentFees ? parseFloat(bigNumberify(formatAmount(currentFeesUsd, USD_DECIMALS - 2, 0, false)).toNumber()) / 100 : 0
   for (let i = 0; i < feeHistory.length; i++) {
     totalFeesDistributed += parseFloat(feeHistory[i].feeUsd)
@@ -269,7 +278,7 @@ export default function DashboardV2() {
   }
 
   const getWeightText = (tokenInfo) => {
-    if (!tokenInfo.weight || !tokenInfo.usdgAmount || !usdgSupply || !totalTokenWeights) {
+    if (!tokenInfo.weight || !tokenInfo.usdgAmount || !usdgSupply || usdgSupply.eq(0) || !totalTokenWeights) {
       return "..."
     }
 
@@ -332,13 +341,15 @@ export default function DashboardV2() {
       updateFees, updateUniPoolSlot0, updateStakedGmxSupply,
       updateTotalTokenWeights, updateGmxSupply])
 
+  const statsUrl = `https://stats.gmx.io/${chainId === AVALANCHE ? "avalanche" : ""}`
+
   return (
     <div className="DashboardV2 Page">
       <div className="Page-title-section">
         <div className="Page-title">Stats</div>
         <div className="Page-description">
           Total Stats start from 01 Sep 2021.&nbsp;<br/>
-          For detailed stats: <a href="https://stats.gmx.io/"  target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
+          For detailed stats: <a href={statsUrl}  target="_blank" rel="noopener noreferrer">{statsUrl}</a>.
         </div>
       </div>
       <div className="DashboardV2-content">
@@ -385,12 +396,14 @@ export default function DashboardV2() {
                   ${formatAmount(totalShortPositionSizes, USD_DECIMALS, 0, true)}
                 </div>
               </div>
-              <div className="App-card-row">
-                <div className="label">Fees since {formatDate(feeHistory[0].to)}</div>
-                <div>
-                  ${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}
+              {feeHistory.length &&
+                <div className="App-card-row">
+                  <div className="label">Fees since {formatDate(feeHistory[0].to)}</div>
+                  <div>
+                    ${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}
+                  </div>
                 </div>
-              </div>
+              }
             </div>
           </div>
           <div className="App-card">
