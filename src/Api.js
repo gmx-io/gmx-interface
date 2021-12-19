@@ -314,7 +314,16 @@ async function getChartPricesFromGmxGraph(tokenAddress, chainId) {
     throw new Error(`Not enough price data for token ${tokenAddress} chainId: ${chainId}`)
   }
 
-  return prices.sort(([timeA], [timeB]) => timeA - timeB)
+  prices.sort(([timeA], [timeB]) => timeA - timeB)
+
+  const OBSOLETE_THRESHOLD = 60 * 60 * 3 // chainlink updates on Arbitrum/Avalanche are not too frequent
+  const lastTs = prices[prices.length - 1][0]
+  const diff = parseInt(Date.now() / 1000) - lastTs
+  if (diff > OBSOLETE_THRESHOLD) {
+    throw new Error(`chart data is obsolete, last price record at ${new Date(lastTs * 1000)}`)
+  }
+
+  return prices
 }
 
 function getChartPricesFromGraph(marketName) {
