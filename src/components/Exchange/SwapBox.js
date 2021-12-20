@@ -797,7 +797,7 @@ export default function SwapBox(props) {
     }
     setTokenSelection(updatedTokenSelection)
 
-    if (isShort && fromToken && fromToken.isStable) {
+    if (isShort && token.isStable) {
       setShortCollateralAddress(token.address)
     }
   }
