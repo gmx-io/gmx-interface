@@ -111,9 +111,9 @@ export default function NetworkSelector(props) {
     })
   }
 
-  const showModal = function () {
-    setIsModalVisible(true)
-    props.showModal(true)
+  const toggleModal = function (val) {
+    setIsModalVisible(val)
+    props.showModal(val)
   }
 
   var value = find(options, (o) => { return o.label === selectedLabel })
@@ -125,7 +125,7 @@ export default function NetworkSelector(props) {
       {
         isModalVisible &&
         <div>
-          <Modal className="selector-modal" isVisible={isModalVisible} setIsVisible={setIsModalVisible} label={modalLabel}>
+          <Modal className="selector-modal" isVisible={isModalVisible} setIsVisible={toggleModal} label={modalLabel}>
             <div className="Selector-options">
               {options.map(renderOption)}
             </div>
@@ -134,7 +134,7 @@ export default function NetworkSelector(props) {
       }
       {
         small ?
-          (<div className={cx("Selector-box", value.label)} onClick={() => showModal()}>
+          (<div className={cx("Selector-box", value.label)} onClick={() => toggleModal(true)}>
             <img src={valueIcon.default} alt="valueIcon" />
             {showCaret && <img src={selectorDropdowns} alt="selectorDropdowns" />}
           </div>)
