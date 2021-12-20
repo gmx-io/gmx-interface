@@ -230,7 +230,7 @@ export function getServerBaseUrl(chainId) {
   } else if (chainId === ARBITRUM) {
     return "https://gmx-server-mainnet.uw.r.appspot.com"
   } else if (chainId === AVALANCHE) {
-    return "https://gmx-avax-server.uw.r.appspot.com"
+    return "https://gmx-avax-server.uc.r.appspot.com"
   }
   return "https://gmx-server-mainnet.uw.r.appspot.com"
 }
