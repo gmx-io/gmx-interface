@@ -15,7 +15,7 @@ import {
   getTokenInfo,
   getServerBaseUrl,
   useAccountOrders,
-  AVALANCHE
+  useChainId
 } from '../../Helpers'
 import { getToken, getTokens, getWhitelistedTokens } from '../../data/Tokens'
 import { getPositions, getPositionQuery } from '../Exchange/Exchange'
@@ -32,7 +32,7 @@ export default function Actions() {
   const { account } = useParams()
   const { active, library } = useWeb3React()
 
-  const chainId = AVALANCHE
+  const { chainId } = useChainId()
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
   const vaultAddress = getContract(chainId, "Vault")
   const readerAddress = getContract(chainId, "Reader")
