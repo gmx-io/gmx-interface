@@ -1,12 +1,16 @@
 import { ethers } from 'ethers';
 import { helperToast } from "./Helpers"
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { Token as UniToken } from '@uniswap/sdk-core'
+import { Pool } from '@uniswap/v3-sdk'
 import useSWR from 'swr'
 
 import OrderBook from './abis/OrderBook.json'
 import Vault from './abis/Vault.json'
 import Router from './abis/Router.json'
+import UniPool from './abis/UniPool.json'
+
 import { getContract } from './Addresses'
 import {
   SWAP_ORDER_EXECUTION_GAS_FEE,
@@ -21,8 +25,14 @@ import {
   getGasLimit,
   replaceNativeTokenAddress,
   getProvider,
-  getOrderKey
+  getOrderKey,
+  fetcher,
+  parseValue,
+  expandDecimals
 } from './Helpers'
+import {
+  getTokenBySymbol
+} from './data/Tokens'
 
 const { AddressZero } = ethers.constants
 
@@ -391,6 +401,48 @@ export function useTrades(chainId, account) {
   })
 
   return { trades, updateTrades }
+}
+
+export function useGmxPrice() {
+  const poolAddress = getContract(ARBITRUM, "UniswapGmxEthPool")
+  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR([`StakeV2:uniPoolSlot0`, ARBITRUM, poolAddress, "slot0"], {
+    fetcher: fetcher(undefined, UniPool),
+  })
+
+  const vaultAddress = getContract(ARBITRUM, "Vault")
+  const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address
+  const { data: ethPrice, mutate: updateEthPrice } = useSWR([`StakeV2:ethPrice`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress], {
+    fetcher: fetcher(undefined, Vault),
+  })
+
+  let gmxPrice
+  if (uniPoolSlot0 && ethPrice) {
+    const tokenA = new UniToken(ARBITRUM, ethAddress, 18, "SYMBOL", "NAME")
+
+    const gmxAddress = getContract(ARBITRUM, "GMX")
+    const tokenB = new UniToken(ARBITRUM, gmxAddress, 18, "SYMBOL", "NAME")
+
+    const pool = new Pool(
+      tokenA, // tokenA
+      tokenB, // tokenB
+      10000, // fee
+      uniPoolSlot0.sqrtPriceX96, // sqrtRatioX96
+      1, // liquidity
+      uniPoolSlot0.tick, // tickCurrent
+      []
+    )
+
+    const poolTokenPrice = pool.priceOf(tokenB).toSignificant(6)
+    const poolTokenPriceAmount = parseValue(poolTokenPrice, 18)
+    gmxPrice = poolTokenPriceAmount.mul(ethPrice).div(expandDecimals(1, 18))
+  }
+
+  const mutate = useCallback(() => {
+    updateUniPoolSlot0(undefined, true)
+    updateEthPrice(undefined, true)
+  }, [updateEthPrice, updateUniPoolSlot0])
+
+  return { data: gmxPrice, mutate }
 }
 
 export function useChartPrices(marketName, tokenAddress, chainId) {

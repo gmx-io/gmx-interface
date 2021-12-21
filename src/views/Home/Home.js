@@ -24,7 +24,7 @@ import {
   numberWithCommas,
   getServerUrl,
   USD_DECIMALS,
-  AVALANCHE
+  ARBITRUM
 } from '../../Helpers'
 
 import { useUserStat } from "../../Api"
@@ -70,14 +70,12 @@ export default function Home() {
   //   }
   // }
 
-  const chainId = AVALANCHE
-
-  const positionStatsUrl = getServerUrl(chainId, "/position_stats")
+  const positionStatsUrl = getServerUrl(ARBITRUM, "/position_stats")
   const { data: positionStats } = useSWR([positionStatsUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
 
-  const totalVolumeUrl = getServerUrl(chainId, "/total_volume")
+  const totalVolumeUrl = getServerUrl(ARBITRUM, "/total_volume")
   const { data: totalVolume } = useSWR([totalVolumeUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
@@ -95,7 +93,7 @@ export default function Home() {
   }
 
   // user stat
-  const userStats = useUserStat(chainId)
+  const userStats = useUserStat(ARBITRUM)
 
   return (
     <div className="Home">

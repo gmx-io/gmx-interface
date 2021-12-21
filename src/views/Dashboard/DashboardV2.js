@@ -2,8 +2,6 @@ import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
-import { Pool } from '@uniswap/v3-sdk'
-import { Token as UniToken } from '@uniswap/sdk-core'
 import Tooltip from '../../components/Tooltip/Tooltip'
 
 import { ethers } from 'ethers'
@@ -15,28 +13,27 @@ import {
   fetcher,
   formatAmount,
   formatKeyAmount,
-  parseValue,
   getInfoTokens,
   expandDecimals,
   bigNumberify,
   numberWithCommas,
   formatDate,
   getServerUrl,
+  useChainId,
   USD_DECIMALS,
   GMX_DECIMALS,
   GLP_DECIMALS,
   BASIS_POINTS_DIVISOR,
   DEFAULT_MAX_USDG_AMOUNT,
-  AVALANCHE,
-  ARBITRUM
+  AVALANCHE
 } from '../../Helpers'
+import { useGmxPrice } from '../../Api'
 
 import { getContract } from '../../Addresses'
 
 import VaultV2 from '../../abis/VaultV2.json'
 import ReaderV2 from '../../abis/ReaderV2.json'
 import GlpManager from '../../abis/GlpManager.json'
-import UniPool from '../../abis/UniPool.json'
 import Token from '../../abis/Token.json'
 
 import Footer from "../../Footer"
@@ -109,7 +106,7 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
 
 export default function DashboardV2() {
   const { active, library } = useWeb3React()
-  const chainId = 43114 // set chain to Arbitrum
+  const { chainId } = useChainId()
 
   const positionStatsUrl = getServerUrl(chainId, "/position_stats")
   const { data: positionStats, mutate: updatePositionStats } = useSWR([positionStatsUrl], {
@@ -178,11 +175,6 @@ export default function DashboardV2() {
     fetcher: fetcher(library, VaultV2),
   })
 
-  const poolAddress = getContract(ARBITRUM, "UniswapGmxEthPool")
-  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR([`StakeV2:uniPoolSlot0:${active}`, ARBITRUM, poolAddress, "slot0"], {
-    fetcher: fetcher(undefined, UniPool),
-  })
-
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker")
 
   const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR(["StakeV2:stakedGmxSupply", chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
@@ -201,25 +193,7 @@ export default function DashboardV2() {
     totalFeesDistributed += parseFloat(feeHistory[i].feeUsd)
   }
 
-  let gmxPrice
-  if (uniPoolSlot0 && eth && eth.minPrice) {
-    const tokenA = new UniToken(ARBITRUM, eth.address, 18, "SYMBOL", "NAME")
-    const tokenB = new UniToken(ARBITRUM, gmxAddress, 18, "SYMBOL", "NAME")
-
-    const pool = new Pool(
-      tokenA, // tokenA
-      tokenB, // tokenB
-      10000, // fee
-      uniPoolSlot0.sqrtPriceX96, // sqrtRatioX96
-      1, // liquidity
-      uniPoolSlot0.tick, // tickCurrent
-      []
-    )
-
-    const poolTokenPrice = pool.priceOf(tokenB).toSignificant(6)
-    const poolTokenPriceAmount = parseValue(poolTokenPrice, 18)
-    gmxPrice = poolTokenPriceAmount.mul(eth.minPrice).div(expandDecimals(1, 18))
-  }
+  const { data: gmxPrice, mutate: updateGmxPrice } = useGmxPrice()
 
   let gmxMarketCap
   if (gmxPrice && gmxSupply) {
@@ -316,7 +290,7 @@ export default function DashboardV2() {
         updateVaultTokenInfo(undefined, true)
 
         updateFees(undefined, true)
-        updateUniPoolSlot0(undefined, true)
+        updateGmxPrice(undefined, true)
         updateStakedGmxSupply(undefined, true)
         updateGmxSupply(undefined, true)
 
@@ -329,7 +303,7 @@ export default function DashboardV2() {
   }, [active, library,  chainId,
       updatePositionStats, updateHourlyVolume, updateTotalVolume,
       updateTotalSupplies, updateAums, updateVaultTokenInfo,
-      updateFees, updateUniPoolSlot0, updateStakedGmxSupply,
+      updateFees, updateGmxPrice, updateStakedGmxSupply,
       updateTotalTokenWeights, updateGmxSupply])
 
   const statsUrl = `https://stats.gmx.io/${chainId === AVALANCHE ? "avalanche" : ""}`
@@ -387,13 +361,13 @@ export default function DashboardV2() {
                   ${formatAmount(totalShortPositionSizes, USD_DECIMALS, 0, true)}
                 </div>
               </div>
-              {feeHistory.length &&
+              {feeHistory.length ?
                 <div className="App-card-row">
                   <div className="label">Fees since {formatDate(feeHistory[0].to)}</div>
                   <div>
                     ${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}
                   </div>
-                </div>
+                </div> : null
               }
             </div>
           </div>
