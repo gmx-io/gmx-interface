@@ -128,10 +128,10 @@
     max-width: 416px;
     justify-content: space-between;
     margin: 0 auto;
-    margin-top: 1.871rem;
+    margin-top: 1.419rem;
 }
 
-.GLP-block-section .GLP-block {
+.GLP-block {
     background-image: url('../../img/btn_big_purchasegmx.png');
     background-size: 100% 100%;
     display: flex;
@@ -146,7 +146,7 @@
     position: relative;
 }
 
-.GLP-block-section .GLP-block:hover::before {
+.GLP-block:hover::before {
     content: " ";
     position: absolute;
     background: #50D0FE19;
@@ -157,7 +157,7 @@
     border-radius: 4px;
 }
 
-.GLP-block-section .GLP-block:active::before {
+.GLP-block:active::before {
     content: " ";
     position: absolute;
     background: #50D0FE3d;
@@ -175,8 +175,27 @@
 .GLP-block .GLP-block-label {
     color: white;
     font-size: 1.161rem;
-    line-height: 1.484rem;
+    line-height: 1rem;
     margin-left: 0.516rem;
+}
+
+.GLP-block .GLP-block-description {
+    color: #6B6D84;
+    font-size: 0.903rem;
+    line-height: 1.161rem;
+    margin-left: 0.516rem;
+}
+
+.GLP-block .GLP-block-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.GMX-block-section {
+    display: flex;
+    justify-content: center;
+    margin: 1.419rem auto;
 }
 
 @media (max-width: 600px) {
