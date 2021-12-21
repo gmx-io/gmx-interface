@@ -23,7 +23,8 @@ import {
   bigNumberify,
   numberWithCommas,
   getServerUrl,
-  USD_DECIMALS
+  USD_DECIMALS,
+  ARBITRUM
 } from '../../Helpers'
 
 import { useUserStat } from "../../Api"
@@ -69,14 +70,12 @@ export default function Home() {
   //   }
   // }
 
-  const chainId = 42161 // set chain to Arbitrum
-
-  const positionStatsUrl = getServerUrl(chainId, "/position_stats")
+  const positionStatsUrl = getServerUrl(ARBITRUM, "/position_stats")
   const { data: positionStats } = useSWR([positionStatsUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
 
-  const totalVolumeUrl = getServerUrl(chainId, "/total_volume")
+  const totalVolumeUrl = getServerUrl(ARBITRUM, "/total_volume")
   const { data: totalVolume } = useSWR([totalVolumeUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
@@ -94,7 +93,7 @@ export default function Home() {
   }
 
   // user stat
-  const userStats = useUserStat()
+  const userStats = useUserStat(ARBITRUM)
 
   return (
     <div className="Home">

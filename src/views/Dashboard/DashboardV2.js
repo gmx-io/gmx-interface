@@ -2,39 +2,38 @@ import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
-import { Pool } from '@uniswap/v3-sdk'
-import { Token as UniToken } from '@uniswap/sdk-core'
 import Tooltip from '../../components/Tooltip/Tooltip'
 
 import { ethers } from 'ethers'
 
-import { getTokens, getWhitelistedTokens } from '../../data/Tokens'
+import { getTokens, getWhitelistedTokens, getTokenBySymbol } from '../../data/Tokens'
 import { getFeeHistory } from '../../data/Fees'
 
 import {
   fetcher,
   formatAmount,
   formatKeyAmount,
-  parseValue,
   getInfoTokens,
   expandDecimals,
   bigNumberify,
   numberWithCommas,
   formatDate,
   getServerUrl,
+  useChainId,
   USD_DECIMALS,
   GMX_DECIMALS,
   GLP_DECIMALS,
   BASIS_POINTS_DIVISOR,
-  DEFAULT_MAX_USDG_AMOUNT
+  DEFAULT_MAX_USDG_AMOUNT,
+  AVALANCHE
 } from '../../Helpers'
+import { useGmxPrice } from '../../Api'
 
 import { getContract } from '../../Addresses'
 
 import VaultV2 from '../../abis/VaultV2.json'
 import ReaderV2 from '../../abis/ReaderV2.json'
 import GlpManager from '../../abis/GlpManager.json'
-import UniPool from '../../abis/UniPool.json'
 import Token from '../../abis/Token.json'
 
 import Footer from "../../Footer"
@@ -107,7 +106,7 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
 
 export default function DashboardV2() {
   const { active, library } = useWeb3React()
-  const chainId = 42161 // set chain to Arbitrum
+  const { chainId } = useChainId()
 
   const positionStatsUrl = getServerUrl(chainId, "/position_stats")
   const { data: positionStats, mutate: updatePositionStats } = useSWR([positionStatsUrl], {
@@ -176,12 +175,6 @@ export default function DashboardV2() {
     fetcher: fetcher(library, VaultV2),
   })
 
-  const poolAddress = "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E" // GMX/WETH
-
-  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR([`StakeV2:uniPoolSlot0:${active}`, chainId, poolAddress, "slot0"], {
-    fetcher: fetcher(library, UniPool),
-  })
-
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker")
 
   const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR(["StakeV2:stakedGmxSupply", chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
@@ -190,36 +183,17 @@ export default function DashboardV2() {
 
   const infoTokens = getInfoTokens(tokens, undefined, whitelistedTokens, vaultTokenInfo, undefined)
 
-  const eth = infoTokens[nativeTokenAddress]
+  const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address]
   const currentFeesUsd = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokens)
 
   const feeHistory = getFeeHistory(chainId)
-  const shouldIncludeCurrrentFees = (parseInt(Date.now() / 1000) - feeHistory[0].to) > 60 * 60
+  const shouldIncludeCurrrentFees = feeHistory.length && (parseInt(Date.now() / 1000) - feeHistory[0].to) > 60 * 60
   let totalFeesDistributed = shouldIncludeCurrrentFees ? parseFloat(bigNumberify(formatAmount(currentFeesUsd, USD_DECIMALS - 2, 0, false)).toNumber()) / 100 : 0
   for (let i = 0; i < feeHistory.length; i++) {
     totalFeesDistributed += parseFloat(feeHistory[i].feeUsd)
   }
 
-  let gmxPrice
-
-  if (uniPoolSlot0 && eth && eth.minPrice) {
-    const tokenA = new UniToken(chainId, nativeTokenAddress, 18, "SYMBOL", "NAME")
-    const tokenB = new UniToken(chainId, gmxAddress, 18, "SYMBOL", "NAME")
-
-    const pool = new Pool(
-      tokenA, // tokenA
-      tokenB, // tokenB
-      10000, // fee
-      uniPoolSlot0.sqrtPriceX96, // sqrtRatioX96
-      1, // liquidity
-      uniPoolSlot0.tick, // tickCurrent
-      []
-    )
-
-    const poolTokenPrice = pool.priceOf(tokenB).toSignificant(6)
-    const poolTokenPriceAmount = parseValue(poolTokenPrice, 18)
-    gmxPrice = poolTokenPriceAmount.mul(eth.minPrice).div(expandDecimals(1, 18))
-  }
+  const { data: gmxPrice, mutate: updateGmxPrice } = useGmxPrice()
 
   let gmxMarketCap
   if (gmxPrice && gmxSupply) {
@@ -269,7 +243,7 @@ export default function DashboardV2() {
   }
 
   const getWeightText = (tokenInfo) => {
-    if (!tokenInfo.weight || !tokenInfo.usdgAmount || !usdgSupply || !totalTokenWeights) {
+    if (!tokenInfo.weight || !tokenInfo.usdgAmount || !usdgSupply || usdgSupply.eq(0) || !totalTokenWeights) {
       return "..."
     }
 
@@ -316,7 +290,7 @@ export default function DashboardV2() {
         updateVaultTokenInfo(undefined, true)
 
         updateFees(undefined, true)
-        updateUniPoolSlot0(undefined, true)
+        updateGmxPrice(undefined, true)
         updateStakedGmxSupply(undefined, true)
         updateGmxSupply(undefined, true)
 
@@ -329,8 +303,10 @@ export default function DashboardV2() {
   }, [active, library,  chainId,
       updatePositionStats, updateHourlyVolume, updateTotalVolume,
       updateTotalSupplies, updateAums, updateVaultTokenInfo,
-      updateFees, updateUniPoolSlot0, updateStakedGmxSupply,
+      updateFees, updateGmxPrice, updateStakedGmxSupply,
       updateTotalTokenWeights, updateGmxSupply])
+
+  const statsUrl = `https://stats.gmx.io/${chainId === AVALANCHE ? "avalanche" : ""}`
 
   return (
     <div className="DashboardV2 Page">
@@ -338,7 +314,7 @@ export default function DashboardV2() {
         <div className="Page-title">Stats</div>
         <div className="Page-description">
           Total Stats start from 01 Sep 2021.&nbsp;<br/>
-          For detailed stats: <a href="https://stats.gmx.io/"  target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
+          For detailed stats: <a href={statsUrl}  target="_blank" rel="noopener noreferrer">{statsUrl}</a>.
         </div>
       </div>
       <div className="DashboardV2-content">
@@ -385,12 +361,14 @@ export default function DashboardV2() {
                   ${formatAmount(totalShortPositionSizes, USD_DECIMALS, 0, true)}
                 </div>
               </div>
-              <div className="App-card-row">
-                <div className="label">Fees since {formatDate(feeHistory[0].to)}</div>
-                <div>
-                  ${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}
-                </div>
-              </div>
+              {feeHistory.length ?
+                <div className="App-card-row">
+                  <div className="label">Fees since {formatDate(feeHistory[0].to)}</div>
+                  <div>
+                    ${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}
+                  </div>
+                </div> : null
+              }
             </div>
           </div>
           <div className="App-card">

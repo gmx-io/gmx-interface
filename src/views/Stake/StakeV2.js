@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
-import { Pool } from '@uniswap/v3-sdk'
-import { Token as UniToken } from '@uniswap/sdk-core'
 
 import Modal from '../../components/Modal/Modal'
 import Checkbox from '../../components/Checkbox/Checkbox'
@@ -16,7 +14,6 @@ import RewardRouter from '../../abis/RewardRouter.json'
 import RewardReader from '../../abis/RewardReader.json'
 import Token from '../../abis/Token.json'
 import GlpManager from '../../abis/GlpManager.json'
-import UniPool from '../../abis/UniPool.json'
 
 import { ethers } from 'ethers'
 import {
@@ -31,12 +28,13 @@ import {
   approveTokens,
   getServerUrl,
   useLocalStorageSerializeKey,
+  useChainId,
   GLP_DECIMALS,
   USD_DECIMALS,
   BASIS_POINTS_DIVISOR,
   SECONDS_PER_YEAR
 } from '../../Helpers'
-import { callContract } from '../../Api'
+import { callContract, useGmxPrice } from '../../Api'
 
 import useSWR from 'swr'
 
@@ -179,15 +177,22 @@ function getProcessedData(balanceData, supplyData, depositBalanceData, stakingDa
   data.feeGmxTrackerRewardsUsd = stakingData.feeGmxTracker.claimable.mul(nativeTokenPrice).div(expandDecimals(1, 18))
 
   data.stakedGmxTrackerAnnualRewardsUsd = stakingData.stakedGmxTracker.tokensPerInterval.mul(SECONDS_PER_YEAR).mul(gmxPrice).div(expandDecimals(1, 18))
-  data.gmxAprForEsGmx = data.stakedGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.stakedGmxSupplyUsd)
+  data.gmxAprForEsGmx = data.stakedGmxSupplyUsd && data.stakedGmxSupplyUsd.gt(0)
+    ? data.stakedGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.stakedGmxSupplyUsd)
+    : bigNumberify(0)
   data.feeGmxTrackerAnnualRewardsUsd = stakingData.feeGmxTracker.tokensPerInterval.mul(SECONDS_PER_YEAR).mul(nativeTokenPrice).div(expandDecimals(1, 18))
-  data.gmxAprForETH = data.feeGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.feeGmxSupplyUsd)
+  data.gmxAprForETH = data.feeGmxSupplyUsd && data.feeGmxSupplyUsd.gt(0)
+    ? data.feeGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.feeGmxSupplyUsd)
+    : bigNumberify(0)
   data.gmxAprTotal = data.gmxAprForETH.add(data.gmxAprForEsGmx)
 
   data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(data.feeGmxTrackerRewardsUsd)
 
   data.glpSupply = supplyData.glp
-  data.glpPrice = aum.mul(expandDecimals(1, GLP_DECIMALS)).div(data.glpSupply)
+  data.glpPrice = data.glpSupply && data.glpSupply.gt(0)
+    ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(data.glpSupply)
+    : bigNumberify(0)
+
   data.glpSupplyUsd = supplyData.glp.mul(data.glpPrice).div(expandDecimals(1, 18))
 
   data.glpBalance = depositBalanceData.glpInStakedGlp
@@ -200,9 +205,13 @@ function getProcessedData(balanceData, supplyData, depositBalanceData, stakingDa
   data.feeGlpTrackerRewardsUsd = stakingData.feeGlpTracker.claimable.mul(nativeTokenPrice).div(expandDecimals(1, 18))
 
   data.stakedGlpTrackerAnnualRewardsUsd = stakingData.stakedGlpTracker.tokensPerInterval.mul(SECONDS_PER_YEAR).mul(gmxPrice).div(expandDecimals(1, 18))
-  data.glpAprForEsGmx = data.stakedGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.glpSupplyUsd)
+  data.glpAprForEsGmx = data.glpSupplyUsd && data.glpSupplyUsd.gt(0)
+    ? data.stakedGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.glpSupplyUsd)
+    : bigNumberify(0)
   data.feeGlpTrackerAnnualRewardsUsd = stakingData.feeGlpTracker.tokensPerInterval.mul(SECONDS_PER_YEAR).mul(nativeTokenPrice).div(expandDecimals(1, 18))
-  data.glpAprForETH = data.feeGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.glpSupplyUsd)
+  data.glpAprForETH = data.glpSupplyUsd && data.glpSupplyUsd.gt(0)
+    ? data.feeGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.glpSupplyUsd)
+    : bigNumberify(0)
   data.glpAprTotal = data.glpAprForETH.add(data.glpAprForEsGmx)
 
   data.totalGlpRewardsUsd = data.stakedGlpTrackerRewardsUsd.add(data.feeGlpTrackerRewardsUsd)
@@ -230,7 +239,7 @@ function StakeModal(props) {
   const [isStaking, setIsStaking] = useState(false)
   const [isApproving, setIsApproving] = useState(false)
 
-  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR([active, chainId, stakingTokenAddress, "allowance", account, farmAddress], {
+  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(active && stakingTokenAddress && [active, chainId, stakingTokenAddress, "allowance", account, farmAddress], {
     fetcher: fetcher(library, Token),
   })
 
@@ -627,7 +636,7 @@ function CompoundModal(props) {
 
   const [isApproving, setIsApproving] = useState(false)
 
-  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR([active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress], {
+  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(active && [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress], {
     fetcher: fetcher(library, Token),
   })
 
@@ -822,7 +831,7 @@ function ClaimModal(props) {
 
 export default function StakeV2({ setPendingTxns, connectWallet }) {
   const { active, library, account } = useWeb3React()
-  const chainId = 42161 // set chain to Arbitrum
+  const { chainId } = useChainId()
 
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false)
   const [stakeModalTitle, setStakeModalTitle] = useState("")
@@ -948,11 +957,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     fetcher: fetcher(library, ReaderV2, [vesterAddresses]),
   })
 
-  const poolAddress = "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E" // GMX/WETH
-
-  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR([`StakeV2:uniPoolSlot0:${active}`, chainId, poolAddress, "slot0"], {
-    fetcher: fetcher(library, UniPool),
-  })
+  const { data: gmxPrice, mutate: updateGmxPrice } = useGmxPrice()
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
   const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
@@ -960,28 +965,6 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   })
 
   const isGmxTransferEnabled = true
-
-  let gmxPrice
-  if (isGmxTransferEnabled) {
-    if (uniPoolSlot0 && nativeTokenPrice) {
-      const tokenA = new UniToken(chainId, nativeTokenAddress, 18, "SYMBOL", "NAME")
-      const tokenB = new UniToken(chainId, gmxAddress, 18, "SYMBOL", "NAME")
-
-      const pool = new Pool(
-        tokenA, // tokenA
-        tokenB, // tokenB
-        10000, // fee
-        uniPoolSlot0.sqrtPriceX96, // sqrtRatioX96
-        1, // liquidity
-        uniPoolSlot0.tick, // tickCurrent
-        []
-      )
-
-      const poolTokenPrice = pool.priceOf(tokenB).toSignificant(6)
-      const poolTokenPriceAmount = parseValue(poolTokenPrice, 18)
-      gmxPrice = poolTokenPriceAmount.mul(nativeTokenPrice).div(expandDecimals(1, 18))
-    }
-  }
 
   let esGmxSupplyUsd
   if (esGmxSupply && gmxPrice) {
@@ -1051,7 +1034,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         updateNativeTokenPrice(undefined, true)
         updateStakedGmxSupply(undefined, true)
         updateEsGmxSupply(undefined, true)
-        updateUniPoolSlot0(undefined, true)
+        updateGmxPrice(undefined, true)
         updateVestingInfo(undefined, true)
         updateGmxSupply(undefined, true)
       })
@@ -1061,7 +1044,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     }
   }, [library, active, updateWalletBalances, updateDepositBalances,
       updateStakingInfo, updateAums, updateNativeTokenPrice,
-      updateStakedGmxSupply, updateEsGmxSupply, updateUniPoolSlot0,
+      updateStakedGmxSupply, updateEsGmxSupply, updateGmxPrice,
       updateVestingInfo, updateGmxSupply])
 
   const showStakeGmxModal = () => {

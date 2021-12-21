@@ -1,4 +1,4 @@
-import { MAINNET, TESTNET, ARBITRUM_TESTNET, ARBITRUM } from "./Helpers"
+import { MAINNET, TESTNET, ARBITRUM_TESTNET, ARBITRUM, AVALANCHE } from "./Helpers"
 
 const constants = {
   [MAINNET]: {
@@ -29,6 +29,14 @@ const constants = {
     networkTokenSymbol: "ETH",
     defaultCollateralSymbol: "USDC",
     defaultFlagOrdersEnabled: false,
+    positionReaderPropsLength: 9,
+    v2: true
+  },
+
+  [AVALANCHE]: {
+    networkTokenSymbol: "AVAX",
+    defaultCollateralSymbol: "MIM",
+    defaultFlagOrdersEnabled: true,
     positionReaderPropsLength: 9,
     v2: true
   }
