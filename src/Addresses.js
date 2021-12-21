@@ -1,5 +1,5 @@
 const CONTRACTS = {
-  56: { // bsc
+  56: { // bsc mainnet
     Treasury: "0xa44E7252a0C137748F523F112644042E5987FfC7",
     BUSD: "0xe9e7cea3dedca5984780bafc599bd69add087d56",
     GMT: "0x99e92123eB77Bc8f999316f622e5222498438784",
@@ -92,7 +92,7 @@ const CONTRACTS = {
     GMT_USDG_GMX_IOU: "0x481312655F81b5e249780A6a49735335BF6Ca7f4",
     XGMT_USDG_GMX_IOU: "0x8095F1A92526C304623483018aA28cC6E62EB1e1"
   },
-  42161: { // arbitrum
+  42161: { // arbitrum mainnet
     Vault: "0x489ee077994B6658eAfA855C308275EAd8097C4A",
     Router: "0xaBBc5F99639c9B6bCb58544ddf04EFA6802F4064",
     Reader: "0xF09eD52638c22cc3f1D7F5583e3699A075e601B2",
@@ -118,18 +118,49 @@ const CONTRACTS = {
     GlpVester: "0xA75287d2f8b217273E7FCD7E86eF07D33972042E",
 
     OrderBook: "0x09f77E8A13De9a35a7231028187e9fD5DB8a2ACB",
-    OrderBookReader: "0xa27C20A7CF0e1C68C0460706bB674f98F362Bc21"
+    OrderBookReader: "0xa27C20A7CF0e1C68C0460706bB674f98F362Bc21",
+
+    UniswapGmxEthPool: "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E"
+  },
+  43114: { // avalanche
+    Vault: "0x9ab2De34A33fB459b538c43f251eB825645e8595",
+    Router: "0x5F719c2F1095F7B9fc68a68e35B51194f4b6abe8",
+    Reader: "0x9E372B445723e71117B59393aABa05aD3B54AD3f",
+    GlpManager: "0xe1ae4d4b06A5Fe1fc288f6B4CD72f9F8323B107F",
+    RewardRouter: "0x82147C5A7E850eA4E28155DF107F2590fD4ba327",
+    RewardReader: "0x956d63dd6540230487Eb7E599ef8B0C6FDcA4Ab8",
+    NATIVE_TOKEN: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+    GLP: "0x01234181085565ed162a948b6a5e88758CD7c7b8",
+    GMX: "0x62edc0692BD897D2295872a9FFCac5425011c661",
+    ES_GMX: "0xFf1489227BbAAC61a9209A08929E4c2a526DdD17",
+    BN_GMX: "0x8087a341D32D445d9aC8aCc9c14F5781E04A26d2",
+    USDG: "0xc0253c3cC6aa5Ab407b5795a04c28fB063273894",
+
+    StakedGmxTracker: "0x2bD10f8E93B3669b6d42E74eEedC65dd1B0a1342",
+    BonusGmxTracker: "0x908C4D94D34924765f1eDc22A1DD098397c59dD4",
+    FeeGmxTracker: "0x4d268a7d4C16ceB5a606c173Bd974984343fea13",
+    StakedGlpTracker: "0x9e295B5B976a184B14aD8cd72413aD846C299660",
+    FeeGlpTracker: "0xd2D1162512F927a7e282Ef43a362659E4F2a728F",
+
+    StakedGmxDistributor: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+    StakedGlpDistributor: "0xDd593Cf40734199afc9207eBe9ffF23dA4Bf7720",
+
+    GmxVester: "0x472361d3cA5F49c8E633FB50385BfaD1e018b445",
+    GlpVester: "0x62331A7Bd1dfB3A7642B7db50B5509E57CA3154A",
+
+    OrderBook: "0x4296e307f108B2f583FF2F7B7270ee7831574Ae5",
+    OrderBookReader: "0xccFE3E576f8145403d3ce8f3c2f6519Dae40683B"
   }
 }
 
-export function getContract(chainId, label) {
+export function getContract(chainId, name) {
   if (!CONTRACTS[chainId]) {
-    throw new Error(`Incorrect chainId ${chainId}`);
+    throw new Error(`Unknown chainId ${chainId}`);
   }
-  if (!CONTRACTS[chainId][label]) {
-    throw new Error(`Incorrect label "${label}" for chainId ${chainId}`);
+  if (!CONTRACTS[chainId][name]) {
+    throw new Error(`Unknown constant "${name}" for chainId ${chainId}`);
   }
-  return CONTRACTS[chainId][label]
+  return CONTRACTS[chainId][name]
 }
 
 export const XGMT_EXCLUDED_ACCOUNTS = [

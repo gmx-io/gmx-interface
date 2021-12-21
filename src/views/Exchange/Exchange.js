@@ -216,16 +216,16 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   const defaultCollateralSymbol = getConstant(chainId, "defaultCollateralSymbol")
   const defaultTokenSelection = useMemo(() => ({
     [SWAP]: {
-      from: getTokenBySymbol(chainId, "ETH").address,
-      to: getTokenBySymbol(chainId, "USDC").address,
+      from: AddressZero,
+      to: getTokenBySymbol(chainId, defaultCollateralSymbol).address,
     },
     [LONG]: {
-      from: getTokenBySymbol(chainId, "ETH").address,
-      to: getTokenBySymbol(chainId, "ETH").address,
+      from: AddressZero,
+      to: AddressZero,
     },
     [SHORT]: {
       from: getTokenBySymbol(chainId, defaultCollateralSymbol).address,
-      to: getTokenBySymbol(chainId, "ETH").address,
+      to: AddressZero,
     }
   }), [chainId, defaultCollateralSymbol])
 

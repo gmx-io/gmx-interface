@@ -16,7 +16,6 @@ export default function BuyGMXGLP() {
     window.scrollTo(0, 0)
   }, [])
 
-
   return (
     <div className="BuyGMXGLP">
       <div className="BuyGMXGLP-container default-container">
