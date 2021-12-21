@@ -28,11 +28,11 @@ import {
   approveTokens,
   getServerUrl,
   useLocalStorageSerializeKey,
+  useChainId,
   GLP_DECIMALS,
   USD_DECIMALS,
   BASIS_POINTS_DIVISOR,
-  SECONDS_PER_YEAR,
-  AVALANCHE
+  SECONDS_PER_YEAR
 } from '../../Helpers'
 import { callContract, useGmxPrice } from '../../Api'
 
@@ -831,7 +831,7 @@ function ClaimModal(props) {
 
 export default function StakeV2({ setPendingTxns, connectWallet }) {
   const { active, library, account } = useWeb3React()
-  const chainId = AVALANCHE
+  const { chainId } = useChainId()
 
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false)
   const [stakeModalTitle, setStakeModalTitle] = useState("")
