@@ -51,7 +51,7 @@ export default function BuyGMXGLP() {
               <div className="BuyGMXGLP-purchase-block-info__subtitle">Uniswap Arbitrum</div>
             </div>
           </a>
-          <div className="BuyGMXGLP-description">You can also buy GMX via Olympus Pro bonds with a discount and a small vesting period here.</div>
+          <div className="BuyGMXGLP-description">You can also buy GMX via Olympus Pro bonds with a discount and a small vesting period here:</div>
           <div className="GMX-block-section">
             <a href="https://pro.olympusdao.finance/#/partners/GMX" target="_blank" rel="noopener noreferrer" className="GLP-block">
               <div className="GLP-block-icon">

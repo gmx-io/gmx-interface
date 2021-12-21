@@ -195,7 +195,7 @@
 .GMX-block-section {
     display: flex;
     justify-content: center;
-    margin: 1.419rem auto;
+    margin: 1.419rem auto 3rem;
 }
 
 @media (max-width: 600px) {
