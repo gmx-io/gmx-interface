@@ -727,8 +727,8 @@ export default function SwapBox(props) {
         <a href={uniswapUrl} target="_blank" rel="noreferrer">Buy {swapTokenSymbol} on Uniswap</a>
       </Modal>
     )
-  }, [modalError, setModalError, fromToken.address, toToken.address, shortCollateralToken.address, isLong,
-    shortCollateralToken.symbol, toToken.symbol, fromToken.symbol])
+  }, [modalError, setModalError, fromToken?.address, toToken?.address, shortCollateralToken?.address, isLong,
+    shortCollateralToken?.symbol, toToken?.symbol, fromToken?.symbol])
 
   const isPrimaryEnabled = () => {
     if (!active) { return true }
