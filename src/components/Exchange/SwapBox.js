@@ -218,7 +218,7 @@ export default function SwapBox(props) {
   const tokens = getTokens(chainId)
   const fromTokens = tokens
   const stableTokens = tokens.filter(token => token.isStable)
-  const indexTokens = whitelistedTokens.filter(token => !token.isStable && !token.isWrapped)
+  const indexTokens = whitelistedTokens.filter(token => !token.isStable && !token.isNative)
   const shortableTokens = indexTokens.filter(token => token.isShortable)
   let toTokens = tokens
   if (isLong) {
@@ -259,7 +259,7 @@ export default function SwapBox(props) {
   const fromAmount = parseValue(fromValue, fromToken && fromToken.decimals)
   const toAmount = parseValue(toValue, toToken && toToken.decimals)
 
-  const isPotentialWrap = (fromToken.isNative && toToken.isWrapped) || (fromToken.isWrapped && toToken.isNative)
+  const isPotentialWrap = (fromToken.isNetwork && toToken.isNative) || (fromToken.isNative && toToken.isNetwork)
   const isWrapOrUnwrap = isSwap && isPotentialWrap
   const needApproval = fromTokenAddress !== AddressZero && tokenAllowance && fromAmount && fromAmount.gt(tokenAllowance) && !isWrapOrUnwrap
   const prevFromTokenAddress = usePrevious(fromTokenAddress)
@@ -532,11 +532,11 @@ export default function SwapBox(props) {
         return ["Select different tokens"]
       }
 
-      if (fromToken.isNative && toToken.isWrapped) {
+      if (fromToken.isNetwork && toToken.isNative) {
         return ["Select different tokens"]
       }
 
-      if (toToken.isNative && fromToken.isWrapped) {
+      if (toToken.isNetwork && fromToken.isNative) {
         return ["Select different tokens"]
       }
     }
@@ -762,10 +762,10 @@ export default function SwapBox(props) {
       if (toUsdMax && toUsdMax.lt(fromUsdMin.mul(95).div(100))) {
         return "High Slippage, Swap Anyway"
       }
-      if (toToken.isWrapped && fromToken.isNative) {
+      if (toToken.isNative && fromToken.isNetwork) {
         return "Wrap"
       }
-      if (toToken.isNative && fromToken.isWrapped) {
+      if (toToken.isNetwork && fromToken.isNative) {
         return "Unwrap"
       }
       return "Swap"
@@ -883,12 +883,12 @@ export default function SwapBox(props) {
   }
 
   const swap = async () => {
-    if (fromToken.isNative && toToken.isWrapped) {
+    if (fromToken.isNetwork && toToken.isNative) {
       wrap()
       return
     }
 
-    if (fromTokenAddress.isWrapped && toToken.isNative) {
+    if (fromTokenAddress.isNative && toToken.isNetwork) {
       unwrap()
       return
     }
@@ -1067,7 +1067,7 @@ export default function SwapBox(props) {
 
     const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner())
     const indexToken = getTokenInfo(infoTokens, indexTokenAddress)
-    const tokenSymbol = indexToken.isWrapped ? getConstant(chainId, "networkTokenSymbol") : indexToken.symbol
+    const tokenSymbol = indexToken.isNative ? getConstant(chainId, "networkTokenSymbol") : indexToken.symbol
     const successMsg = `Increased ${tokenSymbol} ${isLong ? "Long" : "Short"} by ${formatAmount(toUsdMax, USD_DECIMALS, 2)} USD`;
 
     Api.callContract(chainId, contract, method, params, {
@@ -1257,7 +1257,7 @@ export default function SwapBox(props) {
       return
     }
 
-    const maxAvailableAmount = fromToken.isNative ? fromBalance.sub(bigNumberify(DUST_BNB).mul(2)) : fromBalance
+    const maxAvailableAmount = fromToken.isNetwork ? fromBalance.sub(bigNumberify(DUST_BNB).mul(2)) : fromBalance
     setFromValue(formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals))
     setAnchorOnFromAmount(true)
   }
@@ -1266,7 +1266,7 @@ export default function SwapBox(props) {
     if (!fromToken || !fromBalance) {
       return false
     }
-    const maxAvailableAmount = fromToken.isNative ? fromBalance.sub(bigNumberify(DUST_BNB).mul(2)) : fromBalance
+    const maxAvailableAmount = fromToken.isNetwork ? fromBalance.sub(bigNumberify(DUST_BNB).mul(2)) : fromBalance
     return fromValue !== formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals)
   }
 

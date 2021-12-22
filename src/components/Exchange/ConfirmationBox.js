@@ -26,7 +26,7 @@ import Modal from '../Modal/Modal'
 import Tooltip from '../Tooltip/Tooltip'
 import Checkbox from '../Checkbox/Checkbox'
 import ExchangeInfoRow from './ExchangeInfoRow'
-import { getToken, getTokenBySymbol } from '../../data/Tokens'
+import { getToken, getNativeToken } from '../../data/Tokens'
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -108,17 +108,17 @@ export default function ConfirmationBox(props) {
   const title = getTitle();
 
   const existingOrder = useMemo(() => {
-    const WETH = getTokenBySymbol(chainId, "WETH")
+    const nativeToken = getNativeToken(chainId)
     for (const order of orders) {
       if (order.type !== INCREASE) continue
-      const sameToken = order.indexToken === WETH.address
-        ? toToken.isNative
+      const sameToken = order.indexToken === nativeToken.address
+        ? toToken.isNetwork
         : order.indexToken === toToken.address
       if (order.isLong === isLong && sameToken) {
         return order
       }
     }
-  }, [orders, chainId, isLong, toToken.address, toToken.isNative])
+  }, [orders, chainId, isLong, toToken.address, toToken.isNetwork])
 
   const getError = () => {
     if (!isSwap && hasExistingPosition && !isMarketOrder) {

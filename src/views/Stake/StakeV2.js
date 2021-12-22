@@ -35,6 +35,7 @@ import {
   SECONDS_PER_YEAR
 } from '../../Helpers'
 import { callContract, useGmxPrice } from '../../Api'
+import { getConstant } from '../../Constants'
 
 import useSWR from 'swr'
 
@@ -621,7 +622,19 @@ function VesterWithdrawModal(props) {
 }
 
 function CompoundModal(props) {
-  const { isVisible, setIsVisible, rewardRouterAddress, active, account, library, chainId, setPendingTxns, totalVesterRewards } = props
+  const {
+    isVisible,
+    setIsVisible,
+    rewardRouterAddress,
+    active,
+    account,
+    library,
+    chainId,
+    setPendingTxns,
+    totalVesterRewards,
+    networkTokenSymbol,
+    nativeTokenSymbol
+  } = props
   const [isCompounding, setIsCompounding] = useState(false)
 	const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey([chainId, "StakeV2-compound-should-claim-gmx"], true)
 	const [shouldStakeGmx, setShouldStakeGmx] = useLocalStorageSerializeKey([chainId, "StakeV2-compound-should-stake-gmx"], true)
@@ -732,12 +745,12 @@ function CompoundModal(props) {
           </div>
           <div>
   					<Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth}>
-  						Claim WETH Rewards
+  						Claim {nativeTokenSymbol} Rewards
   					</Checkbox>
           </div>
           <div>
   					<Checkbox isChecked={shouldConvertWeth} setIsChecked={setShouldConvertWeth}>
-  						Convert WETH to ETH
+  						Convert {nativeTokenSymbol} to {networkTokenSymbol}
   					</Checkbox>
           </div>
         </div>
@@ -752,7 +765,16 @@ function CompoundModal(props) {
 }
 
 function ClaimModal(props) {
-  const { isVisible, setIsVisible, rewardRouterAddress, library, chainId, setPendingTxns } = props
+  const {
+    isVisible,
+    setIsVisible,
+    rewardRouterAddress,
+    library,
+    chainId,
+    setPendingTxns,
+    networkTokenSymbol,
+    nativeTokenSymbol
+  } = props
   const [isClaiming, setIsClaiming] = useState(false)
 	const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey([chainId, "StakeV2-claim-should-claim-gmx"], true)
 	const [shouldClaimEsGmx, setShouldClaimEsGmx] = useLocalStorageSerializeKey([chainId, "StakeV2-claim-should-claim-es-gmx"], true)
@@ -810,12 +832,12 @@ function ClaimModal(props) {
           </div>
           <div>
   					<Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth}>
-  						Claim WETH Rewards
+  						Claim {nativeTokenSymbol} Rewards
   					</Checkbox>
           </div>
           <div>
   					<Checkbox isChecked={shouldConvertWeth} setIsChecked={setShouldConvertWeth}>
-  						Convert WETH to ETH
+  						Convert {networkTokenSymbol} to {nativeTokenSymbol}
   					</Checkbox>
           </div>
         </div>
@@ -899,6 +921,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   const vesterAddresses = [gmxVesterAddress, glpVesterAddress]
 
   const excludedEsGmxAccounts = [stakedGmxDistributorAddress, stakedGlpDistributorAddress]
+
+  const networkTokenSymbol = getConstant(chainId, "networkTokenSymbol")
+  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol")
 
   const walletTokens = [gmxAddress, esGmxAddress, glpAddress, stakedGmxTrackerAddress]
   const depositTokens = [
@@ -1216,6 +1241,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         stakeMethodName={stakeMethodName}
         hasMultiplierPoints={hasMultiplierPoints}
         setPendingTxns={setPendingTxns}
+        networkTokenSymbol={networkTokenSymbol}
+        nativeTokenSymbol={nativeTokenSymbol}
       />
       <UnstakeModal
         setPendingTxns={setPendingTxns}
@@ -1329,7 +1356,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return <>
                         <div className="Tooltip-row">
-                          <span className="label">ETH (WETH) APR</span>
+                          <span className="label">{networkTokenSymbol} ({nativeTokenSymbol}) APR</span>
                           <span>{formatKeyAmount(processedData, "gmxAprForETH", 2, 2, true)}%</span>
                         </div>
                         <div className="Tooltip-row">
@@ -1350,7 +1377,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return <>
                         <div className="Tooltip-row">
-                          <span className="label">ETH (WETH)</span>
+                          <span className="label">{networkTokenSymbol} ({nativeTokenSymbol})</span>
                           <span>{formatKeyAmount(processedData, "feeGmxTrackerRewards", 18, 4)} (${formatKeyAmount(processedData, "feeGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})</span>
                         </div>
                         <div className="Tooltip-row">
@@ -1415,7 +1442,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
-                <div className="label">ETH (WETH)</div>
+                <div className="label">{networkTokenSymbol} ({nativeTokenSymbol})</div>
                 <div>
                   {formatKeyAmount(processedData, "totalETHRewards", 18, 4, true)} (${formatKeyAmount(processedData, "totalETHRewardsUsd", USD_DECIMALS, 2, true)})
                 </div>
@@ -1500,7 +1527,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return <>
                         <div className="Tooltip-row">
-                          <span className="label">ETH (WETH) APR</span>
+                          <span className="label">{networkTokenSymbol} ({nativeTokenSymbol}) APR</span>
                           <span>{formatKeyAmount(processedData, "glpAprForETH", 2, 2, true)}%</span>
                         </div>
                         <div className="Tooltip-row">
@@ -1521,7 +1548,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return <>
                         <div className="Tooltip-row">
-                          <span className="label">ETH (WETH)</span>
+                          <span className="label">{networkTokenSymbol} ({nativeTokenSymbol})</span>
                           <span>{formatKeyAmount(processedData, "feeGlpTrackerRewards", 18, 4)} (${formatKeyAmount(processedData, "feeGlpTrackerRewardsUsd", USD_DECIMALS, 2, true)})</span>
                         </div>
                         <div className="Tooltip-row">
@@ -1586,7 +1613,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       renderContent={() => {
                         return <>
                           <div className="Tooltip-row">
-                            <span className="label">ETH (WETH) APR</span>
+                            <span className="label">{networkTokenSymbol} (nativeTokenSymbol) APR</span>
                             <span>{formatKeyAmount(processedData, "gmxAprForETH", 2, 2, true)}%</span>
                           </div>
                           <div className="Tooltip-row">

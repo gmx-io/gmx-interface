@@ -5,7 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
 import { ethers } from 'ethers'
 
-import { getToken, getTokens, getWhitelistedTokens } from '../../data/Tokens'
+import { getToken, getTokens, getWhitelistedTokens, getNativeToken, getNetworkToken } from '../../data/Tokens'
 import { getContract } from '../../Addresses'
 import {
   helperToast,
@@ -528,13 +528,16 @@ export default function GlpSwap(props) {
     maxSellAmount = glpBalance.sub(reservedAmount)
   }
 
+  const nativeTokenSymbol = getNativeToken(chainId).symbol
+  const networkTokenSymbol = getNetworkToken(chainId).symbol
+
   return (
     <div className="GlpSwap Page">
       {renderErrorModal()}
       <div className="Page-title-section">
         <div className="Page-title">{isBuying ? "Buy GLP" : "Sell GLP"}</div>
         {isBuying && <div className="Page-description">
-          Purchase <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">GLP tokens</a> to earn ETH fees from swaps and leverage trading.<br/>
+          Purchase <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">GLP tokens</a> to earn {networkTokenSymbol} fees from swaps and leverage trading.<br/>
           Note that there is a minimum holding time of 15 minutes after a purchase.<br/>
           <div>View <Link to="/earn">staking</Link> page.</div>
         </div>}
@@ -581,7 +584,7 @@ export default function GlpSwap(props) {
                 <Tooltip handle={`${formatAmount(totalApr, 2, 2, true)}%`} position="right-bottom" renderContent={() => {
                   return <>
                     <div className="Tooltip-row">
-                      <span className="label">ETH (WETH) APR</span>
+                      <span className="label">{networkTokenSymbol} ({nativeTokenSymbol}) APR</span>
                       <span>{formatAmount(feeGlpTrackerApr, 2, 2, false)}%</span>
                     </div>
                     <div className="Tooltip-row">

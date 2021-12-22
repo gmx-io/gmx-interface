@@ -26,14 +26,14 @@ const TOKENS = {
       address: ethers.constants.AddressZero,
       coingeckoUrl: "https://www.coingecko.com/en/coins/binance-coin",
       imageUrl: "https://assets.coingecko.com/coins/images/825/small/binance-coin-logo.png",
-      isNative: true
+      isNetwork: true
     },
     {
       name: "Wrapped Binance Coin",
       symbol: "WBNB",
       decimals: 18,
       address: getContract(56, "NATIVE_TOKEN"),
-      isWrapped: true,
+      isNative: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/binance-coin",
       imageUrl: "https://assets.coingecko.com/coins/images/825/small/binance-coin-logo.png",
       baseSymbol: "BNB"
@@ -93,14 +93,14 @@ const TOKENS = {
       symbol: "BNB",
       decimals: 18,
       address: ethers.constants.AddressZero,
-      isNative: true
+      isNetwork: true
     },
     {
       name: "Wrapped Binance Coin",
       symbol: "WBNB",
       decimals: 18,
       address: "0x612777Eea37a44F7a95E3B101C39e1E2695fa6C2",
-      isWrapped: true,
+      isNative: true,
       baseSymbol: "BNB"
     },
     {
@@ -130,7 +130,7 @@ const TOKENS = {
       symbol: "ETH",
       decimals: 18,
       address: ethers.constants.AddressZero,
-      isNative: true
+      isNetwork: true
     },
     // https://github.com/OffchainLabs/arbitrum/blob/950c2f91b2e951cd3764394e0a73eac3797aecf3/packages/arb-ts/src/lib/networks.ts#L65
     {
@@ -138,7 +138,7 @@ const TOKENS = {
       symbol: "WETH",
       decimals: 18,
       address: "0xB47e6A5f8b33b3F17603C83a0535A9dcD7E32681",
-      isWrapped: true,
+      isNative: true,
       baseSymbol: "ETH"
     },
     {
@@ -162,7 +162,7 @@ const TOKENS = {
       symbol: "ETH",
       decimals: 18,
       address: ethers.constants.AddressZero,
-      isNative: true,
+      isNetwork: true,
       isShortable: true
     },
     {
@@ -170,7 +170,7 @@ const TOKENS = {
       symbol: "WETH",
       decimals: 18,
       address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
-      isWrapped: true,
+      isNative: true,
       baseSymbol: "ETH"
     },
     {
@@ -236,7 +236,7 @@ const TOKENS = {
       symbol: "AVAX",
       decimals: 18,
       address: ethers.constants.AddressZero,
-      isNative: true,
+      isNetwork: true,
       isShortable: true
     },
     {
@@ -244,7 +244,7 @@ const TOKENS = {
       symbol: "WAVAX",
       decimals: 18,
       address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
-      isWrapped: true,
+      isNative: true,
       baseSymbol: "AVAX"
     },
     {
@@ -285,6 +285,26 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
     TOKENS_MAP[chainId][token.address] = token
     TOKENS_BY_SYMBOL_MAP[chainId][token.symbol] = token
   }
+}
+
+const NATIVE_TOKENS = {}
+const NETWORK_TOKENS = {}
+for (const chainId of CHAIN_IDS) {
+  for (const token of TOKENS[chainId]) {
+    if (token.isNative) {
+      NATIVE_TOKENS[chainId] = token
+    } else if (token.isNetwork) {
+      NETWORK_TOKENS[chainId] = token
+    }
+  }
+}
+
+export function getNativeToken(chainId) {
+  return NATIVE_TOKENS[chainId]
+}
+
+export function getNetworkToken(chainId) {
+  return NETWORK_TOKENS[chainId]
 }
 
 export function getTokens(chainId) {
