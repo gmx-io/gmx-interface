@@ -1567,6 +1567,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               <div className="App-card-options">
                 <Link className="App-button-option App-card-option" to="/buy_glp">Buy GLP</Link>
                 <Link className="App-button-option App-card-option" to="/sell_glp">Sell GLP</Link>
+                <a className="App-button-option App-card-option" href="https://app.insurace.io/Insurance/Cart?id=124&referrer=545066382753150189457177837072918687520318754040" target="_blank" rel="noopener noreferrer">Purchase Insurance</a>
               </div>
             </div>
           </div>
