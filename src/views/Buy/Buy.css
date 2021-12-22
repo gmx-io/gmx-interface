@@ -207,7 +207,7 @@
 .GMX-block:active::before {
     content: " ";
     position: absolute;
-    background: #ffffff3d;
+    background: #ffffff29;
     width: 100%;
     height: 100%;
     top: 0;
