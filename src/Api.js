@@ -62,7 +62,7 @@ const arbitrumGraphClient = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-const AVALANCHE_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/gdev8317/gmx-avalanche-staging"
+const AVALANCHE_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats"
 const avalancheGraphClient = new ApolloClient({
   uri: AVALANCHE_GRAPH_API_URL,
   cache: new InMemoryCache()
