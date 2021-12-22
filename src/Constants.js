@@ -27,6 +27,7 @@ const constants = {
 
   [ARBITRUM]: {
     networkTokenSymbol: "ETH",
+    nativeTokenSymbol: "WETH",
     defaultCollateralSymbol: "USDC",
     defaultFlagOrdersEnabled: false,
     positionReaderPropsLength: 9,
@@ -35,6 +36,7 @@ const constants = {
 
   [AVALANCHE]: {
     networkTokenSymbol: "AVAX",
+    nativeTokenSymbol: "WAVAX",
     defaultCollateralSymbol: "MIM",
     defaultFlagOrdersEnabled: true,
     positionReaderPropsLength: 9,

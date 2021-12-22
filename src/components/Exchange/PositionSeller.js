@@ -42,7 +42,6 @@ import Checkbox from "../Checkbox/Checkbox"
 import Tab from "../Tab/Tab"
 import Modal from "../Modal/Modal"
 import ExchangeInfoRow from './ExchangeInfoRow'
-import { getTokenBySymbol } from '../../data/Tokens'
 
 const { AddressZero } = ethers.constants
 
@@ -132,7 +131,6 @@ export default function PositionSeller(props) {
     if (!orders || !position) {
       return null
     }
-    const WETH = getTokenBySymbol(chainId, "WETH")
     for (const order of orders) {
       // only Stop orders can't be executed without corresponding opened position
       if (order.type !== DECREASE) continue
@@ -143,14 +141,14 @@ export default function PositionSeller(props) {
         if (triggerAboveThreshold !== order.triggerAboveThreshold) continue
       }
 
-      const sameToken = order.indexToken === WETH.address
-        ? position.indexToken.isNative
+      const sameToken = order.indexToken === nativeTokenAddress
+        ? position.indexToken.isNetwork
         : order.indexToken === position.indexToken.address
       if (order.isLong === position.isLong && sameToken) {
         return order
       }
     }
-  }, [position, orders, triggerPriceUsd, chainId, orderOption])
+  }, [position, orders, triggerPriceUsd, orderOption, nativeTokenAddress])
 
   const needOrderBookApproval = orderOption === STOP && !orderBookApproved
 
@@ -380,8 +378,8 @@ export default function PositionSeller(props) {
 
     setIsSubmitting(true)
 
-    const collateralTokenAddress = position.collateralToken.isNative ? nativeTokenAddress : position.collateralToken.address
-    const indexTokenAddress = position.indexToken.isNative ? nativeTokenAddress : position.indexToken.address
+    const collateralTokenAddress = position.collateralToken.isNetwork ? nativeTokenAddress : position.collateralToken.address
+    const indexTokenAddress = position.indexToken.isNetwork ? nativeTokenAddress : position.indexToken.address
 
     let params;
     let method;
