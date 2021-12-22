@@ -90,7 +90,7 @@ export default function GlpSwap(props) {
   const chainId = AVALANCHE
   const tokens = getTokens(chainId)
   const whitelistedTokens = getWhitelistedTokens(chainId)
-  const tokenList = whitelistedTokens.filter(t => !t.isWrapped)
+  const tokenList = whitelistedTokens.filter(t => !t.isNative)
   const [swapValue, setSwapValue] = useState("")
   const [glpValue, setGlpValue] = useState("")
   const [swapTokenAddress, setSwapTokenAddress] = useLocalStorageSerializeKey([chainId, `${swapLabel}-swap-token-address`], AddressZero)
