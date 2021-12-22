@@ -309,19 +309,19 @@ async function getChartPricesFromGmxGraph(tokenAddress, chainId) {
   const graphClient = getGmxGraphClient(chainId)
 
   const query = gql(`{
-    chainlinkPrices(first: 1000 orderBy: timestamp orderDirection: desc where: {token: "${tokenAddress}"}) {
+    prices: chainlinkPrices(first: 1000 orderBy: timestamp orderDirection: desc where: {token: "${tokenAddress.toLowerCase()}"}) {
       timestamp
       value
     }
   }`)
   const response = await graphClient.query({query})
 
-  const prices = response.data.chainlinkPrices.map(price => {
+  const prices = response.data.prices.map(price => {
     return [price.timestamp, Number(price.value) / 1e8]
   })
 
   if (prices.length < 300) {
-    throw new Error(`Not enough price data for token ${tokenAddress} chainId: ${chainId}`)
+    throw new Error(`Only ${prices.length} price records for token ${tokenAddress} chainId: ${chainId}`)
   }
 
   prices.sort(([timeA], [timeB]) => timeA - timeB)
