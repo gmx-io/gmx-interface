@@ -27,11 +27,11 @@ const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
   /* eslint-disable array-callback-return */
   return orders.filter(order => {
     if (order.type === SWAP) { return false }
-    const sameToken = order.indexToken === nativeTokenAddress
+    const hasMatchingIndexToken = order.indexToken === nativeTokenAddress
       ? position.indexToken.isNative
       : order.indexToken === position.indexToken.address
-    if (order.isLong === position.isLong
-      && sameToken) {
+    const hasMatchingCollateralToken = order.collateralToken === position.collateralToken.address
+    if (order.isLong === position.isLong && hasMatchingIndexToken && hasMatchingCollateralToken) {
       return true
     }
   }).map(order => {
@@ -150,6 +150,7 @@ export default function PositionsList(props) {
             </div>
           )}
           {positions.map(position => {
+            const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress)
             const liquidationPrice = getLiquidationPrice(position)
             return (<div key={position.key} className="App-card">
               <div className="App-card-title">
@@ -221,6 +222,21 @@ export default function PositionsList(props) {
                         </>
                       }}
                     />
+                  </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">Orders</div>
+                  <div>
+                    {positionOrders.length === 0 && "None"}
+                    {positionOrders.map(order => {
+                      return <div key={`${order.isLong}-${order.type}-${order.index}`} className="Position-list-order">
+                        {order.triggerAboveThreshold ? ">" : "<"} {formatAmount(order.triggerPrice, 30, 2, true)}:
+                        {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
+                        {order.error &&
+                          <>, <span className="negative">{order.error}</span></>
+                        }
+                      </div>
+                    })}
                   </div>
                 </div>
               </div>
@@ -326,7 +342,7 @@ export default function PositionsList(props) {
                   <Tooltip
                     handle={`Orders (${positionOrders.length})`}
                     position="left-bottom"
-                    handleClassName={cx(['Exchange-list-info-label', 'plain', 'clickable'], {muted: !hasOrderError, negative: hasOrderError})}
+                    handleClassName={cx(['Exchange-list-info-label', 'Exchange-position-list-orders', 'plain', 'clickable'], {muted: !hasOrderError, negative: hasOrderError})}
                     renderContent={() => {
                       return <>
                         <strong>Active Orders</strong>
