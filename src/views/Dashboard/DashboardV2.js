@@ -177,7 +177,7 @@ export default function DashboardV2() {
 
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker")
 
-  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR(["StakeV2:stakedGmxSupply", chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
+  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR([`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
     fetcher: fetcher(library, Token),
   })
 
