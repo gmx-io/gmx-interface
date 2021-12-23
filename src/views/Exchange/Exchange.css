@@ -40,6 +40,10 @@
   padding-top: 2rem;
 }
 
+.Exchange-position-list-orders {
+  white-space: nowrap;
+}
+
 .Exchange-lists.large {
   display: block;
 }

@@ -27,6 +27,8 @@ const IS_CANDLESTICKS = true
 
 const PRICE_LINE_TEXT_WIDTH = 15
 
+const timezoneOffset = -(new Date()).getTimezoneOffset() * 60
+
 function getChartToken(swapOption, fromToken, toToken, chainId) {
   if (!fromToken || !toToken) { return }
 
@@ -120,7 +122,7 @@ function getPriceData(prices, chartToken, period) {
       let time
 
       priceData.forEach((item, i) => {
-        time = item.time
+        time = item.time + timezoneOffset
         const frame = Math.floor(time / PERIOD)
         const value = item.value
 
@@ -207,7 +209,7 @@ const getChartOptions = (width, height) => ({
   localization: {
     // https://github.com/tradingview/lightweight-charts/blob/master/docs/customization.md#time-format
     timeFormatter: businessDayOrTimestamp => {
-      return formatDateTime(businessDayOrTimestamp);
+      return formatDateTime(businessDayOrTimestamp - timezoneOffset);
     }
   },
   grid: {
@@ -310,8 +312,8 @@ export default function ExchangeTVChart(props) {
   }, [marketName, previousMarketName])
 
   const scaleChart = useCallback(() => {
-    const from = Date.now() / 1000 - 7 * 86400 * PERIODS[period] / 2;
-    const to = Date.now() / 1000;
+    const from = Date.now() / 1000 - 7 * 86400 * PERIODS[period] / 2 + timezoneOffset;
+    const to = Date.now() / 1000 + timezoneOffset;
     currentChart.timeScale().setVisibleRange({from, to});
   }, [currentChart, period]);
 
@@ -437,7 +439,7 @@ export default function ExchangeTVChart(props) {
 
     const className = cx({
       "ExchangeChart-bottom-stats": true,
-      positive: candlestick.open < candlestick.close,
+      positive: candlestick.open <= candlestick.close,
       negative: candlestick.open > candlestick.close,
       [`length-${String(parseInt(candlestick.close)).length}`]: true
     })
