@@ -291,7 +291,7 @@ async function getChartPricesFromStats(marketName, chainId) {
     : 'https://stats.gmx.io/'
   const from = Math.floor((Date.now() - 86400 * 1000 * 60) / 1000) // 2 months
   const url = `${hostname}api/chart/${symbol}?from=${from}&preferableChainId=${chainId}`
-  const TIMEOUT = 5000
+  const TIMEOUT = 3000
   const res = await new Promise((resolve, reject) => {
     fetch(url).then(resolve)
     setTimeout(() => reject(new Error(`${url} request timeout`)), TIMEOUT)
