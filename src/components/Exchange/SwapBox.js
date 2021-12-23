@@ -1242,13 +1242,13 @@ export default function SwapBox(props) {
   if (isLong && toTokenInfo && toTokenInfo.fundingRate) {
     borrowFeeText = formatAmount(toTokenInfo.fundingRate, 4, 4) + "% / 1h"
     if (toTokenInfo.fundingRate.eq(0)) {
-      hasZeroBorrowFee = true
+      // hasZeroBorrowFee = true
     }
   }
   if (isShort && shortCollateralToken && shortCollateralToken.fundingRate) {
     borrowFeeText = formatAmount(shortCollateralToken.fundingRate, 4, 4) + "% / 1h"
     if (shortCollateralToken.fundingRate.eq(0)) {
-      hasZeroBorrowFee = true
+      // hasZeroBorrowFee = true
     }
   }
 
@@ -1628,7 +1628,9 @@ export default function SwapBox(props) {
                     {isShort && "There are more longs than shorts, borrow fees for shorting is currently zero"}
                   </div>}
                   {!hasZeroBorrowFee && <div>
-                    The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour.
+                    The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour.<br/>
+                    <br/>
+                    {isShort && `You can change the "Profits In" token above to find lower fees`}
                   </div>}
                   <br/>
                   <a href="https://gmxio.gitbook.io/gmx/trading#opening-a-position" target="_blank" rel="noopener noreferrer">More Info</a>
