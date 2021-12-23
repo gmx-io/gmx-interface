@@ -401,8 +401,12 @@ button.App-connect-wallet:hover {
   text-align: right;
 }
 
+.App-card-options {
+  margin: -0.4rem;
+}
+
 .App-card-option {
-  margin-right: 0.8rem;
+  margin: 0.4rem;
 }
 
 .App-header a.App-header-link-main, .App-header .App-header-link-main {
