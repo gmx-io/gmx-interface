@@ -382,7 +382,7 @@ export function useTrades(chainId, account) {
 }
 
 export function useChartPrices(marketName, chainId) {
-  const { data: prices = [], mutate: updatePrices } = useSWR(['getChartPrices', marketName, chainId], {
+  const { data: prices = [], mutate: updatePrices } = useSWR(marketName && ['getChartPrices', marketName, chainId], {
     fetcher: async () => {
       try {
         return await getChartPricesFromStats(marketName, chainId)
