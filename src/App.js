@@ -309,8 +309,8 @@ function FullApp() {
     setIsSettingsVisible(true)
   }
 
-  const showNetworkSelectorModal = () => {
-    setIsNetworkSelectorModalVisible(!isNetworkSelectorModalVisible)
+  const showNetworkSelectorModal = (val) => {
+    setIsNetworkSelectorModalVisible(val)
   }
 
   const saveAndCloseSettings = () => {

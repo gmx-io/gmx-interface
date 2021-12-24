@@ -24,6 +24,7 @@ export default function NetworkSelector(props) {
 
   useEffect(() => {
     if (!networkChanged) {
+      console.log(label)
       setSelectedLabel(label)
     }
   }, [label, networkChanged])
@@ -44,7 +45,12 @@ export default function NetworkSelector(props) {
   const onSelect = async (token) => {
     setIsModalVisible(false)
     props.showModal(false)
-    const network = await props.onSelect(token)
+    let network
+    try {
+      network = await props.onSelect(token)
+    } catch (error) {
+      console.log(error)
+    }
     setSelectedLabel(network)
     setNetworkChanged(true)
   }
