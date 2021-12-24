@@ -23,10 +23,7 @@ export default function NetworkSelector(props) {
   const [networkChanged, setNetworkChanged] = useState(false)
 
   useEffect(() => {
-    if (!networkChanged) {
-      console.log(label)
-      setSelectedLabel(label)
-    }
+    setSelectedLabel(label)
   }, [label, networkChanged])
 
   function renderOption(option) {
@@ -48,10 +45,10 @@ export default function NetworkSelector(props) {
     let network
     try {
       network = await props.onSelect(token)
+      setSelectedLabel(network)
     } catch (error) {
       console.log(error)
     }
-    setSelectedLabel(network)
     setNetworkChanged(true)
   }
 
@@ -123,6 +120,8 @@ export default function NetworkSelector(props) {
   }
 
   var value = find(options, (o) => { return o.label === selectedLabel })
+
+  value = value || options[0]
 
   const valueIcon = require('../../img/' + value.icon);
 
