@@ -178,9 +178,9 @@ export default function OrdersList(props) {
       if (order.type === DECREASE) {
         const positionForOrder = getPositionForOrder(order, positionsMap)
         if (!positionForOrder) {
-          error = "There is no open position for the order, it can't be executed"
+          error = "No open position, order cannot be executed"
         } else if (positionForOrder.size.lt(order.sizeDelta)) {
-          error = "The order size is bigger than position, it can't be executed"
+          error = "Order size exceeds position size, order cannot be executed"
         }
       }
 
