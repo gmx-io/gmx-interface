@@ -39,6 +39,9 @@ import Token from '../../abis/Token.json'
 
 import Footer from "../../Footer"
 
+import arbitrumIcon from "../../img/ic_arbitrum_16.svg"
+import avalancheIcon from "../../img/ic_avalanche_16.svg"
+
 import "./DashboardV2.css"
 
 const { AddressZero } = ethers.constants
@@ -548,7 +551,12 @@ export default function DashboardV2() {
         </div>
         <div className="DashboardV2-projects">
           <div className="App-card">
-            <div className="App-card-title">GMX Blueberry Club</div>
+            <div className="App-card-title">
+              GMX Blueberry Club
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -576,7 +584,12 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GMX Leaderboard</div>
+            <div className="App-card-title">
+              GMX Leaderboard
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -604,7 +617,12 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GMX Positions Bot</div>
+            <div className="App-card-title">
+              GMX Positions Bot
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -632,7 +650,12 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GMX Yield List</div>
+            <div className="App-card-title">
+              GMX Yield List
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -660,7 +683,12 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GMX Charts</div>
+            <div className="App-card-title">
+              GMX Charts
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -688,7 +716,13 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GMX Feedback</div>
+            <div className="App-card-title">
+              GMX Feedback
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+                <img src={avalancheIcon} alt="avalancheIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
