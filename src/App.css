@@ -365,6 +365,7 @@ button.App-connect-wallet:hover {
   letter-spacing: 0px;
   color: #FFFFFF;
   margin-bottom: 1rem;
+  display: flex;
 }
 
 .App-card-title-small {
