@@ -287,27 +287,29 @@ async function getChartPricesFromStats(marketName, chainId) {
     symbol = 'ETH'
   }
   const hostname = document.location.hostname === 'localhost' && false
-    ? 'http://localhost:3105/'
+    ? 'http://localhost:3113/'
     : 'https://stats.gmx.io/'
   const from = Math.floor((Date.now() - 86400 * 1000 * 60) / 1000) // 2 months
   const url = `${hostname}api/chart/${symbol}?from=${from}&preferableChainId=${chainId}`
   const TIMEOUT = 3000
   const res = await new Promise((resolve, reject) => {
-    fetch(url).then(resolve)
     setTimeout(() => reject(new Error(`${url} request timeout`)), TIMEOUT)
+    fetch(url).then(resolve).catch(reject)
   })
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText}`)
   }
   const json = await res.json()
 
+  if (!json || json.length < 100) {
+    throw new Error(`not enough prices: ${json?.length}`)
+  }
+
   const OBSOLETE_THRESHOLD = 60 * 60 * 3 // chainlink updates on Arbitrum are not too frequent
-  if (json && json.length) {
-    const lastTs = json[json.length - 1][0]
-    const diff = Date.now() / 1000 - lastTs
-    if (diff > OBSOLETE_THRESHOLD) {
-      throw new Error('chart data is obsolete, last price record at ' + new Date(lastTs * 1000))
-    }
+  const lastTs = json[json.length - 1][0]
+  const diff = Date.now() / 1000 - lastTs
+  if (diff > OBSOLETE_THRESHOLD) {
+    throw new Error('chart data is obsolete, last price record at ' + new Date(lastTs * 1000))
   }
   return json
 }
@@ -380,7 +382,7 @@ export function useTrades(chainId, account) {
 }
 
 export function useChartPrices(marketName, chainId) {
-  const { data: prices = [], mutate: updatePrices } = useSWR(['getChartPrices', marketName, chainId], {
+  const { data: prices = [], mutate: updatePrices } = useSWR(marketName && ['getChartPrices', marketName, chainId], {
     fetcher: async () => {
       try {
         return await getChartPricesFromStats(marketName, chainId)
