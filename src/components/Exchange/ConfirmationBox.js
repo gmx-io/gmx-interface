@@ -4,8 +4,6 @@ import {
 	PRECISION,
 	BASIS_POINTS_DIVISOR,
   LIMIT,
-  SWAP_ORDER_EXECUTION_GAS_FEE,
-  INCREASE_ORDER_EXECUTION_GAS_FEE,
   MIN_PROFIT_TIME,
   INCREASE,
 	expandDecimals,
@@ -20,6 +18,7 @@ import {
   formatDateTime,
   calculatePositionDelta
 } from '../../Helpers'
+import { getConstant } from '../../Constants'
 
 import { BsArrowRight } from 'react-icons/bs'
 import Modal from '../Modal/Modal'
@@ -297,17 +296,19 @@ export default function ConfirmationBox(props) {
     );
   }, [isSwap, fromAmount, fromToken, toToken, fromUsdMin, toUsdMax, isLong, toAmount])
 
+  const SWAP_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, 'SWAP_ORDER_EXECUTION_GAS_FEE')
+  const INCREASE_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, 'INCREASE_ORDER_EXECUTION_GAS_FEE')
+  const executionFee = isSwap ? SWAP_ORDER_EXECUTION_GAS_FEE : INCREASE_ORDER_EXECUTION_GAS_FEE
   const renderExecutionFee = useCallback(() => {
     if (isMarketOrder) {
       return null;
     }
-    const fee = isSwap ? SWAP_ORDER_EXECUTION_GAS_FEE : INCREASE_ORDER_EXECUTION_GAS_FEE
     return (
       <ExchangeInfoRow label="Execution Fee">
-        {formatAmount(fee, 18, 4)} ETH
+        {formatAmount(executionFee, 18, 4)} ETH
       </ExchangeInfoRow>
     );
-  }, [isMarketOrder, isSwap])
+  }, [isMarketOrder, executionFee])
 
   const renderAvailableLiquidity = useCallback(() => {
     let availableLiquidity

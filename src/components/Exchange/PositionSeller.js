@@ -11,7 +11,6 @@ import {
 	DUST_USD,
 	BASIS_POINTS_DIVISOR,
 	USDG_ADDRESS,
-  DECREASE_ORDER_EXECUTION_GAS_FEE,
   SLIPPAGE_BPS_KEY,
   TRIGGER_PREFIX_BELOW,
   TRIGGER_PREFIX_ABOVE,
@@ -35,6 +34,7 @@ import {
   formatDateTime,
   getTimeRemaining
 } from "../../Helpers"
+import { getConstant } from '../../Constants'
 import { createDecreaseOrder, callContract } from "../../Api"
 import { getContract } from "../../Addresses"
 import Router from "../../abis/Router.json"
@@ -496,6 +496,7 @@ export default function PositionSeller(props) {
     }
   }
 
+  const DECREASE_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, 'DECREASE_ORDER_EXECUTION_GAS_FEE')
   function renderExecutionFee() {
     if (orderOption !== STOP) {
       return null;
