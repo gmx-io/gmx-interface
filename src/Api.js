@@ -12,10 +12,8 @@ import Router from './abis/Router.json'
 import UniPool from './abis/UniPool.json'
 
 import { getContract } from './Addresses'
+import { getConstant } from './Constants'
 import {
-  SWAP_ORDER_EXECUTION_GAS_FEE,
-  INCREASE_ORDER_EXECUTION_GAS_FEE,
-  DECREASE_ORDER_EXECUTION_GAS_FEE,
   ARBITRUM,
   AVALANCHE,
   // DEFAULT_GAS_LIMIT,
@@ -305,36 +303,71 @@ export function usePositionsForOrders(chainId, library, orders) {
   return positions
 }
 
-async function getChartPricesFromGmxGraph(tokenAddress, chainId) {
-  const graphClient = getGmxGraphClient(chainId)
-
-  const query = gql(`{
-    prices: chainlinkPrices(first: 1000 orderBy: timestamp orderDirection: desc where: {token: "${tokenAddress.toLowerCase()}"}) {
-      timestamp
-      value
-    }
-  }`)
-  const response = await graphClient.query({query})
-
-  const prices = response.data.prices.map(price => {
-    return [price.timestamp, Number(price.value) / 1e8]
+async function getChartPricesFromStats(marketName, chainId) {
+  let symbol = marketName.split('_')[0]
+  if (symbol === 'WBTC') {
+    symbol = 'BTC'
+  } else if (symbol === 'WETH') {
+    symbol = 'ETH'
+  }
+  const hostname = document.location.hostname === 'localhost' && false
+    ? 'http://localhost:3113/'
+    : 'https://stats.gmx.io/'
+  const from = Math.floor((Date.now() - 86400 * 1000 * 60) / 1000) // 2 months
+  const url = `${hostname}api/chart/${symbol}?from=${from}&preferableChainId=${chainId}`
+  const TIMEOUT = 3000
+  const res = await new Promise((resolve, reject) => {
+    setTimeout(() => reject(new Error(`${url} request timeout`)), TIMEOUT)
+    fetch(url).then(resolve).catch(reject)
   })
+  if (!res.ok) {
+    throw new Error(`${res.status} ${res.statusText}`)
+  }
+  const json = await res.json()
 
-  if (prices.length < 300) {
-    throw new Error(`Only ${prices.length} price records for token ${tokenAddress} chainId: ${chainId}`)
+  if (!json || json.length < 100) {
+    throw new Error(`not enough prices: ${json?.length}`)
   }
 
-  prices.sort(([timeA], [timeB]) => timeA - timeB)
-
-  const OBSOLETE_THRESHOLD = 60 * 60 * 3 // chainlink updates on Arbitrum/Avalanche are not too frequent
-  const lastTs = prices[prices.length - 1][0]
-  const diff = parseInt(Date.now() / 1000) - lastTs
+  const OBSOLETE_THRESHOLD = 60 * 60 * 3 // chainlink updates on Arbitrum are not too frequent
+  const lastTs = json[json.length - 1][0]
+  const diff = Date.now() / 1000 - lastTs
   if (diff > OBSOLETE_THRESHOLD) {
-    throw new Error(`chart data is obsolete, last price record at ${new Date(lastTs * 1000)}`)
+    throw new Error('chart data is obsolete, last price record at ' + new Date(lastTs * 1000))
   }
-
-  return prices
+  return json
 }
+
+// async function getChartPricesFromGmxGraph(tokenAddress, chainId) {
+//   const graphClient = getGmxGraphClient(chainId)
+
+//   const query = gql(`{
+//     prices: chainlinkPrices(first: 1000 orderBy: timestamp orderDirection: desc where: {token: "${tokenAddress.toLowerCase()}"}) {
+//       timestamp
+//       value
+//     }
+//   }`)
+//   const response = await graphClient.query({query})
+
+//   const prices = response.data.prices.map(price => {
+//     return [price.timestamp, Number(price.value) / 1e8]
+//   })
+
+//   if (prices.length < 300) {
+//     throw new Error(`Only ${prices.length} price records for token ${tokenAddress} chainId: ${chainId}`)
+//   }
+
+//   prices.sort(([timeA], [timeB]) => timeA - timeB)
+
+//   const OBSOLETE_THRESHOLD = 60 * 60 * 3 // chainlink updates on Arbitrum/Avalanche are not too frequent
+//   const lastTs = prices[prices.length - 1][0]
+//   const diff = parseInt(Date.now() / 1000) - lastTs
+//   if (diff > OBSOLETE_THRESHOLD) {
+//     throw new Error(`chart data is obsolete, last price record at ${new Date(lastTs * 1000)}`)
+//   }
+
+//   return prices
+// }
 
 function getChartPricesFromGraph(marketName) {
   if (marketName.startsWith('WBTC') || marketName.startsWith('WETH') || marketName.startsWith('WBNB') || marketName.startsWith('WAVAX')) {
@@ -449,7 +482,7 @@ export function useChartPrices(marketName, tokenAddress, chainId) {
   const { data: prices = [], mutate: updatePrices } = useSWR(['getChartPrices', marketName, chainId], {
     fetcher: async () => {
       try {
-        return await getChartPricesFromGmxGraph(tokenAddress, chainId)
+        return await getChartPricesFromStats(marketName, chainId)
       } catch (ex) {
         console.warn('chart request failed')
         console.warn(ex)
@@ -489,7 +522,7 @@ export async function createSwapOrder(
   nativeTokenAddress,
   opts = {}
 ) {
-  const executionFee = SWAP_ORDER_EXECUTION_GAS_FEE
+  const executionFee = getConstant(chainId, 'SWAP_ORDER_EXECUTION_GAS_FEE')
   const triggerAboveThreshold = false
   let shouldWrap = false
   let shouldUnwrap = false
@@ -544,7 +577,7 @@ export async function createIncreaseOrder(
   path = replaceNativeTokenAddress(path, nativeTokenAddress)
   const shouldWrap = fromETH
   const triggerAboveThreshold = !isLong
-  const executionFee = INCREASE_ORDER_EXECUTION_GAS_FEE
+  const executionFee = getConstant(chainId, 'INCREASE_ORDER_EXECUTION_GAS_FEE')
 
   const params = [
     path,
@@ -586,7 +619,7 @@ export async function createDecreaseOrder(
   invariant(indexTokenAddress !== AddressZero, "indexToken is 0")
   invariant(collateralTokenAddress !== AddressZero, "collateralToken is 0")
 
-  const executionFee = DECREASE_ORDER_EXECUTION_GAS_FEE
+  const executionFee = getConstant(chainId, 'DECREASE_ORDER_EXECUTION_GAS_FEE')
 
   const params = [
     indexTokenAddress,
