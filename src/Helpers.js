@@ -549,11 +549,11 @@ export function getNextToAmount(chainId, fromAmount, fromTokenAddress, toTokenAd
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress)
   const toToken = getTokenInfo(infoTokens, toTokenAddress)
 
-  if (fromToken.isNetwork && toToken.isNative) {
+  if (fromToken.isNative && toToken.isWrapped) {
       return { amount: fromAmount }
   }
 
-  if (fromToken.isNative && toToken.isNetwork) {
+  if (fromToken.isWrapped && toToken.isNative) {
       return { amount: fromAmount }
   }
 

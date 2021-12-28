@@ -25,7 +25,7 @@ import './TradeHistory.css';
 const { AddressZero } = ethers.constants
 
 function getPositionDisplay(increase, indexToken, isLong, sizeDelta) {
-  const symbol = indexToken ? (indexToken.isNative ? indexToken.baseSymbol : indexToken.symbol) : ""
+  const symbol = indexToken ? (indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol) : ""
   return `
     ${increase ? "Increase" : "Decrease"} ${symbol} ${isLong ? "Long" : "Short"}
     ${increase ? "+" : "-"}${formatAmount(sizeDelta, USD_DECIMALS, 2, true)} USD`

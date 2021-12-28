@@ -274,7 +274,7 @@ function FullApp() {
   const connectWallet = () => setWalletModalVisible(true)
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(undefined)
-  const [isNetworkSelectorModalVisible, setIsNetworkSelectorModalVisible] = useState(false)
+  const [isNativeSelectorModalVisible, setisNativeSelectorModalVisible] = useState(false)
   const fadeVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 }
@@ -310,7 +310,7 @@ function FullApp() {
   }
 
   const showNetworkSelectorModal = (val) => {
-    setIsNetworkSelectorModalVisible(val)
+    setisNativeSelectorModalVisible(val)
   }
 
   const saveAndCloseSettings = () => {
@@ -402,16 +402,16 @@ function FullApp() {
                 </motion.div>}
             </AnimatePresence>
           }
-          {isNetworkSelectorModalVisible &&
+          {isNativeSelectorModalVisible &&
             <AnimatePresence>
-              {isNetworkSelectorModalVisible &&
+              {isNativeSelectorModalVisible &&
                 <motion.div className="selector-backdrop"
                   initial="hidden"
                   animate="visible"
                   exit="hidden"
                   variants={fadeVariants}
                   transition={{ duration: 0.2 }}
-                  onClick={() => setIsNetworkSelectorModalVisible(!isNetworkSelectorModalVisible)}
+                  onClick={() => setisNativeSelectorModalVisible(!isNativeSelectorModalVisible)}
                 >
                 </motion.div>}
             </AnimatePresence>

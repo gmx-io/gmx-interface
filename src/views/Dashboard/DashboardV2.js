@@ -142,7 +142,7 @@ export default function DashboardV2() {
   const tokens = getTokens(chainId)
   const whitelistedTokens = getWhitelistedTokens(chainId)
   const whitelistedTokenAddresses = whitelistedTokens.map(token => token.address)
-  const tokenList = whitelistedTokens.filter(t => !t.isNative)
+  const tokenList = whitelistedTokens.filter(t => !t.isWrapped)
 
   const readerAddress = getContract(chainId, "Reader")
   const vaultAddress = getContract(chainId, "Vault")
