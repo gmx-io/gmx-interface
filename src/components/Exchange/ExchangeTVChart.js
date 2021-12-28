@@ -271,7 +271,7 @@ export default function ExchangeTVChart(props) {
   const toToken = getTokenInfo(infoTokens, toTokenAddress)
   const chartToken = getChartToken(swapOption, fromToken, toToken, chainId)
 
-  const symbol = chartToken ? (chartToken.isNative ? chartToken.baseSymbol : chartToken.symbol) : undefined
+  const symbol = chartToken ? (chartToken.isWrapped ? chartToken.baseSymbol : chartToken.symbol) : undefined
   const marketName = chartToken ? symbol + "_USD" : undefined
   const previousMarketName = usePrevious(marketName)
 
@@ -290,7 +290,7 @@ export default function ExchangeTVChart(props) {
       const indexToken = getToken(chainId, order.indexToken);
       return (
         order.indexToken === chartToken.address
-        || (chartToken.isNetwork && indexToken.isNative)
+        || (chartToken.isNative && indexToken.isWrapped)
       )
     })
   }, [orders, chartToken, swapOption, chainId])
@@ -390,7 +390,7 @@ export default function ExchangeTVChart(props) {
           const indexToken = getToken(chainId, order.indexToken)
           let tokenSymbol
           if (indexToken && indexToken.symbol) {
-            tokenSymbol = indexToken.isNative ? indexToken.baseSymbol : indexToken.symbol
+            tokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol
           }
           const title = `${order.type === INCREASE ? "Inc." : "Dec."} ${tokenSymbol} ${order.isLong ? "Long" : "Short"}`
           const color = '#3a3e5e'

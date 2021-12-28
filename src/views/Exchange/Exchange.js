@@ -149,7 +149,7 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
   for (let i = 0; i < tokens.length; i++) {
     const token = tokens[i]
     if (token.isStable) { continue }
-    if (token.isNative) { continue }
+    if (token.isWrapped) { continue }
     collateralTokens.push(getTokenAddress(token, nativeTokenAddress))
     indexTokens.push(getTokenAddress(token, nativeTokenAddress))
     isLong.push(true)
@@ -162,7 +162,7 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
     for (let j = 0; j < tokens.length; j++) {
       const token = tokens[j]
       if (token.isStable) { continue }
-      if (token.isNative) { continue }
+      if (token.isWrapped) { continue }
       collateralTokens.push(stableToken.address)
       indexTokens.push(getTokenAddress(token, nativeTokenAddress))
       isLong.push(false)

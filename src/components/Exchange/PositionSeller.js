@@ -142,7 +142,7 @@ export default function PositionSeller(props) {
       }
 
       const sameToken = order.indexToken === nativeTokenAddress
-        ? position.indexToken.isNetwork
+        ? position.indexToken.isNative
         : order.indexToken === position.indexToken.address
       if (order.isLong === position.isLong && sameToken) {
         return order
@@ -378,8 +378,8 @@ export default function PositionSeller(props) {
 
     setIsSubmitting(true)
 
-    const collateralTokenAddress = position.collateralToken.isNetwork ? nativeTokenAddress : position.collateralToken.address
-    const indexTokenAddress = position.indexToken.isNetwork ? nativeTokenAddress : position.indexToken.address
+    const collateralTokenAddress = position.collateralToken.isNative ? nativeTokenAddress : position.collateralToken.address
+    const indexTokenAddress = position.indexToken.isNative ? nativeTokenAddress : position.indexToken.address
 
     let params;
     let method;

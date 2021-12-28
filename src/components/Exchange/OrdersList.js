@@ -172,7 +172,7 @@ export default function OrdersList(props) {
       const maximisePrice = (order.type === INCREASE && order.isLong) || (order.type === DECREASE && !order.isLong)
       const markPrice = maximisePrice ? indexToken.maxPrice : indexToken.minPrice
       const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW
-      const indexTokenSymbol = indexToken.isNative ? indexToken.baseSymbol : indexToken.symbol
+      const indexTokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol
 
       let error
       if (order.type === DECREASE) {
@@ -270,7 +270,7 @@ export default function OrdersList(props) {
       const maximisePrice = (order.type === INCREASE && order.isLong) || (order.type === DECREASE && !order.isLong)
       const markPrice = maximisePrice ? indexToken.maxPrice : indexToken.minPrice
       const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW
-      const indexTokenSymbol = indexToken.isNative ? indexToken.baseSymbol : indexToken.symbol
+      const indexTokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol
 
       let error
       if (order.type === DECREASE) {

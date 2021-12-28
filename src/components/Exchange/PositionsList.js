@@ -28,7 +28,7 @@ const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
   return orders.filter(order => {
     if (order.type === SWAP) { return false }
     const hasMatchingIndexToken = order.indexToken === nativeTokenAddress
-      ? position.indexToken.isNetwork
+      ? position.indexToken.isNative
       : order.indexToken === position.indexToken.address
     const hasMatchingCollateralToken = order.collateralToken === position.collateralToken.address
     if (order.isLong === position.isLong && hasMatchingIndexToken && hasMatchingCollateralToken) {

@@ -111,13 +111,13 @@ export default function ConfirmationBox(props) {
     for (const order of orders) {
       if (order.type !== INCREASE) continue
       const sameToken = order.indexToken === nativeToken.address
-        ? toToken.isNetwork
+        ? toToken.isNative
         : order.indexToken === toToken.address
       if (order.isLong === isLong && sameToken) {
         return order
       }
     }
-  }, [orders, chainId, isLong, toToken.address, toToken.isNetwork])
+  }, [orders, chainId, isLong, toToken.address, toToken.isNative])
 
   const getError = () => {
     if (!isSwap && hasExistingPosition && !isMarketOrder) {
