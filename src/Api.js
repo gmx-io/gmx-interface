@@ -478,8 +478,8 @@ export function useGmxPrice() {
   return { data: gmxPrice, mutate }
 }
 
-export function useChartPrices(marketName, tokenAddress, chainId) {
-  const { data: prices = [], mutate: updatePrices } = useSWR(['getChartPrices', marketName, chainId], {
+export function useChartPrices(marketName, chainId) {
+  const { data: prices = [], mutate: updatePrices } = useSWR(marketName && ['getChartPrices', marketName, chainId], {
     fetcher: async () => {
       try {
         return await getChartPricesFromStats(marketName, chainId)

@@ -10,6 +10,7 @@ import Anyswap from '../../img/Anyswap.png'
 import Hop from '../../img/Hop.png'
 import logo from '../../img/gmx_logo.svg'
 import glpIcon from '../../img/ic_glp_40.svg'
+import olympusIcon from '../../img/ic_olympus.svg'
 
 export default function BuyGMXGLP() {
   useEffect(() => {
@@ -22,8 +23,10 @@ export default function BuyGMXGLP() {
         <div className="BuyGMXGLP-title-section">
           <div className="BuyGMXGLP-title">Buy GMX</div>
           <div className="BuyGMXGLP-description">
-            To purchase <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">GMX</a> you must first transfer ETH to Arbitrum.<br/>
-            Follow this <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">tutorial</a> and check the options below for better rates.<br/>
+            To purchase <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">GMX</a> you must first have ETH on <a href="https://arbitrum.io/" target="_blank" rel="noopener noreferrer">Arbitrum</a>.<br/>
+            <br/>
+            You can buy ETH directly on Arbitrum using <a href="https://gmx.banxa.com" target="_blank" rel="noopener noreferrer">Banxa</a>.<br/>
+            If you have ETH on other networks you can <a href="https://arbitrum.io/bridge-tutorial" target="_blank" rel="noopener noreferrer">transfer ETH</a> to Arbitrum.<br/>
             Transfers using the below options will take a few minutes.
           </div>
           <div className="alternative-bridges">
@@ -38,7 +41,7 @@ export default function BuyGMXGLP() {
             </a>
           </div>
           <div className="BuyGMXGLP-description better-rates-description">
-            After transferring ETH, set your wallet network to <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">Arbitrum</a> then click on the button below:
+            After you have ETH, set your wallet network to <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">Arbitrum</a> then click on the button below:
           </div>
           <a href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" target="_blank" rel="noopener noreferrer" className="BuyGMXGLP-purchase-block">
             <div className="BuyGMXGLP-purchase-block-icon">
@@ -49,6 +52,18 @@ export default function BuyGMXGLP() {
               <div className="BuyGMXGLP-purchase-block-info__subtitle">Uniswap Arbitrum</div>
             </div>
           </a>
+          <div className="BuyGMXGLP-description">You can also buy GMX via Olympus Pro bonds with a discount and a small vesting period here:</div>
+          <div className="GMX-block-section">
+            <a href="https://pro.olympusdao.finance/#/partners/GMX" target="_blank" rel="noopener noreferrer" className="GMX-block">
+              <div className="GMX-block-icon">
+                <img src={olympusIcon} alt="glpIcon" height="40px" />
+              </div>
+              <div className="GMX-block-content">
+                <div className="GMX-block-label">Buy GMX</div>
+                <div className="GMX-block-description">Olympus Pro</div>
+              </div>
+            </a>
+          </div>
           <div className="BuyGMXGLP-description">If you wish to buy GLP instead, you can find more info at <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">https://gmxio.gitbook.io/gmx/glp</a>.</div>
           <div className="GLP-block-section">
             <NavLink to="/buy_glp" className="GLP-block">
