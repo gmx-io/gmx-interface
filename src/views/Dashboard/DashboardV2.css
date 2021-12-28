@@ -27,8 +27,7 @@
 }
 
 .App-card-title-icon {
-  display: inline-flex;
-  vertical-align: middle;
+  display: flex;
   margin-left: 12px;
 }
 
