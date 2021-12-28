@@ -567,7 +567,7 @@ export default function SwapBox(props) {
         toTokenInfo.availableAmount && toAmount.gt(toTokenInfo.availableAmount)) {
       return ["Insufficient liquidity"]
     }
-    if (toAmount && toTokenInfo.bufferAmount && toTokenInfo.poolAmount && toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(toAmount))) {
+    if (!isWrapOrUnwrap && toAmount && toTokenInfo.bufferAmount && toTokenInfo.poolAmount && toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(toAmount))) {
       return ["Insufficient liquidity"]
     }
 
