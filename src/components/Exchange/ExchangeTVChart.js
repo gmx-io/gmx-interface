@@ -14,7 +14,6 @@ import {
   getLiquidationPrice,
   useLocalStorageSerializeKey
 } from '../../Helpers'
-import { getContract } from '../../Addresses'
 import {
   getToken
 } from '../../data/Tokens'
@@ -296,9 +295,7 @@ export default function ExchangeTVChart(props) {
     })
   }, [orders, chartToken, swapOption, chainId])
 
-  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
-  const chartTokenAddress = chartToken ? (chartToken.isNetwork ? nativeTokenAddress : chartToken.address) : undefined
-  const [prices, updatePrices] = useChartPrices(marketName, chartTokenAddress, chainId);
+  const [prices, updatePrices] = useChartPrices(!chartToken.isStable && marketName, chainId);
   const ref = useRef(null);
   const chartRef = useRef(null);
 
