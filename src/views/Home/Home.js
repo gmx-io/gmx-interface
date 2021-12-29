@@ -108,7 +108,7 @@ export default function Home() {
             <div className="Home-description">
               Trade BTC, ETH and other top cryptocurrencies with up to 30x leverage directly from your wallet
             </div>
-            <NavLink activeClassName="active" to="/trade" className="default-btn">Launch exchange</NavLink>
+            <NavLink activeClassName="active" to="/trade" className="default-btn">Launch Exchange</NavLink>
           </div>
         </div>
         <div className="Home-latest-info-container default-container">
@@ -182,7 +182,7 @@ export default function Home() {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Arbitrum</div>
                 <div className="Home-cta-option-action">
-                  <Link to="/trade" className="default-btn">Launch exchange</Link>
+                  <Link to="/trade" className="default-btn">Launch Exchange</Link>
                 </div>
               </div>
             </div>
@@ -193,9 +193,7 @@ export default function Home() {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Avalanche</div>
                 <div className="Home-cta-option-action">
-                  <button className="default-btn">
-                    Coming soon
-                  </button>
+                  <Link to="/trade" className="default-btn">Launch Exchange</Link>
                 </div>
               </div>
             </div>
