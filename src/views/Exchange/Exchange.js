@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
@@ -10,6 +10,8 @@ import {
   SWAP,
   LONG,
   SHORT,
+  ARBITRUM,
+  AVALANCHE,
   bigNumberify,
   getTokenInfo,
   fetcher,
@@ -213,46 +215,63 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
 
   const positionQuery = getPositionQuery(whitelistedTokens, nativeTokenAddress)
 
-  const defaultCollateralSymbol = getConstant(chainId, "defaultCollateralSymbol")
-  const defaultTokenSelection = useMemo(() => ({
-    [SWAP]: {
-      from: AddressZero,
-      to: getTokenBySymbol(chainId, defaultCollateralSymbol).address,
+  const defaultTokenSelection = {
+    [ARBITRUM]: {
+      [SWAP]: {
+        from: AddressZero,
+        to: getTokenBySymbol(ARBITRUM, "USDC").address,
+      },
+      [LONG]: {
+        from: AddressZero,
+        to: AddressZero,
+      },
+      [SHORT]: {
+        from: getTokenBySymbol(ARBITRUM, "USDC").address,
+        to: AddressZero,
+      }
     },
-    [LONG]: {
-      from: AddressZero,
-      to: AddressZero,
+    [AVALANCHE]: {
+      [SWAP]: {
+        from: AddressZero,
+        to: getTokenBySymbol(AVALANCHE, "MIM").address,
+      },
+      [LONG]: {
+        from: AddressZero,
+        to: AddressZero,
+      },
+      [SHORT]: {
+        from: getTokenBySymbol(AVALANCHE, "MIM").address,
+        to: AddressZero,
+      }
     },
-    [SHORT]: {
-      from: getTokenBySymbol(chainId, defaultCollateralSymbol).address,
-      to: AddressZero,
-    }
-  }), [chainId, defaultCollateralSymbol])
+  }
 
   const [tokenSelection, setTokenSelection] = useLocalStorageSerializeKey([chainId, "Exchange-token-selection"], defaultTokenSelection)
   const [swapOption, setSwapOption] = useLocalStorageSerializeKey([chainId, 'Swap-option'], LONG)
 
-  const fromTokenAddress = tokenSelection[swapOption].from
-  const toTokenAddress = tokenSelection[swapOption].to
+  const fromTokenAddress = tokenSelection[chainId][swapOption].from
+  const toTokenAddress = tokenSelection[chainId][swapOption].to
 
   const setFromTokenAddress = useCallback(address => {
     setTokenSelection(tokenSelection => {
       const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-      newTokenSelection[swapOption].from = address
+      newTokenSelection[chainId][swapOption].from = address
+      return newTokenSelection
     })
-  }, [swapOption, setTokenSelection])
+  }, [chainId, swapOption, setTokenSelection])
 
   const setToTokenAddress = useCallback(address => {
     setTokenSelection(tokenSelection => {
       const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-      newTokenSelection[swapOption].to = address
+      newTokenSelection[chainId][swapOption].to = address
+      return newTokenSelection
     })
-  }, [swapOption, setTokenSelection])
+  }, [chainId, swapOption, setTokenSelection])
 
   const setMarket = (newSwapOption, toTokenAddress) => {
     setSwapOption(newSwapOption)
     const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-    newTokenSelection[newSwapOption].to = toTokenAddress
+    newTokenSelection[chainId][newSwapOption].to = toTokenAddress
     setTokenSelection(newTokenSelection)
   }
 
