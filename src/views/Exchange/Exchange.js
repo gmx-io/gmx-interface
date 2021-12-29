@@ -246,7 +246,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     },
   }
 
-  const [tokenSelection, setTokenSelection] = useLocalStorageSerializeKey([chainId, "Exchange-token-selection"], defaultTokenSelection)
+  const [tokenSelection, setTokenSelection] = useLocalStorageSerializeKey([chainId, "Exchange-token-selection-v2"], defaultTokenSelection)
   const [swapOption, setSwapOption] = useLocalStorageSerializeKey([chainId, 'Swap-option'], LONG)
 
   const fromTokenAddress = tokenSelection[chainId][swapOption].from
