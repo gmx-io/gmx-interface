@@ -792,12 +792,12 @@ export default function SwapBox(props) {
     setFromTokenAddress(token.address)
     setIsWaitingForApproval(false)
 
-    const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-    newTokenSelection[chainId][swapOption] = {
+    const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
+    updatedTokenSelection[swapOption] = {
       from: token.address,
       to: toTokenAddress
     }
-    setTokenSelection(newTokenSelection)
+    setTokenSelection(updatedTokenSelection)
 
     if (isShort && token.isStable) {
       setShortCollateralAddress(token.address)
@@ -810,12 +810,12 @@ export default function SwapBox(props) {
 
   const onSelectToToken = (token) => {
     setToTokenAddress(token.address)
-    const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-    newTokenSelection[chainId][swapOption] = {
+    const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
+    updatedTokenSelection[swapOption] = {
       from: fromTokenAddress,
       to: token.address
     }
-    setTokenSelection(newTokenSelection)
+    setTokenSelection(updatedTokenSelection)
   }
 
   const onFromValueChange = (e) => {
@@ -841,12 +841,12 @@ export default function SwapBox(props) {
     setToTokenAddress(fromTokenAddress)
     setIsWaitingForApproval(false)
 
-    const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-    newTokenSelection[chainId][swapOption] = {
+    const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
+    updatedTokenSelection[swapOption] = {
       from: toTokenAddress,
       to: fromTokenAddress
     }
-    setTokenSelection(newTokenSelection)
+    setTokenSelection(updatedTokenSelection)
   }
 
   const wrap = async () => {
@@ -1089,14 +1089,14 @@ export default function SwapBox(props) {
   }
 
   const onSwapOptionChange = (opt) => {
-    const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-    newTokenSelection[chainId][swapOption] = {
+    const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
+    updatedTokenSelection[swapOption] = {
       from: fromTokenAddress,
       to: toTokenAddress
     }
-    setTokenSelection(newTokenSelection)
-    setFromTokenAddress(tokenSelection[chainId][opt].from)
-    setToTokenAddress(tokenSelection[chainId][opt].to)
+    setTokenSelection(updatedTokenSelection)
+    setFromTokenAddress(tokenSelection[opt].from)
+    setToTokenAddress(tokenSelection[opt].to)
     setSwapOption(opt)
     setAnchorOnFromAmount(true)
     setFromValue("")
@@ -1105,7 +1105,7 @@ export default function SwapBox(props) {
     setTriggerRatioValue("")
 
     if (opt === SHORT && infoTokens) {
-      const fromToken = getToken(chainId, tokenSelection[chainId][opt].from)
+      const fromToken = getToken(chainId, tokenSelection[opt].from)
       if (fromToken && fromToken.isStable) {
         setShortCollateralAddress(fromToken.address)
       } else {

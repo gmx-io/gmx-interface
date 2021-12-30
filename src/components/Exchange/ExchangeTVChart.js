@@ -295,7 +295,7 @@ export default function ExchangeTVChart(props) {
     })
   }, [orders, chartToken, swapOption, chainId])
 
-  const [prices, updatePrices] = useChartPrices(!chartToken?.isStable && marketName, chainId);
+  const [prices, updatePrices] = useChartPrices(!chartToken.isStable && marketName, chainId);
   const ref = useRef(null);
   const chartRef = useRef(null);
 
