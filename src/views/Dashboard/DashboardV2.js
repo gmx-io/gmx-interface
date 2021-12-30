@@ -253,9 +253,9 @@ export default function DashboardV2() {
     glpMarketCap = glpPrice.mul(glpSupply).div(expandDecimals(1, GLP_DECIMALS))
   }
 
-  const ethFloorPriceFund = expandDecimals(400 + 148 + 384, 18)
+  const ethFloorPriceFund = expandDecimals(350 + 148 + 384, 18)
   const glpFloorPriceFund = expandDecimals(660001, 18)
-  const usdcFloorPriceFund = expandDecimals(784598, 30)
+  const usdcFloorPriceFund = expandDecimals(784598 + 200000, 30)
 
   let totalFloorPriceFundUsd
 
