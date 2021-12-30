@@ -52,6 +52,7 @@ import {
   getNextFromAmount,
   getMostAbundantStableToken,
   useLocalStorageSerializeKey,
+  useLocalStorageByChainId,
   calculatePositionDelta,
   replaceNativeTokenAddress,
   adjustForDecimals
@@ -160,8 +161,9 @@ export default function SwapBox(props) {
 
   const defaultCollateralSymbol = getConstant(chainId, "defaultCollateralSymbol")
   // TODO hack with useLocalStorageSerializeKey
-  const [shortCollateralAddress, setShortCollateralAddress] = useLocalStorageSerializeKey(
-    [chainId, "Short-Collateral-Address"],
+  const [shortCollateralAddress, setShortCollateralAddress] = useLocalStorageByChainId(
+    chainId,
+    "Short-Collateral-Address",
     getTokenBySymbol(chainId, defaultCollateralSymbol).address
   )
   const isLong = swapOption === LONG
