@@ -29,6 +29,8 @@ export const CHAIN_ID = DEFAULT_CHAIN_ID
 
 export const MIN_PROFIT_TIME = 60 * 60 * 12 // 12 hours
 
+const SELECTED_NETWORK_LOCAL_STORAGE_KEY = 'SELECTED_NETWORK'
+
 const CHAIN_NAMES_MAP = {
   [MAINNET]: "BSC",
   [TESTNET]: "BSC Testnet",
@@ -936,10 +938,19 @@ export function getInjectedConnector() {
 }
 
 export function useChainId() {
-  const { chainId } = useWeb3React()
+  let { chainId } = useWeb3React()
 
-  if (!supportedChainIds.includes(chainId)) {
-    return { chainId: DEFAULT_CHAIN_ID }
+  const chainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)
+  if (chainIdFromLocalStorage) {
+    chainId = parseInt(chainIdFromLocalStorage)
+    if (!chainId) {
+      // localstorage value is invalid
+      localStorage.removeItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)
+    }
+  }
+
+  if (!chainId || !supportedChainIds.includes(chainId)) {
+    chainId = DEFAULT_CHAIN_ID
   }
   return { chainId }
 }
@@ -1583,6 +1594,14 @@ export const addNetwork = async (metadata) => {
 }
 
 export const switchNetwork = async (chainId) => {
+  // chainId in localStorage allows to switch network even if wallet is not connected
+  // or there is now wallet at all
+  localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, chainId)
+
+  if (!window.ethereum) {
+    document.location.reload()
+    return
+  }
   try {
     const chainIdHex = '0x' + chainId.toString(16)
     await window.ethereum.request({
