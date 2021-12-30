@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { InjectedConnector, UserRejectedRequestError as UserRejectedRequestErrorInjected } from '@web3-react/injected-connector'
 import { WalletConnectConnector, UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from '@web3-react/walletconnect-connector'
 import { toast } from 'react-toastify'
@@ -138,6 +138,24 @@ export const helperToast = {
     toast.dismiss()
     toast.error(content)
   }
+}
+
+export function useLocalStorageByChainId(chainId, key, defaultValue, opts) {
+  const [internalValue, setInternalValue] = useLocalStorageSerializeKey(key, {}, opts)
+
+  const setValue = useCallback(value => {
+    setInternalValue(internalValue => {
+      const newInternalValue = {
+        ...internalValue,
+        [chainId]: value
+      }
+      return newInternalValue
+    })
+  }, [chainId, setInternalValue])
+
+  const value = chainId in internalValue ? internalValue[chainId] : defaultValue
+
+  return [value, setValue]
 }
 
 export function useLocalStorageSerializeKey(key, value, opts) {
