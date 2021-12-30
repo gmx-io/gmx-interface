@@ -140,20 +140,28 @@ export const helperToast = {
   }
 }
 
-export function useLocalStorageByChainId(chainId, key, defaultValue, opts) {
-  const [internalValue, setInternalValue] = useLocalStorageSerializeKey(key, {}, opts)
+export function useLocalStorageByChainId(chainId, key, defaultValue) {
+  const [internalValue, setInternalValue] = useLocalStorage(key, {})
 
   const setValue = useCallback(value => {
     setInternalValue(internalValue => {
+      if (typeof value === 'function') {
+        value = value(internalValue[chainId] || defaultValue)
+      }
       const newInternalValue = {
         ...internalValue,
         [chainId]: value
       }
       return newInternalValue
     })
-  }, [chainId, setInternalValue])
+  }, [chainId, setInternalValue, defaultValue])
 
-  const value = chainId in internalValue ? internalValue[chainId] : defaultValue
+  let value
+  if (chainId in internalValue) {
+    value = internalValue[chainId]
+  } else {
+    value = defaultValue
+  }
 
   return [value, setValue]
 }

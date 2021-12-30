@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useMemo, useCallback } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
@@ -10,8 +10,6 @@ import {
   SWAP,
   LONG,
   SHORT,
-  ARBITRUM,
-  AVALANCHE,
   bigNumberify,
   getTokenInfo,
   fetcher,
@@ -19,6 +17,7 @@ import {
   getPositionKey,
   getLeverage,
   useLocalStorageSerializeKey,
+  useLocalStorageByChainId,
   getDeltaStr,
   useChainId,
   getInfoTokens,
@@ -215,64 +214,51 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
 
   const positionQuery = getPositionQuery(whitelistedTokens, nativeTokenAddress)
 
-  const defaultTokenSelection = {
-    [ARBITRUM]: {
-      [SWAP]: {
-        from: AddressZero,
-        to: getTokenBySymbol(ARBITRUM, "USDC").address,
-      },
-      [LONG]: {
-        from: AddressZero,
-        to: AddressZero,
-      },
-      [SHORT]: {
-        from: getTokenBySymbol(ARBITRUM, "USDC").address,
-        to: AddressZero,
-      }
+  const defaultCollateralSymbol = getConstant(chainId, "defaultCollateralSymbol")
+  const defaultTokenSelection = useMemo(() => ({
+    [SWAP]: {
+      from: AddressZero,
+      to: getTokenBySymbol(chainId, defaultCollateralSymbol).address,
     },
-    [AVALANCHE]: {
-      [SWAP]: {
-        from: AddressZero,
-        to: getTokenBySymbol(AVALANCHE, "MIM").address,
-      },
-      [LONG]: {
-        from: AddressZero,
-        to: AddressZero,
-      },
-      [SHORT]: {
-        from: getTokenBySymbol(AVALANCHE, "MIM").address,
-        to: AddressZero,
-      }
+    [LONG]: {
+      from: AddressZero,
+      to: AddressZero,
     },
-  }
+    [SHORT]: {
+      from: getTokenBySymbol(chainId, defaultCollateralSymbol).address,
+      to: AddressZero,
+    }
+  }), [chainId, defaultCollateralSymbol])
 
-  const [tokenSelection, setTokenSelection] = useLocalStorageSerializeKey([chainId, "Exchange-token-selection-v2"], defaultTokenSelection)
-  const [swapOption, setSwapOption] = useLocalStorageSerializeKey([chainId, 'Swap-option'], LONG)
+  const [tokenSelection, setTokenSelection] = useLocalStorageByChainId(chainId, "Exchange-token-selection-v2", defaultTokenSelection)
+  const [swapOption, setSwapOption] = useLocalStorageByChainId(chainId, 'Swap-option-v2', LONG)
 
-  const fromTokenAddress = tokenSelection[chainId][swapOption].from
-  const toTokenAddress = tokenSelection[chainId][swapOption].to
+  const fromTokenAddress = tokenSelection[swapOption].from
+  const toTokenAddress = tokenSelection[swapOption].to
 
   const setFromTokenAddress = useCallback(address => {
     setTokenSelection(tokenSelection => {
       const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-      newTokenSelection[chainId][swapOption].from = address
+      newTokenSelection[swapOption].from = address
       return newTokenSelection
     })
-  }, [chainId, swapOption, setTokenSelection])
+  }, [swapOption, setTokenSelection])
 
   const setToTokenAddress = useCallback(address => {
     setTokenSelection(tokenSelection => {
       const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-      newTokenSelection[chainId][swapOption].to = address
+      newTokenSelection[swapOption].to = address
       return newTokenSelection
     })
-  }, [chainId, swapOption, setTokenSelection])
+  }, [swapOption, setTokenSelection])
 
   const setMarket = (newSwapOption, toTokenAddress) => {
     setSwapOption(newSwapOption)
-    const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-    newTokenSelection[chainId][newSwapOption].to = toTokenAddress
-    setTokenSelection(newTokenSelection)
+    setTokenSelection(tokenSelection => {
+      const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
+      newTokenSelection[newSwapOption].to = toTokenAddress
+      return newTokenSelection
+    })
   }
 
   const [isConfirming, setIsConfirming] = useState(false);
@@ -359,7 +345,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     flagOrdersEnabled ? 'Orders' : undefined,
     'Trades'
   ].filter(Boolean)
-  let [listSection, setListSection] = useLocalStorageSerializeKey([chainId, 'List-section'], LIST_SECTIONS[0]);
+  let [listSection, setListSection] = useLocalStorageByChainId(chainId, 'List-section-v2', LIST_SECTIONS[0]);
   const LIST_SECTIONS_LABELS = {
     "Orders": orders.length ? `Orders (${orders.length})` : undefined
   }
