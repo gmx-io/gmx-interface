@@ -627,7 +627,7 @@ function CompoundModal(props) {
 
   const [isApproving, setIsApproving] = useState(false)
 
-  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR([active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress], {
+  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(active && [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress], {
     fetcher: fetcher(library, Token),
   })
 
