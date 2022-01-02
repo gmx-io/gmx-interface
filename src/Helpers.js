@@ -234,9 +234,7 @@ export function getServerBaseUrl(chainId) {
   if (!chainId) {
     throw new Error("chainId is not provided")
   }
-  if (document.location.hostname.includes("deploy-preview")) {
-    return "https://gmx-server-mainnet.uw.r.appspot.com"
-  } else if (chainId === MAINNET) {
+  if (chainId === MAINNET) {
     return "https://gambit-server-staging.uc.r.appspot.com"
   } else if (chainId === ARBITRUM_TESTNET) {
     return "https://gambit-l2.as.r.appspot.com"
@@ -1414,9 +1412,6 @@ export function getExplorerUrl(chainId) {
   } else if (chainId === ARBITRUM) {
     return "https://arbiscan.io/"
   } else if (chainId === AVALANCHE) {
-    return "https://snowtrace.io/"
-  }
-  if (chainId === AVALANCHE) {
     return "https://snowtrace.io/"
   }
   return "https://etherscan.io/"
