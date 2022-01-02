@@ -303,17 +303,15 @@ export function usePositionsForOrders(chainId, library, orders) {
   return positions
 }
 
-async function getChartPricesFromStats(marketName, chainId) {
+async function getChartPricesFromStats(chainId, marketName, period) {
   let symbol = marketName.split('_')[0]
   if (symbol === 'WBTC') {
     symbol = 'BTC'
   } else if (symbol === 'WETH') {
     symbol = 'ETH'
   }
-  const hostname = document.location.hostname === 'localhost' && false
-    ? 'http://localhost:3113/'
-    : 'https://stats.gmx.io/'
-  const from = Math.floor((Date.now() - 86400 * 1000 * 60) / 1000) // 2 months
+  const hostname = 'https://stats.gmx.io/'
+  const from = Math.floor(Date.now() / 1000 - period)
   const url = `${hostname}api/chart/${symbol}?from=${from}&preferableChainId=${chainId}`
   const TIMEOUT = 3000
   const res = await new Promise((resolve, reject) => {
@@ -478,16 +476,16 @@ export function useGmxPrice() {
   return { data: gmxPrice, mutate }
 }
 
-export function useChartPrices(marketName, chainId) {
-  const { data: prices = [], mutate: updatePrices } = useSWR(marketName && ['getChartPrices', marketName, chainId], {
+export function useChartPrices(chainId, marketName, period) {
+  const { data: prices = [], mutate: updatePrices } = useSWR(marketName && ['getChartPrices', chainId, marketName, period], {
     fetcher: async () => {
       try {
-        return await getChartPricesFromStats(marketName, chainId)
+        return await getChartPricesFromStats(chainId, marketName, period)
       } catch (ex) {
         console.warn('chart request failed')
         console.warn(ex)
         try {
-          return await getChartPricesFromGraph(marketName, chainId)
+          return await getChartPricesFromGraph(chainId, marketName)
         } catch (ex2) {
           console.warn('fallback chart request failed')
           console.warn(ex2)

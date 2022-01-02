@@ -234,11 +234,6 @@ export function getServerBaseUrl(chainId) {
   if (!chainId) {
     throw new Error("chainId is not provided")
   }
-  if (document.location.hostname === "localhost") {
-    // TODO remove
-    // return "http://localhost:8080"
-    // return "https://gambit-server-devnet.uc.r.appspot.com"
-  }
   if (document.location.hostname.includes("deploy-preview")) {
     return "https://gmx-server-mainnet.uw.r.appspot.com"
   } else if (chainId === MAINNET) {
