@@ -234,6 +234,12 @@ export function getServerBaseUrl(chainId) {
   if (!chainId) {
     throw new Error("chainId is not provided")
   }
+  if (document.location.hostname.includes("deploy-preview")) {
+    const fromLocalStorage = localStorage.getItem("SERVER_BASE_URL")
+    if (fromLocalStorage) {
+      return fromLocalStorage
+    }
+  }
   if (chainId === MAINNET) {
     return "https://gambit-server-staging.uc.r.appspot.com"
   } else if (chainId === ARBITRUM_TESTNET) {
