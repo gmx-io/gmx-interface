@@ -7,7 +7,7 @@ import './Buy.css';
 
 import Synapse from '../../img/Synapse.svg'
 import Anyswap from '../../img/Anyswap.png'
-import Hop from '../../img/Hop.png'
+import Hop from '../../img/Hop_dark.png'
 import Banxa from '../../img/Banxa.png'
 import logo from '../../img/gmx_logo.svg'
 import glpIcon from '../../img/ic_glp_40.svg'
