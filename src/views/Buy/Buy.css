@@ -51,6 +51,27 @@
     position: relative;
 }
 
+.direct-purchase-options {
+  margin: 1.032rem auto 1.032rem;
+}
+
+.direct-purchase-options a {
+  text-align: center;
+}
+
+.direct-purchase-options a.banxa-button img {
+  background: rgba(255, 255, 255, 0.1);
+  text-align: center;
+  height: 2.5rem;
+  border-radius: 4px;
+  padding: 0.1rem 0.5rem;
+}
+
+.direct-purchase-options a.banxa-button img:hover {
+  background: #FFFFFF1F;
+}
+
+
 .alternative-bridges a.Synapse:hover::before,
 .alternative-bridges a.Synapse:focus::before,
 .alternative-bridges a.Anyswap:hover::before,
