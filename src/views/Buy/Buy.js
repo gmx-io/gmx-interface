@@ -8,6 +8,7 @@ import './Buy.css';
 import Synapse from '../../img/Synapse.svg'
 import Anyswap from '../../img/Anyswap.png'
 import Hop from '../../img/Hop.png'
+import Banxa from '../../img/Banxa.png'
 import logo from '../../img/gmx_logo.svg'
 import glpIcon from '../../img/ic_glp_40.svg'
 import olympusIcon from '../../img/ic_olympus.svg'
@@ -24,9 +25,15 @@ export default function BuyGMXGLP() {
           <div className="BuyGMXGLP-title">Buy GMX</div>
           <div className="BuyGMXGLP-description">
             To purchase <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">GMX</a> you must first have ETH on <a href="https://arbitrum.io/" target="_blank" rel="noopener noreferrer">Arbitrum</a>.<br/>
-            <br/>
-            You can buy ETH directly on Arbitrum using <a href="https://gmx.banxa.com" target="_blank" rel="noopener noreferrer">Banxa</a>.<br/>
-            If you have ETH on other networks you can <a href="https://arbitrum.io/bridge-tutorial" target="_blank" rel="noopener noreferrer">transfer ETH</a> to Arbitrum.<br/>
+            You can buy ETH directly on Arbitrum using Banxa.<br/>
+            <div className="direct-purchase-options">
+              <a href="https://gmx.banxa.com" target="_blank" rel="noopener noreferrer" className="banxa-button">
+                <img src={Banxa} alt="Banxa" />
+              </a>
+            </div>
+          </div>
+          <div className="BuyGMXGLP-description">
+            If you have ETH on other networks you can transfer ETH to Arbitrum.<br/>
             Transfers using the below options will take a few minutes.
           </div>
           <div className="alternative-bridges">
