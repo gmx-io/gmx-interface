@@ -186,8 +186,8 @@ function AppHeaderUser({
     if (option.value === chainId) {
       return
     }
-    return switchNetwork(option.value)
-  }, [chainId])
+    return switchNetwork(option.value, active)
+  }, [chainId, active])
 
   const selectorLabel = getChainName(chainId)
 

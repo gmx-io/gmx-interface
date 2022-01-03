@@ -1591,14 +1591,15 @@ export const addNetwork = async (metadata) => {
   await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [metadata] }).catch()
 }
 
-export const switchNetwork = async (chainId) => {
-  if (!window.ethereum) {
+export const switchNetwork = async (chainId, active) => {
+  if (!active) {
     // chainId in localStorage allows to switch network even if wallet is not connected
     // or there is now wallet at all
     localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, chainId)
     document.location.reload()
     return
   }
+
   try {
     const chainIdHex = '0x' + chainId.toString(16)
     await window.ethereum.request({
