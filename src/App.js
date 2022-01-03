@@ -92,10 +92,6 @@ const Zoom = cssTransition({
   duration: 300
 })
 
-const onNetworkSelect = option => {
-  return switchNetwork(option.value)
-}
-
 function inPreviewMode() {
   return false
 }
@@ -186,6 +182,13 @@ function AppHeaderUser({
     }
   }, [active, setWalletModalVisible])
 
+  const onNetworkSelect = useCallback(option => {
+    if (option.value === chainId) {
+      return
+    }
+    return switchNetwork(option.value)
+  }, [chainId])
+
   const selectorLabel = getChainName(chainId)
 
   if (!active) {
@@ -255,6 +258,14 @@ function FullApp() {
   }, [activatingConnector, connector, chainId])
   const triedEager = useEagerConnect(setActivatingConnector)
   useInactiveListener(!triedEager || !!activatingConnector)
+
+  useEffect(() => {
+    if (window.ethereum) {
+      return window.ethereum.on('chainChanged', () => {
+        document.location.reload()
+      })
+    }
+  }, [])
 
   const disconnectAccount = useCallback(() => {
     // only works with WalletConnect

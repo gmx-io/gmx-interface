@@ -939,12 +939,14 @@ export function getInjectedConnector() {
 export function useChainId() {
   let { chainId } = useWeb3React()
 
-  const chainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)
-  if (chainIdFromLocalStorage) {
-    chainId = parseInt(chainIdFromLocalStorage)
-    if (!chainId) {
-      // localstorage value is invalid
-      localStorage.removeItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)
+  if (!chainId) {
+    const chainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)
+    if (chainIdFromLocalStorage) {
+      chainId = parseInt(chainIdFromLocalStorage)
+      if (!chainId) {
+        // localstorage value is invalid
+        localStorage.removeItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)
+      }
     }
   }
 
@@ -1590,11 +1592,10 @@ export const addNetwork = async (metadata) => {
 }
 
 export const switchNetwork = async (chainId) => {
-  // chainId in localStorage allows to switch network even if wallet is not connected
-  // or there is now wallet at all
-  localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, chainId)
-
   if (!window.ethereum) {
+    // chainId in localStorage allows to switch network even if wallet is not connected
+    // or there is now wallet at all
+    localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, chainId)
     document.location.reload()
     return
   }
