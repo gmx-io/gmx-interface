@@ -1572,7 +1572,7 @@ const NETWORK_METADATA = {
   },
   [AVALANCHE]: {
     chainId: '0x' + AVALANCHE.toString(16),
-    chainName: 'Avalanche Network',
+    chainName: 'Avalanche',
     nativeCurrency: {
       name: 'AVAX',
       symbol: 'AVAX',
