@@ -7,7 +7,7 @@ import './Buy.css';
 
 import Synapse from '../../img/Synapse.svg'
 import Anyswap from '../../img/Anyswap.png'
-import Hop from '../../img/Hop.png'
+import Hop from '../../img/Hop_dark.png'
 import Banxa from '../../img/Banxa.png'
 import logo from '../../img/gmx_logo.svg'
 import glpIcon from '../../img/ic_glp_40.svg'
@@ -44,7 +44,7 @@ export default function BuyGMXGLP() {
             <a href="https://anyswap.exchange/bridge#/bridge" target="_blank" rel="noopener noreferrer" className="Anyswap">
               <img src={Anyswap} alt="Anyswap" />
             </a>
-            <a href="https://app.hop.exchange/send?token=USDC&sourceNetwork=ethereum&destNetwork=arbitrum" target="_blank" rel="noopener noreferrer">
+            <a href="https://app.hop.exchange/send?token=USDC&sourceNetwork=ethereum&destNetwork=arbitrum" target="_blank" rel="noopener noreferrer" className="Hop">
               <img src={Hop} alt="Hop" />
             </a>
           </div>
