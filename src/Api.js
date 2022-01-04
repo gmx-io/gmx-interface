@@ -327,11 +327,11 @@ async function getChartPricesFromStats(chainId, marketName, period) {
     throw new Error(`not enough prices: ${json?.length}`)
   }
 
-  const OBSOLETE_THRESHOLD = 60 * 60 * 3 // chainlink updates on Arbitrum are not too frequent
+  const OBSOLETE_THRESHOLD = 60 * 60 * 3 // chainlink updates are not too frequent
   const lastTs = json[json.length - 1][0]
   const diff = Date.now() / 1000 - lastTs
   if (diff > OBSOLETE_THRESHOLD) {
-    throw new Error('chart data is obsolete, last price record at ' + new Date(lastTs * 1000))
+    throw new Error('chart data is obsolete, last price record at ' + new Date(lastTs * 1000).toISOString())
   }
   return json
 }
@@ -367,7 +367,7 @@ async function getChartPricesFromStats(chainId, marketName, period) {
 //   return prices
 // }
 
-function getChartPricesFromGraph(marketName) {
+function getChainlinkChartPricesFromGraph(marketName) {
   if (marketName.startsWith('WBTC') || marketName.startsWith('WETH') || marketName.startsWith('WBNB') || marketName.startsWith('WAVAX')) {
     marketName = marketName.substr(1)
   }
@@ -482,12 +482,11 @@ export function useChartPrices(chainId, marketName, period) {
       try {
         return await getChartPricesFromStats(chainId, marketName, period)
       } catch (ex) {
-        console.warn('chart request failed')
         console.warn(ex)
         try {
-          return await getChartPricesFromGraph(chainId, marketName)
+          return await getChainlinkChartPricesFromGraph(marketName)
         } catch (ex2) {
-          console.warn('fallback chart request failed')
+          console.warn('getChainlinkChartPricesFromGraph failed')
           console.warn(ex2)
           return []
         }
