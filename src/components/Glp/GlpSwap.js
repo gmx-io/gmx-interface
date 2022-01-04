@@ -214,7 +214,7 @@ export default function GlpSwap(props) {
     setIsWaitingForApproval(false)
   }
 
-  const nativeToken = getTokenInfo(infoTokens, nativeTokenAddress)
+  const nativeToken = getTokenInfo(infoTokens, AddressZero)
 
   let totalApr = bigNumberify(0)
 
