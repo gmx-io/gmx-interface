@@ -1118,3 +1118,5 @@ button.App-button {
 .walletconnect-qrcode__image {
   max-height: 50vh;
 }
+
+* { -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
