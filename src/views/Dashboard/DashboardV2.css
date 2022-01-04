@@ -26,6 +26,15 @@
   padding-top: 1rem;
 }
 
+.App-card-title-icon {
+  display: flex;
+  margin-left: 12px;
+}
+
+.App-card-title-icon img + img {
+  margin-left: 6px;
+}
+
 @media (max-width: 900px) {
   .DashboardV2-cards {
     grid-template-columns: 1fr;

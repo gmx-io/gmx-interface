@@ -445,7 +445,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     />
   }
 
-  
+
 
   return (
     <div className="Exchange">
@@ -454,7 +454,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
       }
       <div className="Exchange-content">
         <div className="Exchange-left">
-          
+
           {renderChart()}
           <div className="Exchange-lists large">
             {getListSection()}

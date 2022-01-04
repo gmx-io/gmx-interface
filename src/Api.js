@@ -10,6 +10,7 @@ import OrderBook from './abis/OrderBook.json'
 import Vault from './abis/Vault.json'
 import Router from './abis/Router.json'
 import UniPool from './abis/UniPool.json'
+import Token from './abis/Token.json'
 
 import { getContract } from './Addresses'
 import { getConstant } from './Constants'
@@ -432,6 +433,18 @@ export function useTrades(chainId, account) {
   })
 
   return { trades, updateTrades }
+}
+
+export function useStakedGmxSupply() {
+  const chainId = ARBITRUM
+  const gmxAddress = getContract(chainId, "GMX")
+  const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker")
+
+  const { data, mutate } = useSWR([`StakeV2:stakedGmxSupply`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
+    fetcher: fetcher(undefined, Token),
+  })
+
+  return { data, mutate }
 }
 
 export function useGmxPrice() {
