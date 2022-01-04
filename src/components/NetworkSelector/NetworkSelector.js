@@ -62,7 +62,6 @@ export default function NetworkSelector(props) {
 
   const customStyles = {
     option: (provided, state) => {
-      console.log(state.isFocused)
       const backgroundColor = (state.value === ARBITRUM && state.isFocused) ? '#1d446b' : ((state.value === AVALANCHE && state.isFocused) ? '#371e32' : '')
       return {
         ...provided,
