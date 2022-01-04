@@ -62,6 +62,7 @@ export default function NetworkSelector(props) {
 
   const customStyles = {
     option: (provided, state) => {
+      console.log(state.isFocused)
       const backgroundColor = (state.value === ARBITRUM && state.isFocused) ? '#1d446b' : ((state.value === AVALANCHE && state.isFocused) ? '#371e32' : '')
       return {
         ...provided,
@@ -148,6 +149,7 @@ export default function NetworkSelector(props) {
             value={value}
             options={options}
             components={{ DropdownIndicator }}
+            classNamePrefix="react-select"
             onChange={onSelect}
             isSearchable={false}
             className="network-select"
