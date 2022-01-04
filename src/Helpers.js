@@ -111,10 +111,14 @@ const injectedConnector = new InjectedConnector({
 })
 
 const getWalletConnectConnector = () => {
+  const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID
   return new WalletConnectConnector({
-    rpc: { [AVALANCHE]: AVALANCHE_RPC_PROVIDERS[0] },
-    chainId: AVALANCHE,
-    qrcode: true
+    rpc: {
+      [AVALANCHE]: AVALANCHE_RPC_PROVIDERS[0],
+      [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0]
+    },
+    qrcode: true,
+    chainId
   })
 }
 
@@ -1594,7 +1598,7 @@ export const addNetwork = async (metadata) => {
 export const switchNetwork = async (chainId, active) => {
   if (!active) {
     // chainId in localStorage allows to switch network even if wallet is not connected
-    // or there is now wallet at all
+    // or there is no wallet at all
     localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, chainId)
     document.location.reload()
     return
