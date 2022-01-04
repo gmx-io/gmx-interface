@@ -58,7 +58,7 @@ const constants = {
 
     SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
     INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
-    // for some reason contract required execution fee be strictly greater than 0.01, not gte
+    // for some reason contract requires execution fee be strictly greater than 0.01, not gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001")
   }
 }
