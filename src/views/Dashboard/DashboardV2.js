@@ -112,6 +112,8 @@ export default function DashboardV2() {
   const { active, library } = useWeb3React()
   const { chainId } = useChainId()
 
+  const chainName = getChainName(chainId)
+
   const positionStatsUrl = getServerUrl(chainId, "/position_stats")
   const { data: positionStats, mutate: updatePositionStats } = useSWR([positionStatsUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
@@ -307,13 +309,14 @@ export default function DashboardV2() {
       updateTotalTokenWeights, updateGmxSupply])
 
   const statsUrl = `https://stats.gmx.io/${chainId === AVALANCHE ? "avalanche" : ""}`
+  const totalStatsStartDate = chainId === AVALANCHE ? "06 Jan 2022" : "01 Sep 2021"
 
   return (
     <div className="DashboardV2 Page">
       <div className="Page-title-section">
         <div className="Page-title">Stats</div>
         <div className="Page-description">
-          Total Stats start from 01 Sep 2021.&nbsp;<br/>
+          {chainName} Total Stats start from {totalStatsStartDate}.<br/>
           For detailed stats: <a href={statsUrl}  target="_blank" rel="noopener noreferrer">{statsUrl}</a>.
         </div>
       </div>
@@ -329,7 +332,7 @@ export default function DashboardV2() {
                   <Tooltip
                     handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                     position="right-bottom"
-                    renderContent={() => "Assets Under Management: GLP pool + GMX staked"}
+                    renderContent={() => `Assets Under Management: GMX staked (All chains) + GLP pool (${chainName})`}
                   />
                 </div>
               </div>
@@ -339,7 +342,7 @@ export default function DashboardV2() {
                   <Tooltip
                     handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
                     position="right-bottom"
-                    renderContent={() => "Total value of tokens in GLP pool"}
+                    renderContent={() => `Total value of tokens in GLP pool (${chainName})`}
                   />
                 </div>
               </div>
@@ -434,7 +437,7 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GLP ({getChainName(chainId)})</div>
+            <div className="App-card-title">GLP ({chainName})</div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
