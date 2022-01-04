@@ -624,6 +624,11 @@ export default function SwapBox(props) {
         const { amount: swapAmount } = getNextToAmount(chainId, fromAmount, fromTokenAddress, toTokenAddress, infoTokens, undefined, undefined, usdgSupply, totalTokenWeights)
         requiredAmount = requiredAmount.add(swapAmount)
 
+        if (toToken && toTokenAddress !== USDG_ADDRESS &&
+            toTokenInfo.availableAmount && requiredAmount.gt(toTokenInfo.availableAmount)) {
+          return ["Insufficient liquidity"]
+        }
+
         if (toTokenInfo.poolAmount
           && toTokenInfo.bufferAmount
           && toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(swapAmount))
@@ -638,10 +643,6 @@ export default function SwapBox(props) {
             return [`${fromTokenInfo.symbol} pool exceeded, try different token`, true, "MAX_USDG"]
           }
         }
-      }
-      if (toToken && toTokenAddress !== USDG_ADDRESS &&
-          toTokenInfo.availableAmount && requiredAmount.gt(toTokenInfo.availableAmount)) {
-        return ["Insufficient liquidity"]
       }
     }
 

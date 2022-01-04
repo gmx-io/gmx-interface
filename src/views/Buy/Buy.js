@@ -7,7 +7,7 @@ import './Buy.css';
 
 import Synapse from '../../img/Synapse.svg'
 import Anyswap from '../../img/Anyswap.png'
-import Hop from '../../img/Hop.png'
+import Hop from '../../img/Hop_dark.png'
 import Banxa from '../../img/Banxa.png'
 import logo from '../../img/gmx_logo.svg'
 import glpIcon from '../../img/ic_glp_40.svg'
@@ -43,12 +43,13 @@ export default function BuyGMXGLP() {
             <a href="https://anyswap.exchange/bridge#/bridge" target="_blank" rel="noopener noreferrer" className="Anyswap">
               <img src={Anyswap} alt="Anyswap" />
             </a>
-            <a href="https://app.hop.exchange/send?token=USDC&sourceNetwork=ethereum&destNetwork=arbitrum" target="_blank" rel="noopener noreferrer">
+            <a href="https://app.hop.exchange/send?token=USDC&sourceNetwork=ethereum&destNetwork=arbitrum" target="_blank" rel="noopener noreferrer" className="Hop">
               <img src={Hop} alt="Hop" />
             </a>
           </div>
           <div className="BuyGMXGLP-description better-rates-description">
-            After you have ETH, set your wallet network to <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">Arbitrum</a> then click on the button below:
+            After you have ETH, set your wallet network to <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">Arbitrum</a> then click on the button below.<br/>
+            GMX liquidity is not available on Avalanche yet, it will be available in a few weeks time.
           </div>
           <a href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" target="_blank" rel="noopener noreferrer" className="BuyGMXGLP-purchase-block">
             <div className="BuyGMXGLP-purchase-block-icon">
@@ -59,7 +60,7 @@ export default function BuyGMXGLP() {
               <div className="BuyGMXGLP-purchase-block-info__subtitle">Uniswap Arbitrum</div>
             </div>
           </a>
-          <div className="BuyGMXGLP-description">You can also buy GMX via Olympus Pro bonds with a discount and a small vesting period here:</div>
+          <div className="BuyGMXGLP-description">You can also buy GMX via Olympus Pro bonds on Arbitrum with a discount and a small vesting period.</div>
           <div className="GMX-block-section">
             <a href="https://pro.olympusdao.finance/#/partners/GMX" target="_blank" rel="noopener noreferrer" className="GMX-block">
               <div className="GMX-block-icon">
