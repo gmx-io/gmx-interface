@@ -19,24 +19,28 @@ import {
   numberWithCommas,
   formatDate,
   getServerUrl,
+  getChainName,
   useChainId,
   USD_DECIMALS,
   GMX_DECIMALS,
   GLP_DECIMALS,
   BASIS_POINTS_DIVISOR,
   DEFAULT_MAX_USDG_AMOUNT,
+  ARBITRUM,
   AVALANCHE
 } from '../../Helpers'
-import { useGmxPrice } from '../../Api'
+import { useGmxPrice, useStakedGmxSupply } from '../../Api'
 
 import { getContract } from '../../Addresses'
 
 import VaultV2 from '../../abis/VaultV2.json'
 import ReaderV2 from '../../abis/ReaderV2.json'
 import GlpManager from '../../abis/GlpManager.json'
-import Token from '../../abis/Token.json'
 
 import Footer from "../../Footer"
+
+import arbitrumIcon from "../../img/ic_arbitrum_16.svg"
+import avalancheIcon from "../../img/ic_avalanche_16.svg"
 
 import "./DashboardV2.css"
 
@@ -108,6 +112,8 @@ export default function DashboardV2() {
   const { active, library } = useWeb3React()
   const { chainId } = useChainId()
 
+  const chainName = getChainName(chainId)
+
   const positionStatsUrl = getServerUrl(chainId, "/position_stats")
   const { data: positionStats, mutate: updatePositionStats } = useSWR([positionStatsUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
@@ -123,7 +129,7 @@ export default function DashboardV2() {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
 
-  const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
+  const gmxSupplyUrl = getServerUrl(ARBITRUM, "/gmx_supply")
   const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.text())
   })
@@ -175,11 +181,7 @@ export default function DashboardV2() {
     fetcher: fetcher(library, VaultV2),
   })
 
-  const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker")
-
-  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR([`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
-    fetcher: fetcher(library, Token),
-  })
+  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useStakedGmxSupply()
 
   const infoTokens = getInfoTokens(tokens, undefined, whitelistedTokens, vaultTokenInfo, undefined)
 
@@ -306,14 +308,15 @@ export default function DashboardV2() {
       updateFees, updateGmxPrice, updateStakedGmxSupply,
       updateTotalTokenWeights, updateGmxSupply])
 
-  const statsUrl = `https://stats.gmx.io/${chainId === AVALANCHE ? "avalanche" : ""}`
+  const statsUrl = 'https://stats.gmx.io/'
+  const totalStatsStartDate = chainId === AVALANCHE ? "06 Jan 2022" : "01 Sep 2021"
 
   return (
     <div className="DashboardV2 Page">
       <div className="Page-title-section">
         <div className="Page-title">Stats</div>
         <div className="Page-description">
-          Total Stats start from 01 Sep 2021.&nbsp;<br/>
+          {chainName} Total Stats start from {totalStatsStartDate}.<br/>
           For detailed stats: <a href={statsUrl}  target="_blank" rel="noopener noreferrer">{statsUrl}</a>.
         </div>
       </div>
@@ -329,7 +332,7 @@ export default function DashboardV2() {
                   <Tooltip
                     handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                     position="right-bottom"
-                    renderContent={() => "Assets Under Management: GLP pool + GMX staked"}
+                    renderContent={() => `Assets Under Management: GMX staked (All chains) + GLP pool (${chainName})`}
                   />
                 </div>
               </div>
@@ -339,7 +342,7 @@ export default function DashboardV2() {
                   <Tooltip
                     handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
                     position="right-bottom"
-                    renderContent={() => "Total value of tokens in GLP pool"}
+                    renderContent={() => `Total value of tokens in GLP pool (${chainName})`}
                   />
                 </div>
               </div>
@@ -434,7 +437,7 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GLP</div>
+            <div className="App-card-title">GLP ({chainName})</div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -526,7 +529,12 @@ export default function DashboardV2() {
         </div>
         <div className="DashboardV2-projects">
           <div className="App-card">
-            <div className="App-card-title">GMX Blueberry Club</div>
+            <div className="App-card-title">
+              GMX Blueberry Club
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -554,7 +562,12 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GMX Leaderboard</div>
+            <div className="App-card-title">
+              GMX Leaderboard
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -582,7 +595,12 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GMX Positions Bot</div>
+            <div className="App-card-title">
+              GMX Positions Bot
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -610,7 +628,12 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GMX Yield List</div>
+            <div className="App-card-title">
+              GMX Yield List
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -638,7 +661,12 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GMX Charts</div>
+            <div className="App-card-title">
+              GMX Charts
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -666,7 +694,13 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GMX Feedback</div>
+            <div className="App-card-title">
+              GMX Feedback
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+                <img src={avalancheIcon} alt="avalancheIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">

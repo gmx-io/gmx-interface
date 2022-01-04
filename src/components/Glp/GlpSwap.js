@@ -9,9 +9,10 @@ import { getToken, getTokens, getWhitelistedTokens, getNativeToken, getNetworkTo
 import { getContract } from '../../Addresses'
 import {
   helperToast,
-  useLocalStorageSerializeKey,
+  useLocalStorageByChainId,
   getInfoTokens,
   getTokenInfo,
+  useChainId,
   expandDecimals,
   fetcher,
   bigNumberify,
@@ -33,8 +34,7 @@ import {
   GLP_COOLDOWN_DURATION,
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
-  DEFAULT_MAX_USDG_AMOUNT,
-  AVALANCHE
+  DEFAULT_MAX_USDG_AMOUNT
 } from '../../Helpers'
 
 import { callContract, useGmxPrice } from '../../Api'
@@ -87,13 +87,13 @@ export default function GlpSwap(props) {
   const { savedSlippageAmount, isBuying, setPendingTxns, connectWallet } = props
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp"
   const { active, library, account } = useWeb3React()
-  const chainId = AVALANCHE
+  const { chainId } = useChainId()
   const tokens = getTokens(chainId)
   const whitelistedTokens = getWhitelistedTokens(chainId)
   const tokenList = whitelistedTokens.filter(t => !t.isWrapped)
   const [swapValue, setSwapValue] = useState("")
   const [glpValue, setGlpValue] = useState("")
-  const [swapTokenAddress, setSwapTokenAddress] = useLocalStorageSerializeKey([chainId, `${swapLabel}-swap-token-address`], AddressZero)
+  const [swapTokenAddress, setSwapTokenAddress] = useLocalStorageByChainId(chainId, `${swapLabel}-swap-token-address`, AddressZero)
   const [isApproving, setIsApproving] = useState(false)
   const [isWaitingForApproval, setIsWaitingForApproval] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)

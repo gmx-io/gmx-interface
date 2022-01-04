@@ -348,8 +348,6 @@
 
 .PositionEditor .Modal-content {
   width: 23rem;
-  max-height: 90vh;
-  overflow: auto;
 }
 
 .PositionEditor .Tab {
