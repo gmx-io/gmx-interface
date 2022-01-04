@@ -633,8 +633,8 @@ function CompoundModal(props) {
     chainId,
     setPendingTxns,
     totalVesterRewards,
-    networkTokenSymbol,
-    nativeTokenSymbol
+    nativeTokenSymbol,
+    wrappedTokenSymbol
   } = props
   const [isCompounding, setIsCompounding] = useState(false)
 	const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey([chainId, "StakeV2-compound-should-claim-gmx"], true)
@@ -746,12 +746,12 @@ function CompoundModal(props) {
           </div>
           <div>
   					<Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth}>
-  						Claim {nativeTokenSymbol} Rewards
+  						Claim {wrappedTokenSymbol} Rewards
   					</Checkbox>
           </div>
           <div>
   					<Checkbox isChecked={shouldConvertWeth} setIsChecked={setShouldConvertWeth}>
-  						Convert {nativeTokenSymbol} to {networkTokenSymbol}
+  						Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
   					</Checkbox>
           </div>
         </div>
@@ -773,8 +773,8 @@ function ClaimModal(props) {
     library,
     chainId,
     setPendingTxns,
-    networkTokenSymbol,
-    nativeTokenSymbol
+    nativeTokenSymbol,
+    wrappedTokenSymbol
   } = props
   const [isClaiming, setIsClaiming] = useState(false)
 	const [shouldClaimGmx, setShouldClaimGmx] = useLocalStorageSerializeKey([chainId, "StakeV2-claim-should-claim-gmx"], true)
@@ -833,12 +833,12 @@ function ClaimModal(props) {
           </div>
           <div>
   					<Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth}>
-  						Claim {nativeTokenSymbol} Rewards
+  						Claim {wrappedTokenSymbol} Rewards
   					</Checkbox>
           </div>
           <div>
   					<Checkbox isChecked={shouldConvertWeth} setIsChecked={setShouldConvertWeth}>
-  						Convert {networkTokenSymbol} to {nativeTokenSymbol}
+  						Convert {nativeTokenSymbol} to {wrappedTokenSymbol}
   					</Checkbox>
           </div>
         </div>
@@ -925,8 +925,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
   const excludedEsGmxAccounts = [stakedGmxDistributorAddress, stakedGlpDistributorAddress]
 
-  const networkTokenSymbol = getConstant(chainId, "networkTokenSymbol")
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol")
+  const wrappedTokenSymbol = getConstant(chainId, "wrappedTokenSymbol")
 
   const walletTokens = [gmxAddress, esGmxAddress, glpAddress, stakedGmxTrackerAddress]
   const depositTokens = [
@@ -1221,7 +1221,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       glpStr = formatAmount(processedData.glpBalance, 18, 2, true) + " GLP"
     }
     const amountStr = [gmxAmountStr, esGmxAmountStr, mpAmountStr, glpStr].filter(s => s).join(", ")
-    earnMsg = <div>You are earning {networkTokenSymbol} rewards with {formatAmount(totalRewardTokensAndGlp, 18, 2, true)} tokens.<br/>Tokens: {amountStr}.</div>
+    earnMsg = <div>You are earning {nativeTokenSymbol} rewards with {formatAmount(totalRewardTokensAndGlp, 18, 2, true)} tokens.<br/>Tokens: {amountStr}.</div>
   }
 
   return (
@@ -1244,8 +1244,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         stakeMethodName={stakeMethodName}
         hasMultiplierPoints={hasMultiplierPoints}
         setPendingTxns={setPendingTxns}
-        networkTokenSymbol={networkTokenSymbol}
         nativeTokenSymbol={nativeTokenSymbol}
+        wrappedTokenSymbol={wrappedTokenSymbol}
       />
       <UnstakeModal
         setPendingTxns={setPendingTxns}
@@ -1300,8 +1300,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         setIsVisible={setIsCompoundModalVisible}
         rewardRouterAddress={rewardRouterAddress}
         totalVesterRewards={processedData.totalVesterRewards}
+        wrappedTokenSymbol={wrappedTokenSymbol}
         nativeTokenSymbol={nativeTokenSymbol}
-        networkTokenSymbol={networkTokenSymbol}
         library={library}
         chainId={chainId}
       />
@@ -1313,8 +1313,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         setIsVisible={setIsClaimModalVisible}
         rewardRouterAddress={rewardRouterAddress}
         totalVesterRewards={processedData.totalVesterRewards}
+        wrappedTokenSymbol={wrappedTokenSymbol}
         nativeTokenSymbol={nativeTokenSymbol}
-        networkTokenSymbol={networkTokenSymbol}
         library={library}
         chainId={chainId}
       />
@@ -1363,7 +1363,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return <>
                         <div className="Tooltip-row">
-                          <span className="label">{networkTokenSymbol} ({nativeTokenSymbol}) APR</span>
+                          <span className="label">{nativeTokenSymbol} ({wrappedTokenSymbol}) APR</span>
                           <span>{formatKeyAmount(processedData, "gmxAprForETH", 2, 2, true)}%</span>
                         </div>
                         <div className="Tooltip-row">
@@ -1384,7 +1384,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return <>
                         <div className="Tooltip-row">
-                          <span className="label">{networkTokenSymbol} ({nativeTokenSymbol})</span>
+                          <span className="label">{nativeTokenSymbol} ({wrappedTokenSymbol})</span>
                           <span>{formatKeyAmount(processedData, "feeGmxTrackerRewards", 18, 4)} (${formatKeyAmount(processedData, "feeGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})</span>
                         </div>
                         <div className="Tooltip-row">
@@ -1414,7 +1414,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     position="right-bottom"
                     renderContent={() => {
                       return <>
-                        You are earning {formatAmount(boostBasisPoints, 2, 2, false)}% more {networkTokenSymbol} rewards using {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)} Staked Multiplier Points.<br/>
+                        You are earning {formatAmount(boostBasisPoints, 2, 2, false)}% more {nativeTokenSymbol} rewards using {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)} Staked Multiplier Points.<br/>
                         <br/>
                         Use the "Compound" button to stake your Multiplier Points.
                       </>
@@ -1449,7 +1449,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
-                <div className="label">{networkTokenSymbol} ({nativeTokenSymbol})</div>
+                <div className="label">{nativeTokenSymbol} ({wrappedTokenSymbol})</div>
                 <div>
                   {formatKeyAmount(processedData, "totalETHRewards", 18, 4, true)} (${formatKeyAmount(processedData, "totalETHRewardsUsd", USD_DECIMALS, 2, true)})
                 </div>
@@ -1534,7 +1534,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return <>
                         <div className="Tooltip-row">
-                          <span className="label">{networkTokenSymbol} ({nativeTokenSymbol}) APR</span>
+                          <span className="label">{nativeTokenSymbol} ({wrappedTokenSymbol}) APR</span>
                           <span>{formatKeyAmount(processedData, "glpAprForETH", 2, 2, true)}%</span>
                         </div>
                         <div className="Tooltip-row">
@@ -1555,7 +1555,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return <>
                         <div className="Tooltip-row">
-                          <span className="label">{networkTokenSymbol} ({nativeTokenSymbol})</span>
+                          <span className="label">{nativeTokenSymbol} ({wrappedTokenSymbol})</span>
                           <span>{formatKeyAmount(processedData, "feeGlpTrackerRewards", 18, 4)} (${formatKeyAmount(processedData, "feeGlpTrackerRewardsUsd", USD_DECIMALS, 2, true)})</span>
                         </div>
                         <div className="Tooltip-row">
@@ -1621,7 +1621,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       renderContent={() => {
                         return <>
                           <div className="Tooltip-row">
-                            <span className="label">{networkTokenSymbol} ({nativeTokenSymbol}) APR</span>
+                            <span className="label">{nativeTokenSymbol} ({wrappedTokenSymbol}) APR</span>
                             <span>{formatKeyAmount(processedData, "gmxAprForETH", 2, 2, true)}%</span>
                           </div>
                           <div className="Tooltip-row">
