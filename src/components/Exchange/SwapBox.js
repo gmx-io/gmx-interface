@@ -914,7 +914,7 @@ export default function SwapBox(props) {
     if (shouldRaiseGasError(getTokenInfo(infoTokens, fromTokenAddress), fromAmount)) {
       setIsSubmitting(false)
       setIsPendingConfirmation(true)
-      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "networkTokenSymbol")} for gas`)
+      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "nativeTokenSymbol")} for gas`)
       return
     }
 
@@ -1064,13 +1064,13 @@ export default function SwapBox(props) {
     if (shouldRaiseGasError(getTokenInfo(infoTokens, fromTokenAddress), fromAmount)) {
       setIsSubmitting(false)
       setIsPendingConfirmation(false)
-      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "networkTokenSymbol")} for gas`)
+      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "nativeTokenSymbol")} for gas`)
       return
     }
 
     const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner())
     const indexToken = getTokenInfo(infoTokens, indexTokenAddress)
-    const tokenSymbol = indexToken.isWrapped ? getConstant(chainId, "networkTokenSymbol") : indexToken.symbol
+    const tokenSymbol = indexToken.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexToken.symbol
     const successMsg = `Increased ${tokenSymbol} ${isLong ? "Long" : "Short"} by ${formatAmount(toUsdMax, USD_DECIMALS, 2)} USD`;
 
     Api.callContract(chainId, contract, method, params, {

@@ -12,7 +12,7 @@ const ARBITRUM_ORDER_EXECUTION_GAS_PRICE = expandDecimals(1, 9) // 1 gwei
 
 const constants = {
   [MAINNET]: {
-    networkTokenSymbol: "BNB",
+    nativeTokenSymbol: "BNB",
     defaultCollateralSymbol: "BUSD",
     defaultFlagOrdersEnabled: false,
     positionReaderPropsLength: 8,
@@ -20,7 +20,7 @@ const constants = {
   },
 
   [TESTNET]: {
-    networkTokenSymbol: "BNB",
+    nativeTokenSymbol: "BNB",
     defaultCollateralSymbol: "BUSD",
     defaultFlagOrdersEnabled: true,
     positionReaderPropsLength: 8,
@@ -28,7 +28,7 @@ const constants = {
   },
 
   [ARBITRUM_TESTNET]: {
-    networkTokenSymbol: "ETH",
+    nativeTokenSymbol: "ETH",
     defaultCollateralSymbol: "USDC",
     defaultFlagOrdersEnabled: false,
     positionReaderPropsLength: 9,
@@ -36,8 +36,8 @@ const constants = {
   },
 
   [ARBITRUM]: {
-    networkTokenSymbol: "ETH",
-    nativeTokenSymbol: "WETH",
+    nativeTokenSymbol: "ETH",
+    wrappedTokenSymbol: "WETH",
     defaultCollateralSymbol: "USDC",
     defaultFlagOrdersEnabled: false,
     positionReaderPropsLength: 9,
@@ -49,8 +49,8 @@ const constants = {
   },
 
   [AVALANCHE]: {
-    networkTokenSymbol: "AVAX",
-    nativeTokenSymbol: "WAVAX",
+    nativeTokenSymbol: "AVAX",
+    wrappedTokenSymbol: "WAVAX",
     defaultCollateralSymbol: "MIM",
     defaultFlagOrdersEnabled: true,
     positionReaderPropsLength: 9,

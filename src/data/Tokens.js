@@ -287,24 +287,24 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
   }
 }
 
-const NATIVE_TOKENS = {}
-const NETWORK_TOKENS = {}
+const WRAPPED_TOKENS_MAP = {}
+const NATIVE_TOKENS_MAP = {}
 for (const chainId of CHAIN_IDS) {
   for (const token of TOKENS[chainId]) {
     if (token.isWrapped) {
-      NATIVE_TOKENS[chainId] = token
+      WRAPPED_TOKENS_MAP[chainId] = token
     } else if (token.isNative) {
-      NETWORK_TOKENS[chainId] = token
+      NATIVE_TOKENS_MAP[chainId] = token
     }
   }
 }
 
-export function getNativeToken(chainId) {
-  return NATIVE_TOKENS[chainId]
+export function getWrappedToken(chainId) {
+  return WRAPPED_TOKENS_MAP[chainId]
 }
 
-export function getNetworkToken(chainId) {
-  return NETWORK_TOKENS[chainId]
+export function getNativeToken(chainId) {
+  return NATIVE_TOKENS_MAP[chainId]
 }
 
 export function getTokens(chainId) {
