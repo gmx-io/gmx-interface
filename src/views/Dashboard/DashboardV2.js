@@ -19,22 +19,23 @@ import {
   numberWithCommas,
   formatDate,
   getServerUrl,
+  getChainName,
   useChainId,
   USD_DECIMALS,
   GMX_DECIMALS,
   GLP_DECIMALS,
   BASIS_POINTS_DIVISOR,
   DEFAULT_MAX_USDG_AMOUNT,
+  ARBITRUM,
   AVALANCHE
 } from '../../Helpers'
-import { useGmxPrice } from '../../Api'
+import { useGmxPrice, useStakedGmxSupply } from '../../Api'
 
 import { getContract } from '../../Addresses'
 
 import VaultV2 from '../../abis/VaultV2.json'
 import ReaderV2 from '../../abis/ReaderV2.json'
 import GlpManager from '../../abis/GlpManager.json'
-import Token from '../../abis/Token.json'
 
 import Footer from "../../Footer"
 
@@ -126,7 +127,7 @@ export default function DashboardV2() {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
 
-  const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
+  const gmxSupplyUrl = getServerUrl(ARBITRUM, "/gmx_supply")
   const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.text())
   })
@@ -178,11 +179,7 @@ export default function DashboardV2() {
     fetcher: fetcher(library, VaultV2),
   })
 
-  const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker")
-
-  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR([`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
-    fetcher: fetcher(library, Token),
-  })
+  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useStakedGmxSupply()
 
   const infoTokens = getInfoTokens(tokens, undefined, whitelistedTokens, vaultTokenInfo, undefined)
 
@@ -437,7 +434,7 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GLP</div>
+            <div className="App-card-title">GLP ({getChainName(chainId)})</div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
