@@ -183,10 +183,10 @@ function getProcessedData(balanceData, supplyData, depositBalanceData, stakingDa
     ? data.stakedGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.stakedGmxSupplyUsd)
     : bigNumberify(0)
   data.feeGmxTrackerAnnualRewardsUsd = stakingData.feeGmxTracker.tokensPerInterval.mul(SECONDS_PER_YEAR).mul(nativeTokenPrice).div(expandDecimals(1, 18))
-  data.gmxAprForETH = data.feeGmxSupplyUsd && data.feeGmxSupplyUsd.gt(0)
+  data.gmxAprForNativeToken = data.feeGmxSupplyUsd && data.feeGmxSupplyUsd.gt(0)
     ? data.feeGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.feeGmxSupplyUsd)
     : bigNumberify(0)
-  data.gmxAprTotal = data.gmxAprForETH.add(data.gmxAprForEsGmx)
+  data.gmxAprTotal = data.gmxAprForNativeToken.add(data.gmxAprForEsGmx)
 
   data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(data.feeGmxTrackerRewardsUsd)
 
@@ -211,10 +211,10 @@ function getProcessedData(balanceData, supplyData, depositBalanceData, stakingDa
     ? data.stakedGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.glpSupplyUsd)
     : bigNumberify(0)
   data.feeGlpTrackerAnnualRewardsUsd = stakingData.feeGlpTracker.tokensPerInterval.mul(SECONDS_PER_YEAR).mul(nativeTokenPrice).div(expandDecimals(1, 18))
-  data.glpAprForETH = data.glpSupplyUsd && data.glpSupplyUsd.gt(0)
+  data.glpAprForNativeToken = data.glpSupplyUsd && data.glpSupplyUsd.gt(0)
     ? data.feeGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.glpSupplyUsd)
     : bigNumberify(0)
-  data.glpAprTotal = data.glpAprForETH.add(data.glpAprForEsGmx)
+  data.glpAprTotal = data.glpAprForNativeToken.add(data.glpAprForEsGmx)
 
   data.totalGlpRewardsUsd = data.stakedGlpTrackerRewardsUsd.add(data.feeGlpTrackerRewardsUsd)
 
@@ -226,10 +226,10 @@ function getProcessedData(balanceData, supplyData, depositBalanceData, stakingDa
   data.totalVesterRewards = data.gmxVesterRewards.add(data.glpVesterRewards)
   data.totalVesterRewardsUsd = data.totalVesterRewards.mul(gmxPrice).div(expandDecimals(1, 18))
 
-  data.totalETHRewards = data.feeGmxTrackerRewards.add(data.feeGlpTrackerRewards)
-  data.totalETHRewardsUsd = data.feeGmxTrackerRewardsUsd.add(data.feeGlpTrackerRewardsUsd)
+  data.totalNativeTokenRewards = data.feeGmxTrackerRewards.add(data.feeGlpTrackerRewards)
+  data.totalNativeTokenRewardsUsd = data.feeGmxTrackerRewardsUsd.add(data.feeGlpTrackerRewardsUsd)
 
-  data.totalRewardsUsd = data.totalEsGmxRewardsUsd.add(data.totalETHRewardsUsd).add(data.totalVesterRewardsUsd)
+  data.totalRewardsUsd = data.totalEsGmxRewardsUsd.add(data.totalNativeTokenRewardsUsd).add(data.totalVesterRewardsUsd)
 
   return data
 }
@@ -1364,7 +1364,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       return <>
                         <div className="Tooltip-row">
                           <span className="label">{nativeTokenSymbol} ({wrappedTokenSymbol}) APR</span>
-                          <span>{formatKeyAmount(processedData, "gmxAprForETH", 2, 2, true)}%</span>
+                          <span>{formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%</span>
                         </div>
                         <div className="Tooltip-row">
                           <span className="label">Escrowed GMX APR</span>
@@ -1451,7 +1451,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               <div className="App-card-row">
                 <div className="label">{nativeTokenSymbol} ({wrappedTokenSymbol})</div>
                 <div>
-                  {formatKeyAmount(processedData, "totalETHRewards", 18, 4, true)} (${formatKeyAmount(processedData, "totalETHRewardsUsd", USD_DECIMALS, 2, true)})
+                  {formatKeyAmount(processedData, "totalNativeTokenRewards", 18, 4, true)} (${formatKeyAmount(processedData, "totalNativeTokenRewardsUsd", USD_DECIMALS, 2, true)})
                 </div>
               </div>
               <div className="App-card-row">
@@ -1535,7 +1535,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       return <>
                         <div className="Tooltip-row">
                           <span className="label">{nativeTokenSymbol} ({wrappedTokenSymbol}) APR</span>
-                          <span>{formatKeyAmount(processedData, "glpAprForETH", 2, 2, true)}%</span>
+                          <span>{formatKeyAmount(processedData, "glpAprForNativeToken", 2, 2, true)}%</span>
                         </div>
                         <div className="Tooltip-row">
                           <span className="label">Escrowed GMX APR</span>
@@ -1622,7 +1622,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                         return <>
                           <div className="Tooltip-row">
                             <span className="label">{nativeTokenSymbol} ({wrappedTokenSymbol}) APR</span>
-                            <span>{formatKeyAmount(processedData, "gmxAprForETH", 2, 2, true)}%</span>
+                            <span>{formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%</span>
                           </div>
                           <div className="Tooltip-row">
                             <span className="label">Escrowed GMX APR</span>
