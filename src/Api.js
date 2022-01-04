@@ -337,37 +337,6 @@ async function getChartPricesFromStats(chainId, marketName, period) {
   return json
 }
 
-// async function getChartPricesFromGmxGraph(tokenAddress, chainId) {
-//   const graphClient = getGmxGraphClient(chainId)
-
-//   const query = gql(`{
-//     prices: chainlinkPrices(first: 1000 orderBy: timestamp orderDirection: desc where: {token: "${tokenAddress.toLowerCase()}"}) {
-//       timestamp
-//       value
-//     }
-//   }`)
-//   const response = await graphClient.query({query})
-
-//   const prices = response.data.prices.map(price => {
-//     return [price.timestamp, Number(price.value) / 1e8]
-//   })
-
-//   if (prices.length < 300) {
-//     throw new Error(`Only ${prices.length} price records for token ${tokenAddress} chainId: ${chainId}`)
-//   }
-
-//   prices.sort(([timeA], [timeB]) => timeA - timeB)
-
-//   const OBSOLETE_THRESHOLD = 60 * 60 * 3 // chainlink updates on Arbitrum/Avalanche are not too frequent
-//   const lastTs = prices[prices.length - 1][0]
-//   const diff = parseInt(Date.now() / 1000) - lastTs
-//   if (diff > OBSOLETE_THRESHOLD) {
-//     throw new Error(`chart data is obsolete, last price record at ${new Date(lastTs * 1000)}`)
-//   }
-
-//   return prices
-// }
-
 function getChainlinkChartPricesFromGraph(marketName) {
   if (marketName.startsWith('WBTC') || marketName.startsWith('WETH') || marketName.startsWith('WBNB') || marketName.startsWith('WAVAX')) {
     marketName = marketName.substr(1)
