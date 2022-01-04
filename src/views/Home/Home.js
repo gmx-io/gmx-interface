@@ -106,7 +106,7 @@ export default function Home() {
               Perpetual Exchange
             </div>
             <div className="Home-description">
-              Trade BTC, ETH and other top cryptocurrencies with up to 30x leverage directly from your wallet
+              Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet
             </div>
             <NavLink activeClassName="active" to="/trade" className="default-btn">Launch Exchange</NavLink>
           </div>

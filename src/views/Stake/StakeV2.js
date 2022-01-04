@@ -1221,7 +1221,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       glpStr = formatAmount(processedData.glpBalance, 18, 2, true) + " GLP"
     }
     const amountStr = [gmxAmountStr, esGmxAmountStr, mpAmountStr, glpStr].filter(s => s).join(", ")
-    earnMsg = <div>You are earning ETH rewards with {formatAmount(totalRewardTokensAndGlp, 18, 2, true)} tokens.<br/>Tokens: {amountStr}.</div>
+    earnMsg = <div>You are earning {networkTokenSymbol} rewards with {formatAmount(totalRewardTokensAndGlp, 18, 2, true)} tokens.<br/>Tokens: {amountStr}.</div>
   }
 
   return (
@@ -1300,6 +1300,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         setIsVisible={setIsCompoundModalVisible}
         rewardRouterAddress={rewardRouterAddress}
         totalVesterRewards={processedData.totalVesterRewards}
+        nativeTokenSymbol={nativeTokenSymbol}
+        networkTokenSymbol={networkTokenSymbol}
         library={library}
         chainId={chainId}
       />
@@ -1311,6 +1313,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         setIsVisible={setIsClaimModalVisible}
         rewardRouterAddress={rewardRouterAddress}
         totalVesterRewards={processedData.totalVesterRewards}
+        nativeTokenSymbol={nativeTokenSymbol}
+        networkTokenSymbol={networkTokenSymbol}
         library={library}
         chainId={chainId}
       />
@@ -1410,7 +1414,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     position="right-bottom"
                     renderContent={() => {
                       return <>
-                        You are earning {formatAmount(boostBasisPoints, 2, 2, false)}% more ETH rewards using {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)} Staked Multiplier Points.<br/>
+                        You are earning {formatAmount(boostBasisPoints, 2, 2, false)}% more {networkTokenSymbol} rewards using {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)} Staked Multiplier Points.<br/>
                         <br/>
                         Use the "Compound" button to stake your Multiplier Points.
                       </>
@@ -1617,7 +1621,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       renderContent={() => {
                         return <>
                           <div className="Tooltip-row">
-                            <span className="label">{networkTokenSymbol} (nativeTokenSymbol) APR</span>
+                            <span className="label">{networkTokenSymbol} ({nativeTokenSymbol}) APR</span>
                             <span>{formatKeyAmount(processedData, "gmxAprForETH", 2, 2, true)}%</span>
                           </div>
                           <div className="Tooltip-row">
@@ -1661,6 +1665,18 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           </div>
         </div>
       </div>
+
+      {!isVestingEnabled && <div>
+        <div className="Page-title-section">
+          <div className="Page-title">Vest</div>
+          <div className="Page-description">
+            Vesting of esGMX tokens for Avalanche is not yet available. It will be available in a few weeks time.<br/>
+            More info about vesting: <a href="https://gmxio.gitbook.io/gmx/rewards#vesting" target="_blank" rel="noopener noreferrer">
+              https://gmxio.gitbook.io/gmx/rewards#vesting
+            </a>.
+          </div>
+        </div>
+      </div>}
 
       {isVestingEnabled && <div>
         <div className="Page-title-section">
