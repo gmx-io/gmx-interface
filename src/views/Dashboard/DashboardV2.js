@@ -308,7 +308,7 @@ export default function DashboardV2() {
       updateFees, updateGmxPrice, updateStakedGmxSupply,
       updateTotalTokenWeights, updateGmxSupply])
 
-  const statsUrl = 'https://stats.gmx.io/'
+  const statsUrl = `https://stats.gmx.io/${chainId === AVALANCHE ? "avalanche" : ""}`
   const totalStatsStartDate = chainId === AVALANCHE ? "06 Jan 2022" : "01 Sep 2021"
 
   return (
