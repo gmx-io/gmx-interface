@@ -189,9 +189,20 @@ const FEES = {
       from: 1640740756 - SECONDS_PER_WEEK,
       to: 1640740756,
       feeUsd: "653857.89"
+    },
+    {
+      from: 1641353998 - SECONDS_PER_WEEK,
+      to: 1641353998,
+      feeUsd: "932273.45"
     }
   ],
-  43114: []
+  43114: [
+    {
+      from: 1641430800 - SECONDS_PER_WEEK,
+      to: 1641430800,
+      feeUsd: "10"
+    }
+  ]
 }
 
 export function getFeeHistory(chainId) {
