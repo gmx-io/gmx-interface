@@ -762,12 +762,6 @@ export default function SwapBox(props) {
       if (toUsdMax && toUsdMax.lt(fromUsdMin.mul(95).div(100))) {
         return "High Slippage, Swap Anyway"
       }
-      if (toToken.isWrapped && fromToken.isNative) {
-        return "Wrap"
-      }
-      if (toToken.isNative && fromToken.isWrapped) {
-        return "Unwrap"
-      }
       return "Swap"
     }
 
