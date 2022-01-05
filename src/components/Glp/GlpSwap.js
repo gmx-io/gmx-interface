@@ -12,6 +12,7 @@ import {
   useLocalStorageByChainId,
   getInfoTokens,
   getTokenInfo,
+  getChainName,
   useChainId,
   expandDecimals,
   fetcher,
@@ -88,6 +89,7 @@ export default function GlpSwap(props) {
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp"
   const { active, library, account } = useWeb3React()
   const { chainId } = useChainId()
+  const chainName = getChainName(chainId)
   const tokens = getTokens(chainId)
   const whitelistedTokens = getWhitelistedTokens(chainId)
   const tokenList = whitelistedTokens.filter(t => !t.isWrapped)
@@ -552,7 +554,7 @@ export default function GlpSwap(props) {
       </div>
       <div className="GlpSwap-content">
         <div className="App-card GlpSwap-stats-card">
-          <div className="App-card-title">GLP</div>
+          <div className="App-card-title">GLP ({chainName})</div>
           <div className="App-card-divider"></div>
           <div className="App-card-content">
             <div className="App-card-row">
