@@ -23,6 +23,7 @@ import {
   formatAmount,
   formatKeyAmount,
   formatAmountFree,
+  getChainName,
   expandDecimals,
   parseValue,
   approveTokens,
@@ -856,7 +857,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   const { active, library, account } = useWeb3React()
   const { chainId } = useChainId()
 
+  const chainName = getChainName(chainId)
+
   const isVestingEnabled = chainId === ARBITRUM
+  const hasInsurance = chainId === ARBITRUM
 
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false)
   const [stakeModalTitle, setStakeModalTitle] = useState("")
@@ -1203,7 +1207,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   }, [])
 
   let earnMsg
-  if (totalRewardTokens && totalRewardTokens.gt(0)) {
+  if (totalRewardTokensAndGlp && totalRewardTokensAndGlp.gt(0)) {
     let gmxAmountStr
     if (processedData.gmxInStakedGmx && processedData.gmxInStakedGmx.gt(0)) {
       gmxAmountStr = formatAmount(processedData.gmxInStakedGmx, 18, 2, true) + " GMX"
@@ -1503,7 +1507,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GLP</div>
+            <div className="App-card-title">GLP ({chainName})</div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -1584,7 +1588,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               <div className="App-card-options">
                 <Link className="App-button-option App-card-option" to="/buy_glp">Buy GLP</Link>
                 <Link className="App-button-option App-card-option" to="/sell_glp">Sell GLP</Link>
-                <a className="App-button-option App-card-option" href="https://app.insurace.io/Insurance/Cart?id=124&referrer=545066382753150189457177837072918687520318754040" target="_blank" rel="noopener noreferrer">Purchase Insurance</a>
+                {hasInsurance && <a className="App-button-option App-card-option" href="https://app.insurace.io/Insurance/Cart?id=124&referrer=545066382753150189457177837072918687520318754040" target="_blank" rel="noopener noreferrer">Purchase Insurance</a>}
               </div>
             </div>
           </div>
