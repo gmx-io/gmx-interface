@@ -267,6 +267,20 @@ const TOKENS = {
       address: "0x130966628846BFd36ff31a822705796e8cb8C18D",
       decimals: 18,
       isStable: true
+    },
+    {
+      name: "USD Coin",
+      symbol: "USDC.e",
+      address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+      decimals: 6,
+      isStable: true
+    },
+    {
+      name: "USD Coin",
+      symbol: "USDC",
+      address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+      decimals: 6,
+      isStable: true
     }
   ]
 }
