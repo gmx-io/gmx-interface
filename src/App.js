@@ -14,10 +14,8 @@ import {
 } from 'react-router-dom'
 
 import {
-  MAINNET,
-  TESTNET,
-  ARBITRUM_TESTNET,
   ARBITRUM,
+  AVALANCHE,
   DEFAULT_SLIPPAGE_AMOUNT,
   SLIPPAGE_BPS_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
@@ -94,10 +92,6 @@ const Zoom = cssTransition({
   duration: 300
 })
 
-const onNetworkSelect = option => {
-  switchNetwork(option.value)
-}
-
 function inPreviewMode() {
   return false
 }
@@ -166,29 +160,20 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
   )
 }
 
-function NetworkIcon({ chainId }) {
-  let url
-  if (chainId === MAINNET || chainId === TESTNET) {
-    url = "/binance.svg"
-  } else if (chainId === ARBITRUM_TESTNET || chainId === ARBITRUM) {
-    url = "/arbitrum.svg"
-  }
-  return <img src={url} alt={getChainName(chainId)} className="Network-icon" />
-}
-
 function AppHeaderUser({
   openSettings,
   small,
   setActivatingConnector,
   walletModalVisible,
-  setWalletModalVisible
+  setWalletModalVisible,
+  showNetworkSelectorModal
 }) {
   const { chainId } = useChainId()
   const { active, account } = useWeb3React()
-  const showSelector = false
+  const showSelector = true
   const networkOptions = [
-    { label: "Arbitrum", value: ARBITRUM },
-    { label: "Binance Smart Chain (BSC)", value: MAINNET }
+    { label: "Arbitrum", value: ARBITRUM, icon: 'ic_arbitrum_24.svg' },
+    { label: "Avalanche", value: AVALANCHE, icon: 'ic_avalanche_24.svg' }
   ]
 
   useEffect(() => {
@@ -197,26 +182,36 @@ function AppHeaderUser({
     }
   }, [active, setWalletModalVisible])
 
-  const icon = <NetworkIcon chainId={chainId} />
-  const selectorLabel = <span>{icon}&nbsp;{getChainName(chainId)}</span>
+  const onNetworkSelect = useCallback(option => {
+    if (option.value === chainId) {
+      return
+    }
+    return switchNetwork(option.value, active)
+  }, [chainId, active])
+
+  const selectorLabel = getChainName(chainId)
 
   if (!active) {
     return (
       <div className="App-header-user">
-        <div className="App-header-user-link">
-          <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
-        </div>
         {showSelector && <NetworkSelector
           options={networkOptions}
           label={selectorLabel}
           onSelect={onNetworkSelect}
           className="App-header-user-netowork"
           showCaret={true}
-          modalLabel="Switch Network"
-          modalText="Or you can switch network manually in&nbsp;Metamask"
+          modalLabel="Select Network"
+          small={small}
+          showModal={showNetworkSelectorModal}
         />}
-        <button target="_blank" rel="noopener noreferrer" className="default-btn header-connect-btn" onClick={() => setWalletModalVisible(true)}>
+        <div className="App-header-user-link">
+          <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
+        </div>
+        <button target="_blank" rel="noopener noreferrer" className="default-btn header-connect-btn long-label" onClick={() => setWalletModalVisible(true)}>
           Connect Wallet
+        </button>
+        <button target="_blank" rel="noopener noreferrer" className="default-btn header-connect-btn short-label" onClick={() => setWalletModalVisible(true)}>
+          Connect
         </button>
       </div>
     )
@@ -226,18 +221,19 @@ function AppHeaderUser({
 
   return (
     <div className="App-header-user">
-      <div className="App-header-user-link">
-        <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
-      </div>
       {showSelector && <NetworkSelector
         options={networkOptions}
         label={selectorLabel}
         onSelect={onNetworkSelect}
         className="App-header-user-netowork"
         showCaret={true}
-        modalLabel="Switch Network"
-        modalText="Or you can switch network manually in&nbsp;Metamask"
+        modalLabel="Select Network"
+        small={small}
+        showModal={showNetworkSelectorModal}
       />}
+      <div className="App-header-user-link">
+        <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
+      </div>
       <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="App-cta small transparent App-header-user-account">
         {shortenAddress(account, small ? 11 : 13)}
       </a>
@@ -263,6 +259,18 @@ function FullApp() {
   const triedEager = useEagerConnect(setActivatingConnector)
   useInactiveListener(!triedEager || !!activatingConnector)
 
+  useEffect(() => {
+    if (window.ethereum) {
+      // hack
+      // for some reason after network is changed to Avalanche through Metamask
+      // it triggers event with chainId = 1
+      // reload helps web3 to return correct chain data
+      return window.ethereum.on('chainChanged', () => {
+        document.location.reload()
+      })
+    }
+  }, [])
+
   const disconnectAccount = useCallback(() => {
     // only works with WalletConnect
     clearWalletConnectData()
@@ -281,6 +289,7 @@ function FullApp() {
   const connectWallet = () => setWalletModalVisible(true)
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(undefined)
+  const [isNativeSelectorModalVisible, setisNativeSelectorModalVisible] = useState(false)
   const fadeVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 }
@@ -313,6 +322,10 @@ function FullApp() {
     setSlippageAmount(slippage / BASIS_POINTS_DIVISOR * 100)
     setIsPnlInLeverage(savedIsPnlInLeverage)
     setIsSettingsVisible(true)
+  }
+
+  const showNetworkSelectorModal = (val) => {
+    setisNativeSelectorModalVisible(val)
   }
 
   const saveAndCloseSettings = () => {
@@ -404,6 +417,20 @@ function FullApp() {
                 </motion.div>}
             </AnimatePresence>
           }
+          {isNativeSelectorModalVisible &&
+            <AnimatePresence>
+              {isNativeSelectorModalVisible &&
+                <motion.div className="selector-backdrop"
+                  initial="hidden"
+                  animate="visible"
+                  exit="hidden"
+                  variants={fadeVariants}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => setisNativeSelectorModalVisible(!isNativeSelectorModalVisible)}
+                >
+                </motion.div>}
+            </AnimatePresence>
+          }
           <header>
             <div className="App-header large">
               <div className="App-header-container-left">
@@ -419,6 +446,7 @@ function FullApp() {
                   setActivatingConnector={setActivatingConnector}
                   walletModalVisible={walletModalVisible}
                   setWalletModalVisible={setWalletModalVisible}
+                  showNetworkSelectorModal={showNetworkSelectorModal}
                 />
               </div>
             </div>
@@ -441,6 +469,7 @@ function FullApp() {
                     setActivatingConnector={setActivatingConnector}
                     walletModalVisible={walletModalVisible}
                     setWalletModalVisible={setWalletModalVisible}
+                    showNetworkSelectorModal={showNetworkSelectorModal}
                   />
                 </div>
               </div>

@@ -17,6 +17,7 @@ import {
   getPositionKey,
   getLeverage,
   useLocalStorageSerializeKey,
+  useLocalStorageByChainId,
   getDeltaStr,
   useChainId,
   getInfoTokens,
@@ -216,43 +217,41 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   const defaultCollateralSymbol = getConstant(chainId, "defaultCollateralSymbol")
   const defaultTokenSelection = useMemo(() => ({
     [SWAP]: {
-      from: getTokenBySymbol(chainId, "ETH").address,
-      to: getTokenBySymbol(chainId, "USDC").address,
+      from: AddressZero,
+      to: getTokenBySymbol(chainId, defaultCollateralSymbol).address,
     },
     [LONG]: {
-      from: getTokenBySymbol(chainId, "ETH").address,
-      to: getTokenBySymbol(chainId, "ETH").address,
+      from: AddressZero,
+      to: AddressZero,
     },
     [SHORT]: {
       from: getTokenBySymbol(chainId, defaultCollateralSymbol).address,
-      to: getTokenBySymbol(chainId, "ETH").address,
+      to: AddressZero,
     }
   }), [chainId, defaultCollateralSymbol])
 
-  const [tokenSelection, setTokenSelection] = useLocalStorageSerializeKey([chainId, "Exchange-token-selection"], defaultTokenSelection)
-  const [swapOption, setSwapOption] = useLocalStorageSerializeKey([chainId, 'Swap-option'], LONG)
+  const [tokenSelection, setTokenSelection] = useLocalStorageByChainId(chainId, "Exchange-token-selection-v2", defaultTokenSelection)
+  const [swapOption, setSwapOption] = useLocalStorageByChainId(chainId, 'Swap-option-v2', LONG)
 
   const fromTokenAddress = tokenSelection[swapOption].from
   const toTokenAddress = tokenSelection[swapOption].to
 
-  const setFromTokenAddress = useCallback(address => {
-    setTokenSelection(tokenSelection => {
-      const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-      newTokenSelection[swapOption].from = address
-    })
-  }, [swapOption, setTokenSelection])
-
-  const setToTokenAddress = useCallback(address => {
-    setTokenSelection(tokenSelection => {
-      const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-      newTokenSelection[swapOption].to = address
-    })
-  }, [swapOption, setTokenSelection])
-
-  const setMarket = (newSwapOption, toTokenAddress) => {
-    setSwapOption(newSwapOption)
+  const setFromTokenAddress = useCallback((selectedSwapOption, address) => {
     const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-    newTokenSelection[newSwapOption].to = toTokenAddress
+    newTokenSelection[selectedSwapOption].from = address
+    setTokenSelection(newTokenSelection)
+  }, [tokenSelection, setTokenSelection])
+
+  const setToTokenAddress = useCallback((selectedSwapOption, address) => {
+    const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
+    newTokenSelection[selectedSwapOption].to = address
+    setTokenSelection(newTokenSelection)
+  }, [tokenSelection, setTokenSelection])
+
+  const setMarket = (selectedSwapOption, toTokenAddress) => {
+    setSwapOption(selectedSwapOption)
+    const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
+    newTokenSelection[selectedSwapOption].to = toTokenAddress
     setTokenSelection(newTokenSelection)
   }
 
@@ -315,7 +314,6 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo)
   const { positions, positionsMap } = getPositions(chainId, positionQuery, positionData, infoTokens, savedIsPnlInLeverage)
 
-
   const flagOrdersEnabled = true
   const [orders, updateOrders] = useAccountOrders(flagOrdersEnabled)
 
@@ -341,7 +339,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     flagOrdersEnabled ? 'Orders' : undefined,
     'Trades'
   ].filter(Boolean)
-  let [listSection, setListSection] = useLocalStorageSerializeKey([chainId, 'List-section'], LIST_SECTIONS[0]);
+  let [listSection, setListSection] = useLocalStorageByChainId(chainId, 'List-section-v2', LIST_SECTIONS[0]);
   const LIST_SECTIONS_LABELS = {
     "Orders": orders.length ? `Orders (${orders.length})` : undefined
   }
@@ -425,7 +423,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   }
 
   const onSelectWalletToken = (token) => {
-    setFromTokenAddress(token.address)
+    setFromTokenAddress(swapOption, token.address)
   }
 
   const renderChart = () => {
@@ -441,7 +439,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     />
   }
 
-  
+
 
   return (
     <div className="Exchange">
@@ -450,7 +448,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
       }
       <div className="Exchange-content">
         <div className="Exchange-left">
-          
+
           {renderChart()}
           <div className="Exchange-lists large">
             {getListSection()}
