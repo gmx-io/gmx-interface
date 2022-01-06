@@ -236,29 +236,23 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   const fromTokenAddress = tokenSelection[swapOption].from
   const toTokenAddress = tokenSelection[swapOption].to
 
-  const setFromTokenAddress = useCallback(address => {
-    setTokenSelection(tokenSelection => {
-      const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-      newTokenSelection[swapOption].from = address
-      return newTokenSelection
-    })
-  }, [swapOption, setTokenSelection])
+  const setFromTokenAddress = useCallback((selectedSwapOption, address) => {
+    const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
+    newTokenSelection[selectedSwapOption].from = address
+    setTokenSelection(newTokenSelection)
+  }, [tokenSelection, setTokenSelection])
 
-  const setToTokenAddress = useCallback(address => {
-    setTokenSelection(tokenSelection => {
-      const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-      newTokenSelection[swapOption].to = address
-      return newTokenSelection
-    })
-  }, [swapOption, setTokenSelection])
+  const setToTokenAddress = useCallback((selectedSwapOption, address) => {
+    const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
+    newTokenSelection[selectedSwapOption].to = address
+    setTokenSelection(newTokenSelection)
+  }, [tokenSelection, setTokenSelection])
 
-  const setMarket = (newSwapOption, toTokenAddress) => {
-    setSwapOption(newSwapOption)
-    setTokenSelection(tokenSelection => {
-      const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-      newTokenSelection[newSwapOption].to = toTokenAddress
-      return newTokenSelection
-    })
+  const setMarket = (selectedSwapOption, toTokenAddress) => {
+    setSwapOption(selectedSwapOption)
+    const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
+    newTokenSelection[selectedSwapOption].to = toTokenAddress
+    setTokenSelection(newTokenSelection)
   }
 
   const [isConfirming, setIsConfirming] = useState(false);
@@ -429,7 +423,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   }
 
   const onSelectWalletToken = (token) => {
-    setFromTokenAddress(token.address)
+    setFromTokenAddress(swapOption, token.address)
   }
 
   const renderChart = () => {
