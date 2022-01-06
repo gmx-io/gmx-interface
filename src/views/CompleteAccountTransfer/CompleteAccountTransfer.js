@@ -5,6 +5,7 @@ import { useWeb3React } from '@web3-react/core'
 
 import { getContract } from '../../Addresses'
 import { callContract } from '../../Api'
+import { useChainId } from '../../Helpers'
 
 import Modal from '../../components/Modal/Modal'
 
@@ -18,7 +19,7 @@ export default function CompleteAccountTransfer(props) {
   const { library, account } = useWeb3React()
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false)
 
-  const chainId = 42161 // set chain to Arbitrum
+  const { chainId } = useChainId()
 
   const [isConfirming, setIsConfirming] = useState(false)
   const isLoggedIn = (account || "").toString().toLowerCase() === (receiver || "").toString().toLowerCase()

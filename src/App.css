@@ -15,8 +15,7 @@
 
 .App-content header {
   position: relative;
-  z-index: 2;
-  /* z-index: 20; */
+  z-index: 3;
 }
 
 .App-header.large {
@@ -107,7 +106,7 @@
 
 .App-header-menu-icon-block {
   margin-right: 12px;
-  margin-left: 16px;
+  margin-left: 0px;
   display: flex;
   align-items: center;
 }
@@ -506,6 +505,9 @@ button.App-connect-wallet:hover {
   letter-spacing: 0px;
   color: #FFFFFF;
   padding: 1.0323rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
 }
 
 .App-card-title-small {
@@ -560,10 +562,11 @@ button.App-connect-wallet:hover {
 
 .App-card-options {
   padding: 0.452rem 1.032rem;
+  margin: -0.4rem;
 }
 
 .App-card-option {
-  margin-right: 0.8rem;
+  margin: 0.4rem;
 }
 
 .App-header a.App-header-link-main, .App-header .App-header-link-main {
@@ -571,12 +574,17 @@ button.App-connect-wallet:hover {
   padding: 1rem;
   margin-left: -1rem;
   display: flex;
+  margin-right: 0.7742rem;
 }
 
 .App-header-link-main img {
   display: inline-block;
-  height: 1.3rem;
+  height: 1.4rem;
   vertical-align: middle;
+}
+
+.App-header-link-main img.small {
+  display: none;
 }
 
 .App-header a {
@@ -597,7 +605,7 @@ button.App-connect-wallet:hover {
 }
 
 .App-header-container-left a {
-  padding: 16px 17px;
+  padding: 18px 17px;
   display: block;
   color: #A0A3C4;
   font-size: 15px;
@@ -808,10 +816,11 @@ button.App-button-option:disabled {
   align-items: center;
 }
 
-a.App-header-user-account {
+a.App-cta.App-header-user-account {
   margin-top: 0;
   margin-right: 0.5rem;
   font-size: 0.9rem;
+  padding-left: 0;
 }
 
 .App-header-user-settings {
@@ -866,24 +875,8 @@ a.App-header-user-account {
   height: 1.2rem;
 }
 
-.App-header-user-netowork .Selector-box {
-  cursor: pointer;
-  display: inline-block;
-  padding: 0.6rem 0.7rem;
-  border-radius: 3px;
-  color: rgba(255, 255, 255, 0.7);
-  text-decoration: none;
-  border: none;
-  margin-right: 0.5rem;
-  font-size: 1rem;
-  background: none;
-}
-.App-header-user-netowork .Selector-box .Network-icon {
-  margin: -0.2rem 0.2rem 0 0;
-}
-
-.App-header-user-netowork .Selector-box:hover {
-  color: white;
+.App-header-user-netowork {
+  margin-right: 24px;
 }
 
 .App-content {
@@ -1110,8 +1103,34 @@ button.App-button {
   background: #7a7fec;
 }
 
-@media (max-width: 900px) {
+.header-connect-btn.short-label {
+  display: none!important;
+}
+
+.selector-backdrop {
+  opacity: 1;
+  height: 100vh;
+  z-index: 2;
+  backdrop-filter: blur(17px);
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+@media (max-width: 1033px) {
+  .header-connect-btn.long-label {
+    display: none!important;
+  }
+
+  .header-connect-btn.short-label {
+    display: flex!important;
+  }
+
   .App-header-user-link {
+    margin-right: 16px;
+  }
+
+  .App-header-user-netowork {
     margin-right: 16px;
   }
 
@@ -1131,12 +1150,6 @@ button.App-button {
 
   .App-header-user {
     padding-bottom: 0;
-  }
-
-  .App-header-user-netowork .Selector-box {
-    padding-left: 0.1rem;
-    padding-right: 0.1rem;
-    margin-right: 0;
   }
 
   .App-header-container-right {
@@ -1227,8 +1240,28 @@ button.App-button {
   }
 }
 
+@media (max-width: 600px) {
+  .App-header-link-main img.big {
+    display: none;
+  }
+
+  .App-header-link-main img.small {
+    display: inline-block;
+  }
+}
+
+@media (max-width: 500px) {
+  .header-connect-btn {
+    margin-right: 4px;
+  }
+}
+
 @media (max-width: 410px) {
   .App-header-user-link {
+    margin-right: 6px;
+  }
+
+  .App-header-user-netowork {
     margin-right: 6px;
   }
 
@@ -1236,9 +1269,7 @@ button.App-button {
     margin-left: 0;
     margin-right: 4px;
   }
-}
 
-@media (max-width: 410px) {
   .App-header-menu-icon {
     margin: 4px 5px;
   }
@@ -1255,6 +1286,21 @@ button.App-button {
   .Home-faqs-content {
     padding-left: 1rem;
   }
+
+  .header-connect-btn {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .header-connect-btn:focus {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .App-header .App-header-link-main {
+    padding: 0.1rem!important;
+    margin-left: 0rem!important;
+  }
 }
 
 .walletconnect-modal__mobile__toggle a {
@@ -1266,3 +1312,5 @@ button.App-button {
 .walletconnect-qrcode__image {
   max-height: 50vh;
 }
+
+* { -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }

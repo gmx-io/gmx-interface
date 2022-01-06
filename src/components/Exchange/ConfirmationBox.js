@@ -4,8 +4,6 @@ import {
 	PRECISION,
 	BASIS_POINTS_DIVISOR,
   LIMIT,
-  SWAP_ORDER_EXECUTION_GAS_FEE,
-  INCREASE_ORDER_EXECUTION_GAS_FEE,
   MIN_PROFIT_TIME,
   INCREASE,
 	expandDecimals,
@@ -20,13 +18,14 @@ import {
   formatDateTime,
   calculatePositionDelta
 } from '../../Helpers'
+import { getConstant } from '../../Constants'
 
 import { BsArrowRight } from 'react-icons/bs'
 import Modal from '../Modal/Modal'
 import Tooltip from '../Tooltip/Tooltip'
 import Checkbox from '../Checkbox/Checkbox'
 import ExchangeInfoRow from './ExchangeInfoRow'
-import { getToken, getTokenBySymbol } from '../../data/Tokens'
+import { getToken, getWrappedToken } from '../../data/Tokens'
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -108,10 +107,10 @@ export default function ConfirmationBox(props) {
   const title = getTitle();
 
   const existingOrder = useMemo(() => {
-    const WETH = getTokenBySymbol(chainId, "WETH")
+    const wrappedToken = getWrappedToken(chainId)
     for (const order of orders) {
       if (order.type !== INCREASE) continue
-      const sameToken = order.indexToken === WETH.address
+      const sameToken = order.indexToken === wrappedToken.address
         ? toToken.isNative
         : order.indexToken === toToken.address
       if (order.isLong === isLong && sameToken) {
@@ -184,7 +183,7 @@ export default function ConfirmationBox(props) {
   }, [isMarketOrder, spread])
 
   const renderFeeWarning = useCallback(() => {
-    if (orderOption === LIMIT || !feeBps || feeBps < 50) {
+    if (orderOption === LIMIT || !feeBps || feeBps <= 50) {
       return null
     }
 
@@ -297,17 +296,19 @@ export default function ConfirmationBox(props) {
     );
   }, [isSwap, fromAmount, fromToken, toToken, fromUsdMin, toUsdMax, isLong, toAmount])
 
+  const SWAP_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, 'SWAP_ORDER_EXECUTION_GAS_FEE')
+  const INCREASE_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, 'INCREASE_ORDER_EXECUTION_GAS_FEE')
+  const executionFee = isSwap ? SWAP_ORDER_EXECUTION_GAS_FEE : INCREASE_ORDER_EXECUTION_GAS_FEE
   const renderExecutionFee = useCallback(() => {
     if (isMarketOrder) {
       return null;
     }
-    const fee = isSwap ? SWAP_ORDER_EXECUTION_GAS_FEE : INCREASE_ORDER_EXECUTION_GAS_FEE
     return (
       <ExchangeInfoRow label="Execution Fee">
-        {formatAmount(fee, 18, 4)} ETH
+        {formatAmount(executionFee, 18, 4)} ETH
       </ExchangeInfoRow>
     );
-  }, [isMarketOrder, isSwap])
+  }, [isMarketOrder, executionFee])
 
   const renderAvailableLiquidity = useCallback(() => {
     let availableLiquidity

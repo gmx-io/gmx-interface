@@ -1,18 +1,22 @@
 import { ethers } from 'ethers';
 import { helperToast } from "./Helpers"
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { Token as UniToken } from '@uniswap/sdk-core'
+import { Pool } from '@uniswap/v3-sdk'
 import useSWR from 'swr'
 
 import OrderBook from './abis/OrderBook.json'
 import Vault from './abis/Vault.json'
 import Router from './abis/Router.json'
+import UniPool from './abis/UniPool.json'
+import Token from './abis/Token.json'
+
 import { getContract } from './Addresses'
+import { getConstant } from './Constants'
 import {
-  SWAP_ORDER_EXECUTION_GAS_FEE,
-  INCREASE_ORDER_EXECUTION_GAS_FEE,
-  DECREASE_ORDER_EXECUTION_GAS_FEE,
   ARBITRUM,
+  AVALANCHE,
   // DEFAULT_GAS_LIMIT,
   bigNumberify,
   getExplorerUrl,
@@ -20,24 +24,29 @@ import {
   getGasLimit,
   replaceNativeTokenAddress,
   getProvider,
-  getOrderKey
+  getOrderKey,
+  fetcher,
+  parseValue,
+  expandDecimals
 } from './Helpers'
+import {
+  getTokenBySymbol
+} from './data/Tokens'
 
 const { AddressZero } = ethers.constants
 
 // Ethereum network, Chainlink Aggregator contracts
-const BTC_USD_FEED_ID = "0xae74faa92cb67a95ebcab07358bc222e33a34da7";
-const BNB_USD_FEED_ID = "0xc45ebd0f901ba6b2b8c7e70b717778f055ef5e6d";
-const ETH_USD_FEED_ID = "0x37bc7498f4ff12c19678ee8fe19d713b87f6a9e6";
-const LINK_USD_FEED_ID = "0xdfd03bfc3465107ce570a0397b247f546a42d0fa";
-const UNI_USD_FEED_ID = "0x68577f915131087199fe48913d8b416b3984fd38";
-
 const FEED_ID_MAP = {
-  "BTC_USD": BTC_USD_FEED_ID,
-  "ETH_USD": ETH_USD_FEED_ID,
-  "BNB_USD": BNB_USD_FEED_ID,
-  "LINK_USD": LINK_USD_FEED_ID,
-  "UNI_USD": UNI_USD_FEED_ID
+  "BTC_USD": "0xae74faa92cb67a95ebcab07358bc222e33a34da7",
+  "ETH_USD": "0x37bc7498f4ff12c19678ee8fe19d713b87f6a9e6",
+  "BNB_USD": "0xc45ebd0f901ba6b2b8c7e70b717778f055ef5e6d",
+  "LINK_USD": "0xdfd03bfc3465107ce570a0397b247f546a42d0fa",
+  "UNI_USD": "0x68577f915131087199fe48913d8b416b3984fd38",
+  "SUSHI_USD": "0x7213536a36094cd8a768a5e45203ec286cba2d74",
+  "AVAX_USD": "0x0fc3657899693648bba4dbd2d8b33b82e875105d",
+  "AAVE_USD": "0xe3f0dede4b499c07e12475087ab1a084b5f93bc0",
+  "YFI_USD": "0x8a4d74003870064d41d4f84940550911fbfccf04",
+  "SPELL_USD": "0x8640b23468815902e011948f3ab173e1e83f9879"
 };
 
 const CHAINLINK_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/deividask/chainlink";
@@ -46,9 +55,15 @@ const chainlinkClient = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-const GMX_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-stats"
-const gmxGraphClient = new ApolloClient({
-  uri: GMX_GRAPH_API_URL,
+const ARBITRUM_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-stats"
+const arbitrumGraphClient = new ApolloClient({
+  uri: ARBITRUM_GRAPH_API_URL,
+  cache: new InMemoryCache()
+});
+
+const AVALANCHE_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats"
+const avalancheGraphClient = new ApolloClient({
+  uri: AVALANCHE_GRAPH_API_URL,
   cache: new InMemoryCache()
 });
 
@@ -58,7 +73,16 @@ const nissohGraphClient = new ApolloClient({
   cache: new InMemoryCache()
 });
 
-export function useAllOrdersStats() {
+function getGmxGraphClient(chainId) {
+  if (chainId === ARBITRUM) {
+    return arbitrumGraphClient
+  } else if (chainId === AVALANCHE) {
+    return avalancheGraphClient
+  }
+  throw new Error(`Unsupported chain ${chainId}`)
+}
+
+export function useAllOrdersStats(chainId) {
   const query = gql(`{
     orderStat(id: "total") {
       openSwap
@@ -76,10 +100,27 @@ export function useAllOrdersStats() {
   const [res, setRes] = useState()
 
   useEffect(() => {
-    gmxGraphClient.query({ query }).then(setRes).catch(console.warn)
-  }, [setRes, query])
+    getGmxGraphClient(chainId).query({ query }).then(setRes).catch(console.warn)
+  }, [setRes, query, chainId])
 
   return res ? res.data.orderStat : null
+}
+
+export function useUserStat(chainId) {
+  const query = gql(`{
+    userStat(id: "total") {
+      id
+      uniqueCount
+    }
+  }`)
+
+  const [res, setRes] = useState()
+
+  useEffect(() => {
+    getGmxGraphClient(chainId).query({ query }).then(setRes).catch(console.warn)
+  }, [setRes, query, chainId])
+
+  return res ? res.data.userStat : null
 }
 
 export function useLiquidationsData(chainId, account) {
@@ -103,7 +144,8 @@ export function useLiquidationsData(chainId, account) {
            type
          }
       }`)
-      gmxGraphClient.query({ query }).then(res => {
+      const graphClient = getGmxGraphClient(chainId)
+      graphClient.query({ query }).then(res => {
         const _data = res.data.liquidatedPositions.map(item => {
           return {
             ...item,
@@ -202,8 +244,8 @@ export function useAllOrders(chainId, library) {
   const [res, setRes] = useState()
 
   useEffect(() => {
-    gmxGraphClient.query({ query }).then(setRes)
-  }, [setRes, query])
+    getGmxGraphClient(chainId).query({ query }).then(setRes)
+  }, [setRes, query, chainId])
 
   const key = res ? res.data.orders.map(order => `${order.type}-${order.account}-${order.index}`) : null
   const { data: orders = [] } = useSWR(key, () => {
@@ -262,41 +304,41 @@ export function usePositionsForOrders(chainId, library, orders) {
   return positions
 }
 
-async function getChartPricesFromStats(marketName, chainId) {
+async function getChartPricesFromStats(chainId, marketName, period) {
   let symbol = marketName.split('_')[0]
   if (symbol === 'WBTC') {
     symbol = 'BTC'
   } else if (symbol === 'WETH') {
     symbol = 'ETH'
   }
-  const hostname = document.location.hostname === 'localhost' && false
-    ? 'http://localhost:3105/'
-    : 'https://stats.gmx.io/'
-  const from = Math.floor((Date.now() - 86400 * 1000 * 60) / 1000) // 2 months
+  const hostname = 'https://stats.gmx.io/'
+  const from = Math.floor(Date.now() / 1000 - period)
   const url = `${hostname}api/chart/${symbol}?from=${from}&preferableChainId=${chainId}`
-  const TIMEOUT = 5000
+  const TIMEOUT = 3000
   const res = await new Promise((resolve, reject) => {
-    fetch(url).then(resolve)
     setTimeout(() => reject(new Error(`${url} request timeout`)), TIMEOUT)
+    fetch(url).then(resolve).catch(reject)
   })
   if (!res.ok) {
     throw new Error(`${res.status} ${res.statusText}`)
   }
   const json = await res.json()
 
-  const OBSOLETE_THRESHOLD = 60 * 60 * 3 // chainlink updates on Arbitrum are not too frequent
-  if (json && json.length) {
-    const lastTs = json[json.length - 1][0]
-    const diff = Date.now() / 1000 - lastTs
-    if (diff > OBSOLETE_THRESHOLD) {
-      throw new Error('chart data is obsolete, last price record at ' + new Date(lastTs * 1000))
-    }
+  if (!json || json.length < 100) {
+    throw new Error(`not enough prices: ${json?.length}`)
+  }
+
+  const OBSOLETE_THRESHOLD = 60 * 60 * 3 // chainlink updates are not too frequent
+  const lastTs = json[json.length - 1][0]
+  const diff = Date.now() / 1000 - lastTs
+  if (diff > OBSOLETE_THRESHOLD) {
+    throw new Error('chart data is obsolete, last price record at ' + new Date(lastTs * 1000).toISOString())
   }
   return json
 }
 
-function getChartPricesFromGraph(marketName) {
-  if (marketName.startsWith('WBTC') || marketName.startsWith('WETH') || marketName.startsWith('WBNB')) {
+function getChainlinkChartPricesFromGraph(marketName) {
+  if (marketName.startsWith('WBTC') || marketName.startsWith('WETH') || marketName.startsWith('WBNB') || marketName.startsWith('WAVAX')) {
     marketName = marketName.substr(1)
   }
   const feedId = FEED_ID_MAP[marketName];
@@ -362,18 +404,71 @@ export function useTrades(chainId, account) {
   return { trades, updateTrades }
 }
 
-export function useChartPrices(marketName, chainId) {
-  const { data: prices = [], mutate: updatePrices } = useSWR(['getChartPrices', marketName, chainId], {
+export function useStakedGmxSupply() {
+  const chainId = ARBITRUM
+  const gmxAddress = getContract(chainId, "GMX")
+  const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker")
+
+  const { data, mutate } = useSWR([`StakeV2:stakedGmxSupply`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
+    fetcher: fetcher(undefined, Token),
+  })
+
+  return { data, mutate }
+}
+
+export function useGmxPrice() {
+  const poolAddress = getContract(ARBITRUM, "UniswapGmxEthPool")
+  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR([`StakeV2:uniPoolSlot0`, ARBITRUM, poolAddress, "slot0"], {
+    fetcher: fetcher(undefined, UniPool),
+  })
+
+  const vaultAddress = getContract(ARBITRUM, "Vault")
+  const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address
+  const { data: ethPrice, mutate: updateEthPrice } = useSWR([`StakeV2:ethPrice`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress], {
+    fetcher: fetcher(undefined, Vault),
+  })
+
+  let gmxPrice
+  if (uniPoolSlot0 && ethPrice) {
+    const tokenA = new UniToken(ARBITRUM, ethAddress, 18, "SYMBOL", "NAME")
+
+    const gmxAddress = getContract(ARBITRUM, "GMX")
+    const tokenB = new UniToken(ARBITRUM, gmxAddress, 18, "SYMBOL", "NAME")
+
+    const pool = new Pool(
+      tokenA, // tokenA
+      tokenB, // tokenB
+      10000, // fee
+      uniPoolSlot0.sqrtPriceX96, // sqrtRatioX96
+      1, // liquidity
+      uniPoolSlot0.tick, // tickCurrent
+      []
+    )
+
+    const poolTokenPrice = pool.priceOf(tokenB).toSignificant(6)
+    const poolTokenPriceAmount = parseValue(poolTokenPrice, 18)
+    gmxPrice = poolTokenPriceAmount.mul(ethPrice).div(expandDecimals(1, 18))
+  }
+
+  const mutate = useCallback(() => {
+    updateUniPoolSlot0(undefined, true)
+    updateEthPrice(undefined, true)
+  }, [updateEthPrice, updateUniPoolSlot0])
+
+  return { data: gmxPrice, mutate }
+}
+
+export function useChartPrices(chainId, marketName, period) {
+  const { data: prices = [], mutate: updatePrices } = useSWR(marketName && ['getChartPrices', chainId, marketName, period], {
     fetcher: async () => {
       try {
-        return await getChartPricesFromStats(marketName, chainId)
+        return await getChartPricesFromStats(chainId, marketName, period)
       } catch (ex) {
-        console.warn('chart request failed')
         console.warn(ex)
         try {
-          return await getChartPricesFromGraph(marketName)
+          return await getChainlinkChartPricesFromGraph(marketName)
         } catch (ex2) {
-          console.warn('fallback chart request failed')
+          console.warn('getChainlinkChartPricesFromGraph failed')
           console.warn(ex2)
           return []
         }
@@ -406,7 +501,7 @@ export async function createSwapOrder(
   nativeTokenAddress,
   opts = {}
 ) {
-  const executionFee = SWAP_ORDER_EXECUTION_GAS_FEE
+  const executionFee = getConstant(chainId, 'SWAP_ORDER_EXECUTION_GAS_FEE')
   const triggerAboveThreshold = false
   let shouldWrap = false
   let shouldUnwrap = false
@@ -461,7 +556,7 @@ export async function createIncreaseOrder(
   path = replaceNativeTokenAddress(path, nativeTokenAddress)
   const shouldWrap = fromETH
   const triggerAboveThreshold = !isLong
-  const executionFee = INCREASE_ORDER_EXECUTION_GAS_FEE
+  const executionFee = getConstant(chainId, 'INCREASE_ORDER_EXECUTION_GAS_FEE')
 
   const params = [
     path,
@@ -503,7 +598,7 @@ export async function createDecreaseOrder(
   invariant(indexTokenAddress !== AddressZero, "indexToken is 0")
   invariant(collateralTokenAddress !== AddressZero, "collateralToken is 0")
 
-  const executionFee = DECREASE_ORDER_EXECUTION_GAS_FEE
+  const executionFee = getConstant(chainId, 'DECREASE_ORDER_EXECUTION_GAS_FEE')
 
   const params = [
     indexTokenAddress,

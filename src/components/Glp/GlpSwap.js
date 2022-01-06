@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { Pool } from '@uniswap/v3-sdk'
-import { Token as UniToken } from '@uniswap/sdk-core'
 
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
 import { ethers } from 'ethers'
 
-import { getToken, getTokens, getWhitelistedTokens } from '../../data/Tokens'
+import { getToken, getTokens, getWhitelistedTokens, getWrappedToken, getNativeToken } from '../../data/Tokens'
 import { getContract } from '../../Addresses'
 import {
   helperToast,
-  useLocalStorageSerializeKey,
+  useLocalStorageByChainId,
   getInfoTokens,
   getTokenInfo,
+  getChainName,
+  useChainId,
   expandDecimals,
   fetcher,
   bigNumberify,
@@ -38,7 +38,7 @@ import {
   DEFAULT_MAX_USDG_AMOUNT
 } from '../../Helpers'
 
-import { callContract } from '../../Api'
+import { callContract, useGmxPrice } from '../../Api'
 
 import TokenSelector from '../Exchange/TokenSelector'
 import InputSection from "../InputSection/InputSection"
@@ -53,7 +53,6 @@ import RewardTracker from '../../abis/RewardTracker.json'
 import Vester from '../../abis/Vester.json'
 import RewardRouter from '../../abis/RewardRouter.json'
 import Token from '../../abis/Token.json'
-import UniPool from '../../abis/UniPool.json'
 
 import { FaAngleDown } from 'react-icons/fa'
 
@@ -88,13 +87,14 @@ export default function GlpSwap(props) {
   const { savedSlippageAmount, isBuying, setPendingTxns, connectWallet } = props
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp"
   const { active, library, account } = useWeb3React()
-  const chainId = 42161 // set chain to Arbitrum
+  const { chainId } = useChainId()
+  const chainName = getChainName(chainId)
   const tokens = getTokens(chainId)
   const whitelistedTokens = getWhitelistedTokens(chainId)
   const tokenList = whitelistedTokens.filter(t => !t.isWrapped)
   const [swapValue, setSwapValue] = useState("")
   const [glpValue, setGlpValue] = useState("")
-  const [swapTokenAddress, setSwapTokenAddress] = useLocalStorageSerializeKey([chainId, `${swapLabel}-swap-token-address`], AddressZero)
+  const [swapTokenAddress, setSwapTokenAddress] = useLocalStorageByChainId(chainId, `${swapLabel}-swap-token-address`, AddressZero)
   const [isApproving, setIsApproving] = useState(false)
   const [isWaitingForApproval, setIsWaitingForApproval] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -153,17 +153,14 @@ export default function GlpSwap(props) {
     fetcher: fetcher(library, Vester),
   })
 
+  const { data: gmxPrice, mutate: updateGmxPrice } = useGmxPrice()
+
   const rewardTrackersForStakingInfo = [
     stakedGlpTrackerAddress,
     feeGlpTrackerAddress
   ]
   const { data: stakingInfo, mutate: updateStakingInfo } = useSWR([`GlpSwap:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || AddressZero], {
     fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
-  })
-
-  const poolAddress = "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E" // GMX/WETH
-  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR([`StakeV2:uniPoolSlot0:${active}`, chainId, poolAddress, "slot0"], {
-    fetcher: fetcher(library, UniPool),
   })
 
   const stakingData = getStakingData(stakingInfo)
@@ -203,30 +200,6 @@ export default function GlpSwap(props) {
   const swapUsdMin = getUsd(swapAmount, swapTokenAddress, false, infoTokens)
   const glpUsdMax = (glpAmount && glpPrice) ? glpAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS)) : undefined
 
-  const gmxAddress = getContract(chainId, "GMX")
-  const eth = infoTokens[nativeTokenAddress]
-
-  let gmxPrice
-
-  if (uniPoolSlot0 && eth && eth.minPrice) {
-    const tokenA = new UniToken(chainId, nativeTokenAddress, 18, "SYMBOL", "NAME")
-    const tokenB = new UniToken(chainId, gmxAddress, 18, "SYMBOL", "NAME")
-
-    const pool = new Pool(
-      tokenA, // tokenA
-      tokenB, // tokenB
-      10000, // fee
-      uniPoolSlot0.sqrtPriceX96, // sqrtRatioX96
-      1, // liquidity
-      uniPoolSlot0.tick, // tickCurrent
-      []
-    )
-
-    const poolTokenPrice = pool.priceOf(tokenB).toSignificant(6)
-    const poolTokenPriceAmount = parseValue(poolTokenPrice, 18)
-    gmxPrice = poolTokenPriceAmount.mul(eth.minPrice).div(expandDecimals(1, 18))
-  }
-
   const onSwapValueChange = (e) => {
     setAnchorOnSwapAmount(true)
     setSwapValue(e.target.value)
@@ -242,7 +215,7 @@ export default function GlpSwap(props) {
     setIsWaitingForApproval(false)
   }
 
-  const nativeToken = getTokenInfo(infoTokens, nativeTokenAddress)
+  const nativeToken = getTokenInfo(infoTokens, AddressZero)
 
   let totalApr = bigNumberify(0)
 
@@ -274,7 +247,7 @@ export default function GlpSwap(props) {
         updateTokenAllowance(undefined, true)
         updateLastPurchaseTime(undefined, true)
         updateStakingInfo(undefined, true)
-        updateUniPoolSlot0(undefined, true)
+        updateGmxPrice(undefined, true)
         updateReservedAmount(undefined, true)
         updateGlpBalance(undefined, true)
       })
@@ -285,7 +258,7 @@ export default function GlpSwap(props) {
   }, [active, library,  chainId,
       updateVaultTokenInfo, updateTokenBalances, updateBalancesAndSupplies,
       updateAums, updateTotalTokenWeights, updateTokenAllowance,
-      updateLastPurchaseTime, updateStakingInfo, updateUniPoolSlot0,
+      updateLastPurchaseTime, updateStakingInfo, updateGmxPrice,
       updateReservedAmount, updateGlpBalance])
 
   useEffect(() => {
@@ -556,24 +529,32 @@ export default function GlpSwap(props) {
     maxSellAmount = glpBalance.sub(reservedAmount)
   }
 
+  const wrappedTokenSymbol = getWrappedToken(chainId).symbol
+  const nativeTokenSymbol = getNativeToken(chainId).symbol
+
   return (
     <div className="GlpSwap">
       {renderErrorModal()}
+      <div className="Page-title-section">
+        <div className="Page-title">{isBuying ? "Buy GLP" : "Sell GLP"}</div>
+        {isBuying && <div className="Page-description">
+          Purchase <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">GLP tokens</a> to earn {nativeTokenSymbol} fees from swaps and leverage trading.<br/>
+          Note that there is a minimum holding time of 15 minutes after a purchase.<br/>
+          <div>View <Link to="/earn">staking</Link> page.</div>
+        </div>}
+        {!isBuying && <div className="Page-description">
+          Redeem your GLP tokens for any supported asset.
+          {inCooldownWindow && <div>
+            GLP tokens can only be redeemed 15 minutes after your most recent purchase.<br/>
+            Your last purchase was at {formatDateTime(lastPurchaseTime)}, you can redeem GLP tokens after {formatDateTime(redemptionTime)}.<br/>
+          </div>}
+          <div>View <Link to="/earn">staking</Link> page.</div>
+        </div>}
+      </div>
       <div className="GlpSwap-content">
         <div className="App-card GlpSwap-stats-card">
-          <div className="Tab-title-section">
-            {isBuying && <div className="Tab-description">
-              Purchase <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">GLP tokens</a> to earn ETH fees from swaps and leverage trading.
-              Note that there is a minimum holding time of 15 minutes after a purchase. View <Link to="/earn">staking</Link> page.
-            </div>}
-            {!isBuying && <div className="Tab-description">
-              Redeem your GLP tokens for any supported asset.
-              {inCooldownWindow && <div>
-                GLP tokens can only be redeemed 15 minutes after your most recent purchase.
-                Your last purchase was at {formatDateTime(lastPurchaseTime)}, you can redeem GLP tokens after {formatDateTime(redemptionTime)}. View <Link to="/earn">staking</Link> page.
-              </div>}
-            </div>}
-          </div>
+          <div className="App-card-title">GLP ({chainName})</div>
+          <div className="App-card-divider"></div>
           <div className="App-card-content">
             <div className="App-card-row">
               <div className="label">Price</div>
@@ -603,7 +584,7 @@ export default function GlpSwap(props) {
                 <Tooltip handle={`${formatAmount(totalApr, 2, 2, true)}%`} position="right-bottom" renderContent={() => {
                   return <>
                     <div className="Tooltip-row">
-                      <span className="label">ETH (WETH) APR</span>
+                      <span className="label">{nativeTokenSymbol} ({wrappedTokenSymbol}) APR</span>
                       <span>{formatAmount(feeGlpTrackerApr, 2, 2, false)}%</span>
                     </div>
                     <div className="Tooltip-row">

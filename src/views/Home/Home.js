@@ -8,32 +8,26 @@ import './Home.css';
 import simpleSwapIcon from '../../img/ic_simpleswaps.svg'
 import costIcon from '../../img/ic_cost.svg'
 import liquidityIcon from '../../img/ic_liquidity.svg'
+import totaluserIcon from '../../img/ic_totaluser.svg'
 
 // import bscIcon from '../../img/ic_bsc.svg'
 import arbitrumIcon from '../../img/ic_arbitrum_96.svg'
 import avaIcon from '../../img/ic_avalanche_96.svg'
 
-import cashIcon from '../../img/ic_cash.png'
 import statsIcon from '../../img/ic_stats.svg'
 import tradingIcon from '../../img/ic_trading.svg'
 // import gmxBigIcon from '../../img/ic_gmx_big.svg'
 import useSWR from 'swr'
-import { useWeb3React } from '@web3-react/core'
 import {
-  fetcher,
   formatAmount,
-  getInfoTokens,
-  expandDecimals,
   bigNumberify,
   numberWithCommas,
   getServerUrl,
-  USD_DECIMALS
+  USD_DECIMALS,
+  ARBITRUM
 } from '../../Helpers'
 
-import { getTokens, getWhitelistedTokens } from '../../data/Tokens'
-import { getFeeHistory } from '../../data/Fees'
-import { getContract } from '../../Addresses'
-import ReaderV2 from '../../abis/ReaderV2.json'
+import { useUserStat } from "../../Api"
 
 function getTotalVolumeSum(volumes) {
   if (!volumes || volumes.length === 0) {
@@ -48,28 +42,7 @@ function getTotalVolumeSum(volumes) {
   return volume
 }
 
-function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
-  if (!fees || !infoTokens) {
-    return bigNumberify(0)
-  }
-
-  let currentFeesUsd = bigNumberify(0)
-  for (let i = 0; i < tokenAddresses.length; i++) {
-    const tokenAddress = tokenAddresses[i]
-    const tokenInfo = infoTokens[tokenAddress]
-    if (!tokenInfo || !tokenInfo.minPrice) {
-      continue
-    }
-
-    const feeUsd = fees[i].mul(tokenInfo.minPrice).div(expandDecimals(1, tokenInfo.decimals))
-    currentFeesUsd = currentFeesUsd.add(feeUsd)
-  }
-
-  return currentFeesUsd
-}
-
 export default function Home() {
-  const { active, library } = useWeb3React()
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
   // const faqContent = [{
   //   id: 1,
@@ -97,14 +70,12 @@ export default function Home() {
   //   }
   // }
 
-  const chainId = 42161 // set chain to Arbitrum
-
-  const positionStatsUrl = getServerUrl(chainId, "/position_stats")
+  const positionStatsUrl = getServerUrl(ARBITRUM, "/position_stats")
   const { data: positionStats } = useSWR([positionStatsUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
 
-  const totalVolumeUrl = getServerUrl(chainId, "/total_volume")
+  const totalVolumeUrl = getServerUrl(ARBITRUM, "/total_volume")
   const { data: totalVolume } = useSWR([totalVolumeUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
@@ -121,38 +92,13 @@ export default function Home() {
     openInterest = openInterest.add(positionStats.totalShortPositionSizes)
   }
 
-  // Total Fee
-  const readerAddress = getContract(chainId, "Reader")
-  const vaultAddress = getContract(chainId, "Vault")
-  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
-
-  const tokens = getTokens(chainId)
-  const whitelistedTokens = getWhitelistedTokens(chainId)
-  const whitelistedTokenAddresses = whitelistedTokens.map(token => token.address)
-
-  const { data: vaultTokenInfo } = useSWR([`Dashboard:vaultTokenInfo:${active}`, chainId, readerAddress, "getFullVaultTokenInfo"], {
-    fetcher: fetcher(library, ReaderV2, [vaultAddress, nativeTokenAddress, expandDecimals(1, 18), whitelistedTokenAddresses]),
-  })
-
-  const { data: fees } = useSWR([`Dashboard:fees:${active}`, chainId, readerAddress, "getFees", vaultAddress], {
-    fetcher: fetcher(library, ReaderV2, [whitelistedTokenAddresses]),
-  })
-
-  const infoTokens = getInfoTokens(tokens, undefined, whitelistedTokens, vaultTokenInfo, undefined)
-
-  const currentFeesUsd = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokens)
-
-  const feeHistory = getFeeHistory(chainId)
-  const shouldIncludeCurrrentFees = (parseInt(Date.now() / 1000) - feeHistory[0].to) > 60 * 60
-  let totalFeesDistributed = shouldIncludeCurrrentFees ? parseFloat(bigNumberify(formatAmount(currentFeesUsd, USD_DECIMALS - 2, 0, false)).toNumber()) / 100 : 0
-  for (let i = 0; i < feeHistory.length; i++) {
-    totalFeesDistributed += parseFloat(feeHistory[i].feeUsd)
-  }
+  // user stat
+  const userStats = useUserStat(ARBITRUM)
 
   return (
     <div className="Home">
       <div className="Home-top">
-        <div className="Home-top-image"></div>
+        {/* <div className="Home-top-image"></div> */}
         <div className="Home-title-section-container default-container">
           <div className="Home-title-section">
             <div className="Home-title">
@@ -160,9 +106,9 @@ export default function Home() {
               Perpetual Exchange
             </div>
             <div className="Home-description">
-              Trade BTC, ETH and other top cryptocurrencies with up to 30x leverage directly from your wallet
+              Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet
             </div>
-            <NavLink activeClassName="active" to="/trade" className="default-btn">Launch exchange</NavLink>
+            <NavLink activeClassName="active" to="/trade" className="default-btn">Launch Exchange</NavLink>
           </div>
         </div>
         <div className="Home-latest-info-container default-container">
@@ -176,15 +122,15 @@ export default function Home() {
           <div className="Home-latest-info-block">
             <img src={statsIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">Current Open Interest</div>
+              <div className="Home-latest-info__title">Open Interest</div>
               <div className="Home-latest-info__value">${formatAmount(openInterest, USD_DECIMALS, 0, true)}</div>
             </div>
           </div>
           <div className="Home-latest-info-block">
-            <img src={cashIcon} alt="trading" className="Home-latest-info__icon" />
+            <img src={totaluserIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">Total Fees Collected</div>
-              <div className="Home-latest-info__value">${numberWithCommas(totalFeesDistributed.toFixed(0))}</div>
+              <div className="Home-latest-info__title">Total Users</div>
+              <div className="Home-latest-info__value">{numberWithCommas(userStats && userStats.uniqueCount.toFixed(0))}</div>
             </div>
           </div>
         </div>
@@ -236,7 +182,7 @@ export default function Home() {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Arbitrum</div>
                 <div className="Home-cta-option-action">
-                  <Link to="/trade" className="default-btn">Launch exchange</Link>
+                  <Link to="/trade" className="default-btn">Launch Exchange</Link>
                 </div>
               </div>
             </div>
@@ -247,9 +193,7 @@ export default function Home() {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Avalanche</div>
                 <div className="Home-cta-option-action">
-                  <button className="default-btn">
-                    Coming soon
-                  </button>
+                  <Link to="/trade" className="default-btn">Launch Exchange</Link>
                 </div>
               </div>
             </div>

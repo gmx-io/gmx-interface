@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1920" height="815" viewBox="0 0 1920 815">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_421" data-name="Rectangle 421" width="1920" height="815" fill="#fff" stroke="#707070" stroke-width="1"/>
+    </clipPath>
+    <linearGradient id="linear-gradient" x1="0.677" y1="0.273" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#03d1cf" stop-opacity="0.329"/>
+      <stop offset="1" stop-color="#4e09f8" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-3" x1="0.323" y1="0.273" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#03d1cf" stop-opacity="0.349"/>
+      <stop offset="1" stop-color="#4e09f8" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-4" x1="0.323" y1="0.273" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#03d1cf" stop-opacity="0.31"/>
+      <stop offset="1" stop-color="#4e09f8" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-5" x1="0.323" y1="0.273" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#03d1cf" stop-opacity="0.522"/>
+      <stop offset="1" stop-color="#4e09f8" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <g id="Artwork_gmx" data-name="Artwork gmx" clip-path="url(#clip-path)">
+    <g id="Group_216" data-name="Group 216" transform="translate(942 -66)">
+      <path id="Polygon_23" data-name="Polygon 23" d="M554,0l554,755H0Z" transform="translate(1436 755) rotate(180)" fill="url(#linear-gradient)"/>
+      <path id="Polygon_24" data-name="Polygon 24" d="M432,0,864,589H0Z" transform="translate(864 616) rotate(180)" fill="url(#linear-gradient)"/>
+      <path id="Polygon_25" data-name="Polygon 25" d="M432,0,864,589H0Z" transform="translate(174 377)" fill="url(#linear-gradient-3)"/>
+      <path id="Polygon_26" data-name="Polygon 26" d="M432,0,864,589H0Z" transform="translate(174 377)" fill="url(#linear-gradient-4)"/>
+      <path id="Polygon_27" data-name="Polygon 27" d="M256,0,512,349H0Z" transform="translate(626 584)" fill="url(#linear-gradient-5)"/>
+      <path id="Polygon_28" data-name="Polygon 28" d="M554,0l554,755H0Z" transform="translate(424 158)" fill="#fff" opacity="0.09"/>
+    </g>
+  </g>
+</svg>

@@ -1,6 +1,6 @@
 .Footer {
   position: relative;
-  height: 158px;
+  height: 168px;
   margin-top: 3rem;
 }
 
@@ -12,28 +12,31 @@
   position: absolute;
   transform: translateX(-50%);
   left: 50%;
+  height: 100%;
 }
 
 .Footer-logo {
-  margin-bottom: 2.067rem;
+  margin-bottom: 1.548rem;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .Footer-logo img {
-  height: 1.674rem;
+  height: 1.72rem;
 }
 
 .Footer-social-link-block {
-  padding-bottom: 1.549rem;
+  padding-bottom: 2.5806rem;
   max-width: 71.613rem;
   margin: 0 auto;
+  display: flex;
+  justify-content: center;
 }
 
 .Footer-social-link-block .App-social-link {
-  margin: 0 2.226rem;
-  display: inline-flex;
+  margin: 0 2.064rem;
+  display: flex;
   width: 32px;
   height: 32px;
   align-items: center;
