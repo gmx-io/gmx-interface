@@ -307,9 +307,9 @@ export default function SwapBox(props) {
 
   useEffect(() => {
     if (!toTokens.find(token => token.address === toTokenAddress)) {
-      setToTokenAddress(toTokens[0].address)
+      setToTokenAddress(swapOption, toTokens[0].address)
     }
-  }, [toTokens, toTokenAddress, setToTokenAddress])
+  }, [swapOption, toTokens, toTokenAddress, setToTokenAddress])
 
   useEffect(() => {
     if (active) {
@@ -784,7 +784,7 @@ export default function SwapBox(props) {
   }
 
   const onSelectFromToken = (token) => {
-    setFromTokenAddress(token.address)
+    setFromTokenAddress(swapOption, token.address)
     setIsWaitingForApproval(false)
 
     const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
@@ -804,7 +804,7 @@ export default function SwapBox(props) {
   }
 
   const onSelectToToken = (token) => {
-    setToTokenAddress(token.address)
+    setToTokenAddress(swapOption, token.address)
     const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
     updatedTokenSelection[swapOption] = {
       from: fromTokenAddress,
@@ -832,8 +832,8 @@ export default function SwapBox(props) {
       }
       setAnchorOnFromAmount(!anchorOnFromAmount)
     }
-    setFromTokenAddress(toTokenAddress)
-    setToTokenAddress(fromTokenAddress)
+    setFromTokenAddress(swapOption, toTokenAddress)
+    setToTokenAddress(swapOption, fromTokenAddress)
     setIsWaitingForApproval(false)
 
     const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
@@ -1090,8 +1090,6 @@ export default function SwapBox(props) {
       to: toTokenAddress
     }
     setTokenSelection(updatedTokenSelection)
-    setFromTokenAddress(tokenSelection[opt].from)
-    setToTokenAddress(tokenSelection[opt].to)
     setSwapOption(opt)
     setAnchorOnFromAmount(true)
     setFromValue("")
