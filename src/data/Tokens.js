@@ -248,14 +248,14 @@ const TOKENS = {
       baseSymbol: "AVAX"
     },
     {
-      name: "Ether",
+      name: "Ether (WETH.e)",
       symbol: "ETH",
       address: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
       decimals: 18,
       isShortable: true
     },
     {
-      name: "Bitcoin",
+      name: "Bitcoin (WBTC.e)",
       symbol: "BTC",
       address: "0x50b7545627a5162F82A992c33b87aDc75187B218",
       decimals: 8,
