@@ -1645,6 +1645,8 @@ export const getWalletConnectHandler = (activate, deactivate, setActivatingConne
 export const getInjectedHandler = (activate) => {
   const fn = async () => {
     activate(getInjectedConnector(), (e) => {
+      const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID
+
       if (e.message.includes("No Ethereum provider")) {
         helperToast.error(<div>
           MetaMask not yet installed.<br/>
@@ -1657,12 +1659,12 @@ export const getInjectedHandler = (activate) => {
       }
       if (e instanceof UnsupportedChainIdError) {
         helperToast.error(<div>
-          <div>Your wallet is not connected to {getChainName(DEFAULT_CHAIN_ID)}.</div><br/>
-          <div className="clickable underline margin-bottom" onClick={() => switchNetwork(DEFAULT_CHAIN_ID)}>
-            Switch to {getChainName(DEFAULT_CHAIN_ID)}
+          <div>Your wallet is not connected to {getChainName(chainId)}.</div><br/>
+          <div className="clickable underline margin-bottom" onClick={() => switchNetwork(chainId, true)}>
+            Switch to {getChainName(chainId)}
           </div>
-          <div className="clickable underline" onClick={() => switchNetwork(DEFAULT_CHAIN_ID)}>
-            Add {getChainName(DEFAULT_CHAIN_ID)}
+          <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
+            Add {getChainName(chainId)}
           </div>
         </div>)
         return
