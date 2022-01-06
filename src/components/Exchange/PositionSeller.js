@@ -232,8 +232,18 @@ export default function PositionSeller(props) {
     if (isClosing) {
       nextCollateral = bigNumberify(0)
     } else {
-      if (position.collateral && collateralDelta) {
-        nextCollateral = position.collateral.sub(collateralDelta)
+      if (position.collateral) {
+        nextCollateral = position.collateral
+        if (collateralDelta && collateralDelta.gt(0)) {
+          nextCollateral = position.collateral.sub(collateralDelta)
+        } else if (position.delta && position.delta.gt(0) && sizeDelta) {
+          const adjustedDelta = sizeDelta.mul(position.delta).div(position.size);
+          if (position.hasProfit) {
+            nextCollateral = nextCollateral.add(adjustedDelta)
+          } else {
+            nextCollateral = nextCollateral.sub(adjustedDelta)
+          }
+        }
       }
     }
 
@@ -261,7 +271,7 @@ export default function PositionSeller(props) {
           isLong: position.isLong,
           size: position.size,
           sizeDelta,
-          collateral: position.collateral,
+          collateral: nextCollateral,
           averagePrice: position.averagePrice,
           entryFundingRate: position.entryFundingRate,
           cumulativeFundingRate: position.cumulativeFundingRate
@@ -648,14 +658,16 @@ export default function PositionSeller(props) {
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">Collateral</div>
               <div className="align-right">
-                {nextCollateral && <div>
-                  <div className="inline-block muted">
-                    ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                    <BsArrowRight className="transition-arrow" />
+                {(nextCollateral && !nextCollateral.eq(position.collateral))
+                  ? <div>
+                    <div className="inline-block muted">
+                      ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                      <BsArrowRight className="transition-arrow" />
+                    </div>
+                    ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
                   </div>
-                  ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
-                </div>}
-                {!nextCollateral && `$${formatAmount(position.collateral, USD_DECIMALS, 4, true)}`}
+                  : `$${formatAmount(position.collateral, USD_DECIMALS, 4, true)}`
+                }
               </div>
             </div>
             {!keepLeverage && <div className="Exchange-info-row">
