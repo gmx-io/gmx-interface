@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="42.308" height="40" viewBox="0 0 42.308 40">
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
   <g id="ic_liquidity" transform="translate(0)">
     <rect id="Rectangle_1" data-name="Rectangle 1" width="40" height="40" rx="4" transform="translate(0)" fill="none"/>
-    <g id="Group_86" data-name="Group 86" transform="translate(-2.308 -2.5)">
-      <path id="Path_173" data-name="Path 173" d="M27.854-24.323a1.617,1.617,0,0,0-2.631,0C22.2-19.945,15-9.03,15-4.243,15,1.817,20.166,6.731,26.538,6.731S38.077,1.817,38.077-4.243C38.077-9.03,30.88-19.945,27.854-24.323Z" transform="translate(6.538 35.769)" fill="#4e09f8"/>
+    <g id="Group_86" data-name="Group 86" transform="translate(-7.307 -4)">
       <path id="Path_172" data-name="Path 172" d="M27.854-24.323a1.617,1.617,0,0,0-2.631,0C22.2-19.945,15-9.03,15-4.243,15,1.817,20.166,6.731,26.538,6.731S38.077,1.817,38.077-4.243C38.077-9.03,30.88-19.945,27.854-24.323Z" transform="translate(-5 30)" fill="rgba(3,209,207,0.99)"/>
-      <path id="Intersection_1" data-name="Intersection 1" d="M0,16.035C0,12.383,4.19,5.162,7.521,0c2.2,3.9,4.017,7.858,4.017,10.266a11.188,11.188,0,0,1-10.2,10.9A10.505,10.505,0,0,1,0,16.035Z" transform="translate(21.538 15.491)" fill="#4e09f8" stroke="rgba(0,0,0,0)" stroke-width="1" style="mix-blend-mode: screen;isolation: isolate"/>
+      <path id="Path_173" data-name="Path 173" d="M27.854-24.323a1.617,1.617,0,0,0-2.631,0C22.2-19.945,15-9.03,15-4.243,15,1.817,20.166,6.731,26.538,6.731S38.077,1.817,38.077-4.243C38.077-9.03,30.88-19.945,27.854-24.323Z" transform="translate(6.539 35.769)" fill="#303fd0"/>
+      <path id="Intersection_1" data-name="Intersection 1" d="M0,16.035C0,12.383,4.19,5.162,7.521,0c2.2,3.9,4.017,7.858,4.017,10.266a11.188,11.188,0,0,1-10.2,10.9A10.505,10.505,0,0,1,0,16.035Z" transform="translate(21.538 15.491)" fill="#50d0fe" stroke="rgba(0,0,0,0)" stroke-width="1"/>
     </g>
   </g>
 </svg>

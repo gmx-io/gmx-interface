@@ -2,42 +2,45 @@ import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
-import { Pool } from '@uniswap/v3-sdk'
-import { Token as UniToken } from '@uniswap/sdk-core'
 import Tooltip from '../../components/Tooltip/Tooltip'
 
 import { ethers } from 'ethers'
 
-import { getTokens, getWhitelistedTokens } from '../../data/Tokens'
+import { getTokens, getWhitelistedTokens, getTokenBySymbol } from '../../data/Tokens'
 import { getFeeHistory } from '../../data/Fees'
 
 import {
   fetcher,
   formatAmount,
   formatKeyAmount,
-  parseValue,
   getInfoTokens,
   expandDecimals,
   bigNumberify,
   numberWithCommas,
   formatDate,
   getServerUrl,
+  getChainName,
+  useChainId,
   USD_DECIMALS,
   GMX_DECIMALS,
   GLP_DECIMALS,
   BASIS_POINTS_DIVISOR,
-  DEFAULT_MAX_USDG_AMOUNT
+  DEFAULT_MAX_USDG_AMOUNT,
+  ARBITRUM,
+  AVALANCHE
 } from '../../Helpers'
+import { useGmxPrice, useStakedGmxSupply } from '../../Api'
 
 import { getContract } from '../../Addresses'
 
 import VaultV2 from '../../abis/VaultV2.json'
 import ReaderV2 from '../../abis/ReaderV2.json'
 import GlpManager from '../../abis/GlpManager.json'
-import UniPool from '../../abis/UniPool.json'
-import Token from '../../abis/Token.json'
 
 import Footer from "../../Footer"
+
+import arbitrumIcon from "../../img/ic_arbitrum_16.svg"
+import avalancheIcon from "../../img/ic_avalanche_16.svg"
 
 import "./DashboardV2.css"
 
@@ -107,7 +110,9 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
 
 export default function DashboardV2() {
   const { active, library } = useWeb3React()
-  const chainId = 42161 // set chain to Arbitrum
+  const { chainId } = useChainId()
+
+  const chainName = getChainName(chainId)
 
   const positionStatsUrl = getServerUrl(chainId, "/position_stats")
   const { data: positionStats, mutate: updatePositionStats } = useSWR([positionStatsUrl], {
@@ -124,7 +129,7 @@ export default function DashboardV2() {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
 
-  const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
+  const gmxSupplyUrl = getServerUrl(ARBITRUM, "/gmx_supply")
   const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.text())
   })
@@ -176,50 +181,21 @@ export default function DashboardV2() {
     fetcher: fetcher(library, VaultV2),
   })
 
-  const poolAddress = "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E" // GMX/WETH
-
-  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR([`StakeV2:uniPoolSlot0:${active}`, chainId, poolAddress, "slot0"], {
-    fetcher: fetcher(library, UniPool),
-  })
-
-  const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker")
-
-  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR(["StakeV2:stakedGmxSupply", chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
-    fetcher: fetcher(library, Token),
-  })
+  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useStakedGmxSupply()
 
   const infoTokens = getInfoTokens(tokens, undefined, whitelistedTokens, vaultTokenInfo, undefined)
 
-  const eth = infoTokens[nativeTokenAddress]
+  const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address]
   const currentFeesUsd = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokens)
 
   const feeHistory = getFeeHistory(chainId)
-  const shouldIncludeCurrrentFees = (parseInt(Date.now() / 1000) - feeHistory[0].to) > 60 * 60
+  const shouldIncludeCurrrentFees = feeHistory.length && (parseInt(Date.now() / 1000) - feeHistory[0].to) > 60 * 60
   let totalFeesDistributed = shouldIncludeCurrrentFees ? parseFloat(bigNumberify(formatAmount(currentFeesUsd, USD_DECIMALS - 2, 0, false)).toNumber()) / 100 : 0
   for (let i = 0; i < feeHistory.length; i++) {
     totalFeesDistributed += parseFloat(feeHistory[i].feeUsd)
   }
 
-  let gmxPrice
-
-  if (uniPoolSlot0 && eth && eth.minPrice) {
-    const tokenA = new UniToken(chainId, nativeTokenAddress, 18, "SYMBOL", "NAME")
-    const tokenB = new UniToken(chainId, gmxAddress, 18, "SYMBOL", "NAME")
-
-    const pool = new Pool(
-      tokenA, // tokenA
-      tokenB, // tokenB
-      10000, // fee
-      uniPoolSlot0.sqrtPriceX96, // sqrtRatioX96
-      1, // liquidity
-      uniPoolSlot0.tick, // tickCurrent
-      []
-    )
-
-    const poolTokenPrice = pool.priceOf(tokenB).toSignificant(6)
-    const poolTokenPriceAmount = parseValue(poolTokenPrice, 18)
-    gmxPrice = poolTokenPriceAmount.mul(eth.minPrice).div(expandDecimals(1, 18))
-  }
+  const { data: gmxPrice, mutate: updateGmxPrice } = useGmxPrice()
 
   let gmxMarketCap
   if (gmxPrice && gmxSupply) {
@@ -250,9 +226,9 @@ export default function DashboardV2() {
     glpMarketCap = glpPrice.mul(glpSupply).div(expandDecimals(1, GLP_DECIMALS))
   }
 
-  const ethFloorPriceFund = expandDecimals(400 + 148 + 384, 18)
+  const ethFloorPriceFund = expandDecimals(350 + 148 + 384, 18)
   const glpFloorPriceFund = expandDecimals(660001, 18)
-  const usdcFloorPriceFund = expandDecimals(784598, 30)
+  const usdcFloorPriceFund = expandDecimals(784598 + 200000, 30)
 
   let totalFloorPriceFundUsd
 
@@ -269,7 +245,7 @@ export default function DashboardV2() {
   }
 
   const getWeightText = (tokenInfo) => {
-    if (!tokenInfo.weight || !tokenInfo.usdgAmount || !usdgSupply || !totalTokenWeights) {
+    if (!tokenInfo.weight || !tokenInfo.usdgAmount || !usdgSupply || usdgSupply.eq(0) || !totalTokenWeights) {
       return "..."
     }
 
@@ -316,7 +292,7 @@ export default function DashboardV2() {
         updateVaultTokenInfo(undefined, true)
 
         updateFees(undefined, true)
-        updateUniPoolSlot0(undefined, true)
+        updateGmxPrice(undefined, true)
         updateStakedGmxSupply(undefined, true)
         updateGmxSupply(undefined, true)
 
@@ -329,16 +305,19 @@ export default function DashboardV2() {
   }, [active, library,  chainId,
       updatePositionStats, updateHourlyVolume, updateTotalVolume,
       updateTotalSupplies, updateAums, updateVaultTokenInfo,
-      updateFees, updateUniPoolSlot0, updateStakedGmxSupply,
+      updateFees, updateGmxPrice, updateStakedGmxSupply,
       updateTotalTokenWeights, updateGmxSupply])
+
+  const statsUrl = `https://stats.gmx.io/${chainId === AVALANCHE ? "avalanche" : ""}`
+  const totalStatsStartDate = chainId === AVALANCHE ? "06 Jan 2022" : "01 Sep 2021"
 
   return (
     <div className="DashboardV2 Page">
       <div className="Page-title-section">
         <div className="Page-title">Stats</div>
         <div className="Page-description">
-          Total Stats start from 01 Sep 2021.&nbsp;<br/>
-          For detailed stats: <a href="https://stats.gmx.io/"  target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
+          {chainName} Total Stats start from {totalStatsStartDate}.<br/>
+          For detailed stats: <a href={statsUrl}  target="_blank" rel="noopener noreferrer">{statsUrl}</a>.
         </div>
       </div>
       <div className="DashboardV2-content">
@@ -353,7 +332,7 @@ export default function DashboardV2() {
                   <Tooltip
                     handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                     position="right-bottom"
-                    renderContent={() => "Assets Under Management: GLP pool + GMX staked"}
+                    renderContent={() => `Assets Under Management: GMX staked (All chains) + GLP pool (${chainName})`}
                   />
                 </div>
               </div>
@@ -363,7 +342,7 @@ export default function DashboardV2() {
                   <Tooltip
                     handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
                     position="right-bottom"
-                    renderContent={() => "Total value of tokens in GLP pool"}
+                    renderContent={() => `Total value of tokens in GLP pool (${chainName})`}
                   />
                 </div>
               </div>
@@ -385,12 +364,14 @@ export default function DashboardV2() {
                   ${formatAmount(totalShortPositionSizes, USD_DECIMALS, 0, true)}
                 </div>
               </div>
-              <div className="App-card-row">
-                <div className="label">Fees since {formatDate(feeHistory[0].to)}</div>
-                <div>
-                  ${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}
-                </div>
-              </div>
+              {feeHistory.length ?
+                <div className="App-card-row">
+                  <div className="label">Fees since {formatDate(feeHistory[0].to)}</div>
+                  <div>
+                    ${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}
+                  </div>
+                </div> : null
+              }
             </div>
           </div>
           <div className="App-card">
@@ -456,7 +437,7 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GLP</div>
+            <div className="App-card-title">GLP ({chainName})</div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -548,35 +529,45 @@ export default function DashboardV2() {
         </div>
         <div className="DashboardV2-projects">
           <div className="App-card">
-            <div className="App-card-title">GMX Positions Bot</div>
+            <div className="App-card-title">
+              GMX Blueberry Club
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">Link</div>
                 <div>
-                  <a href="https://t.me/GMXPositions" target="_blank" rel="noopener noreferrer">
-                    https://t.me/GMXPositions
+                  <a href="https://www.blueberry.club/" target="_blank" rel="noopener noreferrer">
+                    https://www.blueberry.club
                   </a>
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
                 <div>
-                  Telegram bot for GMX position updates
+                  GMX Blueberry NFTs
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
                 <div>
-                  <a href="https://t.me/zhongfu" target="_blank" rel="noopener noreferrer">
-                    @zhongfu
+                  <a href="https://t.me/xm92boi" target="_blank" rel="noopener noreferrer">
+                    @xm92boi
                   </a>
                 </div>
               </div>
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GMX Leaderboard</div>
+            <div className="App-card-title">
+              GMX Leaderboard
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -604,7 +595,45 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GMX Yield List</div>
+            <div className="App-card-title">
+              GMX Positions Bot
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+              </div>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://t.me/GMXPositions" target="_blank" rel="noopener noreferrer">
+                    https://t.me/GMXPositions
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  Telegram bot for GMX position updates
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Creator</div>
+                <div>
+                  <a href="https://t.me/zhongfu" target="_blank" rel="noopener noreferrer">
+                    @zhongfu
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">
+              GMX Yield List
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -632,7 +661,12 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GMX Charts</div>
+            <div className="App-card-title">
+              GMX Charts
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -660,7 +694,13 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GMX Feedback</div>
+            <div className="App-card-title">
+              GMX Feedback
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+                <img src={avalancheIcon} alt="avalancheIcon" />
+              </div>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">

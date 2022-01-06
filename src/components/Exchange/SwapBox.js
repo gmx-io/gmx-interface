@@ -52,6 +52,7 @@ import {
   getNextFromAmount,
   getMostAbundantStableToken,
   useLocalStorageSerializeKey,
+  useLocalStorageByChainId,
   calculatePositionDelta,
   replaceNativeTokenAddress,
   adjustForDecimals
@@ -160,8 +161,9 @@ export default function SwapBox(props) {
 
   const defaultCollateralSymbol = getConstant(chainId, "defaultCollateralSymbol")
   // TODO hack with useLocalStorageSerializeKey
-  const [shortCollateralAddress, setShortCollateralAddress] = useLocalStorageSerializeKey(
-    [chainId, "Short-Collateral-Address"],
+  const [shortCollateralAddress, setShortCollateralAddress] = useLocalStorageByChainId(
+    chainId,
+    "Short-Collateral-Address",
     getTokenBySymbol(chainId, defaultCollateralSymbol).address
   )
   const isLong = swapOption === LONG
@@ -305,9 +307,9 @@ export default function SwapBox(props) {
 
   useEffect(() => {
     if (!toTokens.find(token => token.address === toTokenAddress)) {
-      setToTokenAddress(toTokens[0].address)
+      setToTokenAddress(swapOption, toTokens[0].address)
     }
-  }, [toTokens, toTokenAddress, setToTokenAddress])
+  }, [swapOption, toTokens, toTokenAddress, setToTokenAddress])
 
   useEffect(() => {
     if (active) {
@@ -567,7 +569,7 @@ export default function SwapBox(props) {
         toTokenInfo.availableAmount && toAmount.gt(toTokenInfo.availableAmount)) {
       return ["Insufficient liquidity"]
     }
-    if (toAmount && toTokenInfo.bufferAmount && toTokenInfo.poolAmount && toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(toAmount))) {
+    if (!isWrapOrUnwrap && toAmount && toTokenInfo.bufferAmount && toTokenInfo.poolAmount && toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(toAmount))) {
       return ["Insufficient liquidity"]
     }
 
@@ -622,6 +624,11 @@ export default function SwapBox(props) {
         const { amount: swapAmount } = getNextToAmount(chainId, fromAmount, fromTokenAddress, toTokenAddress, infoTokens, undefined, undefined, usdgSupply, totalTokenWeights)
         requiredAmount = requiredAmount.add(swapAmount)
 
+        if (toToken && toTokenAddress !== USDG_ADDRESS &&
+            toTokenInfo.availableAmount && requiredAmount.gt(toTokenInfo.availableAmount)) {
+          return ["Insufficient liquidity"]
+        }
+
         if (toTokenInfo.poolAmount
           && toTokenInfo.bufferAmount
           && toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(swapAmount))
@@ -636,10 +643,6 @@ export default function SwapBox(props) {
             return [`${fromTokenInfo.symbol} pool exceeded, try different token`, true, "MAX_USDG"]
           }
         }
-      }
-      if (toToken && toTokenAddress !== USDG_ADDRESS &&
-          toTokenInfo.availableAmount && requiredAmount.gt(toTokenInfo.availableAmount)) {
-        return ["Insufficient liquidity"]
       }
     }
 
@@ -727,8 +730,8 @@ export default function SwapBox(props) {
         <a href={uniswapUrl} target="_blank" rel="noreferrer">Buy {swapTokenSymbol} on Uniswap</a>
       </Modal>
     )
-  }, [modalError, setModalError, fromToken.address, toToken.address, shortCollateralToken.address, isLong,
-    shortCollateralToken.symbol, toToken.symbol, fromToken.symbol])
+  }, [modalError, setModalError, fromToken?.address, toToken?.address, shortCollateralToken?.address, isLong,
+    shortCollateralToken?.symbol, toToken?.symbol, fromToken?.symbol])
 
   const isPrimaryEnabled = () => {
     if (!active) { return true }
@@ -762,12 +765,6 @@ export default function SwapBox(props) {
       if (toUsdMax && toUsdMax.lt(fromUsdMin.mul(95).div(100))) {
         return "High Slippage, Swap Anyway"
       }
-      if (toToken.isWrapped && fromToken.isNative) {
-        return "Wrap"
-      }
-      if (toToken.isNative && fromToken.isWrapped) {
-        return "Unwrap"
-      }
       return "Swap"
     }
 
@@ -787,17 +784,10 @@ export default function SwapBox(props) {
   }
 
   const onSelectFromToken = (token) => {
-    setFromTokenAddress(token.address)
+    setFromTokenAddress(swapOption, token.address)
     setIsWaitingForApproval(false)
 
-    const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-    updatedTokenSelection[swapOption] = {
-      from: token.address,
-      to: toTokenAddress
-    }
-    setTokenSelection(updatedTokenSelection)
-
-    if (isShort && fromToken && fromToken.isStable) {
+    if (isShort && token.isStable) {
       setShortCollateralAddress(token.address)
     }
   }
@@ -807,13 +797,7 @@ export default function SwapBox(props) {
   }
 
   const onSelectToToken = (token) => {
-    setToTokenAddress(token.address)
-    const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-    updatedTokenSelection[swapOption] = {
-      from: fromTokenAddress,
-      to: token.address
-    }
-    setTokenSelection(updatedTokenSelection)
+    setToTokenAddress(swapOption, token.address)
   }
 
   const onFromValueChange = (e) => {
@@ -835,8 +819,6 @@ export default function SwapBox(props) {
       }
       setAnchorOnFromAmount(!anchorOnFromAmount)
     }
-    setFromTokenAddress(toTokenAddress)
-    setToTokenAddress(fromTokenAddress)
     setIsWaitingForApproval(false)
 
     const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
@@ -911,7 +893,7 @@ export default function SwapBox(props) {
     if (shouldRaiseGasError(getTokenInfo(infoTokens, fromTokenAddress), fromAmount)) {
       setIsSubmitting(false)
       setIsPendingConfirmation(true)
-      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "networkTokenSymbol")} for gas`)
+      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "nativeTokenSymbol")} for gas`)
       return
     }
 
@@ -1061,13 +1043,13 @@ export default function SwapBox(props) {
     if (shouldRaiseGasError(getTokenInfo(infoTokens, fromTokenAddress), fromAmount)) {
       setIsSubmitting(false)
       setIsPendingConfirmation(false)
-      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "networkTokenSymbol")} for gas`)
+      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, "nativeTokenSymbol")} for gas`)
       return
     }
 
     const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner())
     const indexToken = getTokenInfo(infoTokens, indexTokenAddress)
-    const tokenSymbol = indexToken.isWrapped ? getConstant(chainId, "networkTokenSymbol") : indexToken.symbol
+    const tokenSymbol = indexToken.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexToken.symbol
     const successMsg = `Increased ${tokenSymbol} ${isLong ? "Long" : "Short"} by ${formatAmount(toUsdMax, USD_DECIMALS, 2)} USD`;
 
     Api.callContract(chainId, contract, method, params, {
@@ -1087,14 +1069,6 @@ export default function SwapBox(props) {
   }
 
   const onSwapOptionChange = (opt) => {
-    const updatedTokenSelection = JSON.parse(JSON.stringify(tokenSelection))
-    updatedTokenSelection[swapOption] = {
-      from: fromTokenAddress,
-      to: toTokenAddress
-    }
-    setTokenSelection(updatedTokenSelection)
-    setFromTokenAddress(tokenSelection[opt].from)
-    setToTokenAddress(tokenSelection[opt].to)
     setSwapOption(opt)
     setAnchorOnFromAmount(true)
     setFromValue("")
@@ -1242,13 +1216,13 @@ export default function SwapBox(props) {
   if (isLong && toTokenInfo && toTokenInfo.fundingRate) {
     borrowFeeText = formatAmount(toTokenInfo.fundingRate, 4, 4) + "% / 1h"
     if (toTokenInfo.fundingRate.eq(0)) {
-      hasZeroBorrowFee = true
+      // hasZeroBorrowFee = true
     }
   }
   if (isShort && shortCollateralToken && shortCollateralToken.fundingRate) {
     borrowFeeText = formatAmount(shortCollateralToken.fundingRate, 4, 4) + "% / 1h"
     if (shortCollateralToken.fundingRate.eq(0)) {
-      hasZeroBorrowFee = true
+      // hasZeroBorrowFee = true
     }
   }
 
@@ -1628,7 +1602,9 @@ export default function SwapBox(props) {
                     {isShort && "There are more longs than shorts, borrow fees for shorting is currently zero"}
                   </div>}
                   {!hasZeroBorrowFee && <div>
-                    The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour.
+                    The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour.<br/>
+                    <br/>
+                    {isShort && `You can change the "Profits In" token above to find lower fees`}
                   </div>}
                   <br/>
                   <a href="https://gmxio.gitbook.io/gmx/trading#opening-a-position" target="_blank" rel="noopener noreferrer">More Info</a>
