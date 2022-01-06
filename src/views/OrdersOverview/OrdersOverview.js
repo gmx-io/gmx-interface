@@ -51,7 +51,7 @@ export default function OrdersOverview() {
   const infoTokens = getInfoTokens(tokens, null, whitelistedTokens, vaultTokenInfo)
 
   const orders = useAllOrders(chainId, library)
-  const stats = useAllOrdersStats()
+  const stats = useAllOrdersStats(chainId)
 
   const positionsForOrders = usePositionsForOrders(chainId, library, orders.filter(order => order.type === DECREASE))
 

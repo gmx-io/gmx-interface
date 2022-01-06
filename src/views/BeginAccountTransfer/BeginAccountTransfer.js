@@ -18,7 +18,8 @@ import { FaCheck, FaTimes } from 'react-icons/fa'
 
 import {
   fetcher,
-  approveTokens
+  approveTokens,
+  useChainId
 } from '../../Helpers'
 
 import "./BeginAccountTransfer.css"
@@ -38,7 +39,7 @@ function ValidationRow({ isValid, children }) {
 export default function BeginAccountTransfer(props) {
   const { setPendingTxns } = props
   const { active, library, account } = useWeb3React()
-  const chainId = 42161 // set chain to Arbitrum
+  const { chainId } = useChainId()
 
   const [receiver, setReceiver] = useState("")
   const [isTransferring, setIsTransferring] = useState(false)

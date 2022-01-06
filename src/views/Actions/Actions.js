@@ -14,7 +14,8 @@ import {
   getInfoTokens,
   getTokenInfo,
   getServerBaseUrl,
-  useAccountOrders
+  useAccountOrders,
+  useChainId
 } from '../../Helpers'
 import { getToken, getTokens, getWhitelistedTokens } from '../../data/Tokens'
 import { getPositions, getPositionQuery } from '../Exchange/Exchange'
@@ -31,7 +32,7 @@ export default function Actions() {
   const { account } = useParams()
   const { active, library } = useWeb3React()
 
-  const chainId = 42161
+  const { chainId } = useChainId()
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
   const vaultAddress = getContract(chainId, "Vault")
   const readerAddress = getContract(chainId, "Reader")

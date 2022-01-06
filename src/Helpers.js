@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { InjectedConnector, UserRejectedRequestError as UserRejectedRequestErrorInjected } from '@web3-react/injected-connector'
 import { WalletConnectConnector, UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from '@web3-react/walletconnect-connector'
 import { toast } from 'react-toastify'
@@ -19,24 +19,31 @@ import { getWhitelistedTokens, isValidToken } from './data/Tokens'
 const { AddressZero } = ethers.constants
 
 export const MAINNET = 56;
+export const AVALANCHE = 43114;
 export const TESTNET = 97;
 export const ARBITRUM_TESTNET = 421611
 export const ARBITRUM = 42161
 // TODO take it from web3
-export const DEFAULT_CHAIN_ID = ARBITRUM
+export const DEFAULT_CHAIN_ID = AVALANCHE
 export const CHAIN_ID = DEFAULT_CHAIN_ID
 
 export const MIN_PROFIT_TIME = 60 * 60 * 12 // 12 hours
+
+const SELECTED_NETWORK_LOCAL_STORAGE_KEY = 'SELECTED_NETWORK'
 
 const CHAIN_NAMES_MAP = {
   [MAINNET]: "BSC",
   [TESTNET]: "BSC Testnet",
   [ARBITRUM_TESTNET]: "Arbitrum Testnet",
-  [ARBITRUM]: "Arbitrum"
+  [ARBITRUM]: "Arbitrum",
+  [AVALANCHE]: "Avalanche"
 }
 
 const ARBITRUM_RPC_PROVIDERS = [
   "https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"
+]
+const AVALANCHE_RPC_PROVIDERS = [
+  "https://api.avax.network/ext/bc/C/rpc"
 ]
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = 'walletconnect'
 
@@ -90,33 +97,28 @@ export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3"
 export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage"
 export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-position-lines"
 
-const ORDER_EXECUTION_GAS_PRICE = expandDecimals(1, 9) // 1 gwei
-
-const INCREASE_ORDER_EXECUTION_GAS_LIMIT = 1000000 // https://arbiscan.io/tx/0x63e08dab7044af40f074c1458734ad6aba61061c9161a002f02cb65a23e518db
-const DECREASE_ORDER_EXECUTION_GAS_LIMIT = 1000000 // https://arbiscan.io/tx/0xa27b456717e0d092992ff013a93d106043e5d9dbdd5761ddebd06d9c9dc6cd39
-const SWAP_ORDER_EXECUTION_GAS_LIMIT = 1000000 // https://arbiscan.io/tx/0x18070f49e94d428bf3c7d3c249b8e4cdb18ea6a3f4945de52b705187827a6b73
-
-export const SWAP_ORDER_EXECUTION_GAS_FEE = ORDER_EXECUTION_GAS_PRICE.mul(SWAP_ORDER_EXECUTION_GAS_LIMIT)
-export const INCREASE_ORDER_EXECUTION_GAS_FEE = ORDER_EXECUTION_GAS_PRICE.mul(INCREASE_ORDER_EXECUTION_GAS_LIMIT)
-export const DECREASE_ORDER_EXECUTION_GAS_FEE = ORDER_EXECUTION_GAS_PRICE.mul(DECREASE_ORDER_EXECUTION_GAS_LIMIT)
-
 export const TRIGGER_PREFIX_ABOVE = '>'
 export const TRIGGER_PREFIX_BELOW = '<'
 
 export const PROFIT_THRESHOLD_BASIS_POINTS = 150
 
 const supportedChainIds = [
-  ARBITRUM
+  ARBITRUM,
+  AVALANCHE
 ];
 const injectedConnector = new InjectedConnector({
   supportedChainIds
 })
 
 const getWalletConnectConnector = () => {
+  const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID
   return new WalletConnectConnector({
-    rpc: { [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0] },
-    chainId: ARBITRUM,
-    qrcode: true
+    rpc: {
+      [AVALANCHE]: AVALANCHE_RPC_PROVIDERS[0],
+      [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0]
+    },
+    qrcode: true,
+    chainId
   })
 }
 
@@ -142,6 +144,32 @@ export const helperToast = {
     toast.dismiss()
     toast.error(content)
   }
+}
+
+export function useLocalStorageByChainId(chainId, key, defaultValue) {
+  const [internalValue, setInternalValue] = useLocalStorage(key, {})
+
+  const setValue = useCallback(value => {
+    setInternalValue(internalValue => {
+      if (typeof value === 'function') {
+        value = value(internalValue[chainId] || defaultValue)
+      }
+      const newInternalValue = {
+        ...internalValue,
+        [chainId]: value
+      }
+      return newInternalValue
+    })
+  }, [chainId, setInternalValue, defaultValue])
+
+  let value
+  if (chainId in internalValue) {
+    value = internalValue[chainId]
+  } else {
+    value = defaultValue
+  }
+
+  return [value, setValue]
 }
 
 export function useLocalStorageSerializeKey(key, value, opts) {
@@ -210,22 +238,20 @@ export function getServerBaseUrl(chainId) {
   if (!chainId) {
     throw new Error("chainId is not provided")
   }
-  if (document.location.hostname === "localhost") {
-    // TODO remove
-    // return "http://localhost:8080"
-    // return "https://gambit-server-devnet.uc.r.appspot.com"
-  }
   if (document.location.hostname.includes("deploy-preview")) {
-    return "https://gmx-server-mainnet.uw.r.appspot.com"
+    const fromLocalStorage = localStorage.getItem("SERVER_BASE_URL")
+    if (fromLocalStorage) {
+      return fromLocalStorage
+    }
   }
   if (chainId === MAINNET) {
     return "https://gambit-server-staging.uc.r.appspot.com"
-  }
-  if (chainId === ARBITRUM_TESTNET) {
+  } else if (chainId === ARBITRUM_TESTNET) {
     return "https://gambit-l2.as.r.appspot.com"
-  }
-  if (chainId === ARBITRUM) {
+  } else if (chainId === ARBITRUM) {
     return "https://gmx-server-mainnet.uw.r.appspot.com"
+  } else if (chainId === AVALANCHE) {
+    return "https://gmx-avax-server.uc.r.appspot.com"
   }
   return "https://gmx-server-mainnet.uw.r.appspot.com"
 }
@@ -881,7 +907,8 @@ export const BSC_RPC_PROVIDERS = [
 
 const RPC_PROVIDERS = {
   [MAINNET]: BSC_RPC_PROVIDERS,
-  [ARBITRUM]: ARBITRUM_RPC_PROVIDERS
+  [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
+  [AVALANCHE]: AVALANCHE_RPC_PROVIDERS
 }
 
 export function shortenAddress(address) {
@@ -914,10 +941,21 @@ export function getInjectedConnector() {
 }
 
 export function useChainId() {
-  const { chainId } = useWeb3React()
+  let { chainId } = useWeb3React()
 
-  if (!supportedChainIds.includes(chainId)) {
-    return { chainId: DEFAULT_CHAIN_ID }
+  if (!chainId) {
+    const chainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)
+    if (chainIdFromLocalStorage) {
+      chainId = parseInt(chainIdFromLocalStorage)
+      if (!chainId) {
+        // localstorage value is invalid
+        localStorage.removeItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)
+      }
+    }
+  }
+
+  if (!chainId || !supportedChainIds.includes(chainId)) {
+    chainId = DEFAULT_CHAIN_ID
   }
   return { chainId }
 }
@@ -1375,21 +1413,18 @@ export function numberWithCommas(x) {
 export function getExplorerUrl(chainId) {
   if (chainId === 3) {
     return "https://ropsten.etherscan.io/"
-  }
-  if (chainId === 42) {
+  } else if (chainId === 42) {
     return "https://kovan.etherscan.io/"
-  }
-  if (chainId === MAINNET) {
+  } else if (chainId === MAINNET) {
     return "https://bscscan.com/"
-  }
-  if (chainId === TESTNET) {
+  } else if (chainId === TESTNET) {
     return "https://testnet.bscscan.com/"
-  }
-  if (chainId === ARBITRUM_TESTNET) {
+  } else if (chainId === ARBITRUM_TESTNET) {
     return "https://rinkeby-explorer.arbitrum.io/"
-  }
-  if (chainId === ARBITRUM) {
+  } else if (chainId === ARBITRUM) {
     return "https://arbiscan.io/"
+  } else if (chainId === AVALANCHE) {
+    return "https://snowtrace.io/"
   }
   return "https://etherscan.io/"
 }
@@ -1417,7 +1452,7 @@ export function usePrevious(value) {
 }
 
 export async function getGasLimit(contract, method, params = [], value, gasBuffer) {
-  const defaultGasBuffer = 50000
+  const defaultGasBuffer = 200000
   const defaultValue = bigNumberify(0)
 
   if (!value) {
@@ -1539,6 +1574,17 @@ const NETWORK_METADATA = {
     rpcUrls: ARBITRUM_RPC_PROVIDERS,
     blockExplorerUrls: [getExplorerUrl(ARBITRUM)],
   },
+  [AVALANCHE]: {
+    chainId: '0x' + AVALANCHE.toString(16),
+    chainName: 'Avalanche',
+    nativeCurrency: {
+      name: 'AVAX',
+      symbol: 'AVAX',
+      decimals: 18
+    },
+    rpcUrls: AVALANCHE_RPC_PROVIDERS,
+    blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
+  },
 }
 
 export const addBscNetwork = async () => {
@@ -1549,14 +1595,23 @@ export const addNetwork = async (metadata) => {
   await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [metadata] }).catch()
 }
 
-export const switchNetwork = async (chainId) => {
+export const switchNetwork = async (chainId, active) => {
+  if (!active) {
+    // chainId in localStorage allows to switch network even if wallet is not connected
+    // or there is no wallet at all
+    localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, chainId)
+    document.location.reload()
+    return
+  }
+
   try {
     const chainIdHex = '0x' + chainId.toString(16)
     await window.ethereum.request({
       method: "wallet_switchEthereumChain",
       params: [{ chainId: chainIdHex }]
     })
-    helperToast.success("Wallet connected!")
+    helperToast.success("Connected to " + getChainName(chainId))
+    return getChainName(chainId)
   } catch (ex) {
     // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
     // This error code indicates that the chain has not been added to MetaMask.
@@ -1564,7 +1619,7 @@ export const switchNetwork = async (chainId) => {
       return await addNetwork(NETWORK_METADATA[chainId])
     }
 
-    console.error(ex)
+    console.error('error', ex)
   }
 }
 
@@ -1590,6 +1645,8 @@ export const getWalletConnectHandler = (activate, deactivate, setActivatingConne
 export const getInjectedHandler = (activate) => {
   const fn = async () => {
     activate(getInjectedConnector(), (e) => {
+      const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID
+
       if (e.message.includes("No Ethereum provider")) {
         helperToast.error(<div>
           MetaMask not yet installed.<br/>
@@ -1602,12 +1659,12 @@ export const getInjectedHandler = (activate) => {
       }
       if (e instanceof UnsupportedChainIdError) {
         helperToast.error(<div>
-          <div>Your wallet is not connected to {getChainName(DEFAULT_CHAIN_ID)}.</div><br/>
-          <div className="clickable underline margin-bottom" onClick={() => switchNetwork(DEFAULT_CHAIN_ID)}>
-            Switch to {getChainName(DEFAULT_CHAIN_ID)}
+          <div>Your wallet is not connected to {getChainName(chainId)}.</div><br/>
+          <div className="clickable underline margin-bottom" onClick={() => switchNetwork(chainId, true)}>
+            Switch to {getChainName(chainId)}
           </div>
-          <div className="clickable underline" onClick={() => switchNetwork(DEFAULT_CHAIN_ID)}>
-            Add {getChainName(DEFAULT_CHAIN_ID)}
+          <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
+            Add {getChainName(chainId)}
           </div>
         </div>)
         return
