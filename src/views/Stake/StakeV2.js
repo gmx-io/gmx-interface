@@ -839,7 +839,7 @@ function ClaimModal(props) {
           </div>
           <div>
   					<Checkbox isChecked={shouldConvertWeth} setIsChecked={setShouldConvertWeth}>
-  						Convert {nativeTokenSymbol} to {wrappedTokenSymbol}
+  						Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
   					</Checkbox>
           </div>
         </div>
