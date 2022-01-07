@@ -120,11 +120,11 @@ export default function GlpSwap(props) {
   })
 
   const tokenAddresses = tokens.map(token => token.address)
-  const { data: tokenBalances, mutate: updateTokenBalances } = useSWR([`GlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account || AddressZero], {
+  const { data: tokenBalances, mutate: updateTokenBalances } = useSWR(account && [`GlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account], {
     fetcher: fetcher(library, ReaderV2, [tokenAddresses]),
   })
 
-  const { data: balancesAndSupplies, mutate: updateBalancesAndSupplies } = useSWR([`GlpSwap:getTokenBalancesWithSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero], {
+  const { data: balancesAndSupplies, mutate: updateBalancesAndSupplies } = useSWR(account && [`GlpSwap:getTokenBalancesWithSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", account], {
     fetcher: fetcher(library, ReaderV2, [tokensForBalanceAndSupplyQuery]),
   })
 
@@ -137,20 +137,20 @@ export default function GlpSwap(props) {
   })
 
   const tokenAllowanceAddress = swapTokenAddress === AddressZero ? nativeTokenAddress : swapTokenAddress
-  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR([active, chainId, tokenAllowanceAddress, "allowance", account || AddressZero, glpManagerAddress], {
+  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(account && [active, chainId, tokenAllowanceAddress, "allowance", account, glpManagerAddress], {
     fetcher: fetcher(library, Token),
   })
 
-  const { data: lastPurchaseTime, mutate: updateLastPurchaseTime } = useSWR([`GlpSwap:lastPurchaseTime:${active}`, chainId, glpManagerAddress, "lastAddedAt", account || AddressZero], {
+  const { data: lastPurchaseTime, mutate: updateLastPurchaseTime } = useSWR(account && [`GlpSwap:lastPurchaseTime:${active}`, chainId, glpManagerAddress, "lastAddedAt", account], {
     fetcher: fetcher(library, GlpManager),
   })
 
-  const { data: glpBalance, mutate: updateGlpBalance } = useSWR([`GlpSwap:glpBalance:${active}`, chainId, feeGlpTrackerAddress, "stakedAmounts", account || AddressZero], {
+  const { data: glpBalance, mutate: updateGlpBalance } = useSWR(account && [`GlpSwap:glpBalance:${active}`, chainId, feeGlpTrackerAddress, "stakedAmounts", account], {
     fetcher: fetcher(library, RewardTracker),
   })
 
   const glpVesterAddress = getContract(chainId, "GlpVester")
-  const { data: reservedAmount, mutate: updateReservedAmount } = useSWR([`GlpSwap:reservedAmount:${active}`, chainId, glpVesterAddress, "pairAmounts", account || AddressZero], {
+  const { data: reservedAmount, mutate: updateReservedAmount } = useSWR(account && [`GlpSwap:reservedAmount:${active}`, chainId, glpVesterAddress, "pairAmounts", account], {
     fetcher: fetcher(library, Vester),
   })
 
@@ -160,7 +160,7 @@ export default function GlpSwap(props) {
     stakedGlpTrackerAddress,
     feeGlpTrackerAddress
   ]
-  const { data: stakingInfo, mutate: updateStakingInfo } = useSWR([`GlpSwap:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || AddressZero], {
+  const { data: stakingInfo, mutate: updateStakingInfo } = useSWR(account && [`GlpSwap:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account], {
     fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
   })
 
