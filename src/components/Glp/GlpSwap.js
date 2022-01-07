@@ -779,7 +779,15 @@ export default function GlpSwap(props) {
                   </div>
                 </div>}
                 <div className="App-card-row">
-                  <div className="label">Fees</div>
+                  <div className="label">
+                    {tokenFeeBps
+                      ? "Fees"
+                      : <Tooltip
+                        handle={`Fees`}
+                        renderContent={() => `Please enter an amount to see fee percentages`}
+                      />
+                    }
+                  </div>
                   <div>
                     {formatAmount(tokenFeeBps, 2, 2, true, "-")}{(tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0) ? "%" : ""}
                   </div>
