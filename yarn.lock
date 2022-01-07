@@ -8339,11 +8339,8 @@ __metadata:
     react-icons: ^4.2.0
     react-router-dom: ^5.2.0
     react-scripts: 4.0.3
-<<<<<<< HEAD
-    react-tabs: ^3.2.3
-=======
     react-select: ^5.2.1
->>>>>>> 6c49660975570de8ec4dee800bb04662862d1a1c
+    react-tabs: ^3.2.3
     react-toastify: 6.0.9
     react-use: ^17.2.4
     recharts: ^2.0.9
@@ -13437,9 +13434,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-"prop-types@npm:^15.5.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
-=======
 "prompts@npm:^2.0.1":
   version: 2.4.2
   resolution: "prompts@npm:2.4.2"
@@ -13450,8 +13444,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
->>>>>>> 6c49660975570de8ec4dee800bb04662862d1a1c
+"prop-types@npm:^15.5.0, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
   version: 15.7.2
   resolution: "prop-types@npm:15.7.2"
   dependencies:
