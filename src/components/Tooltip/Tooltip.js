@@ -60,7 +60,7 @@ export default function Tooltip(props) {
   return (
     <span className="Tooltip">
       <span className={cx({'Tooltip-handle': !props.disableHandleStyle}, [props.handleClassName])} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
-        <img src={infoIcon} alt="infoIcon" />
+        <img src={infoIcon} alt="infoIcon" width="14px" />
       </span>
       {props.handle}
       {visible &&

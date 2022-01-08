@@ -13,6 +13,13 @@
   margin-bottom: 24px;
 }
 
+.Tab-title {
+  font-size: 20px;
+  line-height: 22px;
+  letter-spacing: 0px;
+  color: #FFFFFF;
+}
+
 .Tab-description {
   font-size: 0.903rem;
   line-height: 1.2903rem;
@@ -43,10 +50,9 @@
 
 .GlpSwap-token-list-content {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 1rem;
   padding: 1rem;
   padding-top: 0;
+  text-align: left;
 }
 
 .GlpSwap-token-list-content .App-card {
@@ -61,6 +67,44 @@
 
 .GlpSwap-cta {
   margin-top: 0.5rem;
+}
+
+.token-table {
+  margin-left: -1rem;
+  margin-right: -1rem;
+  width: calc(100% + 2rem);
+  border-spacing: 0;
+}
+
+.token-table td, .token-table th {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.token-table th:first-child, .token-table td:first-child {
+  padding-left: 1rem;
+}
+
+.token-table th:last-child, .token-table td:last-child {
+  padding-right: 1rem;
+  text-align: right;
+}
+
+.token-table th {
+  font-size: 0.903rem;
+  line-height: 1.2903rem;
+  font-weight: normal;
+  letter-spacing: 0.25px;
+  color: #A0A3C4;
+  text-transform: uppercase;
+}
+
+.token-table tbody tr:nth-child(odd) {
+  background: #1E1F37;
+}
+
+.token-table tbody tr:nth-child(even) {
+  background: #1E1F3700;
 }
 
 @media (max-width: 900px) {
