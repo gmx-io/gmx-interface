@@ -839,7 +839,7 @@ function ClaimModal(props) {
           </div>
           <div>
   					<Checkbox isChecked={shouldConvertWeth} setIsChecked={setShouldConvertWeth}>
-  						Convert {nativeTokenSymbol} to {wrappedTokenSymbol}
+  						Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
   					</Checkbox>
           </div>
         </div>
@@ -1444,7 +1444,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <Link className="App-button-option App-card-option" to="/buy">Buy GMX</Link>
                 {active && <button className="App-button-option App-card-option" onClick={() => showStakeGmxModal()}>Stake</button>}
                 {active && <button className="App-button-option App-card-option" onClick={() => showUnstakeGmxModal()}>Unstake</button>}
-                {active && <Link className="App-button-option App-card-option" to="/begin_account_transfer">Transfer</Link>}
+                {active && <Link className="App-button-option App-card-option" to="/begin_account_transfer">Transfer Account</Link>}
               </div>
             </div>
           </div>

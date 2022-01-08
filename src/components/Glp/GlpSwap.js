@@ -119,11 +119,11 @@ export default function GlpSwap(props) {
   })
 
   const tokenAddresses = tokens.map(token => token.address)
-  const { data: tokenBalances, mutate: updateTokenBalances } = useSWR([`GlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account || AddressZero], {
+  const { data: tokenBalances, mutate: updateTokenBalances } = useSWR(account && [`GlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account], {
     fetcher: fetcher(library, ReaderV2, [tokenAddresses]),
   })
 
-  const { data: balancesAndSupplies, mutate: updateBalancesAndSupplies } = useSWR([`GlpSwap:getTokenBalancesWithSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero], {
+  const { data: balancesAndSupplies, mutate: updateBalancesAndSupplies } = useSWR(account && [`GlpSwap:getTokenBalancesWithSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", account], {
     fetcher: fetcher(library, ReaderV2, [tokensForBalanceAndSupplyQuery]),
   })
 
@@ -136,20 +136,20 @@ export default function GlpSwap(props) {
   })
 
   const tokenAllowanceAddress = swapTokenAddress === AddressZero ? nativeTokenAddress : swapTokenAddress
-  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR([active, chainId, tokenAllowanceAddress, "allowance", account || AddressZero, glpManagerAddress], {
+  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(account && [active, chainId, tokenAllowanceAddress, "allowance", account, glpManagerAddress], {
     fetcher: fetcher(library, Token),
   })
 
-  const { data: lastPurchaseTime, mutate: updateLastPurchaseTime } = useSWR([`GlpSwap:lastPurchaseTime:${active}`, chainId, glpManagerAddress, "lastAddedAt", account || AddressZero], {
+  const { data: lastPurchaseTime, mutate: updateLastPurchaseTime } = useSWR(account && [`GlpSwap:lastPurchaseTime:${active}`, chainId, glpManagerAddress, "lastAddedAt", account], {
     fetcher: fetcher(library, GlpManager),
   })
 
-  const { data: glpBalance, mutate: updateGlpBalance } = useSWR([`GlpSwap:glpBalance:${active}`, chainId, feeGlpTrackerAddress, "stakedAmounts", account || AddressZero], {
+  const { data: glpBalance, mutate: updateGlpBalance } = useSWR(account && [`GlpSwap:glpBalance:${active}`, chainId, feeGlpTrackerAddress, "stakedAmounts", account], {
     fetcher: fetcher(library, RewardTracker),
   })
 
   const glpVesterAddress = getContract(chainId, "GlpVester")
-  const { data: reservedAmount, mutate: updateReservedAmount } = useSWR([`GlpSwap:reservedAmount:${active}`, chainId, glpVesterAddress, "pairAmounts", account || AddressZero], {
+  const { data: reservedAmount, mutate: updateReservedAmount } = useSWR(account && [`GlpSwap:reservedAmount:${active}`, chainId, glpVesterAddress, "pairAmounts", account], {
     fetcher: fetcher(library, Vester),
   })
 
@@ -159,7 +159,7 @@ export default function GlpSwap(props) {
     stakedGlpTrackerAddress,
     feeGlpTrackerAddress
   ]
-  const { data: stakingInfo, mutate: updateStakingInfo } = useSWR([`GlpSwap:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || AddressZero], {
+  const { data: stakingInfo, mutate: updateStakingInfo } = useSWR(account && [`GlpSwap:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account], {
     fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
   })
 
@@ -754,14 +754,20 @@ export default function GlpSwap(props) {
                   maxUsdgAmount = tokenInfo.maxUsdgAmount
                 }
 
-                var tokenImage = require('../../img/ic_' + token.symbol.toLowerCase() + '_40.svg')
+                var tokenImage = null;
+
+                try {
+                  tokenImage = require('../../img/ic_' + token.symbol.toLowerCase() + '_40.svg')
+                } catch (error) {
+                  // console.log(error)
+                }
 
                 return (
                   <tr key={token.symbol}>
                     <td>
                       <div className="App-card-title-info">
                         <div className="App-card-title-info-icon">
-                          <img src={tokenImage.default} alt={token.symbol} />
+                          <img src={tokenImage && tokenImage.default} alt={token.symbol} />
                         </div>
                         <div className="App-card-title-info-text">
                           <div className="App-card-info-title">{token.name}</div>
