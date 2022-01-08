@@ -27,10 +27,19 @@
   color: #A0A3C4;
 }
 
+.Tab-description span {
+  color: #F89191;
+}
+
 .GlpSwap-content .GlpSwap-stats-card, .GlpSwap-content .GlpSwap-box {
   border: 2px solid #A0A3C433;
   border-radius: 8px;
   background: unset;
+}
+
+.GlpSwap-stats-card .App-card-row {
+  padding-top: 0.71rem;
+  padding-bottom: 0.71rem;
 }
 
 .GlpSwap-stats-card .App-card-row:nth-child(odd) {
@@ -63,10 +72,35 @@
 
 .GlpSwap-box {
   padding: 1rem;
+  padding-top: 0;
+}
+
+.GlpSwap-box .App-card-title {
+  padding-left: 0;
+}
+
+.GlpSwap-box .Exchange-info-row {
+  height: 32px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.GlpSwap-box .Exchange-info-row .Exchange-info-label {
+  margin-right: 0.5rem;
 }
 
 .GlpSwap-cta {
-  margin-top: 0.5rem;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 0;
+}
+
+.GlpSwap-cta .Exchange-swap-button {
+  max-width: 22.194rem;
+  margin: 0 auto;
+  justify-content: center;
 }
 
 .token-table {
@@ -81,8 +115,16 @@
   padding-bottom: 1rem;
 }
 
+.token-table td {
+  font-size: 0.903rem;
+  line-height: 1.2903rem;
+  letter-spacing: 0.25px;
+  color: #FFFFFFDE;
+}
+
 .token-table th:first-child, .token-table td:first-child {
   padding-left: 1rem;
+  width: 17rem;
 }
 
 .token-table th:last-child, .token-table td:last-child {

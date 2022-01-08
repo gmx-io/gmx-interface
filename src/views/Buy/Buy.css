@@ -15,6 +15,10 @@
     height: 56px;
     margin-bottom: 0;
     border-bottom: 1px solid #1E2136;
+    background: #16182E;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    box-sizing: border-box;
 }
 
 .BuyGMXGLP-container .react-tabs__tab {
@@ -23,12 +27,25 @@
     justify-content: center;
     height: 100%;
     width: 25%;
+    border: 0;
+    opacity: 0.32;
 }
 
 .BuyGMXGLP-container .react-tabs__tab.react-tabs__tab--selected {
     background: #37527B33;
     color: white;
     border: none;
+    position: relative;
+    opacity: 1;
+}
+
+.BuyGMXGLP-container .react-tabs__tab.react-tabs__tab--selected::after {
+    content: ' ';
+    background: #2D42FC;
+    height: 2px;
+    width: 100%;
+    position: absolute;
+    bottom: 1px;
 }
 
 .BuyGMXGLP-container .react-tabs__tab:focus:after {

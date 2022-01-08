@@ -697,7 +697,7 @@ export default function GlpSwap(props) {
             </div>
           </div>
           <div className="GlpSwap-cta Exchange-swap-button-container">
-            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <button className="default-btn Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {getPrimaryText()}
             </button>
           </div>
@@ -707,12 +707,10 @@ export default function GlpSwap(props) {
         <div className="Tab-title-section">
           <div className="Tab-title">Save on Fees</div>
           {isBuying && <div className="Tab-description">
-            Fees may vary depending on which asset you use to buy GLP.<br />
-            Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
+            Fees may vary depending on which asset you use to buy GLP. <span>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.</span>
           </div>}
           {!isBuying && <div className="Tab-description">
-            Fees may vary depending on which asset sell GLP for.<br />
-            Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
+            Fees may vary depending on which asset sell GLP for. <span>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.</span>
           </div>}
         </div>
         <div className="GlpSwap-token-list-content">
@@ -811,7 +809,6 @@ export default function GlpSwap(props) {
               })}
             </tbody>
           </table>
-
         </div>
       </div>
     </div>
