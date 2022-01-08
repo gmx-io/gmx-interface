@@ -172,7 +172,7 @@ export default function Home() {
         <div className="Home-cta-container default-container">
           <div className="Home-cta-info">
             <div className="Home-cta-info__title">Available on your preferred network</div>
-            <div className="Home-cta-info__description">GMX is currently live on Arbitrum and will be launching on Avalanche shortly.</div>
+            <div className="Home-cta-info__description">GMX is currently live on Arbitrum and Avalanche.</div>
           </div>
           <div className="Home-cta-options">
             <div className="Home-cta-option Home-cta-option-arbitrum">
