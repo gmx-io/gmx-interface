@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { useHistory } from "react-router-dom";
 import Footer from "../../Footer"
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
@@ -19,15 +20,24 @@ import olympusIcon from '../../img/ic_olympus.svg'
 import gmx24Icon from '../../img/ic_gmx_24.svg'
 import glp24Icon from '../../img/ic_glp_24.svg'
 
+const TAB_NO = ['','glp','sell_glp']
+
 export default function BuyGMXGLP(props) {
+  const history = useHistory()
+  const activeTabNo = TAB_NO.indexOf(history.location.hash.replace('#', ''))
+  
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
+  const onSelectTab = (index) => {
+    history.push(`${history.location.pathname}${TAB_NO[index]?`#${TAB_NO[index]}`:''}`)
+  }
+
   return (
     <div className="BuyGMXGLP">
       <div className="BuyGMXGLP-container default-container">
-        <Tabs>
+        <Tabs defaultIndex={activeTabNo} onSelect={onSelectTab}>
           <TabList>
             <Tab>
               <div className="BuyGMXGLP-Tabitem-content">
