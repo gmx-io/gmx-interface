@@ -505,7 +505,7 @@ button.App-connect-wallet:hover {
   letter-spacing: 0px;
   color: #FFFFFF;
   padding: 1.0323rem;
-  margin-bottom: 1rem;
+  /* margin-bottom: 1rem; */
   display: flex;
   align-items: center;
 }

@@ -50,7 +50,7 @@ export default function BuyGMXGLP(props) {
           </TabList>
 
           <TabPanel>
-            <div className="BuyGMXGLP-title-section">
+            <div className="BuyGMXGLP-panel">
               <div className="BuyGMXGLP-block">
                 <div className="BuyGMXGLP-description">
                   To purchase <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">GMX</a> you must first have ETH on <a href="https://arbitrum.io/" target="_blank" rel="noopener noreferrer">Arbitrum</a>.<br />
