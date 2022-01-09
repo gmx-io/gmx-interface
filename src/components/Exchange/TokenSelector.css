@@ -1,6 +1,7 @@
-.TokenSelector .Modal-content {
+.TokenSelector .Modal .Modal-content {
   width: 20rem;
   margin: 0;
+  max-height: 100vh;
 }
 
 .TokenSelector-token-name {

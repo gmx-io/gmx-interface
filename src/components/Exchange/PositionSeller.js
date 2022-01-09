@@ -11,7 +11,6 @@ import {
 	DUST_USD,
 	BASIS_POINTS_DIVISOR,
 	USDG_ADDRESS,
-  DECREASE_ORDER_EXECUTION_GAS_FEE,
   SLIPPAGE_BPS_KEY,
   TRIGGER_PREFIX_BELOW,
   TRIGGER_PREFIX_ABOVE,
@@ -35,6 +34,7 @@ import {
   formatDateTime,
   getTimeRemaining
 } from "../../Helpers"
+import { getConstant } from '../../Constants'
 import { createDecreaseOrder, callContract } from "../../Api"
 import { getContract } from "../../Addresses"
 import Router from "../../abis/Router.json"
@@ -42,7 +42,6 @@ import Checkbox from "../Checkbox/Checkbox"
 import Tab from "../Tab/Tab"
 import Modal from "../Modal/Modal"
 import ExchangeInfoRow from './ExchangeInfoRow'
-import { getTokenBySymbol } from '../../data/Tokens'
 
 const { AddressZero } = ethers.constants
 
@@ -132,7 +131,6 @@ export default function PositionSeller(props) {
     if (!orders || !position) {
       return null
     }
-    const WETH = getTokenBySymbol(chainId, "WETH")
     for (const order of orders) {
       // only Stop orders can't be executed without corresponding opened position
       if (order.type !== DECREASE) continue
@@ -143,14 +141,14 @@ export default function PositionSeller(props) {
         if (triggerAboveThreshold !== order.triggerAboveThreshold) continue
       }
 
-      const sameToken = order.indexToken === WETH.address
+      const sameToken = order.indexToken === nativeTokenAddress
         ? position.indexToken.isNative
         : order.indexToken === position.indexToken.address
       if (order.isLong === position.isLong && sameToken) {
         return order
       }
     }
-  }, [position, orders, triggerPriceUsd, chainId, orderOption])
+  }, [position, orders, triggerPriceUsd, orderOption, nativeTokenAddress])
 
   const needOrderBookApproval = orderOption === STOP && !orderBookApproved
 
@@ -508,6 +506,7 @@ export default function PositionSeller(props) {
     }
   }
 
+  const DECREASE_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, 'DECREASE_ORDER_EXECUTION_GAS_FEE')
   function renderExecutionFee() {
     if (orderOption !== STOP) {
       return null;

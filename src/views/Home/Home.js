@@ -23,7 +23,8 @@ import {
   bigNumberify,
   numberWithCommas,
   getServerUrl,
-  USD_DECIMALS
+  USD_DECIMALS,
+  ARBITRUM
 } from '../../Helpers'
 
 import { useUserStat } from "../../Api"
@@ -69,14 +70,12 @@ export default function Home() {
   //   }
   // }
 
-  const chainId = 42161 // set chain to Arbitrum
-
-  const positionStatsUrl = getServerUrl(chainId, "/position_stats")
+  const positionStatsUrl = getServerUrl(ARBITRUM, "/position_stats")
   const { data: positionStats } = useSWR([positionStatsUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
 
-  const totalVolumeUrl = getServerUrl(chainId, "/total_volume")
+  const totalVolumeUrl = getServerUrl(ARBITRUM, "/total_volume")
   const { data: totalVolume } = useSWR([totalVolumeUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
@@ -94,7 +93,7 @@ export default function Home() {
   }
 
   // user stat
-  const userStats = useUserStat()
+  const userStats = useUserStat(ARBITRUM)
 
   return (
     <div className="Home">
@@ -107,9 +106,9 @@ export default function Home() {
               Perpetual Exchange
             </div>
             <div className="Home-description">
-              Trade BTC, ETH and other top cryptocurrencies with up to 30x leverage directly from your wallet
+              Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet
             </div>
-            <NavLink activeClassName="active" to="/trade" className="default-btn">Launch exchange</NavLink>
+            <NavLink activeClassName="active" to="/trade" className="default-btn">Launch Exchange</NavLink>
           </div>
         </div>
         <div className="Home-latest-info-container default-container">
@@ -183,7 +182,7 @@ export default function Home() {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Arbitrum</div>
                 <div className="Home-cta-option-action">
-                  <Link to="/trade" className="default-btn">Launch exchange</Link>
+                  <Link to="/trade" className="default-btn">Launch Exchange</Link>
                 </div>
               </div>
             </div>
@@ -194,9 +193,7 @@ export default function Home() {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Avalanche</div>
                 <div className="Home-cta-option-action">
-                  <button className="default-btn">
-                    Coming soon
-                  </button>
+                  <Link to="/trade" className="default-btn">Launch Exchange</Link>
                 </div>
               </div>
             </div>
