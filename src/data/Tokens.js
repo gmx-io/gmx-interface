@@ -229,10 +229,63 @@ const TOKENS = {
       address: "0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F",
       isStable: true
     }
+  ],
+  43114: [
+    {
+      name: "Avalanche",
+      symbol: "AVAX",
+      decimals: 18,
+      address: ethers.constants.AddressZero,
+      isNative: true,
+      isShortable: true
+    },
+    {
+      name: "Wrapped AVAX",
+      symbol: "WAVAX",
+      decimals: 18,
+      address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+      isWrapped: true,
+      baseSymbol: "AVAX"
+    },
+    {
+      name: "Ether (WETH.e)",
+      symbol: "ETH",
+      address: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
+      decimals: 18,
+      isShortable: true
+    },
+    {
+      name: "Bitcoin (WBTC.e)",
+      symbol: "BTC",
+      address: "0x50b7545627a5162F82A992c33b87aDc75187B218",
+      decimals: 8,
+      isShortable: true
+    },
+    {
+      name: "Magic Internet Money",
+      symbol: "MIM",
+      address: "0x130966628846BFd36ff31a822705796e8cb8C18D",
+      decimals: 18,
+      isStable: true
+    },
+    {
+      name: "USD Coin",
+      symbol: "USDC.e",
+      address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+      decimals: 6,
+      isStable: true
+    },
+    {
+      name: "USD Coin",
+      symbol: "USDC",
+      address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+      decimals: 6,
+      isStable: true
+    }
   ]
 }
 
-const CHAIN_IDS = [56, 97, 42161, 421611]
+const CHAIN_IDS = [56, 97, 42161, 421611, 43114]
 
 const TOKENS_MAP = {}
 const TOKENS_BY_SYMBOL_MAP = {}
@@ -246,6 +299,26 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
     TOKENS_MAP[chainId][token.address] = token
     TOKENS_BY_SYMBOL_MAP[chainId][token.symbol] = token
   }
+}
+
+const WRAPPED_TOKENS_MAP = {}
+const NATIVE_TOKENS_MAP = {}
+for (const chainId of CHAIN_IDS) {
+  for (const token of TOKENS[chainId]) {
+    if (token.isWrapped) {
+      WRAPPED_TOKENS_MAP[chainId] = token
+    } else if (token.isNative) {
+      NATIVE_TOKENS_MAP[chainId] = token
+    }
+  }
+}
+
+export function getWrappedToken(chainId) {
+  return WRAPPED_TOKENS_MAP[chainId]
+}
+
+export function getNativeToken(chainId) {
+  return NATIVE_TOKENS_MAP[chainId]
 }
 
 export function getTokens(chainId) {

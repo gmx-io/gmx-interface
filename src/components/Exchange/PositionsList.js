@@ -30,7 +30,9 @@ const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
     const hasMatchingIndexToken = order.indexToken === nativeTokenAddress
       ? position.indexToken.isNative
       : order.indexToken === position.indexToken.address
-    const hasMatchingCollateralToken = order.collateralToken === position.collateralToken.address
+    const hasMatchingCollateralToken = order.collateralToken === nativeTokenAddress
+      ? position.collateralToken.isNative
+      : order.collateralToken === position.collateralToken.address
     if (order.isLong === position.isLong && hasMatchingIndexToken && hasMatchingCollateralToken) {
       return true
     }
