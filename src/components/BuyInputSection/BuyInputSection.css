@@ -29,4 +29,58 @@
   letter-spacing: 0.4px;
   color: #2D42FC;
   margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+.buy-input .PositionEditor-token-symbol {
+  text-align: left;
+}
+
+.buy-input .TokenSelector-box {
+  text-align: left;
+}
+
+.buy-input .Exchange-swap-input-container input, .buy-input .Exchange-swap-selected-token-symbol {
+  text-align: right;
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+  letter-spacing: -0.5px;
+  color: #FFFFFF;
+}
+
+.buy-input .Exchange-swap-input-container {
+  display: flex;
+  align-items: center;
+}
+
+.buy-input .Exchange-swap-label, .buy-input .Exchange-swap-selected-token-balance {
+  font-size: 0.774rem;
+  line-height: 1rem;
+  letter-spacing: 0.4px;
+  color: #A0A3C4;
+}
+
+.buy-input .Exchange-swap-balance {
+  font-size: 0.774rem;
+  line-height: 1rem;
+  letter-spacing: 0.4px;
+  color: white;
+}
+
+.buy-input .Exchange-swap-section-top {
+  padding-bottom: 0;
+}
+
+.buy-input .Exchange-swap-section-bottom.middle {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.buy-input .Exchange-swap-section-bottom {
+  padding: 0;
+}
+
+.buy-input .Exchange-swap-token-balance-block {
+  display: flex;
+  align-items: center;
 }

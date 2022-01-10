@@ -535,7 +535,7 @@ button.App-connect-wallet:hover {
   top: 2px;
 }
 
-.App-card-row .label {
+.new-update .App-card-row .label {
   font-size: 0.903rem;
   line-height: 1.1613rem;
   font-weight: normal;
@@ -543,7 +543,7 @@ button.App-connect-wallet:hover {
   color: #A0A3C4;
 }
 
-.App-card-row .value {
+.new-update .App-card-row .value {
   font-size: 0.903rem;
   line-height: 1.161rem;
   font-weight: normal;

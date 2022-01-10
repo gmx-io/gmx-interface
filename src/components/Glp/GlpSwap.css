@@ -81,11 +81,11 @@
 }
 
 .GlpSwap-box .Exchange-info-row {
-  height: 32px;
+  height: 1rem;
+  margin-bottom: 0.5rem;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-bottom: 0;
 }
 
 .GlpSwap-box .Exchange-info-row .Exchange-info-label {

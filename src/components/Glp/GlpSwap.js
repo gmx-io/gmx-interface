@@ -95,7 +95,6 @@ export default function GlpSwap(props) {
   const [swapValue, setSwapValue] = useState("")
   const [glpValue, setGlpValue] = useState("")
   const [swapTokenAddress, setSwapTokenAddress] = useLocalStorageByChainId(chainId, `${swapLabel}-swap-token-address`, AddressZero)
-  const [swapTokenSymbol, setSwapTokenSymbol] = useState('AVAX')
   const [isApproving, setIsApproving] = useState(false)
   const [isWaitingForApproval, setIsWaitingForApproval] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -213,7 +212,6 @@ export default function GlpSwap(props) {
 
   const onSelectSwapToken = (token) => {
     setSwapTokenAddress(token.address)
-    setSwapTokenSymbol(token.symbol)
     setIsWaitingForApproval(false)
   }
 
@@ -497,21 +495,23 @@ export default function GlpSwap(props) {
     }
   }
 
-  let payLabel = "Pay"
+  let payLabel = "Sell"
   let receiveLabel = "Receive"
+  let payBalance = "$0.00"
+  let receiveBalance = "$0.00"
   if (isBuying) {
     if (swapUsdMin) {
-      payLabel = `Pay: ${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)} USD`
+      payBalance = `$${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)}`
     }
     if (glpUsdMax) {
-      receiveLabel = `Receive: ${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)} USD`
+      receiveBalance = `$${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)}`
     }
   } else {
     if (glpUsdMax) {
-      payLabel = `Pay: ${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)} USD`
+      payBalance = `$${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)}`
     }
     if (swapUsdMin) {
-      receiveLabel = `Receive: ${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)} USD`
+      receiveBalance = `$${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)}`
     }
   }
 
@@ -616,14 +616,16 @@ export default function GlpSwap(props) {
 
           {isBuying && <BuyInputSection
             topLeftLabel={payLabel}
-            topRightLabel={`Balance: ${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
+            topRightLabel={`Balance: `}
+            tokenBalance={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
             inputValue={swapValue}
             onInputValueChange={onSwapValueChange}
             showMaxButton={swapValue !== formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals)}
             onClickTopRightLabel={fillMaxAmount}
             onClickMax={fillMaxAmount}
             hightlight={true}
-            selectedToken={swapTokenSymbol}
+            selectedToken={swapToken}
+            balance={payBalance}
           >
             <TokenSelector
               label="Pay"
@@ -638,12 +640,15 @@ export default function GlpSwap(props) {
 
           {!isBuying && <BuyInputSection
             topLeftLabel={payLabel}
-            topRightLabel={`Available: ${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
+            topRightLabel={`Available: `}
+            tokenBalance={`${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
             inputValue={glpValue}
             onInputValueChange={onGlpValueChange}
             showMaxButton={glpValue !== formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS)}
             onClickTopRightLabel={fillMaxAmount}
             onClickMax={fillMaxAmount}
+            balance={payBalance}
+            defaultTokenName={'GLP'}
           >
             GLP
           </BuyInputSection>}
@@ -656,19 +661,25 @@ export default function GlpSwap(props) {
 
           {isBuying && <BuyInputSection
             topLeftLabel={receiveLabel}
-            topRightLabel={`Balance: ${formatAmount(glpBalance, GLP_DECIMALS, 4, true)}`}
+            topRightLabel={`Balance: `}
+            tokenBalance={`${formatAmount(glpBalance, GLP_DECIMALS, 4, true)}`}
             inputValue={glpValue}
             onInputValueChange={onGlpValueChange}
+            balance={receiveBalance}
+            defaultTokenName={'GLP'}
           >
             GLP
           </BuyInputSection>}
 
           {!isBuying && <BuyInputSection
             topLeftLabel={receiveLabel}
-            topRightLabel={`Balance: ${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
+            topRightLabel={`Balance: `}
+            tokenBalance={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
             inputValue={swapValue}
             onInputValueChange={onSwapValueChange}
             hightlight={true}
+            balance={receiveBalance}
+            selectedToken={swapToken}
           >
             <TokenSelector
               label="Receive"
