@@ -84,3 +84,37 @@
   display: flex;
   align-items: center;
 }
+
+.buy-input .PositionEditor-token-symbol {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  line-height: 1.0625rem;
+  letter-spacing: -0.35px;
+  color: #FFFFFF;
+}
+
+.buy-input .PositionEditor-token-symbol > img {
+  margin-right: 0.5rem;
+}
+
+.buy-input .TokenSelector-box {
+  display: flex;
+  align-items: center;
+  background: #1E1F37;
+  border-radius: 4px;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.0625rem;
+  letter-spacing: -0.35px;
+  color: #FFFFFF;
+  min-width: 6.77rem;
+}
+
+.buy-input .TokenSelector-box .TokenSelector-box-symbol {
+  margin-right: 0.5rem;
+}
+
+.buy-input .TokenSelector-box .TokenSelector-box-caret {
+  margin-left: 1rem;
+}

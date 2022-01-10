@@ -79,8 +79,7 @@
 .BuyGMXGLP-block {
     background: #1F2037;
     border-radius: 4px;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding: 1rem;
     max-width: 46.452rem;
     margin: 0 auto;
 }
@@ -108,8 +107,8 @@
 }
 
 .BuyGMXGLP-description {
-    font-size: 0.903rem;
-    line-height: 1.163rem;
+    font-size: 1rem;
+    line-height: 1.484rem;
     letter-spacing: 0px;
     color: #A0A3C4;
 }
