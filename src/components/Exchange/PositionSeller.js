@@ -235,7 +235,6 @@ export default function PositionSeller(props) {
         if (collateralDelta && collateralDelta.gt(0)) {
           nextCollateral = position.collateral.sub(collateralDelta)
         } else if (position.delta && position.delta.gt(0) && sizeDelta) {
-          const adjustedDelta = sizeDelta.mul(position.delta).div(position.size);
           if (position.hasProfit) {
             nextCollateral = nextCollateral.add(adjustedDelta)
           } else {
@@ -269,10 +268,13 @@ export default function PositionSeller(props) {
           isLong: position.isLong,
           size: position.size,
           sizeDelta,
-          collateral: nextCollateral,
+          collateral: position.collateral,
           averagePrice: position.averagePrice,
           entryFundingRate: position.entryFundingRate,
-          cumulativeFundingRate: position.cumulativeFundingRate
+          cumulativeFundingRate: position.cumulativeFundingRate,
+          delta: nextDelta,
+          hasProfit: nextHasProfit,
+          includeDelta: true
         })
       }
     }
@@ -626,10 +628,10 @@ export default function PositionSeller(props) {
               <div className="align-right">
                 {(isClosing && orderOption !== STOP) && "-"}
                 {(!isClosing || orderOption === STOP) && <div>
-                  {!nextLiquidationPrice && <div>
+                  {(!nextLiquidationPrice || nextLiquidationPrice.eq(liquidationPrice)) && <div>
                     {`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}
                   </div>}
-                  {nextLiquidationPrice && <div>
+                  {nextLiquidationPrice && !nextLiquidationPrice.eq(liquidationPrice) && <div>
                     <div className="inline-block muted">
                       ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
                       <BsArrowRight className="transition-arrow" />

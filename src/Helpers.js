@@ -799,7 +799,21 @@ export function getLeverage ({ size, sizeDelta, increaseSize, collateral, collat
 }
 
 export function getLiquidationPrice(data) {
-  let { isLong, size, collateral, averagePrice, entryFundingRate, cumulativeFundingRate, sizeDelta, collateralDelta, increaseCollateral, increaseSize } = data
+  let {
+    isLong,
+    size,
+    collateral,
+    averagePrice,
+    entryFundingRate,
+    cumulativeFundingRate,
+    sizeDelta,
+    collateralDelta,
+    increaseCollateral,
+    increaseSize,
+    delta,
+    hasProfit,
+    includeDelta
+  } = data
   if (!size || !collateral || !averagePrice) { return }
 
   let nextSize = size ? size : bigNumberify(0)
@@ -817,6 +831,15 @@ export function getLiquidationPrice(data) {
 
     const marginFee = getMarginFee(sizeDelta)
     remainingCollateral = remainingCollateral.sub(marginFee)
+
+    if (includeDelta) {
+      const adjustedDelta = sizeDelta.mul(delta).div(size)
+      if (hasProfit) {
+        remainingCollateral = remainingCollateral.add(adjustedDelta)
+      } else {
+        remainingCollateral = remainingCollateral.sub(adjustedDelta)
+      }
+    }
   }
 
   if (collateralDelta) {
