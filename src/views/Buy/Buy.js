@@ -35,7 +35,7 @@ export default function BuyGMXGLP(props) {
   }
 
   return (
-    <div className="BuyGMXGLP">
+    <div className="BuyGMXGLP new-update">
       <div className="BuyGMXGLP-container default-container">
         <Tabs defaultIndex={activeTabNo} onSelect={onSelectTab}>
           <TabList>
