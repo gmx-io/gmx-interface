@@ -39,7 +39,16 @@
     opacity: 1;
 }
 
-.BuyGMXGLP-container .react-tabs__tab.react-tabs__tab--selected::after {
+.BuyGMXGLP-container .react-tabs__tab:hover {
+    background: #37527B14;
+    color: white;
+    border: none;
+    position: relative;
+    opacity: 1;
+}
+
+.BuyGMXGLP-container .react-tabs__tab.react-tabs__tab--selected::after,
+.BuyGMXGLP-container .react-tabs__tab:hover::after {
     content: ' ';
     background: #2D42FC;
     height: 2px;
@@ -147,6 +156,10 @@
   background: #FFFFFF1F;
 }
 
+.direct-purchase-options a.banxa-button {
+    position: relative;
+}
+
 .alternative-bridges a.Synapse:hover::before,
 .alternative-bridges a.Synapse:focus::before,
 .alternative-bridges a.Anyswap:hover::before,
@@ -166,6 +179,28 @@
     content: " ";
     position: absolute;
     background: #FFFFFF14;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+}
+
+.direct-purchase-options a.banxa-button:hover::before {
+    content: " ";
+    position: absolute;
+    background: #FFFFFF14;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+}
+
+.direct-purchase-options a.banxa-button:active::before {
+    content: " ";
+    position: absolute;
+    background: #FFFFFF29;
     width: 100%;
     height: 100%;
     top: 0;
