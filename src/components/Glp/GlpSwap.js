@@ -54,6 +54,8 @@ import Vester from '../../abis/Vester.json'
 import RewardRouter from '../../abis/RewardRouter.json'
 import Token from '../../abis/Token.json'
 
+import glp24Icon from '../../img/ic_glp_24.svg'
+
 import { FaAngleDown } from 'react-icons/fa'
 
 import "./GlpSwap.css"
@@ -635,6 +637,8 @@ export default function GlpSwap(props) {
               tokens={whitelistedTokens}
               infoTokens={infoTokens}
               className="right"
+              showSymbolImage={true}
+              showNewCaret={true}
             />
           </BuyInputSection>}
 
@@ -650,7 +654,7 @@ export default function GlpSwap(props) {
             balance={payBalance}
             defaultTokenName={'GLP'}
           >
-            GLP
+            <img src={glp24Icon} alt="glp24Icon" /> GLP
           </BuyInputSection>}
 
           <div className="AppOrder-ball-container">
@@ -668,7 +672,7 @@ export default function GlpSwap(props) {
             balance={receiveBalance}
             defaultTokenName={'GLP'}
           >
-            GLP
+            <img src={glp24Icon} alt="glp24Icon" /> GLP
           </BuyInputSection>}
 
           {!isBuying && <BuyInputSection
@@ -689,6 +693,8 @@ export default function GlpSwap(props) {
               tokens={whitelistedTokens}
               infoTokens={infoTokens}
               className="right"
+              showSymbolImage={true}
+              showNewCaret={true}
             />
           </BuyInputSection>}
           <div>
