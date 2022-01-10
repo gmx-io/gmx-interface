@@ -1,0 +1,32 @@
+.buy-input .InputSection-static-input {
+  font-size: 1.5rem;
+}
+
+.buy-input.Exchange-swap-section.highlighted {
+  background: #101124;
+  border-radius: 4px;
+}
+
+.buy-input.Exchange-swap-section:not(.highlighted) {
+  border: 2px solid #A0A3C433;
+  border-radius: 8px;
+}
+
+.buy-input.Exchange-swap-section {
+  margin-bottom: 0.5rem;
+  box-sizing: border-box;
+}
+
+.buy-input .Exchange-swap-balance-select {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.buy-input .Exchange-swap-max-btn {
+  font-size: 0.774rem;
+  line-height: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  color: #2D42FC;
+  margin-left: 0.5rem;
+}

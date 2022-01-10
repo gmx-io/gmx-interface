@@ -41,7 +41,7 @@ import {
 import { callContract, useGmxPrice } from '../../Api'
 
 import TokenSelector from '../Exchange/TokenSelector'
-import InputSection from "../InputSection/InputSection"
+import BuyInputSection from "../BuyInputSection/BuyInputSection"
 import Tooltip from '../Tooltip/Tooltip'
 import Modal from '../Modal/Modal'
 
@@ -95,6 +95,7 @@ export default function GlpSwap(props) {
   const [swapValue, setSwapValue] = useState("")
   const [glpValue, setGlpValue] = useState("")
   const [swapTokenAddress, setSwapTokenAddress] = useLocalStorageByChainId(chainId, `${swapLabel}-swap-token-address`, AddressZero)
+  const [swapTokenSymbol, setSwapTokenSymbol] = useState('AVAX')
   const [isApproving, setIsApproving] = useState(false)
   const [isWaitingForApproval, setIsWaitingForApproval] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -212,6 +213,7 @@ export default function GlpSwap(props) {
 
   const onSelectSwapToken = (token) => {
     setSwapTokenAddress(token.address)
+    setSwapTokenSymbol(token.symbol)
     setIsWaitingForApproval(false)
   }
 
@@ -612,7 +614,7 @@ export default function GlpSwap(props) {
         <div className="GlpSwap-box App-box">
           <div className="App-card-title">Swap</div>
 
-          {isBuying && <InputSection
+          {isBuying && <BuyInputSection
             topLeftLabel={payLabel}
             topRightLabel={`Balance: ${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
             inputValue={swapValue}
@@ -620,6 +622,8 @@ export default function GlpSwap(props) {
             showMaxButton={swapValue !== formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals)}
             onClickTopRightLabel={fillMaxAmount}
             onClickMax={fillMaxAmount}
+            hightlight={true}
+            selectedToken={swapTokenSymbol}
           >
             <TokenSelector
               label="Pay"
@@ -630,9 +634,9 @@ export default function GlpSwap(props) {
               infoTokens={infoTokens}
               className="right"
             />
-          </InputSection>}
+          </BuyInputSection>}
 
-          {!isBuying && <InputSection
+          {!isBuying && <BuyInputSection
             topLeftLabel={payLabel}
             topRightLabel={`Available: ${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
             inputValue={glpValue}
@@ -642,7 +646,7 @@ export default function GlpSwap(props) {
             onClickMax={fillMaxAmount}
           >
             GLP
-          </InputSection>}
+          </BuyInputSection>}
 
           <div className="AppOrder-ball-container">
             <div className="AppOrder-ball">
@@ -650,20 +654,21 @@ export default function GlpSwap(props) {
             </div>
           </div>
 
-          {isBuying && <InputSection
+          {isBuying && <BuyInputSection
             topLeftLabel={receiveLabel}
             topRightLabel={`Balance: ${formatAmount(glpBalance, GLP_DECIMALS, 4, true)}`}
             inputValue={glpValue}
             onInputValueChange={onGlpValueChange}
           >
             GLP
-          </InputSection>}
+          </BuyInputSection>}
 
-          {!isBuying && <InputSection
+          {!isBuying && <BuyInputSection
             topLeftLabel={receiveLabel}
             topRightLabel={`Balance: ${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
             inputValue={swapValue}
             onInputValueChange={onSwapValueChange}
+            hightlight={true}
           >
             <TokenSelector
               label="Receive"
@@ -674,7 +679,7 @@ export default function GlpSwap(props) {
               infoTokens={infoTokens}
               className="right"
             />
-          </InputSection>}
+          </BuyInputSection>}
           <div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">
