@@ -55,8 +55,7 @@ import RewardRouter from '../../abis/RewardRouter.json'
 import Token from '../../abis/Token.json'
 
 import glp24Icon from '../../img/ic_glp_24.svg'
-
-import { FaAngleDown } from 'react-icons/fa'
+import arrowIcon from '../../img/ic_convert_down.svg'
 
 import "./GlpSwap.css"
 
@@ -622,7 +621,7 @@ export default function GlpSwap(props) {
             tokenBalance={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
             inputValue={swapValue}
             onInputValueChange={onSwapValueChange}
-            showMaxButton={swapValue !== formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals)}
+            showMaxButton={true}
             onClickTopRightLabel={fillMaxAmount}
             onClickMax={fillMaxAmount}
             hightlight={true}
@@ -648,7 +647,7 @@ export default function GlpSwap(props) {
             tokenBalance={`${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
             inputValue={glpValue}
             onInputValueChange={onGlpValueChange}
-            showMaxButton={glpValue !== formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS)}
+            showMaxButton={true}
             onClickTopRightLabel={fillMaxAmount}
             onClickMax={fillMaxAmount}
             balance={payBalance}
@@ -659,7 +658,7 @@ export default function GlpSwap(props) {
 
           <div className="AppOrder-ball-container">
             <div className="AppOrder-ball">
-              <FaAngleDown className="AppOrder-ball-icon" />
+              <img src={arrowIcon} alt="arrowIcon" />
             </div>
           </div>
 
@@ -702,7 +701,7 @@ export default function GlpSwap(props) {
               <div className="Exchange-info-label">
                 {feeBasisPoints > 50 ? "WARNING: High Fees" : "Fees"}
               </div>
-              <div className="align-right">
+              <div className="align-right fee-block">
                 {isBuying && <Tooltip handle={feePercentageText} position="right-bottom" renderContent={() => {
                   return <>
                     {feeBasisPoints > 50 && <div>To reduce fees, select a different asset to pay with.</div>}
@@ -729,10 +728,10 @@ export default function GlpSwap(props) {
         <div className="Tab-title-section">
           <div className="Tab-title">Save on Fees</div>
           {isBuying && <div className="Tab-description">
-            Fees may vary depending on which asset you use to buy GLP. <span>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.</span>
+            Fees may vary depending on which asset you use to buy GLP.<br/> <span>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.</span>
           </div>}
           {!isBuying && <div className="Tab-description">
-            Fees may vary depending on which asset sell GLP for. <span>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.</span>
+            Fees may vary depending on which asset sell GLP for.<br/> <span>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.</span>
           </div>}
         </div>
         <div className="GlpSwap-token-list-content">
@@ -743,7 +742,13 @@ export default function GlpSwap(props) {
                 <th>PRICE</th>
                 <th>POOL</th>
                 <th>WALLET</th>
-                <th>FEES</th>
+                <th>
+                  <Tooltip handle={'FEES'} position="right-bottom text-none" renderContent={() => {
+                    return <>
+                      <div>Fees will be shown once you have entered an amount in the order form.</div>
+                    </>
+                  }} />
+                </th>
                 <th></th>
               </tr>
             </thead>
