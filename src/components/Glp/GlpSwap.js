@@ -834,7 +834,7 @@ export default function GlpSwap(props) {
                     </td>
                     <td>
                       <button className="default-btn" onClick={() => selectToken(token)}>
-                        {isBuying ? 'Buy' : 'Sell'}
+                        {isBuying ? 'Buy with ' + token.symbol : 'Sell for ' + token.symbol}
                       </button>
                     </td>
                   </tr>
