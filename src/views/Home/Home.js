@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import Footer from "../../Footer"
 import { Link, NavLink } from 'react-router-dom'
 // import { FiPlus, FiMinus } from "react-icons/fi"
@@ -24,8 +24,13 @@ import {
   numberWithCommas,
   getServerUrl,
   USD_DECIMALS,
-  ARBITRUM
+  useChainId,
+  ARBITRUM,
+  AVALANCHE,
+  switchNetwork
 } from '../../Helpers'
+
+import { useWeb3React } from '@web3-react/core'
 
 import { useUserStat } from "../../Api"
 
@@ -70,6 +75,9 @@ export default function Home() {
   //   }
   // }
 
+  const { chainId } = useChainId()
+  const { active } = useWeb3React()
+
   const positionStatsUrl = getServerUrl(ARBITRUM, "/position_stats")
   const { data: positionStats } = useSWR([positionStatsUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
@@ -94,6 +102,19 @@ export default function Home() {
 
   // user stat
   const userStats = useUserStat(ARBITRUM)
+
+  const changeNetwork = useCallback(network => {
+    if (network === chainId) {
+      return
+    }
+    if (!active) {
+      setTimeout(() => {
+        return switchNetwork(network, active)
+      }, 500)
+    } else {
+      return switchNetwork(network, active)
+    }
+  }, [chainId, active])
 
   return (
     <div className="Home">
@@ -172,7 +193,7 @@ export default function Home() {
         <div className="Home-cta-container default-container">
           <div className="Home-cta-info">
             <div className="Home-cta-info__title">Available on your preferred network</div>
-            <div className="Home-cta-info__description">GMX is currently live on Arbitrum and will be launching on Avalanche shortly.</div>
+            <div className="Home-cta-info__description">GMX is currently live on Arbitrum and Avalanche.</div>
           </div>
           <div className="Home-cta-options">
             <div className="Home-cta-option Home-cta-option-arbitrum">
@@ -182,7 +203,7 @@ export default function Home() {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Arbitrum</div>
                 <div className="Home-cta-option-action">
-                  <Link to="/trade" className="default-btn">Launch Exchange</Link>
+                  <Link to="/trade" className="default-btn" onClick={() => changeNetwork(ARBITRUM)}>Launch Exchange</Link>
                 </div>
               </div>
             </div>
@@ -193,7 +214,7 @@ export default function Home() {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Avalanche</div>
                 <div className="Home-cta-option-action">
-                  <Link to="/trade" className="default-btn">Launch Exchange</Link>
+                  <Link to="/trade" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>Launch Exchange</Link>
                 </div>
               </div>
             </div>
