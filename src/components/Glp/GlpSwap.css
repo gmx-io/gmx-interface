@@ -38,8 +38,8 @@
 }
 
 .GlpSwap-stats-card .App-card-row {
-  padding-top: 0.71rem;
-  padding-bottom: 0.71rem;
+  padding-top: 0.71rem!important;
+  padding-bottom: 0.71rem!important;
 }
 
 .GlpSwap-stats-card .App-card-row:nth-child(odd) {
