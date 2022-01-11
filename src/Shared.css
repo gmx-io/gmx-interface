@@ -120,6 +120,10 @@ td {
   text-decoration: underline;
 }
 
+.text-none {
+  text-transform: none;
+}
+
 .margin-bottom {
   margin-bottom: 0.3rem;
 }

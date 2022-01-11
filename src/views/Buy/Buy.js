@@ -91,7 +91,8 @@ export default function BuyGMXGLP(props) {
               </div>
               <div className="BuyGMXGLP-block">
                 <div className="BuyGMXGLP-description better-rates-description">
-                  After you have ETH, set your wallet network to <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">Arbitrum</a> then click on the button below.
+                  After you have ETH, set your wallet network to <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">Arbitrum</a> then click on the button below. <br/>
+                  GMX liquidity is not available on Avalanche yet, it will be available in a few weeks time.
                 </div>
                 <a href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" target="_blank" rel="noopener noreferrer" className="BuyGMXGLP-purchase-block">
                   <div className="BuyGMXGLP-purchase-block-icon">
