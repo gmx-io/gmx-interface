@@ -54,7 +54,8 @@
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: center;
-  padding: 3.6135rem 0;
+  padding-top: 3.6135rem;
+  padding-bottom: 3.6135rem;
 }
 
 .Home-benefit {
@@ -91,7 +92,8 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  padding: 5.161rem 0 3rem 0;
+  padding-top: 5.161rem;
+  padding-bottom: 3rem;
 }
 
 .Home-cta-info {
@@ -278,7 +280,8 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  padding: 4rem 0 1rem 0;
+  padding-top: 4rem;
+  padding-bottom: 1rem;
   width: 100%;
 }
 
