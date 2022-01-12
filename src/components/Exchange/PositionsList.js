@@ -105,7 +105,6 @@ export default function PositionsList(props) {
         collateralTokenAddress={collateralTokenAddress}
         pendingTxns={pendingTxns}
         setPendingTxns={setPendingTxns}
-        getLiquidationPrice={getLiquidationPrice}
         getUsd={getUsd}
         getLeverage={getLeverage}
         savedIsPnlInLeverage={savedIsPnlInLeverage}
