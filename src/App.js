@@ -39,6 +39,7 @@ import {
 import Home from './views/Home/Home'
 import Presale from './views/Presale/Presale'
 import Dashboard from './views/Dashboard/Dashboard'
+import Ecosystem from './views/Ecosystem/Ecosystem'
 import Stake from './views/Stake/Stake'
 import Exchange from './views/Exchange/Exchange'
 import Actions from './views/Actions/Actions'
@@ -139,13 +140,11 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
         <NavLink activeClassName="active" to="/buy">Buy</NavLink>
       </div>
       <div className="App-header-link-container">
-        <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
-          About
-        </a>
+        <NavLink activeClassName="active" to="/ecosystem">Ecosystem</NavLink>
       </div>
       <div className="App-header-link-container">
-        <a href="https://www.gmx.house/p/leaderboard" target="_blank" rel="noopener noreferrer">
-          Leaderboard
+        <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
+          About
         </a>
       </div>
       {small &&
@@ -530,6 +529,9 @@ function FullApp() {
                 setPendingTxns={setPendingTxns}
                 connectWallet={connectWallet}
               />
+            </Route>
+            <Route exact path="/ecosystem">
+              <Ecosystem />
             </Route>
             <Route exact path="/about">
               <Home />
