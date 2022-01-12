@@ -1,4 +1,4 @@
-import { getLiquidationPrice, bigNumberify, expandDecimals, formatAmount } from '../Helpers'
+import { getLiquidationPrice, bigNumberify, expandDecimals } from '../Helpers'
 
 describe('Helpers', function() {
   const cases = [
