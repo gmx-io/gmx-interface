@@ -90,10 +90,9 @@ describe('Helpers', function() {
     }
   ]
   it('getLiquidationPrice', function() {
-    for (const data of cases) {
-      const liqPrice = getLiquidationPrice(data)
-      console.log('Liq price: %s, expected: %s', liqPrice, data.expected)
-      expect(liqPrice).toEqual(data.expected)
+    for (const case_ of cases) {
+      const liqPrice = getLiquidationPrice(case_)
+      expect(liqPrice).toEqual(case_.expected)
     }
   })
 })
