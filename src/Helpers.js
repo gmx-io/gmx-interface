@@ -834,9 +834,7 @@ export function getLiquidationPrice(data) {
 
     if (includeDelta) {
       const adjustedDelta = sizeDelta.mul(delta).div(size)
-      if (hasProfit) {
-        remainingCollateral = remainingCollateral.add(adjustedDelta)
-      } else {
+      if (!hasProfit) {
         remainingCollateral = remainingCollateral.sub(adjustedDelta)
       }
     }
