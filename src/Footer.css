@@ -1,7 +1,7 @@
 .Footer {
-  position: relative;
-  height: 168px;
-  margin-top: 3rem;
+  /* position: relative; */
+  /* height: 168px; */
+  /* margin-top: 3rem; */
 }
 
 .Footer-wrapper {
@@ -12,7 +12,8 @@
   position: absolute;
   transform: translateX(-50%);
   left: 50%;
-  height: 100%;
+  height: 168px;
+  bottom: 0;
 }
 
 .Footer-logo {
