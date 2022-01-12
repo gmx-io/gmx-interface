@@ -236,9 +236,9 @@ export default function Home() {
                 <div className="Home-token-card-option-title">GMX is the utility and governance token, and also accrues 30% of the platform's generated fees.</div>
                 <div className="Home-token-card-option-apr">Current APR: 24.04%.</div>
                 <div className="Home-token-card-option-action">
-                  <a href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" target="_blank" rel="noreferrer" className="default-btn buy">Buy</a>
-                  <Link to="/buy" className="default-btn">Stake</Link>
-                  <Link to="/buy" className="default-btn read-more">Read more</Link>
+                  <Link to="/buy" className="default-btn buy">Buy</Link>
+                  <Link to="/earn" className="default-btn">Stake</Link>
+                  <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noreferrer" className="default-btn read-more">Read more</a>
                 </div>
               </div>
             </div>
@@ -251,8 +251,8 @@ export default function Home() {
                 <div className="Home-token-card-option-apr">Current APR: 24.04%.</div>
                 <div className="Home-token-card-option-action">
                   <Link to="/buy_glp" className="default-btn buy">Buy</Link>
-                  <Link to="/buy" className="default-btn">Stake</Link>
-                  <Link to="/buy" className="default-btn read-more">Read more</Link>
+                  <Link to="/earn" className="default-btn">Stake</Link>
+                  <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noreferrer" className="default-btn read-more">Read more</a>
                 </div>
               </div>
             </div>
