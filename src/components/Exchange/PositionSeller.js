@@ -235,9 +235,7 @@ export default function PositionSeller(props) {
         if (collateralDelta && collateralDelta.gt(0)) {
           nextCollateral = position.collateral.sub(collateralDelta)
         } else if (position.delta && position.delta.gt(0) && sizeDelta) {
-          if (position.hasProfit) {
-            nextCollateral = nextCollateral.add(adjustedDelta)
-          } else {
+          if (!position.hasProfit) {
             nextCollateral = nextCollateral.sub(adjustedDelta)
           }
         }
