@@ -160,6 +160,7 @@ function getProcessedData(balanceData, supplyData, depositBalanceData, stakingDa
   data.esGmxBalanceUsd = balanceData.esGmx.mul(gmxPrice).div(expandDecimals(1, 18))
 
   data.stakedGmxTrackerSupply = supplyData.stakedGmxTracker
+  data.stakedGmxTrackerSupplyUsd = supplyData.stakedGmxTracker.mul(gmxPrice).div(expandDecimals(1, 18))
   data.stakedEsGmxSupply = data.stakedGmxTrackerSupply.sub(data.stakedGmxSupply)
   data.stakedEsGmxSupplyUsd = data.stakedEsGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18))
 
@@ -180,8 +181,8 @@ function getProcessedData(balanceData, supplyData, depositBalanceData, stakingDa
   data.feeGmxTrackerRewardsUsd = stakingData.feeGmxTracker.claimable.mul(nativeTokenPrice).div(expandDecimals(1, 18))
 
   data.stakedGmxTrackerAnnualRewardsUsd = stakingData.stakedGmxTracker.tokensPerInterval.mul(SECONDS_PER_YEAR).mul(gmxPrice).div(expandDecimals(1, 18))
-  data.gmxAprForEsGmx = data.stakedGmxSupplyUsd && data.stakedGmxSupplyUsd.gt(0)
-    ? data.stakedGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.stakedGmxSupplyUsd)
+  data.gmxAprForEsGmx = data.stakedGmxTrackerSupplyUsd && data.stakedGmxTrackerSupplyUsd.gt(0)
+    ? data.stakedGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.stakedGmxTrackerSupplyUsd)
     : bigNumberify(0)
   data.feeGmxTrackerAnnualRewardsUsd = stakingData.feeGmxTracker.tokensPerInterval.mul(SECONDS_PER_YEAR).mul(nativeTokenPrice).div(expandDecimals(1, 18))
   data.gmxAprForNativeToken = data.feeGmxSupplyUsd && data.feeGmxSupplyUsd.gt(0)
