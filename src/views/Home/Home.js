@@ -16,7 +16,8 @@ import avaIcon from '../../img/ic_avalanche_96.svg'
 
 import statsIcon from '../../img/ic_stats.svg'
 import tradingIcon from '../../img/ic_trading.svg'
-// import gmxBigIcon from '../../img/ic_gmx_big.svg'
+import gmxBigIcon from '../../img/ic_gmx_custom.svg'
+import glpBigIcon from '../../img/ic_glp_custom.svg'
 import useSWR from 'swr'
 import {
   formatAmount,
@@ -215,6 +216,43 @@ export default function Home() {
                 <div className="Home-cta-option-title">Avalanche</div>
                 <div className="Home-cta-option-action">
                   <Link to="/trade" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>Launch Exchange</Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="Home-token-card-section">
+        <div className="Home-token-card-container default-container">
+          <div className="Home-token-card-info">
+            <div className="Home-token-card-info__title">Two tokens create our ecosystem</div>
+          </div>
+          <div className="Home-token-card-options">
+            <div className="Home-token-card-option">
+              <div className="Home-token-card-option-icon">
+                <img src={gmxBigIcon} alt="gmxBigIcon" /> GMX
+              </div>
+              <div className="Home-token-card-option-info">
+                <div className="Home-token-card-option-title">GMX is the utility and governance token, and also accrues 30% of the platform's generated fees.</div>
+                <div className="Home-token-card-option-apr">Current APR: 24.04%.</div>
+                <div className="Home-token-card-option-action">
+                  <a href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" target="_blank" rel="noreferrer" className="default-btn buy">Buy</a>
+                  <Link to="/buy" className="default-btn">Stake</Link>
+                  <Link to="/buy" className="default-btn read-more">Read more</Link>
+                </div>
+              </div>
+            </div>
+            <div className="Home-token-card-option">
+              <div className="Home-token-card-option-icon">
+                <img src={glpBigIcon} alt="glpBigIcon" /> GLP
+              </div>
+              <div className="Home-token-card-option-info">
+                <div className="Home-token-card-option-title">GLP is the platform's liquidity provider token. Accrues 70% of its generated fees.</div>
+                <div className="Home-token-card-option-apr">Current APR: 24.04%.</div>
+                <div className="Home-token-card-option-action">
+                  <Link to="/buy_glp" className="default-btn buy">Buy</Link>
+                  <Link to="/buy" className="default-btn">Stake</Link>
+                  <Link to="/buy" className="default-btn read-more">Read more</Link>
                 </div>
               </div>
             </div>
