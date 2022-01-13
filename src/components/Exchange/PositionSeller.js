@@ -230,8 +230,15 @@ export default function PositionSeller(props) {
     if (isClosing) {
       nextCollateral = bigNumberify(0)
     } else {
-      if (position.collateral && collateralDelta) {
-        nextCollateral = position.collateral.sub(collateralDelta)
+      if (position.collateral) {
+        nextCollateral = position.collateral
+        if (collateralDelta && collateralDelta.gt(0)) {
+          nextCollateral = position.collateral.sub(collateralDelta)
+        } else if (position.delta && position.delta.gt(0) && sizeDelta) {
+          if (!position.hasProfit) {
+            nextCollateral = nextCollateral.sub(adjustedDelta)
+          }
+        }
       }
     }
 
@@ -262,7 +269,10 @@ export default function PositionSeller(props) {
           collateral: position.collateral,
           averagePrice: position.averagePrice,
           entryFundingRate: position.entryFundingRate,
-          cumulativeFundingRate: position.cumulativeFundingRate
+          cumulativeFundingRate: position.cumulativeFundingRate,
+          delta: nextDelta,
+          hasProfit: nextHasProfit,
+          includeDelta: true
         })
       }
     }
@@ -616,10 +626,10 @@ export default function PositionSeller(props) {
               <div className="align-right">
                 {(isClosing && orderOption !== STOP) && "-"}
                 {(!isClosing || orderOption === STOP) && <div>
-                  {!nextLiquidationPrice && <div>
+                  {(!nextLiquidationPrice || nextLiquidationPrice.eq(liquidationPrice)) && <div>
                     {`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}
                   </div>}
-                  {nextLiquidationPrice && <div>
+                  {nextLiquidationPrice && !nextLiquidationPrice.eq(liquidationPrice) && <div>
                     <div className="inline-block muted">
                       ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
                       <BsArrowRight className="transition-arrow" />
@@ -647,14 +657,16 @@ export default function PositionSeller(props) {
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">Collateral</div>
               <div className="align-right">
-                {nextCollateral && <div>
-                  <div className="inline-block muted">
-                    ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                    <BsArrowRight className="transition-arrow" />
+                {(nextCollateral && !nextCollateral.eq(position.collateral))
+                  ? <div>
+                    <div className="inline-block muted">
+                      ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                      <BsArrowRight className="transition-arrow" />
+                    </div>
+                    ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
                   </div>
-                  ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
-                </div>}
-                {!nextCollateral && `$${formatAmount(position.collateral, USD_DECIMALS, 4, true)}`}
+                  : `$${formatAmount(position.collateral, USD_DECIMALS, 4, true)}`
+                }
               </div>
             </div>
             {!keepLeverage && <div className="Exchange-info-row">
