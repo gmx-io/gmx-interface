@@ -194,6 +194,11 @@
   background-image: url('../../img/btn_big_avalanche.png');
 }
 
+.Home-token-card-section {
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+}
+
 .Home-token-card-info {
   max-width: 25rem;
 }

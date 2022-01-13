@@ -31,12 +31,14 @@ import {
   ARBITRUM,
   AVALANCHE,
   switchNetwork,
-  expandDecimals,
-  GLP_DECIMALS,
-  BASIS_POINTS_DIVISOR,
-  SECONDS_PER_YEAR,
   fetcher,
-  formatKeyAmount
+  formatKeyAmount,
+  getTotalVolumeSum,
+  getBalanceAndSupplyData,
+  getDepositBalanceData,
+  getVestingData,
+  getStakingData,
+  getProcessedData
 } from '../../Helpers'
 
 import Vault from '../../abis/Vault.json'
@@ -54,237 +56,7 @@ import { getContract } from '../../Addresses'
 import { ethers } from 'ethers'
 const { AddressZero } = ethers.constants
 
-function getTotalVolumeSum(volumes) {
-  if (!volumes || volumes.length === 0) {
-    return
-  }
-
-  let volume = bigNumberify(0)
-  for (let i = 0; i < volumes.length; i++) {
-    volume = volume.add(volumes[i].data.volume)
-  }
-
-  return volume
-}
-
-function getBalanceAndSupplyData(balances) {
-  if (!balances || balances.length === 0) {
-    return {}
-  }
-
-  const keys = ["gmx", "esGmx", "glp", "stakedGmxTracker"]
-  const balanceData = {}
-  const supplyData = {}
-  const propsLength = 2
-
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i]
-    balanceData[key] = balances[i * propsLength]
-    supplyData[key] = balances[i * propsLength + 1]
-  }
-
-  return { balanceData, supplyData }
-}
-
-function getDepositBalanceData(depositBalances) {
-  if (!depositBalances || depositBalances.length === 0) {
-    return
-  }
-
-  const keys = ["gmxInStakedGmx", "esGmxInStakedGmx", "stakedGmxInBonusGmx", "bonusGmxInFeeGmx", "bnGmxInFeeGmx", "glpInStakedGlp"]
-  const data = {}
-
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i]
-    data[key] = depositBalances[i]
-  }
-
-  return data
-}
-
-function getVestingData(vestingInfo) {
-  if (!vestingInfo || vestingInfo.length === 0) {
-    return
-  }
-
-  const keys = ["gmxVester", "glpVester"]
-  const data = {}
-  const propsLength = 7
-
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i]
-    data[key] = {
-      pairAmount: vestingInfo[i * propsLength],
-      vestedAmount: vestingInfo[i * propsLength + 1],
-      escrowedBalance: vestingInfo[i * propsLength + 2],
-      claimedAmounts: vestingInfo[i * propsLength + 3],
-      claimable: vestingInfo[i * propsLength + 4],
-      maxVestableAmount: vestingInfo[i * propsLength + 5],
-      averageStakedAmount: vestingInfo[i * propsLength + 6],
-    }
-
-    data[key + "PairAmount"] = data[key].pairAmount
-    data[key + "VestedAmount"] = data[key].vestedAmount
-    data[key + "EscrowedBalance"] = data[key].escrowedBalance
-    data[key + "ClaimSum"] = data[key].claimedAmounts.add(data[key].claimable)
-    data[key + "Claimable"] = data[key].claimable
-    data[key + "MaxVestableAmount"] = data[key].maxVestableAmount
-    data[key + "AverageStakedAmount"] = data[key].averageStakedAmount
-  }
-
-  return data
-}
-
-function getStakingData(stakingInfo) {
-  if (!stakingInfo || stakingInfo.length === 0) {
-    return
-  }
-
-  const keys = ["stakedGmxTracker", "bonusGmxTracker", "feeGmxTracker", "stakedGlpTracker", "feeGlpTracker"]
-  const data = {}
-  const propsLength = 5
-
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i]
-    data[key] = {
-      claimable: stakingInfo[i * propsLength],
-      tokensPerInterval: stakingInfo[i * propsLength + 1],
-      averageStakedAmounts: stakingInfo[i * propsLength + 2],
-      cumulativeRewards: stakingInfo[i * propsLength + 3],
-      totalSupply: stakingInfo[i * propsLength + 4]
-    }
-  }
-
-  return data
-}
-
-function getProcessedData(balanceData, supplyData, depositBalanceData, stakingData, vestingData, aum, nativeTokenPrice, stakedGmxSupply, gmxPrice, gmxSupply) {
-  if (!balanceData || !supplyData || !depositBalanceData || !stakingData || !vestingData || !aum || !nativeTokenPrice || !stakedGmxSupply || !gmxPrice || !gmxSupply) {
-    return {}
-  }
-
-  const data = {}
-
-  data.gmxBalance = balanceData.gmx
-  data.gmxBalanceUsd = balanceData.gmx.mul(gmxPrice).div(expandDecimals(1, 18))
-
-  data.gmxSupply = bigNumberify(gmxSupply)
-
-  data.gmxSupplyUsd = supplyData.gmx.mul(gmxPrice).div(expandDecimals(1, 18))
-  data.stakedGmxSupply = stakedGmxSupply
-  data.stakedGmxSupplyUsd = stakedGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18))
-  data.gmxInStakedGmx = depositBalanceData.gmxInStakedGmx
-  data.gmxInStakedGmxUsd = depositBalanceData.gmxInStakedGmx.mul(gmxPrice).div(expandDecimals(1, 18))
-
-  data.esGmxBalance = balanceData.esGmx
-  data.esGmxBalanceUsd = balanceData.esGmx.mul(gmxPrice).div(expandDecimals(1, 18))
-
-  data.stakedGmxTrackerSupply = supplyData.stakedGmxTracker
-  data.stakedGmxTrackerSupplyUsd = supplyData.stakedGmxTracker.mul(gmxPrice).div(expandDecimals(1, 18))
-  data.stakedEsGmxSupply = data.stakedGmxTrackerSupply.sub(data.stakedGmxSupply)
-  data.stakedEsGmxSupplyUsd = data.stakedEsGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18))
-
-  data.esGmxInStakedGmx = depositBalanceData.esGmxInStakedGmx
-  data.esGmxInStakedGmxUsd = depositBalanceData.esGmxInStakedGmx.mul(gmxPrice).div(expandDecimals(1, 18))
-
-  data.bnGmxInFeeGmx = depositBalanceData.bnGmxInFeeGmx
-  data.bonusGmxInFeeGmx = depositBalanceData.bonusGmxInFeeGmx
-  data.feeGmxSupply = stakingData.feeGmxTracker.totalSupply
-  data.feeGmxSupplyUsd = data.feeGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18))
-
-  data.stakedGmxTrackerRewards = stakingData.stakedGmxTracker.claimable
-  data.stakedGmxTrackerRewardsUsd = stakingData.stakedGmxTracker.claimable.mul(gmxPrice).div(expandDecimals(1, 18))
-
-  data.bonusGmxTrackerRewards = stakingData.bonusGmxTracker.claimable
-
-  data.feeGmxTrackerRewards = stakingData.feeGmxTracker.claimable
-  data.feeGmxTrackerRewardsUsd = stakingData.feeGmxTracker.claimable.mul(nativeTokenPrice).div(expandDecimals(1, 18))
-
-  data.stakedGmxTrackerAnnualRewardsUsd = stakingData.stakedGmxTracker.tokensPerInterval.mul(SECONDS_PER_YEAR).mul(gmxPrice).div(expandDecimals(1, 18))
-  data.gmxAprForEsGmx = data.stakedGmxTrackerSupplyUsd && data.stakedGmxTrackerSupplyUsd.gt(0)
-    ? data.stakedGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.stakedGmxTrackerSupplyUsd)
-    : bigNumberify(0)
-  data.feeGmxTrackerAnnualRewardsUsd = stakingData.feeGmxTracker.tokensPerInterval.mul(SECONDS_PER_YEAR).mul(nativeTokenPrice).div(expandDecimals(1, 18))
-  data.gmxAprForNativeToken = data.feeGmxSupplyUsd && data.feeGmxSupplyUsd.gt(0)
-    ? data.feeGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.feeGmxSupplyUsd)
-    : bigNumberify(0)
-  data.gmxAprTotal = data.gmxAprForNativeToken.add(data.gmxAprForEsGmx)
-
-  data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(data.feeGmxTrackerRewardsUsd)
-
-  data.glpSupply = supplyData.glp
-  data.glpPrice = data.glpSupply && data.glpSupply.gt(0)
-    ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(data.glpSupply)
-    : bigNumberify(0)
-
-  data.glpSupplyUsd = supplyData.glp.mul(data.glpPrice).div(expandDecimals(1, 18))
-
-  data.glpBalance = depositBalanceData.glpInStakedGlp
-  data.glpBalanceUsd = depositBalanceData.glpInStakedGlp.mul(data.glpPrice).div(expandDecimals(1, GLP_DECIMALS))
-
-  data.stakedGlpTrackerRewards  = stakingData.stakedGlpTracker.claimable
-  data.stakedGlpTrackerRewardsUsd = stakingData.stakedGlpTracker.claimable.mul(gmxPrice).div(expandDecimals(1, 18))
-
-  data.feeGlpTrackerRewards = stakingData.feeGlpTracker.claimable
-  data.feeGlpTrackerRewardsUsd = stakingData.feeGlpTracker.claimable.mul(nativeTokenPrice).div(expandDecimals(1, 18))
-
-  data.stakedGlpTrackerAnnualRewardsUsd = stakingData.stakedGlpTracker.tokensPerInterval.mul(SECONDS_PER_YEAR).mul(gmxPrice).div(expandDecimals(1, 18))
-  data.glpAprForEsGmx = data.glpSupplyUsd && data.glpSupplyUsd.gt(0)
-    ? data.stakedGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.glpSupplyUsd)
-    : bigNumberify(0)
-  data.feeGlpTrackerAnnualRewardsUsd = stakingData.feeGlpTracker.tokensPerInterval.mul(SECONDS_PER_YEAR).mul(nativeTokenPrice).div(expandDecimals(1, 18))
-  data.glpAprForNativeToken = data.glpSupplyUsd && data.glpSupplyUsd.gt(0)
-    ? data.feeGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.glpSupplyUsd)
-    : bigNumberify(0)
-  data.glpAprTotal = data.glpAprForNativeToken.add(data.glpAprForEsGmx)
-
-  data.totalGlpRewardsUsd = data.stakedGlpTrackerRewardsUsd.add(data.feeGlpTrackerRewardsUsd)
-
-  data.totalEsGmxRewards = data.stakedGmxTrackerRewards.add(data.stakedGlpTrackerRewards)
-  data.totalEsGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(data.stakedGlpTrackerRewardsUsd)
-
-  data.gmxVesterRewards = vestingData.gmxVester.claimable
-  data.glpVesterRewards = vestingData.glpVester.claimable
-  data.totalVesterRewards = data.gmxVesterRewards.add(data.glpVesterRewards)
-  data.totalVesterRewardsUsd = data.totalVesterRewards.mul(gmxPrice).div(expandDecimals(1, 18))
-
-  data.totalNativeTokenRewards = data.feeGmxTrackerRewards.add(data.feeGlpTrackerRewards)
-  data.totalNativeTokenRewardsUsd = data.feeGmxTrackerRewardsUsd.add(data.feeGlpTrackerRewardsUsd)
-
-  data.totalRewardsUsd = data.totalEsGmxRewardsUsd.add(data.totalNativeTokenRewardsUsd).add(data.totalVesterRewardsUsd)
-
-  return data
-}
-
-export default function Home() {
-  // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
-  // const faqContent = [{
-  //   id: 1,
-  //   question: "What is GMX?",
-  //   answer: "GMX is a decentralized spot and perpetual exchange that supports low swap fees and zero price impact trades.<br><br>Trading is supported by a unique multi-asset pool that earns liquidity providers fees from market making, swap fees, leverage trading (spreads, funding fees & liquidations), and asset rebalancing.<br><br>Dynamic pricing is supported by Chainlink Oracles along with TWAP pricing from leading volume DEXs."
-  // }, {
-  //   id: 2,
-  //   question: "What is the GMX Governance Token? ",
-  //   answer: "The GMX token is the governance token of the GMX ecosystem, it provides the token owner voting rights on the direction of the GMX platform.<br><br>Additionally, when GMX is staked you will earn 30% of the platform-generated fees, you will also earn Escrowed GMX tokens and Multiplier Points."
-  // }, {
-  //   id: 3,
-  //   question: "What is the GLP Token? ",
-  //   answer: "The GLP token represents the liquidity users provide to the GMX platform for Swaps and Margin Trading.<br><br>To provide liquidity to GLP you <a href='https://gmx.io/buy_glp' target='_blank'>trade</a> your crypto asset BTC, ETH, LINK, UNI, USDC, USDT, MIM, or FRAX to the liquidity pool, in exchange, you gain exposure to a diversified index of tokens while earning 50% of the platform trading fees and esGMX."
-  // }, {
-  //   id: 4,
-  //   question: "What can I trade on GMX? ",
-  //   answer: "On GMX you can swap or margin trade any of the following assets: ETH, BTC, LINK, UNI, USDC, USDT, MIM, FRAX, with others to be added. "
-  // }]
-
-  // const toggleFAQContent = function(index) {
-  //   if (openedFAQIndex === index) {
-  //     setOpenedFAQIndex(null)
-  //   } else {
-  //     setOpenedFAQIndex(index)
-  //   }
-  // }
-
-  const { chainId } = useChainId()
+function APRComponent ({chainId, label}) {
   const { active, library, account } = useWeb3React()
 
   const rewardReaderAddress = getContract(chainId, "RewardReader")
@@ -335,45 +107,7 @@ export default function Home() {
     stakedGlpTrackerAddress,
     feeGlpTrackerAddress
   ]
-
-  const positionStatsUrl = getServerUrl(ARBITRUM, "/position_stats")
-  const { data: positionStats } = useSWR([positionStatsUrl], {
-    fetcher: (...args) => fetch(...args).then(res => res.json())
-  })
-
-  const totalVolumeUrl = getServerUrl(ARBITRUM, "/total_volume")
-  const { data: totalVolume } = useSWR([totalVolumeUrl], {
-    fetcher: (...args) => fetch(...args).then(res => res.json())
-  })
-
-  // Total Volume
-
-  const totalVolumeSum = getTotalVolumeSum(totalVolume)
-
-  // Open Interest
-
-  let openInterest = bigNumberify(0)
-  if (positionStats && positionStats.totalLongPositionSizes && positionStats.totalShortPositionSizes) {
-    openInterest = openInterest.add(positionStats.totalLongPositionSizes)
-    openInterest = openInterest.add(positionStats.totalShortPositionSizes)
-  }
-
-  // user stat
-  const userStats = useUserStat(ARBITRUM)
-
-  const changeNetwork = useCallback(network => {
-    if (network === chainId) {
-      return
-    }
-    if (!active) {
-      setTimeout(() => {
-        return switchNetwork(network, active)
-      }, 500)
-    } else {
-      return switchNetwork(network, active)
-    }
-  }, [chainId, active])
-
+  
   const { data: walletBalances } = useSWR(["StakeV2:walletBalances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero], {
     fetcher: fetcher(library, ReaderV2, [walletTokens]),
   })
@@ -420,6 +154,78 @@ export default function Home() {
   const vestingData = getVestingData(vestingInfo)
 
   const processedData = getProcessedData(balanceData, supplyData, depositBalanceData, stakingData, vestingData, aum, nativeTokenPrice, stakedGmxSupply, gmxPrice, gmxSupply)
+
+  return <>{`${formatKeyAmount(processedData, label, 2, 2, true)}%`}</>
+}
+
+export default function Home() {
+  // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
+  // const faqContent = [{
+  //   id: 1,
+  //   question: "What is GMX?",
+  //   answer: "GMX is a decentralized spot and perpetual exchange that supports low swap fees and zero price impact trades.<br><br>Trading is supported by a unique multi-asset pool that earns liquidity providers fees from market making, swap fees, leverage trading (spreads, funding fees & liquidations), and asset rebalancing.<br><br>Dynamic pricing is supported by Chainlink Oracles along with TWAP pricing from leading volume DEXs."
+  // }, {
+  //   id: 2,
+  //   question: "What is the GMX Governance Token? ",
+  //   answer: "The GMX token is the governance token of the GMX ecosystem, it provides the token owner voting rights on the direction of the GMX platform.<br><br>Additionally, when GMX is staked you will earn 30% of the platform-generated fees, you will also earn Escrowed GMX tokens and Multiplier Points."
+  // }, {
+  //   id: 3,
+  //   question: "What is the GLP Token? ",
+  //   answer: "The GLP token represents the liquidity users provide to the GMX platform for Swaps and Margin Trading.<br><br>To provide liquidity to GLP you <a href='https://gmx.io/buy_glp' target='_blank'>trade</a> your crypto asset BTC, ETH, LINK, UNI, USDC, USDT, MIM, or FRAX to the liquidity pool, in exchange, you gain exposure to a diversified index of tokens while earning 50% of the platform trading fees and esGMX."
+  // }, {
+  //   id: 4,
+  //   question: "What can I trade on GMX? ",
+  //   answer: "On GMX you can swap or margin trade any of the following assets: ETH, BTC, LINK, UNI, USDC, USDT, MIM, FRAX, with others to be added. "
+  // }]
+
+  // const toggleFAQContent = function(index) {
+  //   if (openedFAQIndex === index) {
+  //     setOpenedFAQIndex(null)
+  //   } else {
+  //     setOpenedFAQIndex(index)
+  //   }
+  // }
+
+  const { chainId } = useChainId()
+  const { active } = useWeb3React()
+
+  const positionStatsUrl = getServerUrl(ARBITRUM, "/position_stats")
+  const { data: positionStats } = useSWR([positionStatsUrl], {
+    fetcher: (...args) => fetch(...args).then(res => res.json())
+  })
+
+  const totalVolumeUrl = getServerUrl(ARBITRUM, "/total_volume")
+  const { data: totalVolume } = useSWR([totalVolumeUrl], {
+    fetcher: (...args) => fetch(...args).then(res => res.json())
+  })
+
+  // Total Volume
+
+  const totalVolumeSum = getTotalVolumeSum(totalVolume)
+
+  // Open Interest
+
+  let openInterest = bigNumberify(0)
+  if (positionStats && positionStats.totalLongPositionSizes && positionStats.totalShortPositionSizes) {
+    openInterest = openInterest.add(positionStats.totalLongPositionSizes)
+    openInterest = openInterest.add(positionStats.totalShortPositionSizes)
+  }
+
+  // user stat
+  const userStats = useUserStat(ARBITRUM)
+
+  const changeNetwork = useCallback(network => {
+    if (network === chainId) {
+      return
+    }
+    if (!active) {
+      setTimeout(() => {
+        return switchNetwork(network, active)
+      }, 500)
+    } else {
+      return switchNetwork(network, active)
+    }
+  }, [chainId, active])
 
   return (
     <div className="Home">
@@ -538,7 +344,7 @@ export default function Home() {
               </div>
               <div className="Home-token-card-option-info">
                 <div className="Home-token-card-option-title">GMX is the utility and governance token, and also accrues 30% of the platform's generated fees.</div>
-                <div className="Home-token-card-option-apr">Current APR: {`${formatKeyAmount(processedData, "gmxAprTotal", 2, 2, true)}%`}</div>
+                <div className="Home-token-card-option-apr">Current APR: <APRComponent chainId={chainId} label="gmxAprTotal" /></div>
                 <div className="Home-token-card-option-action">
                   <Link to="/buy" className="default-btn buy">Buy</Link>
                   <Link to="/earn" className="default-btn">Stake</Link>
@@ -552,7 +358,7 @@ export default function Home() {
               </div>
               <div className="Home-token-card-option-info">
                 <div className="Home-token-card-option-title">GLP is the platform's liquidity provider token. Accrues 70% of its generated fees.</div>
-                <div className="Home-token-card-option-apr">Current APR: {`${formatKeyAmount(processedData, "glpAprTotal", 2, 2, true)}%`}</div>
+                <div className="Home-token-card-option-apr">Current APR: <APRComponent chainId={ARBITRUM} label="glpAprTotal" /> (Arbitrum), <APRComponent chainId={AVALANCHE} label="glpAprTotal" /> (Avalanche)</div>
                 <div className="Home-token-card-option-action">
                   <Link to="/buy_glp" className="default-btn buy">Buy</Link>
                   <Link to="/earn" className="default-btn">Stake</Link>

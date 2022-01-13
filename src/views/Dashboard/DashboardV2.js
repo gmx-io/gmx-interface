@@ -27,7 +27,8 @@ import {
   BASIS_POINTS_DIVISOR,
   DEFAULT_MAX_USDG_AMOUNT,
   ARBITRUM,
-  AVALANCHE
+  AVALANCHE,
+  getTotalVolumeSum
 } from '../../Helpers'
 import { useGmxPrice, useStakedGmxSupply } from '../../Api'
 
@@ -42,19 +43,6 @@ import Footer from "../../Footer"
 import "./DashboardV2.css"
 
 const { AddressZero } = ethers.constants
-
-function getTotalVolumeSum(volumes) {
-  if (!volumes || volumes.length === 0) {
-    return
-  }
-
-  let volume = bigNumberify(0)
-  for (let i = 0; i < volumes.length; i++) {
-    volume = volume.add(volumes[i].data.volume)
-  }
-
-  return volume
-}
 
 function getVolumeInfo(hourlyVolume) {
   if (!hourlyVolume || hourlyVolume.length === 0) {
