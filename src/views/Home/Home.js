@@ -57,7 +57,10 @@ import { ethers } from 'ethers'
 const { AddressZero } = ethers.constants
 
 function APRComponent ({chainId, label}) {
-  const { active, library, account } = useWeb3React()
+  const { library } = useWeb3React()
+
+  const active = false
+  const account = undefined
 
   const rewardReaderAddress = getContract(chainId, "RewardReader")
   const readerAddress = getContract(chainId, "Reader")
@@ -358,7 +361,7 @@ export default function Home() {
               </div>
               <div className="Home-token-card-option-info">
                 <div className="Home-token-card-option-title">GLP is the platform's liquidity provider token. Accrues 70% of its generated fees.</div>
-                <div className="Home-token-card-option-apr">Current APR: <APRComponent chainId={ARBITRUM} label="glpAprTotal" /> (Arbitrum), <APRComponent chainId={AVALANCHE} label="glpAprTotal" /> (Avalanche)</div>
+                <div className="Home-token-card-option-apr">Current APR: <APRComponent chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" /> (Arbitrum), <APRComponent chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" /> (Avalanche)</div>
                 <div className="Home-token-card-option-action">
                   <Link to="/buy_glp" className="default-btn buy">Buy</Link>
                   <Link to="/earn" className="default-btn">Stake</Link>

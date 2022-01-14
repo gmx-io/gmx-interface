@@ -894,6 +894,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       updateStakingInfo, updateAums, updateNativeTokenPrice,
       updateStakedGmxSupply, updateEsGmxSupply, updateGmxPrice,
       updateVestingInfo, updateGmxSupply])
+  
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   const showStakeGmxModal = () => {
     if (!isGmxTransferEnabled) {
