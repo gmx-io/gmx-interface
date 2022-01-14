@@ -216,41 +216,6 @@ button.App-connect-wallet:hover {
   margin-right: 24px;
 }
 
-/* .App-header-user-link a {
-  width: 68px;
-  height: 36px;
-  background: #303FD0 0% 0% no-repeat padding-box;
-  border-radius: 4px;
-  opacity: 1!important;
-  color: #FFFFFF!important;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 500;
-  display: inline-flex!important;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-} */
-
-/* .App-header-user-link a:active {
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-.App-header-user-link a:active::after {
-  opacity: 0.239;
-  content: " ";
-  width: 52px;
-  height: 52px;
-  position: absolute;
-  left: calc(50% - 26px);
-  top: -8px;
-  background: white;
-  border-radius: 50%;
-  transform: scale(0);
-  animation: ripple 500ms linear;
-} */
-
 .App-card-divider {
   height: 1px;
   background: #23263b;
@@ -264,11 +229,7 @@ button.App-connect-wallet:hover {
 .Page {
   max-width: 70rem;
   margin: auto;
-  min-height: calc(100vh - 62px);
-  display: flex;
-  flex-direction: column;
   padding-top: 3rem;
-  padding-bottom: calc(3rem + 168px);
 }
 
 .Page-content {

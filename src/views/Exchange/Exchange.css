@@ -1,11 +1,7 @@
 .Exchange {
   max-width: 100rem;
   margin: auto;
-  min-height: calc(100vh - 62px);
-  display: flex;
-  flex-direction: column;
   justify-content: space-between;
-  padding-bottom: calc(3rem + 168px);
 }
 
 .Exchange-list-tab-container {
