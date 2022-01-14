@@ -1045,7 +1045,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   }
 
   return (
-    <div className="StakeV2 Page">
+    <div className="StakeV2 Page page-layout">
       <StakeModal
         isVisible={isStakeModalVisible}
         setIsVisible={setIsStakeModalVisible}

@@ -19,7 +19,7 @@ export default function BuyGMXGLP() {
   }, [])
 
   return (
-    <div className="BuyGMXGLP">
+    <div className="BuyGMXGLP page-layout">
       <div className="BuyGMXGLP-container default-container">
         <div className="BuyGMXGLP-title-section">
           <div className="BuyGMXGLP-title">Buy GMX</div>

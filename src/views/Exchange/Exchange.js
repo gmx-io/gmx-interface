@@ -442,7 +442,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
 
 
   return (
-    <div className="Exchange">
+    <div className="Exchange page-layout">
       {
         showBanner && <ExchangeBanner hideBanner={hideBanner} />
       }

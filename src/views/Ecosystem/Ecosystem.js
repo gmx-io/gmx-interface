@@ -9,7 +9,7 @@ import "./Ecosystem.css"
 
 export default function Ecosystem() {
   return (
-    <div className="DashboardV2 Page">
+    <div className="DashboardV2 Page page-layout">
       <div>
         <div className="Page-title-section">
           <div className="Page-title">Community Projects</div>
