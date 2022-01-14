@@ -93,7 +93,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   padding-top: 5.161rem;
-  padding-bottom: 3rem;
+  padding-bottom: 5.161rem;
 }
 
 .Home-cta-info {
@@ -195,8 +195,9 @@
 }
 
 .Home-token-card-section {
-  margin-top: 5rem;
-  margin-bottom: 5rem;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+  background: #17182C;
 }
 
 .Home-token-card-info {
@@ -222,9 +223,13 @@
   padding: 1.5rem;
   border-radius: 13px;
   max-width: 38.19rem;
+  background: #18192C;
+  box-shadow: 0px 5px 13px #00000085;
+  border: 1px solid #2A2B3D;
+  border-radius: 4px;
 }
 
-.Home-token-card-option::before {
+/* .Home-token-card-option::before {
   content: ' ';
   display: flex;
   width: 100%;
@@ -236,7 +241,7 @@
   left: 0;
   border-radius: 13px;
   z-index: -1;
-}
+} */
 
 .Home-token-card-option-icon {
   display: flex;
@@ -450,10 +455,6 @@
 }
 
 @media (max-width: 500px) {
-  .Home-top {
-    /* background-position-x: 70%; */
-  }
-
   .Home-title-section-container {
     padding-top: 4.774rem;
   }
