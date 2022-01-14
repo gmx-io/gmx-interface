@@ -203,6 +203,7 @@
   padding-top: 5rem;
   padding-bottom: 5rem;
   background: #17182C;
+  margin-bottom: -3rem;
 }
 
 .Home-token-card-info {
@@ -233,20 +234,6 @@
   border: 1px solid #2A2B3D;
   border-radius: 4px;
 }
-
-/* .Home-token-card-option::before {
-  content: ' ';
-  display: flex;
-  width: 100%;
-  height: 100%;
-  background: transparent linear-gradient(241deg, #03D1CFFC 0%, #4E09F8 100%) 0% 0% no-repeat padding-box;
-  opacity: 0.35;
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 13px;
-  z-index: -1;
-} */
 
 .Home-token-card-option-icon {
   display: flex;
