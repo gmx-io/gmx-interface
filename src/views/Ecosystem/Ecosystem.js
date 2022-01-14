@@ -152,39 +152,6 @@ export default function Ecosystem() {
           </div>
           <div className="App-card">
             <div className="App-card-title">
-              GMX Yield List
-              <div className="App-card-title-icon">
-                <img src={arbitrumIcon} alt="arbitrumIcon" />
-              </div>
-            </div>
-            <div className="App-card-divider"></div>
-            <div className="App-card-content">
-              <div className="App-card-row">
-                <div className="label">Link</div>
-                <div>
-                  <a href="https://gist.github.com/gmxyield/3c2941634ce42cf24b57bdba6f99067f" target="_blank" rel="noopener noreferrer">
-                    https://gist.github.com/gmxyield
-                  </a>
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">About</div>
-                <div>
-                  List of rewards from external projects
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">Creator</div>
-                <div>
-                  <a href="https://gist.github.com/gmxyield" target="_blank" rel="noopener noreferrer">
-                    @gmxyield
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="App-card">
-            <div className="App-card-title">
               GMX Charts
               <div className="App-card-title-icon">
                 <img src={arbitrumIcon} alt="arbitrumIcon" />
