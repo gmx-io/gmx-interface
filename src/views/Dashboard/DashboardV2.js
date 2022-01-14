@@ -297,7 +297,7 @@ export default function DashboardV2() {
   const totalStatsStartDate = chainId === AVALANCHE ? "06 Jan 2022" : "01 Sep 2021"
 
   return (
-    <div className="DashboardV2 Page">
+    <div className="DashboardV2 Page page-layout">
       <div className="Page-title-section">
         <div className="Page-title">Stats</div>
         <div className="Page-description">
