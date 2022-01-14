@@ -8,6 +8,7 @@
   left: 50%;
   height: 168px;
   bottom: 0;
+  border-top: 1px solid #282B4C;
 }
 
 .Footer-logo {
