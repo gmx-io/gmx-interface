@@ -25,12 +25,10 @@
 }
 
 .Selector-box.Arbitrum {
-  /* background-color: #1d446b; */
   border: 1px solid #FFFFFF17;
 }
 
 .Selector-box.Avalanche {
-  /* background-color: #371e32; */
   border: 1px solid #FFFFFF17;
 }
 
@@ -128,12 +126,18 @@
 
 .react-select__option:first-child:active {
   background-color: #264f79;
-  /* background-color: #2c5a88; */
 }
 
 .react-select__option:last-child:active {
   background-color: #E841424D;
-  /* background-color: #E841427e; */
+}
+
+.react-select__control:hover {
+  background: #808AFF14;
+}
+
+.react-select__control.react-select__control--is-focused {
+  background: #818CEF33;
 }
 
 @media (max-width: 900px) {
