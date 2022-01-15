@@ -62,7 +62,6 @@ import Checkbox from './components/Checkbox/Checkbox'
 
 import { RiMenuLine } from 'react-icons/ri'
 import { FaTimes } from 'react-icons/fa'
-import { BsThreeDots } from 'react-icons/bs'
 import { FiX } from "react-icons/fi"
 import { BiLogOut }  from 'react-icons/bi'
 
@@ -74,6 +73,7 @@ import './AppOrder.css';
 
 import logoImg from './img/logo_GMX.svg'
 import logoSmallImg from './img/logo_GMX_small.svg'
+import menuDotsImg from './img/ic_menu_dots_enabled.svg'
 
 // import logoImg from './img/gmx-logo-final-white-small.png'
 import metamaskImg from './img/metamask.png'
@@ -233,14 +233,16 @@ function AppHeaderUser({
       <div className="App-header-user-link">
         <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
       </div>
-      <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="App-cta small transparent App-header-user-account">
-        {shortenAddress(account, small ? 11 : 13)}
-      </a>
-      {!small &&
-        <button className="App-header-user-settings" onClick={openSettings}>
-          <BsThreeDots />
-        </button>
-      }
+      <div className="App-header-user-account-address">
+        <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="small App-header-user-account">
+          {shortenAddress(account, small ? 11 : 13)}
+        </a>
+        {!small &&
+          <button className="App-header-user-settings" onClick={openSettings}>
+            <img src={menuDotsImg} alt="menuDotsImg" />
+          </button>
+        }
+      </div>
     </div>
   )
 }

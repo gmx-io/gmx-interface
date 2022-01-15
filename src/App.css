@@ -658,29 +658,57 @@ button.App-button-option:disabled {
   align-items: center;
 }
 
-a.App-cta.App-header-user-account {
+a.App-header-user-account {
   margin-top: 0;
   margin-right: 0.5rem;
   font-size: 0.9rem;
-  padding-left: 0;
+  padding: 0;
+  line-height: 1.5rem;
+  padding-left: 4px;
+  padding-right: 4px;
+  border-radius: 4px;
+  background: transparent;
+}
+
+.App-header-user-account-address {
+  border: 1px solid #FFFFFF14;
+  border-radius: 4px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.App-header-user-account-address:hover {
+  background: #1f2139;
+}
+
+.App-header-user-account-address:focus {
+  background: #202243;
+  border: 1px solid #FFFFFF17;
 }
 
 .App-header-user-settings {
-  display: inline-block;
-  vertical-align: middle;
+  display: flex;
+  align-items: center;
   cursor: pointer;
   border: none;
-  border-radius: 1rem;
+  border-radius: 4px;
   font-size: 0.9rem;
   background: none;
   color: white;
-  opacity: 0.7;
   padding: 0;
-  margin-top: 0.5rem;
 }
 
-.App-header-user-settings:hover {
-  opacity: 1;
+.App-header-user-settings:hover,
+.App-header-user-account:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.App-header-user-settings:focus,
+.App-header-user-account:focus {
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .App-settings-row {
