@@ -192,30 +192,66 @@ export default function Home() {
   const { chainId } = useChainId()
   const { active } = useWeb3React()
 
-  const positionStatsUrl = getServerUrl(ARBITRUM, "/position_stats")
-  const { data: positionStats } = useSWR([positionStatsUrl], {
+  // ARBITRUM
+
+  const arbitrumPositionStatsUrl = getServerUrl(ARBITRUM, "/position_stats")
+  const { data: arbitrumPositionStats } = useSWR([arbitrumPositionStatsUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
 
-  const totalVolumeUrl = getServerUrl(ARBITRUM, "/total_volume")
-  const { data: totalVolume } = useSWR([totalVolumeUrl], {
+  const arbitrumTotalVolumeUrl = getServerUrl(ARBITRUM, "/total_volume")
+  const { data: arbitrumTotalVolume } = useSWR([arbitrumTotalVolumeUrl], {
+    fetcher: (...args) => fetch(...args).then(res => res.json())
+  })
+
+  // AVALANCHE
+
+  const avalanchePositionStatsUrl = getServerUrl(AVALANCHE, "/position_stats")
+  const { data: avalanchePositionStats } = useSWR([avalanchePositionStatsUrl], {
+    fetcher: (...args) => fetch(...args).then(res => res.json())
+  })
+
+  const avalancheTotalVolumeUrl = getServerUrl(AVALANCHE, "/total_volume")
+  const { data: avalancheTotalVolume } = useSWR([avalancheTotalVolumeUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
 
   // Total Volume
 
-  const totalVolumeSum = getTotalVolumeSum(totalVolume)
+  const arbitrumTotalVolumeSum = getTotalVolumeSum(arbitrumTotalVolume)
+  const avalancheTotalVolumeSum = getTotalVolumeSum(avalancheTotalVolume)
+
+  let totalVolumeSum = bigNumberify(0)
+  if (arbitrumTotalVolumeSum && avalancheTotalVolumeSum) {
+    totalVolumeSum = totalVolumeSum.add(arbitrumTotalVolumeSum)
+    totalVolumeSum = totalVolumeSum.add(avalancheTotalVolumeSum)
+  }
 
   // Open Interest
 
   let openInterest = bigNumberify(0)
-  if (positionStats && positionStats.totalLongPositionSizes && positionStats.totalShortPositionSizes) {
-    openInterest = openInterest.add(positionStats.totalLongPositionSizes)
-    openInterest = openInterest.add(positionStats.totalShortPositionSizes)
+  if (arbitrumPositionStats && arbitrumPositionStats.totalLongPositionSizes && arbitrumPositionStats.totalShortPositionSizes) {
+    openInterest = openInterest.add(arbitrumPositionStats.totalLongPositionSizes)
+    openInterest = openInterest.add(arbitrumPositionStats.totalShortPositionSizes)
+  }
+
+  if (avalanchePositionStats && avalanchePositionStats.totalLongPositionSizes && avalanchePositionStats.totalShortPositionSizes) {
+    openInterest = openInterest.add(avalanchePositionStats.totalLongPositionSizes)
+    openInterest = openInterest.add(avalanchePositionStats.totalShortPositionSizes)
   }
 
   // user stat
-  const userStats = useUserStat(ARBITRUM)
+  const arbitrumUserStats = useUserStat(ARBITRUM)
+  const avalancheUserStats = useUserStat(AVALANCHE)
+  let totalUsers = 0
+
+  if (arbitrumUserStats && arbitrumUserStats.uniqueCount) {
+    totalUsers += arbitrumUserStats.uniqueCount
+  }
+
+  if (avalancheUserStats && avalancheUserStats.uniqueCount) {
+    totalUsers += avalancheUserStats.uniqueCount
+  }
 
   const changeNetwork = useCallback(network => {
     if (network === chainId) {
@@ -265,7 +301,7 @@ export default function Home() {
             <img src={totaluserIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
               <div className="Home-latest-info__title">Total Users</div>
-              <div className="Home-latest-info__value">{numberWithCommas(userStats && userStats.uniqueCount.toFixed(0))}</div>
+              <div className="Home-latest-info__value">{numberWithCommas(totalUsers.toFixed(0))}</div>
             </div>
           </div>
         </div>
