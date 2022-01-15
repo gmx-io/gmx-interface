@@ -397,7 +397,7 @@ export default function Home() {
               </div>
               <div className="Home-token-card-option-info">
                 <div className="Home-token-card-option-title">GLP is the platform's liquidity provider token. Accrues 70% of its generated fees.</div>
-                <div className="Home-token-card-option-apr">Current APR: <APRComponent chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" /> (Arbitrum), <APRComponent chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" /> (Avalanche)</div>
+                <div className="Home-token-card-option-apr">Arbitrum APR: <APRComponent chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />, Avalanche APR: <APRComponent chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" /></div>
                 <div className="Home-token-card-option-action">
                   <Link to="/buy_glp" className="default-btn buy">Buy</Link>
                   <Link to="/earn" className="default-btn">Stake</Link>
