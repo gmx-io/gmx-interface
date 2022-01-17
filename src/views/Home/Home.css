@@ -1,3 +1,8 @@
+.Home {
+  min-height: 100vh;
+  padding-bottom: calc(3rem + 168px);
+}
+
 .Home-top {
   display: flex;
   flex-direction: column;
