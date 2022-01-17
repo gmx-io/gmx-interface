@@ -66,7 +66,7 @@ export default function NftWallet() {
   }
 
   return(
-    <div className="NftWallet Page">
+    <div className="NftWallet Page page-layout">
       <div className="Page-title-section">
         <div className="Page-title">NFT Wallet</div>
       </div>

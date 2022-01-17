@@ -1,8 +1,5 @@
 .BuyGMXGLP {
     background: #101124;
-    min-height: calc(100vh - 62px);
-    display: flex;
-    flex-direction: column;
     justify-content: space-between;
 }
 
@@ -159,10 +156,8 @@
     position: relative;
 }
 
-.alternative-bridges a.Synapse:hover::before,
-.alternative-bridges a.Synapse:focus::before,
-.alternative-bridges a.Anyswap:hover::before,
-.alternative-bridges a.Anyswap:focus::before {
+.alternative-bridges a:hover::before,
+.alternative-bridges a:focus::before {
     content: " ";
     position: absolute;
     background: #FFFFFF1F;
