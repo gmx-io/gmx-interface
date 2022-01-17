@@ -383,7 +383,7 @@ export default function Home() {
               </div>
               <div className="Home-token-card-option-info">
                 <div className="Home-token-card-option-title">GMX is the utility and governance token, and also accrues 30% of the platform's generated fees.</div>
-                <div className="Home-token-card-option-apr">Current APR: <APRComponent chainId={chainId} label="gmxAprTotal" /></div>
+                <div className="Home-token-card-option-apr">Arbitrum APR: <APRComponent chainId={ARBITRUM} label="gmxAprTotal" />, Avalanche APR: <APRComponent chainId={AVALANCHE} label="gmxAprTotal" key="AVALANCHE" /></div>
                 <div className="Home-token-card-option-action">
                   <Link to="/buy" className="default-btn buy">Buy</Link>
                   <Link to="/earn" className="default-btn">Stake</Link>
