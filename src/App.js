@@ -122,9 +122,9 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
           <div className="App-header-menu-icon-block" onClick={() => clickCloseIcon()}>
             <FiX className="App-header-menu-icon" />
           </div>
-          <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
+          <a className="App-header-link-main" href="/">
             <img src={logoImg} alt="GMX Logo" />
-          </NavLink>
+          </a>
         </div>
       }
       <div className="App-header-link-container App-header-link-home">
@@ -433,10 +433,10 @@ function FullApp() {
           <header>
             <div className="App-header large">
               <div className="App-header-container-left">
-                <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
+                <a className="App-header-link-main" href="/">
                   <img src={logoImg} className="big" alt="GMX Logo" />
                   <img src={logoSmallImg} className="small" alt="GMX Logo" />
-                </NavLink>
+                </a>
                 <AppHeaderLinks />
               </div>
               <div className="App-header-container-right">
