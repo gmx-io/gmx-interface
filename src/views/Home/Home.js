@@ -110,7 +110,7 @@ function APRComponent ({chainId, label}) {
     stakedGlpTrackerAddress,
     feeGlpTrackerAddress
   ]
-  
+
   const { data: walletBalances } = useSWR(["StakeV2:walletBalances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero], {
     fetcher: fetcher(library, ReaderV2, [walletTokens]),
   })
