@@ -387,7 +387,7 @@ export default function Home() {
                 <div className="Home-token-card-option-action">
                   <Link to="/buy" className="default-btn buy">Buy</Link>
                   <Link to="/earn" className="default-btn">Stake</Link>
-                  <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noreferrer" className="default-btn read-more">Read more</a>
+                  <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noreferrer" className="default-btn read-more">Read more</a>
                 </div>
               </div>
             </div>
