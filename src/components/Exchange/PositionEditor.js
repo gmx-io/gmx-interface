@@ -17,6 +17,7 @@ import {
 	expandDecimals,
 	shouldRaiseGasError,
 	getTokenInfo,
+  getLiquidationPrice,
 	approveTokens
 } from '../../Helpers'
 import { getContract } from '../../Addresses'
@@ -45,7 +46,6 @@ export default function PositionEditor(props) {
     collateralTokenAddress,
     pendingTxns,
     setPendingTxns,
-    getLiquidationPrice,
     getUsd,
     getLeverage,
     savedIsPnlInLeverage,

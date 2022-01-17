@@ -601,7 +601,7 @@ export default function StakeV1() {
   const hasFeeDistribution = true
 
   return(
-    <div className="Stake Page">
+    <div className="Stake Page page-layout">
       <StakeModal
         isVisible={isStakeModalVisible}
         setIsVisible={setIsStakeModalVisible}
