@@ -327,7 +327,7 @@ async function getChartPricesFromStats(chainId, symbol, period, currentAveragePr
   const json = await res.json()
   const prices = json?.prices
   const updatedAt = json?.updatedAt || 0
-  if (!prices || prices.length < 100) {
+  if (!prices || prices.length < 10) {
     throw new Error(`not enough prices: ${prices?.length}`)
   }
 
