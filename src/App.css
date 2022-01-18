@@ -429,6 +429,7 @@ button.App-connect-wallet:hover {
   letter-spacing: 0px;
   color: #A0A3C4;
   margin-top: 4px;
+  max-width: 40rem;
 }
 
 .Page-title-section {

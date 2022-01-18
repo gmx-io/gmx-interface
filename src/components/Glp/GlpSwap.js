@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
 import { ethers } from 'ethers'
+import cx from "classnames"
 
 import { getToken, getTokens, getWhitelistedTokens, getWrappedToken, getNativeToken } from '../../data/Tokens'
 import { getContract } from '../../Addresses'
@@ -55,6 +56,7 @@ import RewardRouter from '../../abis/RewardRouter.json'
 import Token from '../../abis/Token.json'
 
 import glp24Icon from '../../img/ic_glp_24.svg'
+import glp40Icon from '../../img/ic_glp_40.svg'
 import arrowIcon from '../../img/ic_convert_down.svg'
 
 import "./GlpSwap.css"
@@ -86,6 +88,7 @@ function getStakingData(stakingInfo) {
 
 export default function GlpSwap(props) {
   const { savedSlippageAmount, isBuying, setPendingTxns, connectWallet } = props
+  const history = useHistory()
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp"
   const { active, library, account } = useWeb3React()
   const { chainId } = useChainId()
@@ -317,6 +320,11 @@ export default function GlpSwap(props) {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
+
+  const switchSwapOption = (hash = '') => {
+    history.push(`${history.location.pathname}#${hash}`)
+    props.setIsBuying(hash === 'redeem' ? false : true)
+  }
 
   const fillMaxAmount = () => {
     if (isBuying) {
@@ -557,12 +565,7 @@ export default function GlpSwap(props) {
       <div className="GlpSwap-content">
         <div className="App-card GlpSwap-stats-card">
           <div className="App-card-title">
-            {isBuying && <div className="Tab-description">
-              Purchase GLP tokens to earn ETH fees from swaps and leverage trading. Note that there is a minimum holding time of 15 minutes after a purchase. View <Link to="/earn">staking</Link> page.
-            </div>}
-            {!isBuying && <div className="Tab-description">
-              Redeem your GLP tokens for any supported asset. View <Link to="/earn">staking</Link> page.
-            </div>}
+            <img src={glp40Icon} alt="glp40Icon" />
           </div>
           <div className="App-card-content">
             <div className="App-card-row">
@@ -613,6 +616,10 @@ export default function GlpSwap(props) {
           </div>
         </div>
         <div className="GlpSwap-box App-box">
+          <div className="swap-option-select">
+            <div onClick={() => switchSwapOption()} className={cx("swap-option", isBuying && "active")}>Buy GLP</div>
+            <div onClick={() => switchSwapOption('redeem')} className={cx("swap-option", !isBuying && "active")}>Sell GLP</div>
+          </div>
           <div className="App-card-title">Swap</div>
 
           {isBuying && <BuyInputSection
