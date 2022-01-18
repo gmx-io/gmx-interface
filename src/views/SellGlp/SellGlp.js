@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 import GlpSwap from '../../components/Glp/GlpSwap'
 import statsBigIcon from '../../img/ic_stats_big.svg'
@@ -13,10 +14,10 @@ export default function SellGlp(props) {
         </div>
         <div className="section-title-content">
           <div className="section-title-content__title">
-            Buy GMX or GLP
+            Buy or redeem GLP
           </div>
           <div className="section-title-content__description">
-            Total Stats start from 01 Sep 2021. For detailed stats: <a href="https://stats.gmx.io/" target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
+            Purchase GLP tokens to earn AVAX fees from swaps and leverages trading. Note that there is a minimum holding time of 15 minutes after a purchase. View <Link to="/earn">staking</Link> page.
           </div>
         </div>
       </div>
