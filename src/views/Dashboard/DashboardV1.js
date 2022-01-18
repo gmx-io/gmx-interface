@@ -393,7 +393,7 @@ export default function DashboardV1() {
   }
 
   return(
-    <div className="Dashboard Page">
+    <div className="Dashboard Page page-layout">
       <div className="Dashboard-title App-hero">
         <div className="Dashboard-title-primary App-hero-primary">${formatAmount(tokenStats.aum, USD_DECIMALS, 0, true)}</div>
         <div className="Dashboard-title-secondary">Assets Under Management</div>
