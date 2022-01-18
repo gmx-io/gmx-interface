@@ -384,7 +384,7 @@ function getPriceDataFromChainlinkPrices(prices, period) {
 
     const groupedPriceData = []
     let prevFrame = 0
-    const periodSeconds = 60 * 60 * CHART_PERIODS[period]
+    const periodSeconds = CHART_PERIODS[period]
 
     let open
     let low
@@ -580,14 +580,13 @@ export function useGmxPrice() {
   return { data: gmxPrice, mutate }
 }
 
-function getStablePriceData() {
+function getStablePriceData(period) {
+  const periodSeconds = CHART_PERIODS[period]
   const now = Date.now() / 1000;
-  const HOURS_IN_MONTH = 30 * 24;
-  const SECONDS_IN_HOUR = 60 * 60;
   let priceData = []
-  for (let i = HOURS_IN_MONTH; i > 0; i--) {
+  for (let i = 100; i > 0; i--) {
     priceData.push({
-      time: now - i * SECONDS_IN_HOUR,
+      time: now - i * periodSeconds,
       open: 1,
       close: 1,
       high: 1,
@@ -620,7 +619,7 @@ export function useChartPrices(chainId, symbol, isStable, period, currentAverage
   })
 
   if (isStable) {
-    return [getStablePriceData(), () => {}]
+    return [getStablePriceData(period), () => {}]
   }
 
   return [prices, updatePrices]

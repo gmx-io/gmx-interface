@@ -181,7 +181,7 @@ export default function ExchangeTVChart(props) {
   }, [marketName, previousMarketName])
 
   const scaleChart = useCallback(() => {
-    const from = Date.now() / 1000 - 7 * 86400 * CHART_PERIODS[period] / 2 + timezoneOffset;
+    const from = Date.now() / 1000 - 7 * 24 * CHART_PERIODS[period] / 2 + timezoneOffset;
     const to = Date.now() / 1000 + timezoneOffset;
     currentChart.timeScale().setVisibleRange({from, to});
   }, [currentChart, period]);
