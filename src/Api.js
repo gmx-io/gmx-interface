@@ -17,6 +17,8 @@ import { getConstant } from './Constants'
 import {
   ARBITRUM,
   AVALANCHE,
+  USD_DECIMALS,
+  CHART_PERIODS,
   // DEFAULT_GAS_LIMIT,
   bigNumberify,
   getExplorerUrl,
@@ -27,7 +29,8 @@ import {
   getOrderKey,
   fetcher,
   parseValue,
-  expandDecimals
+  expandDecimals,
+  formatAmount
 } from './Helpers'
 import {
   getTokenBySymbol
@@ -304,16 +307,15 @@ export function usePositionsForOrders(chainId, library, orders) {
   return positions
 }
 
-async function getChartPricesFromStats(chainId, marketName, period) {
-  let symbol = marketName.split('_')[0]
-  if (symbol === 'WBTC') {
-    symbol = 'BTC'
-  } else if (symbol === 'WETH') {
-    symbol = 'ETH'
+async function getChartPricesFromStats(chainId, symbol, period, currentAveragePrice) {
+  if (['WBTC', 'WETH', 'WAVAX'].includes(symbol)) {
+    symbol = symbol.substr(1)
   }
   const hostname = 'https://stats.gmx.io/'
-  const from = Math.floor(Date.now() / 1000 - period)
-  const url = `${hostname}api/chart/${symbol}?from=${from}&preferableChainId=${chainId}`
+  // const hostname = 'http://localhost:3113/'
+  const timeDiff = period === '1d' ? 180 * 86400 : 90 * 86400
+  const from = Math.floor(Date.now() / 1000 - timeDiff)
+  const url = `${hostname}api/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}`
   const TIMEOUT = 3000
   const res = await new Promise((resolve, reject) => {
     setTimeout(() => reject(new Error(`${url} request timeout`)), TIMEOUT)
@@ -323,24 +325,136 @@ async function getChartPricesFromStats(chainId, marketName, period) {
     throw new Error(`${res.status} ${res.statusText}`)
   }
   const json = await res.json()
-
-  if (!json || json.length < 100) {
-    throw new Error(`not enough prices: ${json?.length}`)
+  const prices = json?.prices
+  const updatedAt = json?.updatedAt || 0
+  if (!prices || prices.length < 100) {
+    throw new Error(`not enough prices: ${prices?.length}`)
   }
 
-  const OBSOLETE_THRESHOLD = 60 * 60 * 3 // chainlink updates are not too frequent
-  const lastTs = json[json.length - 1][0]
-  const diff = Date.now() / 1000 - lastTs
-  if (diff > OBSOLETE_THRESHOLD) {
-    throw new Error('chart data is obsolete, last price record at ' + new Date(lastTs * 1000).toISOString())
+  const OBSOLETE_THRESHOLD = Date.now() / 1000 - (60 * 60 * 15) // 15 min
+  if (updatedAt < OBSOLETE_THRESHOLD) {
+    throw new Error('chart data is obsolete, last price record at ' + new Date(updatedAt * 1000).toISOString())
   }
-  return json
+
+  if (currentAveragePrice && prices.length) {
+    const last = prices[prices.length - 1]
+    currentAveragePrice = parseFloat(formatAmount(currentAveragePrice, USD_DECIMALS, 2))
+    prices.push({
+      t: Math.floor(Date.now() / 1000),
+      o: last.o,
+      c: currentAveragePrice,
+      h: Math.max(last.h, currentAveragePrice),
+      l: Math.min(last.l, currentAveragePrice)
+    })
+  }
+
+  return prices.map(({ t: time, o: open, c: close, h: high, l: low}) => ({
+    time, open, close, high, low
+  }))
 }
 
-function getChainlinkChartPricesFromGraph(marketName) {
-  if (marketName.startsWith('WBTC') || marketName.startsWith('WETH') || marketName.startsWith('WBNB') || marketName.startsWith('WAVAX')) {
-    marketName = marketName.substr(1)
+function getPriceDataFromChainlinkPrices(prices, period) {
+  let priceData = []
+  const timezoneOffset = -(new Date()).getTimezoneOffset() * 60
+  const now = parseInt(Date.now() / 1000)
+
+  if (prices && prices.length) {
+    const result = [...prices];
+    let minValue = result.length === 0 ? 1000000 : parseFloat(result[0][1])
+    let maxValue = 0
+    for (let i = 0; i < result.length; i++) {
+      const item = result[i]
+      const chartValue = parseFloat(item[1])
+      if (!isNaN(chartValue)) {
+        if (chartValue > maxValue) {
+          maxValue = chartValue
+        }
+        if (chartValue < minValue) {
+          minValue = chartValue
+        }
+      }
+
+      if (parseInt(item[0]) <= now) {
+        priceData.push({
+          time: item[0],
+          value: chartValue
+        })
+      }
+    }
+
+    const groupedPriceData = []
+    let prevFrame = 0
+    const periodSeconds = 60 * 60 * CHART_PERIODS[period]
+
+    let open
+    let low
+    let high
+    let close
+    let time
+
+    priceData.forEach((item, i) => {
+      time = item.time + timezoneOffset
+      const frame = Math.floor(time / periodSeconds)
+      const value = item.value
+
+      if (prevFrame && frame > prevFrame) {
+        close = close + (value - close) * 0.5
+
+        groupedPriceData.push({
+          time: prevFrame * periodSeconds,
+          open,
+          low,
+          high,
+          close,
+          frame: prevFrame
+        })
+
+        if (prevFrame && frame - prevFrame > 1) {
+          let j = 1
+          while (j < frame - prevFrame) {
+            groupedPriceData.push({
+              time: (prevFrame + j) * periodSeconds,
+              open: close,
+              low: close,
+              high: close,
+              close: close,
+              frame: prevFrame + j
+            })
+            j++
+
+          }
+        }
+
+        open = 0
+        low = 0
+        high = 0
+      }
+
+      prevFrame = frame
+      if (!open) open = close || value
+      if (!low || value < low) low = value
+      if (!high || value > high) high = value
+      close = value
+    })
+
+    groupedPriceData.push({
+      time: prevFrame * periodSeconds,
+      open,
+      low,
+      high,
+      close,
+      frame: prevFrame
+    })
+    priceData = groupedPriceData
   }
+  return priceData
+}
+
+function getChainlinkChartPricesFromGraph(tokenSymbol, period, currentAveragePrice) {
+  if (['WBTC', 'WETH', 'WAVAX'].includes(tokenSymbol)) {
+    tokenSymbol = tokenSymbol.substr(1)
+  }
+  const marketName = tokenSymbol + '_USD'
   const feedId = FEED_ID_MAP[marketName];
   if (!feedId) {
     throw new Error(`undefined marketName ${marketName}`)
@@ -382,7 +496,15 @@ function getChainlinkChartPricesFromGraph(marketName) {
       })
     });
 
-    return prices.sort(([timeA], [timeB]) => timeA - timeB);
+    prices.sort(([timeA], [timeB]) => timeA - timeB)
+    if (currentAveragePrice) {
+      prices.push([Math.floor(Date.now() / 1000), formatAmount(currentAveragePrice, USD_DECIMALS, 2)])
+    }
+    return getPriceDataFromChainlinkPrices(
+      prices,
+      period,
+      currentAveragePrice
+    )
   }).catch(err => {
     console.error(err);
   })
@@ -458,15 +580,38 @@ export function useGmxPrice() {
   return { data: gmxPrice, mutate }
 }
 
-export function useChartPrices(chainId, marketName, period) {
-  const { data: prices = [], mutate: updatePrices } = useSWR(marketName && ['getChartPrices', chainId, marketName, period], {
+function getStablePriceData() {
+  const now = Date.now() / 1000;
+  const HOURS_IN_MONTH = 30 * 24;
+  const SECONDS_IN_HOUR = 60 * 60;
+  let priceData = []
+  for (let i = HOURS_IN_MONTH; i > 0; i--) {
+    priceData.push({
+      time: now - i * SECONDS_IN_HOUR,
+      open: 1,
+      close: 1,
+      high: 1,
+      low: 1
+    })
+  }
+  return priceData
+}
+
+export function useChartPrices(chainId, symbol, isStable, period, currentAveragePrice) {
+  const swrKey = !isStable && symbol ? ['getChartCandles', chainId, symbol, period] : null
+  const { data: prices = [], mutate: updatePrices } = useSWR(swrKey, {
     fetcher: async () => {
+      if (isStable) {
+        return getStablePriceData()
+      }
+
       try {
-        return await getChartPricesFromStats(chainId, marketName, period)
+        return await getChartPricesFromStats(chainId, symbol, period, currentAveragePrice)
       } catch (ex) {
         console.warn(ex)
         try {
-          return await getChainlinkChartPricesFromGraph(marketName)
+          const _prices = await getChainlinkChartPricesFromGraph(symbol, period, currentAveragePrice)
+          return _prices
         } catch (ex2) {
           console.warn('getChainlinkChartPricesFromGraph failed')
           console.warn(ex2)
@@ -477,7 +622,8 @@ export function useChartPrices(chainId, marketName, period) {
     dedupingInterval: 60000,
     focusThrottleInterval: 60000 * 10
   })
-  return [prices, updatePrices];
+
+  return [prices, updatePrices]
 }
 
 export async function approvePlugin(chainId, pluginAddress, { library, pendingTxns, setPendingTxns }) {

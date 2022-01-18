@@ -1750,3 +1750,11 @@ export function getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTok
 
   return infoTokens
 }
+
+export const CHART_PERIODS = {
+  "5m": 1 / 12,
+  "15m": 0.25,
+  "1h": 1,
+  "4h": 4,
+  "1d": 24
+}
