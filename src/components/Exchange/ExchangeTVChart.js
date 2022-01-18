@@ -23,8 +23,6 @@ import Tab from '../Tab/Tab'
 
 import { getTokens } from '../../data/Tokens'
 
-const IS_CANDLESTICKS = true
-
 const PRICE_LINE_TEXT_WIDTH = 15
 
 const timezoneOffset = -(new Date()).getTimezoneOffset() * 60
@@ -219,9 +217,7 @@ export default function ExchangeTVChart(props) {
 
     chart.subscribeCrosshairMove(onCrosshairMove)
 
-    const series = IS_CANDLESTICKS
-      ? chart.addCandlestickSeries(getSeriesOptions())
-      : chart.addAreaSeries(getSeriesOptions())
+    const series = chart.addCandlestickSeries(getSeriesOptions())
 
     setCurrentChart(chart);
     setCurrentSeries(series);
