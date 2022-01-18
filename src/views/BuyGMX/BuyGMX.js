@@ -6,9 +6,9 @@ import './BuyGMX.css';
 import Synapse from '../../img/Synapse.png'
 import Anyswap from '../../img/Anyswap.png'
 import Hop from '../../img/Hop.png'
-import Banxa from '../../img/Banxa.png'
+import Banxa from '../../img/ic_banxa.svg'
 import Binance from '../../img/binance.png'
-import gmx64Icon from '../../img/ic_gmx_64.svg'
+import gmx64Icon from '../../img/ic_gmx_30.svg'
 
 import olympusIcon from '../../img/ic_olympus.svg'
 import buyTransferETHIcon from '../../img/buy_transfer_eth.svg'
@@ -45,8 +45,13 @@ export default function BuyGMX() {
               You can buy ETH directly on <a href="https://arbitrum.io/" target="_blank" rel="noopener noreferrer">Arbitrum</a> using Banxa:
             </div>
             <div className="direct-purchase-options">
-              <a href="https://gmx.banxa.com" target="_blank" rel="noopener noreferrer" className="banxa-button">
-                <img src={Banxa} alt="Banxa" />
+              <a href="https://gmx.banxa.com" target="_blank" rel="noopener noreferrer" className="GMX-btn">
+                <div className="GMX-btn-icon">
+                  <img src={Banxa} alt="Banxa" />
+                </div>
+                <div className="GMX-btn-label">
+                  Banxa
+                </div>
               </a>
             </div>
           </div>
@@ -88,15 +93,16 @@ export default function BuyGMX() {
             <div className="BuyGMXGLP-description better-rates-description">
               After you have ETH, set your network to <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">Arbitrum</a> then click the button below:
             </div>
-            <a href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" target="_blank" rel="noopener noreferrer" className="BuyGMXGLP-purchase-block">
-              <div className="BuyGMXGLP-purchase-block-icon">
-                <img src={gmx64Icon} alt="logo" height="64px" />
-              </div>
-              <div className="BuyGMXGLP-purchase-block-info">
-                <div className="BuyGMXGLP-purchase-block-info__title">Purchase GMX</div>
-                <div className="BuyGMXGLP-purchase-block-info__subtitle">Uniswap Arbitrum</div>
-              </div>
-            </a>
+            <div className="GMX-block-section">
+              <a href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" target="_blank" rel="noopener noreferrer" className="GMX-btn">
+                <div className="GMX-btn-icon">
+                  <img src={gmx64Icon} alt="gmx64Icon" />
+                </div>
+                <div className="GMX-btn-label">
+                  Purchase GMX
+                </div>
+              </a>
+            </div>
           </div>
         </div>
         <div className="section-title-block">
@@ -113,13 +119,12 @@ export default function BuyGMX() {
           <div className="BuyGMXGLP-block">
             <div className="BuyGMXGLP-description">You can also purchase GMX bonds by clicking here:</div>
             <div className="GMX-block-section">
-              <a href="https://pro.olympusdao.finance/#/partners/GMX" target="_blank" rel="noopener noreferrer" className="GMX-block">
-                <div className="GMX-block-icon">
-                  <img src={olympusIcon} alt="glpIcon" height="40px" />
+              <a href="https://pro.olympusdao.finance/#/partners/GMX" target="_blank" rel="noopener noreferrer" className="GMX-btn">
+                <div className="GMX-btn-icon">
+                  <img src={olympusIcon} alt="olympusIcon" />
                 </div>
-                <div className="GMX-block-content">
-                  <div className="GMX-block-label">Buy GMX</div>
-                  <div className="GMX-block-description">Olympus Pro</div>
+                <div className="GMX-btn-label">
+                  Olympus Pro
                 </div>
               </a>
             </div>

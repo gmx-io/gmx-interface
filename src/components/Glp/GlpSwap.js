@@ -726,10 +726,10 @@ export default function GlpSwap(props) {
         <div className="Tab-title-section">
           <div className="Tab-title">Save on Fees</div>
           {isBuying && <div className="Tab-description">
-            Fees may vary depending on which asset you use to buy GLP.<br/> <span>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.</span>
+            Fees may vary depending on which asset you use to buy GLP.<br/> Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
           </div>}
           {!isBuying && <div className="Tab-description">
-            Fees may vary depending on which asset sell GLP for.<br/> <span>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.</span>
+            Fees may vary depending on which asset sell GLP for.<br/> Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
           </div>}
         </div>
         <div className="GlpSwap-token-list-content">
