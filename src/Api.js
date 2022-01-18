@@ -315,7 +315,7 @@ async function getChartPricesFromStats(chainId, symbol, period, currentAveragePr
   // const hostname = 'http://localhost:3113/'
   const timeDiff = period === '1d' ? 180 * 86400 : 90 * 86400
   const from = Math.floor(Date.now() / 1000 - timeDiff)
-  const url = `${hostname}api/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}`
+  const url = `${hostname}api/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`
   const TIMEOUT = 3000
   const res = await new Promise((resolve, reject) => {
     setTimeout(() => reject(new Error(`${url} request timeout`)), TIMEOUT)
@@ -331,7 +331,7 @@ async function getChartPricesFromStats(chainId, symbol, period, currentAveragePr
     throw new Error(`not enough prices: ${prices?.length}`)
   }
 
-  const OBSOLETE_THRESHOLD = Date.now() / 1000 - (60 * 60 * 15) // 15 min
+  const OBSOLETE_THRESHOLD = Date.now() / 1000 - (60 * 60 * 30) // 30 min
   if (updatedAt < OBSOLETE_THRESHOLD) {
     throw new Error('chart data is obsolete, last price record at ' + new Date(updatedAt * 1000).toISOString())
   }
@@ -601,10 +601,6 @@ export function useChartPrices(chainId, symbol, isStable, period, currentAverage
   const swrKey = !isStable && symbol ? ['getChartCandles', chainId, symbol, period] : null
   const { data: prices = [], mutate: updatePrices } = useSWR(swrKey, {
     fetcher: async () => {
-      if (isStable) {
-        return getStablePriceData()
-      }
-
       try {
         return await getChartPricesFromStats(chainId, symbol, period, currentAveragePrice)
       } catch (ex) {
@@ -622,6 +618,10 @@ export function useChartPrices(chainId, symbol, isStable, period, currentAverage
     dedupingInterval: 60000,
     focusThrottleInterval: 60000 * 10
   })
+
+  if (isStable) {
+    return [getStablePriceData(), () => {}]
+  }
 
   return [prices, updatePrices]
 }
