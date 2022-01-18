@@ -7,45 +7,15 @@
   border-radius: 4px;
 }
 
-.buy-input.Exchange-swap-section:not(.highlighted) {
-  border: 2px solid #A0A3C433;
-  border-radius: 8px;
-}
-
-.buy-input.Exchange-swap-section {
-  margin-bottom: 0.5rem;
-  box-sizing: border-box;
-}
-
-.buy-input .Exchange-swap-balance-select {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.buy-input .Exchange-swap-max-btn {
-  font-size: 0.774rem;
-  line-height: 1rem;
-  font-weight: 500;
-  letter-spacing: 0.4px;
-  color: #2D42FC;
-  margin-left: 0.5rem;
-  cursor: pointer;
-}
-
-.buy-input .PositionEditor-token-symbol {
-  text-align: left;
-}
-
 .buy-input .TokenSelector-box {
-  text-align: left;
-}
-
-.buy-input .Exchange-swap-input-container input, .buy-input .Exchange-swap-selected-token-symbol {
-  text-align: right;
-  font-size: 1.25rem;
-  line-height: 1.5rem;
-  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  padding: 0.5rem;
   color: #FFFFFF;
+  min-width: 6.77rem;
+  font-size: 1.25rem;
+  line-height: 1.625rem;
 }
 
 .buy-input .Exchange-swap-input-container {
@@ -53,68 +23,25 @@
   align-items: center;
 }
 
-.buy-input .Exchange-swap-label, .buy-input .Exchange-swap-selected-token-balance {
-  font-size: 0.774rem;
-  line-height: 1rem;
-  letter-spacing: 0.4px;
-  color: #A0A3C4;
-}
-
-.buy-input .Exchange-swap-balance {
-  font-size: 0.774rem;
-  line-height: 1rem;
-  letter-spacing: 0.4px;
+.buy-input .Exchange-swap-max {
+  position: unset;
   color: white;
+  font-size: 1rem;
 }
 
-.buy-input .Exchange-swap-section-top {
-  padding-bottom: 0;
+.buy-input .TokenSelector-caret {
+  margin: 0;
 }
 
-.buy-input .Exchange-swap-section-bottom.middle {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.buy-input .Exchange-swap-section-bottom {
-  padding: 0;
-}
-
-.buy-input .Exchange-swap-token-balance-block {
-  display: flex;
-  align-items: center;
+.buy-input .TokenSelector-box-symbol {
+  margin-left: 0.5rem;
 }
 
 .buy-input .PositionEditor-token-symbol {
   display: flex;
   align-items: center;
-  font-size: 0.875rem;
-  line-height: 1.0625rem;
-  letter-spacing: -0.35px;
-  color: #FFFFFF;
 }
 
-.buy-input .PositionEditor-token-symbol > img {
-  margin-right: 0.5rem;
-}
-
-.buy-input .TokenSelector-box {
-  display: flex;
-  align-items: center;
-  background: #1E1F37;
-  border-radius: 4px;
-  padding: 0.5rem;
-  font-size: 0.875rem;
-  line-height: 1.0625rem;
-  letter-spacing: -0.35px;
-  color: #FFFFFF;
-  min-width: 6.77rem;
-}
-
-.buy-input .TokenSelector-box .TokenSelector-box-symbol {
-  margin-right: 0.5rem;
-}
-
-.buy-input .TokenSelector-box .TokenSelector-box-caret {
-  margin-left: 1rem;
+.buy-input .PositionEditor-token-symbol img {
+  margin-left: 0.5rem;
 }

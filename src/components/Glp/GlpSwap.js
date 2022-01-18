@@ -637,7 +637,6 @@ export default function GlpSwap(props) {
               infoTokens={infoTokens}
               className="right"
               showSymbolImage={true}
-              showNewCaret={true}
             />
           </BuyInputSection>}
 
@@ -653,7 +652,7 @@ export default function GlpSwap(props) {
             balance={payBalance}
             defaultTokenName={'GLP'}
           >
-            <img src={glp24Icon} alt="glp24Icon" /> GLP
+            GLP <img src={glp24Icon} alt="glp24Icon" />
           </BuyInputSection>}
 
           <div className="AppOrder-ball-container">
@@ -671,7 +670,7 @@ export default function GlpSwap(props) {
             balance={receiveBalance}
             defaultTokenName={'GLP'}
           >
-            <img src={glp24Icon} alt="glp24Icon" /> GLP
+            GLP <img src={glp24Icon} alt="glp24Icon" />
           </BuyInputSection>}
 
           {!isBuying && <BuyInputSection
@@ -693,7 +692,6 @@ export default function GlpSwap(props) {
               infoTokens={infoTokens}
               className="right"
               showSymbolImage={true}
-              showNewCaret={true}
             />
           </BuyInputSection>}
           <div>
