@@ -34,22 +34,22 @@ async function getChartPricesFromStats(chainId, symbol, period) {
   const timeDiff = CHART_PERIODS[period] * 200
   const from = Math.floor(Date.now() / 1000 - timeDiff)
   const url = `${hostname}api/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`
-  const TIMEOUT = 3000
+  const TIMEOUT = 5000
   const res = await new Promise((resolve, reject) => {
-    setTimeout(() => reject(new Error(`${url} request timeout`)), TIMEOUT)
+    setTimeout(() => reject(new Error(`request timeout ${url}`)), TIMEOUT)
     fetch(url).then(resolve).catch(reject)
   })
   if (!res.ok) {
-    throw new Error(`${res.status} ${res.statusText}`)
+    throw new Error(`request failed ${res.status} ${res.statusText}`)
   }
   const json = await res.json()
   let prices = json?.prices
-  const updatedAt = json?.updatedAt || 0
   if (!prices || prices.length < 10) {
-    throw new Error(`not enough prices: ${prices?.length}`)
+    throw new Error(`not enough prices data: ${prices?.length}`)
   }
 
   const OBSOLETE_THRESHOLD = Date.now() / 1000 - (60 * 30) // 30 min ago
+  const updatedAt = json?.updatedAt || 0
   if (updatedAt < OBSOLETE_THRESHOLD) {
     throw new Error('chart data is obsolete, last price record at ' + new Date(updatedAt * 1000).toISOString())
   }
@@ -159,6 +159,7 @@ export function useChartPrices(chainId, symbol, isStable, period, currentAverage
         return await getChartPricesFromStats(chainId, symbol, period)
       } catch (ex) {
         console.warn(ex)
+        console.warn('Switching to graph chainlink data')
         try {
           return await getChainlinkChartPricesFromGraph(symbol, period)
         } catch (ex2) {
