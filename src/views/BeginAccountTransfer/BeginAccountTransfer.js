@@ -8,6 +8,7 @@ import { getContract } from '../../Addresses'
 import { callContract } from '../../Api'
 
 import Modal from '../../components/Modal/Modal'
+import Footer from "../../Footer"
 
 import Token from '../../abis/Token.json'
 import Vester from '../../abis/Vester.json'
@@ -207,7 +208,7 @@ export default function BeginAccountTransfer(props) {
   const pendingTransferLink = `/complete_account_transfer/${account}/${pendingReceiver}`
 
   return (
-    <div className="BeginAccountTransfer Page">
+    <div className="BeginAccountTransfer Page page-layout">
       <Modal isVisible={isTransferSubmittedModalVisible} setIsVisible={setIsTransferSubmittedModalVisible} label="Transfer Submitted">
         Your transfer has been initiated.<br/>
         <br/>
@@ -254,6 +255,7 @@ export default function BeginAccountTransfer(props) {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }
