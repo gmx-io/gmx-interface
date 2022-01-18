@@ -1,24 +1,21 @@
 import { ethers } from 'ethers';
-import { helperToast } from "./Helpers"
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client'
+import { gql } from '@apollo/client'
 import { useState, useEffect, useCallback } from 'react'
 import { Token as UniToken } from '@uniswap/sdk-core'
 import { Pool } from '@uniswap/v3-sdk'
 import useSWR from 'swr'
 
-import OrderBook from './abis/OrderBook.json'
-import Vault from './abis/Vault.json'
-import Router from './abis/Router.json'
-import UniPool from './abis/UniPool.json'
-import Token from './abis/Token.json'
+import OrderBook from '../abis/OrderBook.json'
+import Vault from '../abis/Vault.json'
+import Router from '../abis/Router.json'
+import UniPool from '../abis/UniPool.json'
+import Token from '../abis/Token.json'
 
-import { getContract } from './Addresses'
-import { getConstant } from './Constants'
+import { getContract } from '../Addresses'
+import { getConstant } from '../Constants'
 import {
   ARBITRUM,
   AVALANCHE,
-  USD_DECIMALS,
-  CHART_PERIODS,
   // DEFAULT_GAS_LIMIT,
   bigNumberify,
   getExplorerUrl,
@@ -30,51 +27,20 @@ import {
   fetcher,
   parseValue,
   expandDecimals,
-  formatAmount
-} from './Helpers'
+  helperToast
+} from '../Helpers'
 import {
   getTokenBySymbol
-} from './data/Tokens'
+} from '../data/Tokens'
+
+import {
+  nissohGraphClient,
+  arbitrumGraphClient,
+  avalancheGraphClient
+} from './common'
+export * from './prices'
 
 const { AddressZero } = ethers.constants
-
-// Ethereum network, Chainlink Aggregator contracts
-const FEED_ID_MAP = {
-  "BTC_USD": "0xae74faa92cb67a95ebcab07358bc222e33a34da7",
-  "ETH_USD": "0x37bc7498f4ff12c19678ee8fe19d713b87f6a9e6",
-  "BNB_USD": "0xc45ebd0f901ba6b2b8c7e70b717778f055ef5e6d",
-  "LINK_USD": "0xdfd03bfc3465107ce570a0397b247f546a42d0fa",
-  "UNI_USD": "0x68577f915131087199fe48913d8b416b3984fd38",
-  "SUSHI_USD": "0x7213536a36094cd8a768a5e45203ec286cba2d74",
-  "AVAX_USD": "0x0fc3657899693648bba4dbd2d8b33b82e875105d",
-  "AAVE_USD": "0xe3f0dede4b499c07e12475087ab1a084b5f93bc0",
-  "YFI_USD": "0x8a4d74003870064d41d4f84940550911fbfccf04",
-  "SPELL_USD": "0x8640b23468815902e011948f3ab173e1e83f9879"
-};
-
-const CHAINLINK_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/deividask/chainlink";
-const chainlinkClient = new ApolloClient({
-  uri: CHAINLINK_GRAPH_API_URL,
-  cache: new InMemoryCache()
-});
-
-const ARBITRUM_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-stats"
-const arbitrumGraphClient = new ApolloClient({
-  uri: ARBITRUM_GRAPH_API_URL,
-  cache: new InMemoryCache()
-});
-
-const AVALANCHE_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats"
-const avalancheGraphClient = new ApolloClient({
-  uri: AVALANCHE_GRAPH_API_URL,
-  cache: new InMemoryCache()
-});
-
-const NISSOH_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault"
-const nissohGraphClient = new ApolloClient({
-  uri: NISSOH_GRAPH_API_URL,
-  cache: new InMemoryCache()
-});
 
 function getGmxGraphClient(chainId) {
   if (chainId === ARBITRUM) {
@@ -307,208 +273,7 @@ export function usePositionsForOrders(chainId, library, orders) {
   return positions
 }
 
-async function getChartPricesFromStats(chainId, symbol, period, currentAveragePrice) {
-  if (['WBTC', 'WETH', 'WAVAX'].includes(symbol)) {
-    symbol = symbol.substr(1)
-  }
-  const hostname = 'https://stats.gmx.io/'
-  // const hostname = 'http://localhost:3113/'
-  const timeDiff = CHART_PERIODS[period] * 200
-  const from = Math.floor(Date.now() / 1000 - timeDiff)
-  const url = `${hostname}api/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`
-  const TIMEOUT = 3000
-  const res = await new Promise((resolve, reject) => {
-    setTimeout(() => reject(new Error(`${url} request timeout`)), TIMEOUT)
-    fetch(url).then(resolve).catch(reject)
-  })
-  if (!res.ok) {
-    throw new Error(`${res.status} ${res.statusText}`)
-  }
-  const json = await res.json()
-  const prices = json?.prices
-  const updatedAt = json?.updatedAt || 0
-  if (!prices || prices.length < 10) {
-    throw new Error(`not enough prices: ${prices?.length}`)
-  }
 
-  const OBSOLETE_THRESHOLD = Date.now() / 1000 - (60 * 60 * 30) // 30 min
-  if (updatedAt < OBSOLETE_THRESHOLD) {
-    throw new Error('chart data is obsolete, last price record at ' + new Date(updatedAt * 1000).toISOString())
-  }
-
-  if (currentAveragePrice && prices.length) {
-    const last = prices[prices.length - 1]
-    currentAveragePrice = parseFloat(formatAmount(currentAveragePrice, USD_DECIMALS, 2))
-    prices.push({
-      t: Math.floor(Date.now() / 1000),
-      o: last.o,
-      c: currentAveragePrice,
-      h: Math.max(last.h, currentAveragePrice),
-      l: Math.min(last.l, currentAveragePrice)
-    })
-  }
-
-  return prices.map(({ t: time, o: open, c: close, h: high, l: low}) => ({
-    time, open, close, high, low
-  }))
-}
-
-function getPriceDataFromChainlinkPrices(prices, period) {
-  let priceData = []
-  const timezoneOffset = -(new Date()).getTimezoneOffset() * 60
-  const now = parseInt(Date.now() / 1000)
-
-  if (prices && prices.length) {
-    const result = [...prices];
-    let minValue = result.length === 0 ? 1000000 : parseFloat(result[0][1])
-    let maxValue = 0
-    for (let i = 0; i < result.length; i++) {
-      const item = result[i]
-      const chartValue = parseFloat(item[1])
-      if (!isNaN(chartValue)) {
-        if (chartValue > maxValue) {
-          maxValue = chartValue
-        }
-        if (chartValue < minValue) {
-          minValue = chartValue
-        }
-      }
-
-      if (parseInt(item[0]) <= now) {
-        priceData.push({
-          time: item[0],
-          value: chartValue
-        })
-      }
-    }
-
-    const groupedPriceData = []
-    let prevFrame = 0
-    const periodSeconds = CHART_PERIODS[period]
-
-    let open
-    let low
-    let high
-    let close
-    let time
-
-    priceData.forEach((item, i) => {
-      time = item.time + timezoneOffset
-      const frame = Math.floor(time / periodSeconds)
-      const value = item.value
-
-      if (prevFrame && frame > prevFrame) {
-        close = close + (value - close) * 0.5
-
-        groupedPriceData.push({
-          time: prevFrame * periodSeconds,
-          open,
-          low,
-          high,
-          close,
-          frame: prevFrame
-        })
-
-        if (prevFrame && frame - prevFrame > 1) {
-          let j = 1
-          while (j < frame - prevFrame) {
-            groupedPriceData.push({
-              time: (prevFrame + j) * periodSeconds,
-              open: close,
-              low: close,
-              high: close,
-              close: close,
-              frame: prevFrame + j
-            })
-            j++
-
-          }
-        }
-
-        open = 0
-        low = 0
-        high = 0
-      }
-
-      prevFrame = frame
-      if (!open) open = close || value
-      if (!low || value < low) low = value
-      if (!high || value > high) high = value
-      close = value
-    })
-
-    groupedPriceData.push({
-      time: prevFrame * periodSeconds,
-      open,
-      low,
-      high,
-      close,
-      frame: prevFrame
-    })
-    priceData = groupedPriceData
-  }
-  return priceData
-}
-
-function getChainlinkChartPricesFromGraph(tokenSymbol, period, currentAveragePrice) {
-  if (['WBTC', 'WETH', 'WAVAX'].includes(tokenSymbol)) {
-    tokenSymbol = tokenSymbol.substr(1)
-  }
-  const marketName = tokenSymbol + '_USD'
-  const feedId = FEED_ID_MAP[marketName];
-  if (!feedId) {
-    throw new Error(`undefined marketName ${marketName}`)
-  }
-
-  const PER_CHUNK = 1000;
-  const CHUNKS_TOTAL = 6;
-  const requests = [];
-  for (let i = 0; i < CHUNKS_TOTAL; i++) {
-    const query = gql(`{
-      rounds(
-        first: ${PER_CHUNK},
-        skip: ${i * PER_CHUNK},
-        orderBy: unixTimestamp,
-        orderDirection: desc,
-        where: {feed: "${feedId}"}
-      ) {
-        unixTimestamp,
-        value
-      }
-    }`)
-    requests.push(chainlinkClient.query({query}))
-  }
-
-  return Promise.all(requests).then(chunks => {
-    const prices = [];
-    const uniqTs = new Set();
-    chunks.forEach(chunk => {
-      chunk.data.rounds.forEach(item => {
-        if (uniqTs.has(item.unixTimestamp)) {
-          return;
-        }
-
-        uniqTs.add(item.unixTimestamp)
-        prices.push([
-            item.unixTimestamp,
-            Number(item.value) / 1e8
-        ]);
-      })
-    });
-
-    prices.sort(([timeA], [timeB]) => timeA - timeB)
-    if (currentAveragePrice) {
-      prices.push([Math.floor(Date.now() / 1000), formatAmount(currentAveragePrice, USD_DECIMALS, 2)])
-    }
-    return getPriceDataFromChainlinkPrices(
-      prices,
-      period,
-      currentAveragePrice
-    )
-  }).catch(err => {
-    console.error(err);
-  })
-}
 
 function invariant(condition, errorMsg) {
   if (!condition) {
@@ -580,50 +345,6 @@ export function useGmxPrice() {
   return { data: gmxPrice, mutate }
 }
 
-function getStablePriceData(period) {
-  const periodSeconds = CHART_PERIODS[period]
-  const now = Date.now() / 1000;
-  let priceData = []
-  for (let i = 100; i > 0; i--) {
-    priceData.push({
-      time: now - i * periodSeconds,
-      open: 1,
-      close: 1,
-      high: 1,
-      low: 1
-    })
-  }
-  return priceData
-}
-
-export function useChartPrices(chainId, symbol, isStable, period, currentAveragePrice) {
-  const swrKey = !isStable && symbol ? ['getChartCandles', chainId, symbol, period] : null
-  const { data: prices = [], mutate: updatePrices } = useSWR(swrKey, {
-    fetcher: async () => {
-      try {
-        return await getChartPricesFromStats(chainId, symbol, period, currentAveragePrice)
-      } catch (ex) {
-        console.warn(ex)
-        try {
-          const _prices = await getChainlinkChartPricesFromGraph(symbol, period, currentAveragePrice)
-          return _prices
-        } catch (ex2) {
-          console.warn('getChainlinkChartPricesFromGraph failed')
-          console.warn(ex2)
-          return []
-        }
-      }
-    },
-    dedupingInterval: 60000,
-    focusThrottleInterval: 60000 * 10
-  })
-
-  if (isStable) {
-    return [getStablePriceData(period), () => {}]
-  }
-
-  return [prices, updatePrices]
-}
 
 export async function approvePlugin(chainId, pluginAddress, { library, pendingTxns, setPendingTxns }) {
   const routerAddress = getContract(chainId, "Router")
