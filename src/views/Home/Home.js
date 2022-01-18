@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react'
 import Footer from "../../Footer"
 import { Link, NavLink } from 'react-router-dom'
-// import { FiPlus, FiMinus } from "react-icons/fi"
 
 import './Home.css';
 
@@ -10,14 +9,11 @@ import costIcon from '../../img/ic_cost.svg'
 import liquidityIcon from '../../img/ic_liquidity.svg'
 import totaluserIcon from '../../img/ic_totaluser.svg'
 
-// import bscIcon from '../../img/ic_bsc.svg'
 import arbitrumIcon from '../../img/ic_arbitrum_96.svg'
 import avaIcon from '../../img/ic_avalanche_96.svg'
 
 import statsIcon from '../../img/ic_stats.svg'
 import tradingIcon from '../../img/ic_trading.svg'
-import gmxBigIcon from '../../img/ic_gmx_custom.svg'
-import glpBigIcon from '../../img/ic_glp_custom.svg'
 
 import useSWR from 'swr'
 
@@ -38,7 +34,7 @@ import { useWeb3React } from '@web3-react/core'
 
 import { useUserStat } from "../../Api"
 
-import APRLabel from '../../components/APRLabel/APRLabel'
+import TokenCard from '../../components/TokenCard/TokenCard'
 
 export default function Home() {
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
@@ -255,36 +251,7 @@ export default function Home() {
           <div className="Home-token-card-info">
             <div className="Home-token-card-info__title">Two tokens create our ecosystem</div>
           </div>
-          <div className="Home-token-card-options">
-            <div className="Home-token-card-option">
-              <div className="Home-token-card-option-icon">
-                <img src={gmxBigIcon} alt="gmxBigIcon" /> GMX
-              </div>
-              <div className="Home-token-card-option-info">
-                <div className="Home-token-card-option-title">GMX is the utility and governance token, and also accrues 30% of the platform's generated fees.</div>
-                <div className="Home-token-card-option-apr">Arbitrum APR: <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />, Avalanche APR: <APRLabel chainId={AVALANCHE} label="gmxAprTotal" key="AVALANCHE" /></div>
-                <div className="Home-token-card-option-action">
-                  <Link to="/buy" className="default-btn buy">Buy</Link>
-                  <Link to="/earn" className="default-btn">Stake</Link>
-                  <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noreferrer" className="default-btn read-more">Read more</a>
-                </div>
-              </div>
-            </div>
-            <div className="Home-token-card-option">
-              <div className="Home-token-card-option-icon">
-                <img src={glpBigIcon} alt="glpBigIcon" /> GLP
-              </div>
-              <div className="Home-token-card-option-info">
-                <div className="Home-token-card-option-title">GLP is the platform's liquidity provider token. Accrues 70% of its generated fees.</div>
-                <div className="Home-token-card-option-apr">Arbitrum APR: <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />, Avalanche APR: <APRLabel chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" /></div>
-                <div className="Home-token-card-option-action">
-                  <Link to="/buy_glp" className="default-btn buy">Buy</Link>
-                  <Link to="/earn" className="default-btn">Stake</Link>
-                  <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noreferrer" className="default-btn read-more">Read more</a>
-                </div>
-              </div>
-            </div>
-          </div>
+          <TokenCard />
         </div>
       </div>
 

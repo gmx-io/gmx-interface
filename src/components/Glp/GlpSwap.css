@@ -2,8 +2,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 1rem;
-  padding: 1rem;
-  background: #16182E;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
@@ -32,9 +30,9 @@
 }
 
 .GlpSwap-content .GlpSwap-stats-card, .GlpSwap-content .GlpSwap-box {
-  border: 2px solid #A0A3C433;
+  background: #16182E;
   border-radius: 8px;
-  background: unset;
+  border: none;
 }
 
 .GlpSwap-stats-card .App-card-row {

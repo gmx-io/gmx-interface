@@ -536,7 +536,7 @@ export default function GlpSwap(props) {
   const nativeTokenSymbol = getNativeToken(chainId).symbol
 
   return (
-    <div className="GlpSwap Page page-layout">
+    <div className="GlpSwap">
       {renderErrorModal()}
       {/* <div className="Page-title-section">
         <div className="Page-title">{isBuying ? "Buy GLP" : "Sell GLP"}</div>
