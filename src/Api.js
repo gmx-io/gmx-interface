@@ -313,7 +313,7 @@ async function getChartPricesFromStats(chainId, symbol, period, currentAveragePr
   }
   const hostname = 'https://stats.gmx.io/'
   // const hostname = 'http://localhost:3113/'
-  const timeDiff = period === '1d' ? 180 * 86400 : 90 * 86400
+  const timeDiff = CHART_PERIODS[period] * 200
   const from = Math.floor(Date.now() / 1000 - timeDiff)
   const url = `${hostname}api/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`
   const TIMEOUT = 3000

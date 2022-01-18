@@ -334,17 +334,18 @@ export default function ExchangeTVChart(props) {
 	const timeThreshold = now - 24 * 60 * 60
 
 	if (priceData) {
-    for (const { time, close: value } of priceData) {
-			if (time < timeThreshold) {
-				break;
-			}
-			if (!low) { low = value }
-			if (!high) { high = value }
+    for (let i = priceData.length - 1; i > 0; i--) {
+      const price = priceData[i]
+      if (price.time < timeThreshold) {
+        break
+      }
+			if (!low) { low = price.low }
+			if (!high) { high = price.high }
 
-			if (value > high) { high = value }
-			if (value < low) { low = value }
+			if (price.high > high) { high = price.high }
+			if (price.low < low) { low = price.low }
 
-			deltaPrice = value
+			deltaPrice = price.open
 		}
 	}
 
