@@ -7,7 +7,7 @@ html, body, #root {
   font-family: "Relative";
   letter-spacing: 0.5px;
   font-size: 15.5px;
-  background: #0b0b0f;
+  background-color: #101124;
 }
 
 * {
@@ -321,4 +321,11 @@ button.btn-link:hover .logout-icon {
 
 .mt-0 {
   margin-top: 0!important;
+}
+
+.page-layout {
+  min-height: calc(100vh - 62px);
+  display: flex;
+  flex-direction: column;
+  padding-bottom: calc(3rem + 168px);
 }

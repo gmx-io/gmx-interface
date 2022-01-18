@@ -16,8 +16,11 @@ import avaIcon from '../../img/ic_avalanche_96.svg'
 
 import statsIcon from '../../img/ic_stats.svg'
 import tradingIcon from '../../img/ic_trading.svg'
-// import gmxBigIcon from '../../img/ic_gmx_big.svg'
+import gmxBigIcon from '../../img/ic_gmx_custom.svg'
+import glpBigIcon from '../../img/ic_glp_custom.svg'
+
 import useSWR from 'swr'
+
 import {
   formatAmount,
   bigNumberify,
@@ -27,24 +30,135 @@ import {
   useChainId,
   ARBITRUM,
   AVALANCHE,
-  switchNetwork
+  switchNetwork,
+  fetcher,
+  formatKeyAmount,
+  getTotalVolumeSum,
+  getBalanceAndSupplyData,
+  getDepositBalanceData,
+  getVestingData,
+  getStakingData,
+  getProcessedData
 } from '../../Helpers'
+
+import Vault from '../../abis/Vault.json'
+import ReaderV2 from '../../abis/ReaderV2.json'
+import RewardReader from '../../abis/RewardReader.json'
+import Token from '../../abis/Token.json'
+import GlpManager from '../../abis/GlpManager.json'
 
 import { useWeb3React } from '@web3-react/core'
 
-import { useUserStat } from "../../Api"
+import { useUserStat, useGmxPrice } from "../../Api"
 
-function getTotalVolumeSum(volumes) {
-  if (!volumes || volumes.length === 0) {
-    return
+import { getContract } from '../../Addresses'
+
+import { ethers } from 'ethers'
+const { AddressZero } = ethers.constants
+
+function APRComponent ({chainId, label}) {
+  const { library } = useWeb3React()
+
+  const active = false
+  const account = undefined
+
+  const rewardReaderAddress = getContract(chainId, "RewardReader")
+  const readerAddress = getContract(chainId, "Reader")
+
+  const vaultAddress = getContract(chainId, "Vault")
+  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
+  const gmxAddress = getContract(chainId, "GMX")
+  const esGmxAddress = getContract(chainId, "ES_GMX")
+  const bnGmxAddress = getContract(chainId, "BN_GMX")
+  const glpAddress = getContract(chainId, "GLP")
+
+  const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker")
+  const bonusGmxTrackerAddress = getContract(chainId, "BonusGmxTracker")
+  const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker")
+
+  const stakedGlpTrackerAddress = getContract(chainId, "StakedGlpTracker")
+  const feeGlpTrackerAddress = getContract(chainId, "FeeGlpTracker")
+
+  const glpManagerAddress = getContract(chainId, "GlpManager")
+
+  const gmxVesterAddress = getContract(chainId, "GmxVester")
+  const glpVesterAddress = getContract(chainId, "GlpVester")
+
+  const vesterAddresses = [gmxVesterAddress, glpVesterAddress]
+
+  const walletTokens = [gmxAddress, esGmxAddress, glpAddress, stakedGmxTrackerAddress]
+  const depositTokens = [
+    gmxAddress,
+    esGmxAddress,
+    stakedGmxTrackerAddress,
+    bonusGmxTrackerAddress,
+    bnGmxAddress,
+    glpAddress
+  ]
+  const rewardTrackersForDepositBalances = [
+    stakedGmxTrackerAddress,
+    stakedGmxTrackerAddress,
+    bonusGmxTrackerAddress,
+    feeGmxTrackerAddress,
+    feeGmxTrackerAddress,
+    feeGlpTrackerAddress
+  ]
+  const rewardTrackersForStakingInfo = [
+    stakedGmxTrackerAddress,
+    bonusGmxTrackerAddress,
+    feeGmxTrackerAddress,
+    stakedGlpTrackerAddress,
+    feeGlpTrackerAddress
+  ]
+
+  const { data: walletBalances } = useSWR(["StakeV2:walletBalances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero], {
+    fetcher: fetcher(library, ReaderV2, [walletTokens]),
+  })
+
+  const { data: depositBalances } = useSWR(["StakeV2:depositBalances", chainId, rewardReaderAddress, "getDepositBalances", account || AddressZero], {
+    fetcher: fetcher(library, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
+  })
+
+  const { data: stakingInfo } = useSWR(["StakeV2:stakingInfo", chainId, rewardReaderAddress, "getStakingInfo", account || AddressZero], {
+    fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
+  })
+
+  const { data: stakedGmxSupply } = useSWR(["StakeV2:stakedGmxSupply", chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
+    fetcher: fetcher(library, Token),
+  })
+
+  const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
+    fetcher: fetcher(library, GlpManager),
+  })
+
+  const { data: nativeTokenPrice } = useSWR([`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress], {
+    fetcher: fetcher(library, Vault),
+  })
+
+  const { data: vestingInfo } = useSWR([`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || AddressZero], {
+    fetcher: fetcher(library, ReaderV2, [vesterAddresses]),
+  })
+
+  const { data: gmxPrice } = useGmxPrice()
+
+  const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
+  const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
+    fetcher: (...args) => fetch(...args).then(res => res.text())
+  })
+
+  let aum
+  if (aums && aums.length > 0) {
+    aum = aums[0].add(aums[1]).div(2)
   }
 
-  let volume = bigNumberify(0)
-  for (let i = 0; i < volumes.length; i++) {
-    volume = volume.add(volumes[i].data.volume)
-  }
+  const { balanceData, supplyData } = getBalanceAndSupplyData(walletBalances)
+  const depositBalanceData = getDepositBalanceData(depositBalances)
+  const stakingData = getStakingData(stakingInfo)
+  const vestingData = getVestingData(vestingInfo)
 
-  return volume
+  const processedData = getProcessedData(balanceData, supplyData, depositBalanceData, stakingData, vestingData, aum, nativeTokenPrice, stakedGmxSupply, gmxPrice, gmxSupply)
+
+  return <>{`${formatKeyAmount(processedData, label, 2, 2, true)}%`}</>
 }
 
 export default function Home() {
@@ -78,30 +192,66 @@ export default function Home() {
   const { chainId } = useChainId()
   const { active } = useWeb3React()
 
-  const positionStatsUrl = getServerUrl(ARBITRUM, "/position_stats")
-  const { data: positionStats } = useSWR([positionStatsUrl], {
+  // ARBITRUM
+
+  const arbitrumPositionStatsUrl = getServerUrl(ARBITRUM, "/position_stats")
+  const { data: arbitrumPositionStats } = useSWR([arbitrumPositionStatsUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
 
-  const totalVolumeUrl = getServerUrl(ARBITRUM, "/total_volume")
-  const { data: totalVolume } = useSWR([totalVolumeUrl], {
+  const arbitrumTotalVolumeUrl = getServerUrl(ARBITRUM, "/total_volume")
+  const { data: arbitrumTotalVolume } = useSWR([arbitrumTotalVolumeUrl], {
+    fetcher: (...args) => fetch(...args).then(res => res.json())
+  })
+
+  // AVALANCHE
+
+  const avalanchePositionStatsUrl = getServerUrl(AVALANCHE, "/position_stats")
+  const { data: avalanchePositionStats } = useSWR([avalanchePositionStatsUrl], {
+    fetcher: (...args) => fetch(...args).then(res => res.json())
+  })
+
+  const avalancheTotalVolumeUrl = getServerUrl(AVALANCHE, "/total_volume")
+  const { data: avalancheTotalVolume } = useSWR([avalancheTotalVolumeUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.json())
   })
 
   // Total Volume
 
-  const totalVolumeSum = getTotalVolumeSum(totalVolume)
+  const arbitrumTotalVolumeSum = getTotalVolumeSum(arbitrumTotalVolume)
+  const avalancheTotalVolumeSum = getTotalVolumeSum(avalancheTotalVolume)
+
+  let totalVolumeSum = bigNumberify(0)
+  if (arbitrumTotalVolumeSum && avalancheTotalVolumeSum) {
+    totalVolumeSum = totalVolumeSum.add(arbitrumTotalVolumeSum)
+    totalVolumeSum = totalVolumeSum.add(avalancheTotalVolumeSum)
+  }
 
   // Open Interest
 
   let openInterest = bigNumberify(0)
-  if (positionStats && positionStats.totalLongPositionSizes && positionStats.totalShortPositionSizes) {
-    openInterest = openInterest.add(positionStats.totalLongPositionSizes)
-    openInterest = openInterest.add(positionStats.totalShortPositionSizes)
+  if (arbitrumPositionStats && arbitrumPositionStats.totalLongPositionSizes && arbitrumPositionStats.totalShortPositionSizes) {
+    openInterest = openInterest.add(arbitrumPositionStats.totalLongPositionSizes)
+    openInterest = openInterest.add(arbitrumPositionStats.totalShortPositionSizes)
+  }
+
+  if (avalanchePositionStats && avalanchePositionStats.totalLongPositionSizes && avalanchePositionStats.totalShortPositionSizes) {
+    openInterest = openInterest.add(avalanchePositionStats.totalLongPositionSizes)
+    openInterest = openInterest.add(avalanchePositionStats.totalShortPositionSizes)
   }
 
   // user stat
-  const userStats = useUserStat(ARBITRUM)
+  const arbitrumUserStats = useUserStat(ARBITRUM)
+  const avalancheUserStats = useUserStat(AVALANCHE)
+  let totalUsers = 0
+
+  if (arbitrumUserStats && arbitrumUserStats.uniqueCount) {
+    totalUsers += arbitrumUserStats.uniqueCount
+  }
+
+  if (avalancheUserStats && avalancheUserStats.uniqueCount) {
+    totalUsers += avalancheUserStats.uniqueCount
+  }
 
   const changeNetwork = useCallback(network => {
     if (network === chainId) {
@@ -151,7 +301,7 @@ export default function Home() {
             <img src={totaluserIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
               <div className="Home-latest-info__title">Total Users</div>
-              <div className="Home-latest-info__value">{numberWithCommas(userStats && userStats.uniqueCount.toFixed(0))}</div>
+              <div className="Home-latest-info__value">{numberWithCommas(totalUsers.toFixed(0))}</div>
             </div>
           </div>
         </div>
@@ -215,6 +365,43 @@ export default function Home() {
                 <div className="Home-cta-option-title">Avalanche</div>
                 <div className="Home-cta-option-action">
                   <Link to="/trade" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>Launch Exchange</Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="Home-token-card-section">
+        <div className="Home-token-card-container default-container">
+          <div className="Home-token-card-info">
+            <div className="Home-token-card-info__title">Two tokens create our ecosystem</div>
+          </div>
+          <div className="Home-token-card-options">
+            <div className="Home-token-card-option">
+              <div className="Home-token-card-option-icon">
+                <img src={gmxBigIcon} alt="gmxBigIcon" /> GMX
+              </div>
+              <div className="Home-token-card-option-info">
+                <div className="Home-token-card-option-title">GMX is the utility and governance token, and also accrues 30% of the platform's generated fees.</div>
+                <div className="Home-token-card-option-apr">Arbitrum APR: <APRComponent chainId={ARBITRUM} label="gmxAprTotal" />, Avalanche APR: <APRComponent chainId={AVALANCHE} label="gmxAprTotal" key="AVALANCHE" /></div>
+                <div className="Home-token-card-option-action">
+                  <Link to="/buy" className="default-btn buy">Buy</Link>
+                  <Link to="/earn" className="default-btn">Stake</Link>
+                  <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noreferrer" className="default-btn read-more">Read more</a>
+                </div>
+              </div>
+            </div>
+            <div className="Home-token-card-option">
+              <div className="Home-token-card-option-icon">
+                <img src={glpBigIcon} alt="glpBigIcon" /> GLP
+              </div>
+              <div className="Home-token-card-option-info">
+                <div className="Home-token-card-option-title">GLP is the platform's liquidity provider token. Accrues 70% of its generated fees.</div>
+                <div className="Home-token-card-option-apr">Arbitrum APR: <APRComponent chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />, Avalanche APR: <APRComponent chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" /></div>
+                <div className="Home-token-card-option-action">
+                  <Link to="/buy_glp" className="default-btn buy">Buy</Link>
+                  <Link to="/earn" className="default-btn">Stake</Link>
+                  <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noreferrer" className="default-btn read-more">Read more</a>
                 </div>
               </div>
             </div>
