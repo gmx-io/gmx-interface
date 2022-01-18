@@ -1,0 +1,440 @@
+.BuyGMXGLP {
+    background: #101124;
+    justify-content: space-between;
+}
+
+.BuyGMXGLP-container {
+    padding: 3rem 0 2rem 0;
+    width: 100%;
+}
+
+.BuyGMXGLP-container .section-title-content {
+    justify-content: center;
+}
+
+.BuyGMXGLP-container .react-tabs__tab-list {
+    height: 56px;
+    margin-bottom: 0;
+    border-bottom: 1px solid #1E2136;
+    background: #16182E;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    box-sizing: border-box;
+}
+
+.BuyGMXGLP-container .react-tabs__tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 25%;
+    border: 0;
+    opacity: 0.65;
+}
+
+.BuyGMXGLP-container .react-tabs__tab.react-tabs__tab--selected {
+    background: #37527B33;
+    color: white;
+    border: none;
+    position: relative;
+    opacity: 1;
+}
+
+.BuyGMXGLP-container .react-tabs__tab:not(.react-tabs__tab--selected):hover {
+    background: #37527B14;
+    color: white;
+    border: none;
+    position: relative;
+    opacity: 1;
+}
+
+.BuyGMXGLP-container .react-tabs__tab.react-tabs__tab--selected::after,
+.BuyGMXGLP-container .react-tabs__tab:hover::after {
+    content: ' ';
+    background: #2D42FC;
+    height: 2px;
+    width: 100%;
+    position: absolute;
+    bottom: 1px;
+}
+
+.BuyGMXGLP-container .react-tabs__tab:focus:after {
+    content: unset;
+}
+
+.BuyGMXGLP-Tabitem-content {
+    display: flex;
+    align-items: center;
+}
+
+.BuyGMXGLP-Tabitem-content span {
+    font-size: 1.2903rem;
+    line-height: 1.6774rem;
+    margin-left: 8px;
+}
+
+.BuyGMXGLP-container .react-tabs__tab:first-child {
+    width: 50%;
+}
+
+.BuyGMXGLP-block {
+    background: #1F2037;
+    border-radius: 4px;
+    padding: 1rem;
+    max-width: 37.677rem;
+    width: 100%;
+}
+
+.BuyGMXGLP-panel {
+    text-align: center;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.BuyGMXGLP-title {
+    font-size: 2.2rem;
+    line-height: 3.097rem;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    margin-bottom: 1.5484rem;
+    font-family: 'Relative Bold';
+}
+
+.BuyGMXGLP-description {
+    font-size: 1rem;
+    line-height: 1.484rem;
+    letter-spacing: 0px;
+    color: #A0A3C4;
+}
+
+.better-rates-description {
+    letter-spacing: 0;
+}
+
+.BuyGMXGLP-description a {
+    text-decoration: none;
+    position: relative;
+}
+
+.alternative-bridges {
+    margin: 1.290rem auto 0;
+    max-width: 528px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.alternative-bridges a {
+    display: flex;
+    position: relative;
+}
+
+.direct-purchase-options {
+    margin: 1.290rem auto 0rem;
+    display: flex;
+    justify-content: center;
+}
+
+.direct-purchase-options a {
+  display: inline-flex;
+}
+
+.direct-purchase-options a.banxa-button img {
+  background: rgba(255, 255, 255, 0.1);
+  text-align: center;
+  border-radius: 4px;
+}
+
+.direct-purchase-options a.banxa-button img:hover {
+  background: #FFFFFF1F;
+}
+
+.direct-purchase-options a.banxa-button {
+    position: relative;
+}
+
+.alternative-bridges a:hover::before,
+.alternative-bridges a:focus::before {
+    content: " ";
+    position: absolute;
+    background: #FFFFFF1F;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+}
+
+.alternative-bridges a.Hop:hover::before,
+.alternative-bridges a.Hop:focus::before {
+    content: " ";
+    position: absolute;
+    background: #FFFFFF14;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+}
+
+.direct-purchase-options a.banxa-button:hover::before {
+    content: " ";
+    position: absolute;
+    background: #FFFFFF14;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+}
+
+.direct-purchase-options a.banxa-button:active::before {
+    content: " ";
+    position: absolute;
+    background: #FFFFFF29;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+}
+
+.BuyGMXGLP-purchase-block {
+    background-image: url('../../img/btn_big_purchasegmx.png');
+    max-width: 376px;
+    width: 100%;
+    min-height: 80px;
+    margin: 1.290rem auto 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 9px 12px #00000054;
+    border: 1px solid #1E2136;
+    border-radius: 4px;
+    text-decoration: none;
+    position: relative;
+}
+
+.BuyGMXGLP-purchase-block:hover::before {
+    content: " ";
+    position: absolute;
+    background: #50D0FE19;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+}
+
+.BuyGMXGLP-purchase-block:active::before {
+    content: " ";
+    position: absolute;
+    background: #50D0FE3d;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+}
+
+.BuyGMXGLP-purchase-block-info {
+    margin-left: 0.5rem;
+    text-align: left;
+}
+
+.BuyGMXGLP-purchase-block-info__title {
+    font-size: 1.677rem;
+    line-height: 2.129rem;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+}
+
+.BuyGMXGLP-purchase-block-info__subtitle {
+    color: #6B6D84;
+    font-size: 1.161rem;
+    line-height: 1.484rem;
+    letter-spacing: 0px;
+}
+
+.BuyGMXGLP-panel .GLP-block-section {
+    display: flex;
+    max-width: 416px;
+    justify-content: space-between;
+    margin: 0 auto;
+    margin-top: 1.548rem;
+}
+
+.GLP-block {
+    background-image: url('../../img/btn_big_purchasegmx.png');
+    background-size: 100% 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 72px;
+    box-shadow: 0px 9px 12px #00000054;
+    border: 1px solid #1E2136;
+    border-radius: 4px;
+    text-decoration: none;
+    position: relative;
+}
+
+.GLP-block:hover::before {
+    content: " ";
+    position: absolute;
+    background: #50D0FE19;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+}
+
+.GLP-block:active::before {
+    content: " ";
+    position: absolute;
+    background: #50D0FE3d;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+}
+
+.GLP-block .GLP-block-icon {
+    display: flex;
+}
+
+.GLP-block .GLP-block-label {
+    color: white;
+    font-size: 1.161rem;
+    line-height: 1rem;
+    margin-left: 0.516rem;
+}
+
+.GMX-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 72px;
+    background: transparent linear-gradient(71deg, #3C495A 0%, #5C677E 50%, #3C495A 100%) 0% 0% no-repeat padding-box;
+    box-shadow: 0px 9px 12px #00000054;
+    border: 1px solid #1E2136;
+    border-radius: 4px;
+    text-decoration: none;
+    position: relative;
+}
+
+.GMX-block:hover::before {
+    content: " ";
+    position: absolute;
+    background: #ffffff19;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+}
+
+.GMX-block:active::before {
+    content: " ";
+    position: absolute;
+    background: #ffffff29;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+}
+
+.GMX-block .GMX-block-icon {
+    display: flex;
+}
+
+.GMX-block .GMX-block-description {
+    color: #9ea1c2;
+    font-size: 0.903rem;
+    line-height: 1.161rem;
+    margin-left: 0.516rem;
+}
+
+.GMX-block .GMX-block-label {
+    color: white;
+    font-size: 1.161rem;
+    line-height: 1.2903rem;
+    margin-left: 0.516rem;
+}
+
+.GMX-block .GMX-block-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 0.5rem;
+}
+
+.GMX-block-section {
+    display: flex;
+    justify-content: center;
+    margin: 1rem auto 0;
+}
+
+@media (max-width: 600px) {
+    .alternative-bridges {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .alternative-bridges a + a {
+        margin-top: 1rem;
+    }
+
+    .BuyGMXGLP-purchase-block {
+        padding-left: 1.859rem;
+    }
+
+    .BuyGMXGLP-panel .GLP-block-section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .GLP-block-section .GLP-block + .GLP-block {
+        margin-top: 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .BuyGMXGLP-container {
+        padding-left: 16px!important;
+        padding-right: 16px!important;
+    }
+
+    .BuyGMXGLP-description {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+
+    .BuyGMXGLP-purchase-block {
+        padding-left: 1.5rem;
+    }
+
+    .BuyGMXGLP-purchase-block-info {
+        margin-left: 1.5rem;
+        text-align: left;
+    }
+
+    .BuyGMXGLP-purchase-block-info__title {
+        font-size: 1.5rem;
+        line-height: 2rem;
+    }
+
+    .BuyGMXGLP-purchase-block-info__subtitle {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+}
