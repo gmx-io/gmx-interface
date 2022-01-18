@@ -7,6 +7,7 @@ import {
 	USD_DECIMALS,
 	SWAP,
   INCREASE,
+  CHART_PERIODS,
 	getTokenInfo,
 	formatAmount,
 	formatDateTime,
@@ -45,143 +46,6 @@ function getChartToken(swapOption, fromToken, toToken, chainId) {
 }
 
 const DEFAULT_PERIOD = "4h"
-const PERIODS = {
-  "15m": 0.25,
-  "1h": 1,
-  "4h": 4,
-  "1d": 24
-}
-
-function getPriceData(prices, chartToken, period) {
-  if (!chartToken) {
-    return {}
-  }
-
-  let priceData = []
-  const now = parseInt(Date.now() / 1000)
-  let lastPrice
-
-  if (chartToken.isStable) {
-    const now = Date.now() / 1000;
-    const HOURS_IN_MONTH = 30 * 24;
-    const SECONDS_IN_HOUR = 60 * 60;
-    for (let i = HOURS_IN_MONTH; i > 0; i--) {
-      priceData.push({
-        time: now - i * SECONDS_IN_HOUR,
-        value: 1,
-        open: 1,
-        close: 1,
-        high: 1,
-        low: 1
-      })
-    }
-    return {
-      lastPrice: 1,
-      priceData
-    }
-  }
-
-  if (prices && prices.length) {
-    const result = [...prices];
-    if (chartToken && chartToken.maxPrice && chartToken.minPrice) {
-			const currentAveragePrice = chartToken.maxPrice.add(chartToken.minPrice).div(2)
-      result.push([now, formatAmount(currentAveragePrice, USD_DECIMALS, 2)])
-    }
-    let minValue = result.length === 0 ? 1000000 : parseFloat(result[0][1])
-    let maxValue = 0
-    for (let i = 0; i < result.length; i++) {
-      const item = result[i]
-      const chartValue = parseFloat(item[1])
-      if (!isNaN(chartValue)) {
-        if (chartValue > maxValue) {
-          maxValue = chartValue
-        }
-        if (chartValue < minValue) {
-          minValue = chartValue
-        }
-      }
-
-      if (parseInt(item[0]) <= now) {
-        priceData.push({
-          time: item[0],
-          value: chartValue
-        })
-      }
-    }
-
-    if (IS_CANDLESTICKS) {
-      const groupedPriceData = []
-      let prevFrame = 0
-      const PERIOD = 60 * 60 * PERIODS[period]
-
-      let open
-      let low
-      let high
-      let close
-      let time
-
-      priceData.forEach((item, i) => {
-        time = item.time + timezoneOffset
-        const frame = Math.floor(time / PERIOD)
-        const value = item.value
-
-        if (prevFrame && frame > prevFrame) {
-          close = close + (value - close) * 0.5
-
-          groupedPriceData.push({
-            time: prevFrame * PERIOD,
-            open,
-            low,
-            high,
-            close,
-            frame: prevFrame
-          })
-
-          if (prevFrame && frame - prevFrame > 1) {
-            let j = 1
-            while (j < frame - prevFrame) {
-              groupedPriceData.push({
-                time: (prevFrame + j) * PERIOD,
-                open: close,
-                low: close,
-                high: close,
-                close: close,
-                frame: prevFrame + j
-              })
-              j++
-
-            }
-          }
-
-          open = 0
-          low = 0
-          high = 0
-        }
-
-        prevFrame = frame
-        if (!open) open = close || value
-        if (!low || value < low) low = value
-        if (!high || value > high) high = value
-        close = value
-      })
-
-      groupedPriceData.push({
-        time: prevFrame * PERIOD,
-        open,
-        low,
-        high,
-        close,
-        frame: prevFrame
-      })
-      priceData = groupedPriceData
-    }
-
-    if (priceData.length) {
-      lastPrice = priceData[priceData.length - 1].value;
-    }
-  }
-  return { lastPrice, priceData }
-}
 
 const getSeriesOptions = () => ({
   // https://github.com/tradingview/lightweight-charts/blob/master/docs/area-series.md
@@ -261,7 +125,7 @@ export default function ExchangeTVChart(props) {
   const [currentSeries, setCurrentSeries] = useState();
 
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD)
-  if (!(period in PERIODS)) {
+  if (!(period in CHART_PERIODS)) {
     period = DEFAULT_PERIOD
   }
 
@@ -295,12 +159,19 @@ export default function ExchangeTVChart(props) {
     })
   }, [orders, chartToken, swapOption, chainId])
 
-  const pricesPeriod = period === '1d' ? 150 * 86400 : 60 * 86400
-  const [prices, updatePrices] = useChartPrices(chainId, !chartToken.isStable && marketName, pricesPeriod);
   const ref = useRef(null);
   const chartRef = useRef(null);
 
-  const { priceData } = getPriceData(prices, chartToken, period)
+  const currentAveragePrice = chartToken.maxPrice && chartToken.minPrice
+    ? chartToken.maxPrice.add(chartToken.minPrice).div(2)
+    : null
+  const [priceData, updatePriceData] = useChartPrices(
+    chainId,
+    chartToken.symbol,
+    chartToken.isStable,
+    period,
+    currentAveragePrice,
+  )
 
   const [chartInited, setChartInited] = useState(false);
   useEffect(() => {
@@ -310,7 +181,7 @@ export default function ExchangeTVChart(props) {
   }, [marketName, previousMarketName])
 
   const scaleChart = useCallback(() => {
-    const from = Date.now() / 1000 - 7 * 86400 * PERIODS[period] / 2 + timezoneOffset;
+    const from = Date.now() / 1000 - 7 * 86400 * CHART_PERIODS[period] / 2 + timezoneOffset;
     const to = Date.now() / 1000 + timezoneOffset;
     currentChart.timeScale().setVisibleRange({from, to});
   }, [currentChart, period]);
@@ -358,10 +229,10 @@ export default function ExchangeTVChart(props) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      updatePrices(undefined, true)
+      updatePriceData(undefined, true)
     }, 60 * 1000)
     return () => clearInterval(interval);
-  }, [updatePrices])
+  }, [updatePriceData])
 
   useEffect(() => {
     if (!currentChart) { return; }
@@ -455,7 +326,6 @@ export default function ExchangeTVChart(props) {
 	let high
 	let low
 	let deltaPrice
-	let currentAveragePrice
 	let delta
 	let deltaPercentage
 	let deltaPercentageStr
@@ -463,9 +333,8 @@ export default function ExchangeTVChart(props) {
   const now = parseInt(Date.now() / 1000)
 	const timeThreshold = now - 24 * 60 * 60
 
-	if (prices) {
-		for (let i = prices.length - 1; i > 0; i--) {
-			const [ time, value ] = prices[i]
+	if (priceData) {
+    for (const { time, close: value } of priceData) {
 			if (time < timeThreshold) {
 				break;
 			}
@@ -477,10 +346,6 @@ export default function ExchangeTVChart(props) {
 
 			deltaPrice = value
 		}
-	}
-
-	if (chartToken && chartToken.minPrice && chartToken.maxPrice) {
-		currentAveragePrice = chartToken.maxPrice.add(chartToken.minPrice).div(2)
 	}
 
 	if (deltaPrice && currentAveragePrice) {
@@ -540,7 +405,7 @@ export default function ExchangeTVChart(props) {
       <div className="ExchangeChart-bottom App-box App-box-border">
         <div className="ExchangeChart-bottom-header">
           <div className="ExchangeChart-bottom-controls">
-            <Tab options={Object.keys(PERIODS)} option={period} setOption={setPeriod} />
+            <Tab options={Object.keys(CHART_PERIODS)} option={period} setOption={setPeriod} />
           </div>
           {candleStatsHtml}
         </div>
