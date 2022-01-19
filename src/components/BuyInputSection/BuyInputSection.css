@@ -11,7 +11,7 @@
   display: flex;
   align-items: center;
   border-radius: 4px;
-  padding: 0.5rem;
+  padding: 0.5rem 0;
   color: #FFFFFF;
   min-width: 6.77rem;
   font-size: 1.25rem;
@@ -40,8 +40,24 @@
 .buy-input .PositionEditor-token-symbol {
   display: flex;
   align-items: center;
+  margin-left: 0.9rem;
 }
 
 .buy-input .PositionEditor-token-symbol img {
   margin-left: 0.5rem;
+}
+
+.buy-input .Exchange-swap-section-top {
+  padding-bottom: 0;
+}
+
+.buy-input .selected-token {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.buy-input .Exchange-swap-balance {
+  color: white;
 }

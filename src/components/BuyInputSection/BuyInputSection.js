@@ -13,8 +13,8 @@ export default function BuyInputSection(props) {
         <div className="muted">
           {topLeftLabel}: {balance}
         </div>
-        <div className={cx("muted", "align-right", { clickable: onClickTopRightLabel })} onClick={onClickTopRightLabel}>
-        <span className="Exchange-swap-label">{topRightLabel}</span>&nbsp;<span className="Exchange-swap-balance">{tokenBalance} {(selectedToken && selectedToken.symbol) || defaultTokenName}</span>
+        <div className={cx("align-right", { clickable: onClickTopRightLabel })} onClick={onClickTopRightLabel}>
+        <span className="Exchange-swap-label muted">{topRightLabel}</span>&nbsp;<span className="Exchange-swap-balance">{tokenBalance} {(selectedToken && selectedToken.symbol) || defaultTokenName}</span>
         </div>
       </div>
       <div className="Exchange-swap-section-bottom">

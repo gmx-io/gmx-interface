@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import { Link, useHistory } from 'react-router-dom'
 
 import GlpSwap from '../../components/Glp/GlpSwap'
-import statsBigIcon from '../../img/ic_stats_big.svg'
+import buyGLPIcon from '../../img/ic_buy_glp.svg'
 import Footer from "../../Footer"
 import "./BuyGlp.css"
 
@@ -19,7 +19,7 @@ export default function BuyGlp(props) {
     <div className="default-container buy-glp-content page-layout">
       <div className="section-title-block">
         <div className="section-title-icon">
-          <img src={statsBigIcon} alt="statsBigIcon" />
+          <img src={buyGLPIcon} alt="buyGLPIcon" />
         </div>
         <div className="section-title-content">
           <div className="section-title-content__title">
