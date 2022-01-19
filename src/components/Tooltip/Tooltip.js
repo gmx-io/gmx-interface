@@ -14,6 +14,8 @@ export default function Tooltip(props) {
   const intervalCloseRef = useRef(null)
   const intervalOpenRef = useRef(null)
 
+  const { tooltipIconPosition = 'left' } = props
+
   const position = props.position ?? 'left-bottom'
   const trigger = props.trigger ?? 'hover'
 
@@ -59,15 +61,18 @@ export default function Tooltip(props) {
 
   return (
     <span className="Tooltip">
-      <span className={cx({'Tooltip-handle': !props.disableHandleStyle}, [props.handleClassName])} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
+      {tooltipIconPosition === 'left' && <span className={cx({ 'Tooltip-handle': !props.disableHandleStyle }, [props.handleClassName])} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
         <img src={infoIcon} alt="infoIcon" width="14px" />
-      </span>
+      </span>}
       {props.handle}
       {visible &&
         <div className={cx(['Tooltip-popup', position])} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
           {props.renderContent()}
         </div>
       }
+      {tooltipIconPosition === 'right' && <span className={cx({ 'Tooltip-handle': !props.disableHandleStyle }, 'right', [props.handleClassName])} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
+        <img src={infoIcon} alt="infoIcon" width="14px" />
+      </span>}
     </span>
   )
 }

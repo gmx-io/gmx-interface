@@ -70,6 +70,13 @@
   margin-right: 4px;
 }
 
+.Tooltip-handle.right {
+  cursor: help;
+  position: relative;
+  display: inline-flex;
+  margin-left: 4px;
+}
+
 .Tooltip-handle:before {
   position: absolute;
   content: '';
