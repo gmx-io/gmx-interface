@@ -36,7 +36,8 @@ import {
   GLP_COOLDOWN_DURATION,
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
-  DEFAULT_MAX_USDG_AMOUNT
+  DEFAULT_MAX_USDG_AMOUNT,
+  ARBITRUM,
 } from '../../Helpers'
 
 import { callContract, useGmxPrice } from '../../Api'
@@ -58,6 +59,9 @@ import Token from '../../abis/Token.json'
 import glp24Icon from '../../img/ic_glp_24.svg'
 import glp40Icon from '../../img/ic_glp_40.svg'
 import arrowIcon from '../../img/ic_convert_down.svg'
+
+import avalanche16Icon from '../../img/ic_avalanche_16.svg'
+import arbitrum16Icon from '../../img/ic_arbitrum_16.svg'
 
 import "./GlpSwap.css"
 
@@ -504,7 +508,7 @@ export default function GlpSwap(props) {
     }
   }
 
-  let payLabel = "Sell"
+  let payLabel = "Pay"
   let receiveLabel = "Receive"
   let payBalance = "$0.00"
   let receiveBalance = "$0.00"
@@ -565,7 +569,16 @@ export default function GlpSwap(props) {
       <div className="GlpSwap-content">
         <div className="App-card GlpSwap-stats-card">
           <div className="App-card-title">
-            <img src={glp40Icon} alt="glp40Icon" />
+            <div className="GlpSwap-stats-mark">
+              <div className="GlpSwap-stats-mark-icon">
+                <img src={glp40Icon} alt="glp40Icon" />
+                {chainId === ARBITRUM ? <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" /> : <img src={avalanche16Icon} alt="avalanche16Icon" className="selected-network-symbol" />}
+              </div>
+              <div className="GlpSwap-stats-mark-info">
+                <div className="GlpSwap-stats-mark-title">GLP</div>
+                <div className="GlpSwap-stats-mark-subtitle">GLP</div>
+              </div>
+            </div>
           </div>
           <div className="App-card-content">
             <div className="App-card-row">
@@ -620,8 +633,6 @@ export default function GlpSwap(props) {
             <div onClick={() => switchSwapOption()} className={cx("swap-option", isBuying && "active")}>Buy GLP</div>
             <div onClick={() => switchSwapOption('redeem')} className={cx("swap-option", !isBuying && "active")}>Sell GLP</div>
           </div>
-          <div className="App-card-title">Swap</div>
-
           {isBuying && <BuyInputSection
             topLeftLabel={payLabel}
             topRightLabel={`Balance: `}
@@ -659,7 +670,9 @@ export default function GlpSwap(props) {
             balance={payBalance}
             defaultTokenName={'GLP'}
           >
-            GLP <img src={glp24Icon} alt="glp24Icon" />
+            <div className="selected-token">
+              GLP <img src={glp24Icon} alt="glp24Icon" />
+            </div>
           </BuyInputSection>}
 
           <div className="AppOrder-ball-container">
@@ -677,7 +690,9 @@ export default function GlpSwap(props) {
             balance={receiveBalance}
             defaultTokenName={'GLP'}
           >
-            GLP <img src={glp24Icon} alt="glp24Icon" />
+            <div className="selected-token">
+              GLP <img src={glp24Icon} alt="glp24Icon" />
+            </div>
           </BuyInputSection>}
 
           {!isBuying && <BuyInputSection
@@ -733,10 +748,10 @@ export default function GlpSwap(props) {
         <div className="Tab-title-section">
           <div className="Tab-title">Save on Fees</div>
           {isBuying && <div className="Tab-description">
-            Fees may vary depending on which asset you use to buy GLP.<br/> Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
+            Fees may vary depending on which asset you use to buy GLP.<br /> Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
           </div>}
           {!isBuying && <div className="Tab-description">
-            Fees may vary depending on which asset sell GLP for.<br/> Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
+            Fees may vary depending on which asset sell GLP for.<br /> Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
           </div>}
         </div>
         <div className="GlpSwap-token-list-content">

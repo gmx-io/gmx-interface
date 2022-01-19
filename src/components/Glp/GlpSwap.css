@@ -1,6 +1,6 @@
 .GlpSwap-content {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr auto;
   grid-gap: 2rem;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
@@ -34,13 +34,24 @@
   background: #16182E;
   border-radius: 8px;
   border: none;
+  width: 100%;
+}
+
+.GlpSwap-content .GlpSwap-stats-card {
+  max-width: 45.935rem;
+}
+
+.GlpSwap-content .GlpSwap-box {
+  max-width: 29.935rem;
 }
 
 .GlpSwap-stats-card .App-card-row {
-  padding-top: 0.71rem!important;
-  padding-bottom: 0.71rem!important;
+  padding-top: 0.452rem!important;
+  padding-bottom: 0.452rem!important;
   padding-left: 1rem;
   padding-right: 1rem;
+  font-size: 0.903rem;
+  line-height: 1.161rem;
 }
 
 .GlpSwap-stats-card .App-card-row:nth-child(odd) {
@@ -49,6 +60,38 @@
 
 .GlpSwap-stats-card .App-card-content {
   grid-row-gap: 0;
+}
+
+.GlpSwap-stats-card .GlpSwap-stats-mark-icon {
+  position: relative;
+  margin-right: 0.5rem;
+  display: flex;
+}
+
+.GlpSwap-stats-card .GlpSwap-stats-mark-icon .selected-network-symbol {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border: 1px solid #1E1F37;
+  border-radius: 50%;
+}
+
+.GlpSwap-stats-card .GlpSwap-stats-mark {
+  display: flex;
+}
+
+.GlpSwap-stats-mark .GlpSwap-stats-mark-title {
+  font-size: 1.032rem;
+  line-height: 1.355rem;
+  letter-spacing: 0px;
+  color: #FFFFFF;
+}
+
+.GlpSwap-stats-mark .GlpSwap-stats-mark-subtitle {
+  font-size: 0.774rem;
+  line-height: 1rem;
+  letter-spacing: 0px;
+  color: #A0A3C4;
 }
 
 .GlpSwap-token-list {
@@ -83,7 +126,7 @@
   height: 1rem;
   margin-bottom: 0.5rem;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
 }
 
@@ -109,9 +152,9 @@
 }
 
 .GlpSwap-cta .Exchange-swap-button {
-  max-width: 22.194rem;
   margin: 0 auto;
   justify-content: center;
+  min-height: 3.097rem;
 }
 
 .token-table {
@@ -196,5 +239,9 @@
 @media (max-width: 900px) {
   .GlpSwap-content {
     grid-template-columns: 1fr;
+  }
+
+  .GlpSwap-content .GlpSwap-stats-card, .GlpSwap-content .GlpSwap-box {
+    max-width: 100%;
   }
 }
