@@ -89,6 +89,7 @@ export default function Ecosystem() {
               GMX Positions Bot
               <div className="App-card-title-icon">
                 <img src={arbitrumIcon} alt="arbitrumIcon" />
+                <img src={avalancheIcon} alt="avalancheIcon" />
               </div>
             </div>
             <div className="App-card-divider"></div>
