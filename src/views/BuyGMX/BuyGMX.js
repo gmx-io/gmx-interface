@@ -3,11 +3,11 @@ import Footer from "../../Footer"
 import 'react-tabs/style/react-tabs.css';
 import './BuyGMX.css';
 
-import Synapse from '../../img/Synapse.png'
-import Anyswap from '../../img/Anyswap.png'
-import Hop from '../../img/Hop.png'
+import Synapse from '../../img/ic_synapse.svg'
+import Multiswap from '../../img/ic_multiswap.svg'
+import Hop from '../../img/ic_hop.svg'
 import Banxa from '../../img/ic_banxa.svg'
-import Binance from '../../img/binance.png'
+import Binance from '../../img/ic_binance_logo.svg'
 import gmx64Icon from '../../img/ic_gmx_30.svg'
 
 import olympusIcon from '../../img/ic_olympus.svg'
@@ -64,16 +64,23 @@ export default function BuyGMX() {
             </div>
             <div className="alternative-bridges">
               <a href="https://synapseprotocol.com/?inputCurrency=ETH&outputCurrency=ETH&outputChain=42161" target="_blank" rel="noopener noreferrer" className="Synapse">
-                <img src={Synapse} alt="Synapse" />
+                <div className="transfer-eth-icon">
+                  <img src={Synapse} alt="Synapse" />
+                </div>
+                Synapse
               </a>
-              <a href="https://anyswap.exchange/bridge#/bridge" target="_blank" rel="noopener noreferrer" className="Anyswap">
-                <img src={Anyswap} alt="Anyswap" />
+              <a href="https://app.multichain.org/#/router" target="_blank" rel="noopener noreferrer" className="Multiswap">
+                <div className="transfer-eth-icon">
+                  <img src={Multiswap} alt="Multiswap" />
+                </div>
+                Multiswap
               </a>
               <a href="https://app.hop.exchange/send?token=USDC&sourceNetwork=ethereum&destNetwork=arbitrum" target="_blank" rel="noopener noreferrer" className="Hop">
-                <img src={Hop} alt="Hop" />
+                <div className="transfer-eth-icon">
+                  <img src={Hop} alt="Hop" /> </div> Hop
               </a>
               <a href="https://binance.com/" target="_blank" rel="noopener noreferrer" className="Binance">
-                <img src={Binance} alt="Binance" />
+                <div className="transfer-eth-icon"><img src={Binance} alt="Binance" /></div> Binance
               </a>
             </div>
           </div>
