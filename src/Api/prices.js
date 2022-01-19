@@ -1,5 +1,7 @@
+import { useMemo } from 'react'
 import { gql } from '@apollo/client'
 import useSWR from 'swr'
+import { ethers } from 'ethers'
 
 import {
   USD_DECIMALS,
@@ -9,6 +11,8 @@ import {
 import {
   chainlinkClient
 } from './common'
+
+const BigNumber = ethers.BigNumber
 
 // Ethereum network, Chainlink Aggregator contracts
 const FEED_ID_MAP = {
@@ -24,6 +28,36 @@ const FEED_ID_MAP = {
   "SPELL_USD": "0x8640b23468815902e011948f3ab173e1e83f9879"
 };
 const timezoneOffset = -(new Date()).getTimezoneOffset() * 60
+
+function fillGaps(prices, periodSeconds) {
+  if (prices.length < 2) {
+    return prices
+  }
+
+  const newPrices = [prices[0]]
+  let prevTime = prices[0].time
+  for (let i = 1; i < prices.length; i++) {
+    const { time, open } = prices[i]
+    if (prevTime) {
+      let j = (time - prevTime) / periodSeconds - 1
+      while (j > 0) {
+        newPrices.push({
+          time: time - j * periodSeconds,
+          open,
+          close: open,
+          high: open * 1.0003,
+          low: open * 0.9996
+        })
+        j--
+      }
+    }
+
+    prevTime = time
+    newPrices.push(prices[i])
+  }
+
+  return newPrices
+}
 
 async function getChartPricesFromStats(chainId, symbol, period) {
   if (['WBTC', 'WETH', 'WAVAX'].includes(symbol)) {
@@ -125,7 +159,7 @@ function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
   }
 
   return Promise.all(requests).then(chunks => {
-    const prices = [];
+    let prices = [];
     const uniqTs = new Set();
     chunks.forEach(chunk => {
       chunk.data.rounds.forEach(item => {
@@ -142,19 +176,20 @@ function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
     });
 
     prices.sort(([timeA], [timeB]) => timeA - timeB)
-    return getCandlesFromPrices(
+    prices = getCandlesFromPrices(
       prices,
       period
     )
+    return prices
   }).catch(err => {
     console.error(err);
   })
 }
 
 export function useChartPrices(chainId, symbol, isStable, period, currentAveragePrice) {
-  const swrKey = !isStable && symbol ? ['getChartCandles', chainId, symbol, period] : null
-  let { data: prices = [], mutate: updatePrices } = useSWR(swrKey, {
-    fetcher: async () => {
+  const swrKey = (!isStable && symbol) ? ['getChartCandles', chainId, symbol, period] : null
+  let { data: prices, mutate: updatePrices } = useSWR(swrKey, {
+    fetcher: async (...args) => {
       try {
         return await getChartPricesFromStats(chainId, symbol, period)
       } catch (ex) {
@@ -173,15 +208,25 @@ export function useChartPrices(chainId, symbol, isStable, period, currentAverage
     focusThrottleInterval: 60000 * 10
   })
 
-  if (isStable) {
-    return [getStablePriceData(period), () => {}]
-  }
+  const currentAveragePriceString = currentAveragePrice && currentAveragePrice.toString()
+  const retPrices = useMemo(() => {
+    if (isStable) {
+      return getStablePriceData(period)
+    }
 
-  if (currentAveragePrice && prices.length) {
-    prices = appendCurrentAveragePrice(prices, currentAveragePrice, period)
-  }
+    if (!prices) {
+      return []
+    }
 
-  return [prices, updatePrices]
+    let _prices = [...prices]
+    if (currentAveragePriceString && prices.length) {
+      _prices = appendCurrentAveragePrice(_prices, BigNumber.from(currentAveragePriceString), period)
+    }
+
+    return fillGaps(_prices, CHART_PERIODS[period])
+  }, [prices, isStable, currentAveragePriceString, period])
+
+  return [retPrices, updatePrices]
 }
 
 function appendCurrentAveragePrice(prices, currentAveragePrice, period) {
