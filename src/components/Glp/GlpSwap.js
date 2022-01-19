@@ -763,7 +763,7 @@ export default function GlpSwap(props) {
                 <th>POOL</th>
                 <th>WALLET</th>
                 <th>
-                  <Tooltip handle={'FEES'} position="right-bottom text-none" renderContent={() => {
+                  <Tooltip handle={'FEES'} tooltipIconPosition="right" position="right-bottom text-none" renderContent={() => {
                     return <>
                       <div>Fees will be shown once you have entered an amount in the order form.</div>
                     </>
@@ -831,6 +831,7 @@ export default function GlpSwap(props) {
                           <Tooltip
                             handle={`$${formatAmount(managedUsd, USD_DECIMALS, 2, true)}`}
                             position="right-bottom"
+                            tooltipIconPosition="right"
                             renderContent={() => {
                               return <>
                                 Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol}<br />
