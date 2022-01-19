@@ -105,6 +105,7 @@
   padding: 1rem;
   padding-top: 0;
   text-align: left;
+  overflow-x: scroll;
 }
 
 .GlpSwap-token-list-content .App-card {
