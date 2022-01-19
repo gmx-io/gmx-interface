@@ -532,42 +532,63 @@ function CompoundModal(props) {
     })
   }
 
+  const toggleShouldStakeGmx = (value) => {
+    if (value) {
+      setShouldClaimGmx(true)
+    }
+    setShouldStakeGmx(value)
+  }
+
+  const toggleShouldStakeEsGmx = (value) => {
+    if (value) {
+      setShouldClaimEsGmx(true)
+    }
+    setShouldStakeEsGmx(value)
+  }
+
+  const toggleConvertWeth = (value) => {
+    if (value) {
+      setShouldClaimWeth(true)
+    }
+    setShouldConvertWeth(value)
+  }
+
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label="Compound Rewards">
         <div className="CompoundModal-menu">
           <div>
-  					<Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx}>
+  					<Checkbox isChecked={shouldStakeMultiplierPoints} setIsChecked={setShouldStakeMultiplierPoints}>
+  						Stake Multiplier Points
+  					</Checkbox>
+          </div>
+          <div>
+  					<Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx} disabled={shouldStakeGmx}>
   						Claim GMX Rewards
   					</Checkbox>
           </div>
           <div>
-  					<Checkbox isChecked={shouldStakeGmx} setIsChecked={setShouldStakeGmx}>
-  						Compound GMX Rewards
+  					<Checkbox isChecked={shouldStakeGmx} setIsChecked={toggleShouldStakeGmx}>
+  						Stake GMX Rewards
   					</Checkbox>
           </div>
           <div>
-  					<Checkbox isChecked={shouldClaimEsGmx} setIsChecked={setShouldClaimEsGmx}>
+  					<Checkbox isChecked={shouldClaimEsGmx} setIsChecked={setShouldClaimEsGmx} disabled={shouldStakeEsGmx}>
   						Claim esGMX Rewards
   					</Checkbox>
           </div>
           <div>
-  					<Checkbox isChecked={shouldStakeEsGmx} setIsChecked={setShouldStakeEsGmx}>
-  						Compound esGMX Rewards
+  					<Checkbox isChecked={shouldStakeEsGmx} setIsChecked={toggleShouldStakeEsGmx}>
+  						Stake esGMX Rewards
   					</Checkbox>
           </div>
           <div>
-  					<Checkbox isChecked={shouldStakeMultiplierPoints} setIsChecked={setShouldStakeMultiplierPoints}>
-  						Compound Multiplier Points
-  					</Checkbox>
-          </div>
-          <div>
-  					<Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth}>
+  					<Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth} disabled={shouldConvertWeth}>
   						Claim {wrappedTokenSymbol} Rewards
   					</Checkbox>
           </div>
           <div>
-  					<Checkbox isChecked={shouldConvertWeth} setIsChecked={setShouldConvertWeth}>
+  					<Checkbox isChecked={shouldConvertWeth} setIsChecked={toggleConvertWeth}>
   						Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
   					</Checkbox>
           </div>
@@ -634,6 +655,13 @@ function ClaimModal(props) {
     })
   }
 
+  const toggleConvertWeth = (value) => {
+    if (value) {
+      setShouldClaimWeth(true)
+    }
+    setShouldConvertWeth(value)
+  }
+
   return (
     <div className="StakeModal">
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label="Claim Rewards">
@@ -649,12 +677,12 @@ function ClaimModal(props) {
   					</Checkbox>
           </div>
           <div>
-  					<Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth}>
+  					<Checkbox isChecked={shouldClaimWeth} setIsChecked={setShouldClaimWeth} disabled={shouldConvertWeth}>
   						Claim {wrappedTokenSymbol} Rewards
   					</Checkbox>
           </div>
           <div>
-  					<Checkbox isChecked={shouldConvertWeth} setIsChecked={setShouldConvertWeth}>
+  					<Checkbox isChecked={shouldConvertWeth} setIsChecked={toggleConvertWeth}>
   						Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
   					</Checkbox>
           </div>
@@ -894,7 +922,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       updateStakingInfo, updateAums, updateNativeTokenPrice,
       updateStakedGmxSupply, updateEsGmxSupply, updateGmxPrice,
       updateVestingInfo, updateGmxSupply])
-  
+
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
