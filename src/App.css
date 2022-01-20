@@ -432,6 +432,11 @@ button.App-connect-wallet:hover {
   max-width: 40rem;
 }
 
+.section-title-content .section-title-content__description span {
+  cursor: pointer;
+  color: white;
+}
+
 .Page-title-section {
   padding-left: 3rem;
   padding-right: 1rem;
