@@ -125,9 +125,25 @@
     background: #FFFFFF1F;
 }
 
-.GMX-btn-icon {
+.GMX-btn-icon-block {
     display: flex;
     margin-right: 0.75rem;
+}
+
+.GMX-btn-icon {
+    display: flex;
+    position: relative;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.GMX-btn-icon-network {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
 }
 
 .GMX-btn-label {
