@@ -21,8 +21,12 @@ import avax30Icon from '../../img/ic_avax_30.svg'
 
 import olympusIcon from '../../img/ic_olympus.svg'
 import buyTransferETHIcon from '../../img/buy_transfer_eth.svg'
+import buyTransferAVAXIcon from '../../img/ic_transfer_avax.svg'
 import buyGMXIcon from '../../img/buy_gmx.svg'
 import buyGMXBondIcon from '../../img/buy_gmx_bond.svg'
+
+import arbitrum16Icon from '../../img/ic_arbitrum_16.svg'
+import avalanche16Icon from '../../img/ic_avalanche_16.svg'
 
 export default function BuyGMX() {
   const { chainId } = useChainId()
@@ -58,7 +62,7 @@ export default function BuyGMX() {
         </div>}
         {chainId === AVALANCHE && <div className="section-title-block">
           <div className="section-title-icon">
-            <img src={buyTransferETHIcon} alt="buyTransferETHIcon" />
+            <img src={buyTransferAVAXIcon} alt="buyTransferAVAXIcon" />
           </div>
           <div className="section-title-content">
             <div className="section-title-content__title">
@@ -82,8 +86,10 @@ export default function BuyGMX() {
               </div>
               <div className="direct-purchase-options">
                 <a href="https://gmx.banxa.com" target="_blank" rel="noopener noreferrer" className="GMX-btn">
-                  <div className="GMX-btn-icon">
-                    <img src={Banxa} alt="Banxa" />
+                  <div className="GMX-btn-icon-block">
+                    <div className="GMX-btn-icon">
+                      <img src={Banxa} alt="Banxa" />
+                    </div>
                   </div>
                   <div className="GMX-btn-label">
                     Banxa
@@ -128,7 +134,7 @@ export default function BuyGMX() {
         {chainId === AVALANCHE && <div className="BuyGMXGLP-panel">
           <div className="App-card">
             <div className="App-card-title">
-              Transfer ETH
+              Transfer AVAX
             </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
@@ -184,8 +190,13 @@ export default function BuyGMX() {
               </div>
               <div className="GMX-block-section">
                 <a href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" target="_blank" rel="noopener noreferrer" className="GMX-btn">
-                  <div className="GMX-btn-icon">
-                    <img src={gmx64Icon} alt="gmx64Icon" />
+                  <div className="GMX-btn-icon-block">
+                    <div className="GMX-btn-icon">
+                      <img src={gmx64Icon} alt="gmx64Icon" />
+                      <div className="GMX-btn-icon-network">
+                        <img src={arbitrum16Icon} alt="arbitrum16Icon" />
+                      </div>
+                    </div>
                   </div>
                   <div className="GMX-btn-label">
                     Purchase GMX
@@ -201,8 +212,13 @@ export default function BuyGMX() {
               </div>
               <div className="GMX-block-section">
                 <a href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" target="_blank" rel="noopener noreferrer" className="GMX-btn">
-                  <div className="GMX-btn-icon">
-                    <img src={gmx64Icon} alt="gmx64Icon" />
+                  <div className="GMX-btn-icon-block">
+                    <div className="GMX-btn-icon">
+                      <img src={gmx64Icon} alt="gmx64Icon" />
+                      <div className="GMX-btn-icon-network">
+                        <img src={avalanche16Icon} alt="avalanche16Icon" />
+                      </div>
+                    </div>
                   </div>
                   <div className="GMX-btn-label">
                     Purchase GMX
@@ -228,8 +244,13 @@ export default function BuyGMX() {
               <div className="BuyGMXGLP-description">You can also purchase GMX bonds by clicking here:</div>
               <div className="GMX-block-section">
                 <a href="https://pro.olympusdao.finance/#/partners/GMX" target="_blank" rel="noopener noreferrer" className="GMX-btn">
-                  <div className="GMX-btn-icon">
-                    <img src={olympusIcon} alt="olympusIcon" />
+                  <div className="GMX-btn-icon-block">
+                    <div className="GMX-btn-icon">
+                      <img src={olympusIcon} alt="olympusIcon" />
+                      <div className="GMX-btn-icon-network">
+                        <img src={arbitrum16Icon} alt="arbitrum16Icon" />
+                      </div>
+                    </div>
                   </div>
                   <div className="GMX-btn-label">
                     Olympus Pro
