@@ -404,6 +404,8 @@ button.App-connect-wallet:hover {
 
 .section-title-icon {
   margin-right: 0.774rem;
+  display: flex;
+  align-items: center;
 }
 
 .section-title-icon img {
