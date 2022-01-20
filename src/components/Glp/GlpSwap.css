@@ -1,7 +1,6 @@
 .GlpSwap-content {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-gap: 2rem;
+  display: flex;
+  justify-content: space-between;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
@@ -39,10 +38,12 @@
 
 .GlpSwap-content .GlpSwap-stats-card {
   max-width: 45.935rem;
+  margin-right: 1rem;
 }
 
 .GlpSwap-content .GlpSwap-box {
   max-width: 29.935rem;
+  margin-left: 1rem;
 }
 
 .GlpSwap-stats-card .App-card-row {
@@ -169,8 +170,12 @@
 .token-table td, .token-table th {
   padding-top: 1rem;
   padding-bottom: 1rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.token-table td:nth-child(3), .token-table th:nth-child(3) {
+  min-width: 255px;
 }
 
 .token-table td {
@@ -188,6 +193,7 @@
 .token-table th:last-child, .token-table td:last-child {
   padding-right: 1rem;
   text-align: right;
+  width: 175px;
 }
 
 .token-table th {
@@ -242,10 +248,17 @@
 
 @media (max-width: 900px) {
   .GlpSwap-content {
-    grid-template-columns: 1fr;
+    flex-wrap: wrap;
   }
 
-  .GlpSwap-content .GlpSwap-stats-card, .GlpSwap-content .GlpSwap-box {
+  .GlpSwap-content .GlpSwap-stats-card {
+    margin: 0;
+    margin-bottom: 2rem;
+    max-width: 100%;
+  }
+  
+  .GlpSwap-content .GlpSwap-box {
+    margin: 0;
     max-width: 100%;
   }
 }
