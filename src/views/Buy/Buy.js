@@ -49,7 +49,7 @@ export default function BuyGMXGLP() {
           </div>
           <div className="BuyGMXGLP-description better-rates-description">
             After you have ETH, set your wallet network to <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">Arbitrum</a> then click on the button below.<br/>
-            GMX liquidity is not available on Avalanche yet, it will be available in a few weeks time.
+            GMX liquidity is also available on Avalanche on <a href="https://traderjoexyz.com/#/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661" target="_blank" rel="noopener noreferrer">Trader Joe</a>.
           </div>
           <a href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" target="_blank" rel="noopener noreferrer" className="BuyGMXGLP-purchase-block">
             <div className="BuyGMXGLP-purchase-block-icon">
@@ -60,7 +60,7 @@ export default function BuyGMXGLP() {
               <div className="BuyGMXGLP-purchase-block-info__subtitle">Uniswap Arbitrum</div>
             </div>
           </a>
-          <div className="BuyGMXGLP-description">You can also buy GMX via Olympus Pro bonds on Arbitrum with a discount and a small vesting period.</div>
+          <div className="BuyGMXGLP-description">GMX bonds can be bought on Olympus Pro with a discount and a small vesting period.</div>
           <div className="GMX-block-section">
             <a href="https://pro.olympusdao.finance/#/partners/GMX" target="_blank" rel="noopener noreferrer" className="GMX-block">
               <div className="GMX-block-icon">
