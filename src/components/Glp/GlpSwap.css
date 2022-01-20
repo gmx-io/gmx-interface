@@ -105,7 +105,7 @@
   padding: 1rem;
   padding-top: 0;
   text-align: left;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .GlpSwap-token-list-content .App-card {
@@ -163,11 +163,14 @@
   margin-right: -1rem;
   width: calc(100% + 2rem);
   border-spacing: 0;
+  white-space: nowrap;
 }
 
 .token-table td, .token-table th {
   padding-top: 1rem;
   padding-bottom: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .token-table td {
