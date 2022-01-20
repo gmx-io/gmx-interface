@@ -46,6 +46,10 @@
   margin-left: 1rem;
 }
 
+.GlpSwap-box .Exchange-swap-option-tabs {
+  margin: 1rem 0;
+}
+
 .GlpSwap-stats-card .App-card-row {
   padding-top: 0.452rem!important;
   padding-bottom: 0.452rem!important;
@@ -211,39 +215,6 @@
 
 .token-table tbody tr:nth-child(even) {
   background: #1E1F3700;
-}
-
-.swap-option-select {
-  display: flex;
-  margin: 1rem 0;
-}
-
-.swap-option-select .swap-option {
-  background: #1D233D;
-  font-size: 0.875rem;
-  line-height: 1.5rem;
-  letter-spacing: 0px;
-  color: #A0A3C4;
-  text-decoration: none;
-  width: 50%;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
-
-.swap-option-select .swap-option.active {
-  background: #2D42FC;
-  color: white;
-}
-
-.swap-option-select .swap-option:first-child {
-  border-radius: 4px 0px 0px 4px;
-}
-
-.swap-option-select .swap-option:last-child {
-  border-radius: 0px 4px 4px 0px;
 }
 
 @media (max-width: 900px) {

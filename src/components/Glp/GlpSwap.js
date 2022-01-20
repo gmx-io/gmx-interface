@@ -4,7 +4,8 @@ import { useHistory } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
 import { ethers } from 'ethers'
-import cx from "classnames"
+
+import Tab from '../Tab/Tab'
 
 import { getToken, getTokens, getWhitelistedTokens, getWrappedToken, getNativeToken } from '../../data/Tokens'
 import { getContract } from '../../Addresses'
@@ -94,6 +95,7 @@ export default function GlpSwap(props) {
   const { savedSlippageAmount, isBuying, setPendingTxns, connectWallet } = props
   const history = useHistory()
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp"
+  const tabLabel = isBuying ? "Buy GLP" : "Sell GLP"
   const { active, library, account } = useWeb3React()
   const { chainId } = useChainId()
   // const chainName = getChainName(chainId)
@@ -547,6 +549,14 @@ export default function GlpSwap(props) {
   const wrappedTokenSymbol = getWrappedToken(chainId).symbol
   const nativeTokenSymbol = getNativeToken(chainId).symbol
 
+  const onSwapOptionChange = (opt) => {
+    if (opt === "Sell GLP") {
+      switchSwapOption('redeem')
+    } else {
+      switchSwapOption()
+    }
+  }
+
   return (
     <div className="GlpSwap">
       {renderErrorModal()}
@@ -629,10 +639,7 @@ export default function GlpSwap(props) {
           </div>
         </div>
         <div className="GlpSwap-box App-box">
-          <div className="swap-option-select">
-            <div onClick={() => switchSwapOption()} className={cx("swap-option", isBuying && "active")}>Buy GLP</div>
-            <div onClick={() => switchSwapOption('redeem')} className={cx("swap-option", !isBuying && "active")}>Sell GLP</div>
-          </div>
+          <Tab options={["Buy GLP", "Sell GLP"]} option={tabLabel} onChange={onSwapOptionChange} className="Exchange-swap-option-tabs" />
           {isBuying && <BuyInputSection
             topLeftLabel={payLabel}
             topRightLabel={`Balance: `}

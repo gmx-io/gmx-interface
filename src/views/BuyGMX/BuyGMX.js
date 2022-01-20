@@ -211,7 +211,7 @@ export default function BuyGMX() {
                 After you have AVAX, set your network to Avalanche then click the button below:
               </div>
               <div className="GMX-block-section">
-                <a href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" target="_blank" rel="noopener noreferrer" className="GMX-btn">
+                <a href="https://traderjoexyz.com/#/trade" target="_blank" rel="noopener noreferrer" className="GMX-btn">
                   <div className="GMX-btn-icon-block">
                     <div className="GMX-btn-icon">
                       <img src={gmx64Icon} alt="gmx64Icon" />
