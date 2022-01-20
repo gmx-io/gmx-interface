@@ -639,10 +639,9 @@ export default function GlpSwap(props) {
             tokenBalance={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
             inputValue={swapValue}
             onInputValueChange={onSwapValueChange}
-            showMaxButton={true}
+            showMaxButton={swapValue !== formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals)}
             onClickTopRightLabel={fillMaxAmount}
             onClickMax={fillMaxAmount}
-            hightlight={true}
             selectedToken={swapToken}
             balance={payBalance}
           >
@@ -664,7 +663,7 @@ export default function GlpSwap(props) {
             tokenBalance={`${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
             inputValue={glpValue}
             onInputValueChange={onGlpValueChange}
-            showMaxButton={true}
+            showMaxButton={glpValue !== formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS)}
             onClickTopRightLabel={fillMaxAmount}
             onClickMax={fillMaxAmount}
             balance={payBalance}
@@ -701,7 +700,6 @@ export default function GlpSwap(props) {
             tokenBalance={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
             inputValue={swapValue}
             onInputValueChange={onSwapValueChange}
-            hightlight={true}
             balance={receiveBalance}
             selectedToken={swapToken}
           >

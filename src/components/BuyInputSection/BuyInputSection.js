@@ -5,7 +5,7 @@ import "./BuyInputSection.css"
 
 export default function BuyInputSection(props) {
   const { topLeftLabel, topRightLabel, onClickTopRightLabel,
-    inputValue, onInputValueChange, onClickMax, showMaxButton, staticInput, selectedToken, balance, tokenBalance, defaultTokenName } = props
+    inputValue, onInputValueChange, onClickMax, showMaxButton, staticInput, balance, tokenBalance } = props
 
   return (
     <div className="Exchange-swap-section buy-input">
@@ -14,7 +14,8 @@ export default function BuyInputSection(props) {
           {topLeftLabel}: {balance}
         </div>
         <div className={cx("align-right", { clickable: onClickTopRightLabel })} onClick={onClickTopRightLabel}>
-        <span className="Exchange-swap-label muted">{topRightLabel}</span>&nbsp;<span className="Exchange-swap-balance">{tokenBalance} {(selectedToken && selectedToken.symbol) || defaultTokenName}</span>
+        <span className="Exchange-swap-label muted">{topRightLabel}</span>&nbsp;
+        <span className="Exchange-swap-balance">{tokenBalance} {/*(selectedToken && selectedToken.symbol) || defaultTokenName*/}</span>
         </div>
       </div>
       <div className="Exchange-swap-section-bottom">
