@@ -8,6 +8,7 @@ import { callContract } from '../../Api'
 import { useChainId } from '../../Helpers'
 
 import Modal from '../../components/Modal/Modal'
+import Footer from "../../Footer"
 
 import RewardRouter from '../../abis/RewardRouter.json'
 
@@ -70,7 +71,7 @@ export default function CompleteAccountTransfer(props) {
   }
 
   return (
-    <div className="CompleteAccountTransfer Page">
+    <div className="CompleteAccountTransfer Page page-layout">
       <Modal isVisible={isTransferSubmittedModalVisible} setIsVisible={setIsTransferSubmittedModalVisible} label="Transfer Completed">
         Your transfer has been completed.<br/>
         <br/>
@@ -95,6 +96,7 @@ export default function CompleteAccountTransfer(props) {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }

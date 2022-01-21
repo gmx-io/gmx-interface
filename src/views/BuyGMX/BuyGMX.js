@@ -211,7 +211,7 @@ export default function BuyGMX() {
                 After you have AVAX, set your network to Avalanche then click the button below:
               </div>
               <div className="GMX-block-section">
-                <a href="https://traderjoexyz.com/#/trade" target="_blank" rel="noopener noreferrer" className="GMX-btn">
+                <a href="https://traderjoexyz.com/#/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661" target="_blank" rel="noopener noreferrer" className="GMX-btn">
                   <div className="GMX-btn-icon-block">
                     <div className="GMX-btn-icon">
                       <img src={gmx64Icon} alt="gmx64Icon" />
@@ -241,7 +241,7 @@ export default function BuyGMX() {
         {chainId === ARBITRUM && <div className="BuyGMXGLP-panel">
           <div className="App-card">
             <div className="App-card-content no-title">
-              <div className="BuyGMXGLP-description">You can also purchase GMX bonds by clicking here:</div>
+              <div className="BuyGMXGLP-description">GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:</div>
               <div className="GMX-block-section">
                 <a href="https://pro.olympusdao.finance/#/partners/GMX" target="_blank" rel="noopener noreferrer" className="GMX-btn">
                   <div className="GMX-btn-icon-block">

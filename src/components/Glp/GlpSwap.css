@@ -219,6 +219,12 @@
 
 .token-table .action-btn {
   width: 100%;
+  justify-content: center;
+}
+
+.token-table .action-btn.selling {
+  width: 90%;
+  justify-content: center;
 }
 
 @media (max-width: 900px) {
