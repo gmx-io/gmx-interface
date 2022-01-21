@@ -1,5 +1,6 @@
 .Tooltip {
   position: relative;
+  display: flex;
 }
 
 .Tooltip-popup {
@@ -69,18 +70,24 @@
   margin-right: 4px;
 }
 
-.Tooltip-handle {
+.Tooltip-handle.right {
   cursor: help;
   position: relative;
+  display: inline-flex;
+  margin-left: 4px;
 }
-.Tooltip-handle:after {
+
+.Tooltip-handle:before {
   position: absolute;
   content: '';
-  bottom: -1px;
-  left: 0;
+  /* left: -17.4px; */
+  top: 2px;
   right: 0;
-  border-bottom: 1px dashed;
-  opacity: 0.6;
+  /* background-image: url('../../img/ic_info.svg'); */
+  /* border-bottom: 1px dashed; */
+  /* opacity: 0.6; */
+  /* width: 13px; */
+  /* height: 13px; */
 }
 
 .Tooltip-handle.plain:after {
