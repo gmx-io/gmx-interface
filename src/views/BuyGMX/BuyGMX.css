@@ -44,6 +44,10 @@
     padding: 0.5rem 1.5rem 1rem;
 }
 
+.BuyGMXGLP-panel .App-card-content.no-title {
+    padding-top: 1rem;
+}
+
 .BuyGMXGLP-panel:last-child {
     padding-bottom: 0;
 }

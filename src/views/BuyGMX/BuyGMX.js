@@ -66,7 +66,7 @@ export default function BuyGMX() {
           </div>
           <div className="section-title-content">
             <div className="section-title-content__title">
-              Buy/Transfer AVAX
+              Transfer AVAX
             </div>
             <div className="section-title-content__description">
               Avax is needed on Avalanche to purchase GMX.<br/>
@@ -120,7 +120,7 @@ export default function BuyGMX() {
                   </div>
                   Multiswap
                 </a>
-                <a href="https://app.hop.exchange/send?token=USDC&sourceNetwork=ethereum&destNetwork=arbitrum" target="_blank" rel="noopener noreferrer" className="Hop">
+                <a href="https://app.hop.exchange/send?token=ETH&sourceNetwork=ethereum&destNetwork=arbitrum" target="_blank" rel="noopener noreferrer" className="Hop">
                   <div className="transfer-eth-icon">
                     <img src={Hop} alt="Hop" /> </div> Hop
                 </a>
@@ -139,7 +139,7 @@ export default function BuyGMX() {
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="BuyGMXGLP-description">
-                You can transfer AVAX to Avalanche using any of the below options: <br/><br/>
+                You can transfer AVAX to Avalanche using any of the below options. <br/><br/>
                 Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees.
               </div>
               <div className="alternative-bridges">
@@ -184,7 +184,7 @@ export default function BuyGMX() {
         </div>
         <div className="BuyGMXGLP-panel">
           {chainId === ARBITRUM && <div className="App-card">
-            <div className="App-card-content">
+            <div className="App-card-content no-title">
               <div className="BuyGMXGLP-description better-rates-description">
                 After you have ETH, set your network to <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">Arbitrum</a> then click the button below:
               </div>
@@ -206,7 +206,7 @@ export default function BuyGMX() {
             </div>
           </div>}
           {chainId === AVALANCHE && <div className="App-card">
-            <div className="App-card-content">
+            <div className="App-card-content no-title">
               <div className="BuyGMXGLP-description better-rates-description">
                 After you have AVAX, set your network to Avalanche then click the button below:
               </div>
@@ -240,7 +240,7 @@ export default function BuyGMX() {
         </div>}
         {chainId === ARBITRUM && <div className="BuyGMXGLP-panel">
           <div className="App-card">
-            <div className="App-card-content">
+            <div className="App-card-content no-title">
               <div className="BuyGMXGLP-description">You can also purchase GMX bonds by clicking here:</div>
               <div className="GMX-block-section">
                 <a href="https://pro.olympusdao.finance/#/partners/GMX" target="_blank" rel="noopener noreferrer" className="GMX-btn">
