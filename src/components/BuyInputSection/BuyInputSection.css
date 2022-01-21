@@ -9,6 +9,7 @@
 .buy-input .TokenSelector-box {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   border-radius: 4px;
   padding: 0.5rem 0;
   color: #FFFFFF;
@@ -30,8 +31,7 @@
 
 .buy-input .TokenSelector-caret {
   margin: 0;
-  position: relative;
-  right: -5px;
+  margin-right: -5px;
 }
 
 .buy-input .TokenSelector-box-symbol {
