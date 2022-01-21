@@ -15,6 +15,7 @@
   min-width: 6.77rem;
   font-size: 1.25rem;
   line-height: 1.625rem;
+  justify-content: flex-end;
 }
 
 .buy-input .Exchange-swap-input-container {
@@ -30,8 +31,7 @@
 
 .buy-input .TokenSelector-caret {
   margin: 0;
-  position: relative;
-  right: -5px;
+  margin-right: -5px;
 }
 
 .buy-input .TokenSelector-box-symbol {
