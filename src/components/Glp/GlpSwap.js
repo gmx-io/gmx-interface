@@ -859,7 +859,7 @@ export default function GlpSwap(props) {
                       {formatAmount(tokenFeeBps, 2, 2, true, "-")}{(tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0) ? "%" : ""}
                     </td>
                     <td>
-                      <button className="default-btn" onClick={() => selectToken(token)}>
+                      <button className="default-btn action-btn" onClick={() => selectToken(token)}>
                         {isBuying ? 'Buy with ' + token.symbol : 'Sell for ' + token.symbol}
                       </button>
                     </td>

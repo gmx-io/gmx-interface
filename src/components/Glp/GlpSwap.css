@@ -217,6 +217,10 @@
   background: #1E1F3700;
 }
 
+.token-table .action-btn {
+  width: 100%;
+}
+
 @media (max-width: 900px) {
   .GlpSwap-content {
     flex-wrap: wrap;

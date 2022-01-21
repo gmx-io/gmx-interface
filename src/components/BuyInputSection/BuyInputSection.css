@@ -31,6 +31,8 @@
 
 .buy-input .TokenSelector-caret {
   margin: 0;
+  position: relative;
+  right: -5px;
 }
 
 .buy-input .TokenSelector-box-symbol {
