@@ -2,9 +2,8 @@
   font-size: 1.5rem;
 }
 
-.buy-input.Exchange-swap-section.highlighted {
-  background: #101124;
-  border-radius: 4px;
+.buy-input.Exchange-swap-section {
+  min-height: 5.935rem;
 }
 
 .buy-input .TokenSelector-box {

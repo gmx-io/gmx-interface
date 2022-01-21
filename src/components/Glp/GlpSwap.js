@@ -6,6 +6,7 @@ import useSWR from 'swr'
 import { ethers } from 'ethers'
 
 import Tab from '../Tab/Tab'
+import cx from "classnames"
 
 import { getToken, getTokens, getWhitelistedTokens, getWrappedToken, getNativeToken } from '../../data/Tokens'
 import { getContract } from '../../Addresses'
@@ -859,7 +860,7 @@ export default function GlpSwap(props) {
                       {formatAmount(tokenFeeBps, 2, 2, true, "-")}{(tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0) ? "%" : ""}
                     </td>
                     <td>
-                      <button className="default-btn action-btn" onClick={() => selectToken(token)}>
+                      <button className={cx("default-btn action-btn", isBuying ? 'buying' : 'selling')} onClick={() => selectToken(token)}>
                         {isBuying ? 'Buy with ' + token.symbol : 'Sell for ' + token.symbol}
                       </button>
                     </td>
