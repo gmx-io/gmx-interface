@@ -30,9 +30,9 @@
 }
 
 .GlpSwap-content .GlpSwap-stats-card, .GlpSwap-content .GlpSwap-box {
-  background: #16182E;
+  /* background: #16182E;
   border-radius: 8px;
-  border: none;
+  border: none; */
   width: 100%;
 }
 
@@ -44,28 +44,31 @@
 .GlpSwap-content .GlpSwap-box {
   max-width: 29.935rem;
   margin-left: 1rem;
+  border-radius: 4px;
+  padding: 1rem;
+  padding-top: 0;
 }
 
 .GlpSwap-box .Exchange-swap-option-tabs {
   margin: 1rem 0;
 }
 
-.GlpSwap-stats-card .App-card-row {
+/* .GlpSwap-stats-card .App-card-row {
   padding-top: 0.452rem!important;
   padding-bottom: 0.452rem!important;
   padding-left: 1rem;
   padding-right: 1rem;
   font-size: 0.903rem;
   line-height: 1.161rem;
-}
+} */
 
-.GlpSwap-stats-card .App-card-row:nth-child(odd) {
+/* .GlpSwap-stats-card .App-card-row:nth-child(odd) {
   background: #1E1F37;
-}
+} */
 
-.GlpSwap-stats-card .App-card-content {
+/* .GlpSwap-stats-card .App-card-content {
   grid-row-gap: 0;
-}
+} */
 
 .GlpSwap-stats-card .GlpSwap-stats-mark-icon {
   position: relative;
@@ -101,8 +104,8 @@
 
 .GlpSwap-token-list {
   margin-top: 2rem;
-  background: #16182E;
-  border-radius: 8px;
+  border: 1px solid #1e2136;
+  border-radius: 4px;
 }
 
 .GlpSwap-token-list-content {
@@ -117,11 +120,6 @@
   background: #17182C;
   border: 2px solid #A0A3C433;
   border-radius: 8px;
-}
-
-.GlpSwap-box {
-  padding: 1rem;
-  padding-top: 0;
 }
 
 .GlpSwap-box .App-card-title {
