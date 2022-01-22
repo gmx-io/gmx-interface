@@ -605,6 +605,9 @@ export default function GlpSwap(props) {
                 {formatAmount(glpBalance, GLP_DECIMALS, 4, true)} GLP (${formatAmount(glpBalanceUsd, USD_DECIMALS, 2, true)})
               </div>
             </div>
+          </div>
+          <div className="App-card-divider"></div>
+          <div className="App-card-content">
             {!isBuying && <div className="App-card-row">
               <div className="label">Reserved</div>
               <div className="value">
@@ -758,7 +761,7 @@ export default function GlpSwap(props) {
             Fees may vary depending on which asset you use to buy GLP.<br /> Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
           </div>}
           {!isBuying && <div className="Tab-description">
-            Fees may vary depending on which asset sell GLP for.<br /> Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
+            Fees may vary depending on which asset you sell GLP for.<br /> Enter the amount of GLP you want to redeem in the order form, then check here to compare fees.
           </div>}
         </div>
         <div className="GlpSwap-token-list-content">
