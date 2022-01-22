@@ -30,9 +30,6 @@
 }
 
 .GlpSwap-content .GlpSwap-stats-card, .GlpSwap-content .GlpSwap-box {
-  /* background: #16182E;
-  border-radius: 8px;
-  border: none; */
   width: 100%;
 }
 
@@ -52,23 +49,6 @@
 .GlpSwap-box .Exchange-swap-option-tabs {
   margin: 1rem 0;
 }
-
-/* .GlpSwap-stats-card .App-card-row {
-  padding-top: 0.452rem!important;
-  padding-bottom: 0.452rem!important;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  font-size: 0.903rem;
-  line-height: 1.161rem;
-} */
-
-/* .GlpSwap-stats-card .App-card-row:nth-child(odd) {
-  background: #1E1F37;
-} */
-
-/* .GlpSwap-stats-card .App-card-content {
-  grid-row-gap: 0;
-} */
 
 .GlpSwap-stats-card .GlpSwap-stats-mark-icon {
   position: relative;
@@ -106,6 +86,7 @@
   margin-top: 2rem;
   border: 1px solid #1e2136;
   border-radius: 4px;
+  background: #17182C;
 }
 
 .GlpSwap-token-list-content {
@@ -205,14 +186,6 @@
   letter-spacing: 0.25px;
   color: #A0A3C4;
   text-transform: uppercase;
-}
-
-.token-table tbody tr:nth-child(odd) {
-  background: #1E1F37;
-}
-
-.token-table tbody tr:nth-child(even) {
-  background: #1E1F3700;
 }
 
 .token-table .action-btn {

@@ -22,10 +22,10 @@ export default function BuyGlp(props) {
           <img src={buyGLPIcon} alt="buyGLPIcon" />
         </div>
         <div className="section-title-content">
-          <div className="section-title-content__title">
+          <div className="Page-title">
             Buy or redeem GLP
           </div>
-          <div className="section-title-content__description">
+          <div className="Page-description">
             Purchase GLP tokens to earn AVAX fees from swaps and leverages trading.<br/>Note that there is a minimum holding time of 15 minutes after a purchase.<br/>View <Link to="/earn">staking</Link> page.
           </div>
         </div>

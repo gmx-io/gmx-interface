@@ -22,35 +22,10 @@
     flex-wrap: wrap;
 }
 
-/* .BuyGMXGLP-panel .App-card {
-    background: #16182E;
-    border-radius: 8px;
-    max-width: 37.677rem;
-    width: 100%;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-    display: flex;
-    flex-direction: column;
-    border: none;
-} */
-
 .BuyGMXGLP-panel .App-card {
     max-width: 37.677rem;
     width: 100%;
 }
-
-/* .BuyGMXGLP-panel .App-card .App-card-title {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-} */
-
-/* .BuyGMXGLP-panel .App-card-content {
-    padding: 0.5rem 1.5rem 1rem;
-} */
-
-/* .BuyGMXGLP-panel .App-card-content.no-title {
-    padding-top: 1rem;
-} */
 
 .BuyGMXGLP-panel:last-child {
     padding-bottom: 0;

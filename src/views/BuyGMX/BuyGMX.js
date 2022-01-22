@@ -51,10 +51,10 @@ export default function BuyGMX() {
             <img src={buyTransferETHIcon} alt="buyTransferETHIcon" />
           </div>
           <div className="section-title-content">
-            <div className="section-title-content__title">
+            <div className="Page-title">
               Buy/Transfer ETH
             </div>
-            <div className="section-title-content__description">
+            <div className="Page-description">
               ETH is needed on Arbitrum to purchase GMX.<br/>
               To purchase GMX on <span onClick={() => onNetworkSelect(AVALANCHE)}>Avalanche</span>, please change your network.
             </div>
@@ -65,10 +65,10 @@ export default function BuyGMX() {
             <img src={buyTransferAVAXIcon} alt="buyTransferAVAXIcon" />
           </div>
           <div className="section-title-content">
-            <div className="section-title-content__title">
+            <div className="Page-title">
               Transfer AVAX
             </div>
-            <div className="section-title-content__description">
+            <div className="Page-description">
               Avax is needed on Avalanche to purchase GMX.<br/>
               To purchase GMX on <span onClick={() => onNetworkSelect(ARBITRUM)}>Arbitrum</span>, please change your network.
             </div>
@@ -177,7 +177,7 @@ export default function BuyGMX() {
             <img src={buyGMXIcon} alt="buyGMXIcon" />
           </div>
           <div className="section-title-content">
-            <div className="section-title-content__title">
+            <div className="Page-title">
               Buy GMX
             </div>
           </div>
@@ -233,7 +233,7 @@ export default function BuyGMX() {
             <img src={buyGMXBondIcon} alt="buyGMXBondIcon" />
           </div>
           <div className="section-title-content">
-            <div className="section-title-content__title">
+            <div className="Page-title">
               Buy GMX Bonds
             </div>
           </div>
