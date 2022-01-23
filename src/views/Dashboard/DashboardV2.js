@@ -180,7 +180,7 @@ export default function DashboardV2() {
     totalFeesDistributed += parseFloat(feeHistory[i].feeUsd)
   }
 
-  const { data: gmxPrice, mutate: updateGmxPrice } = useGmxPrice()
+  const { data: gmxPrice, mutate: updateGmxPrice } = useGmxPrice(chainId)
 
   let gmxMarketCap
   if (gmxPrice && gmxSupply) {

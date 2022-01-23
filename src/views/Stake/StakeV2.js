@@ -833,7 +833,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     fetcher: fetcher(library, ReaderV2, [vesterAddresses]),
   })
 
-  const { data: gmxPrice, mutate: updateGmxPrice } = useGmxPrice()
+  const { data: gmxPrice, mutate: updateGmxPrice } = useGmxPrice(chainId)
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
   const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
