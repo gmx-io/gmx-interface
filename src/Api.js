@@ -328,11 +328,13 @@ async function getChartPricesFromStats(chainId, marketName, period) {
     throw new Error(`not enough prices: ${json?.length}`)
   }
 
-  const OBSOLETE_THRESHOLD = 60 * 60 * 3 // chainlink updates are not too frequent
+  const OBSOLETE_THRESHOLD = 60 * 60 * 6 // chainlink updates are not too frequent
   const lastTs = json[json.length - 1][0]
   const diff = Date.now() / 1000 - lastTs
   if (diff > OBSOLETE_THRESHOLD) {
-    throw new Error('chart data is obsolete, last price record at ' + new Date(lastTs * 1000).toISOString())
+    throw new Error(
+      'chart data is obsolete, last price record at ' + new Date(lastTs * 1000).toISOString()
+      + ' now: ' + new Date().toISOString())
   }
   return json
 }
