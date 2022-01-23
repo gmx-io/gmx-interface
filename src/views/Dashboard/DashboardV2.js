@@ -398,7 +398,14 @@ export default function DashboardV2() {
               <div className="App-card-row">
                 <div className="label">Price</div>
                 <div>
-                  ${formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+                  {!gmxPrice && '...'}
+                  {gmxPrice &&
+                    <Tooltip
+                      className="nowrap"
+                      handle={'$' + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+                      renderContent={() => `GMX Price on ${chainName}`}
+                    />
+                  }
                 </div>
               </div>
               <div className="App-card-row">
