@@ -85,7 +85,9 @@ async function getChartPricesFromStats(chainId, symbol, period) {
   const OBSOLETE_THRESHOLD = Date.now() / 1000 - (60 * 30) // 30 min ago
   const updatedAt = json?.updatedAt || 0
   if (updatedAt < OBSOLETE_THRESHOLD) {
-    throw new Error('chart data is obsolete, last price record at ' + new Date(updatedAt * 1000).toISOString())
+    throw new Error(
+      'chart data is obsolete, last price record at ' + new Date(updatedAt * 1000).toISOString()
+      + ' now: ' + new Date().toISOString())
   }
 
   prices = prices.map(({ t, o: open, c: close, h: high, l: low}) => ({
