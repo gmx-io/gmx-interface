@@ -17,7 +17,7 @@ export default function BuyGMXGLP(props) {
             <img src={buyGMXIcon} alt="buyGMXIcon" />
           </div>
           <div className="section-title-content">
-            <div className="section-title-content__title">
+            <div className="Page-title">
               Buy GMX or GLP
             </div>
           </div>

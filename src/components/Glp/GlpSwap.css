@@ -124,13 +124,6 @@
   opacity: 1;
 }
 
-.GlpSwap-box .Exchange-info-row .fee-block .Tooltip {
-  font-size: 0.75rem;
-  line-height: 1rem;
-  letter-spacing: 0.4px;
-  color: #a9a9b0;
-}
-
 .GlpSwap-cta {
   margin: 0 auto;
   text-align: center;
