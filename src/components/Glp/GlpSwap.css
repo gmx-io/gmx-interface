@@ -19,7 +19,7 @@
 
 .Tab-description {
   letter-spacing: 0px;
-  color: #A0A3C4;
+  color: #a9a9b0;
   margin-top: 0.5rem;
 }
 
@@ -34,6 +34,11 @@
 .GlpSwap-content .GlpSwap-stats-card {
   max-width: 45.935rem;
   margin-right: 1rem;
+}
+
+.GlpSwap-stats-card .App-card-row .label {
+  color: #a9a9b0;
+  opacity: 1;
 }
 
 .GlpSwap-content .GlpSwap-box {
@@ -77,7 +82,7 @@
   font-size: 0.774rem;
   line-height: 1rem;
   letter-spacing: 0px;
-  color: #A0A3C4;
+  color: #a9a9b0;
 }
 
 .GlpSwap-token-list {
@@ -115,17 +120,15 @@
 
 .GlpSwap-box .Exchange-info-row .Exchange-info-label {
   margin-right: 0.5rem;
-  font-size: 0.75rem;
-  line-height: 1rem;
-  letter-spacing: 0.4px;
-  /* color: #A0A3C4; */
+  color: #a9a9b0;
+  opacity: 1;
 }
 
 .GlpSwap-box .Exchange-info-row .fee-block .Tooltip {
   font-size: 0.75rem;
   line-height: 1rem;
   letter-spacing: 0.4px;
-  color: #A0A3C4;
+  color: #a9a9b0;
 }
 
 .GlpSwap-cta {
@@ -160,6 +163,14 @@
   min-width: 275px;
 }
 
+.token-table td:nth-child(4), .token-table th:nth-child(4) {
+  min-width: 180px;
+}
+
+.token-table td:nth-child(5), .token-table th:nth-child(5) {
+  min-width: 60px;
+}
+
 .token-table td {
   letter-spacing: 0.25px;
   color: #FFFFFFDE;
@@ -173,13 +184,13 @@
 .token-table th:last-child, .token-table td:last-child {
   padding-right: 1rem;
   text-align: right;
-  width: 165px;
+  width: 160px;
 }
 
 .token-table th {
   font-weight: normal;
   letter-spacing: 0.25px;
-  color: #A0A3C4;
+  color: #a9a9b0;
   text-transform: uppercase;
 }
 

@@ -864,7 +864,7 @@ export default function GlpSwap(props) {
                       {formatAmount(tokenFeeBps, 2, 2, true, "-")}{(tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0) ? "%" : ""}
                     </td>
                     <td>
-                      <button className={cx("default-btn action-btn", isBuying ? 'buying' : 'selling')} onClick={() => selectToken(token)}>
+                      <button className={cx("App-button-option action-btn", isBuying ? 'buying' : 'selling')} onClick={() => selectToken(token)}>
                         {isBuying ? 'Buy with ' + token.symbol : 'Sell for ' + token.symbol}
                       </button>
                     </td>

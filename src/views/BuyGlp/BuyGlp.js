@@ -6,7 +6,13 @@ import buyGLPIcon from '../../img/ic_buy_glp.svg'
 import Footer from "../../Footer"
 import "./BuyGlp.css"
 
+import {
+  useChainId,
+  ARBITRUM
+} from '../../Helpers'
+
 export default function BuyGlp(props) {
+  const { chainId } = useChainId()
   const history = useHistory()
   const [isBuying, setIsBuying] = useState(true)
   useEffect(() => {
@@ -26,7 +32,7 @@ export default function BuyGlp(props) {
             Buy or redeem GLP
           </div>
           <div className="Page-description">
-            Purchase GLP tokens to earn AVAX fees from swaps and leverages trading.<br/>Note that there is a minimum holding time of 15 minutes after a purchase.<br/>View <Link to="/earn">staking</Link> page.
+            Purchase <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">GLP tokens</a> to earn {chainId === ARBITRUM ? 'ETH' : 'AVAX'} fees from swaps and leverages trading.<br/>Note that there is a minimum holding time of 15 minutes after a purchase.<br/>View <Link to="/earn">staking</Link> page.
           </div>
         </div>
       </div>
