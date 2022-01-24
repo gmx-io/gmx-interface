@@ -118,7 +118,7 @@
   font-size: 0.75rem;
   line-height: 1rem;
   letter-spacing: 0.4px;
-  color: #A0A3C4;
+  /* color: #A0A3C4; */
 }
 
 .GlpSwap-box .Exchange-info-row .fee-block .Tooltip {
@@ -138,6 +138,7 @@
   margin: 0 auto;
   justify-content: center;
   min-height: 3.097rem;
+  font-size: 1rem;
 }
 
 .token-table {
