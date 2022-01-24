@@ -273,8 +273,6 @@ export function usePositionsForOrders(chainId, library, orders) {
   return positions
 }
 
-
-
 function invariant(condition, errorMsg) {
   if (!condition) {
     throw new Error(errorMsg)
