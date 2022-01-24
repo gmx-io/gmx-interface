@@ -59,6 +59,10 @@
   line-height: 1.161rem;
 }
 
+.GlpSwap-stats-card .App-card-row .label {
+  color: #A0A3C4;
+}
+
 .GlpSwap-stats-card .App-card-row:nth-child(odd) {
   background: #1E1F37;
 }
