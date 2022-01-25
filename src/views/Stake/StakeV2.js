@@ -1198,6 +1198,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   {!gmxPrice && '...'}
                   {gmxPrice &&
                     <Tooltip
+                      position="right-bottom"
                       className="nowrap"
                       handle={'$' + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
                       renderContent={() => <>
