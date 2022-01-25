@@ -154,7 +154,7 @@ export default function GlpSwap(props) {
     fetcher: fetcher(library, Vester),
   })
 
-  const { data: gmxPrice, mutate: updateGmxPrice } = useGmxPrice()
+  const { data: gmxPrice, mutate: updateGmxPrice } = useGmxPrice(chainId)
 
   const rewardTrackersForStakingInfo = [
     stakedGlpTrackerAddress,
