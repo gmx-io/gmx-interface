@@ -1289,7 +1289,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-options">
-                <Link className="App-button-option App-card-option" to="/buy">Buy GMX</Link>
+                <Link className="App-button-option App-card-option" to="/buy_gmx">Buy GMX</Link>
                 {active && <button className="App-button-option App-card-option" onClick={() => showStakeGmxModal()}>Stake</button>}
                 {active && <button className="App-button-option App-card-option" onClick={() => showUnstakeGmxModal()}>Unstake</button>}
                 {active && <Link className="App-button-option App-card-option" to="/begin_account_transfer">Transfer Account</Link>}
