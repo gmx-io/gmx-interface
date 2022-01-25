@@ -12,7 +12,7 @@
   border-radius: 4px;
   padding: 0.5rem 0;
   color: #FFFFFF;
-  min-width: 6.77rem;
+  min-width: 3rem;
   font-size: 1.25rem;
   line-height: 1.625rem;
   justify-content: flex-end;
@@ -46,6 +46,7 @@
 
 .buy-input .PositionEditor-token-symbol img {
   margin-left: 0.5rem;
+  display: none;
 }
 
 .buy-input .Exchange-swap-section-top {

@@ -377,6 +377,8 @@ button.App-connect-wallet:hover {
 .section-title-block {
   display: flex;
   margin-bottom: 1.5rem;
+  max-width: 37.677rem;
+  width: 100%;
 }
 
 .page-main-content .section-title-block {
@@ -390,7 +392,8 @@ button.App-connect-wallet:hover {
 }
 
 .section-title-icon img {
-  display: flex;
+  /* display: flex; */
+  display: none;
 }
 
 .section-title-content {
