@@ -25,6 +25,10 @@
     height: fit-content;
 }
 
+.BuyGMXGLP-panel .App-card.no-height {
+    height: unset;
+}
+
 .BuyGMXGLP-panel:last-child {
     padding-bottom: 0;
 }

@@ -453,6 +453,10 @@ button.App-connect-wallet:hover {
   display: inline-flex;
 }
 
+.Page-description span img, .Page-description a img {
+  margin-left: 4px;
+}
+
 .App-hero {
   position: relative;
   text-align: center;

@@ -61,7 +61,7 @@ export default function BuyGMX() {
           </div>
         </div>}
         {chainId === ARBITRUM && <div className="BuyGMXGLP-panel">
-          <div className="App-card">
+          <div className="App-card no-height">
             <div className="App-card-title">
               Buy ETH
             </div>
@@ -84,7 +84,7 @@ export default function BuyGMX() {
               </div>
             </div>
           </div>
-          <div className="App-card">
+          <div className="App-card no-height">
             <div className="App-card-title">
               Transfer ETH
             </div>
@@ -244,7 +244,7 @@ export default function BuyGMX() {
               </div>
             </div>
             <div className="d-flex justify-space-between flex-wrap w-100">
-              <div className="App-card">
+              <div className="App-card no-height">
                 <div className="App-card-content no-title">
                   <div className="BuyGMXGLP-description better-rates-description">
                     After you have ETH, set your network to <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">Arbitrum</a> then click the button below:
@@ -276,7 +276,7 @@ export default function BuyGMX() {
                   </div>
                 </div>
               </div>
-              <div className="App-card">
+              <div className="App-card no-height">
                 <div className="App-card-content no-title">
                   <div className="BuyGMXGLP-description">GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:</div>
                   <div className="GMX-block-section">
