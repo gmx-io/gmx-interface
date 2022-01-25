@@ -52,7 +52,7 @@ export default function BuyGMX() {
           </div>
           <div className="section-title-content">
             <div className="Page-title">
-              Buy/Transfer ETH
+              Buy / Transfer ETH
             </div>
             <div className="Page-description">
               ETH is needed on Arbitrum to purchase GMX.<br />
