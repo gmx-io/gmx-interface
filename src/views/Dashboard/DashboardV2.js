@@ -406,6 +406,7 @@ export default function DashboardV2() {
                   {!gmxPrice && '...'}
                   {gmxPrice &&
                     <Tooltip
+                      position="right-bottom"
                       className="nowrap"
                       handle={'$' + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
                       renderContent={() => <>
