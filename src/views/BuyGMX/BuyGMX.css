@@ -4,12 +4,9 @@
 }
 
 .BuyGMXGLP-container {
-    padding: 3rem 0 2rem 0;
+    padding-top: 3rem;
+    padding-bottom: 2rem;
     width: 100%;
-}
-
-.BuyGMXGLP-container .section-title-content {
-    justify-content: center;
 }
 
 .BuyGMXGLP-panel {
@@ -25,6 +22,7 @@
 .BuyGMXGLP-panel .App-card {
     max-width: 37.677rem;
     width: 100%;
+    height: fit-content;
 }
 
 .BuyGMXGLP-panel:last-child {
@@ -137,6 +135,29 @@
 .GMX-block-section {
     display: flex;
     justify-content: center;
+}
+
+.display-bg {
+    display: flex!important;
+}
+
+.display-sm {
+    display: none!important;
+}
+
+@media (max-width: 1241px) {
+    .display-bg {
+        display: none!important;
+    }
+    
+    .display-sm {
+        display: flex!important;
+        margin-top: 2.5rem;
+    }
+    
+    .BuyGMXGLP-panel .App-card + .App-card {
+        margin-top: 2rem;
+    }
 }
 
 @media (max-width: 450px) {

@@ -23,8 +23,7 @@ export default function TokenCard() {
           <div className="Home-token-card-option-apr">Arbitrum APR: <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />, Avalanche APR: <APRLabel chainId={AVALANCHE} label="gmxAprTotal" key="AVALANCHE" /></div>
           <div className="Home-token-card-option-action">
             <Link to="/buy_gmx" className="default-btn buy">Buy</Link>
-            <Link to="/earn" className="default-btn">Stake</Link>
-            <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noreferrer" className="default-btn read-more">Read more</a>
+            <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noreferrer" className="default-btn">Read more</a>
           </div>
         </div>
       </div>
@@ -37,8 +36,7 @@ export default function TokenCard() {
           <div className="Home-token-card-option-apr">Arbitrum APR: <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />, Avalanche APR: <APRLabel chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" /></div>
           <div className="Home-token-card-option-action">
             <Link to="/buy_glp" className="default-btn buy">Buy</Link>
-            <Link to="/earn" className="default-btn">Stake</Link>
-            <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noreferrer" className="default-btn read-more">Read more</a>
+            <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noreferrer" className="default-btn">Read more</a>
           </div>
         </div>
       </div>
