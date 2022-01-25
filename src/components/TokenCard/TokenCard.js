@@ -19,7 +19,7 @@ export default function TokenCard() {
           <img src={gmxBigIcon} alt="gmxBigIcon" /> GMX
         </div>
         <div className="Home-token-card-option-info">
-          <div className="Home-token-card-option-title">GMX is the utility and governance token, and also accrues 30% of the platform's generated fees.</div>
+          <div className="Home-token-card-option-title">GMX is the utility and governance token. 30% of platform fees are distributed to staked GMX.</div>
           <div className="Home-token-card-option-apr">Arbitrum APR: <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />, Avalanche APR: <APRLabel chainId={AVALANCHE} label="gmxAprTotal" key="AVALANCHE" /></div>
           <div className="Home-token-card-option-action">
             <Link to="/buy_gmx" className="default-btn buy">Buy</Link>
@@ -32,7 +32,7 @@ export default function TokenCard() {
           <img src={glpBigIcon} alt="glpBigIcon" /> GLP
         </div>
         <div className="Home-token-card-option-info">
-          <div className="Home-token-card-option-title">GLP is the platform's liquidity provider token. Accrues 70% of its generated fees.</div>
+          <div className="Home-token-card-option-title">GLP is the platform's liquidity provider token. 70% of platform fees are distributed to GLP holders.</div>
           <div className="Home-token-card-option-apr">Arbitrum APR: <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />, Avalanche APR: <APRLabel chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" /></div>
           <div className="Home-token-card-option-action">
             <Link to="/buy_glp" className="default-btn buy">Buy</Link>
