@@ -873,6 +873,102 @@ export default function GlpSwap(props) {
               })}
             </tbody>
           </table>
+          <div className="token-grid">
+            {tokenList.map((token) => {
+              let tokenFeeBps
+              if (isBuying) {
+                const { feeBasisPoints: feeBps } = getBuyGlpFromAmount(glpAmount, token.address, infoTokens, glpPrice, usdgSupply, totalTokenWeights)
+                tokenFeeBps = feeBps
+              } else {
+                const { feeBasisPoints: feeBps } = getSellGlpToAmount(glpAmount, token.address, infoTokens, glpPrice, usdgSupply, totalTokenWeights)
+                tokenFeeBps = feeBps
+              }
+              const tokenInfo = getTokenInfo(infoTokens, token.address)
+              let managedUsd
+              if (tokenInfo && tokenInfo.managedUsd) {
+                managedUsd = tokenInfo.managedUsd
+              }
+              let availableAmountUsd
+              if (tokenInfo && tokenInfo.minPrice && tokenInfo.availableAmount) {
+                availableAmountUsd = tokenInfo.availableAmount.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals))
+              }
+              let balanceUsd
+              if (tokenInfo && tokenInfo.minPrice && tokenInfo.balance) {
+                balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals))
+              }
+
+              let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT
+              if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+                maxUsdgAmount = tokenInfo.maxUsdgAmount
+              }
+
+              return (
+                <div className="App-card" key={token.symbol}>
+                  <div className="App-card-title">{token.name}</div>
+                  <div className="App-card-divider"></div>
+                  <div className="App-card-content">
+                    <div className="App-card-row">
+                      <div className="label">Price</div>
+                      <div>
+                        ${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">Wallet</div>
+                      <div>
+                        {formatKeyAmount(tokenInfo, "balance", tokenInfo.decimals, 2, true)} {tokenInfo.symbol} (${formatAmount(balanceUsd, USD_DECIMALS, 2, true)})
+                      </div>
+                    </div>
+                    {isBuying && <div className="App-card-row">
+                      <div className="label">Pool</div>
+                      <div>
+                        <Tooltip
+                          handle={`$${formatAmount(managedUsd, USD_DECIMALS, 2, true)}`}
+                          position="right-bottom"
+                          renderContent={() => {
+                            return <>
+                              Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol}<br/>
+                              <br/>
+                              Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                            </>
+                          }}
+                        />
+                      </div>
+                    </div>}
+                    {!isBuying && <div className="App-card-row">
+                      <div className="label">Available</div>
+                      <div>
+                        {formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} {token.symbol} (${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)})
+                      </div>
+                    </div>}
+                    <div className="App-card-row">
+                      <div className="label">
+                        {tokenFeeBps
+                          ? "Fees"
+                          : <Tooltip
+                            handle={`Fees`}
+                            renderContent={() => `Please enter an amount to see fee percentages`}
+                          />
+                        }
+                      </div>
+                      <div>
+                        {formatAmount(tokenFeeBps, 2, 2, true, "-")}{(tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0) ? "%" : ""}
+                      </div>
+                    </div>
+                    <div className="App-card-divider"></div>
+                    <div className="App-card-options">
+                      {isBuying && <button className="App-button-option App-card-option" onClick={() => selectToken(token)}>
+                        Buy with {token.symbol}
+                      </button>}
+                      {!isBuying && <button className="App-button-option App-card-option" onClick={() => selectToken(token)}>
+                        Sell for {token.symbol}
+                      </button>}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
         </div>
       </div>
     </div>

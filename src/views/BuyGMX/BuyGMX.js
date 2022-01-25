@@ -56,7 +56,7 @@ export default function BuyGMX() {
             </div>
             <div className="Page-description">
               ETH is needed on Arbitrum to purchase GMX.<br />
-              To purchase GMX on <span onClick={() => onNetworkSelect(AVALANCHE)}>Avalanche</span>, please change your network.
+              To purchase GMX on <span onClick={() => onNetworkSelect(AVALANCHE)}>Avalanche <img src={avalanche16Icon} alt="avalanche16Icon" /></span>, please change your network.
             </div>
           </div>
         </div>}
@@ -129,7 +129,7 @@ export default function BuyGMX() {
                 </div>
                 <div className="Page-description">
                   Avax is needed on Avalanche to purchase GMX.<br />
-                  To purchase GMX on <span onClick={() => onNetworkSelect(ARBITRUM)}>Arbitrum</span>, please change your network.
+                  To purchase GMX on <span onClick={() => onNetworkSelect(ARBITRUM)}>Arbitrum <img src={arbitrum16Icon} alt="arbitrum16Icon" /></span>, please change your network.
                 </div>
               </div>
             </div>
