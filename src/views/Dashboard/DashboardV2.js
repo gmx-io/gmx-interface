@@ -180,7 +180,12 @@ export default function DashboardV2() {
     totalFeesDistributed += parseFloat(feeHistory[i].feeUsd)
   }
 
-  const { data: gmxPrice, mutate: updateGmxPrice } = useGmxPrice(chainId)
+  const {
+    gmxPrice,
+    gmxPriceFromArbitrum,
+    gmxPriceFromAvalanche,
+    mutate: updateGmxPrice
+  } = useGmxPrice(chainId)
 
   let gmxMarketCap
   if (gmxPrice && gmxSupply) {
@@ -403,7 +408,10 @@ export default function DashboardV2() {
                     <Tooltip
                       className="nowrap"
                       handle={'$' + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
-                      renderContent={() => `GMX Price on ${chainName}`}
+                      renderContent={() => <>
+                        Price on Arbitrum: ${formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}<br/>
+                        Price on Avalanche: ${formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                      </>}
                     />
                   }
                 </div>
