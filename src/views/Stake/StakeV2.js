@@ -833,7 +833,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     fetcher: fetcher(library, ReaderV2, [vesterAddresses]),
   })
 
-  const { data: gmxPrice, mutate: updateGmxPrice } = useGmxPrice(chainId)
+  const {
+    gmxPrice,
+    gmxPriceFromArbitrum,
+    gmxPriceFromAvalanche,
+    mutate: updateGmxPrice
+  } = useGmxPrice(chainId)
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
   const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
@@ -1195,7 +1200,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     <Tooltip
                       className="nowrap"
                       handle={'$' + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
-                      renderContent={() => `GMX Price on ${chainName}`}
+                      renderContent={() => <>
+                        Price on Arbitrum: ${formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}<br/>
+                        Price on Avalanche: ${formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                      </>}
                     />
                   }
                 </div>
