@@ -81,8 +81,8 @@ export default function TokenSelector(props) {
         </div>
       </Modal>
       <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
-        {tokenInfo.symbol}
         {showSymbolImage && <img src={tokenImage && tokenImage.default} alt={tokenInfo.symbol} className="TokenSelector-box-symbol" />}
+        {tokenInfo.symbol}
         { showNewCaret && <img src={dropDownIcon} alt="dropDownIcon" className="TokenSelector-box-caret" /> }
         { !showNewCaret && <BiChevronDown className="TokenSelector-caret" /> }
       </div>

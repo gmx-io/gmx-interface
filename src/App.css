@@ -437,6 +437,12 @@ button.App-connect-wallet:hover {
 .section-title-content .section-title-content__description span {
   cursor: pointer;
   color: white;
+  display: inline-flex;
+  align-items: center;
+}
+
+.section-title-content .section-title-content__description span img {
+  margin-left: 4px;
 }
 
 .Page-title-section {
