@@ -442,13 +442,15 @@ button.App-connect-wallet:hover {
 }
 
 .Page-description {
-  opacity: 0.7;
+  /* opacity: 0.7; */
+  color: #b7b7bd;
   line-height: 1.4rem;
 }
 
 .Page-description span, .Page-description a {
   text-decoration: underline;
   cursor: pointer;
+  display: inline-flex;
 }
 
 .App-hero {

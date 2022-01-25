@@ -143,6 +143,10 @@
   white-space: nowrap;
 }
 
+.token-grid {
+  display: none;
+}
+
 .token-table td, .token-table th {
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -204,5 +208,27 @@
   .GlpSwap-content .GlpSwap-box {
     margin: 0;
     max-width: 100%;
+  }
+
+  .token-table {
+    display: none;
+  }
+
+  .token-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 1rem;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .token-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 1rem;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
   }
 }
