@@ -6,7 +6,7 @@
 }
 
 .Tab-title-section {
-  padding: 1.0967rem 1.032rem 0;
+  padding: 2rem 1rem 0;
   margin-bottom: 24px;
 }
 
@@ -84,7 +84,6 @@
 }
 
 .GlpSwap-token-list {
-  margin-top: 2rem;
   border: 1px solid #1e2136;
   border-radius: 4px;
   background: #17182C;
@@ -223,7 +222,7 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 680px) {
   .token-grid {
     display: grid;
     grid-template-columns: 1fr;
