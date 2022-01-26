@@ -150,6 +150,10 @@
   padding-right: 0.5rem;
 }
 
+.token-table td:nth-child(2), .token-table th:nth-child(2) {
+  width: 110px;
+}
+
 .token-table td:nth-child(3), .token-table th:nth-child(3) {
   min-width: 270px;
 }
