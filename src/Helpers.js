@@ -40,7 +40,7 @@ const CHAIN_NAMES_MAP = {
 }
 
 const ARBITRUM_RPC_PROVIDERS = [
-  "https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"
+  "https://rpc.ankr.com/arbitrum"
 ]
 const AVALANCHE_RPC_PROVIDERS = [
   "https://api.avax.network/ext/bc/C/rpc"
