@@ -15,12 +15,13 @@
   color: #FFFFFF;
   min-width: 6.77rem;
   font-size: 1.25rem;
-  line-height: 1.625rem;
+  line-height: 1;
 }
 
 .buy-input .Exchange-swap-input-container {
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .buy-input .Exchange-swap-max {
@@ -57,6 +58,7 @@
   padding-bottom: 0.5rem;
   display: flex;
   align-items: center;
+  line-height: 1;
 }
 
 .buy-input .Exchange-swap-balance {

@@ -678,7 +678,7 @@ export default function GlpSwap(props) {
             defaultTokenName={'GLP'}
           >
             <div className="selected-token">
-              <img src={glp24Icon} alt="glp24Icon" /> GLP
+              <img src={glp24Icon} alt="glp24Icon" /> <span>GLP</span>
             </div>
           </BuyInputSection>}
 
@@ -698,7 +698,7 @@ export default function GlpSwap(props) {
             defaultTokenName={'GLP'}
           >
             <div className="selected-token">
-              <img src={glp24Icon} alt="glp24Icon" /> GLP
+              <img src={glp24Icon} alt="glp24Icon" /> <span>GLP</span>
             </div>
           </BuyInputSection>}
 
