@@ -13,7 +13,7 @@
   border-radius: 4px;
   padding: 0.5rem 0;
   color: #FFFFFF;
-  min-width: 6.77rem;
+  /* min-width: 6.77rem; */
   font-size: 1.25rem;
   line-height: 1;
 }
@@ -36,7 +36,7 @@
 }
 
 .buy-input .TokenSelector-box-symbol {
-  margin-left: 0.5rem;
+  /* margin-left: 0.5rem; */
 }
 
 .buy-input .PositionEditor-token-symbol {
