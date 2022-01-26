@@ -155,15 +155,15 @@
 }
 
 .token-table td:nth-child(3), .token-table th:nth-child(3) {
-  min-width: 270px;
+  width: 320px;
 }
 
 .token-table td:nth-child(4), .token-table th:nth-child(4) {
-  min-width: 200px;
+  width: 200px;
 }
 
 .token-table td:nth-child(5), .token-table th:nth-child(5) {
-  min-width: 100px;
+  width: 130px;
 }
 
 .token-table td {
@@ -179,7 +179,7 @@
 .token-table th:last-child, .token-table td:last-child {
   padding-right: 1rem;
   text-align: right;
-  width: 160px;
+  width: 170px;
 }
 
 .token-table th {
