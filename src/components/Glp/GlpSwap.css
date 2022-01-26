@@ -6,15 +6,16 @@
 }
 
 .Tab-title-section {
-  padding: 1.0967rem 1.032rem 0;
   margin-bottom: 24px;
 }
 
 .Tab-title {
-  font-size: 20px;
-  line-height: 22px;
+  font-size: 16px;
+  line-height: 21px;
   letter-spacing: 0px;
   color: #FFFFFF;
+  padding: 1rem;
+  border-bottom: 1px solid #23263b;
 }
 
 .Tab-description {
@@ -23,6 +24,7 @@
   letter-spacing: 0px;
   color: #A0A3C4;
   margin-top: 0.5rem;
+  padding: 0 1rem;
 }
 
 .Tab-description span {
