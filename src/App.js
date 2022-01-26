@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { SWRConfig } from 'swr'
 
 import { motion, AnimatePresence } from "framer-motion"
+import Davatar from "@davatar/react"
 
 import { Web3ReactProvider, useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
@@ -26,6 +27,7 @@ import {
   helperToast,
   getChainName,
   useChainId,
+  useENS,
   getAccountUrl,
   getInjectedHandler,
   useEagerConnect,
@@ -169,6 +171,7 @@ function AppHeaderUser({
 }) {
   const { chainId } = useChainId()
   const { active, account } = useWeb3React()
+  const { ensName } = useENS(account)
   const showSelector = true
   const networkOptions = [
     { label: "Arbitrum", value: ARBITRUM, icon: 'ic_arbitrum_24.svg' },
@@ -234,7 +237,10 @@ function AppHeaderUser({
         <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
       </div>
       <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="App-cta small transparent App-header-user-account">
-        {shortenAddress(account, small ? 11 : 13)}
+        <div className="App-header-user-davatar">
+          <Davatar size={20} address={account} />
+        </div>
+        <div>{ensName || shortenAddress(account, small ? 11 : 13)}</div>
       </a>
       {!small &&
         <button className="App-header-user-settings" onClick={openSettings}>
