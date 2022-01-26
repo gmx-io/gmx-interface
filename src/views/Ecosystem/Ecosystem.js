@@ -164,7 +164,7 @@ export default function Ecosystem() {
               <div className="App-card-row">
                 <div className="label">Link</div>
                 <div>
-                  <a href="https://gmxterminal.com/" target="_blank" rel="noopener noreferrer">
+                  <a href="https://www.gmxstats.com/" target="_blank" rel="noopener noreferrer">
                     https://www.gmxstats.com/
                   </a>
                 </div>
