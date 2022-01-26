@@ -451,6 +451,7 @@ button.App-connect-wallet:hover {
   text-decoration: underline;
   cursor: pointer;
   display: inline-flex;
+  color: inherit;
 }
 
 .Page-description span img, .Page-description a img {

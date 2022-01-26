@@ -209,6 +209,15 @@
     margin: 0;
     max-width: 100%;
   }
+  
+  .GlpSwap-token-list {
+    border: none;
+    background-color: transparent;
+  }
+
+  .GlpSwap-token-list-content {
+    padding: 0;
+  }
 
   .token-table {
     display: none;
@@ -223,7 +232,7 @@
   }
 }
 
-@media (max-width: 680px) {
+@media (max-width: 510px) {
   .token-grid {
     display: grid;
     grid-template-columns: 1fr;
