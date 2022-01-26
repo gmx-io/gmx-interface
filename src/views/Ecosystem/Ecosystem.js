@@ -153,6 +153,40 @@ export default function Ecosystem() {
           </div>
           <div className="App-card">
             <div className="App-card-title">
+              GMX Analytics
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+                <img src={avalancheIcon} alt="avalancheIcon" />
+              </div>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://gmxterminal.com/" target="_blank" rel="noopener noreferrer">
+                    https://www.gmxstats.com/
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  Financial reports and protocol analytics
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Creator</div>
+                <div>
+                  <a href="https://t.me/LarpCapital" target="_blank" rel="noopener noreferrer">
+                    @CryptoMessiah
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">
               GMX Charts
               <div className="App-card-title-icon">
                 <img src={arbitrumIcon} alt="arbitrumIcon" />
