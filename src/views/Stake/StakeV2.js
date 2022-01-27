@@ -1000,12 +1000,22 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   }
 
   const showGmxVesterWithdrawModal = () => {
+    if (!vestingData || !vestingData.gmxVesterVestedAmount || vestingData.gmxVesterVestedAmount.eq(0)) {
+      helperToast.error("You have not deposited any tokens for vesting.")
+      return
+    }
+
     setIsVesterWithdrawModalVisible(true)
     setVesterWithdrawTitle("Withdraw from GMX Vault")
     setVesterWithdrawAddress(gmxVesterAddress)
   }
 
   const showGlpVesterWithdrawModal = () => {
+    if (!vestingData || !vestingData.glpVesterVestedAmount || vestingData.glpVesterVestedAmount.eq(0)) {
+      helperToast.error("You have not deposited any tokens for vesting.")
+      return
+    }
+
     setIsVesterWithdrawModalVisible(true)
     setVesterWithdrawTitle("Withdraw from GLP Vault")
     setVesterWithdrawAddress(glpVesterAddress)
