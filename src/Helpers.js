@@ -40,7 +40,7 @@ const CHAIN_NAMES_MAP = {
 }
 
 const ARBITRUM_RPC_PROVIDERS = [
-  "https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"
+  "https://rpc.ankr.com/arbitrum"
 ]
 const AVALANCHE_RPC_PROVIDERS = [
   "https://api.avax.network/ext/bc/C/rpc"
@@ -66,10 +66,10 @@ export const GLP_DECIMALS = 18
 export const GMX_DECIMALS = 18
 export const DEFAULT_MAX_USDG_AMOUNT = expandDecimals(200 * 1000 * 1000, 18)
 
-export const TAX_BASIS_POINTS = 30
+export const TAX_BASIS_POINTS = 50
 export const STABLE_TAX_BASIS_POINTS = 5
-export const MINT_BURN_FEE_BASIS_POINTS = 20
-export const SWAP_FEE_BASIS_POINTS = 20
+export const MINT_BURN_FEE_BASIS_POINTS = 25
+export const SWAP_FEE_BASIS_POINTS = 25
 export const STABLE_SWAP_FEE_BASIS_POINTS = 1
 export const MARGIN_FEE_BASIS_POINTS = 10
 

@@ -56,8 +56,9 @@ export default function Tooltip(props) {
     }
   }, [setVisible, intervalCloseRef])
 
+  const className = cx('Tooltip', props.className)
   return (
-    <span className="Tooltip" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
+    <span className={className} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
       <span className={cx({'Tooltip-handle': !props.disableHandleStyle}, [props.handleClassName])}>
         {props.handle}
        </span>
