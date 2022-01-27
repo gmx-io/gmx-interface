@@ -13,11 +13,6 @@ import selectorDropdowns from '../../img/ic_selector_dropdowns.svg';
 import Select, { components } from 'react-select';
 import { find } from 'lodash';
 
-import {
-  ARBITRUM,
-  AVALANCHE,
-} from '../../Helpers'
-
 function getDotColor(network){
   switch(network){
     case 'Arbitrum':
