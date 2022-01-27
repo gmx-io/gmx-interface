@@ -237,10 +237,8 @@ function AppHeaderUser({
         <NavLink activeClassName="active" className="default-btn" to="/trade">Trade</NavLink>
       </div>
       <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="App-cta small transparent App-header-user-account">
-        <div className="App-header-user-davatar">
-          <Davatar size={20} address={account} />
-        </div>
-        <div>{ensName || shortenAddress(account, small ? 11 : 13)}</div>
+        <Davatar size={20} address={account} />
+        <div className="App-header-user-address">{ensName || shortenAddress(account, small ? 11 : 13)}</div>
       </a>
       {!small &&
         <button className="App-header-user-settings" onClick={openSettings}>

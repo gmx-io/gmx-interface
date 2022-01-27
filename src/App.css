@@ -629,8 +629,8 @@ a.App-cta.App-header-user-account {
   align-items: center;
 }
 
-.App-header-user-davatar {
-  margin-right: 10px;
+.App-header-user-address {
+  margin-left: 10px;
 }
 
 .App-header-user-settings {
