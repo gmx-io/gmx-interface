@@ -833,7 +833,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     fetcher: fetcher(library, ReaderV2, [vesterAddresses]),
   })
 
-  const { data: gmxPrice, mutate: updateGmxPrice } = useGmxPrice()
+  const {
+    gmxPrice,
+    gmxPriceFromArbitrum,
+    gmxPriceFromAvalanche,
+    mutate: updateGmxPrice
+  } = useGmxPrice(chainId)
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
   const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
@@ -995,12 +1000,22 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   }
 
   const showGmxVesterWithdrawModal = () => {
+    if (!vestingData || !vestingData.gmxVesterVestedAmount || vestingData.gmxVesterVestedAmount.eq(0)) {
+      helperToast.error("You have not deposited any tokens for vesting.")
+      return
+    }
+
     setIsVesterWithdrawModalVisible(true)
     setVesterWithdrawTitle("Withdraw from GMX Vault")
     setVesterWithdrawAddress(gmxVesterAddress)
   }
 
   const showGlpVesterWithdrawModal = () => {
+    if (!vestingData || !vestingData.glpVesterVestedAmount || vestingData.glpVesterVestedAmount.eq(0)) {
+      helperToast.error("You have not deposited any tokens for vesting.")
+      return
+    }
+
     setIsVesterWithdrawModalVisible(true)
     setVesterWithdrawTitle("Withdraw from GLP Vault")
     setVesterWithdrawAddress(glpVesterAddress)
@@ -1190,7 +1205,18 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               <div className="App-card-row">
                 <div className="label">Price</div>
                 <div>
-                  ${formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+                  {!gmxPrice && '...'}
+                  {gmxPrice &&
+                    <Tooltip
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={'$' + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+                      renderContent={() => <>
+                        Price on Arbitrum: ${formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}<br/>
+                        Price on Avalanche: ${formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                      </>}
+                    />
+                  }
                 </div>
               </div>
               <div className="App-card-row">
