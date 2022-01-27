@@ -64,6 +64,12 @@
   top: 0;
   height: 100vh;
   width: 304px;
+  overflow-y: auto;
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.App-header-drawer::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
 }
 
 .App-header-drawer .App-header-link-container a {
