@@ -1071,7 +1071,8 @@ button.App-button {
     padding-left: 1rem;
   }
 
-  .header-connect-btn {
+  .header-connect-btn,
+  .header-connect-btn:active {
     padding-left: 5px;
     padding-right: 5px;
   }
