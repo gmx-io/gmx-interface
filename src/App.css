@@ -791,6 +791,7 @@ button.App-button {
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  transition: none;
 }
 .Toastify__close-button:hover {
   background: #FFFFFF47 0% 0% no-repeat padding-box;
