@@ -3,7 +3,6 @@ import { InjectedConnector, UserRejectedRequestError as UserRejectedRequestError
 import { WalletConnectConnector, UserRejectedRequestError as UserRejectedRequestErrorWalletConnect } from '@web3-react/walletconnect-connector'
 import { toast } from 'react-toastify'
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core'
-import { getDefaultProvider } from "@ethersproject/providers";
 import { useLocalStorage } from 'react-use'
 import { ethers } from 'ethers'
 import { format as formatDateFn } from 'date-fns'
@@ -986,7 +985,7 @@ export function useENS(address) {
   useEffect(() => {
     async function resolveENS() {
       if (address) {
-        const provider = await getDefaultProvider();
+        const provider = await ethers.providers.getDefaultProvider();
         const name = await provider.lookupAddress(address.toLowerCase());
         if (name) setENSName(name);
       }
