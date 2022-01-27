@@ -770,10 +770,27 @@ button.App-button {
 }
 
 .Toastify__toast--success {
-  background: linear-gradient(90deg, rgba(10,134,104,1) 0%, rgba(44,156,128,1) 44%, rgba(38,170,137,1) 100%);
-  backdrop-filter: blur(10px);
+  background: transparent linear-gradient(90deg, #18846C 0%, #26AA89 100%) 0% 0% no-repeat padding-box;;
   border: 1px solid #268270;
   color: white;
+  box-shadow: 0px 3px 6px #0000005C;
+  border-radius: 4px;
+}
+
+.Toastify__close-button {
+  align-self: center;
+  border-radius: 4px;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+.Toastify__close-button:hover {
+  background: #FFFFFF47 0% 0% no-repeat padding-box;
+}
+.Toastify__toast-body {
+  font: normal normal normal 14px/16px Relative;
 }
 
 @keyframes zoomIn {
