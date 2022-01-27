@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { useHistory, Link } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
@@ -579,8 +579,6 @@ export default function GlpSwap(props) {
           </div>}
           {currentWeightBps.gt(targetWeightBps) && <div>
             {tokenInfo.symbol} is above its target weight.<br/>
-            <br/>
-            Get lower fees to <Link to="/trade" target="_blank" rel="noopener noreferrer">swap</Link> tokens for {tokenInfo.symbol}.
           </div>}
           <br/>
           <div>
@@ -798,7 +796,6 @@ export default function GlpSwap(props) {
             <thead>
               <tr>
                 <th>TOKEN</th>
-                <th>PRICE</th>
                 <th>
                   <Tooltip handle={'FEES'} tooltipIconPosition="right" position="left-bottom text-none" renderContent={() => {
                     return <>
@@ -855,8 +852,10 @@ export default function GlpSwap(props) {
                 }
 
                 let utilization = bigNumberify(0)
+                let utilizedAvailableAmount
                 if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
                   utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount)
+                  utilizedAvailableAmount = tokenInfo.availableAmount.mul(utilization).div(10000)
                 }
 
                 return (
@@ -871,9 +870,6 @@ export default function GlpSwap(props) {
                           <div className="App-card-info-subtitle">{token.symbol}</div>
                         </div>
                       </div>
-                    </td>
-                    <td>
-                      ${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}
                     </td>
                     <td>
                       {formatAmount(tokenFeeBps, 2, 2, true, "-")}{(tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0) ? "%" : ""}
@@ -905,7 +901,16 @@ export default function GlpSwap(props) {
                         </div>}
                       {!isBuying &&
                         <div>
-                          {formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} {token.symbol} (${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}) ({formatAmount(utilization, 2, 2, false)}% utilized)
+                          <Tooltip
+                            handle={`${formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} ${token.symbol} ($${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)})`}
+                            position="right-bottom"
+                            tooltipIconPosition="right"
+                            renderContent={() => {
+                              return <>
+                                Utilization: {formatAmount(utilization, 2, 2, false)}% ({formatAmount(utilizedAvailableAmount, token.decimals, 2, true)} {token.symbol} out of {formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} {token.symbol})
+                              </>
+                            }}
+                          />
                         </div>
                       }
                     </td>
