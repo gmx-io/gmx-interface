@@ -136,7 +136,7 @@
 
 .GlpSwap-box .Exchange-info-row {
   height: 1rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.7rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -144,14 +144,12 @@
 
 .GlpSwap-box .Exchange-info-row .Exchange-info-label {
   margin-right: 0.5rem;
-  font-size: 0.75rem;
   line-height: 1rem;
   letter-spacing: 0.4px;
   color: #A0A3C4;
 }
 
 .GlpSwap-box .Exchange-info-row .fee-block .Tooltip {
-  font-size: 0.75rem;
   line-height: 1rem;
   letter-spacing: 0.4px;
   color: #A0A3C4;
