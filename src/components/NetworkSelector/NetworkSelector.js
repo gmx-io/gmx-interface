@@ -177,7 +177,6 @@ export default function NetworkSelector(props) {
             className={cx('network-select')}
             styles={customStyles}
             getOptionLabel={e => {
-              console.log( selectedLabel === e.label,  getDotColor(e.label))
               var optionIcon = require('../../img/' + e.icon);
               return (<div style={{ display: 'flex', alignItems: 'center' }}>
                 <img src={optionIcon.default} alt={e.icon} className="network-icon" />
