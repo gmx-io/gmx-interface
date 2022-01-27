@@ -10,7 +10,7 @@ export default function BuyGMXGLP(props) {
   }, [])
 
   return (
-    <div className="BuyGMXGLP new-update page-layout">
+    <div className="BuyGMXGLP page-layout">
       <div className="BuyGMXGLP-container default-container">
         <div className="section-title-block">
           <div className="section-title-icon">

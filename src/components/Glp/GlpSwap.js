@@ -766,7 +766,13 @@ export default function GlpSwap(props) {
               <tr>
                 <th>TOKEN</th>
                 <th>PRICE</th>
-                <th>POOL</th>
+                <th>
+                  { isBuying ? 'POOL' : <Tooltip handle={'AVAILABLE'} tooltipIconPosition="right" position="right-bottom text-none" renderContent={() => {
+                    return <>
+                      <div>Funds not utilized by current open positions.</div>
+                    </>
+                  }} />}
+                </th>
                 <th>WALLET</th>
                 <th>
                   <Tooltip handle={'FEES'} tooltipIconPosition="right" position="right-bottom text-none" renderContent={() => {

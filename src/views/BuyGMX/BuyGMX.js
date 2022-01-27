@@ -44,7 +44,7 @@ export default function BuyGMX() {
   }, [])
 
   return (
-    <div className="BuyGMXGLP new-update page-layout">
+    <div className="BuyGMXGLP page-layout">
       <div className="BuyGMXGLP-container default-container">
         {chainId === ARBITRUM && <div className="section-title-block">
           <div className="section-title-icon">
