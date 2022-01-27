@@ -182,8 +182,10 @@
   padding-right: 0.5rem;
 }
 
-.token-table td:nth-child(3), .token-table th:nth-child(3) {
-  min-width: 275px;
+.token-table td:nth-child(4), .token-table th:nth-child(4) {
+  padding-right: 1rem;
+  text-align: center;
+  width: 165px;
 }
 
 .token-table td {
@@ -199,9 +201,7 @@
 }
 
 .token-table th:last-child, .token-table td:last-child {
-  padding-right: 1rem;
-  text-align: right;
-  width: 165px;
+  min-width: 400px;
 }
 
 .token-table th {

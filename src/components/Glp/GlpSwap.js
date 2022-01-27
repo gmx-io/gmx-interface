@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
@@ -558,6 +558,39 @@ export default function GlpSwap(props) {
     }
   }
 
+  const getWeightText = (tokenInfo) => {
+    if (!tokenInfo.weight || !tokenInfo.usdgAmount || !usdgSupply || usdgSupply.eq(0) || !totalTokenWeights) {
+      return "..."
+    }
+
+    const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(usdgSupply)
+    const targetWeightBps = tokenInfo.weight.mul(BASIS_POINTS_DIVISOR).div(totalTokenWeights)
+
+    const weightText = `(${formatAmount(currentWeightBps, 2, 2, false)}% / ${formatAmount(targetWeightBps, 2, 2, false)}%)`
+
+    return (
+      <Tooltip handle={weightText} position="right-bottom" renderContent={() => {
+        return <>
+          Current Weight: {formatAmount(currentWeightBps, 2, 2, false)}%<br/>
+          Target Weight: {formatAmount(targetWeightBps, 2, 2, false)}%<br/>
+          <br/>
+          {currentWeightBps.lt(targetWeightBps) && <div>
+            {tokenInfo.symbol} is below its target weight.<br/>
+          </div>}
+          {currentWeightBps.gt(targetWeightBps) && <div>
+            {tokenInfo.symbol} is above its target weight.<br/>
+            <br/>
+            Get lower fees to <Link to="/trade" target="_blank" rel="noopener noreferrer">swap</Link> tokens for {tokenInfo.symbol}.
+          </div>}
+          <br/>
+          <div>
+            <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">More Info</a>
+          </div>
+        </>
+      }} />
+    )
+  }
+
   return (
     <div className="GlpSwap">
       {renderErrorModal()}
@@ -767,21 +800,21 @@ export default function GlpSwap(props) {
                 <th>TOKEN</th>
                 <th>PRICE</th>
                 <th>
+                  <Tooltip handle={'FEES'} tooltipIconPosition="right" position="left-bottom text-none" renderContent={() => {
+                    return <>
+                      <div>Fees will be shown once you have entered an amount in the order form.</div>
+                    </>
+                  }} />
+                </th>
+                <th>{ isBuying ? 'BUY' : 'SELL' }</th>
+                <th>WALLET</th>
+                <th>
                   { isBuying ? 'POOL' : <Tooltip handle={'AVAILABLE'} tooltipIconPosition="right" position="right-bottom text-none" renderContent={() => {
                     return <>
                       <div>Funds not utilized by current open positions.</div>
                     </>
                   }} />}
                 </th>
-                <th>WALLET</th>
-                <th>
-                  <Tooltip handle={'FEES'} tooltipIconPosition="right" position="right-bottom text-none" renderContent={() => {
-                    return <>
-                      <div>Fees will be shown once you have entered an amount in the order form.</div>
-                    </>
-                  }} />
-                </th>
-                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -821,6 +854,11 @@ export default function GlpSwap(props) {
                   // console.log(error)
                 }
 
+                let utilization = bigNumberify(0)
+                if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
+                  utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount)
+                }
+
                 return (
                   <tr key={token.symbol}>
                     <td>
@@ -838,6 +876,17 @@ export default function GlpSwap(props) {
                       ${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}
                     </td>
                     <td>
+                      {formatAmount(tokenFeeBps, 2, 2, true, "-")}{(tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0) ? "%" : ""}
+                    </td>
+                    <td>
+                      <button className={cx("default-btn action-btn", isBuying ? 'buying' : 'selling')} onClick={() => selectToken(token)}>
+                        {isBuying ? 'Buy with ' + token.symbol : 'Sell for ' + token.symbol}
+                      </button>
+                    </td>
+                    <td>
+                      {formatKeyAmount(tokenInfo, "balance", tokenInfo.decimals, 2, true)} {tokenInfo.symbol} (${formatAmount(balanceUsd, USD_DECIMALS, 2, true)})
+                    </td>
+                    <td>
                       {isBuying &&
                         <div>
                           <Tooltip
@@ -852,23 +901,13 @@ export default function GlpSwap(props) {
                               </>
                             }}
                           />
+                          {getWeightText(tokenInfo)}
                         </div>}
                       {!isBuying &&
                         <div>
-                          {formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} {token.symbol} (${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)})
+                          {formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} {token.symbol} (${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}) ({formatAmount(utilization, 2, 2, false)}% utilized)
                         </div>
                       }
-                    </td>
-                    <td>
-                      {formatKeyAmount(tokenInfo, "balance", tokenInfo.decimals, 2, true)} {tokenInfo.symbol} (${formatAmount(balanceUsd, USD_DECIMALS, 2, true)})
-                    </td>
-                    <td>
-                      {formatAmount(tokenFeeBps, 2, 2, true, "-")}{(tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0) ? "%" : ""}
-                    </td>
-                    <td>
-                      <button className={cx("default-btn action-btn", isBuying ? 'buying' : 'selling')} onClick={() => selectToken(token)}>
-                        {isBuying ? 'Buy with ' + token.symbol : 'Sell for ' + token.symbol}
-                      </button>
                     </td>
                   </tr>
                 )
