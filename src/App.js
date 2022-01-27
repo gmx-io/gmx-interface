@@ -348,6 +348,14 @@ function FullApp() {
     setSavedSlippageAmount(basisPoints)
     setIsSettingsVisible(false)
   }
+  useEffect(() => {
+    if(isDrawerVisible){
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => document.body.style.overflow = 'unset';
+  }, [isDrawerVisible])
 
   const [pendingTxns, setPendingTxns] = useState([])
 
