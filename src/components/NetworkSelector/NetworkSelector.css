@@ -69,12 +69,12 @@
 }
 
 .Selector-option.Arbitrum:hover {
-  background-color: #1d446b;
+  background: #262949!important;
   border: 1px solid #4275a8;
 }
 
 .Selector-option.Avalanche:hover {
-  background-color: #E841424D;
+  background: #262949!important;
   border: 1px solid #E84142;
 }
 
@@ -92,6 +92,14 @@
 
 .Selector-option.Avalanche .selected-icon {
   background-color: #E84142;
+}
+
+.selected-icon {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  right: 1rem;
 }
 
 .Selector .Modal {
@@ -126,15 +134,34 @@
   border-radius: 4px;
 }
 
-.react-select__option:first-child:active {
-  background-color: #264f79;
-  /* background-color: #2c5a88; */
+.react-select__option:active {
+  background-color: #262949!important;
 }
 
-.react-select__option:last-child:active {
+/* .react-select__option:last-child:active {
   background-color: #E841424D;
-  /* background-color: #E841427e; */
+  background-color: #E841427e;
+} */
+
+.react-select__indicators {
+  padding-right: 8px;
 }
+.react-select__indicator {
+  border-radius: 4px;
+}
+.network-select:hover {
+  background: #808AFF14 0% 0% no-repeat padding-box;
+}
+.network-select:focus {
+  background: red 0% 0% no-repeat padding-box;
+}
+.network-select:hover .react-select__indicator {
+  background: #2c2d45;
+}
+.active {
+  background: green;
+}
+
 
 @media (max-width: 900px) {
   .Selector .network-label {

@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from 'react'
 import cx from "classnames";
 
@@ -15,6 +17,17 @@ import {
   ARBITRUM,
   AVALANCHE,
 } from '../../Helpers'
+
+function getDotColor(network){
+  switch(network){
+    case 'Arbitrum':
+      return '#4275a8'
+    case 'Avalanche':
+      return '#E84142'
+    default:
+      return ''
+  }
+}
 
 export default function NetworkSelector(props) {
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -60,15 +73,25 @@ export default function NetworkSelector(props) {
     );
   };
 
+  function SingleValue({data, ...props}){
+    let icon = require('../../img/' + data.icon);
+    return <components.SingleValue {...props}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <img src={icon.default} alt={data.label} className="network-icon" />
+        <span style={{ marginLeft: 5 }} className="network-label">{data.label}</span>
+      </div>
+    </components.SingleValue>
+  }
+
   const customStyles = {
     option: (provided, state) => {
-      const backgroundColor = (state.value === ARBITRUM && state.isFocused) ? '#1d446b' : ((state.value === AVALANCHE && state.isFocused) ? '#371e32' : '')
+      const backgroundColor = state.isFocused ? '#808AFF14' : '#16182E'
       return {
         ...provided,
         margin: 0,
         paddingLeft: 8,
-        backgroundColor,
         cursor: 'pointer',
+        backgroundColor,
         height: 36,
         paddingTop: 6
       }
@@ -147,17 +170,21 @@ export default function NetworkSelector(props) {
           (<Select
             value={value}
             options={options}
-            components={{ DropdownIndicator }}
+            components={{ DropdownIndicator, SingleValue }}
             classNamePrefix="react-select"
             onChange={onSelect}
             isSearchable={false}
-            className="network-select"
+            className={cx('network-select')}
             styles={customStyles}
             getOptionLabel={e => {
+              console.log( selectedLabel === e.label,  getDotColor(e.label))
               var optionIcon = require('../../img/' + e.icon);
               return (<div style={{ display: 'flex', alignItems: 'center' }}>
                 <img src={optionIcon.default} alt={e.icon} className="network-icon" />
                 <span style={{ marginLeft: 5 }} className="network-label">{e.label}</span>
+                {
+                  selectedLabel === e.label && <div className='selected-icon ' style={{backgroundColor: getDotColor(e.label)}}></div>
+                }
               </div>)
             }}
           />)
