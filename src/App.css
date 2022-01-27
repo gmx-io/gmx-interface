@@ -1099,3 +1099,9 @@ button.App-button {
 }
 
 * { -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
+
+@supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+  .App-header-drawer {
+    background: #0e0f1f;
+  }
+}
