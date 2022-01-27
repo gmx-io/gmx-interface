@@ -9,7 +9,7 @@
 }
 
 .BuyGMXGLP-container .section-title-content {
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 @media (max-width: 400px) {
