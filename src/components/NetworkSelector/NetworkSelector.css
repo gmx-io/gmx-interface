@@ -158,9 +158,6 @@
 .network-select:hover .react-select__indicator {
   background: #2c2d45;
 }
-.active {
-  background: green;
-}
 
 
 @media (max-width: 900px) {
