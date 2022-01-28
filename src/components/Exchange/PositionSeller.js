@@ -500,7 +500,7 @@ export default function PositionSeller(props) {
             profit
           </a> of {deltaStr}. <br/>
           Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
-          This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
+          This rule applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
         </div>
       )
     }
