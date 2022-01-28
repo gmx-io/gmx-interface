@@ -31,7 +31,6 @@ import {
   useEagerConnect,
   useLocalStorageSerializeKey,
   useInactiveListener,
-  shortenAddress,
   getExplorerUrl,
   getWalletConnectHandler
 } from "./Helpers";
