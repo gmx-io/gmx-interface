@@ -68,6 +68,14 @@ export default function NetworkSelector(props) {
     );
   };
 
+  function Option(props){
+    let className = cx(props.className, props.data.label.toLowerCase())
+    props = {...props, className}
+    return (
+      <components.Option {...props} />
+    );
+  };
+
   function SingleValue({data, ...props}){
     let icon = require('../../img/' + data.icon);
     return <components.SingleValue {...props}>
@@ -88,7 +96,7 @@ export default function NetworkSelector(props) {
         cursor: 'pointer',
         backgroundColor,
         height: 36,
-        paddingTop: 6
+        paddingTop: 6,
       }
     },
     control: (provided, state) => {
@@ -119,6 +127,10 @@ export default function NetworkSelector(props) {
       border: '1px solid #32344C',
       borderRadius: 4,
       fontSize: '14px'
+    }),
+    menuList: (provided) => ({
+      paddingTop: '0px',
+      paddingBottom: '0px'
     }),
     singleValue: (provided, state) => ({
       ...provided,
@@ -165,7 +177,7 @@ export default function NetworkSelector(props) {
           (<Select
             value={value}
             options={options}
-            components={{ DropdownIndicator, SingleValue }}
+            components={{ DropdownIndicator, SingleValue, Option }}
             classNamePrefix="react-select"
             onChange={onSelect}
             isSearchable={false}
