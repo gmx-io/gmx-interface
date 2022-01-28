@@ -39,7 +39,7 @@ export default function OrdersToa(props) {
       <li>Insufficient liquidity to execute the order</li>
       <li>The mark price which is an aggregate of exchange prices did not reach the specified price</li>
       <li>The specified price was reached but not long enough for it to be executed</li>
-      <li>No keeper executed the order</li>
+      <li>No keeper picked up the order for execution</li>
     </ul>
 
     <div className="Orders-toa-accept-rules">
