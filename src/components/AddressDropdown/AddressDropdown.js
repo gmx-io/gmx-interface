@@ -1,5 +1,5 @@
 import "./AddressDropdown.css";
-import { Menu, Transition } from "@headlessui/react";
+import { Menu } from "@headlessui/react";
 import { shortenAddress } from "../../Helpers";
 import { FiCopy, FiExternalLink } from "react-icons/fi";
 import { BiLogIn } from "react-icons/bi";
@@ -11,7 +11,7 @@ function AddressDropdown({
   accountUrl,
   disconnectAccountAndCloseSettings
 }) {
-  const [userAddress, copyToClipboard] = useCopyToClipboard();
+  const [_userAddress, copyToClipboard] = useCopyToClipboard();
   return (
     <Menu>
       <Menu.Button as="div">
