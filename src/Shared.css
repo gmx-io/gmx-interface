@@ -138,6 +138,15 @@ td {
   color: rgba(255, 255, 255, 0.7);
 }
 
+ul {
+  padding-left: 1.5rem;
+  margin-bottom: 0;
+}
+
+ul li {
+  padding-bottom: 1rem;
+}
+
 a.plain {
   text-decoration: none;
 }
