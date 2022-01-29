@@ -721,11 +721,13 @@ a.App-cta.App-header-user-account {
   background: none;
   color: white;
   padding: 0;
+  width: 24px;
+  height: 24px;
   align-items: center;
-}
-
-.App-header-user-settings:hover {
-  opacity: 1;
+  border-radius: 4px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .App-settings-row {

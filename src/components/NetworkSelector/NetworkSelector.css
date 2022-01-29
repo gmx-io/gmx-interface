@@ -175,6 +175,9 @@
 .react-select__control:hover .react-select__indicator {
   background: #2c2d45;
 }
+.App-header-user-address:hover .App-header-user-settings {
+  background: #2c2d45;
+}
 
 @media (max-width: 900px) {
   .Selector .network-label {
