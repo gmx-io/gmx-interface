@@ -276,6 +276,7 @@
 .ExchangeChart.tv .ExchangeChart-top {
   position: relative;
   padding: 0.6rem 0.2rem;
+  z-index: 1;
 }
 
 .ExchangeChart.tv .ExchangeChart-bottom {
