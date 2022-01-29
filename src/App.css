@@ -1045,6 +1045,9 @@ button.App-button {
   .header-connect-btn.long-label {
     display: none !important;
   }
+  .App-header-user-address {
+    padding: 0 0px;
+  }
 
   .header-connect-btn.short-label {
     display: flex !important;
