@@ -26,12 +26,12 @@
 
 .Selector-box.Arbitrum {
   /* background-color: #1d446b; */
-  border: 1px solid #FFFFFF17;
+  border: 1px solid #ffffff17;
 }
 
 .Selector-box.Avalanche {
   /* background-color: #371e32; */
-  border: 1px solid #FFFFFF17;
+  border: 1px solid #ffffff17;
 }
 
 .Selector-caret {
@@ -43,8 +43,8 @@
 
 .Selector-option {
   cursor: pointer;
-  background: #FFFFFF0A 0% 0% no-repeat padding-box;
-  border: 1px solid #FFFFFF08;
+  background: #ffffff0a 0% 0% no-repeat padding-box;
+  border: 1px solid #ffffff08;
   border-radius: 4px;
   padding: 0.5rem 1rem;
   display: flex;
@@ -65,17 +65,17 @@
   font-size: 16px;
   line-height: 20px;
   letter-spacing: 0.29px;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .Selector-option.Arbitrum:hover {
-  background: #262949!important;
+  background: #262949 !important;
   border: 1px solid #4275a8;
 }
 
 .Selector-option.Avalanche:hover {
-  background: #262949!important;
-  border: 1px solid #E84142;
+  background: #262949 !important;
+  border: 1px solid #e84142;
 }
 
 .Selector-option .selected-icon {
@@ -91,7 +91,7 @@
 }
 
 .Selector-option.Avalanche .selected-icon {
-  background-color: #E84142;
+  background-color: #e84142;
 }
 
 .selected-icon {
@@ -129,7 +129,7 @@
   width: 100%;
   max-width: 19.1rem;
   margin: auto;
-  background: #16182E 0% 0% no-repeat padding-box;
+  background: #16182e 0% 0% no-repeat padding-box;
   border: 1px solid #262638;
   border-radius: 4px;
 }
@@ -139,26 +139,26 @@
   border-radius: 4px;
 }
 .react-select__option.arbitrum:hover {
-  background: #262949!important;
+  background: #262949 !important;
   border: 1px solid #4275a8;
   border-radius: 4px;
 }
 .react-select__option.arbitrum:active {
-  background: #262949!important;
+  background: #262949 !important;
 }
 .react-select__option.avalanche:hover {
-  background: #262949!important;
-  border: 1px solid #E84142;
+  background: #262949 !important;
+  border: 1px solid #e84142;
   border-radius: 4px;
 }
 .react-select__option.avalanche:active {
-  background-color: #E841424D!important;
+  background-color: #e841424d !important;
 }
 .react-select__option {
-  margin-bottom: 5px!important;
+  margin-bottom: 5px !important;
 }
 .react-select__option:last-child {
-  margin-bottom: 0px!important;
+  margin-bottom: 0px !important;
 }
 .react-select__indicators {
   padding-right: 8px;
@@ -166,14 +166,13 @@
 .react-select__indicator {
   border-radius: 4px;
 }
-.network-select:hover {
-  background: #808AFF14 0% 0% no-repeat padding-box;
+.react-select__control:hover {
+  background: #808aff14 0% 0% no-repeat padding-box;
 }
 
-.network-select:hover .react-select__indicator {
+.react-select__control:hover .react-select__indicator {
   background: #2c2d45;
 }
-
 
 @media (max-width: 900px) {
   .Selector .network-label {

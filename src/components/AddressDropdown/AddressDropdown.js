@@ -11,7 +11,7 @@ function AddressDropdown({
   accountUrl,
   disconnectAccountAndCloseSettings
 }) {
-  const [_userAddress, copyToClipboard] = useCopyToClipboard();
+  const [userAddress, copyToClipboard] = useCopyToClipboard();
   return (
     <Menu>
       <Menu.Button as="div">
@@ -21,38 +21,32 @@ function AddressDropdown({
       </Menu.Button>
       <Menu.Items as="div" className="menu-items">
         <Menu.Item>
-          {({ active }) => (
-            <div className="menu-item" onClick={() => copyToClipboard(account)}>
-              <FiCopy fontSize={16} />
-              <p>Copy Address</p>
-            </div>
-          )}
+          <div className="menu-item" onClick={() => copyToClipboard(account)}>
+            <FiCopy fontSize={16} />
+            <p>Copy Address</p>
+          </div>
         </Menu.Item>
 
         <Menu.Item>
-          {({ active }) => (
-            <a
-              href={accountUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="menu-item"
-            >
-              <FiExternalLink fontSize={16} />
-              <p>View in Explorer</p>
-            </a>
-          )}
+          <a
+            href={accountUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="menu-item"
+          >
+            <FiExternalLink fontSize={16} />
+            <p>View in Explorer</p>
+          </a>
         </Menu.Item>
 
         <Menu.Item>
-          {({ active }) => (
-            <div
-              className="menu-item"
-              onClick={disconnectAccountAndCloseSettings}
-            >
-              <BiLogIn fontSize={16} />
-              <p>Disconnect</p>
-            </div>
-          )}
+          <div
+            className="menu-item"
+            onClick={disconnectAccountAndCloseSettings}
+          >
+            <BiLogIn fontSize={16} />
+            <p>Disconnect</p>
+          </div>
         </Menu.Item>
       </Menu.Items>
     </Menu>
