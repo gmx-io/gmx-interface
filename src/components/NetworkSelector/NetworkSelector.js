@@ -207,6 +207,7 @@ export default function NetworkSelector(props) {
         <Select
           value={value}
           options={options}
+          menuIsOpen={true}
           components={{ DropdownIndicator, SingleValue, Option }}
           classNamePrefix="react-select"
           onChange={onSelect}
