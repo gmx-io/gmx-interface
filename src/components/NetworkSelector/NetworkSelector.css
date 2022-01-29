@@ -169,7 +169,9 @@
 .react-select__control:hover {
   background: #808aff14 0% 0% no-repeat padding-box;
 }
-
+.App-header-user-address:hover {
+  background: #808aff14 0% 0% no-repeat padding-box;
+}
 .react-select__control:hover .react-select__indicator {
   background: #2c2d45;
 }
