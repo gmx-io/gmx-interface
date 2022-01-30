@@ -11,7 +11,7 @@ function AddressDropdown({
   accountUrl,
   disconnectAccountAndCloseSettings
 }) {
-  const [userAddress, copyToClipboard] = useCopyToClipboard();
+  const [, copyToClipboard] = useCopyToClipboard();
   return (
     <Menu>
       <Menu.Button as="div">

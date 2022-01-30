@@ -119,6 +119,7 @@ export default function NetworkSelector(props) {
         paddingLeft: 8,
         cursor: "pointer",
         backgroundColor,
+        color: "#a0a3c4",
         height: 36,
         paddingTop: 6
       };
