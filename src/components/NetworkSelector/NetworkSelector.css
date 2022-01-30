@@ -144,6 +144,12 @@
   border-radius: 4px;
   color: #eee;
 }
+.react-select__option.arbitrum:active {
+  background: #262949 !important;
+}
+.react-select__option.avalanche:active {
+  background: #262949 !important;
+}
 .react-select__option.avalanche:hover {
   background: #262949 !important;
   border: 1px solid #e84142;
