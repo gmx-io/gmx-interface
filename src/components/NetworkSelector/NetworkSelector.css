@@ -175,7 +175,7 @@
 .react-select__control:hover .react-select__indicator {
   background: #2c2d45;
 }
-.App-header-user-address:hover .App-header-user-settings {
+.App-header-user-settings:hover {
   background: #2c2d45;
 }
 
