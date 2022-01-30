@@ -142,17 +142,13 @@
   background: #262949 !important;
   border: 1px solid #4275a8;
   border-radius: 4px;
-}
-.react-select__option.arbitrum:active {
-  background: #262949 !important;
+  color: #eee;
 }
 .react-select__option.avalanche:hover {
   background: #262949 !important;
   border: 1px solid #e84142;
   border-radius: 4px;
-}
-.react-select__option.avalanche:active {
-  background-color: #e841424d !important;
+  color: #eee;
 }
 .react-select__option {
   margin-bottom: 5px !important;
@@ -160,20 +156,14 @@
 .react-select__option:last-child {
   margin-bottom: 0px !important;
 }
-.react-select__indicators {
-  padding-right: 8px;
-}
 .react-select__indicator {
   border-radius: 4px;
 }
-.react-select__control:hover {
+.network-select:hover {
   background: #808aff14 0% 0% no-repeat padding-box;
 }
 .App-header-user-address:hover {
   background: #808aff14 0% 0% no-repeat padding-box;
-}
-.react-select__control:hover .react-select__indicator {
-  background: #2c2d45;
 }
 .App-header-user-settings:hover {
   background: #2c2d45;
