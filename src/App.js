@@ -53,7 +53,7 @@ import CompleteAccountTransfer from "./views/CompleteAccountTransfer/CompleteAcc
 import Debug from "./views/Debug/Debug";
 
 import cx from "classnames";
-import { cssTransition, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NetworkSelector from "./components/NetworkSelector/NetworkSelector";
 import Modal from "./components/Modal/Modal";
@@ -63,7 +63,7 @@ import { RiMenuLine } from "react-icons/ri";
 import { FaTimes } from "react-icons/fa";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FiX } from "react-icons/fi";
-import { BiLogOut } from "react-icons/bi";
+// import { BiLogOut } from "react-icons/bi";
 
 import "./Font.css";
 import "./Shared.css";
@@ -740,7 +740,7 @@ function FullApp() {
             Include PnL in leverage display
           </Checkbox>
         </div>
-        <div className="Exchange-settings-row">
+        {/* <div className="Exchange-settings-row">
           <button
             className="btn-link"
             onClick={disconnectAccountAndCloseSettings}
@@ -748,7 +748,7 @@ function FullApp() {
             <BiLogOut className="logout-icon" />
             Logout from Account
           </button>
-        </div>
+        </div> */}
         <button
           className="App-cta Exchange-swap-button"
           onClick={saveAndCloseSettings}

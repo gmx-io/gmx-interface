@@ -2,7 +2,7 @@ import "./AddressDropdown.css";
 import { Menu } from "@headlessui/react";
 import { shortenAddress } from "../../Helpers";
 import { FiCopy, FiExternalLink } from "react-icons/fi";
-import { BiLogIn } from "react-icons/bi";
+import { BiLogOut } from "react-icons/bi";
 import { useCopyToClipboard } from "react-use";
 
 function AddressDropdown({
@@ -26,7 +26,6 @@ function AddressDropdown({
             <p>Copy Address</p>
           </div>
         </Menu.Item>
-
         <Menu.Item>
           <a
             href={accountUrl}
@@ -44,7 +43,7 @@ function AddressDropdown({
             className="menu-item"
             onClick={disconnectAccountAndCloseSettings}
           >
-            <BiLogIn fontSize={16} />
+            <BiLogOut fontSize={18} />
             <p>Disconnect</p>
           </div>
         </Menu.Item>
