@@ -690,7 +690,6 @@ function FullApp() {
       </div>
       <ToastContainer
         limit={1}
-        transition={Zoom}
         position="bottom-right"
         autoClose={7000}
         hideProgressBar={true}

@@ -16,7 +16,7 @@ function AddressDropdown({
     <Menu>
       <Menu.Button as="div">
         <p className="App-cta small transparent App-header-user-account">
-          {shortenAddress(account, small ? 9 : 11)}
+          {shortenAddress(account, small ? 11 : 13)}
         </p>
       </Menu.Button>
       <Menu.Items as="div" className="menu-items">
