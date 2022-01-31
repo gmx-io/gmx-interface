@@ -18,6 +18,11 @@
   z-index: 1;
 }
 
+.Tooltip.nowrap .Tooltip-popup {
+  min-width: auto;
+  white-space: nowrap;
+}
+
 .Tooltip-popup :first-child {
   margin-top: 0;
 }

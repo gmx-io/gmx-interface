@@ -164,7 +164,7 @@ export default function GlpSwap(props) {
     fetcher: fetcher(library, Vester),
   })
 
-  const { data: gmxPrice, mutate: updateGmxPrice } = useGmxPrice()
+  const { gmxPrice, mutate: updateGmxPrice } = useGmxPrice(chainId)
 
   const rewardTrackersForStakingInfo = [
     stakedGlpTrackerAddress,
@@ -775,7 +775,7 @@ export default function GlpSwap(props) {
             </div>
           </div>
           <div className="GlpSwap-cta Exchange-swap-button-container">
-            <button className="default-btn Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {getPrimaryText()}
             </button>
           </div>

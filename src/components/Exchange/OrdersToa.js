@@ -32,9 +32,16 @@ export default function OrdersToa(props) {
   }
 
   return <Modal setIsVisible={setIsVisible} isVisible={true} label="Enable Orders" className="Orders-toa" zIndex="30">
-    Note that orders may not execute if there is insufficient liquidity.<br/>
+    Note that orders are not guaranteed to be executed.<br/>
     <br/>
-    Additionally, since the mark price is based on an aggregate of exchanges, an order may not execute even if the specified price was reached on another exchange.
+    This can occur in a few situations including but not exclusive to:<br/>
+    <ul>
+      <li>Insufficient liquidity to execute the order</li>
+      <li>The mark price which is an aggregate of exchange prices did not reach the specified price</li>
+      <li>The specified price was reached but not long enough for it to be executed</li>
+      <li>No keeper picked up the order for execution</li>
+    </ul>
+
     <div className="Orders-toa-accept-rules">
       <Checkbox isChecked={isChecked} setIsChecked={setIsChecked}>
         <span className="muted">Accept that orders are not guaranteed to&nbsp;execute</span>
