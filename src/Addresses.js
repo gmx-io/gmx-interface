@@ -149,7 +149,9 @@ const CONTRACTS = {
     GlpVester: "0x62331A7Bd1dfB3A7642B7db50B5509E57CA3154A",
 
     OrderBook: "0x4296e307f108B2f583FF2F7B7270ee7831574Ae5",
-    OrderBookReader: "0xccFE3E576f8145403d3ce8f3c2f6519Dae40683B"
+    OrderBookReader: "0xccFE3E576f8145403d3ce8f3c2f6519Dae40683B",
+
+    TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98"
   }
 }
 
