@@ -1730,6 +1730,11 @@ export function getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTok
       token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 10]
       token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 11]
 
+      token.maxAvailableShort = bigNumberify(0)
+      if (token.maxGlobalShortSize.gt(0) && token.maxGlobalShortSize.gt(token.globalShortSize)) {
+        token.maxAvailableShort = token.maxGlobalShortSize.sub(token.globalShortSize)
+      }
+
       token.availableUsd = token.isStable
         ? token.poolAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals))
         : token.availableAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals))

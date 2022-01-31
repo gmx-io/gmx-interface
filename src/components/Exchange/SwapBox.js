@@ -254,6 +254,7 @@ export default function SwapBox(props) {
 
   const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress)
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress)
+  const hasMaxAvailableShort = isShort && toTokenInfo.maxAvailableShort && toTokenInfo.maxAvailableShort.gt(0)
 
   const fromBalance = fromTokenInfo ? fromTokenInfo.balance : bigNumberify(0)
   const toBalance = toTokenInfo ? toTokenInfo.balance : bigNumberify(0)
@@ -675,6 +676,10 @@ export default function SwapBox(props) {
 
       const sizeUsd = toAmount.mul(toTokenInfo.maxPrice).div(expandDecimals(1, toTokenInfo.decimals))
       const sizeTokens = sizeUsd.mul(expandDecimals(1, shortCollateralToken.decimals)).div(shortCollateralToken.minPrice)
+
+      if (toTokenInfo.maxAvailableShort && toTokenInfo.maxAvailableShort.gt(0) && sizeUsd.gt(toTokenInfo.maxAvailableShort)) {
+        return [`Max ${toTokenInfo.symbol} short exceeded`]
+      }
 
       stableTokenAmount = stableTokenAmount.add(sizeTokens)
       if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
@@ -1630,6 +1635,18 @@ export default function SwapBox(props) {
               </Tooltip>
             </div>
           </div>
+          {hasMaxAvailableShort && <div className="Exchange-info-row">
+            <div className="Exchange-info-label">Max {toToken.symbol} Short</div>
+            <div className="align-right">
+              <Tooltip handle={`${formatAmount(toTokenInfo.maxAvailableShort, USD_DECIMALS, 2, true)}`} position="right-bottom" renderContent={() => {
+                return <>
+                  Max {toTokenInfo.symbol} Short Capacity: ${formatAmount(toTokenInfo.maxGlobalShortSize, USD_DECIMALS, 2, true)}<br/>
+                  Current {toTokenInfo.symbol} Shorts: ${formatAmount(toTokenInfo.globalShortSize, USD_DECIMALS, 2, true)}<br/>
+                </>
+              }}>
+              </Tooltip>
+            </div>
+          </div>}
         </div>
       }
       <div className="Exchange-swap-market-box App-box App-box-border">
