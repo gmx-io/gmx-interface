@@ -88,10 +88,10 @@ function getLibrary(provider) {
   return library;
 }
 
-const Zoom = cssTransition({
-  enter: "zoomIn",
-  duration: 300
-});
+// const Zoom = cssTransition({
+//   enter: "zoomIn",
+//   duration: 300
+// });
 
 function inPreviewMode() {
   return false;
