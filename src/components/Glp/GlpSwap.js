@@ -771,7 +771,7 @@ export default function GlpSwap(props) {
                 <th>TOKEN</th>
                 <th>PRICE</th>
                 <th>
-                  { isBuying ? 'POOL(WEIGHT)' : <Tooltip handle={'AVAILABLE'} tooltipIconPosition="right" position="right-bottom text-none" renderContent={() => {
+                  { isBuying ? 'POOL' : <Tooltip handle={'AVAILABLE'} tooltipIconPosition="right" position="right-bottom text-none" renderContent={() => {
                     return <>
                       <div>Funds not utilized by current open positions.</div>
                     </>
