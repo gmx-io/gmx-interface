@@ -297,11 +297,9 @@ function AppHeaderUser({
           accountUrl={accountUrl}
           disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
         />
-        {!small && (
-          <button className="App-header-user-settings" onClick={openSettings}>
-            <BsThreeDotsVertical fontSize={20} />
-          </button>
-        )}
+        <button className="App-header-user-settings" onClick={openSettings}>
+          <BsThreeDotsVertical fontSize={20} />
+        </button>
       </div>
     </div>
   );
