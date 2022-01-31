@@ -13,6 +13,7 @@
   list-style: none;
   cursor: pointer;
   outline: none;
+  z-index: 2;
 }
 .menu-item {
   display: flex !important;
