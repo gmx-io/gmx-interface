@@ -1696,7 +1696,7 @@ export const getInjectedHandler = (activate) => {
 
 export function getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo, vaultPropsLength) {
   if (!vaultPropsLength) {
-    vaultPropsLength = 12
+    vaultPropsLength = 14
   }
   const fundingRatePropsLength = 2
   const infoTokens = {}
@@ -1724,9 +1724,11 @@ export function getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTok
       token.weight = vaultTokenInfo[i * vaultPropsLength + 4]
       token.bufferAmount = vaultTokenInfo[i * vaultPropsLength + 5]
       token.maxUsdgAmount = vaultTokenInfo[i * vaultPropsLength + 6]
-      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 7]
-      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 8]
-      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 9]
+      token.globalShortSize = vaultTokenInfo[i * vaultPropsLength + 7]
+      token.maxGlobalShortSize = vaultTokenInfo[i * vaultPropsLength + 8]
+      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 9]
+      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 10]
+      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 11]
 
       token.availableUsd = token.isStable
         ? token.poolAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals))

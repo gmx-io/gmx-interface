@@ -259,7 +259,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
 
   const tokens = getTokens(chainId)
-  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR([active, chainId, readerAddress, "getFullVaultTokenInfo"], {
+  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR([active, chainId, readerAddress, "getVaultTokenInfoV2"], {
     fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, expandDecimals(1, 18), whitelistedTokenAddresses]),
   })
 
