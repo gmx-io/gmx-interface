@@ -164,7 +164,7 @@ export default function GlpSwap(props) {
     fetcher: fetcher(library, Vester),
   })
 
-  const { data: gmxPrice, mutate: updateGmxPrice } = useGmxPrice()
+  const { gmxPrice, mutate: updateGmxPrice } = useGmxPrice(chainId)
 
   const rewardTrackersForStakingInfo = [
     stakedGlpTrackerAddress,
@@ -748,7 +748,7 @@ export default function GlpSwap(props) {
             </div>
           </div>
           <div className="GlpSwap-cta Exchange-swap-button-container">
-            <button className="default-btn Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {getPrimaryText()}
             </button>
           </div>
@@ -771,7 +771,7 @@ export default function GlpSwap(props) {
                 <th>TOKEN</th>
                 <th>PRICE</th>
                 <th>
-                  { isBuying ? 'POOL' : <Tooltip handle={'AVAILABLE'} tooltipIconPosition="right" position="right-bottom text-none" renderContent={() => {
+                  { isBuying ? 'POOL(WEIGHT)' : <Tooltip handle={'AVAILABLE'} tooltipIconPosition="right" position="right-bottom text-none" renderContent={() => {
                     return <>
                       <div>Funds not utilized by current open positions.</div>
                     </>

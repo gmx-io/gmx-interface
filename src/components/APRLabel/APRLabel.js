@@ -111,7 +111,7 @@ export default function APRLabel ({chainId, label}) {
     fetcher: fetcher(library, ReaderV2, [vesterAddresses]),
   })
 
-  const { data: gmxPrice } = useGmxPrice()
+  const { gmxPrice } = useGmxPrice(chainId)
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
   const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
