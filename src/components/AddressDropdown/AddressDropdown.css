@@ -4,9 +4,8 @@
 .menu-items {
   position: absolute;
   right: 0;
-  top: 50px;
-  margin-top: 0.5rem;
-  width: 11rem;
+  top: 43px;
+  width: 10.5rem;
   transform-origin: top right;
   border-radius: 4px;
   background: #16182e;
@@ -22,7 +21,7 @@
   color: #a0a3c4;
   padding-bottom: 15px;
   font-size: 14px;
-  padding: 10px 10px;
+  padding: 8.5px 8px;
   border: 1px solid transparent;
   border-radius: 4px;
 }

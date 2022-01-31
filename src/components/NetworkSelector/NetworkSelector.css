@@ -156,12 +156,6 @@
   border-radius: 4px;
   color: #eee;
 }
-.react-select__option {
-  margin-bottom: 5px !important;
-}
-.react-select__option:last-child {
-  margin-bottom: 0px !important;
-}
 .react-select__indicator {
   border-radius: 4px;
 }
