@@ -3,7 +3,7 @@
 }
 .menu-items {
   position: absolute;
-  right: 0;
+  right: -2px;
   top: 43px;
   width: 10.5rem;
   transform-origin: top right;
