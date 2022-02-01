@@ -806,7 +806,7 @@ export default function GlpSwap(props) {
                 <th>{ isBuying ? 'BUY' : 'SELL' }</th>
                 <th>WALLET</th>
                 <th>
-                  { isBuying ? 'POOL(WEIGHT)' : <Tooltip handle={'AVAILABLE'} tooltipIconPosition="right" position="right-bottom text-none" renderContent={() => {
+                  { isBuying ? 'POOL (WEIGHT)' : <Tooltip handle={'AVAILABLE'} tooltipIconPosition="right" position="right-bottom text-none" renderContent={() => {
                     return <>
                       <div>Funds not utilized by current open positions.</div>
                     </>
@@ -891,7 +891,7 @@ export default function GlpSwap(props) {
                             tooltipIconPosition="right"
                             renderContent={() => {
                               return <>
-                                Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol}<br />
+                                Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol}<br />
                                 <br />
                                 Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
                               </>
@@ -907,7 +907,7 @@ export default function GlpSwap(props) {
                             tooltipIconPosition="right"
                             renderContent={() => {
                               return <>
-                                Utilization: {formatAmount(utilization, 2, 2, false)}% ({formatAmount(utilizedAvailableAmount, token.decimals, 2, true)} {token.symbol} out of {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol})
+                                Utilization: {formatAmount(utilization, 2, 2, false)}% ({formatAmount(utilizedAvailableAmount, token.decimals, 2, true)} {token.symbol} out of {formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} {token.symbol})
                               </>
                             }}
                           />
