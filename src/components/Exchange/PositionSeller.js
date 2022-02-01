@@ -91,6 +91,7 @@ export default function PositionSeller(props) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const prevIsVisible = usePrevious(isVisible)
   const routerAddress = getContract(chainId, "Router")
+  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol")
 
   const orderOptions = [MARKET, STOP];
   let [orderOption, setOrderOption] = useState(MARKET);
@@ -513,7 +514,7 @@ export default function PositionSeller(props) {
     }
     return (
       <ExchangeInfoRow label="Execution Fees">
-        {formatAmount(DECREASE_ORDER_EXECUTION_GAS_FEE, 18, 4)} ETH
+        {formatAmount(DECREASE_ORDER_EXECUTION_GAS_FEE, 18, 4)} {nativeTokenSymbol}
       </ExchangeInfoRow>
     );
   }
