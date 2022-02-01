@@ -71,13 +71,8 @@
   cursor: help;
   position: relative;
   display: inline-flex;
-  margin-right: 4px;
 }
 
-.Tooltip-handle {
-  cursor: help;
-  position: relative;
-}
 .Tooltip-handle:after {
   position: absolute;
   content: '';
