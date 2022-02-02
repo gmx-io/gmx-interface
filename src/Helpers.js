@@ -1471,7 +1471,7 @@ export function usePrevious(value) {
 }
 
 export async function getGasLimit(contract, method, params = [], value, gasBuffer) {
-  const defaultGasBuffer = 200000
+  const defaultGasBuffer = 300000
   const defaultValue = bigNumberify(0)
 
   if (!value) {
