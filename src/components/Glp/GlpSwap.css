@@ -43,6 +43,15 @@
   margin-right: 1rem;
 }
 
+.GlpSwap-content .GlpSwap-stats-card .App-card-divider {
+  margin-bottom: 0;
+}
+
+.GlpSwap-content .GlpSwap-stats-card .App-card-row {
+  margin-left: -1rem;
+  margin-right: -1rem;
+}
+
 .GlpSwap-content .GlpSwap-box {
   max-width: 29.935rem;
   margin-left: 1rem;

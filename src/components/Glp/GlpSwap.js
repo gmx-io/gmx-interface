@@ -622,6 +622,7 @@ export default function GlpSwap(props) {
               </div>
             </div>
           </div>
+          <div className="App-card-divider"></div>
           <div className="App-card-content">
             <div className="App-card-row">
               <div className="label">Price</div>
@@ -905,7 +906,7 @@ export default function GlpSwap(props) {
                             tooltipIconPosition="right"
                             renderContent={() => {
                               return <>
-                                Utilization: {formatAmount(utilization, 2, 2, false)}% ({formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} {token.symbol} out of {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol})
+                                Utilization: {formatAmount(utilization, 2, 2, false)}% ({formatKeyAmount(tokenInfo, "reservedAmount", token.decimals, 2, true)} {token.symbol} out of {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol})
                               </>
                             }}
                           />
