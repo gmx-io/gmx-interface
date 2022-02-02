@@ -2397,9 +2397,9 @@ export default function SwapBox(props) {
                       {parseFloat(savedSlippageAmount / 100.0).toFixed(2)}%.
                       <br />
                       <br />
-                      The slippage amount can be configured by clicking on the
-                      Settings menu in address dropdown available at the top right of the page after connecting
-                      your wallet.
+                      The slippage amount can be configured under Settings,
+                      found by clicking on your address at the top right of the
+                      page after connecting your wallet.
                       <br />
                       <br />
                       <a
