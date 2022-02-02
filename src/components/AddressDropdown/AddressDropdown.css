@@ -1,6 +1,15 @@
 .menu-items:focus-visible {
   border: 1px solid #262638;
 }
+.address-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white!important;
+}
+.address-btn span {
+  margin-right: 10px;
+}
 .menu-items {
   position: absolute;
   right: -2px;

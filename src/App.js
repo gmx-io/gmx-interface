@@ -61,7 +61,6 @@ import Checkbox from "./components/Checkbox/Checkbox";
 
 import { RiMenuLine } from "react-icons/ri";
 import { FaTimes } from "react-icons/fa";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import { FiX } from "react-icons/fi";
 // import { BiLogOut } from "react-icons/bi";
 
@@ -296,10 +295,8 @@ function AppHeaderUser({
           small={small}
           accountUrl={accountUrl}
           disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+          openSettings={openSettings}
         />
-        <button className="App-header-user-settings" onClick={openSettings}>
-          <BsThreeDotsVertical fontSize={20} />
-        </button>
       </div>
     </div>
   );
