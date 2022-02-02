@@ -272,7 +272,7 @@ function AppHeaderUser({
 
   return (
     <div className="App-header-user">
-       <div className="App-header-user-link">
+      <div className="App-header-user-link">
         <NavLink activeClassName="active" className="default-btn" to="/trade">
           Trade
         </NavLink>
