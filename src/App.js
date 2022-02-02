@@ -272,6 +272,11 @@ function AppHeaderUser({
 
   return (
     <div className="App-header-user">
+       <div className="App-header-user-link">
+        <NavLink activeClassName="active" className="default-btn" to="/trade">
+          Trade
+        </NavLink>
+      </div>
       {showSelector && (
         <NetworkSelector
           options={networkOptions}
@@ -284,11 +289,6 @@ function AppHeaderUser({
           showModal={showNetworkSelectorModal}
         />
       )}
-      <div className="App-header-user-link">
-        <NavLink activeClassName="active" className="default-btn" to="/trade">
-          Trade
-        </NavLink>
-      </div>
       <div className="App-header-user-address">
         <AddressDropdown
           account={account}

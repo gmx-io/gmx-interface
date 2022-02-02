@@ -704,13 +704,6 @@ button.App-button-option:disabled {
   align-items: center;
 }
 
-a.App-cta.App-header-user-account {
-  margin-top: 0;
-  margin-right: 0.5rem;
-  font-size: 0.9rem;
-  padding-left: 0;
-}
-
 .App-header-user-settings {
   display: inline-flex;
   cursor: pointer;
@@ -1128,10 +1121,6 @@ button.App-button {
   .Page-title-section {
     margin-top: 2rem;
   }
-
-  a.App-header-user-account {
-    margin-right: 0;
-  }
 }
 
 @media (max-width: 600px) {
@@ -1166,10 +1155,6 @@ button.App-button {
 
   .App-header-menu-icon {
     margin: 4px 5px;
-  }
-
-  .App-header-user-account {
-    font-size: 0.8rem;
   }
 
   .App-header.small {
