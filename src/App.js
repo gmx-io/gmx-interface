@@ -53,7 +53,7 @@ import CompleteAccountTransfer from "./views/CompleteAccountTransfer/CompleteAcc
 import Debug from "./views/Debug/Debug";
 
 import cx from "classnames";
-import { ToastContainer } from "react-toastify";
+import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NetworkSelector from "./components/NetworkSelector/NetworkSelector";
 import Modal from "./components/Modal/Modal";
@@ -87,10 +87,11 @@ function getLibrary(provider) {
   return library;
 }
 
-// const Zoom = cssTransition({
-//   enter: "zoomIn",
-//   duration: 300
-// });
+const Zoom = cssTransition({
+  enter: "zoomIn",
+  collapseDuration: 300,
+  exit: "zoomOut"
+});
 
 function inPreviewMode() {
   return false;
@@ -687,6 +688,7 @@ function FullApp() {
       </div>
       <ToastContainer
         limit={1}
+        transition={Zoom}
         position="bottom-right"
         autoClose={7000}
         hideProgressBar={true}
