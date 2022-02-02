@@ -1356,7 +1356,7 @@ export function shortenAddress(address, length) {
   return (
     address.substring(0, side) +
     "..." +
-    address.substring(address.length - 4, address.length)
+    address.substring(address.length - side, address.length)
   );
 }
 

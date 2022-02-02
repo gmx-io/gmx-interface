@@ -2135,13 +2135,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@headlessui/react@npm:^1.4.3":
-  version: 1.4.3
-  resolution: "@headlessui/react@npm:1.4.3"
+"@headlessui/react@npm:dev":
+  version: 0.0.0-dev.0ce63d8
+  resolution: "@headlessui/react@npm:0.0.0-dev.0ce63d8"
   peerDependencies:
     react: ^16 || ^17 || ^18
     react-dom: ^16 || ^17 || ^18
-  checksum: 0c55bba6dc09a81576ec7d41320e3beb57b3f4576637ac4aad6048af851d5fe5434fd0d10dfb5c7b2db16eca6ded5eb3368822ddb87ff4dcb99fc3592ef63b0a
+  checksum: 77b433c173652c568c384c248eef6acbf54e795e52eecdc7ea27489694bfbbbc0cc83161a989942b30d1f9fefe7ad7f56877feca597714d34b6030a54caa9bd0
   languageName: node
   linkType: hard
 
@@ -8319,7 +8319,7 @@ __metadata:
     "@apollo/client": ^3.3.19
     "@ethersproject/providers": ^5.0.23
     "@ethersproject/units": ^5.0.10
-    "@headlessui/react": ^1.4.3
+    "@headlessui/react": dev
     "@testing-library/jest-dom": ^5.11.4
     "@testing-library/react": ^11.1.0
     "@testing-library/user-event": ^12.1.10

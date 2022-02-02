@@ -89,11 +89,17 @@ export default function NetworkSelector(props) {
       </components.DropdownIndicator>
     );
   };
-
   function Option(props) {
     let className = cx(props.className, props.data.label.toLowerCase());
     props = { ...props, className };
     return <components.Option {...props} />;
+  }
+  function IndicatorsContainer(props) {
+    return (
+      <components.IndicatorsContainer {...props}>
+        <img src={selectorDropdowns} alt="" />
+      </components.IndicatorsContainer>
+    );
   }
 
   function SingleValue({ data, ...props }) {
@@ -208,7 +214,12 @@ export default function NetworkSelector(props) {
         <Select
           value={value}
           options={options}
-          components={{ DropdownIndicator, SingleValue, Option }}
+          components={{
+            DropdownIndicator,
+            SingleValue,
+            Option,
+            IndicatorsContainer
+          }}
           classNamePrefix="react-select"
           onChange={onSelect}
           isSearchable={false}
