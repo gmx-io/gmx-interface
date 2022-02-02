@@ -1345,15 +1345,16 @@ const RPC_PROVIDERS = {
   [AVALANCHE]: AVALANCHE_RPC_PROVIDERS
 };
 
-export function shortenAddress(address) {
+export function shortenAddress(address, length) {
   if (!address) {
     return address;
   }
   if (address.length < 10) {
     return address;
   }
+  let side = Math.round((length - 3) / 2);
   return (
-    address.substring(0, 4) +
+    address.substring(0, side) +
     "..." +
     address.substring(address.length - 4, address.length)
   );
