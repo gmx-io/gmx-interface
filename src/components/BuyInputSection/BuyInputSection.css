@@ -4,6 +4,9 @@
 
 .buy-input.Exchange-swap-section {
   min-height: 5.935rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .buy-input .TokenSelector-box {
@@ -11,7 +14,7 @@
   align-items: center;
   justify-content: flex-end;
   border-radius: 4px;
-  padding: 0.5rem 0;
+  /* padding: 0.5rem 0; */
   color: #FFFFFF;
   /* min-width: 6.77rem; */
   font-size: 1.25rem;
@@ -54,8 +57,8 @@
 }
 
 .buy-input .selected-token {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  /* padding-top: 0.5rem;
+  padding-bottom: 0.5rem; */
   display: flex;
   align-items: center;
   line-height: 1;
