@@ -852,10 +852,8 @@ export default function GlpSwap(props) {
                 }
 
                 let utilization = bigNumberify(0)
-                let utilizedAvailableAmount
                 if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
                   utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount)
-                  utilizedAvailableAmount = tokenInfo.availableAmount.mul(utilization).div(10000)
                 }
 
                 return (
@@ -896,7 +894,7 @@ export default function GlpSwap(props) {
                                 Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
                               </>
                             }}
-                          />
+                          />&nbsp;
                           {getWeightText(tokenInfo)}
                         </div>}
                       {!isBuying &&
@@ -907,7 +905,7 @@ export default function GlpSwap(props) {
                             tooltipIconPosition="right"
                             renderContent={() => {
                               return <>
-                                Utilization: {formatAmount(utilization, 2, 2, false)}% ({formatAmount(utilizedAvailableAmount, token.decimals, 2, true)} {token.symbol} out of {formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} {token.symbol})
+                                Utilization: {formatAmount(utilization, 2, 2, false)}% ({formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} {token.symbol} out of {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol})
                               </>
                             }}
                           />
