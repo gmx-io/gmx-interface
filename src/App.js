@@ -92,7 +92,8 @@ const Zoom = cssTransition({
   exit: "zoomOut",
   appendPosition: false,
   collapse: true,
-  collapseDuration: 300
+  collapseDuration: 200,
+  duration: 200
 });
 
 function inPreviewMode() {
@@ -217,6 +218,7 @@ function AppHeaderUser({
     if (active) {
       setWalletModalVisible(false);
     }
+    helperToast.success("hello");
   }, [active, setWalletModalVisible]);
 
   const onNetworkSelect = useCallback(
