@@ -899,13 +899,13 @@ table.Exchange-list-small td {
 
   .Exchange-swap-box .TokenSelector .Modal-content,
   .Exchange-swap-box .Selector .Modal-content {
-    display: block;
+    /* display: block;
     margin: 0;
     padding: 1rem;
     box-sizing: border-box;
     height: auto;
     border: 1px solid #1c0e6a;
-    width: 100%;
+    width: 100%; */
   }
 
   input.Exchange-swap-input {
