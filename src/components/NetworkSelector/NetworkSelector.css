@@ -69,12 +69,12 @@
 }
 
 .Selector-option.Arbitrum:hover {
-  background: #262949 !important;
+  background: #1f213e !important;
   border: 1px solid #4275a8;
 }
 
 .Selector-option.Avalanche:hover {
-  background: #262949 !important;
+  background: #1f213e !important;
   border: 1px solid #e84142;
 }
 
@@ -139,19 +139,19 @@
   border-radius: 4px;
 }
 .react-select__option.arbitrum:hover {
-  background: #262949 !important;
+  background: #1f213e !important;
   border: 1px solid #4275a8;
   border-radius: 4px;
   color: #eee;
 }
 .react-select__option.arbitrum:active {
-  background: #262949 !important;
+  background: #2c2f54 !important;
 }
 .react-select__option.avalanche:active {
-  background: #262949 !important;
+  background: #2c2f54 !important;
 }
 .react-select__option.avalanche:hover {
-  background: #262949 !important;
+  background: #1f213e !important;
   border: 1px solid #e84142;
   border-radius: 4px;
   color: #eee;
@@ -160,7 +160,7 @@
   border-radius: 4px;
 }
 .network-select:hover {
-  background: #808aff14 0% 0% no-repeat padding-box;
+  background: #1f213e;
 }
 .App-header-user-settings:hover {
   background: #2c2d45;
