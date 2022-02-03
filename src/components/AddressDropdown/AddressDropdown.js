@@ -5,7 +5,7 @@ import { useCopyToClipboard } from "react-use";
 import externalLink from "../../img/ic_new_link_16.svg";
 import copy from "../../img/ic_copy_16.svg";
 import settings from "../../img/ic_settings_16.svg";
-import disconnect from "../../img/ic_sign in_16.svg";
+import disconnect from "../../img/ic_sign_out_16.svg";
 import { FaChevronDown } from "react-icons/fa";
 
 function AddressDropdown({

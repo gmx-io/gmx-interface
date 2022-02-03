@@ -1,17 +1,40 @@
+a.btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.btn-center {
+  justify-content: center;
+}
+.btn-left {
+  justify-content: start;
+}
 .btn {
-  background: var(--dark-blue);
+  display: inline;
   border: none;
   color: white;
-  border: 1px solid var(--dark-blue-border);
   padding: 8px 16px;
   font-size: 14px;
   border-radius: var(--border-radius-sm);
   cursor: pointer;
 }
+.btn-label {
+  margin-left: 10px;
+}
+.btn-image {
+  width: 25px;
+  height: 25px;
+}
 
-.btn:hover {
+.btn-primary {
+  background: var(--dark-blue);
+  border: 1px solid var(--dark-blue-border);
+  border-radius: var(--border-radius-sm);
+}
+
+.btn-primary:hover {
   background: var(--dark-blue-hover);
 }
-.btn:active {
+.btn-primary:active {
   background: var(--dark-blue-active);
 }
