@@ -43,8 +43,7 @@
 }
 
 .GlpSwap-content .GlpSwap-box {
-  max-width: 29.935rem;
-  margin-left: 1rem;
+  max-width: 30.935rem;
   border-radius: 4px;
   padding: 1rem;
   padding-top: 0;
@@ -204,12 +203,12 @@
     margin-bottom: 2rem;
     max-width: 100%;
   }
-  
+
   .GlpSwap-content .GlpSwap-box {
     margin: 0;
     max-width: 100%;
   }
-  
+
   .GlpSwap-token-list {
     border: none;
     background-color: transparent;
