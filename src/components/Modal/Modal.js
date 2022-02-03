@@ -3,11 +3,14 @@ import cx from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { FaTimes } from "react-icons/fa";
+import { useLockBodyScroll } from "react-use";
 
 import "./Modal.css";
 
 export default function Modal(props) {
   const { isVisible, setIsVisible, className, zIndex } = props;
+
+  useLockBodyScroll(isVisible);
 
   useEffect(() => {
     function close(e) {
@@ -40,7 +43,7 @@ export default function Modal(props) {
             className="Modal-backdrop"
             onClick={() => setIsVisible(false)}
           ></div>
-          <div className="Modal-content App-box-solid">
+          <div className="Modal-content">
             <div className="Modal-title-bar">
               <div className="Modal-title">{props.label}</div>
               <div
