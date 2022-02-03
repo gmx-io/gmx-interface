@@ -89,8 +89,7 @@ function getLibrary(provider) {
 
 const Zoom = cssTransition({
   enter: "zoomIn",
-  collapseDuration: 300,
-  exit: "zoomOut"
+  duration: 300
 });
 
 function inPreviewMode() {
