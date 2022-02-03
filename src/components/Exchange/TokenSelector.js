@@ -33,7 +33,7 @@ export default function TokenSelector(props) {
         label={props.label}
       >
         <div className="TokenSelector-tokens">
-          {tokens.map(token => {
+          {tokens.concat(tokens).map(token => {
             let info = infoTokens ? infoTokens[token.address] : {};
             let mintAmount;
             let balance = info.balance;
