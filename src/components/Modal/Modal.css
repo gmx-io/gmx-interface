@@ -24,12 +24,11 @@
 .Modal-content {
   z-index: 20;
   position: relative;
-  padding: 1rem;
   max-width: 100%;
-  margin: 1rem;
   max-height: 90vh;
   overflow: auto;
   background: var(--dark-blue);
+  border-radius: 4px;
 }
 
 .Modal-content {
@@ -40,21 +39,29 @@
   width: 0; /* Remove scrollbar space */
   background: transparent; /* Optional: just make scrollbar invisible */
 }
+.divider {
+  border-bottom: 1px solid #ffffff29;
+  margin-bottom: 1rem;
+}
 /* Optional: show position indicator in red */
 .Modal-content::-webkit-scrollbar-thumb {
   background: #ff0000;
 }
 
 .Modal-title-bar {
-  display: grid;
-  grid-template-columns: auto auto;
-  padding-bottom: 0.5rem;
-  padding-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem;
+}
+.Modal-body {
+  margin: 1rem;
 }
 
 .Modal-title {
   text-align: left;
   font-size: 1rem;
+  line-height: 1.5rem;
 }
 
 .Modal-close-button {

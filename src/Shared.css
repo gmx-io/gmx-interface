@@ -40,6 +40,8 @@ body,
 
 :root {
   --dark-blue: #16182e;
+  --dark-blue-hover: #808aff14;
+  --border-radius-sm: 4px;
 }
 a {
   color: white;

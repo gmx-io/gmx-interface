@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import cx from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 
-import { FaTimes } from "react-icons/fa";
+import { MdClose } from "react-icons/md";
 import { useLockBodyScroll } from "react-use";
 
 import "./Modal.css";
@@ -50,10 +50,11 @@ export default function Modal(props) {
                 className="Modal-close-button"
                 onClick={() => setIsVisible(false)}
               >
-                <FaTimes className="Modal-close-icon" />
+                <MdClose className="Modal-close-icon" />
               </div>
             </div>
-            {props.children}
+            <div className="divider" />
+            <div className="Modal-body">{props.children}</div>
           </div>
         </motion.div>
       )}
