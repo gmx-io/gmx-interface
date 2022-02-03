@@ -9,12 +9,13 @@ import { BiChevronDown } from "react-icons/bi";
 
 import Modal from "../Modal/Modal";
 
-import "./TokenSelector.css";
+import dropDownIcon from '../../img/DROP_DOWN.svg'
+import './TokenSelector.css';
 
 export default function TokenSelector(props) {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const tokenInfo = getToken(props.chainId, props.tokenAddress);
-  const { tokens, mintingCap, infoTokens, showMintingCap, disabled } = props;
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const tokenInfo = getToken(props.chainId, props.tokenAddress)
+  const { tokens, mintingCap, infoTokens, showMintingCap, disabled, showSymbolImage = false, showNewCaret = false } = props
 
   const onSelectToken = token => {
     setIsModalVisible(false);
@@ -23,6 +24,14 @@ export default function TokenSelector(props) {
 
   if (!tokenInfo) {
     return null;
+  }
+
+  var tokenImage = null;
+
+  try {
+    tokenImage = require('../../img/ic_' + tokenInfo.symbol.toLowerCase() + '_24.svg')
+  } catch (error) {
+    // console.log(error)
   }
 
   return (
@@ -100,7 +109,9 @@ export default function TokenSelector(props) {
         onClick={() => setIsModalVisible(true)}
       >
         {tokenInfo.symbol}
-        <BiChevronDown className="TokenSelector-caret" />
+        {showSymbolImage && <img src={tokenImage && tokenImage.default} alt={tokenInfo.symbol} className="TokenSelector-box-symbol" />}
+        { showNewCaret && <img src={dropDownIcon} alt="dropDownIcon" className="TokenSelector-box-caret" /> }
+        { !showNewCaret && <BiChevronDown className="TokenSelector-caret" /> }
       </div>
     </div>
   );

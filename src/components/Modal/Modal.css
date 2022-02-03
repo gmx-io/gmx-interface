@@ -36,6 +36,10 @@
   margin-bottom: 1rem;
 }
 
+.Modal.non-scrollable .Modal-content {
+  overflow: visible;
+}
+
 .Modal-title-bar {
   display: flex;
   justify-content: space-between;
