@@ -1314,7 +1314,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-options">
-                <Link className="App-button-option App-card-option" to="/buy">Buy GMX</Link>
+                <Link className="App-button-option App-card-option" to="/buy_gmx">Buy GMX</Link>
                 {active && <button className="App-button-option App-card-option" onClick={() => showStakeGmxModal()}>Stake</button>}
                 {active && <button className="App-button-option App-card-option" onClick={() => showUnstakeGmxModal()}>Unstake</button>}
                 {active && <Link className="App-button-option App-card-option" to="/begin_account_transfer">Transfer Account</Link>}
@@ -1460,7 +1460,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               <div className="App-card-divider"></div>
               <div className="App-card-options">
                 <Link className="App-button-option App-card-option" to="/buy_glp">Buy GLP</Link>
-                <Link className="App-button-option App-card-option" to="/sell_glp">Sell GLP</Link>
+                <Link className="App-button-option App-card-option" to="/buy_glp#redeem">Sell GLP</Link>
                 {hasInsurance && <a className="App-button-option App-card-option" href="https://app.insurace.io/Insurance/Cart?id=124&referrer=545066382753150189457177837072918687520318754040" target="_blank" rel="noopener noreferrer">Purchase Insurance</a>}
               </div>
             </div>
