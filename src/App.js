@@ -218,7 +218,6 @@ function AppHeaderUser({
     if (active) {
       setWalletModalVisible(false);
     }
-    helperToast.success("hello");
   }, [active, setWalletModalVisible]);
 
   const onNetworkSelect = useCallback(
