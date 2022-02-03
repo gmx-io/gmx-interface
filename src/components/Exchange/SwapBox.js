@@ -356,6 +356,7 @@ export default function SwapBox(props) {
   const collateralTokenAddress = isLong
     ? indexTokenAddress
     : shortCollateralAddress;
+  const collateralToken = getToken(chainId, collateralTokenAddress);
 
   const [triggerRatioValue, setTriggerRatioValue] = useState("");
 
@@ -1779,6 +1780,8 @@ export default function SwapBox(props) {
   let fees;
   let feesUsd;
   let feeBps;
+  let swapFees;
+  let positionFee;
   if (isSwap) {
     if (fromAmount) {
       const { feeBasisPoints } = getNextToAmount(
@@ -1805,7 +1808,10 @@ export default function SwapBox(props) {
       feeBps = feeBasisPoints;
     }
   } else if (toUsdMax) {
-    feesUsd = toUsdMax.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
+    positionFee = toUsdMax
+      .mul(MARGIN_FEE_BASIS_POINTS)
+      .div(BASIS_POINTS_DIVISOR);
+    feesUsd = positionFee;
 
     const { feeBasisPoints } = getNextToAmount(
       chainId,
@@ -1819,7 +1825,7 @@ export default function SwapBox(props) {
       totalTokenWeights
     );
     if (feeBasisPoints) {
-      const swapFees = fromUsdMin.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
+      swapFees = fromUsdMin.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
       feesUsd = feesUsd.add(swapFees);
     }
     feeBps = feeBasisPoints;
@@ -2309,16 +2315,30 @@ export default function SwapBox(props) {
                 {!feesUsd && "-"}
                 {feesUsd && (
                   <Tooltip
-                    handle={`${formatAmount(
-                      MARGIN_FEE_BASIS_POINTS,
-                      2,
-                      2,
-                      false
-                    )}% (${formatAmount(feesUsd, USD_DECIMALS, 2, true)} USD)`}
+                    handle={`$${formatAmount(feesUsd, USD_DECIMALS, 2, true)}`}
                     position="right-bottom"
-                    renderContent={() =>
-                      "Fees are calculated based on your position size."
-                    }
+                    renderContent={() => {
+                      return (
+                        <>
+                          {swapFees && (
+                            <div>
+                              {collateralToken.symbol} is required for
+                              collateral. <br />
+                              <br />
+                              Swap {fromToken.symbol} to{" "}
+                              {collateralToken.symbol} Fee: $
+                              {formatAmount(swapFees, USD_DECIMALS, 2, true)}
+                              <br />
+                              <br />
+                            </div>
+                          )}
+                          <div>
+                            Position Fee (0.1% of position size): $
+                            {formatAmount(positionFee, USD_DECIMALS, 2, true)}
+                          </div>
+                        </>
+                      );
+                    }}
                   />
                 )}
               </div>

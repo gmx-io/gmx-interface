@@ -1,0 +1,183 @@
+.BuyGMXGLP {
+    background: #101124;
+    justify-content: space-between;
+}
+
+.BuyGMXGLP-container {
+    padding-top: 3rem;
+    padding-bottom: 2rem;
+    width: 100%;
+}
+
+.BuyGMXGLP-panel {
+    padding-top: 0;
+    padding-bottom: 2.5rem;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.BuyGMXGLP-panel .App-card {
+    max-width: 37.677rem;
+    width: 100%;
+    height: fit-content;
+}
+
+.BuyGMXGLP-panel .App-card.no-height {
+    height: unset;
+}
+
+.BuyGMXGLP-panel:last-child {
+    padding-bottom: 0;
+}
+
+.BuyGMXGLP-description {
+    letter-spacing: 0px;
+    color: #a9a9b0;
+}
+
+.BuyGMXGLP-description a {
+    text-decoration: none;
+    position: relative;
+}
+
+.alternative-bridges {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: calc(100% + 0.5rem);
+    margin-left: -0.25rem;
+    margin-top: 0.875rem;
+}
+
+.alternative-bridges a {
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin: 0.25rem;
+    background: #FFFFFF0A;
+    border: 1px solid #FFFFFF14;
+    border-radius: 4px;
+    height: 44px;
+    text-decoration: none;
+    padding-right: 1rem;
+    font-size: 1.1875rem;
+    line-height: 1.5rem;
+}
+
+.alternative-bridges .transfer-eth-icon {
+    width: 3.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.direct-purchase-options {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
+}
+
+.alternative-bridges a:hover {
+    background: #FFFFFF14;
+}
+
+.alternative-bridges a:focus {
+    background: #FFFFFF1F;
+}
+
+.GMX-btn {
+    display: flex;
+    align-items: center;
+    background: #FFFFFF0A;
+    border: 1px solid #FFFFFF14;
+    border-radius: 4px;
+    text-decoration: none;
+    height: 3rem;
+    padding: 0.5rem 1rem;
+    margin: 2rem 0;
+}
+
+.GMX-btn:hover {
+    background: #FFFFFF14;
+}
+
+.GMX-btn:focus, .GMX-btn:active {
+    background: #FFFFFF1F;
+}
+
+.GMX-btn-icon-block {
+    display: flex;
+    margin-right: 0.75rem;
+}
+
+.GMX-btn-icon {
+    display: flex;
+    position: relative;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.GMX-btn-icon-network {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+}
+
+.GMX-btn-label {
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    font-size: 1.1875rem;
+    line-height: 1.5rem;
+}
+
+.GMX-block-section {
+    display: flex;
+    justify-content: center;
+}
+
+.display-bg {
+    display: flex!important;
+}
+
+.display-sm {
+    display: none!important;
+}
+
+@media (max-width: 1241px) {
+    .display-bg {
+        display: none!important;
+    }
+    
+    .display-sm {
+        display: flex!important;
+        margin-top: 2.5rem;
+    }
+    
+    .BuyGMXGLP-panel .App-card + .App-card {
+        margin-top: 2rem;
+    }
+}
+
+@media (max-width: 450px) {
+    .alternative-bridges {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 400px) {
+    .BuyGMXGLP-container {
+        padding-left: 16px!important;
+        padding-right: 16px!important;
+    }
+
+    .BuyGMXGLP-description {
+        font-size: 1rem;
+        line-height: 1.3rem;
+    }
+}

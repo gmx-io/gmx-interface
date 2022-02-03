@@ -1,31 +1,242 @@
 .GlpSwap-content {
-  display: grid;
-  grid-template-columns: 1fr 28rem;
-  grid-gap: 1rem;
+  display: flex;
+  justify-content: space-between;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.Tab-title-section {
+  padding: 2rem 1rem 0;
+  margin-bottom: 24px;
+}
+
+.Tab-title {
+  letter-spacing: 0px;
+  color: #FFFFFF;
+  font-size: 2.2rem;
+  font-weight: 500;
+  font-family: "Relative Bold";
+}
+
+.Tab-description {
+  letter-spacing: 0px;
+  color: #a9a9b0;
   margin-top: 0.5rem;
-  padding: 2rem;
-  padding-top: 1rem;
+}
+
+.Tab-description span {
+  color: #F89191;
+}
+
+.GlpSwap-content .GlpSwap-stats-card, .GlpSwap-content .GlpSwap-box {
+  width: 100%;
+}
+
+.GlpSwap-content .GlpSwap-stats-card {
+  max-width: 45.935rem;
+  margin-right: 1rem;
+}
+
+.GlpSwap-stats-card .App-card-row .label {
+  color: #a9a9b0;
+  opacity: 1;
+}
+
+.GlpSwap-content .GlpSwap-box {
+  max-width: 30.935rem;
+  border-radius: 4px;
+  padding: 1rem;
+  padding-top: 0;
+}
+
+.GlpSwap-box .Exchange-swap-option-tabs {
+  margin: 1rem 0;
+}
+
+.GlpSwap-stats-card .GlpSwap-stats-mark-icon {
+  position: relative;
+  margin-right: 0.5rem;
+  display: flex;
+}
+
+.GlpSwap-stats-card .GlpSwap-stats-mark-icon .selected-network-symbol {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  border: 1px solid #1E1F37;
+  border-radius: 50%;
+}
+
+.GlpSwap-stats-card .GlpSwap-stats-mark {
+  display: flex;
+}
+
+.GlpSwap-stats-mark .GlpSwap-stats-mark-title {
+  font-size: 1.032rem;
+  line-height: 1.355rem;
+  letter-spacing: 0px;
+  color: #FFFFFF;
+}
+
+.GlpSwap-stats-mark .GlpSwap-stats-mark-subtitle {
+  font-size: 0.774rem;
+  line-height: 1rem;
+  letter-spacing: 0px;
+  color: #a9a9b0;
 }
 
 .GlpSwap-token-list {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 1rem;
-  margin-top: 0.5rem;
-  padding: 2rem;
-  padding-top: 1rem;
+  border: 1px solid #1e2136;
+  border-radius: 4px;
+  background: #17182C;
 }
 
-.GlpSwap-box {
+.GlpSwap-token-list-content {
+  display: grid;
   padding: 1rem;
+  padding-top: 0;
+  text-align: left;
+  overflow-x: auto;
+}
+
+.GlpSwap-box .App-card-title {
+  margin-bottom: 0.5rem;
+}
+
+.GlpSwap-box .Exchange-info-row {
+  height: 1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.GlpSwap-box .Exchange-info-row .Exchange-info-label {
+  margin-right: 0.5rem;
+  color: #a9a9b0;
+  opacity: 1;
 }
 
 .GlpSwap-cta {
-  margin-top: 0.5rem;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 0;
+}
+
+.GlpSwap-cta .Exchange-swap-button {
+  margin: 0 auto;
+  justify-content: center;
+  min-height: 3.097rem;
+  font-size: 1rem;
+}
+
+.token-table {
+  margin-left: -1rem;
+  margin-right: -1rem;
+  width: calc(100% + 2rem);
+  border-spacing: 0;
+  white-space: nowrap;
+}
+
+.token-grid {
+  display: none;
+}
+
+.token-table td, .token-table th {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.token-table td:nth-child(2), .token-table th:nth-child(2) {
+  width: 110px;
+}
+
+.token-table td:nth-child(3), .token-table th:nth-child(3) {
+  width: 320px;
+}
+
+.token-table td:nth-child(4), .token-table th:nth-child(4) {
+  width: 200px;
+}
+
+.token-table td:nth-child(5), .token-table th:nth-child(5) {
+  width: 130px;
+}
+
+.token-table td {
+  letter-spacing: 0.25px;
+  color: #FFFFFFDE;
+}
+
+.token-table th:first-child, .token-table td:first-child {
+  padding-left: 1rem;
+  width: 17rem;
+}
+
+.token-table th:last-child, .token-table td:last-child {
+  padding-right: 1rem;
+  text-align: right;
+  width: 170px;
+}
+
+.token-table th {
+  font-weight: normal;
+  letter-spacing: 0.25px;
+  color: #a9a9b0;
+  text-transform: uppercase;
+}
+
+.token-table .action-btn {
+  width: 100%;
+  justify-content: center;
 }
 
 @media (max-width: 900px) {
   .GlpSwap-content {
+    flex-wrap: wrap;
+  }
+
+  .GlpSwap-content .GlpSwap-stats-card {
+    margin: 0;
+    margin-bottom: 2rem;
+    max-width: 100%;
+  }
+
+  .GlpSwap-content .GlpSwap-box {
+    margin: 0;
+    max-width: 100%;
+  }
+
+  .GlpSwap-token-list {
+    border: none;
+    background-color: transparent;
+  }
+
+  .GlpSwap-token-list-content {
+    padding: 0;
+  }
+
+  .token-table {
+    display: none;
+  }
+
+  .token-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 1rem;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+  }
+}
+
+@media (max-width: 510px) {
+  .token-grid {
+    display: grid;
     grid-template-columns: 1fr;
+    grid-gap: 1rem;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
   }
 }

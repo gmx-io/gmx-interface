@@ -1480,15 +1480,15 @@ export function useInactiveListener(suppress = false) {
       const handleConnect = () => {
         activate(injected);
       };
-      const handleChainChanged = (chainId: string | number) => {
+      const handleChainChanged = chainId => {
         activate(injected);
       };
-      const handleAccountsChanged = (accounts: string[]) => {
+      const handleAccountsChanged = accounts => {
         if (accounts.length > 0) {
           activate(injected);
         }
       };
-      const handleNetworkChanged = (networkId: string | number) => {
+      const handleNetworkChanged = networkId => {
         activate(injected);
       };
 
@@ -2014,7 +2014,7 @@ export async function getGasLimit(
   value,
   gasBuffer
 ) {
-  const defaultGasBuffer = 200000;
+  const defaultGasBuffer = 300000;
   const defaultValue = bigNumberify(0);
 
   if (!value) {
@@ -2386,6 +2386,14 @@ export function getInfoTokens(
 
   return infoTokens;
 }
+
+export const CHART_PERIODS = {
+  "5m": 60 * 5,
+  "15m": 60 * 15,
+  "1h": 60 * 60,
+  "4h": 60 * 60 * 4,
+  "1d": 60 * 60 * 24
+};
 
 export function getTotalVolumeSum(volumes) {
   if (!volumes || volumes.length === 0) {

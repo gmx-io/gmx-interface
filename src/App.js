@@ -45,6 +45,7 @@ import Actions from "./views/Actions/Actions";
 import OrdersOverview from "./views/OrdersOverview/OrdersOverview";
 import PositionsOverview from "./views/PositionsOverview/PositionsOverview";
 import BuyGlp from "./views/BuyGlp/BuyGlp";
+import BuyGMX from "./views/BuyGMX/BuyGMX";
 import SellGlp from "./views/SellGlp/SellGlp";
 import Buy from "./views/Buy/Buy";
 import NftWallet from "./views/NftWallet/NftWallet";
@@ -640,7 +641,11 @@ function FullApp() {
               />
             </Route>
             <Route exact path="/buy">
-              <Buy />
+              <Buy
+                savedSlippageAmount={savedSlippageAmount}
+                setPendingTxns={setPendingTxns}
+                connectWallet={connectWallet}
+              />
             </Route>
             <Route exact path="/buy_glp">
               <BuyGlp
@@ -655,6 +660,9 @@ function FullApp() {
                 setPendingTxns={setPendingTxns}
                 connectWallet={connectWallet}
               />
+            </Route>
+            <Route exact path="/buy_gmx">
+              <BuyGMX />
             </Route>
             <Route exact path="/ecosystem">
               <Ecosystem />

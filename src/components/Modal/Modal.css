@@ -31,6 +31,10 @@
   overflow: auto;
 }
 
+.Modal.non-scrollable .Modal-content {
+  overflow: visible;
+}
+
 .Modal-title-bar {
   display: grid;
   grid-template-columns: auto auto;
