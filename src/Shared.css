@@ -1,4 +1,6 @@
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   width: 100%;
   margin: 0;
@@ -36,6 +38,9 @@ html, body, #root {
   background: #4a4a4a;
 }
 
+:root {
+  --dark-blue: #16182e;
+}
 a {
   color: white;
 }
@@ -51,7 +56,7 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
@@ -74,7 +79,8 @@ button {
   font-family: "Relative";
 }
 
-button:disabled, button.App-cta:disabled {
+button:disabled,
+button.App-cta:disabled {
   cursor: not-allowed;
   opacity: 0.9;
   box-shadow: none;
@@ -97,7 +103,7 @@ td {
 }
 
 .border {
-  border: 1px solid rgba(163,165,196,0.2);
+  border: 1px solid rgba(163, 165, 196, 0.2);
 }
 
 .align-right {
@@ -142,8 +148,8 @@ a.plain {
   text-decoration: none;
 }
 
-.checkbox:checked:before{
-  background-color:green;
+.checkbox:checked:before {
+  background-color: green;
 }
 
 .default-btn {
@@ -154,7 +160,7 @@ a.plain {
   font-family: Relative;
   font-weight: normal;
   letter-spacing: 0px;
-  color: #FFFFFF!important;
+  color: #ffffff !important;
   padding-left: 16px;
   padding-right: 16px;
   /* padding: 9px 16px!important; */
@@ -162,7 +168,7 @@ a.plain {
   box-sizing: border-box;
   position: relative;
   min-height: 36px;
-  display: inline-flex!important;
+  display: inline-flex !important;
   align-items: center;
   text-align: center;
   cursor: pointer;
@@ -207,7 +213,7 @@ a.plain {
 
 .default-btn:disabled {
   background: #2d2e3f 0% 0% no-repeat padding-box;
-  color: #FFFFFF61;
+  color: #ffffff61;
 }
 
 .default-container {
@@ -234,7 +240,7 @@ a.plain {
   position: relative;
   min-height: 36px;
   border: none;
-  display: inline-flex!important;
+  display: inline-flex !important;
   align-items: center;
   text-align: center;
 }
@@ -245,7 +251,7 @@ a.plain {
 
 .secondary-btn:focus {
   background: #54dedd;
-  border: 1px solid #1CB5B4FC;
+  border: 1px solid #1cb5b4fc;
   box-sizing: border-box;
   padding-left: 15px;
   padding-right: 15px;
@@ -277,7 +283,7 @@ a.plain {
 
 .secondary-btn:disabled {
   background: #2d2e3f 0% 0% no-repeat padding-box;
-  color: #FFFFFF61;
+  color: #ffffff61;
 }
 
 @keyframes ripple {
@@ -320,7 +326,7 @@ button.btn-link:hover .logout-icon {
 }
 
 .mt-0 {
-  margin-top: 0!important;
+  margin-top: 0 !important;
 }
 
 .page-layout {
