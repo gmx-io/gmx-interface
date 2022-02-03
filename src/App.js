@@ -31,7 +31,6 @@ import {
   useEagerConnect,
   useLocalStorageSerializeKey,
   useInactiveListener,
-  shortenAddress,
   getExplorerUrl,
   getWalletConnectHandler
 } from "./Helpers";
@@ -46,6 +45,7 @@ import Actions from "./views/Actions/Actions";
 import OrdersOverview from "./views/OrdersOverview/OrdersOverview";
 import PositionsOverview from "./views/PositionsOverview/PositionsOverview";
 import BuyGlp from "./views/BuyGlp/BuyGlp";
+import BuyGMX from "./views/BuyGMX/BuyGMX";
 import SellGlp from "./views/SellGlp/SellGlp";
 import Buy from "./views/Buy/Buy";
 import NftWallet from "./views/NftWallet/NftWallet";
@@ -62,9 +62,8 @@ import Checkbox from "./components/Checkbox/Checkbox";
 
 import { RiMenuLine } from "react-icons/ri";
 import { FaTimes } from "react-icons/fa";
-import { BsThreeDots } from "react-icons/bs";
 import { FiX } from "react-icons/fi";
-import { BiLogOut } from "react-icons/bi";
+// import { BiLogOut } from "react-icons/bi";
 
 import "./Font.css";
 import "./Shared.css";
@@ -78,6 +77,7 @@ import logoSmallImg from "./img/logo_GMX_small.svg";
 // import logoImg from './img/gmx-logo-final-white-small.png'
 import metamaskImg from "./img/metamask.png";
 import walletConnectImg from "./img/walletconnect-circle-blue.svg";
+import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -90,7 +90,11 @@ function getLibrary(provider) {
 
 const Zoom = cssTransition({
   enter: "zoomIn",
-  duration: 300
+  exit: "zoomOut",
+  appendPosition: false,
+  collapse: true,
+  collapseDuration: 200,
+  duration: 200
 });
 
 function inPreviewMode() {
@@ -190,14 +194,25 @@ function AppHeaderUser({
   setActivatingConnector,
   walletModalVisible,
   setWalletModalVisible,
-  showNetworkSelectorModal
+  showNetworkSelectorModal,
+  disconnectAccountAndCloseSettings
 }) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
   const showSelector = true;
   const networkOptions = [
-    { label: "Arbitrum", value: ARBITRUM, icon: "ic_arbitrum_24.svg" },
-    { label: "Avalanche", value: AVALANCHE, icon: "ic_avalanche_24.svg" }
+    {
+      label: "Arbitrum",
+      value: ARBITRUM,
+      icon: "ic_arbitrum_24.svg",
+      color: "#264f79"
+    },
+    {
+      label: "Avalanche",
+      value: AVALANCHE,
+      icon: "ic_avalanche_24.svg",
+      color: "#E841424D"
+    }
   ];
 
   useEffect(() => {
@@ -221,6 +236,11 @@ function AppHeaderUser({
   if (!active) {
     return (
       <div className="App-header-user">
+        <div className="App-header-user-link">
+          <NavLink activeClassName="active" className="default-btn" to="/trade">
+            Trade
+          </NavLink>
+        </div>
         {showSelector && (
           <NetworkSelector
             options={networkOptions}
@@ -233,11 +253,6 @@ function AppHeaderUser({
             showModal={showNetworkSelectorModal}
           />
         )}
-        <div className="App-header-user-link">
-          <NavLink activeClassName="active" className="default-btn" to="/trade">
-            Trade
-          </NavLink>
-        </div>
         <button
           target="_blank"
           rel="noopener noreferrer"
@@ -262,6 +277,11 @@ function AppHeaderUser({
 
   return (
     <div className="App-header-user">
+      <div className="App-header-user-link">
+        <NavLink activeClassName="active" className="default-btn" to="/trade">
+          Trade
+        </NavLink>
+      </div>
       {showSelector && (
         <NetworkSelector
           options={networkOptions}
@@ -274,24 +294,15 @@ function AppHeaderUser({
           showModal={showNetworkSelectorModal}
         />
       )}
-      <div className="App-header-user-link">
-        <NavLink activeClassName="active" className="default-btn" to="/trade">
-          Trade
-        </NavLink>
+      <div className="App-header-user-address">
+        <AddressDropdown
+          account={account}
+          small={small}
+          accountUrl={accountUrl}
+          disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+          openSettings={openSettings}
+        />
       </div>
-      <a
-        href={accountUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="App-cta small transparent App-header-user-account"
-      >
-        {shortenAddress(account, small ? 11 : 13)}
-      </a>
-      {!small && (
-        <button className="App-header-user-settings" onClick={openSettings}>
-          <BsThreeDots />
-        </button>
-      )}
     </div>
   );
 }
@@ -412,6 +423,14 @@ function FullApp() {
     setSavedSlippageAmount(basisPoints);
     setIsSettingsVisible(false);
   };
+  useEffect(() => {
+    if (isDrawerVisible) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => (document.body.style.overflow = "unset");
+  }, [isDrawerVisible]);
 
   const [pendingTxns, setPendingTxns] = useState([]);
 
@@ -517,6 +536,9 @@ function FullApp() {
               </div>
               <div className="App-header-container-right">
                 <AppHeaderUser
+                  disconnectAccountAndCloseSettings={
+                    disconnectAccountAndCloseSettings
+                  }
                   openSettings={openSettings}
                   setActivatingConnector={setActivatingConnector}
                   walletModalVisible={walletModalVisible}
@@ -555,6 +577,9 @@ function FullApp() {
                 </div>
                 <div className="App-header-container-right">
                   <AppHeaderUser
+                    disconnectAccountAndCloseSettings={
+                      disconnectAccountAndCloseSettings
+                    }
                     openSettings={openSettings}
                     small
                     setActivatingConnector={setActivatingConnector}
@@ -616,7 +641,11 @@ function FullApp() {
               />
             </Route>
             <Route exact path="/buy">
-              <Buy />
+              <Buy
+                savedSlippageAmount={savedSlippageAmount}
+                setPendingTxns={setPendingTxns}
+                connectWallet={connectWallet}
+              />
             </Route>
             <Route exact path="/buy_glp">
               <BuyGlp
@@ -631,6 +660,9 @@ function FullApp() {
                 setPendingTxns={setPendingTxns}
                 connectWallet={connectWallet}
               />
+            </Route>
+            <Route exact path="/buy_gmx">
+              <BuyGMX />
             </Route>
             <Route exact path="/ecosystem">
               <Ecosystem />
@@ -718,7 +750,7 @@ function FullApp() {
             Include PnL in leverage display
           </Checkbox>
         </div>
-        <div className="Exchange-settings-row">
+        {/* <div className="Exchange-settings-row">
           <button
             className="btn-link"
             onClick={disconnectAccountAndCloseSettings}
@@ -726,7 +758,7 @@ function FullApp() {
             <BiLogOut className="logout-icon" />
             Logout from Account
           </button>
-        </div>
+        </div> */}
         <button
           className="App-cta Exchange-swap-button"
           onClick={saveAndCloseSettings}

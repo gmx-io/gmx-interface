@@ -21,7 +21,7 @@ export default function Modal(props) {
     }
     window.addEventListener("keydown", close);
     return () => window.removeEventListener("keydown", close);
-  }, []);
+  }, [setIsVisible]);
 
   const fadeVariants = {
     hidden: { opacity: 0 },

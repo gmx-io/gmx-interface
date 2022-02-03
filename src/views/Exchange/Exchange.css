@@ -276,6 +276,7 @@
 .ExchangeChart.tv .ExchangeChart-top {
   position: relative;
   padding: 0.6rem 0.2rem;
+  z-index: 1;
 }
 
 .ExchangeChart.tv .ExchangeChart-bottom {
@@ -284,6 +285,7 @@
   left: 0;
   right: 0;
   top: 4.5rem;
+  z-index: 1;
 }
 .ExchangeChart-bottom-controls {
   display: inline-block;
@@ -544,6 +546,10 @@ table.Exchange-list th {
   padding-bottom: 1rem;
 }
 
+.Exchange-swap-market-box .App-card-divider {
+  margin: 0 -1rem 1rem;
+}
+
 .Exchange-swap-box .Radio {
   margin-bottom: 0.7rem;
 }
@@ -642,7 +648,7 @@ table.Exchange-list th {
   padding: 0.3rem 0.5rem;
   color: rgba(255, 255, 255, 0.7);
   border-radius: 3px;
-  z-index: 2;
+  z-index: 1;
   cursor: pointer;
   background: linear-gradient(
     90deg,
@@ -690,7 +696,7 @@ input.Exchange-swap-input.small {
 
 .Exchange-swap-ball-container {
   position: relative;
-  z-index: 2;
+  z-index: 1;
 }
 
 .Exchange-swap-ball-icon {

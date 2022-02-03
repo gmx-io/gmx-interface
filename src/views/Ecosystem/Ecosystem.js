@@ -153,6 +153,40 @@ export default function Ecosystem() {
           </div>
           <div className="App-card">
             <div className="App-card-title">
+              GMX Analytics
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+                <img src={avalancheIcon} alt="avalancheIcon" />
+              </div>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://www.gmxstats.com/" target="_blank" rel="noopener noreferrer">
+                    https://www.gmxstats.com/
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  Financial reports and protocol analytics
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Creator</div>
+                <div>
+                  <a href="https://t.me/LarpCapital" target="_blank" rel="noopener noreferrer">
+                    @CryptoMessiah
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">
               GMX Charts
               <div className="App-card-title-icon">
                 <img src={arbitrumIcon} alt="arbitrumIcon" />
@@ -179,6 +213,73 @@ export default function Ecosystem() {
                 <div>
                   <a href="https://t.me/atomist" target="_blank" rel="noopener noreferrer">
                     @atomist
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">
+              GMX Returns Calculator
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+                <img src={avalancheIcon} alt="avalancheIcon" />
+              </div>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://docs.google.com/spreadsheets/u/4/d/1mQZlztz_NpTg5qQiYIzc_Ls1OTLfMOUtmEQN-WW8jj4/copy" target="_blank" rel="noopener noreferrer">
+                    Google Spreadsheet
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  Returns calculator for GMX and GLP
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Creator</div>
+                <div>
+                  <a href="https://twitter.com/AStoicTrader1" target="_blank" rel="noopener noreferrer">
+                    Marcus.Crypto
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">
+              GMX Compound Calculator
+              <div className="App-card-title-icon">
+                <img src={avalancheIcon} alt="avalancheIcon" />
+              </div>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://docs.google.com/spreadsheets/d/14DiIE1wZkK9-Y5xSx1PzIgmpcj4ccz1YVw5nwzIWLgI/edit#gid=0" target="_blank" rel="noopener noreferrer">
+                    Google Spreadsheet
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  Optimal compound interval calculator
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Creator</div>
+                <div>
+                  <a href="https://twitter.com/ChasenKaminsky/status/1485820753173962753" target="_blank" rel="noopener noreferrer">
+                    chasenk.eth
                   </a>
                 </div>
               </div>
