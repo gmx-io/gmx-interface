@@ -265,7 +265,6 @@ export default function SwapBox(props) {
   const whitelistedTokens = getWhitelistedTokens(chainId);
   const tokens = getTokens(chainId);
   const fromTokens = tokens;
-  console.log({ fromTokens }, "from tokens");
   const stableTokens = tokens.filter(token => token.isStable);
   const indexTokens = whitelistedTokens.filter(
     token => !token.isStable && !token.isWrapped

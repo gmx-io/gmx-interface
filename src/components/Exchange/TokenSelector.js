@@ -25,8 +25,6 @@ export default function TokenSelector(props) {
     return null;
   }
 
-  console.log({ tokens });
-
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)}>
       <Modal
@@ -57,40 +55,40 @@ export default function TokenSelector(props) {
                 onClick={() => onSelectToken(token)}
                 key={token.address}
               >
-                <img
-                  src={
-                    `/images/icons/ic_${token.symbol?.toLowerCase()}_lg.svg` ||
-                    token.imageUrl
-                  }
-                  alt=""
-                  className="token-logo"
-                />
-                <div className="TokenSelector-top-row">
-                  <div>{token.symbol}</div>
+                <div className="Token-info">
+                  <img
+                    src={
+                      `/images/icons/ic_${token.symbol?.toLowerCase()}_lg.svg` ||
+                      token.imageUrl
+                    }
+                    alt=""
+                    className="token-logo"
+                  />
+                  <div className="Token-symbol">
+                    <div className="Token-text">{token.symbol}</div>
+                    <span className="text-accent">{token.name}</span>
+                  </div>
+                </div>
+                <div className="Token-balance">
                   {balance && (
-                    <div className="align-right">
+                    <div className="Token-text">
                       {balance.gt(0) &&
                         formatAmount(balance, token.decimals, 4, true)}
                       {balance.eq(0) && "-"}
                     </div>
                   )}
-                </div>
-                <div className="TokenSelector-content-row">
-                  <div className="TokenSelector-token-name">{token.name}</div>
-                  {mintAmount && (
-                    <div className="align-right">
-                      Mintable:{" "}
-                      {formatAmount(mintAmount, token.decimals, 2, true)} USDG
-                    </div>
-                  )}
-                  {showMintingCap && !mintAmount && (
-                    <div className="align-right">-</div>
-                  )}
-                  {!showMintingCap && balanceUsd && balanceUsd.gt(0) && (
-                    <div className="align-right">
-                      ${formatAmount(balanceUsd, 30, 2, true)}
-                    </div>
-                  )}
+                  <span className="text-accent">
+                    {mintAmount && (
+                      <div>
+                        Mintable:{" "}
+                        {formatAmount(mintAmount, token.decimals, 2, true)} USDG
+                      </div>
+                    )}
+                    {showMintingCap && !mintAmount && <div>-</div>}
+                    {!showMintingCap && balanceUsd && balanceUsd.gt(0) && (
+                      <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
+                    )}
+                  </span>
                 </div>
               </div>
             );

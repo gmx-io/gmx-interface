@@ -31,21 +31,9 @@
   border-radius: 4px;
 }
 
-.Modal-content {
-  overflow: scroll;
-  overflow-x: hidden;
-}
-.Modal-content::-webkit-scrollbar {
-  width: 0; /* Remove scrollbar space */
-  background: transparent; /* Optional: just make scrollbar invisible */
-}
 .divider {
   border-bottom: 1px solid #ffffff29;
   margin-bottom: 1rem;
-}
-/* Optional: show position indicator in red */
-.Modal-content::-webkit-scrollbar-thumb {
-  background: #ff0000;
 }
 
 .Modal-title-bar {

@@ -28,6 +28,27 @@
   color: #7885ff;
 }
 
+.Token-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.Token-info .Token-symbol {
+  margin-left: 8px;
+  display: flex;
+  flex-direction: column;
+}
+.Token-info .Token-balance {
+  display: flex;
+  flex-direction: column;
+}
+.Token-info .token-logo {
+  width: 40px;
+  height: 40px;
+  margin-right: 0.5rem;
+}
+
 .TokenSelector-caret {
   vertical-align: middle;
   display: inline-block;
@@ -42,41 +63,34 @@
 
 .TokenSelector-token-row {
   cursor: pointer;
-  padding: 0.6rem;
-  padding-left: 0.7rem;
-  margin-bottom: 0.3rem;
   border: 1px solid #ffffff29;
   background: transparent;
   border-radius: var(--border-radius-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  margin-bottom: 8px;
 }
 
-.token-logo {
-  width: 1.5rem;
-  height: 1.5rem;
-  margin-right: 0.5rem;
+.TokenSelector-token-row .Token-text {
+  font-size: 1rem;
+  color: #ffffff;
+  font-weight: 500;
+  letter-spacing: 0.25px;
 }
-
 .TokenSelector-token-row:hover {
   background: var(--dark-blue-hover);
-}
-
-.TokenSelector-top-row {
-  font-size: 1.1rem;
-  display: grid;
-  grid-template-columns: auto auto;
-}
-
-.TokenSelector-content-row {
-  margin-top: 0.2rem;
-  font-size: 0.8rem;
-  opacity: 0.7;
-  display: grid;
-  grid-template-columns: auto auto;
 }
 
 .TokenSelector.right .Modal {
   align-items: flex-start;
   justify-content: flex-end;
+}
+.text-accent {
+  color: var(--dark-blue-accent);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .TokenSelector.right .Modal-content {
