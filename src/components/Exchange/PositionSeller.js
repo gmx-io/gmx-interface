@@ -91,6 +91,7 @@ export default function PositionSeller(props) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const prevIsVisible = usePrevious(isVisible)
   const routerAddress = getContract(chainId, "Router")
+  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol")
 
   const orderOptions = [MARKET, STOP];
   let [orderOption, setOrderOption] = useState(MARKET);
@@ -489,7 +490,7 @@ export default function PositionSeller(props) {
             </a> of {deltaStr}. <br/>
             <br/>
             Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
-            This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
+            This rule applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
           </div>
         )
       }
@@ -500,7 +501,7 @@ export default function PositionSeller(props) {
             profit
           </a> of {deltaStr}. <br/>
           Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
-          This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
+          This rule applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
         </div>
       )
     }
@@ -513,7 +514,7 @@ export default function PositionSeller(props) {
     }
     return (
       <ExchangeInfoRow label="Execution Fees">
-        {formatAmount(DECREASE_ORDER_EXECUTION_GAS_FEE, 18, 4)} ETH
+        {formatAmount(DECREASE_ORDER_EXECUTION_GAS_FEE, 18, 4)} {nativeTokenSymbol}
       </ExchangeInfoRow>
     );
   }
