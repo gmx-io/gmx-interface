@@ -32,7 +32,6 @@ export default function APRLabel ({chainId, label}) {
   const { library } = useWeb3React()
 
   const active = false
-  const account = undefined
 
   const rewardReaderAddress = getContract(chainId, "RewardReader")
   const readerAddress = getContract(chainId, "Reader")
@@ -83,15 +82,15 @@ export default function APRLabel ({chainId, label}) {
     feeGlpTrackerAddress
   ]
 
-  const { data: walletBalances } = useSWR(["StakeV2:walletBalances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero], {
+  const { data: walletBalances } = useSWR(["StakeV2:walletBalances", chainId, readerAddress, "getTokenBalancesWithSupplies", AddressZero], {
     fetcher: fetcher(library, ReaderV2, [walletTokens]),
   })
 
-  const { data: depositBalances } = useSWR(["StakeV2:depositBalances", chainId, rewardReaderAddress, "getDepositBalances", account || AddressZero], {
+  const { data: depositBalances } = useSWR(["StakeV2:depositBalances", chainId, rewardReaderAddress, "getDepositBalances", AddressZero], {
     fetcher: fetcher(library, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
   })
 
-  const { data: stakingInfo } = useSWR(["StakeV2:stakingInfo", chainId, rewardReaderAddress, "getStakingInfo", account || AddressZero], {
+  const { data: stakingInfo } = useSWR(["StakeV2:stakingInfo", chainId, rewardReaderAddress, "getStakingInfo", AddressZero], {
     fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
   })
 
@@ -107,7 +106,7 @@ export default function APRLabel ({chainId, label}) {
     fetcher: fetcher(library, Vault),
   })
 
-  const { data: vestingInfo } = useSWR([`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || AddressZero], {
+  const { data: vestingInfo } = useSWR([`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", AddressZero], {
     fetcher: fetcher(library, ReaderV2, [vesterAddresses]),
   })
 

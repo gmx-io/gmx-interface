@@ -99,6 +99,11 @@ function inPreviewMode() {
 }
 
 function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
+  const refreshPage = () => {
+    setTimeout(() => {
+      window.location.reload()
+    }, 100)
+  }
   if (inPreviewMode()) {
     return (
       <div className="App-header-links preview">
@@ -138,7 +143,7 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
         <NavLink activeClassName="active" to="/earn">Earn</NavLink>
       </div>
       <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/buy">Buy</NavLink>
+        <NavLink activeClassName="active" to="/buy" onClick={() => refreshPage()}>Buy</NavLink>
       </div>
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/ecosystem">Ecosystem</NavLink>
