@@ -3,14 +3,15 @@ import cx from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { MdClose } from "react-icons/md";
-import { useLockBodyScroll } from "react-use";
+import { useLockBodyScroll, createBreakpoint } from "react-use";
 
 import "./Modal.css";
 
 export default function Modal(props) {
   const { isVisible, setIsVisible, className, zIndex } = props;
-
-  useLockBodyScroll(isVisible);
+  const useBreakpoint = createBreakpoint();
+  let isMobile = useBreakpoint() === "tablet";
+  useLockBodyScroll(isVisible && !isMobile);
 
   useEffect(() => {
     function close(e) {
