@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
 import { ethers } from 'ethers'
+
+import Tab from '../Tab/Tab'
+import cx from "classnames"
 
 import { getToken, getTokens, getWhitelistedTokens, getWrappedToken, getNativeToken } from '../../data/Tokens'
 import { getContract } from '../../Addresses'
@@ -12,7 +15,7 @@ import {
   useLocalStorageByChainId,
   getInfoTokens,
   getTokenInfo,
-  getChainName,
+  // getChainName,
   useChainId,
   expandDecimals,
   fetcher,
@@ -20,7 +23,7 @@ import {
   formatAmount,
   formatAmountFree,
   formatKeyAmount,
-  formatDateTime,
+  // formatDateTime,
   getBuyGlpToAmount,
   getBuyGlpFromAmount,
   getSellGlpFromAmount,
@@ -35,15 +38,15 @@ import {
   GLP_COOLDOWN_DURATION,
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
-  DEFAULT_MAX_USDG_AMOUNT
+  DEFAULT_MAX_USDG_AMOUNT,
+  ARBITRUM,
 } from '../../Helpers'
 
 import { callContract, useGmxPrice } from '../../Api'
 
 import TokenSelector from '../Exchange/TokenSelector'
-import InputSection from "../InputSection/InputSection"
+import BuyInputSection from "../BuyInputSection/BuyInputSection"
 import Tooltip from '../Tooltip/Tooltip'
-import Footer from "../../Footer"
 import Modal from '../Modal/Modal'
 
 import ReaderV2 from '../../abis/ReaderV2.json'
@@ -55,7 +58,12 @@ import Vester from '../../abis/Vester.json'
 import RewardRouter from '../../abis/RewardRouter.json'
 import Token from '../../abis/Token.json'
 
-import { FaAngleDown } from 'react-icons/fa'
+import glp24Icon from '../../img/ic_glp_24.svg'
+import glp40Icon from '../../img/ic_glp_40.svg'
+import arrowIcon from '../../img/ic_convert_down.svg'
+
+import avalanche16Icon from '../../img/ic_avalanche_16.svg'
+import arbitrum16Icon from '../../img/ic_arbitrum_16.svg'
 
 import "./GlpSwap.css"
 
@@ -86,10 +94,12 @@ function getStakingData(stakingInfo) {
 
 export default function GlpSwap(props) {
   const { savedSlippageAmount, isBuying, setPendingTxns, connectWallet } = props
+  const history = useHistory()
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp"
+  const tabLabel = isBuying ? "Buy GLP" : "Sell GLP"
   const { active, library, account } = useWeb3React()
   const { chainId } = useChainId()
-  const chainName = getChainName(chainId)
+  // const chainName = getChainName(chainId)
   const tokens = getTokens(chainId)
   const whitelistedTokens = getWhitelistedTokens(chainId)
   const tokenList = whitelistedTokens.filter(t => !t.isWrapped)
@@ -256,11 +266,11 @@ export default function GlpSwap(props) {
         library.removeAllListeners('block')
       }
     }
-  }, [active, library,  chainId,
-      updateVaultTokenInfo, updateTokenBalances, updateBalancesAndSupplies,
-      updateAums, updateTotalTokenWeights, updateTokenAllowance,
-      updateLastPurchaseTime, updateStakingInfo, updateGmxPrice,
-      updateReservedAmount, updateGlpBalance])
+  }, [active, library, chainId,
+    updateVaultTokenInfo, updateTokenBalances, updateBalancesAndSupplies,
+    updateAums, updateTotalTokenWeights, updateTokenAllowance,
+    updateLastPurchaseTime, updateStakingInfo, updateGmxPrice,
+    updateReservedAmount, updateGlpBalance])
 
   useEffect(() => {
     const updateSwapAmounts = () => {
@@ -292,7 +302,7 @@ export default function GlpSwap(props) {
         return
       }
 
-      if(swapToken) {
+      if (swapToken) {
         if (isBuying) {
           const { amount: nextAmount, feeBasisPoints: feeBps } = getBuyGlpFromAmount(glpAmount, swapTokenAddress, infoTokens, glpPrice, usdgSupply, totalTokenWeights)
           const nextValue = formatAmountFree(nextAmount, swapToken.decimals, swapToken.decimals)
@@ -310,13 +320,18 @@ export default function GlpSwap(props) {
 
     updateSwapAmounts()
   }, [isBuying, anchorOnSwapAmount, swapAmount,
-      glpAmount, swapToken, swapTokenAddress,
-      infoTokens, glpPrice, usdgSupply,
-      totalTokenWeights])
+    glpAmount, swapToken, swapTokenAddress,
+    infoTokens, glpPrice, usdgSupply,
+    totalTokenWeights])
 
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
+
+  const switchSwapOption = (hash = '') => {
+    history.push(`${history.location.pathname}#${hash}`)
+    props.setIsBuying(hash === 'redeem' ? false : true)
+  }
 
   const fillMaxAmount = () => {
     if (isBuying) {
@@ -331,7 +346,7 @@ export default function GlpSwap(props) {
 
   const getError = () => {
     if (!isBuying && inCooldownWindow) {
-        return [`Redemption time not yet reached`]
+      return [`Redemption time not yet reached`]
     }
 
     if (!swapAmount || swapAmount.eq(0)) { return ["Enter an amount"] }
@@ -442,11 +457,11 @@ export default function GlpSwap(props) {
       successMsg: `${formatAmount(glpAmount, 18, 4, true)} GLP bought with ${formatAmount(swapAmount, swapTokenInfo.decimals, 4, true)} ${swapTokenInfo.symbol}.`,
       setPendingTxns
     })
-    .then(async () => {
-    })
-    .finally(() => {
-      setIsSubmitting(false)
-    })
+      .then(async () => {
+      })
+      .finally(() => {
+        setIsSubmitting(false)
+      })
   }
 
   const sellGlp = () => {
@@ -464,11 +479,11 @@ export default function GlpSwap(props) {
       successMsg: `${formatAmount(glpAmount, 18, 4, true)} GLP sold for ${formatAmount(swapAmount, swapTokenInfo.decimals, 4, true)} ${swapTokenInfo.symbol}.`,
       setPendingTxns
     })
-    .then(async () => {
-    })
-    .finally(() => {
-      setIsSubmitting(false)
-    })
+      .then(async () => {
+      })
+      .finally(() => {
+        setIsSubmitting(false)
+      })
   }
 
   const onClickPrimary = () => {
@@ -498,19 +513,21 @@ export default function GlpSwap(props) {
 
   let payLabel = "Pay"
   let receiveLabel = "Receive"
+  let payBalance = "$0.00"
+  let receiveBalance = "$0.00"
   if (isBuying) {
     if (swapUsdMin) {
-      payLabel = `Pay: ${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)} USD`
+      payBalance = `$${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)}`
     }
     if (glpUsdMax) {
-      receiveLabel = `Receive: ${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)} USD`
+      receiveBalance = `$${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)}`
     }
   } else {
     if (glpUsdMax) {
-      payLabel = `Pay: ${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)} USD`
+      payBalance = `$${formatAmount(glpUsdMax, USD_DECIMALS, 2, true)}`
     }
     if (swapUsdMin) {
-      receiveLabel = `Receive: ${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)} USD`
+      receiveBalance = `$${formatAmount(swapUsdMin, USD_DECIMALS, 2, true)}`
     }
   }
 
@@ -533,10 +550,18 @@ export default function GlpSwap(props) {
   const wrappedTokenSymbol = getWrappedToken(chainId).symbol
   const nativeTokenSymbol = getNativeToken(chainId).symbol
 
+  const onSwapOptionChange = (opt) => {
+    if (opt === "Sell GLP") {
+      switchSwapOption('redeem')
+    } else {
+      switchSwapOption()
+    }
+  }
+
   return (
-    <div className="GlpSwap Page page-layout">
+    <div className="GlpSwap">
       {renderErrorModal()}
-      <div className="Page-title-section">
+      {/* <div className="Page-title-section">
         <div className="Page-title">{isBuying ? "Buy GLP" : "Sell GLP"}</div>
         {isBuying && <div className="Page-description">
           Purchase <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">GLP tokens</a> to earn {nativeTokenSymbol} fees from swaps and leverage trading.<br/>
@@ -551,27 +576,41 @@ export default function GlpSwap(props) {
           </div>}
           <div>View <Link to="/earn">staking</Link> page.</div>
         </div>}
-      </div>
+      </div> */}
       <div className="GlpSwap-content">
         <div className="App-card GlpSwap-stats-card">
-          <div className="App-card-title">GLP ({chainName})</div>
+          <div className="App-card-title">
+            <div className="GlpSwap-stats-mark">
+              <div className="GlpSwap-stats-mark-icon">
+                <img src={glp40Icon} alt="glp40Icon" />
+                {chainId === ARBITRUM ? <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" /> : <img src={avalanche16Icon} alt="avalanche16Icon" className="selected-network-symbol" />}
+              </div>
+              <div className="GlpSwap-stats-mark-info">
+                <div className="GlpSwap-stats-mark-title">GLP</div>
+                <div className="GlpSwap-stats-mark-subtitle">GLP</div>
+              </div>
+            </div>
+          </div>
           <div className="App-card-divider"></div>
           <div className="App-card-content">
             <div className="App-card-row">
               <div className="label">Price</div>
-              <div>
+              <div className="value">
                 ${formatAmount(glpPrice, USD_DECIMALS, 2, true)}
               </div>
             </div>
             <div className="App-card-row">
               <div className="label">Wallet</div>
-              <div>
+              <div className="value">
                 {formatAmount(glpBalance, GLP_DECIMALS, 4, true)} GLP (${formatAmount(glpBalanceUsd, USD_DECIMALS, 2, true)})
               </div>
             </div>
+          </div>
+          <div className="App-card-divider"></div>
+          <div className="App-card-content">
             {!isBuying && <div className="App-card-row">
               <div className="label">Reserved</div>
-              <div>
+              <div className="value">
                 <Tooltip
                   handle={`${formatAmount(reservedAmount, 18, 4, true)} GLP ($${formatAmount(reserveAmountUsd, USD_DECIMALS, 2, true)})`}
                   position="right-bottom"
@@ -579,10 +618,9 @@ export default function GlpSwap(props) {
                 />
               </div>
             </div>}
-            <div className="App-card-divider"></div>
             <div className="App-card-row">
               <div className="label">APR</div>
-              <div>
+              <div className="value">
                 <Tooltip handle={`${formatAmount(totalApr, 2, 2, true)}%`} position="right-bottom" renderContent={() => {
                   return <>
                     <div className="Tooltip-row">
@@ -599,23 +637,25 @@ export default function GlpSwap(props) {
             </div>
             <div className="App-card-row">
               <div className="label">Total Supply</div>
-              <div>
+              <div className="value">
                 {formatAmount(glpSupply, GLP_DECIMALS, 4, true)} GLP (${formatAmount(glpSupplyUsd, USD_DECIMALS, 2, true)})
               </div>
             </div>
           </div>
         </div>
         <div className="GlpSwap-box App-box">
-          <div className="App-card-title">Order</div>
-
-          {isBuying && <InputSection
+          <Tab options={["Buy GLP", "Sell GLP"]} option={tabLabel} onChange={onSwapOptionChange} className="Exchange-swap-option-tabs" />
+          {isBuying && <BuyInputSection
             topLeftLabel={payLabel}
-            topRightLabel={`Balance: ${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
+            topRightLabel={`Balance: `}
+            tokenBalance={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
             inputValue={swapValue}
             onInputValueChange={onSwapValueChange}
             showMaxButton={swapValue !== formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals)}
             onClickTopRightLabel={fillMaxAmount}
             onClickMax={fillMaxAmount}
+            selectedToken={swapToken}
+            balance={payBalance}
           >
             <TokenSelector
               label="Pay"
@@ -625,41 +665,55 @@ export default function GlpSwap(props) {
               tokens={whitelistedTokens}
               infoTokens={infoTokens}
               className="right"
+              showSymbolImage={true}
             />
-          </InputSection>}
+          </BuyInputSection>}
 
-          {!isBuying && <InputSection
+          {!isBuying && <BuyInputSection
             topLeftLabel={payLabel}
-            topRightLabel={`Available: ${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
+            topRightLabel={`Available: `}
+            tokenBalance={`${formatAmount(maxSellAmount, GLP_DECIMALS, 4, true)}`}
             inputValue={glpValue}
             onInputValueChange={onGlpValueChange}
             showMaxButton={glpValue !== formatAmountFree(maxSellAmount, GLP_DECIMALS, GLP_DECIMALS)}
             onClickTopRightLabel={fillMaxAmount}
             onClickMax={fillMaxAmount}
+            balance={payBalance}
+            defaultTokenName={'GLP'}
           >
-            GLP
-          </InputSection>}
+            <div className="selected-token">
+              GLP <img src={glp24Icon} alt="glp24Icon" />
+            </div>
+          </BuyInputSection>}
 
           <div className="AppOrder-ball-container">
             <div className="AppOrder-ball">
-              <FaAngleDown className="AppOrder-ball-icon" />
+              <img src={arrowIcon} alt="arrowIcon" />
             </div>
           </div>
 
-          {isBuying && <InputSection
+          {isBuying && <BuyInputSection
             topLeftLabel={receiveLabel}
-            topRightLabel={`Balance: ${formatAmount(glpBalance, GLP_DECIMALS, 4, true)}`}
+            topRightLabel={`Balance: `}
+            tokenBalance={`${formatAmount(glpBalance, GLP_DECIMALS, 4, true)}`}
             inputValue={glpValue}
             onInputValueChange={onGlpValueChange}
+            balance={receiveBalance}
+            defaultTokenName={'GLP'}
           >
-            GLP
-          </InputSection>}
+            <div className="selected-token">
+              GLP <img src={glp24Icon} alt="glp24Icon" />
+            </div>
+          </BuyInputSection>}
 
-          {!isBuying && <InputSection
+          {!isBuying && <BuyInputSection
             topLeftLabel={receiveLabel}
-            topRightLabel={`Balance: ${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
+            topRightLabel={`Balance: `}
+            tokenBalance={`${formatAmount(swapTokenBalance, swapToken.decimals, 4, true)}`}
             inputValue={swapValue}
             onInputValueChange={onSwapValueChange}
+            balance={receiveBalance}
+            selectedToken={swapToken}
           >
             <TokenSelector
               label="Receive"
@@ -669,14 +723,15 @@ export default function GlpSwap(props) {
               tokens={whitelistedTokens}
               infoTokens={infoTokens}
               className="right"
+              showSymbolImage={true}
             />
-          </InputSection>}
+          </BuyInputSection>}
           <div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">
                 {feeBasisPoints > 50 ? "WARNING: High Fees" : "Fees"}
               </div>
-              <div className="align-right">
+              <div className="align-right fee-block">
                 {isBuying && <Tooltip handle={feePercentageText} position="right-bottom" renderContent={() => {
                   return <>
                     {feeBasisPoints > 50 && <div>To reduce fees, select a different asset to pay with.</div>}
@@ -699,114 +754,229 @@ export default function GlpSwap(props) {
           </div>
         </div>
       </div>
-      <div className="Page-title-section">
+      <div className="Tab-title-section">
         <div className="Page-title">Save on Fees</div>
         {isBuying && <div className="Page-description">
-          Fees may vary depending on which asset you use to buy GLP.<br/>
-          Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
+          Fees may vary depending on which asset you use to buy GLP.<br /> Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
         </div>}
         {!isBuying && <div className="Page-description">
-          Fees may vary depending on which asset sell GLP for.<br/>
-          Enter the amount of GLP you want to purchase in the order form, then check here to compare fees.
+          Fees may vary depending on which asset you sell GLP for.<br /> Enter the amount of GLP you want to redeem in the order form, then check here to compare fees.
         </div>}
       </div>
       <div className="GlpSwap-token-list">
-        {tokenList.map((token) => {
-          let tokenFeeBps
-          if (isBuying) {
-            const { feeBasisPoints: feeBps } = getBuyGlpFromAmount(glpAmount, token.address, infoTokens, glpPrice, usdgSupply, totalTokenWeights)
-            tokenFeeBps = feeBps
-          } else {
-            const { feeBasisPoints: feeBps } = getSellGlpToAmount(glpAmount, token.address, infoTokens, glpPrice, usdgSupply, totalTokenWeights)
-            tokenFeeBps = feeBps
-          }
-          const tokenInfo = getTokenInfo(infoTokens, token.address)
-          let managedUsd
-          if (tokenInfo && tokenInfo.managedUsd) {
-            managedUsd = tokenInfo.managedUsd
-          }
-          let availableAmountUsd
-          if (tokenInfo && tokenInfo.minPrice && tokenInfo.availableAmount) {
-            availableAmountUsd = tokenInfo.availableAmount.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals))
-          }
-          let balanceUsd
-          if (tokenInfo && tokenInfo.minPrice && tokenInfo.balance) {
-            balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals))
-          }
+        <div className="GlpSwap-token-list-content">
+          <table className="token-table">
+            <thead>
+              <tr>
+                <th>TOKEN</th>
+                <th>PRICE</th>
+                <th>
+                  { isBuying ? 'POOL' : <Tooltip handle={'AVAILABLE'} tooltipIconPosition="right" position="right-bottom text-none" renderContent={() => {
+                    return <>
+                      <div>Funds not utilized by current open positions.</div>
+                    </>
+                  }} />}
+                </th>
+                <th>WALLET</th>
+                <th>
+                  <Tooltip handle={'FEES'} tooltipIconPosition="right" position="right-bottom text-none" renderContent={() => {
+                    return <>
+                      <div>Fees will be shown once you have entered an amount in the order form.</div>
+                    </>
+                  }} />
+                </th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {tokenList.map((token) => {
+                let tokenFeeBps
+                if (isBuying) {
+                  const { feeBasisPoints: feeBps } = getBuyGlpFromAmount(glpAmount, token.address, infoTokens, glpPrice, usdgSupply, totalTokenWeights)
+                  tokenFeeBps = feeBps
+                } else {
+                  const { feeBasisPoints: feeBps } = getSellGlpToAmount(glpAmount, token.address, infoTokens, glpPrice, usdgSupply, totalTokenWeights)
+                  tokenFeeBps = feeBps
+                }
+                const tokenInfo = getTokenInfo(infoTokens, token.address)
+                let managedUsd
+                if (tokenInfo && tokenInfo.managedUsd) {
+                  managedUsd = tokenInfo.managedUsd
+                }
+                let availableAmountUsd
+                if (tokenInfo && tokenInfo.minPrice && tokenInfo.availableAmount) {
+                  availableAmountUsd = tokenInfo.availableAmount.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals))
+                }
+                let balanceUsd
+                if (tokenInfo && tokenInfo.minPrice && tokenInfo.balance) {
+                  balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals))
+                }
 
-          let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT
-          if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
-            maxUsdgAmount = tokenInfo.maxUsdgAmount
-          }
+                let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT
+                if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+                  maxUsdgAmount = tokenInfo.maxUsdgAmount
+                }
 
-          return (
-            <div className="App-card" key={token.symbol}>
-              <div className="App-card-title">{token.name}</div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-content">
-                <div className="App-card-row">
-                  <div className="label">Price</div>
-                  <div>
-                    ${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}
+                var tokenImage = null;
+
+                try {
+                  tokenImage = require('../../img/ic_' + token.symbol.toLowerCase() + '_40.svg')
+                } catch (error) {
+                  // console.log(error)
+                }
+
+                return (
+                  <tr key={token.symbol}>
+                    <td>
+                      <div className="App-card-title-info">
+                        <div className="App-card-title-info-icon">
+                          <img src={tokenImage && tokenImage.default} alt={token.symbol} width="40px" />
+                        </div>
+                        <div className="App-card-title-info-text">
+                          <div className="App-card-info-title">{token.name}</div>
+                          <div className="App-card-info-subtitle">{token.symbol}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      ${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}
+                    </td>
+                    <td>
+                      {isBuying &&
+                        <div>
+                          <Tooltip
+                            handle={`$${formatAmount(managedUsd, USD_DECIMALS, 2, true)}`}
+                            position="right-bottom"
+                            tooltipIconPosition="right"
+                            renderContent={() => {
+                              return <>
+                                Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol}<br />
+                                <br />
+                                Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                              </>
+                            }}
+                          />
+                        </div>}
+                      {!isBuying &&
+                        <div>
+                          {formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} {token.symbol} (${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)})
+                        </div>
+                      }
+                    </td>
+                    <td>
+                      {formatKeyAmount(tokenInfo, "balance", tokenInfo.decimals, 2, true)} {tokenInfo.symbol} (${formatAmount(balanceUsd, USD_DECIMALS, 2, true)})
+                    </td>
+                    <td>
+                      {formatAmount(tokenFeeBps, 2, 2, true, "-")}{(tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0) ? "%" : ""}
+                    </td>
+                    <td>
+                      <button className={cx("App-button-option action-btn", isBuying ? 'buying' : 'selling')} onClick={() => selectToken(token)}>
+                        {isBuying ? 'Buy with ' + token.symbol : 'Sell for ' + token.symbol}
+                      </button>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+          <div className="token-grid">
+            {tokenList.map((token) => {
+              let tokenFeeBps
+              if (isBuying) {
+                const { feeBasisPoints: feeBps } = getBuyGlpFromAmount(glpAmount, token.address, infoTokens, glpPrice, usdgSupply, totalTokenWeights)
+                tokenFeeBps = feeBps
+              } else {
+                const { feeBasisPoints: feeBps } = getSellGlpToAmount(glpAmount, token.address, infoTokens, glpPrice, usdgSupply, totalTokenWeights)
+                tokenFeeBps = feeBps
+              }
+              const tokenInfo = getTokenInfo(infoTokens, token.address)
+              let managedUsd
+              if (tokenInfo && tokenInfo.managedUsd) {
+                managedUsd = tokenInfo.managedUsd
+              }
+              let availableAmountUsd
+              if (tokenInfo && tokenInfo.minPrice && tokenInfo.availableAmount) {
+                availableAmountUsd = tokenInfo.availableAmount.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals))
+              }
+              let balanceUsd
+              if (tokenInfo && tokenInfo.minPrice && tokenInfo.balance) {
+                balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals))
+              }
+
+              let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT
+              if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+                maxUsdgAmount = tokenInfo.maxUsdgAmount
+              }
+
+              return (
+                <div className="App-card" key={token.symbol}>
+                  <div className="App-card-title">{token.name}</div>
+                  <div className="App-card-divider"></div>
+                  <div className="App-card-content">
+                    <div className="App-card-row">
+                      <div className="label">Price</div>
+                      <div>
+                        ${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">Wallet</div>
+                      <div>
+                        {formatKeyAmount(tokenInfo, "balance", tokenInfo.decimals, 2, true)} {tokenInfo.symbol} (${formatAmount(balanceUsd, USD_DECIMALS, 2, true)})
+                      </div>
+                    </div>
+                    {isBuying && <div className="App-card-row">
+                      <div className="label">Pool</div>
+                      <div>
+                        <Tooltip
+                          handle={`$${formatAmount(managedUsd, USD_DECIMALS, 2, true)}`}
+                          position="right-bottom"
+                          renderContent={() => {
+                            return <>
+                              Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol}<br/>
+                              <br/>
+                              Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                            </>
+                          }}
+                        />
+                      </div>
+                    </div>}
+                    {!isBuying && <div className="App-card-row">
+                      <div className="label">Available</div>
+                      <div>
+                        {formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} {token.symbol} (${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)})
+                      </div>
+                    </div>}
+                    <div className="App-card-row">
+                      <div className="label">
+                        {tokenFeeBps
+                          ? "Fees"
+                          : <Tooltip
+                            handle={`Fees`}
+                            renderContent={() => `Please enter an amount to see fee percentages`}
+                          />
+                        }
+                      </div>
+                      <div>
+                        {formatAmount(tokenFeeBps, 2, 2, true, "-")}{(tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0) ? "%" : ""}
+                      </div>
+                    </div>
+                    <div className="App-card-divider"></div>
+                    <div className="App-card-options">
+                      {isBuying && <button className="App-button-option App-card-option" onClick={() => selectToken(token)}>
+                        Buy with {token.symbol}
+                      </button>}
+                      {!isBuying && <button className="App-button-option App-card-option" onClick={() => selectToken(token)}>
+                        Sell for {token.symbol}
+                      </button>}
+                    </div>
                   </div>
                 </div>
-                <div className="App-card-row">
-                  <div className="label">Wallet</div>
-                  <div>
-                    {formatKeyAmount(tokenInfo, "balance", tokenInfo.decimals, 2, true)} {tokenInfo.symbol} (${formatAmount(balanceUsd, USD_DECIMALS, 2, true)})
-                  </div>
-                </div>
-                {isBuying && <div className="App-card-row">
-                  <div className="label">Pool</div>
-                  <div>
-                    <Tooltip
-                      handle={`$${formatAmount(managedUsd, USD_DECIMALS, 2, true)}`}
-                      position="right-bottom"
-                      renderContent={() => {
-                        return <>
-                          Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol}<br/>
-                          <br/>
-                          Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
-                        </>
-                      }}
-                    />
-                  </div>
-                </div>}
-                {!isBuying && <div className="App-card-row">
-                  <div className="label">Available</div>
-                  <div>
-                    {formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} {token.symbol} (${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)})
-                  </div>
-                </div>}
-                <div className="App-card-row">
-                  <div className="label">
-                    {tokenFeeBps
-                      ? "Fees"
-                      : <Tooltip
-                        handle={`Fees`}
-                        renderContent={() => `Please enter an amount to see fee percentages`}
-                      />
-                    }
-                  </div>
-                  <div>
-                    {formatAmount(tokenFeeBps, 2, 2, true, "-")}{(tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0) ? "%" : ""}
-                  </div>
-                </div>
-                <div className="App-card-divider"></div>
-                <div className="App-card-options">
-                  {isBuying && <button className="App-button-option App-card-option" onClick={() => selectToken(token)}>
-                    Buy with {token.symbol}
-                  </button>}
-                  {!isBuying && <button className="App-button-option App-card-option" onClick={() => selectToken(token)}>
-                    Sell for {token.symbol}
-                  </button>}
-                </div>
-              </div>
-            </div>
-          )
-        })}
+              )
+            })}
+          </div>
+        </div>
       </div>
-      <Footer />
     </div>
   )
 }
