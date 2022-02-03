@@ -159,8 +159,14 @@
 .react-select__indicator {
   border-radius: 4px;
 }
+.network-select {
+  background: var(--dark-blue);
+}
 .network-select:hover {
   background: #808aff14;
+}
+.network-select:active {
+  background: var(--dark-blue-active);
 }
 .App-header-user-settings:hover {
   background: #2c2d45;

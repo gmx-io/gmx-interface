@@ -1,0 +1,17 @@
+.btn {
+  background: var(--dark-blue);
+  border: none;
+  color: white;
+  border: 1px solid var(--dark-blue-border);
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: var(--dark-blue-hover);
+}
+.btn:active {
+  background: var(--dark-blue-active);
+}
