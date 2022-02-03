@@ -546,6 +546,10 @@ table.Exchange-list th {
   padding-bottom: 1rem;
 }
 
+.Exchange-swap-market-box .App-card-divider {
+  margin: 0 -1rem 1rem;
+}
+
 .Exchange-swap-box .Radio {
   margin-bottom: 0.7rem;
 }

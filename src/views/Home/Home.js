@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react'
 import Footer from "../../Footer"
 import { Link, NavLink } from 'react-router-dom'
-// import { FiPlus, FiMinus } from "react-icons/fi"
 
 import './Home.css';
 
@@ -10,14 +9,11 @@ import costIcon from '../../img/ic_cost.svg'
 import liquidityIcon from '../../img/ic_liquidity.svg'
 import totaluserIcon from '../../img/ic_totaluser.svg'
 
-// import bscIcon from '../../img/ic_bsc.svg'
 import arbitrumIcon from '../../img/ic_arbitrum_96.svg'
 import avaIcon from '../../img/ic_avalanche_96.svg'
 
 import statsIcon from '../../img/ic_stats.svg'
 import tradingIcon from '../../img/ic_trading.svg'
-import gmxBigIcon from '../../img/ic_gmx_custom.svg'
-import glpBigIcon from '../../img/ic_glp_custom.svg'
 
 import useSWR from 'swr'
 
@@ -31,135 +27,14 @@ import {
   ARBITRUM,
   AVALANCHE,
   switchNetwork,
-  fetcher,
-  formatKeyAmount,
-  getTotalVolumeSum,
-  getBalanceAndSupplyData,
-  getDepositBalanceData,
-  getVestingData,
-  getStakingData,
-  getProcessedData
+  getTotalVolumeSum
 } from '../../Helpers'
-
-import Vault from '../../abis/Vault.json'
-import ReaderV2 from '../../abis/ReaderV2.json'
-import RewardReader from '../../abis/RewardReader.json'
-import Token from '../../abis/Token.json'
-import GlpManager from '../../abis/GlpManager.json'
 
 import { useWeb3React } from '@web3-react/core'
 
-import { useUserStat, useGmxPrice } from "../../Api"
+import { useUserStat } from "../../Api"
 
-import { getContract } from '../../Addresses'
-
-import { ethers } from 'ethers'
-const { AddressZero } = ethers.constants
-
-function APRComponent ({chainId, label}) {
-  const { library } = useWeb3React()
-
-  const active = false
-  const account = undefined
-
-  const rewardReaderAddress = getContract(chainId, "RewardReader")
-  const readerAddress = getContract(chainId, "Reader")
-
-  const vaultAddress = getContract(chainId, "Vault")
-  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
-  const gmxAddress = getContract(chainId, "GMX")
-  const esGmxAddress = getContract(chainId, "ES_GMX")
-  const bnGmxAddress = getContract(chainId, "BN_GMX")
-  const glpAddress = getContract(chainId, "GLP")
-
-  const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker")
-  const bonusGmxTrackerAddress = getContract(chainId, "BonusGmxTracker")
-  const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker")
-
-  const stakedGlpTrackerAddress = getContract(chainId, "StakedGlpTracker")
-  const feeGlpTrackerAddress = getContract(chainId, "FeeGlpTracker")
-
-  const glpManagerAddress = getContract(chainId, "GlpManager")
-
-  const gmxVesterAddress = getContract(chainId, "GmxVester")
-  const glpVesterAddress = getContract(chainId, "GlpVester")
-
-  const vesterAddresses = [gmxVesterAddress, glpVesterAddress]
-
-  const walletTokens = [gmxAddress, esGmxAddress, glpAddress, stakedGmxTrackerAddress]
-  const depositTokens = [
-    gmxAddress,
-    esGmxAddress,
-    stakedGmxTrackerAddress,
-    bonusGmxTrackerAddress,
-    bnGmxAddress,
-    glpAddress
-  ]
-  const rewardTrackersForDepositBalances = [
-    stakedGmxTrackerAddress,
-    stakedGmxTrackerAddress,
-    bonusGmxTrackerAddress,
-    feeGmxTrackerAddress,
-    feeGmxTrackerAddress,
-    feeGlpTrackerAddress
-  ]
-  const rewardTrackersForStakingInfo = [
-    stakedGmxTrackerAddress,
-    bonusGmxTrackerAddress,
-    feeGmxTrackerAddress,
-    stakedGlpTrackerAddress,
-    feeGlpTrackerAddress
-  ]
-
-  const { data: walletBalances } = useSWR(["StakeV2:walletBalances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero], {
-    fetcher: fetcher(library, ReaderV2, [walletTokens]),
-  })
-
-  const { data: depositBalances } = useSWR(["StakeV2:depositBalances", chainId, rewardReaderAddress, "getDepositBalances", account || AddressZero], {
-    fetcher: fetcher(library, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
-  })
-
-  const { data: stakingInfo } = useSWR(["StakeV2:stakingInfo", chainId, rewardReaderAddress, "getStakingInfo", account || AddressZero], {
-    fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
-  })
-
-  const { data: stakedGmxSupply } = useSWR(["StakeV2:stakedGmxSupply", chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
-    fetcher: fetcher(library, Token),
-  })
-
-  const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: fetcher(library, GlpManager),
-  })
-
-  const { data: nativeTokenPrice } = useSWR([`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress], {
-    fetcher: fetcher(library, Vault),
-  })
-
-  const { data: vestingInfo } = useSWR([`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || AddressZero], {
-    fetcher: fetcher(library, ReaderV2, [vesterAddresses]),
-  })
-
-  const { data: gmxPrice } = useGmxPrice(chainId)
-
-  const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
-  const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
-    fetcher: (...args) => fetch(...args).then(res => res.text())
-  })
-
-  let aum
-  if (aums && aums.length > 0) {
-    aum = aums[0].add(aums[1]).div(2)
-  }
-
-  const { balanceData, supplyData } = getBalanceAndSupplyData(walletBalances)
-  const depositBalanceData = getDepositBalanceData(depositBalances)
-  const stakingData = getStakingData(stakingInfo)
-  const vestingData = getVestingData(vestingInfo)
-
-  const processedData = getProcessedData(balanceData, supplyData, depositBalanceData, stakingData, vestingData, aum, nativeTokenPrice, stakedGmxSupply, gmxPrice, gmxSupply)
-
-  return <>{`${formatKeyAmount(processedData, label, 2, 2, true)}%`}</>
-}
+import TokenCard from '../../components/TokenCard/TokenCard'
 
 export default function Home() {
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
@@ -376,36 +251,7 @@ export default function Home() {
           <div className="Home-token-card-info">
             <div className="Home-token-card-info__title">Two tokens create our ecosystem</div>
           </div>
-          <div className="Home-token-card-options">
-            <div className="Home-token-card-option">
-              <div className="Home-token-card-option-icon">
-                <img src={gmxBigIcon} alt="gmxBigIcon" /> GMX
-              </div>
-              <div className="Home-token-card-option-info">
-                <div className="Home-token-card-option-title">GMX is the utility and governance token, and also accrues 30% of the platform's generated fees.</div>
-                <div className="Home-token-card-option-apr">Arbitrum APR: <APRComponent chainId={ARBITRUM} label="gmxAprTotal" />, Avalanche APR: <APRComponent chainId={AVALANCHE} label="gmxAprTotal" key="AVALANCHE" /></div>
-                <div className="Home-token-card-option-action">
-                  <Link to="/buy" className="default-btn buy">Buy</Link>
-                  <Link to="/earn" className="default-btn">Stake</Link>
-                  <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noreferrer" className="default-btn read-more">Read more</a>
-                </div>
-              </div>
-            </div>
-            <div className="Home-token-card-option">
-              <div className="Home-token-card-option-icon">
-                <img src={glpBigIcon} alt="glpBigIcon" /> GLP
-              </div>
-              <div className="Home-token-card-option-info">
-                <div className="Home-token-card-option-title">GLP is the platform's liquidity provider token. Accrues 70% of its generated fees.</div>
-                <div className="Home-token-card-option-apr">Arbitrum APR: <APRComponent chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />, Avalanche APR: <APRComponent chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" /></div>
-                <div className="Home-token-card-option-action">
-                  <Link to="/buy_glp" className="default-btn buy">Buy</Link>
-                  <Link to="/earn" className="default-btn">Stake</Link>
-                  <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noreferrer" className="default-btn read-more">Read more</a>
-                </div>
-              </div>
-            </div>
-          </div>
+          <TokenCard />
         </div>
       </div>
 

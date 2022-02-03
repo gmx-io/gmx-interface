@@ -102,6 +102,8 @@ td {
 
 .align-right {
   text-align: right;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .muted {
@@ -120,6 +122,10 @@ td {
   text-decoration: underline;
 }
 
+.text-none {
+  text-transform: none;
+}
+
 .margin-bottom {
   margin-bottom: 0.3rem;
 }
@@ -136,6 +142,15 @@ td {
 .label,
 .label a {
   color: rgba(255, 255, 255, 0.7);
+}
+
+ul {
+  padding-left: 1.5rem;
+  margin-bottom: 0;
+}
+
+ul li {
+  padding-bottom: 1rem;
 }
 
 a.plain {
@@ -316,7 +331,7 @@ button.btn-link:hover .logout-icon {
 }
 
 .page-container {
-  padding-top: 5.1613rem;
+  padding-top: 4rem;
 }
 
 .mt-0 {
@@ -328,4 +343,24 @@ button.btn-link:hover .logout-icon {
   display: flex;
   flex-direction: column;
   padding-bottom: calc(3rem + 168px);
+}
+
+.d-flex {
+  display: flex;
+}
+
+.justify-space-between {
+  justify-content: space-between;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.w-100 {
+  width: 100%;
 }
