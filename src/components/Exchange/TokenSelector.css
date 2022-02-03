@@ -45,19 +45,19 @@
   padding: 0.6rem;
   padding-left: 0.7rem;
   margin-bottom: 0.3rem;
-  background: linear-gradient(270deg, rgba(45,66,252,0.15) 0%, rgba(45,66,252,0.4) 100%);
+  border: 1px solid #ffffff29;
+  background: transparent;
+  border-radius: var(--border-radius-sm);
 }
 
-.TokenSelector-token-row:first-child {
-  border-radius: 0.3rem 0.3rem 0 0;
-}
-
-.TokenSelector-token-row:last-child {
-  border-radius: 0 0 0.3rem 0.3rem;
+.token-logo {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.5rem;
 }
 
 .TokenSelector-token-row:hover {
-  background: linear-gradient(270deg, rgba(45,66,252,0.3) 0%, rgba(45,66,252,0.8) 100%);
+  background: var(--dark-blue-hover);
 }
 
 .TokenSelector-top-row {

@@ -25,6 +25,8 @@ export default function TokenSelector(props) {
     return null;
   }
 
+  console.log({ tokens });
+
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)}>
       <Modal
@@ -33,7 +35,7 @@ export default function TokenSelector(props) {
         label={props.label}
       >
         <div className="TokenSelector-tokens">
-          {tokens.concat(tokens).map(token => {
+          {tokens.map(token => {
             let info = infoTokens ? infoTokens[token.address] : {};
             let mintAmount;
             let balance = info.balance;
@@ -55,6 +57,14 @@ export default function TokenSelector(props) {
                 onClick={() => onSelectToken(token)}
                 key={token.address}
               >
+                <img
+                  src={
+                    `/images/icons/ic_${token.symbol?.toLowerCase()}_lg.svg` ||
+                    token.imageUrl
+                  }
+                  alt=""
+                  className="token-logo"
+                />
                 <div className="TokenSelector-top-row">
                   <div>{token.symbol}</div>
                   {balance && (
