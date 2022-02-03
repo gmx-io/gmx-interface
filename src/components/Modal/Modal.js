@@ -51,7 +51,7 @@ export default function Modal(props) {
                 className="Modal-close-button"
                 onClick={() => setIsVisible(false)}
               >
-                <MdClose className="Modal-close-icon" />
+                <MdClose fontSize={20} className="Modal-close-icon" />
               </div>
             </div>
             <div className="divider" />
