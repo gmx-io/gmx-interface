@@ -113,12 +113,12 @@
     bottom: 0;
   }
 
-  .TokenSelector.right .Modal-content {
+  /* .TokenSelector.right .Modal-content {
     display: block;
     margin: 2rem;
     padding: 1rem;
     box-sizing: border-box;
     height: auto;
     width: 100%;
-  }
+  } */
 }
