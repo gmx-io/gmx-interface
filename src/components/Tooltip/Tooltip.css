@@ -6,9 +6,6 @@
   font-size: 0.774rem;
   line-height: 1.032rem;
   position: absolute;
-  background: #353651 0% 0% no-repeat padding-box;
-  box-shadow: 0px 3px 6px #0000005C;
-  border: 1px solid #484B6E;
   border-radius: 4px;
   padding: 3px 0.774rem;
   letter-spacing: 0.4px;
@@ -16,6 +13,7 @@
   min-width: 250px;
   text-align: left;
   z-index: 1;
+  background: linear-gradient(90deg, #0b0b0f 0%, rgba(10,13,28,1) 100%);
 }
 
 .Tooltip.nowrap .Tooltip-popup {

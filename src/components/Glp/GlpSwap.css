@@ -15,7 +15,7 @@
   letter-spacing: 0px;
   color: #FFFFFF;
   padding: 1rem;
-  border-bottom: 1px solid #23263b;
+  border-bottom: 1px solid #FFFFFF29;
 }
 
 .Tab-description {
@@ -45,6 +45,7 @@
 
 .GlpSwap-content .GlpSwap-stats-card .App-card-divider {
   margin-bottom: 0;
+  background-color: #FFFFFF29;
 }
 
 .GlpSwap-content .GlpSwap-stats-card .App-card-row {
@@ -190,12 +191,20 @@
 
 .token-table td:nth-child(2), .token-table th:nth-child(2) {
   width: 90px;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 .token-table td:nth-child(3), .token-table th:nth-child(3) {
-  padding-right: 1rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
   text-align: center;
   width: 170px;
+}
+
+.token-table td:nth-child(4), .token-table th:nth-child(4) {
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 .token-table td {
