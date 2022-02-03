@@ -10,7 +10,9 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  NavLink
+  NavLink,
+  Link,
+  useHistory
 } from 'react-router-dom'
 
 import {
@@ -99,10 +101,10 @@ function inPreviewMode() {
 }
 
 function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
-  const refreshPage = () => {
-    setTimeout(() => {
-      window.location.reload()
-    }, 100)
+  const history = useHistory()
+  const isBuyPage = history.location.pathname === '/buy'
+  const goToBuyPage = () => {
+    window.location.href = '/buy'
   }
   if (inPreviewMode()) {
     return (
@@ -143,7 +145,7 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
         <NavLink activeClassName="active" to="/earn">Earn</NavLink>
       </div>
       <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/buy" onClick={() => refreshPage()}>Buy</NavLink>
+        <Link className={ isBuyPage ? "active" : '' } onClick={() => goToBuyPage()}>Buy</Link>
       </div>
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/ecosystem">Ecosystem</NavLink>
