@@ -78,6 +78,7 @@ import logoSmallImg from './img/logo_GMX_small.svg'
 
 // import logoImg from './img/gmx-logo-final-white-small.png'
 import metamaskImg from './img/metamask.png'
+import coinbaseImg from './img/coinbaseWallet.png'
 import walletConnectImg from './img/walletconnect-circle-blue.svg'
 
 if ('ethereum' in window) {
@@ -587,11 +588,15 @@ function FullApp() {
         pauseOnHover
       />
       <Modal className="Connect-wallet-modal" isVisible={walletModalVisible} setIsVisible={setWalletModalVisible} label="Connect Wallet">
-        <button className="MetaMask-btn" onClick={connectInjectedWallet}>
+        <button className="Wallet-btn MetaMask-btn" onClick={connectInjectedWallet}>
           <img src={metamaskImg} alt="MetaMask"/>
           <div>MetaMask</div>
         </button>
-        <button className="WalletConnect-btn" onClick={activateWalletConnect}>
+        <button className="Wallet-btn CoinbaseWallet-btn" onClick={connectInjectedWallet}>
+          <img src={coinbaseImg} alt="Coinbase Wallet"/>
+          <div>Coinbase Wallet</div>
+        </button>
+        <button className="Wallet-btn WalletConnect-btn" onClick={activateWalletConnect}>
           <img src={walletConnectImg} alt="WalletConnect"/>
           <div>WalletConnect</div>
         </button>

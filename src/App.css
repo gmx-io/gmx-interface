@@ -291,8 +291,7 @@
   filter: unset;
 }
 
-.WalletConnect-btn,
-.MetaMask-btn {
+.Wallet-btn {
   display: block;
   box-shadow: inset 0px 0px 10px 5px rgba(27, 30, 46, 0.2);
   background: linear-gradient(90deg, rgba(20,23,38,0.9) 0%, rgba(25,30,47,0.9) 100%);
@@ -309,20 +308,27 @@
   padding-left: 1.2rem;
   padding-top: 0.7rem;
 }
-.WalletConnect-btn:hover,
-.MetaMask-btn:hover {
+.Wallet-btn:hover {
   background: linear-gradient(90deg, rgba(20,23,38,1) 0%, rgba(25,30,47,1) 100%);
   border-color: rgba(45,66,252,1);
 }
 
-.MetaMask-btn {
+.Wallet-btn:not(:last-child) {
   margin-bottom: 0.7rem;
 }
+
 
 .MetaMask-btn img {
   display: inline-block;
   height: 1.5rem;
-  margin-right: 1.2rem;
+  margin-right: 1.1rem;
+  margin-left: 0.1rem;
+}
+
+.CoinbaseWallet-btn img {
+  display: inline-block;
+  height: 1.8rem;
+  margin-right: 1.1rem;
 }
 
 .WalletConnect-btn img {
