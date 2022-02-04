@@ -166,7 +166,7 @@ export default function DashboardV2() {
     fetcher: fetcher(library, VaultV2),
   })
 
-  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useStakedGmxSupply()
+  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useStakedGmxSupply(chainId === ARBITRUM ? library : undefined, active)
 
   const infoTokens = getInfoTokens(tokens, undefined, whitelistedTokens, vaultTokenInfo, undefined)
 
@@ -185,7 +185,7 @@ export default function DashboardV2() {
     gmxPriceFromArbitrum,
     gmxPriceFromAvalanche,
     mutate: updateGmxPrice
-  } = useGmxPrice(chainId)
+  } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? library : undefined }, active)
 
   let gmxMarketCap
   if (gmxPrice && gmxSupply) {

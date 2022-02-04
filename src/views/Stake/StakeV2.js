@@ -800,19 +800,19 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     feeGlpTrackerAddress
   ]
 
-  const { data: walletBalances, mutate: updateWalletBalances } = useSWR(["StakeV2:walletBalances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero], {
+  const { data: walletBalances, mutate: updateWalletBalances } = useSWR([`StakeV2:walletBalances:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero], {
     fetcher: fetcher(library, ReaderV2, [walletTokens]),
   })
 
-  const { data: depositBalances, mutate: updateDepositBalances } = useSWR(["StakeV2:depositBalances", chainId, rewardReaderAddress, "getDepositBalances", account || AddressZero], {
+  const { data: depositBalances, mutate: updateDepositBalances } = useSWR([`StakeV2:depositBalances:${active}`, chainId, rewardReaderAddress, "getDepositBalances", account || AddressZero], {
     fetcher: fetcher(library, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
   })
 
-  const { data: stakingInfo, mutate: updateStakingInfo } = useSWR(["StakeV2:stakingInfo", chainId, rewardReaderAddress, "getStakingInfo", account || AddressZero], {
+  const { data: stakingInfo, mutate: updateStakingInfo } = useSWR([`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || AddressZero], {
     fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
   })
 
-  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR(["StakeV2:stakedGmxSupply", chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
+  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR([`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
     fetcher: fetcher(library, Token),
   })
 
@@ -837,7 +837,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     gmxPriceFromArbitrum,
     gmxPriceFromAvalanche,
     mutate: updateGmxPrice
-  } = useGmxPrice(chainId)
+  } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? library : undefined }, active)
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
   const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
