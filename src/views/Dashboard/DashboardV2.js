@@ -42,6 +42,9 @@ import Footer from "../../Footer"
 
 import "./DashboardV2.css"
 
+import arbitrum24Icon from '../../img/ic_arbitrum_24.svg'
+import avalanche24Icon from '../../img/ic_avalanche_24.svg'
+
 const { AddressZero } = ethers.constants
 
 function getVolumeInfo(hourlyVolume) {
@@ -298,16 +301,21 @@ export default function DashboardV2() {
       updateFees, updateGmxPrice, updateStakedGmxSupply,
       updateTotalTokenWeights, updateGmxSupply])
 
-  const statsUrl = `https://stats.gmx.io/${chainId === AVALANCHE ? "avalanche" : ""}`
+  // const statsUrl = `https://stats.gmx.io/${chainId === AVALANCHE ? "avalanche" : ""}`
   const totalStatsStartDate = chainId === AVALANCHE ? "06 Jan 2022" : "01 Sep 2021"
 
   return (
-    <div className="DashboardV2 Page page-layout">
-      <div className="Page-title-section">
-        <div className="Page-title">Stats</div>
-        <div className="Page-description">
-          {chainName} Total Stats start from {totalStatsStartDate}.<br/>
-          For detailed stats: <a href={statsUrl}  target="_blank" rel="noopener noreferrer">{statsUrl}</a>.
+    <div className="default-container DashboardV2 page-layout">
+      <div className="section-title-block">
+        <div className="section-title-icon">
+        </div>
+        <div className="section-title-content">
+          <div className="Page-title">
+            Stats (Avalanche <img src={avalanche24Icon} alt="avalanche24Icon" />, Arbitrum <img src={arbitrum24Icon} alt="arbitrum24Icon" />)
+          </div>
+          <div className="Page-description">
+            Total Stats start from {totalStatsStartDate}. For detailed stats: <a href="https://stats.gmx.io"  target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
+          </div>
         </div>
       </div>
       <div className="DashboardV2-content">
@@ -389,138 +397,224 @@ export default function DashboardV2() {
             </div>
           </div>
         </div>
-        <div className="Page-title-section">
-          <div className="Page-title">Tokens</div>
+        <div className="Tab-title-section">
+          <div className="Page-title">
+            Tokens
+          </div>
           <div className="Page-description">
             Platform and GLP index tokens.
           </div>
         </div>
         <div className="DashboardV2-token-cards">
-          <div className="App-card">
-            <div className="App-card-title">GMX</div>
-            <div className="App-card-divider"></div>
-            <div className="App-card-content">
-              <div className="App-card-row">
-                <div className="label">Price</div>
-                <div>
-                  {!gmxPrice && '...'}
-                  {gmxPrice &&
-                    <Tooltip
-                      position="right-bottom"
-                      className="nowrap"
-                      handle={'$' + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
-                      renderContent={() => <>
-                        Price on Arbitrum: ${formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}<br/>
-                        Price on Avalanche: ${formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
-                      </>}
-                    />
-                  }
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">Supply</div>
-                <div>
-                  {formatAmount(gmxSupply, GMX_DECIMALS, 0, true)} GMX
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">Total Staked</div>
-                <div>
-                  ${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">Market Cap</div>
-                <div>
-                  ${formatAmount(gmxMarketCap, USD_DECIMALS, 0, true)}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="App-card">
-            <div className="App-card-title">GLP ({chainName})</div>
-            <div className="App-card-divider"></div>
-            <div className="App-card-content">
-              <div className="App-card-row">
-                <div className="label">Price</div>
-                <div>
-                  ${formatAmount(glpPrice, USD_DECIMALS, 2, true)}
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">Supply</div>
-                <div>
-                  {formatAmount(glpSupply, GLP_DECIMALS, 0, true)} GLP
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">Total Staked</div>
-                <div>
-                  ${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">Market Cap</div>
-                <div>
-                  ${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}
-                </div>
-              </div>
-            </div>
-          </div>
-          {tokenList.map((token) => {
-            const tokenInfo = infoTokens[token.address]
-            let utilization = bigNumberify(0)
-            if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
-              utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount)
-            }
-            let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT
-            if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
-              maxUsdgAmount = tokenInfo.maxUsdgAmount
-            }
-
-            return (
-              <div className="App-card" key={token.symbol}>
-                <div className="App-card-title">{token.symbol}</div>
-                <div className="App-card-divider"></div>
-                <div className="App-card-content">
-                  <div className="App-card-row">
-                    <div className="label">Price</div>
-                    <div>
-                      ${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}
-                    </div>
-                  </div>
-                  <div className="App-card-row">
-                    <div className="label">Pool</div>
-                    <div>
+          <div className="stats-wrapper stats-wrapper--gmx">
+            <div className="App-card">
+              <div className="App-card-title">GMX</div>
+              <div className="App-card-divider"></div>
+              <div className="App-card-content">
+                <div className="App-card-row">
+                  <div className="label">Price</div>
+                  <div>
+                    {!gmxPrice && '...'}
+                    {gmxPrice &&
                       <Tooltip
-                        handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
                         position="right-bottom"
-                        renderContent={() => {
-                          return <>
-                            Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol}<br/>
-                            <br/>
-                            Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
-                          </>
-                        }}
+                        className="nowrap"
+                        handle={'$' + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+                        renderContent={() => <>
+                          Price on Arbitrum: ${formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}<br/>
+                          Price on Avalanche: ${formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                        </>}
                       />
-                    </div>
+                    }
                   </div>
-                  <div className="App-card-row">
-                    <div className="label">Weight</div>
-                    <div>
-                      {getWeightText(tokenInfo)}
-                    </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">Supply</div>
+                  <div>
+                    {formatAmount(gmxSupply, GMX_DECIMALS, 0, true)} GMX
                   </div>
-                  <div className="App-card-row">
-                    <div className="label">Utilization</div>
-                    <div>
-                      {formatAmount(utilization, 2, 2, false)}%
-                    </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">Total Staked</div>
+                  <div>
+                    ${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}
+                  </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">Market Cap</div>
+                  <div>
+                    ${formatAmount(gmxMarketCap, USD_DECIMALS, 0, true)}
                   </div>
                 </div>
               </div>
-            )
-          })}
+            </div>
+            <div className="stats-block stats-block--gmx">
+
+            </div>
+          </div>
+          <div className="stats-wrapper stats-wrapper--glp">
+            <div className="App-card">
+              <div className="App-card-title">GLP ({chainName})</div>
+              <div className="App-card-divider"></div>
+              <div className="App-card-content">
+                <div className="App-card-row">
+                  <div className="label">Price</div>
+                  <div>
+                    ${formatAmount(glpPrice, USD_DECIMALS, 2, true)}
+                  </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">Supply</div>
+                  <div>
+                    {formatAmount(glpSupply, GLP_DECIMALS, 0, true)} GLP
+                  </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">Total Staked</div>
+                  <div>
+                    ${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}
+                  </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">Market Cap</div>
+                  <div>
+                    ${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="stats-block stats-block--glp">
+
+            </div>
+          </div>
+          <div className="token-table-wrapper">
+            <table className="token-table">
+              <thead>
+                <tr>
+                  <th>TOKEN</th>
+                  <th>PRICE</th>
+                  <th>POOL</th>
+                  <th>WEIGHT</th>
+                  <th>UTILIZATION</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tokenList.map((token) => {
+                  const tokenInfo = infoTokens[token.address]
+                  let utilization = bigNumberify(0)
+                  if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
+                    utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount)
+                  }
+                  let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT
+                  if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+                    maxUsdgAmount = tokenInfo.maxUsdgAmount
+                  }
+
+                  var tokenImage = null;
+
+                  try {
+                    tokenImage = require('../../img/ic_' + token.symbol.toLowerCase() + '_40.svg')
+                  } catch (error) {
+                    // console.log(error)
+                  }
+
+                  return (
+                    <tr key={token.symbol}>
+                      <td>
+                        <div className="App-card-title-info">
+                          <div className="App-card-title-info-icon">
+                            <img src={tokenImage && tokenImage.default} alt={token.symbol} width="40px" />
+                          </div>
+                          <div className="App-card-title-info-text">
+                            <div className="App-card-info-title">{token.name}</div>
+                            <div className="App-card-info-subtitle">{token.symbol}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        ${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}
+                      </td>
+                      <td>
+                        <Tooltip
+                          handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
+                          position="right-bottom"
+                          renderContent={() => {
+                            return <>
+                              Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol}<br/>
+                              <br/>
+                              Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                            </>
+                          }}
+                        />
+                      </td>
+                      <td>
+                        {getWeightText(tokenInfo)}
+                      </td>
+                      <td>
+                        {formatAmount(utilization, 2, 2, false)}%
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div className="token-grid">
+            {tokenList.map((token) => {
+              const tokenInfo = infoTokens[token.address]
+              let utilization = bigNumberify(0)
+              if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
+                utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount)
+              }
+              let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT
+              if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+                maxUsdgAmount = tokenInfo.maxUsdgAmount
+              }
+
+              return (
+                <div className="App-card" key={token.symbol}>
+                  <div className="App-card-title">{token.symbol}</div>
+                  <div className="App-card-divider"></div>
+                  <div className="App-card-content">
+                    <div className="App-card-row">
+                      <div className="label">Price</div>
+                      <div>
+                        ${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">Pool</div>
+                      <div>
+                        <Tooltip
+                          handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
+                          position="right-bottom"
+                          renderContent={() => {
+                            return <>
+                              Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol}<br/>
+                              <br/>
+                              Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                            </>
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">Weight</div>
+                      <div>
+                        {getWeightText(tokenInfo)}
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">Utilization</div>
+                      <div>
+                        {formatAmount(utilization, 2, 2, false)}%
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
         </div>
       </div>
       <Footer />

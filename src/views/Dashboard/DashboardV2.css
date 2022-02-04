@@ -1,20 +1,24 @@
+.DashboardV2 {
+  padding-top: 3rem;
+}
+
 .DashboardV2-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 1rem;
   margin-top: 0.5rem;
-  padding: 2rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
 }
 
 .DashboardV2-token-cards {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 1rem;
   margin-top: 0.5rem;
-  padding: 2rem;
-  padding-top: 1rem;
+}
+
+.token-table-wrapper {
+  border: 1px solid #1e2136;
+  border-radius: 4px;
+  background: #17182C;
+  padding: 1rem;
+  text-align: left;
 }
 
 .DashboardV2-projects {
@@ -23,7 +27,6 @@
   grid-gap: 1rem;
   margin-top: 0.5rem;
   padding: 2rem;
-  padding-top: 1rem;
 }
 
 .App-card-title-icon {
@@ -35,13 +38,33 @@
   margin-left: 6px;
 }
 
+.stats-wrapper {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.stats-wrapper .App-card {
+  max-width: 24.7rem;
+  width: 100%;
+}
+
+.stats-block {
+  max-width: 51.1rem;
+  width: 100%;
+}
+
 @media (max-width: 900px) {
   .DashboardV2-cards {
     grid-template-columns: 1fr;
   }
 
+  .token-table-wrapper {
+    display: none;
+  }
+
   .DashboardV2-token-cards {
-    grid-template-columns: 1fr;
+    /* grid-template-columns: 1fr; */
   }
 
   .DashboardV2-projects {
