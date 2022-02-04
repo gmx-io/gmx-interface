@@ -1,18 +1,26 @@
 import cx from "classnames";
 import "./Button.css";
 
-function Button(
-  { href, imgSrc, children, onClick, className, align = "center" },
+function Button({
+  href,
+  imgSrc,
+  children,
+  onClick,
+  className,
+  size = "lg",
+  align = "center",
   ...rest
-) {
+}) {
+  let classNames = cx(
+    "btn btn-primary",
+    align === "left" ? "btn-left" : "btn-center",
+    size === "lg" ? "btn-lg" : "btn-sm",
+    className
+  );
   if (typeof children === "object") {
     return (
       <a
-        className={cx(
-          "btn btn-primary",
-          align === "left" ? "btn-left" : "btn-center",
-          className
-        )}
+        className={classNames}
         href={href}
         target="_blank"
         rel="noopener noreferrer"
@@ -26,11 +34,7 @@ function Button(
   if (href) {
     return (
       <a
-        className={cx(
-          "btn btn-primary",
-          align === "left" ? "btn-left" : "btn-center",
-          className
-        )}
+        className={classNames}
         href={href}
         target="_blank"
         rel="noopener noreferrer"
@@ -42,15 +46,7 @@ function Button(
     );
   }
   return (
-    <button
-      className={cx(
-        "btn btn-primary",
-        align === "left" ? "btn-left" : "btn-center",
-        className
-      )}
-      onClick={onClick}
-      {...rest}
-    >
+    <button className={classNames} onClick={onClick} {...rest}>
       {imgSrc && <img className="btn-image" src={imgSrc} alt={children} />}
       <span className="btn-label">{children}</span>
     </button>
