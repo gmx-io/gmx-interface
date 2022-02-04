@@ -1,17 +1,22 @@
 import cx from "classnames";
 import "./Button.css";
 
-function Button({ href, imgSrc, children, onClick, label, align = "center" }) {
+function Button(
+  { href, imgSrc, children, onClick, className, align = "center" },
+  ...rest
+) {
   if (typeof children === "object") {
     return (
       <a
         className={cx(
           "btn btn-primary",
-          align === "left" ? "btn-left" : "btn-center"
+          align === "left" ? "btn-left" : "btn-center",
+          className
         )}
         href={href}
         target="_blank"
         rel="noopener noreferrer"
+        {...rest}
       >
         {children}
       </a>
@@ -23,11 +28,13 @@ function Button({ href, imgSrc, children, onClick, label, align = "center" }) {
       <a
         className={cx(
           "btn btn-primary",
-          align === "left" ? "btn-left" : "btn-center"
+          align === "left" ? "btn-left" : "btn-center",
+          className
         )}
         href={href}
         target="_blank"
         rel="noopener noreferrer"
+        {...rest}
       >
         {imgSrc && <img className="btn-image" src={imgSrc} alt={children} />}
         <span className="btn-label">{children}</span>
@@ -35,9 +42,17 @@ function Button({ href, imgSrc, children, onClick, label, align = "center" }) {
     );
   }
   return (
-    <button className="btn btn-primary" onClick={onClick}>
+    <button
+      className={cx(
+        "btn btn-primary",
+        align === "left" ? "btn-left" : "btn-center",
+        className
+      )}
+      onClick={onClick}
+      {...rest}
+    >
       {imgSrc && <img className="btn-image" src={imgSrc} alt={children} />}
-      <span>{children}</span>
+      <span className="btn-label">{children}</span>
     </button>
   );
 }

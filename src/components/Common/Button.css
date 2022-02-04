@@ -10,20 +10,25 @@ a.btn {
   justify-content: start;
 }
 .btn {
-  display: inline;
+  display: inline-flex;
+  align-items: center;
   border: none;
   color: white;
-  padding: 8px 16px;
+  padding: 5px 14px;
   font-size: 14px;
   border-radius: var(--border-radius-sm);
   cursor: pointer;
 }
 .btn-label {
-  margin-left: 10px;
+  margin-left: 8px;
 }
-.btn-image {
+.btn-image-lg {
   width: 25px;
   height: 25px;
+}
+.btn-image {
+  width: 24px;
+  height: 24px;
 }
 
 .btn-primary {
@@ -37,4 +42,10 @@ a.btn {
 }
 .btn-primary:active {
   background: var(--dark-blue-active);
+}
+
+@media (max-width: 900px) {
+  .btn {
+    padding: 5px 8px;
+  }
 }
