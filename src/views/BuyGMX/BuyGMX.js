@@ -116,7 +116,7 @@ export default function BuyGMX() {
                     align="left"
                     imgSrc={Hop}
                   >
-                    Multiswap
+                    Hop
                   </Button>
                   <Button
                     href="https://binance.com/"

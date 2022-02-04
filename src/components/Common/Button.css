@@ -61,6 +61,7 @@ a.btn {
   justify-content: center;
   width: 26px;
   height: 26px;
+  padding: 0 1px;
 }
 .btn-xl .btn-image {
   display: inline-flex;
@@ -72,7 +73,7 @@ a.btn {
 }
 
 .btn-primary {
-  background: var(--dark-blue);
+  background: transparent;
   border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
 }
