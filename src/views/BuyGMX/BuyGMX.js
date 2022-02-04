@@ -82,7 +82,7 @@ export default function BuyGMX() {
                   using Banxa:
                 </div>
                 <div className="direct-purchase-options">
-                  <Button href="https://gmx.banxa.com" imgSrc={Banxa}>
+                  <Button size="xl" href="https://gmx.banxa.com" imgSrc={Banxa}>
                     Banxa
                   </Button>
                 </div>
@@ -277,7 +277,10 @@ export default function BuyGMX() {
                     then click the button below:
                   </div>
                   <div className="buy-gmx">
-                    <Button href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a">
+                    <Button
+                      size="xl"
+                      href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a"
+                    >
                       <div className="GMX-btn-icon">
                         <img src={gmx64Icon} alt="olympusIcon" />
                         <div className="GMX-btn-icon-network">
@@ -304,7 +307,10 @@ export default function BuyGMX() {
                     small vesting period:
                   </div>
                   <div className="buy-gmx">
-                    <Button href="https://pro.olympusdao.finance/#/partners/GMX">
+                    <Button
+                      size="xl"
+                      href="https://pro.olympusdao.finance/#/partners/GMX"
+                    >
                       <div className="GMX-btn-icon">
                         <img src={olympusIcon} alt="olympusIcon" />
                         <div className="GMX-btn-icon-network">
