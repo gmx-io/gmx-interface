@@ -22,8 +22,15 @@ a.btn {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.btn-lg {
+.btn-lg,
+.btn-xl {
   padding: 0.5rem 1rem;
+}
+.btn-sm .btn-label {
+  font-weight: normal;
+  font-size: 14px;
+  margin-left: 8px;
+  letter-spacing: 0;
 }
 
 .btn-lg .btn-label {
@@ -33,23 +40,35 @@ a.btn {
   line-height: 1.5rem;
   letter-spacing: 0;
 }
-.btn-sm .btn-label {
+.btn-xl .btn-label {
+  margin-left: 0.75rem;
+  font-size: 1.1875rem;
   font-weight: normal;
-  font-size: 14px;
-  margin-left: 8px;
+  line-height: 1.5rem;
   letter-spacing: 0;
 }
+
+.btn-sm .btn-image {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
 .btn-lg .btn-image {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+}
+.btn-xl .btn-image {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 29px;
   height: 29px;
   padding: 0 2px;
-}
-.btn-sm .btn-image {
-  width: 24px;
-  height: 24px;
 }
 
 .btn-primary {

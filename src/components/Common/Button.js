@@ -14,7 +14,7 @@ function Button({
   let classNames = cx(
     "btn btn-primary",
     align === "left" ? "btn-left" : "btn-center",
-    size === "lg" ? "btn-lg" : "btn-sm",
+    `btn-${size}`,
     className
   );
   if (typeof children === "object") {
