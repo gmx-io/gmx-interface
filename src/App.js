@@ -73,6 +73,7 @@ import "./AppOrder.css";
 
 import logoImg from "./img/logo_GMX.svg";
 import logoSmallImg from "./img/logo_GMX_small.svg";
+import connectWalletImg from "./img/ic_wallet_24.svg";
 
 // import logoImg from './img/gmx-logo-final-white-small.png'
 import metamaskImg from "./img/metamask.png";
@@ -254,17 +255,12 @@ function AppHeaderUser({
             showModal={showNetworkSelectorModal}
           />
         )}
-        <Button onClick={() => setWalletModalVisible(true)}>
-          Connect Wallet
-        </Button>
-        <button
-          target="_blank"
-          rel="noopener noreferrer"
-          className="default-btn header-connect-btn short-label"
+        <Button
           onClick={() => setWalletModalVisible(true)}
+          imgSrc={connectWalletImg}
         >
-          Connect
-        </button>
+          {small ? "Connect" : "Connect Wallet"}
+        </Button>
       </div>
     );
   }
