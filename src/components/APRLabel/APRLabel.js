@@ -3,6 +3,8 @@ import React from 'react'
 import useSWR from 'swr'
 
 import {
+  ARBITRUM,
+  AVALANCHE,
   getServerUrl,
   fetcher,
   formatKeyAmount,
@@ -29,9 +31,11 @@ import { ethers } from 'ethers'
 const { AddressZero } = ethers.constants
 
 export default function APRLabel ({chainId, label}) {
-  const { library } = useWeb3React()
+  let { library, active } = useWeb3React()
 
-  const active = false
+  if (chainId === AVALANCHE) {
+    active = false
+  }
   const account = undefined
 
   const rewardReaderAddress = getContract(chainId, "RewardReader")
@@ -83,19 +87,19 @@ export default function APRLabel ({chainId, label}) {
     feeGlpTrackerAddress
   ]
 
-  const { data: walletBalances } = useSWR(["StakeV2:walletBalances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero], {
+  const { data: walletBalances } = useSWR([`StakeV2:walletBalances:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero], {
     fetcher: fetcher(library, ReaderV2, [walletTokens]),
   })
 
-  const { data: depositBalances } = useSWR(["StakeV2:depositBalances", chainId, rewardReaderAddress, "getDepositBalances", account || AddressZero], {
+  const { data: depositBalances } = useSWR([`StakeV2:depositBalances:${active}`, chainId, rewardReaderAddress, "getDepositBalances", account || AddressZero], {
     fetcher: fetcher(library, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
   })
 
-  const { data: stakingInfo } = useSWR(["StakeV2:stakingInfo", chainId, rewardReaderAddress, "getStakingInfo", account || AddressZero], {
+  const { data: stakingInfo } = useSWR([`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || AddressZero], {
     fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
   })
 
-  const { data: stakedGmxSupply } = useSWR(["StakeV2:stakedGmxSupply", chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
+  const { data: stakedGmxSupply } = useSWR([`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
     fetcher: fetcher(library, Token),
   })
 
@@ -111,7 +115,7 @@ export default function APRLabel ({chainId, label}) {
     fetcher: fetcher(library, ReaderV2, [vesterAddresses]),
   })
 
-  const { gmxPrice } = useGmxPrice(chainId)
+  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? library : undefined }, active)
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
   const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
