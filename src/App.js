@@ -258,6 +258,7 @@ function AppHeaderUser({
         <Button
           onClick={() => setWalletModalVisible(true)}
           imgSrc={connectWalletImg}
+          size="sm"
         >
           {small ? "Connect" : "Connect Wallet"}
         </Button>
