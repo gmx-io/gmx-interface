@@ -160,7 +160,7 @@
   border-radius: 4px;
 }
 .network-select {
-  background: var(--dark-blue);
+  background: transparent;
 }
 .network-select:hover {
   background: #808aff14;
