@@ -5,6 +5,7 @@ import useSWR from 'swr'
 import {
   ARBITRUM,
   AVALANCHE,
+  PLACEHOLDER_ACCOUNT,
   getServerUrl,
   fetcher,
   formatKeyAmount,
@@ -26,9 +27,6 @@ import { useWeb3React } from '@web3-react/core'
 import { useGmxPrice } from "../../Api"
 
 import { getContract } from '../../Addresses'
-
-import { ethers } from 'ethers'
-const { AddressZero } = ethers.constants
 
 export default function APRLabel ({chainId, label}) {
   let { library, active } = useWeb3React()
@@ -87,15 +85,15 @@ export default function APRLabel ({chainId, label}) {
     feeGlpTrackerAddress
   ]
 
-  const { data: walletBalances } = useSWR([`StakeV2:walletBalances:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero], {
+  const { data: walletBalances } = useSWR([`StakeV2:walletBalances:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, ReaderV2, [walletTokens]),
   })
 
-  const { data: depositBalances } = useSWR([`StakeV2:depositBalances:${active}`, chainId, rewardReaderAddress, "getDepositBalances", account || AddressZero], {
+  const { data: depositBalances } = useSWR([`StakeV2:depositBalances:${active}`, chainId, rewardReaderAddress, "getDepositBalances", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
   })
 
-  const { data: stakingInfo } = useSWR([`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || AddressZero], {
+  const { data: stakingInfo } = useSWR([`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
   })
 
@@ -111,7 +109,7 @@ export default function APRLabel ({chainId, label}) {
     fetcher: fetcher(library, Vault),
   })
 
-  const { data: vestingInfo } = useSWR([`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || AddressZero], {
+  const { data: vestingInfo } = useSWR([`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, ReaderV2, [vesterAddresses]),
   })
 
