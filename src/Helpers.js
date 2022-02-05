@@ -18,6 +18,8 @@ import { getWhitelistedTokens, isValidToken } from './data/Tokens'
 
 const { AddressZero } = ethers.constants
 
+export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address
+
 export const MAINNET = 56;
 export const AVALANCHE = 43114;
 export const TESTNET = 97;
