@@ -102,6 +102,19 @@ export const TRIGGER_PREFIX_BELOW = '<'
 
 export const PROFIT_THRESHOLD_BASIS_POINTS = 150
 
+export const GLPPOOLCOLORS = {
+  ETH: "#FCFCFD",
+  BTC: "#F7931A",
+  "USDC": "#2775CA",
+  "USDC.e": "#2A5ADA",
+  TETHER: "#67B18A",
+  MIM: "#9695F8",
+  FRAX: "#000",
+  DAI: "#FAC044",
+  UNISWAP: "#E9167C",
+  AVAX: "#E84142"
+}
+
 const supportedChainIds = [
   ARBITRUM,
   AVALANCHE

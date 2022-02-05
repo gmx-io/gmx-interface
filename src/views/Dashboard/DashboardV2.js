@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
+import { PieChart, Pie, Cell } from 'recharts'
 import Tooltip from '../../components/Tooltip/Tooltip'
 
 import { ethers } from 'ethers'
@@ -28,7 +29,8 @@ import {
   DEFAULT_MAX_USDG_AMOUNT,
   ARBITRUM,
   AVALANCHE,
-  getTotalVolumeSum
+  getTotalVolumeSum,
+  GLPPOOLCOLORS
 } from '../../Helpers'
 import { useGmxPrice, useStakedGmxSupply } from '../../Api'
 
@@ -304,6 +306,23 @@ export default function DashboardV2() {
   // const statsUrl = `https://stats.gmx.io/${chainId === AVALANCHE ? "avalanche" : ""}`
   const totalStatsStartDate = chainId === AVALANCHE ? "06 Jan 2022" : "01 Sep 2021"
 
+  let glpPool = tokenList.map((token) => {
+    const tokenInfo = infoTokens[token.address]
+    if (tokenInfo.usdgAmount && usdgSupply) {
+      const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(usdgSupply)
+      return {
+        fullname: token.name,
+        name: token.symbol,
+        value: parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`)
+      }
+    }
+    return null
+  })
+
+  glpPool = glpPool.filter(function( element ) {
+    return element !== null;
+  });
+
   return (
     <div className="default-container DashboardV2 page-layout">
       <div className="section-title-block">
@@ -448,7 +467,7 @@ export default function DashboardV2() {
                 </div>
               </div>
             </div>
-            <div className="stats-block stats-block--gmx">
+            <div className="App-card stats-block stats-block--gmx">
 
             </div>
           </div>
@@ -483,8 +502,40 @@ export default function DashboardV2() {
                 </div>
               </div>
             </div>
-            <div className="stats-block stats-block--glp">
-
+            <div className="App-card stats-block stats-block--glp">
+              <div className="stats-piechart">
+                {
+                  glpPool.length > 0 && 
+                    <PieChart width={240} height={240}>
+                      <Pie
+                        data={glpPool}
+                        cx={120}
+                        cy={120}
+                        innerRadius={100}
+                        outerRadius={110}
+                        fill="#8884d8"
+                        dataKey="value"
+                        startAngle={90}
+                        endAngle={-270}
+                      >
+                        {glpPool.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={GLPPOOLCOLORS[entry.name]} />
+                        ))}
+                        <text>GLP Pool</text>
+                      </Pie>
+                    </PieChart>
+                }
+              </div>
+              <div className="stats-labels">
+                {
+                  glpPool.map((pool, index) => {
+                    return <div className="stats-label" key={index}>
+                      <div className="stats-label-color" style={{backgroundColor: GLPPOOLCOLORS[pool.name]}}></div>
+                      {pool.value}% {pool.fullname}
+                    </div>
+                  })
+                }
+              </div>
             </div>
           </div>
           <div className="token-table-wrapper">
