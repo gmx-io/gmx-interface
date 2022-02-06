@@ -28,6 +28,33 @@
   color: #F89191;
 }
 
+
+.GlpSwap-from-token .Modal {
+  align-items: center;
+  justify-content: center;
+}
+.GlpSwap-from-token .Modal .Modal-content {
+  width: 25rem;
+}
+
+.GlpSwap-from-token .Modal-content {
+  position: absolute;
+  width: 25rem;
+  max-height: 80vh;
+  overflow: hidden;
+  border: none;
+}
+.GlpSwap-from-token .Modal-content .Modal-body {
+  overflow-y: auto;
+  max-height: calc(80vh - 5.5rem);
+  scroll-margin-right: 25rem;
+  overscroll-behavior: smooth;
+  scrollbar-width: thin;
+  padding-right: 5px;
+  margin: 1rem calc(1rem - 5px) 1rem 1rem;
+}
+
+
 .GlpSwap-content .GlpSwap-stats-card, .GlpSwap-content .GlpSwap-box {
   width: 100%;
 }

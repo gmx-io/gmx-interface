@@ -9,13 +9,22 @@ import { BiChevronDown } from "react-icons/bi";
 
 import Modal from "../Modal/Modal";
 
-import dropDownIcon from '../../img/DROP_DOWN.svg'
-import './TokenSelector.css';
+import dropDownIcon from "../../img/DROP_DOWN.svg";
+import "./TokenSelector.css";
 
 export default function TokenSelector(props) {
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const tokenInfo = getToken(props.chainId, props.tokenAddress)
-  const { tokens, mintingCap, infoTokens, showMintingCap, disabled, showSymbolImage = false, showNewCaret = false } = props
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const tokenInfo = getToken(props.chainId, props.tokenAddress);
+  const {
+    tokens,
+    mintingCap,
+    infoTokens,
+    showMintingCap,
+    disabled,
+    showTokenImgInDropdown = true,
+    showSymbolImage = false,
+    showNewCaret = false
+  } = props;
 
   const onSelectToken = token => {
     setIsModalVisible(false);
@@ -29,10 +38,13 @@ export default function TokenSelector(props) {
   var tokenImage = null;
 
   try {
-    tokenImage = require('../../img/ic_' + tokenInfo.symbol.toLowerCase() + '_24.svg')
+    tokenImage = require("../../img/ic_" +
+      tokenInfo.symbol.toLowerCase() +
+      "_24.svg");
   } catch (error) {
     // console.log(error)
   }
+
 
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)}>
@@ -43,6 +55,12 @@ export default function TokenSelector(props) {
       >
         <div className="TokenSelector-tokens">
           {tokens.map(token => {
+            let tokenPopupImage;
+            try {
+              tokenPopupImage = require("../../img/ic_" + token.symbol.toLowerCase() + "_40.svg");
+            } catch (error) {
+              tokenPopupImage = require("../../img/ic_eth_40.svg")
+            }
             let info = infoTokens ? infoTokens[token.address] : {};
             let mintAmount;
             let balance = info.balance;
@@ -65,14 +83,11 @@ export default function TokenSelector(props) {
                 key={token.address}
               >
                 <div className="Token-info">
-                  <img
-                    src={
-                      `/images/icons/ic_${token.symbol?.toLowerCase()}_lg.svg` ||
-                      token.imageUrl
-                    }
-                    alt=""
+                  {showTokenImgInDropdown && <img
+                    src={tokenPopupImage?.default}
+                    alt={token.name}
                     className="token-logo"
-                  />
+                  />}
                   <div className="Token-symbol">
                     <div className="Token-text">{token.symbol}</div>
                     <span className="text-accent">{token.name}</span>
@@ -109,9 +124,21 @@ export default function TokenSelector(props) {
         onClick={() => setIsModalVisible(true)}
       >
         {tokenInfo.symbol}
-        {showSymbolImage && <img src={tokenImage && tokenImage.default} alt={tokenInfo.symbol} className="TokenSelector-box-symbol" />}
-        { showNewCaret && <img src={dropDownIcon} alt="dropDownIcon" className="TokenSelector-box-caret" /> }
-        { !showNewCaret && <BiChevronDown className="TokenSelector-caret" /> }
+        {showSymbolImage && (
+          <img
+            src={tokenImage && tokenImage.default}
+            alt={tokenInfo.symbol}
+            className="TokenSelector-box-symbol"
+          />
+        )}
+        {showNewCaret && (
+          <img
+            src={dropDownIcon}
+            alt="dropDownIcon"
+            className="TokenSelector-box-caret"
+          />
+        )}
+        {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}
       </div>
     </div>
   );
