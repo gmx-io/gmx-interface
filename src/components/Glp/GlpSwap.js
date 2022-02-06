@@ -666,6 +666,7 @@ export default function GlpSwap(props) {
               infoTokens={infoTokens}
               className="GlpSwap-from-token"
               showSymbolImage={true}
+              showTokenImgInDropdown={true}
             />
           </BuyInputSection>}
 
@@ -724,6 +725,7 @@ export default function GlpSwap(props) {
               infoTokens={infoTokens}
               className="GlpSwap-from-token"
               showSymbolImage={true}
+              showTokenImgInDropdown={true}
             />
           </BuyInputSection>}
           <div>

@@ -1971,6 +1971,7 @@ export default function SwapBox(props) {
                     tokens={fromTokens}
                     infoTokens={infoTokens}
                     showMintingCap={false}
+                    showTokenImgInDropdown={true}
                   />
                 </div>
               </div>
@@ -2022,6 +2023,7 @@ export default function SwapBox(props) {
                     onSelectToken={onSelectToToken}
                     tokens={toTokens}
                     infoTokens={infoTokens}
+                    showTokenImgInDropdown={true}
                   />
                 </div>
               </div>

@@ -21,7 +21,7 @@ export default function TokenSelector(props) {
     infoTokens,
     showMintingCap,
     disabled,
-    showTokenImgInDropdown = true,
+    showTokenImgInDropdown = false,
     showSymbolImage = false,
     showNewCaret = false
   } = props;
