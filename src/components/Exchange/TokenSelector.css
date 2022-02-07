@@ -39,9 +39,10 @@
   display: flex;
   flex-direction: column;
 }
-.Token-info .Token-balance {
+.Token-balance {
   display: flex;
   flex-direction: column;
+  text-align: right;
 }
 .Token-info .token-logo {
   display: block!important;
