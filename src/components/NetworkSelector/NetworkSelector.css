@@ -138,7 +138,6 @@
   border-radius: 4px;
 }
 .react-select__option.arbitrum:hover {
-  background: var(--arbitrum-blue) !important;
   border: 1px solid #4275a8;
   border-radius: 4px;
   color: #eee;
@@ -150,7 +149,6 @@
   background: #818cef33 !important;
 }
 .react-select__option.avalanche:hover {
-  background: var(--avax-blue) !important;
   border: 1px solid #e84142;
   border-radius: 4px;
   color: #eee;
@@ -158,8 +156,14 @@
 .react-select__indicator {
   border-radius: 4px;
 }
+.network-select {
+  background: transparent;
+}
 .network-select:hover {
   background: #808aff14;
+}
+.network-select:active {
+  background: var(--dark-blue-active);
 }
 .App-header-user-settings:hover {
   background: #2c2d45;

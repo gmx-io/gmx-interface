@@ -1,11 +1,11 @@
 import "./AddressDropdown.css";
 import { Menu } from "@headlessui/react";
-import { shortenAddress } from "../../Helpers";
+import { helperToast, shortenAddress } from "../../Helpers";
 import { useCopyToClipboard } from "react-use";
 import externalLink from "../../img/ic_new_link_16.svg";
 import copy from "../../img/ic_copy_16.svg";
 import settings from "../../img/ic_settings_16.svg";
-import disconnect from "../../img/ic_sign in_16.svg";
+import disconnect from "../../img/ic_sign_out_16.svg";
 import { FaChevronDown } from "react-icons/fa";
 
 function AddressDropdown({
@@ -27,7 +27,13 @@ function AddressDropdown({
 
       <Menu.Items as="div" className="menu-items">
         <Menu.Item>
-          <div className="menu-item" onClick={() => copyToClipboard(account)}>
+          <div
+            className="menu-item"
+            onClick={() => {
+              copyToClipboard(account);
+              helperToast.success("Address copied to your clipboard");
+            }}
+          >
             <img src={copy} alt="Copy user address" />
             <p>Copy Address</p>
           </div>
