@@ -82,7 +82,7 @@ export default function BuyGMX() {
                   using Banxa:
                 </div>
                 <div className="direct-purchase-options">
-                  <Button size="xl" href="https://gmx.banxa.com" imgSrc={Banxa}>
+                  <Button href="https://gmx.banxa.com" imgSrc={Banxa}>
                     Banxa
                   </Button>
                 </div>
@@ -194,13 +194,7 @@ export default function BuyGMX() {
                     >
                       Multiswap
                     </Button>
-                    <Button
-                      align="left"
-                      href="https://app.hop.exchange/"
-                      imgSrc={Hop}
-                    >
-                      Hop
-                    </Button>
+
                     <Button
                       align="left"
                       href="https://binance.com"
@@ -278,7 +272,6 @@ export default function BuyGMX() {
                   </div>
                   <div className="buy-gmx">
                     <Button
-                      size="xl"
                       href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a"
                     >
                       <div className="GMX-btn-icon">
@@ -308,7 +301,6 @@ export default function BuyGMX() {
                   </div>
                   <div className="buy-gmx">
                     <Button
-                      size="xl"
                       href="https://pro.olympusdao.finance/#/partners/GMX"
                     >
                       <div className="GMX-btn-icon">

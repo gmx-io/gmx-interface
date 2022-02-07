@@ -59,9 +59,8 @@ a.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
-  padding: 0 1px;
+  width: 24px;
+  height: 24px;
 }
 .btn-xl .btn-image {
   display: inline-flex;
@@ -85,8 +84,8 @@ a.btn {
   background: var(--dark-blue-active);
 }
 
-@media (max-width: 900px) {
+/* @media (max-width: 900px) {
   .btn {
     padding: 5px 8px;
   }
-}
+} */

@@ -172,4 +172,7 @@
     font-size: 1rem;
     line-height: 1.3rem;
   }
+  .bridge-options {
+    grid-template-columns: 1fr;
+  }
 }
