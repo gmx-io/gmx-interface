@@ -11,9 +11,11 @@ import Modal from "../Modal/Modal";
 
 import dropDownIcon from "../../img/DROP_DOWN.svg";
 import "./TokenSelector.css";
+import { useLockBodyScroll } from "react-use";
 
 export default function TokenSelector(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  useLockBodyScroll(isModalVisible);
   const tokenInfo = getToken(props.chainId, props.tokenAddress);
   const {
     tokens,
