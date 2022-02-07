@@ -13,6 +13,9 @@ import Banxa from "../../img/ic_banxa.svg";
 import Binance from "../../img/ic_binance_logo.svg";
 import gmx64Icon from "../../img/ic_gmx_30.svg";
 import avax30Icon from "../../img/ic_avax_30.svg";
+import gmxAvax from "../../img/ic_gmx_avax.svg";
+import gmxArbitrum from "../../img/ic_gmx_arbitrum.svg";
+import ohmArbitrum from "../../img/ic_olympus_arbitrum.svg";
 
 import olympusIcon from "../../img/ic_olympus.svg";
 import buyTransferETHIcon from "../../img/buy_transfer_eth.svg";
@@ -220,14 +223,11 @@ export default function BuyGMX() {
                     click the button below:
                   </div>
                   <div className="direct-purchase-options">
-                    <Button href="https://traderjoexyz.com/#/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661">
-                      <div className="GMX-btn-icon">
-                        <img src={gmx64Icon} alt="gmx64Icon" />
-                        <div className="GMX-btn-icon-network">
-                          <img src={avalanche16Icon} alt="avalanche16Icon" />
-                        </div>
-                      </div>
-                      <span className="btn-label">Purchase GMX</span>
+                    <Button
+                      imgSrc={gmxAvax}
+                      href="https://traderjoexyz.com/#/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661"
+                    >
+                      Purchase GMX
                     </Button>
                   </div>
                 </div>
@@ -272,15 +272,10 @@ export default function BuyGMX() {
                   </div>
                   <div className="buy-gmx">
                     <Button
+                      imgSrc={gmxArbitrum}
                       href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a"
                     >
-                      <div className="GMX-btn-icon">
-                        <img src={gmx64Icon} alt="olympusIcon" />
-                        <div className="GMX-btn-icon-network">
-                          <img src={arbitrum16Icon} alt="arbitrum16Icon" />
-                        </div>
-                      </div>
-                      <span className="btn-label">Purchase GMX</span>
+                      Purchase GMX
                     </Button>
                   </div>
                 </div>
@@ -301,15 +296,10 @@ export default function BuyGMX() {
                   </div>
                   <div className="buy-gmx">
                     <Button
+                      imgSrc={ohmArbitrum}
                       href="https://pro.olympusdao.finance/#/partners/GMX"
                     >
-                      <div className="GMX-btn-icon">
-                        <img src={olympusIcon} alt="olympusIcon" />
-                        <div className="GMX-btn-icon-network">
-                          <img src={arbitrum16Icon} alt="arbitrum16Icon" />
-                        </div>
-                      </div>
-                      <span className="btn-label">Olympus Pro</span>
+                      Olympus Pro
                     </Button>
                   </div>
                 </div>
