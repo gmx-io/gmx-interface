@@ -574,8 +574,8 @@ table.Exchange-list th {
 
 .Exchange-swap-box .TokenSelector .Modal-content,
 .Selector .Modal-content {
+  width: 27rem;
   position: absolute;
-  width: 25rem!important;
   max-height: 80vh;
   overflow: hidden;
   border: none;

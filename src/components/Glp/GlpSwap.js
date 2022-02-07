@@ -93,7 +93,7 @@ function getStakingData(stakingInfo) {
 }
 
 export default function GlpSwap(props) {
-  const { savedSlippageAmount, isBuying, setPendingTxns, connectWallet } = props
+  const { savedSlippageAmount, isBuying, setPendingTxns, connectWallet, setIsBuying } = props
   const history = useHistory()
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp"
   const tabLabel = isBuying ? "Buy GLP" : "Sell GLP"
@@ -689,7 +689,10 @@ export default function GlpSwap(props) {
 
           <div className="AppOrder-ball-container">
             <div className="AppOrder-ball">
-              <img src={arrowIcon} alt="arrowIcon" />
+              <img src={arrowIcon} alt="arrowIcon" onClick={() => {
+                setIsBuying(!isBuying);
+                switchSwapOption(isBuying ? 'redeem' : '');
+              }} />
             </div>
           </div>
 
