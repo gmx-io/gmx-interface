@@ -112,7 +112,7 @@ export default function NetworkSelector(props) {
 
   const customStyles = {
     option: (provided, state) => {
-      const backgroundColor = "#16182E";
+      const backgroundColor = "#16182e";
       return {
         ...provided,
         margin: 0,
@@ -129,7 +129,7 @@ export default function NetworkSelector(props) {
         width: 144,
         height: 36,
         display: "flex",
-        border: "1px solid #FFFFFF17",
+        border: "1px solid #FFFFFF29",
         borderRadius: 4,
         cursor: "pointer",
         fontSize: "14px",

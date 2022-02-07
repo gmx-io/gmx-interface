@@ -73,11 +73,13 @@ import "./AppOrder.css";
 
 import logoImg from "./img/logo_GMX.svg";
 import logoSmallImg from "./img/logo_GMX_small.svg";
+import connectWalletImg from "./img/ic_wallet_24.svg";
 
 // import logoImg from './img/gmx-logo-final-white-small.png'
 import metamaskImg from "./img/metamask.png";
 import walletConnectImg from "./img/walletconnect-circle-blue.svg";
 import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
+import Button from "./components/Common/Button";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -253,22 +255,13 @@ function AppHeaderUser({
             showModal={showNetworkSelectorModal}
           />
         )}
-        <button
-          target="_blank"
-          rel="noopener noreferrer"
-          className="default-btn header-connect-btn long-label"
+        <Button
           onClick={() => setWalletModalVisible(true)}
+          imgSrc={connectWalletImg}
+          size="sm"
         >
-          Connect Wallet
-        </button>
-        <button
-          target="_blank"
-          rel="noopener noreferrer"
-          className="default-btn header-connect-btn short-label"
-          onClick={() => setWalletModalVisible(true)}
-        >
-          Connect
-        </button>
+          {small ? "Connect" : "Connect Wallet"}
+        </Button>
       </div>
     );
   }

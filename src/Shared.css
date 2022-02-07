@@ -39,14 +39,16 @@ body,
 }
 
 :root {
-  --dark-blue: #16182e;
+  --dark-blue: #17182c;
   --dark-blue-accent: #a0a3c4;
   --dark-blue-hover: #808aff14;
   --dark-blue-border: #ffffff29;
+  --dark-blue-active: #818cef33;
   --avax-red: #e84143;
   --arbitrum-blue: #28a0f0;
   --border-radius-sm: 4px;
 }
+
 a {
   color: white;
 }
