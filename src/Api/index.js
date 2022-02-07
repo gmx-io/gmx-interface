@@ -290,20 +290,21 @@ export function useTrades(chainId, account) {
   return { trades, updateTrades }
 }
 
-export function useStakedGmxSupply() {
+export function useStakedGmxSupply(library, active) {
   const chainId = ARBITRUM
   const gmxAddress = getContract(chainId, "GMX")
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker")
 
-  const { data, mutate } = useSWR([`StakeV2:stakedGmxSupply`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
-    fetcher: fetcher(undefined, Token),
+  const { data, mutate } = useSWR([`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
+    fetcher: fetcher(library, Token),
   })
 
   return { data, mutate }
 }
 
-export function useGmxPrice(chainId) {
-  const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum()
+export function useGmxPrice(chainId, libraries, active) {
+  const arbitrumLibrary = libraries && libraries.arbitrum ? libraries.arbitrum : undefined
+  const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum(arbitrumLibrary, active)
   const { data: gmxPriceFromAvalanche, mutate: mutateFromAvalanche } = useGmxPriceFromAvalanche()
 
   const gmxPrice = chainId === ARBITRUM ? gmxPriceFromArbitrum : gmxPriceFromAvalanche
@@ -348,16 +349,16 @@ function useGmxPriceFromAvalanche() {
   return { data: gmxPrice, mutate }
 }
 
-function useGmxPriceFromArbitrum() {
+function useGmxPriceFromArbitrum(library, active) {
   const poolAddress = getContract(ARBITRUM, "UniswapGmxEthPool")
-  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR([`StakeV2:uniPoolSlot0`, ARBITRUM, poolAddress, "slot0"], {
-    fetcher: fetcher(undefined, UniPool),
+  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR([`StakeV2:uniPoolSlot0:${active}`, ARBITRUM, poolAddress, "slot0"], {
+    fetcher: fetcher(library, UniPool),
   })
 
   const vaultAddress = getContract(ARBITRUM, "Vault")
   const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address
-  const { data: ethPrice, mutate: updateEthPrice } = useSWR([`StakeV2:ethPrice`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress], {
-    fetcher: fetcher(undefined, Vault),
+  const { data: ethPrice, mutate: updateEthPrice } = useSWR([`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress], {
+    fetcher: fetcher(library, Vault),
   })
 
   const gmxPrice = useMemo(() => {
