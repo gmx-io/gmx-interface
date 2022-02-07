@@ -2238,6 +2238,7 @@ export default function SwapBox(props) {
                     tokenAddress={shortCollateralAddress}
                     onSelectToken={onSelectShortCollateralAddress}
                     tokens={stableTokens}
+                    showTokenImgInDropdown={true}
                   />
                 </div>
               </div>
