@@ -34,7 +34,8 @@
   height: 13px;
   width: 100%;
   content: " ";
-  background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
+  background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%)
+    0% 0% no-repeat padding-box;
   position: absolute;
   bottom: -13px;
   left: 0;
@@ -53,7 +54,7 @@
 }
 
 .App-header-drawer {
-  background: #17182C88 0% 0% no-repeat padding-box;
+  background: #17182c88 0% 0% no-repeat padding-box;
   box-shadow: 8px 3px 6px #00000029;
   opacity: 1;
   backdrop-filter: blur(27px);
@@ -64,6 +65,12 @@
   top: 0;
   height: 100vh;
   width: 304px;
+  overflow-y: auto;
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+.App-header-drawer::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
 }
 
 .App-header-drawer .App-header-link-container a {
@@ -71,7 +78,7 @@
   line-height: 18px;
   font-weight: normal;
   letter-spacing: 0.1px;
-  color: #A0A3C4;
+  color: #a0a3c4;
   padding: 15px 16px;
   text-decoration: none;
   display: block;
@@ -80,7 +87,7 @@
 .App-header-drawer .App-header-link-container a:hover,
 .App-header-drawer .App-header-link-container a:focus,
 .App-header-drawer .App-header-link-container a.active {
-  background: #303FD024;
+  background: #303fd024;
   color: white;
 }
 
@@ -124,16 +131,26 @@
 }
 
 .App-highlight-box {
-  background: linear-gradient(45deg, rgba(80,10,245,1) 0%, rgba(43,118,224,1) 35%, rgba(7,157,250,1) 77%, rgba(2,207,207,1) 100%);
+  background: linear-gradient(
+    45deg,
+    rgba(80, 10, 245, 1) 0%,
+    rgba(43, 118, 224, 1) 35%,
+    rgba(7, 157, 250, 1) 77%,
+    rgba(2, 207, 207, 1) 100%
+  );
   border-radius: 3px;
-  box-shadow: 0 0 4px 6px rgba(45,66,252,0.15);
+  box-shadow: 0 0 4px 6px rgba(45, 66, 252, 0.15);
 }
 
-.App-box, .App-card, .App-card-primary, .App-box-highlight, .App-box-solid {
+.App-box,
+.App-card,
+.App-card-primary,
+.App-box-highlight,
+.App-box-solid {
   position: relative;
-  border: 1px solid #1E2136;
+  border: 1px solid #1e2136;
   border-radius: 4px;
-  background: #17182C;
+  background: #17182c;
 }
 
 .App-card-bottom-placeholder {
@@ -149,12 +166,13 @@
   padding-bottom: 1.2rem;
 }
 
-.App-card-bottom .App-card-divider, .App-card-bottom-placeholder .App-card-divider {
+.App-card-bottom .App-card-divider,
+.App-card-bottom-placeholder .App-card-divider {
   margin-bottom: 1.2rem;
 }
 
 .App-card-long {
-  background: #16182E;
+  background: #16182e;
   margin-bottom: 1.5484rem;
 }
 
@@ -180,7 +198,7 @@
   line-height: 1.3548rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .App-card-long_sub__info___subtitle {
@@ -188,7 +206,7 @@
   line-height: 0.9677rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: #A0A3C4;
+  color: #a0a3c4;
 }
 
 .App-card-long-sub-left {
@@ -220,7 +238,7 @@
 .App-card-divider-vertical {
   width: 1px;
   height: 5.6774rem;
-  background: #A0A3C4;
+  background: #a0a3c4;
 }
 
 .App-card-long_sub:first-child {
@@ -229,7 +247,7 @@
 }
 
 .App-card-long_sub__title {
-  color: #A0A3C4;
+  color: #a0a3c4;
   font-size: 0.903rem;
   line-height: 1.1613rem;
   font-weight: normal;
@@ -265,7 +283,7 @@
   line-height: 1.3548rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .App-card-info-subtitle {
@@ -295,7 +313,11 @@
 .MetaMask-btn {
   display: block;
   box-shadow: inset 0px 0px 10px 5px rgba(27, 30, 46, 0.2);
-  background: linear-gradient(90deg, rgba(20,23,38,0.9) 0%, rgba(25,30,47,0.9) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(20, 23, 38, 0.9) 0%,
+    rgba(25, 30, 47, 0.9) 100%
+  );
   height: 3.3rem;
   width: 17rem;
   border: 1px solid #23263b;
@@ -311,8 +333,12 @@
 }
 .WalletConnect-btn:hover,
 .MetaMask-btn:hover {
-  background: linear-gradient(90deg, rgba(20,23,38,1) 0%, rgba(25,30,47,1) 100%);
-  border-color: rgba(45,66,252,1);
+  background: linear-gradient(
+    90deg,
+    rgba(20, 23, 38, 1) 0%,
+    rgba(25, 30, 47, 1) 100%
+  );
+  border-color: rgba(45, 66, 252, 1);
 }
 
 .MetaMask-btn {
@@ -340,8 +366,8 @@ button.App-connect-wallet {
   font-weight: 500;
   padding: 9px 24px;
   height: 36px;
-  color: #17182C;
-  background: #03CFCD 0% 0% no-repeat padding-box;
+  color: #17182c;
+  background: #03cfcd 0% 0% no-repeat padding-box;
   border-radius: 4px;
 }
 
@@ -353,6 +379,16 @@ button.App-connect-wallet:hover {
   margin-right: 24px;
 }
 
+.App-header-user-address {
+  border: 1px solid #ffffff17;
+  height: 36px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  color: white;
+  position: relative;
+}
+
 .App-card-divider {
   height: 1px;
   background: #23263b;
@@ -360,7 +396,11 @@ button.App-connect-wallet:hover {
 }
 
 .App-box-solid {
-  background: linear-gradient(90deg, rgba(20,21,38,1) 0%, rgba(25,27,47,1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(20, 21, 38, 1) 0%,
+    rgba(25, 27, 47, 1) 100%
+  );
 }
 
 .Page {
@@ -413,7 +453,7 @@ button.App-connect-wallet:hover {
   font-size: 1.161rem;
   line-height: 1.484rem;
   letter-spacing: 0px;
-  color: #A0A3C4;
+  color: #a0a3c4;
   margin-top: 4px;
   max-width: 40rem;
 }
@@ -438,7 +478,7 @@ button.App-connect-wallet:hover {
   font-size: 2.2rem;
   font-weight: 500;
   margin-bottom: 0.5rem;
-  font-family: 'Relative Bold';
+  font-family: "Relative Bold";
 }
 
 .Page-description {
@@ -447,14 +487,16 @@ button.App-connect-wallet:hover {
   line-height: 1.4rem;
 }
 
-.Page-description span, .Page-description a {
+.Page-description span,
+.Page-description a {
   text-decoration: underline;
   cursor: pointer;
   display: inline-flex;
   color: inherit;
 }
 
-.Page-description span img, .Page-description a img {
+.Page-description span img,
+.Page-description a img {
   margin-left: 4px;
 }
 
@@ -489,7 +531,7 @@ button.App-connect-wallet:hover {
   line-height: 1.355rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
@@ -540,7 +582,8 @@ button.App-connect-wallet:hover {
   margin: 0.4rem;
 }
 
-.App-header a.App-header-link-main, .App-header .App-header-link-main {
+.App-header a.App-header-link-main,
+.App-header .App-header-link-main {
   font-size: 1.1rem;
   padding: 1rem;
   margin-left: -1rem;
@@ -578,7 +621,7 @@ button.App-connect-wallet:hover {
 .App-header-container-left a {
   padding: 18px 17px;
   display: block;
-  color: #A0A3C4;
+  color: #a0a3c4;
   font-size: 15px;
   line-height: 1.2rem;
   font-weight: normal;
@@ -590,7 +633,7 @@ button.App-connect-wallet:hover {
 
 .App-header-container-left a.disabled {
   cursor: not-allowed;
-  color: #FFFFFF61;
+  color: #ffffff61;
 }
 
 .Toastify {
@@ -629,7 +672,11 @@ button.App-connect-wallet:hover {
   top: 0;
   bottom: 0;
   pointer-events: none;
-  background: linear-gradient(90deg, rgba(45,66,252,0.05) 0%, rgba(8,8,10,0) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(45, 66, 252, 0.05) 0%,
+    rgba(8, 8, 10, 0) 100%
+  );
 }
 
 .App-background-side-2 {
@@ -640,7 +687,12 @@ button.App-connect-wallet:hover {
   top: 0;
   bottom: 0;
   pointer-events: none;
-  background: linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,216,240,0.01) 51%, rgba(0,216,240,0.03) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 216, 240, 0.01) 51%,
+    rgba(0, 216, 240, 0.03) 100%
+  );
 }
 
 .App-background {
@@ -651,7 +703,12 @@ button.App-connect-wallet:hover {
   top: -20%;
   bottom: -200%;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(80,10,245,0.05) 0%, rgba(80,10,245,0.02) 36%, rgba(8,8,10,0) 100%);
+  background: radial-gradient(
+    circle,
+    rgba(80, 10, 245, 0.05) 0%,
+    rgba(80, 10, 245, 0.02) 36%,
+    rgba(8, 8, 10, 0) 100%
+  );
 }
 
 .App-background-ball-1 {
@@ -662,7 +719,12 @@ button.App-connect-wallet:hover {
   top: -50%;
   bottom: -200%;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(102,56,217,0.05) 0%, rgba(56,33,105,0.02) 36%, rgba(8,8,10,0) 100%);
+  background: radial-gradient(
+    circle,
+    rgba(102, 56, 217, 0.05) 0%,
+    rgba(56, 33, 105, 0.02) 36%,
+    rgba(8, 8, 10, 0) 100%
+  );
 }
 
 .App-background-ball-2 {
@@ -673,7 +735,12 @@ button.App-connect-wallet:hover {
   top: -30%;
   bottom: -200%;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(7,149,250,0.05) 0%, rgba(7,149,250,0.02) 36%, rgba(8,8,10,0) 100%);
+  background: radial-gradient(
+    circle,
+    rgba(7, 149, 250, 0.05) 0%,
+    rgba(7, 149, 250, 0.02) 36%,
+    rgba(8, 8, 10, 0) 100%
+  );
 }
 
 .App-highlight {
@@ -719,44 +786,58 @@ button.App-connect-wallet:hover {
   padding: 1rem;
   border-radius: 3px;
   border: none;
-  font-size: 1rem;
+  font-size: 14px;
 }
 
-a.App-cta, button.App-cta {
+a.App-cta,
+button.App-cta {
   color: white;
   text-decoration: none;
-  background: linear-gradient(90deg, rgba(45,66,252,1) 0%, rgba(46,61,205,1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(45, 66, 252, 1) 0%,
+    rgba(46, 61, 205, 1) 100%
+  );
   /* box-shadow: 0 0 4px 6px rgba(45,66,252,0.15); */
 }
 
-a.App-cta:hover, button.App-cta:hover:enabled {
-  background: linear-gradient(90deg, rgba(58,78,252,1) 0%, rgba(51,68,222,1) 100%);
-  box-shadow: 0 0 4px 6px rgba(45,66,252,0.2);
+a.App-cta:hover,
+button.App-cta:hover:enabled {
+  background: linear-gradient(
+    90deg,
+    rgba(58, 78, 252, 1) 0%,
+    rgba(51, 68, 222, 1) 100%
+  );
+  box-shadow: 0 0 4px 6px rgba(45, 66, 252, 0.2);
 }
 
 .App-cta.small {
   padding: 0.6rem 0.7rem;
 }
 
-a.App-cta.transparent, button.App-cta.transparent {
-  box-shadow:  none;
+a.App-cta.transparent,
+button.App-cta.transparent {
+  box-shadow: none;
   background: none;
   color: rgba(255, 255, 255, 0.7);
   opacity: 1;
 }
 
-a.App-cta.transparent:hover, button.App-cta.transparent:hover:enabled {
+a.App-cta.transparent:hover,
+button.App-cta.transparent:hover:enabled {
   color: white;
   box-shadow: none;
   background: none;
 }
 
-button.App-cta.option, a.App-cta.option {
+button.App-cta.option,
+a.App-cta.option {
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
 }
 
-a.App-button-option, button.App-button-option {
+a.App-button-option,
+button.App-button-option {
   cursor: pointer;
   display: inline-block;
   padding: 0.4rem 0.7rem;
@@ -765,12 +846,17 @@ a.App-button-option, button.App-button-option {
   text-decoration: none;
   border: none;
   font-size: 1rem;
-  background: rgba(43,55,94,1);
+  background: rgba(43, 55, 94, 1);
 }
 
-a.App-button-option:hover, button.App-button-option:hover:enabled {
-  background: linear-gradient(90deg, rgba(58,78,252,1) 0%, rgba(51,68,222,1) 100%);
-  box-shadow: 0 0 4px 6px rgba(45,66,252,0.2);
+a.App-button-option:hover,
+button.App-button-option:hover:enabled {
+  background: linear-gradient(
+    90deg,
+    rgba(58, 78, 252, 1) 0%,
+    rgba(51, 68, 222, 1) 100%
+  );
+  box-shadow: 0 0 4px 6px rgba(45, 66, 252, 0.2);
 }
 
 button.App-button-option:disabled {
@@ -787,29 +873,22 @@ button.App-button-option:disabled {
   align-items: center;
 }
 
-a.App-cta.App-header-user-account {
-  margin-top: 0;
-  margin-right: 0.5rem;
-  font-size: 0.9rem;
-  padding-left: 0;
-}
-
 .App-header-user-settings {
-  display: inline-block;
-  vertical-align: middle;
+  display: inline-flex;
   cursor: pointer;
   border: none;
   border-radius: 1rem;
-  font-size: 0.9rem;
+  font-size: 1rem;
   background: none;
   color: white;
-  opacity: 0.7;
   padding: 0;
-  margin-top: 0.5rem;
-}
-
-.App-header-user-settings:hover {
-  opacity: 1;
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  border-radius: 4px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .App-settings-row {
@@ -911,7 +990,7 @@ a.App-social-link:hover {
 
 .App-input-container {
   border: 2px solid rgba(48, 31, 130, 0.8);
-  background: rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.1);
   display: grid;
   grid-template-columns: 1fr auto;
 }
@@ -937,16 +1016,35 @@ button.App-button {
 }
 
 .Toastify__toast--success {
-  background: linear-gradient(90deg, rgba(10,134,104,1) 0%, rgba(44,156,128,1) 44%, rgba(38,170,137,1) 100%);
-  backdrop-filter: blur(10px);
+  background: transparent linear-gradient(90deg, #18846c 0%, #26aa89 100%) 0% 0%
+    no-repeat padding-box;
   border: 1px solid #268270;
   color: white;
+  box-shadow: 0px 3px 6px #0000005c;
+  border-radius: 4px;
+}
+
+.Toastify__close-button {
+  align-self: center;
+  border-radius: 4px;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  transition: none;
+}
+.Toastify__close-button:hover {
+  background: #ffffff47 0% 0% no-repeat padding-box;
+}
+.Toastify__toast-body {
+  font: normal normal normal 14px/16px Relative;
 }
 
 @keyframes zoomIn {
   from {
     opacity: 0;
-    transform: scale3d(.3, .3, .3);
+    transform: scale3d(0.3, 0.3, 0.3);
   }
 
   50% {
@@ -965,7 +1063,7 @@ button.App-button {
 
   50% {
     opacity: 0;
-    transform: scale3d(.3, .3, .3);
+    transform: scale3d(0.3, 0.3, 0.3);
   }
 
   to {
@@ -982,7 +1080,11 @@ button.App-button {
 }
 
 .positive-background {
-  background: linear-gradient(45deg, rgba(10,115,75,1) 0%, rgba(12,154,100,1) 100%);
+  background: linear-gradient(
+    45deg,
+    rgba(10, 115, 75, 1) 0%,
+    rgba(12, 154, 100, 1) 100%
+  );
 }
 
 .negative {
@@ -990,10 +1092,15 @@ button.App-button {
 }
 
 .negative-background {
-  background: linear-gradient(45deg, rgba(115,30,43,1) 0%, rgba(174,43,63,1) 100%);
+  background: linear-gradient(
+    45deg,
+    rgba(115, 30, 43, 1) 0%,
+    rgba(174, 43, 63, 1) 100%
+  );
 }
 
-.App-warning, .App-warning a {
+.App-warning,
+.App-warning a {
   color: #f037b5;
 }
 
@@ -1002,11 +1109,19 @@ button.App-button {
 }
 
 .App-slider .rc-slider-rail {
-  background: linear-gradient(90deg, rgba(30,34,61,1) 0%, rgba(40,45,74,1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(30, 34, 61, 1) 0%,
+    rgba(40, 45, 74, 1) 100%
+  );
 }
 
 .App-slider .rc-slider-track {
-  background: linear-gradient(90deg, rgba(46,61,205,1) 0%, rgba(45,66,252,1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(46, 61, 205, 1) 0%,
+    rgba(45, 66, 252, 1) 100%
+  );
 }
 
 .App-slider .rc-slider-dot {
@@ -1014,7 +1129,7 @@ button.App-button {
   border-radius: 1px;
   width: 2px;
   margin-left: -1px;
-  background: rgba(40,45,74,1);
+  background: rgba(40, 45, 74, 1);
 }
 
 .App-slider .rc-slider-dot-active {
@@ -1023,19 +1138,21 @@ button.App-button {
 
 .App-slider .rc-slider-handle {
   background: #303652;
-  border: solid 2px rgba(45,66,252,1);
+  border: solid 2px rgba(45, 66, 252, 1);
 }
 
 .App-slider .rc-slider-handle:active {
-  box-shadow: 0 0 4px 6px rgba(45,66,252,0.2);
+  box-shadow: 0 0 4px 6px rgba(45, 66, 252, 0.2);
 }
 
-.App-slider .rc-slider-mark-text, .App-slider .rc-slider-mark-text-active {
+.App-slider .rc-slider-mark-text,
+.App-slider .rc-slider-mark-text-active {
   color: white;
   opacity: 0.5;
 }
 
-.App-slider .rc-slider-mark-text:hover, .App-slider .rc-slider-mark-text-active:hover {
+.App-slider .rc-slider-mark-text:hover,
+.App-slider .rc-slider-mark-text-active:hover {
   opacity: 1;
 }
 
@@ -1063,7 +1180,7 @@ button.App-button {
 
 .header-connect-btn:focus {
   background: #7a7fec;
-  border: 1px solid #3B43E3;
+  border: 1px solid #3b43e3;
   box-sizing: border-box;
   padding-left: 15px;
   padding-right: 15px;
@@ -1073,8 +1190,8 @@ button.App-button {
   background: #7a7fec;
 }
 
-.header-connect-btn.short-label {
-  display: none!important;
+.short-connect-btn {
+  display: none !important;
 }
 
 .selector-backdrop {
@@ -1088,12 +1205,15 @@ button.App-button {
 }
 
 @media (max-width: 1033px) {
-  .header-connect-btn.long-label {
-    display: none!important;
+  .long-connect-btn {
+    display: none !important;
+  }
+  .App-header-user-address {
+    padding: 0 0px;
   }
 
-  .header-connect-btn.short-label {
-    display: flex!important;
+  .short-connect-btn {
+    display: flex !important;
   }
 
   .App-header-user-link {
@@ -1159,7 +1279,9 @@ button.App-button {
     height: 13px;
     width: 100%;
     content: " ";
-    background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
+    background: transparent
+      linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat
+      padding-box;
     position: absolute;
     bottom: -13px;
     left: 0;
@@ -1244,10 +1366,6 @@ button.App-button {
     margin: 4px 5px;
   }
 
-  .App-header-user-account {
-    font-size: 0.8rem;
-  }
-
   .App-header.small {
     padding-left: 6px;
     padding-right: 6px;
@@ -1257,7 +1375,8 @@ button.App-button {
     padding-left: 1rem;
   }
 
-  .header-connect-btn {
+  .header-connect-btn,
+  .header-connect-btn:active {
     padding-left: 5px;
     padding-right: 5px;
   }
@@ -1268,8 +1387,8 @@ button.App-button {
   }
 
   .App-header .App-header-link-main {
-    padding: 0.1rem!important;
-    margin-left: 0rem!important;
+    padding: 0.1rem !important;
+    margin-left: 0rem !important;
   }
 }
 
@@ -1283,4 +1402,12 @@ button.App-button {
   max-height: 50vh;
 }
 
-* { -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+@supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
+  .App-header-drawer {
+    background: #0e0f1f;
+  }
+}
