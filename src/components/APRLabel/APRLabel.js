@@ -3,7 +3,6 @@ import React from 'react'
 import useSWR from 'swr'
 
 import {
-  ARBITRUM,
   PLACEHOLDER_ACCOUNT,
   getServerUrl,
   fetcher,
@@ -28,7 +27,7 @@ import { useGmxPrice } from "../../Api"
 import { getContract } from '../../Addresses'
 
 export default function APRLabel ({chainId, label}) {
-  let { library, active } = useWeb3React()
+  let { active } = useWeb3React()
 
   const rewardReaderAddress = getContract(chainId, "RewardReader")
   const readerAddress = getContract(chainId, "Reader")
@@ -107,7 +106,7 @@ export default function APRLabel ({chainId, label}) {
     fetcher: fetcher(undefined, ReaderV2, [vesterAddresses]),
   })
 
-  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? library : undefined }, active)
+  const { gmxPrice } = useGmxPrice(chainId, { }, active)
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
   const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
