@@ -1,7 +1,7 @@
 import "./AddressDropdown.css";
 import { Menu } from "@headlessui/react";
 import { helperToast, shortenAddress } from "../../Helpers";
-import { useCopyToClipboard } from "react-use";
+import { useCopyToClipboard, createBreakpoint } from "react-use";
 import externalLink from "../../img/ic_new_link_16.svg";
 import copy from "../../img/ic_copy_16.svg";
 import settings from "../../img/ic_settings_16.svg";
@@ -15,12 +15,14 @@ function AddressDropdown({
   disconnectAccountAndCloseSettings,
   openSettings
 }) {
+  const useBreakpoint = createBreakpoint({ XL: 1200, L: 992, M: 768, S: 576 });
+  const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
   return (
     <Menu>
       <Menu.Button as="div">
         <button className="App-cta small transparent address-btn">
-          <span>{shortenAddress(account, small ? 9 : 13)}</span>
+          <span>{shortenAddress(account, breakpoint === "S" ? 9 : 13)}</span>
           <FaChevronDown />
         </button>
       </Menu.Button>
