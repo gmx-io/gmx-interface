@@ -2313,7 +2313,8 @@ export const getInjectedHandler = activate => {
         );
         return;
       }
-      helperToast.error(e.toString());
+      const errString = e.message ?? e.toString();
+      helperToast.error(errString);
     });
   };
   return fn;
