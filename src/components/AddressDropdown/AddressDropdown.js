@@ -15,7 +15,7 @@ function AddressDropdown({
   disconnectAccountAndCloseSettings,
   openSettings
 }) {
-  const useBreakpoint = createBreakpoint({ XL: 1200, L: 992, M: 768, S: 576 });
+  const useBreakpoint = createBreakpoint({ M: 550, S: 400 });
   const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
   return (
