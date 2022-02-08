@@ -1382,6 +1382,29 @@ export function formatDate(time) {
   return formatDateFn(time * 1000, "dd MMM yyyy");
 }
 
+export function activateInjectedProvider(providerName) {
+  const { ethereum } = window;
+
+  if (!ethereum?.providers) {
+    return undefined;
+  }
+
+  let provider;
+  switch (providerName) {
+    case 'CoinBase':
+      provider = ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
+      break;
+    case 'MetaMask':
+    default:
+      provider = ethereum.providers.find(({ isMetaMask }) => isMetaMask);
+      break;
+  }
+
+  if (provider) {
+    ethereum.setSelectedProvider(provider);
+  }
+}
+
 export function getInjectedConnector() {
   return injectedConnector;
 }

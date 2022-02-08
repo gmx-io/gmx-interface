@@ -32,8 +32,9 @@ import {
   useLocalStorageSerializeKey,
   useInactiveListener,
   getExplorerUrl,
-  getWalletConnectHandler
-} from "./Helpers";
+  getWalletConnectHandler,
+  activateInjectedProvider,
+} from './Helpers';
 
 import Home from "./views/Home/Home";
 import Presale from "./views/Presale/Presale";
@@ -337,12 +338,25 @@ function FullApp() {
     setIsSettingsVisible(false);
   };
 
+
   const connectInjectedWallet = getInjectedHandler(activate);
   const activateWalletConnect = getWalletConnectHandler(
     activate,
     deactivate,
     setActivatingConnector
   );
+  const activateMetaMask = () => {
+    attemptActivateWallet('MetaMask');
+    connectInjectedWallet();
+  }
+  const activateCoinBase = () => {
+    attemptActivateWallet('CoinBase');
+    connectInjectedWallet();
+  }
+  const attemptActivateWallet = providerName => {
+    activateInjectedProvider(providerName);
+    connectInjectedWallet();
+  }
 
   const [walletModalVisible, setWalletModalVisible] = useState();
   const connectWallet = () => setWalletModalVisible(true);
@@ -708,11 +722,11 @@ function FullApp() {
         setIsVisible={setWalletModalVisible}
         label="Connect Wallet"
       >
-        <button className="Wallet-btn MetaMask-btn" onClick={connectInjectedWallet}>
+        <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
           <img src={metamaskImg} alt="MetaMask" />
           <div>MetaMask</div>
         </button>
-        <button className="Wallet-btn CoinbaseWallet-btn" onClick={connectInjectedWallet}>
+        <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
           <img src={coinbaseImg} alt="Coinbase Wallet"/>
           <div>Coinbase Wallet</div>
         </button>
