@@ -33,7 +33,7 @@ import {
   useInactiveListener,
   getExplorerUrl,
   getWalletConnectHandler,
-  activateInjectedProvider,
+  activateInjectedProvider, hasMetaMaskWalletExtension, hasCoinBaseWalletExtension,
 } from './Helpers';
 
 import Home from "./views/Home/Home";
@@ -347,12 +347,11 @@ function FullApp() {
   );
   const activateMetaMask = () => {
     attemptActivateWallet('MetaMask');
-    connectInjectedWallet();
   }
   const activateCoinBase = () => {
     attemptActivateWallet('CoinBase');
-    connectInjectedWallet();
   }
+
   const attemptActivateWallet = providerName => {
     activateInjectedProvider(providerName);
     connectInjectedWallet();
@@ -722,14 +721,14 @@ function FullApp() {
         setIsVisible={setWalletModalVisible}
         label="Connect Wallet"
       >
-        <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
+        {hasMetaMaskWalletExtension() && <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
           <img src={metamaskImg} alt="MetaMask" />
           <div>MetaMask</div>
-        </button>
-        <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
+        </button>}
+        {hasCoinBaseWalletExtension() && <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
           <img src={coinbaseImg} alt="Coinbase Wallet"/>
           <div>Coinbase Wallet</div>
-        </button>
+        </button>}
         <button className="Wallet-btn WalletConnect-btn" onClick={activateWalletConnect}>
           <img src={walletConnectImg} alt="WalletConnect" />
           <div>WalletConnect</div>

@@ -1382,6 +1382,25 @@ export function formatDate(time) {
   return formatDateFn(time * 1000, "dd MMM yyyy");
 }
 
+
+export function hasMetaMaskWalletExtension() {
+  const { ethereum } = window;
+
+  if (!ethereum?.providers && !ethereum?.isMetaMask) {
+    return false;
+  }
+  return window.ethereum.isMetaMask || ethereum.providers.find(({ isMetaMask }) => isMetaMask);
+}
+
+export function hasCoinBaseWalletExtension() {
+  const { ethereum } = window;
+
+  if (!ethereum?.providers && !ethereum?.isCoinbaseWallet) {
+    return false;
+  }
+  return window.ethereum.isCoinbaseWallet || ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
+}
+
 export function activateInjectedProvider(providerName) {
   const { ethereum } = window;
 
