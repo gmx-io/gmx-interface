@@ -16,9 +16,17 @@
   border-bottom-right-radius: 8px;
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
+}
+.BuyGMXGLP-panel .App-card:first-child {
+  margin-right: 20px;
 }
 
+.BuyGMXGLP-panel .App-card {
+  max-width: 37.677rem;
+  width: 100%;
+  height: fit-content;
+}
 .BuyGMXGLP-panel .App-card {
   max-width: 37.677rem;
   width: 100%;
@@ -134,25 +142,68 @@
 }
 
 .display-bg {
-  display: flex !important;
+  display: block;
 }
 
 .display-sm {
   display: none !important;
 }
 
+.BuyGMXGLP-panel .buy-card:first-child,
+.BuyGMXGLP-panel .section-title-block:first-child {
+  margin-right: 20px;
+}
+
+.card-title {
+  font-size: 2.2rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  font-family: "Relative Bold";
+}
+
 @media (max-width: 1241px) {
-  .display-bg {
+  /* .display-bg {
     display: none !important;
   }
 
   .display-sm {
     display: flex !important;
     margin-top: 2.5rem;
-  }
+  } */
 
-  .BuyGMXGLP-panel .App-card + .App-card {
+  /* .BuyGMXGLP-panel .App-card + .App-card {
     margin-top: 2rem;
+  } */
+}
+
+@media (max-width: 800px) {
+  .display-bg {
+    display: none !important;
+  }
+  .display-sm {
+    display: block !important;
+  }
+  .card-details {
+    display: flex;
+    flex-direction: column;
+  }
+  .section-title-block {
+    margin-bottom: 1rem !important;
+  }
+  .BuyGMXGLP-panel {
+    flex-direction: column;
+  }
+  .BuyGMXGLP-panel .App-card:first-child {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+  .BuyGMXGLP-panel .App-card {
+    max-width: 100%;
+  }
+  .BuyGMXGLP-panel .buy-card:first-child,
+  .BuyGMXGLP-panel .section-title-block:first-child {
+    margin-right: 0;
+    margin-bottom: 20px;
   }
 }
 

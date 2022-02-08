@@ -13,15 +13,15 @@ import Banxa from "../../img/ic_banxa.svg";
 import Binance from "../../img/ic_binance_logo.svg";
 import gmx64Icon from "../../img/ic_gmx_30.svg";
 import avax30Icon from "../../img/ic_avax_30.svg";
-import gmxAvax from "../../img/ic_gmx_avax.svg";
 import gmxArbitrum from "../../img/ic_gmx_arbitrum.svg";
 import ohmArbitrum from "../../img/ic_olympus_arbitrum.svg";
 
-import olympusIcon from "../../img/ic_olympus.svg";
-import buyTransferETHIcon from "../../img/buy_transfer_eth.svg";
-import buyTransferAVAXIcon from "../../img/ic_transfer_avax.svg";
-import buyGMXIcon from "../../img/buy_gmx.svg";
-import buyGMXBondIcon from "../../img/buy_gmx_bond.svg";
+// import gmxAvax from "../../img/ic_gmx_avax.svg";
+// import olympusIcon from "../../img/ic_olympus.svg";
+// import buyTransferETHIcon from "../../img/buy_transfer_eth.svg";
+// import buyTransferAVAXIcon from "../../img/ic_transfer_avax.svg";
+// import buyGMXIcon from "../../img/buy_gmx.svg";
+// import buyGMXBondIcon from "../../img/buy_gmx_bond.svg";
 
 import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 import avalanche16Icon from "../../img/ic_avalanche_16.svg";
@@ -50,9 +50,6 @@ export default function BuyGMX() {
       <div className="BuyGMXGLP-container default-container">
         {chainId === ARBITRUM && (
           <div className="section-title-block">
-            <div className="section-title-icon">
-              <img src={buyTransferETHIcon} alt="buyTransferETHIcon" />
-            </div>
             <div className="section-title-content">
               <div className="Page-title">Buy / Transfer ETH</div>
               <div className="Page-description">
@@ -135,11 +132,8 @@ export default function BuyGMX() {
         )}
         {chainId === AVALANCHE && (
           <div className="BuyGMXGLP-panel flex-column">
-            <div className="d-flex justify-space-between flex-wrap w-100">
+            <div className="d-flex justify-space-between w-100">
               <div className="section-title-block">
-                <div className="section-title-icon">
-                  <img src={buyTransferAVAXIcon} alt="buyTransferAVAXIcon" />
-                </div>
                 <div className="section-title-content">
                   <div className="Page-title">Transfer AVAX</div>
                   <div className="Page-description">
@@ -154,15 +148,12 @@ export default function BuyGMX() {
                 </div>
               </div>
               <div className="section-title-block display-bg">
-                <div className="section-title-icon">
-                  <img src={buyGMXIcon} alt="buyGMXIcon" />
-                </div>
                 <div className="section-title-content">
                   <div className="Page-title">Buy GMX</div>
                 </div>
               </div>
             </div>
-            <div className="d-flex justify-space-between flex-wrap">
+            <div className="d-flex justify-space-between card-details">
               <div className="App-card">
                 <div className="App-card-title">Transfer AVAX</div>
                 <div className="App-card-divider"></div>
@@ -197,7 +188,13 @@ export default function BuyGMX() {
                     >
                       Multiswap
                     </Button>
-
+                    <Button
+                      align="left"
+                      href="https://app.hop.exchange/"
+                      imgSrc={Hop}
+                    >
+                      Hop
+                    </Button>
                     <Button
                       align="left"
                       href="https://binance.com"
@@ -209,9 +206,6 @@ export default function BuyGMX() {
                 </div>
               </div>
               <div className="section-title-block display-sm">
-                <div className="section-title-icon">
-                  <img src={buyGMXIcon} alt="buyGMXIcon" />
-                </div>
                 <div className="section-title-content">
                   <div className="Page-title">Buy GMX</div>
                 </div>
@@ -223,11 +217,14 @@ export default function BuyGMX() {
                     click the button below:
                   </div>
                   <div className="direct-purchase-options">
-                    <Button
-                      imgSrc={gmxAvax}
-                      href="https://traderjoexyz.com/#/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661"
-                    >
-                      Purchase GMX
+                    <Button href="https://traderjoexyz.com/#/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661">
+                      <div className="GMX-btn-icon">
+                        <img src={gmx64Icon} alt="gmx64Icon" />
+                        <div className="GMX-btn-icon-network">
+                          <img src={avalanche16Icon} alt="avalanche16Icon" />
+                        </div>
+                      </div>
+                      <span className="btn-label">Purchase GMX</span>
                     </Button>
                   </div>
                 </div>
@@ -237,26 +234,11 @@ export default function BuyGMX() {
         )}
 
         {chainId === ARBITRUM && (
-          <div className="BuyGMXGLP-panel flex-column">
-            <div className="d-flex justify-space-between flex-wrap w-100">
-              <div className="section-title-block">
-                <div className="section-title-icon">
-                  <img src={buyGMXIcon} alt="buyGMXIcon" />
-                </div>
-                <div className="section-title-content">
-                  <div className="Page-title">Buy GMX</div>
-                </div>
+          <div className="BuyGMXGLP-panel">
+            <div className="buy-card">
+              <div className="section-title-content">
+                <div className="card-title">Buy GMX</div>
               </div>
-              <div className="section-title-block display-bg">
-                <div className="section-title-icon">
-                  <img src={buyGMXBondIcon} alt="buyGMXBondIcon" />
-                </div>
-                <div className="section-title-content">
-                  <div className="Page-title">Buy GMX Bonds</div>
-                </div>
-              </div>
-            </div>
-            <div className="d-flex justify-space-between flex-wrap w-100">
               <div className="App-card no-height">
                 <div className="App-card-content no-title">
                   <div className="BuyGMXGLP-description better-rates-description">
@@ -280,13 +262,10 @@ export default function BuyGMX() {
                   </div>
                 </div>
               </div>
-              <div className="section-title-block display-sm">
-                <div className="section-title-icon">
-                  <img src={buyGMXBondIcon} alt="buyGMXBondIcon" />
-                </div>
-                <div className="section-title-content">
-                  <div className="Page-title">Buy GMX Bonds</div>
-                </div>
+            </div>
+            <div className="buy-card">
+              <div className="section-title-content">
+                <div className="card-title">Buy GMX Bonds</div>
               </div>
               <div className="App-card no-height">
                 <div className="App-card-content no-title">
