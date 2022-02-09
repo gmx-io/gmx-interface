@@ -85,8 +85,19 @@ a.btn {
   background: var(--dark-blue-active);
 }
 
-/* @media (max-width: 900px) {
-  .btn {
+@media (max-width: 450px) {
+  .connect-wallet {
     padding: 5px 8px;
   }
-} */
+}
+@media (max-width: 350px) {
+  .connect-wallet .btn-image {
+    display: none;
+  }
+  .connect-wallet .btn-label {
+    margin-left: 0px;
+  }
+  .connect-wallet {
+    height: 36px;
+  }
+}
