@@ -533,8 +533,8 @@ export default function SwapBox(props) {
           const { feeBasisPoints } = getNextToAmount(
             chainId,
             fromAmount,
+            fromTokenAddress,
             collateralTokenAddress,
-            indexTokenAddress,
             infoTokens,
             undefined,
             undefined,
