@@ -721,14 +721,14 @@ function FullApp() {
         setIsVisible={setWalletModalVisible}
         label="Connect Wallet"
       >
-        {hasMetaMaskWalletExtension() && <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
+        <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
           <img src={metamaskImg} alt="MetaMask" />
           <div>MetaMask</div>
-        </button>}
-        {hasCoinBaseWalletExtension() && <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
+        </button>
+        <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
           <img src={coinbaseImg} alt="Coinbase Wallet"/>
           <div>Coinbase Wallet</div>
-        </button>}
+        </button>
         <button className="Wallet-btn WalletConnect-btn" onClick={activateWalletConnect}>
           <img src={walletConnectImg} alt="WalletConnect" />
           <div>WalletConnect</div>
