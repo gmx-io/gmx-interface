@@ -14,7 +14,7 @@ a.btn {
   align-items: center;
   border: none;
   color: white;
-  padding: 5px 14px;
+  padding: 0.5rem 1rem;
   font-size: 14px;
   border-radius: var(--border-radius-sm);
   cursor: pointer;
@@ -22,6 +22,7 @@ a.btn {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.btn-sm,
 .btn-lg,
 .btn-xl {
   padding: 0.5rem 1rem;
