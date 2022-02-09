@@ -32,7 +32,9 @@ import {
   useLocalStorageSerializeKey,
   useInactiveListener,
   getExplorerUrl,
-  getWalletConnectHandler
+  getWalletConnectHandler,
+  getProvider,
+  notifyBadRpcHelper,
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
@@ -301,10 +303,39 @@ function AppHeaderUser({
 }
 
 function FullApp() {
-  const { connector, library, deactivate, activate } = useWeb3React();
-
+  const { connector, library, deactivate, activate, account } = useWeb3React();
   const { chainId } = useChainId();
+
   const [activatingConnector, setActivatingConnector] = useState();
+  useEffect(() => {
+    async function testRpcIsConnected () {
+      const provider = getProvider(library, chainId)
+      const canTest = provider && provider.getBalance && account
+      const isArbitrum = chainId === ARBITRUM
+      if(isArbitrum && canTest) {
+        let isTestingNetwork = true
+        await Promise.race(
+          [
+            new Promise(async (resolve) => {
+              await provider.provider.getBalance(account)
+              isTestingNetwork = false
+            }),
+            new Promise((resolve) => {
+              setTimeout(() => {
+                if(isTestingNetwork) {
+                  notifyBadRpcHelper()
+                  resolve('Could not connect to RPC');
+                  isTestingNetwork = false
+                }
+              }, 5000)
+            })
+          ]
+        )
+      }
+    }
+    testRpcIsConnected()
+  })
+
   useEffect(() => {
     if (activatingConnector && activatingConnector === connector) {
       setActivatingConnector(undefined);
