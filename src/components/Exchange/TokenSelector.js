@@ -47,7 +47,6 @@ export default function TokenSelector(props) {
     // console.log(error)
   }
 
-
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)}>
       <Modal
@@ -59,9 +58,11 @@ export default function TokenSelector(props) {
           {tokens.map(token => {
             let tokenPopupImage;
             try {
-              tokenPopupImage = require("../../img/ic_" + token.symbol.toLowerCase() + "_40.svg");
+              tokenPopupImage = require("../../img/ic_" +
+                token.symbol.toLowerCase() +
+                "_40.svg");
             } catch (error) {
-              tokenPopupImage = require("../../img/ic_eth_40.svg")
+              tokenPopupImage = require("../../img/ic_eth_40.svg");
             }
             let info = infoTokens ? infoTokens[token.address] : {};
             let mintAmount;
@@ -85,11 +86,13 @@ export default function TokenSelector(props) {
                 key={token.address}
               >
                 <div className="Token-info">
-                  {showTokenImgInDropdown && <img
-                    src={tokenPopupImage?.default}
-                    alt={token.name}
-                    className="token-logo"
-                  />}
+                  {showTokenImgInDropdown && (
+                    <img
+                      src={tokenPopupImage?.default}
+                      alt={token.name}
+                      className="token-logo"
+                    />
+                  )}
                   <div className="Token-symbol">
                     <div className="Token-text">{token.symbol}</div>
                     <span className="text-accent">{token.name}</span>

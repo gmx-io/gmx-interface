@@ -12,7 +12,7 @@
 
 .Tab-title {
   letter-spacing: 0px;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 2.2rem;
   font-weight: 500;
   font-family: "Relative Bold";
@@ -25,14 +25,14 @@
 }
 
 .Tab-description span {
-  color: #F89191;
+  color: #f89191;
 }
-
 
 .GlpSwap-from-token .Modal {
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-end;
 }
+
 .GlpSwap-from-token .Modal .Modal-content {
   width: 27rem;
 }
@@ -40,22 +40,18 @@
 .GlpSwap-from-token .Modal-content {
   position: absolute;
   width: 25rem;
-  max-height: 80vh;
+  max-height: 100vh;
   overflow: hidden;
   border: none;
+  top: 0;
+  bottom: 0;
 }
 .GlpSwap-from-token .Modal-content .Modal-body {
-  overflow-y: auto;
-  max-height: calc(80vh - 5.5rem);
-  scroll-margin-right: 25rem;
-  overscroll-behavior: smooth;
-  scrollbar-width: thin;
   padding-right: 5px;
-  margin: 1rem calc(1rem - 5px) 1rem 1rem;
 }
 
-
-.GlpSwap-content .GlpSwap-stats-card, .GlpSwap-content .GlpSwap-box {
+.GlpSwap-content .GlpSwap-stats-card,
+.GlpSwap-content .GlpSwap-box {
   width: 100%;
 }
 
@@ -90,7 +86,7 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  border: 1px solid #1E1F37;
+  border: 1px solid #1e1f37;
   border-radius: 50%;
 }
 
@@ -102,7 +98,7 @@
   font-size: 1.032rem;
   line-height: 1.355rem;
   letter-spacing: 0px;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .GlpSwap-stats-mark .GlpSwap-stats-mark-subtitle {
@@ -115,7 +111,7 @@
 .GlpSwap-token-list {
   border: 1px solid #1e2136;
   border-radius: 4px;
-  background: #17182C;
+  background: #17182c;
 }
 
 .GlpSwap-token-list-content {
@@ -169,40 +165,47 @@
   display: none;
 }
 
-.token-table td, .token-table th {
+.token-table td,
+.token-table th {
   padding-top: 1rem;
   padding-bottom: 1rem;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
 }
 
-.token-table td:nth-child(2), .token-table th:nth-child(2) {
+.token-table td:nth-child(2),
+.token-table th:nth-child(2) {
   width: 110px;
 }
 
-.token-table td:nth-child(3), .token-table th:nth-child(3) {
+.token-table td:nth-child(3),
+.token-table th:nth-child(3) {
   width: 320px;
 }
 
-.token-table td:nth-child(4), .token-table th:nth-child(4) {
+.token-table td:nth-child(4),
+.token-table th:nth-child(4) {
   width: 200px;
 }
 
-.token-table td:nth-child(5), .token-table th:nth-child(5) {
+.token-table td:nth-child(5),
+.token-table th:nth-child(5) {
   width: 130px;
 }
 
 .token-table td {
   letter-spacing: 0.25px;
-  color: #FFFFFFDE;
+  color: #ffffffde;
 }
 
-.token-table th:first-child, .token-table td:first-child {
+.token-table th:first-child,
+.token-table td:first-child {
   padding-left: 1rem;
   width: 17rem;
 }
 
-.token-table th:last-child, .token-table td:last-child {
+.token-table th:last-child,
+.token-table td:last-child {
   padding-right: 1rem;
   text-align: right;
   width: 170px;
@@ -258,6 +261,27 @@
   }
 }
 
+@media (max-width: 1100px) {
+  .GlpSwap-from-token .Modal {
+    align-items: center;
+    justify-content: center;
+  }
+  .GlpSwap-from-token .Modal .Modal-content {
+    width: 27rem;
+    position: absolute;
+    max-height: 80vh;
+    overflow: hidden;
+    border: none;
+    top: auto;
+    bottom: auto;
+  }
+  .GlpSwap-from-token .Modal .Modal-content .Modal-body {
+    overflow-y: auto;
+    max-height: calc(80vh - 5.5rem);
+    padding-right: 5px;
+    margin: 1rem calc(1rem - 5px) 1rem 1rem;
+  }
+}
 @media (max-width: 510px) {
   .token-grid {
     display: grid;
