@@ -57,7 +57,7 @@
   display: inline-flex;
 }
 
-@media screen and (max-width: 450px) {
+@media screen and (max-width: 370px) {
   .user-address {
     display: none;
   }
