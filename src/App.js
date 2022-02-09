@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { SWRConfig } from "swr";
 
-import { motion, AnimatePresence } from "framer-motion"
-import Davatar from "@davatar/react"
+import { motion, AnimatePresence } from "framer-motion";
 
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
@@ -27,15 +26,13 @@ import {
   helperToast,
   getChainName,
   useChainId,
-  useENS,
   getAccountUrl,
   getInjectedHandler,
   useEagerConnect,
   useLocalStorageSerializeKey,
   useInactiveListener,
   getExplorerUrl,
-  getWalletConnectHandler,
-  shortenAddress
+  getWalletConnectHandler
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
@@ -83,7 +80,6 @@ import metamaskImg from "./img/metamask.png";
 import walletConnectImg from "./img/walletconnect-circle-blue.svg";
 import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
 import Button from "./components/Common/Button";
-import { BsThreeDots } from "react-icons/bs";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -203,10 +199,9 @@ function AppHeaderUser({
   showNetworkSelectorModal,
   disconnectAccountAndCloseSettings
 }) {
-  const { chainId } = useChainId()
-  const { active, account } = useWeb3React()
-  const { ensName } = useENS(account)
-  const showSelector = true
+  const { chainId } = useChainId();
+  const { active, account } = useWeb3React();
+  const showSelector = true;
   const networkOptions = [
     {
       label: "Arbitrum",
@@ -301,15 +296,6 @@ function AppHeaderUser({
           openSettings={openSettings}
         />
       </div>
-      <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="App-cta small transparent App-header-user-account">
-        <Davatar size={20} address={account} />
-        <div className="App-header-user-address">{ensName || shortenAddress(account, small ? 11 : 13)}</div>
-      </a>
-      {!small &&
-        <button className="App-header-user-settings" onClick={openSettings}>
-          <BsThreeDots />
-        </button>
-      }
     </div>
   );
 }
