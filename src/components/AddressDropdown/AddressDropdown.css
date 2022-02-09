@@ -8,12 +8,15 @@
   color: white !important;
 }
 
+.user-address {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
 .App-header-user-address:hover {
   background: #808aff14;
 }
-.address-btn span {
-  margin-right: 10px;
-}
+
 .menu-items {
   position: absolute;
   right: -2px;
@@ -52,4 +55,15 @@
 }
 .menu-item > a {
   display: inline-flex;
+}
+
+@media screen and (max-width: 450px) {
+  .user-address {
+    display: none;
+  }
+  .address-btn {
+    display: flex;
+    width: 60px;
+    justify-content: space-between;
+  }
 }

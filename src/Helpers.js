@@ -1349,6 +1349,9 @@ const RPC_PROVIDERS = {
 };
 
 export function shortenAddress(address, length) {
+  if (!length) {
+    return "";
+  }
   if (!address) {
     return address;
   }
@@ -1406,6 +1409,23 @@ export function useChainId() {
     chainId = DEFAULT_CHAIN_ID;
   }
   return { chainId };
+}
+
+export function useENS(address) {
+  const [ensName, setENSName] = useState();
+
+  useEffect(() => {
+    async function resolveENS() {
+      if (address) {
+        const provider = await ethers.providers.getDefaultProvider();
+        const name = await provider.lookupAddress(address.toLowerCase());
+        if (name) setENSName(name);
+      }
+    }
+    resolveENS();
+  }, [address]);
+
+  return { ensName };
 }
 
 export function clearWalletConnectData() {
