@@ -1948,8 +1948,13 @@ __metadata:
   linkType: hard
 
 "@ethersproject/providers@npm:^5.4.5":
+<<<<<<< HEAD
   version: 5.5.2
   resolution: "@ethersproject/providers@npm:5.5.2"
+=======
+  version: 5.5.3
+  resolution: "@ethersproject/providers@npm:5.5.3"
+>>>>>>> 693f697000901b7a86f8257fae0986e5c8e4d9f6
   dependencies:
     "@ethersproject/abstract-provider": ^5.5.0
     "@ethersproject/abstract-signer": ^5.5.0
@@ -1970,7 +1975,11 @@ __metadata:
     "@ethersproject/web": ^5.5.0
     bech32: 1.1.4
     ws: 7.4.6
+<<<<<<< HEAD
   checksum: f03b78017ffa39880508cfb4f811ef3b5983d222303af06b4ab47b6296a3fa67dcd058534e5e167302e4e3af41c4aa44f8c113a974b84fbaa65c62959c098558
+=======
+  checksum: abe27d424361b9499926c45f167c62e81eea611bb7b40d22d427ac1bc6501fff530932c3e0d1effd110be3a8a8f48aed9c48c7d3d478db60f6ed245d724e2dcc
+>>>>>>> 693f697000901b7a86f8257fae0986e5c8e4d9f6
   languageName: node
   linkType: hard
 
@@ -2176,6 +2185,16 @@ __metadata:
   dependencies:
     "@hapi/hoek": ^8.3.0
   checksum: 34278bc13b4023d6d0d7c913605a254b2d728dc6489cd465269eebaa7d8d2d81cda3f2157398dca87d3cb9e1a8aa8a1158ce2564c71a8e289b807c144e3b4c1e
+  languageName: node
+  linkType: hard
+
+"@headlessui/react@npm:dev":
+  version: 0.0.0-dev.0ce63d8
+  resolution: "@headlessui/react@npm:0.0.0-dev.0ce63d8"
+  peerDependencies:
+    react: ^16 || ^17 || ^18
+    react-dom: ^16 || ^17 || ^18
+  checksum: 77b433c173652c568c384c248eef6acbf54e795e52eecdc7ea27489694bfbbbc0cc83161a989942b30d1f9fefe7ad7f56877feca597714d34b6030a54caa9bd0
   languageName: node
   linkType: hard
 
@@ -5566,6 +5585,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"clsx@npm:^1.1.0":
+  version: 1.1.1
+  resolution: "clsx@npm:1.1.1"
+  checksum: ff052650329773b9b245177305fc4c4dc3129f7b2be84af4f58dc5defa99538c61d4207be7419405a5f8f3d92007c954f4daba5a7b74e563d5de71c28c830063
+  languageName: node
+  linkType: hard
+
 "co@npm:^4.6.0":
   version: 4.6.0
   resolution: "co@npm:4.6.0"
@@ -8363,6 +8389,7 @@ __metadata:
     "@davatar/react": ^1.8.1
     "@ethersproject/providers": ^5.0.23
     "@ethersproject/units": ^5.0.10
+    "@headlessui/react": dev
     "@testing-library/jest-dom": ^5.11.4
     "@testing-library/react": ^11.1.0
     "@testing-library/user-event": ^12.1.10
@@ -8387,6 +8414,7 @@ __metadata:
     react-router-dom: ^5.2.0
     react-scripts: 4.0.3
     react-select: ^5.2.1
+    react-tabs: ^3.2.3
     react-toastify: 6.0.9
     react-use: ^17.2.4
     recharts: ^2.0.9
@@ -13497,6 +13525,7 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< HEAD
 "prop-types@npm:^15.5.10":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
@@ -13509,6 +13538,9 @@ __metadata:
   linkType: hard
 
 "prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
+=======
+"prop-types@npm:^15.5.0, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
+>>>>>>> 693f697000901b7a86f8257fae0986e5c8e4d9f6
   version: 15.7.2
   resolution: "prop-types@npm:15.7.2"
   dependencies:
@@ -13516,6 +13548,17 @@ __metadata:
     object-assign: ^4.1.1
     react-is: ^16.8.1
   checksum: 5eef82fdda64252c7e75aa5c8cc28a24bbdece0f540adb60ce67c205cf978a5bd56b83e4f269f91c6e4dcfd80b36f2a2dec24d362e278913db2086ca9c6f9430
+  languageName: node
+  linkType: hard
+
+"prop-types@npm:^15.5.10":
+  version: 15.8.1
+  resolution: "prop-types@npm:15.8.1"
+  dependencies:
+    loose-envify: ^1.4.0
+    object-assign: ^4.1.1
+    react-is: ^16.13.1
+  checksum: c056d3f1c057cb7ff8344c645450e14f088a915d078dcda795041765047fa080d38e5d626560ccaac94a4e16e3aa15f3557c1a9a8d1174530955e992c675e459
   languageName: node
   linkType: hard
 
@@ -14107,6 +14150,18 @@ __metadata:
     react: ^15.0.0 || ^16.0.0 || ^17.0.0
     react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0
   checksum: 4eff3fb93067b538e046df2c56a2f99b25f4c3a2aafc1c59707d1a0150f7f0afab408afdc1a47ffa3556adbdb5c915d6035a9a28da878e68771dce7568cc6f69
+  languageName: node
+  linkType: hard
+
+"react-tabs@npm:^3.2.3":
+  version: 3.2.3
+  resolution: "react-tabs@npm:3.2.3"
+  dependencies:
+    clsx: ^1.1.0
+    prop-types: ^15.5.0
+  peerDependencies:
+    react: ^16.3.0 || ^17.0.0-0
+  checksum: 9fd8a577f2705f3c8049606b9a3dfd01a0d589fa2ac741b3f6b365e454bcb52b9dfb2088417ea369693202496a960ce0e2655d4c050b6a98cf98cbec9c2f77bd
   languageName: node
   linkType: hard
 

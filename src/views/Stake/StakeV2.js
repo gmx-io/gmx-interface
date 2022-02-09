@@ -34,6 +34,7 @@ import {
   USD_DECIMALS,
   BASIS_POINTS_DIVISOR,
   ARBITRUM,
+  PLACEHOLDER_ACCOUNT,
   getBalanceAndSupplyData,
   getDepositBalanceData,
   getVestingData,
@@ -323,7 +324,7 @@ function VesterDepositModal(props) {
 
   return (
     <div className="StakeModal">
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title} className="non-scrollable">
         <div className="Exchange-swap-section">
           <div className="Exchange-swap-section-top">
             <div className="muted">
@@ -703,7 +704,6 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
   const chainName = getChainName(chainId)
 
-  const isVestingEnabled = chainId === ARBITRUM
   const hasInsurance = chainId === ARBITRUM
 
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false)
@@ -801,19 +801,19 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     feeGlpTrackerAddress
   ]
 
-  const { data: walletBalances, mutate: updateWalletBalances } = useSWR(["StakeV2:walletBalances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero], {
+  const { data: walletBalances, mutate: updateWalletBalances } = useSWR([`StakeV2:walletBalances:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, ReaderV2, [walletTokens]),
   })
 
-  const { data: depositBalances, mutate: updateDepositBalances } = useSWR(["StakeV2:depositBalances", chainId, rewardReaderAddress, "getDepositBalances", account || AddressZero], {
+  const { data: depositBalances, mutate: updateDepositBalances } = useSWR([`StakeV2:depositBalances:${active}`, chainId, rewardReaderAddress, "getDepositBalances", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
   })
 
-  const { data: stakingInfo, mutate: updateStakingInfo } = useSWR(["StakeV2:stakingInfo", chainId, rewardReaderAddress, "getStakingInfo", account || AddressZero], {
+  const { data: stakingInfo, mutate: updateStakingInfo } = useSWR([`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
   })
 
-  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR(["StakeV2:stakedGmxSupply", chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
+  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR([`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
     fetcher: fetcher(library, Token),
   })
 
@@ -829,7 +829,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     fetcher: fetcher(library, ReaderV2, [excludedEsGmxAccounts]),
   })
 
-  const { data: vestingInfo, mutate: updateVestingInfo } = useSWR([`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || AddressZero], {
+  const { data: vestingInfo, mutate: updateVestingInfo } = useSWR([`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, ReaderV2, [vesterAddresses]),
   })
 
@@ -838,7 +838,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     gmxPriceFromArbitrum,
     gmxPriceFromAvalanche,
     mutate: updateGmxPrice
-  } = useGmxPrice(chainId)
+  } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? library : undefined }, active)
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
   const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
@@ -1000,12 +1000,22 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   }
 
   const showGmxVesterWithdrawModal = () => {
+    if (!vestingData || !vestingData.gmxVesterVestedAmount || vestingData.gmxVesterVestedAmount.eq(0)) {
+      helperToast.error("You have not deposited any tokens for vesting.")
+      return
+    }
+
     setIsVesterWithdrawModalVisible(true)
     setVesterWithdrawTitle("Withdraw from GMX Vault")
     setVesterWithdrawAddress(gmxVesterAddress)
   }
 
   const showGlpVesterWithdrawModal = () => {
+    if (!vestingData || !vestingData.glpVesterVestedAmount || vestingData.glpVesterVestedAmount.eq(0)) {
+      helperToast.error("You have not deposited any tokens for vesting.")
+      return
+    }
+
     setIsVesterWithdrawModalVisible(true)
     setVesterWithdrawTitle("Withdraw from GLP Vault")
     setVesterWithdrawAddress(glpVesterAddress)
@@ -1305,7 +1315,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-options">
-                <Link className="App-button-option App-card-option" to="/buy">Buy GMX</Link>
+                <Link className="App-button-option App-card-option" to="/buy_gmx">Buy GMX</Link>
                 {active && <button className="App-button-option App-card-option" onClick={() => showStakeGmxModal()}>Stake</button>}
                 {active && <button className="App-button-option App-card-option" onClick={() => showUnstakeGmxModal()}>Unstake</button>}
                 {active && <Link className="App-button-option App-card-option" to="/begin_account_transfer">Transfer Account</Link>}
@@ -1451,7 +1461,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               <div className="App-card-divider"></div>
               <div className="App-card-options">
                 <Link className="App-button-option App-card-option" to="/buy_glp">Buy GLP</Link>
-                <Link className="App-button-option App-card-option" to="/sell_glp">Sell GLP</Link>
+                <Link className="App-button-option App-card-option" to="/buy_glp#redeem">Sell GLP</Link>
                 {hasInsurance && <a className="App-button-option App-card-option" href="https://app.insurace.io/Insurance/Cart?id=124&referrer=545066382753150189457177837072918687520318754040" target="_blank" rel="noopener noreferrer">Purchase Insurance</a>}
               </div>
             </div>
@@ -1534,19 +1544,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         </div>
       </div>
 
-      {!isVestingEnabled && <div>
-        <div className="Page-title-section">
-          <div className="Page-title">Vest</div>
-          <div className="Page-description">
-            Vesting of esGMX tokens for Avalanche is not yet available. It will be available in a few weeks time.<br/>
-            More info about vesting: <a href="https://gmxio.gitbook.io/gmx/rewards#vesting" target="_blank" rel="noopener noreferrer">
-              https://gmxio.gitbook.io/gmx/rewards#vesting
-            </a>.
-          </div>
-        </div>
-      </div>}
-
-      {isVestingEnabled && <div>
+      <div>
         <div className="Page-title-section">
           <div className="Page-title">Vest</div>
           <div className="Page-description">
@@ -1665,7 +1663,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             </div>
           </div>
         </div>
-      </div>}
+      </div>
       <Footer />
     </div>
   )

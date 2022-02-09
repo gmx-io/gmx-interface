@@ -1,10 +1,11 @@
-import React from 'react'
-
-import GlpSwap from '../../components/Glp/GlpSwap'
+import { useEffect } from 'react'
 
 export default function SellGlp(props) {
-  return (<GlpSwap
-    {...props}
-    isBuying={false}
-  />)
+  useEffect(() => {
+    window.location.href = '/buy_glp#redeem';
+  }, [])
+  return (
+    <div className="Page page-layout">
+    </div>
+  )
 }
