@@ -11,9 +11,10 @@ import Multiswap from "../../img/ic_multiswap.svg";
 import Hop from "../../img/ic_hop.svg";
 import Banxa from "../../img/ic_banxa.svg";
 import Binance from "../../img/ic_binance_logo.svg";
-import gmx64Icon from "../../img/ic_gmx_30.svg";
+// import gmx64Icon from "../../img/ic_gmx_30.svg";
 import avax30Icon from "../../img/ic_avax_30.svg";
 import gmxArbitrum from "../../img/ic_gmx_arbitrum.svg";
+import gmxAvax from "../../img/ic_gmx_avax.svg";
 import ohmArbitrum from "../../img/ic_olympus_arbitrum.svg";
 
 // import gmxAvax from "../../img/ic_gmx_avax.svg";
@@ -131,100 +132,116 @@ export default function BuyGMX() {
           </div>
         )}
         {chainId === AVALANCHE && (
-          <div className="BuyGMXGLP-panel flex-column">
-            <div className="d-flex justify-space-between w-100">
-              <div className="section-title-block">
-                <div className="section-title-content">
-                  <div className="Page-title">Transfer AVAX</div>
-                  <div className="Page-description">
-                    Avax is needed on Avalanche to purchase GMX.
-                    <br />
-                    To purchase GMX on{" "}
-                    <span onClick={() => onNetworkSelect(ARBITRUM)}>
-                      Arbitrum <img src={arbitrum16Icon} alt="arbitrum16Icon" />
-                    </span>
-                    , please change your network.
-                  </div>
-                </div>
+          <div className="section-title-block">
+            <div className="section-title-content">
+              <div className="Page-title">Buy / Transfer AVAX</div>
+              <div className="Page-description">
+                Avax is needed on Avalanche to purchase GMX.
+                <br />
+                To purchase GMX on{" "}
+                <span onClick={() => onNetworkSelect(ARBITRUM)}>
+                  Arbitrum <img src={arbitrum16Icon} alt="arbitrum16Icon" />
+                </span>
+                , please change your network.
               </div>
-              <div className="section-title-block display-bg">
-                <div className="section-title-content">
-                  <div className="Page-title">Buy GMX</div>
+            </div>
+          </div>
+        )}
+        {chainId === AVALANCHE && (
+          <div className="BuyGMXGLP-panel">
+            <div className="App-card no-height">
+              <div className="App-card-title">Buy AVAX</div>
+              <div className="App-card-divider"></div>
+              <div className="App-card-content">
+                <div className="BuyGMXGLP-description">
+                  You can buy AVAX directly on{" "}
+                  <a
+                    href="https://www.avax.network/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Avalanche
+                  </a>{" "}
+                  using Banxa:
+                </div>
+                <div className="direct-purchase-options">
+                  <Button href="https://gmx.banxa.com" imgSrc={Banxa}>
+                    Banxa
+                  </Button>
                 </div>
               </div>
             </div>
-            <div className="d-flex justify-space-between card-details">
-              <div className="App-card">
-                <div className="App-card-title">Transfer AVAX</div>
-                <div className="App-card-divider"></div>
-                <div className="App-card-content">
-                  <div className="BuyGMXGLP-description">
-                    You can transfer AVAX to Avalanche using any of the below
-                    options. <br />
-                    <br />
-                    Using the Avalanche or Synapse bridges, you can also
-                    transfer any other supported cryptocurrency, and receive
-                    free AVAX to pay for the network's fees.
-                  </div>
-                  <div className="bridge-options">
-                    <Button
-                      align="left"
-                      href="https://bridge.avax.network/"
-                      imgSrc={avax30Icon}
-                    >
-                      Avalanche
-                    </Button>
-                    <Button
-                      align="left"
-                      href="https://synapseprotocol.com/"
-                      imgSrc={Synapse}
-                    >
-                      Synapse
-                    </Button>
-                    <Button
-                      align="left"
-                      href="https://app.multichain.org/"
-                      imgSrc={Multiswap}
-                    >
-                      Multiswap
-                    </Button>
-                    <Button
-                      align="left"
-                      href="https://app.hop.exchange/"
-                      imgSrc={Hop}
-                    >
-                      Hop
-                    </Button>
-                    <Button
-                      align="left"
-                      href="https://binance.com"
-                      imgSrc={Binance}
-                    >
-                      Binance
-                    </Button>
-                  </div>
+            <div className="App-card no-height">
+              <div className="App-card-title">Transfer AVAX</div>
+              <div className="App-card-divider"></div>
+              <div className="App-card-content">
+                <div className="BuyGMXGLP-description">
+                  You can transfer AVAX to Avalanche using any of the below
+                  options. <br />
+                  <br />
+                  Using the Avalanche or Synapse bridges, you can also transfer
+                  any other supported cryptocurrency, and receive free AVAX to
+                  pay for the network's fees.
+                </div>
+                <div className="bridge-options">
+                  <Button
+                    align="left"
+                    href="https://bridge.avax.network/"
+                    imgSrc={avax30Icon}
+                  >
+                    Avalanche
+                  </Button>
+                  <Button
+                    align="left"
+                    href="https://synapseprotocol.com/"
+                    imgSrc={Synapse}
+                  >
+                    Synapse
+                  </Button>
+                  <Button
+                    align="left"
+                    href="https://app.multichain.org/"
+                    imgSrc={Multiswap}
+                  >
+                    Multiswap
+                  </Button>
+                  <Button
+                    align="left"
+                    href="https://binance.com"
+                    imgSrc={Binance}
+                  >
+                    Binance
+                  </Button>
                 </div>
               </div>
-              <div className="section-title-block display-sm">
-                <div className="section-title-content">
-                  <div className="Page-title">Buy GMX</div>
-                </div>
+            </div>
+          </div>
+        )}
+        {chainId === AVALANCHE && (
+          <div className="BuyGMXGLP-panel">
+            <div className="buy-card">
+              <div className="section-title-content">
+                <div className="card-title">Buy GMX</div>
               </div>
-              <div className="App-card">
+              <div className="App-card no-height">
                 <div className="App-card-content no-title">
                   <div className="BuyGMXGLP-description better-rates-description">
-                    After you have AVAX, set your network to Avalanche then
-                    click the button below:
+                    After you have ETH, set your network to{" "}
+                    <a
+                      href="https://arbitrum.io/bridge-tutorial/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Arbitrum
+                    </a>{" "}
+                    then click the button below:
                   </div>
-                  <div className="direct-purchase-options">
-                    <Button href="https://traderjoexyz.com/#/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661">
-                      <div className="GMX-btn-icon">
-                        <img src={gmx64Icon} alt="gmx64Icon" />
-                        <div className="GMX-btn-icon-network">
-                          <img src={avalanche16Icon} alt="avalanche16Icon" />
-                        </div>
-                      </div>
-                      <span className="btn-label">Purchase GMX</span>
+                  <div className="buy-gmx">
+                    <Button
+                      imgSrc={gmxAvax}
+                      href="https://traderjoexyz.com/#/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661"
+                    >
+                      Purchase GMX
                     </Button>
                   </div>
                 </div>
