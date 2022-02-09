@@ -1,0 +1,92 @@
+a.btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.btn-center {
+  justify-content: center;
+}
+.btn-left {
+  justify-content: start;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  color: white;
+  padding: 5px 14px;
+  font-size: 14px;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.btn-lg,
+.btn-xl {
+  padding: 0.5rem 1rem;
+}
+.btn-sm .btn-label {
+  font-weight: normal;
+  font-size: 14px;
+  margin-left: 8px;
+  letter-spacing: 0;
+}
+
+.btn-lg .btn-label {
+  margin-left: 0.75rem;
+  font-size: 1.1875rem;
+  font-weight: normal;
+  line-height: 1.5rem;
+  letter-spacing: 0;
+}
+.btn-xl .btn-label {
+  margin-left: 0.75rem;
+  font-size: 1.1875rem;
+  font-weight: normal;
+  line-height: 1.5rem;
+  letter-spacing: 0;
+}
+
+.btn-sm .btn-image {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+.btn-lg .btn-image {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0 1px;
+}
+.btn-xl .btn-image {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 29px;
+  height: 29px;
+  padding: 0 2px;
+}
+
+.btn-primary {
+  background: transparent;
+  border: 1px solid var(--dark-blue-border);
+  border-radius: var(--border-radius-sm);
+}
+
+.btn-primary:hover {
+  background: var(--dark-blue-hover);
+}
+.btn-primary:active {
+  background: var(--dark-blue-active);
+}
+
+@media (max-width: 900px) {
+  .btn {
+    padding: 5px 8px;
+  }
+}
