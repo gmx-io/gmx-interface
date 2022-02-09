@@ -7,7 +7,7 @@ function Button({
   children,
   onClick,
   className,
-  size = "sm",
+  size = "lg",
   align = "center",
   ...rest
 }) {
@@ -47,6 +47,16 @@ function Button({
   }
   return (
     <button className={classNames} onClick={onClick} {...rest}>
+      {imgSrc && <img className="btn-image" src={imgSrc} alt={children} />}
+      <span className="btn-label">{children}</span>
+    </button>
+  );
+}
+
+export function ConnectWalletButton({ imgSrc, children, onClick, className }) {
+  let classNames = cx("btn btn-primary btn-sm", className);
+  return (
+    <button className={classNames} onClick={onClick}>
       {imgSrc && <img className="btn-image" src={imgSrc} alt={children} />}
       <span className="btn-label">{children}</span>
     </button>

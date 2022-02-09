@@ -14,27 +14,27 @@ a.btn {
   align-items: center;
   border: none;
   color: white;
-  padding: 0.5rem 1rem;
   font-size: 14px;
   border-radius: var(--border-radius-sm);
   cursor: pointer;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.btn-sm {
+  padding: 5px 14px;
+}
 
-.btn-sm,
 .btn-lg,
 .btn-xl {
   padding: 0.5rem 1rem;
 }
+
 .btn-sm .btn-label {
-  margin-left: 0.75rem;
-  font-size: 1.1875rem;
-  font-weight: normal;
-  line-height: 1.5rem;
+  font-weight: 400;
+  font-size: 14px;
+  margin-left: 8px;
   letter-spacing: 0;
 }
-
 .btn-lg .btn-label {
   margin-left: 0.75rem;
   font-size: 1.1875rem;
@@ -54,23 +54,22 @@ a.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 23px;
-  height: 23px;
+  width: 24px;
+  height: 24px;
 }
 .btn-lg .btn-image {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 25px;
-  height: 25px;
+  width: 23px;
+  height: 23px;
 }
 .btn-xl .btn-image {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 29px;
-  height: 29px;
-  padding: 0 2px;
+  width: 25px;
+  height: 25px;
 }
 
 .btn-primary {

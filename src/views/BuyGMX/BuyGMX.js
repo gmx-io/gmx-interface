@@ -245,7 +245,7 @@ export default function BuyGMX() {
                   <div className="buy-gmx">
                     <Button
                       imgSrc={gmxAvax}
-                      size="lg"
+                      size="xl"
                       href="https://traderjoexyz.com/#/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661"
                     >
                       Purchase GMX
@@ -278,7 +278,7 @@ export default function BuyGMX() {
                   </div>
                   <div className="buy-gmx">
                     <Button
-                      size="lg"
+                      size="xl"
                       imgSrc={gmxArbitrum}
                       href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a"
                     >
@@ -300,7 +300,7 @@ export default function BuyGMX() {
                   </div>
                   <div className="buy-gmx">
                     <Button
-                      size="lg"
+                      size="xl"
                       imgSrc={ohmArbitrum}
                       href="https://pro.olympusdao.finance/#/partners/GMX"
                     >
