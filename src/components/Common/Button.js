@@ -7,7 +7,7 @@ function Button({
   children,
   onClick,
   className,
-  size = "lg",
+  size = "sm",
   align = "center",
   ...rest
 }) {
