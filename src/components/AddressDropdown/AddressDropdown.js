@@ -1,26 +1,31 @@
 import "./AddressDropdown.css";
 import { Menu } from "@headlessui/react";
-import { helperToast, shortenAddress } from "../../Helpers";
+import { helperToast, shortenAddress, useENS } from "../../Helpers";
 import { useCopyToClipboard } from "react-use";
 import externalLink from "../../img/ic_new_link_16.svg";
 import copy from "../../img/ic_copy_16.svg";
 import settings from "../../img/ic_settings_16.svg";
 import disconnect from "../../img/ic_sign_out_16.svg";
 import { FaChevronDown } from "react-icons/fa";
+import Davatar from "@davatar/react";
 
 function AddressDropdown({
   account,
   small,
   accountUrl,
   disconnectAccountAndCloseSettings,
-  openSettings
+  openSettings,
 }) {
   const [, copyToClipboard] = useCopyToClipboard();
+  const { ensName } = useENS(account);
   return (
     <Menu>
       <Menu.Button as="div">
         <button className="App-cta small transparent address-btn">
-          <span>{shortenAddress(account, small ? 9 : 13)}</span>
+          <Davatar size={20} address={account} />
+          <span className="user-address">
+            {ensName || shortenAddress(account, small ? 9 : 13)}
+          </span>
           <FaChevronDown />
         </button>
       </Menu.Button>
