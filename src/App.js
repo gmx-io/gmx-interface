@@ -195,8 +195,6 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
 function AppHeaderUser({
   openSettings,
   small,
-  setActivatingConnector,
-  walletModalVisible,
   setWalletModalVisible,
   showNetworkSelectorModal,
   disconnectAccountAndCloseSettings
