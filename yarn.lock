@@ -1948,13 +1948,8 @@ __metadata:
   linkType: hard
 
 "@ethersproject/providers@npm:^5.4.5":
-<<<<<<< HEAD
-  version: 5.5.2
-  resolution: "@ethersproject/providers@npm:5.5.2"
-=======
   version: 5.5.3
   resolution: "@ethersproject/providers@npm:5.5.3"
->>>>>>> 693f697000901b7a86f8257fae0986e5c8e4d9f6
   dependencies:
     "@ethersproject/abstract-provider": ^5.5.0
     "@ethersproject/abstract-signer": ^5.5.0
@@ -1975,11 +1970,7 @@ __metadata:
     "@ethersproject/web": ^5.5.0
     bech32: 1.1.4
     ws: 7.4.6
-<<<<<<< HEAD
-  checksum: f03b78017ffa39880508cfb4f811ef3b5983d222303af06b4ab47b6296a3fa67dcd058534e5e167302e4e3af41c4aa44f8c113a974b84fbaa65c62959c098558
-=======
   checksum: abe27d424361b9499926c45f167c62e81eea611bb7b40d22d427ac1bc6501fff530932c3e0d1effd110be3a8a8f48aed9c48c7d3d478db60f6ed245d724e2dcc
->>>>>>> 693f697000901b7a86f8257fae0986e5c8e4d9f6
   languageName: node
   linkType: hard
 
@@ -13525,22 +13516,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-"prop-types@npm:^15.5.10":
-  version: 15.8.1
-  resolution: "prop-types@npm:15.8.1"
-  dependencies:
-    loose-envify: ^1.4.0
-    object-assign: ^4.1.1
-    react-is: ^16.13.1
-  checksum: c056d3f1c057cb7ff8344c645450e14f088a915d078dcda795041765047fa080d38e5d626560ccaac94a4e16e3aa15f3557c1a9a8d1174530955e992c675e459
-  languageName: node
-  linkType: hard
-
-"prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
-=======
 "prop-types@npm:^15.5.0, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2":
->>>>>>> 693f697000901b7a86f8257fae0986e5c8e4d9f6
   version: 15.7.2
   resolution: "prop-types@npm:15.7.2"
   dependencies:
