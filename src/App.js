@@ -346,9 +346,43 @@ function FullApp() {
     setActivatingConnector
   );
   const activateMetaMask = () => {
+    if ( !hasMetaMaskWalletExtension() ) {
+      helperToast.error(
+        <div>
+          MetaMask not yet installed.
+          <br />
+          <a
+            href="https://metamask.io"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Install MetaMask
+          </a>{" "}
+          to start using the app.
+        </div>
+      );
+      return false;
+    }
     attemptActivateWallet('MetaMask');
   }
   const activateCoinBase = () => {
+    if ( !hasCoinBaseWalletExtension() ) {
+      helperToast.error(
+        <div>
+          Coinbase Wallet not yet installed.
+          <br />
+          <a
+            href="https://www.coinbase.com/wallet"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Install Coinbase Wallet
+          </a>{" "}
+          to start using the app.
+        </div>
+      );
+      return false
+    }
     attemptActivateWallet('CoinBase');
   }
 
