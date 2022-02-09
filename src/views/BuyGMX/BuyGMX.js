@@ -83,7 +83,10 @@ export default function BuyGMX() {
                   using Banxa:
                 </div>
                 <div className="direct-purchase-options">
-                  <Button href="https://gmx.banxa.com" imgSrc={Banxa}>
+                  <Button
+                    href="https://gmx.banxa.com?coinType=ETH&fiatType=USD&fiatAmount=500&blockchain=arbitrum"
+                    imgSrc={Banxa}
+                  >
                     Banxa
                   </Button>
                 </div>
@@ -165,7 +168,10 @@ export default function BuyGMX() {
                   using Banxa:
                 </div>
                 <div className="direct-purchase-options">
-                  <Button href="https://gmx.banxa.com" imgSrc={Banxa}>
+                  <Button
+                    href="https://gmx.banxa.com?coinType=AVAX&fiatType=USD&fiatAmount=500&blockchain=avalanche"
+                    imgSrc={Banxa}
+                  >
                     Banxa
                   </Button>
                 </div>
