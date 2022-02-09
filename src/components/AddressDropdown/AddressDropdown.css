@@ -8,6 +8,10 @@
   color: white !important;
 }
 
+.user-address {
+  margin-left: 10px;
+}
+
 .App-header-user-address:hover {
   background: #808aff14;
 }

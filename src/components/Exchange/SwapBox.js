@@ -546,8 +546,8 @@ export default function SwapBox(props) {
           const { feeBasisPoints } = getNextToAmount(
             chainId,
             fromAmount,
+            fromTokenAddress,
             collateralTokenAddress,
-            indexTokenAddress,
             infoTokens,
             undefined,
             undefined,
@@ -2237,6 +2237,7 @@ export default function SwapBox(props) {
                   marks={leverageMarks}
                   handle={leverageSliderHandle}
                   onChange={value => setLeverageOption(value)}
+                  value={leverageOption}
                   defaultValue={leverageOption}
                 />
               </div>
