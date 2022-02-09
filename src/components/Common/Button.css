@@ -52,15 +52,15 @@ a.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 23px;
+  height: 23px;
 }
 .btn-lg .btn-image {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 23px;
+  height: 23px;
 }
 .btn-xl .btn-image {
   display: inline-flex;
