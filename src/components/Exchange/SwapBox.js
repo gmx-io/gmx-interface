@@ -2222,6 +2222,7 @@ export default function SwapBox(props) {
                   marks={leverageMarks}
                   handle={leverageSliderHandle}
                   onChange={value => setLeverageOption(value)}
+                  value={leverageOption}
                   defaultValue={leverageOption}
                 />
               </div>
