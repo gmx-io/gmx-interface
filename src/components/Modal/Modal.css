@@ -24,11 +24,16 @@
 .Modal-content {
   z-index: 20;
   position: relative;
-  padding: 1rem;
   max-width: 100%;
-  margin: 1rem;
   max-height: 90vh;
   overflow: auto;
+  background: var(--dark-blue);
+  border-radius: 4px;
+}
+
+.divider {
+  border-bottom: 1px solid #ffffff29;
+  margin-bottom: 1rem;
 }
 
 .Modal.non-scrollable .Modal-content {
@@ -36,15 +41,19 @@
 }
 
 .Modal-title-bar {
-  display: grid;
-  grid-template-columns: auto auto;
-  padding-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem;
+}
+.Modal-body {
+  margin: 1rem;
 }
 
 .Modal-title {
   text-align: left;
-  font-size: 0.9rem;
-  opacity: 0.7;
+  font-size: 1rem;
+  line-height: 1.5rem;
 }
 
 .Modal-close-button {

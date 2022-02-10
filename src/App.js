@@ -81,7 +81,7 @@ import metamaskImg from "./img/metamask.png";
 import coinbaseImg from './img/coinbaseWallet.png'
 import walletConnectImg from "./img/walletconnect-circle-blue.svg";
 import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
-import Button from "./components/Common/Button";
+import { ConnectWalletButton } from "./components/Common/Button";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -255,13 +255,12 @@ function AppHeaderUser({
             showModal={showNetworkSelectorModal}
           />
         )}
-        <Button
+        <ConnectWalletButton
           onClick={() => setWalletModalVisible(true)}
           imgSrc={connectWalletImg}
-          size="sm"
         >
           {small ? "Connect" : "Connect Wallet"}
-        </Button>
+        </ConnectWalletButton>
       </div>
     );
   }

@@ -43,13 +43,16 @@
 
 .Selector-option {
   cursor: pointer;
-  background: #ffffff0a 0% 0% no-repeat padding-box;
-  border: 1px solid #ffffff08;
+  background: var(--dark-blue);
+  border: 1px solid var(--dark-blue-border);
   border-radius: 4px;
   padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
   position: relative;
+}
+.Selector-option:hover {
+  background: var(--dark-blue-hover);
 }
 
 .Selector-option + .Selector-option {
@@ -121,10 +124,6 @@
   opacity: 1;
 }
 
-.Selector .Modal-title-bar {
-  padding-bottom: 1rem;
-}
-
 .Selector .Modal-content {
   width: 100%;
   max-width: 19.1rem;
@@ -139,7 +138,6 @@
   border-radius: 4px;
 }
 .react-select__option.arbitrum:hover {
-  background: #808aff14 !important;
   border: 1px solid #4275a8;
   border-radius: 4px;
   color: #eee;
@@ -151,7 +149,6 @@
   background: #818cef33 !important;
 }
 .react-select__option.avalanche:hover {
-  background: #808aff14 !important;
   border: 1px solid #e84142;
   border-radius: 4px;
   color: #eee;

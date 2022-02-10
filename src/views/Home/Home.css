@@ -268,15 +268,17 @@
 
 .Home-token-card-option-action {
   margin-top: 1.25rem;
+  display: flex;
+  justify-content: space-between;
 }
 
-.Home-token-card-option-action .buy {
+.Home-token-card-option-action > .buy a:first-child {
   margin-right: 1rem;
 }
 
-.Home-token-card-option-action .read-more {
+/* .Home-token-card-option-action .read-more {
   float: right;
-}
+} */
 
 .Home-latest-info-container {
   display: flex;
@@ -438,6 +440,32 @@
   transition: all 0.3s ease-in-out 0s;
 }
 
+@media (max-width: 1000px) {
+  .Home-token-card-option-action {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 1rem;
+  }
+  .Home-token-card-option-action a {
+    justify-content: center;
+    display: inline-block;
+  }
+  .Home-token-card-option-action a{
+    text-align: center;
+  }
+  .Home-token-card-option-action > .buy {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 1rem;
+  }
+  .Home-token-card-option-action > .read-more {
+    display: inline-block;
+  }
+  .Home-token-card-option-action > .buy a:first-child {
+    margin-right: 0;
+  }
+}
+
 @media (max-width: 750px) {
   .Home-token-card-options {
     display: grid;
@@ -508,7 +536,7 @@
     color: #A0A3C4;
     margin-bottom: 1.677rem;
   }
-
+/*
   .Home-token-card-option-action {
     display: flex;
     flex-wrap: wrap;
@@ -518,7 +546,7 @@
 
   .Home-token-card-option-action .default-btn {
     margin: 0.5rem;
-  }
+  } */
 }
 
 @media (max-width: 350px) {
