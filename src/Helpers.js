@@ -141,13 +141,13 @@ export function deserialize(data) {
 }
 
 export const helperToast = {
-  success: content => {
+  success: (content, options = {}) => {
     toast.dismiss();
-    toast.success(content);
+    toast.success(content, options);
   },
-  error: content => {
+  error: (content, options = {}) => {
     toast.dismiss();
-    toast.error(content);
+    toast.error(content, options);
   }
 };
 
