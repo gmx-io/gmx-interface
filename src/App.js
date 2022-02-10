@@ -80,6 +80,7 @@ import metamaskImg from "./img/metamask.png";
 import walletConnectImg from "./img/walletconnect-circle-blue.svg";
 import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
 import { ConnectWalletButton } from "./components/Common/Button";
+import EventPopup, { showEventPopup } from "./components/EventToast/EventToast";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -221,6 +222,7 @@ function AppHeaderUser({
     if (active) {
       setWalletModalVisible(false);
     }
+    showEventPopup();
   }, [active, setWalletModalVisible]);
 
   const onNetworkSelect = useCallback(
@@ -694,6 +696,7 @@ function FullApp() {
         transition={Zoom}
         position="bottom-right"
         autoClose={7000}
+        autoClose={false}
         hideProgressBar={true}
         newestOnTop={false}
         closeOnClick={false}

@@ -1,0 +1,41 @@
+.event-popup-container {
+  background: #333957;
+  color: white;
+  border: none;
+  position: relative;
+}
+.event-popup-container {
+  top: 64px;
+  right: 16px;
+}
+.event-popup-container .Toastify__close-button {
+  width: 20px;
+  height: 20px;
+}
+.event-popup-container .Toastify__close-button--success {
+  align-self: start;
+  border-radius: 4px;
+  transition: none;
+  padding: 0 4px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+.event-popup-container .Toastify__close-button--success:hover {
+  background: #ffffff47 0% 0% no-repeat padding-box;
+}
+.event-popup-container header {
+  display: flex;
+  align-items: center;
+}
+.event-popup-container header .announcement-icon {
+  width: 20px;
+  height: 20px;
+  color: white;
+}
+.event-popup-container header p {
+  margin: 0;
+  padding: 0.5rem 0;
+  margin-left: 0.75rem;
+  font-weight: bold;
+}
