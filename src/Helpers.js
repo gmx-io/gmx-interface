@@ -48,6 +48,11 @@ const CHAIN_NAMES_MAP = {
   [AVALANCHE]: "Avalanche"
 };
 
+const GAS_PRICE_ADJUSTMENT_MAP = {
+  [ARBITRUM]: "0",
+  [AVALANCHE]: "3000000000" // 3 gwei
+}
+
 const ARBITRUM_RPC_PROVIDERS = ["https://rpc.ankr.com/arbitrum"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
@@ -2028,6 +2033,15 @@ export function usePrevious(value) {
     ref.current = value;
   });
   return ref.current;
+}
+
+export async function getGasPrice(provider, chainId) {
+  if (!provider) { return }
+
+  const gasPrice = await provider.getGasPrice()
+  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0)
+
+  return gasPrice.add(premium)
 }
 
 export async function getGasLimit(
