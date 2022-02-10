@@ -42,8 +42,10 @@ export default function TokenCard() {
           <div className="Home-token-card-option-title">GMX is the utility and governance token, and also accrues 30% of the platform's generated fees.</div>
           <div className="Home-token-card-option-apr">Arbitrum APR: <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />, Avalanche APR: <APRLabel chainId={AVALANCHE} label="gmxAprTotal" key="AVALANCHE" /></div>
           <div className="Home-token-card-option-action">
-            <Link to="/buy_gmx" className="default-btn buy" onClick={() => changeNetwork(ARBITRUM)}>Buy on Arbitrum</Link>
-            <Link to="/buy_gmx" className="default-btn buy" onClick={() => changeNetwork(AVALANCHE)}>Buy on Avalanche</Link>
+           <div className='buy'>
+              <Link to="/buy_gmx" className="default-btn" onClick={() => changeNetwork(ARBITRUM)}>Buy on Arbitrum</Link>
+              <Link to="/buy_gmx" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>Buy on Avalanche</Link>
+           </div>
             <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noreferrer" className="default-btn read-more">Read more</a>
           </div>
         </div>
@@ -56,8 +58,10 @@ export default function TokenCard() {
           <div className="Home-token-card-option-title">GLP is the platform's liquidity provider token. Accrues 70% of its generated fees.</div>
           <div className="Home-token-card-option-apr">Arbitrum APR: <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />, Avalanche APR: <APRLabel chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" /></div>
           <div className="Home-token-card-option-action">
-            <Link to="/buy_glp" className="default-btn buy" onClick={() => changeNetwork(ARBITRUM)}>Buy on Arbitrum</Link>
-            <Link to="/buy_glp" className="default-btn buy" onClick={() => changeNetwork(AVALANCHE)}>Buy on Avalanche</Link>
+            <div className="buy">
+              <Link to="/buy_glp" className="default-btn" onClick={() => changeNetwork(ARBITRUM)}>Buy on Arbitrum</Link>
+              <Link to="/buy_glp" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>Buy on Avalanche</Link>
+            </div>
             <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noreferrer" className="default-btn read-more">Read more</a>
           </div>
         </div>
