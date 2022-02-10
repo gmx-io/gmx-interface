@@ -25,7 +25,7 @@ import { getWhitelistedTokens, isValidToken } from "./data/Tokens";
 const { AddressZero } = ethers.constants;
 
 // use a random placeholder account instead of the zero address as the zero address might have tokens
-export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address
+export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
 
 export const MAINNET = 56;
 export const AVALANCHE = 43114;
@@ -1349,17 +1349,20 @@ const RPC_PROVIDERS = {
 };
 
 export function shortenAddress(address, length) {
+  if (!length) {
+    return "";
+  }
   if (!address) {
     return address;
   }
   if (address.length < 10) {
     return address;
   }
-  let side = Math.round((length - 3) / 2);
+  let left = Math.floor((length - 3) / 2) + 1;
   return (
-    address.substring(0, side) +
+    address.substring(0, left) +
     "..." +
-    address.substring(address.length - side, address.length)
+    address.substring(address.length - (length - (left + 3)), address.length)
   );
 }
 
