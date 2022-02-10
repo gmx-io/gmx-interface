@@ -25,7 +25,7 @@ import { getWhitelistedTokens, isValidToken } from "./data/Tokens";
 const { AddressZero } = ethers.constants;
 
 // use a random placeholder account instead of the zero address as the zero address might have tokens
-export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address
+export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
 
 export const MAINNET = 56;
 export const AVALANCHE = 43114;
@@ -47,6 +47,11 @@ const CHAIN_NAMES_MAP = {
   [ARBITRUM]: "Arbitrum",
   [AVALANCHE]: "Avalanche"
 };
+
+const GAS_PRICE_ADJUSTMENT_MAP = {
+  [ARBITRUM]: "0",
+  [AVALANCHE]: "3000000000" // 3 gwei
+}
 
 const ARBITRUM_RPC_PROVIDERS = ["https://rpc.ankr.com/arbitrum"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
@@ -1349,17 +1354,20 @@ const RPC_PROVIDERS = {
 };
 
 export function shortenAddress(address, length) {
+  if (!length) {
+    return "";
+  }
   if (!address) {
     return address;
   }
   if (address.length < 10) {
     return address;
   }
-  let side = Math.round((length - 3) / 2);
+  let left = Math.floor((length - 3) / 2) + 1;
   return (
-    address.substring(0, side) +
+    address.substring(0, left) +
     "..." +
-    address.substring(address.length - side, address.length)
+    address.substring(address.length - (length - (left + 3)), address.length)
   );
 }
 
@@ -2067,6 +2075,15 @@ export function usePrevious(value) {
     ref.current = value;
   });
   return ref.current;
+}
+
+export async function getGasPrice(provider, chainId) {
+  if (!provider) { return }
+
+  const gasPrice = await provider.getGasPrice()
+  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0)
+
+  return gasPrice.add(premium)
 }
 
 export async function getGasLimit(

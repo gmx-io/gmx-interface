@@ -189,6 +189,19 @@ export default function SwapBox(props) {
   const isLong = swapOption === LONG;
   const isShort = swapOption === SHORT;
   const isSwap = swapOption === SWAP;
+
+  function getTokenLabel(){
+    switch(true){
+      case isLong:
+        return "Long";
+      case isShort:
+        return "Short";
+      case isSwap:
+        return "Receive";
+      default:
+        return ""
+    }
+  }
   const [leverageOption, setLeverageOption] = useLocalStorageSerializeKey(
     [chainId, "Exchange-swap-leverage-option"],
     "2"
@@ -541,6 +554,7 @@ export default function SwapBox(props) {
             usdgSupply,
             totalTokenWeights
           );
+
           let fromUsdMinAfterFee = fromUsdMin;
           if (feeBasisPoints) {
             fromUsdMinAfterFee = fromUsdMin
@@ -548,23 +562,21 @@ export default function SwapBox(props) {
               .div(BASIS_POINTS_DIVISOR);
           }
 
-          const baseToUsd = fromUsdMinAfterFee
-            .mul(leverageMultiplier)
-            .div(BASIS_POINTS_DIVISOR);
-          fromUsdMinAfterFee = fromUsdMinAfterFee.sub(
-            baseToUsd.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
-          );
-          const nextToUsd = fromUsdMinAfterFee
-            .mul(leverageMultiplier)
-            .div(BASIS_POINTS_DIVISOR);
+          const toNumerator = fromUsdMinAfterFee.mul(leverageMultiplier).mul(BASIS_POINTS_DIVISOR)
+          const toDenominator = bigNumberify(MARGIN_FEE_BASIS_POINTS).mul(leverageMultiplier).add(bigNumberify(BASIS_POINTS_DIVISOR).mul(BASIS_POINTS_DIVISOR))
+
+          const nextToUsd = toNumerator.div(toDenominator)
+
           const nextToAmount = nextToUsd
             .mul(expandDecimals(1, toToken.decimals))
             .div(toTokenPriceUsd);
+
           const nextToValue = formatAmountFree(
             nextToAmount,
             toToken.decimals,
             toToken.decimals
           );
+
           setToValue(nextToValue);
         }
         return;
@@ -585,9 +597,11 @@ export default function SwapBox(props) {
         const leverageMultiplier = parseInt(
           leverageOption * BASIS_POINTS_DIVISOR
         );
+
         const baseFromAmountUsd = toUsdMax
           .mul(BASIS_POINTS_DIVISOR)
           .div(leverageMultiplier);
+
         let fees = toUsdMax
           .mul(MARGIN_FEE_BASIS_POINTS)
           .div(BASIS_POINTS_DIVISOR);
@@ -595,14 +609,15 @@ export default function SwapBox(props) {
         const { feeBasisPoints } = getNextToAmount(
           chainId,
           fromAmount,
+          fromTokenAddress,
           collateralTokenAddress,
-          indexTokenAddress,
           infoTokens,
           undefined,
           undefined,
           usdgSupply,
           totalTokenWeights
         );
+
         if (feeBasisPoints) {
           const swapFees = baseFromAmountUsd
             .mul(feeBasisPoints)
@@ -611,14 +626,17 @@ export default function SwapBox(props) {
         }
 
         const nextFromUsd = baseFromAmountUsd.add(fees);
+
         const nextFromAmount = nextFromUsd
           .mul(expandDecimals(1, fromToken.decimals))
           .div(fromTokenInfo.minPrice);
+
         const nextFromValue = formatAmountFree(
           nextFromAmount,
           fromToken.decimals,
           fromToken.decimals
         );
+
         setFromValue(nextFromValue);
       }
     };
@@ -1964,13 +1982,14 @@ export default function SwapBox(props) {
                 </div>
                 <div>
                   <TokenSelector
-                    label="From"
+                    label="Pay"
                     chainId={chainId}
                     tokenAddress={fromTokenAddress}
                     onSelectToken={onSelectFromToken}
                     tokens={fromTokens}
                     infoTokens={infoTokens}
                     showMintingCap={false}
+                    showTokenImgInDropdown={true}
                   />
                 </div>
               </div>
@@ -2016,12 +2035,13 @@ export default function SwapBox(props) {
                 </div>
                 <div>
                   <TokenSelector
-                    label="To"
+                    label={getTokenLabel()}
                     chainId={chainId}
                     tokenAddress={toTokenAddress}
                     onSelectToken={onSelectToToken}
                     tokens={toTokens}
                     infoTokens={infoTokens}
+                    showTokenImgInDropdown={true}
                   />
                 </div>
               </div>
@@ -2237,6 +2257,7 @@ export default function SwapBox(props) {
                     tokenAddress={shortCollateralAddress}
                     onSelectToken={onSelectShortCollateralAddress}
                     tokens={stableTokens}
+                    showTokenImgInDropdown={true}
                   />
                 </div>
               </div>
