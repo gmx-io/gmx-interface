@@ -23,4 +23,9 @@
   border-radius: 2rem;
   user-select: none;
   background: linear-gradient(90deg, rgba(45,66,252,1) 0%, rgba(46,61,205,1) 100%);
+  cursor: pointer;
+  opacity: 0.85;
+}
+.AppOrder-ball:hover {
+  opacity: 1;
 }

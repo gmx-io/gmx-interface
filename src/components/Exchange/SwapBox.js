@@ -189,6 +189,19 @@ export default function SwapBox(props) {
   const isLong = swapOption === LONG;
   const isShort = swapOption === SHORT;
   const isSwap = swapOption === SWAP;
+
+  function getTokenLabel(){
+    switch(true){
+      case isLong:
+        return "Long";
+      case isShort:
+        return "Short";
+      case isSwap:
+        return "Receive";
+      default:
+        return ""
+    }
+  }
   const [leverageOption, setLeverageOption] = useLocalStorageSerializeKey(
     [chainId, "Exchange-swap-leverage-option"],
     "2"
@@ -1964,13 +1977,14 @@ export default function SwapBox(props) {
                 </div>
                 <div>
                   <TokenSelector
-                    label="From"
+                    label="Pay"
                     chainId={chainId}
                     tokenAddress={fromTokenAddress}
                     onSelectToken={onSelectFromToken}
                     tokens={fromTokens}
                     infoTokens={infoTokens}
                     showMintingCap={false}
+                    showTokenImgInDropdown={true}
                   />
                 </div>
               </div>
@@ -2016,12 +2030,13 @@ export default function SwapBox(props) {
                 </div>
                 <div>
                   <TokenSelector
-                    label="To"
+                    label={getTokenLabel()}
                     chainId={chainId}
                     tokenAddress={toTokenAddress}
                     onSelectToken={onSelectToToken}
                     tokens={toTokens}
                     infoTokens={infoTokens}
+                    showTokenImgInDropdown={true}
                   />
                 </div>
               </div>
@@ -2237,6 +2252,7 @@ export default function SwapBox(props) {
                     tokenAddress={shortCollateralAddress}
                     onSelectToken={onSelectShortCollateralAddress}
                     tokens={stableTokens}
+                    showTokenImgInDropdown={true}
                   />
                 </div>
               </div>

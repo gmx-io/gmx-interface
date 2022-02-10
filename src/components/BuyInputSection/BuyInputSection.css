@@ -14,11 +14,14 @@
   align-items: center;
   border-radius: 4px;
   /* padding: 0.5rem 0; */
-  color: #FFFFFF;
+  color: #ffffff;
   min-width: 3rem;
   font-size: 1.25rem;
   line-height: 1.625rem;
   justify-content: flex-end;
+}
+.buy-input .TokenSelector-box:hover {
+  color: #7885ff;
 }
 
 .buy-input .Exchange-swap-input-container {

@@ -11,19 +11,10 @@ import Multiswap from "../../img/ic_multiswap.svg";
 import Hop from "../../img/ic_hop.svg";
 import Banxa from "../../img/ic_banxa.svg";
 import Binance from "../../img/ic_binance_logo.svg";
-// import gmx64Icon from "../../img/ic_gmx_30.svg";
 import avax30Icon from "../../img/ic_avax_30.svg";
 import gmxArbitrum from "../../img/ic_gmx_arbitrum.svg";
 import gmxAvax from "../../img/ic_gmx_avax.svg";
 import ohmArbitrum from "../../img/ic_olympus_arbitrum.svg";
-
-// import gmxAvax from "../../img/ic_gmx_avax.svg";
-// import olympusIcon from "../../img/ic_olympus.svg";
-// import buyTransferETHIcon from "../../img/buy_transfer_eth.svg";
-// import buyTransferAVAXIcon from "../../img/ic_transfer_avax.svg";
-// import buyGMXIcon from "../../img/buy_gmx.svg";
-// import buyGMXBondIcon from "../../img/buy_gmx_bond.svg";
-
 import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 import avalanche16Icon from "../../img/ic_avalanche_16.svg";
 import Button from "../../components/Common/Button";
@@ -242,10 +233,10 @@ export default function BuyGMX() {
                     </a>{" "}
                     then click the button below:
                   </div>
-                  <div className="buy-gmx">
+                  <div className="direct-purchase-options">
                     <Button
-                      imgSrc={gmxAvax}
                       size="xl"
+                      imgSrc={gmxAvax}
                       href="https://traderjoexyz.com/#/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661"
                     >
                       Purchase GMX
