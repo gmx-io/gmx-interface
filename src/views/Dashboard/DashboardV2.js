@@ -30,7 +30,8 @@ import {
   ARBITRUM,
   AVALANCHE,
   getTotalVolumeSum,
-  GLPPOOLCOLORS
+  GLPPOOLCOLORS,
+  adjustForDecimals
 } from '../../Helpers'
 import { useGmxPrice, useStakedGmxSupply, useGmxPriceFromAvalanche } from '../../Api'
 
@@ -290,6 +291,11 @@ export default function DashboardV2() {
   const { data: arbitrumGmxSupply } = useSWR([arbitrumGmxSupplyUrl], {
     fetcher: (...args) => fetch(...args).then(res => res.text())
   })
+  // GMX in Arbitrum Liquidity
+  let UniswapGmxEthPool = getContract(ARBITRUM, "UniswapGmxEthPool")
+  const { data: gmxInArbitrumLiquidity } = useSWR([`StakeV2:gmxInArbitrumLiquidity:${active}`, ARBITRUM, arbitrumGmxAddress, "balanceOf", UniswapGmxEthPool], {
+    fetcher: fetcher(undefined, Token),
+  })
 
   // AVALANCHE
   const avalancheGmxAddress = getContract(AVALANCHE, "GMX")
@@ -298,6 +304,20 @@ export default function DashboardV2() {
   const { data: avalancheStakedGmxSupply } = useSWR([`StakeV2:stakedGmxSupply:${active}`, AVALANCHE, avalancheGmxAddress, "balanceOf", avalancheStakedGmxTrackerAddress], {
     fetcher: fetcher(undefined, Token),
   })
+  // GMX in AVAX Liquidity
+  let TraderJoeGmxAvaxPool = getContract(AVALANCHE, "TraderJoeGmxAvaxPool")
+  const { data: gmxInAvaxLiquidity } = useSWR([`StakeV2:gmxInAvaxLiquidity:${active}`, AVALANCHE, avalancheGmxAddress, "balanceOf", TraderJoeGmxAvaxPool], {
+    fetcher: fetcher(undefined, Token),
+  })
+  // Total GMX in Liquidity
+  let totalGmxInLiquidity = bigNumberify(0)
+  if(gmxInAvaxLiquidity){
+    totalGmxInLiquidity = totalGmxInLiquidity.add(gmxInAvaxLiquidity)
+  }
+
+  if(gmxInArbitrumLiquidity){
+    totalGmxInLiquidity = totalGmxInLiquidity.add(gmxInArbitrumLiquidity)
+  }
 
   const avalancheGmxSupplyUrl = getServerUrl(AVALANCHE, "/gmx_supply")
   const { data: avalancheGmxSupply } = useSWR([avalancheGmxSupplyUrl], {
@@ -321,7 +341,7 @@ export default function DashboardV2() {
   if (avalancheStakedGmxSupply) {
     totalStakedGmxSupply = totalStakedGmxSupply.add(bigNumberify(avalancheStakedGmxSupply))
   }
-  
+
   let stakedPercent = bigNumberify(0)
 
   if (!totalGmxSupply.isZero()) {
@@ -582,7 +602,7 @@ export default function DashboardV2() {
             <div className="App-card stats-block stats-block--glp">
               <div className="stats-piechart">
                 {
-                  glpPool.length > 0 && 
+                  glpPool.length > 0 &&
                     <PieChart width={240} height={240}>
                       <Pie
                         data={glpPool}
