@@ -9,6 +9,7 @@ import selectorDropdowns from "../../img/ic_selector_dropdowns.svg";
 
 import Select, { components } from "react-select";
 import { find } from "lodash";
+import { useLockBodyScroll } from "react-use";
 
 function getDotColor(network) {
   switch (network) {
@@ -39,14 +40,7 @@ export default function NetworkSelector(props) {
     setSelectedLabel(label);
   }, [label, networkChanged]);
 
-  useEffect(() => {
-    if (isModalVisible) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => (document.body.style.overflow = "unset");
-  }, [isModalVisible]);
+  useLockBodyScroll(isModalVisible);
 
   function renderOption(option) {
     var optionIcon = require("../../img/" + option.icon);

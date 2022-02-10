@@ -16,7 +16,6 @@
   border-bottom-right-radius: 8px;
   display: flex;
   justify-content: space-between;
-  /* flex-wrap: wrap; */
 }
 .BuyGMXGLP-panel .App-card:first-child {
   margin-right: 20px;
@@ -78,14 +77,6 @@
   flex: 1 1 auto;
   margin: 2rem 0;
 }
-
-/* .alternative-bridges a:hover {
-  background: #ffffff14;
-}
-
-.alternative-bridges a:focus {
-  background: #ffffff1f;
-} */
 
 .GMX-btn {
   display: flex;
@@ -159,21 +150,6 @@
   font-weight: 500;
   margin-bottom: 1rem;
   font-family: "Relative Bold";
-}
-
-@media (max-width: 1241px) {
-  /* .display-bg {
-    display: none !important;
-  }
-
-  .display-sm {
-    display: flex !important;
-    margin-top: 2.5rem;
-  } */
-
-  /* .BuyGMXGLP-panel .App-card + .App-card {
-    margin-top: 2rem;
-  } */
 }
 
 @media (max-width: 800px) {
