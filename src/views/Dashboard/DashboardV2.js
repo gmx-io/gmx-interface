@@ -30,10 +30,9 @@ import {
   ARBITRUM,
   AVALANCHE,
   getTotalVolumeSum,
-  GLPPOOLCOLORS,
-  adjustForDecimals
+  GLPPOOLCOLORS
 } from '../../Helpers'
-import { useGmxPrice, useStakedGmxSupply, useGmxPriceFromAvalanche } from '../../Api'
+import { useGmxPrice, useStakedGmxSupply } from '../../Api'
 
 import { getContract } from '../../Addresses'
 
@@ -46,8 +45,16 @@ import Footer from "../../Footer"
 
 import "./DashboardV2.css"
 
+import gmx40Icon from '../../img/ic_gmx_40.svg'
+import glp40Icon from '../../img/ic_glp_40.svg'
+import avalanche16Icon from '../../img/ic_avalanche_16.svg'
+import arbitrum16Icon from '../../img/ic_arbitrum_16.svg'
 import arbitrum24Icon from '../../img/ic_arbitrum_24.svg'
 import avalanche24Icon from '../../img/ic_avalanche_24.svg'
+
+import arbitrumHover16Icon from '../../img/ic_arbitrum_hover_16.svg'
+import coingeckoHover16Icon from '../../img/ic_coingecko_hover_16.svg'
+import metamaskHover16Icon from '../../img/ic_metamask_hover_16.svg'
 
 const { AddressZero } = ethers.constants
 
@@ -254,21 +261,21 @@ export default function DashboardV2() {
     return (
       <Tooltip handle={weightText} position="right-bottom" renderContent={() => {
         return <>
-          Current Weight: {formatAmount(currentWeightBps, 2, 2, false)}%<br/>
-          Target Weight: {formatAmount(targetWeightBps, 2, 2, false)}%<br/>
-          <br/>
+          Current Weight: {formatAmount(currentWeightBps, 2, 2, false)}%<br />
+          Target Weight: {formatAmount(targetWeightBps, 2, 2, false)}%<br />
+          <br />
           {currentWeightBps.lt(targetWeightBps) && <div>
-            {tokenInfo.symbol} is below its target weight.<br/>
-            <br/>
+            {tokenInfo.symbol} is below its target weight.<br />
+            <br />
             Get lower fees to <Link to="/buy_glp" target="_blank" rel="noopener noreferrer">buy GLP</Link> with {tokenInfo.symbol},&nbsp;
             and to <Link to="/trade" target="_blank" rel="noopener noreferrer">swap</Link> {tokenInfo.symbol} for other tokens.
           </div>}
           {currentWeightBps.gt(targetWeightBps) && <div>
-            {tokenInfo.symbol} is above its target weight.<br/>
-            <br/>
+            {tokenInfo.symbol} is above its target weight.<br />
+            <br />
             Get lower fees to <Link to="/trade" target="_blank" rel="noopener noreferrer">swap</Link> tokens for {tokenInfo.symbol}.
           </div>}
-          <br/>
+          <br />
           <div>
             <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">More Info</a>
           </div>
@@ -311,11 +318,11 @@ export default function DashboardV2() {
   })
   // Total GMX in Liquidity
   let totalGmxInLiquidity = bigNumberify(0)
-  if(gmxInAvaxLiquidity){
+  if (gmxInAvaxLiquidity) {
     totalGmxInLiquidity = totalGmxInLiquidity.add(gmxInAvaxLiquidity)
   }
 
-  if(gmxInArbitrumLiquidity){
+  if (gmxInArbitrumLiquidity) {
     totalGmxInLiquidity = totalGmxInLiquidity.add(gmxInArbitrumLiquidity)
   }
 
@@ -342,34 +349,33 @@ export default function DashboardV2() {
     totalStakedGmxSupply = totalStakedGmxSupply.add(bigNumberify(avalancheStakedGmxSupply))
   }
 
-  let stakedPercent = bigNumberify(0)
+  let stakedPercent = 0
 
   if (!totalGmxSupply.isZero()) {
-    stakedPercent = totalStakedGmxSupply.mul(100).div(totalGmxSupply)
+    stakedPercent = totalStakedGmxSupply.mul(100).div(totalGmxSupply).toNumber()
   }
 
-  let totalGMX = bigNumberify(0)
+  let liquidityPercent = 0
 
-  if (gmxPriceFromArbitrum) {
-    totalGMX = totalGMX.add(gmxPriceFromArbitrum)
+  if (!totalGmxSupply.isZero()) {
+    liquidityPercent = totalGmxInLiquidity.mul(100).div(totalGmxSupply).toNumber()
   }
 
-  if (gmxPriceFromAvalanche) {
-    totalGMX = totalGMX.add(gmxPriceFromAvalanche)
-  }
+  let notStakedPercent = 100 - stakedPercent - liquidityPercent
 
-  console.log("totalGMX", formatAmount(totalGMX, USD_DECIMALS, 2, true))
-
-  let liquidityPercent = bigNumberify(0)
-
-  if (!totalGmxSupply.isZero() && gmxPrice) {
-    console.log("gmxPrice", gmxPrice)
-    const totalGmxSupplyUSD = totalGmxSupply.mul(gmxPrice).div(expandDecimals(1, GMX_DECIMALS))
-    console.log("totalGmxSupplyUSD", totalGmxSupplyUSD)
-    liquidityPercent = totalGMX.mul(100).div(totalGmxSupplyUSD)
-    console.log(formatAmount(totalGmxSupplyUSD, USD_DECIMALS, 0, true))
-    console.log('liquidityPercent', formatAmount(liquidityPercent, 0, 2, true))
-  }
+  let gmxDistributionData = [{
+    name: "staked",
+    value: stakedPercent,
+    color: "#2D42FC"
+  }, {
+    name: "in liquidity",
+    value: liquidityPercent,
+    color: "#02CECD"
+  }, {
+    name: "not staked",
+    value: notStakedPercent,
+    color: "#FB4AFD"
+  }]
 
   useEffect(() => {
     if (active) {
@@ -393,12 +399,12 @@ export default function DashboardV2() {
         library.removeAllListeners('block')
       }
     }
-  }, [active, library,  chainId,
-      updatePositionStats, updateHourlyVolume, updateTotalVolume,
-      updateTotalSupplies, updateAums, updateVaultTokenInfo,
-      updateFees, updateGmxPrice, updateStakedGmxSupply,
-      updateTotalTokenWeights, updateGmxSupply
-    ])
+  }, [active, library, chainId,
+    updatePositionStats, updateHourlyVolume, updateTotalVolume,
+    updateTotalSupplies, updateAums, updateVaultTokenInfo,
+    updateFees, updateGmxPrice, updateStakedGmxSupply,
+    updateTotalTokenWeights, updateGmxSupply
+  ])
 
   // const statsUrl = `https://stats.gmx.io/${chainId === AVALANCHE ? "avalanche" : ""}`
   const totalStatsStartDate = chainId === AVALANCHE ? "06 Jan 2022" : "01 Sep 2021"
@@ -416,7 +422,7 @@ export default function DashboardV2() {
     return null
   })
 
-  glpPool = glpPool.filter(function( element ) {
+  glpPool = glpPool.filter(function (element) {
     return element !== null;
   });
 
@@ -430,7 +436,7 @@ export default function DashboardV2() {
             Stats (Avalanche <img src={avalanche24Icon} alt="avalanche24Icon" />, Arbitrum <img src={arbitrum24Icon} alt="arbitrum24Icon" />)
           </div>
           <div className="Page-description">
-            Total Stats start from {totalStatsStartDate}. For detailed stats: <a href="https://stats.gmx.io"  target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
+            Total Stats start from {totalStatsStartDate}. For detailed stats: <a href="https://stats.gmx.io" target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
           </div>
         </div>
       </div>
@@ -524,7 +530,29 @@ export default function DashboardV2() {
         <div className="DashboardV2-token-cards">
           <div className="stats-wrapper stats-wrapper--gmx">
             <div className="App-card">
-              <div className="App-card-title">GMX</div>
+              <div className="App-card-title">
+                <div className="App-card-title-mark">
+                  <div className="App-card-title-mark-icon">
+                    <img src={gmx40Icon} alt="gmx40Icon" />
+                    {chainId === ARBITRUM ? <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" /> : <img src={avalanche16Icon} alt="avalanche16Icon" className="selected-network-symbol" />}
+                  </div>
+                  <div className="App-card-title-mark-info">
+                    <div className="App-card-title-mark-title">GMX</div>
+                    <div className="App-card-title-mark-subtitle">GMX</div>
+                  </div>
+                </div>
+                <div className="Available-network-group">
+                  <div className="Available-network">
+                    <img src={metamaskHover16Icon} alt="metamaskHover16Icon" />
+                  </div>
+                  <div className="Available-network">
+                    <img src={coingeckoHover16Icon} alt="coingeckoHover16Icon" />
+                  </div>
+                  <div className="Available-network">
+                    <img src={arbitrumHover16Icon} alt="arbitrumHover16Icon" />
+                  </div>
+                </div>
+              </div>
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="App-card-row">
@@ -537,7 +565,7 @@ export default function DashboardV2() {
                         className="nowrap"
                         handle={'$' + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
                         renderContent={() => <>
-                          Price on Arbitrum: ${formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}<br/>
+                          Price on Arbitrum: ${formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}<br />
                           Price on Avalanche: ${formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
                         </>}
                       />
@@ -565,12 +593,59 @@ export default function DashboardV2() {
               </div>
             </div>
             <div className="App-card stats-block stats-block--gmx">
-
+              <div className="stats-piechart">
+                {
+                  gmxDistributionData.length > 0 &&
+                  <PieChart width={260} height={260}>
+                    <Pie
+                      data={gmxDistributionData}
+                      cx={120}
+                      cy={120}
+                      innerRadius={100}
+                      outerRadius={110}
+                      fill="#8884d8"
+                      dataKey="value"
+                      startAngle={90}
+                      endAngle={-270}
+                    >
+                      {gmxDistributionData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} style={{
+                          filter: `drop-shadow(0px 0px 10px ${entry.color}`
+                        }} stroke="0" />
+                      ))}
+                    </Pie>
+                    <text x={'50%'} y={'50%'} fill="white" textAnchor="middle" dominantBaseline="middle">
+                      GMX Distribution
+                    </text>
+                  </PieChart>
+                }
+              </div>
+              <div className="stats-labels">
+                {
+                  gmxDistributionData.map((item, index) => {
+                    return <div className="stats-label" key={index}>
+                      <div className="stats-label-color" style={{ backgroundColor: item.color }}></div>
+                      {item.value}% {item.name}
+                    </div>
+                  })
+                }
+              </div>
             </div>
           </div>
           <div className="stats-wrapper stats-wrapper--glp">
             <div className="App-card">
-              <div className="App-card-title">GLP ({chainName})</div>
+              <div className="App-card-title">
+                <div className="App-card-title-mark">
+                  <div className="App-card-title-mark-icon">
+                    <img src={glp40Icon} alt="glp40Icon" />
+                    {chainId === ARBITRUM ? <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" /> : <img src={avalanche16Icon} alt="avalanche16Icon" className="selected-network-symbol" />}
+                  </div>
+                  <div className="App-card-title-mark-info">
+                    <div className="App-card-title-mark-title">GLP</div>
+                    <div className="App-card-title-mark-subtitle">GLP</div>
+                  </div>
+                </div>
+              </div>
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="App-card-row">
@@ -603,31 +678,35 @@ export default function DashboardV2() {
               <div className="stats-piechart">
                 {
                   glpPool.length > 0 &&
-                    <PieChart width={240} height={240}>
-                      <Pie
-                        data={glpPool}
-                        cx={120}
-                        cy={120}
-                        innerRadius={100}
-                        outerRadius={110}
-                        fill="#8884d8"
-                        dataKey="value"
-                        startAngle={90}
-                        endAngle={-270}
-                      >
-                        {glpPool.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={GLPPOOLCOLORS[entry.name]} />
-                        ))}
-                        <text>GLP Pool</text>
-                      </Pie>
-                    </PieChart>
+                  <PieChart width={260} height={260}>
+                    <Pie
+                      data={glpPool}
+                      cx={120}
+                      cy={120}
+                      innerRadius={100}
+                      outerRadius={110}
+                      fill="#8884d8"
+                      dataKey="value"
+                      startAngle={90}
+                      endAngle={-270}
+                    >
+                      {glpPool.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={GLPPOOLCOLORS[entry.name]} style={{
+                          filter: `drop-shadow(0px 0px 10px ${GLPPOOLCOLORS[entry.name]}`
+                        }} stroke="0" />
+                      ))}
+                    </Pie>
+                    <text x={'50%'} y={'50%'} fill="white" textAnchor="middle" dominantBaseline="middle">
+                      GLP Pool
+                    </text>
+                  </PieChart>
                 }
               </div>
               <div className="stats-labels">
                 {
                   glpPool.map((pool, index) => {
                     return <div className="stats-label" key={index}>
-                      <div className="stats-label-color" style={{backgroundColor: GLPPOOLCOLORS[pool.name]}}></div>
+                      <div className="stats-label-color" style={{ backgroundColor: GLPPOOLCOLORS[pool.name] }}></div>
                       {pool.value}% {pool.fullname}
                     </div>
                   })
@@ -635,7 +714,9 @@ export default function DashboardV2() {
               </div>
             </div>
           </div>
-          <div className="token-table-wrapper">
+          <div className="token-table-wrapper App-card">
+            <div className="App-card-title">GLP Index Composition</div>
+            <div className="App-card-divider"></div>
             <table className="token-table">
               <thead>
                 <tr>
@@ -669,13 +750,26 @@ export default function DashboardV2() {
                   return (
                     <tr key={token.symbol}>
                       <td>
-                        <div className="App-card-title-info">
-                          <div className="App-card-title-info-icon">
-                            <img src={tokenImage && tokenImage.default} alt={token.symbol} width="40px" />
+                        <div className="token-symbol-wrapper">
+                          <div className="App-card-title-info">
+                            <div className="App-card-title-info-icon">
+                              <img src={tokenImage && tokenImage.default} alt={token.symbol} width="40px" />
+                            </div>
+                            <div className="App-card-title-info-text">
+                              <div className="App-card-info-title">{token.name}</div>
+                              <div className="App-card-info-subtitle">{token.symbol}</div>
+                            </div>
                           </div>
-                          <div className="App-card-title-info-text">
-                            <div className="App-card-info-title">{token.name}</div>
-                            <div className="App-card-info-subtitle">{token.symbol}</div>
+                          <div className="Available-network-group">
+                            <div className="Available-network">
+                              <img src={metamaskHover16Icon} alt="metamaskHover16Icon" />
+                            </div>
+                            <div className="Available-network">
+                              <img src={coingeckoHover16Icon} alt="coingeckoHover16Icon" />
+                            </div>
+                            <div className="Available-network">
+                              <img src={arbitrumHover16Icon} alt="arbitrumHover16Icon" />
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -688,8 +782,8 @@ export default function DashboardV2() {
                           position="right-bottom"
                           renderContent={() => {
                             return <>
-                              Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol}<br/>
-                              <br/>
+                              Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol}<br />
+                              <br />
                               Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
                             </>
                           }}
@@ -738,8 +832,8 @@ export default function DashboardV2() {
                           position="right-bottom"
                           renderContent={() => {
                             return <>
-                              Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol}<br/>
-                              <br/>
+                              Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol}<br />
+                              <br />
                               Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
                             </>
                           }}
