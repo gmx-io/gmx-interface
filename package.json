@@ -4,8 +4,10 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.3.19",
+    "@davatar/react": "^1.8.1",
     "@ethersproject/providers": "^5.0.23",
     "@ethersproject/units": "^5.0.10",
+    "@headlessui/react": "dev",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",

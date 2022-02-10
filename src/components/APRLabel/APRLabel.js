@@ -3,8 +3,7 @@ import React from 'react'
 import useSWR from 'swr'
 
 import {
-  ARBITRUM,
-  AVALANCHE,
+  PLACEHOLDER_ACCOUNT,
   getServerUrl,
   fetcher,
   formatKeyAmount,
@@ -27,16 +26,8 @@ import { useGmxPrice } from "../../Api"
 
 import { getContract } from '../../Addresses'
 
-import { ethers } from 'ethers'
-const { AddressZero } = ethers.constants
-
 export default function APRLabel ({chainId, label}) {
-  let { library, active } = useWeb3React()
-
-  if (chainId === AVALANCHE) {
-    active = false
-  }
-  const account = undefined
+  let { active } = useWeb3React()
 
   const rewardReaderAddress = getContract(chainId, "RewardReader")
   const readerAddress = getContract(chainId, "Reader")
@@ -87,35 +78,35 @@ export default function APRLabel ({chainId, label}) {
     feeGlpTrackerAddress
   ]
 
-  const { data: walletBalances } = useSWR([`StakeV2:walletBalances:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero], {
-    fetcher: fetcher(library, ReaderV2, [walletTokens]),
+  const { data: walletBalances } = useSWR([`StakeV2:walletBalances:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", PLACEHOLDER_ACCOUNT], {
+    fetcher: fetcher(undefined, ReaderV2, [walletTokens]),
   })
 
-  const { data: depositBalances } = useSWR([`StakeV2:depositBalances:${active}`, chainId, rewardReaderAddress, "getDepositBalances", account || AddressZero], {
-    fetcher: fetcher(library, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
+  const { data: depositBalances } = useSWR([`StakeV2:depositBalances:${active}`, chainId, rewardReaderAddress, "getDepositBalances", PLACEHOLDER_ACCOUNT], {
+    fetcher: fetcher(undefined, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
   })
 
-  const { data: stakingInfo } = useSWR([`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || AddressZero], {
-    fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
+  const { data: stakingInfo } = useSWR([`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", PLACEHOLDER_ACCOUNT], {
+    fetcher: fetcher(undefined, RewardReader, [rewardTrackersForStakingInfo]),
   })
 
   const { data: stakedGmxSupply } = useSWR([`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
-    fetcher: fetcher(library, Token),
+    fetcher: fetcher(undefined, Token),
   })
 
   const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: fetcher(library, GlpManager),
+    fetcher: fetcher(undefined, GlpManager),
   })
 
   const { data: nativeTokenPrice } = useSWR([`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress], {
-    fetcher: fetcher(library, Vault),
+    fetcher: fetcher(undefined, Vault),
   })
 
-  const { data: vestingInfo } = useSWR([`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || AddressZero], {
-    fetcher: fetcher(library, ReaderV2, [vesterAddresses]),
+  const { data: vestingInfo } = useSWR([`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", PLACEHOLDER_ACCOUNT], {
+    fetcher: fetcher(undefined, ReaderV2, [vesterAddresses]),
   })
 
-  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? library : undefined }, active)
+  const { gmxPrice } = useGmxPrice(chainId, { }, active)
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
   const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
