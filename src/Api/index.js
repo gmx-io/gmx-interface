@@ -21,6 +21,7 @@ import {
   bigNumberify,
   getExplorerUrl,
   getServerBaseUrl,
+  getGasPrice,
   getGasLimit,
   replaceNativeTokenAddress,
   getProvider,
@@ -656,11 +657,11 @@ export async function callContract(chainId, contract, method, params, opts) {
       opts.gasLimit = await getGasLimit(contract, method, params, opts.value)
     }
 
-    // if (opts.gasLimit.lt(DEFAULT_GAS_LIMIT)) {
-    //   opts.gasLimit = bigNumberify(DEFAULT_GAS_LIMIT)
-    // }
+    if (!opts.gasPrice) {
+      opts.gasPrice = await getGasPrice(contract.provider, chainId)
+    }
 
-    const res = await contract[method](...params, { gasLimit: opts.gasLimit, value: opts.value })
+    const res = await contract[method](...params, { gasLimit: opts.gasLimit, value: opts.value, gasPrice: opts.gasPrice })
     const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash
     const sentMsg = opts.sentMsg || "Transaction sent."
     helperToast.success(
