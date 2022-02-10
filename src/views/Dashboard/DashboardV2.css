@@ -17,7 +17,7 @@
   border: 1px solid #1e2136;
   border-radius: 4px;
   background: #17182C;
-  padding: 1rem;
+  padding: 0 1rem;
   text-align: left;
 }
 
@@ -89,10 +89,6 @@
 
   .token-table-wrapper {
     display: none;
-  }
-
-  .DashboardV2-token-cards {
-    /* grid-template-columns: 1fr; */
   }
 
   .DashboardV2-projects {

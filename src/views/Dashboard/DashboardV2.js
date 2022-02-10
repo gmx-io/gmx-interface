@@ -32,13 +32,14 @@ import {
   getTotalVolumeSum,
   GLPPOOLCOLORS
 } from '../../Helpers'
-import { useGmxPrice, useStakedGmxSupply } from '../../Api'
+import { useGmxPrice, useStakedGmxSupply, useGmxPriceFromAvalanche } from '../../Api'
 
 import { getContract } from '../../Addresses'
 
 import VaultV2 from '../../abis/VaultV2.json'
 import ReaderV2 from '../../abis/ReaderV2.json'
 import GlpManager from '../../abis/GlpManager.json'
+import Token from '../../abis/Token.json'
 
 import Footer from "../../Footer"
 
@@ -275,6 +276,81 @@ export default function DashboardV2() {
     )
   }
 
+  /* GMX Distribution */
+
+  // ARBITRUM
+  const arbitrumGmxAddress = getContract(ARBITRUM, "GMX")
+  const arbitrumStakedGmxTrackerAddress = getContract(ARBITRUM, "StakedGmxTracker")
+
+  const { data: arbitrumStakedGmxSupply } = useSWR([`StakeV2:stakedGmxSupply:${active}`, ARBITRUM, arbitrumGmxAddress, "balanceOf", arbitrumStakedGmxTrackerAddress], {
+    fetcher: fetcher(undefined, Token),
+  })
+
+  const arbitrumGmxSupplyUrl = getServerUrl(ARBITRUM, "/gmx_supply")
+  const { data: arbitrumGmxSupply } = useSWR([arbitrumGmxSupplyUrl], {
+    fetcher: (...args) => fetch(...args).then(res => res.text())
+  })
+
+  // AVALANCHE
+  const avalancheGmxAddress = getContract(AVALANCHE, "GMX")
+  const avalancheStakedGmxTrackerAddress = getContract(AVALANCHE, "StakedGmxTracker")
+
+  const { data: avalancheStakedGmxSupply } = useSWR([`StakeV2:stakedGmxSupply:${active}`, AVALANCHE, avalancheGmxAddress, "balanceOf", avalancheStakedGmxTrackerAddress], {
+    fetcher: fetcher(undefined, Token),
+  })
+
+  const avalancheGmxSupplyUrl = getServerUrl(AVALANCHE, "/gmx_supply")
+  const { data: avalancheGmxSupply } = useSWR([avalancheGmxSupplyUrl], {
+    fetcher: (...args) => fetch(...args).then(res => res.text())
+  })
+
+  let totalGmxSupply = bigNumberify(0)
+  if (arbitrumGmxSupply) {
+    totalGmxSupply = totalGmxSupply.add(bigNumberify(arbitrumGmxSupply))
+  }
+
+  if (avalancheGmxSupply) {
+    totalGmxSupply = totalGmxSupply.add(bigNumberify(avalancheGmxSupply))
+  }
+
+  let totalStakedGmxSupply = bigNumberify(0)
+  if (arbitrumStakedGmxSupply) {
+    totalStakedGmxSupply = totalStakedGmxSupply.add(bigNumberify(arbitrumStakedGmxSupply))
+  }
+
+  if (avalancheStakedGmxSupply) {
+    totalStakedGmxSupply = totalStakedGmxSupply.add(bigNumberify(avalancheStakedGmxSupply))
+  }
+  
+  let stakedPercent = bigNumberify(0)
+
+  if (!totalGmxSupply.isZero()) {
+    stakedPercent = totalStakedGmxSupply.mul(100).div(totalGmxSupply)
+  }
+
+  let totalGMX = bigNumberify(0)
+
+  if (gmxPriceFromArbitrum) {
+    totalGMX = totalGMX.add(gmxPriceFromArbitrum)
+  }
+
+  if (gmxPriceFromAvalanche) {
+    totalGMX = totalGMX.add(gmxPriceFromAvalanche)
+  }
+
+  console.log("totalGMX", formatAmount(totalGMX, USD_DECIMALS, 2, true))
+
+  let liquidityPercent = bigNumberify(0)
+
+  if (!totalGmxSupply.isZero() && gmxPrice) {
+    console.log("gmxPrice", gmxPrice)
+    const totalGmxSupplyUSD = totalGmxSupply.mul(gmxPrice).div(expandDecimals(1, GMX_DECIMALS))
+    console.log("totalGmxSupplyUSD", totalGmxSupplyUSD)
+    liquidityPercent = totalGMX.mul(100).div(totalGmxSupplyUSD)
+    console.log(formatAmount(totalGmxSupplyUSD, USD_DECIMALS, 0, true))
+    console.log('liquidityPercent', formatAmount(liquidityPercent, 0, 2, true))
+  }
+
   useEffect(() => {
     if (active) {
       library.on('block', () => {
@@ -301,7 +377,8 @@ export default function DashboardV2() {
       updatePositionStats, updateHourlyVolume, updateTotalVolume,
       updateTotalSupplies, updateAums, updateVaultTokenInfo,
       updateFees, updateGmxPrice, updateStakedGmxSupply,
-      updateTotalTokenWeights, updateGmxSupply])
+      updateTotalTokenWeights, updateGmxSupply
+    ])
 
   // const statsUrl = `https://stats.gmx.io/${chainId === AVALANCHE ? "avalanche" : ""}`
   const totalStatsStartDate = chainId === AVALANCHE ? "06 Jan 2022" : "01 Sep 2021"
