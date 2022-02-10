@@ -113,12 +113,13 @@ export const GLPPOOLCOLORS = {
   BTC: "#F7931A",
   "USDC": "#2775CA",
   "USDC.e": "#2A5ADA",
-  TETHER: "#67B18A",
+  USDT: "#67B18A",
   MIM: "#9695F8",
   FRAX: "#000",
   DAI: "#FAC044",
-  UNISWAP: "#E9167C",
-  AVAX: "#E84142"
+  UNI: "#E9167C",
+  AVAX: "#E84142",
+  LINK: "#3256D6"
 }
 
 const supportedChainIds = [
