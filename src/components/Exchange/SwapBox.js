@@ -2557,7 +2557,7 @@ export default function SwapBox(props) {
         </div>
       )}
       <div className="Exchange-swap-market-box App-box App-box-border">
-        <div className="Exchange-swap-market-box-title">Trading Guide</div>
+        <div className="Exchange-swap-market-box-title">Useful Links</div>
         <div className="App-card-divider"></div>
         <div className="Exchange-info-row">
           <div className="Exchange-info-label-button">
@@ -2566,7 +2566,18 @@ export default function SwapBox(props) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              How to Trade
+              Trading guide
+            </a>
+          </div>
+        </div>
+        <div className="Exchange-info-row">
+          <div className="Exchange-info-label-button">
+            <a
+              href="https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Speed up page loading
             </a>
           </div>
         </div>
