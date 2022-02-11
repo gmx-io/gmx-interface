@@ -2397,8 +2397,10 @@ export function getInfoTokens(
       token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 11]
 
       token.maxAvailableShort = bigNumberify(0)
-      if (token.maxGlobalShortSize.gt(0) && token.maxGlobalShortSize.gt(token.globalShortSize)) {
-        token.maxAvailableShort = token.maxGlobalShortSize.sub(token.globalShortSize)
+      if (token.maxGlobalShortSize.gt(0)) {
+        if (token.maxGlobalShortSize.gt(token.globalShortSize)) {
+          token.maxAvailableShort = token.maxGlobalShortSize.sub(token.globalShortSize)
+        }
       }
 
       token.availableUsd = token.isStable
