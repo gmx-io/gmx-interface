@@ -335,7 +335,6 @@ export default function SwapBox(props) {
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
 
   const hasMaxAvailableShort = isShort && toTokenInfo.maxAvailableShort && toTokenInfo.maxAvailableShort.gt(0)
-  console.log("hasMaxAvailableShort", hasMaxAvailableShort, toTokenInfo.maxAvailableShort.toString())
 
   const fromBalance = fromTokenInfo ? fromTokenInfo.balance : bigNumberify(0);
   const toBalance = toTokenInfo ? toTokenInfo.balance : bigNumberify(0);
@@ -2543,12 +2542,13 @@ export default function SwapBox(props) {
             </div>
           </div>
           {hasMaxAvailableShort && <div className="Exchange-info-row">
-            <div className="Exchange-info-label">Max {toToken.symbol} Short</div>
+            <div className="Exchange-info-label">Available Liquidity</div>
             <div className="align-right">
               <Tooltip handle={`${formatAmount(toTokenInfo.maxAvailableShort, USD_DECIMALS, 2, true)}`} position="right-bottom" renderContent={() => {
                 return <>
-                  Max {toTokenInfo.symbol} Short Capacity: ${formatAmount(toTokenInfo.maxGlobalShortSize, USD_DECIMALS, 2, true)}<br/>
-                  Current {toTokenInfo.symbol} Shorts: ${formatAmount(toTokenInfo.globalShortSize, USD_DECIMALS, 2, true)}<br/>
+                  Max {toTokenInfo.symbol} short capacity: ${formatAmount(toTokenInfo.maxGlobalShortSize, USD_DECIMALS, 2, true)}<br/>
+                  <br/>
+                  Current {toTokenInfo.symbol} shorts: ${formatAmount(toTokenInfo.globalShortSize, USD_DECIMALS, 2, true)}<br/>
                 </>
               }}>
               </Tooltip>
