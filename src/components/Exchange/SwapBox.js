@@ -334,6 +334,8 @@ export default function SwapBox(props) {
   const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
 
+  const hasMaxAvailableShort = isShort && toTokenInfo.maxAvailableShort && toTokenInfo.maxAvailableShort.gt(0)
+
   const fromBalance = fromTokenInfo ? fromTokenInfo.balance : bigNumberify(0);
   const toBalance = toTokenInfo ? toTokenInfo.balance : bigNumberify(0);
 
@@ -1051,7 +1053,11 @@ export default function SwapBox(props) {
         .mul(expandDecimals(1, shortCollateralToken.decimals))
         .div(shortCollateralToken.minPrice);
 
-      stableTokenAmount = stableTokenAmount.add(sizeTokens);
+      if (toTokenInfo.maxAvailableShort && toTokenInfo.maxAvailableShort.gt(0) && sizeUsd.gt(toTokenInfo.maxAvailableShort)) {
+        return [`Max ${toTokenInfo.symbol} short exceeded`]
+      }
+
+      stableTokenAmount = stableTokenAmount.add(sizeTokens)
       if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
         return [`Insufficient liquidity, change "Profits In"`];
       }
@@ -2535,6 +2541,19 @@ export default function SwapBox(props) {
               </Tooltip>
             </div>
           </div>
+          {hasMaxAvailableShort && <div className="Exchange-info-row">
+            <div className="Exchange-info-label">Available Liquidity</div>
+            <div className="align-right">
+              <Tooltip handle={`${formatAmount(toTokenInfo.maxAvailableShort, USD_DECIMALS, 2, true)}`} position="right-bottom" renderContent={() => {
+                return <>
+                  Max {toTokenInfo.symbol} short capacity: ${formatAmount(toTokenInfo.maxGlobalShortSize, USD_DECIMALS, 2, true)}<br/>
+                  <br/>
+                  Current {toTokenInfo.symbol} shorts: ${formatAmount(toTokenInfo.globalShortSize, USD_DECIMALS, 2, true)}<br/>
+                </>
+              }}>
+              </Tooltip>
+            </div>
+          </div>}
         </div>
       )}
       <div className="Exchange-swap-market-box App-box App-box-border">
