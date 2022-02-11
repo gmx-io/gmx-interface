@@ -1,0 +1,72 @@
+.buy-input .InputSection-static-input {
+  font-size: 1.5rem;
+}
+
+.buy-input.Exchange-swap-section {
+  min-height: 5.935rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.buy-input .TokenSelector-box {
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  /* padding: 0.5rem 0; */
+  color: #ffffff;
+  min-width: 3rem;
+  font-size: 1.25rem;
+  line-height: 1.625rem;
+  justify-content: flex-end;
+}
+.buy-input .TokenSelector-box:hover {
+  color: #7885ff;
+}
+
+.buy-input .Exchange-swap-input-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.buy-input .Exchange-swap-max {
+  position: unset;
+  color: white;
+  font-size: 1rem;
+}
+
+.buy-input .TokenSelector-caret {
+  margin: 0;
+  margin-right: -5px;
+}
+
+.buy-input .TokenSelector-box-symbol {
+  margin-left: 0.5rem;
+}
+
+.buy-input .PositionEditor-token-symbol {
+  display: flex;
+  align-items: center;
+  margin-left: 0.9rem;
+}
+
+.buy-input .PositionEditor-token-symbol img {
+  margin-left: 0.5rem;
+  display: none;
+}
+
+.buy-input .Exchange-swap-section-top {
+  padding-bottom: 0;
+}
+
+.buy-input .selected-token {
+  /* padding-top: 0.5rem; */
+  /* padding-bottom: 0.5rem; */
+  display: flex;
+  align-items: center;
+}
+
+.buy-input .Exchange-swap-balance {
+  color: white;
+}

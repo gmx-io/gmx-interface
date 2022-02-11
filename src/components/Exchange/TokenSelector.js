@@ -1,80 +1,150 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import cx from "classnames";
 
-import { formatAmount, expandDecimals, bigNumberify } from "../../Helpers"
+import { formatAmount, expandDecimals, bigNumberify } from "../../Helpers";
 
-import { getToken } from '../../data/Tokens'
+import { getToken } from "../../data/Tokens";
 
-import { BiChevronDown } from 'react-icons/bi'
+import { BiChevronDown } from "react-icons/bi";
 
-import Modal from '../Modal/Modal'
+import Modal from "../Modal/Modal";
 
-import './TokenSelector.css';
+import dropDownIcon from "../../img/DROP_DOWN.svg";
+import "./TokenSelector.css";
+import { useLockBodyScroll } from "react-use";
 
 export default function TokenSelector(props) {
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const tokenInfo = getToken(props.chainId, props.tokenAddress)
-  const { tokens, mintingCap, infoTokens, showMintingCap, disabled } = props
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  useLockBodyScroll(isModalVisible);
+  const tokenInfo = getToken(props.chainId, props.tokenAddress);
+  const {
+    tokens,
+    mintingCap,
+    infoTokens,
+    showMintingCap,
+    disabled,
+    showTokenImgInDropdown = false,
+    showSymbolImage = false,
+    showNewCaret = false
+  } = props;
 
-  const onSelectToken = (token) => {
-    setIsModalVisible(false)
-    props.onSelectToken(token)
-  }
+  const onSelectToken = token => {
+    setIsModalVisible(false);
+    props.onSelectToken(token);
+  };
 
   if (!tokenInfo) {
-    return null
+    return null;
+  }
+
+  var tokenImage = null;
+
+  try {
+    tokenImage = require("../../img/ic_" +
+      tokenInfo.symbol.toLowerCase() +
+      "_24.svg");
+  } catch (error) {
+    // console.log(error)
   }
 
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)}>
-      <Modal isVisible={isModalVisible} setIsVisible={setIsModalVisible} label={props.label}>
+      <Modal
+        isVisible={isModalVisible}
+        setIsVisible={setIsModalVisible}
+        label={props.label}
+      >
         <div className="TokenSelector-tokens">
           {tokens.map(token => {
-            let info = infoTokens ? infoTokens[token.address] : {}
-            let mintAmount
-            let balance = info.balance
+            let tokenPopupImage;
+            try {
+              tokenPopupImage = require("../../img/ic_" +
+                token.symbol.toLowerCase() +
+                "_40.svg");
+            } catch (error) {
+              tokenPopupImage = require("../../img/ic_eth_40.svg");
+            }
+            let info = infoTokens ? infoTokens[token.address] : {};
+            let mintAmount;
+            let balance = info.balance;
             if (showMintingCap && mintingCap && info.usdgAmount) {
-              mintAmount = mintingCap.sub(info.usdgAmount)
+              mintAmount = mintingCap.sub(info.usdgAmount);
             }
             if (mintAmount && mintAmount.lt(0)) {
-              mintAmount = bigNumberify(0)
+              mintAmount = bigNumberify(0);
             }
-            let balanceUsd
+            let balanceUsd;
             if (balance && info.maxPrice) {
-              balanceUsd = balance.mul(info.maxPrice).div(expandDecimals(1, token.decimals))
+              balanceUsd = balance
+                .mul(info.maxPrice)
+                .div(expandDecimals(1, token.decimals));
             }
             return (
-              <div className="TokenSelector-token-row" onClick={() => onSelectToken(token)} key={token.address}>
-                <div  className="TokenSelector-top-row">
-                  <div>
-                    {token.symbol}
+              <div
+                className="TokenSelector-token-row"
+                onClick={() => onSelectToken(token)}
+                key={token.address}
+              >
+                <div className="Token-info">
+                  {showTokenImgInDropdown && (
+                    <img
+                      src={tokenPopupImage?.default}
+                      alt={token.name}
+                      className="token-logo"
+                    />
+                  )}
+                  <div className="Token-symbol">
+                    <div className="Token-text">{token.symbol}</div>
+                    <span className="text-accent">{token.name}</span>
                   </div>
-                  {balance && <div className="align-right">
-                    {balance.gt(0) && formatAmount(balance, token.decimals, 4, true)}
-                    {balance.eq(0) && "-"}
-                  </div>}
                 </div>
-                <div className="TokenSelector-content-row">
-                  <div className="TokenSelector-token-name">
-                    {token.name}
-                  </div>
-                  {mintAmount && <div className="align-right">
-                    Mintable: {formatAmount(mintAmount, token.decimals, 2, true)} USDG
-                  </div>}
-                  {(showMintingCap && !mintAmount) && <div className="align-right">-</div>}
-                  {(!showMintingCap && balanceUsd && balanceUsd.gt(0)) && <div className="align-right">
-                    ${formatAmount(balanceUsd, 30, 2, true)}
-                  </div>}
+                <div className="Token-balance">
+                  {balance && (
+                    <div className="Token-text">
+                      {balance.gt(0) &&
+                        formatAmount(balance, token.decimals, 4, true)}
+                      {balance.eq(0) && "-"}
+                    </div>
+                  )}
+                  <span className="text-accent">
+                    {mintAmount && (
+                      <div>
+                        Mintable:{" "}
+                        {formatAmount(mintAmount, token.decimals, 2, true)} USDG
+                      </div>
+                    )}
+                    {showMintingCap && !mintAmount && <div>-</div>}
+                    {!showMintingCap && balanceUsd && balanceUsd.gt(0) && (
+                      <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
+                    )}
+                  </span>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
       </Modal>
-      <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
+      <div
+        className="TokenSelector-box"
+        onClick={() => setIsModalVisible(true)}
+      >
         {tokenInfo.symbol}
-        <BiChevronDown className="TokenSelector-caret" />
+        {showSymbolImage && (
+          <img
+            src={tokenImage && tokenImage.default}
+            alt={tokenInfo.symbol}
+            className="TokenSelector-box-symbol"
+          />
+        )}
+        {showNewCaret && (
+          <img
+            src={dropDownIcon}
+            alt="dropDownIcon"
+            className="TokenSelector-box-caret"
+          />
+        )}
+        {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}
       </div>
     </div>
-  )
+  );
 }

@@ -1,20 +1,19 @@
 import { ethers } from 'ethers';
-import { helperToast } from "./Helpers"
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client'
+import { gql } from '@apollo/client'
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { Token as UniToken } from '@uniswap/sdk-core'
 import { Pool } from '@uniswap/v3-sdk'
 import useSWR from 'swr'
 
-import OrderBook from './abis/OrderBook.json'
-import Vault from './abis/Vault.json'
-import Router from './abis/Router.json'
-import UniPool from './abis/UniPool.json'
-import UniswapV2 from './abis/UniswapV2.json'
-import Token from './abis/Token.json'
+import OrderBook from '../abis/OrderBook.json'
+import Vault from '../abis/Vault.json'
+import Router from '../abis/Router.json'
+import UniPool from '../abis/UniPool.json'
+import UniswapV2 from '../abis/UniswapV2.json'
+import Token from '../abis/Token.json'
 
-import { getContract } from './Addresses'
-import { getConstant } from './Constants'
+import { getContract } from '../Addresses'
+import { getConstant } from '../Constants'
 import {
   ARBITRUM,
   AVALANCHE,
@@ -22,57 +21,28 @@ import {
   bigNumberify,
   getExplorerUrl,
   getServerBaseUrl,
+  getGasPrice,
   getGasLimit,
   replaceNativeTokenAddress,
   getProvider,
   getOrderKey,
   fetcher,
   parseValue,
-  expandDecimals
-} from './Helpers'
+  expandDecimals,
+  helperToast
+} from '../Helpers'
 import {
   getTokenBySymbol
-} from './data/Tokens'
+} from '../data/Tokens'
+
+import {
+  nissohGraphClient,
+  arbitrumGraphClient,
+  avalancheGraphClient
+} from './common'
+export * from './prices'
 
 const { AddressZero } = ethers.constants
-
-// Ethereum network, Chainlink Aggregator contracts
-const FEED_ID_MAP = {
-  "BTC_USD": "0xae74faa92cb67a95ebcab07358bc222e33a34da7",
-  "ETH_USD": "0x37bc7498f4ff12c19678ee8fe19d713b87f6a9e6",
-  "BNB_USD": "0xc45ebd0f901ba6b2b8c7e70b717778f055ef5e6d",
-  "LINK_USD": "0xdfd03bfc3465107ce570a0397b247f546a42d0fa",
-  "UNI_USD": "0x68577f915131087199fe48913d8b416b3984fd38",
-  "SUSHI_USD": "0x7213536a36094cd8a768a5e45203ec286cba2d74",
-  "AVAX_USD": "0x0fc3657899693648bba4dbd2d8b33b82e875105d",
-  "AAVE_USD": "0xe3f0dede4b499c07e12475087ab1a084b5f93bc0",
-  "YFI_USD": "0x8a4d74003870064d41d4f84940550911fbfccf04",
-  "SPELL_USD": "0x8640b23468815902e011948f3ab173e1e83f9879"
-};
-
-const CHAINLINK_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/deividask/chainlink";
-const chainlinkClient = new ApolloClient({
-  uri: CHAINLINK_GRAPH_API_URL,
-  cache: new InMemoryCache()
-});
-
-const ARBITRUM_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-stats"
-const arbitrumGraphClient = new ApolloClient({
-  uri: ARBITRUM_GRAPH_API_URL,
-  cache: new InMemoryCache()
-});
-
-const AVALANCHE_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats"
-const avalancheGraphClient = new ApolloClient({
-  uri: AVALANCHE_GRAPH_API_URL,
-  cache: new InMemoryCache()
-});
-
-const NISSOH_GRAPH_API_URL = "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault"
-const nissohGraphClient = new ApolloClient({
-  uri: NISSOH_GRAPH_API_URL,
-  cache: new InMemoryCache()
-});
 
 function getGmxGraphClient(chainId) {
   if (chainId === ARBITRUM) {
@@ -305,92 +275,6 @@ export function usePositionsForOrders(chainId, library, orders) {
   return positions
 }
 
-async function getChartPricesFromStats(chainId, marketName, period) {
-  let symbol = marketName.split('_')[0]
-  if (symbol === 'WBTC') {
-    symbol = 'BTC'
-  } else if (symbol === 'WETH') {
-    symbol = 'ETH'
-  }
-  const hostname = 'https://stats.gmx.io/'
-  const from = Math.floor(Date.now() / 1000 - period)
-  const url = `${hostname}api/chart/${symbol}?from=${from}&preferableChainId=${chainId}`
-  const TIMEOUT = 3000
-  const res = await new Promise((resolve, reject) => {
-    setTimeout(() => reject(new Error(`${url} request timeout`)), TIMEOUT)
-    fetch(url).then(resolve).catch(reject)
-  })
-  if (!res.ok) {
-    throw new Error(`${res.status} ${res.statusText}`)
-  }
-  const json = await res.json()
-
-  if (!json || json.length < 100) {
-    throw new Error(`not enough prices: ${json?.length}`)
-  }
-
-  const OBSOLETE_THRESHOLD = 60 * 60 * 6 // chainlink updates are not too frequent
-  const lastTs = json[json.length - 1][0]
-  const diff = Date.now() / 1000 - lastTs
-  if (diff > OBSOLETE_THRESHOLD) {
-    throw new Error(
-      'chart data is obsolete, last price record at ' + new Date(lastTs * 1000).toISOString()
-      + ' now: ' + new Date().toISOString())
-  }
-  return json
-}
-
-function getChainlinkChartPricesFromGraph(marketName) {
-  if (marketName.startsWith('WBTC') || marketName.startsWith('WETH') || marketName.startsWith('WBNB') || marketName.startsWith('WAVAX')) {
-    marketName = marketName.substr(1)
-  }
-  const feedId = FEED_ID_MAP[marketName];
-  if (!feedId) {
-    throw new Error(`undefined marketName ${marketName}`)
-  }
-
-  const PER_CHUNK = 1000;
-  const CHUNKS_TOTAL = 6;
-  const requests = [];
-  for (let i = 0; i < CHUNKS_TOTAL; i++) {
-    const query = gql(`{
-      rounds(
-        first: ${PER_CHUNK},
-        skip: ${i * PER_CHUNK},
-        orderBy: unixTimestamp,
-        orderDirection: desc,
-        where: {feed: "${feedId}"}
-      ) {
-        unixTimestamp,
-        value
-      }
-    }`)
-    requests.push(chainlinkClient.query({query}))
-  }
-
-  return Promise.all(requests).then(chunks => {
-    const prices = [];
-    const uniqTs = new Set();
-    chunks.forEach(chunk => {
-      chunk.data.rounds.forEach(item => {
-        if (uniqTs.has(item.unixTimestamp)) {
-          return;
-        }
-
-        uniqTs.add(item.unixTimestamp)
-        prices.push([
-            item.unixTimestamp,
-            Number(item.value) / 1e8
-        ]);
-      })
-    });
-
-    return prices.sort(([timeA], [timeB]) => timeA - timeB);
-  }).catch(err => {
-    console.error(err);
-  })
-}
-
 function invariant(condition, errorMsg) {
   if (!condition) {
     throw new Error(errorMsg)
@@ -407,20 +291,21 @@ export function useTrades(chainId, account) {
   return { trades, updateTrades }
 }
 
-export function useStakedGmxSupply() {
+export function useStakedGmxSupply(library, active) {
   const chainId = ARBITRUM
   const gmxAddress = getContract(chainId, "GMX")
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker")
 
-  const { data, mutate } = useSWR([`StakeV2:stakedGmxSupply`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
-    fetcher: fetcher(undefined, Token),
+  const { data, mutate } = useSWR([`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
+    fetcher: fetcher(library, Token),
   })
 
   return { data, mutate }
 }
 
-export function useGmxPrice(chainId) {
-  const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum()
+export function useGmxPrice(chainId, libraries, active) {
+  const arbitrumLibrary = libraries && libraries.arbitrum ? libraries.arbitrum : undefined
+  const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum(arbitrumLibrary, active)
   const { data: gmxPriceFromAvalanche, mutate: mutateFromAvalanche } = useGmxPriceFromAvalanche()
 
   const gmxPrice = chainId === ARBITRUM ? gmxPriceFromArbitrum : gmxPriceFromAvalanche
@@ -465,16 +350,16 @@ function useGmxPriceFromAvalanche() {
   return { data: gmxPrice, mutate }
 }
 
-function useGmxPriceFromArbitrum() {
+function useGmxPriceFromArbitrum(library, active) {
   const poolAddress = getContract(ARBITRUM, "UniswapGmxEthPool")
-  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR([`StakeV2:uniPoolSlot0`, ARBITRUM, poolAddress, "slot0"], {
-    fetcher: fetcher(undefined, UniPool),
+  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR([`StakeV2:uniPoolSlot0:${active}`, ARBITRUM, poolAddress, "slot0"], {
+    fetcher: fetcher(library, UniPool),
   })
 
   const vaultAddress = getContract(ARBITRUM, "Vault")
   const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address
-  const { data: ethPrice, mutate: updateEthPrice } = useSWR([`StakeV2:ethPrice`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress], {
-    fetcher: fetcher(undefined, Vault),
+  const { data: ethPrice, mutate: updateEthPrice } = useSWR([`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress], {
+    fetcher: fetcher(library, Vault),
   })
 
   const gmxPrice = useMemo(() => {
@@ -508,27 +393,6 @@ function useGmxPriceFromArbitrum() {
   return { data: gmxPrice, mutate }
 }
 
-export function useChartPrices(chainId, marketName, period) {
-  const { data: prices = [], mutate: updatePrices } = useSWR(marketName && ['getChartPrices', chainId, marketName, period], {
-    fetcher: async () => {
-      try {
-        return await getChartPricesFromStats(chainId, marketName, period)
-      } catch (ex) {
-        console.warn(ex)
-        try {
-          return await getChainlinkChartPricesFromGraph(marketName)
-        } catch (ex2) {
-          console.warn('getChainlinkChartPricesFromGraph failed')
-          console.warn(ex2)
-          return []
-        }
-      }
-    },
-    dedupingInterval: 60000,
-    focusThrottleInterval: 60000 * 10
-  })
-  return [prices, updatePrices];
-}
 
 export async function approvePlugin(chainId, pluginAddress, { library, pendingTxns, setPendingTxns }) {
   const routerAddress = getContract(chainId, "Router")
@@ -793,11 +657,11 @@ export async function callContract(chainId, contract, method, params, opts) {
       opts.gasLimit = await getGasLimit(contract, method, params, opts.value)
     }
 
-    // if (opts.gasLimit.lt(DEFAULT_GAS_LIMIT)) {
-    //   opts.gasLimit = bigNumberify(DEFAULT_GAS_LIMIT)
-    // }
+    if (!opts.gasPrice) {
+      opts.gasPrice = await getGasPrice(contract.provider, chainId)
+    }
 
-    const res = await contract[method](...params, { gasLimit: opts.gasLimit, value: opts.value })
+    const res = await contract[method](...params, { gasLimit: opts.gasLimit, value: opts.value, gasPrice: opts.gasPrice })
     const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash
     const sentMsg = opts.sentMsg || "Transaction sent."
     helperToast.success(
