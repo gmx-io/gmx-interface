@@ -1,0 +1,205 @@
+.BuyGMXGLP {
+  background: #101124;
+  justify-content: space-between;
+}
+
+.BuyGMXGLP-container {
+  padding-top: 3rem;
+  padding-bottom: 2rem;
+  width: 100%;
+}
+
+.BuyGMXGLP-panel {
+  padding-top: 0;
+  padding-bottom: 2.5rem;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+.BuyGMXGLP-panel .App-card:first-child {
+  margin-right: 20px;
+}
+
+.BuyGMXGLP-panel .App-card {
+  max-width: 37.677rem;
+  width: 100%;
+  height: fit-content;
+}
+.BuyGMXGLP-panel .App-card {
+  max-width: 37.677rem;
+  width: 100%;
+  height: fit-content;
+}
+
+.BuyGMXGLP-panel .App-card.no-height {
+  height: unset;
+}
+
+.BuyGMXGLP-panel:last-child {
+  padding-bottom: 0;
+}
+
+.BuyGMXGLP-description {
+  letter-spacing: 0px;
+  color: #a9a9b0;
+}
+
+.BuyGMXGLP-description a {
+  text-decoration: none;
+  position: relative;
+}
+
+.bridge-options {
+  display: grid;
+  grid-gap: 0.5rem;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 1rem;
+}
+.buy-gmx {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  margin: 2rem 0;
+}
+.alternative-bridges .transfer-eth-icon {
+  width: 3.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.direct-purchase-options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  margin: 2rem 0;
+}
+
+.GMX-btn {
+  display: flex;
+  align-items: center;
+  background: #ffffff0a;
+  border: 1px solid #ffffff14;
+  border-radius: 4px;
+  text-decoration: none;
+  height: 3rem;
+  padding: 0.5rem 1rem;
+  margin: 2rem 0;
+}
+
+.GMX-btn:hover {
+  background: #ffffff14;
+}
+
+.GMX-btn:focus,
+.GMX-btn:active {
+  background: #ffffff1f;
+}
+
+.GMX-btn-icon-block {
+  display: flex;
+  margin-right: 0.75rem;
+}
+
+.GMX-btn-icon {
+  display: flex;
+  position: relative;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+}
+
+.GMX-btn-icon-network {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+}
+
+.GMX-btn-label {
+  letter-spacing: 0px;
+  color: #ffffff;
+  font-size: 1.1875rem;
+  line-height: 1.5rem;
+}
+
+.GMX-block-section {
+  display: flex;
+  justify-content: center;
+}
+
+.display-bg {
+  display: block;
+}
+
+.display-sm {
+  display: none !important;
+}
+
+.BuyGMXGLP-panel .buy-card:first-child,
+.BuyGMXGLP-panel .section-title-block:first-child {
+  margin-right: 20px;
+}
+
+.card-title {
+  font-size: 2.2rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  font-family: "Relative Bold";
+}
+
+@media (max-width: 800px) {
+  .display-bg {
+    display: none !important;
+  }
+  .display-sm {
+    display: block !important;
+  }
+  .card-details {
+    display: flex;
+    flex-direction: column;
+  }
+  .section-title-block {
+    margin-bottom: 1rem !important;
+  }
+  .BuyGMXGLP-panel {
+    flex-direction: column;
+  }
+  .BuyGMXGLP-panel .App-card:first-child {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+  .BuyGMXGLP-panel .App-card {
+    max-width: 100%;
+  }
+  .BuyGMXGLP-panel .buy-card:first-child,
+  .BuyGMXGLP-panel .section-title-block:first-child {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+}
+
+@media (max-width: 450px) {
+  .alternative-bridges {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 400px) {
+  .BuyGMXGLP-container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .BuyGMXGLP-description {
+    font-size: 1rem;
+    line-height: 1.3rem;
+  }
+  .bridge-options {
+    grid-template-columns: 1fr;
+  }
+}

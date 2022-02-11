@@ -34,6 +34,7 @@ import {
   USD_DECIMALS,
   BASIS_POINTS_DIVISOR,
   ARBITRUM,
+  PLACEHOLDER_ACCOUNT,
   getBalanceAndSupplyData,
   getDepositBalanceData,
   getVestingData,
@@ -491,8 +492,8 @@ function CompoundModal(props) {
   const getPrimaryText = () => {
     if (isApproving) { return `Approving GMX...` }
     if (needApproval) { return `Approve GMX` }
-    if (isCompounding) { return "Confirming..." }
-    return "Confirm"
+    if (isCompounding) { return "Compounding..." }
+    return "Compound"
   }
 
   const onClickPrimary = () => {
@@ -800,19 +801,19 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     feeGlpTrackerAddress
   ]
 
-  const { data: walletBalances, mutate: updateWalletBalances } = useSWR(["StakeV2:walletBalances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero], {
+  const { data: walletBalances, mutate: updateWalletBalances } = useSWR([`StakeV2:walletBalances:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, ReaderV2, [walletTokens]),
   })
 
-  const { data: depositBalances, mutate: updateDepositBalances } = useSWR(["StakeV2:depositBalances", chainId, rewardReaderAddress, "getDepositBalances", account || AddressZero], {
+  const { data: depositBalances, mutate: updateDepositBalances } = useSWR([`StakeV2:depositBalances:${active}`, chainId, rewardReaderAddress, "getDepositBalances", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
   })
 
-  const { data: stakingInfo, mutate: updateStakingInfo } = useSWR(["StakeV2:stakingInfo", chainId, rewardReaderAddress, "getStakingInfo", account || AddressZero], {
+  const { data: stakingInfo, mutate: updateStakingInfo } = useSWR([`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
   })
 
-  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR(["StakeV2:stakedGmxSupply", chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
+  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR([`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress], {
     fetcher: fetcher(library, Token),
   })
 
@@ -828,7 +829,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     fetcher: fetcher(library, ReaderV2, [excludedEsGmxAccounts]),
   })
 
-  const { data: vestingInfo, mutate: updateVestingInfo } = useSWR([`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || AddressZero], {
+  const { data: vestingInfo, mutate: updateVestingInfo } = useSWR([`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, ReaderV2, [vesterAddresses]),
   })
 
@@ -837,7 +838,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     gmxPriceFromArbitrum,
     gmxPriceFromAvalanche,
     mutate: updateGmxPrice
-  } = useGmxPrice(chainId)
+  } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? library : undefined }, active)
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply")
   const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
@@ -1314,7 +1315,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-options">
-                <Link className="App-button-option App-card-option" to="/buy">Buy GMX</Link>
+                <Link className="App-button-option App-card-option" to="/buy_gmx">Buy GMX</Link>
                 {active && <button className="App-button-option App-card-option" onClick={() => showStakeGmxModal()}>Stake</button>}
                 {active && <button className="App-button-option App-card-option" onClick={() => showUnstakeGmxModal()}>Unstake</button>}
                 {active && <Link className="App-button-option App-card-option" to="/begin_account_transfer">Transfer Account</Link>}
@@ -1460,7 +1461,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               <div className="App-card-divider"></div>
               <div className="App-card-options">
                 <Link className="App-button-option App-card-option" to="/buy_glp">Buy GLP</Link>
-                <Link className="App-button-option App-card-option" to="/sell_glp">Sell GLP</Link>
+                <Link className="App-button-option App-card-option" to="/buy_glp#redeem">Sell GLP</Link>
                 {hasInsurance && <a className="App-button-option App-card-option" href="https://app.insurace.io/Insurance/Cart?id=124&referrer=545066382753150189457177837072918687520318754040" target="_blank" rel="noopener noreferrer">Purchase Insurance</a>}
               </div>
             </div>

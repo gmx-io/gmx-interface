@@ -91,6 +91,7 @@ export default function PositionSeller(props) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const prevIsVisible = usePrevious(isVisible)
   const routerAddress = getContract(chainId, "Router")
+  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol")
 
   const orderOptions = [MARKET, STOP];
   let [orderOption, setOrderOption] = useState(MARKET);
@@ -212,6 +213,15 @@ export default function PositionSeller(props) {
 
     if (keepLeverage && sizeDelta && !isClosing) {
       collateralDelta = sizeDelta.mul(position.collateral).div(position.size)
+      // if the position will be realising a loss then reduce collateralDelta by the realised loss
+      if (!nextHasProfit) {
+        const deductions = adjustedDelta.add(positionFee).add(fundingFee)
+        if (collateralDelta.gt(deductions)) {
+          collateralDelta = collateralDelta = collateralDelta.sub(deductions)
+        } else {
+          collateralDelta = bigNumberify(0)
+        }
+      }
     }
 
     receiveAmount = receiveAmount.add(collateralDelta)
@@ -513,7 +523,7 @@ export default function PositionSeller(props) {
     }
     return (
       <ExchangeInfoRow label="Execution Fees">
-        {formatAmount(DECREASE_ORDER_EXECUTION_GAS_FEE, 18, 4)} ETH
+        {formatAmount(DECREASE_ORDER_EXECUTION_GAS_FEE, 18, 4)} {nativeTokenSymbol}
       </ExchangeInfoRow>
     );
   }

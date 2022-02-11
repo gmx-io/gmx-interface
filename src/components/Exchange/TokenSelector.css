@@ -28,6 +28,30 @@
   color: #7885ff;
 }
 
+.Token-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.Token-info .Token-symbol {
+  margin-left: 8px;
+  display: flex;
+  flex-direction: column;
+}
+.Token-balance {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+.Token-info .token-logo {
+  display: block !important;
+  width: 40px;
+  height: 40px;
+  margin-right: 0.5rem;
+  margin-left: 0 !important;
+}
+
 .TokenSelector-caret {
   vertical-align: middle;
   display: inline-block;
@@ -36,52 +60,42 @@
   margin-top: -0.3rem;
 }
 
-.TokenSelector-tokens {
-  overflow: auto;
-}
-
 .TokenSelector-token-row {
   cursor: pointer;
-  padding: 0.6rem;
-  padding-left: 0.7rem;
-  margin-bottom: 0.3rem;
-  background: linear-gradient(270deg, rgba(45,66,252,0.15) 0%, rgba(45,66,252,0.4) 100%);
+  border: 1px solid #ffffff29;
+  background: transparent;
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  margin-bottom: 8px;
 }
 
-.TokenSelector-token-row:first-child {
-  border-radius: 0.3rem 0.3rem 0 0;
+.TokenSelector-token-row .Token-text {
+  font-size: 16px;
+  color: #ffffff;
+  font-weight: 500;
+  letter-spacing: 0px;
 }
-
-.TokenSelector-token-row:last-child {
-  border-radius: 0 0 0.3rem 0.3rem;
-}
-
 .TokenSelector-token-row:hover {
-  background: linear-gradient(270deg, rgba(45,66,252,0.3) 0%, rgba(45,66,252,0.8) 100%);
-}
-
-.TokenSelector-top-row {
-  font-size: 1.1rem;
-  display: grid;
-  grid-template-columns: auto auto;
-}
-
-.TokenSelector-content-row {
-  margin-top: 0.2rem;
-  font-size: 0.8rem;
-  opacity: 0.7;
-  display: grid;
-  grid-template-columns: auto auto;
+  background: var(--dark-blue-hover);
 }
 
 .TokenSelector.right .Modal {
   align-items: flex-start;
   justify-content: flex-end;
 }
+.text-accent {
+  color: var(--dark-blue-accent);
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
 
 .TokenSelector.right .Modal-content {
   position: absolute;
-  width: 27rem;
+  width: 23rem;
   top: 0;
   bottom: 0;
   overflow: auto;
@@ -98,13 +112,9 @@
     right: 2rem;
     bottom: 0;
   }
-
-  .TokenSelector.right .Modal-content {
-    display: block;
-    margin: 2rem;
-    padding: 1rem;
-    box-sizing: border-box;
-    height: auto;
-    width: 100%;
+  .Token-info .token-logo {
+    width: 30px;
+    height: 30px;
+    margin-right: 0.5rem;
   }
 }
