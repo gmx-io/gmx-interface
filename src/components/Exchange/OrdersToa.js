@@ -41,10 +41,14 @@ export default function OrdersToa(props) {
       <li>The specified price was reached but not long enough for it to be executed</li>
       <li>No keeper picked up the order for execution</li>
     </ul>
+    <div>
+      Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price.
+    </div>
+    <br/>
 
     <div className="Orders-toa-accept-rules">
       <Checkbox isChecked={isChecked} setIsChecked={setIsChecked}>
-        <span className="muted">Accept that orders are not guaranteed to&nbsp;execute</span>
+        <span className="muted">Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price</span>
       </Checkbox>
     </div>
     <button

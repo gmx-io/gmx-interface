@@ -492,8 +492,8 @@ function CompoundModal(props) {
   const getPrimaryText = () => {
     if (isApproving) { return `Approving GMX...` }
     if (needApproval) { return `Approve GMX` }
-    if (isCompounding) { return "Confirming..." }
-    return "Confirm"
+    if (isCompounding) { return "Compounding..." }
+    return "Compound"
   }
 
   const onClickPrimary = () => {

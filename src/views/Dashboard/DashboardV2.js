@@ -164,7 +164,7 @@ export default function DashboardV2() {
     fetcher: fetcher(library, GlpManager),
   })
 
-  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR([`Dashboard:vaultTokenInfo:${active}`, chainId, readerAddress, "getFullVaultTokenInfo"], {
+  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR([`Dashboard:vaultTokenInfo:${active}`, chainId, readerAddress, "getVaultTokenInfoV2"], {
     fetcher: fetcher(library, ReaderV2, [vaultAddress, nativeTokenAddress, expandDecimals(1, 18), whitelistedTokenAddresses]),
   })
 
@@ -243,17 +243,22 @@ export default function DashboardV2() {
     totalFloorPriceFundUsd = ethFloorPriceFundUsd.add(glpFloorPriceFundUsd).add(usdcFloorPriceFund)
   }
 
-  let usdgSupply
-  if (totalSupplies && totalSupplies[5]) {
-    usdgSupply = totalSupplies[5]
+  let adjustedUsdgSupply = bigNumberify(0)
+
+  for (let i = 0; i < tokenList.length; i++) {
+    const token = tokenList[i]
+    const tokenInfo = infoTokens[token.address]
+    if (tokenInfo && tokenInfo.usdgAmount) {
+      adjustedUsdgSupply = adjustedUsdgSupply.add(tokenInfo.usdgAmount)
+    }
   }
 
   const getWeightText = (tokenInfo) => {
-    if (!tokenInfo.weight || !tokenInfo.usdgAmount || !usdgSupply || usdgSupply.eq(0) || !totalTokenWeights) {
+    if (!tokenInfo.weight || !tokenInfo.usdgAmount || !adjustedUsdgSupply || adjustedUsdgSupply.eq(0) || !totalTokenWeights) {
       return "..."
     }
 
-    const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(usdgSupply)
+    const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply)
     const targetWeightBps = tokenInfo.weight.mul(BASIS_POINTS_DIVISOR).div(totalTokenWeights)
 
     const weightText = `${formatAmount(currentWeightBps, 2, 2, false)}% / ${formatAmount(targetWeightBps, 2, 2, false)}%`
