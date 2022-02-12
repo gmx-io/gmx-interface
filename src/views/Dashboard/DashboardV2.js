@@ -416,8 +416,8 @@ export default function DashboardV2() {
 
   let glpPool = tokenList.map((token) => {
     const tokenInfo = infoTokens[token.address]
-    if (tokenInfo.usdgAmount && usdgSupply) {
-      const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(usdgSupply)
+    if (tokenInfo.usdgAmount && adjustedUsdgSupply) {
+      const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply)
       return {
         fullname: token.name,
         name: token.symbol,
