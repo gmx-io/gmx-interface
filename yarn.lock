@@ -4943,6 +4943,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"body-scroll-lock@npm:^4.0.0-beta.0":
+  version: 4.0.0-beta.0
+  resolution: "body-scroll-lock@npm:4.0.0-beta.0"
+  checksum: 61d40007fddf64ecc69e9e02ed9d96bb895f88d7da65cea7651081110225de48efa44ffc4acd376ed004788e242a9af12059fec728c096774b49365524ea6f46
+  languageName: node
+  linkType: hard
+
 "bonjour@npm:^3.5.0":
   version: 3.5.0
   resolution: "bonjour@npm:3.5.0"
@@ -8390,6 +8397,7 @@ __metadata:
     "@web3-react/injected-connector": ^6.0.7
     "@web3-react/walletconnect-connector": ^6.2.8
     bigdecimal: ^0.6.1
+    body-scroll-lock: ^4.0.0-beta.0
     classnames: ^2.2.6
     date-fns: ^2.18.0
     eslint: ^7.20.0

@@ -213,6 +213,15 @@ export default function PositionSeller(props) {
 
     if (keepLeverage && sizeDelta && !isClosing) {
       collateralDelta = sizeDelta.mul(position.collateral).div(position.size)
+      // if the position will be realising a loss then reduce collateralDelta by the realised loss
+      if (!nextHasProfit) {
+        const deductions = adjustedDelta.add(positionFee).add(fundingFee)
+        if (collateralDelta.gt(deductions)) {
+          collateralDelta = collateralDelta = collateralDelta.sub(deductions)
+        } else {
+          collateralDelta = bigNumberify(0)
+        }
+      }
     }
 
     receiveAmount = receiveAmount.add(collateralDelta)
