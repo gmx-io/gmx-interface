@@ -149,20 +149,8 @@
   padding-bottom: 1.2rem;
 }
 
-.new-update .App-card-bottom {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: unset;
-}
-
 .App-card-bottom .App-card-divider, .App-card-bottom-placeholder .App-card-divider {
   margin-bottom: 1.2rem;
-}
-
-.new-update .App-card-bottom .App-card-divider, .new-update .App-card-bottom-placeholder .App-card-divider {
-  margin: unset;
 }
 
 .App-card-long {
@@ -372,7 +360,7 @@ button.App-connect-wallet:hover {
   margin: 0.7rem -1rem;
 }
 
-.new-update .App-card-divider {
+.App-card.App-card--striped .App-card-divider, .App-card.App-card--densed .App-card-divider {
   height: 1px;
   background: #FFFFFF29;
   margin: unset;
@@ -494,9 +482,10 @@ button.App-connect-wallet:hover {
   border-radius: 4px;
 }
 
-.new-update .App-card {
+.App-card.App-card--striped, .App-card.App-card--densed {
   border-radius: 8px;
   padding: unset;
+  border: unset;
 }
 
 .App-card-title {
@@ -508,9 +497,10 @@ button.App-connect-wallet:hover {
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
-.new-update .App-card-title {
+.App-card.App-card--striped .App-card-title, .App-card.App-card--densed .App-card-title {
   font-size: 1.032rem;
   line-height: 1.355rem;
   font-weight: normal;
@@ -532,9 +522,27 @@ button.App-connect-wallet:hover {
   grid-row-gap: 0.5rem;
 }
 
-.new-update .App-card-content {
+.App-card-content--scrollable {
+  overflow-x: auto;
+}
+
+.App-card.App-card--no-border {
+  border: unset;
+  background: #16182E;
+  border-radius: 8px;
+}
+
+.App-card.App-card--striped {
+  background: #16182E;
+}
+
+.App-card.App-card--striped .App-card-content, .App-card.App-card--densed .App-card-content {
   display: grid;
   grid-row-gap: unset;
+}
+
+.App-card.App-card--striped .App-card-row:nth-child(odd) {
+  background: #1E1F37;
 }
 
 .App-card-row {
@@ -544,7 +552,7 @@ button.App-connect-wallet:hover {
   padding: unset;
 }
 
-.new-update .App-card-row {
+.App-card.App-card--striped .App-card-row {
   display: grid;
   grid-template-columns: 1fr auto;
   grid-column-gap: 1rem;
@@ -561,7 +569,7 @@ button.App-connect-wallet:hover {
   top: 2px;
 }
 
-.new-update .App-card-row .label {
+.App-card.App-card--striped .App-card-row .label {
   font-size: 0.903rem;
   line-height: 1.1613rem;
   font-weight: normal;
@@ -569,7 +577,7 @@ button.App-connect-wallet:hover {
   color: #A0A3C4;
 }
 
-.new-update .App-card-row .value {
+.App-card.App-card--striped .App-card-row .value {
   font-size: 0.903rem;
   line-height: 1.161rem;
   font-weight: normal;
@@ -588,11 +596,6 @@ button.App-connect-wallet:hover {
 
 .App-card-options {
   padding: unset;
-  margin: -0.4rem;
-}
-
-.new-update .App-card-options {
-  padding: 0.452rem 1.032rem;
   margin: -0.4rem;
 }
 

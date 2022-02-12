@@ -35,7 +35,7 @@
     border: none;
 }
 
-.BuyGMXGLP-panel .App-card .App-card-title {
+.BuyGMXGLP-panel .App-card.App-card--densed .App-card-title {
     padding-left: 1.5rem;
     padding-right: 1.5rem;
 }

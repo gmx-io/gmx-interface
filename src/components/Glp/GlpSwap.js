@@ -609,16 +609,16 @@ export default function GlpSwap(props) {
         </div>}
       </div> */}
       <div className="GlpSwap-content">
-        <div className="App-card GlpSwap-stats-card">
+        <div className="App-card App-card--striped GlpSwap-stats-card">
           <div className="App-card-title">
-            <div className="GlpSwap-stats-mark">
-              <div className="GlpSwap-stats-mark-icon">
+            <div className="App-card-title-mark">
+              <div className="App-card-title-mark-icon">
                 <img src={glp40Icon} alt="glp40Icon" />
                 {chainId === ARBITRUM ? <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" /> : <img src={avalanche16Icon} alt="avalanche16Icon" className="selected-network-symbol" />}
               </div>
-              <div className="GlpSwap-stats-mark-info">
-                <div className="GlpSwap-stats-mark-title">GLP</div>
-                <div className="GlpSwap-stats-mark-subtitle">GLP</div>
+              <div className="App-card-title-mark-info">
+                <div className="App-card-title-mark-title">GLP</div>
+                <div className="App-card-title-mark-subtitle">GLP</div>
               </div>
             </div>
           </div>
