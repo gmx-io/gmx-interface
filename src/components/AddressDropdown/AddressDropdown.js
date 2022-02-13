@@ -15,7 +15,7 @@ function AddressDropdown({
   accountUrl,
   disconnectAccountAndCloseSettings,
   openSettings,
-  setIsBackdropVisible
+  setIsAddressDropdownOpen
 }) {
   const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
   let [isOpen, setIsOpen] = useState(false);
@@ -24,8 +24,9 @@ function AddressDropdown({
   const { ensName } = useENS(account);
 
   useEffect(() => {
-    setIsBackdropVisible(isOpen);
-  }, [isOpen]);
+    setIsAddressDropdownOpen(isOpen);
+    return () => setIsAddressDropdownOpen(false);
+  }, [isOpen, setIsAddressDropdownOpen]);
 
   return (
     <Menu>

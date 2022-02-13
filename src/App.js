@@ -80,7 +80,7 @@ import metamaskImg from "./img/metamask.png";
 import walletConnectImg from "./img/walletconnect-circle-blue.svg";
 import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
 import { ConnectWalletButton } from "./components/Common/Button";
-import { showEventPopup } from "./components/EventToast/EventToast";
+import { useEventToast } from "./components/EventToast/EventToast";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -199,7 +199,8 @@ function AppHeaderUser({
   setWalletModalVisible,
   showNetworkSelectorModal,
   disconnectAccountAndCloseSettings,
-  setIsBackdropVisible
+  setIsNetworkSelectorOpen,
+  setIsAddressDropdownOpen
 }) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
@@ -223,7 +224,6 @@ function AppHeaderUser({
     if (active) {
       setWalletModalVisible(false);
     }
-    showEventPopup();
   }, [active, setWalletModalVisible]);
 
   const onNetworkSelect = useCallback(
@@ -256,7 +256,7 @@ function AppHeaderUser({
             modalLabel="Select Network"
             small={small}
             showModal={showNetworkSelectorModal}
-            setIsBackdropVisible={setIsBackdropVisible}
+            setIsNetworkSelectorOpen={setIsNetworkSelectorOpen}
           />
         )}
         <ConnectWalletButton
@@ -288,7 +288,7 @@ function AppHeaderUser({
           modalLabel="Select Network"
           small={small}
           showModal={showNetworkSelectorModal}
-          setIsBackdropVisible={setIsBackdropVisible}
+          setIsNetworkSelectorOpen={setIsNetworkSelectorOpen}
         />
       )}
       <div className="App-header-user-address">
@@ -298,7 +298,7 @@ function AppHeaderUser({
           accountUrl={accountUrl}
           disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
           openSettings={openSettings}
-          setIsBackdropVisible={setIsBackdropVisible}
+          setIsAddressDropdownOpen={setIsAddressDropdownOpen}
         />
       </div>
     </div>
@@ -307,10 +307,11 @@ function AppHeaderUser({
 
 function FullApp() {
   const { connector, library, deactivate, activate } = useWeb3React();
-
   const { chainId } = useChainId();
+  useEventToast();
   const [activatingConnector, setActivatingConnector] = useState();
-  const [isBackdropVisible, setIsBackdropVisible] = useState(false);
+  const [isAddressDropdownOpen, setIsAddressDropdownOpen] = useState(false);
+  const [isNetworkSelectorOpen, setIsNetworkSelectorOpen] = useState(false);
   useEffect(() => {
     if (activatingConnector && activatingConnector === connector) {
       setActivatingConnector(undefined);
@@ -543,7 +544,8 @@ function FullApp() {
                   walletModalVisible={walletModalVisible}
                   setWalletModalVisible={setWalletModalVisible}
                   showNetworkSelectorModal={showNetworkSelectorModal}
-                  setIsBackdropVisible={setIsBackdropVisible}
+                  setIsAddressDropdownOpen={setIsAddressDropdownOpen}
+                  setIsNetworkSelectorOpen={setIsNetworkSelectorOpen}
                 />
               </div>
             </div>
@@ -586,7 +588,8 @@ function FullApp() {
                     walletModalVisible={walletModalVisible}
                     setWalletModalVisible={setWalletModalVisible}
                     showNetworkSelectorModal={showNetworkSelectorModal}
-                    setIsBackdropVisible={setIsBackdropVisible}
+                    setIsAddressDropdownOpen={setIsAddressDropdownOpen}
+                    setIsNetworkSelectorOpen={setIsNetworkSelectorOpen}
                   />
                 </div>
               </div>
@@ -612,8 +615,15 @@ function FullApp() {
             )}
           </AnimatePresence>
           <div
-            className={isBackdropVisible ? "dropdown-backdrop" : ""}
-            onClick={() => setIsBackdropVisible(false)}
+            className={
+              isAddressDropdownOpen || isNetworkSelectorOpen
+                ? "dropdown-backdrop"
+                : ""
+            }
+            onClick={() => {
+              setIsAddressDropdownOpen(false);
+              setIsNetworkSelectorOpen(false);
+            }}
           ></div>
           <Switch>
             <Route exact path="/">
@@ -716,7 +726,7 @@ function FullApp() {
         containerId="main"
       />
       <ToastContainer
-        limit={1}
+        limit={3}
         transition={Zoom}
         position="top-right"
         autoClose={false}

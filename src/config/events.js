@@ -1,4 +1,4 @@
-let events = [
+let eventsData = [
   {
     id: "weth-bond-on-olympus",
     title: "New wETH bond",
@@ -30,3 +30,4 @@ let events = [
     ]
   }
 ];
+export default eventsData;
