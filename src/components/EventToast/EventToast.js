@@ -1,30 +1,53 @@
-import { helperToast } from "../../Helpers";
 import "./EventToast.css";
 import Icon from "./AnnouncementIcon";
+import eventsData from "../../config/events";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
+import { useLocalStorage } from "react-use";
 
-function EventPopupUI() {
+function EventPopupUI({ event }) {
   return (
     <div className="">
       <header>
         <Icon className="announcement-icon" />
-        <p>New wETH bond</p>
+        <p>{event.title}</p>
       </header>
-      <p className="toast-body">New WETH bond is now live on OlympusPro.</p>
+      <p className="toast-body">{event.bodyText}</p>
       <div className="event-links">
-        <a href="">Buy Now</a>
-        <a href="">Learn more</a>
+        {event.buttons.map(button => (
+          <a
+            key={event.id + button.text}
+            target="_blank"
+            rel="noreferrer noopener"
+            href={button.link}
+          >
+            {button.text}
+          </a>
+        ))}
       </div>
     </div>
   );
 }
-export function showEventPopup() {
-  helperToast.success(<EventPopupUI />, {
-    position: "top-right",
-    autoClose: false,
-    className: `event-popup-container`,
-    toastId: "event",
-    containerId: "event"
-  });
+
+export function useEventToast() {
+  const [value, setValue] = useLocalStorage("visited-announcements", []);
+  useEffect(() => {
+    eventsData
+      .filter(event => event.isActive)
+      .filter(event => !value.includes(event.id))
+      .forEach(event => {
+        toast.success(<EventPopupUI event={event} />, {
+          position: "top-right",
+          autoClose: false,
+          className: `event-popup-container`,
+          containerId: "event",
+          toastId: event.id,
+          onClose: () => {
+            setValue(prev => [...prev, event.id]);
+          }
+        });
+      });
+  }, [setValue, value]);
 }
 
-export default EventPopupUI;
+export default useEventToast;
