@@ -31,6 +31,7 @@ export default function NetworkSelector(props) {
     label,
     modalLabel,
     className,
+    setIsBackdropVisible,
     showCaret = true
   } = props;
   const [selectedLabel, setSelectedLabel] = useState(label);
@@ -217,7 +218,9 @@ export default function NetworkSelector(props) {
           classNamePrefix="react-select"
           onChange={onSelect}
           isSearchable={false}
-          className={cx("network-select")}
+          onMenuOpen={() => setIsBackdropVisible(true)}
+          onMenuClose={() => setIsBackdropVisible(false)}
+          className={"network-select"}
           styles={customStyles}
           getOptionLabel={e => {
             var optionIcon = require("../../img/" + e.icon);

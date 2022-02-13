@@ -1037,6 +1037,16 @@ button.App-button {
   font: normal normal normal 14px/16px Relative;
 }
 
+.dropdown-backdrop {
+  position: fixed;
+  z-index: 10;
+  top: 62px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  backdrop-filter: blur(20px);
+}
+
 @keyframes zoomIn {
   from {
     opacity: 0;

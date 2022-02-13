@@ -80,7 +80,7 @@ import metamaskImg from "./img/metamask.png";
 import walletConnectImg from "./img/walletconnect-circle-blue.svg";
 import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
 import { ConnectWalletButton } from "./components/Common/Button";
-import EventPopup, { showEventPopup } from "./components/EventToast/EventToast";
+import { showEventPopup } from "./components/EventToast/EventToast";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -198,7 +198,8 @@ function AppHeaderUser({
   walletModalVisible,
   setWalletModalVisible,
   showNetworkSelectorModal,
-  disconnectAccountAndCloseSettings
+  disconnectAccountAndCloseSettings,
+  setIsBackdropVisible
 }) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
@@ -255,6 +256,7 @@ function AppHeaderUser({
             modalLabel="Select Network"
             small={small}
             showModal={showNetworkSelectorModal}
+            setIsBackdropVisible={setIsBackdropVisible}
           />
         )}
         <ConnectWalletButton
@@ -286,6 +288,7 @@ function AppHeaderUser({
           modalLabel="Select Network"
           small={small}
           showModal={showNetworkSelectorModal}
+          setIsBackdropVisible={setIsBackdropVisible}
         />
       )}
       <div className="App-header-user-address">
@@ -295,6 +298,7 @@ function AppHeaderUser({
           accountUrl={accountUrl}
           disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
           openSettings={openSettings}
+          setIsBackdropVisible={setIsBackdropVisible}
         />
       </div>
     </div>
@@ -306,6 +310,7 @@ function FullApp() {
 
   const { chainId } = useChainId();
   const [activatingConnector, setActivatingConnector] = useState();
+  const [isBackdropVisible, setIsBackdropVisible] = useState(false);
   useEffect(() => {
     if (activatingConnector && activatingConnector === connector) {
       setActivatingConnector(undefined);
@@ -538,6 +543,7 @@ function FullApp() {
                   walletModalVisible={walletModalVisible}
                   setWalletModalVisible={setWalletModalVisible}
                   showNetworkSelectorModal={showNetworkSelectorModal}
+                  setIsBackdropVisible={setIsBackdropVisible}
                 />
               </div>
             </div>
@@ -580,6 +586,7 @@ function FullApp() {
                     walletModalVisible={walletModalVisible}
                     setWalletModalVisible={setWalletModalVisible}
                     showNetworkSelectorModal={showNetworkSelectorModal}
+                    setIsBackdropVisible={setIsBackdropVisible}
                   />
                 </div>
               </div>
@@ -604,6 +611,10 @@ function FullApp() {
               </motion.div>
             )}
           </AnimatePresence>
+          <div
+            className={isBackdropVisible ? "dropdown-backdrop" : ""}
+            onClick={() => setIsBackdropVisible(false)}
+          ></div>
           <Switch>
             <Route exact path="/">
               <Home />
@@ -696,12 +707,26 @@ function FullApp() {
         transition={Zoom}
         position="bottom-right"
         autoClose={7000}
-        autoClose={false}
         hideProgressBar={true}
         newestOnTop={false}
         closeOnClick={false}
         draggable={false}
         pauseOnHover
+        enableMultiContainer
+        containerId="main"
+      />
+      <ToastContainer
+        limit={1}
+        transition={Zoom}
+        position="top-right"
+        autoClose={false}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick={false}
+        draggable={false}
+        className="event-toast-container"
+        enableMultiContainer
+        containerId="event"
       />
       <Modal
         className="Connect-wallet-modal"

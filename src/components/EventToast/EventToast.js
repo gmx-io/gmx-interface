@@ -9,10 +9,11 @@ function EventPopupUI() {
         <Icon className="announcement-icon" />
         <p>New wETH bond</p>
       </header>
-      <p className="toast-body">
-        New WETH bond is now live on OlympusPro. <a href="">Buy Now </a> or{" "}
+      <p className="toast-body">New WETH bond is now live on OlympusPro.</p>
+      <div className="event-links">
+        <a href="">Buy Now</a>
         <a href="">Learn more</a>
-      </p>
+      </div>
     </div>
   );
 }
@@ -21,7 +22,8 @@ export function showEventPopup() {
     position: "top-right",
     autoClose: false,
     className: `event-popup-container`,
-    toastId: "event"
+    toastId: "event",
+    containerId: "event"
   });
 }
 
