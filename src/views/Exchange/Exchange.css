@@ -583,13 +583,12 @@ table.Exchange-list th {
   border: none;
 }
 .Exchange-swap-box .TokenSelector .Modal-content .Modal-body {
-  /* overflow-y: auto; */
-  /* max-height: calc(80vh - 5.5rem); */
   scroll-margin-right: 25rem;
   overscroll-behavior: smooth;
   scrollbar-width: thin;
   padding-right: 5px;
-  /* margin: 1rem calc(1rem - 5px) 1rem 1rem; */
+  max-height: calc(100vh - 5rem);
+  overflow-y: auto;
 }
 
 .Selector .Modal-content {
@@ -937,7 +936,7 @@ table.Exchange-list-small td {
 
   .Exchange-swap-box .TokenSelector .Modal-content .Modal-body {
     overflow-y: auto;
-    max-height: calc(80vh - 5.5rem);
+    max-height: calc(70vh - 5.5rem);
     scroll-margin-right: 25rem;
     overscroll-behavior: smooth;
     scrollbar-width: thin;

@@ -334,6 +334,8 @@ export default function SwapBox(props) {
   const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
 
+  const hasMaxAvailableShort = isShort && toTokenInfo.maxAvailableShort && toTokenInfo.maxAvailableShort.gt(0)
+
   const fromBalance = fromTokenInfo ? fromTokenInfo.balance : bigNumberify(0);
   const toBalance = toTokenInfo ? toTokenInfo.balance : bigNumberify(0);
 
@@ -554,6 +556,7 @@ export default function SwapBox(props) {
             usdgSupply,
             totalTokenWeights
           );
+
           let fromUsdMinAfterFee = fromUsdMin;
           if (feeBasisPoints) {
             fromUsdMinAfterFee = fromUsdMin
@@ -561,23 +564,21 @@ export default function SwapBox(props) {
               .div(BASIS_POINTS_DIVISOR);
           }
 
-          const baseToUsd = fromUsdMinAfterFee
-            .mul(leverageMultiplier)
-            .div(BASIS_POINTS_DIVISOR);
-          fromUsdMinAfterFee = fromUsdMinAfterFee.sub(
-            baseToUsd.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
-          );
-          const nextToUsd = fromUsdMinAfterFee
-            .mul(leverageMultiplier)
-            .div(BASIS_POINTS_DIVISOR);
+          const toNumerator = fromUsdMinAfterFee.mul(leverageMultiplier).mul(BASIS_POINTS_DIVISOR)
+          const toDenominator = bigNumberify(MARGIN_FEE_BASIS_POINTS).mul(leverageMultiplier).add(bigNumberify(BASIS_POINTS_DIVISOR).mul(BASIS_POINTS_DIVISOR))
+
+          const nextToUsd = toNumerator.div(toDenominator)
+
           const nextToAmount = nextToUsd
             .mul(expandDecimals(1, toToken.decimals))
             .div(toTokenPriceUsd);
+
           const nextToValue = formatAmountFree(
             nextToAmount,
             toToken.decimals,
             toToken.decimals
           );
+
           setToValue(nextToValue);
         }
         return;
@@ -598,9 +599,11 @@ export default function SwapBox(props) {
         const leverageMultiplier = parseInt(
           leverageOption * BASIS_POINTS_DIVISOR
         );
+
         const baseFromAmountUsd = toUsdMax
           .mul(BASIS_POINTS_DIVISOR)
           .div(leverageMultiplier);
+
         let fees = toUsdMax
           .mul(MARGIN_FEE_BASIS_POINTS)
           .div(BASIS_POINTS_DIVISOR);
@@ -608,14 +611,15 @@ export default function SwapBox(props) {
         const { feeBasisPoints } = getNextToAmount(
           chainId,
           fromAmount,
+          fromTokenAddress,
           collateralTokenAddress,
-          indexTokenAddress,
           infoTokens,
           undefined,
           undefined,
           usdgSupply,
           totalTokenWeights
         );
+
         if (feeBasisPoints) {
           const swapFees = baseFromAmountUsd
             .mul(feeBasisPoints)
@@ -624,14 +628,17 @@ export default function SwapBox(props) {
         }
 
         const nextFromUsd = baseFromAmountUsd.add(fees);
+
         const nextFromAmount = nextFromUsd
           .mul(expandDecimals(1, fromToken.decimals))
           .div(fromTokenInfo.minPrice);
+
         const nextFromValue = formatAmountFree(
           nextFromAmount,
           fromToken.decimals,
           fromToken.decimals
         );
+
         setFromValue(nextFromValue);
       }
     };
@@ -1046,7 +1053,11 @@ export default function SwapBox(props) {
         .mul(expandDecimals(1, shortCollateralToken.decimals))
         .div(shortCollateralToken.minPrice);
 
-      stableTokenAmount = stableTokenAmount.add(sizeTokens);
+      if (toTokenInfo.maxAvailableShort && toTokenInfo.maxAvailableShort.gt(0) && sizeUsd.gt(toTokenInfo.maxAvailableShort)) {
+        return [`Max ${toTokenInfo.symbol} short exceeded`]
+      }
+
+      stableTokenAmount = stableTokenAmount.add(sizeTokens)
       if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
         return [`Insufficient liquidity, change "Profits In"`];
       }
@@ -2530,10 +2541,23 @@ export default function SwapBox(props) {
               </Tooltip>
             </div>
           </div>
+          {hasMaxAvailableShort && <div className="Exchange-info-row">
+            <div className="Exchange-info-label">Available Liquidity</div>
+            <div className="align-right">
+              <Tooltip handle={`${formatAmount(toTokenInfo.maxAvailableShort, USD_DECIMALS, 2, true)}`} position="right-bottom" renderContent={() => {
+                return <>
+                  Max {toTokenInfo.symbol} short capacity: ${formatAmount(toTokenInfo.maxGlobalShortSize, USD_DECIMALS, 2, true)}<br/>
+                  <br/>
+                  Current {toTokenInfo.symbol} shorts: ${formatAmount(toTokenInfo.globalShortSize, USD_DECIMALS, 2, true)}<br/>
+                </>
+              }}>
+              </Tooltip>
+            </div>
+          </div>}
         </div>
       )}
       <div className="Exchange-swap-market-box App-box App-box-border">
-        <div className="Exchange-swap-market-box-title">Trading Guide</div>
+        <div className="Exchange-swap-market-box-title">Useful Links</div>
         <div className="App-card-divider"></div>
         <div className="Exchange-info-row">
           <div className="Exchange-info-label-button">
@@ -2542,7 +2566,18 @@ export default function SwapBox(props) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              How to Trade
+              Trading guide
+            </a>
+          </div>
+        </div>
+        <div className="Exchange-info-row">
+          <div className="Exchange-info-label-button">
+            <a
+              href="https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Speed up page loading
             </a>
           </div>
         </div>
