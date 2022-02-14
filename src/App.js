@@ -33,7 +33,7 @@ import {
   useInactiveListener,
   getExplorerUrl,
   getWalletConnectHandler,
-  activateInjectedProvider, hasMetaMaskWalletExtension, hasCoinBaseWalletExtension,
+  activateInjectedProvider, hasMetaMaskWalletExtension, hasCoinBaseWalletExtension, isMobileDevice,
 } from './Helpers';
 
 import Home from "./views/Home/Home";
@@ -342,11 +342,16 @@ function FullApp() {
     deactivate,
     setActivatingConnector
   );
+
+
+  const userOnMobileDevice = ("navigator" in window) && isMobileDevice(window.navigator);
+
   const activateMetaMask = () => {
     if ( !hasMetaMaskWalletExtension() ) {
       helperToast.error(
         <div>
-          MetaMask not yet installed.
+          MetaMask not detected.
+          <br />
           <br />
           <a
             href="https://metamask.io"
@@ -355,7 +360,7 @@ function FullApp() {
           >
             Install MetaMask
           </a>{" "}
-          to start using the app.
+          {userOnMobileDevice ? ', and use GMX with its built-in browser' : ' to start using GMX'}.
         </div>
       );
       return false;
@@ -366,16 +371,16 @@ function FullApp() {
     if ( !hasCoinBaseWalletExtension() ) {
       helperToast.error(
         <div>
-          Coinbase Wallet not yet installed.
+          Coinbase Wallet not detected.
+          <br />
           <br />
           <a
             href="https://www.coinbase.com/wallet"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Install Coinbase Wallet
-          </a>{" "}
-          to start using the app.
+            Please install Coinbase Wallet
+          </a>{userOnMobileDevice ? ', and use GMX with its built-in browser' : ' to start using GMX'}.
         </div>
       );
       return false
