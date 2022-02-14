@@ -21,18 +21,18 @@
   right: 30px;
 }
 
-.event-popup-container {
+.single-toast {
   background: #333957;
   color: white;
   border: none;
   position: relative;
 }
 
-.event-popup-container .Toastify__close-button {
+.single-toast .Toastify__close-button {
   width: 20px;
   height: 20px;
 }
-.event-popup-container .Toastify__close-button--success {
+.single-toast .Toastify__close-button--success {
   align-self: start;
   border-radius: 4px;
   transition: none;
@@ -44,19 +44,19 @@
   top: 8px;
   right: 8px;
 }
-.event-popup-container .Toastify__close-button--success:hover {
+.single-toast .Toastify__close-button--success:hover {
   background: #ffffff47 0% 0% no-repeat padding-box;
 }
-.event-popup-container header {
+.single-toast header {
   display: flex;
   align-items: center;
 }
-.event-popup-container header .announcement-icon {
+.single-toast header .announcement-icon {
   width: 20px;
   height: 20px;
   color: white;
 }
-.event-popup-container header p {
+.single-toast header p {
   margin: 0;
   padding: 0.5rem 0;
   margin-left: 0.75rem;
@@ -66,4 +66,15 @@
 .Toastify__toast-body .toast-body {
   margin: 10px 0 0 0;
   padding: 0;
+}
+
+@media screen and (max-width: 500px) {
+  .event-toast-container {
+    top: 80px;
+    left: 18px;
+    width: calc(100% - 36px);
+  }
+  .single-toast {
+    margin-bottom: 1rem;
+  }
 }

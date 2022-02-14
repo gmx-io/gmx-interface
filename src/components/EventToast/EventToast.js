@@ -39,7 +39,7 @@ export function useEventToast() {
         toast.success(<EventPopupUI event={event} />, {
           position: "top-right",
           autoClose: false,
-          className: `event-popup-container`,
+          className: `single-toast`,
           containerId: "event",
           toastId: event.id,
           onClose: () => {
