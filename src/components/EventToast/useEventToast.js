@@ -25,7 +25,12 @@ function useEventToast() {
             />
           ),
           {
-            id: event.id
+            id: event.id,
+            style: {
+              backgroundColor: "#333957",
+              color: "white",
+              borderRadius: "4px"
+            }
           }
         );
       });
