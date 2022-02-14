@@ -429,6 +429,16 @@ export default function DashboardV2() {
     return element !== null;
   });
 
+  glpPool = glpPool.sort(function(a, b) {
+    if (a.value < b.value) return 1;
+    else return -1;
+  })
+
+  gmxDistributionData = gmxDistributionData.sort(function(a, b) {
+    if (a.value < b.value) return 1;
+    else return -1;
+  })
+
   return (
     <div className="default-container DashboardV2 page-layout">
       <div className="section-title-block">
@@ -437,7 +447,7 @@ export default function DashboardV2() {
         </div>
         <div className="section-title-content">
           <div className="Page-title">
-            Stats (Avalanche <img src={avalanche24Icon} alt="avalanche24Icon" />, Arbitrum <img src={arbitrum24Icon} alt="arbitrum24Icon" />)
+            Stats { chainId === AVALANCHE && <img src={avalanche24Icon} alt="avalanche24Icon" /> }{ chainId === ARBITRUM && <img src={arbitrum24Icon} alt="arbitrum24Icon" /> }
           </div>
           <div className="Page-description">
             Total Stats start from {totalStatsStartDate}. For detailed stats: <a href="https://stats.gmx.io" target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
@@ -605,11 +615,11 @@ export default function DashboardV2() {
               <div className="stats-piechart">
                 {
                   gmxDistributionData.length > 0 &&
-                  <PieChart width={260} height={260}>
+                  <PieChart width={270} height={270}>
                     <Pie
                       data={gmxDistributionData}
-                      cx={120}
-                      cy={120}
+                      cx={130}
+                      cy={130}
                       innerRadius={100}
                       outerRadius={110}
                       fill="#8884d8"
@@ -687,11 +697,11 @@ export default function DashboardV2() {
               <div className="stats-piechart">
                 {
                   glpPool.length > 0 &&
-                  <PieChart width={260} height={260}>
+                  <PieChart width={270} height={270}>
                     <Pie
                       data={glpPool}
-                      cx={120}
-                      cy={120}
+                      cx={130}
+                      cy={130}
                       innerRadius={100}
                       outerRadius={110}
                       fill="#8884d8"
