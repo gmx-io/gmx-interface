@@ -2563,6 +2563,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rehooks/local-storage@npm:^2.4.4":
+  version: 2.4.4
+  resolution: "@rehooks/local-storage@npm:2.4.4"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 1aba4f4cfa0f1767d82730240a11c814f5b70917a0031989d3ce3a97b3d040523271738802a4a5deee20e9295e7c09bca6882a048337f0b78525347b7370ec73
+  languageName: node
+  linkType: hard
+
 "@rollup/plugin-node-resolve@npm:^7.1.1":
   version: 7.1.3
   resolution: "@rollup/plugin-node-resolve@npm:7.1.3"
@@ -8388,6 +8397,7 @@ __metadata:
     "@ethersproject/providers": ^5.0.23
     "@ethersproject/units": ^5.0.10
     "@headlessui/react": dev
+    "@rehooks/local-storage": ^2.4.4
     "@testing-library/jest-dom": ^5.11.4
     "@testing-library/react": ^11.1.0
     "@testing-library/user-event": ^12.1.10
@@ -8409,6 +8419,7 @@ __metadata:
     rc-slider: ^9.7.2
     react: ^17.0.1
     react-dom: ^17.0.1
+    react-hot-toast: ^2.2.0
     react-icons: ^4.2.0
     react-router-dom: ^5.2.0
     react-scripts: 4.0.3
@@ -8620,6 +8631,15 @@ __metadata:
     pify: ^2.0.0
     pinkie-promise: ^2.0.0
   checksum: 18109d6b9d55643d2b98b59c3cfae7073ccfe39829632f353d516cc124d836c2ddebe48a23f04af63d66a621b6d86dd4cbd7e6af906f2458a7fe510ffc4bd424
+  languageName: node
+  linkType: hard
+
+"goober@npm:^2.1.1":
+  version: 2.1.7
+  resolution: "goober@npm:2.1.7"
+  peerDependencies:
+    csstype: ^2.6.2
+  checksum: f26e056e3ea58c6e7810fb620773f19dfee6f791f316a53c082834aa44c8ab7248b591c4a6f348bbdeb2da54c11e046b87bf359648711f99c0ccd1b423be1f29
   languageName: node
   linkType: hard
 
@@ -13934,6 +13954,18 @@ __metadata:
   version: 6.0.9
   resolution: "react-error-overlay@npm:6.0.9"
   checksum: 695853bc885e798008a00c10d8d94e5ac91626e8130802fea37345f9c037f41b80104345db2ee87f225feb4a4ef71b0df572b17c378a6d397b6815f6d4a84293
+  languageName: node
+  linkType: hard
+
+"react-hot-toast@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "react-hot-toast@npm:2.2.0"
+  dependencies:
+    goober: ^2.1.1
+  peerDependencies:
+    react: ">=16"
+    react-dom: ">=16"
+  checksum: bb34ddc8ada14cbd75a37f14d2563412174e23276eb05e9fb23a031b6d8374ca190cefa1940692f4371529ddafeb2d4b8d3e5023187c2851ec8cb247461553ee
   languageName: node
   linkType: hard
 
