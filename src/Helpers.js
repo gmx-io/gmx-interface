@@ -2396,6 +2396,10 @@ export const getInjectedHandler = activate => {
   return fn;
 };
 
+export function isMobileDevice(navigator) {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
 export function getInfoTokens(
   tokens,
   tokenBalances,
