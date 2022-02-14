@@ -359,8 +359,7 @@ function FullApp() {
             rel="noopener noreferrer"
           >
             Install MetaMask
-          </a>{" "}
-          {userOnMobileDevice ? ', and use GMX with its built-in browser' : ' to start using GMX'}.
+          </a>{userOnMobileDevice ? ', and use GMX with its built-in browser' : ' to start using GMX'}.
         </div>
       );
       return false;
