@@ -1,18 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import cx from "classnames";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { MdClose } from "react-icons/md";
-import { useLockBodyScroll, createBreakpoint } from "react-use";
 
 import "./Modal.css";
+import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 export default function Modal(props) {
   const { isVisible, setIsVisible, className, zIndex } = props;
-  const useBreakpoint = createBreakpoint();
-  let isMobile = useBreakpoint() === "tablet";
-  useLockBodyScroll(isVisible && !isMobile);
-
+  const modalRef = useRef(null);
+  useLockBodyScroll(modalRef, isVisible);
   useEffect(() => {
     function close(e) {
       if (e.keyCode === 27) {
@@ -42,6 +40,10 @@ export default function Modal(props) {
         >
           <div
             className="Modal-backdrop"
+            style={{
+              overflow: isVisible ? "hidden" : "visible",
+              position: "fixed"
+            }}
             onClick={() => setIsVisible(false)}
           ></div>
           <div className="Modal-content">
@@ -55,7 +57,9 @@ export default function Modal(props) {
               </div>
             </div>
             <div className="divider" />
-            <div className="Modal-body">{props.children}</div>
+            <div ref={modalRef} className="Modal-body">
+              {props.children}
+            </div>
           </div>
         </motion.div>
       )}

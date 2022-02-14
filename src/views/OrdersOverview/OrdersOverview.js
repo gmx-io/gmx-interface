@@ -44,7 +44,7 @@ export default function OrdersOverview() {
   const whitelistedTokens = getWhitelistedTokens(chainId)
   const whitelistedTokenAddresses = whitelistedTokens.map(token => token.address)
 
-  const { data: vaultTokenInfo } = useSWR([true, chainId, readerAddress, "getFullVaultTokenInfo"], {
+  const { data: vaultTokenInfo } = useSWR([true, chainId, readerAddress, "getVaultTokenInfoV2"], {
     fetcher: fetcher(library, ReaderV2, [vaultAddress, nativeTokenAddress, expandDecimals(1, 18), whitelistedTokenAddresses]),
   })
 
