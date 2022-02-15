@@ -199,9 +199,7 @@ function AppHeaderUser({
   walletModalVisible,
   setWalletModalVisible,
   showNetworkSelectorModal,
-  disconnectAccountAndCloseSettings,
-  setIsNetworkSelectorOpen,
-  setIsAddressDropdownOpen
+  disconnectAccountAndCloseSettings
 }) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
@@ -257,7 +255,6 @@ function AppHeaderUser({
             modalLabel="Select Network"
             small={small}
             showModal={showNetworkSelectorModal}
-            setIsNetworkSelectorOpen={setIsNetworkSelectorOpen}
           />
         )}
         <ConnectWalletButton
@@ -289,7 +286,6 @@ function AppHeaderUser({
           modalLabel="Select Network"
           small={small}
           showModal={showNetworkSelectorModal}
-          setIsNetworkSelectorOpen={setIsNetworkSelectorOpen}
         />
       )}
       <div className="App-header-user-address">
@@ -299,7 +295,6 @@ function AppHeaderUser({
           accountUrl={accountUrl}
           disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
           openSettings={openSettings}
-          setIsAddressDropdownOpen={setIsAddressDropdownOpen}
         />
       </div>
     </div>
@@ -311,8 +306,6 @@ function FullApp() {
   const { chainId } = useChainId();
   useEventToast();
   const [activatingConnector, setActivatingConnector] = useState();
-  const [isAddressDropdownOpen, setIsAddressDropdownOpen] = useState(false);
-  const [isNetworkSelectorOpen, setIsNetworkSelectorOpen] = useState(false);
   useEffect(() => {
     if (activatingConnector && activatingConnector === connector) {
       setActivatingConnector(undefined);
@@ -545,8 +538,6 @@ function FullApp() {
                   walletModalVisible={walletModalVisible}
                   setWalletModalVisible={setWalletModalVisible}
                   showNetworkSelectorModal={showNetworkSelectorModal}
-                  setIsAddressDropdownOpen={setIsAddressDropdownOpen}
-                  setIsNetworkSelectorOpen={setIsNetworkSelectorOpen}
                 />
               </div>
             </div>
@@ -589,8 +580,6 @@ function FullApp() {
                     walletModalVisible={walletModalVisible}
                     setWalletModalVisible={setWalletModalVisible}
                     showNetworkSelectorModal={showNetworkSelectorModal}
-                    setIsAddressDropdownOpen={setIsAddressDropdownOpen}
-                    setIsNetworkSelectorOpen={setIsNetworkSelectorOpen}
                   />
                 </div>
               </div>
@@ -615,17 +604,6 @@ function FullApp() {
               </motion.div>
             )}
           </AnimatePresence>
-          <div
-            className={
-              isAddressDropdownOpen || isNetworkSelectorOpen
-                ? "dropdown-backdrop"
-                : ""
-            }
-            onClick={() => {
-              setIsAddressDropdownOpen(false);
-              setIsNetworkSelectorOpen(false);
-            }}
-          ></div>
           <Switch>
             <Route exact path="/">
               <Home />
