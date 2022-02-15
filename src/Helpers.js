@@ -36,7 +36,7 @@ export const ARBITRUM = 42161;
 export const DEFAULT_CHAIN_ID = AVALANCHE;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const MIN_PROFIT_TIME = 60 * 60 * 12; // 12 hours
+export const MIN_PROFIT_TIME = 6 * 60 * 60; // 6 hours
 
 const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
 
