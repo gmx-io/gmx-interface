@@ -6,11 +6,12 @@
 }
 
 .event-toast-container .event-links a {
-  text-decoration: none;
-  color: #b3b7d8;
+  text-decoration: underline;
+  font-size: 14px;
+  opacity: 0.7;
 }
 .event-toast-container .event-links a:hover {
-  text-decoration: underline;
+  opacity: 1;
 }
 
 .single-toast {
@@ -32,7 +33,7 @@
   padding: 2px;
 }
 .single-toast header .cross:hover {
-  background: var(--dark-blue);
+  background: #ffffff47;
 }
 .single-toast header {
   display: flex;
@@ -48,14 +49,15 @@
   margin: 0;
   padding: 0.5rem 0;
   margin-left: 0.75rem;
-  font-weight: bold;
+  font-size: 16px;
 }
 
 .toast-body {
-  margin: 5px 0;
+  margin: 10px 0;
   padding: 0;
   max-width: 300px;
-  font-size: 0.95rem;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 @media screen and (max-width: 500px) {

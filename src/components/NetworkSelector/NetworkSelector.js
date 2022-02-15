@@ -31,7 +31,6 @@ export default function NetworkSelector(props) {
     label,
     modalLabel,
     className,
-    setIsNetworkSelectorOpen,
     showCaret = true
   } = props;
   const [selectedLabel, setSelectedLabel] = useState(label);
@@ -218,8 +217,6 @@ export default function NetworkSelector(props) {
           classNamePrefix="react-select"
           onChange={onSelect}
           isSearchable={false}
-          onMenuOpen={() => setIsNetworkSelectorOpen(true)}
-          onMenuClose={() => setIsNetworkSelectorOpen(false)}
           className={"network-select"}
           styles={customStyles}
           getOptionLabel={e => {
