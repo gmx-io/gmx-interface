@@ -378,7 +378,7 @@ function FullApp() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Please install Coinbase Wallet
+            Install Coinbase Wallet
           </a>{userOnMobileDevice ? ', and use GMX with its built-in browser' : ' to start using GMX'}.
         </div>
       );
