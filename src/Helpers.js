@@ -54,6 +54,7 @@ const GAS_PRICE_ADJUSTMENT_MAP = {
 }
 
 const ARBITRUM_RPC_PROVIDERS = ["https://rpc.ankr.com/arbitrum"];
+const ARBITRUM_RPC_PROVIDERS_BACKUP = ["https://arb1.arbitrum.io/rpc"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 
@@ -2298,6 +2299,26 @@ export const getWalletConnectHandler = (
   };
   return fn;
 };
+
+export const notifyBadRpcHelper = () => {
+  const chainId =
+  localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) ||
+  DEFAULT_CHAIN_ID;
+  if (Number(chainId) === ARBITRUM) {
+    helperToast.error(
+      <div>
+        <div>It looks like your wallet is having trouble connecting to {getChainName(chainId)}.</div>
+        <br />
+        <div>
+          Please consider updating your RPC url to 
+          <a href={ARBITRUM_RPC_PROVIDERS[0]}> {ARBITRUM_RPC_PROVIDERS[0]}</a> or<br/> 
+          <a href={ARBITRUM_RPC_PROVIDERS_BACKUP[0]}>{ARBITRUM_RPC_PROVIDERS_BACKUP[0]}</a>
+        </div>
+      </div>
+    );
+  }
+  return
+}
 
 export const getInjectedHandler = activate => {
   const fn = async () => {
