@@ -664,6 +664,17 @@ export default function DashboardV2() {
                     <div className="App-card-title-mark-subtitle">GLP</div>
                   </div>
                 </div>
+                <div className="Available-network-group">
+                  <div className="Available-network">
+                    <img src={metamaskHover16Icon} alt="metamaskHover16Icon" />
+                  </div>
+                  <div className="Available-network">
+                    <img src={coingeckoHover16Icon} alt="coingeckoHover16Icon" />
+                  </div>
+                  <div className="Available-network">
+                    <img src={arbitrumHover16Icon} alt="arbitrumHover16Icon" />
+                  </div>
+                </div>
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-content">
@@ -722,14 +733,26 @@ export default function DashboardV2() {
                 }
               </div>
               <div className="stats-labels">
-                {
-                  glpPool.map((pool, index) => {
-                    return <div className="stats-label" key={index}>
-                      <div className="stats-label-color" style={{ backgroundColor: GLPPOOLCOLORS[pool.name] }}></div>
-                      {pool.value}% {pool.fullname}
-                    </div>
-                  })
-                }
+                <div className="stats-label-column">
+                  {
+                    glpPool.slice(0, glpPool.length / 2).map((pool, index) => {
+                      return <div className="stats-label" key={index}>
+                        <div className="stats-label-color" style={{ backgroundColor: GLPPOOLCOLORS[pool.name] }}></div>
+                        {pool.value}% {pool.fullname}
+                      </div>
+                    })
+                  }
+                </div>
+                <div className="stats-label-column">
+                  {
+                    glpPool.slice(glpPool.length / 2, glpPool.length).map((pool, index) => {
+                      return <div className="stats-label" key={index}>
+                        <div className="stats-label-color" style={{ backgroundColor: GLPPOOLCOLORS[pool.name] }}></div>
+                        {pool.value}% {pool.fullname}
+                      </div>
+                    })
+                  }
+                </div>
               </div>
             </div>
           </div>
