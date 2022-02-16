@@ -141,6 +141,9 @@ export default function PositionEditor(props) {
   }
 
   const getError = () => {
+    if (isDeposit) {
+      return ["Temporarily disabled, pending upgrade"]
+    }
     if (!fromAmount) { return "Enter an amount" }
     if (nextLeverage && nextLeverage.eq(0)) { return "Enter an amount" }
 
