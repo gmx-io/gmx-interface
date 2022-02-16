@@ -183,11 +183,11 @@ export const ICONLINKS = {
     AVAX: {
       coingecko: "https://www.coingecko.com/en/coins/avalanche"
     },
-    "WETH.e": {
+    ETH: {
       coingecko: "https://www.coingecko.com/en/coins/weth",
       avalanche: "https://snowtrace.io/address/0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab"
     },
-    "WBTC.e": {
+    BTC: {
       coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
       avalanche: "https://snowtrace.io/address/0x50b7545627a5162f82a992c33b87adc75187b218"
     },
