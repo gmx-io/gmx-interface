@@ -667,6 +667,14 @@ export function getNextFromAmount(
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
   const toToken = getTokenInfo(infoTokens, toTokenAddress);
 
+  if (fromToken.isNative && toToken.isWrapped) {
+    return { amount: toAmount };
+  }
+
+  if (fromToken.isWrapped && toToken.isNative) {
+    return { amount: toAmount };
+  }
+
   if (!fromToken || !fromToken.minPrice || !toToken || !toToken.maxPrice) {
     return defaultValue;
   }
