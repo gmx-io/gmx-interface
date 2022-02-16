@@ -30,7 +30,8 @@ import {
   ARBITRUM,
   AVALANCHE,
   getTotalVolumeSum,
-  GLPPOOLCOLORS
+  GLPPOOLCOLORS,
+  ICONLINKS
 } from '../../Helpers'
 import { useGmxPrice, useStakedGmxSupply } from '../../Api'
 
@@ -52,8 +53,6 @@ import arbitrum16Icon from '../../img/ic_arbitrum_16.svg'
 import arbitrum24Icon from '../../img/ic_arbitrum_24.svg'
 import avalanche24Icon from '../../img/ic_avalanche_24.svg'
 
-import arbitrumHover16Icon from '../../img/ic_arbitrum_hover_16.svg'
-import coingeckoHover16Icon from '../../img/ic_coingecko_hover_16.svg'
 import metamaskHover16Icon from '../../img/ic_metamask_hover_16.svg'
 
 import statsIcon from '../../img/ic_stats_big.svg'
@@ -561,15 +560,26 @@ export default function DashboardV2() {
                   </div>
                 </div>
                 <div className="Available-network-group">
-                  <div className="Available-network">
-                    <img src={metamaskHover16Icon} alt="metamaskHover16Icon" />
-                  </div>
-                  <div className="Available-network">
-                    <img src={coingeckoHover16Icon} alt="coingeckoHover16Icon" />
-                  </div>
-                  <div className="Available-network">
-                    <img src={arbitrumHover16Icon} alt="arbitrumHover16Icon" />
-                  </div>
+                  { 
+                    Object.keys(ICONLINKS[chainId]["GMX"]).map((item, index) => {
+                      var iconImage = null;
+
+                      try {
+                        iconImage = require('../../img/ic_' + item + '_16.svg')
+                      } catch (error) {
+                        // console.log(error)
+                      }
+
+                      return (
+                        <a href={ICONLINKS[chainId]["GMX"][item]} className="Available-network" key={index} target="_blank" rel="noopener noreferrer">
+                          <img src={iconImage.default} alt={ICONLINKS[chainId]["GMX"][item]} />
+                        </a>
+                      )
+                    })
+                  }
+                  <a href="/#" className="Available-network" target="_blank" rel="noopener noreferrer">
+                    <img src={metamaskHover16Icon} alt="metamask" />
+                  </a>
                 </div>
               </div>
               <div className="App-card-divider"></div>
@@ -665,15 +675,26 @@ export default function DashboardV2() {
                   </div>
                 </div>
                 <div className="Available-network-group">
-                  <div className="Available-network">
-                    <img src={metamaskHover16Icon} alt="metamaskHover16Icon" />
-                  </div>
-                  <div className="Available-network">
-                    <img src={coingeckoHover16Icon} alt="coingeckoHover16Icon" />
-                  </div>
-                  <div className="Available-network">
-                    <img src={arbitrumHover16Icon} alt="arbitrumHover16Icon" />
-                  </div>
+                  { 
+                    Object.keys(ICONLINKS[chainId]["GLP"]).map((item, index) => {
+                      var iconImage = null;
+
+                      try {
+                        iconImage = require('../../img/ic_' + item + '_16.svg')
+                      } catch (error) {
+                        // console.log(error)
+                      }
+
+                      return (
+                        <a href={ICONLINKS[chainId]["GLP"][item]} className="Available-network" key={index} target="_blank" rel="noopener noreferrer">
+                          <img src={iconImage.default} alt={ICONLINKS[chainId]["GLP"][item]} />
+                        </a>
+                      )
+                    })
+                  }
+                  <a href="/#" className="Available-network" target="_blank" rel="noopener noreferrer">
+                    <img src={metamaskHover16Icon} alt="metamask" />
+                  </a>
                 </div>
               </div>
               <div className="App-card-divider"></div>
@@ -804,15 +825,27 @@ export default function DashboardV2() {
                               </div>
                             </div>
                             <div className="Available-network-group">
-                              <div className="Available-network">
-                                <img src={metamaskHover16Icon} alt="metamaskHover16Icon" />
-                              </div>
-                              <div className="Available-network">
-                                <img src={coingeckoHover16Icon} alt="coingeckoHover16Icon" />
-                              </div>
-                              <div className="Available-network">
-                                <img src={arbitrumHover16Icon} alt="arbitrumHover16Icon" />
-                              </div>
+                              {
+                                ICONLINKS[chainId][token.symbol] && 
+                                Object.keys(ICONLINKS[chainId][token.symbol]).map((item, index) => {
+                                  var iconImage = null;
+
+                                  try {
+                                    iconImage = require('../../img/ic_' + item + '_16.svg')
+                                  } catch (error) {
+                                    // console.log(error)
+                                  }
+
+                                  return (
+                                    <a href={ICONLINKS[chainId][token.symbol][item]} className="Available-network" key={index} target="_blank" rel="noopener noreferrer">
+                                      <img src={iconImage.default} alt={ICONLINKS[chainId][token.symbol][item]} />
+                                    </a>
+                                  )
+                                })
+                              }
+                              <a href="/#" className="Available-network" target="_blank" rel="noopener noreferrer">
+                                <img src={metamaskHover16Icon} alt="metamask" />
+                              </a>
                             </div>
                           </div>
                         </td>
