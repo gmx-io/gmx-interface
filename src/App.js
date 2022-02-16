@@ -705,7 +705,7 @@ function FullApp() {
       <Toaster
         position="top-right"
         reverseOrder={true}
-        gutter={30}
+        gutter={20}
         containerClassName="event-toast-container"
         containerStyle={{
           zIndex: 2,
