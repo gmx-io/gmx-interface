@@ -76,6 +76,7 @@
 .stats-block--glp .stats-labels .stats-label-column {
   display: grid;
   grid-row-gap: 1px;
+  height: fit-content;
 }
 
 .stats-label {
