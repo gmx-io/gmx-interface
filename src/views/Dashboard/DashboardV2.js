@@ -462,7 +462,7 @@ export default function DashboardV2() {
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">AUM</div>
-                <div>
+                <div className="value">
                   <Tooltip
                     handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                     position="right-bottom"
@@ -472,7 +472,7 @@ export default function DashboardV2() {
               </div>
               <div className="App-card-row">
                 <div className="label">GLP Pool</div>
-                <div>
+                <div className="value">
                   <Tooltip
                     handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
                     position="right-bottom"
@@ -482,26 +482,26 @@ export default function DashboardV2() {
               </div>
               <div className="App-card-row">
                 <div className="label">24h Volume</div>
-                <div>
+                <div className="value">
                   ${formatAmount(volumeInfo.totalVolume, USD_DECIMALS, 0, true)}
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Long Positions</div>
-                <div>
+                <div className="value">
                   ${formatAmount(totalLongPositionSizes, USD_DECIMALS, 0, true)}
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Short Positions</div>
-                <div>
+                <div className="value">
                   ${formatAmount(totalShortPositionSizes, USD_DECIMALS, 0, true)}
                 </div>
               </div>
               {feeHistory.length ?
                 <div className="App-card-row">
                   <div className="label">Fees since {formatDate(feeHistory[0].to)}</div>
-                  <div>
+                  <div className="value">
                     ${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}
                   </div>
                 </div> : null
@@ -514,19 +514,19 @@ export default function DashboardV2() {
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">Total Fees</div>
-                <div>
+                <div className="value">
                   ${numberWithCommas(totalFeesDistributed.toFixed(0))}
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Total Volume</div>
-                <div>
+                <div className="value">
                   ${formatAmount(totalVolumeSum, USD_DECIMALS, 0, true)}
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Floor Price Fund</div>
-                <div>
+                <div className="value">
                   ${formatAmount(totalFloorPriceFundUsd, 30, 0, true)}
                 </div>
               </div>
@@ -576,7 +576,7 @@ export default function DashboardV2() {
               <div className="App-card-content">
                 <div className="App-card-row">
                   <div className="label">Price</div>
-                  <div>
+                  <div className="value">
                     {!gmxPrice && '...'}
                     {gmxPrice &&
                       <Tooltip
@@ -593,19 +593,19 @@ export default function DashboardV2() {
                 </div>
                 <div className="App-card-row">
                   <div className="label">Supply</div>
-                  <div>
+                  <div className="value">
                     {formatAmount(gmxSupply, GMX_DECIMALS, 0, true)} GMX
                   </div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">Total Staked</div>
-                  <div>
+                  <div className="value">
                     ${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}
                   </div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">Market Cap</div>
-                  <div>
+                  <div className="value">
                     ${formatAmount(gmxMarketCap, USD_DECIMALS, 0, true)}
                   </div>
                 </div>
@@ -669,25 +669,25 @@ export default function DashboardV2() {
               <div className="App-card-content">
                 <div className="App-card-row">
                   <div className="label">Price</div>
-                  <div>
+                  <div className="value">
                     ${formatAmount(glpPrice, USD_DECIMALS, 2, true)}
                   </div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">Supply</div>
-                  <div>
+                  <div className="value">
                     {formatAmount(glpSupply, GLP_DECIMALS, 0, true)} GLP
                   </div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">Total Staked</div>
-                  <div>
+                  <div className="value">
                     ${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}
                   </div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">Market Cap</div>
-                  <div>
+                  <div className="value">
                     ${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}
                   </div>
                 </div>
