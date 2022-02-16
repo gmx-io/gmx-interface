@@ -864,7 +864,13 @@ export default function SwapBox(props) {
     return [false];
   };
 
+  const isLeverageDisabled = true
+
   const getLeverageError = useCallback(() => {
+    if (isLeverageDisabled) {
+      return ["Temporarily disabled, pending upgrade"]
+    }
+
     if (!toAmount || toAmount.eq(0)) {
       return ["Enter an amount"];
     }
@@ -1085,7 +1091,8 @@ export default function SwapBox(props) {
     triggerPriceUsd,
     triggerPriceValue,
     usdgSupply,
-    entryMarkPrice
+    entryMarkPrice,
+    isLeverageDisabled
   ]);
 
   const getToLabel = () => {
