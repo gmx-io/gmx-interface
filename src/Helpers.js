@@ -111,7 +111,7 @@ export const SHOULD_SHOW_POSITION_LINES_KEY =
 export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
 
-export const PROFIT_THRESHOLD_BASIS_POINTS = 150;
+export const PROFIT_THRESHOLD_BASIS_POINTS = 120;
 
 const supportedChainIds = [ARBITRUM, AVALANCHE];
 const injectedConnector = new InjectedConnector({
