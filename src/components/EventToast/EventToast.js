@@ -2,9 +2,12 @@ import "./EventToast.css";
 import Icon from "./AnnouncementIcon";
 import { MdOutlineClose } from "react-icons/md";
 
-export default function EventToast({ event, id, onClick }) {
+export default function EventToast({ event, id, onClick, t }) {
   return (
-    <div className="single-toast" key={id}>
+    <div
+      className={`single-toast ${t.visible ? "zoomIn" : "zoomOut"}`}
+      key={id}
+    >
       <header>
         <div className="toast-title">
           <Icon className="announcement-icon" />
