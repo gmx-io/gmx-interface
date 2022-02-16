@@ -69,6 +69,15 @@
   grid-template-columns: 1fr;
 }
 
+.stats-block--glp .stats-label {
+  grid-row-gap: 0;
+}
+
+.stats-block--glp .stats-labels .stats-label-column {
+  display: grid;
+  grid-row-gap: 1px;
+}
+
 .stats-label {
   height: 32px;
   background: #1E1F37;
