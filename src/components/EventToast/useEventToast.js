@@ -12,7 +12,7 @@ function useEventToast() {
       .filter(event => event.isActive)
       .filter(event => Array.isArray(visited) && !visited.includes(event.id))
       .forEach(event => {
-        toast(
+        toast.custom(
           () => (
             <EventToast
               event={event}

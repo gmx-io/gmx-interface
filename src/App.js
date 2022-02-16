@@ -713,8 +713,7 @@ function FullApp() {
           right: "30px"
         }}
         toastOptions={{
-          duration: Infinity,
-          className: "single-toast"
+          duration: Infinity
         }}
       />
       <Modal

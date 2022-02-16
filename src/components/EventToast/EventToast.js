@@ -4,16 +4,20 @@ import { MdOutlineClose } from "react-icons/md";
 
 export default function EventToast({ event, id, onClick }) {
   return (
-    <div className="" key={id}>
+    <div className="single-toast" key={id}>
       <header>
-        <div className="title-info">
+        <div className="toast-title">
           <Icon className="announcement-icon" />
           <p>{event.title}</p>
         </div>
-        <MdOutlineClose onClick={onClick} className="cross" color="white" />
+        <MdOutlineClose
+          onClick={onClick}
+          className="cross-icon"
+          color="white"
+        />
       </header>
       <p className="toast-body">{event.bodyText}</p>
-      <div className="event-links">
+      <div className="toast-links">
         {event.buttons.map(button => (
           <a
             key={event.id + button.text}
