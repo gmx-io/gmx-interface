@@ -5,6 +5,14 @@
   font-size: 14px;
   padding: 0 1rem 1rem 1rem;
 }
+.zoomIn {
+  animation: zoomIn 0.2s ease-in-out;
+  animation-fill-mode: forwards;
+}
+.zoomOut {
+  animation: zoomOut 0.2s ease-in-out;
+  animation-fill-mode: forwards;
+}
 .event-toast-container .toast-links a {
   text-decoration: underline;
   font-size: 14px;

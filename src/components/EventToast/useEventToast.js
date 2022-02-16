@@ -12,11 +12,12 @@ function useEventToast() {
       .filter(event => event.isActive)
       .filter(event => Array.isArray(visited) && !visited.includes(event.id))
       .forEach(event => {
-        toast(
-          () => (
+        toast.custom(
+          t => (
             <EventToast
               event={event}
               id={event.id}
+              t={t}
               onClick={() => {
                 toast.dismiss(event.id);
                 visited.push(event.id);
@@ -26,13 +27,7 @@ function useEventToast() {
           ),
           {
             id: event.id,
-            style: {
-              backgroundColor: "transparent",
-              color: "white",
-              boxShadow: "none",
-              padding: 0,
-              margin: 0
-            }
+            style: {}
           }
         );
       });
