@@ -217,7 +217,7 @@ export default function PositionSeller(props) {
       if (!nextHasProfit) {
         const deductions = adjustedDelta.add(positionFee).add(fundingFee)
         if (collateralDelta.gt(deductions)) {
-          collateralDelta = collateralDelta = collateralDelta.sub(deductions)
+          collateralDelta = collateralDelta.sub(deductions)
         } else {
           collateralDelta = bigNumberify(0)
         }

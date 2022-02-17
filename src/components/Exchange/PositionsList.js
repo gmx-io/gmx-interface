@@ -404,7 +404,7 @@ export default function PositionsList(props) {
               </td>
               <td>
                 <button className="Exchange-list-action" onClick={() => editPosition(position)}>
-                  Edit
+                  Deposit
                 </button>
               </td>
               <td>

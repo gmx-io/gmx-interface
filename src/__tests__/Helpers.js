@@ -18,7 +18,7 @@ describe('Helpers', function() {
         averagePrice: expandDecimals(50000, 30),
         entryFundingRate: bigNumberify(80000),
         cumulativeFundingRate: bigNumberify(100000),
-        expected: expandDecimals(41055, 30)
+        expected: expandDecimals(41045, 30)
     },
     { // with size increase
         isLong: true,
@@ -27,7 +27,7 @@ describe('Helpers', function() {
         averagePrice: expandDecimals(50000, 30),
         entryFundingRate: bigNumberify(95000),
         cumulativeFundingRate: bigNumberify(100000),
-        expected: expandDecimals(45525, 30),
+        expected: expandDecimals(45520, 30),
         sizeDelta: expandDecimals(50000, 30),
         increaseSize: true
     },
@@ -38,7 +38,7 @@ describe('Helpers', function() {
         averagePrice: expandDecimals(50000, 30),
         entryFundingRate: bigNumberify(95000),
         cumulativeFundingRate: bigNumberify(100000),
-        expected: expandDecimals(30660, 30),
+        expected: expandDecimals(30630, 30),
         sizeDelta: expandDecimals(25000, 30)
     },
     { // with pending losses
@@ -52,7 +52,7 @@ describe('Helpers', function() {
         hasProfit: false,
         delta: expandDecimals(5000, 30),
         includeDelta: true,
-        expected: expandDecimals(35660, 30)
+        expected: expandDecimals(35630, 30)
     },
     { // with pending profit (no difference)
         isLong: true,
@@ -65,7 +65,7 @@ describe('Helpers', function() {
         hasProfit: true,
         delta: expandDecimals(5000, 30),
         includeDelta: true,
-        expected: expandDecimals(30660, 30)
+        expected: expandDecimals(30630, 30)
     },
     { // decrease collateral
         isLong: true,

@@ -21,7 +21,7 @@ import {
 	approveTokens
 } from '../../Helpers'
 import { getContract } from '../../Addresses'
-import Tab from '../Tab/Tab'
+// import Tab from '../Tab/Tab'
 import Modal from '../Modal/Modal'
 import { callContract } from '../../Api'
 
@@ -30,7 +30,7 @@ import Token from '../../abis/Token.json'
 
 const DEPOSIT = "Deposit"
 const WITHDRAW = "Withdraw"
-const EDIT_OPTIONS = [DEPOSIT, WITHDRAW]
+// const EDIT_OPTIONS = [DEPOSIT, WITHDRAW]
 const { AddressZero } = ethers.constants
 
 export default function PositionEditor(props) {
@@ -53,7 +53,7 @@ export default function PositionEditor(props) {
   } = props
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
   const position = (positionsMap && positionKey) ? positionsMap[positionKey] : undefined
-  const [option, setOption] = useState(DEPOSIT)
+  const [option] = useState(DEPOSIT)
   const [fromValue, setFromValue] = useState("")
   const [isApproving, setIsApproving] = useState(false)
   const [isSwapping, setIsSwapping] = useState(false)
@@ -86,7 +86,7 @@ export default function PositionEditor(props) {
   let title
   let collateralDelta
   if (position) {
-    title = `Edit ${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol}`
+    title = `Deposit ${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol}`
     collateralToken = position.collateralToken
     liquidationPrice = getLiquidationPrice(position)
 
@@ -306,17 +306,16 @@ export default function PositionEditor(props) {
       {(position) &&
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           <div>
-            <Tab options={EDIT_OPTIONS} option={option} setOption={setOption} onChange={resetForm} />
             {(isDeposit || isWithdrawal) && <div>
               <div className="Exchange-swap-section">
                 <div className="Exchange-swap-section-top">
                   <div className="muted">
                     {convertedAmountFormatted &&
                       <div className="Exchange-swap-usd">
-                        {isDeposit ? "Deposit" : "Withdraw"}: {convertedAmountFormatted} {isDeposit ? "USD" : position.collateralToken.symbol}
+                        {isDeposit ? "Amount" : "Withdraw"}: {convertedAmountFormatted} {isDeposit ? "USD" : position.collateralToken.symbol}
                       </div>
                     }
-                    {!convertedAmountFormatted && `${isDeposit ? "Deposit" : "Withdraw"}`}
+                    {!convertedAmountFormatted && `${isDeposit ? "Amount" : "Withdraw"}`}
                   </div>
                   {maxAmount &&
                     <div className="muted align-right clickable" onClick={() => setFromValue(maxAmountFormattedFree)}>Max: {maxAmountFormatted}</div>
