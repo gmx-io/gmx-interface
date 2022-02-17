@@ -34,6 +34,9 @@
 .App-card-title-icon img + img {
   margin-left: 6px;
 }
+.cap-reached {
+  color: #f44336;
+}
 
 @media (max-width: 900px) {
   .DashboardV2-cards {

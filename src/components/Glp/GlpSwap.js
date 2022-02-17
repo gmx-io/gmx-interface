@@ -830,6 +830,7 @@ export default function GlpSwap(props) {
                 } catch (error) {
                   // console.log(error)
                 }
+                let isCapReached = tokenInfo.managedAmount?.gt(maxUsdgAmount)
 
                 return (
                   <tr key={token.symbol}>
@@ -862,6 +863,7 @@ export default function GlpSwap(props) {
                               </>
                             }}
                           />
+                          {isCapReached && <span className='cap-reached'>Cap reached</span>}
                         </div>}
                       {!isBuying &&
                         <div>
