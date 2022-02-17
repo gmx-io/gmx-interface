@@ -354,6 +354,16 @@ button.App-connect-wallet:hover {
   margin-right: 24px;
 }
 
+.App-header-user-address {
+  border: 1px solid #ffffff29;
+  height: 36px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  color: white;
+  position: relative;
+}
+
 .App-card-divider {
   height: 1px;
   background: #23263b;

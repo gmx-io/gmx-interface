@@ -26,12 +26,12 @@
 
 .Selector-box.Arbitrum {
   /* background-color: #1d446b; */
-  border: 1px solid #FFFFFF17;
+  border: 1px solid #ffffff17;
 }
 
 .Selector-box.Avalanche {
   /* background-color: #371e32; */
-  border: 1px solid #FFFFFF17;
+  border: 1px solid #ffffff17;
 }
 
 .Selector-caret {
@@ -43,13 +43,16 @@
 
 .Selector-option {
   cursor: pointer;
-  background: #FFFFFF0A 0% 0% no-repeat padding-box;
-  border: 1px solid #FFFFFF08;
+  background: var(--dark-blue);
+  border: 1px solid var(--dark-blue-border);
   border-radius: 4px;
   padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
   position: relative;
+}
+.Selector-option:hover {
+  background: var(--dark-blue-hover);
 }
 
 .Selector-option + .Selector-option {
@@ -65,17 +68,17 @@
   font-size: 16px;
   line-height: 20px;
   letter-spacing: 0.29px;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .Selector-option.Arbitrum:hover {
-  background-color: #1d446b;
+  background: #808aff14 !important;
   border: 1px solid #4275a8;
 }
 
 .Selector-option.Avalanche:hover {
-  background-color: #E841424D;
-  border: 1px solid #E84142;
+  background: #1f213e !important;
+  border: 1px solid #e84142;
 }
 
 .Selector-option .selected-icon {
@@ -91,7 +94,15 @@
 }
 
 .Selector-option.Avalanche .selected-icon {
-  background-color: #E84142;
+  background-color: #e84142;
+}
+
+.selected-icon {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  right: 1rem;
 }
 
 .Selector .Modal {
@@ -113,27 +124,49 @@
   opacity: 1;
 }
 
-.Selector .Modal-title-bar {
-  padding-bottom: 1rem;
-}
-
 .Selector .Modal-content {
   width: 100%;
   max-width: 19.1rem;
   margin: auto;
-  background: #16182E 0% 0% no-repeat padding-box;
+  background: #16182e 0% 0% no-repeat padding-box;
   border: 1px solid #262638;
   border-radius: 4px;
 }
 
-.react-select__option:first-child:active {
-  background-color: #264f79;
-  /* background-color: #2c5a88; */
+.react-select__option {
+  border: 1px solid transparent;
+  border-radius: 4px;
 }
-
-.react-select__option:last-child:active {
-  background-color: #E841424D;
-  /* background-color: #E841427e; */
+.react-select__option.arbitrum:hover {
+  border: 1px solid #4275a8;
+  border-radius: 4px;
+  color: #eee;
+}
+.react-select__option.arbitrum:active {
+  background: #818cef33 !important;
+}
+.react-select__option.avalanche:active {
+  background: #818cef33 !important;
+}
+.react-select__option.avalanche:hover {
+  border: 1px solid #e84142;
+  border-radius: 4px;
+  color: #eee;
+}
+.react-select__indicator {
+  border-radius: 4px;
+}
+.network-select {
+  background: transparent;
+}
+.network-select:hover {
+  background: #808aff14;
+}
+.network-select:active {
+  background: var(--dark-blue-active);
+}
+.App-header-user-settings:hover {
+  background: #2c2d45;
 }
 
 @media (max-width: 900px) {
