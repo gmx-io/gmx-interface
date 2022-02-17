@@ -130,7 +130,7 @@ const TOKENS = {
       name: "Bitcoin (BTCB)",
       symbol: "BTC",
       decimals: 18,
-      address: "0xab952e6801daB7920B65b8aC918FF0F66a8a0F44"
+      address: "0xab952e6801daB7920B65b8aC918FF0F66a8a0F44",
     },
     {
       name: "Ethereum",
@@ -264,7 +264,9 @@ const TOKENS = {
       decimals: 18,
       address: ethers.constants.AddressZero,
       isNative: true,
-      isShortable: true
+      isShortable: true,
+      imageUrl:
+      "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818"
     },
     {
       name: "Wrapped AVAX",
@@ -272,42 +274,54 @@ const TOKENS = {
       decimals: 18,
       address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
       isWrapped: true,
-      baseSymbol: "AVAX"
+      baseSymbol: "AVAX",
+      imageUrl:
+      "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818"
     },
     {
       name: "Ether (WETH.e)",
       symbol: "ETH",
       address: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
       decimals: 18,
-      isShortable: true
+      isShortable: true,
+      imageUrl:
+        "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880"
     },
     {
       name: "Bitcoin (WBTC.e)",
       symbol: "BTC",
       address: "0x50b7545627a5162F82A992c33b87aDc75187B218",
       decimals: 8,
-      isShortable: true
+      isShortable: true,
+      imageUrl:
+        "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744"
     },
     {
       name: "Magic Internet Money",
       symbol: "MIM",
       address: "0x130966628846BFd36ff31a822705796e8cb8C18D",
       decimals: 18,
-      isStable: true
+      isStable: true,
+      imageUrl:
+        "https://assets.coingecko.com/coins/images/16786/small/mimlogopng.png"
     },
     {
       name: "USD Coin",
       symbol: "USDC.e",
       address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
       decimals: 6,
-      isStable: true
+      isStable: true,
+      imageUrl:
+      "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389"
     },
     {
       name: "USD Coin",
       symbol: "USDC",
       address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
       decimals: 6,
-      isStable: true
+      isStable: true,
+      imageUrl:
+      "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389"
     }
   ]
 };
