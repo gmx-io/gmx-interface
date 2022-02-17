@@ -51,7 +51,7 @@ const CHAIN_NAMES_MAP = {
 const GAS_PRICE_ADJUSTMENT_MAP = {
   [ARBITRUM]: "0",
   [AVALANCHE]: "3000000000" // 3 gwei
-}
+};
 
 const ARBITRUM_RPC_PROVIDERS = ["https://rpc.ankr.com/arbitrum"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
@@ -116,7 +116,7 @@ export const PROFIT_THRESHOLD_BASIS_POINTS = 150;
 export const GLPPOOLCOLORS = {
   ETH: "#FCFCFD",
   BTC: "#F7931A",
-  "USDC": "#2775CA",
+  USDC: "#2775CA",
   "USDC.e": "#2A5ADA",
   USDT: "#67B18A",
   MIM: "#9695F8",
@@ -125,91 +125,142 @@ export const GLPPOOLCOLORS = {
   UNI: "#E9167C",
   AVAX: "#E84142",
   LINK: "#3256D6"
-}
+};
 
 export const ICONLINKS = {
   42161: {
     GMX: {
       coingecko: "https://www.coingecko.com/en/coins/gmx",
-      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a"
+      arbitrum:
+        "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a"
     },
     GLP: {
-      arbitrum: "https://arbiscan.io/token/0x1aDDD80E6039594eE970E5872D247bf0414C8903"
+      arbitrum:
+        "https://arbiscan.io/token/0x1aDDD80E6039594eE970E5872D247bf0414C8903"
     },
     ETH: {
       coingecko: "https://www.coingecko.com/en/coins/ethereum"
     },
     BTC: {
       coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
-      arbitrum: "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f"
+      arbitrum:
+        "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f"
     },
     LINK: {
       coingecko: "https://www.coingecko.com/en/coins/chainlink",
-      arbitrum: "https://arbiscan.io/address/0xf97f4df75117a78c1a5a0dbb814af92458539fb4"
+      arbitrum:
+        "https://arbiscan.io/address/0xf97f4df75117a78c1a5a0dbb814af92458539fb4"
     },
     UNI: {
       coingecko: "https://www.coingecko.com/en/coins/uniswap",
-      arbitrum: "https://arbiscan.io/address/0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0"
+      arbitrum:
+        "https://arbiscan.io/address/0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0"
     },
     USDC: {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
-      arbitrum: "https://arbiscan.io/address/0xff970a61a04b1ca14834a43f5de4533ebddb5cc8"
+      arbitrum:
+        "https://arbiscan.io/address/0xff970a61a04b1ca14834a43f5de4533ebddb5cc8"
     },
     USDT: {
       coingecko: "https://www.coingecko.com/en/coins/tether",
-      arbitrum: "https://arbiscan.io/address/0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9"
+      arbitrum:
+        "https://arbiscan.io/address/0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9"
     },
     DAI: {
       coingecko: "https://www.coingecko.com/en/coins/dai",
-      arbitrum: "https://arbiscan.io/address/0xda10009cbd5d07dd0cecc66161fc93d7c9000da1"
+      arbitrum:
+        "https://arbiscan.io/address/0xda10009cbd5d07dd0cecc66161fc93d7c9000da1"
     },
     MIM: {
       coingecko: "https://www.coingecko.com/en/coins/magic-internet-money",
-      arbitrum: "https://arbiscan.io/address/0xfea7a6a0b346362bf88a9e4a88416b77a57d6c2a"
+      arbitrum:
+        "https://arbiscan.io/address/0xfea7a6a0b346362bf88a9e4a88416b77a57d6c2a"
     },
     FRAX: {
       coingecko: "https://www.coingecko.com/en/coins/frax",
-      arbitrum: "https://arbiscan.io/address/0x17fc002b466eec40dae837fc4be5c67993ddbd6f"
+      arbitrum:
+        "https://arbiscan.io/address/0x17fc002b466eec40dae837fc4be5c67993ddbd6f"
     }
   },
   43114: {
     GMX: {
       coingecko: "https://www.coingecko.com/en/coins/gmx",
-      avalanche: "https://snowtrace.io/address/0x62edc0692bd897d2295872a9ffcac5425011c661"
+      avalanche:
+        "https://snowtrace.io/address/0x62edc0692bd897d2295872a9ffcac5425011c661"
     },
     GLP: {
-      avalanche: "https://snowtrace.io/address/0x9e295B5B976a184B14aD8cd72413aD846C299660"
+      avalanche:
+        "https://snowtrace.io/address/0x9e295B5B976a184B14aD8cd72413aD846C299660"
     },
     AVAX: {
       coingecko: "https://www.coingecko.com/en/coins/avalanche"
     },
     ETH: {
       coingecko: "https://www.coingecko.com/en/coins/weth",
-      avalanche: "https://snowtrace.io/address/0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab"
+      avalanche:
+        "https://snowtrace.io/address/0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab"
     },
     BTC: {
       coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
-      avalanche: "https://snowtrace.io/address/0x50b7545627a5162f82a992c33b87adc75187b218"
+      avalanche:
+        "https://snowtrace.io/address/0x50b7545627a5162f82a992c33b87adc75187b218"
     },
     MIM: {
       coingecko: "https://www.coingecko.com/en/coins/magic-internet-money",
-      avalanche: "https://snowtrace.io/address/0x130966628846bfd36ff31a822705796e8cb8c18d"
+      avalanche:
+        "https://snowtrace.io/address/0x130966628846bfd36ff31a822705796e8cb8c18d"
     },
     "USDC.e": {
-      coingecko: "https://www.coingecko.com/en/coins/usd-coin-avalanche-bridged-usdc-e",
-      avalanche: "https://snowtrace.io/address/0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
+      coingecko:
+        "https://www.coingecko.com/en/coins/usd-coin-avalanche-bridged-usdc-e",
+      avalanche:
+        "https://snowtrace.io/address/0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664"
     },
     USDC: {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
-      avalanche: "https://snowtrace.io/address/0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e"
+      avalanche:
+        "https://snowtrace.io/address/0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e"
     }
   }
+};
+
+export const platformTokens = {
+  42161: {
+    GMX: {
+      name: 'GMX',
+      symbol: 'GMX',
+      decimals: 18,
+      address: '0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a',
+      imageUrl: 'https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468'
+    },
+    GLP: {
+      name: 'GMX LP',
+      symbol: 'GLP',
+      decimals: 18,
+      address: '0x4277f8F2c384827B5273592FF7CeBd9f2C1ac258',
+      imageUrl: 'https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true'
+    }
+  },
+  43114: {
+    GMX: {
+      name: 'GMX',
+      symbol: 'GMX',
+      decimals: 18,
+      address: '0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a',
+      imageUrl: 'https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468'
+    },
+    GLP: {
+      name: 'GMX LP',
+      symbol: 'GLP',
+      decimals: 18,
+      address: '0x4277f8F2c384827B5273592FF7CeBd9f2C1ac258',
+      imageUrl: 'https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true'
+    }
+  },
+
 }
 
-const supportedChainIds = [
-  ARBITRUM,
-  AVALANCHE
-];
+const supportedChainIds = [ARBITRUM, AVALANCHE];
 const injectedConnector = new InjectedConnector({
   supportedChainIds
 });
@@ -2132,12 +2183,14 @@ export function usePrevious(value) {
 }
 
 export async function getGasPrice(provider, chainId) {
-  if (!provider) { return }
+  if (!provider) {
+    return;
+  }
 
-  const gasPrice = await provider.getGasPrice()
-  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0)
+  const gasPrice = await provider.getGasPrice();
+  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
 
-  return gasPrice.add(premium)
+  return gasPrice.add(premium);
 }
 
 export async function getGasLimit(
@@ -2458,7 +2511,7 @@ export function getInfoTokens(
   vaultPropsLength
 ) {
   if (!vaultPropsLength) {
-    vaultPropsLength = 14
+    vaultPropsLength = 14;
   }
   const fundingRatePropsLength = 2;
   const infoTokens = {};
@@ -2478,24 +2531,26 @@ export function getInfoTokens(
   for (let i = 0; i < whitelistedTokens.length; i++) {
     const token = JSON.parse(JSON.stringify(whitelistedTokens[i]));
     if (vaultTokenInfo) {
-      token.poolAmount = vaultTokenInfo[i * vaultPropsLength]
-      token.reservedAmount = vaultTokenInfo[i * vaultPropsLength + 1]
-      token.availableAmount = token.poolAmount.sub(token.reservedAmount)
-      token.usdgAmount = vaultTokenInfo[i * vaultPropsLength + 2]
-      token.redemptionAmount = vaultTokenInfo[i * vaultPropsLength + 3]
-      token.weight = vaultTokenInfo[i * vaultPropsLength + 4]
-      token.bufferAmount = vaultTokenInfo[i * vaultPropsLength + 5]
-      token.maxUsdgAmount = vaultTokenInfo[i * vaultPropsLength + 6]
-      token.globalShortSize = vaultTokenInfo[i * vaultPropsLength + 7]
-      token.maxGlobalShortSize = vaultTokenInfo[i * vaultPropsLength + 8]
-      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 9]
-      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 10]
-      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 11]
+      token.poolAmount = vaultTokenInfo[i * vaultPropsLength];
+      token.reservedAmount = vaultTokenInfo[i * vaultPropsLength + 1];
+      token.availableAmount = token.poolAmount.sub(token.reservedAmount);
+      token.usdgAmount = vaultTokenInfo[i * vaultPropsLength + 2];
+      token.redemptionAmount = vaultTokenInfo[i * vaultPropsLength + 3];
+      token.weight = vaultTokenInfo[i * vaultPropsLength + 4];
+      token.bufferAmount = vaultTokenInfo[i * vaultPropsLength + 5];
+      token.maxUsdgAmount = vaultTokenInfo[i * vaultPropsLength + 6];
+      token.globalShortSize = vaultTokenInfo[i * vaultPropsLength + 7];
+      token.maxGlobalShortSize = vaultTokenInfo[i * vaultPropsLength + 8];
+      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 9];
+      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 10];
+      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 11];
 
-      token.maxAvailableShort = bigNumberify(0)
+      token.maxAvailableShort = bigNumberify(0);
       if (token.maxGlobalShortSize.gt(0)) {
         if (token.maxGlobalShortSize.gt(token.globalShortSize)) {
-          token.maxAvailableShort = token.maxGlobalShortSize.sub(token.globalShortSize)
+          token.maxAvailableShort = token.maxGlobalShortSize.sub(
+            token.globalShortSize
+          );
         }
       }
 
@@ -2841,4 +2896,27 @@ export function getProcessedData(
     .add(data.totalVesterRewardsUsd);
 
   return data;
+}
+
+export async function addTokenToMetamask(token) {
+  try {
+    const wasAdded = await window.ethereum.request({
+      method: "wallet_watchAsset",
+      params: {
+        type: "ERC20",
+        options: {
+          address: token.address,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          image:  token.imageUrl,
+        }
+      }
+    });
+    if (wasAdded) {
+      // https://github.com/MetaMask/metamask-extension/issues/11377
+      // We can show a toast message when the token is added to metamask but because of the bug we can't. Once the bug is fixed we can show a toast message.
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
