@@ -98,6 +98,10 @@
   align-items: center;
 }
 
+.stats-label.active {
+  background: #2d2e50;
+}
+
 .stats-label-color {
   width: 4px;
   height: 100%;

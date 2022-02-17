@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
 import { PieChart, Pie, Cell } from 'recharts'
+import cx from "classnames"
 import Tooltip from '../../components/Tooltip/Tooltip'
 
 import { ethers } from 'ethers'
@@ -440,6 +441,42 @@ export default function DashboardV2() {
     else return -1;
   })
 
+  const [gmxActiveIndex, setGMXActiveIndex] = useState(null)
+
+  const onGMXDistributionChartEnter = (_, index) => {
+    setGMXActiveIndex(index);
+  };
+
+  const onGMXStatEnter = (index) => {
+    setGMXActiveIndex(index);
+  };
+
+  const onGMXDistributionChartLeave = (_, index) => {
+    setGMXActiveIndex(null);
+  };
+
+  const onGMXStatLeave = () => {
+    setGMXActiveIndex(null);
+  };
+
+  const [glpActiveIndex, setGLPActiveIndex] = useState(null)
+
+  const onGLPPoolChartEnter = (_, index) => {
+    setGLPActiveIndex(index);
+  };
+
+  const onGLPPoolStatEnter = (index) => {
+    setGLPActiveIndex(index);
+  };
+
+  const onGLPPoolChartLeave = (_, index) => {
+    setGLPActiveIndex(null);
+  };
+
+  const onGLPPoolStatLeave = () => {
+    setGLPActiveIndex(null);
+  };
+
   return (
     <div className="default-container DashboardV2 page-layout">
       <div className="section-title-block">
@@ -644,10 +681,12 @@ export default function DashboardV2() {
                       dataKey="value"
                       startAngle={90}
                       endAngle={-270}
+                      onMouseOver={onGMXDistributionChartEnter}
+                      onMouseOut={onGMXDistributionChartLeave}
                     >
                       {gmxDistributionData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} style={{
-                          filter: `drop-shadow(0px 0px 10px ${entry.color}`
+                          filter: gmxActiveIndex === index ? `drop-shadow(0px 0px 10px ${entry.color})` : 'none'
                         }} stroke="0" />
                       ))}
                     </Pie>
@@ -660,7 +699,12 @@ export default function DashboardV2() {
               <div className="stats-labels">
                 {
                   gmxDistributionData.map((item, index) => {
-                    return <div className="stats-label" key={index}>
+                    return <div
+                      className={cx("stats-label", gmxActiveIndex === index && 'active')}
+                      key={index}
+                      onMouseOver={() => onGMXStatEnter(index)}
+                      onMouseLeave={() => onGMXStatLeave()}
+                      >
                       <div className="stats-label-color" style={{ backgroundColor: item.color }}></div>
                       {item.value}% {item.name}
                     </div>
@@ -754,10 +798,12 @@ export default function DashboardV2() {
                       dataKey="value"
                       startAngle={90}
                       endAngle={-270}
+                      onMouseEnter={onGLPPoolChartEnter}
+                      onMouseLeave={onGLPPoolChartLeave}
                     >
                       {glpPool.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={GLPPOOLCOLORS[entry.name]} style={{
-                          filter: `drop-shadow(0px 0px 10px ${GLPPOOLCOLORS[entry.name]}`
+                          filter: glpActiveIndex === index ? `drop-shadow(0px 0px 10px ${GLPPOOLCOLORS[entry.name]})` : 'none'
                         }} stroke="0" />
                       ))}
                     </Pie>
@@ -770,8 +816,13 @@ export default function DashboardV2() {
               <div className="stats-labels">
                 <div className="stats-label-column">
                   {
-                    glpPool.slice(0, glpPool.length / 2).map((pool, index) => {
-                      return <div className="stats-label" key={index}>
+                    glpPool.slice(0, Math.ceil(glpPool.length / 2)).map((pool, index) => {
+                      return <div
+                        className={cx("stats-label", glpActiveIndex === index && 'active')}
+                        key={index}
+                        onMouseOver={() => onGLPPoolStatEnter(index)}
+                        onMouseLeave={() => onGLPPoolStatLeave()}
+                      >
                         <div className="stats-label-color" style={{ backgroundColor: GLPPOOLCOLORS[pool.name] }}></div>
                         {pool.value}% {pool.fullname}
                       </div>
@@ -780,8 +831,13 @@ export default function DashboardV2() {
                 </div>
                 <div className="stats-label-column">
                   {
-                    glpPool.slice(glpPool.length / 2, glpPool.length).map((pool, index) => {
-                      return <div className="stats-label" key={index}>
+                    glpPool.slice(Math.ceil(glpPool.length / 2), glpPool.length).map((pool, index) => {
+                      return <div
+                          className={cx("stats-label", glpActiveIndex === (index + Math.ceil(glpPool.length / 2)) && 'active')}
+                          key={index}
+                          onMouseOver={() => onGLPPoolStatEnter(index + Math.ceil(glpPool.length / 2))}
+                          onMouseLeave={() => onGLPPoolStatLeave()}
+                        >
                         <div className="stats-label-color" style={{ backgroundColor: GLPPOOLCOLORS[pool.name] }}></div>
                         {pool.value}% {pool.fullname}
                       </div>
