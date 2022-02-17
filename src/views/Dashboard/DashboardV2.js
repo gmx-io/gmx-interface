@@ -482,7 +482,7 @@ export default function DashboardV2() {
             if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
               maxUsdgAmount = tokenInfo.maxUsdgAmount
             }
-
+            let isCapReached = tokenInfo.managedAmount?.gt(maxUsdgAmount)
             return (
               <div className="App-card" key={token.symbol}>
                 <div className="App-card-title">{token.symbol}</div>
@@ -497,6 +497,7 @@ export default function DashboardV2() {
                   <div className="App-card-row">
                     <div className="label">Pool</div>
                     <div>
+                      {isCapReached && <span style={{marginRight: '8px', marginLeft: '0'}} className='cap-reached'>Cap reached</span>}
                       <Tooltip
                         handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
                         position="right-bottom"

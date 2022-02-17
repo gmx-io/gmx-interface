@@ -222,6 +222,9 @@
   width: 100%;
   justify-content: center;
 }
+.cap-reached {
+  margin-left: 8px;
+}
 
 @media (max-width: 900px) {
   .GlpSwap-content {
