@@ -435,12 +435,12 @@ export default function DashboardV2() {
     return element !== null;
   });
 
-  glpPool = glpPool.sort(function(a, b) {
+  glpPool = glpPool.sort(function (a, b) {
     if (a.value < b.value) return 1;
     else return -1;
   })
 
-  gmxDistributionData = gmxDistributionData.sort(function(a, b) {
+  gmxDistributionData = gmxDistributionData.sort(function (a, b) {
     if (a.value < b.value) return 1;
     else return -1;
   })
@@ -451,7 +451,15 @@ export default function DashboardV2() {
     setGMXActiveIndex(index);
   };
 
+  const onGMXStatEnter = (index) => {
+    setGMXActiveIndex(index);
+  };
+
   const onGMXDistributionChartLeave = (_, index) => {
+    setGMXActiveIndex(null);
+  };
+
+  const onGMXStatLeave = () => {
     setGMXActiveIndex(null);
   };
 
@@ -461,7 +469,15 @@ export default function DashboardV2() {
     setGLPActiveIndex(index);
   };
 
+  const onGLPPoolStatEnter = (index) => {
+    setGLPActiveIndex(index);
+  };
+
   const onGLPPoolChartLeave = (_, index) => {
+    setGLPActiveIndex(null);
+  };
+
+  const onGLPPoolStatLeave = () => {
     setGLPActiveIndex(null);
   };
 
@@ -472,7 +488,7 @@ export default function DashboardV2() {
         </div>
         <div className="section-title-content">
           <div className="Page-title">
-            Stats { chainId === AVALANCHE && <img src={avalanche24Icon} alt="avalanche24Icon" /> }{ chainId === ARBITRUM && <img src={arbitrum24Icon} alt="arbitrum24Icon" /> }
+            Stats {chainId === AVALANCHE && <img src={avalanche24Icon} alt="avalanche24Icon" />}{chainId === ARBITRUM && <img src={arbitrum24Icon} alt="arbitrum24Icon" />}
           </div>
           <div className="Page-description">
             Total Stats start from {totalStatsStartDate}. For detailed stats: <a href="https://stats.gmx.io" target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
@@ -599,7 +615,7 @@ export default function DashboardV2() {
                     })
                   }
                   {
-                    active && <span style={{cursor: 'pointer'}} className="Available-network" onClick={(e) => {
+                    active && <span style={{ cursor: 'pointer' }} className="Available-network" onClick={(e) => {
                       e.preventDefault();
                       let token = platformTokens[chainId]["GMX"];
                       addTokenToMetamask(token)
@@ -681,7 +697,12 @@ export default function DashboardV2() {
               <div className="stats-labels">
                 {
                   gmxDistributionData.map((item, index) => {
-                    return <div className={cx("stats-label", gmxActiveIndex === index && 'active')} key={index}>
+                    return <div
+                      className={cx("stats-label", gmxActiveIndex === index && 'active')}
+                      key={index}
+                      onMouseOver={() => onGMXStatEnter(index)}
+                      onMouseLeave={() => onGMXStatLeave()}
+                    >
                       <div className="stats-label-color" style={{ backgroundColor: item.color }}></div>
                       {item.value}% {item.name}
                     </div>
@@ -723,7 +744,7 @@ export default function DashboardV2() {
                   }
 
                   {
-                    active && <span style={{cursor: 'pointer'}} className="Available-network" onClick={(e) => {
+                    active && <span style={{ cursor: 'pointer' }} className="Available-network" onClick={(e) => {
                       e.preventDefault();
                       let token = platformTokens[chainId]["GLP"];
                       addTokenToMetamask(token)
@@ -795,7 +816,12 @@ export default function DashboardV2() {
                 <div className="stats-label-column">
                   {
                     glpPool.slice(0, Math.ceil(glpPool.length / 2)).map((pool, index) => {
-                      return <div className={cx("stats-label", glpActiveIndex === index && 'active')} key={index}>
+                      return <div
+                        className={cx("stats-label", glpActiveIndex === index && 'active')}
+                        key={index}
+                        onMouseOver={() => onGLPPoolStatEnter(index)}
+                        onMouseLeave={() => onGLPPoolStatLeave()}
+                        >
                         <div className="stats-label-color" style={{ backgroundColor: GLPPOOLCOLORS[pool.name] }}></div>
                         {pool.value}% {pool.fullname}
                       </div>
@@ -805,7 +831,12 @@ export default function DashboardV2() {
                 <div className="stats-label-column">
                   {
                     glpPool.slice(Math.ceil(glpPool.length / 2), glpPool.length).map((pool, index) => {
-                      return <div className={cx("stats-label", glpActiveIndex === (index + Math.ceil(glpPool.length / 2)) && 'active')} key={index}>
+                      return <div
+                        className={cx("stats-label", glpActiveIndex === (index + Math.ceil(glpPool.length / 2)) && 'active')}
+                        key={index}
+                        onMouseOver={() => onGLPPoolStatEnter(index + Math.ceil(glpPool.length / 2))}
+                        onMouseLeave={() => onGLPPoolStatLeave()}
+                        >
                         <div className="stats-label-color" style={{ backgroundColor: GLPPOOLCOLORS[pool.name] }}></div>
                         {pool.value}% {pool.fullname}
                       </div>
