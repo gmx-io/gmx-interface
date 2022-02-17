@@ -917,7 +917,7 @@ export default function GlpSwap(props) {
               if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
                 maxUsdgAmount = tokenInfo.maxUsdgAmount
               }
-
+              let isCapReached = tokenInfo.managedAmount?.gt(maxUsdgAmount)
               return (
                 <div className="App-card" key={token.symbol}>
                   <div className="App-card-title">{token.name}</div>
@@ -938,6 +938,7 @@ export default function GlpSwap(props) {
                     {isBuying && <div className="App-card-row">
                       <div className="label">Pool</div>
                       <div>
+                        {isCapReached && <span style={{marginRight: '8px'}} className='cap-reached'>Cap reached</span>}
                         <Tooltip
                           handle={`$${formatAmount(managedUsd, USD_DECIMALS, 2, true)}`}
                           position="right-bottom"
