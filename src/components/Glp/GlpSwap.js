@@ -559,6 +559,8 @@ export default function GlpSwap(props) {
     }
   }
 
+  // Tokens have not reached the cap
+  let uncappedTokens = whitelistedTokens.map(token => getTokenInfo(infoTokens, token.address)).filter(token => token.maxUsdgAmount?.gt(token.managedAmount))
   return (
     <div className="GlpSwap">
       {renderErrorModal()}
@@ -663,7 +665,7 @@ export default function GlpSwap(props) {
               chainId={chainId}
               tokenAddress={swapTokenAddress}
               onSelectToken={onSelectSwapToken}
-              tokens={whitelistedTokens}
+              tokens={uncappedTokens}
               infoTokens={infoTokens}
               className="GlpSwap-from-token"
               showSymbolImage={true}
@@ -725,7 +727,7 @@ export default function GlpSwap(props) {
               chainId={chainId}
               tokenAddress={swapTokenAddress}
               onSelectToken={onSelectSwapToken}
-              tokens={whitelistedTokens}
+              tokens={uncappedTokens}
               infoTokens={infoTokens}
               className="GlpSwap-from-token"
               showSymbolImage={true}

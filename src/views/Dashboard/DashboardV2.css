@@ -36,6 +36,7 @@
 }
 .cap-reached {
   color: #f44336;
+  font-size: 14px;
 }
 
 @media (max-width: 900px) {
