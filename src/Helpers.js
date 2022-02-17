@@ -201,6 +201,41 @@ export const ICONLINKS = {
   }
 }
 
+export const platformTokens = {
+  42161: {
+    GMX: {
+      name: 'GMX',
+      symbol: 'GMX',
+      decimals: 18,
+      address: '0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a',
+      imageUrl: 'https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468'
+    },
+    GLP: {
+      name: 'GMX LP',
+      symbol: 'GLP',
+      decimals: 18,
+      address: '0x4277f8F2c384827B5273592FF7CeBd9f2C1ac258',
+      imageUrl: 'https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true'
+    }
+  },
+  43114: {
+    GMX: {
+      name: 'GMX',
+      symbol: 'GMX',
+      decimals: 18,
+      address: '0x62edc0692BD897D2295872a9FFCac5425011c661',
+      imageUrl: 'https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468'
+    },
+    GLP: {
+      name: 'GMX LP',
+      symbol: 'GLP',
+      decimals: 18,
+      address: '0x01234181085565ed162a948b6a5e88758CD7c7b8',
+      imageUrl: 'https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true'
+    }
+  }
+}
+
 const supportedChainIds = [
   ARBITRUM,
   AVALANCHE
@@ -2798,4 +2833,27 @@ export function getProcessedData(
     .add(data.totalVesterRewardsUsd);
 
   return data;
+}
+
+export async function addTokenToMetamask(token) {
+  try {
+    const wasAdded = await window.ethereum.request({
+      method: "wallet_watchAsset",
+      params: {
+        type: "ERC20",
+        options: {
+          address: token.address,
+          symbol: token.symbol,
+          decimals: token.decimals,
+          image:  token.imageUrl,
+        }
+      }
+    });
+    if (wasAdded) {
+      // https://github.com/MetaMask/metamask-extension/issues/11377
+      // We can show a toast message when the token is added to metamask but because of the bug we can't. Once the bug is fixed we can show a toast message.
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }

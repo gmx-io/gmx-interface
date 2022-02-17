@@ -31,7 +31,9 @@ import {
   AVALANCHE,
   getTotalVolumeSum,
   GLPPOOLCOLORS,
-  ICONLINKS
+  ICONLINKS,
+  addTokenToMetamask,
+  platformTokens
 } from '../../Helpers'
 import { useGmxPrice, useStakedGmxSupply } from '../../Api'
 
@@ -560,7 +562,7 @@ export default function DashboardV2() {
                   </div>
                 </div>
                 <div className="Available-network-group">
-                  { 
+                  {
                     Object.keys(ICONLINKS[chainId]["GMX"]).map((item, index) => {
                       var iconImage = null;
 
@@ -577,9 +579,15 @@ export default function DashboardV2() {
                       )
                     })
                   }
-                  <a href="/#" className="Available-network" target="_blank" rel="noopener noreferrer">
-                    <img src={metamaskHover16Icon} alt="metamask" />
-                  </a>
+                  {
+                    active && <span style={{cursor: 'pointer'}} className="Available-network" onClick={(e) => {
+                      e.preventDefault();
+                      let token = platformTokens[chainId]["GMX"];
+                      addTokenToMetamask(token)
+                    }}>
+                      <img src={metamaskHover16Icon} alt="metamask" />
+                    </span>
+                  }
                 </div>
               </div>
               <div className="App-card-divider"></div>
@@ -675,7 +683,7 @@ export default function DashboardV2() {
                   </div>
                 </div>
                 <div className="Available-network-group">
-                  { 
+                  {
                     Object.keys(ICONLINKS[chainId]["GLP"]).map((item, index) => {
                       var iconImage = null;
 
@@ -692,9 +700,15 @@ export default function DashboardV2() {
                       )
                     })
                   }
-                  <a href="/#" className="Available-network" target="_blank" rel="noopener noreferrer">
-                    <img src={metamaskHover16Icon} alt="metamask" />
-                  </a>
+                  {
+                    active && <span style={{cursor: 'pointer'}} className="Available-network" onClick={(e) => {
+                      e.preventDefault();
+                      let token = platformTokens[chainId]["GLP"];
+                      addTokenToMetamask(token)
+                    }}>
+                      <img src={metamaskHover16Icon} alt="metamask" />
+                    </span>
+                  }
                 </div>
               </div>
               <div className="App-card-divider"></div>
@@ -826,7 +840,7 @@ export default function DashboardV2() {
                             </div>
                             <div className="Available-network-group">
                               {
-                                ICONLINKS[chainId][token.symbol] && 
+                                ICONLINKS[chainId][token.symbol] &&
                                 Object.keys(ICONLINKS[chainId][token.symbol]).map((item, index) => {
                                   var iconImage = null;
 
