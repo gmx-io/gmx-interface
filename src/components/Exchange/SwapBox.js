@@ -16,6 +16,7 @@ import {
   helperToast,
   formatAmount,
   bigNumberify,
+  ARBITRUM,
   USD_DECIMALS,
   USDG_DECIMALS,
   LONG,
@@ -864,7 +865,7 @@ export default function SwapBox(props) {
     return [false];
   };
 
-  const isLeverageDisabled = true
+  const isLeverageDisabled = chainId === ARBITRUM
 
   const getLeverageError = useCallback(() => {
     if (isLeverageDisabled) {
