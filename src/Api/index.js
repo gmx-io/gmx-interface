@@ -693,7 +693,7 @@ export async function callContract(chainId, contract, method, params, opts) {
         failMsg = "Transaction was cancelled."
         break
       case SLIPPAGE:
-        failMsg = "The mark price has changed, consider increasing your Slippage Tolerance by clicking on the \"...\" icon next to your address."
+        failMsg = "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
         break
       default:
         failMsg = (<div>

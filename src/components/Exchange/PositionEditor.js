@@ -9,6 +9,8 @@ import {
 	USD_DECIMALS,
 	BASIS_POINTS_DIVISOR,
 	DUST_BNB,
+  ARBITRUM,
+  AVALANCHE,
   helperToast,
   formatAmount,
   bigNumberify,
@@ -73,8 +75,8 @@ export default function PositionEditor(props) {
     fetcher: fetcher(library, Vault),
   })
 
-  console.log("isLeverageEnabled", isLeverageEnabled, account, COLLATERAL_INCREMENTS[account])
-  const isDepositEnabled = isLeverageEnabled && COLLATERAL_INCREMENTS[account]
+  const isDepositEnabled = chainId === AVALANCHE || (isLeverageEnabled && COLLATERAL_INCREMENTS[account])
+  const isWithdrawalEnabled = chainId === ARBITRUM
 
   const isDeposit = option === DEPOSIT
   const isWithdrawal = option === WITHDRAW
@@ -318,7 +320,7 @@ export default function PositionEditor(props) {
       {(position) &&
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           <div>
-            <Tab options={EDIT_OPTIONS} option={option} setOption={setOption} onChange={resetForm} />
+            {isWithdrawalEnabled && <Tab options={EDIT_OPTIONS} option={option} setOption={setOption} onChange={resetForm} />}
             {(isDeposit || isWithdrawal) && <div>
               <div className="Exchange-swap-section">
                 <div className="Exchange-swap-section-top">
