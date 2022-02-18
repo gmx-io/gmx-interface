@@ -2274,7 +2274,9 @@ export const switchNetwork = async (chainId, active) => {
   } catch (ex) {
     // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
     // This error code indicates that the chain has not been added to MetaMask.
-    if (ex.code === 4902) {
+    // 4001 error means user has denied the request
+    // If the error code is not 4001, then we need to add the network
+    if (ex.code !== 4001) {
       return await addNetwork(NETWORK_METADATA[chainId]);
     }
 
