@@ -2368,7 +2368,7 @@ export default function SwapBox(props) {
                             </div>
                           )}
                           <div>
-                            Position Fee (0.08% of position size): $
+                            Position Fee (0.1% of position size): $
                             {formatAmount(positionFee, USD_DECIMALS, 2, true)}
                           </div>
                         </>
