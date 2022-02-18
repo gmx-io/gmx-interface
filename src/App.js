@@ -722,7 +722,7 @@ function FullApp() {
         label="Settings"
       >
         <div className="App-settings-row">
-          <div>Slippage Tolerance</div>
+          <div>Allowed Slippage</div>
           <div className="App-slippage-tolerance-input-container">
             <input
               type="number"
