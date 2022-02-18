@@ -25,7 +25,6 @@ import {
   GMX_DECIMALS,
   GLP_DECIMALS,
   BASIS_POINTS_DIVISOR,
-  DEFAULT_MAX_USDG_AMOUNT,
   ARBITRUM,
   AVALANCHE,
   getTotalVolumeSum
@@ -478,11 +477,7 @@ export default function DashboardV2() {
             if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
               utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount)
             }
-            let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT
-            if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
-              maxUsdgAmount = tokenInfo.maxUsdgAmount
-            }
-            let isCapReached = tokenInfo.managedAmount?.gt(maxUsdgAmount)
+
             return (
               <div className="App-card" key={token.symbol}>
                 <div className="App-card-title">{token.symbol}</div>
@@ -497,7 +492,6 @@ export default function DashboardV2() {
                   <div className="App-card-row">
                     <div className="label">Pool</div>
                     <div>
-                      {isCapReached && <span style={{marginRight: '8px', marginLeft: '0'}} className='cap-reached'>Cap reached</span>}
                       <Tooltip
                         handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
                         position="right-bottom"
@@ -505,7 +499,7 @@ export default function DashboardV2() {
                           return <>
                             Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} {token.symbol}<br/>
                             <br/>
-                            Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                            Max {tokenInfo.symbol} Capacity: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
                           </>
                         }}
                       />
