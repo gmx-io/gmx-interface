@@ -38,7 +38,6 @@ import {
   GLP_COOLDOWN_DURATION,
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
-  DEFAULT_MAX_USDG_AMOUNT,
   ARBITRUM,
   PLACEHOLDER_ACCOUNT
 } from '../../Helpers'
@@ -820,11 +819,6 @@ export default function GlpSwap(props) {
                   balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals))
                 }
 
-                let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT
-                if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
-                  maxUsdgAmount = tokenInfo.maxUsdgAmount
-                }
-
                 var tokenImage = null;
 
                 try {
@@ -832,7 +826,6 @@ export default function GlpSwap(props) {
                 } catch (error) {
                   // console.log(error)
                 }
-                let isCapReached = tokenInfo.managedAmount?.gt(maxUsdgAmount)
 
                 return (
                   <tr key={token.symbol}>
@@ -861,11 +854,10 @@ export default function GlpSwap(props) {
                               return <>
                                 Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol}<br />
                                 <br />
-                                Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                                Max {tokenInfo.symbol} Capacity: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
                               </>
                             }}
                           />
-                          {isCapReached && <span className='cap-reached'>Cap reached</span>}
                         </div>}
                       {!isBuying &&
                         <div>
@@ -913,11 +905,6 @@ export default function GlpSwap(props) {
                 balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals))
               }
 
-              let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT
-              if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
-                maxUsdgAmount = tokenInfo.maxUsdgAmount
-              }
-              let isCapReached = tokenInfo.managedAmount?.gt(maxUsdgAmount)
               return (
                 <div className="App-card" key={token.symbol}>
                   <div className="App-card-title">{token.name}</div>
@@ -938,7 +925,6 @@ export default function GlpSwap(props) {
                     {isBuying && <div className="App-card-row">
                       <div className="label">Pool</div>
                       <div>
-                        {isCapReached && <span style={{marginRight: '8px'}} className='cap-reached'>Cap reached</span>}
                         <Tooltip
                           handle={`$${formatAmount(managedUsd, USD_DECIMALS, 2, true)}`}
                           position="right-bottom"
@@ -946,7 +932,7 @@ export default function GlpSwap(props) {
                             return <>
                               Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol}<br/>
                               <br/>
-                              Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                              Max {tokenInfo.symbol} Capacity: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
                             </>
                           }}
                         />

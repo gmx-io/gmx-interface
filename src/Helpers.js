@@ -2411,6 +2411,10 @@ export function getInfoTokens(
         }
       }
 
+      if (token.maxUsdgAmount.eq(0)) {
+        token.maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT
+      }
+
       token.availableUsd = token.isStable
         ? token.poolAmount
             .mul(token.minPrice)
