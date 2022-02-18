@@ -3,6 +3,8 @@ import useSWR from 'swr'
 import { ethers } from 'ethers'
 import { BsArrowRight } from 'react-icons/bs'
 
+import { COLLATERAL_INCREMENTS } from "../../data/CollateralIncrements"
+
 import {
 	USD_DECIMALS,
 	BASIS_POINTS_DIVISOR,
@@ -27,6 +29,7 @@ import { callContract } from '../../Api'
 
 import Router from '../../abis/Router.json'
 import Token from '../../abis/Token.json'
+import Vault from '../../abis/Vault.json'
 
 const DEPOSIT = "Deposit"
 const WITHDRAW = "Withdraw"
@@ -60,10 +63,18 @@ export default function PositionEditor(props) {
   const prevIsVisible = usePrevious(isVisible)
 
   const routerAddress = getContract(chainId, "Router")
+  const vaultAddress = getContract(chainId, "Vault")
 
   const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR([active, chainId, collateralTokenAddress, "allowance", account, routerAddress], {
     fetcher: fetcher(library, Token),
   })
+
+  const { data: isLeverageEnabled, mutate: updateIsLeverageEnabled } = useSWR([active, chainId, vaultAddress, "isLeverageEnabled"], {
+    fetcher: fetcher(library, Vault),
+  })
+
+  console.log("isLeverageEnabled", isLeverageEnabled, account, COLLATERAL_INCREMENTS[account])
+  const isDepositEnabled = isLeverageEnabled && COLLATERAL_INCREMENTS[account]
 
   const isDeposit = option === DEPOSIT
   const isWithdrawal = option === WITHDRAW
@@ -141,7 +152,7 @@ export default function PositionEditor(props) {
   }
 
   const getError = () => {
-    if (isDeposit) {
+    if (isDeposit && !isDepositEnabled) {
       return ["Temporarily disabled, pending upgrade"]
     }
     if (!fromAmount) { return "Enter an amount" }
@@ -202,12 +213,13 @@ export default function PositionEditor(props) {
     if (active) {
       library.on('block', () => {
         updateTokenAllowance(undefined, true)
+        updateIsLeverageEnabled(undefined, true)
       })
       return () => {
         library.removeAllListeners('block')
       }
     }
-  }, [active, library, updateTokenAllowance])
+  }, [active, library, updateTokenAllowance, updateIsLeverageEnabled])
 
   const depositCollateral = async () => {
     setIsSwapping(true)
