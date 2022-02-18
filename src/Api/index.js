@@ -22,6 +22,7 @@ import {
   getExplorerUrl,
   getServerBaseUrl,
   getGasPrice,
+  getMaxGasPrice,
   getGasLimit,
   replaceNativeTokenAddress,
   getProvider,
@@ -657,8 +658,19 @@ export async function callContract(chainId, contract, method, params, opts) {
       opts.gasLimit = await getGasLimit(contract, method, params, opts.value)
     }
 
-    if (!opts.gasPrice) {
-      opts.gasPrice = await getGasPrice(contract.provider, chainId)
+    const maxGasPrice = getMaxGasPrice(chainId)
+    if (maxGasPrice) {
+      if (!opts.maxFeePerGas) {
+        opts.maxFeePerGas = maxGasPrice
+      }
+
+      if (!opts.gasPrice) {
+        opts.maxPriorityFeePerGas = await getGasPrice(contract.provider, chainId)
+      }
+    } else {
+      if (!opts.gasPrice) {
+        opts.gasPrice = await getGasPrice(contract.provider, chainId)
+      }
     }
 
     const res = await contract[method](...params, { gasLimit: opts.gasLimit, value: opts.value, gasPrice: opts.gasPrice })

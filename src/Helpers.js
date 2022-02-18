@@ -53,6 +53,10 @@ const GAS_PRICE_ADJUSTMENT_MAP = {
   [AVALANCHE]: "3000000000" // 3 gwei
 }
 
+const MAX_GAS_PRICE_MAP = {
+  [AVALANCHE]: "100000000000" // 100 gwei
+}
+
 const ARBITRUM_RPC_PROVIDERS = ["https://rpc.ankr.com/arbitrum"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
@@ -2050,6 +2054,10 @@ export async function getGasPrice(provider, chainId) {
   const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0)
 
   return gasPrice.add(premium)
+}
+
+export function getMaxGasPrice(chainId) {
+  return MAX_GAS_PRICE_MAP[chainId]
 }
 
 export async function getGasLimit(
