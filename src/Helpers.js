@@ -81,7 +81,7 @@ export const STABLE_TAX_BASIS_POINTS = 5;
 export const MINT_BURN_FEE_BASIS_POINTS = 25;
 export const SWAP_FEE_BASIS_POINTS = 25;
 export const STABLE_SWAP_FEE_BASIS_POINTS = 1;
-export const MARGIN_FEE_BASIS_POINTS = 8;
+export const MARGIN_FEE_BASIS_POINTS = 10;
 
 export const LIQUIDATION_FEE = expandDecimals(5, USD_DECIMALS);
 
@@ -2274,7 +2274,9 @@ export const switchNetwork = async (chainId, active) => {
   } catch (ex) {
     // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
     // This error code indicates that the chain has not been added to MetaMask.
-    if (ex.code === 4902) {
+    // 4001 error means user has denied the request
+    // If the error code is not 4001, then we need to add the network
+    if (ex.code !== 4001) {
       return await addNetwork(NETWORK_METADATA[chainId]);
     }
 
