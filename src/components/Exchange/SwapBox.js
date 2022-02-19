@@ -1829,13 +1829,13 @@ export default function SwapBox(props) {
       return
     }
 
-    if (needOrderBookApproval) {
-      setOrdersToaOpen(true);
+    if (needApproval) {
+      approveFromToken();
       return;
     }
 
-    if (needApproval) {
-      approveFromToken();
+    if (needOrderBookApproval) {
+      setOrdersToaOpen(true);
       return;
     }
 
