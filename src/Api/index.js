@@ -394,12 +394,12 @@ function useGmxPriceFromArbitrum(library, active) {
 }
 
 
-export async function approvePlugin(chainId, pluginAddress, { library, pendingTxns, setPendingTxns }) {
+export async function approvePlugin(chainId, pluginAddress, { library, pendingTxns, setPendingTxns, sentMsg, failMsg }) {
   const routerAddress = getContract(chainId, "Router")
   const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner())
   return callContract(chainId, contract, 'approvePlugin', [pluginAddress], {
-    sentMsg: 'Enable orders sent',
-    failMsg: 'Enable orders failed',
+    sentMsg,
+    failMsg,
     pendingTxns,
     setPendingTxns
   })
