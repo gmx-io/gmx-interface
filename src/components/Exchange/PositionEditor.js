@@ -3,14 +3,12 @@ import useSWR from 'swr'
 import { ethers } from 'ethers'
 import { BsArrowRight } from 'react-icons/bs'
 
-import { COLLATERAL_INCREMENTS } from "../../data/CollateralIncrements"
-
 import {
 	USD_DECIMALS,
 	BASIS_POINTS_DIVISOR,
+  DEPOSIT_FEE,
 	DUST_BNB,
   ARBITRUM,
-  AVALANCHE,
   helperToast,
   formatAmount,
   bigNumberify,
@@ -31,7 +29,6 @@ import { callContract } from '../../Api'
 
 import Router from '../../abis/Router.json'
 import Token from '../../abis/Token.json'
-import Vault from '../../abis/Vault.json'
 
 const DEPOSIT = "Deposit"
 const WITHDRAW = "Withdraw"
@@ -54,6 +51,10 @@ export default function PositionEditor(props) {
     getUsd,
     getLeverage,
     savedIsPnlInLeverage,
+    positionManagerApproved,
+    isWaitingForPositionManagerApproval,
+    isPositionManagerApproving,
+    approvePositionManager,
     chainId
   } = props
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
@@ -65,21 +66,17 @@ export default function PositionEditor(props) {
   const prevIsVisible = usePrevious(isVisible)
 
   const routerAddress = getContract(chainId, "Router")
-  const vaultAddress = getContract(chainId, "Vault")
 
   const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR([active, chainId, collateralTokenAddress, "allowance", account, routerAddress], {
     fetcher: fetcher(library, Token),
   })
 
-  const { data: isLeverageEnabled, mutate: updateIsLeverageEnabled } = useSWR([active, chainId, vaultAddress, "isLeverageEnabled"], {
-    fetcher: fetcher(library, Vault),
-  })
-
-  const isDepositEnabled = chainId === AVALANCHE || (isLeverageEnabled && COLLATERAL_INCREMENTS[account])
   const isWithdrawalEnabled = chainId === ARBITRUM
 
   const isDeposit = option === DEPOSIT
   const isWithdrawal = option === WITHDRAW
+
+  const needPositionManagerApproval = chainId === ARBITRUM && isDeposit && !positionManagerApproved
 
   let collateralToken
   let maxAmount
@@ -126,6 +123,9 @@ export default function PositionEditor(props) {
 
     if (fromAmount) {
       collateralDelta = isDeposit ? convertedAmount : fromAmount
+      if (position.isLong) {
+        collateralDelta = collateralDelta.mul(BASIS_POINTS_DIVISOR - DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR)
+      }
       nextLeverage = getLeverage({
         size: position.size,
         collateral: position.collateral,
@@ -154,9 +154,6 @@ export default function PositionEditor(props) {
   }
 
   const getError = () => {
-    if (isDeposit && !isDepositEnabled) {
-      return ["Temporarily disabled, pending upgrade"]
-    }
     if (!fromAmount) { return "Enter an amount" }
     if (nextLeverage && nextLeverage.eq(0)) { return "Enter an amount" }
 
@@ -182,6 +179,12 @@ export default function PositionEditor(props) {
     const error = getError()
     if (error) { return false }
     if (isSwapping) { return false }
+    if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
+      return false
+    }
+    if (isPositionManagerApproving) {
+      return false
+    }
 
     return true
   }
@@ -194,6 +197,14 @@ export default function PositionEditor(props) {
     if (isSwapping) {
       if (isDeposit) { return "Depositing..." }
       return "Withdrawing..."
+    }
+
+    if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
+      return "Enabling Deposit..."
+    }
+
+    if (isDeposit && needPositionManagerApproval) {
+      return "Enable Deposit"
     }
 
     if (isDeposit) { return "Deposit" }
@@ -215,13 +226,12 @@ export default function PositionEditor(props) {
     if (active) {
       library.on('block', () => {
         updateTokenAllowance(undefined, true)
-        updateIsLeverageEnabled(undefined, true)
       })
       return () => {
         library.removeAllListeners('block')
       }
     }
-  }, [active, library, updateTokenAllowance, updateIsLeverageEnabled])
+  }, [active, library, updateTokenAllowance])
 
   const depositCollateral = async () => {
     setIsSwapping(true)
@@ -248,7 +258,8 @@ export default function PositionEditor(props) {
       return
     }
 
-    const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner())
+    const contractAddress = chainId === ARBITRUM ? getContract(chainId, "PositionManager") : routerAddress
+    const contract = new ethers.Contract(contractAddress, Router.abi, library.getSigner())
     callContract(chainId, contract, method, params, {
       value,
       sentMsg: "Deposit submitted!",
@@ -292,6 +303,13 @@ export default function PositionEditor(props) {
   }
 
   const onClickPrimary = () => {
+    if (needPositionManagerApproval) {
+      approvePositionManager({
+        sentMsg: "Enable deposit sent",
+        failMsg: "Enable deposit failed",
+      })
+      return
+    }
     if (needApproval) {
       approveTokens({
         setIsApproving,

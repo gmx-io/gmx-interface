@@ -66,6 +66,10 @@ export default function PositionsList(props) {
     isWaitingForPluginApproval,
     updateOrderBookApproved,
     orderBookApproved,
+    positionManagerApproved,
+    isWaitingForPositionManagerApproval,
+    isPositionManagerApproving,
+    approvePositionManager,
     setMarket
   } = props
   const [positionToEditKey, setPositionToEditKey] = useState(undefined)
@@ -108,6 +112,10 @@ export default function PositionsList(props) {
         getUsd={getUsd}
         getLeverage={getLeverage}
         savedIsPnlInLeverage={savedIsPnlInLeverage}
+        positionManagerApproved={positionManagerApproved}
+        isPositionManagerApproving={isPositionManagerApproving}
+        isWaitingForPositionManagerApproval={isWaitingForPositionManagerApproval}
+        approvePositionManager={approvePositionManager}
         chainId={chainId}
       />
       {ordersToaOpen &&

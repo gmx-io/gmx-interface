@@ -69,6 +69,7 @@ export const SECONDS_PER_YEAR = 31536000;
 export const USDG_DECIMALS = 18;
 export const USD_DECIMALS = 30;
 export const BASIS_POINTS_DIVISOR = 10000;
+export const DEPOSIT_FEE = 50;
 export const DUST_BNB = "2000000000000000";
 export const DUST_USD = expandDecimals(1, USD_DECIMALS);
 export const PRECISION = expandDecimals(1, 30);
