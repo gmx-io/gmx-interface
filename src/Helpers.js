@@ -111,7 +111,7 @@ export const SHOULD_SHOW_POSITION_LINES_KEY =
 export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
 
-export const PROFIT_THRESHOLD_BASIS_POINTS = 120;
+export const MIN_PROFIT_BIPS = 150;
 
 const supportedChainIds = [ARBITRUM, AVALANCHE];
 const injectedConnector = new InjectedConnector({
@@ -1043,10 +1043,10 @@ export function getProfitPrice(closePrice, position) {
   if (position && position.averagePrice && closePrice) {
     profitPrice = position.isLong
       ? position.averagePrice
-          .mul(BASIS_POINTS_DIVISOR + PROFIT_THRESHOLD_BASIS_POINTS)
+          .mul(BASIS_POINTS_DIVISOR + MIN_PROFIT_BIPS)
           .div(BASIS_POINTS_DIVISOR)
       : position.averagePrice
-          .mul(BASIS_POINTS_DIVISOR - PROFIT_THRESHOLD_BASIS_POINTS)
+          .mul(BASIS_POINTS_DIVISOR - MIN_PROFIT_BIPS)
           .div(BASIS_POINTS_DIVISOR);
   }
   return profitPrice;
@@ -1072,7 +1072,7 @@ export function calculatePositionDelta(
   if (
     !minProfitExpired &&
     hasProfit &&
-    delta.mul(BASIS_POINTS_DIVISOR).lte(size.mul(PROFIT_THRESHOLD_BASIS_POINTS))
+    delta.mul(BASIS_POINTS_DIVISOR).lte(size.mul(MIN_PROFIT_BIPS))
   ) {
     delta = bigNumberify(0);
   }
