@@ -192,8 +192,6 @@ export default function PositionEditor(props) {
   const getPrimaryText = () => {
     const error = getError()
     if (error) { return error }
-    if (isApproving) { return `Approving ${position.collateralToken.symbol}...` }
-    if (needApproval) { return `Approve ${position.collateralToken.symbol}` }
     if (isSwapping) {
       if (isDeposit) { return "Depositing..." }
       return "Withdrawing..."
@@ -202,10 +200,12 @@ export default function PositionEditor(props) {
     if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
       return "Enabling Deposit..."
     }
-
     if (isDeposit && needPositionManagerApproval) {
       return "Enable Deposit"
     }
+
+    if (isApproving) { return `Approving ${position.collateralToken.symbol}...` }
+    if (needApproval) { return `Approve ${position.collateralToken.symbol}` }
 
     if (isDeposit) { return "Deposit" }
 
@@ -310,6 +310,7 @@ export default function PositionEditor(props) {
       })
       return
     }
+
     if (needApproval) {
       approveTokens({
         setIsApproving,
