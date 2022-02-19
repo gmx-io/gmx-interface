@@ -1253,6 +1253,16 @@ export default function SwapBox(props) {
       return error;
     }
 
+    if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
+      return "Enabling Leverage..."
+    }
+    if (isPositionManagerApproving) {
+      return "Enabling Leverage..."
+    }
+    if (needPositionManagerApproval) {
+      return "Enable Leverage"
+    }
+
     if (needApproval && isWaitingForApproval) {
       return "Waiting for Approval";
     }
@@ -1271,16 +1281,6 @@ export default function SwapBox(props) {
     }
     if (needOrderBookApproval) {
       return "Enable Orders";
-    }
-
-    if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
-      return "Enabling Leverage..."
-    }
-    if (isPositionManagerApproving) {
-      return "Enabling Leverage..."
-    }
-    if (needPositionManagerApproval) {
-      return "Enable Leverage"
     }
 
     if (!isMarketOrder)
