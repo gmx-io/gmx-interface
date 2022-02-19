@@ -123,7 +123,7 @@ export default function PositionEditor(props) {
 
     if (fromAmount) {
       collateralDelta = isDeposit ? convertedAmount : fromAmount
-      if (position.isLong) {
+      if (position.isLong && chainId === ARBITRUM) {
         collateralDelta = collateralDelta.mul(BASIS_POINTS_DIVISOR - DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR)
       }
       nextLeverage = getLeverage({
