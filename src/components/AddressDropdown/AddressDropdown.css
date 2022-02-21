@@ -19,9 +19,10 @@
 
 .menu-items {
   position: absolute;
-  right: -2px;
+  right: 0;
   top: 43px;
-  width: 10rem;
+  min-width: 10rem;
+  width: 100%;
   transform-origin: top right;
   border-radius: 4px;
   background: #16182e;
@@ -29,7 +30,7 @@
   list-style: none;
   cursor: pointer;
   outline: none;
-  z-index: 2;
+  z-index: 1000;
 }
 .menu-item {
   display: flex !important;

@@ -36,7 +36,7 @@ export const ARBITRUM = 42161;
 export const DEFAULT_CHAIN_ID = AVALANCHE;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const MIN_PROFIT_TIME = 6 * 60 * 60; // 6 hours
+export const MIN_PROFIT_TIME = 3 * 60 * 60; // 3 hours
 
 const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
 
@@ -51,7 +51,7 @@ const CHAIN_NAMES_MAP = {
 const GAS_PRICE_ADJUSTMENT_MAP = {
   [ARBITRUM]: "0",
   [AVALANCHE]: "3000000000" // 3 gwei
-}
+};
 
 const ARBITRUM_RPC_PROVIDERS = ["https://rpc.ankr.com/arbitrum"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
@@ -69,6 +69,7 @@ export const SECONDS_PER_YEAR = 31536000;
 export const USDG_DECIMALS = 18;
 export const USD_DECIMALS = 30;
 export const BASIS_POINTS_DIVISOR = 10000;
+export const DEPOSIT_FEE = 50;
 export const DUST_BNB = "2000000000000000";
 export const DUST_USD = expandDecimals(1, USD_DECIMALS);
 export const PRECISION = expandDecimals(1, 30);
@@ -111,7 +112,7 @@ export const SHOULD_SHOW_POSITION_LINES_KEY =
 export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
 
-export const PROFIT_THRESHOLD_BASIS_POINTS = 150;
+export const MIN_PROFIT_BIPS = 150;
 
 const supportedChainIds = [ARBITRUM, AVALANCHE];
 const injectedConnector = new InjectedConnector({
@@ -1043,10 +1044,10 @@ export function getProfitPrice(closePrice, position) {
   if (position && position.averagePrice && closePrice) {
     profitPrice = position.isLong
       ? position.averagePrice
-          .mul(BASIS_POINTS_DIVISOR + PROFIT_THRESHOLD_BASIS_POINTS)
+          .mul(BASIS_POINTS_DIVISOR + MIN_PROFIT_BIPS)
           .div(BASIS_POINTS_DIVISOR)
       : position.averagePrice
-          .mul(BASIS_POINTS_DIVISOR - PROFIT_THRESHOLD_BASIS_POINTS)
+          .mul(BASIS_POINTS_DIVISOR - MIN_PROFIT_BIPS)
           .div(BASIS_POINTS_DIVISOR);
   }
   return profitPrice;
@@ -1072,7 +1073,7 @@ export function calculatePositionDelta(
   if (
     !minProfitExpired &&
     hasProfit &&
-    delta.mul(BASIS_POINTS_DIVISOR).lte(size.mul(PROFIT_THRESHOLD_BASIS_POINTS))
+    delta.mul(BASIS_POINTS_DIVISOR).lte(size.mul(MIN_PROFIT_BIPS))
   ) {
     delta = bigNumberify(0);
   }
@@ -2044,12 +2045,14 @@ export function usePrevious(value) {
 }
 
 export async function getGasPrice(provider, chainId) {
-  if (!provider) { return }
+  if (!provider) {
+    return;
+  }
 
-  const gasPrice = await provider.getGasPrice()
-  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0)
+  const gasPrice = await provider.getGasPrice();
+  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
 
-  return gasPrice.add(premium)
+  return gasPrice.add(premium);
 }
 
 export async function getGasLimit(
@@ -2274,7 +2277,9 @@ export const switchNetwork = async (chainId, active) => {
   } catch (ex) {
     // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
     // This error code indicates that the chain has not been added to MetaMask.
-    if (ex.code === 4902) {
+    // 4001 error means user has denied the request
+    // If the error code is not 4001, then we need to add the network
+    if (ex.code !== 4001) {
       return await addNetwork(NETWORK_METADATA[chainId]);
     }
 
@@ -2370,7 +2375,7 @@ export function getInfoTokens(
   vaultPropsLength
 ) {
   if (!vaultPropsLength) {
-    vaultPropsLength = 14
+    vaultPropsLength = 14;
   }
   const fundingRatePropsLength = 2;
   const infoTokens = {};
@@ -2390,24 +2395,26 @@ export function getInfoTokens(
   for (let i = 0; i < whitelistedTokens.length; i++) {
     const token = JSON.parse(JSON.stringify(whitelistedTokens[i]));
     if (vaultTokenInfo) {
-      token.poolAmount = vaultTokenInfo[i * vaultPropsLength]
-      token.reservedAmount = vaultTokenInfo[i * vaultPropsLength + 1]
-      token.availableAmount = token.poolAmount.sub(token.reservedAmount)
-      token.usdgAmount = vaultTokenInfo[i * vaultPropsLength + 2]
-      token.redemptionAmount = vaultTokenInfo[i * vaultPropsLength + 3]
-      token.weight = vaultTokenInfo[i * vaultPropsLength + 4]
-      token.bufferAmount = vaultTokenInfo[i * vaultPropsLength + 5]
-      token.maxUsdgAmount = vaultTokenInfo[i * vaultPropsLength + 6]
-      token.globalShortSize = vaultTokenInfo[i * vaultPropsLength + 7]
-      token.maxGlobalShortSize = vaultTokenInfo[i * vaultPropsLength + 8]
-      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 9]
-      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 10]
-      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 11]
+      token.poolAmount = vaultTokenInfo[i * vaultPropsLength];
+      token.reservedAmount = vaultTokenInfo[i * vaultPropsLength + 1];
+      token.availableAmount = token.poolAmount.sub(token.reservedAmount);
+      token.usdgAmount = vaultTokenInfo[i * vaultPropsLength + 2];
+      token.redemptionAmount = vaultTokenInfo[i * vaultPropsLength + 3];
+      token.weight = vaultTokenInfo[i * vaultPropsLength + 4];
+      token.bufferAmount = vaultTokenInfo[i * vaultPropsLength + 5];
+      token.maxUsdgAmount = vaultTokenInfo[i * vaultPropsLength + 6];
+      token.globalShortSize = vaultTokenInfo[i * vaultPropsLength + 7];
+      token.maxGlobalShortSize = vaultTokenInfo[i * vaultPropsLength + 8];
+      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 9];
+      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 10];
+      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 11];
 
-      token.maxAvailableShort = bigNumberify(0)
+      token.maxAvailableShort = bigNumberify(0);
       if (token.maxGlobalShortSize.gt(0)) {
         if (token.maxGlobalShortSize.gt(token.globalShortSize)) {
-          token.maxAvailableShort = token.maxGlobalShortSize.sub(token.globalShortSize)
+          token.maxAvailableShort = token.maxGlobalShortSize.sub(
+            token.globalShortSize
+          );
         }
       }
 

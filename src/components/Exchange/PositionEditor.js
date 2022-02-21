@@ -6,7 +6,9 @@ import { BsArrowRight } from 'react-icons/bs'
 import {
 	USD_DECIMALS,
 	BASIS_POINTS_DIVISOR,
+  DEPOSIT_FEE,
 	DUST_BNB,
+  ARBITRUM,
   helperToast,
   formatAmount,
   bigNumberify,
@@ -49,6 +51,10 @@ export default function PositionEditor(props) {
     getUsd,
     getLeverage,
     savedIsPnlInLeverage,
+    positionManagerApproved,
+    isWaitingForPositionManagerApproval,
+    isPositionManagerApproving,
+    approvePositionManager,
     chainId
   } = props
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN")
@@ -65,8 +71,12 @@ export default function PositionEditor(props) {
     fetcher: fetcher(library, Token),
   })
 
+  const isWithdrawalEnabled = chainId === ARBITRUM
+
   const isDeposit = option === DEPOSIT
   const isWithdrawal = option === WITHDRAW
+
+  const needPositionManagerApproval = chainId === ARBITRUM && isDeposit && !positionManagerApproved
 
   let collateralToken
   let maxAmount
@@ -113,6 +123,9 @@ export default function PositionEditor(props) {
 
     if (fromAmount) {
       collateralDelta = isDeposit ? convertedAmount : fromAmount
+      if (position.isLong && chainId === ARBITRUM) {
+        collateralDelta = collateralDelta.mul(BASIS_POINTS_DIVISOR - DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR)
+      }
       nextLeverage = getLeverage({
         size: position.size,
         collateral: position.collateral,
@@ -166,6 +179,12 @@ export default function PositionEditor(props) {
     const error = getError()
     if (error) { return false }
     if (isSwapping) { return false }
+    if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
+      return false
+    }
+    if (isPositionManagerApproving) {
+      return false
+    }
 
     return true
   }
@@ -173,12 +192,20 @@ export default function PositionEditor(props) {
   const getPrimaryText = () => {
     const error = getError()
     if (error) { return error }
-    if (isApproving) { return `Approving ${position.collateralToken.symbol}...` }
-    if (needApproval) { return `Approve ${position.collateralToken.symbol}` }
     if (isSwapping) {
       if (isDeposit) { return "Depositing..." }
       return "Withdrawing..."
     }
+
+    if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
+      return "Enabling Deposit..."
+    }
+    if (isDeposit && needPositionManagerApproval) {
+      return "Enable Deposit"
+    }
+
+    if (isApproving) { return `Approving ${position.collateralToken.symbol}...` }
+    if (needApproval) { return `Approve ${position.collateralToken.symbol}` }
 
     if (isDeposit) { return "Deposit" }
 
@@ -231,7 +258,8 @@ export default function PositionEditor(props) {
       return
     }
 
-    const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner())
+    const contractAddress = chainId === ARBITRUM ? getContract(chainId, "PositionManager") : routerAddress
+    const contract = new ethers.Contract(contractAddress, Router.abi, library.getSigner())
     callContract(chainId, contract, method, params, {
       value,
       sentMsg: "Deposit submitted!",
@@ -275,6 +303,14 @@ export default function PositionEditor(props) {
   }
 
   const onClickPrimary = () => {
+    if (needPositionManagerApproval) {
+      approvePositionManager({
+        sentMsg: "Enable deposit sent",
+        failMsg: "Enable deposit failed",
+      })
+      return
+    }
+
     if (needApproval) {
       approveTokens({
         setIsApproving,
@@ -303,7 +339,7 @@ export default function PositionEditor(props) {
       {(position) &&
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           <div>
-            <Tab options={EDIT_OPTIONS} option={option} setOption={setOption} onChange={resetForm} />
+            {isWithdrawalEnabled && <Tab options={EDIT_OPTIONS} option={option} setOption={setOption} onChange={resetForm} />}
             {(isDeposit || isWithdrawal) && <div>
               <div className="Exchange-swap-section">
                 <div className="Exchange-swap-section-top">
