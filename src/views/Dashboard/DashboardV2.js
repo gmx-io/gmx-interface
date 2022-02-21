@@ -699,14 +699,14 @@ export default function DashboardV2() {
                       dataKey="value"
                       startAngle={90}
                       endAngle={-270}
+                      paddingAngle={1}
                       onMouseEnter={onGMXDistributionChartEnter}
                       onMouseLeave={onGMXDistributionChartLeave}
                     >
                       {gmxDistributionData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} style={{
                           filter: gmxActiveIndex === index ? `drop-shadow(0px 0px 10px ${entry.color})` : 'none',
-                          cursor: 'pointer',
-                          zIndex: gmxActiveIndex === index ? 2 : 1
+                          cursor: 'pointer'
                         }} stroke={entry.color} strokeWidth={ gmxActiveIndex === index ? 4 : 0} />
                       ))}
                     </Pie>
@@ -841,12 +841,12 @@ export default function DashboardV2() {
                       endAngle={-270}
                       onMouseEnter={onGLPPoolChartEnter}
                       onMouseLeave={onGLPPoolChartLeave}
+                      paddingAngle={1}
                     >
                       {glpPool.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={GLPPOOLCOLORS[entry.name]} style={{
                           filter: glpActiveIndex === index ? `drop-shadow(0px 0px 10px ${GLPPOOLCOLORS[entry.name]})` : 'none',
-                          cursor: 'pointer',
-                          zIndex: glpActiveIndex === index ? 2 : 1
+                          cursor: 'pointer'
                         }} stroke={GLPPOOLCOLORS[entry.name]} strokeWidth={ glpActiveIndex === index ? 4 : 0} />
                       ))}
                     </Pie>
