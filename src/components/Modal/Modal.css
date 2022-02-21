@@ -1,6 +1,6 @@
 .Modal {
   position: fixed;
-  z-index: 20;
+  z-index: 900;
   top: 0;
   left: 0;
   right: 0;
@@ -48,6 +48,19 @@
 }
 .Modal-body {
   margin: 1rem;
+}
+.Modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.Modal-body::-webkit-scrollbar-track {
+  background-color: #1c1c1c;
+  border-radius: 100rem;
+}
+
+.Modal-body::-webkit-scrollbar-thumb {
+  background-color: #949393;
+  border-radius: 100rem;
 }
 
 .Modal-title {

@@ -51,7 +51,7 @@ const CHAIN_NAMES_MAP = {
 const GAS_PRICE_ADJUSTMENT_MAP = {
   [ARBITRUM]: "0",
   [AVALANCHE]: "3000000000" // 3 gwei
-}
+};
 
 const ARBITRUM_RPC_PROVIDERS = ["https://rpc.ankr.com/arbitrum"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
@@ -2045,12 +2045,14 @@ export function usePrevious(value) {
 }
 
 export async function getGasPrice(provider, chainId) {
-  if (!provider) { return }
+  if (!provider) {
+    return;
+  }
 
-  const gasPrice = await provider.getGasPrice()
-  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0)
+  const gasPrice = await provider.getGasPrice();
+  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
 
-  return gasPrice.add(premium)
+  return gasPrice.add(premium);
 }
 
 export async function getGasLimit(
@@ -2373,7 +2375,7 @@ export function getInfoTokens(
   vaultPropsLength
 ) {
   if (!vaultPropsLength) {
-    vaultPropsLength = 14
+    vaultPropsLength = 14;
   }
   const fundingRatePropsLength = 2;
   const infoTokens = {};
@@ -2393,24 +2395,26 @@ export function getInfoTokens(
   for (let i = 0; i < whitelistedTokens.length; i++) {
     const token = JSON.parse(JSON.stringify(whitelistedTokens[i]));
     if (vaultTokenInfo) {
-      token.poolAmount = vaultTokenInfo[i * vaultPropsLength]
-      token.reservedAmount = vaultTokenInfo[i * vaultPropsLength + 1]
-      token.availableAmount = token.poolAmount.sub(token.reservedAmount)
-      token.usdgAmount = vaultTokenInfo[i * vaultPropsLength + 2]
-      token.redemptionAmount = vaultTokenInfo[i * vaultPropsLength + 3]
-      token.weight = vaultTokenInfo[i * vaultPropsLength + 4]
-      token.bufferAmount = vaultTokenInfo[i * vaultPropsLength + 5]
-      token.maxUsdgAmount = vaultTokenInfo[i * vaultPropsLength + 6]
-      token.globalShortSize = vaultTokenInfo[i * vaultPropsLength + 7]
-      token.maxGlobalShortSize = vaultTokenInfo[i * vaultPropsLength + 8]
-      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 9]
-      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 10]
-      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 11]
+      token.poolAmount = vaultTokenInfo[i * vaultPropsLength];
+      token.reservedAmount = vaultTokenInfo[i * vaultPropsLength + 1];
+      token.availableAmount = token.poolAmount.sub(token.reservedAmount);
+      token.usdgAmount = vaultTokenInfo[i * vaultPropsLength + 2];
+      token.redemptionAmount = vaultTokenInfo[i * vaultPropsLength + 3];
+      token.weight = vaultTokenInfo[i * vaultPropsLength + 4];
+      token.bufferAmount = vaultTokenInfo[i * vaultPropsLength + 5];
+      token.maxUsdgAmount = vaultTokenInfo[i * vaultPropsLength + 6];
+      token.globalShortSize = vaultTokenInfo[i * vaultPropsLength + 7];
+      token.maxGlobalShortSize = vaultTokenInfo[i * vaultPropsLength + 8];
+      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 9];
+      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 10];
+      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 11];
 
-      token.maxAvailableShort = bigNumberify(0)
+      token.maxAvailableShort = bigNumberify(0);
       if (token.maxGlobalShortSize.gt(0)) {
         if (token.maxGlobalShortSize.gt(token.globalShortSize)) {
-          token.maxAvailableShort = token.maxGlobalShortSize.sub(token.globalShortSize)
+          token.maxAvailableShort = token.maxGlobalShortSize.sub(
+            token.globalShortSize
+          );
         }
       }
 
