@@ -53,78 +53,15 @@ const CHAIN_NAMES_MAP = {
 }
 
 const GAS_PRICE_ADJUSTMENT_MAP = {
-<<<<<<< HEAD
-  [ARBITRUM]: '0',
-  [AVALANCHE]: '3000000000', // 3 gwei
-}
-=======
   [ARBITRUM]: "0",
   [AVALANCHE]: "3000000000" // 3 gwei
 };
->>>>>>> master
 
 const ARBITRUM_RPC_PROVIDERS = ['https://rpc.ankr.com/arbitrum']
 const AVALANCHE_RPC_PROVIDERS = ['https://api.avax.network/ext/bc/C/rpc']
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = 'walletconnect'
 
 export function getChainName(chainId) {
-<<<<<<< HEAD
-  return CHAIN_NAMES_MAP[chainId]
-}
-
-export const USDG_ADDRESS = getContract(CHAIN_ID, 'USDG')
-export const MAX_LEVERAGE = 100 * 10000
-
-export const DEFAULT_GAS_LIMIT = 1 * 1000 * 1000
-export const SECONDS_PER_YEAR = 31536000
-export const USDG_DECIMALS = 18
-export const USD_DECIMALS = 30
-export const BASIS_POINTS_DIVISOR = 10000
-export const DUST_BNB = '2000000000000000'
-export const DUST_USD = expandDecimals(1, USD_DECIMALS)
-export const PRECISION = expandDecimals(1, 30)
-export const GLP_DECIMALS = 18
-export const GMX_DECIMALS = 18
-export const DEFAULT_MAX_USDG_AMOUNT = expandDecimals(200 * 1000 * 1000, 18)
-
-export const TAX_BASIS_POINTS = 50
-export const STABLE_TAX_BASIS_POINTS = 5
-export const MINT_BURN_FEE_BASIS_POINTS = 25
-export const SWAP_FEE_BASIS_POINTS = 25
-export const STABLE_SWAP_FEE_BASIS_POINTS = 1
-export const MARGIN_FEE_BASIS_POINTS = 10
-
-export const LIQUIDATION_FEE = expandDecimals(5, USD_DECIMALS)
-
-export const GLP_COOLDOWN_DURATION = 15 * 60
-export const THRESHOLD_REDEMPTION_VALUE = expandDecimals(993, 27) // 0.993
-export const FUNDING_RATE_PRECISION = 1000000
-
-export const SWAP = 'Swap'
-export const INCREASE = 'Increase'
-export const DECREASE = 'Decrease'
-export const LONG = 'Long'
-export const SHORT = 'Short'
-
-export const MARKET = 'Market'
-export const LIMIT = 'Limit'
-export const STOP = 'Stop'
-export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT]
-export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT]
-export const SWAP_OPTIONS = [LONG, SHORT, SWAP]
-export const DEFAULT_SLIPPAGE_AMOUNT = 20
-
-export const SLIPPAGE_BPS_KEY = 'Exchange-swap-slippage-basis-points-v3'
-export const IS_PNL_IN_LEVERAGE_KEY = 'Exchange-swap-is-pnl-in-leverage'
-export const SHOULD_SHOW_POSITION_LINES_KEY = 'Exchange-swap-should-show-position-lines'
-
-export const TRIGGER_PREFIX_ABOVE = '>'
-export const TRIGGER_PREFIX_BELOW = '<'
-
-export const PROFIT_THRESHOLD_BASIS_POINTS = 150
-
-const supportedChainIds = [ARBITRUM, AVALANCHE]
-=======
   return CHAIN_NAMES_MAP[chainId];
 }
 
@@ -182,7 +119,6 @@ export const TRIGGER_PREFIX_BELOW = "<";
 export const MIN_PROFIT_BIPS = 150;
 
 const supportedChainIds = [ARBITRUM, AVALANCHE];
->>>>>>> master
 const injectedConnector = new InjectedConnector({
   supportedChainIds,
 })
@@ -919,17 +855,12 @@ export function getProfitPrice(closePrice, position) {
   let profitPrice
   if (position && position.averagePrice && closePrice) {
     profitPrice = position.isLong
-<<<<<<< HEAD
-      ? position.averagePrice.mul(BASIS_POINTS_DIVISOR + PROFIT_THRESHOLD_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
-      : position.averagePrice.mul(BASIS_POINTS_DIVISOR - PROFIT_THRESHOLD_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
-=======
       ? position.averagePrice
           .mul(BASIS_POINTS_DIVISOR + MIN_PROFIT_BIPS)
           .div(BASIS_POINTS_DIVISOR)
       : position.averagePrice
           .mul(BASIS_POINTS_DIVISOR - MIN_PROFIT_BIPS)
           .div(BASIS_POINTS_DIVISOR);
->>>>>>> master
   }
   return profitPrice
 }
@@ -1775,11 +1706,7 @@ export function usePrevious(value) {
 
 export async function getGasPrice(provider, chainId) {
   if (!provider) {
-<<<<<<< HEAD
-    return
-=======
     return;
->>>>>>> master
   }
 
   const gasPrice = await provider.getGasPrice();
@@ -1987,15 +1914,10 @@ export const switchNetwork = async (chainId, active) => {
   } catch (ex) {
     // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
     // This error code indicates that the chain has not been added to MetaMask.
-<<<<<<< HEAD
-    if (ex.code === 4902) {
-      return await addNetwork(NETWORK_METADATA[chainId])
-=======
     // 4001 error means user has denied the request
     // If the error code is not 4001, then we need to add the network
     if (ex.code !== 4001) {
       return await addNetwork(NETWORK_METADATA[chainId]);
->>>>>>> master
     }
 
     console.error('error', ex)
