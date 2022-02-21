@@ -1,17 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { SWRConfig } from "swr";
+import React, { useState, useEffect, useCallback } from 'react'
+import { SWRConfig } from 'swr'
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from 'framer-motion'
 
-import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
-import { Web3Provider } from "@ethersproject/providers";
+import { Web3ReactProvider, useWeb3React } from '@web3-react/core'
+import { Web3Provider } from '@ethersproject/providers'
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  NavLink
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, NavLink } from 'react-router-dom'
 
 import {
   ARBITRUM,
@@ -32,75 +27,75 @@ import {
   useLocalStorageSerializeKey,
   useInactiveListener,
   getExplorerUrl,
-  getWalletConnectHandler
-} from "./Helpers";
+  getWalletConnectHandler,
+} from './Helpers'
 
-import Home from "./views/Home/Home";
-import Presale from "./views/Presale/Presale";
-import Dashboard from "./views/Dashboard/Dashboard";
-import Ecosystem from "./views/Ecosystem/Ecosystem";
-import Stake from "./views/Stake/Stake";
-import Exchange from "./views/Exchange/Exchange";
-import Actions from "./views/Actions/Actions";
-import OrdersOverview from "./views/OrdersOverview/OrdersOverview";
-import PositionsOverview from "./views/PositionsOverview/PositionsOverview";
-import BuyGlp from "./views/BuyGlp/BuyGlp";
-import BuyGMX from "./views/BuyGMX/BuyGMX";
-import SellGlp from "./views/SellGlp/SellGlp";
-import Buy from "./views/Buy/Buy";
-import NftWallet from "./views/NftWallet/NftWallet";
-import BeginAccountTransfer from "./views/BeginAccountTransfer/BeginAccountTransfer";
-import CompleteAccountTransfer from "./views/CompleteAccountTransfer/CompleteAccountTransfer";
-import Debug from "./views/Debug/Debug";
+import Home from './views/Home/Home'
+import Presale from './views/Presale/Presale'
+import Dashboard from './views/Dashboard/Dashboard'
+import Ecosystem from './views/Ecosystem/Ecosystem'
+import Stake from './views/Stake/Stake'
+import Exchange from './views/Exchange/Exchange'
+import Actions from './views/Actions/Actions'
+import OrdersOverview from './views/OrdersOverview/OrdersOverview'
+import PositionsOverview from './views/PositionsOverview/PositionsOverview'
+import BuyGlp from './views/BuyGlp/BuyGlp'
+import BuyGMX from './views/BuyGMX/BuyGMX'
+import SellGlp from './views/SellGlp/SellGlp'
+import Buy from './views/Buy/Buy'
+import NftWallet from './views/NftWallet/NftWallet'
+import BeginAccountTransfer from './views/BeginAccountTransfer/BeginAccountTransfer'
+import CompleteAccountTransfer from './views/CompleteAccountTransfer/CompleteAccountTransfer'
+import Debug from './views/Debug/Debug'
 
-import cx from "classnames";
-import { cssTransition, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import NetworkSelector from "./components/NetworkSelector/NetworkSelector";
-import Modal from "./components/Modal/Modal";
-import Checkbox from "./components/Checkbox/Checkbox";
+import cx from 'classnames'
+import { cssTransition, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import NetworkSelector from './components/NetworkSelector/NetworkSelector'
+import Modal from './components/Modal/Modal'
+import Checkbox from './components/Checkbox/Checkbox'
 
-import { RiMenuLine } from "react-icons/ri";
-import { FaTimes } from "react-icons/fa";
-import { FiX } from "react-icons/fi";
+import { RiMenuLine } from 'react-icons/ri'
+import { FaTimes } from 'react-icons/fa'
+import { FiX } from 'react-icons/fi'
 // import { BiLogOut } from "react-icons/bi";
 
-import "./Font.css";
-import "./Shared.css";
-import "./App.css";
-import "./Input.css";
-import "./AppOrder.css";
+import './Font.css'
+import './Shared.css'
+import './App.css'
+import './Input.css'
+import './AppOrder.css'
 
-import logoImg from "./img/logo_GMX.svg";
-import logoSmallImg from "./img/logo_GMX_small.svg";
-import connectWalletImg from "./img/ic_wallet_24.svg";
+import logoImg from './img/logo_GMX.svg'
+import logoSmallImg from './img/logo_GMX_small.svg'
+import connectWalletImg from './img/ic_wallet_24.svg'
 
 // import logoImg from './img/gmx-logo-final-white-small.png'
-import metamaskImg from "./img/metamask.png";
-import walletConnectImg from "./img/walletconnect-circle-blue.svg";
-import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
-import { ConnectWalletButton } from "./components/Common/Button";
+import metamaskImg from './img/metamask.png'
+import walletConnectImg from './img/walletconnect-circle-blue.svg'
+import AddressDropdown from './components/AddressDropdown/AddressDropdown'
+import { ConnectWalletButton } from './components/Common/Button'
 
-if ("ethereum" in window) {
-  window.ethereum.autoRefreshOnNetworkChange = false;
+if ('ethereum' in window) {
+  window.ethereum.autoRefreshOnNetworkChange = false
 }
 
 function getLibrary(provider) {
-  const library = new Web3Provider(provider);
-  return library;
+  const library = new Web3Provider(provider)
+  return library
 }
 
 const Zoom = cssTransition({
-  enter: "zoomIn",
-  exit: "zoomOut",
+  enter: 'zoomIn',
+  exit: 'zoomOut',
   appendPosition: false,
   collapse: true,
   collapseDuration: 200,
-  duration: 200
-});
+  duration: 200,
+})
 
 function inPreviewMode() {
-  return false;
+  return false
 }
 
 function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
@@ -118,25 +113,18 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
           </NavLink>
         </div>
         <div className="App-header-link-container">
-          <a
-            href="https://gmxio.gitbook.io/gmx/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
             ABOUT
           </a>
         </div>
       </div>
-    );
+    )
   }
   return (
     <div className="App-header-links">
       {small && (
         <div className="App-header-links-header">
-          <div
-            className="App-header-menu-icon-block"
-            onClick={() => clickCloseIcon()}
-          >
+          <div className="App-header-menu-icon-block" onClick={() => clickCloseIcon()}>
             <FiX className="App-header-menu-icon" />
           </div>
           <a className="App-header-link-main" href="/">
@@ -170,11 +158,7 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
         </NavLink>
       </div>
       <div className="App-header-link-container">
-        <a
-          href="https://gmxio.gitbook.io/gmx/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
           About
         </a>
       </div>
@@ -187,7 +171,7 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
         </div>
       )}
     </div>
-  );
+  )
 }
 
 function AppHeaderUser({
@@ -197,43 +181,43 @@ function AppHeaderUser({
   walletModalVisible,
   setWalletModalVisible,
   showNetworkSelectorModal,
-  disconnectAccountAndCloseSettings
+  disconnectAccountAndCloseSettings,
 }) {
-  const { chainId } = useChainId();
-  const { active, account } = useWeb3React();
-  const showSelector = true;
+  const { chainId } = useChainId()
+  const { active, account } = useWeb3React()
+  const showSelector = true
   const networkOptions = [
     {
-      label: "Arbitrum",
+      label: 'Arbitrum',
       value: ARBITRUM,
-      icon: "ic_arbitrum_24.svg",
-      color: "#264f79"
+      icon: 'ic_arbitrum_24.svg',
+      color: '#264f79',
     },
     {
-      label: "Avalanche",
+      label: 'Avalanche',
       value: AVALANCHE,
-      icon: "ic_avalanche_24.svg",
-      color: "#E841424D"
-    }
-  ];
+      icon: 'ic_avalanche_24.svg',
+      color: '#E841424D',
+    },
+  ]
 
   useEffect(() => {
     if (active) {
-      setWalletModalVisible(false);
+      setWalletModalVisible(false)
     }
-  }, [active, setWalletModalVisible]);
+  }, [active, setWalletModalVisible])
 
   const onNetworkSelect = useCallback(
     option => {
       if (option.value === chainId) {
-        return;
+        return
       }
-      return switchNetwork(option.value, active);
+      return switchNetwork(option.value, active)
     },
     [chainId, active]
-  );
+  )
 
-  const selectorLabel = getChainName(chainId);
+  const selectorLabel = getChainName(chainId)
 
   if (!active) {
     return (
@@ -255,17 +239,14 @@ function AppHeaderUser({
             showModal={showNetworkSelectorModal}
           />
         )}
-        <ConnectWalletButton
-          onClick={() => setWalletModalVisible(true)}
-          imgSrc={connectWalletImg}
-        >
-          {small ? "Connect" : "Connect Wallet"}
+        <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
+          {small ? 'Connect' : 'Connect Wallet'}
         </ConnectWalletButton>
       </div>
-    );
+    )
   }
 
-  const accountUrl = getAccountUrl(chainId, account);
+  const accountUrl = getAccountUrl(chainId, account)
 
   return (
     <div className="App-header-user">
@@ -296,21 +277,21 @@ function AppHeaderUser({
         />
       </div>
     </div>
-  );
+  )
 }
 
 function FullApp() {
-  const { connector, library, deactivate, activate } = useWeb3React();
+  const { connector, library, deactivate, activate } = useWeb3React()
 
-  const { chainId } = useChainId();
-  const [activatingConnector, setActivatingConnector] = useState();
+  const { chainId } = useChainId()
+  const [activatingConnector, setActivatingConnector] = useState()
   useEffect(() => {
     if (activatingConnector && activatingConnector === connector) {
-      setActivatingConnector(undefined);
+      setActivatingConnector(undefined)
     }
-  }, [activatingConnector, connector, chainId]);
-  const triedEager = useEagerConnect(setActivatingConnector);
-  useInactiveListener(!triedEager || !!activatingConnector);
+  }, [activatingConnector, connector, chainId])
+  const triedEager = useEagerConnect(setActivatingConnector)
+  useInactiveListener(!triedEager || !!activatingConnector)
 
   useEffect(() => {
     if (window.ethereum) {
@@ -318,160 +299,147 @@ function FullApp() {
       // for some reason after network is changed to Avalanche through Metamask
       // it triggers event with chainId = 1
       // reload helps web3 to return correct chain data
-      return window.ethereum.on("chainChanged", () => {
-        document.location.reload();
-      });
+      return window.ethereum.on('chainChanged', () => {
+        document.location.reload()
+      })
     }
-  }, []);
+  }, [])
 
   const disconnectAccount = useCallback(() => {
     // only works with WalletConnect
-    clearWalletConnectData();
-    deactivate();
-  }, [deactivate]);
+    clearWalletConnectData()
+    deactivate()
+  }, [deactivate])
 
   const disconnectAccountAndCloseSettings = () => {
-    disconnectAccount();
-    setIsSettingsVisible(false);
-  };
+    disconnectAccount()
+    setIsSettingsVisible(false)
+  }
 
-  const connectInjectedWallet = getInjectedHandler(activate);
-  const activateWalletConnect = getWalletConnectHandler(
-    activate,
-    deactivate,
-    setActivatingConnector
-  );
+  const connectInjectedWallet = getInjectedHandler(activate)
+  const activateWalletConnect = getWalletConnectHandler(activate, deactivate, setActivatingConnector)
 
-  const [walletModalVisible, setWalletModalVisible] = useState();
-  const connectWallet = () => setWalletModalVisible(true);
+  const [walletModalVisible, setWalletModalVisible] = useState()
+  const connectWallet = () => setWalletModalVisible(true)
 
-  const [isDrawerVisible, setIsDrawerVisible] = useState(undefined);
-  const [
-    isNativeSelectorModalVisible,
-    setisNativeSelectorModalVisible
-  ] = useState(false);
+  const [isDrawerVisible, setIsDrawerVisible] = useState(undefined)
+  const [isNativeSelectorModalVisible, setisNativeSelectorModalVisible] = useState(false)
   const fadeVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1 }
-  };
+    visible: { opacity: 1 },
+  }
   const slideVariants = {
-    hidden: { x: "-100%" },
-    visible: { x: 0 }
-  };
+    hidden: { x: '-100%' },
+    visible: { x: 0 },
+  }
 
-  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
-  const [
-    savedSlippageAmount,
-    setSavedSlippageAmount
-  ] = useLocalStorageSerializeKey(
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false)
+  const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
     [chainId, SLIPPAGE_BPS_KEY],
     DEFAULT_SLIPPAGE_AMOUNT
-  );
-  const [slippageAmount, setSlippageAmount] = useState(0);
-  const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
+  )
+  const [slippageAmount, setSlippageAmount] = useState(0)
+  const [isPnlInLeverage, setIsPnlInLeverage] = useState(false)
 
-  const [
-    savedIsPnlInLeverage,
-    setSavedIsPnlInLeverage
-  ] = useLocalStorageSerializeKey([chainId, IS_PNL_IN_LEVERAGE_KEY], false);
+  const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
+    [chainId, IS_PNL_IN_LEVERAGE_KEY],
+    false
+  )
 
-  const [
-    savedShouldShowPositionLines,
-    setSavedShouldShowPositionLines
-  ] = useLocalStorageSerializeKey(
+  const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
     [chainId, SHOULD_SHOW_POSITION_LINES_KEY],
     false
-  );
+  )
 
   const openSettings = () => {
-    const slippage = parseInt(savedSlippageAmount);
-    setSlippageAmount((slippage / BASIS_POINTS_DIVISOR) * 100);
-    setIsPnlInLeverage(savedIsPnlInLeverage);
-    setIsSettingsVisible(true);
-  };
+    const slippage = parseInt(savedSlippageAmount)
+    setSlippageAmount((slippage / BASIS_POINTS_DIVISOR) * 100)
+    setIsPnlInLeverage(savedIsPnlInLeverage)
+    setIsSettingsVisible(true)
+  }
 
   const showNetworkSelectorModal = val => {
-    setisNativeSelectorModalVisible(val);
-  };
+    setisNativeSelectorModalVisible(val)
+  }
 
   const saveAndCloseSettings = () => {
-    const slippage = parseFloat(slippageAmount);
+    const slippage = parseFloat(slippageAmount)
     if (isNaN(slippage)) {
-      helperToast.error("Invalid slippage value");
-      return;
+      helperToast.error('Invalid slippage value')
+      return
     }
     if (slippage > 5) {
-      helperToast.error("Slippage should be less than 5%");
-      return;
+      helperToast.error('Slippage should be less than 5%')
+      return
     }
 
-    const basisPoints = (slippage * BASIS_POINTS_DIVISOR) / 100;
+    const basisPoints = (slippage * BASIS_POINTS_DIVISOR) / 100
     if (parseInt(basisPoints) !== parseFloat(basisPoints)) {
-      helperToast.error("Max slippage precision is 0.01%");
-      return;
+      helperToast.error('Max slippage precision is 0.01%')
+      return
     }
 
-    setSavedIsPnlInLeverage(isPnlInLeverage);
-    setSavedSlippageAmount(basisPoints);
-    setIsSettingsVisible(false);
-  };
+    setSavedIsPnlInLeverage(isPnlInLeverage)
+    setSavedSlippageAmount(basisPoints)
+    setIsSettingsVisible(false)
+  }
   useEffect(() => {
     if (isDrawerVisible) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden'
     } else {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = 'unset'
     }
-    return () => (document.body.style.overflow = "unset");
-  }, [isDrawerVisible]);
+    return () => (document.body.style.overflow = 'unset')
+  }, [isDrawerVisible])
 
-  const [pendingTxns, setPendingTxns] = useState([]);
+  const [pendingTxns, setPendingTxns] = useState([])
 
   useEffect(() => {
     const checkPendingTxns = async () => {
-      const updatedPendingTxns = [];
+      const updatedPendingTxns = []
       for (let i = 0; i < pendingTxns.length; i++) {
-        const pendingTxn = pendingTxns[i];
-        const receipt = await library.getTransactionReceipt(pendingTxn.hash);
+        const pendingTxn = pendingTxns[i]
+        const receipt = await library.getTransactionReceipt(pendingTxn.hash)
         if (receipt) {
           if (receipt.status === 0) {
-            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
+            const txUrl = getExplorerUrl(chainId) + 'tx/' + pendingTxn.hash
             helperToast.error(
               <div>
-                Txn failed.{" "}
+                Txn failed.{' '}
                 <a href={txUrl} target="_blank" rel="noopener noreferrer">
                   View
                 </a>
                 <br />
               </div>
-            );
+            )
           }
           if (receipt.status === 1 && pendingTxn.message) {
-            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
+            const txUrl = getExplorerUrl(chainId) + 'tx/' + pendingTxn.hash
             helperToast.success(
               <div>
-                {pendingTxn.message}.{" "}
+                {pendingTxn.message}.{' '}
                 <a href={txUrl} target="_blank" rel="noopener noreferrer">
                   View
                 </a>
                 <br />
               </div>
-            );
+            )
           }
-          continue;
+          continue
         }
-        updatedPendingTxns.push(pendingTxn);
+        updatedPendingTxns.push(pendingTxn)
       }
 
       if (updatedPendingTxns.length !== pendingTxns.length) {
-        setPendingTxns(updatedPendingTxns);
+        setPendingTxns(updatedPendingTxns)
       }
-    };
+    }
 
     const interval = setInterval(() => {
-      checkPendingTxns();
-    }, 2 * 1000);
-    return () => clearInterval(interval);
-  }, [library, pendingTxns, chainId]);
+      checkPendingTxns()
+    }, 2 * 1000)
+    return () => clearInterval(interval)
+  }, [library, pendingTxns, chainId])
 
   return (
     <Router>
@@ -508,11 +476,7 @@ function FullApp() {
                   exit="hidden"
                   variants={fadeVariants}
                   transition={{ duration: 0.2 }}
-                  onClick={() =>
-                    setisNativeSelectorModalVisible(
-                      !isNativeSelectorModalVisible
-                    )
-                  }
+                  onClick={() => setisNativeSelectorModalVisible(!isNativeSelectorModalVisible)}
                 ></motion.div>
               )}
             </AnimatePresence>
@@ -528,9 +492,7 @@ function FullApp() {
               </div>
               <div className="App-header-container-right">
                 <AppHeaderUser
-                  disconnectAccountAndCloseSettings={
-                    disconnectAccountAndCloseSettings
-                  }
+                  disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
                   openSettings={openSettings}
                   setActivatingConnector={setActivatingConnector}
                   walletModalVisible={walletModalVisible}
@@ -539,39 +501,25 @@ function FullApp() {
                 />
               </div>
             </div>
-            <div
-              className={cx("App-header", "small", { active: isDrawerVisible })}
-            >
+            <div className={cx('App-header', 'small', { active: isDrawerVisible })}>
               <div
-                className={cx("App-header-link-container", "App-header-top", {
-                  active: isDrawerVisible
+                className={cx('App-header-link-container', 'App-header-top', {
+                  active: isDrawerVisible,
                 })}
               >
                 <div className="App-header-container-left">
-                  <div
-                    className="App-header-menu-icon-block"
-                    onClick={() => setIsDrawerVisible(!isDrawerVisible)}
-                  >
-                    {!isDrawerVisible && (
-                      <RiMenuLine className="App-header-menu-icon" />
-                    )}
-                    {isDrawerVisible && (
-                      <FaTimes className="App-header-menu-icon" />
-                    )}
+                  <div className="App-header-menu-icon-block" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
+                    {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
+                    {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
                   </div>
-                  <div
-                    className="App-header-link-main clickable"
-                    onClick={() => setIsDrawerVisible(!isDrawerVisible)}
-                  >
+                  <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
                     <img src={logoImg} className="big" alt="GMX Logo" />
                     <img src={logoSmallImg} className="small" alt="GMX Logo" />
                   </div>
                 </div>
                 <div className="App-header-container-right">
                   <AppHeaderUser
-                    disconnectAccountAndCloseSettings={
-                      disconnectAccountAndCloseSettings
-                    }
+                    disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
                     openSettings={openSettings}
                     small
                     setActivatingConnector={setActivatingConnector}
@@ -594,11 +542,7 @@ function FullApp() {
                 variants={slideVariants}
                 transition={{ duration: 0.2 }}
               >
-                <AppHeaderLinks
-                  small
-                  openSettings={openSettings}
-                  clickCloseIcon={() => setIsDrawerVisible(false)}
-                />
+                <AppHeaderLinks small openSettings={openSettings} clickCloseIcon={() => setIsDrawerVisible(false)} />
               </motion.div>
             )}
           </AnimatePresence>
@@ -614,9 +558,7 @@ function FullApp() {
                 setPendingTxns={setPendingTxns}
                 pendingTxns={pendingTxns}
                 savedShouldShowPositionLines={savedShouldShowPositionLines}
-                setSavedShouldShowPositionLines={
-                  setSavedShouldShowPositionLines
-                }
+                setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                 connectWallet={connectWallet}
               />
             </Route>
@@ -627,10 +569,7 @@ function FullApp() {
               <Dashboard />
             </Route>
             <Route exact path="/earn">
-              <Stake
-                setPendingTxns={setPendingTxns}
-                connectWallet={connectWallet}
-              />
+              <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
             </Route>
             <Route exact path="/buy">
               <Buy
@@ -735,10 +674,7 @@ function FullApp() {
           </div>
         </div>
         <div className="Exchange-settings-row">
-          <Checkbox
-            isChecked={isPnlInLeverage}
-            setIsChecked={setIsPnlInLeverage}
-          >
+          <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
             Include PnL in leverage display
           </Checkbox>
         </div>
@@ -751,27 +687,24 @@ function FullApp() {
             Logout from Account
           </button>
         </div> */}
-        <button
-          className="App-cta Exchange-swap-button"
-          onClick={saveAndCloseSettings}
-        >
+        <button className="App-cta Exchange-swap-button" onClick={saveAndCloseSettings}>
           Save
         </button>
       </Modal>
     </Router>
-  );
+  )
 }
 
 function PreviewApp() {
-  const [isDrawerVisible, setIsDrawerVisible] = useState(undefined);
+  const [isDrawerVisible, setIsDrawerVisible] = useState(undefined)
   const fadeVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1 }
-  };
+    visible: { opacity: 1 },
+  }
   const slideVariants = {
-    hidden: { x: "-100%" },
-    visible: { x: 0 }
-  };
+    hidden: { x: '-100%' },
+    visible: { x: 0 },
+  }
 
   return (
     <Router>
@@ -801,12 +734,7 @@ function PreviewApp() {
           <header>
             <div className="App-header large preview">
               <div className="App-header-container-left">
-                <NavLink
-                  exact
-                  activeClassName="active"
-                  className="App-header-link-main"
-                  to="/"
-                >
+                <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
                   <img src={logoImg} alt="GMX Logo" />
                   GMX
                 </NavLink>
@@ -815,12 +743,10 @@ function PreviewApp() {
                 <AppHeaderLinks />
               </div>
             </div>
-            <div
-              className={cx("App-header", "small", { active: isDrawerVisible })}
-            >
+            <div className={cx('App-header', 'small', { active: isDrawerVisible })}>
               <div
-                className={cx("App-header-link-container", "App-header-top", {
-                  active: isDrawerVisible
+                className={cx('App-header-link-container', 'App-header-top', {
+                  active: isDrawerVisible,
                 })}
               >
                 <div className="App-header-container-left">
@@ -830,12 +756,8 @@ function PreviewApp() {
                 </div>
                 <div className="App-header-container-right">
                   <div onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
-                    {!isDrawerVisible && (
-                      <RiMenuLine className="App-header-menu-icon" />
-                    )}
-                    {isDrawerVisible && (
-                      <FaTimes className="App-header-menu-icon" />
-                    )}
+                    {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
+                    {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
                   </div>
                 </div>
               </div>
@@ -867,7 +789,7 @@ function PreviewApp() {
         </div>
       </div>
     </Router>
-  );
+  )
 }
 
 function App() {
@@ -876,7 +798,7 @@ function App() {
       <Web3ReactProvider getLibrary={getLibrary}>
         <PreviewApp />
       </Web3ReactProvider>
-    );
+    )
   }
 
   return (
@@ -885,7 +807,7 @@ function App() {
         <FullApp />
       </Web3ReactProvider>
     </SWRConfig>
-  );
+  )
 }
 
-export default App;
+export default App

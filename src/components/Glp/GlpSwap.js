@@ -714,6 +714,7 @@ export default function GlpSwap(props) {
       switchSwapOption()
     }
   }
+  // let isCapReached = swapTokenInfo.isCapReached
 
   return (
     <div className="GlpSwap">
@@ -1087,6 +1088,26 @@ export default function GlpSwap(props) {
                     tokenInfo.managedUsd
                   )
                 }
+                function renderFees() {
+                  switch (true) {
+                    case (isBuying && isCapReached) || (!isBuying && managedUsd?.lt(1)):
+                      return (
+                        <Tooltip
+                          handle="NA"
+                          position="right-bottom"
+                          renderContent={() =>
+                            `Max pool capacity reached for ${tokenInfo.symbol}. Please mint GLP using another token`
+                          }
+                        />
+                      )
+                    case (isBuying && !isCapReached) || (!isBuying && managedUsd?.gt(0)):
+                      return `${formatAmount(tokenFeeBps, 2, 2, true, '-')}${
+                        tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0 ? '%' : ''
+                      }`
+                    default:
+                      return ''
+                  }
+                }
 
                 return (
                   <tr key={token.symbol}>
@@ -1107,7 +1128,9 @@ export default function GlpSwap(props) {
                         <div>
                           <Tooltip
                             handle={
-                              amountLeftToDeposit && `$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`
+                              amountLeftToDeposit && amountLeftToDeposit.lt(0)
+                                ? '$0.00'
+                                : `$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`
                             }
                             position="right-bottom"
                             tooltipIconPosition="right"
@@ -1118,7 +1141,7 @@ export default function GlpSwap(props) {
                                   {formatKeyAmount(tokenInfo, 'poolAmount', token.decimals, 2, true)} {token.symbol})
                                   <br />
                                   <br />
-                                  Max {tokenInfo.symbol} Capacity: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
+                                  Max Pool Capacity: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
                                 </>
                               )
                             }}
@@ -1136,21 +1159,7 @@ export default function GlpSwap(props) {
                       {formatKeyAmount(tokenInfo, 'balance', tokenInfo.decimals, 2, true)} {tokenInfo.symbol} ($
                       {formatAmount(balanceUsd, USD_DECIMALS, 2, true)})
                     </td>
-                    <td>
-                      {isCapReached ? (
-                        <Tooltip
-                          handle="NA"
-                          position="right-bottom"
-                          renderContent={() =>
-                            `Max pool capacity reached for ${tokenInfo.symbol}. Please mint GLP using another token`
-                          }
-                        />
-                      ) : (
-                        `${formatAmount(tokenFeeBps, 2, 2, true, '-')}${
-                          tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0 ? '%' : ''
-                        }`
-                      )}
-                    </td>
+                    <td>{renderFees()}</td>
                     <td>
                       <button
                         className={cx('App-button-option action-btn', isBuying ? 'buying' : 'selling')}
@@ -1212,6 +1221,27 @@ export default function GlpSwap(props) {
               }
               let isCapReached = tokenInfo.managedAmount?.gt(tokenInfo.maxUsdgAmount)
 
+              function renderFees() {
+                switch (true) {
+                  case (isBuying && isCapReached) || (!isBuying && managedUsd?.lt(1)):
+                    return (
+                      <Tooltip
+                        handle="NA"
+                        position="right-bottom"
+                        renderContent={() =>
+                          `Max pool capacity reached for ${tokenInfo.symbol}. Please mint GLP using another token`
+                        }
+                      />
+                    )
+                  case (isBuying && !isCapReached) || (!isBuying && managedUsd?.gt(0)):
+                    return `${formatAmount(tokenFeeBps, 2, 2, true, '-')}${
+                      tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0 ? '%' : ''
+                    }`
+                  default:
+                    return ''
+                }
+              }
+
               return (
                 <div className="App-card" key={token.symbol}>
                   <div className="App-card-title">{token.name}</div>
@@ -1242,7 +1272,7 @@ export default function GlpSwap(props) {
                                   {formatKeyAmount(tokenInfo, 'poolAmount', token.decimals, 2, true)} {token.symbol})
                                   <br />
                                   <br />
-                                  Max {tokenInfo.symbol} Capacity: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
+                                  Max Pool Capacity: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
                                 </>
                               )
                             }}
@@ -1289,21 +1319,7 @@ export default function GlpSwap(props) {
                           />
                         )}
                       </div>
-                      <div>
-                        {isCapReached ? (
-                          <Tooltip
-                            handle="NA"
-                            position="right-bottom"
-                            renderContent={() =>
-                              `Max pool capacity reached for ${tokenInfo.symbol}. Please mint GLP using another token`
-                            }
-                          />
-                        ) : (
-                          `${formatAmount(tokenFeeBps, 2, 2, true, '-')}${
-                            tokenFeeBps !== undefined && tokenFeeBps.toString().length > 0 ? '%' : ''
-                          }`
-                        )}
-                      </div>
+                      <div>{renderFees()}</div>
                     </div>
                     <div className="App-card-divider"></div>
                     <div className="App-card-options">
