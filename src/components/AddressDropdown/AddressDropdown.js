@@ -19,6 +19,7 @@ function AddressDropdown({
   const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
   const { ensName } = useENS(account);
+
   return (
     <Menu>
       <Menu.Button as="div">
@@ -30,48 +31,49 @@ function AddressDropdown({
           <FaChevronDown />
         </button>
       </Menu.Button>
+      <div>
+        <Menu.Items as="div" className="menu-items">
+          <Menu.Item>
+            <div
+              className="menu-item"
+              onClick={() => {
+                copyToClipboard(account);
+                helperToast.success("Address copied to your clipboard");
+              }}
+            >
+              <img src={copy} alt="Copy user address" />
+              <p>Copy Address</p>
+            </div>
+          </Menu.Item>
+          <Menu.Item>
+            <a
+              href={accountUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="menu-item"
+            >
+              <img src={externalLink} alt="Open address in explorer" />
+              <p>View in Explorer</p>
+            </a>
+          </Menu.Item>
 
-      <Menu.Items as="div" className="menu-items">
-        <Menu.Item>
-          <div
-            className="menu-item"
-            onClick={() => {
-              copyToClipboard(account);
-              helperToast.success("Address copied to your clipboard");
-            }}
-          >
-            <img src={copy} alt="Copy user address" />
-            <p>Copy Address</p>
-          </div>
-        </Menu.Item>
-        <Menu.Item>
-          <a
-            href={accountUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="menu-item"
-          >
-            <img src={externalLink} alt="Open address in explorer" />
-            <p>View in Explorer</p>
-          </a>
-        </Menu.Item>
-
-        <Menu.Item>
-          <div className="menu-item" onClick={openSettings}>
-            <img src={settings} alt="Open settings" />
-            <p>Settings</p>
-          </div>
-        </Menu.Item>
-        <Menu.Item>
-          <div
-            className="menu-item"
-            onClick={disconnectAccountAndCloseSettings}
-          >
-            <img src={disconnect} alt="Disconnect the wallet" />
-            <p>Disconnect</p>
-          </div>
-        </Menu.Item>
-      </Menu.Items>
+          <Menu.Item>
+            <div className="menu-item" onClick={openSettings}>
+              <img src={settings} alt="Open settings" />
+              <p>Settings</p>
+            </div>
+          </Menu.Item>
+          <Menu.Item>
+            <div
+              className="menu-item"
+              onClick={disconnectAccountAndCloseSettings}
+            >
+              <img src={disconnect} alt="Disconnect the wallet" />
+              <p>Disconnect</p>
+            </div>
+          </Menu.Item>
+        </Menu.Items>
+      </div>
     </Menu>
   );
 }
