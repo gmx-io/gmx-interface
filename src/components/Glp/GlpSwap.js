@@ -260,6 +260,13 @@ export default function GlpSwap(props) {
 
   const swapUsdMin = getUsd(swapAmount, swapTokenAddress, false, infoTokens)
   const glpUsdMax = glpAmount && glpPrice ? glpAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS)) : undefined
+  // vipin
+  let isSwapTokenCapReached
+  if (swapTokenInfo.managedUsd && swapTokenInfo.maxUsdgAmount) {
+    isSwapTokenCapReached = swapTokenInfo.managedUsd.gt(
+      adjustForDecimals(swapTokenInfo.maxUsdgAmount, USDG_DECIMALS, USD_DECIMALS)
+    )
+  }
 
   const onSwapValueChange = e => {
     setAnchorOnSwapAmount(true)
@@ -543,6 +550,9 @@ export default function GlpSwap(props) {
     if (isSubmitting) {
       return false
     }
+    if (isSwapTokenCapReached) {
+      return false
+    }
 
     return true
   }
@@ -554,6 +564,9 @@ export default function GlpSwap(props) {
     const [error, modal] = getError()
     if (error && !modal) {
       return error
+    }
+    if (isBuying && isSwapTokenCapReached) {
+      return `Max Capacity for ${swapToken.symbol} Reached`
     }
 
     if (needApproval && isWaitingForApproval) {
@@ -933,7 +946,7 @@ export default function GlpSwap(props) {
               <div className="align-right fee-block">
                 {isBuying && (
                   <Tooltip
-                    handle={feePercentageText}
+                    handle={isBuying && isSwapTokenCapReached ? 'NA' : feePercentageText}
                     position="right-bottom"
                     renderContent={() => {
                       return (
