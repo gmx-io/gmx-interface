@@ -611,8 +611,9 @@ export default function DashboardV2() {
                         <Tooltip
                           position="right-bottom"
                           className="nowrap no-underline"
+                          key={index}
                           handle={
-                            <a href={ICONLINKS[chainId]["GMX"][item]} className="Available-network" key={index} target="_blank" rel="noopener noreferrer">
+                            <a href={ICONLINKS[chainId]["GMX"][item]} className="Available-network" target="_blank" rel="noopener noreferrer">
                               <img src={iconImage.default} alt={ICONLINKS[chainId]["GMX"][item]} />
                             </a>
                           }
@@ -760,8 +761,9 @@ export default function DashboardV2() {
                         <Tooltip
                           position="right-bottom"
                           className="nowrap no-underline"
+                          key={index}
                           handle={
-                            <a href={ICONLINKS[chainId]["GLP"][item]} className="Available-network" key={index} target="_blank" rel="noopener noreferrer">
+                            <a href={ICONLINKS[chainId]["GLP"][item]} className="Available-network" target="_blank" rel="noopener noreferrer">
                               <img src={iconImage.default} alt={ICONLINKS[chainId]["GLP"][item]} />
                             </a>
                           }
@@ -950,8 +952,9 @@ export default function DashboardV2() {
                                   <Tooltip
                                     position="right-bottom"
                                     className="nowrap no-underline"
+                                    key={index}
                                     handle={
-                                      <a href={ICONLINKS[chainId][token.symbol][item]} className="Available-network" key={index} target="_blank" rel="noopener noreferrer">
+                                      <a href={ICONLINKS[chainId][token.symbol][item]} className="Available-network" target="_blank" rel="noopener noreferrer">
                                         <img src={iconImage.default} alt={ICONLINKS[chainId][token.symbol][item]} />
                                       </a>
                                     }
