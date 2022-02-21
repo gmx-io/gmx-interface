@@ -36,11 +36,7 @@ export const ARBITRUM = 42161
 export const DEFAULT_CHAIN_ID = AVALANCHE
 export const CHAIN_ID = DEFAULT_CHAIN_ID
 
-<<<<<<< HEAD
-export const MIN_PROFIT_TIME = 6 * 60 * 60 // 6 hours
-=======
-export const MIN_PROFIT_TIME = 3 * 60 * 60; // 3 hours
->>>>>>> master
+export const MIN_PROFIT_TIME = 3 * 60 * 60 // 3 hours
 
 const SELECTED_NETWORK_LOCAL_STORAGE_KEY = 'SELECTED_NETWORK'
 
@@ -53,72 +49,71 @@ const CHAIN_NAMES_MAP = {
 }
 
 const GAS_PRICE_ADJUSTMENT_MAP = {
-  [ARBITRUM]: "0",
-  [AVALANCHE]: "3000000000" // 3 gwei
-};
+  [ARBITRUM]: '0',
+  [AVALANCHE]: '3000000000', // 3 gwei
+}
 
 const ARBITRUM_RPC_PROVIDERS = ['https://rpc.ankr.com/arbitrum']
 const AVALANCHE_RPC_PROVIDERS = ['https://api.avax.network/ext/bc/C/rpc']
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = 'walletconnect'
 
 export function getChainName(chainId) {
-  return CHAIN_NAMES_MAP[chainId];
+  return CHAIN_NAMES_MAP[chainId]
 }
 
-export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
-export const MAX_LEVERAGE = 100 * 10000;
+export const USDG_ADDRESS = getContract(CHAIN_ID, 'USDG')
+export const MAX_LEVERAGE = 100 * 10000
 
-export const DEFAULT_GAS_LIMIT = 1 * 1000 * 1000;
-export const SECONDS_PER_YEAR = 31536000;
-export const USDG_DECIMALS = 18;
-export const USD_DECIMALS = 30;
-export const BASIS_POINTS_DIVISOR = 10000;
-export const DEPOSIT_FEE = 50;
-export const DUST_BNB = "2000000000000000";
-export const DUST_USD = expandDecimals(1, USD_DECIMALS);
-export const PRECISION = expandDecimals(1, 30);
-export const GLP_DECIMALS = 18;
-export const GMX_DECIMALS = 18;
-export const DEFAULT_MAX_USDG_AMOUNT = expandDecimals(200 * 1000 * 1000, 18);
+export const DEFAULT_GAS_LIMIT = 1 * 1000 * 1000
+export const SECONDS_PER_YEAR = 31536000
+export const USDG_DECIMALS = 18
+export const USD_DECIMALS = 30
+export const BASIS_POINTS_DIVISOR = 10000
+export const DEPOSIT_FEE = 50
+export const DUST_BNB = '2000000000000000'
+export const DUST_USD = expandDecimals(1, USD_DECIMALS)
+export const PRECISION = expandDecimals(1, 30)
+export const GLP_DECIMALS = 18
+export const GMX_DECIMALS = 18
+export const DEFAULT_MAX_USDG_AMOUNT = expandDecimals(200 * 1000 * 1000, 18)
 
-export const TAX_BASIS_POINTS = 50;
-export const STABLE_TAX_BASIS_POINTS = 5;
-export const MINT_BURN_FEE_BASIS_POINTS = 25;
-export const SWAP_FEE_BASIS_POINTS = 25;
-export const STABLE_SWAP_FEE_BASIS_POINTS = 1;
-export const MARGIN_FEE_BASIS_POINTS = 10;
+export const TAX_BASIS_POINTS = 50
+export const STABLE_TAX_BASIS_POINTS = 5
+export const MINT_BURN_FEE_BASIS_POINTS = 25
+export const SWAP_FEE_BASIS_POINTS = 25
+export const STABLE_SWAP_FEE_BASIS_POINTS = 1
+export const MARGIN_FEE_BASIS_POINTS = 10
 
-export const LIQUIDATION_FEE = expandDecimals(5, USD_DECIMALS);
+export const LIQUIDATION_FEE = expandDecimals(5, USD_DECIMALS)
 
-export const GLP_COOLDOWN_DURATION = 15 * 60;
-export const THRESHOLD_REDEMPTION_VALUE = expandDecimals(993, 27); // 0.993
-export const FUNDING_RATE_PRECISION = 1000000;
+export const GLP_COOLDOWN_DURATION = 15 * 60
+export const THRESHOLD_REDEMPTION_VALUE = expandDecimals(993, 27) // 0.993
+export const FUNDING_RATE_PRECISION = 1000000
 
-export const SWAP = "Swap";
-export const INCREASE = "Increase";
-export const DECREASE = "Decrease";
-export const LONG = "Long";
-export const SHORT = "Short";
+export const SWAP = 'Swap'
+export const INCREASE = 'Increase'
+export const DECREASE = 'Decrease'
+export const LONG = 'Long'
+export const SHORT = 'Short'
 
-export const MARKET = "Market";
-export const LIMIT = "Limit";
-export const STOP = "Stop";
-export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT];
-export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT];
-export const SWAP_OPTIONS = [LONG, SHORT, SWAP];
-export const DEFAULT_SLIPPAGE_AMOUNT = 20;
+export const MARKET = 'Market'
+export const LIMIT = 'Limit'
+export const STOP = 'Stop'
+export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT]
+export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT]
+export const SWAP_OPTIONS = [LONG, SHORT, SWAP]
+export const DEFAULT_SLIPPAGE_AMOUNT = 20
 
-export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3";
-export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage";
-export const SHOULD_SHOW_POSITION_LINES_KEY =
-  "Exchange-swap-should-show-position-lines";
+export const SLIPPAGE_BPS_KEY = 'Exchange-swap-slippage-basis-points-v3'
+export const IS_PNL_IN_LEVERAGE_KEY = 'Exchange-swap-is-pnl-in-leverage'
+export const SHOULD_SHOW_POSITION_LINES_KEY = 'Exchange-swap-should-show-position-lines'
 
-export const TRIGGER_PREFIX_ABOVE = ">";
-export const TRIGGER_PREFIX_BELOW = "<";
+export const TRIGGER_PREFIX_ABOVE = '>'
+export const TRIGGER_PREFIX_BELOW = '<'
 
-export const MIN_PROFIT_BIPS = 150;
+export const MIN_PROFIT_BIPS = 150
 
-const supportedChainIds = [ARBITRUM, AVALANCHE];
+const supportedChainIds = [ARBITRUM, AVALANCHE]
 const injectedConnector = new InjectedConnector({
   supportedChainIds,
 })
@@ -855,12 +850,8 @@ export function getProfitPrice(closePrice, position) {
   let profitPrice
   if (position && position.averagePrice && closePrice) {
     profitPrice = position.isLong
-      ? position.averagePrice
-          .mul(BASIS_POINTS_DIVISOR + MIN_PROFIT_BIPS)
-          .div(BASIS_POINTS_DIVISOR)
-      : position.averagePrice
-          .mul(BASIS_POINTS_DIVISOR - MIN_PROFIT_BIPS)
-          .div(BASIS_POINTS_DIVISOR);
+      ? position.averagePrice.mul(BASIS_POINTS_DIVISOR + MIN_PROFIT_BIPS).div(BASIS_POINTS_DIVISOR)
+      : position.averagePrice.mul(BASIS_POINTS_DIVISOR - MIN_PROFIT_BIPS).div(BASIS_POINTS_DIVISOR)
   }
   return profitPrice
 }
@@ -877,15 +868,10 @@ export function calculatePositionDelta(
   let delta = sizeDelta.mul(priceDelta).div(averagePrice)
   const pendingDelta = delta
 
-  const minProfitExpired =
-    lastIncreasedTime + MIN_PROFIT_TIME < Date.now() / 1000;
-  const hasProfit = isLong ? price.gt(averagePrice) : price.lt(averagePrice);
-  if (
-    !minProfitExpired &&
-    hasProfit &&
-    delta.mul(BASIS_POINTS_DIVISOR).lte(size.mul(MIN_PROFIT_BIPS))
-  ) {
-    delta = bigNumberify(0);
+  const minProfitExpired = lastIncreasedTime + MIN_PROFIT_TIME < Date.now() / 1000
+  const hasProfit = isLong ? price.gt(averagePrice) : price.lt(averagePrice)
+  if (!minProfitExpired && hasProfit && delta.mul(BASIS_POINTS_DIVISOR).lte(size.mul(MIN_PROFIT_BIPS))) {
+    delta = bigNumberify(0)
   }
 
   const deltaPercentage = delta.mul(BASIS_POINTS_DIVISOR).div(collateral)
@@ -1706,13 +1692,13 @@ export function usePrevious(value) {
 
 export async function getGasPrice(provider, chainId) {
   if (!provider) {
-    return;
+    return
   }
 
-  const gasPrice = await provider.getGasPrice();
-  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
+  const gasPrice = await provider.getGasPrice()
+  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0)
 
-  return gasPrice.add(premium);
+  return gasPrice.add(premium)
 }
 
 export async function getGasLimit(contract, method, params = [], value, gasBuffer) {
@@ -1917,7 +1903,7 @@ export const switchNetwork = async (chainId, active) => {
     // 4001 error means user has denied the request
     // If the error code is not 4001, then we need to add the network
     if (ex.code !== 4001) {
-      return await addNetwork(NETWORK_METADATA[chainId]);
+      return await addNetwork(NETWORK_METADATA[chainId])
     }
 
     console.error('error', ex)
@@ -1994,7 +1980,7 @@ export function getInfoTokens(
   vaultPropsLength
 ) {
   if (!vaultPropsLength) {
-    vaultPropsLength = 14;
+    vaultPropsLength = 14
   }
   const fundingRatePropsLength = 2
   const infoTokens = {}
@@ -2014,26 +2000,24 @@ export function getInfoTokens(
   for (let i = 0; i < whitelistedTokens.length; i++) {
     const token = JSON.parse(JSON.stringify(whitelistedTokens[i]))
     if (vaultTokenInfo) {
-      token.poolAmount = vaultTokenInfo[i * vaultPropsLength];
-      token.reservedAmount = vaultTokenInfo[i * vaultPropsLength + 1];
-      token.availableAmount = token.poolAmount.sub(token.reservedAmount);
-      token.usdgAmount = vaultTokenInfo[i * vaultPropsLength + 2];
-      token.redemptionAmount = vaultTokenInfo[i * vaultPropsLength + 3];
-      token.weight = vaultTokenInfo[i * vaultPropsLength + 4];
-      token.bufferAmount = vaultTokenInfo[i * vaultPropsLength + 5];
-      token.maxUsdgAmount = vaultTokenInfo[i * vaultPropsLength + 6];
-      token.globalShortSize = vaultTokenInfo[i * vaultPropsLength + 7];
-      token.maxGlobalShortSize = vaultTokenInfo[i * vaultPropsLength + 8];
-      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 9];
-      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 10];
-      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 11];
+      token.poolAmount = vaultTokenInfo[i * vaultPropsLength]
+      token.reservedAmount = vaultTokenInfo[i * vaultPropsLength + 1]
+      token.availableAmount = token.poolAmount.sub(token.reservedAmount)
+      token.usdgAmount = vaultTokenInfo[i * vaultPropsLength + 2]
+      token.redemptionAmount = vaultTokenInfo[i * vaultPropsLength + 3]
+      token.weight = vaultTokenInfo[i * vaultPropsLength + 4]
+      token.bufferAmount = vaultTokenInfo[i * vaultPropsLength + 5]
+      token.maxUsdgAmount = vaultTokenInfo[i * vaultPropsLength + 6]
+      token.globalShortSize = vaultTokenInfo[i * vaultPropsLength + 7]
+      token.maxGlobalShortSize = vaultTokenInfo[i * vaultPropsLength + 8]
+      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 9]
+      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 10]
+      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 11]
 
-      token.maxAvailableShort = bigNumberify(0);
+      token.maxAvailableShort = bigNumberify(0)
       if (token.maxGlobalShortSize.gt(0)) {
         if (token.maxGlobalShortSize.gt(token.globalShortSize)) {
-          token.maxAvailableShort = token.maxGlobalShortSize.sub(
-            token.globalShortSize
-          );
+          token.maxAvailableShort = token.maxGlobalShortSize.sub(token.globalShortSize)
         }
       }
 
