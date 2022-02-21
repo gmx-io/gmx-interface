@@ -608,20 +608,39 @@ export default function DashboardV2() {
                       }
 
                       return (
-                        <a href={ICONLINKS[chainId]["GMX"][item]} className="Available-network" key={index} target="_blank" rel="noopener noreferrer">
-                          <img src={iconImage.default} alt={ICONLINKS[chainId]["GMX"][item]} />
-                        </a>
+                        <Tooltip
+                          position="right-bottom"
+                          className="nowrap no-underline"
+                          handle={
+                            <a href={ICONLINKS[chainId]["GMX"][item]} className="Available-network" key={index} target="_blank" rel="noopener noreferrer">
+                              <img src={iconImage.default} alt={ICONLINKS[chainId]["GMX"][item]} />
+                            </a>
+                          }
+                          renderContent={() => <>
+                            Open in {item === 'coingecko' ? 'Coingecko' : 'Explorer'}
+                          </>}
+                        />
                       )
                     })
                   }
                   {
-                    active && <span style={{ cursor: 'pointer' }} className="Available-network" onClick={(e) => {
-                      e.preventDefault();
-                      let token = platformTokens[chainId]["GMX"];
-                      addTokenToMetamask(token)
-                    }}>
-                      <img src={metamaskHover16Icon} alt="metamask" />
-                    </span>
+                    active && 
+                    <Tooltip
+                      position="right-bottom"
+                      className="nowrap no-underline"
+                      handle={
+                        <span style={{ cursor: 'pointer' }} className="Available-network" onClick={(e) => {
+                          e.preventDefault();
+                          let token = platformTokens[chainId]["GMX"];
+                          addTokenToMetamask(token)
+                        }}>
+                          <img src={metamaskHover16Icon} alt="metamask" />
+                        </span>
+                      }
+                      renderContent={() => <>
+                        Add to Metamask
+                      </>}
+                    />
                   }
                 </div>
               </div>
@@ -736,21 +755,40 @@ export default function DashboardV2() {
                       }
 
                       return (
-                        <a href={ICONLINKS[chainId]["GLP"][item]} className="Available-network" key={index} target="_blank" rel="noopener noreferrer">
-                          <img src={iconImage.default} alt={ICONLINKS[chainId]["GLP"][item]} />
-                        </a>
+                        <Tooltip
+                          position="right-bottom"
+                          className="nowrap no-underline"
+                          handle={
+                            <a href={ICONLINKS[chainId]["GLP"][item]} className="Available-network" key={index} target="_blank" rel="noopener noreferrer">
+                              <img src={iconImage.default} alt={ICONLINKS[chainId]["GLP"][item]} />
+                            </a>
+                          }
+                          renderContent={() => <>
+                            Open in {item === 'coingecko' ? 'Coingecko' : 'Explorer'}
+                          </>}
+                        />
                       )
                     })
                   }
 
                   {
-                    active && <span style={{ cursor: 'pointer' }} className="Available-network" onClick={(e) => {
-                      e.preventDefault();
-                      let token = platformTokens[chainId]["GLP"];
-                      addTokenToMetamask(token)
-                    }}>
-                      <img src={metamaskHover16Icon} alt="metamask" />
-                    </span>
+                    active && 
+                    <Tooltip
+                      position="right-bottom"
+                      className="nowrap no-underline"
+                      handle={
+                        <span style={{ cursor: 'pointer' }} className="Available-network" onClick={(e) => {
+                          e.preventDefault();
+                          let token = platformTokens[chainId]["GLP"];
+                          addTokenToMetamask(token)
+                        }}>
+                          <img src={metamaskHover16Icon} alt="metamask" />
+                        </span>
+                      }
+                      renderContent={() => <>
+                        Add to Metamask
+                      </>}
+                    />
                   }
                 </div>
               </div>
@@ -905,19 +943,38 @@ export default function DashboardV2() {
                                 }
 
                                 return (
-                                  <a href={ICONLINKS[chainId][token.symbol][item]} className="Available-network" key={index} target="_blank" rel="noopener noreferrer">
-                                    <img src={iconImage.default} alt={ICONLINKS[chainId][token.symbol][item]} />
-                                  </a>
+                                  <Tooltip
+                                    position="right-bottom"
+                                    className="nowrap no-underline"
+                                    handle={
+                                      <a href={ICONLINKS[chainId][token.symbol][item]} className="Available-network" key={index} target="_blank" rel="noopener noreferrer">
+                                        <img src={iconImage.default} alt={ICONLINKS[chainId][token.symbol][item]} />
+                                      </a>
+                                    }
+                                    renderContent={() => <>
+                                      Open in {item === 'coingecko' ? 'Coingecko' : 'Explorer'}
+                                    </>}
+                                  />
                                 )
                               })
                             }
                             {
-                              active && <a href="/#" className="Available-network" onClick={(event) => {
-                                event.preventDefault();
-                                addTokenToMetamask(token);
-                              }}>
-                                <img src={metamaskHover16Icon} alt="metamask" />
-                              </a>
+                              active && 
+                              <Tooltip
+                                position="right-bottom"
+                                className="nowrap no-underline"
+                                handle={
+                                  <a href="/#" className="Available-network" onClick={(event) => {
+                                    event.preventDefault();
+                                    addTokenToMetamask(token);
+                                  }}>
+                                    <img src={metamaskHover16Icon} alt="metamask" />
+                                  </a>
+                                }
+                                renderContent={() => <>
+                                  Add to Metamask
+                                </>}
+                              />
                             }
                           </div>
                         </div>
