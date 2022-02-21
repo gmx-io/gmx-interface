@@ -2159,7 +2159,6 @@ export default function SwapBox(props) {
         </div>
         <div className="Exchange-info-row">
           <div className="Exchange-info-label-button">
-            {console.log({ active, account })}
             <a
               href={active ? `https://www.gmx.house/p/account/${account}` : 'https://gmx.house'}
               target="_blank"
