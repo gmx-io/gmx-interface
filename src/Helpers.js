@@ -226,11 +226,12 @@ export const ICONLINKS = {
 
 export const platformTokens = {
   42161: {
+    // arbitrum
     GMX: {
       name: "GMX",
       symbol: "GMX",
       decimals: 18,
-      address: "0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
+      address: getContract(ARBITRUM, "GMX"),
       imageUrl:
         "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468"
     },
@@ -238,17 +239,18 @@ export const platformTokens = {
       name: "GMX LP",
       symbol: "GLP",
       decimals: 18,
-      address: "0x1aDDD80E6039594eE970E5872D247bf0414C8903", // address of fsGLP token because user only holds fsGLP
+      address: getContract(ARBITRUM, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
       imageUrl:
         "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true"
     }
   },
   43114: {
+    // avalanche
     GMX: {
       name: "GMX",
       symbol: "GMX",
       decimals: 18,
-      address: "0x62edc0692BD897D2295872a9FFCac5425011c661",
+      address: getContract(AVALANCHE, "GMX"),
       imageUrl:
         "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468"
     },
@@ -256,7 +258,7 @@ export const platformTokens = {
       name: "GMX LP",
       symbol: "GLP",
       decimals: 18,
-      address: "0x01234181085565ed162a948b6a5e88758CD7c7b8",
+      address: getContract(AVALANCHE, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
       imageUrl:
         "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true"
     }
