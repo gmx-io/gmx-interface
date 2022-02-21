@@ -300,7 +300,7 @@ export default function SwapBox(props) {
   const needOrderBookApproval = !isMarketOrder && !orderBookApproved;
   const prevNeedOrderBookApproval = usePrevious(needOrderBookApproval);
 
-  let needPositionManagerApproval = isMarketOrder && !positionManagerApproved
+  let needPositionManagerApproval = (isLong || isShort) && isMarketOrder && !positionManagerApproved
   needPositionManagerApproval = needPositionManagerApproval && chainId === ARBITRUM
   const prevNeedPositionManagerApproval = usePrevious(needPositionManagerApproval);
 
