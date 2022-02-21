@@ -1096,7 +1096,7 @@ export default function GlpSwap(props) {
                           handle="NA"
                           position="right-bottom"
                           renderContent={() =>
-                            `Max pool capacity reached for ${tokenInfo.symbol}. Please mint GLP using another token`
+                            `Max pool capacity reached for ${tokenInfo.symbol}. Please mint GLP using another token.`
                           }
                         />
                       )
