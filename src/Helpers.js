@@ -221,6 +221,7 @@ export const ICONLINKS = {
 
 export const platformTokens = {
   42161: {
+    // arbitrum
     GMX: {
       name: "GMX",
       symbol: "GMX",
@@ -233,12 +234,13 @@ export const platformTokens = {
       name: "GMX LP",
       symbol: "GLP",
       decimals: 18,
-      address: "0x4277f8F2c384827B5273592FF7CeBd9f2C1ac258",
+      address: "0x4277f8F2c384827B5273592FF7CeBd9f2C1ac258", // address of fsGLP token because user only holds fsGLP
       imageUrl:
         "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true"
     }
   },
   43114: {
+    // avalanche
     GMX: {
       name: "GMX",
       symbol: "GMX",
@@ -251,7 +253,7 @@ export const platformTokens = {
       name: "GMX LP",
       symbol: "GLP",
       decimals: 18,
-      address: "0x1aDDD80E6039594eE970E5872D247bf0414C8903", // address of fsGLP token because user only holds fsGLP
+      address: "0x9e295B5B976a184B14aD8cd72413aD846C299660", // address of fsGLP token because user only holds fsGLP
       imageUrl:
         "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true"
     }
