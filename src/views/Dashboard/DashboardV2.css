@@ -122,6 +122,10 @@
   filter: grayscale(100%);
 }
 
+.Available-network-group .Tooltip-handle.active .Available-network img {
+  filter: unset;
+}
+
 .Available-network-group .Available-network img:hover {
   filter: unset;
 }
