@@ -2222,7 +2222,7 @@ export default function SwapBox(props) {
               target="_blank"
               rel="noopener noreferrer"
             >
-              gmx.house
+              GMX.house
             </a>
           </div>
         </div>
