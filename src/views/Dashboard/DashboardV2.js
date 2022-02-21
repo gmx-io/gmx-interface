@@ -703,7 +703,8 @@ export default function DashboardV2() {
                     >
                       {gmxDistributionData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} style={{
-                          filter: gmxActiveIndex === index ? `drop-shadow(0px 0px 10px ${entry.color})` : 'none'
+                          filter: gmxActiveIndex === index ? `drop-shadow(0px 0px 10px ${entry.color})` : 'none',
+                          cursor: 'pointer'
                         }} stroke="0" />
                       ))}
                     </Pie>
@@ -840,7 +841,8 @@ export default function DashboardV2() {
                     >
                       {glpPool.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={GLPPOOLCOLORS[entry.name]} style={{
-                          filter: glpActiveIndex === index ? `drop-shadow(0px 0px 10px ${GLPPOOLCOLORS[entry.name]})` : 'none'
+                          filter: glpActiveIndex === index ? `drop-shadow(0px 0px 10px ${GLPPOOLCOLORS[entry.name]})` : 'none',
+                          cursor: 'pointer'
                         }} stroke="0" />
                       ))}
                     </Pie>
