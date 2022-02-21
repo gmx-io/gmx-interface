@@ -16,6 +16,7 @@ import {
   helperToast,
   formatAmount,
   bigNumberify,
+  ARBITRUM,
   USD_DECIMALS,
   USDG_DECIMALS,
   LONG,
@@ -147,9 +148,12 @@ export default function SwapBox(props) {
     orders,
     savedIsPnlInLeverage,
     orderBookApproved,
+    positionManagerApproved,
     isWaitingForPluginApproval,
     approveOrderBook,
+    approvePositionManager,
     setIsWaitingForPluginApproval,
+<<<<<<< HEAD
     isPluginApproving,
   } = props
 
@@ -162,6 +166,26 @@ export default function SwapBox(props) {
   const [modalError, setModalError] = useState(false)
 
   const defaultCollateralSymbol = getConstant(chainId, 'defaultCollateralSymbol')
+=======
+    isWaitingForPositionManagerApproval,
+    setIsWaitingForPositionManagerApproval,
+    isPluginApproving,
+    isPositionManagerApproving
+  } = props;
+
+  const [fromValue, setFromValue] = useState("");
+  const [toValue, setToValue] = useState("");
+  const [anchorOnFromAmount, setAnchorOnFromAmount] = useState(true);
+  const [isApproving, setIsApproving] = useState(false);
+  const [isWaitingForApproval, setIsWaitingForApproval] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [modalError, setModalError] = useState(false);
+
+  const defaultCollateralSymbol = getConstant(
+    chainId,
+    "defaultCollateralSymbol"
+  );
+>>>>>>> master
   // TODO hack with useLocalStorageSerializeKey
   const [shortCollateralAddress, setShortCollateralAddress] = useLocalStorageByChainId(
     chainId,
@@ -253,6 +277,42 @@ export default function SwapBox(props) {
 
   const needOrderBookApproval = !isMarketOrder && !orderBookApproved
   const prevNeedOrderBookApproval = usePrevious(needOrderBookApproval)
+
+  let needPositionManagerApproval = (isLong || isShort) && isMarketOrder && !positionManagerApproved
+  needPositionManagerApproval = needPositionManagerApproval && chainId === ARBITRUM
+  const prevNeedPositionManagerApproval = usePrevious(needPositionManagerApproval);
+
+  useEffect(() => {
+    if (
+      !needOrderBookApproval &&
+      prevNeedOrderBookApproval &&
+      isWaitingForPluginApproval
+    ) {
+      setIsWaitingForPluginApproval(false);
+      helperToast.success(<div>Orders enabled!</div>);
+    }
+  }, [
+    needOrderBookApproval,
+    prevNeedOrderBookApproval,
+    setIsWaitingForPluginApproval,
+    isWaitingForPluginApproval
+  ]);
+
+  useEffect(() => {
+    if (
+      !needPositionManagerApproval &&
+      prevNeedPositionManagerApproval &&
+      isWaitingForPositionManagerApproval
+    ) {
+      setIsWaitingForPositionManagerApproval(false);
+      helperToast.success(<div>Leverage enabled!</div>);
+    }
+  }, [
+    needPositionManagerApproval,
+    prevNeedPositionManagerApproval,
+    setIsWaitingForPositionManagerApproval,
+    isWaitingForPositionManagerApproval
+  ]);
 
   useEffect(() => {
     if (!needOrderBookApproval && prevNeedOrderBookApproval && isWaitingForPluginApproval) {
@@ -716,6 +776,10 @@ export default function SwapBox(props) {
   }
 
   const getLeverageError = useCallback(() => {
+    if (chainId === ARBITRUM && !isMarketOrder) {
+      return ["Temporarily disabled, pending upgrade"]
+    }
+
     if (!toAmount || toAmount.eq(0)) {
       return ['Enter an amount']
     }
@@ -981,6 +1045,12 @@ export default function SwapBox(props) {
     if ((needApproval && isWaitingForApproval) || isApproving) {
       return false
     }
+    if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
+      return false
+    }
+    if (isPositionManagerApproving) {
+      return false
+    }
     if (isApproving) {
       return false
     }
@@ -1001,6 +1071,16 @@ export default function SwapBox(props) {
     const [error, modal] = getError()
     if (error && !modal) {
       return error
+    }
+
+    if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
+      return "Enabling Leverage..."
+    }
+    if (isPositionManagerApproving) {
+      return "Enabling Leverage..."
+    }
+    if (needPositionManagerApproval) {
+      return "Enable Leverage"
     }
 
     if (needApproval && isWaitingForApproval) {
@@ -1371,6 +1451,7 @@ export default function SwapBox(props) {
       setIsSubmitting(false)
       setIsPendingConfirmation(false)
       helperToast.error(
+<<<<<<< HEAD
         `Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(chainId, 'nativeTokenSymbol')} for gas`
       )
       return
@@ -1384,6 +1465,29 @@ export default function SwapBox(props) {
       USD_DECIMALS,
       2
     )} USD`
+=======
+        `Leave at least ${formatAmount(DUST_BNB, 18, 3)} ${getConstant(
+          chainId,
+          "nativeTokenSymbol"
+        )} for gas`
+      );
+      return;
+    }
+
+    const contractAddress = chainId === ARBITRUM ? getContract(chainId, "PositionManager") : routerAddress
+    const contract = new ethers.Contract(
+      contractAddress,
+      Router.abi,
+      library.getSigner()
+    );
+    const indexToken = getTokenInfo(infoTokens, indexTokenAddress);
+    const tokenSymbol = indexToken.isWrapped
+      ? getConstant(chainId, "nativeTokenSymbol")
+      : indexToken.symbol;
+    const successMsg = `Increased ${tokenSymbol} ${
+      isLong ? "Long" : "Short"
+    } by ${formatAmount(toUsdMax, USD_DECIMALS, 2)} USD`;
+>>>>>>> master
 
     Api.callContract(chainId, contract, method, params, {
       value,
@@ -1469,8 +1573,16 @@ export default function SwapBox(props) {
       return
     }
 
+<<<<<<< HEAD
     if (needOrderBookApproval) {
       setOrdersToaOpen(true)
+=======
+    if (needPositionManagerApproval) {
+      approvePositionManager({
+        sentMsg: "Enable leverage sent",
+        failMsg: "Enable leverage failed",
+      })
+>>>>>>> master
       return
     }
 
@@ -1479,7 +1591,16 @@ export default function SwapBox(props) {
       return
     }
 
+<<<<<<< HEAD
     const [, modal, errorCode] = getError()
+=======
+    if (needOrderBookApproval) {
+      setOrdersToaOpen(true);
+      return;
+    }
+
+    const [, modal, errorCode] = getError();
+>>>>>>> master
 
     if (modal) {
       setModalError(errorCode)
