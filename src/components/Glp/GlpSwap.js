@@ -1109,7 +1109,11 @@ export default function GlpSwap(props) {
                           handle="NA"
                           position="right-bottom"
                           renderContent={() =>
-                            `Max pool capacity reached for ${tokenInfo.symbol}. Please mint GLP using another token.`
+                            <div>
+                              Max pool capacity reached for {tokenInfo.symbol}<br/>
+                              <br/>
+                              Please mint GLP using another token
+                            </div>
                           }
                         />
                       )
@@ -1267,6 +1271,7 @@ export default function GlpSwap(props) {
                     {isBuying && (
                       <div className="App-card-row">
                         <Tooltip
+                          className="label"
                           handle="Available"
                           position="left-bottom"
                           renderContent={() => 'Available amount to deposit into GLP.'}
