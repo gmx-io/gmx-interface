@@ -57,7 +57,7 @@ export default function Modal(props) {
               </div>
             </div>
             <div className="divider" />
-            <div ref={modalRef} className="Modal-body">
+            <div className="Modal-body" ref={modalRef}>
               {props.children}
             </div>
           </div>
