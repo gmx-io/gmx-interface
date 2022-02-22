@@ -107,6 +107,10 @@
   grid-gap: 0.5rem;
 }
 
+.Available-network-group .Tooltip {
+  display: flex;
+}
+
 .Available-network-group .Available-network {
   display: flex;
 }
