@@ -182,10 +182,9 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
       </div>
       {small && (
         <div className="App-header-link-container">
-          {/* eslint-disable-next-line */}
-          <a href="#" onClick={openSettings}>
-            Settings
-          </a>
+          <NavLink activeClassName="active" to="/trade">
+            Trade
+          </NavLink>
         </div>
       )}
     </div>
