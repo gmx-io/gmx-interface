@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 
 import { useWeb3React } from '@web3-react/core'
@@ -47,7 +47,6 @@ import { callContract, useGmxPrice } from '../../Api'
 import TokenSelector from '../Exchange/TokenSelector'
 import BuyInputSection from '../BuyInputSection/BuyInputSection'
 import Tooltip from '../Tooltip/Tooltip'
-import Modal from '../Modal/Modal'
 
 import ReaderV2 from '../../abis/ReaderV2.json'
 import RewardReader from '../../abis/RewardReader.json'
@@ -115,7 +114,6 @@ export default function GlpSwap(props) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [anchorOnSwapAmount, setAnchorOnSwapAmount] = useState(true)
   const [feeBasisPoints, setFeeBasisPoints] = useState('')
-  const [modalError, setModalError] = useState(false)
 
   const readerAddress = getContract(chainId, 'Reader')
   const rewardReaderAddress = getContract(chainId, 'RewardReader')
@@ -516,23 +514,6 @@ export default function GlpSwap(props) {
     return [false]
   }
 
-  const renderErrorModal = useCallback(() => {
-    const inputCurrency = swapToken.address
-    const uniswapUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}`
-    const label = `${swapToken.symbol} Capacity Reached`
-    return (
-      <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal">
-        <p>The pool's capacity has been reached for {swapToken.symbol}. Please use another token to buy GLP.</p>
-        <p>Check the "Save on Fees" section for tokens with the lowest fees.</p>
-        <p>
-          <a href={uniswapUrl} target="_blank" rel="noreferrer">
-            Swap on Uniswap
-          </a>
-        </p>
-      </Modal>
-    )
-  }, [modalError, setModalError, swapToken.symbol, swapToken.address])
-
   const isPrimaryEnabled = () => {
     if (!active) {
       return true
@@ -670,7 +651,6 @@ export default function GlpSwap(props) {
     const [, modal] = getError()
 
     if (modal) {
-      setModalError(true)
       return
     }
 
@@ -727,11 +707,9 @@ export default function GlpSwap(props) {
       switchSwapOption()
     }
   }
-  // let isCapReached = swapTokenInfo.isCapReached
 
   return (
     <div className="GlpSwap">
-      {renderErrorModal()}
       {/* <div className="Page-title-section">
         <div className="Page-title">{isBuying ? "Buy GLP" : "Sell GLP"}</div>
         {isBuying && <div className="Page-description">
@@ -1106,7 +1084,7 @@ export default function GlpSwap(props) {
                   const swapUrl =
                     chainId === ARBITRUM
                       ? `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}`
-                      : `https://traderjoexyz.com/trade`
+                      : `https://traderjoexyz.com/trade?inputCurrency=${inputCurrency}`
                   switch (true) {
                     case (isBuying && isCapReached) || (!isBuying && managedUsd?.lt(1)):
                       return (
