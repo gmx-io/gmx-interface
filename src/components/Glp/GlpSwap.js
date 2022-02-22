@@ -1102,19 +1102,31 @@ export default function GlpSwap(props) {
                   )
                 }
                 function renderFees() {
+                  const inputCurrency = swapToken.address
+                  const swapUrl =
+                    chainId === ARBITRUM
+                      ? `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}`
+                      : `https://traderjoexyz.com/trade`
                   switch (true) {
                     case (isBuying && isCapReached) || (!isBuying && managedUsd?.lt(1)):
                       return (
                         <Tooltip
                           handle="NA"
                           position="right-bottom"
-                          renderContent={() =>
+                          renderContent={() => (
                             <div>
-                              Max pool capacity reached for {tokenInfo.symbol}<br/>
-                              <br/>
+                              Max pool capacity reached for {tokenInfo.symbol}
+                              <br />
+                              <br />
                               Please mint GLP using another token
+                              <br />
+                              <p>
+                                <a href={swapUrl} target="_blank" rel="noreferrer">
+                                  Swap on {chainId === ARBITRUM ? 'Uniswap' : 'Trader Joe'}
+                                </a>
+                              </p>
                             </div>
-                          }
+                          )}
                         />
                       )
                     case (isBuying && !isCapReached) || (!isBuying && managedUsd?.gt(0)):
