@@ -907,10 +907,6 @@ export default function SwapBox(props) {
   };
 
   const getLeverageError = useCallback(() => {
-    if (chainId === ARBITRUM && !isMarketOrder) {
-      return ["Temporarily disabled, pending upgrade"]
-    }
-
     if (!toAmount || toAmount.eq(0)) {
       return ["Enter an amount"];
     }

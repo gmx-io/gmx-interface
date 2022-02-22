@@ -6,7 +6,6 @@ import {
   INCREASE,
   DECREASE,
   USD_DECIMALS,
-  ARBITRUM,
   formatAmount,
   TRIGGER_PREFIX_ABOVE,
   TRIGGER_PREFIX_BELOW,
@@ -183,8 +182,6 @@ export default function OrdersList(props) {
         } else if (positionForOrder.size.lt(order.sizeDelta)) {
           error = "Order size exceeds position size, order cannot be executed"
         }
-      } else if (order.type === INCREASE && chainId === ARBITRUM) {
-        error = "Limit orders are temprorarily disabled, pending upgrade"
       }
 
       return (
