@@ -40,6 +40,7 @@ import {
   USDG_DECIMALS,
   DEFAULT_MAX_USDG_AMOUNT,
   ARBITRUM,
+  PLACEHOLDER_ACCOUNT
 } from '../../Helpers'
 
 import { callContract, useGmxPrice } from '../../Api'
@@ -93,7 +94,7 @@ function getStakingData(stakingInfo) {
 }
 
 export default function GlpSwap(props) {
-  const { savedSlippageAmount, isBuying, setPendingTxns, connectWallet } = props
+  const { savedSlippageAmount, isBuying, setPendingTxns, connectWallet, setIsBuying } = props
   const history = useHistory()
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp"
   const tabLabel = isBuying ? "Buy GLP" : "Sell GLP"
@@ -125,16 +126,16 @@ export default function GlpSwap(props) {
   const tokensForBalanceAndSupplyQuery = [stakedGlpTrackerAddress, usdgAddress]
 
   const whitelistedTokenAddresses = whitelistedTokens.map(token => token.address)
-  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR([`GlpSwap:getVaultTokenInfo:${active}`, chainId, readerAddress, "getFullVaultTokenInfo"], {
+  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR([`GlpSwap:getVaultTokenInfo:${active}`, chainId, readerAddress, "getVaultTokenInfoV2"], {
     fetcher: fetcher(library, ReaderV2, [vaultAddress, nativeTokenAddress, expandDecimals(1, 18), whitelistedTokenAddresses]),
   })
 
   const tokenAddresses = tokens.map(token => token.address)
-  const { data: tokenBalances, mutate: updateTokenBalances } = useSWR(account && [`GlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account], {
+  const { data: tokenBalances, mutate: updateTokenBalances } = useSWR([`GlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, ReaderV2, [tokenAddresses]),
   })
 
-  const { data: balancesAndSupplies, mutate: updateBalancesAndSupplies } = useSWR(account && [`GlpSwap:getTokenBalancesWithSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", account], {
+  const { data: balancesAndSupplies, mutate: updateBalancesAndSupplies } = useSWR([`GlpSwap:getTokenBalancesWithSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, ReaderV2, [tokensForBalanceAndSupplyQuery]),
   })
 
@@ -147,30 +148,30 @@ export default function GlpSwap(props) {
   })
 
   const tokenAllowanceAddress = swapTokenAddress === AddressZero ? nativeTokenAddress : swapTokenAddress
-  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(account && [active, chainId, tokenAllowanceAddress, "allowance", account, glpManagerAddress], {
+  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR([active, chainId, tokenAllowanceAddress, "allowance", account || PLACEHOLDER_ACCOUNT, glpManagerAddress], {
     fetcher: fetcher(library, Token),
   })
 
-  const { data: lastPurchaseTime, mutate: updateLastPurchaseTime } = useSWR(account && [`GlpSwap:lastPurchaseTime:${active}`, chainId, glpManagerAddress, "lastAddedAt", account], {
+  const { data: lastPurchaseTime, mutate: updateLastPurchaseTime } = useSWR([`GlpSwap:lastPurchaseTime:${active}`, chainId, glpManagerAddress, "lastAddedAt", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, GlpManager),
   })
 
-  const { data: glpBalance, mutate: updateGlpBalance } = useSWR(account && [`GlpSwap:glpBalance:${active}`, chainId, feeGlpTrackerAddress, "stakedAmounts", account], {
+  const { data: glpBalance, mutate: updateGlpBalance } = useSWR([`GlpSwap:glpBalance:${active}`, chainId, feeGlpTrackerAddress, "stakedAmounts", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, RewardTracker),
   })
 
   const glpVesterAddress = getContract(chainId, "GlpVester")
-  const { data: reservedAmount, mutate: updateReservedAmount } = useSWR(account && [`GlpSwap:reservedAmount:${active}`, chainId, glpVesterAddress, "pairAmounts", account], {
+  const { data: reservedAmount, mutate: updateReservedAmount } = useSWR([`GlpSwap:reservedAmount:${active}`, chainId, glpVesterAddress, "pairAmounts", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, Vester),
   })
 
-  const { gmxPrice, mutate: updateGmxPrice } = useGmxPrice(chainId)
+  const { gmxPrice, mutate: updateGmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? library : undefined }, active)
 
   const rewardTrackersForStakingInfo = [
     stakedGlpTrackerAddress,
     feeGlpTrackerAddress
   ]
-  const { data: stakingInfo, mutate: updateStakingInfo } = useSWR(account && [`GlpSwap:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account], {
+  const { data: stakingInfo, mutate: updateStakingInfo } = useSWR([`GlpSwap:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT], {
     fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
   })
 
@@ -636,6 +637,9 @@ export default function GlpSwap(props) {
                 {formatAmount(glpBalance, GLP_DECIMALS, 4, true)} GLP (${formatAmount(glpBalanceUsd, USD_DECIMALS, 2, true)})
               </div>
             </div>
+          </div>
+          <div className="App-card-divider"></div>
+          <div className="App-card-content">
             {!isBuying && <div className="App-card-row">
               <div className="label">Reserved</div>
               <div className="value">
@@ -692,8 +696,9 @@ export default function GlpSwap(props) {
               onSelectToken={onSelectSwapToken}
               tokens={whitelistedTokens}
               infoTokens={infoTokens}
-              className="right"
+              className="GlpSwap-from-token"
               showSymbolImage={true}
+              showTokenImgInDropdown={true}
             />
           </BuyInputSection>}
 
@@ -716,7 +721,10 @@ export default function GlpSwap(props) {
 
           <div className="AppOrder-ball-container">
             <div className="AppOrder-ball">
-              <img src={arrowIcon} alt="arrowIcon" />
+              <img src={arrowIcon} alt="arrowIcon" onClick={() => {
+                setIsBuying(!isBuying);
+                switchSwapOption(isBuying ? 'redeem' : '');
+              }} />
             </div>
           </div>
 
@@ -750,8 +758,9 @@ export default function GlpSwap(props) {
               onSelectToken={onSelectSwapToken}
               tokens={whitelistedTokens}
               infoTokens={infoTokens}
-              className="right"
+              className="GlpSwap-from-token"
               showSymbolImage={true}
+              showTokenImgInDropdown={true}
             />
           </BuyInputSection>}
           <div>

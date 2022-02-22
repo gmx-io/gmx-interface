@@ -28,8 +28,8 @@ export default function BuyGlp(props) {
           <img src={buyGLPIcon} alt="buyGLPIcon" />
         </div>
         <div className="section-title-content">
-          <div className="section-title-content__title">
-            Buy or redeem GLP
+          <div className="Page-title">
+            Buy / Sell GLP
           </div>
           <div className="section-title-content__description">
           Purchase <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">GLP tokens</a> to earn {chainId === ARBITRUM ? 'ETH' : 'AVAX'} fees from swaps and leverages trading.<br/>Note that there is a minimum holding time of 15 minutes after a purchase.<br/>View <Link to="/earn">staking</Link> page.

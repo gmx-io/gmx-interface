@@ -394,12 +394,12 @@ function useGmxPriceFromArbitrum(library, active) {
 }
 
 
-export async function approvePlugin(chainId, pluginAddress, { library, pendingTxns, setPendingTxns }) {
+export async function approvePlugin(chainId, pluginAddress, { library, pendingTxns, setPendingTxns, sentMsg, failMsg }) {
   const routerAddress = getContract(chainId, "Router")
   const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner())
   return callContract(chainId, contract, 'approvePlugin', [pluginAddress], {
-    sentMsg: 'Enable orders sent',
-    failMsg: 'Enable orders failed',
+    sentMsg,
+    failMsg,
     pendingTxns,
     setPendingTxns
   })
@@ -693,7 +693,7 @@ export async function callContract(chainId, contract, method, params, opts) {
         failMsg = "Transaction was cancelled."
         break
       case SLIPPAGE:
-        failMsg = "The mark price has changed, consider increasing your Slippage Tolerance by clicking on the \"...\" icon next to your address."
+        failMsg = "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
         break
       default:
         failMsg = (<div>

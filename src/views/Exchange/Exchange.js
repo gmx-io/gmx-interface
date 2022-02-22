@@ -259,7 +259,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
 
   const tokens = getTokens(chainId)
-  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR([active, chainId, readerAddress, "getFullVaultTokenInfo"], {
+  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR([active, chainId, readerAddress, "getVaultTokenInfoV2"], {
     fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, expandDecimals(1, 18), whitelistedTokenAddresses]),
   })
 
@@ -290,6 +290,11 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
     fetcher: fetcher(library, Router)
   });
 
+  const positionManagerAddress = getContract(chainId, "PositionManager")
+  const { data: positionManagerApproved, mutate: updatePositionManagerApproved } = useSWR(active && [active, chainId, routerAddress, "approvedPlugins", account, positionManagerAddress], {
+    fetcher: fetcher(library, Router)
+  });
+
   useEffect(() => {
     if (active) {
       function onBlock() {
@@ -300,6 +305,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
         updateTotalTokenWeights(undefined, true)
         updateUsdgSupply(undefined, true)
         updateOrderBookApproved(undefined, true)
+        updatePositionManagerApproved(undefined, true)
       }
       library.on('block', onBlock)
       return () => {
@@ -309,7 +315,7 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   }, [active, library, chainId,
       updateVaultTokenInfo, updateTokenBalances, updatePositionData,
       updateFundingRateInfo, updateTotalTokenWeights, updateUsdgSupply,
-      updateOrderBookApproved])
+      updateOrderBookApproved, updatePositionManagerApproved])
 
   const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo)
   const { positions, positionsMap } = getPositions(chainId, positionQuery, positionData, infoTokens, savedIsPnlInLeverage)
@@ -318,19 +324,39 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
   const [orders, updateOrders] = useAccountOrders(flagOrdersEnabled)
 
   const [isWaitingForPluginApproval, setIsWaitingForPluginApproval] = useState(false);
+  const [isWaitingForPositionManagerApproval, setIsWaitingForPositionManagerApproval] = useState(false);
   const [isPluginApproving, setIsPluginApproving] = useState(false);
+  const [isPositionManagerApproving, setIsPositionManagerApproving] = useState(false);
 
   const approveOrderBook = () => {
     setIsPluginApproving(true)
     return approvePlugin(chainId, orderBookAddress, {
       library,
       pendingTxns,
-      setPendingTxns
+      setPendingTxns,
+      sentMsg: "Enable orders sent",
+      failMsg: "Enable orders failed"
     }).then(() => {
       setIsWaitingForPluginApproval(true)
       updateOrderBookApproved(undefined, true);
     }).finally(() => {
       setIsPluginApproving(false)
+    })
+  }
+
+  const approvePositionManager = ({ sentMsg, failMsg }) => {
+    setIsPositionManagerApproving(true)
+    return approvePlugin(chainId, positionManagerAddress, {
+      library,
+      pendingTxns,
+      setPendingTxns,
+      sentMsg,
+      failMsg
+    }).then(() => {
+      setIsWaitingForPositionManagerApproval(true)
+      updatePositionManagerApproved(undefined, true);
+    }).finally(() => {
+      setIsPositionManagerApproving(false)
     })
   }
 
@@ -373,11 +399,16 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
           <PositionsList
             setListSection={setListSection}
             setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
+            setIsWaitingForPositionManagerApproval={setIsWaitingForPositionManagerApproval}
             approveOrderBook={approveOrderBook}
+            approvePositionManager={approvePositionManager}
             isPluginApproving={isPluginApproving}
+            isPositionManagerApproving={isPositionManagerApproving}
             isWaitingForPluginApproval={isWaitingForPluginApproval}
+            isWaitingForPositionManagerApproval={isWaitingForPositionManagerApproval}
             updateOrderBookApproved={updateOrderBookApproved}
             orderBookApproved={orderBookApproved}
+            positionManagerApproved={positionManagerApproved}
             positions={positions}
             positionsMap={positionsMap}
             infoTokens={infoTokens}
@@ -457,11 +488,16 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
         <div className="Exchange-right">
           <SwapBox
             setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
+            setIsWaitingForPositionManagerApproval={setIsWaitingForPositionManagerApproval}
             approveOrderBook={approveOrderBook}
+            approvePositionManager={approvePositionManager}
             isPluginApproving={isPluginApproving}
+            isPositionManagerApproving={isPositionManagerApproving}
             isWaitingForPluginApproval={isWaitingForPluginApproval}
+            isWaitingForPositionManagerApproval={isWaitingForPositionManagerApproval}
             updateOrderBookApproved={updateOrderBookApproved}
             orderBookApproved={orderBookApproved}
+            positionManagerApproved={positionManagerApproved}
             orders={orders}
             flagOrdersEnabled={flagOrdersEnabled}
             chainId={chainId}
