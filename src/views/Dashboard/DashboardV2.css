@@ -109,13 +109,15 @@
 }
 
 .Available-network-group {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 0.5rem;
+  /* display: grid; */
+  /* grid-template-columns: 1fr 1fr 1fr; */
+  /* grid-gap: 0.5rem; */
+  display: flex;
 }
 
 .Available-network-group .Tooltip {
   display: flex;
+  margin: 0 0.25rem;
 }
 
 .Available-network-group .Available-network {
@@ -146,7 +148,7 @@
 }
 
 .DashboardV2-token-cards .token-table th:first-child, .DashboardV2-token-cards .token-table td:first-child {
-  min-width: 26rem;
+  min-width: 22rem;
 }
 
 .DashboardV2-token-cards .token-table td:nth-child(3), .DashboardV2-token-cards .token-table th:nth-child(3) {
