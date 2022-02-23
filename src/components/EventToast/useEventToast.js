@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import eventsData from "../../config/events";
 import { useEffect } from "react";
 import EventToast from "./EventToast";
+import { isFuture } from "date-fns";
 
 function useEventToast() {
   const [visited, setVisited] = useLocalStorage("visited-announcements", []);
@@ -10,6 +11,7 @@ function useEventToast() {
   useEffect(() => {
     eventsData
       .filter(event => event.isActive)
+      .filter(event => isFuture(new Date(event.validTill)))
       .filter(event => Array.isArray(visited) && !visited.includes(event.id))
       .forEach(event => {
         toast.custom(

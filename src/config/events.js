@@ -4,6 +4,7 @@ let eventsData = [
   //   title: "New wETH bond",
   //   icon: "",
   //   isActive: true,
+  //   validTill: "2/22/2022 6:00:00 PM", // "2/18/2022 7:37:08 AM"
   //   bodyText: "New WETH bond is now live on OlympusPro.",
   //   buttons: [
   //     {
@@ -20,6 +21,7 @@ let eventsData = [
   //   id: "new-bond-on-olympus",
   //   title: "Second wETH bond",
   //   icon: "",
+  //   validTill: "2/22/2022 5:44:00 PM", // "2/18/2022 7:37:08 AM"
   //   isActive: true,
   //   bodyText: "New WETH bond is now live on OlympusPro.",
   //   buttons: [
