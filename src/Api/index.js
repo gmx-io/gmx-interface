@@ -6,6 +6,7 @@ import { Pool } from '@uniswap/v3-sdk'
 import useSWR from 'swr'
 
 import OrderBook from '../abis/OrderBook.json'
+import OrderExecutor from '../abis/OrderExecutor.json'
 import Vault from '../abis/Vault.json'
 import Router from '../abis/Router.json'
 import UniPool from '../abis/UniPool.json'
@@ -586,8 +587,8 @@ export async function updateSwapOrder(chainId, library, index, minOut, triggerRa
 
 export async function _executeOrder(chainId, library, method, account, index, feeReceiver, opts) {
   const params = [account, index, feeReceiver];
-  const orderBookAddress = getContract(chainId, "OrderBook")
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner())
+  const orderExecutorAddress = getContract(chainId, "OrderExecutor")
+  const contract = new ethers.Contract(orderExecutorAddress, OrderExecutor.abi, library.getSigner())
   return callContract(chainId, contract, method, params, opts);
 }
 
