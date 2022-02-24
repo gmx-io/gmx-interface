@@ -59,7 +59,7 @@
   opacity: 1;
   backdrop-filter: blur(27px);
   position: fixed;
-  z-index: 11;
+  z-index: 801;
   left: 0;
   right: 0;
   top: 0;
