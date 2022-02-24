@@ -9,12 +9,7 @@ import disconnect from "../../img/ic_sign_out_16.svg";
 import { FaChevronDown } from "react-icons/fa";
 import Davatar from "@davatar/react";
 
-function AddressDropdown({
-  account,
-  accountUrl,
-  disconnectAccountAndCloseSettings,
-  openSettings
-}) {
+function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSettings, openSettings }) {
   const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
   const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
@@ -25,9 +20,7 @@ function AddressDropdown({
       <Menu.Button as="div">
         <button className="App-cta small transparent address-btn">
           <Davatar size={20} address={account} />
-          <span className="user-address">
-            {ensName || shortenAddress(account, breakpoint === "S" ? 9 : 13)}
-          </span>
+          <span className="user-address">{ensName || shortenAddress(account, breakpoint === "S" ? 9 : 13)}</span>
           <FaChevronDown />
         </button>
       </Menu.Button>
@@ -46,12 +39,7 @@ function AddressDropdown({
             </div>
           </Menu.Item>
           <Menu.Item>
-            <a
-              href={accountUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="menu-item"
-            >
+            <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="menu-item">
               <img src={externalLink} alt="Open address in explorer" />
               <p>View in Explorer</p>
             </a>
@@ -64,10 +52,7 @@ function AddressDropdown({
             </div>
           </Menu.Item>
           <Menu.Item>
-            <div
-              className="menu-item"
-              onClick={disconnectAccountAndCloseSettings}
-            >
+            <div className="menu-item" onClick={disconnectAccountAndCloseSettings}>
               <img src={disconnect} alt="Disconnect the wallet" />
               <p>Disconnect</p>
             </div>

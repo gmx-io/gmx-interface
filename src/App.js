@@ -6,12 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  NavLink
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, NavLink } from "react-router-dom";
 
 import {
   ARBITRUM,
@@ -32,7 +27,7 @@ import {
   useLocalStorageSerializeKey,
   useInactiveListener,
   getExplorerUrl,
-  getWalletConnectHandler
+  getWalletConnectHandler,
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
@@ -98,7 +93,7 @@ const Zoom = cssTransition({
   appendPosition: false,
   collapse: true,
   collapseDuration: 200,
-  duration: 200
+  duration: 200,
 });
 
 function inPreviewMode() {
@@ -120,11 +115,7 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
           </NavLink>
         </div>
         <div className="App-header-link-container">
-          <a
-            href="https://gmxio.gitbook.io/gmx/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
             ABOUT
           </a>
         </div>
@@ -135,10 +126,7 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
     <div className="App-header-links">
       {small && (
         <div className="App-header-links-header">
-          <div
-            className="App-header-menu-icon-block"
-            onClick={() => clickCloseIcon()}
-          >
+          <div className="App-header-menu-icon-block" onClick={() => clickCloseIcon()}>
             <FiX className="App-header-menu-icon" />
           </div>
           <a className="App-header-link-main" href="/">
@@ -172,11 +160,7 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
         </NavLink>
       </div>
       <div className="App-header-link-container">
-        <a
-          href="https://gmxio.gitbook.io/gmx/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
           About
         </a>
       </div>
@@ -199,7 +183,7 @@ function AppHeaderUser({
   walletModalVisible,
   setWalletModalVisible,
   showNetworkSelectorModal,
-  disconnectAccountAndCloseSettings
+  disconnectAccountAndCloseSettings,
 }) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
@@ -209,14 +193,14 @@ function AppHeaderUser({
       label: "Arbitrum",
       value: ARBITRUM,
       icon: "ic_arbitrum_24.svg",
-      color: "#264f79"
+      color: "#264f79",
     },
     {
       label: "Avalanche",
       value: AVALANCHE,
       icon: "ic_avalanche_24.svg",
-      color: "#E841424D"
-    }
+      color: "#E841424D",
+    },
   ];
 
   useEffect(() => {
@@ -226,7 +210,7 @@ function AppHeaderUser({
   }, [active, setWalletModalVisible]);
 
   const onNetworkSelect = useCallback(
-    option => {
+    (option) => {
       if (option.value === chainId) {
         return;
       }
@@ -257,10 +241,7 @@ function AppHeaderUser({
             showModal={showNetworkSelectorModal}
           />
         )}
-        <ConnectWalletButton
-          onClick={() => setWalletModalVisible(true)}
-          imgSrc={connectWalletImg}
-        >
+        <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
           {small ? "Connect" : "Connect Wallet"}
         </ConnectWalletButton>
       </div>
@@ -338,49 +319,36 @@ function FullApp() {
   };
 
   const connectInjectedWallet = getInjectedHandler(activate);
-  const activateWalletConnect = getWalletConnectHandler(
-    activate,
-    deactivate,
-    setActivatingConnector
-  );
+  const activateWalletConnect = getWalletConnectHandler(activate, deactivate, setActivatingConnector);
 
   const [walletModalVisible, setWalletModalVisible] = useState();
   const connectWallet = () => setWalletModalVisible(true);
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(undefined);
-  const [
-    isNativeSelectorModalVisible,
-    setisNativeSelectorModalVisible
-  ] = useState(false);
+  const [isNativeSelectorModalVisible, setisNativeSelectorModalVisible] = useState(false);
   const fadeVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1 }
+    visible: { opacity: 1 },
   };
   const slideVariants = {
     hidden: { x: "-100%" },
-    visible: { x: 0 }
+    visible: { x: 0 },
   };
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
-  const [
-    savedSlippageAmount,
-    setSavedSlippageAmount
-  ] = useLocalStorageSerializeKey(
+  const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
     [chainId, SLIPPAGE_BPS_KEY],
     DEFAULT_SLIPPAGE_AMOUNT
   );
   const [slippageAmount, setSlippageAmount] = useState(0);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
 
-  const [
-    savedIsPnlInLeverage,
-    setSavedIsPnlInLeverage
-  ] = useLocalStorageSerializeKey([chainId, IS_PNL_IN_LEVERAGE_KEY], false);
+  const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
+    [chainId, IS_PNL_IN_LEVERAGE_KEY],
+    false
+  );
 
-  const [
-    savedShouldShowPositionLines,
-    setSavedShouldShowPositionLines
-  ] = useLocalStorageSerializeKey(
+  const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
     [chainId, SHOULD_SHOW_POSITION_LINES_KEY],
     false
   );
@@ -392,7 +360,7 @@ function FullApp() {
     setIsSettingsVisible(true);
   };
 
-  const showNetworkSelectorModal = val => {
+  const showNetworkSelectorModal = (val) => {
     setisNativeSelectorModalVisible(val);
   };
 
@@ -510,11 +478,7 @@ function FullApp() {
                   exit="hidden"
                   variants={fadeVariants}
                   transition={{ duration: 0.2 }}
-                  onClick={() =>
-                    setisNativeSelectorModalVisible(
-                      !isNativeSelectorModalVisible
-                    )
-                  }
+                  onClick={() => setisNativeSelectorModalVisible(!isNativeSelectorModalVisible)}
                 ></motion.div>
               )}
             </AnimatePresence>
@@ -530,9 +494,7 @@ function FullApp() {
               </div>
               <div className="App-header-container-right">
                 <AppHeaderUser
-                  disconnectAccountAndCloseSettings={
-                    disconnectAccountAndCloseSettings
-                  }
+                  disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
                   openSettings={openSettings}
                   setActivatingConnector={setActivatingConnector}
                   walletModalVisible={walletModalVisible}
@@ -541,39 +503,25 @@ function FullApp() {
                 />
               </div>
             </div>
-            <div
-              className={cx("App-header", "small", { active: isDrawerVisible })}
-            >
+            <div className={cx("App-header", "small", { active: isDrawerVisible })}>
               <div
                 className={cx("App-header-link-container", "App-header-top", {
-                  active: isDrawerVisible
+                  active: isDrawerVisible,
                 })}
               >
                 <div className="App-header-container-left">
-                  <div
-                    className="App-header-menu-icon-block"
-                    onClick={() => setIsDrawerVisible(!isDrawerVisible)}
-                  >
-                    {!isDrawerVisible && (
-                      <RiMenuLine className="App-header-menu-icon" />
-                    )}
-                    {isDrawerVisible && (
-                      <FaTimes className="App-header-menu-icon" />
-                    )}
+                  <div className="App-header-menu-icon-block" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
+                    {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
+                    {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
                   </div>
-                  <div
-                    className="App-header-link-main clickable"
-                    onClick={() => setIsDrawerVisible(!isDrawerVisible)}
-                  >
+                  <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
                     <img src={logoImg} className="big" alt="GMX Logo" />
                     <img src={logoSmallImg} className="small" alt="GMX Logo" />
                   </div>
                 </div>
                 <div className="App-header-container-right">
                   <AppHeaderUser
-                    disconnectAccountAndCloseSettings={
-                      disconnectAccountAndCloseSettings
-                    }
+                    disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
                     openSettings={openSettings}
                     small
                     setActivatingConnector={setActivatingConnector}
@@ -596,11 +544,7 @@ function FullApp() {
                 variants={slideVariants}
                 transition={{ duration: 0.2 }}
               >
-                <AppHeaderLinks
-                  small
-                  openSettings={openSettings}
-                  clickCloseIcon={() => setIsDrawerVisible(false)}
-                />
+                <AppHeaderLinks small openSettings={openSettings} clickCloseIcon={() => setIsDrawerVisible(false)} />
               </motion.div>
             )}
           </AnimatePresence>
@@ -616,9 +560,7 @@ function FullApp() {
                 setPendingTxns={setPendingTxns}
                 pendingTxns={pendingTxns}
                 savedShouldShowPositionLines={savedShouldShowPositionLines}
-                setSavedShouldShowPositionLines={
-                  setSavedShouldShowPositionLines
-                }
+                setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                 connectWallet={connectWallet}
               />
             </Route>
@@ -629,10 +571,7 @@ function FullApp() {
               <Dashboard />
             </Route>
             <Route exact path="/earn">
-              <Stake
-                setPendingTxns={setPendingTxns}
-                connectWallet={connectWallet}
-              />
+              <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
             </Route>
             <Route exact path="/buy">
               <Buy
@@ -710,10 +649,10 @@ function FullApp() {
         containerStyle={{
           zIndex: 2,
           top: "93px",
-          right: "30px"
+          right: "30px",
         }}
         toastOptions={{
-          duration: Infinity
+          duration: Infinity,
         }}
       />
       <Modal
@@ -745,16 +684,13 @@ function FullApp() {
               className="App-slippage-tolerance-input"
               min="0"
               value={slippageAmount}
-              onChange={e => setSlippageAmount(e.target.value)}
+              onChange={(e) => setSlippageAmount(e.target.value)}
             />
             <div className="App-slippage-tolerance-input-percent">%</div>
           </div>
         </div>
         <div className="Exchange-settings-row">
-          <Checkbox
-            isChecked={isPnlInLeverage}
-            setIsChecked={setIsPnlInLeverage}
-          >
+          <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
             Include PnL in leverage display
           </Checkbox>
         </div>
@@ -767,10 +703,7 @@ function FullApp() {
             Logout from Account
           </button>
         </div> */}
-        <button
-          className="App-cta Exchange-swap-button"
-          onClick={saveAndCloseSettings}
-        >
+        <button className="App-cta Exchange-swap-button" onClick={saveAndCloseSettings}>
           Save
         </button>
       </Modal>
@@ -782,11 +715,11 @@ function PreviewApp() {
   const [isDrawerVisible, setIsDrawerVisible] = useState(undefined);
   const fadeVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1 }
+    visible: { opacity: 1 },
   };
   const slideVariants = {
     hidden: { x: "-100%" },
-    visible: { x: 0 }
+    visible: { x: 0 },
   };
 
   return (
@@ -817,12 +750,7 @@ function PreviewApp() {
           <header>
             <div className="App-header large preview">
               <div className="App-header-container-left">
-                <NavLink
-                  exact
-                  activeClassName="active"
-                  className="App-header-link-main"
-                  to="/"
-                >
+                <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
                   <img src={logoImg} alt="GMX Logo" />
                   GMX
                 </NavLink>
@@ -831,12 +759,10 @@ function PreviewApp() {
                 <AppHeaderLinks />
               </div>
             </div>
-            <div
-              className={cx("App-header", "small", { active: isDrawerVisible })}
-            >
+            <div className={cx("App-header", "small", { active: isDrawerVisible })}>
               <div
                 className={cx("App-header-link-container", "App-header-top", {
-                  active: isDrawerVisible
+                  active: isDrawerVisible,
                 })}
               >
                 <div className="App-header-container-left">
@@ -846,12 +772,8 @@ function PreviewApp() {
                 </div>
                 <div className="App-header-container-right">
                   <div onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
-                    {!isDrawerVisible && (
-                      <RiMenuLine className="App-header-menu-icon" />
-                    )}
-                    {isDrawerVisible && (
-                      <FaTimes className="App-header-menu-icon" />
-                    )}
+                    {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
+                    {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
                   </div>
                 </div>
               </div>

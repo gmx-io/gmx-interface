@@ -1,71 +1,70 @@
-import React, { useState } from 'react'
-import { ethers } from 'ethers'
-import { useWeb3React } from '@web3-react/core'
-import { useChainId } from '../../Helpers'
+import React, { useState } from "react";
+import { ethers } from "ethers";
+import { useWeb3React } from "@web3-react/core";
+import { useChainId } from "../../Helpers";
 
-import ERC721 from '../../abis/ERC721.json'
+import ERC721 from "../../abis/ERC721.json";
 
-import { callContract } from '../../Api'
-import "./NftWallet.css"
+import { callContract } from "../../Api";
+import "./NftWallet.css";
 
 export default function NftWallet() {
-  const [nftAddress, setNftAddress] = useState("")
-  const [nftId, setNftId] = useState("")
-  const [receiver, setReceiver] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState("")
+  const [nftAddress, setNftAddress] = useState("");
+  const [nftId, setNftId] = useState("");
+  const [receiver, setReceiver] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState("");
 
-  const { active, account, library } = useWeb3React()
-  const { chainId } = useChainId()
+  const { active, account, library } = useWeb3React();
+  const { chainId } = useChainId();
 
   function getTransferError() {
     if (!active) {
-      return "Wallet not connected"
+      return "Wallet not connected";
     }
     if (!receiver || receiver.length === 0) {
-      return "Enter Receiver Address"
+      return "Enter Receiver Address";
     }
     if (!ethers.utils.isAddress(receiver)) {
-      return "Invalid Receiver Address"
+      return "Invalid Receiver Address";
     }
     if (!nftAddress || nftAddress.length === 0) {
-      return "Enter NFT Address"
+      return "Enter NFT Address";
     }
     if (!ethers.utils.isAddress(nftAddress)) {
-      return "Invalid NFT Address"
+      return "Invalid NFT Address";
     }
     if (!nftId || nftId.toString().length === 0) {
-      return "Enter NFT ID"
+      return "Enter NFT ID";
     }
   }
 
   function getPrimaryText() {
-    const transferError = getTransferError()
+    const transferError = getTransferError();
     if (transferError) {
-      return transferError
+      return transferError;
     }
     if (isSubmitting) {
-      return "Tranferring..."
+      return "Tranferring...";
     }
-    return "Transfer NFT"
+    return "Transfer NFT";
   }
 
   function isPrimaryEnabled() {
-    return !getTransferError()
+    return !getTransferError();
   }
 
   function transferNft() {
-    setIsSubmitting(true)
-    const contract = new ethers.Contract(nftAddress, ERC721.abi, library.getSigner())
+    setIsSubmitting(true);
+    const contract = new ethers.Contract(nftAddress, ERC721.abi, library.getSigner());
     callContract(chainId, contract, "transferFrom", [account, receiver, nftId], {
       sentMsg: "Transfer submitted!",
-      failMsg: "Transfer failed."
-    })
-    .finally(() => {
-      setIsSubmitting(false)
-    })
+      failMsg: "Transfer failed.",
+    }).finally(() => {
+      setIsSubmitting(false);
+    });
   }
 
-  return(
+  return (
     <div className="NftWallet Page page-layout">
       <div className="Page-title-section">
         <div className="Page-title">NFT Wallet</div>
@@ -96,5 +95,5 @@ export default function NftWallet() {
         </div>
       </div>
     </div>
-  )
+  );
 }

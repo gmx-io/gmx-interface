@@ -10,12 +10,12 @@ function useEventToast() {
 
   useEffect(() => {
     eventsData
-      .filter(event => event.isActive)
-      .filter(event => isFuture(new Date(event.validTill)))
-      .filter(event => Array.isArray(visited) && !visited.includes(event.id))
-      .forEach(event => {
+      .filter((event) => event.isActive)
+      .filter((event) => isFuture(new Date(event.validTill)))
+      .filter((event) => Array.isArray(visited) && !visited.includes(event.id))
+      .forEach((event) => {
         toast.custom(
-          t => (
+          (t) => (
             <EventToast
               event={event}
               id={event.id}
@@ -29,7 +29,7 @@ function useEventToast() {
           ),
           {
             id: event.id,
-            style: {}
+            style: {},
           }
         );
       });

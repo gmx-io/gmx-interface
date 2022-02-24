@@ -1,12 +1,12 @@
-import React from 'react'
+import React from "react";
 
 import cx from "classnames";
 
-import './Checkbox.css';
-import { ImCheckboxUnchecked, ImCheckboxChecked } from 'react-icons/im'
+import "./Checkbox.css";
+import { ImCheckboxUnchecked, ImCheckboxChecked } from "react-icons/im";
 
 export default function Checkbox(props) {
-  const { isChecked, setIsChecked, disabled } = props
+  const { isChecked, setIsChecked, disabled } = props;
 
   return (
     <div className={cx("Checkbox", { disabled })} onClick={() => setIsChecked(!isChecked)}>
@@ -14,9 +14,7 @@ export default function Checkbox(props) {
         {isChecked && <ImCheckboxChecked className="App-icon Checkbox-icon active" />}
         {!isChecked && <ImCheckboxUnchecked className="App-icon Checkbox-icon inactive" />}
       </span>
-      <span className="Checkbox-label">
-        {props.children}
-      </span>
+      <span className="Checkbox-label">{props.children}</span>
     </div>
-  )
+  );
 }
