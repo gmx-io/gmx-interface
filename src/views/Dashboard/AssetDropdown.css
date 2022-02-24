@@ -1,0 +1,25 @@
+.asset-menu-items {
+  position: absolute;
+  border: 1px solid var(--dark-blue-border);
+  border-radius: 4px;
+  background: var(--dark-blue);
+}
+
+.dropdown-arrow {
+  margin-left: 0.5rem;
+  cursor: pointer;
+}
+
+.asset-item {
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  cursor: pointer;
+}
+.asset-item:hover {
+  background: var(--dark-blue-hover);
+}
+.asset-item p {
+  margin: 0.5rem 0;
+  margin-left: 0.25rem;
+}
