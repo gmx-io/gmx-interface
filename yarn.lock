@@ -7611,7 +7611,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^7.11.0":
+"eslint@npm:^7.11.0, eslint@npm:^7.20.0":
   version: 7.32.0
   resolution: "eslint@npm:7.32.0"
   dependencies:
@@ -8481,6 +8481,7 @@ __metadata:
     body-scroll-lock: ^4.0.0-beta.0
     classnames: ^2.2.6
     date-fns: ^2.18.0
+    eslint: ^7.20.0
     ethers: ^5.0.31
     framer-motion: ^4.1.9
     graphql: ^15.5.0
