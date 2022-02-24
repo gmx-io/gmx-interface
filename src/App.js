@@ -151,6 +151,13 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
           Home
         </NavLink>
       </div>
+      {small && (
+        <div className="App-header-link-container">
+          <NavLink activeClassName="active" to="/trade">
+            Trade
+          </NavLink>
+        </div>
+      )}
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/dashboard">
           Dashboard
