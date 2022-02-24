@@ -24,7 +24,7 @@ export default function BuyGMX() {
   const { active } = useWeb3React();
 
   const onNetworkSelect = useCallback(
-    value => {
+    (value) => {
       if (value === chainId) {
         return;
       }
@@ -64,11 +64,7 @@ export default function BuyGMX() {
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
                   You can buy ETH directly on{" "}
-                  <a
-                    href="https://arbitrum.io/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <a href="https://arbitrum.io/" target="_blank" rel="noopener noreferrer">
                     Arbitrum
                   </a>{" "}
                   using Banxa:
@@ -88,8 +84,7 @@ export default function BuyGMX() {
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
-                  You can transfer ETH from other networks to Arbitrum using any
-                  of the below options:
+                  You can transfer ETH from other networks to Arbitrum using any of the below options:
                 </div>
                 <div className="bridge-options">
                   <Button
@@ -99,11 +94,7 @@ export default function BuyGMX() {
                   >
                     Synapse
                   </Button>
-                  <Button
-                    href="https://app.multichain.org/#/router"
-                    align="left"
-                    imgSrc={Multiswap}
-                  >
+                  <Button href="https://app.multichain.org/#/router" align="left" imgSrc={Multiswap}>
                     Multiswap
                   </Button>
                   <Button
@@ -113,11 +104,7 @@ export default function BuyGMX() {
                   >
                     Hop
                   </Button>
-                  <Button
-                    href="https://binance.com/"
-                    align="left"
-                    imgSrc={Binance}
-                  >
+                  <Button href="https://binance.com/" align="left" imgSrc={Binance}>
                     Binance
                   </Button>
                 </div>
@@ -149,11 +136,7 @@ export default function BuyGMX() {
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
                   You can buy AVAX directly on{" "}
-                  <a
-                    href="https://www.avax.network/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <a href="https://www.avax.network/" target="_blank" rel="noopener noreferrer">
                     Avalanche
                   </a>{" "}
                   using Banxa:
@@ -173,40 +156,22 @@ export default function BuyGMX() {
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
-                  You can transfer AVAX to Avalanche using any of the below
-                  options. <br />
+                  You can transfer AVAX to Avalanche using any of the below options. <br />
                   <br />
-                  Using the Avalanche or Synapse bridges, you can also transfer
-                  any other supported cryptocurrency, and receive free AVAX to
-                  pay for the network's fees.
+                  Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and
+                  receive free AVAX to pay for the network's fees.
                 </div>
                 <div className="bridge-options">
-                  <Button
-                    align="left"
-                    href="https://bridge.avax.network/"
-                    imgSrc={avax30Icon}
-                  >
+                  <Button align="left" href="https://bridge.avax.network/" imgSrc={avax30Icon}>
                     Avalanche
                   </Button>
-                  <Button
-                    align="left"
-                    href="https://synapseprotocol.com/"
-                    imgSrc={Synapse}
-                  >
+                  <Button align="left" href="https://synapseprotocol.com/" imgSrc={Synapse}>
                     Synapse
                   </Button>
-                  <Button
-                    align="left"
-                    href="https://app.multichain.org/"
-                    imgSrc={Multiswap}
-                  >
+                  <Button align="left" href="https://app.multichain.org/" imgSrc={Multiswap}>
                     Multiswap
                   </Button>
-                  <Button
-                    align="left"
-                    href="https://binance.com"
-                    imgSrc={Binance}
-                  >
+                  <Button align="left" href="https://binance.com" imgSrc={Binance}>
                     Binance
                   </Button>
                 </div>
@@ -224,11 +189,7 @@ export default function BuyGMX() {
                 <div className="App-card-content no-title">
                   <div className="BuyGMXGLP-description better-rates-description">
                     After you have ETH, set your network to{" "}
-                    <a
-                      href="https://arbitrum.io/bridge-tutorial/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">
                       Arbitrum
                     </a>{" "}
                     then click the button below:
@@ -258,11 +219,7 @@ export default function BuyGMX() {
                 <div className="App-card-content no-title">
                   <div className="BuyGMXGLP-description better-rates-description">
                     After you have ETH, set your network to{" "}
-                    <a
-                      href="https://arbitrum.io/bridge-tutorial/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">
                       Arbitrum
                     </a>{" "}
                     then click the button below:
@@ -286,15 +243,10 @@ export default function BuyGMX() {
               <div className="App-card no-height">
                 <div className="App-card-content no-title">
                   <div className="BuyGMXGLP-description">
-                    GMX bonds can be bought on Olympus Pro with a discount and a
-                    small vesting period:
+                    GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:
                   </div>
                   <div className="buy-gmx">
-                    <Button
-                      size="xl"
-                      imgSrc={ohmArbitrum}
-                      href="https://pro.olympusdao.finance/#/partners/GMX"
-                    >
+                    <Button size="xl" imgSrc={ohmArbitrum} href="https://pro.olympusdao.finance/#/partners/GMX">
                       Olympus Pro
                     </Button>
                   </div>
