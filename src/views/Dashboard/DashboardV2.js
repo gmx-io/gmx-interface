@@ -849,7 +849,7 @@ export default function DashboardV2() {
                                 <div className="App-card-info-subtitle">{token.symbol}</div>
                               </div>
                               <div>
-                                <AssetDropdown assetInfo={token} assetSymbol="GMX" />
+                                <AssetDropdown assetInfo={token} assetSymbol={token.symbol} />
                               </div>
                             </div>
                           </div>
