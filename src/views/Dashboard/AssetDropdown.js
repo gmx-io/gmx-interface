@@ -45,7 +45,7 @@ function AssetDropdown({ assetName, assetInfo, chainId, active }) {
                 rel="noopener noreferrer"
               >
                 <img src={arbitrumIcon} alt="Open in explorer" />
-                <p>Open in explorer</p>
+                <p>Open in Explorer</p>
               </a>
             )}
             {avalanche && (

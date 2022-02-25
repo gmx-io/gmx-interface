@@ -1,6 +1,6 @@
 .asset-menu-items {
   position: absolute;
-  border: 1px solid var(--dark-blue-border);
+  border: 1px solid #32344c;
   border-radius: 4px;
   background: var(--dark-blue);
   outline: none;
@@ -17,12 +17,16 @@
   align-items: center;
   padding: 0 0.5rem;
   cursor: pointer;
+  color: #a0a3c4;
   text-decoration: none;
+  padding: 8.5px 8px;
 }
 .asset-item:hover {
   background: var(--dark-blue-hover);
+  color: white;
+  border-radius: 4px;
 }
 .asset-item p {
-  margin: 0.5rem 0;
-  margin-left: 0.25rem;
+  margin: 0;
+  margin-left: 5px;
 }
