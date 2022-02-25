@@ -599,7 +599,7 @@ export default function DashboardV2() {
                     <div className="App-card-title-mark-subtitle">GMX</div>
                   </div>
                   <div>
-                    <AssetDropdown assetName="GMX" active={active} chainId={chainId} />
+                    <AssetDropdown assetSymbol="GMX" />
                   </div>
                 </div>
               </div>
@@ -704,7 +704,7 @@ export default function DashboardV2() {
                     <div className="App-card-title-mark-subtitle">GLP</div>
                   </div>
                   <div>
-                    <AssetDropdown assetName="GLP" active={active} chainId={chainId} />
+                    <AssetDropdown assetSymbol="GLP" />
                   </div>
                 </div>
               </div>
@@ -849,7 +849,7 @@ export default function DashboardV2() {
                                 <div className="App-card-info-subtitle">{token.symbol}</div>
                               </div>
                               <div>
-                                <AssetDropdown assetInfo={token} assetName="GMX" active={active} chainId={chainId} />
+                                <AssetDropdown assetInfo={token} assetSymbol="GMX" />
                               </div>
                             </div>
                           </div>

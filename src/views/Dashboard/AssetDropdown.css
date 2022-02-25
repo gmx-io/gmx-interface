@@ -10,12 +10,16 @@
 .dropdown-arrow {
   margin-left: 0.5rem;
   cursor: pointer;
+  color: white;
+  opacity: 0.8;
+}
+.dropdown-arrow:hover {
+  opacity: 1;
 }
 
 .asset-item {
   display: flex;
   align-items: center;
-  padding: 0 0.5rem;
   cursor: pointer;
   color: #a0a3c4;
   text-decoration: none;
