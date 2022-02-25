@@ -51,3 +51,7 @@
 .ClaimEsGmx-vesting-options .Checkbox.avalanche .Checkbox-icon.active {
   color: #e84141;
 }
+
+.ClaimEsGmx button {
+  max-width: 23rem;
+}
