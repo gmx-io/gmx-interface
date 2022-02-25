@@ -1,0 +1,57 @@
+.ClaimEsGmx input {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ClaimEsGmx label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.ClaimEsGmx-content {
+  padding: 3rem;
+  padding-top: 1rem;
+  max-width: 25rem;
+}
+
+.ClaimEsGmx-row {
+  margin-bottom: 1rem;
+}
+
+.ClaimEsGmx button {
+  margin-top: 0.5rem;
+}
+
+.ClaimEsGmx-vesting-options .Checkbox {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.ClaimEsGmx-vesting-options .Checkbox img {
+  height: 1rem;
+}
+
+.ClaimEsGmx-option-label {
+  display: inline-block;
+  width: 20rem;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.ClaimEsGmx-vesting-options .Checkbox.selected .ClaimEsGmx-option-label {
+  opacity: 1;
+}
+
+.ClaimEsGmx-vesting-options .Checkbox.arbitrum .Checkbox-icon.active {
+  color: #29a0f0;
+}
+
+.ClaimEsGmx-vesting-options .Checkbox.avalanche .Checkbox-icon.active {
+  color: #e84141;
+}
+
+.ClaimEsGmx button {
+  max-width: 23rem;
+}
