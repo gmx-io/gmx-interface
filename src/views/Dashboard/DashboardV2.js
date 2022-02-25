@@ -110,8 +110,6 @@ export default function DashboardV2() {
   const { active, library } = useWeb3React()
   const { chainId } = useChainId()
 
-  // console.log({active, library, chainId})
-
   const chainName = getChainName(chainId)
 
   const positionStatsUrl = getServerUrl(chainId, "/position_stats")
@@ -593,7 +591,7 @@ export default function DashboardV2() {
                     <div className="App-card-title-mark-subtitle">GMX</div>
                   </div>
                   <div>
-                    <AssetDropdown assetName="GMX" chainId={chainId} active={active} />
+                    <AssetDropdown assetSymbol="GMX" />
                   </div>
                 </div>
               </div>
@@ -698,7 +696,7 @@ export default function DashboardV2() {
                     <div className="App-card-title-mark-subtitle">GLP</div>
                   </div>
                   <div>
-                    <AssetDropdown assetName="GLP" chainId={chainId} active={active} />
+                    <AssetDropdown assetSymbol="GLP" />
                   </div>
                 </div>
               </div>
@@ -842,7 +840,7 @@ export default function DashboardV2() {
                               <div className="App-card-info-subtitle">{token.symbol}</div>
                             </div>
                             <div>
-                              <AssetDropdown assetName={token.symbol} assetInfo={token} chainId={chainId} active={active} />
+                              <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
                             </div>
                           </div>
                         </div>
@@ -893,7 +891,7 @@ export default function DashboardV2() {
                     <div style={{display: 'flex'}}>
                       {token.symbol}
                       <div>
-                        <AssetDropdown assetName={token.symbol} assetInfo={token} chainId={chainId} active={active} />
+                        <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
                       </div>
                     </div>
                   </div>
