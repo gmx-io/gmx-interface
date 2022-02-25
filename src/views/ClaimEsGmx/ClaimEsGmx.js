@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import useSWR from 'swr'
-// import { ethers } from 'ethers'
+import { ethers } from 'ethers'
 import { useWeb3React } from '@web3-react/core'
 import {
   ARBITRUM,
+  AVALANCHE,
   PLACEHOLDER_ACCOUNT,
   useChainId,
   fetcher,
-  formatAmount
+  formatAmount,
+  bigNumberify
 } from '../../Helpers'
 
 import { getContract } from '../../Addresses'
 
-// import { callContract } from '../../Api'
+import { callContract } from '../../Api'
 
 import Token from '../../abis/Token.json'
 import RewardReader from '../../abis/RewardReader.json'
@@ -72,11 +74,68 @@ export function getVestingDataV2(vestingInfo) {
   return data;
 }
 
+function getVestingValues({
+  minRatio,
+  esGmxIouBalance,
+  vestingDataItem
+}) {
 
-export default function ClaimEsGmx() {
+  if (!vestingDataItem || !esGmxIouBalance || esGmxIouBalance.eq(0)) {
+    return
+  }
+
+  let currentRatio = bigNumberify(0)
+
+  const ratioMultiplier = 10000
+  const amount = esGmxIouBalance
+  const maxVestableAmount = vestingDataItem.maxVestableAmount
+  const nextMaxVestableEsGmx = maxVestableAmount.add(amount)
+
+  const combinedAverageStakedAmount =vestingDataItem.combinedAverageStakedAmount
+  if (maxVestableAmount.gt(0)) {
+    currentRatio = combinedAverageStakedAmount.mul(ratioMultiplier).div(maxVestableAmount)
+  }
+
+  const transferredCumulativeReward = vestingDataItem.transferredCumulativeReward
+  const nextTransferredCumulativeReward = transferredCumulativeReward.add(amount)
+  const cumulativeReward = vestingDataItem.cumulativeReward
+  const totalCumulativeReward = cumulativeReward.add(nextTransferredCumulativeReward)
+
+  let nextCombinedAverageStakedAmount = combinedAverageStakedAmount
+
+  if (combinedAverageStakedAmount.lt(totalCumulativeReward.mul(minRatio))) {
+    const averageStakedAmount = vestingDataItem.averageStakedAmount
+    let nextTransferredAverageStakedAmount = totalCumulativeReward.mul(minRatio)
+    nextTransferredAverageStakedAmount = nextTransferredAverageStakedAmount.sub(
+      averageStakedAmount.mul(cumulativeReward).div(totalCumulativeReward)
+    )
+    nextTransferredAverageStakedAmount = nextTransferredAverageStakedAmount.mul(totalCumulativeReward).div(nextTransferredCumulativeReward)
+
+    nextCombinedAverageStakedAmount = averageStakedAmount.mul(cumulativeReward).div(totalCumulativeReward).add(
+      nextTransferredAverageStakedAmount.mul(nextTransferredCumulativeReward).div(totalCumulativeReward)
+    )
+  }
+
+  const nextRatio = nextCombinedAverageStakedAmount.mul(ratioMultiplier).div(nextMaxVestableEsGmx)
+
+  const initialStakingAmount = currentRatio.mul(maxVestableAmount)
+  const nextStakingAmount = nextRatio.mul(nextMaxVestableEsGmx)
+
+  return {
+    maxVestableAmount,
+    currentRatio,
+    nextMaxVestableEsGmx,
+    nextRatio,
+    initialStakingAmount,
+    nextStakingAmount
+  }
+}
+
+export default function ClaimEsGmx({ setPendingTxns }) {
   const { active, account, library } = useWeb3React()
   const { chainId } = useChainId()
   const [selectedOption, setSelectedOption] = useState("")
+  const [isClaiming, setIsClaiming] = useState(false)
 
   const isArbitrum = chainId === ARBITRUM
 
@@ -87,58 +146,170 @@ export default function ClaimEsGmx() {
   })
 
   const arbRewardReaderAddress = getContract(ARBITRUM, "RewardReader")
+  const avaxRewardReaderAddress = getContract(AVALANCHE, "RewardReader")
+
   const arbVesterAdddresses = [getContract(ARBITRUM, "GmxVester"), getContract(ARBITRUM, "GlpVester")]
+  const avaxVesterAdddresses = [getContract(AVALANCHE, "GmxVester"), getContract(AVALANCHE, "GlpVester")]
 
   const { data: arbVestingInfo, mutate: updateArbVestingInfo } = useSWR([`StakeV2:vestingInfo:${active}`, ARBITRUM, arbRewardReaderAddress, "getVestingInfoV2", account || PLACEHOLDER_ACCOUNT], {
-    fetcher: fetcher(library, RewardReader, [arbVesterAdddresses]),
+    fetcher: fetcher(undefined, RewardReader, [arbVesterAdddresses]),
+  })
+
+  const { data: avaxVestingInfo, mutate: updateAvaxVestingInfo } = useSWR([`StakeV2:vestingInfo:${active}`, AVALANCHE, avaxRewardReaderAddress, "getVestingInfoV2", account || PLACEHOLDER_ACCOUNT], {
+    fetcher: fetcher(undefined, RewardReader, [avaxVesterAdddresses]),
   })
 
   const arbVestingData = getVestingDataV2(arbVestingInfo)
-  console.log("arbVestingData", arbVestingData)
+  const avaxVestingData = getVestingDataV2(avaxVestingInfo)
 
   useEffect(() => {
     if (active) {
       library.on('block', () => {
         updateEsGmxIouBalance(undefined, true)
         updateArbVestingInfo(undefined, true)
+        updateAvaxVestingInfo(undefined, true)
       })
       return () => {
         library.removeAllListeners('block')
       }
     }
-  }, [active, library, updateEsGmxIouBalance, updateArbVestingInfo])
+  }, [active, library, updateEsGmxIouBalance, updateArbVestingInfo, updateAvaxVestingInfo])
 
-  let currentMaxVestableEsGmx
+  let maxVestableAmount
   let currentRatio
 
   let nextMaxVestableEsGmx
   let nextRatio
 
-  const ratioMultiplier = 10000
+  let initialStakingAmount
+  let nextStakingAmount
 
-  if (selectedOption === VEST_WITH_GMX_ARB && arbVestingData && arbVestingData.gmxVester && esGmxIouBalance) {
-    const amount = esGmxIouBalance
-    currentMaxVestableEsGmx = arbVestingData.gmxVester.maxVestableAmount
-    nextMaxVestableEsGmx = currentMaxVestableEsGmx.add(amount)
+  let stakingToken = "staked GMX"
 
-    const combinedAverageStakedAmount = arbVestingData.gmxVester.combinedAverageStakedAmount
-    currentRatio = combinedAverageStakedAmount.mul(ratioMultiplier).div(currentMaxVestableEsGmx)
+  const shouldShowStakingAmounts = false
 
-    const stakeAmount = amount.mul(4)
-    const transferredAverageStakedAmount = arbVestingData.gmxVester.transferredAverageStakedAmount
-    const transferredCumulativeReward = arbVestingData.gmxVester.transferredCumulativeReward
-    const nextTransferredCumulativeReward = transferredCumulativeReward.add(amount)
+  if (selectedOption === VEST_WITH_GMX_ARB && arbVestingData) {
+    const result = getVestingValues({
+      minRatio: bigNumberify(4),
+      esGmxIouBalance,
+      vestingDataItem: arbVestingData.gmxVester
+    })
 
-    let nextTransferredAverageStakedAmount = transferredAverageStakedAmount.mul(arbVestingData.gmxVester.transferredCumulativeReward).div(nextTransferredCumulativeReward)
-    nextTransferredAverageStakedAmount = nextTransferredAverageStakedAmount.add(stakeAmount.mul(amount).div(nextTransferredCumulativeReward))
+    if (result) {
+      ({ maxVestableAmount, currentRatio, nextMaxVestableEsGmx, nextRatio, initialStakingAmount, nextStakingAmount } = result);
+    }
+  }
 
-    const cumulativeReward = arbVestingData.gmxVester.cumulativeReward
-    const nextTotalCumulativeReward = cumulativeReward.add(nextTransferredCumulativeReward)
-    const averageStakedAmount = arbVestingData.gmxVester.averageStakedAmount
-    let nextCombinedAverageStakedAmount = averageStakedAmount.mul(cumulativeReward).div(nextTotalCumulativeReward)
-    nextCombinedAverageStakedAmount = nextCombinedAverageStakedAmount.add(nextTransferredAverageStakedAmount.mul(nextTransferredCumulativeReward).div(nextTotalCumulativeReward))
+  if (selectedOption === VEST_WITH_GLP_ARB && arbVestingData) {
+    const result = getVestingValues({
+      minRatio: bigNumberify(320),
+      esGmxIouBalance,
+      vestingDataItem: arbVestingData.glpVester
+    })
 
-    nextRatio = nextCombinedAverageStakedAmount.mul(ratioMultiplier).div(nextMaxVestableEsGmx)
+    if (result) {
+      ({ maxVestableAmount, currentRatio, nextMaxVestableEsGmx, nextRatio, initialStakingAmount, nextStakingAmount } = result);
+    }
+
+    stakingToken = "GLP"
+  }
+
+  if (selectedOption === VEST_WITH_GMX_AVAX && avaxVestingData) {
+    const result = getVestingValues({
+      minRatio: bigNumberify(4),
+      esGmxIouBalance,
+      vestingDataItem: avaxVestingData.gmxVester
+    })
+
+    if (result) {
+      ({ maxVestableAmount, currentRatio, nextMaxVestableEsGmx, nextRatio, initialStakingAmount, nextStakingAmount } = result);
+    }
+  }
+
+  if (selectedOption === VEST_WITH_GLP_AVAX && avaxVestingData) {
+    const result = getVestingValues({
+      minRatio: bigNumberify(320),
+      esGmxIouBalance,
+      vestingDataItem: avaxVestingData.glpVester
+    })
+
+    if (result) {
+      ({ maxVestableAmount, currentRatio, nextMaxVestableEsGmx, nextRatio, initialStakingAmount, nextStakingAmount } = result);
+    }
+
+    stakingToken = "GLP"
+  }
+
+  const getError = () => {
+    if (!active) {
+      return "Wallet not connected"
+    }
+
+    if (esGmxIouBalance && esGmxIouBalance.eq(0)) {
+      return "No esGMX to claim"
+    }
+
+    if (selectedOption === "") {
+      return "Select an option"
+    }
+
+    return false
+  }
+
+  const error = getError()
+
+  const getPrimaryText = () => {
+    if (error) {
+      return error
+    }
+
+    if (isClaiming) {
+      return "Claiming..."
+    }
+
+    return "Claim"
+  }
+
+  const isPrimaryEnabled = () => {
+    return !error && !isClaiming
+  }
+
+  const claim = () => {
+    setIsClaiming(true)
+
+    let receiver
+
+    if (selectedOption === VEST_WITH_GMX_ARB) {
+      receiver = "0x544a6ec142Aa9A7F75235fE111F61eF2EbdC250a"
+    }
+
+    if (selectedOption === VEST_WITH_GLP_ARB) {
+      receiver = "0x9d8f6f6eE45275A5Ca3C6f6269c5622b1F9ED515"
+    }
+
+    if (selectedOption === VEST_WITH_GMX_AVAX) {
+      receiver = "0x171a321A78dAE0CDC0Ba3409194df955DEEcA746"
+    }
+
+    if (selectedOption === VEST_WITH_GLP_AVAX) {
+      receiver = "0x28863Dd19fb52DF38A9f2C6dfed40eeB996e3818"
+    }
+
+    const contract = new ethers.Contract(esGmxIouAddress, Token.abi, library.getSigner())
+    callContract(chainId, contract, "transfer", [
+      receiver,
+      esGmxIouBalance
+    ], {
+      sentMsg: "Claim submitted!",
+      failMsg: "Claim failed.",
+      successMsg: "Claim completed.",
+      setPendingTxns
+    })
+    .then(async (res) => {
+    })
+    .finally(() => {
+      setIsClaiming(false)
+    })
   }
 
   return(
@@ -156,11 +327,12 @@ export default function ClaimEsGmx() {
             <br/>
             The address of the esGMX (IOU) token is {esGmxIouAddress}.<br/>
             The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like.<br/>
-            If you'd like to split the tokens across multiple vesting options, you could temporarily send the esGMX (IOU) tokens to a different account, claim, then transfer the tokens back.
-            <br/>
+            If you'd like to split the tokens across multiple vesting options, you could temporarily send the esGMX (IOU) tokens to a different account, claim, then transfer the tokens back.<br/>
             <br/>
             Select your vesting option below then click "Claim".<br/>
-            After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days.
+            After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days. <br/>
+            Your esGMX (IOU) balance would become zero after claiming, this is expected behaviour.<br/>
+            Optionally, you can save the transaction hash of your claim transaction for your records.
           </div>
           <br/>
           <div className="ClaimEsGmx-vesting-options">
@@ -182,14 +354,15 @@ export default function ClaimEsGmx() {
             </Checkbox>
           </div>
           <br/>
-          <div className="muted">
-            You can currently vest a maximum of {formatAmount(currentMaxVestableEsGmx, 18, 2, true)} esGMX tokens at a ratio of {formatAmount(currentRatio, 4, 2, true)} staked GMX to 1 esGMX.<br/>
-            After claiming you will be able to vest a maximum of {formatAmount(nextMaxVestableEsGmx, 18, 2, true)} esGMX at a ratio of {formatAmount(nextRatio, 4, 2, true)} staked GMX to 1 esGMX.
-          </div>
-          <br/>
+          {!error && <div className="muted">
+            You can currently vest a maximum of {formatAmount(maxVestableAmount, 18, 2, true)} esGMX tokens at a ratio of {formatAmount(currentRatio, 4, 2, true)} {stakingToken} to 1 esGMX. {shouldShowStakingAmounts && `${formatAmount(initialStakingAmount, 18, 2, true)}.`}<br/>
+            After claiming you will be able to vest a maximum of {formatAmount(nextMaxVestableEsGmx, 18, 2, true)} esGMX at a ratio of {formatAmount(nextRatio, 4, 2, true)} {stakingToken} to 1 esGMX. {shouldShowStakingAmounts && `${formatAmount(nextStakingAmount, 18, 2, true)}.`}
+            <br/>
+            <br/>
+          </div>}
           <div>
-            <button className="App-cta Exchange-swap-button">
-              Claim
+            <button className="App-cta Exchange-swap-button" disabled={!isPrimaryEnabled()} onClick={() => claim()}>
+              {getPrimaryText()}
             </button>
           </div>
         </div>}

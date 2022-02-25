@@ -676,7 +676,7 @@ function FullApp() {
               <NftWallet />
             </Route>
             <Route exact path="/claim_es_gmx">
-              <ClaimEsGmx />
+              <ClaimEsGmx setPendingTxns={setPendingTxns} />
             </Route>
             <Route exact path="/actions/:account">
               <Actions />
