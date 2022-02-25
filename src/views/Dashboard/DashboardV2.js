@@ -32,9 +32,6 @@ import {
   AVALANCHE,
   getTotalVolumeSum,
   GLPPOOLCOLORS,
-  ICONLINKS,
-  addTokenToMetamask,
-  platformTokens
 } from '../../Helpers'
 import { useGmxPrice, useStakedGmxSupply } from '../../Api'
 
@@ -56,7 +53,7 @@ import arbitrum16Icon from '../../img/ic_arbitrum_16.svg'
 import arbitrum24Icon from '../../img/ic_arbitrum_24.svg'
 import avalanche24Icon from '../../img/ic_avalanche_24.svg'
 
-import metamaskHover16Icon from '../../img/ic_metamask_hover_16.svg'
+import AssetDropdown from './AssetDropdown'
 
 const { AddressZero } = ethers.constants
 
@@ -595,54 +592,9 @@ export default function DashboardV2() {
                     <div className="App-card-title-mark-title">GMX</div>
                     <div className="App-card-title-mark-subtitle">GMX</div>
                   </div>
-                </div>
-                <div className="Available-network-group">
-                  {
-                    Object.keys(ICONLINKS[chainId]["GMX"]).map((item, index) => {
-                      var iconImage = null;
-
-                      try {
-                        iconImage = require('../../img/ic_' + item + '_16.svg')
-                      } catch (error) {
-                        // console.log(error)
-                      }
-
-                      return (
-                        <Tooltip
-                          position="right-bottom"
-                          className="nowrap no-underline"
-                          key={index}
-                          handle={
-                            <a href={ICONLINKS[chainId]["GMX"][item]} className="Available-network" target="_blank" rel="noopener noreferrer">
-                              <img src={iconImage.default} alt={ICONLINKS[chainId]["GMX"][item]} />
-                            </a>
-                          }
-                          renderContent={() => <>
-                            Open in {item === 'coingecko' ? 'Coingecko' : 'Explorer'}
-                          </>}
-                        />
-                      )
-                    })
-                  }
-                  {
-                    active && 
-                    <Tooltip
-                      position="right-bottom"
-                      className="nowrap no-underline"
-                      handle={
-                        <span style={{ cursor: 'pointer' }} className="Available-network" onClick={(e) => {
-                          e.preventDefault();
-                          let token = platformTokens[chainId]["GMX"];
-                          addTokenToMetamask(token)
-                        }}>
-                          <img src={metamaskHover16Icon} alt="metamask" />
-                        </span>
-                      }
-                      renderContent={() => <>
-                        Add to Metamask
-                      </>}
-                    />
-                  }
+                  <div>
+                    <AssetDropdown assetName="GMX" chainId={chainId} active={active} />
+                  </div>
                 </div>
               </div>
               <div className="App-card-divider"></div>
@@ -745,55 +697,9 @@ export default function DashboardV2() {
                     <div className="App-card-title-mark-title">GLP</div>
                     <div className="App-card-title-mark-subtitle">GLP</div>
                   </div>
-                </div>
-                <div className="Available-network-group">
-                  {
-                    Object.keys(ICONLINKS[chainId]["GLP"]).map((item, index) => {
-                      var iconImage = null;
-
-                      try {
-                        iconImage = require('../../img/ic_' + item + '_16.svg')
-                      } catch (error) {
-                        // console.log(error)
-                      }
-
-                      return (
-                        <Tooltip
-                          position="right-bottom"
-                          className="nowrap no-underline"
-                          key={index}
-                          handle={
-                            <a href={ICONLINKS[chainId]["GLP"][item]} className="Available-network" target="_blank" rel="noopener noreferrer">
-                              <img src={iconImage.default} alt={ICONLINKS[chainId]["GLP"][item]} />
-                            </a>
-                          }
-                          renderContent={() => <>
-                            Open in {item === 'coingecko' ? 'Coingecko' : 'Explorer'}
-                          </>}
-                        />
-                      )
-                    })
-                  }
-
-                  {
-                    active && 
-                    <Tooltip
-                      position="right-bottom"
-                      className="nowrap no-underline"
-                      handle={
-                        <span style={{ cursor: 'pointer' }} className="Available-network" onClick={(e) => {
-                          e.preventDefault();
-                          let token = platformTokens[chainId]["GLP"];
-                          addTokenToMetamask(token)
-                        }}>
-                          <img src={metamaskHover16Icon} alt="metamask" />
-                        </span>
-                      }
-                      renderContent={() => <>
-                        Add to Metamask
-                      </>}
-                    />
-                  }
+                  <div>
+                    <AssetDropdown assetName="GLP" chainId={chainId} active={active} />
+                  </div>
                 </div>
               </div>
               <div className="App-card-divider"></div>
@@ -935,54 +841,9 @@ export default function DashboardV2() {
                               <div className="App-card-info-title">{token.name}</div>
                               <div className="App-card-info-subtitle">{token.symbol}</div>
                             </div>
-                          </div>
-                          <div className="Available-network-group">
-                            {
-                              ICONLINKS[chainId][token.symbol] &&
-                              Object.keys(ICONLINKS[chainId][token.symbol]).map((item, index) => {
-                                var iconImage = null;
-
-                                try {
-                                  iconImage = require('../../img/ic_' + item + '_16.svg')
-                                } catch (error) {
-                                  // console.log(error)
-                                }
-
-                                return (
-                                  <Tooltip
-                                    position="right-bottom"
-                                    className="nowrap no-underline"
-                                    key={index}
-                                    handle={
-                                      <a href={ICONLINKS[chainId][token.symbol][item]} className="Available-network" target="_blank" rel="noopener noreferrer">
-                                        <img src={iconImage.default} alt={ICONLINKS[chainId][token.symbol][item]} />
-                                      </a>
-                                    }
-                                    renderContent={() => <>
-                                      Open in {item === 'coingecko' ? 'Coingecko' : 'Explorer'}
-                                    </>}
-                                  />
-                                )
-                              })
-                            }
-                            {
-                              active && 
-                              <Tooltip
-                                position="right-bottom"
-                                className="nowrap no-underline"
-                                handle={
-                                  <a href="/#" className="Available-network" onClick={(event) => {
-                                    event.preventDefault();
-                                    addTokenToMetamask(token);
-                                  }}>
-                                    <img src={metamaskHover16Icon} alt="metamask" />
-                                  </a>
-                                }
-                                renderContent={() => <>
-                                  Add to Metamask
-                                </>}
-                              />
-                            }
+                            <div>
+                              <AssetDropdown assetName={token.symbol} assetInfo={token} chainId={chainId} active={active} />
+                            </div>
                           </div>
                         </div>
                       </td>
@@ -1028,7 +889,14 @@ export default function DashboardV2() {
 
               return (
                 <div className="App-card" key={token.symbol}>
-                  <div className="App-card-title">{token.symbol}</div>
+                  <div className="App-card-title">
+                    <div style={{display: 'flex'}}>
+                      {token.symbol}
+                      <div>
+                        <AssetDropdown assetName={token.symbol} assetInfo={token} chainId={chainId} active={active} />
+                      </div>
+                    </div>
+                  </div>
                   <div className="App-card-divider"></div>
                   <div className="App-card-content">
                     <div className="App-card-row">
