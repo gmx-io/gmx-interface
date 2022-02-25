@@ -1080,11 +1080,10 @@ export default function GlpSwap(props) {
                   )
                 }
                 function renderFees() {
-                  const inputCurrency = swapToken.address
                   const swapUrl =
                     chainId === ARBITRUM
-                      ? `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}`
-                      : `https://traderjoexyz.com/trade?inputCurrency=${inputCurrency}`
+                      ? `https://app.uniswap.org/#/swap?inputCurrency=${token.address}`
+                      : `https://traderjoexyz.com/trade?inputCurrency=${token.address}`
                   switch (true) {
                     case (isBuying && isCapReached) || (!isBuying && managedUsd?.lt(1)):
                       return (
