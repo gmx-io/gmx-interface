@@ -67,6 +67,7 @@ import avalanche16Icon from '../../img/ic_avalanche_16.svg'
 import arbitrum16Icon from '../../img/ic_arbitrum_16.svg'
 
 import "./GlpSwap.css"
+import AssetDropdown from '../../views/Dashboard/AssetDropdown'
 
 const { AddressZero } = ethers.constants
 
@@ -841,6 +842,9 @@ export default function GlpSwap(props) {
                         <div className="App-card-title-info-text">
                           <div className="App-card-info-title">{token.name}</div>
                           <div className="App-card-info-subtitle">{token.symbol}</div>
+                        </div>
+                        <div>
+                          <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
                         </div>
                       </div>
                     </td>

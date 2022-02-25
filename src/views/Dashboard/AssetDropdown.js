@@ -9,10 +9,14 @@ import {
   addTokenToMetamask,
   ICONLINKS,
   platformTokens,
+  useChainId,
 } from "../../Helpers";
+import { useWeb3React } from "@web3-react/core";
 
-function AssetDropdown({ assetName, assetInfo, chainId, active }) {
-  let { coingecko, arbitrum, avalanche } = ICONLINKS[chainId][assetName];
+function AssetDropdown({ assetSymbol, assetInfo }) {
+  const { active } = useWeb3React()
+  const { chainId } = useChainId()
+  let { coingecko, arbitrum, avalanche } = ICONLINKS[chainId][assetSymbol];
 
   return (
     <Menu>
@@ -23,12 +27,7 @@ function AssetDropdown({ assetName, assetInfo, chainId, active }) {
         <Menu.Item>
           <>
             {coingecko && (
-              <a
-                href={coingecko}
-                className="asset-item"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={coingecko} className="asset-item" target="_blank" rel="noopener noreferrer">
                 <img src={coingeckoIcon} alt="Open in Coingecko" />
                 <p>Open in Coingecko</p>
               </a>
@@ -38,18 +37,13 @@ function AssetDropdown({ assetName, assetInfo, chainId, active }) {
         <Menu.Item>
           <>
             {arbitrum && (
-              <a
-                href={arbitrum}
-                className="asset-item"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={arbitrum} className="asset-item" target="_blank" rel="noopener noreferrer">
                 <img src={arbitrumIcon} alt="Open in explorer" />
                 <p>Open in Explorer</p>
               </a>
             )}
             {avalanche && (
-              <a href={avalanche} className="asset-item">
+              <a target="_blank" rel="noopener noreferrer" href={avalanche} className="asset-item">
                 <img src={avalancheIcon} alt="Open in explorer" />
                 <p>Open in Explorer</p>
               </a>
@@ -63,7 +57,7 @@ function AssetDropdown({ assetName, assetInfo, chainId, active }) {
                 onClick={() => {
                   let token = assetInfo
                     ? {...assetInfo, image: assetInfo.imageUrl}
-                    : platformTokens[chainId][assetName];
+                    : platformTokens[chainId][assetSymbol];
                   addTokenToMetamask(token);
                 }}
                 className="asset-item"
