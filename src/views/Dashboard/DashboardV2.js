@@ -635,7 +635,7 @@ export default function DashboardV2() {
               </div>
             </div>
             <div className="App-card stats-block stats-block--gmx">
-              <div className="stats-piechart">
+              <div className="stats-piechart" onMouseLeave={onGMXDistributionChartLeave}>
                 {
                   gmxDistributionData.length > 0 &&
                   <PieChart width={270} height={270}>
@@ -643,21 +643,28 @@ export default function DashboardV2() {
                       data={gmxDistributionData}
                       cx={130}
                       cy={130}
-                      innerRadius={100}
+                      innerRadius={80}
                       outerRadius={110}
                       fill="#8884d8"
                       dataKey="value"
                       startAngle={90}
                       endAngle={-270}
-                      paddingAngle={1}
+                      paddingAngle={2}
                       onMouseEnter={onGMXDistributionChartEnter}
+                      onMouseOut={onGMXDistributionChartLeave}
                       onMouseLeave={onGMXDistributionChartLeave}
                     >
                       {gmxDistributionData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} style={{
-                          filter: gmxActiveIndex === index ? `drop-shadow(0px 0px 10px ${entry.color})` : 'none',
-                          cursor: 'pointer'
-                        }} stroke={entry.color} strokeWidth={ gmxActiveIndex === index ? 4 : 0} />
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={entry.color}
+                          style={{
+                            filter: gmxActiveIndex === index ? `drop-shadow(0px 0px 10px ${entry.color})` : 'none',
+                            cursor: 'pointer'
+                          }}
+                          stroke={entry.color}
+                          strokeWidth={ gmxActiveIndex === index ? 4 : 1}
+                        />
                       ))}
                     </Pie>
                     <text x={'50%'} y={'50%'} fill="white" textAnchor="middle" dominantBaseline="middle">
@@ -729,7 +736,7 @@ export default function DashboardV2() {
               </div>
             </div>
             <div className="App-card stats-block stats-block--glp">
-              <div className="stats-piechart">
+              <div className="stats-piechart" onMouseOut={onGLPPoolChartLeave}>
                 {
                   glpPool.length > 0 &&
                   <PieChart width={270} height={270}>
@@ -737,21 +744,28 @@ export default function DashboardV2() {
                       data={glpPool}
                       cx={130}
                       cy={130}
-                      innerRadius={100}
+                      innerRadius={80}
                       outerRadius={110}
                       fill="#8884d8"
                       dataKey="value"
                       startAngle={90}
                       endAngle={-270}
                       onMouseEnter={onGLPPoolChartEnter}
+                      onMouseOut={onGLPPoolChartLeave}
                       onMouseLeave={onGLPPoolChartLeave}
-                      paddingAngle={1}
+                      paddingAngle={2}
                     >
                       {glpPool.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={GLPPOOLCOLORS[entry.name]} style={{
-                          filter: glpActiveIndex === index ? `drop-shadow(0px 0px 10px ${GLPPOOLCOLORS[entry.name]})` : 'none',
-                          cursor: 'pointer'
-                        }} stroke={GLPPOOLCOLORS[entry.name]} strokeWidth={ glpActiveIndex === index ? 4 : 0} />
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={GLPPOOLCOLORS[entry.name]}
+                          style={{
+                            filter: glpActiveIndex === index ? `drop-shadow(0px 0px 10px ${GLPPOOLCOLORS[entry.name]})` : 'none',
+                            cursor: 'pointer'
+                          }}
+                          stroke={GLPPOOLCOLORS[entry.name]}
+                          strokeWidth={ glpActiveIndex === index ? 4 : 1}
+                        />
                       ))}
                     </Pie>
                     <text x={'50%'} y={'50%'} fill="white" textAnchor="middle" dominantBaseline="middle">
