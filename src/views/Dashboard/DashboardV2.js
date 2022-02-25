@@ -834,7 +834,7 @@ export default function DashboardV2() {
               <div className="stats-piechart">
                 {
                   glpPool.length > 0 &&
-                  <PieChart width={270} height={270}>
+                  <PieChart width={270} height={270} onMouseLeave={onGLPPoolChartLeave}>
                     <Pie
                       data={glpPool}
                       cx={130}
@@ -848,6 +848,7 @@ export default function DashboardV2() {
                       paddingAngle={1}
                       onMouseEnter={onGLPPoolChartEnter}
                       onMouseLeave={onGLPPoolChartLeave}
+                      onMouseOut={onGLPPoolChartLeave}
                     >
                       {glpPool.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={GLPPOOLCOLORS[entry.name]} style={{
