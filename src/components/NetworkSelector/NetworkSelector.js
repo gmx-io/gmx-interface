@@ -217,7 +217,7 @@ export default function NetworkSelector(props) {
           classNamePrefix="react-select"
           onChange={onSelect}
           isSearchable={false}
-          className={cx("network-select")}
+          className={"network-select"}
           styles={customStyles}
           getOptionLabel={e => {
             var optionIcon = require("../../img/" + e.icon);
