@@ -67,3 +67,41 @@
 .ClaimEsGmx button {
   max-width: 23rem;
 }
+
+.ClaimEsGmx-input-label {
+  margin-bottom: 0.5rem;
+}
+
+.ClaimEsGmx input {
+  width: 23rem;
+}
+
+.ClaimEsGmx-input-container {
+  position: relative;
+}
+
+.ClaimEsGmx-max-button {
+  position: absolute;
+  padding: 0.3rem 0.5rem;
+  background: linear-gradient(
+    90deg,
+    rgba(45, 66, 252, 1) 0%,
+    rgba(46, 61, 205, 1) 100%
+  );
+  left: 19.2rem;
+  top: 0.6rem;
+  font-size: 0.9rem;
+  border-radius: 3px;
+  z-index: 1;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.ClaimEsGmx-max-button:hover {
+  color: rgba(255, 255, 255, 1);
+  background: linear-gradient(
+    90deg,
+    rgba(58, 78, 252, 1) 0%,
+    rgba(51, 68, 222, 1) 100%
+  );
+}

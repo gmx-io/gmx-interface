@@ -9,6 +9,8 @@ import {
   useChainId,
   fetcher,
   formatAmount,
+  formatAmountFree,
+  parseValue,
   bigNumberify
 } from '../../Helpers'
 
@@ -76,18 +78,17 @@ export function getVestingDataV2(vestingInfo) {
 
 function getVestingValues({
   minRatio,
-  esGmxIouBalance,
+  amount,
   vestingDataItem
 }) {
 
-  if (!vestingDataItem || !esGmxIouBalance || esGmxIouBalance.eq(0)) {
+  if (!vestingDataItem || !amount || amount.eq(0)) {
     return
   }
 
   let currentRatio = bigNumberify(0)
 
   const ratioMultiplier = 10000
-  const amount = esGmxIouBalance
   const maxVestableAmount = vestingDataItem.maxVestableAmount
   const nextMaxVestableEsGmx = maxVestableAmount.add(amount)
 
@@ -136,6 +137,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
   const { chainId } = useChainId()
   const [selectedOption, setSelectedOption] = useState("")
   const [isClaiming, setIsClaiming] = useState(false)
+  const [value, setValue] = useState("")
 
   const isArbitrum = chainId === ARBITRUM
 
@@ -161,6 +163,8 @@ export default function ClaimEsGmx({ setPendingTxns }) {
 
   const arbVestingData = getVestingDataV2(arbVestingInfo)
   const avaxVestingData = getVestingDataV2(avaxVestingInfo)
+
+  let amount = parseValue(value, 18)
 
   useEffect(() => {
     if (active) {
@@ -191,7 +195,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
   if (selectedOption === VEST_WITH_GMX_ARB && arbVestingData) {
     const result = getVestingValues({
       minRatio: bigNumberify(4),
-      esGmxIouBalance,
+      amount,
       vestingDataItem: arbVestingData.gmxVester
     })
 
@@ -203,7 +207,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
   if (selectedOption === VEST_WITH_GLP_ARB && arbVestingData) {
     const result = getVestingValues({
       minRatio: bigNumberify(320),
-      esGmxIouBalance,
+      amount,
       vestingDataItem: arbVestingData.glpVester
     })
 
@@ -217,7 +221,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
   if (selectedOption === VEST_WITH_GMX_AVAX && avaxVestingData) {
     const result = getVestingValues({
       minRatio: bigNumberify(4),
-      esGmxIouBalance,
+      amount,
       vestingDataItem: avaxVestingData.gmxVester
     })
 
@@ -229,7 +233,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
   if (selectedOption === VEST_WITH_GLP_AVAX && avaxVestingData) {
     const result = getVestingValues({
       minRatio: bigNumberify(320),
-      esGmxIouBalance,
+      amount,
       vestingDataItem: avaxVestingData.glpVester
     })
 
@@ -248,6 +252,8 @@ export default function ClaimEsGmx({ setPendingTxns }) {
     if (esGmxIouBalance && esGmxIouBalance.eq(0)) {
       return "No esGMX to claim"
     }
+
+    if (!amount || amount.eq(0)) { return "Enter an amount" }
 
     if (selectedOption === "") {
       return "Select an option"
@@ -298,7 +304,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
     const contract = new ethers.Contract(esGmxIouAddress, Token.abi, library.getSigner())
     callContract(chainId, contract, "transfer", [
       receiver,
-      esGmxIouBalance
+      amount
     ], {
       sentMsg: "Claim submitted!",
       failMsg: "Claim failed.",
@@ -327,12 +333,12 @@ export default function ClaimEsGmx({ setPendingTxns }) {
             <br/>
             The address of the esGMX (IOU) token is {esGmxIouAddress}.<br/>
             The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like.<br/>
-            If you'd like to split the tokens across multiple vesting options, you could temporarily send the esGMX (IOU) tokens to a different account, claim, then transfer the tokens back.<br/>
             <br/>
             Select your vesting option below then click "Claim".<br/>
             After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days. <br/>
-            Your esGMX (IOU) balance would become zero after claiming, this is expected behaviour.<br/>
-            Optionally, you can save the transaction hash of your claim transaction for your records.
+            The esGMX tokens can be staked or vested at any time.<br/>
+            Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour.<br/>
+            You can check your claim history <a href={`https://arbiscan.io/token/${esGmxIouAddress}?a=${account}`} target="_blank" rel="noopener noreferrer">here</a>.
           </div>
           <br/>
           <div className="ClaimEsGmx-vesting-options">
@@ -360,6 +366,14 @@ export default function ClaimEsGmx({ setPendingTxns }) {
             <br/>
             <br/>
           </div>}
+          <div>
+            <div className="ClaimEsGmx-input-label muted">Amount to claim</div>
+            <div  className="ClaimEsGmx-input-container">
+              <input type="number" placeholder="0.0" value={value} onChange={(e) => setValue(e.target.value)} />
+              {(value !== formatAmountFree(esGmxIouBalance, 18, 18)) && <div className="ClaimEsGmx-max-button" onClick={() => setValue(formatAmountFree(esGmxIouBalance, 18, 18))}>MAX</div>}
+            </div>
+          </div>
+          <br/>
           <div>
             <button className="App-cta Exchange-swap-button" disabled={!isPrimaryEnabled()} onClick={() => claim()}>
               {getPrimaryText()}
