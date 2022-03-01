@@ -2360,7 +2360,7 @@ export const getInjectedHandler = activate => {
         );
         return;
       }
-      helperToast.error(e.toString());
+      helperToast.error(e?.message || 'Something went wrong!');
     });
   };
   return fn;
