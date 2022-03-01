@@ -6,6 +6,7 @@ import { Pool } from '@uniswap/v3-sdk'
 import useSWR from 'swr'
 
 import OrderBook from '../abis/OrderBook.json'
+import OrderExecutor from '../abis/OrderExecutor.json'
 import Vault from '../abis/Vault.json'
 import Router from '../abis/Router.json'
 import UniPool from '../abis/UniPool.json'
@@ -394,12 +395,12 @@ function useGmxPriceFromArbitrum(library, active) {
 }
 
 
-export async function approvePlugin(chainId, pluginAddress, { library, pendingTxns, setPendingTxns }) {
+export async function approvePlugin(chainId, pluginAddress, { library, pendingTxns, setPendingTxns, sentMsg, failMsg }) {
   const routerAddress = getContract(chainId, "Router")
   const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner())
   return callContract(chainId, contract, 'approvePlugin', [pluginAddress], {
-    sentMsg: 'Enable orders sent',
-    failMsg: 'Enable orders failed',
+    sentMsg,
+    failMsg,
     pendingTxns,
     setPendingTxns
   })
@@ -586,8 +587,8 @@ export async function updateSwapOrder(chainId, library, index, minOut, triggerRa
 
 export async function _executeOrder(chainId, library, method, account, index, feeReceiver, opts) {
   const params = [account, index, feeReceiver];
-  const orderBookAddress = getContract(chainId, "OrderBook")
-  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner())
+  const orderExecutorAddress = getContract(chainId, "OrderExecutor")
+  const contract = new ethers.Contract(orderExecutorAddress, OrderExecutor.abi, library.getSigner())
   return callContract(chainId, contract, method, params, opts);
 }
 
@@ -693,7 +694,7 @@ export async function callContract(chainId, contract, method, params, opts) {
         failMsg = "Transaction was cancelled."
         break
       case SLIPPAGE:
-        failMsg = "The mark price has changed, consider increasing your Slippage Tolerance by clicking on the \"...\" icon next to your address."
+        failMsg = "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
         break
       default:
         failMsg = (<div>

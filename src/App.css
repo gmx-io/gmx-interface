@@ -15,7 +15,7 @@
 
 .App-content header {
   position: relative;
-  z-index: 3;
+  z-index: 800;
 }
 
 .App-header.large {
@@ -59,7 +59,7 @@
   opacity: 1;
   backdrop-filter: blur(27px);
   position: fixed;
-  z-index: 11;
+  z-index: 801;
   left: 0;
   right: 0;
   top: 0;
@@ -931,8 +931,7 @@ button.App-button-option:disabled {
 }
 
 .App-content {
-  position: relative;
-  z-index: 2;
+  position: static !important;
 }
 
 .App-footer {
@@ -1026,7 +1025,7 @@ button.App-button {
 }
 
 .Toastify__close-button {
-  align-self: center;
+  align-self: flex-start;
   border-radius: 4px;
   width: 20px;
   height: 20px;
@@ -1040,6 +1039,16 @@ button.App-button {
 }
 .Toastify__toast-body {
   font: normal normal normal 14px/16px Relative;
+}
+
+.dropdown-backdrop {
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  backdrop-filter: blur(20px);
 }
 
 @keyframes zoomIn {
