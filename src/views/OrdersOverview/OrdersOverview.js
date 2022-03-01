@@ -72,9 +72,9 @@ export default function OrdersOverview() {
 
     const params = [chainId, library, order.account, order.index, account]
     let method
-    if (order.type === 'swap') {
+    if (order.type === 'Swap') {
       method = 'executeSwapOrder'
-    } else if (order.type === 'increase') {
+    } else if (order.type === 'Increase') {
       method = 'executeIncreaseOrder'
     } else {
       method = 'executeDecreaseOrder'

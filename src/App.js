@@ -50,6 +50,7 @@ import BuyGMX from "./views/BuyGMX/BuyGMX";
 import SellGlp from "./views/SellGlp/SellGlp";
 import Buy from "./views/Buy/Buy";
 import NftWallet from "./views/NftWallet/NftWallet";
+import ClaimEsGmx from "./views/ClaimEsGmx/ClaimEsGmx";
 import BeginAccountTransfer from "./views/BeginAccountTransfer/BeginAccountTransfer";
 import CompleteAccountTransfer from "./views/CompleteAccountTransfer/CompleteAccountTransfer";
 import Debug from "./views/Debug/Debug";
@@ -64,6 +65,7 @@ import Checkbox from "./components/Checkbox/Checkbox";
 import { RiMenuLine } from "react-icons/ri";
 import { FaTimes } from "react-icons/fa";
 import { FiX } from "react-icons/fi";
+import { Toaster } from "react-hot-toast";
 // import { BiLogOut } from "react-icons/bi";
 
 import "./Font.css";
@@ -82,6 +84,7 @@ import coinbaseImg from './img/coinbaseWallet.png'
 import walletConnectImg from "./img/walletconnect-circle-blue.svg";
 import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
 import { ConnectWalletButton } from "./components/Common/Button";
+import useEventToast from "./components/EventToast/useEventToast";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -151,6 +154,13 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
           Home
         </NavLink>
       </div>
+      {small && (
+        <div className="App-header-link-container">
+          <NavLink activeClassName="active" to="/trade">
+            Trade
+          </NavLink>
+        </div>
+      )}
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/dashboard">
           Dashboard
@@ -301,8 +311,8 @@ function AppHeaderUser({
 
 function FullApp() {
   const { connector, library, deactivate, activate } = useWeb3React();
-
   const { chainId } = useChainId();
+  useEventToast();
   const [activatingConnector, setActivatingConnector] = useState();
   useEffect(() => {
     if (activatingConnector && activatingConnector === connector) {
@@ -715,6 +725,9 @@ function FullApp() {
             <Route exact path="/nft_wallet">
               <NftWallet />
             </Route>
+            <Route exact path="/claim_es_gmx">
+              <ClaimEsGmx setPendingTxns={setPendingTxns} />
+            </Route>
             <Route exact path="/actions/:account">
               <Actions />
             </Route>
@@ -750,6 +763,20 @@ function FullApp() {
         draggable={false}
         pauseOnHover
       />
+      <Toaster
+        position="top-right"
+        reverseOrder={true}
+        gutter={20}
+        containerClassName="event-toast-container"
+        containerStyle={{
+          zIndex: 2,
+          top: "93px",
+          right: "30px"
+        }}
+        toastOptions={{
+          duration: Infinity
+        }}
+      />
       <Modal
         className="Connect-wallet-modal"
         isVisible={walletModalVisible}
@@ -776,7 +803,7 @@ function FullApp() {
         label="Settings"
       >
         <div className="App-settings-row">
-          <div>Slippage Tolerance</div>
+          <div>Allowed Slippage</div>
           <div className="App-slippage-tolerance-input-container">
             <input
               type="number"
