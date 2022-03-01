@@ -11,6 +11,62 @@ export default function Ecosystem() {
   return (
     <div className="DashboardV2 Page page-layout">
       <div>
+      <div className="Page-title-section">
+          <div className="Page-title">Official Pages</div>
+          <div className="Page-description">
+            Official GMX ecosystem pages.
+          </div>
+        </div>
+        <div className="DashboardV2-projects">
+          <div className="App-card">
+            <div className="App-card-title">
+              GMX Governance
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://gov.gmx.io/" target="_blank" rel="noopener noreferrer">
+                    https://gov.gmx.io/
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  GMX Governance page
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">
+              GMX Stats
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+                <img src={avalancheIcon} alt="avalancheIcon" />
+              </div>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://stats.gmx.io/" target="_blank" rel="noopener noreferrer">
+                    https://stats.gmx.io/
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  GMX Stats page
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="Page-title-section">
           <div className="Page-title">Community Projects</div>
           <div className="Page-description">
@@ -321,63 +377,7 @@ export default function Ecosystem() {
           </div>
         </div>
         <div className="Page-title-section">
-          <div className="Page-title">Official Pages</div>
-          <div className="Page-description">
-            Official GMX ecosystem pages.
-          </div>
-        </div>
-        <div className="DashboardV2-projects">
-          <div className="App-card">
-            <div className="App-card-title">
-              GMX Governance
-            </div>
-            <div className="App-card-divider"></div>
-            <div className="App-card-content">
-              <div className="App-card-row">
-                <div className="label">Link</div>
-                <div>
-                  <a href="https://gov.gmx.io/" target="_blank" rel="noopener noreferrer">
-                    https://gov.gmx.io/
-                  </a>
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">About</div>
-                <div>
-                  GMX Governance page
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="App-card">
-            <div className="App-card-title">
-              GMX Stats
-              <div className="App-card-title-icon">
-                <img src={arbitrumIcon} alt="arbitrumIcon" />
-                <img src={avalancheIcon} alt="avalancheIcon" />
-              </div>
-            </div>
-            <div className="App-card-divider"></div>
-            <div className="App-card-content">
-              <div className="App-card-row">
-                <div className="label">Link</div>
-                <div>
-                  <a href="https://stats.gmx.io/" target="_blank" rel="noopener noreferrer">
-                    https://stats.gmx.io/
-                  </a>
-                </div>
-              </div>
-              <div className="App-card-row">
-                <div className="label">About</div>
-                <div>
-                  GMX Stats page
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="Page-title-section">
-          <div className="Page-title">Partnerships and integrations</div>
+          <div className="Page-title">Partnerships and Integrations</div>
           <div className="Page-description">
             Projects supporting GMX.
           </div>
@@ -386,6 +386,10 @@ export default function Ecosystem() {
           <div className="App-card">
             <div className="App-card-title">
               DeBank
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+                <img src={avalancheIcon} alt="avalancheIcon" />
+              </div>
             </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
