@@ -33,7 +33,7 @@ import {
   useInactiveListener,
   getExplorerUrl,
   getWalletConnectHandler,
-  activateInjectedProvider, hasMetaMaskWalletExtension, hasCoinBaseWalletExtension, isMobileDevice, clearWalletLinkData,
+  activateInjectedProvider, hasMetaMaskWalletExtension, hasCoinBaseWalletExtension, isMobileDevice, clearWalletLinkData, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
 } from './Helpers';
 
 import Home from "./views/Home/Home";
@@ -337,23 +337,27 @@ function FullApp() {
   const disconnectAccount = useCallback(() => {
     // only works with WalletConnect
     clearWalletConnectData();
-    // force clear localStorage connection for MM/CB Wallet
+    // force clear localStorage connection for MM/CB Wallet (Brave legacy)
     clearWalletLinkData();
     deactivate();
   }, [deactivate]);
 
   const disconnectAccountAndCloseSettings = () => {
     disconnectAccount();
+    localStorage.removeItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY);
     setIsSettingsVisible(false);
   };
 
 
   const connectInjectedWallet = getInjectedHandler(activate);
-  const activateWalletConnect = getWalletConnectHandler(
-    activate,
-    deactivate,
-    setActivatingConnector
-  );
+  const activateWalletConnect = ()=>{
+    localStorage.setItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, true);
+    getWalletConnectHandler(
+      activate,
+      deactivate,
+      setActivatingConnector
+    );
+  }
 
 
   const userOnMobileDevice = ("navigator" in window) && isMobileDevice(window.navigator);
@@ -400,6 +404,7 @@ function FullApp() {
   }
 
   const attemptActivateWallet = providerName => {
+    localStorage.setItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, true);
     activateInjectedProvider(providerName);
     connectInjectedWallet();
   }
