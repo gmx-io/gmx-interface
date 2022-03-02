@@ -663,13 +663,13 @@ export default function DashboardV2() {
               <div className="stats-piechart" onMouseLeave={onGMXDistributionChartLeave}>
                 {
                   gmxDistributionData.length > 0 &&
-                  <PieChart width={250} height={250}>
+                  <PieChart width={230} height={230}>
                     <Pie
                       data={gmxDistributionData}
-                      cx={120}
-                      cy={120}
-                      innerRadius={95}
-                      outerRadius={110}
+                      cx={110}
+                      cy={110}
+                      innerRadius={85}
+                      outerRadius={100}
                       fill="#8884d8"
                       dataKey="value"
                       startAngle={90}
@@ -764,13 +764,13 @@ export default function DashboardV2() {
               <div className="stats-piechart" onMouseLeave={onGLPPoolChartLeave}>
                 {
                   glpPool.length > 0 &&
-                  <PieChart width={250} height={250} onMouseLeave={onGLPPoolChartLeave}>
+                  <PieChart width={230} height={230} onMouseLeave={onGLPPoolChartLeave}>
                     <Pie
                       data={glpPool}
-                      cx={120}
-                      cy={120}
-                      innerRadius={95}
-                      outerRadius={110}
+                      cx={110}
+                      cy={110}
+                      innerRadius={85}
+                      outerRadius={100}
                       fill="#8884d8"
                       dataKey="value"
                       startAngle={90}
