@@ -655,26 +655,21 @@ export async function callContract(chainId, contract, method, params, opts) {
       opts = {}
     }
 
-    if (!opts.gasLimit) {
-      opts.gasLimit = await getGasLimit(contract, method, params, opts.value)
-    }
+    const txnOpts = {}
+
+    txnOpts.value = opts.value
+
+    txnOpts.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value)
 
     const maxGasPrice = getMaxGasPrice(chainId)
     if (maxGasPrice) {
-      if (!opts.maxFeePerGas) {
-        opts.maxFeePerGas = maxGasPrice
-      }
-
-      if (!opts.gasPrice) {
-        opts.maxPriorityFeePerGas = await getGasPrice(contract.provider, chainId)
-      }
+      txnOpts.maxFeePerGas = opts.maxFeePerGas ? opts.maxFeePerGas : maxGasPrice
+      txnOpts.maxPriorityFeePerGas = opts.gasPrice ? opts.gasPrice : await getGasPrice(contract.provider, chainId)
     } else {
-      if (!opts.gasPrice) {
-        opts.gasPrice = await getGasPrice(contract.provider, chainId)
-      }
+      txnOpts.gasPrice = opts.gasPrice ? opts.gasPrice : await getGasPrice(contract.provider, chainId)
     }
 
-    const res = await contract[method](...params, { gasLimit: opts.gasLimit, value: opts.value, gasPrice: opts.gasPrice })
+    const res = await contract[method](...params, txnOpts)
     const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash
     const sentMsg = opts.sentMsg || "Transaction sent."
     helperToast.success(
