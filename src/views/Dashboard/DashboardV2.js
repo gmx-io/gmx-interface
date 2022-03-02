@@ -490,7 +490,7 @@ export default function DashboardV2() {
             Stats { chainId === AVALANCHE && <img src={avalanche24Icon} alt="avalanche24Icon" /> }{ chainId === ARBITRUM && <img src={arbitrum24Icon} alt="arbitrum24Icon" /> }
           </div>
           <div className="Page-description">
-            Total Stats start from {totalStatsStartDate}. <br/> For detailed stats: <a href="https://stats.gmx.io" target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
+            {chainName} Total Stats start from {totalStatsStartDate}. <br/> For detailed stats: <a href="https://stats.gmx.io" target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
           </div>
         </div>
       </div>
