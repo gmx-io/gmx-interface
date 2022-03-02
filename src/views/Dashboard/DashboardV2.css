@@ -53,6 +53,11 @@
   max-width: 51.1rem;
   width: 100%;
   display: flex;
+  padding: 1rem;
+}
+
+.stats-piechart {
+  margin: -5px;
 }
 
 .stats-labels {
@@ -193,5 +198,6 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    margin: 0;
   }
 }
