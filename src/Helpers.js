@@ -56,6 +56,7 @@ const GAS_PRICE_ADJUSTMENT_MAP = {
 const ARBITRUM_RPC_PROVIDERS = ["https://rpc.ankr.com/arbitrum"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
+export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
 
 export function getChainName(chainId) {
   return CHAIN_NAMES_MAP[chainId];
@@ -1487,6 +1488,14 @@ export function useENS(address) {
 export function clearWalletConnectData() {
   localStorage.removeItem(WALLET_CONNECT_LOCALSTORAGE_KEY);
 }
+
+export function clearWalletLinkData() {
+  Object.entries(localStorage)
+    .map(x => x[0])
+    .filter(x => x.startsWith(WALLET_LINK_LOCALSTORAGE_PREFIX))
+    .map(x => localStorage.removeItem(x));
+}
+
 
 export function useEagerConnect(setActivatingConnector) {
   const { activate, active } = useWeb3React();

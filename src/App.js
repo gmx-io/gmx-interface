@@ -33,7 +33,7 @@ import {
   useInactiveListener,
   getExplorerUrl,
   getWalletConnectHandler,
-  activateInjectedProvider, hasMetaMaskWalletExtension, hasCoinBaseWalletExtension, isMobileDevice,
+  activateInjectedProvider, hasMetaMaskWalletExtension, hasCoinBaseWalletExtension, isMobileDevice, clearWalletLinkData,
 } from './Helpers';
 
 import Home from "./views/Home/Home";
@@ -337,6 +337,8 @@ function FullApp() {
   const disconnectAccount = useCallback(() => {
     // only works with WalletConnect
     clearWalletConnectData();
+    // force clear localStorage connection for MM/CB Wallet
+    clearWalletLinkData();
     deactivate();
   }, [deactivate]);
 
