@@ -61,6 +61,11 @@
   display: flex;
   border-radius: 8px;
   background: #16182E;
+  padding: 1rem;
+}
+
+.stats-piechart {
+  margin: -5px;
 }
 
 .stats-labels {
@@ -206,5 +211,6 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    margin: 0;
   }
 }
