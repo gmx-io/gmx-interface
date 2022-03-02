@@ -2381,26 +2381,6 @@ export const getInjectedHandler = activate => {
         localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) ||
         DEFAULT_CHAIN_ID;
 
-//      if (e.message.includes('No Ethereum provider')) {
-//        helperToast.error(
-//          <div>
-//            MetaMask not yet installed.
-//            <br/>
-//            <a
-//              href="https://metamask.io"
-//              target="_blank"
-//              rel="noopener noreferrer"
-//            >
-//              Install MetaMask
-//            </a>{' '}
-//            to start using the app.
-//          </div>,
-//        );
-//        return;
-//      }
-//      if (e instanceof UserRejectedRequestErrorInjected) {
-//        return;
-//      }
       if (e instanceof UnsupportedChainIdError) {
         helperToast.error(
           <div>
