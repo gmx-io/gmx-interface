@@ -12,16 +12,13 @@
 .buy-input .TokenSelector-box {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   border-radius: 4px;
   /* padding: 0.5rem 0; */
-  color: #ffffff;
-  min-width: 3rem;
+  color: #FFFFFF;
+  /* min-width: 6.77rem; */
   font-size: 1.25rem;
-  line-height: 1.625rem;
-  justify-content: flex-end;
-}
-.buy-input .TokenSelector-box:hover {
-  color: #7885ff;
+  line-height: 1;
 }
 
 .buy-input .Exchange-swap-input-container {
@@ -42,7 +39,7 @@
 }
 
 .buy-input .TokenSelector-box-symbol {
-  margin-left: 0.5rem;
+  /* margin-left: 0.5rem; */
 }
 
 .buy-input .PositionEditor-token-symbol {
@@ -52,8 +49,7 @@
 }
 
 .buy-input .PositionEditor-token-symbol img {
-  margin-left: 0.5rem;
-  display: none;
+  margin-right: 0.5rem;
 }
 
 .buy-input .Exchange-swap-section-top {
@@ -61,10 +57,11 @@
 }
 
 .buy-input .selected-token {
-  /* padding-top: 0.5rem; */
-  /* padding-bottom: 0.5rem; */
+  /* padding-top: 0.5rem;
+  padding-bottom: 0.5rem; */
   display: flex;
   align-items: center;
+  line-height: 1;
 }
 
 .buy-input .Exchange-swap-balance {

@@ -12,7 +12,7 @@
   min-width: 250px;
   text-align: left;
   z-index: 1;
-  background:  linear-gradient(90deg, #0b0b0f 0%, rgba(10,13,28,1) 100%)
+  background: linear-gradient(90deg, #0b0b0f 0%, rgba(10,13,28,1) 100%);
 }
 
 .Tooltip.nowrap .Tooltip-popup {
@@ -82,6 +82,10 @@
 
 .Tooltip-handle.plain:after {
   border-bottom: none;
+}
+
+.Tooltip.no-underline .Tooltip-handle::after {
+  content: unset;
 }
 
 @media (max-width: 700px) {
