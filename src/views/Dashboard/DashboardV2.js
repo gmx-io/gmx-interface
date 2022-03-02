@@ -476,6 +476,22 @@ export default function DashboardV2() {
     setGLPActiveIndex(null);
   };
 
+  tokenList.sort(function(x, y) {
+    const xTokenInfo = infoTokens[x.address]
+    const yTokenInfo = infoTokens[y.address]
+    if (xTokenInfo.usdgAmount && yTokenInfo.usdgAmount && adjustedUsdgSupply) {
+      const xCurrentWeightBps = xTokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply)
+      const yCurrentWeightBps = yTokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply)
+      if (xCurrentWeightBps.lt(yCurrentWeightBps)) {
+        return 1;
+      }
+      if (xCurrentWeightBps.gt(yCurrentWeightBps)) {
+        return -1;
+      }
+    }
+    return 0;
+  });
+
   return (
     <div className="default-container DashboardV2 page-layout">
       <div className="section-title-block">
@@ -638,12 +654,12 @@ export default function DashboardV2() {
               <div className="stats-piechart" onMouseLeave={onGMXDistributionChartLeave}>
                 {
                   gmxDistributionData.length > 0 &&
-                  <PieChart width={270} height={270}>
+                  <PieChart width={250} height={250}>
                     <Pie
                       data={gmxDistributionData}
-                      cx={130}
-                      cy={130}
-                      innerRadius={80}
+                      cx={120}
+                      cy={120}
+                      innerRadius={95}
                       outerRadius={110}
                       fill="#8884d8"
                       dataKey="value"
@@ -659,7 +675,7 @@ export default function DashboardV2() {
                           key={`cell-${index}`}
                           fill={entry.color}
                           style={{
-                            filter: gmxActiveIndex === index ? `drop-shadow(0px 0px 10px ${entry.color})` : 'none',
+                            filter: gmxActiveIndex === index ? `drop-shadow(0px 0px 6px ${entry.color})` : 'none',
                             cursor: 'pointer'
                           }}
                           stroke={entry.color}
@@ -739,12 +755,12 @@ export default function DashboardV2() {
               <div className="stats-piechart" onMouseOut={onGLPPoolChartLeave}>
                 {
                   glpPool.length > 0 &&
-                  <PieChart width={270} height={270}>
+                  <PieChart width={250} height={250}>
                     <Pie
                       data={glpPool}
-                      cx={130}
-                      cy={130}
-                      innerRadius={80}
+                      cx={120}
+                      cy={120}
+                      innerRadius={95}
                       outerRadius={110}
                       fill="#8884d8"
                       dataKey="value"
@@ -760,7 +776,7 @@ export default function DashboardV2() {
                           key={`cell-${index}`}
                           fill={GLPPOOLCOLORS[entry.name]}
                           style={{
-                            filter: glpActiveIndex === index ? `drop-shadow(0px 0px 10px ${GLPPOOLCOLORS[entry.name]})` : 'none',
+                            filter: glpActiveIndex === index ? `drop-shadow(0px 0px 6px ${GLPPOOLCOLORS[entry.name]})` : 'none',
                             cursor: 'pointer'
                           }}
                           stroke={GLPPOOLCOLORS[entry.name]}
