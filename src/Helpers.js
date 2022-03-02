@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
-  InjectedConnector,
-  UserRejectedRequestError as UserRejectedRequestErrorInjected
+  InjectedConnector
 } from "@web3-react/injected-connector";
 import {
   WalletConnectConnector,
