@@ -57,6 +57,7 @@ const ARBITRUM_RPC_PROVIDERS = ["https://rpc.ankr.com/arbitrum"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
+export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = 'eagerconnect';
 
 export function getChainName(chainId) {
   return CHAIN_NAMES_MAP[chainId];
@@ -1422,19 +1423,21 @@ export function hasCoinBaseWalletExtension() {
 export function activateInjectedProvider(providerName) {
   const { ethereum } = window;
 
-  if (!ethereum?.providers) {
+  if (!ethereum?.providers && !ethereum?.isCoinbaseWallet && !ethereum?.isMetaMask) {
     return undefined;
   }
 
   let provider;
-  switch (providerName) {
-    case 'CoinBase':
-      provider = ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
-      break;
-    case 'MetaMask':
-    default:
-      provider = ethereum.providers.find(({ isMetaMask }) => isMetaMask);
-      break;
+  if (ethereum?.providers) {
+    switch (providerName) {
+      case 'CoinBase':
+        provider = ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
+        break;
+      case 'MetaMask':
+      default:
+        provider = ethereum.providers.find(({ isMetaMask }) => isMetaMask);
+        break;
+    }
   }
 
   if (provider) {
@@ -1504,6 +1507,14 @@ export function useEagerConnect(setActivatingConnector) {
 
   useEffect(() => {
     (async function() {
+      if (Boolean(localStorage.getItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY)) !== true) {
+        // only works with WalletConnect
+        clearWalletConnectData();
+        // force clear localStorage connection for MM/CB Wallet (Brave legacy)
+        clearWalletLinkData();
+        return;
+      }
+
       let shouldTryWalletConnect = false;
       try {
         // naive validation to not trigger Wallet Connect if data is corrupted
@@ -2370,26 +2381,26 @@ export const getInjectedHandler = activate => {
         localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) ||
         DEFAULT_CHAIN_ID;
 
-      if (e.message.includes("No Ethereum provider")) {
-        helperToast.error(
-          <div>
-            MetaMask not yet installed.
-            <br />
-            <a
-              href="https://metamask.io"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Install MetaMask
-            </a>{" "}
-            to start using the app.
-          </div>
-        );
-        return;
-      }
-      if (e instanceof UserRejectedRequestErrorInjected) {
-        return;
-      }
+//      if (e.message.includes('No Ethereum provider')) {
+//        helperToast.error(
+//          <div>
+//            MetaMask not yet installed.
+//            <br/>
+//            <a
+//              href="https://metamask.io"
+//              target="_blank"
+//              rel="noopener noreferrer"
+//            >
+//              Install MetaMask
+//            </a>{' '}
+//            to start using the app.
+//          </div>,
+//        );
+//        return;
+//      }
+//      if (e instanceof UserRejectedRequestErrorInjected) {
+//        return;
+//      }
       if (e instanceof UnsupportedChainIdError) {
         helperToast.error(
           <div>
