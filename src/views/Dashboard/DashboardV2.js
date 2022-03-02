@@ -506,7 +506,7 @@ export default function DashboardV2() {
             Stats { chainId === AVALANCHE && <img src={avalanche24Icon} alt="avalanche24Icon" /> }{ chainId === ARBITRUM && <img src={arbitrum24Icon} alt="arbitrum24Icon" /> }
           </div>
           <div className="Page-description">
-            {chainName} Total Stats start from {totalStatsStartDate}. <br/> For detailed stats: <a href="https://stats.gmx.io" target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a>.
+            {chainName} Total Stats start from {totalStatsStartDate}. <br/> For detailed stats: { chainId === ARBITRUM && <a href="https://stats.gmx.io" target="_blank" rel="noopener noreferrer">https://stats.gmx.io</a> }{ chainId === AVALANCHE && <a href="https://stats.gmx.io/avalanche" target="_blank" rel="noopener noreferrer">https://stats.gmx.io/avalanche</a> }.
           </div>
         </div>
       </div>
@@ -663,13 +663,13 @@ export default function DashboardV2() {
               <div className="stats-piechart" onMouseLeave={onGMXDistributionChartLeave}>
                 {
                   gmxDistributionData.length > 0 &&
-                  <PieChart width={230} height={230}>
+                  <PieChart width={210} height={210}>
                     <Pie
                       data={gmxDistributionData}
-                      cx={110}
-                      cy={110}
-                      innerRadius={85}
-                      outerRadius={100}
+                      cx={100}
+                      cy={100}
+                      innerRadius={75}
+                      outerRadius={90}
                       fill="#8884d8"
                       dataKey="value"
                       startAngle={90}
@@ -764,13 +764,13 @@ export default function DashboardV2() {
               <div className="stats-piechart" onMouseLeave={onGLPPoolChartLeave}>
                 {
                   glpPool.length > 0 &&
-                  <PieChart width={230} height={230} onMouseLeave={onGLPPoolChartLeave}>
+                  <PieChart width={210} height={210} onMouseLeave={onGLPPoolChartLeave}>
                     <Pie
                       data={glpPool}
-                      cx={110}
-                      cy={110}
-                      innerRadius={85}
-                      outerRadius={100}
+                      cx={100}
+                      cy={100}
+                      innerRadius={75}
+                      outerRadius={90}
                       fill="#8884d8"
                       dataKey="value"
                       startAngle={90}
