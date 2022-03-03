@@ -44,6 +44,7 @@ import BuyGMX from "./views/BuyGMX/BuyGMX";
 import SellGlp from "./views/SellGlp/SellGlp";
 import Buy from "./views/Buy/Buy";
 import NftWallet from "./views/NftWallet/NftWallet";
+import ClaimEsGmx from "./views/ClaimEsGmx/ClaimEsGmx";
 import BeginAccountTransfer from "./views/BeginAccountTransfer/BeginAccountTransfer";
 import CompleteAccountTransfer from "./views/CompleteAccountTransfer/CompleteAccountTransfer";
 import Debug from "./views/Debug/Debug";
@@ -139,6 +140,13 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
           Home
         </NavLink>
       </div>
+      {small && (
+        <div className="App-header-link-container">
+          <NavLink activeClassName="active" to="/trade">
+            Trade
+          </NavLink>
+        </div>
+      )}
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/dashboard">
           Dashboard
@@ -605,6 +613,9 @@ function FullApp() {
             </Route>
             <Route exact path="/nft_wallet">
               <NftWallet />
+            </Route>
+            <Route exact path="/claim_es_gmx">
+              <ClaimEsGmx setPendingTxns={setPendingTxns} />
             </Route>
             <Route exact path="/actions/:account">
               <Actions />
