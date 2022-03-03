@@ -1,0 +1,14 @@
+.chart-token-selector .react-select__option--is-selected .item {
+    border-radius: 4px;
+    padding: 3px 12px;
+}
+
+.chart-token-selector .react-select__option--is-selected .item:hover {
+    background: #808AFF14 0% 0% no-repeat padding-box;
+}
+
+.chart-token-selector .react-select__option--is-selected .item.selected {
+    background: #808AFF14 0% 0% no-repeat padding-box;
+    border-radius: 4px;
+    padding: 3px 12px;
+}
