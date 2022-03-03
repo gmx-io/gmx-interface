@@ -825,7 +825,9 @@ export default function DashboardV2() {
             </div>
           </div>
           <div className="token-table-wrapper App-card">
-            <div className="App-card-title">GLP Index Composition</div>
+            <div className="App-card-title">
+              GLP Index Composition {chainId === AVALANCHE && <img src={avalanche16Icon} alt="avalanche16Icon" />}{chainId === ARBITRUM && <img src={arbitrum16Icon} alt="arbitrum16Icon" />}
+            </div>
             <div className="App-card-divider"></div>
             <table className="token-table">
               <thead>
