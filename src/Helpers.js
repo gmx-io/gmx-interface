@@ -57,6 +57,7 @@ const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
 export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = 'eagerconnect';
+export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = 'currentprovider';
 
 export function getChainName(chainId) {
   return CHAIN_NAMES_MAP[chainId];
@@ -1263,7 +1264,6 @@ export function clearWalletLinkData() {
 
 export function useEagerConnect(setActivatingConnector) {
   const { activate, active } = useWeb3React();
-
   const [tried, setTried] = useState(false);
 
   useEffect(() => {
@@ -1308,6 +1308,10 @@ export function useEagerConnect(setActivatingConnector) {
 
       try {
         const connector = getInjectedConnector();
+        const currentProviderName = localStorage.getItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY) ?? false;
+        if ( currentProviderName !== false ) {
+          activateInjectedProvider(currentProviderName);
+        }
         const authorized = await connector.isAuthorized();
         if (authorized) {
           setActivatingConnector(connector);

@@ -28,7 +28,7 @@ import {
   useInactiveListener,
   getExplorerUrl,
   getWalletConnectHandler,
-  activateInjectedProvider, hasMetaMaskWalletExtension, hasCoinBaseWalletExtension, isMobileDevice, clearWalletLinkData, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
+  activateInjectedProvider, hasMetaMaskWalletExtension, hasCoinBaseWalletExtension, isMobileDevice, clearWalletLinkData, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, CURRENT_PROVIDER_LOCALSTORAGE_KEY,
 } from './Helpers';
 
 import Home from "./views/Home/Home";
@@ -326,13 +326,13 @@ function FullApp() {
   const disconnectAccountAndCloseSettings = () => {
     disconnectAccount();
     localStorage.removeItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY);
+    localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
     setIsSettingsVisible(false);
   };
 
 
   const connectInjectedWallet = getInjectedHandler(activate);
   const activateWalletConnect = ()=>{
-    localStorage.setItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, true);
     getWalletConnectHandler(
       activate,
       deactivate,
@@ -386,6 +386,7 @@ function FullApp() {
 
   const attemptActivateWallet = providerName => {
     localStorage.setItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, true);
+    localStorage.setItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY, providerName);
     activateInjectedProvider(providerName);
     connectInjectedWallet();
   }
