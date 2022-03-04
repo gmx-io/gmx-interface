@@ -411,7 +411,7 @@ export default function Ecosystem() {
                 <div className="label">Announcement</div>
                 <div>
                   <a href="https://twitter.com/GMX_IO/status/1439711532884152324" target="_blank" rel="noopener noreferrer">
-                    1439711532884152324
+                    https://twitter.com
                   </a>
                 </div>
               </div>
@@ -445,7 +445,7 @@ export default function Ecosystem() {
                 <div className="label">Announcement</div>
                 <div>
                   <a href="https://twitter.com/GMX_IO/status/1438899138549145605" target="_blank" rel="noopener noreferrer">
-                    1438899138549145605
+                    https://twitter.com
                   </a>
                 </div>
               </div>
@@ -479,7 +479,7 @@ export default function Ecosystem() {
                 <div className="label">Announcement</div>
                 <div>
                   <a href="https://twitter.com/GMX_IO/status/1484601407378378754" target="_blank" rel="noopener noreferrer">
-                    1484601407378378754
+                    https://twitter.com
                   </a>
                 </div>
               </div>
@@ -513,7 +513,7 @@ export default function Ecosystem() {
                 <div className="label">Announcement</div>
                 <div>
                   <a href="https://twitter.com/GMX_IO/status/1495780826016989191" target="_blank" rel="noopener noreferrer">
-                    1495780826016989191
+                    https://twitter.com
                   </a>
                 </div>
               </div>
@@ -547,7 +547,7 @@ export default function Ecosystem() {
                 <div className="label">Announcement</div>
                 <div>
                   <a href="https://twitter.com/GMX_IO/status/1482445801523716099" target="_blank" rel="noopener noreferrer">
-                    1482445801523716099
+                    https://twitter.com
                   </a>
                 </div>
               </div>
@@ -581,7 +581,7 @@ export default function Ecosystem() {
                 <div className="label">Announcement</div>
                 <div>
                   <a href="https://twitter.com/GMX_IO/status/1482788805635678212" target="_blank" rel="noopener noreferrer">
-                    1482788805635678212
+                    https://twitter.com
                   </a>
                 </div>
               </div>
@@ -641,7 +641,7 @@ export default function Ecosystem() {
                 <div className="label">Announcement</div>
                 <div>
                   <a href="https://twitter.com/GMX_IO/status/1438124768033660938" target="_blank" rel="noopener noreferrer">
-                    1438124768033660938
+                    https://twitter.com
                   </a>
                 </div>
               </div>
