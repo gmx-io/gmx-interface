@@ -115,7 +115,8 @@ export default function ExchangeTVChart(props) {
     chainId,
     positions,
     savedShouldShowPositionLines,
-    orders
+    orders,
+    setToTokenAddress
   } = props
   const [currentChart, setCurrentChart] = useState();
   const [currentSeries, setCurrentSeries] = useState();
@@ -372,6 +373,7 @@ export default function ExchangeTVChart(props) {
   const onSelectToken = (token) => {
     const tmp = getTokenInfo(infoTokens, token.address)
     setChartToken(tmp)
+    setToTokenAddress(swapOption, token.address)
   }
 
   return (

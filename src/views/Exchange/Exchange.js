@@ -467,10 +467,9 @@ export default function Exchange({ savedIsPnlInLeverage, setSavedIsPnlInLeverage
       positions={positions}
       savedShouldShowPositionLines={savedShouldShowPositionLines}
       orders={orders}
+      setToTokenAddress={setToTokenAddress}
     />
   }
-
-
 
   return (
     <div className="Exchange page-layout">

@@ -7,6 +7,10 @@
     background: #808AFF14 0% 0% no-repeat padding-box;
 }
 
+.chart-token-selector .react-select__option--is-selected:active {
+    background: #818cef33;
+}
+
 .chart-token-selector .react-select__option--is-selected .item.selected {
     background: #808AFF14 0% 0% no-repeat padding-box;
     border-radius: 4px;
