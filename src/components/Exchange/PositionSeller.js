@@ -32,7 +32,7 @@ import {
   getDeltaStr,
   getProfitPrice,
   formatDateTime,
-  getTimeRemaining
+  getTimeRemaining,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import { createDecreaseOrder, callContract } from "../../Api";
@@ -47,7 +47,7 @@ const { AddressZero } = ethers.constants;
 
 const orderOptionLabels = {
   [MARKET]: "Market",
-  [STOP]: "Trigger"
+  [STOP]: "Trigger",
 };
 
 function getTokenAmount(usdAmount, tokenAddress, max, infoTokens) {
@@ -68,9 +68,7 @@ function getTokenAmount(usdAmount, tokenAddress, max, infoTokens) {
     return;
   }
 
-  return usdAmount
-    .mul(expandDecimals(1, info.decimals))
-    .div(max ? info.minPrice : info.maxPrice);
+  return usdAmount.mul(expandDecimals(1, info.decimals)).div(max ? info.minPrice : info.maxPrice);
 }
 
 export default function PositionSeller(props) {
@@ -91,18 +89,11 @@ export default function PositionSeller(props) {
     isWaitingForPluginApproval,
     isPluginApproving,
     orderBookApproved,
-    setOrdersToaOpen
+    setOrdersToaOpen,
   } = props;
-  const [savedSlippageAmount] = useLocalStorageSerializeKey(
-    [chainId, SLIPPAGE_BPS_KEY],
-    DEFAULT_SLIPPAGE_AMOUNT
-  );
-  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(
-    [chainId, "Exchange-keep-leverage"],
-    true
-  );
-  const position =
-    positionsMap && positionKey ? positionsMap[positionKey] : undefined;
+  const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
+  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true);
+  const position = positionsMap && positionKey ? positionsMap[positionKey] : undefined;
   const [fromValue, setFromValue] = useState("");
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -115,16 +106,15 @@ export default function PositionSeller(props) {
   if (!flagOrdersEnabled) {
     orderOption = MARKET;
   }
-  const onOrderOptionChange = option => {
+  const onOrderOptionChange = (option) => {
     setOrderOption(option);
   };
 
-  const onTriggerPriceChange = evt => {
+  const onTriggerPriceChange = (evt) => {
     setTriggerPriceValue(evt.target.value || "");
   };
   const [triggerPriceValue, setTriggerPriceValue] = useState("");
-  const triggerPriceUsd =
-    orderOption === MARKET ? 0 : parseValue(triggerPriceValue, USD_DECIMALS);
+  const triggerPriceUsd = orderOption === MARKET ? 0 : parseValue(triggerPriceValue, USD_DECIMALS);
 
   const [nextDelta, nextHasProfit = bigNumberify(0)] = useMemo(() => {
     if (!position) {
@@ -139,10 +129,7 @@ export default function PositionSeller(props) {
       return [bigNumberify(0), false];
     }
 
-    const { delta, hasProfit, deltaPercentage } = calculatePositionDelta(
-      triggerPriceUsd,
-      position
-    );
+    const { delta, hasProfit, deltaPercentage } = calculatePositionDelta(triggerPriceUsd, position);
     return [delta, hasProfit, deltaPercentage];
   }, [position, orderOption, triggerPriceUsd]);
 
@@ -205,9 +192,7 @@ export default function PositionSeller(props) {
     fromAmount = parseValue(fromValue, USD_DECIMALS);
     sizeDelta = fromAmount;
 
-    title = `Close ${position.isLong ? "Long" : "Short"} ${
-      position.indexToken.symbol
-    }`;
+    title = `Close ${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol}`;
     collateralToken = position.collateralToken;
     liquidationPrice = getLiquidationPrice(position);
 
@@ -259,12 +244,7 @@ export default function PositionSeller(props) {
       }
     }
 
-    convertedReceiveAmount = getTokenAmount(
-      receiveAmount,
-      collateralToken.address,
-      false,
-      infoTokens
-    );
+    convertedReceiveAmount = getTokenAmount(receiveAmount, collateralToken.address, false, infoTokens);
 
     if (isClosing) {
       nextCollateral = bigNumberify(0);
@@ -285,15 +265,8 @@ export default function PositionSeller(props) {
     maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
     maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
     if (fromAmount && collateralToken.maxPrice) {
-      convertedAmount = fromAmount
-        .mul(expandDecimals(1, collateralToken.decimals))
-        .div(collateralToken.maxPrice);
-      convertedAmountFormatted = formatAmount(
-        convertedAmount,
-        collateralToken.decimals,
-        4,
-        true
-      );
+      convertedAmount = fromAmount.mul(expandDecimals(1, collateralToken.decimals)).div(collateralToken.maxPrice);
+      convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
     }
 
     if (fromAmount) {
@@ -306,7 +279,7 @@ export default function PositionSeller(props) {
           cumulativeFundingRate: position.cumulativeFundingRate,
           hasProfit: nextHasProfit,
           delta: nextDelta,
-          includeDelta: savedIsPnlInLeverage
+          includeDelta: savedIsPnlInLeverage,
         });
         nextLiquidationPrice = getLiquidationPrice({
           isLong: position.isLong,
@@ -318,7 +291,7 @@ export default function PositionSeller(props) {
           cumulativeFundingRate: position.cumulativeFundingRate,
           delta: nextDelta,
           hasProfit: nextHasProfit,
-          includeDelta: true
+          includeDelta: true,
         });
       }
     }
@@ -329,15 +302,15 @@ export default function PositionSeller(props) {
       return ["-", "-"];
     }
     if (orderOption !== STOP) {
-      const {
-        pendingDelta,
-        pendingDeltaPercentage,
-        hasProfit
-      } = calculatePositionDelta(position.markPrice, position, fromAmount);
+      const { pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta(
+        position.markPrice,
+        position,
+        fromAmount
+      );
       const { deltaStr, deltaPercentageStr } = getDeltaStr({
         delta: pendingDelta,
         deltaPercentage: pendingDeltaPercentage,
-        hasProfit
+        hasProfit,
       });
       return [deltaStr, deltaPercentageStr];
     }
@@ -345,16 +318,16 @@ export default function PositionSeller(props) {
       return ["-", "-"];
     }
 
-    const {
-      pendingDelta,
-      pendingDeltaPercentage,
-      hasProfit
-    } = calculatePositionDelta(triggerPriceUsd, position, fromAmount);
+    const { pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta(
+      triggerPriceUsd,
+      position,
+      fromAmount
+    );
 
     const { deltaStr, deltaPercentageStr } = getDeltaStr({
       delta: pendingDelta,
       deltaPercentage: pendingDeltaPercentage,
-      hasProfit
+      hasProfit,
     });
     return [deltaStr, deltaPercentageStr];
   }, [position, triggerPriceUsd, orderOption, fromAmount]);
@@ -473,9 +446,7 @@ export default function PositionSeller(props) {
     const collateralTokenAddress = position.collateralToken.isNative
       ? nativeTokenAddress
       : position.collateralToken.address;
-    const indexTokenAddress = position.indexToken.isNative
-      ? nativeTokenAddress
-      : position.indexToken.address;
+    const indexTokenAddress = position.indexToken.isNative ? nativeTokenAddress : position.indexToken.address;
 
     let params;
     let method;
@@ -500,7 +471,7 @@ export default function PositionSeller(props) {
           sentMsg: "Order submitted!",
           successMsg: "Order created!",
           failMsg: "Order creation failed",
-          setPendingTxns
+          setPendingTxns,
         }
       )
         .then(() => {
@@ -513,64 +484,44 @@ export default function PositionSeller(props) {
       return;
     }
 
-    const tokenAddress0 =
-      collateralTokenAddress === AddressZero
-        ? nativeTokenAddress
-        : collateralTokenAddress;
+    const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
     const priceBasisPoints = position.isLong
       ? BASIS_POINTS_DIVISOR - savedSlippageAmount
       : BASIS_POINTS_DIVISOR + savedSlippageAmount;
-    const refPrice = position.isLong
-      ? position.indexToken.minPrice
-      : position.indexToken.maxPrice;
+    const refPrice = position.isLong ? position.indexToken.minPrice : position.indexToken.maxPrice;
     let priceLimit = refPrice.mul(priceBasisPoints).div(BASIS_POINTS_DIVISOR);
     const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME;
-    const minProfitTimeExpired =
-      parseInt(Date.now() / 1000) > minProfitExpiration;
+    const minProfitTimeExpired = parseInt(Date.now() / 1000) > minProfitExpiration;
     if (nextHasProfit && !minProfitTimeExpired && !isProfitWarningAccepted) {
-      if (
-        (position.isLong && priceLimit.lt(profitPrice)) ||
-        (!position.isLong && priceLimit.gt(profitPrice))
-      ) {
+      if ((position.isLong && priceLimit.lt(profitPrice)) || (!position.isLong && priceLimit.gt(profitPrice))) {
         priceLimit = profitPrice;
       }
     }
 
-    params = [
-      tokenAddress0,
-      indexTokenAddress,
-      collateralDelta,
-      sizeDelta,
-      position.isLong,
-      account,
-      priceLimit
-    ];
+    params = [tokenAddress0, indexTokenAddress, collateralDelta, sizeDelta, position.isLong, account, priceLimit];
     method =
-      collateralTokenAddress === AddressZero ||
-      collateralTokenAddress === nativeTokenAddress
+      collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress
         ? "decreasePositionETH"
         : "decreasePosition";
     contractAddress = routerAddress;
 
-    const successMsg = `Decreased ${position.indexToken.symbol} ${
-      position.isLong ? "Long" : "Short"
-    } by ${formatAmount(sizeDelta, USD_DECIMALS, 2)} USD.`;
+    const successMsg = `Decreased ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"} by ${formatAmount(
+      sizeDelta,
+      USD_DECIMALS,
+      2
+    )} USD.`;
     abi = Router.abi;
 
-    const contract = new ethers.Contract(
-      contractAddress,
-      abi,
-      library.getSigner()
-    );
+    const contract = new ethers.Contract(contractAddress, abi, library.getSigner());
 
     callContract(chainId, contract, method, params, {
       value,
       sentMsg: "Close submitted!",
       successMsg,
       failMsg: "Close failed.",
-      setPendingTxns
+      setPendingTxns,
     })
-      .then(async res => {
+      .then(async (res) => {
         setFromValue("");
         setIsVisible(false);
       })
@@ -590,16 +541,12 @@ export default function PositionSeller(props) {
       4,
       true
     );
-    const prefix = existingOrder.triggerAboveThreshold
-      ? TRIGGER_PREFIX_ABOVE
-      : TRIGGER_PREFIX_BELOW;
+    const prefix = existingOrder.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
     return (
       <div className="Confirmation-box-warning">
-        You have an active order to decrease{" "}
-        {existingOrder.isLong ? "Long" : "Short"} {sizeInToken}{" "}
-        {indexToken.symbol} ($
-        {formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at{" "}
-        {prefix}{" "}
+        You have an active order to decrease {existingOrder.isLong ? "Long" : "Short"} {sizeInToken} {indexToken.symbol}{" "}
+        ($
+        {formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at {prefix}{" "}
         {formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
       </div>
     );
@@ -622,59 +569,42 @@ export default function PositionSeller(props) {
             </a>{" "}
             of {deltaStr}. <br />
             <br />
-            Profit price: {position.isLong ? ">" : "<"} $
-            {formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
-            applies for the next {getTimeRemaining(minProfitExpiration)}, until{" "}
-            {formatDateTime(minProfitExpiration)}.
+            Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
+            applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
           </div>
         );
       }
       return (
         <div className="Confirmation-box-warning">
           This order will forfeit a&nbsp;
-          <a
-            href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
             profit
           </a>{" "}
           of {deltaStr}. <br />
-          Profit price: {position.isLong ? ">" : "<"} $
-          {formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule applies
-          for the next {getTimeRemaining(minProfitExpiration)}, until{" "}
-          {formatDateTime(minProfitExpiration)}.
+          Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
+          applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
         </div>
       );
     }
   }
 
-  const DECREASE_ORDER_EXECUTION_GAS_FEE = getConstant(
-    chainId,
-    "DECREASE_ORDER_EXECUTION_GAS_FEE"
-  );
+  const DECREASE_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE");
   function renderExecutionFee() {
     if (orderOption !== STOP) {
       return null;
     }
     return (
       <ExchangeInfoRow label="Execution Fees">
-        {formatAmount(DECREASE_ORDER_EXECUTION_GAS_FEE, 18, 4)}{" "}
-        {nativeTokenSymbol}
+        {formatAmount(DECREASE_ORDER_EXECUTION_GAS_FEE, 18, 4)} {nativeTokenSymbol}
       </ExchangeInfoRow>
     );
   }
 
-  const profitPrice = getProfitPrice(
-    orderOption === MARKET ? position.markPrice : triggerPriceUsd,
-    position
-  );
+  const profitPrice = getProfitPrice(orderOption === MARKET ? position.markPrice : triggerPriceUsd, position);
 
   let triggerPricePrefix;
   if (triggerPriceUsd) {
-    triggerPricePrefix = triggerPriceUsd.gt(position.markPrice)
-      ? TRIGGER_PREFIX_ABOVE
-      : TRIGGER_PREFIX_BELOW;
+    triggerPricePrefix = triggerPriceUsd.gt(position.markPrice) ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
   }
 
   const shouldShowExistingOrderWarning = false;
@@ -696,17 +626,13 @@ export default function PositionSeller(props) {
               <div className="muted">
                 {convertedAmountFormatted && (
                   <div className="Exchange-swap-usd">
-                    Close: {convertedAmountFormatted}{" "}
-                    {position.collateralToken.symbol}
+                    Close: {convertedAmountFormatted} {position.collateralToken.symbol}
                   </div>
                 )}
                 {!convertedAmountFormatted && "Close"}
               </div>
               {maxAmount && (
-                <div
-                  className="muted align-right clickable"
-                  onClick={() => setFromValue(maxAmountFormattedFree)}
-                >
+                <div className="muted align-right clickable" onClick={() => setFromValue(maxAmountFormattedFree)}>
                   Max: {maxAmountFormatted}
                 </div>
               )}
@@ -719,7 +645,7 @@ export default function PositionSeller(props) {
                   placeholder="0.0"
                   className="Exchange-swap-input"
                   value={fromValue}
-                  onChange={e => setFromValue(e.target.value)}
+                  onChange={(e) => setFromValue(e.target.value)}
                 />
                 {fromValue !== maxAmountFormattedFree && (
                   <div
@@ -742,13 +668,10 @@ export default function PositionSeller(props) {
                 <div
                   className="muted align-right clickable"
                   onClick={() => {
-                    setTriggerPriceValue(
-                      formatAmountFree(position.markPrice, USD_DECIMALS, 2)
-                    );
+                    setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, 2));
                   }}
                 >
-                  Mark:{" "}
-                  {formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
+                  Mark: {formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
                 </div>
               </div>
               <div className="Exchange-swap-section-bottom">
@@ -771,19 +694,14 @@ export default function PositionSeller(props) {
           <div className="PositionEditor-info-box">
             {hasPendingProfit && orderOption !== STOP && (
               <div className="PositionEditor-accept-profit-warning">
-                <Checkbox
-                  isChecked={isProfitWarningAccepted}
-                  setIsChecked={setIsProfitWarningAccepted}
-                >
+                <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
                   <span className="muted">Forfeit profit</span>
                 </Checkbox>
               </div>
             )}
             <div className="PositionEditor-keep-leverage-settings">
               <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                <span className="muted">
-                  Keep leverage at {formatAmount(position.leverage, 4, 2)}x
-                </span>
+                <span className="muted">Keep leverage at {formatAmount(position.leverage, 4, 2)}x</span>
               </Checkbox>
             </div>
             {orderOption === STOP && (
@@ -791,27 +709,17 @@ export default function PositionSeller(props) {
                 <div className="Exchange-info-label">Trigger Price</div>
                 <div className="align-right">
                   {!triggerPriceUsd && "-"}
-                  {triggerPriceUsd &&
-                    `${triggerPricePrefix} ${formatAmount(
-                      triggerPriceUsd,
-                      USD_DECIMALS,
-                      2,
-                      true
-                    )}`}
+                  {triggerPriceUsd && `${triggerPricePrefix} ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}`}
                 </div>
               </div>
             )}
             <div className="Exchange-info-row top-line">
               <div className="Exchange-info-label">Mark Price</div>
-              <div className="align-right">
-                ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
-              </div>
+              <div className="align-right">${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
             </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">Entry Price</div>
-              <div className="align-right">
-                ${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}
-              </div>
+              <div className="align-right">${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}</div>
             </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">Liq. Price</div>
@@ -819,39 +727,18 @@ export default function PositionSeller(props) {
                 {isClosing && orderOption !== STOP && "-"}
                 {(!isClosing || orderOption === STOP) && (
                   <div>
-                    {(!nextLiquidationPrice ||
-                      nextLiquidationPrice.eq(liquidationPrice)) && (
+                    {(!nextLiquidationPrice || nextLiquidationPrice.eq(liquidationPrice)) && (
+                      <div>{`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}</div>
+                    )}
+                    {nextLiquidationPrice && !nextLiquidationPrice.eq(liquidationPrice) && (
                       <div>
-                        {`$${formatAmount(
-                          liquidationPrice,
-                          USD_DECIMALS,
-                          2,
-                          true
-                        )}`}
+                        <div className="inline-block muted">
+                          ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
+                          <BsArrowRight className="transition-arrow" />
+                        </div>
+                        ${formatAmount(nextLiquidationPrice, USD_DECIMALS, 2, true)}
                       </div>
                     )}
-                    {nextLiquidationPrice &&
-                      !nextLiquidationPrice.eq(liquidationPrice) && (
-                        <div>
-                          <div className="inline-block muted">
-                            $
-                            {formatAmount(
-                              liquidationPrice,
-                              USD_DECIMALS,
-                              2,
-                              true
-                            )}
-                            <BsArrowRight className="transition-arrow" />
-                          </div>
-                          $
-                          {formatAmount(
-                            nextLiquidationPrice,
-                            USD_DECIMALS,
-                            2,
-                            true
-                          )}
-                        </div>
-                      )}
                   </div>
                 )}
               </div>
@@ -865,19 +752,11 @@ export default function PositionSeller(props) {
                       ${formatAmount(position.size, USD_DECIMALS, 2, true)}
                       <BsArrowRight className="transition-arrow" />
                     </div>
-                    $
-                    {formatAmount(
-                      position.size.sub(fromAmount),
-                      USD_DECIMALS,
-                      2,
-                      true
-                    )}
+                    ${formatAmount(position.size.sub(fromAmount), USD_DECIMALS, 2, true)}
                   </div>
                 )}
                 {position && position.size && !fromAmount && (
-                  <div>
-                    ${formatAmount(position.size, USD_DECIMALS, 2, true)}
-                  </div>
+                  <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
                 )}
               </div>
             </div>
@@ -887,8 +766,7 @@ export default function PositionSeller(props) {
                 {nextCollateral && !nextCollateral.eq(position.collateral) ? (
                   <div>
                     <div className="inline-block muted">
-                      $
-                      {formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                      ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
                       <BsArrowRight className="transition-arrow" />
                     </div>
                     ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
@@ -905,9 +783,7 @@ export default function PositionSeller(props) {
                   {isClosing && "-"}
                   {!isClosing && (
                     <div>
-                      {!nextLeverage && (
-                        <div>{formatAmount(position.leverage, 4, 2)}x</div>
-                      )}
+                      {!nextLeverage && <div>{formatAmount(position.leverage, 4, 2)}x</div>}
                       {nextLeverage && (
                         <div>
                           <div className="inline-block muted">
@@ -930,27 +806,19 @@ export default function PositionSeller(props) {
             </div>
             <div className="Exchange-info-row top-line">
               <div className="Exchange-info-label">Borrow Fee</div>
-              <div className="align-right">
-                ${formatAmount(fundingFee, USD_DECIMALS, 2, true)}
-              </div>
+              <div className="align-right">${formatAmount(fundingFee, USD_DECIMALS, 2, true)}</div>
             </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">Closing Fee</div>
               <div className="align-right">
-                {positionFee &&
-                  `$${formatAmount(positionFee, USD_DECIMALS, 2, true)}`}
+                {positionFee && `$${formatAmount(positionFee, USD_DECIMALS, 2, true)}`}
                 {!positionFee && "-"}
               </div>
             </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">Receive</div>
               <div className="align-right">
-                {formatAmount(
-                  convertedReceiveAmount,
-                  position.collateralToken.decimals,
-                  4,
-                  true
-                )}{" "}
+                {formatAmount(convertedReceiveAmount, position.collateralToken.decimals, 4, true)}{" "}
                 {position.collateralToken.symbol} ($
                 {formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
               </div>
@@ -958,11 +826,7 @@ export default function PositionSeller(props) {
             {renderExecutionFee()}
           </div>
           <div className="Exchange-swap-button-container">
-            <button
-              className="App-cta Exchange-swap-button"
-              onClick={onClickPrimary}
-              disabled={!isPrimaryEnabled()}
-            >
+            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {getPrimaryText()}
             </button>
           </div>
