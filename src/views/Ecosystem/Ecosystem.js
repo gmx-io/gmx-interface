@@ -407,6 +407,244 @@ export default function Ecosystem() {
                   DeFi portfolio tracker
                 </div>
               </div>
+              <div className="App-card-row">
+                <div className="label">Announcement</div>
+                <div>
+                  <a href="https://twitter.com/GMX_IO/status/1439711532884152324" target="_blank" rel="noopener noreferrer">
+                    1439711532884152324
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">
+              DODO
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+                <img src={avalancheIcon} alt="avalancheIcon" />
+              </div>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://dodoex.io/" target="_blank" rel="noopener noreferrer">
+                    https://dodoex.io/
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  Decentralized Trading Protocol
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Announcement</div>
+                <div>
+                  <a href="https://twitter.com/GMX_IO/status/1438899138549145605" target="_blank" rel="noopener noreferrer">
+                    1438899138549145605
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">
+              Yield Yak
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+                <img src={avalancheIcon} alt="avalancheIcon" />
+              </div>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://yieldyak.com/" target="_blank" rel="noopener noreferrer">
+                    https://yieldyak.com/
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  Yield Optimizer on Avalanche
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Announcement</div>
+                <div>
+                  <a href="https://twitter.com/GMX_IO/status/1484601407378378754" target="_blank" rel="noopener noreferrer">
+                    1484601407378378754
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">
+              Open Ocean
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+                <img src={avalancheIcon} alt="avalancheIcon" />
+              </div>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://openocean.finance/" target="_blank" rel="noopener noreferrer">
+                    https://openocean.finance/
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  DEX Aggregator
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Announcement</div>
+                <div>
+                  <a href="https://twitter.com/GMX_IO/status/1495780826016989191" target="_blank" rel="noopener noreferrer">
+                    1495780826016989191
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">
+              Dopex
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+                <img src={avalancheIcon} alt="avalancheIcon" />
+              </div>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://dopex.io" target="_blank" rel="noopener noreferrer">
+                    https://dopex.io
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  Decentralized Options Protocol
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Announcement</div>
+                <div>
+                  <a href="https://twitter.com/GMX_IO/status/1482445801523716099" target="_blank" rel="noopener noreferrer">
+                    1482445801523716099
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">
+              Jones DAO
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+                <img src={avalancheIcon} alt="avalancheIcon" />
+              </div>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://jonesdao.io" target="_blank" rel="noopener noreferrer">
+                    https://jonesdao.io
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  Decentralized Options Strategies
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Announcement</div>
+                <div>
+                  <a href="https://twitter.com/GMX_IO/status/1482788805635678212" target="_blank" rel="noopener noreferrer">
+                    1482788805635678212
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">
+              Defi Pulse
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+                <img src={avalancheIcon} alt="avalancheIcon" />
+              </div>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://defipulse.com" target="_blank" rel="noopener noreferrer">
+                    https://defipulse.com
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  Decentralized Finance Dashboard
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">
+              Defi Llama
+              <div className="App-card-title-icon">
+                <img src={arbitrumIcon} alt="arbitrumIcon" />
+                <img src={avalancheIcon} alt="avalancheIcon" />
+              </div>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Link</div>
+                <div>
+                  <a href="https://defillama.com" target="_blank" rel="noopener noreferrer">
+                    https://defillama.com
+                  </a>
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">About</div>
+                <div>
+                  Decentralized Finance Dashboard
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Announcement</div>
+                <div>
+                  <a href="https://twitter.com/GMX_IO/status/1438124768033660938" target="_blank" rel="noopener noreferrer">
+                    1438124768033660938
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
