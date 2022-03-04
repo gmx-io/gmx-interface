@@ -14,13 +14,11 @@ import {
   getInfoTokens,
   getTokenInfo,
   getServerBaseUrl,
-  useAccountOrders,
   useChainId,
 } from "../../Helpers";
 import { getToken, getTokens, getWhitelistedTokens } from "../../data/Tokens";
 import { getPositions, getPositionQuery } from "../Exchange/Exchange";
 import PositionsList from "../../components/Exchange/PositionsList";
-import OrdersList from "../../components/Exchange/OrdersList";
 
 import TradeHistory from "../../components/Exchange/TradeHistory";
 import Reader from "../../abis/Reader.json";
@@ -94,9 +92,6 @@ export default function Actions() {
   const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo);
   const { positions, positionsMap } = getPositions(chainId, positionQuery, positionData, infoTokens, false);
 
-  const flagOrdersEnabled = true;
-  const [orders, updateOrders] = useAccountOrders(flagOrdersEnabled, checkSummedAccount);
-
   useEffect(() => {
     const interval = setInterval(() => {
       updatePnlData(undefined, true);
@@ -147,22 +142,7 @@ export default function Actions() {
             flagOrdersEnabled={false}
             savedIsPnlInLeverage={false}
             chainId={chainId}
-            orders={orders}
             nativeTokenAddress={nativeTokenAddress}
-          />
-        </div>
-      )}
-      {flagOrdersEnabled && (
-        <div className="Actions-section">
-          <div className="Actions-title">Orders</div>
-          <OrdersList
-            account={checkSummedAccount}
-            infoTokens={infoTokens}
-            positionsMap={positionsMap}
-            chainId={chainId}
-            orders={orders}
-            updateOrders={updateOrders}
-            hideActions
           />
         </div>
       )}
