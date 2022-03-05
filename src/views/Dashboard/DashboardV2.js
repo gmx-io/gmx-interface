@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useWeb3React } from '@web3-react/core'
 import useSWR from 'swr'
-import { PieChart, Pie, Cell } from 'recharts'
-import cx from "classnames"
-import Tooltip from '../../components/Tooltip/Tooltip'
+import { PieChart, Pie, Cell, Tooltip } from 'recharts'
+import TooltipComponent from '../../components/Tooltip/Tooltip'
 
 import { ethers } from 'ethers'
 
@@ -263,7 +262,7 @@ export default function DashboardV2() {
     const weightText = `${formatAmount(currentWeightBps, 2, 2, false)}% / ${formatAmount(targetWeightBps, 2, 2, false)}%`
 
     return (
-      <Tooltip handle={weightText} position="right-bottom" renderContent={() => {
+      <TooltipComponent handle={weightText} position="right-bottom" renderContent={() => {
         return <>
           Current Weight: {formatAmount(currentWeightBps, 2, 2, false)}%<br />
           Target Weight: {formatAmount(targetWeightBps, 2, 2, false)}%<br />
@@ -410,7 +409,6 @@ export default function DashboardV2() {
     updateTotalTokenWeights, updateGmxSupply
   ])
 
-  // const statsUrl = `https://stats.gmx.io/${chainId === AVALANCHE ? "avalanche" : ""}`
   const totalStatsStartDate = chainId === AVALANCHE ? "06 Jan 2022" : "01 Sep 2021"
 
   let glpPool = tokenList.map((token) => {
@@ -446,15 +444,7 @@ export default function DashboardV2() {
     setGMXActiveIndex(index);
   };
 
-  const onGMXStatEnter = (index) => {
-    setGMXActiveIndex(index);
-  };
-
   const onGMXDistributionChartLeave = (_, index) => {
-    setGMXActiveIndex(null);
-  };
-
-  const onGMXStatLeave = () => {
     setGMXActiveIndex(null);
   };
 
@@ -464,15 +454,7 @@ export default function DashboardV2() {
     setGLPActiveIndex(index);
   };
 
-  const onGLPPoolStatEnter = (index) => {
-    setGLPActiveIndex(index);
-  };
-
   const onGLPPoolChartLeave = (_, index) => {
-    setGLPActiveIndex(null);
-  };
-
-  const onGLPPoolStatLeave = () => {
     setGLPActiveIndex(null);
   };
 
@@ -491,6 +473,19 @@ export default function DashboardV2() {
     }
     return 0;
   });
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="stats-label">
+          <div className="stats-label-color" style={{ backgroundColor: payload[0].color }}></div>
+          {payload[0].value}% {payload[0].name}
+        </div>
+      );
+    }
+  
+    return null;
+  };
 
   return (
     <div className="default-container DashboardV2 page-layout">
@@ -515,7 +510,7 @@ export default function DashboardV2() {
               <div className="App-card-row">
                 <div className="label">AUM</div>
                 <div>
-                  <Tooltip
+                  <TooltipComponent
                     handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                     position="right-bottom"
                     renderContent={() => `Assets Under Management: GMX staked (All chains) + GLP pool (${chainName})`}
@@ -525,7 +520,7 @@ export default function DashboardV2() {
               <div className="App-card-row">
                 <div className="label">GLP Pool</div>
                 <div>
-                  <Tooltip
+                  <TooltipComponent
                     handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
                     position="right-bottom"
                     renderContent={() => `Total value of tokens in GLP pool (${chainName})`}
@@ -596,61 +591,61 @@ export default function DashboardV2() {
         <div className="DashboardV2-token-cards">
           <div className="stats-wrapper stats-wrapper--gmx">
             <div className="App-card">
-              <div className="App-card-title">
-                <div className="App-card-title-mark">
-                  <div className="App-card-title-mark-icon">
-                    <img src={gmx40Icon} alt="gmx40Icon" />
-                    {chainId === ARBITRUM ? <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" /> : <img src={avalanche16Icon} alt="avalanche16Icon" className="selected-network-symbol" />}
+              <div className="stats-block">
+                <div className="App-card-title">
+                  <div className="App-card-title-mark">
+                    <div className="App-card-title-mark-icon">
+                      <img src={gmx40Icon} alt="gmx40Icon" />
+                      {chainId === ARBITRUM ? <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" /> : <img src={avalanche16Icon} alt="avalanche16Icon" className="selected-network-symbol" />}
+                    </div>
+                    <div className="App-card-title-mark-info">
+                      <div className="App-card-title-mark-title">GMX</div>
+                      <div className="App-card-title-mark-subtitle">GMX</div>
+                    </div>
+                    <div>
+                      <AssetDropdown assetSymbol="GMX" />
+                    </div>
                   </div>
-                  <div className="App-card-title-mark-info">
-                    <div className="App-card-title-mark-title">GMX</div>
-                    <div className="App-card-title-mark-subtitle">GMX</div>
+                </div>
+                <div className="App-card-divider"></div>
+                <div className="App-card-content">
+                  <div className="App-card-row">
+                    <div className="label">Price</div>
+                    <div>
+                      {!gmxPrice && '...'}
+                      {gmxPrice &&
+                        <TooltipComponent
+                          position="right-bottom"
+                          className="nowrap"
+                          handle={'$' + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+                          renderContent={() => <>
+                            Price on Arbitrum: ${formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}<br />
+                            Price on Avalanche: ${formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                          </>}
+                        />
+                      }
+                    </div>
                   </div>
-                  <div>
-                    <AssetDropdown assetSymbol="GMX" />
+                  <div className="App-card-row">
+                    <div className="label">Supply</div>
+                    <div>
+                      {formatAmount(gmxSupply, GMX_DECIMALS, 0, true)} GMX
+                    </div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Total Staked</div>
+                    <div>
+                      ${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}
+                    </div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Market Cap</div>
+                    <div>
+                      ${formatAmount(gmxMarketCap, USD_DECIMALS, 0, true)}
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-content">
-                <div className="App-card-row">
-                  <div className="label">Price</div>
-                  <div>
-                    {!gmxPrice && '...'}
-                    {gmxPrice &&
-                      <Tooltip
-                        position="right-bottom"
-                        className="nowrap"
-                        handle={'$' + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
-                        renderContent={() => <>
-                          Price on Arbitrum: ${formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}<br />
-                          Price on Avalanche: ${formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
-                        </>}
-                      />
-                    }
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Supply</div>
-                  <div>
-                    {formatAmount(gmxSupply, GMX_DECIMALS, 0, true)} GMX
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Total Staked</div>
-                  <div>
-                    ${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Market Cap</div>
-                  <div>
-                    ${formatAmount(gmxMarketCap, USD_DECIMALS, 0, true)}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="App-card stats-block stats-block--gmx">
               <div className="stats-piechart" onMouseLeave={onGMXDistributionChartLeave}>
                 {
                   gmxDistributionData.length > 0 &&
@@ -686,72 +681,56 @@ export default function DashboardV2() {
                     <text x={'50%'} y={'50%'} fill="white" textAnchor="middle" dominantBaseline="middle">
                       GMX Distribution
                     </text>
+                    <Tooltip content={<CustomTooltip />} />
                   </PieChart>
                 }
               </div>
-              <div className="stats-labels">
-                {
-                  gmxDistributionData.map((item, index) => {
-                    return <div
-                      className={cx("stats-label", gmxActiveIndex === index && 'active')}
-                      key={index}
-                      onMouseOver={() => onGMXStatEnter(index)}
-                      onMouseLeave={() => onGMXStatLeave()}
-                    >
-                      <div className="stats-label-color" style={{ backgroundColor: item.color }}></div>
-                      {item.value}% {item.name}
-                    </div>
-                  })
-                }
-              </div>
             </div>
-          </div>
-          <div className="stats-wrapper stats-wrapper--glp">
             <div className="App-card">
-              <div className="App-card-title">
-                <div className="App-card-title-mark">
-                  <div className="App-card-title-mark-icon">
-                    <img src={glp40Icon} alt="glp40Icon" />
-                    {chainId === ARBITRUM ? <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" /> : <img src={avalanche16Icon} alt="avalanche16Icon" className="selected-network-symbol" />}
+              <div className="stats-block">
+                <div className="App-card-title">
+                  <div className="App-card-title-mark">
+                    <div className="App-card-title-mark-icon">
+                      <img src={glp40Icon} alt="glp40Icon" />
+                      {chainId === ARBITRUM ? <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" /> : <img src={avalanche16Icon} alt="avalanche16Icon" className="selected-network-symbol" />}
+                    </div>
+                    <div className="App-card-title-mark-info">
+                      <div className="App-card-title-mark-title">GLP</div>
+                      <div className="App-card-title-mark-subtitle">GLP</div>
+                    </div>
+                    <div>
+                      <AssetDropdown assetSymbol="GLP" />
+                    </div>
                   </div>
-                  <div className="App-card-title-mark-info">
-                    <div className="App-card-title-mark-title">GLP</div>
-                    <div className="App-card-title-mark-subtitle">GLP</div>
+                </div>
+                <div className="App-card-divider"></div>
+                <div className="App-card-content">
+                  <div className="App-card-row">
+                    <div className="label">Price</div>
+                    <div>
+                      ${formatAmount(glpPrice, USD_DECIMALS, 2, true)}
+                    </div>
                   </div>
-                  <div>
-                    <AssetDropdown assetSymbol="GLP" />
+                  <div className="App-card-row">
+                    <div className="label">Supply</div>
+                    <div>
+                      {formatAmount(glpSupply, GLP_DECIMALS, 0, true)} GLP
+                    </div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Total Staked</div>
+                    <div>
+                      ${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}
+                    </div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Market Cap</div>
+                    <div>
+                      ${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-content">
-                <div className="App-card-row">
-                  <div className="label">Price</div>
-                  <div>
-                    ${formatAmount(glpPrice, USD_DECIMALS, 2, true)}
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Supply</div>
-                  <div>
-                    {formatAmount(glpSupply, GLP_DECIMALS, 0, true)} GLP
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Total Staked</div>
-                  <div>
-                    ${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Market Cap</div>
-                  <div>
-                    ${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="App-card stats-block stats-block--glp">
               <div className="stats-piechart" onMouseOut={onGLPPoolChartLeave}>
                 {
                   glpPool.length > 0 &&
@@ -787,40 +766,9 @@ export default function DashboardV2() {
                     <text x={'50%'} y={'50%'} fill="white" textAnchor="middle" dominantBaseline="middle">
                       GLP Pool
                     </text>
+                    <Tooltip content={<CustomTooltip />} />
                   </PieChart>
                 }
-              </div>
-              <div className="stats-labels">
-                <div className="stats-label-column">
-                  {
-                    glpPool.slice(0, Math.ceil(glpPool.length / 2)).map((pool, index) => {
-                      return <div
-                        className={cx("stats-label", glpActiveIndex === index && 'active')}
-                        key={index}
-                        onMouseOver={() => onGLPPoolStatEnter(index)}
-                        onMouseLeave={() => onGLPPoolStatLeave()}
-                        >
-                        <div className="stats-label-color" style={{ backgroundColor: GLPPOOLCOLORS[pool.name] }}></div>
-                        {pool.value}% {pool.fullname}
-                      </div>
-                    })
-                  }
-                </div>
-                <div className="stats-label-column">
-                  {
-                    glpPool.slice(Math.ceil(glpPool.length / 2), glpPool.length).map((pool, index) => {
-                      return <div
-                        className={cx("stats-label", glpActiveIndex === (index + Math.ceil(glpPool.length / 2)) && 'active')}
-                        key={index}
-                        onMouseOver={() => onGLPPoolStatEnter(index + Math.ceil(glpPool.length / 2))}
-                        onMouseLeave={() => onGLPPoolStatLeave()}
-                        >
-                        <div className="stats-label-color" style={{ backgroundColor: GLPPOOLCOLORS[pool.name] }}></div>
-                        {pool.value}% {pool.fullname}
-                      </div>
-                    })
-                  }
-                </div>
               </div>
             </div>
           </div>
@@ -881,7 +829,7 @@ export default function DashboardV2() {
                         ${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}
                       </td>
                       <td>
-                        <Tooltip
+                        <TooltipComponent
                           handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
                           position="right-bottom"
                           renderContent={() => {
@@ -938,7 +886,7 @@ export default function DashboardV2() {
                     <div className="App-card-row">
                       <div className="label">Pool</div>
                       <div>
-                        <Tooltip
+                        <TooltipComponent
                           handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
                           position="right-bottom"
                           renderContent={() => {

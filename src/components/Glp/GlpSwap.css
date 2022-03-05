@@ -167,10 +167,7 @@
 
 .token-table td,
 .token-table th {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding: 0.75rem;
 }
 
 .token-table td:nth-child(2),
