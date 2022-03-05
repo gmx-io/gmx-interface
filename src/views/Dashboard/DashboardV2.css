@@ -49,65 +49,40 @@
 }
 
 .stats-wrapper {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-.stats-wrapper .App-card:first-child {
-  max-width: 24.7rem;
+.stats-wrapper .App-card {
   width: 100%;
+  display: flex;
 }
 
 .stats-block {
-  max-width: 51.1rem;
   width: 100%;
-  display: flex;
-  padding: 1rem;
 }
 
 .stats-piechart {
   margin: -10px;
-}
-
-.stats-labels {
-  margin-left: 4.2rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-row-gap: 1px;
-  grid-column-gap: 1rem;
-  height: fit-content;
-  width: 100%;
-}
-
-.stats-block--gmx .stats-labels {
-  grid-template-columns: 1fr;
+  margin-left: 1rem;
 }
 
 .stats-block--glp .stats-label {
   grid-row-gap: 0;
 }
 
-.stats-block--glp .stats-labels .stats-label-column {
-  display: grid;
-  grid-row-gap: 1px;
-  height: fit-content;
-}
-
 .stats-label {
-  height: 32px;
-  background: #1E1F37;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  letter-spacing: 0.25px;
-  color: #FFFFFFDE;
-  display: flex;
-  align-items: center;
+  font-size: 0.9rem;
+  line-height: 1.032rem;
+  border-radius: 4px;
+  padding: 0.674rem;
+  letter-spacing: 0.4px;
+  text-align: left;
+  z-index: 1;
+  background:  linear-gradient(90deg, #0b0b0f 0%, rgba(10,13,28,1) 100%);
   cursor: pointer;
-}
-
-.stats-label.active {
-  background: #2d2e50;
 }
 
 .stats-label-color {
@@ -153,22 +128,11 @@
   width: 200px;
 }
 
-@media (max-width: 1280px) {
-  .stats-block {
-    margin-left: 1.5rem;
-  }
-
-  .stats-labels {
-    grid-template-columns: 1fr;
-    margin-left: 2.5rem;
-  }
-}
-
 @media (max-width: 1024px) {
   .stats-wrapper {
     display: grid;
     grid-template-columns: 1fr;
-    grid-gap: 2rem;
+    grid-gap: 1rem;
   }
 
   .stats-wrapper .App-card {
@@ -196,12 +160,9 @@
 }
 
 @media (max-width: 660px) {
-  .stats-wrapper .stats-block {
+  .stats-wrapper .App-card {
     flex-wrap: wrap;
-  }
-
-  .stats-labels {
-    margin: 0;
+    padding-bottom: 0;
   }
 
   .stats-piechart {
