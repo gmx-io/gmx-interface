@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
 
-import Footer from "../../Footer"
+import Footer from "../../Footer";
 
-import arbitrumIcon from "../../img/ic_arbitrum_16.svg"
-import avalancheIcon from "../../img/ic_avalanche_16.svg"
+import arbitrumIcon from "../../img/ic_arbitrum_16.svg";
+import avalancheIcon from "../../img/ic_avalanche_16.svg";
 
-import "./Ecosystem.css"
+import "./Ecosystem.css";
 
 export default function Ecosystem() {
   return (
@@ -13,9 +13,7 @@ export default function Ecosystem() {
       <div>
         <div className="Page-title-section">
           <div className="Page-title">Community Projects</div>
-          <div className="Page-description">
-            Projects developed by the GMX community.
-          </div>
+          <div className="Page-description">Projects developed by the GMX community.</div>
         </div>
         <div className="DashboardV2-projects">
           <div className="App-card">
@@ -37,9 +35,7 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  GMX Blueberry NFTs
-                </div>
+                <div>GMX Blueberry NFTs</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
@@ -70,9 +66,7 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  Leaderboard for GMX traders
-                </div>
+                <div>Leaderboard for GMX traders</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
@@ -104,9 +98,7 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  Telegram bot for GMX position updates
-                </div>
+                <div>Telegram bot for GMX position updates</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
@@ -137,9 +129,7 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  GMX explorer for stats and traders
-                </div>
+                <div>GMX explorer for stats and traders</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
@@ -171,9 +161,7 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  Financial reports and protocol analytics
-                </div>
+                <div>Financial reports and protocol analytics</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
@@ -204,9 +192,7 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  GMX price and staking charts
-                </div>
+                <div>GMX price and staking charts</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
@@ -231,16 +217,18 @@ export default function Ecosystem() {
               <div className="App-card-row">
                 <div className="label">Link</div>
                 <div>
-                  <a href="https://docs.google.com/spreadsheets/u/4/d/1mQZlztz_NpTg5qQiYIzc_Ls1OTLfMOUtmEQN-WW8jj4/copy" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://docs.google.com/spreadsheets/u/4/d/1mQZlztz_NpTg5qQiYIzc_Ls1OTLfMOUtmEQN-WW8jj4/copy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     Google Spreadsheet
                   </a>
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  Returns calculator for GMX and GLP
-                </div>
+                <div>Returns calculator for GMX and GLP</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
@@ -264,21 +252,27 @@ export default function Ecosystem() {
               <div className="App-card-row">
                 <div className="label">Link</div>
                 <div>
-                  <a href="https://docs.google.com/spreadsheets/d/14DiIE1wZkK9-Y5xSx1PzIgmpcj4ccz1YVw5nwzIWLgI/edit#gid=0" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://docs.google.com/spreadsheets/d/14DiIE1wZkK9-Y5xSx1PzIgmpcj4ccz1YVw5nwzIWLgI/edit#gid=0"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     Google Spreadsheet
                   </a>
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  Optimal compound interval calculator
-                </div>
+                <div>Optimal compound interval calculator</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
                 <div>
-                  <a href="https://twitter.com/ChasenKaminsky/status/1485820753173962753" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://twitter.com/ChasenKaminsky/status/1485820753173962753"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     chasenk.eth
                   </a>
                 </div>
@@ -305,9 +299,7 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  GMX feedback and feature requests
-                </div>
+                <div>GMX feedback and feature requests</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Creator</div>
@@ -323,5 +315,5 @@ export default function Ecosystem() {
       </div>
       <Footer />
     </div>
-  )
+  );
 }
