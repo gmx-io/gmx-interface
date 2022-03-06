@@ -2657,6 +2657,7 @@ export default function SwapBox(props) {
       {renderOrdersToa()}
       {isConfirming && (
         <ConfirmationBox
+          library={library}
           orders={orders}
           isSwap={isSwap}
           isLong={isLong}
@@ -2691,6 +2692,8 @@ export default function SwapBox(props) {
           collateralTokenAddress={collateralTokenAddress}
           infoTokens={infoTokens}
           chainId={chainId}
+          setPendingTxns={setPendingTxns}
+          pendingTxns={pendingTxns}
         />
       )}
     </div>

@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useMemo } from 'react'
+import './ConfirmationBox.css'
 import {
 	USD_DECIMALS,
 	PRECISION,
@@ -16,7 +17,8 @@ import {
   DEFAULT_SLIPPAGE_AMOUNT,
   SLIPPAGE_BPS_KEY,
   formatDateTime,
-  calculatePositionDelta
+  calculatePositionDelta,
+  DECREASE
 } from '../../Helpers'
 import { getConstant } from '../../Constants'
 
@@ -26,6 +28,7 @@ import Tooltip from '../Tooltip/Tooltip'
 import Checkbox from '../Checkbox/Checkbox'
 import ExchangeInfoRow from './ExchangeInfoRow'
 import { getToken, getWrappedToken } from '../../data/Tokens'
+import { cancelDecreaseOrder } from '../../Api'
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -77,7 +80,10 @@ export default function ConfirmationBox(props) {
     collateralTokenAddress,
     feeBps,
     chainId,
-    orders
+    orders,
+    library,
+    setPendingTxns,
+    pendingTxns
   } = props;
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT)
@@ -119,6 +125,20 @@ export default function ConfirmationBox(props) {
     }
   }, [orders, chainId, isLong, toToken.address, toToken.isNative])
 
+  const existingTriggerOrders = useMemo(() => {
+    const wrappedToken = getWrappedToken(chainId)
+    return orders.filter(order => {
+      if (order.type !== DECREASE) return false
+      const sameToken = order.indexToken === wrappedToken.address
+        ? toToken.isNative
+        : order.indexToken === toToken.address
+      if (order.isLong === isLong && sameToken) {
+        return order
+      }
+      return false
+    })
+  }, [orders, chainId, isLong, toToken.address, toToken.isNative])
+
   const getError = () => {
     if (!isSwap && hasExistingPosition && !isMarketOrder) {
       const { delta, hasProfit } = calculatePositionDelta(triggerPriceUsd, existingPosition)
@@ -150,6 +170,10 @@ export default function ConfirmationBox(props) {
         return isLong ? `Forfeit profit and ${action}` : `Forfeit profit and Short`
       }
 
+      if(!hasExistingPosition && existingTriggerOrders?.length > 0){
+        return `Cancel trigger orders to open position!`
+      }
+
       return isMarketOrder ? `Accept minimum and ${action}` : action
     }
 
@@ -161,6 +185,9 @@ export default function ConfirmationBox(props) {
 
   const isPrimaryEnabled = () => {
     if (getError()) {
+      return false
+    }
+    if(!hasExistingPosition && existingTriggerOrders?.length > 0){
       return false
     }
     return !isPendingConfirmation && !isSubmitting;
@@ -268,6 +295,41 @@ export default function ConfirmationBox(props) {
     );
   }, [existingOrder, isSwap, chainId])
 
+  const renderExistingTriggerWarning = useCallback(() => {
+    if (isSwap || hasExistingPosition || existingTriggerOrders?.length < 1) {
+      return
+    }
+    let existingTriggerOrderLength = existingTriggerOrders?.length;
+    return (
+      <>
+        <div className="Confirmation-box-warning">
+          You have {existingTriggerOrderLength > 1 ? `${existingTriggerOrderLength}` : 'an'} active trigger {existingTriggerOrderLength > 1 ? 'orders' : 'order'}. You have to cancal these orders below to open a new position.
+        </div>
+        <ul className='trigger-order-list'>
+          {
+            existingTriggerOrders.map(order => {
+              const indexToken = getToken(chainId, order.indexToken)
+              return <li>
+                <p>
+                  {order.type === INCREASE ? "Increase" : "Decrease"} {indexToken.symbol} {order.isLong ? "Long" : "Short"}
+                  &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
+                </p>
+                <button onClick={() => cancelDecreaseOrder(chainId, library, order.index, {
+      successMsg: "Order cancelled",
+      failMsg: "Cancel failed",
+      sentMsg: "Cancel submitted",
+      pendingTxns,
+      setPendingTxns
+    })}>Cancel</button>
+              </li>
+            })
+          }
+        </ul>
+      </>
+    );
+
+  }, [hasExistingPosition, existingTriggerOrders, isSwap, chainId])
+
   // TODO handle unaprproved order plugin (very unlikely case)
   const renderMain = useCallback(() => {
     if (isSwap) {
@@ -360,6 +422,7 @@ export default function ConfirmationBox(props) {
         {renderFeeWarning()}
         {renderMinProfitWarning()}
         {renderExistingOrderWarning()}
+        {renderExistingTriggerWarning()}
         {(hasPendingProfit && isMarketOrder) &&
           <div className="PositionEditor-accept-profit-warning">
             <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
