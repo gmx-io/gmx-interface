@@ -7,6 +7,7 @@ import { ethers } from "ethers";
 import {
   FUNDING_RATE_PRECISION,
   BASIS_POINTS_DIVISOR,
+  MARGIN_FEE_BASIS_POINTS,
   SWAP,
   LONG,
   SHORT,
@@ -64,7 +65,7 @@ const getTokenAddress = (token, nativeTokenAddress) => {
   return token.address;
 };
 
-export function getPositions(chainId, positionQuery, positionData, infoTokens, includeDelta) {
+export function getPositions(chainId, positionQuery, positionData, infoTokens, includeDelta, showPnlAfterFees) {
   const propsLength = getConstant(chainId, "positionReaderPropsLength");
   const positions = [];
   const positionsMap = {};
@@ -99,6 +100,9 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
     position.fundingFee = fundingFee ? fundingFee : bigNumberify(0);
     position.collateralAfterFee = position.collateral.sub(position.fundingFee);
 
+    position.positionFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).mul(2).div(BASIS_POINTS_DIVISOR)
+    position.totalFees = position.positionFee.add(position.fundingFee)
+
     position.hasLowCollateral =
       position.collateralAfterFee.lte(0) || position.size.div(position.collateralAfterFee.abs()).gt(50);
 
@@ -120,6 +124,40 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
 
       position.deltaStr = deltaStr;
       position.deltaPercentageStr = deltaPercentageStr;
+
+      let hasProfitAfterFees
+      let pendingDeltaAfterFees
+
+      if (position.hasProfit) {
+        if (position.pendingDelta.gt(position.totalFees)) {
+          hasProfitAfterFees = true
+          pendingDeltaAfterFees = position.pendingDelta.sub(position.totalFees)
+        } else {
+          hasProfitAfterFees = false
+          pendingDeltaAfterFees = position.totalFees.sub(position.pendingDelta)
+        }
+      } else {
+        hasProfitAfterFees = false
+        pendingDeltaAfterFees = position.pendingDelta.add(position.totalFees)
+      }
+
+      position.hasProfitAfterFees = hasProfitAfterFees
+      position.pendingDeltaAfterFees = pendingDeltaAfterFees
+      position.deltaPercentageAfterFees = position.pendingDeltaAfterFees.mul(BASIS_POINTS_DIVISOR).div(position.collateral);
+
+      const { deltaStr: deltaAfterFeesStr, deltaPercentageStr: deltaAfterFeesPercentageStr } = getDeltaStr({
+        delta: position.pendingDeltaAfterFees,
+        deltaPercentage: position.deltaPercentageAfterFees,
+        hasProfit: hasProfitAfterFees,
+      });
+
+      position.deltaAfterFeesStr = deltaAfterFeesStr;
+      position.deltaAfterFeesPercentageStr = deltaAfterFeesPercentageStr;
+
+      if (showPnlAfterFees) {
+        position.deltaStr = position.deltaAfterFeesStr;
+        position.deltaPercentageStr = position.deltaAfterFeesPercentageStr;
+      }
 
       let netValue = position.hasProfit
         ? position.collateral.add(position.pendingDelta)
@@ -191,6 +229,7 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
 export default function Exchange({
   savedIsPnlInLeverage,
   setSavedIsPnlInLeverage,
+  savedShowPnlAfterFees,
   savedSlippageAmount,
   pendingTxns,
   setPendingTxns,
@@ -402,7 +441,8 @@ export default function Exchange({
     positionQuery,
     positionData,
     infoTokens,
-    savedIsPnlInLeverage
+    savedIsPnlInLeverage,
+    savedShowPnlAfterFees
   );
 
   const flagOrdersEnabled = true;
