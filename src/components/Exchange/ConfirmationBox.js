@@ -19,6 +19,8 @@ import {
   formatDateTime,
   calculatePositionDelta,
   DECREASE,
+  TRIGGER_PREFIX_ABOVE,
+  TRIGGER_PREFIX_BELOW,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 
@@ -131,11 +133,19 @@ export default function ConfirmationBox(props) {
   const existingTriggerOrders = useMemo(() => {
     const wrappedToken = getWrappedToken(chainId);
     return orders.filter((order) => {
+      console.log({ order });
       if (order.type !== DECREASE) return false;
       const sameToken =
         order.indexToken === wrappedToken.address ? toToken.isNative : order.indexToken === toToken.address;
+
       if (order.isLong === isLong && sameToken) {
-        return order;
+        let canImmediatelyClosed;
+        if (order.triggerAboveThreshold) {
+          canImmediatelyClosed = !nextAveragePrice.lt(order.triggerPrice);
+        } else {
+          canImmediatelyClosed = !nextAveragePrice.gt(order.triggerPrice);
+        }
+        return canImmediatelyClosed ? order : false;
       }
       return false;
     });
@@ -339,14 +349,16 @@ export default function ConfirmationBox(props) {
           position.
         </div>
         <ul className="trigger-order-list">
-          {existingTriggerOrders.map((order) => {
+          {existingTriggerOrders.map((order, i) => {
+            console.log({ order });
+            const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
             const indexToken = getToken(chainId, order.indexToken);
             return (
-              <li>
+              <li key={`${order.account}-${i}`}>
                 <p>
                   {order.type === INCREASE ? "Increase" : "Decrease"} {indexToken.symbol}{" "}
                   {order.isLong ? "Long" : "Short"}
-                  &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
+                  &nbsp;{triggerPricePrefix} ${formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
                 </p>
                 <button
                   onClick={() =>
