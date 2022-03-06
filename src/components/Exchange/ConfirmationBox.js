@@ -155,6 +155,10 @@ export default function ConfirmationBox(props) {
   };
 
   const getPrimaryText = () => {
+    if (!hasExistingPosition && existingTriggerOrders?.length > 0) {
+      return `Cancel trigger orders to open position!`;
+    }
+
     if (!isPendingConfirmation) {
       const error = getError();
       if (error) {
