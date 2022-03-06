@@ -166,6 +166,7 @@ export default function PositionsList(props) {
             {positions.map((position) => {
               const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
               const liquidationPrice = getLiquidationPrice(position);
+
               return (
                 <div key={position.key} className="App-card">
                   <div className="App-card-title">
@@ -251,7 +252,9 @@ export default function PositionsList(props) {
                                 <br />
                                 Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
                                 <br />
-                                PnL: {position.deltaStr} ({position.deltaPercentageStr})<br />
+                                Open + Close fee: ${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
+                                <br />
+                                PnL After Fees: {position.deltaAfterFeesStr} ({position.deltaAfterFeesPercentageStr})
                               </>
                             );
                           }}
@@ -358,8 +361,11 @@ export default function PositionsList(props) {
                             Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
                             <br />
                             Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
+                            <br/>
+                            Open + Close fee: ${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
+                            <br/>
                             <br />
-                            PnL: {position.deltaStr} ({position.deltaPercentageStr})<br />
+                            PnL After Fees: {position.deltaAfterFeesStr} ({position.deltaAfterFeesPercentageStr})
                           </>
                         );
                       }}
