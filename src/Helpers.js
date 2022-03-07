@@ -114,7 +114,7 @@ export const TRIGGER_PREFIX_BELOW = "<";
 export const PROFIT_THRESHOLD_BASIS_POINTS = 150;
 
 export const GLPPOOLCOLORS = {
-  ETH: "#FCFCFD",
+  ETH: "#6062a6",
   BTC: "#F7931A",
   USDC: "#2775CA",
   "USDC.e": "#2A5ADA",
