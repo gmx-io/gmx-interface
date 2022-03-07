@@ -1,21 +1,21 @@
-import React, { useCallback } from 'react'
-import Footer from "../../Footer"
-import { Link, NavLink } from 'react-router-dom'
+import React, { useCallback } from "react";
+import Footer from "../../Footer";
+import { Link, NavLink } from "react-router-dom";
 
-import './Home.css';
+import "./Home.css";
 
-import simpleSwapIcon from '../../img/ic_simpleswaps.svg'
-import costIcon from '../../img/ic_cost.svg'
-import liquidityIcon from '../../img/ic_liquidity.svg'
-import totaluserIcon from '../../img/ic_totaluser.svg'
+import simpleSwapIcon from "../../img/ic_simpleswaps.svg";
+import costIcon from "../../img/ic_cost.svg";
+import liquidityIcon from "../../img/ic_liquidity.svg";
+import totaluserIcon from "../../img/ic_totaluser.svg";
 
-import arbitrumIcon from '../../img/ic_arbitrum_96.svg'
-import avaIcon from '../../img/ic_avalanche_96.svg'
+import arbitrumIcon from "../../img/ic_arbitrum_96.svg";
+import avaIcon from "../../img/ic_avalanche_96.svg";
 
-import statsIcon from '../../img/ic_stats.svg'
-import tradingIcon from '../../img/ic_trading.svg'
+import statsIcon from "../../img/ic_stats.svg";
+import tradingIcon from "../../img/ic_trading.svg";
 
-import useSWR from 'swr'
+import useSWR from "swr";
 
 import {
   formatAmount,
@@ -27,14 +27,14 @@ import {
   ARBITRUM,
   AVALANCHE,
   switchNetwork,
-  getTotalVolumeSum
-} from '../../Helpers'
+  getTotalVolumeSum,
+} from "../../Helpers";
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3React } from "@web3-react/core";
 
-import { useUserStat } from "../../Api"
+import { useUserStat } from "../../Api";
 
-import TokenCard from '../../components/TokenCard/TokenCard'
+import TokenCard from "../../components/TokenCard/TokenCard";
 
 export default function Home() {
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
@@ -64,82 +64,93 @@ export default function Home() {
   //   }
   // }
 
-  const { chainId } = useChainId()
-  const { active } = useWeb3React()
+  const { chainId } = useChainId();
+  const { active } = useWeb3React();
 
   // ARBITRUM
 
-  const arbitrumPositionStatsUrl = getServerUrl(ARBITRUM, "/position_stats")
+  const arbitrumPositionStatsUrl = getServerUrl(ARBITRUM, "/position_stats");
   const { data: arbitrumPositionStats } = useSWR([arbitrumPositionStatsUrl], {
-    fetcher: (...args) => fetch(...args).then(res => res.json())
-  })
+    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+  });
 
-  const arbitrumTotalVolumeUrl = getServerUrl(ARBITRUM, "/total_volume")
+  const arbitrumTotalVolumeUrl = getServerUrl(ARBITRUM, "/total_volume");
   const { data: arbitrumTotalVolume } = useSWR([arbitrumTotalVolumeUrl], {
-    fetcher: (...args) => fetch(...args).then(res => res.json())
-  })
+    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+  });
 
   // AVALANCHE
 
-  const avalanchePositionStatsUrl = getServerUrl(AVALANCHE, "/position_stats")
+  const avalanchePositionStatsUrl = getServerUrl(AVALANCHE, "/position_stats");
   const { data: avalanchePositionStats } = useSWR([avalanchePositionStatsUrl], {
-    fetcher: (...args) => fetch(...args).then(res => res.json())
-  })
+    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+  });
 
-  const avalancheTotalVolumeUrl = getServerUrl(AVALANCHE, "/total_volume")
+  const avalancheTotalVolumeUrl = getServerUrl(AVALANCHE, "/total_volume");
   const { data: avalancheTotalVolume } = useSWR([avalancheTotalVolumeUrl], {
-    fetcher: (...args) => fetch(...args).then(res => res.json())
-  })
+    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+  });
 
   // Total Volume
 
-  const arbitrumTotalVolumeSum = getTotalVolumeSum(arbitrumTotalVolume)
-  const avalancheTotalVolumeSum = getTotalVolumeSum(avalancheTotalVolume)
+  const arbitrumTotalVolumeSum = getTotalVolumeSum(arbitrumTotalVolume);
+  const avalancheTotalVolumeSum = getTotalVolumeSum(avalancheTotalVolume);
 
-  let totalVolumeSum = bigNumberify(0)
+  let totalVolumeSum = bigNumberify(0);
   if (arbitrumTotalVolumeSum && avalancheTotalVolumeSum) {
-    totalVolumeSum = totalVolumeSum.add(arbitrumTotalVolumeSum)
-    totalVolumeSum = totalVolumeSum.add(avalancheTotalVolumeSum)
+    totalVolumeSum = totalVolumeSum.add(arbitrumTotalVolumeSum);
+    totalVolumeSum = totalVolumeSum.add(avalancheTotalVolumeSum);
   }
 
   // Open Interest
 
-  let openInterest = bigNumberify(0)
-  if (arbitrumPositionStats && arbitrumPositionStats.totalLongPositionSizes && arbitrumPositionStats.totalShortPositionSizes) {
-    openInterest = openInterest.add(arbitrumPositionStats.totalLongPositionSizes)
-    openInterest = openInterest.add(arbitrumPositionStats.totalShortPositionSizes)
+  let openInterest = bigNumberify(0);
+  if (
+    arbitrumPositionStats &&
+    arbitrumPositionStats.totalLongPositionSizes &&
+    arbitrumPositionStats.totalShortPositionSizes
+  ) {
+    openInterest = openInterest.add(arbitrumPositionStats.totalLongPositionSizes);
+    openInterest = openInterest.add(arbitrumPositionStats.totalShortPositionSizes);
   }
 
-  if (avalanchePositionStats && avalanchePositionStats.totalLongPositionSizes && avalanchePositionStats.totalShortPositionSizes) {
-    openInterest = openInterest.add(avalanchePositionStats.totalLongPositionSizes)
-    openInterest = openInterest.add(avalanchePositionStats.totalShortPositionSizes)
+  if (
+    avalanchePositionStats &&
+    avalanchePositionStats.totalLongPositionSizes &&
+    avalanchePositionStats.totalShortPositionSizes
+  ) {
+    openInterest = openInterest.add(avalanchePositionStats.totalLongPositionSizes);
+    openInterest = openInterest.add(avalanchePositionStats.totalShortPositionSizes);
   }
 
   // user stat
-  const arbitrumUserStats = useUserStat(ARBITRUM)
-  const avalancheUserStats = useUserStat(AVALANCHE)
-  let totalUsers = 0
+  const arbitrumUserStats = useUserStat(ARBITRUM);
+  const avalancheUserStats = useUserStat(AVALANCHE);
+  let totalUsers = 0;
 
   if (arbitrumUserStats && arbitrumUserStats.uniqueCount) {
-    totalUsers += arbitrumUserStats.uniqueCount
+    totalUsers += arbitrumUserStats.uniqueCount;
   }
 
   if (avalancheUserStats && avalancheUserStats.uniqueCount) {
-    totalUsers += avalancheUserStats.uniqueCount
+    totalUsers += avalancheUserStats.uniqueCount;
   }
 
-  const changeNetwork = useCallback(network => {
-    if (network === chainId) {
-      return
-    }
-    if (!active) {
-      setTimeout(() => {
-        return switchNetwork(network, active)
-      }, 500)
-    } else {
-      return switchNetwork(network, active)
-    }
-  }, [chainId, active])
+  const changeNetwork = useCallback(
+    (network) => {
+      if (network === chainId) {
+        return;
+      }
+      if (!active) {
+        setTimeout(() => {
+          return switchNetwork(network, active);
+        }, 500);
+      } else {
+        return switchNetwork(network, active);
+      }
+    },
+    [chainId, active]
+  );
 
   return (
     <div className="Home">
@@ -148,13 +159,16 @@ export default function Home() {
         <div className="Home-title-section-container default-container">
           <div className="Home-title-section">
             <div className="Home-title">
-              Decentralized<br />
+              Decentralized
+              <br />
               Perpetual Exchange
             </div>
             <div className="Home-description">
               Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet
             </div>
-            <NavLink activeClassName="active" to="/trade" className="default-btn">Launch Exchange</NavLink>
+            <NavLink activeClassName="active" to="/trade" className="default-btn">
+              Launch Exchange
+            </NavLink>
           </div>
         </div>
         <div className="Home-latest-info-container default-container">
@@ -182,15 +196,15 @@ export default function Home() {
         </div>
       </div>
       <div className="Home-benefits-section">
-        <div className='Home-benefits default-container'>
+        <div className="Home-benefits default-container">
           <div className="Home-benefit">
             <div className="Home-benefit-icon">
               <img src={liquidityIcon} alt="liquidity" className="Home-benefit-icon-symbol" />
               <div className="Home-benefit-title">Reduce Liquidation Risks</div>
             </div>
             <div className="Home-benefit-description">
-              An aggregate of high-quality price feeds determine when
-              liquidations occur. This keeps positions safe from temporary wicks.
+              An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from
+              temporary wicks.
             </div>
           </div>
           <div className="Home-benefit">
@@ -199,8 +213,8 @@ export default function Home() {
               <div className="Home-benefit-title">Save on Costs</div>
             </div>
             <div className="Home-benefit-description">
-              Enter and exit positions with minimal spread and zero price impact.
-              Get the optimal price without incurring additional costs.
+              Enter and exit positions with minimal spread and zero price impact. Get the optimal price without
+              incurring additional costs.
             </div>
           </div>
           <div className="Home-benefit">
@@ -209,7 +223,8 @@ export default function Home() {
               <div className="Home-benefit-title">Simple Swaps</div>
             </div>
             <div className="Home-benefit-description">
-              Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice.
+              Open positions through a simple swap interface. Conveniently swap from any supported asset into the
+              position of your choice.
             </div>
           </div>
         </div>
@@ -228,7 +243,9 @@ export default function Home() {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Arbitrum</div>
                 <div className="Home-cta-option-action">
-                  <Link to="/trade" className="default-btn" onClick={() => changeNetwork(ARBITRUM)}>Launch Exchange</Link>
+                  <Link to="/trade" className="default-btn" onClick={() => changeNetwork(ARBITRUM)}>
+                    Launch Exchange
+                  </Link>
                 </div>
               </div>
             </div>
@@ -239,7 +256,9 @@ export default function Home() {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Avalanche</div>
                 <div className="Home-cta-option-action">
-                  <Link to="/trade" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>Launch Exchange</Link>
+                  <Link to="/trade" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>
+                    Launch Exchange
+                  </Link>
                 </div>
               </div>
             </div>
@@ -297,5 +316,5 @@ export default function Home() {
       </div> */}
       <Footer />
     </div>
-  )
+  );
 }

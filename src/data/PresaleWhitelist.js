@@ -1,5 +1,5 @@
-const WHITELIST = {}
+const WHITELIST = {};
 
 export function getWhitelist() {
-  return WHITELIST
+  return WHITELIST;
 }

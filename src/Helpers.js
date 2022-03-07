@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   InjectedConnector,
-  UserRejectedRequestError as UserRejectedRequestErrorInjected
+  UserRejectedRequestError as UserRejectedRequestErrorInjected,
 } from "@web3-react/injected-connector";
 import {
   WalletConnectConnector,
-  UserRejectedRequestError as UserRejectedRequestErrorWalletConnect
+  UserRejectedRequestError as UserRejectedRequestErrorWalletConnect,
 } from "@web3-react/walletconnect-connector";
 import { toast } from "react-toastify";
 import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
@@ -36,7 +36,7 @@ export const ARBITRUM = 42161;
 export const DEFAULT_CHAIN_ID = AVALANCHE;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const MIN_PROFIT_TIME = 60 * 60 * 12; // 12 hours
+export const MIN_PROFIT_TIME = 3 * 60 * 60; // 3 hours
 
 const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
 
@@ -45,7 +45,7 @@ const CHAIN_NAMES_MAP = {
   [TESTNET]: "BSC Testnet",
   [ARBITRUM_TESTNET]: "Arbitrum Testnet",
   [ARBITRUM]: "Arbitrum",
-  [AVALANCHE]: "Avalanche"
+  [AVALANCHE]: "Avalanche",
 };
 
 const GAS_PRICE_ADJUSTMENT_MAP = {
@@ -69,6 +69,7 @@ export const SECONDS_PER_YEAR = 31536000;
 export const USDG_DECIMALS = 18;
 export const USD_DECIMALS = 30;
 export const BASIS_POINTS_DIVISOR = 10000;
+export const DEPOSIT_FEE = 50;
 export const DUST_BNB = "2000000000000000";
 export const DUST_USD = expandDecimals(1, USD_DECIMALS);
 export const PRECISION = expandDecimals(1, 30);
@@ -105,13 +106,13 @@ export const DEFAULT_SLIPPAGE_AMOUNT = 20;
 
 export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3";
 export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage";
-export const SHOULD_SHOW_POSITION_LINES_KEY =
-  "Exchange-swap-should-show-position-lines";
+export const SHOW_PNL_AFTER_FEES_KEY = "Exchange-swap-show-pnl-after-fees";
+export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-position-lines";
 
 export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
 
-export const PROFIT_THRESHOLD_BASIS_POINTS = 150;
+export const MIN_PROFIT_BIPS = 150;
 
 export const GLPPOOLCOLORS = {
   ETH: "#FCFCFD",
@@ -267,20 +268,18 @@ export const platformTokens = {
 
 const supportedChainIds = [ARBITRUM, AVALANCHE];
 const injectedConnector = new InjectedConnector({
-  supportedChainIds
+  supportedChainIds,
 });
 
 const getWalletConnectConnector = () => {
-  const chainId =
-    localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) ||
-    DEFAULT_CHAIN_ID;
+  const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID;
   return new WalletConnectConnector({
     rpc: {
       [AVALANCHE]: AVALANCHE_RPC_PROVIDERS[0],
-      [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0]
+      [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0],
     },
     qrcode: true,
-    chainId
+    chainId,
   });
 };
 
@@ -298,28 +297,28 @@ export function deserialize(data) {
 }
 
 export const helperToast = {
-  success: content => {
+  success: (content) => {
     toast.dismiss();
     toast.success(content);
   },
-  error: content => {
+  error: (content) => {
     toast.dismiss();
     toast.error(content);
-  }
+  },
 };
 
 export function useLocalStorageByChainId(chainId, key, defaultValue) {
   const [internalValue, setInternalValue] = useLocalStorage(key, {});
 
   const setValue = useCallback(
-    value => {
-      setInternalValue(internalValue => {
+    (value) => {
+      setInternalValue((internalValue) => {
         if (typeof value === "function") {
           value = value(internalValue[chainId] || defaultValue);
         }
         const newInternalValue = {
           ...internalValue,
-          [chainId]: value
+          [chainId]: value,
         };
         return newInternalValue;
       });
@@ -342,13 +341,7 @@ export function useLocalStorageSerializeKey(key, value, opts) {
   return useLocalStorage(key, value, opts);
 }
 
-function getTriggerPrice(
-  tokenAddress,
-  max,
-  info,
-  orderOption,
-  triggerPriceUsd
-) {
+function getTriggerPrice(tokenAddress, max, info, orderOption, triggerPriceUsd) {
   // Limit/stop orders are executed with price specified by user
   if (orderOption && orderOption !== MARKET && triggerPriceUsd) {
     return triggerPriceUsd;
@@ -367,13 +360,7 @@ function getTriggerPrice(
   return max ? info.maxPrice : info.minPrice;
 }
 
-export function getLiquidationPriceFromDelta({
-  liquidationAmount,
-  size,
-  collateral,
-  averagePrice,
-  isLong
-}) {
+export function getLiquidationPriceFromDelta({ liquidationAmount, size, collateral, averagePrice, isLong }) {
   if (!size || size.eq(0)) {
     return;
   }
@@ -381,9 +368,7 @@ export function getLiquidationPriceFromDelta({
   if (liquidationAmount.gt(collateral)) {
     const liquidationDelta = liquidationAmount.sub(collateral);
     const priceDelta = liquidationDelta.mul(averagePrice).div(size);
-    return !isLong
-      ? averagePrice.sub(priceDelta)
-      : averagePrice.add(priceDelta);
+    return !isLong ? averagePrice.sub(priceDelta) : averagePrice.add(priceDelta);
   }
 
   const liquidationDelta = collateral.sub(liquidationAmount);
@@ -413,9 +398,7 @@ export function getPositionFee(size) {
   if (!size) {
     return bigNumberify(0);
   }
-  const afterFeeUsd = size
-    .mul(BASIS_POINTS_DIVISOR - MARGIN_FEE_BASIS_POINTS)
-    .div(BASIS_POINTS_DIVISOR);
+  const afterFeeUsd = size.mul(BASIS_POINTS_DIVISOR - MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
   return size.sub(afterFeeUsd);
 }
 
@@ -423,9 +406,7 @@ export function getMarginFee(sizeDelta) {
   if (!sizeDelta) {
     return bigNumberify(0);
   }
-  const afterFeeUsd = sizeDelta
-    .mul(BASIS_POINTS_DIVISOR - MARGIN_FEE_BASIS_POINTS)
-    .div(BASIS_POINTS_DIVISOR);
+  const afterFeeUsd = sizeDelta.mul(BASIS_POINTS_DIVISOR - MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
   return sizeDelta.sub(afterFeeUsd);
 }
 
@@ -458,18 +439,12 @@ export function getServerUrl(chainId, path) {
 export function isTriggerRatioInverted(fromTokenInfo, toTokenInfo) {
   if (!toTokenInfo || !fromTokenInfo) return false;
   if (toTokenInfo.isStable || toTokenInfo.isUsdg) return true;
-  if (toTokenInfo.maxPrice)
-    return toTokenInfo.maxPrice.lt(fromTokenInfo.maxPrice);
+  if (toTokenInfo.maxPrice) return toTokenInfo.maxPrice.lt(fromTokenInfo.maxPrice);
   return false;
 }
 
 export function getExchangeRate(tokenAInfo, tokenBInfo, inverted) {
-  if (
-    !tokenAInfo ||
-    !tokenAInfo.minPrice ||
-    !tokenBInfo ||
-    !tokenBInfo.maxPrice
-  ) {
+  if (!tokenAInfo || !tokenAInfo.minPrice || !tokenBInfo || !tokenBInfo.maxPrice) {
     return;
   }
   if (inverted) {
@@ -481,18 +456,14 @@ export function getExchangeRate(tokenAInfo, tokenBInfo, inverted) {
 export function getMostAbundantStableToken(chainId, infoTokens) {
   const whitelistedTokens = getWhitelistedTokens(chainId);
   let availableAmount;
-  let stableToken = whitelistedTokens.find(t => t.isStable);
+  let stableToken = whitelistedTokens.find((t) => t.isStable);
   for (let i = 0; i < whitelistedTokens.length; i++) {
     const info = getTokenInfo(infoTokens, whitelistedTokens[i].address);
     if (!info.isStable || !info.availableAmount) {
       continue;
     }
 
-    const adjustedAvailableAmount = adjustForDecimals(
-      info.availableAmount,
-      info.decimals,
-      USD_DECIMALS
-    );
+    const adjustedAvailableAmount = adjustForDecimals(info.availableAmount, info.decimals, USD_DECIMALS);
     if (!availableAmount || adjustedAvailableAmount.gt(availableAmount)) {
       availableAmount = adjustedAvailableAmount;
       stableToken = info;
@@ -503,8 +474,7 @@ export function getMostAbundantStableToken(chainId, infoTokens) {
 
 export function shouldInvertTriggerRatio(tokenA, tokenB) {
   if (tokenB.isStable || tokenB.isUsdg) return true;
-  if (tokenB.maxPrice && tokenA.maxPrice && tokenB.maxPrice.lt(tokenA.maxPrice))
-    return true;
+  if (tokenB.maxPrice && tokenA.maxPrice && tokenB.maxPrice.lt(tokenA.maxPrice)) return true;
   return false;
 }
 
@@ -514,19 +484,14 @@ export function getExchangeRateDisplay(rate, tokenA, tokenB, opts = {}) {
     [tokenA, tokenB] = [tokenB, tokenA];
     rate = PRECISION.mul(PRECISION).div(rate);
   }
-  const rateValue = formatAmount(
-    rate,
-    USD_DECIMALS,
-    tokenA.isStable || tokenA.isUsdg ? 2 : 4,
-    true
-  );
+  const rateValue = formatAmount(rate, USD_DECIMALS, tokenA.isStable || tokenA.isUsdg ? 2 : 4, true);
   if (opts.omitSymbols) {
     return rateValue;
   }
   return `${rateValue} ${tokenA.symbol} / ${tokenB.symbol}`;
 }
 
-const adjustForDecimalsFactory = n => number => {
+const adjustForDecimalsFactory = (n) => (number) => {
   if (n === 0) {
     return number;
   }
@@ -537,9 +502,7 @@ const adjustForDecimalsFactory = n => number => {
 };
 
 export function adjustForDecimals(amount, divDecimals, mulDecimals) {
-  return amount
-    .mul(expandDecimals(1, mulDecimals))
-    .div(expandDecimals(1, divDecimals));
+  return amount.mul(expandDecimals(1, mulDecimals)).div(expandDecimals(1, divDecimals));
 }
 
 export function getTargetUsdgAmount(token, usdgSupply, totalTokenWeights) {
@@ -573,16 +536,10 @@ export function getFeeBasisPoints(
   const initialAmount = token.usdgAmount;
   let nextAmount = initialAmount.add(usdgDelta);
   if (!increment) {
-    nextAmount = usdgDelta.gt(initialAmount)
-      ? bigNumberify(0)
-      : initialAmount.sub(usdgDelta);
+    nextAmount = usdgDelta.gt(initialAmount) ? bigNumberify(0) : initialAmount.sub(usdgDelta);
   }
 
-  const targetAmount = getTargetUsdgAmount(
-    token,
-    usdgSupply,
-    totalTokenWeights
-  );
+  const targetAmount = getTargetUsdgAmount(token, usdgSupply, totalTokenWeights);
   if (!targetAmount || targetAmount.eq(0)) {
     return feeBasisPoints.toNumber();
   }
@@ -590,15 +547,11 @@ export function getFeeBasisPoints(
   const initialDiff = initialAmount.gt(targetAmount)
     ? initialAmount.sub(targetAmount)
     : targetAmount.sub(initialAmount);
-  const nextDiff = nextAmount.gt(targetAmount)
-    ? nextAmount.sub(targetAmount)
-    : targetAmount.sub(nextAmount);
+  const nextDiff = nextAmount.gt(targetAmount) ? nextAmount.sub(targetAmount) : targetAmount.sub(nextAmount);
 
   if (nextDiff.lt(initialDiff)) {
     const rebateBps = taxBasisPoints.mul(initialDiff).div(targetAmount);
-    return rebateBps.gt(feeBasisPoints)
-      ? 0
-      : feeBasisPoints.sub(rebateBps).toNumber();
+    return rebateBps.gt(feeBasisPoints) ? 0 : feeBasisPoints.sub(rebateBps).toNumber();
   }
 
   let averageDiff = initialDiff.add(nextDiff).div(2);
@@ -609,23 +562,9 @@ export function getFeeBasisPoints(
   return feeBasisPoints.add(taxBps).toNumber();
 }
 
-export function getBuyGlpToAmount(
-  fromAmount,
-  swapTokenAddress,
-  infoTokens,
-  glpPrice,
-  usdgSupply,
-  totalTokenWeights
-) {
+export function getBuyGlpToAmount(fromAmount, swapTokenAddress, infoTokens, glpPrice, usdgSupply, totalTokenWeights) {
   const defaultValue = { amount: bigNumberify(0), feeBasisPoints: 0 };
-  if (
-    !fromAmount ||
-    !swapTokenAddress ||
-    !infoTokens ||
-    !glpPrice ||
-    !usdgSupply ||
-    !totalTokenWeights
-  ) {
+  if (!fromAmount || !swapTokenAddress || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
     return defaultValue;
   }
 
@@ -649,30 +588,14 @@ export function getBuyGlpToAmount(
     totalTokenWeights
   );
 
-  glpAmount = glpAmount
-    .mul(BASIS_POINTS_DIVISOR - feeBasisPoints)
-    .div(BASIS_POINTS_DIVISOR);
+  glpAmount = glpAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR);
 
   return { amount: glpAmount, feeBasisPoints };
 }
 
-export function getSellGlpFromAmount(
-  toAmount,
-  swapTokenAddress,
-  infoTokens,
-  glpPrice,
-  usdgSupply,
-  totalTokenWeights
-) {
+export function getSellGlpFromAmount(toAmount, swapTokenAddress, infoTokens, glpPrice, usdgSupply, totalTokenWeights) {
   const defaultValue = { amount: bigNumberify(0), feeBasisPoints: 0 };
-  if (
-    !toAmount ||
-    !swapTokenAddress ||
-    !infoTokens ||
-    !glpPrice ||
-    !usdgSupply ||
-    !totalTokenWeights
-  ) {
+  if (!toAmount || !swapTokenAddress || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
     return defaultValue;
   }
 
@@ -696,30 +619,14 @@ export function getSellGlpFromAmount(
     totalTokenWeights
   );
 
-  glpAmount = glpAmount
-    .mul(BASIS_POINTS_DIVISOR)
-    .div(BASIS_POINTS_DIVISOR - feeBasisPoints);
+  glpAmount = glpAmount.mul(BASIS_POINTS_DIVISOR).div(BASIS_POINTS_DIVISOR - feeBasisPoints);
 
   return { amount: glpAmount, feeBasisPoints };
 }
 
-export function getBuyGlpFromAmount(
-  toAmount,
-  fromTokenAddress,
-  infoTokens,
-  glpPrice,
-  usdgSupply,
-  totalTokenWeights
-) {
+export function getBuyGlpFromAmount(toAmount, fromTokenAddress, infoTokens, glpPrice, usdgSupply, totalTokenWeights) {
   const defaultValue = { amount: bigNumberify(0) };
-  if (
-    !toAmount ||
-    !fromTokenAddress ||
-    !infoTokens ||
-    !glpPrice ||
-    !usdgSupply ||
-    !totalTokenWeights
-  ) {
+  if (!toAmount || !fromTokenAddress || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
     return defaultValue;
   }
 
@@ -742,30 +649,14 @@ export function getBuyGlpFromAmount(
     totalTokenWeights
   );
 
-  fromAmount = fromAmount
-    .mul(BASIS_POINTS_DIVISOR)
-    .div(BASIS_POINTS_DIVISOR - feeBasisPoints);
+  fromAmount = fromAmount.mul(BASIS_POINTS_DIVISOR).div(BASIS_POINTS_DIVISOR - feeBasisPoints);
 
   return { amount: fromAmount, feeBasisPoints };
 }
 
-export function getSellGlpToAmount(
-  toAmount,
-  fromTokenAddress,
-  infoTokens,
-  glpPrice,
-  usdgSupply,
-  totalTokenWeights
-) {
+export function getSellGlpToAmount(toAmount, fromTokenAddress, infoTokens, glpPrice, usdgSupply, totalTokenWeights) {
   const defaultValue = { amount: bigNumberify(0) };
-  if (
-    !toAmount ||
-    !fromTokenAddress ||
-    !infoTokens ||
-    !glpPrice ||
-    !usdgSupply ||
-    !totalTokenWeights
-  ) {
+  if (!toAmount || !fromTokenAddress || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
     return defaultValue;
   }
 
@@ -788,9 +679,7 @@ export function getSellGlpToAmount(
     totalTokenWeights
   );
 
-  fromAmount = fromAmount
-    .mul(BASIS_POINTS_DIVISOR - feeBasisPoints)
-    .div(BASIS_POINTS_DIVISOR);
+  fromAmount = fromAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR);
 
   return { amount: fromAmount, feeBasisPoints };
 }
@@ -819,13 +708,19 @@ export function getNextFromAmount(
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
   const toToken = getTokenInfo(infoTokens, toTokenAddress);
 
+  if (fromToken.isNative && toToken.isWrapped) {
+    return { amount: toAmount };
+  }
+
+  if (fromToken.isWrapped && toToken.isNative) {
+    return { amount: toAmount };
+  }
+
   if (!fromToken || !fromToken.minPrice || !toToken || !toToken.maxPrice) {
     return defaultValue;
   }
 
-  const adjustDecimals = adjustForDecimalsFactory(
-    fromToken.decimals - toToken.decimals
-  );
+  const adjustDecimals = adjustForDecimalsFactory(fromToken.decimals - toToken.decimals);
 
   let fromAmountBasedOnRatio;
   if (ratio && !ratio.isZero()) {
@@ -838,42 +733,28 @@ export function getNextFromAmount(
     if (ratio && !ratio.isZero()) {
       return {
         amount: adjustDecimals(
-          fromAmountBasedOnRatio
-            .mul(BASIS_POINTS_DIVISOR + feeBasisPoints)
-            .div(BASIS_POINTS_DIVISOR)
-        )
+          fromAmountBasedOnRatio.mul(BASIS_POINTS_DIVISOR + feeBasisPoints).div(BASIS_POINTS_DIVISOR)
+        ),
       };
     }
     const fromAmount = toAmount.mul(PRECISION).div(fromToken.maxPrice);
     return {
-      amount: adjustDecimals(
-        fromAmount
-          .mul(BASIS_POINTS_DIVISOR + feeBasisPoints)
-          .div(BASIS_POINTS_DIVISOR)
-      )
+      amount: adjustDecimals(fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
     };
   }
 
   if (fromTokenAddress === USDG_ADDRESS) {
-    const redemptionValue = toToken.redemptionAmount
-      .mul(toToken.maxPrice)
-      .div(expandDecimals(1, toToken.decimals));
+    const redemptionValue = toToken.redemptionAmount.mul(toToken.maxPrice).div(expandDecimals(1, toToken.decimals));
     if (redemptionValue.gt(THRESHOLD_REDEMPTION_VALUE)) {
       const feeBasisPoints = getSwapFeeBasisPoints(toToken.isStable);
 
       const fromAmount =
         ratio && !ratio.isZero()
           ? fromAmountBasedOnRatio
-          : toAmount
-              .mul(expandDecimals(1, toToken.decimals))
-              .div(toToken.redemptionAmount);
+          : toAmount.mul(expandDecimals(1, toToken.decimals)).div(toToken.redemptionAmount);
 
       return {
-        amount: adjustDecimals(
-          fromAmount
-            .mul(BASIS_POINTS_DIVISOR + feeBasisPoints)
-            .div(BASIS_POINTS_DIVISOR)
-        )
+        amount: adjustDecimals(fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
       };
     }
 
@@ -886,16 +767,10 @@ export function getNextFromAmount(
       const fromAmount =
         ratio && !ratio.isZero()
           ? fromAmountBasedOnRatio
-          : toAmount
-              .mul(expandDecimals(1, toToken.decimals))
-              .div(toToken.redemptionAmount);
+          : toAmount.mul(expandDecimals(1, toToken.decimals)).div(toToken.redemptionAmount);
 
       return {
-        amount: adjustDecimals(
-          fromAmount
-            .mul(BASIS_POINTS_DIVISOR + feeBasisPoints)
-            .div(BASIS_POINTS_DIVISOR)
-        )
+        amount: adjustDecimals(fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
       };
     }
 
@@ -909,7 +784,7 @@ export function getNextFromAmount(
         .div(BASIS_POINTS_DIVISOR);
       return {
         amount: adjustDecimals(fromAmount),
-        path: [USDG_ADDRESS, stableToken.address, toToken.address]
+        path: [USDG_ADDRESS, stableToken.address, toToken.address],
       };
     }
 
@@ -917,39 +792,28 @@ export function getNextFromAmount(
     let fromAmount = toAmount.mul(toToken.maxPrice).div(stableToken.minPrice);
 
     // apply stableToken => toToken fees
-    fromAmount = fromAmount
-      .mul(BASIS_POINTS_DIVISOR + feeBasisPoints1)
-      .div(BASIS_POINTS_DIVISOR);
+    fromAmount = fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints1).div(BASIS_POINTS_DIVISOR);
 
     // get fromAmount for USDG => stableToken
     fromAmount = fromAmount.mul(stableToken.maxPrice).div(PRECISION);
 
     // apply USDG => stableToken fees
-    fromAmount = fromAmount
-      .mul(BASIS_POINTS_DIVISOR + feeBasisPoints0)
-      .div(BASIS_POINTS_DIVISOR);
+    fromAmount = fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints0).div(BASIS_POINTS_DIVISOR);
 
     return {
       amount: adjustDecimals(fromAmount),
-      path: [USDG_ADDRESS, stableToken.address, toToken.address]
+      path: [USDG_ADDRESS, stableToken.address, toToken.address],
     };
   }
 
   const fromAmount =
-    ratio && !ratio.isZero()
-      ? fromAmountBasedOnRatio
-      : toAmount.mul(toToken.maxPrice).div(fromToken.minPrice);
+    ratio && !ratio.isZero() ? fromAmountBasedOnRatio : toAmount.mul(toToken.maxPrice).div(fromToken.minPrice);
 
   let usdgAmount = fromAmount.mul(fromToken.minPrice).div(PRECISION);
   usdgAmount = adjustForDecimals(usdgAmount, toToken.decimals, USDG_DECIMALS);
   const swapFeeBasisPoints =
-    fromToken.isStable && toToken.isStable
-      ? STABLE_SWAP_FEE_BASIS_POINTS
-      : SWAP_FEE_BASIS_POINTS;
-  const taxBasisPoints =
-    fromToken.isStable && toToken.isStable
-      ? STABLE_TAX_BASIS_POINTS
-      : TAX_BASIS_POINTS;
+    fromToken.isStable && toToken.isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS;
+  const taxBasisPoints = fromToken.isStable && toToken.isStable ? STABLE_TAX_BASIS_POINTS : TAX_BASIS_POINTS;
   const feeBasisPoints0 = getFeeBasisPoints(
     fromToken,
     usdgAmount,
@@ -968,16 +832,11 @@ export function getNextFromAmount(
     usdgSupply,
     totalTokenWeights
   );
-  const feeBasisPoints =
-    feeBasisPoints0 > feeBasisPoints1 ? feeBasisPoints0 : feeBasisPoints1;
+  const feeBasisPoints = feeBasisPoints0 > feeBasisPoints1 ? feeBasisPoints0 : feeBasisPoints1;
 
   return {
-    amount: adjustDecimals(
-      fromAmount
-        .mul(BASIS_POINTS_DIVISOR)
-        .div(BASIS_POINTS_DIVISOR - feeBasisPoints)
-    ),
-    feeBasisPoints
+    amount: adjustDecimals(fromAmount.mul(BASIS_POINTS_DIVISOR).div(BASIS_POINTS_DIVISOR - feeBasisPoints)),
+    feeBasisPoints,
   };
 }
 
@@ -1016,9 +875,7 @@ export function getNextToAmount(
     return defaultValue;
   }
 
-  const adjustDecimals = adjustForDecimalsFactory(
-    toToken.decimals - fromToken.decimals
-  );
+  const adjustDecimals = adjustForDecimalsFactory(toToken.decimals - fromToken.decimals);
 
   let toAmountBasedOnRatio = bigNumberify(0);
   if (ratio && !ratio.isZero()) {
@@ -1031,23 +888,15 @@ export function getNextToAmount(
     if (ratio && !ratio.isZero()) {
       const toAmount = toAmountBasedOnRatio;
       return {
-        amount: adjustDecimals(
-          toAmount
-            .mul(BASIS_POINTS_DIVISOR - feeBasisPoints)
-            .div(BASIS_POINTS_DIVISOR)
-        ),
-        feeBasisPoints
+        amount: adjustDecimals(toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
+        feeBasisPoints,
       };
     }
 
     const toAmount = fromAmount.mul(fromToken.minPrice).div(PRECISION);
     return {
-      amount: adjustDecimals(
-        toAmount
-          .mul(BASIS_POINTS_DIVISOR - feeBasisPoints)
-          .div(BASIS_POINTS_DIVISOR)
-      ),
-      feeBasisPoints
+      amount: adjustDecimals(toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
+      feeBasisPoints,
     };
   }
 
@@ -1062,17 +911,11 @@ export function getNextToAmount(
       const toAmount =
         ratio && !ratio.isZero()
           ? toAmountBasedOnRatio
-          : fromAmount
-              .mul(toToken.redemptionAmount)
-              .div(expandDecimals(1, toToken.decimals));
+          : fromAmount.mul(toToken.redemptionAmount).div(expandDecimals(1, toToken.decimals));
 
       return {
-        amount: adjustDecimals(
-          toAmount
-            .mul(BASIS_POINTS_DIVISOR - feeBasisPoints)
-            .div(BASIS_POINTS_DIVISOR)
-        ),
-        feeBasisPoints
+        amount: adjustDecimals(toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
+        feeBasisPoints,
       };
     }
 
@@ -1083,17 +926,11 @@ export function getNextToAmount(
       const toAmount =
         ratio && !ratio.isZero()
           ? toAmountBasedOnRatio
-          : fromAmount
-              .mul(toToken.redemptionAmount)
-              .div(expandDecimals(1, toToken.decimals));
+          : fromAmount.mul(toToken.redemptionAmount).div(expandDecimals(1, toToken.decimals));
       const feeBasisPoints = getSwapFeeBasisPoints(toToken.isStable);
       return {
-        amount: adjustDecimals(
-          toAmount
-            .mul(BASIS_POINTS_DIVISOR - feeBasisPoints)
-            .div(BASIS_POINTS_DIVISOR)
-        ),
-        feeBasisPoints
+        amount: adjustDecimals(toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
+        feeBasisPoints,
       };
     }
 
@@ -1107,50 +944,37 @@ export function getNextToAmount(
       return {
         amount: adjustDecimals(toAmount),
         path: [USDG_ADDRESS, stableToken.address, toToken.address],
-        feeBasisPoints: feeBasisPoints0 + feeBasisPoints1
+        feeBasisPoints: feeBasisPoints0 + feeBasisPoints1,
       };
     }
 
     // get toAmount for USDG => stableToken
     let toAmount = fromAmount.mul(PRECISION).div(stableToken.maxPrice);
     // apply USDG => stableToken fees
-    toAmount = toAmount
-      .mul(BASIS_POINTS_DIVISOR - feeBasisPoints0)
-      .div(BASIS_POINTS_DIVISOR);
+    toAmount = toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints0).div(BASIS_POINTS_DIVISOR);
 
     // get toAmount for stableToken => toToken
-    toAmount = toAmount
-      .mul(stableToken.minPrice)
-      .div(toTokenPriceUsd || toToken.maxPrice);
+    toAmount = toAmount.mul(stableToken.minPrice).div(toTokenPriceUsd || toToken.maxPrice);
     // apply stableToken => toToken fees
-    toAmount = toAmount
-      .mul(BASIS_POINTS_DIVISOR - feeBasisPoints1)
-      .div(BASIS_POINTS_DIVISOR);
+    toAmount = toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints1).div(BASIS_POINTS_DIVISOR);
 
     return {
       amount: adjustDecimals(toAmount),
       path: [USDG_ADDRESS, stableToken.address, toToken.address],
-      feeBasisPoints: feeBasisPoints0 + feeBasisPoints1
+      feeBasisPoints: feeBasisPoints0 + feeBasisPoints1,
     };
   }
 
   const toAmount =
     ratio && !ratio.isZero()
       ? toAmountBasedOnRatio
-      : fromAmount
-          .mul(fromToken.minPrice)
-          .div(toTokenPriceUsd || toToken.maxPrice);
+      : fromAmount.mul(fromToken.minPrice).div(toTokenPriceUsd || toToken.maxPrice);
 
   let usdgAmount = fromAmount.mul(fromToken.minPrice).div(PRECISION);
   usdgAmount = adjustForDecimals(usdgAmount, fromToken.decimals, USDG_DECIMALS);
   const swapFeeBasisPoints =
-    fromToken.isStable && toToken.isStable
-      ? STABLE_SWAP_FEE_BASIS_POINTS
-      : SWAP_FEE_BASIS_POINTS;
-  const taxBasisPoints =
-    fromToken.isStable && toToken.isStable
-      ? STABLE_TAX_BASIS_POINTS
-      : TAX_BASIS_POINTS;
+    fromToken.isStable && toToken.isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS;
+  const taxBasisPoints = fromToken.isStable && toToken.isStable ? STABLE_TAX_BASIS_POINTS : TAX_BASIS_POINTS;
   const feeBasisPoints0 = getFeeBasisPoints(
     fromToken,
     usdgAmount,
@@ -1169,16 +993,11 @@ export function getNextToAmount(
     usdgSupply,
     totalTokenWeights
   );
-  const feeBasisPoints =
-    feeBasisPoints0 > feeBasisPoints1 ? feeBasisPoints0 : feeBasisPoints1;
+  const feeBasisPoints = feeBasisPoints0 > feeBasisPoints1 ? feeBasisPoints0 : feeBasisPoints1;
 
   return {
-    amount: adjustDecimals(
-      toAmount
-        .mul(BASIS_POINTS_DIVISOR - feeBasisPoints)
-        .div(BASIS_POINTS_DIVISOR)
-    ),
-    feeBasisPoints
+    amount: adjustDecimals(toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
+    feeBasisPoints,
   };
 }
 
@@ -1186,12 +1005,8 @@ export function getProfitPrice(closePrice, position) {
   let profitPrice;
   if (position && position.averagePrice && closePrice) {
     profitPrice = position.isLong
-      ? position.averagePrice
-          .mul(BASIS_POINTS_DIVISOR + PROFIT_THRESHOLD_BASIS_POINTS)
-          .div(BASIS_POINTS_DIVISOR)
-      : position.averagePrice
-          .mul(BASIS_POINTS_DIVISOR - PROFIT_THRESHOLD_BASIS_POINTS)
-          .div(BASIS_POINTS_DIVISOR);
+      ? position.averagePrice.mul(BASIS_POINTS_DIVISOR + MIN_PROFIT_BIPS).div(BASIS_POINTS_DIVISOR)
+      : position.averagePrice.mul(BASIS_POINTS_DIVISOR - MIN_PROFIT_BIPS).div(BASIS_POINTS_DIVISOR);
   }
   return profitPrice;
 }
@@ -1204,34 +1019,25 @@ export function calculatePositionDelta(
   if (!sizeDelta) {
     sizeDelta = size;
   }
-  const priceDelta = averagePrice.gt(price)
-    ? averagePrice.sub(price)
-    : price.sub(averagePrice);
+  const priceDelta = averagePrice.gt(price) ? averagePrice.sub(price) : price.sub(averagePrice);
   let delta = sizeDelta.mul(priceDelta).div(averagePrice);
   const pendingDelta = delta;
 
-  const minProfitExpired =
-    lastIncreasedTime + MIN_PROFIT_TIME < Date.now() / 1000;
+  const minProfitExpired = lastIncreasedTime + MIN_PROFIT_TIME < Date.now() / 1000;
   const hasProfit = isLong ? price.gt(averagePrice) : price.lt(averagePrice);
-  if (
-    !minProfitExpired &&
-    hasProfit &&
-    delta.mul(BASIS_POINTS_DIVISOR).lte(size.mul(PROFIT_THRESHOLD_BASIS_POINTS))
-  ) {
+  if (!minProfitExpired && hasProfit && delta.mul(BASIS_POINTS_DIVISOR).lte(size.mul(MIN_PROFIT_BIPS))) {
     delta = bigNumberify(0);
   }
 
   const deltaPercentage = delta.mul(BASIS_POINTS_DIVISOR).div(collateral);
-  const pendingDeltaPercentage = pendingDelta
-    .mul(BASIS_POINTS_DIVISOR)
-    .div(collateral);
+  const pendingDeltaPercentage = pendingDelta.mul(BASIS_POINTS_DIVISOR).div(collateral);
 
   return {
     delta,
     pendingDelta,
     pendingDeltaPercentage,
     hasProfit,
-    deltaPercentage
+    deltaPercentage,
   };
 }
 
@@ -1263,7 +1069,7 @@ export function getLeverage({
   cumulativeFundingRate,
   hasProfit,
   delta,
-  includeDelta
+  includeDelta,
 }) {
   if (!size && !sizeDelta) {
     return;
@@ -1313,14 +1119,10 @@ export function getLeverage({
   }
 
   remainingCollateral = sizeDelta
-    ? remainingCollateral
-        .mul(BASIS_POINTS_DIVISOR - MARGIN_FEE_BASIS_POINTS)
-        .div(BASIS_POINTS_DIVISOR)
+    ? remainingCollateral.mul(BASIS_POINTS_DIVISOR - MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
     : remainingCollateral;
   if (entryFundingRate && cumulativeFundingRate) {
-    const fundingFee = size
-      .mul(cumulativeFundingRate.sub(entryFundingRate))
-      .div(FUNDING_RATE_PRECISION);
+    const fundingFee = size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
     remainingCollateral = remainingCollateral.sub(fundingFee);
   }
 
@@ -1341,7 +1143,7 @@ export function getLiquidationPrice(data) {
     increaseSize,
     delta,
     hasProfit,
-    includeDelta
+    includeDelta,
   } = data;
   if (!size || !collateral || !averagePrice) {
     return;
@@ -1382,9 +1184,7 @@ export function getLiquidationPrice(data) {
 
   let positionFee = getPositionFee(size).add(LIQUIDATION_FEE);
   if (entryFundingRate && cumulativeFundingRate) {
-    const fundingFee = size
-      .mul(cumulativeFundingRate.sub(entryFundingRate))
-      .div(FUNDING_RATE_PRECISION);
+    const fundingFee = size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
     positionFee = positionFee.add(fundingFee);
   }
 
@@ -1393,7 +1193,7 @@ export function getLiquidationPrice(data) {
     size: nextSize,
     collateral: remainingCollateral,
     averagePrice,
-    isLong
+    isLong,
   });
 
   const liquidationPriceForMaxLeverage = getLiquidationPriceFromDelta({
@@ -1401,7 +1201,7 @@ export function getLiquidationPrice(data) {
     size: nextSize,
     collateral: remainingCollateral,
     averagePrice,
-    isLong
+    isLong,
   });
 
   if (!liquidationPriceForFees) {
@@ -1424,14 +1224,7 @@ export function getLiquidationPrice(data) {
     : liquidationPriceForMaxLeverage;
 }
 
-export function getUsd(
-  amount,
-  tokenAddress,
-  max,
-  infoTokens,
-  orderOption,
-  triggerPriceUsd
-) {
+export function getUsd(amount, tokenAddress, max, infoTokens, orderOption, triggerPriceUsd) {
   if (!amount) {
     return;
   }
@@ -1439,13 +1232,7 @@ export function getUsd(
     return amount.mul(PRECISION).div(expandDecimals(1, 18));
   }
   const info = getTokenInfo(infoTokens, tokenAddress);
-  const price = getTriggerPrice(
-    tokenAddress,
-    max,
-    info,
-    orderOption,
-    triggerPriceUsd
-  );
+  const price = getTriggerPrice(tokenAddress, max, info, orderOption, triggerPriceUsd);
   if (!price) {
     return;
   }
@@ -1453,18 +1240,9 @@ export function getUsd(
   return amount.mul(price).div(expandDecimals(1, info.decimals));
 }
 
-export function getPositionKey(
-  collateralTokenAddress,
-  indexTokenAddress,
-  isLong,
-  nativeTokenAddress
-) {
-  const tokenAddress0 =
-    collateralTokenAddress === AddressZero
-      ? nativeTokenAddress
-      : collateralTokenAddress;
-  const tokenAddress1 =
-    indexTokenAddress === AddressZero ? nativeTokenAddress : indexTokenAddress;
+export function getPositionKey(collateralTokenAddress, indexTokenAddress, isLong, nativeTokenAddress) {
+  const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
+  const tokenAddress1 = indexTokenAddress === AddressZero ? nativeTokenAddress : indexTokenAddress;
   return tokenAddress0 + ":" + tokenAddress1 + ":" + isLong;
 }
 
@@ -1496,13 +1274,13 @@ export const BSC_RPC_PROVIDERS = [
   "https://bsc-dataseed1.binance.org",
   "https://bsc-dataseed2.binance.org",
   "https://bsc-dataseed3.binance.org",
-  "https://bsc-dataseed4.binance.org"
+  "https://bsc-dataseed4.binance.org",
 ];
 
 const RPC_PROVIDERS = {
   [MAINNET]: BSC_RPC_PROVIDERS,
   [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
-  [AVALANCHE]: AVALANCHE_RPC_PROVIDERS
+  [AVALANCHE]: AVALANCHE_RPC_PROVIDERS,
 };
 
 export function shortenAddress(address, length) {
@@ -1516,11 +1294,7 @@ export function shortenAddress(address, length) {
     return address;
   }
   let left = Math.floor((length - 3) / 2) + 1;
-  return (
-    address.substring(0, left) +
-    "..." +
-    address.substring(address.length - (length - (left + 3)), address.length)
-  );
+  return address.substring(0, left) + "..." + address.substring(address.length - (length - (left + 3)), address.length);
 }
 
 export function formatDateTime(time) {
@@ -1550,9 +1324,7 @@ export function useChainId() {
   let { chainId } = useWeb3React();
 
   if (!chainId) {
-    const chainIdFromLocalStorage = localStorage.getItem(
-      SELECTED_NETWORK_LOCAL_STORAGE_KEY
-    );
+    const chainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
     if (chainIdFromLocalStorage) {
       chainId = parseInt(chainIdFromLocalStorage);
       if (!chainId) {
@@ -1595,7 +1367,7 @@ export function useEagerConnect(setActivatingConnector) {
   const [tried, setTried] = useState(false);
 
   useEffect(() => {
-    (async function() {
+    (async function () {
       let shouldTryWalletConnect = false;
       try {
         // naive validation to not trigger Wallet Connect if data is corrupted
@@ -1660,15 +1432,15 @@ export function useInactiveListener(suppress = false) {
       const handleConnect = () => {
         activate(injected);
       };
-      const handleChainChanged = chainId => {
+      const handleChainChanged = (chainId) => {
         activate(injected);
       };
-      const handleAccountsChanged = accounts => {
+      const handleAccountsChanged = (accounts) => {
         if (accounts.length > 0) {
           activate(injected);
         }
       };
-      const handleNetworkChanged = networkId => {
+      const handleNetworkChanged = (networkId) => {
         activate(injected);
       };
 
@@ -1699,39 +1471,39 @@ export function getProvider(library, chainId) {
   return new ethers.providers.JsonRpcProvider(provider);
 }
 
-export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
-  // eslint-disable-next-line
-  const [id, chainId, arg0, arg1, ...params] = args;
-  const provider = getProvider(library, chainId);
+export const fetcher =
+  (library, contractInfo, additionalArgs) =>
+  (...args) => {
+    // eslint-disable-next-line
+    const [id, chainId, arg0, arg1, ...params] = args;
+    const provider = getProvider(library, chainId);
 
-  const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
+    const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
 
-  function onError(e) {
-    console.error(contractInfo.contractName, method, e);
-  }
-
-  if (ethers.utils.isAddress(arg0)) {
-    const address = arg0;
-    const contract = new ethers.Contract(address, contractInfo.abi, provider);
-
-    try {
-      if (additionalArgs) {
-        return contract[method](...params.concat(additionalArgs)).catch(
-          onError
-        );
-      }
-      return contract[method](...params).catch(onError);
-    } catch (e) {
-      onError(e);
+    function onError(e) {
+      console.error(contractInfo.contractName, method, e);
     }
-  }
 
-  if (!library) {
-    return;
-  }
+    if (ethers.utils.isAddress(arg0)) {
+      const address = arg0;
+      const contract = new ethers.Contract(address, contractInfo.abi, provider);
 
-  return library[method](arg1, ...params).catch(onError);
-};
+      try {
+        if (additionalArgs) {
+          return contract[method](...params.concat(additionalArgs)).catch(onError);
+        }
+        return contract[method](...params).catch(onError);
+      } catch (e) {
+        onError(e);
+      }
+    }
+
+    if (!library) {
+      return;
+    }
+
+    return library[method](arg1, ...params).catch(onError);
+  };
 
 export function bigNumberify(n) {
   return ethers.BigNumber.from(n);
@@ -1741,7 +1513,7 @@ export function expandDecimals(n, decimals) {
   return bigNumberify(n).mul(bigNumberify(10).pow(decimals));
 }
 
-export const trimZeroDecimals = amount => {
+export const trimZeroDecimals = (amount) => {
   if (parseFloat(amount) === parseInt(amount)) {
     return parseInt(amount).toString();
   }
@@ -1760,10 +1532,7 @@ export const limitDecimals = (amount, maxDecimals) => {
   if (dotIndex !== -1) {
     let decimals = amountStr.length - dotIndex - 1;
     if (decimals > maxDecimals) {
-      amountStr = amountStr.substr(
-        0,
-        amountStr.length - (decimals - maxDecimals)
-      );
+      amountStr = amountStr.substr(0, amountStr.length - (decimals - maxDecimals));
     }
   }
   return amountStr;
@@ -1775,10 +1544,7 @@ export const padDecimals = (amount, minDecimals) => {
   if (dotIndex !== -1) {
     const decimals = amountStr.length - dotIndex - 1;
     if (decimals < minDecimals) {
-      amountStr = amountStr.padEnd(
-        amountStr.length + (minDecimals - decimals),
-        "0"
-      );
+      amountStr = amountStr.padEnd(amountStr.length + (minDecimals - decimals), "0");
     }
   } else {
     amountStr = amountStr + ".0000";
@@ -1786,13 +1552,7 @@ export const padDecimals = (amount, minDecimals) => {
   return amountStr;
 };
 
-export const formatKeyAmount = (
-  map,
-  key,
-  tokenDecimals,
-  displayDecimals,
-  useCommas
-) => {
+export const formatKeyAmount = (map, key, tokenDecimals, displayDecimals, useCommas) => {
   if (!map || !map[key]) {
     return "...";
   }
@@ -1800,13 +1560,7 @@ export const formatKeyAmount = (
   return formatAmount(map[key], tokenDecimals, displayDecimals, useCommas);
 };
 
-export const formatArrayAmount = (
-  arr,
-  index,
-  tokenDecimals,
-  displayDecimals,
-  useCommas
-) => {
+export const formatArrayAmount = (arr, index, tokenDecimals, displayDecimals, useCommas) => {
   if (!arr || !arr[index]) {
     return "...";
   }
@@ -1814,14 +1568,7 @@ export const formatArrayAmount = (
   return formatAmount(arr[index], tokenDecimals, displayDecimals, useCommas);
 };
 
-function _parseOrdersData(
-  ordersData,
-  account,
-  indexes,
-  extractor,
-  uintPropsLength,
-  addressPropsLength
-) {
+function _parseOrdersData(ordersData, account, indexes, extractor, uintPropsLength, addressPropsLength) {
   if (!ordersData || ordersData.length === 0) {
     return [];
   }
@@ -1847,13 +1594,8 @@ function _parseOrdersData(
   return orders;
 }
 
-function parseDecreaseOrdersData(
-  chainId,
-  decreaseOrdersData,
-  account,
-  indexes
-) {
-  const extractor = sliced => {
+function parseDecreaseOrdersData(chainId, decreaseOrdersData, account, indexes) {
+  const extractor = (sliced) => {
     const isLong = sliced[4].toString() === "1";
     return {
       collateralToken: sliced[0],
@@ -1863,31 +1605,16 @@ function parseDecreaseOrdersData(
       isLong,
       triggerPrice: sliced[5],
       triggerAboveThreshold: sliced[6].toString() === "1",
-      type: DECREASE
+      type: DECREASE,
     };
   };
-  return _parseOrdersData(
-    decreaseOrdersData,
-    account,
-    indexes,
-    extractor,
-    5,
-    2
-  ).filter(order => {
-    return (
-      isValidToken(chainId, order.collateralToken) &&
-      isValidToken(chainId, order.indexToken)
-    );
+  return _parseOrdersData(decreaseOrdersData, account, indexes, extractor, 5, 2).filter((order) => {
+    return isValidToken(chainId, order.collateralToken) && isValidToken(chainId, order.indexToken);
   });
 }
 
-function parseIncreaseOrdersData(
-  chainId,
-  increaseOrdersData,
-  account,
-  indexes
-) {
-  const extractor = sliced => {
+function parseIncreaseOrdersData(chainId, increaseOrdersData, account, indexes) {
+  const extractor = (sliced) => {
     const isLong = sliced[5].toString() === "1";
     return {
       purchaseToken: sliced[0],
@@ -1898,17 +1625,10 @@ function parseIncreaseOrdersData(
       isLong,
       triggerPrice: sliced[6],
       triggerAboveThreshold: sliced[7].toString() === "1",
-      type: INCREASE
+      type: INCREASE,
     };
   };
-  return _parseOrdersData(
-    increaseOrdersData,
-    account,
-    indexes,
-    extractor,
-    5,
-    3
-  ).filter(order => {
+  return _parseOrdersData(increaseOrdersData, account, indexes, extractor, 5, 3).filter((order) => {
     return (
       isValidToken(chainId, order.purchaseToken) &&
       isValidToken(chainId, order.collateralToken) &&
@@ -1922,31 +1642,22 @@ function parseSwapOrdersData(chainId, swapOrdersData, account, indexes) {
     return [];
   }
 
-  const extractor = sliced => {
+  const extractor = (sliced) => {
     const triggerAboveThreshold = sliced[6].toString() === "1";
     const shouldUnwrap = sliced[7].toString() === "1";
 
     return {
-      path: [sliced[0], sliced[1], sliced[2]].filter(
-        address => address !== AddressZero
-      ),
+      path: [sliced[0], sliced[1], sliced[2]].filter((address) => address !== AddressZero),
       amountIn: sliced[3],
       minOut: sliced[4],
       triggerRatio: sliced[5],
       triggerAboveThreshold,
       type: SWAP,
-      shouldUnwrap
+      shouldUnwrap,
     };
   };
-  return _parseOrdersData(
-    swapOrdersData,
-    account,
-    indexes,
-    extractor,
-    5,
-    3
-  ).filter(order => {
-    return order.path.every(token => isValidToken(chainId, token));
+  return _parseOrdersData(swapOrdersData, account, indexes, extractor, 5, 3).filter((order) => {
+    return order.path.every((token) => isValidToken(chainId, token));
   });
 }
 
@@ -1963,36 +1674,22 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
 
   const orderBookAddress = getContract(chainId, "OrderBook");
   const orderBookReaderAddress = getContract(chainId, "OrderBookReader");
-  const key = shouldRequest
-    ? [active, chainId, orderBookAddress, account]
-    : false;
+  const key = shouldRequest ? [active, chainId, orderBookAddress, account] : false;
   const { data: orders = [], mutate: updateOrders } = useSWR(key, {
     dedupingInterval: 5000,
     fetcher: async (active, chainId, orderBookAddress, account) => {
       const provider = getProvider(library, chainId);
-      const orderBookContract = new ethers.Contract(
-        orderBookAddress,
-        OrderBook.abi,
-        provider
-      );
-      const orderBookReaderContract = new ethers.Contract(
-        orderBookReaderAddress,
-        OrderBookReader.abi,
-        provider
-      );
+      const orderBookContract = new ethers.Contract(orderBookAddress, OrderBook.abi, provider);
+      const orderBookReaderContract = new ethers.Contract(orderBookReaderAddress, OrderBookReader.abi, provider);
 
       const fetchIndexesFromServer = () => {
-        const ordersIndexesUrl = `${getServerBaseUrl(
-          chainId
-        )}/orders_indices?account=${account}`;
+        const ordersIndexesUrl = `${getServerBaseUrl(chainId)}/orders_indices?account=${account}`;
         return fetch(ordersIndexesUrl)
-          .then(async res => {
+          .then(async (res) => {
             const json = await res.json();
             const ret = {};
             for (const key of Object.keys(json)) {
-              ret[key.toLowerCase()] = json[key].map(val =>
-                parseInt(val.value)
-              );
+              ret[key.toLowerCase()] = json[key].map((val) => parseInt(val.value));
             }
 
             return ret;
@@ -2000,18 +1697,16 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
           .catch(() => ({ swap: [], increase: [], decrease: [] }));
       };
 
-      const fetchLastIndex = async type => {
+      const fetchLastIndex = async (type) => {
         const method = type.toLowerCase() + "OrdersIndex";
-        return await orderBookContract[method](account).then(res =>
-          bigNumberify(res._hex).toNumber()
-        );
+        return await orderBookContract[method](account).then((res) => bigNumberify(res._hex).toNumber());
       };
 
       const fetchLastIndexes = async () => {
         const [swap, increase, decrease] = await Promise.all([
           fetchLastIndex("swap"),
           fetchLastIndex("increase"),
-          fetchLastIndex("decrease")
+          fetchLastIndex("decrease"),
         ]);
 
         return { swap, increase, decrease };
@@ -2033,71 +1728,36 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
         }
         return [
           ...knownIndexes,
-          ...getRange(
-            lastIndex,
-            knownIndexes[knownIndexes.length - 1] + 1
-          ).sort((a, b) => b - a)
+          ...getRange(lastIndex, knownIndexes[knownIndexes.length - 1] + 1).sort((a, b) => b - a),
         ];
       };
 
       const getOrders = async (method, knownIndexes, lastIndex, parseFunc) => {
         const indexes = getIndexes(knownIndexes, lastIndex);
-        const ordersData = await orderBookReaderContract[method](
-          orderBookAddress,
-          account,
-          indexes
-        );
+        const ordersData = await orderBookReaderContract[method](orderBookAddress, account, indexes);
         const orders = parseFunc(chainId, ordersData, account, indexes);
 
         return orders;
       };
 
       try {
-        const [serverIndexes, lastIndexes] = await Promise.all([
-          fetchIndexesFromServer(),
-          fetchLastIndexes()
-        ]);
-        const [
-          swapOrders = [],
-          increaseOrders = [],
-          decreaseOrders = []
-        ] = await Promise.all([
-          getOrders(
-            "getSwapOrders",
-            serverIndexes.swap,
-            lastIndexes.swap,
-            parseSwapOrdersData
-          ),
-          getOrders(
-            "getIncreaseOrders",
-            serverIndexes.increase,
-            lastIndexes.increase,
-            parseIncreaseOrdersData
-          ),
-          getOrders(
-            "getDecreaseOrders",
-            serverIndexes.decrease,
-            lastIndexes.decrease,
-            parseDecreaseOrdersData
-          )
+        const [serverIndexes, lastIndexes] = await Promise.all([fetchIndexesFromServer(), fetchLastIndexes()]);
+        const [swapOrders = [], increaseOrders = [], decreaseOrders = []] = await Promise.all([
+          getOrders("getSwapOrders", serverIndexes.swap, lastIndexes.swap, parseSwapOrdersData),
+          getOrders("getIncreaseOrders", serverIndexes.increase, lastIndexes.increase, parseIncreaseOrdersData),
+          getOrders("getDecreaseOrders", serverIndexes.decrease, lastIndexes.decrease, parseDecreaseOrdersData),
         ]);
         return [...swapOrders, ...increaseOrders, ...decreaseOrders];
       } catch (ex) {
         console.error(ex);
       }
-    }
+    },
   });
 
   return [orders, updateOrders];
 }
 
-export const formatAmount = (
-  amount,
-  tokenDecimals,
-  displayDecimals,
-  useCommas,
-  defaultValue
-) => {
+export const formatAmount = (amount, tokenDecimals, displayDecimals, useCommas, defaultValue) => {
   if (!defaultValue) {
     defaultValue = "...";
   }
@@ -2198,13 +1858,7 @@ export async function getGasPrice(provider, chainId) {
   return gasPrice.add(premium);
 }
 
-export async function getGasLimit(
-  contract,
-  method,
-  params = [],
-  value,
-  gasBuffer
-) {
+export async function getGasLimit(contract, method, params = [], value, gasBuffer) {
   const defaultGasBuffer = 300000;
   const defaultValue = bigNumberify(0);
 
@@ -2232,17 +1886,13 @@ export function approveTokens({
   infoTokens,
   pendingTxns,
   setPendingTxns,
-  includeMessage
+  includeMessage,
 }) {
   setIsApproving(true);
-  const contract = new ethers.Contract(
-    tokenAddress,
-    Token.abi,
-    library.getSigner()
-  );
+  const contract = new ethers.Contract(tokenAddress, Token.abi, library.getSigner());
   contract
     .approve(spender, ethers.constants.MaxUint256)
-    .then(async res => {
+    .then(async (res) => {
       const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
       helperToast.success(
         <div>
@@ -2260,31 +1910,25 @@ export function approveTokens({
         const token = getTokenInfo(infoTokens, tokenAddress);
         const pendingTxn = {
           hash: res.hash,
-          message: includeMessage ? `${token.symbol} Approved!` : false
+          message: includeMessage ? `${token.symbol} Approved!` : false,
         };
         setPendingTxns([...pendingTxns, pendingTxn]);
       }
     })
-    .catch(e => {
+    .catch((e) => {
       console.error(e);
       let failMsg;
       if (
-        [
-          "not enough funds for gas",
-          "failed to execute call with revert code InsufficientGasFunds"
-        ].includes(e.data?.message)
+        ["not enough funds for gas", "failed to execute call with revert code InsufficientGasFunds"].includes(
+          e.data?.message
+        )
       ) {
         failMsg = (
           <div>
-            There is not enough ETH in your account on Arbitrum to send this
-            transaction.
+            There is not enough ETH in your account on Arbitrum to send this transaction.
             <br />
             <br />
-            <a
-              href={"https://arbitrum.io/bridge-tutorial/"}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href={"https://arbitrum.io/bridge-tutorial/"} target="_blank" rel="noopener noreferrer">
               Bridge ETH to Arbitrum
             </a>
           </div>
@@ -2320,12 +1964,7 @@ export const shouldRaiseGasError = (token, amount) => {
   return false;
 };
 
-export const getTokenInfo = (
-  infoTokens,
-  tokenAddress,
-  replaceNative,
-  nativeTokenAddress
-) => {
+export const getTokenInfo = (infoTokens, tokenAddress, replaceNative, nativeTokenAddress) => {
   if (replaceNative && tokenAddress === nativeTokenAddress) {
     return infoTokens[AddressZero];
   }
@@ -2339,10 +1978,10 @@ const NETWORK_METADATA = {
     nativeCurrency: {
       name: "BNB",
       symbol: "BNB",
-      decimals: 18
+      decimals: 18,
     },
     rpcUrls: BSC_RPC_PROVIDERS,
-    blockExplorerUrls: ["https://bscscan.com"]
+    blockExplorerUrls: ["https://bscscan.com"],
   },
   [TESTNET]: {
     chainId: "0x" + TESTNET.toString(16),
@@ -2350,10 +1989,10 @@ const NETWORK_METADATA = {
     nativeCurrency: {
       name: "BNB",
       symbol: "BNB",
-      decimals: 18
+      decimals: 18,
     },
     rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
-    blockExplorerUrls: ["https://testnet.bscscan.com/"]
+    blockExplorerUrls: ["https://testnet.bscscan.com/"],
   },
   [ARBITRUM_TESTNET]: {
     chainId: "0x" + ARBITRUM_TESTNET.toString(16),
@@ -2361,10 +2000,10 @@ const NETWORK_METADATA = {
     nativeCurrency: {
       name: "ETH",
       symbol: "ETH",
-      decimals: 18
+      decimals: 18,
     },
     rpcUrls: ["https://rinkeby.arbitrum.io/rpc"],
-    blockExplorerUrls: ["https://rinkeby-explorer.arbitrum.io/"]
+    blockExplorerUrls: ["https://rinkeby-explorer.arbitrum.io/"],
   },
   [ARBITRUM]: {
     chainId: "0x" + ARBITRUM.toString(16),
@@ -2372,10 +2011,10 @@ const NETWORK_METADATA = {
     nativeCurrency: {
       name: "ETH",
       symbol: "ETH",
-      decimals: 18
+      decimals: 18,
     },
     rpcUrls: ARBITRUM_RPC_PROVIDERS,
-    blockExplorerUrls: [getExplorerUrl(ARBITRUM)]
+    blockExplorerUrls: [getExplorerUrl(ARBITRUM)],
   },
   [AVALANCHE]: {
     chainId: "0x" + AVALANCHE.toString(16),
@@ -2383,21 +2022,19 @@ const NETWORK_METADATA = {
     nativeCurrency: {
       name: "AVAX",
       symbol: "AVAX",
-      decimals: 18
+      decimals: 18,
     },
     rpcUrls: AVALANCHE_RPC_PROVIDERS,
-    blockExplorerUrls: [getExplorerUrl(AVALANCHE)]
-  }
+    blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
+  },
 };
 
 export const addBscNetwork = async () => {
   return addNetwork(NETWORK_METADATA[MAINNET]);
 };
 
-export const addNetwork = async metadata => {
-  await window.ethereum
-    .request({ method: "wallet_addEthereumChain", params: [metadata] })
-    .catch();
+export const addNetwork = async (metadata) => {
+  await window.ethereum.request({ method: "wallet_addEthereumChain", params: [metadata] }).catch();
 };
 
 export const switchNetwork = async (chainId, active) => {
@@ -2413,14 +2050,16 @@ export const switchNetwork = async (chainId, active) => {
     const chainIdHex = "0x" + chainId.toString(16);
     await window.ethereum.request({
       method: "wallet_switchEthereumChain",
-      params: [{ chainId: chainIdHex }]
+      params: [{ chainId: chainIdHex }],
     });
     helperToast.success("Connected to " + getChainName(chainId));
     return getChainName(chainId);
   } catch (ex) {
     // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
     // This error code indicates that the chain has not been added to MetaMask.
-    if (ex.code === 4902) {
+    // 4001 error means user has denied the request
+    // If the error code is not 4001, then we need to add the network
+    if (ex.code !== 4001) {
       return await addNetwork(NETWORK_METADATA[chainId]);
     }
 
@@ -2428,19 +2067,13 @@ export const switchNetwork = async (chainId, active) => {
   }
 };
 
-export const getWalletConnectHandler = (
-  activate,
-  deactivate,
-  setActivatingConnector
-) => {
+export const getWalletConnectHandler = (activate, deactivate, setActivatingConnector) => {
   const fn = async () => {
     const walletConnect = getWalletConnectConnector();
     setActivatingConnector(walletConnect);
-    activate(walletConnect, ex => {
+    activate(walletConnect, (ex) => {
       if (ex instanceof UnsupportedChainIdError) {
-        helperToast.error(
-          "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
-        );
+        helperToast.error("Unsupported chain. Switch to Arbitrum network on your wallet and try again");
         console.warn(ex);
       } else if (!(ex instanceof UserRejectedRequestErrorWalletConnect)) {
         helperToast.error(ex.message);
@@ -2453,23 +2086,17 @@ export const getWalletConnectHandler = (
   return fn;
 };
 
-export const getInjectedHandler = activate => {
+export const getInjectedHandler = (activate) => {
   const fn = async () => {
-    activate(getInjectedConnector(), e => {
-      const chainId =
-        localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) ||
-        DEFAULT_CHAIN_ID;
+    activate(getInjectedConnector(), (e) => {
+      const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID;
 
       if (e.message.includes("No Ethereum provider")) {
         helperToast.error(
           <div>
             MetaMask not yet installed.
             <br />
-            <a
-              href="https://metamask.io"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">
               Install MetaMask
             </a>{" "}
             to start using the app.
@@ -2485,23 +2112,17 @@ export const getInjectedHandler = activate => {
           <div>
             <div>Your wallet is not connected to {getChainName(chainId)}.</div>
             <br />
-            <div
-              className="clickable underline margin-bottom"
-              onClick={() => switchNetwork(chainId, true)}
-            >
+            <div className="clickable underline margin-bottom" onClick={() => switchNetwork(chainId, true)}>
               Switch to {getChainName(chainId)}
             </div>
-            <div
-              className="clickable underline"
-              onClick={() => switchNetwork(chainId, true)}
-            >
+            <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
               Add {getChainName(chainId)}
             </div>
           </div>
         );
         return;
       }
-      helperToast.error(e.toString());
+      helperToast.error(e?.message || "Something went wrong!");
     });
   };
   return fn;
@@ -2560,23 +2181,16 @@ export function getInfoTokens(
       }
 
       token.availableUsd = token.isStable
-        ? token.poolAmount
-            .mul(token.minPrice)
-            .div(expandDecimals(1, token.decimals))
-        : token.availableAmount
-            .mul(token.minPrice)
-            .div(expandDecimals(1, token.decimals));
+        ? token.poolAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals))
+        : token.availableAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals));
 
       token.managedUsd = token.availableUsd.add(token.guaranteedUsd);
-      token.managedAmount = token.managedUsd
-        .mul(expandDecimals(1, token.decimals))
-        .div(token.minPrice);
+      token.managedAmount = token.managedUsd.mul(expandDecimals(1, token.decimals)).div(token.minPrice);
     }
 
     if (fundingRateInfo) {
       token.fundingRate = fundingRateInfo[i * fundingRatePropsLength];
-      token.cumulativeFundingRate =
-        fundingRateInfo[i * fundingRatePropsLength + 1];
+      token.cumulativeFundingRate = fundingRateInfo[i * fundingRatePropsLength + 1];
     }
 
     if (infoTokens[token.address]) {
@@ -2594,7 +2208,7 @@ export const CHART_PERIODS = {
   "15m": 60 * 15,
   "1h": 60 * 60,
   "4h": 60 * 60 * 4,
-  "1d": 60 * 60 * 24
+  "1d": 60 * 60 * 24,
 };
 
 export function getTotalVolumeSum(volumes) {
@@ -2640,7 +2254,7 @@ export function getDepositBalanceData(depositBalances) {
     "stakedGmxInBonusGmx",
     "bonusGmxInFeeGmx",
     "bnGmxInFeeGmx",
-    "glpInStakedGlp"
+    "glpInStakedGlp",
   ];
   const data = {};
 
@@ -2670,7 +2284,7 @@ export function getVestingData(vestingInfo) {
       claimedAmounts: vestingInfo[i * propsLength + 3],
       claimable: vestingInfo[i * propsLength + 4],
       maxVestableAmount: vestingInfo[i * propsLength + 5],
-      averageStakedAmount: vestingInfo[i * propsLength + 6]
+      averageStakedAmount: vestingInfo[i * propsLength + 6],
     };
 
     data[key + "PairAmount"] = data[key].pairAmount;
@@ -2690,13 +2304,7 @@ export function getStakingData(stakingInfo) {
     return;
   }
 
-  const keys = [
-    "stakedGmxTracker",
-    "bonusGmxTracker",
-    "feeGmxTracker",
-    "stakedGlpTracker",
-    "feeGlpTracker"
-  ];
+  const keys = ["stakedGmxTracker", "bonusGmxTracker", "feeGmxTracker", "stakedGlpTracker", "feeGlpTracker"];
   const data = {};
   const propsLength = 5;
 
@@ -2707,7 +2315,7 @@ export function getStakingData(stakingInfo) {
       tokensPerInterval: stakingInfo[i * propsLength + 1],
       averageStakedAmounts: stakingInfo[i * propsLength + 2],
       cumulativeRewards: stakingInfo[i * propsLength + 3],
-      totalSupply: stakingInfo[i * propsLength + 4]
+      totalSupply: stakingInfo[i * propsLength + 4],
     };
   }
 
@@ -2750,53 +2358,33 @@ export function getProcessedData(
 
   data.gmxSupplyUsd = supplyData.gmx.mul(gmxPrice).div(expandDecimals(1, 18));
   data.stakedGmxSupply = stakedGmxSupply;
-  data.stakedGmxSupplyUsd = stakedGmxSupply
-    .mul(gmxPrice)
-    .div(expandDecimals(1, 18));
+  data.stakedGmxSupplyUsd = stakedGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   data.gmxInStakedGmx = depositBalanceData.gmxInStakedGmx;
-  data.gmxInStakedGmxUsd = depositBalanceData.gmxInStakedGmx
-    .mul(gmxPrice)
-    .div(expandDecimals(1, 18));
+  data.gmxInStakedGmxUsd = depositBalanceData.gmxInStakedGmx.mul(gmxPrice).div(expandDecimals(1, 18));
 
   data.esGmxBalance = balanceData.esGmx;
-  data.esGmxBalanceUsd = balanceData.esGmx
-    .mul(gmxPrice)
-    .div(expandDecimals(1, 18));
+  data.esGmxBalanceUsd = balanceData.esGmx.mul(gmxPrice).div(expandDecimals(1, 18));
 
   data.stakedGmxTrackerSupply = supplyData.stakedGmxTracker;
-  data.stakedGmxTrackerSupplyUsd = supplyData.stakedGmxTracker
-    .mul(gmxPrice)
-    .div(expandDecimals(1, 18));
-  data.stakedEsGmxSupply = data.stakedGmxTrackerSupply.sub(
-    data.stakedGmxSupply
-  );
-  data.stakedEsGmxSupplyUsd = data.stakedEsGmxSupply
-    .mul(gmxPrice)
-    .div(expandDecimals(1, 18));
+  data.stakedGmxTrackerSupplyUsd = supplyData.stakedGmxTracker.mul(gmxPrice).div(expandDecimals(1, 18));
+  data.stakedEsGmxSupply = data.stakedGmxTrackerSupply.sub(data.stakedGmxSupply);
+  data.stakedEsGmxSupplyUsd = data.stakedEsGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
 
   data.esGmxInStakedGmx = depositBalanceData.esGmxInStakedGmx;
-  data.esGmxInStakedGmxUsd = depositBalanceData.esGmxInStakedGmx
-    .mul(gmxPrice)
-    .div(expandDecimals(1, 18));
+  data.esGmxInStakedGmxUsd = depositBalanceData.esGmxInStakedGmx.mul(gmxPrice).div(expandDecimals(1, 18));
 
   data.bnGmxInFeeGmx = depositBalanceData.bnGmxInFeeGmx;
   data.bonusGmxInFeeGmx = depositBalanceData.bonusGmxInFeeGmx;
   data.feeGmxSupply = stakingData.feeGmxTracker.totalSupply;
-  data.feeGmxSupplyUsd = data.feeGmxSupply
-    .mul(gmxPrice)
-    .div(expandDecimals(1, 18));
+  data.feeGmxSupplyUsd = data.feeGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
 
   data.stakedGmxTrackerRewards = stakingData.stakedGmxTracker.claimable;
-  data.stakedGmxTrackerRewardsUsd = stakingData.stakedGmxTracker.claimable
-    .mul(gmxPrice)
-    .div(expandDecimals(1, 18));
+  data.stakedGmxTrackerRewardsUsd = stakingData.stakedGmxTracker.claimable.mul(gmxPrice).div(expandDecimals(1, 18));
 
   data.bonusGmxTrackerRewards = stakingData.bonusGmxTracker.claimable;
 
   data.feeGmxTrackerRewards = stakingData.feeGmxTracker.claimable;
-  data.feeGmxTrackerRewardsUsd = stakingData.feeGmxTracker.claimable
-    .mul(nativeTokenPrice)
-    .div(expandDecimals(1, 18));
+  data.feeGmxTrackerRewardsUsd = stakingData.feeGmxTracker.claimable.mul(nativeTokenPrice).div(expandDecimals(1, 18));
 
   data.stakedGmxTrackerAnnualRewardsUsd = stakingData.stakedGmxTracker.tokensPerInterval
     .mul(SECONDS_PER_YEAR)
@@ -2804,9 +2392,7 @@ export function getProcessedData(
     .div(expandDecimals(1, 18));
   data.gmxAprForEsGmx =
     data.stakedGmxTrackerSupplyUsd && data.stakedGmxTrackerSupplyUsd.gt(0)
-      ? data.stakedGmxTrackerAnnualRewardsUsd
-          .mul(BASIS_POINTS_DIVISOR)
-          .div(data.stakedGmxTrackerSupplyUsd)
+      ? data.stakedGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.stakedGmxTrackerSupplyUsd)
       : bigNumberify(0);
   data.feeGmxTrackerAnnualRewardsUsd = stakingData.feeGmxTracker.tokensPerInterval
     .mul(SECONDS_PER_YEAR)
@@ -2814,15 +2400,11 @@ export function getProcessedData(
     .div(expandDecimals(1, 18));
   data.gmxAprForNativeToken =
     data.feeGmxSupplyUsd && data.feeGmxSupplyUsd.gt(0)
-      ? data.feeGmxTrackerAnnualRewardsUsd
-          .mul(BASIS_POINTS_DIVISOR)
-          .div(data.feeGmxSupplyUsd)
+      ? data.feeGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.feeGmxSupplyUsd)
       : bigNumberify(0);
   data.gmxAprTotal = data.gmxAprForNativeToken.add(data.gmxAprForEsGmx);
 
-  data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(
-    data.feeGmxTrackerRewardsUsd
-  );
+  data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(data.feeGmxTrackerRewardsUsd);
 
   data.glpSupply = supplyData.glp;
   data.glpPrice =
@@ -2830,24 +2412,16 @@ export function getProcessedData(
       ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(data.glpSupply)
       : bigNumberify(0);
 
-  data.glpSupplyUsd = supplyData.glp
-    .mul(data.glpPrice)
-    .div(expandDecimals(1, 18));
+  data.glpSupplyUsd = supplyData.glp.mul(data.glpPrice).div(expandDecimals(1, 18));
 
   data.glpBalance = depositBalanceData.glpInStakedGlp;
-  data.glpBalanceUsd = depositBalanceData.glpInStakedGlp
-    .mul(data.glpPrice)
-    .div(expandDecimals(1, GLP_DECIMALS));
+  data.glpBalanceUsd = depositBalanceData.glpInStakedGlp.mul(data.glpPrice).div(expandDecimals(1, GLP_DECIMALS));
 
   data.stakedGlpTrackerRewards = stakingData.stakedGlpTracker.claimable;
-  data.stakedGlpTrackerRewardsUsd = stakingData.stakedGlpTracker.claimable
-    .mul(gmxPrice)
-    .div(expandDecimals(1, 18));
+  data.stakedGlpTrackerRewardsUsd = stakingData.stakedGlpTracker.claimable.mul(gmxPrice).div(expandDecimals(1, 18));
 
   data.feeGlpTrackerRewards = stakingData.feeGlpTracker.claimable;
-  data.feeGlpTrackerRewardsUsd = stakingData.feeGlpTracker.claimable
-    .mul(nativeTokenPrice)
-    .div(expandDecimals(1, 18));
+  data.feeGlpTrackerRewardsUsd = stakingData.feeGlpTracker.claimable.mul(nativeTokenPrice).div(expandDecimals(1, 18));
 
   data.stakedGlpTrackerAnnualRewardsUsd = stakingData.stakedGlpTracker.tokensPerInterval
     .mul(SECONDS_PER_YEAR)
@@ -2855,9 +2429,7 @@ export function getProcessedData(
     .div(expandDecimals(1, 18));
   data.glpAprForEsGmx =
     data.glpSupplyUsd && data.glpSupplyUsd.gt(0)
-      ? data.stakedGlpTrackerAnnualRewardsUsd
-          .mul(BASIS_POINTS_DIVISOR)
-          .div(data.glpSupplyUsd)
+      ? data.stakedGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.glpSupplyUsd)
       : bigNumberify(0);
   data.feeGlpTrackerAnnualRewardsUsd = stakingData.feeGlpTracker.tokensPerInterval
     .mul(SECONDS_PER_YEAR)
@@ -2865,40 +2437,24 @@ export function getProcessedData(
     .div(expandDecimals(1, 18));
   data.glpAprForNativeToken =
     data.glpSupplyUsd && data.glpSupplyUsd.gt(0)
-      ? data.feeGlpTrackerAnnualRewardsUsd
-          .mul(BASIS_POINTS_DIVISOR)
-          .div(data.glpSupplyUsd)
+      ? data.feeGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.glpSupplyUsd)
       : bigNumberify(0);
   data.glpAprTotal = data.glpAprForNativeToken.add(data.glpAprForEsGmx);
 
-  data.totalGlpRewardsUsd = data.stakedGlpTrackerRewardsUsd.add(
-    data.feeGlpTrackerRewardsUsd
-  );
+  data.totalGlpRewardsUsd = data.stakedGlpTrackerRewardsUsd.add(data.feeGlpTrackerRewardsUsd);
 
-  data.totalEsGmxRewards = data.stakedGmxTrackerRewards.add(
-    data.stakedGlpTrackerRewards
-  );
-  data.totalEsGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(
-    data.stakedGlpTrackerRewardsUsd
-  );
+  data.totalEsGmxRewards = data.stakedGmxTrackerRewards.add(data.stakedGlpTrackerRewards);
+  data.totalEsGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(data.stakedGlpTrackerRewardsUsd);
 
   data.gmxVesterRewards = vestingData.gmxVester.claimable;
   data.glpVesterRewards = vestingData.glpVester.claimable;
   data.totalVesterRewards = data.gmxVesterRewards.add(data.glpVesterRewards);
-  data.totalVesterRewardsUsd = data.totalVesterRewards
-    .mul(gmxPrice)
-    .div(expandDecimals(1, 18));
+  data.totalVesterRewardsUsd = data.totalVesterRewards.mul(gmxPrice).div(expandDecimals(1, 18));
 
-  data.totalNativeTokenRewards = data.feeGmxTrackerRewards.add(
-    data.feeGlpTrackerRewards
-  );
-  data.totalNativeTokenRewardsUsd = data.feeGmxTrackerRewardsUsd.add(
-    data.feeGlpTrackerRewardsUsd
-  );
+  data.totalNativeTokenRewards = data.feeGmxTrackerRewards.add(data.feeGlpTrackerRewards);
+  data.totalNativeTokenRewardsUsd = data.feeGmxTrackerRewardsUsd.add(data.feeGlpTrackerRewardsUsd);
 
-  data.totalRewardsUsd = data.totalEsGmxRewardsUsd
-    .add(data.totalNativeTokenRewardsUsd)
-    .add(data.totalVesterRewardsUsd);
+  data.totalRewardsUsd = data.totalEsGmxRewardsUsd.add(data.totalNativeTokenRewardsUsd).add(data.totalVesterRewardsUsd);
 
   return data;
 }
