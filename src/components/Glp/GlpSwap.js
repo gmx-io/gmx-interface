@@ -1077,7 +1077,7 @@ export default function GlpSwap(props) {
                 try {
                   tokenImage = require("../../img/ic_" + token.symbol.toLowerCase() + "_40.svg");
                 } catch (error) {
-                  // console.log(error)
+                  console.log(error)
                 }
 
                 return (
