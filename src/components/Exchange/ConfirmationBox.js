@@ -133,7 +133,6 @@ export default function ConfirmationBox(props) {
   const existingTriggerOrders = useMemo(() => {
     const wrappedToken = getWrappedToken(chainId);
     return orders.filter((order) => {
-      console.log({ order });
       if (order.type !== DECREASE) return false;
       const sameToken =
         order.indexToken === wrappedToken.address ? toToken.isNative : order.indexToken === toToken.address;
@@ -149,7 +148,7 @@ export default function ConfirmationBox(props) {
       }
       return false;
     });
-  }, [orders, chainId, isLong, toToken.address, toToken.isNative]);
+  }, [orders, chainId, nextAveragePrice, isLong, toToken.address, toToken.isNative]);
 
   const getError = () => {
     if (!isSwap && hasExistingPosition && !isMarketOrder) {
@@ -350,7 +349,6 @@ export default function ConfirmationBox(props) {
         </div>
         <ul className="trigger-order-list">
           {existingTriggerOrders.map((order, i) => {
-            console.log({ order });
             const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
             const indexToken = getToken(chainId, order.indexToken);
             return (
