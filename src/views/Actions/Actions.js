@@ -143,6 +143,7 @@ export default function Actions() {
             savedIsPnlInLeverage={false}
             chainId={chainId}
             nativeTokenAddress={nativeTokenAddress}
+            showPnlAfterFees={false}
           />
         </div>
       )}
