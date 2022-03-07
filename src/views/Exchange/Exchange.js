@@ -100,6 +100,7 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
     position.fundingFee = fundingFee ? fundingFee : bigNumberify(0);
     position.collateralAfterFee = position.collateral.sub(position.fundingFee);
 
+    position.closingFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
     position.positionFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).mul(2).div(BASIS_POINTS_DIVISOR)
     position.totalFees = position.positionFee.add(position.fundingFee)
 
@@ -124,6 +125,7 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
 
       position.deltaStr = deltaStr;
       position.deltaPercentageStr = deltaPercentageStr;
+      position.deltaBeforeFeesStr = deltaStr;
 
       let hasProfitAfterFees
       let pendingDeltaAfterFees
@@ -162,7 +164,14 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
       let netValue = position.hasProfit
         ? position.collateral.add(position.pendingDelta)
         : position.collateral.sub(position.pendingDelta);
-      position.netValue = netValue.sub(position.fundingFee);
+
+      netValue = netValue.sub(position.fundingFee)
+
+      if (showPnlAfterFees) {
+        netValue = netValue.sub(position.closingFee);
+      }
+
+      position.netValue = netValue;
     }
 
     position.leverage = getLeverage({
@@ -548,6 +557,7 @@ export default function Exchange({
             nativeTokenAddress={nativeTokenAddress}
             setMarket={setMarket}
             orders={orders}
+            showPnlAfterFees={savedShowPnlAfterFees}
           />
         )}
         {listSection === "Orders" && (

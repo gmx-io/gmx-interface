@@ -76,6 +76,7 @@ export default function PositionsList(props) {
     isWaitingForPositionManagerApproval,
     isPositionManagerApproving,
     approvePositionManager,
+    showPnlAfterFees,
     setMarket,
   } = props;
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
@@ -245,10 +246,12 @@ export default function PositionsList(props) {
                           renderContent={() => {
                             return (
                               <>
-                                Net Value: Initial Collateral - Borrow Fee + PnL
+                                Net Value: {showPnlAfterFees ? "Initial Collateral - Fees + PnL" : "Initial Collateral - Borrow Fee + PnL"}
                                 <br />
                                 <br />
                                 Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                                <br />
+                                PnL: {position.deltaBeforeFeesStr}
                                 <br />
                                 Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
                                 <br />
@@ -355,10 +358,12 @@ export default function PositionsList(props) {
                       renderContent={() => {
                         return (
                           <>
-                            Net Value: Initial Collateral - Borrow Fee + PnL
+                            Net Value: {showPnlAfterFees ? "Initial Collateral - Fees + PnL" : "Initial Collateral - Borrow Fee + PnL"}
                             <br />
                             <br />
                             Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                            <br />
+                            PnL: {position.deltaBeforeFeesStr}
                             <br />
                             Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
                             <br/>
