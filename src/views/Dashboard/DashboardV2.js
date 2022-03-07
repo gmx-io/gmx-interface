@@ -408,15 +408,15 @@ export default function DashboardV2() {
   let gmxDistributionData = [{
     name: "staked",
     value: stakedPercent,
-    color: "#2D42FC"
+    color: "#4353fa"
   }, {
     name: "in liquidity",
     value: liquidityPercent,
-    color: "#02CECD"
+    color: "#0598fa"
   }, {
     name: "not staked",
     value: notStakedPercent,
-    color: "#FB4AFD"
+    color: "#5c0af5"
   }]
 
   useEffect(() => {
@@ -506,7 +506,7 @@ export default function DashboardV2() {
         </div>
       );
     }
-  
+
     return null;
   };
 
@@ -664,7 +664,7 @@ export default function DashboardV2() {
                       cx={100}
                       cy={100}
                       innerRadius={75}
-                      outerRadius={90}
+                      outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
                       startAngle={90}
@@ -688,7 +688,7 @@ export default function DashboardV2() {
                       ))}
                     </Pie>
                     <text x={'50%'} y={'50%'} fill="white" textAnchor="middle" dominantBaseline="middle">
-                      GMX Distribution
+                      Distribution
                     </text>
                     <Tooltip content={<CustomTooltip />} />
                   </PieChart>
@@ -749,7 +749,7 @@ export default function DashboardV2() {
                       cx={100}
                       cy={100}
                       innerRadius={75}
-                      outerRadius={90}
+                      outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
                       startAngle={90}
