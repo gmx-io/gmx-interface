@@ -14,6 +14,7 @@ import "./TokenSelector.css";
 
 export default function TokenSelector(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState('');
   const tokenInfo = getToken(props.chainId, props.tokenAddress);
   const {
     tokens,
@@ -43,11 +44,28 @@ export default function TokenSelector(props) {
     console.log(error)
   }
 
+  const onSearchKeywordChange = (e) => {
+    console.log(e.target.value)
+    setSearchKeyword(e.target.value);
+  }
+
+  const filteredTokens = tokens.filter(item => {
+    return item.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1
+  })
+
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)}>
       <Modal isVisible={isModalVisible} setIsVisible={setIsModalVisible} label={props.label}>
         <div className="TokenSelector-tokens">
-          {tokens.map((token) => {
+          <div className="TokenSelector-token-row">
+            <input
+              type="text"
+              placeholder="Search Coins"
+              value={searchKeyword}
+              onChange={(e) => onSearchKeywordChange(e)}
+            />
+          </div>
+          {filteredTokens.map((token) => {
             let tokenPopupImage;
             try {
               tokenPopupImage = require("../../img/ic_" + token.symbol.toLowerCase() + "_40.svg");
