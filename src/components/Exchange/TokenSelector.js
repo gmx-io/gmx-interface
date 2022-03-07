@@ -23,10 +23,10 @@ export default function TokenSelector(props) {
     disabled,
     showTokenImgInDropdown = false,
     showSymbolImage = false,
-    showNewCaret = false
+    showNewCaret = false,
   } = props;
 
-  const onSelectToken = token => {
+  const onSelectToken = (token) => {
     setIsModalVisible(false);
     props.onSelectToken(token);
   };
@@ -38,27 +38,19 @@ export default function TokenSelector(props) {
   var tokenImage = null;
 
   try {
-    tokenImage = require("../../img/ic_" +
-      tokenInfo.symbol.toLowerCase() +
-      "_24.svg");
+    tokenImage = require("../../img/ic_" + tokenInfo.symbol.toLowerCase() + "_24.svg");
   } catch (error) {
-    // console.log(error)
+    console.log(error)
   }
 
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)}>
-      <Modal
-        isVisible={isModalVisible}
-        setIsVisible={setIsModalVisible}
-        label={props.label}
-      >
+      <Modal isVisible={isModalVisible} setIsVisible={setIsModalVisible} label={props.label}>
         <div className="TokenSelector-tokens">
-          {tokens.map(token => {
+          {tokens.map((token) => {
             let tokenPopupImage;
             try {
-              tokenPopupImage = require("../../img/ic_" +
-                token.symbol.toLowerCase() +
-                "_40.svg");
+              tokenPopupImage = require("../../img/ic_" + token.symbol.toLowerCase() + "_40.svg");
             } catch (error) {
               tokenPopupImage = require("../../img/ic_eth_40.svg");
             }
@@ -73,23 +65,13 @@ export default function TokenSelector(props) {
             }
             let balanceUsd;
             if (balance && info.maxPrice) {
-              balanceUsd = balance
-                .mul(info.maxPrice)
-                .div(expandDecimals(1, token.decimals));
+              balanceUsd = balance.mul(info.maxPrice).div(expandDecimals(1, token.decimals));
             }
             return (
-              <div
-                className="TokenSelector-token-row"
-                onClick={() => onSelectToken(token)}
-                key={token.address}
-              >
+              <div className="TokenSelector-token-row" onClick={() => onSelectToken(token)} key={token.address}>
                 <div className="Token-info">
                   {showTokenImgInDropdown && (
-                    <img
-                      src={tokenPopupImage?.default}
-                      alt={token.name}
-                      className="token-logo"
-                    />
+                    <img src={tokenPopupImage?.default} alt={token.name} className="token-logo" />
                   )}
                   <div className="Token-symbol">
                     <div className="Token-text">{token.symbol}</div>
@@ -99,18 +81,12 @@ export default function TokenSelector(props) {
                 <div className="Token-balance">
                   {balance && (
                     <div className="Token-text">
-                      {balance.gt(0) &&
-                        formatAmount(balance, token.decimals, 4, true)}
+                      {balance.gt(0) && formatAmount(balance, token.decimals, 4, true)}
                       {balance.eq(0) && "-"}
                     </div>
                   )}
                   <span className="text-accent">
-                    {mintAmount && (
-                      <div>
-                        Mintable:{" "}
-                        {formatAmount(mintAmount, token.decimals, 2, true)} USDG
-                      </div>
-                    )}
+                    {mintAmount && <div>Mintable: {formatAmount(mintAmount, token.decimals, 2, true)} USDG</div>}
                     {showMintingCap && !mintAmount && <div>-</div>}
                     {!showMintingCap && balanceUsd && balanceUsd.gt(0) && (
                       <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
@@ -122,25 +98,12 @@ export default function TokenSelector(props) {
           })}
         </div>
       </Modal>
-      <div
-        className="TokenSelector-box"
-        onClick={() => setIsModalVisible(true)}
-      >
+      <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
         {tokenInfo.symbol}
         {showSymbolImage && (
-          <img
-            src={tokenImage && tokenImage.default}
-            alt={tokenInfo.symbol}
-            className="TokenSelector-box-symbol"
-          />
+          <img src={tokenImage && tokenImage.default} alt={tokenInfo.symbol} className="TokenSelector-box-symbol" />
         )}
-        {showNewCaret && (
-          <img
-            src={dropDownIcon}
-            alt="dropDownIcon"
-            className="TokenSelector-box-caret"
-          />
-        )}
+        {showNewCaret && <img src={dropDownIcon} alt="dropDownIcon" className="TokenSelector-box-caret" />}
         {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}
       </div>
     </div>

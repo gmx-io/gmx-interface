@@ -364,7 +364,20 @@
 }
 
 .PositionEditor .Modal-content {
-  width: 23rem;
+  width: 27rem;
+  position: absolute;
+  max-height: 80vh;
+  overflow: hidden;
+  border: none;
+  top: auto;
+  bottom: auto;
+}
+
+.PositionEditor .Modal-content .Modal-body {
+  overscroll-behavior: smooth;
+  max-height: calc(80vh - 5.5rem);
+  overflow-y: auto;
+  padding-right: 5px;
 }
 
 .PositionEditor .Tab {
@@ -963,7 +976,7 @@ table.Exchange-list-small td {
 
 @media (max-width: 700px) {
   .PositionEditor .Modal-content {
-    width: 80vw;
+    width: 90vw;
   }
 
   .ExchangeChart-top-inner {
