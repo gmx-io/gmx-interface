@@ -161,7 +161,7 @@ export default function ConfirmationBox(props) {
       }
       return false;
     });
-  }, [orders, chainId, nextAveragePrice, isLong, toToken.address, toToken.isNative]);
+  }, [orders, chainId, isLong, toToken.address, toToken.isNative]);
 
   const getError = () => {
     if (!isSwap && hasExistingPosition && !isMarketOrder) {
@@ -411,7 +411,7 @@ export default function ConfirmationBox(props) {
         {existingTriggerOrderLength > 1 ? "orders" : "order"}. You should cancel these trigger orders.
       </div>
     );
-  }, [hasExistingPosition, existingTriggerOrders, isSwap]);
+  }, [hasExistingPosition, existingTriggerOrders, isSwap, existingTriggerOrdersThatWillBeClosed]);
 
   // TODO handle unaprproved order plugin (very unlikely case)
   const renderMain = useCallback(() => {
@@ -635,6 +635,7 @@ export default function ConfirmationBox(props) {
     fromUsdMin,
     collateralAfterFees,
     renderExistingTriggerWarning,
+    renderExistingTriggerError,
   ]);
 
   const renderSwapSection = useCallback(() => {
