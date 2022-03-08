@@ -65,22 +65,21 @@ export default function ChartTokenSelector(props) {
 
   const customStyles = {
     option: (provided, state) => {
-      const backgroundColor = "#16182e";
       return {
         ...provided,
         margin: 0,
         padding: 0,
         cursor: "pointer",
-        backgroundColor,
+        backgroundColor: "#101124",
         color: "white",
-        height: 36,
+        height: 40,
         fontSize: "1.375rem",
         lineHeight: "1.75rem"
       };
     },
     control: (provided, state) => {
       return {
-        height: 36,
+        height: 40,
         display: "flex",
         cursor: "pointer",
         fontSize: "1.375rem",
@@ -102,12 +101,14 @@ export default function ChartTokenSelector(props) {
       borderRadius: 4,
       fontSize: "14px",
       top: '42px',
-      left: '-0.2rem',
+      left: '0rem',
       width: 158
     }),
     menuList: provided => ({
       paddingTop: "0px",
-      paddingBottom: "0px"
+      paddingBottom: "0px",
+      background: "#101124",
+      borderRadius: 4
     }),
     singleValue: (provided, state) => ({
       ...provided,
