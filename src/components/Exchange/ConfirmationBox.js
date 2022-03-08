@@ -130,7 +130,7 @@ export default function ConfirmationBox(props) {
     }
   }, [orders, chainId, isLong, toToken.address, toToken.isNative]);
 
-  const existingTriggerOrders = useMemo(() => {
+  const existingTriggerOrdersThatWillBeClosed = useMemo(() => {
     const wrappedToken = getWrappedToken(chainId);
     return orders.filter((order) => {
       if (order.type !== DECREASE) return false;
@@ -150,6 +150,19 @@ export default function ConfirmationBox(props) {
     });
   }, [orders, chainId, nextAveragePrice, isLong, toToken.address, toToken.isNative]);
 
+  const existingTriggerOrders = useMemo(() => {
+    const wrappedToken = getWrappedToken(chainId);
+    return orders.filter((order) => {
+      if (order.type !== DECREASE) return false;
+      const sameToken =
+        order.indexToken === wrappedToken.address ? toToken.isNative : order.indexToken === toToken.address;
+      if (order.isLong === isLong && sameToken) {
+        return order;
+      }
+      return false;
+    });
+  }, [orders, chainId, nextAveragePrice, isLong, toToken.address, toToken.isNative]);
+
   const getError = () => {
     if (!isSwap && hasExistingPosition && !isMarketOrder) {
       const { delta, hasProfit } = calculatePositionDelta(triggerPriceUsd, existingPosition);
@@ -164,7 +177,7 @@ export default function ConfirmationBox(props) {
   };
 
   const getPrimaryText = () => {
-    if (!hasExistingPosition && existingTriggerOrders?.length > 0) {
+    if (!hasExistingPosition && existingTriggerOrdersThatWillBeClosed?.length > 0) {
       return `Cancel trigger orders to open position!`;
     }
 
@@ -202,7 +215,7 @@ export default function ConfirmationBox(props) {
     if (getError()) {
       return false;
     }
-    if (!hasExistingPosition && existingTriggerOrders?.length > 0) {
+    if (!hasExistingPosition && existingTriggerOrdersThatWillBeClosed?.length > 0) {
       return false;
     }
     return !isPendingConfirmation && !isSubmitting;
@@ -335,11 +348,11 @@ export default function ConfirmationBox(props) {
     );
   }, [existingOrder, isSwap, chainId]);
 
-  const renderExistingTriggerWarning = useCallback(() => {
-    if (isSwap || hasExistingPosition || existingTriggerOrders?.length < 1) {
+  const renderExistingTriggerError = useCallback(() => {
+    if (isSwap || hasExistingPosition || existingTriggerOrdersThatWillBeClosed?.length < 1) {
       return;
     }
-    let existingTriggerOrderLength = existingTriggerOrders?.length;
+    let existingTriggerOrderLength = existingTriggerOrdersThatWillBeClosed?.length;
     return (
       <>
         <div className="Confirmation-box-warning">
@@ -348,7 +361,7 @@ export default function ConfirmationBox(props) {
           position.
         </div>
         <ul className="trigger-order-list">
-          {existingTriggerOrders.map((order, i) => {
+          {existingTriggerOrdersThatWillBeClosed.map((order, i) => {
             const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
             const indexToken = getToken(chainId, order.indexToken);
             return (
@@ -377,7 +390,28 @@ export default function ConfirmationBox(props) {
         </ul>
       </>
     );
-  }, [hasExistingPosition, existingTriggerOrders, isSwap, chainId, library, pendingTxns, setPendingTxns]);
+  }, [
+    hasExistingPosition,
+    existingTriggerOrdersThatWillBeClosed,
+    isSwap,
+    chainId,
+    library,
+    pendingTxns,
+    setPendingTxns,
+  ]);
+
+  const renderExistingTriggerWarning = useCallback(() => {
+    if (isSwap || hasExistingPosition || !existingTriggerOrders || existingTriggerOrdersThatWillBeClosed.length > 0) {
+      return;
+    }
+    let existingTriggerOrderLength = existingTriggerOrders.length;
+    return (
+      <div className="Confirmation-box-warning">
+        You have {existingTriggerOrderLength > 1 ? `${existingTriggerOrderLength}` : "an"} active trigger{" "}
+        {existingTriggerOrderLength > 1 ? "orders" : "order"}. You should cancel these trigger orders.
+      </div>
+    );
+  }, [hasExistingPosition, existingTriggerOrders, isSwap]);
 
   // TODO handle unaprproved order plugin (very unlikely case)
   const renderMain = useCallback(() => {
@@ -481,6 +515,7 @@ export default function ConfirmationBox(props) {
           {renderFeeWarning()}
           {renderMinProfitWarning()}
           {renderExistingOrderWarning()}
+          {renderExistingTriggerError()}
           {renderExistingTriggerWarning()}
           {hasPendingProfit && isMarketOrder && (
             <div className="PositionEditor-accept-profit-warning">
