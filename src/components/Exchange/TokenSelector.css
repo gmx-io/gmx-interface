@@ -72,8 +72,13 @@
   margin-bottom: 8px;
 }
 
+.TokenSelector-token-row.TokenSelector-token-input-row {
+  padding: 0;
+}
+
 .TokenSelector-token-row input {
-  padding: 0 8px;
+  padding: 8px;
+  width: 100%;
 }
 
 .TokenSelector-token-row .Token-text {
