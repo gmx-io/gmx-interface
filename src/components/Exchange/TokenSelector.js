@@ -57,10 +57,10 @@ export default function TokenSelector(props) {
     <div className={cx("TokenSelector", { disabled }, props.className)}>
       <Modal isVisible={isModalVisible} setIsVisible={setIsModalVisible} label={props.label}>
         <div className="TokenSelector-tokens">
-          <div className="TokenSelector-token-row">
+          <div className="TokenSelector-token-row TokenSelector-token-input-row">
             <input
               type="text"
-              placeholder="Search Coins"
+              placeholder="Search Token"
               value={searchKeyword}
               onChange={(e) => onSearchKeywordChange(e)}
             />
