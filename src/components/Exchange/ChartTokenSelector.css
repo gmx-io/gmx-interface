@@ -4,12 +4,17 @@
     height: 100%;
 }
 
-.chart-token-selector .react-select__option--is-selected .item:hover {
-    background: #808AFF14;
+.chart-token-selector .react-select__option--is-selected:hover {
+    background: #191b35;
 }
 
 .chart-token-selector .react-select__option--is-selected:active {
-    background: #818cef33;
+    background: #272a4d;
+}
+
+.chart-token-selector .react-select__option--is-selected:active .item.selected,
+.chart-token-selector .react-select__option--is-selected:hover .item.selected {
+    background: transparent;
 }
 
 .chart-token-selector .react-select__option--is-selected .item.selected {
@@ -24,6 +29,6 @@
 }
 
 .chart-token-select .react-select__control:hover {
-    background: #808aff14;
-    border: 1px solid #ffffff29;
+    background: #191b35;
+    border: 1px solid #363747;
 }
