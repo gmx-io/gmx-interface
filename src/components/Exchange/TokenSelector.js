@@ -63,6 +63,7 @@ export default function TokenSelector(props) {
               placeholder="Search Token"
               value={searchKeyword}
               onChange={(e) => onSearchKeywordChange(e)}
+              autoFocus
             />
           </div>
           {filteredTokens.map((token) => {
