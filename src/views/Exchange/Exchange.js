@@ -453,7 +453,7 @@ export default function Exchange({
   let [listSection, setListSection] = useLocalStorageByChainId(chainId, "List-section-v2", LIST_SECTIONS[0]);
   const LIST_SECTIONS_LABELS = {
     Orders: orders.length ? `Orders (${orders.length})` : undefined,
-    Positions: positions.length ? `Positions (${orders.length})` : undefined,
+    Positions: positions.length ? `Positions (${positions.length})` : undefined,
   };
   if (!LIST_SECTIONS.includes(listSection)) {
     listSection = LIST_SECTIONS[0];
