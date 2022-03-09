@@ -1,34 +1,16 @@
-.chart-token-selector .react-select__option--is-selected .item {
-    border-radius: 4px;
-    padding: 6px 7px;
-    height: 100%;
+.chart-token-selector {
+    padding-top: 0!important;
+    padding-bottom: 0!important;
 }
 
-.chart-token-selector .react-select__option--is-selected:hover {
-    background: #191b35;
+.chart-token-selector--current {
+    font-size: 1.4rem;
+    margin-right: 10px;
 }
 
-.chart-token-selector .react-select__option--is-selected:active {
-    background: #272a4d;
-}
-
-.chart-token-selector .react-select__option--is-selected:active .item.selected,
-.chart-token-selector .react-select__option--is-selected:hover .item.selected {
-    background: transparent;
-}
-
-.chart-token-selector .react-select__option--is-selected .item.selected {
-    background: #808AFF14;
-    border-radius: 4px;
-}
-
-.chart-token-select .react-select__control {
+.chart-token-menu-items.menu-items {
     width: 158px;
-    border-radius: 4px;
-    border: 1px solid transparent;
-}
-
-.chart-token-select .react-select__control:hover {
-    background: #191b35;
-    border: 1px solid #363747;
+    top: 60px;
+    right: unset;
+    left: 0;
 }
