@@ -427,7 +427,7 @@ function FullApp() {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.success(
               <div>
-                {pendingTxn.message}.{" "}
+                {pendingTxn.message}{" "}
                 <a href={txUrl} target="_blank" rel="noopener noreferrer">
                   View
                 </a>

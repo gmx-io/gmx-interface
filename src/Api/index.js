@@ -715,7 +715,7 @@ export async function callContract(chainId, contract, method, params, opts) {
     if (opts.setPendingTxns) {
       const pendingTxn = {
         hash: res.hash,
-        message: opts.successMsg || "Transaction completed.",
+        message: opts.successMsg || "Transaction completed",
       };
       opts.setPendingTxns((pendingTxns) => [...pendingTxns, pendingTxn]);
     }
@@ -746,7 +746,7 @@ export async function callContract(chainId, contract, method, params, opts) {
       default:
         failMsg = (
           <div>
-            {opts.failMsg || "Transaction failed."}
+            {opts.failMsg || "Transaction failed"}
             <br />
             {message && <ToastifyDebug>{message}</ToastifyDebug>}
           </div>
