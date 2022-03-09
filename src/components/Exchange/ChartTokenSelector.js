@@ -2,25 +2,47 @@ import React from "react";
 import { Menu } from "@headlessui/react";
 import { FaChevronDown } from "react-icons/fa";
 import "./ChartTokenSelector.css";
-import { getTokens } from '../../data/Tokens'
+import { getTokens, getWhitelistedTokens } from '../../data/Tokens'
+import {
+  LONG,
+  SHORT,
+  // SWAP
+} from "../../Helpers";
 
 export default function ChartTokenSelector(props) {
   const {
     chainId,
     selectedToken,
-    onSelectToken
+    onSelectToken,
+    swapOption
   } = props;
 
-  var availableOptions = {
-    43114: ['AVAX', 'ETH', 'BTC'],
-    42161: ['ETH', 'BTC', 'LINK', 'UNI']
+  const isLong = swapOption === LONG;
+  const isShort = swapOption === SHORT;
+  // const isSwap = swapOption === SWAP;
+
+  // var availableOptions = {
+  //   43114: ['AVAX', 'ETH', 'BTC'],
+  //   42161: ['ETH', 'BTC', 'LINK', 'UNI']
+  // }
+
+  let options = getTokens(chainId);
+  const whitelistedTokens = getWhitelistedTokens(chainId);
+  const indexTokens = whitelistedTokens.filter(
+    token => !token.isStable && !token.isWrapped
+  );
+  const shortableTokens = indexTokens.filter(token => token.isShortable);
+
+  if (isLong) {
+    options = indexTokens;
+  }
+  if (isShort) {
+    options = shortableTokens;
   }
 
-  let options = getTokens(chainId)
-
-  options = options.filter((item) => {
-    return availableOptions[chainId].indexOf(item.symbol) > -1
-  })
+  // options = options.filter((item) => {
+  //   return availableOptions[chainId].indexOf(item.symbol) > -1
+  // })
 
   const onSelect = async token => {
     onSelectToken(token)
