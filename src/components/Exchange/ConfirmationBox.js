@@ -353,12 +353,13 @@ export default function ConfirmationBox(props) {
       return;
     }
     let existingTriggerOrderLength = existingTriggerOrdersThatWillBeClosed?.length;
+    let orderText = existingTriggerOrderLength > 1 ? "orders" : "order";
     return (
       <>
         <div className="Confirmation-box-warning">
-          You have {existingTriggerOrderLength > 1 ? `${existingTriggerOrderLength}` : "an"} active trigger{" "}
-          {existingTriggerOrderLength > 1 ? "orders" : "order"}. You have to cancal these orders below to open a new
-          position.
+          You have {existingTriggerOrderLength > 1 ? `${existingTriggerOrderLength}` : "an"} active trigger {orderText}{" "}
+          that would execute inmediately. Please cancel these
+          {orderText} below to open this new position.
         </div>
         <ul className="trigger-order-list">
           {existingTriggerOrdersThatWillBeClosed.map((order, i) => {
@@ -401,17 +402,30 @@ export default function ConfirmationBox(props) {
   ]);
 
   const renderExistingTriggerWarning = useCallback(() => {
-    if (isSwap || hasExistingPosition || !existingTriggerOrders || existingTriggerOrdersThatWillBeClosed.length > 0) {
+    if (
+      isSwap ||
+      hasExistingPosition ||
+      existingTriggerOrders.length < 1 ||
+      existingTriggerOrdersThatWillBeClosed.length > 0 ||
+      renderExistingOrderWarning()
+    ) {
       return;
     }
     let existingTriggerOrderLength = existingTriggerOrders.length;
+    console.log({ existingTriggerOrderLength });
     return (
       <div className="Confirmation-box-warning">
         You have {existingTriggerOrderLength > 1 ? `${existingTriggerOrderLength}` : "an"} active trigger{" "}
-        {existingTriggerOrderLength > 1 ? "orders" : "order"}. You should cancel these trigger orders.
+        {existingTriggerOrderLength > 1 ? "orders" : "order"} that could impact this position.
       </div>
     );
-  }, [hasExistingPosition, existingTriggerOrders, isSwap, existingTriggerOrdersThatWillBeClosed]);
+  }, [
+    hasExistingPosition,
+    existingTriggerOrders,
+    isSwap,
+    existingTriggerOrdersThatWillBeClosed,
+    renderExistingOrderWarning,
+  ]);
 
   // TODO handle unaprproved order plugin (very unlikely case)
   const renderMain = useCallback(() => {
@@ -625,7 +639,6 @@ export default function ConfirmationBox(props) {
     leverage,
     renderExecutionFee,
     shortCollateralToken,
-    renderExistingOrderWarning,
     chainId,
     renderFeeWarning,
     hasPendingProfit,
@@ -634,6 +647,7 @@ export default function ConfirmationBox(props) {
     orderOption,
     fromUsdMin,
     collateralAfterFees,
+    renderExistingOrderWarning,
     renderExistingTriggerWarning,
     renderExistingTriggerError,
   ]);
