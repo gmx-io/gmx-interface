@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import cx from "classnames";
 
 import { formatAmount, expandDecimals, bigNumberify } from "../../Helpers";
@@ -31,6 +31,12 @@ export default function TokenSelector(props) {
     setIsModalVisible(false);
     props.onSelectToken(token);
   };
+
+  useEffect(() => {
+    if (isModalVisible) {
+      setSearchKeyword('')
+    }
+  }, [isModalVisible])
 
   if (!tokenInfo) {
     return null;
