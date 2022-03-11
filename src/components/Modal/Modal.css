@@ -27,7 +27,7 @@
   max-width: 100%;
   max-height: 90vh;
   overflow: auto;
-  background: var(--dark-blue);
+  background: #16182e;
   border-radius: 4px;
 }
 
