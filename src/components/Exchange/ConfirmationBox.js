@@ -136,17 +136,16 @@ export default function ConfirmationBox(props) {
       if (order.type !== DECREASE) return false;
       const sameToken =
         order.indexToken === wrappedToken.address ? toToken.isNative : order.indexToken === toToken.address;
-
-      if (order.isLong === isLong && sameToken) {
-        let canImmediatelyClosed;
-        if (order.triggerAboveThreshold) {
-          canImmediatelyClosed = !nextAveragePrice.lt(order.triggerPrice);
-        } else {
-          canImmediatelyClosed = !nextAveragePrice.gt(order.triggerPrice);
-        }
-        return canImmediatelyClosed ? order : false;
+      if (order.isLong !== isLong || !sameToken) {
+        return false;
       }
-      return false;
+      let canImmediatelyClosed;
+      if (order.triggerAboveThreshold) {
+        canImmediatelyClosed = nextAveragePrice.gte(order.triggerPrice);
+      } else {
+        canImmediatelyClosed = nextAveragePrice.lte(order.triggerPrice);
+      }
+      return canImmediatelyClosed;
     });
   }, [orders, chainId, nextAveragePrice, isLong, toToken.address, toToken.isNative]);
 
@@ -156,10 +155,7 @@ export default function ConfirmationBox(props) {
       if (order.type !== DECREASE) return false;
       const sameToken =
         order.indexToken === wrappedToken.address ? toToken.isNative : order.indexToken === toToken.address;
-      if (order.isLong === isLong && sameToken) {
-        return order;
-      }
-      return false;
+      return order.isLong === isLong && sameToken;
     });
   }, [orders, chainId, isLong, toToken.address, toToken.isNative]);
 
@@ -412,7 +408,6 @@ export default function ConfirmationBox(props) {
       return;
     }
     let existingTriggerOrderLength = existingTriggerOrders.length;
-    console.log({ existingTriggerOrderLength });
     return (
       <div className="Confirmation-box-warning">
         You have {existingTriggerOrderLength > 1 ? `${existingTriggerOrderLength}` : "an"} active trigger{" "}
