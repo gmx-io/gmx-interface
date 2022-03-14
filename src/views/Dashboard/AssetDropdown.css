@@ -1,0 +1,36 @@
+.asset-menu-items {
+  position: absolute;
+  border: 1px solid #32344c;
+  border-radius: 4px;
+  background: var(--dark-blue);
+  outline: none;
+  z-index: 100;
+}
+
+.dropdown-arrow {
+  margin-left: 0.5rem;
+  cursor: pointer;
+  color: white;
+  opacity: 0.8;
+}
+.dropdown-arrow:hover {
+  opacity: 1;
+}
+
+.asset-item {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: #a0a3c4;
+  text-decoration: none;
+  padding: 8.5px 8px;
+}
+.asset-item:hover {
+  background: var(--dark-blue-hover);
+  color: white;
+  border-radius: 4px;
+}
+.asset-item p {
+  margin: 0;
+  margin-left: 5px;
+}
