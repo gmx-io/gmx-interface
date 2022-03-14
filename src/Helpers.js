@@ -24,6 +24,8 @@ import { getWhitelistedTokens, isValidToken } from "./data/Tokens";
 
 const { AddressZero } = ethers.constants;
 
+export const UI_VERSION = "1.0"
+
 // use a random placeholder account instead of the zero address as the zero address might have tokens
 export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
 

@@ -16,12 +16,14 @@ import Token from "../abis/Token.json";
 import { getContract } from "../Addresses";
 import { getConstant } from "../Constants";
 import {
+  UI_VERSION,
   ARBITRUM,
   AVALANCHE,
   // DEFAULT_GAS_LIMIT,
   bigNumberify,
   getExplorerUrl,
   getServerBaseUrl,
+  getServerUrl,
   getGasPrice,
   getGasLimit,
   replaceNativeTokenAddress,
@@ -316,6 +318,21 @@ export function useStakedGmxSupply(library, active) {
   );
 
   return { data, mutate };
+}
+
+export function useHasOutdatedUi() {
+  const url = getServerUrl(ARBITRUM, "/ui_version");
+  const { data, mutate } = useSWR([url], {
+    fetcher: (...args) => fetch(...args).then((res) => res.text()),
+  });
+
+  let hasOutdatedUi = false
+
+  if (data && data !== UI_VERSION) {
+    hasOutdatedUi = true
+  }
+
+  return { data: hasOutdatedUi, mutate };
 }
 
 export function useGmxPrice(chainId, libraries, active) {
