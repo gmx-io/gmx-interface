@@ -51,13 +51,18 @@ export default function TokenSelector(props) {
   }
 
   const onSearchKeywordChange = (e) => {
-    console.log(e.target.value)
     setSearchKeyword(e.target.value);
   }
 
   const filteredTokens = tokens.filter(item => {
-    return item.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1
+    return item.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || item.symbol.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1
   })
+
+  const _handleKeyDown = (e) => {
+    if (e.key === 'Enter' && filteredTokens.length > 0) {
+      onSelectToken(filteredTokens[0]);
+    }
+  }
 
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)}>
@@ -69,6 +74,7 @@ export default function TokenSelector(props) {
               placeholder="Search Token"
               value={searchKeyword}
               onChange={(e) => onSearchKeywordChange(e)}
+              onKeyDown={_handleKeyDown}
               autoFocus
             />
           </div>
