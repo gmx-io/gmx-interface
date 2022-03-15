@@ -3,7 +3,7 @@
 }
 
 .buy-input.Exchange-swap-section {
-  min-height: 5.935rem;
+  min-height: 5.75rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -15,7 +15,7 @@
   border-radius: 4px;
   /* padding: 0.5rem 0; */
   color: #ffffff;
-  min-width: 3rem;
+  min-width: 2.875rem;
   font-size: 1.25rem;
   line-height: 1.625rem;
   justify-content: flex-end;
@@ -48,7 +48,7 @@
 .buy-input .PositionEditor-token-symbol {
   display: flex;
   align-items: center;
-  margin-left: 0.9rem;
+  margin-left: 0.875rem;
 }
 
 .buy-input .PositionEditor-token-symbol img {

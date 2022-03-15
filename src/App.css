@@ -120,7 +120,7 @@
 
 .App-header-menu-icon {
   color: white;
-  font-size: 1.3rem;
+  font-size: 1.26rem;
   cursor: pointer;
   opacity: 0.7;
   margin: 9px 10px;
@@ -163,27 +163,27 @@
   left: 0;
   right: 0;
   padding: 1rem;
-  padding-bottom: 1.2rem;
+  padding-bottom: 1.1625rem;
 }
 
 .App-card-bottom .App-card-divider,
 .App-card-bottom-placeholder .App-card-divider {
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.1625rem;
 }
 
 .App-card-long {
   background: #16182e;
-  margin-bottom: 1.5484rem;
+  margin-bottom: 1.5rem;
 }
 
 .App-card-long-content {
   display: flex;
-  padding: 1.032rem 0;
+  padding: 1rem 0;
 }
 
 .App-card-long_sub {
   width: 20%;
-  padding: 0 1.032rem;
+  padding: 0 1rem;
 }
 
 .App-card-long_sub__info {
@@ -194,16 +194,16 @@
 }
 
 .App-card-long_sub__info___title {
-  font-size: 1.032rem;
-  line-height: 1.3548rem;
+  font-size: 1rem;
+  line-height: 1.3125rem;
   font-weight: normal;
   letter-spacing: 0px;
   color: #ffffff;
 }
 
 .App-card-long_sub__info___subtitle {
-  font-size: 0.774rem;
-  line-height: 0.9677rem;
+  font-size: 0.75rem;
+  line-height: 0.9375rem;
   font-weight: normal;
   letter-spacing: 0px;
   color: #a0a3c4;
@@ -237,7 +237,7 @@
 
 .App-card-divider-vertical {
   width: 1px;
-  height: 5.6774rem;
+  height: 5.5rem;
   background: #a0a3c4;
 }
 
@@ -248,25 +248,25 @@
 
 .App-card-long_sub__title {
   color: #a0a3c4;
-  font-size: 0.903rem;
-  line-height: 1.1613rem;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
   font-weight: normal;
   letter-spacing: 0.25px;
-  margin-bottom: 0.516rem;
+  margin-bottom: 0.5rem;
 }
 
 .App-card-long_sub__subtitle {
   letter-spacing: 0.36px;
   color: white;
-  font-size: 1.2903rem;
-  line-height: 1.6774rem;
+  font-size: 1.25rem;
+  line-height: 1.625rem;
   font-weight: normal;
 }
 
 .App-card-title-block {
   display: flex;
   justify-content: space-between;
-  padding: 1.032rem;
+  padding: 1rem;
 }
 
 .App-card-title-info-icon {
@@ -279,16 +279,16 @@
 }
 
 .App-card-info-title {
-  font-size: 1.032rem;
-  line-height: 1.3548rem;
+  font-size: 1rem;
+  line-height: 1.3125rem;
   font-weight: normal;
   letter-spacing: 0px;
   color: #ffffff;
 }
 
 .App-card-info-subtitle {
-  font-size: 0.774rem;
-  line-height: 0.9677rem;
+  font-size: 0.75rem;
+  line-height: 0.9375rem;
   font-weight: normal;
   letter-spacing: 0px;
   color: #a9a9b0;
@@ -314,18 +314,18 @@
   display: block;
   box-shadow: inset 0px 0px 10px 5px rgba(27, 30, 46, 0.2);
   background: var(--dark-blue);
-  height: 3.3rem;
-  width: 17rem;
+  height: 3.25rem;
+  width: 16.5rem;
   border: 1px solid var(--dark-blue-border);
   border-radius: 3px;
   position: relative;
   color: white;
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   display: grid;
   grid-template-columns: auto 1fr;
   text-align: left;
-  padding-left: 1.2rem;
-  padding-top: 0.7rem;
+  padding-left: 1.1625rem;
+  padding-top: 0.675rem;
 }
 .WalletConnect-btn:hover,
 .MetaMask-btn:hover {
@@ -338,19 +338,19 @@
 }
 
 .MetaMask-btn {
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.675rem;
 }
 
 .MetaMask-btn img {
   display: inline-block;
   height: 1.5rem;
-  margin-right: 1.2rem;
+  margin-right: 1.1625rem;
 }
 
 .WalletConnect-btn img {
   display: inline-block;
-  height: 1.8rem;
-  margin-right: 1.2rem;
+  height: 1.75rem;
+  margin-right: 1.1625rem;
 }
 
 button.App-connect-wallet {
@@ -388,7 +388,7 @@ button.App-connect-wallet:hover {
 .App-card-divider {
   height: 1px;
   background: #23263b;
-  margin: 0.7rem -1rem;
+  margin: 0.675rem -1rem;
 }
 
 .App-box-solid {
@@ -400,29 +400,29 @@ button.App-connect-wallet:hover {
 }
 
 .Page {
-  max-width: 70rem;
+  max-width: 67.875rem;
   margin: auto;
-  padding-top: 3rem;
+  padding-top: 2.875rem;
 }
 
 .Page-content {
-  padding: 3rem;
+  padding: 2.875rem;
   padding-top: 1rem;
 }
 
 .section-title-block {
   display: flex;
   margin-bottom: 1.5rem;
-  max-width: 37.677rem;
+  max-width: 38rem;
   width: 100%;
 }
 
 .page-main-content .section-title-block {
-  margin-top: 4rem;
+  margin-top: 3.875rem;
 }
 
 .section-title-icon {
-  margin-right: 0.774rem;
+  margin-right: 0.75rem;
   display: flex;
   align-items: center;
 }
@@ -446,12 +446,12 @@ button.App-connect-wallet:hover {
 }
 
 .section-title-content .section-title-content__description {
-  font-size: 1.161rem;
-  line-height: 1.484rem;
+  font-size: 1.125rem;
+  line-height: 1.4375rem;
   letter-spacing: 0px;
   color: #a0a3c4;
   margin-top: 4px;
-  max-width: 40rem;
+  max-width: 38.75rem;
 }
 
 .section-title-content .section-title-content__description span {
@@ -460,7 +460,7 @@ button.App-connect-wallet:hover {
 }
 
 .Page-title-section {
-  padding-left: 3rem;
+  padding-left: 2.875rem;
   padding-right: 1rem;
   margin-top: 1rem;
   position: relative;
@@ -471,7 +471,7 @@ button.App-connect-wallet:hover {
 }
 
 .Page-title {
-  font-size: 2.2rem;
+  font-size: 2.125rem;
   font-weight: 500;
   margin-bottom: 0.5rem;
   font-family: "Relative Bold";
@@ -480,7 +480,7 @@ button.App-connect-wallet:hover {
 .Page-description {
   /* opacity: 0.7; */
   color: #b7b7bd;
-  line-height: 1.4rem;
+  line-height: 1.375rem;
 }
 
 .Page-description span,
@@ -499,12 +499,12 @@ button.App-connect-wallet:hover {
 .App-hero {
   position: relative;
   text-align: center;
-  padding-top: 4rem;
+  padding-top: 3.875rem;
   margin-bottom: 2rem;
 }
 
 .App-hero-primary {
-  font-size: 3rem;
+  font-size: 2.875rem;
   font-weight: bold;
   margin-bottom: 1rem;
 }
@@ -512,19 +512,19 @@ button.App-connect-wallet:hover {
 .App-note {
   text-align: center;
   font-weight: bold;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   padding: 0 2rem;
 }
 
 .App-card {
-  padding: 1rem 1rem 1.2rem;
+  padding: 1rem 1rem 1.1625rem;
   border: 1px solid #1e2136;
   border-radius: 4px;
 }
 
 .App-card-title {
-  font-size: 1.032rem;
-  line-height: 1.355rem;
+  font-size: 1rem;
+  line-height: 1.3125rem;
   font-weight: normal;
   letter-spacing: 0px;
   color: #ffffff;
@@ -535,7 +535,7 @@ button.App-connect-wallet:hover {
 }
 
 .App-card-title-small {
-  font-size: 1.1rem;
+  font-size: 1.0625rem;
   margin-bottom: 1rem;
 }
 
@@ -572,25 +572,25 @@ button.App-connect-wallet:hover {
 
 .App-card-options {
   padding: unset;
-  margin: -0.4rem;
+  margin: -0.375rem;
 }
 
 .App-card-option {
-  margin: 0.4rem;
+  margin: 0.375rem;
 }
 
 .App-header a.App-header-link-main,
 .App-header .App-header-link-main {
-  font-size: 1.1rem;
+  font-size: 1.0625rem;
   padding: 1rem;
   margin-left: -1rem;
   display: flex;
-  margin-right: 0.7742rem;
+  margin-right: 0.75rem;
 }
 
 .App-header-link-main img {
   display: inline-block;
-  height: 1.4rem;
+  height: 1.375rem;
   vertical-align: middle;
 }
 
@@ -620,7 +620,7 @@ button.App-connect-wallet:hover {
   display: block;
   color: #a0a3c4;
   font-size: 15px;
-  line-height: 1.2rem;
+  line-height: 1.1625rem;
   font-weight: normal;
 }
 
@@ -634,11 +634,11 @@ button.App-connect-wallet:hover {
 }
 
 .Toastify {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
 .Toastify__toast {
-  min-height: 3rem;
+  min-height: 2.875rem;
   cursor: default;
 }
 
@@ -648,7 +648,7 @@ button.App-connect-wallet:hover {
 
 .Toastify-debug {
   margin-top: 0.3rem;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   opacity: 0.7;
 }
 .Toastify-debug-button {
@@ -752,7 +752,7 @@ button.App-connect-wallet:hover {
 
 .App-title {
   text-align: center;
-  font-size: 3rem;
+  font-size: 2.875rem;
   margin-top: 17vh;
   margin-bottom: 1rem;
   font-weight: bold;
@@ -760,7 +760,7 @@ button.App-connect-wallet:hover {
 
 .App-subtitle {
   text-align: center;
-  font-size: 1.1rem;
+  font-size: 1.0625rem;
   margin-bottom: 5rem;
   opacity: 0.9;
   padding: 0 1rem;
@@ -769,7 +769,7 @@ button.App-connect-wallet:hover {
 .App-info-row {
   display: grid;
   grid-template-columns: auto auto;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   margin-bottom: 0.3rem;
 }
 
@@ -809,7 +809,7 @@ button.App-cta:hover:enabled {
 }
 
 .App-cta.small {
-  padding: 0.6rem 0.7rem;
+  padding: 0.6rem 0.675rem;
 }
 
 a.App-cta.transparent,
@@ -830,14 +830,14 @@ button.App-cta.transparent:hover:enabled {
 button.App-cta.option,
 a.App-cta.option {
   padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
 a.App-button-option,
 button.App-button-option {
   cursor: pointer;
   display: inline-block;
-  padding: 0.4rem 0.7rem;
+  padding: 0.375rem 0.675rem;
   border-radius: 3px;
   color: white;
   text-decoration: none;
@@ -909,7 +909,7 @@ button.App-button-option:disabled {
 
 .App-slippage-tolerance-input-percent {
   position: absolute;
-  right: 0.7rem;
+  right: 0.675rem;
   width: 2rem;
   top: 1.5rem;
   bottom: 0;
@@ -918,8 +918,8 @@ button.App-button-option:disabled {
 
 .Network-icon {
   vertical-align: middle;
-  width: 1.2rem;
-  height: 1.2rem;
+  width: 1.1625rem;
+  height: 1.1625rem;
 }
 
 .App-header-user-netowork {
@@ -939,8 +939,8 @@ button.App-button-option:disabled {
 }
 
 a.App-social-link {
-  margin-left: 0.7rem;
-  margin-right: 0.7rem;
+  margin-left: 0.675rem;
+  margin-right: 0.675rem;
   font-size: 1.7rem;
   color: white;
   opacity: 0.8;
@@ -954,7 +954,7 @@ a.App-social-link:hover {
   text-align: center;
   display: inline-block;
   width: 90%;
-  max-width: 30rem;
+  max-width: 29.0625rem;
 }
 
 .App-input input {
@@ -993,16 +993,16 @@ a.App-social-link:hover {
 
 .App-input-unit {
   text-align: right;
-  padding: 0.8rem;
-  font-size: 1.3rem;
+  padding: 0.75rem;
+  font-size: 1.25rem;
 }
 
 button.App-button {
   text-align: center;
   display: inline-block;
-  font-size: 1.1rem;
+  font-size: 1.0625rem;
   width: 90%;
-  max-width: 30rem;
+  max-width: 29.0625rem;
 }
 
 .Toastify__toast--error {
@@ -1241,7 +1241,7 @@ button.App-button {
     padding: 0.6rem 0.5rem;
   }
   .App-subtitle {
-    margin-bottom: 3rem;
+    margin-bottom: 2.875rem;
   }
 
   .App-header-user {
@@ -1262,7 +1262,7 @@ button.App-button {
   }
 
   .App-header-link-main img {
-    height: 1.355rem;
+    height: 1.3125rem;
   }
 
   .App-header.large {

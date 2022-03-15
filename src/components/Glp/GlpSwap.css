@@ -13,7 +13,7 @@
 .Tab-title {
   letter-spacing: 0px;
   color: #ffffff;
-  font-size: 2.2rem;
+  font-size: 2.125rem;
   font-weight: 500;
   font-family: "Relative Bold";
 }
@@ -39,7 +39,7 @@
 
 .GlpSwap-from-token .Modal-content {
   position: absolute;
-  width: 25rem;
+  width: 24.25rem;
   max-height: 100vh;
   overflow: hidden;
   border: none;
@@ -60,7 +60,7 @@
 }
 
 .GlpSwap-content .GlpSwap-stats-card {
-  max-width: 45.935rem;
+  max-width: 44.5rem;
   margin-right: 1rem;
 }
 
@@ -70,7 +70,7 @@
 }
 
 .GlpSwap-content .GlpSwap-box {
-  max-width: 30.935rem;
+  max-width: 29.875rem;
   border-radius: 4px;
   padding: 1rem;
   padding-top: 0;
@@ -99,14 +99,14 @@
 }
 
 .App-card-title-mark .App-card-title-mark-title {
-  font-size: 1.032rem;
-  line-height: 1.355rem;
+  font-size: 1rem;
+  line-height: 1.3125rem;
   letter-spacing: 0px;
   color: #ffffff;
 }
 
 .App-card-title-mark .App-card-title-mark-subtitle {
-  font-size: 0.774rem;
+  font-size: 0.75rem;
   line-height: 1rem;
   letter-spacing: 0px;
   color: #a9a9b0;
@@ -153,7 +153,7 @@
 .GlpSwap-cta .Exchange-swap-button {
   margin: 0 auto;
   justify-content: center;
-  min-height: 3.097rem;
+  min-height: 3rem;
   font-size: 1rem;
 }
 
@@ -202,7 +202,7 @@
 .token-table th:first-child,
 .token-table td:first-child {
   padding-left: 1rem;
-  width: 17rem;
+  width: 16.5rem;
 }
 
 .token-table th:last-child,

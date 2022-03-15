@@ -3,11 +3,11 @@
 }
 
 .Tooltip-popup {
-  font-size: 0.9rem;
-  line-height: 1.032rem;
+  font-size: 0.875rem;
+  line-height: 1rem;
   position: absolute;
   border-radius: 4px;
-  padding: 0.674rem;
+  padding: 0.625rem;
   letter-spacing: 0.4px;
   min-width: 250px;
   text-align: left;

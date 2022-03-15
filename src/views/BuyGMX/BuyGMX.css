@@ -4,7 +4,7 @@
 }
 
 .BuyGMXGLP-container {
-  padding-top: 3rem;
+  padding-top: 2.875rem;
   padding-bottom: 2rem;
   width: 100%;
 }
@@ -22,12 +22,12 @@
 }
 
 .BuyGMXGLP-panel .App-card {
-  max-width: 37.677rem;
+  max-width: 36.5rem;
   width: 100%;
   height: fit-content;
 }
 .BuyGMXGLP-panel .App-card {
-  max-width: 37.677rem;
+  max-width: 36.5rem;
   width: 100%;
   height: fit-content;
 }
@@ -64,7 +64,7 @@
   margin: 2rem 0;
 }
 .alternative-bridges .transfer-eth-icon {
-  width: 3.6rem;
+  width: 3.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,7 +85,7 @@
   border: 1px solid #ffffff14;
   border-radius: 4px;
   text-decoration: none;
-  height: 3rem;
+  height: 2.875rem;
   padding: 0.5rem 1rem;
   margin: 2rem 0;
 }
@@ -123,7 +123,7 @@
 .GMX-btn-label {
   letter-spacing: 0px;
   color: #ffffff;
-  font-size: 1.1875rem;
+  font-size: 1.15rem;
   line-height: 1.5rem;
 }
 
@@ -146,7 +146,7 @@
 }
 
 .card-title {
-  font-size: 2.2rem;
+  font-size: 2.125rem;
   font-weight: 500;
   margin-bottom: 1rem;
   font-family: "Relative Bold";
@@ -197,7 +197,7 @@
 
   .BuyGMXGLP-description {
     font-size: 1rem;
-    line-height: 1.3rem;
+    line-height: 1.25rem;
   }
   .bridge-options {
     grid-template-columns: 1fr;

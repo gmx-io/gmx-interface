@@ -8,7 +8,7 @@ body,
   color: white;
   font-family: "Relative";
   letter-spacing: 0.5px;
-  font-size: 15.5px;
+  font-size: 16px;
   background-color: #101124;
 }
 
@@ -69,12 +69,12 @@ input[type="number"] {
 }
 
 input {
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   color: white;
   outline: none;
   background: none;
   border: none;
-  padding: 0.8rem;
+  padding: 0.75rem;
   font-family: "Relative";
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -329,7 +329,7 @@ button.btn-link {
 
 .logout-icon {
   vertical-align: middle;
-  font-size: 1.1rem;
+  font-size: 1.0625rem;
   margin-top: -0.2rem;
   margin-right: 0.35rem;
   margin-left: -0.3rem;
@@ -345,7 +345,7 @@ button.btn-link:hover .logout-icon {
 }
 
 .page-container {
-  padding-top: 4rem;
+  padding-top: 3.875rem;
 }
 
 .mt-0 {

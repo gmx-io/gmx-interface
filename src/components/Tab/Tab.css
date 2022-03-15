@@ -1,7 +1,7 @@
 .Tab.block {
   display: grid;
   grid-auto-flow: column;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   border-radius: 3px;
   overflow: hidden;
   color: rgba(255, 255, 255, 0.7);

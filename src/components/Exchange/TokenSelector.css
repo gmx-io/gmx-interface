@@ -1,5 +1,5 @@
 .TokenSelector .Modal .Modal-content {
-  width: 20rem;
+  width: 19.375rem;
   margin: 0;
   max-height: 100vh;
 }
@@ -95,7 +95,7 @@
 
 .TokenSelector.right .Modal-content {
   position: absolute;
-  width: 23rem;
+  width: 22.25rem;
   top: 0;
   bottom: 0;
   overflow: auto;

@@ -16,18 +16,18 @@
 }
 
 .StakeV2-address-input {
-  padding: 1rem 2.2rem;
+  padding: 1rem 2.125rem;
   padding-bottom: 0;
 }
 
 .StakeV2-buy-gmx-modal .Modal-content {
-  max-width: 30rem;
+  max-width: 29.0625rem;
 }
 
 .StakeV2-address-input input {
   box-sizing: border-box;
   width: 100%;
-  font-size: 1.1rem;
+  font-size: 1.0625rem;
 }
 
 .StakeV2-boost-bar {
@@ -43,7 +43,7 @@
 }
 
 .StakeV2-boost-icon {
-  font-size: 0.7rem;
+  font-size: 0.675rem;
   z-index: 2;
 }
 
@@ -62,10 +62,7 @@
   grid-gap: 1rem;
   margin-top: 0.5rem;
   padding: 2rem;
-  padding-top: 1rem;
-}
-
-.StakeV2-content {
+  padding-top: 1.5rem;
 }
 
 @media (max-width: 900px) {

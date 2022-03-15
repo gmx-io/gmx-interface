@@ -11,7 +11,7 @@
   padding-top: 62px;
   position: relative;
   /* height: 52.581rem; */
-  padding-bottom: 4.129rem;
+  padding-bottom: 4rem;
   background: url('../../img/Artwork_gmx.svg');
   background-repeat: no-repeat;
   background-size: cover;
@@ -20,8 +20,8 @@
 }
 
 .Home-title {
-  font-size: 3.677rem;
-  line-height: 4.387rem;
+  font-size: 3.5625rem;
+  line-height: 4.25rem;
   font-weight: bold;
   margin-bottom: 1rem;
   letter-spacing: 0;
@@ -32,22 +32,22 @@
   /* z-index: 2; */
   width: 100%;
   /* padding-top: 7.548rem; */
-  padding-top: 4rem;
+  padding-top: 3.875rem;
 }
 
 .Home-title-section {
-  max-width: 33.677rem;
+  max-width: 32.625rem;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
 .Home-description {
-  font-size: 1.29rem;
-  line-height: 1.613rem;
-  max-width: 28.645rem;
+  font-size: 1.25rem;
+  line-height: 1.5625rem;
+  max-width: 27.75rem;
   color: #A0A3C4;
-  margin-bottom: 1.807rem;
+  margin-bottom: 1.75rem;
 }
 
 .Home-benefits-section {
@@ -59,25 +59,25 @@
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: center;
-  padding-top: 3.6135rem;
-  padding-bottom: 3.6135rem;
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
 }
 
 .Home-benefit {
-  padding: 1.5485rem 0;
+  padding: 1.5rem 0;
 }
 
 .Home-benefit-title {
-  font-size: 1.419rem;
-  line-height: 1.806rem;
+  font-size: 1.375rem;
+  line-height: 1.75rem;
   font-weight: normal;
   margin-left: 1rem;
 }
 
 .Home-benefit-description {
-  font-size: 1.161rem;
-  line-height: 1.484rem;
-  max-width: 18.839rem;
+  font-size: 1.125rem;
+  line-height: 1.4375rem;
+  max-width: 18.25rem;
   color: #A0A3C4;
   letter-spacing: 0;
 }
@@ -86,7 +86,7 @@
   display: flex;
   align-items: center;
   padding: 0 0 1rem;
-  font-size: 1.2rem;
+  font-size: 1.1625rem;
 }
 
 .Home-cta-section {
@@ -97,8 +97,8 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  padding-top: 5.161rem;
-  padding-bottom: 5.161rem;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
 }
 
 .Home-cta-info {
@@ -106,38 +106,38 @@
 }
 
 .Home-cta-info__title {
-  font-size: 2.452rem;
-  line-height: 3.097rem;
+  font-size: 2.375rem;
+  line-height: 3rem;
   font-weight: bold;
-  margin-bottom: 2.065rem;
+  margin-bottom: 2rem;
   letter-spacing: 0;
 }
 
 .Home-cta-info__description {
-  font-size: 1.161rem;
-  line-height: 1.484rem;
+  font-size: 1.125rem;
+  line-height: 1.4375rem;
   letter-spacing: 0;
   color: #A0A3C4;
-  margin-bottom: 3.226rem;
+  margin-bottom: 3.125rem;
 }
 
 .Home-cta-options {
-  max-width: 38rem;
+  max-width: 36.8125rem;
   width: 100%;
 }
 
 .Home-cta-option-title {
-  font-size: 1.548rem;
-  line-height: 2.065rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
   font-weight: bold;
   letter-spacing: 0px;
   margin-top: 0.3rem;
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.675rem;
 }
 
 .Home-cta-option-subtitle {
-  font-size: 1.161rem;
-  line-height: 1.484rem;
+  font-size: 1.125rem;
+  line-height: 1.4375rem;
   letter-spacing: 0px;
   color: #A0A3C4;
   margin-bottom: 3px;
@@ -166,11 +166,11 @@
 }
 
 .Home-cta-option {
-  max-width: 38rem;
+  max-width: 36.8125rem;
   width: 100%;
   box-shadow: 0px 7px 12px #0000004D;
   border: 1px solid #1E2136;
-  padding: 1.032rem;
+  padding: 1rem;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -184,7 +184,7 @@
 }
 
 .Home-cta-option + .Home-cta-option {
-  margin-top: 2.645rem;
+  margin-top: 2.5625rem;
 }
 
 .Home-cta-option-arbitrum {
@@ -200,19 +200,19 @@
 }
 
 .Home-token-card-section {
-  padding-top: 5rem;
-  padding-bottom: 5rem;
+  padding-top: 4.825rem;
+  padding-bottom: 4.825rem;
   background: #17182C;
   margin-bottom: -3rem;
 }
 
 .Home-token-card-info {
-  max-width: 25rem;
+  max-width: 24.25rem;
 }
 
 .Home-token-card-info__title {
-  font-size: 2.452rem;
-  line-height: 3.097rem;
+  font-size: 2.375rem;
+  line-height: 3rem;
   font-weight: bold;
   margin-bottom: 2rem;
   letter-spacing: 0;
@@ -228,7 +228,7 @@
   position: relative;
   padding: 1.5rem;
   border-radius: 13px;
-  max-width: 38.19rem;
+  max-width: 37rem;
   background: #16182e;
   box-shadow: 0px 5px 13px #00000085;
   border: 1px solid #2A2B3D;
@@ -251,8 +251,8 @@
 }
 
 .Home-token-card-option-title {
-  font-size: 1.161rem;
-  line-height: 1.484rem;
+  font-size: 1.125rem;
+  line-height: 1.4375rem;
   letter-spacing: 0px;
   color: #fff;
   margin-top: 1.5rem;
@@ -260,7 +260,7 @@
 
 .Home-token-card-option-apr {
   font-size: 1rem;
-  line-height: 1.484rem;
+  line-height: 1.4375rem;
   letter-spacing: 0px;
   color: #A0A3C4;
   margin-top: 1.25rem;
@@ -284,7 +284,7 @@
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  padding-top: 4rem;
+  padding-top: 3.875rem;
   padding-bottom: 1rem;
   width: 100%;
 }
@@ -297,53 +297,53 @@
   /* mix-blend-mode: multiply; */
   border: 1px solid #FFFFFF14;
   border-radius: 4px;
-  max-width: 24.526rem;
+  max-width: 23.75rem;
   width: 100%;
   display: flex;
   align-items: center;
-  padding-top: 1.806rem;
-  padding-bottom: 1.806rem;
-  margin: 1.032rem 0;
+  padding-top: 1.75rem;
+  padding-bottom: 1.75rem;
+  margin: 1rem 0;
   backdrop-filter: blur(4px);
 }
 
 .Home-latest-info__icon {
-  margin-left: 1.645rem;
-  margin-right: 2.548rem;
+  margin-left: 1.6rem;
+  margin-right: 2.465rem;
 }
 
 .Home-latest-info__title {
   color: #A0A3C4;
-  font-size: 1.032rem;
-  line-height: 1.613rem;
+  font-size: 1rem;
+  line-height: 1.5625rem;
   letter-spacing: 0px;
 }
 
 .Home-latest-info__value {
   color: white;
-  font-size: 1.936rem;
-  line-height: 2.516rem;
+  font-size: 1.875rem;
+  line-height: 2.4375rem;
   letter-spacing: 0px;
 }
 
 .Home-latest-info__description {
   letter-spacing: 0px;
   color: #A0A3C4;
-  font-size: 0.903rem;
-  line-height: 1.613rem;
+  font-size: 0.875rem;
+  line-height: 1.5625rem;
 }
 
 .Home-video-section {
   background: #101124;
-  padding: 5.161rem 0;
+  padding: 5rem 0;
 }
 
 .Home-video-block {
   background: #0B131C 0% 0% no-repeat padding-box;
   box-shadow: 0px 8px 20px #0000003D;
   border-radius: 7px;
-  max-width: 57.677rem;
-  max-height: 32.645rem;
+  max-width: 55.875rem;
+  max-height: 32.5625rem;
   width: 100%;
   height: 100%;
   margin: 0 auto;
@@ -351,7 +351,7 @@
 
 .Home-faqs-section {
   background: #101124;
-  padding: 5.161rem 0;
+  padding: 5rem 0;
 }
 
 .Home-faqs-container {
@@ -361,28 +361,28 @@
 }
 
 .Home-faqs-documentation {
-  margin-bottom: 3.163rem;
+  margin-bottom: 3.0625rem;
 }
 
 .Home-faqs-introduction__title {
   letter-spacing: 0px;
   color: #FFFFFF;
-  font-size: 2.452rem;
-  line-height: 3.097rem;
+  font-size: 2.375rem;
+  line-height: 3rem;
 }
 
 .Home-faqs-introduction__description {
   letter-spacing: 0px;
   color: #A0A3C4;
-  font-size: 1.161rem;
-  line-height: 1.484rem;
-  margin-bottom: 2.387rem;
+  font-size: 1.125rem;
+  line-height: 1.4375rem;
+  margin-bottom: 2.3125rem;
   margin-top: 1rem;
-  max-width: 19.226rem;
+  max-width: 18.625rem;
 }
 
 .Home-faqs-content-block {
-  max-width: 52rem;
+  max-width: 50.375rem;
   width: 100%;
 }
 
@@ -391,9 +391,9 @@
   border: 1px solid #1E2136;
   border-radius: 4px;
   cursor: pointer;
-  padding: 2.387rem 3.226rem;
+  padding: 2.3125rem 3.125rem;
   width: 100%;
-  max-width: 52rem;
+  max-width: 50.375rem;
 }
 
 .Home-faqs-content:hover {
@@ -411,14 +411,14 @@
 .Home-faqs-content-header__icon {
   display: flex;
   align-items: center;
-  margin-right: 1.139rem;
-  font-size: 0.89rem;
+  margin-right: 1.125rem;
+  font-size: 0.875rem;
   color: #3041DA;
 }
 
 .Home-faqs-content-header__text {
-  font-size: 1.097rem;
-  line-height: 1.419rem;
+  font-size: 1.0625rem;
+  line-height: 1.375rem;
   letter-spacing: 0px;
   color: #FFFFFF;
 }
@@ -476,7 +476,7 @@
 
 @media (max-width: 500px) {
   .Home-title-section-container {
-    padding-top: 4.774rem;
+    padding-top: 4.625rem;
   }
 
   .Home-title {
@@ -502,7 +502,7 @@
   }
 
   .Home-cta-option-title {
-    line-height: 1.548rem;
+    line-height: 1.5rem;
   }
 
   .Home-cta-option-action {
@@ -512,15 +512,15 @@
   .Home-latest-info-container {
     padding-left: 16px!important;
     padding-right: 16px!important;
-    padding-top: 4.774rem;
+    padding-top: 4.625rem;
   }
 
   .Home-latest-info__icon {
-    margin-right: 1.903rem;
+    margin-right: 1.8125rem;
   }
 
   .Home-latest-info-block + .Home-latest-info-block {
-    margin-top: 16px;
+    margin-top: 1rem;
   }
 
   .Home-faqs-content {
@@ -531,10 +531,10 @@
 @media (max-width: 400px) {
   .Home-description {
     font-size: 1rem;
-    line-height: 1.4rem;
-    max-width: 28.645rem;
+    line-height: 1.375rem;
+    max-width: 27.75rem;
     color: #A0A3C4;
-    margin-bottom: 1.677rem;
+    margin-bottom: 1.625rem;
   }
 /*
   .Home-token-card-option-action {
@@ -552,7 +552,7 @@
 @media (max-width: 350px) {
   .Home-title {
     font-size: 2.5rem;
-    line-height: 3rem;
+    line-height: 2.875rem;
     font-weight: bold;
     margin-bottom: 1rem;
     letter-spacing: 0;

@@ -59,7 +59,7 @@
 
 .Dashboard-token-title img {
   cursor: pointer;
-  height: 1.2rem;
+  height: 1.1625rem;
   margin-left: 0.3rem;
   opacity: 0.9;
 }
@@ -72,7 +72,7 @@
 }
 
 .Dashboard-fees {
-  padding-bottom: 3rem;
+  padding-bottom: 2.875rem;
 }
 
 @media (max-width: 700px) {

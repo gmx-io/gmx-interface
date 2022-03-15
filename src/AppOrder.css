@@ -15,11 +15,11 @@
   justify-content: center;
   align-items: center;
   position: absolute;
-  width: 2.3rem;
-  height: 2.3rem;
+  width: 2.25rem;
+  height: 2.25rem;
   left: 50%;
-  margin-left: -1.15rem;
-  top: -1.4rem;
+  margin-left: -1.125rem;
+  top: -1.375rem;
   border-radius: 2rem;
   user-select: none;
   background: linear-gradient(90deg, rgba(45,66,252,1) 0%, rgba(46,61,205,1) 100%);
