@@ -32,7 +32,7 @@ import {
   getTotalVolumeSum,
   GLPPOOLCOLORS,
 } from "../../Helpers";
-import { useGmxPrice, useStakedGmxSupply } from "../../Api";
+import { useGmxPrice } from "../../Api";
 
 import { getContract } from "../../Addresses";
 
@@ -197,11 +197,6 @@ export default function DashboardV2() {
       fetcher: fetcher(library, VaultV2),
     }
   );
-
-  // const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useStakedGmxSupply(
-  //   chainId === ARBITRUM ? library : undefined,
-  //   active
-  // );
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
   const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress],
