@@ -6,11 +6,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 1rem;
-  margin-top: 0.5rem;
-}
-
-.DashboardV2-token-cards {
-  margin-top: 0.5rem;
 }
 
 .token-table-wrapper {
@@ -29,14 +24,6 @@
   margin-top: 3px;
   display: inline-flex;
   margin-left: 0.5rem;
-}
-
-.DashboardV2-projects {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 1rem;
-  /* margin-top: 0.5rem; */
-  padding: 2rem;
 }
 
 .App-card-title-icon {
