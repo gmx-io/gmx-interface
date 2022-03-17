@@ -32,7 +32,7 @@ import {
   getTotalVolumeSum,
   GLPPOOLCOLORS,
 } from "../../Helpers";
-import { useGmxPrice } from "../../Api";
+import { useGMXInLiquidity, useGmxPrice } from "../../Api";
 
 import { getContract } from "../../Addresses";
 
@@ -353,99 +353,19 @@ export default function DashboardV2() {
     );
   };
 
-  /* GMX Distribution */
-
-  // ARBITRUM
-  const arbitrumGmxAddress = getContract(ARBITRUM, "GMX");
-  const arbitrumStakedGmxTrackerAddress = getContract(ARBITRUM, "StakedGmxTracker");
-
-  const { data: arbitrumStakedGmxSupply } = useSWR(
-    [`StakeV2:stakedGmxSupply:${active}`, ARBITRUM, arbitrumGmxAddress, "balanceOf", arbitrumStakedGmxTrackerAddress],
-    {
-      fetcher: fetcher(undefined, Token),
-    }
-  );
-
-  const arbitrumGmxSupplyUrl = getServerUrl(ARBITRUM, "/gmx_supply");
-  const { data: arbitrumGmxSupply } = useSWR([arbitrumGmxSupplyUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
-  });
-  // GMX in Arbitrum Liquidity
-  let UniswapGmxEthPool = getContract(ARBITRUM, "UniswapGmxEthPool");
-  const { data: gmxInArbitrumLiquidity } = useSWR(
-    [`StakeV2:gmxInArbitrumLiquidity:${active}`, ARBITRUM, arbitrumGmxAddress, "balanceOf", UniswapGmxEthPool],
-    {
-      fetcher: fetcher(undefined, Token),
-    }
-  );
-
-  // AVALANCHE
-  const avalancheGmxAddress = getContract(AVALANCHE, "GMX");
-  const avalancheStakedGmxTrackerAddress = getContract(AVALANCHE, "StakedGmxTracker");
-
-  const { data: avalancheStakedGmxSupply } = useSWR(
-    [
-      `StakeV2:stakedGmxSupply:${active}`,
-      AVALANCHE,
-      avalancheGmxAddress,
-      "balanceOf",
-      avalancheStakedGmxTrackerAddress,
-    ],
-    {
-      fetcher: fetcher(undefined, Token),
-    }
-  );
-  // GMX in AVAX Liquidity
-  let TraderJoeGmxAvaxPool = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
-  const { data: gmxInAvaxLiquidity } = useSWR(
-    [`StakeV2:gmxInAvaxLiquidity:${active}`, AVALANCHE, avalancheGmxAddress, "balanceOf", TraderJoeGmxAvaxPool],
-    {
-      fetcher: fetcher(undefined, Token),
-    }
-  );
-  // Total GMX in Liquidity
-  let totalGmxInLiquidity = bigNumberify(0);
-  if (gmxInAvaxLiquidity) {
-    totalGmxInLiquidity = totalGmxInLiquidity.add(gmxInAvaxLiquidity);
-  }
-
-  if (gmxInArbitrumLiquidity) {
-    totalGmxInLiquidity = totalGmxInLiquidity.add(gmxInArbitrumLiquidity);
-  }
-
-  const avalancheGmxSupplyUrl = getServerUrl(AVALANCHE, "/gmx_supply");
-  const { data: avalancheGmxSupply } = useSWR([avalancheGmxSupplyUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
-  });
-
-  let totalGmxSupply = bigNumberify(0);
-  if (arbitrumGmxSupply) {
-    totalGmxSupply = totalGmxSupply.add(bigNumberify(arbitrumGmxSupply));
-  }
-
-  if (avalancheGmxSupply) {
-    totalGmxSupply = totalGmxSupply.add(bigNumberify(avalancheGmxSupply));
-  }
-
-  let totalStakedGmxSupply = bigNumberify(0);
-  if (arbitrumStakedGmxSupply) {
-    totalStakedGmxSupply = totalStakedGmxSupply.add(bigNumberify(arbitrumStakedGmxSupply));
-  }
-
-  if (avalancheStakedGmxSupply) {
-    totalStakedGmxSupply = totalStakedGmxSupply.add(bigNumberify(avalancheStakedGmxSupply));
-  }
+  // GMX in Liquidity (on uniswap and traderjoe) for current chain
+  let { data: gmxInLiquidity } = useGMXInLiquidity(chainId, active);
 
   let stakedPercent = 0;
 
-  if (!totalGmxSupply.isZero()) {
-    stakedPercent = totalStakedGmxSupply.mul(100).div(totalGmxSupply).toNumber();
+  if (gmxSupply && stakedGmxSupply) {
+    stakedPercent = stakedGmxSupply.mul(100).div(gmxSupply).toNumber();
   }
 
   let liquidityPercent = 0;
 
-  if (!totalGmxSupply.isZero()) {
-    liquidityPercent = totalGmxInLiquidity.mul(100).div(totalGmxSupply).toNumber();
+  if (gmxSupply && gmxInLiquidity) {
+    liquidityPercent = gmxInLiquidity.mul(100).div(gmxSupply).toNumber();
   }
 
   let notStakedPercent = 100 - stakedPercent - liquidityPercent;
