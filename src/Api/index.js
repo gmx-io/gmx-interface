@@ -326,15 +326,15 @@ export function useStakedGmxSupply(library, active) {
     }
   );
 
-  let data
+  let data;
   if (arbData && avaxData) {
-    data = arbData.add(avaxData)
+    data = arbData.add(avaxData);
   }
 
   const mutate = () => {
-    arbMutate()
-    avaxMutate()
-  }
+    arbMutate();
+    avaxMutate();
+  };
 
   return { data, mutate };
 }
@@ -345,10 +345,10 @@ export function useHasOutdatedUi() {
     fetcher: (...args) => fetch(...args).then((res) => res.text()),
   });
 
-  let hasOutdatedUi = false
+  let hasOutdatedUi = false;
 
   if (data && data !== UI_VERSION) {
-    hasOutdatedUi = true
+    hasOutdatedUi = true;
   }
 
   return { data: hasOutdatedUi, mutate };
@@ -370,6 +370,22 @@ export function useGmxPrice(chainId, libraries, active) {
     gmxPriceFromArbitrum,
     gmxPriceFromAvalanche,
     mutate,
+  };
+}
+
+export function useGMXInLiquidity(chainId, active) {
+  let isArbitrum = chainId === ARBITRUM;
+  let poolAddress = getContract(chainId, isArbitrum ? "UniswapGmxEthPool" : "TraderJoeGmxAvaxPool");
+  const gmxAddress = getContract(chainId, "GMX");
+  const { data: gmxInLiquidity, mutate: mutateGMXInLiquidity } = useSWR(
+    [`StakeV2:gmxInLiquidity:${chainId + active}`, chainId, gmxAddress, "balanceOf", poolAddress],
+    {
+      fetcher: fetcher(undefined, Token),
+    }
+  );
+  return {
+    data: gmxInLiquidity,
+    mutate: mutateGMXInLiquidity,
   };
 }
 
