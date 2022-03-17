@@ -35,7 +35,7 @@ import {
   getTimeRemaining,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
-import { createDecreaseOrder, callContract } from "../../Api";
+import { createDecreaseOrder, callContract, useHasOutdatedUi } from "../../Api";
 import { getContract } from "../../Addresses";
 import Router from "../../abis/Router.json";
 import Checkbox from "../Checkbox/Checkbox";
@@ -161,6 +161,8 @@ export default function PositionSeller(props) {
   }, [position, orders, triggerPriceUsd, orderOption, nativeTokenAddress]);
 
   const needOrderBookApproval = orderOption === STOP && !orderBookApproved;
+
+  const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   let collateralToken;
   let maxAmount;
@@ -333,6 +335,9 @@ export default function PositionSeller(props) {
   }, [position, triggerPriceUsd, orderOption, fromAmount]);
 
   const getError = () => {
+    if (hasOutdatedUi) {
+      return "Page outdated, please refresh";
+    }
     if (!fromAmount) {
       return "Enter an amount";
     }
