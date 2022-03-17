@@ -8485,6 +8485,7 @@ __metadata:
     ethers: ^5.0.31
     framer-motion: ^4.1.9
     graphql: ^15.5.0
+    hex-to-rgba: ^2.0.1
     husky: ^7.0.0
     krasulya-lightweight-charts: ^3.4.3
     lint-staged: ^12.3.4
@@ -8917,6 +8918,13 @@ __metadata:
   version: 1.1.0
   resolution: "hex-color-regex@npm:1.1.0"
   checksum: 44fa1b7a26d745012f3bfeeab8015f60514f72d2fcf10dce33068352456b8d71a2e6bc5a17f933ab470da2c5ab1e3e04b05caf3fefe3c1cabd7e02e516fc8784
+  languageName: node
+  linkType: hard
+
+"hex-to-rgba@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "hex-to-rgba@npm:2.0.1"
+  checksum: adbb81babe9d06cf743b925e2104968bb32d9e10f0de328b71c9e20ff52da4028fadde4623261866eaed4d9a3b975fb325fa34f2422eb035e839ed71ec462431
   languageName: node
   linkType: hard
 

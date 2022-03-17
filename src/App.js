@@ -14,6 +14,7 @@ import {
   DEFAULT_SLIPPAGE_AMOUNT,
   SLIPPAGE_BPS_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
+  SHOW_PNL_AFTER_FEES_KEY,
   BASIS_POINTS_DIVISOR,
   SHOULD_SHOW_POSITION_LINES_KEY,
   clearWalletConnectData,
@@ -412,9 +413,15 @@ function FullApp() {
   );
   const [slippageAmount, setSlippageAmount] = useState(0);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
+  const [showPnlAfterFees, setShowPnlAfterFees] = useState(false);
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
     [chainId, IS_PNL_IN_LEVERAGE_KEY],
+    false
+  );
+
+  const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
+    [chainId, SHOW_PNL_AFTER_FEES_KEY],
     false
   );
 
@@ -427,6 +434,7 @@ function FullApp() {
     const slippage = parseInt(savedSlippageAmount);
     setSlippageAmount((slippage / BASIS_POINTS_DIVISOR) * 100);
     setIsPnlInLeverage(savedIsPnlInLeverage);
+    setShowPnlAfterFees(savedShowPnlAfterFees);
     setIsSettingsVisible(true);
   };
 
@@ -452,6 +460,7 @@ function FullApp() {
     }
 
     setSavedIsPnlInLeverage(isPnlInLeverage);
+    setSavedShowPnlAfterFees(showPnlAfterFees);
     setSavedSlippageAmount(basisPoints);
     setIsSettingsVisible(false);
   };
@@ -624,6 +633,7 @@ function FullApp() {
             </Route>
             <Route exact path="/trade">
               <Exchange
+                savedShowPnlAfterFees={savedShowPnlAfterFees}
                 savedIsPnlInLeverage={savedIsPnlInLeverage}
                 setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
                 savedSlippageAmount={savedSlippageAmount}
@@ -767,19 +777,15 @@ function FullApp() {
           </div>
         </div>
         <div className="Exchange-settings-row">
+          <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
+            Display PnL after fees
+          </Checkbox>
+        </div>
+        <div className="Exchange-settings-row">
           <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
             Include PnL in leverage display
           </Checkbox>
         </div>
-        {/* <div className="Exchange-settings-row">
-          <button
-            className="btn-link"
-            onClick={disconnectAccountAndCloseSettings}
-          >
-            <BiLogOut className="logout-icon" />
-            Logout from Account
-          </button>
-        </div> */}
         <button className="App-cta Exchange-swap-button" onClick={saveAndCloseSettings}>
           Save
         </button>

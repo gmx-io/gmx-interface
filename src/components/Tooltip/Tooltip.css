@@ -84,6 +84,10 @@
   border-bottom: none;
 }
 
+.Tooltip.no-underline .Tooltip-handle::after {
+  content: unset;
+}
+
 @media (max-width: 700px) {
   .Tooltip-popup {
     min-width: 200px;

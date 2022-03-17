@@ -162,7 +162,7 @@ const CONTRACTS = {
     OrderExecutor: "0x4296e307f108B2f583FF2F7B7270ee7831574Ae5",
     OrderBookReader: "0xccFE3E576f8145403d3ce8f3c2f6519Dae40683B",
 
-    PositionManager: "0x98a00666CfCb2BA5A405415C2BF6547C63bf5491", // PLACEHOLDER
+    PositionManager: "0x98a00666CfCb2BA5A405415C2BF6547C63bf5491", // placeholder address
 
     TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98",
   },
