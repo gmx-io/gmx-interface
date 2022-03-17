@@ -289,7 +289,7 @@ const TOKENS = {
         "https://assets.coingecko.com/coins/images/16786/small/mimlogopng.png"
     },
     {
-      name: "USD Coin",
+      name: "USD Coin (USDC.e)",
       symbol: "USDC.e",
       address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
       decimals: 6,
