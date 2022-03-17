@@ -1348,7 +1348,7 @@ export function useENS(address) {
   useEffect(() => {
     async function resolveENS() {
       if (address) {
-        const provider = await ethers.providers.getDefaultProvider();
+        const provider = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/eth");
         const name = await provider.lookupAddress(address.toLowerCase());
         if (name) setENSName(name);
       }
