@@ -5,6 +5,7 @@ import useSWR from 'swr'
 import { PieChart, Pie, Cell, Tooltip } from 'recharts'
 import TooltipComponent from '../../components/Tooltip/Tooltip'
 
+import hexToRgba from 'hex-to-rgba';
 import { ethers } from "ethers";
 
 import { getTokens, getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
@@ -663,7 +664,7 @@ export default function DashboardV2() {
                       data={gmxDistributionData}
                       cx={100}
                       cy={100}
-                      innerRadius={75}
+                      innerRadius={73}
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
@@ -679,11 +680,11 @@ export default function DashboardV2() {
                           key={`cell-${index}`}
                           fill={entry.color}
                           style={{
-                            filter: gmxActiveIndex === index ? `drop-shadow(0px 0px 6px ${entry.color})` : 'none',
+                            filter: gmxActiveIndex === index ? `drop-shadow(0px 0px 6px ${hexToRgba(entry.color, 0.7)})` : 'none',
                             cursor: 'pointer'
                           }}
                           stroke={entry.color}
-                          strokeWidth={ gmxActiveIndex === index ? 4 : 1}
+                          strokeWidth={ gmxActiveIndex === index ? 1 : 1}
                         />
                       ))}
                     </Pie>
@@ -748,7 +749,7 @@ export default function DashboardV2() {
                       data={glpPool}
                       cx={100}
                       cy={100}
-                      innerRadius={75}
+                      innerRadius={73}
                       outerRadius={80}
                       fill="#8884d8"
                       dataKey="value"
@@ -764,11 +765,11 @@ export default function DashboardV2() {
                           key={`cell-${index}`}
                           fill={GLPPOOLCOLORS[entry.name]}
                           style={{
-                            filter: glpActiveIndex === index ? `drop-shadow(0px 0px 6px ${GLPPOOLCOLORS[entry.name]})` : 'none',
+                            filter: glpActiveIndex === index ? `drop-shadow(0px 0px 6px ${hexToRgba(GLPPOOLCOLORS[entry.name], 0.7)})` : 'none',
                             cursor: 'pointer'
                           }}
                           stroke={GLPPOOLCOLORS[entry.name]}
-                          strokeWidth={ glpActiveIndex === index ? 4 : 1}
+                          strokeWidth={ glpActiveIndex === index ? 1 : 1}
                         />
                       ))}
                     </Pie>
