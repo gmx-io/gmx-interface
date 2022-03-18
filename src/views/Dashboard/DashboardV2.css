@@ -1,20 +1,34 @@
+.DashboardV2 {
+  padding-top: 3rem;
+}
+
 .DashboardV2-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 1rem;
   margin-top: 0.5rem;
-  padding: 2rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
 }
 
 .DashboardV2-token-cards {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 1rem;
   margin-top: 0.5rem;
-  padding: 2rem;
-  padding-top: 1rem;
+}
+
+.token-table-wrapper {
+  border: 1px solid #1e2136;
+  border-radius: 4px;
+  background: #17182c;
+  padding: 0 1rem;
+  text-align: left;
+}
+
+.token-table-wrapper .App-card-title {
+  justify-content: unset;
+}
+
+.token-table-wrapper .App-card-title img {
+  margin-top: 3px;
+  display: inline-flex;
+  margin-left: 0.5rem;
 }
 
 .DashboardV2-projects {
@@ -23,7 +37,6 @@
   grid-gap: 1rem;
   margin-top: 0.5rem;
   padding: 2rem;
-  padding-top: 1rem;
 }
 
 .App-card-title-icon {
@@ -34,9 +47,99 @@
 .App-card-title-icon img + img {
   margin-left: 6px;
 }
-.cap-reached {
-  color: #f44336;
-  font-size: 14px;
+
+.stats-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.stats-wrapper .App-card {
+  width: 100%;
+  display: flex;
+}
+
+.stats-block {
+  width: 100%;
+}
+
+.stats-piechart {
+  margin: -10px;
+  margin-left: 1rem;
+}
+
+.stats-block--glp .stats-label {
+  grid-row-gap: 0;
+}
+
+.stats-label {
+  font-size: 0.9rem;
+  line-height: 1.032rem;
+  border-radius: 4px;
+  padding: 0.674rem;
+  letter-spacing: 0.4px;
+  text-align: left;
+  z-index: 1;
+  background: linear-gradient(90deg, #0b0b0f 0%, rgba(10, 13, 28, 1) 100%);
+  cursor: pointer;
+}
+
+.stats-label-color {
+  width: 4px;
+  height: 100%;
+  margin-right: 1rem;
+}
+
+.Available-network-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 0.5rem;
+}
+
+.Available-network-group .Tooltip {
+  display: flex;
+}
+
+.Available-network-group .Available-network {
+  display: flex;
+}
+
+.Available-network-group .Available-network img {
+  filter: grayscale(100%);
+}
+
+.Available-network-group .Tooltip-handle.active .Available-network img {
+  filter: unset;
+}
+
+.Available-network-group .Available-network img:hover {
+  filter: unset;
+}
+
+.token-table .token-symbol-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 3rem;
+}
+
+.DashboardV2-token-cards .token-table td:nth-child(3),
+.DashboardV2-token-cards .token-table th:nth-child(3) {
+  width: 200px;
+}
+
+@media (max-width: 1024px) {
+  .stats-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-gap: 1rem;
+  }
+
+  .stats-wrapper .App-card {
+    max-width: unset !important;
+    margin: 0;
+  }
 }
 
 @media (max-width: 900px) {
@@ -44,11 +147,29 @@
     grid-template-columns: 1fr;
   }
 
-  .DashboardV2-token-cards {
-    grid-template-columns: 1fr;
+  .token-table-wrapper {
+    display: none;
   }
 
   .DashboardV2-projects {
     grid-template-columns: 1fr;
+  }
+
+  .DashboardV2-token-cards .token-grid {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 660px) {
+  .stats-wrapper .App-card {
+    flex-wrap: wrap;
+    padding-bottom: 0;
+  }
+
+  .stats-piechart {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 0;
   }
 }
