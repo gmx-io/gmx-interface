@@ -72,6 +72,15 @@
   margin-bottom: 8px;
 }
 
+.TokenSelector-token-row.TokenSelector-token-input-row {
+  padding: 0;
+}
+
+.TokenSelector-token-row input {
+  padding: 8px;
+  width: 100%;
+}
+
 .TokenSelector-token-row .Token-text {
   font-size: 16px;
   color: #ffffff;

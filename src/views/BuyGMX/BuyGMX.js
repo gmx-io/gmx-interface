@@ -1,41 +1,41 @@
-import React, { useEffect, useCallback } from 'react'
-import Footer from '../../Footer'
-import './BuyGMX.css'
+import React, { useEffect, useCallback } from "react";
+import Footer from "../../Footer";
+import "./BuyGMX.css";
 
-import { ARBITRUM, AVALANCHE, switchNetwork, useChainId } from '../../Helpers'
+import { ARBITRUM, AVALANCHE, switchNetwork, useChainId } from "../../Helpers";
 
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3React } from "@web3-react/core";
 
-import Synapse from '../../img/ic_synapse.svg'
-import Multiswap from '../../img/ic_multiswap.svg'
-import Hop from '../../img/ic_hop.svg'
-import Banxa from '../../img/ic_banxa.svg'
-import Binance from '../../img/ic_binance_logo.svg'
-import avax30Icon from '../../img/ic_avax_30.svg'
-import gmxArbitrum from '../../img/ic_gmx_arbitrum.svg'
-import gmxAvax from '../../img/ic_gmx_avax.svg'
-import ohmArbitrum from '../../img/ic_olympus_arbitrum.svg'
-import arbitrum16Icon from '../../img/ic_arbitrum_16.svg'
-import avalanche16Icon from '../../img/ic_avalanche_16.svg'
-import Button from '../../components/Common/Button'
+import Synapse from "../../img/ic_synapse.svg";
+import Multiswap from "../../img/ic_multiswap.svg";
+import Hop from "../../img/ic_hop.svg";
+import Banxa from "../../img/ic_banxa.svg";
+import Binance from "../../img/ic_binance_logo.svg";
+import avax30Icon from "../../img/ic_avax_30.svg";
+import gmxArbitrum from "../../img/ic_gmx_arbitrum.svg";
+import gmxAvax from "../../img/ic_gmx_avax.svg";
+import ohmArbitrum from "../../img/ic_olympus_arbitrum.svg";
+import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
+import avalanche16Icon from "../../img/ic_avalanche_16.svg";
+import Button from "../../components/Common/Button";
 
 export default function BuyGMX() {
-  const { chainId } = useChainId()
-  const { active } = useWeb3React()
+  const { chainId } = useChainId();
+  const { active } = useWeb3React();
 
   const onNetworkSelect = useCallback(
-    value => {
+    (value) => {
       if (value === chainId) {
-        return
+        return;
       }
-      return switchNetwork(value, active)
+      return switchNetwork(value, active);
     },
     [chainId, active]
-  )
+  );
 
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="BuyGMXGLP page-layout">
@@ -47,7 +47,7 @@ export default function BuyGMX() {
               <div className="Page-description">
                 ETH is needed on Arbitrum to purchase GMX.
                 <br />
-                To purchase GMX on{' '}
+                To purchase GMX on{" "}
                 <span onClick={() => onNetworkSelect(AVALANCHE)}>
                   Avalanche <img src={avalanche16Icon} alt="avalanche16Icon" />
                 </span>
@@ -63,10 +63,10 @@ export default function BuyGMX() {
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
-                  You can buy ETH directly on{' '}
+                  You can buy ETH directly on{" "}
                   <a href="https://arbitrum.io/" target="_blank" rel="noopener noreferrer">
                     Arbitrum
-                  </a>{' '}
+                  </a>{" "}
                   using Banxa:
                 </div>
                 <div className="direct-purchase-options">
@@ -119,7 +119,7 @@ export default function BuyGMX() {
               <div className="Page-description">
                 Avax is needed on Avalanche to purchase GMX.
                 <br />
-                To purchase GMX on{' '}
+                To purchase GMX on{" "}
                 <span onClick={() => onNetworkSelect(ARBITRUM)}>
                   Arbitrum <img src={arbitrum16Icon} alt="arbitrum16Icon" />
                 </span>
@@ -135,10 +135,10 @@ export default function BuyGMX() {
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
-                  You can buy AVAX directly on{' '}
+                  You can buy AVAX directly on{" "}
                   <a href="https://www.avax.network/" target="_blank" rel="noopener noreferrer">
                     Avalanche
-                  </a>{' '}
+                  </a>{" "}
                   using Banxa:
                 </div>
                 <div className="direct-purchase-options">
@@ -188,10 +188,10 @@ export default function BuyGMX() {
               <div className="App-card no-height">
                 <div className="App-card-content no-title">
                   <div className="BuyGMXGLP-description better-rates-description">
-                    After you have AVAX, set your network to{' '}
-                    <a href="https://bridge.avax.network/login" target="_blank" rel="noopener noreferrer">
-                      Avalanche
-                    </a>{' '}
+                    After you have ETH, set your network to{" "}
+                    <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">
+                      Arbitrum
+                    </a>{" "}
                     then click the button below:
                   </div>
                   <div className="direct-purchase-options">
@@ -218,10 +218,10 @@ export default function BuyGMX() {
               <div className="App-card no-height">
                 <div className="App-card-content no-title">
                   <div className="BuyGMXGLP-description better-rates-description">
-                    After you have ETH, set your network to{' '}
+                    After you have ETH, set your network to{" "}
                     <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">
                       Arbitrum
-                    </a>{' '}
+                    </a>{" "}
                     then click the button below:
                   </div>
                   <div className="buy-gmx">
@@ -258,5 +258,5 @@ export default function BuyGMX() {
       </div>
       <Footer />
     </div>
-  )
+  );
 }

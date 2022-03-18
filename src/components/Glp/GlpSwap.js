@@ -65,6 +65,7 @@ import avalanche16Icon from "../../img/ic_avalanche_16.svg";
 import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
+import AssetDropdown from "../../views/Dashboard/AssetDropdown";
 
 const { AddressZero } = ethers.constants;
 
@@ -258,7 +259,7 @@ export default function GlpSwap(props) {
 
   const swapUsdMin = getUsd(swapAmount, swapTokenAddress, false, infoTokens);
   const glpUsdMax = glpAmount && glpPrice ? glpAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS)) : undefined;
-  // vipin
+
   let isSwapTokenCapReached;
   if (swapTokenInfo.managedUsd && swapTokenInfo.maxUsdgAmount) {
     isSwapTokenCapReached = swapTokenInfo.managedUsd.gt(
@@ -729,8 +730,8 @@ export default function GlpSwap(props) {
       <div className="GlpSwap-content">
         <div className="App-card GlpSwap-stats-card">
           <div className="App-card-title">
-            <div className="GlpSwap-stats-mark">
-              <div className="GlpSwap-stats-mark-icon">
+            <div className="App-card-title-mark">
+              <div className="App-card-title-mark-icon">
                 <img src={glp40Icon} alt="glp40Icon" />
                 {chainId === ARBITRUM ? (
                   <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" />
@@ -738,9 +739,9 @@ export default function GlpSwap(props) {
                   <img src={avalanche16Icon} alt="avalanche16Icon" className="selected-network-symbol" />
                 )}
               </div>
-              <div className="GlpSwap-stats-mark-info">
-                <div className="GlpSwap-stats-mark-title">GLP</div>
-                <div className="GlpSwap-stats-mark-subtitle">GLP</div>
+              <div className="App-card-title-mark-info">
+                <div className="App-card-title-mark-title">GLP</div>
+                <div className="App-card-title-mark-subtitle">GLP</div>
               </div>
             </div>
           </div>
@@ -1069,7 +1070,7 @@ export default function GlpSwap(props) {
                 try {
                   tokenImage = require("../../img/ic_" + token.symbol.toLowerCase() + "_40.svg");
                 } catch (error) {
-                  // console.log(error)
+                  console.log(error);
                 }
                 let isCapReached = tokenInfo.managedAmount?.gt(tokenInfo.maxUsdgAmount);
 
@@ -1125,6 +1126,9 @@ export default function GlpSwap(props) {
                         <div className="App-card-title-info-text">
                           <div className="App-card-info-title">{token.name}</div>
                           <div className="App-card-info-subtitle">{token.symbol}</div>
+                        </div>
+                        <div>
+                          <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
                         </div>
                       </div>
                     </td>

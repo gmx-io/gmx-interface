@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import cx from 'classnames'
+import React, { useState } from "react";
+import cx from "classnames";
 
-import Tooltip from '../Tooltip/Tooltip'
-import PositionSeller from './PositionSeller'
-import PositionEditor from './PositionEditor'
-import OrdersToa from './OrdersToa'
+import Tooltip from "../Tooltip/Tooltip";
+import PositionSeller from "./PositionSeller";
+import PositionEditor from "./PositionEditor";
+import OrdersToa from "./OrdersToa";
 
 import {
   helperToast,
@@ -18,37 +18,37 @@ import {
   SHORT,
   INCREASE,
   DECREASE,
-} from '../../Helpers'
+} from "../../Helpers";
 
 const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
-    return []
+    return [];
   }
   /* eslint-disable array-callback-return */
   return orders
-    .filter(order => {
+    .filter((order) => {
       if (order.type === SWAP) {
-        return false
+        return false;
       }
       const hasMatchingIndexToken =
         order.indexToken === nativeTokenAddress
           ? position.indexToken.isNative
-          : order.indexToken === position.indexToken.address
+          : order.indexToken === position.indexToken.address;
       const hasMatchingCollateralToken =
         order.collateralToken === nativeTokenAddress
           ? position.collateralToken.isNative
-          : order.collateralToken === position.collateralToken.address
+          : order.collateralToken === position.collateralToken.address;
       if (order.isLong === position.isLong && hasMatchingIndexToken && hasMatchingCollateralToken) {
-        return true
+        return true;
       }
     })
-    .map(order => {
+    .map((order) => {
       if (order.type === DECREASE && order.sizeDelta.gt(position.size)) {
-        order.error = 'Order size exceeds position size, order cannot be executed'
+        order.error = "Order size exceeds position size, order cannot be executed";
       }
-      return order
-    })
-}
+      return order;
+    });
+};
 
 export default function PositionsList(props) {
   const {
@@ -76,30 +76,31 @@ export default function PositionsList(props) {
     isWaitingForPositionManagerApproval,
     isPositionManagerApproving,
     approvePositionManager,
+    showPnlAfterFees,
     setMarket,
-  } = props
-  const [positionToEditKey, setPositionToEditKey] = useState(undefined)
-  const [positionToSellKey, setPositionToSellKey] = useState(undefined)
-  const [isPositionEditorVisible, setIsPositionEditorVisible] = useState(undefined)
-  const [isPositionSellerVisible, setIsPositionSellerVisible] = useState(undefined)
-  const [collateralTokenAddress, setCollateralTokenAddress] = useState(undefined)
-  const [ordersToaOpen, setOrdersToaOpen] = useState(false)
+  } = props;
+  const [positionToEditKey, setPositionToEditKey] = useState(undefined);
+  const [positionToSellKey, setPositionToSellKey] = useState(undefined);
+  const [isPositionEditorVisible, setIsPositionEditorVisible] = useState(undefined);
+  const [isPositionSellerVisible, setIsPositionSellerVisible] = useState(undefined);
+  const [collateralTokenAddress, setCollateralTokenAddress] = useState(undefined);
+  const [ordersToaOpen, setOrdersToaOpen] = useState(false);
 
-  const editPosition = position => {
-    setCollateralTokenAddress(position.collateralToken.address)
-    setPositionToEditKey(position.key)
-    setIsPositionEditorVisible(true)
-  }
+  const editPosition = (position) => {
+    setCollateralTokenAddress(position.collateralToken.address);
+    setPositionToEditKey(position.key);
+    setIsPositionEditorVisible(true);
+  };
 
-  const sellPosition = position => {
-    setPositionToSellKey(position.key)
-    setIsPositionSellerVisible(true)
-  }
+  const sellPosition = (position) => {
+    setPositionToSellKey(position.key);
+    setIsPositionSellerVisible(true);
+  };
 
-  const onPositionClick = position => {
-    helperToast.success(`${position.isLong ? 'Long' : 'Short'} ${position.indexToken.symbol} market selected`)
-    setMarket(position.isLong ? LONG : SHORT, position.indexToken.address)
-  }
+  const onPositionClick = (position) => {
+    helperToast.success(`${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol} market selected`);
+    setMarket(position.isLong ? LONG : SHORT, position.indexToken.address);
+  };
 
   return (
     <div className="PositionsList">
@@ -163,9 +164,10 @@ export default function PositionsList(props) {
             {positions.length === 0 && (
               <div className="Exchange-empty-positions-list-note App-card">No open positions</div>
             )}
-            {positions.map(position => {
-              const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress)
-              const liquidationPrice = getLiquidationPrice(position)
+            {positions.map((position) => {
+              const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
+              const liquidationPrice = getLiquidationPrice(position);
+
               return (
                 <div key={position.key} className="App-card">
                   <div className="App-card-title">
@@ -178,12 +180,12 @@ export default function PositionsList(props) {
                       <div>
                         {formatAmount(position.leverage, 4, 2, true)}x&nbsp;
                         <span
-                          className={cx('Exchange-list-side', {
+                          className={cx("Exchange-list-side", {
                             positive: position.isLong,
                             negative: !position.isLong,
                           })}
                         >
-                          {position.isLong ? 'Long' : 'Short'}
+                          {position.isLong ? "Long" : "Short"}
                         </span>
                       </div>
                     </div>
@@ -197,7 +199,7 @@ export default function PositionsList(props) {
                         <Tooltip
                           handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
                           position="right-bottom"
-                          handleClassName={cx('plain', { negative: position.hasLowCollateral })}
+                          handleClassName={cx("plain", { negative: position.hasLowCollateral })}
                           renderContent={() => {
                             return (
                               <>
@@ -216,7 +218,7 @@ export default function PositionsList(props) {
                                 <br />
                                 Use the "Edit" button to deposit or withdraw collateral.
                               </>
-                            )
+                            );
                           }}
                         />
                       </div>
@@ -244,17 +246,23 @@ export default function PositionsList(props) {
                           renderContent={() => {
                             return (
                               <>
-                                Net Value: Initial Collateral - Borrow Fee + PnL
+                                Net Value:{" "}
+                                {showPnlAfterFees
+                                  ? "Initial Collateral - Fees + PnL"
+                                  : "Initial Collateral - Borrow Fee + PnL"}
                                 <br />
                                 <br />
                                 Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
                                 <br />
+                                PnL: {position.deltaBeforeFeesStr}
+                                <br />
                                 Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
                                 <br />
-                                PnL: {position.deltaStr} ({position.deltaPercentageStr})<br />
+                                Open + Close fee: ${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
                                 <br />
+                                PnL After Fees: {position.deltaAfterFeesStr} ({position.deltaAfterFeesPercentageStr})
                               </>
-                            )
+                            );
                           }}
                         />
                       </div>
@@ -262,19 +270,19 @@ export default function PositionsList(props) {
                     <div className="App-card-row">
                       <div className="label">Orders</div>
                       <div>
-                        {positionOrders.length === 0 && 'None'}
-                        {positionOrders.map(order => {
+                        {positionOrders.length === 0 && "None"}
+                        {positionOrders.map((order) => {
                           return (
                             <div key={`${order.isLong}-${order.type}-${order.index}`} className="Position-list-order">
-                              {order.triggerAboveThreshold ? '>' : '<'} {formatAmount(order.triggerPrice, 30, 2, true)}:
-                              {order.type === INCREASE ? ' +' : ' -'}${formatAmount(order.sizeDelta, 30, 2, true)}
+                              {order.triggerAboveThreshold ? ">" : "<"} {formatAmount(order.triggerPrice, 30, 2, true)}:
+                              {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
                               {order.error && (
                                 <>
                                   , <span className="negative">{order.error}</span>
                                 </>
                               )}
                             </div>
-                          )
+                          );
                         })}
                       </div>
                     </div>
@@ -304,7 +312,7 @@ export default function PositionsList(props) {
                     </button>
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
@@ -329,10 +337,10 @@ export default function PositionsList(props) {
               </td>
             </tr>
           )}
-          {positions.map(position => {
-            const liquidationPrice = getLiquidationPrice(position)
-            const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress)
-            const hasOrderError = !!positionOrders.find(order => order.error)
+          {positions.map((position) => {
+            const liquidationPrice = getLiquidationPrice(position);
+            const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
+            const hasOrderError = !!positionOrders.find((order) => order.error);
             return (
               <tr key={position.key}>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
@@ -340,7 +348,7 @@ export default function PositionsList(props) {
                   <div className="Exchange-list-info-label">
                     <span className="muted">{formatAmount(position.leverage, 4, 2, true)}x</span>&nbsp;
                     <span className={cx({ positive: position.isLong, negative: !position.isLong })}>
-                      {position.isLong ? 'Long' : 'Short'}
+                      {position.isLong ? "Long" : "Short"}
                     </span>
                   </div>
                 </td>
@@ -353,23 +361,29 @@ export default function PositionsList(props) {
                       renderContent={() => {
                         return (
                           <>
-                            Net Value: Initial Collateral - Borrow Fee + PnL
+                            Net Value:{" "}
+                            {showPnlAfterFees
+                              ? "Initial Collateral - Fees + PnL"
+                              : "Initial Collateral - Borrow Fee + PnL"}
                             <br />
                             <br />
                             Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
                             <br />
+                            PnL: {position.deltaBeforeFeesStr}
+                            <br />
                             Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
                             <br />
-                            PnL: {position.deltaStr} ({position.deltaPercentageStr})<br />
-                            Realised PnL: ${formatAmount(position.realisedPnl, USD_DECIMALS, 2, true)}
+                            Open + Close fee: ${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
                             <br />
+                            <br />
+                            PnL After Fees: {position.deltaAfterFeesStr} ({position.deltaAfterFeesPercentageStr})
                           </>
-                        )
+                        );
                       }}
                     />
                   </div>
                   <div
-                    className={cx('Exchange-list-info-label', {
+                    className={cx("Exchange-list-info-label", {
                       positive: position.hasProfit && position.pendingDelta.gt(0),
                       negative: !position.hasProfit && position.pendingDelta.gt(0),
                       muted: position.pendingDelta.eq(0),
@@ -381,37 +395,37 @@ export default function PositionsList(props) {
                 <td>
                   <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
                   {positionOrders.length > 0 && (
-                    <div onClick={() => setListSection && setListSection('Orders')}>
+                    <div onClick={() => setListSection && setListSection("Orders")}>
                       <Tooltip
                         handle={`Orders (${positionOrders.length})`}
                         position="left-bottom"
                         handleClassName={cx(
-                          ['Exchange-list-info-label', 'Exchange-position-list-orders', 'plain', 'clickable'],
+                          ["Exchange-list-info-label", "Exchange-position-list-orders", "plain", "clickable"],
                           { muted: !hasOrderError, negative: hasOrderError }
                         )}
                         renderContent={() => {
                           return (
                             <>
                               <strong>Active Orders</strong>
-                              {positionOrders.map(order => {
+                              {positionOrders.map((order) => {
                                 return (
                                   <div
                                     key={`${order.isLong}-${order.type}-${order.index}`}
                                     className="Position-list-order"
                                   >
-                                    {order.triggerAboveThreshold ? '>' : '<'}{' '}
+                                    {order.triggerAboveThreshold ? ">" : "<"}{" "}
                                     {formatAmount(order.triggerPrice, 30, 2, true)}:
-                                    {order.type === INCREASE ? ' +' : ' -'}${formatAmount(order.sizeDelta, 30, 2, true)}
+                                    {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
                                     {order.error && (
                                       <>
                                         , <span className="negative">{order.error}</span>
                                       </>
                                     )}
                                   </div>
-                                )
+                                );
                               })}
                             </>
-                          )
+                          );
                         }}
                       />
                     </div>
@@ -421,7 +435,7 @@ export default function PositionsList(props) {
                   <Tooltip
                     handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
                     position="left-bottom"
-                    handleClassName={cx('plain', { negative: position.hasLowCollateral })}
+                    handleClassName={cx("plain", { negative: position.hasLowCollateral })}
                     renderContent={() => {
                       return (
                         <>
@@ -440,7 +454,7 @@ export default function PositionsList(props) {
                           <br />
                           Use the "Edit" button to deposit or withdraw collateral.
                         </>
-                      )
+                      );
                     }}
                   />
                 </td>
@@ -458,7 +472,7 @@ export default function PositionsList(props) {
                           <br />
                           Use the "Close" button to reduce your position size, or to set stop-loss / take-profit orders.
                         </>
-                      )
+                      );
                     }}
                   />
                 </td>
@@ -479,10 +493,10 @@ export default function PositionsList(props) {
                   </button>
                 </td>
               </tr>
-            )
+            );
           })}
         </tbody>
       </table>
     </div>
-  )
+  );
 }
