@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
-  InjectedConnector,
-  UserRejectedRequestError as UserRejectedRequestErrorInjected,
+  InjectedConnector
 } from "@web3-react/injected-connector";
 import {
   WalletConnectConnector,
@@ -58,6 +57,9 @@ const GAS_PRICE_ADJUSTMENT_MAP = {
 const ARBITRUM_RPC_PROVIDERS = ["https://rpc.ankr.com/arbitrum"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
+export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
+export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = 'eagerconnect';
+export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = 'currentprovider';
 
 export function getChainName(chainId) {
   return CHAIN_NAMES_MAP[chainId];
@@ -1318,6 +1320,50 @@ export function formatDate(time) {
   return formatDateFn(time * 1000, "dd MMM yyyy");
 }
 
+
+export function hasMetaMaskWalletExtension() {
+  const { ethereum } = window;
+
+  if (!ethereum?.providers && !ethereum?.isMetaMask) {
+    return false;
+  }
+  return window.ethereum.isMetaMask || ethereum.providers.find(({ isMetaMask }) => isMetaMask);
+}
+
+export function hasCoinBaseWalletExtension() {
+  const { ethereum } = window;
+
+  if (!ethereum?.providers && !ethereum?.isCoinbaseWallet) {
+    return false;
+  }
+  return window.ethereum.isCoinbaseWallet || ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
+}
+
+export function activateInjectedProvider(providerName) {
+  const { ethereum } = window;
+
+  if (!ethereum?.providers && !ethereum?.isCoinbaseWallet && !ethereum?.isMetaMask) {
+    return undefined;
+  }
+
+  let provider;
+  if (ethereum?.providers) {
+    switch (providerName) {
+      case 'CoinBase':
+        provider = ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
+        break;
+      case 'MetaMask':
+      default:
+        provider = ethereum.providers.find(({ isMetaMask }) => isMetaMask);
+        break;
+    }
+  }
+
+  if (provider) {
+    ethereum.setSelectedProvider(provider);
+  }
+}
+
 export function getInjectedConnector() {
   return injectedConnector;
 }
@@ -1363,13 +1409,28 @@ export function clearWalletConnectData() {
   localStorage.removeItem(WALLET_CONNECT_LOCALSTORAGE_KEY);
 }
 
+export function clearWalletLinkData() {
+  Object.entries(localStorage)
+    .map(x => x[0])
+    .filter(x => x.startsWith(WALLET_LINK_LOCALSTORAGE_PREFIX))
+    .map(x => localStorage.removeItem(x));
+}
+
+
 export function useEagerConnect(setActivatingConnector) {
   const { activate, active } = useWeb3React();
-
   const [tried, setTried] = useState(false);
 
   useEffect(() => {
     (async function () {
+      if (Boolean(localStorage.getItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY)) !== true) {
+        // only works with WalletConnect
+        clearWalletConnectData();
+        // force clear localStorage connection for MM/CB Wallet (Brave legacy)
+        clearWalletLinkData();
+        return;
+      }
+
       let shouldTryWalletConnect = false;
       try {
         // naive validation to not trigger Wallet Connect if data is corrupted
@@ -1402,6 +1463,10 @@ export function useEagerConnect(setActivatingConnector) {
 
       try {
         const connector = getInjectedConnector();
+        const currentProviderName = localStorage.getItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY) ?? false;
+        if ( currentProviderName !== false ) {
+          activateInjectedProvider(currentProviderName);
+        }
         const authorized = await connector.isAuthorized();
         if (authorized) {
           setActivatingConnector(connector);
@@ -2093,22 +2158,6 @@ export const getInjectedHandler = (activate) => {
     activate(getInjectedConnector(), (e) => {
       const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID;
 
-      if (e.message.includes("No Ethereum provider")) {
-        helperToast.error(
-          <div>
-            MetaMask not yet installed.
-            <br />
-            <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">
-              Install MetaMask
-            </a>{" "}
-            to start using the app.
-          </div>
-        );
-        return;
-      }
-      if (e instanceof UserRejectedRequestErrorInjected) {
-        return;
-      }
       if (e instanceof UnsupportedChainIdError) {
         helperToast.error(
           <div>
@@ -2124,11 +2173,16 @@ export const getInjectedHandler = (activate) => {
         );
         return;
       }
-      helperToast.error(e?.message || "Something went wrong!");
+      const errString = e.message ?? e.toString();
+      helperToast.error(errString);
     });
   };
   return fn;
 };
+
+export function isMobileDevice(navigator) {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
 
 export function getInfoTokens(
   tokens,
