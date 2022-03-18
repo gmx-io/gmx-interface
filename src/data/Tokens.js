@@ -176,7 +176,7 @@ const TOKENS = {
       imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
     },
     {
-      name: "Wrapped Bitcoin",
+      name: "Bitcoin (WBTC)",
       symbol: "BTC",
       decimals: 8,
       address: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
@@ -262,7 +262,7 @@ const TOKENS = {
       "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818"
     },
     {
-      name: "Ether (WETH.e)",
+      name: "Ethereum (WETH.e)",
       symbol: "ETH",
       address: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
       decimals: 18,
@@ -289,7 +289,7 @@ const TOKENS = {
         "https://assets.coingecko.com/coins/images/16786/small/mimlogopng.png"
     },
     {
-      name: "USD Coin",
+      name: "USD Coin (USDC.e)",
       symbol: "USDC.e",
       address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
       decimals: 6,
