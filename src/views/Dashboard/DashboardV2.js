@@ -33,14 +33,13 @@ import {
   getTotalVolumeSum,
   GLPPOOLCOLORS,
 } from "../../Helpers";
-import { useGMXInLiquidity, useGmxPrice } from "../../Api";
+import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "../../Api";
 
 import { getContract } from "../../Addresses";
 
 import VaultV2 from "../../abis/VaultV2.json";
 import ReaderV2 from "../../abis/ReaderV2.json";
 import GlpManager from "../../abis/GlpManager.json";
-import Token from "../../abis/Token.json";
 
 import Footer from "../../Footer";
 
@@ -127,10 +126,12 @@ export default function DashboardV2() {
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
-  const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
-  const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
-  });
+  let {
+    total: totalGmxSupply,
+    avax: avaxGmxSupply,
+    arbitrum: arbitrumGmxSupply,
+    mutate: updateTotalGmxSupply,
+  } = useTotalGmxSupply();
 
   let totalLongPositionSizes;
   let totalShortPositionSizes;
@@ -198,13 +199,6 @@ export default function DashboardV2() {
       fetcher: fetcher(library, VaultV2),
     }
   );
-  const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
-  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR(
-    [`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress],
-    {
-      fetcher: fetcher(library, Token),
-    }
-  );
 
   const infoTokens = getInfoTokens(tokens, undefined, whitelistedTokens, vaultTokenInfo, undefined);
 
@@ -227,24 +221,28 @@ export default function DashboardV2() {
     mutate: updateGmxPrice,
   } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? library : undefined }, active);
 
+  let { total: totalGmxInLiquidity, mutate: updateGmxInLiquidity } = useTotalGmxInLiquidity(chainId, active);
+
+  let {
+    avax: avaxStakedGmx,
+    arbitrum: arbitrumStakedGmx,
+    total: totalStakedGmx,
+    mutate: updateStakedGmx,
+  } = useTotalGmxStaked();
+
   let gmxMarketCap;
-  if (gmxPrice && gmxSupply) {
-    gmxMarketCap = gmxPrice.mul(gmxSupply).div(expandDecimals(1, GMX_DECIMALS));
+  if (gmxPrice && totalGmxSupply) {
+    gmxMarketCap = gmxPrice.mul(totalGmxSupply).div(expandDecimals(1, GMX_DECIMALS));
   }
 
   let stakedGmxSupplyUsd;
-  if (gmxPrice && stakedGmxSupply) {
-    stakedGmxSupplyUsd = stakedGmxSupply.mul(gmxPrice).div(expandDecimals(1, GMX_DECIMALS));
+  if (gmxPrice && totalStakedGmx) {
+    stakedGmxSupplyUsd = totalStakedGmx.mul(gmxPrice).div(expandDecimals(1, GMX_DECIMALS));
   }
 
   let aum;
   if (aums && aums.length > 0) {
     aum = aums[0].add(aums[1]).div(2);
-  }
-
-  let tvl;
-  if (aum && gmxPrice && stakedGmxSupply) {
-    tvl = aum.add(gmxPrice.mul(stakedGmxSupply).div(expandDecimals(1, GMX_DECIMALS)));
   }
 
   let glpPrice;
@@ -257,6 +255,11 @@ export default function DashboardV2() {
         ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(glpSupply)
         : expandDecimals(1, USD_DECIMALS);
     glpMarketCap = glpPrice.mul(glpSupply).div(expandDecimals(1, GLP_DECIMALS));
+  }
+
+  let tvl;
+  if (glpMarketCap && gmxPrice && totalStakedGmx) {
+    tvl = glpMarketCap.add(gmxPrice.mul(totalStakedGmx).div(expandDecimals(1, GMX_DECIMALS)));
   }
 
   const ethFloorPriceFund = expandDecimals(350 + 148 + 384, 18);
@@ -354,19 +357,16 @@ export default function DashboardV2() {
     );
   };
 
-  // GMX in Liquidity (on uniswap and traderjoe) for current chain
-  let { data: gmxInLiquidity } = useGMXInLiquidity(chainId, active);
-
   let stakedPercent = 0;
 
-  if (gmxSupply && stakedGmxSupply) {
-    stakedPercent = stakedGmxSupply.mul(100).div(gmxSupply).toNumber();
+  if (!totalGmxSupply.isZero() && !totalStakedGmx.isZero()) {
+    stakedPercent = totalStakedGmx.mul(100).div(totalGmxSupply).toNumber();
   }
 
   let liquidityPercent = 0;
 
-  if (gmxSupply && gmxInLiquidity) {
-    liquidityPercent = gmxInLiquidity.mul(100).div(gmxSupply).toNumber();
+  if (!totalGmxSupply.isZero() && totalGmxInLiquidity) {
+    liquidityPercent = totalGmxInLiquidity.mul(100).div(totalGmxSupply).toNumber();
   }
 
   let notStakedPercent = 100 - stakedPercent - liquidityPercent;
@@ -402,8 +402,9 @@ export default function DashboardV2() {
 
         updateFees(undefined, true);
         updateGmxPrice(undefined, true);
-        updateStakedGmxSupply(undefined, true);
-        updateGmxSupply(undefined, true);
+        updateStakedGmx(undefined, true);
+        updateTotalGmxSupply(undefined, true);
+        updateGmxInLiquidity(undefined, true);
 
         updateTotalTokenWeights(undefined, true);
       });
@@ -423,9 +424,10 @@ export default function DashboardV2() {
     updateVaultTokenInfo,
     updateFees,
     updateGmxPrice,
-    updateStakedGmxSupply,
     updateTotalTokenWeights,
-    updateGmxSupply,
+    updateStakedGmx,
+    updateTotalGmxSupply,
+    updateGmxInLiquidity,
   ]);
 
   const totalStatsStartDate = chainId === AVALANCHE ? "06 Jan 2022" : "01 Sep 2021";
@@ -634,11 +636,39 @@ export default function DashboardV2() {
                   </div>
                   <div className="App-card-row">
                     <div className="label">Supply</div>
-                    <div>{formatAmount(gmxSupply, GMX_DECIMALS, 0, true)} GMX</div>
+                    <div>
+                      {totalGmxSupply && arbitrumGmxSupply && avaxGmxSupply && (
+                        <TooltipComponent
+                          position="right-bottom"
+                          className="nowrap"
+                          handle={formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true) + " GMX"}
+                          renderContent={() => (
+                            <>
+                              Supply on Arbitrum: {formatAmount(arbitrumGmxSupply, GMX_DECIMALS, 0, true)} GMX
+                              <br />
+                              Supply on Avalanche: {formatAmount(avaxGmxSupply, GMX_DECIMALS, 0, true)} GMX
+                            </>
+                          )}
+                        />
+                      )}
+                    </div>
                   </div>
                   <div className="App-card-row">
                     <div className="label">Total Staked</div>
-                    <div>${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}</div>
+                    {stakedGmxSupplyUsd && arbitrumStakedGmx && avaxStakedGmx && (
+                      <TooltipComponent
+                        position="right-bottom"
+                        className="nowrap"
+                        handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
+                        renderContent={() => (
+                          <>
+                            Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                            <br />
+                            Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                          </>
+                        )}
+                      />
+                    )}
                   </div>
                   <div className="App-card-row">
                     <div className="label">Market Cap</div>

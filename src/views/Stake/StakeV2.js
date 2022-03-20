@@ -41,7 +41,7 @@ import {
   getStakingData,
   getProcessedData,
 } from "../../Helpers";
-import { callContract, useGmxPrice } from "../../Api";
+import { callContract, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "../../Api";
 import { getConstant } from "../../Constants";
 
 import useSWR from "swr";
@@ -1067,6 +1067,15 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     mutate: updateGmxPrice,
   } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? library : undefined }, active);
 
+  let { total: totalGmxSupply, mutate: updateTotalGmxSupply } = useTotalGmxSupply();
+
+  let {
+    avax: avaxGmxStaked,
+    arbitrum: arbitrumGmxStaked,
+    total: totalGmxStaked,
+    mutate: updateGmxStaked,
+  } = useTotalGmxStaked();
+
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
   const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
     fetcher: (...args) => fetch(...args).then((res) => res.text()),
@@ -1133,8 +1142,13 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   }
 
   let stakedGmxSupplyUsd;
-  if (stakedGmxSupply && gmxPrice) {
-    stakedGmxSupplyUsd = stakedGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
+  if (!totalGmxStaked.isZero() && gmxPrice) {
+    stakedGmxSupplyUsd = totalGmxStaked.mul(gmxPrice).div(expandDecimals(1, 18));
+  }
+
+  let totalSupplyUsd;
+  if (!totalGmxSupply.isZero() && gmxPrice) {
+    totalSupplyUsd = totalGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   }
 
   let maxUnstakeableGmx = bigNumberify(0);
@@ -1161,11 +1175,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         updateStakingInfo(undefined, true);
         updateAums(undefined, true);
         updateNativeTokenPrice(undefined, true);
-        updateStakedGmxSupply(undefined, true);
+        updateGmxStaked(undefined, true);
         updateEsGmxSupply(undefined, true);
         updateGmxPrice(undefined, true);
         updateVestingInfo(undefined, true);
         updateGmxSupply(undefined, true);
+        updateTotalGmxSupply(undefined, true);
       });
       return () => {
         library.removeAllListeners("block");
@@ -1184,6 +1199,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     updateGmxPrice,
     updateVestingInfo,
     updateGmxSupply,
+    updateTotalGmxSupply,
+    updateGmxStaked,
   ]);
 
   useEffect(() => {
@@ -1610,16 +1627,48 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               <div className="App-card-row">
                 <div className="label">Total Staked</div>
                 <div>
-                  {formatAmount(stakedGmxSupply, 18, 0, true)} GMX ($
-                  {formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)})
+                  {!totalGmxStaked && "..."}
+                  {totalGmxStaked && (
+                    <Tooltip
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={
+                        formatAmount(totalGmxStaked, 18, 0, true) +
+                        " GMX" +
+                        ` ($${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)})`
+                      }
+                      renderContent={() => (
+                        <>
+                          Arbitrum: {formatAmount(arbitrumGmxStaked, 18, 0, true)} GMX
+                          <br />
+                          Avalanche: {formatAmount(avaxGmxStaked, 18, 0, true)} GMX
+                        </>
+                      )}
+                    />
+                  )}
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Total Supply</div>
-                <div>
-                  {formatKeyAmount(processedData, "gmxSupply", 18, 0, true)} GMX ($
-                  {formatKeyAmount(processedData, "gmxSupplyUsd", USD_DECIMALS, 0, true)})
-                </div>
+                {!totalGmxSupply && "..."}
+                {totalGmxSupply && (
+                  <Tooltip
+                    position="right-bottom"
+                    className="nowrap"
+                    handle={
+                      formatAmount(totalGmxSupply, 18, 0, true) +
+                      " GMX" +
+                      ` ($${formatAmount(totalSupplyUsd, USD_DECIMALS, 0, true)})`
+                    }
+                    renderContent={() => (
+                      <>
+                        Arbitrum: {formatAmount(arbitrumGmxStaked, 18, 0, true)} GMX
+                        <br />
+                        Avalanche: {formatAmount(avaxGmxStaked, 18, 0, true)} GMX
+                      </>
+                    )}
+                  />
+                )}
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-options">
