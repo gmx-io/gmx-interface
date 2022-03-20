@@ -387,15 +387,7 @@ export default function ConfirmationBox(props) {
         </ul>
       </>
     );
-  }, [
-    hasExistingPosition,
-    existingTriggerOrdersThatWillBeClosed,
-    isSwap,
-    chainId,
-    library,
-    pendingTxns,
-    setPendingTxns,
-  ]);
+  }, [existingTriggerOrdersThatWillBeClosed, isSwap, chainId, library, pendingTxns, setPendingTxns]);
 
   const renderExistingTriggerWarning = useCallback(() => {
     if (
