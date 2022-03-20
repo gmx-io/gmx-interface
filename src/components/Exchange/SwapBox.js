@@ -299,6 +299,8 @@ export default function SwapBox(props) {
     }
   );
 
+  const { data: hasOutdatedUi } = Api.useHasOutdatedUi();
+
   const fromToken = getToken(chainId, fromTokenAddress);
   const toToken = getToken(chainId, toTokenAddress);
   const shortCollateralToken = getTokenInfo(infoTokens, shortCollateralAddress);
@@ -749,6 +751,10 @@ export default function SwapBox(props) {
   };
 
   const getLeverageError = useCallback(() => {
+    if (hasOutdatedUi) {
+      return ["Page outdated, please refresh"]
+    }
+
     if (!toAmount || toAmount.eq(0)) {
       return ["Enter an amount"];
     }
@@ -933,6 +939,7 @@ export default function SwapBox(props) {
     triggerPriceValue,
     usdgSupply,
     entryMarkPrice,
+    hasOutdatedUi,
   ]);
 
   const getToLabel = () => {

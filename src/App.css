@@ -150,7 +150,7 @@
   position: relative;
   border: 1px solid #1e2136;
   border-radius: 4px;
-  background: #17182c;
+  background: #16182e;
 }
 
 .App-card-bottom-placeholder {
@@ -531,6 +531,7 @@ button.App-connect-wallet:hover {
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .App-card-title-small {
