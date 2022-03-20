@@ -16,12 +16,14 @@ import Token from "../abis/Token.json";
 import { getContract } from "../Addresses";
 import { getConstant } from "../Constants";
 import {
+  UI_VERSION,
   ARBITRUM,
   AVALANCHE,
   // DEFAULT_GAS_LIMIT,
   bigNumberify,
   getExplorerUrl,
   getServerBaseUrl,
+  getServerUrl,
   getGasPrice,
   getGasLimit,
   replaceNativeTokenAddress,
@@ -304,18 +306,52 @@ export function useTrades(chainId, account) {
 }
 
 export function useStakedGmxSupply(library, active) {
-  const chainId = ARBITRUM;
-  const gmxAddress = getContract(chainId, "GMX");
-  const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
+  const gmxAddressArb = getContract(ARBITRUM, "GMX");
+  const stakedGmxTrackerAddressArb = getContract(ARBITRUM, "StakedGmxTracker");
 
-  const { data, mutate } = useSWR(
-    [`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress],
+  const { data: arbData, mutate: arbMutate } = useSWR(
+    [`StakeV2:stakedGmxSupply:${active}`, ARBITRUM, gmxAddressArb, "balanceOf", stakedGmxTrackerAddressArb],
     {
       fetcher: fetcher(library, Token),
     }
   );
 
+  const gmxAddressAvax = getContract(AVALANCHE, "GMX");
+  const stakedGmxTrackerAddressAvax = getContract(AVALANCHE, "StakedGmxTracker");
+
+  const { data: avaxData, mutate: avaxMutate } = useSWR(
+    [`StakeV2:stakedGmxSupply:${active}`, AVALANCHE, gmxAddressAvax, "balanceOf", stakedGmxTrackerAddressAvax],
+    {
+      fetcher: fetcher(undefined, Token),
+    }
+  );
+
+  let data
+  if (arbData && avaxData) {
+    data = arbData.add(avaxData)
+  }
+
+  const mutate = () => {
+    arbMutate()
+    avaxMutate()
+  }
+
   return { data, mutate };
+}
+
+export function useHasOutdatedUi() {
+  const url = getServerUrl(ARBITRUM, "/ui_version");
+  const { data, mutate } = useSWR([url], {
+    fetcher: (...args) => fetch(...args).then((res) => res.text()),
+  });
+
+  let hasOutdatedUi = false
+
+  if (data && data !== UI_VERSION) {
+    hasOutdatedUi = true
+  }
+
+  return { data: hasOutdatedUi, mutate };
 }
 
 export function useGmxPrice(chainId, libraries, active) {
