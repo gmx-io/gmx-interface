@@ -345,7 +345,7 @@ export default function ConfirmationBox(props) {
   }, [existingOrder, isSwap, chainId]);
 
   const renderExistingTriggerError = useCallback(() => {
-    if (isSwap || hasExistingPosition || existingTriggerOrdersThatWillBeClosed?.length < 1) {
+    if (isSwap || existingTriggerOrdersThatWillBeClosed?.length < 1) {
       return;
     }
     let existingTriggerOrderLength = existingTriggerOrdersThatWillBeClosed?.length;
