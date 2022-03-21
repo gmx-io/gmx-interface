@@ -1,7 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import {
-  InjectedConnector
-} from "@web3-react/injected-connector";
+import { InjectedConnector } from "@web3-react/injected-connector";
 import {
   WalletConnectConnector,
   UserRejectedRequestError as UserRejectedRequestErrorWalletConnect,
@@ -58,8 +56,8 @@ const ARBITRUM_RPC_PROVIDERS = ["https://rpc.ankr.com/arbitrum"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
-export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = 'eagerconnect';
-export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = 'currentprovider';
+export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
+export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
 
 export function getChainName(chainId) {
   return CHAIN_NAMES_MAP[chainId];
@@ -1298,14 +1296,8 @@ export function formatDate(time) {
   return formatDateFn(time * 1000, "dd MMM yyyy");
 }
 
-
 export function hasMetaMaskWalletExtension() {
-  const { ethereum } = window;
-
-  if (!ethereum?.providers && !ethereum?.isMetaMask) {
-    return false;
-  }
-  return window.ethereum.isMetaMask || ethereum.providers.find(({ isMetaMask }) => isMetaMask);
+  return window.ethereum;
 }
 
 export function hasCoinBaseWalletExtension() {
@@ -1327,10 +1319,10 @@ export function activateInjectedProvider(providerName) {
   let provider;
   if (ethereum?.providers) {
     switch (providerName) {
-      case 'CoinBase':
+      case "CoinBase":
         provider = ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
         break;
-      case 'MetaMask':
+      case "MetaMask":
       default:
         provider = ethereum.providers.find(({ isMetaMask }) => isMetaMask);
         break;
@@ -1389,11 +1381,10 @@ export function clearWalletConnectData() {
 
 export function clearWalletLinkData() {
   Object.entries(localStorage)
-    .map(x => x[0])
-    .filter(x => x.startsWith(WALLET_LINK_LOCALSTORAGE_PREFIX))
-    .map(x => localStorage.removeItem(x));
+    .map((x) => x[0])
+    .filter((x) => x.startsWith(WALLET_LINK_LOCALSTORAGE_PREFIX))
+    .map((x) => localStorage.removeItem(x));
 }
-
 
 export function useEagerConnect(setActivatingConnector) {
   const { activate, active } = useWeb3React();
@@ -1442,7 +1433,7 @@ export function useEagerConnect(setActivatingConnector) {
       try {
         const connector = getInjectedConnector();
         const currentProviderName = localStorage.getItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY) ?? false;
-        if ( currentProviderName !== false ) {
+        if (currentProviderName !== false) {
           activateInjectedProvider(currentProviderName);
         }
         const authorized = await connector.isAuthorized();
