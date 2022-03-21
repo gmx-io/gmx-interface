@@ -752,7 +752,7 @@ export default function DashboardV2() {
                   <div className="App-card-row">
                     <div className="label">Stablecoins Percentage</div>
                     <div>
-                      {stablePercentage} %
+                      {stablePercentage}%
                     </div>
                   </div>
                 </div>
