@@ -1067,7 +1067,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     mutate: updateGmxPrice,
   } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? library : undefined }, active);
 
-  let { total: totalGmxSupply, mutate: updateTotalGmxSupply } = useTotalGmxSupply();
+  let {
+    total: totalGmxSupply,
+    avax: avaxTotalGmx,
+    arbitrum: arbitrumTotalGmx,
+    mutate: updateTotalGmxSupply,
+  } = useTotalGmxSupply();
 
   let {
     avax: avaxGmxStaked,
@@ -1662,9 +1667,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     }
                     renderContent={() => (
                       <>
-                        Arbitrum: {formatAmount(arbitrumGmxStaked, 18, 0, true)} GMX
+                        Arbitrum: {formatAmount(arbitrumTotalGmx, 18, 0, true)} GMX
                         <br />
-                        Avalanche: {formatAmount(avaxGmxStaked, 18, 0, true)} GMX
+                        Avalanche: {formatAmount(avaxTotalGmx, 18, 0, true)} GMX
                       </>
                     )}
                   />
