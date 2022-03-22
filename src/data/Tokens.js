@@ -176,7 +176,7 @@ const TOKENS = {
       imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
     },
     {
-      name: "Wrapped Bitcoin",
+      name: "Bitcoin (WBTC)",
       symbol: "BTC",
       decimals: 8,
       address: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
@@ -248,8 +248,7 @@ const TOKENS = {
       address: ethers.constants.AddressZero,
       isNative: true,
       isShortable: true,
-      imageUrl:
-      "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818"
+      imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
     },
     {
       name: "Wrapped AVAX",
@@ -258,17 +257,15 @@ const TOKENS = {
       address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
       isWrapped: true,
       baseSymbol: "AVAX",
-      imageUrl:
-      "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818"
+      imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
     },
     {
-      name: "Ether (WETH.e)",
+      name: "Ethereum (WETH.e)",
       symbol: "ETH",
       address: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
       decimals: 18,
       isShortable: true,
-      imageUrl:
-        "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880"
+      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
     },
     {
       name: "Bitcoin (WBTC.e)",
@@ -276,8 +273,7 @@ const TOKENS = {
       address: "0x50b7545627a5162F82A992c33b87aDc75187B218",
       decimals: 8,
       isShortable: true,
-      imageUrl:
-        "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744"
+      imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
     },
     {
       name: "Magic Internet Money",
@@ -285,17 +281,15 @@ const TOKENS = {
       address: "0x130966628846BFd36ff31a822705796e8cb8C18D",
       decimals: 18,
       isStable: true,
-      imageUrl:
-        "https://assets.coingecko.com/coins/images/16786/small/mimlogopng.png"
+      imageUrl: "https://assets.coingecko.com/coins/images/16786/small/mimlogopng.png",
     },
     {
-      name: "USD Coin",
+      name: "USD Coin (USDC.e)",
       symbol: "USDC.e",
       address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
       decimals: 6,
       isStable: true,
-      imageUrl:
-      "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389"
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
     },
     {
       name: "USD Coin",
@@ -303,10 +297,9 @@ const TOKENS = {
       address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
       decimals: 6,
       isStable: true,
-      imageUrl:
-      "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389"
-    }
-  ]
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+    },
+  ],
 };
 
 const CHAIN_IDS = [56, 97, 42161, 421611, 43114];
