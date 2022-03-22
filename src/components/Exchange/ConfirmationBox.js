@@ -17,6 +17,7 @@ import {
   SLIPPAGE_BPS_KEY,
   formatDateTime,
   calculatePositionDelta,
+  ARBITRUM,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 
@@ -341,7 +342,11 @@ export default function ConfirmationBox(props) {
     if (isMarketOrder) {
       return null;
     }
-    return <ExchangeInfoRow label="Execution Fee">{formatAmount(executionFee, 18, 4)} ETH</ExchangeInfoRow>;
+    return (
+      <ExchangeInfoRow label="Execution Fee">
+        {formatAmount(executionFee, 18, 4)} {chainId === ARBITRUM ? "ETH" : "AVAX"}
+      </ExchangeInfoRow>
+    );
   }, [isMarketOrder, executionFee]);
 
   const renderAvailableLiquidity = useCallback(() => {
