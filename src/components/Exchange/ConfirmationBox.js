@@ -347,7 +347,7 @@ export default function ConfirmationBox(props) {
         {formatAmount(executionFee, 18, 4)} {chainId === ARBITRUM ? "ETH" : "AVAX"}
       </ExchangeInfoRow>
     );
-  }, [isMarketOrder, executionFee]);
+  }, [isMarketOrder, executionFee, chainId]);
 
   const renderAvailableLiquidity = useCallback(() => {
     let availableLiquidity;
