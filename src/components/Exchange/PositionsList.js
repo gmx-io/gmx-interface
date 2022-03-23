@@ -5,6 +5,7 @@ import Tooltip from "../Tooltip/Tooltip";
 import PositionSeller from "./PositionSeller";
 import PositionEditor from "./PositionEditor";
 import OrdersToa from "./OrdersToa";
+import { FiShare } from "react-icons/fi";
 
 import {
   helperToast,
@@ -19,6 +20,7 @@ import {
   INCREASE,
   DECREASE,
 } from "../../Helpers";
+import SharePosition from "./SharePosition";
 
 const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -81,8 +83,10 @@ export default function PositionsList(props) {
   } = props;
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
   const [positionToSellKey, setPositionToSellKey] = useState(undefined);
+  const [positionToShareKey, setPositionToShareKey] = useState(undefined);
   const [isPositionEditorVisible, setIsPositionEditorVisible] = useState(undefined);
   const [isPositionSellerVisible, setIsPositionSellerVisible] = useState(undefined);
+  const [isSharePositionVisible, setIsSharePositionVisible] = useState(undefined);
   const [collateralTokenAddress, setCollateralTokenAddress] = useState(undefined);
   const [ordersToaOpen, setOrdersToaOpen] = useState(false);
 
@@ -95,6 +99,28 @@ export default function PositionsList(props) {
   const sellPosition = (position) => {
     setPositionToSellKey(position.key);
     setIsPositionSellerVisible(true);
+  };
+
+  const sharePosition = (position) => {
+    console.log(position);
+    let data = {
+      entryPrice: `${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}`,
+      currentPrice: `${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}`,
+      pnlPercentage: position.deltaAfterFeesPercentageStr,
+      isLong: position.isLong,
+      token: position.indexToken.symbol,
+    };
+    fetch(`https://gmx-og-image-sigma.vercel.app/api`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then(console.log);
+    setPositionToShareKey(position.key);
+    setIsSharePositionVisible(true);
   };
 
   const onPositionClick = (position) => {
@@ -156,6 +182,13 @@ export default function PositionsList(props) {
           chainId={chainId}
           nativeTokenAddress={nativeTokenAddress}
           setOrdersToaOpen={setOrdersToaOpen}
+        />
+      )}
+      {isSharePositionVisible && (
+        <SharePosition
+          isVisible={isSharePositionVisible}
+          setIsVisible={setIsSharePositionVisible}
+          title="Share Position"
         />
       )}
       {positions && (
@@ -309,6 +342,9 @@ export default function PositionsList(props) {
                     </button>
                     <button className="App-button-option App-card-option" onClick={() => sellPosition(position)}>
                       Close
+                    </button>
+                    <button className="App-button-option App-card-option" onClick={() => sharePosition(position)}>
+                      <FiShare />
                     </button>
                   </div>
                 </div>
@@ -491,6 +527,11 @@ export default function PositionsList(props) {
                   <button className="Exchange-list-action" onClick={() => sellPosition(position)}>
                     Close
                   </button>
+                </td>
+                <td>
+                  <div className="position-share" onClick={() => sharePosition(position)}>
+                    <FiShare />
+                  </div>
                 </td>
               </tr>
             );
