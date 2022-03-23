@@ -17,7 +17,6 @@ import {
   SLIPPAGE_BPS_KEY,
   formatDateTime,
   calculatePositionDelta,
-  ARBITRUM,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 
@@ -26,7 +25,7 @@ import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
 import Checkbox from "../Checkbox/Checkbox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
-import { getToken, getWrappedToken } from "../../data/Tokens";
+import { getNativeToken, getToken, getWrappedToken } from "../../data/Tokens";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -344,7 +343,7 @@ export default function ConfirmationBox(props) {
     }
     return (
       <ExchangeInfoRow label="Execution Fee">
-        {formatAmount(executionFee, 18, 4)} {chainId === ARBITRUM ? "ETH" : "AVAX"}
+        {formatAmount(executionFee, 18, 4)} {getNativeToken(chainId).symbol}
       </ExchangeInfoRow>
     );
   }, [isMarketOrder, executionFee, chainId]);
