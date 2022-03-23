@@ -2,13 +2,6 @@
   background: #101124;
   justify-content: space-between;
 }
-
-.BuyGMXGLP-container {
-  padding-top: 2.875rem;
-  padding-bottom: 2rem;
-  width: 100%;
-}
-
 .BuyGMXGLP-panel {
   padding-top: 0;
   padding-bottom: 2.5rem;
@@ -190,11 +183,6 @@
 }
 
 @media (max-width: 400px) {
-  .BuyGMXGLP-container {
-    padding-left: 16px !important;
-    padding-right: 16px !important;
-  }
-
   .BuyGMXGLP-description {
     font-size: 1rem;
     line-height: 1.25rem;

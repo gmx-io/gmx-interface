@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import cx from "classnames";
 
 import { formatAmount, expandDecimals, bigNumberify } from "../../Helpers";
@@ -14,6 +14,7 @@ import "./TokenSelector.css";
 
 export default function TokenSelector(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState("");
   const tokenInfo = getToken(props.chainId, props.tokenAddress);
   const {
     tokens,
@@ -31,6 +32,12 @@ export default function TokenSelector(props) {
     props.onSelectToken(token);
   };
 
+  useEffect(() => {
+    if (isModalVisible) {
+      setSearchKeyword("");
+    }
+  }, [isModalVisible]);
+
   if (!tokenInfo) {
     return null;
   }
@@ -40,14 +47,41 @@ export default function TokenSelector(props) {
   try {
     tokenImage = require("../../img/ic_" + tokenInfo.symbol.toLowerCase() + "_24.svg");
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
+
+  const onSearchKeywordChange = (e) => {
+    setSearchKeyword(e.target.value);
+  };
+
+  const filteredTokens = tokens.filter((item) => {
+    return (
+      item.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 ||
+      item.symbol.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1
+    );
+  });
+
+  const _handleKeyDown = (e) => {
+    if (e.key === "Enter" && filteredTokens.length > 0) {
+      onSelectToken(filteredTokens[0]);
+    }
+  };
 
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)}>
       <Modal isVisible={isModalVisible} setIsVisible={setIsModalVisible} label={props.label}>
         <div className="TokenSelector-tokens">
-          {tokens.map((token) => {
+          <div className="TokenSelector-token-row TokenSelector-token-input-row">
+            <input
+              type="text"
+              placeholder="Search Token"
+              value={searchKeyword}
+              onChange={(e) => onSearchKeywordChange(e)}
+              onKeyDown={_handleKeyDown}
+              autoFocus
+            />
+          </div>
+          {filteredTokens.map((token) => {
             let tokenPopupImage;
             try {
               tokenPopupImage = require("../../img/ic_" + token.symbol.toLowerCase() + "_40.svg");

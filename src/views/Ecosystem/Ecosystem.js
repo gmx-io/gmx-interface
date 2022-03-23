@@ -23,9 +23,7 @@ export default function Ecosystem() {
         </div>
         <div className="DashboardV2-projects">
           <div className="App-card">
-            <div className="App-card-title">
-              GMX Governance
-            </div>
+            <div className="App-card-title">GMX Governance</div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -38,9 +36,7 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  GMX Governance page
-                </div>
+                <div>GMX Governance page</div>
               </div>
             </div>
           </div>
@@ -64,9 +60,7 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  GMX Stats page
-                </div>
+                <div>GMX Stats page</div>
               </div>
             </div>
           </div>
@@ -374,9 +368,7 @@ export default function Ecosystem() {
         </div>
         <div className="Tab-title-section">
           <div className="Page-title">Partnerships and Integrations</div>
-          <div className="Page-description">
-            Projects supporting GMX.
-          </div>
+          <div className="Page-description">Projects supporting GMX.</div>
         </div>
         <div className="DashboardV2-projects">
           <div className="App-card">
@@ -399,14 +391,16 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  DeFi portfolio tracker
-                </div>
+                <div>DeFi portfolio tracker</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Announcement</div>
                 <div>
-                  <a href="https://twitter.com/GMX_IO/status/1439711532884152324" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://twitter.com/GMX_IO/status/1439711532884152324"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     https://twitter.com
                   </a>
                 </div>
@@ -433,14 +427,16 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  Decentralized Trading Protocol
-                </div>
+                <div>Decentralized Trading Protocol</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Announcement</div>
                 <div>
-                  <a href="https://twitter.com/GMX_IO/status/1438899138549145605" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://twitter.com/GMX_IO/status/1438899138549145605"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     https://twitter.com
                   </a>
                 </div>
@@ -467,14 +463,16 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  Yield Optimizer on Avalanche
-                </div>
+                <div>Yield Optimizer on Avalanche</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Announcement</div>
                 <div>
-                  <a href="https://twitter.com/GMX_IO/status/1484601407378378754" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://twitter.com/GMX_IO/status/1484601407378378754"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     https://twitter.com
                   </a>
                 </div>
@@ -501,14 +499,16 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  DEX Aggregator
-                </div>
+                <div>DEX Aggregator</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Announcement</div>
                 <div>
-                  <a href="https://twitter.com/GMX_IO/status/1495780826016989191" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://twitter.com/GMX_IO/status/1495780826016989191"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     https://twitter.com
                   </a>
                 </div>
@@ -535,14 +535,16 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  Decentralized Options Protocol
-                </div>
+                <div>Decentralized Options Protocol</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Announcement</div>
                 <div>
-                  <a href="https://twitter.com/GMX_IO/status/1482445801523716099" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://twitter.com/GMX_IO/status/1482445801523716099"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     https://twitter.com
                   </a>
                 </div>
@@ -569,14 +571,16 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  Decentralized Options Strategies
-                </div>
+                <div>Decentralized Options Strategies</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Announcement</div>
                 <div>
-                  <a href="https://twitter.com/GMX_IO/status/1482788805635678212" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://twitter.com/GMX_IO/status/1482788805635678212"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     https://twitter.com
                   </a>
                 </div>
@@ -603,9 +607,7 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  Decentralized Finance Dashboard
-                </div>
+                <div>Decentralized Finance Dashboard</div>
               </div>
             </div>
           </div>
@@ -629,14 +631,16 @@ export default function Ecosystem() {
               </div>
               <div className="App-card-row">
                 <div className="label">About</div>
-                <div>
-                  Decentralized Finance Dashboard
-                </div>
+                <div>Decentralized Finance Dashboard</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Announcement</div>
                 <div>
-                  <a href="https://twitter.com/GMX_IO/status/1438124768033660938" target="_blank" rel="noopener noreferrer">
+                  <a
+                    href="https://twitter.com/GMX_IO/status/1438124768033660938"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     https://twitter.com
                   </a>
                 </div>

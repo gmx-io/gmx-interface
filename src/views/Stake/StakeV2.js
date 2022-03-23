@@ -1376,7 +1376,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   }
 
   return (
-    <div className="StakeV2 Page page-layout">
+    <div className="StakeV2 default-container page-layout">
       <StakeModal
         isVisible={isStakeModalVisible}
         setIsVisible={setIsStakeModalVisible}
@@ -1469,20 +1469,25 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         library={library}
         chainId={chainId}
       />
-      <div className="Page-title-section mt-0">
-        <div className="Page-title">Earn</div>
-        <div className="Page-description">
-          Stake{" "}
-          <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">
-            GMX
-          </a>{" "}
-          and{" "}
-          <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
-            GLP
-          </a>{" "}
-          to earn rewards.
+      <div className="section-title-block">
+        <div className="section-title-icon"></div>
+        <div className="section-title-content">
+          <div className="Page-title">
+            Earn
+          </div>
+          <div className="Page-description">
+            Stake{" "}
+            <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">
+              GMX
+            </a>{" "}
+            and{" "}
+            <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
+              GLP
+            </a>{" "}
+            to earn rewards.
+          </div>
+          {earnMsg && <div className="Page-description">{earnMsg}</div>}
         </div>
-        {earnMsg && <div className="Page-description">{earnMsg}</div>}
       </div>
       <div className="StakeV2-content">
         <div className="StakeV2-cards">
@@ -1926,193 +1931,190 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           </div>
         </div>
       </div>
-
-      <div>
-        <div className="Page-title-section">
-          <div className="Page-title">Vest</div>
-          <div className="Page-description">
-            Convert esGMX tokens to GMX tokens.
-            <br />
-            Please read the{" "}
-            <a href="https://gmxio.gitbook.io/gmx/rewards#vesting" target="_blank" rel="noopener noreferrer">
-              vesting details
-            </a>{" "}
-            before using the vaults.
-          </div>
+      <div className="Tab-title-section">
+        <div className="Page-title">
+          Vest
         </div>
-        <div>
-          <div className="StakeV2-cards">
-            <div className="App-card StakeV2-gmx-card">
-              <div className="App-card-title">GMX Vault</div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-content">
-                <div className="App-card-row">
-                  <div className="label">Staked Tokens</div>
-                  <div>
-                    <Tooltip
-                      handle={formatAmount(totalRewardTokens, 18, 2, true)}
-                      position="right-bottom"
-                      renderContent={() => {
-                        return (
-                          <>
-                            {formatAmount(processedData.gmxInStakedGmx, 18, 2, true)} GMX
-                            <br />
-                            {formatAmount(processedData.esGmxInStakedGmx, 18, 2, true)} esGMX
-                            <br />
-                            {formatAmount(processedData.bnGmxInFeeGmx, 18, 2, true)} Multiplier Points
-                          </>
-                        );
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Reserved for Vesting</div>
-                  <div>
-                    {formatKeyAmount(vestingData, "gmxVesterPairAmount", 18, 2, true)} /{" "}
-                    {formatAmount(totalRewardTokens, 18, 2, true)}
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Vesting Status</div>
-                  <div>
-                    <Tooltip
-                      handle={`${formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} / ${formatKeyAmount(
-                        vestingData,
-                        "gmxVesterVestedAmount",
-                        18,
-                        4,
-                        true
-                      )}`}
-                      position="right-bottom"
-                      renderContent={() => {
-                        return (
-                          <>
-                            {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} tokens have been converted
-                            to GMX from the&nbsp;
-                            {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX deposited for
-                            vesting.
-                          </>
-                        );
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Claimable</div>
-                  <div>
-                    <Tooltip
-                      handle={`${formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)} GMX`}
-                      position="right-bottom"
-                      renderContent={() =>
-                        `${formatKeyAmount(
-                          vestingData,
-                          "gmxVesterClaimable",
-                          18,
-                          4,
-                          true
-                        )} GMX tokens can be claimed, use the options under the Total Rewards section to claim them.`
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="App-card-divider"></div>
-                <div className="App-card-options">
-                  {!active && (
-                    <button className="App-button-option App-card-option" onClick={() => connectWallet()}>
-                      Connect Wallet
-                    </button>
-                  )}
-                  {active && (
-                    <button className="App-button-option App-card-option" onClick={() => showGmxVesterDepositModal()}>
-                      Deposit
-                    </button>
-                  )}
-                  {active && (
-                    <button className="App-button-option App-card-option" onClick={() => showGmxVesterWithdrawModal()}>
-                      Withdraw
-                    </button>
-                  )}
-                </div>
+        <div className="Page-description">
+          Convert esGMX tokens to GMX tokens.
+          <br />
+          Please read the{" "}
+          <a href="https://gmxio.gitbook.io/gmx/rewards#vesting" target="_blank" rel="noopener noreferrer">
+            vesting details
+          </a>{" "}
+          before using the vaults.
+        </div>
+      </div>
+      <div className="StakeV2-cards">
+        <div className="App-card StakeV2-gmx-card">
+          <div className="App-card-title">GMX Vault</div>
+          <div className="App-card-divider"></div>
+          <div className="App-card-content">
+            <div className="App-card-row">
+              <div className="label">Staked Tokens</div>
+              <div>
+                <Tooltip
+                  handle={formatAmount(totalRewardTokens, 18, 2, true)}
+                  position="right-bottom"
+                  renderContent={() => {
+                    return (
+                      <>
+                        {formatAmount(processedData.gmxInStakedGmx, 18, 2, true)} GMX
+                        <br />
+                        {formatAmount(processedData.esGmxInStakedGmx, 18, 2, true)} esGMX
+                        <br />
+                        {formatAmount(processedData.bnGmxInFeeGmx, 18, 2, true)} Multiplier Points
+                      </>
+                    );
+                  }}
+                />
               </div>
             </div>
-            <div className="App-card StakeV2-gmx-card">
-              <div className="App-card-title">GLP Vault</div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-content">
-                <div className="App-card-row">
-                  <div className="label">Staked Tokens</div>
-                  <div>{formatAmount(processedData.glpBalance, 18, 2, true)} GLP</div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Reserved for Vesting</div>
-                  <div>
-                    {formatKeyAmount(vestingData, "glpVesterPairAmount", 18, 2, true)} /{" "}
-                    {formatAmount(processedData.glpBalance, 18, 2, true)}
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Vesting Status</div>
-                  <div>
-                    <Tooltip
-                      handle={`${formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} / ${formatKeyAmount(
-                        vestingData,
-                        "glpVesterVestedAmount",
-                        18,
-                        4,
-                        true
-                      )}`}
-                      position="right-bottom"
-                      renderContent={() => {
-                        return (
-                          <>
-                            {formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} tokens have been converted
-                            to GMX from the&nbsp;
-                            {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)} esGMX deposited for
-                            vesting.
-                          </>
-                        );
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Claimable</div>
-                  <div>
-                    <Tooltip
-                      handle={`${formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX`}
-                      position="right-bottom"
-                      renderContent={() =>
-                        `${formatKeyAmount(
-                          vestingData,
-                          "glpVesterClaimable",
-                          18,
-                          4,
-                          true
-                        )} GMX tokens can be claimed, use the options under the Total Rewards section to claim them.`
-                      }
-                    ></Tooltip>
-                  </div>
-                </div>
-                <div className="App-card-divider"></div>
-                <div className="App-card-options">
-                  {!active && (
-                    <button className="App-button-option App-card-option" onClick={() => connectWallet()}>
-                      Connect Wallet
-                    </button>
-                  )}
-                  {active && (
-                    <button className="App-button-option App-card-option" onClick={() => showGlpVesterDepositModal()}>
-                      Deposit
-                    </button>
-                  )}
-                  {active && (
-                    <button className="App-button-option App-card-option" onClick={() => showGlpVesterWithdrawModal()}>
-                      Withdraw
-                    </button>
-                  )}
-                </div>
+            <div className="App-card-row">
+              <div className="label">Reserved for Vesting</div>
+              <div>
+                {formatKeyAmount(vestingData, "gmxVesterPairAmount", 18, 2, true)} /{" "}
+                {formatAmount(totalRewardTokens, 18, 2, true)}
               </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">Vesting Status</div>
+              <div>
+                <Tooltip
+                  handle={`${formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} / ${formatKeyAmount(
+                    vestingData,
+                    "gmxVesterVestedAmount",
+                    18,
+                    4,
+                    true
+                  )}`}
+                  position="right-bottom"
+                  renderContent={() => {
+                    return (
+                      <>
+                        {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} tokens have been converted
+                        to GMX from the&nbsp;
+                        {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX deposited for
+                        vesting.
+                      </>
+                    );
+                  }}
+                />
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">Claimable</div>
+              <div>
+                <Tooltip
+                  handle={`${formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)} GMX`}
+                  position="right-bottom"
+                  renderContent={() =>
+                    `${formatKeyAmount(
+                      vestingData,
+                      "gmxVesterClaimable",
+                      18,
+                      4,
+                      true
+                    )} GMX tokens can be claimed, use the options under the Total Rewards section to claim them.`
+                  }
+                />
+              </div>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-options">
+              {!active && (
+                <button className="App-button-option App-card-option" onClick={() => connectWallet()}>
+                  Connect Wallet
+                </button>
+              )}
+              {active && (
+                <button className="App-button-option App-card-option" onClick={() => showGmxVesterDepositModal()}>
+                  Deposit
+                </button>
+              )}
+              {active && (
+                <button className="App-button-option App-card-option" onClick={() => showGmxVesterWithdrawModal()}>
+                  Withdraw
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="App-card StakeV2-gmx-card">
+          <div className="App-card-title">GLP Vault</div>
+          <div className="App-card-divider"></div>
+          <div className="App-card-content">
+            <div className="App-card-row">
+              <div className="label">Staked Tokens</div>
+              <div>{formatAmount(processedData.glpBalance, 18, 2, true)} GLP</div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">Reserved for Vesting</div>
+              <div>
+                {formatKeyAmount(vestingData, "glpVesterPairAmount", 18, 2, true)} /{" "}
+                {formatAmount(processedData.glpBalance, 18, 2, true)}
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">Vesting Status</div>
+              <div>
+                <Tooltip
+                  handle={`${formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} / ${formatKeyAmount(
+                    vestingData,
+                    "glpVesterVestedAmount",
+                    18,
+                    4,
+                    true
+                  )}`}
+                  position="right-bottom"
+                  renderContent={() => {
+                    return (
+                      <>
+                        {formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} tokens have been converted
+                        to GMX from the&nbsp;
+                        {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)} esGMX deposited for
+                        vesting.
+                      </>
+                    );
+                  }}
+                />
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">Claimable</div>
+              <div>
+                <Tooltip
+                  handle={`${formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX`}
+                  position="right-bottom"
+                  renderContent={() =>
+                    `${formatKeyAmount(
+                      vestingData,
+                      "glpVesterClaimable",
+                      18,
+                      4,
+                      true
+                    )} GMX tokens can be claimed, use the options under the Total Rewards section to claim them.`
+                  }
+                ></Tooltip>
+              </div>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-options">
+              {!active && (
+                <button className="App-button-option App-card-option" onClick={() => connectWallet()}>
+                  Connect Wallet
+                </button>
+              )}
+              {active && (
+                <button className="App-button-option App-card-option" onClick={() => showGlpVesterDepositModal()}>
+                  Deposit
+                </button>
+              )}
+              {active && (
+                <button className="App-button-option App-card-option" onClick={() => showGlpVesterWithdrawModal()}>
+                  Withdraw
+                </button>
+              )}
             </div>
           </div>
         </div>

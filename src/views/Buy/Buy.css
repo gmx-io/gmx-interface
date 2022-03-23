@@ -4,17 +4,9 @@
 }
 
 .BuyGMXGLP-container {
-    padding: 2.875rem 0 2rem 0;
     width: 100%;
 }
 
 .BuyGMXGLP-container .section-title-content {
     justify-content: flex-start;
-}
-
-@media (max-width: 400px) {
-    .BuyGMXGLP-container {
-        padding-left: 16px!important;
-        padding-right: 16px!important;
-    }
 }
