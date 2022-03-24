@@ -76,6 +76,8 @@ function getTokenAmount(usdAmount, tokenAddress, max, infoTokens) {
 export default function PositionSeller(props) {
   const {
     active,
+    pendingPositions,
+    setPendingPositions,
     positionsMap,
     positionKey,
     isVisible,
@@ -555,11 +557,9 @@ export default function PositionSeller(props) {
       withdrawETH, // _withdrawETH
     ];
 
-    const successMsg = `Decreased ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"} by ${formatAmount(
-      sizeDelta,
-      USD_DECIMALS,
-      2
-    )} USD.`;
+    const successMsg = `Requested decrease of ${position.indexToken.symbol} ${
+      position.isLong ? "Long" : "Short"
+    } by ${formatAmount(sizeDelta, USD_DECIMALS, 2)} USD.`;
 
     const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
 
@@ -573,6 +573,17 @@ export default function PositionSeller(props) {
       .then(async (res) => {
         setFromValue("");
         setIsVisible(false);
+
+        let nextSize = position.size.sub(sizeDelta);
+
+        pendingPositions[position.key] = {
+          updatedAt: Date.now(),
+          pendingChanges: {
+            size: nextSize,
+          },
+        };
+
+        setPendingPositions(pendingPositions);
       })
       .finally(() => {
         setIsSubmitting(false);

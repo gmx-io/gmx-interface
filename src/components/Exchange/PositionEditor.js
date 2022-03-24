@@ -36,6 +36,8 @@ const { AddressZero } = ethers.constants;
 
 export default function PositionEditor(props) {
   const {
+    pendingPositions,
+    setPendingPositions,
     positionsMap,
     positionKey,
     isVisible,
@@ -300,7 +302,7 @@ export default function PositionEditor(props) {
     callContract(chainId, contract, method, params, {
       value,
       sentMsg: "Deposit submitted!",
-      successMsg: `Deposited ${formatAmount(fromAmount, position.collateralToken.decimals, 4)} ${
+      successMsg: `Requested deposit of ${formatAmount(fromAmount, position.collateralToken.decimals, 4)} ${
         position.collateralToken.symbol
       } into ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}`,
       failMsg: "Deposit failed",
@@ -309,6 +311,16 @@ export default function PositionEditor(props) {
       .then(async (res) => {
         setFromValue("");
         setIsVisible(false);
+
+        pendingPositions[position.key] = {
+          updatedAt: Date.now(),
+          pendingChanges: {
+            collateralSnapshot: position.collateral,
+            expectingCollateralChange: true,
+          },
+        };
+
+        setPendingPositions(pendingPositions);
       })
       .finally(() => {
         setIsSwapping(false);
@@ -343,15 +355,23 @@ export default function PositionEditor(props) {
     callContract(chainId, contract, method, params, {
       value: minExecutionFee,
       sentMsg: "Withdrawal submitted!",
-      successMsg: `Withdrew ${formatAmount(fromAmount, USD_DECIMALS, 2)} USD from ${position.indexToken.symbol} ${
-        position.isLong ? "Long" : "Short"
-      }.`,
+      successMsg: `Requested withdrawal of ${formatAmount(fromAmount, USD_DECIMALS, 2)} USD from ${
+        position.indexToken.symbol
+      } ${position.isLong ? "Long" : "Short"}.`,
       failMsg: "Withdrawal failed.",
       setPendingTxns,
     })
       .then(async (res) => {
         setFromValue("");
         setIsVisible(false);
+
+        pendingPositions[position.key] = {
+          updatedAt: Date.now(),
+          pendingChanges: {
+            collateralSnapshot: position.collateral,
+            expectingCollateralChange: true,
+          },
+        };
       })
       .finally(() => {
         setIsSwapping(false);

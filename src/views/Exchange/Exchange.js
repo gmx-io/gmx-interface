@@ -65,7 +65,41 @@ const getTokenAddress = (token, nativeTokenAddress) => {
   return token.address;
 };
 
-export function getPositions(chainId, positionQuery, positionData, infoTokens, includeDelta, showPnlAfterFees) {
+function applyPendingChanges(position, pendingPositions) {
+  if (!pendingPositions) {
+    return;
+  }
+  const { key } = position;
+
+  if (
+    pendingPositions[key] &&
+    pendingPositions[key].updatedAt &&
+    pendingPositions[key].pendingChanges &&
+    pendingPositions[key].updatedAt + 30 * 1000 > Date.now()
+  ) {
+    const { pendingChanges } = pendingPositions[key];
+    if (pendingChanges.size && position.size.eq(pendingChanges.size)) {
+      return;
+    }
+
+    if (pendingChanges.expectingCollateralChange && !position.collateral.eq(pendingChanges.collateralSnapshot)) {
+      return;
+    }
+
+    position.hasPendingChanges = true;
+    position.pendingChanges = pendingChanges;
+  }
+}
+
+export function getPositions(
+  chainId,
+  positionQuery,
+  positionData,
+  infoTokens,
+  pendingPositions,
+  includeDelta,
+  showPnlAfterFees
+) {
   const propsLength = getConstant(chainId, "positionReaderPropsLength");
   const positions = [];
   const positionsMap = {};
@@ -104,11 +138,12 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
     position.positionFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).mul(2).div(BASIS_POINTS_DIVISOR);
     position.totalFees = position.positionFee.add(position.fundingFee);
 
-    position.hasLowCollateral =
-      position.collateralAfterFee.lte(0) || position.size.div(position.collateralAfterFee.abs()).gt(50);
-
     position.pendingDelta = position.delta;
+
     if (position.collateral.gt(0)) {
+      position.hasLowCollateral =
+        position.collateralAfterFee.lt(0) || position.size.div(position.collateralAfterFee.abs()).gt(50);
+
       if (position.delta.eq(0) && position.averagePrice && position.markPrice) {
         const priceDelta = position.averagePrice.gt(position.markPrice)
           ? position.averagePrice.sub(position.markPrice)
@@ -188,7 +223,9 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
 
     positionsMap[key] = position;
 
-    if (position.size.gt(0)) {
+    applyPendingChanges(position, pendingPositions);
+
+    if (position.size.gt(0) || position.hasPendingChanges) {
       positions.push(position);
     }
   }
@@ -250,6 +287,8 @@ export default function Exchange({
 }) {
   const [showBanner, setShowBanner] = useLocalStorageSerializeKey("showBanner", true);
   const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey("bannerHidden", null);
+
+  const [pendingPositions, setPendingPositions] = useState({});
 
   const hideBanner = () => {
     const hiddenLimit = new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000);
@@ -409,6 +448,7 @@ export default function Exchange({
     positionQuery,
     positionData,
     infoTokens,
+    pendingPositions,
     savedIsPnlInLeverage,
     savedShowPnlAfterFees
   );
@@ -488,6 +528,8 @@ export default function Exchange({
         </div>
         {listSection === "Positions" && (
           <PositionsList
+            pendingPositions={pendingPositions}
+            setPendingPositions={setPendingPositions}
             setListSection={setListSection}
             setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
             setIsWaitingForPositionRouterApproval={setIsWaitingForPositionRouterApproval}
@@ -572,6 +614,8 @@ export default function Exchange({
         </div>
         <div className="Exchange-right">
           <SwapBox
+            pendingPositions={pendingPositions}
+            setPendingPositions={setPendingPositions}
             setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
             setIsWaitingForPositionRouterApproval={setIsWaitingForPositionRouterApproval}
             approveOrderBook={approveOrderBook}
