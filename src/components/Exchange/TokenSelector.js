@@ -14,7 +14,7 @@ import "./TokenSelector.css";
 
 export default function TokenSelector(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState("");
   const tokenInfo = getToken(props.chainId, props.tokenAddress);
   const {
     tokens,
@@ -34,9 +34,9 @@ export default function TokenSelector(props) {
 
   useEffect(() => {
     if (isModalVisible) {
-      setSearchKeyword('')
+      setSearchKeyword("");
     }
-  }, [isModalVisible])
+  }, [isModalVisible]);
 
   if (!tokenInfo) {
     return null;
@@ -47,22 +47,25 @@ export default function TokenSelector(props) {
   try {
     tokenImage = require("../../img/ic_" + tokenInfo.symbol.toLowerCase() + "_24.svg");
   } catch (error) {
-    console.log(error)
+    console.error(error);
   }
 
   const onSearchKeywordChange = (e) => {
     setSearchKeyword(e.target.value);
-  }
+  };
 
-  const filteredTokens = tokens.filter(item => {
-    return item.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 || item.symbol.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1
-  })
+  const filteredTokens = tokens.filter((item) => {
+    return (
+      item.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 ||
+      item.symbol.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1
+    );
+  });
 
   const _handleKeyDown = (e) => {
-    if (e.key === 'Enter' && filteredTokens.length > 0) {
+    if (e.key === "Enter" && filteredTokens.length > 0) {
       onSelectToken(filteredTokens[0]);
     }
-  }
+  };
 
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)}>

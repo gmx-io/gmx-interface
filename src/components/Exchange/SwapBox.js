@@ -69,8 +69,9 @@ import ConfirmationBox from "./ConfirmationBox";
 import OrdersToa from "./OrdersToa";
 
 import { getTokens, getWhitelistedTokens, getToken, getTokenBySymbol } from "../../data/Tokens";
-import Token from "../../abis/Token.json";
+import PositionRouter from "../../abis/PositionRouter.json";
 import Router from "../../abis/Router.json";
+import Token from "../../abis/Token.json";
 import WETH from "../../abis/WETH.json";
 
 import longImg from "../../img/long.svg";
@@ -290,12 +291,18 @@ export default function SwapBox(props) {
 
   const routerAddress = getContract(chainId, "Router");
   const tokenAllowanceAddress = fromTokenAddress === AddressZero ? nativeTokenAddress : fromTokenAddress;
-  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(
+  const { data: tokenAllowance } = useSWR(
     active && [active, chainId, tokenAllowanceAddress, "allowance", account, routerAddress],
     {
       fetcher: fetcher(library, Token),
     }
   );
+
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
+
+  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
+    fetcher: fetcher(library, PositionRouter),
+  });
 
   const { data: hasOutdatedUi } = Api.useHasOutdatedUi();
 
@@ -380,18 +387,6 @@ export default function SwapBox(props) {
       setToTokenAddress(swapOption, toTokens[0].address);
     }
   }, [swapOption, toTokens, toTokenAddress, setToTokenAddress]);
-
-  useEffect(() => {
-    if (active) {
-      function onBlock() {
-        updateTokenAllowance(undefined, true);
-      }
-      library.on("block", onBlock);
-      return () => {
-        library.removeListener("block", onBlock);
-      };
-    }
-  }, [active, library, updateTokenAllowance]);
 
   useEffect(() => {
     if (swapOption !== SHORT) {
@@ -1358,6 +1353,8 @@ export default function SwapBox(props) {
       });
   };
 
+  const referralCode = ethers.constants.HashZero;
+
   const increasePosition = async () => {
     setIsSubmitting(true);
     const tokenAddress0 = fromTokenAddress === AddressZero ? nativeTokenAddress : fromTokenAddress;
@@ -1411,14 +1408,33 @@ export default function SwapBox(props) {
       }
     }
 
-    let params = [path, indexTokenAddress, boundedFromAmount, 0, toUsdMax, isLong, priceLimit];
+    let params = [
+      path, // _path
+      indexTokenAddress, // _indexToken
+      boundedFromAmount, // _amountIn
+      0, // _minOut
+      toUsdMax, // _sizeDelta
+      isLong, // _isLong
+      priceLimit, // _acceptablePrice
+      minExecutionFee, // _executionFee
+      referralCode, // _referralCode
+    ];
 
-    let method = "increasePosition";
-    let value = bigNumberify(0);
+    let method = "createIncreasePosition";
+    let value = minExecutionFee;
     if (fromTokenAddress === AddressZero) {
-      method = "increasePositionETH";
-      value = boundedFromAmount;
-      params = [path, indexTokenAddress, 0, toUsdMax, isLong, priceLimit];
+      method = "createIncreasePositionETH";
+      value = boundedFromAmount.add(minExecutionFee);
+      params = [
+        path, // _path
+        indexTokenAddress, // _indexToken
+        0, // _minOut
+        toUsdMax, // _sizeDelta
+        isLong, // _isLong
+        priceLimit, // _acceptablePrice
+        minExecutionFee, // _executionFee
+        referralCode, // _referralCode
+      ];
     }
 
     if (shouldRaiseGasError(getTokenInfo(infoTokens, fromTokenAddress), fromAmount)) {
@@ -1431,7 +1447,7 @@ export default function SwapBox(props) {
     }
 
     const contractAddress = getContract(chainId, "PositionRouter");
-    const contract = new ethers.Contract(contractAddress, Router.abi, library.getSigner());
+    const contract = new ethers.Contract(contractAddress, PositionRouter.abi, library.getSigner());
     const indexToken = getTokenInfo(infoTokens, indexTokenAddress);
     const tokenSymbol = indexToken.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexToken.symbol;
     const successMsg = `Increased ${tokenSymbol} ${isLong ? "Long" : "Short"} by ${formatAmount(

@@ -26,7 +26,7 @@ import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
 import { callContract } from "../../Api";
 
-import Router from "../../abis/Router.json";
+import PositionRouter from "../../abis/PositionRouter.json";
 import Token from "../../abis/Token.json";
 
 const DEPOSIT = "Deposit";
@@ -65,13 +65,18 @@ export default function PositionEditor(props) {
   const prevIsVisible = usePrevious(isVisible);
 
   const routerAddress = getContract(chainId, "Router");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
 
-  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(
+  const { data: tokenAllowance } = useSWR(
     [active, chainId, collateralTokenAddress, "allowance", account, routerAddress],
     {
       fetcher: fetcher(library, Token),
     }
   );
+
+  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
+    fetcher: fetcher(library, PositionRouter),
+  });
 
   const isDeposit = option === DEPOSIT;
   const isWithdrawal = option === WITHDRAW;
@@ -245,17 +250,6 @@ export default function PositionEditor(props) {
     }
   }, [prevIsVisible, isVisible]);
 
-  useEffect(() => {
-    if (active) {
-      library.on("block", () => {
-        updateTokenAllowance(undefined, true);
-      });
-      return () => {
-        library.removeAllListeners("block");
-      };
-    }
-  }, [active, library, updateTokenAllowance]);
-
   const depositCollateral = async () => {
     setIsSwapping(true);
     const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
@@ -266,14 +260,34 @@ export default function PositionEditor(props) {
     const priceBasisPoints = position.isLong ? 11000 : 9000;
     const priceLimit = position.indexToken.maxPrice.mul(priceBasisPoints).div(10000);
 
-    let params = [path, indexTokenAddress, fromAmount, 0, 0, position.isLong, priceLimit];
+    const referralCode = ethers.constants.HashZero;
+    let params = [
+      path, // _path
+      indexTokenAddress, // _indexToken
+      fromAmount, // _amountIn
+      0, // _minOut
+      0, // _sizeDelta
+      position.isLong, // _isLong
+      priceLimit, // _acceptablePrice
+      minExecutionFee, // _executionFee
+      referralCode, // _referralCode
+    ];
 
-    let method = "increasePosition";
-    let value = bigNumberify(0);
+    let method = "createIncreasePosition";
+    let value = minExecutionFee;
     if (collateralTokenAddress === AddressZero) {
-      method = "increasePositionETH";
-      value = fromAmount;
-      params = [path, indexTokenAddress, 0, 0, position.isLong, priceLimit];
+      method = "createIncreasePositionETH";
+      value = fromAmount.add(minExecutionFee);
+      params = [
+        path, // _path
+        indexTokenAddress, // _indexToken
+        0, // _minOut
+        0, // _sizeDelta
+        position.isLong, // _isLong
+        priceLimit, // _acceptablePrice
+        minExecutionFee, // _executionFee
+        referralCode, // _referralCode
+      ];
     }
 
     if (shouldRaiseGasError(getTokenInfo(infoTokens, collateralTokenAddress), fromAmount)) {
@@ -282,8 +296,7 @@ export default function PositionEditor(props) {
       return;
     }
 
-    const contractAddress = getContract(chainId, "PositionRouter");
-    const contract = new ethers.Contract(contractAddress, Router.abi, library.getSigner());
+    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
     callContract(chainId, contract, method, params, {
       value,
       sentMsg: "Deposit submitted!",
@@ -310,14 +323,25 @@ export default function PositionEditor(props) {
     const priceBasisPoints = position.isLong ? 9000 : 11000;
     const priceLimit = position.indexToken.maxPrice.mul(priceBasisPoints).div(10000);
 
-    let params = [tokenAddress0, indexTokenAddress, fromAmount, 0, position.isLong, account, priceLimit];
-    let method =
-      collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress
-        ? "decreasePositionETH"
-        : "decreasePosition";
+    const withdrawETH = collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress;
+    const params = [
+      [tokenAddress0], // _path
+      indexTokenAddress, // _indexToken
+      fromAmount, // _collateralDelta
+      0, // _sizeDelta
+      position.isLong, // _isLong
+      account, // _receiver
+      priceLimit, // _acceptablePrice
+      0, // _minOut
+      minExecutionFee, // _executionFee
+      withdrawETH, // _withdrawETH
+    ];
 
-    const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner());
+    const method = "createDecreasePosition";
+
+    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
     callContract(chainId, contract, method, params, {
+      value: minExecutionFee,
       sentMsg: "Withdrawal submitted!",
       successMsg: `Withdrew ${formatAmount(fromAmount, USD_DECIMALS, 2)} USD from ${position.indexToken.symbol} ${
         position.isLong ? "Long" : "Short"

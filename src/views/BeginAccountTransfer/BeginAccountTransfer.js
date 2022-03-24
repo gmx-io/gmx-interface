@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 import { ethers } from "ethers";
@@ -53,22 +53,16 @@ export default function BeginAccountTransfer(props) {
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
 
-  const { data: gmxVesterBalance, mutate: updateGmxVesterBalance } = useSWR(
-    [active, chainId, gmxVesterAddress, "balanceOf", account],
-    {
-      fetcher: fetcher(library, Token),
-    }
-  );
+  const { data: gmxVesterBalance } = useSWR([active, chainId, gmxVesterAddress, "balanceOf", account], {
+    fetcher: fetcher(library, Token),
+  });
 
-  const { data: glpVesterBalance, mutate: updateGlpVesterBalance } = useSWR(
-    [active, chainId, glpVesterAddress, "balanceOf", account],
-    {
-      fetcher: fetcher(library, Token),
-    }
-  );
+  const { data: glpVesterBalance } = useSWR([active, chainId, glpVesterAddress, "balanceOf", account], {
+    fetcher: fetcher(library, Token),
+  });
 
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
-  const { data: cumulativeGmxRewards, mutate: updateCumulativeGmxRewards } = useSWR(
+  const { data: cumulativeGmxRewards } = useSWR(
     [active, chainId, stakedGmxTrackerAddress, "cumulativeRewards", parsedReceiver],
     {
       fetcher: fetcher(library, RewardTracker),
@@ -76,42 +70,36 @@ export default function BeginAccountTransfer(props) {
   );
 
   const stakedGlpTrackerAddress = getContract(chainId, "StakedGlpTracker");
-  const { data: cumulativeGlpRewards, mutate: updateCumulativeGlpRewards } = useSWR(
+  const { data: cumulativeGlpRewards } = useSWR(
     [active, chainId, stakedGlpTrackerAddress, "cumulativeRewards", parsedReceiver],
     {
       fetcher: fetcher(library, RewardTracker),
     }
   );
 
-  const { data: transferredCumulativeGmxRewards, mutate: updateTransferredCumulativeGmxRewards } = useSWR(
+  const { data: transferredCumulativeGmxRewards } = useSWR(
     [active, chainId, gmxVesterAddress, "transferredCumulativeRewards", parsedReceiver],
     {
       fetcher: fetcher(library, Vester),
     }
   );
 
-  const { data: transferredCumulativeGlpRewards, mutate: updateTransferredCumulativeGlpRewards } = useSWR(
+  const { data: transferredCumulativeGlpRewards } = useSWR(
     [active, chainId, glpVesterAddress, "transferredCumulativeRewards", parsedReceiver],
     {
       fetcher: fetcher(library, Vester),
     }
   );
 
-  const { data: pendingReceiver, mutate: updatePendingReceiver } = useSWR(
-    [active, chainId, rewardRouterAddress, "pendingReceivers", account],
-    {
-      fetcher: fetcher(library, RewardRouter),
-    }
-  );
+  const { data: pendingReceiver } = useSWR([active, chainId, rewardRouterAddress, "pendingReceivers", account], {
+    fetcher: fetcher(library, RewardRouter),
+  });
 
-  const { data: gmxAllowance, mutate: updateGmxAllowance } = useSWR(
-    [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress],
-    {
-      fetcher: fetcher(library, Token),
-    }
-  );
+  const { data: gmxAllowance } = useSWR([active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress], {
+    fetcher: fetcher(library, Token),
+  });
 
-  const { data: gmxStaked, mutate: updateGmxStaked } = useSWR(
+  const { data: gmxStaked } = useSWR(
     [active, chainId, stakedGmxTrackerAddress, "depositBalances", account, gmxAddress],
     {
       fetcher: fetcher(library, RewardTracker),
@@ -129,37 +117,6 @@ export default function BeginAccountTransfer(props) {
     (cumulativeGlpRewards && cumulativeGlpRewards.gt(0)) ||
     (transferredCumulativeGlpRewards && transferredCumulativeGlpRewards.gt(0));
   const hasPendingReceiver = pendingReceiver && pendingReceiver !== ethers.constants.AddressZero;
-
-  useEffect(() => {
-    if (active) {
-      library.on("block", () => {
-        updateGmxVesterBalance(undefined, true);
-        updateGlpVesterBalance(undefined, true);
-        updateCumulativeGmxRewards(undefined, true);
-        updateCumulativeGlpRewards(undefined, true);
-        updateTransferredCumulativeGmxRewards(undefined, true);
-        updateTransferredCumulativeGlpRewards(undefined, true);
-        updatePendingReceiver(undefined, true);
-        updateGmxAllowance(undefined, true);
-        updateGmxStaked(undefined, true);
-      });
-      return () => {
-        library.removeAllListeners("block");
-      };
-    }
-  }, [
-    active,
-    library,
-    updateGmxVesterBalance,
-    updateGlpVesterBalance,
-    updateCumulativeGmxRewards,
-    updateCumulativeGlpRewards,
-    updateTransferredCumulativeGmxRewards,
-    updateTransferredCumulativeGlpRewards,
-    updatePendingReceiver,
-    updateGmxAllowance,
-    updateGmxStaked,
-  ]);
 
   const getError = () => {
     if (hasVestedGmx) {
