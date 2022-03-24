@@ -6,6 +6,8 @@ import PositionSeller from "./PositionSeller";
 import PositionEditor from "./PositionEditor";
 import OrdersToa from "./OrdersToa";
 
+import { ImSpinner2 } from "react-icons/im";
+
 import {
   helperToast,
   getLiquidationPrice,
@@ -52,6 +54,8 @@ const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
 
 export default function PositionsList(props) {
   const {
+    pendingPositions,
+    setPendingPositions,
     positions,
     positionsMap,
     infoTokens,
@@ -104,6 +108,8 @@ export default function PositionsList(props) {
   return (
     <div className="PositionsList">
       <PositionEditor
+        pendingPositions={pendingPositions}
+        setPendingPositions={setPendingPositions}
         positionsMap={positionsMap}
         positionKey={positionToEditKey}
         isVisible={isPositionEditorVisible}
@@ -133,6 +139,8 @@ export default function PositionsList(props) {
       )}
       {isPositionSellerVisible && (
         <PositionSeller
+          pendingPositions={pendingPositions}
+          setPendingPositions={setPendingPositions}
           setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
           approveOrderBook={approveOrderBook}
           isPluginApproving={isPluginApproving}
@@ -346,9 +354,14 @@ export default function PositionsList(props) {
             return (
               <tr key={position.key}>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
-                  <div className="Exchange-list-title">{position.indexToken.symbol}</div>
+                  <div className="Exchange-list-title">
+                    {position.indexToken.symbol}
+                    {position.hasPendingChanges && <ImSpinner2 className="spin position-pending-icon" />}
+                  </div>
                   <div className="Exchange-list-info-label">
-                    <span className="muted">{formatAmount(position.leverage, 4, 2, true)}x</span>&nbsp;
+                    {position.leverage && (
+                      <span className="muted">{formatAmount(position.leverage, 4, 2, true)}x&nbsp;</span>
+                    )}
                     <span className={cx({ positive: position.isLong, negative: !position.isLong })}>
                       {position.isLong ? "Long" : "Short"}
                     </span>
@@ -356,43 +369,48 @@ export default function PositionsList(props) {
                 </td>
                 <td>
                   <div>
-                    <Tooltip
-                      handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
-                      position="left-bottom"
-                      handleClassName="plain"
-                      renderContent={() => {
-                        return (
-                          <>
-                            Net Value:{" "}
-                            {showPnlAfterFees
-                              ? "Initial Collateral - Fees + PnL"
-                              : "Initial Collateral - Borrow Fee + PnL"}
-                            <br />
-                            <br />
-                            Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                            <br />
-                            PnL: {position.deltaBeforeFeesStr}
-                            <br />
-                            Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                            <br />
-                            Open + Close fee: ${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
-                            <br />
-                            <br />
-                            PnL After Fees: {position.deltaAfterFeesStr} ({position.deltaAfterFeesPercentageStr})
-                          </>
-                        );
-                      }}
-                    />
+                    {!position.netValue && "Creating..."}
+                    {position.netValue && (
+                      <Tooltip
+                        handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
+                        position="left-bottom"
+                        handleClassName="plain"
+                        renderContent={() => {
+                          return (
+                            <>
+                              Net Value:{" "}
+                              {showPnlAfterFees
+                                ? "Initial Collateral - Fees + PnL"
+                                : "Initial Collateral - Borrow Fee + PnL"}
+                              <br />
+                              <br />
+                              Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                              <br />
+                              PnL: {position.deltaBeforeFeesStr}
+                              <br />
+                              Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
+                              <br />
+                              Open + Close fee: ${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
+                              <br />
+                              <br />
+                              PnL After Fees: {position.deltaAfterFeesStr} ({position.deltaAfterFeesPercentageStr})
+                            </>
+                          );
+                        }}
+                      />
+                    )}
                   </div>
-                  <div
-                    className={cx("Exchange-list-info-label", {
-                      positive: position.hasProfit && position.pendingDelta.gt(0),
-                      negative: !position.hasProfit && position.pendingDelta.gt(0),
-                      muted: position.pendingDelta.eq(0),
-                    })}
-                  >
-                    {position.deltaStr} ({position.deltaPercentageStr})
-                  </div>
+                  {position.deltaStr && (
+                    <div
+                      className={cx("Exchange-list-info-label", {
+                        positive: position.hasProfit && position.pendingDelta.gt(0),
+                        negative: !position.hasProfit && position.pendingDelta.gt(0),
+                        muted: position.pendingDelta.eq(0),
+                      })}
+                    >
+                      {position.deltaStr} ({position.deltaPercentageStr})
+                    </div>
+                  )}
                 </td>
                 <td>
                   <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
@@ -482,15 +500,24 @@ export default function PositionsList(props) {
                   ${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}
                 </td>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
-                  ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
+                  {liquidationPrice && `$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}
+                  {!liquidationPrice && `...`}
                 </td>
                 <td>
-                  <button className="Exchange-list-action" onClick={() => editPosition(position)}>
+                  <button
+                    className="Exchange-list-action"
+                    onClick={() => editPosition(position)}
+                    disabled={position.size.eq(0)}
+                  >
                     Edit
                   </button>
                 </td>
                 <td>
-                  <button className="Exchange-list-action" onClick={() => sellPosition(position)}>
+                  <button
+                    className="Exchange-list-action"
+                    onClick={() => sellPosition(position)}
+                    disabled={position.size.eq(0)}
+                  >
                     Close
                   </button>
                 </td>

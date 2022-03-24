@@ -120,6 +120,8 @@ function getNextAveragePrice({ size, sizeDelta, hasProfit, delta, nextPrice, isL
 
 export default function SwapBox(props) {
   const {
+    pendingPositions,
+    setPendingPositions,
     infoTokens,
     active,
     library,
@@ -1450,7 +1452,7 @@ export default function SwapBox(props) {
     const contract = new ethers.Contract(contractAddress, PositionRouter.abi, library.getSigner());
     const indexToken = getTokenInfo(infoTokens, indexTokenAddress);
     const tokenSymbol = indexToken.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexToken.symbol;
-    const successMsg = `Increased ${tokenSymbol} ${isLong ? "Long" : "Short"} by ${formatAmount(
+    const successMsg = `Requested increase of ${tokenSymbol} ${isLong ? "Long" : "Short"} by ${formatAmount(
       toUsdMax,
       USD_DECIMALS,
       2
@@ -1465,6 +1467,21 @@ export default function SwapBox(props) {
     })
       .then(async () => {
         setIsConfirming(false);
+
+        const key = getPositionKey(path[path.length - 1], indexTokenAddress, isLong);
+        let nextSize = toUsdMax;
+        if (hasExistingPosition) {
+          nextSize = existingPosition.size.add(toUsdMax);
+        }
+
+        pendingPositions[key] = {
+          updatedAt: Date.now(),
+          pendingChanges: {
+            size: nextSize,
+          },
+        };
+
+        setPendingPositions(pendingPositions);
       })
       .finally(() => {
         setIsSubmitting(false);
