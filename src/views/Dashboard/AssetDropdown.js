@@ -5,17 +5,12 @@ import coingeckoIcon from "../../img/ic_coingecko_16.svg";
 import arbitrumIcon from "../../img/ic_arbitrum_16.svg";
 import avalancheIcon from "../../img/ic_avalanche_16.svg";
 import metamaskIcon from "../../img/ic_metamask_16.svg";
-import {
-  addTokenToMetamask,
-  ICONLINKS,
-  platformTokens,
-  useChainId,
-} from "../../Helpers";
+import { addTokenToMetamask, ICONLINKS, platformTokens, useChainId } from "../../Helpers";
 import { useWeb3React } from "@web3-react/core";
 
 function AssetDropdown({ assetSymbol, assetInfo }) {
-  const { active } = useWeb3React()
-  const { chainId } = useChainId()
+  const { active } = useWeb3React();
+  const { chainId } = useChainId();
   let { coingecko, arbitrum, avalanche } = ICONLINKS[chainId][assetSymbol];
   const unavailableTokenSymbols = {
     42161: ['ETH'],
@@ -60,7 +55,7 @@ function AssetDropdown({ assetSymbol, assetInfo }) {
               <div
                 onClick={() => {
                   let token = assetInfo
-                    ? {...assetInfo, image: assetInfo.imageUrl}
+                    ? { ...assetInfo, image: assetInfo.imageUrl }
                     : platformTokens[chainId][assetSymbol];
                   addTokenToMetamask(token);
                 }}
