@@ -34,7 +34,7 @@
   grid-template-columns: 1fr auto;
   grid-gap: 1rem;
   padding: 2rem;
-  padding-top: 2rem;
+  padding-top: 0;
 }
 
 .Exchange-position-list-orders {
@@ -994,7 +994,6 @@ table.Exchange-list-small td {
 
   .Exchange-content {
     padding: 1rem;
-    padding-top: 1rem;
   }
   .Exchange-swap-box .TokenSelector .Modal {
     margin: 0 1rem;
