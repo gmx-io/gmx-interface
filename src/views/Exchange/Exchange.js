@@ -5,6 +5,8 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 
 import {
+  ARBITRUM,
+  AVALANCHE,
   FUNDING_RATE_PRECISION,
   BASIS_POINTS_DIVISOR,
   MARGIN_FEE_BASIS_POINTS,
@@ -16,6 +18,7 @@ import {
   fetcher,
   expandDecimals,
   getPositionKey,
+  getPositionContractKey,
   getLeverage,
   useLocalStorageSerializeKey,
   useLocalStorageByChainId,
@@ -32,6 +35,7 @@ import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from "../
 
 import Reader from "../../abis/ReaderV2.json";
 import VaultV2 from "../../abis/VaultV2.json";
+import VaultV2b from "../../abis/VaultV2b.json";
 import Token from "../../abis/Token.json";
 import Router from "../../abis/Router.json";
 
@@ -49,6 +53,25 @@ import Footer from "../../Footer";
 import "./Exchange.css";
 
 const { AddressZero } = ethers.constants;
+
+const arbWsProvider = new ethers.providers.WebSocketProvider(
+  "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"
+);
+
+const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
+
+function getWsProvider(active, chainId) {
+  if (!active) {
+    return;
+  }
+  if (chainId === ARBITRUM) {
+    return arbWsProvider;
+  }
+
+  if (chainId === AVALANCHE) {
+    return avaxWsProvider;
+  }
+}
 
 function getFundingFee(data) {
   let { entryFundingRate, cumulativeFundingRate, size } = data;
@@ -96,9 +119,11 @@ export function getPositions(
   positionQuery,
   positionData,
   infoTokens,
-  pendingPositions,
   includeDelta,
-  showPnlAfterFees
+  showPnlAfterFees,
+  account,
+  pendingPositions,
+  updatedPositions
 ) {
   const propsLength = getConstant(chainId, "positionReaderPropsLength");
   const positions = [];
@@ -111,9 +136,14 @@ export function getPositions(
     const collateralToken = getTokenInfo(infoTokens, collateralTokens[i], true, getContract(chainId, "NATIVE_TOKEN"));
     const indexToken = getTokenInfo(infoTokens, indexTokens[i], true, getContract(chainId, "NATIVE_TOKEN"));
     const key = getPositionKey(collateralTokens[i], indexTokens[i], isLong[i]);
+    let contractKey;
+    if (account) {
+      contractKey = getPositionContractKey(account, collateralTokens[i], indexTokens[i], isLong[i]);
+    }
 
     const position = {
       key,
+      contractKey,
       collateralToken,
       indexToken,
       isLong: isLong[i],
@@ -129,6 +159,19 @@ export function getPositions(
       delta: positionData[i * propsLength + 8],
       markPrice: isLong[i] ? indexToken.minPrice : indexToken.maxPrice,
     };
+
+    if (
+      updatedPositions &&
+      updatedPositions[key] &&
+      updatedPositions[key].updatedAt &&
+      updatedPositions[key].updatedAt + 30 * 1000 > Date.now()
+    ) {
+      const updatedPosition = updatedPositions[key];
+      position.size = updatedPosition.size;
+      position.collateral = updatedPosition.collateral;
+      position.averagePrice = updatedPosition.averagePrice;
+      position.entryFundingRate = updatedPosition.entryFundingRate;
+    }
 
     let fundingFee = getFundingFee(position);
     position.fundingFee = fundingFee ? fundingFee : bigNumberify(0);
@@ -289,6 +332,7 @@ export default function Exchange({
   const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey("bannerHidden", null);
 
   const [pendingPositions, setPendingPositions] = useState({});
+  const [updatedPositions, setUpdatedPositions] = useState({});
 
   const hideBanner = () => {
     const hiddenLimit = new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000);
@@ -448,10 +492,68 @@ export default function Exchange({
     positionQuery,
     positionData,
     infoTokens,
-    pendingPositions,
     savedIsPnlInLeverage,
-    savedShowPnlAfterFees
+    savedShowPnlAfterFees,
+    account,
+    pendingPositions,
+    updatedPositions
   );
+
+  useEffect(() => {
+    const wsVaultAbi = chainId === ARBITRUM ? VaultV2.abi : VaultV2b.abi;
+    const wsProvider = getWsProvider(active, chainId);
+    if (!wsProvider) {
+      return;
+    }
+
+    const wsPositionRouter = new ethers.Contract(vaultAddress, wsVaultAbi, wsProvider);
+
+    const onUpdatePosition = (key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl) => {
+      for (let i = 0; i < positions.length; i++) {
+        const position = positions[i];
+        if (position.contractKey === key) {
+          updatedPositions[position.key] = {
+            size,
+            collateral,
+            averagePrice,
+            entryFundingRate,
+            reserveAmount,
+            realisedPnl,
+            updatedAt: Date.now(),
+          };
+          setUpdatedPositions({ ...updatedPositions });
+          break;
+        }
+      }
+    };
+
+    const onClosePosition = (key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl) => {
+      for (let i = 0; i < positions.length; i++) {
+        const position = positions[i];
+        if (position.contractKey === key) {
+          updatedPositions[position.key] = {
+            size: bigNumberify(0),
+            collateral: bigNumberify(0),
+            averagePrice,
+            entryFundingRate,
+            reserveAmount,
+            realisedPnl,
+            updatedAt: Date.now(),
+          };
+          setUpdatedPositions({ ...updatedPositions });
+          break;
+        }
+      }
+    };
+
+    wsPositionRouter.on("UpdatePosition", onUpdatePosition);
+    wsPositionRouter.on("ClosePosition", onClosePosition);
+
+    return function cleanup() {
+      wsPositionRouter.off("UpdatePosition", onUpdatePosition);
+      wsPositionRouter.off("ClosePosition", onClosePosition);
+    };
+  }, [active, chainId, positions, updatedPositions, vaultAddress]);
 
   const flagOrdersEnabled = true;
   const [orders] = useAccountOrders(flagOrdersEnabled);

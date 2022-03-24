@@ -1481,7 +1481,7 @@ export default function SwapBox(props) {
           },
         };
 
-        setPendingPositions(pendingPositions);
+        setPendingPositions({ ...pendingPositions });
       })
       .finally(() => {
         setIsSubmitting(false);

@@ -1226,6 +1226,13 @@ export function getPositionKey(collateralTokenAddress, indexTokenAddress, isLong
   return tokenAddress0 + ":" + tokenAddress1 + ":" + isLong;
 }
 
+export function getPositionContractKey(account, collateralToken, indexToken, isLong) {
+  return ethers.utils.solidityKeccak256(
+    ["address", "address", "address", "bool"],
+    [account, collateralToken, indexToken, isLong]
+  );
+}
+
 export function getSwapFeeBasisPoints(isStable) {
   return isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS;
 }
