@@ -583,7 +583,7 @@ export default function PositionSeller(props) {
           },
         };
 
-        setPendingPositions(pendingPositions);
+        setPendingPositions({ ...pendingPositions });
       })
       .finally(() => {
         setIsSubmitting(false);

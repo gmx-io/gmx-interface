@@ -320,7 +320,7 @@ export default function PositionEditor(props) {
           },
         };
 
-        setPendingPositions(pendingPositions);
+        setPendingPositions({ ...pendingPositions });
       })
       .finally(() => {
         setIsSwapping(false);

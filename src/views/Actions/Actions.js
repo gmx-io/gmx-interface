@@ -95,9 +95,11 @@ export default function Actions() {
     positionQuery,
     positionData,
     infoTokens,
-    undefined,
     false,
-    false
+    false,
+    undefined,
+    undefined,
+    undefined
   );
 
   useEffect(() => {
