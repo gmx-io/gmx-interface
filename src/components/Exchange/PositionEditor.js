@@ -8,7 +8,6 @@ import {
   BASIS_POINTS_DIVISOR,
   DEPOSIT_FEE,
   DUST_BNB,
-  ARBITRUM,
   helperToast,
   formatAmount,
   bigNumberify,
@@ -51,10 +50,10 @@ export default function PositionEditor(props) {
     getUsd,
     getLeverage,
     savedIsPnlInLeverage,
-    positionManagerApproved,
-    isWaitingForPositionManagerApproval,
-    isPositionManagerApproving,
-    approvePositionManager,
+    positionRouterApproved,
+    isWaitingForPositionRouterApproval,
+    isPositionRouterApproving,
+    approvePositionRouter,
     chainId,
   } = props;
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
@@ -74,12 +73,10 @@ export default function PositionEditor(props) {
     }
   );
 
-  const isWithdrawalEnabled = chainId === ARBITRUM;
-
   const isDeposit = option === DEPOSIT;
   const isWithdrawal = option === WITHDRAW;
 
-  const needPositionManagerApproval = chainId === ARBITRUM && isDeposit && !positionManagerApproved;
+  const needPositionRouterApproval = !positionRouterApproved;
 
   let collateralToken;
   let maxAmount;
@@ -126,7 +123,7 @@ export default function PositionEditor(props) {
 
     if (fromAmount) {
       collateralDelta = isDeposit ? convertedAmount : fromAmount;
-      if (position.isLong && chainId === ARBITRUM) {
+      if (position.isLong) {
         collateralDelta = collateralDelta.mul(BASIS_POINTS_DIVISOR - DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR);
       }
       nextLeverage = getLeverage({
@@ -190,10 +187,10 @@ export default function PositionEditor(props) {
     if (isSwapping) {
       return false;
     }
-    if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
+    if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
       return false;
     }
-    if (isPositionManagerApproving) {
+    if (isPositionRouterApproving) {
       return false;
     }
 
@@ -212,18 +209,23 @@ export default function PositionEditor(props) {
       return "Withdrawing...";
     }
 
-    if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
-      return "Enabling Deposit...";
-    }
-    if (isDeposit && needPositionManagerApproval) {
-      return "Enable Deposit";
-    }
-
     if (isApproving) {
       return `Approving ${position.collateralToken.symbol}...`;
     }
     if (needApproval) {
       return `Approve ${position.collateralToken.symbol}`;
+    }
+
+    if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
+      return "Enabling Leverage";
+    }
+
+    if (isPositionRouterApproving) {
+      return "Enabling Leverage...";
+    }
+
+    if (needPositionRouterApproval) {
+      return "Enable Leverage";
     }
 
     if (isDeposit) {
@@ -280,7 +282,7 @@ export default function PositionEditor(props) {
       return;
     }
 
-    const contractAddress = chainId === ARBITRUM ? getContract(chainId, "PositionManager") : routerAddress;
+    const contractAddress = getContract(chainId, "PositionRouter");
     const contract = new ethers.Contract(contractAddress, Router.abi, library.getSigner());
     callContract(chainId, contract, method, params, {
       value,
@@ -333,14 +335,6 @@ export default function PositionEditor(props) {
   };
 
   const onClickPrimary = () => {
-    if (needPositionManagerApproval) {
-      approvePositionManager({
-        sentMsg: "Enable deposit sent",
-        failMsg: "Enable deposit failed",
-      });
-      return;
-    }
-
     if (needApproval) {
       approveTokens({
         setIsApproving,
@@ -352,6 +346,14 @@ export default function PositionEditor(props) {
         getTokenInfo,
         pendingTxns,
         setPendingTxns,
+      });
+      return;
+    }
+
+    if (needPositionRouterApproval) {
+      approvePositionRouter({
+        sentMsg: isDeposit ? "Enable deposit sent" : "Enable withdraw sent",
+        failMsg: isDeposit ? "Enable deposit failed" : "Enable withdraw failed",
       });
       return;
     }
@@ -369,9 +371,7 @@ export default function PositionEditor(props) {
       {position && (
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           <div>
-            {isWithdrawalEnabled && (
-              <Tab options={EDIT_OPTIONS} option={option} setOption={setOption} onChange={resetForm} />
-            )}
+            <Tab options={EDIT_OPTIONS} option={option} setOption={setOption} onChange={resetForm} />
             {(isDeposit || isWithdrawal) && (
               <div>
                 <div className="Exchange-swap-section">

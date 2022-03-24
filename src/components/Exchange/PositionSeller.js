@@ -90,6 +90,10 @@ export default function PositionSeller(props) {
     isPluginApproving,
     orderBookApproved,
     setOrdersToaOpen,
+    positionRouterApproved,
+    isWaitingForPositionRouterApproval,
+    isPositionRouterApproving,
+    approvePositionRouter,
   } = props;
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true);
@@ -103,9 +107,13 @@ export default function PositionSeller(props) {
 
   const orderOptions = [MARKET, STOP];
   let [orderOption, setOrderOption] = useState(MARKET);
+
   if (!flagOrdersEnabled) {
     orderOption = MARKET;
   }
+
+  const needPositionRouterApproval = !positionRouterApproved && orderOption === MARKET;
+
   const onOrderOptionChange = (option) => {
     setOrderOption(option);
   };
@@ -397,6 +405,12 @@ export default function PositionSeller(props) {
     if (isPluginApproving) {
       return false;
     }
+    if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
+      return false;
+    }
+    if (isPositionRouterApproving) {
+      return false;
+    }
 
     return true;
   };
@@ -408,6 +422,7 @@ export default function PositionSeller(props) {
     if (error) {
       return error;
     }
+
     if (orderOption === STOP) {
       if (isSubmitting) return "Creating Order...";
 
@@ -423,6 +438,19 @@ export default function PositionSeller(props) {
 
       return "Create Order";
     }
+
+    if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
+      return "Enabling Leverage...";
+    }
+
+    if (isPositionRouterApproving) {
+      return "Enabling Leverage...";
+    }
+
+    if (needPositionRouterApproval) {
+      return "Enable Leverage";
+    }
+
     if (hasPendingProfit) {
       return "Close without profit";
     }
@@ -443,6 +471,14 @@ export default function PositionSeller(props) {
   const onClickPrimary = async () => {
     if (needOrderBookApproval) {
       setOrdersToaOpen(true);
+      return;
+    }
+
+    if (needPositionRouterApproval) {
+      approvePositionRouter({
+        sentMsg: "Enable leverage sent",
+        failMsg: "Enable leverage failed",
+      });
       return;
     }
 

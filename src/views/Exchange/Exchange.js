@@ -100,9 +100,9 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
     position.fundingFee = fundingFee ? fundingFee : bigNumberify(0);
     position.collateralAfterFee = position.collateral.sub(position.fundingFee);
 
-    position.closingFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR)
-    position.positionFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).mul(2).div(BASIS_POINTS_DIVISOR)
-    position.totalFees = position.positionFee.add(position.fundingFee)
+    position.closingFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
+    position.positionFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).mul(2).div(BASIS_POINTS_DIVISOR);
+    position.totalFees = position.positionFee.add(position.fundingFee);
 
     position.hasLowCollateral =
       position.collateralAfterFee.lte(0) || position.size.div(position.collateralAfterFee.abs()).gt(50);
@@ -127,25 +127,27 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
       position.deltaPercentageStr = deltaPercentageStr;
       position.deltaBeforeFeesStr = deltaStr;
 
-      let hasProfitAfterFees
-      let pendingDeltaAfterFees
+      let hasProfitAfterFees;
+      let pendingDeltaAfterFees;
 
       if (position.hasProfit) {
         if (position.pendingDelta.gt(position.totalFees)) {
-          hasProfitAfterFees = true
-          pendingDeltaAfterFees = position.pendingDelta.sub(position.totalFees)
+          hasProfitAfterFees = true;
+          pendingDeltaAfterFees = position.pendingDelta.sub(position.totalFees);
         } else {
-          hasProfitAfterFees = false
-          pendingDeltaAfterFees = position.totalFees.sub(position.pendingDelta)
+          hasProfitAfterFees = false;
+          pendingDeltaAfterFees = position.totalFees.sub(position.pendingDelta);
         }
       } else {
-        hasProfitAfterFees = false
-        pendingDeltaAfterFees = position.pendingDelta.add(position.totalFees)
+        hasProfitAfterFees = false;
+        pendingDeltaAfterFees = position.pendingDelta.add(position.totalFees);
       }
 
-      position.hasProfitAfterFees = hasProfitAfterFees
-      position.pendingDeltaAfterFees = pendingDeltaAfterFees
-      position.deltaPercentageAfterFees = position.pendingDeltaAfterFees.mul(BASIS_POINTS_DIVISOR).div(position.collateral);
+      position.hasProfitAfterFees = hasProfitAfterFees;
+      position.pendingDeltaAfterFees = pendingDeltaAfterFees;
+      position.deltaPercentageAfterFees = position.pendingDeltaAfterFees
+        .mul(BASIS_POINTS_DIVISOR)
+        .div(position.collateral);
 
       const { deltaStr: deltaAfterFeesStr, deltaPercentageStr: deltaAfterFeesPercentageStr } = getDeltaStr({
         delta: position.pendingDeltaAfterFees,
@@ -165,7 +167,7 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
         ? position.collateral.add(position.pendingDelta)
         : position.collateral.sub(position.pendingDelta);
 
-      netValue = netValue.sub(position.fundingFee)
+      netValue = netValue.sub(position.fundingFee);
 
       if (showPnlAfterFees) {
         netValue = netValue.sub(position.closingFee);
@@ -405,9 +407,9 @@ export default function Exchange({
     }
   );
 
-  const positionManagerAddress = getContract(chainId, "PositionManager");
-  const { data: positionManagerApproved, mutate: updatePositionManagerApproved } = useSWR(
-    active && [active, chainId, routerAddress, "approvedPlugins", account, positionManagerAddress],
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
+  const { data: positionRouterApproved, mutate: updatePositionRouterApproved } = useSWR(
+    active && [active, chainId, routerAddress, "approvedPlugins", account, positionRouterAddress],
     {
       fetcher: fetcher(library, Router),
     }
@@ -423,7 +425,7 @@ export default function Exchange({
         updateTotalTokenWeights(undefined, true);
         updateUsdgSupply(undefined, true);
         updateOrderBookApproved(undefined, true);
-        updatePositionManagerApproved(undefined, true);
+        updatePositionRouterApproved(undefined, true);
       }
       library.on("block", onBlock);
       return () => {
@@ -441,7 +443,7 @@ export default function Exchange({
     updateTotalTokenWeights,
     updateUsdgSupply,
     updateOrderBookApproved,
-    updatePositionManagerApproved,
+    updatePositionRouterApproved,
   ]);
 
   const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo);
@@ -458,9 +460,9 @@ export default function Exchange({
   const [orders, updateOrders] = useAccountOrders(flagOrdersEnabled);
 
   const [isWaitingForPluginApproval, setIsWaitingForPluginApproval] = useState(false);
-  const [isWaitingForPositionManagerApproval, setIsWaitingForPositionManagerApproval] = useState(false);
+  const [isWaitingForPositionRouterApproval, setIsWaitingForPositionRouterApproval] = useState(false);
   const [isPluginApproving, setIsPluginApproving] = useState(false);
-  const [isPositionManagerApproving, setIsPositionManagerApproving] = useState(false);
+  const [isPositionRouterApproving, setIsPositionRouterApproving] = useState(false);
 
   const approveOrderBook = () => {
     setIsPluginApproving(true);
@@ -480,9 +482,9 @@ export default function Exchange({
       });
   };
 
-  const approvePositionManager = ({ sentMsg, failMsg }) => {
-    setIsPositionManagerApproving(true);
-    return approvePlugin(chainId, positionManagerAddress, {
+  const approvePositionRouter = ({ sentMsg, failMsg }) => {
+    setIsPositionRouterApproving(true);
+    return approvePlugin(chainId, positionRouterAddress, {
       library,
       pendingTxns,
       setPendingTxns,
@@ -490,11 +492,11 @@ export default function Exchange({
       failMsg,
     })
       .then(() => {
-        setIsWaitingForPositionManagerApproval(true);
-        updatePositionManagerApproved(undefined, true);
+        setIsWaitingForPositionRouterApproval(true);
+        updatePositionRouterApproved(undefined, true);
       })
       .finally(() => {
-        setIsPositionManagerApproving(false);
+        setIsPositionRouterApproving(false);
       });
   };
 
@@ -533,16 +535,16 @@ export default function Exchange({
           <PositionsList
             setListSection={setListSection}
             setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
-            setIsWaitingForPositionManagerApproval={setIsWaitingForPositionManagerApproval}
+            setIsWaitingForPositionRouterApproval={setIsWaitingForPositionRouterApproval}
             approveOrderBook={approveOrderBook}
-            approvePositionManager={approvePositionManager}
+            approvePositionRouter={approvePositionRouter}
             isPluginApproving={isPluginApproving}
-            isPositionManagerApproving={isPositionManagerApproving}
+            isPositionRouterApproving={isPositionRouterApproving}
             isWaitingForPluginApproval={isWaitingForPluginApproval}
-            isWaitingForPositionManagerApproval={isWaitingForPositionManagerApproval}
+            isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
             updateOrderBookApproved={updateOrderBookApproved}
             orderBookApproved={orderBookApproved}
-            positionManagerApproved={positionManagerApproved}
+            positionRouterApproved={positionRouterApproved}
             positions={positions}
             positionsMap={positionsMap}
             infoTokens={infoTokens}
@@ -618,16 +620,16 @@ export default function Exchange({
         <div className="Exchange-right">
           <SwapBox
             setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
-            setIsWaitingForPositionManagerApproval={setIsWaitingForPositionManagerApproval}
+            setIsWaitingForPositionRouterApproval={setIsWaitingForPositionRouterApproval}
             approveOrderBook={approveOrderBook}
-            approvePositionManager={approvePositionManager}
+            approvePositionRouter={approvePositionRouter}
             isPluginApproving={isPluginApproving}
-            isPositionManagerApproving={isPositionManagerApproving}
+            isPositionRouterApproving={isPositionRouterApproving}
             isWaitingForPluginApproval={isWaitingForPluginApproval}
-            isWaitingForPositionManagerApproval={isWaitingForPositionManagerApproval}
+            isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
             updateOrderBookApproved={updateOrderBookApproved}
             orderBookApproved={orderBookApproved}
-            positionManagerApproved={positionManagerApproved}
+            positionRouterApproved={positionRouterApproved}
             orders={orders}
             flagOrdersEnabled={flagOrdersEnabled}
             chainId={chainId}

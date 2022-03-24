@@ -16,7 +16,6 @@ import {
   helperToast,
   formatAmount,
   bigNumberify,
-  ARBITRUM,
   USD_DECIMALS,
   USDG_DECIMALS,
   LONG,
@@ -148,15 +147,15 @@ export default function SwapBox(props) {
     orders,
     savedIsPnlInLeverage,
     orderBookApproved,
-    positionManagerApproved,
+    positionRouterApproved,
     isWaitingForPluginApproval,
     approveOrderBook,
-    approvePositionManager,
+    approvePositionRouter,
     setIsWaitingForPluginApproval,
-    isWaitingForPositionManagerApproval,
-    setIsWaitingForPositionManagerApproval,
+    isWaitingForPositionRouterApproval,
+    setIsWaitingForPositionRouterApproval,
     isPluginApproving,
-    isPositionManagerApproving,
+    isPositionRouterApproving,
   } = props;
 
   const [fromValue, setFromValue] = useState("");
@@ -260,9 +259,8 @@ export default function SwapBox(props) {
   const needOrderBookApproval = !isMarketOrder && !orderBookApproved;
   const prevNeedOrderBookApproval = usePrevious(needOrderBookApproval);
 
-  let needPositionManagerApproval = (isLong || isShort) && isMarketOrder && !positionManagerApproved;
-  needPositionManagerApproval = needPositionManagerApproval && chainId === ARBITRUM;
-  const prevNeedPositionManagerApproval = usePrevious(needPositionManagerApproval);
+  const needPositionRouterApproval = (isLong || isShort) && isMarketOrder && !positionRouterApproved;
+  const prevNeedPositionRouterApproval = usePrevious(needPositionRouterApproval);
 
   useEffect(() => {
     if (!needOrderBookApproval && prevNeedOrderBookApproval && isWaitingForPluginApproval) {
@@ -272,15 +270,15 @@ export default function SwapBox(props) {
   }, [needOrderBookApproval, prevNeedOrderBookApproval, setIsWaitingForPluginApproval, isWaitingForPluginApproval]);
 
   useEffect(() => {
-    if (!needPositionManagerApproval && prevNeedPositionManagerApproval && isWaitingForPositionManagerApproval) {
-      setIsWaitingForPositionManagerApproval(false);
+    if (!needPositionRouterApproval && prevNeedPositionRouterApproval && isWaitingForPositionRouterApproval) {
+      setIsWaitingForPositionRouterApproval(false);
       helperToast.success(<div>Leverage enabled!</div>);
     }
   }, [
-    needPositionManagerApproval,
-    prevNeedPositionManagerApproval,
-    setIsWaitingForPositionManagerApproval,
-    isWaitingForPositionManagerApproval,
+    needPositionRouterApproval,
+    prevNeedPositionRouterApproval,
+    setIsWaitingForPositionRouterApproval,
+    isWaitingForPositionRouterApproval,
   ]);
 
   useEffect(() => {
@@ -752,7 +750,7 @@ export default function SwapBox(props) {
 
   const getLeverageError = useCallback(() => {
     if (hasOutdatedUi) {
-      return ["Page outdated, please refresh"]
+      return ["Page outdated, please refresh"];
     }
 
     if (!toAmount || toAmount.eq(0)) {
@@ -1021,10 +1019,10 @@ export default function SwapBox(props) {
     if ((needApproval && isWaitingForApproval) || isApproving) {
       return false;
     }
-    if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
+    if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
       return false;
     }
-    if (isPositionManagerApproving) {
+    if (isPositionRouterApproving) {
       return false;
     }
     if (isApproving) {
@@ -1049,13 +1047,13 @@ export default function SwapBox(props) {
       return error;
     }
 
-    if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
+    if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
       return "Enabling Leverage...";
     }
-    if (isPositionManagerApproving) {
+    if (isPositionRouterApproving) {
       return "Enabling Leverage...";
     }
-    if (needPositionManagerApproval) {
+    if (needPositionRouterApproval) {
       return "Enable Leverage";
     }
 
@@ -1432,7 +1430,7 @@ export default function SwapBox(props) {
       return;
     }
 
-    const contractAddress = chainId === ARBITRUM ? getContract(chainId, "PositionManager") : routerAddress;
+    const contractAddress = getContract(chainId, "PositionRouter");
     const contract = new ethers.Contract(contractAddress, Router.abi, library.getSigner());
     const indexToken = getTokenInfo(infoTokens, indexTokenAddress);
     const tokenSymbol = indexToken.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexToken.symbol;
@@ -1526,8 +1524,8 @@ export default function SwapBox(props) {
       return;
     }
 
-    if (needPositionManagerApproval) {
-      approvePositionManager({
+    if (needPositionRouterApproval) {
+      approvePositionRouter({
         sentMsg: "Enable leverage sent",
         failMsg: "Enable leverage failed",
       });
