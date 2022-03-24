@@ -24,8 +24,8 @@
   display: flex;
   justify-content: space-between;
   position: relative;
-  padding-left: 32px;
-  padding-right: 32px;
+  padding-left: 2rem;
+  padding-right: 2rem;
   background: transparent 0% 0% no-repeat padding-box;
   border-bottom: 1px solid #ffffff10;
 }
@@ -55,7 +55,7 @@
 
 .App-header-drawer {
   background: #17182c88 0% 0% no-repeat padding-box;
-  box-shadow: 8px 3px 6px #00000029;
+  box-shadow: 0.5rem 3px 6px #00000029;
   opacity: 1;
   backdrop-filter: blur(27px);
   position: fixed;
@@ -74,12 +74,12 @@
 }
 
 .App-header-drawer .App-header-link-container a {
-  font-size: 14px;
-  line-height: 18px;
+  font-size: 0.875rem;
+  line-height: 1.125rem;
   font-weight: normal;
   letter-spacing: 0.1px;
   color: #a0a3c4;
-  padding: 15px 16px;
+  padding: 0.9375rem 1rem;
   text-decoration: none;
   display: block;
 }
@@ -112,7 +112,7 @@
 }
 
 .App-header-menu-icon-block {
-  margin-right: 12px;
+  margin-right: 0.75rem;
   margin-left: 0px;
   display: flex;
   align-items: center;
@@ -218,7 +218,7 @@
 }
 
 .App-card-long_sub__iconlist .App-card-long_sub__iconlist___icon {
-  margin-left: 8px;
+  margin-left: 0.5rem;
 }
 
 .App-card-long_sub__iconlist .App-card-long_sub__iconlist___icon img {
@@ -271,7 +271,7 @@
 
 .App-card-title-info-icon {
   display: flex;
-  margin-right: 8px;
+  margin-right: 0.5rem;
 }
 
 .App-card-title-info {
@@ -297,8 +297,8 @@
 .App-card-title-iconlist {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-column-gap: 8px;
-  grid-row-gap: 8px;
+  grid-column-gap: 0.5rem;
+  grid-row-gap: 0.5rem;
 }
 
 .App-card-title-iconlist___icon img {
@@ -362,11 +362,11 @@ button.App-connect-wallet {
   cursor: pointer;
   display: inline-block;
   border: none;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
   font-weight: 500;
-  padding: 9px 24px;
-  height: 36px;
+  padding: 9px 1.5rem;
+  height: 2.25rem;
   color: #17182c;
   background: #03cfcd 0% 0% no-repeat padding-box;
   border-radius: 4px;
@@ -377,12 +377,12 @@ button.App-connect-wallet:hover {
 }
 
 .App-header-user-link {
-  margin-right: 24px;
+  margin-right: 1.5rem;
 }
 
 .App-header-user-address {
   border: 1px solid #ffffff29;
-  height: 36px;
+  height: 2.25rem;
   border-radius: 4px;
   display: inline-flex;
   align-items: center;
@@ -621,10 +621,10 @@ button.App-connect-wallet:hover {
 }
 
 .App-header-container-left a {
-  padding: 18px 17px;
+  padding: 1.125rem 1.0625rem;
   display: block;
   color: #a0a3c4;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 1.1625rem;
   font-weight: normal;
 }
@@ -788,7 +788,7 @@ button.App-connect-wallet:hover {
   padding: 1rem;
   border-radius: 3px;
   border: none;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 a.App-cta,
@@ -884,8 +884,8 @@ button.App-button-option:disabled {
   background: none;
   color: white;
   padding: 0;
-  width: 24px;
-  height: 24px;
+  width: 1.5rem;
+  height: 1.5rem;
   align-items: center;
   border-radius: 4px;
   display: inline-flex;
@@ -928,7 +928,7 @@ button.App-button-option:disabled {
 }
 
 .App-header-user-netowork {
-  margin-right: 24px;
+  margin-right: 1.5rem;
 }
 
 .App-content {
@@ -1028,8 +1028,8 @@ button.App-button {
 .Toastify__close-button {
   align-self: flex-start;
   border-radius: 4px;
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -1039,7 +1039,7 @@ button.App-button {
   background: #ffffff47 0% 0% no-repeat padding-box;
 }
 .Toastify__toast-body {
-  font: normal normal normal 14px/16px Relative;
+  font: normal normal normal 0.875rem/1rem Relative;
 }
 
 .dropdown-backdrop {
@@ -1193,8 +1193,8 @@ button.App-button {
   background: #7a7fec;
   border: 1px solid #3b43e3;
   box-sizing: border-box;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 0.9375rem;
+  padding-right: 0.9375rem;
 }
 
 .header-connect-btn:active {
@@ -1209,7 +1209,7 @@ button.App-button {
   opacity: 1;
   height: 100vh;
   z-index: 2;
-  backdrop-filter: blur(17px);
+  backdrop-filter: blur(1.0625rem);
   position: fixed;
   top: 0;
   width: 100%;
@@ -1228,11 +1228,11 @@ button.App-button {
   }
 
   .App-header-user-link {
-    margin-right: 16px;
+    margin-right: 1rem;
   }
 
   .App-header-user-netowork {
-    margin-right: 16px;
+    margin-right: 1rem;
   }
 
   button.App-connect-wallet {
@@ -1280,8 +1280,8 @@ button.App-button {
     display: flex;
     justify-content: space-between;
     position: relative;
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 1rem;
+    padding-right: 1rem;
     background: transparent 0% 0% no-repeat padding-box;
     border-bottom: 1px solid #ffffff10;
   }

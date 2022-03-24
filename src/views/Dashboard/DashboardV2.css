@@ -28,7 +28,7 @@
 
 .App-card-title-icon {
   display: flex;
-  margin-left: 12px;
+  margin-left: 0.75rem;
 }
 
 .App-card-title-icon img + img {

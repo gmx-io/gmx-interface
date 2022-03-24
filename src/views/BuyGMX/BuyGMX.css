@@ -5,13 +5,13 @@
 .BuyGMXGLP-panel {
   padding-top: 0;
   padding-bottom: 2.5rem;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
   display: flex;
   justify-content: space-between;
 }
 .BuyGMXGLP-panel .App-card:first-child {
-  margin-right: 20px;
+  margin-right: 1.25rem;
 }
 
 .BuyGMXGLP-panel .App-card {
@@ -135,7 +135,7 @@
 
 .BuyGMXGLP-panel .buy-card:first-child,
 .BuyGMXGLP-panel .section-title-block:first-child {
-  margin-right: 20px;
+  margin-right: 1.25rem;
 }
 
 .card-title {
@@ -164,7 +164,7 @@
   }
   .BuyGMXGLP-panel .App-card:first-child {
     margin-right: 0;
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
   }
   .BuyGMXGLP-panel .App-card {
     max-width: 100%;
@@ -172,7 +172,7 @@
   .BuyGMXGLP-panel .buy-card:first-child,
   .BuyGMXGLP-panel .section-title-block:first-child {
     margin-right: 0;
-    margin-bottom: 20px;
+    margin-bottom: 1.25rem;
   }
 }
 

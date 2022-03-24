@@ -303,7 +303,7 @@
   z-index: 5;
 }
 .ExchangeChart.tv .ExchangeChart-bottom-stats {
-  font-size: 14px;
+  font-size: 0.875rem;
   padding: 0.5rem 0;
   margin-left: 2rem;
   white-space: nowrap;
@@ -809,7 +809,7 @@ table.Exchange-list-small td {
 }
 
 .Confirmation-box {
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 
 .Confirmation-box-main {

@@ -41,7 +41,7 @@ table.Orders-list tr:last-child {
 }
 
 .Orders-list-item-type {
-  width: 60px;
+  width: 3.75rem;
 }
 
 table.Orders-list tr.Orders-list-header {

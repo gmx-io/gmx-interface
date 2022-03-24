@@ -14,14 +14,14 @@
 
 .Selector-box {
   width: 72px;
-  height: 36px;
+  height: 2.25rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
-  padding: 7px 8px;
+  font-size: 0.875rem;
+  padding: 7px 0.5rem;
 }
 
 .Selector-box.Arbitrum {
@@ -60,13 +60,13 @@
 }
 
 .Selector-option .Selector-option_icon {
-  width: 32px;
+  width: 2rem;
   margin-right: 1rem;
 }
 
 .Selector-option .Selector-option_label {
-  font-size: 16px;
-  line-height: 20px;
+  font-size: 1rem;
+  line-height: 1.25rem;
   letter-spacing: 0.29px;
   color: #ffffff;
 }
@@ -83,8 +83,8 @@
 
 .Selector-option .selected-icon {
   position: absolute;
-  width: 8px;
-  height: 8px;
+  width: 0.5rem;
+  height: 0.5rem;
   border-radius: 50%;
   right: 1rem;
 }
@@ -99,8 +99,8 @@
 
 .selected-icon {
   position: absolute;
-  width: 8px;
-  height: 8px;
+  width: 0.5rem;
+  height: 0.5rem;
   border-radius: 50%;
   right: 1rem;
 }
@@ -118,8 +118,8 @@
 
 .Selector .Modal-title {
   color: white;
-  font-size: 14px;
-  line-height: 20px;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
   letter-spacing: 0.25px;
   opacity: 1;
 }

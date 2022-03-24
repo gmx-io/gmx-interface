@@ -37,9 +37,9 @@
   align-items: center;
   font-size: 1rem;
   color: #a0a3c4;
-  padding-bottom: 15px;
-  font-size: 14px;
-  padding: 8.5px 8px;
+  padding-bottom: 0.9375rem;
+  font-size: 0.875rem;
+  padding: 8.5px 0.5rem;
   /* border: 1px solid transparent; */
   border-radius: 4px;
 }
@@ -64,7 +64,7 @@
   }
   .address-btn {
     display: flex;
-    width: 60px;
+    width: 3.75rem;
     justify-content: space-between;
   }
 }

@@ -114,7 +114,7 @@ export default function NetworkSelector(props) {
         border: "1px solid #FFFFFF29",
         borderRadius: 4,
         cursor: "pointer",
-        fontSize: "14px",
+        fontSize: "0.875rem",
         "@media (max-width: 900px)": {
           width: 72,
         },
@@ -130,10 +130,10 @@ export default function NetworkSelector(props) {
     menu: (provided) => ({
       ...provided,
       background: "#16182E",
-      boxShadow: "0px 5px 12px #00000052",
+      boxShadow: "0px 5px 0.75rem #00000052",
       border: "1px solid #32344C",
       borderRadius: 4,
-      fontSize: "14px",
+      fontSize: "0.875rem",
     }),
     menuList: (provided) => ({
       paddingTop: "0px",
@@ -143,7 +143,7 @@ export default function NetworkSelector(props) {
       ...provided,
       color: "white",
       margin: 0,
-      fontSize: "14px",
+      fontSize: "0.875rem",
     }),
     valueContainer: (provided, state) => ({
       ...provided,

@@ -1,6 +1,6 @@
 .Home {
   min-height: 100vh;
-  padding-bottom: calc(3rem + 168px);
+  padding-bottom: calc(3rem + 10.5rem);
 }
 
 .Home-top {
@@ -168,7 +168,7 @@
 .Home-cta-option {
   max-width: 36.8125rem;
   width: 100%;
-  box-shadow: 0px 7px 12px #0000004D;
+  box-shadow: 0px 7px 0.75rem #0000004D;
   border: 1px solid #1E2136;
   padding: 1rem;
   background-position: center;
@@ -291,9 +291,9 @@
 
 .Home-latest-info-block {
   /* background: #17182C 0% 0% no-repeat padding-box; */
-  box-shadow: 0px 5px 22px #0000001F;
-  box-shadow: 0px 12px 17px #00000024;
-  box-shadow: 0px 7px 8px #00000033;
+  box-shadow: 0px 5px 1.375rem #0000001F;
+  box-shadow: 0px 0.75rem 1.0625rem #00000024;
+  box-shadow: 0px 7px 0.5rem #00000033;
   /* mix-blend-mode: multiply; */
   border: 1px solid #FFFFFF14;
   border-radius: 4px;
@@ -340,7 +340,7 @@
 
 .Home-video-block {
   background: #0B131C 0% 0% no-repeat padding-box;
-  box-shadow: 0px 8px 20px #0000003D;
+  box-shadow: 0px 0.5rem 1.25rem #0000003D;
   border-radius: 7px;
   max-width: 55.875rem;
   max-height: 32.5625rem;
@@ -488,9 +488,9 @@
   }
 
   .Home-cta-options {
-    width: calc(100% + 32px);
-    margin-left: -16px;
-    margin-right: -16px;
+    width: calc(100% + 2rem);
+    margin-left: -1rem;
+    margin-right: -1rem;
   }
 
   .Home-cta-option-info {
@@ -510,8 +510,8 @@
   }
 
   .Home-latest-info-container {
-    padding-left: 16px!important;
-    padding-right: 16px!important;
+    padding-left: 1rem!important;
+    padding-right: 1rem!important;
     padding-top: 4.625rem;
   }
 

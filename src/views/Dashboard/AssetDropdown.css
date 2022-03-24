@@ -23,7 +23,7 @@
   cursor: pointer;
   color: #a0a3c4;
   text-decoration: none;
-  padding: 8.5px 8px;
+  padding: 8.5px 0.5rem;
 }
 .asset-item:hover {
   background: var(--dark-blue-hover);
