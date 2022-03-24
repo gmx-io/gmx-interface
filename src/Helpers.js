@@ -52,7 +52,7 @@ const GAS_PRICE_ADJUSTMENT_MAP = {
   [AVALANCHE]: "3000000000", // 3 gwei
 };
 
-const ARBITRUM_RPC_PROVIDERS = ["https://rpc.ankr.com/arbitrum"];
+const ARBITRUM_RPC_PROVIDERS = ["https://arb1.arbitrum.io/rpc"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
@@ -1304,12 +1304,7 @@ export function formatDate(time) {
 }
 
 export function hasMetaMaskWalletExtension() {
-  const { ethereum } = window;
-
-  if (!ethereum?.providers && !ethereum?.isMetaMask) {
-    return false;
-  }
-  return window.ethereum.isMetaMask || ethereum.providers.find(({ isMetaMask }) => isMetaMask);
+  return window.ethereum;
 }
 
 export function hasCoinBaseWalletExtension() {
@@ -2213,6 +2208,10 @@ export function getInfoTokens(
         if (token.maxGlobalShortSize.gt(token.globalShortSize)) {
           token.maxAvailableShort = token.maxGlobalShortSize.sub(token.globalShortSize);
         }
+      }
+
+      if (token.maxUsdgAmount.eq(0)) {
+        token.maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
       }
 
       token.availableUsd = token.isStable

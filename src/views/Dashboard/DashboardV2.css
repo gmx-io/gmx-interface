@@ -16,7 +16,7 @@
 .token-table-wrapper {
   border: 1px solid #1e2136;
   border-radius: 4px;
-  background: #17182C;
+  background: #17182c;
   padding: 0 1rem;
   text-align: left;
 }
@@ -81,7 +81,7 @@
   letter-spacing: 0.4px;
   text-align: left;
   z-index: 1;
-  background:  linear-gradient(90deg, #0b0b0f 0%, rgba(10,13,28,1) 100%);
+  background: linear-gradient(90deg, #0b0b0f 0%, rgba(10, 13, 28, 1) 100%);
   cursor: pointer;
 }
 
@@ -124,7 +124,8 @@
   padding-right: 3rem;
 }
 
-.DashboardV2-token-cards .token-table td:nth-child(3), .DashboardV2-token-cards .token-table th:nth-child(3) {
+.DashboardV2-token-cards .token-table td:nth-child(3),
+.DashboardV2-token-cards .token-table th:nth-child(3) {
   width: 200px;
 }
 
@@ -136,18 +137,20 @@
   }
 
   .stats-wrapper .App-card {
-    max-width: unset!important;
+    max-width: unset !important;
     margin: 0;
+  }
+}
+
+@media (max-width: 1100px) {
+  .token-table-wrapper {
+    display: none;
   }
 }
 
 @media (max-width: 900px) {
   .DashboardV2-cards {
     grid-template-columns: 1fr;
-  }
-
-  .token-table-wrapper {
-    display: none;
   }
 
   .DashboardV2-projects {
