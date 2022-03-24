@@ -72,10 +72,10 @@ export default function PositionsList(props) {
     isWaitingForPluginApproval,
     updateOrderBookApproved,
     orderBookApproved,
-    positionManagerApproved,
-    isWaitingForPositionManagerApproval,
-    isPositionManagerApproving,
-    approvePositionManager,
+    positionRouterApproved,
+    isWaitingForPositionRouterApproval,
+    isPositionRouterApproving,
+    approvePositionRouter,
     showPnlAfterFees,
     setMarket,
   } = props;
@@ -119,10 +119,10 @@ export default function PositionsList(props) {
         getUsd={getUsd}
         getLeverage={getLeverage}
         savedIsPnlInLeverage={savedIsPnlInLeverage}
-        positionManagerApproved={positionManagerApproved}
-        isPositionManagerApproving={isPositionManagerApproving}
-        isWaitingForPositionManagerApproval={isWaitingForPositionManagerApproval}
-        approvePositionManager={approvePositionManager}
+        positionRouterApproved={positionRouterApproved}
+        isPositionRouterApproving={isPositionRouterApproving}
+        isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
+        approvePositionRouter={approvePositionRouter}
         chainId={chainId}
       />
       {ordersToaOpen && (
@@ -156,6 +156,10 @@ export default function PositionsList(props) {
           chainId={chainId}
           nativeTokenAddress={nativeTokenAddress}
           setOrdersToaOpen={setOrdersToaOpen}
+          positionRouterApproved={positionRouterApproved}
+          isPositionRouterApproving={isPositionRouterApproving}
+          isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
+          approvePositionRouter={approvePositionRouter}
         />
       )}
       {positions && (
@@ -246,7 +250,10 @@ export default function PositionsList(props) {
                           renderContent={() => {
                             return (
                               <>
-                                Net Value: {showPnlAfterFees ? "Initial Collateral - Fees + PnL" : "Initial Collateral - Borrow Fee + PnL"}
+                                Net Value:{" "}
+                                {showPnlAfterFees
+                                  ? "Initial Collateral - Fees + PnL"
+                                  : "Initial Collateral - Borrow Fee + PnL"}
                                 <br />
                                 <br />
                                 Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
@@ -358,7 +365,10 @@ export default function PositionsList(props) {
                       renderContent={() => {
                         return (
                           <>
-                            Net Value: {showPnlAfterFees ? "Initial Collateral - Fees + PnL" : "Initial Collateral - Borrow Fee + PnL"}
+                            Net Value:{" "}
+                            {showPnlAfterFees
+                              ? "Initial Collateral - Fees + PnL"
+                              : "Initial Collateral - Borrow Fee + PnL"}
                             <br />
                             <br />
                             Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
@@ -366,9 +376,9 @@ export default function PositionsList(props) {
                             PnL: {position.deltaBeforeFeesStr}
                             <br />
                             Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                            <br/>
+                            <br />
                             Open + Close fee: ${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
-                            <br/>
+                            <br />
                             <br />
                             PnL After Fees: {position.deltaAfterFeesStr} ({position.deltaAfterFeesPercentageStr})
                           </>
