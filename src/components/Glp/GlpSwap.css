@@ -116,6 +116,9 @@
   border: 1px solid #1e2136;
   border-radius: 4px;
   background: #16182e;
+  padding: 1rem;
+  padding-top: 0;
+  text-align: left;
 }
 
 .GlpSwap-token-list-content {
@@ -281,6 +284,27 @@
     max-height: calc(80vh - 5.5rem);
     padding-right: 5px;
     margin: 1rem calc(1rem - 5px) 1rem 1rem;
+  }
+
+  .GlpSwap-token-list {
+    border: none;
+    background-color: transparent;
+    padding: 0;
+  }
+
+  .GlpSwap-token-list-content {
+    padding: 0;
+  }
+
+  .token-table {
+    display: none;
+  }
+
+  .token-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 1rem;
+    margin-top: 0.5rem;
   }
 }
 @media (max-width: 510px) {

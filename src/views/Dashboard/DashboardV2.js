@@ -508,10 +508,18 @@ export default function DashboardV2() {
 
   const totalStatsStartDate = chainId === AVALANCHE ? "06 Jan 2022" : "01 Sep 2021";
 
+  let stableGlp = 0;
+  let totalGlp = 0;
+
   let glpPool = tokenList.map((token) => {
     const tokenInfo = infoTokens[token.address];
     if (tokenInfo.usdgAmount && adjustedUsdgSupply) {
-      const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
+      const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply)
+
+      if (tokenInfo.isStable) {
+        stableGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`)
+      }
+      totalGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`)
       return {
         fullname: token.name,
         name: token.symbol,
@@ -520,6 +528,8 @@ export default function DashboardV2() {
     }
     return null;
   });
+
+  let stablePercentage = totalGlp > 0 ? (stableGlp * 100 / totalGlp).toFixed(2) : '0.0'
 
   glpPool = glpPool.filter(function (element) {
     return element !== null;
@@ -804,6 +814,12 @@ export default function DashboardV2() {
                   <div className="App-card-row">
                     <div className="label">Market Cap</div>
                     <div>${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}</div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Stablecoins Percentage</div>
+                    <div>
+                      {stablePercentage}%
+                    </div>
                   </div>
                 </div>
               </div>
