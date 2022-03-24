@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react";
+import useSWR from "swr";
 import { ethers } from "ethers";
 
 import { BsArrowRight } from "react-icons/bs";
@@ -15,6 +16,7 @@ import {
   TRIGGER_PREFIX_BELOW,
   TRIGGER_PREFIX_ABOVE,
   MIN_PROFIT_TIME,
+  fetcher,
   usePrevious,
   formatAmountFree,
   parseValue,
@@ -37,7 +39,7 @@ import {
 import { getConstant } from "../../Constants";
 import { createDecreaseOrder, callContract, useHasOutdatedUi } from "../../Api";
 import { getContract } from "../../Addresses";
-import Router from "../../abis/Router.json";
+import PositionRouter from "../../abis/PositionRouter.json";
 import Checkbox from "../Checkbox/Checkbox";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
@@ -73,6 +75,7 @@ function getTokenAmount(usdAmount, tokenAddress, max, infoTokens) {
 
 export default function PositionSeller(props) {
   const {
+    active,
     positionsMap,
     positionKey,
     isVisible,
@@ -102,8 +105,12 @@ export default function PositionSeller(props) {
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const prevIsVisible = usePrevious(isVisible);
-  const routerAddress = getContract(chainId, "Router");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
+
+  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
+    fetcher: fetcher(library, PositionRouter),
+  });
 
   const orderOptions = [MARKET, STOP];
   let [orderOption, setOrderOption] = useState(MARKET);
@@ -489,12 +496,6 @@ export default function PositionSeller(props) {
       : position.collateralToken.address;
     const indexTokenAddress = position.indexToken.isNative ? nativeTokenAddress : position.indexToken.address;
 
-    let params;
-    let method;
-    let contractAddress;
-    let abi;
-    let value;
-
     if (orderOption === STOP) {
       const triggerAboveThreshold = triggerPriceUsd.gt(position.markPrice);
 
@@ -539,24 +540,31 @@ export default function PositionSeller(props) {
       }
     }
 
-    params = [tokenAddress0, indexTokenAddress, collateralDelta, sizeDelta, position.isLong, account, priceLimit];
-    method =
-      collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress
-        ? "decreasePositionETH"
-        : "decreasePosition";
-    contractAddress = routerAddress;
+    const withdrawETH = collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress;
+
+    const params = [
+      [tokenAddress0], // _path
+      indexTokenAddress, // _indexToken
+      collateralDelta, // _collateralDelta
+      sizeDelta, // _sizeDelta
+      position.isLong, // _isLong
+      account, // _receiver
+      priceLimit, // _acceptablePrice
+      0, // _minOut
+      minExecutionFee, // _executionFee
+      withdrawETH, // _withdrawETH
+    ];
 
     const successMsg = `Decreased ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"} by ${formatAmount(
       sizeDelta,
       USD_DECIMALS,
       2
     )} USD.`;
-    abi = Router.abi;
 
-    const contract = new ethers.Contract(contractAddress, abi, library.getSigner());
+    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
 
-    callContract(chainId, contract, method, params, {
-      value,
+    callContract(chainId, contract, "createDecreasePosition", params, {
+      value: minExecutionFee,
       sentMsg: "Close submitted!",
       successMsg,
       failMsg: "Close failed.",

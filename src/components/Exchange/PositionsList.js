@@ -70,7 +70,6 @@ export default function PositionsList(props) {
     approveOrderBook,
     isPluginApproving,
     isWaitingForPluginApproval,
-    updateOrderBookApproved,
     orderBookApproved,
     positionRouterApproved,
     isWaitingForPositionRouterApproval,
@@ -138,7 +137,6 @@ export default function PositionsList(props) {
           approveOrderBook={approveOrderBook}
           isPluginApproving={isPluginApproving}
           isWaitingForPluginApproval={isWaitingForPluginApproval}
-          updateOrderBookApproved={updateOrderBookApproved}
           orderBookApproved={orderBookApproved}
           positionsMap={positionsMap}
           positionKey={positionToSellKey}

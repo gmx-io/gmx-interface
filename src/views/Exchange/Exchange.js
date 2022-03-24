@@ -346,27 +346,21 @@ export default function Exchange({
   const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
 
   const tokens = getTokens(chainId);
-  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR(
-    [active, chainId, readerAddress, "getVaultTokenInfoV2"],
-    {
-      fetcher: fetcher(library, Reader, [
-        vaultAddress,
-        nativeTokenAddress,
-        expandDecimals(1, 18),
-        whitelistedTokenAddresses,
-      ]),
-    }
-  );
+  const { data: vaultTokenInfo } = useSWR([active, chainId, readerAddress, "getVaultTokenInfoV2"], {
+    fetcher: fetcher(library, Reader, [
+      vaultAddress,
+      nativeTokenAddress,
+      expandDecimals(1, 18),
+      whitelistedTokenAddresses,
+    ]),
+  });
 
   const tokenAddresses = tokens.map((token) => token.address);
-  const { data: tokenBalances, mutate: updateTokenBalances } = useSWR(
-    active && [active, chainId, readerAddress, "getTokenBalances", account],
-    {
-      fetcher: fetcher(library, Reader, [tokenAddresses]),
-    }
-  );
+  const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
+    fetcher: fetcher(library, Reader, [tokenAddresses]),
+  });
 
-  const { data: positionData, mutate: updatePositionData } = useSWR(
+  const { data: positionData } = useSWR(
     active && [active, chainId, readerAddress, "getPositions", vaultAddress, account],
     {
       fetcher: fetcher(library, Reader, [
@@ -377,30 +371,24 @@ export default function Exchange({
     }
   );
 
-  const { data: fundingRateInfo, mutate: updateFundingRateInfo } = useSWR(
-    [active, chainId, readerAddress, "getFundingRates"],
-    {
-      fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
-    }
-  );
+  const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
+    fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+  });
 
-  const { data: totalTokenWeights, mutate: updateTotalTokenWeights } = useSWR(
+  const { data: totalTokenWeights } = useSWR(
     [`Exchange:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
       fetcher: fetcher(library, VaultV2),
     }
   );
 
-  const { data: usdgSupply, mutate: updateUsdgSupply } = useSWR(
-    [`Exchange:usdgSupply:${active}`, chainId, usdgAddress, "totalSupply"],
-    {
-      fetcher: fetcher(library, Token),
-    }
-  );
+  const { data: usdgSupply } = useSWR([`Exchange:usdgSupply:${active}`, chainId, usdgAddress, "totalSupply"], {
+    fetcher: fetcher(library, Token),
+  });
 
   const orderBookAddress = getContract(chainId, "OrderBook");
   const routerAddress = getContract(chainId, "Router");
-  const { data: orderBookApproved, mutate: updateOrderBookApproved } = useSWR(
+  const { data: orderBookApproved } = useSWR(
     active && [active, chainId, routerAddress, "approvedPlugins", account, orderBookAddress],
     {
       fetcher: fetcher(library, Router),
@@ -408,43 +396,12 @@ export default function Exchange({
   );
 
   const positionRouterAddress = getContract(chainId, "PositionRouter");
-  const { data: positionRouterApproved, mutate: updatePositionRouterApproved } = useSWR(
+  const { data: positionRouterApproved } = useSWR(
     active && [active, chainId, routerAddress, "approvedPlugins", account, positionRouterAddress],
     {
       fetcher: fetcher(library, Router),
     }
   );
-
-  useEffect(() => {
-    if (active) {
-      function onBlock() {
-        updateVaultTokenInfo(undefined, true);
-        updateTokenBalances(undefined, true);
-        updatePositionData(undefined, true);
-        updateFundingRateInfo(undefined, true);
-        updateTotalTokenWeights(undefined, true);
-        updateUsdgSupply(undefined, true);
-        updateOrderBookApproved(undefined, true);
-        updatePositionRouterApproved(undefined, true);
-      }
-      library.on("block", onBlock);
-      return () => {
-        library.removeListener("block", onBlock);
-      };
-    }
-  }, [
-    active,
-    library,
-    chainId,
-    updateVaultTokenInfo,
-    updateTokenBalances,
-    updatePositionData,
-    updateFundingRateInfo,
-    updateTotalTokenWeights,
-    updateUsdgSupply,
-    updateOrderBookApproved,
-    updatePositionRouterApproved,
-  ]);
 
   const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo);
   const { positions, positionsMap } = getPositions(
@@ -457,7 +414,7 @@ export default function Exchange({
   );
 
   const flagOrdersEnabled = true;
-  const [orders, updateOrders] = useAccountOrders(flagOrdersEnabled);
+  const [orders] = useAccountOrders(flagOrdersEnabled);
 
   const [isWaitingForPluginApproval, setIsWaitingForPluginApproval] = useState(false);
   const [isWaitingForPositionRouterApproval, setIsWaitingForPositionRouterApproval] = useState(false);
@@ -475,7 +432,6 @@ export default function Exchange({
     })
       .then(() => {
         setIsWaitingForPluginApproval(true);
-        updateOrderBookApproved(undefined, true);
       })
       .finally(() => {
         setIsPluginApproving(false);
@@ -493,7 +449,6 @@ export default function Exchange({
     })
       .then(() => {
         setIsWaitingForPositionRouterApproval(true);
-        updatePositionRouterApproved(undefined, true);
       })
       .finally(() => {
         setIsPositionRouterApproving(false);
@@ -542,7 +497,6 @@ export default function Exchange({
             isPositionRouterApproving={isPositionRouterApproving}
             isWaitingForPluginApproval={isWaitingForPluginApproval}
             isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
-            updateOrderBookApproved={updateOrderBookApproved}
             orderBookApproved={orderBookApproved}
             positionRouterApproved={positionRouterApproved}
             positions={positions}
@@ -572,7 +526,6 @@ export default function Exchange({
             positionsMap={positionsMap}
             chainId={chainId}
             orders={orders}
-            updateOrders={updateOrders}
             totalTokenWeights={totalTokenWeights}
             usdgSupply={usdgSupply}
           />
@@ -627,7 +580,6 @@ export default function Exchange({
             isPositionRouterApproving={isPositionRouterApproving}
             isWaitingForPluginApproval={isWaitingForPluginApproval}
             isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
-            updateOrderBookApproved={updateOrderBookApproved}
             orderBookApproved={orderBookApproved}
             positionRouterApproved={positionRouterApproved}
             orders={orders}

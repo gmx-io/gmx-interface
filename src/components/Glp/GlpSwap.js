@@ -66,8 +66,8 @@ import arrowIcon from "../../img/ic_convert_down.svg";
 import avalanche16Icon from "../../img/ic_avalanche_16.svg";
 import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 
-import "./GlpSwap.css"
-import AssetDropdown from '../../views/Dashboard/AssetDropdown'
+import "./GlpSwap.css";
+import AssetDropdown from "../../views/Dashboard/AssetDropdown";
 
 const { AddressZero } = ethers.constants;
 
@@ -131,7 +131,7 @@ export default function GlpSwap(props) {
   const tokensForBalanceAndSupplyQuery = [stakedGlpTrackerAddress, usdgAddress];
 
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
-  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR(
+  const { data: vaultTokenInfo } = useSWR(
     [`GlpSwap:getVaultTokenInfo:${active}`, chainId, readerAddress, "getVaultTokenInfoV2"],
     {
       fetcher: fetcher(library, ReaderV2, [
@@ -144,14 +144,14 @@ export default function GlpSwap(props) {
   );
 
   const tokenAddresses = tokens.map((token) => token.address);
-  const { data: tokenBalances, mutate: updateTokenBalances } = useSWR(
+  const { data: tokenBalances } = useSWR(
     [`GlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account || PLACEHOLDER_ACCOUNT],
     {
       fetcher: fetcher(library, ReaderV2, [tokenAddresses]),
     }
   );
 
-  const { data: balancesAndSupplies, mutate: updateBalancesAndSupplies } = useSWR(
+  const { data: balancesAndSupplies } = useSWR(
     [
       `GlpSwap:getTokenBalancesWithSupplies:${active}`,
       chainId,
@@ -164,14 +164,11 @@ export default function GlpSwap(props) {
     }
   );
 
-  const { data: aums, mutate: updateAums } = useSWR(
-    [`GlpSwap:getAums:${active}`, chainId, glpManagerAddress, "getAums"],
-    {
-      fetcher: fetcher(library, GlpManager),
-    }
-  );
+  const { data: aums } = useSWR([`GlpSwap:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
+    fetcher: fetcher(library, GlpManager),
+  });
 
-  const { data: totalTokenWeights, mutate: updateTotalTokenWeights } = useSWR(
+  const { data: totalTokenWeights } = useSWR(
     [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
       fetcher: fetcher(library, VaultV2),
@@ -179,21 +176,21 @@ export default function GlpSwap(props) {
   );
 
   const tokenAllowanceAddress = swapTokenAddress === AddressZero ? nativeTokenAddress : swapTokenAddress;
-  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(
+  const { data: tokenAllowance } = useSWR(
     [active, chainId, tokenAllowanceAddress, "allowance", account || PLACEHOLDER_ACCOUNT, glpManagerAddress],
     {
       fetcher: fetcher(library, Token),
     }
   );
 
-  const { data: lastPurchaseTime, mutate: updateLastPurchaseTime } = useSWR(
+  const { data: lastPurchaseTime } = useSWR(
     [`GlpSwap:lastPurchaseTime:${active}`, chainId, glpManagerAddress, "lastAddedAt", account || PLACEHOLDER_ACCOUNT],
     {
       fetcher: fetcher(library, GlpManager),
     }
   );
 
-  const { data: glpBalance, mutate: updateGlpBalance } = useSWR(
+  const { data: glpBalance } = useSWR(
     [`GlpSwap:glpBalance:${active}`, chainId, feeGlpTrackerAddress, "stakedAmounts", account || PLACEHOLDER_ACCOUNT],
     {
       fetcher: fetcher(library, RewardTracker),
@@ -201,21 +198,17 @@ export default function GlpSwap(props) {
   );
 
   const glpVesterAddress = getContract(chainId, "GlpVester");
-  const { data: reservedAmount, mutate: updateReservedAmount } = useSWR(
+  const { data: reservedAmount } = useSWR(
     [`GlpSwap:reservedAmount:${active}`, chainId, glpVesterAddress, "pairAmounts", account || PLACEHOLDER_ACCOUNT],
     {
       fetcher: fetcher(library, Vester),
     }
   );
 
-  const { gmxPrice, mutate: updateGmxPrice } = useGmxPrice(
-    chainId,
-    { arbitrum: chainId === ARBITRUM ? library : undefined },
-    active
-  );
+  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? library : undefined }, active);
 
   const rewardTrackersForStakingInfo = [stakedGlpTrackerAddress, feeGlpTrackerAddress];
-  const { data: stakingInfo, mutate: updateStakingInfo } = useSWR(
+  const { data: stakingInfo } = useSWR(
     [`GlpSwap:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
     {
       fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
@@ -319,42 +312,6 @@ export default function GlpSwap(props) {
     stakedGlpTrackerApr = stakedGlpTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(glpSupplyUsd);
     totalApr = totalApr.add(stakedGlpTrackerApr);
   }
-
-  useEffect(() => {
-    if (active) {
-      library.on("block", () => {
-        updateVaultTokenInfo(undefined, true);
-        updateTokenBalances(undefined, true);
-        updateBalancesAndSupplies(undefined, true);
-        updateAums(undefined, true);
-        updateTotalTokenWeights(undefined, true);
-        updateTokenAllowance(undefined, true);
-        updateLastPurchaseTime(undefined, true);
-        updateStakingInfo(undefined, true);
-        updateGmxPrice(undefined, true);
-        updateReservedAmount(undefined, true);
-        updateGlpBalance(undefined, true);
-      });
-      return () => {
-        library.removeAllListeners("block");
-      };
-    }
-  }, [
-    active,
-    library,
-    chainId,
-    updateVaultTokenInfo,
-    updateTokenBalances,
-    updateBalancesAndSupplies,
-    updateAums,
-    updateTotalTokenWeights,
-    updateTokenAllowance,
-    updateLastPurchaseTime,
-    updateStakingInfo,
-    updateGmxPrice,
-    updateReservedAmount,
-    updateGlpBalance,
-  ]);
 
   useEffect(() => {
     const updateSwapAmounts = () => {
@@ -1078,7 +1035,7 @@ export default function GlpSwap(props) {
                 try {
                   tokenImage = require("../../img/ic_" + token.symbol.toLowerCase() + "_40.svg");
                 } catch (error) {
-                  console.log(error)
+                  console.error(error);
                 }
 
                 return (

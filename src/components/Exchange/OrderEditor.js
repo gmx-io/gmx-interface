@@ -39,7 +39,6 @@ export default function OrderEditor(props) {
     infoTokens,
     pendingTxns,
     setPendingTxns,
-    updateOrders,
     library,
     totalTokenWeights,
     usdgSupply,
@@ -151,7 +150,6 @@ export default function OrderEditor(props) {
     return func(...params)
       .then(() => {
         setEditingOrder(null);
-        updateOrders(undefined, true);
       })
       .finally(() => {
         setIsSubmitting(false);
