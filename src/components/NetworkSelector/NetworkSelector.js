@@ -53,7 +53,7 @@ export default function NetworkSelector(props) {
       network = await props.onSelect(token);
       setSelectedLabel(network);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
     setNetworkChanged(true);
   };
