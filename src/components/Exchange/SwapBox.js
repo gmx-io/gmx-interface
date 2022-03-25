@@ -752,7 +752,7 @@ export default function SwapBox(props) {
 
   const getLeverageError = useCallback(() => {
     if (hasOutdatedUi) {
-      return ["Page outdated, please refresh"]
+      return ["Page outdated, please refresh"];
     }
 
     if (!toAmount || toAmount.eq(0)) {
