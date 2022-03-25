@@ -1363,7 +1363,7 @@ button.App-button {
 }
 
 .spin {
-  animation: spin-animation infinite 1s linear;
+  animation: spin-animation infinite 1.5s linear;
 }
 
 @keyframes spin-animation {
