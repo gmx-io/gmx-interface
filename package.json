@@ -20,6 +20,7 @@
     "body-scroll-lock": "^4.0.0-beta.0",
     "classnames": "^2.2.6",
     "date-fns": "^2.18.0",
+    "dom-to-image": "^2.6.0",
     "ethers": "^5.0.31",
     "framer-motion": "^4.1.9",
     "graphql": "^15.5.0",
@@ -41,6 +42,7 @@
     "swr": "^0.4.2",
     "web-vitals": "^1.0.1"
   },
+  "proxy": "http://localhost:3000",
   "resolutions": {
     "react-error-overlay": "6.0.9"
   },

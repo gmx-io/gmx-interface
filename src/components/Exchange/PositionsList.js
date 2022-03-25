@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import cx from "classnames";
 
 import Tooltip from "../Tooltip/Tooltip";
@@ -6,6 +6,7 @@ import PositionSeller from "./PositionSeller";
 import PositionEditor from "./PositionEditor";
 import OrdersToa from "./OrdersToa";
 import { FiShare } from "react-icons/fi";
+import domtoimage from "dom-to-image";
 
 import {
   helperToast,
@@ -21,6 +22,7 @@ import {
   DECREASE,
 } from "../../Helpers";
 import SharePosition from "./SharePosition";
+import { getSharePositionHTML } from "../../config/getSharePositionHTML";
 
 const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -101,6 +103,7 @@ export default function PositionsList(props) {
     setIsPositionSellerVisible(true);
   };
 
+  let shareRef = useRef();
   const sharePosition = (position) => {
     console.log(position);
     let data = {
@@ -110,15 +113,18 @@ export default function PositionsList(props) {
       isLong: position.isLong,
       token: position.indexToken.symbol,
     };
-    fetch(`https://gmx-og-image-sigma.vercel.app/api`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then(console.log);
+    let html = getSharePositionHTML(data);
+    domtoimage
+      .toPng(shareRef.current)
+      .then(function (dataUrl) {
+        var img = new Image();
+        img.src = dataUrl;
+        console.log(img);
+      })
+      .catch(function (error) {
+        console.error("oops, something went wrong!", error);
+      });
+
     setPositionToShareKey(position.key);
     setIsSharePositionVisible(true);
   };
@@ -129,7 +135,7 @@ export default function PositionsList(props) {
   };
 
   return (
-    <div className="PositionsList">
+    <div className="PositionsList" ref={shareRef}>
       <PositionEditor
         positionsMap={positionsMap}
         positionKey={positionToEditKey}

@@ -6951,6 +6951,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dom-to-image@npm:^2.6.0":
+  version: 2.6.0
+  resolution: "dom-to-image@npm:2.6.0"
+  checksum: 0d1f450b776d36f3ec982783d2a3898baaa3697f135ed0a9c70085db6bc5ac6def02f5ed7affc6acb92ef4fb3248905fabec915fed541994383d317260f784a2
+  languageName: node
+  linkType: hard
+
 "domain-browser@npm:^1.1.1":
   version: 1.2.0
   resolution: "domain-browser@npm:1.2.0"
@@ -8481,6 +8488,7 @@ __metadata:
     body-scroll-lock: ^4.0.0-beta.0
     classnames: ^2.2.6
     date-fns: ^2.18.0
+    dom-to-image: ^2.6.0
     eslint: ^7.20.0
     ethers: ^5.0.31
     framer-motion: ^4.1.9
