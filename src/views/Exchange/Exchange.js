@@ -13,6 +13,9 @@ import {
   SWAP,
   LONG,
   SHORT,
+  USD_DECIMALS,
+  helperToast,
+  formatAmount,
   bigNumberify,
   getTokenInfo,
   fetcher,
@@ -36,8 +39,9 @@ import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from "../
 import Reader from "../../abis/ReaderV2.json";
 import VaultV2 from "../../abis/VaultV2.json";
 import VaultV2b from "../../abis/VaultV2b.json";
-import Token from "../../abis/Token.json";
+import PositionRouter from "../../abis/PositionRouter.json";
 import Router from "../../abis/Router.json";
+import Token from "../../abis/Token.json";
 
 import Checkbox from "../../components/Checkbox/Checkbox";
 import SwapBox from "../../components/Exchange/SwapBox";
@@ -62,6 +66,30 @@ const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.ne
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
 const UPDATED_POSITION_VALID_DURATION = 60 * 1000;
+
+const notifications = {};
+
+function pushSuccessNotification(message, e) {
+  const { transactionHash } = e;
+  const id = ethers.utils.id(message + transactionHash);
+  if (notifications[id]) {
+    return;
+  }
+
+  notifications[id] = true;
+  helperToast.success(message);
+}
+
+function pushErrorNotification(message, e) {
+  const { transactionHash } = e;
+  const id = ethers.utils.id(message + transactionHash);
+  if (notifications[id]) {
+    return;
+  }
+
+  notifications[id] = true;
+  helperToast.error(message);
+}
 
 function getWsProvider(active, chainId) {
   if (!active) {
@@ -362,6 +390,7 @@ export default function Exchange({
 
   const { active, account, library } = useWeb3React();
   const { chainId } = useChainId();
+  const currentAccount = account;
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
@@ -509,7 +538,8 @@ export default function Exchange({
       return;
     }
 
-    const wsPositionRouter = new ethers.Contract(vaultAddress, wsVaultAbi, wsProvider);
+    const wsVault = new ethers.Contract(vaultAddress, wsVaultAbi, wsProvider);
+    const wsPositionRouter = new ethers.Contract(positionRouterAddress, PositionRouter.abi, wsProvider);
 
     const onUpdatePosition = (key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl) => {
       for (let i = 0; i < positions.length; i++) {
@@ -530,7 +560,7 @@ export default function Exchange({
       }
     };
 
-    const onClosePosition = (key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl) => {
+    const onClosePosition = (key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl, e) => {
       for (let i = 0; i < positions.length; i++) {
         const position = positions[i];
         if (position.contractKey === key) {
@@ -549,14 +579,195 @@ export default function Exchange({
       }
     };
 
-    wsPositionRouter.on("UpdatePosition", onUpdatePosition);
-    wsPositionRouter.on("ClosePosition", onClosePosition);
+    const onIncreasePosition = (
+      key,
+      account,
+      collateralToken,
+      indexToken,
+      collateralDelta,
+      sizeDelta,
+      isLong,
+      price,
+      fee,
+      e
+    ) => {
+      if (account !== currentAccount) {
+        return;
+      }
+
+      const indexTokenItem = getToken(chainId, indexToken);
+      const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
+
+      let message;
+      if (sizeDelta.eq(0)) {
+        message = `Deposited ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD into ${tokenSymbol} ${
+          isLong ? "Long" : "Short"
+        }`;
+      } else {
+        message = `Increased ${tokenSymbol} ${isLong ? "Long" : "Short"}, +${formatAmount(
+          sizeDelta,
+          USD_DECIMALS,
+          2,
+          true
+        )} USD`;
+      }
+
+      pushSuccessNotification(message, e);
+    };
+
+    const onDecreasePosition = (
+      key,
+      account,
+      collateralToken,
+      indexToken,
+      collateralDelta,
+      sizeDelta,
+      isLong,
+      price,
+      fee,
+      e
+    ) => {
+      if (account !== currentAccount) {
+        return;
+      }
+
+      const indexTokenItem = getToken(chainId, indexToken);
+      const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
+
+      let message;
+      if (sizeDelta.eq(0)) {
+        message = `Withdrew ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD from ${tokenSymbol} ${
+          isLong ? "Long" : "Short"
+        }`;
+      } else {
+        message = `Decreased ${tokenSymbol} ${isLong ? "Long" : "Short"}, -${formatAmount(
+          sizeDelta,
+          USD_DECIMALS,
+          2,
+          true
+        )} USD`;
+      }
+
+      pushSuccessNotification(message, e);
+    };
+
+    const onCancelIncreasePosition = (
+      account,
+      path,
+      indexToken,
+      amountIn,
+      minOut,
+      sizeDelta,
+      isLong,
+      acceptablePrice,
+      executionFee,
+      blockGap,
+      timeGap,
+      e
+    ) => {
+      if (account !== currentAccount) {
+        return;
+      }
+      console.log(
+        "onCancelIncreasePosition",
+        account,
+        path,
+        indexToken,
+        amountIn,
+        minOut,
+        sizeDelta,
+        isLong,
+        acceptablePrice,
+        executionFee,
+        blockGap,
+        timeGap
+      );
+      const indexTokenItem = getToken(chainId, indexToken);
+      const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
+
+      const message = `Could not increase ${tokenSymbol} ${
+        isLong ? "Long" : "Short"
+      } within allowed slippage, you can adjust the slippage in the settings on the top right of the page`;
+
+      pushErrorNotification(message, e);
+
+      const key = getPositionKey(path[path.length - 1], indexToken, isLong);
+      pendingPositions[key] = {};
+      setPendingPositions({ ...pendingPositions });
+    };
+
+    const onCancelDecreasePosition = (
+      account,
+      path,
+      indexToken,
+      collateralDelta,
+      sizeDelta,
+      isLong,
+      receiver,
+      acceptablePrice,
+      minOut,
+      executionFee,
+      blockGap,
+      timeGap,
+      e
+    ) => {
+      if (account !== currentAccount) {
+        return;
+      }
+      console.log(
+        "onCancelIncreasePosition",
+        account,
+        path,
+        indexToken,
+        collateralDelta,
+        sizeDelta,
+        isLong,
+        receiver,
+        acceptablePrice,
+        minOut,
+        executionFee,
+        blockGap,
+        timeGap
+      );
+      const indexTokenItem = getToken(chainId, indexToken);
+      const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
+
+      const message = `Could not decrease ${tokenSymbol} ${
+        isLong ? "Long" : "Short"
+      } within allowed slippage, you can adjust the slippage in the settings on the top right of the page`;
+
+      pushErrorNotification(message, e);
+
+      const key = getPositionKey(path[path.length - 1], indexToken, isLong);
+      pendingPositions[key] = {};
+      setPendingPositions({ ...pendingPositions });
+    };
+
+    wsVault.on("UpdatePosition", onUpdatePosition);
+    wsVault.on("ClosePosition", onClosePosition);
+    wsVault.on("IncreasePosition", onIncreasePosition);
+    wsVault.on("DecreasePosition", onDecreasePosition);
+    wsPositionRouter.on("CancelIncreasePosition", onCancelIncreasePosition);
+    wsPositionRouter.on("CancelDecreasePosition", onCancelDecreasePosition);
 
     return function cleanup() {
-      wsPositionRouter.off("UpdatePosition", onUpdatePosition);
-      wsPositionRouter.off("ClosePosition", onClosePosition);
+      wsVault.off("UpdatePosition", onUpdatePosition);
+      wsVault.off("ClosePosition", onClosePosition);
+      wsVault.off("IncreasePosition", onIncreasePosition);
+      wsVault.off("DecreasePosition", onDecreasePosition);
+      wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
+      wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
     };
-  }, [active, chainId, positions, updatedPositions, vaultAddress]);
+  }, [
+    active,
+    chainId,
+    currentAccount,
+    positions,
+    updatedPositions,
+    pendingPositions,
+    vaultAddress,
+    positionRouterAddress,
+  ]);
 
   const flagOrdersEnabled = true;
   const [orders] = useAccountOrders(flagOrdersEnabled);
