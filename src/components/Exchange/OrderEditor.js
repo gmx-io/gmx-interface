@@ -208,7 +208,7 @@ export default function OrderEditor(props) {
   };
 
   const renderMinProfitWarning = () => {
-    if (order.type === SWAP || !position || !triggerPrice || triggerPrice.eq(0)) {
+    if (MIN_PROFIT_TIME === 0 || order.type === SWAP || !position || !triggerPrice || triggerPrice.eq(0)) {
       return null;
     }
 

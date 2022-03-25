@@ -35,7 +35,7 @@ export const ARBITRUM = 42161;
 export const DEFAULT_CHAIN_ID = AVALANCHE;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const MIN_PROFIT_TIME = 3 * 60 * 60; // 3 hours
+export const MIN_PROFIT_TIME = 0;
 
 const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
 
@@ -114,7 +114,7 @@ export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-positio
 export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
 
-export const MIN_PROFIT_BIPS = 150;
+export const MIN_PROFIT_BIPS = 0;
 
 export const GLPPOOLCOLORS = {
   ETH: "#6062a6",
