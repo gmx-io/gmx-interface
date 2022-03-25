@@ -224,20 +224,20 @@ const TOKENS = {
       imageUrl: "https://assets.coingecko.com/coins/images/9956/thumb/4943.png?1636636734",
     },
     {
-      name: "Magic Internet Money",
-      symbol: "MIM",
-      decimals: 18,
-      address: "0xFEa7a6a0B346362BF88A9e4A88416B77a57D6c2A",
-      isStable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/16786/small/mimlogopng.png",
-    },
-    {
       name: "Frax",
       symbol: "FRAX",
       decimals: 18,
       address: "0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/13422/small/frax_logo.png?1608476506",
+    },
+    {
+      name: "Magic Internet Money",
+      symbol: "MIM",
+      decimals: 18,
+      address: "0xFEa7a6a0B346362BF88A9e4A88416B77a57D6c2A",
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/16786/small/mimlogopng.png",
     },
   ],
   43114: [
@@ -276,14 +276,6 @@ const TOKENS = {
       imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
     },
     {
-      name: "Magic Internet Money",
-      symbol: "MIM",
-      address: "0x130966628846BFd36ff31a822705796e8cb8C18D",
-      decimals: 18,
-      isStable: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/16786/small/mimlogopng.png",
-    },
-    {
       name: "USD Coin (USDC.e)",
       symbol: "USDC.e",
       address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
@@ -298,6 +290,14 @@ const TOKENS = {
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+    },
+    {
+      name: "Magic Internet Money",
+      symbol: "MIM",
+      address: "0x130966628846BFd36ff31a822705796e8cb8C18D",
+      decimals: 18,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/16786/small/mimlogopng.png",
     },
   ],
 };
