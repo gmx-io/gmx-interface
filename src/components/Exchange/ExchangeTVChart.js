@@ -18,7 +18,10 @@ import {
 import { useChartPrices } from '../../Api'
 import Tab from '../Tab/Tab'
 
-import { getTokens, getToken } from '../../data/Tokens'
+import {
+  // getTokens,
+  getToken
+} from '../../data/Tokens'
 import ChartTokenSelector from './ChartTokenSelector'
 
 const PRICE_LINE_TEXT_WIDTH = 15;
@@ -30,29 +33,29 @@ function getChartToken(swapOption, fromToken, toToken, chainId) {
     return;
   }
 
-  if (swapOption !== SWAP) {
-    return toToken;
-  }
+  // if (swapOption !== SWAP) {
+  //   return toToken;
+  // }
 
-  if (fromToken.isUsdg && toToken.isUsdg) {
-    return getTokens(chainId).find((t) => t.isStable);
-  }
-  if (fromToken.isUsdg) {
-    return toToken;
-  }
-  if (toToken.isUsdg) {
-    return fromToken;
-  }
+  // if (fromToken.isUsdg && toToken.isUsdg) {
+  //   return getTokens(chainId).find((t) => t.isStable);
+  // }
+  // if (fromToken.isUsdg) {
+  //   return toToken;
+  // }
+  // if (toToken.isUsdg) {
+  //   return fromToken;
+  // }
 
-  if (fromToken.isStable && toToken.isStable) {
-    return toToken;
-  }
-  if (fromToken.isStable) {
-    return toToken;
-  }
-  if (toToken.isStable) {
-    return fromToken;
-  }
+  // if (fromToken.isStable && toToken.isStable) {
+  //   return toToken;
+  // }
+  // if (fromToken.isStable) {
+  //   return toToken;
+  // }
+  // if (toToken.isStable) {
+  //   return fromToken;
+  // }
 
   return toToken;
 }
@@ -417,7 +420,6 @@ export default function ExchangeTVChart(props) {
 
   const onSelectToken = (token) => {
     const tmp = getTokenInfo(infoTokens, token.address)
-    console.log(tmp)
     setChartToken(tmp)
     setToTokenAddress(swapOption, token.address)
   }
