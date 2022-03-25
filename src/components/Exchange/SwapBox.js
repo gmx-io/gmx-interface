@@ -24,6 +24,7 @@ import {
   MARKET,
   SWAP_ORDER_OPTIONS,
   LEVERAGE_ORDER_OPTIONS,
+  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   getPositionKey,
   getUsd,
   BASIS_POINTS_DIVISOR,
@@ -168,6 +169,12 @@ export default function SwapBox(props) {
   const [isWaitingForApproval, setIsWaitingForApproval] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
+  const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
+
+  let allowedSlippage = savedSlippageAmount;
+  if (isHigherSlippageAllowed) {
+    allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
+  }
 
   const defaultCollateralSymbol = getConstant(chainId, "defaultCollateralSymbol");
   // TODO hack with useLocalStorageSerializeKey
@@ -1278,7 +1285,7 @@ export default function SwapBox(props) {
       method = "swapTokensToETH";
     }
 
-    minOut = toAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR);
+    minOut = toAmount.mul(BASIS_POINTS_DIVISOR - allowedSlippage).div(BASIS_POINTS_DIVISOR);
     params = [path, fromAmount, minOut, account];
     if (fromTokenAddress === AddressZero) {
       method = "swapETHToTokens";
@@ -1382,9 +1389,7 @@ export default function SwapBox(props) {
     }
 
     const refPrice = isLong ? toTokenInfo.maxPrice : toTokenInfo.minPrice;
-    const priceBasisPoints = isLong
-      ? BASIS_POINTS_DIVISOR + savedSlippageAmount
-      : BASIS_POINTS_DIVISOR - savedSlippageAmount;
+    const priceBasisPoints = isLong ? BASIS_POINTS_DIVISOR + allowedSlippage : BASIS_POINTS_DIVISOR - allowedSlippage;
     const priceLimit = refPrice.mul(priceBasisPoints).div(BASIS_POINTS_DIVISOR);
 
     const boundedFromAmount = fromAmount ? fromAmount : bigNumberify(0);
@@ -1595,6 +1600,7 @@ export default function SwapBox(props) {
     }
 
     setIsConfirming(true);
+    setIsHigherSlippageAllowed(false);
   };
 
   const showFromAndToSection = orderOption !== STOP;
@@ -2258,6 +2264,8 @@ export default function SwapBox(props) {
       {renderOrdersToa()}
       {isConfirming && (
         <ConfirmationBox
+          isHigherSlippageAllowed={isHigherSlippageAllowed}
+          setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
           orders={orders}
           isSwap={isSwap}
           isLong={isLong}
