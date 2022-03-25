@@ -687,7 +687,7 @@ export default function Exchange({
 
       const message = `Could not increase ${tokenSymbol} ${
         isLong ? "Long" : "Short"
-      } within allowed slippage, you can adjust the slippage in the settings on the top right of the page`;
+      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page`;
 
       pushErrorNotification(message, e);
 
@@ -734,7 +734,7 @@ export default function Exchange({
 
       const message = `Could not decrease ${tokenSymbol} ${
         isLong ? "Long" : "Short"
-      } within allowed slippage, you can adjust the slippage in the settings on the top right of the page`;
+      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page`;
 
       pushErrorNotification(message, e);
 
