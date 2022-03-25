@@ -143,6 +143,105 @@ export default function TradeHistory(props) {
         )} ${tokenOut.symbol}`;
       }
 
+      if (tradeData.action === "CreateIncreasePosition") {
+        const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress);
+        if (!indexToken) {
+          return defaultMsg;
+        }
+
+        if (bigNumberify(params.sizeDelta).eq(0)) {
+          return `Request deposit into ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`;
+        }
+
+        return `Request increase ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}, +${formatAmount(
+          params.sizeDelta,
+          USD_DECIMALS,
+          2,
+          true
+        )} USD, Acceptable Price: ${params.isLong ? "<" : ">"} ${formatAmount(
+          params.acceptablePrice,
+          USD_DECIMALS,
+          2,
+          true
+        )} USD`;
+      }
+
+      if (tradeData.action === "CreateDecreasePosition") {
+        const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress);
+        if (!indexToken) {
+          return defaultMsg;
+        }
+
+        if (bigNumberify(params.sizeDelta).eq(0)) {
+          return `Request withdrawal from ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`;
+        }
+
+        return `Request decrease ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}, +${formatAmount(
+          params.sizeDelta,
+          USD_DECIMALS,
+          2,
+          true
+        )} USD, Acceptable Price: ${params.isLong ? ">" : "<"} ${formatAmount(
+          params.acceptablePrice,
+          USD_DECIMALS,
+          2,
+          true
+        )} USD`;
+      }
+
+      if (tradeData.action === "CancelIncreasePosition") {
+        const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress);
+        if (!indexToken) {
+          return defaultMsg;
+        }
+
+        if (bigNumberify(params.sizeDelta).eq(0)) {
+          // return `Could not execute deposit into ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`;
+          return (
+            <>
+              Could not execute deposit into {indexToken.symbol} {params.isLong ? "Long" : "Short"}
+            </>
+          );
+        }
+
+        return (
+          <>
+            Could not increase {indexToken.symbol} {params.isLong ? "Long" : "Short"},
+            {`+${formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)}`} USD, Acceptable Price:&nbsp;
+            {params.isLong ? "<" : ">"}&nbsp;
+            <Tooltip
+              position="left-top"
+              handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, 2, true)} USD`}
+              renderContent={() => <>Try increasing the "Allowed Slippage", under the Settings menu on the top right</>}
+            />
+          </>
+        );
+      }
+
+      if (tradeData.action === "CancelDecreasePosition") {
+        const indexToken = getTokenInfo(infoTokens, params.indexToken, true, nativeTokenAddress);
+        if (!indexToken) {
+          return defaultMsg;
+        }
+
+        if (bigNumberify(params.sizeDelta).eq(0)) {
+          return `Could not execute withdrawal from ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`;
+        }
+
+        return (
+          <>
+            Could not decrease {indexToken.symbol} {params.isLong ? "Long" : "Short"},
+            {`+${formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)}`} USD, Acceptable Price:&nbsp;
+            {params.isLong ? ">" : "<"}&nbsp;
+            <Tooltip
+              position="left-top"
+              handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, 2, true)} USD`}
+              renderContent={() => <>Try increasing the "Allowed Slippage", under the Settings menu on the top right</>}
+            />
+          </>
+        );
+      }
+
       if (tradeData.action === "IncreasePosition-Long" || tradeData.action === "IncreasePosition-Short") {
         if (params.flags?.isOrderExecution) {
           return;
