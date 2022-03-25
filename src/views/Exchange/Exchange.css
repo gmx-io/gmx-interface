@@ -2,6 +2,7 @@
   max-width: 96.875rem;
   margin: auto;
   justify-content: space-between;
+  padding-top: 2rem!important;
 }
 
 .Exchange-list-tab-container {
@@ -47,9 +48,6 @@
 
 .Exchange-lists.small {
   display: none;
-}
-
-.Exchange-list-tabs {
 }
 
 .Exchange-right {
