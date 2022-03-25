@@ -25,7 +25,7 @@ import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
 import Checkbox from "../Checkbox/Checkbox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
-import { getToken, getWrappedToken } from "../../data/Tokens";
+import { getNativeToken, getToken, getWrappedToken } from "../../data/Tokens";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -341,8 +341,12 @@ export default function ConfirmationBox(props) {
     if (isMarketOrder) {
       return null;
     }
-    return <ExchangeInfoRow label="Execution Fee">{formatAmount(executionFee, 18, 4)} ETH</ExchangeInfoRow>;
-  }, [isMarketOrder, executionFee]);
+    return (
+      <ExchangeInfoRow label="Execution Fee">
+        {formatAmount(executionFee, 18, 4)} {getNativeToken(chainId).symbol}
+      </ExchangeInfoRow>
+    );
+  }, [isMarketOrder, executionFee, chainId]);
 
   const renderAvailableLiquidity = useCallback(() => {
     let availableLiquidity;

@@ -27,7 +27,6 @@ import {
   GMX_DECIMALS,
   GLP_DECIMALS,
   BASIS_POINTS_DIVISOR,
-  DEFAULT_MAX_USDG_AMOUNT,
   ARBITRUM,
   AVALANCHE,
   getTotalVolumeSum,
@@ -40,7 +39,6 @@ import { getContract } from "../../Addresses";
 import VaultV2 from "../../abis/VaultV2.json";
 import ReaderV2 from "../../abis/ReaderV2.json";
 import GlpManager from "../../abis/GlpManager.json";
-
 import Footer from "../../Footer";
 
 import "./DashboardV2.css";
