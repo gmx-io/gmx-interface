@@ -301,6 +301,45 @@ export function useTrades(chainId, account) {
     dedupingInterval: 30000,
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
+  trades.sort((item0, item1) => {
+    const data0 = item0.data;
+    const data1 = item1.data;
+    const time0 = parseInt(data0.timestamp);
+    const time1 = parseInt(data1.timestamp);
+    if (time1 > time0) {
+      return 1;
+    }
+    if (time1 < time0) {
+      return -1;
+    }
+
+    const block0 = parseInt(data0.blockNumber);
+    const block1 = parseInt(data1.blockNumber);
+
+    if (isNaN(block0) && isNaN(block1)) {
+      return 0;
+    }
+
+    if (isNaN(block0)) {
+      return 1;
+    }
+
+    if (isNaN(block1)) {
+      return -1;
+    }
+
+    if (block1 > block0) {
+      return 1;
+    }
+
+    if (block1 < block0) {
+      return -1;
+    }
+
+    return 0;
+  });
+
+  console.log("trades", trades);
 
   return { trades, updateTrades };
 }
