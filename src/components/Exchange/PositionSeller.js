@@ -424,7 +424,7 @@ export default function PositionSeller(props) {
     return true;
   };
 
-  const hasPendingProfit = position.delta.eq(0) && position.pendingDelta.gt(0);
+  const hasPendingProfit = MIN_PROFIT_TIME > 0 && position.delta.eq(0) && position.pendingDelta.gt(0);
 
   const getPrimaryText = () => {
     const error = getError();
@@ -613,6 +613,10 @@ export default function PositionSeller(props) {
   }, [existingOrder, infoTokens]);
 
   function renderMinProfitWarning() {
+    if (MIN_PROFIT_TIME === 0) {
+      return null;
+    }
+
     if (profitPrice && nextDelta.eq(0) && nextHasProfit) {
       const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME;
 
