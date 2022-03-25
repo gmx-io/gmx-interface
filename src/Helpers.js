@@ -1525,7 +1525,7 @@ export const fetcher =
     const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
 
     function onError(e) {
-      console.error(contractInfo.contractName, method, e);
+      console.error(id, contractInfo.contractName, method, e);
     }
 
     if (ethers.utils.isAddress(arg0)) {
