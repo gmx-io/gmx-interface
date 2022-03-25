@@ -60,6 +60,9 @@ const arbWsProvider = new ethers.providers.WebSocketProvider(
 
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
 
+const PENDING_POSITION_VALID_DURATION = 600 * 1000;
+const UPDATED_POSITION_VALID_DURATION = 60 * 1000;
+
 function getWsProvider(active, chainId) {
   if (!active) {
     return;
@@ -98,7 +101,7 @@ function applyPendingChanges(position, pendingPositions) {
     pendingPositions[key] &&
     pendingPositions[key].updatedAt &&
     pendingPositions[key].pendingChanges &&
-    pendingPositions[key].updatedAt + 30 * 1000 > Date.now()
+    pendingPositions[key].updatedAt + PENDING_POSITION_VALID_DURATION > Date.now()
   ) {
     const { pendingChanges } = pendingPositions[key];
     if (pendingChanges.size && position.size.eq(pendingChanges.size)) {
@@ -164,7 +167,7 @@ export function getPositions(
       updatedPositions &&
       updatedPositions[key] &&
       updatedPositions[key].updatedAt &&
-      updatedPositions[key].updatedAt + 30 * 1000 > Date.now()
+      updatedPositions[key].updatedAt + UPDATED_POSITION_VALID_DURATION > Date.now()
     ) {
       const updatedPosition = updatedPositions[key];
       position.size = updatedPosition.size;
