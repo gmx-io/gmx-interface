@@ -31,6 +31,7 @@ import {
   AVALANCHE,
   getTotalVolumeSum,
   GLPPOOLCOLORS,
+  DEFAULT_MAX_USDG_AMOUNT,
 } from "../../Helpers";
 import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "../../Api";
 
@@ -648,20 +649,22 @@ export default function DashboardV2() {
                   </div>
                   <div className="App-card-row">
                     <div className="label">Total Staked</div>
-                    {stakedGmxSupplyUsd && arbitrumStakedGmx && avaxStakedGmx && (
-                      <TooltipComponent
-                        position="right-bottom"
-                        className="nowrap"
-                        handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
-                        renderContent={() => (
-                          <>
-                            Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX
-                            <br />
-                            Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX
-                          </>
-                        )}
-                      />
-                    )}
+                    <div>
+                      {stakedGmxSupplyUsd && arbitrumStakedGmx && avaxStakedGmx && (
+                        <TooltipComponent
+                          position="right-bottom"
+                          className="nowrap"
+                          handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
+                          renderContent={() => (
+                            <>
+                              Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                              <br />
+                              Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                            </>
+                          )}
+                        />
+                      )}
+                    </div>
                   </div>
                   <div className="App-card-row">
                     <div className="label">Market Cap</div>
