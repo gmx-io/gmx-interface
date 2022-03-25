@@ -10,6 +10,7 @@ import { ImSpinner2 } from "react-icons/im";
 
 import {
   helperToast,
+  bigNumberify,
   getLiquidationPrice,
   getUsd,
   getLeverage,
@@ -348,7 +349,7 @@ export default function PositionsList(props) {
             </tr>
           )}
           {positions.map((position) => {
-            const liquidationPrice = getLiquidationPrice(position);
+            const liquidationPrice = getLiquidationPrice(position) || bigNumberify(0);
             const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
             const hasOrderError = !!positionOrders.find((order) => order.error);
             return (
@@ -356,7 +357,7 @@ export default function PositionsList(props) {
                 <td className="clickable" onClick={() => onPositionClick(position)}>
                   <div className="Exchange-list-title">
                     {position.indexToken.symbol}
-                    {position.hasPendingChanges && <ImSpinner2 className="spin position-pending-icon" />}
+                    {position.hasPendingChanges && <ImSpinner2 className="spin position-loading-icon" />}
                   </div>
                   <div className="Exchange-list-info-label">
                     {position.leverage && (
@@ -369,7 +370,7 @@ export default function PositionsList(props) {
                 </td>
                 <td>
                   <div>
-                    {!position.netValue && "Creating..."}
+                    {!position.netValue && "Opening..."}
                     {position.netValue && (
                       <Tooltip
                         handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
@@ -500,8 +501,7 @@ export default function PositionsList(props) {
                   ${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}
                 </td>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
-                  {liquidationPrice && `$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}
-                  {!liquidationPrice && `...`}
+                  ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
                 </td>
                 <td>
                   <button
