@@ -347,7 +347,7 @@ export function useHasOutdatedUi() {
 
   let hasOutdatedUi = false;
 
-  if (data && data !== UI_VERSION) {
+  if (data && parseFloat(data) > parseFloat(UI_VERSION)) {
     hasOutdatedUi = true;
   }
 
