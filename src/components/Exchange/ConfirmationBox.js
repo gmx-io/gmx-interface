@@ -56,6 +56,8 @@ export default function ConfirmationBox(props) {
     isShort,
     toAmount,
     fromAmount,
+    isHigherSlippageAllowed,
+    setIsHigherSlippageAllowed,
     onConfirmationClick,
     setIsConfirming,
     shortCollateralAddress,
@@ -499,6 +501,13 @@ export default function ConfirmationBox(props) {
               (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
               "% / 1h"}
           </ExchangeInfoRow>
+          {isMarketOrder && (
+            <div className="PositionEditor-allow-higher-slippage">
+              <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
+                <span className="muted">Allow up to 1% slippage</span>
+              </Checkbox>
+            </div>
+          )}
           {renderExecutionFee()}
         </div>
       </>
@@ -533,6 +542,8 @@ export default function ConfirmationBox(props) {
     orderOption,
     fromUsdMin,
     collateralAfterFees,
+    isHigherSlippageAllowed,
+    setIsHigherSlippageAllowed,
   ]);
 
   const renderSwapSection = useCallback(() => {

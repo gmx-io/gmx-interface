@@ -8,6 +8,7 @@ import {
   formatAmount,
   bigNumberify,
   DEFAULT_SLIPPAGE_AMOUNT,
+  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   USD_DECIMALS,
   DUST_USD,
   BASIS_POINTS_DIVISOR,
@@ -99,6 +100,8 @@ export default function PositionSeller(props) {
     isWaitingForPositionRouterApproval,
     isPositionRouterApproving,
     approvePositionRouter,
+    isHigherSlippageAllowed,
+    setIsHigherSlippageAllowed,
   } = props;
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true);
@@ -109,6 +112,11 @@ export default function PositionSeller(props) {
   const prevIsVisible = usePrevious(isVisible);
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
+
+  let allowedSlippage = savedSlippageAmount;
+  if (isHigherSlippageAllowed) {
+    allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
+  }
 
   const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
     fetcher: fetcher(library, PositionRouter),
@@ -530,8 +538,8 @@ export default function PositionSeller(props) {
 
     const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
     const priceBasisPoints = position.isLong
-      ? BASIS_POINTS_DIVISOR - savedSlippageAmount
-      : BASIS_POINTS_DIVISOR + savedSlippageAmount;
+      ? BASIS_POINTS_DIVISOR - allowedSlippage
+      : BASIS_POINTS_DIVISOR + allowedSlippage;
     const refPrice = position.isLong ? position.indexToken.minPrice : position.indexToken.maxPrice;
     let priceLimit = refPrice.mul(priceBasisPoints).div(BASIS_POINTS_DIVISOR);
     const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME;
@@ -768,6 +776,13 @@ export default function PositionSeller(props) {
                 <span className="muted">Keep leverage at {formatAmount(position.leverage, 4, 2)}x</span>
               </Checkbox>
             </div>
+            {orderOption === MARKET && (
+              <div className="PositionEditor-allow-higher-slippage">
+                <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
+                  <span className="muted">Allow up to 1% slippage</span>
+                </Checkbox>
+              </div>
+            )}
             {orderOption === STOP && (
               <div className="Exchange-info-row">
                 <div className="Exchange-info-label">Trigger Price</div>

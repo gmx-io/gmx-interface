@@ -89,6 +89,7 @@ export default function PositionsList(props) {
   const [isPositionSellerVisible, setIsPositionSellerVisible] = useState(undefined);
   const [collateralTokenAddress, setCollateralTokenAddress] = useState(undefined);
   const [ordersToaOpen, setOrdersToaOpen] = useState(false);
+  const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
 
   const editPosition = (position) => {
     setCollateralTokenAddress(position.collateralToken.address);
@@ -99,6 +100,7 @@ export default function PositionsList(props) {
   const sellPosition = (position) => {
     setPositionToSellKey(position.key);
     setIsPositionSellerVisible(true);
+    setIsHigherSlippageAllowed(false);
   };
 
   const onPositionClick = (position) => {
@@ -167,6 +169,8 @@ export default function PositionsList(props) {
           isPositionRouterApproving={isPositionRouterApproving}
           isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
           approvePositionRouter={approvePositionRouter}
+          isHigherSlippageAllowed={isHigherSlippageAllowed}
+          setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         />
       )}
       {positions && (
