@@ -125,12 +125,7 @@ export default function DashboardV2() {
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
-  let {
-    total: totalGmxSupply,
-    avax: avaxGmxSupply,
-    arbitrum: arbitrumGmxSupply,
-    mutate: updateTotalGmxSupply,
-  } = useTotalGmxSupply();
+  let { total: totalGmxSupply, avax: avaxGmxSupply, arbitrum: arbitrumGmxSupply } = useTotalGmxSupply();
 
   let totalLongPositionSizes;
   let totalShortPositionSizes;
@@ -213,14 +208,9 @@ export default function DashboardV2() {
     active
   );
 
-  let { total: totalGmxInLiquidity, mutate: updateGmxInLiquidity } = useTotalGmxInLiquidity(chainId, active);
+  let { total: totalGmxInLiquidity } = useTotalGmxInLiquidity(chainId, active);
 
-  let {
-    avax: avaxStakedGmx,
-    arbitrum: arbitrumStakedGmx,
-    total: totalStakedGmx,
-    mutate: updateStakedGmx,
-  } = useTotalGmxStaked();
+  let { avax: avaxStakedGmx, arbitrum: arbitrumStakedGmx, total: totalStakedGmx } = useTotalGmxStaked();
 
   let gmxMarketCap;
   if (gmxPrice && totalGmxSupply) {
