@@ -103,28 +103,7 @@ export default function PositionsList(props) {
     setIsPositionSellerVisible(true);
   };
 
-  let shareRef = useRef();
   const sharePosition = (position) => {
-    console.log(position);
-    let data = {
-      entryPrice: `${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}`,
-      currentPrice: `${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}`,
-      pnlPercentage: position.deltaAfterFeesPercentageStr,
-      isLong: position.isLong,
-      token: position.indexToken.symbol,
-    };
-    let html = getSharePositionHTML(data);
-    domtoimage
-      .toPng(shareRef.current)
-      .then(function (dataUrl) {
-        var img = new Image();
-        img.src = dataUrl;
-        console.log(img);
-      })
-      .catch(function (error) {
-        console.error("oops, something went wrong!", error);
-      });
-
     setPositionToShareKey(position.key);
     setIsSharePositionVisible(true);
   };
@@ -135,7 +114,7 @@ export default function PositionsList(props) {
   };
 
   return (
-    <div className="PositionsList" ref={shareRef}>
+    <div className="PositionsList">
       <PositionEditor
         positionsMap={positionsMap}
         positionKey={positionToEditKey}
@@ -195,6 +174,8 @@ export default function PositionsList(props) {
           isVisible={isSharePositionVisible}
           setIsVisible={setIsSharePositionVisible}
           title="Share Position"
+          positions={positions}
+          selectedPositionKey={positionToShareKey}
         />
       )}
       {positions && (
