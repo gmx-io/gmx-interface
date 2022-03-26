@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react";
+import useSWR from "swr";
 import { ethers } from "ethers";
 
 import { BsArrowRight } from "react-icons/bs";
@@ -7,6 +8,7 @@ import {
   formatAmount,
   bigNumberify,
   DEFAULT_SLIPPAGE_AMOUNT,
+  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   USD_DECIMALS,
   DUST_USD,
   BASIS_POINTS_DIVISOR,
@@ -15,6 +17,7 @@ import {
   TRIGGER_PREFIX_BELOW,
   TRIGGER_PREFIX_ABOVE,
   MIN_PROFIT_TIME,
+  fetcher,
   usePrevious,
   formatAmountFree,
   parseValue,
@@ -37,7 +40,7 @@ import {
 import { getConstant } from "../../Constants";
 import { createDecreaseOrder, callContract, useHasOutdatedUi } from "../../Api";
 import { getContract } from "../../Addresses";
-import Router from "../../abis/Router.json";
+import PositionRouter from "../../abis/PositionRouter.json";
 import Checkbox from "../Checkbox/Checkbox";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
@@ -73,6 +76,9 @@ function getTokenAmount(usdAmount, tokenAddress, max, infoTokens) {
 
 export default function PositionSeller(props) {
   const {
+    active,
+    pendingPositions,
+    setPendingPositions,
     positionsMap,
     positionKey,
     isVisible,
@@ -90,6 +96,12 @@ export default function PositionSeller(props) {
     isPluginApproving,
     orderBookApproved,
     setOrdersToaOpen,
+    positionRouterApproved,
+    isWaitingForPositionRouterApproval,
+    isPositionRouterApproving,
+    approvePositionRouter,
+    isHigherSlippageAllowed,
+    setIsHigherSlippageAllowed,
   } = props;
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true);
@@ -98,14 +110,27 @@ export default function PositionSeller(props) {
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const prevIsVisible = usePrevious(isVisible);
-  const routerAddress = getContract(chainId, "Router");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
+
+  let allowedSlippage = savedSlippageAmount;
+  if (isHigherSlippageAllowed) {
+    allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
+  }
+
+  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
+    fetcher: fetcher(library, PositionRouter),
+  });
 
   const orderOptions = [MARKET, STOP];
   let [orderOption, setOrderOption] = useState(MARKET);
+
   if (!flagOrdersEnabled) {
     orderOption = MARKET;
   }
+
+  const needPositionRouterApproval = !positionRouterApproved && orderOption === MARKET;
+
   const onOrderOptionChange = (option) => {
     setOrderOption(option);
   };
@@ -397,17 +422,24 @@ export default function PositionSeller(props) {
     if (isPluginApproving) {
       return false;
     }
+    if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
+      return false;
+    }
+    if (isPositionRouterApproving) {
+      return false;
+    }
 
     return true;
   };
 
-  const hasPendingProfit = position.delta.eq(0) && position.pendingDelta.gt(0);
+  const hasPendingProfit = MIN_PROFIT_TIME > 0 && position.delta.eq(0) && position.pendingDelta.gt(0);
 
   const getPrimaryText = () => {
     const error = getError();
     if (error) {
       return error;
     }
+
     if (orderOption === STOP) {
       if (isSubmitting) return "Creating Order...";
 
@@ -423,6 +455,19 @@ export default function PositionSeller(props) {
 
       return "Create Order";
     }
+
+    if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
+      return "Enabling Leverage...";
+    }
+
+    if (isPositionRouterApproving) {
+      return "Enabling Leverage...";
+    }
+
+    if (needPositionRouterApproval) {
+      return "Enable Leverage";
+    }
+
     if (hasPendingProfit) {
       return "Close without profit";
     }
@@ -446,18 +491,20 @@ export default function PositionSeller(props) {
       return;
     }
 
+    if (needPositionRouterApproval) {
+      approvePositionRouter({
+        sentMsg: "Enable leverage sent",
+        failMsg: "Enable leverage failed",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     const collateralTokenAddress = position.collateralToken.isNative
       ? nativeTokenAddress
       : position.collateralToken.address;
     const indexTokenAddress = position.indexToken.isNative ? nativeTokenAddress : position.indexToken.address;
-
-    let params;
-    let method;
-    let contractAddress;
-    let abi;
-    let value;
 
     if (orderOption === STOP) {
       const triggerAboveThreshold = triggerPriceUsd.gt(position.markPrice);
@@ -491,8 +538,8 @@ export default function PositionSeller(props) {
 
     const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
     const priceBasisPoints = position.isLong
-      ? BASIS_POINTS_DIVISOR - savedSlippageAmount
-      : BASIS_POINTS_DIVISOR + savedSlippageAmount;
+      ? BASIS_POINTS_DIVISOR - allowedSlippage
+      : BASIS_POINTS_DIVISOR + allowedSlippage;
     const refPrice = position.isLong ? position.indexToken.minPrice : position.indexToken.maxPrice;
     let priceLimit = refPrice.mul(priceBasisPoints).div(BASIS_POINTS_DIVISOR);
     const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME;
@@ -503,24 +550,29 @@ export default function PositionSeller(props) {
       }
     }
 
-    params = [tokenAddress0, indexTokenAddress, collateralDelta, sizeDelta, position.isLong, account, priceLimit];
-    method =
-      collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress
-        ? "decreasePositionETH"
-        : "decreasePosition";
-    contractAddress = routerAddress;
+    const withdrawETH = collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress;
 
-    const successMsg = `Decreased ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"} by ${formatAmount(
-      sizeDelta,
-      USD_DECIMALS,
-      2
-    )} USD.`;
-    abi = Router.abi;
+    const params = [
+      [tokenAddress0], // _path
+      indexTokenAddress, // _indexToken
+      collateralDelta, // _collateralDelta
+      sizeDelta, // _sizeDelta
+      position.isLong, // _isLong
+      account, // _receiver
+      priceLimit, // _acceptablePrice
+      0, // _minOut
+      minExecutionFee, // _executionFee
+      withdrawETH, // _withdrawETH
+    ];
 
-    const contract = new ethers.Contract(contractAddress, abi, library.getSigner());
+    const successMsg = `Requested decrease of ${position.indexToken.symbol} ${
+      position.isLong ? "Long" : "Short"
+    } by ${formatAmount(sizeDelta, USD_DECIMALS, 2)} USD.`;
 
-    callContract(chainId, contract, method, params, {
-      value,
+    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
+
+    callContract(chainId, contract, "createDecreasePosition", params, {
+      value: minExecutionFee,
       sentMsg: "Close submitted!",
       successMsg,
       failMsg: "Close failed.",
@@ -529,6 +581,17 @@ export default function PositionSeller(props) {
       .then(async (res) => {
         setFromValue("");
         setIsVisible(false);
+
+        let nextSize = position.size.sub(sizeDelta);
+
+        pendingPositions[position.key] = {
+          updatedAt: Date.now(),
+          pendingChanges: {
+            size: nextSize,
+          },
+        };
+
+        setPendingPositions({ ...pendingPositions });
       })
       .finally(() => {
         setIsSubmitting(false);
@@ -558,6 +621,10 @@ export default function PositionSeller(props) {
   }, [existingOrder, infoTokens]);
 
   function renderMinProfitWarning() {
+    if (MIN_PROFIT_TIME === 0) {
+      return null;
+    }
+
     if (profitPrice && nextDelta.eq(0) && nextHasProfit) {
       const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME;
 
@@ -709,6 +776,13 @@ export default function PositionSeller(props) {
                 <span className="muted">Keep leverage at {formatAmount(position.leverage, 4, 2)}x</span>
               </Checkbox>
             </div>
+            {orderOption === MARKET && (
+              <div className="PositionEditor-allow-higher-slippage">
+                <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
+                  <span className="muted">Allow up to 1% slippage</span>
+                </Checkbox>
+              </div>
+            )}
             {orderOption === STOP && (
               <div className="Exchange-info-row">
                 <div className="Exchange-info-label">Trigger Price</div>

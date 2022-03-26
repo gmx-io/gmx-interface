@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
-import throttle from "lodash/throttle";
+import React, { useState, useCallback } from "react";
 
 import {
   SWAP,
@@ -30,7 +29,6 @@ function getPositionForOrder(order, positionsMap) {
 
 export default function OrdersList(props) {
   const {
-    active,
     library,
     setPendingTxns,
     pendingTxns,
@@ -39,24 +37,11 @@ export default function OrdersList(props) {
     totalTokenWeights,
     usdgSupply,
     orders,
-    updateOrders,
     hideActions,
     chainId,
   } = props;
 
   const [editingOrder, setEditingOrder] = useState(null);
-
-  useEffect(() => {
-    const onBlock = throttle(function () {
-      updateOrders();
-    }, 5000);
-    if (active) {
-      library.on("block", onBlock);
-      return () => {
-        library.removeListener("block", onBlock);
-      };
-    }
-  }, [active, library, updateOrders]);
 
   const onCancelClick = useCallback(
     (order) => {
@@ -378,7 +363,6 @@ export default function OrdersList(props) {
           setPendingTxns={setPendingTxns}
           getPositionForOrder={getPositionForOrder}
           positionsMap={positionsMap}
-          updateOrders={updateOrders}
           library={library}
           totalTokenWeights={totalTokenWeights}
           usdgSupply={usdgSupply}
