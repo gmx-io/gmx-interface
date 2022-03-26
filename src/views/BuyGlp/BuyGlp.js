@@ -6,12 +6,15 @@ import buyGLPIcon from "../../img/ic_buy_glp.svg";
 import Footer from "../../Footer";
 import "./BuyGlp.css";
 
-import { useChainId, ARBITRUM } from "../../Helpers";
+import { useChainId } from "../../Helpers";
+import { getNativeToken } from "../../data/Tokens";
 
 export default function BuyGlp(props) {
   const { chainId } = useChainId();
   const history = useHistory();
   const [isBuying, setIsBuying] = useState(true);
+  const nativeTokenSymbol = getNativeToken(chainId).symbol;
+
   useEffect(() => {
     const hash = history.location.hash.replace("#", "");
     const buying = hash === "redeem" ? false : true;
@@ -31,7 +34,7 @@ export default function BuyGlp(props) {
             <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
               GLP tokens
             </a>{" "}
-            to earn {chainId === ARBITRUM ? "ETH" : "AVAX"} fees from swaps and leverages trading.
+            to earn {nativeTokenSymbol} fees from swaps and leverages trading.
             <br />
             Note that there is a minimum holding time of 15 minutes after a purchase.
             <br />
