@@ -466,6 +466,12 @@ export default function DashboardV2() {
     const tokenInfo = infoTokens[token.address];
     if (tokenInfo.usdgAmount && adjustedUsdgSupply) {
       const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
+
+      if (tokenInfo.isStable) {
+        stableGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
+      }
+      totalGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
+
       return {
         fullname: token.name,
         name: token.symbol,
@@ -762,7 +768,7 @@ export default function DashboardV2() {
                     <div>${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}</div>
                   </div>
                   <div className="App-card-row">
-                    <div className="label">Stablecoins Percentage</div>
+                    <div className="label">Stablecoin Percentage</div>
                     <div>{stablePercentage}%</div>
                   </div>
                 </div>
