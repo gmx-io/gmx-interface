@@ -16,7 +16,6 @@ import {
   helperToast,
   formatAmount,
   bigNumberify,
-  ARBITRUM,
   USD_DECIMALS,
   USDG_DECIMALS,
   LONG,
@@ -25,6 +24,7 @@ import {
   MARKET,
   SWAP_ORDER_OPTIONS,
   LEVERAGE_ORDER_OPTIONS,
+  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   getPositionKey,
   getUsd,
   BASIS_POINTS_DIVISOR,
@@ -70,8 +70,9 @@ import ConfirmationBox from "./ConfirmationBox";
 import OrdersToa from "./OrdersToa";
 
 import { getTokens, getWhitelistedTokens, getToken, getTokenBySymbol } from "../../data/Tokens";
-import Token from "../../abis/Token.json";
+import PositionRouter from "../../abis/PositionRouter.json";
 import Router from "../../abis/Router.json";
+import Token from "../../abis/Token.json";
 import WETH from "../../abis/WETH.json";
 
 import longImg from "../../img/long.svg";
@@ -120,6 +121,8 @@ function getNextAveragePrice({ size, sizeDelta, hasProfit, delta, nextPrice, isL
 
 export default function SwapBox(props) {
   const {
+    pendingPositions,
+    setPendingPositions,
     infoTokens,
     active,
     library,
@@ -148,15 +151,15 @@ export default function SwapBox(props) {
     orders,
     savedIsPnlInLeverage,
     orderBookApproved,
-    positionManagerApproved,
+    positionRouterApproved,
     isWaitingForPluginApproval,
     approveOrderBook,
-    approvePositionManager,
+    approvePositionRouter,
     setIsWaitingForPluginApproval,
-    isWaitingForPositionManagerApproval,
-    setIsWaitingForPositionManagerApproval,
+    isWaitingForPositionRouterApproval,
+    setIsWaitingForPositionRouterApproval,
     isPluginApproving,
-    isPositionManagerApproving,
+    isPositionRouterApproving,
   } = props;
 
   const [fromValue, setFromValue] = useState("");
@@ -166,6 +169,12 @@ export default function SwapBox(props) {
   const [isWaitingForApproval, setIsWaitingForApproval] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
+  const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
+
+  let allowedSlippage = savedSlippageAmount;
+  if (isHigherSlippageAllowed) {
+    allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
+  }
 
   const defaultCollateralSymbol = getConstant(chainId, "defaultCollateralSymbol");
   // TODO hack with useLocalStorageSerializeKey
@@ -260,9 +269,8 @@ export default function SwapBox(props) {
   const needOrderBookApproval = !isMarketOrder && !orderBookApproved;
   const prevNeedOrderBookApproval = usePrevious(needOrderBookApproval);
 
-  let needPositionManagerApproval = (isLong || isShort) && isMarketOrder && !positionManagerApproved;
-  needPositionManagerApproval = needPositionManagerApproval && chainId === ARBITRUM;
-  const prevNeedPositionManagerApproval = usePrevious(needPositionManagerApproval);
+  const needPositionRouterApproval = (isLong || isShort) && isMarketOrder && !positionRouterApproved;
+  const prevNeedPositionRouterApproval = usePrevious(needPositionRouterApproval);
 
   useEffect(() => {
     if (!needOrderBookApproval && prevNeedOrderBookApproval && isWaitingForPluginApproval) {
@@ -272,15 +280,15 @@ export default function SwapBox(props) {
   }, [needOrderBookApproval, prevNeedOrderBookApproval, setIsWaitingForPluginApproval, isWaitingForPluginApproval]);
 
   useEffect(() => {
-    if (!needPositionManagerApproval && prevNeedPositionManagerApproval && isWaitingForPositionManagerApproval) {
-      setIsWaitingForPositionManagerApproval(false);
+    if (!needPositionRouterApproval && prevNeedPositionRouterApproval && isWaitingForPositionRouterApproval) {
+      setIsWaitingForPositionRouterApproval(false);
       helperToast.success(<div>Leverage enabled!</div>);
     }
   }, [
-    needPositionManagerApproval,
-    prevNeedPositionManagerApproval,
-    setIsWaitingForPositionManagerApproval,
-    isWaitingForPositionManagerApproval,
+    needPositionRouterApproval,
+    prevNeedPositionRouterApproval,
+    setIsWaitingForPositionRouterApproval,
+    isWaitingForPositionRouterApproval,
   ]);
 
   useEffect(() => {
@@ -292,12 +300,18 @@ export default function SwapBox(props) {
 
   const routerAddress = getContract(chainId, "Router");
   const tokenAllowanceAddress = fromTokenAddress === AddressZero ? nativeTokenAddress : fromTokenAddress;
-  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(
+  const { data: tokenAllowance } = useSWR(
     active && [active, chainId, tokenAllowanceAddress, "allowance", account, routerAddress],
     {
       fetcher: fetcher(library, Token),
     }
   );
+
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
+
+  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
+    fetcher: fetcher(library, PositionRouter),
+  });
 
   const { data: hasOutdatedUi } = Api.useHasOutdatedUi();
 
@@ -382,18 +396,6 @@ export default function SwapBox(props) {
       setToTokenAddress(swapOption, toTokens[0].address);
     }
   }, [swapOption, toTokens, toTokenAddress, setToTokenAddress]);
-
-  useEffect(() => {
-    if (active) {
-      function onBlock() {
-        updateTokenAllowance(undefined, true);
-      }
-      library.on("block", onBlock);
-      return () => {
-        library.removeListener("block", onBlock);
-      };
-    }
-  }, [active, library, updateTokenAllowance]);
 
   useEffect(() => {
     if (swapOption !== SHORT) {
@@ -752,7 +754,7 @@ export default function SwapBox(props) {
 
   const getLeverageError = useCallback(() => {
     if (hasOutdatedUi) {
-      return ["Page outdated, please refresh"]
+      return ["Page outdated, please refresh"];
     }
 
     if (!toAmount || toAmount.eq(0)) {
@@ -1021,10 +1023,10 @@ export default function SwapBox(props) {
     if ((needApproval && isWaitingForApproval) || isApproving) {
       return false;
     }
-    if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
+    if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
       return false;
     }
-    if (isPositionManagerApproving) {
+    if (isPositionRouterApproving) {
       return false;
     }
     if (isApproving) {
@@ -1049,13 +1051,13 @@ export default function SwapBox(props) {
       return error;
     }
 
-    if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
+    if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
       return "Enabling Leverage...";
     }
-    if (isPositionManagerApproving) {
+    if (isPositionRouterApproving) {
       return "Enabling Leverage...";
     }
-    if (needPositionManagerApproval) {
+    if (needPositionRouterApproval) {
       return "Enable Leverage";
     }
 
@@ -1283,7 +1285,7 @@ export default function SwapBox(props) {
       method = "swapTokensToETH";
     }
 
-    minOut = toAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR);
+    minOut = toAmount.mul(BASIS_POINTS_DIVISOR - allowedSlippage).div(BASIS_POINTS_DIVISOR);
     params = [path, fromAmount, minOut, account];
     if (fromTokenAddress === AddressZero) {
       method = "swapETHToTokens";
@@ -1360,6 +1362,8 @@ export default function SwapBox(props) {
       });
   };
 
+  const referralCode = ethers.constants.HashZero;
+
   const increasePosition = async () => {
     setIsSubmitting(true);
     const tokenAddress0 = fromTokenAddress === AddressZero ? nativeTokenAddress : fromTokenAddress;
@@ -1385,9 +1389,7 @@ export default function SwapBox(props) {
     }
 
     const refPrice = isLong ? toTokenInfo.maxPrice : toTokenInfo.minPrice;
-    const priceBasisPoints = isLong
-      ? BASIS_POINTS_DIVISOR + savedSlippageAmount
-      : BASIS_POINTS_DIVISOR - savedSlippageAmount;
+    const priceBasisPoints = isLong ? BASIS_POINTS_DIVISOR + allowedSlippage : BASIS_POINTS_DIVISOR - allowedSlippage;
     const priceLimit = refPrice.mul(priceBasisPoints).div(BASIS_POINTS_DIVISOR);
 
     const boundedFromAmount = fromAmount ? fromAmount : bigNumberify(0);
@@ -1413,14 +1415,33 @@ export default function SwapBox(props) {
       }
     }
 
-    let params = [path, indexTokenAddress, boundedFromAmount, 0, toUsdMax, isLong, priceLimit];
+    let params = [
+      path, // _path
+      indexTokenAddress, // _indexToken
+      boundedFromAmount, // _amountIn
+      0, // _minOut
+      toUsdMax, // _sizeDelta
+      isLong, // _isLong
+      priceLimit, // _acceptablePrice
+      minExecutionFee, // _executionFee
+      referralCode, // _referralCode
+    ];
 
-    let method = "increasePosition";
-    let value = bigNumberify(0);
+    let method = "createIncreasePosition";
+    let value = minExecutionFee;
     if (fromTokenAddress === AddressZero) {
-      method = "increasePositionETH";
-      value = boundedFromAmount;
-      params = [path, indexTokenAddress, 0, toUsdMax, isLong, priceLimit];
+      method = "createIncreasePositionETH";
+      value = boundedFromAmount.add(minExecutionFee);
+      params = [
+        path, // _path
+        indexTokenAddress, // _indexToken
+        0, // _minOut
+        toUsdMax, // _sizeDelta
+        isLong, // _isLong
+        priceLimit, // _acceptablePrice
+        minExecutionFee, // _executionFee
+        referralCode, // _referralCode
+      ];
     }
 
     if (shouldRaiseGasError(getTokenInfo(infoTokens, fromTokenAddress), fromAmount)) {
@@ -1432,11 +1453,11 @@ export default function SwapBox(props) {
       return;
     }
 
-    const contractAddress = chainId === ARBITRUM ? getContract(chainId, "PositionManager") : routerAddress;
-    const contract = new ethers.Contract(contractAddress, Router.abi, library.getSigner());
+    const contractAddress = getContract(chainId, "PositionRouter");
+    const contract = new ethers.Contract(contractAddress, PositionRouter.abi, library.getSigner());
     const indexToken = getTokenInfo(infoTokens, indexTokenAddress);
     const tokenSymbol = indexToken.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexToken.symbol;
-    const successMsg = `Increased ${tokenSymbol} ${isLong ? "Long" : "Short"} by ${formatAmount(
+    const successMsg = `Requested increase of ${tokenSymbol} ${isLong ? "Long" : "Short"} by ${formatAmount(
       toUsdMax,
       USD_DECIMALS,
       2
@@ -1451,6 +1472,21 @@ export default function SwapBox(props) {
     })
       .then(async () => {
         setIsConfirming(false);
+
+        const key = getPositionKey(path[path.length - 1], indexTokenAddress, isLong);
+        let nextSize = toUsdMax;
+        if (hasExistingPosition) {
+          nextSize = existingPosition.size.add(toUsdMax);
+        }
+
+        pendingPositions[key] = {
+          updatedAt: Date.now(),
+          pendingChanges: {
+            size: nextSize,
+          },
+        };
+
+        setPendingPositions({ ...pendingPositions });
       })
       .finally(() => {
         setIsSubmitting(false);
@@ -1526,8 +1562,8 @@ export default function SwapBox(props) {
       return;
     }
 
-    if (needPositionManagerApproval) {
-      approvePositionManager({
+    if (needPositionRouterApproval) {
+      approvePositionRouter({
         sentMsg: "Enable leverage sent",
         failMsg: "Enable leverage failed",
       });
@@ -1564,6 +1600,7 @@ export default function SwapBox(props) {
     }
 
     setIsConfirming(true);
+    setIsHigherSlippageAllowed(false);
   };
 
   const showFromAndToSection = orderOption !== STOP;
@@ -2228,6 +2265,8 @@ export default function SwapBox(props) {
       {isConfirming && (
         <ConfirmationBox
           library={library}
+          isHigherSlippageAllowed={isHigherSlippageAllowed}
+          setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
           orders={orders}
           isSwap={isSwap}
           isLong={isLong}
