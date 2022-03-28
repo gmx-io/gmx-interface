@@ -40,6 +40,7 @@ import {
   getVestingData,
   getStakingData,
   getProcessedData,
+  getPageTitle,
 } from "../../Helpers";
 import { callContract, useGmxPrice } from "../../Api";
 import { getConstant } from "../../Constants";
@@ -49,6 +50,7 @@ import useSWR from "swr";
 import { getContract } from "../../Addresses";
 
 import "./StakeV2.css";
+import SEO from "../../components/Common/SEO";
 
 const { AddressZero } = ethers.constants;
 
@@ -419,101 +421,106 @@ function VesterDepositModal(props) {
   };
 
   return (
-    <div className="StakeModal">
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title} className="non-scrollable">
-        <div className="Exchange-swap-section">
-          <div className="Exchange-swap-section-top">
-            <div className="muted">
-              <div className="Exchange-swap-usd">Deposit</div>
+    <SEO title={getPageTitle("Earn")}>
+      <div className="StakeModal">
+        <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title} className="non-scrollable">
+          <div className="Exchange-swap-section">
+            <div className="Exchange-swap-section-top">
+              <div className="muted">
+                <div className="Exchange-swap-usd">Deposit</div>
+              </div>
+              <div
+                className="muted align-right clickable"
+                onClick={() => setValue(formatAmountFree(maxAmount, 18, 18))}
+              >
+                Max: {formatAmount(maxAmount, 18, 4, true)}
+              </div>
             </div>
-            <div className="muted align-right clickable" onClick={() => setValue(formatAmountFree(maxAmount, 18, 18))}>
-              Max: {formatAmount(maxAmount, 18, 4, true)}
-            </div>
-          </div>
-          <div className="Exchange-swap-section-bottom">
-            <div>
-              <input
-                type="number"
-                placeholder="0.0"
-                className="Exchange-swap-input"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-              />
-            </div>
-            <div className="PositionEditor-token-symbol">esGMX</div>
-          </div>
-        </div>
-        <div className="VesterDepositModal-info-rows">
-          <div className="Exchange-info-row">
-            <div className="Exchange-info-label">Wallet</div>
-            <div className="align-right">{formatAmount(balance, 18, 2, true)} esGMX</div>
-          </div>
-          <div className="Exchange-info-row">
-            <div className="Exchange-info-label">Vault Capacity</div>
-            <div className="align-right">
-              <Tooltip
-                handle={`${formatAmount(nextDepositAmount, 18, 2, true)} / ${formatAmount(
-                  maxVestableAmount,
-                  18,
-                  2,
-                  true
-                )}`}
-                position="right-bottom"
-                renderContent={() => {
-                  return (
-                    <>
-                      Vault Capacity for your Account
-                      <br />
-                      <br />
-                      Deposited: {formatAmount(escrowedBalance, 18, 2, true)} esGMX
-                      <br />
-                      Max Capacity: {formatAmount(maxVestableAmount, 18, 2, true)} esGMX
-                      <br />
-                    </>
-                  );
-                }}
-              />
+            <div className="Exchange-swap-section-bottom">
+              <div>
+                <input
+                  type="number"
+                  placeholder="0.0"
+                  className="Exchange-swap-input"
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                />
+              </div>
+              <div className="PositionEditor-token-symbol">esGMX</div>
             </div>
           </div>
-          <div className="Exchange-info-row">
-            <div className="Exchange-info-label">Reserve Amount</div>
-            <div className="align-right">
-              <Tooltip
-                handle={`${formatAmount(nextReserveAmount, 18, 2, true)} / ${formatAmount(
-                  maxReserveAmount,
-                  18,
-                  2,
-                  true
-                )}`}
-                position="right-bottom"
-                renderContent={() => {
-                  return (
-                    <>
-                      Current Reserved: {formatAmount(reserveAmount, 18, 2, true)}
-                      <br />
-                      Reserve Required: {formatAmount(additionalReserveAmount, 18, 2, true)}
-                      <br />
-                      {amount && nextReserveAmount.gt(maxReserveAmount) && (
-                        <div>
-                          <br />
-                          You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)} {stakeTokenLabel}{" "}
-                          to vest {formatAmount(amount, 18, 2, true)} esGMX.
-                        </div>
-                      )}
-                    </>
-                  );
-                }}
-              />
+          <div className="VesterDepositModal-info-rows">
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Wallet</div>
+              <div className="align-right">{formatAmount(balance, 18, 2, true)} esGMX</div>
+            </div>
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Vault Capacity</div>
+              <div className="align-right">
+                <Tooltip
+                  handle={`${formatAmount(nextDepositAmount, 18, 2, true)} / ${formatAmount(
+                    maxVestableAmount,
+                    18,
+                    2,
+                    true
+                  )}`}
+                  position="right-bottom"
+                  renderContent={() => {
+                    return (
+                      <>
+                        Vault Capacity for your Account
+                        <br />
+                        <br />
+                        Deposited: {formatAmount(escrowedBalance, 18, 2, true)} esGMX
+                        <br />
+                        Max Capacity: {formatAmount(maxVestableAmount, 18, 2, true)} esGMX
+                        <br />
+                      </>
+                    );
+                  }}
+                />
+              </div>
+            </div>
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Reserve Amount</div>
+              <div className="align-right">
+                <Tooltip
+                  handle={`${formatAmount(nextReserveAmount, 18, 2, true)} / ${formatAmount(
+                    maxReserveAmount,
+                    18,
+                    2,
+                    true
+                  )}`}
+                  position="right-bottom"
+                  renderContent={() => {
+                    return (
+                      <>
+                        Current Reserved: {formatAmount(reserveAmount, 18, 2, true)}
+                        <br />
+                        Reserve Required: {formatAmount(additionalReserveAmount, 18, 2, true)}
+                        <br />
+                        {amount && nextReserveAmount.gt(maxReserveAmount) && (
+                          <div>
+                            <br />
+                            You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)}{" "}
+                            {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.
+                          </div>
+                        )}
+                      </>
+                    );
+                  }}
+                />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="Exchange-swap-button-container">
-          <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
-            {getPrimaryText()}
-          </button>
-        </div>
-      </Modal>
-    </div>
+          <div className="Exchange-swap-button-container">
+            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+              {getPrimaryText()}
+            </button>
+          </div>
+        </Modal>
+      </div>
+    </SEO>
   );
 }
 
