@@ -90,7 +90,17 @@ export default function Actions() {
   );
 
   const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo);
-  const { positions, positionsMap } = getPositions(chainId, positionQuery, positionData, infoTokens, false, false);
+  const { positions, positionsMap } = getPositions(
+    chainId,
+    positionQuery,
+    positionData,
+    infoTokens,
+    false,
+    false,
+    undefined,
+    undefined,
+    undefined
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
