@@ -705,7 +705,7 @@ export default function DashboardV2() {
                     <div>${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}</div>
                   </div>
                   <div className="App-card-row">
-                    <div className="label">Stablecoins Percentage</div>
+                    <div className="label">Stablecoin Percentage</div>
                     <div>{stablePercentage}%</div>
                   </div>
                 </div>
