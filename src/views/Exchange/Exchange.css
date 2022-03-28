@@ -22,6 +22,15 @@
   padding-bottom: 0.3rem;
 }
 
+.position-loading-icon {
+  display: inline-block;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+  color: #38558f;
+  vertical-align: middle;
+  margin-top: -0.2rem;
+}
+
 .Exchange-settings-row {
   margin-bottom: 0.5rem;
 }
@@ -206,6 +215,15 @@
   grid-template-columns: 1fr auto;
   direction: rtl;
   font-size: 0.875rem;
+  margin-bottom: 0.3rem;
+}
+
+.PositionEditor-allow-higher-slippage .Checkbox {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  direction: rtl;
+  font-size: 0.9rem;
   margin-bottom: 0.3rem;
 }
 
@@ -461,11 +479,7 @@ table.Exchange-list tr:last-child {
 }
 
 table.Exchange-list tr:hover {
-  background: linear-gradient(
-    90deg,
-    rgba(30, 34, 61, 1) 0%,
-    rgba(38, 43, 71, 1) 100%
-  );
+  background: linear-gradient(90deg, rgba(30, 34, 61, 1) 0%, rgba(38, 43, 71, 1) 100%);
   box-shadow: inset 0px 0px 30px 5px rgba(255, 255, 255, 0.01);
 }
 
@@ -614,11 +628,7 @@ table.Exchange-list th {
   padding: 1rem;
   margin-bottom: 0.675rem;
   border-radius: 3px;
-  background: linear-gradient(
-    90deg,
-    rgba(30, 34, 61, 0.9) 0%,
-    rgba(38, 43, 71, 0.9) 100%
-  );
+  background: linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%);
   box-shadow: inset 0px 0px 30px 5px rgba(255, 255, 255, 0.01);
 }
 
@@ -670,20 +680,12 @@ table.Exchange-list th {
   border-radius: 3px;
   z-index: 1;
   cursor: pointer;
-  background: linear-gradient(
-    90deg,
-    rgba(45, 66, 252, 1) 0%,
-    rgba(46, 61, 205, 1) 100%
-  );
+  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
 }
 
 .Exchange-swap-max:hover {
   color: rgba(255, 255, 255, 1);
-  background: linear-gradient(
-    90deg,
-    rgba(58, 78, 252, 1) 0%,
-    rgba(51, 68, 222, 1) 100%
-  );
+  background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
 }
 
 .Exchange-swap-section-bottom .TokenSelector-box {
@@ -737,22 +739,14 @@ input.Exchange-swap-input.small {
   border-radius: 2rem;
   cursor: pointer;
   user-select: none;
-  background: linear-gradient(
-    90deg,
-    rgba(45, 66, 252, 1) 0%,
-    rgba(46, 61, 205, 1) 100%
-  );
+  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .Exchange-swap-ball:hover {
-  background: linear-gradient(
-    90deg,
-    rgba(58, 78, 252, 1) 0%,
-    rgba(51, 68, 222, 1) 100%
-  );
+  background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
 }
 
 .Exchange-swap-ball:hover .Exchange-swap-ball-icon {
@@ -761,11 +755,7 @@ input.Exchange-swap-input.small {
 
 table.Exchange-list-small {
   width: 100%;
-  background: linear-gradient(
-    45deg,
-    rgba(11, 5, 55, 0.6) 0%,
-    rgba(21, 3, 48, 0.6) 100%
-  );
+  background: linear-gradient(45deg, rgba(11, 5, 55, 0.6) 0%, rgba(21, 3, 48, 0.6) 100%);
 }
 
 table.Exchange-list-small th,
@@ -784,6 +774,7 @@ table.Exchange-list-small td {
 .Exchange-list-title {
   width: 2rem;
   display: inline-block;
+  white-space: nowrap;
 }
 
 .Exchange-list-info-label {

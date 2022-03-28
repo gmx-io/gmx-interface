@@ -5,17 +5,23 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 
 import {
+  ARBITRUM,
+  AVALANCHE,
   FUNDING_RATE_PRECISION,
   BASIS_POINTS_DIVISOR,
   MARGIN_FEE_BASIS_POINTS,
   SWAP,
   LONG,
   SHORT,
+  USD_DECIMALS,
+  helperToast,
+  formatAmount,
   bigNumberify,
   getTokenInfo,
   fetcher,
   expandDecimals,
   getPositionKey,
+  getPositionContractKey,
   getLeverage,
   useLocalStorageSerializeKey,
   useLocalStorageByChainId,
@@ -32,8 +38,10 @@ import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from "../
 
 import Reader from "../../abis/ReaderV2.json";
 import VaultV2 from "../../abis/VaultV2.json";
-import Token from "../../abis/Token.json";
+import VaultV2b from "../../abis/VaultV2b.json";
+import PositionRouter from "../../abis/PositionRouter.json";
 import Router from "../../abis/Router.json";
+import Token from "../../abis/Token.json";
 
 import Checkbox from "../../components/Checkbox/Checkbox";
 import SwapBox from "../../components/Exchange/SwapBox";
@@ -50,6 +58,52 @@ import "./Exchange.css";
 
 const { AddressZero } = ethers.constants;
 
+const arbWsProvider = new ethers.providers.WebSocketProvider(
+  "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"
+);
+
+const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
+
+const PENDING_POSITION_VALID_DURATION = 600 * 1000;
+const UPDATED_POSITION_VALID_DURATION = 60 * 1000;
+
+const notifications = {};
+
+function pushSuccessNotification(message, e) {
+  const { transactionHash } = e;
+  const id = ethers.utils.id(message + transactionHash);
+  if (notifications[id]) {
+    return;
+  }
+
+  notifications[id] = true;
+  helperToast.success(message);
+}
+
+function pushErrorNotification(message, e) {
+  const { transactionHash } = e;
+  const id = ethers.utils.id(message + transactionHash);
+  if (notifications[id]) {
+    return;
+  }
+
+  notifications[id] = true;
+  helperToast.error(message);
+}
+
+function getWsProvider(active, chainId) {
+  if (!active) {
+    return;
+  }
+  if (chainId === ARBITRUM) {
+    return arbWsProvider;
+  }
+
+  if (chainId === AVALANCHE) {
+    return avaxWsProvider;
+  }
+}
+
 function getFundingFee(data) {
   let { entryFundingRate, cumulativeFundingRate, size } = data;
   if (entryFundingRate && cumulativeFundingRate) {
@@ -65,7 +119,43 @@ const getTokenAddress = (token, nativeTokenAddress) => {
   return token.address;
 };
 
-export function getPositions(chainId, positionQuery, positionData, infoTokens, includeDelta, showPnlAfterFees) {
+function applyPendingChanges(position, pendingPositions) {
+  if (!pendingPositions) {
+    return;
+  }
+  const { key } = position;
+
+  if (
+    pendingPositions[key] &&
+    pendingPositions[key].updatedAt &&
+    pendingPositions[key].pendingChanges &&
+    pendingPositions[key].updatedAt + PENDING_POSITION_VALID_DURATION > Date.now()
+  ) {
+    const { pendingChanges } = pendingPositions[key];
+    if (pendingChanges.size && position.size.eq(pendingChanges.size)) {
+      return;
+    }
+
+    if (pendingChanges.expectingCollateralChange && !position.collateral.eq(pendingChanges.collateralSnapshot)) {
+      return;
+    }
+
+    position.hasPendingChanges = true;
+    position.pendingChanges = pendingChanges;
+  }
+}
+
+export function getPositions(
+  chainId,
+  positionQuery,
+  positionData,
+  infoTokens,
+  includeDelta,
+  showPnlAfterFees,
+  account,
+  pendingPositions,
+  updatedPositions
+) {
   const propsLength = getConstant(chainId, "positionReaderPropsLength");
   const positions = [];
   const positionsMap = {};
@@ -77,9 +167,14 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
     const collateralToken = getTokenInfo(infoTokens, collateralTokens[i], true, getContract(chainId, "NATIVE_TOKEN"));
     const indexToken = getTokenInfo(infoTokens, indexTokens[i], true, getContract(chainId, "NATIVE_TOKEN"));
     const key = getPositionKey(collateralTokens[i], indexTokens[i], isLong[i]);
+    let contractKey;
+    if (account) {
+      contractKey = getPositionContractKey(account, collateralTokens[i], indexTokens[i], isLong[i]);
+    }
 
     const position = {
       key,
+      contractKey,
       collateralToken,
       indexToken,
       isLong: isLong[i],
@@ -96,6 +191,19 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
       markPrice: isLong[i] ? indexToken.minPrice : indexToken.maxPrice,
     };
 
+    if (
+      updatedPositions &&
+      updatedPositions[key] &&
+      updatedPositions[key].updatedAt &&
+      updatedPositions[key].updatedAt + UPDATED_POSITION_VALID_DURATION > Date.now()
+    ) {
+      const updatedPosition = updatedPositions[key];
+      position.size = updatedPosition.size;
+      position.collateral = updatedPosition.collateral;
+      position.averagePrice = updatedPosition.averagePrice;
+      position.entryFundingRate = updatedPosition.entryFundingRate;
+    }
+
     let fundingFee = getFundingFee(position);
     position.fundingFee = fundingFee ? fundingFee : bigNumberify(0);
     position.collateralAfterFee = position.collateral.sub(position.fundingFee);
@@ -104,11 +212,12 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
     position.positionFee = position.size.mul(MARGIN_FEE_BASIS_POINTS).mul(2).div(BASIS_POINTS_DIVISOR);
     position.totalFees = position.positionFee.add(position.fundingFee);
 
-    position.hasLowCollateral =
-      position.collateralAfterFee.lte(0) || position.size.div(position.collateralAfterFee.abs()).gt(50);
-
     position.pendingDelta = position.delta;
+
     if (position.collateral.gt(0)) {
+      position.hasLowCollateral =
+        position.collateralAfterFee.lt(0) || position.size.div(position.collateralAfterFee.abs()).gt(50);
+
       if (position.delta.eq(0) && position.averagePrice && position.markPrice) {
         const priceDelta = position.averagePrice.gt(position.markPrice)
           ? position.averagePrice.sub(position.markPrice)
@@ -188,7 +297,9 @@ export function getPositions(chainId, positionQuery, positionData, infoTokens, i
 
     positionsMap[key] = position;
 
-    if (position.size.gt(0)) {
+    applyPendingChanges(position, pendingPositions);
+
+    if (position.size.gt(0) || position.hasPendingChanges) {
       positions.push(position);
     }
   }
@@ -251,6 +362,9 @@ export default function Exchange({
   const [showBanner, setShowBanner] = useLocalStorageSerializeKey("showBanner", true);
   const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey("bannerHidden", null);
 
+  const [pendingPositions, setPendingPositions] = useState({});
+  const [updatedPositions, setUpdatedPositions] = useState({});
+
   const hideBanner = () => {
     const hiddenLimit = new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000);
     setBannerHidden(hiddenLimit);
@@ -276,6 +390,7 @@ export default function Exchange({
 
   const { active, account, library } = useWeb3React();
   const { chainId } = useChainId();
+  const currentAccount = account;
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
@@ -346,27 +461,21 @@ export default function Exchange({
   const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
 
   const tokens = getTokens(chainId);
-  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR(
-    [active, chainId, readerAddress, "getVaultTokenInfoV2"],
-    {
-      fetcher: fetcher(library, Reader, [
-        vaultAddress,
-        nativeTokenAddress,
-        expandDecimals(1, 18),
-        whitelistedTokenAddresses,
-      ]),
-    }
-  );
+  const { data: vaultTokenInfo } = useSWR([active, chainId, readerAddress, "getVaultTokenInfoV2"], {
+    fetcher: fetcher(library, Reader, [
+      vaultAddress,
+      nativeTokenAddress,
+      expandDecimals(1, 18),
+      whitelistedTokenAddresses,
+    ]),
+  });
 
   const tokenAddresses = tokens.map((token) => token.address);
-  const { data: tokenBalances, mutate: updateTokenBalances } = useSWR(
-    active && [active, chainId, readerAddress, "getTokenBalances", account],
-    {
-      fetcher: fetcher(library, Reader, [tokenAddresses]),
-    }
-  );
+  const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
+    fetcher: fetcher(library, Reader, [tokenAddresses]),
+  });
 
-  const { data: positionData, mutate: updatePositionData } = useSWR(
+  const { data: positionData } = useSWR(
     active && [active, chainId, readerAddress, "getPositions", vaultAddress, account],
     {
       fetcher: fetcher(library, Reader, [
@@ -377,74 +486,37 @@ export default function Exchange({
     }
   );
 
-  const { data: fundingRateInfo, mutate: updateFundingRateInfo } = useSWR(
-    [active, chainId, readerAddress, "getFundingRates"],
-    {
-      fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
-    }
-  );
+  const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
+    fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+  });
 
-  const { data: totalTokenWeights, mutate: updateTotalTokenWeights } = useSWR(
+  const { data: totalTokenWeights } = useSWR(
     [`Exchange:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
       fetcher: fetcher(library, VaultV2),
     }
   );
 
-  const { data: usdgSupply, mutate: updateUsdgSupply } = useSWR(
-    [`Exchange:usdgSupply:${active}`, chainId, usdgAddress, "totalSupply"],
-    {
-      fetcher: fetcher(library, Token),
-    }
-  );
+  const { data: usdgSupply } = useSWR([`Exchange:usdgSupply:${active}`, chainId, usdgAddress, "totalSupply"], {
+    fetcher: fetcher(library, Token),
+  });
 
   const orderBookAddress = getContract(chainId, "OrderBook");
   const routerAddress = getContract(chainId, "Router");
-  const { data: orderBookApproved, mutate: updateOrderBookApproved } = useSWR(
+  const { data: orderBookApproved } = useSWR(
     active && [active, chainId, routerAddress, "approvedPlugins", account, orderBookAddress],
     {
       fetcher: fetcher(library, Router),
     }
   );
 
-  const positionManagerAddress = getContract(chainId, "PositionManager");
-  const { data: positionManagerApproved, mutate: updatePositionManagerApproved } = useSWR(
-    active && [active, chainId, routerAddress, "approvedPlugins", account, positionManagerAddress],
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
+  const { data: positionRouterApproved } = useSWR(
+    active && [active, chainId, routerAddress, "approvedPlugins", account, positionRouterAddress],
     {
       fetcher: fetcher(library, Router),
     }
   );
-
-  useEffect(() => {
-    if (active) {
-      function onBlock() {
-        updateVaultTokenInfo(undefined, true);
-        updateTokenBalances(undefined, true);
-        updatePositionData(undefined, true);
-        updateFundingRateInfo(undefined, true);
-        updateTotalTokenWeights(undefined, true);
-        updateUsdgSupply(undefined, true);
-        updateOrderBookApproved(undefined, true);
-        updatePositionManagerApproved(undefined, true);
-      }
-      library.on("block", onBlock);
-      return () => {
-        library.removeListener("block", onBlock);
-      };
-    }
-  }, [
-    active,
-    library,
-    chainId,
-    updateVaultTokenInfo,
-    updateTokenBalances,
-    updatePositionData,
-    updateFundingRateInfo,
-    updateTotalTokenWeights,
-    updateUsdgSupply,
-    updateOrderBookApproved,
-    updatePositionManagerApproved,
-  ]);
 
   const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo);
   const { positions, positionsMap } = getPositions(
@@ -453,16 +525,257 @@ export default function Exchange({
     positionData,
     infoTokens,
     savedIsPnlInLeverage,
-    savedShowPnlAfterFees
+    savedShowPnlAfterFees,
+    account,
+    pendingPositions,
+    updatedPositions
   );
 
+  useEffect(() => {
+    const wsVaultAbi = chainId === ARBITRUM ? VaultV2.abi : VaultV2b.abi;
+    const wsProvider = getWsProvider(active, chainId);
+    if (!wsProvider) {
+      return;
+    }
+
+    const wsVault = new ethers.Contract(vaultAddress, wsVaultAbi, wsProvider);
+    const wsPositionRouter = new ethers.Contract(positionRouterAddress, PositionRouter.abi, wsProvider);
+
+    const onUpdatePosition = (key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl) => {
+      for (let i = 0; i < positions.length; i++) {
+        const position = positions[i];
+        if (position.contractKey === key) {
+          updatedPositions[position.key] = {
+            size,
+            collateral,
+            averagePrice,
+            entryFundingRate,
+            reserveAmount,
+            realisedPnl,
+            updatedAt: Date.now(),
+          };
+          setUpdatedPositions({ ...updatedPositions });
+          break;
+        }
+      }
+    };
+
+    const onClosePosition = (key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl, e) => {
+      for (let i = 0; i < positions.length; i++) {
+        const position = positions[i];
+        if (position.contractKey === key) {
+          updatedPositions[position.key] = {
+            size: bigNumberify(0),
+            collateral: bigNumberify(0),
+            averagePrice,
+            entryFundingRate,
+            reserveAmount,
+            realisedPnl,
+            updatedAt: Date.now(),
+          };
+          setUpdatedPositions({ ...updatedPositions });
+          break;
+        }
+      }
+    };
+
+    const onIncreasePosition = (
+      key,
+      account,
+      collateralToken,
+      indexToken,
+      collateralDelta,
+      sizeDelta,
+      isLong,
+      price,
+      fee,
+      e
+    ) => {
+      if (account !== currentAccount) {
+        return;
+      }
+
+      const indexTokenItem = getToken(chainId, indexToken);
+      const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
+
+      let message;
+      if (sizeDelta.eq(0)) {
+        message = `Deposited ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD into ${tokenSymbol} ${
+          isLong ? "Long" : "Short"
+        }`;
+      } else {
+        message = `Increased ${tokenSymbol} ${isLong ? "Long" : "Short"}, +${formatAmount(
+          sizeDelta,
+          USD_DECIMALS,
+          2,
+          true
+        )} USD`;
+      }
+
+      pushSuccessNotification(message, e);
+    };
+
+    const onDecreasePosition = (
+      key,
+      account,
+      collateralToken,
+      indexToken,
+      collateralDelta,
+      sizeDelta,
+      isLong,
+      price,
+      fee,
+      e
+    ) => {
+      if (account !== currentAccount) {
+        return;
+      }
+
+      const indexTokenItem = getToken(chainId, indexToken);
+      const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
+
+      let message;
+      if (sizeDelta.eq(0)) {
+        message = `Withdrew ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD from ${tokenSymbol} ${
+          isLong ? "Long" : "Short"
+        }`;
+      } else {
+        message = `Decreased ${tokenSymbol} ${isLong ? "Long" : "Short"}, -${formatAmount(
+          sizeDelta,
+          USD_DECIMALS,
+          2,
+          true
+        )} USD`;
+      }
+
+      pushSuccessNotification(message, e);
+    };
+
+    const onCancelIncreasePosition = (
+      account,
+      path,
+      indexToken,
+      amountIn,
+      minOut,
+      sizeDelta,
+      isLong,
+      acceptablePrice,
+      executionFee,
+      blockGap,
+      timeGap,
+      e
+    ) => {
+      if (account !== currentAccount) {
+        return;
+      }
+      console.log(
+        "onCancelIncreasePosition",
+        account,
+        path,
+        indexToken,
+        amountIn,
+        minOut,
+        sizeDelta,
+        isLong,
+        acceptablePrice,
+        executionFee,
+        blockGap,
+        timeGap
+      );
+      const indexTokenItem = getToken(chainId, indexToken);
+      const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
+
+      const message = `Could not increase ${tokenSymbol} ${
+        isLong ? "Long" : "Short"
+      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page`;
+
+      pushErrorNotification(message, e);
+
+      const key = getPositionKey(path[path.length - 1], indexToken, isLong);
+      pendingPositions[key] = {};
+      setPendingPositions({ ...pendingPositions });
+    };
+
+    const onCancelDecreasePosition = (
+      account,
+      path,
+      indexToken,
+      collateralDelta,
+      sizeDelta,
+      isLong,
+      receiver,
+      acceptablePrice,
+      minOut,
+      executionFee,
+      blockGap,
+      timeGap,
+      e
+    ) => {
+      if (account !== currentAccount) {
+        return;
+      }
+      console.log(
+        "onCancelIncreasePosition",
+        account,
+        path,
+        indexToken,
+        collateralDelta,
+        sizeDelta,
+        isLong,
+        receiver,
+        acceptablePrice,
+        minOut,
+        executionFee,
+        blockGap,
+        timeGap
+      );
+      const indexTokenItem = getToken(chainId, indexToken);
+      const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
+
+      const message = `Could not decrease ${tokenSymbol} ${
+        isLong ? "Long" : "Short"
+      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page`;
+
+      pushErrorNotification(message, e);
+
+      const key = getPositionKey(path[path.length - 1], indexToken, isLong);
+      pendingPositions[key] = {};
+      setPendingPositions({ ...pendingPositions });
+    };
+
+    wsVault.on("UpdatePosition", onUpdatePosition);
+    wsVault.on("ClosePosition", onClosePosition);
+    wsVault.on("IncreasePosition", onIncreasePosition);
+    wsVault.on("DecreasePosition", onDecreasePosition);
+    wsPositionRouter.on("CancelIncreasePosition", onCancelIncreasePosition);
+    wsPositionRouter.on("CancelDecreasePosition", onCancelDecreasePosition);
+
+    return function cleanup() {
+      wsVault.off("UpdatePosition", onUpdatePosition);
+      wsVault.off("ClosePosition", onClosePosition);
+      wsVault.off("IncreasePosition", onIncreasePosition);
+      wsVault.off("DecreasePosition", onDecreasePosition);
+      wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
+      wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
+    };
+  }, [
+    active,
+    chainId,
+    currentAccount,
+    positions,
+    updatedPositions,
+    pendingPositions,
+    vaultAddress,
+    positionRouterAddress,
+  ]);
+
   const flagOrdersEnabled = true;
-  const [orders, updateOrders] = useAccountOrders(flagOrdersEnabled);
+  const [orders] = useAccountOrders(flagOrdersEnabled);
 
   const [isWaitingForPluginApproval, setIsWaitingForPluginApproval] = useState(false);
-  const [isWaitingForPositionManagerApproval, setIsWaitingForPositionManagerApproval] = useState(false);
+  const [isWaitingForPositionRouterApproval, setIsWaitingForPositionRouterApproval] = useState(false);
   const [isPluginApproving, setIsPluginApproving] = useState(false);
-  const [isPositionManagerApproving, setIsPositionManagerApproving] = useState(false);
+  const [isPositionRouterApproving, setIsPositionRouterApproving] = useState(false);
 
   const approveOrderBook = () => {
     setIsPluginApproving(true);
@@ -475,16 +788,15 @@ export default function Exchange({
     })
       .then(() => {
         setIsWaitingForPluginApproval(true);
-        updateOrderBookApproved(undefined, true);
       })
       .finally(() => {
         setIsPluginApproving(false);
       });
   };
 
-  const approvePositionManager = ({ sentMsg, failMsg }) => {
-    setIsPositionManagerApproving(true);
-    return approvePlugin(chainId, positionManagerAddress, {
+  const approvePositionRouter = ({ sentMsg, failMsg }) => {
+    setIsPositionRouterApproving(true);
+    return approvePlugin(chainId, positionRouterAddress, {
       library,
       pendingTxns,
       setPendingTxns,
@@ -492,11 +804,10 @@ export default function Exchange({
       failMsg,
     })
       .then(() => {
-        setIsWaitingForPositionManagerApproval(true);
-        updatePositionManagerApproved(undefined, true);
+        setIsWaitingForPositionRouterApproval(true);
       })
       .finally(() => {
-        setIsPositionManagerApproving(false);
+        setIsPositionRouterApproving(false);
       });
   };
 
@@ -533,18 +844,19 @@ export default function Exchange({
         </div>
         {listSection === "Positions" && (
           <PositionsList
+            pendingPositions={pendingPositions}
+            setPendingPositions={setPendingPositions}
             setListSection={setListSection}
             setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
-            setIsWaitingForPositionManagerApproval={setIsWaitingForPositionManagerApproval}
+            setIsWaitingForPositionRouterApproval={setIsWaitingForPositionRouterApproval}
             approveOrderBook={approveOrderBook}
-            approvePositionManager={approvePositionManager}
+            approvePositionRouter={approvePositionRouter}
             isPluginApproving={isPluginApproving}
-            isPositionManagerApproving={isPositionManagerApproving}
+            isPositionRouterApproving={isPositionRouterApproving}
             isWaitingForPluginApproval={isWaitingForPluginApproval}
-            isWaitingForPositionManagerApproval={isWaitingForPositionManagerApproval}
-            updateOrderBookApproved={updateOrderBookApproved}
+            isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
             orderBookApproved={orderBookApproved}
-            positionManagerApproved={positionManagerApproved}
+            positionRouterApproved={positionRouterApproved}
             positions={positions}
             positionsMap={positionsMap}
             infoTokens={infoTokens}
@@ -572,7 +884,6 @@ export default function Exchange({
             positionsMap={positionsMap}
             chainId={chainId}
             orders={orders}
-            updateOrders={updateOrders}
             totalTokenWeights={totalTokenWeights}
             usdgSupply={usdgSupply}
           />
@@ -619,17 +930,18 @@ export default function Exchange({
         </div>
         <div className="Exchange-right">
           <SwapBox
+            pendingPositions={pendingPositions}
+            setPendingPositions={setPendingPositions}
             setIsWaitingForPluginApproval={setIsWaitingForPluginApproval}
-            setIsWaitingForPositionManagerApproval={setIsWaitingForPositionManagerApproval}
+            setIsWaitingForPositionRouterApproval={setIsWaitingForPositionRouterApproval}
             approveOrderBook={approveOrderBook}
-            approvePositionManager={approvePositionManager}
+            approvePositionRouter={approvePositionRouter}
             isPluginApproving={isPluginApproving}
-            isPositionManagerApproving={isPositionManagerApproving}
+            isPositionRouterApproving={isPositionRouterApproving}
             isWaitingForPluginApproval={isWaitingForPluginApproval}
-            isWaitingForPositionManagerApproval={isWaitingForPositionManagerApproval}
-            updateOrderBookApproved={updateOrderBookApproved}
+            isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
             orderBookApproved={orderBookApproved}
-            positionManagerApproved={positionManagerApproved}
+            positionRouterApproved={positionRouterApproved}
             orders={orders}
             flagOrdersEnabled={flagOrdersEnabled}
             chainId={chainId}

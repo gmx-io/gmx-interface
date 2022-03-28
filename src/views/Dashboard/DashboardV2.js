@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
@@ -113,22 +113,22 @@ export default function DashboardV2() {
   const chainName = getChainName(chainId);
 
   const positionStatsUrl = getServerUrl(chainId, "/position_stats");
-  const { data: positionStats, mutate: updatePositionStats } = useSWR([positionStatsUrl], {
+  const { data: positionStats } = useSWR([positionStatsUrl], {
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
   const hourlyVolumeUrl = getServerUrl(chainId, "/hourly_volume");
-  const { data: hourlyVolume, mutate: updateHourlyVolume } = useSWR([hourlyVolumeUrl], {
+  const { data: hourlyVolume } = useSWR([hourlyVolumeUrl], {
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
   const totalVolumeUrl = getServerUrl(chainId, "/total_volume");
-  const { data: totalVolume, mutate: updateTotalVolume } = useSWR([totalVolumeUrl], {
+  const { data: totalVolume } = useSWR([totalVolumeUrl], {
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
   const gmxSupplyUrl = getServerUrl(ARBITRUM, "/gmx_supply");
-  const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
+  const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
     fetcher: (...args) => fetch(...args).then((res) => res.text()),
   });
 
@@ -159,14 +159,11 @@ export default function DashboardV2() {
 
   const tokensForSupplyQuery = [gmxAddress, glpAddress, usdgAddress];
 
-  const { data: aums, mutate: updateAums } = useSWR(
-    [`Dashboard:getAums:${active}`, chainId, glpManagerAddress, "getAums"],
-    {
-      fetcher: fetcher(library, GlpManager),
-    }
-  );
+  const { data: aums } = useSWR([`Dashboard:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
+    fetcher: fetcher(library, GlpManager),
+  });
 
-  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR(
+  const { data: vaultTokenInfo } = useSWR(
     [`Dashboard:vaultTokenInfo:${active}`, chainId, readerAddress, "getVaultTokenInfoV2"],
     {
       fetcher: fetcher(library, ReaderV2, [
@@ -178,31 +175,25 @@ export default function DashboardV2() {
     }
   );
 
-  const { data: fees, mutate: updateFees } = useSWR(
-    [`Dashboard:fees:${active}`, chainId, readerAddress, "getFees", vaultAddress],
-    {
-      fetcher: fetcher(library, ReaderV2, [whitelistedTokenAddresses]),
-    }
-  );
+  const { data: fees } = useSWR([`Dashboard:fees:${active}`, chainId, readerAddress, "getFees", vaultAddress], {
+    fetcher: fetcher(library, ReaderV2, [whitelistedTokenAddresses]),
+  });
 
-  const { data: totalSupplies, mutate: updateTotalSupplies } = useSWR(
+  const { data: totalSupplies } = useSWR(
     [`Dashboard:totalSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", AddressZero],
     {
       fetcher: fetcher(library, ReaderV2, [tokensForSupplyQuery]),
     }
   );
 
-  const { data: totalTokenWeights, mutate: updateTotalTokenWeights } = useSWR(
+  const { data: totalTokenWeights } = useSWR(
     [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
       fetcher: fetcher(library, VaultV2),
     }
   );
 
-  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useStakedGmxSupply(
-    chainId === ARBITRUM ? library : undefined,
-    active
-  );
+  const { data: stakedGmxSupply } = useStakedGmxSupply(chainId === ARBITRUM ? library : undefined, active);
 
   const infoTokens = getInfoTokens(tokens, undefined, whitelistedTokens, vaultTokenInfo, undefined);
 
@@ -218,12 +209,11 @@ export default function DashboardV2() {
     totalFeesDistributed += parseFloat(feeHistory[i].feeUsd);
   }
 
-  const {
-    gmxPrice,
-    gmxPriceFromArbitrum,
-    gmxPriceFromAvalanche,
-    mutate: updateGmxPrice,
-  } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? library : undefined }, active);
+  const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
+    chainId,
+    { arbitrum: chainId === ARBITRUM ? library : undefined },
+    active
+  );
 
   let gmxMarketCap;
   if (gmxPrice && gmxSupply) {
@@ -467,45 +457,6 @@ export default function DashboardV2() {
     },
   ];
 
-  useEffect(() => {
-    if (active) {
-      library.on("block", () => {
-        updatePositionStats(undefined, true);
-        updateHourlyVolume(undefined, true);
-        updateTotalVolume(undefined, true);
-
-        updateTotalSupplies(undefined, true);
-        updateAums(undefined, true);
-        updateVaultTokenInfo(undefined, true);
-
-        updateFees(undefined, true);
-        updateGmxPrice(undefined, true);
-        updateStakedGmxSupply(undefined, true);
-        updateGmxSupply(undefined, true);
-
-        updateTotalTokenWeights(undefined, true);
-      });
-      return () => {
-        library.removeAllListeners("block");
-      };
-    }
-  }, [
-    active,
-    library,
-    chainId,
-    updatePositionStats,
-    updateHourlyVolume,
-    updateTotalVolume,
-    updateTotalSupplies,
-    updateAums,
-    updateVaultTokenInfo,
-    updateFees,
-    updateGmxPrice,
-    updateStakedGmxSupply,
-    updateTotalTokenWeights,
-    updateGmxSupply,
-  ]);
-
   const totalStatsStartDate = chainId === AVALANCHE ? "06 Jan 2022" : "01 Sep 2021";
 
   let stableGlp = 0;
@@ -514,12 +465,13 @@ export default function DashboardV2() {
   let glpPool = tokenList.map((token) => {
     const tokenInfo = infoTokens[token.address];
     if (tokenInfo.usdgAmount && adjustedUsdgSupply) {
-      const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply)
+      const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
 
       if (tokenInfo.isStable) {
-        stableGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`)
+        stableGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
       }
-      totalGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`)
+      totalGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
+
       return {
         fullname: token.name,
         name: token.symbol,
@@ -529,7 +481,7 @@ export default function DashboardV2() {
     return null;
   });
 
-  let stablePercentage = totalGlp > 0 ? (stableGlp * 100 / totalGlp).toFixed(2) : '0.0'
+  let stablePercentage = totalGlp > 0 ? ((stableGlp * 100) / totalGlp).toFixed(2) : "0.0";
 
   glpPool = glpPool.filter(function (element) {
     return element !== null;
@@ -816,10 +768,8 @@ export default function DashboardV2() {
                     <div>${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}</div>
                   </div>
                   <div className="App-card-row">
-                    <div className="label">Stablecoins Percentage</div>
-                    <div>
-                      {stablePercentage}%
-                    </div>
+                    <div className="label">Stablecoin Percentage</div>
+                    <div>{stablePercentage}%</div>
                   </div>
                 </div>
               </div>
@@ -899,7 +849,7 @@ export default function DashboardV2() {
                   try {
                     tokenImage = require("../../img/ic_" + token.symbol.toLowerCase() + "_40.svg");
                   } catch (error) {
-                    // console.log(error)
+                    console.error(error);
                   }
 
                   return (
