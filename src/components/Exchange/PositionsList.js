@@ -184,6 +184,8 @@ export default function PositionsList(props) {
             {positions.map((position) => {
               const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
               const liquidationPrice = getLiquidationPrice(position);
+              const hasPositionProfit = position[savedShowPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
+              const positionDelta = position[savedShowPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"];
 
               return (
                 <div key={position.key} className="App-card">
@@ -245,8 +247,9 @@ export default function PositionsList(props) {
                       <div>
                         <span
                           className={cx({
-                            positive: position.hasProfit && position.pendingDelta.gt(0),
-                            negative: !position.hasProfit && position.pendingDelta.gt(0),
+                            positive: hasPositionProfit,
+                            negative: !hasPositionProfit,
+                            muted: positionDelta.eq(0),
                           })}
                         >
                           {position.deltaStr} ({position.deltaPercentageStr})
