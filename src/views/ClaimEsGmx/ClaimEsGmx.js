@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import useSWR from "swr";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
@@ -141,7 +141,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
 
   const esGmxIouAddress = getContract(chainId, "ES_GMX_IOU");
 
-  const { data: esGmxIouBalance, mutate: updateEsGmxIouBalance } = useSWR(
+  const { data: esGmxIouBalance } = useSWR(
     isArbitrum && [
       `ClaimEsGmx:esGmxIouBalance:${active}`,
       chainId,
@@ -160,7 +160,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
   const arbVesterAdddresses = [getContract(ARBITRUM, "GmxVester"), getContract(ARBITRUM, "GlpVester")];
   const avaxVesterAdddresses = [getContract(AVALANCHE, "GmxVester"), getContract(AVALANCHE, "GlpVester")];
 
-  const { data: arbVestingInfo, mutate: updateArbVestingInfo } = useSWR(
+  const { data: arbVestingInfo } = useSWR(
     [
       `StakeV2:vestingInfo:${active}`,
       ARBITRUM,
@@ -173,7 +173,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
     }
   );
 
-  const { data: avaxVestingInfo, mutate: updateAvaxVestingInfo } = useSWR(
+  const { data: avaxVestingInfo } = useSWR(
     [
       `StakeV2:vestingInfo:${active}`,
       AVALANCHE,
@@ -190,19 +190,6 @@ export default function ClaimEsGmx({ setPendingTxns }) {
   const avaxVestingData = getVestingDataV2(avaxVestingInfo);
 
   let amount = parseValue(value, 18);
-
-  useEffect(() => {
-    if (active) {
-      library.on("block", () => {
-        updateEsGmxIouBalance(undefined, true);
-        updateArbVestingInfo(undefined, true);
-        updateAvaxVestingInfo(undefined, true);
-      });
-      return () => {
-        library.removeAllListeners("block");
-      };
-    }
-  }, [active, library, updateEsGmxIouBalance, updateArbVestingInfo, updateAvaxVestingInfo]);
 
   let maxVestableAmount;
   let currentRatio;

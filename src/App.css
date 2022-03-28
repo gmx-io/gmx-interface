@@ -34,8 +34,7 @@
   height: 13px;
   width: 100%;
   content: " ";
-  background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%)
-    0% 0% no-repeat padding-box;
+  background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
   position: absolute;
   bottom: -13px;
   left: 0;
@@ -334,7 +333,6 @@
   background: var(--dark-blue-active);
 }
 
-
 .Wallet-btn:not(:last-child) {
   margin-bottom: 0.7rem;
 }
@@ -397,11 +395,7 @@ button.App-connect-wallet:hover {
 }
 
 .App-box-solid {
-  background: linear-gradient(
-    90deg,
-    rgba(20, 21, 38, 1) 0%,
-    rgba(25, 27, 47, 1) 100%
-  );
+  background: linear-gradient(90deg, rgba(20, 21, 38, 1) 0%, rgba(25, 27, 47, 1) 100%);
 }
 
 .Page {
@@ -674,11 +668,7 @@ button.App-connect-wallet:hover {
   top: 0;
   bottom: 0;
   pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    rgba(45, 66, 252, 0.05) 0%,
-    rgba(8, 8, 10, 0) 100%
-  );
+  background: linear-gradient(90deg, rgba(45, 66, 252, 0.05) 0%, rgba(8, 8, 10, 0) 100%);
 }
 
 .App-background-side-2 {
@@ -689,12 +679,7 @@ button.App-connect-wallet:hover {
   top: 0;
   bottom: 0;
   pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 216, 240, 0.01) 51%,
-    rgba(0, 216, 240, 0.03) 100%
-  );
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 216, 240, 0.01) 51%, rgba(0, 216, 240, 0.03) 100%);
 }
 
 .App-background {
@@ -705,12 +690,7 @@ button.App-connect-wallet:hover {
   top: -20%;
   bottom: -200%;
   pointer-events: none;
-  background: radial-gradient(
-    circle,
-    rgba(80, 10, 245, 0.05) 0%,
-    rgba(80, 10, 245, 0.02) 36%,
-    rgba(8, 8, 10, 0) 100%
-  );
+  background: radial-gradient(circle, rgba(80, 10, 245, 0.05) 0%, rgba(80, 10, 245, 0.02) 36%, rgba(8, 8, 10, 0) 100%);
 }
 
 .App-background-ball-1 {
@@ -721,12 +701,7 @@ button.App-connect-wallet:hover {
   top: -50%;
   bottom: -200%;
   pointer-events: none;
-  background: radial-gradient(
-    circle,
-    rgba(102, 56, 217, 0.05) 0%,
-    rgba(56, 33, 105, 0.02) 36%,
-    rgba(8, 8, 10, 0) 100%
-  );
+  background: radial-gradient(circle, rgba(102, 56, 217, 0.05) 0%, rgba(56, 33, 105, 0.02) 36%, rgba(8, 8, 10, 0) 100%);
 }
 
 .App-background-ball-2 {
@@ -737,12 +712,7 @@ button.App-connect-wallet:hover {
   top: -30%;
   bottom: -200%;
   pointer-events: none;
-  background: radial-gradient(
-    circle,
-    rgba(7, 149, 250, 0.05) 0%,
-    rgba(7, 149, 250, 0.02) 36%,
-    rgba(8, 8, 10, 0) 100%
-  );
+  background: radial-gradient(circle, rgba(7, 149, 250, 0.05) 0%, rgba(7, 149, 250, 0.02) 36%, rgba(8, 8, 10, 0) 100%);
 }
 
 .App-highlight {
@@ -795,21 +765,13 @@ a.App-cta,
 button.App-cta {
   color: white;
   text-decoration: none;
-  background: linear-gradient(
-    90deg,
-    rgba(45, 66, 252, 1) 0%,
-    rgba(46, 61, 205, 1) 100%
-  );
+  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
   /* box-shadow: 0 0 4px 6px rgba(45,66,252,0.15); */
 }
 
 a.App-cta:hover,
 button.App-cta:hover:enabled {
-  background: linear-gradient(
-    90deg,
-    rgba(58, 78, 252, 1) 0%,
-    rgba(51, 68, 222, 1) 100%
-  );
+  background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
   box-shadow: 0 0 4px 6px rgba(45, 66, 252, 0.2);
 }
 
@@ -853,11 +815,7 @@ button.App-button-option {
 
 a.App-button-option:hover,
 button.App-button-option:hover:enabled {
-  background: linear-gradient(
-    90deg,
-    rgba(58, 78, 252, 1) 0%,
-    rgba(51, 68, 222, 1) 100%
-  );
+  background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
   box-shadow: 0 0 4px 6px rgba(45, 66, 252, 0.2);
 }
 
@@ -1017,8 +975,7 @@ button.App-button {
 }
 
 .Toastify__toast--success {
-  background: transparent linear-gradient(90deg, #18846c 0%, #26aa89 100%) 0% 0%
-    no-repeat padding-box;
+  background: transparent linear-gradient(90deg, #18846c 0%, #26aa89 100%) 0% 0% no-repeat padding-box;
   border: 1px solid #268270;
   color: white;
   box-shadow: 0px 3px 6px #0000005c;
@@ -1091,11 +1048,7 @@ button.App-button {
 }
 
 .positive-background {
-  background: linear-gradient(
-    45deg,
-    rgba(10, 115, 75, 1) 0%,
-    rgba(12, 154, 100, 1) 100%
-  );
+  background: linear-gradient(45deg, rgba(10, 115, 75, 1) 0%, rgba(12, 154, 100, 1) 100%);
 }
 
 .negative {
@@ -1103,11 +1056,7 @@ button.App-button {
 }
 
 .negative-background {
-  background: linear-gradient(
-    45deg,
-    rgba(115, 30, 43, 1) 0%,
-    rgba(174, 43, 63, 1) 100%
-  );
+  background: linear-gradient(45deg, rgba(115, 30, 43, 1) 0%, rgba(174, 43, 63, 1) 100%);
 }
 
 .App-warning,
@@ -1120,19 +1069,11 @@ button.App-button {
 }
 
 .App-slider .rc-slider-rail {
-  background: linear-gradient(
-    90deg,
-    rgba(30, 34, 61, 1) 0%,
-    rgba(40, 45, 74, 1) 100%
-  );
+  background: linear-gradient(90deg, rgba(30, 34, 61, 1) 0%, rgba(40, 45, 74, 1) 100%);
 }
 
 .App-slider .rc-slider-track {
-  background: linear-gradient(
-    90deg,
-    rgba(46, 61, 205, 1) 0%,
-    rgba(45, 66, 252, 1) 100%
-  );
+  background: linear-gradient(90deg, rgba(46, 61, 205, 1) 0%, rgba(45, 66, 252, 1) 100%);
 }
 
 .App-slider .rc-slider-dot {
@@ -1290,9 +1231,7 @@ button.App-button {
     height: 13px;
     width: 100%;
     content: " ";
-    background: transparent
-      linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat
-      padding-box;
+    background: transparent linear-gradient(180deg, #00000030 0%, #00000000 100%) 0% 0% no-repeat padding-box;
     position: absolute;
     bottom: -13px;
     left: 0;
@@ -1420,5 +1359,18 @@ button.App-button {
 @supports not ((-webkit-backdrop-filter: none) or (backdrop-filter: none)) {
   .App-header-drawer {
     background: #0e0f1f;
+  }
+}
+
+.spin {
+  animation: spin-animation infinite 1.2s linear;
+}
+
+@keyframes spin-animation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
