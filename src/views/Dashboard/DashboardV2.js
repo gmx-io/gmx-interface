@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";

@@ -29,6 +29,7 @@ import {
   useChainId,
   getInfoTokens,
   useAccountOrders,
+  getPageTitle,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import { approvePlugin } from "../../Api";
@@ -519,6 +520,15 @@ export default function Exchange({
   );
 
   const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo);
+
+  useEffect(() => {
+    let selectedToken = tokenSelection[swapOption]["to"];
+    let tokenInfo = getTokenInfo(infoTokens, selectedToken);
+    let currentTokenPriceStr = formatAmount(tokenInfo.maxPrice, USD_DECIMALS, 2, true);
+    let title = getPageTitle(currentTokenPriceStr + ` | ${tokenInfo.symbol}USD`);
+    document.title = title;
+  }, [tokenSelection, swapOption, infoTokens]);
+
   const { positions, positionsMap } = getPositions(
     chainId,
     positionQuery,
@@ -668,20 +678,6 @@ export default function Exchange({
       if (account !== currentAccount) {
         return;
       }
-      console.log(
-        "onCancelIncreasePosition",
-        account,
-        path,
-        indexToken,
-        amountIn,
-        minOut,
-        sizeDelta,
-        isLong,
-        acceptablePrice,
-        executionFee,
-        blockGap,
-        timeGap
-      );
       const indexTokenItem = getToken(chainId, indexToken);
       const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
 
