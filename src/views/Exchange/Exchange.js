@@ -871,7 +871,7 @@ export default function Exchange({
             nativeTokenAddress={nativeTokenAddress}
             setMarket={setMarket}
             orders={orders}
-            showPnlAfterFees={savedShowPnlAfterFees}
+            savedShowPnlAfterFees={savedShowPnlAfterFees}
           />
         )}
         {listSection === "Orders" && (

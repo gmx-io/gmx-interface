@@ -82,7 +82,9 @@ export default function PositionsList(props) {
     approvePositionRouter,
     showPnlAfterFees,
     setMarket,
+    savedShowPnlAfterFees,
   } = props;
+
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
   const [positionToSellKey, setPositionToSellKey] = useState(undefined);
   const [isPositionEditorVisible, setIsPositionEditorVisible] = useState(undefined);
@@ -356,6 +358,8 @@ export default function PositionsList(props) {
             const liquidationPrice = getLiquidationPrice(position) || bigNumberify(0);
             const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
             const hasOrderError = !!positionOrders.find((order) => order.error);
+            const hasPositionProfit = position[savedShowPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
+            const positionDelta = position[savedShowPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"];
             return (
               <tr key={position.key}>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
@@ -408,9 +412,9 @@ export default function PositionsList(props) {
                   {position.deltaStr && (
                     <div
                       className={cx("Exchange-list-info-label", {
-                        positive: position.hasProfit && position.pendingDelta.gt(0),
-                        negative: !position.hasProfit && position.pendingDelta.gt(0),
-                        muted: position.pendingDelta.eq(0),
+                        positive: hasPositionProfit,
+                        negative: !hasPositionProfit,
+                        muted: positionDelta.eq(0),
                       })}
                     >
                       {position.deltaStr} ({position.deltaPercentageStr})
