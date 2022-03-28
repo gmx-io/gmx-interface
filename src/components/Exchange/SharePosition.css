@@ -1,52 +1,10 @@
-.container {
-  background: url(https://user-images.githubusercontent.com/73279781/155832774-eea34c27-0225-41bc-9b43-72fd3f5124db.jpg)
-    no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  width: 500px;
-  margin: 2rem 1rem;
+.share-position-image img {
+  max-width: 700px;
+  width: 100%;
 }
-.trade-details {
+
+.social-share-btn {
+  justify-content: center;
   display: flex;
-  margin-top: 2rem;
-}
-.trade-details div {
-  margin-right: 10px;
-  font-size: 1.25rem;
-}
-.trade-details span {
-  margin-right: 15px;
-  margin-left: 15px;
-}
-.short {
-  color: #eb2626;
-}
-.long {
-  color: #51e151;
-}
-.profit {
-  font-size: 5rem;
-  font-weight: 700;
-  margin-top: 2rem;
-  color: #51e151;
-}
-.loss {
-  font-size: 5rem;
-  font-weight: 700;
-  margin-top: 2rem;
-  color: #eb2626;
-}
-.price {
-  margin-top: 2rem;
-}
-.price p {
-  opacity: 0.75;
-}
-.price span {
-  font-size: 1.5rem;
-  color: #21c177;
-  font-weight: 800;
-  margin-left: 1rem;
+  margin-top: 1rem;
 }

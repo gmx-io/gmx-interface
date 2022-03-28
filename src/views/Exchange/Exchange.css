@@ -441,8 +441,8 @@ table.Exchange-list th,
 table.Exchange-list td {
   font-weight: normal;
   text-align: left;
-  padding: 0.7rem;
-  padding-left: 1rem;
+  padding: 0.5rem;
+  padding-left: 0.75rem;
 }
 table.Exchange-list.Orders th,
 table.Exchange-list.Orders td {

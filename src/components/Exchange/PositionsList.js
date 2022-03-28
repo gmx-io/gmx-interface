@@ -1,12 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import cx from "classnames";
 
 import Tooltip from "../Tooltip/Tooltip";
 import PositionSeller from "./PositionSeller";
 import PositionEditor from "./PositionEditor";
 import OrdersToa from "./OrdersToa";
-import { FiShare } from "react-icons/fi";
-import domtoimage from "dom-to-image";
+import { FiShare2 } from "react-icons/fi";
 
 import {
   helperToast,
@@ -22,7 +21,7 @@ import {
   DECREASE,
 } from "../../Helpers";
 import SharePosition from "./SharePosition";
-import { getSharePositionHTML } from "../../config/getSharePositionHTML";
+import Loader from "../Common/Loader";
 
 const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -88,7 +87,9 @@ export default function PositionsList(props) {
   const [positionToShareKey, setPositionToShareKey] = useState(undefined);
   const [isPositionEditorVisible, setIsPositionEditorVisible] = useState(undefined);
   const [isPositionSellerVisible, setIsPositionSellerVisible] = useState(undefined);
-  const [isSharePositionVisible, setIsSharePositionVisible] = useState(undefined);
+  const [isSharePositionVisible, setIsSharePositionVisible] = useState(null);
+  const [sharePositionData, setSharePositionData] = useState(null);
+  const [isSharePositionImageLoading, setIsSharePositionImageLoading] = useState(false);
   const [collateralTokenAddress, setCollateralTokenAddress] = useState(undefined);
   const [ordersToaOpen, setOrdersToaOpen] = useState(false);
 
@@ -105,7 +106,40 @@ export default function PositionsList(props) {
 
   const sharePosition = (position) => {
     setPositionToShareKey(position.key);
-    setIsSharePositionVisible(true);
+    setIsSharePositionImageLoading(true);
+    let apiUrl = `https://gmx-og-image-vipineth.vercel.app/api/og`;
+    let data = {
+      entryPrice: `$${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}`,
+      currentPrice: `$${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}`,
+      pnlPercentage: position.deltaPercentageStr,
+      isLong: position.isLong,
+      token: position.indexToken.symbol,
+    };
+    fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw Error(res.statusText);
+        }
+        return res.blob();
+      })
+      .then((res) => {
+        let reader = new FileReader();
+        reader.readAsDataURL(res);
+        reader.onloadend = function () {
+          let base64data = reader.result;
+          setIsSharePositionVisible(true);
+          setSharePositionData(base64data);
+        };
+      })
+      .finally(() => {
+        setIsSharePositionImageLoading(false);
+      });
   };
 
   const onPositionClick = (position) => {
@@ -174,8 +208,9 @@ export default function PositionsList(props) {
           isVisible={isSharePositionVisible}
           setIsVisible={setIsSharePositionVisible}
           title="Share Position"
+          sharePositionData={sharePositionData}
           positions={positions}
-          selectedPositionKey={positionToShareKey}
+          positionToShareKey={positionToShareKey}
         />
       )}
       {positions && (
@@ -331,7 +366,7 @@ export default function PositionsList(props) {
                       Close
                     </button>
                     <button className="App-button-option App-card-option" onClick={() => sharePosition(position)}>
-                      <FiShare />
+                      {isSharePositionImageLoading ? <Loader size={4} /> : <FiShare2 />}
                     </button>
                   </div>
                 </div>
@@ -350,6 +385,7 @@ export default function PositionsList(props) {
             <th>Mark Price</th>
             <th>Entry Price</th>
             <th>Liq. Price</th>
+            <th>Share</th>
             <th></th>
             <th></th>
           </tr>
@@ -506,6 +542,11 @@ export default function PositionsList(props) {
                   ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
                 </td>
                 <td>
+                  <div className="position-share" onClick={() => sharePosition(position)}>
+                    {isSharePositionImageLoading ? <Loader size={4} /> : <FiShare2 />}
+                  </div>
+                </td>
+                <td>
                   <button className="Exchange-list-action" onClick={() => editPosition(position)}>
                     Edit
                   </button>
@@ -514,11 +555,6 @@ export default function PositionsList(props) {
                   <button className="Exchange-list-action" onClick={() => sellPosition(position)}>
                     Close
                   </button>
-                </td>
-                <td>
-                  <div className="position-share" onClick={() => sharePosition(position)}>
-                    <FiShare />
-                  </div>
                 </td>
               </tr>
             );
