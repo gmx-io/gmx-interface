@@ -302,6 +302,46 @@ export function useTrades(chainId, account) {
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
+  if (trades) {
+    trades.sort((item0, item1) => {
+      const data0 = item0.data;
+      const data1 = item1.data;
+      const time0 = parseInt(data0.timestamp);
+      const time1 = parseInt(data1.timestamp);
+      if (time1 > time0) {
+        return 1;
+      }
+      if (time1 < time0) {
+        return -1;
+      }
+
+      const block0 = parseInt(data0.blockNumber);
+      const block1 = parseInt(data1.blockNumber);
+
+      if (isNaN(block0) && isNaN(block1)) {
+        return 0;
+      }
+
+      if (isNaN(block0)) {
+        return 1;
+      }
+
+      if (isNaN(block1)) {
+        return -1;
+      }
+
+      if (block1 > block0) {
+        return 1;
+      }
+
+      if (block1 < block0) {
+        return -1;
+      }
+
+      return 0;
+    });
+  }
+
   return { trades, updateTrades };
 }
 
@@ -326,15 +366,15 @@ export function useStakedGmxSupply(library, active) {
     }
   );
 
-  let data
+  let data;
   if (arbData && avaxData) {
-    data = arbData.add(avaxData)
+    data = arbData.add(avaxData);
   }
 
   const mutate = () => {
-    arbMutate()
-    avaxMutate()
-  }
+    arbMutate();
+    avaxMutate();
+  };
 
   return { data, mutate };
 }
@@ -345,10 +385,10 @@ export function useHasOutdatedUi() {
     fetcher: (...args) => fetch(...args).then((res) => res.text()),
   });
 
-  let hasOutdatedUi = false
+  let hasOutdatedUi = false;
 
-  if (data && data !== UI_VERSION) {
-    hasOutdatedUi = true
+  if (data && parseFloat(data) > parseFloat(UI_VERSION)) {
+    hasOutdatedUi = true;
   }
 
   return { data: hasOutdatedUi, mutate };

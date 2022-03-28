@@ -34,7 +34,7 @@ export default function OrdersToa(props) {
   };
 
   return (
-    <Modal setIsVisible={setIsVisible} isVisible={true} label="Enable Orders" className="Orders-toa" zIndex="30">
+    <Modal setIsVisible={setIsVisible} isVisible={true} label="Enable Orders" className="Orders-toa" zIndex="1000">
       Note that orders are not guaranteed to be executed.
       <br />
       <br />

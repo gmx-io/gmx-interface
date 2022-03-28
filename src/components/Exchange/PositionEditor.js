@@ -8,7 +8,6 @@ import {
   BASIS_POINTS_DIVISOR,
   DEPOSIT_FEE,
   DUST_BNB,
-  ARBITRUM,
   helperToast,
   formatAmount,
   bigNumberify,
@@ -27,7 +26,7 @@ import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
 import { callContract } from "../../Api";
 
-import Router from "../../abis/Router.json";
+import PositionRouter from "../../abis/PositionRouter.json";
 import Token from "../../abis/Token.json";
 
 const DEPOSIT = "Deposit";
@@ -37,6 +36,8 @@ const { AddressZero } = ethers.constants;
 
 export default function PositionEditor(props) {
   const {
+    pendingPositions,
+    setPendingPositions,
     positionsMap,
     positionKey,
     isVisible,
@@ -51,10 +52,10 @@ export default function PositionEditor(props) {
     getUsd,
     getLeverage,
     savedIsPnlInLeverage,
-    positionManagerApproved,
-    isWaitingForPositionManagerApproval,
-    isPositionManagerApproving,
-    approvePositionManager,
+    positionRouterApproved,
+    isWaitingForPositionRouterApproval,
+    isPositionRouterApproving,
+    approvePositionRouter,
     chainId,
   } = props;
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
@@ -66,20 +67,23 @@ export default function PositionEditor(props) {
   const prevIsVisible = usePrevious(isVisible);
 
   const routerAddress = getContract(chainId, "Router");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
 
-  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(
+  const { data: tokenAllowance } = useSWR(
     [active, chainId, collateralTokenAddress, "allowance", account, routerAddress],
     {
       fetcher: fetcher(library, Token),
     }
   );
 
-  const isWithdrawalEnabled = chainId === ARBITRUM;
+  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
+    fetcher: fetcher(library, PositionRouter),
+  });
 
   const isDeposit = option === DEPOSIT;
   const isWithdrawal = option === WITHDRAW;
 
-  const needPositionManagerApproval = chainId === ARBITRUM && isDeposit && !positionManagerApproved;
+  const needPositionRouterApproval = !positionRouterApproved;
 
   let collateralToken;
   let maxAmount;
@@ -126,7 +130,7 @@ export default function PositionEditor(props) {
 
     if (fromAmount) {
       collateralDelta = isDeposit ? convertedAmount : fromAmount;
-      if (position.isLong && chainId === ARBITRUM) {
+      if (position.isLong) {
         collateralDelta = collateralDelta.mul(BASIS_POINTS_DIVISOR - DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR);
       }
       nextLeverage = getLeverage({
@@ -190,10 +194,10 @@ export default function PositionEditor(props) {
     if (isSwapping) {
       return false;
     }
-    if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
+    if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
       return false;
     }
-    if (isPositionManagerApproving) {
+    if (isPositionRouterApproving) {
       return false;
     }
 
@@ -212,18 +216,23 @@ export default function PositionEditor(props) {
       return "Withdrawing...";
     }
 
-    if (needPositionManagerApproval && isWaitingForPositionManagerApproval) {
-      return "Enabling Deposit...";
-    }
-    if (isDeposit && needPositionManagerApproval) {
-      return "Enable Deposit";
-    }
-
     if (isApproving) {
       return `Approving ${position.collateralToken.symbol}...`;
     }
     if (needApproval) {
       return `Approve ${position.collateralToken.symbol}`;
+    }
+
+    if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
+      return "Enabling Leverage";
+    }
+
+    if (isPositionRouterApproving) {
+      return "Enabling Leverage...";
+    }
+
+    if (needPositionRouterApproval) {
+      return "Enable Leverage";
     }
 
     if (isDeposit) {
@@ -243,17 +252,6 @@ export default function PositionEditor(props) {
     }
   }, [prevIsVisible, isVisible]);
 
-  useEffect(() => {
-    if (active) {
-      library.on("block", () => {
-        updateTokenAllowance(undefined, true);
-      });
-      return () => {
-        library.removeAllListeners("block");
-      };
-    }
-  }, [active, library, updateTokenAllowance]);
-
   const depositCollateral = async () => {
     setIsSwapping(true);
     const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
@@ -264,14 +262,34 @@ export default function PositionEditor(props) {
     const priceBasisPoints = position.isLong ? 11000 : 9000;
     const priceLimit = position.indexToken.maxPrice.mul(priceBasisPoints).div(10000);
 
-    let params = [path, indexTokenAddress, fromAmount, 0, 0, position.isLong, priceLimit];
+    const referralCode = ethers.constants.HashZero;
+    let params = [
+      path, // _path
+      indexTokenAddress, // _indexToken
+      fromAmount, // _amountIn
+      0, // _minOut
+      0, // _sizeDelta
+      position.isLong, // _isLong
+      priceLimit, // _acceptablePrice
+      minExecutionFee, // _executionFee
+      referralCode, // _referralCode
+    ];
 
-    let method = "increasePosition";
-    let value = bigNumberify(0);
+    let method = "createIncreasePosition";
+    let value = minExecutionFee;
     if (collateralTokenAddress === AddressZero) {
-      method = "increasePositionETH";
-      value = fromAmount;
-      params = [path, indexTokenAddress, 0, 0, position.isLong, priceLimit];
+      method = "createIncreasePositionETH";
+      value = fromAmount.add(minExecutionFee);
+      params = [
+        path, // _path
+        indexTokenAddress, // _indexToken
+        0, // _minOut
+        0, // _sizeDelta
+        position.isLong, // _isLong
+        priceLimit, // _acceptablePrice
+        minExecutionFee, // _executionFee
+        referralCode, // _referralCode
+      ];
     }
 
     if (shouldRaiseGasError(getTokenInfo(infoTokens, collateralTokenAddress), fromAmount)) {
@@ -280,12 +298,11 @@ export default function PositionEditor(props) {
       return;
     }
 
-    const contractAddress = chainId === ARBITRUM ? getContract(chainId, "PositionManager") : routerAddress;
-    const contract = new ethers.Contract(contractAddress, Router.abi, library.getSigner());
+    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
     callContract(chainId, contract, method, params, {
       value,
       sentMsg: "Deposit submitted!",
-      successMsg: `Deposited ${formatAmount(fromAmount, position.collateralToken.decimals, 4)} ${
+      successMsg: `Requested deposit of ${formatAmount(fromAmount, position.collateralToken.decimals, 4)} ${
         position.collateralToken.symbol
       } into ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}`,
       failMsg: "Deposit failed",
@@ -294,6 +311,16 @@ export default function PositionEditor(props) {
       .then(async (res) => {
         setFromValue("");
         setIsVisible(false);
+
+        pendingPositions[position.key] = {
+          updatedAt: Date.now(),
+          pendingChanges: {
+            collateralSnapshot: position.collateral,
+            expectingCollateralChange: true,
+          },
+        };
+
+        setPendingPositions({ ...pendingPositions });
       })
       .finally(() => {
         setIsSwapping(false);
@@ -308,24 +335,43 @@ export default function PositionEditor(props) {
     const priceBasisPoints = position.isLong ? 9000 : 11000;
     const priceLimit = position.indexToken.maxPrice.mul(priceBasisPoints).div(10000);
 
-    let params = [tokenAddress0, indexTokenAddress, fromAmount, 0, position.isLong, account, priceLimit];
-    let method =
-      collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress
-        ? "decreasePositionETH"
-        : "decreasePosition";
+    const withdrawETH = collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress;
+    const params = [
+      [tokenAddress0], // _path
+      indexTokenAddress, // _indexToken
+      fromAmount, // _collateralDelta
+      0, // _sizeDelta
+      position.isLong, // _isLong
+      account, // _receiver
+      priceLimit, // _acceptablePrice
+      0, // _minOut
+      minExecutionFee, // _executionFee
+      withdrawETH, // _withdrawETH
+    ];
 
-    const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner());
+    const method = "createDecreasePosition";
+
+    const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
     callContract(chainId, contract, method, params, {
+      value: minExecutionFee,
       sentMsg: "Withdrawal submitted!",
-      successMsg: `Withdrew ${formatAmount(fromAmount, USD_DECIMALS, 2)} USD from ${position.indexToken.symbol} ${
-        position.isLong ? "Long" : "Short"
-      }.`,
+      successMsg: `Requested withdrawal of ${formatAmount(fromAmount, USD_DECIMALS, 2)} USD from ${
+        position.indexToken.symbol
+      } ${position.isLong ? "Long" : "Short"}.`,
       failMsg: "Withdrawal failed.",
       setPendingTxns,
     })
       .then(async (res) => {
         setFromValue("");
         setIsVisible(false);
+
+        pendingPositions[position.key] = {
+          updatedAt: Date.now(),
+          pendingChanges: {
+            collateralSnapshot: position.collateral,
+            expectingCollateralChange: true,
+          },
+        };
       })
       .finally(() => {
         setIsSwapping(false);
@@ -333,14 +379,6 @@ export default function PositionEditor(props) {
   };
 
   const onClickPrimary = () => {
-    if (needPositionManagerApproval) {
-      approvePositionManager({
-        sentMsg: "Enable deposit sent",
-        failMsg: "Enable deposit failed",
-      });
-      return;
-    }
-
     if (needApproval) {
       approveTokens({
         setIsApproving,
@@ -352,6 +390,14 @@ export default function PositionEditor(props) {
         getTokenInfo,
         pendingTxns,
         setPendingTxns,
+      });
+      return;
+    }
+
+    if (needPositionRouterApproval) {
+      approvePositionRouter({
+        sentMsg: isDeposit ? "Enable deposit sent" : "Enable withdraw sent",
+        failMsg: isDeposit ? "Enable deposit failed" : "Enable withdraw failed",
       });
       return;
     }
@@ -369,9 +415,7 @@ export default function PositionEditor(props) {
       {position && (
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           <div>
-            {isWithdrawalEnabled && (
-              <Tab options={EDIT_OPTIONS} option={option} setOption={setOption} onChange={resetForm} />
-            )}
+            <Tab options={EDIT_OPTIONS} option={option} setOption={setOption} onChange={resetForm} />
             {(isDeposit || isWithdrawal) && (
               <div>
                 <div className="Exchange-swap-section">
