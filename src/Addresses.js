@@ -126,7 +126,7 @@ const CONTRACTS = {
     OrderExecutor: "0x7257ac5D0a0aaC04AA7bA2AC0A6Eb742E332c3fB",
     OrderBookReader: "0xa27C20A7CF0e1C68C0460706bB674f98F362Bc21",
 
-    PositionManager: "0x98a00666CfCb2BA5A405415C2BF6547C63bf5491",
+    PositionRouter: "0x3D6bA331e3D9702C5e8A8d254e5d8a285F223aba",
 
     UniswapGmxEthPool: "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E",
   },
@@ -162,7 +162,7 @@ const CONTRACTS = {
     OrderExecutor: "0x4296e307f108B2f583FF2F7B7270ee7831574Ae5",
     OrderBookReader: "0xccFE3E576f8145403d3ce8f3c2f6519Dae40683B",
 
-    PositionManager: "0x98a00666CfCb2BA5A405415C2BF6547C63bf5491", // placeholder address
+    PositionRouter: "0x195256074192170d1530527abC9943759c7167d8",
 
     TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98",
   },

@@ -25,7 +25,7 @@ import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
 import Checkbox from "../Checkbox/Checkbox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
-import { getToken, getWrappedToken } from "../../data/Tokens";
+import { getNativeToken, getToken, getWrappedToken } from "../../data/Tokens";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -56,6 +56,8 @@ export default function ConfirmationBox(props) {
     isShort,
     toAmount,
     fromAmount,
+    isHigherSlippageAllowed,
+    setIsHigherSlippageAllowed,
     onConfirmationClick,
     setIsConfirming,
     shortCollateralAddress,
@@ -147,11 +149,17 @@ export default function ConfirmationBox(props) {
       }
       const action = isMarketOrder ? (isLong ? "Long" : "Short") : "Create Order";
 
-      if (isMarketOrder && hasExistingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0)) {
+      if (
+        isMarketOrder &&
+        MIN_PROFIT_TIME > 0 &&
+        hasExistingPosition &&
+        existingPosition.delta.eq(0) &&
+        existingPosition.pendingDelta.gt(0)
+      ) {
         return isLong ? `Forfeit profit and ${action}` : `Forfeit profit and Short`;
       }
 
-      return isMarketOrder ? `Accept minimum and ${action}` : action;
+      return isMarketOrder && MIN_PROFIT_TIME > 0 ? `Accept minimum and ${action}` : action;
     }
 
     if (!isMarketOrder) {
@@ -217,9 +225,13 @@ export default function ConfirmationBox(props) {
     );
   }, [feeBps, isSwap, collateralTokenAddress, chainId, fromToken.symbol, toToken.symbol, orderOption]);
 
-  const hasPendingProfit = existingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0);
+  const hasPendingProfit =
+    MIN_PROFIT_TIME > 0 && existingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0);
 
   const renderMinProfitWarning = useCallback(() => {
+    if (MIN_PROFIT_TIME === 0) {
+      return null;
+    }
     if (!isSwap) {
       if (hasExistingPosition) {
         const minProfitExpiration = existingPosition.lastIncreasedTime + MIN_PROFIT_TIME;
@@ -341,8 +353,12 @@ export default function ConfirmationBox(props) {
     if (isMarketOrder) {
       return null;
     }
-    return <ExchangeInfoRow label="Execution Fee">{formatAmount(executionFee, 18, 4)} ETH</ExchangeInfoRow>;
-  }, [isMarketOrder, executionFee]);
+    return (
+      <ExchangeInfoRow label="Execution Fee">
+        {formatAmount(executionFee, 18, 4)} {getNativeToken(chainId).symbol}
+      </ExchangeInfoRow>
+    );
+  }, [isMarketOrder, executionFee, chainId]);
 
   const renderAvailableLiquidity = useCallback(() => {
     let availableLiquidity;
@@ -485,6 +501,13 @@ export default function ConfirmationBox(props) {
               (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
               "% / 1h"}
           </ExchangeInfoRow>
+          {isMarketOrder && (
+            <div className="PositionEditor-allow-higher-slippage">
+              <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
+                <span className="muted">Allow up to 1% slippage</span>
+              </Checkbox>
+            </div>
+          )}
           {renderExecutionFee()}
         </div>
       </>
@@ -519,6 +542,8 @@ export default function ConfirmationBox(props) {
     orderOption,
     fromUsdMin,
     collateralAfterFees,
+    isHigherSlippageAllowed,
+    setIsHigherSlippageAllowed,
   ]);
 
   const renderSwapSection = useCallback(() => {
