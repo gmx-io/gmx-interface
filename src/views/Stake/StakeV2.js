@@ -74,23 +74,12 @@ function StakeModal(props) {
   const [isStaking, setIsStaking] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
 
-  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(
+  const { data: tokenAllowance } = useSWR(
     active && stakingTokenAddress && [active, chainId, stakingTokenAddress, "allowance", account, farmAddress],
     {
       fetcher: fetcher(library, Token),
     }
   );
-
-  useEffect(() => {
-    if (active) {
-      library.on("block", () => {
-        updateTokenAllowance(undefined, true);
-      });
-      return () => {
-        library.removeAllListeners("block");
-      };
-    }
-  }, [active, library, updateTokenAllowance]);
 
   let amount = parseValue(value, 18);
   const needApproval = farmAddress !== AddressZero && tokenAllowance && amount && amount.gt(tokenAllowance);

@@ -47,7 +47,7 @@ export default function TokenSelector(props) {
   try {
     tokenImage = require("../../img/ic_" + tokenInfo.symbol.toLowerCase() + "_24.svg");
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 
   const onSearchKeywordChange = (e) => {
