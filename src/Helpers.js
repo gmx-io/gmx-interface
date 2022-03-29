@@ -2391,7 +2391,7 @@ export function getProcessedData(
 
   data.gmxSupply = bigNumberify(gmxSupply);
 
-  data.gmxSupplyUsd = supplyData.gmx.mul(gmxPrice).div(expandDecimals(1, 18));
+  data.gmxSupplyUsd = data.gmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   data.stakedGmxSupply = stakedGmxSupply;
   data.stakedGmxSupplyUsd = stakedGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   data.gmxInStakedGmx = depositBalanceData.gmxInStakedGmx;
