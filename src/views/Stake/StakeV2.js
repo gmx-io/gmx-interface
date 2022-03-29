@@ -479,19 +479,19 @@ function VesterDepositModal(props) {
             <div className="Exchange-info-label">Reserve Amount</div>
             <div className="align-right">
               <Tooltip
-                handle={`${formatAmount(nextReserveAmount, 18, 2, true)} / ${formatAmount(
-                  maxReserveAmount,
+                handle={`${formatAmount(
+                  reserveAmount && reserveAmount.gte(additionalReserveAmount) ? reserveAmount : additionalReserveAmount,
                   18,
                   2,
                   true
-                )}`}
+                )} / ${formatAmount(maxReserveAmount, 18, 2, true)}`}
                 position="right-bottom"
                 renderContent={() => {
                   return (
                     <>
                       Current Reserved: {formatAmount(reserveAmount, 18, 2, true)}
                       <br />
-                      Reserve Required: {formatAmount(additionalReserveAmount, 18, 2, true)}
+                      Additional reserve required: {formatAmount(additionalReserveAmount, 18, 2, true)}
                       <br />
                       {amount && nextReserveAmount.gt(maxReserveAmount) && (
                         <div>
