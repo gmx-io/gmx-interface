@@ -613,7 +613,7 @@ function CompoundModal(props) {
 
   const [isApproving, setIsApproving] = useState(false);
 
-  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(
+  const { data: tokenAllowance } = useSWR(
     active && [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress],
     {
       fetcher: fetcher(library, Token),
@@ -621,17 +621,6 @@ function CompoundModal(props) {
   );
 
   const needApproval = shouldStakeGmx && tokenAllowance && totalVesterRewards && totalVesterRewards.gt(tokenAllowance);
-
-  useEffect(() => {
-    if (active) {
-      library.on("block", () => {
-        updateTokenAllowance(undefined, true);
-      });
-      return () => {
-        library.removeAllListeners("block");
-      };
-    }
-  }, [active, library, updateTokenAllowance]);
 
   const isPrimaryEnabled = () => {
     return !isCompounding && !isApproving && !isCompounding;
@@ -981,7 +970,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     feeGlpTrackerAddress,
   ];
 
-  const { data: walletBalances, mutate: updateWalletBalances } = useSWR(
+  const { data: walletBalances } = useSWR(
     [
       `StakeV2:walletBalances:${active}`,
       chainId,
@@ -994,7 +983,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     }
   );
 
-  const { data: depositBalances, mutate: updateDepositBalances } = useSWR(
+  const { data: depositBalances } = useSWR(
     [
       `StakeV2:depositBalances:${active}`,
       chainId,
@@ -1007,71 +996,57 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     }
   );
 
-  const { data: stakingInfo, mutate: updateStakingInfo } = useSWR(
+  const { data: stakingInfo } = useSWR(
     [`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
     {
       fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
     }
   );
 
-  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR(
+  const { data: stakedGmxSupply } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress],
     {
       fetcher: fetcher(library, Token),
     }
   );
 
-  const { data: aums, mutate: updateAums } = useSWR(
-    [`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"],
-    {
-      fetcher: fetcher(library, GlpManager),
-    }
-  );
+  const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
+    fetcher: fetcher(library, GlpManager),
+  });
 
-  const { data: nativeTokenPrice, mutate: updateNativeTokenPrice } = useSWR(
+  const { data: nativeTokenPrice } = useSWR(
     [`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress],
     {
       fetcher: fetcher(library, Vault),
     }
   );
 
-  const { data: esGmxSupply, mutate: updateEsGmxSupply } = useSWR(
+  const { data: esGmxSupply } = useSWR(
     [`StakeV2:esGmxSupply:${active}`, chainId, readerAddress, "getTokenSupply", esGmxAddress],
     {
       fetcher: fetcher(library, ReaderV2, [excludedEsGmxAccounts]),
     }
   );
 
-  const { data: vestingInfo, mutate: updateVestingInfo } = useSWR(
+  const { data: vestingInfo } = useSWR(
     [`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || PLACEHOLDER_ACCOUNT],
     {
       fetcher: fetcher(library, ReaderV2, [vesterAddresses]),
     }
   );
 
-  const {
-    gmxPrice,
-    gmxPriceFromArbitrum,
-    gmxPriceFromAvalanche,
-    mutate: updateGmxPrice,
-  } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? library : undefined }, active);
+  const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
+    chainId,
+    { arbitrum: chainId === ARBITRUM ? library : undefined },
+    active
+  );
 
-  let {
-    total: totalGmxSupply,
-    avax: avaxTotalGmx,
-    arbitrum: arbitrumTotalGmx,
-    mutate: updateTotalGmxSupply,
-  } = useTotalGmxSupply();
+  let { total: totalGmxSupply, avax: avaxTotalGmx, arbitrum: arbitrumTotalGmx } = useTotalGmxSupply();
 
-  let {
-    avax: avaxGmxStaked,
-    arbitrum: arbitrumGmxStaked,
-    total: totalGmxStaked,
-    mutate: updateGmxStaked,
-  } = useTotalGmxStaked();
+  let { avax: avaxGmxStaked, arbitrum: arbitrumGmxStaked, total: totalGmxStaked } = useTotalGmxStaked();
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
-  const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
+  const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
     fetcher: (...args) => fetch(...args).then((res) => res.text()),
   });
 
@@ -1160,42 +1135,6 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       maxUnstakeableGmx = availableTokens.mul(stakedTokens).div(divisor);
     }
   }
-
-  useEffect(() => {
-    if (active) {
-      library.on("block", () => {
-        updateWalletBalances(undefined, true);
-        updateDepositBalances(undefined, true);
-        updateStakingInfo(undefined, true);
-        updateAums(undefined, true);
-        updateNativeTokenPrice(undefined, true);
-        updateGmxStaked(undefined, true);
-        updateEsGmxSupply(undefined, true);
-        updateGmxPrice(undefined, true);
-        updateVestingInfo(undefined, true);
-        updateGmxSupply(undefined, true);
-        updateTotalGmxSupply(undefined, true);
-      });
-      return () => {
-        library.removeAllListeners("block");
-      };
-    }
-  }, [
-    library,
-    active,
-    updateWalletBalances,
-    updateDepositBalances,
-    updateStakingInfo,
-    updateAums,
-    updateNativeTokenPrice,
-    updateStakedGmxSupply,
-    updateEsGmxSupply,
-    updateGmxPrice,
-    updateVestingInfo,
-    updateGmxSupply,
-    updateTotalGmxSupply,
-    updateGmxStaked,
-  ]);
 
   useEffect(() => {
     window.scrollTo(0, 0);

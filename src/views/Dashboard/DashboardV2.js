@@ -39,6 +39,7 @@ import { getContract } from "../../Addresses";
 
 import VaultV2 from "../../abis/VaultV2.json";
 import ReaderV2 from "../../abis/ReaderV2.json";
+import VaultReader from "../../abis/VaultReader.json";
 import GlpManager from "../../abis/GlpManager.json";
 import Footer from "../../Footer";
 
@@ -144,7 +145,9 @@ export default function DashboardV2() {
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
 
   const readerAddress = getContract(chainId, "Reader");
+  const vaultReaderAddress = getContract(chainId, "VaultReader");
   const vaultAddress = getContract(chainId, "Vault");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const glpManagerAddress = getContract(chainId, "GlpManager");
 
@@ -159,10 +162,11 @@ export default function DashboardV2() {
   });
 
   const { data: vaultTokenInfo } = useSWR(
-    [`Dashboard:vaultTokenInfo:${active}`, chainId, readerAddress, "getVaultTokenInfoV2"],
+    [`Dashboard:vaultTokenInfo:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
     {
-      fetcher: fetcher(library, ReaderV2, [
+      fetcher: fetcher(library, VaultReader, [
         vaultAddress,
+        positionRouterAddress,
         nativeTokenAddress,
         expandDecimals(1, 18),
         whitelistedTokenAddresses,

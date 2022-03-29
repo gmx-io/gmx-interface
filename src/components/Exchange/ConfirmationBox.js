@@ -378,6 +378,18 @@ export default function ConfirmationBox(props) {
       if (isShort) {
         availableLiquidity = token.availableAmount;
 
+        let adjustedMaxGlobalShortSize;
+
+        if (toTokenInfo.maxAvailableShort && toTokenInfo.maxAvailableShort.gt(0)) {
+          adjustedMaxGlobalShortSize = toTokenInfo.maxAvailableShort
+            .mul(expandDecimals(1, token.decimals))
+            .div(expandDecimals(1, USD_DECIMALS));
+        }
+
+        if (adjustedMaxGlobalShortSize && adjustedMaxGlobalShortSize.lt(token.availableAmount)) {
+          availableLiquidity = adjustedMaxGlobalShortSize;
+        }
+
         const sizeTokens = toUsdMax.mul(expandDecimals(1, token.decimals)).div(token.minPrice);
         isLiquidityRisk = availableLiquidity.mul(riskThresholdBps).div(BASIS_POINTS_DIVISOR).lt(sizeTokens);
       } else {
