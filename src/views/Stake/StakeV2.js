@@ -41,7 +41,7 @@ import {
   getStakingData,
   getProcessedData,
 } from "../../Helpers";
-import { callContract, useGmxPrice } from "../../Api";
+import { callContract, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "../../Api";
 import { getConstant } from "../../Constants";
 
 import useSWR from "swr";
@@ -479,19 +479,19 @@ function VesterDepositModal(props) {
             <div className="Exchange-info-label">Reserve Amount</div>
             <div className="align-right">
               <Tooltip
-                handle={`${formatAmount(nextReserveAmount, 18, 2, true)} / ${formatAmount(
-                  maxReserveAmount,
+                handle={`${formatAmount(
+                  reserveAmount && reserveAmount.gte(additionalReserveAmount) ? reserveAmount : additionalReserveAmount,
                   18,
                   2,
                   true
-                )}`}
+                )} / ${formatAmount(maxReserveAmount, 18, 2, true)}`}
                 position="right-bottom"
                 renderContent={() => {
                   return (
                     <>
                       Current Reserved: {formatAmount(reserveAmount, 18, 2, true)}
                       <br />
-                      Reserve Required: {formatAmount(additionalReserveAmount, 18, 2, true)}
+                      Additional reserve required: {formatAmount(additionalReserveAmount, 18, 2, true)}
                       <br />
                       {amount && nextReserveAmount.gt(maxReserveAmount) && (
                         <div>
@@ -1041,6 +1041,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     active
   );
 
+  let { total: totalGmxSupply, avax: avaxTotalGmx, arbitrum: arbitrumTotalGmx } = useTotalGmxSupply();
+
+  let { avax: avaxGmxStaked, arbitrum: arbitrumGmxStaked, total: totalGmxStaked } = useTotalGmxStaked();
+
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
   const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
     fetcher: (...args) => fetch(...args).then((res) => res.text()),
@@ -1107,8 +1111,13 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   }
 
   let stakedGmxSupplyUsd;
-  if (stakedGmxSupply && gmxPrice) {
-    stakedGmxSupplyUsd = stakedGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
+  if (!totalGmxStaked.isZero() && gmxPrice) {
+    stakedGmxSupplyUsd = totalGmxStaked.mul(gmxPrice).div(expandDecimals(1, 18));
+  }
+
+  let totalSupplyUsd;
+  if (!totalGmxSupply.isZero() && gmxPrice) {
+    totalSupplyUsd = totalGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   }
 
   let maxUnstakeableGmx = bigNumberify(0);
@@ -1551,16 +1560,48 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               <div className="App-card-row">
                 <div className="label">Total Staked</div>
                 <div>
-                  {formatAmount(stakedGmxSupply, 18, 0, true)} GMX ($
-                  {formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)})
+                  {!totalGmxStaked && "..."}
+                  {totalGmxStaked && (
+                    <Tooltip
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={
+                        formatAmount(totalGmxStaked, 18, 0, true) +
+                        " GMX" +
+                        ` ($${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)})`
+                      }
+                      renderContent={() => (
+                        <>
+                          Arbitrum: {formatAmount(arbitrumGmxStaked, 18, 0, true)} GMX
+                          <br />
+                          Avalanche: {formatAmount(avaxGmxStaked, 18, 0, true)} GMX
+                        </>
+                      )}
+                    />
+                  )}
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Total Supply</div>
-                <div>
-                  {formatKeyAmount(processedData, "gmxSupply", 18, 0, true)} GMX ($
-                  {formatKeyAmount(processedData, "gmxSupplyUsd", USD_DECIMALS, 0, true)})
-                </div>
+                {!totalGmxSupply && "..."}
+                {totalGmxSupply && (
+                  <Tooltip
+                    position="right-bottom"
+                    className="nowrap"
+                    handle={
+                      formatAmount(totalGmxSupply, 18, 0, true) +
+                      " GMX" +
+                      ` ($${formatAmount(totalSupplyUsd, USD_DECIMALS, 0, true)})`
+                    }
+                    renderContent={() => (
+                      <>
+                        Arbitrum: {formatAmount(arbitrumTotalGmx, 18, 0, true)} GMX
+                        <br />
+                        Avalanche: {formatAmount(avaxTotalGmx, 18, 0, true)} GMX
+                      </>
+                    )}
+                  />
+                )}
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-options">
