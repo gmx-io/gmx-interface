@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import useSWR from "swr";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
@@ -22,7 +22,7 @@ import PositionsList from "../../components/Exchange/PositionsList";
 
 import TradeHistory from "../../components/Exchange/TradeHistory";
 import Reader from "../../abis/Reader.json";
-import ReaderV2 from "../../abis/ReaderV2.json";
+import VaultReader from "../../abis/VaultReader.json";
 
 const USD_DECIMALS = 30;
 
@@ -34,6 +34,8 @@ export default function Actions() {
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const vaultAddress = getContract(chainId, "Vault");
   const readerAddress = getContract(chainId, "Reader");
+  const vaultReaderAddress = getContract(chainId, "VaultReader");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
 
   const shouldShowPnl = false;
 
@@ -42,7 +44,7 @@ export default function Actions() {
     checkSummedAccount = ethers.utils.getAddress(account);
   }
   const pnlUrl = `${getServerBaseUrl(chainId)}/pnl?account=${checkSummedAccount}`;
-  const { data: pnlData, mutate: updatePnlData } = useSWR([pnlUrl], {
+  const { data: pnlData } = useSWR([pnlUrl], {
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
@@ -52,29 +54,24 @@ export default function Actions() {
 
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenAddresses = tokens.map((token) => token.address);
-  const { data: tokenBalances, mutate: updateTokenBalances } = useSWR(
-    [active, chainId, readerAddress, "getTokenBalances", account],
-    {
-      fetcher: fetcher(library, Reader, [tokenAddresses]),
-    }
-  );
+  const { data: tokenBalances } = useSWR([active, chainId, readerAddress, "getTokenBalances", account], {
+    fetcher: fetcher(library, Reader, [tokenAddresses]),
+  });
 
-  const { data: positionData, mutate: updatePositionData } = useSWR(
-    [active, chainId, readerAddress, "getPositions", vaultAddress, account],
-    {
-      fetcher: fetcher(library, Reader, [
-        positionQuery.collateralTokens,
-        positionQuery.indexTokens,
-        positionQuery.isLong,
-      ]),
-    }
-  );
+  const { data: positionData } = useSWR([active, chainId, readerAddress, "getPositions", vaultAddress, account], {
+    fetcher: fetcher(library, Reader, [
+      positionQuery.collateralTokens,
+      positionQuery.indexTokens,
+      positionQuery.isLong,
+    ]),
+  });
 
-  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR(
-    [active, chainId, readerAddress, "getVaultTokenInfoV2"],
+  const { data: vaultTokenInfo } = useSWR(
+    [`Actions:vaultTokenInfo:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
     {
-      fetcher: fetcher(library, ReaderV2, [
+      fetcher: fetcher(library, VaultReader, [
         vaultAddress,
+        positionRouterAddress,
         nativeTokenAddress,
         expandDecimals(1, 18),
         whitelistedTokenAddresses,
@@ -82,12 +79,9 @@ export default function Actions() {
     }
   );
 
-  const { data: fundingRateInfo, mutate: updateFundingRateInfo } = useSWR(
-    [active, chainId, readerAddress, "getFundingRates"],
-    {
-      fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
-    }
-  );
+  const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
+    fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+  });
 
   const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo);
   const { positions, positionsMap } = getPositions(
@@ -101,17 +95,6 @@ export default function Actions() {
     undefined,
     undefined
   );
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      updatePnlData(undefined, true);
-      updateTokenBalances(undefined, true);
-      updatePositionData(undefined, true);
-      updateVaultTokenInfo(undefined, true);
-      updateFundingRateInfo(undefined, true);
-    }, 10 * 1000);
-    return () => clearInterval(interval);
-  }, [updatePnlData, updateTokenBalances, updatePositionData, updateVaultTokenInfo, updateFundingRateInfo]);
 
   return (
     <div className="Actions">

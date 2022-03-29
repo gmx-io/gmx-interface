@@ -48,6 +48,7 @@ import TokenSelector from "../Exchange/TokenSelector";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
 import Tooltip from "../Tooltip/Tooltip";
 
+import VaultReader from "../../abis/VaultReader.json";
 import ReaderV2 from "../../abis/ReaderV2.json";
 import RewardReader from "../../abis/RewardReader.json";
 import VaultV2 from "../../abis/VaultV2.json";
@@ -117,6 +118,8 @@ export default function GlpSwap(props) {
   const [feeBasisPoints, setFeeBasisPoints] = useState("");
 
   const readerAddress = getContract(chainId, "Reader");
+  const vaultReaderAddress = getContract(chainId, "VaultReader");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
   const rewardReaderAddress = getContract(chainId, "RewardReader");
   const vaultAddress = getContract(chainId, "Vault");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
@@ -129,10 +132,11 @@ export default function GlpSwap(props) {
 
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const { data: vaultTokenInfo } = useSWR(
-    [`GlpSwap:getVaultTokenInfo:${active}`, chainId, readerAddress, "getVaultTokenInfoV2"],
+    [`GlpSwap:getVaultTokenInfo:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
     {
-      fetcher: fetcher(library, ReaderV2, [
+      fetcher: fetcher(library, VaultReader, [
         vaultAddress,
+        positionRouterAddress,
         nativeTokenAddress,
         expandDecimals(1, 18),
         whitelistedTokenAddresses,
