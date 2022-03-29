@@ -19,12 +19,6 @@ export default function ChartTokenSelector(props) {
 
   const isLong = swapOption === LONG;
   const isShort = swapOption === SHORT;
-  // const isSwap = swapOption === SWAP;
-
-  // var availableOptions = {
-  //   43114: ['AVAX', 'ETH', 'BTC'],
-  //   42161: ['ETH', 'BTC', 'LINK', 'UNI']
-  // }
 
   let options = getTokens(chainId);
   const whitelistedTokens = getWhitelistedTokens(chainId);
@@ -39,10 +33,6 @@ export default function ChartTokenSelector(props) {
   if (isShort) {
     options = shortableTokens;
   }
-
-  // options = options.filter((item) => {
-  //   return availableOptions[chainId].indexOf(item.symbol) > -1
-  // })
 
   const onSelect = async token => {
     onSelectToken(token)

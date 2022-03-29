@@ -32,31 +32,7 @@ function getChartToken(swapOption, fromToken, toToken, chainId) {
   if (!fromToken || !toToken) {
     return;
   }
-
-  // if (swapOption !== SWAP) {
-  //   return toToken;
-  // }
-
-  // if (fromToken.isUsdg && toToken.isUsdg) {
-  //   return getTokens(chainId).find((t) => t.isStable);
-  // }
-  // if (fromToken.isUsdg) {
-  //   return toToken;
-  // }
-  // if (toToken.isUsdg) {
-  //   return fromToken;
-  // }
-
-  // if (fromToken.isStable && toToken.isStable) {
-  //   return toToken;
-  // }
-  // if (fromToken.isStable) {
-  //   return toToken;
-  // }
-  // if (toToken.isStable) {
-  //   return fromToken;
-  // }
-
+  
   return toToken;
 }
 
