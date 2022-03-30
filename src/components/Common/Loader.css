@@ -10,6 +10,7 @@
   -webkit-transform: translateZ(0);
   -ms-transform: translateZ(0);
   transform: translateZ(0);
+  margin: 0.5rem 0.5rem 0.5rem 0.75rem;
 }
 @-webkit-keyframes loader {
   0%,

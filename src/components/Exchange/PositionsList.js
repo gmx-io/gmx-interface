@@ -568,7 +568,7 @@ export default function PositionsList(props) {
                 </td>
                 <td>
                   <div className="position-share" onClick={() => sharePosition(position)}>
-                    {isSharePositionImageLoading ? <Loader size={4} /> : <FiShare2 />}
+                    {isSharePositionImageLoading ? <Loader size={3} /> : <FiShare2 />}
                   </div>
                 </td>
                 <td>
