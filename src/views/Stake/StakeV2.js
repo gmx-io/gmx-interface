@@ -1583,25 +1583,27 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-row">
                 <div className="label">Total Supply</div>
-                {!totalGmxSupply && "..."}
-                {totalGmxSupply && (
-                  <Tooltip
-                    position="right-bottom"
-                    className="nowrap"
-                    handle={
-                      formatAmount(totalGmxSupply, 18, 0, true) +
-                      " GMX" +
-                      ` ($${formatAmount(totalSupplyUsd, USD_DECIMALS, 0, true)})`
-                    }
-                    renderContent={() => (
-                      <>
-                        Arbitrum: {formatAmount(arbitrumTotalGmx, 18, 0, true)} GMX
-                        <br />
-                        Avalanche: {formatAmount(avaxTotalGmx, 18, 0, true)} GMX
-                      </>
-                    )}
-                  />
-                )}
+                <div>
+                  {!totalGmxSupply && "..."}
+                  {totalGmxSupply && (
+                    <Tooltip
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={
+                        formatAmount(totalGmxSupply, 18, 0, true) +
+                        " GMX" +
+                        ` ($${formatAmount(totalSupplyUsd, USD_DECIMALS, 0, true)})`
+                      }
+                      renderContent={() => (
+                        <>
+                          Arbitrum: {formatAmount(arbitrumTotalGmx, 18, 0, true)} GMX
+                          <br />
+                          Avalanche: {formatAmount(avaxTotalGmx, 18, 0, true)} GMX
+                        </>
+                      )}
+                    />
+                  )}
+                </div>
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-options">
