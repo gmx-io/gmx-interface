@@ -5,7 +5,9 @@
 
 .chart-token-selector--current {
     font-size: 1.4rem;
+    font-weight: 700;
     margin-right: 10px;
+    color: white;
 }
 
 .chart-token-menu-items.menu-items {
