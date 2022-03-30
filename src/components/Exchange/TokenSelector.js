@@ -12,6 +12,8 @@ import Modal from "../Modal/Modal";
 import dropDownIcon from "../../img/DROP_DOWN.svg";
 import "./TokenSelector.css";
 
+const sortTokensByBalance = true;
+
 export default function TokenSelector(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -59,7 +61,31 @@ export default function TokenSelector(props) {
       item.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 ||
       item.symbol.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1
     );
+  }).map((token) => {
+    let info = infoTokens ? infoTokens[token.address] : {};
+    let balance = info.balance;
+    let balanceUsd;
+    if (balance && info.maxPrice) {
+      balanceUsd = balance.mul(info.maxPrice).div(expandDecimals(1, token.decimals));
+    }
+    return {
+      ...token,
+      balanceUsd
+    }
   });
+  
+  if (sortTokensByBalance) {
+    filteredTokens.sort((tokenA, tokenB) => {
+      let balanceUsdA = tokenA.balanceUsd;
+      let balanceUsdB = tokenB.balanceUsd;
+      if (balanceUsdA && balanceUsdB) {
+        if (balanceUsdA.gt(balanceUsdB)) {
+          return 1;
+        } else return -1;
+      }
+      return 0;
+    });
+  }
 
   const _handleKeyDown = (e) => {
     if (e.key === "Enter" && filteredTokens.length > 0) {
