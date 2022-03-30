@@ -6,7 +6,7 @@ import { getTokens, getWhitelistedTokens } from '../../data/Tokens'
 import {
   LONG,
   SHORT,
-  // SWAP
+  SWAP
 } from "../../Helpers";
 
 export default function ChartTokenSelector(props) {
@@ -19,6 +19,7 @@ export default function ChartTokenSelector(props) {
 
   const isLong = swapOption === LONG;
   const isShort = swapOption === SHORT;
+  const isSwap = swapOption === SWAP;
 
   let options = getTokens(chainId);
   const whitelistedTokens = getWhitelistedTokens(chainId);
@@ -42,12 +43,12 @@ export default function ChartTokenSelector(props) {
 
   return (
     <Menu>
-      <Menu.Button as="div">
+      <Menu.Button as="div" disabled={isSwap}>
         <button className="App-cta small transparent chart-token-selector">
           <span className="chart-token-selector--current">
             {value.symbol} / USD
           </span>
-          <FaChevronDown />
+          { !isSwap && <FaChevronDown /> }
         </button>
       </Menu.Button>
       <div className="chart-token-menu">
