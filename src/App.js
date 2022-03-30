@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { SWRConfig } from "swr";
 
 import { motion, AnimatePresence } from "framer-motion";
+import { useWindowScroll } from "react-use";
 
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
@@ -87,6 +88,7 @@ import walletConnectImg from "./img/walletconnect-circle-blue.svg";
 import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
 import { ConnectWalletButton } from "./components/Common/Button";
 import useEventToast from "./components/EventToast/useEventToast";
+import { Link } from "react-router-dom";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -139,9 +141,9 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
           <div className="App-header-menu-icon-block" onClick={() => clickCloseIcon()}>
             <FiX className="App-header-menu-icon" />
           </div>
-          <a className="App-header-link-main" href="/">
+          <Link className="App-header-link-main" to="/">
             <img src={logoImg} alt="GMX Logo" />
-          </a>
+          </Link>
         </div>
       )}
       <div className="App-header-link-container App-header-link-home">
@@ -516,6 +518,8 @@ function FullApp() {
     return () => clearInterval(interval);
   }, [library, pendingTxns, chainId]);
 
+  let { y: scrollY } = useWindowScroll();
+
   return (
     <Router>
       <div className="App">
@@ -559,10 +563,10 @@ function FullApp() {
           <header>
             <div className="App-header large">
               <div className="App-header-container-left">
-                <a className="App-header-link-main" href="/">
+                <Link className="App-header-link-main" to="/">
                   <img src={logoImg} className="big" alt="GMX Logo" />
                   <img src={logoSmallImg} className="small" alt="GMX Logo" />
-                </a>
+                </Link>
                 <AppHeaderLinks />
               </div>
               <div className="App-header-container-right">
@@ -725,7 +729,8 @@ function FullApp() {
         containerClassName="event-toast-container"
         containerStyle={{
           zIndex: 2,
-          top: "93px",
+          transition: "all 200ms",
+          top: scrollY > 65 ? "30px" : "93px",
           right: "30px",
         }}
         toastOptions={{
