@@ -19,7 +19,6 @@ import {
   bigNumberify,
   getTokenInfo,
   fetcher,
-  expandDecimals,
   getPositionKey,
   getPositionContractKey,
   getLeverage,
@@ -27,17 +26,15 @@ import {
   useLocalStorageByChainId,
   getDeltaStr,
   useChainId,
-  getInfoTokens,
   useAccountOrders,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
-import { approvePlugin } from "../../Api";
+import { approvePlugin, useInfoTokens } from "../../Api";
 
 import { getContract } from "../../Addresses";
 import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
 
 import Reader from "../../abis/ReaderV2.json";
-import VaultReader from "../../abis/VaultReader.json";
 import VaultV2 from "../../abis/VaultV2.json";
 import VaultV2b from "../../abis/VaultV2b.json";
 import PositionRouter from "../../abis/PositionRouter.json";
@@ -398,7 +395,6 @@ export default function Exchange({
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const readerAddress = getContract(chainId, "Reader");
-  const vaultReaderAddress = getContract(chainId, "VaultReader");
   const usdgAddress = getContract(chainId, "USDG");
 
   const whitelistedTokens = getWhitelistedTokens(chainId);
@@ -464,18 +460,6 @@ export default function Exchange({
   const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
 
   const tokens = getTokens(chainId);
-  const { data: vaultTokenInfo } = useSWR(
-    [`Exchange:vaultTokenInfo:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
-    {
-      fetcher: fetcher(library, VaultReader, [
-        vaultAddress,
-        positionRouterAddress,
-        nativeTokenAddress,
-        expandDecimals(1, 18),
-        whitelistedTokenAddresses,
-      ]),
-    }
-  );
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
@@ -524,7 +508,8 @@ export default function Exchange({
     }
   );
 
-  const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo);
+  const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo);
+
   const { positions, positionsMap } = getPositions(
     chainId,
     positionQuery,

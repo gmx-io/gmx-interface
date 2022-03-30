@@ -8,14 +8,13 @@ import TooltipComponent from "../../components/Tooltip/Tooltip";
 import hexToRgba from "hex-to-rgba";
 import { ethers } from "ethers";
 
-import { getTokens, getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
+import { getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
 import { getFeeHistory } from "../../data/Fees";
 
 import {
   fetcher,
   formatAmount,
   formatKeyAmount,
-  getInfoTokens,
   expandDecimals,
   bigNumberify,
   numberWithCommas,
@@ -33,13 +32,12 @@ import {
   GLPPOOLCOLORS,
   DEFAULT_MAX_USDG_AMOUNT,
 } from "../../Helpers";
-import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "../../Api";
+import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply, useInfoTokens } from "../../Api";
 
 import { getContract } from "../../Addresses";
 
 import VaultV2 from "../../abis/VaultV2.json";
 import ReaderV2 from "../../abis/ReaderV2.json";
-import VaultReader from "../../abis/VaultReader.json";
 import GlpManager from "../../abis/GlpManager.json";
 import Footer from "../../Footer";
 
@@ -139,16 +137,12 @@ export default function DashboardV2() {
 
   const totalVolumeSum = getTotalVolumeSum(totalVolume);
 
-  const tokens = getTokens(chainId);
   const whitelistedTokens = getWhitelistedTokens(chainId);
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
 
   const readerAddress = getContract(chainId, "Reader");
-  const vaultReaderAddress = getContract(chainId, "VaultReader");
   const vaultAddress = getContract(chainId, "Vault");
-  const positionRouterAddress = getContract(chainId, "PositionRouter");
-  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const glpManagerAddress = getContract(chainId, "GlpManager");
 
   const gmxAddress = getContract(chainId, "GMX");
@@ -160,19 +154,6 @@ export default function DashboardV2() {
   const { data: aums } = useSWR([`Dashboard:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
     fetcher: fetcher(library, GlpManager),
   });
-
-  const { data: vaultTokenInfo } = useSWR(
-    [`Dashboard:vaultTokenInfo:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
-    {
-      fetcher: fetcher(library, VaultReader, [
-        vaultAddress,
-        positionRouterAddress,
-        nativeTokenAddress,
-        expandDecimals(1, 18),
-        whitelistedTokenAddresses,
-      ]),
-    }
-  );
 
   const { data: fees } = useSWR([`Dashboard:fees:${active}`, chainId, readerAddress, "getFees", vaultAddress], {
     fetcher: fetcher(library, ReaderV2, [whitelistedTokenAddresses]),
@@ -192,7 +173,7 @@ export default function DashboardV2() {
     }
   );
 
-  const infoTokens = getInfoTokens(tokens, undefined, whitelistedTokens, vaultTokenInfo, undefined);
+  const { infoTokens } = useInfoTokens(library, chainId, active, undefined, undefined);
 
   const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
   const currentFeesUsd = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokens);
