@@ -104,7 +104,7 @@ export const STOP = "Stop";
 export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_OPTIONS = [LONG, SHORT, SWAP];
-export const DEFAULT_SLIPPAGE_AMOUNT = 20;
+export const DEFAULT_SLIPPAGE_AMOUNT = 30;
 export const DEFAULT_HIGHER_SLIPPAGE_AMOUNT = 100;
 
 export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3";
@@ -1525,7 +1525,7 @@ export const fetcher =
     const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
 
     function onError(e) {
-      console.error(contractInfo.contractName, method, e);
+      console.error(id, contractInfo.contractName, method, e);
     }
 
     if (ethers.utils.isAddress(arg0)) {
@@ -2391,7 +2391,7 @@ export function getProcessedData(
 
   data.gmxSupply = bigNumberify(gmxSupply);
 
-  data.gmxSupplyUsd = supplyData.gmx.mul(gmxPrice).div(expandDecimals(1, 18));
+  data.gmxSupplyUsd = data.gmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   data.stakedGmxSupply = stakedGmxSupply;
   data.stakedGmxSupplyUsd = stakedGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   data.gmxInStakedGmx = depositBalanceData.gmxInStakedGmx;

@@ -1,4 +1,22 @@
 let eventsData = [
+  {
+    id: "removal-of-min-profit-rule",
+    title: "Trading improvements",
+    isActive: true,
+    validTill: "4/1/2022 12:00:00 PM",
+    bodyText: "The 1.5% minimum profit rule has been removed",
+    buttons: [
+      {
+        text: "Read more",
+        link: "https://gmxio.gitbook.io/gmx/roadmap#30-march-2022",
+        newTab: true,
+      },
+      {
+        text: "Trade Now",
+        link: "https://gmx.io/trade",
+      },
+    ],
+  },
   // {
   //   id: "weth-bond-on-olympus",
   //   title: "New wETH bond",
