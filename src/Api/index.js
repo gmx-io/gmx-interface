@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { gql } from "@apollo/client";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
 import useSWR from "swr";
@@ -302,6 +302,46 @@ export function useTrades(chainId, account) {
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
+  if (trades) {
+    trades.sort((item0, item1) => {
+      const data0 = item0.data;
+      const data1 = item1.data;
+      const time0 = parseInt(data0.timestamp);
+      const time1 = parseInt(data1.timestamp);
+      if (time1 > time0) {
+        return 1;
+      }
+      if (time1 < time0) {
+        return -1;
+      }
+
+      const block0 = parseInt(data0.blockNumber);
+      const block1 = parseInt(data1.blockNumber);
+
+      if (isNaN(block0) && isNaN(block1)) {
+        return 0;
+      }
+
+      if (isNaN(block0)) {
+        return 1;
+      }
+
+      if (isNaN(block1)) {
+        return -1;
+      }
+
+      if (block1 > block0) {
+        return 1;
+      }
+
+      if (block1 < block0) {
+        return -1;
+      }
+
+      return 0;
+    });
+  }
+
   return { trades, updateTrades };
 }
 
@@ -347,7 +387,7 @@ export function useHasOutdatedUi() {
 
   let hasOutdatedUi = false;
 
-  if (data && data !== UI_VERSION) {
+  if (data && parseFloat(data) > parseFloat(UI_VERSION)) {
     hasOutdatedUi = true;
   }
 
@@ -369,6 +409,115 @@ export function useGmxPrice(chainId, libraries, active) {
     gmxPrice,
     gmxPriceFromArbitrum,
     gmxPriceFromAvalanche,
+    mutate,
+  };
+}
+
+export function useTotalGmxSupply() {
+  const gmxSupplyUrlArbitrum = getServerUrl(ARBITRUM, "/gmx_supply");
+  const gmxSupplyUrlAvax = getServerUrl(AVALANCHE, "/gmx_supply");
+  let totalGMXSupply = useRef(bigNumberify(0));
+
+  const { data: gmxSupplyArbitrum, mutate: updateGmxSupplyArbitrum } = useSWR([gmxSupplyUrlArbitrum], {
+    fetcher: (...args) => fetch(...args).then((res) => res.text()),
+  });
+  const { data: gmxSupplyAvax, mutate: updateGmxSupplyAvax } = useSWR([gmxSupplyUrlAvax], {
+    fetcher: (...args) => fetch(...args).then((res) => res.text()),
+  });
+
+  if (gmxSupplyArbitrum && gmxSupplyAvax) {
+    let total = bigNumberify(gmxSupplyArbitrum).add(gmxSupplyAvax);
+    totalGMXSupply.current = total;
+  }
+  const mutate = useCallback(() => {
+    updateGmxSupplyArbitrum();
+    updateGmxSupplyAvax();
+  }, [updateGmxSupplyArbitrum, updateGmxSupplyAvax]);
+
+  return {
+    arbitrum: gmxSupplyArbitrum,
+    avax: gmxSupplyAvax,
+    total: totalGMXSupply.current,
+    mutate,
+  };
+}
+export function useTotalGmxStaked() {
+  const stakedGmxTrackerAddressArbitrum = getContract(ARBITRUM, "StakedGmxTracker");
+  const stakedGmxTrackerAddressAvax = getContract(AVALANCHE, "StakedGmxTracker");
+  let totalStakedGmx = useRef(bigNumberify(0));
+  const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR(
+    [
+      `StakeV2:stakedGmxSupply:${ARBITRUM}`,
+      ARBITRUM,
+      getContract(ARBITRUM, "GMX"),
+      "balanceOf",
+      stakedGmxTrackerAddressArbitrum,
+    ],
+    {
+      fetcher: fetcher(undefined, Token),
+    }
+  );
+  const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR(
+    [
+      `StakeV2:stakedGmxSupply:${AVALANCHE}`,
+      AVALANCHE,
+      getContract(AVALANCHE, "GMX"),
+      "balanceOf",
+      stakedGmxTrackerAddressAvax,
+    ],
+    {
+      fetcher: fetcher(undefined, Token),
+    }
+  );
+
+  const mutate = useCallback(() => {
+    updateStakedGmxSupplyArbitrum();
+    updateStakedGmxSupplyAvax();
+  }, [updateStakedGmxSupplyArbitrum, updateStakedGmxSupplyAvax]);
+
+  if (stakedGmxSupplyArbitrum && stakedGmxSupplyAvax) {
+    let total = bigNumberify(stakedGmxSupplyArbitrum).add(stakedGmxSupplyAvax);
+    totalStakedGmx.current = total;
+  }
+
+  return {
+    avax: stakedGmxSupplyAvax,
+    arbitrum: stakedGmxSupplyArbitrum,
+    total: totalStakedGmx.current,
+    mutate,
+  };
+}
+
+export function useTotalGmxInLiquidity() {
+  let poolAddressArbitrum = getContract(ARBITRUM, "UniswapGmxEthPool");
+  let poolAddressAvax = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
+  let totalGMX = useRef(bigNumberify(0));
+
+  const { data: gmxInLiquidityOnArbitrum, mutate: mutateGMXInLiquidityOnArbitrum } = useSWR(
+    [`StakeV2:gmxInLiquidity:${ARBITRUM}`, ARBITRUM, getContract(ARBITRUM, "GMX"), "balanceOf", poolAddressArbitrum],
+    {
+      fetcher: fetcher(undefined, Token),
+    }
+  );
+  const { data: gmxInLiquidityOnAvax, mutate: mutateGMXInLiquidityOnAvax } = useSWR(
+    [`StakeV2:gmxInLiquidity:${AVALANCHE}`, AVALANCHE, getContract(AVALANCHE, "GMX"), "balanceOf", poolAddressAvax],
+    {
+      fetcher: fetcher(undefined, Token),
+    }
+  );
+  const mutate = useCallback(() => {
+    mutateGMXInLiquidityOnArbitrum();
+    mutateGMXInLiquidityOnAvax();
+  }, [mutateGMXInLiquidityOnArbitrum, mutateGMXInLiquidityOnAvax]);
+
+  if (gmxInLiquidityOnAvax && gmxInLiquidityOnArbitrum) {
+    let total = bigNumberify(gmxInLiquidityOnArbitrum).add(gmxInLiquidityOnAvax);
+    totalGMX.current = total;
+  }
+  return {
+    avax: gmxInLiquidityOnAvax,
+    arbitrum: gmxInLiquidityOnArbitrum,
+    total: totalGMX.current,
     mutate,
   };
 }

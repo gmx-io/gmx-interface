@@ -38,11 +38,11 @@ export default function Debug() {
   }, [library, active, updateUniPoolSlot0, updateUniPoolTickSpacing]);
 
   if (uniPoolSlot0) {
-    console.log("tick", uniPoolSlot0.tick.toString());
+    console.info("tick", uniPoolSlot0.tick.toString());
   }
 
   if (uniPoolTickSpacing) {
-    console.log("tickSpacing", uniPoolTickSpacing.toString());
+    console.info("tickSpacing", uniPoolTickSpacing.toString());
   }
 
   return <div className="Debug"></div>;

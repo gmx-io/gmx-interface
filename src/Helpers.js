@@ -21,7 +21,7 @@ import { getWhitelistedTokens, isValidToken } from "./data/Tokens";
 
 const { AddressZero } = ethers.constants;
 
-export const UI_VERSION = "1.0";
+export const UI_VERSION = "1.1";
 
 // use a random placeholder account instead of the zero address as the zero address might have tokens
 export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
@@ -35,7 +35,7 @@ export const ARBITRUM = 42161;
 export const DEFAULT_CHAIN_ID = AVALANCHE;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const MIN_PROFIT_TIME = 3 * 60 * 60; // 3 hours
+export const MIN_PROFIT_TIME = 0;
 
 const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
 
@@ -52,7 +52,7 @@ const GAS_PRICE_ADJUSTMENT_MAP = {
   [AVALANCHE]: "3000000000", // 3 gwei
 };
 
-const ARBITRUM_RPC_PROVIDERS = ["https://rpc.ankr.com/arbitrum"];
+const ARBITRUM_RPC_PROVIDERS = ["https://arb1.arbitrum.io/rpc"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
@@ -71,7 +71,7 @@ export const SECONDS_PER_YEAR = 31536000;
 export const USDG_DECIMALS = 18;
 export const USD_DECIMALS = 30;
 export const BASIS_POINTS_DIVISOR = 10000;
-export const DEPOSIT_FEE = 50;
+export const DEPOSIT_FEE = 30;
 export const DUST_BNB = "2000000000000000";
 export const DUST_USD = expandDecimals(1, USD_DECIMALS);
 export const PRECISION = expandDecimals(1, 30);
@@ -104,7 +104,8 @@ export const STOP = "Stop";
 export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_OPTIONS = [LONG, SHORT, SWAP];
-export const DEFAULT_SLIPPAGE_AMOUNT = 20;
+export const DEFAULT_SLIPPAGE_AMOUNT = 30;
+export const DEFAULT_HIGHER_SLIPPAGE_AMOUNT = 100;
 
 export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3";
 export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage";
@@ -114,7 +115,7 @@ export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-positio
 export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
 
-export const MIN_PROFIT_BIPS = 150;
+export const MIN_PROFIT_BIPS = 0;
 
 export const GLPPOOLCOLORS = {
   ETH: "#6062a6",
@@ -1226,6 +1227,13 @@ export function getPositionKey(collateralTokenAddress, indexTokenAddress, isLong
   return tokenAddress0 + ":" + tokenAddress1 + ":" + isLong;
 }
 
+export function getPositionContractKey(account, collateralToken, indexToken, isLong) {
+  return ethers.utils.solidityKeccak256(
+    ["address", "address", "address", "bool"],
+    [account, collateralToken, indexToken, isLong]
+  );
+}
+
 export function getSwapFeeBasisPoints(isStable) {
   return isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS;
 }
@@ -1517,7 +1525,7 @@ export const fetcher =
     const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
 
     function onError(e) {
-      console.error(contractInfo.contractName, method, e);
+      console.error(id, contractInfo.contractName, method, e);
     }
 
     if (ethers.utils.isAddress(arg0)) {
@@ -2383,7 +2391,7 @@ export function getProcessedData(
 
   data.gmxSupply = bigNumberify(gmxSupply);
 
-  data.gmxSupplyUsd = supplyData.gmx.mul(gmxPrice).div(expandDecimals(1, 18));
+  data.gmxSupplyUsd = data.gmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   data.stakedGmxSupply = stakedGmxSupply;
   data.stakedGmxSupplyUsd = stakedGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   data.gmxInStakedGmx = depositBalanceData.gmxInStakedGmx;
@@ -2505,6 +2513,6 @@ export async function addTokenToMetamask(token) {
       // We can show a toast message when the token is added to metamask but because of the bug we can't. Once the bug is fixed we can show a toast message.
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }

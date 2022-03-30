@@ -21,6 +21,15 @@
   padding-bottom: 0.3rem;
 }
 
+.position-loading-icon {
+  display: inline-block;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+  color: #3749e6;
+  vertical-align: middle;
+  margin-top: -0.2rem;
+}
+
 .Exchange-settings-row {
   margin-bottom: 0.5rem;
 }
@@ -203,6 +212,15 @@
 }
 
 .PositionEditor-accept-profit-warning .Checkbox {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  direction: rtl;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+
+.PositionEditor-allow-higher-slippage .Checkbox {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr auto;
@@ -754,6 +772,7 @@ table.Exchange-list-small td {
 .Exchange-list-title {
   width: 2rem;
   display: inline-block;
+  white-space: nowrap;
 }
 
 .Exchange-list-info-label {
