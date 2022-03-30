@@ -384,7 +384,7 @@ function VesterDepositModal(props) {
 
     callContract(chainId, contract, "deposit", [amount], {
       sentMsg: "Deposit submitted!",
-      failMsg: "Deposit failed.",
+      failMsg: "Deposit failed!",
       successMsg: "Deposited!",
       setPendingTxns,
     })
