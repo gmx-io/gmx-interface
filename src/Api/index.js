@@ -102,7 +102,7 @@ export function useInfoTokens(library, chainId, active, tokenBalances, fundingRa
   const indexPricesUrl = getServerUrl(chainId, "/prices");
   const { data: indexPrices } = useSWR([indexPricesUrl], {
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
-    refreshInterval: 1000,
+    refreshInterval: 500,
   });
 
   return {
