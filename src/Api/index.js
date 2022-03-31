@@ -24,7 +24,7 @@ import {
   getExplorerUrl,
   getServerBaseUrl,
   getServerUrl,
-  getGasPrice,
+  setGasPrice,
   getGasLimit,
   replaceNativeTokenAddress,
   getProvider,
@@ -873,19 +873,17 @@ export async function callContract(chainId, contract, method, params, opts) {
       opts = {};
     }
 
-    if (!opts.gasLimit) {
-      opts.gasLimit = await getGasLimit(contract, method, params, opts.value);
+    const txnOpts = {};
+
+    if (opts.value) {
+      txnOpts.value = opts.value;
     }
 
-    if (!opts.gasPrice) {
-      opts.gasPrice = await getGasPrice(contract.provider, chainId);
-    }
+    txnOpts.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value);
 
-    const res = await contract[method](...params, {
-      gasLimit: opts.gasLimit,
-      value: opts.value,
-      gasPrice: opts.gasPrice,
-    });
+    await setGasPrice(txnOpts, contract.provider, chainId);
+
+    const res = await contract[method](...params, txnOpts);
     const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
     const sentMsg = opts.sentMsg || "Transaction sent.";
     helperToast.success(
