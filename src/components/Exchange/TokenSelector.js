@@ -80,8 +80,8 @@ export default function TokenSelector(props) {
       let balanceUsdB = tokenB.balanceUsd;
       if (balanceUsdA && balanceUsdB) {
         if (balanceUsdA.gt(balanceUsdB)) {
-          return 1;
-        } else return -1;
+          return -1;
+        } else return 1;
       }
       return 0;
     });
