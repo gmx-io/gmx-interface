@@ -32,17 +32,15 @@ import {
   getTotalVolumeSum,
   GLPPOOLCOLORS,
   DEFAULT_MAX_USDG_AMOUNT,
-  getPageTitle,
 } from "../../Helpers";
-import { useGmxPrice, useStakedGmxSupply } from "../../Api";
+import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "../../Api";
 
 import { getContract } from "../../Addresses";
 
 import VaultV2 from "../../abis/VaultV2.json";
 import ReaderV2 from "../../abis/ReaderV2.json";
+import VaultReader from "../../abis/VaultReader.json";
 import GlpManager from "../../abis/GlpManager.json";
-import Token from "../../abis/Token.json";
-
 import Footer from "../../Footer";
 
 import "./DashboardV2.css";
@@ -55,7 +53,6 @@ import arbitrum24Icon from "../../img/ic_arbitrum_24.svg";
 import avalanche24Icon from "../../img/ic_avalanche_24.svg";
 
 import AssetDropdown from "./AssetDropdown";
-import SEO from "../../components/Common/SEO";
 
 const { AddressZero } = ethers.constants;
 
@@ -129,10 +126,7 @@ export default function DashboardV2() {
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
-  const gmxSupplyUrl = getServerUrl(ARBITRUM, "/gmx_supply");
-  const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
-  });
+  let { total: totalGmxSupply, avax: avaxGmxSupply, arbitrum: arbitrumGmxSupply } = useTotalGmxSupply();
 
   let totalLongPositionSizes;
   let totalShortPositionSizes;
@@ -151,7 +145,9 @@ export default function DashboardV2() {
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
 
   const readerAddress = getContract(chainId, "Reader");
+  const vaultReaderAddress = getContract(chainId, "VaultReader");
   const vaultAddress = getContract(chainId, "Vault");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const glpManagerAddress = getContract(chainId, "GlpManager");
 
@@ -166,10 +162,11 @@ export default function DashboardV2() {
   });
 
   const { data: vaultTokenInfo } = useSWR(
-    [`Dashboard:vaultTokenInfo:${active}`, chainId, readerAddress, "getVaultTokenInfoV2"],
+    [`Dashboard:vaultTokenInfo:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
     {
-      fetcher: fetcher(library, ReaderV2, [
+      fetcher: fetcher(library, VaultReader, [
         vaultAddress,
+        positionRouterAddress,
         nativeTokenAddress,
         expandDecimals(1, 18),
         whitelistedTokenAddresses,
@@ -195,8 +192,6 @@ export default function DashboardV2() {
     }
   );
 
-  const { data: stakedGmxSupply } = useStakedGmxSupply(chainId === ARBITRUM ? library : undefined, active);
-
   const infoTokens = getInfoTokens(tokens, undefined, whitelistedTokens, vaultTokenInfo, undefined);
 
   const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
@@ -217,24 +212,23 @@ export default function DashboardV2() {
     active
   );
 
+  let { total: totalGmxInLiquidity } = useTotalGmxInLiquidity(chainId, active);
+
+  let { avax: avaxStakedGmx, arbitrum: arbitrumStakedGmx, total: totalStakedGmx } = useTotalGmxStaked();
+
   let gmxMarketCap;
-  if (gmxPrice && gmxSupply) {
-    gmxMarketCap = gmxPrice.mul(gmxSupply).div(expandDecimals(1, GMX_DECIMALS));
+  if (gmxPrice && totalGmxSupply) {
+    gmxMarketCap = gmxPrice.mul(totalGmxSupply).div(expandDecimals(1, GMX_DECIMALS));
   }
 
   let stakedGmxSupplyUsd;
-  if (gmxPrice && stakedGmxSupply) {
-    stakedGmxSupplyUsd = stakedGmxSupply.mul(gmxPrice).div(expandDecimals(1, GMX_DECIMALS));
+  if (gmxPrice && totalStakedGmx) {
+    stakedGmxSupplyUsd = totalStakedGmx.mul(gmxPrice).div(expandDecimals(1, GMX_DECIMALS));
   }
 
   let aum;
   if (aums && aums.length > 0) {
     aum = aums[0].add(aums[1]).div(2);
-  }
-
-  let tvl;
-  if (aum && gmxPrice && stakedGmxSupply) {
-    tvl = aum.add(gmxPrice.mul(stakedGmxSupply).div(expandDecimals(1, GMX_DECIMALS)));
   }
 
   let glpPrice;
@@ -247,6 +241,11 @@ export default function DashboardV2() {
         ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(glpSupply)
         : expandDecimals(1, USD_DECIMALS);
     glpMarketCap = glpPrice.mul(glpSupply).div(expandDecimals(1, GLP_DECIMALS));
+  }
+
+  let tvl;
+  if (glpMarketCap && gmxPrice && totalStakedGmx) {
+    tvl = glpMarketCap.add(gmxPrice.mul(totalStakedGmx).div(expandDecimals(1, GMX_DECIMALS)));
   }
 
   const ethFloorPriceFund = expandDecimals(350 + 148 + 384, 18);
@@ -344,98 +343,15 @@ export default function DashboardV2() {
     );
   };
 
-  /* GMX Distribution */
-
-  // ARBITRUM
-  const arbitrumGmxAddress = getContract(ARBITRUM, "GMX");
-  const arbitrumStakedGmxTrackerAddress = getContract(ARBITRUM, "StakedGmxTracker");
-
-  const { data: arbitrumStakedGmxSupply } = useSWR(
-    [`StakeV2:stakedGmxSupply:${active}`, ARBITRUM, arbitrumGmxAddress, "balanceOf", arbitrumStakedGmxTrackerAddress],
-    {
-      fetcher: fetcher(undefined, Token),
-    }
-  );
-
-  const arbitrumGmxSupplyUrl = getServerUrl(ARBITRUM, "/gmx_supply");
-  const { data: arbitrumGmxSupply } = useSWR([arbitrumGmxSupplyUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
-  });
-  // GMX in Arbitrum Liquidity
-  let UniswapGmxEthPool = getContract(ARBITRUM, "UniswapGmxEthPool");
-  const { data: gmxInArbitrumLiquidity } = useSWR(
-    [`StakeV2:gmxInArbitrumLiquidity:${active}`, ARBITRUM, arbitrumGmxAddress, "balanceOf", UniswapGmxEthPool],
-    {
-      fetcher: fetcher(undefined, Token),
-    }
-  );
-
-  // AVALANCHE
-  const avalancheGmxAddress = getContract(AVALANCHE, "GMX");
-  const avalancheStakedGmxTrackerAddress = getContract(AVALANCHE, "StakedGmxTracker");
-
-  const { data: avalancheStakedGmxSupply } = useSWR(
-    [
-      `StakeV2:stakedGmxSupply:${active}`,
-      AVALANCHE,
-      avalancheGmxAddress,
-      "balanceOf",
-      avalancheStakedGmxTrackerAddress,
-    ],
-    {
-      fetcher: fetcher(undefined, Token),
-    }
-  );
-  // GMX in AVAX Liquidity
-  let TraderJoeGmxAvaxPool = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
-  const { data: gmxInAvaxLiquidity } = useSWR(
-    [`StakeV2:gmxInAvaxLiquidity:${active}`, AVALANCHE, avalancheGmxAddress, "balanceOf", TraderJoeGmxAvaxPool],
-    {
-      fetcher: fetcher(undefined, Token),
-    }
-  );
-  // Total GMX in Liquidity
-  let totalGmxInLiquidity = bigNumberify(0);
-  if (gmxInAvaxLiquidity) {
-    totalGmxInLiquidity = totalGmxInLiquidity.add(gmxInAvaxLiquidity);
-  }
-
-  if (gmxInArbitrumLiquidity) {
-    totalGmxInLiquidity = totalGmxInLiquidity.add(gmxInArbitrumLiquidity);
-  }
-
-  const avalancheGmxSupplyUrl = getServerUrl(AVALANCHE, "/gmx_supply");
-  const { data: avalancheGmxSupply } = useSWR([avalancheGmxSupplyUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
-  });
-
-  let totalGmxSupply = bigNumberify(0);
-  if (arbitrumGmxSupply) {
-    totalGmxSupply = totalGmxSupply.add(bigNumberify(arbitrumGmxSupply));
-  }
-
-  if (avalancheGmxSupply) {
-    totalGmxSupply = totalGmxSupply.add(bigNumberify(avalancheGmxSupply));
-  }
-
-  let totalStakedGmxSupply = bigNumberify(0);
-  if (arbitrumStakedGmxSupply) {
-    totalStakedGmxSupply = totalStakedGmxSupply.add(bigNumberify(arbitrumStakedGmxSupply));
-  }
-
-  if (avalancheStakedGmxSupply) {
-    totalStakedGmxSupply = totalStakedGmxSupply.add(bigNumberify(avalancheStakedGmxSupply));
-  }
-
   let stakedPercent = 0;
 
-  if (!totalGmxSupply.isZero()) {
-    stakedPercent = totalStakedGmxSupply.mul(100).div(totalGmxSupply).toNumber();
+  if (!totalGmxSupply.isZero() && !totalStakedGmx.isZero()) {
+    stakedPercent = totalStakedGmx.mul(100).div(totalGmxSupply).toNumber();
   }
 
   let liquidityPercent = 0;
 
-  if (!totalGmxSupply.isZero()) {
+  if (!totalGmxSupply.isZero() && totalGmxInLiquidity) {
     liquidityPercent = totalGmxInLiquidity.mul(100).div(totalGmxSupply).toNumber();
   }
 
@@ -468,12 +384,10 @@ export default function DashboardV2() {
     const tokenInfo = infoTokens[token.address];
     if (tokenInfo.usdgAmount && adjustedUsdgSupply) {
       const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
-
       if (tokenInfo.isStable) {
         stableGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
       }
       totalGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
-
       return {
         fullname: token.name,
         name: token.symbol,
@@ -533,437 +447,460 @@ export default function DashboardV2() {
   };
 
   return (
-    <SEO title={getPageTitle("Dashboard")}>
-      <div className="default-container DashboardV2 page-layout">
-        <div className="section-title-block">
-          <div className="section-title-icon"></div>
-          <div className="section-title-content">
-            <div className="Page-title">
-              Stats {chainId === AVALANCHE && <img src={avalanche24Icon} alt="avalanche24Icon" />}
-              {chainId === ARBITRUM && <img src={arbitrum24Icon} alt="arbitrum24Icon" />}
+    <div className="default-container DashboardV2 page-layout">
+      <div className="section-title-block">
+        <div className="section-title-icon"></div>
+        <div className="section-title-content">
+          <div className="Page-title">
+            Stats {chainId === AVALANCHE && <img src={avalanche24Icon} alt="avalanche24Icon" />}
+            {chainId === ARBITRUM && <img src={arbitrum24Icon} alt="arbitrum24Icon" />}
+          </div>
+          <div className="Page-description">
+            {chainName} Total Stats start from {totalStatsStartDate}.<br /> For detailed stats:{" "}
+            {chainId === ARBITRUM && (
+              <a href="https://stats.gmx.io" target="_blank" rel="noopener noreferrer">
+                https://stats.gmx.io
+              </a>
+            )}
+            {chainId === AVALANCHE && (
+              <a href="https://stats.gmx.io/avalanche" target="_blank" rel="noopener noreferrer">
+                https://stats.gmx.io/avalanche
+              </a>
+            )}
+            .
+          </div>
+        </div>
+      </div>
+      <div className="DashboardV2-content">
+        <div className="DashboardV2-cards">
+          <div className="App-card">
+            <div className="App-card-title">Overview</div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">AUM</div>
+                <div>
+                  <TooltipComponent
+                    handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
+                    position="right-bottom"
+                    renderContent={() => `Assets Under Management: GMX staked (All chains) + GLP pool (${chainName})`}
+                  />
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">GLP Pool</div>
+                <div>
+                  <TooltipComponent
+                    handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
+                    position="right-bottom"
+                    renderContent={() => `Total value of tokens in GLP pool (${chainName})`}
+                  />
+                </div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">24h Volume</div>
+                <div>${formatAmount(volumeInfo.totalVolume, USD_DECIMALS, 0, true)}</div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Long Positions</div>
+                <div>${formatAmount(totalLongPositionSizes, USD_DECIMALS, 0, true)}</div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Short Positions</div>
+                <div>${formatAmount(totalShortPositionSizes, USD_DECIMALS, 0, true)}</div>
+              </div>
+              {feeHistory.length ? (
+                <div className="App-card-row">
+                  <div className="label">Fees since {formatDate(feeHistory[0].to)}</div>
+                  <div>${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}</div>
+                </div>
+              ) : null}
             </div>
-            <div className="Page-description">
-              {chainName} Total Stats start from {totalStatsStartDate}.<br /> For detailed stats:{" "}
-              {chainId === ARBITRUM && (
-                <a href="https://stats.gmx.io" target="_blank" rel="noopener noreferrer">
-                  https://stats.gmx.io
-                </a>
-              )}
-              {chainId === AVALANCHE && (
-                <a href="https://stats.gmx.io/avalanche" target="_blank" rel="noopener noreferrer">
-                  https://stats.gmx.io/avalanche
-                </a>
-              )}
-              .
+          </div>
+          <div className="App-card">
+            <div className="App-card-title">Total Stats</div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">Total Fees</div>
+                <div>${numberWithCommas(totalFeesDistributed.toFixed(0))}</div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Total Volume</div>
+                <div>${formatAmount(totalVolumeSum, USD_DECIMALS, 0, true)}</div>
+              </div>
+              <div className="App-card-row">
+                <div className="label">Floor Price Fund</div>
+                <div>${formatAmount(totalFloorPriceFundUsd, 30, 0, true)}</div>
+              </div>
             </div>
           </div>
         </div>
-        <div className="DashboardV2-content">
-          <div className="DashboardV2-cards">
+        <div className="Tab-title-section">
+          <div className="Page-title">
+            Tokens {chainId === AVALANCHE && <img src={avalanche24Icon} alt="avalanche24Icon" />}
+            {chainId === ARBITRUM && <img src={arbitrum24Icon} alt="arbitrum24Icon" />}
+          </div>
+          <div className="Page-description">Platform and GLP index tokens.</div>
+        </div>
+        <div className="DashboardV2-token-cards">
+          <div className="stats-wrapper stats-wrapper--gmx">
             <div className="App-card">
-              <div className="App-card-title">Overview</div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-content">
-                <div className="App-card-row">
-                  <div className="label">AUM</div>
-                  <div>
-                    <TooltipComponent
-                      handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
-                      position="right-bottom"
-                      renderContent={() => `Assets Under Management: GMX staked (All chains) + GLP pool (${chainName})`}
-                    />
+              <div className="stats-block">
+                <div className="App-card-title">
+                  <div className="App-card-title-mark">
+                    <div className="App-card-title-mark-icon">
+                      <img src={gmx40Icon} alt="gmx40Icon" />
+                    </div>
+                    <div className="App-card-title-mark-info">
+                      <div className="App-card-title-mark-title">GMX</div>
+                      <div className="App-card-title-mark-subtitle">GMX</div>
+                    </div>
+                    <div>
+                      <AssetDropdown assetSymbol="GMX" />
+                    </div>
                   </div>
                 </div>
-                <div className="App-card-row">
-                  <div className="label">GLP Pool</div>
-                  <div>
-                    <TooltipComponent
-                      handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
-                      position="right-bottom"
-                      renderContent={() => `Total value of tokens in GLP pool (${chainName})`}
-                    />
-                  </div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">24h Volume</div>
-                  <div>${formatAmount(volumeInfo.totalVolume, USD_DECIMALS, 0, true)}</div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Long Positions</div>
-                  <div>${formatAmount(totalLongPositionSizes, USD_DECIMALS, 0, true)}</div>
-                </div>
-                <div className="App-card-row">
-                  <div className="label">Short Positions</div>
-                  <div>${formatAmount(totalShortPositionSizes, USD_DECIMALS, 0, true)}</div>
-                </div>
-                {feeHistory.length ? (
+                <div className="App-card-divider"></div>
+                <div className="App-card-content">
                   <div className="App-card-row">
-                    <div className="label">Fees since {formatDate(feeHistory[0].to)}</div>
-                    <div>${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}</div>
+                    <div className="label">Price</div>
+                    <div>
+                      {!gmxPrice && "..."}
+                      {gmxPrice && (
+                        <TooltipComponent
+                          position="right-bottom"
+                          className="nowrap"
+                          handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
+                          renderContent={() => (
+                            <>
+                              Price on Arbitrum: ${formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
+                              <br />
+                              Price on Avalanche: ${formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                            </>
+                          )}
+                        />
+                      )}
+                    </div>
                   </div>
-                ) : null}
+                  <div className="App-card-row">
+                    <div className="label">Supply</div>
+                    <div>
+                      {totalGmxSupply && arbitrumGmxSupply && avaxGmxSupply && (
+                        <TooltipComponent
+                          position="right-bottom"
+                          className="nowrap"
+                          handle={formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true) + " GMX"}
+                          renderContent={() => (
+                            <>
+                              Supply on Arbitrum: {formatAmount(arbitrumGmxSupply, GMX_DECIMALS, 0, true)} GMX
+                              <br />
+                              Supply on Avalanche: {formatAmount(avaxGmxSupply, GMX_DECIMALS, 0, true)} GMX
+                            </>
+                          )}
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Total Staked</div>
+                    <div>
+                      {
+                        <TooltipComponent
+                          position="right-bottom"
+                          className="nowrap"
+                          handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
+                          renderContent={() => (
+                            <>
+                              Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                              <br />
+                              Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                            </>
+                          )}
+                        />
+                      }
+                    </div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Market Cap</div>
+                    <div>${formatAmount(gmxMarketCap, USD_DECIMALS, 0, true)}</div>
+                  </div>
+                </div>
+              </div>
+              <div className="stats-piechart" onMouseLeave={onGMXDistributionChartLeave}>
+                {gmxDistributionData.length > 0 && (
+                  <PieChart width={210} height={210}>
+                    <Pie
+                      data={gmxDistributionData}
+                      cx={100}
+                      cy={100}
+                      innerRadius={73}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      startAngle={90}
+                      endAngle={-270}
+                      paddingAngle={2}
+                      onMouseEnter={onGMXDistributionChartEnter}
+                      onMouseOut={onGMXDistributionChartLeave}
+                      onMouseLeave={onGMXDistributionChartLeave}
+                    >
+                      {gmxDistributionData.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={entry.color}
+                          style={{
+                            filter:
+                              gmxActiveIndex === index
+                                ? `drop-shadow(0px 0px 6px ${hexToRgba(entry.color, 0.7)})`
+                                : "none",
+                            cursor: "pointer",
+                          }}
+                          stroke={entry.color}
+                          strokeWidth={gmxActiveIndex === index ? 1 : 1}
+                        />
+                      ))}
+                    </Pie>
+                    <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
+                      Distribution
+                    </text>
+                    <Tooltip content={<CustomTooltip />} />
+                  </PieChart>
+                )}
               </div>
             </div>
             <div className="App-card">
-              <div className="App-card-title">Total Stats</div>
-              <div className="App-card-divider"></div>
-              <div className="App-card-content">
-                <div className="App-card-row">
-                  <div className="label">Total Fees</div>
-                  <div>${numberWithCommas(totalFeesDistributed.toFixed(0))}</div>
+              <div className="stats-block">
+                <div className="App-card-title">
+                  <div className="App-card-title-mark">
+                    <div className="App-card-title-mark-icon">
+                      <img src={glp40Icon} alt="glp40Icon" />
+                      {chainId === ARBITRUM ? (
+                        <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" />
+                      ) : (
+                        <img src={avalanche16Icon} alt="avalanche16Icon" className="selected-network-symbol" />
+                      )}
+                    </div>
+                    <div className="App-card-title-mark-info">
+                      <div className="App-card-title-mark-title">GLP</div>
+                      <div className="App-card-title-mark-subtitle">GLP</div>
+                    </div>
+                    <div>
+                      <AssetDropdown assetSymbol="GLP" />
+                    </div>
+                  </div>
                 </div>
-                <div className="App-card-row">
-                  <div className="label">Total Volume</div>
-                  <div>${formatAmount(totalVolumeSum, USD_DECIMALS, 0, true)}</div>
+                <div className="App-card-divider"></div>
+                <div className="App-card-content">
+                  <div className="App-card-row">
+                    <div className="label">Price</div>
+                    <div>${formatAmount(glpPrice, USD_DECIMALS, 2, true)}</div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Supply</div>
+                    <div>{formatAmount(glpSupply, GLP_DECIMALS, 0, true)} GLP</div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Total Staked</div>
+                    <div>${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}</div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Market Cap</div>
+                    <div>${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}</div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Stablecoin Percentage</div>
+                    <div>{stablePercentage}%</div>
+                  </div>
                 </div>
-                <div className="App-card-row">
-                  <div className="label">Floor Price Fund</div>
-                  <div>${formatAmount(totalFloorPriceFundUsd, 30, 0, true)}</div>
-                </div>
+              </div>
+              <div className="stats-piechart" onMouseOut={onGLPPoolChartLeave}>
+                {glpPool.length > 0 && (
+                  <PieChart width={210} height={210}>
+                    <Pie
+                      data={glpPool}
+                      cx={100}
+                      cy={100}
+                      innerRadius={73}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                      startAngle={90}
+                      endAngle={-270}
+                      onMouseEnter={onGLPPoolChartEnter}
+                      onMouseOut={onGLPPoolChartLeave}
+                      onMouseLeave={onGLPPoolChartLeave}
+                      paddingAngle={2}
+                    >
+                      {glpPool.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={GLPPOOLCOLORS[entry.name]}
+                          style={{
+                            filter:
+                              glpActiveIndex === index
+                                ? `drop-shadow(0px 0px 6px ${hexToRgba(GLPPOOLCOLORS[entry.name], 0.7)})`
+                                : "none",
+                            cursor: "pointer",
+                          }}
+                          stroke={GLPPOOLCOLORS[entry.name]}
+                          strokeWidth={glpActiveIndex === index ? 1 : 1}
+                        />
+                      ))}
+                    </Pie>
+                    <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
+                      GLP Pool
+                    </text>
+                    <Tooltip content={<CustomTooltip />} />
+                  </PieChart>
+                )}
               </div>
             </div>
           </div>
-          <div className="Tab-title-section">
-            <div className="Page-title">
-              Tokens {chainId === AVALANCHE && <img src={avalanche24Icon} alt="avalanche24Icon" />}
-              {chainId === ARBITRUM && <img src={arbitrum24Icon} alt="arbitrum24Icon" />}
+          <div className="token-table-wrapper App-card">
+            <div className="App-card-title">
+              GLP Index Composition {chainId === AVALANCHE && <img src={avalanche16Icon} alt="avalanche16Icon" />}
+              {chainId === ARBITRUM && <img src={arbitrum16Icon} alt="arbitrum16Icon" />}
             </div>
-            <div className="Page-description">Platform and GLP index tokens.</div>
-          </div>
-          <div className="DashboardV2-token-cards">
-            <div className="stats-wrapper stats-wrapper--gmx">
-              <div className="App-card">
-                <div className="stats-block">
-                  <div className="App-card-title">
-                    <div className="App-card-title-mark">
-                      <div className="App-card-title-mark-icon">
-                        <img src={gmx40Icon} alt="gmx40Icon" />
-                        {chainId === ARBITRUM ? (
-                          <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" />
-                        ) : (
-                          <img src={avalanche16Icon} alt="avalanche16Icon" className="selected-network-symbol" />
-                        )}
-                      </div>
-                      <div className="App-card-title-mark-info">
-                        <div className="App-card-title-mark-title">GMX</div>
-                        <div className="App-card-title-mark-subtitle">GMX</div>
-                      </div>
-                      <div>
-                        <AssetDropdown assetSymbol="GMX" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="App-card-divider"></div>
-                  <div className="App-card-content">
-                    <div className="App-card-row">
-                      <div className="label">Price</div>
-                      <div>
-                        {!gmxPrice && "..."}
-                        {gmxPrice && (
-                          <TooltipComponent
-                            position="right-bottom"
-                            className="nowrap"
-                            handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
-                            renderContent={() => (
-                              <>
-                                Price on Arbitrum: ${formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
-                                <br />
-                                Price on Avalanche: ${formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
-                              </>
-                            )}
-                          />
-                        )}
-                      </div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">Supply</div>
-                      <div>{formatAmount(gmxSupply, GMX_DECIMALS, 0, true)} GMX</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">Total Staked</div>
-                      <div>${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">Market Cap</div>
-                      <div>${formatAmount(gmxMarketCap, USD_DECIMALS, 0, true)}</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="stats-piechart" onMouseLeave={onGMXDistributionChartLeave}>
-                  {gmxDistributionData.length > 0 && (
-                    <PieChart width={210} height={210}>
-                      <Pie
-                        data={gmxDistributionData}
-                        cx={100}
-                        cy={100}
-                        innerRadius={73}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        startAngle={90}
-                        endAngle={-270}
-                        paddingAngle={2}
-                        onMouseEnter={onGMXDistributionChartEnter}
-                        onMouseOut={onGMXDistributionChartLeave}
-                        onMouseLeave={onGMXDistributionChartLeave}
-                      >
-                        {gmxDistributionData.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={entry.color}
-                            style={{
-                              filter:
-                                gmxActiveIndex === index
-                                  ? `drop-shadow(0px 0px 6px ${hexToRgba(entry.color, 0.7)})`
-                                  : "none",
-                              cursor: "pointer",
-                            }}
-                            stroke={entry.color}
-                            strokeWidth={gmxActiveIndex === index ? 1 : 1}
-                          />
-                        ))}
-                      </Pie>
-                      <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
-                        Distribution
-                      </text>
-                      <Tooltip content={<CustomTooltip />} />
-                    </PieChart>
-                  )}
-                </div>
-              </div>
-              <div className="App-card">
-                <div className="stats-block">
-                  <div className="App-card-title">
-                    <div className="App-card-title-mark">
-                      <div className="App-card-title-mark-icon">
-                        <img src={glp40Icon} alt="glp40Icon" />
-                        {chainId === ARBITRUM ? (
-                          <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" />
-                        ) : (
-                          <img src={avalanche16Icon} alt="avalanche16Icon" className="selected-network-symbol" />
-                        )}
-                      </div>
-                      <div className="App-card-title-mark-info">
-                        <div className="App-card-title-mark-title">GLP</div>
-                        <div className="App-card-title-mark-subtitle">GLP</div>
-                      </div>
-                      <div>
-                        <AssetDropdown assetSymbol="GLP" />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="App-card-divider"></div>
-                  <div className="App-card-content">
-                    <div className="App-card-row">
-                      <div className="label">Price</div>
-                      <div>${formatAmount(glpPrice, USD_DECIMALS, 2, true)}</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">Supply</div>
-                      <div>{formatAmount(glpSupply, GLP_DECIMALS, 0, true)} GLP</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">Total Staked</div>
-                      <div>${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">Market Cap</div>
-                      <div>${formatAmount(glpMarketCap, USD_DECIMALS, 0, true)}</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">Stablecoin Percentage</div>
-                      <div>{stablePercentage}%</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="stats-piechart" onMouseOut={onGLPPoolChartLeave}>
-                  {glpPool.length > 0 && (
-                    <PieChart width={210} height={210}>
-                      <Pie
-                        data={glpPool}
-                        cx={100}
-                        cy={100}
-                        innerRadius={73}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        startAngle={90}
-                        endAngle={-270}
-                        onMouseEnter={onGLPPoolChartEnter}
-                        onMouseOut={onGLPPoolChartLeave}
-                        onMouseLeave={onGLPPoolChartLeave}
-                        paddingAngle={2}
-                      >
-                        {glpPool.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={GLPPOOLCOLORS[entry.name]}
-                            style={{
-                              filter:
-                                glpActiveIndex === index
-                                  ? `drop-shadow(0px 0px 6px ${hexToRgba(GLPPOOLCOLORS[entry.name], 0.7)})`
-                                  : "none",
-                              cursor: "pointer",
-                            }}
-                            stroke={GLPPOOLCOLORS[entry.name]}
-                            strokeWidth={glpActiveIndex === index ? 1 : 1}
-                          />
-                        ))}
-                      </Pie>
-                      <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
-                        GLP Pool
-                      </text>
-                      <Tooltip content={<CustomTooltip />} />
-                    </PieChart>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="token-table-wrapper App-card">
-              <div className="App-card-title">
-                GLP Index Composition {chainId === AVALANCHE && <img src={avalanche16Icon} alt="avalanche16Icon" />}
-                {chainId === ARBITRUM && <img src={arbitrum16Icon} alt="arbitrum16Icon" />}
-              </div>
-              <div className="App-card-divider"></div>
-              <table className="token-table">
-                <thead>
-                  <tr>
-                    <th>TOKEN</th>
-                    <th>PRICE</th>
-                    <th>POOL</th>
-                    <th>WEIGHT</th>
-                    <th>UTILIZATION</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tokenList.map((token) => {
-                    const tokenInfo = infoTokens[token.address];
-                    let utilization = bigNumberify(0);
-                    if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
-                      utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
-                    }
-                    let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
-                    if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
-                      maxUsdgAmount = tokenInfo.maxUsdgAmount;
-                    }
+            <div className="App-card-divider"></div>
+            <table className="token-table">
+              <thead>
+                <tr>
+                  <th>TOKEN</th>
+                  <th>PRICE</th>
+                  <th>POOL</th>
+                  <th>WEIGHT</th>
+                  <th>UTILIZATION</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tokenList.map((token) => {
+                  const tokenInfo = infoTokens[token.address];
+                  let utilization = bigNumberify(0);
+                  if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
+                    utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
+                  }
+                  let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
+                  if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+                    maxUsdgAmount = tokenInfo.maxUsdgAmount;
+                  }
 
-                    var tokenImage = null;
+                  var tokenImage = null;
 
-                    try {
-                      tokenImage = require("../../img/ic_" + token.symbol.toLowerCase() + "_40.svg");
-                    } catch (error) {
-                      console.error(error);
-                    }
+                  try {
+                    tokenImage = require("../../img/ic_" + token.symbol.toLowerCase() + "_40.svg");
+                  } catch (error) {
+                    console.error(error);
+                  }
 
-                    return (
-                      <tr key={token.symbol}>
-                        <td>
-                          <div className="token-symbol-wrapper">
-                            <div className="App-card-title-info">
-                              <div className="App-card-title-info-icon">
-                                <img src={tokenImage && tokenImage.default} alt={token.symbol} width="40px" />
-                              </div>
-                              <div className="App-card-title-info-text">
-                                <div className="App-card-info-title">{token.name}</div>
-                                <div className="App-card-info-subtitle">{token.symbol}</div>
-                              </div>
-                              <div>
-                                <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
-                              </div>
+                  return (
+                    <tr key={token.symbol}>
+                      <td>
+                        <div className="token-symbol-wrapper">
+                          <div className="App-card-title-info">
+                            <div className="App-card-title-info-icon">
+                              <img src={tokenImage && tokenImage.default} alt={token.symbol} width="40px" />
+                            </div>
+                            <div className="App-card-title-info-text">
+                              <div className="App-card-info-title">{token.name}</div>
+                              <div className="App-card-info-subtitle">{token.symbol}</div>
+                            </div>
+                            <div>
+                              <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
                             </div>
                           </div>
-                        </td>
-                        <td>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</td>
-                        <td>
-                          <TooltipComponent
-                            handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
-                            position="right-bottom"
-                            renderContent={() => {
-                              return (
-                                <>
-                                  Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)}{" "}
-                                  {token.symbol}
-                                  <br />
-                                  <br />
-                                  Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
-                                </>
-                              );
-                            }}
-                          />
-                        </td>
-                        <td>{getWeightText(tokenInfo)}</td>
-                        <td>{formatAmount(utilization, 2, 2, false)}%</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-            <div className="token-grid">
-              {tokenList.map((token) => {
-                const tokenInfo = infoTokens[token.address];
-                let utilization = bigNumberify(0);
-                if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
-                  utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
-                }
-                let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
-                if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
-                  maxUsdgAmount = tokenInfo.maxUsdgAmount;
-                }
+                        </div>
+                      </td>
+                      <td>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</td>
+                      <td>
+                        <TooltipComponent
+                          handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
+                          position="right-bottom"
+                          renderContent={() => {
+                            return (
+                              <>
+                                Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)}{" "}
+                                {token.symbol}
+                                <br />
+                                <br />
+                                Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                              </>
+                            );
+                          }}
+                        />
+                      </td>
+                      <td>{getWeightText(tokenInfo)}</td>
+                      <td>{formatAmount(utilization, 2, 2, false)}%</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div className="token-grid">
+            {tokenList.map((token) => {
+              const tokenInfo = infoTokens[token.address];
+              let utilization = bigNumberify(0);
+              if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
+                utilization = tokenInfo.reservedAmount.mul(BASIS_POINTS_DIVISOR).div(tokenInfo.poolAmount);
+              }
+              let maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
+              if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
+                maxUsdgAmount = tokenInfo.maxUsdgAmount;
+              }
 
-                return (
-                  <div className="App-card" key={token.symbol}>
-                    <div className="App-card-title">
-                      <div style={{ display: "flex" }}>
-                        {token.symbol}
-                        <div>
-                          <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="App-card-divider"></div>
-                    <div className="App-card-content">
-                      <div className="App-card-row">
-                        <div className="label">Price</div>
-                        <div>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</div>
-                      </div>
-                      <div className="App-card-row">
-                        <div className="label">Pool</div>
-                        <div>
-                          <TooltipComponent
-                            handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
-                            position="right-bottom"
-                            renderContent={() => {
-                              return (
-                                <>
-                                  Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)}{" "}
-                                  {token.symbol}
-                                  <br />
-                                  <br />
-                                  Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
-                                </>
-                              );
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="App-card-row">
-                        <div className="label">Weight</div>
-                        <div>{getWeightText(tokenInfo)}</div>
-                      </div>
-                      <div className="App-card-row">
-                        <div className="label">Utilization</div>
-                        <div>{formatAmount(utilization, 2, 2, false)}%</div>
+              return (
+                <div className="App-card" key={token.symbol}>
+                  <div className="App-card-title">
+                    <div style={{ display: "flex" }}>
+                      {token.symbol}
+                      <div>
+                        <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
                       </div>
                     </div>
                   </div>
-                );
-              })}
-            </div>
+                  <div className="App-card-divider"></div>
+                  <div className="App-card-content">
+                    <div className="App-card-row">
+                      <div className="label">Price</div>
+                      <div>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">Pool</div>
+                      <div>
+                        <TooltipComponent
+                          handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
+                          position="right-bottom"
+                          renderContent={() => {
+                            return (
+                              <>
+                                Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)}{" "}
+                                {token.symbol}
+                                <br />
+                                <br />
+                                Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                              </>
+                            );
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">Weight</div>
+                      <div>{getWeightText(tokenInfo)}</div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">Utilization</div>
+                      <div>{formatAmount(utilization, 2, 2, false)}%</div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
-        <Footer />
       </div>
-    </SEO>
+      <Footer />
+    </div>
   );
 }

@@ -52,7 +52,11 @@ const GAS_PRICE_ADJUSTMENT_MAP = {
   [AVALANCHE]: "3000000000", // 3 gwei
 };
 
-const ARBITRUM_RPC_PROVIDERS = ["https://arb1.arbitrum.io/rpc"];
+const MAX_GAS_PRICE_MAP = {
+  [AVALANCHE]: "200000000000", // 200 gwei
+};
+
+const ARBITRUM_RPC_PROVIDERS = ["https://rpc.ankr.com/arbitrum"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
@@ -104,7 +108,7 @@ export const STOP = "Stop";
 export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_OPTIONS = [LONG, SHORT, SWAP];
-export const DEFAULT_SLIPPAGE_AMOUNT = 20;
+export const DEFAULT_SLIPPAGE_AMOUNT = 30;
 export const DEFAULT_HIGHER_SLIPPAGE_AMOUNT = 100;
 
 export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3";
@@ -1525,7 +1529,7 @@ export const fetcher =
     const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
 
     function onError(e) {
-      console.error(contractInfo.contractName, method, e);
+      console.error(id, contractInfo.contractName, method, e);
     }
 
     if (ethers.utils.isAddress(arg0)) {
@@ -1891,15 +1895,23 @@ export function usePrevious(value) {
   return ref.current;
 }
 
-export async function getGasPrice(provider, chainId) {
-  if (!provider) {
-    return;
-  }
-
-  const gasPrice = await provider.getGasPrice();
+export async function setGasPrice(txnOpts, provider, chainId) {
+  let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
   const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
 
-  return gasPrice.add(premium);
+  if (maxGasPrice) {
+    const gasPrice = await provider.getGasPrice();
+    if (gasPrice.gt(maxGasPrice)) {
+      maxGasPrice = gasPrice;
+    }
+
+    const feeData = await provider.getFeeData();
+    txnOpts.maxFeePerGas = maxGasPrice;
+    txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
+  } else {
+    const gasPrice = await provider.getGasPrice();
+    txnOpts.gasPrice = gasPrice.add(premium);
+  }
 }
 
 export async function getGasLimit(contract, method, params = [], value, gasBuffer) {
@@ -2391,7 +2403,7 @@ export function getProcessedData(
 
   data.gmxSupply = bigNumberify(gmxSupply);
 
-  data.gmxSupplyUsd = supplyData.gmx.mul(gmxPrice).div(expandDecimals(1, 18));
+  data.gmxSupplyUsd = data.gmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   data.stakedGmxSupply = stakedGmxSupply;
   data.stakedGmxSupplyUsd = stakedGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   data.gmxInStakedGmx = depositBalanceData.gmxInStakedGmx;

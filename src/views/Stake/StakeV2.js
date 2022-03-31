@@ -42,7 +42,7 @@ import {
   getProcessedData,
   getPageTitle,
 } from "../../Helpers";
-import { callContract, useGmxPrice } from "../../Api";
+import { callContract, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "../../Api";
 import { getConstant } from "../../Constants";
 
 import useSWR from "swr";
@@ -481,36 +481,36 @@ function VesterDepositModal(props) {
                 />
               </div>
             </div>
-            <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Reserve Amount</div>
-              <div className="align-right">
-                <Tooltip
-                  handle={`${formatAmount(nextReserveAmount, 18, 2, true)} / ${formatAmount(
-                    maxReserveAmount,
-                    18,
-                    2,
-                    true
-                  )}`}
-                  position="right-bottom"
-                  renderContent={() => {
-                    return (
-                      <>
-                        Current Reserved: {formatAmount(reserveAmount, 18, 2, true)}
-                        <br />
-                        Reserve Required: {formatAmount(additionalReserveAmount, 18, 2, true)}
-                        <br />
-                        {amount && nextReserveAmount.gt(maxReserveAmount) && (
-                          <div>
-                            <br />
-                            You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)}{" "}
-                            {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.
-                          </div>
-                        )}
-                      </>
-                    );
-                  }}
-                />
-              </div>
+          </div>
+          <div className="Exchange-info-row">
+            <div className="Exchange-info-label">Reserve Amount</div>
+            <div className="align-right">
+              <Tooltip
+                handle={`${formatAmount(
+                  reserveAmount && reserveAmount.gte(additionalReserveAmount) ? reserveAmount : additionalReserveAmount,
+                  18,
+                  2,
+                  true
+                )} / ${formatAmount(maxReserveAmount, 18, 2, true)}`}
+                position="right-bottom"
+                renderContent={() => {
+                  return (
+                    <>
+                      Current Reserved: {formatAmount(reserveAmount, 18, 2, true)}
+                      <br />
+                      Additional reserve required: {formatAmount(additionalReserveAmount, 18, 2, true)}
+                      <br />
+                      {amount && nextReserveAmount.gt(maxReserveAmount) && (
+                        <div>
+                          <br />
+                          You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)} {stakeTokenLabel}{" "}
+                          to vest {formatAmount(amount, 18, 2, true)} esGMX.
+                        </div>
+                      )}
+                    </>
+                  );
+                }}
+              />
             </div>
           </div>
           <div className="Exchange-swap-button-container">
@@ -620,7 +620,7 @@ function CompoundModal(props) {
 
   const [isApproving, setIsApproving] = useState(false);
 
-  const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(
+  const { data: tokenAllowance } = useSWR(
     active && [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress],
     {
       fetcher: fetcher(library, Token),
@@ -628,17 +628,6 @@ function CompoundModal(props) {
   );
 
   const needApproval = shouldStakeGmx && tokenAllowance && totalVesterRewards && totalVesterRewards.gt(tokenAllowance);
-
-  useEffect(() => {
-    if (active) {
-      library.on("block", () => {
-        updateTokenAllowance(undefined, true);
-      });
-      return () => {
-        library.removeAllListeners("block");
-      };
-    }
-  }, [active, library, updateTokenAllowance]);
 
   const isPrimaryEnabled = () => {
     return !isCompounding && !isApproving && !isCompounding;
@@ -988,7 +977,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     feeGlpTrackerAddress,
   ];
 
-  const { data: walletBalances, mutate: updateWalletBalances } = useSWR(
+  const { data: walletBalances } = useSWR(
     [
       `StakeV2:walletBalances:${active}`,
       chainId,
@@ -1001,7 +990,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     }
   );
 
-  const { data: depositBalances, mutate: updateDepositBalances } = useSWR(
+  const { data: depositBalances } = useSWR(
     [
       `StakeV2:depositBalances:${active}`,
       chainId,
@@ -1014,57 +1003,57 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     }
   );
 
-  const { data: stakingInfo, mutate: updateStakingInfo } = useSWR(
+  const { data: stakingInfo } = useSWR(
     [`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
     {
       fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
     }
   );
 
-  const { data: stakedGmxSupply, mutate: updateStakedGmxSupply } = useSWR(
+  const { data: stakedGmxSupply } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress],
     {
       fetcher: fetcher(library, Token),
     }
   );
 
-  const { data: aums, mutate: updateAums } = useSWR(
-    [`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"],
-    {
-      fetcher: fetcher(library, GlpManager),
-    }
-  );
+  const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
+    fetcher: fetcher(library, GlpManager),
+  });
 
-  const { data: nativeTokenPrice, mutate: updateNativeTokenPrice } = useSWR(
+  const { data: nativeTokenPrice } = useSWR(
     [`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress],
     {
       fetcher: fetcher(library, Vault),
     }
   );
 
-  const { data: esGmxSupply, mutate: updateEsGmxSupply } = useSWR(
+  const { data: esGmxSupply } = useSWR(
     [`StakeV2:esGmxSupply:${active}`, chainId, readerAddress, "getTokenSupply", esGmxAddress],
     {
       fetcher: fetcher(library, ReaderV2, [excludedEsGmxAccounts]),
     }
   );
 
-  const { data: vestingInfo, mutate: updateVestingInfo } = useSWR(
+  const { data: vestingInfo } = useSWR(
     [`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || PLACEHOLDER_ACCOUNT],
     {
       fetcher: fetcher(library, ReaderV2, [vesterAddresses]),
     }
   );
 
-  const {
-    gmxPrice,
-    gmxPriceFromArbitrum,
-    gmxPriceFromAvalanche,
-    mutate: updateGmxPrice,
-  } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? library : undefined }, active);
+  const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
+    chainId,
+    { arbitrum: chainId === ARBITRUM ? library : undefined },
+    active
+  );
+
+  let { total: totalGmxSupply, avax: avaxTotalGmx, arbitrum: arbitrumTotalGmx } = useTotalGmxSupply();
+
+  let { avax: avaxGmxStaked, arbitrum: arbitrumGmxStaked, total: totalGmxStaked } = useTotalGmxStaked();
 
   const gmxSupplyUrl = getServerUrl(chainId, "/gmx_supply");
-  const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrl], {
+  const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
     fetcher: (...args) => fetch(...args).then((res) => res.text()),
   });
 
@@ -1129,8 +1118,13 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   }
 
   let stakedGmxSupplyUsd;
-  if (stakedGmxSupply && gmxPrice) {
-    stakedGmxSupplyUsd = stakedGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
+  if (!totalGmxStaked.isZero() && gmxPrice) {
+    stakedGmxSupplyUsd = totalGmxStaked.mul(gmxPrice).div(expandDecimals(1, 18));
+  }
+
+  let totalSupplyUsd;
+  if (!totalGmxSupply.isZero() && gmxPrice) {
+    totalSupplyUsd = totalGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   }
 
   let maxUnstakeableGmx = bigNumberify(0);
@@ -1148,39 +1142,6 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       maxUnstakeableGmx = availableTokens.mul(stakedTokens).div(divisor);
     }
   }
-
-  useEffect(() => {
-    if (active) {
-      library.on("block", () => {
-        updateWalletBalances(undefined, true);
-        updateDepositBalances(undefined, true);
-        updateStakingInfo(undefined, true);
-        updateAums(undefined, true);
-        updateNativeTokenPrice(undefined, true);
-        updateStakedGmxSupply(undefined, true);
-        updateEsGmxSupply(undefined, true);
-        updateGmxPrice(undefined, true);
-        updateVestingInfo(undefined, true);
-        updateGmxSupply(undefined, true);
-      });
-      return () => {
-        library.removeAllListeners("block");
-      };
-    }
-  }, [
-    library,
-    active,
-    updateWalletBalances,
-    updateDepositBalances,
-    updateStakingInfo,
-    updateAums,
-    updateNativeTokenPrice,
-    updateStakedGmxSupply,
-    updateEsGmxSupply,
-    updateGmxPrice,
-    updateVestingInfo,
-    updateGmxSupply,
-  ]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -1606,16 +1567,48 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               <div className="App-card-row">
                 <div className="label">Total Staked</div>
                 <div>
-                  {formatAmount(stakedGmxSupply, 18, 0, true)} GMX ($
-                  {formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)})
+                  {!totalGmxStaked && "..."}
+                  {totalGmxStaked && (
+                    <Tooltip
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={
+                        formatAmount(totalGmxStaked, 18, 0, true) +
+                        " GMX" +
+                        ` ($${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)})`
+                      }
+                      renderContent={() => (
+                        <>
+                          Arbitrum: {formatAmount(arbitrumGmxStaked, 18, 0, true)} GMX
+                          <br />
+                          Avalanche: {formatAmount(avaxGmxStaked, 18, 0, true)} GMX
+                        </>
+                      )}
+                    />
+                  )}
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Total Supply</div>
-                <div>
-                  {formatKeyAmount(processedData, "gmxSupply", 18, 0, true)} GMX ($
-                  {formatKeyAmount(processedData, "gmxSupplyUsd", USD_DECIMALS, 0, true)})
-                </div>
+                {!totalGmxSupply && "..."}
+                {totalGmxSupply && (
+                  <Tooltip
+                    position="right-bottom"
+                    className="nowrap"
+                    handle={
+                      formatAmount(totalGmxSupply, 18, 0, true) +
+                      " GMX" +
+                      ` ($${formatAmount(totalSupplyUsd, USD_DECIMALS, 0, true)})`
+                    }
+                    renderContent={() => (
+                      <>
+                        Arbitrum: {formatAmount(arbitrumTotalGmx, 18, 0, true)} GMX
+                        <br />
+                        Avalanche: {formatAmount(avaxTotalGmx, 18, 0, true)} GMX
+                      </>
+                    )}
+                  />
+                )}
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-options">

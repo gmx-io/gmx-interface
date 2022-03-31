@@ -38,6 +38,7 @@ import { getContract } from "../../Addresses";
 import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
 
 import Reader from "../../abis/ReaderV2.json";
+import VaultReader from "../../abis/VaultReader.json";
 import VaultV2 from "../../abis/VaultV2.json";
 import VaultV2b from "../../abis/VaultV2b.json";
 import PositionRouter from "../../abis/PositionRouter.json";
@@ -397,7 +398,9 @@ export default function Exchange({
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
   const vaultAddress = getContract(chainId, "Vault");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
   const readerAddress = getContract(chainId, "Reader");
+  const vaultReaderAddress = getContract(chainId, "VaultReader");
   const usdgAddress = getContract(chainId, "USDG");
 
   const whitelistedTokens = getWhitelistedTokens(chainId);
@@ -463,14 +466,18 @@ export default function Exchange({
   const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
 
   const tokens = getTokens(chainId);
-  const { data: vaultTokenInfo } = useSWR([active, chainId, readerAddress, "getVaultTokenInfoV2"], {
-    fetcher: fetcher(library, Reader, [
-      vaultAddress,
-      nativeTokenAddress,
-      expandDecimals(1, 18),
-      whitelistedTokenAddresses,
-    ]),
-  });
+  const { data: vaultTokenInfo } = useSWR(
+    [`Exchange:vaultTokenInfo:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
+    {
+      fetcher: fetcher(library, VaultReader, [
+        vaultAddress,
+        positionRouterAddress,
+        nativeTokenAddress,
+        expandDecimals(1, 18),
+        whitelistedTokenAddresses,
+      ]),
+    }
+  );
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
@@ -512,7 +519,6 @@ export default function Exchange({
     }
   );
 
-  const positionRouterAddress = getContract(chainId, "PositionRouter");
   const { data: positionRouterApproved } = useSWR(
     active && [active, chainId, routerAddress, "approvedPlugins", account, positionRouterAddress],
     {
@@ -529,7 +535,7 @@ export default function Exchange({
     let currentTokenPriceStr = formatAmount(selectedToken.maxPrice, USD_DECIMALS, 2, true);
     let title = getPageTitle(currentTokenPriceStr + ` | ${selectedToken.symbol}${selectedToken.isStable ? "" : "USD"}`);
     document.title = title;
-  }, [tokenSelection, swapOption, infoTokens, chainId]);
+  }, [tokenSelection, swapOption, infoTokens, chainId, fromTokenAddress, toTokenAddress]);
 
   const { positions, positionsMap } = getPositions(
     chainId,
@@ -712,21 +718,6 @@ export default function Exchange({
       if (account !== currentAccount) {
         return;
       }
-      console.log(
-        "onCancelIncreasePosition",
-        account,
-        path,
-        indexToken,
-        collateralDelta,
-        sizeDelta,
-        isLong,
-        receiver,
-        acceptablePrice,
-        minOut,
-        executionFee,
-        blockGap,
-        timeGap
-      );
       const indexTokenItem = getToken(chainId, indexToken);
       const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
 
