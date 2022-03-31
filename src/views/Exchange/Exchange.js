@@ -46,7 +46,7 @@ import Token from "../../abis/Token.json";
 
 import Checkbox from "../../components/Checkbox/Checkbox";
 import SwapBox from "../../components/Exchange/SwapBox";
-import ExchangeTVChart from "../../components/Exchange/ExchangeTVChart";
+import ExchangeTVChart, { getChartToken } from "../../components/Exchange/ExchangeTVChart";
 import PositionsList from "../../components/Exchange/PositionsList";
 import OrdersList from "../../components/Exchange/OrdersList";
 import TradeHistory from "../../components/Exchange/TradeHistory";
@@ -523,12 +523,13 @@ export default function Exchange({
   const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo);
 
   useEffect(() => {
-    let selectedToken = tokenSelection[swapOption]["to"];
-    let tokenInfo = getTokenInfo(infoTokens, selectedToken);
-    let currentTokenPriceStr = formatAmount(tokenInfo.maxPrice, USD_DECIMALS, 2, true);
-    let title = getPageTitle(currentTokenPriceStr + ` | ${tokenInfo.symbol}USD`);
+    const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
+    const toToken = getTokenInfo(infoTokens, toTokenAddress);
+    let selectedToken = getChartToken(swapOption, fromToken, toToken, chainId);
+    let currentTokenPriceStr = formatAmount(selectedToken.maxPrice, USD_DECIMALS, 2, true);
+    let title = getPageTitle(currentTokenPriceStr + ` | ${selectedToken.symbol}${selectedToken.isStable ? "" : "USD"}`);
     document.title = title;
-  }, [tokenSelection, swapOption, infoTokens]);
+  }, [tokenSelection, swapOption, infoTokens, chainId]);
 
   const { positions, positionsMap } = getPositions(
     chainId,
