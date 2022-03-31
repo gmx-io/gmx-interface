@@ -605,7 +605,7 @@ export default function DashboardV2() {
                   <div className="App-card-row">
                     <div className="label">Total Staked</div>
                     <div>
-                      {stakedGmxSupplyUsd && arbitrumStakedGmx && avaxStakedGmx && (
+                      {
                         <TooltipComponent
                           position="right-bottom"
                           className="nowrap"
@@ -618,7 +618,7 @@ export default function DashboardV2() {
                             </>
                           )}
                         />
-                      )}
+                      }
                     </div>
                   </div>
                   <div className="App-card-row">
