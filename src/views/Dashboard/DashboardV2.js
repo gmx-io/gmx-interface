@@ -126,7 +126,7 @@ export default function DashboardV2() {
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
-  let { total: totalGmxSupply, avax: avaxGmxSupply, arbitrum: arbitrumGmxSupply } = useTotalGmxSupply();
+  let { total: totalGmxSupply } = useTotalGmxSupply();
 
   let totalLongPositionSizes;
   let totalShortPositionSizes;
@@ -345,13 +345,13 @@ export default function DashboardV2() {
 
   let stakedPercent = 0;
 
-  if (!totalGmxSupply.isZero() && !totalStakedGmx.isZero()) {
+  if (totalGmxSupply && !totalGmxSupply.isZero() && !totalStakedGmx.isZero()) {
     stakedPercent = totalStakedGmx.mul(100).div(totalGmxSupply).toNumber();
   }
 
   let liquidityPercent = 0;
 
-  if (!totalGmxSupply.isZero() && totalGmxInLiquidity) {
+  if (totalGmxSupply && !totalGmxSupply.isZero() && totalGmxInLiquidity) {
     liquidityPercent = totalGmxInLiquidity.mul(100).div(totalGmxSupply).toNumber();
   }
 
@@ -585,22 +585,7 @@ export default function DashboardV2() {
                   </div>
                   <div className="App-card-row">
                     <div className="label">Supply</div>
-                    <div>
-                      {totalGmxSupply && arbitrumGmxSupply && avaxGmxSupply && (
-                        <TooltipComponent
-                          position="right-bottom"
-                          className="nowrap"
-                          handle={formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true) + " GMX"}
-                          renderContent={() => (
-                            <>
-                              Supply on Arbitrum: {formatAmount(arbitrumGmxSupply, GMX_DECIMALS, 0, true)} GMX
-                              <br />
-                              Supply on Avalanche: {formatAmount(avaxGmxSupply, GMX_DECIMALS, 0, true)} GMX
-                            </>
-                          )}
-                        />
-                      )}
-                    </div>
+                    <div>{formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true)} GMX</div>
                   </div>
                   <div className="App-card-row">
                     <div className="label">Total Staked</div>
