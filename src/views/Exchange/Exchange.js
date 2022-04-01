@@ -216,11 +216,12 @@ export function getPositions(
       position.hasLowCollateral =
         position.collateralAfterFee.lt(0) || position.size.div(position.collateralAfterFee.abs()).gt(50);
 
-      if (position.delta.eq(0) && position.averagePrice && position.markPrice) {
+      if (position.averagePrice && position.markPrice) {
         const priceDelta = position.averagePrice.gt(position.markPrice)
           ? position.averagePrice.sub(position.markPrice)
           : position.markPrice.sub(position.averagePrice);
         position.pendingDelta = position.size.mul(priceDelta).div(position.averagePrice);
+        position.delta = position.pendingDelta;
       }
       position.deltaPercentage = position.pendingDelta.mul(BASIS_POINTS_DIVISOR).div(position.collateral);
 
