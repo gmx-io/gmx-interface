@@ -2256,6 +2256,10 @@ export function getInfoTokens(
       token.maxPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 12];
       token.minPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 13];
 
+      // save minPrice and maxPrice as setTokenUsingIndexPrices may override it
+      token.contractMinPrice = token.minPrice;
+      token.contractMaxPrice = token.maxPrice;
+
       token.maxAvailableShort = bigNumberify(0);
       if (token.maxGlobalShortSize.gt(0)) {
         if (token.maxGlobalShortSize.gt(token.globalShortSize)) {

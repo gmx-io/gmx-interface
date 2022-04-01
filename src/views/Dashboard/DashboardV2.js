@@ -92,11 +92,11 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
   for (let i = 0; i < tokenAddresses.length; i++) {
     const tokenAddress = tokenAddresses[i];
     const tokenInfo = infoTokens[tokenAddress];
-    if (!tokenInfo || !tokenInfo.minPrice) {
+    if (!tokenInfo || !tokenInfo.contractMinPrice) {
       continue;
     }
 
-    const feeUsd = fees[i].mul(tokenInfo.minPrice).div(expandDecimals(1, tokenInfo.decimals));
+    const feeUsd = fees[i].mul(tokenInfo.contractMinPrice).div(expandDecimals(1, tokenInfo.decimals));
     currentFeesUsd = currentFeesUsd.add(feeUsd);
   }
 
@@ -235,8 +235,8 @@ export default function DashboardV2() {
 
   let totalFloorPriceFundUsd;
 
-  if (eth && eth.minPrice && glpPrice) {
-    const ethFloorPriceFundUsd = ethFloorPriceFund.mul(eth.minPrice).div(expandDecimals(1, eth.decimals));
+  if (eth && eth.contractMinPrice && glpPrice) {
+    const ethFloorPriceFundUsd = ethFloorPriceFund.mul(eth.contractMinPrice).div(expandDecimals(1, eth.decimals));
     const glpFloorPriceFundUsd = glpFloorPriceFund.mul(glpPrice).div(expandDecimals(1, 18));
 
     totalFloorPriceFundUsd = ethFloorPriceFundUsd.add(glpFloorPriceFundUsd).add(usdcFloorPriceFund);
