@@ -7,15 +7,22 @@ import { useParams } from "react-router-dom";
 import "./Actions.css";
 
 import { getContract } from "../../Addresses";
-import { formatAmount, fetcher, getTokenInfo, getServerBaseUrl, useChainId } from "../../Helpers";
-
-import { useInfoTokens } from "../../Api";
+import {
+  formatAmount,
+  expandDecimals,
+  fetcher,
+  getInfoTokens,
+  getTokenInfo,
+  getServerBaseUrl,
+  useChainId,
+} from "../../Helpers";
 import { getToken, getTokens, getWhitelistedTokens } from "../../data/Tokens";
 import { getPositions, getPositionQuery } from "../Exchange/Exchange";
 import PositionsList from "../../components/Exchange/PositionsList";
 
 import TradeHistory from "../../components/Exchange/TradeHistory";
 import Reader from "../../abis/Reader.json";
+import VaultReader from "../../abis/VaultReader.json";
 
 const USD_DECIMALS = 30;
 
@@ -27,6 +34,8 @@ export default function Actions() {
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const vaultAddress = getContract(chainId, "Vault");
   const readerAddress = getContract(chainId, "Reader");
+  const vaultReaderAddress = getContract(chainId, "VaultReader");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
 
   const shouldShowPnl = false;
 
@@ -57,11 +66,24 @@ export default function Actions() {
     ]),
   });
 
+  const { data: vaultTokenInfo } = useSWR(
+    [`Actions:vaultTokenInfo:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
+    {
+      fetcher: fetcher(library, VaultReader, [
+        vaultAddress,
+        positionRouterAddress,
+        nativeTokenAddress,
+        expandDecimals(1, 18),
+        whitelistedTokenAddresses,
+      ]),
+    }
+  );
+
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
     fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
-  const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo);
+  const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo);
   const { positions, positionsMap } = getPositions(
     chainId,
     positionQuery,
