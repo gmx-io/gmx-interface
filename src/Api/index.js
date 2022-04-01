@@ -413,34 +413,20 @@ export function useGmxPrice(chainId, libraries, active) {
   };
 }
 
+// use only the supply endpoint on arbitrum, it includes the supply on avalanche
 export function useTotalGmxSupply() {
   const gmxSupplyUrlArbitrum = getServerUrl(ARBITRUM, "/gmx_supply");
-  const gmxSupplyUrlAvax = getServerUrl(AVALANCHE, "/gmx_supply");
-  let totalGMXSupply = useRef(bigNumberify(0));
 
-  const { data: gmxSupplyArbitrum, mutate: updateGmxSupplyArbitrum } = useSWR([gmxSupplyUrlArbitrum], {
+  const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrlArbitrum], {
     fetcher: (...args) => fetch(...args).then((res) => res.text()),
   });
-  const { data: gmxSupplyAvax, mutate: updateGmxSupplyAvax } = useSWR([gmxSupplyUrlAvax], {
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
-  });
-
-  if (gmxSupplyArbitrum && gmxSupplyAvax) {
-    let total = bigNumberify(gmxSupplyArbitrum).add(gmxSupplyAvax);
-    totalGMXSupply.current = total;
-  }
-  const mutate = useCallback(() => {
-    updateGmxSupplyArbitrum();
-    updateGmxSupplyAvax();
-  }, [updateGmxSupplyArbitrum, updateGmxSupplyAvax]);
 
   return {
-    arbitrum: gmxSupplyArbitrum,
-    avax: gmxSupplyAvax,
-    total: totalGMXSupply.current,
-    mutate,
+    total: gmxSupply ? bigNumberify(gmxSupply) : undefined,
+    mutate: updateGmxSupply,
   };
 }
+
 export function useTotalGmxStaked() {
   const stakedGmxTrackerAddressArbitrum = getContract(ARBITRUM, "StakedGmxTracker");
   const stakedGmxTrackerAddressAvax = getContract(AVALANCHE, "StakedGmxTracker");
