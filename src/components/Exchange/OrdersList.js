@@ -185,7 +185,7 @@ export default function OrdersList(props) {
 
       const indexToken = getTokenInfo(infoTokens, order.indexToken);
       const maximisePrice = (order.type === INCREASE && order.isLong) || (order.type === DECREASE && !order.isLong);
-      const markPrice = maximisePrice ? indexToken.contractMaxPrice : indexToken.contractMinPrice;
+      const markPrice = maximisePrice ? indexToken.maxPrice : indexToken.minPrice;
       const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
       const indexTokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol;
 
@@ -210,20 +210,7 @@ export default function OrdersList(props) {
           <td>
             {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
           </td>
-          <td>
-            <Tooltip
-              handle={formatAmount(markPrice, USD_DECIMALS, 2, true)}
-              position="right-bottom"
-              renderContent={() => {
-                return (
-                  <>
-                    The price that the order can be executed at may differ slightly from the chart price as market
-                    orders can change the price while limit orders cannot.
-                  </>
-                );
-              }}
-            />
-          </td>
+          <td>{formatAmount(markPrice, USD_DECIMALS, 2, true)}</td>
           {!hideActions && renderActions(order)}
         </tr>
       );
@@ -300,7 +287,7 @@ export default function OrdersList(props) {
 
       const indexToken = getTokenInfo(infoTokens, order.indexToken);
       const maximisePrice = (order.type === INCREASE && order.isLong) || (order.type === DECREASE && !order.isLong);
-      const markPrice = maximisePrice ? indexToken.contractMaxPrice : indexToken.contractMinPrice;
+      const markPrice = maximisePrice ? indexToken.maxPrice : indexToken.minPrice;
       const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
       const indexTokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol;
 
@@ -331,20 +318,7 @@ export default function OrdersList(props) {
             </div>
             <div className="App-card-row">
               <div className="label">Mark Price</div>
-              <div>
-                <Tooltip
-                  handle={formatAmount(markPrice, USD_DECIMALS, 2, true)}
-                  position="right-bottom"
-                  renderContent={() => {
-                    return (
-                      <>
-                        The price that the order can be executed at may differ slightly from the chart price as market
-                        orders can change the price while limit orders cannot.
-                      </>
-                    );
-                  }}
-                />
-              </div>
+              <div>{formatAmount(markPrice, USD_DECIMALS, 2, true)}</div>
             </div>
             {!hideActions && (
               <>
