@@ -3,7 +3,7 @@ let eventsData = [
     id: "removal-of-min-profit-rule",
     title: "Trading improvements",
     isActive: true,
-    validTill: "4/1/2022 12:00:00 PM",
+    validTill: "4/5/2022 12:00:00 PM", // change it back to 4/1/2022 when pushing to production
     bodyText: "The 1.5% minimum profit rule has been removed",
     buttons: [
       {
