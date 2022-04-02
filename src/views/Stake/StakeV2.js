@@ -242,7 +242,7 @@ function UnstakeModal(props) {
     callContract(chainId, contract, unstakeMethodName, [amount], {
       sentMsg: "Unstake submitted!",
       failMsg: "Unstake failed.",
-      successMsg: "Unstake completed.",
+      successMsg: "Unstake completed!",
       setPendingTxns,
     })
       .then(async (res) => {
@@ -526,7 +526,7 @@ function VesterWithdrawModal(props) {
     const contract = new ethers.Contract(vesterAddress, Vester.abi, library.getSigner());
 
     callContract(chainId, contract, "withdraw", [], {
-      sentMsg: "Withdraw submitted!",
+      sentMsg: "Withdraw submitted.",
       failMsg: "Withdraw failed.",
       successMsg: "Withdrawn!",
       setPendingTxns,
@@ -670,7 +670,7 @@ function CompoundModal(props) {
       {
         sentMsg: "Compound submitted!",
         failMsg: "Compound failed.",
-        successMsg: "Compound completed.",
+        successMsg: "Compound completed!",
         setPendingTxns,
       }
     )
@@ -811,9 +811,9 @@ function ClaimModal(props) {
         shouldConvertWeth,
       ],
       {
-        sentMsg: "Claim submitted!",
+        sentMsg: "Claim submitted.",
         failMsg: "Claim failed.",
-        successMsg: "Claim completed.",
+        successMsg: "Claim completed!",
         setPendingTxns,
       }
     )

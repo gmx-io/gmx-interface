@@ -929,7 +929,7 @@ export async function callContract(chainId, contract, method, params, opts) {
     if (opts.setPendingTxns) {
       const pendingTxn = {
         hash: res.hash,
-        message: opts.successMsg || "Transaction completed.",
+        message: opts.successMsg || "Transaction completed!",
       };
       opts.setPendingTxns((pendingTxns) => [...pendingTxns, pendingTxn]);
     }
