@@ -530,6 +530,7 @@ table.Exchange-list th {
 
 .Exchange-info-label {
   opacity: 0.7;
+  margin-right: 0.5rem;
 }
 .Exchange-info-value-warning {
   color: #fa3c58;

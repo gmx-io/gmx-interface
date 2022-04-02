@@ -8,14 +8,13 @@ import TooltipComponent from "../../components/Tooltip/Tooltip";
 import hexToRgba from "hex-to-rgba";
 import { ethers } from "ethers";
 
-import { getTokens, getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
+import { getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
 import { getFeeHistory } from "../../data/Fees";
 
 import {
   fetcher,
   formatAmount,
   formatKeyAmount,
-  getInfoTokens,
   expandDecimals,
   bigNumberify,
   numberWithCommas,
@@ -33,13 +32,12 @@ import {
   GLPPOOLCOLORS,
   DEFAULT_MAX_USDG_AMOUNT,
 } from "../../Helpers";
-import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "../../Api";
+import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply, useInfoTokens } from "../../Api";
 
 import { getContract } from "../../Addresses";
 
 import VaultV2 from "../../abis/VaultV2.json";
 import ReaderV2 from "../../abis/ReaderV2.json";
-import VaultReader from "../../abis/VaultReader.json";
 import GlpManager from "../../abis/GlpManager.json";
 import Footer from "../../Footer";
 
@@ -94,11 +92,11 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
   for (let i = 0; i < tokenAddresses.length; i++) {
     const tokenAddress = tokenAddresses[i];
     const tokenInfo = infoTokens[tokenAddress];
-    if (!tokenInfo || !tokenInfo.minPrice) {
+    if (!tokenInfo || !tokenInfo.contractMinPrice) {
       continue;
     }
 
-    const feeUsd = fees[i].mul(tokenInfo.minPrice).div(expandDecimals(1, tokenInfo.decimals));
+    const feeUsd = fees[i].mul(tokenInfo.contractMinPrice).div(expandDecimals(1, tokenInfo.decimals));
     currentFeesUsd = currentFeesUsd.add(feeUsd);
   }
 
@@ -126,7 +124,7 @@ export default function DashboardV2() {
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
-  let { total: totalGmxSupply, avax: avaxGmxSupply, arbitrum: arbitrumGmxSupply } = useTotalGmxSupply();
+  let { total: totalGmxSupply } = useTotalGmxSupply();
 
   let totalLongPositionSizes;
   let totalShortPositionSizes;
@@ -139,16 +137,12 @@ export default function DashboardV2() {
 
   const totalVolumeSum = getTotalVolumeSum(totalVolume);
 
-  const tokens = getTokens(chainId);
   const whitelistedTokens = getWhitelistedTokens(chainId);
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
 
   const readerAddress = getContract(chainId, "Reader");
-  const vaultReaderAddress = getContract(chainId, "VaultReader");
   const vaultAddress = getContract(chainId, "Vault");
-  const positionRouterAddress = getContract(chainId, "PositionRouter");
-  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const glpManagerAddress = getContract(chainId, "GlpManager");
 
   const gmxAddress = getContract(chainId, "GMX");
@@ -160,19 +154,6 @@ export default function DashboardV2() {
   const { data: aums } = useSWR([`Dashboard:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
     fetcher: fetcher(library, GlpManager),
   });
-
-  const { data: vaultTokenInfo } = useSWR(
-    [`Dashboard:vaultTokenInfo:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
-    {
-      fetcher: fetcher(library, VaultReader, [
-        vaultAddress,
-        positionRouterAddress,
-        nativeTokenAddress,
-        expandDecimals(1, 18),
-        whitelistedTokenAddresses,
-      ]),
-    }
-  );
 
   const { data: fees } = useSWR([`Dashboard:fees:${active}`, chainId, readerAddress, "getFees", vaultAddress], {
     fetcher: fetcher(library, ReaderV2, [whitelistedTokenAddresses]),
@@ -192,7 +173,7 @@ export default function DashboardV2() {
     }
   );
 
-  const infoTokens = getInfoTokens(tokens, undefined, whitelistedTokens, vaultTokenInfo, undefined);
+  const { infoTokens } = useInfoTokens(library, chainId, active, undefined, undefined);
 
   const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
   const currentFeesUsd = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokens);
@@ -254,8 +235,8 @@ export default function DashboardV2() {
 
   let totalFloorPriceFundUsd;
 
-  if (eth && eth.minPrice && glpPrice) {
-    const ethFloorPriceFundUsd = ethFloorPriceFund.mul(eth.minPrice).div(expandDecimals(1, eth.decimals));
+  if (eth && eth.contractMinPrice && glpPrice) {
+    const ethFloorPriceFundUsd = ethFloorPriceFund.mul(eth.contractMinPrice).div(expandDecimals(1, eth.decimals));
     const glpFloorPriceFundUsd = glpFloorPriceFund.mul(glpPrice).div(expandDecimals(1, 18));
 
     totalFloorPriceFundUsd = ethFloorPriceFundUsd.add(glpFloorPriceFundUsd).add(usdcFloorPriceFund);
@@ -345,13 +326,13 @@ export default function DashboardV2() {
 
   let stakedPercent = 0;
 
-  if (!totalGmxSupply.isZero() && !totalStakedGmx.isZero()) {
+  if (totalGmxSupply && !totalGmxSupply.isZero() && !totalStakedGmx.isZero()) {
     stakedPercent = totalStakedGmx.mul(100).div(totalGmxSupply).toNumber();
   }
 
   let liquidityPercent = 0;
 
-  if (!totalGmxSupply.isZero() && totalGmxInLiquidity) {
+  if (totalGmxSupply && !totalGmxSupply.isZero() && totalGmxInLiquidity) {
     liquidityPercent = totalGmxInLiquidity.mul(100).div(totalGmxSupply).toNumber();
   }
 
@@ -585,27 +566,12 @@ export default function DashboardV2() {
                   </div>
                   <div className="App-card-row">
                     <div className="label">Supply</div>
-                    <div>
-                      {totalGmxSupply && arbitrumGmxSupply && avaxGmxSupply && (
-                        <TooltipComponent
-                          position="right-bottom"
-                          className="nowrap"
-                          handle={formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true) + " GMX"}
-                          renderContent={() => (
-                            <>
-                              Supply on Arbitrum: {formatAmount(arbitrumGmxSupply, GMX_DECIMALS, 0, true)} GMX
-                              <br />
-                              Supply on Avalanche: {formatAmount(avaxGmxSupply, GMX_DECIMALS, 0, true)} GMX
-                            </>
-                          )}
-                        />
-                      )}
-                    </div>
+                    <div>{formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true)} GMX</div>
                   </div>
                   <div className="App-card-row">
                     <div className="label">Total Staked</div>
                     <div>
-                      {stakedGmxSupplyUsd && arbitrumStakedGmx && avaxStakedGmx && (
+                      {
                         <TooltipComponent
                           position="right-bottom"
                           className="nowrap"
@@ -618,7 +584,7 @@ export default function DashboardV2() {
                             </>
                           )}
                         />
-                      )}
+                      }
                     </div>
                   </div>
                   <div className="App-card-row">
