@@ -12,6 +12,7 @@ import Router from "../abis/Router.json";
 import UniPool from "../abis/UniPool.json";
 import UniswapV2 from "../abis/UniswapV2.json";
 import Token from "../abis/Token.json";
+import VaultReader from "../abis/VaultReader.json";
 
 import { getContract } from "../Addresses";
 import { getConstant } from "../Constants";
@@ -32,9 +33,10 @@ import {
   fetcher,
   parseValue,
   expandDecimals,
+  getInfoTokens,
   helperToast,
 } from "../Helpers";
-import { getTokenBySymbol } from "../data/Tokens";
+import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
 
 import { nissohGraphClient, arbitrumGraphClient, avalancheGraphClient } from "./common";
 export * from "./prices";
@@ -72,6 +74,49 @@ export function useAllOrdersStats(chainId) {
   }, [setRes, query, chainId]);
 
   return res ? res.data.orderStat : null;
+}
+
+export function useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo, vaultPropsLength) {
+  const tokens = getTokens(chainId);
+  const vaultReaderAddress = getContract(chainId, "VaultReader");
+  const vaultAddress = getContract(chainId, "Vault");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
+  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+
+  const whitelistedTokens = getWhitelistedTokens(chainId);
+  const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
+
+  const { data: vaultTokenInfo } = useSWR(
+    [`useInfoTokens:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
+    {
+      fetcher: fetcher(library, VaultReader, [
+        vaultAddress,
+        positionRouterAddress,
+        nativeTokenAddress,
+        expandDecimals(1, 18),
+        whitelistedTokenAddresses,
+      ]),
+    }
+  );
+
+  const indexPricesUrl = getServerUrl(chainId, "/prices");
+  const { data: indexPrices } = useSWR([indexPricesUrl], {
+    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+    refreshInterval: 500,
+  });
+
+  return {
+    infoTokens: getInfoTokens(
+      tokens,
+      tokenBalances,
+      whitelistedTokens,
+      vaultTokenInfo,
+      fundingRateInfo,
+      vaultPropsLength,
+      indexPrices,
+      nativeTokenAddress
+    ),
+  };
 }
 
 export function useUserStat(chainId) {
@@ -413,34 +458,20 @@ export function useGmxPrice(chainId, libraries, active) {
   };
 }
 
+// use only the supply endpoint on arbitrum, it includes the supply on avalanche
 export function useTotalGmxSupply() {
   const gmxSupplyUrlArbitrum = getServerUrl(ARBITRUM, "/gmx_supply");
-  const gmxSupplyUrlAvax = getServerUrl(AVALANCHE, "/gmx_supply");
-  let totalGMXSupply = useRef(bigNumberify(0));
 
-  const { data: gmxSupplyArbitrum, mutate: updateGmxSupplyArbitrum } = useSWR([gmxSupplyUrlArbitrum], {
+  const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrlArbitrum], {
     fetcher: (...args) => fetch(...args).then((res) => res.text()),
   });
-  const { data: gmxSupplyAvax, mutate: updateGmxSupplyAvax } = useSWR([gmxSupplyUrlAvax], {
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
-  });
-
-  if (gmxSupplyArbitrum && gmxSupplyAvax) {
-    let total = bigNumberify(gmxSupplyArbitrum).add(gmxSupplyAvax);
-    totalGMXSupply.current = total;
-  }
-  const mutate = useCallback(() => {
-    updateGmxSupplyArbitrum();
-    updateGmxSupplyAvax();
-  }, [updateGmxSupplyArbitrum, updateGmxSupplyAvax]);
 
   return {
-    arbitrum: gmxSupplyArbitrum,
-    avax: gmxSupplyAvax,
-    total: totalGMXSupply.current,
-    mutate,
+    total: gmxSupply ? bigNumberify(gmxSupply) : undefined,
+    mutate: updateGmxSupply,
   };
 }
+
 export function useTotalGmxStaked() {
   const stakedGmxTrackerAddressArbitrum = getContract(ARBITRUM, "StakedGmxTracker");
   const stakedGmxTrackerAddressAvax = getContract(AVALANCHE, "StakedGmxTracker");
