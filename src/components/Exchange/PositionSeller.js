@@ -520,9 +520,9 @@ export default function PositionSeller(props) {
         triggerPriceUsd,
         triggerAboveThreshold,
         {
-          sentMsg: "Order submitted!",
+          sentMsg: "Order submitted.",
           successMsg: "Order created!",
-          failMsg: "Order creation failed",
+          failMsg: "Order creation failed.",
           setPendingTxns,
         }
       )
@@ -573,7 +573,7 @@ export default function PositionSeller(props) {
 
     callContract(chainId, contract, "createDecreasePosition", params, {
       value: minExecutionFee,
-      sentMsg: "Close submitted!",
+      sentMsg: "Close submitted.",
       successMsg,
       failMsg: "Close failed.",
       setPendingTxns,
