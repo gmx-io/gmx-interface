@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { SWRConfig } from "swr";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useWindowScroll } from "react-use";
 
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
@@ -68,7 +67,6 @@ import Checkbox from "./components/Checkbox/Checkbox";
 import { RiMenuLine } from "react-icons/ri";
 import { FaTimes } from "react-icons/fa";
 import { FiX } from "react-icons/fi";
-import { Toaster } from "react-hot-toast";
 // import { BiLogOut } from "react-icons/bi";
 
 import "./Font.css";
@@ -89,6 +87,7 @@ import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
 import { ConnectWalletButton } from "./components/Common/Button";
 import useEventToast from "./components/EventToast/useEventToast";
 import { Link } from "react-router-dom";
+import EventToastContainer from "./components/EventToast/EventToastContainer";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -518,8 +517,6 @@ function FullApp() {
     return () => clearInterval(interval);
   }, [library, pendingTxns, chainId]);
 
-  let { y: scrollY } = useWindowScroll();
-
   return (
     <Router>
       <div className="App">
@@ -722,21 +719,7 @@ function FullApp() {
         draggable={false}
         pauseOnHover
       />
-      <Toaster
-        position="top-right"
-        reverseOrder={true}
-        gutter={20}
-        containerClassName="event-toast-container"
-        containerStyle={{
-          zIndex: 2,
-          transition: "all 200ms",
-          top: scrollY > 60 ? "30px" : `${93 - scrollY}px`,
-          right: "30px",
-        }}
-        toastOptions={{
-          duration: Infinity,
-        }}
-      />
+      <EventToastContainer />
       <Modal
         className="Connect-wallet-modal"
         isVisible={walletModalVisible}
