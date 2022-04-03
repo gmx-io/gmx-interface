@@ -13,7 +13,6 @@ import { getContract } from "../../Addresses";
 import {
   helperToast,
   useLocalStorageByChainId,
-  getInfoTokens,
   getTokenInfo,
   // getChainName,
   useChainId,
@@ -42,7 +41,7 @@ import {
   PLACEHOLDER_ACCOUNT,
 } from "../../Helpers";
 
-import { callContract, useGmxPrice } from "../../Api";
+import { callContract, useGmxPrice, useInfoTokens } from "../../Api";
 
 import TokenSelector from "../Exchange/TokenSelector";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
@@ -126,19 +125,6 @@ export default function GlpSwap(props) {
   const glpManagerAddress = getContract(chainId, "GlpManager");
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
   const tokensForBalanceAndSupplyQuery = [stakedGlpTrackerAddress, usdgAddress];
-
-  const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
-  const { data: vaultTokenInfo } = useSWR(
-    [`GlpSwap:getVaultTokenInfo:${active}`, chainId, readerAddress, "getVaultTokenInfoV2"],
-    {
-      fetcher: fetcher(library, ReaderV2, [
-        vaultAddress,
-        nativeTokenAddress,
-        expandDecimals(1, 18),
-        whitelistedTokenAddresses,
-      ]),
-    }
-  );
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(
@@ -238,7 +224,7 @@ export default function GlpSwap(props) {
     reserveAmountUsd = reservedAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS));
   }
 
-  const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, undefined);
+  const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, undefined);
   const swapToken = getToken(chainId, swapTokenAddress);
   const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
 

@@ -14,11 +14,21 @@ export default function EventToast({ event, id, onClick, t }) {
       </header>
       <p className="toast-body">{event.bodyText}</p>
       <div className="toast-links">
-        {event.buttons.map((button) => (
-          <a key={event.id + button.text} target="_blank" rel="noreferrer noopener" href={button.link}>
-            {button.text}
-          </a>
-        ))}
+        {event.buttons.map((button) => {
+          if (button.newTab) {
+            return (
+              <a key={event.id + button.text} target="_blank" rel="noreferrer noopener" href={button.link}>
+                {button.text}
+              </a>
+            );
+          } else {
+            return (
+              <a key={event.id + button.text} href={button.link}>
+                {button.text}
+              </a>
+            );
+          }
+        })}
       </div>
     </div>
   );

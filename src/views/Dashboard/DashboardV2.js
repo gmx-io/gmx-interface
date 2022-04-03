@@ -8,14 +8,13 @@ import TooltipComponent from "../../components/Tooltip/Tooltip";
 import hexToRgba from "hex-to-rgba";
 import { ethers } from "ethers";
 
-import { getTokens, getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
+import { getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
 import { getFeeHistory } from "../../data/Fees";
 
 import {
   fetcher,
   formatAmount,
   formatKeyAmount,
-  getInfoTokens,
   expandDecimals,
   bigNumberify,
   numberWithCommas,
@@ -33,15 +32,13 @@ import {
   GLPPOOLCOLORS,
   DEFAULT_MAX_USDG_AMOUNT,
 } from "../../Helpers";
-import { useGmxPrice, useStakedGmxSupply } from "../../Api";
+import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply, useInfoTokens } from "../../Api";
 
 import { getContract } from "../../Addresses";
 
 import VaultV2 from "../../abis/VaultV2.json";
 import ReaderV2 from "../../abis/ReaderV2.json";
 import GlpManager from "../../abis/GlpManager.json";
-import Token from "../../abis/Token.json";
-
 import Footer from "../../Footer";
 
 import "./DashboardV2.css";
@@ -95,11 +92,11 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
   for (let i = 0; i < tokenAddresses.length; i++) {
     const tokenAddress = tokenAddresses[i];
     const tokenInfo = infoTokens[tokenAddress];
-    if (!tokenInfo || !tokenInfo.minPrice) {
+    if (!tokenInfo || !tokenInfo.contractMinPrice) {
       continue;
     }
 
-    const feeUsd = fees[i].mul(tokenInfo.minPrice).div(expandDecimals(1, tokenInfo.decimals));
+    const feeUsd = fees[i].mul(tokenInfo.contractMinPrice).div(expandDecimals(1, tokenInfo.decimals));
     currentFeesUsd = currentFeesUsd.add(feeUsd);
   }
 
@@ -127,10 +124,7 @@ export default function DashboardV2() {
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
-  const gmxSupplyUrl = getServerUrl(ARBITRUM, "/gmx_supply");
-  const { data: gmxSupply } = useSWR([gmxSupplyUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
-  });
+  let { total: totalGmxSupply } = useTotalGmxSupply();
 
   let totalLongPositionSizes;
   let totalShortPositionSizes;
@@ -143,14 +137,12 @@ export default function DashboardV2() {
 
   const totalVolumeSum = getTotalVolumeSum(totalVolume);
 
-  const tokens = getTokens(chainId);
   const whitelistedTokens = getWhitelistedTokens(chainId);
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
 
   const readerAddress = getContract(chainId, "Reader");
   const vaultAddress = getContract(chainId, "Vault");
-  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const glpManagerAddress = getContract(chainId, "GlpManager");
 
   const gmxAddress = getContract(chainId, "GMX");
@@ -162,18 +154,6 @@ export default function DashboardV2() {
   const { data: aums } = useSWR([`Dashboard:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
     fetcher: fetcher(library, GlpManager),
   });
-
-  const { data: vaultTokenInfo } = useSWR(
-    [`Dashboard:vaultTokenInfo:${active}`, chainId, readerAddress, "getVaultTokenInfoV2"],
-    {
-      fetcher: fetcher(library, ReaderV2, [
-        vaultAddress,
-        nativeTokenAddress,
-        expandDecimals(1, 18),
-        whitelistedTokenAddresses,
-      ]),
-    }
-  );
 
   const { data: fees } = useSWR([`Dashboard:fees:${active}`, chainId, readerAddress, "getFees", vaultAddress], {
     fetcher: fetcher(library, ReaderV2, [whitelistedTokenAddresses]),
@@ -193,9 +173,7 @@ export default function DashboardV2() {
     }
   );
 
-  const { data: stakedGmxSupply } = useStakedGmxSupply(chainId === ARBITRUM ? library : undefined, active);
-
-  const infoTokens = getInfoTokens(tokens, undefined, whitelistedTokens, vaultTokenInfo, undefined);
+  const { infoTokens } = useInfoTokens(library, chainId, active, undefined, undefined);
 
   const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
   const currentFeesUsd = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokens);
@@ -215,24 +193,23 @@ export default function DashboardV2() {
     active
   );
 
+  let { total: totalGmxInLiquidity } = useTotalGmxInLiquidity(chainId, active);
+
+  let { avax: avaxStakedGmx, arbitrum: arbitrumStakedGmx, total: totalStakedGmx } = useTotalGmxStaked();
+
   let gmxMarketCap;
-  if (gmxPrice && gmxSupply) {
-    gmxMarketCap = gmxPrice.mul(gmxSupply).div(expandDecimals(1, GMX_DECIMALS));
+  if (gmxPrice && totalGmxSupply) {
+    gmxMarketCap = gmxPrice.mul(totalGmxSupply).div(expandDecimals(1, GMX_DECIMALS));
   }
 
   let stakedGmxSupplyUsd;
-  if (gmxPrice && stakedGmxSupply) {
-    stakedGmxSupplyUsd = stakedGmxSupply.mul(gmxPrice).div(expandDecimals(1, GMX_DECIMALS));
+  if (gmxPrice && totalStakedGmx) {
+    stakedGmxSupplyUsd = totalStakedGmx.mul(gmxPrice).div(expandDecimals(1, GMX_DECIMALS));
   }
 
   let aum;
   if (aums && aums.length > 0) {
     aum = aums[0].add(aums[1]).div(2);
-  }
-
-  let tvl;
-  if (aum && gmxPrice && stakedGmxSupply) {
-    tvl = aum.add(gmxPrice.mul(stakedGmxSupply).div(expandDecimals(1, GMX_DECIMALS)));
   }
 
   let glpPrice;
@@ -247,14 +224,19 @@ export default function DashboardV2() {
     glpMarketCap = glpPrice.mul(glpSupply).div(expandDecimals(1, GLP_DECIMALS));
   }
 
+  let tvl;
+  if (glpMarketCap && gmxPrice && totalStakedGmx) {
+    tvl = glpMarketCap.add(gmxPrice.mul(totalStakedGmx).div(expandDecimals(1, GMX_DECIMALS)));
+  }
+
   const ethFloorPriceFund = expandDecimals(350 + 148 + 384, 18);
   const glpFloorPriceFund = expandDecimals(660001, 18);
   const usdcFloorPriceFund = expandDecimals(784598 + 200000, 30);
 
   let totalFloorPriceFundUsd;
 
-  if (eth && eth.minPrice && glpPrice) {
-    const ethFloorPriceFundUsd = ethFloorPriceFund.mul(eth.minPrice).div(expandDecimals(1, eth.decimals));
+  if (eth && eth.contractMinPrice && glpPrice) {
+    const ethFloorPriceFundUsd = ethFloorPriceFund.mul(eth.contractMinPrice).div(expandDecimals(1, eth.decimals));
     const glpFloorPriceFundUsd = glpFloorPriceFund.mul(glpPrice).div(expandDecimals(1, 18));
 
     totalFloorPriceFundUsd = ethFloorPriceFundUsd.add(glpFloorPriceFundUsd).add(usdcFloorPriceFund);
@@ -342,98 +324,15 @@ export default function DashboardV2() {
     );
   };
 
-  /* GMX Distribution */
-
-  // ARBITRUM
-  const arbitrumGmxAddress = getContract(ARBITRUM, "GMX");
-  const arbitrumStakedGmxTrackerAddress = getContract(ARBITRUM, "StakedGmxTracker");
-
-  const { data: arbitrumStakedGmxSupply } = useSWR(
-    [`StakeV2:stakedGmxSupply:${active}`, ARBITRUM, arbitrumGmxAddress, "balanceOf", arbitrumStakedGmxTrackerAddress],
-    {
-      fetcher: fetcher(undefined, Token),
-    }
-  );
-
-  const arbitrumGmxSupplyUrl = getServerUrl(ARBITRUM, "/gmx_supply");
-  const { data: arbitrumGmxSupply } = useSWR([arbitrumGmxSupplyUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
-  });
-  // GMX in Arbitrum Liquidity
-  let UniswapGmxEthPool = getContract(ARBITRUM, "UniswapGmxEthPool");
-  const { data: gmxInArbitrumLiquidity } = useSWR(
-    [`StakeV2:gmxInArbitrumLiquidity:${active}`, ARBITRUM, arbitrumGmxAddress, "balanceOf", UniswapGmxEthPool],
-    {
-      fetcher: fetcher(undefined, Token),
-    }
-  );
-
-  // AVALANCHE
-  const avalancheGmxAddress = getContract(AVALANCHE, "GMX");
-  const avalancheStakedGmxTrackerAddress = getContract(AVALANCHE, "StakedGmxTracker");
-
-  const { data: avalancheStakedGmxSupply } = useSWR(
-    [
-      `StakeV2:stakedGmxSupply:${active}`,
-      AVALANCHE,
-      avalancheGmxAddress,
-      "balanceOf",
-      avalancheStakedGmxTrackerAddress,
-    ],
-    {
-      fetcher: fetcher(undefined, Token),
-    }
-  );
-  // GMX in AVAX Liquidity
-  let TraderJoeGmxAvaxPool = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
-  const { data: gmxInAvaxLiquidity } = useSWR(
-    [`StakeV2:gmxInAvaxLiquidity:${active}`, AVALANCHE, avalancheGmxAddress, "balanceOf", TraderJoeGmxAvaxPool],
-    {
-      fetcher: fetcher(undefined, Token),
-    }
-  );
-  // Total GMX in Liquidity
-  let totalGmxInLiquidity = bigNumberify(0);
-  if (gmxInAvaxLiquidity) {
-    totalGmxInLiquidity = totalGmxInLiquidity.add(gmxInAvaxLiquidity);
-  }
-
-  if (gmxInArbitrumLiquidity) {
-    totalGmxInLiquidity = totalGmxInLiquidity.add(gmxInArbitrumLiquidity);
-  }
-
-  const avalancheGmxSupplyUrl = getServerUrl(AVALANCHE, "/gmx_supply");
-  const { data: avalancheGmxSupply } = useSWR([avalancheGmxSupplyUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
-  });
-
-  let totalGmxSupply = bigNumberify(0);
-  if (arbitrumGmxSupply) {
-    totalGmxSupply = totalGmxSupply.add(bigNumberify(arbitrumGmxSupply));
-  }
-
-  if (avalancheGmxSupply) {
-    totalGmxSupply = totalGmxSupply.add(bigNumberify(avalancheGmxSupply));
-  }
-
-  let totalStakedGmxSupply = bigNumberify(0);
-  if (arbitrumStakedGmxSupply) {
-    totalStakedGmxSupply = totalStakedGmxSupply.add(bigNumberify(arbitrumStakedGmxSupply));
-  }
-
-  if (avalancheStakedGmxSupply) {
-    totalStakedGmxSupply = totalStakedGmxSupply.add(bigNumberify(avalancheStakedGmxSupply));
-  }
-
   let stakedPercent = 0;
 
-  if (!totalGmxSupply.isZero()) {
-    stakedPercent = totalStakedGmxSupply.mul(100).div(totalGmxSupply).toNumber();
+  if (totalGmxSupply && !totalGmxSupply.isZero() && !totalStakedGmx.isZero()) {
+    stakedPercent = totalStakedGmx.mul(100).div(totalGmxSupply).toNumber();
   }
 
   let liquidityPercent = 0;
 
-  if (!totalGmxSupply.isZero()) {
+  if (totalGmxSupply && !totalGmxSupply.isZero() && totalGmxInLiquidity) {
     liquidityPercent = totalGmxInLiquidity.mul(100).div(totalGmxSupply).toNumber();
   }
 
@@ -466,12 +365,10 @@ export default function DashboardV2() {
     const tokenInfo = infoTokens[token.address];
     if (tokenInfo.usdgAmount && adjustedUsdgSupply) {
       const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
-
       if (tokenInfo.isStable) {
         stableGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
       }
       totalGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
-
       return {
         fullname: token.name,
         name: token.symbol,
@@ -635,11 +532,6 @@ export default function DashboardV2() {
                   <div className="App-card-title-mark">
                     <div className="App-card-title-mark-icon">
                       <img src={gmx40Icon} alt="gmx40Icon" />
-                      {chainId === ARBITRUM ? (
-                        <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" />
-                      ) : (
-                        <img src={avalanche16Icon} alt="avalanche16Icon" className="selected-network-symbol" />
-                      )}
                     </div>
                     <div className="App-card-title-mark-info">
                       <div className="App-card-title-mark-title">GMX</div>
@@ -674,11 +566,26 @@ export default function DashboardV2() {
                   </div>
                   <div className="App-card-row">
                     <div className="label">Supply</div>
-                    <div>{formatAmount(gmxSupply, GMX_DECIMALS, 0, true)} GMX</div>
+                    <div>{formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true)} GMX</div>
                   </div>
                   <div className="App-card-row">
                     <div className="label">Total Staked</div>
-                    <div>${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}</div>
+                    <div>
+                      {
+                        <TooltipComponent
+                          position="right-bottom"
+                          className="nowrap"
+                          handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
+                          renderContent={() => (
+                            <>
+                              Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                              <br />
+                              Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                            </>
+                          )}
+                        />
+                      }
+                    </div>
                   </div>
                   <div className="App-card-row">
                     <div className="label">Market Cap</div>
