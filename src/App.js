@@ -730,7 +730,7 @@ function FullApp() {
         containerStyle={{
           zIndex: 2,
           transition: "all 200ms",
-          top: scrollY > 65 ? "30px" : "93px",
+          top: scrollY > 10 ? "30px" : "93px",
           right: "30px",
         }}
         toastOptions={{
