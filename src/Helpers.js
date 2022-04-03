@@ -1715,7 +1715,8 @@ export function getOrderKey(order) {
 }
 
 export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
-  const { active, library, account: connectedAccount } = useWeb3React();
+  const { library, account: connectedAccount } = useWeb3React();
+  const active = true; // this is used in Actions.js so set active to always be true
   const account = overrideAccount || connectedAccount;
 
   const { chainId } = useChainId();
