@@ -67,7 +67,6 @@ import Checkbox from "./components/Checkbox/Checkbox";
 import { RiMenuLine } from "react-icons/ri";
 import { FaTimes } from "react-icons/fa";
 import { FiX } from "react-icons/fi";
-import { Toaster } from "react-hot-toast";
 // import { BiLogOut } from "react-icons/bi";
 
 import "./Font.css";
@@ -87,6 +86,8 @@ import walletConnectImg from "./img/walletconnect-circle-blue.svg";
 import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
 import { ConnectWalletButton } from "./components/Common/Button";
 import useEventToast from "./components/EventToast/useEventToast";
+import { Link } from "react-router-dom";
+import EventToastContainer from "./components/EventToast/EventToastContainer";
 import SEO from "./components/Common/SEO";
 
 if ("ethereum" in window) {
@@ -140,9 +141,9 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
           <div className="App-header-menu-icon-block" onClick={() => clickCloseIcon()}>
             <FiX className="App-header-menu-icon" />
           </div>
-          <a className="App-header-link-main" href="/">
+          <Link className="App-header-link-main" to="/">
             <img src={logoImg} alt="GMX Logo" />
-          </a>
+          </Link>
         </div>
       )}
       <div className="App-header-link-container App-header-link-home">
@@ -560,10 +561,10 @@ function FullApp() {
           <header>
             <div className="App-header large">
               <div className="App-header-container-left">
-                <a className="App-header-link-main" href="/">
+                <Link className="App-header-link-main" to="/">
                   <img src={logoImg} className="big" alt="GMX Logo" />
                   <img src={logoSmallImg} className="small" alt="GMX Logo" />
-                </a>
+                </Link>
                 <AppHeaderLinks />
               </div>
               <div className="App-header-container-right">
@@ -719,20 +720,7 @@ function FullApp() {
         draggable={false}
         pauseOnHover
       />
-      <Toaster
-        position="top-right"
-        reverseOrder={true}
-        gutter={20}
-        containerClassName="event-toast-container"
-        containerStyle={{
-          zIndex: 2,
-          top: "93px",
-          right: "30px",
-        }}
-        toastOptions={{
-          duration: Infinity,
-        }}
-      />
+      <EventToastContainer />
       <Modal
         className="Connect-wallet-modal"
         isVisible={walletModalVisible}
