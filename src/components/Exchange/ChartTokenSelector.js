@@ -1,6 +1,7 @@
 import React from "react";
 import { Menu } from "@headlessui/react";
 import { FaChevronDown } from "react-icons/fa";
+import cx from "classnames";
 import "./ChartTokenSelector.css";
 import { getTokens, getWhitelistedTokens } from '../../data/Tokens'
 import {
@@ -44,7 +45,7 @@ export default function ChartTokenSelector(props) {
   return (
     <Menu>
       <Menu.Button as="div" disabled={isSwap}>
-        <button className="App-cta small transparent chart-token-selector">
+        <button className={cx("App-cta small transparent chart-token-selector", {'default-cursor': isSwap})}>
           <span className="chart-token-selector--current">
             {value.symbol} / USD
           </span>

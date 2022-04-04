@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import useSWR from "swr";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
@@ -7,22 +7,17 @@ import { useParams } from "react-router-dom";
 import "./Actions.css";
 
 import { getContract } from "../../Addresses";
-import {
-  formatAmount,
-  expandDecimals,
-  fetcher,
-  getInfoTokens,
-  getTokenInfo,
-  getServerBaseUrl,
-  useChainId,
-} from "../../Helpers";
+import { formatAmount, fetcher, getTokenInfo, getServerBaseUrl, useChainId, useAccountOrders } from "../../Helpers";
+
+import { useInfoTokens } from "../../Api";
 import { getToken, getTokens, getWhitelistedTokens } from "../../data/Tokens";
 import { getPositions, getPositionQuery } from "../Exchange/Exchange";
+
 import PositionsList from "../../components/Exchange/PositionsList";
+import OrdersList from "../../components/Exchange/OrdersList";
 
 import TradeHistory from "../../components/Exchange/TradeHistory";
 import Reader from "../../abis/Reader.json";
-import ReaderV2 from "../../abis/ReaderV2.json";
 
 const USD_DECIMALS = 30;
 
@@ -42,7 +37,7 @@ export default function Actions() {
     checkSummedAccount = ethers.utils.getAddress(account);
   }
   const pnlUrl = `${getServerBaseUrl(chainId)}/pnl?account=${checkSummedAccount}`;
-  const { data: pnlData, mutate: updatePnlData } = useSWR([pnlUrl], {
+  const { data: pnlData } = useSWR([pnlUrl], {
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
@@ -52,44 +47,23 @@ export default function Actions() {
 
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenAddresses = tokens.map((token) => token.address);
-  const { data: tokenBalances, mutate: updateTokenBalances } = useSWR(
-    [active, chainId, readerAddress, "getTokenBalances", account],
-    {
-      fetcher: fetcher(library, Reader, [tokenAddresses]),
-    }
-  );
+  const { data: tokenBalances } = useSWR([active, chainId, readerAddress, "getTokenBalances", account], {
+    fetcher: fetcher(library, Reader, [tokenAddresses]),
+  });
 
-  const { data: positionData, mutate: updatePositionData } = useSWR(
-    [active, chainId, readerAddress, "getPositions", vaultAddress, account],
-    {
-      fetcher: fetcher(library, Reader, [
-        positionQuery.collateralTokens,
-        positionQuery.indexTokens,
-        positionQuery.isLong,
-      ]),
-    }
-  );
+  const { data: positionData } = useSWR([active, chainId, readerAddress, "getPositions", vaultAddress, account], {
+    fetcher: fetcher(library, Reader, [
+      positionQuery.collateralTokens,
+      positionQuery.indexTokens,
+      positionQuery.isLong,
+    ]),
+  });
 
-  const { data: vaultTokenInfo, mutate: updateVaultTokenInfo } = useSWR(
-    [active, chainId, readerAddress, "getVaultTokenInfoV2"],
-    {
-      fetcher: fetcher(library, ReaderV2, [
-        vaultAddress,
-        nativeTokenAddress,
-        expandDecimals(1, 18),
-        whitelistedTokenAddresses,
-      ]),
-    }
-  );
+  const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
+    fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+  });
 
-  const { data: fundingRateInfo, mutate: updateFundingRateInfo } = useSWR(
-    [active, chainId, readerAddress, "getFundingRates"],
-    {
-      fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
-    }
-  );
-
-  const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo);
+  const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo);
   const { positions, positionsMap } = getPositions(
     chainId,
     positionQuery,
@@ -102,16 +76,8 @@ export default function Actions() {
     undefined
   );
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      updatePnlData(undefined, true);
-      updateTokenBalances(undefined, true);
-      updatePositionData(undefined, true);
-      updateVaultTokenInfo(undefined, true);
-      updateFundingRateInfo(undefined, true);
-    }, 10 * 1000);
-    return () => clearInterval(interval);
-  }, [updatePnlData, updateTokenBalances, updatePositionData, updateVaultTokenInfo, updateFundingRateInfo]);
+  const flagOrdersEnabled = true;
+  const [orders, updateOrders] = useAccountOrders(flagOrdersEnabled, checkSummedAccount);
 
   return (
     <div className="Actions">
@@ -147,6 +113,7 @@ export default function Actions() {
             positionsMap={positionsMap}
             infoTokens={infoTokens}
             active={active}
+            orders={orders}
             account={checkSummedAccount}
             library={library}
             flagOrdersEnabled={false}
@@ -154,6 +121,20 @@ export default function Actions() {
             chainId={chainId}
             nativeTokenAddress={nativeTokenAddress}
             showPnlAfterFees={false}
+          />
+        </div>
+      )}
+      {flagOrdersEnabled && checkSummedAccount.length > 0 && (
+        <div className="Actions-section">
+          <div className="Actions-title">Orders</div>
+          <OrdersList
+            account={checkSummedAccount}
+            infoTokens={infoTokens}
+            positionsMap={positionsMap}
+            chainId={chainId}
+            orders={orders}
+            updateOrders={updateOrders}
+            hideActions
           />
         </div>
       )}

@@ -25,7 +25,7 @@
   display: inline-block;
   font-size: 0.8rem;
   margin-left: 0.5rem;
-  color: #38558f;
+  color: #3749e6;
   vertical-align: middle;
   margin-top: -0.2rem;
 }
@@ -529,6 +529,7 @@ table.Exchange-list th {
 
 .Exchange-info-label {
   opacity: 0.7;
+  margin-right: 0.5rem;
 }
 .Exchange-info-value-warning {
   color: #fa3c58;

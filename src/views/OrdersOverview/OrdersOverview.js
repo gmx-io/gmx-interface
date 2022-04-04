@@ -1,23 +1,18 @@
 import { useWeb3React } from "@web3-react/core";
-import useSWR from "swr";
 import cx from "classnames";
 
 import { NavLink } from "react-router-dom";
 
 import { getContract } from "../../Addresses";
 import { useAllOrders, useAllOrdersStats, usePositionsForOrders } from "../../Api";
-import { getTokens, getWhitelistedTokens } from "../../data/Tokens";
 import {
   USD_DECIMALS,
   DECREASE,
   INCREASE,
   SWAP,
   useChainId,
-  getInfoTokens,
   formatAmount,
   shortenAddress,
-  fetcher,
-  expandDecimals,
   getTokenInfo,
   getExchangeRateDisplay,
   getExchangeRate,
@@ -25,33 +20,18 @@ import {
   formatDateTime,
   getOrderKey,
 } from "../../Helpers";
-import ReaderV2 from "../../abis/ReaderV2.json";
+
 import * as Api from "../../Api";
 
 import "./OrdersOverview.css";
 
 export default function OrdersOverview() {
   const { chainId } = useChainId();
-  const { library, account } = useWeb3React();
+  const { library, account, active } = useWeb3React();
 
-  const readerAddress = getContract(chainId, "Reader");
-  const vaultAddress = getContract(chainId, "Vault");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
-  const tokens = getTokens(chainId);
-  const whitelistedTokens = getWhitelistedTokens(chainId);
-  const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
-
-  const { data: vaultTokenInfo } = useSWR([true, chainId, readerAddress, "getVaultTokenInfoV2"], {
-    fetcher: fetcher(library, ReaderV2, [
-      vaultAddress,
-      nativeTokenAddress,
-      expandDecimals(1, 18),
-      whitelistedTokenAddresses,
-    ]),
-  });
-
-  const infoTokens = getInfoTokens(tokens, null, whitelistedTokens, vaultTokenInfo);
+  const { infoTokens } = Api.useInfoTokens(library, chainId, active, undefined, undefined);
 
   const orders = useAllOrders(chainId, library);
   const stats = useAllOrdersStats(chainId);

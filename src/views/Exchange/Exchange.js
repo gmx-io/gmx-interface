@@ -19,7 +19,6 @@ import {
   bigNumberify,
   getTokenInfo,
   fetcher,
-  expandDecimals,
   getPositionKey,
   getPositionContractKey,
   getLeverage,
@@ -27,11 +26,11 @@ import {
   useLocalStorageByChainId,
   getDeltaStr,
   useChainId,
-  getInfoTokens,
   useAccountOrders,
+  getPageTitle,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
-import { approvePlugin } from "../../Api";
+import { approvePlugin, useInfoTokens } from "../../Api";
 
 import { getContract } from "../../Addresses";
 import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
@@ -45,7 +44,7 @@ import Token from "../../abis/Token.json";
 
 import Checkbox from "../../components/Checkbox/Checkbox";
 import SwapBox from "../../components/Exchange/SwapBox";
-import ExchangeTVChart from "../../components/Exchange/ExchangeTVChart";
+import ExchangeTVChart, { getChartToken } from "../../components/Exchange/ExchangeTVChart";
 import PositionsList from "../../components/Exchange/PositionsList";
 import OrdersList from "../../components/Exchange/OrdersList";
 import TradeHistory from "../../components/Exchange/TradeHistory";
@@ -218,12 +217,21 @@ export function getPositions(
       position.hasLowCollateral =
         position.collateralAfterFee.lt(0) || position.size.div(position.collateralAfterFee.abs()).gt(50);
 
-      if (position.delta.eq(0) && position.averagePrice && position.markPrice) {
+      if (position.averagePrice && position.markPrice) {
         const priceDelta = position.averagePrice.gt(position.markPrice)
           ? position.averagePrice.sub(position.markPrice)
           : position.markPrice.sub(position.averagePrice);
         position.pendingDelta = position.size.mul(priceDelta).div(position.averagePrice);
+
+        position.delta = position.pendingDelta;
+
+        if (position.isLong) {
+          position.hasProfit = position.markPrice.gte(position.averagePrice);
+        } else {
+          position.hasProfit = position.markPrice.lte(position.averagePrice);
+        }
       }
+
       position.deltaPercentage = position.pendingDelta.mul(BASIS_POINTS_DIVISOR).div(position.collateral);
 
       const { deltaStr, deltaPercentageStr } = getDeltaStr({
@@ -395,6 +403,7 @@ export default function Exchange({
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
   const vaultAddress = getContract(chainId, "Vault");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
   const readerAddress = getContract(chainId, "Reader");
   const usdgAddress = getContract(chainId, "USDG");
 
@@ -461,14 +470,6 @@ export default function Exchange({
   const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
 
   const tokens = getTokens(chainId);
-  const { data: vaultTokenInfo } = useSWR([active, chainId, readerAddress, "getVaultTokenInfoV2"], {
-    fetcher: fetcher(library, Reader, [
-      vaultAddress,
-      nativeTokenAddress,
-      expandDecimals(1, 18),
-      whitelistedTokenAddresses,
-    ]),
-  });
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
@@ -510,7 +511,6 @@ export default function Exchange({
     }
   );
 
-  const positionRouterAddress = getContract(chainId, "PositionRouter");
   const { data: positionRouterApproved } = useSWR(
     active && [active, chainId, routerAddress, "approvedPlugins", account, positionRouterAddress],
     {
@@ -518,7 +518,17 @@ export default function Exchange({
     }
   );
 
-  const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo);
+  const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo);
+
+  useEffect(() => {
+    const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
+    const toToken = getTokenInfo(infoTokens, toTokenAddress);
+    let selectedToken = getChartToken(swapOption, fromToken, toToken, chainId);
+    let currentTokenPriceStr = formatAmount(selectedToken.maxPrice, USD_DECIMALS, 2, true);
+    let title = getPageTitle(currentTokenPriceStr + ` | ${selectedToken.symbol}${selectedToken.isStable ? "" : "USD"}`);
+    document.title = title;
+  }, [tokenSelection, swapOption, infoTokens, chainId, fromTokenAddress, toTokenAddress]);
+
   const { positions, positionsMap } = getPositions(
     chainId,
     positionQuery,
@@ -668,20 +678,6 @@ export default function Exchange({
       if (account !== currentAccount) {
         return;
       }
-      console.log(
-        "onCancelIncreasePosition",
-        account,
-        path,
-        indexToken,
-        amountIn,
-        minOut,
-        sizeDelta,
-        isLong,
-        acceptablePrice,
-        executionFee,
-        blockGap,
-        timeGap
-      );
       const indexTokenItem = getToken(chainId, indexToken);
       const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
 
@@ -714,21 +710,6 @@ export default function Exchange({
       if (account !== currentAccount) {
         return;
       }
-      console.log(
-        "onCancelIncreasePosition",
-        account,
-        path,
-        indexToken,
-        collateralDelta,
-        sizeDelta,
-        isLong,
-        receiver,
-        acceptablePrice,
-        minOut,
-        executionFee,
-        blockGap,
-        timeGap
-      );
       const indexTokenItem = getToken(chainId, indexToken);
       const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
 
@@ -783,8 +764,8 @@ export default function Exchange({
       library,
       pendingTxns,
       setPendingTxns,
-      sentMsg: "Enable orders sent",
-      failMsg: "Enable orders failed",
+      sentMsg: "Enable orders sent.",
+      failMsg: "Enable orders failed.",
     })
       .then(() => {
         setIsWaitingForPluginApproval(true);
