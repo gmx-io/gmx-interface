@@ -142,7 +142,7 @@ export default function OrderEditor(props) {
     params.push({
       successMsg: "Order updated!",
       failMsg: "Order update failed.",
-      sentMsg: "Order update submitted.",
+      sentMsg: "Order update submitted!",
       pendingTxns,
       setPendingTxns,
     });

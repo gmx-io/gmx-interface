@@ -1187,7 +1187,7 @@ export default function SwapBox(props) {
 
     const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, library.getSigner());
     Api.callContract(chainId, contract, "withdraw", [fromAmount], {
-      sentMsg: "Swap submitted.",
+      sentMsg: "Swap submitted!",
       failMsg: "Swap failed.",
       successMsg: `Swapped ${formatAmount(fromAmount, fromToken.decimals, 4, true)} ${
         fromToken.symbol
@@ -1262,7 +1262,7 @@ export default function SwapBox(props) {
     if (!isMarketOrder) {
       minOut = toAmount;
       Api.createSwapOrder(chainId, library, path, fromAmount, minOut, triggerRatio, nativeTokenAddress, {
-        sentMsg: "Swap Order submitted.",
+        sentMsg: "Swap Order submitted!",
         successMsg: "Swap Order created!",
         failMsg: "Swap Order creation failed.",
         pendingTxns,
@@ -1296,7 +1296,7 @@ export default function SwapBox(props) {
 
     Api.callContract(chainId, contract, method, params, {
       value,
-      sentMsg: `Swap ${!isMarketOrder ? " order " : ""} submitted.`,
+      sentMsg: `Swap ${!isMarketOrder ? " order " : ""} submitted!`,
       successMsg: `Swapped ${formatAmount(fromAmount, fromToken.decimals, 4, true)} ${
         fromToken.symbol
       } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}!`,
@@ -1348,7 +1348,7 @@ export default function SwapBox(props) {
       {
         pendingTxns,
         setPendingTxns,
-        sentMsg: "Limit order submitted.",
+        sentMsg: "Limit order submitted!",
         successMsg,
         failMsg: "Limit order creation failed.",
       }
@@ -1461,7 +1461,7 @@ export default function SwapBox(props) {
       toUsdMax,
       USD_DECIMALS,
       2
-    )} USD!`;
+    )} USD.`;
 
     Api.callContract(chainId, contract, method, params, {
       value,
