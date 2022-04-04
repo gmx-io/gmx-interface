@@ -83,6 +83,7 @@ export default function PositionsList(props) {
     showPnlAfterFees,
     setMarket,
   } = props;
+
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
   const [positionToSellKey, setPositionToSellKey] = useState(undefined);
   const [isPositionEditorVisible, setIsPositionEditorVisible] = useState(undefined);
@@ -182,6 +183,8 @@ export default function PositionsList(props) {
             {positions.map((position) => {
               const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
               const liquidationPrice = getLiquidationPrice(position);
+              const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
+              const positionDelta = position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"];
 
               return (
                 <div key={position.key} className="App-card">
@@ -243,8 +246,9 @@ export default function PositionsList(props) {
                       <div>
                         <span
                           className={cx({
-                            positive: position.hasProfit && position.pendingDelta.gt(0),
-                            negative: !position.hasProfit && position.pendingDelta.gt(0),
+                            positive: hasPositionProfit,
+                            negative: !hasPositionProfit,
+                            muted: positionDelta && positionDelta.eq(0),
                           })}
                         >
                           {position.deltaStr} ({position.deltaPercentageStr})
@@ -356,6 +360,8 @@ export default function PositionsList(props) {
             const liquidationPrice = getLiquidationPrice(position) || bigNumberify(0);
             const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
             const hasOrderError = !!positionOrders.find((order) => order.error);
+            const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
+            const positionDelta = position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"];
             return (
               <tr key={position.key}>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
@@ -408,9 +414,9 @@ export default function PositionsList(props) {
                   {position.deltaStr && (
                     <div
                       className={cx("Exchange-list-info-label", {
-                        positive: position.hasProfit && position.pendingDelta.gt(0),
-                        negative: !position.hasProfit && position.pendingDelta.gt(0),
-                        muted: position.pendingDelta.eq(0),
+                        positive: hasPositionProfit,
+                        negative: !hasPositionProfit,
+                        muted: positionDelta && positionDelta.eq(0),
                       })}
                     >
                       {position.deltaStr} ({position.deltaPercentageStr})

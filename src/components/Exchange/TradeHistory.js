@@ -176,7 +176,7 @@ export default function TradeHistory(props) {
           return `Request withdrawal from ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`;
         }
 
-        return `Request decrease ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}, +${formatAmount(
+        return `Request decrease ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}, -${formatAmount(
           params.sizeDelta,
           USD_DECIMALS,
           2,

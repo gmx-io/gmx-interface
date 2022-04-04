@@ -14,12 +14,12 @@ import {
   LONG,
   SHORT,
   USD_DECIMALS,
+  getExplorerUrl,
   helperToast,
   formatAmount,
   bigNumberify,
   getTokenInfo,
   fetcher,
-  expandDecimals,
   getPositionKey,
   getPositionContractKey,
   getLeverage,
@@ -27,17 +27,16 @@ import {
   useLocalStorageByChainId,
   getDeltaStr,
   useChainId,
-  getInfoTokens,
   useAccountOrders,
+  getPageTitle,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
-import { approvePlugin } from "../../Api";
+import { approvePlugin, useInfoTokens } from "../../Api";
 
 import { getContract } from "../../Addresses";
 import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
 
 import Reader from "../../abis/ReaderV2.json";
-import VaultReader from "../../abis/VaultReader.json";
 import VaultV2 from "../../abis/VaultV2.json";
 import VaultV2b from "../../abis/VaultV2b.json";
 import PositionRouter from "../../abis/PositionRouter.json";
@@ -46,7 +45,7 @@ import Token from "../../abis/Token.json";
 
 import Checkbox from "../../components/Checkbox/Checkbox";
 import SwapBox from "../../components/Exchange/SwapBox";
-import ExchangeTVChart from "../../components/Exchange/ExchangeTVChart";
+import ExchangeTVChart, { getChartToken } from "../../components/Exchange/ExchangeTVChart";
 import PositionsList from "../../components/Exchange/PositionsList";
 import OrdersList from "../../components/Exchange/OrdersList";
 import TradeHistory from "../../components/Exchange/TradeHistory";
@@ -70,7 +69,7 @@ const UPDATED_POSITION_VALID_DURATION = 60 * 1000;
 
 const notifications = {};
 
-function pushSuccessNotification(message, e) {
+function pushSuccessNotification(chainId, message, e) {
   const { transactionHash } = e;
   const id = ethers.utils.id(message + transactionHash);
   if (notifications[id]) {
@@ -78,10 +77,19 @@ function pushSuccessNotification(message, e) {
   }
 
   notifications[id] = true;
-  helperToast.success(message);
+
+  const txUrl = getExplorerUrl(chainId) + "tx/" + transactionHash;
+  helperToast.success(
+    <div>
+      {message}{" "}
+      <a href={txUrl} target="_blank" rel="noopener noreferrer">
+        View
+      </a>
+    </div>
+  );
 }
 
-function pushErrorNotification(message, e) {
+function pushErrorNotification(chainId, message, e) {
   const { transactionHash } = e;
   const id = ethers.utils.id(message + transactionHash);
   if (notifications[id]) {
@@ -89,7 +97,16 @@ function pushErrorNotification(message, e) {
   }
 
   notifications[id] = true;
-  helperToast.error(message);
+
+  const txUrl = getExplorerUrl(chainId) + "tx/" + transactionHash;
+  helperToast.error(
+    <div>
+      {message}{" "}
+      <a href={txUrl} target="_blank" rel="noopener noreferrer">
+        View
+      </a>
+    </div>
+  );
 }
 
 function getWsProvider(active, chainId) {
@@ -219,12 +236,21 @@ export function getPositions(
       position.hasLowCollateral =
         position.collateralAfterFee.lt(0) || position.size.div(position.collateralAfterFee.abs()).gt(50);
 
-      if (position.delta.eq(0) && position.averagePrice && position.markPrice) {
+      if (position.averagePrice && position.markPrice) {
         const priceDelta = position.averagePrice.gt(position.markPrice)
           ? position.averagePrice.sub(position.markPrice)
           : position.markPrice.sub(position.averagePrice);
         position.pendingDelta = position.size.mul(priceDelta).div(position.averagePrice);
+
+        position.delta = position.pendingDelta;
+
+        if (position.isLong) {
+          position.hasProfit = position.markPrice.gte(position.averagePrice);
+        } else {
+          position.hasProfit = position.markPrice.lte(position.averagePrice);
+        }
       }
+
       position.deltaPercentage = position.pendingDelta.mul(BASIS_POINTS_DIVISOR).div(position.collateral);
 
       const { deltaStr, deltaPercentageStr } = getDeltaStr({
@@ -398,7 +424,6 @@ export default function Exchange({
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const readerAddress = getContract(chainId, "Reader");
-  const vaultReaderAddress = getContract(chainId, "VaultReader");
   const usdgAddress = getContract(chainId, "USDG");
 
   const whitelistedTokens = getWhitelistedTokens(chainId);
@@ -464,18 +489,6 @@ export default function Exchange({
   const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
 
   const tokens = getTokens(chainId);
-  const { data: vaultTokenInfo } = useSWR(
-    [`Exchange:vaultTokenInfo:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
-    {
-      fetcher: fetcher(library, VaultReader, [
-        vaultAddress,
-        positionRouterAddress,
-        nativeTokenAddress,
-        expandDecimals(1, 18),
-        whitelistedTokenAddresses,
-      ]),
-    }
-  );
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
@@ -524,7 +537,17 @@ export default function Exchange({
     }
   );
 
-  const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo);
+  const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo);
+
+  useEffect(() => {
+    const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
+    const toToken = getTokenInfo(infoTokens, toTokenAddress);
+    let selectedToken = getChartToken(swapOption, fromToken, toToken, chainId);
+    let currentTokenPriceStr = formatAmount(selectedToken.maxPrice, USD_DECIMALS, 2, true);
+    let title = getPageTitle(currentTokenPriceStr + ` | ${selectedToken.symbol}${selectedToken.isStable ? "" : "USD"}`);
+    document.title = title;
+  }, [tokenSelection, swapOption, infoTokens, chainId, fromTokenAddress, toTokenAddress]);
+
   const { positions, positionsMap } = getPositions(
     chainId,
     positionQuery,
@@ -607,7 +630,7 @@ export default function Exchange({
       let message;
       if (sizeDelta.eq(0)) {
         message = `Deposited ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD into ${tokenSymbol} ${
-          isLong ? "Long" : "Short"
+          isLong ? "Long" : "Short."
         }`;
       } else {
         message = `Increased ${tokenSymbol} ${isLong ? "Long" : "Short"}, +${formatAmount(
@@ -615,10 +638,10 @@ export default function Exchange({
           USD_DECIMALS,
           2,
           true
-        )} USD`;
+        )} USD.`;
       }
 
-      pushSuccessNotification(message, e);
+      pushSuccessNotification(chainId, message, e);
     };
 
     const onDecreasePosition = (
@@ -644,17 +667,17 @@ export default function Exchange({
       if (sizeDelta.eq(0)) {
         message = `Withdrew ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD from ${tokenSymbol} ${
           isLong ? "Long" : "Short"
-        }`;
+        }.`;
       } else {
         message = `Decreased ${tokenSymbol} ${isLong ? "Long" : "Short"}, -${formatAmount(
           sizeDelta,
           USD_DECIMALS,
           2,
           true
-        )} USD`;
+        )} USD.`;
       }
 
-      pushSuccessNotification(message, e);
+      pushSuccessNotification(chainId, message, e);
     };
 
     const onCancelIncreasePosition = (
@@ -679,9 +702,9 @@ export default function Exchange({
 
       const message = `Could not increase ${tokenSymbol} ${
         isLong ? "Long" : "Short"
-      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page`;
+      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`;
 
-      pushErrorNotification(message, e);
+      pushErrorNotification(chainId, message, e);
 
       const key = getPositionKey(path[path.length - 1], indexToken, isLong);
       pendingPositions[key] = {};
@@ -711,9 +734,9 @@ export default function Exchange({
 
       const message = `Could not decrease ${tokenSymbol} ${
         isLong ? "Long" : "Short"
-      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page`;
+      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`;
 
-      pushErrorNotification(message, e);
+      pushErrorNotification(chainId, message, e);
 
       const key = getPositionKey(path[path.length - 1], indexToken, isLong);
       pendingPositions[key] = {};
@@ -760,8 +783,8 @@ export default function Exchange({
       library,
       pendingTxns,
       setPendingTxns,
-      sentMsg: "Enable orders sent",
-      failMsg: "Enable orders failed",
+      sentMsg: "Enable orders sent.",
+      failMsg: "Enable orders failed.",
     })
       .then(() => {
         setIsWaitingForPluginApproval(true);
