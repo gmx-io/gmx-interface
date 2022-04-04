@@ -754,8 +754,8 @@ export default function Exchange({
       library,
       pendingTxns,
       setPendingTxns,
-      sentMsg: "Enable orders sent",
-      failMsg: "Enable orders failed",
+      sentMsg: "Enable orders sent.",
+      failMsg: "Enable orders failed.",
     })
       .then(() => {
         setIsWaitingForPluginApproval(true);
