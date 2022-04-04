@@ -196,7 +196,6 @@ export default function TradeHistory(props) {
         }
 
         if (bigNumberify(params.sizeDelta).eq(0)) {
-          // return `Could not execute deposit into ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`;
           return (
             <>
               Could not execute deposit into {indexToken.symbol} {params.isLong ? "Long" : "Short"}
