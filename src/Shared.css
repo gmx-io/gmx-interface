@@ -378,3 +378,7 @@ button.btn-link:hover .logout-icon {
 .w-100 {
   width: 100%;
 }
+
+.default-cursor.App-cta {
+  cursor: default;
+}

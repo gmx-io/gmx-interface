@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { gql } from "@apollo/client";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
 import useSWR from "swr";
@@ -12,6 +12,7 @@ import Router from "../abis/Router.json";
 import UniPool from "../abis/UniPool.json";
 import UniswapV2 from "../abis/UniswapV2.json";
 import Token from "../abis/Token.json";
+import VaultReader from "../abis/VaultReader.json";
 
 import { getContract } from "../Addresses";
 import { getConstant } from "../Constants";
@@ -24,7 +25,7 @@ import {
   getExplorerUrl,
   getServerBaseUrl,
   getServerUrl,
-  getGasPrice,
+  setGasPrice,
   getGasLimit,
   replaceNativeTokenAddress,
   getProvider,
@@ -32,9 +33,10 @@ import {
   fetcher,
   parseValue,
   expandDecimals,
+  getInfoTokens,
   helperToast,
 } from "../Helpers";
-import { getTokenBySymbol } from "../data/Tokens";
+import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
 
 import { nissohGraphClient, arbitrumGraphClient, avalancheGraphClient } from "./common";
 export * from "./prices";
@@ -72,6 +74,50 @@ export function useAllOrdersStats(chainId) {
   }, [setRes, query, chainId]);
 
   return res ? res.data.orderStat : null;
+}
+
+export function useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo, vaultPropsLength) {
+  const tokens = getTokens(chainId);
+  const vaultReaderAddress = getContract(chainId, "VaultReader");
+  const vaultAddress = getContract(chainId, "Vault");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
+  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+
+  const whitelistedTokens = getWhitelistedTokens(chainId);
+  const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
+
+  const { data: vaultTokenInfo } = useSWR(
+    [`useInfoTokens:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
+    {
+      fetcher: fetcher(library, VaultReader, [
+        vaultAddress,
+        positionRouterAddress,
+        nativeTokenAddress,
+        expandDecimals(1, 18),
+        whitelistedTokenAddresses,
+      ]),
+    }
+  );
+
+  const indexPricesUrl = getServerUrl(chainId, "/prices");
+  const { data: indexPrices } = useSWR([indexPricesUrl], {
+    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+    refreshInterval: 500,
+    refreshWhenHidden: true,
+  });
+
+  return {
+    infoTokens: getInfoTokens(
+      tokens,
+      tokenBalances,
+      whitelistedTokens,
+      vaultTokenInfo,
+      fundingRateInfo,
+      vaultPropsLength,
+      indexPrices,
+      nativeTokenAddress
+    ),
+  };
 }
 
 export function useUserStat(chainId) {
@@ -409,6 +455,101 @@ export function useGmxPrice(chainId, libraries, active) {
     gmxPrice,
     gmxPriceFromArbitrum,
     gmxPriceFromAvalanche,
+    mutate,
+  };
+}
+
+// use only the supply endpoint on arbitrum, it includes the supply on avalanche
+export function useTotalGmxSupply() {
+  const gmxSupplyUrlArbitrum = getServerUrl(ARBITRUM, "/gmx_supply");
+
+  const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrlArbitrum], {
+    fetcher: (...args) => fetch(...args).then((res) => res.text()),
+  });
+
+  return {
+    total: gmxSupply ? bigNumberify(gmxSupply) : undefined,
+    mutate: updateGmxSupply,
+  };
+}
+
+export function useTotalGmxStaked() {
+  const stakedGmxTrackerAddressArbitrum = getContract(ARBITRUM, "StakedGmxTracker");
+  const stakedGmxTrackerAddressAvax = getContract(AVALANCHE, "StakedGmxTracker");
+  let totalStakedGmx = useRef(bigNumberify(0));
+  const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR(
+    [
+      `StakeV2:stakedGmxSupply:${ARBITRUM}`,
+      ARBITRUM,
+      getContract(ARBITRUM, "GMX"),
+      "balanceOf",
+      stakedGmxTrackerAddressArbitrum,
+    ],
+    {
+      fetcher: fetcher(undefined, Token),
+    }
+  );
+  const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR(
+    [
+      `StakeV2:stakedGmxSupply:${AVALANCHE}`,
+      AVALANCHE,
+      getContract(AVALANCHE, "GMX"),
+      "balanceOf",
+      stakedGmxTrackerAddressAvax,
+    ],
+    {
+      fetcher: fetcher(undefined, Token),
+    }
+  );
+
+  const mutate = useCallback(() => {
+    updateStakedGmxSupplyArbitrum();
+    updateStakedGmxSupplyAvax();
+  }, [updateStakedGmxSupplyArbitrum, updateStakedGmxSupplyAvax]);
+
+  if (stakedGmxSupplyArbitrum && stakedGmxSupplyAvax) {
+    let total = bigNumberify(stakedGmxSupplyArbitrum).add(stakedGmxSupplyAvax);
+    totalStakedGmx.current = total;
+  }
+
+  return {
+    avax: stakedGmxSupplyAvax,
+    arbitrum: stakedGmxSupplyArbitrum,
+    total: totalStakedGmx.current,
+    mutate,
+  };
+}
+
+export function useTotalGmxInLiquidity() {
+  let poolAddressArbitrum = getContract(ARBITRUM, "UniswapGmxEthPool");
+  let poolAddressAvax = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
+  let totalGMX = useRef(bigNumberify(0));
+
+  const { data: gmxInLiquidityOnArbitrum, mutate: mutateGMXInLiquidityOnArbitrum } = useSWR(
+    [`StakeV2:gmxInLiquidity:${ARBITRUM}`, ARBITRUM, getContract(ARBITRUM, "GMX"), "balanceOf", poolAddressArbitrum],
+    {
+      fetcher: fetcher(undefined, Token),
+    }
+  );
+  const { data: gmxInLiquidityOnAvax, mutate: mutateGMXInLiquidityOnAvax } = useSWR(
+    [`StakeV2:gmxInLiquidity:${AVALANCHE}`, AVALANCHE, getContract(AVALANCHE, "GMX"), "balanceOf", poolAddressAvax],
+    {
+      fetcher: fetcher(undefined, Token),
+    }
+  );
+  const mutate = useCallback(() => {
+    mutateGMXInLiquidityOnArbitrum();
+    mutateGMXInLiquidityOnAvax();
+  }, [mutateGMXInLiquidityOnArbitrum, mutateGMXInLiquidityOnAvax]);
+
+  if (gmxInLiquidityOnAvax && gmxInLiquidityOnArbitrum) {
+    let total = bigNumberify(gmxInLiquidityOnArbitrum).add(gmxInLiquidityOnAvax);
+    totalGMX.current = total;
+  }
+  return {
+    avax: gmxInLiquidityOnAvax,
+    arbitrum: gmxInLiquidityOnArbitrum,
+    total: totalGMX.current,
     mutate,
   };
 }
@@ -764,19 +905,17 @@ export async function callContract(chainId, contract, method, params, opts) {
       opts = {};
     }
 
-    if (!opts.gasLimit) {
-      opts.gasLimit = await getGasLimit(contract, method, params, opts.value);
+    const txnOpts = {};
+
+    if (opts.value) {
+      txnOpts.value = opts.value;
     }
 
-    if (!opts.gasPrice) {
-      opts.gasPrice = await getGasPrice(contract.provider, chainId);
-    }
+    txnOpts.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value);
 
-    const res = await contract[method](...params, {
-      gasLimit: opts.gasLimit,
-      value: opts.value,
-      gasPrice: opts.gasPrice,
-    });
+    await setGasPrice(txnOpts, contract.provider, chainId);
+
+    const res = await contract[method](...params, txnOpts);
     const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
     const sentMsg = opts.sentMsg || "Transaction sent.";
     helperToast.success(
@@ -791,7 +930,7 @@ export async function callContract(chainId, contract, method, params, opts) {
     if (opts.setPendingTxns) {
       const pendingTxn = {
         hash: res.hash,
-        message: opts.successMsg || "Transaction completed.",
+        message: opts.successMsg || "Transaction completed!",
       };
       opts.setPendingTxns((pendingTxns) => [...pendingTxns, pendingTxn]);
     }

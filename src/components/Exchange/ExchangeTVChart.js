@@ -28,7 +28,7 @@ const PRICE_LINE_TEXT_WIDTH = 15;
 
 const timezoneOffset = -new Date().getTimezoneOffset() * 60;
 
-function getChartToken(swapOption, fromToken, toToken, chainId) {
+export function getChartToken(swapOption, fromToken, toToken, chainId) {
   if (!fromToken || !toToken) {
     return;
   }
