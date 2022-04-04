@@ -87,6 +87,7 @@ import walletConnectImg from "./img/walletconnect-circle-blue.svg";
 import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
 import { ConnectWalletButton } from "./components/Common/Button";
 import useEventToast from "./components/EventToast/useEventToast";
+import SEO from "./components/Common/SEO";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -897,7 +898,9 @@ function App() {
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <FullApp />
+        <SEO>
+          <FullApp />
+        </SEO>
       </Web3ReactProvider>
     </SWRConfig>
   );

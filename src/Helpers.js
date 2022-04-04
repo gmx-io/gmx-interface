@@ -2575,3 +2575,8 @@ export async function addTokenToMetamask(token) {
     console.error(error);
   }
 }
+
+export function getPageTitle(data) {
+  return `${data} | Decentralized
+  Perpetual Exchange | GMX`;
+}
