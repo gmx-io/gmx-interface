@@ -493,8 +493,8 @@ export default function PositionSeller(props) {
 
     if (needPositionRouterApproval) {
       approvePositionRouter({
-        sentMsg: "Enable leverage sent",
-        failMsg: "Enable leverage failed",
+        sentMsg: "Enable leverage sent.",
+        failMsg: "Enable leverage failed.",
       });
       return;
     }
@@ -522,7 +522,7 @@ export default function PositionSeller(props) {
         {
           sentMsg: "Order submitted!",
           successMsg: "Order created!",
-          failMsg: "Order creation failed",
+          failMsg: "Order creation failed.",
           setPendingTxns,
         }
       )

@@ -246,6 +246,10 @@ a.plain {
   margin: 0 auto;
 }
 
+.default-sm-container {
+  max-width: 1088px;
+}
+
 .secondary-btn {
   background: #03d1cf;
   border-radius: 4px;
