@@ -25,7 +25,7 @@ import {
   getTokenInfo,
   getLiquidationPrice,
   getLeverage,
-  getPositionFee,
+  getMarginFee,
   PRECISION,
   MARKET,
   STOP,
@@ -226,7 +226,7 @@ export default function PositionSeller(props) {
 
     if (fromAmount) {
       isClosing = position.size.sub(fromAmount).lt(DUST_USD);
-      positionFee = getPositionFee(fromAmount);
+      positionFee = getMarginFee(fromAmount);
     }
 
     if (isClosing) {

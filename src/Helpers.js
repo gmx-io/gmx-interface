@@ -354,7 +354,7 @@ export function getLiquidationPriceFromDelta({ liquidationAmount, size, collater
   if (liquidationAmount.gt(collateral)) {
     const liquidationDelta = liquidationAmount.sub(collateral);
     const priceDelta = liquidationDelta.mul(averagePrice).div(size);
-    return !isLong ? averagePrice.sub(priceDelta) : averagePrice.add(priceDelta);
+    return isLong ? averagePrice.add(priceDelta) : averagePrice.sub(priceDelta);
   }
 
   const liquidationDelta = collateral.sub(liquidationAmount);
@@ -379,14 +379,6 @@ export const replaceNativeTokenAddress = (path, nativeTokenAddress) => {
 
   return updatedPath;
 };
-
-export function getPositionFee(size) {
-  if (!size) {
-    return bigNumberify(0);
-  }
-  const afterFeeUsd = size.mul(BASIS_POINTS_DIVISOR - MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
-  return size.sub(afterFeeUsd);
-}
 
 export function getMarginFee(sizeDelta) {
   if (!sizeDelta) {
@@ -1148,9 +1140,6 @@ export function getLiquidationPrice(data) {
       nextSize = size.sub(sizeDelta);
     }
 
-    const marginFee = getMarginFee(sizeDelta);
-    remainingCollateral = remainingCollateral.sub(marginFee);
-
     if (includeDelta && !hasProfit) {
       const adjustedDelta = sizeDelta.mul(delta).div(size);
       remainingCollateral = remainingCollateral.sub(adjustedDelta);
@@ -1168,7 +1157,7 @@ export function getLiquidationPrice(data) {
     }
   }
 
-  let positionFee = getPositionFee(size).add(LIQUIDATION_FEE);
+  let positionFee = getMarginFee(size).add(LIQUIDATION_FEE);
   if (entryFundingRate && cumulativeFundingRate) {
     const fundingFee = size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
     positionFee = positionFee.add(fundingFee);
