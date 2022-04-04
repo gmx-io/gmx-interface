@@ -55,7 +55,7 @@ export default function OrdersList(props) {
       }
 
       return func(chainId, library, order.index, {
-        successMsg: "Order cancelled!",
+        successMsg: "Order cancelled.",
         failMsg: "Cancel failed.",
         sentMsg: "Cancel submitted.",
         pendingTxns,

@@ -493,8 +493,8 @@ export default function PositionSeller(props) {
 
     if (needPositionRouterApproval) {
       approvePositionRouter({
-        sentMsg: "Enable leverage sent",
-        failMsg: "Enable leverage failed",
+        sentMsg: "Enable leverage sent.",
+        failMsg: "Enable leverage failed.",
       });
       return;
     }

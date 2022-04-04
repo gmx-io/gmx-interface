@@ -304,7 +304,7 @@ export default function PositionEditor(props) {
       sentMsg: "Deposit submitted.",
       successMsg: `Requested deposit of ${formatAmount(fromAmount, position.collateralToken.decimals, 4)} ${
         position.collateralToken.symbol
-      } into ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}!`,
+      } into ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}.`,
       failMsg: "Deposit failed.",
       setPendingTxns,
     })
@@ -357,7 +357,7 @@ export default function PositionEditor(props) {
       sentMsg: "Withdrawal submitted.",
       successMsg: `Requested withdrawal of ${formatAmount(fromAmount, USD_DECIMALS, 2)} USD from ${
         position.indexToken.symbol
-      } ${position.isLong ? "Long" : "Short"}!`,
+      } ${position.isLong ? "Long" : "Short"}.`,
       failMsg: "Withdrawal failed.",
       setPendingTxns,
     })
@@ -396,8 +396,8 @@ export default function PositionEditor(props) {
 
     if (needPositionRouterApproval) {
       approvePositionRouter({
-        sentMsg: isDeposit ? "Enable deposit sent" : "Enable withdraw sent",
-        failMsg: isDeposit ? "Enable deposit failed" : "Enable withdraw failed",
+        sentMsg: isDeposit ? "Enable deposit sent." : "Enable withdraw sent.",
+        failMsg: isDeposit ? "Enable deposit failed." : "Enable withdraw failed.",
       });
       return;
     }

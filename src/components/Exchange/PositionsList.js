@@ -82,7 +82,6 @@ export default function PositionsList(props) {
     approvePositionRouter,
     showPnlAfterFees,
     setMarket,
-    savedShowPnlAfterFees,
   } = props;
 
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
@@ -184,8 +183,8 @@ export default function PositionsList(props) {
             {positions.map((position) => {
               const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
               const liquidationPrice = getLiquidationPrice(position);
-              const hasPositionProfit = position[savedShowPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
-              const positionDelta = position[savedShowPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"];
+              const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
+              const positionDelta = position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"];
 
               return (
                 <div key={position.key} className="App-card">
@@ -361,8 +360,8 @@ export default function PositionsList(props) {
             const liquidationPrice = getLiquidationPrice(position) || bigNumberify(0);
             const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
             const hasOrderError = !!positionOrders.find((order) => order.error);
-            const hasPositionProfit = position[savedShowPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
-            const positionDelta = position[savedShowPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"];
+            const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
+            const positionDelta = position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"];
             return (
               <tr key={position.key}>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
