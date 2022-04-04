@@ -14,6 +14,7 @@ import {
   LONG,
   SHORT,
   USD_DECIMALS,
+  getExplorerUrl,
   helperToast,
   formatAmount,
   bigNumberify,
@@ -68,7 +69,7 @@ const UPDATED_POSITION_VALID_DURATION = 60 * 1000;
 
 const notifications = {};
 
-function pushSuccessNotification(message, e) {
+function pushSuccessNotification(chainId, message, e) {
   const { transactionHash } = e;
   const id = ethers.utils.id(message + transactionHash);
   if (notifications[id]) {
@@ -76,10 +77,19 @@ function pushSuccessNotification(message, e) {
   }
 
   notifications[id] = true;
-  helperToast.success(message);
+
+  const txUrl = getExplorerUrl(chainId) + "tx/" + transactionHash;
+  helperToast.success(
+    <div>
+      {message}{" "}
+      <a href={txUrl} target="_blank" rel="noopener noreferrer">
+        View
+      </a>
+    </div>
+  );
 }
 
-function pushErrorNotification(message, e) {
+function pushErrorNotification(chainId, message, e) {
   const { transactionHash } = e;
   const id = ethers.utils.id(message + transactionHash);
   if (notifications[id]) {
@@ -87,7 +97,16 @@ function pushErrorNotification(message, e) {
   }
 
   notifications[id] = true;
-  helperToast.error(message);
+
+  const txUrl = getExplorerUrl(chainId) + "tx/" + transactionHash;
+  helperToast.error(
+    <div>
+      {message}{" "}
+      <a href={txUrl} target="_blank" rel="noopener noreferrer">
+        View
+      </a>
+    </div>
+  );
 }
 
 function getWsProvider(active, chainId) {
@@ -611,7 +630,7 @@ export default function Exchange({
       let message;
       if (sizeDelta.eq(0)) {
         message = `Deposited ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD into ${tokenSymbol} ${
-          isLong ? "Long" : "Short"
+          isLong ? "Long" : "Short."
         }`;
       } else {
         message = `Increased ${tokenSymbol} ${isLong ? "Long" : "Short"}, +${formatAmount(
@@ -619,10 +638,10 @@ export default function Exchange({
           USD_DECIMALS,
           2,
           true
-        )} USD`;
+        )} USD.`;
       }
 
-      pushSuccessNotification(message, e);
+      pushSuccessNotification(chainId, message, e);
     };
 
     const onDecreasePosition = (
@@ -648,17 +667,17 @@ export default function Exchange({
       if (sizeDelta.eq(0)) {
         message = `Withdrew ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD from ${tokenSymbol} ${
           isLong ? "Long" : "Short"
-        }`;
+        }.`;
       } else {
         message = `Decreased ${tokenSymbol} ${isLong ? "Long" : "Short"}, -${formatAmount(
           sizeDelta,
           USD_DECIMALS,
           2,
           true
-        )} USD`;
+        )} USD.`;
       }
 
-      pushSuccessNotification(message, e);
+      pushSuccessNotification(chainId, message, e);
     };
 
     const onCancelIncreasePosition = (
@@ -683,9 +702,9 @@ export default function Exchange({
 
       const message = `Could not increase ${tokenSymbol} ${
         isLong ? "Long" : "Short"
-      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page`;
+      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`;
 
-      pushErrorNotification(message, e);
+      pushErrorNotification(chainId, message, e);
 
       const key = getPositionKey(path[path.length - 1], indexToken, isLong);
       pendingPositions[key] = {};
@@ -715,9 +734,9 @@ export default function Exchange({
 
       const message = `Could not decrease ${tokenSymbol} ${
         isLong ? "Long" : "Short"
-      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page`;
+      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`;
 
-      pushErrorNotification(message, e);
+      pushErrorNotification(chainId, message, e);
 
       const key = getPositionKey(path[path.length - 1], indexToken, isLong);
       pendingPositions[key] = {};
