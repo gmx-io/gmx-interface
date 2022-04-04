@@ -248,7 +248,7 @@ export default function PositionsList(props) {
                           className={cx({
                             positive: hasPositionProfit,
                             negative: !hasPositionProfit,
-                            muted: positionDelta.eq(0),
+                            muted: positionDelta && positionDelta.eq(0),
                           })}
                         >
                           {position.deltaStr} ({position.deltaPercentageStr})
@@ -416,7 +416,7 @@ export default function PositionsList(props) {
                       className={cx("Exchange-list-info-label", {
                         positive: hasPositionProfit,
                         negative: !hasPositionProfit,
-                        muted: positionDelta.eq(0),
+                        muted: positionDelta && positionDelta.eq(0),
                       })}
                     >
                       {position.deltaStr} ({position.deltaPercentageStr})
