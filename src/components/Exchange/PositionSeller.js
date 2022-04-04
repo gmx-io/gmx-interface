@@ -45,6 +45,7 @@ import Checkbox from "../Checkbox/Checkbox";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
 import ExchangeInfoRow from "./ExchangeInfoRow";
+import Tooltip from "../Tooltip/Tooltip";
 
 const { AddressZero } = ethers.constants;
 
@@ -781,6 +782,27 @@ export default function PositionSeller(props) {
                 <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
                   <span className="muted">Allow up to 1% slippage</span>
                 </Checkbox>
+              </div>
+            )}
+            {orderOption === MARKET && (
+              <div>
+                <ExchangeInfoRow label="Allowed Slippage">
+                  <Tooltip
+                    handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
+                    position="right-bottom"
+                    renderContent={() => {
+                      return (
+                        <>
+                          You can change this in the settings menu on the top right of the page.
+                          <br />
+                          <br />
+                          Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices
+                          are volatile.
+                        </>
+                      );
+                    }}
+                  />
+                </ExchangeInfoRow>
               </div>
             )}
             {orderOption === STOP && (
