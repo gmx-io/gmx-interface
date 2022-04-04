@@ -103,6 +103,7 @@ export function useInfoTokens(library, chainId, active, tokenBalances, fundingRa
   const { data: indexPrices } = useSWR([indexPricesUrl], {
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
     refreshInterval: 500,
+    refreshWhenHidden: true,
   });
 
   return {
@@ -929,7 +930,7 @@ export async function callContract(chainId, contract, method, params, opts) {
     if (opts.setPendingTxns) {
       const pendingTxn = {
         hash: res.hash,
-        message: opts.successMsg || "Transaction completed.",
+        message: opts.successMsg || "Transaction completed!",
       };
       opts.setPendingTxns((pendingTxns) => [...pendingTxns, pendingTxn]);
     }
