@@ -7,12 +7,14 @@ import { useParams } from "react-router-dom";
 import "./Actions.css";
 
 import { getContract } from "../../Addresses";
-import { formatAmount, fetcher, getTokenInfo, getServerBaseUrl, useChainId } from "../../Helpers";
+import { formatAmount, fetcher, getTokenInfo, getServerBaseUrl, useChainId, useAccountOrders } from "../../Helpers";
 
 import { useInfoTokens } from "../../Api";
 import { getToken, getTokens, getWhitelistedTokens } from "../../data/Tokens";
 import { getPositions, getPositionQuery } from "../Exchange/Exchange";
+
 import PositionsList from "../../components/Exchange/PositionsList";
+import OrdersList from "../../components/Exchange/OrdersList";
 
 import TradeHistory from "../../components/Exchange/TradeHistory";
 import Reader from "../../abis/Reader.json";
@@ -74,6 +76,9 @@ export default function Actions() {
     undefined
   );
 
+  const flagOrdersEnabled = true;
+  const [orders, updateOrders] = useAccountOrders(flagOrdersEnabled, checkSummedAccount);
+
   return (
     <div className="Actions">
       {checkSummedAccount.length > 0 && <div className="Actions-section">Account: {checkSummedAccount}</div>}
@@ -108,6 +113,7 @@ export default function Actions() {
             positionsMap={positionsMap}
             infoTokens={infoTokens}
             active={active}
+            orders={orders}
             account={checkSummedAccount}
             library={library}
             flagOrdersEnabled={false}
@@ -115,6 +121,20 @@ export default function Actions() {
             chainId={chainId}
             nativeTokenAddress={nativeTokenAddress}
             showPnlAfterFees={false}
+          />
+        </div>
+      )}
+      {flagOrdersEnabled && checkSummedAccount.length > 0 && (
+        <div className="Actions-section">
+          <div className="Actions-title">Orders</div>
+          <OrdersList
+            account={checkSummedAccount}
+            infoTokens={infoTokens}
+            positionsMap={positionsMap}
+            chainId={chainId}
+            orders={orders}
+            updateOrders={updateOrders}
+            hideActions
           />
         </div>
       )}

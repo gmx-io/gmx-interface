@@ -88,6 +88,7 @@ import { ConnectWalletButton } from "./components/Common/Button";
 import useEventToast from "./components/EventToast/useEventToast";
 import { Link } from "react-router-dom";
 import EventToastContainer from "./components/EventToast/EventToastContainer";
+import SEO from "./components/Common/SEO";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -493,7 +494,7 @@ function FullApp() {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.success(
               <div>
-                {pendingTxn.message}.{" "}
+                {pendingTxn.message}{" "}
                 <a href={txUrl} target="_blank" rel="noopener noreferrer">
                   View
                 </a>
@@ -885,7 +886,9 @@ function App() {
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <FullApp />
+        <SEO>
+          <FullApp />
+        </SEO>
       </Web3ReactProvider>
     </SWRConfig>
   );

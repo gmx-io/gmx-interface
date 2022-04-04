@@ -27,6 +27,7 @@ import {
   getDeltaStr,
   useChainId,
   useAccountOrders,
+  getPageTitle,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import { approvePlugin, useInfoTokens } from "../../Api";
@@ -43,7 +44,7 @@ import Token from "../../abis/Token.json";
 
 import Checkbox from "../../components/Checkbox/Checkbox";
 import SwapBox from "../../components/Exchange/SwapBox";
-import ExchangeTVChart from "../../components/Exchange/ExchangeTVChart";
+import ExchangeTVChart, { getChartToken } from "../../components/Exchange/ExchangeTVChart";
 import PositionsList from "../../components/Exchange/PositionsList";
 import OrdersList from "../../components/Exchange/OrdersList";
 import TradeHistory from "../../components/Exchange/TradeHistory";
@@ -519,6 +520,15 @@ export default function Exchange({
 
   const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo);
 
+  useEffect(() => {
+    const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
+    const toToken = getTokenInfo(infoTokens, toTokenAddress);
+    let selectedToken = getChartToken(swapOption, fromToken, toToken, chainId);
+    let currentTokenPriceStr = formatAmount(selectedToken.maxPrice, USD_DECIMALS, 2, true);
+    let title = getPageTitle(currentTokenPriceStr + ` | ${selectedToken.symbol}${selectedToken.isStable ? "" : "USD"}`);
+    document.title = title;
+  }, [tokenSelection, swapOption, infoTokens, chainId, fromTokenAddress, toTokenAddress]);
+
   const { positions, positionsMap } = getPositions(
     chainId,
     positionQuery,
@@ -754,8 +764,8 @@ export default function Exchange({
       library,
       pendingTxns,
       setPendingTxns,
-      sentMsg: "Enable orders sent",
-      failMsg: "Enable orders failed",
+      sentMsg: "Enable orders sent.",
+      failMsg: "Enable orders failed.",
     })
       .then(() => {
         setIsWaitingForPluginApproval(true);
