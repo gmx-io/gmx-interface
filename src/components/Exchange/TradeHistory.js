@@ -7,6 +7,7 @@ import {
   USD_DECIMALS,
   MAX_LEVERAGE,
   BASIS_POINTS_DIVISOR,
+  LIQUIDATION_FEE,
   formatAmount,
   getExplorerUrl,
   formatDateTime,
@@ -64,6 +65,7 @@ function renderLiquidationTooltip(liquidationData, label) {
           Borrow fee: ${formatAmount(liquidationData.borrowFee, USD_DECIMALS, 2, true)}
           <br />
           PnL: -${formatAmount(liquidationData.loss, USD_DECIMALS, 2, true)}
+          {liquidationData.type === "full" && <div>Liquidation fee: ${formatAmount(LIQUIDATION_FEE, 30, 2, true)}</div>}
         </>
       )}
     />
