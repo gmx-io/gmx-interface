@@ -1226,10 +1226,10 @@ export function getUsd(amount, tokenAddress, max, infoTokens, orderOption, trigg
   return amount.mul(price).div(expandDecimals(1, info.decimals));
 }
 
-export function getPositionKey(collateralTokenAddress, indexTokenAddress, isLong, nativeTokenAddress) {
+export function getPositionKey(account, collateralTokenAddress, indexTokenAddress, isLong, nativeTokenAddress) {
   const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
   const tokenAddress1 = indexTokenAddress === AddressZero ? nativeTokenAddress : indexTokenAddress;
-  return tokenAddress0 + ":" + tokenAddress1 + ":" + isLong;
+  return account + ":" + tokenAddress0 + ":" + tokenAddress1 + ":" + isLong;
 }
 
 export function getPositionContractKey(account, collateralToken, indexToken, isLong) {
