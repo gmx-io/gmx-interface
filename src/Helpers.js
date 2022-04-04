@@ -21,7 +21,7 @@ import { getWhitelistedTokens, isValidToken } from "./data/Tokens";
 
 const { AddressZero } = ethers.constants;
 
-export const UI_VERSION = "1.1";
+export const UI_VERSION = "1.3";
 
 // use a random placeholder account instead of the zero address as the zero address might have tokens
 export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
@@ -52,6 +52,10 @@ const GAS_PRICE_ADJUSTMENT_MAP = {
   [AVALANCHE]: "3000000000", // 3 gwei
 };
 
+const MAX_GAS_PRICE_MAP = {
+  [AVALANCHE]: "200000000000", // 200 gwei
+};
+
 const ARBITRUM_RPC_PROVIDERS = ["https://arb1.arbitrum.io/rpc"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
@@ -66,6 +70,7 @@ export function getChainName(chainId) {
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
 export const MAX_LEVERAGE = 100 * 10000;
 
+export const MAX_PRICE_DEVIATION_BASIS_POINTS = 250;
 export const DEFAULT_GAS_LIMIT = 1 * 1000 * 1000;
 export const SECONDS_PER_YEAR = 31536000;
 export const USDG_DECIMALS = 18;
@@ -1710,7 +1715,8 @@ export function getOrderKey(order) {
 }
 
 export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
-  const { active, library, account: connectedAccount } = useWeb3React();
+  const { library, account: connectedAccount } = useWeb3React();
+  const active = true; // this is used in Actions.js so set active to always be true
   const account = overrideAccount || connectedAccount;
 
   const { chainId } = useChainId();
@@ -1891,15 +1897,23 @@ export function usePrevious(value) {
   return ref.current;
 }
 
-export async function getGasPrice(provider, chainId) {
-  if (!provider) {
-    return;
-  }
-
-  const gasPrice = await provider.getGasPrice();
+export async function setGasPrice(txnOpts, provider, chainId) {
+  let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
   const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
 
-  return gasPrice.add(premium);
+  if (maxGasPrice) {
+    const gasPrice = await provider.getGasPrice();
+    if (gasPrice.gt(maxGasPrice)) {
+      maxGasPrice = gasPrice;
+    }
+
+    const feeData = await provider.getFeeData();
+    txnOpts.maxFeePerGas = maxGasPrice;
+    txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
+  } else {
+    const gasPrice = await provider.getGasPrice();
+    txnOpts.gasPrice = gasPrice.add(premium);
+  }
 }
 
 export async function getGasLimit(contract, method, params = [], value, gasBuffer) {
@@ -2161,13 +2175,50 @@ export function isMobileDevice(navigator) {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
+export function setTokenUsingIndexPrices(token, indexPrices, nativeTokenAddress) {
+  if (!indexPrices) {
+    return;
+  }
+
+  const tokenAddress = token.isNative ? nativeTokenAddress : token.address;
+
+  const indexPrice = indexPrices[tokenAddress];
+  if (!indexPrice) {
+    return;
+  }
+
+  const indexPriceBn = bigNumberify(indexPrice);
+  if (indexPriceBn.eq(0)) {
+    return;
+  }
+
+  const spread = token.maxPrice.sub(token.minPrice);
+  const spreadBps = spread.mul(BASIS_POINTS_DIVISOR).div(token.maxPrice);
+
+  if (spreadBps.gt(MAX_PRICE_DEVIATION_BASIS_POINTS - 1)) {
+    // only set of the values as there will be a spread between the index price and the Chainlink price
+    if (indexPriceBn.gt(token.minPrimaryPrice)) {
+      token.maxPrice = indexPriceBn;
+    } else {
+      token.minPrice = indexPriceBn;
+    }
+    return;
+  }
+
+  const halfSpreadBps = spreadBps.div(2).toNumber();
+  token.maxPrice = indexPriceBn.mul(BASIS_POINTS_DIVISOR + halfSpreadBps).div(BASIS_POINTS_DIVISOR);
+  token.minPrice = indexPriceBn.mul(BASIS_POINTS_DIVISOR - halfSpreadBps).div(BASIS_POINTS_DIVISOR);
+}
+
 export function getInfoTokens(
   tokens,
   tokenBalances,
   whitelistedTokens,
   vaultTokenInfo,
   fundingRateInfo,
-  vaultPropsLength
+  vaultPropsLength,
+  indexPrices,
+  nativeTokenAddress
 ) {
   if (!vaultPropsLength) {
     vaultPropsLength = 14;
@@ -2203,6 +2254,12 @@ export function getInfoTokens(
       token.minPrice = vaultTokenInfo[i * vaultPropsLength + 9];
       token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 10];
       token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 11];
+      token.maxPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 12];
+      token.minPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 13];
+
+      // save minPrice and maxPrice as setTokenUsingIndexPrices may override it
+      token.contractMinPrice = token.minPrice;
+      token.contractMaxPrice = token.maxPrice;
 
       token.maxAvailableShort = bigNumberify(0);
       if (token.maxGlobalShortSize.gt(0)) {
@@ -2221,6 +2278,8 @@ export function getInfoTokens(
 
       token.managedUsd = token.availableUsd.add(token.guaranteedUsd);
       token.managedAmount = token.managedUsd.mul(expandDecimals(1, token.decimals)).div(token.minPrice);
+
+      setTokenUsingIndexPrices(token, indexPrices, nativeTokenAddress);
     }
 
     if (fundingRateInfo) {
@@ -2515,4 +2574,9 @@ export async function addTokenToMetamask(token) {
   } catch (error) {
     console.error(error);
   }
+}
+
+export function getPageTitle(data) {
+  return `${data} | Decentralized
+  Perpetual Exchange | GMX`;
 }

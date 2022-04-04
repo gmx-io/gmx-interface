@@ -40,6 +40,7 @@ import {
   getVestingData,
   getStakingData,
   getProcessedData,
+  getPageTitle,
 } from "../../Helpers";
 import { callContract, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "../../Api";
 import { getConstant } from "../../Constants";
@@ -49,6 +50,7 @@ import useSWR from "swr";
 import { getContract } from "../../Addresses";
 
 import "./StakeV2.css";
+import SEO from "../../components/Common/SEO";
 
 const { AddressZero } = ethers.constants;
 
@@ -242,7 +244,7 @@ function UnstakeModal(props) {
     callContract(chainId, contract, unstakeMethodName, [amount], {
       sentMsg: "Unstake submitted!",
       failMsg: "Unstake failed.",
-      successMsg: "Unstake completed.",
+      successMsg: "Unstake completed!",
       setPendingTxns,
     })
       .then(async (res) => {
@@ -384,7 +386,7 @@ function VesterDepositModal(props) {
 
     callContract(chainId, contract, "deposit", [amount], {
       sentMsg: "Deposit submitted!",
-      failMsg: "Deposit failed.",
+      failMsg: "Deposit failed!",
       successMsg: "Deposited!",
       setPendingTxns,
     })
@@ -419,60 +421,65 @@ function VesterDepositModal(props) {
   };
 
   return (
-    <div className="StakeModal">
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title} className="non-scrollable">
-        <div className="Exchange-swap-section">
-          <div className="Exchange-swap-section-top">
-            <div className="muted">
-              <div className="Exchange-swap-usd">Deposit</div>
+    <SEO title={getPageTitle("Earn")}>
+      <div className="StakeModal">
+        <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title} className="non-scrollable">
+          <div className="Exchange-swap-section">
+            <div className="Exchange-swap-section-top">
+              <div className="muted">
+                <div className="Exchange-swap-usd">Deposit</div>
+              </div>
+              <div
+                className="muted align-right clickable"
+                onClick={() => setValue(formatAmountFree(maxAmount, 18, 18))}
+              >
+                Max: {formatAmount(maxAmount, 18, 4, true)}
+              </div>
             </div>
-            <div className="muted align-right clickable" onClick={() => setValue(formatAmountFree(maxAmount, 18, 18))}>
-              Max: {formatAmount(maxAmount, 18, 4, true)}
+            <div className="Exchange-swap-section-bottom">
+              <div>
+                <input
+                  type="number"
+                  placeholder="0.0"
+                  className="Exchange-swap-input"
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                />
+              </div>
+              <div className="PositionEditor-token-symbol">esGMX</div>
             </div>
           </div>
-          <div className="Exchange-swap-section-bottom">
-            <div>
-              <input
-                type="number"
-                placeholder="0.0"
-                className="Exchange-swap-input"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-              />
+          <div className="VesterDepositModal-info-rows">
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Wallet</div>
+              <div className="align-right">{formatAmount(balance, 18, 2, true)} esGMX</div>
             </div>
-            <div className="PositionEditor-token-symbol">esGMX</div>
-          </div>
-        </div>
-        <div className="VesterDepositModal-info-rows">
-          <div className="Exchange-info-row">
-            <div className="Exchange-info-label">Wallet</div>
-            <div className="align-right">{formatAmount(balance, 18, 2, true)} esGMX</div>
-          </div>
-          <div className="Exchange-info-row">
-            <div className="Exchange-info-label">Vault Capacity</div>
-            <div className="align-right">
-              <Tooltip
-                handle={`${formatAmount(nextDepositAmount, 18, 2, true)} / ${formatAmount(
-                  maxVestableAmount,
-                  18,
-                  2,
-                  true
-                )}`}
-                position="right-bottom"
-                renderContent={() => {
-                  return (
-                    <>
-                      Vault Capacity for your Account
-                      <br />
-                      <br />
-                      Deposited: {formatAmount(escrowedBalance, 18, 2, true)} esGMX
-                      <br />
-                      Max Capacity: {formatAmount(maxVestableAmount, 18, 2, true)} esGMX
-                      <br />
-                    </>
-                  );
-                }}
-              />
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Vault Capacity</div>
+              <div className="align-right">
+                <Tooltip
+                  handle={`${formatAmount(nextDepositAmount, 18, 2, true)} / ${formatAmount(
+                    maxVestableAmount,
+                    18,
+                    2,
+                    true
+                  )}`}
+                  position="right-bottom"
+                  renderContent={() => {
+                    return (
+                      <>
+                        Vault Capacity for your Account
+                        <br />
+                        <br />
+                        Deposited: {formatAmount(escrowedBalance, 18, 2, true)} esGMX
+                        <br />
+                        Max Capacity: {formatAmount(maxVestableAmount, 18, 2, true)} esGMX
+                        <br />
+                      </>
+                    );
+                  }}
+                />
+              </div>
             </div>
           </div>
           <div className="Exchange-info-row">
@@ -506,14 +513,14 @@ function VesterDepositModal(props) {
               />
             </div>
           </div>
-        </div>
-        <div className="Exchange-swap-button-container">
-          <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
-            {getPrimaryText()}
-          </button>
-        </div>
-      </Modal>
-    </div>
+          <div className="Exchange-swap-button-container">
+            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+              {getPrimaryText()}
+            </button>
+          </div>
+        </Modal>
+      </div>
+    </SEO>
   );
 }
 
@@ -526,7 +533,7 @@ function VesterWithdrawModal(props) {
     const contract = new ethers.Contract(vesterAddress, Vester.abi, library.getSigner());
 
     callContract(chainId, contract, "withdraw", [], {
-      sentMsg: "Withdraw submitted!",
+      sentMsg: "Withdraw submitted.",
       failMsg: "Withdraw failed.",
       successMsg: "Withdrawn!",
       setPendingTxns,
@@ -670,7 +677,7 @@ function CompoundModal(props) {
       {
         sentMsg: "Compound submitted!",
         failMsg: "Compound failed.",
-        successMsg: "Compound completed.",
+        successMsg: "Compound completed!",
         setPendingTxns,
       }
     )
@@ -811,9 +818,9 @@ function ClaimModal(props) {
         shouldConvertWeth,
       ],
       {
-        sentMsg: "Claim submitted!",
+        sentMsg: "Claim submitted.",
         failMsg: "Claim failed.",
-        successMsg: "Claim completed.",
+        successMsg: "Claim completed!",
         setPendingTxns,
       }
     )
@@ -1041,7 +1048,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     active
   );
 
-  let { total: totalGmxSupply, avax: avaxTotalGmx, arbitrum: arbitrumTotalGmx } = useTotalGmxSupply();
+  let { total: totalGmxSupply } = useTotalGmxSupply();
 
   let { avax: avaxGmxStaked, arbitrum: arbitrumGmxStaked, total: totalGmxStaked } = useTotalGmxStaked();
 
@@ -1116,7 +1123,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   }
 
   let totalSupplyUsd;
-  if (!totalGmxSupply.isZero() && gmxPrice) {
+  if (totalGmxSupply && !totalGmxSupply.isZero() && gmxPrice) {
     totalSupplyUsd = totalGmxSupply.mul(gmxPrice).div(expandDecimals(1, 18));
   }
 
@@ -1583,27 +1590,13 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-row">
                 <div className="label">Total Supply</div>
-                <div>
-                  {!totalGmxSupply && "..."}
-                  {totalGmxSupply && (
-                    <Tooltip
-                      position="right-bottom"
-                      className="nowrap"
-                      handle={
-                        formatAmount(totalGmxSupply, 18, 0, true) +
-                        " GMX" +
-                        ` ($${formatAmount(totalSupplyUsd, USD_DECIMALS, 0, true)})`
-                      }
-                      renderContent={() => (
-                        <>
-                          Arbitrum: {formatAmount(arbitrumTotalGmx, 18, 0, true)} GMX
-                          <br />
-                          Avalanche: {formatAmount(avaxTotalGmx, 18, 0, true)} GMX
-                        </>
-                      )}
-                    />
-                  )}
-                </div>
+                {!totalGmxSupply && "..."}
+                {totalGmxSupply && (
+                  <div>
+                    {formatAmount(totalGmxSupply, 18, 0, true)} GMX ($
+                    {formatAmount(totalSupplyUsd, USD_DECIMALS, 0, true)})
+                  </div>
+                )}
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-options">
