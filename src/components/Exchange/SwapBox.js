@@ -243,10 +243,10 @@ export default function SwapBox(props) {
 
   let positionKey;
   if (isLong) {
-    positionKey = getPositionKey(toTokenAddress, toTokenAddress, true, nativeTokenAddress);
+    positionKey = getPositionKey(account, toTokenAddress, toTokenAddress, true, nativeTokenAddress);
   }
   if (isShort) {
-    positionKey = getPositionKey(shortCollateralAddress, toTokenAddress, false, nativeTokenAddress);
+    positionKey = getPositionKey(account, shortCollateralAddress, toTokenAddress, false, nativeTokenAddress);
   }
 
   const existingPosition = positionKey ? positionsMap[positionKey] : undefined;
@@ -406,7 +406,7 @@ export default function SwapBox(props) {
     }
     for (let i = 0; i < stableTokens.length; i++) {
       const stableToken = stableTokens[i];
-      const key = getPositionKey(stableToken.address, toTokenAddress, false, nativeTokenAddress);
+      const key = getPositionKey(account, stableToken.address, toTokenAddress, false, nativeTokenAddress);
       const position = positionsMap[key];
       if (position && position.size && position.size.gt(0)) {
         setShortCollateralAddress(position.collateralToken.address);
@@ -414,6 +414,7 @@ export default function SwapBox(props) {
       }
     }
   }, [
+    account,
     toTokenAddress,
     prevToTokenAddress,
     swapOption,
@@ -1473,7 +1474,7 @@ export default function SwapBox(props) {
       .then(async () => {
         setIsConfirming(false);
 
-        const key = getPositionKey(path[path.length - 1], indexTokenAddress, isLong);
+        const key = getPositionKey(account, path[path.length - 1], indexTokenAddress, isLong);
         let nextSize = toUsdMax;
         if (hasExistingPosition) {
           nextSize = existingPosition.size.add(toUsdMax);
