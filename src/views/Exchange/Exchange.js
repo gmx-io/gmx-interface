@@ -184,7 +184,7 @@ export function getPositions(
   for (let i = 0; i < collateralTokens.length; i++) {
     const collateralToken = getTokenInfo(infoTokens, collateralTokens[i], true, getContract(chainId, "NATIVE_TOKEN"));
     const indexToken = getTokenInfo(infoTokens, indexTokens[i], true, getContract(chainId, "NATIVE_TOKEN"));
-    const key = getPositionKey(collateralTokens[i], indexTokens[i], isLong[i]);
+    const key = getPositionKey(account, collateralTokens[i], indexTokens[i], isLong[i]);
     let contractKey;
     if (account) {
       contractKey = getPositionContractKey(account, collateralTokens[i], indexTokens[i], isLong[i]);
@@ -706,7 +706,7 @@ export default function Exchange({
 
       pushErrorNotification(chainId, message, e);
 
-      const key = getPositionKey(path[path.length - 1], indexToken, isLong);
+      const key = getPositionKey(account, path[path.length - 1], indexToken, isLong);
       pendingPositions[key] = {};
       setPendingPositions({ ...pendingPositions });
     };
@@ -738,7 +738,7 @@ export default function Exchange({
 
       pushErrorNotification(chainId, message, e);
 
-      const key = getPositionKey(path[path.length - 1], indexToken, isLong);
+      const key = getPositionKey(account, path[path.length - 1], indexToken, isLong);
       pendingPositions[key] = {};
       setPendingPositions({ ...pendingPositions });
     };
@@ -876,6 +876,7 @@ export default function Exchange({
         )}
         {listSection === "Orders" && (
           <OrdersList
+            account={account}
             active={active}
             library={library}
             pendingTxns={pendingTxns}

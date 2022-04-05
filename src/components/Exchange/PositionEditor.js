@@ -96,6 +96,7 @@ export default function PositionEditor(props) {
   let convertedAmountFormatted;
 
   let nextLeverage;
+  let nextLeverageExcludingPnl;
   let liquidationPrice;
   let nextLiquidationPrice;
   let nextCollateral;
@@ -144,6 +145,17 @@ export default function PositionEditor(props) {
         delta: position.delta,
         includeDelta: savedIsPnlInLeverage,
       });
+      nextLeverageExcludingPnl = getLeverage({
+        size: position.size,
+        collateral: position.collateral,
+        collateralDelta,
+        increaseCollateral: isDeposit,
+        entryFundingRate: position.entryFundingRate,
+        cumulativeFundingRate: position.cumulativeFundingRate,
+        hasProfit: position.hasProfit,
+        delta: position.delta,
+        includeDelta: false,
+      });
 
       nextLiquidationPrice = getLiquidationPrice({
         isLong: position.isLong,
@@ -177,11 +189,11 @@ export default function PositionEditor(props) {
       }
     }
 
-    if (nextLeverage && nextLeverage.lt(1.1 * BASIS_POINTS_DIVISOR)) {
+    if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.lt(1.1 * BASIS_POINTS_DIVISOR)) {
       return "Min leverage: 1.1x";
     }
 
-    if (nextLeverage && nextLeverage.gt(30.5 * BASIS_POINTS_DIVISOR)) {
+    if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.gt(30.5 * BASIS_POINTS_DIVISOR)) {
       return "Max leverage: 30x";
     }
   };

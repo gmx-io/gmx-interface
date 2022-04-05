@@ -14,6 +14,7 @@ import {
   useLocalStorageSerializeKey,
   getExchangeRateDisplay,
   DEFAULT_SLIPPAGE_AMOUNT,
+  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   SLIPPAGE_BPS_KEY,
   formatDateTime,
   calculatePositionDelta,
@@ -184,6 +185,11 @@ export default function ConfirmationBox(props) {
   const spread = getSpread(fromTokenInfo, toTokenInfo);
   // it's meaningless for limit/stop orders to show spread based on current prices
   const showSpread = isMarketOrder && !!spread;
+
+  let allowedSlippage = savedSlippageAmount;
+  if (isHigherSlippageAllowed) {
+    allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
+  }
 
   const renderSpreadWarning = useCallback(() => {
     if (!isMarketOrder) {
@@ -513,6 +519,23 @@ export default function ConfirmationBox(props) {
               (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
               "% / 1h"}
           </ExchangeInfoRow>
+          <ExchangeInfoRow label="Allowed Slippage">
+            <Tooltip
+              handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
+              position="right-top"
+              renderContent={() => {
+                return (
+                  <>
+                    You can change this in the settings menu on the top right of the page.
+                    <br />
+                    <br />
+                    Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are
+                    volatile.
+                  </>
+                );
+              }}
+            />
+          </ExchangeInfoRow>
           {isMarketOrder && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
@@ -556,6 +579,7 @@ export default function ConfirmationBox(props) {
     collateralAfterFees,
     isHigherSlippageAllowed,
     setIsHigherSlippageAllowed,
+    allowedSlippage,
   ]);
 
   const renderSwapSection = useCallback(() => {
