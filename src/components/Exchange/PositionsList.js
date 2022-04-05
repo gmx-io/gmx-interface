@@ -185,7 +185,8 @@ export default function PositionsList(props) {
               const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
               const liquidationPrice = getLiquidationPrice(position);
               const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
-              const positionDelta = position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"];
+              const positionDelta =
+                position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || bigNumberify(0);
               let borrowFeeText;
               if (position.collateralToken && position.collateralToken.fundingRate) {
                 const borrowFeeRate = position.collateralToken.fundingRate
@@ -254,10 +255,10 @@ export default function PositionsList(props) {
                       <div className="label">PnL</div>
                       <div>
                         <span
-                          className={cx({
-                            positive: hasPositionProfit,
-                            negative: !hasPositionProfit,
-                            muted: positionDelta && positionDelta.eq(0),
+                          className={cx("Exchange-list-info-label", {
+                            positive: hasPositionProfit && positionDelta.gt(0),
+                            negative: !hasPositionProfit && positionDelta.gt(0),
+                            muted: positionDelta.eq(0),
                           })}
                         >
                           {position.deltaStr} ({position.deltaPercentageStr})
@@ -370,7 +371,8 @@ export default function PositionsList(props) {
             const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
             const hasOrderError = !!positionOrders.find((order) => order.error);
             const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
-            const positionDelta = position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"];
+            const positionDelta =
+              position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || bigNumberify(0);
             let borrowFeeText;
             if (position.collateralToken && position.collateralToken.fundingRate) {
               const borrowFeeRate = position.collateralToken.fundingRate
@@ -432,9 +434,9 @@ export default function PositionsList(props) {
                   {position.deltaStr && (
                     <div
                       className={cx("Exchange-list-info-label", {
-                        positive: hasPositionProfit,
-                        negative: !hasPositionProfit,
-                        muted: positionDelta && positionDelta.eq(0),
+                        positive: hasPositionProfit && positionDelta.gt(0),
+                        negative: !hasPositionProfit && positionDelta.gt(0),
+                        muted: positionDelta.eq(0),
                       })}
                     >
                       {position.deltaStr} ({position.deltaPercentageStr})
