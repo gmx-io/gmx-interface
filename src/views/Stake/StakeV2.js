@@ -880,7 +880,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
   const chainName = getChainName(chainId);
 
-  const hasInsurance = chainId === ARBITRUM;
+  const hasInsurance = true;
 
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
   const [stakeModalTitle, setStakeModalTitle] = useState("");

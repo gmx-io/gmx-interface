@@ -13,13 +13,16 @@ import {
   formatDateTime,
   usePrevious,
   getLiquidationPrice,
-  useLocalStorageSerializeKey,
-} from "../../Helpers";
-import { getToken } from "../../data/Tokens";
-import { useChartPrices } from "../../Api";
-import Tab from "../Tab/Tab";
+  useLocalStorageSerializeKey
+} from '../../Helpers'
+import { useChartPrices } from '../../Api'
+import Tab from '../Tab/Tab'
 
-import { getTokens } from "../../data/Tokens";
+import {
+  getTokens,
+  getToken
+} from '../../data/Tokens'
+import ChartTokenSelector from './ChartTokenSelector'
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -53,7 +56,7 @@ export function getChartToken(swapOption, fromToken, toToken, chainId) {
   if (toToken.isStable) {
     return fromToken;
   }
-
+  
   return toToken;
 }
 
@@ -132,7 +135,8 @@ export default function ExchangeTVChart(props) {
     positions,
     savedShouldShowPositionLines,
     orders,
-  } = props;
+    setToTokenAddress
+  } = props
   const [currentChart, setCurrentChart] = useState();
   const [currentSeries, setCurrentSeries] = useState();
 
@@ -143,9 +147,17 @@ export default function ExchangeTVChart(props) {
 
   const [hoveredCandlestick, setHoveredCandlestick] = useState();
 
-  const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
-  const toToken = getTokenInfo(infoTokens, toTokenAddress);
-  const chartToken = getChartToken(swapOption, fromToken, toToken, chainId);
+  const fromToken = getTokenInfo(infoTokens, fromTokenAddress)
+  const toToken = getTokenInfo(infoTokens, toTokenAddress)
+
+  const [chartToken, setChartToken] = useState({
+    maxPrice: null,
+    minPrice: null
+  })
+  useEffect(() => {
+    const tmp = getChartToken(swapOption, fromToken, toToken, chainId)
+    setChartToken(tmp)
+  }, [swapOption, fromToken, toToken, chainId])
 
   const symbol = chartToken ? (chartToken.isWrapped ? chartToken.baseSymbol : chartToken.symbol) : undefined;
   const marketName = chartToken ? symbol + "_USD" : undefined;
@@ -406,38 +418,53 @@ export default function ExchangeTVChart(props) {
     return null;
   }
 
+  const onSelectToken = (token) => {
+    const tmp = getTokenInfo(infoTokens, token.address)
+    setChartToken(tmp)
+    setToTokenAddress(swapOption, token.address)
+  }
+
   return (
     <div className="ExchangeChart tv" ref={ref}>
       <div className="ExchangeChart-top App-box App-box-border">
         <div className="ExchangeChart-top-inner">
           <div>
-            <div className="ExchangeChart-title">{chartToken && `${chartToken.symbol} / USD`}</div>
-          </div>
-          <div>
-            <div className="ExchangeChart-main-price">{formatAmount(chartToken.maxPrice, USD_DECIMALS, 2)}</div>
-            <div className="ExchangeChart-info-label">${formatAmount(chartToken.minPrice, USD_DECIMALS, 2)}</div>
-          </div>
-          <div>
-            <div className="ExchangeChart-info-label">24h Change</div>
-            <div className={cx({ positive: deltaPercentage > 0, negative: deltaPercentage < 0 })}>
-              {!deltaPercentageStr && "-"}
-              {deltaPercentageStr && deltaPercentageStr}
+            <div className="ExchangeChart-title">
+              <ChartTokenSelector
+                chainId={chainId}
+                selectedToken={chartToken}
+                swapOption={swapOption}
+                infoTokens={infoTokens}
+                onSelectToken={onSelectToken}
+                className="chart-token-selector"
+              />
             </div>
           </div>
-          <div className="ExchangeChart-additional-info">
-            <div className="ExchangeChart-info-label">24h High</div>
-            <div>
-              {!high && "-"}
-              {high && high.toFixed(2)}
-            </div>
-          </div>
-          <div className="ExchangeChart-additional-info">
-            <div className="ExchangeChart-info-label">24h Low</div>
-            <div>
-              {!low && "-"}
-              {low && low.toFixed(2)}
-            </div>
-          </div>
+					<div>
+						<div className="ExchangeChart-main-price">{chartToken.maxPrice && formatAmount(chartToken.maxPrice, USD_DECIMALS, 2)}</div>
+						<div className="ExchangeChart-info-label">${chartToken.minPrice && formatAmount(chartToken.minPrice, USD_DECIMALS, 2)}</div>
+					</div>
+					<div>
+						<div className="ExchangeChart-info-label">24h Change</div>
+						<div className={cx({ positive: deltaPercentage > 0, negative: deltaPercentage < 0 })}>
+							{!deltaPercentageStr && "-"}
+							{deltaPercentageStr && deltaPercentageStr}
+						</div>
+					</div>
+					<div className="ExchangeChart-additional-info">
+						<div className="ExchangeChart-info-label">24h High</div>
+						<div>
+							{!high && "-"}
+							{high && high.toFixed(2)}
+						</div>
+					</div>
+					<div className="ExchangeChart-additional-info">
+						<div className="ExchangeChart-info-label">24h Low</div>
+						<div>
+							{!low && "-"}
+							{low && low.toFixed(2)}
+						</div>
+					</div>
         </div>
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">

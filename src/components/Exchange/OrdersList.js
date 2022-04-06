@@ -21,14 +21,15 @@ import OrderEditor from "./OrderEditor";
 
 import "./OrdersList.css";
 
-function getPositionForOrder(order, positionsMap) {
-  const key = getPositionKey(order.collateralToken, order.indexToken, order.isLong);
+function getPositionForOrder(account, order, positionsMap) {
+  const key = getPositionKey(account, order.collateralToken, order.indexToken, order.isLong);
   const position = positionsMap[key];
   return position && position.size && position.size.gt(0) ? position : null;
 }
 
 export default function OrdersList(props) {
   const {
+    account,
     library,
     setPendingTxns,
     pendingTxns,
@@ -191,7 +192,7 @@ export default function OrdersList(props) {
 
       let error;
       if (order.type === DECREASE) {
-        const positionForOrder = getPositionForOrder(order, positionsMap);
+        const positionForOrder = getPositionForOrder(account, order, positionsMap);
         if (!positionForOrder) {
           error = "No open position, order cannot be executed";
         } else if (positionForOrder.size.lt(order.sizeDelta)) {
@@ -228,7 +229,7 @@ export default function OrdersList(props) {
         </tr>
       );
     });
-  }, [orders, renderActions, infoTokens, positionsMap, hideActions, chainId]);
+  }, [orders, renderActions, infoTokens, positionsMap, hideActions, chainId, account]);
 
   const renderSmallList = useCallback(() => {
     if (!orders || !orders.length) {
@@ -306,7 +307,7 @@ export default function OrdersList(props) {
 
       let error;
       if (order.type === DECREASE) {
-        const positionForOrder = getPositionForOrder(order, positionsMap);
+        const positionForOrder = getPositionForOrder(account, order, positionsMap);
         if (!positionForOrder) {
           error = "There is no open position for the order, it can't be executed";
         } else if (positionForOrder.size.lt(order.sizeDelta)) {
@@ -363,7 +364,7 @@ export default function OrdersList(props) {
         </div>
       );
     });
-  }, [orders, onEditClick, onCancelClick, infoTokens, positionsMap, hideActions, chainId]);
+  }, [orders, onEditClick, onCancelClick, infoTokens, positionsMap, hideActions, chainId, account]);
 
   return (
     <React.Fragment>
@@ -382,6 +383,7 @@ export default function OrdersList(props) {
       </div>
       {editingOrder && (
         <OrderEditor
+          account={account}
           order={editingOrder}
           setEditingOrder={setEditingOrder}
           infoTokens={infoTokens}
