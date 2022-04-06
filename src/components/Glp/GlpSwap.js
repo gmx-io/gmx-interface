@@ -1103,8 +1103,20 @@ export default function GlpSwap(props) {
                     )}
                     {!isBuying && (
                       <div>
-                        {formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} {token.symbol} ($
-                        {formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)})
+                        <Tooltip
+                          handle={
+                            `${formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} ${token.symbol}`
+                          }
+                          position="right-bottom"
+                          tooltipIconPosition="right"
+                          renderContent={() => {
+                            return (
+                              <>
+                                ${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}
+                              </>
+                            );
+                          }}
+                        />
                       </div>
                     )}
                   </td>
