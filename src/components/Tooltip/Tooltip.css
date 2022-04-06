@@ -68,16 +68,11 @@
   cursor: help;
   position: relative;
   display: inline-flex;
-}
-
-.Tooltip-handle:after {
-  position: absolute;
-  content: '';
-  bottom: -1px;
-  left: 0;
-  right: 0;
-  border-bottom: 1px dashed;
-  opacity: 0.6;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  text-decoration-color: rgba(255, 255, 255, 0.6);
 }
 
 .Tooltip-handle.plain:after {
