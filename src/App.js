@@ -47,6 +47,7 @@ import Exchange from "./views/Exchange/Exchange";
 import Actions from "./views/Actions/Actions";
 import OrdersOverview from "./views/OrdersOverview/OrdersOverview";
 import PositionsOverview from "./views/PositionsOverview/PositionsOverview";
+import Referrals from "./views/Referrals/Referrals";
 import BuyGlp from "./views/BuyGlp/BuyGlp";
 import BuyGMX from "./views/BuyGMX/BuyGMX";
 import SellGlp from "./views/SellGlp/SellGlp";
@@ -678,6 +679,9 @@ function FullApp() {
             </Route>
             <Route exact path="/about">
               <Home />
+            </Route>
+            <Route exact path="/referrals">
+              <Referrals />
             </Route>
             <Route exact path="/nft_wallet">
               <NftWallet />
