@@ -91,6 +91,14 @@ export function useReferralsData(chainId, account) {
       totalRebateUsd,
       discountUsd
     }
+    referralCodes (
+      first: 1000,
+      where: {
+        owner: "__ACCOUNT__"
+      }
+    ) {
+      code
+    }
   }`
     .replaceAll("__ACCOUNT__", (account || "").toLowerCase())
     .replaceAll("__DISTRIBUTION_TYPE_REBATES__", DISTRIBUTION_TYPE_REBATES)
@@ -135,7 +143,8 @@ export function useReferralsData(chainId, account) {
         rebateDistributions,
         discountDistributions,
         totalStats: res.data.totalStats.map(prepareStatsItem),
-        lastDayStats: res.data.lastDayStats.map(prepareStatsItem)
+        lastDayStats: res.data.lastDayStats.map(prepareStatsItem),
+        codes: res.data.referralCodes.map(e => decodeReferralCode(e.code))
       })
     }).catch(console.warn);
   }, [setData, query, chainId]);
