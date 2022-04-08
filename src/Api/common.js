@@ -23,3 +23,9 @@ export const nissohGraphClient = new ApolloClient({
   uri: NISSOH_GRAPH_API_URL,
   cache: new InMemoryCache(),
 });
+
+const REFERRALS_API_URL = "https://api.thegraph.com/subgraphs/name/gdev8317/gmx-arbitrum-referrals-staging";
+export const referralsGraphClient = new ApolloClient({
+  uri: REFERRALS_API_URL,
+  cache: new InMemoryCache(),
+});
