@@ -90,6 +90,9 @@ import { Link } from "react-router-dom";
 import EventToastContainer from "./components/EventToast/EventToastContainer";
 import SEO from "./components/Common/SEO";
 
+import avalanche24Icon from "./img/ic_avalanche_24.svg"
+import arbitrum24Icon from "./img/ic_arbitrum_24.svg"
+
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
@@ -209,13 +212,13 @@ function AppHeaderUser({
     {
       label: "Arbitrum",
       value: ARBITRUM,
-      icon: "ic_arbitrum_24.svg",
+      icon: arbitrum24Icon,
       color: "#264f79",
     },
     {
       label: "Avalanche",
       value: AVALANCHE,
-      icon: "ic_avalanche_24.svg",
+      icon: avalanche24Icon,
       color: "#E841424D",
     },
   ];

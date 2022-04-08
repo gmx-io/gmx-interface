@@ -35,10 +35,9 @@ export default function NetworkSelector(props) {
   useLockBodyScroll(isModalVisible);
 
   function renderOption(option) {
-    var optionIcon = require("../../img/" + option.icon);
     return (
       <div className={cx("Selector-option", option.label)} onClick={() => onSelect(option)} key={option.value}>
-        <img src={optionIcon.default} alt={option.icon} className="Selector-option_icon" />
+        <img src={option.icon} alt={option.label} className="Selector-option_icon" />
         <span className="Selector-option_label">{option.label}</span>
         {selectedLabel === option.label && <div className="selected-icon"></div>}
       </div>
@@ -79,11 +78,10 @@ export default function NetworkSelector(props) {
   }
 
   function SingleValue({ data, ...props }) {
-    let icon = require("../../img/" + data.icon);
     return (
       <components.SingleValue {...props}>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <img src={icon.default} alt={data.label} className="network-icon" />
+          <img src={data.icon} alt={data.label} className="network-icon" />
           <span style={{ marginLeft: 5 }} className="network-label">
             {data.label}
           </span>
@@ -162,7 +160,7 @@ export default function NetworkSelector(props) {
 
   value = value || options[0];
 
-  const valueIcon = require("../../img/" + value.icon);
+  const valueIcon = value.icon
 
   return (
     <div className={cx("Selector", className, { disabled })}>
@@ -175,7 +173,7 @@ export default function NetworkSelector(props) {
       )}
       {small ? (
         <div className={cx("Selector-box", value.label)} onClick={() => toggleModal(true)}>
-          <img src={valueIcon.default} alt="valueIcon" />
+          <img src={valueIcon} alt="valueIcon" />
           {showCaret && <img src={selectorDropdowns} alt="selectorDropdowns" />}
         </div>
       ) : (
@@ -194,10 +192,9 @@ export default function NetworkSelector(props) {
           className={"network-select"}
           styles={customStyles}
           getOptionLabel={(e) => {
-            var optionIcon = require("../../img/" + e.icon);
             return (
               <div style={{ display: "flex", alignItems: "center" }}>
-                <img src={optionIcon.default} alt={e.icon} className="network-icon" />
+                <img src={e.icon} alt={e.label} className="network-icon" />
                 <span style={{ marginLeft: 5 }} className="network-label">
                   {e.label}
                 </span>
