@@ -2,6 +2,58 @@
   margin: 30px auto;
 }
 
+.referral-body-container .list {
+  margin-top: 2rem;
+}
+.referral-body-container .reward-history {
+  margin-top: 2rem;
+}
+.create-referrar-code form {
+  display: flex;
+  align-items: inherit;
+  justify-content: center;
+  margin: 2rem 0;
+}
+.create-referrar-code form input {
+  border: 1px solid #1e2136;
+  border-radius: 4px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  width: 400px;
+}
+.create-referrar-code form button {
+  margin-left: 1rem;
+}
+
 .referral-stats {
+  margin: 0 auto;
   display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.text-center {
+  text-align: center;
+}
+
+.info-card {
+  background: var(--dark-blue-bg);
+  border: 1px solid #1e2136;
+  border-radius: 4px;
+}
+.info-card .label {
+  font-size: 1rem;
+  line-height: 1.355rem;
+  font-weight: normal;
+  letter-spacing: 0px;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.info-card .data {
+  font-size: 1.5rem;
+  font-weight: normal;
+  text-align: center;
+  padding: 0;
+  margin: 1rem 0;
 }

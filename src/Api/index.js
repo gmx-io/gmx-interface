@@ -649,6 +649,17 @@ export async function approvePlugin(
   });
 }
 
+export async function registerReferralCode(chainId) {
+  const routerAddress = getContract(chainId, "Router");
+  const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner());
+  return callContract(chainId, contract, "approvePlugin", [pluginAddress], {
+    sentMsg,
+    failMsg,
+    pendingTxns,
+    setPendingTxns,
+  });
+}
+
 export async function createSwapOrder(
   chainId,
   library,
