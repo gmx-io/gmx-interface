@@ -175,6 +175,11 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
         </NavLink>
       </div>
       <div className="App-header-link-container">
+        <NavLink activeClassName="active" to="/referrals">
+          Referrals
+        </NavLink>
+      </div>
+      <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/ecosystem">
           Ecosystem
         </NavLink>
@@ -676,6 +681,9 @@ function FullApp() {
             </Route>
             <Route exact path="/ecosystem">
               <Ecosystem />
+            </Route>
+            <Route exact path="/referrals">
+              <Referrals />
             </Route>
             <Route exact path="/about">
               <Home />
