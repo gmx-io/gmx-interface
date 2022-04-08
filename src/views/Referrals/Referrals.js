@@ -1,9 +1,15 @@
 import React, { useState } from "react";
+import { useWeb3React } from "@web3-react/core";
+
 import Card from "../../components/Common/Card";
 import SEO from "../../components/Common/SEO";
 import Tab from "../../components/Tab/Tab";
 import Footer from "../../Footer";
-import { getPageTitle } from "../../Helpers";
+import {
+  useChainId,
+  getPageTitle
+} from "../../Helpers";
+import { useReferralsData } from "../../Api/referrals"
 
 import "./Referrals.css";
 
@@ -12,7 +18,13 @@ const REFERRERS = "Referrers";
 let TAB_OPTIONS = [REFERRERS, REBATES];
 
 export default function Referrals() {
+  const { active, account, library } = useWeb3React();
+  const { chainId } = useChainId();
+
   let [activeTab, setActiveTab] = useState(REFERRERS);
+
+  const referralsData = useReferralsData(chainId, account)
+  console.log('referralsData', referralsData)
 
   console.log(activeTab);
   return (
