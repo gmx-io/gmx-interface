@@ -832,7 +832,7 @@ export default function SwapBox(props) {
 
         if (toToken && toTokenAddress !== USDG_ADDRESS) {
           if (!toTokenInfo.availableAmount) {
-            return ["Insufficient liquidity"];
+            return ["Liquidity data not loaded"];
           }
           if (toTokenInfo.availableAmount && requiredAmount.gt(toTokenInfo.availableAmount)) {
             return ["Insufficient liquidity"];
@@ -918,6 +918,10 @@ export default function SwapBox(props) {
       const sizeTokens = sizeUsd
         .mul(expandDecimals(1, shortCollateralToken.decimals))
         .div(shortCollateralToken.minPrice);
+
+      if (!toTokenInfo.maxAvailableShort) {
+        return ["Liquidity data not loaded"];
+      }
 
       if (
         toTokenInfo.maxAvailableShort &&

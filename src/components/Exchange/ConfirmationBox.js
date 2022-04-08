@@ -20,6 +20,7 @@ import {
   calculatePositionDelta,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
+import { getContract } from "../../Addresses";
 
 import { BsArrowRight } from "react-icons/bs";
 import Modal from "../Modal/Modal";
@@ -30,13 +31,22 @@ import { getNativeToken, getToken, getWrappedToken } from "../../data/Tokens";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
-function getSpread(fromTokenInfo, toTokenInfo) {
+function getSpread(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
   if (fromTokenInfo && fromTokenInfo.maxPrice && toTokenInfo && toTokenInfo.minPrice) {
     const fromDiff = fromTokenInfo.maxPrice.sub(fromTokenInfo.minPrice);
     const fromSpread = fromDiff.mul(PRECISION).div(fromTokenInfo.maxPrice);
     const toDiff = toTokenInfo.maxPrice.sub(toTokenInfo.minPrice);
     const toSpread = toDiff.mul(PRECISION).div(toTokenInfo.maxPrice);
-    const value = fromSpread.add(toSpread);
+
+    let value = fromSpread.add(toSpread);
+
+    const fromTokenAddress = fromTokenInfo.isNative ? nativeTokenAddress : fromTokenInfo.address;
+    const toTokenAddress = toTokenInfo.isNative ? nativeTokenAddress : toTokenInfo.address;
+
+    if (isLong && fromTokenAddress === toTokenAddress) {
+      value = fromSpread;
+    }
+
     return {
       value,
       isHigh: value.gt(HIGH_SPREAD_THRESHOLD),
@@ -182,7 +192,8 @@ export default function ConfirmationBox(props) {
     return !isPendingConfirmation && !isSubmitting;
   };
 
-  const spread = getSpread(fromTokenInfo, toTokenInfo);
+  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+  const spread = getSpread(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress);
   // it's meaningless for limit/stop orders to show spread based on current prices
   const showSpread = isMarketOrder && !!spread;
 
