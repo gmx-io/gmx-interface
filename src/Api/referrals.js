@@ -25,7 +25,7 @@ const DISTRIBUTION_TYPE_DISCOUNT = "2"
 
 export function decodeReferralCode(hexCode) {
   try {
-    ethers.utils.parseBytes32String(hexCode)
+    return ethers.utils.parseBytes32String(hexCode)
   } catch (ex) {
     let code = ''
     hexCode = hexCode.substring(2)
@@ -147,7 +147,7 @@ export function useReferralsData(chainId, account) {
         codes: res.data.referralCodes.map(e => decodeReferralCode(e.code))
       })
     }).catch(console.warn);
-  }, [setData, query, chainId]);
+  }, [setData, query, chainId, account]);
 
   return data || null;
 }
