@@ -16,25 +16,52 @@ import {
   getTokenInfo,
   getExplorerUrl,
   shortenAddress,
+  fetcher,
 } from "../../Helpers";
-import { useReferralsData } from "../../Api/referrals";
+import { decodeReferralCode, useReferralsData } from "../../Api/referrals";
 
 import "./Referrals.css";
-import { registerReferralCode, useInfoTokens } from "../../Api";
+import { registerReferralCode, setTraderReferralCodeByUser, useInfoTokens } from "../../Api";
 import { utils } from "ethers";
-import { BiCopy } from "react-icons/bi";
+import { BiCopy, BiEditAlt } from "react-icons/bi";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import { useCopyToClipboard } from "react-use";
 import Loader from "../../components/Common/Loader";
+import Modal from "../../components/Modal/Modal";
+import useSWR from "swr";
+import { getContract } from "../../Addresses";
+import ReferralContract from "../../abis/ReferralStorage.json";
+import { RiQuestionLine } from "react-icons/ri";
 
 const REBATES = "Rebates";
 const REFERRERS = "Referrers";
 let TAB_OPTIONS = [REBATES, REFERRERS];
 
+function getDollarValue(value) {
+  return `$${formatAmount(value, USD_DECIMALS, 2, true, "0.00")}`;
+}
+
 export default function Referrals() {
   const { active, account, library } = useWeb3React();
   const { chainId } = useChainId();
   const { infoTokens } = useInfoTokens(library, chainId, active, undefined, undefined);
+  const ReferralToken = getContract(chainId, "Referral");
+  const { data: userReferralCode } = useSWR(
+    account && [
+      `ReferralStorage:traderReferralCodes:${active}`,
+      chainId,
+      ReferralToken,
+      "traderReferralCodes",
+      account,
+    ],
+    {
+      fetcher: fetcher(library, ReferralContract),
+    }
+  );
+  let referralCodeInString;
+  if (userReferralCode) {
+    referralCodeInString = decodeReferralCode(userReferralCode);
+  }
   function handleCreateReferralCode(event, code) {
     event.preventDefault();
     let referralCodeHex = utils.formatBytes32String(code);
@@ -47,10 +74,9 @@ export default function Referrals() {
   }
 
   let [activeTab, setActiveTab] = useState(REBATES);
-  // "0xbb00f2e53888e60974110d68f1060e5eaab34790"
   const referralsData = useReferralsData(chainId, account);
-  console.log(referralsData);
-  function displayBody() {
+  // console.log(referralsData);
+  function renderBody() {
     if (!account) {
       return (
         <CreateReferrarCode
@@ -86,7 +112,19 @@ export default function Referrals() {
       }
     }
     if (activeTab === REBATES) {
-      return <Rebates />;
+      if (!referralCodeInString) {
+        return <JoinReferrarCode isWalletConnected={!!account} library={library} chainId={chainId} />;
+      }
+
+      return (
+        <Rebates
+          referralCodeInString={referralCodeInString}
+          infoTokens={infoTokens}
+          chainId={chainId}
+          library={library}
+          referralsData={referralsData}
+        />
+      );
     }
   }
 
@@ -96,7 +134,7 @@ export default function Referrals() {
         <div className="referral-tab-container">
           <Tab options={TAB_OPTIONS} option={activeTab} setOption={setActiveTab} onChange={setActiveTab} />
         </div>
-        {displayBody()}
+        {renderBody()}
       </div>
       <Footer />
     </SEO>
@@ -137,10 +175,8 @@ function CreateReferrarCode({ handleCreateReferralCode, isWalletConnected }) {
 function ReferrersStats({ referralsData, handleCreateReferralCode, infoTokens, chainId }) {
   let [referralCode, setReferralCode] = useState("");
   const [, copyToClipboard] = useCopyToClipboard();
-  let { cumulativeStats, referrerTotalStats, rebateDistributions } = referralsData;
-  function getDollarValue(value) {
-    return `$${formatAmount(value, USD_DECIMALS, 2, true, "0.00")}`;
-  }
+  let { cumulativeStats, referrerTotalStats, discountDistributions } = referralsData;
+
   return (
     <div className="referral-body-container">
       <div className="referral-stats">
@@ -214,7 +250,7 @@ function ReferrersStats({ referralsData, handleCreateReferralCode, infoTokens, c
               </tr>
             </thead>
             <tbody>
-              {rebateDistributions.map((rebate, index) => {
+              {discountDistributions.map((rebate, index) => {
                 let tokenInfo = getTokenInfo(infoTokens, rebate.token);
                 let explorerURL = getExplorerUrl(chainId);
                 return (
@@ -239,15 +275,157 @@ function ReferrersStats({ referralsData, handleCreateReferralCode, infoTokens, c
   );
 }
 
-function Rebates() {
-  return <h2>Rebates Page</h2>;
+function Rebates({ referralsData, infoTokens, chainId, library, referralCodeInString }) {
+  let { referralTotalStats, rebateDistributions } = referralsData;
+  let [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  let [editReferralCode, setEditReferralCode] = useState("");
+  let [isUpdateSubmitting, setIsUpdateSubmitting] = useState(false);
+  let open = () => setIsEditModalOpen(true);
+  let close = () => setIsEditModalOpen(false);
+
+  function handleUpdateReferralCode(event) {
+    event.preventDefault();
+    setIsUpdateSubmitting(true);
+    let referralCodeHex = utils.formatBytes32String(editReferralCode);
+    return setTraderReferralCodeByUser(chainId, referralCodeHex, {
+      library,
+      successMsg: `Referral code updated!`,
+      failMsg: "Referral code updated failed.",
+    }).finally(() => {
+      setIsUpdateSubmitting(false);
+    });
+  }
+
+  return (
+    <div className="rebate-container">
+      <div className="referral-stats">
+        <InfoCard label="Total Volume Traded" data={getDollarValue(referralTotalStats?.volume)} />
+        <InfoCard label="Total Rebate" data={getDollarValue(referralTotalStats?.discountUsd)} />
+        <InfoCard
+          label="Active Referral Code"
+          data={
+            <div className="referral-code-edit">
+              <span>{referralCodeInString}</span>
+              <BiEditAlt onClick={open} />
+            </div>
+          }
+        />
+        <Modal
+          className="Connect-wallet-modal"
+          isVisible={isEditModalOpen}
+          setIsVisible={close}
+          label="Edit Referral Code"
+        >
+          <div className="edit-referral-modal">
+            <form onSubmit={handleUpdateReferralCode}>
+              <input
+                disabled={isUpdateSubmitting}
+                type="text"
+                placeholder="Enter new referral code"
+                className="text-input edit-referral-code-input"
+                value={editReferralCode}
+                onChange={(e) => setEditReferralCode(e.target.value)}
+              />
+              <button type="submit" className="App-cta Exchange-swap-button" disabled={isUpdateSubmitting}>
+                {isUpdateSubmitting ? "Updating..." : "Update Referral Code"}
+              </button>
+            </form>
+          </div>
+        </Modal>
+      </div>
+      {rebateDistributions.length > 0 && (
+        <div className="reward-history">
+          <Card title="Rebates Distribution History">
+            <table className="referral-table">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Amount</th>
+                  <th scope="col">Tx Hash</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rebateDistributions.map((rebate, index) => {
+                  let tokenInfo = getTokenInfo(infoTokens, rebate.token);
+                  let explorerURL = getExplorerUrl(chainId);
+                  return (
+                    <tr key={index}>
+                      <td data-label="Date">{formatDate(rebate.timestamp)}</td>
+                      <td data-label="Amount">
+                        {formatAmount(rebate.amount, tokenInfo.decimals, 4, true)} {tokenInfo.symbol}
+                      </td>
+                      <td data-label="Tx Hash">
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={explorerURL + `tx/${rebate.transactionHash}`}
+                        >
+                          {shortenAddress(rebate.transactionHash, 20)}
+                        </a>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
 }
 
 function InfoCard({ label, data }) {
   return (
     <div className="info-card">
-      <h3 className="label">{label}</h3>
-      <p className="data">{data}</p>
+      <h3 className="label">
+        {label}{" "}
+        <Tooltip handle={<RiQuestionLine />} position="left-bottom" renderContent={() => "This is sample copy!"} />
+      </h3>
+      <div className="data">{data}</div>
+    </div>
+  );
+}
+
+function JoinReferrarCode({ isWalletConnected, chainId, library }) {
+  let [referralCode, setReferralCode] = useState("");
+  let [isSubmitting, setIsSubmitting] = useState(false);
+  function handleSetTraderReferralCode(event, code) {
+    event.preventDefault();
+    setIsSubmitting(true);
+    let referralCodeHex = utils.formatBytes32String(code);
+    return setTraderReferralCodeByUser(chainId, referralCodeHex, {
+      library,
+      successMsg: `Referral code added!`,
+      failMsg: "Adding referral code failed.",
+    }).finally(() => {
+      setIsSubmitting(false);
+    });
+  }
+  return (
+    <div className="card text-center create-referrar-code">
+      <h1>Join Referral Code</h1>
+      <p>Please enter a referral code to start earning rebates.</p>
+      {isWalletConnected ? (
+        <form onSubmit={(e) => handleSetTraderReferralCode(e, referralCode)}>
+          <input
+            type="text"
+            value={referralCode}
+            disabled={isSubmitting}
+            placeholder="Enter a code"
+            onChange={(e) => {
+              setReferralCode(e.target.value);
+            }}
+          />
+          <button className="default-btn" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Submitting.." : "Submit"}
+          </button>
+        </form>
+      ) : (
+        <button className="default-btn" type="submit">
+          Connect Wallet
+        </button>
+      )}
     </div>
   );
 }

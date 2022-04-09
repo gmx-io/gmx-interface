@@ -173,10 +173,15 @@ export function useReferralsData(chainId, account) {
           referrerLastDayStats: res.data.referrerLastDayStats.map(prepareStatsItem),
           cumulativeStats: getCumulativeStats(referrerTotalStats),
           codes: res.data.referralCodes.map((e) => decodeReferralCode(e.code)),
-          referralTotalStats: {
-            volume: bigNumberify(res.data.referralTotalStats.volume),
-            discountUsd: bigNumberify(res.data.referralTotalStats.discountUsd)
-          }
+          referralTotalStats: res.data.referralTotalStats
+            ? {
+                volume: bigNumberify(res.data.referralTotalStats.volume),
+                discountUsd: bigNumberify(res.data.referralTotalStats.discountUsd),
+              }
+            : {
+                volume: bigNumberify(0),
+                discountUsd: bigNumberify(0),
+              },
         });
       })
       .catch(console.warn);
