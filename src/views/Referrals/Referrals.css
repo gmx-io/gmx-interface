@@ -5,6 +5,15 @@
 .referral-body-container .list {
   margin-top: 2rem;
 }
+.referral-body-container .list form {
+  display: flex;
+}
+.referral-body-container .list form input {
+  border: 1px solid #1e2136;
+  border-radius: 4px;
+  margin-right: 1rem;
+  padding: 0.5rem;
+}
 .referral-body-container .reward-history {
   margin-top: 2rem;
 }
