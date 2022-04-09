@@ -77,20 +77,18 @@ export default function Referrals() {
   const referralsData = useReferralsData(chainId, account);
   // console.log(referralsData);
   function renderBody() {
-    if (!account) {
-      return (
-        <CreateReferrarCode
-          isWalletConnected={!!account}
-          handleCreateReferralCode={handleCreateReferralCode}
-          library={library}
-          chainId={chainId}
-        />
-      );
-    }
-
-    if (!referralsData) return <Loader />;
-
     if (activeTab === REFERRERS) {
+      if (!account) {
+        return (
+          <CreateReferrarCode
+            isWalletConnected={!!account}
+            handleCreateReferralCode={handleCreateReferralCode}
+            library={library}
+            chainId={chainId}
+          />
+        );
+      }
+      if (!referralsData) return <Loader />;
       if (referralsData?.codes?.length > 0) {
         return (
           <ReferrersStats
@@ -112,6 +110,7 @@ export default function Referrals() {
       }
     }
     if (activeTab === REBATES) {
+      if (!referralsData) return <Loader />;
       if (!referralCodeInString) {
         return <JoinReferrarCode isWalletConnected={!!account} library={library} chainId={chainId} />;
       }
