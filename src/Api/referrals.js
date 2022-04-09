@@ -23,7 +23,7 @@ const DISTRIBUTION_TYPE_DISCOUNT = "2";
 
 export function decodeReferralCode(hexCode) {
   try {
-    ethers.utils.parseBytes32String(hexCode);
+    return ethers.utils.parseBytes32String(hexCode);
   } catch (ex) {
     let code = "";
     hexCode = hexCode.substring(2);
@@ -90,6 +90,14 @@ export function useReferralsData(chainId, account) {
       totalRebateUsd,
       discountUsd
     }
+    referralCodes (
+      first: 1000,
+      where: {
+        owner: "__ACCOUNT__"
+      }
+    ) {
+      code
+    }
   }`
       .replaceAll("__ACCOUNT__", (account || "").toLowerCase())
       .replaceAll("__DISTRIBUTION_TYPE_REBATES__", DISTRIBUTION_TYPE_REBATES)
@@ -132,15 +140,38 @@ export function useReferralsData(chainId, account) {
           };
         }
 
+        function getCumulativeStats(data = []) {
+          return data.reduce(
+            (acc, cv) => {
+              acc.rebates = acc.rebates.add(cv.totalRebateUsd);
+              acc.volume = acc.volume.add(cv.volume);
+              acc.discountUsd = acc.discountUsd.add(cv.discountUsd);
+              acc.trades = acc.trades + cv.trades;
+              acc.referralsCount = acc.referralsCount + cv.tradedReferralsCount;
+              return acc;
+            },
+            {
+              rebates: bigNumberify(0),
+              volume: bigNumberify(0),
+              discountUsd: bigNumberify(0),
+              trades: parseInt(0),
+              referralsCount: parseInt(0),
+            }
+          );
+        }
+
+        let totalStats = res.data.totalStats.map(prepareStatsItem);
         setData({
           rebateDistributions,
           discountDistributions,
-          totalStats: res.data.totalStats.map(prepareStatsItem),
+          totalStats,
           lastDayStats: res.data.lastDayStats.map(prepareStatsItem),
+          cumulativeStats: getCumulativeStats(totalStats),
+          codes: res.data.referralCodes.map((e) => decodeReferralCode(e.code)),
         });
       })
       .catch(console.warn);
-  }, [setData, query, chainId]);
+  }, [setData, query, chainId, account]);
 
   return data || null;
 }

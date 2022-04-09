@@ -7,9 +7,10 @@
 }
 .referral-body-container .list form {
   display: flex;
+  margin: 2rem 0;
 }
 .referral-body-container .list form input {
-  border: 1px solid #1e2136;
+  border: 1px solid var(--dark-blue-border);
   border-radius: 4px;
   margin-right: 1rem;
   padding: 0.5rem;
@@ -65,4 +66,35 @@
   text-align: center;
   padding: 0;
   margin: 1rem 0;
+}
+.table-referral-code {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.referral-code {
+  font-family: monospace;
+}
+.referral-table {
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  table-layout: fixed;
+}
+.referral-table th {
+  text-transform: uppercase;
+  color: #a9a9b0;
+}
+.referral-table th,
+.referral-table td {
+  padding: 0.625em;
+  text-align: left;
+}
+
+.table-referral-code p {
+  margin: 0;
+  margin-left: 0.5rem;
+  padding: 0;
 }
