@@ -655,6 +655,11 @@ export async function registerReferralCode(chainId, referralCode, { library, suc
   const contract = new ethers.Contract(referralContract, ReferralStorage.abi, library.getSigner());
   return callContract(chainId, contract, "registerCode", [referralCode], { successMsg, failMsg });
 }
+export async function registerReferralCodeByUser(chainId, referralCode, { library, successMsg, failMsg }) {
+  const referralContract = getContract(chainId, "Referral");
+  const contract = new ethers.Contract(referralContract, ReferralStorage.abi, library.getSigner());
+  return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCode], { successMsg, failMsg });
+}
 
 export async function createSwapOrder(
   chainId,
