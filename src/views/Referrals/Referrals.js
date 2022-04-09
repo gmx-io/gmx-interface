@@ -137,7 +137,7 @@ function CreateReferrarCode({ handleCreateReferralCode, isWalletConnected }) {
 function ReferrersStats({ referralsData, handleCreateReferralCode, infoTokens, chainId }) {
   let [referralCode, setReferralCode] = useState("");
   const [, copyToClipboard] = useCopyToClipboard();
-  let { cumulativeStats, totalStats, rebateDistributions } = referralsData;
+  let { cumulativeStats, referrerTotalStats, rebateDistributions } = referralsData;
   function getDollarValue(value) {
     return `$${formatAmount(value, USD_DECIMALS, 2, true, "0.00")}`;
   }
@@ -173,7 +173,7 @@ function ReferrersStats({ referralsData, handleCreateReferralCode, infoTokens, c
               </tr>
             </thead>
             <tbody>
-              {totalStats.map((stat, index) => {
+              {referrerTotalStats.map((stat, index) => {
                 return (
                   <tr key={index}>
                     <td data-label="Referral Code">
