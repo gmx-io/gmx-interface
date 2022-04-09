@@ -6,11 +6,12 @@ import Card from "../../components/Common/Card";
 import SEO from "../../components/Common/SEO";
 import Tab from "../../components/Tab/Tab";
 import Footer from "../../Footer";
-import { useChainId, getPageTitle } from "../../Helpers";
+import { useChainId, getPageTitle, formatAmount, USD_DECIMALS } from "../../Helpers";
 import { useReferralsData } from "../../Api/referrals";
 
 import "./Referrals.css";
 import { utils } from "ethers";
+import { registerReferralCode } from "../../Api";
 
 const REBATES = "Rebates";
 const REFERRERS = "Referrers";
@@ -23,7 +24,7 @@ export default function Referrals() {
   let [activeTab, setActiveTab] = useState(REFERRERS);
   // "0xbb00f2e53888e60974110d68f1060e5eaab34790"
 
-  const referralsData = useReferralsData(chainId, account);
+  const referralsData = useReferralsData(chainId, "0xbb00f2e53888e60974110d68f1060e5eaab34790");
   console.log("referralsData", referralsData);
 
   return (
@@ -32,20 +33,28 @@ export default function Referrals() {
         <div className="referral-tab-container">
           <Tab options={TAB_OPTIONS} option={activeTab} setOption={setActiveTab} onChange={setActiveTab} />
         </div>
-        {referralsData?.totalStats?.length > 0 ? <ReferrersStats /> : <CreateReferrarCode />}
+        {referralsData?.codes?.length > 0 ? (
+          <ReferrersStats totalStats={referralsData.totalStats} />
+        ) : (
+          <CreateReferrarCode library={library} chainId={chainId} />
+        )}
       </div>
       <Footer />
     </SEO>
   );
 }
 
-function CreateReferrarCode() {
+function CreateReferrarCode({ chainId, library }) {
   let [referralCode, setReferralCode] = useState("");
 
   function handleSubmit(event) {
     event.preventDefault();
-    let res = utils.formatBytes32String(referralCode);
-    console.log({ referralCode, res });
+    let referralCodeHex = utils.formatBytes32String(referralCode);
+    registerReferralCode(chainId, referralCodeHex, {
+      library,
+      successMsg: `Referral code created!`,
+      failMsg: "Referral code creation failed.",
+    });
   }
   return (
     <div className="card text-center create-referrar-code">
@@ -70,19 +79,25 @@ function CreateReferrarCode() {
   );
 }
 
-function ReferrersStats() {
+function ReferrersStats({ totalStats }) {
+  let { tradedReferralsCount, discountUsd, totalRebateUsd, volume } = totalStats[0];
+  function getDollarValue(value) {
+    return `$${formatAmount(value, USD_DECIMALS, 2, true, "0.00")}`;
+  }
   return (
     <div className="referral-body-container">
       <div className="referral-stats">
-        <InfoCard label="Total Traders Referred" data={25} />
-        <InfoCard label="Weekly Trading Volume" data={"$ 12,766,34"} />
-        <InfoCard label="Weekly Rebates" data={"$ 2,345"} />
-        <InfoCard label="Weekly Rebates For Traders" data={"$ 1,098"} />
+        <InfoCard label="Total Traders Referred" data={tradedReferralsCount} />
+        <InfoCard label="Weekly Trading Volume" data={getDollarValue(volume)} />
+        <InfoCard label="Weekly Rebates" data={getDollarValue(totalRebateUsd)} />
+        <InfoCard label="Weekly Rebates For Traders" data={getDollarValue(discountUsd)} />
       </div>
       <div className="list">
         <Card title="Referral Codes">
-          <input type="text" placeholder="Enter the code" />
-          <Button>Create</Button>
+          <form>
+            <input type="text" placeholder="Enter the code" />
+            <Button>Create</Button>
+          </form>
         </Card>
       </div>
       <div className="reward-history">
