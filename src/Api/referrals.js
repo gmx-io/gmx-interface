@@ -42,72 +42,77 @@ export function encodeReferralCode(code) {
 }
 
 export function useReferralsData(chainId, account) {
-  const startOfDayTimestamp = Math.floor(parseInt(Date.now() / 1000) / 86400) * 86400;
-  const query = gql(
-    `{
-    distributions(
-      first: 1000,
-      orderBy: timestamp,
-      orderDirection: desc,
-      where: {
-        receiver: "__ACCOUNT__",
-        typeId_in: ["__DISTRIBUTION_TYPE_REBATES__", "__DISTRIBUTION_TYPE_DISCOUNT__"]
-      }
-    ) {
-      receiver
-      amount
-      typeId
-      token
-      transactionHash
-      timestamp
-    }
-    totalStats: referralVolumeStats(
-      first: 1000
-      where: {
-        period: total
-        referrer: "__ACCOUNT__"
-      }
-    ) {
-      referralCode,
-      volume,
-      trades,
-      tradedReferralsCount,
-      totalRebateUsd,
-      discountUsd
-    }
-    lastDayStats: referralVolumeStats(
-      first: 1000
-      where: {
-        period: daily
-        referrer: "__ACCOUNT__"
-        timestamp: __TIMESTAMP__
-      }
-    ) {
-      referralCode,
-      volume,
-      trades,
-      tradedReferralsCount,
-      totalRebateUsd,
-      discountUsd
-    }
-    referralCodes (
-      first: 1000,
-      where: {
-        owner: "__ACCOUNT__"
-      }
-    ) {
-      code
-    }
-  }`
-      .replaceAll("__ACCOUNT__", (account || "").toLowerCase())
-      .replaceAll("__DISTRIBUTION_TYPE_REBATES__", DISTRIBUTION_TYPE_REBATES)
-      .replaceAll("__DISTRIBUTION_TYPE_DISCOUNT__", DISTRIBUTION_TYPE_DISCOUNT)
-      .replaceAll("__TIMESTAMP__", startOfDayTimestamp)
-  );
-
   const [data, setData] = useState();
-
   useEffect(() => {
+    const startOfDayTimestamp = Math.floor(parseInt(Date.now() / 1000) / 86400) * 86400;
+    const query = gql(
+      `{
+      distributions(
+        first: 1000,
+        orderBy: timestamp,
+        orderDirection: desc,
+        where: {
+          receiver: "__ACCOUNT__",
+          typeId_in: ["__DISTRIBUTION_TYPE_REBATES__", "__DISTRIBUTION_TYPE_DISCOUNT__"]
+        }
+      ) {
+        receiver
+        amount
+        typeId
+        token
+        transactionHash
+        timestamp
+      }
+      referrerTotalStats: referrerStats(
+        first: 1000
+        where: {
+          period: total
+          referrer: "__ACCOUNT__"
+        }
+      ) {
+        referralCode,
+        volume,
+        trades,
+        tradedReferralsCount,
+        totalRebateUsd,
+        discountUsd
+      }
+      referrerLastDayStats: referrerStats(
+        first: 1000
+        where: {
+          period: daily
+          referrer: "__ACCOUNT__"
+          timestamp: __TIMESTAMP__
+        }
+      ) {
+        referralCode,
+        volume,
+        trades,
+        tradedReferralsCount,
+        totalRebateUsd,
+        discountUsd
+      }
+      referralCodes (
+        first: 1000,
+        where: {
+          owner: "__ACCOUNT__"
+        }
+      ) {
+        code
+      }
+      referralTotalStats: referralStat(
+        id: "total:0:__ACCOUNT__"
+      ) {
+        volume,
+        discountUsd
+      }
+    }`
+        .replaceAll("__ACCOUNT__", (account || "").toLowerCase())
+        .replaceAll("__DISTRIBUTION_TYPE_REBATES__", DISTRIBUTION_TYPE_REBATES)
+        .replaceAll("__DISTRIBUTION_TYPE_DISCOUNT__", DISTRIBUTION_TYPE_DISCOUNT)
+        .replaceAll("__TIMESTAMP__", startOfDayTimestamp)
+    );
+
     getGraphClient(chainId)
       .query({ query })
       .then((res) => {
@@ -160,18 +165,22 @@ export function useReferralsData(chainId, account) {
           );
         }
 
-        let totalStats = res.data.totalStats.map(prepareStatsItem);
+        let referrerTotalStats = res.data.referrerTotalStats.map(prepareStatsItem);
         setData({
           rebateDistributions,
           discountDistributions,
-          totalStats,
-          lastDayStats: res.data.lastDayStats.map(prepareStatsItem),
-          cumulativeStats: getCumulativeStats(totalStats),
+          referrerTotalStats,
+          referrerLastDayStats: res.data.referrerLastDayStats.map(prepareStatsItem),
+          cumulativeStats: getCumulativeStats(referrerTotalStats),
           codes: res.data.referralCodes.map((e) => decodeReferralCode(e.code)),
+          referralTotalStats: {
+            volume: bigNumberify(res.data.referralTotalStats.volume),
+            discountUsd: bigNumberify(res.data.referralTotalStats.discountUsd)
+          }
         });
       })
       .catch(console.warn);
-  }, [setData, query, chainId, account]);
+  }, [setData, chainId, account]);
 
   return data || null;
 }
