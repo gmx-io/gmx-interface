@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
-import Button from "../../components/Common/Button";
 import Card from "../../components/Common/Card";
 import SEO from "../../components/Common/SEO";
 import Tab from "../../components/Tab/Tab";
@@ -34,9 +33,9 @@ import ReferralContract from "../../abis/ReferralStorage.json";
 import { RiQuestionLine } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
 
-const REBATES = "Rebates";
-const REFERRERS = "Referrers";
-let TAB_OPTIONS = [REBATES, REFERRERS];
+const TRADERS = "Traders";
+const AFFILIATES = "Affiliates";
+let TAB_OPTIONS = [TRADERS, AFFILIATES];
 
 function getDollarValue(value) {
   return `$${formatAmount(value, USD_DECIMALS, 2, true, "0.00")}`;
@@ -74,11 +73,11 @@ export default function Referrals() {
     });
   }
 
-  let [activeTab, setActiveTab] = useState(REBATES);
+  let [activeTab, setActiveTab] = useState(TRADERS);
   const referralsData = useReferralsData(chainId, account);
   // console.log(referralsData);
   function renderBody() {
-    if (activeTab === REFERRERS) {
+    if (activeTab === AFFILIATES) {
       if (!account) {
         return (
           <CreateReferrarCode
@@ -97,6 +96,7 @@ export default function Referrals() {
             handleCreateReferralCode={handleCreateReferralCode}
             referralsData={referralsData}
             chainId={chainId}
+            library={library}
           />
         );
       } else {
@@ -110,7 +110,7 @@ export default function Referrals() {
         );
       }
     }
-    if (activeTab === REBATES) {
+    if (activeTab === TRADERS) {
       if (!referralsData) return <Loader />;
       if (!referralCodeInString) {
         return <JoinReferrarCode isWalletConnected={!!account} library={library} chainId={chainId} />;
@@ -143,6 +143,7 @@ export default function Referrals() {
 
 function CreateReferrarCode({ handleCreateReferralCode, isWalletConnected }) {
   let [referralCode, setReferralCode] = useState("");
+
   return (
     <div className="card text-center create-referrar-code">
       <h1>Generate Referral Code</h1>
@@ -172,27 +173,53 @@ function CreateReferrarCode({ handleCreateReferralCode, isWalletConnected }) {
   );
 }
 
-function ReferrersStats({ referralsData, handleCreateReferralCode, infoTokens, chainId }) {
+function ReferrersStats({ referralsData, infoTokens, chainId, library }) {
   let [referralCode, setReferralCode] = useState("");
+  let [isAdding, setIsAdding] = useState(false);
+  let [isAddReferralCodeOpen, setIsAddReferralCodeOpen] = useState(false);
   const [, copyToClipboard] = useCopyToClipboard();
+
+  function handleCreateReferralCode(event) {
+    event.preventDefault();
+    let referralCodeHex = utils.formatBytes32String(referralCode);
+    setIsAdding(true);
+    return registerReferralCode(chainId, referralCodeHex, {
+      library,
+      successMsg: `Referral code created!`,
+      failMsg: "Referral code creation failed.",
+    })
+      .then(() => {
+        setReferralCode("");
+      })
+      .finally(() => {
+        setIsAdding(false);
+        close();
+      });
+  }
+
+  let open = () => {
+    setIsAddReferralCodeOpen(true);
+  };
+  let close = () => setIsAddReferralCodeOpen(false);
+
   let { cumulativeStats, referrerTotalStats, discountDistributions } = referralsData;
 
   return (
     <div className="referral-body-container">
       <div className="referral-stats">
         <InfoCard label="Total Traders Referred" data={cumulativeStats?.referralsCount || "0"} />
-        <InfoCard label="Weekly Trading Volume" data={getDollarValue(cumulativeStats?.volume)} />
-        <InfoCard label="Weekly Rebates" data={getDollarValue(cumulativeStats?.rebates)} />
-        <InfoCard label="Weekly Rebates For Traders" data={getDollarValue(cumulativeStats?.discountUsd)} />
+        <InfoCard label="Total Trading Volume" data={getDollarValue(cumulativeStats?.volume)} />
+        <InfoCard label="Total Rebates" data={getDollarValue(cumulativeStats?.rebates)} />
+        <InfoCard label="Total Rebates For Traders" data={getDollarValue(cumulativeStats?.discountUsd)} />
       </div>
       <div className="list">
         <Card
           title={
             <div className="referral-table-header">
               <span>Referral Codes</span>
-              <Button>
+              <button className="transparent-btn" onClick={open}>
                 <FiPlus /> <span className="ml-small">Add New</span>
-              </Button>
+              </button>
             </div>
           }
         >
@@ -234,18 +261,28 @@ function ReferrersStats({ referralsData, handleCreateReferralCode, infoTokens, c
               })}
             </tbody>
           </table>
-          <div className="App-card-divider"></div>
-          <form className="create-referral-code" onSubmit={(e) => handleCreateReferralCode(e, referralCode)}>
-            <input
-              type="text"
-              value={referralCode}
-              placeholder="Enter a code"
-              onChange={(e) => {
-                setReferralCode(e.target.value);
-              }}
-            />
-            <Button>Create</Button>
-          </form>
+          <Modal
+            className="Connect-wallet-modal"
+            isVisible={isAddReferralCodeOpen}
+            setIsVisible={setIsAddReferralCodeOpen}
+            label="Create New Referral Code"
+          >
+            <div className="edit-referral-modal">
+              <form onSubmit={handleCreateReferralCode}>
+                <input
+                  disabled={isAdding}
+                  type="text"
+                  placeholder="Enter new referral code"
+                  className="text-input edit-referral-code-input"
+                  value={referralCode}
+                  onChange={(e) => setReferralCode(e.target.value)}
+                />
+                <button type="submit" className="App-cta Exchange-swap-button" disabled={isAdding}>
+                  {isAdding ? "Adding..." : "Add New Referral Code"}
+                </button>
+              </form>
+            </div>
+          </Modal>
         </Card>
       </div>
       <div className="reward-history">
