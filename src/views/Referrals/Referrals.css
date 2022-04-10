@@ -1,7 +1,42 @@
+.section-center {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.mt-large {
+  margin-top: 2rem;
+}
 .referral-tab-container {
   margin: 30px auto;
 }
-
+.referral-card {
+  position: relative;
+  padding: 1.5rem;
+  border-radius: 13px;
+  max-width: 38.19rem;
+  background: #16182e;
+  box-shadow: 0px 5px 13px #00000085;
+  border: 1px solid #2a2b3d;
+  border-radius: 4px;
+}
+.referral-card .title {
+  font-weight: 500;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  color: #ffffff;
+  padding: 0.5rem 0;
+  margin: 0;
+}
+.referral-card .sub-title {
+  font-size: 1.161rem;
+  line-height: 1.484rem;
+  letter-spacing: 0px;
+  color: #fff;
+  margin-top: 0.75rem;
+}
+.referral-card .card-action {
+  margin-top: 3rem;
+}
 .referral-body-container .list {
   margin-top: 2rem;
 }
@@ -123,8 +158,10 @@
   table-layout: fixed;
 }
 .referral-table th {
-  text-transform: uppercase;
+  font-weight: normal;
+  letter-spacing: 0.25px;
   color: #a9a9b0;
+  text-transform: uppercase;
 }
 .referral-table th,
 .referral-table td {
