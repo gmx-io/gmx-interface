@@ -32,6 +32,7 @@ import useSWR from "swr";
 import { getContract } from "../../Addresses";
 import ReferralContract from "../../abis/ReferralStorage.json";
 import { RiQuestionLine } from "react-icons/ri";
+import { FiPlus } from "react-icons/fi";
 
 const REBATES = "Rebates";
 const REFERRERS = "Referrers";
@@ -185,19 +186,16 @@ function ReferrersStats({ referralsData, handleCreateReferralCode, infoTokens, c
         <InfoCard label="Weekly Rebates For Traders" data={getDollarValue(cumulativeStats?.discountUsd)} />
       </div>
       <div className="list">
-        <Card title="Referral Codes">
-          <form className="create-referral-code" onSubmit={(e) => handleCreateReferralCode(e, referralCode)}>
-            <input
-              type="text"
-              value={referralCode}
-              placeholder="Enter a code"
-              onChange={(e) => {
-                setReferralCode(e.target.value);
-              }}
-            />
-            <Button>Create</Button>
-          </form>
-          <div className="App-card-divider"></div>
+        <Card
+          title={
+            <div className="referral-table-header">
+              <span>Referral Codes</span>
+              <Button>
+                <FiPlus /> <span className="ml-small">Add New</span>
+              </Button>
+            </div>
+          }
+        >
           <table className="referral-table">
             <thead>
               <tr>
@@ -236,6 +234,18 @@ function ReferrersStats({ referralsData, handleCreateReferralCode, infoTokens, c
               })}
             </tbody>
           </table>
+          <div className="App-card-divider"></div>
+          <form className="create-referral-code" onSubmit={(e) => handleCreateReferralCode(e, referralCode)}>
+            <input
+              type="text"
+              value={referralCode}
+              placeholder="Enter a code"
+              onChange={(e) => {
+                setReferralCode(e.target.value);
+              }}
+            />
+            <Button>Create</Button>
+          </form>
         </Card>
       </div>
       <div className="reward-history">
@@ -292,6 +302,7 @@ function Rebates({ referralsData, infoTokens, chainId, library, referralCodeInSt
       failMsg: "Referral code updated failed.",
     }).finally(() => {
       setIsUpdateSubmitting(false);
+      setIsEditModalOpen(false);
     });
   }
 
