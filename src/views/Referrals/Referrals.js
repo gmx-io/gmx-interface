@@ -16,6 +16,7 @@ import {
   getExplorerUrl,
   shortenAddress,
   fetcher,
+  ARBITRUM,
 } from "../../Helpers";
 import { decodeReferralCode, useReferralsData } from "../../Api/referrals";
 
@@ -41,11 +42,14 @@ function getDollarValue(value) {
   return `$${formatAmount(value, USD_DECIMALS, 2, true, "0.00")}`;
 }
 
-export default function Referrals() {
+function Referrals({ connectWallet }) {
   const { active, account, library } = useWeb3React();
   const { chainId } = useChainId();
   const { infoTokens } = useInfoTokens(library, chainId, active, undefined, undefined);
+  let [activeTab, setActiveTab] = useState(TRADERS);
+  const referralsData = useReferralsData(chainId, account);
   const ReferralToken = getContract(chainId, "Referral");
+
   const { data: userReferralCode } = useSWR(
     account && [
       `ReferralStorage:traderReferralCodes:${active}`,
@@ -58,6 +62,7 @@ export default function Referrals() {
       fetcher: fetcher(library, ReferralContract),
     }
   );
+
   let referralCodeInString;
   if (userReferralCode) {
     referralCodeInString = decodeReferralCode(userReferralCode);
@@ -73,8 +78,6 @@ export default function Referrals() {
     });
   }
 
-  let [activeTab, setActiveTab] = useState(TRADERS);
-  const referralsData = useReferralsData(chainId, account);
   // console.log(referralsData);
   function renderBody() {
     if (activeTab === AFFILIATES) {
@@ -85,6 +88,7 @@ export default function Referrals() {
             handleCreateReferralCode={handleCreateReferralCode}
             library={library}
             chainId={chainId}
+            connectWallet={connectWallet}
           />
         );
       }
@@ -113,7 +117,14 @@ export default function Referrals() {
     if (activeTab === TRADERS) {
       if (!referralsData) return <Loader />;
       if (!referralCodeInString) {
-        return <JoinReferrarCode isWalletConnected={!!account} library={library} chainId={chainId} />;
+        return (
+          <JoinReferrarCode
+            connectWallet={connectWallet}
+            isWalletConnected={!!account}
+            library={library}
+            chainId={chainId}
+          />
+        );
       }
 
       return (
@@ -141,34 +152,34 @@ export default function Referrals() {
   );
 }
 
-function CreateReferrarCode({ handleCreateReferralCode, isWalletConnected }) {
+function CreateReferrarCode({ handleCreateReferralCode, isWalletConnected, connectWallet }) {
   let [referralCode, setReferralCode] = useState("");
 
   return (
-    <div className="card text-center create-referrar-code">
-      <h1>Generate Referral Code</h1>
-      <p>
-        Looks like you don't have a referral code to share. Enter a code below and hit submit to create it on-chain.
-      </p>
-      {isWalletConnected ? (
-        <form onSubmit={(e) => handleCreateReferralCode(e, referralCode)}>
-          <input
-            type="text"
-            value={referralCode}
-            placeholder="Enter a code"
-            onChange={(e) => {
-              setReferralCode(e.target.value);
-            }}
-          />
-          <button className="default-btn" type="submit">
-            Create
+    <div className="referral-card section-center mt-large">
+      <h2 className="title">Generate Referral Code</h2>
+      <p className="sub-title">Looks like you don't have a referral code to share. Create one right now!</p>
+      <div className="card-action">
+        {isWalletConnected ? (
+          <form onSubmit={(e) => handleCreateReferralCode(e, referralCode)}>
+            <input
+              type="text"
+              value={referralCode}
+              placeholder="Enter a code"
+              onChange={(e) => {
+                setReferralCode(e.target.value);
+              }}
+            />
+            <button className="default-btn" type="submit">
+              Create
+            </button>
+          </form>
+        ) : (
+          <button className="default-btn" type="submit" onClick={connectWallet}>
+            Connect Wallet
           </button>
-        </form>
-      ) : (
-        <button className="default-btn" type="submit">
-          Connect Wallet
-        </button>
-      )}
+        )}
+      </div>
     </div>
   );
 }
@@ -434,7 +445,7 @@ function InfoCard({ label, data }) {
   );
 }
 
-function JoinReferrarCode({ isWalletConnected, chainId, library }) {
+function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet }) {
   let [referralCode, setReferralCode] = useState("");
   let [isSubmitting, setIsSubmitting] = useState(false);
   function handleSetTraderReferralCode(event, code) {
@@ -450,29 +461,43 @@ function JoinReferrarCode({ isWalletConnected, chainId, library }) {
     });
   }
   return (
-    <div className="card text-center create-referrar-code">
-      <h1>Join Referral Code</h1>
-      <p>Please enter a referral code to start earning rebates.</p>
-      {isWalletConnected ? (
-        <form onSubmit={(e) => handleSetTraderReferralCode(e, referralCode)}>
-          <input
-            type="text"
-            value={referralCode}
-            disabled={isSubmitting}
-            placeholder="Enter a code"
-            onChange={(e) => {
-              setReferralCode(e.target.value);
-            }}
-          />
-          <button className="default-btn" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Submitting.." : "Submit"}
+    <div className="referral-card section-center mt-large">
+      <h2 className="title">Enter Affiliate code</h2>
+      <p className="sub-title">Please input an affiliate code to start earning rebates.</p>
+      <div className="card-action">
+        {isWalletConnected ? (
+          <form onSubmit={(e) => handleSetTraderReferralCode(e, referralCode)}>
+            <input
+              type="text"
+              value={referralCode}
+              disabled={isSubmitting}
+              placeholder="Enter a code"
+              onChange={(e) => {
+                setReferralCode(e.target.value);
+              }}
+            />
+            <button className="default-btn" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Submitting.." : "Submit"}
+            </button>
+          </form>
+        ) : (
+          <button className="default-btn" type="submit" onClick={connectWallet}>
+            Connect Wallet
           </button>
-        </form>
-      ) : (
-        <button className="default-btn" type="submit">
-          Connect Wallet
-        </button>
-      )}
+        )}
+      </div>
     </div>
   );
 }
+
+function ReferralWrapper({ ...props }) {
+  let { chainId } = useChainId();
+  return chainId === ARBITRUM ? (
+    <Referrals {...props} />
+  ) : (
+    <div style={{ width: "100%", height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+      <h3>Right now we support only Arbitrum Network!</h3>
+    </div>
+  );
+}
+export default ReferralWrapper;

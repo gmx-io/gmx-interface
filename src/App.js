@@ -683,13 +683,10 @@ function FullApp() {
               <Ecosystem />
             </Route>
             <Route exact path="/referrals">
-              <Referrals />
+              <Referrals connectWallet={connectWallet} />
             </Route>
             <Route exact path="/about">
               <Home />
-            </Route>
-            <Route exact path="/referrals">
-              <Referrals />
             </Route>
             <Route exact path="/nft_wallet">
               <NftWallet />
