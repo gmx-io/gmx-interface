@@ -1483,20 +1483,22 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                         <>
                           <div className="Tooltip-row">
                             <span className="label">
-                              {nativeTokenSymbol} ({wrappedTokenSymbol}) APR
+                              {nativeTokenSymbol} ({wrappedTokenSymbol}) Base APR
                             </span>
-                            <span>{formatKeyAmount(processedData, "gmxAprForNativeTokenWithBoost", 2, 2, true)}%</span>
+                            <span>{formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%</span>
                           </div>
+                          {processedData.bnGmxInFeeGmx && processedData.bnGmxInFeeGmx.gt(0) &&
+                            <div className="Tooltip-row">
+                              <span className="label">
+                                {nativeTokenSymbol} ({wrappedTokenSymbol}) Boosted APR
+                              </span>
+                              <span>{formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%</span>
+                            </div>
+                          }
                           <div className="Tooltip-row">
                             <span className="label">Escrowed GMX APR</span>
                             <span>{formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%</span>
                           </div>
-                          {
-                            processedData.bnGmxInFeeGmx && processedData.bnGmxInFeeGmx.gt(0) ? <>
-                              <br />
-                              Including boost from {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)} Staked Multiplier.
-                            </> : null
-                          }
                         </>
                       );
                     }}
@@ -1843,21 +1845,23 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                           <>
                             <div className="Tooltip-row">
                               <span className="label">
-                                {nativeTokenSymbol} ({wrappedTokenSymbol}) APR
+                                {nativeTokenSymbol} ({wrappedTokenSymbol}) Base APR
                               </span>
-                              <span>{formatKeyAmount(processedData, "gmxAprForNativeTokenWithBoost", 2, 2, true)}%</span>
+                              <span>{formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%</span>
                             </div>
+                            {processedData.bnGmxInFeeGmx && processedData.bnGmxInFeeGmx.gt(0) &&
+                              <div className="Tooltip-row">
+                                <span className="label">
+                                  {nativeTokenSymbol} ({wrappedTokenSymbol}) Boosted APR
+                                </span>
+                                <span>{formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%</span>
+                              </div>
+                            }
                             <div className="Tooltip-row">
                               <span className="label">Escrowed GMX APR</span>
                               <span>{formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%</span>
                             </div>
-                            {
-                              processedData.bnGmxInFeeGmx && processedData.bnGmxInFeeGmx.gt(0) ? <>
-                                <br />
-                                Including boost from {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)} Staked Multiplier.
-                              </> : null
-                            }
-                            </>
+                          </>
                         );
                       }}
                     />

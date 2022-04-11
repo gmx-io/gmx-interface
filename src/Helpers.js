@@ -2495,11 +2495,11 @@ export function getProcessedData(
     data.feeGmxSupplyUsd && data.feeGmxSupplyUsd.gt(0)
       ? data.feeGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.feeGmxSupplyUsd)
       : bigNumberify(0);
-  data.gmxAprForNativeTokenWithBoost = data.gmxAprForNativeToken
-    .mul(data.boostBasisPoints.add(BASIS_POINTS_DIVISOR))
+  data.gmxBoostAprForNativeToken = data.gmxAprForNativeToken
+    .mul(data.boostBasisPoints)
     .div(BASIS_POINTS_DIVISOR)
   data.gmxAprTotal = data.gmxAprForNativeToken.add(data.gmxAprForEsGmx);
-  data.gmxAprTotalWithBoost = data.gmxAprForNativeTokenWithBoost.add(data.gmxAprForEsGmx);
+  data.gmxAprTotalWithBoost = data.gmxAprForNativeToken.add(data.gmxBoostAprForNativeToken).add(data.gmxAprForEsGmx);
 
   data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(data.feeGmxTrackerRewardsUsd);
 
