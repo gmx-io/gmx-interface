@@ -59,10 +59,10 @@
   justify-content: center;
 }
 .edit-referral-code-input {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 .edit-referral-modal {
-  max-width: 275px;
+  max-width: 20rem;
 }
 .referral-code-edit span {
   margin-right: 0.5rem;
@@ -158,6 +158,10 @@
 }
 
 .referral-code {
+  display: flex;
+}
+.referral-code span {
+  margin-right: 0.5rem;
   font-family: monospace;
 }
 .referral-table {
@@ -183,4 +187,10 @@
   margin: 0;
   margin-left: 0.5rem;
   padding: 0;
+}
+.error {
+  margin: 0;
+  padding: 0.5rem 0 1rem;
+  color: #fa3c58;
+  font-size: 1rem;
 }

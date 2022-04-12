@@ -34,19 +34,30 @@ import ReferralContract from "../../abis/ReferralStorage.json";
 import { RiQuestionLine } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
 
-const TRADERS = "Traders";
-const AFFILIATES = "Affiliates";
-let TAB_OPTIONS = [TRADERS, AFFILIATES];
+const AFFILIATE_CODE = "Affiliate Code";
+const REFERRAL_CODE = "Referral Code";
+let TAB_OPTIONS = [AFFILIATE_CODE, REFERRAL_CODE];
 
 function getDollarValue(value) {
   return `$${formatAmount(value, USD_DECIMALS, 2, true, "0.00")}`;
+}
+
+function getErrorMessage(value) {
+  let invalid = /\s/;
+  if (!String(value).trim()) {
+    return `Input can't be empty.`;
+  }
+  if (invalid.test(value)) {
+    return "The referral code can't contain spaces.";
+  }
+  return "";
 }
 
 function Referrals({ connectWallet }) {
   const { active, account, library } = useWeb3React();
   const { chainId } = useChainId();
   const { infoTokens } = useInfoTokens(library, chainId, active, undefined, undefined);
-  let [activeTab, setActiveTab] = useState(TRADERS);
+  let [activeTab, setActiveTab] = useState(AFFILIATE_CODE);
   const referralsData = useReferralsData(chainId, account);
   const ReferralToken = getContract(chainId, "Referral");
 
@@ -78,9 +89,8 @@ function Referrals({ connectWallet }) {
     });
   }
 
-  // console.log(referralsData);
   function renderBody() {
-    if (activeTab === AFFILIATES) {
+    if (activeTab === REFERRAL_CODE) {
       if (!account) {
         return (
           <CreateReferrarCode
@@ -114,7 +124,7 @@ function Referrals({ connectWallet }) {
         );
       }
     }
-    if (activeTab === TRADERS) {
+    if (activeTab === AFFILIATE_CODE) {
       if (!referralsData) return <Loader />;
       if (!referralCodeInString) {
         return (
@@ -154,24 +164,36 @@ function Referrals({ connectWallet }) {
 
 function CreateReferrarCode({ handleCreateReferralCode, isWalletConnected, connectWallet }) {
   let [referralCode, setReferralCode] = useState("");
+  let [isProcessing, setIsProcessing] = useState(false);
+  function handleSubmit(e) {
+    setIsProcessing(true);
+    handleCreateReferralCode(e, referralCode)
+      .then((res) => {
+        // console.log({ res });
+      })
+      .finally(() => setIsProcessing(false));
+  }
 
   return (
     <div className="referral-card section-center mt-large">
       <h2 className="title">Generate Referral Code</h2>
-      <p className="sub-title">Looks like you don't have a referral code to share. Create one right now!</p>
+      <p className="sub-title">
+        Looks like you don't have a referral code to share. Create one now and start earning rebates!
+      </p>
       <div className="card-action">
         {isWalletConnected ? (
-          <form onSubmit={(e) => handleCreateReferralCode(e, referralCode)}>
+          <form onSubmit={handleSubmit}>
             <input
               type="text"
               value={referralCode}
+              disabled={isProcessing}
               placeholder="Enter a code"
               onChange={(e) => {
                 setReferralCode(e.target.value);
               }}
             />
-            <button className="default-btn" type="submit">
-              Create
+            <button className="default-btn" type="submit" disabled={isProcessing}>
+              {isProcessing ? "Creating..." : "Create"}
             </button>
           </form>
         ) : (
@@ -188,10 +210,14 @@ function ReferrersStats({ referralsData, infoTokens, chainId, library }) {
   let [referralCode, setReferralCode] = useState("");
   let [isAdding, setIsAdding] = useState(false);
   let [isAddReferralCodeOpen, setIsAddReferralCodeOpen] = useState(false);
+  let [error, setError] = useState("");
   const [, copyToClipboard] = useCopyToClipboard();
+  let open = () => setIsAddReferralCodeOpen(true);
+  let close = () => setIsAddReferralCodeOpen(false);
 
   function handleCreateReferralCode(event) {
     event.preventDefault();
+
     let referralCodeHex = utils.formatBytes32String(referralCode);
     setIsAdding(true);
     return registerReferralCode(chainId, referralCodeHex, {
@@ -207,11 +233,6 @@ function ReferrersStats({ referralsData, infoTokens, chainId, library }) {
         close();
       });
   }
-
-  let open = () => {
-    setIsAddReferralCodeOpen(true);
-  };
-  let close = () => setIsAddReferralCodeOpen(false);
 
   let { cumulativeStats, referrerTotalStats, discountDistributions } = referralsData;
 
@@ -249,19 +270,16 @@ function ReferrersStats({ referralsData, infoTokens, chainId, library }) {
                   <tr key={index}>
                     <td data-label="Referral Code">
                       <div className="table-referral-code">
-                        <Tooltip
-                          handle={<p className="referral-code">{stat.referralCode}</p>}
-                          position="bottom"
-                          renderContent={() => "Copy Referral Link"}
-                        />
-                        <p
+                        <div
                           onClick={() => {
-                            copyToClipboard(`https://gmx.io/trade?refId=${stat.referralCode}`);
+                            copyToClipboard(`https://gmx.io/trade?refferalCode=${stat.referralCode}`);
                             helperToast.success("Referral link copied to your clipboard");
                           }}
+                          className="referral-code"
                         >
+                          <span>{stat.referralCode}</span>
                           <BiCopy />
-                        </p>
+                        </div>
                       </div>
                     </td>
                     <td data-label="Traders Referred">{stat.tradedReferralsCount}</td>
@@ -279,16 +297,20 @@ function ReferrersStats({ referralsData, infoTokens, chainId, library }) {
             label="Create New Referral Code"
           >
             <div className="edit-referral-modal">
-              <form onSubmit={handleCreateReferralCode}>
+              <form onSubmit={!error && handleCreateReferralCode}>
                 <input
                   disabled={isAdding}
                   type="text"
                   placeholder="Enter new referral code"
                   className="text-input edit-referral-code-input"
                   value={referralCode}
-                  onChange={(e) => setReferralCode(e.target.value)}
+                  onChange={(e) => {
+                    setError(getErrorMessage(referralCode));
+                    setReferralCode(e.target.value);
+                  }}
                 />
-                <button type="submit" className="App-cta Exchange-swap-button" disabled={isAdding}>
+                <p className="error">{error}</p>
+                <button type="submit" className="App-cta Exchange-swap-button" disabled={error || isAdding}>
                   {isAdding ? "Adding..." : "Add New Referral Code"}
                 </button>
               </form>
@@ -296,38 +318,44 @@ function ReferrersStats({ referralsData, infoTokens, chainId, library }) {
           </Modal>
         </Card>
       </div>
-      <div className="reward-history">
-        <Card title="Rebates Distribution History">
-          <table className="referral-table">
-            <thead>
-              <tr>
-                <th scope="col">Date</th>
-                <th scope="col">Amount</th>
-                <th scope="col">Tx Hash</th>
-              </tr>
-            </thead>
-            <tbody>
-              {discountDistributions.map((rebate, index) => {
-                let tokenInfo = getTokenInfo(infoTokens, rebate.token);
-                let explorerURL = getExplorerUrl(chainId);
-                return (
-                  <tr key={index}>
-                    <td data-label="Date">{formatDate(rebate.timestamp)}</td>
-                    <td data-label="Amount">
-                      {formatAmount(rebate.amount, tokenInfo.decimals, 4, true)} {tokenInfo.symbol}
-                    </td>
-                    <td data-label="Tx Hash">
-                      <a target="_blank" rel="noopener noreferrer" href={explorerURL + `tx/${rebate.transactionHash}`}>
-                        {shortenAddress(rebate.transactionHash, 20)}
-                      </a>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </Card>
-      </div>
+      {discountDistributions?.length > 0 && (
+        <div className="reward-history">
+          <Card title="Rebates Distribution History">
+            <table className="referral-table">
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Amount</th>
+                  <th scope="col">Tx Hash</th>
+                </tr>
+              </thead>
+              <tbody>
+                {discountDistributions.map((rebate, index) => {
+                  let tokenInfo = getTokenInfo(infoTokens, rebate.token);
+                  let explorerURL = getExplorerUrl(chainId);
+                  return (
+                    <tr key={index}>
+                      <td data-label="Date">{formatDate(rebate.timestamp)}</td>
+                      <td data-label="Amount">
+                        {formatAmount(rebate.amount, tokenInfo.decimals, 4, true)} {tokenInfo.symbol}
+                      </td>
+                      <td data-label="Tx Hash">
+                        <a
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={explorerURL + `tx/${rebate.transactionHash}`}
+                        >
+                          {shortenAddress(rebate.transactionHash, 20)}
+                        </a>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
