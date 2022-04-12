@@ -29,7 +29,7 @@
 }
 .referral-card .sub-title {
   font-size: 1.161rem;
-  line-height: 1.484rem;
+  line-height: 1.6rem;
   letter-spacing: 0px;
   color: #fff;
   margin-top: 0.75rem;
@@ -37,9 +37,11 @@
 .referral-card .card-action {
   margin-top: 3rem;
 }
-.referral-card .card-action form {
-  display: flex;
-}
+/* .referral-card .card-action form {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  grid-gap: 1rem;
+} */
 .referral-card .card-action input {
   border: 1px solid rgba(255, 255, 255, 0.2);
   font-size: 1rem;
@@ -58,11 +60,11 @@
   align-items: center;
   justify-content: center;
 }
-.edit-referral-code-input {
-  margin-bottom: 0.5rem;
+.mb-sm {
+  margin-bottom: 1rem;
 }
 .edit-referral-modal {
-  max-width: 20rem;
+  width: 20rem;
 }
 .referral-code-edit span {
   margin-right: 0.5rem;
@@ -192,5 +194,5 @@
   margin: 0;
   padding: 0.5rem 0 1rem;
   color: #fa3c58;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }

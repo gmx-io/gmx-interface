@@ -683,7 +683,7 @@ function FullApp() {
               <Ecosystem />
             </Route>
             <Route exact path="/referrals">
-              <Referrals connectWallet={connectWallet} />
+              <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
             </Route>
             <Route exact path="/about">
               <Home />
