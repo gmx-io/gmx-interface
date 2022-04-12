@@ -650,15 +650,17 @@ export async function approvePlugin(
   });
 }
 
-export async function registerReferralCode(chainId, referralCode, { library, successMsg, failMsg }) {
+export async function registerReferralCode(chainId, referralCode, { library, ...props }) {
   const referralContract = getContract(chainId, "Referral");
   const contract = new ethers.Contract(referralContract, ReferralStorage.abi, library.getSigner());
-  return callContract(chainId, contract, "registerCode", [referralCode], { successMsg, failMsg });
+  return callContract(chainId, contract, "registerCode", [referralCode], { ...props });
 }
-export async function setTraderReferralCodeByUser(chainId, referralCode, { library, successMsg, failMsg }) {
+export async function setTraderReferralCodeByUser(chainId, referralCode, { library, ...props }) {
   const referralContract = getContract(chainId, "Referral");
   const contract = new ethers.Contract(referralContract, ReferralStorage.abi, library.getSigner());
-  return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCode], { successMsg, failMsg });
+  return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCode], {
+    ...props,
+  });
 }
 
 export async function createSwapOrder(

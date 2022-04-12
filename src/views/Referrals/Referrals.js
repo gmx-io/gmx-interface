@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
 import Card from "../../components/Common/Card";
@@ -17,6 +17,7 @@ import {
   shortenAddress,
   fetcher,
   ARBITRUM,
+  bigNumberify,
 } from "../../Helpers";
 import { decodeReferralCode, useReferralsData } from "../../Api/referrals";
 
@@ -34,32 +35,46 @@ import ReferralContract from "../../abis/ReferralStorage.json";
 import { RiQuestionLine } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
 
-const AFFILIATE_CODE = "Affiliate Code";
-const REFERRAL_CODE = "Referral Code";
-let TAB_OPTIONS = [AFFILIATE_CODE, REFERRAL_CODE];
+const getSampleReferrarStat = (code) => {
+  return {
+    discountUsd: bigNumberify(0),
+    referralCode: code,
+    totalRebateUsd: bigNumberify(0),
+    tradedReferralsCount: 0,
+    trades: 0,
+    volume: bigNumberify(0),
+  };
+};
+
+const TRADERS = "Traders";
+const AFFiLIATES = "Affiliates";
+let TAB_OPTIONS = [TRADERS, AFFiLIATES];
 
 function getDollarValue(value) {
   return `$${formatAmount(value, USD_DECIMALS, 2, true, "0.00")}`;
 }
 
 function getErrorMessage(value) {
+  let trimmedValue = value.trim();
   let invalid = /\s/;
-  if (!String(value).trim()) {
-    return `Input can't be empty.`;
-  }
-  if (invalid.test(value)) {
+  if (invalid.test(trimmedValue)) {
     return "The referral code can't contain spaces.";
   }
   return "";
 }
 
-function Referrals({ connectWallet }) {
+function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { active, account, library } = useWeb3React();
   const { chainId } = useChainId();
   const { infoTokens } = useInfoTokens(library, chainId, active, undefined, undefined);
-  let [activeTab, setActiveTab] = useState(AFFILIATE_CODE);
+  let [activeTab, setActiveTab] = useState(TRADERS);
   const referralsData = useReferralsData(chainId, account);
   const ReferralToken = getContract(chainId, "Referral");
+
+  const [referralsDataState, setReferralsDataState] = useState(referralsData);
+  useEffect(() => {
+    setReferralsDataState(referralsData);
+  }, [referralsData]);
 
   const { data: userReferralCode } = useSWR(
     account && [
@@ -74,10 +89,13 @@ function Referrals({ connectWallet }) {
     }
   );
 
+  let isZero = (v) => !v || v === utils.formatBytes32String(0);
+
   let referralCodeInString;
-  if (userReferralCode) {
+  if (!isZero(userReferralCode)) {
     referralCodeInString = decodeReferralCode(userReferralCode);
   }
+
   function handleCreateReferralCode(event, code) {
     event.preventDefault();
     let referralCodeHex = utils.formatBytes32String(code);
@@ -86,11 +104,13 @@ function Referrals({ connectWallet }) {
       library,
       successMsg: `Referral code created!`,
       failMsg: "Referral code creation failed.",
+      setPendingTxns,
+      pendingTxns,
     });
   }
 
   function renderBody() {
-    if (activeTab === REFERRAL_CODE) {
+    if (activeTab === AFFiLIATES) {
       if (!account) {
         return (
           <CreateReferrarCode
@@ -99,18 +119,22 @@ function Referrals({ connectWallet }) {
             library={library}
             chainId={chainId}
             connectWallet={connectWallet}
+            setPendingTxns={setPendingTxns}
+            pendingTxns={pendingTxns}
           />
         );
       }
-      if (!referralsData) return <Loader />;
-      if (referralsData?.codes?.length > 0) {
+      if (!referralsDataState) return <Loader />;
+      if (referralsDataState?.codes?.length > 0) {
         return (
           <ReferrersStats
             infoTokens={infoTokens}
             handleCreateReferralCode={handleCreateReferralCode}
-            referralsData={referralsData}
+            referralsDataState={referralsDataState}
             chainId={chainId}
             library={library}
+            setPendingTxns={setPendingTxns}
+            pendingTxns={pendingTxns}
           />
         );
       } else {
@@ -120,12 +144,16 @@ function Referrals({ connectWallet }) {
             handleCreateReferralCode={handleCreateReferralCode}
             library={library}
             chainId={chainId}
+            setPendingTxns={setPendingTxns}
+            pendingTxns={pendingTxns}
+            referralsDataState={referralsDataState}
+            setReferralsDataState={setReferralsDataState}
           />
         );
       }
     }
-    if (activeTab === AFFILIATE_CODE) {
-      if (!referralsData) return <Loader />;
+    if (activeTab === TRADERS) {
+      if (!referralsDataState) return <Loader />;
       if (!referralCodeInString) {
         return (
           <JoinReferrarCode
@@ -133,6 +161,8 @@ function Referrals({ connectWallet }) {
             isWalletConnected={!!account}
             library={library}
             chainId={chainId}
+            setPendingTxns={setPendingTxns}
+            pendingTxns={pendingTxns}
           />
         );
       }
@@ -143,7 +173,9 @@ function Referrals({ connectWallet }) {
           infoTokens={infoTokens}
           chainId={chainId}
           library={library}
-          referralsData={referralsData}
+          referralsDataState={referralsDataState}
+          setPendingTxns={setPendingTxns}
+          pendingTxns={pendingTxns}
         />
       );
     }
@@ -162,14 +194,28 @@ function Referrals({ connectWallet }) {
   );
 }
 
-function CreateReferrarCode({ handleCreateReferralCode, isWalletConnected, connectWallet }) {
+function CreateReferrarCode({
+  handleCreateReferralCode,
+  isWalletConnected,
+  connectWallet,
+  setReferralsDataState,
+  referralsDataState,
+}) {
   let [referralCode, setReferralCode] = useState("");
   let [isProcessing, setIsProcessing] = useState(false);
+  let [error, setError] = useState("");
   function handleSubmit(e) {
     setIsProcessing(true);
     handleCreateReferralCode(e, referralCode)
       .then((res) => {
-        // console.log({ res });
+        setReferralsDataState((state) => {
+          let referralCodeString = decodeReferralCode(res.data);
+          return {
+            ...state,
+            codes: state.codes.concat(referralCodeString),
+            referrerTotalStats: state.referrerTotalStats.concat(getSampleReferrarStat(referralCodeString)),
+          };
+        });
       })
       .finally(() => setIsProcessing(false));
   }
@@ -178,7 +224,7 @@ function CreateReferrarCode({ handleCreateReferralCode, isWalletConnected, conne
     <div className="referral-card section-center mt-large">
       <h2 className="title">Generate Referral Code</h2>
       <p className="sub-title">
-        Looks like you don't have a referral code to share. Create one now and start earning rebates!
+        Looks like you don't have a referral code to share. <br /> Create one now and start earning rebates!
       </p>
       <div className="card-action">
         {isWalletConnected ? (
@@ -187,17 +233,29 @@ function CreateReferrarCode({ handleCreateReferralCode, isWalletConnected, conne
               type="text"
               value={referralCode}
               disabled={isProcessing}
+              className={`text-input ${!error && "mb-sm"}`}
               placeholder="Enter a code"
-              onChange={(e) => {
-                setReferralCode(e.target.value);
+              onChange={({ target }) => {
+                let { value } = target;
+                setReferralCode(value);
+                setError(getErrorMessage(value));
               }}
             />
-            <button className="default-btn" type="submit" disabled={isProcessing}>
+            {error && (
+              <p className="error" style={{ textAlign: "left" }}>
+                {error}
+              </p>
+            )}
+            <button
+              className="App-cta Exchange-swap-button"
+              type="submit"
+              disabled={!referralCode.trim() || isProcessing}
+            >
               {isProcessing ? "Creating..." : "Create"}
             </button>
           </form>
         ) : (
-          <button className="default-btn" type="submit" onClick={connectWallet}>
+          <button className="App-cta Exchange-swap-button" type="submit" onClick={connectWallet}>
             Connect Wallet
           </button>
         )}
@@ -206,24 +264,31 @@ function CreateReferrarCode({ handleCreateReferralCode, isWalletConnected, conne
   );
 }
 
-function ReferrersStats({ referralsData, infoTokens, chainId, library }) {
+function ReferrersStats({ referralsDataState, infoTokens, chainId, library, setPendingTxns, pendingTxns }) {
   let [referralCode, setReferralCode] = useState("");
   let [isAdding, setIsAdding] = useState(false);
   let [isAddReferralCodeOpen, setIsAddReferralCodeOpen] = useState(false);
   let [error, setError] = useState("");
   const [, copyToClipboard] = useCopyToClipboard();
   let open = () => setIsAddReferralCodeOpen(true);
-  let close = () => setIsAddReferralCodeOpen(false);
+  let close = () => {
+    setReferralCode("");
+    setIsAdding(false);
+    setError(false);
+    setIsAddReferralCodeOpen(false);
+  };
 
   function handleCreateReferralCode(event) {
     event.preventDefault();
-
+    if (error) return;
     let referralCodeHex = utils.formatBytes32String(referralCode);
     setIsAdding(true);
     return registerReferralCode(chainId, referralCodeHex, {
       library,
       successMsg: `Referral code created!`,
       failMsg: "Referral code creation failed.",
+      setPendingTxns,
+      pendingTxns,
     })
       .then(() => {
         setReferralCode("");
@@ -234,7 +299,7 @@ function ReferrersStats({ referralsData, infoTokens, chainId, library }) {
       });
   }
 
-  let { cumulativeStats, referrerTotalStats, discountDistributions } = referralsData;
+  let { cumulativeStats, referrerTotalStats, discountDistributions } = referralsDataState;
 
   return (
     <div className="referral-body-container">
@@ -297,19 +362,20 @@ function ReferrersStats({ referralsData, infoTokens, chainId, library }) {
             label="Create New Referral Code"
           >
             <div className="edit-referral-modal">
-              <form onSubmit={!error && handleCreateReferralCode}>
+              <form onSubmit={handleCreateReferralCode}>
                 <input
                   disabled={isAdding}
                   type="text"
                   placeholder="Enter new referral code"
-                  className="text-input edit-referral-code-input"
+                  className={`text-input ${!error && "mb-sm"}`}
                   value={referralCode}
                   onChange={(e) => {
-                    setError(getErrorMessage(referralCode));
-                    setReferralCode(e.target.value);
+                    let { value } = e.target;
+                    setReferralCode(value);
+                    setError(getErrorMessage(value));
                   }}
                 />
-                <p className="error">{error}</p>
+                {error && <p className="error">{error}</p>}
                 <button type="submit" className="App-cta Exchange-swap-button" disabled={error || isAdding}>
                   {isAdding ? "Adding..." : "Add New Referral Code"}
                 </button>
@@ -360,11 +426,20 @@ function ReferrersStats({ referralsData, infoTokens, chainId, library }) {
   );
 }
 
-function Rebates({ referralsData, infoTokens, chainId, library, referralCodeInString }) {
-  let { referralTotalStats, rebateDistributions } = referralsData;
+function Rebates({
+  referralsDataState,
+  infoTokens,
+  chainId,
+  library,
+  referralCodeInString,
+  setPendingTxns,
+  pendingTxns,
+}) {
+  let { referralTotalStats, rebateDistributions } = referralsDataState;
   let [isEditModalOpen, setIsEditModalOpen] = useState(false);
   let [editReferralCode, setEditReferralCode] = useState("");
   let [isUpdateSubmitting, setIsUpdateSubmitting] = useState(false);
+  let [error, setError] = useState("");
   let open = () => setIsEditModalOpen(true);
   let close = () => setIsEditModalOpen(false);
 
@@ -376,6 +451,8 @@ function Rebates({ referralsData, infoTokens, chainId, library, referralCodeInSt
       library,
       successMsg: `Referral code updated!`,
       failMsg: "Referral code updated failed.",
+      setPendingTxns,
+      pendingTxns,
     }).finally(() => {
       setIsUpdateSubmitting(false);
       setIsEditModalOpen(false);
@@ -408,10 +485,15 @@ function Rebates({ referralsData, infoTokens, chainId, library, referralCodeInSt
                 disabled={isUpdateSubmitting}
                 type="text"
                 placeholder="Enter new referral code"
-                className="text-input edit-referral-code-input"
+                className={`text-input ${!error && "mb-sm"}`}
                 value={editReferralCode}
-                onChange={(e) => setEditReferralCode(e.target.value)}
+                onChange={({ target }) => {
+                  let { value } = target;
+                  setEditReferralCode(value);
+                  setError(getErrorMessage(value));
+                }}
               />
+              {error && <p className="error">{error}</p>}
               <button type="submit" className="App-cta Exchange-swap-button" disabled={isUpdateSubmitting}>
                 {isUpdateSubmitting ? "Updating..." : "Update Referral Code"}
               </button>
@@ -473,9 +555,11 @@ function InfoCard({ label, data }) {
   );
 }
 
-function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet }) {
+function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet, setPendingTxns, pendingTxns }) {
   let [referralCode, setReferralCode] = useState("");
   let [isSubmitting, setIsSubmitting] = useState(false);
+  let [isJoined, setIsJoined] = useState(false);
+  let [error, setError] = useState("");
   function handleSetTraderReferralCode(event, code) {
     event.preventDefault();
     setIsSubmitting(true);
@@ -484,13 +568,22 @@ function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet }
       library,
       successMsg: `Referral code added!`,
       failMsg: "Adding referral code failed.",
-    }).finally(() => {
-      setIsSubmitting(false);
-    });
+      setPendingTxns,
+      pendingTxns,
+    })
+      .then(() => {
+        // mutateUserReferralCode
+        setIsJoined(true);
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   }
+  //
+  if (isJoined) return <Loader />;
   return (
     <div className="referral-card section-center mt-large">
-      <h2 className="title">Enter Affiliate code</h2>
+      <h2 className="title">Enter Affiliate Code</h2>
       <p className="sub-title">Please input an affiliate code to start earning rebates.</p>
       <div className="card-action">
         {isWalletConnected ? (
@@ -499,17 +592,29 @@ function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet }
               type="text"
               value={referralCode}
               disabled={isSubmitting}
+              className={`text-input ${!error && "mb-sm"}`}
               placeholder="Enter a code"
-              onChange={(e) => {
-                setReferralCode(e.target.value);
+              onChange={({ target }) => {
+                let { value } = target;
+                setReferralCode(value);
+                setError(getErrorMessage(value));
               }}
             />
-            <button className="default-btn" type="submit" disabled={isSubmitting}>
+            {error && (
+              <p className="error" style={{ textAlign: "left" }}>
+                {error}
+              </p>
+            )}
+            <button
+              className="App-cta Exchange-swap-button"
+              type="submit"
+              disabled={!referralCode.trim() || isSubmitting}
+            >
               {isSubmitting ? "Submitting.." : "Submit"}
             </button>
           </form>
         ) : (
-          <button className="default-btn" type="submit" onClick={connectWallet}>
+          <button className="App-cta Exchange-swap-button" type="submit" onClick={connectWallet}>
             Connect Wallet
           </button>
         )}
