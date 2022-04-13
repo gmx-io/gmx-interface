@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 
-import { BrowserRouter as Router, Switch, Route, NavLink } from "react-router-dom";
+import { Switch, Route, NavLink } from "react-router-dom";
 
 import {
   ARBITRUM,
@@ -36,6 +36,8 @@ import {
   clearWalletLinkData,
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
+  REFERRAL_CODE_KEY,
+  REFERRAL_CODE_QUERY_PARAMS,
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
@@ -90,6 +92,8 @@ import useEventToast from "./components/EventToast/useEventToast";
 import { Link } from "react-router-dom";
 import EventToastContainer from "./components/EventToast/EventToastContainer";
 import SEO from "./components/Common/SEO";
+import useRouteQuery from "./hooks/useRouteQuery";
+import { utils } from "ethers";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -318,6 +322,15 @@ function FullApp() {
   const triedEager = useEagerConnect(setActivatingConnector);
   useInactiveListener(!triedEager || !!activatingConnector);
 
+  let query = useRouteQuery();
+
+  useEffect(() => {
+    let referralCode = query.get(REFERRAL_CODE_QUERY_PARAMS);
+    if (referralCode) {
+      localStorage.setItem(REFERRAL_CODE_KEY, utils.formatBytes32String(referralCode));
+    }
+  }, [query]);
+
   useEffect(() => {
     if (window.ethereum) {
       // hack
@@ -525,7 +538,7 @@ function FullApp() {
   }, [library, pendingTxns, chainId]);
 
   return (
-    <Router>
+    <>
       <div className="App">
         {/* <div className="App-background-side-1"></div>
         <div className="App-background-side-2"></div>
@@ -782,7 +795,7 @@ function FullApp() {
           Save
         </button>
       </Modal>
-    </Router>
+    </>
   );
 }
 
@@ -798,7 +811,7 @@ function PreviewApp() {
   };
 
   return (
-    <Router>
+    <>
       <div className="App">
         <div className="App-background-side-1"></div>
         <div className="App-background-side-2"></div>
@@ -879,7 +892,7 @@ function PreviewApp() {
           </Switch>
         </div>
       </div>
-    </Router>
+    </>
   );
 }
 

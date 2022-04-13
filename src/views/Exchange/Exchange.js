@@ -55,7 +55,6 @@ import Tab from "../../components/Tab/Tab";
 import Footer from "../../Footer";
 
 import "./Exchange.css";
-
 const { AddressZero } = ethers.constants;
 
 const arbWsProvider = new ethers.providers.WebSocketProvider(
