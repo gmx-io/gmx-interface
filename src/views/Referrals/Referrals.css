@@ -37,11 +37,7 @@
 .referral-card .card-action {
   margin-top: 3rem;
 }
-/* .referral-card .card-action form {
-  display: grid;
-  grid-template-columns: 3fr 1fr;
-  grid-gap: 1rem;
-} */
+
 .referral-card .card-action input {
   border: 1px solid rgba(255, 255, 255, 0.2);
   font-size: 1rem;
