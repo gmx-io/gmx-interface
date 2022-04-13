@@ -23,7 +23,7 @@ import {
 import { decodeReferralCode, useReferralsData } from "../../Api/referrals";
 
 import "./Referrals.css";
-import { registerReferralCode, setTraderReferralCodeByUser, useInfoTokens } from "../../Api";
+import { registerReferralCode, setTraderReferralCodeByUser, useInfoTokens, useUserReferralCode } from "../../Api";
 import { utils } from "ethers";
 import { BiCopy, BiEditAlt } from "react-icons/bi";
 import Tooltip from "../../components/Tooltip/Tooltip";
@@ -48,8 +48,8 @@ const getSampleReferrarStat = (code) => {
 };
 
 const TRADERS = "Traders";
-const AFFiLIATES = "Affiliates";
-let TAB_OPTIONS = [TRADERS, AFFiLIATES];
+const AFFILIATES = "Affiliates";
+let TAB_OPTIONS = [TRADERS, AFFILIATES];
 
 function getDollarValue(value) {
   return `$${formatAmount(value, USD_DECIMALS, 2, true, "0.00")}`;
@@ -70,25 +70,12 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { infoTokens } = useInfoTokens(library, chainId, active, undefined, undefined);
   let [activeTab, setActiveTab] = useState(TRADERS);
   const referralsData = useReferralsData(chainId, account);
-  const ReferralToken = getContract(chainId, "Referral");
-
   const [referralsDataState, setReferralsDataState] = useState(referralsData);
+  const { userReferralCode } = useUserReferralCode(library, chainId, account);
+
   useEffect(() => {
     setReferralsDataState(referralsData);
   }, [referralsData]);
-
-  const { data: userReferralCode } = useSWR(
-    account && [
-      `ReferralStorage:traderReferralCodes:${active}`,
-      chainId,
-      ReferralToken,
-      "traderReferralCodes",
-      account,
-    ],
-    {
-      fetcher: fetcher(library, ReferralContract),
-    }
-  );
 
   let isZero = (v) => !v || v === utils.formatBytes32String(0);
 
@@ -100,7 +87,6 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   function handleCreateReferralCode(event, code) {
     event.preventDefault();
     let referralCodeHex = utils.formatBytes32String(code);
-
     return registerReferralCode(chainId, referralCodeHex, {
       library,
       successMsg: `Referral code created!`,
@@ -110,76 +96,62 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     });
   }
 
-  function renderBody() {
-    if (activeTab === AFFiLIATES) {
-      if (!account) {
-        return (
-          <CreateReferrarCode
-            isWalletConnected={!!account}
-            handleCreateReferralCode={handleCreateReferralCode}
-            library={library}
-            chainId={chainId}
-            connectWallet={connectWallet}
-            setPendingTxns={setPendingTxns}
-            pendingTxns={pendingTxns}
-          />
-        );
-      }
-      if (!referralsDataState) return <Loader />;
-      if (referralsDataState?.codes?.length > 0) {
-        return (
-          <ReferrersStats
-            infoTokens={infoTokens}
-            handleCreateReferralCode={handleCreateReferralCode}
-            referralsDataState={referralsDataState}
-            chainId={chainId}
-            library={library}
-            setPendingTxns={setPendingTxns}
-            pendingTxns={pendingTxns}
-          />
-        );
-      } else {
-        return (
-          <CreateReferrarCode
-            isWalletConnected={!!account}
-            handleCreateReferralCode={handleCreateReferralCode}
-            library={library}
-            chainId={chainId}
-            setPendingTxns={setPendingTxns}
-            pendingTxns={pendingTxns}
-            referralsDataState={referralsDataState}
-            setReferralsDataState={setReferralsDataState}
-          />
-        );
-      }
-    }
-    if (activeTab === TRADERS) {
-      if (!referralsDataState) return <Loader />;
-      if (!referralCodeInString) {
-        return (
-          <JoinReferrarCode
-            connectWallet={connectWallet}
-            isWalletConnected={!!account}
-            library={library}
-            chainId={chainId}
-            setPendingTxns={setPendingTxns}
-            pendingTxns={pendingTxns}
-          />
-        );
-      }
-
+  function AffiliatesTab() {
+    if (!referralsDataState) return <Loader />;
+    if (referralsDataState.codes?.length > 0) {
       return (
-        <Rebates
-          referralCodeInString={referralCodeInString}
+        <ReferrersStats
           infoTokens={infoTokens}
+          handleCreateReferralCode={handleCreateReferralCode}
+          referralsDataState={referralsDataState}
           chainId={chainId}
           library={library}
+          setPendingTxns={setPendingTxns}
+          pendingTxns={pendingTxns}
+        />
+      );
+    } else {
+      return (
+        <CreateReferrarCode
+          isWalletConnected={active}
+          handleCreateReferralCode={handleCreateReferralCode}
+          library={library}
+          chainId={chainId}
+          setPendingTxns={setPendingTxns}
+          pendingTxns={pendingTxns}
           referralsDataState={referralsDataState}
+          setReferralsDataState={setReferralsDataState}
+        />
+      );
+    }
+  }
+
+  function TradersTab() {
+    if (!referralsDataState) return <Loader />;
+    if (!referralCodeInString) {
+      return (
+        <JoinReferrarCode
+          connectWallet={connectWallet}
+          isWalletConnected={active}
+          library={library}
+          chainId={chainId}
           setPendingTxns={setPendingTxns}
           pendingTxns={pendingTxns}
         />
       );
     }
+
+    return (
+      <Rebates
+        referralCodeInString={referralCodeInString}
+        infoTokens={infoTokens}
+        chainId={chainId}
+        library={library}
+        referralsDataState={referralsDataState}
+        setPendingTxns={setPendingTxns}
+        pendingTxns={pendingTxns}
+      />
+    );
   }
 
   return (
@@ -188,20 +160,14 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
         <div className="referral-tab-container">
           <Tab options={TAB_OPTIONS} option={activeTab} setOption={setActiveTab} onChange={setActiveTab} />
         </div>
-        {renderBody()}
+        {activeTab === AFFILIATES ? <AffiliatesTab active={active} /> : <TradersTab active={active} />}
       </div>
       <Footer />
     </SEO>
   );
 }
 
-function CreateReferrarCode({
-  handleCreateReferralCode,
-  isWalletConnected,
-  connectWallet,
-  setReferralsDataState,
-  referralsDataState,
-}) {
+function CreateReferrarCode({ handleCreateReferralCode, isWalletConnected, connectWallet, setReferralsDataState }) {
   let [referralCode, setReferralCode] = useState("");
   let [isProcessing, setIsProcessing] = useState(false);
   let [error, setError] = useState("");
@@ -268,15 +234,16 @@ function CreateReferrarCode({
 function ReferrersStats({ referralsDataState, infoTokens, chainId, library, setPendingTxns, pendingTxns }) {
   let [referralCode, setReferralCode] = useState("");
   let [isAdding, setIsAdding] = useState(false);
-  let [isAddReferralCodeOpen, setIsAddReferralCodeOpen] = useState(false);
+  let [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   let [error, setError] = useState("");
+
   const [, copyToClipboard] = useCopyToClipboard();
-  let open = () => setIsAddReferralCodeOpen(true);
+  let open = () => setIsAddReferralCodeModalOpen(true);
   let close = () => {
     setReferralCode("");
     setIsAdding(false);
     setError(false);
-    setIsAddReferralCodeOpen(false);
+    setIsAddReferralCodeModalOpen(false);
   };
 
   function handleCreateReferralCode(event) {
@@ -358,8 +325,8 @@ function ReferrersStats({ referralsDataState, infoTokens, chainId, library, setP
           </table>
           <Modal
             className="Connect-wallet-modal"
-            isVisible={isAddReferralCodeOpen}
-            setIsVisible={setIsAddReferralCodeOpen}
+            isVisible={isAddReferralCodeModalOpen}
+            setIsVisible={setIsAddReferralCodeModalOpen}
             label="Create New Referral Code"
           >
             <div className="edit-referral-modal">
@@ -441,8 +408,12 @@ function Rebates({
   let [editReferralCode, setEditReferralCode] = useState("");
   let [isUpdateSubmitting, setIsUpdateSubmitting] = useState(false);
   let [error, setError] = useState("");
+
   let open = () => setIsEditModalOpen(true);
-  let close = () => setIsEditModalOpen(false);
+  let close = () => {
+    setEditReferralCode("");
+    setIsEditModalOpen(false);
+  };
 
   function handleUpdateReferralCode(event) {
     event.preventDefault();
@@ -544,18 +515,6 @@ function Rebates({
   );
 }
 
-function InfoCard({ label, data }) {
-  return (
-    <div className="info-card">
-      <h3 className="label">
-        {label}{" "}
-        <Tooltip handle={<RiQuestionLine />} position="left-bottom" renderContent={() => "This is sample copy!"} />
-      </h3>
-      <div className="data">{data}</div>
-    </div>
-  );
-}
-
 function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet, setPendingTxns, pendingTxns }) {
   let [referralCode, setReferralCode] = useState("");
   let [isSubmitting, setIsSubmitting] = useState(false);
@@ -573,7 +532,6 @@ function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet, 
       pendingTxns,
     })
       .then(() => {
-        // mutateUserReferralCode
         setIsJoined(true);
       })
       .finally(() => {
@@ -620,6 +578,18 @@ function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet, 
           </button>
         )}
       </div>
+    </div>
+  );
+}
+
+function InfoCard({ label, data }) {
+  return (
+    <div className="info-card">
+      <h3 className="label">
+        {label}{" "}
+        <Tooltip handle={<RiQuestionLine />} position="left-bottom" renderContent={() => "This is sample copy!"} />
+      </h3>
+      <div className="data">{data}</div>
     </div>
   );
 }
