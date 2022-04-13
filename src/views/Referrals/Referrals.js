@@ -15,7 +15,6 @@ import {
   getTokenInfo,
   getExplorerUrl,
   shortenAddress,
-  fetcher,
   ARBITRUM,
   bigNumberify,
   REFERRAL_CODE_QUERY_PARAMS,
@@ -30,9 +29,6 @@ import Tooltip from "../../components/Tooltip/Tooltip";
 import { useCopyToClipboard } from "react-use";
 import Loader from "../../components/Common/Loader";
 import Modal from "../../components/Modal/Modal";
-import useSWR from "swr";
-import { getContract } from "../../Addresses";
-import ReferralContract from "../../abis/ReferralStorage.json";
 import { RiQuestionLine } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
 
