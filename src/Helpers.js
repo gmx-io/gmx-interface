@@ -2571,3 +2571,7 @@ export function getPageTitle(data) {
   return `${data} | Decentralized
   Perpetual Exchange | GMX`;
 }
+
+export function isHashZero(value) {
+  return value === ethers.constants.HashZero;
+}

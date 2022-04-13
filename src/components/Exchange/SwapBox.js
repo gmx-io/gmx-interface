@@ -59,6 +59,7 @@ import {
   adjustForDecimals,
   REFERRAL_CODE_KEY,
   ARBITRUM,
+  isHashZero,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import * as Api from "../../Api";
@@ -1369,11 +1370,8 @@ export default function SwapBox(props) {
   };
 
   let referralCode = ethers.constants.HashZero;
-  if (userReferralCode === ethers.constants.HashZero && userReferralCodeInLocalStorage) {
+  if (isHashZero(userReferralCode) && userReferralCodeInLocalStorage) {
     referralCode = userReferralCodeInLocalStorage;
-  }
-  if (userReferralCode && userReferralCode !== ethers.constants.HashZero) {
-    referralCode = userReferralCode;
   }
 
   const increasePosition = async () => {
