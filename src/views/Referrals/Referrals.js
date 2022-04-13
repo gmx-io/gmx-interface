@@ -18,6 +18,7 @@ import {
   ARBITRUM,
   bigNumberify,
   REFERRAL_CODE_QUERY_PARAMS,
+  isHashZero,
 } from "../../Helpers";
 import { decodeReferralCode, useReferralsData } from "../../Api/referrals";
 
@@ -73,10 +74,8 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     setReferralsDataState(referralsData);
   }, [referralsData]);
 
-  let isZero = (v) => !v || v === utils.formatBytes32String(0);
-
   let referralCodeInString;
-  if (!isZero(userReferralCode)) {
+  if (userReferralCode && !isHashZero(userReferralCode)) {
     referralCodeInString = decodeReferralCode(userReferralCode);
   }
 
@@ -92,7 +91,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     });
   }
 
-  function AffiliatesTab() {
+  function renderAffiliatesTab() {
     if (!referralsDataState) return <Loader />;
     if (referralsDataState.codes?.length > 0) {
       return (
@@ -122,7 +121,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     }
   }
 
-  function TradersTab() {
+  function renderTradersTab() {
     if (!referralsDataState) return <Loader />;
     if (!referralCodeInString) {
       return (
@@ -156,7 +155,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
         <div className="referral-tab-container">
           <Tab options={TAB_OPTIONS} option={activeTab} setOption={setActiveTab} onChange={setActiveTab} />
         </div>
-        {activeTab === AFFILIATES ? <AffiliatesTab active={active} /> : <TradersTab active={active} />}
+        {activeTab === AFFILIATES ? renderAffiliatesTab() : renderTradersTab()}
       </div>
       <Footer />
     </SEO>
@@ -410,7 +409,6 @@ function Rebates({
     setEditReferralCode("");
     setIsEditModalOpen(false);
   };
-
   function handleUpdateReferralCode(event) {
     event.preventDefault();
     setIsUpdateSubmitting(true);
