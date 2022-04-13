@@ -1482,23 +1482,37 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       return (
                         <>
                           <div className="Tooltip-row">
-                            <span className="label">
-                              {nativeTokenSymbol} ({wrappedTokenSymbol}) Base APR
-                            </span>
-                            <span>{formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%</span>
-                          </div>
-                          {processedData.bnGmxInFeeGmx && processedData.bnGmxInFeeGmx.gt(0) &&
-                            <div className="Tooltip-row">
-                              <span className="label">
-                                {nativeTokenSymbol} ({wrappedTokenSymbol}) Boosted APR
-                              </span>
-                              <span>{formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%</span>
-                            </div>
-                          }
-                          <div className="Tooltip-row">
                             <span className="label">Escrowed GMX APR</span>
                             <span>{formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%</span>
                           </div>
+                          {(!processedData.gmxBoostAprForNativeToken ||
+                            processedData.gmxBoostAprForNativeToken.eq(0)) && (
+                            <div className="Tooltip-row">
+                              <span className="label">{nativeTokenSymbol} APR</span>
+                              <span>{formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%</span>
+                            </div>
+                          )}
+                          {processedData.gmxBoostAprForNativeToken && processedData.gmxBoostAprForNativeToken.gt(0) && (
+                            <div>
+                              <br />
+                              <div className="Tooltip-row">
+                                <span className="label">{nativeTokenSymbol} Base APR</span>
+                                <span>{formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%</span>
+                              </div>
+                              <div className="Tooltip-row">
+                                <span className="label">{nativeTokenSymbol} Boosted APR</span>
+                                <span>{formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%</span>
+                              </div>
+                              <div className="Tooltip-row">
+                                <span className="label">{nativeTokenSymbol} Total APR</span>
+                                <span>
+                                  {formatKeyAmount(processedData, "gmxAprForNativeTokenWithBoost", 2, 2, true)}%
+                                </span>
+                              </div>
+                              <br />
+                              <div className="muted">The Boosted APR is from your staked Multiplier Points.</div>
+                            </div>
+                          )}
                         </>
                       );
                     }}
@@ -1549,9 +1563,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return (
                         <>
-                          You are earning {formatAmount(processedData.boostBasisPoints, 2, 2, false)}% more {nativeTokenSymbol}{" "}
-                          rewards using {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)} Staked Multiplier
-                          Points.
+                          You are earning {formatAmount(processedData.boostBasisPoints, 2, 2, false)}% more{" "}
+                          {nativeTokenSymbol} rewards using {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)}{" "}
+                          Staked Multiplier Points.
                           <br />
                           <br />
                           Use the "Compound" button to stake your Multiplier Points.
@@ -1849,14 +1863,14 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                               </span>
                               <span>{formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%</span>
                             </div>
-                            {processedData.bnGmxInFeeGmx && processedData.bnGmxInFeeGmx.gt(0) &&
+                            {processedData.bnGmxInFeeGmx && processedData.bnGmxInFeeGmx.gt(0) && (
                               <div className="Tooltip-row">
                                 <span className="label">
                                   {nativeTokenSymbol} ({wrappedTokenSymbol}) Boosted APR
                                 </span>
                                 <span>{formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%</span>
                               </div>
-                            }
+                            )}
                             <div className="Tooltip-row">
                               <span className="label">Escrowed GMX APR</span>
                               <span>{formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%</span>

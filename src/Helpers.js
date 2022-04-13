@@ -2470,12 +2470,7 @@ export function getProcessedData(
   data.feeGmxTrackerRewardsUsd = stakingData.feeGmxTracker.claimable.mul(nativeTokenPrice).div(expandDecimals(1, 18));
 
   data.boostBasisPoints = bigNumberify(0);
-  if (
-    data &&
-    data.bnGmxInFeeGmx &&
-    data.bonusGmxInFeeGmx &&
-    data.bonusGmxInFeeGmx.gt(0)
-  ) {
+  if (data && data.bnGmxInFeeGmx && data.bonusGmxInFeeGmx && data.bonusGmxInFeeGmx.gt(0)) {
     data.boostBasisPoints = data.bnGmxInFeeGmx.mul(BASIS_POINTS_DIVISOR).div(data.bonusGmxInFeeGmx);
   }
 
@@ -2495,11 +2490,10 @@ export function getProcessedData(
     data.feeGmxSupplyUsd && data.feeGmxSupplyUsd.gt(0)
       ? data.feeGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.feeGmxSupplyUsd)
       : bigNumberify(0);
-  data.gmxBoostAprForNativeToken = data.gmxAprForNativeToken
-    .mul(data.boostBasisPoints)
-    .div(BASIS_POINTS_DIVISOR)
+  data.gmxBoostAprForNativeToken = data.gmxAprForNativeToken.mul(data.boostBasisPoints).div(BASIS_POINTS_DIVISOR);
   data.gmxAprTotal = data.gmxAprForNativeToken.add(data.gmxAprForEsGmx);
   data.gmxAprTotalWithBoost = data.gmxAprForNativeToken.add(data.gmxBoostAprForNativeToken).add(data.gmxAprForEsGmx);
+  data.gmxAprForNativeTokenWithBoost = data.gmxAprForNativeToken.add(data.gmxBoostAprForNativeToken);
 
   data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(data.feeGmxTrackerRewardsUsd);
 
