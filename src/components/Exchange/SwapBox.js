@@ -57,6 +57,8 @@ import {
   calculatePositionDelta,
   replaceNativeTokenAddress,
   adjustForDecimals,
+  REFERRAL_CODE_KEY,
+  ARBITRUM,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import * as Api from "../../Api";
@@ -170,6 +172,9 @@ export default function SwapBox(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
+  // SWITCH TO chainID once the referrals is live on avalanche
+  const { userReferralCode } = Api.useUserReferralCode(library, ARBITRUM, account);
+  const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -1363,7 +1368,13 @@ export default function SwapBox(props) {
       });
   };
 
-  const referralCode = ethers.constants.HashZero;
+  let referralCode = ethers.constants.HashZero;
+  if (userReferralCode === ethers.constants.HashZero && userReferralCodeInLocalStorage) {
+    referralCode = userReferralCodeInLocalStorage;
+  }
+  if (userReferralCode && userReferralCode !== ethers.constants.HashZero) {
+    referralCode = userReferralCode;
+  }
 
   const increasePosition = async () => {
     setIsSubmitting(true);

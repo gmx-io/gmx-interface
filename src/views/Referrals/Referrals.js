@@ -18,6 +18,7 @@ import {
   fetcher,
   ARBITRUM,
   bigNumberify,
+  REFERRAL_CODE_QUERY_PARAMS,
 } from "../../Helpers";
 import { decodeReferralCode, useReferralsData } from "../../Api/referrals";
 
@@ -337,7 +338,7 @@ function ReferrersStats({ referralsDataState, infoTokens, chainId, library, setP
                       <div className="table-referral-code">
                         <div
                           onClick={() => {
-                            copyToClipboard(`https://gmx.io/trade?refferalCode=${stat.referralCode}`);
+                            copyToClipboard(`https://gmx.io/trade?${REFERRAL_CODE_QUERY_PARAMS}=${stat.referralCode}`);
                             helperToast.success("Referral link copied to your clipboard");
                           }}
                           className="referral-code"
@@ -583,8 +584,8 @@ function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet, 
   if (isJoined) return <Loader />;
   return (
     <div className="referral-card section-center mt-large">
-      <h2 className="title">Enter Affiliate Code</h2>
-      <p className="sub-title">Please input an affiliate code to start earning rebates.</p>
+      <h2 className="title">Enter Referral Code</h2>
+      <p className="sub-title">Please input a referral code to start earning rebates.</p>
       <div className="card-action">
         {isWalletConnected ? (
           <form onSubmit={(e) => handleSetTraderReferralCode(e, referralCode)}>

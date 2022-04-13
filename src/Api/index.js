@@ -555,6 +555,20 @@ export function useTotalGmxInLiquidity() {
   };
 }
 
+export function useUserReferralCode(library, chainId, account) {
+  const ReferralToken = getContract(chainId, "Referral");
+  const { data: userReferralCode, mutate: mutateUserReferralCode } = useSWR(
+    account && [`ReferralStorage:traderReferralCodes`, chainId, ReferralToken, "traderReferralCodes", account],
+    {
+      fetcher: fetcher(library, ReferralStorage),
+    }
+  );
+  return {
+    userReferralCode,
+    mutateUserReferralCode,
+  };
+}
+
 function useGmxPriceFromAvalanche() {
   const poolAddress = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
 
