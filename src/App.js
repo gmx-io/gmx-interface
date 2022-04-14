@@ -557,14 +557,22 @@ function FullApp() {
     const wsVault = new ethers.Contract(vaultAddress, wsVaultAbi, wsProvider);
     const wsPositionRouter = new ethers.Contract(positionRouterAddress, PositionRouter.abi, wsProvider);
 
+    const callExchangeRef = (method, ...args) => {
+      if (!exchangeRef || !exchangeRef.current) {
+        return;
+      }
+
+      exchangeRef.current[method](...args);
+    };
+
     // handle the subscriptions here instead of within the Exchange component to avoid unsubscribing and re-subscribing
     // each time the Exchange components re-renders, which happens on every data update
-    const onUpdatePosition = (...args) => exchangeRef.current.onUpdatePosition(...args);
-    const onClosePosition = (...args) => exchangeRef.current.onClosePosition(...args);
-    const onIncreasePosition = (...args) => exchangeRef.current.onIncreasePosition(...args);
-    const onDecreasePosition = (...args) => exchangeRef.current.onDecreasePosition(...args);
-    const onCancelIncreasePosition = (...args) => exchangeRef.current.onCancelIncreasePosition(...args);
-    const onCancelDecreasePosition = (...args) => exchangeRef.current.onCancelDecreasePosition(...args);
+    const onUpdatePosition = (...args) => callExchangeRef("onUpdatePosition", ...args);
+    const onClosePosition = (...args) => callExchangeRef("onClosePosition", ...args);
+    const onIncreasePosition = (...args) => callExchangeRef("onIncreasePosition", ...args);
+    const onDecreasePosition = (...args) => callExchangeRef("onDecreasePosition", ...args);
+    const onCancelIncreasePosition = (...args) => callExchangeRef("onCancelIncreasePosition", ...args);
+    const onCancelDecreasePosition = (...args) => callExchangeRef("onCancelDecreasePosition", ...args);
 
     wsVault.on("UpdatePosition", onUpdatePosition);
     wsVault.on("ClosePosition", onClosePosition);
