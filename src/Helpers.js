@@ -1506,7 +1506,7 @@ export function getProvider(library, chainId) {
     return library.getSigner();
   }
   provider = _.sample(RPC_PROVIDERS[chainId]);
-  return new ethers.providers.JsonRpcProvider(provider);
+  return new ethers.providers.JsonRpcProvider(provider, chainId);
 }
 
 export const fetcher =
