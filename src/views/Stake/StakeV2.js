@@ -1107,16 +1107,6 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
   const bonusGmxInFeeGmx = processedData ? processedData.bonusGmxInFeeGmx : undefined;
 
-  let boostBasisPoints = bigNumberify(0);
-  if (
-    processedData &&
-    processedData.bnGmxInFeeGmx &&
-    processedData.bonusGmxInFeeGmx &&
-    processedData.bonusGmxInFeeGmx.gt(0)
-  ) {
-    boostBasisPoints = processedData.bnGmxInFeeGmx.mul(BASIS_POINTS_DIVISOR).div(processedData.bonusGmxInFeeGmx);
-  }
-
   let stakedGmxSupplyUsd;
   if (!totalGmxStaked.isZero() && gmxPrice) {
     stakedGmxSupplyUsd = totalGmxStaked.mul(gmxPrice).div(expandDecimals(1, 18));
@@ -1490,21 +1480,43 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div className="label">APR</div>
                 <div>
                   <Tooltip
-                    handle={`${formatKeyAmount(processedData, "gmxAprTotal", 2, 2, true)}%`}
+                    handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
                     position="right-bottom"
                     renderContent={() => {
                       return (
                         <>
                           <div className="Tooltip-row">
-                            <span className="label">
-                              {nativeTokenSymbol} ({wrappedTokenSymbol}) APR
-                            </span>
-                            <span>{formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%</span>
-                          </div>
-                          <div className="Tooltip-row">
                             <span className="label">Escrowed GMX APR</span>
                             <span>{formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%</span>
                           </div>
+                          {(!processedData.gmxBoostAprForNativeToken ||
+                            processedData.gmxBoostAprForNativeToken.eq(0)) && (
+                            <div className="Tooltip-row">
+                              <span className="label">{nativeTokenSymbol} APR</span>
+                              <span>{formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%</span>
+                            </div>
+                          )}
+                          {processedData.gmxBoostAprForNativeToken && processedData.gmxBoostAprForNativeToken.gt(0) && (
+                            <div>
+                              <br />
+                              <div className="Tooltip-row">
+                                <span className="label">{nativeTokenSymbol} Base APR</span>
+                                <span>{formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%</span>
+                              </div>
+                              <div className="Tooltip-row">
+                                <span className="label">{nativeTokenSymbol} Boosted APR</span>
+                                <span>{formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%</span>
+                              </div>
+                              <div className="Tooltip-row">
+                                <span className="label">{nativeTokenSymbol} Total APR</span>
+                                <span>
+                                  {formatKeyAmount(processedData, "gmxAprForNativeTokenWithBoost", 2, 2, true)}%
+                                </span>
+                              </div>
+                              <br />
+                              <div className="muted">The Boosted APR is from your staked Multiplier Points.</div>
+                            </div>
+                          )}
                         </>
                       );
                     }}
@@ -1550,14 +1562,14 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div className="label">Boost Percentage</div>
                 <div>
                   <Tooltip
-                    handle={`${formatAmount(boostBasisPoints, 2, 2, false)}%`}
+                    handle={`${formatAmount(processedData.boostBasisPoints, 2, 2, false)}%`}
                     position="right-bottom"
                     renderContent={() => {
                       return (
                         <>
-                          You are earning {formatAmount(boostBasisPoints, 2, 2, false)}% more {nativeTokenSymbol}{" "}
-                          rewards using {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)} Staked Multiplier
-                          Points.
+                          You are earning {formatAmount(processedData.boostBasisPoints, 2, 2, false)}% more{" "}
+                          {nativeTokenSymbol} rewards using {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)}{" "}
+                          Staked Multiplier Points.
                           <br />
                           <br />
                           Use the "Compound" button to stake your Multiplier Points.
@@ -1844,17 +1856,25 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 <div>
                   <div>
                     <Tooltip
-                      handle={`${formatKeyAmount(processedData, "gmxAprTotal", 2, 2, true)}%`}
+                      handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
                       position="right-bottom"
                       renderContent={() => {
                         return (
                           <>
                             <div className="Tooltip-row">
                               <span className="label">
-                                {nativeTokenSymbol} ({wrappedTokenSymbol}) APR
+                                {nativeTokenSymbol} ({wrappedTokenSymbol}) Base APR
                               </span>
                               <span>{formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%</span>
                             </div>
+                            {processedData.bnGmxInFeeGmx && processedData.bnGmxInFeeGmx.gt(0) && (
+                              <div className="Tooltip-row">
+                                <span className="label">
+                                  {nativeTokenSymbol} ({wrappedTokenSymbol}) Boosted APR
+                                </span>
+                                <span>{formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%</span>
+                              </div>
+                            )}
                             <div className="Tooltip-row">
                               <span className="label">Escrowed GMX APR</span>
                               <span>{formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%</span>
