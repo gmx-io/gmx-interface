@@ -1,18 +1,18 @@
 .SellGlp-content {
   display: grid;
-  grid-template-columns: 1fr 28rem;
-  grid-gap: 1rem;
-  margin-top: 0.5rem;
-  padding: 2rem;
-  padding-top: 1rem;
+  grid-template-columns: 1fr 43.4rem;
+  grid-gap: 1.55rem;
+  margin-top: 0.8rem;
+  padding: 3.1rem;
+  padding-top: 1.55rem;
 }
 
 .SellGlp-box {
-  padding: 1rem;
+  padding: 1.55rem;
 }
 
 .SellGlp-cta {
-  margin-top: 0.5rem;
+  margin-top: 0.8rem;
 }
 
 
