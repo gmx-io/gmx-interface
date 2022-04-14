@@ -8,7 +8,7 @@ body,
   color: white;
   font-family: "Relative";
   letter-spacing: 0.5px;
-  font-size: 15.5px;
+  font-size: 10px;
   background-color: #101124;
 }
 
@@ -241,8 +241,8 @@ a.plain {
 
 .default-container {
   max-width: 1264px;
-  padding-left: 32px;
-  padding-right: 32px;
+  padding-left: 3.2rem;
+  padding-right: 3.2rem;
   margin: 0 auto;
 }
 
@@ -348,6 +348,10 @@ button.btn-link:hover .logout-icon {
   padding-top: 4rem;
 }
 
+.default-sm-container {
+  max-width: 108.8rem;
+}
+
 .mt-0 {
   margin-top: 0 !important;
 }
@@ -357,6 +361,7 @@ button.btn-link:hover .logout-icon {
   display: flex;
   flex-direction: column;
   padding-bottom: calc(3rem + 168px);
+  padding-top: 4.6rem;
 }
 
 .d-flex {
