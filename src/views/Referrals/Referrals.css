@@ -94,6 +94,7 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  margin-bottom: 1rem;
 }
 
 .referral-table-header .ml-small {
@@ -190,4 +191,29 @@
   padding: 0.5rem 0 1rem;
   color: #fa3c58;
   font-size: 0.9rem;
+}
+
+.mobile {
+  display: none;
+}
+.table-wrapper {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 800px) {
+  .desktop {
+    display: none;
+  }
+  .mobile {
+    display: block;
+  }
+}
+@media (max-width: 500px) {
+  .referral-table {
+    width: auto;
+    margin-bottom: 1rem;
+  }
 }

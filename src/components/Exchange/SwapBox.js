@@ -58,7 +58,6 @@ import {
   replaceNativeTokenAddress,
   adjustForDecimals,
   REFERRAL_CODE_KEY,
-  ARBITRUM,
   isHashZero,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";

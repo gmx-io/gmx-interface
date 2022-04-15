@@ -76,7 +76,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { chainId } = useChainId();
   const { infoTokens } = useInfoTokens(library, chainId, active);
   const [activeTab, setActiveTab] = useLocalStorage(REFERRAL_CODE_KEY, TRADERS);
-  const referralsData = useReferralsData(chainId, account);
+  const { data: referralsData, loading } = useReferralsData(chainId, account);
   const [referralsDataState, setReferralsDataState] = useState(referralsData);
   const { userReferralCode } = useUserReferralCode(library, chainId, account);
 
@@ -101,8 +101,8 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   }
 
   function renderAffiliatesTab() {
-    if (!referralsDataState) return <Loader />;
-    if (referralsDataState.codes?.length > 0) {
+    if (loading) return <Loader />;
+    if (referralsData.codes?.length > 0) {
       return (
         <ReferrersStats
           infoTokens={infoTokens}
@@ -299,7 +299,37 @@ function ReferrersStats({ referralsDataState, handleCreateReferralCode, infoToke
         />
       </div>
       <div className="list">
+        <Modal
+          className="Connect-wallet-modal"
+          isVisible={isAddReferralCodeModalOpen}
+          setIsVisible={close}
+          label="Create New Referral Code"
+          onAfterOpen={() => addNewModalRef.current?.focus()}
+        >
+          <div className="edit-referral-modal">
+            <form onSubmit={handleSubmit}>
+              <input
+                disabled={isAdding}
+                ref={addNewModalRef}
+                type="text"
+                placeholder="Enter new referral code"
+                className={`text-input ${!error && "mb-sm"}`}
+                value={referralCode}
+                onChange={(e) => {
+                  const { value } = e.target;
+                  setReferralCode(value);
+                  setError(getErrorMessage(value));
+                }}
+              />
+              {error && <p className="error">{error}</p>}
+              <button type="submit" className="App-cta Exchange-swap-button" disabled={error || isAdding}>
+                {isAdding ? "Adding..." : "Add New Referral Code"}
+              </button>
+            </form>
+          </div>
+        </Modal>
         <Card
+          className="desktop"
           title={
             <div className="referral-table-header">
               <span>Referral Codes</span>
@@ -344,72 +374,95 @@ function ReferrersStats({ referralsDataState, handleCreateReferralCode, infoToke
               })}
             </tbody>
           </table>
-          <Modal
-            className="Connect-wallet-modal"
-            isVisible={isAddReferralCodeModalOpen}
-            setIsVisible={close}
-            label="Create New Referral Code"
-            onAfterOpen={() => addNewModalRef.current?.focus()}
-          >
-            <div className="edit-referral-modal">
-              <form onSubmit={handleSubmit}>
-                <input
-                  disabled={isAdding}
-                  ref={addNewModalRef}
-                  type="text"
-                  placeholder="Enter new referral code"
-                  className={`text-input ${!error && "mb-sm"}`}
-                  value={referralCode}
-                  onChange={(e) => {
-                    const { value } = e.target;
-                    setReferralCode(value);
-                    setError(getErrorMessage(value));
-                  }}
-                />
-                {error && <p className="error">{error}</p>}
-                <button type="submit" className="App-cta Exchange-swap-button" disabled={error || isAdding}>
-                  {isAdding ? "Adding..." : "Add New Referral Code"}
-                </button>
-              </form>
+        </Card>
+        <Card
+          className="mobile"
+          title={
+            <div className="referral-table-header">
+              <span>Referral Codes</span>
+              <button className="transparent-btn" onClick={open}>
+                <FiPlus /> <span className="ml-small">Add New</span>
+              </button>
             </div>
-          </Modal>
+          }
+        >
+          {referrerTotalStats.map((stat, index) => {
+            return (
+              <div key={index}>
+                <div className="App-card-content">
+                  <div className="App-card-row">
+                    <div className="label">Referral Code</div>
+                    <div className="table-referral-code">
+                      <div
+                        onClick={() => {
+                          copyToClipboard(`https://gmx.io/trade?${REFERRAL_CODE_QUERY_PARAMS}=${stat.referralCode}`);
+                          helperToast.success("Referral link copied to your clipboard");
+                        }}
+                        className="referral-code"
+                      >
+                        <span>{stat.referralCode}</span>
+                        <BiCopy />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Traders Referred</div>
+                    <div>{stat.tradedReferralsCount}</div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Total Volume</div>
+                    <div>{getUSDValue(stat.volume)}</div>
+                  </div>
+                  <div className="App-card-row">
+                    <div className="label">Total Rebate</div>
+                    <div>{getUSDValue(stat.totalRebateUsd)}</div>
+                  </div>
+                </div>
+                {index < referrerTotalStats.length - 1 && <div className="App-card-divider"></div>}
+              </div>
+            );
+          })}
         </Card>
       </div>
       {discountDistributions?.length > 0 && (
         <div className="reward-history">
           <Card title="Rebates Distribution History">
-            <table className="referral-table">
-              <thead>
-                <tr>
-                  <th scope="col">Date</th>
-                  <th scope="col">Amount</th>
-                  <th scope="col">Tx Hash</th>
-                </tr>
-              </thead>
-              <tbody>
-                {discountDistributions.map((rebate, index) => {
-                  const tokenInfo = getTokenInfo(infoTokens, rebate.token);
-                  const explorerURL = getExplorerUrl(chainId);
-                  return (
-                    <tr key={index}>
-                      <td data-label="Date">{formatDate(rebate.timestamp)}</td>
-                      <td data-label="Amount">
-                        {formatAmount(rebate.amount, tokenInfo.decimals, 4, true)} {tokenInfo.symbol}
-                      </td>
-                      <td data-label="Tx Hash">
-                        <a
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          href={explorerURL + `tx/${rebate.transactionHash}`}
-                        >
-                          {shortenAddress(rebate.transactionHash, 20)}
-                        </a>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <div className="table-wrapper">
+              <table className="referral-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Tx Hash</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {discountDistributions
+                    .concat(discountDistributions.concat(discountDistributions))
+                    .map((rebate, index) => {
+                      const tokenInfo = getTokenInfo(infoTokens, rebate.token);
+                      const explorerURL = getExplorerUrl(chainId);
+                      return (
+                        <tr key={index}>
+                          <td data-label="Date">{formatDate(rebate.timestamp)}</td>
+                          <td data-label="Amount">
+                            {formatAmount(rebate.amount, tokenInfo.decimals, 4, true)} {tokenInfo.symbol}
+                          </td>
+                          <td data-label="Tx Hash">
+                            <a
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              href={explorerURL + `tx/${rebate.transactionHash}`}
+                            >
+                              {shortenAddress(rebate.transactionHash, 20)}
+                            </a>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
           </Card>
         </div>
       )}
