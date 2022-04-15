@@ -39,7 +39,9 @@ export function encodeReferralCode(code) {
 
 export function useReferralsData(chainId, account) {
   const [data, setData] = useState();
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
+    setLoading(true);
     const startOfDayTimestamp = Math.floor(parseInt(Date.now() / 1000) / 86400) * 86400;
     const query = gql(
       `{
@@ -182,8 +184,14 @@ export function useReferralsData(chainId, account) {
               },
         });
       })
-      .catch(console.warn);
+      .catch(console.warn)
+      .finally(() => {
+        setLoading(false);
+      });
   }, [setData, chainId, account]);
 
-  return data || null;
+  return {
+    data: data || null,
+    loading,
+  };
 }
