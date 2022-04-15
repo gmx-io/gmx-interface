@@ -8,7 +8,7 @@ import "./Modal.css";
 import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 export default function Modal(props) {
-  const { isVisible, setIsVisible, className, zIndex } = props;
+  const { isVisible, setIsVisible, className, zIndex, onAfterOpen } = props;
   const modalRef = useRef(null);
   useLockBodyScroll(modalRef, isVisible);
   useEffect(() => {
@@ -22,8 +22,8 @@ export default function Modal(props) {
   }, [setIsVisible]);
 
   useEffect(() => {
-    props.onAfterOpen && props.onAfterOpen();
-  }, [props.onAfterOpen]);
+    if (typeof onAfterOpen === "function") onAfterOpen();
+  }, [onAfterOpen]);
 
   const fadeVariants = {
     hidden: { opacity: 0 },
