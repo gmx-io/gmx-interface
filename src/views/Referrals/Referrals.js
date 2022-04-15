@@ -25,7 +25,6 @@ import { decodeReferralCode, encodeReferralCode, useReferralsData } from "../../
 
 import "./Referrals.css";
 import { registerReferralCode, setTraderReferralCodeByUser, useInfoTokens, useUserReferralCode } from "../../Api";
-import { utils } from "ethers";
 import { BiCopy, BiEditAlt } from "react-icons/bi";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import { useCopyToClipboard, useLocalStorage } from "react-use";
@@ -55,13 +54,17 @@ function getUSDValue(value) {
 
 function getErrorMessage(value) {
   const trimmedValue = value.trim();
+  if (!trimmedValue) return "";
+
   const regexForSpace = /\s/;
   if (regexForSpace.test(trimmedValue)) {
     return "The referral code can't contain spaces.";
   }
+
   if (trimmedValue.length > 20) {
     return "The referral code can't be more than 20 characters.";
   }
+
   const regexForValidString = /^\w+$/; // only number, string and underscore is allowed
   if (!regexForValidString.test(trimmedValue)) {
     return "The referral code contains invalid character.";
@@ -246,7 +249,7 @@ function ReferrersStats({ referralsDataState, handleCreateReferralCode, infoToke
   const close = () => {
     setReferralCode("");
     setIsAdding(false);
-    setError(false);
+    setError("");
     setIsAddReferralCodeModalOpen(false);
   };
 
@@ -345,7 +348,7 @@ function ReferrersStats({ referralsDataState, handleCreateReferralCode, infoToke
           <Modal
             className="Connect-wallet-modal"
             isVisible={isAddReferralCodeModalOpen}
-            setIsVisible={setIsAddReferralCodeModalOpen}
+            setIsVisible={close}
             label="Create New Referral Code"
             onAfterOpen={() => addNewModalRef.current?.focus()}
           >
@@ -434,6 +437,8 @@ function Rebates({
   const open = () => setIsEditModalOpen(true);
   const close = () => {
     setEditReferralCode("");
+    setIsUpdateSubmitting(false);
+    setError("");
     setIsEditModalOpen(false);
   };
   function handleUpdateReferralCode(event) {
