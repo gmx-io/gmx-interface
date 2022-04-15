@@ -168,6 +168,7 @@ const CONTRACTS = {
     PositionRouter: "0x195256074192170d1530527abC9943759c7167d8",
 
     TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98",
+    ReferralStorage: "0x827ed045002ecdabeb6e2b0d1604cf5fc3d322f8",
   },
 };
 
