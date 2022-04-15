@@ -2,18 +2,14 @@ import { ethers } from "ethers";
 import { gql } from "@apollo/client";
 import { useState, useEffect } from "react";
 
-import {
-  ARBITRUM,
-  // AVALANCHE,
-  bigNumberify,
-} from "../Helpers";
-import { arbitrumReferralsGraphClient } from "./common";
+import { ARBITRUM, AVALANCHE, bigNumberify } from "../Helpers";
+import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "./common";
 
 function getGraphClient(chainId) {
   if (chainId === ARBITRUM) {
     return arbitrumReferralsGraphClient;
-    // } else if (chainId === AVALANCHE) {
-    //   return avalancheGraphClient;
+  } else if (chainId === AVALANCHE) {
+    return avalancheReferralsGraphClient;
   }
   throw new Error(`Unsupported chain ${chainId}`);
 }
@@ -65,6 +61,8 @@ export function useReferralsData(chainId, account) {
       }
       referrerTotalStats: referrerStats(
         first: 1000
+        orderBy: volume
+        orderDirection: desc
         where: {
           period: total
           referrer: "__ACCOUNT__"

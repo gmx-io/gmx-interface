@@ -15,7 +15,6 @@ import {
   getTokenInfo,
   getExplorerUrl,
   shortenAddress,
-  ARBITRUM,
   bigNumberify,
   REFERRAL_CODE_QUERY_PARAMS,
   isHashZero,
@@ -633,14 +632,4 @@ function InfoCard({ label, data, tooltipText }) {
   );
 }
 
-function ReferralWrapper({ ...props }) {
-  const { chainId } = useChainId();
-  return chainId === ARBITRUM ? (
-    <Referrals {...props} />
-  ) : (
-    <div style={{ width: "100%", height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
-      <h3>Right now we support only Arbitrum Network!</h3>
-    </div>
-  );
-}
-export default ReferralWrapper;
+export default Referrals;
