@@ -325,7 +325,7 @@ function FullApp() {
 
   useEffect(() => {
     let referralCode = query.get(REFERRAL_CODE_QUERY_PARAMS);
-    if (referralCode) {
+    if (referralCode && referralCode.length <= 20) {
       localStorage.setItem(REFERRAL_CODE_KEY, encodeReferralCode(referralCode));
     }
   }, [query]);

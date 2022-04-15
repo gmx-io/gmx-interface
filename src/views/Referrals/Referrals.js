@@ -55,12 +55,16 @@ function getUSDValue(value) {
 
 function getErrorMessage(value) {
   const trimmedValue = value.trim();
-  const invalid = /\s/;
-  if (invalid.test(trimmedValue)) {
+  const regexForSpace = /\s/;
+  if (regexForSpace.test(trimmedValue)) {
     return "The referral code can't contain spaces.";
   }
-  if (trimmedValue.length > 31) {
-    return "The referral code can't be more than 31 characters.";
+  if (trimmedValue.length > 20) {
+    return "The referral code can't be more than 20 characters.";
+  }
+  const regexForValidString = /^\w+$/; // only number, string and underscore is allowed
+  if (!regexForValidString.test(trimmedValue)) {
+    return "The referral code contains invalid character.";
   }
   return "";
 }
@@ -616,13 +620,7 @@ function InfoCard({ label, data, tooltipText }) {
       <h3 className="label">
         {label}{" "}
         {tooltipText && (
-          <Tooltip
-            handle={<RiQuestionLine />}
-            position="left-bottom"
-            renderContent={() => {
-              tooltipText;
-            }}
-          />
+          <Tooltip handle={<RiQuestionLine />} position="left-bottom" renderContent={() => tooltipText} />
         )}
       </h3>
       <div className="data">{data}</div>
