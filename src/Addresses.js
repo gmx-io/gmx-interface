@@ -130,7 +130,7 @@ const CONTRACTS = {
     PositionRouter: "0x3D6bA331e3D9702C5e8A8d254e5d8a285F223aba",
 
     UniswapGmxEthPool: "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E",
-    Referral: "0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d",
+    ReferralStorage: "0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d",
   },
   43114: {
     // avalanche

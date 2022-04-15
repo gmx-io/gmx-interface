@@ -556,9 +556,9 @@ export function useTotalGmxInLiquidity() {
 }
 
 export function useUserReferralCode(library, chainId, account) {
-  const ReferralToken = getContract(chainId, "Referral");
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const { data: userReferralCode, mutate: mutateUserReferralCode } = useSWR(
-    account && [`ReferralStorage:traderReferralCodes`, chainId, ReferralToken, "traderReferralCodes", account],
+    account && [`ReferralStorage:traderReferralCodes`, chainId, referralStorageAddress, "traderReferralCodes", account],
     {
       fetcher: fetcher(library, ReferralStorage),
     }
@@ -665,13 +665,13 @@ export async function approvePlugin(
 }
 
 export async function registerReferralCode(chainId, referralCode, { library, ...props }) {
-  const referralContract = getContract(chainId, "Referral");
-  const contract = new ethers.Contract(referralContract, ReferralStorage.abi, library.getSigner());
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
   return callContract(chainId, contract, "registerCode", [referralCode], { ...props });
 }
 export async function setTraderReferralCodeByUser(chainId, referralCode, { library, ...props }) {
-  const referralContract = getContract(chainId, "Referral");
-  const contract = new ethers.Contract(referralContract, ReferralStorage.abi, library.getSigner());
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
   return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCode], {
     ...props,
   });

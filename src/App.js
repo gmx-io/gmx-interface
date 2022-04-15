@@ -70,7 +70,6 @@ import Checkbox from "./components/Checkbox/Checkbox";
 import { RiMenuLine } from "react-icons/ri";
 import { FaTimes } from "react-icons/fa";
 import { FiX } from "react-icons/fi";
-// import { BiLogOut } from "react-icons/bi";
 
 import "./Font.css";
 import "./Shared.css";
@@ -93,7 +92,7 @@ import { Link } from "react-router-dom";
 import EventToastContainer from "./components/EventToast/EventToastContainer";
 import SEO from "./components/Common/SEO";
 import useRouteQuery from "./hooks/useRouteQuery";
-import { utils } from "ethers";
+import { encodeReferralCode } from "./Api/referrals";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -322,12 +321,12 @@ function FullApp() {
   const triedEager = useEagerConnect(setActivatingConnector);
   useInactiveListener(!triedEager || !!activatingConnector);
 
-  let query = useRouteQuery();
+  const query = useRouteQuery();
 
   useEffect(() => {
     let referralCode = query.get(REFERRAL_CODE_QUERY_PARAMS);
     if (referralCode) {
-      localStorage.setItem(REFERRAL_CODE_KEY, utils.formatBytes32String(referralCode));
+      localStorage.setItem(REFERRAL_CODE_KEY, encodeReferralCode(referralCode));
     }
   }, [query]);
 

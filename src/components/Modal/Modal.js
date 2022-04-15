@@ -21,6 +21,10 @@ export default function Modal(props) {
     return () => window.removeEventListener("keydown", close);
   }, [setIsVisible]);
 
+  useEffect(() => {
+    props.onAfterOpen && props.onAfterOpen();
+  }, [props.onAfterOpen]);
+
   const fadeVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
