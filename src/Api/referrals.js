@@ -38,7 +38,7 @@ export function encodeReferralCode(code) {
   if (code.length > 31) {
     throw new Error("Code is too big");
   }
-  ethers.utils.formatBytes32String(code);
+  return ethers.utils.formatBytes32String(code);
 }
 
 export function useReferralsData(chainId, account) {
