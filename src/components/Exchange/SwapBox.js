@@ -173,8 +173,7 @@ export default function SwapBox(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
-  // SWITCH TO chainID once the referrals is live on avalanche
-  const { userReferralCode } = Api.useUserReferralCode(library, ARBITRUM, account);
+  const { userReferralCode } = Api.useUserReferralCode(library, chainId, account);
   const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
 
   let allowedSlippage = savedSlippageAmount;
