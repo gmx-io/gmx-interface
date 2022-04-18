@@ -17,6 +17,19 @@ let eventsData = [
       },
     ],
   },
+  {
+    id: "shorting-of-link-uni-re-enabled",
+    title: "Shorting of LINK and UNI",
+    isActive: true,
+    validTill: "4/20/2022 12:00:00 PM",
+    bodyText: "Shorting has been re-enabled for LINK and UNI.",
+    buttons: [
+      {
+        text: "Trade Now",
+        link: "https://gmx.io/trade",
+      },
+    ],
+  },
   // {
   //   id: "weth-bond-on-olympus",
   //   title: "New wETH bond",
