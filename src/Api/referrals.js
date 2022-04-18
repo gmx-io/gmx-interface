@@ -41,6 +41,7 @@ export function useReferralsData(chainId, account) {
   const [data, setData] = useState();
   const [loading, setLoading] = useState(true);
   useEffect(() => {
+    if (!chainId) return;
     setLoading(true);
     const startOfDayTimestamp = Math.floor(parseInt(Date.now() / 1000) / 86400) * 86400;
     const query = gql(
@@ -112,6 +113,7 @@ export function useReferralsData(chainId, account) {
         .replaceAll("__DISTRIBUTION_TYPE_DISCOUNT__", DISTRIBUTION_TYPE_DISCOUNT)
         .replaceAll("__TIMESTAMP__", startOfDayTimestamp)
     );
+    setLoading(true);
 
     getGraphClient(chainId)
       .query({ query })

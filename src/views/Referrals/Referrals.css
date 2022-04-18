@@ -94,7 +94,6 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  margin-bottom: 1rem;
 }
 
 .referral-table-header .ml-small {
@@ -215,5 +214,8 @@
   .referral-table {
     width: auto;
     margin-bottom: 1rem;
+  }
+  .referral-table td {
+    white-space: nowrap;
   }
 }

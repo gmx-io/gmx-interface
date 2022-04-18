@@ -19,6 +19,8 @@ import {
   REFERRAL_CODE_QUERY_PARAMS,
   isHashZero,
   REFERRAL_CODE_KEY,
+  REFERRALS_DATA_KEY,
+  useLocalStorageSerializeKey,
 } from "../../Helpers";
 import { decodeReferralCode, encodeReferralCode, useReferralsData } from "../../Api/referrals";
 
@@ -31,6 +33,14 @@ import Loader from "../../components/Common/Loader";
 import Modal from "../../components/Modal/Modal";
 import { RiQuestionLine } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
+
+// TODO: remove in prod
+function fakePrmise(code) {
+  const referralCodeHex = encodeReferralCode(code);
+  return new Promise((res, rej) => {
+    setTimeout(() => res({ data: referralCodeHex }), 3000);
+  });
+}
 
 const getSampleReferrarStat = (code) => {
   return {
@@ -72,16 +82,21 @@ function getErrorMessage(value) {
 }
 
 function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
-  const { active, account, library } = useWeb3React();
+  const { active, account, library, chainId: chainIdWithoutLocalStorage } = useWeb3React();
   const { chainId } = useChainId();
   const { infoTokens } = useInfoTokens(library, chainId, active);
   const [activeTab, setActiveTab] = useLocalStorage(REFERRAL_CODE_KEY, TRADERS);
-  const { data: referralsData, loading } = useReferralsData(chainId, account);
-  const [referralsDataState, setReferralsDataState] = useState(referralsData);
+  const { data: referralsData, loading } = useReferralsData(chainIdWithoutLocalStorage, account);
+  const [referralsDataState, setReferralsDataState] = useLocalStorageSerializeKey([
+    chainId,
+    REFERRALS_DATA_KEY,
+    account,
+  ]);
   const { userReferralCode } = useUserReferralCode(library, chainId, account);
-
   useEffect(() => {
-    setReferralsDataState(referralsData);
+    if (!referralsDataState) {
+      setReferralsDataState(referralsData);
+    }
   }, [referralsData]);
 
   let referralCodeInString;
@@ -101,13 +116,28 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   }
 
   function renderAffiliatesTab() {
+    if (!account || !referralsDataState)
+      return (
+        <CreateReferrarCode
+          isWalletConnected={active}
+          handleCreateReferralCode={handleCreateReferralCode}
+          library={library}
+          chainId={chainId}
+          setPendingTxns={setPendingTxns}
+          pendingTxns={pendingTxns}
+          referralsDataState={referralsDataState}
+          setReferralsDataState={setReferralsDataState}
+          connectWallet={connectWallet}
+        />
+      );
     if (loading) return <Loader />;
-    if (referralsData.codes?.length > 0) {
+    if (referralsDataState.codes?.length > 0) {
       return (
         <ReferrersStats
           infoTokens={infoTokens}
-          handleCreateReferralCode={handleCreateReferralCode}
           referralsDataState={referralsDataState}
+          setReferralsDataState={setReferralsDataState}
+          handleCreateReferralCode={handleCreateReferralCode}
           chainId={chainId}
           library={library}
           setPendingTxns={setPendingTxns}
@@ -125,12 +155,24 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
           pendingTxns={pendingTxns}
           referralsDataState={referralsDataState}
           setReferralsDataState={setReferralsDataState}
+          connectWallet={connectWallet}
         />
       );
     }
   }
 
   function renderTradersTab() {
+    if (!account)
+      return (
+        <JoinReferrarCode
+          connectWallet={connectWallet}
+          isWalletConnected={active}
+          library={library}
+          chainId={chainId}
+          setPendingTxns={setPendingTxns}
+          pendingTxns={pendingTxns}
+        />
+      );
     if (!referralsDataState) return <Loader />;
     if (!referralCodeInString) {
       return (
@@ -171,23 +213,34 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   );
 }
 
-function CreateReferrarCode({ handleCreateReferralCode, isWalletConnected, connectWallet, setReferralsDataState }) {
+function CreateReferrarCode({
+  handleCreateReferralCode,
+  referralsDataState,
+  isWalletConnected,
+  connectWallet,
+  setReferralsDataState,
+}) {
   const [referralCode, setReferralCode] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState("");
+
   function handleSubmit(event) {
     event.preventDefault();
     setIsProcessing(true);
     handleCreateReferralCode(referralCode)
       .then((res) => {
-        setReferralsDataState((state) => {
-          let referralCodeString = decodeReferralCode(res.data);
-          return {
-            ...state,
-            codes: state.codes.concat(referralCodeString),
-            referrerTotalStats: state.referrerTotalStats.concat(getSampleReferrarStat(referralCodeString)),
-          };
-        });
+        // 0x36def2c8685f770000000000000000000000000000000000000000000000000000000000
+        let referralCodeString = decodeReferralCode(res.data);
+        referralsDataState.codes.push(referralCodeString);
+        referralsDataState.referrerTotalStats.push(getSampleReferrarStat(referralCodeString));
+        setReferralsDataState(referralsDataState);
+        setReferralCode("");
+      })
+      .catch(({ data }) => {
+        if (data?.message) {
+          const isAlreadyExistError = data.message.includes("code already exists");
+          if (isAlreadyExistError) setError("Referral code is already taken.");
+        }
       })
       .finally(() => setIsProcessing(false));
   }
@@ -236,7 +289,7 @@ function CreateReferrarCode({ handleCreateReferralCode, isWalletConnected, conne
   );
 }
 
-function ReferrersStats({ referralsDataState, handleCreateReferralCode, infoTokens, chainId }) {
+function ReferrersStats({ referralsDataState, handleCreateReferralCode, setReferralsDataState, infoTokens, chainId }) {
   const [referralCode, setReferralCode] = useState("");
   const [isAdding, setIsAdding] = useState(false);
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
@@ -256,8 +309,12 @@ function ReferrersStats({ referralsDataState, handleCreateReferralCode, infoToke
     event.preventDefault();
     if (error) return;
     setIsAdding(true);
-    return handleCreateReferralCode(referralCode)
-      .then(() => {
+    handleCreateReferralCode(referralCode)
+      .then((res) => {
+        let referralCodeString = decodeReferralCode(res.data);
+        referralsDataState.codes.push(referralCodeString);
+        referralsDataState.referrerTotalStats.push(getSampleReferrarStat(referralCodeString));
+        setReferralsDataState(referralsDataState);
         setReferralCode("");
         close();
       })
@@ -284,17 +341,17 @@ function ReferrersStats({ referralsDataState, handleCreateReferralCode, infoToke
         />
         <InfoCard
           label="Total Trading Volume"
-          tooltipText="Total volume traded by your referred traders."
+          tooltipText="Volume traded by your referred traders."
           data={getUSDValue(cumulativeStats?.volume)}
         />
         <InfoCard
           label="Total Rebates"
-          tooltipText="Total rebated earned by this account as an affiliate."
+          tooltipText="Rebates earned by this account as an affiliate."
           data={getUSDValue(cumulativeStats?.rebates)}
         />
         <InfoCard
           label="Total Rebates For Traders"
-          tooltipText="Total rebates earned by your referred traders."
+          tooltipText="Rebates earned by your referred traders."
           data={getUSDValue(cumulativeStats?.discountUsd)}
         />
       </div>
@@ -329,7 +386,6 @@ function ReferrersStats({ referralsDataState, handleCreateReferralCode, infoToke
           </div>
         </Modal>
         <Card
-          className="desktop"
           title={
             <div className="referral-table-header">
               <span>Referral Codes</span>
@@ -339,89 +395,45 @@ function ReferrersStats({ referralsDataState, handleCreateReferralCode, infoToke
             </div>
           }
         >
-          <table className="referral-table">
-            <thead>
-              <tr>
-                <th scope="col">Referral Code</th>
-                <th scope="col">Traders Referred</th>
-                <th scope="col">Total Volume</th>
-                <th scope="col">Total Rebate</th>
-              </tr>
-            </thead>
-            <tbody>
-              {referrerTotalStats.map((stat, index) => {
-                return (
-                  <tr key={index}>
-                    <td data-label="Referral Code">
-                      <div className="table-referral-code">
-                        <div
-                          onClick={() => {
-                            copyToClipboard(`https://gmx.io/trade?${REFERRAL_CODE_QUERY_PARAMS}=${stat.referralCode}`);
-                            helperToast.success("Referral link copied to your clipboard");
-                          }}
-                          className="referral-code"
-                        >
-                          <span>{stat.referralCode}</span>
-                          <BiCopy />
+          <div className="table-wrapper">
+            <table className="referral-table">
+              <thead>
+                <tr>
+                  <th scope="col">Referral Code</th>
+                  <th scope="col">Traders Referred</th>
+                  <th scope="col">Total Volume</th>
+                  <th scope="col">Total Rebate</th>
+                </tr>
+              </thead>
+              <tbody>
+                {referrerTotalStats.map((stat, index) => {
+                  return (
+                    <tr key={index}>
+                      <td data-label="Referral Code">
+                        <div className="table-referral-code">
+                          <div
+                            onClick={() => {
+                              copyToClipboard(
+                                `https://gmx.io/trade?${REFERRAL_CODE_QUERY_PARAMS}=${stat.referralCode}`
+                              );
+                              helperToast.success("Referral link copied to your clipboard");
+                            }}
+                            className="referral-code"
+                          >
+                            <span>{stat.referralCode}</span>
+                            <BiCopy />
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                    <td data-label="Traders Referred">{stat.tradedReferralsCount}</td>
-                    <td data-label="Total Volume">{getUSDValue(stat.volume)}</td>
-                    <td data-label="Total Rebate">{getUSDValue(stat.totalRebateUsd)}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </Card>
-        <Card
-          className="mobile"
-          title={
-            <div className="referral-table-header">
-              <span>Referral Codes</span>
-              <button className="transparent-btn" onClick={open}>
-                <FiPlus /> <span className="ml-small">Add New</span>
-              </button>
-            </div>
-          }
-        >
-          {referrerTotalStats.map((stat, index) => {
-            return (
-              <div key={index}>
-                <div className="App-card-content">
-                  <div className="App-card-row">
-                    <div className="label">Referral Code</div>
-                    <div className="table-referral-code">
-                      <div
-                        onClick={() => {
-                          copyToClipboard(`https://gmx.io/trade?${REFERRAL_CODE_QUERY_PARAMS}=${stat.referralCode}`);
-                          helperToast.success("Referral link copied to your clipboard");
-                        }}
-                        className="referral-code"
-                      >
-                        <span>{stat.referralCode}</span>
-                        <BiCopy />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="App-card-row">
-                    <div className="label">Traders Referred</div>
-                    <div>{stat.tradedReferralsCount}</div>
-                  </div>
-                  <div className="App-card-row">
-                    <div className="label">Total Volume</div>
-                    <div>{getUSDValue(stat.volume)}</div>
-                  </div>
-                  <div className="App-card-row">
-                    <div className="label">Total Rebate</div>
-                    <div>{getUSDValue(stat.totalRebateUsd)}</div>
-                  </div>
-                </div>
-                {index < referrerTotalStats.length - 1 && <div className="App-card-divider"></div>}
-              </div>
-            );
-          })}
+                      </td>
+                      <td data-label="Traders Referred">{stat.tradedReferralsCount}</td>
+                      <td data-label="Total Volume">{getUSDValue(stat.volume)}</td>
+                      <td data-label="Total Rebate">{getUSDValue(stat.totalRebateUsd)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </Card>
       </div>
       {discountDistributions?.length > 0 && (
@@ -433,7 +445,7 @@ function ReferrersStats({ referralsDataState, handleCreateReferralCode, infoToke
                   <tr>
                     <th scope="col">Date</th>
                     <th scope="col">Amount</th>
-                    <th scope="col">Tx Hash</th>
+                    <th scope="col">Transaction</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -448,7 +460,7 @@ function ReferrersStats({ referralsDataState, handleCreateReferralCode, infoToke
                           <td data-label="Amount">
                             {formatAmount(rebate.amount, tokenInfo.decimals, 4, true)} {tokenInfo.symbol}
                           </td>
-                          <td data-label="Tx Hash">
+                          <td data-label="Transaction">
                             <a
                               target="_blank"
                               rel="noopener noreferrer"
@@ -514,17 +526,16 @@ function Rebates({
       <div className="referral-stats">
         <InfoCard
           label="Total Volume Traded"
-          tooltipText="Total volume traded on this account."
+          tooltipText="Volume traded by this account."
           data={getUSDValue(referralTotalStats?.volume)}
         />
         <InfoCard
           label="Total Rebate"
-          tooltipText="Total rebates earned by this account as a trader."
+          tooltipText="Rebates earned by this account as an affiliate."
           data={getUSDValue(referralTotalStats?.discountUsd)}
         />
         <InfoCard
           label="Active Referral Code"
-          tooltipText="Current active referral code."
           data={
             <div className="referral-code-edit">
               <span>{referralCodeInString}</span>
@@ -620,7 +631,7 @@ function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet, 
       setPendingTxns,
       pendingTxns,
     })
-      .then(() => {
+      .then((res) => {
         setIsJoined(true);
       })
       .finally(() => {
@@ -671,13 +682,13 @@ function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet, 
   );
 }
 
-function InfoCard({ label, data, tooltipText }) {
+function InfoCard({ label, data, tooltipText, toolTipPosition = "right-bottom" }) {
   return (
     <div className="info-card">
       <h3 className="label">
         {label}{" "}
         {tooltipText && (
-          <Tooltip handle={<RiQuestionLine />} position="left-bottom" renderContent={() => tooltipText} />
+          <Tooltip handle={<RiQuestionLine />} position={toolTipPosition} renderContent={() => tooltipText} />
         )}
       </h3>
       <div className="data">{data}</div>
