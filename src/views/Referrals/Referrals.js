@@ -96,8 +96,6 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   useEffect(() => {
     if (!referralsDataState) {
       setReferralsDataState(referralsData);
-    } else {
-      setReferralsDataState(referralsData);
     }
   }, [referralsData, referralsDataState, setReferralsDataState]);
 
@@ -230,11 +228,9 @@ function CreateReferrarCode({
     event.preventDefault();
     setIsProcessing(true);
     handleCreateReferralCode(referralCode)
-      .then((res) => {
-        // 0x36def2c8685f770000000000000000000000000000000000000000000000000000000000
-        let referralCodeString = decodeReferralCode(res.data);
-        referralsDataState.codes.push(referralCodeString);
-        referralsDataState.referrerTotalStats.push(getSampleReferrarStat(referralCodeString));
+      .then(() => {
+        referralsDataState.codes.push(referralCode);
+        referralsDataState.referrerTotalStats.push(getSampleReferrarStat(referralCode));
         setReferralsDataState(referralsDataState);
         setReferralCode("");
       })
@@ -312,10 +308,9 @@ function ReferrersStats({ referralsDataState, handleCreateReferralCode, setRefer
     if (error) return;
     setIsAdding(true);
     handleCreateReferralCode(referralCode)
-      .then((res) => {
-        let referralCodeString = decodeReferralCode(res.data);
-        referralsDataState.codes.push(referralCodeString);
-        referralsDataState.referrerTotalStats.push(getSampleReferrarStat(referralCodeString));
+      .then(() => {
+        referralsDataState.codes.push(referralCode);
+        referralsDataState.referrerTotalStats.push(getSampleReferrarStat(referralCode));
         setReferralsDataState(referralsDataState);
         setReferralCode("");
         close();
