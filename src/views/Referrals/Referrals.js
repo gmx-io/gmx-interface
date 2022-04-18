@@ -99,7 +99,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     } else {
       setReferralsDataState(referralsData);
     }
-  }, [referralsData, referralsDataState]);
+  }, [referralsData, referralsDataState, setReferralsDataState]);
 
   let referralCodeInString;
   if (userReferralCode && !isHashZero(userReferralCode)) {
