@@ -482,7 +482,7 @@ export const Exchange = forwardRef((props, ref) => {
     fetcher: fetcher(library, Reader, [tokenAddresses]),
   });
 
-  const { data: positionData } = useSWR(
+  const { data: positionData, error: positionDataError } = useSWR(
     active && [active, chainId, readerAddress, "getPositions", vaultAddress, account],
     {
       fetcher: fetcher(library, Reader, [
@@ -492,6 +492,8 @@ export const Exchange = forwardRef((props, ref) => {
       ]),
     }
   );
+
+  const positionsDataIsLoading = active && !positionData && !positionDataError;
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
     fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
@@ -774,6 +776,7 @@ export const Exchange = forwardRef((props, ref) => {
         </div>
         {listSection === "Positions" && (
           <PositionsList
+            positionsDataIsLoading={positionsDataIsLoading}
             pendingPositions={pendingPositions}
             setPendingPositions={setPendingPositions}
             setListSection={setListSection}
