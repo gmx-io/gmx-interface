@@ -189,6 +189,15 @@ export default function PositionEditor(props) {
       }
     }
 
+    if (!isDeposit && fromAmount && nextLiquidationPrice) {
+      if (position.isLong && position.markPrice.lt(nextLiquidationPrice)) {
+        return "Invalid liq. price";
+      }
+      if (!position.isLong && position.markPrice.gt(nextLiquidationPrice)) {
+        return "Invalid liq. price";
+      }
+    }
+
     if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.lt(1.1 * BASIS_POINTS_DIVISOR)) {
       return "Min leverage: 1.1x";
     }
