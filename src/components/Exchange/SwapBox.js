@@ -16,6 +16,8 @@ import {
   helperToast,
   formatAmount,
   bigNumberify,
+  ARBITRUM,
+  AVALANCHE,
   USD_DECIMALS,
   USDG_DECIMALS,
   LONG,
@@ -186,6 +188,16 @@ export default function SwapBox(props) {
   const isLong = swapOption === LONG;
   const isShort = swapOption === SHORT;
   const isSwap = swapOption === SWAP;
+
+  const getLeaderboardLink = () => {
+    if (chainId === ARBITRUM) {
+      return "https://www.gmx.house/arbitrum/leaderboard";
+    }
+    if (chainId === AVALANCHE) {
+      return "https://www.gmx.house/avalanche/leaderboard";
+    }
+    return "https://www.gmx.house";
+  };
 
   function getTokenLabel() {
     switch (true) {
@@ -2269,6 +2281,13 @@ export default function SwapBox(props) {
           <div className="Exchange-info-label-button">
             <a href="https://gmxio.gitbook.io/gmx/trading" target="_blank" rel="noopener noreferrer">
               Trading guide
+            </a>
+          </div>
+        </div>
+        <div className="Exchange-info-row">
+          <div className="Exchange-info-label-button">
+            <a href={getLeaderboardLink()} target="_blank" rel="noopener noreferrer">
+              Leaderboard
             </a>
           </div>
         </div>
