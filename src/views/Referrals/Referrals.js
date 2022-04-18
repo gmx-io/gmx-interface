@@ -35,12 +35,12 @@ import { RiQuestionLine } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
 
 // TODO: remove in prod
-function fakePrmise(code) {
-  const referralCodeHex = encodeReferralCode(code);
-  return new Promise((res, rej) => {
-    setTimeout(() => res({ data: referralCodeHex }), 3000);
-  });
-}
+// function fakePrmise(code) {
+//   const referralCodeHex = encodeReferralCode(code);
+//   return new Promise((res, rej) => {
+//     setTimeout(() => res({ data: referralCodeHex }), 3000);
+//   });
+// }
 
 const getSampleReferrarStat = (code) => {
   return {
@@ -96,8 +96,10 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   useEffect(() => {
     if (!referralsDataState) {
       setReferralsDataState(referralsData);
+    } else {
+      setReferralsDataState(referralsData);
     }
-  }, [referralsData]);
+  }, [referralsData, referralsDataState]);
 
   let referralCodeInString;
   if (userReferralCode && !isHashZero(userReferralCode)) {
