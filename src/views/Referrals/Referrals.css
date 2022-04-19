@@ -68,6 +68,7 @@
 }
 .active-referral-code .tier a {
   text-decoration: none;
+  font-size: 0;
 }
 .mb-sm {
   margin-bottom: 1rem;
@@ -145,6 +146,9 @@
   background: var(--dark-blue-bg);
   border: 1px solid #1e2136;
   border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .info-card .label {
   font-size: 1rem;
@@ -206,9 +210,6 @@
   font-size: 0.9rem;
 }
 
-.mobile {
-  display: none;
-}
 .table-wrapper {
   display: block;
   width: 100%;
@@ -216,14 +217,6 @@
   -webkit-overflow-scrolling: touch;
 }
 
-@media (max-width: 800px) {
-  .desktop {
-    display: none;
-  }
-  .mobile {
-    display: block;
-  }
-}
 @media (max-width: 500px) {
   .referral-table {
     width: auto;
