@@ -42,6 +42,7 @@ export function useReferralsData(chainId, account) {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (!chainId) return;
+
     setLoading(true);
     const startOfDayTimestamp = Math.floor(parseInt(Date.now() / 1000) / 86400) * 86400;
     const query = gql(
