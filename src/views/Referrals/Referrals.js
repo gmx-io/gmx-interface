@@ -465,7 +465,7 @@ function ReferrersStats({
           </div>
         </Card>
       </div>
-      {discountDistributions?.length > 0 && (
+      {discountDistributions?.length > 0 ? (
         <div className="reward-history">
           <Card title="Rebates Distribution History">
             <div className="table-wrapper">
@@ -504,6 +504,8 @@ function ReferrersStats({
             </div>
           </Card>
         </div>
+      ) : (
+        <EmptyMessage message="You do not have any rebates distribution history." />
       )}
     </div>
   );
@@ -609,7 +611,7 @@ function Rebates({
           </div>
         </Modal>
       </div>
-      {rebateDistributions.length > 0 && (
+      {rebateDistributions.length > 0 ? (
         <div className="reward-history">
           <Card title="Rebates Distribution History">
             <table className="referral-table">
@@ -646,6 +648,8 @@ function Rebates({
             </table>
           </Card>
         </div>
+      ) : (
+        <EmptyMessage message="You do not have any rebates distribution history." />
       )}
     </div>
   );
@@ -730,6 +734,14 @@ function InfoCard({ label, data, tooltipText, toolTipPosition = "right-bottom" }
         </h3>
         <div className="data">{data}</div>
       </div>
+    </div>
+  );
+}
+
+function EmptyMessage({ message = "" }) {
+  return (
+    <div className="empty-message">
+      <p>{message}</p>
     </div>
   );
 }

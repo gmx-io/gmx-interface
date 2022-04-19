@@ -217,6 +217,17 @@
   -webkit-overflow-scrolling: touch;
 }
 
+.empty-message {
+  margin: 3rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #1e2136;
+  border-radius: 4px;
+  background: #16182e;
+}
+
 @media (max-width: 500px) {
   .referral-table {
     width: auto;
