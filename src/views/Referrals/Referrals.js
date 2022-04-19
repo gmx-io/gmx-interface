@@ -47,6 +47,12 @@ function isRecentReferralNotCodeExpired(referralCodeInfo) {
   }
 }
 
+const tierRebateInfo = {
+  0: 5,
+  1: 10,
+  2: 15,
+};
+
 // TODO: remove in prod
 // function fakePrmise(code) {
 //   return new Promise((res, rej) => {
@@ -368,6 +374,8 @@ function ReferrersStats({
     return acc;
   }, referrerTotalStats);
 
+  const tierId = referrerTierInfo?.tierId;
+
   return (
     <div className="referral-body-container">
       <div className="referral-stats">
@@ -426,7 +434,8 @@ function ReferrersStats({
           title={
             <div className="referral-table-header">
               <p className="title">
-                Referral Codes <span>{referrerTierInfo && `(Tier: ${referrerTierInfo.tierId})`}</span>
+                Referral Codes{" "}
+                <span>{referrerTierInfo && `Tier: ${tierId} - (${tierRebateInfo[tierId]}% rebate)`}</span>
               </p>
               <button className="transparent-btn" onClick={open}>
                 <FiPlus /> <span className="ml-small">Add New</span>
@@ -537,6 +546,7 @@ function Rebates({
   const [isUpdateSubmitting, setIsUpdateSubmitting] = useState(false);
   const [error, setError] = useState("");
   const editModalRef = useRef(null);
+  const referrerTierString = String(referrerTier || "");
 
   const open = () => setIsEditModalOpen(true);
   const close = () => {
@@ -584,7 +594,7 @@ function Rebates({
               </div>
               {referrerTier && (
                 <div className="tier">
-                  <span>Referrer Tier: {String(referrerTier)}</span>
+                  <span>Referrer Tier: {`${referrerTierString} (${tierRebateInfo[referrerTierString]}% rebate)`}</span>
                   <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
                     <BiInfoCircle size={14} />
                   </a>

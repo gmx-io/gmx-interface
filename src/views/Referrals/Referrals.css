@@ -61,6 +61,9 @@
 .active-referral-code .edit svg {
   cursor: pointer;
 }
+.active-referral-code .edit svg:hover {
+  opacity: 0.75;
+}
 .active-referral-code .tier {
   margin-top: 0.5rem;
   display: flex;
