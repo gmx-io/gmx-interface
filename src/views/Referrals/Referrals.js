@@ -233,19 +233,23 @@ function CreateReferrarCode({
   connectWallet,
   setRecentlyAddedCodes,
   recentlyAddedCodes,
+  library,
 }) {
   const [referralCode, setReferralCode] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState("");
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     setIsProcessing(true);
     handleCreateReferralCode(referralCode)
-      .then(() => {
-        recentlyAddedCodes.push(getSampleReferrarStat(referralCode));
-        setRecentlyAddedCodes(recentlyAddedCodes);
-        setReferralCode("");
+      .then(async ({ hash }) => {
+        const receipt = await library.getTransactionReceipt(hash);
+        if (receipt.status === 1) {
+          recentlyAddedCodes.push(getSampleReferrarStat(referralCode));
+          setRecentlyAddedCodes(recentlyAddedCodes);
+          setReferralCode("");
+        }
       })
       .catch(({ data }) => {
         if (data?.message) {
@@ -305,6 +309,7 @@ function ReferrersStats({
   handleCreateReferralCode,
   infoTokens,
   chainId,
+  library,
   setRecentlyAddedCodes,
   recentlyAddedCodes,
 }) {
@@ -328,17 +333,20 @@ function ReferrersStats({
     if (error) return;
     setIsAdding(true);
     handleCreateReferralCode(referralCode)
-      .then(() => {
-        const updatedCodes = [];
-        recentlyAddedCodes.forEach((code) => {
-          if (isRecentReferralNotCodeExpired(code)) {
-            updatedCodes.push(code);
-          }
-        });
-        updatedCodes.push(getSampleReferrarStat(referralCode));
-        setRecentlyAddedCodes(updatedCodes);
-        setReferralCode("");
-        close();
+      .then(async ({ hash }) => {
+        const receipt = await library.getTransactionReceipt(hash);
+        if (receipt.status === 1) {
+          const updatedCodes = [];
+          recentlyAddedCodes.forEach((code) => {
+            if (isRecentReferralNotCodeExpired(code)) {
+              updatedCodes.push(code);
+            }
+          });
+          updatedCodes.push(getSampleReferrarStat(referralCode));
+          setRecentlyAddedCodes(updatedCodes);
+          setReferralCode("");
+          close();
+        }
       })
       .catch(({ data }) => {
         if (data?.message) {
@@ -351,7 +359,7 @@ function ReferrersStats({
       });
   }
 
-  const { cumulativeStats, referrerTotalStats, discountDistributions } = referralsData;
+  const { cumulativeStats, referrerTotalStats, discountDistributions, referrerTierInfo } = referralsData;
   const finalReferrerTotalStats = recentlyAddedCodes.filter(isRecentReferralNotCodeExpired).reduce((acc, cv) => {
     const addedCodes = referrerTotalStats.map((c) => c.referralCode.trim());
     if (!addedCodes.includes(cv.referralCode)) {
@@ -417,7 +425,9 @@ function ReferrersStats({
         <Card
           title={
             <div className="referral-table-header">
-              <span>Referral Codes</span>
+              <p className="title">
+                Referral Codes <span>{referrerTierInfo && `(Tier: ${referrerTierInfo.tierId})`}</span>
+              </p>
               <button className="transparent-btn" onClick={open}>
                 <FiPlus /> <span className="ml-small">Add New</span>
               </button>
@@ -572,12 +582,14 @@ function Rebates({
                 <span>{referralCodeInString}</span>
                 <BiEditAlt onClick={open} />
               </div>
-              <div className="tier">
-                <span>Referrer Tier: {referrerTier.toString()}</span>
-                <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
-                  <BiInfoCircle size={14} />
-                </a>
-              </div>
+              {referrerTier && (
+                <div className="tier">
+                  <span>Referrer Tier: {String(referrerTier)}</span>
+                  <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
+                    <BiInfoCircle size={14} />
+                  </a>
+                </div>
+              )}
             </div>
           }
         />

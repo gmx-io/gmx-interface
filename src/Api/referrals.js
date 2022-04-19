@@ -108,6 +108,11 @@ export function useReferralsData(chainId, account) {
         volume,
         discountUsd
       }
+      referrerTierInfo: referrer(id: "__ACCOUNT__") {
+        tierId
+        id
+        discountShare
+      }
     }`
         .replaceAll("__ACCOUNT__", (account || "").toLowerCase())
         .replaceAll("__DISTRIBUTION_TYPE_REBATES__", DISTRIBUTION_TYPE_REBATES)
@@ -173,6 +178,7 @@ export function useReferralsData(chainId, account) {
           rebateDistributions,
           discountDistributions,
           referrerTotalStats,
+          referrerTierInfo: res.data.referrerTierInfo,
           referrerLastDayStats: res.data.referrerLastDayStats.map(prepareStatsItem),
           cumulativeStats: getCumulativeStats(referrerTotalStats),
           codes: res.data.referralCodes.map((e) => decodeReferralCode(e.code)),
