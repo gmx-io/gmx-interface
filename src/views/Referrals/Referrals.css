@@ -55,6 +55,12 @@
   align-items: center;
   justify-content: center;
 }
+.active-referral-code .edit span {
+  margin-right: 1rem;
+}
+.active-referral-code .edit svg {
+  cursor: pointer;
+}
 .active-referral-code .tier {
   margin-top: 0.5rem;
   display: flex;
@@ -109,6 +115,14 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
+}
+.referral-table-header .title {
+  margin: 0;
+}
+.referral-table-header span {
+  color: #a9a9b0;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
 }
 
 .referral-table-header .ml-small {
