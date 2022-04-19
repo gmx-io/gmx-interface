@@ -31,7 +31,7 @@ import {
   useReferrerTier,
   useUserReferralCode,
 } from "../../Api";
-import { BiCopy, BiEditAlt } from "react-icons/bi";
+import { BiCopy, BiEditAlt, BiInfoCircle } from "react-icons/bi";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import { useCopyToClipboard, useLocalStorage } from "react-use";
 import Loader from "../../components/Common/Loader";
@@ -109,7 +109,6 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], []);
   const { userReferralCode } = useUserReferralCode(library, chainId, account);
   const { referrerTier } = useReferrerTier(library, chainId, account);
-
   let referralCodeInString;
   if (userReferralCode && !isHashZero(userReferralCode)) {
     referralCodeInString = decodeReferralCode(userReferralCode);
@@ -430,8 +429,8 @@ function ReferrersStats({
               <thead>
                 <tr>
                   <th scope="col">Referral Code</th>
-                  <th scope="col">Traders Referred</th>
                   <th scope="col">Total Volume</th>
+                  <th scope="col">Traders Referred</th>
                   <th scope="col">Total Rebates</th>
                 </tr>
               </thead>
@@ -455,8 +454,8 @@ function ReferrersStats({
                           </div>
                         </div>
                       </td>
-                      <td data-label="Traders Referred">{stat.tradedReferralsCount}</td>
                       <td data-label="Total Volume">{getUSDValue(stat.volume)}</td>
+                      <td data-label="Traders Referred">{stat.tradedReferralsCount}</td>
                       <td data-label="Total Rebates">{getUSDValue(stat.totalRebateUsd)}</td>
                     </tr>
                   );
@@ -571,7 +570,12 @@ function Rebates({
                 <span>{referralCodeInString}</span>
                 <BiEditAlt onClick={open} />
               </div>
-              <div className="tier"></div>
+              <div className="tier">
+                <span>Referrer Tier: {referrerTier.toString()}</span>
+                <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
+                  <BiInfoCircle size={14} />
+                </a>
+              </div>
             </div>
           }
         />
@@ -717,13 +721,15 @@ function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet, 
 function InfoCard({ label, data, tooltipText, toolTipPosition = "right-bottom" }) {
   return (
     <div className="info-card">
-      <h3 className="label">
-        {label}{" "}
-        {tooltipText && (
-          <Tooltip handle={<RiQuestionLine />} position={toolTipPosition} renderContent={() => tooltipText} />
-        )}
-      </h3>
-      <div className="data">{data}</div>
+      <div className="card-details">
+        <h3 className="label">
+          {label}{" "}
+          {tooltipText && (
+            <Tooltip handle={<RiQuestionLine />} position={toolTipPosition} renderContent={() => tooltipText} />
+          )}
+        </h3>
+        <div className="data">{data}</div>
+      </div>
     </div>
   );
 }
