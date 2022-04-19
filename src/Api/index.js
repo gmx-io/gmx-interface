@@ -568,6 +568,19 @@ export function useUserReferralCode(library, chainId, account) {
     mutateUserReferralCode,
   };
 }
+export function useReferrerTier(library, chainId, account) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const { data: referrerTier, mutate: mutateReferrerTier } = useSWR(
+    account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
+    {
+      fetcher: fetcher(library, ReferralStorage),
+    }
+  );
+  return {
+    referrerTier,
+    mutateReferrerTier,
+  };
+}
 
 function useGmxPriceFromAvalanche() {
   const poolAddress = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");

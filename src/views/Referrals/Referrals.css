@@ -50,10 +50,24 @@
 .reward-history {
   margin-top: 2rem;
 }
-.referral-code-edit {
+.active-referral-code .edit {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.active-referral-code .tier {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.active-referral-code .tier span {
+  font-size: 0.85rem;
+  color: #a9a9b0;
+  margin-right: 0.5rem;
+}
+.active-referral-code .tier a {
+  text-decoration: none;
 }
 .mb-sm {
   margin-bottom: 1rem;
