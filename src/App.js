@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { SWRConfig } from "swr";
 import { ethers } from "ethers";
 
@@ -96,6 +96,8 @@ import VaultV2 from "./abis/VaultV2.json";
 import VaultV2b from "./abis/VaultV2b.json";
 import PositionRouter from "./abis/PositionRouter.json";
 
+import { useTranslation } from 'react-i18next';
+
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
@@ -138,6 +140,8 @@ function getWsProvider(active, chainId) {
 }
 
 function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
+  const { t } = useTranslation();
+
   if (inPreviewMode()) {
     return (
       <div className="App-header-links preview">
@@ -195,7 +199,7 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
       </div>
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/buy">
-          Buy
+          {t('Buy')}
         </NavLink>
       </div>
       <div className="App-header-link-container">
@@ -958,13 +962,15 @@ function App() {
   }
 
   return (
-    <SWRConfig value={{ refreshInterval: 5000 }}>
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <SEO>
-          <FullApp />
-        </SEO>
-      </Web3ReactProvider>
-    </SWRConfig>
+    <Suspense fallback="loading">
+      <SWRConfig value={{ refreshInterval: 5000 }}>
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <SEO>
+            <FullApp />
+          </SEO>
+        </Web3ReactProvider>
+      </SWRConfig>
+    </Suspense>
   );
 }
 
