@@ -113,6 +113,9 @@
   border-radius: var(--border-radius-sm);
   cursor: pointer;
 }
+.transparent-btn:hover {
+  background: rgba(128, 138, 255, 0.0784313725490196);
+}
 .referral-table-header {
   display: flex;
   justify-content: space-between;
@@ -122,7 +125,7 @@
 .referral-table-header .title {
   margin: 0;
 }
-.referral-table-header span {
+.referral-table-header .sub-title {
   color: #a9a9b0;
   font-size: 0.9rem;
   margin-left: 0.5rem;

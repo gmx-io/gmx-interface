@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
 import Card from "../../components/Common/Card";
@@ -54,17 +54,28 @@ const tierRebateInfo = {
 };
 
 // TODO: remove in prod
-// function fakePrmise(code) {
-//   return new Promise((res, rej) => {
-//     setTimeout(
-//       () =>
-//         res({
-//           name: "Main Function",
-//         }),
-//       3000
-//     );
-//   });
-// }
+function fakePrmise(code) {
+  return new Promise((res, rej) => {
+    setTimeout(
+      () =>
+        res({
+          hash: "Main Function",
+        }),
+      3000
+    );
+  });
+}
+function fakePrmise2(code) {
+  return new Promise((res, rej) => {
+    setTimeout(
+      () =>
+        res({
+          status: 1,
+        }),
+      3000
+    );
+  });
+}
 
 const getSampleReferrarStat = (code) => {
   return {
@@ -115,6 +126,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], []);
   const { userReferralCode } = useUserReferralCode(library, chainId, account);
   const { referrerTier } = useReferrerTier(library, chainId, account);
+
   let referralCodeInString;
   if (userReferralCode && !isHashZero(userReferralCode)) {
     referralCodeInString = decodeReferralCode(userReferralCode);
@@ -148,7 +160,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
         />
       );
     if (loading) return <Loader />;
-    if (referralsData.codes?.length > 0 || recentlyAddedCodes.length > 0) {
+    if (referralsData.codes?.length > 0 || recentlyAddedCodes.filter(isRecentReferralNotCodeExpired).length > 0) {
       return (
         <ReferrersStats
           infoTokens={infoTokens}
@@ -248,22 +260,25 @@ function CreateReferrarCode({
   async function handleSubmit(event) {
     event.preventDefault();
     setIsProcessing(true);
-    handleCreateReferralCode(referralCode)
-      .then(async ({ hash }) => {
-        const receipt = await library.getTransactionReceipt(hash);
-        if (receipt.status === 1) {
-          recentlyAddedCodes.push(getSampleReferrarStat(referralCode));
-          setRecentlyAddedCodes(recentlyAddedCodes);
-          setReferralCode("");
-        }
-      })
-      .catch(({ data }) => {
-        if (data?.message) {
-          const isAlreadyExistError = data.message.includes("code already exists");
-          if (isAlreadyExistError) setError("Referral code is already taken.");
-        }
-      })
-      .finally(() => setIsProcessing(false));
+    try {
+      const tx = await handleCreateReferralCode(referralCode);
+      await tx.wait();
+      const receipt = await library.getTransactionReceipt(tx.hash);
+
+      if (receipt.status === 1) {
+        recentlyAddedCodes.push(getSampleReferrarStat(referralCode));
+        setRecentlyAddedCodes(recentlyAddedCodes);
+        setReferralCode("");
+      }
+    } catch (err) {
+      let message = err?.data?.message;
+      if (message) {
+        const isAlreadyExistError = message.includes("code already exists");
+        if (isAlreadyExistError) setError("Referral code is already taken.");
+      }
+    } finally {
+      setIsProcessing(false);
+    }
   }
 
   return (
@@ -334,35 +349,29 @@ function ReferrersStats({
     setIsAddReferralCodeModalOpen(false);
   };
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     if (error) return;
     setIsAdding(true);
-    handleCreateReferralCode(referralCode)
-      .then(async ({ hash }) => {
-        const receipt = await library.getTransactionReceipt(hash);
-        if (receipt.status === 1) {
-          const updatedCodes = [];
-          recentlyAddedCodes.forEach((code) => {
-            if (isRecentReferralNotCodeExpired(code)) {
-              updatedCodes.push(code);
-            }
-          });
-          updatedCodes.push(getSampleReferrarStat(referralCode));
-          setRecentlyAddedCodes(updatedCodes);
-          setReferralCode("");
-          close();
-        }
-      })
-      .catch(({ data }) => {
-        if (data?.message) {
-          const isAlreadyExistError = data.message.includes("code already exists");
-          if (isAlreadyExistError) setError("Referral code is already taken.");
-        }
-      })
-      .finally(() => {
-        setIsAdding(false);
-      });
+    try {
+      const tx = await handleCreateReferralCode(referralCode);
+      await tx.wait();
+      const receipt = await library.getTransactionReceipt(tx.hash);
+      if (receipt.status === 1) {
+        recentlyAddedCodes.push(getSampleReferrarStat(referralCode));
+        setRecentlyAddedCodes(recentlyAddedCodes);
+        setReferralCode("");
+        close();
+      }
+    } catch (err) {
+      let message = err?.data?.message;
+      if (message) {
+        const isAlreadyExistError = message.includes("code already exists");
+        if (isAlreadyExistError) setError("Referral code is already taken.");
+      }
+    } finally {
+      setIsAdding(false);
+    }
   }
 
   const { cumulativeStats, referrerTotalStats, discountDistributions, referrerTierInfo } = referralsData;
@@ -435,7 +444,9 @@ function ReferrersStats({
             <div className="referral-table-header">
               <p className="title">
                 Referral Codes{" "}
-                <span>{referrerTierInfo && `Tier: ${tierId} - (${tierRebateInfo[tierId]}% rebate)`}</span>
+                <span className="sub-title">
+                  {referrerTierInfo && `Tier: ${tierId} - (${tierRebateInfo[tierId]}% rebate)`}
+                </span>
               </p>
               <button className="transparent-btn" onClick={open}>
                 <FiPlus /> <span className="ml-small">Add New</span>
