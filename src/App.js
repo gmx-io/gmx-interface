@@ -118,9 +118,7 @@ function inPreviewMode() {
   return false;
 }
 
-const arbWsProvider = new ethers.providers.WebSocketProvider(
-  "wss://rpc.ankr.com/arbitrum/ws/693d8feb054a4aab2cbfd547ef30f3af4669d431914f9724ce9d81843bbcffa4"
-);
+const arbWsProvider = new ethers.providers.WebSocketProvider("wss://arb1.arbitrum.io/ws");
 
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
 
