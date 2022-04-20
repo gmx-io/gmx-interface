@@ -119,7 +119,7 @@ function inPreviewMode() {
 }
 
 const arbWsProvider = new ethers.providers.WebSocketProvider(
-  "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"
+  "wss://rpc.ankr.com/arbitrum/ws/693d8feb054a4aab2cbfd547ef30f3af4669d431914f9724ce9d81843bbcffa4"
 );
 
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
