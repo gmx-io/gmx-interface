@@ -47,6 +47,7 @@
   cursor: pointer;
   border-radius: 4px;
   padding: 2px;
+  margin-left: 1rem;
 }
 .single-toast header .cross-icon:hover {
   background: #ffffff47;

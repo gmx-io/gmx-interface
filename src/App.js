@@ -120,9 +120,7 @@ function inPreviewMode() {
   return false;
 }
 
-const arbWsProvider = new ethers.providers.WebSocketProvider(
-  "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"
-);
+const arbWsProvider = new ethers.providers.WebSocketProvider("wss://arb1.arbitrum.io/ws");
 
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
 
@@ -965,7 +963,7 @@ function App() {
 
   return (
     <Suspense fallback="loading">
-      <SWRConfig value={{ refreshInterval: 5000 }}>
+      <SWRConfig value={{ refreshInterval: 3000 }}>
         <Web3ReactProvider getLibrary={getLibrary}>
           <SEO>
             <FullApp />
