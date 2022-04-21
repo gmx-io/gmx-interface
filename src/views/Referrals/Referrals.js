@@ -526,7 +526,6 @@ function ReferrersStats({
               <thead>
                 <tr>
                   <th scope="col">Referral Code</th>
-                  <th scope="col">{chainId === ARBITRUM ? "AVALANCHE" : "ARBITRUM"}</th>
                   <th scope="col">Total Volume</th>
                   <th scope="col">Traders Referred</th>
                   <th scope="col">Total Rebates</th>
@@ -552,7 +551,6 @@ function ReferrersStats({
                           </div>
                         </div>
                       </td>
-                      <td>Hello</td>
                       <td data-label="Total Volume">{getUSDValue(stat.volume)}</td>
                       <td data-label="Traders Referred">{stat.tradedReferralsCount}</td>
                       <td data-label="Total Rebates">{getUSDValue(stat.totalRebateUsd)}</td>
