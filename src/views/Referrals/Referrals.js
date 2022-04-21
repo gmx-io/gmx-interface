@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
 import Card from "../../components/Common/Card";
@@ -52,30 +52,6 @@ const tierRebateInfo = {
   1: 10,
   2: 15,
 };
-
-// TODO: remove in prod
-function fakePrmise(code) {
-  return new Promise((res, rej) => {
-    setTimeout(
-      () =>
-        res({
-          hash: "Main Function",
-        }),
-      3000
-    );
-  });
-}
-function fakePrmise2(code) {
-  return new Promise((res, rej) => {
-    setTimeout(
-      () =>
-        res({
-          status: 1,
-        }),
-      3000
-    );
-  });
-}
 
 const getSampleReferrarStat = (code) => {
   return {
