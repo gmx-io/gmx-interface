@@ -247,6 +247,14 @@
   border-radius: 4px;
   background: #16182e;
 }
+.confirm-checkbox .Checkbox {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  direction: rtl;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
 
 @media (max-width: 500px) {
   .referral-table {
