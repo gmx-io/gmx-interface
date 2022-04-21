@@ -23,12 +23,15 @@ export default function CompleteAccountTransfer(props) {
   const { chainId } = useChainId();
 
   const [isConfirming, setIsConfirming] = useState(false);
-  const isLoggedIn = (account || "").toString().toLowerCase() === (receiver || "").toString().toLowerCase();
+  const isCorrectAccount = (account || "").toString().toLowerCase() === (receiver || "").toString().toLowerCase();
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
 
   const getError = () => {
-    if (!isLoggedIn) {
+    if (!account) {
+      return "Wallet is not connected";
+    }
+    if (!isCorrectAccount) {
       return "Incorrect Account";
     }
   };
@@ -86,13 +89,13 @@ export default function CompleteAccountTransfer(props) {
       </Modal>
       <div className="Page-title-section">
         <div className="Page-title">Complete Account Transfer</div>
-        {!isLoggedIn && (
+        {!isCorrectAccount && (
           <div className="Page-description">
             You have a pending transfer from {sender}.<br />
             Please connect your wallet to {receiver} to accept the transfer.
           </div>
         )}
-        {isLoggedIn && (
+        {isCorrectAccount && (
           <div className="Page-description">
             You have a pending transfer from {sender}.<br />
           </div>
