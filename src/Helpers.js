@@ -1511,9 +1511,8 @@ export function getProvider(library, chainId) {
   return new ethers.providers.JsonRpcProvider(provider);
 }
 
-export const fetcher =
-  (library, contractInfo, additionalArgs) =>
-  (...args) => {
+// prettier-ignore
+export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
     // eslint-disable-next-line
     const [id, chainId, arg0, arg1, ...params] = args;
     const provider = getProvider(library, chainId);

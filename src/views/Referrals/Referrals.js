@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
 import Card from "../../components/Common/Card";
@@ -12,7 +12,6 @@ import {
   USD_DECIMALS,
   helperToast,
   formatDate,
-  getTokenInfo,
   getExplorerUrl,
   shortenAddress,
   bigNumberify,
@@ -20,17 +19,12 @@ import {
   isHashZero,
   REFERRAL_CODE_KEY,
   useLocalStorageSerializeKey,
+  ARBITRUM,
 } from "../../Helpers";
 import { decodeReferralCode, encodeReferralCode, useReferralsData } from "../../Api/referrals";
 
 import "./Referrals.css";
-import {
-  registerReferralCode,
-  setTraderReferralCodeByUser,
-  useInfoTokens,
-  useReferrerTier,
-  useUserReferralCode,
-} from "../../Api";
+import { registerReferralCode, setTraderReferralCodeByUser, useReferrerTier, useUserReferralCode } from "../../Api";
 import { BiCopy, BiEditAlt, BiInfoCircle } from "react-icons/bi";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import { useCopyToClipboard, useLocalStorage } from "react-use";
@@ -38,6 +32,7 @@ import Loader from "../../components/Common/Loader";
 import Modal from "../../components/Modal/Modal";
 import { RiQuestionLine } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
+import { getToken, getNativeToken } from "../../data/Tokens";
 
 const REFERRAL_DATA_MAX_TIME = 60000 * 5; // 5 minutes
 
@@ -96,7 +91,6 @@ function getErrorMessage(value) {
 function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { active, account, library, chainId: chainIdWithoutLocalStorage } = useWeb3React();
   const { chainId } = useChainId();
-  const { infoTokens } = useInfoTokens(library, chainId, active);
   const [activeTab, setActiveTab] = useLocalStorage(REFERRAL_CODE_KEY, TRADERS);
   const { data: referralsData, loading } = useReferralsData(chainIdWithoutLocalStorage, account);
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], []);
@@ -139,7 +133,6 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     if (referralsData.codes?.length > 0 || recentlyAddedCodes.filter(isRecentReferralNotCodeExpired).length > 0) {
       return (
         <ReferrersStats
-          infoTokens={infoTokens}
           referralsData={referralsData}
           handleCreateReferralCode={handleCreateReferralCode}
           setRecentlyAddedCodes={setRecentlyAddedCodes}
@@ -197,7 +190,6 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     return (
       <Rebates
         referralCodeInString={referralCodeInString}
-        infoTokens={infoTokens}
         chainId={chainId}
         library={library}
         referralsData={referralsData}
@@ -304,7 +296,6 @@ function CreateReferrarCode({
 function ReferrersStats({
   referralsData,
   handleCreateReferralCode,
-  infoTokens,
   chainId,
   library,
   setRecentlyAddedCodes,
@@ -435,6 +426,7 @@ function ReferrersStats({
               <thead>
                 <tr>
                   <th scope="col">Referral Code</th>
+                  <th scope="col">{chainId === ARBITRUM ? "AVALANCHE" : "ARBITRUM"}</th>
                   <th scope="col">Total Volume</th>
                   <th scope="col">Traders Referred</th>
                   <th scope="col">Total Rebates</th>
@@ -460,6 +452,7 @@ function ReferrersStats({
                           </div>
                         </div>
                       </td>
+                      <td>Hello</td>
                       <td data-label="Total Volume">{getUSDValue(stat.volume)}</td>
                       <td data-label="Traders Referred">{stat.tradedReferralsCount}</td>
                       <td data-label="Total Rebates">{getUSDValue(stat.totalRebateUsd)}</td>
@@ -485,7 +478,12 @@ function ReferrersStats({
                 </thead>
                 <tbody>
                   {discountDistributions.map((rebate, index) => {
-                    const tokenInfo = getTokenInfo(infoTokens, rebate.token);
+                    let tokenInfo;
+                    try {
+                      tokenInfo = getToken(chainId, rebate.token);
+                    } catch {
+                      tokenInfo = getNativeToken(chainId);
+                    }
                     const explorerURL = getExplorerUrl(chainId);
                     return (
                       <tr key={index}>
@@ -633,7 +631,12 @@ function Rebates({
               </thead>
               <tbody>
                 {rebateDistributions.map((rebate, index) => {
-                  const tokenInfo = getTokenInfo(infoTokens, rebate.token);
+                  let tokenInfo;
+                  try {
+                    tokenInfo = getToken(chainId, rebate.token);
+                  } catch {
+                    tokenInfo = getNativeToken(chainId);
+                  }
                   const explorerURL = getExplorerUrl(chainId);
                   return (
                     <tr key={index}>
