@@ -280,11 +280,11 @@ function CreateReferrarCode({
     setIsProcessing(true);
     const takenStatus = await getReferralCodeTakenStatus(referralCode, chainId);
     if (takenStatus === "all" || takenStatus === "current") {
-      setError(`Referral code is already taken.`);
+      setError(`Referral code is taken.`);
       setIsProcessing(false);
     }
     if (takenStatus === "other") {
-      setError(`Referral code is already taken on ${chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}`);
+      setError(`Referral code is taken on ${chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}`);
       setConfirmCreateReferralCode(true);
       setIsProcessing(false);
     }
@@ -405,7 +405,7 @@ function ReferrersStats({
     setIsAdding(true);
     const takenStatus = await getReferralCodeTakenStatus(referralCode, chainId);
     if (takenStatus === "all" || takenStatus === "current") {
-      setError(`Referral code is already taken.`);
+      setError(`Referral code is taken.`);
       setIsAdding(false);
     }
     if (takenStatus === "other") {
