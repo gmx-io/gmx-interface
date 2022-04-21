@@ -14,6 +14,7 @@ import UniswapV2 from "../abis/UniswapV2.json";
 import Token from "../abis/Token.json";
 import VaultReader from "../abis/VaultReader.json";
 import ReferralStorage from "../abis/ReferralStorage.json";
+import ReferralReader from "../abis/ReferralReader.json";
 
 import { getContract } from "../Addresses";
 import { getConstant } from "../Constants";
@@ -688,6 +689,14 @@ export async function setTraderReferralCodeByUser(chainId, referralCode, { libra
   return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCode], {
     ...props,
   });
+}
+export async function getReferralCodeOwner(chainId, referralCode, library, active) {
+  const ReferralStorageAddress = getContract(chainId, "ReferralStorage");
+  const ReferralReaderAddress = getContract(chainId, "ReferralReader");
+  const provider = getProvider(library, chainId);
+  const contract = new ethers.Contract(ReferralReaderAddress, ReferralReader.abi, provider);
+  const res = await contract.getCodeOwners(ReferralStorageAddress, [referralCode]);
+  return res;
 }
 
 export async function createSwapOrder(
