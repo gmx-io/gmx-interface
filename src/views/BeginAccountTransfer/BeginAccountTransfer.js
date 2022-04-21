@@ -119,6 +119,9 @@ export default function BeginAccountTransfer(props) {
   const hasPendingReceiver = pendingReceiver && pendingReceiver !== ethers.constants.AddressZero;
 
   const getError = () => {
+    if (!account) {
+      return "Wallet is not connected";
+    }
     if (hasVestedGmx) {
       return "Vested GMX not withdrawn";
     }
