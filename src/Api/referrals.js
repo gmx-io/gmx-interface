@@ -31,10 +31,12 @@ export function decodeReferralCode(hexCode) {
 }
 
 export function encodeReferralCode(code) {
-  if (code.length > 31) {
+  const final = code.replace(/[^\w\s_]/g, ""); // replace everything other than numbers, string  and underscor to ''
+  if (final.length > 31) {
     throw new Error("Code is too big");
   }
-  return ethers.utils.formatBytes32String(code);
+
+  return ethers.utils.formatBytes32String(final);
 }
 
 export function useReferralsData(chainId, account) {

@@ -70,6 +70,7 @@ async function getReferralCodeTakenStatus(referralCode, chainId) {
   if (chainId === AVALANCHE ? referralCodeTakenInfo[ARBITRUM] : referralCodeTakenInfo[AVALANCHE]) {
     return "other";
   }
+  return "none";
 }
 
 const tierRebateInfo = {
@@ -289,12 +290,11 @@ function CreateReferrarCode({
       setIsProcessing(false);
     }
 
-    if (takenStatus === "other" && isChecked) {
+    if (takenStatus === "none" || (takenStatus === "other" && isChecked)) {
       setIsProcessing(true);
       try {
         const tx = await handleCreateReferralCode(referralCode);
-        await tx.wait();
-        const receipt = await library.getTransactionReceipt(tx.hash);
+        const receipt = await tx.wait();
 
         if (receipt.status === 1) {
           recentlyAddedCodes.push(getSampleReferrarStat(referralCode));
@@ -404,6 +404,7 @@ function ReferrersStats({
     event.preventDefault();
     setIsAdding(true);
     const takenStatus = await getReferralCodeTakenStatus(referralCode, chainId);
+
     if (takenStatus === "all" || takenStatus === "current") {
       setError(`Referral code is taken.`);
       setIsAdding(false);
@@ -414,12 +415,11 @@ function ReferrersStats({
       setIsAdding(false);
     }
 
-    if (takenStatus === "other" && isChecked) {
+    if (takenStatus === "none" || (takenStatus === "other" && isChecked)) {
       setIsAdding(true);
       try {
         const tx = await handleCreateReferralCode(referralCode);
-        await tx.wait();
-        const receipt = await library.getTransactionReceipt(tx.hash);
+        const receipt = await tx.wait();
         if (receipt.status === 1) {
           recentlyAddedCodes.push(getSampleReferrarStat(referralCode));
           setRecentlyAddedCodes(recentlyAddedCodes);
