@@ -147,17 +147,17 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
       <div className="App-header-links preview">
         <div className="App-header-link-container App-header-link-home">
           <NavLink activeClassName="active" exact to="/">
-            HOME
+            {t('header.Home')}
           </NavLink>
         </div>
         <div className="App-header-link-container">
           <NavLink activeClassName="active" to="/earn">
-            EARN
+            {t('header.Earn')}
           </NavLink>
         </div>
         <div className="App-header-link-container">
           <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
-            ABOUT
+            {t('header.About')}
           </a>
         </div>
       </div>
@@ -177,46 +177,46 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
       )}
       <div className="App-header-link-container App-header-link-home">
         <NavLink activeClassName="active" exact to="/">
-          Home
+          {t('header.Home')}
         </NavLink>
       </div>
       {small && (
         <div className="App-header-link-container">
           <NavLink activeClassName="active" to="/trade">
-            Trade
+            {t('header.Trade')}
           </NavLink>
         </div>
       )}
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/dashboard">
-          Dashboard
+          {t('header.Dashboard')}
         </NavLink>
       </div>
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/earn">
-          Earn
+          {t('header.Earn')}
         </NavLink>
       </div>
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/buy">
-          {t('Buy')}
+          {t('header.Buy')}
         </NavLink>
       </div>
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/ecosystem">
-          Ecosystem
+          {t('header.Ecosystem')}
         </NavLink>
       </div>
       <div className="App-header-link-container">
         <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
-          About
+          {t('header.About')}
         </a>
       </div>
       {small && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
           <a href="#" onClick={openSettings}>
-            Settings
+            {t('header.Settings')}
           </a>
         </div>
       )}
@@ -231,6 +231,7 @@ function AppHeaderUser({
   showNetworkSelectorModal,
   disconnectAccountAndCloseSettings,
 }) {
+  const { t } = useTranslation();
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
   const showSelector = true;
@@ -272,7 +273,7 @@ function AppHeaderUser({
       <div className="App-header-user">
         <div className="App-header-user-link">
           <NavLink activeClassName="active" className="default-btn" to="/trade">
-            Trade
+            {t('header.Trade')}
           </NavLink>
         </div>
         {showSelector && (
@@ -288,7 +289,7 @@ function AppHeaderUser({
           />
         )}
         <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
-          {small ? "Connect" : "Connect Wallet"}
+          {small ? t("header.Connect") : t("header.Connect_Wallet")}
         </ConnectWalletButton>
       </div>
     );
@@ -300,7 +301,7 @@ function AppHeaderUser({
     <div className="App-header-user">
       <div className="App-header-user-link">
         <NavLink activeClassName="active" className="default-btn" to="/trade">
-          Trade
+          {t('header.Trade')}
         </NavLink>
       </div>
       {showSelector && (
@@ -329,6 +330,7 @@ function AppHeaderUser({
 }
 
 function FullApp() {
+  const { t } = useTranslation();
   const exchangeRef = useRef();
   const { connector, library, deactivate, activate, active } = useWeb3React();
   const { chainId } = useChainId();
@@ -380,13 +382,13 @@ function FullApp() {
     if (!hasMetaMaskWalletExtension()) {
       helperToast.error(
         <div>
-          MetaMask not detected.
+          {t("app.MetaMask_not_detected")}
           <br />
           <br />
           <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">
-            Install MetaMask
+            {t("app.Install_MetaMask")}
           </a>
-          {userOnMobileDevice ? ", and use GMX with its built-in browser" : " to start using GMX"}.
+          {userOnMobileDevice ? t("app.and_use_GMX_with_its_built_in_browser") : t("app.to_start_using_GMX")}.
         </div>
       );
       return false;
@@ -397,13 +399,13 @@ function FullApp() {
     if (!hasCoinBaseWalletExtension()) {
       helperToast.error(
         <div>
-          Coinbase Wallet not detected.
+          {t("app.Coinbase_Wallet_not_detected")}
           <br />
           <br />
           <a href="https://www.coinbase.com/wallet" target="_blank" rel="noopener noreferrer">
-            Install Coinbase Wallet
+            {t("app.Install_Coinbase_Wallet")}
           </a>
-          {userOnMobileDevice ? ", and use GMX with its built-in browser" : " to start using GMX"}.
+          {userOnMobileDevice ? t("app.and_use_GMX_with_its_built_in_browser") : t("app.to_start_using_GMX")}.
         </div>
       );
       return false;
@@ -471,17 +473,17 @@ function FullApp() {
   const saveAndCloseSettings = () => {
     const slippage = parseFloat(slippageAmount);
     if (isNaN(slippage)) {
-      helperToast.error("Invalid slippage value");
+      helperToast.error(t("app.Invalid_slippage_value"));
       return;
     }
     if (slippage > 5) {
-      helperToast.error("Slippage should be less than 5%");
+      helperToast.error(`${t("app.Slippage_should_be_less_than")} 5%`);
       return;
     }
 
     const basisPoints = (slippage * BASIS_POINTS_DIVISOR) / 100;
     if (parseInt(basisPoints) !== parseFloat(basisPoints)) {
-      helperToast.error("Max slippage precision is 0.01%");
+      helperToast.error(`${t("app.Max_slippage_precision_is")} 0.01%`);
       return;
     }
 
@@ -512,9 +514,9 @@ function FullApp() {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.error(
               <div>
-                Txn failed.{" "}
+                {t("app.Txn_failed")}{" "}
                 <a href={txUrl} target="_blank" rel="noopener noreferrer">
-                  View
+                  {t("shared.View")}
                 </a>
                 <br />
               </div>
@@ -526,7 +528,7 @@ function FullApp() {
               <div>
                 {pendingTxn.message}{" "}
                 <a href={txUrl} target="_blank" rel="noopener noreferrer">
-                  View
+                  {t("shared.View")}
                 </a>
                 <br />
               </div>
@@ -546,7 +548,7 @@ function FullApp() {
       checkPendingTxns();
     }, 2 * 1000);
     return () => clearInterval(interval);
-  }, [library, pendingTxns, chainId]);
+  }, [library, pendingTxns, chainId, t]);
 
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -807,15 +809,15 @@ function FullApp() {
       >
         <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
           <img src={metamaskImg} alt="MetaMask" />
-          <div>MetaMask</div>
+          <div>{t("app.MetaMask")}</div>
         </button>
         <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
           <img src={coinbaseImg} alt="Coinbase Wallet" />
-          <div>Coinbase Wallet</div>
+          <div>{t("app.Coinbase_Wallet")}</div>
         </button>
         <button className="Wallet-btn WalletConnect-btn" onClick={activateWalletConnect}>
           <img src={walletConnectImg} alt="WalletConnect" />
-          <div>WalletConnect</div>
+          <div>{t("app.WalletConnect")}</div>
         </button>
       </Modal>
       <Modal
@@ -825,7 +827,7 @@ function FullApp() {
         label="Settings"
       >
         <div className="App-settings-row">
-          <div>Allowed Slippage</div>
+          <div>{t("app.Allowed_Slippage")}</div>
           <div className="App-slippage-tolerance-input-container">
             <input
               type="number"
@@ -839,16 +841,16 @@ function FullApp() {
         </div>
         <div className="Exchange-settings-row">
           <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
-            Display PnL after fees
+            {t("app.Display_PnL_after_fees")}
           </Checkbox>
         </div>
         <div className="Exchange-settings-row">
           <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
-            Include PnL in leverage display
+            {t("app.Include_PnL_in_leverage_display")}
           </Checkbox>
         </div>
         <button className="App-cta Exchange-swap-button" onClick={saveAndCloseSettings}>
-          Save
+          {t("shared.Save")}
         </button>
       </Modal>
     </Router>

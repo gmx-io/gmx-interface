@@ -31,6 +31,8 @@ import Reader from "./abis/Reader.json";
 import Token from "./abis/Token.json";
 import GmxMigrator from "./abis/GmxMigrator.json";
 
+import { useTranslation } from 'react-i18next';
+
 const { MaxUint256, AddressZero } = ethers.constants;
 
 const precision = 1000000;
@@ -79,6 +81,7 @@ const readerAddress = getContract(CHAIN_ID, "Reader");
 const gmxMigratorAddress = getContract(CHAIN_ID, "GmxMigrator");
 
 function MigrationModal(props) {
+  const { t } = useTranslation();
   const {
     isVisible,
     setIsVisible,
@@ -142,10 +145,10 @@ function MigrationModal(props) {
 
   const getError = () => {
     if (!amount || amount.eq(0)) {
-      return "Enter an amount";
+      return t("migration.Enter_an_amount");
     }
     if (maxAmount && amount.gt(maxAmount)) {
-      return "Max amount exceeded";
+      return t("migration.Max_amount_exceeded");
     }
   };
 
@@ -172,9 +175,9 @@ function MigrationModal(props) {
         const txUrl = getExplorerUrl(CHAIN_ID) + "tx/" + res.hash;
         helperToast.success(
           <div>
-            Migration submitted!{" "}
+            {t("migration.Migration_submitted")}{" "}
             <a href={txUrl} target="_blank" rel="noopener noreferrer">
-              View status.
+              {t("migration.View_status")}
             </a>
             <br />
           </div>
@@ -183,7 +186,7 @@ function MigrationModal(props) {
       })
       .catch((e) => {
         console.error(e);
-        helperToast.error("Migration failed.");
+        helperToast.error(t("migration.Migration_failed"));
       })
       .finally(() => {
         setIsMigrating(false);
@@ -213,18 +216,18 @@ function MigrationModal(props) {
       return error;
     }
     if (isApproving) {
-      return `Approving...`;
+      return t("migration.Approving");
     }
     if (needApproval && isPendingApproval) {
-      return "Waiting for Approval";
+      return t("migration.Waiting_for_Approval");
     }
     if (needApproval) {
-      return `Approve ${token.name}`;
+      return `${t("migration.Approve")} ${token.name}`;
     }
     if (isMigrating) {
-      return "Migrating...";
+      return t("migration.Migrating");
     }
-    return "Migrate";
+    return t("migration.Migrate");
   };
 
   return (
@@ -233,10 +236,10 @@ function MigrationModal(props) {
         <div className="Exchange-swap-section">
           <div className="Exchange-swap-section-top">
             <div className="muted">
-              <div className="Exchange-swap-usd">Migrate</div>
+              <div className="Exchange-swap-usd">{t("migration.Migrate")}</div>
             </div>
             <div className="muted align-right clickable" onClick={() => setValue(formatAmountFree(maxAmount, 18, 8))}>
-              Max: {formatAmount(maxAmount, 18, 4, true)}
+              {t("migration.Max")}: {formatAmount(maxAmount, 18, 4, true)}
             </div>
           </div>
           <div className="Exchange-swap-section-bottom">
@@ -268,7 +271,7 @@ function MigrationModal(props) {
           </div>
           {token.bonus > 0 && (
             <div className="App-info-row">
-              <div className="App-info-label">Bonus Tokens</div>
+              <div className="App-info-label">{t("migration.Bonus_Tokens")}</div>
               <div className="align-right">
                 {bonusAmount &&
                   `${formatAmount(bonusAmount, 18, 4, true)} GMX ($${formatAmount(
@@ -283,7 +286,7 @@ function MigrationModal(props) {
           )}
           {token.bonus > 0 && (
             <div className="App-info-row">
-              <div className="App-info-label">To Receive</div>
+              <div className="App-info-label">{t("migration.To_Receive")}</div>
               <div className="align-right">
                 {totalAmount &&
                   `${formatAmount(totalAmount, 18, 4, true)} GMX ($${formatAmount(
@@ -308,6 +311,7 @@ function MigrationModal(props) {
 }
 
 export default function Migration() {
+  const { t } = useTranslation();
   const [isMigrationModalVisible, setIsMigrationModalVisible] = useState(false);
   const [isPendingApproval, setIsPendingApproval] = useState(false);
   const [migrationIndex, setMigrationIndex] = useState(0);
@@ -404,20 +408,20 @@ export default function Migration() {
           <div className="Stake-title-primary App-hero-primary">
             ${formatAmount(totalMigratedUsd, decimals + 18, 0, true)}
           </div>
-          <div className="Stake-title-secondary">Total Assets Migrated</div>
+          <div className="Stake-title-secondary">{t("migration.Total_Assets_Migrated")}</div>
         </div>
       </div>
-      <div className="Migration-note">Your wallet: {formatAmount(gmxBalance, 18, 4, true)} GMX</div>
+      <div className="Migration-note">{t("migration.Your_wallet")}: {formatAmount(gmxBalance, 18, 4, true)} GMX</div>
       <div className="Migration-note">
-        Please read the&nbsp;
+        {t("migration.Please_read_the")}&nbsp;
         <a
           href="https://gambitprotocol.medium.com/gambit-gmx-migration-now-live-2ba999d208dd"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Medium post
+          {t("migration.Medium_post")}
         </a>{" "}
-        before migrating.
+        {t("migration.before_migrating")}
       </div>
       <div className="Migration-cards">
         {tokens.map((token, index) => {
@@ -428,19 +432,19 @@ export default function Migration() {
               <div className="Stake-card-title App-card-title">{token.name}</div>
               <div className="Stake-card-bottom App-card-content">
                 <div className="Stake-info App-card-row">
-                  <div className="label">Wallet</div>
+                  <div className="label">{t("migration.Wallet")}</div>
                   <div>{formatArrayAmount(balances, index * 2, 18, 4, true)}</div>
                 </div>
                 <div className="Stake-info App-card-row">
-                  <div className="label">Migration Price</div>
+                  <div className="label">{t("migration.Migration_Price")}</div>
                   <div>${formatAmount(price, decimals, 2, true)}</div>
                 </div>
                 <div className="Stake-info App-card-row">
-                  <div className="label">Bonus Tokens</div>
+                  <div className="label">{t("migration.Bonus_Tokens")}</div>
                   <div>{parseFloat(bonus).toFixed(2)}%</div>
                 </div>
                 <div className="Stake-info App-card-row">
-                  <div className="label">Migrated</div>
+                  <div className="label">{t("migration.Migrated")}</div>
                   {!hasCap && <div>{formatArrayAmount(migratedAmounts, index, 18, 0, true)}</div>}
                   {hasCap && (
                     <div>
@@ -451,12 +455,12 @@ export default function Migration() {
                 <div className="App-card-options">
                   {!active && (
                     <button className="App-button-option App-card-option" onClick={connectWallet}>
-                      Connect Wallet
+                      {t("migration.Connect_Wallet")}
                     </button>
                   )}
                   {active && (
                     <button className="App-button-option App-card-option" onClick={() => showMigrationModal(index)}>
-                      Migrate
+                      {t("migration.Migrate")}
                     </button>
                   )}
                 </div>

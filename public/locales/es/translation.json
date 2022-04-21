@@ -1,0 +1,36 @@
+{
+  "header": {
+    "Home": "Home",
+    "Trade": "Trade",
+    "Dashboard": "Dashboard",
+    "Earn": "Earn",
+    "Buy": "Buy",
+    "Ecosystem": "Ecosystem",
+    "About": "About",
+    "Settings": "Settings",
+    "Connect": "Connect",
+    "Connect_Wallet": "Connect Wallet"
+  },
+  "app": {
+    "MetaMask_not_detected": "MetaMask not detected.",
+    "Install_MetaMask": "Install MetaMask",
+    "and_use_GMX_with_its_built_in_browser": ", and use GMX with its built-in browser",
+    "to_start_using_GMX": " to start using GMX",
+    "Coinbase_Wallet_not_detected": "Coinbase Wallet not detected.",
+    "Install_Coinbase_Wallet": "Install Coinbase Wallet",
+    "Invalid_slippage_value": "Invalid slippage value",
+    "Slippage_should_be_less_than": "Slippage should be less than",
+    "Max_slippage_precision_is": "Max slippage precision is",
+    "Txn_failed": "Txn failed.",
+    "MetaMask": "MetaMask",
+    "Coinbase_Wallet": "Coinbase Wallet",
+    "WalletConnect": "WalletConnect",
+    "Allowed_Slippage": "Allowed Slippage",
+    "Display_PnL_after_fees": "Display PnL after fees",
+    "Include_PnL_in_leverage_display": "Include PnL in leverage display"
+  },
+  "shared": {
+    "View": "View",
+    "Save": "Save"
+  }
+}

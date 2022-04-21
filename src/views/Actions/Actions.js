@@ -18,10 +18,12 @@ import OrdersList from "../../components/Exchange/OrdersList";
 
 import TradeHistory from "../../components/Exchange/TradeHistory";
 import Reader from "../../abis/Reader.json";
+import { useTranslation } from 'react-i18next';
 
 const USD_DECIMALS = 30;
 
 export default function Actions() {
+  const { t } = useTranslation();
   const { account } = useParams();
   const { active, library } = useWeb3React();
 
@@ -81,11 +83,11 @@ export default function Actions() {
 
   return (
     <div className="Actions">
-      {checkSummedAccount.length > 0 && <div className="Actions-section">Account: {checkSummedAccount}</div>}
+      {checkSummedAccount.length > 0 && <div className="Actions-section">{t("actions.Account")}: {checkSummedAccount}</div>}
       {shouldShowPnl && (
         <div className="Actions-section">
           <div className="Actions-title">PnL</div>
-          {(!pnlData || pnlData.length === 0) && <div>No PnLs found</div>}
+          {(!pnlData || pnlData.length === 0) && <div>{t("actions.No_PnLs_found")}</div>}
           {pnlData &&
             pnlData.length > 0 &&
             pnlData.map((pnlRow, index) => {
@@ -93,11 +95,11 @@ export default function Actions() {
               return (
                 <div className="TradeHistory-row App-box App-box-border" key={index}>
                   <div>
-                    {token.symbol} {pnlRow.data.isLong ? "Long" : "Short"} Profit:{" "}
+                    {token.symbol} {pnlRow.data.isLong ? t("actions.Long") : t("actions.Short")} {t("actions.Profit")}:{" "}
                     {formatAmount(pnlRow.data.profit, USD_DECIMALS, 2, true)} USD
                   </div>
                   <div>
-                    {token.symbol} {pnlRow.data.isLong ? "Long" : "Short"} Loss:{" "}
+                    {token.symbol} {pnlRow.data.isLong ? t("actions.Long") : t("actions.Short")} {t("actions.Loss")}:{" "}
                     {formatAmount(pnlRow.data.loss, USD_DECIMALS, 2, true)} USD
                   </div>
                 </div>
@@ -107,7 +109,7 @@ export default function Actions() {
       )}
       {checkSummedAccount.length > 0 && (
         <div className="Actions-section">
-          <div className="Actions-title">Positions</div>
+          <div className="Actions-title">{t("actions.Positions")}</div>
           <PositionsList
             positions={positions}
             positionsMap={positionsMap}
@@ -126,7 +128,7 @@ export default function Actions() {
       )}
       {flagOrdersEnabled && checkSummedAccount.length > 0 && (
         <div className="Actions-section">
-          <div className="Actions-title">Orders</div>
+          <div className="Actions-title">{t("actions.Orders")}</div>
           <OrdersList
             account={checkSummedAccount}
             infoTokens={infoTokens}
@@ -139,7 +141,7 @@ export default function Actions() {
         </div>
       )}
       <div className="Actions-section">
-        <div className="Actions-title">Actions</div>
+        <div className="Actions-title">{t("actions.Actions")}</div>
         <TradeHistory
           account={checkSummedAccount}
           infoTokens={infoTokens}
