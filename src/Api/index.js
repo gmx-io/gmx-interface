@@ -690,13 +690,13 @@ export async function setTraderReferralCodeByUser(chainId, referralCode, { libra
     ...props,
   });
 }
-export async function getReferralCodeOwner(chainId, referralCode, library, active) {
+export async function getReferralCodeOwner(chainId, referralCode) {
   const ReferralStorageAddress = getContract(chainId, "ReferralStorage");
   const ReferralReaderAddress = getContract(chainId, "ReferralReader");
-  const provider = getProvider(library, chainId);
+  const provider = getProvider(null, chainId);
   const contract = new ethers.Contract(ReferralReaderAddress, ReferralReader.abi, provider);
-  const res = await contract.getCodeOwners(ReferralStorageAddress, [referralCode]);
-  return res;
+  const [ownerAddress] = await contract.getCodeOwners(ReferralStorageAddress, [referralCode]);
+  return ownerAddress;
 }
 
 export async function createSwapOrder(

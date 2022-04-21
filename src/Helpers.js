@@ -2574,3 +2574,6 @@ export function getPageTitle(data) {
 export function isHashZero(value) {
   return value === ethers.constants.HashZero;
 }
+export function isAddressZero(value) {
+  return value === ethers.constants.AddressZero;
+}
