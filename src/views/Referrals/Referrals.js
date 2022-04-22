@@ -121,7 +121,7 @@ function getErrorMessage(value) {
 
   const regexForValidString = /^\w+$/; // only number, string and underscore is allowed
   if (!regexForValidString.test(trimmedValue)) {
-    return "The referral code contains invalid character.";
+    return "Only letters, numbers and underscores are allowed.";
   }
   return "";
 }
@@ -272,9 +272,12 @@ function CreateReferrarCode({
 
   useEffect(() => {
     const checkCodeTakenStatus = async () => {
+      if (error || error.length > 0) {
+        setReferralCodeCheckStatus("ok");
+        return;
+      }
       const localReferralCode = debouncedReferralCode;
       const takenStatus = await getReferralCodeTakenStatus(debouncedReferralCode, chainId);
-      console.log("localReferralCode", localReferralCode, debouncedReferralCode);
       // ignore the result if the referral code to check has changed
       if (debouncedReferralCode !== localReferralCode) {
         return;
@@ -287,7 +290,7 @@ function CreateReferrarCode({
     };
     setReferralCodeCheckStatus("checking");
     checkCodeTakenStatus();
-  }, [debouncedReferralCode, chainId]);
+  }, [debouncedReferralCode, error, chainId]);
 
   function getButtonError() {
     if (!referralCode || referralCode.length === 0) {
@@ -432,9 +435,12 @@ function ReferrersStats({
 
   useEffect(() => {
     const checkCodeTakenStatus = async () => {
+      if (error || error.length > 0) {
+        setReferralCodeCheckStatus("ok");
+        return;
+      }
       const localReferralCode = debouncedReferralCode;
       const takenStatus = await getReferralCodeTakenStatus(debouncedReferralCode, chainId);
-      console.log("localReferralCode", localReferralCode, debouncedReferralCode);
       // ignore the result if the referral code to check has changed
       if (debouncedReferralCode !== localReferralCode) {
         return;
@@ -447,7 +453,7 @@ function ReferrersStats({
     };
     setReferralCodeCheckStatus("checking");
     checkCodeTakenStatus();
-  }, [debouncedReferralCode, chainId]);
+  }, [debouncedReferralCode, error, chainId]);
 
   function getButtonError() {
     if (!referralCode || referralCode.length === 0) {
