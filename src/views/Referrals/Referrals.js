@@ -57,8 +57,10 @@ async function getReferralCodeTakenStatus(account, referralCode, chainId) {
   const ownerArbitrum = await getReferralCodeOwner(ARBITRUM, referralCodeBytes32);
   const ownerAvax = await getReferralCodeOwner(AVALANCHE, referralCodeBytes32);
 
-  const takenOnArb = !isAddressZero(ownerArbitrum) && ownerArbitrum !== account;
-  const takenOnAvax = !isAddressZero(ownerAvax) && ownerAvax !== account;
+  const takenOnArb =
+    !isAddressZero(ownerArbitrum) && (ownerArbitrum !== account || (ownerArbitrum === account && chainId === ARBITRUM));
+  const takenOnAvax =
+    !isAddressZero(ownerAvax) && (ownerAvax !== account || (ownerAvax === account && chainId === AVALANCHE));
 
   const referralCodeTakenInfo = {
     [ARBITRUM]: takenOnArb,
