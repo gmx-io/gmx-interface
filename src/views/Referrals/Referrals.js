@@ -101,6 +101,7 @@ const getSampleReferrarStat = (code) => {
     referralCode: code,
     totalRebateUsd: bigNumberify(0),
     tradedReferralsCount: 0,
+    registeredReferralsCount: 0,
     trades: 0,
     volume: bigNumberify(0),
     time: Date.now(),
@@ -584,7 +585,7 @@ function ReferrersStats({
         <InfoCard
           label="Total Traders Referred"
           tooltipText="Amount of traders you referred."
-          data={cumulativeStats?.referralsCount || "0"}
+          data={cumulativeStats?.registeredReferralsCount || "0"}
         />
         <InfoCard
           label="Total Trading Volume"
@@ -684,7 +685,7 @@ function ReferrersStats({
                         </div>
                       </td>
                       <td data-label="Total Volume">{getUSDValue(stat.volume)}</td>
-                      <td data-label="Traders Referred">{stat.tradedReferralsCount}</td>
+                      <td data-label="Traders Referred">{stat.registeredReferralsCount}</td>
                       <td data-label="Total Rebates">{getUSDValue(referrerRebate)}</td>
                     </tr>
                   );

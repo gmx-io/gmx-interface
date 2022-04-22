@@ -78,6 +78,7 @@ export function useReferralsData(chainId, account) {
         volume,
         trades,
         tradedReferralsCount,
+        registeredReferralsCount,
         totalRebateUsd,
         discountUsd
       }
@@ -93,6 +94,7 @@ export function useReferralsData(chainId, account) {
         volume,
         trades,
         tradedReferralsCount,
+        registeredReferralsCount,
         totalRebateUsd,
         discountUsd
       }
@@ -149,6 +151,7 @@ export function useReferralsData(chainId, account) {
             volume: bigNumberify(e.volume),
             trades: parseInt(e.trades),
             tradedReferralsCount: parseInt(e.tradedReferralsCount),
+            registeredReferralsCount: parseInt(e.registeredReferralsCount),
             totalRebateUsd: bigNumberify(e.totalRebateUsd),
             discountUsd: bigNumberify(e.discountUsd),
             referralCode: decodeReferralCode(e.referralCode),
@@ -162,15 +165,17 @@ export function useReferralsData(chainId, account) {
               acc.volume = acc.volume.add(cv.volume);
               acc.discountUsd = acc.discountUsd.add(cv.discountUsd);
               acc.trades = acc.trades + cv.trades;
-              acc.referralsCount = acc.referralsCount + cv.tradedReferralsCount;
+              acc.tradedReferralsCount = acc.tradedReferralsCount + cv.tradedReferralsCount;
+              acc.registeredReferralsCount = acc.registeredReferralsCount + cv.registeredReferralsCount;
               return acc;
             },
             {
               rebates: bigNumberify(0),
               volume: bigNumberify(0),
               discountUsd: bigNumberify(0),
-              trades: parseInt(0),
-              referralsCount: parseInt(0),
+              trades: 0,
+              tradedReferralsCount: 0,
+              registeredReferralsCount: 0,
             }
           );
         }
