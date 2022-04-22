@@ -144,9 +144,8 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     const referralCodeHex = encodeReferralCode(code);
     return registerReferralCode(chainId, referralCodeHex, {
       library,
-      successMsg: `Referral code created!`,
+      sentMsg: "Referral code submitted!",
       failMsg: "Referral code creation failed.",
-      setPendingTxns,
       pendingTxns,
     });
   }
@@ -354,6 +353,7 @@ function CreateReferrarCode({
 
         if (receipt.status === 1) {
           recentlyAddedCodes.push(getSampleReferrarStat(referralCode));
+          helperToast.success("Referral code created!");
           setRecentlyAddedCodes(recentlyAddedCodes);
           setReferralCode("");
         }
@@ -527,12 +527,13 @@ function ReferrersStats({
       setIsAdding(true);
       try {
         const tx = await handleCreateReferralCode(referralCode);
+        close();
         const receipt = await tx.wait();
         if (receipt.status === 1) {
           recentlyAddedCodes.push(getSampleReferrarStat(referralCode));
+          helperToast.success("Referral code created!");
           setRecentlyAddedCodes(recentlyAddedCodes);
           setReferralCode("");
-          close();
         }
       } catch (err) {
         console.error(err);
@@ -542,7 +543,7 @@ function ReferrersStats({
     }
   }
 
-  const { cumulativeStats, referrerTotalStats, discountDistributions, referrerTierInfo } = referralsData;
+  let { cumulativeStats, referrerTotalStats, discountDistributions, referrerTierInfo } = referralsData;
   const finalReferrerTotalStats = recentlyAddedCodes.filter(isRecentReferralNotCodeExpired).reduce((acc, cv) => {
     const addedCodes = referrerTotalStats.map((c) => c.referralCode.trim());
     if (!addedCodes.includes(cv.referralCode)) {
