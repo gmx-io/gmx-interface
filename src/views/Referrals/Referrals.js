@@ -16,6 +16,7 @@ import {
   shortenAddress,
   bigNumberify,
   REFERRAL_CODE_QUERY_PARAMS,
+  MAX_REFERRAL_CODE_LENGTH,
   isHashZero,
   REFERRAL_CODE_KEY,
   useLocalStorageSerializeKey,
@@ -121,8 +122,8 @@ function getErrorMessage(value) {
     return "The referral code can't contain spaces.";
   }
 
-  if (trimmedValue.length > 20) {
-    return "The referral code can't be more than 20 characters.";
+  if (trimmedValue.length > MAX_REFERRAL_CODE_LENGTH) {
+    return `The referral code can't be more than ${MAX_REFERRAL_CODE_LENGTH} characters.`;
   }
 
   const regexForValidString = /^\w+$/; // only number, string and underscore is allowed

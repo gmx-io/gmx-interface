@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { gql } from "@apollo/client";
 import { useState, useEffect } from "react";
 
-import { ARBITRUM, AVALANCHE, bigNumberify } from "../Helpers";
+import { ARBITRUM, AVALANCHE, MAX_REFERRAL_CODE_LENGTH, bigNumberify } from "../Helpers";
 import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "./common";
 
 function getGraphClient(chainId) {
@@ -32,8 +32,8 @@ export function decodeReferralCode(hexCode) {
 
 export function encodeReferralCode(code) {
   let final = code.replace(/[^\w\s_]/g, ""); // replace everything other than numbers, string  and underscor to ''
-  if (final.length > 25) {
-    final = final.substring(0, 25);
+  if (final.length > MAX_REFERRAL_CODE_LENGTH) {
+    return ethers.constants.HashZero;
   }
 
   return ethers.utils.formatBytes32String(final);
