@@ -280,18 +280,18 @@ function CreateReferrarCode({
   const [isChecked, setIsChecked] = useState(false);
 
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
-  const debouncedReferralCode = useDebounce(referralCode, 500);
+  const debouncedReferralCode = useDebounce(referralCode, 300);
 
   useEffect(() => {
+    let cancelled = false;
     const checkCodeTakenStatus = async () => {
       if (error || error.length > 0) {
         setReferralCodeCheckStatus("ok");
         return;
       }
-      const localReferralCode = debouncedReferralCode;
       const takenStatus = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
       // ignore the result if the referral code to check has changed
-      if (debouncedReferralCode !== localReferralCode) {
+      if (cancelled) {
         return;
       }
       if (takenStatus === "none") {
@@ -302,6 +302,9 @@ function CreateReferrarCode({
     };
     setReferralCodeCheckStatus("checking");
     checkCodeTakenStatus();
+    return () => {
+      cancelled = true;
+    };
   }, [account, debouncedReferralCode, error, chainId]);
 
   function getButtonError() {
@@ -445,18 +448,18 @@ function ReferrersStats({
   const addNewModalRef = useRef(null);
 
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
-  const debouncedReferralCode = useDebounce(referralCode, 500);
+  const debouncedReferralCode = useDebounce(referralCode, 300);
 
   useEffect(() => {
+    let cancelled = false;
     const checkCodeTakenStatus = async () => {
       if (error || error.length > 0) {
         setReferralCodeCheckStatus("ok");
         return;
       }
-      const localReferralCode = debouncedReferralCode;
       const takenStatus = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
       // ignore the result if the referral code to check has changed
-      if (debouncedReferralCode !== localReferralCode) {
+      if (cancelled) {
         return;
       }
       if (takenStatus === "none") {
@@ -467,6 +470,9 @@ function ReferrersStats({
     };
     setReferralCodeCheckStatus("checking");
     checkCodeTakenStatus();
+    return () => {
+      cancelled = true;
+    };
   }, [account, debouncedReferralCode, error, chainId]);
 
   function getButtonError() {
