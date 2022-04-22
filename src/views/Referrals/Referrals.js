@@ -444,6 +444,10 @@ function ReferrersStats({
   }, referrerTotalStats);
 
   const tierId = referrerTierInfo?.tierId;
+  let referrerRebates = bigNumberify(0);
+  if (cumulativeStats && cumulativeStats.rebates && cumulativeStats.discountUsd) {
+    referrerRebates = cumulativeStats.rebates.sub(cumulativeStats.discountUsd);
+  }
 
   return (
     <div className="referral-body-container">
@@ -461,12 +465,7 @@ function ReferrersStats({
         <InfoCard
           label="Total Rebates"
           tooltipText="Rebates earned by this account as an affiliate."
-          data={getUSDValue(cumulativeStats?.rebates)}
-        />
-        <InfoCard
-          label="Total Rebates For Traders"
-          tooltipText="Rebates earned by your referred traders."
-          data={getUSDValue(cumulativeStats?.discountUsd)}
+          data={getUSDValue(referrerRebates)}
         />
       </div>
       <div className="list">
@@ -512,7 +511,7 @@ function ReferrersStats({
               <p className="title">
                 Referral Codes{" "}
                 <span className="sub-title">
-                  {referrerTierInfo && `Tier: ${tierId} - (${tierRebateInfo[tierId]}% rebate)`}
+                  {referrerTierInfo && `Tier ${tierId} (${tierRebateInfo[tierId]}% rebate)`}
                 </span>
               </p>
               <button className="transparent-btn" onClick={open}>
@@ -553,7 +552,7 @@ function ReferrersStats({
                       </td>
                       <td data-label="Total Volume">{getUSDValue(stat.volume)}</td>
                       <td data-label="Traders Referred">{stat.tradedReferralsCount}</td>
-                      <td data-label="Total Rebates">{getUSDValue(stat.totalRebateUsd)}</td>
+                      <td data-label="Total Rebates">{getUSDValue(stat.totalRebateUsd.sub(stat.discountUsd))}</td>
                     </tr>
                   );
                 })}
@@ -655,7 +654,7 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
         />
         <InfoCard
           label="Total Rebates"
-          tooltipText="Rebates earned by this account as an affiliate."
+          tooltipText="Rebates earned by this account as a trader."
           data={getUSDValue(referralTotalStats?.discountUsd)}
         />
         <InfoCard
@@ -668,7 +667,7 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
               </div>
               {referrerTier && (
                 <div className="tier">
-                  <span>Referrer Tier: {`${referrerTierString} (${tierRebateInfo[referrerTierString]}% rebate)`}</span>
+                  <span>Referrer Tier {`${referrerTierString} (${tierRebateInfo[referrerTierString]}% rebate)`}</span>
                   <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
                     <BiInfoCircle size={14} />
                   </a>
