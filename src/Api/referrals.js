@@ -31,9 +31,9 @@ export function decodeReferralCode(hexCode) {
 }
 
 export function encodeReferralCode(code) {
-  const final = code.replace(/[^\w\s_]/g, ""); // replace everything other than numbers, string  and underscor to ''
-  if (final.length > 31) {
-    throw new Error("Code is too big");
+  let final = code.replace(/[^\w\s_]/g, ""); // replace everything other than numbers, string  and underscor to ''
+  if (final.length > 25) {
+    final = final.substring(0, 25);
   }
 
   return ethers.utils.formatBytes32String(final);
