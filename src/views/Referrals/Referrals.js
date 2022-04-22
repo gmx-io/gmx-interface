@@ -18,7 +18,7 @@ import {
   REFERRAL_CODE_QUERY_PARAMS,
   MAX_REFERRAL_CODE_LENGTH,
   isHashZero,
-  REFERRAL_CODE_KEY,
+  REFERRALS_SELECTED_TAB_KEY,
   useLocalStorageSerializeKey,
   ARBITRUM,
   AVALANCHE,
@@ -136,7 +136,7 @@ function getErrorMessage(value) {
 function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { active, account, library, chainId: chainIdWithoutLocalStorage } = useWeb3React();
   const { chainId } = useChainId();
-  const [activeTab, setActiveTab] = useLocalStorage(REFERRAL_CODE_KEY, TRADERS);
+  const [activeTab, setActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, TRADERS);
   const { data: referralsData, loading } = useReferralsData(chainIdWithoutLocalStorage, account);
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], []);
   const { userReferralCode } = useUserReferralCode(library, chainId, account);
