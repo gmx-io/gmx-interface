@@ -520,7 +520,7 @@ function ReferrersStats({
   async function handleSubmit(event) {
     event.preventDefault();
     setIsAdding(true);
-    const takenStatus = await getReferralCodeTakenStatus(referralCode, chainId);
+    const takenStatus = await getReferralCodeTakenStatus(account, referralCode, chainId);
 
     if (takenStatus === "all" || takenStatus === "current") {
       setError(`Referral code is taken.`);
