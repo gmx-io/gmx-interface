@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
+import { useCopyToClipboard } from "react-use";
 
 import { getContract } from "../../Addresses";
 import { callContract } from "../../Api";
-import { useChainId } from "../../Helpers";
+import { useChainId, helperToast } from "../../Helpers";
 
 import Modal from "../../components/Modal/Modal";
 import Footer from "../../Footer";
@@ -15,6 +16,7 @@ import RewardRouter from "../../abis/RewardRouter.json";
 import "./CompleteAccountTransfer.css";
 
 export default function CompleteAccountTransfer(props) {
+  const [, copyToClipboard] = useCopyToClipboard();
   const { sender, receiver } = useParams();
   const { setPendingTxns } = props;
   const { library, account } = useWeb3React();
@@ -91,8 +93,21 @@ export default function CompleteAccountTransfer(props) {
         <div className="Page-title">Complete Account Transfer</div>
         {!isCorrectAccount && (
           <div className="Page-description">
-            You have a pending transfer from {sender}.<br />
-            Please connect your wallet to {receiver} to accept the transfer.
+            To complete the transfer, you must switch your connected account to {receiver}.
+            <br />
+            <br />
+            You will need to be on this page to accept the transfer,{" "}
+            <span
+              onClick={() => {
+                copyToClipboard(window.location.href);
+                helperToast.success("Link copied to your clipboard");
+              }}
+            >
+              click here
+            </span>{" "}
+            to copy the link to this page if needed.
+            <br />
+            <br />
           </div>
         )}
         {isCorrectAccount && (
@@ -101,15 +116,17 @@ export default function CompleteAccountTransfer(props) {
           </div>
         )}
       </div>
-      <div className="Page-content">
-        <div className="input-form">
-          <div className="input-row">
-            <button className="App-cta Exchange-swap-button" disabled={!isPrimaryEnabled()} onClick={onClickPrimary}>
-              {getPrimaryText()}
-            </button>
+      {isCorrectAccount && (
+        <div className="Page-content">
+          <div className="input-form">
+            <div className="input-row">
+              <button className="App-cta Exchange-swap-button" disabled={!isPrimaryEnabled()} onClick={onClickPrimary}>
+                {getPrimaryText()}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <Footer />
     </div>
   );
