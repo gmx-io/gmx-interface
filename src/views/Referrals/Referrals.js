@@ -52,14 +52,18 @@ function isRecentReferralNotCodeExpired(referralCodeInfo) {
   }
 }
 
-async function getReferralCodeTakenStatus(referralCode, chainId) {
+async function getReferralCodeTakenStatus(account, referralCode, chainId) {
   const referralCodeBytes32 = encodeReferralCode(referralCode);
   const ownerArbitrum = await getReferralCodeOwner(ARBITRUM, referralCodeBytes32);
   const ownerAvax = await getReferralCodeOwner(AVALANCHE, referralCodeBytes32);
+
+  const takenOnArb = !isAddressZero(ownerArbitrum) && ownerArbitrum !== account;
+  const takenOnAvax = !isAddressZero(ownerAvax) && ownerAvax !== account;
+
   const referralCodeTakenInfo = {
-    [ARBITRUM]: !isAddressZero(ownerArbitrum),
-    [AVALANCHE]: !isAddressZero(ownerAvax),
-    both: !isAddressZero(ownerArbitrum) && !isAddressZero(ownerAvax),
+    [ARBITRUM]: takenOnArb,
+    [AVALANCHE]: takenOnAvax,
+    both: takenOnArb && takenOnAvax,
   };
 
   if (referralCodeTakenInfo.both) {
@@ -154,6 +158,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     if (!account)
       return (
         <CreateReferrarCode
+          account={account}
           isWalletConnected={active}
           handleCreateReferralCode={handleCreateReferralCode}
           library={library}
@@ -170,6 +175,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     if (referralsData.codes?.length > 0 || recentlyAddedCodes.filter(isRecentReferralNotCodeExpired).length > 0) {
       return (
         <ReferrersStats
+          account={account}
           active={active}
           referralsData={referralsData}
           handleCreateReferralCode={handleCreateReferralCode}
@@ -184,6 +190,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     } else {
       return (
         <CreateReferrarCode
+          account={account}
           isWalletConnected={active}
           handleCreateReferralCode={handleCreateReferralCode}
           library={library}
@@ -252,6 +259,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
 }
 
 function CreateReferrarCode({
+  account,
   handleCreateReferralCode,
   isWalletConnected,
   connectWallet,
@@ -276,7 +284,7 @@ function CreateReferrarCode({
         return;
       }
       const localReferralCode = debouncedReferralCode;
-      const takenStatus = await getReferralCodeTakenStatus(debouncedReferralCode, chainId);
+      const takenStatus = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
       // ignore the result if the referral code to check has changed
       if (debouncedReferralCode !== localReferralCode) {
         return;
@@ -289,7 +297,7 @@ function CreateReferrarCode({
     };
     setReferralCodeCheckStatus("checking");
     checkCodeTakenStatus();
-  }, [debouncedReferralCode, error, chainId]);
+  }, [account, debouncedReferralCode, error, chainId]);
 
   function getButtonError() {
     if (!referralCode || referralCode.length === 0) {
@@ -334,7 +342,7 @@ function CreateReferrarCode({
   async function handleSubmit(event) {
     event.preventDefault();
     setIsProcessing(true);
-    const takenStatus = await getReferralCodeTakenStatus(referralCode, chainId);
+    const takenStatus = await getReferralCodeTakenStatus(account, referralCode, chainId);
     if (takenStatus === "all" || takenStatus === "current") {
       setError(`Referral code is taken.`);
       setIsProcessing(false);
@@ -413,6 +421,7 @@ function CreateReferrarCode({
 }
 
 function ReferrersStats({
+  account,
   active,
   referralsData,
   handleCreateReferralCode,
@@ -440,7 +449,7 @@ function ReferrersStats({
         return;
       }
       const localReferralCode = debouncedReferralCode;
-      const takenStatus = await getReferralCodeTakenStatus(debouncedReferralCode, chainId);
+      const takenStatus = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
       // ignore the result if the referral code to check has changed
       if (debouncedReferralCode !== localReferralCode) {
         return;
@@ -453,7 +462,7 @@ function ReferrersStats({
     };
     setReferralCodeCheckStatus("checking");
     checkCodeTakenStatus();
-  }, [debouncedReferralCode, error, chainId]);
+  }, [account, debouncedReferralCode, error, chainId]);
 
   function getButtonError() {
     if (!referralCode || referralCode.length === 0) {
