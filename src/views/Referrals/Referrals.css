@@ -191,6 +191,17 @@
   display: inline-flex;
   align-items: center;
 }
+.table-referral-code .copy-icon:hover {
+  opacity: 0.75;
+}
+.table-referral-code .status-icon {
+  display: inline-flex;
+  margin-left: 1rem;
+}
+.table-referral-code .status-icon img {
+  width: 14px;
+  margin-right: 0.5rem;
+}
 
 .referral-code {
   display: flex;

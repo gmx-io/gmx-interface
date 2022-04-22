@@ -5,6 +5,8 @@ import Card from "../../components/Common/Card";
 import SEO from "../../components/Common/SEO";
 import Tab from "../../components/Tab/Tab";
 import Footer from "../../Footer";
+import avalanche16Icon from "../../img/ic_avalanche_16.svg";
+import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 import {
   useChainId,
   getPageTitle,
@@ -33,7 +35,7 @@ import {
   useReferrerTier,
   useUserReferralCode,
 } from "../../Api";
-import { BiCopy, BiEditAlt, BiInfoCircle } from "react-icons/bi";
+import { BiCheckShield, BiCopy, BiEditAlt, BiInfoCircle, BiShieldX } from "react-icons/bi";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import { useCopyToClipboard, useLocalStorage } from "react-use";
 import Loader from "../../components/Common/Loader";
@@ -170,6 +172,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
           recentlyAddedCodes={recentlyAddedCodes}
           chainId={chainId}
           library={library}
+          account={account}
           setPendingTxns={setPendingTxns}
           pendingTxns={pendingTxns}
         />
@@ -250,7 +253,6 @@ function CreateReferrarCode({
   connectWallet,
   setRecentlyAddedCodes,
   recentlyAddedCodes,
-  library,
   chainId,
 }) {
   const [referralCode, setReferralCode] = useState("");
@@ -295,7 +297,6 @@ function CreateReferrarCode({
       try {
         const tx = await handleCreateReferralCode(referralCode);
         const receipt = await tx.wait();
-
         if (receipt.status === 1) {
           recentlyAddedCodes.push(getSampleReferrarStat(referralCode));
           setRecentlyAddedCodes(recentlyAddedCodes);
@@ -360,7 +361,6 @@ function ReferrersStats({
   referralsData,
   handleCreateReferralCode,
   chainId,
-  library,
   setRecentlyAddedCodes,
   recentlyAddedCodes,
 }) {
@@ -525,6 +525,7 @@ function ReferrersStats({
               <thead>
                 <tr>
                   <th scope="col">Referral Code</th>
+                  <th scope="col">Status</th>
                   <th scope="col">Total Volume</th>
                   <th scope="col">Traders Referred</th>
                   <th scope="col">Total Rebates</th>
@@ -532,6 +533,7 @@ function ReferrersStats({
               </thead>
               <tbody>
                 {finalReferrerTotalStats.map((stat, index) => {
+                  const otherChainCodeInfo = stat?.otherChainCodeInfo;
                   return (
                     <tr key={index}>
                       <td data-label="Referral Code">
@@ -546,9 +548,50 @@ function ReferrersStats({
                             className="referral-code"
                           >
                             <span>{stat.referralCode}</span>
-                            <BiCopy />
+                            <BiCopy className="copy-icon" />
+                          </div>
+                          <div className="status-icon">
+                            <img
+                              src={chainId === ARBITRUM ? arbitrum16Icon : avalanche16Icon}
+                              alt="avalanche16Icon"
+                            ></img>
+                            {stat.otherChainCodeInfo?.isTakenByCurrentUser && (
+                              <img
+                                src={chainId === ARBITRUM ? avalanche16Icon : arbitrum16Icon}
+                                alt="avalanche16Icon"
+                              ></img>
+                            )}
                           </div>
                         </div>
+                      </td>
+                      <td data-label="Status">
+                        {otherChainCodeInfo?.isTaken ? (
+                          <Tooltip
+                            position="left-top"
+                            handle={
+                              otherChainCodeInfo?.isTakenByCurrentUser ? (
+                                <BiCheckShield color="#26c326" size={20} />
+                              ) : (
+                                <BiShieldX color="#ff3838" size={20} />
+                              )
+                            }
+                            renderContent={() =>
+                              otherChainCodeInfo?.isTakenByCurrentUser
+                                ? "This referral code is active on all networks."
+                                : "This referral code is taken by some other user."
+                            }
+                          />
+                        ) : (
+                          <Tooltip
+                            position="left-top"
+                            handle={<BiShieldX color="#ff3838" size={20} />}
+                            renderContent={() =>
+                              `This referral code is available on ${
+                                chainId === ARBITRUM ? "Avalanche" : "Arbitrum"
+                              }. Please go ahead and create.`
+                            }
+                          />
+                        )}
                       </td>
                       <td data-label="Total Volume">{getUSDValue(stat.volume)}</td>
                       <td data-label="Traders Referred">{stat.tradedReferralsCount}</td>
