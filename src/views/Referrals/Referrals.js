@@ -55,8 +55,10 @@ function isRecentReferralNotCodeExpired(referralCodeInfo) {
 
 async function getReferralCodeTakenStatus(account, referralCode, chainId) {
   const referralCodeBytes32 = encodeReferralCode(referralCode);
-  const ownerArbitrum = await getReferralCodeOwner(ARBITRUM, referralCodeBytes32);
-  const ownerAvax = await getReferralCodeOwner(AVALANCHE, referralCodeBytes32);
+  const [ownerArbitrum, ownerAvax] = await Promise.all([
+    getReferralCodeOwner(ARBITRUM, referralCodeBytes32),
+    getReferralCodeOwner(AVALANCHE, referralCodeBytes32),
+  ]);
 
   const takenOnArb =
     !isAddressZero(ownerArbitrum) && (ownerArbitrum !== account || (ownerArbitrum === account && chainId === ARBITRUM));
