@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 import { ARBITRUM, AVALANCHE, bigNumberify } from "../Helpers";
 import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "./common";
+const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
 
 function getGraphClient(chainId) {
   if (chainId === ARBITRUM) {
@@ -39,9 +40,93 @@ export function encodeReferralCode(code) {
   return ethers.utils.formatBytes32String(final);
 }
 
+export function useUserCodesOnAllChain(account) {
+  const [data, setData] = useState(null);
+  const query = gql(
+    `{
+      referralCodes (
+      first: 1000,
+      where: {
+        owner: "__ACCOUNT__"
+      }) {
+      code
+      }
+    }`.replaceAll("__ACCOUNT__", (account || "").toLowerCase())
+  );
+  const referralCodeOwnerQuery = (referralCode) =>
+    gql(
+      `{
+      referralCodes(where: {code: "${referralCode}"}) {
+        owner
+      }
+    }`
+    );
+
+  useEffect(() => {
+    async function main() {
+      const [arbitrum, avalanche] = await Promise.all(
+        ACTIVE_CHAINS.map((chainId) =>
+          getGraphClient(chainId)
+            .query({ query })
+            .then(({ data }) => {
+              return data.referralCodes.map((c) => c.code);
+            })
+        )
+      );
+      const arbitrumCodeAndAvaxOwners = await Promise.all(
+        arbitrum.map((code) =>
+          getGraphClient(AVALANCHE)
+            .query({ query: referralCodeOwnerQuery(code) })
+            .then(({ data }) => {
+              const owner = data.referralCodes[0]?.owner;
+              return {
+                code,
+                codeString: decodeReferralCode(code),
+                owner,
+                isTaken: !!owner,
+                isTakenByCurrentUser: owner === String(account).toLowerCase() && true,
+              };
+            })
+        )
+      );
+      const avaxCodeAndArbitrumOwners = await Promise.all(
+        avalanche.map((code) =>
+          getGraphClient(ARBITRUM)
+            .query({ query: referralCodeOwnerQuery(code) })
+            .then(({ data }) => {
+              const owner = data.referralCodes[0]?.owner;
+              return {
+                code,
+                codeString: decodeReferralCode(code),
+                owner,
+                isTaken: !!owner,
+                isTakenByCurrentUser: owner === String(account).toLowerCase() && true,
+              };
+            })
+        )
+      );
+      setData({
+        [ARBITRUM]: arbitrumCodeAndAvaxOwners.reduce((acc, cv) => {
+          acc[cv.code] = cv;
+          return acc;
+        }, {}),
+        [AVALANCHE]: avaxCodeAndArbitrumOwners.reduce((acc, cv) => {
+          acc[cv.code] = cv;
+          return acc;
+        }, {}),
+      });
+    }
+
+    main();
+  }, [account, query]);
+
+  return data;
+}
+
 export function useReferralsData(chainId, account) {
   const [data, setData] = useState();
   const [loading, setLoading] = useState(true);
+  const referrerCodesOnAllChains = useUserCodesOnAllChain(account);
   useEffect(() => {
     if (!chainId) return;
 
@@ -152,6 +237,7 @@ export function useReferralsData(chainId, account) {
             totalRebateUsd: bigNumberify(e.totalRebateUsd),
             discountUsd: bigNumberify(e.discountUsd),
             referralCode: decodeReferralCode(e.referralCode),
+            otherChainCodeInfo: referrerCodesOnAllChains?.[chainId][e.referralCode],
           };
         }
 
@@ -176,6 +262,7 @@ export function useReferralsData(chainId, account) {
         }
 
         let referrerTotalStats = res.data.referrerTotalStats.map(prepareStatsItem);
+
         setData({
           rebateDistributions,
           discountDistributions,
@@ -199,7 +286,7 @@ export function useReferralsData(chainId, account) {
       .finally(() => {
         setLoading(false);
       });
-  }, [setData, chainId, account]);
+  }, [setData, chainId, account, referrerCodesOnAllChains]);
 
   return {
     data: data || null,
