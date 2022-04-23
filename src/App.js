@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import React, { useState, useEffect, useCallback } from "react";
 import { SWRConfig } from "swr";
 
@@ -326,7 +327,10 @@ function FullApp() {
   useEffect(() => {
     let referralCode = query.get(REFERRAL_CODE_QUERY_PARAMS);
     if (referralCode && referralCode.length <= 20) {
-      localStorage.setItem(REFERRAL_CODE_KEY, encodeReferralCode(referralCode));
+      const encodedReferralCode = encodeReferralCode(referralCode);
+      if (encodeReferralCode !== ethers.constants.HashZero) {
+        localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
+      }
     }
   }, [query]);
 
