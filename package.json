@@ -27,7 +27,6 @@
     "i18next": "^21.6.16",
     "i18next-browser-languagedetector": "^6.1.4",
     "i18next-http-backend": "^1.4.0",
-    "i18next-locize-backend": "^5.0.1",
     "krasulya-lightweight-charts": "^3.4.3",
     "lodash": "^4.17.21",
     "rc-slider": "^9.7.2",

@@ -28,6 +28,7 @@ import Tooltip from "../Tooltip/Tooltip";
 import Checkbox from "../Checkbox/Checkbox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import { getNativeToken, getToken, getWrappedToken } from "../../data/Tokens";
+import { useTranslation } from 'react-i18next';
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -95,6 +96,7 @@ export default function ConfirmationBox(props) {
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
+  const { t } = useTranslation();
 
   let minOut;
   let fromTokenUsd;
@@ -114,12 +116,12 @@ export default function ConfirmationBox(props) {
 
   const getTitle = () => {
     if (!isMarketOrder) {
-      return "Confirm Limit Order";
+      return t("exchange.Confirm_Limit_Order");
     }
     if (isSwap) {
-      return "Confirm Swap";
+      return t("exchange.Confirm_Swap");
     }
-    return isLong ? "Confirm Long" : "Confirm Short";
+    return isLong ? t("exchange.Confirm_Long") : t("exchange.Confirm_Short");
   };
   const title = getTitle();
 
@@ -139,11 +141,11 @@ export default function ConfirmationBox(props) {
     if (!isSwap && hasExistingPosition && !isMarketOrder) {
       const { delta, hasProfit } = calculatePositionDelta(triggerPriceUsd, existingPosition);
       if (hasProfit && delta.eq(0)) {
-        return "Invalid price, see warning";
+        return t("exchange.Invalid_price_see_warning");
       }
     }
     if (isMarketOrder && hasPendingProfit && !isProfitWarningAccepted) {
-      return "Forfeit profit not checked";
+      return t("exchange.Forfeit_profit_not_checked");
     }
     return false;
   };
@@ -158,7 +160,7 @@ export default function ConfirmationBox(props) {
       if (isSwap) {
         return title;
       }
-      const action = isMarketOrder ? (isLong ? "Long" : "Short") : "Create Order";
+      const action = isMarketOrder ? (isLong ? t("exchange.Long") : t("exchange.Short")) : t("exchange.Create_Order");
 
       if (
         isMarketOrder &&
@@ -167,22 +169,22 @@ export default function ConfirmationBox(props) {
         existingPosition.delta.eq(0) &&
         existingPosition.pendingDelta.gt(0)
       ) {
-        return isLong ? `Forfeit profit and ${action}` : `Forfeit profit and Short`;
+        return isLong ? t("exchange.Forfeit_profit_and_action", { action: action }) : t("exchange.Forfeit_profit_and_Short");
       }
 
-      return isMarketOrder && MIN_PROFIT_TIME > 0 ? `Accept minimum and ${action}` : action;
+      return isMarketOrder && MIN_PROFIT_TIME > 0 ? t("exchange.Accept_minimum_and_action", { action: action }) : action;
     }
 
     if (!isMarketOrder) {
-      return "Creating Order...";
+      return t("exchange.Creating_Order");
     }
     if (isSwap) {
-      return "Swapping...";
+      return t("exchange.Swapping");
     }
     if (isLong) {
-      return "Longing...";
+      return t("exchange.Longing");
     }
-    return "Shorting...";
+    return t("exchange.Shorting");
   };
 
   const isPrimaryEnabled = () => {
@@ -210,11 +212,11 @@ export default function ConfirmationBox(props) {
     if (spread && spread.isHigh) {
       return (
         <div className="Confirmation-box-warning">
-          The spread is > 1%, please ensure the trade details are acceptable before comfirming
+          {t("exchange.confirmation_box_warning")}
         </div>
       );
     }
-  }, [isMarketOrder, spread]);
+  }, [isMarketOrder, spread, t]);
 
   const renderFeeWarning = useCallback(() => {
     if (orderOption === LIMIT || !feeBps || feeBps <= 50) {
@@ -224,7 +226,7 @@ export default function ConfirmationBox(props) {
     if (isSwap) {
       return (
         <div className="Confirmation-box-warning">
-          Fees are high to swap from {fromToken.symbol} to {toToken.symbol}.
+          {t("exchange.confirmation_box_warning2", { fromToken: fromToken.symbol, toToken: toToken.symbol })}
         </div>
       );
     }
@@ -236,11 +238,11 @@ export default function ConfirmationBox(props) {
     const collateralToken = getToken(chainId, collateralTokenAddress);
     return (
       <div className="Confirmation-box-warning">
-        Fees are high to swap from {fromToken.symbol} to {collateralToken.symbol}. <br />
-        {collateralToken.symbol} is needed for collateral.
+        {t("exchange.confirmation_box_warning3", { fromToken: fromToken.symbol, collateralToken: collateralToken.symbol })} <br />
+        {t("exchange.confirmation_box_warning4", { collateralToken: collateralToken.symbol })}
       </div>
     );
-  }, [feeBps, isSwap, collateralTokenAddress, chainId, fromToken.symbol, toToken.symbol, orderOption]);
+  }, [feeBps, isSwap, collateralTokenAddress, chainId, fromToken.symbol, toToken.symbol, orderOption, t]);
 
   const hasPendingProfit =
     MIN_PROFIT_TIME > 0 && existingPosition && existingPosition.delta.eq(0) && existingPosition.pendingDelta.gt(0);

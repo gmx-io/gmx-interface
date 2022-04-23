@@ -64,8 +64,42 @@
     "Orders": "Orders",
     "Actions": "Actions"
   },
+  "addressdropdown": {
+    "Address_copied_to_your_clipboard": "Address copied to your clipboard",
+    "Copy_Address": "Copy Address",
+    "Copy_user_address": "Copy user address",
+    "Open_address_in_explorer": "Open address in explorer",
+    "View_in_Explorer": "View in Explorer",
+    "Open_settings": "Open settings",
+    "Settings": "Settings",
+    "Disconnect": "Disconnect",
+    "Disconnect_the_wallet": "Disconnect the wallet"
+  },
+  "exchange": {
+    "Confirm_Limit_Order": "Confirm Limit Order",
+    "Confirm_Swap": "Confirm Swap",
+    "Confirm_Long": "Confirm Long",
+    "Confirm_Short": "Confirm Short",
+    "Invalid_price_see_warning": "Invalid price, see warning",
+    "Forfeit_profit_not_checked": "Forfeit profit not checked",
+    "Long": "Long",
+    "Short": "Short",
+    "Create_Order": "Create Order",
+    "Forfeit_profit_and_action": "Forfeit profit and {{ action }}",
+    "Forfeit_profit_and_Short": "Forfeit profit and Short",
+    "Accept_minimum_and_action": "Accept minimum and {{ action }}",
+    "Creating_Order": "Creating Order...",
+    "Swapping": "Swapping...",
+    "Longing": "Longing...",
+    "Shorting": "Shorting...",
+    "confirmation_box_warning": "The spread is > 1%, please ensure the trade details are acceptable before confirming",
+    "confirmation_box_warning2": "Fees are high to swap from {{ fromToken }} to {{ toToken }}.",
+    "confirmation_box_warning3": "Fees are high to swap from {{ fromToken }} to {{ collateralToken }}.",
+    "confirmation_box_warning4": "{{ collateralToken }} is needed for collateral."
+  },
   "shared": {
     "View": "View",
-    "Save": "Save"
+    "Save": "Save",
+    "MAX": "MAX"
   }
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import cx from "classnames";
+import { useTranslation } from 'react-i18next';
 
 import "./BuyInputSection.css";
 
@@ -16,6 +17,7 @@ export default function BuyInputSection(props) {
     balance,
     tokenBalance,
   } = props;
+  const { t } = useTranslation();
 
   return (
     <div className="Exchange-swap-section buy-input">
@@ -45,7 +47,7 @@ export default function BuyInputSection(props) {
           {staticInput && <div className="InputSection-static-input">{inputValue}</div>}
           {showMaxButton && (
             <div className="Exchange-swap-max" onClick={onClickMax}>
-              MAX
+              {t('shared.MAX')}
             </div>
           )}
         </div>
