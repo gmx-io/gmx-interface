@@ -65,6 +65,7 @@ import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
 import AssetDropdown from "../../views/Dashboard/AssetDropdown";
+import { useTranslation } from 'react-i18next';
 
 const { AddressZero } = ethers.constants;
 
@@ -92,6 +93,7 @@ function getStakingData(stakingInfo) {
 }
 
 export default function GlpSwap(props) {
+  const { t } = useTranslation();
   const { savedSlippageAmount, isBuying, setPendingTxns, connectWallet, setIsBuying } = props;
   const history = useHistory();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
@@ -414,20 +416,20 @@ export default function GlpSwap(props) {
 
   const getError = () => {
     if (!isBuying && inCooldownWindow) {
-      return [`Redemption time not yet reached`];
+      return [t("buy_glp.Redemption_time_not_yet_reached")];
     }
 
     if (!swapAmount || swapAmount.eq(0)) {
-      return ["Enter an amount"];
+      return [t("buy_glp.Enter_an_amount")];
     }
     if (!glpAmount || glpAmount.eq(0)) {
-      return ["Enter an amount"];
+      return [t("buy_glp.Enter_an_amount")];
     }
 
     if (isBuying) {
       const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
       if (swapTokenInfo && swapTokenInfo.balance && swapAmount && swapAmount.gt(swapTokenInfo.balance)) {
-        return [`Insufficient ${swapTokenInfo.symbol} balance`];
+        return [t("buy_glp.Insufficient_symbol_balance", { swapTokenInfo: swapTokenInfo.symbol })];
       }
 
       if (swapTokenInfo.maxUsdgAmount && swapTokenInfo.usdgAmount && swapUsdMin) {
@@ -654,22 +656,6 @@ export default function GlpSwap(props) {
 
   return (
     <div className="GlpSwap">
-      {/* <div className="Page-title-section">
-        <div className="Page-title">{isBuying ? "Buy GLP" : "Sell GLP"}</div>
-        {isBuying && <div className="Page-description">
-          Purchase <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">GLP tokens</a> to earn {nativeTokenSymbol} fees from swaps and leverage trading.<br/>
-          Note that there is a minimum holding time of 15 minutes after a purchase.<br/>
-          <div>View <Link to="/earn">staking</Link> page.</div>
-        </div>}
-        {!isBuying && <div className="Page-description">
-          Redeem your GLP tokens for any supported asset.
-          {inCooldownWindow && <div>
-            GLP tokens can only be redeemed 15 minutes after your most recent purchase.<br/>
-            Your last purchase was at {formatDateTime(lastPurchaseTime)}, you can redeem GLP tokens after {formatDateTime(redemptionTime)}.<br/>
-          </div>}
-          <div>View <Link to="/earn">staking</Link> page.</div>
-        </div>}
-      </div> */}
       <div className="GlpSwap-content">
         <div className="App-card GlpSwap-stats-card">
           <div className="App-card-title">

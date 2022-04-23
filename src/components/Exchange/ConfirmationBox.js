@@ -258,19 +258,13 @@ export default function ConfirmationBox(props) {
           const profitPrice = getProfitPrice(existingPosition.markPrice, existingPosition);
           return (
             <div className="Confirmation-box-warning">
-              Increasing this position at the current price will forfeit a&nbsp;
-              <a
-                href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                pending profit
-              </a>{" "}
-              of {existingPosition.deltaStr}.<br />
-              <br />
-              Profit price: {existingPosition.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
-              This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until{" "}
-              {formatDateTime(minProfitExpiration)}.
+              <div dangerouslySetInnerHTML={
+                { __html: t("exchange.confirmation_box_warning5", {
+                  existingPosition: existingPosition.deltaStr
+                }) }
+              }></div>
+              {t("exchange.Profit_price")}: {existingPosition.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
+              {t("exchange.This_rule_only_applies_for_the_next_time", { time: getTimeRemaining(minProfitExpiration), until: formatDateTime(minProfitExpiration) })}
             </div>
           );
         }
@@ -309,7 +303,7 @@ export default function ConfirmationBox(props) {
         </div>
       );
     }
-  }, [isSwap, hasExistingPosition, existingPosition, isMarketOrder, triggerPriceUsd]);
+  }, [isSwap, hasExistingPosition, existingPosition, isMarketOrder, triggerPriceUsd, t]);
 
   const renderExistingOrderWarning = useCallback(() => {
     if (isSwap || !existingOrder) {

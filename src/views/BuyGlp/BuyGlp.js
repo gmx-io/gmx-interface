@@ -8,8 +8,10 @@ import "./BuyGlp.css";
 
 import { useChainId } from "../../Helpers";
 import { getNativeToken } from "../../data/Tokens";
+import { useTranslation } from 'react-i18next';
 
 export default function BuyGlp(props) {
+  const { t } = useTranslation();
   const { chainId } = useChainId();
   const history = useHistory();
   const [isBuying, setIsBuying] = useState(true);
@@ -30,12 +32,9 @@ export default function BuyGlp(props) {
         <div className="section-title-content">
           <div className="Page-title">Buy / Sell GLP</div>
           <div className="Page-description">
-            Purchase{" "}
-            <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
-              GLP tokens
-            </a>{" "}
-            to earn {nativeTokenSymbol} fees from swaps and leverages trading.
-            <br />
+            <div dangerouslySetInnerHTML={
+              { __html: t("buy_glp.page_description1", { nativeTokenSymbol: nativeTokenSymbol }) }
+            }></div>
             Note that there is a minimum holding time of 15 minutes after a purchase.
             <br />
             View <Link to="/earn">staking</Link> page.

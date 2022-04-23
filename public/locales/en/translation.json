@@ -95,7 +95,17 @@
     "confirmation_box_warning": "The spread is > 1%, please ensure the trade details are acceptable before confirming",
     "confirmation_box_warning2": "Fees are high to swap from {{ fromToken }} to {{ toToken }}.",
     "confirmation_box_warning3": "Fees are high to swap from {{ fromToken }} to {{ collateralToken }}.",
-    "confirmation_box_warning4": "{{ collateralToken }} is needed for collateral."
+    "confirmation_box_warning4": "{{ collateralToken }} is needed for collateral.",
+    "confirmation_box_warning5": "Increasing this position at the current price will forfeit a <a href='https://gmxio.gitbook.io/gmx/trading#minimum-price-change' target='_blank' rel='noopener noreferrer'>pending_profit</a> of {{ existingPosition }}.",
+    "pending_profit": "pending profit",
+    "Profit_price": "Profit price",
+    "This_rule_only_applies_for_the_next_time": "This rule only applies for the next {{ time }}, until {{ until }}."
+  },
+  "buy_glp": {
+    "page_description1": "Purchase <a href='https://gmxio.gitbook.io/gmx/glp' target='_blank' rel='noopener noreferrer'>GLP tokens</a> to earn {{ nativeTokenSymbol }} fees from swaps and leverages trading.",
+    "Redemption_time_not_yet_reached": "Redemption time not yet reached",
+    "Enter_an_amount": "Enter an amount",
+    "Insufficient_symbol_balance": "Insufficient {{ swapTokenInfo }} balance"
   },
   "shared": {
     "View": "View",
