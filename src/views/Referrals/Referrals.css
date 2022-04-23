@@ -34,7 +34,7 @@
   margin-top: 0.75rem;
 }
 .referral-card .card-action {
-  margin-top: 3rem;
+  margin-top: 2rem;
 }
 
 .referral-card .card-action input {
@@ -186,6 +186,12 @@
   padding: 0;
   margin: 1rem 0;
 }
+.info-card .info-card-question-icon {
+  vertical-align: middle;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
 .table-referral-code {
   cursor: pointer;
   display: inline-flex;

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
 import Card from "../../components/Common/Card";
@@ -18,11 +18,13 @@ import {
   shortenAddress,
   bigNumberify,
   REFERRAL_CODE_QUERY_PARAMS,
+  MAX_REFERRAL_CODE_LENGTH,
   isHashZero,
-  REFERRAL_CODE_KEY,
+  REFERRALS_SELECTED_TAB_KEY,
   useLocalStorageSerializeKey,
   ARBITRUM,
   AVALANCHE,
+  useDebounce,
   isAddressZero,
 } from "../../Helpers";
 import { decodeReferralCode, encodeReferralCode, useReferralsData } from "../../Api/referrals";
@@ -44,6 +46,7 @@ import { RiQuestionLine } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
 import { getToken, getNativeToken } from "../../data/Tokens";
 import Checkbox from "../../components/Checkbox/Checkbox";
+import { MdAddCircleOutline } from "react-icons/md";
 
 const REFERRAL_DATA_MAX_TIME = 60000 * 5; // 5 minutes
 
@@ -53,14 +56,20 @@ function isRecentReferralNotCodeExpired(referralCodeInfo) {
   }
 }
 
-async function getReferralCodeTakenStatus(referralCode, chainId) {
+async function getReferralCodeTakenStatus(account, referralCode, chainId) {
   const referralCodeBytes32 = encodeReferralCode(referralCode);
   const ownerArbitrum = await getReferralCodeOwner(ARBITRUM, referralCodeBytes32);
   const ownerAvax = await getReferralCodeOwner(AVALANCHE, referralCodeBytes32);
+
+  const takenOnArb =
+    !isAddressZero(ownerArbitrum) && (ownerArbitrum !== account || (ownerArbitrum === account && chainId === ARBITRUM));
+  const takenOnAvax =
+    !isAddressZero(ownerAvax) && (ownerAvax !== account || (ownerAvax === account && chainId === AVALANCHE));
+
   const referralCodeTakenInfo = {
-    [ARBITRUM]: !isAddressZero(ownerArbitrum),
-    [AVALANCHE]: !isAddressZero(ownerAvax),
-    both: !isAddressZero(ownerArbitrum) && !isAddressZero(ownerAvax),
+    [ARBITRUM]: takenOnArb,
+    [AVALANCHE]: takenOnAvax,
+    both: takenOnArb && takenOnAvax,
   };
 
   if (referralCodeTakenInfo.both) {
@@ -81,6 +90,12 @@ const tierRebateInfo = {
   2: 15,
 };
 
+const tierDiscountInfo = {
+  0: 5,
+  1: 10,
+  2: 10,
+};
+
 const getSampleReferrarStat = (code) => {
   return {
     discountUsd: bigNumberify(0),
@@ -90,6 +105,13 @@ const getSampleReferrarStat = (code) => {
     trades: 0,
     volume: bigNumberify(0),
     time: Date.now(),
+    otherChainCodeInfo: {
+      code: encodeReferralCode(code),
+      codeString: code,
+      isTaken: false,
+      isTakenByCurrentUser: false,
+      owner: undefined,
+    },
   };
 };
 
@@ -110,13 +132,13 @@ function getErrorMessage(value) {
     return "The referral code can't contain spaces.";
   }
 
-  if (trimmedValue.length > 20) {
-    return "The referral code can't be more than 20 characters.";
+  if (trimmedValue.length > MAX_REFERRAL_CODE_LENGTH) {
+    return `The referral code can't be more than ${MAX_REFERRAL_CODE_LENGTH} characters.`;
   }
 
   const regexForValidString = /^\w+$/; // only number, string and underscore is allowed
   if (!regexForValidString.test(trimmedValue)) {
-    return "The referral code contains invalid character.";
+    return "Only letters, numbers and underscores are allowed.";
   }
   return "";
 }
@@ -124,7 +146,7 @@ function getErrorMessage(value) {
 function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { active, account, library, chainId: chainIdWithoutLocalStorage } = useWeb3React();
   const { chainId } = useChainId();
-  const [activeTab, setActiveTab] = useLocalStorage(REFERRAL_CODE_KEY, TRADERS);
+  const [activeTab, setActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, TRADERS);
   const { data: referralsData, loading } = useReferralsData(chainIdWithoutLocalStorage, account);
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], []);
   const { userReferralCode } = useUserReferralCode(library, chainId, account);
@@ -139,9 +161,8 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     const referralCodeHex = encodeReferralCode(code);
     return registerReferralCode(chainId, referralCodeHex, {
       library,
-      successMsg: `Referral code created!`,
+      sentMsg: "Referral code submitted!",
       failMsg: "Referral code creation failed.",
-      setPendingTxns,
       pendingTxns,
     });
   }
@@ -150,6 +171,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     if (!account)
       return (
         <CreateReferrarCode
+          account={account}
           isWalletConnected={active}
           handleCreateReferralCode={handleCreateReferralCode}
           library={library}
@@ -166,13 +188,14 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     if (referralsData.codes?.length > 0 || recentlyAddedCodes.filter(isRecentReferralNotCodeExpired).length > 0) {
       return (
         <ReferrersStats
+          account={account}
+          active={active}
           referralsData={referralsData}
           handleCreateReferralCode={handleCreateReferralCode}
           setRecentlyAddedCodes={setRecentlyAddedCodes}
           recentlyAddedCodes={recentlyAddedCodes}
           chainId={chainId}
           library={library}
-          account={account}
           setPendingTxns={setPendingTxns}
           pendingTxns={pendingTxns}
         />
@@ -180,6 +203,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     } else {
       return (
         <CreateReferrarCode
+          account={account}
           isWalletConnected={active}
           handleCreateReferralCode={handleCreateReferralCode}
           library={library}
@@ -248,6 +272,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
 }
 
 function CreateReferrarCode({
+  account,
   handleCreateReferralCode,
   isWalletConnected,
   connectWallet,
@@ -261,7 +286,52 @@ function CreateReferrarCode({
   const [error, setError] = useState("");
   const [isChecked, setIsChecked] = useState(false);
 
+  const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
+  const debouncedReferralCode = useDebounce(referralCode, 500);
+
+  useEffect(() => {
+    const checkCodeTakenStatus = async () => {
+      if (error || error.length > 0) {
+        setReferralCodeCheckStatus("ok");
+        return;
+      }
+      const localReferralCode = debouncedReferralCode;
+      const takenStatus = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
+      // ignore the result if the referral code to check has changed
+      if (debouncedReferralCode !== localReferralCode) {
+        return;
+      }
+      if (takenStatus === "none") {
+        setReferralCodeCheckStatus("ok");
+      } else {
+        setReferralCodeCheckStatus("taken");
+      }
+    };
+    setReferralCodeCheckStatus("checking");
+    checkCodeTakenStatus();
+  }, [account, debouncedReferralCode, error, chainId]);
+
+  function getButtonError() {
+    if (!referralCode || referralCode.length === 0) {
+      return "Enter a code";
+    }
+    if (referralCodeCheckStatus === "taken") {
+      return "Code already taken";
+    }
+    if (referralCodeCheckStatus === "checking") {
+      return "Checking code...";
+    }
+
+    return false;
+  }
+
+  const buttonError = getButtonError();
+
   function getPrimaryText() {
+    if (buttonError) {
+      return buttonError;
+    }
+
     if (isProcessing) {
       return `Creating...`;
     }
@@ -269,6 +339,9 @@ function CreateReferrarCode({
     return "Create";
   }
   function isPrimaryEnabled() {
+    if (buttonError) {
+      return false;
+    }
     if (isChecked) {
       return true;
     }
@@ -281,7 +354,7 @@ function CreateReferrarCode({
   async function handleSubmit(event) {
     event.preventDefault();
     setIsProcessing(true);
-    const takenStatus = await getReferralCodeTakenStatus(referralCode, chainId);
+    const takenStatus = await getReferralCodeTakenStatus(account, referralCode, chainId);
     if (takenStatus === "all" || takenStatus === "current") {
       setError(`Referral code is taken.`);
       setIsProcessing(false);
@@ -299,6 +372,7 @@ function CreateReferrarCode({
         const receipt = await tx.wait();
         if (receipt.status === 1) {
           recentlyAddedCodes.push(getSampleReferrarStat(referralCode));
+          helperToast.success("Referral code created!");
           setRecentlyAddedCodes(recentlyAddedCodes);
           setReferralCode("");
         }
@@ -358,6 +432,7 @@ function CreateReferrarCode({
 }
 
 function ReferrersStats({
+  account,
   referralsData,
   handleCreateReferralCode,
   chainId,
@@ -367,22 +442,73 @@ function ReferrersStats({
   const [referralCode, setReferralCode] = useState("");
   const [isAdding, setIsAdding] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+
   const [confirmCreateReferralCode, setConfirmCreateReferralCode] = useState(false);
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const [error, setError] = useState("");
   const addNewModalRef = useRef(null);
 
-  function getPrimaryText() {
-    if (isAdding) {
-      return `Adding...`;
+  const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
+  const debouncedReferralCode = useDebounce(referralCode, 500);
+
+  useEffect(() => {
+    const checkCodeTakenStatus = async () => {
+      if (error || error.length > 0) {
+        setReferralCodeCheckStatus("ok");
+        return;
+      }
+      const localReferralCode = debouncedReferralCode;
+      const takenStatus = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
+      // ignore the result if the referral code to check has changed
+      if (debouncedReferralCode !== localReferralCode) {
+        return;
+      }
+      if (takenStatus === "none") {
+        setReferralCodeCheckStatus("ok");
+      } else {
+        setReferralCodeCheckStatus("taken");
+      }
+    };
+    setReferralCodeCheckStatus("checking");
+    checkCodeTakenStatus();
+  }, [account, debouncedReferralCode, error, chainId]);
+
+  function getButtonError() {
+    if (!referralCode || referralCode.length === 0) {
+      return "Enter a code";
+    }
+    if (referralCodeCheckStatus === "taken") {
+      return "Code already taken";
+    }
+    if (referralCodeCheckStatus === "checking") {
+      return "Checking code...";
     }
 
-    return "Add New Referral Code";
+    return false;
+  }
+
+  const buttonError = getButtonError();
+
+  function getPrimaryText() {
+    if (buttonError) {
+      return buttonError;
+    }
+
+    if (isAdding) {
+      return `Creating...`;
+    }
+
+    return "Create";
   }
   function isPrimaryEnabled() {
+    if (buttonError) {
+      return false;
+    }
+
     if (isChecked) {
       return true;
     }
+
     if (error || isAdding) {
       return false;
     }
@@ -403,7 +529,7 @@ function ReferrersStats({
   async function handleSubmit(event) {
     event.preventDefault();
     setIsAdding(true);
-    const takenStatus = await getReferralCodeTakenStatus(referralCode, chainId);
+    const takenStatus = await getReferralCodeTakenStatus(account, referralCode, chainId);
 
     if (takenStatus === "all" || takenStatus === "current") {
       setError(`Referral code is taken.`);
@@ -419,12 +545,13 @@ function ReferrersStats({
       setIsAdding(true);
       try {
         const tx = await handleCreateReferralCode(referralCode);
+        close();
         const receipt = await tx.wait();
         if (receipt.status === 1) {
           recentlyAddedCodes.push(getSampleReferrarStat(referralCode));
+          helperToast.success("Referral code created!");
           setRecentlyAddedCodes(recentlyAddedCodes);
           setReferralCode("");
-          close();
         }
       } catch (err) {
         console.error(err);
@@ -434,7 +561,7 @@ function ReferrersStats({
     }
   }
 
-  const { cumulativeStats, referrerTotalStats, discountDistributions, referrerTierInfo } = referralsData;
+  let { cumulativeStats, referrerTotalStats, discountDistributions, referrerTierInfo } = referralsData;
   const finalReferrerTotalStats = recentlyAddedCodes.filter(isRecentReferralNotCodeExpired).reduce((acc, cv) => {
     const addedCodes = referrerTotalStats.map((c) => c.referralCode.trim());
     if (!addedCodes.includes(cv.referralCode)) {
@@ -473,7 +600,7 @@ function ReferrersStats({
           className="Connect-wallet-modal"
           isVisible={isAddReferralCodeModalOpen}
           setIsVisible={close}
-          label="Create New Referral Code"
+          label="Create Referral Code"
           onAfterOpen={() => addNewModalRef.current?.focus()}
         >
           <div className="edit-referral-modal">
@@ -482,7 +609,7 @@ function ReferrersStats({
                 disabled={isAdding}
                 ref={addNewModalRef}
                 type="text"
-                placeholder="Enter new referral code"
+                placeholder="Enter referral code"
                 className={`text-input ${!error && "mb-sm"}`}
                 value={referralCode}
                 onChange={(e) => {
@@ -515,7 +642,7 @@ function ReferrersStats({
                 </span>
               </p>
               <button className="transparent-btn" onClick={open}>
-                <FiPlus /> <span className="ml-small">Add New</span>
+                <FiPlus /> <span className="ml-small">Create</span>
               </button>
             </div>
           }
@@ -534,6 +661,10 @@ function ReferrersStats({
               <tbody>
                 {finalReferrerTotalStats.map((stat, index) => {
                   const otherChainCodeInfo = stat?.otherChainCodeInfo;
+                  let referrerRebate = bigNumberify(0);
+                  if (stat && stat.totalRebateUsd && stat.totalRebateUsd.sub && stat.discountUsd) {
+                    referrerRebate = stat.totalRebateUsd.sub(stat.discountUsd);
+                  }
                   return (
                     <tr key={index}>
                       <td data-label="Referral Code">
@@ -584,7 +715,7 @@ function ReferrersStats({
                         ) : (
                           <Tooltip
                             position="left-top"
-                            handle={<BiShieldX color="#ff3838" size={20} />}
+                            handle={<MdAddCircleOutline color="#ffba0e" size={20} />}
                             renderContent={() =>
                               `This referral code is available on ${
                                 chainId === ARBITRUM ? "Avalanche" : "Arbitrum"
@@ -595,7 +726,7 @@ function ReferrersStats({
                       </td>
                       <td data-label="Total Volume">{getUSDValue(stat.volume)}</td>
                       <td data-label="Traders Referred">{stat.tradedReferralsCount}</td>
-                      <td data-label="Total Rebates">{getUSDValue(stat.totalRebateUsd.sub(stat.discountUsd))}</td>
+                      <td data-label="Total Rebates">{getUSDValue(referrerRebate)}</td>
                     </tr>
                   );
                 })}
@@ -649,7 +780,7 @@ function ReferrersStats({
           </Card>
         </div>
       ) : (
-        <EmptyMessage message="You do not have any rebates distribution history." />
+        <EmptyMessage message="No rebates distribution history yet." />
       )}
     </div>
   );
@@ -710,7 +841,9 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
               </div>
               {referrerTier && (
                 <div className="tier">
-                  <span>Referrer Tier {`${referrerTierString} (${tierRebateInfo[referrerTierString]}% rebate)`}</span>
+                  <span>
+                    Referrer Tier {`${referrerTierString} (${tierDiscountInfo[referrerTierString]}% discount)`}
+                  </span>
                   <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
                     <BiInfoCircle size={14} />
                   </a>
@@ -732,7 +865,7 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
                 ref={editModalRef}
                 disabled={isUpdateSubmitting}
                 type="text"
-                placeholder="Enter new referral code"
+                placeholder="Enter referral code"
                 className={`text-input ${!error && "mb-sm"}`}
                 value={editReferralCode}
                 onChange={({ target }) => {
@@ -743,7 +876,7 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
               />
               {error && <p className="error">{error}</p>}
               <button type="submit" className="App-cta Exchange-swap-button" disabled={isUpdateSubmitting}>
-                {isUpdateSubmitting ? "Updating..." : "Update Referral Code"}
+                {isUpdateSubmitting ? "Updating..." : "Update"}
               </button>
             </form>
           </div>
@@ -792,7 +925,7 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
           </Card>
         </div>
       ) : (
-        <EmptyMessage message="You do not have any rebates distribution history." />
+        <EmptyMessage message="No rebates distribution history yet." />
       )}
     </div>
   );
@@ -872,7 +1005,11 @@ function InfoCard({ label, data, tooltipText, toolTipPosition = "right-bottom" }
         <h3 className="label">
           {label}{" "}
           {tooltipText && (
-            <Tooltip handle={<RiQuestionLine />} position={toolTipPosition} renderContent={() => tooltipText} />
+            <Tooltip
+              handle={<RiQuestionLine className="info-card-question-icon" />}
+              position={toolTipPosition}
+              renderContent={() => tooltipText}
+            />
           )}
         </h3>
         <div className="data">{data}</div>
