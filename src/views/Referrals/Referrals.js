@@ -58,8 +58,10 @@ function isRecentReferralNotCodeExpired(referralCodeInfo) {
 
 async function getReferralCodeTakenStatus(account, referralCode, chainId) {
   const referralCodeBytes32 = encodeReferralCode(referralCode);
-  const ownerArbitrum = await getReferralCodeOwner(ARBITRUM, referralCodeBytes32);
-  const ownerAvax = await getReferralCodeOwner(AVALANCHE, referralCodeBytes32);
+  const [ownerArbitrum, ownerAvax] = await Promise.all([
+    getReferralCodeOwner(ARBITRUM, referralCodeBytes32),
+    getReferralCodeOwner(AVALANCHE, referralCodeBytes32),
+  ]);
 
   const takenOnArb =
     !isAddressZero(ownerArbitrum) && (ownerArbitrum !== account || (ownerArbitrum === account && chainId === ARBITRUM));
@@ -102,6 +104,7 @@ const getSampleReferrarStat = (code) => {
     referralCode: code,
     totalRebateUsd: bigNumberify(0),
     tradedReferralsCount: 0,
+    registeredReferralsCount: 0,
     trades: 0,
     volume: bigNumberify(0),
     time: Date.now(),
@@ -287,18 +290,18 @@ function CreateReferrarCode({
   const [isChecked, setIsChecked] = useState(false);
 
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
-  const debouncedReferralCode = useDebounce(referralCode, 500);
+  const debouncedReferralCode = useDebounce(referralCode, 300);
 
   useEffect(() => {
+    let cancelled = false;
     const checkCodeTakenStatus = async () => {
       if (error || error.length > 0) {
         setReferralCodeCheckStatus("ok");
         return;
       }
-      const localReferralCode = debouncedReferralCode;
       const takenStatus = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
       // ignore the result if the referral code to check has changed
-      if (debouncedReferralCode !== localReferralCode) {
+      if (cancelled) {
         return;
       }
       if (takenStatus === "none") {
@@ -309,6 +312,9 @@ function CreateReferrarCode({
     };
     setReferralCodeCheckStatus("checking");
     checkCodeTakenStatus();
+    return () => {
+      cancelled = true;
+    };
   }, [account, debouncedReferralCode, error, chainId]);
 
   function getButtonError() {
@@ -449,18 +455,18 @@ function ReferrersStats({
   const addNewModalRef = useRef(null);
 
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
-  const debouncedReferralCode = useDebounce(referralCode, 500);
+  const debouncedReferralCode = useDebounce(referralCode, 300);
 
   useEffect(() => {
+    let cancelled = false;
     const checkCodeTakenStatus = async () => {
       if (error || error.length > 0) {
         setReferralCodeCheckStatus("ok");
         return;
       }
-      const localReferralCode = debouncedReferralCode;
       const takenStatus = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
       // ignore the result if the referral code to check has changed
-      if (debouncedReferralCode !== localReferralCode) {
+      if (cancelled) {
         return;
       }
       if (takenStatus === "none") {
@@ -471,6 +477,9 @@ function ReferrersStats({
     };
     setReferralCodeCheckStatus("checking");
     checkCodeTakenStatus();
+    return () => {
+      cancelled = true;
+    };
   }, [account, debouncedReferralCode, error, chainId]);
 
   function getButtonError() {
@@ -582,7 +591,7 @@ function ReferrersStats({
         <InfoCard
           label="Total Traders Referred"
           tooltipText="Amount of traders you referred."
-          data={cumulativeStats?.referralsCount || "0"}
+          data={cumulativeStats?.registeredReferralsCount || "0"}
         />
         <InfoCard
           label="Total Trading Volume"
@@ -725,7 +734,7 @@ function ReferrersStats({
                         )}
                       </td>
                       <td data-label="Total Volume">{getUSDValue(stat.volume)}</td>
-                      <td data-label="Traders Referred">{stat.tradedReferralsCount}</td>
+                      <td data-label="Traders Referred">{stat.registeredReferralsCount}</td>
                       <td data-label="Total Rebates">{getUSDValue(referrerRebate)}</td>
                     </tr>
                   );
