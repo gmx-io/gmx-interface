@@ -141,7 +141,7 @@ export function useUserStat(chainId) {
 export function useLiquidationsData(chainId, account) {
   const [data, setData] = useState(null);
   useEffect(() => {
-    if (chainId === ARBITRUM && account) {
+    if (account) {
       const query = gql(`{
          liquidatedPositions(
            where: {account: "${account.toLowerCase()}"}
