@@ -5,8 +5,6 @@ import Card from "../../components/Common/Card";
 import SEO from "../../components/Common/SEO";
 import Tab from "../../components/Tab/Tab";
 import Footer from "../../Footer";
-import avalanche16Icon from "../../img/ic_avalanche_16.svg";
-import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 import {
   useChainId,
   getPageTitle,
@@ -37,7 +35,7 @@ import {
   useReferrerTier,
   useUserReferralCode,
 } from "../../Api";
-import { BiCheckShield, BiCopy, BiEditAlt, BiInfoCircle, BiShieldX } from "react-icons/bi";
+import { BiCopy, BiEditAlt, BiInfoCircle } from "react-icons/bi";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import { useCopyToClipboard, useLocalStorage } from "react-use";
 import Loader from "../../components/Common/Loader";
@@ -46,7 +44,6 @@ import { RiQuestionLine } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
 import { getToken, getNativeToken } from "../../data/Tokens";
 import Checkbox from "../../components/Checkbox/Checkbox";
-import { MdAddCircleOutline } from "react-icons/md";
 
 const REFERRAL_DATA_MAX_TIME = 60000 * 5; // 5 minutes
 
@@ -75,15 +72,15 @@ async function getReferralCodeTakenStatus(account, referralCode, chainId) {
   };
 
   if (referralCodeTakenInfo.both) {
-    return "all";
+    return { status: "all", info: referralCodeTakenInfo };
   }
   if (referralCodeTakenInfo[chainId]) {
-    return "current";
+    return { status: "current", info: referralCodeTakenInfo };
   }
   if (chainId === AVALANCHE ? referralCodeTakenInfo[ARBITRUM] : referralCodeTakenInfo[AVALANCHE]) {
-    return "other";
+    return { status: "other", info: referralCodeTakenInfo };
   }
-  return "none";
+  return { status: "none", info: referralCodeTakenInfo };
 }
 
 const tierRebateInfo = {
@@ -98,7 +95,7 @@ const tierDiscountInfo = {
   2: 10,
 };
 
-const getSampleReferrarStat = (code) => {
+const getSampleReferrarStat = (code, isTaken) => {
   return {
     discountUsd: bigNumberify(0),
     referralCode: code,
@@ -108,12 +105,11 @@ const getSampleReferrarStat = (code) => {
     trades: 0,
     volume: bigNumberify(0),
     time: Date.now(),
-    otherChainCodeInfo: {
+    ownerOnOtherChain: {
       code: encodeReferralCode(code),
       codeString: code,
-      isTaken: false,
-      isTakenByCurrentUser: false,
       owner: undefined,
+      isTaken,
     },
   };
 };
@@ -299,7 +295,7 @@ function CreateReferrarCode({
         setReferralCodeCheckStatus("ok");
         return;
       }
-      const takenStatus = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
+      const { status: takenStatus } = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
       // ignore the result if the referral code to check has changed
       if (cancelled) {
         return;
@@ -360,7 +356,7 @@ function CreateReferrarCode({
   async function handleSubmit(event) {
     event.preventDefault();
     setIsProcessing(true);
-    const takenStatus = await getReferralCodeTakenStatus(account, referralCode, chainId);
+    const { status: takenStatus, info: takenInfo } = await getReferralCodeTakenStatus(account, referralCode, chainId);
     if (takenStatus === "all" || takenStatus === "current") {
       setError(`Referral code is taken.`);
       setIsProcessing(false);
@@ -372,12 +368,14 @@ function CreateReferrarCode({
     }
 
     if (takenStatus === "none" || (takenStatus === "other" && isChecked)) {
+      const isCodeTakeOnOtherNetwork = takenInfo[chainId === ARBITRUM ? AVALANCHE : ARBITRUM];
+
       setIsProcessing(true);
       try {
         const tx = await handleCreateReferralCode(referralCode);
         const receipt = await tx.wait();
         if (receipt.status === 1) {
-          recentlyAddedCodes.push(getSampleReferrarStat(referralCode));
+          recentlyAddedCodes.push(getSampleReferrarStat(referralCode, isCodeTakeOnOtherNetwork));
           helperToast.success("Referral code created!");
           setRecentlyAddedCodes(recentlyAddedCodes);
           setReferralCode("");
@@ -464,7 +462,8 @@ function ReferrersStats({
         setReferralCodeCheckStatus("ok");
         return;
       }
-      const takenStatus = await getReferralCodeTakenStatus(account, debouncedReferralCode, chainId);
+      const { status: takenStatus } = await getReferralCodeTakenStatus(account, referralCode, chainId);
+
       // ignore the result if the referral code to check has changed
       if (cancelled) {
         return;
@@ -480,7 +479,7 @@ function ReferrersStats({
     return () => {
       cancelled = true;
     };
-  }, [account, debouncedReferralCode, error, chainId]);
+  }, [account, debouncedReferralCode, error, chainId, referralCode]);
 
   function getButtonError() {
     if (!referralCode || referralCode.length === 0) {
@@ -538,7 +537,7 @@ function ReferrersStats({
   async function handleSubmit(event) {
     event.preventDefault();
     setIsAdding(true);
-    const takenStatus = await getReferralCodeTakenStatus(account, referralCode, chainId);
+    const { status: takenStatus, info: takenInfo } = await getReferralCodeTakenStatus(account, referralCode, chainId);
 
     if (takenStatus === "all" || takenStatus === "current") {
       setError(`Referral code is taken.`);
@@ -551,13 +550,14 @@ function ReferrersStats({
     }
 
     if (takenStatus === "none" || (takenStatus === "other" && isChecked)) {
+      const isCodeTakeOnOtherNetwork = takenInfo[chainId === ARBITRUM ? AVALANCHE : ARBITRUM];
       setIsAdding(true);
       try {
         const tx = await handleCreateReferralCode(referralCode);
         close();
         const receipt = await tx.wait();
         if (receipt.status === 1) {
-          recentlyAddedCodes.push(getSampleReferrarStat(referralCode));
+          recentlyAddedCodes.push(getSampleReferrarStat(referralCode, isCodeTakeOnOtherNetwork));
           helperToast.success("Referral code created!");
           setRecentlyAddedCodes(recentlyAddedCodes);
           setReferralCode("");
@@ -661,7 +661,6 @@ function ReferrersStats({
               <thead>
                 <tr>
                   <th scope="col">Referral Code</th>
-                  <th scope="col">Status</th>
                   <th scope="col">Total Volume</th>
                   <th scope="col">Traders Referred</th>
                   <th scope="col">Total Rebates</th>
@@ -669,7 +668,7 @@ function ReferrersStats({
               </thead>
               <tbody>
                 {finalReferrerTotalStats.map((stat, index) => {
-                  const otherChainCodeInfo = stat?.otherChainCodeInfo;
+                  const ownerOnOtherChain = stat?.ownerOnOtherChain;
                   let referrerRebate = bigNumberify(0);
                   if (stat && stat.totalRebateUsd && stat.totalRebateUsd.sub && stat.discountUsd) {
                     referrerRebate = stat.totalRebateUsd.sub(stat.discountUsd);
@@ -685,54 +684,27 @@ function ReferrersStats({
                               );
                               helperToast.success("Referral link copied to your clipboard");
                             }}
-                            className="referral-code"
+                            className="referral-code copy-icon"
                           >
                             <span>{stat.referralCode}</span>
-                            <BiCopy className="copy-icon" />
+                            <BiCopy />
                           </div>
-                          <div className="status-icon">
-                            <img
-                              src={chainId === ARBITRUM ? arbitrum16Icon : avalanche16Icon}
-                              alt="avalanche16Icon"
-                            ></img>
-                            {stat.otherChainCodeInfo?.isTakenByCurrentUser && (
-                              <img
-                                src={chainId === ARBITRUM ? avalanche16Icon : arbitrum16Icon}
-                                alt="avalanche16Icon"
-                              ></img>
-                            )}
-                          </div>
+                          {!ownerOnOtherChain?.isTaken && (
+                            <div className="info">
+                              <Tooltip
+                                position="left-top"
+                                handle={<BiInfoCircle color="#ffba0e" size={16} />}
+                                renderContent={() =>
+                                  `You should register this code on ${
+                                    chainId === AVALANCHE ? "Arbitrum" : "Avalanche"
+                                  } too.`
+                                }
+                              />
+                            </div>
+                          )}
                         </div>
                       </td>
-                      <td data-label="Status">
-                        {otherChainCodeInfo?.isTaken ? (
-                          <Tooltip
-                            position="left-top"
-                            handle={
-                              otherChainCodeInfo?.isTakenByCurrentUser ? (
-                                <BiCheckShield color="#26c326" size={20} />
-                              ) : (
-                                <BiShieldX color="#ff3838" size={20} />
-                              )
-                            }
-                            renderContent={() =>
-                              otherChainCodeInfo?.isTakenByCurrentUser
-                                ? "This referral code is active on all networks."
-                                : "This referral code is taken by some other user."
-                            }
-                          />
-                        ) : (
-                          <Tooltip
-                            position="left-top"
-                            handle={<MdAddCircleOutline color="#ffba0e" size={20} />}
-                            renderContent={() =>
-                              `This referral code is available on ${
-                                chainId === ARBITRUM ? "Avalanche" : "Arbitrum"
-                              }. Please go ahead and create.`
-                            }
-                          />
-                        )}
-                      </td>
+
                       <td data-label="Total Volume">{getUSDValue(stat.volume)}</td>
                       <td data-label="Traders Referred">{stat.registeredReferralsCount}</td>
                       <td data-label="Total Rebates">{getUSDValue(referrerRebate)}</td>

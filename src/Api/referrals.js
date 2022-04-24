@@ -73,7 +73,7 @@ export function useUserCodesOnAllChain(account) {
             })
         )
       );
-      const arbitrumCodeAndAvaxOwners = await Promise.all(
+      const codeOwnersOnAvax = await Promise.all(
         arbitrum.map((code) =>
           getGraphClient(AVALANCHE)
             .query({ query: referralCodeOwnerQuery(code) })
@@ -84,12 +84,11 @@ export function useUserCodesOnAllChain(account) {
                 codeString: decodeReferralCode(code),
                 owner,
                 isTaken: !!owner,
-                isTakenByCurrentUser: owner === String(account).toLowerCase() && true,
               };
             })
         )
       );
-      const avaxCodeAndArbitrumOwners = await Promise.all(
+      const codeOwnersOnArbitrum = await Promise.all(
         avalanche.map((code) =>
           getGraphClient(ARBITRUM)
             .query({ query: referralCodeOwnerQuery(code) })
@@ -100,17 +99,16 @@ export function useUserCodesOnAllChain(account) {
                 codeString: decodeReferralCode(code),
                 owner,
                 isTaken: !!owner,
-                isTakenByCurrentUser: owner === String(account).toLowerCase() && true,
               };
             })
         )
       );
       setData({
-        [ARBITRUM]: arbitrumCodeAndAvaxOwners.reduce((acc, cv) => {
+        [ARBITRUM]: codeOwnersOnAvax.reduce((acc, cv) => {
           acc[cv.code] = cv;
           return acc;
         }, {}),
-        [AVALANCHE]: avaxCodeAndArbitrumOwners.reduce((acc, cv) => {
+        [AVALANCHE]: codeOwnersOnArbitrum.reduce((acc, cv) => {
           acc[cv.code] = cv;
           return acc;
         }, {}),
@@ -126,7 +124,7 @@ export function useUserCodesOnAllChain(account) {
 export function useReferralsData(chainId, account) {
   const [data, setData] = useState();
   const [loading, setLoading] = useState(true);
-  const referrerCodesOnAllChains = useUserCodesOnAllChain(account);
+  const ownerOnOtherChain = useUserCodesOnAllChain(account);
   useEffect(() => {
     if (!chainId) return;
 
@@ -240,7 +238,7 @@ export function useReferralsData(chainId, account) {
             totalRebateUsd: bigNumberify(e.totalRebateUsd),
             discountUsd: bigNumberify(e.discountUsd),
             referralCode: decodeReferralCode(e.referralCode),
-            otherChainCodeInfo: referrerCodesOnAllChains?.[chainId][e.referralCode],
+            ownerOnOtherChain: ownerOnOtherChain?.[chainId][e.referralCode],
           };
         }
 
@@ -291,7 +289,7 @@ export function useReferralsData(chainId, account) {
       .finally(() => {
         setLoading(false);
       });
-  }, [setData, chainId, account, referrerCodesOnAllChains]);
+  }, [setData, chainId, account, ownerOnOtherChain]);
 
   return {
     data: data || null,
