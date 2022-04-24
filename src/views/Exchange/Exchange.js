@@ -1,12 +1,10 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useMemo, useCallback, forwardRef, useImperativeHandle } from "react";
 
 import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { ethers } from "ethers";
 
 import {
-  ARBITRUM,
-  AVALANCHE,
   FUNDING_RATE_PRECISION,
   BASIS_POINTS_DIVISOR,
   MARGIN_FEE_BASIS_POINTS,
@@ -38,8 +36,6 @@ import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from "../
 
 import Reader from "../../abis/ReaderV2.json";
 import VaultV2 from "../../abis/VaultV2.json";
-import VaultV2b from "../../abis/VaultV2b.json";
-import PositionRouter from "../../abis/PositionRouter.json";
 import Router from "../../abis/Router.json";
 import Token from "../../abis/Token.json";
 
@@ -56,12 +52,6 @@ import Footer from "../../Footer";
 
 import "./Exchange.css";
 const { AddressZero } = ethers.constants;
-
-const arbWsProvider = new ethers.providers.WebSocketProvider(
-  "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"
-);
-
-const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
 const UPDATED_POSITION_VALID_DURATION = 60 * 1000;
@@ -106,19 +96,6 @@ function pushErrorNotification(chainId, message, e) {
       </a>
     </div>
   );
-}
-
-function getWsProvider(active, chainId) {
-  if (!active) {
-    return;
-  }
-  if (chainId === ARBITRUM) {
-    return arbWsProvider;
-  }
-
-  if (chainId === AVALANCHE) {
-    return avaxWsProvider;
-  }
 }
 
 function getFundingFee(data) {
@@ -374,17 +351,19 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
   return { collateralTokens, indexTokens, isLong };
 }
 
-export default function Exchange({
-  savedIsPnlInLeverage,
-  setSavedIsPnlInLeverage,
-  savedShowPnlAfterFees,
-  savedSlippageAmount,
-  pendingTxns,
-  setPendingTxns,
-  savedShouldShowPositionLines,
-  setSavedShouldShowPositionLines,
-  connectWallet,
-}) {
+export const Exchange = forwardRef((props, ref) => {
+  // console.log("rerender Exchange");
+  const {
+    savedIsPnlInLeverage,
+    setSavedIsPnlInLeverage,
+    savedShowPnlAfterFees,
+    savedSlippageAmount,
+    pendingTxns,
+    setPendingTxns,
+    savedShouldShowPositionLines,
+    setSavedShouldShowPositionLines,
+    connectWallet,
+  } = props;
   const [showBanner, setShowBanner] = useLocalStorageSerializeKey("showBanner", true);
   const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey("bannerHidden", null);
 
@@ -502,7 +481,7 @@ export default function Exchange({
     fetcher: fetcher(library, Reader, [tokenAddresses]),
   });
 
-  const { data: positionData } = useSWR(
+  const { data: positionData, error: positionDataError } = useSWR(
     active && [active, chainId, readerAddress, "getPositions", vaultAddress, account],
     {
       fetcher: fetcher(library, Reader, [
@@ -512,6 +491,8 @@ export default function Exchange({
       ]),
     }
   );
+
+  const positionsDataIsLoading = active && !positionData && !positionDataError;
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
     fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
@@ -567,17 +548,8 @@ export default function Exchange({
     updatedPositions
   );
 
-  useEffect(() => {
-    const wsVaultAbi = chainId === ARBITRUM ? VaultV2.abi : VaultV2b.abi;
-    const wsProvider = getWsProvider(active, chainId);
-    if (!wsProvider) {
-      return;
-    }
-
-    const wsVault = new ethers.Contract(vaultAddress, wsVaultAbi, wsProvider);
-    const wsPositionRouter = new ethers.Contract(positionRouterAddress, PositionRouter.abi, wsProvider);
-
-    const onUpdatePosition = (key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl) => {
+  useImperativeHandle(ref, () => ({
+    onUpdatePosition(key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl) {
       for (let i = 0; i < positions.length; i++) {
         const position = positions[i];
         if (position.contractKey === key) {
@@ -594,9 +566,8 @@ export default function Exchange({
           break;
         }
       }
-    };
-
-    const onClosePosition = (key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl, e) => {
+    },
+    onClosePosition(key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl, e) {
       for (let i = 0; i < positions.length; i++) {
         const position = positions[i];
         if (position.contractKey === key) {
@@ -613,20 +584,9 @@ export default function Exchange({
           break;
         }
       }
-    };
+    },
 
-    const onIncreasePosition = (
-      key,
-      account,
-      collateralToken,
-      indexToken,
-      collateralDelta,
-      sizeDelta,
-      isLong,
-      price,
-      fee,
-      e
-    ) => {
+    onIncreasePosition(key, account, collateralToken, indexToken, collateralDelta, sizeDelta, isLong, price, fee, e) {
       if (account !== currentAccount) {
         return;
       }
@@ -649,20 +609,9 @@ export default function Exchange({
       }
 
       pushSuccessNotification(chainId, message, e);
-    };
+    },
 
-    const onDecreasePosition = (
-      key,
-      account,
-      collateralToken,
-      indexToken,
-      collateralDelta,
-      sizeDelta,
-      isLong,
-      price,
-      fee,
-      e
-    ) => {
+    onDecreasePosition(key, account, collateralToken, indexToken, collateralDelta, sizeDelta, isLong, price, fee, e) {
       if (account !== currentAccount) {
         return;
       }
@@ -685,9 +634,9 @@ export default function Exchange({
       }
 
       pushSuccessNotification(chainId, message, e);
-    };
+    },
 
-    const onCancelIncreasePosition = (
+    onCancelIncreasePosition(
       account,
       path,
       indexToken,
@@ -700,7 +649,7 @@ export default function Exchange({
       blockGap,
       timeGap,
       e
-    ) => {
+    ) {
       if (account !== currentAccount) {
         return;
       }
@@ -716,9 +665,9 @@ export default function Exchange({
       const key = getPositionKey(account, path[path.length - 1], indexToken, isLong);
       pendingPositions[key] = {};
       setPendingPositions({ ...pendingPositions });
-    };
+    },
 
-    const onCancelDecreasePosition = (
+    onCancelDecreasePosition(
       account,
       path,
       indexToken,
@@ -732,7 +681,7 @@ export default function Exchange({
       blockGap,
       timeGap,
       e
-    ) => {
+    ) {
       if (account !== currentAccount) {
         return;
       }
@@ -748,33 +697,8 @@ export default function Exchange({
       const key = getPositionKey(account, path[path.length - 1], indexToken, isLong);
       pendingPositions[key] = {};
       setPendingPositions({ ...pendingPositions });
-    };
-
-    wsVault.on("UpdatePosition", onUpdatePosition);
-    wsVault.on("ClosePosition", onClosePosition);
-    wsVault.on("IncreasePosition", onIncreasePosition);
-    wsVault.on("DecreasePosition", onDecreasePosition);
-    wsPositionRouter.on("CancelIncreasePosition", onCancelIncreasePosition);
-    wsPositionRouter.on("CancelDecreasePosition", onCancelDecreasePosition);
-
-    return function cleanup() {
-      wsVault.off("UpdatePosition", onUpdatePosition);
-      wsVault.off("ClosePosition", onClosePosition);
-      wsVault.off("IncreasePosition", onIncreasePosition);
-      wsVault.off("DecreasePosition", onDecreasePosition);
-      wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
-      wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
-    };
-  }, [
-    active,
-    chainId,
-    currentAccount,
-    positions,
-    updatedPositions,
-    pendingPositions,
-    vaultAddress,
-    positionRouterAddress,
-  ]);
+    },
+  }));
 
   const flagOrdersEnabled = true;
   const [orders] = useAccountOrders(flagOrdersEnabled);
@@ -851,6 +775,7 @@ export default function Exchange({
         </div>
         {listSection === "Positions" && (
           <PositionsList
+            positionsDataIsLoading={positionsDataIsLoading}
             pendingPositions={pendingPositions}
             setPendingPositions={setPendingPositions}
             setListSection={setListSection}
@@ -992,4 +917,4 @@ export default function Exchange({
       <Footer />
     </div>
   );
-}
+});

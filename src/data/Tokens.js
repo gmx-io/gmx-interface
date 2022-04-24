@@ -189,6 +189,7 @@ const TOKENS = {
       decimals: 18,
       address: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
       isStable: false,
+      isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/877/thumb/chainlink-new-logo.png?1547034700",
     },
     {
@@ -197,6 +198,7 @@ const TOKENS = {
       decimals: 18,
       address: "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
       isStable: false,
+      isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/12504/thumb/uniswap-uni.png?1600306604",
     },
     {

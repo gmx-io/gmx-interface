@@ -1,6 +1,6 @@
-import { ethers } from "ethers";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { SWRConfig } from "swr";
+import { ethers } from "ethers";
 
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -46,7 +46,7 @@ import Presale from "./views/Presale/Presale";
 import Dashboard from "./views/Dashboard/Dashboard";
 import Ecosystem from "./views/Ecosystem/Ecosystem";
 import Stake from "./views/Stake/Stake";
-import Exchange from "./views/Exchange/Exchange";
+import { Exchange } from "./views/Exchange/Exchange";
 import Actions from "./views/Actions/Actions";
 import OrdersOverview from "./views/OrdersOverview/OrdersOverview";
 import PositionsOverview from "./views/PositionsOverview/PositionsOverview";
@@ -95,6 +95,11 @@ import SEO from "./components/Common/SEO";
 import useRouteQuery from "./hooks/useRouteQuery";
 import { encodeReferralCode } from "./Api/referrals";
 
+import { getContract } from "./Addresses";
+import VaultV2 from "./abis/VaultV2.json";
+import VaultV2b from "./abis/VaultV2b.json";
+import PositionRouter from "./abis/PositionRouter.json";
+
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
@@ -115,6 +120,23 @@ const Zoom = cssTransition({
 
 function inPreviewMode() {
   return false;
+}
+
+const arbWsProvider = new ethers.providers.WebSocketProvider("wss://arb1.arbitrum.io/ws");
+
+const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
+
+function getWsProvider(active, chainId) {
+  if (!active) {
+    return;
+  }
+  if (chainId === ARBITRUM) {
+    return arbWsProvider;
+  }
+
+  if (chainId === AVALANCHE) {
+    return avaxWsProvider;
+  }
 }
 
 function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
@@ -310,7 +332,8 @@ function AppHeaderUser({
 }
 
 function FullApp() {
-  const { connector, library, deactivate, activate } = useWeb3React();
+  const exchangeRef = useRef();
+  const { connector, library, deactivate, activate, active } = useWeb3React();
   const { chainId } = useChainId();
   useEventToast();
   const [activatingConnector, setActivatingConnector] = useState();
@@ -540,6 +563,53 @@ function FullApp() {
     return () => clearInterval(interval);
   }, [library, pendingTxns, chainId]);
 
+  const vaultAddress = getContract(chainId, "Vault");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
+
+  useEffect(() => {
+    const wsVaultAbi = chainId === ARBITRUM ? VaultV2.abi : VaultV2b.abi;
+    const wsProvider = getWsProvider(active, chainId);
+    if (!wsProvider) {
+      return;
+    }
+
+    const wsVault = new ethers.Contract(vaultAddress, wsVaultAbi, wsProvider);
+    const wsPositionRouter = new ethers.Contract(positionRouterAddress, PositionRouter.abi, wsProvider);
+
+    const callExchangeRef = (method, ...args) => {
+      if (!exchangeRef || !exchangeRef.current) {
+        return;
+      }
+
+      exchangeRef.current[method](...args);
+    };
+
+    // handle the subscriptions here instead of within the Exchange component to avoid unsubscribing and re-subscribing
+    // each time the Exchange components re-renders, which happens on every data update
+    const onUpdatePosition = (...args) => callExchangeRef("onUpdatePosition", ...args);
+    const onClosePosition = (...args) => callExchangeRef("onClosePosition", ...args);
+    const onIncreasePosition = (...args) => callExchangeRef("onIncreasePosition", ...args);
+    const onDecreasePosition = (...args) => callExchangeRef("onDecreasePosition", ...args);
+    const onCancelIncreasePosition = (...args) => callExchangeRef("onCancelIncreasePosition", ...args);
+    const onCancelDecreasePosition = (...args) => callExchangeRef("onCancelDecreasePosition", ...args);
+
+    wsVault.on("UpdatePosition", onUpdatePosition);
+    wsVault.on("ClosePosition", onClosePosition);
+    wsVault.on("IncreasePosition", onIncreasePosition);
+    wsVault.on("DecreasePosition", onDecreasePosition);
+    wsPositionRouter.on("CancelIncreasePosition", onCancelIncreasePosition);
+    wsPositionRouter.on("CancelDecreasePosition", onCancelDecreasePosition);
+
+    return function cleanup() {
+      wsVault.off("UpdatePosition", onUpdatePosition);
+      wsVault.off("ClosePosition", onClosePosition);
+      wsVault.off("IncreasePosition", onIncreasePosition);
+      wsVault.off("DecreasePosition", onDecreasePosition);
+      wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
+      wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
+    };
+  }, [active, chainId, vaultAddress, positionRouterAddress]);
+
   return (
     <>
       <div className="App">
@@ -651,6 +721,7 @@ function FullApp() {
             </Route>
             <Route exact path="/trade">
               <Exchange
+                ref={exchangeRef}
                 savedShowPnlAfterFees={savedShowPnlAfterFees}
                 savedIsPnlInLeverage={savedIsPnlInLeverage}
                 setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
@@ -909,7 +980,7 @@ function App() {
   }
 
   return (
-    <SWRConfig value={{ refreshInterval: 5000 }}>
+    <SWRConfig value={{ refreshInterval: 3000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <SEO>
           <FullApp />

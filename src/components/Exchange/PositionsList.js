@@ -59,6 +59,7 @@ export default function PositionsList(props) {
     pendingPositions,
     setPendingPositions,
     positions,
+    positionsDataIsLoading,
     positionsMap,
     infoTokens,
     active,
@@ -178,7 +179,10 @@ export default function PositionsList(props) {
       {positions && (
         <div className="Exchange-list small">
           <div>
-            {positions.length === 0 && (
+            {positions.length === 0 && positionsDataIsLoading && (
+              <div className="Exchange-empty-positions-list-note App-card">Loading...</div>
+            )}
+            {positions.length === 0 && !positionsDataIsLoading && (
               <div className="Exchange-empty-positions-list-note App-card">No open positions</div>
             )}
             {positions.map((position) => {
@@ -359,7 +363,14 @@ export default function PositionsList(props) {
             <th></th>
             <th></th>
           </tr>
-          {positions.length === 0 && (
+          {positions.length === 0 && positionsDataIsLoading && (
+            <tr>
+              <td colSpan="15">
+                <div className="Exchange-empty-positions-list-note">Loading...</div>
+              </td>
+            </tr>
+          )}
+          {positions.length === 0 && !positionsDataIsLoading && (
             <tr>
               <td colSpan="15">
                 <div className="Exchange-empty-positions-list-note">No open positions</div>

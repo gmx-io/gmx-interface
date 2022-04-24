@@ -16,6 +16,8 @@ import {
   helperToast,
   formatAmount,
   bigNumberify,
+  ARBITRUM,
+  AVALANCHE,
   USD_DECIMALS,
   USDG_DECIMALS,
   LONG,
@@ -191,6 +193,16 @@ export default function SwapBox(props) {
   const isShort = swapOption === SHORT;
   const isSwap = swapOption === SWAP;
 
+  const getLeaderboardLink = () => {
+    if (chainId === ARBITRUM) {
+      return "https://www.gmx.house/arbitrum/leaderboard";
+    }
+    if (chainId === AVALANCHE) {
+      return "https://www.gmx.house/avalanche/leaderboard";
+    }
+    return "https://www.gmx.house";
+  };
+
   function getTokenLabel() {
     switch (true) {
       case isLong:
@@ -325,6 +337,20 @@ export default function SwapBox(props) {
 
   const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
+  const toTokenAvailableUsd = toTokenInfo.availableUsd;
+
+  const renderAvailableLongLiquidity = () => {
+    if (!isLong) {
+      return null;
+    }
+
+    return (
+      <div className="Exchange-info-row">
+        <div className="Exchange-info-label">Available Liquidity</div>
+        <div className="align-right">{formatAmount(toTokenAvailableUsd, USD_DECIMALS, 2, true)}</div>
+      </div>
+    );
+  };
 
   const hasMaxAvailableShort = isShort && toTokenInfo.maxAvailableShort && toTokenInfo.maxAvailableShort.gt(0);
 
@@ -820,13 +846,13 @@ export default function SwapBox(props) {
         );
         requiredAmount = requiredAmount.add(swapAmount);
 
-        if (
-          toToken &&
-          toTokenAddress !== USDG_ADDRESS &&
-          toTokenInfo.availableAmount &&
-          requiredAmount.gt(toTokenInfo.availableAmount)
-        ) {
-          return ["Insufficient liquidity"];
+        if (toToken && toTokenAddress !== USDG_ADDRESS) {
+          if (!toTokenInfo.availableAmount) {
+            return ["Liquidity data not loaded"];
+          }
+          if (toTokenInfo.availableAmount && requiredAmount.gt(toTokenInfo.availableAmount)) {
+            return ["Insufficient liquidity"];
+          }
         }
 
         if (
@@ -908,6 +934,10 @@ export default function SwapBox(props) {
       const sizeTokens = sizeUsd
         .mul(expandDecimals(1, shortCollateralToken.decimals))
         .div(shortCollateralToken.minPrice);
+
+      if (!toTokenInfo.maxAvailableShort) {
+        return ["Liquidity data not loaded"];
+      }
 
       if (
         toTokenInfo.maxAvailableShort &&
@@ -2224,6 +2254,7 @@ export default function SwapBox(props) {
               </Tooltip>
             </div>
           </div>
+          {renderAvailableLongLiquidity()}
           {hasMaxAvailableShort && (
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">Available Liquidity</div>
@@ -2257,6 +2288,13 @@ export default function SwapBox(props) {
           <div className="Exchange-info-label-button">
             <a href="https://gmxio.gitbook.io/gmx/trading" target="_blank" rel="noopener noreferrer">
               Trading guide
+            </a>
+          </div>
+        </div>
+        <div className="Exchange-info-row">
+          <div className="Exchange-info-label-button">
+            <a href={getLeaderboardLink()} target="_blank" rel="noopener noreferrer">
+              Leaderboard
             </a>
           </div>
         </div>
