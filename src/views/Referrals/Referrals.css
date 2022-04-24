@@ -200,14 +200,6 @@
 .table-referral-code .copy-icon:hover {
   opacity: 0.75;
 }
-.table-referral-code .status-icon {
-  display: inline-flex;
-  margin-left: 1rem;
-}
-.table-referral-code .status-icon img {
-  width: 14px;
-  margin-right: 0.5rem;
-}
 
 .referral-code {
   display: flex;
@@ -215,6 +207,9 @@
 .referral-code span {
   margin-right: 0.5rem;
   font-family: monospace;
+}
+.table-referral-code .info {
+  margin-left: 0.5rem;
 }
 .referral-table {
   border-collapse: collapse;
