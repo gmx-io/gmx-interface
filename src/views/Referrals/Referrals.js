@@ -83,6 +83,13 @@ async function getReferralCodeTakenStatus(account, referralCode, chainId) {
   return { status: "none", info: referralCodeTakenInfo };
 }
 
+function getTierIdDisplay(tierId) {
+  if (!tierId) {
+    return "";
+  }
+  return Number(tierId) + 1;
+}
+
 const tierRebateInfo = {
   0: 5,
   1: 10,
@@ -647,7 +654,7 @@ function ReferrersStats({
               <p className="title">
                 Referral Codes{" "}
                 <span className="sub-title">
-                  {referrerTierInfo && `Tier ${tierId} (${tierRebateInfo[tierId]}% rebate)`}
+                  {referrerTierInfo && `Tier ${getTierIdDisplay(tierId)} (${tierRebateInfo[tierId]}% rebate)`}
                 </span>
               </p>
               <button className="transparent-btn" onClick={open}>
@@ -774,7 +781,6 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
   const [isUpdateSubmitting, setIsUpdateSubmitting] = useState(false);
   const [error, setError] = useState("");
   const editModalRef = useRef(null);
-  const referrerTierString = String(referrerTier || "");
 
   const open = () => setIsEditModalOpen(true);
   const close = () => {
@@ -823,7 +829,7 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
               {referrerTier && (
                 <div className="tier">
                   <span>
-                    Referrer Tier {`${referrerTierString} (${tierDiscountInfo[referrerTierString]}% discount)`}
+                    Referrer Tier {`${getTierIdDisplay(referrerTier)} (${tierDiscountInfo[referrerTier]}% discount)`}
                   </span>
                   <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
                     <BiInfoCircle size={14} />
