@@ -25,6 +25,8 @@ import {
 } from "../../Helpers";
 import SharePosition from "./SharePosition";
 import Loader from "../Common/Loader";
+import { useUserReferralCode } from "../../Api";
+import { ethers } from "ethers";
 
 const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -55,6 +57,19 @@ const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
       return order;
     });
 };
+
+export function decodeReferralCode(hexCode) {
+  try {
+    return ethers.utils.parseBytes32String(hexCode);
+  } catch (ex) {
+    let code = "";
+    hexCode = hexCode.substring(2);
+    for (let i = 0; i < 32; i++) {
+      code += String.fromCharCode(parseInt(hexCode.substring(i * 2, i * 2 + 2), 16));
+    }
+    return code.trim();
+  }
+}
 
 export default function PositionsList(props) {
   const {
@@ -97,6 +112,7 @@ export default function PositionsList(props) {
   const [collateralTokenAddress, setCollateralTokenAddress] = useState(undefined);
   const [ordersToaOpen, setOrdersToaOpen] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
+  const { userReferralCode } = useUserReferralCode(library, chainId, account);
 
   const editPosition = (position) => {
     setCollateralTokenAddress(position.collateralToken.address);
@@ -120,6 +136,7 @@ export default function PositionsList(props) {
       pnlPercentage: position.deltaPercentageStr,
       isLong: position.isLong,
       token: position.indexToken.symbol,
+      referralCode: userReferralCode && decodeReferralCode(userReferralCode),
     };
     fetch(apiUrl, {
       method: "POST",

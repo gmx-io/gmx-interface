@@ -12,6 +12,7 @@ import Router from "../abis/Router.json";
 import UniPool from "../abis/UniPool.json";
 import UniswapV2 from "../abis/UniswapV2.json";
 import Token from "../abis/Token.json";
+import ReferralStorage from "../abis/ReferralStorage.json";
 
 import { getContract } from "../Addresses";
 import { getConstant } from "../Constants";
@@ -551,6 +552,20 @@ function useGmxPriceFromAvalanche() {
   }, [updateReserves, updateAvaxPrice]);
 
   return { data: gmxPrice, mutate };
+}
+
+export function useUserReferralCode(library, chainId, account) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const { data: userReferralCode, mutate: mutateUserReferralCode } = useSWR(
+    account && [`ReferralStorage:traderReferralCodes`, chainId, referralStorageAddress, "traderReferralCodes", account],
+    {
+      fetcher: fetcher(library, ReferralStorage),
+    }
+  );
+  return {
+    userReferralCode,
+    mutateUserReferralCode,
+  };
 }
 
 function useGmxPriceFromArbitrum(library, active) {

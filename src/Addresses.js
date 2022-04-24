@@ -130,6 +130,7 @@ const CONTRACTS = {
     PositionRouter: "0x3D6bA331e3D9702C5e8A8d254e5d8a285F223aba",
 
     UniswapGmxEthPool: "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E",
+    ReferralStorage: "0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d",
   },
   43114: {
     // avalanche
@@ -167,6 +168,7 @@ const CONTRACTS = {
     PositionRouter: "0x195256074192170d1530527abC9943759c7167d8",
 
     TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98",
+    ReferralStorage: "0x827ed045002ecdabeb6e2b0d1604cf5fc3d322f8",
   },
 };
 
