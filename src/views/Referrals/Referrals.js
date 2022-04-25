@@ -723,7 +723,7 @@ function ReferrersStats({
                                 handle={<IoWarningOutline color="#e82e56" size={16} />}
                                 renderContent={() => (
                                   <div>
-                                    This code has been taken by someone else on
+                                    This code has been taken by someone else on{" "}
                                     {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}, you will not receive rebates
                                     from traders using this code on {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}.
                                     <br />
