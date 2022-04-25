@@ -701,12 +701,17 @@ function ReferrersStats({
                               <Tooltip
                                 position="left-top"
                                 handle={<BiInfoCircle color="#ffba0e" size={16} />}
-                                renderContent={() => `Your code is not yet registered on ${
-                                  chainId === AVALANCHE ? "Arbitrum" : "Avalanche"
-                                }, you will not receive rebates from traders using your code on ${
-                                  chainId === AVALANCHE ? "Arbitrum" : "Avalanche"
-                                }.
-                                `}
+                                renderContent={() => (
+                                  <div>
+                                    This code is not yet registered on{" "}
+                                    {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}, you will not receive rebates
+                                    from traders using this code on {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}.
+                                    <br />
+                                    <br />
+                                    Switch your network to create this code on{" "}
+                                    {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}.
+                                  </div>
+                                )}
                               />
                             </div>
                           )}
