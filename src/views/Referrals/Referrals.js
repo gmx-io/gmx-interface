@@ -671,10 +671,18 @@ function ReferrersStats({
             <table className="referral-table">
               <thead>
                 <tr>
-                  <th scope="col">Referral Code</th>
-                  <th scope="col">Total Volume</th>
-                  <th scope="col">Traders Referred</th>
-                  <th scope="col">Total Rebates</th>
+                  <th className="table-head" scope="col">
+                    Referral Code
+                  </th>
+                  <th className="table-head" scope="col">
+                    Total Volume
+                  </th>
+                  <th className="table-head" scope="col">
+                    Traders Referred
+                  </th>
+                  <th className="table-head" scope="col">
+                    Total Rebates
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -758,9 +766,15 @@ function ReferrersStats({
               <table className="referral-table">
                 <thead>
                   <tr>
-                    <th scope="col">Date</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Transaction</th>
+                    <th className="table-head" scope="col">
+                      Date
+                    </th>
+                    <th className="table-head" scope="col">
+                      Amount
+                    </th>
+                    <th className="table-head" scope="col">
+                      Transaction
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -774,11 +788,13 @@ function ReferrersStats({
                     const explorerURL = getExplorerUrl(chainId);
                     return (
                       <tr key={index}>
-                        <td data-label="Date">{formatDate(rebate.timestamp)}</td>
-                        <td data-label="Amount">
+                        <td className="table-head" data-label="Date">
+                          {formatDate(rebate.timestamp)}
+                        </td>
+                        <td className="table-head" data-label="Amount">
                           {formatAmount(rebate.amount, tokenInfo.decimals, 4, true)} {tokenInfo.symbol}
                         </td>
-                        <td data-label="Transaction">
+                        <td className="table-head" data-label="Transaction">
                           <a
                             target="_blank"
                             rel="noopener noreferrer"
@@ -900,43 +916,51 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
       {rebateDistributions.length > 0 ? (
         <div className="reward-history">
           <Card title="Rebates Distribution History" tooltipText="Rebates are airdropped weekly.">
-            <table className="referral-table">
-              <thead>
-                <tr>
-                  <th scope="col">Date</th>
-                  <th scope="col">Amount</th>
-                  <th scope="col">Tx Hash</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rebateDistributions.map((rebate, index) => {
-                  let tokenInfo;
-                  try {
-                    tokenInfo = getToken(chainId, rebate.token);
-                  } catch {
-                    tokenInfo = getNativeToken(chainId);
-                  }
-                  const explorerURL = getExplorerUrl(chainId);
-                  return (
-                    <tr key={index}>
-                      <td data-label="Date">{formatDate(rebate.timestamp)}</td>
-                      <td data-label="Amount">
-                        {formatAmount(rebate.amount, tokenInfo.decimals, 4, true)} {tokenInfo.symbol}
-                      </td>
-                      <td data-label="Tx Hash">
-                        <a
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          href={explorerURL + `tx/${rebate.transactionHash}`}
-                        >
-                          {shortenAddress(rebate.transactionHash, 20)}
-                        </a>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            <div className="table-wrapper">
+              <table className="referral-table">
+                <thead>
+                  <tr>
+                    <th className="table-head" scope="col">
+                      Date
+                    </th>
+                    <th className="table-head" scope="col">
+                      Amount
+                    </th>
+                    <th className="table-head" scope="col">
+                      Transaction
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rebateDistributions.map((rebate, index) => {
+                    let tokenInfo;
+                    try {
+                      tokenInfo = getToken(chainId, rebate.token);
+                    } catch {
+                      tokenInfo = getNativeToken(chainId);
+                    }
+                    const explorerURL = getExplorerUrl(chainId);
+                    return (
+                      <tr key={index}>
+                        <td data-label="Date">{formatDate(rebate.timestamp)}</td>
+                        <td data-label="Amount">
+                          {formatAmount(rebate.amount, tokenInfo.decimals, 4, true)} {tokenInfo.symbol}
+                        </td>
+                        <td data-label="Transaction">
+                          <a
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            href={explorerURL + `tx/${rebate.transactionHash}`}
+                          >
+                            {shortenAddress(rebate.transactionHash, 20)}
+                          </a>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </Card>
         </div>
       ) : (
