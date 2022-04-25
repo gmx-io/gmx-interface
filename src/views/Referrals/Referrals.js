@@ -70,6 +70,8 @@ async function getReferralCodeTakenStatus(account, referralCode, chainId) {
     [ARBITRUM]: takenOnArb,
     [AVALANCHE]: takenOnAvax,
     both: takenOnArb && takenOnAvax,
+    ownerArbitrum,
+    ownerAvax,
   };
 
   if (referralCodeTakenInfo.both) {
@@ -103,7 +105,7 @@ const tierDiscountInfo = {
   2: 10,
 };
 
-const getSampleReferrarStat = (code, isTaken) => {
+const getSampleReferrarStat = (code, ownerOnOtherNetwork, account) => {
   return {
     discountUsd: bigNumberify(0),
     referralCode: code,
@@ -117,7 +119,9 @@ const getSampleReferrarStat = (code, isTaken) => {
       code: encodeReferralCode(code),
       codeString: code,
       owner: undefined,
-      isTaken,
+      isTaken: !isAddressZero(ownerOnOtherNetwork),
+      isTakenByCurrentUser:
+        !isAddressZero(ownerOnOtherNetwork) && ownerOnOtherNetwork.toLowerCase() === account.toLowerCase(),
     },
   };
 };
@@ -376,14 +380,13 @@ function CreateReferrarCode({
     }
 
     if (takenStatus === "none" || (takenStatus === "other" && isChecked)) {
-      const isCodeTakeOnOtherNetwork = takenInfo[chainId === ARBITRUM ? AVALANCHE : ARBITRUM];
-
+      const ownerOnOtherNetwork = takenInfo[chainId === ARBITRUM ? "ownerAvax" : "ownerArbitrum"];
       setIsProcessing(true);
       try {
         const tx = await handleCreateReferralCode(referralCode);
         const receipt = await tx.wait();
         if (receipt.status === 1) {
-          recentlyAddedCodes.push(getSampleReferrarStat(referralCode, isCodeTakeOnOtherNetwork));
+          recentlyAddedCodes.push(getSampleReferrarStat(referralCode, ownerOnOtherNetwork, account));
           helperToast.success("Referral code created!");
           setRecentlyAddedCodes(recentlyAddedCodes);
           setReferralCode("");
@@ -558,14 +561,14 @@ function ReferrersStats({
     }
 
     if (takenStatus === "none" || (takenStatus === "other" && isChecked)) {
-      const isCodeTakeOnOtherNetwork = takenInfo[chainId === ARBITRUM ? AVALANCHE : ARBITRUM];
+      const ownerOnOtherNetwork = takenInfo[chainId === ARBITRUM ? "ownerAvax" : "ownerArbitrum"];
       setIsAdding(true);
       try {
         const tx = await handleCreateReferralCode(referralCode);
         close();
         const receipt = await tx.wait();
         if (receipt.status === 1) {
-          recentlyAddedCodes.push(getSampleReferrarStat(referralCode, isCodeTakeOnOtherNetwork));
+          recentlyAddedCodes.push(getSampleReferrarStat(referralCode, ownerOnOtherNetwork, account));
           helperToast.success("Referral code created!");
           setRecentlyAddedCodes(recentlyAddedCodes);
           setReferralCode("");
