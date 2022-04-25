@@ -8496,7 +8496,7 @@ __metadata:
     react-dom: ^17.0.1
     react-helmet: ^6.1.0
     react-hot-toast: ^2.2.0
-    react-icons: ^4.2.0
+    react-icons: ^4.3.0
     react-router-dom: ^5.2.0
     react-scripts: 4.0.3
     react-select: ^5.2.1
@@ -14175,7 +14175,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-icons@npm:^4.2.0":
+"react-icons@npm:^4.3.0":
   version: 4.3.1
   resolution: "react-icons@npm:4.3.1"
   peerDependencies:
