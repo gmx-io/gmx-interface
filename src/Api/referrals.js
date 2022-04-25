@@ -99,6 +99,7 @@ export function useUserCodesOnAllChain(account) {
                 codeString: decodeReferralCode(code),
                 owner,
                 isTaken: !!owner,
+                isTakenByCurrentUser: owner && String(owner).toLowerCase() === String(account).toLowerCase,
               };
             })
         )

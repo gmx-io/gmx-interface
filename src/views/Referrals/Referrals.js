@@ -712,7 +712,6 @@ function ReferrersStats({
                           )}
                         </div>
                       </td>
-
                       <td data-label="Total Volume">{getUSDValue(stat.volume)}</td>
                       <td data-label="Traders Referred">{stat.registeredReferralsCount}</td>
                       <td data-label="Total Rebates">{getUSDValue(referrerRebate)}</td>
