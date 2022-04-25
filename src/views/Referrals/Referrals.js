@@ -36,6 +36,7 @@ import {
   useUserReferralCode,
 } from "../../Api";
 import { BiCopy, BiEditAlt, BiInfoCircle } from "react-icons/bi";
+import { IoWarningOutline } from "react-icons/io5";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import { useCopyToClipboard, useLocalStorage } from "react-use";
 import Loader from "../../components/Common/Loader";
@@ -700,13 +701,18 @@ function ReferrersStats({
                             <div className="info">
                               <Tooltip
                                 position="left-top"
-                                handle={<BiInfoCircle color="#ffba0e" size={16} />}
-                                renderContent={() => `Your code is not yet registered on ${
-                                  chainId === AVALANCHE ? "Arbitrum" : "Avalanche"
-                                }, you will not receive rebates from traders using your code on ${
-                                  chainId === AVALANCHE ? "Arbitrum" : "Avalanche"
-                                }.
-                                `}
+                                handle={<IoWarningOutline color="#ffba0e" size={16} />}
+                                renderContent={() => (
+                                  <div>
+                                    This code is not yet registered on{" "}
+                                    {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}, you will not receive rebates
+                                    from traders using this code on {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}.
+                                    <br />
+                                    <br />
+                                    Switch your network to create this code on{" "}
+                                    {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}.
+                                  </div>
+                                )}
                               />
                             </div>
                           )}
