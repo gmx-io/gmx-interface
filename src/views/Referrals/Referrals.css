@@ -245,8 +245,6 @@
 .table-wrapper {
   display: block;
   width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .empty-message {
@@ -268,12 +266,18 @@
   margin-bottom: 1rem;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 800px) {
   .referral-table {
     width: auto;
     margin-bottom: 1rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
-  .referral-table td {
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .table-head {
     white-space: nowrap;
   }
 }
