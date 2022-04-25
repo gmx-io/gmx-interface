@@ -352,7 +352,6 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
 }
 
 export const Exchange = forwardRef((props, ref) => {
-  // console.log("rerender Exchange");
   const {
     savedIsPnlInLeverage,
     setSavedIsPnlInLeverage,

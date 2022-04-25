@@ -716,6 +716,25 @@ function ReferrersStats({
                               />
                             </div>
                           )}
+                          {ownerOnOtherChain?.isTaken && !ownerOnOtherChain?.isTakenByCurrentUser && (
+                            <div className="info">
+                              <Tooltip
+                                position="left-top"
+                                handle={<IoWarningOutline color="#e82e56" size={16} />}
+                                renderContent={() => (
+                                  <div>
+                                    This code has been taken by someone else on
+                                    {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}, you will not receive rebates
+                                    from traders using this code on {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}.
+                                    <br />
+                                    <br />
+                                    Switch your network to create this code on{" "}
+                                    {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}.
+                                  </div>
+                                )}
+                              />
+                            </div>
+                          )}
                         </div>
                       </td>
                       <td data-label="Total Volume">{getUSDValue(stat.volume)}</td>
