@@ -956,7 +956,7 @@ function App() {
   }
 
   return (
-    <SWRConfig value={{ refreshInterval: 3000 }}>
+    <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <SEO>
           <FullApp />
