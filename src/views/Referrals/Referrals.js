@@ -35,7 +35,7 @@ import {
   useReferrerTier,
   useUserReferralCode,
 } from "../../Api";
-import { BiCopy, BiEditAlt, BiInfoCircle } from "react-icons/bi";
+import { BiCopy, BiEditAlt, BiInfoCircle, BiErrorCircle } from "react-icons/bi";
 import { IoWarningOutline } from "react-icons/io5";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import { useCopyToClipboard, useLocalStorage } from "react-use";
@@ -723,16 +723,12 @@ function ReferrersStats({
                             <div className="info">
                               <Tooltip
                                 position="left-top"
-                                handle={<IoWarningOutline color="#e82e56" size={16} />}
+                                handle={<BiErrorCircle color="#e82e56" size={16} />}
                                 renderContent={() => (
                                   <div>
                                     This code has been taken by someone else on{" "}
                                     {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}, you will not receive rebates
                                     from traders using this code on {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}.
-                                    <br />
-                                    <br />
-                                    Switch your network to create this code on{" "}
-                                    {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}.
                                   </div>
                                 )}
                               />
