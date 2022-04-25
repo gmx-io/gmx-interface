@@ -11,7 +11,6 @@
   letter-spacing: 0.4px;
   min-width: 250px;
   text-align: left;
-  z-index: 10000;
   background: linear-gradient(90deg, #0b0b0f 0%, rgba(10, 13, 28, 1) 100%);
 }
 
@@ -43,6 +42,11 @@
 .Tooltip-popup.right-top {
   right: 0;
   transform: translateY(-0.5rem);
+  bottom: 100%;
+}
+.Tooltip-popup.right {
+  left: 30px;
+  transform: translateY(50%);
   bottom: 100%;
 }
 

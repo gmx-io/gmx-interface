@@ -708,10 +708,10 @@ function ReferrersStats({
                             <span>{stat.referralCode}</span>
                             <BiCopy />
                           </div>
-                          {!ownerOnOtherChain?.isTaken && (
+                          {ownerOnOtherChain && !ownerOnOtherChain?.isTaken && (
                             <div className="info">
                               <Tooltip
-                                position="left-top"
+                                position="right"
                                 handle={<IoWarningOutline color="#ffba0e" size={16} />}
                                 renderContent={() => (
                                   <div>
@@ -727,10 +727,10 @@ function ReferrersStats({
                               />
                             </div>
                           )}
-                          {ownerOnOtherChain?.isTaken && !ownerOnOtherChain?.isTakenByCurrentUser && (
+                          {ownerOnOtherChain && ownerOnOtherChain?.isTaken && !ownerOnOtherChain?.isTakenByCurrentUser && (
                             <div className="info">
                               <Tooltip
-                                position="left-top"
+                                position="right"
                                 handle={<BiErrorCircle color="#e82e56" size={16} />}
                                 renderContent={() => (
                                   <div>
