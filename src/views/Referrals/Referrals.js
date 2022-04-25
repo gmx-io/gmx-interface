@@ -701,11 +701,12 @@ function ReferrersStats({
                               <Tooltip
                                 position="left-top"
                                 handle={<BiInfoCircle color="#ffba0e" size={16} />}
-                                renderContent={() =>
-                                  `You should register this code on ${
-                                    chainId === AVALANCHE ? "Arbitrum" : "Avalanche"
-                                  } too.`
-                                }
+                                renderContent={() => `Your code is not yet registered on ${
+                                  chainId === AVALANCHE ? "Arbitrum" : "Avalanche"
+                                }, you will not receive rebates from traders using your code on ${
+                                  chainId === AVALANCHE ? "Arbitrum" : "Avalanche"
+                                }.
+                                `}
                               />
                             </div>
                           )}
@@ -725,7 +726,7 @@ function ReferrersStats({
       </div>
       {discountDistributions?.length > 0 ? (
         <div className="reward-history">
-          <Card title="Rebates Distribution History">
+          <Card title="Rebates Distribution History" tooltipText="Rebates are airdropped weekly.">
             <div className="table-wrapper">
               <table className="referral-table">
                 <thead>
@@ -768,7 +769,7 @@ function ReferrersStats({
           </Card>
         </div>
       ) : (
-        <EmptyMessage message="No rebates distribution history yet." />
+        <EmptyMessage tooltipText="Rebates are airdropped weekly." message="No rebates distribution history yet." />
       )}
     </div>
   );
@@ -810,7 +811,7 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
       <div className="referral-stats">
         <InfoCard
           label="Total Trading Volume"
-          tooltipText="Volume traded by this account."
+          tooltipText="Volume traded by this account with an active referral code."
           data={getUSDValue(referralTotalStats?.volume)}
         />
         <InfoCard
@@ -871,7 +872,7 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
       </div>
       {rebateDistributions.length > 0 ? (
         <div className="reward-history">
-          <Card title="Rebates Distribution History">
+          <Card title="Rebates Distribution History" tooltipText="Rebates are airdropped weekly.">
             <table className="referral-table">
               <thead>
                 <tr>
@@ -912,7 +913,7 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
           </Card>
         </div>
       ) : (
-        <EmptyMessage message="No rebates distribution history yet." />
+        <EmptyMessage message="No rebates distribution history yet." tooltipText="Rebates are airdropped weekly." />
       )}
     </div>
   );
@@ -946,7 +947,7 @@ function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet, 
   return (
     <div className="referral-card section-center mt-large">
       <h2 className="title">Enter Referral Code</h2>
-      <p className="sub-title">Please input a referral code to start earning rebates.</p>
+      <p className="sub-title">Please input a referral code to benefit from fee discounts.</p>
       <div className="card-action">
         {isWalletConnected ? (
           <form onSubmit={(e) => handleSetTraderReferralCode(e, referralCode)}>
@@ -990,7 +991,7 @@ function InfoCard({ label, data, tooltipText, toolTipPosition = "right-bottom" }
     <div className="info-card">
       <div className="card-details">
         <h3 className="label">
-          {label}{" "}
+          {label}
           {tooltipText && (
             <Tooltip
               handle={<RiQuestionLine className="info-card-question-icon" />}
@@ -1005,10 +1006,14 @@ function InfoCard({ label, data, tooltipText, toolTipPosition = "right-bottom" }
   );
 }
 
-function EmptyMessage({ message = "" }) {
+function EmptyMessage({ message = "", tooltipText }) {
   return (
     <div className="empty-message">
-      <p>{message}</p>
+      {tooltipText ? (
+        <Tooltip handle={<p>{message}</p>} position="center-bottom" renderContent={() => tooltipText} />
+      ) : (
+        <p>{message}</p>
+      )}
     </div>
   );
 }
