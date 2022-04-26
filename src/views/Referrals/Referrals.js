@@ -882,10 +882,16 @@ function Rebates({
       return `Checking code...`;
     }
     if (!isReferralCodeValid) {
-      return `Referral Code is not valid`;
+      return `Referral Code does not exist`;
     }
 
     return "Update";
+  }
+  function isPrimaryEnabled() {
+    if (isUpdateSubmitting || isValidating || !isReferralCodeValid) {
+      return false;
+    }
+    return true;
   }
 
   useEffect(() => {
@@ -953,7 +959,7 @@ function Rebates({
                 }}
               />
               {error && <p className="error">{error}</p>}
-              <button type="submit" className="App-cta Exchange-swap-button" disabled={isUpdateSubmitting}>
+              <button type="submit" className="App-cta Exchange-swap-button" disabled={!isPrimaryEnabled()}>
                 {getPrimaryText()}
               </button>
             </form>
