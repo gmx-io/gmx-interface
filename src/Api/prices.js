@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 import useSWR from "swr";
 import { ethers } from "ethers";
 
-import { USD_DECIMALS, CHART_PERIODS, formatAmount } from "../Helpers";
+import { USD_DECIMALS, CHART_PERIODS, formatAmount, sleep } from "../Helpers";
 import { chainlinkClient } from "./common";
 
 const BigNumber = ethers.BigNumber;
@@ -63,9 +63,26 @@ async function getChartPricesFromStats(chainId, symbol, period) {
   const from = Math.floor(Date.now() / 1000 - timeDiff);
   const url = `${hostname}api/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`;
   const TIMEOUT = 5000;
-  const res = await new Promise((resolve, reject) => {
-    setTimeout(() => reject(new Error(`request timeout ${url}`)), TIMEOUT);
-    fetch(url).then(resolve).catch(reject);
+  const res = await new Promise(async (resolve, reject) => {
+    let done = false;
+    setTimeout(() => {
+      done = true;
+      reject(new Error(`request timeout ${url}`));
+    }, TIMEOUT);
+
+    let lastEx;
+    for (let i = 0; i < 3; i++) {
+      if (done) return;
+      try {
+        const res = await fetch(url);
+        resolve(res);
+        return;
+      } catch (ex) {
+        await sleep(300);
+        lastEx = ex;
+      }
+    }
+    reject(lastEx);
   });
   if (!res.ok) {
     throw new Error(`request failed ${res.status} ${res.statusText}`);
