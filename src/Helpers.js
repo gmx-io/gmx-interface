@@ -2580,6 +2580,10 @@ export async function addTokenToMetamask(token) {
   }
 }
 
+export function sleep(ms) {
+  return new Promise((resolve) => resolve(), ms);
+}
+
 export function getPageTitle(data) {
   return `${data} | Decentralized
   Perpetual Exchange | GMX`;
