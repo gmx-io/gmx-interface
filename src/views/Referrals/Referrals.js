@@ -48,6 +48,10 @@ import { getToken, getNativeToken } from "../../data/Tokens";
 import Checkbox from "../../components/Checkbox/Checkbox";
 
 const REFERRAL_DATA_MAX_TIME = 60000 * 5; // 5 minutes
+const TRADERS = "Traders";
+const AFFILIATES = "Affiliates";
+const TAB_OPTIONS = [TRADERS, AFFILIATES];
+const CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 
 function isRecentReferralNotCodeExpired(referralCodeInfo) {
   if (referralCodeInfo.time) {
@@ -132,11 +136,6 @@ const getSampleReferrarStat = (code, ownerOnOtherNetwork, account) => {
     },
   };
 };
-
-const TRADERS = "Traders";
-const AFFILIATES = "Affiliates";
-let TAB_OPTIONS = [TRADERS, AFFILIATES];
-const CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 
 function getUSDValue(value) {
   return `$${formatAmount(value, USD_DECIMALS, 2, true, "0.00")}`;
