@@ -136,6 +136,7 @@ const getSampleReferrarStat = (code, ownerOnOtherNetwork, account) => {
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
 let TAB_OPTIONS = [TRADERS, AFFILIATES];
+const CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 
 function getUSDValue(value) {
   return `$${formatAmount(value, USD_DECIMALS, 2, true, "0.00")}`;
@@ -154,8 +155,7 @@ function getErrorMessage(value) {
     return `The referral code can't be more than ${MAX_REFERRAL_CODE_LENGTH} characters.`;
   }
 
-  const regexForValidString = /^\w+$/; // only number, string and underscore is allowed
-  if (!regexForValidString.test(trimmedValue)) {
+  if (!CODE_REGEX.test(trimmedValue)) {
     return "Only letters, numbers and underscores are allowed.";
   }
   return "";
@@ -878,6 +878,9 @@ function Rebates({
     if (isUpdateSubmitting) {
       return "Updating...";
     }
+    if (debouncedEditReferralCode === "") {
+      return "Enter Referral Code";
+    }
     if (isValidating) {
       return `Checking code...`;
     }
@@ -888,20 +891,32 @@ function Rebates({
     return "Update";
   }
   function isPrimaryEnabled() {
-    if (isUpdateSubmitting || isValidating || !isReferralCodeValid) {
+    if (debouncedEditReferralCode === "" || isUpdateSubmitting || isValidating || !isReferralCodeValid) {
       return false;
     }
     return true;
   }
 
   useEffect(() => {
+    let cancelled = false;
     async function checkReferralCode() {
+      if (debouncedEditReferralCode === "" || !CODE_REGEX.test(debouncedEditReferralCode)) {
+        setIsValidating(false);
+        setIsReferralCodeValid(false);
+        return;
+      }
+
       setIsValidating(true);
       const referralCodeOwner = await validateReferralCode(debouncedEditReferralCode, chainId);
-      setIsReferralCodeValid(!isAddressZero(referralCodeOwner));
-      setIsValidating(false);
+      if (!cancelled) {
+        setIsReferralCodeValid(!isAddressZero(referralCodeOwner));
+        setIsValidating(false);
+      }
     }
     checkReferralCode();
+    return () => {
+      cancelled = true;
+    };
   }, [debouncedEditReferralCode, chainId]);
 
   return (
