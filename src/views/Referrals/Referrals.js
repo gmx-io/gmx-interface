@@ -234,6 +234,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     if (!account)
       return (
         <JoinReferrarCode
+          account={account}
           connectWallet={connectWallet}
           isWalletConnected={active}
           library={library}
@@ -246,6 +247,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     if (!referralCodeInString) {
       return (
         <JoinReferrarCode
+          account={account}
           connectWallet={connectWallet}
           isWalletConnected={active}
           library={library}
@@ -258,6 +260,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
 
     return (
       <Rebates
+        account={account}
         referralCodeInString={referralCodeInString}
         chainId={chainId}
         library={library}
@@ -814,7 +817,16 @@ function ReferrersStats({
   );
 }
 
-function Rebates({ referralsData, referrerTier, chainId, library, referralCodeInString, setPendingTxns, pendingTxns }) {
+function Rebates({
+  account,
+  referralsData,
+  referrerTier,
+  chainId,
+  library,
+  referralCodeInString,
+  setPendingTxns,
+  pendingTxns,
+}) {
   const { referralTotalStats, rebateDistributions } = referralsData;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editReferralCode, setEditReferralCode] = useState("");
@@ -835,6 +847,7 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
     const referralCodeHex = encodeReferralCode(editReferralCode);
     return setTraderReferralCodeByUser(chainId, referralCodeHex, {
       library,
+      account,
       successMsg: `Referral code updated!`,
       failMsg: "Referral code updated failed.",
       setPendingTxns,
@@ -966,7 +979,15 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
   );
 }
 
-function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet, setPendingTxns, pendingTxns }) {
+function JoinReferrarCode({
+  isWalletConnected,
+  account,
+  chainId,
+  library,
+  connectWallet,
+  setPendingTxns,
+  pendingTxns,
+}) {
   const [referralCode, setReferralCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isJoined, setIsJoined] = useState(false);
@@ -977,6 +998,7 @@ function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet, 
     const referralCodeHex = encodeReferralCode(code);
     return setTraderReferralCodeByUser(chainId, referralCodeHex, {
       library,
+      account,
       successMsg: `Referral code added!`,
       failMsg: "Adding referral code failed.",
       setPendingTxns,

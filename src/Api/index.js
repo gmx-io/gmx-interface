@@ -35,6 +35,7 @@ import {
   parseValue,
   expandDecimals,
   getInfoTokens,
+  isAddressZero,
   helperToast,
 } from "../Helpers";
 import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
@@ -685,6 +686,13 @@ export async function registerReferralCode(chainId, referralCode, { library, ...
 export async function setTraderReferralCodeByUser(chainId, referralCode, { library, ...props }) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
+  const codeOwner = await contract.codeOwners(referralCode);
+  if (isAddressZero(codeOwner)) {
+    helperToast.error("Referral code does not exist");
+    return new Promise((resolve, reject) => {
+      reject();
+    });
+  }
   return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCode], {
     ...props,
   });
