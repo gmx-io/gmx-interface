@@ -32,6 +32,7 @@ import {
   getReferralCodeOwner,
   registerReferralCode,
   setTraderReferralCodeByUser,
+  useCodeOwner,
   useReferrerTier,
   useUserReferralCode,
 } from "../../Api";
@@ -161,7 +162,9 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { data: referralsData, loading } = useReferralsData(chainIdWithoutLocalStorage, account);
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], []);
   const { userReferralCode } = useUserReferralCode(library, chainId, account);
+  const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { referrerTier } = useReferrerTier(library, chainId, account);
+  const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
 
   let referralCodeInString;
   if (userReferralCode && !isHashZero(userReferralCode)) {
@@ -268,6 +271,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
         setPendingTxns={setPendingTxns}
         pendingTxns={pendingTxns}
         referrerTier={referrerTier}
+        traderTier={traderTier}
       />
     );
   }
@@ -821,6 +825,7 @@ function Rebates({
   account,
   referralsData,
   referrerTier,
+  traderTier,
   chainId,
   library,
   referralCodeInString,
@@ -852,10 +857,13 @@ function Rebates({
       failMsg: "Referral code updated failed.",
       setPendingTxns,
       pendingTxns,
-    }).finally(() => {
-      setIsUpdateSubmitting(false);
-      setIsEditModalOpen(false);
-    });
+    })
+      .then(() => {
+        setIsEditModalOpen(false);
+      })
+      .finally(() => {
+        setIsUpdateSubmitting(false);
+      });
   }
 
   return (
@@ -879,11 +887,9 @@ function Rebates({
                 <span>{referralCodeInString}</span>
                 <BiEditAlt onClick={open} />
               </div>
-              {referrerTier && (
+              {traderTier && (
                 <div className="tier">
-                  <span>
-                    Referrer Tier {`${getTierIdDisplay(referrerTier)} (${tierDiscountInfo[referrerTier]}% discount)`}
-                  </span>
+                  <span>Tier {`${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}</span>
                   <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
                     <BiInfoCircle size={14} />
                   </a>
