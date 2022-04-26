@@ -142,14 +142,9 @@ function getUSDValue(value) {
   return `$${formatAmount(value, USD_DECIMALS, 2, true, "0.00")}`;
 }
 
-function getErrorMessage(value) {
+function getCodeError(value) {
   const trimmedValue = value.trim();
   if (!trimmedValue) return "";
-
-  const regexForSpace = /\s/;
-  if (regexForSpace.test(trimmedValue)) {
-    return "The referral code can't contain spaces.";
-  }
 
   if (trimmedValue.length > MAX_REFERRAL_CODE_LENGTH) {
     return `The referral code can't be more than ${MAX_REFERRAL_CODE_LENGTH} characters.`;
@@ -430,7 +425,7 @@ function CreateReferrarCode({
               onChange={({ target }) => {
                 let { value } = target;
                 setReferralCode(value);
-                setError(getErrorMessage(value));
+                setError(getCodeError(value));
               }}
             />
             {error && (
@@ -648,7 +643,7 @@ function ReferrersStats({
                 onChange={(e) => {
                   const { value } = e.target;
                   setReferralCode(value);
-                  setError(getErrorMessage(value));
+                  setError(getCodeError(value));
                 }}
               />
               {error && <p className="error">{error}</p>}
@@ -970,7 +965,7 @@ function Rebates({
                 onChange={({ target }) => {
                   const { value } = target;
                   setEditReferralCode(value);
-                  setError(getErrorMessage(value));
+                  setError(getCodeError(value));
                 }}
               />
               {error && <p className="error">{error}</p>}
@@ -1088,7 +1083,7 @@ function JoinReferrarCode({
               onChange={({ target }) => {
                 let { value } = target;
                 setReferralCode(value);
-                setError(getErrorMessage(value));
+                setError(getCodeError(value));
               }}
             />
             {error && (
