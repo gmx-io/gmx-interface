@@ -36,7 +36,7 @@ import {
   useReferrerTier,
   useUserReferralCode,
 } from "../../Api";
-import { BiCopy, BiEditAlt, BiInfoCircle, BiErrorCircle } from "react-icons/bi";
+import { BiCopy, BiEditAlt, BiErrorCircle } from "react-icons/bi";
 import { IoWarningOutline } from "react-icons/io5";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import { useCopyToClipboard, useLocalStorage } from "react-use";
@@ -942,9 +942,9 @@ function TradersInfo({
               {traderTier && (
                 <div className="tier">
                   <span>Tier {`${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}</span>
-                  <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
+                  {/*<a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
                     <BiInfoCircle size={14} />
-                  </a>
+                  </a>*/}
                 </div>
               )}
             </div>
