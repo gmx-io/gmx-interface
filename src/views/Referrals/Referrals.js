@@ -53,16 +53,16 @@ const AFFILIATES = "Affiliates";
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
 const CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 
-function isRecentReferralNotCodeExpired(referralCodeInfo) {
+function isRecentReferralCodeNotExpired(referralCodeInfo) {
   if (referralCodeInfo.time) {
     return referralCodeInfo.time + REFERRAL_DATA_MAX_TIME > Date.now();
   }
 }
 
-async function validateReferralCode(referralCode, chainId) {
+async function validateReferralCodeExists(referralCode, chainId) {
   const referralCodeBytes32 = encodeReferralCode(referralCode);
   const referralCodeOwner = await getReferralCodeOwner(chainId, referralCodeBytes32);
-  return referralCodeOwner;
+  return !isAddressZero(referralCodeOwner);
 }
 
 async function getReferralCodeTakenStatus(account, referralCode, chainId) {
@@ -199,7 +199,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
         />
       );
     if (loading) return <Loader />;
-    if (referralsData.codes?.length > 0 || recentlyAddedCodes.filter(isRecentReferralNotCodeExpired).length > 0) {
+    if (referralsData.codes?.length > 0 || recentlyAddedCodes.filter(isRecentReferralCodeNotExpired).length > 0) {
       return (
         <ReferrersStats
           account={account}
@@ -262,7 +262,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     }
 
     return (
-      <Rebates
+      <ReferralRebates
         account={account}
         referralCodeInString={referralCodeInString}
         chainId={chainId}
@@ -589,7 +589,7 @@ function ReferrersStats({
   }
 
   let { cumulativeStats, referrerTotalStats, discountDistributions, referrerTierInfo } = referralsData;
-  const finalReferrerTotalStats = recentlyAddedCodes.filter(isRecentReferralNotCodeExpired).reduce((acc, cv) => {
+  const finalReferrerTotalStats = recentlyAddedCodes.filter(isRecentReferralCodeNotExpired).reduce((acc, cv) => {
     const addedCodes = referrerTotalStats.map((c) => c.referralCode.trim());
     if (!addedCodes.includes(cv.referralCode)) {
       acc = acc.concat(cv);
@@ -821,7 +821,7 @@ function ReferrersStats({
   );
 }
 
-function Rebates({
+function ReferralRebates({
   account,
   referralsData,
   referrerTier,
@@ -834,7 +834,7 @@ function Rebates({
 }) {
   const { referralTotalStats, rebateDistributions } = referralsData;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isReferralCodeValid, setIsReferralCodeValid] = useState(true);
+  const [referralCodeExists, setReferralCodeExists] = useState(true);
   const [isValidating, setIsValidating] = useState(false);
   const [editReferralCode, setEditReferralCode] = useState("");
   const [isUpdateSubmitting, setIsUpdateSubmitting] = useState(false);
@@ -878,14 +878,14 @@ function Rebates({
     if (isValidating) {
       return `Checking code...`;
     }
-    if (!isReferralCodeValid) {
+    if (!referralCodeExists) {
       return `Referral Code does not exist`;
     }
 
     return "Update";
   }
   function isPrimaryEnabled() {
-    if (debouncedEditReferralCode === "" || isUpdateSubmitting || isValidating || !isReferralCodeValid) {
+    if (debouncedEditReferralCode === "" || isUpdateSubmitting || isValidating || !referralCodeExists) {
       return false;
     }
     return true;
@@ -896,14 +896,14 @@ function Rebates({
     async function checkReferralCode() {
       if (debouncedEditReferralCode === "" || !CODE_REGEX.test(debouncedEditReferralCode)) {
         setIsValidating(false);
-        setIsReferralCodeValid(false);
+        setReferralCodeExists(false);
         return;
       }
 
       setIsValidating(true);
-      const referralCodeOwner = await validateReferralCode(debouncedEditReferralCode, chainId);
+      const codeExists = await validateReferralCodeExists(debouncedEditReferralCode, chainId);
       if (!cancelled) {
-        setIsReferralCodeValid(!isAddressZero(referralCodeOwner));
+        setReferralCodeExists(codeExists);
         setIsValidating(false);
       }
     }
