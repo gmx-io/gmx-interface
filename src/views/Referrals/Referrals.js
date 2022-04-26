@@ -42,7 +42,6 @@ import Tooltip from "../../components/Tooltip/Tooltip";
 import { useCopyToClipboard, useLocalStorage } from "react-use";
 import Loader from "../../components/Common/Loader";
 import Modal from "../../components/Modal/Modal";
-import { RiQuestionLine } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
 import { getToken, getNativeToken } from "../../data/Tokens";
 import Checkbox from "../../components/Checkbox/Checkbox";
@@ -190,7 +189,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   function renderAffiliatesTab() {
     if (!account)
       return (
-        <CreateReferrarCode
+        <CreateReferralCode
           account={account}
           isWalletConnected={active}
           handleCreateReferralCode={handleCreateReferralCode}
@@ -207,7 +206,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     if (loading) return <Loader />;
     if (referralsData.codes?.length > 0 || recentlyAddedCodes.filter(isRecentReferralNotCodeExpired).length > 0) {
       return (
-        <ReferrersStats
+        <AffiliatesInfo
           account={account}
           active={active}
           referralsData={referralsData}
@@ -222,7 +221,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
       );
     } else {
       return (
-        <CreateReferrarCode
+        <CreateReferralCode
           account={account}
           isWalletConnected={active}
           handleCreateReferralCode={handleCreateReferralCode}
@@ -242,7 +241,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   function renderTradersTab() {
     if (!account)
       return (
-        <JoinReferrarCode
+        <JoinReferralCode
           account={account}
           connectWallet={connectWallet}
           isWalletConnected={active}
@@ -255,7 +254,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     if (!referralsData) return <Loader />;
     if (!referralCodeInString) {
       return (
-        <JoinReferrarCode
+        <JoinReferralCode
           account={account}
           connectWallet={connectWallet}
           isWalletConnected={active}
@@ -268,7 +267,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     }
 
     return (
-      <Rebates
+      <TradersInfo
         account={account}
         referralCodeInString={referralCodeInString}
         chainId={chainId}
@@ -295,7 +294,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   );
 }
 
-function CreateReferrarCode({
+function CreateReferralCode({
   account,
   handleCreateReferralCode,
   isWalletConnected,
@@ -459,7 +458,7 @@ function CreateReferrarCode({
   );
 }
 
-function ReferrersStats({
+function AffiliatesInfo({
   account,
   referralsData,
   handleCreateReferralCode,
@@ -827,7 +826,7 @@ function ReferrersStats({
   );
 }
 
-function Rebates({
+function TradersInfo({
   account,
   referralsData,
   referrerTier,
@@ -1047,7 +1046,7 @@ function Rebates({
   );
 }
 
-function JoinReferrarCode({
+function JoinReferralCode({
   isWalletConnected,
   account,
   chainId,
