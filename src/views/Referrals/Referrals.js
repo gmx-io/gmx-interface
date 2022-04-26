@@ -55,6 +55,12 @@ function isRecentReferralNotCodeExpired(referralCodeInfo) {
   }
 }
 
+async function validateReferralCode(referralCode, chainId) {
+  const referralCodeBytes32 = encodeReferralCode(referralCode);
+  const referralCodeOwner = await getReferralCodeOwner(chainId, referralCodeBytes32);
+  return referralCodeOwner;
+}
+
 async function getReferralCodeTakenStatus(account, referralCode, chainId) {
   const referralCodeBytes32 = encodeReferralCode(referralCode);
   const [ownerArbitrum, ownerAvax] = await Promise.all([
@@ -834,10 +840,13 @@ function Rebates({
 }) {
   const { referralTotalStats, rebateDistributions } = referralsData;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isReferralCodeValid, setIsReferralCodeValid] = useState(true);
+  const [isValidating, setIsValidating] = useState(false);
   const [editReferralCode, setEditReferralCode] = useState("");
   const [isUpdateSubmitting, setIsUpdateSubmitting] = useState(false);
   const [error, setError] = useState("");
   const editModalRef = useRef(null);
+  const debouncedEditReferralCode = useDebounce(editReferralCode, 300);
 
   const open = () => setIsEditModalOpen(true);
   const close = () => {
@@ -865,6 +874,29 @@ function Rebates({
         setIsUpdateSubmitting(false);
       });
   }
+  function getPrimaryText() {
+    if (isUpdateSubmitting) {
+      return "Updating...";
+    }
+    if (isValidating) {
+      return `Checking code...`;
+    }
+    if (!isReferralCodeValid) {
+      return `Referral Code is not valid`;
+    }
+
+    return "Update";
+  }
+
+  useEffect(() => {
+    async function checkReferralCode() {
+      setIsValidating(true);
+      const referralCodeOwner = await validateReferralCode(debouncedEditReferralCode, chainId);
+      setIsReferralCodeValid(!isAddressZero(referralCodeOwner));
+      setIsValidating(false);
+    }
+    checkReferralCode();
+  }, [debouncedEditReferralCode, chainId]);
 
   return (
     <div className="rebate-container">
@@ -922,7 +954,7 @@ function Rebates({
               />
               {error && <p className="error">{error}</p>}
               <button type="submit" className="App-cta Exchange-swap-button" disabled={isUpdateSubmitting}>
-                {isUpdateSubmitting ? "Updating..." : "Update"}
+                {getPrimaryText()}
               </button>
             </form>
           </div>
