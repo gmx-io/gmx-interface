@@ -42,7 +42,6 @@ import Tooltip from "../../components/Tooltip/Tooltip";
 import { useCopyToClipboard, useLocalStorage } from "react-use";
 import Loader from "../../components/Common/Loader";
 import Modal from "../../components/Modal/Modal";
-import { RiQuestionLine } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
 import { getToken, getNativeToken } from "../../data/Tokens";
 import Checkbox from "../../components/Checkbox/Checkbox";
@@ -138,7 +137,7 @@ const getSampleReferrarStat = (code, ownerOnOtherNetwork, account) => {
 };
 
 function getUSDValue(value) {
-  return `$${formatAmount(value, USD_DECIMALS, 2, true, "0.00")}`;
+  return `$${formatAmount(value, USD_DECIMALS, 4, true, "0.00")}`;
 }
 
 function getCodeError(value) {
@@ -183,7 +182,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   function renderAffiliatesTab() {
     if (!account)
       return (
-        <CreateReferrarCode
+        <CreateReferralCode
           account={account}
           isWalletConnected={active}
           handleCreateReferralCode={handleCreateReferralCode}
@@ -200,7 +199,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     if (loading) return <Loader />;
     if (referralsData.codes?.length > 0 || recentlyAddedCodes.filter(isRecentReferralCodeNotExpired).length > 0) {
       return (
-        <ReferrersStats
+        <AffiliatesInfo
           account={account}
           active={active}
           referralsData={referralsData}
@@ -215,7 +214,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
       );
     } else {
       return (
-        <CreateReferrarCode
+        <CreateReferralCode
           account={account}
           isWalletConnected={active}
           handleCreateReferralCode={handleCreateReferralCode}
@@ -235,7 +234,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   function renderTradersTab() {
     if (!account)
       return (
-        <JoinReferrarCode
+        <JoinReferralCode
           account={account}
           connectWallet={connectWallet}
           isWalletConnected={active}
@@ -248,7 +247,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     if (!referralsData) return <Loader />;
     if (!referralCodeInString) {
       return (
-        <JoinReferrarCode
+        <JoinReferralCode
           account={account}
           connectWallet={connectWallet}
           isWalletConnected={active}
@@ -261,7 +260,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     }
 
     return (
-      <ReferralRebates
+      <TradersInfo
         account={account}
         referralCodeInString={referralCodeInString}
         chainId={chainId}
@@ -287,7 +286,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   );
 }
 
-function CreateReferrarCode({
+function CreateReferralCode({
   account,
   handleCreateReferralCode,
   isWalletConnected,
@@ -451,7 +450,7 @@ function CreateReferrarCode({
   );
 }
 
-function ReferrersStats({
+function AffiliatesInfo({
   account,
   referralsData,
   handleCreateReferralCode,
@@ -819,7 +818,7 @@ function ReferrersStats({
   );
 }
 
-function ReferralRebates({
+function TradersInfo({
   account,
   referralsData,
   traderTier,
@@ -866,6 +865,9 @@ function ReferralRebates({
       });
   }
   function getPrimaryText() {
+    if (editReferralCode === referralCodeInString) {
+      return "Referral Code is same";
+    }
     if (isUpdateSubmitting) {
       return "Updating...";
     }
@@ -882,7 +884,13 @@ function ReferralRebates({
     return "Update";
   }
   function isPrimaryEnabled() {
-    if (debouncedEditReferralCode === "" || isUpdateSubmitting || isValidating || !referralCodeExists) {
+    if (
+      debouncedEditReferralCode === "" ||
+      isUpdateSubmitting ||
+      isValidating ||
+      !referralCodeExists ||
+      editReferralCode === referralCodeInString
+    ) {
       return false;
     }
     return true;
@@ -1029,7 +1037,7 @@ function ReferralRebates({
   );
 }
 
-function JoinReferrarCode({
+function JoinReferralCode({
   isWalletConnected,
   account,
   chainId,
@@ -1110,13 +1118,10 @@ function InfoCard({ label, data, tooltipText, toolTipPosition = "right-bottom" }
     <div className="info-card">
       <div className="card-details">
         <h3 className="label">
-          {label}
-          {tooltipText && (
-            <Tooltip
-              handle={<RiQuestionLine className="info-card-question-icon" />}
-              position={toolTipPosition}
-              renderContent={() => tooltipText}
-            />
+          {tooltipText ? (
+            <Tooltip handle={label} position={toolTipPosition} renderContent={() => tooltipText} />
+          ) : (
+            label
           )}
         </h3>
         <div className="data">{data}</div>
