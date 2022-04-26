@@ -270,12 +270,9 @@
   .referral-table {
     width: auto;
     margin-bottom: 1rem;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
   }
   .table-wrapper {
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
   }
   .table-head {
     white-space: nowrap;

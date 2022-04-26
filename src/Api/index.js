@@ -35,6 +35,7 @@ import {
   parseValue,
   expandDecimals,
   getInfoTokens,
+  isAddressZero,
   helperToast,
 } from "../Helpers";
 import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
@@ -581,6 +582,19 @@ export function useReferrerTier(library, chainId, account) {
     mutateReferrerTier,
   };
 }
+export function useCodeOwner(library, chainId, account, code) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const { data: codeOwner, mutate: mutateCodeOwner } = useSWR(
+    account && code && [`ReferralStorage:codeOwners`, chainId, referralStorageAddress, "codeOwners", code],
+    {
+      fetcher: fetcher(library, ReferralStorage),
+    }
+  );
+  return {
+    codeOwner,
+    mutateCodeOwner,
+  };
+}
 
 function useGmxPriceFromAvalanche() {
   const poolAddress = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
@@ -685,6 +699,13 @@ export async function registerReferralCode(chainId, referralCode, { library, ...
 export async function setTraderReferralCodeByUser(chainId, referralCode, { library, ...props }) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
+  const codeOwner = await contract.codeOwners(referralCode);
+  if (isAddressZero(codeOwner)) {
+    helperToast.error("Referral code does not exist");
+    return new Promise((resolve, reject) => {
+      reject();
+    });
+  }
   return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCode], {
     ...props,
   });

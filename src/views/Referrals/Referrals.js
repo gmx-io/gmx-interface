@@ -32,6 +32,7 @@ import {
   getReferralCodeOwner,
   registerReferralCode,
   setTraderReferralCodeByUser,
+  useCodeOwner,
   useReferrerTier,
   useUserReferralCode,
 } from "../../Api";
@@ -161,7 +162,9 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { data: referralsData, loading } = useReferralsData(chainIdWithoutLocalStorage, account);
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], []);
   const { userReferralCode } = useUserReferralCode(library, chainId, account);
+  const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { referrerTier } = useReferrerTier(library, chainId, account);
+  const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
 
   let referralCodeInString;
   if (userReferralCode && !isHashZero(userReferralCode)) {
@@ -234,6 +237,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     if (!account)
       return (
         <JoinReferrarCode
+          account={account}
           connectWallet={connectWallet}
           isWalletConnected={active}
           library={library}
@@ -246,6 +250,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     if (!referralCodeInString) {
       return (
         <JoinReferrarCode
+          account={account}
           connectWallet={connectWallet}
           isWalletConnected={active}
           library={library}
@@ -258,6 +263,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
 
     return (
       <Rebates
+        account={account}
         referralCodeInString={referralCodeInString}
         chainId={chainId}
         library={library}
@@ -265,6 +271,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
         setPendingTxns={setPendingTxns}
         pendingTxns={pendingTxns}
         referrerTier={referrerTier}
+        traderTier={traderTier}
       />
     );
   }
@@ -814,7 +821,17 @@ function ReferrersStats({
   );
 }
 
-function Rebates({ referralsData, referrerTier, chainId, library, referralCodeInString, setPendingTxns, pendingTxns }) {
+function Rebates({
+  account,
+  referralsData,
+  referrerTier,
+  traderTier,
+  chainId,
+  library,
+  referralCodeInString,
+  setPendingTxns,
+  pendingTxns,
+}) {
   const { referralTotalStats, rebateDistributions } = referralsData;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editReferralCode, setEditReferralCode] = useState("");
@@ -835,14 +852,18 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
     const referralCodeHex = encodeReferralCode(editReferralCode);
     return setTraderReferralCodeByUser(chainId, referralCodeHex, {
       library,
+      account,
       successMsg: `Referral code updated!`,
       failMsg: "Referral code updated failed.",
       setPendingTxns,
       pendingTxns,
-    }).finally(() => {
-      setIsUpdateSubmitting(false);
-      setIsEditModalOpen(false);
-    });
+    })
+      .then(() => {
+        setIsEditModalOpen(false);
+      })
+      .finally(() => {
+        setIsUpdateSubmitting(false);
+      });
   }
 
   return (
@@ -866,11 +887,9 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
                 <span>{referralCodeInString}</span>
                 <BiEditAlt onClick={open} />
               </div>
-              {referrerTier && (
+              {traderTier && (
                 <div className="tier">
-                  <span>
-                    Referrer Tier {`${getTierIdDisplay(referrerTier)} (${tierDiscountInfo[referrerTier]}% discount)`}
-                  </span>
+                  <span>Tier {`${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}</span>
                   <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
                     <BiInfoCircle size={14} />
                   </a>
@@ -966,7 +985,15 @@ function Rebates({ referralsData, referrerTier, chainId, library, referralCodeIn
   );
 }
 
-function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet, setPendingTxns, pendingTxns }) {
+function JoinReferrarCode({
+  isWalletConnected,
+  account,
+  chainId,
+  library,
+  connectWallet,
+  setPendingTxns,
+  pendingTxns,
+}) {
   const [referralCode, setReferralCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isJoined, setIsJoined] = useState(false);
@@ -977,6 +1004,7 @@ function JoinReferrarCode({ isWalletConnected, chainId, library, connectWallet, 
     const referralCodeHex = encodeReferralCode(code);
     return setTraderReferralCodeByUser(chainId, referralCodeHex, {
       library,
+      account,
       successMsg: `Referral code added!`,
       failMsg: "Adding referral code failed.",
       setPendingTxns,
