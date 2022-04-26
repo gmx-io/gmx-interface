@@ -582,6 +582,19 @@ export function useReferrerTier(library, chainId, account) {
     mutateReferrerTier,
   };
 }
+export function useCodeOwner(library, chainId, account, code) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const { data: codeOwner, mutate: mutateCodeOwner } = useSWR(
+    account && code && [`ReferralStorage:codeOwners`, chainId, referralStorageAddress, "codeOwners", code],
+    {
+      fetcher: fetcher(library, ReferralStorage),
+    }
+  );
+  return {
+    codeOwner,
+    mutateCodeOwner,
+  };
+}
 
 function useGmxPriceFromAvalanche() {
   const poolAddress = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
