@@ -431,7 +431,7 @@ export default function DashboardV2() {
 
   return (
     <SEO title={getPageTitle("Dashboard")}>
-      <div className="default-container default-sm-container DashboardV2 page-layout">
+      <div className="default-container DashboardV2 page-layout">
         <div className="section-title-block">
           <div className="section-title-icon"></div>
           <div className="section-title-content">

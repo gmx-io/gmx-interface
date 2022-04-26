@@ -12,7 +12,7 @@ import "./Ecosystem.css";
 export default function Ecosystem() {
   return (
     <SEO title={getPageTitle("Ecosystem Projects")}>
-      <div className="default-container default-sm-container page-layout">
+      <div className="default-container page-layout">
         <div>
           <div className="section-title-block">
             <div className="section-title-icon">
