@@ -163,7 +163,6 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], []);
   const { userReferralCode } = useUserReferralCode(library, chainId, account);
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
-  const { referrerTier } = useReferrerTier(library, chainId, account);
   const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
 
   let referralCodeInString;
@@ -270,7 +269,6 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
         referralsData={referralsData}
         setPendingTxns={setPendingTxns}
         pendingTxns={pendingTxns}
-        referrerTier={referrerTier}
         traderTier={traderTier}
       />
     );
@@ -824,7 +822,6 @@ function ReferrersStats({
 function ReferralRebates({
   account,
   referralsData,
-  referrerTier,
   traderTier,
   chainId,
   library,
