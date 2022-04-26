@@ -139,7 +139,7 @@ let TAB_OPTIONS = [TRADERS, AFFILIATES];
 const CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 
 function getUSDValue(value) {
-  return `$${formatAmount(value, USD_DECIMALS, 2, true, "0.00")}`;
+  return `$${formatAmount(value, USD_DECIMALS, 4, true, "0.00")}`;
 }
 
 function getErrorMessage(value) {
@@ -875,6 +875,9 @@ function Rebates({
       });
   }
   function getPrimaryText() {
+    if (editReferralCode === referralCodeInString) {
+      return "Referral code is same";
+    }
     if (isUpdateSubmitting) {
       return "Updating...";
     }
@@ -891,7 +894,13 @@ function Rebates({
     return "Update";
   }
   function isPrimaryEnabled() {
-    if (debouncedEditReferralCode === "" || isUpdateSubmitting || isValidating || !isReferralCodeValid) {
+    if (
+      debouncedEditReferralCode === "" ||
+      isUpdateSubmitting ||
+      isValidating ||
+      !isReferralCodeValid ||
+      editReferralCode === referralCodeInString
+    ) {
       return false;
     }
     return true;
@@ -1119,13 +1128,10 @@ function InfoCard({ label, data, tooltipText, toolTipPosition = "right-bottom" }
     <div className="info-card">
       <div className="card-details">
         <h3 className="label">
-          {label}
-          {tooltipText && (
-            <Tooltip
-              handle={<RiQuestionLine className="info-card-question-icon" />}
-              position={toolTipPosition}
-              renderContent={() => tooltipText}
-            />
+          {tooltipText ? (
+            <Tooltip handle={label} position={toolTipPosition} renderContent={() => tooltipText} />
+          ) : (
+            label
           )}
         </h3>
         <div className="data">{data}</div>
