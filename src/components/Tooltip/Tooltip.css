@@ -12,7 +12,7 @@
   min-width: 250px;
   text-align: left;
   background: linear-gradient(90deg, #0b0b0f 0%, rgba(10, 13, 28, 1) 100%);
-  z-index: 1;
+  z-index: 1000;
 }
 
 .Tooltip.nowrap .Tooltip-popup {
