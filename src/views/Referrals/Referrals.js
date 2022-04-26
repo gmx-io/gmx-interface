@@ -137,7 +137,7 @@ const getSampleReferrarStat = (code, ownerOnOtherNetwork, account) => {
 };
 
 function getUSDValue(value) {
-  return `$${formatAmount(value, USD_DECIMALS, 4, true, "0.00")}`;
+  return `$${formatAmount(value, USD_DECIMALS, 2, true, "0.00")}`;
 }
 
 function getCodeError(value) {
