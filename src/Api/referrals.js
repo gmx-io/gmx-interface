@@ -40,6 +40,34 @@ export function encodeReferralCode(code) {
   return ethers.utils.formatBytes32String(final);
 }
 
+async function getCodeOwnersData(network, account, codes) {
+  const referralCodeOwnerQuery = (referralCode) =>
+    gql(
+      `{
+      referralCodes(where: {code: "${referralCode}"}) {
+        owner
+      }
+    }`
+    );
+
+  return Promise.all(
+    codes.map((code) => {
+      return getGraphClient(network)
+        .query({ query: referralCodeOwnerQuery(code) })
+        .then(({ data }) => {
+          const owner = data.referralCodes[0]?.owner;
+          return {
+            code,
+            codeString: decodeReferralCode(code),
+            owner,
+            isTaken: !!owner,
+            isTakenByCurrentUser: owner && String(owner).toLowerCase() === String(account).toLowerCase(),
+          };
+        });
+    })
+  );
+}
+
 export function useUserCodesOnAllChain(account) {
   const [data, setData] = useState(null);
   const query = gql(
@@ -53,18 +81,10 @@ export function useUserCodesOnAllChain(account) {
       }
     }`.replaceAll("__ACCOUNT__", (account || "").toLowerCase())
   );
-  const referralCodeOwnerQuery = (referralCode) =>
-    gql(
-      `{
-      referralCodes(where: {code: "${referralCode}"}) {
-        owner
-      }
-    }`
-    );
 
   useEffect(() => {
     async function main() {
-      const [arbitrum, avalanche] = await Promise.all(
+      const [arbitrumCodes, avalancheCodes] = await Promise.all(
         ACTIVE_CHAINS.map((chainId) =>
           getGraphClient(chainId)
             .query({ query })
@@ -73,38 +93,11 @@ export function useUserCodesOnAllChain(account) {
             })
         )
       );
-      const codeOwnersOnAvax = await Promise.all(
-        arbitrum.map((code) =>
-          getGraphClient(AVALANCHE)
-            .query({ query: referralCodeOwnerQuery(code) })
-            .then(({ data }) => {
-              const owner = data.referralCodes[0]?.owner;
-              return {
-                code,
-                codeString: decodeReferralCode(code),
-                owner,
-                isTaken: !!owner,
-                isTakenByCurrentUser: owner && String(owner).toLowerCase() === String(account).toLowerCase(),
-              };
-            })
-        )
-      );
-      const codeOwnersOnArbitrum = await Promise.all(
-        avalanche.map((code) =>
-          getGraphClient(ARBITRUM)
-            .query({ query: referralCodeOwnerQuery(code) })
-            .then(({ data }) => {
-              const owner = data.referralCodes[0]?.owner;
-              return {
-                code,
-                codeString: decodeReferralCode(code),
-                owner,
-                isTaken: !!owner,
-                isTakenByCurrentUser: owner && String(owner).toLowerCase() === String(account).toLowerCase(),
-              };
-            })
-        )
-      );
+      const [codeOwnersOnAvax, codeOwnersOnArbitrum] = await Promise.all([
+        getCodeOwnersData(AVALANCHE, account, arbitrumCodes),
+        getCodeOwnersData(ARBITRUM, account, avalancheCodes),
+      ]);
+
       setData({
         [ARBITRUM]: codeOwnersOnAvax.reduce((acc, cv) => {
           acc[cv.code] = cv;
