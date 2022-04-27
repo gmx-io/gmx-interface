@@ -48,7 +48,7 @@ let eventsData = [
     ],
   },
   {
-    id: "referral-program-launch",
+    id: "speed-up-page-loading",
     title: "Speed Up Page Loading",
     isActive: true,
     validTill: "5/04/2022 12:00:00 PM",
