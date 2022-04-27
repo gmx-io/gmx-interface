@@ -51,7 +51,6 @@ import Tab from "../../components/Tab/Tab";
 import Footer from "../../Footer";
 
 import "./Exchange.css";
-
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -353,7 +352,6 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
 }
 
 export const Exchange = forwardRef((props, ref) => {
-  // console.log("rerender Exchange");
   const {
     savedIsPnlInLeverage,
     setSavedIsPnlInLeverage,

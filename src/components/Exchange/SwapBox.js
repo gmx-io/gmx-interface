@@ -59,6 +59,8 @@ import {
   calculatePositionDelta,
   replaceNativeTokenAddress,
   adjustForDecimals,
+  REFERRAL_CODE_KEY,
+  isHashZero,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import * as Api from "../../Api";
@@ -172,6 +174,8 @@ export default function SwapBox(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
+  const { userReferralCode } = Api.useUserReferralCode(library, chainId, account);
+  const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -1393,7 +1397,10 @@ export default function SwapBox(props) {
       });
   };
 
-  const referralCode = ethers.constants.HashZero;
+  let referralCode = ethers.constants.HashZero;
+  if (isHashZero(userReferralCode) && userReferralCodeInLocalStorage) {
+    referralCode = userReferralCodeInLocalStorage;
+  }
 
   const increasePosition = async () => {
     setIsSubmitting(true);
