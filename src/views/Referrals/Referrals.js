@@ -171,7 +171,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     referralCodeInString = decodeReferralCode(userReferralCode);
   }
 
-  if (userReferralCodeInLocalStorage && !isHashZero(userReferralCodeInLocalStorage)) {
+  if (!referralCodeInString && userReferralCodeInLocalStorage && !isHashZero(userReferralCodeInLocalStorage)) {
     referralCodeInString = decodeReferralCode(userReferralCodeInLocalStorage);
   }
 
