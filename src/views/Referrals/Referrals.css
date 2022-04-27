@@ -1,3 +1,7 @@
+.Referrals {
+  padding-top: 3rem;
+}
+
 .section-center {
   margin: 0 auto;
   text-align: center;
@@ -5,8 +9,11 @@
 .mt-large {
   margin-top: 2rem;
 }
+.mt-medium {
+  margin-top: 1rem;
+}
 .referral-tab-container {
-  margin: 30px auto;
+  margin: 1rem auto 2rem auto;
 }
 .referral-card {
   position: relative;
