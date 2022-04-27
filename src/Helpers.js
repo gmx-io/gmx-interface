@@ -116,6 +116,10 @@ export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3";
 export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage";
 export const SHOW_PNL_AFTER_FEES_KEY = "Exchange-swap-show-pnl-after-fees";
 export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-position-lines";
+export const REFERRAL_CODE_KEY = "GMX-referralCode";
+export const REFERRAL_CODE_QUERY_PARAMS = "ref";
+export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
+export const MAX_REFERRAL_CODE_LENGTH = 20;
 
 export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
@@ -1509,9 +1513,8 @@ export function getProvider(library, chainId) {
   return new ethers.providers.StaticJsonRpcProvider(provider, { chainId });
 }
 
-export const fetcher =
-  (library, contractInfo, additionalArgs) =>
-  (...args) => {
+// prettier-ignore
+export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
     // eslint-disable-next-line
     const [id, chainId, arg0, arg1, ...params] = args;
     const provider = getProvider(library, chainId);
@@ -2584,4 +2587,32 @@ export function sleep(ms) {
 export function getPageTitle(data) {
   return `${data} | Decentralized
   Perpetual Exchange | GMX`;
+}
+
+export function isHashZero(value) {
+  return value === ethers.constants.HashZero;
+}
+export function isAddressZero(value) {
+  return value === ethers.constants.AddressZero;
+}
+
+export function useDebounce(value, delay) {
+  // State and setters for debounced value
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(
+    () => {
+      // Update debounced value after delay
+      const handler = setTimeout(() => {
+        setDebouncedValue(value);
+      }, delay);
+      // Cancel the timeout if value changes (also on delay change or unmount)
+      // This is how we prevent debounced value from updating if value is changed ...
+      // .. within the delay period. Timeout gets cleared and restarted.
+      return () => {
+        clearTimeout(handler);
+      };
+    },
+    [value, delay] // Only re-call effect if value or delay changes
+  );
+  return debouncedValue;
 }

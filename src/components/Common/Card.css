@@ -1,0 +1,27 @@
+.card {
+  padding: 1rem;
+  border: 1px solid #1e2136;
+  border-radius: 4px;
+  background: #16182e;
+}
+
+.card-header {
+  font-size: 1.032rem;
+  line-height: 1.355rem;
+  font-weight: normal;
+  letter-spacing: 0px;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-divider {
+  height: 1px;
+  background: #23263b;
+  margin: 0.7rem -1rem;
+}
+
+.card-body {
+}
