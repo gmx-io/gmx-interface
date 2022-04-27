@@ -19,6 +19,7 @@ import {
   MAX_REFERRAL_CODE_LENGTH,
   isHashZero,
   REFERRALS_SELECTED_TAB_KEY,
+  REFERRAL_CODE_KEY,
   useLocalStorageSerializeKey,
   ARBITRUM,
   AVALANCHE,
@@ -163,10 +164,15 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { userReferralCode } = useUserReferralCode(library, chainId, account);
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
+  const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
 
   let referralCodeInString;
   if (userReferralCode && !isHashZero(userReferralCode)) {
     referralCodeInString = decodeReferralCode(userReferralCode);
+  }
+
+  if (userReferralCodeInLocalStorage && !isHashZero(userReferralCodeInLocalStorage)) {
+    referralCodeInString = decodeReferralCode(userReferralCodeInLocalStorage);
   }
 
   function handleCreateReferralCode(code) {
