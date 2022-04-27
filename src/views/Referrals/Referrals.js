@@ -281,7 +281,22 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
 
   return (
     <SEO title={getPageTitle("Referrals")}>
-      <div className="default-container page-layout">
+      <div className="default-container page-layout Referrals">
+        <div className="section-title-block">
+          <div className="section-title-icon"></div>
+          <div className="section-title-content">
+            <div className="Page-title">Referrals</div>
+            <div className="Page-description">
+              Get fee discounts and earn rebates through the GMX referral program.
+              <br />
+              For more information, please read the{" "}
+              <a target="_blank" rel="noopener noreferrer" href="https://gmxio.gitbook.io/gmx/referrals">
+                referral program details
+              </a>
+              .
+            </div>
+          </div>
+        </div>
         <div className="referral-tab-container">
           <Tab options={TAB_OPTIONS} option={activeTab} setOption={setActiveTab} onChange={setActiveTab} />
         </div>
@@ -410,7 +425,7 @@ function CreateReferralCode({
   }
 
   return (
-    <div className="referral-card section-center mt-large">
+    <div className="referral-card section-center mt-medium">
       <h2 className="title">Generate Referral Code</h2>
       <p className="sub-title">
         Looks like you don't have a referral code to share. <br /> Create one now and start earning rebates!
@@ -708,9 +723,7 @@ function AffiliatesInfo({
                         <div className="table-referral-code">
                           <div
                             onClick={() => {
-                              copyToClipboard(
-                                `https://gmx.io/trade?${REFERRAL_CODE_QUERY_PARAMS}=${stat.referralCode}`
-                              );
+                              copyToClipboard(`https://gmx.io?${REFERRAL_CODE_QUERY_PARAMS}=${stat.referralCode}`);
                               helperToast.success("Referral link copied to your clipboard");
                             }}
                             className="referral-code copy-icon"
@@ -947,10 +960,13 @@ function TradersInfo({
               </div>
               {traderTier && (
                 <div className="tier">
-                  <span>Tier {`${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}</span>
-                  {/*<a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
-                    <BiInfoCircle size={14} />
-                  </a>*/}
+                  <Tooltip
+                    handle={`Tier ${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}
+                    position="right-bottom"
+                    renderContent={() =>
+                      `You will receive a ${tierDiscountInfo[traderTier]}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday`
+                    }
+                  />
                 </div>
               )}
             </div>
@@ -1078,7 +1094,7 @@ function JoinReferralCode({
   //
   if (isJoined) return <Loader />;
   return (
-    <div className="referral-card section-center mt-large">
+    <div className="referral-card section-center mt-medium">
       <h2 className="title">Enter Referral Code</h2>
       <p className="sub-title">Please input a referral code to benefit from fee discounts.</p>
       <div className="card-action">
@@ -1119,7 +1135,7 @@ function JoinReferralCode({
   );
 }
 
-function InfoCard({ label, data, tooltipText, toolTipPosition = "right-bottom" }) {
+function InfoCard({ label, data, tooltipText, toolTipPosition = "left-bottom" }) {
   return (
     <div className="info-card">
       <div className="card-details">
