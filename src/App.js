@@ -100,6 +100,18 @@ import VaultV2 from "./abis/VaultV2.json";
 import VaultV2b from "./abis/VaultV2b.json";
 import PositionRouter from "./abis/PositionRouter.json";
 
+import { i18n } from '@lingui/core'
+import { I18nProvider } from '@lingui/react'
+import { messages as enMessages } from './locales/en/messages'
+import { messages as esMessages} from './locales/es/messages'
+import { Trans } from '@lingui/macro'
+
+i18n.load({
+  'en': enMessages,
+  'es': esMessages
+})
+i18n.activate('en')
+
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
 }
@@ -145,17 +157,17 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
       <div className="App-header-links preview">
         <div className="App-header-link-container App-header-link-home">
           <NavLink activeClassName="active" exact to="/">
-            HOME
+            <Trans>HOME</Trans>
           </NavLink>
         </div>
         <div className="App-header-link-container">
           <NavLink activeClassName="active" to="/earn">
-            EARN
+            <Trans>EARN</Trans>
           </NavLink>
         </div>
         <div className="App-header-link-container">
           <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
-            ABOUT
+            <Trans>ABOUT</Trans>
           </a>
         </div>
       </div>
@@ -175,51 +187,51 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
       )}
       <div className="App-header-link-container App-header-link-home">
         <NavLink activeClassName="active" exact to="/">
-          Home
+          <Trans>Home</Trans>
         </NavLink>
       </div>
       {small && (
         <div className="App-header-link-container">
           <NavLink activeClassName="active" to="/trade">
-            Trade
+            <Trans>Trade</Trans>
           </NavLink>
         </div>
       )}
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/dashboard">
-          Dashboard
+          <Trans>Dashboard</Trans>
         </NavLink>
       </div>
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/earn">
-          Earn
+          <Trans>Earn</Trans>
         </NavLink>
       </div>
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/buy">
-          Buy
+          <Trans>Buy</Trans>
         </NavLink>
       </div>
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/referrals">
-          Referrals
+          <Trans>Referrals</Trans>
         </NavLink>
       </div>
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/ecosystem">
-          Ecosystem
+          <Trans>Ecosystem</Trans>
         </NavLink>
       </div>
       <div className="App-header-link-container">
         <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
-          About
+          <Trans>About</Trans>
         </a>
       </div>
       {small && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
           <a href="#" onClick={openSettings}>
-            Settings
+            <Trans>Settings</Trans>
           </a>
         </div>
       )}
@@ -275,7 +287,7 @@ function AppHeaderUser({
       <div className="App-header-user">
         <div className="App-header-user-link">
           <NavLink activeClassName="active" className="default-btn" to="/trade">
-            Trade
+            <Trans>Trade</Trans>
           </NavLink>
         </div>
         {showSelector && (
@@ -291,7 +303,7 @@ function AppHeaderUser({
           />
         )}
         <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
-          {small ? "Connect" : "Connect Wallet"}
+          {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans> }
         </ConnectWalletButton>
       </div>
     );
@@ -303,7 +315,7 @@ function AppHeaderUser({
     <div className="App-header-user">
       <div className="App-header-user-link">
         <NavLink activeClassName="active" className="default-btn" to="/trade">
-          Trade
+          <Trans>Trade</Trans>
         </NavLink>
       </div>
       {showSelector && (
@@ -395,13 +407,13 @@ function FullApp() {
     if (!hasMetaMaskWalletExtension()) {
       helperToast.error(
         <div>
-          MetaMask not detected.
+          <Trans>MetaMask not detected.</Trans>
           <br />
           <br />
           <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">
-            Install MetaMask
+            <Trans>Install MetaMask</Trans>
           </a>
-          {userOnMobileDevice ? ", and use GMX with its built-in browser" : " to start using GMX"}.
+          {userOnMobileDevice ? <Trans>, and use GMX with its built-in browser</Trans> : <Trans> to start using GMX</Trans> }.
         </div>
       );
       return false;
@@ -412,13 +424,13 @@ function FullApp() {
     if (!hasCoinBaseWalletExtension()) {
       helperToast.error(
         <div>
-          Coinbase Wallet not detected.
+          <Trans>Coinbase Wallet not detected.</Trans>
           <br />
           <br />
           <a href="https://www.coinbase.com/wallet" target="_blank" rel="noopener noreferrer">
-            Install Coinbase Wallet
+            <Trans>Install Coinbase Wallet</Trans>
           </a>
-          {userOnMobileDevice ? ", and use GMX with its built-in browser" : " to start using GMX"}.
+          {userOnMobileDevice ? <Trans>, and use GMX with its built-in browser</Trans> : <Trans> to start using GMX</Trans> }.
         </div>
       );
       return false;
@@ -973,19 +985,23 @@ function PreviewApp() {
 function App() {
   if (inPreviewMode()) {
     return (
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <PreviewApp />
-      </Web3ReactProvider>
+      <I18nProvider i18n={i18n}>
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <PreviewApp />
+        </Web3ReactProvider>
+      </I18nProvider>
     );
   }
 
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <SEO>
-          <FullApp />
-        </SEO>
-      </Web3ReactProvider>
+      <I18nProvider i18n={i18n}>
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <SEO>
+            <FullApp />
+          </SEO>
+        </Web3ReactProvider>
+      </I18nProvider>
     </SWRConfig>
   );
 }
