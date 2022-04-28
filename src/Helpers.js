@@ -1526,26 +1526,22 @@ export function getFallbackProvider(chainId) {
   return new ethers.providers.StaticJsonRpcProvider(provider, { chainId });
 }
 
-export const handleFetcherCall = ({ provider, contractInfo, arg0, arg1, method, params, additionalArgs, onError }) => {
+export const getContractCall = ({ provider, contractInfo, arg0, arg1, method, params, additionalArgs, onError }) => {
   if (ethers.utils.isAddress(arg0)) {
     const address = arg0;
     const contract = new ethers.Contract(address, contractInfo.abi, provider);
 
-    try {
-      if (additionalArgs) {
-        return contract[method](...params.concat(additionalArgs)).catch(onError);
-      }
-      return contract[method](...params).catch(onError);
-    } catch (e) {
-      return onError(e);
+    if (additionalArgs) {
+      return contract[method](...params.concat(additionalArgs));
     }
+    return contract[method](...params);
   }
 
   if (!provider) {
     return;
   }
 
-  return provider[method](arg1, ...params).catch(onError);
+  return provider[method](arg1, ...params);
 };
 
 // prettier-ignore
@@ -1556,7 +1552,7 @@ export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
 
   const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
 
-  return handleFetcherCall({
+  const contractCall = getContractCall({
     provider,
     contractInfo,
     arg0,
@@ -1564,14 +1560,16 @@ export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
     method,
     params,
     additionalArgs,
-    onError: (e) => {
-      console.error("fetcher error", id, contractInfo.contractName, method, e);
+  })
+
+  const handleFallback = async (resolve, reject, error) => {
       const fallbackProvider = getFallbackProvider(chainId)
       if (!fallbackProvider) {
+        reject(error)
         return
       }
 
-      return handleFetcherCall({
+      const fallbackContractCall = getContractCall({
         provider: fallbackProvider,
         contractInfo,
         arg0,
@@ -1579,11 +1577,32 @@ export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
         method,
         params,
         additionalArgs,
-        onError: (e) => {
-          console.error("fetcher fallback error", id, contractInfo.contractName, method, e);
-        }
       })
-    }
+
+      fallbackContractCall.then((result) => resolve(result)).catch((e) => {
+        console.error("fallback fetcher error", id, contractInfo.contractName, method, e);
+        reject(e)
+      })
+  }
+
+  return new Promise(async (resolve, reject) => {
+    let receivedResult
+
+    contractCall.then((result) => {
+      receivedResult = result
+      resolve(result)
+    }).catch((e) => {
+      receivedResult = true // set receivedResult to true to avoid a double call of handleFallback in setTimeout
+      console.error("fetcher error", id, contractInfo.contractName, method, e);
+      handleFallback(resolve, reject, e)
+    })
+
+    setTimeout(() => {
+      if (receivedResult) {
+        return
+      }
+      handleFallback(resolve, reject, "contractCall timeout")
+    }, 2000)
   })
 };
 
