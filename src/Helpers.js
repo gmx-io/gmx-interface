@@ -1269,6 +1269,10 @@ const RPC_PROVIDERS = {
   [AVALANCHE]: AVALANCHE_RPC_PROVIDERS,
 };
 
+const FALLBACK_PROVIDERS = {
+  [ARBITRUM]: ["https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"],
+};
+
 export function shortenAddress(address, length) {
   if (!length) {
     return "";
@@ -1513,38 +1517,75 @@ export function getProvider(library, chainId) {
   return new ethers.providers.StaticJsonRpcProvider(provider, { chainId });
 }
 
+export function getFallbackProvider(chainId) {
+  if (!FALLBACK_PROVIDERS[chainId]) {
+    return;
+  }
+
+  const provider = _.sample(FALLBACK_PROVIDERS[chainId]);
+  return new ethers.providers.StaticJsonRpcProvider(provider, { chainId });
+}
+
+export const handleFetcherCall = ({ provider, contractInfo, arg0, arg1, method, params, additionalArgs, onError }) => {
+  if (ethers.utils.isAddress(arg0)) {
+    const address = arg0;
+    const contract = new ethers.Contract(address, contractInfo.abi, provider);
+
+    try {
+      if (additionalArgs) {
+        return contract[method](...params.concat(additionalArgs)).catch(onError);
+      }
+      return contract[method](...params).catch(onError);
+    } catch (e) {
+      return onError(e);
+    }
+  }
+
+  if (!provider) {
+    return;
+  }
+
+  return provider[method](arg1, ...params).catch(onError);
+};
+
 // prettier-ignore
 export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
-    // eslint-disable-next-line
-    const [id, chainId, arg0, arg1, ...params] = args;
-    const provider = getProvider(library, chainId);
+  // eslint-disable-next-line
+  const [id, chainId, arg0, arg1, ...params] = args;
+  const provider = getProvider(library, chainId);
 
-    const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
+  const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
 
-    function onError(e) {
-      console.error(id, contractInfo.contractName, method, e);
-    }
-
-    if (ethers.utils.isAddress(arg0)) {
-      const address = arg0;
-      const contract = new ethers.Contract(address, contractInfo.abi, provider);
-
-      try {
-        if (additionalArgs) {
-          return contract[method](...params.concat(additionalArgs)).catch(onError);
-        }
-        return contract[method](...params).catch(onError);
-      } catch (e) {
-        onError(e);
+  return handleFetcherCall({
+    provider,
+    contractInfo,
+    arg0,
+    arg1,
+    method,
+    params,
+    additionalArgs,
+    onError: (e) => {
+      console.error("fetcher error", id, contractInfo.contractName, method, e);
+      const fallbackProvider = getFallbackProvider(chainId)
+      if (!fallbackProvider) {
+        return
       }
-    }
 
-    if (!library) {
-      return;
+      return handleFetcherCall({
+        provider: fallbackProvider,
+        contractInfo,
+        arg0,
+        arg1,
+        method,
+        params,
+        additionalArgs,
+        onError: (e) => {
+          console.error("fetcher fallback error", id, contractInfo.contractName, method, e);
+        }
+      })
     }
-
-    return library[method](arg1, ...params).catch(onError);
-  };
+  })
+};
 
 export function bigNumberify(n) {
   return ethers.BigNumber.from(n);
