@@ -29,12 +29,15 @@ import { callContract } from "../../Api";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Token from "../../abis/Token.json";
 
+import { useTranslation } from 'react-i18next';
+
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
 const EDIT_OPTIONS = [DEPOSIT, WITHDRAW];
 const { AddressZero } = ethers.constants;
 
 export default function PositionEditor(props) {
+  const { t } = useTranslation();
   const {
     pendingPositions,
     setPendingPositions,
@@ -104,7 +107,7 @@ export default function PositionEditor(props) {
   let title;
   let collateralDelta;
   if (position) {
-    title = `Edit ${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol}`;
+    title = t("exchange.Edit_position_isLong_position_indexToken_symbol", { isLong: position.isLong ? "Long" : "Short", symbol: position.indexToken.symbol });
     collateralToken = position.collateralToken;
     liquidationPrice = getLiquidationPrice(position);
 
@@ -174,36 +177,36 @@ export default function PositionEditor(props) {
 
   const getError = () => {
     if (!fromAmount) {
-      return "Enter an amount";
+      return t("exchange.Enter_an_amount");
     }
     if (nextLeverage && nextLeverage.eq(0)) {
-      return "Enter an amount";
+      return t("exchange.Enter_an_amount");
     }
 
     if (!isDeposit && fromAmount) {
       if (fromAmount.gte(position.collateral)) {
-        return "Min order: 10 USD";
+        return t("exchange.Min_order_10_USD");
       }
       if (position.collateral.sub(fromAmount).lt(expandDecimals(10, USD_DECIMALS))) {
-        return "Min order: 10 USD";
+        return t("exchange.Min_order_10_USD");
       }
     }
 
     if (!isDeposit && fromAmount && nextLiquidationPrice) {
       if (position.isLong && position.markPrice.lt(nextLiquidationPrice)) {
-        return "Invalid liq. price";
+        return t("exchange.Invalid_liq_price");
       }
       if (!position.isLong && position.markPrice.gt(nextLiquidationPrice)) {
-        return "Invalid liq. price";
+        return t("exchange.Invalid_liq_price");
       }
     }
 
     if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.lt(1.1 * BASIS_POINTS_DIVISOR)) {
-      return "Min leverage: 1.1x";
+      return t("exchange.Min_leverage");
     }
 
     if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.gt(30.5 * BASIS_POINTS_DIVISOR)) {
-      return "Max leverage: 30x";
+      return t("exchange.Max_leverage");
     }
   };
 
@@ -232,35 +235,35 @@ export default function PositionEditor(props) {
     }
     if (isSwapping) {
       if (isDeposit) {
-        return "Depositing...";
+        return t("exchange.Depositing");
       }
-      return "Withdrawing...";
+      return t("exchange.Withdrawing");
     }
 
     if (isApproving) {
-      return `Approving ${position.collateralToken.symbol}...`;
+      return t("exchange.Approving_position_collateralToken_symbol", { symbol: position.collateralToken.symbol });
     }
     if (needApproval) {
-      return `Approve ${position.collateralToken.symbol}`;
+      return t("exchange.Approve_position_collateralToken_symbol", { symbol: position.collateralToken.symbol });
     }
 
     if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
-      return "Enabling Leverage";
+      return t("exchange.Enabling_Leverage");
     }
 
     if (isPositionRouterApproving) {
-      return "Enabling Leverage...";
+      return t("exchange.Enabling_Leverage_");
     }
 
     if (needPositionRouterApproval) {
-      return "Enable Leverage";
+      return t("exchange.Enable_Leverage");
     }
 
     if (isDeposit) {
-      return "Deposit";
+      return t("exchange.Deposit");
     }
 
-    return "Withdraw";
+    return t("exchange.Withdraw");
   };
 
   const resetForm = () => {
@@ -315,18 +318,21 @@ export default function PositionEditor(props) {
 
     if (shouldRaiseGasError(getTokenInfo(infoTokens, collateralTokenAddress), fromAmount)) {
       setIsSwapping(false);
-      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ETH for gas`);
+      helperToast.error(t("exchange.Leave_at_least_amount_ETH_for_gas", { amount: formatAmount(DUST_BNB, 18, 3) }));
       return;
     }
 
     const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
     callContract(chainId, contract, method, params, {
       value,
-      sentMsg: "Deposit submitted.",
-      successMsg: `Requested deposit of ${formatAmount(fromAmount, position.collateralToken.decimals, 4)} ${
-        position.collateralToken.symbol
-      } into ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}.`,
-      failMsg: "Deposit failed.",
+      sentMsg: t("exchange.Deposit_submitted"),
+      successMsg: t("exchange.Requested_deposit_of_amount_collateralToken_symbol_into_indexToken_symbol_isLong", {
+        amount: formatAmount(fromAmount, position.collateralToken.decimals, 4),
+        collateralTokenSymbol: position.collateralToken.symbol,
+        indexTokenSymbol: position.indexToken.symbol,
+        isLong: position.isLong ? "Long" : "Short"
+      }),
+      failMsg: t("exchange.Deposit_failed"),
       setPendingTxns,
     })
       .then(async (res) => {
@@ -375,11 +381,13 @@ export default function PositionEditor(props) {
     const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
     callContract(chainId, contract, method, params, {
       value: minExecutionFee,
-      sentMsg: "Withdrawal submitted.",
-      successMsg: `Requested withdrawal of ${formatAmount(fromAmount, USD_DECIMALS, 2)} USD from ${
-        position.indexToken.symbol
-      } ${position.isLong ? "Long" : "Short"}.`,
-      failMsg: "Withdrawal failed.",
+      sentMsg: t("exchange.Withdrawal_submitted"),
+      successMsg: t("exchange.Requested_withdrawal_of_amount_USD_from_indexToken_symbol_isLong", {
+        amount: formatAmount(fromAmount, USD_DECIMALS, 2),
+        indexTokenSymbol: position.indexToken.symbol,
+        isLong: position.isLong ? "Long" : "Short"
+      }),
+      failMsg: t("exchange.Withdrawal_failed"),
       setPendingTxns,
     })
       .then(async (res) => {
@@ -417,8 +425,8 @@ export default function PositionEditor(props) {
 
     if (needPositionRouterApproval) {
       approvePositionRouter({
-        sentMsg: isDeposit ? "Enable deposit sent." : "Enable withdraw sent.",
-        failMsg: isDeposit ? "Enable deposit failed." : "Enable withdraw failed.",
+        sentMsg: isDeposit ? t("exchange.Enable_deposit_sent") : t("exchange.Enable_withdraw_sent"),
+        failMsg: isDeposit ? t("exchange.Enable_deposit_failed") : t("exchange.Enable_withdraw_failed"),
       });
       return;
     }
@@ -444,15 +452,15 @@ export default function PositionEditor(props) {
                     <div className="muted">
                       {convertedAmountFormatted && (
                         <div className="Exchange-swap-usd">
-                          {isDeposit ? "Deposit" : "Withdraw"}: {convertedAmountFormatted}{" "}
+                          {isDeposit ? t("exchange.Deposit") : t("exchange.Withdraw")}: {convertedAmountFormatted}{" "}
                           {isDeposit ? "USD" : position.collateralToken.symbol}
                         </div>
                       )}
-                      {!convertedAmountFormatted && `${isDeposit ? "Deposit" : "Withdraw"}`}
+                      {!convertedAmountFormatted && `${isDeposit ? t("exchange.Deposit") : t("exchange.Withdraw")}`}
                     </div>
                     {maxAmount && (
                       <div className="muted align-right clickable" onClick={() => setFromValue(maxAmountFormattedFree)}>
-                        Max: {maxAmountFormatted}
+                        {t("exchange.Max")}: {maxAmountFormatted}
                       </div>
                     )}
                   </div>
@@ -473,7 +481,7 @@ export default function PositionEditor(props) {
                             setFromValue(maxAmountFormattedFree);
                           }}
                         >
-                          MAX
+                          {t("exchange.MAX")}
                         </div>
                       )}
                     </div>
@@ -484,11 +492,11 @@ export default function PositionEditor(props) {
                 </div>
                 <div className="PositionEditor-info-box">
                   <div className="Exchange-info-row">
-                    <div className="Exchange-info-label">Size</div>
+                    <div className="Exchange-info-label">{t("exchange.Size")}</div>
                     <div className="align-right">{formatAmount(position.size, USD_DECIMALS, 2, true)} USD</div>
                   </div>
                   <div className="Exchange-info-row">
-                    <div className="Exchange-info-label">Collateral</div>
+                    <div className="Exchange-info-label">{t("exchange.Collateral")}</div>
                     <div className="align-right">
                       {!nextCollateral && <div>${formatAmount(position.collateral, USD_DECIMALS, 2, true)}</div>}
                       {nextCollateral && (
@@ -503,7 +511,7 @@ export default function PositionEditor(props) {
                     </div>
                   </div>
                   <div className="Exchange-info-row">
-                    <div className="Exchange-info-label">Leverage</div>
+                    <div className="Exchange-info-label">{t("exchange.Leverage")}</div>
                     <div className="align-right">
                       {!nextLeverage && <div>{formatAmount(position.leverage, 4, 2, true)}x</div>}
                       {nextLeverage && (
@@ -518,11 +526,11 @@ export default function PositionEditor(props) {
                     </div>
                   </div>
                   <div className="Exchange-info-row">
-                    <div className="Exchange-info-label">Mark Price</div>
+                    <div className="Exchange-info-label">{t("exchange.Mark_Price")}</div>
                     <div className="align-right">${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
                   </div>
                   <div className="Exchange-info-row">
-                    <div className="Exchange-info-label">Liq. Price</div>
+                    <div className="Exchange-info-label">{t("exchange.Liq_Price")}</div>
                     <div className="align-right">
                       {!nextLiquidationPrice && (
                         <div>
