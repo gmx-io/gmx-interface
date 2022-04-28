@@ -1569,6 +1569,7 @@ export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
         return
       }
 
+      console.info("using fallbackProvider for", method)
       const fallbackContractCall = getContractCall({
         provider: fallbackProvider,
         contractInfo,
