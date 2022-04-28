@@ -1562,46 +1562,48 @@ export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
     additionalArgs,
   })
 
+  let shouldCallFallback = true
+
   const handleFallback = async (resolve, reject, error) => {
-      const fallbackProvider = getFallbackProvider(chainId)
-      if (!fallbackProvider) {
-        reject(error)
-        return
-      }
+    if (!shouldCallFallback) {
+      return
+    }
+    // prevent fallback from being called twice
+    shouldCallFallback = false
 
-      console.info("using fallbackProvider for", method)
-      const fallbackContractCall = getContractCall({
-        provider: fallbackProvider,
-        contractInfo,
-        arg0,
-        arg1,
-        method,
-        params,
-        additionalArgs,
-      })
+    const fallbackProvider = getFallbackProvider(chainId)
+    if (!fallbackProvider) {
+      reject(error)
+      return
+    }
 
-      fallbackContractCall.then((result) => resolve(result)).catch((e) => {
-        console.error("fallback fetcher error", id, contractInfo.contractName, method, e);
-        reject(e)
-      })
+    console.info("using fallbackProvider for", method)
+    const fallbackContractCall = getContractCall({
+      provider: fallbackProvider,
+      contractInfo,
+      arg0,
+      arg1,
+      method,
+      params,
+      additionalArgs,
+    })
+
+    fallbackContractCall.then((result) => resolve(result)).catch((e) => {
+      console.error("fallback fetcher error", id, contractInfo.contractName, method, e);
+      reject(e)
+    })
   }
 
   return new Promise(async (resolve, reject) => {
-    let receivedResult
-
     contractCall.then((result) => {
-      receivedResult = result
+      shouldCallFallback = false
       resolve(result)
     }).catch((e) => {
-      receivedResult = true // set receivedResult to true to avoid a double call of handleFallback in setTimeout
       console.error("fetcher error", id, contractInfo.contractName, method, e);
       handleFallback(resolve, reject, e)
     })
 
     setTimeout(() => {
-      if (receivedResult) {
-        return
-      }
       handleFallback(resolve, reject, "contractCall timeout")
     }, 2000)
   })
