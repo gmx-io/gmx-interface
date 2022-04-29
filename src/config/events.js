@@ -47,5 +47,19 @@ let eventsData = [
       },
     ],
   },
+  {
+    id: "speed-up-page-loading",
+    title: "Speed Up Page Loading",
+    isActive: true,
+    validTill: "5/04/2022 12:00:00 PM",
+    bodyText: "If you experience data loading issues, please use a free RPC URL from Alchemy.",
+    buttons: [
+      {
+        text: "Learn More",
+        link: "https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls",
+        newTab: true,
+      },
+    ],
+  },
 ];
 export default eventsData;
