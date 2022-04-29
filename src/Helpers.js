@@ -1269,6 +1269,10 @@ const RPC_PROVIDERS = {
   [AVALANCHE]: AVALANCHE_RPC_PROVIDERS,
 };
 
+const FALLBACK_PROVIDERS = {
+  [ARBITRUM]: ["https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"],
+};
+
 export function shortenAddress(address, length) {
   if (!length) {
     return "";
@@ -1513,38 +1517,97 @@ export function getProvider(library, chainId) {
   return new ethers.providers.StaticJsonRpcProvider(provider, { chainId });
 }
 
+export function getFallbackProvider(chainId) {
+  if (!FALLBACK_PROVIDERS[chainId]) {
+    return;
+  }
+
+  const provider = _.sample(FALLBACK_PROVIDERS[chainId]);
+  return new ethers.providers.StaticJsonRpcProvider(provider, { chainId });
+}
+
+export const getContractCall = ({ provider, contractInfo, arg0, arg1, method, params, additionalArgs, onError }) => {
+  if (ethers.utils.isAddress(arg0)) {
+    const address = arg0;
+    const contract = new ethers.Contract(address, contractInfo.abi, provider);
+
+    if (additionalArgs) {
+      return contract[method](...params.concat(additionalArgs));
+    }
+    return contract[method](...params);
+  }
+
+  if (!provider) {
+    return;
+  }
+
+  return provider[method](arg1, ...params);
+};
+
 // prettier-ignore
 export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
-    // eslint-disable-next-line
-    const [id, chainId, arg0, arg1, ...params] = args;
-    const provider = getProvider(library, chainId);
+  // eslint-disable-next-line
+  const [id, chainId, arg0, arg1, ...params] = args;
+  const provider = getProvider(library, chainId);
 
-    const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
+  const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
 
-    function onError(e) {
-      console.error(id, contractInfo.contractName, method, e);
+  const contractCall = getContractCall({
+    provider,
+    contractInfo,
+    arg0,
+    arg1,
+    method,
+    params,
+    additionalArgs,
+  })
+
+  let shouldCallFallback = true
+
+  const handleFallback = async (resolve, reject, error) => {
+    if (!shouldCallFallback) {
+      return
+    }
+    // prevent fallback from being called twice
+    shouldCallFallback = false
+
+    const fallbackProvider = getFallbackProvider(chainId)
+    if (!fallbackProvider) {
+      reject(error)
+      return
     }
 
-    if (ethers.utils.isAddress(arg0)) {
-      const address = arg0;
-      const contract = new ethers.Contract(address, contractInfo.abi, provider);
+    console.info("using fallbackProvider for", method)
+    const fallbackContractCall = getContractCall({
+      provider: fallbackProvider,
+      contractInfo,
+      arg0,
+      arg1,
+      method,
+      params,
+      additionalArgs,
+    })
 
-      try {
-        if (additionalArgs) {
-          return contract[method](...params.concat(additionalArgs)).catch(onError);
-        }
-        return contract[method](...params).catch(onError);
-      } catch (e) {
-        onError(e);
-      }
-    }
+    fallbackContractCall.then((result) => resolve(result)).catch((e) => {
+      console.error("fallback fetcher error", id, contractInfo.contractName, method, e);
+      reject(e)
+    })
+  }
 
-    if (!library) {
-      return;
-    }
+  return new Promise(async (resolve, reject) => {
+    contractCall.then((result) => {
+      shouldCallFallback = false
+      resolve(result)
+    }).catch((e) => {
+      console.error("fetcher error", id, contractInfo.contractName, method, e);
+      handleFallback(resolve, reject, e)
+    })
 
-    return library[method](arg1, ...params).catch(onError);
-  };
+    setTimeout(() => {
+      handleFallback(resolve, reject, "contractCall timeout")
+    }, 2000)
+  })
+};
 
 export function bigNumberify(n) {
   return ethers.BigNumber.from(n);
