@@ -481,9 +481,13 @@ export default function PositionSeller(props) {
   };
 
   useEffect(() => {
-    if (prevIsVisible !== isVisible) {
+    let cancelled = false;
+    if (!cancelled && prevIsVisible !== isVisible) {
       resetForm();
     }
+    return () => {
+      cancelled = true;
+    };
   }, [prevIsVisible, isVisible]);
 
   const onClickPrimary = async () => {
