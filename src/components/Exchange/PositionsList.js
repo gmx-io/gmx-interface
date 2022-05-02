@@ -28,6 +28,7 @@ import SharePosition from "./SharePosition";
 import SpinningLoader from "../Common/SpinningLoader";
 import { useUserReferralCode } from "../../Api";
 import { ethers } from "ethers";
+import { useAffiliateCodes } from "../../Api/referrals";
 
 const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -116,7 +117,7 @@ export default function PositionsList(props) {
   const [isSharePositionModalVisible, setIsSharePositionModalVisible] = useState(null);
   const [sharePositionData, setSharePositionData] = useState(null);
   const [sharePositionImageStatus, setSharePositionImageStatus] = useState({});
-  const { userReferralCode } = useUserReferralCode(library, chainId, account);
+  const userAffiliateCodes = useAffiliateCodes(chainId, account);
 
   const editPosition = (position) => {
     setCollateralTokenAddress(position.collateralToken.address);
@@ -143,7 +144,7 @@ export default function PositionsList(props) {
       pnlPercentage: position.deltaPercentageStr,
       isLong: position.isLong,
       token: position.indexToken.symbol,
-      referralCode: userReferralCode && decodeReferralCode(userReferralCode),
+      referralCode: userAffiliateCodes.length > 0 && userAffiliateCodes[0],
       levrage: formatAmount(position.leverage, 4, 2, true),
     };
     fetch(apiUrl, {
