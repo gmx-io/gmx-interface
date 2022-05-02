@@ -47,6 +47,7 @@
   cursor: pointer;
   border-radius: 4px;
   padding: 2px;
+  margin-left: 1rem;
 }
 .single-toast header .cross-icon:hover {
   background: #ffffff47;
@@ -79,6 +80,9 @@
 
 @media screen and (max-width: 500px) {
   .event-toast-container {
-    inset: 80px 16px 0 16px !important;
+    inset: 80px 16px 0 16px;
+  }
+  .single-toast {
+    background: rgba(43, 49, 85, 1);
   }
 }

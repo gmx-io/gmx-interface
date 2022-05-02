@@ -11,8 +11,8 @@
   letter-spacing: 0.4px;
   min-width: 250px;
   text-align: left;
-  z-index: 1;
-  background:  linear-gradient(90deg, #0b0b0f 0%, rgba(10,13,28,1) 100%)
+  background: linear-gradient(90deg, #0b0b0f 0%, rgba(10, 13, 28, 1) 100%);
+  z-index: 1000;
 }
 
 .Tooltip.nowrap .Tooltip-popup {
@@ -45,6 +45,11 @@
   transform: translateY(-0.5rem);
   bottom: 100%;
 }
+.Tooltip-popup.right {
+  left: 30px;
+  transform: translateY(50%);
+  bottom: 100%;
+}
 
 .Tooltip-popup.left-top {
   left: 0;
@@ -68,16 +73,11 @@
   cursor: help;
   position: relative;
   display: inline-flex;
-}
-
-.Tooltip-handle:after {
-  position: absolute;
-  content: '';
-  bottom: -1px;
-  left: 0;
-  right: 0;
-  border-bottom: 1px dashed;
-  opacity: 0.6;
+  text-decoration: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  text-decoration-color: rgba(255, 255, 255, 0.6);
 }
 
 .Tooltip-handle.plain:after {

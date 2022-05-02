@@ -34,6 +34,7 @@ import { getContract } from "../../Addresses";
 
 export default function OrderEditor(props) {
   const {
+    account,
     order,
     setEditingOrder,
     infoTokens,
@@ -48,7 +49,7 @@ export default function OrderEditor(props) {
 
   const { chainId } = useChainId();
 
-  const position = order.type !== SWAP ? getPositionForOrder(order, positionsMap) : null;
+  const position = order.type !== SWAP ? getPositionForOrder(account, order, positionsMap) : null;
   const liquidationPrice = order.type === DECREASE && position ? getLiquidationPrice(position) : null;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -141,8 +142,8 @@ export default function OrderEditor(props) {
 
     params.push({
       successMsg: "Order updated!",
-      failMsg: "Order update failed",
-      sentMsg: "Order update submitted",
+      failMsg: "Order update failed.",
+      sentMsg: "Order update submitted!",
       pendingTxns,
       setPendingTxns,
     });

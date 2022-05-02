@@ -16,6 +16,7 @@ import {
   getLeverage,
   formatAmount,
   USD_DECIMALS,
+  FUNDING_RATE_PRECISION,
   SWAP,
   LONG,
   SHORT,
@@ -58,6 +59,7 @@ export default function PositionsList(props) {
     pendingPositions,
     setPendingPositions,
     positions,
+    positionsDataIsLoading,
     positionsMap,
     infoTokens,
     active,
@@ -83,6 +85,7 @@ export default function PositionsList(props) {
     showPnlAfterFees,
     setMarket,
   } = props;
+
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
   const [positionToSellKey, setPositionToSellKey] = useState(undefined);
   const [isPositionEditorVisible, setIsPositionEditorVisible] = useState(undefined);
@@ -176,12 +179,26 @@ export default function PositionsList(props) {
       {positions && (
         <div className="Exchange-list small">
           <div>
-            {positions.length === 0 && (
+            {positions.length === 0 && positionsDataIsLoading && (
+              <div className="Exchange-empty-positions-list-note App-card">Loading...</div>
+            )}
+            {positions.length === 0 && !positionsDataIsLoading && (
               <div className="Exchange-empty-positions-list-note App-card">No open positions</div>
             )}
             {positions.map((position) => {
               const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
               const liquidationPrice = getLiquidationPrice(position);
+              const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
+              const positionDelta =
+                position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || bigNumberify(0);
+              let borrowFeeText;
+              if (position.collateralToken && position.collateralToken.fundingRate) {
+                const borrowFeeRate = position.collateralToken.fundingRate
+                  .mul(position.size)
+                  .mul(24)
+                  .div(FUNDING_RATE_PRECISION);
+                borrowFeeText = `Borrow Fee / Day: $${formatAmount(borrowFeeRate, USD_DECIMALS, 2)}`;
+              }
 
               return (
                 <div key={position.key} className="App-card">
@@ -229,7 +246,7 @@ export default function PositionsList(props) {
                                 Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
                                 <br />
                                 Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                                <br />
+                                {borrowFeeText && <div>{borrowFeeText}</div>}
                                 <br />
                                 Use the "Edit" button to deposit or withdraw collateral.
                               </>
@@ -242,9 +259,10 @@ export default function PositionsList(props) {
                       <div className="label">PnL</div>
                       <div>
                         <span
-                          className={cx({
-                            positive: position.hasProfit && position.pendingDelta.gt(0),
-                            negative: !position.hasProfit && position.pendingDelta.gt(0),
+                          className={cx("Exchange-list-info-label", {
+                            positive: hasPositionProfit && positionDelta.gt(0),
+                            negative: !hasPositionProfit && positionDelta.gt(0),
+                            muted: positionDelta.eq(0),
                           })}
                         >
                           {position.deltaStr} ({position.deltaPercentageStr})
@@ -345,7 +363,14 @@ export default function PositionsList(props) {
             <th></th>
             <th></th>
           </tr>
-          {positions.length === 0 && (
+          {positions.length === 0 && positionsDataIsLoading && (
+            <tr>
+              <td colSpan="15">
+                <div className="Exchange-empty-positions-list-note">Loading...</div>
+              </td>
+            </tr>
+          )}
+          {positions.length === 0 && !positionsDataIsLoading && (
             <tr>
               <td colSpan="15">
                 <div className="Exchange-empty-positions-list-note">No open positions</div>
@@ -356,6 +381,18 @@ export default function PositionsList(props) {
             const liquidationPrice = getLiquidationPrice(position) || bigNumberify(0);
             const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
             const hasOrderError = !!positionOrders.find((order) => order.error);
+            const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
+            const positionDelta =
+              position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || bigNumberify(0);
+            let borrowFeeText;
+            if (position.collateralToken && position.collateralToken.fundingRate) {
+              const borrowFeeRate = position.collateralToken.fundingRate
+                .mul(position.size)
+                .mul(24)
+                .div(FUNDING_RATE_PRECISION);
+              borrowFeeText = `Borrow Fee / Day: $${formatAmount(borrowFeeRate, USD_DECIMALS, 2)}`;
+            }
+
             return (
               <tr key={position.key}>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
@@ -408,9 +445,9 @@ export default function PositionsList(props) {
                   {position.deltaStr && (
                     <div
                       className={cx("Exchange-list-info-label", {
-                        positive: position.hasProfit && position.pendingDelta.gt(0),
-                        negative: !position.hasProfit && position.pendingDelta.gt(0),
-                        muted: position.pendingDelta.eq(0),
+                        positive: hasPositionProfit && positionDelta.gt(0),
+                        negative: !hasPositionProfit && positionDelta.gt(0),
+                        muted: positionDelta.eq(0),
                       })}
                     >
                       {position.deltaStr} ({position.deltaPercentageStr})
@@ -475,7 +512,7 @@ export default function PositionsList(props) {
                           Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
                           <br />
                           Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                          <br />
+                          {borrowFeeText && <div>{borrowFeeText}</div>}
                           <br />
                           Use the "Edit" button to deposit or withdraw collateral.
                         </>

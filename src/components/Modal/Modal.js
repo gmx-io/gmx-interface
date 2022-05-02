@@ -8,7 +8,7 @@ import "./Modal.css";
 import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 export default function Modal(props) {
-  const { isVisible, setIsVisible, className, zIndex } = props;
+  const { isVisible, setIsVisible, className, zIndex, onAfterOpen } = props;
   const modalRef = useRef(null);
   useLockBodyScroll(modalRef, isVisible);
   useEffect(() => {
@@ -20,6 +20,10 @@ export default function Modal(props) {
     window.addEventListener("keydown", close);
     return () => window.removeEventListener("keydown", close);
   }, [setIsVisible]);
+
+  useEffect(() => {
+    if (typeof onAfterOpen === "function") onAfterOpen();
+  }, [onAfterOpen]);
 
   const fadeVariants = {
     hidden: { opacity: 0 },
