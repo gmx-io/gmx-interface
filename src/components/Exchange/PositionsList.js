@@ -106,12 +106,13 @@ export default function PositionsList(props) {
   const [positionToShareKey, setPositionToShareKey] = useState(undefined);
   const [isPositionEditorVisible, setIsPositionEditorVisible] = useState(undefined);
   const [isPositionSellerVisible, setIsPositionSellerVisible] = useState(undefined);
-  const [isSharePositionVisible, setIsSharePositionVisible] = useState(null);
-  const [sharePositionData, setSharePositionData] = useState(null);
-  const [isSharePositionImageLoading, setIsSharePositionImageLoading] = useState(false);
   const [collateralTokenAddress, setCollateralTokenAddress] = useState(undefined);
   const [ordersToaOpen, setOrdersToaOpen] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
+
+  const [isSharePositionModalVisible, setIsSharePositionModalVisible] = useState(null);
+  const [sharePositionData, setSharePositionData] = useState(null);
+  const [sharePositionImageStatus, setSharePositionImageStatus] = useState({});
   const { userReferralCode } = useUserReferralCode(library, chainId, account);
 
   const editPosition = (position) => {
@@ -128,7 +129,10 @@ export default function PositionsList(props) {
 
   const sharePosition = (position) => {
     setPositionToShareKey(position.key);
-    setIsSharePositionImageLoading(true);
+    setSharePositionImageStatus((state) => ({
+      ...state,
+      [position.key]: true,
+    }));
     let apiUrl = `https://gmx-og-image-vipineth.vercel.app/api/og`;
     let data = {
       entryPrice: `$${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}`,
@@ -137,6 +141,7 @@ export default function PositionsList(props) {
       isLong: position.isLong,
       token: position.indexToken.symbol,
       referralCode: userReferralCode && decodeReferralCode(userReferralCode),
+      levrage: formatAmount(position.leverage, 4, 2, true),
     };
     fetch(apiUrl, {
       method: "POST",
@@ -156,12 +161,15 @@ export default function PositionsList(props) {
         reader.readAsDataURL(res);
         reader.onloadend = function () {
           let base64data = reader.result;
-          setIsSharePositionVisible(true);
+          setIsSharePositionModalVisible(true);
           setSharePositionData(base64data);
         };
       })
       .finally(() => {
-        setIsSharePositionImageLoading(false);
+        setSharePositionImageStatus((state) => ({
+          ...state,
+          [position.key]: false,
+        }));
       });
   };
 
@@ -235,10 +243,10 @@ export default function PositionsList(props) {
           setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
         />
       )}
-      {isSharePositionVisible && (
+      {isSharePositionModalVisible && (
         <SharePosition
-          isVisible={isSharePositionVisible}
-          setIsVisible={setIsSharePositionVisible}
+          isVisible={isSharePositionModalVisible}
+          setIsVisible={setIsSharePositionModalVisible}
           title="Share Position"
           sharePositionData={sharePositionData}
           positions={positions}
@@ -398,7 +406,7 @@ export default function PositionsList(props) {
                       Close
                     </button>
                     <button className="App-button-option App-card-option" onClick={() => sharePosition(position)}>
-                      {isSharePositionImageLoading ? <Loader size={4} /> : <FiShare2 />}
+                      {sharePositionImageStatus[position.key] ? <Loader size={4} /> : <FiShare2 />}
                     </button>
                   </div>
                 </div>
@@ -585,7 +593,7 @@ export default function PositionsList(props) {
                 </td>
                 <td>
                   <div className="position-share" onClick={() => sharePosition(position)}>
-                    {isSharePositionImageLoading ? <Loader size={3} /> : <FiShare2 />}
+                    {sharePositionImageStatus[position.key] ? <Loader size={3} /> : <FiShare2 />}
                   </div>
                 </td>
                 <td>
