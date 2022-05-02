@@ -9,16 +9,16 @@ function download(dataurl, filename) {
 }
 
 function SharePosition(props) {
-  let { isVisible, setIsVisible, title, sharePositionData, positions, positionToShareKey } = props;
-  let position = positions.find((p) => p.key === positionToShareKey);
+  let { isVisible, setIsVisible, title, sharePositionImageUri, positionToShare } = props;
+  let position = positionToShare;
   let imageName = `${position.indexToken.symbol}-${position.isLong ? "long" : "short"}`;
   return (
     <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
       <div className="share-position-image">
-        <img src={sharePositionData} alt="" />
+        <img src={sharePositionImageUri} alt="" />
       </div>
       <div className="social-share-btn">
-        <button className="default-btn" onClick={() => download(sharePositionData, imageName)}>
+        <button className="default-btn" onClick={() => download(sharePositionImageUri, imageName)}>
           Download to share
         </button>
       </div>

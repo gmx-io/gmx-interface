@@ -26,7 +26,6 @@ import {
 } from "../../Helpers";
 import SharePosition from "./SharePosition";
 import SpinningLoader from "../Common/SpinningLoader";
-import { useUserReferralCode } from "../../Api";
 import { ethers } from "ethers";
 import { useAffiliateCodes } from "../../Api/referrals";
 
@@ -107,7 +106,7 @@ export default function PositionsList(props) {
 
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
   const [positionToSellKey, setPositionToSellKey] = useState(undefined);
-  const [positionToShareKey, setPositionToShareKey] = useState(undefined);
+  const [positionToShare, setPositionToShare] = useState(undefined);
   const [isPositionEditorVisible, setIsPositionEditorVisible] = useState(undefined);
   const [isPositionSellerVisible, setIsPositionSellerVisible] = useState(undefined);
   const [collateralTokenAddress, setCollateralTokenAddress] = useState(undefined);
@@ -115,7 +114,7 @@ export default function PositionsList(props) {
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
 
   const [isSharePositionModalVisible, setIsSharePositionModalVisible] = useState(null);
-  const [sharePositionData, setSharePositionData] = useState(null);
+  const [sharePositionImageUri, setSharePositionImageUri] = useState(null);
   const [sharePositionImageStatus, setSharePositionImageStatus] = useState({});
   const userAffiliateCodes = useAffiliateCodes(chainId, account);
 
@@ -132,7 +131,7 @@ export default function PositionsList(props) {
   };
 
   const sharePosition = (position) => {
-    setPositionToShareKey(position.key);
+    setPositionToShare(position);
     setSharePositionImageStatus((state) => ({
       ...state,
       [position.key]: true,
@@ -166,7 +165,7 @@ export default function PositionsList(props) {
         reader.onloadend = function () {
           let base64data = reader.result;
           setIsSharePositionModalVisible(true);
-          setSharePositionData(base64data);
+          setSharePositionImageUri(base64data);
         };
       })
       .finally(() => {
@@ -245,6 +244,7 @@ export default function PositionsList(props) {
           approvePositionRouter={approvePositionRouter}
           isHigherSlippageAllowed={isHigherSlippageAllowed}
           setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
+          sharePosition={sharePosition}
         />
       )}
       {isSharePositionModalVisible && (
@@ -252,9 +252,8 @@ export default function PositionsList(props) {
           isVisible={isSharePositionModalVisible}
           setIsVisible={setIsSharePositionModalVisible}
           title="Share Position"
-          sharePositionData={sharePositionData}
-          positions={positions}
-          positionToShareKey={positionToShareKey}
+          sharePositionImageUri={sharePositionImageUri}
+          positionToShare={positionToShare}
         />
       )}
       {positions && (
@@ -424,7 +423,11 @@ export default function PositionsList(props) {
                     <button className="App-button-option App-card-option" onClick={() => sellPosition(position)}>
                       Close
                     </button>
-                    <button className="App-button-option App-card-option" onClick={() => sharePosition(position)}>
+                    <button
+                      className="App-button-option App-card-option"
+                      disabled={!position.size.eq(0)}
+                      onClick={() => sharePosition(position)}
+                    >
                       {sharePositionImageStatus[position.key] ? (
                         <SpinningLoader size={4} />
                       ) : (
@@ -634,13 +637,17 @@ export default function PositionsList(props) {
                   ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
                 </td>
                 <td>
-                  <div className="position-share" onClick={() => sharePosition(position)}>
+                  <button
+                    disabled={position.size.eq(0)}
+                    className="Exchange-list-action"
+                    onClick={() => sharePosition(position)}
+                  >
                     {sharePositionImageStatus[position.key] ? (
                       <SpinningLoader size={3} />
                     ) : (
                       <FiShare2 color="#ffffffb3" />
                     )}
-                  </div>
+                  </button>
                 </td>
                 <td>
                   <button

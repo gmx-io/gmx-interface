@@ -834,10 +834,6 @@ table.Exchange-list-small td {
   height: 5rem;
 }
 
-.position-share {
-  cursor: pointer;
-}
-
 @media (max-width: 1500px) {
   .Exchange-swap-box {
     width: 25rem;

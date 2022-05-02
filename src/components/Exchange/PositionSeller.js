@@ -103,6 +103,7 @@ export default function PositionSeller(props) {
     approvePositionRouter,
     isHigherSlippageAllowed,
     setIsHigherSlippageAllowed,
+    sharePosition,
   } = props;
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true);
@@ -586,7 +587,6 @@ export default function PositionSeller(props) {
       .then(async (res) => {
         setFromValue("");
         setIsVisible(false);
-
         let nextSize = position.size.sub(sizeDelta);
 
         pendingPositions[position.key] = {
@@ -597,6 +597,10 @@ export default function PositionSeller(props) {
         };
 
         setPendingPositions({ ...pendingPositions });
+        const receipt = await res.wait();
+        if (receipt.status === 1) {
+          sharePosition(position);
+        }
       })
       .finally(() => {
         setIsSubmitting(false);
