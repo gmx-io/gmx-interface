@@ -16,6 +16,8 @@ import {
   helperToast,
   formatAmount,
   bigNumberify,
+  ARBITRUM,
+  AVALANCHE,
   USD_DECIMALS,
   USDG_DECIMALS,
   LONG,
@@ -57,6 +59,8 @@ import {
   calculatePositionDelta,
   replaceNativeTokenAddress,
   adjustForDecimals,
+  REFERRAL_CODE_KEY,
+  isHashZero,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import * as Api from "../../Api";
@@ -170,6 +174,8 @@ export default function SwapBox(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
+  const { userReferralCode } = Api.useUserReferralCode(library, chainId, account);
+  const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -186,6 +192,16 @@ export default function SwapBox(props) {
   const isLong = swapOption === LONG;
   const isShort = swapOption === SHORT;
   const isSwap = swapOption === SWAP;
+
+  const getLeaderboardLink = () => {
+    if (chainId === ARBITRUM) {
+      return "https://www.gmx.house/arbitrum/leaderboard";
+    }
+    if (chainId === AVALANCHE) {
+      return "https://www.gmx.house/avalanche/leaderboard";
+    }
+    return "https://www.gmx.house";
+  };
 
   function getTokenLabel() {
     switch (true) {
@@ -243,10 +259,10 @@ export default function SwapBox(props) {
 
   let positionKey;
   if (isLong) {
-    positionKey = getPositionKey(toTokenAddress, toTokenAddress, true, nativeTokenAddress);
+    positionKey = getPositionKey(account, toTokenAddress, toTokenAddress, true, nativeTokenAddress);
   }
   if (isShort) {
-    positionKey = getPositionKey(shortCollateralAddress, toTokenAddress, false, nativeTokenAddress);
+    positionKey = getPositionKey(account, shortCollateralAddress, toTokenAddress, false, nativeTokenAddress);
   }
 
   const existingPosition = positionKey ? positionsMap[positionKey] : undefined;
@@ -321,6 +337,20 @@ export default function SwapBox(props) {
 
   const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
+  const toTokenAvailableUsd = toTokenInfo.availableUsd;
+
+  const renderAvailableLongLiquidity = () => {
+    if (!isLong) {
+      return null;
+    }
+
+    return (
+      <div className="Exchange-info-row">
+        <div className="Exchange-info-label">Available Liquidity</div>
+        <div className="align-right">{formatAmount(toTokenAvailableUsd, USD_DECIMALS, 2, true)}</div>
+      </div>
+    );
+  };
 
   const hasMaxAvailableShort = isShort && toTokenInfo.maxAvailableShort && toTokenInfo.maxAvailableShort.gt(0);
 
@@ -406,7 +436,7 @@ export default function SwapBox(props) {
     }
     for (let i = 0; i < stableTokens.length; i++) {
       const stableToken = stableTokens[i];
-      const key = getPositionKey(stableToken.address, toTokenAddress, false, nativeTokenAddress);
+      const key = getPositionKey(account, stableToken.address, toTokenAddress, false, nativeTokenAddress);
       const position = positionsMap[key];
       if (position && position.size && position.size.gt(0)) {
         setShortCollateralAddress(position.collateralToken.address);
@@ -414,6 +444,7 @@ export default function SwapBox(props) {
       }
     }
   }, [
+    account,
     toTokenAddress,
     prevToTokenAddress,
     swapOption,
@@ -815,13 +846,13 @@ export default function SwapBox(props) {
         );
         requiredAmount = requiredAmount.add(swapAmount);
 
-        if (
-          toToken &&
-          toTokenAddress !== USDG_ADDRESS &&
-          toTokenInfo.availableAmount &&
-          requiredAmount.gt(toTokenInfo.availableAmount)
-        ) {
-          return ["Insufficient liquidity"];
+        if (toToken && toTokenAddress !== USDG_ADDRESS) {
+          if (!toTokenInfo.availableAmount) {
+            return ["Liquidity data not loaded"];
+          }
+          if (toTokenInfo.availableAmount && requiredAmount.gt(toTokenInfo.availableAmount)) {
+            return ["Insufficient liquidity"];
+          }
         }
 
         if (
@@ -903,6 +934,10 @@ export default function SwapBox(props) {
       const sizeTokens = sizeUsd
         .mul(expandDecimals(1, shortCollateralToken.decimals))
         .div(shortCollateralToken.minPrice);
+
+      if (!toTokenInfo.maxAvailableShort) {
+        return ["Liquidity data not loaded"];
+      }
 
       if (
         toTokenInfo.maxAvailableShort &&
@@ -1169,10 +1204,10 @@ export default function SwapBox(props) {
     const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, library.getSigner());
     Api.callContract(chainId, contract, "deposit", {
       value: fromAmount,
-      sentMsg: "Swap submitted!",
+      sentMsg: "Swap submitted.",
       successMsg: `Swapped ${formatAmount(fromAmount, fromToken.decimals, 4, true)} ${
         fromToken.symbol
-      } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}`,
+      } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}!`,
       failMsg: "Swap failed.",
       setPendingTxns,
     })
@@ -1191,7 +1226,7 @@ export default function SwapBox(props) {
       failMsg: "Swap failed.",
       successMsg: `Swapped ${formatAmount(fromAmount, fromToken.decimals, 4, true)} ${
         fromToken.symbol
-      } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}`,
+      } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}!`,
       setPendingTxns,
     })
       .then(async (res) => {})
@@ -1264,7 +1299,7 @@ export default function SwapBox(props) {
       Api.createSwapOrder(chainId, library, path, fromAmount, minOut, triggerRatio, nativeTokenAddress, {
         sentMsg: "Swap Order submitted!",
         successMsg: "Swap Order created!",
-        failMsg: "Swap Order creation failed",
+        failMsg: "Swap Order creation failed.",
         pendingTxns,
         setPendingTxns,
       })
@@ -1299,7 +1334,7 @@ export default function SwapBox(props) {
       sentMsg: `Swap ${!isMarketOrder ? " order " : ""} submitted!`,
       successMsg: `Swapped ${formatAmount(fromAmount, fromToken.decimals, 4, true)} ${
         fromToken.symbol
-      } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}`,
+      } for ${formatAmount(toAmount, toToken.decimals, 4, true)} ${toToken.symbol}!`,
       failMsg: "Swap failed.",
       setPendingTxns,
     })
@@ -1331,7 +1366,7 @@ export default function SwapBox(props) {
       toUsdMax,
       USD_DECIMALS,
       2
-    )} USD
+    )} USD!
     `;
     return Api.createIncreaseOrder(
       chainId,
@@ -1362,7 +1397,10 @@ export default function SwapBox(props) {
       });
   };
 
-  const referralCode = ethers.constants.HashZero;
+  let referralCode = ethers.constants.HashZero;
+  if (isHashZero(userReferralCode) && userReferralCodeInLocalStorage) {
+    referralCode = userReferralCodeInLocalStorage;
+  }
 
   const increasePosition = async () => {
     setIsSubmitting(true);
@@ -1461,19 +1499,19 @@ export default function SwapBox(props) {
       toUsdMax,
       USD_DECIMALS,
       2
-    )} USD`;
+    )} USD.`;
 
     Api.callContract(chainId, contract, method, params, {
       value,
       setPendingTxns,
-      sentMsg: `${isLong ? "Long" : "Short"} submitted!`,
+      sentMsg: `${isLong ? "Long" : "Short"} submitted.`,
       failMsg: `${isLong ? "Long" : "Short"} failed.`,
       successMsg,
     })
       .then(async () => {
         setIsConfirming(false);
 
-        const key = getPositionKey(path[path.length - 1], indexTokenAddress, isLong);
+        const key = getPositionKey(account, path[path.length - 1], indexTokenAddress, isLong);
         let nextSize = toUsdMax;
         if (hasExistingPosition) {
           nextSize = existingPosition.size.add(toUsdMax);
@@ -1564,8 +1602,8 @@ export default function SwapBox(props) {
 
     if (needPositionRouterApproval) {
       approvePositionRouter({
-        sentMsg: "Enable leverage sent",
-        failMsg: "Enable leverage failed",
+        sentMsg: "Enable leverage sent.",
+        failMsg: "Enable leverage failed.",
       });
       return;
     }
@@ -2216,6 +2254,7 @@ export default function SwapBox(props) {
               </Tooltip>
             </div>
           </div>
+          {renderAvailableLongLiquidity()}
           {hasMaxAvailableShort && (
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">Available Liquidity</div>
@@ -2249,6 +2288,13 @@ export default function SwapBox(props) {
           <div className="Exchange-info-label-button">
             <a href="https://gmxio.gitbook.io/gmx/trading" target="_blank" rel="noopener noreferrer">
               Trading guide
+            </a>
+          </div>
+        </div>
+        <div className="Exchange-info-row">
+          <div className="Exchange-info-label-button">
+            <a href={getLeaderboardLink()} target="_blank" rel="noopener noreferrer">
+              Leaderboard
             </a>
           </div>
         </div>

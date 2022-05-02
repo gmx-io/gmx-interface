@@ -269,7 +269,6 @@
   grid-template-columns: auto auto auto auto auto 1fr;
   grid-column-gap: 3rem;
   align-items: center;
-  padding-left: 1rem;
 }
 
 .ExchangeChart-dollar-sign {
@@ -294,7 +293,7 @@
 .ExchangeChart.tv .ExchangeChart-top {
   position: relative;
   padding: 0.6rem 0.2rem;
-  z-index: 1;
+  z-index: 2;
 }
 
 .ExchangeChart.tv .ExchangeChart-bottom {
@@ -530,6 +529,7 @@ table.Exchange-list th {
 
 .Exchange-info-label {
   opacity: 0.7;
+  margin-right: 0.5rem;
 }
 .Exchange-info-value-warning {
   color: #fa3c58;

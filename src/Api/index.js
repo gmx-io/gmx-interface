@@ -12,6 +12,7 @@ import Router from "../abis/Router.json";
 import UniPool from "../abis/UniPool.json";
 import UniswapV2 from "../abis/UniswapV2.json";
 import Token from "../abis/Token.json";
+import VaultReader from "../abis/VaultReader.json";
 import ReferralStorage from "../abis/ReferralStorage.json";
 
 import { getContract } from "../Addresses";
@@ -25,7 +26,7 @@ import {
   getExplorerUrl,
   getServerBaseUrl,
   getServerUrl,
-  getGasPrice,
+  setGasPrice,
   getGasLimit,
   replaceNativeTokenAddress,
   getProvider,
@@ -33,9 +34,11 @@ import {
   fetcher,
   parseValue,
   expandDecimals,
+  getInfoTokens,
+  isAddressZero,
   helperToast,
 } from "../Helpers";
-import { getTokenBySymbol } from "../data/Tokens";
+import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
 
 import { nissohGraphClient, arbitrumGraphClient, avalancheGraphClient } from "./common";
 export * from "./prices";
@@ -75,6 +78,50 @@ export function useAllOrdersStats(chainId) {
   return res ? res.data.orderStat : null;
 }
 
+export function useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo, vaultPropsLength) {
+  const tokens = getTokens(chainId);
+  const vaultReaderAddress = getContract(chainId, "VaultReader");
+  const vaultAddress = getContract(chainId, "Vault");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
+  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+
+  const whitelistedTokens = getWhitelistedTokens(chainId);
+  const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
+
+  const { data: vaultTokenInfo } = useSWR(
+    [`useInfoTokens:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
+    {
+      fetcher: fetcher(library, VaultReader, [
+        vaultAddress,
+        positionRouterAddress,
+        nativeTokenAddress,
+        expandDecimals(1, 18),
+        whitelistedTokenAddresses,
+      ]),
+    }
+  );
+
+  const indexPricesUrl = getServerUrl(chainId, "/prices");
+  const { data: indexPrices } = useSWR([indexPricesUrl], {
+    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+    refreshInterval: 500,
+    refreshWhenHidden: true,
+  });
+
+  return {
+    infoTokens: getInfoTokens(
+      tokens,
+      tokenBalances,
+      whitelistedTokens,
+      vaultTokenInfo,
+      fundingRateInfo,
+      vaultPropsLength,
+      indexPrices,
+      nativeTokenAddress
+    ),
+  };
+}
+
 export function useUserStat(chainId) {
   const query = gql(`{
     userStat(id: "total") {
@@ -95,7 +142,7 @@ export function useUserStat(chainId) {
 export function useLiquidationsData(chainId, account) {
   const [data, setData] = useState(null);
   useEffect(() => {
-    if (chainId === ARBITRUM && account) {
+    if (account) {
       const query = gql(`{
          liquidatedPositions(
            where: {account: "${account.toLowerCase()}"}
@@ -414,34 +461,20 @@ export function useGmxPrice(chainId, libraries, active) {
   };
 }
 
+// use only the supply endpoint on arbitrum, it includes the supply on avalanche
 export function useTotalGmxSupply() {
   const gmxSupplyUrlArbitrum = getServerUrl(ARBITRUM, "/gmx_supply");
-  const gmxSupplyUrlAvax = getServerUrl(AVALANCHE, "/gmx_supply");
-  let totalGMXSupply = useRef(bigNumberify(0));
 
-  const { data: gmxSupplyArbitrum, mutate: updateGmxSupplyArbitrum } = useSWR([gmxSupplyUrlArbitrum], {
+  const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrlArbitrum], {
     fetcher: (...args) => fetch(...args).then((res) => res.text()),
   });
-  const { data: gmxSupplyAvax, mutate: updateGmxSupplyAvax } = useSWR([gmxSupplyUrlAvax], {
-    fetcher: (...args) => fetch(...args).then((res) => res.text()),
-  });
-
-  if (gmxSupplyArbitrum && gmxSupplyAvax) {
-    let total = bigNumberify(gmxSupplyArbitrum).add(gmxSupplyAvax);
-    totalGMXSupply.current = total;
-  }
-  const mutate = useCallback(() => {
-    updateGmxSupplyArbitrum();
-    updateGmxSupplyAvax();
-  }, [updateGmxSupplyArbitrum, updateGmxSupplyAvax]);
 
   return {
-    arbitrum: gmxSupplyArbitrum,
-    avax: gmxSupplyAvax,
-    total: totalGMXSupply.current,
-    mutate,
+    total: gmxSupply ? bigNumberify(gmxSupply) : undefined,
+    mutate: updateGmxSupply,
   };
 }
+
 export function useTotalGmxStaked() {
   const stakedGmxTrackerAddressArbitrum = getContract(ARBITRUM, "StakedGmxTracker");
   const stakedGmxTrackerAddressAvax = getContract(AVALANCHE, "StakedGmxTracker");
@@ -523,6 +556,46 @@ export function useTotalGmxInLiquidity() {
   };
 }
 
+export function useUserReferralCode(library, chainId, account) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const { data: userReferralCode, mutate: mutateUserReferralCode } = useSWR(
+    account && [`ReferralStorage:traderReferralCodes`, chainId, referralStorageAddress, "traderReferralCodes", account],
+    {
+      fetcher: fetcher(library, ReferralStorage),
+    }
+  );
+  return {
+    userReferralCode,
+    mutateUserReferralCode,
+  };
+}
+export function useReferrerTier(library, chainId, account) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const { data: referrerTier, mutate: mutateReferrerTier } = useSWR(
+    account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
+    {
+      fetcher: fetcher(library, ReferralStorage),
+    }
+  );
+  return {
+    referrerTier,
+    mutateReferrerTier,
+  };
+}
+export function useCodeOwner(library, chainId, account, code) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const { data: codeOwner, mutate: mutateCodeOwner } = useSWR(
+    account && code && [`ReferralStorage:codeOwners`, chainId, referralStorageAddress, "codeOwners", code],
+    {
+      fetcher: fetcher(library, ReferralStorage),
+    }
+  );
+  return {
+    codeOwner,
+    mutateCodeOwner,
+  };
+}
+
 function useGmxPriceFromAvalanche() {
   const poolAddress = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
 
@@ -552,20 +625,6 @@ function useGmxPriceFromAvalanche() {
   }, [updateReserves, updateAvaxPrice]);
 
   return { data: gmxPrice, mutate };
-}
-
-export function useUserReferralCode(library, chainId, account) {
-  const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: userReferralCode, mutate: mutateUserReferralCode } = useSWR(
-    account && [`ReferralStorage:traderReferralCodes`, chainId, referralStorageAddress, "traderReferralCodes", account],
-    {
-      fetcher: fetcher(library, ReferralStorage),
-    }
-  );
-  return {
-    userReferralCode,
-    mutateUserReferralCode,
-  };
 }
 
 function useGmxPriceFromArbitrum(library, active) {
@@ -630,6 +689,33 @@ export async function approvePlugin(
     pendingTxns,
     setPendingTxns,
   });
+}
+
+export async function registerReferralCode(chainId, referralCode, { library, ...props }) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
+  return callContract(chainId, contract, "registerCode", [referralCode], { ...props });
+}
+export async function setTraderReferralCodeByUser(chainId, referralCode, { library, ...props }) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
+  const codeOwner = await contract.codeOwners(referralCode);
+  if (isAddressZero(codeOwner)) {
+    helperToast.error("Referral code does not exist");
+    return new Promise((resolve, reject) => {
+      reject();
+    });
+  }
+  return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCode], {
+    ...props,
+  });
+}
+export async function getReferralCodeOwner(chainId, referralCode) {
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const provider = getProvider(null, chainId);
+  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, provider);
+  const codeOwner = await contract.codeOwners(referralCode);
+  return codeOwner;
 }
 
 export async function createSwapOrder(
@@ -888,19 +974,17 @@ export async function callContract(chainId, contract, method, params, opts) {
       opts = {};
     }
 
-    if (!opts.gasLimit) {
-      opts.gasLimit = await getGasLimit(contract, method, params, opts.value);
+    const txnOpts = {};
+
+    if (opts.value) {
+      txnOpts.value = opts.value;
     }
 
-    if (!opts.gasPrice) {
-      opts.gasPrice = await getGasPrice(contract.provider, chainId);
-    }
+    txnOpts.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value);
 
-    const res = await contract[method](...params, {
-      gasLimit: opts.gasLimit,
-      value: opts.value,
-      gasPrice: opts.gasPrice,
-    });
+    await setGasPrice(txnOpts, contract.provider, chainId);
+
+    const res = await contract[method](...params, txnOpts);
     const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
     const sentMsg = opts.sentMsg || "Transaction sent.";
     helperToast.success(
@@ -915,7 +999,7 @@ export async function callContract(chainId, contract, method, params, opts) {
     if (opts.setPendingTxns) {
       const pendingTxn = {
         hash: res.hash,
-        message: opts.successMsg || "Transaction completed.",
+        message: opts.successMsg || "Transaction completed!",
       };
       opts.setPendingTxns((pendingTxns) => [...pendingTxns, pendingTxn]);
     }

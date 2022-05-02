@@ -14,11 +14,13 @@ import {
   useLocalStorageSerializeKey,
   getExchangeRateDisplay,
   DEFAULT_SLIPPAGE_AMOUNT,
+  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   SLIPPAGE_BPS_KEY,
   formatDateTime,
   calculatePositionDelta,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
+import { getContract } from "../../Addresses";
 
 import { BsArrowRight } from "react-icons/bs";
 import Modal from "../Modal/Modal";
@@ -29,13 +31,22 @@ import { getNativeToken, getToken, getWrappedToken } from "../../data/Tokens";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
-function getSpread(fromTokenInfo, toTokenInfo) {
+function getSpread(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
   if (fromTokenInfo && fromTokenInfo.maxPrice && toTokenInfo && toTokenInfo.minPrice) {
     const fromDiff = fromTokenInfo.maxPrice.sub(fromTokenInfo.minPrice);
     const fromSpread = fromDiff.mul(PRECISION).div(fromTokenInfo.maxPrice);
     const toDiff = toTokenInfo.maxPrice.sub(toTokenInfo.minPrice);
     const toSpread = toDiff.mul(PRECISION).div(toTokenInfo.maxPrice);
-    const value = fromSpread.add(toSpread);
+
+    let value = fromSpread.add(toSpread);
+
+    const fromTokenAddress = fromTokenInfo.isNative ? nativeTokenAddress : fromTokenInfo.address;
+    const toTokenAddress = toTokenInfo.isNative ? nativeTokenAddress : toTokenInfo.address;
+
+    if (isLong && fromTokenAddress === toTokenAddress) {
+      value = fromSpread;
+    }
+
     return {
       value,
       isHigh: value.gt(HIGH_SPREAD_THRESHOLD),
@@ -181,9 +192,15 @@ export default function ConfirmationBox(props) {
     return !isPendingConfirmation && !isSubmitting;
   };
 
-  const spread = getSpread(fromTokenInfo, toTokenInfo);
+  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+  const spread = getSpread(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress);
   // it's meaningless for limit/stop orders to show spread based on current prices
   const showSpread = isMarketOrder && !!spread;
+
+  let allowedSlippage = savedSlippageAmount;
+  if (isHigherSlippageAllowed) {
+    allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
+  }
 
   const renderSpreadWarning = useCallback(() => {
     if (!isMarketOrder) {
@@ -513,6 +530,23 @@ export default function ConfirmationBox(props) {
               (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
               "% / 1h"}
           </ExchangeInfoRow>
+          <ExchangeInfoRow label="Allowed Slippage">
+            <Tooltip
+              handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
+              position="right-top"
+              renderContent={() => {
+                return (
+                  <>
+                    You can change this in the settings menu on the top right of the page.
+                    <br />
+                    <br />
+                    Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices are
+                    volatile.
+                  </>
+                );
+              }}
+            />
+          </ExchangeInfoRow>
           {isMarketOrder && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
@@ -556,6 +590,7 @@ export default function ConfirmationBox(props) {
     collateralAfterFees,
     isHigherSlippageAllowed,
     setIsHigherSlippageAllowed,
+    allowedSlippage,
   ]);
 
   const renderSwapSection = useCallback(() => {

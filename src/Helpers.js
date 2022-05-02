@@ -21,7 +21,7 @@ import { getWhitelistedTokens, isValidToken } from "./data/Tokens";
 
 const { AddressZero } = ethers.constants;
 
-export const UI_VERSION = "1.1";
+export const UI_VERSION = "1.3";
 
 // use a random placeholder account instead of the zero address as the zero address might have tokens
 export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
@@ -52,6 +52,10 @@ const GAS_PRICE_ADJUSTMENT_MAP = {
   [AVALANCHE]: "3000000000", // 3 gwei
 };
 
+const MAX_GAS_PRICE_MAP = {
+  [AVALANCHE]: "200000000000", // 200 gwei
+};
+
 const ARBITRUM_RPC_PROVIDERS = ["https://arb1.arbitrum.io/rpc"];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
@@ -66,6 +70,7 @@ export function getChainName(chainId) {
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
 export const MAX_LEVERAGE = 100 * 10000;
 
+export const MAX_PRICE_DEVIATION_BASIS_POINTS = 250;
 export const DEFAULT_GAS_LIMIT = 1 * 1000 * 1000;
 export const SECONDS_PER_YEAR = 31536000;
 export const USDG_DECIMALS = 18;
@@ -111,6 +116,10 @@ export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3";
 export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage";
 export const SHOW_PNL_AFTER_FEES_KEY = "Exchange-swap-show-pnl-after-fees";
 export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-position-lines";
+export const REFERRAL_CODE_KEY = "GMX-referralCode";
+export const REFERRAL_CODE_QUERY_PARAMS = "ref";
+export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
+export const MAX_REFERRAL_CODE_LENGTH = 20;
 
 export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
@@ -349,7 +358,7 @@ export function getLiquidationPriceFromDelta({ liquidationAmount, size, collater
   if (liquidationAmount.gt(collateral)) {
     const liquidationDelta = liquidationAmount.sub(collateral);
     const priceDelta = liquidationDelta.mul(averagePrice).div(size);
-    return !isLong ? averagePrice.sub(priceDelta) : averagePrice.add(priceDelta);
+    return isLong ? averagePrice.add(priceDelta) : averagePrice.sub(priceDelta);
   }
 
   const liquidationDelta = collateral.sub(liquidationAmount);
@@ -374,14 +383,6 @@ export const replaceNativeTokenAddress = (path, nativeTokenAddress) => {
 
   return updatedPath;
 };
-
-export function getPositionFee(size) {
-  if (!size) {
-    return bigNumberify(0);
-  }
-  const afterFeeUsd = size.mul(BASIS_POINTS_DIVISOR - MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
-  return size.sub(afterFeeUsd);
-}
 
 export function getMarginFee(sizeDelta) {
   if (!sizeDelta) {
@@ -1143,9 +1144,6 @@ export function getLiquidationPrice(data) {
       nextSize = size.sub(sizeDelta);
     }
 
-    const marginFee = getMarginFee(sizeDelta);
-    remainingCollateral = remainingCollateral.sub(marginFee);
-
     if (includeDelta && !hasProfit) {
       const adjustedDelta = sizeDelta.mul(delta).div(size);
       remainingCollateral = remainingCollateral.sub(adjustedDelta);
@@ -1163,7 +1161,7 @@ export function getLiquidationPrice(data) {
     }
   }
 
-  let positionFee = getPositionFee(size).add(LIQUIDATION_FEE);
+  let positionFee = getMarginFee(size).add(LIQUIDATION_FEE);
   if (entryFundingRate && cumulativeFundingRate) {
     const fundingFee = size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
     positionFee = positionFee.add(fundingFee);
@@ -1221,10 +1219,10 @@ export function getUsd(amount, tokenAddress, max, infoTokens, orderOption, trigg
   return amount.mul(price).div(expandDecimals(1, info.decimals));
 }
 
-export function getPositionKey(collateralTokenAddress, indexTokenAddress, isLong, nativeTokenAddress) {
+export function getPositionKey(account, collateralTokenAddress, indexTokenAddress, isLong, nativeTokenAddress) {
   const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
   const tokenAddress1 = indexTokenAddress === AddressZero ? nativeTokenAddress : indexTokenAddress;
-  return tokenAddress0 + ":" + tokenAddress1 + ":" + isLong;
+  return account + ":" + tokenAddress0 + ":" + tokenAddress1 + ":" + isLong;
 }
 
 export function getPositionContractKey(account, collateralToken, indexToken, isLong) {
@@ -1269,6 +1267,10 @@ const RPC_PROVIDERS = {
   [MAINNET]: BSC_RPC_PROVIDERS,
   [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
   [AVALANCHE]: AVALANCHE_RPC_PROVIDERS,
+};
+
+const FALLBACK_PROVIDERS = {
+  [ARBITRUM]: ["https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"],
 };
 
 export function shortenAddress(address, length) {
@@ -1512,42 +1514,100 @@ export function getProvider(library, chainId) {
     return library.getSigner();
   }
   provider = _.sample(RPC_PROVIDERS[chainId]);
-  return new ethers.providers.JsonRpcProvider(provider);
+  return new ethers.providers.StaticJsonRpcProvider(provider, { chainId });
 }
 
-export const fetcher =
-  (library, contractInfo, additionalArgs) =>
-  (...args) => {
-    // eslint-disable-next-line
-    const [id, chainId, arg0, arg1, ...params] = args;
-    const provider = getProvider(library, chainId);
+export function getFallbackProvider(chainId) {
+  if (!FALLBACK_PROVIDERS[chainId]) {
+    return;
+  }
 
-    const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
+  const provider = _.sample(FALLBACK_PROVIDERS[chainId]);
+  return new ethers.providers.StaticJsonRpcProvider(provider, { chainId });
+}
 
-    function onError(e) {
-      console.error(id, contractInfo.contractName, method, e);
+export const getContractCall = ({ provider, contractInfo, arg0, arg1, method, params, additionalArgs, onError }) => {
+  if (ethers.utils.isAddress(arg0)) {
+    const address = arg0;
+    const contract = new ethers.Contract(address, contractInfo.abi, provider);
+
+    if (additionalArgs) {
+      return contract[method](...params.concat(additionalArgs));
+    }
+    return contract[method](...params);
+  }
+
+  if (!provider) {
+    return;
+  }
+
+  return provider[method](arg1, ...params);
+};
+
+// prettier-ignore
+export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
+  // eslint-disable-next-line
+  const [id, chainId, arg0, arg1, ...params] = args;
+  const provider = getProvider(library, chainId);
+
+  const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
+
+  const contractCall = getContractCall({
+    provider,
+    contractInfo,
+    arg0,
+    arg1,
+    method,
+    params,
+    additionalArgs,
+  })
+
+  let shouldCallFallback = true
+
+  const handleFallback = async (resolve, reject, error) => {
+    if (!shouldCallFallback) {
+      return
+    }
+    // prevent fallback from being called twice
+    shouldCallFallback = false
+
+    const fallbackProvider = getFallbackProvider(chainId)
+    if (!fallbackProvider) {
+      reject(error)
+      return
     }
 
-    if (ethers.utils.isAddress(arg0)) {
-      const address = arg0;
-      const contract = new ethers.Contract(address, contractInfo.abi, provider);
+    console.info("using fallbackProvider for", method)
+    const fallbackContractCall = getContractCall({
+      provider: fallbackProvider,
+      contractInfo,
+      arg0,
+      arg1,
+      method,
+      params,
+      additionalArgs,
+    })
 
-      try {
-        if (additionalArgs) {
-          return contract[method](...params.concat(additionalArgs)).catch(onError);
-        }
-        return contract[method](...params).catch(onError);
-      } catch (e) {
-        onError(e);
-      }
-    }
+    fallbackContractCall.then((result) => resolve(result)).catch((e) => {
+      console.error("fallback fetcher error", id, contractInfo.contractName, method, e);
+      reject(e)
+    })
+  }
 
-    if (!library) {
-      return;
-    }
+  return new Promise(async (resolve, reject) => {
+    contractCall.then((result) => {
+      shouldCallFallback = false
+      resolve(result)
+    }).catch((e) => {
+      console.error("fetcher error", id, contractInfo.contractName, method, e);
+      handleFallback(resolve, reject, e)
+    })
 
-    return library[method](arg1, ...params).catch(onError);
-  };
+    setTimeout(() => {
+      handleFallback(resolve, reject, "contractCall timeout")
+    }, 2000)
+  })
+};
 
 export function bigNumberify(n) {
   return ethers.BigNumber.from(n);
@@ -1710,7 +1770,8 @@ export function getOrderKey(order) {
 }
 
 export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
-  const { active, library, account: connectedAccount } = useWeb3React();
+  const { library, account: connectedAccount } = useWeb3React();
+  const active = true; // this is used in Actions.js so set active to always be true
   const account = overrideAccount || connectedAccount;
 
   const { chainId } = useChainId();
@@ -1719,7 +1780,11 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
   const orderBookAddress = getContract(chainId, "OrderBook");
   const orderBookReaderAddress = getContract(chainId, "OrderBookReader");
   const key = shouldRequest ? [active, chainId, orderBookAddress, account] : false;
-  const { data: orders = [], mutate: updateOrders } = useSWR(key, {
+  const {
+    data: orders = [],
+    mutate: updateOrders,
+    error: ordersError,
+  } = useSWR(key, {
     dedupingInterval: 5000,
     fetcher: async (active, chainId, orderBookAddress, account) => {
       const provider = getProvider(library, chainId);
@@ -1798,7 +1863,7 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
     },
   });
 
-  return [orders, updateOrders];
+  return [orders, updateOrders, ordersError];
 }
 
 export const formatAmount = (amount, tokenDecimals, displayDecimals, useCommas, defaultValue) => {
@@ -1891,15 +1956,23 @@ export function usePrevious(value) {
   return ref.current;
 }
 
-export async function getGasPrice(provider, chainId) {
-  if (!provider) {
-    return;
-  }
-
-  const gasPrice = await provider.getGasPrice();
+export async function setGasPrice(txnOpts, provider, chainId) {
+  let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
   const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
 
-  return gasPrice.add(premium);
+  if (maxGasPrice) {
+    const gasPrice = await provider.getGasPrice();
+    if (gasPrice.gt(maxGasPrice)) {
+      maxGasPrice = gasPrice;
+    }
+
+    const feeData = await provider.getFeeData();
+    txnOpts.maxFeePerGas = maxGasPrice;
+    txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
+  } else {
+    const gasPrice = await provider.getGasPrice();
+    txnOpts.gasPrice = gasPrice.add(premium);
+  }
 }
 
 export async function getGasLimit(contract, method, params = [], value, gasBuffer) {
@@ -2161,13 +2234,50 @@ export function isMobileDevice(navigator) {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
+export function setTokenUsingIndexPrices(token, indexPrices, nativeTokenAddress) {
+  if (!indexPrices) {
+    return;
+  }
+
+  const tokenAddress = token.isNative ? nativeTokenAddress : token.address;
+
+  const indexPrice = indexPrices[tokenAddress];
+  if (!indexPrice) {
+    return;
+  }
+
+  const indexPriceBn = bigNumberify(indexPrice);
+  if (indexPriceBn.eq(0)) {
+    return;
+  }
+
+  const spread = token.maxPrice.sub(token.minPrice);
+  const spreadBps = spread.mul(BASIS_POINTS_DIVISOR).div(token.maxPrice);
+
+  if (spreadBps.gt(MAX_PRICE_DEVIATION_BASIS_POINTS - 1)) {
+    // only set of the values as there will be a spread between the index price and the Chainlink price
+    if (indexPriceBn.gt(token.minPrimaryPrice)) {
+      token.maxPrice = indexPriceBn;
+    } else {
+      token.minPrice = indexPriceBn;
+    }
+    return;
+  }
+
+  const halfSpreadBps = spreadBps.div(2).toNumber();
+  token.maxPrice = indexPriceBn.mul(BASIS_POINTS_DIVISOR + halfSpreadBps).div(BASIS_POINTS_DIVISOR);
+  token.minPrice = indexPriceBn.mul(BASIS_POINTS_DIVISOR - halfSpreadBps).div(BASIS_POINTS_DIVISOR);
+}
+
 export function getInfoTokens(
   tokens,
   tokenBalances,
   whitelistedTokens,
   vaultTokenInfo,
   fundingRateInfo,
-  vaultPropsLength
+  vaultPropsLength,
+  indexPrices,
+  nativeTokenAddress
 ) {
   if (!vaultPropsLength) {
     vaultPropsLength = 14;
@@ -2203,6 +2313,12 @@ export function getInfoTokens(
       token.minPrice = vaultTokenInfo[i * vaultPropsLength + 9];
       token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 10];
       token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 11];
+      token.maxPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 12];
+      token.minPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 13];
+
+      // save minPrice and maxPrice as setTokenUsingIndexPrices may override it
+      token.contractMinPrice = token.minPrice;
+      token.contractMaxPrice = token.maxPrice;
 
       token.maxAvailableShort = bigNumberify(0);
       if (token.maxGlobalShortSize.gt(0)) {
@@ -2221,6 +2337,8 @@ export function getInfoTokens(
 
       token.managedUsd = token.availableUsd.add(token.guaranteedUsd);
       token.managedAmount = token.managedUsd.mul(expandDecimals(1, token.decimals)).div(token.minPrice);
+
+      setTokenUsingIndexPrices(token, indexPrices, nativeTokenAddress);
     }
 
     if (fundingRateInfo) {
@@ -2421,6 +2539,11 @@ export function getProcessedData(
   data.feeGmxTrackerRewards = stakingData.feeGmxTracker.claimable;
   data.feeGmxTrackerRewardsUsd = stakingData.feeGmxTracker.claimable.mul(nativeTokenPrice).div(expandDecimals(1, 18));
 
+  data.boostBasisPoints = bigNumberify(0);
+  if (data && data.bnGmxInFeeGmx && data.bonusGmxInFeeGmx && data.bonusGmxInFeeGmx.gt(0)) {
+    data.boostBasisPoints = data.bnGmxInFeeGmx.mul(BASIS_POINTS_DIVISOR).div(data.bonusGmxInFeeGmx);
+  }
+
   data.stakedGmxTrackerAnnualRewardsUsd = stakingData.stakedGmxTracker.tokensPerInterval
     .mul(SECONDS_PER_YEAR)
     .mul(gmxPrice)
@@ -2437,7 +2560,10 @@ export function getProcessedData(
     data.feeGmxSupplyUsd && data.feeGmxSupplyUsd.gt(0)
       ? data.feeGmxTrackerAnnualRewardsUsd.mul(BASIS_POINTS_DIVISOR).div(data.feeGmxSupplyUsd)
       : bigNumberify(0);
+  data.gmxBoostAprForNativeToken = data.gmxAprForNativeToken.mul(data.boostBasisPoints).div(BASIS_POINTS_DIVISOR);
   data.gmxAprTotal = data.gmxAprForNativeToken.add(data.gmxAprForEsGmx);
+  data.gmxAprTotalWithBoost = data.gmxAprForNativeToken.add(data.gmxBoostAprForNativeToken).add(data.gmxAprForEsGmx);
+  data.gmxAprForNativeTokenWithBoost = data.gmxAprForNativeToken.add(data.gmxBoostAprForNativeToken);
 
   data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(data.feeGmxTrackerRewardsUsd);
 
@@ -2515,4 +2641,41 @@ export async function addTokenToMetamask(token) {
   } catch (error) {
     console.error(error);
   }
+}
+
+export function sleep(ms) {
+  return new Promise((resolve) => resolve(), ms);
+}
+
+export function getPageTitle(data) {
+  return `${data} | Decentralized
+  Perpetual Exchange | GMX`;
+}
+
+export function isHashZero(value) {
+  return value === ethers.constants.HashZero;
+}
+export function isAddressZero(value) {
+  return value === ethers.constants.AddressZero;
+}
+
+export function useDebounce(value, delay) {
+  // State and setters for debounced value
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(
+    () => {
+      // Update debounced value after delay
+      const handler = setTimeout(() => {
+        setDebouncedValue(value);
+      }, delay);
+      // Cancel the timeout if value changes (also on delay change or unmount)
+      // This is how we prevent debounced value from updating if value is changed ...
+      // .. within the delay period. Timeout gets cleared and restarted.
+      return () => {
+        clearTimeout(handler);
+      };
+    },
+    [value, delay] // Only re-call effect if value or delay changes
+  );
+  return debouncedValue;
 }

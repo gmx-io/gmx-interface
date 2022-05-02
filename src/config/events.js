@@ -1,35 +1,65 @@
 let eventsData = [
   // {
-  //   id: "weth-bond-on-olympus",
-  //   title: "New wETH bond",
-  //   icon: "",
+  //   id: "removal-of-min-profit-rule",
+  //   title: "Trading improvements",
   //   isActive: true,
-  //   validTill: "2/22/2022 6:00:00 PM", // "2/18/2022 7:37:08 AM"
-  //   bodyText: "New WETH bond is now live on OlympusPro.",
+  //   validTill: "4/1/2022 12:00:00 PM",
+  //   bodyText: "The 1.5% minimum profit rule has been removed",
   //   buttons: [
   //     {
-  //       text: "Buy Now",
-  //       link: "https://pro.olympusdao.finance/#/partners/GMX"
+  //       text: "Read more",
+  //       link: "https://gmxio.gitbook.io/gmx/roadmap#30-march-2022",
+  //       newTab: true,
   //     },
   //     {
-  //       text: "Learn More",
-  //       link: "https://gist.github.com/xvi10/fcb85bcbf87b0045973c0e5baa0eeb00"
-  //     }
-  //   ]
+  //       text: "Trade Now",
+  //       link: "https://gmx.io/trade",
+  //     },
+  //   ],
   // },
   // {
-  //   id: "new-bond-on-olympus",
-  //   title: "Second wETH bond",
-  //   icon: "",
-  //   validTill: "2/22/2022 5:44:00 PM", // "2/18/2022 7:37:08 AM"
+  //   id: "shorting-of-link-uni-re-enabled",
+  //   title: "Shorting of LINK and UNI",
   //   isActive: true,
-  //   bodyText: "New WETH bond is now live on OlympusPro.",
+  //   validTill: "4/20/2022 12:00:00 PM",
+  //   bodyText: "Shorting has been re-enabled for LINK and UNI.",
   //   buttons: [
   //     {
-  //       text: "Buy Now",
-  //       link: "https://pro.olympusdao.finance/#/partners/GMX"
-  //     }
-  //   ]
-  // }
+  //       text: "Trade Now",
+  //       link: "https://gmx.io/trade",
+  //     },
+  //   ],
+  // },
+  {
+    id: "referral-program-launch",
+    title: "Referral Program Launch",
+    isActive: true,
+    validTill: "5/04/2022 12:00:00 PM",
+    bodyText: "The GMX referral program is now live! Get fee discounts and refer traders to earn rewards.",
+    buttons: [
+      {
+        text: "Read More",
+        link: "https://gmx.io/referrals",
+      },
+      {
+        text: "Join Now",
+        link: "https://gmx.io/referrals",
+      },
+    ],
+  },
+  {
+    id: "speed-up-page-loading",
+    title: "Speed Up Page Loading",
+    isActive: true,
+    validTill: "5/04/2022 12:00:00 PM",
+    bodyText: "If you experience data loading issues, please use a free RPC URL from Alchemy.",
+    buttons: [
+      {
+        text: "Learn More",
+        link: "https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls",
+        newTab: true,
+      },
+    ],
+  },
 ];
 export default eventsData;

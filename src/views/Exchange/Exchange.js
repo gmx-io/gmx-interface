@@ -1,12 +1,10 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useMemo, useCallback, forwardRef, useImperativeHandle } from "react";
 
 import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { ethers } from "ethers";
 
 import {
-  ARBITRUM,
-  AVALANCHE,
   FUNDING_RATE_PRECISION,
   BASIS_POINTS_DIVISOR,
   MARGIN_FEE_BASIS_POINTS,
@@ -14,12 +12,12 @@ import {
   LONG,
   SHORT,
   USD_DECIMALS,
+  getExplorerUrl,
   helperToast,
   formatAmount,
   bigNumberify,
   getTokenInfo,
   fetcher,
-  expandDecimals,
   getPositionKey,
   getPositionContractKey,
   getLeverage,
@@ -27,26 +25,23 @@ import {
   useLocalStorageByChainId,
   getDeltaStr,
   useChainId,
-  getInfoTokens,
   useAccountOrders,
+  getPageTitle,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
-import { approvePlugin } from "../../Api";
+import { approvePlugin, useInfoTokens } from "../../Api";
 
 import { getContract } from "../../Addresses";
 import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
 
 import Reader from "../../abis/ReaderV2.json";
-import VaultReader from "../../abis/VaultReader.json";
 import VaultV2 from "../../abis/VaultV2.json";
-import VaultV2b from "../../abis/VaultV2b.json";
-import PositionRouter from "../../abis/PositionRouter.json";
 import Router from "../../abis/Router.json";
 import Token from "../../abis/Token.json";
 
 import Checkbox from "../../components/Checkbox/Checkbox";
 import SwapBox from "../../components/Exchange/SwapBox";
-import ExchangeTVChart from "../../components/Exchange/ExchangeTVChart";
+import ExchangeTVChart, { getChartToken } from "../../components/Exchange/ExchangeTVChart";
 import PositionsList from "../../components/Exchange/PositionsList";
 import OrdersList from "../../components/Exchange/OrdersList";
 import TradeHistory from "../../components/Exchange/TradeHistory";
@@ -56,21 +51,14 @@ import Tab from "../../components/Tab/Tab";
 import Footer from "../../Footer";
 
 import "./Exchange.css";
-
 const { AddressZero } = ethers.constants;
-
-const arbWsProvider = new ethers.providers.WebSocketProvider(
-  "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"
-);
-
-const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
 const UPDATED_POSITION_VALID_DURATION = 60 * 1000;
 
 const notifications = {};
 
-function pushSuccessNotification(message, e) {
+function pushSuccessNotification(chainId, message, e) {
   const { transactionHash } = e;
   const id = ethers.utils.id(message + transactionHash);
   if (notifications[id]) {
@@ -78,10 +66,19 @@ function pushSuccessNotification(message, e) {
   }
 
   notifications[id] = true;
-  helperToast.success(message);
+
+  const txUrl = getExplorerUrl(chainId) + "tx/" + transactionHash;
+  helperToast.success(
+    <div>
+      {message}{" "}
+      <a href={txUrl} target="_blank" rel="noopener noreferrer">
+        View
+      </a>
+    </div>
+  );
 }
 
-function pushErrorNotification(message, e) {
+function pushErrorNotification(chainId, message, e) {
   const { transactionHash } = e;
   const id = ethers.utils.id(message + transactionHash);
   if (notifications[id]) {
@@ -89,20 +86,16 @@ function pushErrorNotification(message, e) {
   }
 
   notifications[id] = true;
-  helperToast.error(message);
-}
 
-function getWsProvider(active, chainId) {
-  if (!active) {
-    return;
-  }
-  if (chainId === ARBITRUM) {
-    return arbWsProvider;
-  }
-
-  if (chainId === AVALANCHE) {
-    return avaxWsProvider;
-  }
+  const txUrl = getExplorerUrl(chainId) + "tx/" + transactionHash;
+  helperToast.error(
+    <div>
+      {message}{" "}
+      <a href={txUrl} target="_blank" rel="noopener noreferrer">
+        View
+      </a>
+    </div>
+  );
 }
 
 function getFundingFee(data) {
@@ -167,7 +160,7 @@ export function getPositions(
   for (let i = 0; i < collateralTokens.length; i++) {
     const collateralToken = getTokenInfo(infoTokens, collateralTokens[i], true, getContract(chainId, "NATIVE_TOKEN"));
     const indexToken = getTokenInfo(infoTokens, indexTokens[i], true, getContract(chainId, "NATIVE_TOKEN"));
-    const key = getPositionKey(collateralTokens[i], indexTokens[i], isLong[i]);
+    const key = getPositionKey(account, collateralTokens[i], indexTokens[i], isLong[i]);
     let contractKey;
     if (account) {
       contractKey = getPositionContractKey(account, collateralTokens[i], indexTokens[i], isLong[i]);
@@ -219,12 +212,21 @@ export function getPositions(
       position.hasLowCollateral =
         position.collateralAfterFee.lt(0) || position.size.div(position.collateralAfterFee.abs()).gt(50);
 
-      if (position.delta.eq(0) && position.averagePrice && position.markPrice) {
+      if (position.averagePrice && position.markPrice) {
         const priceDelta = position.averagePrice.gt(position.markPrice)
           ? position.averagePrice.sub(position.markPrice)
           : position.markPrice.sub(position.averagePrice);
         position.pendingDelta = position.size.mul(priceDelta).div(position.averagePrice);
+
+        position.delta = position.pendingDelta;
+
+        if (position.isLong) {
+          position.hasProfit = position.markPrice.gte(position.averagePrice);
+        } else {
+          position.hasProfit = position.markPrice.lte(position.averagePrice);
+        }
       }
+
       position.deltaPercentage = position.pendingDelta.mul(BASIS_POINTS_DIVISOR).div(position.collateral);
 
       const { deltaStr, deltaPercentageStr } = getDeltaStr({
@@ -349,17 +351,18 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
   return { collateralTokens, indexTokens, isLong };
 }
 
-export default function Exchange({
-  savedIsPnlInLeverage,
-  setSavedIsPnlInLeverage,
-  savedShowPnlAfterFees,
-  savedSlippageAmount,
-  pendingTxns,
-  setPendingTxns,
-  savedShouldShowPositionLines,
-  setSavedShouldShowPositionLines,
-  connectWallet,
-}) {
+export const Exchange = forwardRef((props, ref) => {
+  const {
+    savedIsPnlInLeverage,
+    setSavedIsPnlInLeverage,
+    savedShowPnlAfterFees,
+    savedSlippageAmount,
+    pendingTxns,
+    setPendingTxns,
+    savedShouldShowPositionLines,
+    setSavedShouldShowPositionLines,
+    connectWallet,
+  } = props;
   const [showBanner, setShowBanner] = useLocalStorageSerializeKey("showBanner", true);
   const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey("bannerHidden", null);
 
@@ -398,7 +401,6 @@ export default function Exchange({
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const readerAddress = getContract(chainId, "Reader");
-  const vaultReaderAddress = getContract(chainId, "VaultReader");
   const usdgAddress = getContract(chainId, "USDG");
 
   const whitelistedTokens = getWhitelistedTokens(chainId);
@@ -448,6 +450,10 @@ export default function Exchange({
     (selectedSwapOption, address) => {
       const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection));
       newTokenSelection[selectedSwapOption].to = address;
+      if (selectedSwapOption === LONG || selectedSwapOption === SHORT) {
+        newTokenSelection[LONG].to = address;
+        newTokenSelection[SHORT].to = address;
+      }
       setTokenSelection(newTokenSelection);
     },
     [tokenSelection, setTokenSelection]
@@ -457,6 +463,10 @@ export default function Exchange({
     setSwapOption(selectedSwapOption);
     const newTokenSelection = JSON.parse(JSON.stringify(tokenSelection));
     newTokenSelection[selectedSwapOption].to = toTokenAddress;
+    if (selectedSwapOption === LONG || selectedSwapOption === SHORT) {
+      newTokenSelection[LONG].to = toTokenAddress;
+      newTokenSelection[SHORT].to = toTokenAddress;
+    }
     setTokenSelection(newTokenSelection);
   };
 
@@ -464,25 +474,13 @@ export default function Exchange({
   const [isPendingConfirmation, setIsPendingConfirmation] = useState(false);
 
   const tokens = getTokens(chainId);
-  const { data: vaultTokenInfo } = useSWR(
-    [`Exchange:vaultTokenInfo:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
-    {
-      fetcher: fetcher(library, VaultReader, [
-        vaultAddress,
-        positionRouterAddress,
-        nativeTokenAddress,
-        expandDecimals(1, 18),
-        whitelistedTokenAddresses,
-      ]),
-    }
-  );
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
     fetcher: fetcher(library, Reader, [tokenAddresses]),
   });
 
-  const { data: positionData } = useSWR(
+  const { data: positionData, error: positionDataError } = useSWR(
     active && [active, chainId, readerAddress, "getPositions", vaultAddress, account],
     {
       fetcher: fetcher(library, Reader, [
@@ -492,6 +490,8 @@ export default function Exchange({
       ]),
     }
   );
+
+  const positionsDataIsLoading = active && !positionData && !positionDataError;
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
     fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
@@ -524,7 +524,17 @@ export default function Exchange({
     }
   );
 
-  const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, fundingRateInfo);
+  const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo);
+
+  useEffect(() => {
+    const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
+    const toToken = getTokenInfo(infoTokens, toTokenAddress);
+    let selectedToken = getChartToken(swapOption, fromToken, toToken, chainId);
+    let currentTokenPriceStr = formatAmount(selectedToken.maxPrice, USD_DECIMALS, 2, true);
+    let title = getPageTitle(currentTokenPriceStr + ` | ${selectedToken.symbol}${selectedToken.isStable ? "" : "USD"}`);
+    document.title = title;
+  }, [tokenSelection, swapOption, infoTokens, chainId, fromTokenAddress, toTokenAddress]);
+
   const { positions, positionsMap } = getPositions(
     chainId,
     positionQuery,
@@ -537,17 +547,8 @@ export default function Exchange({
     updatedPositions
   );
 
-  useEffect(() => {
-    const wsVaultAbi = chainId === ARBITRUM ? VaultV2.abi : VaultV2b.abi;
-    const wsProvider = getWsProvider(active, chainId);
-    if (!wsProvider) {
-      return;
-    }
-
-    const wsVault = new ethers.Contract(vaultAddress, wsVaultAbi, wsProvider);
-    const wsPositionRouter = new ethers.Contract(positionRouterAddress, PositionRouter.abi, wsProvider);
-
-    const onUpdatePosition = (key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl) => {
+  useImperativeHandle(ref, () => ({
+    onUpdatePosition(key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl) {
       for (let i = 0; i < positions.length; i++) {
         const position = positions[i];
         if (position.contractKey === key) {
@@ -564,9 +565,8 @@ export default function Exchange({
           break;
         }
       }
-    };
-
-    const onClosePosition = (key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl, e) => {
+    },
+    onClosePosition(key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl, e) {
       for (let i = 0; i < positions.length; i++) {
         const position = positions[i];
         if (position.contractKey === key) {
@@ -583,20 +583,9 @@ export default function Exchange({
           break;
         }
       }
-    };
+    },
 
-    const onIncreasePosition = (
-      key,
-      account,
-      collateralToken,
-      indexToken,
-      collateralDelta,
-      sizeDelta,
-      isLong,
-      price,
-      fee,
-      e
-    ) => {
+    onIncreasePosition(key, account, collateralToken, indexToken, collateralDelta, sizeDelta, isLong, price, fee, e) {
       if (account !== currentAccount) {
         return;
       }
@@ -607,7 +596,7 @@ export default function Exchange({
       let message;
       if (sizeDelta.eq(0)) {
         message = `Deposited ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD into ${tokenSymbol} ${
-          isLong ? "Long" : "Short"
+          isLong ? "Long" : "Short."
         }`;
       } else {
         message = `Increased ${tokenSymbol} ${isLong ? "Long" : "Short"}, +${formatAmount(
@@ -615,24 +604,13 @@ export default function Exchange({
           USD_DECIMALS,
           2,
           true
-        )} USD`;
+        )} USD.`;
       }
 
-      pushSuccessNotification(message, e);
-    };
+      pushSuccessNotification(chainId, message, e);
+    },
 
-    const onDecreasePosition = (
-      key,
-      account,
-      collateralToken,
-      indexToken,
-      collateralDelta,
-      sizeDelta,
-      isLong,
-      price,
-      fee,
-      e
-    ) => {
+    onDecreasePosition(key, account, collateralToken, indexToken, collateralDelta, sizeDelta, isLong, price, fee, e) {
       if (account !== currentAccount) {
         return;
       }
@@ -644,20 +622,20 @@ export default function Exchange({
       if (sizeDelta.eq(0)) {
         message = `Withdrew ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD from ${tokenSymbol} ${
           isLong ? "Long" : "Short"
-        }`;
+        }.`;
       } else {
         message = `Decreased ${tokenSymbol} ${isLong ? "Long" : "Short"}, -${formatAmount(
           sizeDelta,
           USD_DECIMALS,
           2,
           true
-        )} USD`;
+        )} USD.`;
       }
 
-      pushSuccessNotification(message, e);
-    };
+      pushSuccessNotification(chainId, message, e);
+    },
 
-    const onCancelIncreasePosition = (
+    onCancelIncreasePosition(
       account,
       path,
       indexToken,
@@ -670,7 +648,7 @@ export default function Exchange({
       blockGap,
       timeGap,
       e
-    ) => {
+    ) {
       if (account !== currentAccount) {
         return;
       }
@@ -679,16 +657,16 @@ export default function Exchange({
 
       const message = `Could not increase ${tokenSymbol} ${
         isLong ? "Long" : "Short"
-      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page`;
+      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`;
 
-      pushErrorNotification(message, e);
+      pushErrorNotification(chainId, message, e);
 
-      const key = getPositionKey(path[path.length - 1], indexToken, isLong);
+      const key = getPositionKey(account, path[path.length - 1], indexToken, isLong);
       pendingPositions[key] = {};
       setPendingPositions({ ...pendingPositions });
-    };
+    },
 
-    const onCancelDecreasePosition = (
+    onCancelDecreasePosition(
       account,
       path,
       indexToken,
@@ -702,7 +680,7 @@ export default function Exchange({
       blockGap,
       timeGap,
       e
-    ) => {
+    ) {
       if (account !== currentAccount) {
         return;
       }
@@ -711,40 +689,15 @@ export default function Exchange({
 
       const message = `Could not decrease ${tokenSymbol} ${
         isLong ? "Long" : "Short"
-      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page`;
+      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`;
 
-      pushErrorNotification(message, e);
+      pushErrorNotification(chainId, message, e);
 
-      const key = getPositionKey(path[path.length - 1], indexToken, isLong);
+      const key = getPositionKey(account, path[path.length - 1], indexToken, isLong);
       pendingPositions[key] = {};
       setPendingPositions({ ...pendingPositions });
-    };
-
-    wsVault.on("UpdatePosition", onUpdatePosition);
-    wsVault.on("ClosePosition", onClosePosition);
-    wsVault.on("IncreasePosition", onIncreasePosition);
-    wsVault.on("DecreasePosition", onDecreasePosition);
-    wsPositionRouter.on("CancelIncreasePosition", onCancelIncreasePosition);
-    wsPositionRouter.on("CancelDecreasePosition", onCancelDecreasePosition);
-
-    return function cleanup() {
-      wsVault.off("UpdatePosition", onUpdatePosition);
-      wsVault.off("ClosePosition", onClosePosition);
-      wsVault.off("IncreasePosition", onIncreasePosition);
-      wsVault.off("DecreasePosition", onDecreasePosition);
-      wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
-      wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
-    };
-  }, [
-    active,
-    chainId,
-    currentAccount,
-    positions,
-    updatedPositions,
-    pendingPositions,
-    vaultAddress,
-    positionRouterAddress,
-  ]);
+    },
+  }));
 
   const flagOrdersEnabled = true;
   const [orders] = useAccountOrders(flagOrdersEnabled);
@@ -760,8 +713,8 @@ export default function Exchange({
       library,
       pendingTxns,
       setPendingTxns,
-      sentMsg: "Enable orders sent",
-      failMsg: "Enable orders failed",
+      sentMsg: "Enable orders sent.",
+      failMsg: "Enable orders failed.",
     })
       .then(() => {
         setIsWaitingForPluginApproval(true);
@@ -821,6 +774,7 @@ export default function Exchange({
         </div>
         {listSection === "Positions" && (
           <PositionsList
+            positionsDataIsLoading={positionsDataIsLoading}
             pendingPositions={pendingPositions}
             setPendingPositions={setPendingPositions}
             setListSection={setListSection}
@@ -853,6 +807,7 @@ export default function Exchange({
         )}
         {listSection === "Orders" && (
           <OrdersList
+            account={account}
             active={active}
             library={library}
             pendingTxns={pendingTxns}
@@ -893,6 +848,7 @@ export default function Exchange({
         positions={positions}
         savedShouldShowPositionLines={savedShouldShowPositionLines}
         orders={orders}
+        setToTokenAddress={setToTokenAddress}
       />
     );
   };
@@ -960,4 +916,4 @@ export default function Exchange({
       <Footer />
     </div>
   );
-}
+});

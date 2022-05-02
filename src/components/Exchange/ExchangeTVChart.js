@@ -15,17 +15,17 @@ import {
   getLiquidationPrice,
   useLocalStorageSerializeKey,
 } from "../../Helpers";
-import { getToken } from "../../data/Tokens";
 import { useChartPrices } from "../../Api";
 import Tab from "../Tab/Tab";
 
-import { getTokens } from "../../data/Tokens";
+import { getTokens, getToken } from "../../data/Tokens";
+import ChartTokenSelector from "./ChartTokenSelector";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
 const timezoneOffset = -new Date().getTimezoneOffset() * 60;
 
-function getChartToken(swapOption, fromToken, toToken, chainId) {
+export function getChartToken(swapOption, fromToken, toToken, chainId) {
   if (!fromToken || !toToken) {
     return;
   }
@@ -132,6 +132,7 @@ export default function ExchangeTVChart(props) {
     positions,
     savedShouldShowPositionLines,
     orders,
+    setToTokenAddress,
   } = props;
   const [currentChart, setCurrentChart] = useState();
   const [currentSeries, setCurrentSeries] = useState();
@@ -145,7 +146,15 @@ export default function ExchangeTVChart(props) {
 
   const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
   const toToken = getTokenInfo(infoTokens, toTokenAddress);
-  const chartToken = getChartToken(swapOption, fromToken, toToken, chainId);
+
+  const [chartToken, setChartToken] = useState({
+    maxPrice: null,
+    minPrice: null,
+  });
+  useEffect(() => {
+    const tmp = getChartToken(swapOption, fromToken, toToken, chainId);
+    setChartToken(tmp);
+  }, [swapOption, fromToken, toToken, chainId]);
 
   const symbol = chartToken ? (chartToken.isWrapped ? chartToken.baseSymbol : chartToken.symbol) : undefined;
   const marketName = chartToken ? symbol + "_USD" : undefined;
@@ -406,16 +415,35 @@ export default function ExchangeTVChart(props) {
     return null;
   }
 
+  const onSelectToken = (token) => {
+    const tmp = getTokenInfo(infoTokens, token.address);
+    setChartToken(tmp);
+    setToTokenAddress(swapOption, token.address);
+  };
+
   return (
     <div className="ExchangeChart tv" ref={ref}>
       <div className="ExchangeChart-top App-box App-box-border">
         <div className="ExchangeChart-top-inner">
           <div>
-            <div className="ExchangeChart-title">{chartToken && `${chartToken.symbol} / USD`}</div>
+            <div className="ExchangeChart-title">
+              <ChartTokenSelector
+                chainId={chainId}
+                selectedToken={chartToken}
+                swapOption={swapOption}
+                infoTokens={infoTokens}
+                onSelectToken={onSelectToken}
+                className="chart-token-selector"
+              />
+            </div>
           </div>
           <div>
-            <div className="ExchangeChart-main-price">{formatAmount(chartToken.maxPrice, USD_DECIMALS, 2)}</div>
-            <div className="ExchangeChart-info-label">${formatAmount(chartToken.minPrice, USD_DECIMALS, 2)}</div>
+            <div className="ExchangeChart-main-price">
+              {chartToken.maxPrice && formatAmount(chartToken.maxPrice, USD_DECIMALS, 2)}
+            </div>
+            <div className="ExchangeChart-info-label">
+              ${chartToken.minPrice && formatAmount(chartToken.minPrice, USD_DECIMALS, 2)}
+            </div>
           </div>
           <div>
             <div className="ExchangeChart-info-label">24h Change</div>

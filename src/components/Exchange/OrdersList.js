@@ -21,14 +21,15 @@ import OrderEditor from "./OrderEditor";
 
 import "./OrdersList.css";
 
-function getPositionForOrder(order, positionsMap) {
-  const key = getPositionKey(order.collateralToken, order.indexToken, order.isLong);
+function getPositionForOrder(account, order, positionsMap) {
+  const key = getPositionKey(account, order.collateralToken, order.indexToken, order.isLong);
   const position = positionsMap[key];
   return position && position.size && position.size.gt(0) ? position : null;
 }
 
 export default function OrdersList(props) {
   const {
+    account,
     library,
     setPendingTxns,
     pendingTxns,
@@ -55,9 +56,9 @@ export default function OrdersList(props) {
       }
 
       return func(chainId, library, order.index, {
-        successMsg: "Order cancelled",
-        failMsg: "Cancel failed",
-        sentMsg: "Cancel submitted",
+        successMsg: "Order cancelled.",
+        failMsg: "Cancel failed.",
+        sentMsg: "Cancel submitted.",
         pendingTxns,
         setPendingTxns,
       });
@@ -185,13 +186,13 @@ export default function OrdersList(props) {
 
       const indexToken = getTokenInfo(infoTokens, order.indexToken);
       const maximisePrice = (order.type === INCREASE && order.isLong) || (order.type === DECREASE && !order.isLong);
-      const markPrice = maximisePrice ? indexToken.maxPrice : indexToken.minPrice;
+      const markPrice = maximisePrice ? indexToken.contractMaxPrice : indexToken.contractMinPrice;
       const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
       const indexTokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol;
 
       let error;
       if (order.type === DECREASE) {
-        const positionForOrder = getPositionForOrder(order, positionsMap);
+        const positionForOrder = getPositionForOrder(account, order, positionsMap);
         if (!positionForOrder) {
           error = "No open position, order cannot be executed";
         } else if (positionForOrder.size.lt(order.sizeDelta)) {
@@ -210,12 +211,25 @@ export default function OrdersList(props) {
           <td>
             {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
           </td>
-          <td>{formatAmount(markPrice, USD_DECIMALS, 2, true)}</td>
+          <td>
+            <Tooltip
+              handle={formatAmount(markPrice, USD_DECIMALS, 2, true)}
+              position="right-bottom"
+              renderContent={() => {
+                return (
+                  <>
+                    The price that the order can be executed at may differ slightly from the chart price as market
+                    orders can change the price while limit orders cannot.
+                  </>
+                );
+              }}
+            />
+          </td>
           {!hideActions && renderActions(order)}
         </tr>
       );
     });
-  }, [orders, renderActions, infoTokens, positionsMap, hideActions, chainId]);
+  }, [orders, renderActions, infoTokens, positionsMap, hideActions, chainId, account]);
 
   const renderSmallList = useCallback(() => {
     if (!orders || !orders.length) {
@@ -287,13 +301,13 @@ export default function OrdersList(props) {
 
       const indexToken = getTokenInfo(infoTokens, order.indexToken);
       const maximisePrice = (order.type === INCREASE && order.isLong) || (order.type === DECREASE && !order.isLong);
-      const markPrice = maximisePrice ? indexToken.maxPrice : indexToken.minPrice;
+      const markPrice = maximisePrice ? indexToken.contractMaxPrice : indexToken.contractMinPrice;
       const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
       const indexTokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol;
 
       let error;
       if (order.type === DECREASE) {
-        const positionForOrder = getPositionForOrder(order, positionsMap);
+        const positionForOrder = getPositionForOrder(account, order, positionsMap);
         if (!positionForOrder) {
           error = "There is no open position for the order, it can't be executed";
         } else if (positionForOrder.size.lt(order.sizeDelta)) {
@@ -318,7 +332,20 @@ export default function OrdersList(props) {
             </div>
             <div className="App-card-row">
               <div className="label">Mark Price</div>
-              <div>{formatAmount(markPrice, USD_DECIMALS, 2, true)}</div>
+              <div>
+                <Tooltip
+                  handle={formatAmount(markPrice, USD_DECIMALS, 2, true)}
+                  position="right-bottom"
+                  renderContent={() => {
+                    return (
+                      <>
+                        The price that the order can be executed at may differ slightly from the chart price as market
+                        orders can change the price while limit orders cannot.
+                      </>
+                    );
+                  }}
+                />
+              </div>
             </div>
             {!hideActions && (
               <>
@@ -337,7 +364,7 @@ export default function OrdersList(props) {
         </div>
       );
     });
-  }, [orders, onEditClick, onCancelClick, infoTokens, positionsMap, hideActions, chainId]);
+  }, [orders, onEditClick, onCancelClick, infoTokens, positionsMap, hideActions, chainId, account]);
 
   return (
     <React.Fragment>
@@ -356,6 +383,7 @@ export default function OrdersList(props) {
       </div>
       {editingOrder && (
         <OrderEditor
+          account={account}
           order={editingOrder}
           setEditingOrder={setEditingOrder}
           infoTokens={infoTokens}

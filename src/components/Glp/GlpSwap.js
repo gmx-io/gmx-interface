@@ -13,7 +13,6 @@ import { getContract } from "../../Addresses";
 import {
   helperToast,
   useLocalStorageByChainId,
-  getInfoTokens,
   getTokenInfo,
   // getChainName,
   useChainId,
@@ -42,13 +41,12 @@ import {
   PLACEHOLDER_ACCOUNT,
 } from "../../Helpers";
 
-import { callContract, useGmxPrice } from "../../Api";
+import { callContract, useGmxPrice, useInfoTokens } from "../../Api";
 
 import TokenSelector from "../Exchange/TokenSelector";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
 import Tooltip from "../Tooltip/Tooltip";
 
-import VaultReader from "../../abis/VaultReader.json";
 import ReaderV2 from "../../abis/ReaderV2.json";
 import RewardReader from "../../abis/RewardReader.json";
 import VaultV2 from "../../abis/VaultV2.json";
@@ -118,8 +116,6 @@ export default function GlpSwap(props) {
   const [feeBasisPoints, setFeeBasisPoints] = useState("");
 
   const readerAddress = getContract(chainId, "Reader");
-  const vaultReaderAddress = getContract(chainId, "VaultReader");
-  const positionRouterAddress = getContract(chainId, "PositionRouter");
   const rewardReaderAddress = getContract(chainId, "RewardReader");
   const vaultAddress = getContract(chainId, "Vault");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
@@ -129,20 +125,6 @@ export default function GlpSwap(props) {
   const glpManagerAddress = getContract(chainId, "GlpManager");
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
   const tokensForBalanceAndSupplyQuery = [stakedGlpTrackerAddress, usdgAddress];
-
-  const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
-  const { data: vaultTokenInfo } = useSWR(
-    [`GlpSwap:getVaultTokenInfo:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
-    {
-      fetcher: fetcher(library, VaultReader, [
-        vaultAddress,
-        positionRouterAddress,
-        nativeTokenAddress,
-        expandDecimals(1, 18),
-        whitelistedTokenAddresses,
-      ]),
-    }
-  );
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(
@@ -242,7 +224,7 @@ export default function GlpSwap(props) {
     reserveAmountUsd = reservedAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS));
   }
 
-  const infoTokens = getInfoTokens(tokens, tokenBalances, whitelistedTokens, vaultTokenInfo, undefined);
+  const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, undefined);
   const swapToken = getToken(chainId, swapTokenAddress);
   const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
 
@@ -556,14 +538,14 @@ export default function GlpSwap(props) {
 
     callContract(chainId, contract, method, params, {
       value,
-      sentMsg: "Buy submitted!",
+      sentMsg: "Buy submitted.",
       failMsg: "Buy failed.",
       successMsg: `${formatAmount(glpAmount, 18, 4, true)} GLP bought with ${formatAmount(
         swapAmount,
         swapTokenInfo.decimals,
         4,
         true
-      )} ${swapTokenInfo.symbol}.`,
+      )} ${swapTokenInfo.symbol}!`,
       setPendingTxns,
     })
       .then(async () => {})
@@ -590,7 +572,7 @@ export default function GlpSwap(props) {
         swapTokenInfo.decimals,
         4,
         true
-      )} ${swapTokenInfo.symbol}.`,
+      )} ${swapTokenInfo.symbol}!`,
       setPendingTxns,
     })
       .then(async () => {})

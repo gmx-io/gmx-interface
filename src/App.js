@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { SWRConfig } from "swr";
+import { ethers } from "ethers";
 
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 
-import { BrowserRouter as Router, Switch, Route, NavLink } from "react-router-dom";
+import { Switch, Route, NavLink } from "react-router-dom";
 
 import {
   ARBITRUM,
@@ -36,6 +37,8 @@ import {
   clearWalletLinkData,
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
+  REFERRAL_CODE_KEY,
+  REFERRAL_CODE_QUERY_PARAMS,
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
@@ -43,10 +46,11 @@ import Presale from "./views/Presale/Presale";
 import Dashboard from "./views/Dashboard/Dashboard";
 import Ecosystem from "./views/Ecosystem/Ecosystem";
 import Stake from "./views/Stake/Stake";
-import Exchange from "./views/Exchange/Exchange";
+import { Exchange } from "./views/Exchange/Exchange";
 import Actions from "./views/Actions/Actions";
 import OrdersOverview from "./views/OrdersOverview/OrdersOverview";
 import PositionsOverview from "./views/PositionsOverview/PositionsOverview";
+import Referrals from "./views/Referrals/Referrals";
 import BuyGlp from "./views/BuyGlp/BuyGlp";
 import BuyGMX from "./views/BuyGMX/BuyGMX";
 import SellGlp from "./views/SellGlp/SellGlp";
@@ -67,8 +71,6 @@ import Checkbox from "./components/Checkbox/Checkbox";
 import { RiMenuLine } from "react-icons/ri";
 import { FaTimes } from "react-icons/fa";
 import { FiX } from "react-icons/fi";
-import { Toaster } from "react-hot-toast";
-// import { BiLogOut } from "react-icons/bi";
 
 import "./Font.css";
 import "./Shared.css";
@@ -87,6 +89,16 @@ import walletConnectImg from "./img/walletconnect-circle-blue.svg";
 import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
 import { ConnectWalletButton } from "./components/Common/Button";
 import useEventToast from "./components/EventToast/useEventToast";
+import { Link } from "react-router-dom";
+import EventToastContainer from "./components/EventToast/EventToastContainer";
+import SEO from "./components/Common/SEO";
+import useRouteQuery from "./hooks/useRouteQuery";
+import { encodeReferralCode } from "./Api/referrals";
+
+import { getContract } from "./Addresses";
+import VaultV2 from "./abis/VaultV2.json";
+import VaultV2b from "./abis/VaultV2b.json";
+import PositionRouter from "./abis/PositionRouter.json";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -108,6 +120,23 @@ const Zoom = cssTransition({
 
 function inPreviewMode() {
   return false;
+}
+
+const arbWsProvider = new ethers.providers.WebSocketProvider("wss://arb1.arbitrum.io/ws");
+
+const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
+
+function getWsProvider(active, chainId) {
+  if (!active) {
+    return;
+  }
+  if (chainId === ARBITRUM) {
+    return arbWsProvider;
+  }
+
+  if (chainId === AVALANCHE) {
+    return avaxWsProvider;
+  }
 }
 
 function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
@@ -139,9 +168,9 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
           <div className="App-header-menu-icon-block" onClick={() => clickCloseIcon()}>
             <FiX className="App-header-menu-icon" />
           </div>
-          <a className="App-header-link-main" href="/">
+          <Link className="App-header-link-main" to="/">
             <img src={logoImg} alt="GMX Logo" />
-          </a>
+          </Link>
         </div>
       )}
       <div className="App-header-link-container App-header-link-home">
@@ -169,6 +198,11 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/buy">
           Buy
+        </NavLink>
+      </div>
+      <div className="App-header-link-container">
+        <NavLink activeClassName="active" to="/referrals">
+          Referrals
         </NavLink>
       </div>
       <div className="App-header-link-container">
@@ -298,7 +332,8 @@ function AppHeaderUser({
 }
 
 function FullApp() {
-  const { connector, library, deactivate, activate } = useWeb3React();
+  const exchangeRef = useRef();
+  const { connector, library, deactivate, activate, active } = useWeb3React();
   const { chainId } = useChainId();
   useEventToast();
   const [activatingConnector, setActivatingConnector] = useState();
@@ -309,6 +344,18 @@ function FullApp() {
   }, [activatingConnector, connector, chainId]);
   const triedEager = useEagerConnect(setActivatingConnector);
   useInactiveListener(!triedEager || !!activatingConnector);
+
+  const query = useRouteQuery();
+
+  useEffect(() => {
+    let referralCode = query.get(REFERRAL_CODE_QUERY_PARAMS);
+    if (referralCode && referralCode.length <= 20) {
+      const encodedReferralCode = encodeReferralCode(referralCode);
+      if (encodeReferralCode !== ethers.constants.HashZero) {
+        localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
+      }
+    }
+  }, [query]);
 
   useEffect(() => {
     if (window.ethereum) {
@@ -492,7 +539,7 @@ function FullApp() {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.success(
               <div>
-                {pendingTxn.message}.{" "}
+                {pendingTxn.message}{" "}
                 <a href={txUrl} target="_blank" rel="noopener noreferrer">
                   View
                 </a>
@@ -516,8 +563,55 @@ function FullApp() {
     return () => clearInterval(interval);
   }, [library, pendingTxns, chainId]);
 
+  const vaultAddress = getContract(chainId, "Vault");
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
+
+  useEffect(() => {
+    const wsVaultAbi = chainId === ARBITRUM ? VaultV2.abi : VaultV2b.abi;
+    const wsProvider = getWsProvider(active, chainId);
+    if (!wsProvider) {
+      return;
+    }
+
+    const wsVault = new ethers.Contract(vaultAddress, wsVaultAbi, wsProvider);
+    const wsPositionRouter = new ethers.Contract(positionRouterAddress, PositionRouter.abi, wsProvider);
+
+    const callExchangeRef = (method, ...args) => {
+      if (!exchangeRef || !exchangeRef.current) {
+        return;
+      }
+
+      exchangeRef.current[method](...args);
+    };
+
+    // handle the subscriptions here instead of within the Exchange component to avoid unsubscribing and re-subscribing
+    // each time the Exchange components re-renders, which happens on every data update
+    const onUpdatePosition = (...args) => callExchangeRef("onUpdatePosition", ...args);
+    const onClosePosition = (...args) => callExchangeRef("onClosePosition", ...args);
+    const onIncreasePosition = (...args) => callExchangeRef("onIncreasePosition", ...args);
+    const onDecreasePosition = (...args) => callExchangeRef("onDecreasePosition", ...args);
+    const onCancelIncreasePosition = (...args) => callExchangeRef("onCancelIncreasePosition", ...args);
+    const onCancelDecreasePosition = (...args) => callExchangeRef("onCancelDecreasePosition", ...args);
+
+    wsVault.on("UpdatePosition", onUpdatePosition);
+    wsVault.on("ClosePosition", onClosePosition);
+    wsVault.on("IncreasePosition", onIncreasePosition);
+    wsVault.on("DecreasePosition", onDecreasePosition);
+    wsPositionRouter.on("CancelIncreasePosition", onCancelIncreasePosition);
+    wsPositionRouter.on("CancelDecreasePosition", onCancelDecreasePosition);
+
+    return function cleanup() {
+      wsVault.off("UpdatePosition", onUpdatePosition);
+      wsVault.off("ClosePosition", onClosePosition);
+      wsVault.off("IncreasePosition", onIncreasePosition);
+      wsVault.off("DecreasePosition", onDecreasePosition);
+      wsPositionRouter.off("CancelIncreasePosition", onCancelIncreasePosition);
+      wsPositionRouter.off("CancelDecreasePosition", onCancelDecreasePosition);
+    };
+  }, [active, chainId, vaultAddress, positionRouterAddress]);
+
   return (
-    <Router>
+    <>
       <div className="App">
         {/* <div className="App-background-side-1"></div>
         <div className="App-background-side-2"></div>
@@ -559,10 +653,10 @@ function FullApp() {
           <header>
             <div className="App-header large">
               <div className="App-header-container-left">
-                <a className="App-header-link-main" href="/">
+                <Link className="App-header-link-main" to="/">
                   <img src={logoImg} className="big" alt="GMX Logo" />
                   <img src={logoSmallImg} className="small" alt="GMX Logo" />
-                </a>
+                </Link>
                 <AppHeaderLinks />
               </div>
               <div className="App-header-container-right">
@@ -627,6 +721,7 @@ function FullApp() {
             </Route>
             <Route exact path="/trade">
               <Exchange
+                ref={exchangeRef}
                 savedShowPnlAfterFees={savedShowPnlAfterFees}
                 savedIsPnlInLeverage={savedIsPnlInLeverage}
                 setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
@@ -674,6 +769,9 @@ function FullApp() {
             <Route exact path="/ecosystem">
               <Ecosystem />
             </Route>
+            <Route exact path="/referrals">
+              <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+            </Route>
             <Route exact path="/about">
               <Home />
             </Route>
@@ -718,20 +816,7 @@ function FullApp() {
         draggable={false}
         pauseOnHover
       />
-      <Toaster
-        position="top-right"
-        reverseOrder={true}
-        gutter={20}
-        containerClassName="event-toast-container"
-        containerStyle={{
-          zIndex: 2,
-          top: "93px",
-          right: "30px",
-        }}
-        toastOptions={{
-          duration: Infinity,
-        }}
-      />
+      <EventToastContainer />
       <Modal
         className="Connect-wallet-modal"
         isVisible={walletModalVisible}
@@ -784,7 +869,7 @@ function FullApp() {
           Save
         </button>
       </Modal>
-    </Router>
+    </>
   );
 }
 
@@ -800,7 +885,7 @@ function PreviewApp() {
   };
 
   return (
-    <Router>
+    <>
       <div className="App">
         <div className="App-background-side-1"></div>
         <div className="App-background-side-2"></div>
@@ -881,7 +966,7 @@ function PreviewApp() {
           </Switch>
         </div>
       </div>
-    </Router>
+    </>
   );
 }
 
@@ -897,7 +982,9 @@ function App() {
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <FullApp />
+        <SEO>
+          <FullApp />
+        </SEO>
       </Web3ReactProvider>
     </SWRConfig>
   );
