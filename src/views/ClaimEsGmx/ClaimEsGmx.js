@@ -323,7 +323,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
     callContract(chainId, contract, "transfer", [receiver, amount], {
       sentMsg: "Claim submitted!",
       failMsg: "Claim failed.",
-      successMsg: "Claim completed.",
+      successMsg: "Claim completed!",
       setPendingTxns,
     })
       .then(async (res) => {})

@@ -7,6 +7,7 @@ import {
   USD_DECIMALS,
   MAX_LEVERAGE,
   BASIS_POINTS_DIVISOR,
+  LIQUIDATION_FEE,
   formatAmount,
   getExplorerUrl,
   formatDateTime,
@@ -64,6 +65,7 @@ function renderLiquidationTooltip(liquidationData, label) {
           Borrow fee: ${formatAmount(liquidationData.borrowFee, USD_DECIMALS, 2, true)}
           <br />
           PnL: -${formatAmount(liquidationData.loss, USD_DECIMALS, 2, true)}
+          {liquidationData.type === "full" && <div>Liquidation fee: ${formatAmount(LIQUIDATION_FEE, 30, 2, true)}</div>}
         </>
       )}
     />
@@ -176,7 +178,7 @@ export default function TradeHistory(props) {
           return `Request withdrawal from ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`;
         }
 
-        return `Request decrease ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}, +${formatAmount(
+        return `Request decrease ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}, -${formatAmount(
           params.sizeDelta,
           USD_DECIMALS,
           2,
@@ -196,7 +198,6 @@ export default function TradeHistory(props) {
         }
 
         if (bigNumberify(params.sizeDelta).eq(0)) {
-          // return `Could not execute deposit into ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`;
           return (
             <>
               Could not execute deposit into {indexToken.symbol} {params.isLong ? "Long" : "Short"}

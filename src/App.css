@@ -975,8 +975,7 @@ button.App-button {
 }
 
 .Toastify__toast--success {
-  background: transparent linear-gradient(90deg, #18846c 0%, #26aa89 100%) 0% 0% no-repeat padding-box;
-  border: 1px solid #268270;
+  background: transparent linear-gradient(90deg, #19836c 0%, #177c66 100%) 0% 0% no-repeat padding-box;
   color: white;
   box-shadow: 0px 3px 6px #0000005c;
   border-radius: 4px;
@@ -997,6 +996,7 @@ button.App-button {
 }
 .Toastify__toast-body {
   font: normal normal normal 14px/16px Relative;
+  line-height: 1.3rem;
 }
 
 .dropdown-backdrop {
