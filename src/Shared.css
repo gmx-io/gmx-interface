@@ -383,3 +383,6 @@ button.btn-link:hover .logout-icon {
 .default-cursor.App-cta {
   cursor: default;
 }
+.font-mono {
+  font-family: "RelativeMono";
+}

@@ -347,7 +347,7 @@ export default function SwapBox(props) {
     return (
       <div className="Exchange-info-row">
         <div className="Exchange-info-label">Available Liquidity</div>
-        <div className="align-right">{formatAmount(toTokenAvailableUsd, USD_DECIMALS, 2, true)}</div>
+        <div className="align-right font-mono">{formatAmount(toTokenAvailableUsd, USD_DECIMALS, 2, true)}</div>
       </div>
     );
   };
@@ -2160,7 +2160,7 @@ export default function SwapBox(props) {
             <div className="Exchange-info-label">Entry Price</div>
             <div className="align-right">
               <Tooltip
-                handle={`${formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD`}
+                handle={<div className="font-mono">{formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD</div>}
                 position="right-bottom"
                 renderContent={() => {
                   return (
@@ -2190,7 +2190,7 @@ export default function SwapBox(props) {
             <div className="Exchange-info-label">Exit Price</div>
             <div className="align-right">
               <Tooltip
-                handle={`${formatAmount(exitMarkPrice, USD_DECIMALS, 2, true)} USD`}
+                handle={<div className="font-mono">{formatAmount(exitMarkPrice, USD_DECIMALS, 2, true)} USD</div>}
                 position="right-bottom"
                 renderContent={() => {
                   return (
@@ -2219,7 +2219,7 @@ export default function SwapBox(props) {
             <div className="Exchange-info-label">Borrow Fee</div>
             <div className="align-right">
               <Tooltip
-                handle={borrowFeeText}
+                handle={<div className="font-mono">{borrowFeeText}</div>}
                 position="right-bottom"
                 renderContent={() => {
                   return (

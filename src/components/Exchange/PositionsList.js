@@ -402,7 +402,7 @@ export default function PositionsList(props) {
                   </div>
                   <div className="Exchange-list-info-label">
                     {position.leverage && (
-                      <span className="muted">{formatAmount(position.leverage, 4, 2, true)}x&nbsp;</span>
+                      <span className="muted font-mono">{formatAmount(position.leverage, 4, 2, true)}x&nbsp;</span>
                     )}
                     <span className={cx({ positive: position.isLong, negative: !position.isLong })}>
                       {position.isLong ? "Long" : "Short"}
@@ -414,7 +414,9 @@ export default function PositionsList(props) {
                     {!position.netValue && "Opening..."}
                     {position.netValue && (
                       <Tooltip
-                        handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
+                        handle={
+                          <div className="font-mono">{formatAmount(position.netValue, USD_DECIMALS, 2, true)}</div>
+                        }
                         position="left-bottom"
                         handleClassName="plain"
                         renderContent={() => {
@@ -444,7 +446,7 @@ export default function PositionsList(props) {
                   </div>
                   {position.deltaStr && (
                     <div
-                      className={cx("Exchange-list-info-label", {
+                      className={cx("Exchange-list-info-label font-mono net-value-change", {
                         positive: hasPositionProfit && positionDelta.gt(0),
                         negative: !hasPositionProfit && positionDelta.gt(0),
                         muted: positionDelta.eq(0),
@@ -455,7 +457,7 @@ export default function PositionsList(props) {
                   )}
                 </td>
                 <td>
-                  <div>${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
+                  <div className="font-mono">${formatAmount(position.size, USD_DECIMALS, 2, true)}</div>
                   {positionOrders.length > 0 && (
                     <div onClick={() => setListSection && setListSection("Orders")}>
                       <Tooltip
@@ -495,7 +497,11 @@ export default function PositionsList(props) {
                 </td>
                 <td>
                   <Tooltip
-                    handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
+                    handle={
+                      <div className="font-mono">
+                        {formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
+                      </div>
+                    }
                     position="left-bottom"
                     handleClassName={cx("plain", { negative: position.hasLowCollateral })}
                     renderContent={() => {
@@ -522,7 +528,7 @@ export default function PositionsList(props) {
                 </td>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
                   <Tooltip
-                    handle={`$${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}`}
+                    handle={<div className="font-mono">{formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>}
                     position="left-bottom"
                     handleClassName="plain clickable"
                     renderContent={() => {
@@ -538,10 +544,10 @@ export default function PositionsList(props) {
                     }}
                   />
                 </td>
-                <td className="clickable" onClick={() => onPositionClick(position)}>
+                <td className="clickable font-mono" onClick={() => onPositionClick(position)}>
                   ${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}
                 </td>
-                <td className="clickable" onClick={() => onPositionClick(position)}>
+                <td className="clickable font-mono" onClick={() => onPositionClick(position)}>
                   ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
                 </td>
                 <td>
