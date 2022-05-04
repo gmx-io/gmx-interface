@@ -43,7 +43,8 @@
   grid-template-columns: 1fr auto;
   grid-gap: 1.55rem;
   padding: 3.1rem;
-  padding-top: 3.1rem;
+  padding-top: 0rem;
+  margin-top: -1.55rem;
 }
 
 .Exchange-position-list-orders {

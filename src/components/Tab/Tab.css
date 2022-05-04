@@ -20,7 +20,7 @@
   padding-left: 1.55rem;
   padding-right: 1.55rem;
   cursor: pointer;
-  font-size: 1.55rem;
+  /* font-size: 1.55rem; */
 }
 
 .Tab.block .Tab-option:hover {
