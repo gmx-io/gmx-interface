@@ -46,7 +46,7 @@
   bottom: 100%;
 }
 .Tooltip-popup.right {
-  left: 30px;
+  left: 3rem;
   transform: translateY(50%);
   bottom: 100%;
 }
