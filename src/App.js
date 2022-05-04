@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 
-import { BrowserRouter as Router, Switch, Route, NavLink } from "react-router-dom";
+import { Switch, Route, NavLink } from "react-router-dom";
 
 import {
   ARBITRUM,
@@ -37,6 +37,8 @@ import {
   clearWalletLinkData,
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
+  REFERRAL_CODE_KEY,
+  REFERRAL_CODE_QUERY_PARAMS,
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
@@ -48,6 +50,7 @@ import { Exchange } from "./views/Exchange/Exchange";
 import Actions from "./views/Actions/Actions";
 import OrdersOverview from "./views/OrdersOverview/OrdersOverview";
 import PositionsOverview from "./views/PositionsOverview/PositionsOverview";
+import Referrals from "./views/Referrals/Referrals";
 import BuyGlp from "./views/BuyGlp/BuyGlp";
 import BuyGMX from "./views/BuyGMX/BuyGMX";
 import SellGlp from "./views/SellGlp/SellGlp";
@@ -68,7 +71,6 @@ import Checkbox from "./components/Checkbox/Checkbox";
 import { RiMenuLine } from "react-icons/ri";
 import { FaTimes } from "react-icons/fa";
 import { FiX } from "react-icons/fi";
-// import { BiLogOut } from "react-icons/bi";
 
 import "./Font.css";
 import "./Shared.css";
@@ -90,6 +92,8 @@ import useEventToast from "./components/EventToast/useEventToast";
 import { Link } from "react-router-dom";
 import EventToastContainer from "./components/EventToast/EventToastContainer";
 import SEO from "./components/Common/SEO";
+import useRouteQuery from "./hooks/useRouteQuery";
+import { encodeReferralCode } from "./Api/referrals";
 
 import { getContract } from "./Addresses";
 import VaultV2 from "./abis/VaultV2.json";
@@ -118,9 +122,7 @@ function inPreviewMode() {
   return false;
 }
 
-const arbWsProvider = new ethers.providers.WebSocketProvider(
-  "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"
-);
+const arbWsProvider = new ethers.providers.WebSocketProvider("wss://arb1.arbitrum.io/ws");
 
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
 
@@ -196,6 +198,11 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/buy">
           Buy
+        </NavLink>
+      </div>
+      <div className="App-header-link-container">
+        <NavLink activeClassName="active" to="/referrals">
+          Referrals
         </NavLink>
       </div>
       <div className="App-header-link-container">
@@ -337,6 +344,18 @@ function FullApp() {
   }, [activatingConnector, connector, chainId]);
   const triedEager = useEagerConnect(setActivatingConnector);
   useInactiveListener(!triedEager || !!activatingConnector);
+
+  const query = useRouteQuery();
+
+  useEffect(() => {
+    let referralCode = query.get(REFERRAL_CODE_QUERY_PARAMS);
+    if (referralCode && referralCode.length <= 20) {
+      const encodedReferralCode = encodeReferralCode(referralCode);
+      if (encodeReferralCode !== ethers.constants.HashZero) {
+        localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
+      }
+    }
+  }, [query]);
 
   useEffect(() => {
     if (window.ethereum) {
@@ -592,7 +611,7 @@ function FullApp() {
   }, [active, chainId, vaultAddress, positionRouterAddress]);
 
   return (
-    <Router>
+    <>
       <div className="App">
         {/* <div className="App-background-side-1"></div>
         <div className="App-background-side-2"></div>
@@ -750,6 +769,9 @@ function FullApp() {
             <Route exact path="/ecosystem">
               <Ecosystem />
             </Route>
+            <Route exact path="/referrals">
+              <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+            </Route>
             <Route exact path="/about">
               <Home />
             </Route>
@@ -847,7 +869,7 @@ function FullApp() {
           Save
         </button>
       </Modal>
-    </Router>
+    </>
   );
 }
 
@@ -863,7 +885,7 @@ function PreviewApp() {
   };
 
   return (
-    <Router>
+    <>
       <div className="App">
         <div className="App-background-side-1"></div>
         <div className="App-background-side-2"></div>
@@ -944,7 +966,7 @@ function PreviewApp() {
           </Switch>
         </div>
       </div>
-    </Router>
+    </>
   );
 }
 
