@@ -25,6 +25,7 @@
   max-width: 59rem;
   width: 100%;
   height: fit-content;
+  flex: auto;
 }
 
 .BuyGMXGLP-panel .App-card.no-height {
@@ -133,6 +134,11 @@
 
 .display-sm {
   display: none !important;
+}
+
+.BuyGMXGLP-panel .buy-card {
+  display: flex;
+  flex-direction: column;
 }
 
 .BuyGMXGLP-panel .buy-card:first-child,
