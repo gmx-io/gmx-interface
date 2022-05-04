@@ -40,6 +40,7 @@ body,
 
 :root {
   --dark-blue: #17182c;
+  --dark-blue-bg: #16182e;
   --dark-blue-accent: #a0a3c4;
   --dark-blue-hover: #808aff14;
   --dark-blue-border: #ffffff29;

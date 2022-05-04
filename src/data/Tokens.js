@@ -189,6 +189,7 @@ const TOKENS = {
       decimals: 18,
       address: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
       isStable: false,
+      isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/877/thumb/chainlink-new-logo.png?1547034700",
     },
     {
@@ -197,6 +198,7 @@ const TOKENS = {
       decimals: 18,
       address: "0xFa7F8980b0f1E64A2062791cc3b0871572f1F7f0",
       isStable: false,
+      isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/12504/thumb/uniswap-uni.png?1600306604",
     },
     {
@@ -302,6 +304,49 @@ const TOKENS = {
   ],
 };
 
+const ADDITIONAL_TOKENS = {
+  42161: [
+    {
+      name: "GMX",
+      symbol: "GMX",
+      address: getContract(42161, "GMX"),
+      decimals: 18,
+    },
+    {
+      name: "Escrowed GMX",
+      symbol: "esGMX",
+      address: getContract(42161, "ES_GMX"),
+      decimals: 18,
+    },
+    {
+      name: "GMX LP",
+      symbol: "GLP",
+      address: getContract(42161, "GLP"),
+      decimals: 18,
+    },
+  ],
+  43114: [
+    {
+      name: "GMX",
+      symbol: "GMX",
+      address: getContract(43114, "GMX"),
+      decimals: 18,
+    },
+    {
+      name: "Escrowed GMX",
+      symbol: "esGMX",
+      address: getContract(43114, "ES_GMX"),
+      decimals: 18,
+    },
+    {
+      name: "GMX LP",
+      symbol: "GLP",
+      address: getContract(42161, "GLP"),
+      decimals: 18,
+    },
+  ],
+};
+
 const CHAIN_IDS = [56, 97, 42161, 421611, 43114];
 
 const TOKENS_MAP = {};
@@ -311,8 +356,13 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];
   TOKENS_MAP[chainId] = {};
   TOKENS_BY_SYMBOL_MAP[chainId] = {};
-  for (let i = 0; i < TOKENS[chainId].length; i++) {
-    const token = TOKENS[chainId][i];
+  let tokens = TOKENS[chainId];
+  if (ADDITIONAL_TOKENS[chainId]) {
+    tokens = tokens.concat(ADDITIONAL_TOKENS[chainId]);
+  }
+
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
     TOKENS_MAP[chainId][token.address] = token;
     TOKENS_BY_SYMBOL_MAP[chainId][token.symbol] = token;
   }

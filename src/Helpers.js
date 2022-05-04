@@ -116,6 +116,10 @@ export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3";
 export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage";
 export const SHOW_PNL_AFTER_FEES_KEY = "Exchange-swap-show-pnl-after-fees";
 export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-position-lines";
+export const REFERRAL_CODE_KEY = "GMX-referralCode";
+export const REFERRAL_CODE_QUERY_PARAMS = "ref";
+export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
+export const MAX_REFERRAL_CODE_LENGTH = 20;
 
 export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
@@ -1265,6 +1269,10 @@ const RPC_PROVIDERS = {
   [AVALANCHE]: AVALANCHE_RPC_PROVIDERS,
 };
 
+const FALLBACK_PROVIDERS = {
+  [ARBITRUM]: ["https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"],
+};
+
 export function shortenAddress(address, length) {
   if (!length) {
     return "";
@@ -1509,39 +1517,97 @@ export function getProvider(library, chainId) {
   return new ethers.providers.StaticJsonRpcProvider(provider, { chainId });
 }
 
-export const fetcher =
-  (library, contractInfo, additionalArgs) =>
-  (...args) => {
-    // eslint-disable-next-line
-    const [id, chainId, arg0, arg1, ...params] = args;
-    const provider = getProvider(library, chainId);
+export function getFallbackProvider(chainId) {
+  if (!FALLBACK_PROVIDERS[chainId]) {
+    return;
+  }
 
-    const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
+  const provider = _.sample(FALLBACK_PROVIDERS[chainId]);
+  return new ethers.providers.StaticJsonRpcProvider(provider, { chainId });
+}
 
-    function onError(e) {
-      console.error(id, contractInfo.contractName, method, e);
+export const getContractCall = ({ provider, contractInfo, arg0, arg1, method, params, additionalArgs, onError }) => {
+  if (ethers.utils.isAddress(arg0)) {
+    const address = arg0;
+    const contract = new ethers.Contract(address, contractInfo.abi, provider);
+
+    if (additionalArgs) {
+      return contract[method](...params.concat(additionalArgs));
+    }
+    return contract[method](...params);
+  }
+
+  if (!provider) {
+    return;
+  }
+
+  return provider[method](arg1, ...params);
+};
+
+// prettier-ignore
+export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
+  // eslint-disable-next-line
+  const [id, chainId, arg0, arg1, ...params] = args;
+  const provider = getProvider(library, chainId);
+
+  const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
+
+  const contractCall = getContractCall({
+    provider,
+    contractInfo,
+    arg0,
+    arg1,
+    method,
+    params,
+    additionalArgs,
+  })
+
+  let shouldCallFallback = true
+
+  const handleFallback = async (resolve, reject, error) => {
+    if (!shouldCallFallback) {
+      return
+    }
+    // prevent fallback from being called twice
+    shouldCallFallback = false
+
+    const fallbackProvider = getFallbackProvider(chainId)
+    if (!fallbackProvider) {
+      reject(error)
+      return
     }
 
-    if (ethers.utils.isAddress(arg0)) {
-      const address = arg0;
-      const contract = new ethers.Contract(address, contractInfo.abi, provider);
+    console.info("using fallbackProvider for", method)
+    const fallbackContractCall = getContractCall({
+      provider: fallbackProvider,
+      contractInfo,
+      arg0,
+      arg1,
+      method,
+      params,
+      additionalArgs,
+    })
 
-      try {
-        if (additionalArgs) {
-          return contract[method](...params.concat(additionalArgs)).catch(onError);
-        }
-        return contract[method](...params).catch(onError);
-      } catch (e) {
-        onError(e);
-      }
-    }
+    fallbackContractCall.then((result) => resolve(result)).catch((e) => {
+      console.error("fallback fetcher error", id, contractInfo.contractName, method, e);
+      reject(e)
+    })
+  }
 
-    if (!library) {
-      return;
-    }
+  return new Promise(async (resolve, reject) => {
+    contractCall.then((result) => {
+      shouldCallFallback = false
+      resolve(result)
+    }).catch((e) => {
+      console.error("fetcher error", id, contractInfo.contractName, method, e);
+      handleFallback(resolve, reject, e)
+    })
 
-    return library[method](arg1, ...params).catch(onError);
-  };
+    setTimeout(() => {
+      handleFallback(resolve, reject, "contractCall timeout")
+    }, 2000)
+  })
+};
 
 export function bigNumberify(n) {
   return ethers.BigNumber.from(n);
@@ -1714,7 +1780,11 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
   const orderBookAddress = getContract(chainId, "OrderBook");
   const orderBookReaderAddress = getContract(chainId, "OrderBookReader");
   const key = shouldRequest ? [active, chainId, orderBookAddress, account] : false;
-  const { data: orders = [], mutate: updateOrders } = useSWR(key, {
+  const {
+    data: orders = [],
+    mutate: updateOrders,
+    error: ordersError,
+  } = useSWR(key, {
     dedupingInterval: 5000,
     fetcher: async (active, chainId, orderBookAddress, account) => {
       const provider = getProvider(library, chainId);
@@ -1793,7 +1863,7 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
     },
   });
 
-  return [orders, updateOrders];
+  return [orders, updateOrders, ordersError];
 }
 
 export const formatAmount = (amount, tokenDecimals, displayDecimals, useCommas, defaultValue) => {
@@ -2573,7 +2643,39 @@ export async function addTokenToMetamask(token) {
   }
 }
 
+export function sleep(ms) {
+  return new Promise((resolve) => resolve(), ms);
+}
+
 export function getPageTitle(data) {
   return `${data} | Decentralized
   Perpetual Exchange | GMX`;
+}
+
+export function isHashZero(value) {
+  return value === ethers.constants.HashZero;
+}
+export function isAddressZero(value) {
+  return value === ethers.constants.AddressZero;
+}
+
+export function useDebounce(value, delay) {
+  // State and setters for debounced value
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(
+    () => {
+      // Update debounced value after delay
+      const handler = setTimeout(() => {
+        setDebouncedValue(value);
+      }, delay);
+      // Cancel the timeout if value changes (also on delay change or unmount)
+      // This is how we prevent debounced value from updating if value is changed ...
+      // .. within the delay period. Timeout gets cleared and restarted.
+      return () => {
+        clearTimeout(handler);
+      };
+    },
+    [value, delay] // Only re-call effect if value or delay changes
+  );
+  return debouncedValue;
 }

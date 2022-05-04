@@ -51,7 +51,6 @@ import Tab from "../../components/Tab/Tab";
 import Footer from "../../Footer";
 
 import "./Exchange.css";
-
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -353,7 +352,6 @@ export function getPositionQuery(tokens, nativeTokenAddress) {
 }
 
 export const Exchange = forwardRef((props, ref) => {
-  // console.log("rerender Exchange");
   const {
     savedIsPnlInLeverage,
     setSavedIsPnlInLeverage,
@@ -482,7 +480,7 @@ export const Exchange = forwardRef((props, ref) => {
     fetcher: fetcher(library, Reader, [tokenAddresses]),
   });
 
-  const { data: positionData } = useSWR(
+  const { data: positionData, error: positionDataError } = useSWR(
     active && [active, chainId, readerAddress, "getPositions", vaultAddress, account],
     {
       fetcher: fetcher(library, Reader, [
@@ -492,6 +490,8 @@ export const Exchange = forwardRef((props, ref) => {
       ]),
     }
   );
+
+  const positionsDataIsLoading = active && !positionData && !positionDataError;
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
     fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
@@ -774,6 +774,7 @@ export const Exchange = forwardRef((props, ref) => {
         </div>
         {listSection === "Positions" && (
           <PositionsList
+            positionsDataIsLoading={positionsDataIsLoading}
             pendingPositions={pendingPositions}
             setPendingPositions={setPendingPositions}
             setListSection={setListSection}

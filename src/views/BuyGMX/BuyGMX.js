@@ -198,7 +198,7 @@ export default function BuyGMX() {
                     <Button
                       size="xl"
                       imgSrc={gmxAvax}
-                      href="https://traderjoexyz.com/#/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661"
+                      href="https://traderjoexyz.com/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661#/"
                     >
                       Purchase GMX
                     </Button>
