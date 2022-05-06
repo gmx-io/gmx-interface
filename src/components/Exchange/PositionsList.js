@@ -265,6 +265,7 @@ export default function PositionsList(props) {
           setIsVisible={setIsSharePositionModalVisible}
           title="Share Position"
           sharePositionImageUri={sharePositionImageUri}
+          setSharePositionImageUri={setSharePositionImageUri}
           positionToShare={positionToShare}
           sharePositionInfo={sharePositionInfo}
         />
