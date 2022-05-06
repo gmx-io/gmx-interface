@@ -56,7 +56,9 @@
     "eject": "react-scripts eject",
     "lint": "node node_modules/.bin/eslint src",
     "pre-commit": "npm run test -- --watchAll=false && npm run lint",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "extract": "lingui extract",
+    "compile": "lingui compile"
   },
   "eslintConfig": {
     "extends": [
@@ -77,6 +79,7 @@
     ]
   },
   "devDependencies": {
+    "@lingui/cli": "^3.13.3",
     "eslint": "^7.20.0",
     "husky": "^7.0.0",
     "lint-staged": "^12.3.4",

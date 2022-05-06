@@ -19,6 +19,8 @@ import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 import avalanche16Icon from "../../img/ic_avalanche_16.svg";
 import Button from "../../components/Common/Button";
 
+import { Trans } from '@lingui/macro'
+
 export default function BuyGMX() {
   const { chainId } = useChainId();
   const { active } = useWeb3React();
@@ -43,15 +45,17 @@ export default function BuyGMX() {
         {chainId === ARBITRUM && (
           <div className="section-title-block">
             <div className="section-title-content">
-              <div className="Page-title">Buy / Transfer ETH</div>
+              <div className="Page-title"><Trans>Buy / Transfer ETH</Trans></div>
               <div className="Page-description">
-                ETH is needed on Arbitrum to purchase GMX.
+                <Trans>ETH is needed on Arbitrum to purchase GMX.</Trans>
                 <br />
-                To purchase GMX on{" "}
-                <span onClick={() => onNetworkSelect(AVALANCHE)}>
-                  Avalanche <img src={avalanche16Icon} alt="avalanche16Icon" />
-                </span>
-                , please change your network.
+                <Trans>
+                  To purchase GMX on{" "}
+                  <span onClick={() => onNetworkSelect(AVALANCHE)}>
+                    Avalanche <img src={avalanche16Icon} alt="avalanche16Icon" />
+                  </span>
+                  , please change your network.
+                </Trans>
               </div>
             </div>
           </div>
@@ -59,15 +63,17 @@ export default function BuyGMX() {
         {chainId === ARBITRUM && (
           <div className="BuyGMXGLP-panel">
             <div className="App-card no-height">
-              <div className="App-card-title">Buy ETH</div>
+              <div className="App-card-title"><Trans>Buy ETH</Trans></div>
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
-                  You can buy ETH directly on{" "}
-                  <a href="https://arbitrum.io/" target="_blank" rel="noopener noreferrer">
-                    Arbitrum
-                  </a>{" "}
-                  using Banxa:
+                  <Trans>
+                    You can buy ETH directly on{" "}
+                    <a href="https://arbitrum.io/" target="_blank" rel="noopener noreferrer">
+                      Arbitrum
+                    </a>{" "}
+                    using Banxa:
+                  </Trans>
                 </div>
                 <div className="direct-purchase-options">
                   <Button
