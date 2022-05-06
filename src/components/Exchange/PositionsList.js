@@ -115,6 +115,7 @@ export default function PositionsList(props) {
 
   const [isSharePositionModalVisible, setIsSharePositionModalVisible] = useState(null);
   const [sharePositionImageUri, setSharePositionImageUri] = useState(null);
+  const [sharePositionInfo, setSharePositionInfo] = useState(null);
   const [sharePositionImageStatus, setSharePositionImageStatus] = useState({});
   const userAffiliateCodes = useAffiliateCodes(chainId, account);
 
@@ -153,20 +154,10 @@ export default function PositionsList(props) {
       },
       body: JSON.stringify(data),
     })
-      .then((res) => {
-        if (!res.ok) {
-          throw Error(res.statusText);
-        }
-        return res.blob();
-      })
-      .then((res) => {
-        let reader = new FileReader();
-        reader.readAsDataURL(res);
-        reader.onloadend = function () {
-          let base64data = reader.result;
-          setIsSharePositionModalVisible(true);
-          setSharePositionImageUri(base64data);
-        };
+      .then((res) => res.json())
+      .then((imageInfo) => {
+        setSharePositionInfo(imageInfo);
+        setIsSharePositionModalVisible(true);
       })
       .finally(() => {
         setSharePositionImageStatus((state) => ({
@@ -174,6 +165,27 @@ export default function PositionsList(props) {
           [position.key]: false,
         }));
       });
+    // .then((res) => {
+    //   if (!res.ok) {
+    //     throw Error(res.statusText);
+    //   }
+    //   return res.blob();
+    // })
+    // .then((res) => {
+    //   let reader = new FileReader();
+    //   reader.readAsDataURL(res);
+    //   reader.onloadend = function () {
+    //     let base64data = reader.result;
+    //     setIsSharePositionModalVisible(true);
+    //     setSharePositionImageUri(base64data);
+    //   };
+    // })
+    // .finally(() => {
+    //   setSharePositionImageStatus((state) => ({
+    //     ...state,
+    //     [position.key]: false,
+    //   }));
+    // });
   };
 
   const onPositionClick = (position) => {
@@ -254,6 +266,7 @@ export default function PositionsList(props) {
           title="Share Position"
           sharePositionImageUri={sharePositionImageUri}
           positionToShare={positionToShare}
+          sharePositionInfo={sharePositionInfo}
         />
       )}
       {positions && (

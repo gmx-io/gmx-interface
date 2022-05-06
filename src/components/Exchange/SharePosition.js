@@ -9,18 +9,27 @@ function download(dataurl, filename) {
 }
 
 function SharePosition(props) {
-  let { isVisible, setIsVisible, title, sharePositionImageUri, positionToShare } = props;
+  let { isVisible, setIsVisible, title, sharePositionImageUri, positionToShare, sharePositionInfo } = props;
   let position = positionToShare;
   let imageName = `${position.indexToken.symbol}-${position.isLong ? "long" : "short"}`;
   return (
     <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
       <div className="share-position-image">
-        <img src={sharePositionImageUri} alt="" />
+        <img src={sharePositionInfo.image_url} alt="" />
       </div>
       <div className="social-share-btn">
         <button className="default-btn" onClick={() => download(sharePositionImageUri, imageName)}>
           Download to share
         </button>
+        <a
+          target="_blank"
+          rel="noreferrer"
+          // href={`https://twitter.com/intent/tweet?text=My trade on GMX&url=https://gmx-og-image-vipineth.vercel.app/api/share?image_url=${sharePositionInfo.image_url}&ref=${sharePositionInfo.ref}`}
+          href={`https://twitter.com/intent/tweet?text=PNL%20of%20my%20%24BTC%20Perpetual%20Futures%20position%20on%20%40Delta_Exchange&url=https://gmx-og-image-vipineth.vercel.app/api/share%3Fimage_url%3D${sharePositionInfo.image_url}%26ref%3D${sharePositionInfo.ref}`}
+          className="default-btn"
+        >
+          Tweet
+        </a>
       </div>
     </Modal>
   );
