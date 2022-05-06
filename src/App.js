@@ -99,6 +99,7 @@ import { getContract } from "./Addresses";
 import VaultV2 from "./abis/VaultV2.json";
 import VaultV2b from "./abis/VaultV2b.json";
 import PositionRouter from "./abis/PositionRouter.json";
+import ReferralTerms from "./views/ReferralTerms/ReferralTerms";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -801,6 +802,9 @@ function FullApp() {
             </Route>
             <Route exact path="/debug">
               <Debug />
+            </Route>
+            <Route exact path="/referral-terms">
+              <ReferralTerms />
             </Route>
           </Switch>
         </div>
