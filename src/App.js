@@ -104,13 +104,13 @@ import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { messages as enMessages } from './locales/en/messages'
 import { messages as esMessages} from './locales/es/messages'
-import { Trans } from '@lingui/macro'
+import { Trans, t } from '@lingui/macro'
 
 i18n.load({
   'en': enMessages,
   'es': esMessages
 })
-i18n.activate('en')
+i18n.activate('es')
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -498,17 +498,17 @@ function FullApp() {
   const saveAndCloseSettings = () => {
     const slippage = parseFloat(slippageAmount);
     if (isNaN(slippage)) {
-      helperToast.error("Invalid slippage value");
+      helperToast.error(t`Invalid slippage value`);
       return;
     }
     if (slippage > 5) {
-      helperToast.error("Slippage should be less than 5%");
+      helperToast.error(t`Slippage should be less than 5%`);
       return;
     }
 
     const basisPoints = (slippage * BASIS_POINTS_DIVISOR) / 100;
     if (parseInt(basisPoints) !== parseFloat(basisPoints)) {
-      helperToast.error("Max slippage precision is 0.01%");
+      helperToast.error(t`Max slippage precision is 0.01%`);
       return;
     }
 
@@ -539,9 +539,9 @@ function FullApp() {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.error(
               <div>
-                Txn failed.{" "}
+                <Trans>Txn failed.</Trans>{" "}
                 <a href={txUrl} target="_blank" rel="noopener noreferrer">
-                  View
+                  <Trans>View</Trans>
                 </a>
                 <br />
               </div>
@@ -553,7 +553,7 @@ function FullApp() {
               <div>
                 {pendingTxn.message}{" "}
                 <a href={txUrl} target="_blank" rel="noopener noreferrer">
-                  View
+                  <Trans>View</Trans>
                 </a>
                 <br />
               </div>
@@ -837,15 +837,15 @@ function FullApp() {
       >
         <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
           <img src={metamaskImg} alt="MetaMask" />
-          <div>MetaMask</div>
+          <div><Trans>MetaMask</Trans></div>
         </button>
         <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
           <img src={coinbaseImg} alt="Coinbase Wallet" />
-          <div>Coinbase Wallet</div>
+          <div><Trans>Coinbase Wallet</Trans></div>
         </button>
         <button className="Wallet-btn WalletConnect-btn" onClick={activateWalletConnect}>
           <img src={walletConnectImg} alt="WalletConnect" />
-          <div>WalletConnect</div>
+          <div><Trans>WalletConnect</Trans></div>
         </button>
       </Modal>
       <Modal
@@ -855,7 +855,7 @@ function FullApp() {
         label="Settings"
       >
         <div className="App-settings-row">
-          <div>Allowed Slippage</div>
+          <div><Trans>Allowed Slippage</Trans></div>
           <div className="App-slippage-tolerance-input-container">
             <input
               type="number"
@@ -869,16 +869,16 @@ function FullApp() {
         </div>
         <div className="Exchange-settings-row">
           <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
-            Display PnL after fees
+            <Trans>Display PnL after fees</Trans>
           </Checkbox>
         </div>
         <div className="Exchange-settings-row">
           <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
-            Include PnL in leverage display
+            <Trans>Include PnL in leverage display</Trans>
           </Checkbox>
         </div>
         <button className="App-cta Exchange-swap-button" onClick={saveAndCloseSettings}>
-          Save
+          <Trans>Save</Trans>
         </button>
       </Modal>
     </>
