@@ -62,13 +62,7 @@ export default function Ecosystem() {
               </div>
             </div>
             <div className="App-card">
-              <div className="App-card-title">
-                GMX Proposals Voting
-                <div className="App-card-title-icon">
-                  <img src={arbitrumIcon} alt="arbitrumIcon" />
-                  <img src={avalancheIcon} alt="avalancheIcon" />
-                </div>
-              </div>
+              <div className="App-card-title">GMX Proposals Voting</div>
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="App-card-row">
