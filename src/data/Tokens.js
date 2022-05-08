@@ -304,6 +304,49 @@ const TOKENS = {
   ],
 };
 
+const ADDITIONAL_TOKENS = {
+  42161: [
+    {
+      name: "GMX",
+      symbol: "GMX",
+      address: getContract(42161, "GMX"),
+      decimals: 18,
+    },
+    {
+      name: "Escrowed GMX",
+      symbol: "esGMX",
+      address: getContract(42161, "ES_GMX"),
+      decimals: 18,
+    },
+    {
+      name: "GMX LP",
+      symbol: "GLP",
+      address: getContract(42161, "GLP"),
+      decimals: 18,
+    },
+  ],
+  43114: [
+    {
+      name: "GMX",
+      symbol: "GMX",
+      address: getContract(43114, "GMX"),
+      decimals: 18,
+    },
+    {
+      name: "Escrowed GMX",
+      symbol: "esGMX",
+      address: getContract(43114, "ES_GMX"),
+      decimals: 18,
+    },
+    {
+      name: "GMX LP",
+      symbol: "GLP",
+      address: getContract(42161, "GLP"),
+      decimals: 18,
+    },
+  ],
+};
+
 const CHAIN_IDS = [56, 97, 42161, 421611, 43114];
 
 const TOKENS_MAP = {};
@@ -313,8 +356,13 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];
   TOKENS_MAP[chainId] = {};
   TOKENS_BY_SYMBOL_MAP[chainId] = {};
-  for (let i = 0; i < TOKENS[chainId].length; i++) {
-    const token = TOKENS[chainId][i];
+  let tokens = TOKENS[chainId];
+  if (ADDITIONAL_TOKENS[chainId]) {
+    tokens = tokens.concat(ADDITIONAL_TOKENS[chainId]);
+  }
+
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
     TOKENS_MAP[chainId][token.address] = token;
     TOKENS_BY_SYMBOL_MAP[chainId][token.symbol] = token;
   }
