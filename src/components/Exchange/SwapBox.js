@@ -82,6 +82,7 @@ import WETH from "../../abis/WETH.json";
 import longImg from "../../img/long.svg";
 import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
+import { useUserReferralCode } from "../../Api/referrals";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -174,7 +175,7 @@ export default function SwapBox(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
-  const { userReferralCode } = Api.useUserReferralCode(library, chainId, account);
+  const { userReferralCode } = useUserReferralCode(library, chainId, account);
   const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
 
   let allowedSlippage = savedSlippageAmount;

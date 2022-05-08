@@ -26,17 +26,20 @@ import {
   useDebounce,
   isAddressZero,
 } from "../../Helpers";
-import { decodeReferralCode, encodeReferralCode, useReferralsData } from "../../Api/referrals";
-
-import "./Referrals.css";
 import {
+  decodeReferralCode,
+  encodeReferralCode,
+  useReferralsData,
   getReferralCodeOwner,
   registerReferralCode,
   setTraderReferralCodeByUser,
   useCodeOwner,
   useReferrerTier,
   useUserReferralCode,
-} from "../../Api";
+} from "../../Api/referrals";
+
+import "./Referrals.css";
+
 import { BiCopy, BiEditAlt, BiErrorCircle } from "react-icons/bi";
 import { IoWarningOutline } from "react-icons/io5";
 import Tooltip from "../../components/Tooltip/Tooltip";
