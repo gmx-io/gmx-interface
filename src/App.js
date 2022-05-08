@@ -804,9 +804,6 @@ function FullApp() {
             <Route exact path="/debug">
               <Debug />
             </Route>
-            <Route exact path="/debug">
-              <Debug />
-            </Route>
             <Route exact path="/referral-terms">
               <ReferralTerms />
             </Route>
