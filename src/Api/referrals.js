@@ -136,13 +136,15 @@ export function useUserCodesOnAllChain(account) {
 }
 
 export function useReferralsData(chainId, account) {
-  const [data, setData] = useState();
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const ownerOnOtherChain = useUserCodesOnAllChain(account);
 
   useEffect(() => {
-    if (!chainId) return;
-
+    if (!chainId || !account) {
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const startOfDayTimestamp = Math.floor(parseInt(Date.now() / 1000) / 86400) * 86400;
     const query = gql(
