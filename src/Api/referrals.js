@@ -81,7 +81,7 @@ async function getCodeOwnersData(network, account, codes = []) {
           codeString: decodeReferralCode(code),
           owner,
           isTaken: !isAddressZero(owner),
-          isTakenByCurrentUser: owner && String(owner).toLowerCase() === String(account).toLowerCase(),
+          isTakenByCurrentUser: owner && owner.toLowerCase() === account.toLowerCase(),
         };
       });
     });
@@ -104,13 +104,13 @@ export function useUserCodesOnAllChain(account) {
   useEffect(() => {
     async function main() {
       const [arbitrumCodes, avalancheCodes] = await Promise.all(
-        ACTIVE_CHAINS.map((chainId) =>
-          getGraphClient(chainId)
+        ACTIVE_CHAINS.map((chainId) => {
+          return getGraphClient(chainId)
             .query({ query })
             .then(({ data }) => {
               return data.referralCodes.map((c) => c.code);
-            })
-        )
+            });
+        })
       );
       const [codeOwnersOnAvax = [], codeOwnersOnArbitrum = []] = await Promise.all([
         getCodeOwnersData(AVALANCHE, account, arbitrumCodes),
@@ -312,24 +312,20 @@ export function useReferralsData(chainId, account) {
   };
 }
 
-export async function registerReferralCode(chainId, referralCode, { library, ...props }) {
+export async function registerReferralCode(chainId, referralCode, library, opts) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
-  return callContract(chainId, contract, "registerCode", [referralCode], { ...props });
+  return callContract(chainId, contract, "registerCode", [referralCode], opts);
 }
-export async function setTraderReferralCodeByUser(chainId, referralCode, { library, ...props }) {
+export async function setTraderReferralCodeByUser(chainId, referralCode, library, opts) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
   const codeOwner = await contract.codeOwners(referralCode);
   if (isAddressZero(codeOwner)) {
     helperToast.error("Referral code does not exist");
-    return new Promise((resolve, reject) => {
-      reject();
-    });
+    return Promise.reject();
   }
-  return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCode], {
-    ...props,
-  });
+  return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCode], opts);
 }
 export async function getReferralCodeOwner(chainId, referralCode) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
@@ -341,14 +337,20 @@ export async function getReferralCodeOwner(chainId, referralCode) {
 
 export function useUserReferralCode(library, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
+
   const { data: userReferralCode, mutate: mutateUserReferralCode } = useSWR(
     account && [`ReferralStorage:traderReferralCodes`, chainId, referralStorageAddress, "traderReferralCodes", account],
     {
       fetcher: fetcher(library, ReferralStorage),
     }
   );
+
+  const userReferralCodeString =
+    userReferralCode && !isAddressZero(userReferralCode) && decodeReferralCode(userReferralCode);
+
   return {
     userReferralCode,
+    userReferralCodeString,
     mutateUserReferralCode,
   };
 }
@@ -377,4 +379,10 @@ export function useCodeOwner(library, chainId, account, code) {
     codeOwner,
     mutateCodeOwner,
   };
+}
+
+export async function validateReferralCodeExists(referralCode, chainId) {
+  const referralCodeBytes32 = encodeReferralCode(referralCode);
+  const referralCodeOwner = await getReferralCodeOwner(chainId, referralCodeBytes32);
+  return !isAddressZero(referralCodeOwner);
 }
