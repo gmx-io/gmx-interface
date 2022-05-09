@@ -1,22 +1,56 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import cx from "classnames";
 import { ARBITRUM, helperToast, useDebounce } from "../../Helpers";
 import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./ReferralsHelper";
+import { useWeb3React } from "@web3-react/core";
 
 function CreateAffiliateCode({
-  account,
   handleCreateReferralCode,
   active,
   connectWallet,
   setRecentlyAddedCodes,
   recentlyAddedCodes,
-  chainId,
+}) {
+  return (
+    <div className="referral-card section-center mt-medium">
+      <h2 className="title">Generate Referral Code</h2>
+      <p className="sub-title">
+        Looks like you don't have a referral code to share. <br /> Create one now and start earning rebates!
+      </p>
+      <div className="card-action">
+        {active ? (
+          <CreateAffiliateCodeForm
+            handleCreateReferralCode={handleCreateReferralCode}
+            recentlyAddedCodes={recentlyAddedCodes}
+            setRecentlyAddedCodes={setRecentlyAddedCodes}
+          />
+        ) : (
+          <button className="App-cta Exchange-swap-button" type="submit" onClick={connectWallet}>
+            Connect Wallet
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function CreateAffiliateCodeForm({
+  handleCreateReferralCode,
+  recentlyAddedCodes,
+  setRecentlyAddedCodes,
+  callAfterSuccess,
 }) {
   const [referralCode, setReferralCode] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState("");
+  const inputRef = useRef("");
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
   const debouncedReferralCode = useDebounce(referralCode, 300);
+  const { account, chainId } = useWeb3React();
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -44,7 +78,7 @@ function CreateAffiliateCode({
   }, [account, debouncedReferralCode, error, chainId]);
 
   function getButtonError() {
-    if (!referralCode || referralCode.length === 0) {
+    if (!debouncedReferralCode || debouncedReferralCode.length === 0) {
       return "Enter a code";
     }
     if (referralCodeCheckStatus === "taken") {
@@ -95,6 +129,9 @@ function CreateAffiliateCode({
       const ownerOnOtherNetwork = takenInfo[chainId === ARBITRUM ? "ownerAvax" : "ownerArbitrum"];
       try {
         const tx = await handleCreateReferralCode(referralCode);
+        if (typeof callAfterSuccess === "function") {
+          callAfterSuccess();
+        }
         const receipt = await tx.wait();
         if (receipt.status === 1) {
           recentlyAddedCodes.push(getSampleReferrarStat(referralCode, ownerOnOtherNetwork, account));
@@ -111,38 +148,25 @@ function CreateAffiliateCode({
   }
 
   return (
-    <div className="referral-card section-center mt-medium">
-      <h2 className="title">Generate Referral Code</h2>
-      <p className="sub-title">
-        Looks like you don't have a referral code to share. <br /> Create one now and start earning rebates!
-      </p>
-      <div className="card-action">
-        {active ? (
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              value={referralCode}
-              disabled={isProcessing}
-              className={cx("text-input", { "mb-sm": !error })}
-              placeholder="Enter a code"
-              onChange={({ target }) => {
-                const { value } = target;
-                setReferralCode(value);
-                setError(getCodeError(value));
-              }}
-            />
-            {error && <p className="error">{error}</p>}
-            <button className="App-cta Exchange-swap-button" type="submit" disabled={!isPrimaryEnabled()}>
-              {getPrimaryText()}
-            </button>
-          </form>
-        ) : (
-          <button className="App-cta Exchange-swap-button" type="submit" onClick={connectWallet}>
-            Connect Wallet
-          </button>
-        )}
-      </div>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        ref={inputRef}
+        value={referralCode}
+        disabled={isProcessing}
+        className={cx("text-input", { "mb-sm": !error })}
+        placeholder="Enter a code"
+        onChange={({ target }) => {
+          const { value } = target;
+          setReferralCode(value);
+          setError(getCodeError(value));
+        }}
+      />
+      {error && <p className="error">{error}</p>}
+      <button className="App-cta Exchange-swap-button" type="submit" disabled={!isPrimaryEnabled()}>
+        {getPrimaryText()}
+      </button>
+    </form>
   );
 }
 

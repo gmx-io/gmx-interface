@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import cx from "classnames";
 import { encodeReferralCode, setTraderReferralCodeByUser, validateReferralCodeExists } from "../../Api/referrals";
-import { getCodeError, REFERRAL_CODE_REGEX } from "./ReferralsHelper";
+import { REFERRAL_CODE_REGEX } from "./ReferralsHelper";
 import { useDebounce } from "../../Helpers";
 import { useWeb3React } from "@web3-react/core";
 
@@ -20,7 +19,7 @@ function JoinReferralCode({ setPendingTxns, pendingTxns }) {
 export function JoinReferralCodeForm({
   setPendingTxns,
   pendingTxns,
-  afterSuccess,
+  callAfterSuccess,
   userReferralCodeString = "",
   type = "join",
 }) {
@@ -82,8 +81,8 @@ export function JoinReferralCodeForm({
         setPendingTxns,
         pendingTxns,
       });
-      if (afterSuccess) {
-        afterSuccess();
+      if (typeof callAfterSuccess === "function") {
+        callAfterSuccess();
       }
       const receipt = await tx.wait();
       if (receipt.status === 1) {

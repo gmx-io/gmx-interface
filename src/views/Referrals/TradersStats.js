@@ -13,14 +13,10 @@ import { JoinReferralCodeForm } from "./JoinReferralCode";
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
   const { referralTotalStats, discountDistributions } = referralsData;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [error, setError] = useState("");
   const editModalRef = useRef(null);
 
   const open = () => setIsEditModalOpen(true);
-  const close = () => {
-    setIsEditModalOpen(false);
-    setError("");
-  };
+  const close = () => setIsEditModalOpen(false);
   return (
     <div className="rebate-container">
       <div className="referral-stats">
@@ -69,7 +65,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
               setPendingTxns={setPendingTxns}
               pendingTxns={pendingTxns}
               type="edit"
-              afterSuccess={() => setIsEditModalOpen(false)}
+              callAfterSuccess={() => setIsEditModalOpen(false)}
             />
           </div>
         </Modal>
