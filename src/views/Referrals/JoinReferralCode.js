@@ -4,13 +4,19 @@ import { REFERRAL_CODE_REGEX } from "./ReferralsHelper";
 import { useDebounce } from "../../Helpers";
 import { useWeb3React } from "@web3-react/core";
 
-function JoinReferralCode({ setPendingTxns, pendingTxns }) {
+function JoinReferralCode({ setPendingTxns, pendingTxns, active, connectWallet }) {
   return (
     <div className="referral-card section-center mt-medium">
       <h2 className="title">Enter Referral Code</h2>
       <p className="sub-title">Please input a referral code to benefit from fee discounts.</p>
       <div className="card-action">
-        <JoinReferralCodeForm setPendingTxns={setPendingTxns} pendingTxns={pendingTxns} />
+        {active ? (
+          <JoinReferralCodeForm setPendingTxns={setPendingTxns} pendingTxns={pendingTxns} />
+        ) : (
+          <button className="App-cta Exchange-swap-button" type="submit" onClick={connectWallet}>
+            Connect Wallet
+          </button>
+        )}
       </div>
     </div>
   );

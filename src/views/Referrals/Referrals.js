@@ -53,29 +53,18 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     if (isReferralCodeAvailable) {
       return (
         <AffiliatesStats
-          account={account}
-          active={active}
           referralsData={referralsData}
           handleCreateReferralCode={handleCreateReferralCode}
           setRecentlyAddedCodes={setRecentlyAddedCodes}
           recentlyAddedCodes={recentlyAddedCodes}
           chainId={chainId}
-          library={library}
-          setPendingTxns={setPendingTxns}
-          pendingTxns={pendingTxns}
         />
       );
     } else {
       return (
         <CreateAffiliateCode
-          account={account}
-          active={active}
           handleCreateReferralCode={handleCreateReferralCode}
-          library={library}
-          chainId={chainId}
-          setPendingTxns={setPendingTxns}
-          pendingTxns={pendingTxns}
-          referralsData={referralsData}
+          active={active}
           connectWallet={connectWallet}
           recentlyAddedCodes={recentlyAddedCodes}
           setRecentlyAddedCodes={setRecentlyAddedCodes}
@@ -89,11 +78,8 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     if (!userReferralCodeString || !account) {
       return (
         <JoinReferralCode
-          account={account}
           connectWallet={connectWallet}
           active={active}
-          library={library}
-          chainId={chainId}
           setPendingTxns={setPendingTxns}
           pendingTxns={pendingTxns}
         />
@@ -101,10 +87,8 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     }
     return (
       <TradersStats
-        account={account}
         userReferralCodeString={userReferralCodeString}
         chainId={chainId}
-        library={library}
         referralsData={referralsData}
         setPendingTxns={setPendingTxns}
         pendingTxns={pendingTxns}
