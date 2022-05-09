@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FiPlus } from "react-icons/fi";
-import cx from "classnames";
 import { useCopyToClipboard } from "react-use";
 import { IoWarningOutline } from "react-icons/io5";
 import { BiCopy, BiErrorCircle } from "react-icons/bi";
@@ -9,7 +8,6 @@ import Modal from "../../components/Modal/Modal";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import { getNativeToken, getToken } from "../../data/Tokens";
 import {
-  ARBITRUM,
   AVALANCHE,
   bigNumberify,
   formatAmount,
@@ -18,137 +16,25 @@ import {
   helperToast,
   REFERRAL_CODE_QUERY_PARAM,
   shortenAddress,
-  useDebounce,
 } from "../../Helpers";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
-import {
-  getCodeError,
-  getReferralCodeTakenStatus,
-  getSampleReferrarStat,
-  getTierIdDisplay,
-  getUSDValue,
-  isRecentReferralCodeNotExpired,
-  tierRebateInfo,
-} from "./ReferralsHelper";
+import { getTierIdDisplay, getUSDValue, isRecentReferralCodeNotExpired, tierRebateInfo } from "./ReferralsHelper";
+import { CreateAffiliateCodeForm } from "./CreateAffiliateCode";
 
 function AffiliatesStats({
-  account,
   referralsData,
   handleCreateReferralCode,
   chainId,
   setRecentlyAddedCodes,
   recentlyAddedCodes,
 }) {
-  const [referralCode, setReferralCode] = useState("");
-  const [isAdding, setIsAdding] = useState(false);
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
-  const [error, setError] = useState("");
   const addNewModalRef = useRef(null);
-  const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
-  const debouncedReferralCode = useDebounce(referralCode, 300);
-
-  useEffect(() => {
-    let cancelled = false;
-    const checkCodeTakenStatus = async () => {
-      if (error || error.length > 0) {
-        setReferralCodeCheckStatus("ok");
-        return;
-      }
-      const { status: takenStatus } = await getReferralCodeTakenStatus(account, referralCode, chainId);
-
-      // ignore the result if the referral code to check has changed
-      if (cancelled) {
-        return;
-      }
-      if (takenStatus === "none") {
-        setReferralCodeCheckStatus("ok");
-      } else {
-        setReferralCodeCheckStatus("taken");
-      }
-    };
-    setReferralCodeCheckStatus("checking");
-    checkCodeTakenStatus();
-    return () => {
-      cancelled = true;
-    };
-  }, [account, debouncedReferralCode, error, chainId, referralCode]);
-
-  function getButtonError() {
-    if (!referralCode || referralCode.length === 0) {
-      return "Enter a code";
-    }
-    if (referralCodeCheckStatus === "taken") {
-      return "Code already taken";
-    }
-    if (referralCodeCheckStatus === "checking") {
-      return "Checking code...";
-    }
-
-    return false;
-  }
-
-  const buttonError = getButtonError();
-
-  function getPrimaryText() {
-    if (buttonError) {
-      return buttonError;
-    }
-
-    if (isAdding) {
-      return `Creating...`;
-    }
-
-    return "Create";
-  }
-  function isPrimaryEnabled() {
-    if (buttonError || error || isAdding) {
-      return false;
-    }
-    return true;
-  }
 
   const [, copyToClipboard] = useCopyToClipboard();
   const open = () => setIsAddReferralCodeModalOpen(true);
-  const close = () => {
-    setReferralCode("");
-    setIsAdding(false);
-    setError("");
-    setIsAddReferralCodeModalOpen(false);
-  };
-
-  async function handleSubmit(event) {
-    event.preventDefault();
-    setIsAdding(true);
-    const { status: takenStatus, info: takenInfo } = await getReferralCodeTakenStatus(account, referralCode, chainId);
-
-    if (takenStatus === "all" || takenStatus === "current") {
-      setIsAdding(false);
-    }
-    if (takenStatus === "other") {
-      setIsAdding(false);
-    }
-
-    if (takenStatus === "none" || takenStatus === "other") {
-      const ownerOnOtherNetwork = takenInfo[chainId === ARBITRUM ? "ownerAvax" : "ownerArbitrum"];
-      setIsAdding(true);
-      try {
-        const tx = await handleCreateReferralCode(referralCode);
-        close();
-        const receipt = await tx.wait();
-        if (receipt.status === 1) {
-          recentlyAddedCodes.push(getSampleReferrarStat(referralCode, ownerOnOtherNetwork, account));
-          helperToast.success("Referral code created!");
-          setRecentlyAddedCodes(recentlyAddedCodes);
-          setReferralCode("");
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setIsAdding(false);
-      }
-    }
-  }
+  const close = () => setIsAddReferralCodeModalOpen(false);
 
   const { cumulativeStats, referrerTotalStats, rebateDistributions, referrerTierInfo } = referralsData;
   const allReferralCodes = referrerTotalStats.map((c) => c.referralCode.trim());
@@ -193,25 +79,12 @@ function AffiliatesStats({
           onAfterOpen={() => addNewModalRef.current?.focus()}
         >
           <div className="edit-referral-modal">
-            <form onSubmit={handleSubmit}>
-              <input
-                disabled={isAdding}
-                ref={addNewModalRef}
-                type="text"
-                placeholder="Enter referral code"
-                className={cx("text-input", { "mb-sm": !error })}
-                value={referralCode}
-                onChange={({ target }) => {
-                  const { value } = target;
-                  setReferralCode(value);
-                  setError(getCodeError(value));
-                }}
-              />
-              {error && <p className="error">{error}</p>}
-              <button type="submit" className="App-cta Exchange-swap-button" disabled={!isPrimaryEnabled()}>
-                {getPrimaryText()}
-              </button>
-            </form>
+            <CreateAffiliateCodeForm
+              handleCreateReferralCode={handleCreateReferralCode}
+              recentlyAddedCodes={recentlyAddedCodes}
+              setRecentlyAddedCodes={setRecentlyAddedCodes}
+              callAfterSuccess={close}
+            />
           </div>
         </Modal>
         <Card
