@@ -375,7 +375,7 @@ function AffiliatesStats({
                           {formatDate(rebate.timestamp)}
                         </td>
                         <td className="table-head" data-label="Amount">
-                          {formatAmount(rebate.amount, tokenInfo.decimals, 4, true)} {tokenInfo.symbol}
+                          {formatAmount(rebate.amount, tokenInfo.decimals, 6, true)} {tokenInfo.symbol}
                         </td>
                         <td className="table-head" data-label="Transaction">
                           <a
