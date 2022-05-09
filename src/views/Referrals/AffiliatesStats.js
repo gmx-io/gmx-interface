@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { FiPlus } from "react-icons/fi";
+import cx from "classnames";
 import { useCopyToClipboard } from "react-use";
 import { IoWarningOutline } from "react-icons/io5";
-
 import { BiCopy, BiErrorCircle } from "react-icons/bi";
-import cx from "classnames";
 import Card from "../../components/Common/Card";
 import Modal from "../../components/Modal/Modal";
 import Tooltip from "../../components/Tooltip/Tooltip";
@@ -33,8 +32,6 @@ import {
   tierRebateInfo,
 } from "./ReferralsHelper";
 
-import Checkbox from "../../components/Checkbox/Checkbox";
-
 function AffiliatesStats({
   account,
   referralsData,
@@ -45,13 +42,9 @@ function AffiliatesStats({
 }) {
   const [referralCode, setReferralCode] = useState("");
   const [isAdding, setIsAdding] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
-
-  const [confirmCreateReferralCode, setConfirmCreateReferralCode] = useState(false);
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const [error, setError] = useState("");
   const addNewModalRef = useRef(null);
-
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
   const debouncedReferralCode = useDebounce(referralCode, 300);
 
@@ -109,15 +102,7 @@ function AffiliatesStats({
     return "Create";
   }
   function isPrimaryEnabled() {
-    if (buttonError) {
-      return false;
-    }
-
-    if (isChecked) {
-      return true;
-    }
-
-    if (error || isAdding) {
+    if (buttonError || error || isAdding) {
       return false;
     }
     return true;
@@ -129,8 +114,6 @@ function AffiliatesStats({
     setReferralCode("");
     setIsAdding(false);
     setError("");
-    setConfirmCreateReferralCode(false);
-    setIsChecked(false);
     setIsAddReferralCodeModalOpen(false);
   };
 
@@ -140,16 +123,13 @@ function AffiliatesStats({
     const { status: takenStatus, info: takenInfo } = await getReferralCodeTakenStatus(account, referralCode, chainId);
 
     if (takenStatus === "all" || takenStatus === "current") {
-      setError(`Referral code is taken.`);
       setIsAdding(false);
     }
     if (takenStatus === "other") {
-      setError(`Referral code is taken on ${chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}`);
-      setConfirmCreateReferralCode(true);
       setIsAdding(false);
     }
 
-    if (takenStatus === "none" || (takenStatus === "other" && isChecked)) {
+    if (takenStatus === "none" || takenStatus === "other") {
       const ownerOnOtherNetwork = takenInfo[chainId === ARBITRUM ? "ownerAvax" : "ownerArbitrum"];
       setIsAdding(true);
       try {
@@ -171,9 +151,9 @@ function AffiliatesStats({
   }
 
   const { cumulativeStats, referrerTotalStats, rebateDistributions, referrerTierInfo } = referralsData;
-  const finalReferrerTotalStats = recentlyAddedCodes.filter(isRecentReferralCodeNotExpired).reduce((acc, cv) => {
-    const addedCodes = referrerTotalStats.map((c) => c.referralCode.trim());
-    if (!addedCodes.includes(cv.referralCode)) {
+  const allReferralCodes = referrerTotalStats.map((c) => c.referralCode.trim());
+  const finalAffiliatesTotalStats = recentlyAddedCodes.filter(isRecentReferralCodeNotExpired).reduce((acc, cv) => {
+    if (!allReferralCodes.includes(cv.referralCode)) {
       acc = acc.concat(cv);
     }
     return acc;
@@ -221,20 +201,13 @@ function AffiliatesStats({
                 placeholder="Enter referral code"
                 className={cx("text-input", { "mb-sm": !error })}
                 value={referralCode}
-                onChange={(e) => {
-                  const { value } = e.target;
+                onChange={({ target }) => {
+                  const { value } = target;
                   setReferralCode(value);
                   setError(getCodeError(value));
                 }}
               />
               {error && <p className="error">{error}</p>}
-              {confirmCreateReferralCode && (
-                <div className="confirm-checkbox">
-                  <Checkbox isChecked={isChecked} setIsChecked={setIsChecked}>
-                    Confirm creating referral code
-                  </Checkbox>
-                </div>
-              )}
               <button type="submit" className="App-cta Exchange-swap-button" disabled={!isPrimaryEnabled()}>
                 {getPrimaryText()}
               </button>
@@ -275,7 +248,7 @@ function AffiliatesStats({
                 </tr>
               </thead>
               <tbody>
-                {finalReferrerTotalStats.map((stat, index) => {
+                {finalAffiliatesTotalStats.map((stat, index) => {
                   const ownerOnOtherChain = stat?.ownerOnOtherChain;
                   let referrerRebate = bigNumberify(0);
                   if (stat && stat.totalRebateUsd && stat.totalRebateUsd.sub && stat.discountUsd) {

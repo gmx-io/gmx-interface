@@ -1,116 +1,26 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { BiEditAlt } from "react-icons/bi";
-import cx from "classnames";
 import Card from "../../components/Common/Card";
 import Modal from "../../components/Modal/Modal";
 import Tooltip from "../../components/Tooltip/Tooltip";
 import { getNativeToken, getToken } from "../../data/Tokens";
-import { formatAmount, formatDate, getExplorerUrl, shortenAddress, useDebounce } from "../../Helpers";
+import { formatAmount, formatDate, getExplorerUrl, shortenAddress } from "../../Helpers";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
-import { CODE_REGEX, getCodeError, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./ReferralsHelper";
-import { encodeReferralCode, setTraderReferralCodeByUser, validateReferralCodeExists } from "../../Api/referrals";
+import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./ReferralsHelper";
 import { JoinReferralCodeForm } from "./JoinReferralCode";
 
-function TradersStats({
-  account,
-  referralsData,
-  traderTier,
-  chainId,
-  library,
-  userReferralCodeString,
-  setPendingTxns,
-  pendingTxns,
-}) {
+function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
   const { referralTotalStats, discountDistributions } = referralsData;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [referralCodeExists, setReferralCodeExists] = useState(true);
-  const [isValidating, setIsValidating] = useState(false);
-  const [editReferralCode, setEditReferralCode] = useState("");
-  const [isUpdateSubmitting, setIsUpdateSubmitting] = useState(false);
   const [error, setError] = useState("");
   const editModalRef = useRef(null);
-  const debouncedEditReferralCode = useDebounce(editReferralCode, 300);
 
   const open = () => setIsEditModalOpen(true);
   const close = () => {
-    setEditReferralCode("");
-    setIsUpdateSubmitting(false);
-    setError("");
     setIsEditModalOpen(false);
+    setError("");
   };
-  function handleUpdateReferralCode(event) {
-    event.preventDefault();
-    setIsUpdateSubmitting(true);
-    const referralCodeHex = encodeReferralCode(editReferralCode);
-    return setTraderReferralCodeByUser(chainId, referralCodeHex, library, {
-      account,
-      successMsg: `Referral code updated!`,
-      failMsg: "Referral code updated failed.",
-      setPendingTxns,
-      pendingTxns,
-    })
-      .then(() => {
-        setIsEditModalOpen(false);
-      })
-      .finally(() => {
-        setIsUpdateSubmitting(false);
-      });
-  }
-  function getPrimaryText() {
-    if (editReferralCode === userReferralCodeString) {
-      return "Referral Code is same";
-    }
-    if (isUpdateSubmitting) {
-      return "Updating...";
-    }
-    if (debouncedEditReferralCode === "") {
-      return "Enter Referral Code";
-    }
-    if (isValidating) {
-      return `Checking code...`;
-    }
-    if (!referralCodeExists) {
-      return `Referral Code does not exist`;
-    }
-
-    return "Update";
-  }
-  function isPrimaryEnabled() {
-    if (
-      debouncedEditReferralCode === "" ||
-      isUpdateSubmitting ||
-      isValidating ||
-      !referralCodeExists ||
-      editReferralCode === userReferralCodeString
-    ) {
-      return false;
-    }
-    return true;
-  }
-
-  useEffect(() => {
-    let cancelled = false;
-    async function checkReferralCode() {
-      if (debouncedEditReferralCode === "" || !CODE_REGEX.test(debouncedEditReferralCode)) {
-        setIsValidating(false);
-        setReferralCodeExists(false);
-        return;
-      }
-
-      setIsValidating(true);
-      const codeExists = await validateReferralCodeExists(debouncedEditReferralCode, chainId);
-      if (!cancelled) {
-        setReferralCodeExists(codeExists);
-        setIsValidating(false);
-      }
-    }
-    checkReferralCode();
-    return () => {
-      cancelled = true;
-    };
-  }, [debouncedEditReferralCode, chainId]);
-
   return (
     <div className="rebate-container">
       <div className="referral-stats">

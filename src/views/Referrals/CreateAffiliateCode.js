@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import cx from "classnames";
-import { ARBITRUM, AVALANCHE, helperToast, useDebounce } from "../../Helpers";
+import { ARBITRUM, helperToast, useDebounce } from "../../Helpers";
 import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./ReferralsHelper";
-import Checkbox from "../../components/Checkbox/Checkbox";
 
 function CreateAffiliateCode({
   account,
@@ -15,10 +14,7 @@ function CreateAffiliateCode({
 }) {
   const [referralCode, setReferralCode] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [confirmCreateReferralCode, setConfirmCreateReferralCode] = useState(false);
   const [error, setError] = useState("");
-  const [isChecked, setIsChecked] = useState(false);
-
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
   const debouncedReferralCode = useDebounce(referralCode, 300);
 
@@ -78,9 +74,6 @@ function CreateAffiliateCode({
     if (buttonError) {
       return false;
     }
-    if (isChecked) {
-      return true;
-    }
     if (error || isProcessing) {
       return false;
     }
@@ -92,16 +85,13 @@ function CreateAffiliateCode({
     setIsProcessing(true);
     const { status: takenStatus, info: takenInfo } = await getReferralCodeTakenStatus(account, referralCode, chainId);
     if (takenStatus === "all" || takenStatus === "current") {
-      setError(`Referral code is taken.`);
       setIsProcessing(false);
     }
     if (takenStatus === "other") {
-      setError(`Referral code is taken on ${chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}`);
-      setConfirmCreateReferralCode(true);
       setIsProcessing(false);
     }
 
-    if (takenStatus === "none" || (takenStatus === "other" && isChecked)) {
+    if (takenStatus === "none" || takenStatus === "other") {
       const ownerOnOtherNetwork = takenInfo[chainId === ARBITRUM ? "ownerAvax" : "ownerArbitrum"];
       try {
         const tx = await handleCreateReferralCode(referralCode);
@@ -141,18 +131,7 @@ function CreateAffiliateCode({
                 setError(getCodeError(value));
               }}
             />
-            {error && (
-              <p className="error" style={{ textAlign: "left" }}>
-                {error}
-              </p>
-            )}
-            {confirmCreateReferralCode && (
-              <div className="confirm-checkbox">
-                <Checkbox isChecked={isChecked} setIsChecked={setIsChecked}>
-                  Confirm creating referral code
-                </Checkbox>
-              </div>
-            )}
+            {error && <p className="error">{error}</p>}
             <button className="App-cta Exchange-swap-button" type="submit" disabled={!isPrimaryEnabled()}>
               {getPrimaryText()}
             </button>
