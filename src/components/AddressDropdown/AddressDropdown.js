@@ -9,6 +9,8 @@ import disconnect from "../../img/ic_sign_out_16.svg";
 import { FaChevronDown } from "react-icons/fa";
 import Davatar from "@davatar/react";
 
+import { Trans, t } from '@lingui/macro'
+
 function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSettings, openSettings }) {
   const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
   const breakpoint = useBreakpoint();
@@ -31,30 +33,30 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
               className="menu-item"
               onClick={() => {
                 copyToClipboard(account);
-                helperToast.success("Address copied to your clipboard");
+                helperToast.success(t`Address copied to your clipboard`);
               }}
             >
               <img src={copy} alt="Copy user address" />
-              <p>Copy Address</p>
+              <p><Trans>Copy Address</Trans></p>
             </div>
           </Menu.Item>
           <Menu.Item>
             <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="menu-item">
               <img src={externalLink} alt="Open address in explorer" />
-              <p>View in Explorer</p>
+              <p><Trans>View in Explorer</Trans></p>
             </a>
           </Menu.Item>
 
           <Menu.Item>
             <div className="menu-item" onClick={openSettings}>
               <img src={settings} alt="Open settings" />
-              <p>Settings</p>
+              <p><Trans>Settings</Trans></p>
             </div>
           </Menu.Item>
           <Menu.Item>
             <div className="menu-item" onClick={disconnectAccountAndCloseSettings}>
               <img src={disconnect} alt="Disconnect the wallet" />
-              <p>Disconnect</p>
+              <p><Trans>Disconnect</Trans></p>
             </div>
           </Menu.Item>
         </Menu.Items>

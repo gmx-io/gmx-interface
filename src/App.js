@@ -110,7 +110,7 @@ i18n.load({
   'en': enMessages,
   'es': esMessages
 })
-i18n.activate('es')
+i18n.activate('en')
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
