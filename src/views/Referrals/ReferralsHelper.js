@@ -9,7 +9,7 @@ import {
 } from "../../Helpers";
 import { encodeReferralCode, getReferralCodeOwner } from "../../Api/referrals";
 
-export const CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
+export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 
 export function isRecentReferralCodeNotExpired(referralCodeInfo) {
   const REFERRAL_DATA_MAX_TIME = 60000 * 5; // 5 minutes
@@ -99,7 +99,7 @@ export function getCodeError(value) {
     return `The referral code can't be more than ${MAX_REFERRAL_CODE_LENGTH} characters.`;
   }
 
-  if (!CODE_REGEX.test(trimmedValue)) {
+  if (!REFERRAL_CODE_REGEX.test(trimmedValue)) {
     return "Only letters, numbers and underscores are allowed.";
   }
   return "";

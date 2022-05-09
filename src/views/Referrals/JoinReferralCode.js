@@ -1,23 +1,17 @@
 import { useEffect, useRef, useState } from "react";
+import cx from "classnames";
 import { encodeReferralCode, setTraderReferralCodeByUser, validateReferralCodeExists } from "../../Api/referrals";
-import Loader from "../../components/Common/Loader";
-import { CODE_REGEX } from "./ReferralsHelper";
+import { getCodeError, REFERRAL_CODE_REGEX } from "./ReferralsHelper";
 import { useDebounce } from "../../Helpers";
 import { useWeb3React } from "@web3-react/core";
 
 function JoinReferralCode({ setPendingTxns, pendingTxns }) {
-  const [isJoined, setIsJoined] = useState(false);
-  if (isJoined) return <Loader />;
   return (
     <div className="referral-card section-center mt-medium">
       <h2 className="title">Enter Referral Code</h2>
       <p className="sub-title">Please input a referral code to benefit from fee discounts.</p>
       <div className="card-action">
-        <JoinReferralCodeForm
-          afterSuccess={() => setIsJoined(true)}
-          setPendingTxns={setPendingTxns}
-          pendingTxns={pendingTxns}
-        />
+        <JoinReferralCodeForm setPendingTxns={setPendingTxns} pendingTxns={pendingTxns} />
       </div>
     </div>
   );
@@ -26,9 +20,9 @@ function JoinReferralCode({ setPendingTxns, pendingTxns }) {
 export function JoinReferralCodeForm({
   setPendingTxns,
   pendingTxns,
+  afterSuccess,
   userReferralCodeString = "",
   type = "join",
-  afterSuccess,
 }) {
   const { account, library, chainId } = useWeb3React();
   const [referralCode, setReferralCode] = useState("");
@@ -36,11 +30,11 @@ export function JoinReferralCodeForm({
   const [isValidating, setIsValidating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [referralCodeExists, setReferralCodeExists] = useState(true);
-  const debouncedEditReferralCode = useDebounce(referralCode, 300);
+  const debouncedReferralCode = useDebounce(referralCode, 300);
 
   function getPrimaryText() {
     const isEdit = type === "edit";
-    if (isEdit && referralCode === userReferralCodeString) {
+    if (isEdit && debouncedReferralCode === userReferralCodeString) {
       return "Referral Code is same";
     }
     if (isEdit && isSubmitting) {
@@ -50,7 +44,7 @@ export function JoinReferralCodeForm({
     if (isSubmitting) {
       return "Adding...";
     }
-    if (debouncedEditReferralCode === "") {
+    if (debouncedReferralCode === "") {
       return "Enter Referral Code";
     }
     if (isValidating) {
@@ -64,49 +58,56 @@ export function JoinReferralCodeForm({
   }
   function isPrimaryEnabled() {
     if (
-      debouncedEditReferralCode === "" ||
+      debouncedReferralCode === "" ||
       isSubmitting ||
       isValidating ||
       !referralCodeExists ||
-      referralCode === userReferralCodeString
+      debouncedReferralCode === userReferralCodeString
     ) {
       return false;
     }
     return true;
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
+    const isEdit = type === "edit";
     event.preventDefault();
     setIsSubmitting(true);
     const referralCodeHex = encodeReferralCode(referralCode);
-    return setTraderReferralCodeByUser(chainId, referralCodeHex, library, {
-      account,
-      successMsg: `Referral code updated!`,
-      failMsg: "Referral code updated failed.",
-      setPendingTxns,
-      pendingTxns,
-    })
-      .then(() => {
-        if (afterSuccess) {
-          afterSuccess();
-        }
-      })
-      .finally(() => {
-        setIsSubmitting(false);
+    try {
+      const tx = await setTraderReferralCodeByUser(chainId, referralCodeHex, library, {
+        account,
+        successMsg: isEdit ? "Referral code updated!" : "Referral code added!",
+        failMsg: isEdit ? "Referral code updated failed." : "Adding referral code failed.",
+        setPendingTxns,
+        pendingTxns,
       });
+      if (afterSuccess) {
+        afterSuccess();
+      }
+      const receipt = await tx.wait();
+      if (receipt.status === 1) {
+        setReferralCode("");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+      setIsValidating(false);
+    }
   }
 
   useEffect(() => {
     let cancelled = false;
     async function checkReferralCode() {
-      if (debouncedEditReferralCode === "" || !CODE_REGEX.test(debouncedEditReferralCode)) {
+      if (debouncedReferralCode === "" || !REFERRAL_CODE_REGEX.test(debouncedReferralCode)) {
         setIsValidating(false);
         setReferralCodeExists(false);
         return;
       }
 
       setIsValidating(true);
-      const codeExists = await validateReferralCodeExists(debouncedEditReferralCode, chainId);
+      const codeExists = await validateReferralCodeExists(debouncedReferralCode, chainId);
       if (!cancelled) {
         setReferralCodeExists(codeExists);
         setIsValidating(false);
@@ -116,7 +117,7 @@ export function JoinReferralCodeForm({
     return () => {
       cancelled = true;
     };
-  }, [debouncedEditReferralCode, chainId]);
+  }, [debouncedReferralCode, chainId]);
 
   useEffect(() => {
     inputRef.current.focus();
