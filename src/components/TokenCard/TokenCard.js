@@ -10,6 +10,8 @@ import { useWeb3React } from "@web3-react/core";
 
 import APRLabel from "../APRLabel/APRLabel";
 
+import { Trans } from '@lingui/macro'
+
 export default function TokenCard() {
   const { chainId } = useChainId();
   const { active } = useWeb3React();
@@ -38,19 +40,19 @@ export default function TokenCard() {
         </div>
         <div className="Home-token-card-option-info">
           <div className="Home-token-card-option-title">
-            GMX is the utility and governance token, and also accrues 30% of the platform's generated fees.
+            <Trans>GMX is the utility and governance token, and also accrues 30% of the platform's generated fees.</Trans>
           </div>
           <div className="Home-token-card-option-apr">
-            Arbitrum APR: <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />, Avalanche APR:{" "}
+            <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />, <Trans>Avalanche APR:</Trans>{" "}
             <APRLabel chainId={AVALANCHE} label="gmxAprTotal" key="AVALANCHE" />
           </div>
           <div className="Home-token-card-option-action">
             <div className="buy">
               <Link to="/buy_gmx" className="default-btn" onClick={() => changeNetwork(ARBITRUM)}>
-                Buy on Arbitrum
+                <Trans>Buy on Arbitrum</Trans>
               </Link>
               <Link to="/buy_gmx" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>
-                Buy on Avalanche
+                <Trans>Buy on Avalanche</Trans>
               </Link>
             </div>
             <a
@@ -59,7 +61,7 @@ export default function TokenCard() {
               rel="noreferrer"
               className="default-btn read-more"
             >
-              Read more
+              <Trans>Read more</Trans>
             </a>
           </div>
         </div>
@@ -70,19 +72,19 @@ export default function TokenCard() {
         </div>
         <div className="Home-token-card-option-info">
           <div className="Home-token-card-option-title">
-            GLP is the platform's liquidity provider token. Accrues 70% of its generated fees.
+            <Trans>GLP is the platform's liquidity provider token. Accrues 70% of its generated fees.</Trans>
           </div>
           <div className="Home-token-card-option-apr">
-            Arbitrum APR: <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />, Avalanche APR:{" "}
+            <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />, <Trans>Avalanche APR:</Trans>{" "}
             <APRLabel chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" />
           </div>
           <div className="Home-token-card-option-action">
             <div className="buy">
               <Link to="/buy_glp" className="default-btn" onClick={() => changeNetwork(ARBITRUM)}>
-                Buy on Arbitrum
+                <Trans>Buy on Arbitrum</Trans>
               </Link>
               <Link to="/buy_glp" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>
-                Buy on Avalanche
+                <Trans>Buy on Avalanche</Trans>
               </Link>
             </div>
             <a
@@ -91,7 +93,7 @@ export default function TokenCard() {
               rel="noreferrer"
               className="default-btn read-more"
             >
-              Read more
+              <Trans>Read more</Trans>
             </a>
           </div>
         </div>
