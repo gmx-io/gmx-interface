@@ -6,6 +6,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: en\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
 
 #: src/App.js:416
 #: src/App.js:433
@@ -16,12 +22,201 @@ msgstr ""
 msgid "ABOUT"
 msgstr ""
 
+#: src/components/Glp/GlpSwap.js:729
+msgid "APR"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:936
+#: src/components/Glp/GlpSwap.js:943
+msgid "AVAILABLE"
+msgstr ""
+
 #: src/App.js:227
 msgid "About"
 msgstr ""
 
+#: src/views/Actions/Actions.js:86
+msgid "Account"
+msgstr ""
+
+#: src/views/Actions/Actions.js:144
+msgid "Actions"
+msgstr ""
+
+#: src/views/Dashboard/AssetDropdown.js:67
+msgid "Add to Metamask"
+msgstr ""
+
+#: src/components/AddressDropdown/AddressDropdown.js:36
+msgid "Address copied to your clipboard"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:201
+#: src/views/BuyGMX/BuyGMX.js:233
+msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
+msgstr ""
+
+#: src/App.js:858
+msgid "Allowed Slippage"
+msgstr ""
+
+#: src/views/Home/Home.js:210
+msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:174
+msgid "Approve GMX"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:506
+msgid "Approve {0}"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:503
+msgid "Approving {0}..."
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:177
+msgid "Approving..."
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js:46
+#: src/components/TokenCard/TokenCard.js:78
+msgid "Arbitrum APR:"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:1242
+msgid "Available"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:939
+#: src/components/Glp/GlpSwap.js:1217
+msgid "Available amount to deposit into GLP."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:949
+#: src/components/Glp/GlpSwap.js:1247
+msgid "Available amount to withdraw from GLP."
+msgstr ""
+
+#: src/views/Home/Home.js:239
+msgid "Available on your preferred network"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:801
+msgid "Available:"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:176
+msgid "Avalanche"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js:46
+#: src/components/TokenCard/TokenCard.js:78
+msgid "Avalanche APR:"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:126
+msgid "Avax is needed on Avalanche to purchase GMX."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:774
+#: src/components/Glp/GlpSwap.js:833
+#: src/components/Glp/GlpSwap.js:849
+msgid "Balance:"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:83
+#: src/views/BuyGMX/BuyGMX.js:159
+msgid "Banxa"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:183
+msgid "Begin Transfer"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:114
+#: src/views/BuyGMX/BuyGMX.js:185
+msgid "Binance"
+msgstr ""
+
 #: src/App.js:212
 msgid "Buy"
+msgstr ""
+
+#: src/views/BuyGlp/BuyGlp.js:33
+msgid "Buy / Sell GLP"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:124
+msgid "Buy / Transfer AVAX"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:48
+msgid "Buy / Transfer ETH"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:142
+msgid "Buy AVAX"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:66
+msgid "Buy ETH"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:100
+#: src/components/Glp/GlpSwap.js:513
+#: src/components/Glp/GlpSwap.js:766
+msgid "Buy GLP"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:196
+#: src/views/BuyGMX/BuyGMX.js:228
+msgid "Buy GMX"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:255
+msgid "Buy GMX Bonds"
+msgstr ""
+
+#: src/views/Buy/Buy.js:25
+msgid "Buy GMX or GLP"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:544
+msgid "Buy failed."
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js:52
+#: src/components/TokenCard/TokenCard.js:84
+msgid "Buy on Arbitrum"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js:55
+#: src/components/TokenCard/TokenCard.js:87
+msgid "Buy on Avalanche"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:543
+msgid "Buy submitted."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:1125
+#: src/components/Glp/GlpSwap.js:1284
+msgid "Buy with {0}"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:510
+msgid "Buying..."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:881
+#: src/components/Glp/GlpSwap.js:895
+msgid "Check the \"Save on Fees\" section below to get the lowest fee percentages."
+msgstr ""
+
+#: src/App.js:844
+msgid "Coinbase Wallet"
 msgstr ""
 
 #: src/App.js:427
@@ -33,15 +228,45 @@ msgid "Connect"
 msgstr ""
 
 #: src/App.js:306
+#: src/components/Glp/GlpSwap.js:489
 msgid "Connect Wallet"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:228
+msgid "Continue"
+msgstr ""
+
+#: src/components/AddressDropdown/AddressDropdown.js:40
+msgid "Copy Address"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:1097
+#: src/components/Glp/GlpSwap.js:1227
+msgid "Current Pool Amount"
 msgstr ""
 
 #: src/App.js:202
 msgid "Dashboard"
 msgstr ""
 
+#: src/views/Home/Home.js:164
+msgid "Decentralized<0/>Perpetual Exchange"
+msgstr ""
+
+#: src/components/AddressDropdown/AddressDropdown.js:59
+msgid "Disconnect"
+msgstr ""
+
+#: src/App.js:872
+msgid "Display PnL after fees"
+msgstr ""
+
 #: src/App.js:165
 msgid "EARN"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:50
+msgid "ETH is needed on Arbitrum to purchase GMX."
 msgstr ""
 
 #: src/App.js:207
@@ -52,12 +277,92 @@ msgstr ""
 msgid "Ecosystem"
 msgstr ""
 
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:134
+msgid "Enter Receiver Address"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:423
+#: src/components/Glp/GlpSwap.js:426
+msgid "Enter an amount"
+msgstr ""
+
+#: src/views/Home/Home.js:220
+msgid "Enter and exit positions with minimal spread and zero price impact. Get the optimal price without incurring additional costs."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:916
+msgid "Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:922
+msgid "Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:744
+msgid "Escrowed GMX APR"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:960
+msgid "FEES"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:871
+#: src/components/Glp/GlpSwap.js:1270
+#: src/components/Glp/GlpSwap.js:1273
+msgid "Fees"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:921
+msgid "Fees may vary depending on which asset you sell GLP for."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:915
+msgid "Fees may vary depending on which asset you use to buy GLP."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:966
+msgid "Fees will be shown once you have entered an amount in the order form."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:950
+#: src/components/Glp/GlpSwap.js:1248
+msgid "Funds not utilized by current open positions."
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js:75
+msgid "GLP is the platform's liquidity provider token. Accrues 70% of its generated fees."
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:260
+msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
+msgstr ""
+
+#: src/views/Home/Home.js:240
+msgid "GMX is currently live on Arbitrum and Avalanche."
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js:43
+msgid "GMX is the utility and governance token, and also accrues 30% of the platform's generated fees."
+msgstr ""
+
+#: src/components/Common/SEO.js:8
+msgid "GMX | Decentralized Perpetual Exchange"
+msgstr ""
+
 #: src/App.js:160
 msgid "HOME"
 msgstr ""
 
 #: src/App.js:190
 msgid "Home"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:111
+msgid "Hop"
+msgstr ""
+
+#: src/App.js:877
+msgid "Include PnL in leverage display"
 msgstr ""
 
 #: src/App.js:431
@@ -68,16 +373,305 @@ msgstr ""
 msgid "Install MetaMask"
 msgstr ""
 
+#: src/components/Glp/GlpSwap.js:446
+msgid "Insufficient GLP balance"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:456
+msgid "Insufficient liquidity"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:432
+msgid "Insufficient {0} balance"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:140
+msgid "Invalid Receiver"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:137
+msgid "Invalid Receiver Address"
+msgstr ""
+
+#: src/App.js:501
+msgid "Invalid slippage value"
+msgstr ""
+
+#: src/views/Home/Home.js:174
+#: src/views/Home/Home.js:251
+#: src/views/Home/Home.js:264
+msgid "Launch Exchange"
+msgstr ""
+
+#: src/views/Actions/Actions.js:98
+#: src/views/Actions/Actions.js:102
+msgid "Long"
+msgstr ""
+
+#: src/views/Actions/Actions.js:102
+msgid "Loss"
+msgstr ""
+
+#: src/components/BuyInputSection/BuyInputSection.js:50
+#: src/components/InputSection/InputSection.js:43
+msgid "MAX"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:496
+msgid "Max Capacity for {0} Reached"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:1101
+#: src/components/Glp/GlpSwap.js:1231
+msgid "Max Pool Capacity"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:1043
+msgid "Max pool capacity reached for {0}"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:1189
+msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
+msgstr ""
+
+#: src/App.js:511
+msgid "Max slippage precision is 0.01%"
+msgstr ""
+
+#: src/App.js:840
+msgid "MetaMask"
+msgstr ""
+
 #: src/App.js:410
 msgid "MetaMask not detected."
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:104
+#: src/views/BuyGMX/BuyGMX.js:182
+msgid "Multiswap"
+msgstr ""
+
+#: src/views/Actions/Actions.js:90
+msgid "No PnLs found"
+msgstr ""
+
+#: src/views/BuyGlp/BuyGlp.js:43
+msgid "Note that there is a minimum holding time of 15 minutes after a purchase."
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:264
+msgid "Olympus Pro"
+msgstr ""
+
+#: src/views/Home/Home.js:189
+msgid "Open Interest"
+msgstr ""
+
+#: src/views/Dashboard/AssetDropdown.js:33
+msgid "Open in Coingecko"
+msgstr ""
+
+#: src/views/Dashboard/AssetDropdown.js:43
+#: src/views/Dashboard/AssetDropdown.js:49
+msgid "Open in Explorer"
+msgstr ""
+
+#: src/views/Home/Home.js:230
+msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
+msgstr ""
+
+#: src/views/Actions/Actions.js:131
+msgid "Orders"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:932
+msgid "PRICE"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:610
+#: src/components/Glp/GlpSwap.js:785
+msgid "Pay"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:1274
+msgid "Please enter an amount to see fee percentages"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:1046
+msgid "Please mint GLP using another token"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:234
+msgid "Please only use this for full account transfers."
+msgstr ""
+
+#: src/views/Actions/Actions.js:89
+msgid "PnL"
+msgstr ""
+
+#: src/views/Actions/Actions.js:112
+msgid "Positions"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:696
+msgid "Price"
+msgstr ""
+
+#: src/views/Actions/Actions.js:98
+msgid "Profit"
+msgstr ""
+
+#: src/views/BuyGlp/BuyGlp.js:35
+msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:215
+#: src/views/BuyGMX/BuyGMX.js:247
+msgid "Purchase GMX"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js:64
+#: src/components/TokenCard/TokenCard.js:96
+msgid "Read more"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:611
+#: src/components/Glp/GlpSwap.js:857
+msgid "Receive"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:251
+msgid "Receiver Address"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:269
+msgid "Receiver has not staked GLP tokens before"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:268
+msgid "Receiver has not staked GMX tokens before"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:419
+msgid "Redemption time not yet reached"
+msgstr ""
+
+#: src/views/Home/Home.js:207
+msgid "Reduce Liquidation Risks"
 msgstr ""
 
 #: src/App.js:217
 msgid "Referrals"
 msgstr ""
 
+#: src/components/Glp/GlpSwap.js:711
+msgid "Reserved"
+msgstr ""
+
+#: src/App.js:881
+msgid "Save"
+msgstr ""
+
+#: src/views/Home/Home.js:217
+msgid "Save on Costs"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:143
+msgid "Self-transfer not supported"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:100
+#: src/components/Glp/GlpSwap.js:513
+#: src/components/Glp/GlpSwap.js:766
+msgid "Sell GLP"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:571
+msgid "Sell failed."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:1125
+#: src/components/Glp/GlpSwap.js:1289
+msgid "Sell for {0}"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:570
+msgid "Sell submitted!"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:510
+msgid "Selling..."
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:266
+msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:263
+msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
+msgstr ""
+
 #: src/App.js:234
+#: src/components/AddressDropdown/AddressDropdown.js:53
 msgid "Settings"
+msgstr ""
+
+#: src/views/Actions/Actions.js:98
+#: src/views/Actions/Actions.js:102
+msgid "Short"
+msgstr ""
+
+#: src/views/Home/Home.js:227
+msgid "Simple Swaps"
+msgstr ""
+
+#: src/App.js:505
+msgid "Slippage should be less than 5%"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:1050
+msgid "Swap on {0}"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:101
+#: src/views/BuyGMX/BuyGMX.js:179
+msgid "Synapse"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:931
+msgid "TOKEN"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:236
+msgid "This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account."
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:128
+msgid "To purchase GMX on <0>Arbitrum <1/></0>, please change your network."
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:52
+msgid "To purchase GMX on <0>Avalanche <1/></0>, please change your network."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:880
+msgid "To reduce fees, select a different asset to pay with."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:894
+msgid "To reduce fees, select a different asset to receive."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:754
+msgid "Total Supply"
+msgstr ""
+
+#: src/views/Home/Home.js:182
+msgid "Total Trading Volume"
+msgstr ""
+
+#: src/views/Home/Home.js:196
+msgid "Total Users"
 msgstr ""
 
 #: src/App.js:196
@@ -86,7 +680,161 @@ msgstr ""
 msgid "Trade"
 msgstr ""
 
+#: src/views/Home/Home.js:171
+msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
+msgstr ""
+
+#: src/components/Common/SEO.js:9
+msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet on Arbitrum and Avalanche."
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:165
+msgid "Transfer AVAX"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:232
+msgid "Transfer Account"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:89
+msgid "Transfer ETH"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:150
+msgid "Transfer already initiated"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:203
+msgid "Transfer failed."
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:202
+msgid "Transfer submitted!"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:180
+msgid "Transferring"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:240
+msgid "Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:238
+msgid "Transfers are only supported if the receiving account has not staked GMX or GLP tokens before."
+msgstr ""
+
+#: src/views/Home/Home.js:276
+msgid "Two tokens create our ecosystem"
+msgstr ""
+
+#: src/App.js:542
+msgid "Txn failed."
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:171
+msgid "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees."
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:131
+msgid "Vested GLP not withdrawn"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:128
+msgid "Vested GMX not withdrawn"
+msgstr ""
+
+#: src/App.js:544
+#: src/App.js:556
+msgid "View"
+msgstr ""
+
+#: src/views/BuyGlp/BuyGlp.js:45
+msgid "View <0>staking</0> page."
+msgstr ""
+
+#: src/components/AddressDropdown/AddressDropdown.js:46
+msgid "View in Explorer"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:957
+msgid "WALLET"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:871
+msgid "WARNING: High Fees"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:500
+msgid "Waiting for Approval"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:700
+#: src/components/Glp/GlpSwap.js:1261
+msgid "Wallet"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:125
+msgid "Wallet is not connected"
+msgstr ""
+
+#: src/App.js:848
+msgid "WalletConnect"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:146
+msgid "You can buy AVAX directly on <0>Avalanche</0> using Banxa:"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:70
+msgid "You can buy ETH directly on <0>Arbitrum</0> using Banxa:"
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:169
+msgid "You can transfer AVAX to Avalanche using any of the below options."
+msgstr ""
+
+#: src/views/BuyGMX/BuyGMX.js:93
+msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:244
+msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
+msgstr ""
+
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:224
+msgid "Your transfer has been initiated."
+msgstr ""
+
 #: src/App.js:416
 #: src/App.js:433
 msgid "to start using GMX"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:756
+msgid "{0} GLP (${1})"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:545
+msgid "{0} GLP bought with {1} {2}!"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:722
+msgid "{0} GLP have been reserved for vesting."
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:572
+msgid "{0} GLP sold for {1} {2}!"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:439
+msgid "{0} pool exceeded, try different token"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:633
+msgid "{0} selected in order form"
+msgstr ""
+
+#: src/components/Glp/GlpSwap.js:739
+msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr ""
