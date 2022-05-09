@@ -7,7 +7,7 @@ import Checkbox from "../../components/Checkbox/Checkbox";
 function CreateAffiliateCode({
   account,
   handleCreateReferralCode,
-  isWalletConnected,
+  active,
   connectWallet,
   setRecentlyAddedCodes,
   recentlyAddedCodes,
@@ -127,7 +127,7 @@ function CreateAffiliateCode({
         Looks like you don't have a referral code to share. <br /> Create one now and start earning rebates!
       </p>
       <div className="card-action">
-        {isWalletConnected ? (
+        {active ? (
           <form onSubmit={handleSubmit}>
             <input
               type="text"

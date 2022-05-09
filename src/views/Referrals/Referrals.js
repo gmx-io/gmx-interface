@@ -69,7 +69,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
       return (
         <CreateAffiliateCode
           account={account}
-          isWalletConnected={active}
+          active={active}
           handleCreateReferralCode={handleCreateReferralCode}
           library={library}
           chainId={chainId}
@@ -85,12 +85,13 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   }
 
   function renderTradersTab() {
+    if (loading) return <Loader />;
     if (!userReferralCodeString || !account) {
       return (
         <JoinReferralCode
           account={account}
           connectWallet={connectWallet}
-          isWalletConnected={active}
+          active={active}
           library={library}
           chainId={chainId}
           setPendingTxns={setPendingTxns}
@@ -98,7 +99,6 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
         />
       );
     }
-    if (!referralsData) return <Loader />;
     return (
       <TradersStats
         account={account}

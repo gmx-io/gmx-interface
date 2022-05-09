@@ -51,9 +51,6 @@ export async function getReferralCodeTakenStatus(account, referralCode, chainId)
 }
 
 export function getTierIdDisplay(tierId) {
-  if (!tierId) {
-    return "";
-  }
   return Number(tierId) + 1;
 }
 

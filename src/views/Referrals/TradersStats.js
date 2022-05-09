@@ -10,6 +10,7 @@ import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import { CODE_REGEX, getCodeError, getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./ReferralsHelper";
 import { encodeReferralCode, setTraderReferralCodeByUser, validateReferralCodeExists } from "../../Api/referrals";
+import { JoinReferralCodeForm } from "./JoinReferralCode";
 
 function TradersStats({
   account,
@@ -153,25 +154,13 @@ function TradersStats({
           onAfterOpen={() => editModalRef.current?.focus()}
         >
           <div className="edit-referral-modal">
-            <form onSubmit={handleUpdateReferralCode}>
-              <input
-                ref={editModalRef}
-                disabled={isUpdateSubmitting}
-                type="text"
-                placeholder="Enter referral code"
-                className={cx("text-input", { "mb-sm": !error })}
-                value={editReferralCode}
-                onChange={({ target }) => {
-                  const { value } = target;
-                  setEditReferralCode(value);
-                  setError(getCodeError(value));
-                }}
-              />
-              {error && <p className="error">{error}</p>}
-              <button type="submit" className="App-cta Exchange-swap-button" disabled={!isPrimaryEnabled()}>
-                {getPrimaryText()}
-              </button>
-            </form>
+            <JoinReferralCodeForm
+              userReferralCodeString={userReferralCodeString}
+              setPendingTxns={setPendingTxns}
+              pendingTxns={pendingTxns}
+              type="edit"
+              afterSuccess={() => setIsEditModalOpen(false)}
+            />
           </div>
         </Modal>
       </div>
@@ -206,7 +195,7 @@ function TradersStats({
                       <tr key={index}>
                         <td data-label="Date">{formatDate(rebate.timestamp)}</td>
                         <td data-label="Amount">
-                          {formatAmount(rebate.amount, tokenInfo.decimals, 4, true)} {tokenInfo.symbol}
+                          {formatAmount(rebate.amount, tokenInfo.decimals, 6, true)} {tokenInfo.symbol}
                         </td>
                         <td data-label="Transaction">
                           <a
