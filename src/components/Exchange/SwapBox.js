@@ -83,6 +83,7 @@ import longImg from "../../img/long.svg";
 import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
 import { useUserReferralCode } from "../../Api/referrals";
+import { useLocalStorage } from "react-use";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -176,7 +177,7 @@ export default function SwapBox(props) {
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   const { userReferralCode } = useUserReferralCode(library, chainId, account);
-  const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
+  const [userReferralCodeInLocalStorage] = useLocalStorage(REFERRAL_CODE_KEY);
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
