@@ -22,7 +22,7 @@ import Reader from "../../abis/Reader.json";
 const USD_DECIMALS = 30;
 
 export default function Actions() {
-  const account = ethers.utils.getAddress((useParams().account || "").toLowerCase());
+  const { account } = useParams();
   const { active, library } = useWeb3React();
 
   const { chainId } = useChainId();
