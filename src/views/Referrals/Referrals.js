@@ -740,7 +740,7 @@ function AffiliatesInfo({
                                   <div>
                                     This code is not yet registered on{" "}
                                     {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}, you will not receive rebates
-                                    from traders using this code on {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}.
+                                    there.
                                     <br />
                                     <br />
                                     Switch your network to create this code on{" "}

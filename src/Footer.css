@@ -8,7 +8,7 @@
   left: 50%;
   height: 16.8rem;
   bottom: 0;
-  border-top: 1px solid #282B4C;
+  border-top: 1px solid #282b4c;
 }
 
 .Footer-logo {
@@ -28,6 +28,17 @@
   margin: 0 auto;
   display: flex;
   justify-content: center;
+  margin-bottom: 1.548rem;
+}
+.Footer-link {
+  color: #a0a3c4;
+  font-size: 1rem;
+  line-height: 1.2rem;
+  font-weight: normal;
+  text-decoration: none;
+}
+.Footer-link:hover {
+  color: white;
 }
 
 .Footer-social-link-block .App-social-link {
@@ -52,8 +63,11 @@
   font-size: 1.3rem;
   line-height: 1.3rem;
   letter-spacing: -0.41px;
-  color: #A0A3C4;
+  color: #a0a3c4;
   display: block;
+}
+.Footer-links {
+  padding-bottom: 2.5806rem;
 }
 
 @media (max-width: 900px) {

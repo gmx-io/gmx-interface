@@ -65,6 +65,24 @@ export default function Ecosystem() {
                 </div>
               </div>
             </div>
+            <div className="App-card">
+              <div className="App-card-title">GMX Proposals Voting</div>
+              <div className="App-card-divider"></div>
+              <div className="App-card-content">
+                <div className="App-card-row">
+                  <div className="label">Link</div>
+                  <div>
+                    <a href="https://snapshot.org/#/gmx.eth" target="_blank" rel="noopener noreferrer">
+                      https://snapshot.org/#/gmx.eth
+                    </a>
+                  </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">About</div>
+                  <div>GMX Proposals Voting page</div>
+                </div>
+              </div>
+            </div>
           </div>
           <div className="Tab-title-section">
             <div className="Page-title">Community Projects</div>
