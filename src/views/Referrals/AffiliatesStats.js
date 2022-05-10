@@ -67,7 +67,7 @@ function AffiliatesStats({
         <InfoCard
           label="Total Rebates"
           tooltipText="Rebates earned by this account as an affiliate."
-          data={getUSDValue(referrerRebates)}
+          data={getUSDValue(referrerRebates, 4)}
         />
       </div>
       <div className="list">

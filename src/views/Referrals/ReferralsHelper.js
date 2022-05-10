@@ -87,8 +87,8 @@ export const getSampleReferrarStat = (code, ownerOnOtherNetwork, account) => {
   };
 };
 
-export function getUSDValue(value) {
-  return `$${formatAmount(value, USD_DECIMALS, 2, true, "0.00")}`;
+export function getUSDValue(value, decimals = 2) {
+  return `$${formatAmount(value, USD_DECIMALS, decimals, true, "0.00")}`;
 }
 
 export function getCodeError(value) {
