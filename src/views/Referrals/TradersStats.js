@@ -28,7 +28,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         <InfoCard
           label="Total Rebates"
           tooltipText="Rebates earned by this account as a trader."
-          data={getUSDValue(referralTotalStats?.discountUsd)}
+          data={getUSDValue(referralTotalStats?.discountUsd, 4)}
         />
         <InfoCard
           label="Active Referral Code"

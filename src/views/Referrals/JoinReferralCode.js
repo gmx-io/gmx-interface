@@ -40,7 +40,7 @@ export function JoinReferralCodeForm({
   function getPrimaryText() {
     const isEdit = type === "edit";
     if (isEdit && debouncedReferralCode === userReferralCodeString) {
-      return "Referral Code is same";
+      return "Same as current active code";
     }
     if (isEdit && isSubmitting) {
       return "Updating...";
