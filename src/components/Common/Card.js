@@ -7,7 +7,7 @@ function Card({ title, children, className, tooltipText }) {
       {tooltipText ? (
         <Tooltip
           handle={<div className="card-header">{title}</div>}
-          position="center-bottom"
+          position="left-bottom"
           renderContent={() => tooltipText}
         />
       ) : (

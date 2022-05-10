@@ -71,7 +71,7 @@ export default function Actions() {
     infoTokens,
     false,
     false,
-    account,
+    checkSummedAccount,
     undefined,
     undefined
   );
