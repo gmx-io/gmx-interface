@@ -606,7 +606,7 @@ function AffiliatesInfo({
     }
   }
 
-  let { cumulativeStats, referrerTotalStats, discountDistributions, referrerTierInfo } = referralsData;
+  let { cumulativeStats, referrerTotalStats, rebateDistributions, referrerTierInfo } = referralsData;
   const finalReferrerTotalStats = recentlyAddedCodes.filter(isRecentReferralCodeNotExpired).reduce((acc, cv) => {
     const addedCodes = referrerTotalStats.map((c) => c.referralCode.trim());
     if (!addedCodes.includes(cv.referralCode)) {
@@ -740,7 +740,7 @@ function AffiliatesInfo({
                                   <div>
                                     This code is not yet registered on{" "}
                                     {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}, you will not receive rebates
-                                    from traders using this code on {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}.
+                                    there.
                                     <br />
                                     <br />
                                     Switch your network to create this code on{" "}
@@ -778,7 +778,7 @@ function AffiliatesInfo({
           </div>
         </Card>
       </div>
-      {discountDistributions?.length > 0 ? (
+      {rebateDistributions?.length > 0 ? (
         <div className="reward-history">
           <Card title="Rebates Distribution History" tooltipText="Rebates are airdropped weekly.">
             <div className="table-wrapper">
@@ -797,7 +797,7 @@ function AffiliatesInfo({
                   </tr>
                 </thead>
                 <tbody>
-                  {discountDistributions.map((rebate, index) => {
+                  {rebateDistributions.map((rebate, index) => {
                     let tokenInfo;
                     try {
                       tokenInfo = getToken(chainId, rebate.token);
@@ -847,7 +847,7 @@ function TradersInfo({
   setPendingTxns,
   pendingTxns,
 }) {
-  const { referralTotalStats, rebateDistributions } = referralsData;
+  const { referralTotalStats, discountDistributions } = referralsData;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [referralCodeExists, setReferralCodeExists] = useState(true);
   const [isValidating, setIsValidating] = useState(false);
@@ -1002,7 +1002,7 @@ function TradersInfo({
           </div>
         </Modal>
       </div>
-      {rebateDistributions.length > 0 ? (
+      {discountDistributions.length > 0 ? (
         <div className="reward-history">
           <Card title="Rebates Distribution History" tooltipText="Rebates are airdropped weekly.">
             <div className="table-wrapper">
@@ -1021,7 +1021,7 @@ function TradersInfo({
                   </tr>
                 </thead>
                 <tbody>
-                  {rebateDistributions.map((rebate, index) => {
+                  {discountDistributions.map((rebate, index) => {
                     let tokenInfo;
                     try {
                       tokenInfo = getToken(chainId, rebate.token);

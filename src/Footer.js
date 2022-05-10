@@ -8,6 +8,7 @@ import discordIcon from "./img/ic_discord.svg";
 import telegramIcon from "./img/ic_telegram.svg";
 import githubIcon from "./img/ic_github.svg";
 import mediumIcon from "./img/ic_medium.svg";
+import { NavLink } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -32,6 +33,13 @@ export default function Footer() {
           <a className="App-social-link" href="https://discord.gg/cxjZYR4gQK" target="_blank" rel="noopener noreferrer">
             <img src={discordIcon} alt="Discord" />
           </a>
+        </div>
+        <div className="Footer-links">
+          <div>
+            <NavLink to="/referral-terms" className="Footer-link" activeClassName="active">
+              Referral Terms
+            </NavLink>
+          </div>
         </div>
       </div>
     </div>
