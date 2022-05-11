@@ -57,7 +57,7 @@ const MAX_GAS_PRICE_MAP = {
 };
 
 const ARBITRUM_RPC_PROVIDERS = ["https://arb1.arbitrum.io/rpc"];
-const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
+const AVALANCHE_RPC_PROVIDERS = ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
 export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
