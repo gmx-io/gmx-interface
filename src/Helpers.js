@@ -1271,6 +1271,7 @@ const RPC_PROVIDERS = {
 
 const FALLBACK_PROVIDERS = {
   [ARBITRUM]: ["https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"],
+  [AVALANCHE]: ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
 };
 
 export function shortenAddress(address, length) {
