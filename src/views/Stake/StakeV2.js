@@ -339,7 +339,7 @@ function VesterDepositModal(props) {
     value,
     setValue,
     balance,
-    escrowedBalance,
+    vestedAmount,
     averageStakedAmount,
     maxVestableAmount,
     library,
@@ -355,9 +355,9 @@ function VesterDepositModal(props) {
 
   let nextReserveAmount = reserveAmount;
 
-  let nextDepositAmount = escrowedBalance;
+  let nextDepositAmount = vestedAmount;
   if (amount) {
-    nextDepositAmount = escrowedBalance.add(amount);
+    nextDepositAmount = vestedAmount.add(amount);
   }
 
   let additionalReserveAmount = bigNumberify(0);
@@ -471,7 +471,7 @@ function VesterDepositModal(props) {
                         Vault Capacity for your Account
                         <br />
                         <br />
-                        Deposited: {formatAmount(escrowedBalance, 18, 2, true)} esGMX
+                        Deposited: {formatAmount(vestedAmount, 18, 2, true)} esGMX
                         <br />
                         Max Capacity: {formatAmount(maxVestableAmount, 18, 2, true)} esGMX
                         <br />
@@ -905,6 +905,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   const [vesterDepositMaxAmount, setVesterDepositMaxAmount] = useState("");
   const [vesterDepositBalance, setVesterDepositBalance] = useState("");
   const [vesterDepositEscrowedBalance, setVesterDepositEscrowedBalance] = useState("");
+  const [vesterDepositVestedAmount, setVesterDepositVestedAmount] = useState("");
   const [vesterDepositAverageStakedAmount, setVesterDepositAverageStakedAmount] = useState("");
   const [vesterDepositMaxVestableAmount, setVesterDepositMaxVestableAmount] = useState("");
   const [vesterDepositValue, setVesterDepositValue] = useState("");
@@ -1176,6 +1177,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     setVesterDepositMaxAmount(remainingVestableAmount);
     setVesterDepositBalance(processedData.esGmxBalance);
     setVesterDepositEscrowedBalance(vestingData.gmxVester.escrowedBalance);
+    setVesterDepositVestedAmount(vestingData.gmxVester.vestedAmount);
     setVesterDepositMaxVestableAmount(vestingData.gmxVester.maxVestableAmount);
     setVesterDepositAverageStakedAmount(vestingData.gmxVester.averageStakedAmount);
     setVesterDepositReserveAmount(vestingData.gmxVester.pairAmount);
@@ -1196,6 +1198,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     setVesterDepositMaxAmount(remainingVestableAmount);
     setVesterDepositBalance(processedData.esGmxBalance);
     setVesterDepositEscrowedBalance(vestingData.glpVester.escrowedBalance);
+    setVesterDepositVestedAmount(vestingData.glpVester.vestedAmount);
     setVesterDepositMaxVestableAmount(vestingData.glpVester.maxVestableAmount);
     setVesterDepositAverageStakedAmount(vestingData.glpVester.averageStakedAmount);
     setVesterDepositReserveAmount(vestingData.glpVester.pairAmount);
@@ -1371,6 +1374,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         maxAmount={vesterDepositMaxAmount}
         balance={vesterDepositBalance}
         escrowedBalance={vesterDepositEscrowedBalance}
+        vestedAmount={vesterDepositVestedAmount}
         averageStakedAmount={vesterDepositAverageStakedAmount}
         maxVestableAmount={vesterDepositMaxVestableAmount}
         reserveAmount={vesterDepositReserveAmount}
