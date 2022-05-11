@@ -701,6 +701,13 @@ export default function GlpSwap(props) {
                 {formatAmount(glpBalanceUsd, USD_DECIMALS, 2, true)})
               </div>
             </div>
+            <div className="App-card-row">
+              <div className="label">Staked</div>
+              <div className="value">
+                {formatAmount(glpBalance, GLP_DECIMALS, 4, true)} GLP ($
+                {formatAmount(glpBalanceUsd, USD_DECIMALS, 2, true)})
+              </div>
+            </div>
           </div>
           <div className="App-card-divider"></div>
           <div className="App-card-content">
