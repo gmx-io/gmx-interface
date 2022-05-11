@@ -1719,7 +1719,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">Price</div>
-                <div>${formatKeyAmount(processedData, "glpPrice", USD_DECIMALS, 2, true)}</div>
+                <div>${formatKeyAmount(processedData, "glpPrice", USD_DECIMALS, 3, true)}</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Wallet</div>
