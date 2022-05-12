@@ -311,7 +311,7 @@
 .Wallet-btn {
   display: block;
   box-shadow: inset 0px 0px 10px 5px rgba(27, 30, 46, 0.2);
-  background: rgba(243, 244, 246, 0.05);
+  background: var(--background-secondary);
   height: 3.3rem;
   width: 17rem;
   border: 1px solid var(--border-primary);

@@ -52,7 +52,7 @@ body,
   --border-radius-sm: 4px;
 
   --background-primary: #18181B;
-  --background-secondary: #71717A;
+  --background-secondary: rgba(243, 244, 246, 0.05);
   --border-primary: #71717A;
 
   --tracer-blue: #3535DC;

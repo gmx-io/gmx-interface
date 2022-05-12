@@ -627,7 +627,7 @@ table.Exchange-list th {
   margin-bottom: 0.7rem;
   border-radius: 3px;
   border: 1px solid var(--border-primary);
-  background: rgba(243, 244, 246, 0.05);
+  background: var(--background-secondary);
   box-shadow: inset 0px 0px 30px 5px rgba(255, 255, 255, 0.01);
 }
 
