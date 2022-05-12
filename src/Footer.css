@@ -6,7 +6,7 @@
   position: absolute;
   transform: translateX(-50%);
   left: 50%;
-  height: 168px;
+  height: 200px;
   bottom: 0;
   border-top: 1px solid #ffffff10;
 }
@@ -23,11 +23,21 @@
 }
 
 .Footer-social-link-block {
-  padding-bottom: 2.5806rem;
   max-width: 71.613rem;
   margin: 0 auto;
   display: flex;
   justify-content: center;
+  margin-bottom: 1.548rem;
+}
+.Footer-link {
+  color: #a0a3c4;
+  font-size: 1rem;
+  line-height: 1.2rem;
+  font-weight: normal;
+  text-decoration: none;
+}
+.Footer-link:hover {
+  color: white;
 }
 
 .Footer-social-link-block .App-social-link {
@@ -52,8 +62,11 @@
   font-size: 0.8387rem;
   line-height: 0.8387rem;
   letter-spacing: -0.41px;
-  color: #A0A3C4;
+  color: #a0a3c4;
   display: block;
+}
+.Footer-links {
+  padding-bottom: 2.5806rem;
 }
 
 @media (max-width: 900px) {

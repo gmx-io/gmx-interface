@@ -1,0 +1,24 @@
+.page-not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 4.5rem;
+}
+.page-not-found img {
+  max-width: 225px;
+}
+.go-back span {
+  color: #a0a3c4;
+}
+.go-back a {
+  color: white;
+}
+
+@media (max-width: 500px) {
+  .page-not-found img {
+    max-width: 200px;
+  }
+  .page-not-found {
+    margin-top: 2.5rem;
+  }
+}
