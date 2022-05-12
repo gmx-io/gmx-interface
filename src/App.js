@@ -44,13 +44,11 @@ import {
 import Home from "./views/Home/Home";
 import Presale from "./views/Presale/Presale";
 import Dashboard from "./views/Dashboard/Dashboard";
-import Ecosystem from "./views/Ecosystem/Ecosystem";
 import Stake from "./views/Stake/Stake";
 import { Exchange } from "./views/Exchange/Exchange";
 import Actions from "./views/Actions/Actions";
 import OrdersOverview from "./views/OrdersOverview/OrdersOverview";
 import PositionsOverview from "./views/PositionsOverview/PositionsOverview";
-import Referrals from "./views/Referrals/Referrals";
 import BuyGlp from "./views/BuyGlp/BuyGlp";
 import BuyGMX from "./views/BuyGMX/BuyGMX";
 import SellGlp from "./views/SellGlp/SellGlp";
@@ -200,16 +198,6 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/buy">
           Buy
-        </NavLink>
-      </div>
-      <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/referrals">
-          Referrals
-        </NavLink>
-      </div>
-      <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/ecosystem">
-          Ecosystem
         </NavLink>
       </div>
       <div className="App-header-link-container">
@@ -767,12 +755,6 @@ function FullApp() {
             </Route>
             <Route exact path="/buy_gmx">
               <BuyGMX />
-            </Route>
-            <Route exact path="/ecosystem">
-              <Ecosystem />
-            </Route>
-            <Route exact path="/referrals">
-              <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
             </Route>
             <Route exact path="/about">
               <Home />
