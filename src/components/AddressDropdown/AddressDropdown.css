@@ -25,8 +25,8 @@
   width: 100%;
   transform-origin: top right;
   border-radius: 4px;
-  background: #16182e;
-  border: 1px solid #32344c;
+  background: var(--background-primary);
+  border: 1px solid var(--border-primary);
   list-style: none;
   cursor: pointer;
   outline: none;
@@ -36,7 +36,7 @@
   display: flex !important;
   align-items: center;
   font-size: 1rem;
-  color: #a0a3c4;
+  color: #ffffff61;
   padding-bottom: 15px;
   font-size: 14px;
   padding: 8.5px 8px;
@@ -44,7 +44,7 @@
   border-radius: 4px;
 }
 .menu-item:hover {
-  background: #808aff14 !important;
+  background: #ffffff14 !important;
   /* border: 1px solid #4275a8; */
   border-radius: 4 px;
   opacity: 1;

@@ -18,7 +18,7 @@
 
 .Checkbox .Checkbox-icon {
   font-size: 0.8rem;
-  color: rgba(61, 81, 255, 1);
+  color: var(--tracer-blue);
   margin-right: 0.4rem;
   margin-bottom: 0;
 }

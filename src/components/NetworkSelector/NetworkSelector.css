@@ -43,7 +43,7 @@
 
 .Selector-option {
   cursor: pointer;
-  background: var(--dark-blue);
+  background: var(--background-primary);
   border: 1px solid var(--dark-blue-border);
   border-radius: 4px;
   padding: 0.5rem 1rem;

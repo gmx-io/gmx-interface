@@ -1,14 +1,14 @@
 .Footer-wrapper {
   text-align: center;
   padding-top: 2.581rem;
-  background: #16182E;
+  background: var(--background-primary);
   width: 100vw;
   position: absolute;
   transform: translateX(-50%);
   left: 50%;
   height: 168px;
   bottom: 0;
-  border-top: 1px solid #282B4C;
+  border-top: 1px solid #ffffff10;
 }
 
 .Footer-logo {

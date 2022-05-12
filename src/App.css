@@ -147,9 +147,9 @@
 .App-box-highlight,
 .App-box-solid {
   position: relative;
-  border: 1px solid #1e2136;
+  border: 1px solid var(--border-primary);
   border-radius: 4px;
-  background: #16182e;
+  background: rgba(39, 39, 42, 0.2);
 }
 
 .App-card-bottom-placeholder {
@@ -311,10 +311,10 @@
 .Wallet-btn {
   display: block;
   box-shadow: inset 0px 0px 10px 5px rgba(27, 30, 46, 0.2);
-  background: var(--dark-blue);
+  background: rgba(243, 244, 246, 0.05);
   height: 3.3rem;
   width: 17rem;
-  border: 1px solid var(--dark-blue-border);
+  border: 1px solid var(--border-primary);
   border-radius: 3px;
   position: relative;
   color: white;
@@ -326,8 +326,8 @@
   padding-top: 0.7rem;
 }
 .Wallet-btn:hover {
-  background: var(--dark-blue-hover);
-  border-color: var(--dark-blue-border);
+  background: rgba(243, 244, 246, 0.2);
+  border-color: rgba(243, 244, 246, 0.2);
 }
 .Wallet-btn:active {
   background: var(--dark-blue-active);
@@ -969,7 +969,7 @@ button.App-button {
 }
 
 .Toastify__toast--error {
-  background: #333957;
+  background: var(--background-secondary);
   color: white;
   border-radius: 6px;
 }
@@ -1069,11 +1069,11 @@ button.App-button {
 }
 
 .App-slider .rc-slider-rail {
-  background: linear-gradient(90deg, rgba(30, 34, 61, 1) 0%, rgba(40, 45, 74, 1) 100%);
+  background: #3F3F46;
 }
 
 .App-slider .rc-slider-track {
-  background: linear-gradient(90deg, rgba(46, 61, 205, 1) 0%, rgba(45, 66, 252, 1) 100%);
+  background: var(--tracer-blue-light);
 }
 
 .App-slider .rc-slider-dot {
@@ -1089,8 +1089,8 @@ button.App-button {
 }
 
 .App-slider .rc-slider-handle {
-  background: #303652;
-  border: solid 2px rgba(45, 66, 252, 1);
+  background: var(--tracer-blue-light);
+  border: solid 2px var(--tracer-blue-light);
 }
 
 .App-slider .rc-slider-handle:active {

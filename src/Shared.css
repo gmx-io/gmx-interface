@@ -9,8 +9,10 @@ body,
   font-family: "Relative";
   letter-spacing: 0.5px;
   font-size: 15.5px;
-  background-color: #101124;
+  background-color: var(--background-primary);
 }
+
+
 
 * {
   box-sizing: border-box;
@@ -48,6 +50,13 @@ body,
   --avax-red: #e84143;
   --arbitrum-blue: #28a0f0;
   --border-radius-sm: 4px;
+
+  --background-primary: #18181B;
+  --background-secondary: #71717A;
+  --border-primary: #71717A;
+
+  --tracer-blue: #3535DC;
+  --tracer-blue-light: #1C64F2;
 }
 
 a {
@@ -177,7 +186,7 @@ a.plain {
 }
 
 .default-btn {
-  background: #2d42fc;
+  background: var(--tracer-blue);
   border-radius: 4px;
   font-size: 14px;
   line-height: 20px;
