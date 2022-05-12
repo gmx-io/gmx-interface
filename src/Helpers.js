@@ -57,7 +57,7 @@ const MAX_GAS_PRICE_MAP = {
 };
 
 const ARBITRUM_RPC_PROVIDERS = ["https://arb1.arbitrum.io/rpc"];
-const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
+const AVALANCHE_RPC_PROVIDERS = ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
 export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
@@ -87,7 +87,7 @@ export const DEFAULT_MAX_USDG_AMOUNT = expandDecimals(200 * 1000 * 1000, 18);
 export const TAX_BASIS_POINTS = 50;
 export const STABLE_TAX_BASIS_POINTS = 5;
 export const MINT_BURN_FEE_BASIS_POINTS = 25;
-export const SWAP_FEE_BASIS_POINTS = 25;
+export const SWAP_FEE_BASIS_POINTS = 50;
 export const STABLE_SWAP_FEE_BASIS_POINTS = 1;
 export const MARGIN_FEE_BASIS_POINTS = 10;
 
@@ -1271,6 +1271,7 @@ const RPC_PROVIDERS = {
 
 const FALLBACK_PROVIDERS = {
   [ARBITRUM]: ["https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"],
+  [AVALANCHE]: ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
 };
 
 export function shortenAddress(address, length) {
@@ -2254,8 +2255,8 @@ export function setTokenUsingIndexPrices(token, indexPrices, nativeTokenAddress)
   const spread = token.maxPrice.sub(token.minPrice);
   const spreadBps = spread.mul(BASIS_POINTS_DIVISOR).div(token.maxPrice);
 
-  if (spreadBps.gt(MAX_PRICE_DEVIATION_BASIS_POINTS - 1)) {
-    // only set of the values as there will be a spread between the index price and the Chainlink price
+  if (spreadBps.gt(MAX_PRICE_DEVIATION_BASIS_POINTS - 50)) {
+    // only set one of the values as there will be a spread between the index price and the Chainlink price
     if (indexPriceBn.gt(token.minPrimaryPrice)) {
       token.maxPrice = indexPriceBn;
     } else {
