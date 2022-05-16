@@ -82,7 +82,6 @@ import WETH from "../../abis/WETH.json";
 import longImg from "../../img/long.svg";
 import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
-import { parse } from "@ethersproject/transactions";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -1755,6 +1754,23 @@ export default function SwapBox(props) {
     return fromValue !== formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals);
   }
 
+  function renderInput() {
+    return (
+      <div
+        style={!isSwap ? { display: "flex", justifyContent: "center", alignItems: "center", marginRight: "2rem" } : {}}
+      >
+        <input
+          type="number"
+          min="0"
+          placeholder="0.0"
+          className="Exchange-swap-input"
+          value={isSwap ? toValue : toValueUsd}
+          onChange={onToValueChange}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="Exchange-swap-box">
       {/* <div className="Exchange-swap-wallet-box App-box">
@@ -1849,31 +1865,7 @@ export default function SwapBox(props) {
                 )}
               </div>
               <div className="Exchange-swap-section-bottom">
-                {isSwap ? (
-                  <div>
-                    <input
-                      type="number"
-                      min="0"
-                      placeholder="0.0"
-                      className="Exchange-swap-input"
-                      value={toValue}
-                      onChange={onToValueChange}
-                    />
-                  </div>
-                ) : (
-                  <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginRight: "2rem" }}>
-                    <input
-                      type="number"
-                      min="0"
-                      placeholder="0.0"
-                      className="Exchange-swap-input"
-                      value={toValueUsd}
-                      onChange={onToValueChange}
-                    />
-                    <span>USD</span>
-                  </div>
-                )}
-
+                <div>{renderInput()}</div>
                 <div>
                   <TokenSelector
                     label={getTokenLabel()}
