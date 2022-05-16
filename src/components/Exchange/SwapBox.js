@@ -82,6 +82,7 @@ import WETH from "../../abis/WETH.json";
 import longImg from "../../img/long.svg";
 import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
+import { parse } from "@ethersproject/transactions";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -168,6 +169,7 @@ export default function SwapBox(props) {
 
   const [fromValue, setFromValue] = useState("");
   const [toValue, setToValue] = useState("");
+  const [toValueUsd, setToValueUsd] = useState("");
   const [anchorOnFromAmount, setAnchorOnFromAmount] = useState(true);
   const [isApproving, setIsApproving] = useState(false);
   const [isWaitingForApproval, setIsWaitingForApproval] = useState(false);
@@ -474,7 +476,6 @@ export default function SwapBox(props) {
             usdgSupply,
             totalTokenWeights
           );
-
           const nextToValue = formatAmountFree(nextToAmount, toToken.decimals, toToken.decimals);
           setToValue(nextToValue);
         }
@@ -509,6 +510,7 @@ export default function SwapBox(props) {
       if (anchorOnFromAmount) {
         if (!fromAmount) {
           setToValue("");
+          setToValueUsd("");
           return;
         }
 
@@ -517,7 +519,6 @@ export default function SwapBox(props) {
           const leverageMultiplier = parseInt(leverageOption * BASIS_POINTS_DIVISOR);
           const toTokenPriceUsd =
             !isMarketOrder && triggerPriceUsd && triggerPriceUsd.gt(0) ? triggerPriceUsd : toTokenInfo.maxPrice;
-
           const { feeBasisPoints } = getNextToAmount(
             chainId,
             fromAmount,
@@ -545,8 +546,8 @@ export default function SwapBox(props) {
           const nextToAmount = nextToUsd.mul(expandDecimals(1, toToken.decimals)).div(toTokenPriceUsd);
 
           const nextToValue = formatAmountFree(nextToAmount, toToken.decimals, toToken.decimals);
-
           setToValue(nextToValue);
+          setToValueUsd(formatAmount(toUsdMax, USD_DECIMALS, 2, false));
         }
         return;
       }
@@ -622,6 +623,8 @@ export default function SwapBox(props) {
     chainId,
     collateralTokenAddress,
     indexTokenAddress,
+    toValueUsd,
+    setToValueUsd,
   ]);
 
   let entryMarkPrice;
@@ -1176,13 +1179,24 @@ export default function SwapBox(props) {
 
   const onToValueChange = (e) => {
     setAnchorOnFromAmount(false);
-    setToValue(e.target.value);
+    if (isSwap) {
+      setToValue(e.target.value);
+    }
+
+    if (isLong || isShort) {
+      setToValueUsd(e.target.value);
+      const refPrice = isLong ? toTokenInfo.maxPrice : toTokenInfo.minPrice;
+      const parsedToValue = parseFloat(e.target.value);
+      const toTokenFromUsd = parsedToValue / formatAmount(refPrice, 30, 2, false);
+      setToValue(toTokenFromUsd);
+    }
   };
 
   const switchTokens = () => {
     if (fromAmount && toAmount) {
       if (anchorOnFromAmount) {
         setToValue(formatAmountFree(fromAmount, fromToken.decimals, 8));
+        setToValueUsd(formatAmount(toUsdMax, USD_DECIMALS, 2, false));
       } else {
         setFromValue(formatAmountFree(toAmount, toToken.decimals, 8));
       }
@@ -1822,7 +1836,7 @@ export default function SwapBox(props) {
                 <div className="muted">
                   {toUsdMax && (
                     <div className="Exchange-swap-usd">
-                      {getToLabel()}: {formatAmount(toUsdMax, USD_DECIMALS, 2, true)} USD
+                      {getToLabel()}: {toValue} {toToken.symbol}
                     </div>
                   )}
                   {!toUsdMax && getToLabel()}
@@ -1835,16 +1849,31 @@ export default function SwapBox(props) {
                 )}
               </div>
               <div className="Exchange-swap-section-bottom">
-                <div>
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="0.0"
-                    className="Exchange-swap-input"
-                    value={toValue}
-                    onChange={onToValueChange}
-                  />
-                </div>
+                {isSwap ? (
+                  <div>
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="0.0"
+                      className="Exchange-swap-input"
+                      value={toValue}
+                      onChange={onToValueChange}
+                    />
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginRight: "2rem" }}>
+                    <input
+                      type="number"
+                      min="0"
+                      placeholder="0.0"
+                      className="Exchange-swap-input"
+                      value={toValueUsd}
+                      onChange={onToValueChange}
+                    />
+                    <span>USD</span>
+                  </div>
+                )}
+
                 <div>
                   <TokenSelector
                     label={getTokenLabel()}
