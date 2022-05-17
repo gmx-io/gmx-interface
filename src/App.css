@@ -856,6 +856,7 @@ button.App-button-option:disabled {
 
 .App-settings-row {
   margin-bottom: 0.8rem;
+  font-size: 1.55rem;
 }
 
 .App-settings .App-cta {
