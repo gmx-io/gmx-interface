@@ -1,38 +1,39 @@
 .Footer-wrapper {
   text-align: center;
-  padding-top: 2.581rem;
-  background: #16182e;
+  padding-top: 4rem;
+  background: #16182E;
   width: 100vw;
   position: absolute;
   transform: translateX(-50%);
   left: 50%;
-  height: 200px;
+  height: 20rem;
   bottom: 0;
   border-top: 1px solid #282b4c;
 }
 
 .Footer-logo {
-  margin-bottom: 1.548rem;
+  margin-bottom: 2.4rem;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .Footer-logo img {
-  height: 1.72rem;
+  height: 2.65rem;
 }
 
 .Footer-social-link-block {
-  max-width: 71.613rem;
+  /* padding-bottom: 4rem; */
+  max-width: 111rem;
   margin: 0 auto;
   display: flex;
   justify-content: center;
-  margin-bottom: 1.548rem;
+  margin-bottom: 2.4rem;
 }
 .Footer-link {
   color: #a0a3c4;
-  font-size: 1rem;
-  line-height: 1.2rem;
+  font-size: 1.55rem;
+  line-height: 1.85rem;
   font-weight: normal;
   text-decoration: none;
 }
@@ -41,10 +42,10 @@
 }
 
 .Footer-social-link-block .App-social-link {
-  margin: 0 2.064rem;
+  margin: 0 3.2rem;
   display: flex;
-  width: 32px;
-  height: 32px;
+  width: 3.2rem;
+  height: 3.2rem;
   align-items: center;
   justify-content: center;
 }
@@ -54,23 +55,23 @@
 }
 
 .Footer-copyright {
-  padding: 1.1rem;
+  padding: 1.6rem;
 }
 
 .Footer-copyright__text {
   font-family: Circular Std;
-  font-size: 0.8387rem;
-  line-height: 0.8387rem;
+  font-size: 1.3rem;
+  line-height: 1.3rem;
   letter-spacing: -0.41px;
   color: #a0a3c4;
   display: block;
 }
 .Footer-links {
-  padding-bottom: 2.5806rem;
+  padding-bottom: 4rem;
 }
 
 @media (max-width: 900px) {
   .Footer-social-link-block .App-social-link {
-    margin: 0 1.034rem;
+    margin: 0 1.6rem;
   }
 }

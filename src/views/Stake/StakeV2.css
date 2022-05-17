@@ -4,46 +4,46 @@
 }
 
 .VesterDepositModal-info-rows {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
 }
 
 .CompoundModal-menu {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
 }
 
 .CompoundModal-menu .Checkbox {
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.465rem;
 }
 
 .StakeV2-address-input {
-  padding: 1rem 2.2rem;
+  padding: 1.55rem 3.41rem;
   padding-bottom: 0;
 }
 
 .StakeV2-buy-gmx-modal .Modal-content {
-  max-width: 30rem;
+  max-width: 46.5rem;
 }
 
 .StakeV2-address-input input {
   box-sizing: border-box;
   width: 100%;
-  font-size: 1.1rem;
+  font-size: 1.7rem;
 }
 
 .StakeV2-boost-bar {
   overflow: hidden;
   vertical-align: middle;
-  margin-left: 0.2rem;
+  margin-left: 0.31rem;
   border-radius: 2px;
-  width: 1rem;
-  height: 0.5rem;
+  width: 1.55rem;
+  height: 0.8rem;
   border: 1px solid rgba(255, 255, 255, 0.5);
   display: inline-block;
   position: relative;
 }
 
 .StakeV2-boost-icon {
-  font-size: 0.7rem;
+  font-size: 1.085rem;
   z-index: 2;
 }
 
@@ -59,13 +59,7 @@
 .StakeV2-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: 1rem;
-  margin-top: 0.5rem;
-  padding: 2rem;
-  padding-top: 1rem;
-}
-
-.StakeV2-content {
+  grid-gap: 1.55rem;
 }
 
 @media (max-width: 900px) {
