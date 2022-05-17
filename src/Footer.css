@@ -6,7 +6,7 @@
   position: absolute;
   transform: translateX(-50%);
   left: 50%;
-  height: 16.8rem;
+  height: 20rem;
   bottom: 0;
   border-top: 1px solid #282b4c;
 }
@@ -23,17 +23,17 @@
 }
 
 .Footer-social-link-block {
-  padding-bottom: 4rem;
+  /* padding-bottom: 4rem; */
   max-width: 111rem;
   margin: 0 auto;
   display: flex;
   justify-content: center;
-  margin-bottom: 1.548rem;
+  margin-bottom: 2.4rem;
 }
 .Footer-link {
   color: #a0a3c4;
-  font-size: 1rem;
-  line-height: 1.2rem;
+  font-size: 1.55rem;
+  line-height: 1.85rem;
   font-weight: normal;
   text-decoration: none;
 }
@@ -67,7 +67,7 @@
   display: block;
 }
 .Footer-links {
-  padding-bottom: 2.5806rem;
+  padding-bottom: 4rem;
 }
 
 @media (max-width: 900px) {

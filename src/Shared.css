@@ -361,8 +361,8 @@ button.btn-link:hover .logout-icon {
   min-height: calc(100vh - 62px);
   display: flex;
   flex-direction: column;
-  padding-bottom: calc(3rem + 168px);
-  padding-top: 4.6rem;
+  padding-bottom: calc(4.65rem + 20rem);
+  padding-top: 4.65rem;
 }
 
 .d-flex {
