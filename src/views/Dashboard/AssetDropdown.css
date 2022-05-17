@@ -1,14 +1,14 @@
 .asset-menu-items {
   position: absolute;
   border: 1px solid #32344c;
-  border-radius: 4px;
+  border-radius: 0.4rem;
   background: var(--dark-blue);
   outline: none;
   z-index: 100;
 }
 
 .dropdown-arrow {
-  margin-left: 0.5rem;
+  margin-left: 0.8rem;
   cursor: pointer;
   color: white;
   opacity: 0.8;
@@ -23,14 +23,14 @@
   cursor: pointer;
   color: #a0a3c4;
   text-decoration: none;
-  padding: 8.5px 8px;
+  padding: 0.85rem 0.8rem;
 }
 .asset-item:hover {
   background: var(--dark-blue-hover);
   color: white;
-  border-radius: 4px;
+  border-radius: 0.4rem;
 }
 .asset-item p {
   margin: 0;
-  margin-left: 5px;
+  margin-left: 0.5rem;
 }
