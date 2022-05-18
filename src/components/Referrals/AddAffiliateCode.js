@@ -4,7 +4,7 @@ import { ARBITRUM, helperToast, useDebounce } from "../../Helpers";
 import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./referralsHelper";
 import { useWeb3React } from "@web3-react/core";
 
-function CreateAffiliateCode({
+function AddAffiliateCode({
   handleCreateReferralCode,
   active,
   connectWallet,
@@ -167,4 +167,4 @@ export function AffiliateCodeForm({
   );
 }
 
-export default CreateAffiliateCode;
+export default AddAffiliateCode;
