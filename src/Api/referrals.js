@@ -1,4 +1,4 @@
-import { constants, ethers } from "ethers";
+import { ethers } from "ethers";
 import { gql } from "@apollo/client";
 import { useState, useEffect } from "react";
 import ReferralStorage from "../abis/ReferralStorage.json";
@@ -54,7 +54,7 @@ export function encodeReferralCode(code) {
 }
 
 async function getCodeOwnersData(network, account, codes = []) {
-  if (codes.length < 1 || !account || !network) {
+  if (codes.length === 0 || !account || !network) {
     return undefined;
   }
   const query = gql(
@@ -75,12 +75,12 @@ async function getCodeOwnersData(network, account, codes = []) {
         return acc;
       }, {});
       return codes.map((code) => {
-        const owner = codeOwners[code] || constants.AddressZero;
+        const owner = codeOwners[code];
         return {
           code,
           codeString: decodeReferralCode(code),
           owner,
-          isTaken: !isAddressZero(owner),
+          isTaken: Boolean(owner),
           isTakenByCurrentUser: owner && owner.toLowerCase() === account.toLowerCase(),
         };
       });
@@ -90,15 +90,15 @@ async function getCodeOwnersData(network, account, codes = []) {
 export function useUserCodesOnAllChain(account) {
   const [data, setData] = useState(null);
   const query = gql(
-    `{
+    `query referralCodesOnAllChain($account: String!) {
       referralCodes (
       first: 1000,
       where: {
-        owner: "__ACCOUNT__"
+        owner: $account
       }) {
       code
       }
-    }`.replaceAll("__ACCOUNT__", (account || "").toLowerCase())
+    }`
   );
 
   useEffect(() => {
@@ -106,7 +106,7 @@ export function useUserCodesOnAllChain(account) {
       const [arbitrumCodes, avalancheCodes] = await Promise.all(
         ACTIVE_CHAINS.map((chainId) => {
           return getGraphClient(chainId)
-            .query({ query })
+            .query({ query, variables: { account: (account || "").toLowerCase() } })
             .then(({ data }) => {
               return data.referralCodes.map((c) => c.code);
             });
@@ -145,88 +145,90 @@ export function useReferralsData(chainId, account) {
       setLoading(false);
       return;
     }
-    setLoading(true);
     const startOfDayTimestamp = Math.floor(parseInt(Date.now() / 1000) / 86400) * 86400;
     const query = gql(
-      `{
-      distributions(
-        first: 1000,
-        orderBy: timestamp,
-        orderDirection: desc,
-        where: {
-          receiver: "__ACCOUNT__",
-          typeId_in: ["__DISTRIBUTION_TYPE_REBATES__", "__DISTRIBUTION_TYPE_DISCOUNT__"]
+      `query referralData($typeIds: [String!]!, $account: String!, $timestamp: Int!) {
+        distributions(
+          first: 1000,
+          orderBy: timestamp,
+          orderDirection: desc,
+          where: {
+            receiver: $account,
+            typeId_in: $typeIds
+          }
+        ) {
+          receiver
+          amount
+          typeId
+          token
+          transactionHash
+          timestamp
         }
-      ) {
-        receiver
-        amount
-        typeId
-        token
-        transactionHash
-        timestamp
-      }
-      referrerTotalStats: referrerStats(
-        first: 1000
-        orderBy: volume
-        orderDirection: desc
-        where: {
-          period: total
-          referrer: "__ACCOUNT__"
+        referrerTotalStats: referrerStats(
+          first: 1000
+          orderBy: volume
+          orderDirection: desc
+          where: {
+            period: total
+            referrer: $account
+          }
+        ) {
+          referralCode,
+          volume,
+          trades,
+          tradedReferralsCount,
+          registeredReferralsCount,
+          totalRebateUsd,
+          discountUsd
         }
-      ) {
-        referralCode,
-        volume,
-        trades,
-        tradedReferralsCount,
-        registeredReferralsCount,
-        totalRebateUsd,
-        discountUsd
-      }
-      referrerLastDayStats: referrerStats(
-        first: 1000
-        where: {
-          period: daily
-          referrer: "__ACCOUNT__"
-          timestamp: __TIMESTAMP__
+        referrerLastDayStats: referrerStats(
+          first: 1000
+          where: {
+            period: daily
+            referrer: $account
+            timestamp: $timestamp
+          }
+        ) {
+          referralCode,
+          volume,
+          trades,
+          tradedReferralsCount,
+          registeredReferralsCount,
+          totalRebateUsd,
+          discountUsd
         }
-      ) {
-        referralCode,
-        volume,
-        trades,
-        tradedReferralsCount,
-        registeredReferralsCount,
-        totalRebateUsd,
-        discountUsd
-      }
-      referralCodes (
-        first: 1000,
-        where: {
-          owner: "__ACCOUNT__"
+        referralCodes (
+          first: 1000,
+          where: {
+            owner: $account
+          }
+        ) {
+          code
         }
-      ) {
-        code
-      }
-      referralTotalStats: referralStat(
-        id: "total:0:__ACCOUNT__"
-      ) {
-        volume,
-        discountUsd
-      }
-      referrerTierInfo: referrer(id: "__ACCOUNT__") {
-        tierId
-        id
-        discountShare
-      }
-    }`
-        .replaceAll("__ACCOUNT__", (account || "").toLowerCase())
-        .replaceAll("__DISTRIBUTION_TYPE_REBATES__", DISTRIBUTION_TYPE_REBATES)
-        .replaceAll("__DISTRIBUTION_TYPE_DISCOUNT__", DISTRIBUTION_TYPE_DISCOUNT)
-        .replaceAll("__TIMESTAMP__", startOfDayTimestamp)
+        referralTotalStats: referralStat(
+          id: "total:0:$account"
+        ) {
+          volume,
+          discountUsd
+        }
+        referrerTierInfo: referrer(id: $account) {
+          tierId
+          id
+          discountShare
+        }
+      }`
     );
     setLoading(true);
 
     getGraphClient(chainId)
-      .query({ query })
+      .query({
+        query,
+        variables: {
+          typeIds: [DISTRIBUTION_TYPE_REBATES, DISTRIBUTION_TYPE_DISCOUNT],
+          account: (account || "").toLowerCase(),
+          timestamp: startOfDayTimestamp,
+        },
+      })
       .then((res) => {
         const rebateDistributions = [];
         const discountDistributions = [];
@@ -262,7 +264,7 @@ export function useReferralsData(chainId, account) {
         function getCumulativeStats(data = []) {
           return data.reduce(
             (acc, cv) => {
-              acc.rebates = acc.rebates.add(cv.totalRebateUsd);
+              acc.totalRebateUsd = acc.totalRebateUsd.add(cv.totalRebateUsd);
               acc.volume = acc.volume.add(cv.volume);
               acc.discountUsd = acc.discountUsd.add(cv.discountUsd);
               acc.trades = acc.trades + cv.trades;
@@ -271,7 +273,7 @@ export function useReferralsData(chainId, account) {
               return acc;
             },
             {
-              rebates: bigNumberify(0),
+              totalRebateUsd: bigNumberify(0),
               volume: bigNumberify(0),
               discountUsd: bigNumberify(0),
               trades: 0,
@@ -315,20 +317,24 @@ export function useReferralsData(chainId, account) {
 }
 
 export async function registerReferralCode(chainId, referralCode, library, opts) {
+  const referralCodeHex = encodeReferralCode(referralCode);
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
-  return callContract(chainId, contract, "registerCode", [referralCode], opts);
+  return callContract(chainId, contract, "registerCode", [referralCodeHex], opts);
 }
+
 export async function setTraderReferralCodeByUser(chainId, referralCode, library, opts) {
+  const referralCodeHex = encodeReferralCode(referralCode);
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
-  const codeOwner = await contract.codeOwners(referralCode);
+  const codeOwner = await contract.codeOwners(referralCodeHex);
   if (isAddressZero(codeOwner)) {
     helperToast.error("Referral code does not exist");
     return Promise.reject();
   }
-  return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCode], opts);
+  return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCodeHex], opts);
 }
+
 export async function getReferralCodeOwner(chainId, referralCode) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const provider = getProvider(null, chainId);
@@ -356,6 +362,7 @@ export function useUserReferralCode(library, chainId, account) {
     mutateUserReferralCode,
   };
 }
+
 export function useReferrerTier(library, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const { data: referrerTier, mutate: mutateReferrerTier } = useSWR(
@@ -369,6 +376,7 @@ export function useReferrerTier(library, chainId, account) {
     mutateReferrerTier,
   };
 }
+
 export function useCodeOwner(library, chainId, account, code) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const { data: codeOwner, mutate: mutateCodeOwner } = useSWR(

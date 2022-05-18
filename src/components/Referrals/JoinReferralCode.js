@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { encodeReferralCode, setTraderReferralCodeByUser, validateReferralCodeExists } from "../../Api/referrals";
-import { REFERRAL_CODE_REGEX } from "./ReferralsHelper";
-import { useDebounce } from "../../Helpers";
 import { useWeb3React } from "@web3-react/core";
+import { setTraderReferralCodeByUser, validateReferralCodeExists } from "../../Api/referrals";
+import { REFERRAL_CODE_REGEX } from "./referralsHelper";
+import { useDebounce } from "../../Helpers";
 
 function JoinReferralCode({ setPendingTxns, pendingTxns, active, connectWallet }) {
   return (
@@ -11,7 +11,7 @@ function JoinReferralCode({ setPendingTxns, pendingTxns, active, connectWallet }
       <p className="sub-title">Please input a referral code to benefit from fee discounts.</p>
       <div className="card-action">
         {active ? (
-          <JoinReferralCodeForm setPendingTxns={setPendingTxns} pendingTxns={pendingTxns} />
+          <ReferralCodeForm setPendingTxns={setPendingTxns} pendingTxns={pendingTxns} />
         ) : (
           <button className="App-cta Exchange-swap-button" type="submit" onClick={connectWallet}>
             Connect Wallet
@@ -22,7 +22,7 @@ function JoinReferralCode({ setPendingTxns, pendingTxns, active, connectWallet }
   );
 }
 
-export function JoinReferralCodeForm({
+export function ReferralCodeForm({
   setPendingTxns,
   pendingTxns,
   callAfterSuccess,
@@ -53,10 +53,10 @@ export function JoinReferralCodeForm({
       return "Enter Referral Code";
     }
     if (isValidating) {
-      return `Checking code...`;
+      return "Checking code...";
     }
     if (!referralCodeExists) {
-      return `Referral Code does not exist`;
+      return "Referral Code does not exist";
     }
 
     return isEdit ? "Update" : "Submit";
@@ -78,16 +78,16 @@ export function JoinReferralCodeForm({
     const isEdit = type === "edit";
     event.preventDefault();
     setIsSubmitting(true);
-    const referralCodeHex = encodeReferralCode(referralCode);
+
     try {
-      const tx = await setTraderReferralCodeByUser(chainId, referralCodeHex, library, {
+      const tx = await setTraderReferralCodeByUser(chainId, referralCode, library, {
         account,
         successMsg: isEdit ? "Referral code updated!" : "Referral code added!",
         failMsg: isEdit ? "Referral code updated failed." : "Adding referral code failed.",
         setPendingTxns,
         pendingTxns,
       });
-      if (typeof callAfterSuccess === "function") {
+      if (callAfterSuccess) {
         callAfterSuccess();
       }
       const receipt = await tx.wait();
