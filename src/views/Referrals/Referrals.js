@@ -1,45 +1,41 @@
+import "./Referrals.css";
 import React from "react";
 import { useLocalStorage } from "react-use";
 import { useWeb3React } from "@web3-react/core";
 import SEO from "../../components/Common/SEO";
 import Tab from "../../components/Tab/Tab";
+import Loader from "../../components/Common/Loader";
 import Footer from "../../Footer";
 import { useChainId, getPageTitle, REFERRALS_SELECTED_TAB_KEY, useLocalStorageSerializeKey } from "../../Helpers";
 import {
-  encodeReferralCode,
   useReferralsData,
   registerReferralCode,
   useCodeOwner,
   useReferrerTier,
   useUserReferralCode,
 } from "../../Api/referrals";
-
-import "./Referrals.css";
-
-import Loader from "../../components/Common/Loader";
-import JoinReferralCode from "./JoinReferralCode";
-import AffiliatesStats from "./AffiliatesStats";
-import TradersStats from "./TradersStats";
-import CreateAffiliateCode from "./CreateAffiliateCode";
-import { isRecentReferralCodeNotExpired } from "./ReferralsHelper";
+import JoinReferralCode from "../../components/Referrals/JoinReferralCode";
+import AffiliatesStats from "../../components/Referrals/AffiliatesStats";
+import TradersStats from "../../components/Referrals/TradersStats";
+import CreateAffiliateCode from "../../components/Referrals/CreateAffiliateCode";
+import { isRecentReferralCodeNotExpired } from "../../components/Referrals/referralsHelper";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
 
 function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
-  const { active, account, library, chainId: chainIdWithoutLocalStorage } = useWeb3React();
+  const { active, account, library } = useWeb3React();
   const { chainId } = useChainId();
   const [activeTab, setActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, TRADERS);
-  const { data: referralsData, loading } = useReferralsData(chainIdWithoutLocalStorage, account);
+  const { data: referralsData, loading } = useReferralsData(chainId, account);
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], []);
   const { userReferralCode, userReferralCodeString } = useUserReferralCode(library, chainId, account);
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
 
-  function handleCreateReferralCode(code) {
-    const referralCodeHex = encodeReferralCode(code);
-    return registerReferralCode(chainId, referralCodeHex, library, {
+  function handleCreateReferralCode(referralCode) {
+    return registerReferralCode(chainId, referralCode, library, {
       sentMsg: "Referral code submitted!",
       failMsg: "Referral code creation failed.",
       pendingTxns,

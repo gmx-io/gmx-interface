@@ -1,4 +1,4 @@
-import Tooltip from "../../components/Tooltip/Tooltip";
+import Tooltip from "../Tooltip/Tooltip";
 
 function EmptyMessage({ message = "", tooltipText }) {
   return (

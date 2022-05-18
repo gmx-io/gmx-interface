@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import cx from "classnames";
 import { ARBITRUM, helperToast, useDebounce } from "../../Helpers";
-import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./ReferralsHelper";
+import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./referralsHelper";
 import { useWeb3React } from "@web3-react/core";
 
 function CreateAffiliateCode({
@@ -19,7 +19,7 @@ function CreateAffiliateCode({
       </p>
       <div className="card-action">
         {active ? (
-          <CreateAffiliateCodeForm
+          <AffiliateCodeForm
             handleCreateReferralCode={handleCreateReferralCode}
             recentlyAddedCodes={recentlyAddedCodes}
             setRecentlyAddedCodes={setRecentlyAddedCodes}
@@ -34,7 +34,7 @@ function CreateAffiliateCode({
   );
 }
 
-export function CreateAffiliateCodeForm({
+export function AffiliateCodeForm({
   handleCreateReferralCode,
   recentlyAddedCodes,
   setRecentlyAddedCodes,
@@ -55,7 +55,7 @@ export function CreateAffiliateCodeForm({
   useEffect(() => {
     let cancelled = false;
     const checkCodeTakenStatus = async () => {
-      if (error || error.length > 0) {
+      if (error) {
         setReferralCodeCheckStatus("ok");
         return;
       }
@@ -78,7 +78,7 @@ export function CreateAffiliateCodeForm({
   }, [account, debouncedReferralCode, error, chainId]);
 
   function getButtonError() {
-    if (!debouncedReferralCode || debouncedReferralCode.length === 0) {
+    if (!debouncedReferralCode) {
       return "Enter a code";
     }
     if (referralCodeCheckStatus === "taken") {
@@ -99,7 +99,7 @@ export function CreateAffiliateCodeForm({
     }
 
     if (isProcessing) {
-      return `Creating...`;
+      return "Creating...";
     }
 
     return "Create";
@@ -118,10 +118,7 @@ export function CreateAffiliateCodeForm({
     event.preventDefault();
     setIsProcessing(true);
     const { status: takenStatus, info: takenInfo } = await getReferralCodeTakenStatus(account, referralCode, chainId);
-    if (takenStatus === "all" || takenStatus === "current") {
-      setIsProcessing(false);
-    }
-    if (takenStatus === "other") {
+    if (["all", "current", "other"].includes(takenStatus)) {
       setIsProcessing(false);
     }
 
@@ -129,7 +126,7 @@ export function CreateAffiliateCodeForm({
       const ownerOnOtherNetwork = takenInfo[chainId === ARBITRUM ? "ownerAvax" : "ownerArbitrum"];
       try {
         const tx = await handleCreateReferralCode(referralCode);
-        if (typeof callAfterSuccess === "function") {
+        if (callAfterSuccess) {
           callAfterSuccess();
         }
         const receipt = await tx.wait();

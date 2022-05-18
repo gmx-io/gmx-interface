@@ -286,3 +286,10 @@
     white-space: nowrap;
   }
 }
+@media (max-width: 500px) {
+  .referral-table-header .sub-title {
+    display: block;
+    margin-left: 0;
+    margin-top: 2px;
+  }
+}

@@ -1,14 +1,14 @@
 import { useRef, useState } from "react";
 import { BiEditAlt } from "react-icons/bi";
-import Card from "../../components/Common/Card";
-import Modal from "../../components/Modal/Modal";
-import Tooltip from "../../components/Tooltip/Tooltip";
+import Card from "../Common/Card";
+import Modal from "../Modal/Modal";
+import Tooltip from "../Tooltip/Tooltip";
 import { getNativeToken, getToken } from "../../data/Tokens";
 import { formatAmount, formatDate, getExplorerUrl, shortenAddress } from "../../Helpers";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
-import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./ReferralsHelper";
-import { JoinReferralCodeForm } from "./JoinReferralCode";
+import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
+import { ReferralCodeForm } from "./JoinReferralCode";
 
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
   const { referralTotalStats, discountDistributions } = referralsData;
@@ -60,7 +60,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           onAfterOpen={() => editModalRef.current?.focus()}
         >
           <div className="edit-referral-modal">
-            <JoinReferralCodeForm
+            <ReferralCodeForm
               userReferralCodeString={userReferralCodeString}
               setPendingTxns={setPendingTxns}
               pendingTxns={pendingTxns}

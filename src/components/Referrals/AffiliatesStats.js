@@ -1,11 +1,11 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import { useCopyToClipboard } from "react-use";
 import { IoWarningOutline } from "react-icons/io5";
 import { BiCopy, BiErrorCircle } from "react-icons/bi";
-import Card from "../../components/Common/Card";
-import Modal from "../../components/Modal/Modal";
-import Tooltip from "../../components/Tooltip/Tooltip";
+import Card from "../Common/Card";
+import Modal from "../Modal/Modal";
+import Tooltip from "../Tooltip/Tooltip";
 import { getNativeToken, getToken } from "../../data/Tokens";
 import {
   AVALANCHE,
@@ -19,8 +19,8 @@ import {
 } from "../../Helpers";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
-import { getTierIdDisplay, getUSDValue, isRecentReferralCodeNotExpired, tierRebateInfo } from "./ReferralsHelper";
-import { CreateAffiliateCodeForm } from "./CreateAffiliateCode";
+import { getTierIdDisplay, getUSDValue, isRecentReferralCodeNotExpired, tierRebateInfo } from "./referralsHelper";
+import { AffiliateCodeForm } from "./CreateAffiliateCode";
 
 function AffiliatesStats({
   referralsData,
@@ -38,17 +38,21 @@ function AffiliatesStats({
 
   const { cumulativeStats, referrerTotalStats, rebateDistributions, referrerTierInfo } = referralsData;
   const allReferralCodes = referrerTotalStats.map((c) => c.referralCode.trim());
-  const finalAffiliatesTotalStats = recentlyAddedCodes.filter(isRecentReferralCodeNotExpired).reduce((acc, cv) => {
-    if (!allReferralCodes.includes(cv.referralCode)) {
-      acc = acc.concat(cv);
-    }
-    return acc;
-  }, referrerTotalStats);
+  const finalAffiliatesTotalStats = useMemo(
+    () =>
+      recentlyAddedCodes.filter(isRecentReferralCodeNotExpired).reduce((acc, cv) => {
+        if (!allReferralCodes.includes(cv.referralCode)) {
+          acc = acc.concat(cv);
+        }
+        return acc;
+      }, referrerTotalStats),
+    [allReferralCodes, referrerTotalStats, recentlyAddedCodes]
+  );
 
   const tierId = referrerTierInfo?.tierId;
   let referrerRebates = bigNumberify(0);
-  if (cumulativeStats && cumulativeStats.rebates && cumulativeStats.discountUsd) {
-    referrerRebates = cumulativeStats.rebates.sub(cumulativeStats.discountUsd);
+  if (cumulativeStats && cumulativeStats.totalRebateUsd && cumulativeStats.discountUsd) {
+    referrerRebates = cumulativeStats.totalRebateUsd.sub(cumulativeStats.discountUsd);
   }
 
   return (
@@ -79,7 +83,7 @@ function AffiliatesStats({
           onAfterOpen={() => addNewModalRef.current?.focus()}
         >
           <div className="edit-referral-modal">
-            <CreateAffiliateCodeForm
+            <AffiliateCodeForm
               handleCreateReferralCode={handleCreateReferralCode}
               recentlyAddedCodes={recentlyAddedCodes}
               setRecentlyAddedCodes={setRecentlyAddedCodes}
@@ -124,7 +128,7 @@ function AffiliatesStats({
                 {finalAffiliatesTotalStats.map((stat, index) => {
                   const ownerOnOtherChain = stat?.ownerOnOtherChain;
                   let referrerRebate = bigNumberify(0);
-                  if (stat && stat.totalRebateUsd && stat.totalRebateUsd.sub && stat.discountUsd) {
+                  if (stat && stat.totalRebateUsd && stat.discountUsd) {
                     referrerRebate = stat.totalRebateUsd.sub(stat.discountUsd);
                   }
                   return (

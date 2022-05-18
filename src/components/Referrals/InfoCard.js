@@ -1,4 +1,4 @@
-import Tooltip from "../../components/Tooltip/Tooltip";
+import Tooltip from "../Tooltip/Tooltip";
 
 function InfoCard({ label, data, tooltipText, toolTipPosition = "left-bottom" }) {
   return (
