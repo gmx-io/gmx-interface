@@ -17,7 +17,7 @@ import {
 import JoinReferralCode from "../../components/Referrals/JoinReferralCode";
 import AffiliatesStats from "../../components/Referrals/AffiliatesStats";
 import TradersStats from "../../components/Referrals/TradersStats";
-import CreateAffiliateCode from "../../components/Referrals/CreateAffiliateCode";
+import AddAffiliateCode from "../../components/Referrals/AddAffiliateCode";
 import { isRecentReferralCodeNotExpired } from "../../components/Referrals/referralsHelper";
 
 const TRADERS = "Traders";
@@ -58,7 +58,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
       );
     } else {
       return (
-        <CreateAffiliateCode
+        <AddAffiliateCode
           handleCreateReferralCode={handleCreateReferralCode}
           active={active}
           connectWallet={connectWallet}

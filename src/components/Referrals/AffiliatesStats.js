@@ -20,7 +20,7 @@ import {
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import { getTierIdDisplay, getUSDValue, isRecentReferralCodeNotExpired, tierRebateInfo } from "./referralsHelper";
-import { AffiliateCodeForm } from "./CreateAffiliateCode";
+import { AffiliateCodeForm } from "./AddAffiliateCode";
 
 function AffiliatesStats({
   referralsData,
