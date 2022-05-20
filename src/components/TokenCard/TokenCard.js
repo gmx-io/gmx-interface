@@ -40,7 +40,7 @@ export default function TokenCard() {
         </div>
         <div className="Home-token-card-option-info">
           <div className="Home-token-card-option-title">
-            <Trans>GMX is the utility and governance token, and also accrues 30% of the platform's generated fees.</Trans>
+            <Trans>GMX is the utility and governance token. Accrues 30% of the platform's generated fees.</Trans>
           </div>
           <div className="Home-token-card-option-apr">
             <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />, <Trans>Avalanche APR:</Trans>{" "}
@@ -72,7 +72,7 @@ export default function TokenCard() {
         </div>
         <div className="Home-token-card-option-info">
           <div className="Home-token-card-option-title">
-            <Trans>GLP is the platform's liquidity provider token. Accrues 70% of its generated fees.</Trans>
+            <Trans>GLP is the liquidity provider token. Accrues 70% of the platform's generated fees.</Trans>
           </div>
           <div className="Home-token-card-option-apr">
             <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />, <Trans>Avalanche APR:</Trans>{" "}

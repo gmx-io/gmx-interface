@@ -694,10 +694,17 @@ export default function GlpSwap(props) {
           <div className="App-card-content">
             <div className="App-card-row">
               <div className="label"><Trans>Price</Trans></div>
-              <div className="value">${formatAmount(glpPrice, USD_DECIMALS, 2, true)}</div>
+              <div className="value">${formatAmount(glpPrice, USD_DECIMALS, 3, true)}</div>
             </div>
             <div className="App-card-row">
               <div className="label"><Trans>Wallet</Trans></div>
+              <div className="value">
+                {formatAmount(glpBalance, GLP_DECIMALS, 4, true)} GLP ($
+                {formatAmount(glpBalanceUsd, USD_DECIMALS, 2, true)})
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">Staked</div>
               <div className="value">
                 {formatAmount(glpBalance, GLP_DECIMALS, 4, true)} GLP ($
                 {formatAmount(glpBalanceUsd, USD_DECIMALS, 2, true)})

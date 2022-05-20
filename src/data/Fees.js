@@ -275,6 +275,21 @@ const FEES = {
       to: 1651028602,
       feeUsd: "716772.48",
     },
+    {
+      from: 1651635145 - SECONDS_PER_WEEK,
+      to: 1651635145,
+      feeUsd: "820730.6",
+    },
+    {
+      from: 1652236772 - SECONDS_PER_WEEK,
+      to: 1652236772,
+      feeUsd: "1833127.03",
+    },
+    {
+      from: 1652840724 - SECONDS_PER_WEEK,
+      to: 1652840724,
+      feeUsd: "1931425.93",
+    },
   ],
   43114: [
     {
@@ -361,6 +376,21 @@ const FEES = {
       from: 1651028602 - SECONDS_PER_WEEK,
       to: 1651028602,
       feeUsd: "329239.03",
+    },
+    {
+      from: 1651635172 - SECONDS_PER_WEEK,
+      to: 1651635172,
+      feeUsd: "344748.08",
+    },
+    {
+      from: 1652236772 - SECONDS_PER_WEEK,
+      to: 1652236772,
+      feeUsd: "809852.39",
+    },
+    {
+      from: 1652840724 - SECONDS_PER_WEEK,
+      to: 1652840724,
+      feeUsd: "850963.06",
     },
   ],
 };
