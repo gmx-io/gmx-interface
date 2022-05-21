@@ -4,13 +4,13 @@
 }
 
 .ExchangeWalletTokens-token-name {
-  margin-right: 1rem;
+  margin-right: 1.55rem;
 }
 
 .ExchangeWalletTokens-box {
   display: block;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 0.6rem;
   text-align: right;
   white-space: nowrap;
 }
@@ -21,7 +21,7 @@
 
 .ExchangeWalletTokens-token-row {
   cursor: pointer;
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 1.55rem;
 }
 
 .ExchangeWalletTokens-token-row:hover {
@@ -29,14 +29,14 @@
 }
 
 .ExchangeWalletTokens-top-row {
-  font-size: 1rem;
+  font-size: 1.55rem;
   display: grid;
   grid-template-columns: auto auto;
 }
 
 .ExchangeWalletTokens-content-row {
-  margin-top: 0.2rem;
-  font-size: 0.9rem;
+  margin-top: 0.31rem;
+  font-size: 1.4rem;
   opacity: 0.7;
   display: grid;
   grid-template-columns: auto auto;

@@ -1,0 +1,54 @@
+.setting-dropdown-icon-wrapper {
+    position: relative;
+    margin-left: 2.4rem;
+}
+
+.settings-dropdown-icon {
+    width: 4.1rem;
+    height: 3.6rem;
+    border-radius: 0.4rem;
+    border: 1px solid #FFFFFF29;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+.settings-dropdown-menu {
+}
+
+.settings-dropdown-menu-items {
+    padding: 0.8rem;
+    width: 16rem;
+}
+
+.settings-dropdown-menu-item {
+    display: flex;
+    align-items: center;
+    height: 2.4rem;
+}
+
+.settings-dropdown-menu-item__prepend {
+    width: 1.6rem;
+    margin-right: 0.8rem;
+    display: flex;
+    align-items: center;
+}
+
+.settings-dropdown-menu-item__append {
+    width: 1.6rem;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+}
+
+.settings-dropdown-menu-item-label {
+    font-size: 1.4rem;
+    line-height: 2.4rem;
+    letter-spacing: 0px;
+    color: #A0A3C4;
+}
+
+.settings-language-menu {
+    margin-top: 0.8rem;
+}
