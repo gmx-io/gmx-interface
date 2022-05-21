@@ -87,6 +87,7 @@ import metamaskImg from "./img/metamask.png";
 import coinbaseImg from "./img/coinbaseWallet.png";
 import walletConnectImg from "./img/walletconnect-circle-blue.svg";
 import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
+import SettingDropdown from "./components/SettingDropdown/SettingDropdown";
 import { ConnectWalletButton } from "./components/Common/Button";
 import useEventToast from "./components/EventToast/useEventToast";
 import { Link } from "react-router-dom";
@@ -112,7 +113,13 @@ i18n.load({
   'en': enMessages,
   'es': esMessages
 })
-i18n.activate('en')
+
+let currentLanguage = localStorage.getItem('LANGUAGE_KEY')
+if (!currentLanguage) {
+  currentLanguage = 'en'
+}
+
+i18n.activate(currentLanguage)
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -338,6 +345,11 @@ function AppHeaderUser({
           small={small}
           accountUrl={accountUrl}
           disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+          openSettings={openSettings}
+        />
+      </div>
+      <div className="setting-dropdown-icon-wrapper">
+        <SettingDropdown
           openSettings={openSettings}
         />
       </div>
