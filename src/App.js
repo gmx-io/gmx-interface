@@ -314,6 +314,11 @@ function AppHeaderUser({
         <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
           {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans> }
         </ConnectWalletButton>
+        <div className="setting-dropdown-icon-wrapper">
+          <SettingDropdown
+            openSettings={openSettings}
+          />
+        </div>
       </div>
     );
   }
