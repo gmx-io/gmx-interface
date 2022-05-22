@@ -89,7 +89,7 @@ export function useInfoTokens(library, chainId, active, tokenBalances, fundingRa
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
 
   const { data: vaultTokenInfo } = useSWR(
-    [`useInfoTokens:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
+    [`useInfoTokens:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV4"],
     {
       fetcher: fetcher(library, VaultReader, [
         vaultAddress,
