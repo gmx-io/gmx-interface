@@ -893,6 +893,16 @@ export default function SwapBox(props) {
           }
         }
       }
+
+      const sizeUsd = toAmount.mul(toTokenInfo.maxPrice).div(expandDecimals(1, toTokenInfo.decimals));
+      if (
+        toTokenInfo.maxGlobalLongSize &&
+        toTokenInfo.maxGlobalLongSize.gt(0) &&
+        toTokenInfo.maxAvailableLong &&
+        sizeUsd.gt(toTokenInfo.maxAvailableLong)
+      ) {
+        return [`Max ${toTokenInfo.symbol} long exceeded`];
+      }
     }
 
     if (isShort) {
@@ -956,8 +966,9 @@ export default function SwapBox(props) {
       }
 
       if (
+        toTokenInfo.maxGlobalShortSize &&
+        toTokenInfo.maxGlobalShortSize.gt(0) &&
         toTokenInfo.maxAvailableShort &&
-        toTokenInfo.maxAvailableShort.gt(0) &&
         sizeUsd.gt(toTokenInfo.maxAvailableShort)
       ) {
         return [`Max ${toTokenInfo.symbol} short exceeded`];
