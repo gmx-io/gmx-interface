@@ -337,7 +337,6 @@ export default function SwapBox(props) {
 
   const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
-  const toTokenAvailableUsd = toTokenInfo.availableUsd;
 
   const renderAvailableLongLiquidity = () => {
     if (!isLong) {
@@ -347,7 +346,24 @@ export default function SwapBox(props) {
     return (
       <div className="Exchange-info-row">
         <div className="Exchange-info-label">Available Liquidity</div>
-        <div className="align-right">{formatAmount(toTokenAvailableUsd, USD_DECIMALS, 2, true)}</div>
+        <div className="align-right">
+          <Tooltip
+            handle={`${formatAmount(toTokenInfo.maxAvailableLong, USD_DECIMALS, 2, true)}`}
+            position="right-bottom"
+            renderContent={() => {
+              return (
+                <>
+                  Max {toTokenInfo.symbol} long capacity: $
+                  {formatAmount(toTokenInfo.maxLongCapacity, USD_DECIMALS, 2, true)}
+                  <br />
+                  <br />
+                  Current {toTokenInfo.symbol} long: ${formatAmount(toTokenInfo.guaranteedUsd, USD_DECIMALS, 2, true)}
+                  <br />
+                </>
+              );
+            }}
+          ></Tooltip>
+        </div>
       </div>
     );
   };
