@@ -329,8 +329,9 @@ export async function setTraderReferralCodeByUser(chainId, referralCode, library
   const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
   const codeOwner = await contract.codeOwners(referralCodeHex);
   if (isAddressZero(codeOwner)) {
-    helperToast.error("Referral code does not exist");
-    return Promise.reject();
+    const errorMsg = "Referral code does not exist";
+    helperToast.error(errorMsg);
+    return Promise.reject(errorMsg);
   }
   return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCodeHex], opts);
 }
