@@ -18,7 +18,7 @@
 }
 
 .settings-dropdown-menu-items {
-    padding: 0.8rem;
+    padding: 0.8rem 0;
     width: 16rem;
 }
 
@@ -26,23 +26,28 @@
     display: flex;
     align-items: center;
     height: 2.4rem;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
 }
 
-.settings-dropdown-menu-item__prepend {
+.settings-dropdown-menu-item__prepend,
+.menu-item__prepend {
     width: 1.6rem;
     margin-right: 0.8rem;
     display: flex;
     align-items: center;
 }
 
-.settings-dropdown-menu-item__append {
+.settings-dropdown-menu-item__append,
+.menu-item__append {
     width: 1.6rem;
     margin-left: auto;
     display: flex;
     align-items: center;
 }
 
-.settings-dropdown-menu-item-label {
+.settings-dropdown-menu-item-label,
+.menu-item-label {
     font-size: 1.4rem;
     line-height: 2.4rem;
     letter-spacing: 0px;
@@ -51,4 +56,21 @@
 
 .settings-language-menu {
     margin-top: 0.8rem;
+}
+
+.setting-dropdown-icon-wrapper {
+    position: relative;
+    margin-left: 2.4rem;
+}
+
+@media (max-width: 1033px) {
+    .setting-dropdown-icon-wrapper {
+        margin-left: 1.6rem;
+    }
+}
+
+@media (max-width: 450px) {
+    .setting-dropdown-icon-wrapper {
+        margin-left: 0.6rem;
+    }
 }

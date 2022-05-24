@@ -1,67 +1,161 @@
+import React, { useState, useEffect } from "react";
+import cx from "classnames";
 import "./AddressDropdown.css";
 import { Menu } from "@headlessui/react";
-import { helperToast, shortenAddress, useENS } from "../../Helpers";
+import {
+  ARBITRUM,
+  AVALANCHE,
+  helperToast,
+  shortenAddress,
+  useENS
+} from "../../Helpers";
 import { useCopyToClipboard, createBreakpoint } from "react-use";
 import externalLink from "../../img/ic_new_link_16.svg";
 import copy from "../../img/ic_copy_16.svg";
-import settings from "../../img/ic_settings_16.svg";
 import disconnect from "../../img/ic_sign_out_16.svg";
 import { FaChevronDown } from "react-icons/fa";
 import Davatar from "@davatar/react";
-
 import { Trans, t } from '@lingui/macro'
+import arbitrum16Icon from '../../img/ic_arbitrum_16.svg';
+import avalanche16Icon from '../../img/ic_avalanche_16.svg';
 
-function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSettings, openSettings }) {
+function AddressDropdown(props) {
+  const {
+    account,
+    accountUrl,
+    disconnectAccountAndCloseSettings,
+    label
+  } = props
+
+  const [selectedLabel, setSelectedLabel] = useState(label);
+  const [networkChanged, setNetworkChanged] = useState(false);
+
   const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
   const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
   const { ensName } = useENS(account);
+  console.log(label)
+
+  useEffect(() => {
+    setSelectedLabel(label);
+  }, [label, networkChanged]);
+
+  const onSelect = async (token) => {
+    let network;
+    try {
+      network = await props.onSelect(token);
+      setSelectedLabel(network);
+    } catch (error) {
+      console.error(error);
+    }
+    setNetworkChanged(true);
+  };
 
   return (
-    <Menu>
-      <Menu.Button as="div">
-        <button className="App-cta small transparent address-btn">
-          <Davatar size={20} address={account} />
-          <span className="user-address">{ensName || shortenAddress(account, breakpoint === "S" ? 9 : 13)}</span>
-          <FaChevronDown />
-        </button>
-      </Menu.Button>
-      <div>
-        <Menu.Items as="div" className="menu-items">
-          <Menu.Item>
-            <div
-              className="menu-item"
-              onClick={() => {
-                copyToClipboard(account);
-                helperToast.success(t`Address copied to your clipboard`);
-              }}
-            >
-              <img src={copy} alt="Copy user address" />
-              <p><Trans>Copy Address</Trans></p>
+    <div>
+      <Menu>
+        <Menu.Button as="div">
+          <button className="App-cta small transparent address-btn">
+            <Davatar size={20} address={account} />
+            <span className="user-address">{ensName || shortenAddress(account, breakpoint === "S" ? 9 : 13)}</span>
+            <FaChevronDown />
+          </button>
+        </Menu.Button>
+        <div>
+          <Menu.Items as="div" className="menu-items">
+            <Menu.Item>
+              <div
+                className="menu-item"
+              >
+                <div className="menu-item__prepend avatar-dropdown-item">
+                  <Davatar size={20} address={account} />
+                </div>
+                <span className="menu-item-label">
+                  {ensName || shortenAddress(account, breakpoint === "S" ? 9 : 13)}
+                </span>
+              </div>
+            </Menu.Item>
+            <div className="network-selector-menu-items">
+              <p className="network-selector-menu-items-title"><Trans>Networks</Trans></p>
+              <Menu.Item>
+                <div
+                  className={cx("menu-item", { selected: selectedLabel === 'Arbitrum' } )}
+                  onClick={() => {
+                    onSelect({ value: ARBITRUM });
+                  }}
+                >
+                  <div className="menu-item__prepend">
+                    <img src={arbitrum16Icon} alt="arbitrum icon" />
+                  </div>
+                  <span className="menu-item-label">
+                    <Trans>Arbitrum</Trans>
+                  </span>
+                </div>
+              </Menu.Item>
+              <Menu.Item>
+                <div
+                  className={cx("menu-item", { selected: selectedLabel === 'Avalanche' } )}
+                  onClick={() => {
+                    onSelect({ value: AVALANCHE });
+                  }}
+                >
+                  <div className="menu-item__prepend">
+                    <img src={avalanche16Icon} alt="avalanche icon" />
+                  </div>
+                  <span className="menu-item-label">
+                    <Trans>Avalanche</Trans>
+                  </span>
+                </div>
+              </Menu.Item>
             </div>
-          </Menu.Item>
-          <Menu.Item>
-            <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="menu-item">
-              <img src={externalLink} alt="Open address in explorer" />
-              <p><Trans>View in Explorer</Trans></p>
-            </a>
-          </Menu.Item>
-
-          <Menu.Item>
-            <div className="menu-item" onClick={openSettings}>
-              <img src={settings} alt="Open settings" />
-              <p><Trans>Settings</Trans></p>
-            </div>
-          </Menu.Item>
-          <Menu.Item>
-            <div className="menu-item" onClick={disconnectAccountAndCloseSettings}>
-              <img src={disconnect} alt="Disconnect the wallet" />
-              <p><Trans>Disconnect</Trans></p>
-            </div>
-          </Menu.Item>
-        </Menu.Items>
-      </div>
-    </Menu>
+            <Menu.Item>
+              <div
+                className="menu-item"
+                onClick={() => {
+                  copyToClipboard(account);
+                  helperToast.success(t`Address copied to your clipboard`);
+                }}
+              >
+                <div className="menu-item__prepend">
+                  <img src={copy} alt="Copy user address" />
+                </div>
+                <span className="menu-item-label">
+                  <Trans>Copy Address</Trans>
+                </span>
+              </div>
+            </Menu.Item>
+            <Menu.Item>
+              <a
+                href={accountUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="menu-item"
+              >
+                <div className="menu-item__prepend">
+                  <img src={externalLink} alt="Open address in explorer" />
+                </div>
+                <span className="menu-item-label">
+                  <Trans>View in Explorer</Trans>
+                </span>
+              </a>
+            </Menu.Item>
+            <Menu.Item>
+              <div
+                className="menu-item"
+                onClick={disconnectAccountAndCloseSettings}
+              >
+                <div className="menu-item__prepend">
+                  <img src={disconnect} alt="Disconnect the wallet" />
+                </div>
+                <span className="menu-item-label">
+                  <Trans>Disconnect</Trans>
+                </span>
+              </div>
+            </Menu.Item>
+          </Menu.Items>
+        </div>
+      </Menu>
+    </div>
   );
 }
 
