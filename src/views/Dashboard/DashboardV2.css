@@ -1,23 +1,23 @@
 .DashboardV2 {
-  padding-top: 3rem;
+  padding-top: 4.65rem;
 }
 
 .DashboardV2-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: 1rem;
-  margin-top: 0.5rem;
+  grid-gap: 1.55rem;
+  margin-top: 0.8rem;
 }
 
 .DashboardV2-token-cards {
-  margin-top: 0.5rem;
+  margin-top: 0.8rem;
 }
 
 .token-table-wrapper {
   border: 1px solid #1e2136;
-  border-radius: 4px;
+  border-radius: 0.4rem;
   background: #17182c;
-  padding: 0 1rem;
+  padding: 0 1.55rem;
   text-align: left;
 }
 
@@ -26,33 +26,25 @@
 }
 
 .token-table-wrapper .App-card-title img {
-  margin-top: 3px;
+  margin-top: 0.3rem;
   display: inline-flex;
-  margin-left: 0.5rem;
-}
-
-.DashboardV2-projects {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 1rem;
-  margin-top: 0.5rem;
-  padding: 2rem;
+  margin-left: 0.8rem;
 }
 
 .App-card-title-icon {
   display: flex;
-  margin-left: 12px;
+  margin-left: 1.2rem;
 }
 
 .App-card-title-icon img + img {
-  margin-left: 6px;
+  margin-left: 0.6rem;
 }
 
 .stats-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-column-gap: 1rem;
-  margin-bottom: 1rem;
+  grid-column-gap: 1.55rem;
+  margin-bottom: 1.55rem;
 }
 
 .stats-wrapper .App-card {
@@ -65,8 +57,8 @@
 }
 
 .stats-piechart {
-  margin: -10px;
-  margin-left: 1rem;
+  margin: -1rem;
+  margin-left: 1.55rem;
 }
 
 .stats-block--glp .stats-label {
@@ -74,10 +66,10 @@
 }
 
 .stats-label {
-  font-size: 0.9rem;
-  line-height: 1.032rem;
-  border-radius: 4px;
-  padding: 0.674rem;
+  font-size: 1.4rem;
+  line-height: 1.6rem;
+  border-radius: 0.4rem;
+  padding: 1.05rem;
   letter-spacing: 0.4px;
   text-align: left;
   z-index: 1;
@@ -86,15 +78,15 @@
 }
 
 .stats-label-color {
-  width: 4px;
+  width: 0.4rem;
   height: 100%;
-  margin-right: 1rem;
+  margin-right: 1.55rem;
 }
 
 .Available-network-group {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 0.5rem;
+  grid-gap: 0.8rem;
 }
 
 .Available-network-group .Tooltip {
@@ -121,19 +113,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-right: 3rem;
+  padding-right: 4.65rem;
 }
 
 .DashboardV2-token-cards .token-table td:nth-child(3),
 .DashboardV2-token-cards .token-table th:nth-child(3) {
-  width: 200px;
+  width: 20rem;
 }
 
 @media (max-width: 1024px) {
   .stats-wrapper {
     display: grid;
     grid-template-columns: 1fr;
-    grid-gap: 1rem;
+    grid-gap: 1.55rem;
   }
 
   .stats-wrapper .App-card {
@@ -150,10 +142,6 @@
 
 @media (max-width: 900px) {
   .DashboardV2-cards {
-    grid-template-columns: 1fr;
-  }
-
-  .DashboardV2-projects {
     grid-template-columns: 1fr;
   }
 

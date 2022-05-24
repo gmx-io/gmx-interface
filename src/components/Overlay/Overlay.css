@@ -14,13 +14,13 @@
   left: 0;
   right: 0;
   background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(1rem);
 }
 
 .Overlay-top-bar {
   background: red;
-  height: 1rem;
-  padding: 0.8rem;
+  height: 1.55rem;
+  padding: 1.25rem;
   display: grid;
   grid-template-columns: auto auto;
   background: linear-gradient(90deg, rgba(12,9,78,1) 0%, rgba(45,8,84,1) 100%);
