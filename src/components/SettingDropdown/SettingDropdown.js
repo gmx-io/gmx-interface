@@ -14,6 +14,7 @@ import spanishFlag from "../../img/flag_spanish.png";
 import checkedIcon from "../../img/ic_checked.svg";
 import { messages as enMessages } from '../../locales/en/messages';
 import { messages as esMessages } from '../../locales/es/messages';
+import { Trans } from '@lingui/macro'
 
 i18n.load({
   'en': enMessages,
@@ -78,7 +79,7 @@ export default function SettingDropdown(props) {
                     <img src={setting16Icon} alt="settings-open-icon" />
                   </div>
                   <span className="settings-dropdown-menu-item-label">
-                    Trade settings
+                    <Trans>Trade settings</Trans>
                   </span>
                   <div className="settings-dropdown-menu-item__append">
                     <img src={arrowright16Icon} alt="arrow-right-icon" />
@@ -94,7 +95,7 @@ export default function SettingDropdown(props) {
                     <img src={language16Icon} alt="language-menu-open-icon" />
                   </div>
                   <span className="settings-dropdown-menu-item-label">
-                    Language
+                    <Trans>Language</Trans>
                   </span>
                   <div className="settings-dropdown-menu-item__append">
                     <img src={arrowright16Icon} alt="arrow-right-icon" />
@@ -117,7 +118,7 @@ export default function SettingDropdown(props) {
                     <img src={arrowleft16Icon} alt="arrow-left-icon" />
                   </div>
                   <span className="settings-dropdown-menu-item-label">
-                    Select Language
+                    <Trans>Select Language</Trans>
                   </span>
                 </div>
               </Menu.Item>
@@ -129,13 +130,13 @@ export default function SettingDropdown(props) {
                         className="settings-dropdown-menu-item"
                         onClick={() => selectLanguage(item.language)}
                       >
-                        <div className="settings-dropdown-menu-item__prepend">
+                        <div className="settings-dropdown-menu-item__prepend menu-item__prepend">
                           <img src={item.icon} alt="language-menu-open-icon" />
                         </div>
-                        <span className="settings-dropdown-menu-item-label">
-                          {item.name}
+                        <span className="settings-dropdown-menu-item-label menu-item-label">
+                          <Trans>{item.name}</Trans>
                         </span>
-                        <div className="settings-dropdown-menu-item__append">
+                        <div className="settings-dropdown-menu-item__append menu-item__append">
                           {
                             currentLanguage === item.language && <img src={checkedIcon} alt="checked-icon" />
                           }

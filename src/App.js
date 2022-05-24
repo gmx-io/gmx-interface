@@ -332,25 +332,13 @@ function AppHeaderUser({
           <Trans>Trade</Trans>
         </NavLink>
       </div>
-      {showSelector && (
-        <NetworkSelector
-          options={networkOptions}
-          label={selectorLabel}
-          onSelect={onNetworkSelect}
-          className="App-header-user-netowork"
-          showCaret={true}
-          modalLabel="Select Network"
-          small={small}
-          showModal={showNetworkSelectorModal}
-        />
-      )}
       <div className="App-header-user-address">
         <AddressDropdown
           account={account}
-          small={small}
           accountUrl={accountUrl}
           disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-          openSettings={openSettings}
+          label={selectorLabel}
+          onSelect={onNetworkSelect}
         />
       </div>
       <div className="setting-dropdown-icon-wrapper">
