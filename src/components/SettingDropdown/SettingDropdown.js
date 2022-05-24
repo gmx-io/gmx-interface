@@ -72,7 +72,7 @@ export default function SettingDropdown(props) {
             <Menu.Items as="div" className="menu-items settings-dropdown-menu-items">
               <Menu.Item>
                 <div
-                  className="settings-dropdown-menu-item"
+                  className="settings-dropdown-menu-item menu-item"
                   onClick={() => openSettings()}
                 >
                   <div className="settings-dropdown-menu-item__prepend">
@@ -88,7 +88,7 @@ export default function SettingDropdown(props) {
               </Menu.Item>
               <Menu.Item>
                 <div
-                  className="settings-dropdown-menu-item"
+                  className="settings-dropdown-menu-item menu-item"
                   onClick={toggleLanguageMenu}
                 >
                   <div className="settings-dropdown-menu-item__prepend">
@@ -111,7 +111,7 @@ export default function SettingDropdown(props) {
             <Menu.Items as="div" className="menu-items settings-dropdown-menu-items">
               <Menu.Item>
                 <div
-                  className="settings-dropdown-menu-item"
+                  className="settings-dropdown-menu-item menu-item"
                   onClick={toggleLanguageMenu}
                 >
                   <div className="settings-dropdown-menu-item__prepend">
@@ -127,7 +127,7 @@ export default function SettingDropdown(props) {
                   return (
                     <Menu.Item key={index}>
                       <div
-                        className="settings-dropdown-menu-item"
+                        className="settings-dropdown-menu-item menu-item"
                         onClick={() => selectLanguage(item.language)}
                       >
                         <div className="settings-dropdown-menu-item__prepend menu-item__prepend">
