@@ -23,6 +23,7 @@ const constants = {
 
   [ARBITRUM_TESTNET]: {
     nativeTokenSymbol: "ETH",
+    wrappedTokenSymbol: "WETH",
     defaultCollateralSymbol: "USDC",
     defaultFlagOrdersEnabled: false,
     positionReaderPropsLength: 9,

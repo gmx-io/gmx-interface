@@ -99,6 +99,193 @@ const FEES = {
       feeUsd: "69267.72",
     },
   ],
+  421611: [
+    {
+      from: 1630514845 - SECONDS_PER_WEEK,
+      to: 1630514845,
+      feeUsd: "32.47",
+    },
+    {
+      from: 1631074048 - SECONDS_PER_WEEK,
+      to: 1631074048,
+      feeUsd: "50681",
+    },
+    {
+      from: 1631677736 - SECONDS_PER_WEEK,
+      to: 1631677736,
+      feeUsd: "124400.69",
+    },
+    {
+      from: 1632278435 - SECONDS_PER_WEEK,
+      to: 1632278435,
+      feeUsd: "395299.56",
+    },
+    {
+      from: 1632885416 - SECONDS_PER_WEEK,
+      to: 1632885416,
+      feeUsd: "348555.88",
+    },
+    {
+      from: 1633507067 - SECONDS_PER_WEEK,
+      to: 1633507067,
+      feeUsd: "302888.51",
+    },
+    {
+      from: 1634095073 - SECONDS_PER_WEEK,
+      to: 1634095073,
+      feeUsd: "325532.14",
+    },
+    {
+      from: 1634701754 - SECONDS_PER_WEEK,
+      to: 1634701754,
+      feeUsd: "524688.53",
+    },
+    {
+      from: 1635301669 - SECONDS_PER_WEEK,
+      to: 1635301669,
+      feeUsd: "727989.27",
+    },
+    {
+      from: 1635914306 - SECONDS_PER_WEEK,
+      to: 1635914306,
+      feeUsd: "815838.37",
+    },
+    {
+      from: 1636517248 - SECONDS_PER_WEEK,
+      to: 1636517248,
+      feeUsd: "1017108.52",
+    },
+    {
+      from: 1637118096 - SECONDS_PER_WEEK,
+      to: 1637118096,
+      feeUsd: "1195695.02",
+    },
+    {
+      from: 1637728323 - SECONDS_PER_WEEK,
+      to: 1637728323,
+      feeUsd: "611495.04",
+    },
+    {
+      from: 1638330376 - SECONDS_PER_WEEK,
+      to: 1638330376,
+      feeUsd: "1002226.96",
+    },
+    {
+      from: 1638931348 - SECONDS_PER_WEEK,
+      to: 1638931348,
+      feeUsd: "1225801.74",
+    },
+    {
+      from: 1639538283 - SECONDS_PER_WEEK,
+      to: 1639538283,
+      feeUsd: "638755.06",
+    },
+    {
+      from: 1640135388 - SECONDS_PER_WEEK,
+      to: 1640135388,
+      feeUsd: "692132.12",
+    },
+    {
+      from: 1640740756 - SECONDS_PER_WEEK,
+      to: 1640740756,
+      feeUsd: "653857.89",
+    },
+    {
+      from: 1641353998 - SECONDS_PER_WEEK,
+      to: 1641353998,
+      feeUsd: "932273.45",
+    },
+    {
+      from: 1641954606 - SECONDS_PER_WEEK,
+      to: 1641954606,
+      feeUsd: "2010194.53",
+    },
+    {
+      from: 1642557002 - SECONDS_PER_WEEK,
+      to: 1642557002,
+      feeUsd: "1424176.23",
+    },
+    {
+      from: 1643166233 - SECONDS_PER_WEEK,
+      to: 1643166233,
+      feeUsd: "2131480.58",
+    },
+    {
+      from: 1643765386 - SECONDS_PER_WEEK,
+      to: 1643765386,
+      feeUsd: "1184435.13",
+    },
+    {
+      from: 1644371345 - SECONDS_PER_WEEK,
+      to: 1644371345,
+      feeUsd: "1205134.15",
+    },
+    {
+      from: 1644979161 - SECONDS_PER_WEEK,
+      to: 1644979161,
+      feeUsd: "1206960.25",
+    },
+    {
+      from: 1645579656 - SECONDS_PER_WEEK,
+      to: 1645579656,
+      feeUsd: "527326.47",
+    },
+    {
+      from: 1646182611 - SECONDS_PER_WEEK,
+      to: 1646182611,
+      feeUsd: "2007742.56",
+    },
+    {
+      from: 1646788756 - SECONDS_PER_WEEK,
+      to: 1646788756,
+      feeUsd: "2181383.87",
+    },
+    {
+      from: 1647402638 - SECONDS_PER_WEEK,
+      to: 1647402638,
+      feeUsd: "1060151.47",
+    },
+    {
+      from: 1648000826 - SECONDS_PER_WEEK,
+      to: 1648000826,
+      feeUsd: "1386779.30",
+    },
+    {
+      from: 1648611300 - SECONDS_PER_WEEK,
+      to: 1648611300,
+      feeUsd: "1474852.84",
+    },
+    {
+      from: 1649207110 - SECONDS_PER_WEEK,
+      to: 1649207110,
+      feeUsd: "1882364.25",
+    },
+    {
+      from: 1649814371 - SECONDS_PER_WEEK,
+      to: 1649814371,
+      feeUsd: "2225265.28",
+    },
+    {
+      from: 1650420021 - SECONDS_PER_WEEK,
+      to: 1650420021,
+      feeUsd: "1135279.21",
+    },
+    {
+      from: 1651028602 - SECONDS_PER_WEEK,
+      to: 1651028602,
+      feeUsd: "716772.48",
+    },
+    {
+      from: 1651635145 - SECONDS_PER_WEEK,
+      to: 1651635145,
+      feeUsd: "820730.6",
+    },
+    {
+      from: 1652236772 - SECONDS_PER_WEEK,
+      to: 1652236772,
+      feeUsd: "1833127.03",
+    },
+  ],
   42161: [
     {
       from: 1630514845 - SECONDS_PER_WEEK,

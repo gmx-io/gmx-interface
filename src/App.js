@@ -39,6 +39,7 @@ import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   REFERRAL_CODE_KEY,
   REFERRAL_CODE_QUERY_PARAMS,
+  ARBITRUM_TESTNET,
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
@@ -123,7 +124,7 @@ function inPreviewMode() {
 }
 
 const arbWsProvider = new ethers.providers.WebSocketProvider("wss://arb1.arbitrum.io/ws");
-
+const arbTestnetWsProvider = new ethers.providers.JsonRpcProvider("https://rinkeby.arbitrum.io/rpc");
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
 
 function getWsProvider(active, chainId) {
@@ -132,6 +133,10 @@ function getWsProvider(active, chainId) {
   }
   if (chainId === ARBITRUM) {
     return arbWsProvider;
+  }
+
+  if (chainId === ARBITRUM_TESTNET) {
+    return arbTestnetWsProvider;
   }
 
   if (chainId === AVALANCHE) {
@@ -235,6 +240,12 @@ function AppHeaderUser({
       color: "#264f79",
     },
     {
+      label: "Testnet",
+      value: ARBITRUM_TESTNET,
+      icon: "ic_arbitrum_24.svg",
+      color: "#264f79",
+    },
+    {
       label: "Avalanche",
       value: AVALANCHE,
       icon: "ic_avalanche_24.svg",
@@ -259,6 +270,8 @@ function AppHeaderUser({
   );
 
   const selectorLabel = getChainName(chainId);
+
+  console.log("sel", selectorLabel);
 
   if (!active) {
     return (

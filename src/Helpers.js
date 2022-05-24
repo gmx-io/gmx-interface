@@ -42,7 +42,7 @@ const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
 const CHAIN_NAMES_MAP = {
   [MAINNET]: "BSC",
   [TESTNET]: "BSC Testnet",
-  [ARBITRUM_TESTNET]: "Arbitrum Testnet",
+  [ARBITRUM_TESTNET]: "Testnet",
   [ARBITRUM]: "Arbitrum",
   [AVALANCHE]: "Avalanche",
 };
@@ -57,6 +57,7 @@ const MAX_GAS_PRICE_MAP = {
 };
 
 const ARBITRUM_RPC_PROVIDERS = ["https://arb1.arbitrum.io/rpc"];
+const ARBITRUM_TESTNET_RPC_PROVIDERS = ["https://rinkeby.arbitrum.io/rpc"];
 const AVALANCHE_RPC_PROVIDERS = ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
@@ -141,6 +142,50 @@ export const GLPPOOLCOLORS = {
 };
 
 export const ICONLINKS = {
+  421611: {
+    GMX: {
+      coingecko: "https://www.coingecko.com/en/coins/gmx",
+      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
+    },
+    GLP: {
+      arbitrum: "https://arbiscan.io/token/0x1aDDD80E6039594eE970E5872D247bf0414C8903",
+    },
+    ETH: {
+      coingecko: "https://www.coingecko.com/en/coins/ethereum",
+    },
+    BTC: {
+      coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
+      arbitrum: "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+    },
+    LINK: {
+      coingecko: "https://www.coingecko.com/en/coins/chainlink",
+      arbitrum: "https://arbiscan.io/address/0xf97f4df75117a78c1a5a0dbb814af92458539fb4",
+    },
+    UNI: {
+      coingecko: "https://www.coingecko.com/en/coins/uniswap",
+      arbitrum: "https://arbiscan.io/address/0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0",
+    },
+    USDC: {
+      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
+      arbitrum: "https://arbiscan.io/address/0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
+    },
+    USDT: {
+      coingecko: "https://www.coingecko.com/en/coins/tether",
+      arbitrum: "https://arbiscan.io/address/0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
+    },
+    DAI: {
+      coingecko: "https://www.coingecko.com/en/coins/dai",
+      arbitrum: "https://arbiscan.io/address/0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
+    },
+    MIM: {
+      coingecko: "https://www.coingecko.com/en/coins/magic-internet-money",
+      arbitrum: "https://arbiscan.io/address/0xfea7a6a0b346362bf88a9e4a88416b77a57d6c2a",
+    },
+    FRAX: {
+      coingecko: "https://www.coingecko.com/en/coins/frax",
+      arbitrum: "https://arbiscan.io/address/0x17fc002b466eec40dae837fc4be5c67993ddbd6f",
+    },
+  },
   42161: {
     GMX: {
       coingecko: "https://www.coingecko.com/en/coins/gmx",
@@ -256,7 +301,7 @@ export const platformTokens = {
   },
 };
 
-const supportedChainIds = [ARBITRUM, AVALANCHE];
+const supportedChainIds = [ARBITRUM, AVALANCHE, ARBITRUM_TESTNET];
 const injectedConnector = new InjectedConnector({
   supportedChainIds,
 });
@@ -267,6 +312,7 @@ const getWalletConnectConnector = () => {
     rpc: {
       [AVALANCHE]: AVALANCHE_RPC_PROVIDERS[0],
       [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0],
+      [ARBITRUM_TESTNET]: ARBITRUM_TESTNET_RPC_PROVIDERS[0],
     },
     qrcode: true,
     chainId,
@@ -405,7 +451,8 @@ export function getServerBaseUrl(chainId) {
   if (chainId === MAINNET) {
     return "https://gambit-server-staging.uc.r.appspot.com";
   } else if (chainId === ARBITRUM_TESTNET) {
-    return "https://gambit-l2.as.r.appspot.com";
+    // return "https://gambit-l2.as.r.appspot.com";
+    return "https://gmx-server-mainnet.uw.r.appspot.com";
   } else if (chainId === ARBITRUM) {
     return "https://gmx-server-mainnet.uw.r.appspot.com";
   } else if (chainId === AVALANCHE) {
@@ -1266,6 +1313,7 @@ export const BSC_RPC_PROVIDERS = [
 const RPC_PROVIDERS = {
   [MAINNET]: BSC_RPC_PROVIDERS,
   [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
+  [ARBITRUM_TESTNET]: ARBITRUM_TESTNET_RPC_PROVIDERS,
   [AVALANCHE]: AVALANCHE_RPC_PROVIDERS,
 };
 
@@ -2120,7 +2168,7 @@ const NETWORK_METADATA = {
       symbol: "ETH",
       decimals: 18,
     },
-    rpcUrls: ["https://rinkeby.arbitrum.io/rpc"],
+    rpcUrls: ARBITRUM_TESTNET_RPC_PROVIDERS,
     blockExplorerUrls: ["https://rinkeby-explorer.arbitrum.io/"],
   },
   [ARBITRUM]: {
