@@ -1,39 +1,36 @@
-.Presale-wallet-title {
-}
-
 .Presale-title {
   position: relative;
   text-align: center;
-  font-size: 3rem;
-  padding-top: 4rem;
-  margin-bottom: 1rem;
+  font-size: 4.65rem;
+  padding-top: 6.2rem;
+  margin-bottom: 1.55rem;
   font-weight: bold;
 }
 
 .Presale-card .Card-title {
-  margin-top: 1rem;
-  margin-bottom: 3rem;
+  margin-top: 1.55rem;
+  margin-bottom: 4.65rem;
 }
 
 .Presale-subtitle {
   text-align: center;
-  font-size: 1.1rem;
-  margin-bottom: 3rem;
+  font-size: 1.7rem;
+  margin-bottom: 4.65rem;
   opacity: 0.9;
 }
 
 .Presale-cards {
   display: grid;
   grid-template-columns: 2fr 3fr;
-  grid-gap: 2rem;
-  padding: 2rem;
-  padding-bottom: 5rem;
+  grid-gap: 3.1rem;
+  padding: 3.1rem;
+  padding-bottom: 7.75rem;
 }
 
 .Presale-card {
   border: 2px solid rgba(48, 31, 130, 0.5);
   border-radius: 3px;
-  padding: 2rem;
+  padding: 3.1rem;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -46,7 +43,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  filter: blur(100px);
+  filter: blur(10rem);
   opacity: 0.05;
 }
 
@@ -55,28 +52,28 @@
 }
 
 .Presale-send-input {
-  margin-bottom: 2rem;
+  margin-bottom: 3.1rem;
 }
 
 .Presale-receive {
-  margin-bottom: 2rem;
+  margin-bottom: 3.1rem;
   margin-left: auto;
   margin-right: auto;
   text-align: left;
   width: 90%;
-  max-width: 30rem;
+  max-width: 46.5rem;
 }
 
 .Presale-approve {
-  font-size: 1.1rem;
+  font-size: 1.7rem;
   opacity: 0.9;
   cursor: pointer;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1.25rem;
   margin-left: auto;
   margin-right: auto;
   text-align: left;
   width: 90%;
-  max-width: 30rem;
+  max-width: 46.5rem;
 }
 
 .Presale-approve:hover {
@@ -84,7 +81,7 @@
 }
 
 .Presale-approve .App-icon {
-  margin-right: 0.7rem;
+  margin-right: 1.085rem;
 }
 
 .Presale-approve.disabled {
@@ -97,17 +94,14 @@
 }
 
 button.Presale-buy-button.App-cta {
-  margin-bottom: 1.5rem;
-}
-
-button.Presale-buy-button.App-cta:disabled {
+  margin-bottom: 2.325rem;
 }
 
 .Card-content {
   text-align: left;
   display: inline-block;
   width: 90%;
-  max-width: 30rem;
+  max-width: 46.5rem;
 }
 
 .Presale-account-label {
@@ -115,12 +109,12 @@ button.Presale-buy-button.App-cta:disabled {
 }
 
 .Presale-slots {
-  margin-bottom: 2rem;
-  line-height: 1.2rem;
+  margin-bottom: 3.1rem;
+  line-height: 1.85rem;
 }
 
 .Presale-account {
-  margin-bottom: 2rem;
+  margin-bottom: 3.1rem;
 
   white-space: nowrap;
   overflow: hidden;
@@ -129,16 +123,16 @@ button.Presale-buy-button.App-cta:disabled {
 }
 
 .Presale-balance {
-  margin-bottom: 2rem;
+  margin-bottom: 3.1rem;
 }
 
 .Presale-price {
-  margin-bottom: 2rem;
-  line-height: 1.2rem;
+  margin-bottom: 3.1rem;
+  line-height: 1.85rem;
 }
 
 .Presale-slot-info {
-  padding-bottom: 0.3rem;
+  padding-bottom: 0.465rem;
 }
 
 @media (max-width: 1000px) {

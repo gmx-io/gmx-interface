@@ -99,6 +99,7 @@ import { getContract } from "./Addresses";
 import VaultV2 from "./abis/VaultV2.json";
 import VaultV2b from "./abis/VaultV2b.json";
 import PositionRouter from "./abis/PositionRouter.json";
+import PageNotFound from "./views/PageNotFound/PageNotFound";
 import ReferralTerms from "./views/ReferralTerms/ReferralTerms";
 
 if ("ethereum" in window) {
@@ -805,6 +806,9 @@ function FullApp() {
             </Route>
             <Route exact path="/referral-terms">
               <ReferralTerms />
+            </Route>
+            <Route path="*">
+              <PageNotFound />
             </Route>
           </Switch>
         </div>

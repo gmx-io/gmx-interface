@@ -1,7 +1,7 @@
 .Orders-list {
   width: 100%;
   background: linear-gradient(45deg, rgba(11,5,55,0.6) 0%, rgba(21,3,48,0.6) 100%);
-  font-size: 0.9rem;
+  font-size: 1.4rem;
 }
 
 .Orders-list.small {
@@ -16,7 +16,7 @@ table.Orders-list {
 table.Orders-list th, table.Orders-list td {
   font-weight: normal;
   text-align: left;
-  padding: 0.7rem 1rem;
+  padding: 1.1rem 1.55rem;
 }
 
 table.Orders-list tr {
@@ -41,7 +41,7 @@ table.Orders-list tr:last-child {
 }
 
 .Orders-list-item-type {
-  width: 60px;
+  width: 6rem;
 }
 
 table.Orders-list tr.Orders-list-header {
@@ -53,7 +53,7 @@ table.Orders-list th {
 }
 
 button.Orders-list-action {
-  font-size: 0.9rem;
+  font-size: 1.4rem;
   padding: 0;
   border-radius: 3px;
   background: none;
@@ -68,23 +68,23 @@ button.Orders-list-action:hover {
 }
 
 .Orders-list-modal-button {
-  margin-top: 10px;
+  margin-top: 1rem;
 }
 
 /* don't know how to solve other way */
 .Orders-list-modal .Exchange-swap-input {
-  width: 180px;
+  width: 18rem;
 }
 
 .Orders-list-modal-warning {
   color: #fa3c58;
-  font-size: 0.9rem;
+  font-size: 1.4rem;
   text-align: center;
-  margin-top: 10px;
+  margin-top: 1rem;
 }
 
 .Orders-list-modal .Modal-content {
-  width: 22rem;
+  width: 34.1rem;
 }
 
 @media (max-width: 1000px) {

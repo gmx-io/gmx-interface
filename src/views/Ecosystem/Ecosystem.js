@@ -12,11 +12,14 @@ import "./Ecosystem.css";
 export default function Ecosystem() {
   return (
     <SEO title={getPageTitle("Ecosystem Projects")}>
-      <div className="DashboardV2 Page page-layout">
+      <div className="default-container page-layout">
         <div>
-          <div className="Page-title-section">
-            <div className="Page-title">Official Pages</div>
-            <div className="Page-description">Official GMX ecosystem pages.</div>
+          <div className="section-title-block">
+            <div className="section-title-icon"></div>
+            <div className="section-title-content">
+              <div className="Page-title">Official Pages</div>
+              <div className="Page-description">Official GMX ecosystem pages.</div>
+            </div>
           </div>
           <div className="DashboardV2-projects">
             <div className="App-card">
@@ -61,8 +64,26 @@ export default function Ecosystem() {
                 </div>
               </div>
             </div>
+            <div className="App-card">
+              <div className="App-card-title">GMX Proposals Voting</div>
+              <div className="App-card-divider"></div>
+              <div className="App-card-content">
+                <div className="App-card-row">
+                  <div className="label">Link</div>
+                  <div>
+                    <a href="https://snapshot.org/#/gmx.eth" target="_blank" rel="noopener noreferrer">
+                      https://snapshot.org/#/gmx.eth
+                    </a>
+                  </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">About</div>
+                  <div>GMX Proposals Voting page</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="Page-title-section">
+          <div className="Tab-title-section">
             <div className="Page-title">Community Projects</div>
             <div className="Page-description">Projects developed by the GMX community.</div>
           </div>
@@ -363,7 +384,7 @@ export default function Ecosystem() {
               </div>
             </div>
           </div>
-          <div className="Page-title-section">
+          <div className="Tab-title-section">
             <div className="Page-title">Partnerships and Integrations</div>
             <div className="Page-description">Projects supporting GMX.</div>
           </div>

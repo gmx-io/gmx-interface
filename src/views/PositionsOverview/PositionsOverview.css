@@ -1,6 +1,6 @@
 .Positions-overview {
-  font-size: 0.9rem;
-  margin: 1rem 2rem;
+  font-size: 1.4rem;
+  margin: 1.55rem 3.1rem;
 }
 
 .Positions-overview-stats {
@@ -15,12 +15,12 @@
   opacity: 0.5;
   font-weight: normal;
   text-align: left;
-  padding: 0.5rem 1rem 0.5rem 0;
+  padding: 0.8rem 1.55rem 0.8rem 0;
 }
 
 .Positions-overview td {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.5rem 1rem 0.5rem 0;
+  padding: 0.8rem 1.55rem 0.8rem 0;
 }
 
 .Positions-overview .near {

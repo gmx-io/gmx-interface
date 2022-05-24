@@ -663,7 +663,7 @@ export default function DashboardV2() {
                   <div className="App-card-content">
                     <div className="App-card-row">
                       <div className="label">Price</div>
-                      <div>${formatAmount(glpPrice, USD_DECIMALS, 2, true)}</div>
+                      <div>${formatAmount(glpPrice, USD_DECIMALS, 3, true)}</div>
                     </div>
                     <div className="App-card-row">
                       <div className="label">Supply</div>

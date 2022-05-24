@@ -5,10 +5,10 @@ export const arbitrumGraphClient = createClient("https://api.thegraph.com/subgra
 export const avalancheGraphClient = createClient("https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats");
 export const nissohGraphClient = createClient("https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault");
 export const arbitrumReferralsGraphClient = createClient(
-  "https://api.thegraph.com/subgraphs/name/gdev8317/gmx-arbitrum-referrals-staging"
+  "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-arbitrum-referrals"
 );
 export const avalancheReferralsGraphClient = createClient(
-  "https://api.thegraph.com/subgraphs/name/gdev8317/gmx-avalanche-referrals-staging"
+  "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-referrals"
 );
 
 function createClient(uri) {
