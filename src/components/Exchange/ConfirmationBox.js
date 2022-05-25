@@ -103,6 +103,7 @@ export default function ConfirmationBox(props) {
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
+  const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
 
   let minOut;
   let fromTokenUsd;
@@ -186,8 +187,8 @@ export default function ConfirmationBox(props) {
   };
 
   const getPrimaryText = () => {
-    if (!hasExistingPosition && existingTriggerOrdersThatWillBeClosed?.length > 0) {
-      return `Cancel trigger orders to open position!`;
+    if (!isTriggerWarningAccepted) {
+      return `Accept confirmation of trigger orders`;
     }
 
     if (!isPendingConfirmation) {
@@ -230,7 +231,7 @@ export default function ConfirmationBox(props) {
     if (getError()) {
       return false;
     }
-    if (!hasExistingPosition && existingTriggerOrdersThatWillBeClosed?.length > 0) {
+    if (!isTriggerWarningAccepted) {
       return false;
     }
     return !isPendingConfirmation && !isSubmitting;
@@ -670,6 +671,13 @@ export default function ConfirmationBox(props) {
               </Checkbox>
             </div>
           )}
+          {existingTriggerOrdersThatWillBeClosed.length > 0 && (
+            <div className="PositionEditor-allow-higher-slippage">
+              <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
+                <span className="muted">I am aware of the trigger orders</span>
+              </Checkbox>
+            </div>
+          )}
           {renderExecutionFee()}
         </div>
       </>
@@ -709,6 +717,8 @@ export default function ConfirmationBox(props) {
     isHigherSlippageAllowed,
     setIsHigherSlippageAllowed,
     allowedSlippage,
+    isTriggerWarningAccepted,
+    existingTriggerOrdersThatWillBeClosed,
   ]);
 
   const renderSwapSection = useCallback(() => {
