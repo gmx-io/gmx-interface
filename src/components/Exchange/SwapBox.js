@@ -337,7 +337,6 @@ export default function SwapBox(props) {
 
   const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
-  const toTokenAvailableUsd = toTokenInfo.availableUsd;
 
   const renderAvailableLongLiquidity = () => {
     if (!isLong) {
@@ -347,7 +346,24 @@ export default function SwapBox(props) {
     return (
       <div className="Exchange-info-row">
         <div className="Exchange-info-label">Available Liquidity</div>
-        <div className="align-right">{formatAmount(toTokenAvailableUsd, USD_DECIMALS, 2, true)}</div>
+        <div className="align-right">
+          <Tooltip
+            handle={`${formatAmount(toTokenInfo.maxAvailableLong, USD_DECIMALS, 2, true)}`}
+            position="right-bottom"
+            renderContent={() => {
+              return (
+                <>
+                  Max {toTokenInfo.symbol} long capacity: $
+                  {formatAmount(toTokenInfo.maxLongCapacity, USD_DECIMALS, 2, true)}
+                  <br />
+                  <br />
+                  Current {toTokenInfo.symbol} long: ${formatAmount(toTokenInfo.guaranteedUsd, USD_DECIMALS, 2, true)}
+                  <br />
+                </>
+              );
+            }}
+          ></Tooltip>
+        </div>
       </div>
     );
   };
@@ -877,6 +893,16 @@ export default function SwapBox(props) {
           }
         }
       }
+
+      const sizeUsd = toAmount.mul(toTokenInfo.maxPrice).div(expandDecimals(1, toTokenInfo.decimals));
+      if (
+        toTokenInfo.maxGlobalLongSize &&
+        toTokenInfo.maxGlobalLongSize.gt(0) &&
+        toTokenInfo.maxAvailableLong &&
+        sizeUsd.gt(toTokenInfo.maxAvailableLong)
+      ) {
+        return [`Max ${toTokenInfo.symbol} long exceeded`];
+      }
     }
 
     if (isShort) {
@@ -940,8 +966,9 @@ export default function SwapBox(props) {
       }
 
       if (
+        toTokenInfo.maxGlobalShortSize &&
+        toTokenInfo.maxGlobalShortSize.gt(0) &&
         toTokenInfo.maxAvailableShort &&
-        toTokenInfo.maxAvailableShort.gt(0) &&
         sizeUsd.gt(toTokenInfo.maxAvailableShort)
       ) {
         return [`Max ${toTokenInfo.symbol} short exceeded`];
@@ -1018,22 +1045,36 @@ export default function SwapBox(props) {
     } else {
       outputCurrency = shortCollateralToken.address;
     }
-    let uniswapUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}`;
+    let externalSwapUrl = "";
+    if (chainId === AVALANCHE) {
+      externalSwapUrl = `https://traderjoexyz.com/trade?outputCurrency=${outputCurrency}#/`;
+    } else {
+      externalSwapUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}`;
+    }
+    let externalSwapName = chainId === AVALANCHE ? "Trader Joe" : "Uniswap";
     const label =
       modalError === "BUFFER" ? `${shortCollateralToken.symbol} Required` : `${fromToken.symbol} Capacity Reached`;
     const swapTokenSymbol = isLong ? toToken.symbol : shortCollateralToken.symbol;
     return (
       <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal">
-        You will need to select {swapTokenSymbol} as the "Pay" token to initiate this trade.
+        <div>You need to select {swapTokenSymbol} as the "Pay" token to initiate this trade.</div>
         <br />
-        <br />
-        <a href={uniswapUrl} target="_blank" rel="noreferrer">
-          Buy {swapTokenSymbol} on Uniswap
+        {isShort && (
+          <div>
+            Alternatively you can select a different "Profits In" token.
+            <br />
+            <br />
+          </div>
+        )}
+        <a href={externalSwapUrl} target="_blank" rel="noreferrer">
+          Buy {swapTokenSymbol} on {externalSwapName}
         </a>
       </Modal>
     );
   }, [
+    chainId,
     modalError,
+    isShort,
     setModalError,
     fromToken?.address,
     toToken?.address,

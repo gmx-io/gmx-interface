@@ -217,6 +217,8 @@ export default function OrdersOverview() {
                     error = "No position";
                   } else if (order.sizeDelta.gt(position[0])) {
                     error = `Order size exceeds position`;
+                  } else if (order.sizeDelta.eq(0)) {
+                    error = "Order size is 0";
                   }
                 }
               }
@@ -241,7 +243,7 @@ export default function OrdersOverview() {
                     {formatAmount(diffPercent, 2, 2)}%
                   </td>
                   <td>
-                    <NavLink to={`/actions/${order.account}`}>{shortenAddress(order.account)}</NavLink>
+                    <NavLink to={`/actions/${order.account}`}>{shortenAddress(order.account, 12)}</NavLink>
                   </td>
                   <td>{formatDateTime(order.createdTimestamp)}</td>
                   <td>{order.index}</td>
