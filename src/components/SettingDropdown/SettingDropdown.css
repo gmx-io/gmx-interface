@@ -14,15 +14,18 @@
     padding: 0;
 }
 
+.settings-dropdown-icon img {
+    width: 20px;
+    height: 20px;
+}
+
 .settings-dropdown-menu-items {
-    padding: 0.8rem 0;
     width: 16rem;
 }
 
 .settings-dropdown-menu-item {
     display: flex;
     align-items: center;
-    height: 2.4rem;
     padding-left: 0.8rem;
     padding-right: 0.8rem;
 }
@@ -49,6 +52,10 @@
     line-height: 2.4rem;
     letter-spacing: 0px;
     color: #A0A3C4;
+}
+
+.menu-item:hover .menu-item-label {
+    color: #eee;
 }
 
 .settings-language-menu {
