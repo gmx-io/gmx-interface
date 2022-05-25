@@ -1,0 +1,19 @@
+.connect-wallet {
+    position: relative;
+}
+
+.connect-wallet-btn {
+    padding-right: 2.5rem;
+}
+
+.network-dropdown-trigger-btn {
+    position: absolute;
+    right: 1rem;
+    top: 1.3rem;
+    cursor: pointer;
+}
+
+.connect-wallet .network-selector-menu-items {
+    margin-bottom: 0;
+    border-bottom: none;
+}

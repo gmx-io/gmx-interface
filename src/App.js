@@ -64,7 +64,7 @@ import Debug from "./views/Debug/Debug";
 import cx from "classnames";
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import NetworkSelector from "./components/NetworkSelector/NetworkSelector";
+// import NetworkSelector from "./components/NetworkSelector/NetworkSelector";
 import Modal from "./components/Modal/Modal";
 import Checkbox from "./components/Checkbox/Checkbox";
 
@@ -88,7 +88,7 @@ import coinbaseImg from "./img/coinbaseWallet.png";
 import walletConnectImg from "./img/walletconnect-circle-blue.svg";
 import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
 import SettingDropdown from "./components/SettingDropdown/SettingDropdown";
-import { ConnectWalletButton } from "./components/Common/Button";
+import ConnectWalletButton from "./components/ConnectWalletButton/ConnectWalletButton";
 import useEventToast from "./components/EventToast/useEventToast";
 import { Link } from "react-router-dom";
 import EventToastContainer from "./components/EventToast/EventToastContainer";
@@ -257,21 +257,21 @@ function AppHeaderUser({
 }) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
-  const showSelector = true;
-  const networkOptions = [
-    {
-      label: "Arbitrum",
-      value: ARBITRUM,
-      icon: "ic_arbitrum_24.svg",
-      color: "#264f79",
-    },
-    {
-      label: "Avalanche",
-      value: AVALANCHE,
-      icon: "ic_avalanche_24.svg",
-      color: "#E841424D",
-    },
-  ];
+  // const showSelector = true;
+  // const networkOptions = [
+  //   {
+  //     label: "Arbitrum",
+  //     value: ARBITRUM,
+  //     icon: "ic_arbitrum_24.svg",
+  //     color: "#264f79",
+  //   },
+  //   {
+  //     label: "Avalanche",
+  //     value: AVALANCHE,
+  //     icon: "ic_avalanche_24.svg",
+  //     color: "#E841424D",
+  //   },
+  // ];
 
   useEffect(() => {
     if (active) {
@@ -299,7 +299,7 @@ function AppHeaderUser({
             <Trans>Trade</Trans>
           </NavLink>
         </div>
-        {showSelector && (
+        {/* {showSelector && (
           <NetworkSelector
             options={networkOptions}
             label={selectorLabel}
@@ -310,8 +310,14 @@ function AppHeaderUser({
             small={small}
             showModal={showNetworkSelectorModal}
           />
-        )}
-        <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
+        )} */}
+        <ConnectWalletButton
+          onClick={() => setWalletModalVisible(true)}
+          imgSrc={connectWalletImg}
+          label={selectorLabel}
+          onSelect={onNetworkSelect}
+          small={small}
+        >
           {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans> }
         </ConnectWalletButton>
         <div className="setting-dropdown-icon-wrapper">
