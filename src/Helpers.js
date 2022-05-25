@@ -87,7 +87,7 @@ export const DEFAULT_MAX_USDG_AMOUNT = expandDecimals(200 * 1000 * 1000, 18);
 export const TAX_BASIS_POINTS = 50;
 export const STABLE_TAX_BASIS_POINTS = 5;
 export const MINT_BURN_FEE_BASIS_POINTS = 25;
-export const SWAP_FEE_BASIS_POINTS = 25;
+export const SWAP_FEE_BASIS_POINTS = 30;
 export const STABLE_SWAP_FEE_BASIS_POINTS = 1;
 export const MARGIN_FEE_BASIS_POINTS = 10;
 
@@ -1271,6 +1271,7 @@ const RPC_PROVIDERS = {
 
 const FALLBACK_PROVIDERS = {
   [ARBITRUM]: ["https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"],
+  [AVALANCHE]: ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
 };
 
 export function shortenAddress(address, length) {
@@ -2254,8 +2255,8 @@ export function setTokenUsingIndexPrices(token, indexPrices, nativeTokenAddress)
   const spread = token.maxPrice.sub(token.minPrice);
   const spreadBps = spread.mul(BASIS_POINTS_DIVISOR).div(token.maxPrice);
 
-  if (spreadBps.gt(MAX_PRICE_DEVIATION_BASIS_POINTS - 1)) {
-    // only set of the values as there will be a spread between the index price and the Chainlink price
+  if (spreadBps.gt(MAX_PRICE_DEVIATION_BASIS_POINTS - 50)) {
+    // only set one of the values as there will be a spread between the index price and the Chainlink price
     if (indexPriceBn.gt(token.minPrimaryPrice)) {
       token.maxPrice = indexPriceBn;
     } else {
@@ -2280,7 +2281,7 @@ export function getInfoTokens(
   nativeTokenAddress
 ) {
   if (!vaultPropsLength) {
-    vaultPropsLength = 14;
+    vaultPropsLength = 15;
   }
   const fundingRatePropsLength = 2;
   const infoTokens = {};
@@ -2310,11 +2311,12 @@ export function getInfoTokens(
       token.maxUsdgAmount = vaultTokenInfo[i * vaultPropsLength + 6];
       token.globalShortSize = vaultTokenInfo[i * vaultPropsLength + 7];
       token.maxGlobalShortSize = vaultTokenInfo[i * vaultPropsLength + 8];
-      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 9];
-      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 10];
-      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 11];
-      token.maxPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 12];
-      token.minPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 13];
+      token.maxGlobalLongSize = vaultTokenInfo[i * vaultPropsLength + 9];
+      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 10];
+      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 11];
+      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 12];
+      token.maxPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 13];
+      token.minPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 14];
 
       // save minPrice and maxPrice as setTokenUsingIndexPrices may override it
       token.contractMinPrice = token.minPrice;
@@ -2334,6 +2336,21 @@ export function getInfoTokens(
       token.availableUsd = token.isStable
         ? token.poolAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals))
         : token.availableAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals));
+
+      token.maxAvailableLong = bigNumberify(0);
+      if (token.maxGlobalLongSize.gt(0)) {
+        if (token.maxGlobalLongSize.gt(token.guaranteedUsd)) {
+          const remainingLongSize = token.maxGlobalLongSize.sub(token.guaranteedUsd);
+          token.maxAvailableLong = remainingLongSize.lt(token.availableUsd) ? remainingLongSize : token.availableUsd;
+        }
+      } else {
+        token.maxAvailableLong = token.availableUsd;
+      }
+
+      token.maxLongCapacity =
+        token.maxGlobalLongSize.gt(0) && token.maxGlobalLongSize.lt(token.availableUsd)
+          ? token.maxGlobalLongSize
+          : token.availableUsd;
 
       token.managedUsd = token.availableUsd.add(token.guaranteedUsd);
       token.managedAmount = token.managedUsd.mul(expandDecimals(1, token.decimals)).div(token.minPrice);

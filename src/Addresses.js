@@ -99,7 +99,7 @@ const CONTRACTS = {
     // arbitrum mainnet
     Vault: "0x489ee077994B6658eAfA855C308275EAd8097C4A",
     Router: "0xaBBc5F99639c9B6bCb58544ddf04EFA6802F4064",
-    VaultReader: "0x2A735dd7725a4AC00D2F334F88764DDBF2EE6694",
+    VaultReader: "0xfebB9f4CAC4cD523598fE1C5771181440143F24A",
     Reader: "0x2b43c90D1B727cEe1Df34925bcd5Ace52Ec37694",
     GlpManager: "0x321F653eED006AD1C29D174e17d96351BDe22649",
     RewardRouter: "0xA906F338CB21815cBc4Bc87ace9e68c87eF8d8F1",
@@ -128,6 +128,7 @@ const CONTRACTS = {
     OrderBookReader: "0xa27C20A7CF0e1C68C0460706bB674f98F362Bc21",
 
     PositionRouter: "0x3D6bA331e3D9702C5e8A8d254e5d8a285F223aba",
+    PositionManager: "0x87a4088Bd721F83b6c2E5102e2FA47022Cb1c831",
 
     UniswapGmxEthPool: "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E",
     ReferralStorage: "0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d",
@@ -137,7 +138,7 @@ const CONTRACTS = {
     // avalanche
     Vault: "0x9ab2De34A33fB459b538c43f251eB825645e8595",
     Router: "0x5F719c2F1095F7B9fc68a68e35B51194f4b6abe8",
-    VaultReader: "0x80785f96743d5Aef7725d88256fdBCfF43fBd112",
+    VaultReader: "0x66eC8fc33A26feAEAe156afA3Cb46923651F6f0D",
     Reader: "0x2eFEE1950ededC65De687b40Fd30a7B5f4544aBd",
     GlpManager: "0xe1ae4d4b06A5Fe1fc288f6B4CD72f9F8323B107F",
     RewardRouter: "0x82147C5A7E850eA4E28155DF107F2590fD4ba327",
@@ -167,6 +168,7 @@ const CONTRACTS = {
     OrderBookReader: "0xccFE3E576f8145403d3ce8f3c2f6519Dae40683B",
 
     PositionRouter: "0x195256074192170d1530527abC9943759c7167d8",
+    PositionManager: "0xF2ec2e52c3b5F8b8bd5A3f93945d05628A233216",
 
     TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98",
     ReferralStorage: "0x827ed045002ecdabeb6e2b0d1604cf5fc3d322f8",
@@ -179,7 +181,7 @@ export function getContract(chainId, name) {
     throw new Error(`Unknown chainId ${chainId}`);
   }
   if (!CONTRACTS[chainId][name]) {
-    throw new Error(`Unknown constant "${name}" for chainId ${chainId}`);
+    throw new Error(`Unknown contract "${name}" for chainId ${chainId}`);
   }
   return CONTRACTS[chainId][name];
 }
