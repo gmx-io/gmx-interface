@@ -85,11 +85,11 @@ a.btn {
   background: var(--dark-blue-active);
 }
 
-@media (max-width: 450px) {
+/* @media (max-width: 450px) {
   .connect-wallet {
     padding: 0.5rem 0.8rem;
   }
-}
+} */
 @media (max-width: 350px) {
   .connect-wallet .btn-image {
     display: none;
