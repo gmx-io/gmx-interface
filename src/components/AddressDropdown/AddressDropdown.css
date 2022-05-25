@@ -31,12 +31,11 @@
   cursor: pointer;
   outline: none;
   z-index: 1000;
-  padding: 0.8rem 0;
 }
 .menu-item {
   display: flex !important;
   align-items: center;
-  height: 2.4rem;
+  height: 3.4rem;
   align-items: center;
   padding: 0 0.8rem;
 }
@@ -55,9 +54,8 @@
 }
 
 .network-selector-menu-items {
-  border-top: 1px solid #262638;
   border-bottom: 1px solid #262638;
-  padding: 0.6rem 0.8rem;
+  padding: 0 0.8rem 0.6rem;
   margin-top: 0.8rem;
   margin-bottom: 0.8rem;
 }

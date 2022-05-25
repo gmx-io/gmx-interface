@@ -63,18 +63,6 @@ function AddressDropdown(props) {
         </Menu.Button>
         <div>
           <Menu.Items as="div" className="menu-items">
-            <Menu.Item>
-              <div
-                className="menu-item"
-              >
-                <div className="menu-item__prepend avatar-dropdown-item">
-                  <Davatar size={20} address={account} />
-                </div>
-                <span className="menu-item-label">
-                  {ensName || shortenAddress(account, breakpoint === "S" ? 9 : 13)}
-                </span>
-              </div>
-            </Menu.Item>
             <div className="network-selector-menu-items">
               <p className="network-selector-menu-items-title"><Trans>Networks</Trans></p>
               <Menu.Item>

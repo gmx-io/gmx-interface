@@ -78,7 +78,7 @@ export default function SettingDropdown(props) {
                   <div className="settings-dropdown-menu-item__prepend">
                     <img src={setting16Icon} alt="settings-open-icon" />
                   </div>
-                  <span className="settings-dropdown-menu-item-label">
+                  <span className="settings-dropdown-menu-item-label menu-item-label">
                     <Trans>Trade settings</Trans>
                   </span>
                   <div className="settings-dropdown-menu-item__append">
@@ -94,7 +94,7 @@ export default function SettingDropdown(props) {
                   <div className="settings-dropdown-menu-item__prepend">
                     <img src={language16Icon} alt="language-menu-open-icon" />
                   </div>
-                  <span className="settings-dropdown-menu-item-label">
+                  <span className="settings-dropdown-menu-item-label menu-item-label">
                     <Trans>Language</Trans>
                   </span>
                   <div className="settings-dropdown-menu-item__append">
@@ -117,7 +117,7 @@ export default function SettingDropdown(props) {
                   <div className="settings-dropdown-menu-item__prepend">
                     <img src={arrowleft16Icon} alt="arrow-left-icon" />
                   </div>
-                  <span className="settings-dropdown-menu-item-label">
+                  <span className="settings-dropdown-menu-item-label menu-item-label">
                     <Trans>Select Language</Trans>
                   </span>
                 </div>
