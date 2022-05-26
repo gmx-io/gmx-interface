@@ -219,6 +219,19 @@ module.exports = {
     "Vest with GLP on Avalanche": "Vest with GLP on Avalanche",
     "You can currently vest a maximum of {maxVestableAmount} esGMX tokens at a ratio of {currentRatio} {stakingToken} to 1 esGMX.": "You can currently vest a maximum of {maxVestableAmount} esGMX tokens at a ratio of {currentRatio} {stakingToken} to 1 esGMX.",
     "After claiming you will be able to vest a maximum of {nextMaxVestableEsGmx} esGMX at a ratio of {nextRatio} {stakingToken} to 1 esGMX.": "After claiming you will be able to vest a maximum of {nextMaxVestableEsGmx} esGMX at a ratio of {nextRatio} {stakingToken} to 1 esGMX.",
-    "Amount to claim": "Amount to claim"
+    "Amount to claim": "Amount to claim",
+    "Incorrect Account": "Incorrect Account",
+    "Complete Transfer": "Complete Transfer",
+    "Your transfer has been completed.": "Your transfer has been completed.",
+    "Complete Account Transfer": "Complete Account Transfer",
+    "To complete the transfer, you must switch your connected account to {receiver}.": "To complete the transfer, you must switch your connected account to {receiver}.",
+    "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed.": "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed.",
+    "You have a pending transfer from {sender}.": "You have a pending transfer from {sender}.",
+    "Trade settings": "Trade settings",
+    "Language": "Idioma",
+    "Select Language": "Select Language",
+    "English": "English",
+    "Spanish": "Spanish",
+    "French": "French"
   }
 }

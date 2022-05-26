@@ -8,8 +8,9 @@
 
 .network-dropdown-trigger-btn {
     position: absolute;
-    right: 1rem;
-    top: 1.3rem;
+    right: 0;
+    top: 0.4rem;
+    padding: 1rem;
     cursor: pointer;
 }
 

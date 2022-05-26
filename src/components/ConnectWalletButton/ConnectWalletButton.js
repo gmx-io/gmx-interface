@@ -50,7 +50,9 @@ function ConnectWalletButton(props) {
       </div>
       <Menu>
         <Menu.Button as="div">
-          <FaChevronDown className="network-dropdown-trigger-btn" />
+          <div className="network-dropdown-trigger-btn">
+            <FaChevronDown />
+          </div>
         </Menu.Button>
         <Menu.Items as="div" className="menu-items">
           <div className="network-selector-menu-items">

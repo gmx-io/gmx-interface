@@ -55,7 +55,7 @@
 
 .network-selector-menu-items {
   border-bottom: 1px solid #262638;
-  padding: 0 0.8rem 0.6rem;
+  padding-bottom: 0.6rem;
   margin-top: 0.8rem;
   margin-bottom: 0.8rem;
 }
@@ -65,6 +65,7 @@
   line-height: 13px;
   letter-spacing: 0px;
   margin: 0;
+  padding-left: 0.8rem;
   color: #A0A3C4;
 }
 
@@ -75,13 +76,13 @@
 
 .network-selector-menu-items .menu-item {
   position: relative;
-  padding-left: 1.2rem;
+  padding-left: 2rem;
 }
 
 .network-selector-menu-items .menu-item.selected::before {
   content: " ";
   position: absolute;
-  left: 0;
+  left: 0.8rem;
   height: 4px;
   width: 4px;
   background: #53D0A2;

@@ -62,7 +62,7 @@ export default function SettingDropdown(props) {
   return (
     <Menu>
       <Menu.Button as="div">
-        <button className={cx("App-cta small transparent settings-dropdown-icon")}>
+        <button className={cx("btn-primary small transparent settings-dropdown-icon")}>
           <img src={setting24Icon} alt="settings-dropdown-icon" />
         </button>
       </Menu.Button>
