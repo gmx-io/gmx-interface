@@ -226,6 +226,12 @@ module.exports = {
     "Complete Account Transfer": "Complete Account Transfer",
     "To complete the transfer, you must switch your connected account to {receiver}.": "To complete the transfer, you must switch your connected account to {receiver}.",
     "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed.": "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed.",
-    "You have a pending transfer from {sender}.": "You have a pending transfer from {sender}."
+    "You have a pending transfer from {sender}.": "You have a pending transfer from {sender}.",
+    "Trade settings": "Trade settings",
+    "Language": "Language",
+    "Select Language": "Select Language",
+    "English": "English",
+    "Spanish": "Spanish",
+    "French": "French"
   }
 }
