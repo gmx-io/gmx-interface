@@ -196,7 +196,7 @@ export default function OrdersList(props) {
         if (!positionForOrder) {
           error = "No open position, order cannot be executed unless opening a position";
         } else if (positionForOrder.size.lt(order.sizeDelta)) {
-          error = "Order size is bigger than position, will be executed when position increases";
+          error = "Order size is bigger than position, will be executable otherwise";
         }
       }
 
