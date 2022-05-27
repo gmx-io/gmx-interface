@@ -187,7 +187,7 @@ export default function ConfirmationBox(props) {
   };
 
   const getPrimaryText = () => {
-    if (!isTriggerWarningAccepted) {
+    if (existingTriggerOrdersThatWillBeClosed.length > 0 && !isTriggerWarningAccepted) {
       return `Accept confirmation of trigger orders`;
     }
 
@@ -231,7 +231,7 @@ export default function ConfirmationBox(props) {
     if (getError()) {
       return false;
     }
-    if (!isTriggerWarningAccepted) {
+    if (existingTriggerOrdersThatWillBeClosed.length > 0 && !isTriggerWarningAccepted) {
       return false;
     }
     return !isPendingConfirmation && !isSubmitting;
@@ -384,7 +384,7 @@ export default function ConfirmationBox(props) {
       <>
         <div className="Confirmation-box-warning">
           You have {existingTriggerOrderLength > 1 ? `${existingTriggerOrderLength}` : "an"} active trigger {orderText}{" "}
-          that would execute inmediately. Please accept confirmation of trigger
+          that would potentially execute immediately. Please accept confirmation of trigger
           {` ${orderText} `} to continue.
         </div>
         <ul className="trigger-order-list">
