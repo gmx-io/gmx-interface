@@ -1799,7 +1799,7 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
             const json = await res.json();
             const ret = {};
             for (const key of Object.keys(json)) {
-              ret[key.toLowerCase()] = json[key].map((val) => parseInt(val.value));
+              ret[key.toLowerCase()] = json[key].map((val) => parseInt(val.value)).sort((a, b) => a - b);
             }
 
             return ret;
