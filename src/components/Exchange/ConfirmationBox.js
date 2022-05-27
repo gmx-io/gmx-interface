@@ -155,13 +155,13 @@ export default function ConfirmationBox(props) {
       }
       let canImmediatelyClosed;
       if (order.triggerAboveThreshold) {
-        canImmediatelyClosed = nextAveragePrice.gte(order.triggerPrice);
+        canImmediatelyClosed = existingPosition.markPrice.gte(order.triggerPrice);
       } else {
-        canImmediatelyClosed = nextAveragePrice.lte(order.triggerPrice);
+        canImmediatelyClosed = existingPosition.markPrice.lte(order.triggerPrice);
       }
       return canImmediatelyClosed;
     });
-  }, [orders, chainId, nextAveragePrice, isLong, toToken.address, toToken.isNative]);
+  }, [orders, chainId, isLong, toToken.address, toToken.isNative, existingPosition]);
 
   const existingTriggerOrders = useMemo(() => {
     const wrappedToken = getWrappedToken(chainId);
@@ -422,7 +422,6 @@ export default function ConfirmationBox(props) {
   const renderExistingTriggerWarning = useCallback(() => {
     if (
       isSwap ||
-      hasExistingPosition ||
       existingTriggerOrders.length < 1 ||
       existingTriggerOrdersThatWillBeClosed.length > 0 ||
       renderExistingOrderWarning()
@@ -436,13 +435,7 @@ export default function ConfirmationBox(props) {
         {existingTriggerOrderLength > 1 ? "orders" : "order"} that could impact this position.
       </div>
     );
-  }, [
-    hasExistingPosition,
-    existingTriggerOrders,
-    isSwap,
-    existingTriggerOrdersThatWillBeClosed,
-    renderExistingOrderWarning,
-  ]);
+  }, [existingTriggerOrders, isSwap, existingTriggerOrdersThatWillBeClosed, renderExistingOrderWarning]);
 
   // TODO handle unaprproved order plugin (very unlikely case)
   const renderMain = useCallback(() => {
