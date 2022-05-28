@@ -41,15 +41,15 @@ export default function SettingDropdown(props) {
 
   const availableLanguages = [{
     icon: englishFlag,
-    name: 'English',
+    name: t`English`,
     language: 'en'
   }, {
     icon: spanishFlag,
-    name: 'Spanish',
+    name: t`Spanish`,
     language: 'es'
   }, {
     icon: frenchFlag,
-    name: 'French',
+    name: t`French`,
     language: 'fr'
   }]
 
@@ -57,12 +57,6 @@ export default function SettingDropdown(props) {
     console.log(lang)
     i18n.activate(lang)
     localStorage.setItem('LANGUAGE_KEY', lang)
-  }
-
-  const languageDisplay = (name) => {
-    return (
-      <Trans>Langugage {name}</Trans>
-    )
   }
 
   return (
@@ -140,9 +134,7 @@ export default function SettingDropdown(props) {
                           <img src={item.icon} alt="language-menu-open-icon" />
                         </div>
                         <span className="settings-dropdown-menu-item-label menu-item-label">
-                          {
-                            languageDisplay(item.name)
-                          }
+                          {item.name}
                         </span>
                         <div className="settings-dropdown-menu-item__append menu-item__append">
                           {
