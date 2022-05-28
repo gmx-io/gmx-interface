@@ -232,6 +232,7 @@ module.exports = {
     "Select Language": "Select Language",
     "English": "English",
     "Spanish": "Spanish",
-    "French": "French"
+    "French": "French",
+    "{item.name}": "{item.name}"
   }
 }
