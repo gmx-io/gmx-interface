@@ -233,6 +233,6 @@ module.exports = {
     "English": "English",
     "Spanish": "Spanish",
     "French": "French",
-    "{item.name}": "{item.name}"
+    "Langugage {name}": "{name}"
   }
 }

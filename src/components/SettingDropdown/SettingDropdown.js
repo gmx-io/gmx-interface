@@ -59,6 +59,12 @@ export default function SettingDropdown(props) {
     localStorage.setItem('LANGUAGE_KEY', lang)
   }
 
+  const languageDisplay = (name) => {
+    return (
+      <Trans>Langugage {name}</Trans>
+    )
+  }
+
   return (
     <Menu>
       <Menu.Button as="div">
@@ -134,7 +140,9 @@ export default function SettingDropdown(props) {
                           <img src={item.icon} alt="language-menu-open-icon" />
                         </div>
                         <span className="settings-dropdown-menu-item-label menu-item-label">
-                          <Trans>{item.name}</Trans>
+                          {
+                            languageDisplay(item.name)
+                          }
                         </span>
                         <div className="settings-dropdown-menu-item__append menu-item__append">
                           {
