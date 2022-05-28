@@ -14,7 +14,7 @@ import spanishFlag from "../../img/flag_spanish.png";
 import checkedIcon from "../../img/ic_checked.svg";
 import { messages as enMessages } from '../../locales/en/messages';
 import { messages as esMessages } from '../../locales/es/messages';
-import { Trans } from '@lingui/macro'
+import { Trans, t } from '@lingui/macro'
 
 i18n.load({
   'en': enMessages,
