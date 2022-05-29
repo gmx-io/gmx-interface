@@ -144,25 +144,6 @@ export default function ConfirmationBox(props) {
     }
   }, [orders, chainId, isLong, toToken.address, toToken.isNative]);
 
-  const existingTriggerOrdersThatWillBeClosed = useMemo(() => {
-    const wrappedToken = getWrappedToken(chainId);
-    return orders.filter((order) => {
-      if (order.type !== DECREASE) return false;
-      const sameToken =
-        order.indexToken === wrappedToken.address ? toToken.isNative : order.indexToken === toToken.address;
-      if (order.isLong !== isLong || !sameToken) {
-        return false;
-      }
-      let canImmediatelyClosed;
-      if (order.triggerAboveThreshold) {
-        canImmediatelyClosed = existingPosition.markPrice.gte(order.triggerPrice);
-      } else {
-        canImmediatelyClosed = existingPosition.markPrice.lte(order.triggerPrice);
-      }
-      return canImmediatelyClosed;
-    });
-  }, [orders, chainId, isLong, toToken.address, toToken.isNative, existingPosition]);
-
   const existingTriggerOrders = useMemo(() => {
     const wrappedToken = getWrappedToken(chainId);
     return orders.filter((order) => {
@@ -172,6 +153,16 @@ export default function ConfirmationBox(props) {
       return order.isLong === isLong && sameToken;
     });
   }, [orders, chainId, isLong, toToken.address, toToken.isNative]);
+
+  const decreaseOrdersThatWillBeExecuted = useMemo(() => {
+    return existingTriggerOrders.filter((order) => {
+      if (order.triggerAboveThreshold) {
+        return existingPosition.markPrice.gte(order.triggerPrice);
+      } else {
+        return existingPosition.markPrice.lte(order.triggerPrice);
+      }
+    });
+  }, [existingPosition, existingTriggerOrders]);
 
   const getError = () => {
     if (!isSwap && hasExistingPosition && !isMarketOrder) {
@@ -187,7 +178,7 @@ export default function ConfirmationBox(props) {
   };
 
   const getPrimaryText = () => {
-    if (existingTriggerOrdersThatWillBeClosed.length > 0 && !isTriggerWarningAccepted) {
+    if (decreaseOrdersThatWillBeExecuted.length > 0 && !isTriggerWarningAccepted) {
       return `Accept confirmation of trigger orders`;
     }
 
@@ -231,7 +222,7 @@ export default function ConfirmationBox(props) {
     if (getError()) {
       return false;
     }
-    if (existingTriggerOrdersThatWillBeClosed.length > 0 && !isTriggerWarningAccepted) {
+    if (decreaseOrdersThatWillBeExecuted.length > 0 && !isTriggerWarningAccepted) {
       return false;
     }
     return !isPendingConfirmation && !isSubmitting;
@@ -374,12 +365,12 @@ export default function ConfirmationBox(props) {
     );
   }, [existingOrder, isSwap, chainId]);
 
-  const renderExistingTriggerError = useCallback(() => {
-    if (isSwap || existingTriggerOrdersThatWillBeClosed?.length < 1) {
+  const renderExistingTriggerErrors = useCallback(() => {
+    if (isSwap || decreaseOrdersThatWillBeExecuted?.length < 1) {
       return;
     }
-    let existingTriggerOrderLength = existingTriggerOrdersThatWillBeClosed?.length;
-    let orderText = existingTriggerOrderLength > 1 ? "orders" : "order";
+    const existingTriggerOrderLength = decreaseOrdersThatWillBeExecuted.length;
+    const orderText = existingTriggerOrderLength > 1 ? "orders" : "order";
     return (
       <>
         <div className="Confirmation-box-warning">
@@ -388,7 +379,7 @@ export default function ConfirmationBox(props) {
           {` ${orderText} `} to continue.
         </div>
         <ul className="trigger-order-list">
-          {existingTriggerOrdersThatWillBeClosed.map((order, i) => {
+          {decreaseOrdersThatWillBeExecuted.map((order, i) => {
             const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
             const indexToken = getToken(chainId, order.indexToken);
             return (
@@ -417,25 +408,25 @@ export default function ConfirmationBox(props) {
         </ul>
       </>
     );
-  }, [existingTriggerOrdersThatWillBeClosed, isSwap, chainId, library, pendingTxns, setPendingTxns]);
+  }, [decreaseOrdersThatWillBeExecuted, isSwap, chainId, library, pendingTxns, setPendingTxns]);
 
   const renderExistingTriggerWarning = useCallback(() => {
     if (
       isSwap ||
       existingTriggerOrders.length < 1 ||
-      existingTriggerOrdersThatWillBeClosed.length > 0 ||
+      decreaseOrdersThatWillBeExecuted.length > 0 ||
       renderExistingOrderWarning()
     ) {
       return;
     }
-    let existingTriggerOrderLength = existingTriggerOrders.length;
+    const existingTriggerOrderLength = existingTriggerOrders.length;
     return (
       <div className="Confirmation-box-warning">
         You have {existingTriggerOrderLength > 1 ? `${existingTriggerOrderLength}` : "an"} active trigger{" "}
         {existingTriggerOrderLength > 1 ? "orders" : "order"} that could impact this position.
       </div>
     );
-  }, [existingTriggerOrders, isSwap, existingTriggerOrdersThatWillBeClosed, renderExistingOrderWarning]);
+  }, [existingTriggerOrders, isSwap, decreaseOrdersThatWillBeExecuted, renderExistingOrderWarning]);
 
   // TODO handle unaprproved order plugin (very unlikely case)
   const renderMain = useCallback(() => {
@@ -555,7 +546,7 @@ export default function ConfirmationBox(props) {
           {renderFeeWarning()}
           {renderMinProfitWarning()}
           {renderExistingOrderWarning()}
-          {renderExistingTriggerError()}
+          {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
           {hasPendingProfit && isMarketOrder && (
             <div className="PositionEditor-accept-profit-warning">
@@ -664,7 +655,7 @@ export default function ConfirmationBox(props) {
               </Checkbox>
             </div>
           )}
-          {existingTriggerOrdersThatWillBeClosed.length > 0 && (
+          {decreaseOrdersThatWillBeExecuted.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
                 <span className="muted">I am aware of the trigger orders</span>
@@ -706,12 +697,12 @@ export default function ConfirmationBox(props) {
     collateralAfterFees,
     renderExistingOrderWarning,
     renderExistingTriggerWarning,
-    renderExistingTriggerError,
+    renderExistingTriggerErrors,
     isHigherSlippageAllowed,
     setIsHigherSlippageAllowed,
     allowedSlippage,
     isTriggerWarningAccepted,
-    existingTriggerOrdersThatWillBeClosed,
+    decreaseOrdersThatWillBeExecuted,
   ]);
 
   const renderSwapSection = useCallback(() => {
