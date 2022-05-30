@@ -86,7 +86,7 @@ a.btn {
 }
 
 .connect-wallet {
-    color: #fff;
+    color: var(--tracer-blue-light);
 }
 
 .connect-wallet .btn-label {
