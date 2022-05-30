@@ -18,20 +18,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border: 0.5px solid var(--tracer-blue-light);
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
   padding: 7px 8px;
-}
-
-.Selector-box.Arbitrum {
-  /* background-color: #1d446b; */
-  border: 1px solid #ffffff17;
-}
-
-.Selector-box.Avalanche {
-  /* background-color: #371e32; */
-  border: 1px solid #ffffff17;
 }
 
 .Selector-caret {
@@ -156,6 +147,7 @@
 .react-select__indicator {
   border-radius: 4px;
 }
+
 .network-select {
   background: transparent;
 }

@@ -77,7 +77,7 @@
   line-height: 18px;
   font-weight: normal;
   letter-spacing: 0.1px;
-  color: #a0a3c4;
+  color: var(--tracer-blue-light);
   padding: 15px 16px;
   text-decoration: none;
   display: block;
@@ -378,8 +378,14 @@ button.App-connect-wallet:hover {
   margin-right: 24px;
 }
 
+.App-header-user-link .trade-link {
+  background: rgba(28, 100, 242, 0.3);
+  border: 0.5px solid var(--tracer-blue-light);
+}
+
 .App-header-user-address {
-  border: 1px solid #ffffff29;
+  border: 0.5px solid var(--tracer-blue-light);
+  color: var(--tracer-blue-light);
   height: 36px;
   border-radius: 4px;
   display: inline-flex;
@@ -614,23 +620,24 @@ button.App-connect-wallet:hover {
   color: #eee;
 }
 
-.App-header-container-left a {
+.App-header-links a {
   padding: 18px 17px;
   display: block;
-  color: #a0a3c4;
+  color: #3DA8F5;
   font-size: 15px;
   line-height: 1.2rem;
   font-weight: normal;
 }
 
-.App-header-container-left a.active {
+.App-header-links a.active {
   color: white;
 }
 
-.App-header-container-left a.disabled {
+.App-header-links a.disabled {
   cursor: not-allowed;
   color: #ffffff61;
 }
+
 
 .Toastify {
   font-size: 0.9rem;
@@ -1073,7 +1080,7 @@ button.App-button {
 }
 
 .App-slider .rc-slider-track {
-  background: var(--tracer-blue-light);
+  background: var(--tracer-blue-slider);
 }
 
 .App-slider .rc-slider-dot {
@@ -1089,8 +1096,8 @@ button.App-button {
 }
 
 .App-slider .rc-slider-handle {
-  background: var(--tracer-blue-light);
-  border: solid 2px var(--tracer-blue-light);
+  background: var(--tracer-blue-slider);
+  border: solid 2px var(--tracer-blue-slider);
 }
 
 .App-slider .rc-slider-handle:active {
