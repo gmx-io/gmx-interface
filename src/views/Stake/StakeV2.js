@@ -1421,8 +1421,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         chainId={chainId}
       />
       <div className="section-title-block">
-        <div className="section-title-icon">
-        </div>
+        <div className="section-title-icon"></div>
         <div className="section-title-content">
           <div className="Page-title">Earn</div>
           <div className="Page-description">
