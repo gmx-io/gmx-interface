@@ -836,11 +836,27 @@ table.Exchange-list-small td {
   font-size: 20px;
 }
 
+.Confirmation-box .divider {
+  display: none;
+}
+
+.Confirmation-box .Modal-title-bar {
+  color: var(--text-primary);
+}
+
 .Confirmation-box-main {
   text-align: center;
   display: flex;
   flex-direction: column;
   margin: 1rem 0 1.5rem;
+
+  font-size: 24px;
+  color: var(--text-primary);
+  font-weight: bold;
+
+  padding: 1rem 0;
+  border-top: 1px solid #ffffff29;
+  border-bottom: 1px solid #ffffff29;
 }
 .Confirmation-box-main-icon {
   margin: 5px 0;
@@ -853,7 +869,8 @@ table.Exchange-list-small td {
 }
 
 .Confirmation-box .Modal-content {
-  width: 22rem;
+  width: 26.5rem;
+  border: 1px solid var(--border-primary);
 }
 
 .Confirmation-box-row {

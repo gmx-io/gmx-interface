@@ -30,7 +30,6 @@
   padding-left: 32px;
   padding-right: 32px;
   background: transparent 0% 0% no-repeat padding-box;
-  border-bottom: 1px solid #ffffff10;
 }
 
 .App-header.large::after {
@@ -1235,7 +1234,6 @@ button.App-button {
     padding-left: 16px;
     padding-right: 16px;
     background: transparent 0% 0% no-repeat padding-box;
-    border-bottom: 1px solid #ffffff10;
   }
 
   .App-header.small::after {
