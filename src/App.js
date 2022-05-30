@@ -38,7 +38,7 @@ import {
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   REFERRAL_CODE_KEY,
-  REFERRAL_CODE_QUERY_PARAMS,
+  REFERRAL_CODE_QUERY_PARAM,
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
@@ -350,7 +350,7 @@ function FullApp() {
   const query = useRouteQuery();
 
   useEffect(() => {
-    let referralCode = query.get(REFERRAL_CODE_QUERY_PARAMS);
+    let referralCode = query.get(REFERRAL_CODE_QUERY_PARAM);
     if (referralCode && referralCode.length <= 20) {
       const encodedReferralCode = encodeReferralCode(referralCode);
       if (encodeReferralCode !== ethers.constants.HashZero) {

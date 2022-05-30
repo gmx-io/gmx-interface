@@ -117,7 +117,7 @@ export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage";
 export const SHOW_PNL_AFTER_FEES_KEY = "Exchange-swap-show-pnl-after-fees";
 export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-position-lines";
 export const REFERRAL_CODE_KEY = "GMX-referralCode";
-export const REFERRAL_CODE_QUERY_PARAMS = "ref";
+export const REFERRAL_CODE_QUERY_PARAM = "ref";
 export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
 export const MAX_REFERRAL_CODE_LENGTH = 20;
 
