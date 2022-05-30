@@ -53,11 +53,14 @@ body,
 
   --background-primary: #040811;
   --background-secondary: rgba(243, 244, 246, 0.05);
-  --border-primary: #71717A;
+  --border-primary: #8BB0EF;
 
-  --tracer-blue: #3535DC;
+  --tracer-blue: #1C64F2;
   --tracer-blue-light: #3DA8F5;
   --tracer-blue-slider: #1C64F2;
+
+  --text-primary: #fff;
+  --text-secondary: #8BB0EF;
 }
 
 a {

@@ -775,7 +775,8 @@ a.App-cta,
 button.App-cta {
   color: white;
   text-decoration: none;
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+  background: var(--tracer-blue);
+  /* linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%); */
   /* box-shadow: 0 0 4px 6px rgba(45,66,252,0.15); */
 }
 

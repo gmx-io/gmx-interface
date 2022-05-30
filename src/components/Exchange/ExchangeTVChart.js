@@ -445,25 +445,25 @@ export default function ExchangeTVChart(props) {
 						<div className="ExchangeChart-info-label">${chartToken.minPrice && formatAmount(chartToken.minPrice, USD_DECIMALS, 2)}</div>
 					</div>
 					<div>
-						<div className="ExchangeChart-info-label">24h Change</div>
 						<div className={cx({ positive: deltaPercentage > 0, negative: deltaPercentage < 0 })}>
 							{!deltaPercentageStr && "-"}
 							{deltaPercentageStr && deltaPercentageStr}
 						</div>
+						<div className="ExchangeChart-info-label">24h Change</div>
 					</div>
 					<div className="ExchangeChart-additional-info">
-						<div className="ExchangeChart-info-label">24h High</div>
 						<div>
 							{!high && "-"}
 							{high && high.toFixed(2)}
 						</div>
+						<div className="ExchangeChart-info-label">24h High</div>
 					</div>
 					<div className="ExchangeChart-additional-info">
-						<div className="ExchangeChart-info-label">24h Low</div>
 						<div>
 							{!low && "-"}
 							{low && low.toFixed(2)}
 						</div>
+						<div className="ExchangeChart-info-label">24h Low</div>
 					</div>
         </div>
       </div>

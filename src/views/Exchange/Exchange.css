@@ -19,6 +19,7 @@
 
 .Exchange-empty-positions-list-note {
   padding-bottom: 0.3rem;
+  color: var(--text-primary);
 }
 
 .position-loading-icon {
@@ -44,6 +45,8 @@
   grid-gap: 1rem;
   padding: 2rem;
   padding-top: 2rem;
+
+  color: var(--text-secondary);
 }
 
 .Exchange-position-list-orders {
@@ -75,6 +78,10 @@
   display: grid;
   grid-template-columns: 1fr auto;
   direction: rtl;
+}
+
+.Exchange-leverage-slider-settings .Checkbox .Checkbox-label {
+  color: var(--text-primary);
 }
 
 .Exchange-wallet-tokens {
@@ -252,6 +259,7 @@
 
 .ExchangeChart-main-price {
   font-size: 1.1rem;
+  color: var(--text-primary);
 }
 
 .ExchangeChart-title {
@@ -261,7 +269,11 @@
 
 .ExchangeChart-info-label {
   font-size: 0.8rem;
-  opacity: 0.7;
+  color: var(--text-secondary);
+}
+
+.ExchangeChart-additional-info {
+  color: var(--text-primary);
 }
 
 .ExchangeChart-top-inner {
@@ -508,6 +520,11 @@ table.Exchange-list th {
   margin-bottom: 0.3rem;
 }
 
+.Exchange-info-row .align-right {
+  color: var(--text-primary);
+}
+
+
 .Exchange-info-row.top-line {
   border-top: 1px solid #23263b;
   margin-top: 1rem;
@@ -515,12 +532,12 @@ table.Exchange-list th {
 }
 
 .Exchange-info-label-button {
-  opacity: 0.7;
   cursor: pointer;
 }
 
 .Exchange-info-label-button a {
   text-decoration: none;
+  color: var(--text-secondary);
 }
 
 .Exchange-info-label-button:hover {
@@ -557,6 +574,7 @@ table.Exchange-list th {
 .Exchange-swap-market-box-title {
   font-size: 1rem;
   margin-bottom: 0.8rem;
+  color: var(--text-primary);
 }
 
 .Exchange-swap-box-inner {
@@ -657,6 +675,8 @@ table.Exchange-list th {
   display: grid;
   grid-template-columns: 1fr auto;
   padding-bottom: 0.2rem;
+  color: var(--text-primary);
+  font-weight: bold;
 }
 
 .Exchange-swap-message {
@@ -701,7 +721,23 @@ input.Exchange-swap-input {
   max-width: 100%;
   font-size: 1.5rem;
   width: 100%;
+  font-weight: bold;
 }
+
+/* Chrome, Firefox, Opera, Safari 10.1+ */
+input.Exchange-swap-input::placeholder { 
+  color: var(--color-primary);
+  opacity: 1; /* Firefox */
+}
+
+input.Exchange-swap-input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: var(--color-primary);
+}
+
+input.Exchange-swap-input::-ms-input-placeholder { /* Microsoft Edge */
+  color: var(--color-primary);
+}
+
 input.Exchange-swap-input.small {
   max-width: 9.5rem;
 }
@@ -725,7 +761,6 @@ input.Exchange-swap-input.small {
   display: block;
   transform: rotate(90deg);
   font-size: 1.3rem;
-  opacity: 0.7;
 }
 
 .Exchange-swap-ball {
@@ -738,6 +773,7 @@ input.Exchange-swap-input.small {
   border-radius: 2rem;
   cursor: pointer;
   user-select: none;
+  color: var(--text-primary);
   background: var(--tracer-blue);
   display: flex;
   justify-content: center;

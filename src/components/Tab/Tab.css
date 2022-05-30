@@ -63,4 +63,5 @@
 .Tab.inline .Tab-option.active {
   opacity: 1;
   pointer-events: none;
+  color: var(--text-primary);
 }
