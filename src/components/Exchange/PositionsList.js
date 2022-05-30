@@ -350,7 +350,8 @@ export default function PositionsList(props) {
           </div>
         </div>
       )}
-      <table className="Exchange-list large App-box">
+      <div className="large App-box">
+      <table className="Exchange-list large">
         <tbody>
           <tr className="Exchange-list-header">
             <th>Position</th>
@@ -567,6 +568,7 @@ export default function PositionsList(props) {
           })}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

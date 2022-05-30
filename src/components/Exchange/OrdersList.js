@@ -100,7 +100,9 @@ export default function OrdersList(props) {
 
     return (
       <tr>
-        <td colSpan="5">No open orders</td>
+        <td colSpan="5">
+          <div className="Exchange-empty-positions-list-note">No open orders</div>
+        </td>
       </tr>
     );
   }, [orders]);
@@ -368,13 +370,15 @@ export default function OrdersList(props) {
 
   return (
     <React.Fragment>
-      <table className="Exchange-list Orders App-box large">
+      <div className="App-box large">
+      <table className="Exchange-list Orders large">
         <tbody>
           {renderHead()}
           {renderEmptyRow()}
           {renderLargeList()}
         </tbody>
       </table>
+      </div>
       <div className="Exchange-list Orders small">
         {(!orders || orders.length === 0) && (
           <div className="Exchange-empty-positions-list-note App-card">No open orders</div>

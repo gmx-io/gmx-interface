@@ -37,6 +37,7 @@ import {
   getInfoTokens,
   isAddressZero,
   helperToast,
+  ARBITRUM_TESTNET,
 } from "../Helpers";
 import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
 
@@ -47,6 +48,8 @@ const { AddressZero } = ethers.constants;
 
 function getGmxGraphClient(chainId) {
   if (chainId === ARBITRUM) {
+    return arbitrumGraphClient;
+  } else if (chainId === ARBITRUM_TESTNET) {
     return arbitrumGraphClient;
   } else if (chainId === AVALANCHE) {
     return avalancheGraphClient;

@@ -878,7 +878,7 @@ table.Exchange-list-small td {
 }
 
 @media (max-width: 1300px) {
-  .Exchange-list.large {
+  .App-box.large, .Exchange-list.large {
     display: none;
   }
 
