@@ -15,8 +15,7 @@ export default function Ecosystem() {
       <div className="default-container page-layout">
         <div>
           <div className="section-title-block">
-            <div className="section-title-icon">
-            </div>
+            <div className="section-title-icon"></div>
             <div className="section-title-content">
               <div className="Page-title">Official Pages</div>
               <div className="Page-description">Official GMX ecosystem pages.</div>
