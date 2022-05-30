@@ -2,6 +2,9 @@
   position: relative;
   overflow: hidden;
   min-height: 100%;
+  background-position-y: bottom;
+  background-image: url('./img/background_mesh.svg');
+  background-size: contain;
 }
 
 .App-header-backdrop {
