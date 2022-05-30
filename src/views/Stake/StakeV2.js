@@ -1326,7 +1326,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   }
 
   return (
-    <div className="StakeV2 Page page-layout">
+    <div className="default-container page-layout">
       <StakeModal
         isVisible={isStakeModalVisible}
         setIsVisible={setIsStakeModalVisible}
@@ -1420,20 +1420,23 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         library={library}
         chainId={chainId}
       />
-      <div className="Page-title-section mt-0">
-        <div className="Page-title">Earn</div>
-        <div className="Page-description">
-          Stake{" "}
-          <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">
-            GMX
-          </a>{" "}
-          and{" "}
-          <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
-            GLP
-          </a>{" "}
-          to earn rewards.
+      <div className="section-title-block">
+        <div className="section-title-icon"></div>
+        <div className="section-title-content">
+          <div className="Page-title">Earn</div>
+          <div className="Page-description">
+            Stake{" "}
+            <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">
+              GMX
+            </a>{" "}
+            and{" "}
+            <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
+              GLP
+            </a>{" "}
+            to earn rewards.
+          </div>
+          {earnMsg && <div className="Page-description">{earnMsg}</div>}
         </div>
-        {earnMsg && <div className="Page-description">{earnMsg}</div>}
       </div>
       <div className="StakeV2-content">
         <div className="StakeV2-cards">
@@ -1929,7 +1932,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       </div>
 
       <div>
-        <div className="Page-title-section">
+        <div className="Tab-title-section">
           <div className="Page-title">Vest</div>
           <div className="Page-description">
             Convert esGMX tokens to GMX tokens.
