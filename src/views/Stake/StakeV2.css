@@ -1,6 +1,12 @@
+.StakeV2 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
 .StakeV2 .Page-title-section {
   position: relative;
   z-index: 2;
+  padding-left: 0;
 }
 
 .VesterDepositModal-info-rows {
@@ -58,11 +64,14 @@
 
 .StakeV2-cards {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-gap: 1rem;
   margin-top: 0.5rem;
-  padding: 2rem;
   padding-top: 1rem;
+}
+
+.StakeV2-gmx-card .App-card-row .label {
+  color: var(--text-secondary);
 }
 
 .StakeV2-content {
