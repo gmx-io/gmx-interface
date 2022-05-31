@@ -161,18 +161,18 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const [activeTab, setActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, TRADERS);
   const { data: referralsData, loading } = useReferralsData(chainIdWithoutLocalStorage, account);
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], []);
-  const { userReferralCode } = useUserReferralCode(library, chainId, account);
+  let { userReferralCode } = useUserReferralCode(library, chainId, account);
+  const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
+  if (isHashZero(userReferralCode) && userReferralCodeInLocalStorage) {
+    userReferralCode = userReferralCodeInLocalStorage;
+  }
+
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
-  const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
 
   let referralCodeInString;
   if (userReferralCode && !isHashZero(userReferralCode)) {
     referralCodeInString = decodeReferralCode(userReferralCode);
-  }
-
-  if (!referralCodeInString && userReferralCodeInLocalStorage && !isHashZero(userReferralCodeInLocalStorage)) {
-    referralCodeInString = decodeReferralCode(userReferralCodeInLocalStorage);
   }
 
   function handleCreateReferralCode(code) {
