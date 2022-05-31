@@ -1,17 +1,17 @@
 .card {
-  padding: 1rem;
+  padding: 1.55rem;
   border: 1px solid #1e2136;
-  border-radius: 4px;
+  border-radius: 0.4rem;
   background: #16182e;
 }
 
 .card-header {
-  font-size: 1.032rem;
-  line-height: 1.355rem;
+  font-size: 1.6rem;
+  line-height: 2.1rem;
   font-weight: normal;
   letter-spacing: 0px;
   color: #ffffff;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.775rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -20,7 +20,7 @@
 .card-divider {
   height: 1px;
   background: #23263b;
-  margin: 0.7rem -1rem;
+  margin: 1.085rem -1.55rem;
 }
 
 .card-body {

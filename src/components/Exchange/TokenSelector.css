@@ -1,11 +1,11 @@
 .TokenSelector .Modal .Modal-content {
-  width: 20rem;
+  width: 31rem;
   margin: 0;
   max-height: 100vh;
 }
 
 .TokenSelector-token-name {
-  margin-right: 1rem;
+  margin-right: 1.55rem;
 }
 
 .TokenSelector.disabled {
@@ -19,7 +19,7 @@
 .TokenSelector-box {
   display: block;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 0.6rem;
   text-align: right;
   white-space: nowrap;
 }
@@ -35,7 +35,7 @@
   align-items: center;
 }
 .Token-info .Token-symbol {
-  margin-left: 8px;
+  margin-left: 0.8rem;
   display: flex;
   flex-direction: column;
 }
@@ -46,8 +46,8 @@
 }
 .Token-info .token-logo {
   display: block !important;
-  width: 40px;
-  height: 40px;
+  width: 4rem;
+  height: 4rem;
   margin-right: 2px;
   margin-left: 0 !important;
 }
@@ -55,9 +55,9 @@
 .TokenSelector-caret {
   vertical-align: middle;
   display: inline-block;
-  margin-left: 0.3rem;
-  font-size: 1.5rem;
-  margin-top: -0.3rem;
+  margin-left: 0.465rem;
+  font-size: 2.325rem;
+  margin-top: -0.465rem;
 }
 
 .TokenSelector-token-row {
@@ -68,8 +68,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px;
-  margin-bottom: 8px;
+  padding: 0.8rem;
+  margin-bottom: 0.8rem;
 }
 
 .TokenSelector-token-row.TokenSelector-token-input-row {
@@ -77,12 +77,12 @@
 }
 
 .TokenSelector-token-row input {
-  padding: 8px;
+  padding: 0.8rem;
   width: 100%;
 }
 
 .TokenSelector-token-row .Token-text {
-  font-size: 16px;
+  font-size: 1.6rem;
   color: #ffffff;
   font-weight: 500;
   letter-spacing: 0px;
@@ -97,14 +97,14 @@
 }
 .text-accent {
   color: var(--dark-blue-accent);
-  font-size: 12px;
+  font-size: 1.2rem;
   line-height: 1.5;
   letter-spacing: 0;
 }
 
 .TokenSelector.right .Modal-content {
   position: absolute;
-  width: 23rem;
+  width: 35.65rem;
   top: 0;
   bottom: 0;
   overflow: auto;
@@ -116,14 +116,14 @@
     align-items: center;
     justify-content: center;
     position: fixed;
-    left: 2rem;
+    left: 3.1rem;
     top: 0;
-    right: 2rem;
+    right: 3.1rem;
     bottom: 0;
   }
   .Token-info .token-logo {
-    width: 30px;
-    height: 30px;
-    margin-right: 0.5rem;
+    width: 3rem;
+    height: 3rem;
+    margin-right: 0.8rem;
   }
 }

@@ -4,7 +4,7 @@
 }
 
 .BuyGMXGLP-container {
-    padding: 3rem 0 2rem 0;
+    padding: 0 0 3.1rem 0;
     width: 100%;
 }
 
@@ -14,7 +14,7 @@
 
 @media (max-width: 400px) {
     .BuyGMXGLP-container {
-        padding-left: 16px!important;
-        padding-right: 16px!important;
+        padding-left: 1.6rem!important;
+        padding-right: 1.6rem!important;
     }
 }

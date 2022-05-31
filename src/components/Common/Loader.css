@@ -1,7 +1,7 @@
 @keyframes bouncing-loader {
   to {
     opacity: 0.1;
-    transform: translate3d(0, -16px, 0);
+    transform: translate3d(0, -1.6rem, 0);
   }
 }
 
@@ -11,9 +11,9 @@
 }
 
 .bouncing-loader > div {
-  width: 16px;
-  height: 16px;
-  margin: 3rem 0.2rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  margin: 4.65rem 0.31rem;
   background: #8385aa;
   border-radius: 50%;
   animation: bouncing-loader 0.6s infinite alternate;

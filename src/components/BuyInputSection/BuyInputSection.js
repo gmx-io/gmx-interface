@@ -3,6 +3,8 @@ import cx from "classnames";
 
 import "./BuyInputSection.css";
 
+import { Trans } from '@lingui/macro'
+
 export default function BuyInputSection(props) {
   const {
     topLeftLabel,
@@ -45,7 +47,7 @@ export default function BuyInputSection(props) {
           {staticInput && <div className="InputSection-static-input">{inputValue}</div>}
           {showMaxButton && (
             <div className="Exchange-swap-max" onClick={onClickMax}>
-              MAX
+              <Trans>MAX</Trans>
             </div>
           )}
         </div>

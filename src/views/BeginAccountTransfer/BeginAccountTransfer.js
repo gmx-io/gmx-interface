@@ -19,6 +19,8 @@ import { FaCheck, FaTimes } from "react-icons/fa";
 
 import { fetcher, approveTokens, useChainId } from "../../Helpers";
 
+import { Trans, t } from '@lingui/macro'
+
 import "./BeginAccountTransfer.css";
 
 function ValidationRow({ isValid, children }) {
@@ -120,32 +122,32 @@ export default function BeginAccountTransfer(props) {
 
   const getError = () => {
     if (!account) {
-      return "Wallet is not connected";
+      return t`Wallet is not connected`;
     }
     if (hasVestedGmx) {
-      return "Vested GMX not withdrawn";
+      return t`Vested GMX not withdrawn`;
     }
     if (hasVestedGlp) {
-      return "Vested GLP not withdrawn";
+      return t`Vested GLP not withdrawn`;
     }
     if (!receiver || receiver.length === 0) {
-      return "Enter Receiver Address";
+      return t`Enter Receiver Address`;
     }
     if (!ethers.utils.isAddress(receiver)) {
-      return "Invalid Receiver Address";
+      return t`Invalid Receiver Address`;
     }
     if (hasStakedGmx || hasStakedGlp) {
-      return "Invalid Receiver";
+      return t`Invalid Receiver`;
     }
     if ((parsedReceiver || "").toString().toLowerCase() === (account || "").toString().toLowerCase()) {
-      return "Self-transfer not supported";
+      return t`Self-transfer not supported`;
     }
 
     if (
       (parsedReceiver || "").length > 0 &&
       (parsedReceiver || "").toString().toLowerCase() === (pendingReceiver || "").toString().toLowerCase()
     ) {
-      return "Transfer already initiated";
+      return t`Transfer already initiated`;
     }
   };
 
@@ -169,16 +171,16 @@ export default function BeginAccountTransfer(props) {
       return error;
     }
     if (needApproval) {
-      return "Approve GMX";
+      return t`Approve GMX`;
     }
     if (isApproving) {
-      return "Approving...";
+      return t`Approving...`;
     }
     if (isTransferring) {
-      return "Transferring";
+      return t`Transferring`;
     }
 
-    return "Begin Transfer";
+    return t`Begin Transfer`;
   };
 
   const onClickPrimary = () => {
@@ -197,8 +199,8 @@ export default function BeginAccountTransfer(props) {
     const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
 
     callContract(chainId, contract, "signalTransfer", [parsedReceiver], {
-      sentMsg: "Transfer submitted!",
-      failMsg: "Transfer failed.",
+      sentMsg: t`Transfer submitted!`,
+      failMsg: t`Transfer failed.`,
       setPendingTxns,
     })
       .then(async (res) => {
@@ -219,34 +221,34 @@ export default function BeginAccountTransfer(props) {
         setIsVisible={setIsTransferSubmittedModalVisible}
         label="Transfer Submitted"
       >
-        Your transfer has been initiated.
+        <Trans>Your transfer has been initiated.</Trans>
         <br />
         <br />
         <Link className="App-cta" to={completeTransferLink}>
-          Continue
+          <Trans>Continue</Trans>
         </Link>
       </Modal>
       <div className="Page-title-section">
-        <div className="Page-title">Transfer Account</div>
+        <div className="Page-title"><Trans>Transfer Account</Trans></div>
         <div className="Page-description">
-          Please only use this for full account transfers.
+          <Trans>Please only use this for full account transfers.</Trans>
           <br />
-          This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.
+          <Trans>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.</Trans>
           <br />
-          Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.
+          <Trans>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.</Trans>
           <br />
-          Transfers are one-way, you will not be able to transfer staked tokens back to the sending account.
+          <Trans>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account.</Trans>
         </div>
         {hasPendingReceiver && (
           <div className="Page-description">
-            You have a <Link to={pendingTransferLink}>pending transfer</Link> to {pendingReceiver}.
+            <Trans>You have a <Link to={pendingTransferLink}>pending transfer</Link> to {pendingReceiver}.</Trans>
           </div>
         )}
       </div>
       <div className="Page-content">
         <div className="input-form">
           <div className="input-row">
-            <label className="input-label">Receiver Address</label>
+            <label className="input-label"><Trans>Receiver Address</Trans></label>
             <div>
               <input
                 type="text"
@@ -258,13 +260,13 @@ export default function BeginAccountTransfer(props) {
           </div>
           <div className="BeginAccountTransfer-validations">
             <ValidationRow isValid={!hasVestedGmx}>
-              Sender has withdrawn all tokens from GMX Vesting Vault
+              <Trans>Sender has withdrawn all tokens from GMX Vesting Vault</Trans>
             </ValidationRow>
             <ValidationRow isValid={!hasVestedGlp}>
-              Sender has withdrawn all tokens from GLP Vesting Vault
+              <Trans>Sender has withdrawn all tokens from GLP Vesting Vault</Trans>
             </ValidationRow>
-            <ValidationRow isValid={!hasStakedGmx}>Receiver has not staked GMX tokens before</ValidationRow>
-            <ValidationRow isValid={!hasStakedGlp}>Receiver has not staked GLP tokens before</ValidationRow>
+            <ValidationRow isValid={!hasStakedGmx}><Trans>Receiver has not staked GMX tokens before</Trans></ValidationRow>
+            <ValidationRow isValid={!hasStakedGlp}><Trans>Receiver has not staked GLP tokens before</Trans></ValidationRow>
           </div>
           <div className="input-row">
             <button

@@ -3,13 +3,13 @@
 }
 
 .Tooltip-popup {
-  font-size: 0.9rem;
-  line-height: 1.032rem;
+  font-size: 1.4rem;
+  line-height: 1.6rem;
   position: absolute;
   border-radius: 4px;
-  padding: 0.674rem;
+  padding: 1.05rem;
   letter-spacing: 0.4px;
-  min-width: 250px;
+  min-width: 25rem;
   text-align: left;
   background: linear-gradient(90deg, #0b0b0f 0%, rgba(10, 13, 28, 1) 100%);
   z-index: 1000;
@@ -30,42 +30,42 @@
 
 .Tooltip-popup.left-bottom {
   left: 0;
-  transform: translateY(0.5rem);
+  transform: translateY(0.8rem);
   top: 100%;
 }
 
 .Tooltip-popup.right-bottom {
   right: 0;
-  transform: translateY(0.5rem);
+  transform: translateY(0.8rem);
   top: 100%;
 }
 
 .Tooltip-popup.right-top {
   right: 0;
-  transform: translateY(-0.5rem);
+  transform: translateY(-0.8rem);
   bottom: 100%;
 }
 .Tooltip-popup.right {
-  left: 30px;
+  left: 3rem;
   transform: translateY(50%);
   bottom: 100%;
 }
 
 .Tooltip-popup.left-top {
   left: 0;
-  transform: translateY(-0.5rem);
+  transform: translateY(-0.8rem);
   bottom: 100%;
 }
 
 .Tooltip-popup.center-bottom {
   left: 50%;
-  transform: translateY(0.5rem) translateX(-50%);
+  transform: translateY(0.8rem) translateX(-50%);
   top: 100%;
 }
 
 .Tooltip-popup.center-top {
   left: 50%;
-  transform: translateY(-0.5rem) translateX(-50%);
+  transform: translateY(-0.8rem) translateX(-50%);
   bottom: 100%;
 }
 
@@ -90,6 +90,6 @@
 
 @media (max-width: 700px) {
   .Tooltip-popup {
-    min-width: 200px;
+    min-width: 20rem;
   }
 }

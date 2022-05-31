@@ -6,6 +6,8 @@ import buyGMXIcon from "../../img/buy_gmx.svg";
 import SEO from "../../components/Common/SEO";
 import { getPageTitle } from "../../Helpers";
 
+import { Trans } from '@lingui/macro'
+
 export default function BuyGMXGLP(props) {
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -20,7 +22,7 @@ export default function BuyGMXGLP(props) {
               <img src={buyGMXIcon} alt="buyGMXIcon" />
             </div>
             <div className="section-title-content">
-              <div className="Page-title">Buy GMX or GLP</div>
+              <div className="Page-title"><Trans>Buy GMX or GLP</Trans></div>
             </div>
           </div>
           <TokenCard />

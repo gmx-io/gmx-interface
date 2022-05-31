@@ -13,13 +13,13 @@
   align-items: center;
   vertical-align: middle;
   position: relative;
-  top: 0.05rem;
+  top: 0.08rem;
 }
 
 .Checkbox .Checkbox-icon {
-  font-size: 0.8rem;
+  font-size: 1.25rem;
   color: rgba(61, 81, 255, 1);
-  margin-right: 0.4rem;
+  margin-right: 0.62rem;
   margin-bottom: 0;
 }
 
@@ -34,4 +34,5 @@
 .Checkbox-label {
   display: inline-block;
   vertical-align: middle;
+  font-size: 1.55rem;
 }
