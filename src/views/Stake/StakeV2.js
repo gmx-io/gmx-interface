@@ -720,12 +720,12 @@ function CompoundModal(props) {
           </div>
           <div>
             <Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx} disabled={shouldStakeGmx}>
-              Claim GMX Rewards
+              Claim TCR Rewards
             </Checkbox>
           </div>
           <div>
             <Checkbox isChecked={shouldStakeGmx} setIsChecked={toggleShouldStakeGmx}>
-              Stake GMX Rewards
+              Stake TCR Rewards
             </Checkbox>
           </div>
           <div>
@@ -844,7 +844,7 @@ function ClaimModal(props) {
         <div className="CompoundModal-menu">
           <div>
             <Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx}>
-              Claim GMX Rewards
+              Claim TCR Rewards
             </Checkbox>
           </div>
           <div>
@@ -1144,7 +1144,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     }
 
     setIsStakeModalVisible(true);
-    setStakeModalTitle("Stake GMX");
+    setStakeModalTitle("Stake TCR");
     setStakeModalMaxAmount(processedData.gmxBalance);
     setStakeValue("");
     setStakingTokenSymbol("GMX");
@@ -1230,11 +1230,11 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
   const showUnstakeGmxModal = () => {
     if (!isGmxTransferEnabled) {
-      helperToast.error("GMX transfers not yet enabled");
+      helperToast.error("TCR transfers not yet enabled");
       return;
     }
     setIsUnstakeModalVisible(true);
-    setUnstakeModalTitle("Unstake GMX");
+    setUnstakeModalTitle("Unstake TCR");
     let maxAmount = processedData.gmxInStakedGmx;
     if (
       processedData.gmxInStakedGmx &&
@@ -1424,7 +1424,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         <div className="Page-description">
           Stake{" "}
           <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">
-            GMX
+            TCR
           </a>{" "}
           and{" "}
           <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
@@ -1437,7 +1437,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       <div className="StakeV2-content">
         <div className="StakeV2-cards">
           <div className="App-card StakeV2-gmx-card">
-            <div className="App-card-title">GMX</div>
+            <div className="App-card-title">TCR</div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -1463,14 +1463,14 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               <div className="App-card-row">
                 <div className="label">Wallet</div>
                 <div>
-                  {formatKeyAmount(processedData, "gmxBalance", 18, 2, true)} GMX ($
+                  {formatKeyAmount(processedData, "gmxBalance", 18, 2, true)} TCR ($
                   {formatKeyAmount(processedData, "gmxBalanceUsd", USD_DECIMALS, 2, true)})
                 </div>
               </div>
               <div className="App-card-row">
                 <div className="label">Staked</div>
                 <div>
-                  {formatKeyAmount(processedData, "gmxInStakedGmx", 18, 2, true)} GMX ($
+                  {formatKeyAmount(processedData, "gmxInStakedGmx", 18, 2, true)} TCR ($
                   {formatKeyAmount(processedData, "gmxInStakedGmxUsd", USD_DECIMALS, 2, true)})
                 </div>
               </div>
@@ -1485,7 +1485,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       return (
                         <>
                           <div className="Tooltip-row">
-                            <span className="label">Escrowed GMX APR</span>
+                            <span className="label">Escrowed TCR APR</span>
                             <span>{formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%</span>
                           </div>
                           {(!processedData.gmxBoostAprForNativeToken ||
@@ -1541,7 +1541,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                             </span>
                           </div>
                           <div className="Tooltip-row">
-                            <span className="label">Escrowed GMX</span>
+                            <span className="label">Escrowed TCR</span>
                             <span>
                               {formatKeyAmount(processedData, "stakedGmxTrackerRewards", 18, 4)} ($
                               {formatKeyAmount(processedData, "stakedGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})
@@ -1589,14 +1589,14 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       className="nowrap"
                       handle={
                         formatAmount(totalGmxStaked, 18, 0, true) +
-                        " GMX" +
+                        " TCR" +
                         ` ($${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)})`
                       }
                       renderContent={() => (
                         <>
-                          Arbitrum: {formatAmount(arbitrumGmxStaked, 18, 0, true)} GMX
+                          Arbitrum: {formatAmount(arbitrumGmxStaked, 18, 0, true)} TCR
                           <br />
-                          Avalanche: {formatAmount(avaxGmxStaked, 18, 0, true)} GMX
+                          Avalanche: {formatAmount(avaxGmxStaked, 18, 0, true)} TCR
                         </>
                       )}
                     />
@@ -1608,7 +1608,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 {!totalGmxSupply && "..."}
                 {totalGmxSupply && (
                   <div>
-                    {formatAmount(totalGmxSupply, 18, 0, true)} GMX ($
+                    {formatAmount(totalGmxSupply, 18, 0, true)} TCR ($
                     {formatAmount(totalSupplyUsd, USD_DECIMALS, 0, true)})
                   </div>
                 )}
@@ -1616,7 +1616,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               <div className="App-card-divider"></div>
               <div className="App-card-options">
                 <Link className="App-button-option App-card-option" to="/buy_gmx">
-                  Buy GMX
+                  Buy TCR
                 </Link>
                 {active && (
                   <button className="App-button-option App-card-option" onClick={() => showStakeGmxModal()}>

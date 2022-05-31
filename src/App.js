@@ -271,8 +271,6 @@ function AppHeaderUser({
 
   const selectorLabel = getChainName(chainId);
 
-  console.log("sel", selectorLabel);
-
   if (!active) {
     return (
       <div className="App-header-user">

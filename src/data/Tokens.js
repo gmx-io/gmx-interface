@@ -124,6 +124,7 @@ const TOKENS = {
       symbol: "BTC",
       decimals: 18,
       address: "0xab952e6801daB7920B65b8aC918FF0F66a8a0F44",
+      isShortable: true
     },
     {
       name: "Ethereum",
