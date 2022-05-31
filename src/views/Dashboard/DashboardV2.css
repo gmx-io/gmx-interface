@@ -13,6 +13,11 @@
   margin-top: 0.5rem;
 }
 
+.DashboardV2-cards .App-card-row .label,
+.DashboardV2-token-cards .App-card-row .label {
+  color: var(--text-secondary);
+}
+
 .token-table-wrapper {
   border: 1px solid #1e2136;
   border-radius: 4px;

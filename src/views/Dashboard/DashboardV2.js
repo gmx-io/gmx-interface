@@ -32,6 +32,7 @@ import {
   GLPPOOLCOLORS,
   DEFAULT_MAX_USDG_AMOUNT,
   getPageTitle,
+  ARBITRUM_TESTNET,
 } from "../../Helpers";
 import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply, useInfoTokens } from "../../Api";
 
@@ -292,7 +293,7 @@ export default function DashboardV2() {
                   <br />
                   Get lower fees to{" "}
                   <Link to="/buy_glp" target="_blank" rel="noopener noreferrer">
-                    buy GLP
+                    buy TLP
                   </Link>{" "}
                   with {tokenInfo.symbol},&nbsp; and to{" "}
                   <Link to="/trade" target="_blank" rel="noopener noreferrer">
@@ -433,15 +434,14 @@ export default function DashboardV2() {
     <SEO title={getPageTitle("Dashboard")}>
       <div className="default-container DashboardV2 page-layout">
         <div className="section-title-block">
-          <div className="section-title-icon"></div>
           <div className="section-title-content">
             <div className="Page-title">
               Stats {chainId === AVALANCHE && <img src={avalanche24Icon} alt="avalanche24Icon" />}
-              {chainId === ARBITRUM && <img src={arbitrum24Icon} alt="arbitrum24Icon" />}
+              {(chainId === ARBITRUM || chainId === ARBITRUM_TESTNET) && <img src={arbitrum24Icon} alt="arbitrum24Icon" />}
             </div>
             <div className="Page-description">
               {chainName} Total Stats start from {totalStatsStartDate}.<br /> For detailed stats:{" "}
-              {chainId === ARBITRUM && (
+              {(chainId === ARBITRUM || chainId === ARBITRUM_TESTNET) && (
                 <a href="https://stats.gmx.io" target="_blank" rel="noopener noreferrer">
                   https://stats.gmx.io
                 </a>
@@ -467,17 +467,17 @@ export default function DashboardV2() {
                     <TooltipComponent
                       handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
-                      renderContent={() => `Assets Under Management: GMX staked (All chains) + GLP pool (${chainName})`}
+                      renderContent={() => `Assets Under Management: TCR staked (All chains) + TLP pool (${chainName})`}
                     />
                   </div>
                 </div>
                 <div className="App-card-row">
-                  <div className="label">GLP Pool</div>
+                  <div className="label">TLP Pool</div>
                   <div>
                     <TooltipComponent
                       handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
-                      renderContent={() => `Total value of tokens in GLP pool (${chainName})`}
+                      renderContent={() => `Total value of tokens in TLP pool (${chainName})`}
                     />
                   </div>
                 </div>
@@ -525,7 +525,7 @@ export default function DashboardV2() {
               Tokens {chainId === AVALANCHE && <img src={avalanche24Icon} alt="avalanche24Icon" />}
               {chainId === ARBITRUM && <img src={arbitrum24Icon} alt="arbitrum24Icon" />}
             </div>
-            <div className="Page-description">Platform and GLP index tokens.</div>
+            <div className="Page-description">Platform and TLP index tokens.</div>
           </div>
           <div className="DashboardV2-token-cards">
             <div className="stats-wrapper stats-wrapper--gmx">
@@ -537,8 +537,8 @@ export default function DashboardV2() {
                         <img src={gmx40Icon} alt="gmx40Icon" />
                       </div>
                       <div className="App-card-title-mark-info">
-                        <div className="App-card-title-mark-title">GMX</div>
-                        <div className="App-card-title-mark-subtitle">GMX</div>
+                        <div className="App-card-title-mark-title">TCR</div>
+                        <div className="App-card-title-mark-subtitle">TCR</div>
                       </div>
                       <div>
                         <AssetDropdown assetSymbol="GMX" />
@@ -569,7 +569,7 @@ export default function DashboardV2() {
                     </div>
                     <div className="App-card-row">
                       <div className="label">Supply</div>
-                      <div>{formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true)} GMX</div>
+                      <div>{formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true)} TCR</div>
                     </div>
                     <div className="App-card-row">
                       <div className="label">Total Staked</div>
@@ -581,9 +581,9 @@ export default function DashboardV2() {
                             handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
                             renderContent={() => (
                               <>
-                                Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                                Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} TCR
                                 <br />
-                                Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                                Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} TCR
                               </>
                             )}
                           />
@@ -651,8 +651,8 @@ export default function DashboardV2() {
                         )}
                       </div>
                       <div className="App-card-title-mark-info">
-                        <div className="App-card-title-mark-title">GLP</div>
-                        <div className="App-card-title-mark-subtitle">GLP</div>
+                        <div className="App-card-title-mark-title">TLP</div>
+                        <div className="App-card-title-mark-subtitle">TLP</div>
                       </div>
                       <div>
                         <AssetDropdown assetSymbol="GLP" />
@@ -667,7 +667,7 @@ export default function DashboardV2() {
                     </div>
                     <div className="App-card-row">
                       <div className="label">Supply</div>
-                      <div>{formatAmount(glpSupply, GLP_DECIMALS, 0, true)} GLP</div>
+                      <div>{formatAmount(glpSupply, GLP_DECIMALS, 0, true)} TLP</div>
                     </div>
                     <div className="App-card-row">
                       <div className="label">Total Staked</div>
@@ -718,7 +718,7 @@ export default function DashboardV2() {
                         ))}
                       </Pie>
                       <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
-                        GLP Pool
+                        TLP Pool
                       </text>
                       <Tooltip content={<CustomTooltip />} />
                     </PieChart>
@@ -728,7 +728,7 @@ export default function DashboardV2() {
             </div>
             <div className="token-table-wrapper App-card">
               <div className="App-card-title">
-                GLP Index Composition {chainId === AVALANCHE && <img src={avalanche16Icon} alt="avalanche16Icon" />}
+                TLP Index Composition {chainId === AVALANCHE && <img src={avalanche16Icon} alt="avalanche16Icon" />}
                 {chainId === ARBITRUM && <img src={arbitrum16Icon} alt="arbitrum16Icon" />}
               </div>
               <div className="App-card-divider"></div>
