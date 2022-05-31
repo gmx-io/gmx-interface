@@ -6,7 +6,7 @@
 }
 
 .Tab-title-section {
-  padding: 2rem 1rem 0;
+  padding: 2rem 0 0;
   margin-bottom: 24px;
 }
 
@@ -65,7 +65,7 @@
 }
 
 .GlpSwap-stats-card .App-card-row .label {
-  color: #a9a9b0;
+  color: var(--text-secondary);
   opacity: 1;
 }
 
@@ -113,9 +113,8 @@
 }
 
 .GlpSwap-token-list {
-  border: 1px solid #1e2136;
+  border: 1px solid var(--border-primary);
   border-radius: 4px;
-  background: #16182e;
   padding: 1rem;
   padding-top: 0;
   text-align: left;
@@ -217,7 +216,7 @@
 .token-table th {
   font-weight: normal;
   letter-spacing: 0.25px;
-  color: #a9a9b0;
+  color: var(--text-secondary);
   text-transform: uppercase;
 }
 

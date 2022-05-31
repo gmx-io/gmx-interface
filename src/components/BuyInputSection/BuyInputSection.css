@@ -58,6 +58,7 @@
 
 .buy-input .Exchange-swap-section-top {
   padding-bottom: 0;
+  color: var(--text-secondary);
 }
 
 .buy-input .selected-token {
@@ -65,8 +66,4 @@
   /* padding-bottom: 0.5rem; */
   display: flex;
   align-items: center;
-}
-
-.buy-input .Exchange-swap-balance {
-  color: white;
 }

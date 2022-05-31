@@ -2,6 +2,7 @@
   position: relative;
   overflow: hidden;
   min-height: 100%;
+  background-repeat: no-repeat;
   background-position-y: bottom;
   background-image: url('./img/background_mesh.svg');
   background-size: contain;
@@ -292,7 +293,7 @@
   line-height: 0.9677rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: #a9a9b0;
+  color: var(--text-secondary);
 }
 
 .App-card-title-iconlist {
@@ -486,7 +487,7 @@ button.App-connect-wallet:hover {
 
 .Page-description {
   /* opacity: 0.7; */
-  color: #b7b7bd;
+  color: var(--text-secondary);
   line-height: 1.4rem;
 }
 
@@ -525,7 +526,7 @@ button.App-connect-wallet:hover {
 
 .App-card {
   padding: 1rem 1rem 1.2rem;
-  border: 1px solid #1e2136;
+  border: 1px solid var(--border-primary);
   border-radius: 4px;
 }
 

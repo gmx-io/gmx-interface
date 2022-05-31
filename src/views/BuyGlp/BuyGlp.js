@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
 import GlpSwap from "../../components/Glp/GlpSwap";
-import buyGLPIcon from "../../img/ic_buy_glp.svg";
+// import buyGLPIcon from "../../img/ic_buy_glp.svg";
 import Footer from "../../Footer";
 import "./BuyGlp.css";
 
@@ -24,15 +24,17 @@ export default function BuyGlp(props) {
   return (
     <div className="default-container buy-glp-content page-layout">
       <div className="section-title-block">
-        <div className="section-title-icon">
-          <img src={buyGLPIcon} alt="buyGLPIcon" />
-        </div>
+        {/* 
+          <div className="section-title-icon">
+            <img src={buyGLPIcon} alt="buyGLPIcon" />
+          </div>
+        */}
         <div className="section-title-content">
-          <div className="Page-title">Buy / Sell GLP</div>
+          <div className="Page-title">Buy / Sell TLP</div>
           <div className="Page-description">
             Purchase{" "}
             <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
-              GLP tokens
+              TLP tokens
             </a>{" "}
             to earn {nativeTokenSymbol} fees from swaps and leverages trading.
             <br />
