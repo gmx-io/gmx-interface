@@ -9,7 +9,7 @@ import hexToRgba from "hex-to-rgba";
 import { ethers } from "ethers";
 
 import { getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
-import { getFeeHistory, getLatestFeeDistributionDate } from "../../data/Fees";
+import { getFeeHistory } from "../../data/Fees";
 
 import {
   fetcher,
@@ -181,8 +181,7 @@ export default function DashboardV2() {
   const currentFeesUsd = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokens);
 
   const feeHistory = getFeeHistory(chainId);
-  const shouldIncludeCurrrentFees =
-    feeHistory.length && parseInt(Date.now() / 1000) - getLatestFeeDistributionDate() > 60 * 60;
+  const shouldIncludeCurrrentFees = feeHistory.length && parseInt(Date.now() / 1000) - feeHistory[0].to > 60 * 60;
   let totalFeesDistributed = shouldIncludeCurrrentFees
     ? parseFloat(bigNumberify(formatAmount(currentFeesUsd, USD_DECIMALS - 2, 0, false)).toNumber()) / 100
     : 0;
@@ -496,7 +495,7 @@ export default function DashboardV2() {
                 </div>
                 {feeHistory.length ? (
                   <div className="App-card-row">
-                    <div className="label">Fees since {formatDate(getLatestFeeDistributionDate())}</div>
+                    <div className="label">Fees since {formatDate(feeHistory[0].to)}</div>
                     <div>${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}</div>
                   </div>
                 ) : null}
