@@ -9,7 +9,7 @@ import hexToRgba from "hex-to-rgba";
 import { ethers } from "ethers";
 
 import { getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
-import { getFeeHistory } from "../../data/Fees";
+import { getFeeHistory, getLatestDistributionDate } from "../../data/Fees";
 
 import {
   fetcher,
@@ -495,7 +495,7 @@ export default function DashboardV2() {
                 </div>
                 {feeHistory.length ? (
                   <div className="App-card-row">
-                    <div className="label">Fees since {formatDate(feeHistory[0].to)}</div>
+                    <div className="label">Fees since {formatDate(getLatestDistributionDate())}</div>
                     <div>${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}</div>
                   </div>
                 ) : null}
