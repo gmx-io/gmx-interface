@@ -27,6 +27,6 @@ export function getFeeHistory(chainId) {
   return FEES[chainId].concat([]).reverse();
 }
 
-export function getLatestDistributionDate() {
+export function getLatestFeeDistributionDate() {
   return 1654055630;
 }
