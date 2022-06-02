@@ -339,7 +339,6 @@ export default function SwapBox(props) {
 
   const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
-  const toTokenAvailableUsd = toTokenInfo.availableUsd;
 
   const renderAvailableLongLiquidity = () => {
     if (!isLong) {
@@ -349,7 +348,24 @@ export default function SwapBox(props) {
     return (
       <div className="Exchange-info-row">
         <div className="Exchange-info-label">Available Liquidity</div>
-        <div className="align-right">{formatAmount(toTokenAvailableUsd, USD_DECIMALS, 2, true)}</div>
+        <div className="align-right">
+          <Tooltip
+            handle={`${formatAmount(toTokenInfo.maxAvailableLong, USD_DECIMALS, 2, true)}`}
+            position="right-bottom"
+            renderContent={() => {
+              return (
+                <>
+                  Max {toTokenInfo.symbol} long capacity: $
+                  {formatAmount(toTokenInfo.maxLongCapacity, USD_DECIMALS, 2, true)}
+                  <br />
+                  <br />
+                  Current {toTokenInfo.symbol} long: ${formatAmount(toTokenInfo.guaranteedUsd, USD_DECIMALS, 2, true)}
+                  <br />
+                </>
+              );
+            }}
+          ></Tooltip>
+        </div>
       </div>
     );
   };
@@ -879,6 +895,16 @@ export default function SwapBox(props) {
           }
         }
       }
+
+      const sizeUsd = toAmount.mul(toTokenInfo.maxPrice).div(expandDecimals(1, toTokenInfo.decimals));
+      if (
+        toTokenInfo.maxGlobalLongSize &&
+        toTokenInfo.maxGlobalLongSize.gt(0) &&
+        toTokenInfo.maxAvailableLong &&
+        sizeUsd.gt(toTokenInfo.maxAvailableLong)
+      ) {
+        return [`Max ${toTokenInfo.symbol} long exceeded`];
+      }
     }
 
     if (isShort) {
@@ -942,8 +968,9 @@ export default function SwapBox(props) {
       }
 
       if (
+        toTokenInfo.maxGlobalShortSize &&
+        toTokenInfo.maxGlobalShortSize.gt(0) &&
         toTokenInfo.maxAvailableShort &&
-        toTokenInfo.maxAvailableShort.gt(0) &&
         sizeUsd.gt(toTokenInfo.maxAvailableShort)
       ) {
         return [`Max ${toTokenInfo.symbol} short exceeded`];

@@ -278,6 +278,38 @@ export default function Ecosystem() {
             </div>
             <div className="App-card">
               <div className="App-card-title">
+                GMX Yield Simulator
+                <div className="App-card-title-icon">
+                  <img src={arbitrumIcon} alt="arbitrumIcon" />
+                  <img src={avalancheIcon} alt="avalancheIcon" />
+                </div>
+              </div>
+              <div className="App-card-divider"></div>
+              <div className="App-card-content">
+                <div className="App-card-row">
+                  <div className="label">Link</div>
+                  <div>
+                    <a href="http://gmx.defisims.com/" target="_blank" rel="noopener noreferrer">
+                      http://gmx.defisims.com/
+                    </a>
+                  </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">About</div>
+                  <div>Yield simulator for GMX</div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">Creator</div>
+                  <div>
+                    <a href="https://twitter.com/s0berknight" target="_blank" rel="noopener noreferrer">
+                      s0berknight
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="App-card">
+              <div className="App-card-title">
                 GMX Returns Calculator
                 <div className="App-card-title-icon">
                   <img src={arbitrumIcon} alt="arbitrumIcon" />

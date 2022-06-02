@@ -2281,7 +2281,7 @@ export function getInfoTokens(
   nativeTokenAddress
 ) {
   if (!vaultPropsLength) {
-    vaultPropsLength = 14;
+    vaultPropsLength = 15;
   }
   const fundingRatePropsLength = 2;
   const infoTokens = {};
@@ -2311,11 +2311,12 @@ export function getInfoTokens(
       token.maxUsdgAmount = vaultTokenInfo[i * vaultPropsLength + 6];
       token.globalShortSize = vaultTokenInfo[i * vaultPropsLength + 7];
       token.maxGlobalShortSize = vaultTokenInfo[i * vaultPropsLength + 8];
-      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 9];
-      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 10];
-      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 11];
-      token.maxPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 12];
-      token.minPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 13];
+      token.maxGlobalLongSize = vaultTokenInfo[i * vaultPropsLength + 9];
+      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 10];
+      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 11];
+      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 12];
+      token.maxPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 13];
+      token.minPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 14];
 
       // save minPrice and maxPrice as setTokenUsingIndexPrices may override it
       token.contractMinPrice = token.minPrice;
@@ -2335,6 +2336,21 @@ export function getInfoTokens(
       token.availableUsd = token.isStable
         ? token.poolAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals))
         : token.availableAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals));
+
+      token.maxAvailableLong = bigNumberify(0);
+      if (token.maxGlobalLongSize.gt(0)) {
+        if (token.maxGlobalLongSize.gt(token.guaranteedUsd)) {
+          const remainingLongSize = token.maxGlobalLongSize.sub(token.guaranteedUsd);
+          token.maxAvailableLong = remainingLongSize.lt(token.availableUsd) ? remainingLongSize : token.availableUsd;
+        }
+      } else {
+        token.maxAvailableLong = token.availableUsd;
+      }
+
+      token.maxLongCapacity =
+        token.maxGlobalLongSize.gt(0) && token.maxGlobalLongSize.lt(token.availableUsd)
+          ? token.maxGlobalLongSize
+          : token.availableUsd;
 
       token.managedUsd = token.availableUsd.add(token.guaranteedUsd);
       token.managedAmount = token.managedUsd.mul(expandDecimals(1, token.decimals)).div(token.minPrice);
