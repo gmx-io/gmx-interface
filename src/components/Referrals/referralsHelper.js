@@ -1,7 +1,6 @@
 import {
   formatAmount,
   USD_DECIMALS,
-  bigNumberify,
   MAX_REFERRAL_CODE_LENGTH,
   ARBITRUM,
   AVALANCHE,
@@ -68,13 +67,13 @@ export const tierDiscountInfo = {
 
 export const getSampleReferrarStat = (code, ownerOnOtherNetwork, account) => {
   return {
-    discountUsd: bigNumberify(0),
+    discountUsd: 0,
     referralCode: code,
-    totalRebateUsd: bigNumberify(0),
+    totalRebateUsd: 0,
     tradedReferralsCount: 0,
     registeredReferralsCount: 0,
     trades: 0,
-    volume: bigNumberify(0),
+    volume: 0,
     time: Date.now(),
     ownerOnOtherChain: {
       code: encodeReferralCode(code),
