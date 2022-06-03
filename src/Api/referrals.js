@@ -356,11 +356,6 @@ export function useUserReferralCode(library, chainId, account) {
     }
   );
 
-  const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
-  if (isHashZero(userReferralCode) && userReferralCodeInLocalStorage) {
-    userReferralCode = userReferralCodeInLocalStorage;
-  }
-
   let userReferralCodeString;
   if (userReferralCode && !isHashZero(userReferralCode)) {
     userReferralCodeString = decodeReferralCode(userReferralCode);
