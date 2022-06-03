@@ -286,8 +286,8 @@ export default function Ecosystem() {
                 <div className="App-card-row">
                   <div className="label">Link</div>
                   <div>
-                    <a href="http://gmx.defisims.com/" target="_blank" rel="noopener noreferrer">
-                      http://gmx.defisims.com/
+                    <a href="https://gmx.defisims.com/" target="_blank" rel="noopener noreferrer">
+                      https://gmx.defisims.com/
                     </a>
                   </div>
                 </div>
