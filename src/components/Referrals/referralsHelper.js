@@ -1,10 +1,11 @@
 import {
   formatAmount,
+  bigNumberify,
+  isAddressZero,
   USD_DECIMALS,
   MAX_REFERRAL_CODE_LENGTH,
   ARBITRUM,
   AVALANCHE,
-  isAddressZero,
 } from "../../Helpers";
 import { encodeReferralCode, getReferralCodeOwner } from "../../Api/referrals";
 
@@ -65,15 +66,30 @@ export const tierDiscountInfo = {
   2: 10,
 };
 
+export function deserializeSampleStats(input) {
+  const parsedData = JSON.parse(input);
+  return parsedData.map((data) => {
+    return Object.keys(data).reduce((acc, cv) => {
+      const currentValue = data[cv];
+      if (currentValue?.type === "BigNumber") {
+        acc[cv] = bigNumberify(currentValue.hex);
+      } else {
+        acc[cv] = currentValue;
+      }
+      return acc;
+    }, {});
+  });
+}
+
 export const getSampleReferrarStat = (code, ownerOnOtherNetwork, account) => {
   return {
-    discountUsd: 0,
+    discountUsd: bigNumberify(0),
     referralCode: code,
-    totalRebateUsd: 0,
+    totalRebateUsd: bigNumberify(0),
     tradedReferralsCount: 0,
     registeredReferralsCount: 0,
     trades: 0,
-    volume: 0,
+    volume: bigNumberify(0),
     time: Date.now(),
     ownerOnOtherChain: {
       code: encodeReferralCode(code),
