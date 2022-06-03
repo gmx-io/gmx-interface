@@ -1615,22 +1615,22 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 )}
               </div>
               <div className="App-card-divider"></div>
-              <div className="App-card-options">
-                <Link className="App-button-option App-card-option" to="/buy_gmx">
+              <div className="App-card-options btn-group">
+                <Link className="default-btn" to="/buy_gmx">
                   Buy GMX
                 </Link>
                 {active && (
-                  <button className="App-button-option App-card-option" onClick={() => showStakeGmxModal()}>
+                  <button className="default-btn" onClick={() => showStakeGmxModal()}>
                     Stake
                   </button>
                 )}
                 {active && (
-                  <button className="App-button-option App-card-option" onClick={() => showUnstakeGmxModal()}>
+                  <button className="default-btn" onClick={() => showUnstakeGmxModal()}>
                     Unstake
                   </button>
                 )}
                 {active && (
-                  <Link className="App-button-option App-card-option" to="/begin_account_transfer">
+                  <Link className="default-btn" to="/begin_account_transfer">
                     Transfer Account
                   </Link>
                 )}
@@ -1678,11 +1678,11 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-bottom-placeholder">
                 <div className="App-card-divider"></div>
-                <div className="App-card-options">
-                  {active && <button className="App-button-option App-card-option">Compound</button>}
-                  {active && <button className="App-button-option App-card-option">Claim</button>}
+                <div className="App-card-options btn-group">
+                  {active && <button className="default-btn">Compound</button>}
+                  {active && <button className="default-btn">Claim</button>}
                   {!active && (
-                    <button className="App-button-option App-card-option" onClick={() => connectWallet()}>
+                    <button className="default-btn" onClick={() => connectWallet()}>
                       Connect Wallet
                     </button>
                   )}
@@ -1690,22 +1690,19 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-bottom">
                 <div className="App-card-divider"></div>
-                <div className="App-card-options">
+                <div className="App-card-options btn-group">
                   {active && (
-                    <button
-                      className="App-button-option App-card-option"
-                      onClick={() => setIsCompoundModalVisible(true)}
-                    >
+                    <button className="default-btn" onClick={() => setIsCompoundModalVisible(true)}>
                       Compound
                     </button>
                   )}
                   {active && (
-                    <button className="App-button-option App-card-option" onClick={() => setIsClaimModalVisible(true)}>
+                    <button className="default-btn" onClick={() => setIsClaimModalVisible(true)}>
                       Claim
                     </button>
                   )}
                   {!active && (
-                    <button className="App-button-option App-card-option" onClick={() => connectWallet()}>
+                    <button className="default-btn" onClick={() => connectWallet()}>
                       Connect Wallet
                     </button>
                   )}
@@ -1808,16 +1805,16 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 </div>
               </div>
               <div className="App-card-divider"></div>
-              <div className="App-card-options">
-                <Link className="App-button-option App-card-option" to="/buy_glp">
+              <div className="App-card-options btn-group">
+                <Link className="default-btn" to="/buy_glp">
                   Buy GLP
                 </Link>
-                <Link className="App-button-option App-card-option" to="/buy_glp#redeem">
+                <Link className="default-btn" to="/buy_glp#redeem">
                   Sell GLP
                 </Link>
                 {hasInsurance && (
                   <a
-                    className="App-button-option App-card-option"
+                    className="default-btn"
                     href="https://app.insurace.io/Insurance/Cart?id=124&referrer=545066382753150189457177837072918687520318754040"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -1906,19 +1903,19 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 </div>
               </div>
               <div className="App-card-divider"></div>
-              <div className="App-card-options">
+              <div className="App-card-options btn-group">
                 {active && (
-                  <button className="App-button-option App-card-option" onClick={() => showStakeEsGmxModal()}>
+                  <button className="default-btn" onClick={() => showStakeEsGmxModal()}>
                     Stake
                   </button>
                 )}
                 {active && (
-                  <button className="App-button-option App-card-option" onClick={() => showUnstakeEsGmxModal()}>
+                  <button className="default-btn" onClick={() => showUnstakeEsGmxModal()}>
                     Unstake
                   </button>
                 )}
                 {!active && (
-                  <button className="App-button-option App-card-option" onClick={() => connectWallet()}>
+                  <button className="default-btn" onClick={() => connectWallet()}>
                     Connect Wallet
                   </button>
                 )}
@@ -2018,19 +2015,19 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   </div>
                 </div>
                 <div className="App-card-divider"></div>
-                <div className="App-card-options">
+                <div className="App-card-options btn-group">
                   {!active && (
-                    <button className="App-button-option App-card-option" onClick={() => connectWallet()}>
+                    <button className="default-btn" onClick={() => connectWallet()}>
                       Connect Wallet
                     </button>
                   )}
                   {active && (
-                    <button className="App-button-option App-card-option" onClick={() => showGmxVesterDepositModal()}>
+                    <button className="default-btn" onClick={() => showGmxVesterDepositModal()}>
                       Deposit
                     </button>
                   )}
                   {active && (
-                    <button className="App-button-option App-card-option" onClick={() => showGmxVesterWithdrawModal()}>
+                    <button className="default-btn" onClick={() => showGmxVesterWithdrawModal()}>
                       Withdraw
                     </button>
                   )}
@@ -2096,19 +2093,19 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   </div>
                 </div>
                 <div className="App-card-divider"></div>
-                <div className="App-card-options">
+                <div className="App-card-options btn-group">
                   {!active && (
-                    <button className="App-button-option App-card-option" onClick={() => connectWallet()}>
+                    <button className="default-btn" onClick={() => connectWallet()}>
                       Connect Wallet
                     </button>
                   )}
                   {active && (
-                    <button className="App-button-option App-card-option" onClick={() => showGlpVesterDepositModal()}>
+                    <button className="default-btn" onClick={() => showGlpVesterDepositModal()}>
                       Deposit
                     </button>
                   )}
                   {active && (
-                    <button className="App-button-option App-card-option" onClick={() => showGlpVesterWithdrawModal()}>
+                    <button className="default-btn" onClick={() => showGlpVesterWithdrawModal()}>
                       Withdraw
                     </button>
                   )}

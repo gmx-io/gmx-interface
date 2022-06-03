@@ -65,7 +65,9 @@
   padding-top: 1rem;
 }
 
-.StakeV2-content {
+.btn-group > a,
+button:not(:last-child) {
+  margin-right: 10px;
 }
 
 @media (max-width: 900px) {
