@@ -415,7 +415,7 @@ export default function Ecosystem() {
           </div>
           <div className="Page-title-section">
             <div className="Page-title">Partnerships and Integrations</div>
-            <div className="Page-description">Projects supporting GMX.</div>
+            <div className="Page-description">Projects integrated with GMX.</div>
           </div>
           <div className="DashboardV2-projects">
             <div className="App-card">
@@ -517,6 +517,41 @@ export default function Ecosystem() {
                   <div>
                     <a
                       href="https://twitter.com/GMX_IO/status/1484601407378378754"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      https://twitter.com
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="App-card">
+              <div className="App-card-title">
+                Vovo Finance
+                <div className="App-card-title-icon">
+                  <img src={arbitrumIcon} alt="arbitrumIcon" />
+                </div>
+              </div>
+              <div className="App-card-divider"></div>
+              <div className="App-card-content">
+                <div className="App-card-row">
+                  <div className="label">Link</div>
+                  <div>
+                    <a href="https://vovo.finance/" target="_blank" rel="noopener noreferrer">
+                      https://vovo.finance/
+                    </a>
+                  </div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">About</div>
+                  <div>Structured Products</div>
+                </div>
+                <div className="App-card-row">
+                  <div className="label">Announcement</div>
+                  <div>
+                    <a
+                      href="https://twitter.com/VovoFinance/status/1531517177790345217"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
