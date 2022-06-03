@@ -1,8 +1,9 @@
 import { ethers } from "ethers";
 import { gql } from "@apollo/client";
 import { useState, useEffect } from "react";
-import ReferralStorage from "../abis/ReferralStorage.json";
+import useSWR from "swr";
 
+import ReferralStorage from "../abis/ReferralStorage.json";
 import {
   ARBITRUM,
   AVALANCHE,
@@ -18,7 +19,6 @@ import {
 import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "./common";
 import { getContract } from "../Addresses";
 import { callContract } from ".";
-import useSWR from "swr";
 const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
 
 function getGraphClient(chainId) {
@@ -47,7 +47,7 @@ export function decodeReferralCode(hexCode) {
 }
 
 export function encodeReferralCode(code) {
-  let final = code.replace(/[^\w\s_]/g, ""); // replace everything other than numbers, string  and underscor to ''
+  const final = code.replace(/[^\w\s_]/g, ""); // replace everything other than numbers, string  and underscor to ''
   if (final.length > MAX_REFERRAL_CODE_LENGTH) {
     return ethers.constants.HashZero;
   }
