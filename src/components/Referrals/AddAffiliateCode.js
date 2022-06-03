@@ -48,8 +48,6 @@ export function AffiliateCodeForm({
   const debouncedReferralCode = useDebounce(referralCode, 300);
   const { account, chainId } = useWeb3React();
 
-  console.log(recentlyAddedCodes);
-
   useEffect(() => {
     inputRef.current.focus();
   }, []);
