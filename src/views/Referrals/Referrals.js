@@ -6,7 +6,13 @@ import SEO from "../../components/Common/SEO";
 import Tab from "../../components/Tab/Tab";
 import Loader from "../../components/Common/Loader";
 import Footer from "../../Footer";
-import { useChainId, getPageTitle, REFERRALS_SELECTED_TAB_KEY, useLocalStorageSerializeKey } from "../../Helpers";
+import {
+  useChainId,
+  getPageTitle,
+  REFERRALS_SELECTED_TAB_KEY,
+  useLocalStorageSerializeKey,
+  isHashZero,
+} from "../../Helpers";
 import {
   useReferralsData,
   registerReferralCode,
@@ -32,10 +38,9 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], [], {
     deserializer: deserializeSampleStats,
   });
-  const { userReferralCode, userReferralCodeString } = useUserReferralCode(library, chainId, account);
+  const { userReferralCode, userReferralCodeString } = useUserReferralCode(chainId, account);
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
-
   function handleCreateReferralCode(referralCode) {
     return registerReferralCode(chainId, referralCode, library, {
       sentMsg: "Referral code submitted!",
@@ -73,7 +78,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
 
   function renderTradersTab() {
     if (loading) return <Loader />;
-    if (!userReferralCodeString || !account) {
+    if (isHashZero(userReferralCode) || !account || !userReferralCode) {
       return (
         <JoinReferralCode
           connectWallet={connectWallet}
