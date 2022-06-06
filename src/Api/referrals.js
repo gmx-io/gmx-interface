@@ -364,7 +364,6 @@ export function useUserReferralCode(chainId, account) {
   useEffect(() => {
     async function getUserReferralCode() {
       if (account) {
-        console.log("called inside useEffect");
         const referralCode = await contract.traderReferralCodes(account);
         if (!isHashZero(referralCode)) {
           setUserReferralCode(referralCode);
