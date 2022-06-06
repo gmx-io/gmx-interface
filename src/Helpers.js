@@ -2665,8 +2665,8 @@ export function sleep(ms) {
 }
 
 export function getPageTitle(data) {
-  return `${data} | Decentralized
-  Perpetual Exchange | GMX`;
+  return `${data} | Open Source
+  Perpetual and Spot Exchange | GMX`;
 }
 
 export function isHashZero(value) {
