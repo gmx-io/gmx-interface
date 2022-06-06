@@ -173,7 +173,9 @@ export default function SwapBox(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
-  const { userReferralCode } = useUserReferralCode(chainId, account);
+  const { userReferralCodeForExchange: referralCode } = useUserReferralCode(chainId, account);
+
+  console.log({ referralCode });
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -1496,7 +1498,7 @@ export default function SwapBox(props) {
       isLong, // _isLong
       priceLimit, // _acceptablePrice
       minExecutionFee, // _executionFee
-      userReferralCode, // _referralCode
+      referralCode, // _referralCode
     ];
 
     let method = "createIncreasePosition";
@@ -1512,7 +1514,7 @@ export default function SwapBox(props) {
         isLong, // _isLong
         priceLimit, // _acceptablePrice
         minExecutionFee, // _executionFee
-        userReferralCode, // _referralCode
+        referralCode, // _referralCode
       ];
     }
 

@@ -351,7 +351,8 @@ export async function getReferralCodeOwner(chainId, referralCode) {
 }
 
 export function useUserReferralCode(chainId, account) {
-  const [userReferralCode, setUserReferralCode] = useState(ethers.constants.HashZero);
+  const [userReferralCode, setUserReferralCode] = useState(null);
+  const [userReferralCodeForExchange, setUserReferralCodeForExchange] = useState(ethers.constants.HashZero);
   const [userReferralCodeString, setUserReferralCodeString] = useState("");
   const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const contract = useMemo(() => {
@@ -367,21 +368,29 @@ export function useUserReferralCode(chainId, account) {
         if (!isHashZero(referralCode)) {
           setUserReferralCode(referralCode);
           setUserReferralCodeString(decodeReferralCode(referralCode));
+          setUserReferralCodeForExchange(ethers.constants.HashZero);
         } else if (userReferralCodeInLocalStorage && userReferralCodeInLocalStorage.startsWith("0x")) {
           const localstorageCodeOwner = await contract.codeOwners(userReferralCodeInLocalStorage);
           if (!isAddressZero(localstorageCodeOwner)) {
             setUserReferralCode(userReferralCodeInLocalStorage);
+            setUserReferralCodeForExchange(userReferralCodeInLocalStorage);
             setUserReferralCodeString(decodeReferralCode(userReferralCodeInLocalStorage));
           }
         }
       }
     }
     getUserReferralCode();
+    // return () => {
+    //   setUserReferralCode(null);
+    //   setUserReferralCodeForExchange(ethers.constants.HashZero);
+    //   setUserReferralCodeString("null");
+    // };
   }, [account, contract, userReferralCodeInLocalStorage]);
 
   return {
     userReferralCode,
     userReferralCodeString,
+    userReferralCodeForExchange,
   };
 }
 
