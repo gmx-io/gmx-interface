@@ -1,16 +1,1 @@
-<svg id="ic_eth_40" xmlns="http://www.w3.org/2000/svg" width="40" height="40.005" viewBox="0 0 40 40.005">
-  <rect id="Rectangle_179" data-name="Rectangle 179" width="40" height="40" transform="translate(0 0.005)" fill="none"/>
-  <path id="Path_1467" data-name="Path 1467" d="M39.4,24.842A20,20,0,1,1,24.836.6,20,20,0,0,1,39.4,24.842h0Z" transform="translate(0 -0.001)" fill="#fff"/>
-  <g id="Layer_x0020_1" transform="translate(11.429 6.047)">
-    <g id="_1421394342400">
-      <g id="Group_119" data-name="Group 119">
-        <path id="Path_1461" data-name="Path 1461" d="M383.687,0,383.5.636V19.095l.187.187,8.568-5.065Z" transform="translate(-375.119)" fill="#343434"/>
-        <path id="Path_1462" data-name="Path 1462" d="M8.568,0,0,14.217l8.568,5.065V0Z" fill="#8c8c8c"/>
-        <path id="Path_1463" data-name="Path 1463" d="M387.346,729.952l-.106.129v6.575l.106.308,8.573-12.074Z" transform="translate(-378.777 -709.048)" fill="#3c3c3b"/>
-        <path id="Path_1464" data-name="Path 1464" d="M8.568,736.964v-7.012L0,724.89Z" transform="translate(0 -709.048)" fill="#8c8c8c"/>
-        <path id="Path_1465" data-name="Path 1465" d="M392.07,481.289l8.568-5.065-8.568-3.895Z" transform="translate(-383.502 -462.008)" fill="#141414"/>
-        <path id="Path_1466" data-name="Path 1466" d="M0,476.225l8.568,5.065V472.33Z" transform="translate(0 -462.008)" fill="#393939"/>
-      </g>
-    </g>
-  </g>
-</svg>
+<svg height="40.005" viewBox="0 0 40 40.005" width="40" xmlns="http://www.w3.org/2000/svg"><path d="m0 .005h40v40h-40z" fill="none"/><path d="m39.4 24.842a20 20 0 1 1 -14.564-24.242 20 20 0 0 1 14.564 24.242z" fill="#fff" transform="translate(0 -.001)"/><g transform="translate(11.429 6.047)"><path d="m383.687 0-.187.636v18.459l.187.187 8.568-5.065z" fill="#343434" transform="translate(-375.119)"/><path d="m8.568 0-8.568 14.217 8.568 5.065z" fill="#8c8c8c"/><path d="m387.346 729.952-.106.129v6.575l.106.308 8.573-12.074z" fill="#3c3c3b" transform="translate(-378.777 -709.048)"/><path d="m8.568 736.964v-7.012l-8.568-5.062z" fill="#8c8c8c" transform="translate(0 -709.048)"/><path d="m392.07 481.289 8.568-5.065-8.568-3.895z" fill="#141414" transform="translate(-383.502 -462.008)"/><path d="m0 476.225 8.568 5.065v-8.96z" fill="#393939" transform="translate(0 -462.008)"/></g></svg>
