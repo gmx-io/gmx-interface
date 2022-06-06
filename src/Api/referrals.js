@@ -364,6 +364,7 @@ export function useUserReferralCode(chainId, account) {
   useEffect(() => {
     async function getUserReferralCode() {
       if (account) {
+        console.log("called inside useEffect");
         const referralCode = await contract.traderReferralCodes(account);
         if (!isHashZero(referralCode)) {
           setUserReferralCode(referralCode);
@@ -380,11 +381,6 @@ export function useUserReferralCode(chainId, account) {
       }
     }
     getUserReferralCode();
-    // return () => {
-    //   setUserReferralCode(null);
-    //   setUserReferralCodeForExchange(ethers.constants.HashZero);
-    //   setUserReferralCodeString("null");
-    // };
   }, [account, contract, userReferralCodeInLocalStorage]);
 
   return {

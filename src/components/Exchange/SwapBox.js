@@ -175,8 +175,6 @@ export default function SwapBox(props) {
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
   const { userReferralCodeForExchange: referralCode } = useUserReferralCode(chainId, account);
 
-  console.log({ referralCode });
-
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
