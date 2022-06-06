@@ -68,11 +68,12 @@ export const tierDiscountInfo = {
 
 export function deserializeSampleStats(input) {
   const parsedData = JSON.parse(input);
+  if (!Array.isArray(parsedData)) return [];
   return parsedData.map((data) => {
     return Object.keys(data).reduce((acc, cv) => {
       const currentValue = data[cv];
       if (currentValue?.type === "BigNumber") {
-        acc[cv] = bigNumberify(currentValue.hex);
+        acc[cv] = bigNumberify(currentValue.hex || 0);
       } else {
         acc[cv] = currentValue;
       }

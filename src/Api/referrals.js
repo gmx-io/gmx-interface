@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { gql } from "@apollo/client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import useSWR from "swr";
 
 import ReferralStorage from "../abis/ReferralStorage.json";
@@ -8,13 +8,13 @@ import {
   ARBITRUM,
   AVALANCHE,
   MAX_REFERRAL_CODE_LENGTH,
-  REFERRAL_CODE_KEY,
   bigNumberify,
   isAddressZero,
   helperToast,
   getProvider,
   fetcher,
   isHashZero,
+  REFERRAL_CODE_KEY,
 } from "../Helpers";
 import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "./common";
 import { getContract } from "../Addresses";
@@ -319,8 +319,8 @@ export function useReferralsData(chainId, account) {
 }
 
 export async function registerReferralCode(chainId, referralCode, library, opts) {
-  const referralCodeHex = encodeReferralCode(referralCode);
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const referralCodeHex = encodeReferralCode(referralCode);
   const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
   return callContract(chainId, contract, "registerCode", [referralCodeHex], opts);
 }
@@ -342,29 +342,46 @@ export async function getReferralCodeOwner(chainId, referralCode) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const provider = getProvider(null, chainId);
   const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, provider);
-  const codeOwner = await contract.codeOwners(referralCode);
-  return codeOwner;
+  try {
+    const codeOwner = await contract.codeOwners(referralCode);
+    return codeOwner;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-export function useUserReferralCode(library, chainId, account) {
-  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+export function useUserReferralCode(chainId, account) {
+  const [userReferralCode, setUserReferralCode] = useState(ethers.constants.HashZero);
+  const [userReferralCodeString, setUserReferralCodeString] = useState("");
+  const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
+  const contract = useMemo(() => {
+    const referralStorageAddress = getContract(chainId, "ReferralStorage");
+    const provider = getProvider(null, chainId);
+    return new ethers.Contract(referralStorageAddress, ReferralStorage.abi, provider);
+  }, [chainId]);
 
-  let { data: userReferralCode, mutate: mutateUserReferralCode } = useSWR(
-    account && [`ReferralStorage:traderReferralCodes`, chainId, referralStorageAddress, "traderReferralCodes", account],
-    {
-      fetcher: fetcher(library, ReferralStorage),
+  useEffect(() => {
+    async function getUserReferralCode() {
+      if (account) {
+        const referralCode = await contract.traderReferralCodes(account);
+        if (!isHashZero(referralCode)) {
+          setUserReferralCode(referralCode);
+          setUserReferralCodeString(decodeReferralCode(referralCode));
+        } else if (userReferralCodeInLocalStorage && userReferralCodeInLocalStorage.startsWith("0x")) {
+          const localstorageCodeOwner = await contract.codeOwners(userReferralCodeInLocalStorage);
+          if (!isAddressZero(localstorageCodeOwner)) {
+            setUserReferralCode(userReferralCodeInLocalStorage);
+            setUserReferralCodeString(decodeReferralCode(userReferralCodeInLocalStorage));
+          }
+        }
+      }
     }
-  );
-
-  let userReferralCodeString;
-  if (userReferralCode && !isHashZero(userReferralCode)) {
-    userReferralCodeString = decodeReferralCode(userReferralCode);
-  }
+    getUserReferralCode();
+  }, [account, contract, userReferralCodeInLocalStorage]);
 
   return {
     userReferralCode,
     userReferralCodeString,
-    mutateUserReferralCode,
   };
 }
 
