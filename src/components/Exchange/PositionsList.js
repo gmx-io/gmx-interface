@@ -48,7 +48,7 @@ const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
     })
     .map((order) => {
       if (order.type === DECREASE && order.sizeDelta.gt(position.size)) {
-        order.error = "Order size is bigger than position, will be executable otherwise";
+        order.error = "Order size is bigger than position, will be executable when position increases";
       }
       return order;
     });
