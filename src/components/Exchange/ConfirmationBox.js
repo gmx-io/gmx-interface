@@ -33,9 +33,9 @@ const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
 function getSpread(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
   if (fromTokenInfo && fromTokenInfo.maxPrice && toTokenInfo && toTokenInfo.minPrice) {
-    const fromDiff = fromTokenInfo.maxPrice.sub(fromTokenInfo.minPrice);
+    const fromDiff = fromTokenInfo.maxPrice.sub(fromTokenInfo.minPrice).div(2);
     const fromSpread = fromDiff.mul(PRECISION).div(fromTokenInfo.maxPrice);
-    const toDiff = toTokenInfo.maxPrice.sub(toTokenInfo.minPrice);
+    const toDiff = toTokenInfo.maxPrice.sub(toTokenInfo.minPrice).div(2);
     const toSpread = toDiff.mul(PRECISION).div(toTokenInfo.maxPrice);
 
     let value = fromSpread.add(toSpread);
