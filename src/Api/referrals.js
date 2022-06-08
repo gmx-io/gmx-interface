@@ -2,7 +2,6 @@ import { ethers } from "ethers";
 import { gql } from "@apollo/client";
 import { useState, useEffect, useMemo } from "react";
 import useSWR from "swr";
-
 import ReferralStorage from "../abis/ReferralStorage.json";
 import {
   ARBITRUM,
@@ -20,6 +19,7 @@ import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "./c
 import { getContract } from "../Addresses";
 import { callContract } from ".";
 const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
+const REGEX_VERIFY_BYTES32 = new RegExp(/0x[0-9a-f]{64}/);
 
 function getGraphClient(chainId) {
   if (chainId === ARBITRUM) {
@@ -47,12 +47,11 @@ export function decodeReferralCode(hexCode) {
 }
 
 export function encodeReferralCode(code) {
-  const final = code.replace(/[^\w\s_]/g, ""); // replace everything other than numbers, string  and underscor to ''
-  if (final.length > MAX_REFERRAL_CODE_LENGTH) {
+  if (code.length > MAX_REFERRAL_CODE_LENGTH) {
     return ethers.constants.HashZero;
   }
 
-  return ethers.utils.formatBytes32String(final);
+  return ethers.utils.formatBytes32String(code);
 }
 
 async function getCodeOwnersData(network, account, codes = []) {
@@ -351,6 +350,7 @@ export async function getReferralCodeOwner(chainId, referralCode) {
 }
 
 export function useUserReferralCode(library, chainId, account) {
+  console.log(REGEX_VERIFY_BYTES32.test("0x416c676f64000000000000000000"), "third");
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
 
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
@@ -359,7 +359,14 @@ export function useUserReferralCode(library, chainId, account) {
     { fetcher: fetcher(library, ReferralStorage) }
   );
   const { data: localStorageCodeOwner } = useSWR(
-    localStorageCode && ["ReferralStorage", chainId, referralStorageAddress, "codeOwners", localStorageCode],
+    localStorageCode &&
+      REGEX_VERIFY_BYTES32.test(localStorageCode) && [
+        "ReferralStorage",
+        chainId,
+        referralStorageAddress,
+        "codeOwners",
+        localStorageCode,
+      ],
     { fetcher: fetcher(library, ReferralStorage) }
   );
   const [userReferralCodeForExchange, userReferralCode, userReferralCodeString] = useMemo(() => {
