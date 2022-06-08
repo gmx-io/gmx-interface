@@ -1,9 +1,1 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg width="15.704" height="9.856" viewBox="0 0 15.704 9.856" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <style>.a{fill:#bfabe2;}</style>
-  </defs>
-  <g transform="translate(15.704 9.856) rotate(180)">
-    <path class="a" d="M0,0V5.67L2.113,3.56,7.439,8.88l2.924-2.921,3.9,3.9L15.7,8.408,10.363,3.067,7.439,5.991,3.557,2.109,5.67,0Z" style="fill: rgb(255, 255, 255);"/>
-  </g>
-</svg>
+<svg height="9.856" viewBox="0 0 15.704 9.856" width="15.704" xmlns="http://www.w3.org/2000/svg"><path d="m0 0v5.67l2.113-2.11 5.326 5.32 2.924-2.921 3.9 3.9 1.437-1.451-5.337-5.341-2.924 2.924-3.882-3.882 2.113-2.109z" fill="#fff" transform="matrix(-1 0 0 -1 15.704 9.856)"/></svg>
