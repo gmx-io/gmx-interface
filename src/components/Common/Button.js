@@ -1,4 +1,5 @@
 import cx from "classnames";
+import { Link } from "react-router-dom";
 import "./Button.css";
 
 function Button({ href, imgSrc, children, onClick, className, size = "lg", align = "center", ...rest }) {
@@ -35,6 +36,31 @@ export function ConnectWalletButton({ imgSrc, children, onClick, className }) {
       <span className="btn-label">{children}</span>
     </button>
   );
+}
+export function TransparentButton({ to, children, onClick, className, href }) {
+  let classNames = cx("btn btn-primary btn-lg", className);
+  function renderButton() {
+    if (to) {
+      return (
+        <Link to={to} className={classNames} onClick={onClick}>
+          <span className="btn-label-without-icon">{children}</span>
+        </Link>
+      );
+    } else if (href) {
+      return (
+        <a href={href} className={classNames} target="_blank" rel="noopener noreferrer">
+          <span className="btn-label-without-icon">{children}</span>
+        </a>
+      );
+    } else {
+      return (
+        <button className={classNames} onClick={onClick}>
+          <span className="btn-label-without-icon">{children}</span>
+        </button>
+      );
+    }
+  }
+  return renderButton();
 }
 
 export default Button;

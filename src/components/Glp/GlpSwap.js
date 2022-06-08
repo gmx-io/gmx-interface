@@ -65,6 +65,7 @@ import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
 import AssetDropdown from "../../views/Dashboard/AssetDropdown";
+import { TransparentButton } from "../Common/Button";
 
 const { AddressZero } = ethers.constants;
 
@@ -1121,12 +1122,12 @@ export default function GlpSwap(props) {
                   </td>
                   <td>{renderFees()}</td>
                   <td>
-                    <button
-                      className={cx("default-btn action-btn", isBuying ? "buying" : "selling")}
+                    <TransparentButton
+                      className={cx("action-btn", isBuying ? "buying" : "selling")}
                       onClick={() => selectToken(token)}
                     >
                       {isBuying ? "Buy with " + token.symbol : "Sell for " + token.symbol}
-                    </button>
+                    </TransparentButton>
                   </td>
                 </tr>
               );
@@ -1283,14 +1284,10 @@ export default function GlpSwap(props) {
                   <div className="App-card-divider"></div>
                   <div className="App-card-options">
                     {isBuying && (
-                      <button className="default-btn" onClick={() => selectToken(token)}>
-                        Buy with {token.symbol}
-                      </button>
+                      <TransparentButton onClick={() => selectToken(token)}>Buy with {token.symbol}</TransparentButton>
                     )}
                     {!isBuying && (
-                      <button className="default-btn" onClick={() => selectToken(token)}>
-                        Sell for {token.symbol}
-                      </button>
+                      <TransparentButton onClick={() => selectToken(token)}>Sell for {token.symbol}</TransparentButton>
                     )}
                   </div>
                 </div>

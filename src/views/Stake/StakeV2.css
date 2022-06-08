@@ -64,10 +64,17 @@
   padding: 2rem;
   padding-top: 1rem;
 }
-
+.btn-group {
+  padding: unset;
+  margin: -0.4rem;
+}
 .btn-group > a,
 button:not(:last-child) {
   margin-right: 10px;
+}
+.btn-group > a,
+button {
+  margin-bottom: 0.4rem;
 }
 
 @media (max-width: 900px) {
