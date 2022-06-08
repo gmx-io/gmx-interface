@@ -9,6 +9,7 @@ import { ARBITRUM, AVALANCHE, switchNetwork, useChainId } from "../../Helpers";
 import { useWeb3React } from "@web3-react/core";
 
 import APRLabel from "../APRLabel/APRLabel";
+import { TransparentButton } from "../Common/Button";
 
 export default function TokenCard() {
   const { chainId } = useChainId();
@@ -46,21 +47,16 @@ export default function TokenCard() {
           </div>
           <div className="Home-token-card-option-action">
             <div className="buy">
-              <Link to="/buy_gmx" className="default-btn" onClick={() => changeNetwork(ARBITRUM)}>
+              <TransparentButton to="/buy_gmx" onClick={() => changeNetwork(ARBITRUM)}>
                 Buy on Arbitrum
-              </Link>
-              <Link to="/buy_gmx" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>
+              </TransparentButton>
+              <TransparentButton to="/buy_gmx" onClick={() => changeNetwork(AVALANCHE)}>
                 Buy on Avalanche
-              </Link>
+              </TransparentButton>
             </div>
-            <a
-              href="https://gmxio.gitbook.io/gmx/tokenomics"
-              target="_blank"
-              rel="noreferrer"
-              className="default-btn read-more"
-            >
+            <TransparentButton href="https://gmxio.gitbook.io/gmx/tokenomics" className="read-more">
               Read more
-            </a>
+            </TransparentButton>
           </div>
         </div>
       </div>
@@ -78,21 +74,16 @@ export default function TokenCard() {
           </div>
           <div className="Home-token-card-option-action">
             <div className="buy">
-              <Link to="/buy_glp" className="default-btn" onClick={() => changeNetwork(ARBITRUM)}>
+              <TransparentButton to="/buy_glp" onClick={() => changeNetwork(ARBITRUM)}>
                 Buy on Arbitrum
-              </Link>
-              <Link to="/buy_glp" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>
+              </TransparentButton>
+              <TransparentButton to="/buy_glp" onClick={() => changeNetwork(AVALANCHE)}>
                 Buy on Avalanche
-              </Link>
+              </TransparentButton>
             </div>
-            <a
-              href="https://gmxio.gitbook.io/gmx/glp"
-              target="_blank"
-              rel="noreferrer"
-              className="default-btn read-more"
-            >
+            <TransparentButton href="https://gmxio.gitbook.io/gmx/glp" className="read-more">
               Read more
-            </a>
+            </TransparentButton>
           </div>
         </div>
       </div>

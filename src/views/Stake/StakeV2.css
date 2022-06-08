@@ -68,12 +68,16 @@
   padding: unset;
   margin: -0.4rem;
 }
-.btn-group > a,
-button:not(:last-child) {
+.btn-group > a:not(:last-child) {
   margin-right: 10px;
 }
-.btn-group > a,
-button {
+.btn-group > button:not(:last-child) {
+  margin-right: 10px;
+}
+.btn-group > a {
+  margin-bottom: 0.4rem;
+}
+.btn-group > button {
   margin-bottom: 0.4rem;
 }
 
