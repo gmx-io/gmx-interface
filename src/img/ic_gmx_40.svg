@@ -1,10 +1,1 @@
-<svg id="ic_gmx_40" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40" viewBox="0 0 40 40">
-  <defs>
-    <linearGradient id="linear-gradient" x1="0.5" x2="0" y2="1" gradientUnits="objectBoundingBox">
-      <stop offset="0" stop-color="#03d1cf" stop-opacity="0.988"/>
-      <stop offset="1" stop-color="#4e09f8"/>
-    </linearGradient>
-  </defs>
-  <rect id="Base_ic" width="40" height="40" fill="none"/>
-  <path id="Path_1450" data-name="Path 1450" d="M565.51,724.971,545.619,696l-19.952,28.971h27.8l-7.845-11.057-3.892,5.745h-4.139l8.03-11.551,11.613,16.864Z" transform="translate(-525.666 -690.486)" fill="url(#linear-gradient)"/>
-</svg>
+<svg height="40" viewBox="0 0 40 40" width="40" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><linearGradient id="a" gradientUnits="objectBoundingBox" x1=".5" x2="0" y2="1"><stop offset="0" stop-color="#03d1cf" stop-opacity=".988"/><stop offset="1" stop-color="#4e09f8"/></linearGradient><path d="m0 0h40v40h-40z" fill="none"/><path d="m565.51 724.971-19.891-28.971-19.952 28.971h27.8l-7.845-11.057-3.892 5.745h-4.139l8.03-11.551 11.613 16.864z" fill="url(#a)" transform="translate(-525.666 -690.486)"/></svg>

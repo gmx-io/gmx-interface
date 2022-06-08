@@ -1,12 +1,1 @@
-<svg id="ic_link_24" xmlns="http://www.w3.org/2000/svg" width="24" height="24.003" viewBox="0 0 24 24.003">
-  <rect id="Rectangle_179" data-name="Rectangle 179" width="23.341" height="23.341" transform="translate(0.33 0.329)" fill="none"/>
-  <path id="Path_1467" data-name="Path 1467" d="M23.641,14.905A12,12,0,1,1,14.9.36a12,12,0,0,1,8.739,14.545h0Z" transform="translate(0 -0.001)" fill="#2a5ada"/>
-  <g id="ic_link" transform="translate(5 4.605)">
-    <rect id="Rectangle_182" data-name="Rectangle 182" width="14" height="14" transform="translate(0 0.394)" fill="none"/>
-    <g id="Layer_2" data-name="Layer 2" transform="translate(0.586)">
-      <g id="Layer_1" data-name="Layer 1">
-        <path id="Path_1469" data-name="Path 1469" d="M6.414,0,5.056.781l-3.7,2.138L0,3.7v7.4l1.357.781L5.09,14.015l1.357.781,1.357-.781,3.665-2.138,1.357-.781V3.7L11.47,2.918,7.771.781Zm-3.7,9.536V5.26l3.7-2.138,3.7,2.138V9.536l-3.7,2.138Z" fill="#fff"/>
-      </g>
-    </g>
-  </g>
-</svg>
+<svg height="24.003" viewBox="0 0 24 24.003" width="24" xmlns="http://www.w3.org/2000/svg"><path d="m.33.329h23.341v23.341h-23.341z" fill="none"/><path d="m23.641 14.905a12 12 0 1 1 -8.741-14.545 12 12 0 0 1 8.739 14.545z" fill="#2a5ada" transform="translate(0 -.001)"/><path d="m5 4.999h14v14h-14z" fill="none"/><path d="m6.414 0-1.358.781-3.7 2.138-1.356.781v7.4l1.357.781 3.733 2.134 1.357.781 1.357-.781 3.665-2.138 1.357-.781v-7.396l-1.356-.782-3.699-2.137zm-3.7 9.536v-4.276l3.7-2.138 3.7 2.138v4.276l-3.7 2.138z" fill="#fff" transform="translate(5.586 4.605)"/></svg>
