@@ -350,37 +350,26 @@ export async function getReferralCodeOwner(chainId, referralCode) {
   }
 }
 
-export function useUserReferralCode(chainId, account) {
-  const [userReferralCode, setUserReferralCode] = useState(null);
-  const [userReferralCodeForExchange, setUserReferralCodeForExchange] = useState(ethers.constants.HashZero);
-  const [userReferralCodeString, setUserReferralCodeString] = useState("");
-  const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
-  const contract = useMemo(() => {
-    const referralStorageAddress = getContract(chainId, "ReferralStorage");
-    const provider = getProvider(null, chainId);
-    return new ethers.Contract(referralStorageAddress, ReferralStorage.abi, provider);
-  }, [chainId]);
+export function useUserReferralCode(library, chainId, account) {
+  const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
 
-  useEffect(() => {
-    async function getUserReferralCode() {
-      if (account) {
-        const referralCode = await contract.traderReferralCodes(account);
-        if (!isHashZero(referralCode)) {
-          setUserReferralCode(referralCode);
-          setUserReferralCodeString(decodeReferralCode(referralCode));
-          setUserReferralCodeForExchange(ethers.constants.HashZero);
-        } else if (userReferralCodeInLocalStorage && userReferralCodeInLocalStorage.startsWith("0x")) {
-          const localstorageCodeOwner = await contract.codeOwners(userReferralCodeInLocalStorage);
-          if (!isAddressZero(localstorageCodeOwner)) {
-            setUserReferralCode(userReferralCodeInLocalStorage);
-            setUserReferralCodeForExchange(userReferralCodeInLocalStorage);
-            setUserReferralCodeString(decodeReferralCode(userReferralCodeInLocalStorage));
-          }
-        }
-      }
+  const referralStorageAddress = getContract(chainId, "ReferralStorage");
+  const { data: onChainCode } = useSWR(
+    account && ["ReferralStorage", chainId, referralStorageAddress, "traderReferralCodes", account],
+    { fetcher: fetcher(library, ReferralStorage) }
+  );
+  const { data: localStorageCodeOwner } = useSWR(
+    localStorageCode && ["ReferralStorage", chainId, referralStorageAddress, "codeOwners", localStorageCode],
+    { fetcher: fetcher(library, ReferralStorage) }
+  );
+  const [userReferralCodeForExchange, userReferralCode, userReferralCodeString] = useMemo(() => {
+    if (onChainCode && !isHashZero(onChainCode)) {
+      return [ethers.utils.AddressZero, onChainCode, decodeReferralCode(onChainCode)];
+    } else if (localStorageCodeOwner && !isAddressZero(localStorageCodeOwner)) {
+      return [localStorageCode, localStorageCode, decodeReferralCode(localStorageCode)];
     }
-    getUserReferralCode();
-  }, [account, contract, userReferralCodeInLocalStorage]);
+    return [ethers.utils.AddressZero];
+  }, [localStorageCode, localStorageCodeOwner, onChainCode]);
 
   return {
     userReferralCode,
