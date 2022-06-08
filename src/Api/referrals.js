@@ -7,11 +7,13 @@ import {
   ARBITRUM,
   AVALANCHE,
   MAX_REFERRAL_CODE_LENGTH,
+  REFERRAL_CODE_KEY,
   bigNumberify,
   isAddressZero,
   helperToast,
   getProvider,
   fetcher,
+  isHashZero,
 } from "../Helpers";
 import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "./common";
 import { getContract } from "../Addresses";
@@ -347,15 +349,22 @@ export async function getReferralCodeOwner(chainId, referralCode) {
 export function useUserReferralCode(library, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
 
-  const { data: userReferralCode, mutate: mutateUserReferralCode } = useSWR(
+  let { data: userReferralCode, mutate: mutateUserReferralCode } = useSWR(
     account && [`ReferralStorage:traderReferralCodes`, chainId, referralStorageAddress, "traderReferralCodes", account],
     {
       fetcher: fetcher(library, ReferralStorage),
     }
   );
 
-  const userReferralCodeString =
-    userReferralCode && !isAddressZero(userReferralCode) && decodeReferralCode(userReferralCode);
+  const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
+  if (isHashZero(userReferralCode) && userReferralCodeInLocalStorage) {
+    userReferralCode = userReferralCodeInLocalStorage;
+  }
+
+  let userReferralCodeString;
+  if (userReferralCode && !isHashZero(userReferralCode)) {
+    userReferralCodeString = decodeReferralCode(userReferralCode);
+  }
 
   return {
     userReferralCode,
