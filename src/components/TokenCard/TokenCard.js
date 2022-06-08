@@ -1,6 +1,4 @@
 import React, { useCallback } from "react";
-import { Link } from "react-router-dom";
-
 import gmxBigIcon from "../../img/ic_gmx_custom.svg";
 import glpBigIcon from "../../img/ic_glp_custom.svg";
 
