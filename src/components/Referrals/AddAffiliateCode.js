@@ -47,7 +47,6 @@ export function AffiliateCodeForm({
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
   const debouncedReferralCode = useDebounce(referralCode, 300);
   const { account, chainId } = useWeb3React();
-
   useEffect(() => {
     inputRef.current.focus();
   }, []);

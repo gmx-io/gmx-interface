@@ -108,14 +108,13 @@ export function getUSDValue(value, decimals = 2) {
 }
 
 export function getCodeError(value) {
-  const trimmedValue = value.trim();
-  if (!trimmedValue) return "";
+  if (!value) return "";
 
-  if (trimmedValue.length > MAX_REFERRAL_CODE_LENGTH) {
+  if (value.length > MAX_REFERRAL_CODE_LENGTH) {
     return `The referral code can't be more than ${MAX_REFERRAL_CODE_LENGTH} characters.`;
   }
 
-  if (!REFERRAL_CODE_REGEX.test(trimmedValue)) {
+  if (!REFERRAL_CODE_REGEX.test(value)) {
     return "Only letters, numbers and underscores are allowed.";
   }
   return "";
