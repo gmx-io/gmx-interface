@@ -370,7 +370,7 @@ export default function SwapBox(props) {
     );
   };
 
-  const hasMaxAvailableShort = isShort && toTokenInfo.maxAvailableShort && toTokenInfo.maxAvailableShort.gt(0);
+  const hasMaxAvailableShort = isShort && toTokenInfo.hasMaxAvailableShort;
 
   const fromBalance = fromTokenInfo ? fromTokenInfo.balance : bigNumberify(0);
   const toBalance = toTokenInfo ? toTokenInfo.balance : bigNumberify(0);
