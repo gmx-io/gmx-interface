@@ -2052,9 +2052,9 @@ export function approveTokens({
           </div>
         );
       } else if (e.message?.includes("User denied transaction signature")) {
-        failMsg = "Approval was cancelled.";
+        failMsg = "Approval was cancelled";
       } else {
-        failMsg = "Approval failed.";
+        failMsg = "Approval failed";
       }
       helperToast.error(failMsg);
     })
