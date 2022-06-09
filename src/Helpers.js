@@ -2323,7 +2323,9 @@ export function getInfoTokens(
       token.contractMaxPrice = token.maxPrice;
 
       token.maxAvailableShort = bigNumberify(0);
+      token.hasMaxAvailableShort = false;
       if (token.maxGlobalShortSize.gt(0)) {
+        token.hasMaxAvailableShort = true;
         if (token.maxGlobalShortSize.gt(token.globalShortSize)) {
           token.maxAvailableShort = token.maxGlobalShortSize.sub(token.globalShortSize);
         }
@@ -2338,7 +2340,10 @@ export function getInfoTokens(
         : token.availableAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals));
 
       token.maxAvailableLong = bigNumberify(0);
+      token.hasMaxAvailableLong = false;
       if (token.maxGlobalLongSize.gt(0)) {
+        token.hasMaxAvailableLong = true;
+
         if (token.maxGlobalLongSize.gt(token.guaranteedUsd)) {
           const remainingLongSize = token.maxGlobalLongSize.sub(token.guaranteedUsd);
           token.maxAvailableLong = remainingLongSize.lt(token.availableUsd) ? remainingLongSize : token.availableUsd;
