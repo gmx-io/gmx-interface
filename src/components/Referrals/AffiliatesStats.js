@@ -21,6 +21,7 @@ import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import { getTierIdDisplay, getUSDValue, isRecentReferralCodeNotExpired, tierRebateInfo } from "./referralsHelper";
 import { AffiliateCodeForm } from "./AddAffiliateCode";
+import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
 function AffiliatesStats({
   referralsData,
@@ -100,6 +101,7 @@ function AffiliatesStats({
                   {referrerTierInfo && `Tier ${getTierIdDisplay(tierId)} (${tierRebateInfo[tierId]}% rebate)`}
                 </span>
               </p>
+
               <button className="transparent-btn" onClick={open}>
                 <FiPlus /> <span className="ml-small">Create</span>
               </button>
@@ -147,7 +149,7 @@ function AffiliatesStats({
                           </div>
                           {ownerOnOtherChain && !ownerOnOtherChain?.isTaken && (
                             <div className="info">
-                              <Tooltip
+                              <TooltipWithPortal
                                 position="right"
                                 handle={<IoWarningOutline color="#ffba0e" size={16} />}
                                 renderContent={() => (
@@ -166,7 +168,7 @@ function AffiliatesStats({
                           )}
                           {ownerOnOtherChain && ownerOnOtherChain?.isTaken && !ownerOnOtherChain?.isTakenByCurrentUser && (
                             <div className="info">
-                              <Tooltip
+                              <TooltipWithPortal
                                 position="right"
                                 handle={<BiErrorCircle color="#e82e56" size={16} />}
                                 renderContent={() => (
