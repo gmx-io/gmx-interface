@@ -803,13 +803,22 @@ a.App-cta.option {
 a.App-button-option,
 button.App-button-option {
   cursor: pointer;
-  display: inline-block;
-  padding: 0.4rem 0.7rem;
-  border-radius: 3px;
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  font-family: Relative;
+  font-weight: normal;
+  letter-spacing: 0px;
   color: white;
+  padding-left: 16px;
+  padding-right: 16px;
   text-decoration: none;
+  box-sizing: border-box;
+  position: relative;
+  min-height: 36px;
+  display: inline-flex !important;
+  align-items: center;
   border: none;
-  font-size: 1rem;
   background: rgba(43, 55, 94, 1);
 }
 
