@@ -194,9 +194,9 @@ export default function OrdersList(props) {
       if (order.type === DECREASE) {
         const positionForOrder = getPositionForOrder(account, order, positionsMap);
         if (!positionForOrder) {
-          error = "No open position, order cannot be executed";
+          error = "No open position, order cannot be executed unless opening a position";
         } else if (positionForOrder.size.lt(order.sizeDelta)) {
-          error = "Order size exceeds position size, order cannot be executed";
+          error = "Order size is bigger than position, will be executable when position increases";
         }
       }
 
@@ -309,9 +309,9 @@ export default function OrdersList(props) {
       if (order.type === DECREASE) {
         const positionForOrder = getPositionForOrder(account, order, positionsMap);
         if (!positionForOrder) {
-          error = "There is no open position for the order, it can't be executed";
+          error = "No open position, order cannot be executed unless opening a position";
         } else if (positionForOrder.size.lt(order.sizeDelta)) {
-          error = "The order size is bigger than position, it can't be executed";
+          error = "Order size is bigger than position, will be executed when position increase";
         }
       }
 

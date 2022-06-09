@@ -143,7 +143,7 @@ export default function Presale() {
       })
       .catch((e) => {
         console.error(e);
-        helperToast.error("Approval failed.");
+        helperToast.error("Approval failed");
       })
       .finally(() => {
         setIsApproving(false);
@@ -168,7 +168,7 @@ export default function Presale() {
       })
       .catch((e) => {
         console.error(e);
-        helperToast.error("Buy failed.");
+        helperToast.error("Buy failed");
       })
       .finally(() => {});
   };
