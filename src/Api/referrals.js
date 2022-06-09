@@ -350,7 +350,6 @@ export async function getReferralCodeOwner(chainId, referralCode) {
 }
 
 export function useUserReferralCode(library, chainId, account) {
-  console.log(REGEX_VERIFY_BYTES32.test("0x416c676f64000000000000000000"), "third");
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
 
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
