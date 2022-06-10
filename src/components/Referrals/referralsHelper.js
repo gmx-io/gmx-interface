@@ -10,6 +10,7 @@ import {
 import { encodeReferralCode, getReferralCodeOwner } from "../../Api/referrals";
 
 export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
+export const REGEX_VERIFY_BYTES32 = new RegExp(/0x[0-9a-f]{64}/);
 
 export function isRecentReferralCodeNotExpired(referralCodeInfo) {
   const REFERRAL_DATA_MAX_TIME = 60000 * 5; // 5 minutes
