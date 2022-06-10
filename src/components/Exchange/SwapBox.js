@@ -59,6 +59,7 @@ import {
   calculatePositionDelta,
   replaceNativeTokenAddress,
   adjustForDecimals,
+  REFERRAL_CODE_KEY,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import * as Api from "../../Api";
@@ -81,6 +82,7 @@ import longImg from "../../img/long.svg";
 import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
 import { useUserReferralCode } from "../../Api/referrals";
+import { REGEX_VERIFY_BYTES32 } from "../Referrals/referralsHelper";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -173,7 +175,8 @@ export default function SwapBox(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
-  const { userReferralCodeForExchange: referralCode } = useUserReferralCode(library, chainId, account);
+  const { isCodeAttached } = useUserReferralCode(library, chainId, account);
+  const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -1435,6 +1438,11 @@ export default function SwapBox(props) {
         setIsPendingConfirmation(false);
       });
   };
+
+  let referralCode = ethers.constants.HashZero;
+  if (!isCodeAttached && userReferralCodeInLocalStorage && REGEX_VERIFY_BYTES32.test(userReferralCodeInLocalStorage)) {
+    referralCode = userReferralCodeInLocalStorage;
+  }
 
   const increasePosition = async () => {
     setIsSubmitting(true);

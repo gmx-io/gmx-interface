@@ -18,8 +18,8 @@ import {
 import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "./common";
 import { getContract } from "../Addresses";
 import { callContract } from ".";
+import { REGEX_VERIFY_BYTES32 } from "../components/Referrals/referralsHelper";
 const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
-const REGEX_VERIFY_BYTES32 = new RegExp(/0x[0-9a-f]{64}/);
 
 function getGraphClient(chainId) {
   if (chainId === ARBITRUM) {
@@ -47,26 +47,26 @@ export function decodeReferralCode(hexCode) {
 }
 
 export function encodeReferralCode(code) {
-  if (code.length > MAX_REFERRAL_CODE_LENGTH) {
+  let final = code.replace(/[^\w_]/g, ""); // replace everything other than numbers, string  and underscor to ''
+  if (final.length > MAX_REFERRAL_CODE_LENGTH) {
     return ethers.constants.HashZero;
   }
 
-  return ethers.utils.formatBytes32String(code);
+  return ethers.utils.formatBytes32String(final);
 }
 
 async function getCodeOwnersData(network, account, codes = []) {
   if (codes.length === 0 || !account || !network) {
     return undefined;
   }
-  const query = gql(
-    `query allCodes($codes: [String!]!){
-      referralCodes(where: {code_in: $codes}) {
+  const query = gql`
+    query allCodes($codes: [String!]!) {
+      referralCodes(where: { code_in: $codes }) {
         owner
         id
       }
-    }`
-  );
-
+    }
+  `;
   return getGraphClient(network)
     .query({ query, variables: { codes } })
     .then(({ data }) => {
@@ -90,18 +90,13 @@ async function getCodeOwnersData(network, account, codes = []) {
 
 export function useUserCodesOnAllChain(account) {
   const [data, setData] = useState(null);
-  const query = gql(
-    `query referralCodesOnAllChain($account: String!) {
-      referralCodes (
-      first: 1000,
-      where: {
-        owner: $account
-      }) {
-      code
+  const query = gql`
+    query referralCodesOnAllChain($account: String!) {
+      referralCodes(first: 1000, where: { owner: $account }) {
+        code
       }
-    }`
-  );
-
+    }
+  `;
   useEffect(() => {
     async function main() {
       const [arbitrumCodes, avalancheCodes] = await Promise.all(
@@ -147,16 +142,13 @@ export function useReferralsData(chainId, account) {
       return;
     }
     const startOfDayTimestamp = Math.floor(parseInt(Date.now() / 1000) / 86400) * 86400;
-    const query = gql(
-      `query referralData($typeIds: [String!]!, $account: String!, $timestamp: Int!) {
+    const query = gql`
+      query referralData($typeIds: [String!]!, $account: String!, $timestamp: Int!, $referralTotalStatsId: String!) {
         distributions(
-          first: 1000,
-          orderBy: timestamp,
-          orderDirection: desc,
-          where: {
-            receiver: $account,
-            typeId_in: $typeIds
-          }
+          first: 1000
+          orderBy: timestamp
+          orderDirection: desc
+          where: { receiver: $account, typeId_in: $typeIds }
         ) {
           receiver
           amount
@@ -169,47 +161,33 @@ export function useReferralsData(chainId, account) {
           first: 1000
           orderBy: volume
           orderDirection: desc
-          where: {
-            period: total
-            referrer: $account
-          }
+          where: { period: total, referrer: $account }
         ) {
-          referralCode,
-          volume,
-          trades,
-          tradedReferralsCount,
-          registeredReferralsCount,
-          totalRebateUsd,
+          referralCode
+          volume
+          trades
+          tradedReferralsCount
+          registeredReferralsCount
+          totalRebateUsd
           discountUsd
         }
         referrerLastDayStats: referrerStats(
           first: 1000
-          where: {
-            period: daily
-            referrer: $account
-            timestamp: $timestamp
-          }
+          where: { period: daily, referrer: $account, timestamp: $timestamp }
         ) {
-          referralCode,
-          volume,
-          trades,
-          tradedReferralsCount,
-          registeredReferralsCount,
-          totalRebateUsd,
+          referralCode
+          volume
+          trades
+          tradedReferralsCount
+          registeredReferralsCount
+          totalRebateUsd
           discountUsd
         }
-        referralCodes (
-          first: 1000,
-          where: {
-            owner: $account
-          }
-        ) {
+        referralCodes(first: 1000, where: { owner: $account }) {
           code
         }
-        referralTotalStats: referralStat(
-          id: "total:0:$account"
-        ) {
-          volume,
+        referralTotalStats: referralStat(id: $referralTotalStatsId) {
+          volume
           discountUsd
         }
         referrerTierInfo: referrer(id: $account) {
@@ -217,8 +195,8 @@ export function useReferralsData(chainId, account) {
           id
           discountShare
         }
-      }`
-    );
+      }
+    `;
     setLoading(true);
 
     getGraphClient(chainId)
@@ -228,6 +206,7 @@ export function useReferralsData(chainId, account) {
           typeIds: [DISTRIBUTION_TYPE_REBATES, DISTRIBUTION_TYPE_DISCOUNT],
           account: (account || "").toLowerCase(),
           timestamp: startOfDayTimestamp,
+          referralTotalStatsId: account && `total:0:${account.toLowerCase()}`,
         },
       })
       .then((res) => {
@@ -368,11 +347,11 @@ export function useUserReferralCode(library, chainId, account) {
       ],
     { fetcher: fetcher(library, ReferralStorage) }
   );
-  const [userReferralCodeForExchange, userReferralCode, userReferralCodeString] = useMemo(() => {
+  const [isCodeAttached, userReferralCode, userReferralCodeString] = useMemo(() => {
     if (onChainCode && !isHashZero(onChainCode)) {
-      return [ethers.utils.AddressZero, onChainCode, decodeReferralCode(onChainCode)];
+      return [true, onChainCode, decodeReferralCode(onChainCode)];
     } else if (localStorageCodeOwner && !isAddressZero(localStorageCodeOwner)) {
-      return [localStorageCode, localStorageCode, decodeReferralCode(localStorageCode)];
+      return [false, localStorageCode, decodeReferralCode(localStorageCode)];
     }
     return [ethers.utils.AddressZero];
   }, [localStorageCode, localStorageCodeOwner, onChainCode]);
@@ -380,7 +359,7 @@ export function useUserReferralCode(library, chainId, account) {
   return {
     userReferralCode,
     userReferralCodeString,
-    userReferralCodeForExchange,
+    isCodeAttached,
   };
 }
 
