@@ -13,7 +13,7 @@ function getImage(name) {
   try {
     image = require("../../img/" + name);
   } catch (error) {
-    image = require("../../img/" + "gmx-logo-final.png");
+    image = require("../../img/gmx-logo-final.png");
     console.error(error);
   }
   return image && image.default;
