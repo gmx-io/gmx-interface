@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import { gql } from "@apollo/client";
 import { useState, useEffect, useMemo } from "react";
 import useSWR from "swr";
+
 import ReferralStorage from "../abis/ReferralStorage.json";
 import {
   ARBITRUM,
@@ -19,7 +20,10 @@ import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "./c
 import { getContract } from "../Addresses";
 import { callContract } from ".";
 import { REGEX_VERIFY_BYTES32 } from "../components/Referrals/referralsHelper";
+
 const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
+const DISTRIBUTION_TYPE_REBATES = "1";
+const DISTRIBUTION_TYPE_DISCOUNT = "2";
 
 function getGraphClient(chainId) {
   if (chainId === ARBITRUM) {
@@ -29,9 +33,6 @@ function getGraphClient(chainId) {
   }
   throw new Error(`Unsupported chain ${chainId}`);
 }
-
-const DISTRIBUTION_TYPE_REBATES = "1";
-const DISTRIBUTION_TYPE_DISCOUNT = "2";
 
 export function decodeReferralCode(hexCode) {
   try {
@@ -51,7 +52,6 @@ export function encodeReferralCode(code) {
   if (final.length > MAX_REFERRAL_CODE_LENGTH) {
     return ethers.constants.HashZero;
   }
-
   return ethers.utils.formatBytes32String(final);
 }
 
@@ -127,7 +127,6 @@ export function useUserCodesOnAllChain(account) {
 
     main();
   }, [account, query]);
-
   return data;
 }
 
@@ -135,7 +134,6 @@ export function useReferralsData(chainId, account) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const ownerOnOtherChain = useUserCodesOnAllChain(account);
-
   useEffect(() => {
     if (!chainId || !account) {
       setLoading(false);
@@ -264,7 +262,6 @@ export function useReferralsData(chainId, account) {
         }
 
         let referrerTotalStats = res.data.referrerTotalStats.map(prepareStatsItem);
-
         setData({
           rebateDistributions,
           discountDistributions,
@@ -330,7 +327,6 @@ export async function getReferralCodeOwner(chainId, referralCode) {
 
 export function useUserReferralCode(library, chainId, account) {
   const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
-
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const { data: onChainCode } = useSWR(
     account && ["ReferralStorage", chainId, referralStorageAddress, "traderReferralCodes", account],
