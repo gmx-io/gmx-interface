@@ -1,13 +1,12 @@
 import React from "react";
 import SEO from "../../components/Common/SEO";
+import "./Ecosystem.css";
 
 import Footer from "../../Footer";
 import { getPageTitle, ARBITRUM, AVALANCHE } from "../../Helpers";
 
 import arbitrumIcon from "../../img/ic_arbitrum_16.svg";
 import avalancheIcon from "../../img/ic_avalanche_16.svg";
-
-import "./Ecosystem.css";
 
 const NETWORK_ICONS = {
   [ARBITRUM]: arbitrumIcon,
@@ -26,18 +25,21 @@ export default function Ecosystem() {
       link: "https://gov.gmx.io/",
       about: "GMX Governance page",
       chainIds: [ARBITRUM, AVALANCHE],
+      icon: "ic_governance.svg",
     },
     {
       title: "GMX Stats",
       link: "https://stats.gmx.io/",
       about: "GMX Stats page",
       chainIds: [ARBITRUM, AVALANCHE],
+      icon: "ic_GMXstats.svg",
     },
     {
       title: "GMX Proposals",
       link: "https://snapshot.org/#/gmx.eth",
       about: "GMX Proposals Voting page",
       chainIds: [ARBITRUM, AVALANCHE],
+      icon: "ic_voting.svg",
     },
   ];
 
@@ -49,6 +51,7 @@ export default function Ecosystem() {
       creatorLabel: "@xm92boi",
       creatorLink: "https://t.me/xm92boi",
       chainIds: [ARBITRUM],
+      icon: "ic_gbc.png",
     },
     {
       title: "GMX Leaderboard",
@@ -57,6 +60,7 @@ export default function Ecosystem() {
       creatorLabel: "@Itburnz",
       creatorLink: "https://t.me/Itburnz",
       chainIds: [ARBITRUM, AVALANCHE],
+      icon: "ic_GMXLeaderboard.svg",
     },
     {
       title: "GMX Positions Bot",
@@ -65,6 +69,7 @@ export default function Ecosystem() {
       creatorLabel: "@zhongfu",
       creatorLink: "https://t.me/zhongfu",
       chainIds: [ARBITRUM, AVALANCHE],
+      icon: "ic_GMXPositionsBot.svg",
     },
     {
       title: "GMX Terminal",
@@ -73,6 +78,7 @@ export default function Ecosystem() {
       creatorLabel: "@vipineth",
       creatorLink: "https://t.me/vipineth",
       chainIds: [ARBITRUM],
+      icon: "ic_GMXTerminal.svg",
     },
     {
       title: "GMX Analytics",
@@ -81,6 +87,7 @@ export default function Ecosystem() {
       creatorLabel: "@CryptoMessiah",
       creatorLink: "https://t.me/LarpCapital",
       chainIds: [ARBITRUM, AVALANCHE],
+      icon: "ic_GMXAnalytics.svg",
     },
     {
       title: "GMX Yield Simulator",
@@ -89,6 +96,7 @@ export default function Ecosystem() {
       creatorLabel: "@s0berknight",
       creatorLink: "https://twitter.com/s0berknight",
       chainIds: [ARBITRUM, AVALANCHE],
+      icon: "ic_GMXAnalytics.svg",
     },
     {
       title: "GMX Returns Calculator",
@@ -98,6 +106,7 @@ export default function Ecosystem() {
       creatorLabel: "@AStoicTrader1",
       creatorLink: "https://twitter.com/AStoicTrader1",
       chainIds: [ARBITRUM, AVALANCHE],
+      icon: "ic_GMXReturnsCalculator.svg",
     },
     {
       title: "GMX Compound Calculator",
@@ -107,6 +116,7 @@ export default function Ecosystem() {
       creatorLabel: "@ChasenKaminsky",
       creatorLink: "https://twitter.com/ChasenKaminsky",
       chainIds: [AVALANCHE],
+      icon: "ic_GMXCompoundCalculator.svg",
     },
   ];
 
@@ -118,6 +128,7 @@ export default function Ecosystem() {
       announcementLabel: "https://twitter.com",
       announcementLink: "https://twitter.com/GMX_IO/status/1439711532884152324",
       chainIds: [ARBITRUM, AVALANCHE],
+      icon: "ic_debank.svg",
     },
     {
       title: "Defi Llama",
@@ -126,6 +137,7 @@ export default function Ecosystem() {
       announcementLabel: "https://twitter.com",
       announcementLink: "https://twitter.com/GMX_IO/status/1438124768033660938",
       chainIds: [ARBITRUM, AVALANCHE],
+      icon: "ic_defillama.svg",
     },
     {
       title: "Dopex",
@@ -134,6 +146,7 @@ export default function Ecosystem() {
       announcementLabel: "https://twitter.com",
       announcementLink: "https://twitter.com/GMX_IO/status/1482445801523716099",
       chainIds: [ARBITRUM, AVALANCHE],
+      icon: "ic_dopex.svg",
     },
     {
       title: "Jones DAO",
@@ -142,6 +155,7 @@ export default function Ecosystem() {
       announcementLabel: "https://twitter.com",
       announcementLink: "https://twitter.com/GMX_IO/status/1482788805635678212",
       chainIds: [ARBITRUM],
+      icon: "ic_jonesdao.svg",
     },
     {
       title: "Yield Yak",
@@ -150,6 +164,7 @@ export default function Ecosystem() {
       announcementLabel: "https://twitter.com",
       announcementLink: "https://twitter.com/GMX_IO/status/1484601407378378754",
       chainIds: [AVALANCHE],
+      icon: "ic_yak.png",
     },
     {
       title: "Vovo Finance",
@@ -158,6 +173,7 @@ export default function Ecosystem() {
       announcementLabel: "https://twitter.com",
       announcementLink: "https://twitter.com/VovoFinance/status/1531517177790345217",
       chainIds: [ARBITRUM],
+      icon: "ic_vovo.svg",
     },
     {
       title: "DODO",
@@ -166,6 +182,7 @@ export default function Ecosystem() {
       announcementLabel: "https://twitter.com",
       announcementLink: "https://twitter.com/GMX_IO/status/1438899138549145605",
       chainIds: [ARBITRUM, AVALANCHE],
+      icon: "ic_dodo.svg",
     },
     {
       title: "Open Ocean",
@@ -174,6 +191,7 @@ export default function Ecosystem() {
       announcementLabel: "https://twitter.com",
       announcementLink: "https://twitter.com/GMX_IO/status/1495780826016989191",
       chainIds: [ARBITRUM, AVALANCHE],
+      icon: "ic_openocean.svg",
     },
   ];
 
@@ -191,29 +209,38 @@ export default function Ecosystem() {
           <div className="DashboardV2-projects">
             {officialPages.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
+              let tokenImage = null;
+              try {
+                tokenImage = require("../../img/" + item.icon);
+              } catch (error) {
+                console.error(error);
+              }
               return (
-                <div className="App-card">
+                <div key={item.link} className="App-card">
                   <div className="App-card-title">
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
                   <div className="App-card-divider"></div>
                   <div className="App-card-content">
-                    <div className="App-card-row">
-                      <div className="label">Link</div>
-                      <div>
-                        <a href={item.link} target="_blank" rel="noopener noreferrer">
-                          {linkLabel}
-                        </a>
+                    <img src={tokenImage && tokenImage.default} alt={item.title} width="50" />
+                    <div className="App-card-rows">
+                      <div className="App-card-row">
+                        <div className="label">Link</div>
+                        <div>
+                          <a href={item.link} target="_blank" rel="noopener noreferrer">
+                            {linkLabel}
+                          </a>
+                        </div>
                       </div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">About</div>
-                      <div>{item.about}</div>
+                      <div className="App-card-row">
+                        <div className="label">About</div>
+                        <div>{item.about}</div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -227,36 +254,45 @@ export default function Ecosystem() {
           <div className="DashboardV2-projects">
             {communityProjects.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
+              let tokenImage = null;
+              try {
+                tokenImage = require("../../img/" + item.icon);
+              } catch (error) {
+                console.error(error);
+              }
               return (
-                <div className="App-card">
+                <div key={item.link} className="App-card">
                   <div className="App-card-title">
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
                   <div className="App-card-divider"></div>
                   <div className="App-card-content">
-                    <div className="App-card-row">
-                      <div className="label">Link</div>
-                      <div>
-                        <a href={item.link} target="_blank" rel="noopener noreferrer">
-                          {linkLabel}
-                        </a>
+                    <img src={tokenImage && tokenImage.default} alt={item.title} width="50" />
+                    <div className="App-card-rows">
+                      <div className="App-card-row">
+                        <div className="label">Link</div>
+                        <div>
+                          <a href={item.link} target="_blank" rel="noopener noreferrer">
+                            {linkLabel}
+                          </a>
+                        </div>
                       </div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">About</div>
-                      <div>{item.about}</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">Creator</div>
-                      <div>
-                        <a href={item.creatorLink} target="_blank" rel="noopener noreferrer">
-                          {item.creatorLabel}
-                        </a>
+                      <div className="App-card-row">
+                        <div className="label">About</div>
+                        <div>{item.about}</div>
+                      </div>
+                      <div className="App-card-row">
+                        <div className="label">Creator</div>
+                        <div>
+                          <a href={item.creatorLink} target="_blank" rel="noopener noreferrer">
+                            {item.creatorLabel}
+                          </a>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -271,36 +307,45 @@ export default function Ecosystem() {
           <div className="DashboardV2-projects">
             {integrations.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
+              let tokenImage = null;
+              try {
+                tokenImage = require("../../img/" + item.icon);
+              } catch (error) {
+                console.error(error);
+              }
               return (
-                <div className="App-card">
+                <div key={item.link} className="App-card">
                   <div className="App-card-title">
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
                   <div className="App-card-divider"></div>
                   <div className="App-card-content">
-                    <div className="App-card-row">
-                      <div className="label">Link</div>
-                      <div>
-                        <a href={item.link} target="_blank" rel="noopener noreferrer">
-                          {linkLabel}
-                        </a>
+                    <img src={tokenImage && tokenImage.default} alt={item.title} width="50" />
+                    <div className="App-card-rows">
+                      <div className="App-card-row">
+                        <div className="label">Link</div>
+                        <div>
+                          <a href={item.link} target="_blank" rel="noopener noreferrer">
+                            {linkLabel}
+                          </a>
+                        </div>
                       </div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">About</div>
-                      <div>{item.about}</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">Announcement</div>
-                      <div>
-                        <a href={item.announcementLink} target="_blank" rel="noopener noreferrer">
-                          {item.announcementLabel}
-                        </a>
+                      <div className="App-card-row">
+                        <div className="label">About</div>
+                        <div>{item.about}</div>
+                      </div>
+                      <div className="App-card-row">
+                        <div className="label">Announcement</div>
+                        <div>
+                          <a href={item.announcementLink} target="_blank" rel="noopener noreferrer">
+                            {item.announcementLabel}
+                          </a>
+                        </div>
                       </div>
                     </div>
                   </div>

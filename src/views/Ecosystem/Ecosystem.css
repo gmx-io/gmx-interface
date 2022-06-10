@@ -3,6 +3,23 @@
   grid-template-columns: 1fr 1fr;
   grid-gap: 1.55rem;
 }
+.App-card-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-column-gap: 1.55rem;
+  padding: unset;
+}
+
+.App-card-content {
+  grid-template-columns: auto 1fr;
+  grid-column-gap: 1.6rem;
+  align-items: center;
+}
+
+.App-card-rows {
+  display: grid;
+  grid-row-gap: 0.8rem;
+}
 
 @media (max-width: 900px) {
   .DashboardV2-projects {
