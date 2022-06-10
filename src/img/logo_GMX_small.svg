@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="29.515" height="21.462" viewBox="0 0 29.515 21.462">
-  <defs>
-    <linearGradient id="linear-gradient" x1="0.536" y1="0.026" x2="0.011" y2="1" gradientUnits="objectBoundingBox">
-      <stop offset="0" stop-color="#03d1cf" stop-opacity="0.988"/>
-      <stop offset="1" stop-color="#4e09f8"/>
-    </linearGradient>
-  </defs>
-  <g id="logo_GMX" transform="translate(0)">
-    <path id="Path_1" data-name="Path 1" d="M555.182,717.462,540.447,696l-14.78,21.462h20.592l-5.812-8.191-2.883,4.256H534.5l5.949-8.557,8.6,12.493Z" transform="translate(-525.667 -696)" fill="url(#linear-gradient)"/>
-  </g>
-</svg>
+<svg height="21.462" viewBox="0 0 29.515 21.462" width="29.515" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><linearGradient id="a" gradientUnits="objectBoundingBox" x1=".536" x2=".011" y1=".026" y2="1"><stop offset="0" stop-color="#03d1cf" stop-opacity=".988"/><stop offset="1" stop-color="#4e09f8"/></linearGradient><path d="m555.182 717.462-14.735-21.462-14.78 21.462h20.592l-5.812-8.191-2.883 4.256h-3.064l5.949-8.557 8.6 12.493z" fill="url(#a)" transform="translate(-525.667 -696)"/></svg>
