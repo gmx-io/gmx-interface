@@ -1,19 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import "./Tooltip.css";
 import { createPortal } from "react-dom";
 import cx from "classnames";
 
-const Portal = ({ children }) => {
-  const mount = document.body;
+import "./Tooltip.css";
+
+function Portal({ children }) {
+  const root = document.body;
   const el = document.createElement("div");
 
   useEffect(() => {
-    mount.appendChild(el);
-    return () => mount.removeChild(el);
-  }, [el, mount]);
+    root.appendChild(el);
+    return () => root.removeChild(el);
+  }, [el, root]);
 
   return createPortal(children, el);
-};
+}
 
 const isTouch = "ontouchstart" in window;
 
