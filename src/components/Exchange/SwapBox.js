@@ -175,8 +175,7 @@ export default function SwapBox(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
-  const { isCodeAttached } = useUserReferralCode(library, chainId, account);
-  const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
+  const { attachedOnChain, userReferralCode } = useUserReferralCode(library, chainId, account);
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -1440,8 +1439,8 @@ export default function SwapBox(props) {
   };
 
   let referralCode = ethers.constants.HashZero;
-  if (!isCodeAttached && userReferralCodeInLocalStorage && REGEX_VERIFY_BYTES32.test(userReferralCodeInLocalStorage)) {
-    referralCode = userReferralCodeInLocalStorage;
+  if (!attachedOnChain && userReferralCode) {
+    referralCode = userReferralCode;
   }
 
   const increasePosition = async () => {
