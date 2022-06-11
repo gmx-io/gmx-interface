@@ -317,12 +317,8 @@ export async function getReferralCodeOwner(chainId, referralCode) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const provider = getProvider(null, chainId);
   const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, provider);
-  try {
-    const codeOwner = await contract.codeOwners(referralCode);
-    return codeOwner;
-  } catch (error) {
-    console.error(error);
-  }
+  const codeOwner = await contract.codeOwners(referralCode);
+  return codeOwner;
 }
 
 export function useUserReferralCode(library, chainId, account) {
@@ -343,19 +339,19 @@ export function useUserReferralCode(library, chainId, account) {
       ],
     { fetcher: fetcher(library, ReferralStorage) }
   );
-  const [isCodeAttached, userReferralCode, userReferralCodeString] = useMemo(() => {
+  const [attachedOnChain, userReferralCode, userReferralCodeString] = useMemo(() => {
     if (onChainCode && !isHashZero(onChainCode)) {
       return [true, onChainCode, decodeReferralCode(onChainCode)];
     } else if (localStorageCodeOwner && !isAddressZero(localStorageCodeOwner)) {
       return [false, localStorageCode, decodeReferralCode(localStorageCode)];
     }
-    return [ethers.utils.AddressZero];
+    return [false];
   }, [localStorageCode, localStorageCodeOwner, onChainCode]);
 
   return {
     userReferralCode,
     userReferralCodeString,
-    isCodeAttached,
+    attachedOnChain,
   };
 }
 

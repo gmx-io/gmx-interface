@@ -10,7 +10,7 @@ import {
 import { encodeReferralCode, getReferralCodeOwner } from "../../Api/referrals";
 
 export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
-export const REGEX_VERIFY_BYTES32 = new RegExp(/0x[0-9a-f]{64}/);
+export const REGEX_VERIFY_BYTES32 = /^0x[0-9a-f]{64}$/;
 
 export function isRecentReferralCodeNotExpired(referralCodeInfo) {
   const REFERRAL_DATA_MAX_TIME = 60000 * 5; // 5 minutes
@@ -71,6 +71,7 @@ export function deserializeSampleStats(input) {
   const parsedData = JSON.parse(input);
   if (!Array.isArray(parsedData)) return [];
   return parsedData.map((data) => {
+    if (typeof data !== "object") return {};
     return Object.keys(data).reduce((acc, cv) => {
       const currentValue = data[cv];
       if (currentValue?.type === "BigNumber") {
@@ -109,13 +110,14 @@ export function getUSDValue(value, decimals = 2) {
 }
 
 export function getCodeError(value) {
-  if (!value) return "";
+  const trimmedValue = value.trim();
+  if (!trimmedValue) return "";
 
-  if (value.length > MAX_REFERRAL_CODE_LENGTH) {
+  if (trimmedValue.length > MAX_REFERRAL_CODE_LENGTH) {
     return `The referral code can't be more than ${MAX_REFERRAL_CODE_LENGTH} characters.`;
   }
 
-  if (!REFERRAL_CODE_REGEX.test(value)) {
+  if (!REFERRAL_CODE_REGEX.test(trimmedValue)) {
     return "Only letters, numbers and underscores are allowed.";
   }
   return "";
