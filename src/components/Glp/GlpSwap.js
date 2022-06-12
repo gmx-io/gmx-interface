@@ -133,7 +133,6 @@ export default function GlpSwap(props) {
   const tokensForBalanceAndSupplyQuery = [stakedGlpTrackerAddress, usdgAddress];
 
   const tokenAddresses = tokens.map((token) => token.address);
-
   const { data: tokenBalances } = useSWR(
     [`GlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account || PLACEHOLDER_ACCOUNT],
     {
