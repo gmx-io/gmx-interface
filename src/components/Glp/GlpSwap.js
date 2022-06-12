@@ -91,6 +91,12 @@ function getStakingData(stakingInfo) {
   return data;
 }
 
+function getSwapUrl(chainId, token) {
+  return chainId === ARBITRUM
+    ? `https://app.uniswap.org/#/swap?inputCurrency=${token.address}`
+    : `https://traderjoexyz.com/trade?inputCurrency=${token.address}`;
+}
+
 export default function GlpSwap(props) {
   const { savedSlippageAmount, isBuying, setPendingTxns, connectWallet, setIsBuying } = props;
   const history = useHistory();
@@ -238,13 +244,6 @@ export default function GlpSwap(props) {
 
   const swapUsdMin = getUsd(swapAmount, swapTokenAddress, false, infoTokens);
   const glpUsdMax = glpAmount && glpPrice ? glpAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS)) : undefined;
-
-  let isSwapTokenCapReached;
-  if (swapTokenInfo.managedUsd && swapTokenInfo.maxUsdgAmount) {
-    isSwapTokenCapReached = swapTokenInfo.managedUsd.gt(
-      adjustForDecimals(swapTokenInfo.maxUsdgAmount, USDG_DECIMALS, USD_DECIMALS)
-    );
-  }
 
   const onSwapValueChange = (e) => {
     setAnchorOnSwapAmount(true);
@@ -401,6 +400,11 @@ export default function GlpSwap(props) {
     props.setIsBuying(hash === "redeem" ? false : true);
   };
 
+  let maxSellAmount = glpBalance;
+  if (glpBalance && reservedAmount) {
+    maxSellAmount = glpBalance.sub(reservedAmount);
+  }
+
   const fillMaxAmount = () => {
     if (isBuying) {
       setAnchorOnSwapAmount(true);
@@ -434,7 +438,7 @@ export default function GlpSwap(props) {
         const usdgFromAmount = adjustForDecimals(swapUsdMin, USD_DECIMALS, USDG_DECIMALS);
         const nextUsdgAmount = swapTokenInfo.usdgAmount.add(usdgFromAmount);
         if (swapTokenInfo.maxUsdgAmount.gt(0) && nextUsdgAmount.gt(swapTokenInfo.maxUsdgAmount)) {
-          return [`${swapTokenInfo.symbol} pool exceeded, try different token`, true];
+          return [`${swapTokenInfo.symbol} pool exceeded, try different token`, "CAP_REACHED"];
         }
       }
     }
@@ -458,12 +462,13 @@ export default function GlpSwap(props) {
     return [false];
   };
 
+  const [error, errorCode] = getError();
+
   const isPrimaryEnabled = () => {
     if (!active) {
       return true;
     }
-    const [error, modal] = getError();
-    if (error && !modal) {
+    if (error) {
       return false;
     }
     if ((needApproval && isWaitingForApproval) || isApproving) {
@@ -475,9 +480,6 @@ export default function GlpSwap(props) {
     if (isSubmitting) {
       return false;
     }
-    if (isSwapTokenCapReached) {
-      return false;
-    }
 
     return true;
   };
@@ -486,12 +488,8 @@ export default function GlpSwap(props) {
     if (!active) {
       return "Connect Wallet";
     }
-    const [error, modal] = getError();
-    if (error && !modal) {
+    if (error) {
       return error;
-    }
-    if (isBuying && isSwapTokenCapReached) {
-      return `Max Capacity for ${swapToken.symbol} Reached`;
     }
 
     if (needApproval && isWaitingForApproval) {
@@ -592,12 +590,6 @@ export default function GlpSwap(props) {
       return;
     }
 
-    const [, modal] = getError();
-
-    if (modal) {
-      return;
-    }
-
     if (isBuying) {
       buyGlp();
     } else {
@@ -634,11 +626,6 @@ export default function GlpSwap(props) {
   let feePercentageText = formatAmount(feeBasisPoints, 2, 2, true, "-");
   if (feeBasisPoints !== undefined && feeBasisPoints.toString().length > 0) {
     feePercentageText += "%";
-  }
-
-  let maxSellAmount = glpBalance;
-  if (glpBalance && reservedAmount) {
-    maxSellAmount = glpBalance.sub(reservedAmount);
   }
 
   const wrappedTokenSymbol = getWrappedToken(chainId).symbol;
@@ -875,10 +862,23 @@ export default function GlpSwap(props) {
               <div className="align-right fee-block">
                 {isBuying && (
                   <Tooltip
-                    handle={isBuying && isSwapTokenCapReached ? "NA" : feePercentageText}
+                    handle={isBuying && errorCode === "CAP_REACHED" ? "NA" : feePercentageText}
                     position="right-bottom"
                     renderContent={() => {
-                      return (
+                      return errorCode === "CAP_REACHED" ? (
+                        <>
+                          Max pool capacity reached for&nbsp;{swapTokenInfo.symbol}
+                          <br />
+                          <br />
+                          Please mint GLP using another token
+                          <br />
+                          <p>
+                            <a href={getSwapUrl(chainId, swapTokenInfo)} target="_blank" rel="noreferrer">
+                              Swap on {chainId === ARBITRUM ? "Uniswap" : "Trader Joe"}
+                            </a>
+                          </p>
+                        </>
+                      ) : (
                         <>
                           {feeBasisPoints > 50 && <div>To reduce fees, select a different asset to pay with.</div>}
                           Check the "Save on Fees" section below to get the lowest fee percentages.
@@ -1031,10 +1031,6 @@ export default function GlpSwap(props) {
                 );
               }
               function renderFees() {
-                const swapUrl =
-                  chainId === ARBITRUM
-                    ? `https://app.uniswap.org/#/swap?inputCurrency=${token.address}`
-                    : `https://traderjoexyz.com/trade?inputCurrency=${token.address}`;
                 switch (true) {
                   case (isBuying && isCapReached) || (!isBuying && managedUsd?.lt(1)):
                     return (
@@ -1049,7 +1045,7 @@ export default function GlpSwap(props) {
                             Please mint GLP using another token
                             <br />
                             <p>
-                              <a href={swapUrl} target="_blank" rel="noreferrer">
+                              <a href={getSwapUrl(chainId, tokenInfo)} target="_blank" rel="noreferrer">
                                 Swap on {chainId === ARBITRUM ? "Uniswap" : "Trader Joe"}
                               </a>
                             </p>
