@@ -40,6 +40,7 @@ export default function OrdersList(props) {
     orders,
     hideActions,
     chainId,
+    savedShouldDisableOrderValidation,
   } = props;
 
   const [editingOrder, setEditingOrder] = useState(null);
@@ -394,6 +395,7 @@ export default function OrdersList(props) {
           library={library}
           totalTokenWeights={totalTokenWeights}
           usdgSupply={usdgSupply}
+          savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
         />
       )}
     </React.Fragment>

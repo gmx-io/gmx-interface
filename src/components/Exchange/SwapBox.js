@@ -166,6 +166,7 @@ export default function SwapBox(props) {
     setIsWaitingForPositionRouterApproval,
     isPluginApproving,
     isPositionRouterApproving,
+    savedShouldDisableOrderValidation,
   } = props;
 
   const [fromValue, setFromValue] = useState("");
@@ -837,7 +838,7 @@ export default function SwapBox(props) {
       return ["Max leverage: 30.5x"];
     }
 
-    if (!isMarketOrder && entryMarkPrice && triggerPriceUsd) {
+    if (!isMarketOrder && entryMarkPrice && triggerPriceUsd && !savedShouldDisableOrderValidation) {
       if (isLong && entryMarkPrice.lt(triggerPriceUsd)) {
         return ["Price above Mark Price"];
       }
