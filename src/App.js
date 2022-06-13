@@ -458,7 +458,7 @@ function FullApp() {
   );
   const [slippageAmount, setSlippageAmount] = useState(0);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
-  const [isDisableOrderValidation, setIsDisableOrderValidation] = useState(false);
+  const [shouldDisableOrderValidation, setShouldDisableOrderValidation] = useState(false);
   const [showPnlAfterFees, setShowPnlAfterFees] = useState(false);
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
@@ -470,7 +470,7 @@ function FullApp() {
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
     false
   );
-  const [savedIsDisableOrderValidation, setSavedIsDisableOrderValidation] = useLocalStorageSerializeKey(
+  const [savedShouldDisableOrderValidation, setSavedShouldDisableOrderValidation] = useLocalStorageSerializeKey(
     [chainId, DISABLE_ORDER_VALIDATION_KEY],
     false
   );
@@ -485,7 +485,7 @@ function FullApp() {
     setSlippageAmount((slippage / BASIS_POINTS_DIVISOR) * 100);
     setIsPnlInLeverage(savedIsPnlInLeverage);
     setShowPnlAfterFees(savedShowPnlAfterFees);
-    setIsDisableOrderValidation(savedIsDisableOrderValidation);
+    setShouldDisableOrderValidation(savedShouldDisableOrderValidation);
     setIsSettingsVisible(true);
   };
 
@@ -512,7 +512,7 @@ function FullApp() {
 
     setSavedIsPnlInLeverage(isPnlInLeverage);
     setSavedShowPnlAfterFees(showPnlAfterFees);
-    setSavedIsDisableOrderValidation(isDisableOrderValidation);
+    setSavedShouldDisableOrderValidation(shouldDisableOrderValidation);
     setSavedSlippageAmount(basisPoints);
     setIsSettingsVisible(false);
   };
@@ -742,7 +742,7 @@ function FullApp() {
                 savedShouldShowPositionLines={savedShouldShowPositionLines}
                 setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                 connectWallet={connectWallet}
-                savedIsDisableOrderValidation={savedIsDisableOrderValidation}
+                savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
               />
             </Route>
             <Route exact path="/presale">
@@ -885,7 +885,7 @@ function FullApp() {
         </div>
         {isDevelopment() && (
           <div className="Exchange-settings-row">
-            <Checkbox isChecked={isDisableOrderValidation} setIsChecked={setIsDisableOrderValidation}>
+            <Checkbox isChecked={shouldDisableOrderValidation} setIsChecked={setShouldDisableOrderValidation}>
               Disable order validations
             </Checkbox>
           </div>

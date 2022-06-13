@@ -362,7 +362,7 @@ export const Exchange = forwardRef((props, ref) => {
     savedShouldShowPositionLines,
     setSavedShouldShowPositionLines,
     connectWallet,
-    savedIsDisableOrderValidation,
+    savedShouldDisableOrderValidation,
   } = props;
   const [showBanner, setShowBanner] = useLocalStorageSerializeKey("showBanner", true);
   const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey("bannerHidden", null);
@@ -820,7 +820,7 @@ export const Exchange = forwardRef((props, ref) => {
             orders={orders}
             totalTokenWeights={totalTokenWeights}
             usdgSupply={usdgSupply}
-            savedIsDisableOrderValidation={savedIsDisableOrderValidation}
+            savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
           />
         )}
         {listSection === "Trades" && (
@@ -907,7 +907,7 @@ export const Exchange = forwardRef((props, ref) => {
             savedSlippageAmount={savedSlippageAmount}
             totalTokenWeights={totalTokenWeights}
             usdgSupply={usdgSupply}
-            savedIsDisableOrderValidation={savedIsDisableOrderValidation}
+            savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
           />
           <div className="Exchange-wallet-tokens">
             <div className="Exchange-wallet-tokens-content">
