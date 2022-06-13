@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 import Tooltip from "../Tooltip/Tooltip";
 import Modal from "../Modal/Modal";
@@ -1000,7 +1000,7 @@ export default function SwapBox(props) {
     return getLeverageError();
   };
 
-  const renderOrdersToa = useCallback(() => {
+  const renderOrdersToa = () => {
     if (!ordersToaOpen) {
       return null;
     }
@@ -1012,9 +1012,9 @@ export default function SwapBox(props) {
         isPluginApproving={isPluginApproving}
       />
     );
-  }, [ordersToaOpen, setOrdersToaOpen, isPluginApproving, approveOrderBook]);
+  };
 
-  const renderErrorModal = useCallback(() => {
+  const renderErrorModal = () => {
     const inputCurrency = fromToken.address === AddressZero ? "ETH" : fromToken.address;
     let outputCurrency;
     if (isLong) {
@@ -1048,19 +1048,7 @@ export default function SwapBox(props) {
         </a>
       </Modal>
     );
-  }, [
-    chainId,
-    modalError,
-    isShort,
-    setModalError,
-    fromToken?.address,
-    toToken?.address,
-    shortCollateralToken?.address,
-    isLong,
-    shortCollateralToken?.symbol,
-    toToken?.symbol,
-    fromToken?.symbol,
-  ]);
+  };
 
   const isPrimaryEnabled = () => {
     if (!active) {
