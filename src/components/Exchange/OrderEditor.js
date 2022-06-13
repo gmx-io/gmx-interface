@@ -26,6 +26,7 @@ import {
   getDeltaStr,
   getProfitPrice,
   getTimeRemaining,
+  isDevelopment,
 } from "../../Helpers";
 import { updateSwapOrder, updateIncreaseOrder, updateDecreaseOrder } from "../../Api";
 import Modal from "../Modal/Modal";
@@ -33,6 +34,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import { getContract } from "../../Addresses";
 
 export default function OrderEditor(props) {
+  alert("hello");
   const {
     account,
     order,
@@ -45,6 +47,7 @@ export default function OrderEditor(props) {
     usdgSupply,
     getPositionForOrder,
     positionsMap,
+    savedIsDisableOrderValidation,
   } = props;
 
   const { chainId } = useChainId();
@@ -189,6 +192,10 @@ export default function OrderEditor(props) {
       if (hasProfit && delta.eq(0)) {
         return "Invalid price, see warning";
       }
+    }
+
+    if (order.type !== SWAP && isDevelopment() && savedIsDisableOrderValidation) {
+      return "";
     }
 
     if (order.type !== SWAP && indexTokenMarkPrice) {
