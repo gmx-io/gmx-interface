@@ -61,6 +61,7 @@ import {
   adjustForDecimals,
   REFERRAL_CODE_KEY,
   isHashZero,
+  isDevelopment,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import * as Api from "../../Api";
@@ -166,6 +167,7 @@ export default function SwapBox(props) {
     setIsWaitingForPositionRouterApproval,
     isPluginApproving,
     isPositionRouterApproving,
+    savedIsDisableOrderValidation,
   } = props;
 
   const [fromValue, setFromValue] = useState("");
@@ -840,6 +842,9 @@ export default function SwapBox(props) {
     }
 
     if (!isMarketOrder && entryMarkPrice && triggerPriceUsd) {
+      if (isDevelopment() && savedIsDisableOrderValidation) {
+        return "";
+      }
       if (isLong && entryMarkPrice.lt(triggerPriceUsd)) {
         return ["Price above Mark Price"];
       }
