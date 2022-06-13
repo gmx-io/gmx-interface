@@ -10,8 +10,8 @@
   background: var(--dark-blue-hover);
   border-radius: var(--border-radius-sm);
   margin-bottom: 0.25rem;
-  padding-bottom: 0;
-  padding: 0.5rem;
+  padding: 1rem;
+  padding-left: 1.2rem;
 }
 .trigger-order-list li p {
   font-size: 1.4rem;
