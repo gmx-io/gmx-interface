@@ -370,8 +370,6 @@ export default function SwapBox(props) {
     );
   };
 
-  const hasMaxAvailableShort = isShort && toTokenInfo.hasMaxAvailableShort;
-
   const fromBalance = fromTokenInfo ? fromTokenInfo.balance : bigNumberify(0);
   const toBalance = toTokenInfo ? toTokenInfo.balance : bigNumberify(0);
 
@@ -801,7 +799,7 @@ export default function SwapBox(props) {
     return [false];
   };
 
-  const getLeverageError = useCallback(() => {
+  const getLeverageError = () => {
     if (hasOutdatedUi) {
       return ["Page outdated, please refresh"];
     }
@@ -983,30 +981,7 @@ export default function SwapBox(props) {
     }
 
     return [false];
-  }, [
-    chainId,
-    fromAmount,
-    fromTokenAddress,
-    fromUsdMin,
-    hasExistingPosition,
-    infoTokens,
-    isLong,
-    isMarketOrder,
-    isShort,
-    leverage,
-    shortCollateralAddress,
-    shortCollateralToken,
-    swapOption,
-    toAmount,
-    toToken,
-    toTokenAddress,
-    totalTokenWeights,
-    triggerPriceUsd,
-    triggerPriceValue,
-    usdgSupply,
-    entryMarkPrice,
-    hasOutdatedUi,
-  ]);
+  };
 
   const getToLabel = () => {
     if (isSwap) {
@@ -2298,7 +2273,7 @@ export default function SwapBox(props) {
             </div>
           </div>
           {renderAvailableLongLiquidity()}
-          {hasMaxAvailableShort && (
+          {isShort && toTokenInfo.hasMaxAvailableShort && (
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">Available Liquidity</div>
               <div className="align-right">
