@@ -1,28 +1,50 @@
-.DashboardV2-projects {
+.ecosystem-projects {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 1.55rem;
 }
-.App-card-row {
+.card-row {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: 1fr auto;
   grid-column-gap: 1.55rem;
   padding: unset;
 }
+.card-divider {
+  height: 1px;
+  background: #23263b;
+  margin: 1.05rem -1.55rem;
+}
 
-.App-card-content {
+.ecosystem-card-title {
+  font-size: 1.6rem;
+  line-height: 2.1rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: #fff;
+  margin-bottom: 1.55rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-content {
+  display: grid;
   grid-template-columns: auto 1fr;
   grid-column-gap: 1.6rem;
   align-items: center;
 }
+.card-title-icon {
+  display: flex;
+  margin-left: 1.2rem;
+}
 
-.App-card-rows {
+.card-rows {
   display: grid;
   grid-row-gap: 0.8rem;
 }
 
 @media (max-width: 900px) {
-  .DashboardV2-projects {
+  .ecosystem-projects {
     grid-template-columns: 1fr;
   }
 }

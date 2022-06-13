@@ -16,7 +16,7 @@ function getImage(name) {
     image = require("../../img/gmx-logo-final.png");
     console.error(error);
   }
-  return image && image.default;
+  return image.default;
 }
 
 const NETWORK_ICONS = {
@@ -217,25 +217,25 @@ export default function Ecosystem() {
               <div className="Page-description">Official GMX ecosystem pages.</div>
             </div>
           </div>
-          <div className="DashboardV2-projects">
+          <div className="ecosystem-projects">
             {officialPages.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
               const image = getImage(item.icon);
               return (
                 <div key={item.link} className="App-card">
-                  <div className="App-card-title">
+                  <div className="ecosystem-card-title">
                     {item.title}
-                    <div className="App-card-title-icon">
+                    <div className="card-title-icon">
                       {item.chainIds.map((network) => (
                         <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
-                  <div className="App-card-divider"></div>
-                  <div className="App-card-content">
+                  <div className="card-divider"></div>
+                  <div className="card-content">
                     <img src={image} alt={item.title} width="50" />
-                    <div className="App-card-rows">
-                      <div className="App-card-row">
+                    <div className="card-rows">
+                      <div className="card-row">
                         <div className="label">Link</div>
                         <div>
                           <a href={item.link} target="_blank" rel="noopener noreferrer">
@@ -243,7 +243,7 @@ export default function Ecosystem() {
                           </a>
                         </div>
                       </div>
-                      <div className="App-card-row">
+                      <div className="card-row">
                         <div className="label">About</div>
                         <div>{item.about}</div>
                       </div>
@@ -257,25 +257,25 @@ export default function Ecosystem() {
             <div className="Page-title">Community Projects</div>
             <div className="Page-description">Projects developed by the GMX community.</div>
           </div>
-          <div className="DashboardV2-projects">
+          <div className="ecosystem-projects">
             {communityProjects.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
               const image = getImage(item.icon);
               return (
                 <div key={item.link} className="App-card">
-                  <div className="App-card-title">
+                  <div className="ecosystem-card-title">
                     {item.title}
-                    <div className="App-card-title-icon">
+                    <div className="card-title-icon">
                       {item.chainIds.map((network) => (
                         <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
-                  <div className="App-card-divider"></div>
-                  <div className="App-card-content">
+                  <div className="card-divider"></div>
+                  <div className="card-content">
                     <img src={image} alt={item.title} width="50" />
-                    <div className="App-card-rows">
-                      <div className="App-card-row">
+                    <div className="card-rows">
+                      <div className="card-row">
                         <div className="label">Link</div>
                         <div>
                           <a href={item.link} target="_blank" rel="noopener noreferrer">
@@ -283,11 +283,11 @@ export default function Ecosystem() {
                           </a>
                         </div>
                       </div>
-                      <div className="App-card-row">
+                      <div className="card-row">
                         <div className="label">About</div>
                         <div>{item.about}</div>
                       </div>
-                      <div className="App-card-row">
+                      <div className="card-row">
                         <div className="label">Creator</div>
                         <div>
                           <a href={item.creatorLink} target="_blank" rel="noopener noreferrer">
@@ -305,25 +305,25 @@ export default function Ecosystem() {
             <div className="Page-title">Partnerships and Integrations</div>
             <div className="Page-description">Projects integrated with GMX.</div>
           </div>
-          <div className="DashboardV2-projects">
+          <div className="ecosystem-projects">
             {integrations.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
               const image = getImage(item.icon);
               return (
                 <div key={item.link} className="App-card">
-                  <div className="App-card-title">
+                  <div className="ecosystem-card-title">
                     {item.title}
-                    <div className="App-card-title-icon">
+                    <div className="card-title-icon">
                       {item.chainIds.map((network) => (
                         <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
-                  <div className="App-card-divider"></div>
-                  <div className="App-card-content">
+                  <div className="card-divider"></div>
+                  <div className="card-content">
                     <img src={image} alt={item.title} width="50" />
-                    <div className="App-card-rows">
-                      <div className="App-card-row">
+                    <div className="card-rows">
+                      <div className="card-row">
                         <div className="label">Link</div>
                         <div>
                           <a href={item.link} target="_blank" rel="noopener noreferrer">
@@ -331,11 +331,11 @@ export default function Ecosystem() {
                           </a>
                         </div>
                       </div>
-                      <div className="App-card-row">
+                      <div className="card-row">
                         <div className="label">About</div>
                         <div>{item.about}</div>
                       </div>
-                      <div className="App-card-row">
+                      <div className="card-row">
                         <div className="label">Announcement</div>
                         <div>
                           <a href={item.announcementLink} target="_blank" rel="noopener noreferrer">
