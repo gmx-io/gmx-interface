@@ -1011,6 +1011,7 @@ export default function SwapBox(props) {
     usdgSupply,
     entryMarkPrice,
     hasOutdatedUi,
+    savedIsDisableOrderValidation,
   ]);
 
   const getToLabel = () => {
