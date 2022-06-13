@@ -797,7 +797,7 @@ export default function SwapBox(props) {
     return [false];
   };
 
-  const getLeverageError = useCallback(() => {
+  const getLeverageError = () => {
     if (hasOutdatedUi) {
       return ["Page outdated, please refresh"];
     }
@@ -979,30 +979,7 @@ export default function SwapBox(props) {
     }
 
     return [false];
-  }, [
-    chainId,
-    fromAmount,
-    fromTokenAddress,
-    fromUsdMin,
-    hasExistingPosition,
-    infoTokens,
-    isLong,
-    isMarketOrder,
-    isShort,
-    leverage,
-    shortCollateralAddress,
-    shortCollateralToken,
-    swapOption,
-    toAmount,
-    toToken,
-    toTokenAddress,
-    totalTokenWeights,
-    triggerPriceUsd,
-    triggerPriceValue,
-    usdgSupply,
-    entryMarkPrice,
-    hasOutdatedUi,
-  ]);
+  };
 
   const getToLabel = () => {
     if (isSwap) {
