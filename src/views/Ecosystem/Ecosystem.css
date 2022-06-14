@@ -38,6 +38,10 @@
   margin-left: 1.2rem;
 }
 
+.card-title-icon img + img {
+  margin-left: 0.6rem;
+}
+
 .card-rows {
   display: grid;
   grid-row-gap: 0.8rem;
