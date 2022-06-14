@@ -40,6 +40,7 @@ export default function OrdersList(props) {
     orders,
     hideActions,
     chainId,
+    savedShouldDisableOrderValidation,
   } = props;
 
   const [editingOrder, setEditingOrder] = useState(null);
@@ -194,9 +195,9 @@ export default function OrdersList(props) {
       if (order.type === DECREASE) {
         const positionForOrder = getPositionForOrder(account, order, positionsMap);
         if (!positionForOrder) {
-          error = "No open position, order cannot be executed unless opening a position";
+          error = "No open position, order cannot be executed unless a position is opened";
         } else if (positionForOrder.size.lt(order.sizeDelta)) {
-          error = "Order size is bigger than position, will be executable when position increases";
+          error = "Order size is bigger than position, will only be executable if position increases";
         }
       }
 
@@ -309,9 +310,9 @@ export default function OrdersList(props) {
       if (order.type === DECREASE) {
         const positionForOrder = getPositionForOrder(account, order, positionsMap);
         if (!positionForOrder) {
-          error = "No open position, order cannot be executed unless opening a position";
+          error = "No open position, order cannot be executed unless a position is opened";
         } else if (positionForOrder.size.lt(order.sizeDelta)) {
-          error = "Order size is bigger than position, will be executed when position increase";
+          error = "Order size is bigger than position, will only be executable if position increases";
         }
       }
 
@@ -394,6 +395,7 @@ export default function OrdersList(props) {
           library={library}
           totalTokenWeights={totalTokenWeights}
           usdgSupply={usdgSupply}
+          savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
         />
       )}
     </React.Fragment>
