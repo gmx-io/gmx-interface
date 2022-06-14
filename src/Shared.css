@@ -385,6 +385,10 @@ button.btn-link:hover .logout-icon {
   width: 100%;
 }
 
+.font-sm {
+  font-size: 1.4rem;
+}
+
 .default-cursor.App-cta {
   cursor: default;
 }
