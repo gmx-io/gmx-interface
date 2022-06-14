@@ -567,6 +567,9 @@ button.App-connect-wallet:hover {
   display: flex;
   justify-content: space-between;
 }
+.Tooltip-row > span.label {
+  margin-right: 5px;
+}
 
 .App-card-row > div:last-child {
   text-align: right;

@@ -220,7 +220,7 @@ export default function OrdersList(props) {
                 return (
                   <>
                     The price that the order can be executed at may differ slightly from the chart price as market
-                    orders can change the price while limit orders cannot.
+                    orders can change the price while limit / trigger orders cannot.
                   </>
                 );
               }}
@@ -341,7 +341,7 @@ export default function OrdersList(props) {
                     return (
                       <>
                         The price that the order can be executed at may differ slightly from the chart price as market
-                        orders can change the price while limit orders cannot.
+                        orders can change the price while limit / trigger orders cannot.
                       </>
                     );
                   }}

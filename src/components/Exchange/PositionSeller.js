@@ -774,13 +774,13 @@ export default function PositionSeller(props) {
             )}
             <div className="PositionEditor-keep-leverage-settings">
               <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                <span className="muted">Keep leverage at {formatAmount(position.leverage, 4, 2)}x</span>
+                <span className="muted font-sm">Keep leverage at {formatAmount(position.leverage, 4, 2)}x</span>
               </Checkbox>
             </div>
             {orderOption === MARKET && (
               <div className="PositionEditor-allow-higher-slippage">
                 <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
-                  <span className="muted">Allow up to 1% slippage</span>
+                  <span className="muted font-sm">Allow up to 1% slippage</span>
                 </Checkbox>
               </div>
             )}
