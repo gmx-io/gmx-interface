@@ -975,4 +975,7 @@ table.Exchange-list-small td {
   .Exchange-swap-box .TokenSelector .Modal {
     margin: 0 1.55rem;
   }
+  .page-layout {
+    padding-top: 1rem !important;
+  }
 }
