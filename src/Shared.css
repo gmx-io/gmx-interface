@@ -388,6 +388,9 @@ button.btn-link:hover .logout-icon {
 .font-sm {
   font-size: 1.4rem;
 }
+.font-base {
+  font-size: 1.55rem;
+}
 
 .default-cursor.App-cta {
   cursor: default;
