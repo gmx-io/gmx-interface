@@ -1110,8 +1110,26 @@ export default function GlpSwap(props) {
                     )}
                     {!isBuying && (
                       <div>
-                        {formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} {token.symbol} ($
-                        {formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)})
+                        <Tooltip
+                          handle={
+                            amountLeftToDeposit && amountLeftToDeposit.lt(0)
+                              ? "$0.00"
+                              : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
+                          }
+                          position="right-bottom"
+                          tooltipIconPosition="right"
+                          renderContent={() => {
+                            return (
+                              <>
+                                Current Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)}
+                                {token.symbol}
+                                <br />
+                                <br />
+                                Max Pool Capacity: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
+                              </>
+                            );
+                          }}
+                        />
                       </div>
                     )}
                   </td>
