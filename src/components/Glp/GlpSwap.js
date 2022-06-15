@@ -1259,21 +1259,41 @@ export default function GlpSwap(props) {
                   )}
                   {!isBuying && (
                     <div className="App-card-row">
-                      <Tooltip
-                        handle="Available"
-                        position="left-bottom"
-                        renderContent={() => {
-                          return (
-                            <>
-                              <div>Available amount to withdraw from GLP.</div>
-                              <div>Funds not utilized by current open positions.</div>
-                            </>
-                          );
-                        }}
-                      />
+                      <div className="label">
+                        <Tooltip
+                          handle="Available"
+                          position="left-bottom"
+                          renderContent={() => {
+                            return (
+                              <>
+                                <div>Available amount to withdraw from GLP.</div>
+                                <div>Funds not utilized by current open positions.</div>
+                              </>
+                            );
+                          }}
+                        />
+                      </div>
                       <div>
-                        {formatKeyAmount(tokenInfo, "availableAmount", token.decimals, 2, true)} {token.symbol} ($
-                        {formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)})
+                        <Tooltip
+                          handle={
+                            amountLeftToDeposit && amountLeftToDeposit.lt(0)
+                              ? "$0.00"
+                              : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
+                          }
+                          position="right-bottom"
+                          tooltipIconPosition="right"
+                          renderContent={() => {
+                            return (
+                              <>
+                                Current Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)}
+                                {token.symbol}
+                                <br />
+                                <br />
+                                Max Pool Capacity: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
+                              </>
+                            );
+                          }}
+                        />
                       </div>
                     </div>
                   )}
@@ -1290,10 +1310,7 @@ export default function GlpSwap(props) {
                       {tokenFeeBps ? (
                         "Fees"
                       ) : (
-                        <Tooltip
-                          handle={`Fees`}
-                          renderContent={() => `Please enter an amount to see fee percentages`}
-                        />
+                        <Tooltip handle="Fees" renderContent={() => `Please enter an amount to see fee percentages`} />
                       )}
                     </div>
                     <div>{renderFees()}</div>
@@ -1316,7 +1333,6 @@ export default function GlpSwap(props) {
             );
           })}
         </div>
-        {/* </div> */}
       </div>
     </div>
   );
