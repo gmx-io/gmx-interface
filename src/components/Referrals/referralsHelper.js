@@ -13,7 +13,6 @@ export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscor
 export const REGEX_VERIFY_BYTES32 = /^0x[0-9a-f]{64}$/;
 
 export function isRecentReferralCodeNotExpired(referralCodeInfo) {
-  if (!areObjectsWithSameKey(getSampleReferrarStat(), referralCodeInfo)) return false;
   const REFERRAL_DATA_MAX_TIME = 60000 * 5; // 5 minutes
   if (referralCodeInfo.time) {
     return referralCodeInfo.time + REFERRAL_DATA_MAX_TIME > Date.now();
@@ -69,7 +68,7 @@ export const tierDiscountInfo = {
 };
 
 function areObjectsWithSameKey(obj1, obj2) {
-  return Object.keys(obj1).every((key) => Object.keys(obj2).includes(key));
+  return Object.keys(obj1).every((key) => key in obj2);
 }
 
 export function deserializeSampleStats(input) {
