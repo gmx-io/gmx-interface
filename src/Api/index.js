@@ -13,7 +13,6 @@ import UniPool from "../abis/UniPool.json";
 import UniswapV2 from "../abis/UniswapV2.json";
 import Token from "../abis/Token.json";
 import VaultReader from "../abis/VaultReader.json";
-import ReferralStorage from "../abis/ReferralStorage.json";
 
 import { getContract } from "../Addresses";
 import { getConstant } from "../Constants";
@@ -35,7 +34,6 @@ import {
   parseValue,
   expandDecimals,
   getInfoTokens,
-  isAddressZero,
   helperToast,
 } from "../Helpers";
 import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
@@ -556,46 +554,6 @@ export function useTotalGmxInLiquidity() {
   };
 }
 
-export function useUserReferralCode(library, chainId, account) {
-  const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: userReferralCode, mutate: mutateUserReferralCode } = useSWR(
-    account && [`ReferralStorage:traderReferralCodes`, chainId, referralStorageAddress, "traderReferralCodes", account],
-    {
-      fetcher: fetcher(library, ReferralStorage),
-    }
-  );
-  return {
-    userReferralCode,
-    mutateUserReferralCode,
-  };
-}
-export function useReferrerTier(library, chainId, account) {
-  const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: referrerTier, mutate: mutateReferrerTier } = useSWR(
-    account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
-    {
-      fetcher: fetcher(library, ReferralStorage),
-    }
-  );
-  return {
-    referrerTier,
-    mutateReferrerTier,
-  };
-}
-export function useCodeOwner(library, chainId, account, code) {
-  const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: codeOwner, mutate: mutateCodeOwner } = useSWR(
-    account && code && [`ReferralStorage:codeOwners`, chainId, referralStorageAddress, "codeOwners", code],
-    {
-      fetcher: fetcher(library, ReferralStorage),
-    }
-  );
-  return {
-    codeOwner,
-    mutateCodeOwner,
-  };
-}
-
 function useGmxPriceFromAvalanche() {
   const poolAddress = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
 
@@ -689,33 +647,6 @@ export async function approvePlugin(
     pendingTxns,
     setPendingTxns,
   });
-}
-
-export async function registerReferralCode(chainId, referralCode, { library, ...props }) {
-  const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
-  return callContract(chainId, contract, "registerCode", [referralCode], { ...props });
-}
-export async function setTraderReferralCodeByUser(chainId, referralCode, { library, ...props }) {
-  const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
-  const codeOwner = await contract.codeOwners(referralCode);
-  if (isAddressZero(codeOwner)) {
-    helperToast.error("Referral code does not exist");
-    return new Promise((resolve, reject) => {
-      reject();
-    });
-  }
-  return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCode], {
-    ...props,
-  });
-}
-export async function getReferralCodeOwner(chainId, referralCode) {
-  const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const provider = getProvider(null, chainId);
-  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, provider);
-  const codeOwner = await contract.codeOwners(referralCode);
-  return codeOwner;
 }
 
 export async function createSwapOrder(
@@ -1030,7 +961,7 @@ export async function callContract(chainId, contract, method, params, opts) {
       default:
         failMsg = (
           <div>
-            {opts.failMsg || "Transaction failed."}
+            {opts.failMsg || "Transaction failed"}
             <br />
             {message && <ToastifyDebug>{message}</ToastifyDebug>}
           </div>
