@@ -18,6 +18,7 @@
   margin: 0;
 }
 .trigger-order-list li button {
+  font-size: 1.4rem;
   background: none;
   border: none;
   color: white;
