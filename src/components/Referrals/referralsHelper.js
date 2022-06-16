@@ -67,7 +67,7 @@ export const tierDiscountInfo = {
   2: 10,
 };
 
-function areObjectsWithSameKey(obj1, obj2) {
+function areObjectsWithSameKeys(obj1, obj2) {
   return Object.keys(obj1).every((key) => key in obj2);
 }
 
@@ -76,7 +76,7 @@ export function deserializeSampleStats(input) {
   if (!Array.isArray(parsedData)) return [];
   return parsedData
     .map((data) => {
-      if (!areObjectsWithSameKey(getSampleReferrarStat(), data)) return null;
+      if (!areObjectsWithSameKeys(getSampleReferrarStat(), data)) return null;
       return Object.keys(data).reduce((acc, cv) => {
         const currentValue = data[cv];
         if (currentValue?.type === "BigNumber") {
