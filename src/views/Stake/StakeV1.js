@@ -364,7 +364,7 @@ function StakeModal(props) {
       })
       .catch((e) => {
         console.error(e);
-        helperToast.error("Stake failed.");
+        helperToast.error("Stake failed");
       })
       .finally(() => {
         setIsStaking(false);
@@ -473,7 +473,7 @@ function UnstakeModal(props) {
       })
       .catch((e) => {
         console.error(e);
-        helperToast.error("Unstake failed.");
+        helperToast.error("Unstake failed");
       })
       .finally(() => {
         setIsUnstaking(false);
@@ -713,7 +713,7 @@ export default function StakeV1() {
       })
       .catch((e) => {
         console.error(e);
-        helperToast.error("Claim failed.");
+        helperToast.error("Claim failed");
       });
   };
 

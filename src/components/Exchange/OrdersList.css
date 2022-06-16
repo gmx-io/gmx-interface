@@ -1,11 +1,11 @@
 .Orders-list {
   width: 100%;
-  background: linear-gradient(45deg, rgba(11,5,55,0.6) 0%, rgba(21,3,48,0.6) 100%);
-  font-size: 0.9rem;
+  background: linear-gradient(45deg, rgba(11, 5, 55, 0.6) 0%, rgba(21, 3, 48, 0.6) 100%);
+  font-size: 1.4rem;
 }
 
 .Orders-list.small {
-	display: none;
+  display: none;
 }
 
 table.Orders-list {
@@ -13,14 +13,15 @@ table.Orders-list {
   border: 1px solid #1c0e6a;
 }
 
-table.Orders-list th, table.Orders-list td {
+table.Orders-list th,
+table.Orders-list td {
   font-weight: normal;
   text-align: left;
-  padding: 0.7rem 1rem;
+  padding: 1.1rem 1.55rem;
 }
 
 table.Orders-list tr {
-  background: linear-gradient(90deg, rgba(57,28,147,0.1) 0%, rgba(66,24,140,0.1) 100%);
+  background: linear-gradient(90deg, rgba(57, 28, 147, 0.1) 0%, rgba(66, 24, 140, 0.1) 100%);
   border-bottom: 1px solid rgba(28, 14, 106, 0.5);
 }
 
@@ -33,7 +34,7 @@ table.Orders-list tr:last-child {
 }
 
 .Orders-list-item:hover {
-  background: linear-gradient(90deg, rgba(93,43,255,0.5) 0%, rgba(184,15,150,0.5) 100%);
+  background: linear-gradient(90deg, rgba(93, 43, 255, 0.5) 0%, rgba(184, 15, 150, 0.5) 100%);
 }
 
 .Orders-list-item-error {
@@ -41,7 +42,7 @@ table.Orders-list tr:last-child {
 }
 
 .Orders-list-item-type {
-  width: 60px;
+  width: 6rem;
 }
 
 table.Orders-list tr.Orders-list-header {
@@ -53,7 +54,7 @@ table.Orders-list th {
 }
 
 button.Orders-list-action {
-  font-size: 0.9rem;
+  font-size: 1.4rem;
   padding: 0;
   border-radius: 3px;
   background: none;
@@ -67,32 +68,12 @@ button.Orders-list-action:hover {
   opacity: 1;
 }
 
-.Orders-list-modal-button {
-  margin-top: 10px;
-}
-
-/* don't know how to solve other way */
-.Orders-list-modal .Exchange-swap-input {
-  width: 180px;
-}
-
-.Orders-list-modal-warning {
-  color: #fa3c58;
-  font-size: 0.9rem;
-  text-align: center;
-  margin-top: 10px;
-}
-
-.Orders-list-modal .Modal-content {
-  width: 22rem;
-}
-
 @media (max-width: 1000px) {
   .Orders-list.small {
     display: block;
   }
 
   .Orders-list.large {
-  	display: none;
+    display: none;
   }
 }
