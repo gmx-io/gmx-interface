@@ -651,14 +651,14 @@ export default function ConfirmationBox(props) {
           {isMarketOrder && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
-                <span className="muted">Allow up to 1% slippage</span>
+                <span className="muted font-sm">Allow up to 1% slippage</span>
               </Checkbox>
             </div>
           )}
           {decreaseOrdersThatWillBeExecuted.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-                <span className="muted">I am aware of the trigger orders</span>
+                <span className="muted font-sm">I am aware of the trigger orders</span>
               </Checkbox>
             </div>
           )}
