@@ -82,8 +82,6 @@ import WETH from "../../abis/WETH.json";
 import longImg from "../../img/long.svg";
 import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
-import { useUserReferralCode } from "../../Api/referrals";
-import { useLocalStorage } from "react-use";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -166,7 +164,6 @@ export default function SwapBox(props) {
     setIsWaitingForPositionRouterApproval,
     isPluginApproving,
     isPositionRouterApproving,
-    savedShouldDisableOrderValidation,
   } = props;
 
   const [fromValue, setFromValue] = useState("");
@@ -177,8 +174,8 @@ export default function SwapBox(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
-  const { userReferralCode } = useUserReferralCode(library, chainId, account);
-  const [userReferralCodeInLocalStorage] = useLocalStorage(REFERRAL_CODE_KEY);
+  const { userReferralCode } = Api.useUserReferralCode(library, chainId, account);
+  const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -838,7 +835,7 @@ export default function SwapBox(props) {
       return ["Max leverage: 30.5x"];
     }
 
-    if (!isMarketOrder && entryMarkPrice && triggerPriceUsd && !savedShouldDisableOrderValidation) {
+    if (!isMarketOrder && entryMarkPrice && triggerPriceUsd) {
       if (isLong && entryMarkPrice.lt(triggerPriceUsd)) {
         return ["Price above Mark Price"];
       }
@@ -1034,7 +1031,7 @@ export default function SwapBox(props) {
       modalError === "BUFFER" ? `${shortCollateralToken.symbol} Required` : `${fromToken.symbol} Capacity Reached`;
     const swapTokenSymbol = isLong ? toToken.symbol : shortCollateralToken.symbol;
     return (
-      <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal font-base">
+      <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal">
         <div>You need to select {swapTokenSymbol} as the "Pay" token to initiate this trade.</div>
         <br />
         {isShort && (
@@ -2317,7 +2314,6 @@ export default function SwapBox(props) {
       {renderOrdersToa()}
       {isConfirming && (
         <ConfirmationBox
-          library={library}
           isHigherSlippageAllowed={isHigherSlippageAllowed}
           setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
           orders={orders}
@@ -2354,8 +2350,6 @@ export default function SwapBox(props) {
           collateralTokenAddress={collateralTokenAddress}
           infoTokens={infoTokens}
           chainId={chainId}
-          setPendingTxns={setPendingTxns}
-          pendingTxns={pendingTxns}
         />
       )}
     </div>
