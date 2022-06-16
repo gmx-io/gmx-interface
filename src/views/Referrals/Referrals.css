@@ -1,5 +1,5 @@
 .Referrals {
-  padding-top: 4.65rem;
+  padding-top: 3rem;
 }
 
 .section-center {
@@ -7,55 +7,55 @@
   text-align: center;
 }
 .mt-large {
-  margin-top: 3.1rem;
+  margin-top: 2rem;
 }
 .mt-medium {
-  margin-top: 1.55rem;
+  margin-top: 1rem;
 }
 .referral-tab-container {
-  margin: 1.55rem auto 3.1rem auto;
+  margin: 1rem auto 2rem auto;
 }
 .referral-card {
   position: relative;
-  padding: 2.325rem;
-  border-radius: 1.3rem;
-  max-width: 59.2rem;
+  padding: 1.5rem;
+  border-radius: 13px;
+  max-width: 38.19rem;
   background: #16182e;
-  box-shadow: 0px 0.5rem 1.3rem #00000085;
+  box-shadow: 0px 5px 13px #00000085;
   border: 1px solid #2a2b3d;
-  border-radius: 0.4rem;
+  border-radius: 4px;
 }
 .referral-card .title {
   font-weight: 500;
-  font-size: 2.325rem;
-  line-height: 3.1rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
   color: #ffffff;
-  padding: 0.775rem 0;
+  padding: 0.5rem 0;
   margin: 0;
 }
 .referral-card .sub-title {
-  font-size: 1.8rem;
-  line-height: 2.5rem;
+  font-size: 1.161rem;
+  line-height: 1.6rem;
   letter-spacing: 0px;
   color: #fff;
-  margin-top: 1.1625rem;
+  margin-top: 0.75rem;
 }
 .referral-card .card-action {
-  margin-top: 3.1rem;
+  margin-top: 2rem;
 }
 
 .referral-card .card-action input {
   border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 1.55rem;
+  font-size: 1rem;
   width: 100%;
   box-sizing: border-box;
-  margin-right: 1.55rem;
+  margin-right: 1rem;
 }
 .referral-body-container .list {
-  margin-top: 3.1rem;
+  margin-top: 2rem;
 }
 .reward-history {
-  margin-top: 3.1rem;
+  margin-top: 2rem;
 }
 .active-referral-code .edit {
   display: flex;
@@ -63,7 +63,7 @@
   justify-content: center;
 }
 .active-referral-code .edit span {
-  margin-right: 1.55rem;
+  margin-right: 1rem;
 }
 .active-referral-code .edit svg {
   cursor: pointer;
@@ -72,28 +72,28 @@
   opacity: 0.75;
 }
 .active-referral-code .tier {
-  margin-top: 0.775rem;
+  margin-top: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .active-referral-code .tier span {
-  font-size: 1.3175rem;
+  font-size: 0.85rem;
   color: #a9a9b0;
-  margin-right: 0.775rem;
+  margin-right: 0.5rem;
 }
 .active-referral-code .tier a {
   text-decoration: none;
   font-size: 0;
 }
 .mb-sm {
-  margin-bottom: 1.55rem;
+  margin-bottom: 1rem;
 }
 .edit-referral-modal {
-  width: 31rem;
+  width: 20rem;
 }
 .referral-code-edit span {
-  margin-right: 0.775rem;
+  margin-right: 0.5rem;
 }
 .referral-code-edit svg {
   opacity: 0.75;
@@ -105,8 +105,8 @@
 }
 .create-referrar-code {
   text-align: center;
-  max-width: 50rem;
-  margin: 3.1rem auto;
+  max-width: 500px;
+  margin: 2rem auto;
 }
 .transparent-btn {
   text-decoration: none;
@@ -114,9 +114,9 @@
   align-items: center;
   background: transparent;
   border: 1px solid var(--dark-blue-border);
-  padding: 0.775rem 1.55rem;
+  padding: 0.5rem 1rem;
   color: white;
-  font-size: 1.4rem;
+  font-size: 14px;
   border-radius: var(--border-radius-sm);
   cursor: pointer;
 }
@@ -134,35 +134,35 @@
 }
 .referral-table-header .sub-title {
   color: #a9a9b0;
-  font-size: 1.4rem;
-  margin-left: 0.775rem;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
 }
 
 .referral-table-header .ml-small {
-  margin-left: 0.775rem;
+  margin-left: 0.5rem;
 }
 .create-referrar-code form {
   display: flex;
   align-items: inherit;
   justify-content: center;
-  margin: 3.1rem 0;
+  margin: 2rem 0;
 }
 .create-referrar-code form input {
   border: 1px solid #1e2136;
-  border-radius: 0.4rem;
-  padding: 1.1625rem;
-  font-size: 1.55rem;
-  width: 40rem;
+  border-radius: 4px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  width: 400px;
 }
 .create-referrar-code form button {
-  margin-left: 1.55rem;
+  margin-left: 1rem;
 }
 
 .referral-stats {
   margin: 0 auto;
   display: grid;
-  grid-gap: 1.55rem;
-  grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+  grid-gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
 .text-center {
@@ -172,30 +172,30 @@
 .info-card {
   background: var(--dark-blue-bg);
   border: 1px solid #1e2136;
-  border-radius: 0.4rem;
+  border-radius: 4px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .info-card .label {
-  font-size: 1.55rem;
-  line-height: 2.1rem;
+  font-size: 1rem;
+  line-height: 1.355rem;
   font-weight: normal;
   letter-spacing: 0px;
   color: #ffffff;
-  margin-bottom: 1.55rem;
+  margin-bottom: 1rem;
   text-align: center;
 }
 .info-card .data {
-  font-size: 2.325rem;
+  font-size: 1.5rem;
   font-weight: normal;
   text-align: center;
   padding: 0;
-  margin: 1.55rem 0;
+  margin: 1rem 0;
 }
 .info-card .info-card-question-icon {
   vertical-align: middle;
-  font-size: 1.4rem;
+  font-size: 0.9rem;
   opacity: 0.8;
 }
 
@@ -212,11 +212,11 @@
   display: flex;
 }
 .referral-code span {
-  margin-right: 0.775rem;
+  margin-right: 0.5rem;
   font-family: monospace;
 }
 .table-referral-code .info {
-  margin-left: 0.775rem;
+  margin-left: 0.5rem;
 }
 .referral-table {
   border-collapse: collapse;
@@ -239,30 +239,29 @@
 
 .table-referral-code p {
   margin: 0;
-  margin-left: 0.775rem;
+  margin-left: 0.5rem;
   padding: 0;
 }
 .error {
   margin: 0;
-  padding: 0.775rem 0 1.55rem;
+  padding: 0.5rem 0 1rem;
   color: #fa3c58;
-  font-size: 1.4rem;
+  font-size: 0.9rem;
 }
 
 .table-wrapper {
   display: block;
   width: 100%;
-  font-size: 1.55rem;
 }
 
 .empty-message {
-  margin: 4.65rem 0;
+  margin: 3rem 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1.55rem;
+  padding: 1rem;
   border: 1px solid #1e2136;
-  border-radius: 0.4rem;
+  border-radius: 4px;
   background: #16182e;
 }
 .confirm-checkbox .Checkbox {
@@ -270,26 +269,19 @@
   display: grid;
   grid-template-columns: 1fr auto;
   direction: rtl;
-  font-size: 1.4rem;
-  margin-bottom: 1.55rem;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
 }
 
 @media (max-width: 800px) {
   .referral-table {
     width: auto;
-    margin-bottom: 1.55rem;
+    margin-bottom: 1rem;
   }
   .table-wrapper {
     overflow-x: auto;
   }
   .table-head {
     white-space: nowrap;
-  }
-}
-@media (max-width: 500px) {
-  .referral-table-header .sub-title {
-    display: block;
-    margin-left: 0;
-    margin-top: 2px;
   }
 }

@@ -15,4 +15,3 @@
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "no-referrer"
     X-Content-Type-Options = "nosniff"
-    Content-Security-Policy = "default-src 'self' netlify-cdp-loader.netlify.app; connect-src *; frame-src 'self' app.netlify.com; style-src 'self' 'unsafe-inline';"

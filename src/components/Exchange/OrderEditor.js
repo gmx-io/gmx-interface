@@ -45,7 +45,6 @@ export default function OrderEditor(props) {
     usdgSupply,
     getPositionForOrder,
     positionsMap,
-    savedShouldDisableOrderValidation,
   } = props;
 
   const { chainId } = useChainId();
@@ -192,7 +191,7 @@ export default function OrderEditor(props) {
       }
     }
 
-    if (order.type !== SWAP && indexTokenMarkPrice && !savedShouldDisableOrderValidation) {
+    if (order.type !== SWAP && indexTokenMarkPrice) {
       if (order.triggerAboveThreshold && indexTokenMarkPrice.gt(triggerPrice)) {
         return "Price below Mark Price";
       }
