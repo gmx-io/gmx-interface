@@ -375,8 +375,8 @@ export default function ConfirmationBox(props) {
       <>
         <div className="Confirmation-box-warning">
           You have {existingTriggerOrderLength > 1 ? `${existingTriggerOrderLength}` : "an"} active trigger {orderText}{" "}
-          that would potentially execute immediately. Please accept confirmation of trigger
-          {` ${orderText} `} to continue.
+          that might execute immediately after you open this position. Please cancel the {orderText} or accept the
+          confirmation to continue.
         </div>
         <ul className="trigger-order-list">
           {decreaseOrdersThatWillBeExecuted.map((order, i) => {
