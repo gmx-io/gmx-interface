@@ -22,7 +22,7 @@ export default function BuyGlp(props) {
   }, [history.location.hash]);
 
   return (
-    <div className="default-container buy-glp-content page-layout">
+    <div className="default-container page-layout">
       <div className="section-title-block">
         <div className="section-title-icon">
           <img src={buyGLPIcon} alt="buyGLPIcon" />

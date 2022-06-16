@@ -1,13 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="93" height="64" viewBox="0 0 93 64">
-  <g id="ic_stats" transform="translate(-0.25 -0.219)">
-    <rect id="ic_base_token" width="93" height="64" transform="translate(0.25 0.219)" fill="none" opacity="0.47"/>
-    <g id="Group_116" data-name="Group 116" transform="translate(4.657 4.157)">
-      <rect id="Rectangle_192" data-name="Rectangle 192" width="24" height="56" rx="4" transform="translate(-0.407 0.062)" fill="#303fd0"/>
-      <rect id="Rectangle_193" data-name="Rectangle 193" width="24" height="44" rx="4" transform="translate(14.593 12.062)" fill="#02cecc"/>
-      <rect id="Rectangle_194" data-name="Rectangle 194" width="24" height="31" rx="4" transform="translate(27.593 25.062)" fill="#50d0fe"/>
-      <path id="Intersection_8" data-name="Intersection 8" d="M-14275.405-110.937a4,4,0,0,1-4-4v-36a4,4,0,0,1,4-4h5v40a4,4,0,0,1-4,4Z" transform="translate(14293.999 167)" fill="#4e09f8" style="mix-blend-mode: screen;isolation: isolate"/>
-      <path id="Intersection_9" data-name="Intersection 9" d="M-14277.407-122.937a4,4,0,0,1-4-4v-23a4,4,0,0,1,4-4h7v27a4,4,0,0,1-4,4Z" transform="translate(14308.999 179)" fill="#02cecc" style="mix-blend-mode: screen;isolation: isolate"/>
-    </g>
-    <path id="Path_1485" data-name="Path 1485" d="M4.763,12.891a1.983,1.983,0,0,0,2.8,0l6.411-6.409,10.5,10.5a1.983,1.983,0,0,0,2.8,0L40.942,3.315,44.6,6.972a2.975,2.975,0,0,0,5.078-2.1V-7.642a1.983,1.983,0,0,0-1.983-1.983H35.182a2.975,2.975,0,0,0-2.1,5.078L36.735-.891,25.877,9.966,15.38-.531a1.983,1.983,0,0,0-2.8,0L3.361,8.684a1.983,1.983,0,0,0,0,2.8Z" transform="translate(38.574 38.252)" fill="#fff"/>
-  </g>
-</svg>
+<svg height="64" viewBox="0 0 93 64" width="93" xmlns="http://www.w3.org/2000/svg"><path d="m0 0h93v64h-93z" fill="none" opacity=".47"/><rect fill="#303fd0" height="56" rx="4" width="24" x="4" y="4"/><rect fill="#02cecc" height="44" rx="4" width="24" x="19" y="16"/><rect fill="#50d0fe" height="31" rx="4" width="24" x="32" y="29"/><path d="m-14275.405-110.937a4 4 0 0 1 -4-4v-36a4 4 0 0 1 4-4h5v40a4 4 0 0 1 -4 4z" fill="#4e09f8" transform="translate(14298.406 170.938)"/><path d="m-14277.407-122.937a4 4 0 0 1 -4-4v-23a4 4 0 0 1 4-4h7v27a4 4 0 0 1 -4 4z" fill="#02cecc" transform="translate(14313.406 182.938)"/><path d="m4.763 12.891a1.983 1.983 0 0 0 2.8 0l6.411-6.409 10.5 10.5a1.983 1.983 0 0 0 2.8 0l13.668-13.667 3.658 3.657a2.975 2.975 0 0 0 5.078-2.1v-12.514a1.983 1.983 0 0 0 -1.983-1.983h-12.513a2.975 2.975 0 0 0 -2.1 5.078l3.653 3.656-10.858 10.857-10.497-10.497a1.983 1.983 0 0 0 -2.8 0l-9.219 9.215a1.983 1.983 0 0 0 0 2.8z" fill="#fff" transform="translate(38.324 38.033)"/></svg>

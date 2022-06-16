@@ -1,9 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="25.026" height="25.025" viewBox="0 0 25.026 25.025">
-  <g id="ic_binance_logo" transform="translate(0.547)">
-    <path id="Path_4374" data-name="Path 4374" d="M26.692,10.516l4.86-4.86,4.862,4.862,2.828-2.828L31.552,0,23.864,7.688Z" transform="translate(-19.586)" fill="#f3ba2f"/>
-    <rect id="Rectangle_249" data-name="Rectangle 249" width="3.999" height="3.999" transform="translate(2.281 9.684) rotate(45)" fill="#f3ba2f"/>
-    <path id="Path_4375" data-name="Path 4375" d="M26.675,73.4l4.86,4.86L36.4,73.4l2.829,2.826v0l-7.69,7.69-7.688-7.688,0,0Z" transform="translate(-19.569 -58.889)" fill="#f3ba2f"/>
-    <rect id="Rectangle_250" data-name="Rectangle 250" width="3.999" height="3.999" transform="translate(24.479 12.513) rotate(135)" fill="#f3ba2f"/>
-    <path id="Path_4376" data-name="Path 4376" d="M53.973,51.65h0L51.1,48.78,48.984,50.9h0l-.244.244-.5.5h0l0,0,0,0L51.1,54.522l2.87-2.87v0Z" transform="translate(-39.139 -39.138)" fill="#f3ba2f"/>
-  </g>
-</svg>
+<svg height="25.025" viewBox="0 0 25.026 25.025" width="25.026" xmlns="http://www.w3.org/2000/svg"><g fill="#f3ba2f"><path d="m26.692 10.516 4.86-4.86 4.862 4.862 2.828-2.828-7.69-7.69-7.688 7.688z" transform="translate(-19.039)"/><path d="m0 0h3.999v3.999h-3.999z" transform="matrix(.70710678 .70710678 -.70710678 .70710678 2.828 9.684)"/><path d="m26.675 73.4 4.86 4.86 4.865-4.86 2.829 2.826-7.69 7.69-7.688-7.688z" transform="translate(-19.022 -58.889)"/><path d="m0 0h3.999v3.999h-3.999z" transform="matrix(-.70710678 .70710678 -.70710678 -.70710678 25.026 12.513)"/><path d="m53.973 51.65-2.873-2.87-2.116 2.12-.244.244-.5.5 2.86 2.878 2.87-2.87z" transform="translate(-38.592 -39.138)"/></g></svg>
