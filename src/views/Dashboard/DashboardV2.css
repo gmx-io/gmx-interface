@@ -120,6 +120,12 @@
 .DashboardV2-token-cards .token-table th:nth-child(3) {
   width: 20rem;
 }
+.mobile-token-card {
+  display: flex;
+}
+.mobile-token-card > img {
+  margin-right: 8px;
+}
 
 @media (max-width: 1024px) {
   .stats-wrapper {
