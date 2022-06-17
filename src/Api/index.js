@@ -961,7 +961,7 @@ export async function callContract(chainId, contract, method, params, opts) {
       default:
         failMsg = (
           <div>
-            {opts.failMsg || "Transaction failed."}
+            {opts.failMsg || "Transaction failed"}
             <br />
             {message && <ToastifyDebug>{message}</ToastifyDebug>}
           </div>

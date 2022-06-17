@@ -224,6 +224,11 @@ export default function GlpSwap(props) {
     reserveAmountUsd = reservedAmount.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS));
   }
 
+  let maxSellAmount = glpBalance;
+  if (glpBalance && reservedAmount) {
+    maxSellAmount = glpBalance.sub(reservedAmount);
+  }
+
   const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, undefined);
   const swapToken = getToken(chainId, swapTokenAddress);
   const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
@@ -475,7 +480,7 @@ export default function GlpSwap(props) {
     if (isSubmitting) {
       return false;
     }
-    if (isSwapTokenCapReached) {
+    if (isBuying && isSwapTokenCapReached) {
       return false;
     }
 
@@ -634,11 +639,6 @@ export default function GlpSwap(props) {
   let feePercentageText = formatAmount(feeBasisPoints, 2, 2, true, "-");
   if (feeBasisPoints !== undefined && feeBasisPoints.toString().length > 0) {
     feePercentageText += "%";
-  }
-
-  let maxSellAmount = glpBalance;
-  if (glpBalance && reservedAmount) {
-    maxSellAmount = glpBalance.sub(reservedAmount);
   }
 
   const wrappedTokenSymbol = getWrappedToken(chainId).symbol;
