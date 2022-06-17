@@ -40,6 +40,7 @@ export default function OrdersList(props) {
     orders,
     hideActions,
     chainId,
+    savedShouldDisableOrderValidation,
   } = props;
 
   const [editingOrder, setEditingOrder] = useState(null);
@@ -194,9 +195,9 @@ export default function OrdersList(props) {
       if (order.type === DECREASE) {
         const positionForOrder = getPositionForOrder(account, order, positionsMap);
         if (!positionForOrder) {
-          error = "No open position, order cannot be executed";
+          error = "No open position, order cannot be executed unless a position is opened";
         } else if (positionForOrder.size.lt(order.sizeDelta)) {
-          error = "Order size exceeds position size, order cannot be executed";
+          error = "Order size is bigger than position, will only be executable if position increases";
         }
       }
 
@@ -219,7 +220,7 @@ export default function OrdersList(props) {
                 return (
                   <>
                     The price that the order can be executed at may differ slightly from the chart price as market
-                    orders can change the price while limit orders cannot.
+                    orders can change the price while limit / trigger orders cannot.
                   </>
                 );
               }}
@@ -309,9 +310,9 @@ export default function OrdersList(props) {
       if (order.type === DECREASE) {
         const positionForOrder = getPositionForOrder(account, order, positionsMap);
         if (!positionForOrder) {
-          error = "There is no open position for the order, it can't be executed";
+          error = "No open position, order cannot be executed unless a position is opened";
         } else if (positionForOrder.size.lt(order.sizeDelta)) {
-          error = "The order size is bigger than position, it can't be executed";
+          error = "Order size is bigger than position, will only be executable if position increases";
         }
       }
 
@@ -340,7 +341,7 @@ export default function OrdersList(props) {
                     return (
                       <>
                         The price that the order can be executed at may differ slightly from the chart price as market
-                        orders can change the price while limit orders cannot.
+                        orders can change the price while limit / trigger orders cannot.
                       </>
                     );
                   }}
@@ -394,6 +395,7 @@ export default function OrdersList(props) {
           library={library}
           totalTokenWeights={totalTokenWeights}
           usdgSupply={usdgSupply}
+          savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
         />
       )}
     </React.Fragment>
