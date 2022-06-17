@@ -1,15 +1,16 @@
 import {
   formatAmount,
-  USD_DECIMALS,
   bigNumberify,
+  isAddressZero,
+  USD_DECIMALS,
   MAX_REFERRAL_CODE_LENGTH,
   ARBITRUM,
   AVALANCHE,
-  isAddressZero,
 } from "../../Helpers";
 import { encodeReferralCode, getReferralCodeOwner } from "../../Api/referrals";
 
 export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
+export const REGEX_VERIFY_BYTES32 = /^0x[0-9a-f]{64}$/;
 
 export function isRecentReferralCodeNotExpired(referralCodeInfo) {
   const REFERRAL_DATA_MAX_TIME = 60000 * 5; // 5 minutes
@@ -66,7 +67,30 @@ export const tierDiscountInfo = {
   2: 10,
 };
 
-export const getSampleReferrarStat = (code, ownerOnOtherNetwork, account) => {
+function areObjectsWithSameKeys(obj1, obj2) {
+  return Object.keys(obj1).every((key) => key in obj2);
+}
+
+export function deserializeSampleStats(input) {
+  const parsedData = JSON.parse(input);
+  if (!Array.isArray(parsedData)) return [];
+  return parsedData
+    .map((data) => {
+      if (!areObjectsWithSameKeys(getSampleReferrarStat(), data)) return null;
+      return Object.keys(data).reduce((acc, cv) => {
+        const currentValue = data[cv];
+        if (currentValue?.type === "BigNumber") {
+          acc[cv] = bigNumberify(currentValue.hex || 0);
+        } else {
+          acc[cv] = currentValue;
+        }
+        return acc;
+      }, {});
+    })
+    .filter(Boolean);
+}
+
+export const getSampleReferrarStat = (code = "", ownerOnOtherNetwork = "", account = "") => {
   return {
     discountUsd: bigNumberify(0),
     referralCode: code,
