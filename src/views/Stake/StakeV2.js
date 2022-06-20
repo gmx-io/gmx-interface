@@ -481,36 +481,38 @@ function VesterDepositModal(props) {
                 />
               </div>
             </div>
-          </div>
-          <div className="Exchange-info-row">
-            <div className="Exchange-info-label">Reserve Amount</div>
-            <div className="align-right">
-              <Tooltip
-                handle={`${formatAmount(
-                  reserveAmount && reserveAmount.gte(additionalReserveAmount) ? reserveAmount : additionalReserveAmount,
-                  18,
-                  2,
-                  true
-                )} / ${formatAmount(maxReserveAmount, 18, 2, true)}`}
-                position="right-bottom"
-                renderContent={() => {
-                  return (
-                    <>
-                      Current Reserved: {formatAmount(reserveAmount, 18, 2, true)}
-                      <br />
-                      Additional reserve required: {formatAmount(additionalReserveAmount, 18, 2, true)}
-                      <br />
-                      {amount && nextReserveAmount.gt(maxReserveAmount) && (
-                        <div>
-                          <br />
-                          You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)} {stakeTokenLabel}{" "}
-                          to vest {formatAmount(amount, 18, 2, true)} esGMX.
-                        </div>
-                      )}
-                    </>
-                  );
-                }}
-              />
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Reserve Amount</div>
+              <div className="align-right">
+                <Tooltip
+                  handle={`${formatAmount(
+                    reserveAmount && reserveAmount.gte(additionalReserveAmount)
+                      ? reserveAmount
+                      : additionalReserveAmount,
+                    18,
+                    2,
+                    true
+                  )} / ${formatAmount(maxReserveAmount, 18, 2, true)}`}
+                  position="right-bottom"
+                  renderContent={() => {
+                    return (
+                      <>
+                        Current Reserved: {formatAmount(reserveAmount, 18, 2, true)}
+                        <br />
+                        Additional reserve required: {formatAmount(additionalReserveAmount, 18, 2, true)}
+                        <br />
+                        {amount && nextReserveAmount.gt(maxReserveAmount) && (
+                          <div>
+                            <br />
+                            You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)}{" "}
+                            {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.
+                          </div>
+                        )}
+                      </>
+                    );
+                  }}
+                />
+              </div>
             </div>
           </div>
           <div className="Exchange-swap-button-container">
@@ -1326,7 +1328,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   }
 
   return (
-    <div className="StakeV2 Page page-layout">
+    <div className="default-container page-layout">
       <StakeModal
         isVisible={isStakeModalVisible}
         setIsVisible={setIsStakeModalVisible}
@@ -1420,20 +1422,23 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         library={library}
         chainId={chainId}
       />
-      <div className="Page-title-section mt-0">
-        <div className="Page-title">Earn</div>
-        <div className="Page-description">
-          Stake{" "}
-          <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">
-            GMX
-          </a>{" "}
-          and{" "}
-          <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
-            GLP
-          </a>{" "}
-          to earn rewards.
+      <div className="section-title-block">
+        <div className="section-title-icon"></div>
+        <div className="section-title-content">
+          <div className="Page-title">Earn</div>
+          <div className="Page-description">
+            Stake{" "}
+            <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">
+              GMX
+            </a>{" "}
+            and{" "}
+            <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
+              GLP
+            </a>{" "}
+            to earn rewards.
+          </div>
+          {earnMsg && <div className="Page-description">{earnMsg}</div>}
         </div>
-        {earnMsg && <div className="Page-description">{earnMsg}</div>}
       </div>
       <div className="StakeV2-content">
         <div className="StakeV2-cards">
@@ -1929,7 +1934,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       </div>
 
       <div>
-        <div className="Page-title-section">
+        <div className="Tab-title-section">
           <div className="Page-title">Vest</div>
           <div className="Page-description">
             Convert esGMX tokens to GMX tokens.

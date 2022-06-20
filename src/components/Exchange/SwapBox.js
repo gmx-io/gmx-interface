@@ -59,8 +59,6 @@ import {
   calculatePositionDelta,
   replaceNativeTokenAddress,
   adjustForDecimals,
-  REFERRAL_CODE_KEY,
-  isHashZero,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import * as Api from "../../Api";
@@ -82,6 +80,7 @@ import WETH from "../../abis/WETH.json";
 import longImg from "../../img/long.svg";
 import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
+import { useUserReferralCode } from "../../Api/referrals";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -164,6 +163,7 @@ export default function SwapBox(props) {
     setIsWaitingForPositionRouterApproval,
     isPluginApproving,
     isPositionRouterApproving,
+    savedShouldDisableOrderValidation,
   } = props;
 
   const [fromValue, setFromValue] = useState("");
@@ -174,8 +174,7 @@ export default function SwapBox(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
-  const { userReferralCode } = Api.useUserReferralCode(library, chainId, account);
-  const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
+  const { attachedOnChain, userReferralCode } = useUserReferralCode(library, chainId, account);
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -835,7 +834,7 @@ export default function SwapBox(props) {
       return ["Max leverage: 30.5x"];
     }
 
-    if (!isMarketOrder && entryMarkPrice && triggerPriceUsd) {
+    if (!isMarketOrder && entryMarkPrice && triggerPriceUsd && !savedShouldDisableOrderValidation) {
       if (isLong && entryMarkPrice.lt(triggerPriceUsd)) {
         return ["Price above Mark Price"];
       }
@@ -1031,7 +1030,7 @@ export default function SwapBox(props) {
       modalError === "BUFFER" ? `${shortCollateralToken.symbol} Required` : `${fromToken.symbol} Capacity Reached`;
     const swapTokenSymbol = isLong ? toToken.symbol : shortCollateralToken.symbol;
     return (
-      <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal">
+      <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal font-base">
         <div>You need to select {swapTokenSymbol} as the "Pay" token to initiate this trade.</div>
         <br />
         {isShort && (
@@ -1402,8 +1401,8 @@ export default function SwapBox(props) {
   };
 
   let referralCode = ethers.constants.HashZero;
-  if (isHashZero(userReferralCode) && userReferralCodeInLocalStorage) {
-    referralCode = userReferralCodeInLocalStorage;
+  if (!attachedOnChain && userReferralCode) {
+    referralCode = userReferralCode;
   }
 
   const increasePosition = async () => {
@@ -2314,6 +2313,7 @@ export default function SwapBox(props) {
       {renderOrdersToa()}
       {isConfirming && (
         <ConfirmationBox
+          library={library}
           isHigherSlippageAllowed={isHigherSlippageAllowed}
           setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
           orders={orders}
@@ -2350,6 +2350,8 @@ export default function SwapBox(props) {
           collateralTokenAddress={collateralTokenAddress}
           infoTokens={infoTokens}
           chainId={chainId}
+          setPendingTxns={setPendingTxns}
+          pendingTxns={pendingTxns}
         />
       )}
     </div>

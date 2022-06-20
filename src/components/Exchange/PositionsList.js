@@ -48,7 +48,7 @@ const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
     })
     .map((order) => {
       if (order.type === DECREASE && order.sizeDelta.gt(position.size)) {
-        order.error = "Order size exceeds position size, order cannot be executed";
+        order.error = "Order size is bigger than position, will only be executable if position increases";
       }
       return order;
     });
@@ -305,17 +305,31 @@ export default function PositionsList(props) {
                       <div>
                         {positionOrders.length === 0 && "None"}
                         {positionOrders.map((order) => {
-                          return (
-                            <div key={`${order.isLong}-${order.type}-${order.index}`} className="Position-list-order">
+                          const orderText = () => (
+                            <>
                               {order.triggerAboveThreshold ? ">" : "<"} {formatAmount(order.triggerPrice, 30, 2, true)}:
                               {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
-                              {order.error && (
-                                <>
-                                  , <span className="negative">{order.error}</span>
-                                </>
-                              )}
-                            </div>
+                            </>
                           );
+                          if (order.error) {
+                            return (
+                              <div key={`${order.isLong}-${order.type}-${order.index}`} className="Position-list-order">
+                                <Tooltip
+                                  className="order-error"
+                                  handle={orderText()}
+                                  position="right-bottom"
+                                  handleClassName="plain"
+                                  renderContent={() => <span className="negative">{order.error}</span>}
+                                />
+                              </div>
+                            );
+                          } else {
+                            return (
+                              <div key={`${order.isLong}-${order.type}-${order.index}`} className="Position-list-order">
+                                {orderText()}
+                              </div>
+                            );
+                          }
                         })}
                       </div>
                     </div>

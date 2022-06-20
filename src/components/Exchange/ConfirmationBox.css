@@ -1,0 +1,29 @@
+.trigger-order-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 1rem;
+}
+.trigger-order-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--dark-blue-hover);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: 0.25rem;
+  padding: 1rem;
+  padding-left: 1.2rem;
+}
+.trigger-order-list li p {
+  font-size: 1.4rem;
+  margin: 0;
+}
+.trigger-order-list li button {
+  font-size: 1.4rem;
+  background: none;
+  border: none;
+  color: white;
+  opacity: 0.8;
+}
+.trigger-order-list li button:hover {
+  opacity: 1;
+}

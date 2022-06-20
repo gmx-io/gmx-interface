@@ -4,15 +4,15 @@
 }
 
 .chart-token-selector--current {
-    font-size: 1.4rem;
+    font-size: 2.15rem;
     font-weight: 700;
-    margin-right: 10px;
+    margin-right: 1rem;
     color: white;
 }
 
 .chart-token-menu-items.menu-items {
-    width: 158px;
-    top: 60px;
+    width: 15.8rem;
+    top: 6rem;
     right: unset;
     left: 0;
 }
