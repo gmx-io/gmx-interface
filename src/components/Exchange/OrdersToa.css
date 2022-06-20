@@ -1,6 +1,12 @@
 .Orders-toa .Modal-content {
   width: 22rem;
 }
+.Orders-toa .Modal-body {
+  overscroll-behavior: smooth;
+  max-height: calc(80vh - 5.5rem);
+  overflow-y: auto;
+  padding-right: 5px;
+}
 
 .Orders-toa-accept-rules {
   margin-top: 0.2rem;
