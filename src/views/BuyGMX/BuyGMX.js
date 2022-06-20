@@ -188,11 +188,15 @@ export default function BuyGMX() {
               <div className="App-card no-height">
                 <div className="App-card-content no-title">
                   <div className="BuyGMXGLP-description better-rates-description">
-                    After you have ETH, set your network to{" "}
-                    <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">
-                      Arbitrum
-                    </a>{" "}
-                    then click the button below:
+                    After you have AVAX, set your network to{" "}
+                    <a
+                      href="https://support.avax.network/en/articles/4626956-how-do-i-set-up-metamask-on-avalanche"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Avalanche
+                    </a>
+                    , then click the button below:
                   </div>
                   <div className="direct-purchase-options">
                     <Button
