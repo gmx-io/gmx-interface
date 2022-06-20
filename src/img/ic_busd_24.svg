@@ -1,11 +1,1 @@
-<svg id="ic_busd_24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-  <circle id="Ellipse_82" data-name="Ellipse 82" cx="12" cy="12" r="12" fill="#f0b90b"/>
-  <g id="Layer_2" data-name="Layer 2" transform="translate(3.428 2.926)">
-    <g id="Layer_1" data-name="Layer 1" transform="translate(0.7 0.71)">
-      <path id="Path_1643" data-name="Path 1643" d="M68.905.71l2.067,2.117L65.767,8.032,63.7,5.965Z" transform="translate(-60.562 -0.71)" fill="#fff"/>
-      <path id="Path_1644" data-name="Path 1644" d="M72.043,63.71l2.067,2.117L65.767,74.17,63.7,72.1Z" transform="translate(-60.562 -60.572)" fill="#fff"/>
-      <path id="Path_1645" data-name="Path 1645" d="M2.767,126.71l2.067,2.117-2.067,2.067L.7,128.827Z" transform="translate(-0.7 -120.434)" fill="#fff"/>
-      <path id="Path_1646" data-name="Path 1646" d="M135.043,126.71l2.067,2.117-8.343,8.343L126.7,135.1Z" transform="translate(-120.424 -120.434)" fill="#fff"/>
-    </g>
-  </g>
-</svg>
+<svg height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" fill="#f0b90b" r="12"/><g fill="#fff"><path d="m68.905.71 2.067 2.117-5.205 5.205-2.067-2.067z" transform="translate(-56.434 2.926)"/><path d="m72.043 63.71 2.067 2.117-8.343 8.343-2.067-2.07z" transform="translate(-56.434 -56.936)"/><path d="m2.767 126.71 2.067 2.117-2.067 2.067-2.067-2.067z" transform="translate(3.428 -116.798)"/><path d="m135.043 126.71 2.067 2.117-8.343 8.343-2.067-2.07z" transform="translate(-116.296 -116.798)"/></g></svg>

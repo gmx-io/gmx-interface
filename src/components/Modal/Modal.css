@@ -40,7 +40,7 @@
 
 .divider {
   border-bottom: 1px solid #ffffff29;
-  margin-bottom: 1rem;
+  margin-bottom: 1.55rem;
 }
 
 .Modal.non-scrollable .Modal-content {
@@ -51,29 +51,29 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1rem;
+  margin: 1.55rem;
 }
 .Modal-body {
-  margin: 1rem;
+  margin: 1.55rem;
 }
 .Modal-body::-webkit-scrollbar {
-  width: 6px;
+  width: 0.6rem;
 }
 
 .Modal-body::-webkit-scrollbar-track {
   background-color: #1c1c1c;
-  border-radius: 100rem;
+  border-radius: 155rem;
 }
 
 .Modal-body::-webkit-scrollbar-thumb {
   background-color: #949393;
-  border-radius: 100rem;
+  border-radius: 155rem;
 }
 
 .Modal-title {
   text-align: left;
-  font-size: 1rem;
-  line-height: 1.5rem;
+  font-size: 1.5rem;
+  line-height: 2.325rem;
 }
 
 .Modal-close-button {
@@ -92,6 +92,6 @@
 }
 
 .Modal-note {
-  margin-bottom: 1rem;
-  margin-top: 0.5rem;
+  margin-bottom: 1.55rem;
+  margin-top: 0.8rem;
 }
