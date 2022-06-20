@@ -11,6 +11,13 @@
   text-align: left;
 }
 
+.Modal-scrollable .Modal-content .Modal-body {
+  overscroll-behavior: smooth;
+  max-height: calc(80vh - 5.5rem);
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
 .Modal-backdrop {
   position: fixed;
   z-index: 10;
