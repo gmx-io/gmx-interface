@@ -375,7 +375,7 @@
 }
 
 .PositionEditor .Modal-content {
-  width: 41.85rem;
+  width: 36rem;
   position: absolute;
   max-height: 80vh;
   overflow: hidden;
@@ -409,7 +409,7 @@
 }
 
 .Exchange-list-modal .Modal-content {
-  width: 3.41rem;
+  width: 36rem;
 }
 
 .Exchange-list {
@@ -418,6 +418,16 @@
 
 .Position-list-order {
   white-space: nowrap;
+  margin-bottom: 8px;
+}
+
+.order-error span {
+  text-decoration-color: var(--error-red);
+  color: var(--error-red);
+}
+
+.order-error .Tooltip-popup {
+  white-space: pre-line;
 }
 
 .Exchange-list .App-card {
@@ -672,6 +682,7 @@ table.Exchange-list th {
   border-radius: 3px;
   z-index: 1;
   cursor: pointer;
+  font-size: 1.55rem;
   background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
 }
 
@@ -807,7 +818,7 @@ table.Exchange-list-small td {
 }
 
 .Confirmation-box .Modal-content {
-  width: 34.1rem;
+  width: 36rem;
 }
 
 .Confirmation-box-row {
@@ -900,6 +911,12 @@ table.Exchange-list-small td {
     bottom: 0;
   }
 
+  .order-error-message {
+    white-space: pre-line;
+    display: block;
+    margin-bottom: 10px;
+  }
+
   .Exchange-swap-box .TokenSelector .Modal-content,
   .Exchange-swap-box .Selector .Modal-content {
     /* display: block;
@@ -973,5 +990,8 @@ table.Exchange-list-small td {
   }
   .Exchange-swap-box .TokenSelector .Modal {
     margin: 0 1.55rem;
+  }
+  .Exchange {
+    padding-top: 1.5rem !important;
   }
 }
