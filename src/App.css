@@ -389,6 +389,11 @@ button.App-connect-wallet:hover {
   position: relative;
 }
 
+.mobile-menu-divider {
+  height: 1px;
+  background: #4e516a;
+}
+
 .App-card-divider {
   height: 1px;
   background: #23263b;

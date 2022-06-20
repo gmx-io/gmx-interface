@@ -179,11 +179,7 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
           </Link>
         </div>
       )}
-      <div className="App-header-link-container App-header-link-home">
-        <NavLink activeClassName="active" exact to="/">
-          Home
-        </NavLink>
-      </div>
+
       {small && (
         <div className="App-header-link-container">
           <NavLink activeClassName="active" to="/trade">
@@ -191,6 +187,13 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
           </NavLink>
         </div>
       )}
+      {small && <div className="mobile-menu-divider" />}
+
+      <div className="App-header-link-container App-header-link-home">
+        <NavLink activeClassName="active" exact to="/">
+          Home
+        </NavLink>
+      </div>
       <div className="App-header-link-container">
         <NavLink activeClassName="active" to="/dashboard">
           Dashboard
