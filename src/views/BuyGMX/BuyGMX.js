@@ -84,7 +84,7 @@ export default function BuyGMX() {
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
-                  You can transfer ETH from other networks to Arbitrum using any of the below options:
+                  You can also transfer ETH from other networks to Arbitrum using any of the below options:
                 </div>
                 <div className="bridge-options">
                   <Button
@@ -156,10 +156,10 @@ export default function BuyGMX() {
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
-                  You can transfer AVAX to Avalanche using any of the below options. <br />
+                  You can also transfer AVAX to Avalanche using any of the below options. <br />
                   <br />
-                  Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and
-                  receive free AVAX to pay for the network's fees.
+                  If you use the Avalanche or Synapse bridges, you can transfer any other supported cryptocurrency, and
+                  receive AVAX to pay for the network fees.
                 </div>
                 <div className="bridge-options">
                   <Button align="left" href="https://bridge.avax.network/" imgSrc={avax30Icon}>
