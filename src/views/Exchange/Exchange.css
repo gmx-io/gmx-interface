@@ -422,7 +422,8 @@
 }
 
 .order-error span {
-  text-decoration-color: #bc324c;
+  text-decoration-color: var(--error-red);
+  color: var(--error-red);
 }
 
 .order-error .Tooltip-popup {
