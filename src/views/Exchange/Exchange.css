@@ -901,6 +901,12 @@ table.Exchange-list-small td {
     bottom: 0;
   }
 
+  .order-error-message {
+    white-space: pre-line;
+    display: block;
+    margin-bottom: 10px;
+  }
+
   .Exchange-swap-box .TokenSelector .Modal-content,
   .Exchange-swap-box .Selector .Modal-content {
     /* display: block;
