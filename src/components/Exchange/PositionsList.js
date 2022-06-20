@@ -311,7 +311,7 @@ export default function PositionsList(props) {
                               {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
                               {order.error && (
                                 <>
-                                  , <span className="negative">{order.error}</span>
+                                  , <span className="negative order-error-message ">{order.error}</span>
                                 </>
                               )}
                             </div>
