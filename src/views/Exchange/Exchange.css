@@ -418,6 +418,15 @@
 
 .Position-list-order {
   white-space: nowrap;
+  margin-bottom: 8px;
+}
+
+.order-error span {
+  text-decoration-color: #bc324c;
+}
+
+.order-error .Tooltip-popup {
+  white-space: pre-line;
 }
 
 .Exchange-list .App-card {
