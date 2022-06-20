@@ -39,6 +39,8 @@ import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   REFERRAL_CODE_KEY,
   REFERRAL_CODE_QUERY_PARAM,
+  isDevelopment,
+  DISABLE_ORDER_VALIDATION_KEY,
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
@@ -124,7 +126,9 @@ function inPreviewMode() {
   return false;
 }
 
-const arbWsProvider = new ethers.providers.WebSocketProvider("wss://arb1.arbitrum.io/ws");
+const arbWsProvider = new ethers.providers.WebSocketProvider(
+  "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"
+);
 
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
 
@@ -456,6 +460,7 @@ function FullApp() {
   );
   const [slippageAmount, setSlippageAmount] = useState(0);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
+  const [shouldDisableOrderValidation, setShouldDisableOrderValidation] = useState(false);
   const [showPnlAfterFees, setShowPnlAfterFees] = useState(false);
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
@@ -465,6 +470,10 @@ function FullApp() {
 
   const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
+    false
+  );
+  const [savedShouldDisableOrderValidation, setSavedShouldDisableOrderValidation] = useLocalStorageSerializeKey(
+    [chainId, DISABLE_ORDER_VALIDATION_KEY],
     false
   );
 
@@ -478,6 +487,7 @@ function FullApp() {
     setSlippageAmount((slippage / BASIS_POINTS_DIVISOR) * 100);
     setIsPnlInLeverage(savedIsPnlInLeverage);
     setShowPnlAfterFees(savedShowPnlAfterFees);
+    setShouldDisableOrderValidation(savedShouldDisableOrderValidation);
     setIsSettingsVisible(true);
   };
 
@@ -504,6 +514,7 @@ function FullApp() {
 
     setSavedIsPnlInLeverage(isPnlInLeverage);
     setSavedShowPnlAfterFees(showPnlAfterFees);
+    setSavedShouldDisableOrderValidation(shouldDisableOrderValidation);
     setSavedSlippageAmount(basisPoints);
     setIsSettingsVisible(false);
   };
@@ -733,6 +744,7 @@ function FullApp() {
                 savedShouldShowPositionLines={savedShouldShowPositionLines}
                 setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                 connectWallet={connectWallet}
+                savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
               />
             </Route>
             <Route exact path="/presale">
@@ -873,6 +885,14 @@ function FullApp() {
             Include PnL in leverage display
           </Checkbox>
         </div>
+        {isDevelopment() && (
+          <div className="Exchange-settings-row">
+            <Checkbox isChecked={shouldDisableOrderValidation} setIsChecked={setShouldDisableOrderValidation}>
+              Disable order validations
+            </Checkbox>
+          </div>
+        )}
+
         <button className="App-cta Exchange-swap-button" onClick={saveAndCloseSettings}>
           Save
         </button>

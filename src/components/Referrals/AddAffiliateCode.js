@@ -47,7 +47,6 @@ export function AffiliateCodeForm({
   const [referralCodeCheckStatus, setReferralCodeCheckStatus] = useState("ok");
   const debouncedReferralCode = useDebounce(referralCode, 300);
   const { account, chainId } = useWeb3React();
-
   useEffect(() => {
     inputRef.current.focus();
   }, []);
@@ -132,6 +131,7 @@ export function AffiliateCodeForm({
         const receipt = await tx.wait();
         if (receipt.status === 1) {
           recentlyAddedCodes.push(getSampleReferrarStat(referralCode, ownerOnOtherNetwork, account));
+
           helperToast.success("Referral code created!");
           setRecentlyAddedCodes(recentlyAddedCodes);
           setReferralCode("");

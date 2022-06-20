@@ -6,7 +6,13 @@ import SEO from "../../components/Common/SEO";
 import Tab from "../../components/Tab/Tab";
 import Loader from "../../components/Common/Loader";
 import Footer from "../../Footer";
-import { useChainId, getPageTitle, REFERRALS_SELECTED_TAB_KEY, useLocalStorageSerializeKey } from "../../Helpers";
+import {
+  useChainId,
+  getPageTitle,
+  REFERRALS_SELECTED_TAB_KEY,
+  useLocalStorageSerializeKey,
+  isHashZero,
+} from "../../Helpers";
 import {
   useReferralsData,
   registerReferralCode,
@@ -18,7 +24,7 @@ import JoinReferralCode from "../../components/Referrals/JoinReferralCode";
 import AffiliatesStats from "../../components/Referrals/AffiliatesStats";
 import TradersStats from "../../components/Referrals/TradersStats";
 import AddAffiliateCode from "../../components/Referrals/AddAffiliateCode";
-import { isRecentReferralCodeNotExpired } from "../../components/Referrals/referralsHelper";
+import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "../../components/Referrals/referralsHelper";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
@@ -29,7 +35,9 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { chainId } = useChainId();
   const [activeTab, setActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, TRADERS);
   const { data: referralsData, loading } = useReferralsData(chainId, account);
-  const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], []);
+  const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], [], {
+    deserializer: deserializeSampleStats,
+  });
   const { userReferralCode, userReferralCodeString } = useUserReferralCode(library, chainId, account);
   const { codeOwner } = useCodeOwner(library, chainId, account, userReferralCode);
   const { referrerTier: traderTier } = useReferrerTier(library, chainId, codeOwner);
@@ -71,7 +79,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
 
   function renderTradersTab() {
     if (loading) return <Loader />;
-    if (!userReferralCodeString || !account) {
+    if (isHashZero(userReferralCode) || !account || !userReferralCode) {
       return (
         <JoinReferralCode
           connectWallet={connectWallet}

@@ -48,6 +48,7 @@ body,
   --avax-red: #e84143;
   --arbitrum-blue: #28a0f0;
   --border-radius-sm: 4px;
+  --error-red: #fa3c58;
 }
 
 a {
@@ -383,6 +384,13 @@ button.btn-link:hover .logout-icon {
 
 .w-100 {
   width: 100%;
+}
+
+.font-sm {
+  font-size: 1.4rem;
+}
+.font-base {
+  font-size: 1.55rem;
 }
 
 .default-cursor.App-cta {
