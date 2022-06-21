@@ -39,6 +39,7 @@ import {
   USDG_DECIMALS,
   ARBITRUM,
   PLACEHOLDER_ACCOUNT,
+  importImage,
 } from "../../Helpers";
 
 import { callContract, useGmxPrice, useInfoTokens } from "../../Api";
@@ -1014,14 +1015,7 @@ export default function GlpSwap(props) {
               if (tokenInfo && tokenInfo.minPrice && tokenInfo.balance) {
                 balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals));
               }
-
-              var tokenImage = null;
-
-              try {
-                tokenImage = require("../../img/ic_" + token.symbol.toLowerCase() + "_40.svg");
-              } catch (error) {
-                console.error(error);
-              }
+              const tokenImage = importImage(token.symbol.toLowerCase() + "_40.svg");
               let isCapReached = tokenInfo.managedAmount?.gt(tokenInfo.maxUsdgAmount);
 
               let amountLeftToDeposit;
@@ -1071,7 +1065,7 @@ export default function GlpSwap(props) {
                   <td>
                     <div className="App-card-title-info">
                       <div className="App-card-title-info-icon">
-                        <img src={tokenImage && tokenImage.default} alt={token.symbol} width="40px" />
+                        <img src={tokenImage} alt={token.symbol} width="40px" />
                       </div>
                       <div className="App-card-title-info-text">
                         <div className="App-card-info-title">{token.name}</div>
@@ -1201,10 +1195,17 @@ export default function GlpSwap(props) {
                   return "";
               }
             }
-
+            const tokenImage = importImage(token.symbol.toLowerCase() + "_24.svg");
             return (
               <div className="App-card" key={token.symbol}>
-                <div className="App-card-title">{token.name}</div>
+                <div className="mobile-token-card">
+                  <img src={tokenImage} alt={token.symbol} width="20px" />
+                  {token.symbol}
+                  <div>
+                    <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
+                  </div>
+                </div>
+                {/* <div className="App-card-title">{token.name}</div> */}
                 <div className="App-card-divider"></div>
                 <div className="App-card-content">
                   <div className="App-card-row">

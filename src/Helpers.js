@@ -2706,3 +2706,14 @@ export function useDebounce(value, delay) {
 export function isDevelopment() {
   return !window.location.origin?.includes("gmx.io");
 }
+
+export function importImage(name) {
+  let tokenImage = null;
+  try {
+    tokenImage = require("./img/ic_" + name);
+  } catch (error) {
+    tokenImage = require("./img/ic_eth_40.svg");
+    console.error(error);
+  }
+  return tokenImage && tokenImage.default;
+}

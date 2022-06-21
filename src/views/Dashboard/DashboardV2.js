@@ -32,6 +32,7 @@ import {
   GLPPOOLCOLORS,
   DEFAULT_MAX_USDG_AMOUNT,
   getPageTitle,
+  importImage,
 } from "../../Helpers";
 import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply, useInfoTokens } from "../../Api";
 
@@ -55,16 +56,6 @@ import AssetDropdown from "./AssetDropdown";
 import SEO from "../../components/Common/SEO";
 
 const { AddressZero } = ethers.constants;
-
-function getTokenImage(name) {
-  let tokenImage = null;
-  try {
-    tokenImage = require("../../img/ic_" + name);
-  } catch (error) {
-    console.error(error);
-  }
-  return tokenImage && tokenImage.default;
-}
 
 function getVolumeInfo(hourlyVolume) {
   if (!hourlyVolume || hourlyVolume.length === 0) {
@@ -763,7 +754,7 @@ export default function DashboardV2() {
                     if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
                       maxUsdgAmount = tokenInfo.maxUsdgAmount;
                     }
-                    const tokenImage = getTokenImage(token.symbol.toLowerCase() + "_40.svg");
+                    const tokenImage = importImage(token.symbol.toLowerCase() + "_40.svg");
 
                     return (
                       <tr key={token.symbol}>
@@ -821,8 +812,7 @@ export default function DashboardV2() {
                   maxUsdgAmount = tokenInfo.maxUsdgAmount;
                 }
 
-                const tokenImage = getTokenImage(token.symbol.toLowerCase() + "_24.svg");
-
+                const tokenImage = importImage(token.symbol.toLowerCase() + "_24.svg");
                 return (
                   <div className="App-card" key={token.symbol}>
                     <div className="App-card-title">
