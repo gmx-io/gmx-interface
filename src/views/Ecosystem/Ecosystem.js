@@ -3,21 +3,10 @@ import SEO from "../../components/Common/SEO";
 import "./Ecosystem.css";
 
 import Footer from "../../Footer";
-import { getPageTitle, ARBITRUM, AVALANCHE } from "../../Helpers";
+import { getPageTitle, ARBITRUM, AVALANCHE, importImage } from "../../Helpers";
 
 import arbitrumIcon from "../../img/ic_arbitrum_16.svg";
 import avalancheIcon from "../../img/ic_avalanche_16.svg";
-
-function getImage(name) {
-  let image;
-  try {
-    image = require("../../img/" + name);
-  } catch (error) {
-    image = require("../../img/gmx-logo-final.png");
-    console.error(error);
-  }
-  return image.default;
-}
 
 const NETWORK_ICONS = {
   [ARBITRUM]: arbitrumIcon,
@@ -220,7 +209,7 @@ export default function Ecosystem() {
           <div className="ecosystem-projects">
             {officialPages.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
-              const image = getImage(item.icon);
+              const image = importImage(item.icon);
               return (
                 <div key={item.link} className="App-card">
                   <div className="ecosystem-card-title">
@@ -260,7 +249,7 @@ export default function Ecosystem() {
           <div className="ecosystem-projects">
             {communityProjects.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
-              const image = getImage(item.icon);
+              const image = importImage(item.icon);
               return (
                 <div key={item.link} className="App-card">
                   <div className="ecosystem-card-title">
@@ -308,7 +297,7 @@ export default function Ecosystem() {
           <div className="ecosystem-projects">
             {integrations.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
-              const image = getImage(item.icon);
+              const image = importImage(item.icon);
               return (
                 <div key={item.link} className="App-card">
                   <div className="ecosystem-card-title">
