@@ -14,6 +14,9 @@
 .StakeModal .Modal-content {
   width: 31rem;
 }
+.StakeModal .Modal-body {
+  font-size: 1.55rem;
+}
 
 .Stake-warning {
   text-align: center;
