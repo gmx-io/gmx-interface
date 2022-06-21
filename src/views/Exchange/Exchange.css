@@ -418,6 +418,16 @@
 
 .Position-list-order {
   white-space: nowrap;
+  margin-bottom: 8px;
+}
+
+.order-error span {
+  text-decoration-color: var(--error-red);
+  color: var(--error-red);
+}
+
+.order-error .Tooltip-popup {
+  white-space: pre-line;
 }
 
 .Exchange-list .App-card {
@@ -899,6 +909,12 @@ table.Exchange-list-small td {
     top: 0;
     right: 0;
     bottom: 0;
+  }
+
+  .order-error-message {
+    white-space: pre-line;
+    display: block;
+    margin-bottom: 10px;
   }
 
   .Exchange-swap-box .TokenSelector .Modal-content,
