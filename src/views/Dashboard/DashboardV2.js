@@ -818,7 +818,7 @@ export default function DashboardV2() {
                     <div className="App-card-title">
                       <div className="mobile-token-card">
                         <img src={tokenImage} alt={token.symbol} width="20px" />
-                        {token.symbol}
+                        <div className="token-symbol-text">{token.symbol}</div>
                         <div>
                           <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
                         </div>

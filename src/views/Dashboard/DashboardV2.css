@@ -122,9 +122,15 @@
 }
 .mobile-token-card {
   display: flex;
+  align-items: center;
 }
+
+.token-symbol-text {
+  line-height: 1;
+}
+
 .mobile-token-card > img {
-  margin-right: 8px;
+  margin-right: 0.8rem;
 }
 
 @media (max-width: 1024px) {
