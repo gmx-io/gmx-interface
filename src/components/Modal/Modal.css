@@ -55,6 +55,7 @@
 }
 .Modal-body {
   margin: 1.55rem;
+  font-size: 1.55rem;
 }
 .Modal-body::-webkit-scrollbar {
   width: 0.6rem;
