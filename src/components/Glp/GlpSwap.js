@@ -1015,7 +1015,7 @@ export default function GlpSwap(props) {
               if (tokenInfo && tokenInfo.minPrice && tokenInfo.balance) {
                 balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals));
               }
-              const tokenImage = importImage(token.symbol.toLowerCase() + "_40.svg");
+              const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_40.svg");
               let isCapReached = tokenInfo.managedAmount?.gt(tokenInfo.maxUsdgAmount);
 
               let amountLeftToDeposit;
@@ -1195,7 +1195,7 @@ export default function GlpSwap(props) {
                   return "";
               }
             }
-            const tokenImage = importImage(token.symbol.toLowerCase() + "_24.svg");
+            const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_24.svg");
             return (
               <div className="App-card" key={token.symbol}>
                 <div className="mobile-token-card">

@@ -754,7 +754,7 @@ export default function DashboardV2() {
                     if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
                       maxUsdgAmount = tokenInfo.maxUsdgAmount;
                     }
-                    const tokenImage = importImage(token.symbol.toLowerCase() + "_40.svg");
+                    const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_40.svg");
 
                     return (
                       <tr key={token.symbol}>
@@ -812,7 +812,7 @@ export default function DashboardV2() {
                   maxUsdgAmount = tokenInfo.maxUsdgAmount;
                 }
 
-                const tokenImage = importImage(token.symbol.toLowerCase() + "_24.svg");
+                const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_24.svg");
                 return (
                   <div className="App-card" key={token.symbol}>
                     <div className="App-card-title">

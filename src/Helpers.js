@@ -2710,7 +2710,7 @@ export function isDevelopment() {
 export function importImage(name) {
   let tokenImage = null;
   try {
-    tokenImage = require("./img/ic_" + name);
+    tokenImage = require("./img/" + name);
   } catch (error) {
     tokenImage = require("./img/ic_eth_40.svg");
     console.error(error);
