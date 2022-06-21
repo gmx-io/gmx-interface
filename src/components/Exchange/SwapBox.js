@@ -59,8 +59,6 @@ import {
   calculatePositionDelta,
   replaceNativeTokenAddress,
   adjustForDecimals,
-  REFERRAL_CODE_KEY,
-  isHashZero,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import * as Api from "../../Api";
@@ -83,7 +81,6 @@ import longImg from "../../img/long.svg";
 import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
 import { useUserReferralCode } from "../../Api/referrals";
-import { useLocalStorage } from "react-use";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -177,8 +174,7 @@ export default function SwapBox(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
-  const { userReferralCode } = useUserReferralCode(library, chainId, account);
-  const [userReferralCodeInLocalStorage] = useLocalStorage(REFERRAL_CODE_KEY);
+  const { attachedOnChain, userReferralCode } = useUserReferralCode(library, chainId, account);
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -1405,8 +1401,8 @@ export default function SwapBox(props) {
   };
 
   let referralCode = ethers.constants.HashZero;
-  if (isHashZero(userReferralCode) && userReferralCodeInLocalStorage) {
-    referralCode = userReferralCodeInLocalStorage;
+  if (!attachedOnChain && userReferralCode) {
+    referralCode = userReferralCode;
   }
 
   const increasePosition = async () => {

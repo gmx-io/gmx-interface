@@ -375,8 +375,8 @@ export default function ConfirmationBox(props) {
       <>
         <div className="Confirmation-box-warning">
           You have {existingTriggerOrderLength > 1 ? `${existingTriggerOrderLength}` : "an"} active trigger {orderText}{" "}
-          that would potentially execute immediately. Please accept confirmation of trigger
-          {` ${orderText} `} to continue.
+          that might execute immediately after you open this position. Please cancel the {orderText} or accept the
+          confirmation to continue.
         </div>
         <ul className="trigger-order-list">
           {decreaseOrdersThatWillBeExecuted.map((order, i) => {
@@ -651,14 +651,14 @@ export default function ConfirmationBox(props) {
           {isMarketOrder && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
-                <span className="muted">Allow up to 1% slippage</span>
+                <span className="muted font-sm">Allow up to 1% slippage</span>
               </Checkbox>
             </div>
           )}
           {decreaseOrdersThatWillBeExecuted.length > 0 && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
-                <span className="muted">I am aware of the trigger orders</span>
+                <span className="muted font-sm">I am aware of the trigger orders</span>
               </Checkbox>
             </div>
           )}
