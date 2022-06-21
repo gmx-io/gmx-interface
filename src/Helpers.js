@@ -287,6 +287,14 @@ export function deserialize(data) {
   return data;
 }
 
+export function inMultiSiteMode() {
+  return process.env.REACT_APP_IN_MULTI_SITE_MODE;
+}
+
+export function isHomeSite() {
+  return process.env.REACT_APP_IS_HOME_SITE;
+}
+
 export const helperToast = {
   success: (content) => {
     toast.dismiss();
