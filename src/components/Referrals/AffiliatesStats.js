@@ -5,7 +5,6 @@ import { IoWarningOutline } from "react-icons/io5";
 import { BiCopy, BiErrorCircle } from "react-icons/bi";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
-import Tooltip from "../Tooltip/Tooltip";
 import { getNativeToken, getToken } from "../../data/Tokens";
 import {
   AVALANCHE,
@@ -21,6 +20,7 @@ import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import { getTierIdDisplay, getUSDValue, isRecentReferralCodeNotExpired, tierRebateInfo } from "./referralsHelper";
 import { AffiliateCodeForm } from "./AddAffiliateCode";
+import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
 function AffiliatesStats({
   referralsData,
@@ -147,7 +147,7 @@ function AffiliatesStats({
                           </div>
                           {ownerOnOtherChain && !ownerOnOtherChain?.isTaken && (
                             <div className="info">
-                              <Tooltip
+                              <TooltipWithPortal
                                 position="right"
                                 handle={<IoWarningOutline color="#ffba0e" size={16} />}
                                 renderContent={() => (
@@ -166,7 +166,7 @@ function AffiliatesStats({
                           )}
                           {ownerOnOtherChain && ownerOnOtherChain?.isTaken && !ownerOnOtherChain?.isTakenByCurrentUser && (
                             <div className="info">
-                              <Tooltip
+                              <TooltipWithPortal
                                 position="right"
                                 handle={<BiErrorCircle color="#e82e56" size={16} />}
                                 renderContent={() => (
