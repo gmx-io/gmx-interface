@@ -287,12 +287,12 @@ export function deserialize(data) {
   return data;
 }
 
-export function inMultiSiteMode() {
-  return process.env.REACT_APP_IN_MULTI_SITE_MODE;
+export function inCombinedSiteMode() {
+  return process.env.REACT_APP_IN_COMBINED_SITE_MODE === "true";
 }
 
 export function isHomeSite() {
-  return process.env.REACT_APP_IS_HOME_SITE;
+  return process.env.REACT_APP_IS_HOME_SITE === "true";
 }
 
 export const helperToast = {

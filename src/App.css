@@ -18,6 +18,10 @@
   z-index: 800;
 }
 
+.RedirectModal .Modal-content {
+  width: 36rem;
+}
+
 .App-header.large {
   height: 6.2rem;
   backdrop-filter: blur(4px);
@@ -72,6 +76,7 @@
   display: none; /* Safari and Chrome */
 }
 
+.App-header-drawer .App-header-link-container .a,
 .App-header-drawer .App-header-link-container a {
   font-size: 1.4rem;
   line-height: 1.8rem;
@@ -83,6 +88,9 @@
   display: block;
 }
 
+.App-header-drawer .App-header-link-container .a:hover,
+.App-header-drawer .App-header-link-container .a:focus,
+.App-header-drawer .App-header-link-container .a:active,
 .App-header-drawer .App-header-link-container a:hover,
 .App-header-drawer .App-header-link-container a:focus,
 .App-header-drawer .App-header-link-container a.active {
@@ -603,23 +611,28 @@ button.App-connect-wallet:hover {
   display: none;
 }
 
+.App-header .a,
 .App-header a {
   text-decoration: none;
   vertical-align: middle;
   display: inline-block;
+  cursor: pointer;
 }
 
+.App-header .a.active,
 .App-header a.active {
   pointer-events: none;
   opacity: 1;
   color: #eee;
 }
 
+.App-header .a:hover,
 .App-header a:hover {
   opacity: 1;
   color: #eee;
 }
 
+.App-header-container-left .a,
 .App-header-container-left a {
   padding: 1.8rem 1.7rem;
   display: block;
@@ -629,13 +642,9 @@ button.App-connect-wallet:hover {
   font-weight: normal;
 }
 
+.App-header-container-left .a.active,
 .App-header-container-left a.active {
   color: white;
-}
-
-.App-header-container-left a.disabled {
-  cursor: not-allowed;
-  color: #ffffff61;
 }
 
 .Toastify {
@@ -1290,6 +1299,10 @@ button.App-button {
 @media (max-width: 700px) {
   .App-card-long-content {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .RedirectModal .Modal-content {
+    width: 90vw;
   }
 }
 
