@@ -2150,6 +2150,48 @@ export default function SwapBox(props) {
               {toTokenInfo && formatAmount(toTokenInfo.maxPrice, USD_DECIMALS, 2, true)} USD
             </div>
           </div>
+          <div className="Exchange-info-row">
+            <div className="Exchange-info-label">Available Liquidity:</div>
+            <div className="align-right">
+              <Tooltip
+                handle={`${formatAmount(
+                  toTokenInfo?.poolAmount?.sub(toTokenInfo?.bufferAmount),
+                  toTokenInfo?.decimals,
+                  2,
+                  true
+                )}
+                ${toTokenInfo?.symbol}`}
+                position="right-bottom"
+                renderContent={() => {
+                  return (
+                    <>
+                      <div>
+                        Max {fromTokenInfo?.symbol} out:{" "}
+                        {formatAmount(
+                          fromTokenInfo?.poolAmount?.sub(fromTokenInfo?.bufferAmount),
+                          fromTokenInfo?.decimals,
+                          2,
+                          true
+                        )}{" "}
+                        {fromTokenInfo?.symbol}
+                      </div>
+                      <br />
+                      <div>
+                        Max {toTokenInfo?.symbol} in:{" "}
+                        {formatAmount(
+                          toTokenInfo?.poolAmount?.sub(toTokenInfo?.bufferAmount),
+                          toTokenInfo?.decimals,
+                          2,
+                          true
+                        )}{" "}
+                        {toTokenInfo?.symbol}
+                      </div>
+                    </>
+                  );
+                }}
+              />
+            </div>
+          </div>
           {!isMarketOrder && (
             <ExchangeInfoRow label="Price">
               {getExchangeRateDisplay(getExchangeRate(fromTokenInfo, toTokenInfo), fromToken, toToken)}
