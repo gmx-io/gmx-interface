@@ -2168,8 +2168,7 @@ export default function SwapBox(props) {
                           fromTokenInfo?.decimals,
                           2,
                           true
-                        )}{" "}
-                        {fromTokenInfo?.symbol}
+                        )}
                       </div>
                       <br />
                       <div>
@@ -2179,8 +2178,7 @@ export default function SwapBox(props) {
                           toTokenInfo?.decimals,
                           2,
                           true
-                        )}{" "}
-                        {toTokenInfo?.symbol}
+                        )}
                       </div>
                     </>
                   );
