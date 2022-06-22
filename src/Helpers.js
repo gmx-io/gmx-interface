@@ -2719,6 +2719,14 @@ export function isLocal() {
   return window.location.host?.includes("localhost");
 }
 
+export function getHomeUrl() {
+  if (isLocal()) {
+    return "http://localhost:3010";
+  }
+
+  return "https://gmx.io";
+}
+
 export function getAppBaseUrl() {
   if (isLocal()) {
     return "http://localhost:3011/#";
