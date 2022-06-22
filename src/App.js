@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 
-import { Switch, Route, NavLink, HashRouter } from "react-router-dom";
+import { Switch, Route, NavLink, HashRouter, useLocation } from "react-router-dom";
 
 import {
   ARBITRUM,
@@ -19,6 +19,7 @@ import {
   BASIS_POINTS_DIVISOR,
   SHOULD_SHOW_POSITION_LINES_KEY,
   inCombinedSiteMode,
+  getHomeUrl,
   getAppBaseUrl,
   isHomeSite,
   clearWalletConnectData,
@@ -47,7 +48,6 @@ import {
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
-import Presale from "./views/Presale/Presale";
 import Dashboard from "./views/Dashboard/Dashboard";
 import Ecosystem from "./views/Ecosystem/Ecosystem";
 import Stake from "./views/Stake/Stake";
@@ -58,13 +58,11 @@ import PositionsOverview from "./views/PositionsOverview/PositionsOverview";
 import Referrals from "./views/Referrals/Referrals";
 import BuyGlp from "./views/BuyGlp/BuyGlp";
 import BuyGMX from "./views/BuyGMX/BuyGMX";
-import SellGlp from "./views/SellGlp/SellGlp";
 import Buy from "./views/Buy/Buy";
 import NftWallet from "./views/NftWallet/NftWallet";
 import ClaimEsGmx from "./views/ClaimEsGmx/ClaimEsGmx";
 import BeginAccountTransfer from "./views/BeginAccountTransfer/BeginAccountTransfer";
 import CompleteAccountTransfer from "./views/CompleteAccountTransfer/CompleteAccountTransfer";
-import Debug from "./views/Debug/Debug";
 
 import cx from "classnames";
 import { cssTransition, ToastContainer } from "react-toastify";
@@ -208,13 +206,8 @@ function AppHeaderUser({
 }) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
-  // let showSelector = inCombinedSiteMode() || !isHomeSite();
   const showConnectionOptions = inCombinedSiteMode() || !isHomeSite();
-  console.log("inCombinedSiteMode", inCombinedSiteMode(), inCombinedSiteMode() === false);
-  // const showSelector = false;
 
-  // console.log("showSelector", inCombinedSiteMode(), isHomeSite(), showSelector);
-  // console.log("showSelector", showSelector);
   const networkOptions = [
     {
       label: "Arbitrum",
@@ -519,12 +512,24 @@ function FullApp() {
     setSelectedToPage(to);
   };
 
+  const location = useLocation();
+
   const HeaderLink = ({ isHomeLink, className, exact, to, children }) => {
-    if (isHome) {
+    const isOnHomePage = location.pathname === "/";
+
+    if (isHome && !(isHomeLink && !isOnHomePage)) {
       return (
-        <div className={cx("a", className, { active: isHome && isHomeLink })} onClick={() => showRedirectModal(to)}>
+        <div className={cx("a", className, { active: isHomeLink })} onClick={() => showRedirectModal(to)}>
           {children}
         </div>
+      );
+    }
+
+    if (isHomeLink) {
+      return (
+        <a href={getHomeUrl()} className={cx(className)}>
+          {children}
+        </a>
       );
     }
 
@@ -745,93 +750,81 @@ function FullApp() {
             <Route exact path="/">
               <Home />
             </Route>
-            <Route exact path="/trade">
-              <Exchange
-                ref={exchangeRef}
-                savedShowPnlAfterFees={savedShowPnlAfterFees}
-                savedIsPnlInLeverage={savedIsPnlInLeverage}
-                setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
-                savedSlippageAmount={savedSlippageAmount}
-                setPendingTxns={setPendingTxns}
-                pendingTxns={pendingTxns}
-                savedShouldShowPositionLines={savedShouldShowPositionLines}
-                setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
-                connectWallet={connectWallet}
-                savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
-              />
-            </Route>
-            <Route exact path="/presale">
-              <Presale />
-            </Route>
-            <Route exact path="/dashboard">
-              <Dashboard />
-            </Route>
-            <Route exact path="/earn">
-              <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
-            </Route>
-            <Route exact path="/buy">
-              <Buy
-                savedSlippageAmount={savedSlippageAmount}
-                setPendingTxns={setPendingTxns}
-                connectWallet={connectWallet}
-              />
-            </Route>
-            <Route exact path="/buy_glp">
-              <BuyGlp
-                savedSlippageAmount={savedSlippageAmount}
-                setPendingTxns={setPendingTxns}
-                connectWallet={connectWallet}
-              />
-            </Route>
-            <Route exact path="/sell_glp">
-              <SellGlp
-                savedSlippageAmount={savedSlippageAmount}
-                setPendingTxns={setPendingTxns}
-                connectWallet={connectWallet}
-              />
-            </Route>
-            <Route exact path="/buy_gmx">
-              <BuyGMX />
-            </Route>
-            <Route exact path="/ecosystem">
-              <Ecosystem />
-            </Route>
-            <Route exact path="/referrals">
-              <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
-            </Route>
-            <Route exact path="/about">
-              <Home />
-            </Route>
-            <Route exact path="/nft_wallet">
-              <NftWallet />
-            </Route>
-            <Route exact path="/claim_es_gmx">
-              <ClaimEsGmx setPendingTxns={setPendingTxns} />
-            </Route>
-            <Route exact path="/actions/:account">
-              <Actions />
-            </Route>
-            <Route exact path="/orders_overview">
-              <OrdersOverview />
-            </Route>
-            <Route exact path="/positions_overview">
-              <PositionsOverview />
-            </Route>
-            <Route exact path="/actions">
-              <Actions />
-            </Route>
-            <Route exact path="/begin_account_transfer">
-              <BeginAccountTransfer setPendingTxns={setPendingTxns} />
-            </Route>
-            <Route exact path="/complete_account_transfer/:sender/:receiver">
-              <CompleteAccountTransfer setPendingTxns={setPendingTxns} />
-            </Route>
-            <Route exact path="/debug">
-              <Debug />
-            </Route>
-            <Route exact path="/referral-terms">
-              <ReferralTerms />
-            </Route>
+            {!isHome && (
+              <>
+                <Route exact path="/trade">
+                  <Exchange
+                    ref={exchangeRef}
+                    savedShowPnlAfterFees={savedShowPnlAfterFees}
+                    savedIsPnlInLeverage={savedIsPnlInLeverage}
+                    setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
+                    savedSlippageAmount={savedSlippageAmount}
+                    setPendingTxns={setPendingTxns}
+                    pendingTxns={pendingTxns}
+                    savedShouldShowPositionLines={savedShouldShowPositionLines}
+                    setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
+                    connectWallet={connectWallet}
+                    savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
+                  />
+                </Route>
+                <Route exact path="/dashboard">
+                  <Dashboard />
+                </Route>
+                <Route exact path="/earn">
+                  <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
+                </Route>
+                <Route exact path="/buy">
+                  <Buy
+                    savedSlippageAmount={savedSlippageAmount}
+                    setPendingTxns={setPendingTxns}
+                    connectWallet={connectWallet}
+                  />
+                </Route>
+                <Route exact path="/buy_glp">
+                  <BuyGlp
+                    savedSlippageAmount={savedSlippageAmount}
+                    setPendingTxns={setPendingTxns}
+                    connectWallet={connectWallet}
+                  />
+                </Route>
+                <Route exact path="/buy_gmx">
+                  <BuyGMX />
+                </Route>
+                <Route exact path="/ecosystem">
+                  <Ecosystem />
+                </Route>
+                <Route exact path="/referrals">
+                  <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+                </Route>
+                <Route exact path="/nft_wallet">
+                  <NftWallet />
+                </Route>
+                <Route exact path="/claim_es_gmx">
+                  <ClaimEsGmx setPendingTxns={setPendingTxns} />
+                </Route>
+                <Route exact path="/actions">
+                  <Actions />
+                </Route>
+                <Route exact path="/actions/:account">
+                  <Actions />
+                </Route>
+                <Route exact path="/orders_overview">
+                  <OrdersOverview />
+                </Route>
+                <Route exact path="/positions_overview">
+                  <PositionsOverview />
+                </Route>
+                <Route exact path="/begin_account_transfer">
+                  <BeginAccountTransfer setPendingTxns={setPendingTxns} />
+                </Route>
+                <Route exact path="/complete_account_transfer/:sender/:receiver">
+                  <CompleteAccountTransfer setPendingTxns={setPendingTxns} />
+                </Route>
+                <Route exact path="/referral-terms">
+                  <ReferralTerms />
+                </Route>
+              </>
+            )}
             <Route path="*">
               <PageNotFound />
             </Route>
