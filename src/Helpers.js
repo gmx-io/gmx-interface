@@ -2712,5 +2712,17 @@ export function useDebounce(value, delay) {
 }
 
 export function isDevelopment() {
-  return !window.location.origin?.includes("gmx.io");
+  return !window.location.host?.includes("gmx.io");
+}
+
+export function isLocal() {
+  return window.location.host?.includes("localhost");
+}
+
+export function getAppBaseUrl() {
+  if (isLocal()) {
+    return "http://localhost:3011/#";
+  }
+
+  return "https://app.gmx.io/#";
 }

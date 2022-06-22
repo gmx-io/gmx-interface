@@ -19,6 +19,7 @@ import {
   BASIS_POINTS_DIVISOR,
   SHOULD_SHOW_POSITION_LINES_KEY,
   inCombinedSiteMode,
+  getAppBaseUrl,
   isHomeSite,
   clearWalletConnectData,
   switchNetwork,
@@ -416,6 +417,7 @@ function FullApp() {
 
   const [walletModalVisible, setWalletModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
+  const [selectedToPage, setSelectedToPage] = useState("");
   const connectWallet = () => setWalletModalVisible(true);
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(undefined);
@@ -494,6 +496,12 @@ function FullApp() {
     setSavedSlippageAmount(basisPoints);
     setIsSettingsVisible(false);
   };
+
+  const goToAppPage = () => {
+    const baseUrl = getAppBaseUrl();
+    window.open(baseUrl + selectedToPage, "_self");
+  };
+
   useEffect(() => {
     if (isDrawerVisible) {
       document.body.style.overflow = "hidden";
@@ -508,7 +516,7 @@ function FullApp() {
   const isHome = isHomeSite();
   const showRedirectModal = (to) => {
     setRedirectModalVisible(true);
-    // console.log("showRedirectModal", to);
+    setSelectedToPage(to);
   };
 
   const HeaderLink = ({ isHomeLink, className, exact, to, children }) => {
@@ -858,7 +866,7 @@ function FullApp() {
         File System (IPFS).
         <br />
         <br />
-        <button className="App-cta Exchange-swap-button" onClick={saveAndCloseSettings}>
+        <button className="App-cta Exchange-swap-button" onClick={goToAppPage}>
           Agree
         </button>
       </Modal>
