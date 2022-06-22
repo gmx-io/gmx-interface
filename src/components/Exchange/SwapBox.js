@@ -59,6 +59,7 @@ import {
   calculatePositionDelta,
   replaceNativeTokenAddress,
   adjustForDecimals,
+  numberWithCommas,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import * as Api from "../../Api";
@@ -397,6 +398,24 @@ export default function SwapBox(props) {
   const triggerRatioInverted = useMemo(() => {
     return isTriggerRatioInverted(fromTokenInfo, toTokenInfo);
   }, [toTokenInfo, fromTokenInfo]);
+
+  const maxToTokenOut = useMemo(() => {
+    return toTokenInfo?.availableAmount?.gt(toTokenInfo?.poolAmount?.sub(toTokenInfo?.bufferAmount))
+      ? toTokenInfo?.poolAmount?.sub(toTokenInfo?.bufferAmount)
+      : toTokenInfo?.availableAmount;
+  }, [toTokenInfo]);
+
+  const maxToTokenOutUSD = useMemo(() => {
+    return getUsd(maxToTokenOut, toTokenAddress, false, infoTokens);
+  }, [maxToTokenOut, toTokenAddress, infoTokens]);
+
+  const maxFromTokenInUSD = useMemo(() => {
+    return fromTokenInfo?.maxUsdgAmount?.sub(fromTokenInfo?.usdgAmount);
+  }, [fromTokenInfo]);
+
+  const maxFromTokenIn = useMemo(() => {
+    return maxFromTokenInUSD?.div(adjustForDecimals(fromTokenInfo?.maxPrice, USD_DECIMALS, USDG_DECIMALS)).toString();
+  }, [maxFromTokenInUSD, fromTokenInfo]);
 
   const triggerRatio = useMemo(() => {
     if (!triggerRatioValue) {
@@ -741,9 +760,9 @@ export default function SwapBox(props) {
     if (!fromTokenInfo || !fromTokenInfo.minPrice) {
       return ["Incorrect network"];
     }
-    if (fromTokenInfo && fromTokenInfo.balance && fromAmount && fromAmount.gt(fromTokenInfo.balance)) {
-      return [`Insufficient ${fromTokenInfo.symbol} balance`];
-    }
+    // if (fromTokenInfo && fromTokenInfo.balance && fromAmount && fromAmount.gt(fromTokenInfo.balance)) {
+    //   return [`Insufficient ${fromTokenInfo.symbol} balance`];
+    // }
 
     const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
 
@@ -2150,35 +2169,22 @@ export default function SwapBox(props) {
             <div className="Exchange-info-label">Available Liquidity:</div>
             <div className="align-right">
               <Tooltip
-                handle={`${formatAmount(
-                  toTokenInfo?.poolAmount?.sub(toTokenInfo?.bufferAmount),
-                  toTokenInfo?.decimals,
-                  2,
-                  true
-                )}
+                handle={`${formatAmount(maxToTokenOut, toTokenInfo?.decimals, 2, true)}
                 ${toTokenInfo?.symbol}`}
                 position="right-bottom"
                 renderContent={() => {
                   return (
                     <>
                       <div>
-                        Max {fromTokenInfo?.symbol} out:{" "}
-                        {formatAmount(
-                          fromTokenInfo?.poolAmount?.sub(fromTokenInfo?.bufferAmount),
-                          fromTokenInfo?.decimals,
-                          2,
-                          true
-                        )}
+                        Max {fromTokenInfo?.symbol} in: {numberWithCommas(maxFromTokenIn)} {fromTokenInfo?.symbol}{" "}
+                        <br />({"$ "}
+                        {formatAmount(maxFromTokenInUSD, USDG_DECIMALS, 2, true)} )
                       </div>
                       <br />
                       <div>
-                        Max {toTokenInfo?.symbol} in:{" "}
-                        {formatAmount(
-                          toTokenInfo?.poolAmount?.sub(toTokenInfo?.bufferAmount),
-                          toTokenInfo?.decimals,
-                          2,
-                          true
-                        )}
+                        Max {toTokenInfo?.symbol} out: {formatAmount(maxToTokenOut, toTokenInfo?.decimals, 2, true)}{" "}
+                        {toTokenInfo?.symbol} <br />({"$ "}
+                        {formatAmount(maxToTokenOutUSD, USD_DECIMALS, 2, true)})
                       </div>
                     </>
                   );
