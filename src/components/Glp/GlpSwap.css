@@ -10,7 +10,7 @@
   color: #ffffff;
   font-size: 3.41rem;
   font-weight: 500;
-  font-family: 'Relative Bold';
+  font-family: "Relative Bold";
 }
 
 .Tab-description {
@@ -151,7 +151,7 @@
   margin: 0 auto;
   justify-content: center;
   min-height: 4.8rem;
-  font-size: 1.55rem;
+  font-size: 1.5rem;
 }
 
 .token-table {
@@ -160,7 +160,7 @@
   width: calc(100% + 3.1rem);
   border-spacing: 0;
   white-space: nowrap;
-  font-size: 1.55rem;
+  font-size: 1.5rem;
 }
 
 .token-grid {
