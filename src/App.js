@@ -95,7 +95,7 @@ import useEventToast from "./components/EventToast/useEventToast";
 import EventToastContainer from "./components/EventToast/EventToastContainer";
 import SEO from "./components/Common/SEO";
 import useRouteQuery from "./hooks/useRouteQuery";
-import { encodeReferralCode } from "./Api/referrals";
+import { encodeReferralCode, decodeReferralCode } from "./Api/referrals";
 
 import { getContract } from "./Addresses";
 import VaultV2 from "./abis/VaultV2.json";
@@ -325,6 +325,11 @@ function FullApp() {
 
   useEffect(() => {
     let referralCode = query.get(REFERRAL_CODE_QUERY_PARAM);
+    if (!referralCode || referralCode.length === 0) {
+      const params = new URLSearchParams(window.location.search);
+      referralCode = params.get(REFERRAL_CODE_QUERY_PARAM);
+    }
+
     if (referralCode && referralCode.length <= 20) {
       const encodedReferralCode = encodeReferralCode(referralCode);
       if (encodeReferralCode !== ethers.constants.HashZero) {
@@ -491,8 +496,15 @@ function FullApp() {
     setIsSettingsVisible(false);
   };
 
+  const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
   const baseUrl = getAppBaseUrl();
-  const appRedirectUrl = baseUrl + selectedToPage;
+  let appRedirectUrl = baseUrl + selectedToPage;
+  if (localStorageCode && localStorageCode.length > 0 && localStorageCode !== ethers.constants.HashZero) {
+    const decodedRefCode = decodeReferralCode(localStorageCode);
+    if (decodedRefCode) {
+      appRedirectUrl = `${appRedirectUrl}?ref=${decodedRefCode}`;
+    }
+  }
 
   useEffect(() => {
     if (isDrawerVisible) {
