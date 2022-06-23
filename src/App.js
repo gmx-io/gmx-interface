@@ -490,10 +490,8 @@ function FullApp() {
     setIsSettingsVisible(false);
   };
 
-  const goToAppPage = () => {
-    const baseUrl = getAppBaseUrl();
-    window.open(baseUrl + selectedToPage, "_self");
-  };
+  const baseUrl = getAppBaseUrl();
+  const appRedirectUrl = baseUrl + selectedToPage;
 
   useEffect(() => {
     if (isDrawerVisible) {
@@ -748,7 +746,7 @@ function FullApp() {
           </AnimatePresence>
           <Switch>
             <Route exact path="/">
-              <Home />
+              <Home showRedirectModal={showRedirectModal} />
             </Route>
             {!isHome && (
               <>
@@ -870,9 +868,9 @@ function FullApp() {
         .
         <br />
         <br />
-        <button className="App-cta Exchange-swap-button" onClick={goToAppPage}>
+        <a href={appRedirectUrl} className="App-cta Exchange-swap-button">
           Agree
-        </button>
+        </a>
       </Modal>
       <Modal
         className="Connect-wallet-modal"
