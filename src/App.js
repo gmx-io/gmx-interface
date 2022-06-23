@@ -823,6 +823,7 @@ function FullApp() {
                 <Route exact path="/referral-terms">
                   <ReferralTerms />
                 </Route>
+                {/* PageNotFound needs to be duplicated in this block, otherwise it won't show up for this set of routes */}
                 <Route path="*">
                   <PageNotFound />
                 </Route>
