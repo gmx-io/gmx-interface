@@ -307,6 +307,7 @@ function AppHeaderUser({
 }
 
 function FullApp() {
+  const isHome = isHomeSite();
   const exchangeRef = useRef();
   const { connector, library, deactivate, activate, active } = useWeb3React();
   const { chainId } = useChainId();
@@ -504,7 +505,6 @@ function FullApp() {
 
   const [pendingTxns, setPendingTxns] = useState([]);
 
-  const isHome = isHomeSite();
   const showRedirectModal = (to) => {
     setRedirectModalVisible(true);
     setSelectedToPage(to);
