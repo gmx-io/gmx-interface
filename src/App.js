@@ -756,93 +756,97 @@ function FullApp() {
               </motion.div>
             )}
           </AnimatePresence>
-          <Switch>
-            <Route exact path="/">
-              <Home showRedirectModal={showRedirectModal} />
-            </Route>
-            {!isHome && (
-              <>
-                <Route exact path="/trade">
-                  <Exchange
-                    ref={exchangeRef}
-                    savedShowPnlAfterFees={savedShowPnlAfterFees}
-                    savedIsPnlInLeverage={savedIsPnlInLeverage}
-                    setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
-                    savedSlippageAmount={savedSlippageAmount}
-                    setPendingTxns={setPendingTxns}
-                    pendingTxns={pendingTxns}
-                    savedShouldShowPositionLines={savedShouldShowPositionLines}
-                    setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
-                    connectWallet={connectWallet}
-                    savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
-                  />
-                </Route>
-                <Route exact path="/dashboard">
-                  <Dashboard />
-                </Route>
-                <Route exact path="/earn">
-                  <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
-                </Route>
-                <Route exact path="/buy">
-                  <Buy
-                    savedSlippageAmount={savedSlippageAmount}
-                    setPendingTxns={setPendingTxns}
-                    connectWallet={connectWallet}
-                  />
-                </Route>
-                <Route exact path="/buy_glp">
-                  <BuyGlp
-                    savedSlippageAmount={savedSlippageAmount}
-                    setPendingTxns={setPendingTxns}
-                    connectWallet={connectWallet}
-                  />
-                </Route>
-                <Route exact path="/buy_gmx">
-                  <BuyGMX />
-                </Route>
-                <Route exact path="/ecosystem">
-                  <Ecosystem />
-                </Route>
-                <Route exact path="/referrals">
-                  <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
-                </Route>
-                <Route exact path="/nft_wallet">
-                  <NftWallet />
-                </Route>
-                <Route exact path="/claim_es_gmx">
-                  <ClaimEsGmx setPendingTxns={setPendingTxns} />
-                </Route>
-                <Route exact path="/actions">
-                  <Actions />
-                </Route>
-                <Route exact path="/actions/:account">
-                  <Actions />
-                </Route>
-                <Route exact path="/orders_overview">
-                  <OrdersOverview />
-                </Route>
-                <Route exact path="/positions_overview">
-                  <PositionsOverview />
-                </Route>
-                <Route exact path="/begin_account_transfer">
-                  <BeginAccountTransfer setPendingTxns={setPendingTxns} />
-                </Route>
-                <Route exact path="/complete_account_transfer/:sender/:receiver">
-                  <CompleteAccountTransfer setPendingTxns={setPendingTxns} />
-                </Route>
-                <Route exact path="/referral-terms">
-                  <ReferralTerms />
-                </Route>
-                {/* PageNotFound needs to be duplicated in this block, otherwise it won't show up for this set of routes */}
-                <Route path="*">
-                  <PageNotFound />
-                </Route>
-              </>
-            )}
-            <Route path="*">
-              <PageNotFound />
-            </Route>
-          </Switch>
+          {isHome && (
+            <Switch>
+              <Route exact path="/">
+                <Home showRedirectModal={showRedirectModal} />
+              </Route>
+              <Route path="*">
+                <PageNotFound />
+              </Route>
+            </Switch>
+          )}
+          {!isHome && (
+            <Switch>
+              <Route exact path="/">
+                <Dashboard />
+              </Route>
+              <Route exact path="/trade">
+                <Exchange
+                  ref={exchangeRef}
+                  savedShowPnlAfterFees={savedShowPnlAfterFees}
+                  savedIsPnlInLeverage={savedIsPnlInLeverage}
+                  setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
+                  savedSlippageAmount={savedSlippageAmount}
+                  setPendingTxns={setPendingTxns}
+                  pendingTxns={pendingTxns}
+                  savedShouldShowPositionLines={savedShouldShowPositionLines}
+                  setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
+                  connectWallet={connectWallet}
+                  savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
+                />
+              </Route>
+              <Route exact path="/dashboard">
+                <Dashboard />
+              </Route>
+              <Route exact path="/earn">
+                <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
+              </Route>
+              <Route exact path="/buy">
+                <Buy
+                  savedSlippageAmount={savedSlippageAmount}
+                  setPendingTxns={setPendingTxns}
+                  connectWallet={connectWallet}
+                />
+              </Route>
+              <Route exact path="/buy_glp">
+                <BuyGlp
+                  savedSlippageAmount={savedSlippageAmount}
+                  setPendingTxns={setPendingTxns}
+                  connectWallet={connectWallet}
+                />
+              </Route>
+              <Route exact path="/buy_gmx">
+                <BuyGMX />
+              </Route>
+              <Route exact path="/ecosystem">
+                <Ecosystem />
+              </Route>
+              <Route exact path="/referrals">
+                <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path="/nft_wallet">
+                <NftWallet />
+              </Route>
+              <Route exact path="/claim_es_gmx">
+                <ClaimEsGmx setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path="/actions">
+                <Actions />
+              </Route>
+              <Route exact path="/actions/:account">
+                <Actions />
+              </Route>
+              <Route exact path="/orders_overview">
+                <OrdersOverview />
+              </Route>
+              <Route exact path="/positions_overview">
+                <PositionsOverview />
+              </Route>
+              <Route exact path="/begin_account_transfer">
+                <BeginAccountTransfer setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path="/complete_account_transfer/:sender/:receiver">
+                <CompleteAccountTransfer setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path="/referral-terms">
+                <ReferralTerms />
+              </Route>
+              <Route path="*">
+                <PageNotFound />
+              </Route>
+            </Switch>
+          )}
         </div>
       </div>
       <ToastContainer
