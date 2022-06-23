@@ -9,12 +9,12 @@
 .input-label {
   display: block;
   margin-bottom: 0.8rem;
-  font-size: 1.55rem;
+  font-size: 1.5rem;
 }
 
 .text-input {
   border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   width: 100%;
   box-sizing: border-box;
 }

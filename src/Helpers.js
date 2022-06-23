@@ -2734,3 +2734,11 @@ export function getAppBaseUrl() {
 
   return "https://app.gmx.io/#";
 }
+
+export function getTradePageUrl() {
+  if (isLocal()) {
+    return "http://localhost:3011/#/trade";
+  }
+
+  return "https://app.gmx.io/#/trade";
+}

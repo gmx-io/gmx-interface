@@ -563,7 +563,7 @@ table.Exchange-list th {
 }
 
 .Exchange-swap-market-box-title {
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   margin-bottom: 1.25rem;
 }
 
@@ -682,7 +682,7 @@ table.Exchange-list th {
   border-radius: 3px;
   z-index: 1;
   cursor: pointer;
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
 }
 
@@ -696,7 +696,7 @@ table.Exchange-list th {
 }
 
 .Exchange-leverage-box .TokenSelector-caret {
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   margin-left: 0.31rem;
 }
 

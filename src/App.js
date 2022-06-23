@@ -823,6 +823,9 @@ function FullApp() {
                 <Route exact path="/referral-terms">
                   <ReferralTerms />
                 </Route>
+                <Route path="*">
+                  <PageNotFound />
+                </Route>
               </>
             )}
             <Route path="*">
