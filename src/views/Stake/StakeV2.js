@@ -604,10 +604,7 @@ function CompoundModal(props) {
     [chainId, "StakeV2-compound-should-stake-es-gmx"],
     true
   );
-  const [shouldStakeMultiplierPoints, setShouldStakeMultiplierPoints] = useLocalStorageSerializeKey(
-    [chainId, "StakeV2-compound-should-stake-multiplier-points"],
-    true
-  );
+  const [shouldStakeMultiplierPoints, setShouldStakeMultiplierPoints] = useState(true);
   const [shouldClaimWeth, setShouldClaimWeth] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-compound-should-claim-weth"],
     true
@@ -717,7 +714,11 @@ function CompoundModal(props) {
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label="Compound Rewards">
         <div className="CompoundModal-menu">
           <div>
-            <Checkbox isChecked={shouldStakeMultiplierPoints} setIsChecked={setShouldStakeMultiplierPoints} disabled={true}>
+            <Checkbox
+              isChecked={shouldStakeMultiplierPoints}
+              setIsChecked={setShouldStakeMultiplierPoints}
+              disabled={true}
+            >
               Stake Multiplier Points
             </Checkbox>
           </div>
