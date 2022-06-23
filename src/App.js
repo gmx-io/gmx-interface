@@ -851,16 +851,23 @@ function FullApp() {
         className="RedirectModal"
         isVisible={redirectModalVisible}
         setIsVisible={setRedirectModalVisible}
-        label="Redirect Notice"
+        label="Launch App"
       >
         You are leaving gmx.io and will be redirected to a third party, independent website.
         <br />
         <br />
-        This redirect takes you to a community deployed and maintained instance of the open source GMX front end.
+        The website is a community deployed and maintained instance of the open source{" "}
+        <a href="https://github.com/gmx-io/gmx-interface" target="_blank" rel="noopener noreferrer">
+          GMX front end
+        </a>
+        .
         <br />
         <br />
-        This front end is hosted and served on the distributed, peer-to-peer file network known as the Interplanetary
-        File System (IPFS).
+        This front end is hosted and served on the distributed, peer-to-peer{" "}
+        <a href="https://ipfs.io/" target="_blank" rel="noopener noreferrer">
+          IPFS network
+        </a>
+        .
         <br />
         <br />
         <button className="App-cta Exchange-swap-button" onClick={goToAppPage}>
