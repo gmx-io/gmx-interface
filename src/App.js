@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 
-import { Switch, Route, NavLink, HashRouter, useLocation } from "react-router-dom";
+import { Switch, Route, NavLink, useLocation } from "react-router-dom";
+import IpfsRouter from "ipfs-react-router";
 
 import {
   ARBITRUM,
@@ -957,9 +958,9 @@ function App() {
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <SEO>
-          <HashRouter>
+          <IpfsRouter>
             <FullApp />
-          </HashRouter>
+          </IpfsRouter>
         </SEO>
       </Web3ReactProvider>
     </SWRConfig>
