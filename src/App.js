@@ -18,7 +18,6 @@ import {
   SHOW_PNL_AFTER_FEES_KEY,
   BASIS_POINTS_DIVISOR,
   SHOULD_SHOW_POSITION_LINES_KEY,
-  inCombinedSiteMode,
   getHomeUrl,
   getAppBaseUrl,
   isHomeSite,
@@ -206,7 +205,7 @@ function AppHeaderUser({
 }) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
-  const showConnectionOptions = inCombinedSiteMode() || !isHomeSite();
+  const showConnectionOptions = !isHomeSite();
 
   const networkOptions = [
     {
@@ -761,6 +760,9 @@ function FullApp() {
               <Route exact path="/">
                 <Home showRedirectModal={showRedirectModal} />
               </Route>
+              <Route exact path="/referral-terms">
+                <ReferralTerms />
+              </Route>
               <Route path="*">
                 <PageNotFound />
               </Route>
@@ -839,9 +841,6 @@ function FullApp() {
               <Route exact path="/complete_account_transfer/:sender/:receiver">
                 <CompleteAccountTransfer setPendingTxns={setPendingTxns} />
               </Route>
-              <Route exact path="/referral-terms">
-                <ReferralTerms />
-              </Route>
               <Route path="*">
                 <PageNotFound />
               </Route>
@@ -867,7 +866,7 @@ function FullApp() {
         setIsVisible={setRedirectModalVisible}
         label="Launch App"
       >
-        You are leaving gmx.io and will be redirected to a third party, independent website.
+        You are leaving GMX.io and will be redirected to a third party, independent website.
         <br />
         <br />
         The website is a community deployed and maintained instance of the open source{" "}
