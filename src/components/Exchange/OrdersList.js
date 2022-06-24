@@ -13,13 +13,14 @@ import {
   getExchangeRate,
   getPositionKey,
 } from "../../Helpers.js";
-import { cancelSwapOrder, cancelIncreaseOrder, cancelDecreaseOrder } from "../../Api";
+import { cancelSwapOrder, cancelIncreaseOrder, cancelDecreaseOrder, cancelMultipleOrders } from "../../Api";
 import { getContract } from "../../Addresses";
 
 import Tooltip from "../Tooltip/Tooltip";
 import OrderEditor from "./OrderEditor";
 
 import "./OrdersList.css";
+import Checkbox from "../Checkbox/Checkbox.js";
 
 function getPositionForOrder(account, order, positionsMap) {
   const key = getPositionKey(account, order.collateralToken, order.indexToken, order.isLong);
@@ -44,6 +45,8 @@ export default function OrdersList(props) {
   } = props;
 
   const [editingOrder, setEditingOrder] = useState(null);
+  const [isCancelMultipleOrderProcessing, setIsCancelMultipleOrderProcessing] = useState(false);
+  const [cancelOrderIdList, setCancelOrderIdList] = useState([]);
 
   const onCancelClick = useCallback(
     (order) => {
@@ -65,6 +68,30 @@ export default function OrdersList(props) {
       });
     },
     [library, pendingTxns, setPendingTxns, chainId]
+  );
+
+  const onMultipleCancelClick = useCallback(
+    async function onMultipleCancelClick() {
+      setIsCancelMultipleOrderProcessing(true);
+      try {
+        const tx = await cancelMultipleOrders(chainId, library, cancelOrderIdList, {
+          successMsg: "Multiple orders cancelled.",
+          failMsg: "Cancel failed.",
+          sentMsg: "Cancel submitted.",
+          pendingTxns,
+          setPendingTxns,
+        });
+        const receipt = await tx.wait();
+        if (receipt.status === 1) {
+          setCancelOrderIdList([]);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsCancelMultipleOrderProcessing(false);
+      }
+    },
+    [chainId, library, cancelOrderIdList, pendingTxns, setPendingTxns]
   );
 
   const onEditClick = useCallback(
@@ -89,10 +116,21 @@ export default function OrdersList(props) {
         <th>
           <div>Mark Price</div>
         </th>
-        <th colSpan="2"></th>
+        <th colSpan="3" className="cancel-order-heading">
+          {cancelOrderIdList.length > 0 && (
+            <button
+              disabled={isCancelMultipleOrderProcessing}
+              type="button"
+              className="default-btn cancel-order"
+              onClick={onMultipleCancelClick}
+            >
+              Cancle {cancelOrderIdList.length} {cancelOrderIdList.length > 1 ? "orders" : "order"}
+            </button>
+          )}
+        </th>
       </tr>
     );
-  }, []);
+  }, [cancelOrderIdList, onMultipleCancelClick, isCancelMultipleOrderProcessing]);
 
   const renderEmptyRow = useCallback(() => {
     if (orders && orders.length) {
@@ -108,6 +146,7 @@ export default function OrdersList(props) {
 
   const renderActions = useCallback(
     (order) => {
+      const orderId = `${order.type}-${order.index}`;
       return (
         <>
           <td>
@@ -120,17 +159,32 @@ export default function OrdersList(props) {
               Cancel
             </button>
           </td>
+          <td>
+            <div>
+              <Checkbox
+                isChecked={cancelOrderIdList.includes(orderId)}
+                setIsChecked={() => {
+                  setCancelOrderIdList((prevState) => {
+                    if (prevState.includes(orderId)) {
+                      return prevState.filter((i) => i !== orderId);
+                    } else {
+                      return prevState.concat(orderId);
+                    }
+                  });
+                }}
+              />
+            </div>
+          </td>
         </>
       );
     },
-    [onEditClick, onCancelClick]
+    [onEditClick, onCancelClick, cancelOrderIdList]
   );
 
   const renderLargeList = useCallback(() => {
     if (!orders || !orders.length) {
       return null;
     }
-
     return orders.map((order) => {
       if (order.type === SWAP) {
         const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
