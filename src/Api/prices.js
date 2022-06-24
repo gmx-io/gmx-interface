@@ -3,8 +3,8 @@ import { gql } from "@apollo/client";
 import useSWR from "swr";
 import { ethers } from "ethers";
 
-import { USD_DECIMALS, CHART_PERIODS, formatAmount, sleep } from "../Helpers";
-import { chainlinkClient, arbitrumPricesGraphClient } from "./common";
+import { USD_DECIMALS, CHART_PERIODS, formatAmount, sleep, ARBITRUM } from "../Helpers";
+import { chainlinkClient, arbitrumPricesGraphClient, avalanchePricesGraphClient } from "./common";
 
 const BigNumber = ethers.BigNumber;
 
@@ -154,7 +154,7 @@ function getCandlesFromPrices(prices, period) {
   }));
 }
 
-async function getPricesFromGmxSubgraph(tokenAddress, period) {
+async function getPricesFromGmxSubgraph(chainId, tokenAddress, period) {
   const query = gql`
     query all($token: String!, $period: String!) {
       priceCandles(
@@ -173,7 +173,9 @@ async function getPricesFromGmxSubgraph(tokenAddress, period) {
     }
   `;
 
-  const res = await arbitrumPricesGraphClient.query({
+  const client = chainId === ARBITRUM ? arbitrumPricesGraphClient : avalanchePricesGraphClient;
+
+  const res = await client.query({
     query,
     variables: {
       token: tokenAddress.toLowerCase(),
@@ -251,7 +253,7 @@ export function useChartPrices(chainId, symbol, isStable, tokenAddress, period, 
   let { data: prices, mutate: updatePrices } = useSWR(swrKey, {
     fetcher: async (...args) => {
       try {
-        return await getPricesFromGmxSubgraph(tokenAddress, period);
+        return await getPricesFromGmxSubgraph(chainId, tokenAddress, period);
         // return await getChartPricesFromStats(chainId, symbol, period);
       } catch (ex) {
         console.warn(ex);

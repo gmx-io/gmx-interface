@@ -6,6 +6,9 @@ export const arbitrumPricesGraphClient = createClient(
   "https://api.thegraph.com/subgraphs/name/gdev8317/gmx-arbitrum-prices"
 );
 export const avalancheGraphClient = createClient("https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats");
+export const avalanchePricesGraphClient = createClient(
+  "https://api.thegraph.com/subgraphs/name/gdev8317/gmx-avalanche-prices"
+);
 export const nissohGraphClient = createClient("https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault");
 export const arbitrumReferralsGraphClient = createClient(
   "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-arbitrum-referrals"
