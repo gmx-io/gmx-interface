@@ -75,7 +75,7 @@ export default function OrdersList(props) {
       setIsCancelMultipleOrderProcessing(true);
       try {
         const tx = await cancelMultipleOrders(chainId, library, cancelOrderIds, {
-          successMsg: "Multiple orders cancelled.",
+          successMsg: "Orders cancelled.",
           failMsg: "Cancel failed.",
           sentMsg: "Cancel submitted.",
           pendingTxns,
