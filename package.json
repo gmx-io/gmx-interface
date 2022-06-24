@@ -25,6 +25,7 @@
     "framer-motion": "4.1.17",
     "graphql": "15.8.0",
     "hex-to-rgba": "2.0.1",
+    "ipfs-react-router": "^0.2.2",
     "krasulya-lightweight-charts": "3.4.3",
     "lodash": "4.17.21",
     "rc-slider": "9.7.5",
