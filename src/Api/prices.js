@@ -157,9 +157,48 @@ function getCandlesFromPrices(prices, period) {
 async function getPricesFromGmxSubgraph(chainId, tokenAddress, period) {
   const query = gql`
     query all($token: String!, $period: String!) {
-      priceCandles(
+      p0: priceCandles(
         first: 1000
         skip: 0
+        orderBy: timestamp
+        orderDirection: desc
+        where: { token: $token, period: $period }
+      ) {
+        t: timestamp
+        o: open
+        h: high
+        l: low
+        c: close
+      }
+      p1: priceCandles(
+        first: 1000
+        skip: 1000
+        orderBy: timestamp
+        orderDirection: desc
+        where: { token: $token, period: $period }
+      ) {
+        t: timestamp
+        o: open
+        h: high
+        l: low
+        c: close
+      }
+      p2: priceCandles(
+        first: 1000
+        skip: 2000
+        orderBy: timestamp
+        orderDirection: desc
+        where: { token: $token, period: $period }
+      ) {
+        t: timestamp
+        o: open
+        h: high
+        l: low
+        c: close
+      }
+      p3: priceCandles(
+        first: 1000
+        skip: 3000
         orderBy: timestamp
         orderDirection: desc
         where: { token: $token, period: $period }
@@ -183,7 +222,7 @@ async function getPricesFromGmxSubgraph(chainId, tokenAddress, period) {
     },
   });
 
-  const prices = res.data.priceCandles.map(({ t, o, h, l, c }) => ({
+  const prices = [...res.data.p0, ...res.data.p1, ...res.data.p2, ...res.data.p3].map(({ t, o, h, l, c }) => ({
     time: t + timezoneOffset,
     open: o / 1e30,
     close: c / 1e30,
@@ -267,8 +306,9 @@ export function useChartPrices(chainId, symbol, isStable, tokenAddress, period, 
         }
       }
     },
-    dedupingInterval: 60000,
-    focusThrottleInterval: 60000 * 10,
+    dedupingInterval: 30000,
+    refreshInterval: 60000,
+    focusThrottleInterval: 30000,
   });
 
   const currentAveragePriceString = currentAveragePrice && currentAveragePrice.toString();
@@ -277,12 +317,12 @@ export function useChartPrices(chainId, symbol, isStable, tokenAddress, period, 
       return getStablePriceData(period);
     }
 
-    if (!prices) {
+    if (!prices || prices.length === 0) {
       return [];
     }
 
     let _prices = [...prices];
-    if (currentAveragePriceString && prices.length) {
+    if (currentAveragePriceString) {
       _prices = appendCurrentAveragePrice(_prices, BigNumber.from(currentAveragePriceString), period);
     }
 
