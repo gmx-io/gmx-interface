@@ -2167,18 +2167,18 @@ export default function SwapBox(props) {
           </div>
           <div className="Exchange-info-row">
             <div className="Exchange-info-label">Available Liquidity:</div>
-            <div className="align-right">
+            <div className="align-right al-swap">
               <Tooltip
                 handle={`${formatAmount(maxToTokenOut, toTokenInfo?.decimals, 2, true)}
                 ${toTokenInfo?.symbol}`}
                 position="right-bottom"
                 renderContent={() => {
                   return (
-                    <>
+                    <div className="font-base">
                       <div>
                         Max {fromTokenInfo?.symbol} in: {numberWithCommas(maxFromTokenIn)} {fromTokenInfo?.symbol}{" "}
                         <br />({"$ "}
-                        {formatAmount(maxFromTokenInUSD, USDG_DECIMALS, 2, true)} )
+                        {formatAmount(maxFromTokenInUSD, USDG_DECIMALS, 2, true)})
                       </div>
                       <br />
                       <div>
@@ -2186,7 +2186,7 @@ export default function SwapBox(props) {
                         {toTokenInfo?.symbol} <br />({"$ "}
                         {formatAmount(maxToTokenOutUSD, USD_DECIMALS, 2, true)})
                       </div>
-                    </>
+                    </div>
                   );
                 }}
               />
