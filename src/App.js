@@ -7,8 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 
-import { Switch, Route, NavLink, useLocation } from "react-router-dom";
-import IpfsRouter from "ipfs-react-router";
+import { Switch, Route, NavLink, HashRouter as Router, Redirect, useLocation } from "react-router-dom";
 
 import {
   ARBITRUM,
@@ -770,7 +769,7 @@ function FullApp() {
           {!isHome && (
             <Switch>
               <Route exact path="/">
-                <Dashboard />
+                <Redirect to="/dashboard" />
               </Route>
               <Route exact path="/trade">
                 <Exchange
@@ -958,9 +957,9 @@ function App() {
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <SEO>
-          <IpfsRouter>
+          <Router>
             <FullApp />
-          </IpfsRouter>
+          </Router>
         </SEO>
       </Web3ReactProvider>
     </SWRConfig>
