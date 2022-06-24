@@ -287,10 +287,6 @@ export function deserialize(data) {
   return data;
 }
 
-export function inCombinedSiteMode() {
-  return process.env.REACT_APP_IN_COMBINED_SITE_MODE === "true";
-}
-
 export function isHomeSite() {
   return process.env.REACT_APP_IS_HOME_SITE === "true";
 }
