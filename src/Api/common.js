@@ -2,6 +2,9 @@ import { ApolloClient, InMemoryCache } from "@apollo/client";
 
 export const chainlinkClient = createClient("https://api.thegraph.com/subgraphs/name/deividask/chainlink");
 export const arbitrumGraphClient = createClient("https://api.thegraph.com/subgraphs/name/gmx-io/gmx-stats");
+export const arbitrumPricesGraphClient = createClient(
+  "https://api.thegraph.com/subgraphs/name/gdev8317/gmx-arbitrum-prices"
+);
 export const avalancheGraphClient = createClient("https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats");
 export const nissohGraphClient = createClient("https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault");
 export const arbitrumReferralsGraphClient = createClient(

@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 
 import { USD_DECIMALS, CHART_PERIODS, formatAmount, sleep } from "../Helpers";
-import { chainlinkClient } from "./common";
+import { chainlinkClient, arbitrumPricesGraphClient } from "./common";
 
 const BigNumber = ethers.BigNumber;
 
@@ -53,6 +53,7 @@ function fillGaps(prices, periodSeconds) {
   return newPrices;
 }
 
+// eslint-disable-next-line no-unused-vars
 async function getChartPricesFromStats(chainId, symbol, period) {
   if (["WBTC", "WETH", "WAVAX"].includes(symbol)) {
     symbol = symbol.substr(1);
@@ -153,6 +154,45 @@ function getCandlesFromPrices(prices, period) {
   }));
 }
 
+async function getPricesFromGmxSubgraph(tokenAddress, period) {
+  const query = gql`
+    query all($token: String!, $period: String!) {
+      priceCandles(
+        first: 1000
+        skip: 0
+        orderBy: timestamp
+        orderDirection: desc
+        where: { token: $token, period: $period }
+      ) {
+        t: timestamp
+        o: open
+        h: high
+        l: low
+        c: close
+      }
+    }
+  `;
+
+  const res = await arbitrumPricesGraphClient.query({
+    query,
+    variables: {
+      token: tokenAddress.toLowerCase(),
+      period,
+    },
+  });
+
+  const prices = res.data.priceCandles.map(({ t, o, h, l, c }) => ({
+    time: t + timezoneOffset,
+    open: o / 1e30,
+    close: c / 1e30,
+    high: h / 1e30,
+    low: l / 1e30,
+  }));
+  prices.sort((a, b) => a.time - b.time);
+
+  return prices;
+}
+
 function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
   if (["WBTC", "WETH", "WAVAX"].includes(tokenSymbol)) {
     tokenSymbol = tokenSymbol.substr(1);
@@ -206,12 +246,13 @@ function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
     });
 }
 
-export function useChartPrices(chainId, symbol, isStable, period, currentAveragePrice) {
+export function useChartPrices(chainId, symbol, isStable, tokenAddress, period, currentAveragePrice) {
   const swrKey = !isStable && symbol ? ["getChartCandles", chainId, symbol, period] : null;
   let { data: prices, mutate: updatePrices } = useSWR(swrKey, {
     fetcher: async (...args) => {
       try {
-        return await getChartPricesFromStats(chainId, symbol, period);
+        return await getPricesFromGmxSubgraph(tokenAddress, period);
+        // return await getChartPricesFromStats(chainId, symbol, period);
       } catch (ex) {
         console.warn(ex);
         console.warn("Switching to graph chainlink data");

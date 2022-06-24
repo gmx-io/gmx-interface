@@ -15,6 +15,7 @@ import {
   getLiquidationPrice,
   useLocalStorageSerializeKey,
 } from "../../Helpers";
+import { getContract } from "../../Addresses";
 import { useChartPrices } from "../../Api";
 import Tab from "../Tab/Tab";
 
@@ -182,10 +183,12 @@ export default function ExchangeTVChart(props) {
 
   const currentAveragePrice =
     chartToken.maxPrice && chartToken.minPrice ? chartToken.maxPrice.add(chartToken.minPrice).div(2) : null;
+  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const [priceData, updatePriceData] = useChartPrices(
     chainId,
     chartToken.symbol,
     chartToken.isStable,
+    chartToken.isNative ? nativeTokenAddress : chartToken.address,
     period,
     currentAveragePrice
   );
