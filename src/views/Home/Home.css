@@ -12,7 +12,7 @@
   position: relative;
   /* height: 52.581rem; */
   padding-bottom: 6.4rem;
-  background: url('../../img/Artwork_gmx.svg');
+  background: url("../../img/Artwork_gmx.svg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: right;
@@ -46,7 +46,7 @@
   font-size: 2rem;
   line-height: 2.5rem;
   max-width: 44.4rem;
-  color: #A0A3C4;
+  color: #a0a3c4;
   margin-bottom: 2.8rem;
 }
 
@@ -78,7 +78,7 @@
   font-size: 1.8rem;
   line-height: 2.3rem;
   max-width: 29rem;
-  color: #A0A3C4;
+  color: #a0a3c4;
   letter-spacing: 0;
 }
 
@@ -117,7 +117,7 @@
   font-size: 1.8rem;
   line-height: 2.3rem;
   letter-spacing: 0;
-  color: #A0A3C4;
+  color: #a0a3c4;
   margin-bottom: 5rem;
 }
 
@@ -139,7 +139,7 @@
   font-size: 1.8rem;
   line-height: 2.3rem;
   letter-spacing: 0px;
-  color: #A0A3C4;
+  color: #a0a3c4;
   margin-bottom: 0.3rem;
 }
 
@@ -168,8 +168,8 @@
 .Home-cta-option {
   max-width: 58.9rem;
   width: 100%;
-  box-shadow: 0px 0.7rem 1.2rem #0000004D;
-  border: 1px solid #1E2136;
+  box-shadow: 0px 0.7rem 1.2rem #0000004d;
+  border: 1px solid #1e2136;
   padding: 1.6rem;
   background-position: center;
   background-repeat: no-repeat;
@@ -202,7 +202,7 @@
 .Home-token-card-section {
   padding-top: 7.75rem;
   padding-bottom: 7.75rem;
-  background: #17182C;
+  background: #17182c;
   margin-bottom: -4.65rem;
 }
 
@@ -231,7 +231,7 @@
   max-width: 59.2rem;
   background: #16182e;
   box-shadow: 0px 0.5rem 1.3rem #00000085;
-  border: 1px solid #2A2B3D;
+  border: 1px solid #2a2b3d;
   border-radius: 4px;
 }
 
@@ -242,7 +242,7 @@
   font-size: 2.325rem;
   line-height: 3.1rem;
   letter-spacing: 0px;
-  color: #FFFFFF;
+  color: #ffffff;
   height: 3.1rem;
 }
 
@@ -259,10 +259,10 @@
 }
 
 .Home-token-card-option-apr {
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   line-height: 2.3rem;
   letter-spacing: 0px;
-  color: #A0A3C4;
+  color: #a0a3c4;
   margin-top: 1.9375rem;
 }
 
@@ -291,7 +291,7 @@
 
 .Home-latest-info-block {
   /* background: #17182C 0% 0% no-repeat padding-box; */
-  box-shadow: 0px 0.5rem 2.2rem #0000001F;
+  box-shadow: 0px 0.5rem 2.2rem #0000001f;
   box-shadow: 0px 1.2rem 1.7rem #00000024;
   box-shadow: 0px 0.7rem 0.8rem #00000033;
   /* mix-blend-mode: multiply; */
@@ -313,7 +313,7 @@
 }
 
 .Home-latest-info__title {
-  color: #A0A3C4;
+  color: #a0a3c4;
   font-size: 1.6rem;
   line-height: 2.5rem;
   letter-spacing: 0px;
@@ -328,7 +328,7 @@
 
 .Home-latest-info__description {
   letter-spacing: 0px;
-  color: #A0A3C4;
+  color: #a0a3c4;
   font-size: 1.4rem;
   line-height: 2.5rem;
 }
@@ -339,8 +339,8 @@
 }
 
 .Home-video-block {
-  background: #0B131C 0% 0% no-repeat padding-box;
-  box-shadow: 0px 0.8rem 2rem #0000003D;
+  background: #0b131c 0% 0% no-repeat padding-box;
+  box-shadow: 0px 0.8rem 2rem #0000003d;
   border-radius: 0.7rem;
   max-width: 89.4rem;
   max-height: 50.6rem;
@@ -366,14 +366,14 @@
 
 .Home-faqs-introduction__title {
   letter-spacing: 0px;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 3.8rem;
   line-height: 4.8rem;
 }
 
 .Home-faqs-introduction__description {
   letter-spacing: 0px;
-  color: #A0A3C4;
+  color: #a0a3c4;
   font-size: 1.8rem;
   line-height: 2.3rem;
   margin-bottom: 3.7rem;
@@ -413,7 +413,7 @@
   align-items: center;
   margin-right: 1.765rem;
   font-size: 1.3795rem;
-  color: #3041DA;
+  color: #3041da;
 }
 
 .Home-faqs-content-header__text {
@@ -498,7 +498,7 @@
   }
 
   .Home-cta-option-subtitle {
-    margin-bottom: .4rem;
+    margin-bottom: 0.4rem;
   }
 
   .Home-cta-option-title {
@@ -510,8 +510,8 @@
   }
 
   .Home-latest-info-container {
-    padding-left: 1.6rem!important;
-    padding-right: 1.6rem!important;
+    padding-left: 1.6rem !important;
+    padding-right: 1.6rem !important;
     padding-top: 7.4rem;
   }
 
@@ -530,10 +530,10 @@
 
 @media (max-width: 400px) {
   .Home-description {
-    font-size: 1.55rem;
+    font-size: 1.5rem;
     line-height: 2.17rem;
     max-width: 44.4rem;
-    color: #A0A3C4;
+    color: #a0a3c4;
     margin-bottom: 2.6rem;
   }
   /*

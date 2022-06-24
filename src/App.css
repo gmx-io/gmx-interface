@@ -2,6 +2,7 @@
   position: relative;
   overflow: hidden;
   min-height: 100%;
+  font-size: 1.5rem;
 }
 
 .App-header-backdrop {
@@ -150,7 +151,7 @@
   border: 1px solid #1e2136;
   border-radius: 0.4rem;
   background: #16182e;
-  font-size: 1.55rem;
+  font-size: 1.5rem;
 }
 
 .App-card-bottom-placeholder {
@@ -481,7 +482,7 @@ button.App-connect-wallet:hover {
   /* opacity: 0.7; */
   color: #b7b7bd;
   line-height: 2.15rem;
-  font-size: 1.55rem;
+  font-size: 1.5rem;
 }
 
 .Page-description span,
@@ -521,7 +522,7 @@ button.App-connect-wallet:hover {
   padding: 1.55rem 1.55rem 1.86rem;
   border: 1px solid #1e2136;
   border-radius: 0.4rem;
-  font-size: 1.55rem;
+  font-size: 1.5rem;
 }
 
 .App-card-title {
@@ -853,7 +854,7 @@ button.App-button-option:disabled {
   cursor: pointer;
   border: none;
   border-radius: 1.55rem;
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   background: none;
   color: white;
   padding: 0;
@@ -868,7 +869,7 @@ button.App-button-option:disabled {
 
 .App-settings-row {
   margin-bottom: 0.8rem;
-  font-size: 1.55rem;
+  font-size: 1.5rem;
 }
 
 .App-settings .App-cta {
