@@ -71,7 +71,7 @@ export default function OrdersList(props) {
   );
 
   const onMultipleCancelClick = useCallback(
-    async function onMultipleCancelClick(cancelOrderIds) {
+    async function (cancelOrderIds) {
       setIsCancelMultipleOrderProcessing(true);
       try {
         const tx = await cancelMultipleOrders(chainId, library, cancelOrderIds, {
@@ -91,7 +91,7 @@ export default function OrdersList(props) {
         setIsCancelMultipleOrderProcessing(false);
       }
     },
-    [chainId, library, pendingTxns, setPendingTxns]
+    [chainId, library, pendingTxns, setPendingTxns, cancelOrderIdList]
   );
 
   const onEditClick = useCallback(
@@ -100,6 +100,38 @@ export default function OrdersList(props) {
     },
     [setEditingOrder]
   );
+
+  const renderButton = useCallback(() => {
+    if (orders.length === 0) return;
+
+    if (cancelOrderIdList.length === 0 || cancelOrderIdList.length === orders.length) {
+      return (
+        <button
+          disabled={isCancelMultipleOrderProcessing}
+          type="button"
+          className="default-btn cancel-order"
+          onClick={() => {
+            const allOrderIds = orders.map((o) => `${o.type}-${o.index}`);
+            setCancelOrderIdList(allOrderIds);
+            onMultipleCancelClick(allOrderIds);
+          }}
+        >
+          Cancel all
+        </button>
+      );
+    } else {
+      return (
+        <button
+          disabled={isCancelMultipleOrderProcessing}
+          type="button"
+          className="default-btn cancel-order"
+          onClick={() => onMultipleCancelClick(cancelOrderIdList)}
+        >
+          Cancel {cancelOrderIdList.length} {cancelOrderIdList.length > 1 ? "orders" : "order"}
+        </button>
+      );
+    }
+  }, [isCancelMultipleOrderProcessing, cancelOrderIdList, orders, onMultipleCancelClick]);
 
   const renderHead = useCallback(() => {
     return (
@@ -117,32 +149,11 @@ export default function OrdersList(props) {
           <div>Mark Price</div>
         </th>
         <th colSpan="3" className="cancel-order-heading">
-          {cancelOrderIdList.length > 0 ? (
-            <button
-              disabled={isCancelMultipleOrderProcessing}
-              type="button"
-              className="default-btn cancel-order"
-              onClick={() => onMultipleCancelClick(cancelOrderIdList)}
-            >
-              Cancel {cancelOrderIdList.length} {cancelOrderIdList.length > 1 ? "orders" : "order"}
-            </button>
-          ) : (
-            <button
-              disabled={isCancelMultipleOrderProcessing}
-              type="button"
-              className="default-btn cancel-order"
-              onClick={() => {
-                const allOrderIds = orders.map((o) => `${o.type}-${o.index}`);
-                onMultipleCancelClick(allOrderIds);
-              }}
-            >
-              Cancel all
-            </button>
-          )}
+          {renderButton()}
         </th>
       </tr>
     );
-  }, [cancelOrderIdList, onMultipleCancelClick, isCancelMultipleOrderProcessing, orders]);
+  }, [renderButton]);
 
   const renderEmptyRow = useCallback(() => {
     if (orders && orders.length) {
