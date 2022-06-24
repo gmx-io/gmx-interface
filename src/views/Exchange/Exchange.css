@@ -994,4 +994,8 @@ table.Exchange-list-small td {
   .Exchange {
     padding-top: 1.5rem !important;
   }
+
+  .al-swap .Tooltip-popup {
+    min-width: 25rem;
+  }
 }
