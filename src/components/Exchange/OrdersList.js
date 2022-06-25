@@ -91,7 +91,7 @@ export default function OrdersList(props) {
         setIsCancelMultipleOrderProcessing(false);
       }
     },
-    [chainId, library, pendingTxns, setPendingTxns, cancelOrderIdList]
+    [chainId, library, pendingTxns, setPendingTxns]
   );
 
   const onEditClick = useCallback(
