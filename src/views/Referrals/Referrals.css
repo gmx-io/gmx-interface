@@ -201,23 +201,27 @@
 
 .table-referral-code {
   cursor: pointer;
-  display: inline-flex;
   align-items: center;
+  display: flex;
 }
+
+.table-referral-code .referral-text {
+  margin-right: 0.775rem;
+  font-family: monospace;
+}
+
+.table-referral-code .copy-icon {
+  margin-right: 1rem;
+}
+
 .table-referral-code .copy-icon:hover {
   opacity: 0.75;
 }
 
-.referral-code {
-  display: flex;
-}
-.referral-code span {
-  margin-right: 0.775rem;
-  font-family: monospace;
-}
 .table-referral-code .info {
   margin-left: 0.775rem;
 }
+
 .referral-table {
   border-collapse: collapse;
   margin: 0;
