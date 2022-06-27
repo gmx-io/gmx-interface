@@ -2254,7 +2254,7 @@ export function setTokenUsingIndexPrices(token, indexPrices, nativeTokenAddress)
   }
 
   const spread = token.maxPrice.sub(token.minPrice);
-  const spreadBps = spread.mul(BASIS_POINTS_DIVISOR).div(token.maxPrice);
+  const spreadBps = spread.mul(BASIS_POINTS_DIVISOR).div(token.maxPrice.add(token.minPrice).div(2));
 
   if (spreadBps.gt(MAX_PRICE_DEVIATION_BASIS_POINTS - 50)) {
     // only set one of the values as there will be a spread between the index price and the Chainlink price
