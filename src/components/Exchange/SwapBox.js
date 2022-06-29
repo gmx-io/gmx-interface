@@ -322,11 +322,7 @@ export default function SwapBox(props) {
     }
   );
 
-  const positionRouterAddress = getContract(chainId, "PositionRouter");
-
-  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
-    fetcher: fetcher(library, PositionRouter),
-  });
+  const { minExecutionFee } = Api.useMinExecutionFee(library, active, chainId);
 
   const { data: hasOutdatedUi } = Api.useHasOutdatedUi();
 
