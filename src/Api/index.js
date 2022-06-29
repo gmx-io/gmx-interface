@@ -13,6 +13,7 @@ import UniPool from "../abis/UniPool.json";
 import UniswapV2 from "../abis/UniswapV2.json";
 import Token from "../abis/Token.json";
 import VaultReader from "../abis/VaultReader.json";
+import PositionRouter from "../abis/PositionRouter.json";
 
 import { getContract } from "../Addresses";
 import { getConstant } from "../Constants";
@@ -34,6 +35,7 @@ import {
   parseValue,
   expandDecimals,
   getInfoTokens,
+  getFallbackProvider,
   helperToast,
 } from "../Helpers";
 import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
@@ -389,6 +391,45 @@ export function useTrades(chainId, account) {
   }
 
   return { trades, updateTrades };
+}
+
+export function useMinExecutionFee(library, active, chainId) {
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
+
+  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
+    fetcher: fetcher(library, PositionRouter),
+  });
+
+  const { data: gasPrice } = useSWR(["gasPrice"], {
+    fetcher: () => {
+      return new Promise(async (resolve, reject) => {
+        if (chainId !== ARBITRUM) {
+          resolve(undefined);
+          return;
+        }
+
+        const provider = getFallbackProvider(chainId);
+        if (!provider) {
+          resolve(undefined);
+          return;
+        }
+
+        const gasPrice = await provider.getGasPrice();
+        resolve(gasPrice);
+      });
+    },
+  });
+
+  let finalExecutionFee = minExecutionFee;
+
+  if (gasPrice) {
+    const estimatedExecutionFee = gasPrice.mul(65000);
+    if (estimatedExecutionFee.gt(minExecutionFee)) {
+      finalExecutionFee = estimatedExecutionFee;
+    }
+  }
+
+  return { minExecutionFee: finalExecutionFee };
 }
 
 export function useStakedGmxSupply(library, active) {

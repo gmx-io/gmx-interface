@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react";
-import useSWR from "swr";
 import { ethers } from "ethers";
 
 import { BsArrowRight } from "react-icons/bs";
@@ -17,7 +16,6 @@ import {
   TRIGGER_PREFIX_BELOW,
   TRIGGER_PREFIX_ABOVE,
   MIN_PROFIT_TIME,
-  fetcher,
   usePrevious,
   formatAmountFree,
   parseValue,
@@ -38,7 +36,7 @@ import {
   getTimeRemaining,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
-import { createDecreaseOrder, callContract, useHasOutdatedUi } from "../../Api";
+import { createDecreaseOrder, callContract, useHasOutdatedUi, useMinExecutionFee } from "../../Api";
 import { getContract } from "../../Addresses";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Checkbox from "../Checkbox/Checkbox";
@@ -119,9 +117,7 @@ export default function PositionSeller(props) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
 
-  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
-    fetcher: fetcher(library, PositionRouter),
-  });
+  const { minExecutionFee } = useMinExecutionFee(library, active, chainId);
 
   const orderOptions = [MARKET, STOP];
   let [orderOption, setOrderOption] = useState(MARKET);
