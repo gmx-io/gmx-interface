@@ -63,34 +63,34 @@ let eventsData = [
   //     },
   //   ],
   // },
-  {
-    id: "gmx-arbitrum-odyssey",
-    title: "GMX Arbitrum Odyssey",
-    isActive: true,
-    validTill: "3 Jul 2022, 12:00",
-    bodyText:
-      "The GMX Arbitrum Odyssey is taking place this week, all participants will receive prizes. Read on to find out more.",
-    buttons: [
-      {
-        text: "Read More",
-        link: "https://medium.com/@gmx.io/gmx-arbitrum-odyssey-fc12cba2d10d",
-      },
-    ],
-  },
-  {
-    id: "fix-arbitrum-transaction-issues",
-    title: "Fix Arbitrum Transactions",
-    isActive: true,
-    validTill: "30 Jun 2022, 12:00",
-    bodyText:
-      "If you experience transaction errors on Arbitrum or data loading issues, please use a free RPC URL from Alchemy.",
-    buttons: [
-      {
-        text: "Learn More",
-        link: "https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls",
-        newTab: true,
-      },
-    ],
-  },
+  // {
+  //   id: "gmx-arbitrum-odyssey",
+  //   title: "GMX Arbitrum Odyssey",
+  //   isActive: true,
+  //   validTill: "3 Jul 2022, 12:00",
+  //   bodyText:
+  //     "The GMX Arbitrum Odyssey is taking place this week, all participants will receive prizes. Read on to find out more.",
+  //   buttons: [
+  //     {
+  //       text: "Read More",
+  //       link: "https://medium.com/@gmx.io/gmx-arbitrum-odyssey-fc12cba2d10d",
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: "fix-arbitrum-transaction-issues",
+  //   title: "Fix Arbitrum Transactions",
+  //   isActive: true,
+  //   validTill: "30 Jun 2022, 12:00",
+  //   bodyText:
+  //     "If you experience transaction errors on Arbitrum or data loading issues, please use a free RPC URL from Alchemy.",
+  //   buttons: [
+  //     {
+  //       text: "Learn More",
+  //       link: "https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls",
+  //       newTab: true,
+  //     },
+  //   ],
+  // },
 ];
 export default eventsData;
