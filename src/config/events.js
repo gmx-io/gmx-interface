@@ -92,5 +92,19 @@ let eventsData = [
   //     },
   //   ],
   // },
+  {
+    id: "gmx-arbitrum-odyssey-paused",
+    title: "GMX Arbitrum Odyssey Paused",
+    isActive: true,
+    validTill: "3 Jul 2022, 12:00",
+    bodyText: "The GMX Arbitrum Odyssey has been paused. Please read the linked post for more information.",
+    buttons: [
+      {
+        text: "Read More",
+        link: "https://twitter.com/GMX_IO/status/1542163585111150592",
+        newTab: true,
+      },
+    ],
+  },
 ];
 export default eventsData;
