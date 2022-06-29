@@ -77,5 +77,20 @@ let eventsData = [
       },
     ],
   },
+  {
+    id: "fix-arbitrum-transaction-issues",
+    title: "Fix Arbitrum Transactions",
+    isActive: true,
+    validTill: "30 Jun 2022, 12:00",
+    bodyText:
+      "If you experience transaction errors on Arbitrum or data loading issues, please use a free RPC URL from Alchemy.",
+    buttons: [
+      {
+        text: "Learn More",
+        link: "https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls",
+        newTab: true,
+      },
+    ],
+  },
 ];
 export default eventsData;
