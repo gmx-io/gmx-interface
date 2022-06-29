@@ -2314,6 +2314,7 @@ export default function SwapBox(props) {
       {isConfirming && (
         <ConfirmationBox
           library={library}
+          minExecutionFee={minExecutionFee}
           isHigherSlippageAllowed={isHigherSlippageAllowed}
           setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
           orders={orders}

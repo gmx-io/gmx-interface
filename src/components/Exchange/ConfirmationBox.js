@@ -93,6 +93,7 @@ export default function ConfirmationBox(props) {
     toUsdMax,
     nextAveragePrice,
     collateralTokenAddress,
+    minExecutionFee,
     feeBps,
     chainId,
     orders,
@@ -100,6 +101,8 @@ export default function ConfirmationBox(props) {
     setPendingTxns,
     pendingTxns,
   } = props;
+
+  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
@@ -631,6 +634,30 @@ export default function ConfirmationBox(props) {
               (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
               "% / 1h"}
           </ExchangeInfoRow>
+          {isMarketOrder && (
+            <div className="PositionEditor-allow-higher-slippage">
+              <ExchangeInfoRow label="Execution Fee">
+                <Tooltip
+                  handle={`${formatAmount(minExecutionFee, 18, 4)} ${nativeTokenSymbol}`}
+                  position="right-top"
+                  renderContent={() => {
+                    return (
+                      <>
+                        This is the network cost required to execute the postion.{" "}
+                        <a
+                          href="https://gmxio.gitbook.io/gmx/trading#opening-a-position"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          More Info
+                        </a>
+                      </>
+                    );
+                  }}
+                />
+              </ExchangeInfoRow>
+            </div>
+          )}
           <ExchangeInfoRow label="Allowed Slippage">
             <Tooltip
               handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
@@ -703,6 +730,8 @@ export default function ConfirmationBox(props) {
     allowedSlippage,
     isTriggerWarningAccepted,
     decreaseOrdersThatWillBeExecuted,
+    minExecutionFee,
+    nativeTokenSymbol,
   ]);
 
   const renderSwapSection = useCallback(() => {
