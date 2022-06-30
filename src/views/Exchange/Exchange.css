@@ -836,6 +836,10 @@ table.Exchange-list-small td {
   height: 7.75rem;
 }
 
+.al-swap .Tooltip-popup {
+  min-width: 25rem;
+}
+
 @media (max-width: 1500px) {
   .Exchange-swap-box {
     width: 38.75rem;
@@ -993,9 +997,5 @@ table.Exchange-list-small td {
   }
   .Exchange {
     padding-top: 1.5rem !important;
-  }
-
-  .al-swap .Tooltip-popup {
-    min-width: 25rem;
   }
 }
