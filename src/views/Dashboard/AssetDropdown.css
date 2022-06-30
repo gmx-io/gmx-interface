@@ -7,6 +7,12 @@
   z-index: 100;
 }
 
+.center-both {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .dropdown-arrow {
   margin-left: 0.8rem;
   cursor: pointer;
