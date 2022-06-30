@@ -32,6 +32,7 @@ import {
   GLPPOOLCOLORS,
   DEFAULT_MAX_USDG_AMOUNT,
   getPageTitle,
+  importImage,
 } from "../../Helpers";
 import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply, useInfoTokens } from "../../Api";
 
@@ -753,14 +754,7 @@ export default function DashboardV2() {
                     if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
                       maxUsdgAmount = tokenInfo.maxUsdgAmount;
                     }
-
-                    var tokenImage = null;
-
-                    try {
-                      tokenImage = require("../../img/ic_" + token.symbol.toLowerCase() + "_40.svg");
-                    } catch (error) {
-                      console.error(error);
-                    }
+                    const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_40.svg");
 
                     return (
                       <tr key={token.symbol}>
@@ -768,7 +762,7 @@ export default function DashboardV2() {
                           <div className="token-symbol-wrapper">
                             <div className="App-card-title-info">
                               <div className="App-card-title-info-icon">
-                                <img src={tokenImage && tokenImage.default} alt={token.symbol} width="40px" />
+                                <img src={tokenImage} alt={token.symbol} width="40px" />
                               </div>
                               <div className="App-card-title-info-text">
                                 <div className="App-card-info-title">{token.name}</div>
@@ -818,11 +812,13 @@ export default function DashboardV2() {
                   maxUsdgAmount = tokenInfo.maxUsdgAmount;
                 }
 
+                const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_24.svg");
                 return (
                   <div className="App-card" key={token.symbol}>
                     <div className="App-card-title">
-                      <div style={{ display: "flex" }}>
-                        {token.symbol}
+                      <div className="mobile-token-card">
+                        <img src={tokenImage} alt={token.symbol} width="20px" />
+                        <div className="token-symbol-text">{token.symbol}</div>
                         <div>
                           <AssetDropdown assetSymbol={token.symbol} assetInfo={token} />
                         </div>
