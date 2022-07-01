@@ -59,7 +59,6 @@ import {
   calculatePositionDelta,
   replaceNativeTokenAddress,
   adjustForDecimals,
-  numberWithCommas,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import * as Api from "../../Api";
@@ -275,10 +274,6 @@ export default function SwapBox(props) {
   const indexTokens = whitelistedTokens.filter((token) => !token.isStable && !token.isWrapped);
   const shortableTokens = indexTokens.filter((token) => token.isShortable);
 
-  function isStable(tokenSymbol) {
-    return stableTokens.find((t) => t.symbol === tokenSymbol);
-  }
-
   let toTokens = tokens;
   if (isLong) {
     toTokens = indexTokens;
@@ -419,7 +414,7 @@ export default function SwapBox(props) {
   }, [fromTokenInfo]);
 
   const maxFromTokenIn = useMemo(() => {
-    return maxFromTokenInUSD?.div(adjustForDecimals(fromTokenInfo.maxPrice, USD_DECIMALS, USDG_DECIMALS)).toString();
+    return maxFromTokenInUSD?.mul(expandDecimals(1, USD_DECIMALS)).div(fromTokenInfo.maxPrice).toString();
   }, [maxFromTokenInUSD, fromTokenInfo]);
 
   const triggerRatio = useMemo(() => {
@@ -765,9 +760,9 @@ export default function SwapBox(props) {
     if (!fromTokenInfo || !fromTokenInfo.minPrice) {
       return ["Incorrect network"];
     }
-    // if (fromTokenInfo && fromTokenInfo.balance && fromAmount && fromAmount.gt(fromTokenInfo.balance)) {
-    //   return [`Insufficient ${fromTokenInfo.symbol} balance`];
-    // }
+    if (fromTokenInfo && fromTokenInfo.balance && fromAmount && fromAmount.gt(fromTokenInfo.balance)) {
+      return [`Insufficient ${fromTokenInfo.symbol} balance`];
+    }
 
     const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
 
@@ -2181,14 +2176,13 @@ export default function SwapBox(props) {
                   return (
                     <div>
                       <div>
-                        Max {fromTokenInfo.symbol} in: {numberWithCommas(maxFromTokenIn)} {fromTokenInfo.symbol} <br />(
-                        {"$ "}
+                        Max {fromTokenInfo.symbol} in: {formatAmount(maxFromTokenIn, USDG_DECIMALS, 2, true)}{" "}
+                        {fromTokenInfo.symbol} <br />({"$ "}
                         {formatAmount(maxFromTokenInUSD, USDG_DECIMALS, 2, true)})
                       </div>
                       <br />
                       <div>
-                        Max {toTokenInfo.symbol} out:{" "}
-                        {formatAmount(maxToTokenOut, toTokenInfo.decimals, isStable(toTokenInfo.symbol) ? 0 : 2, true)}{" "}
+                        Max {toTokenInfo.symbol} out: {formatAmount(maxToTokenOut, toTokenInfo.decimals, 2, true)}{" "}
                         {toTokenInfo.symbol} <br />({"$ "}
                         {formatAmount(maxToTokenOutUSD, USD_DECIMALS, 2, true)})
                       </div>
