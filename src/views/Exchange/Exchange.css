@@ -837,7 +837,12 @@ table.Exchange-list-small td {
   padding-top: 3.1rem;
   height: 7.75rem;
 }
-
+.cancel-order-btn {
+  margin-right: 1.5rem;
+  background: none;
+  border: none;
+  color: white;
+}
 .al-swap .Tooltip-popup {
   min-width: 25rem;
 }
