@@ -645,7 +645,7 @@ export default function ConfirmationBox(props) {
                       <>
                         This is the network cost required to execute the postion.{" "}
                         <a
-                          href="https://gmxio.gitbook.io/gmx/trading#opening-a-position"
+                          href="https://gmxio.gitbook.io/gmx/trading#execution-fee"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
