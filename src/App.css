@@ -390,6 +390,11 @@ button.App-connect-wallet:hover {
   position: relative;
 }
 
+.mobile-menu-divider {
+  height: 1px;
+  background: #4e516a;
+}
+
 .App-card-divider {
   height: 1px;
   background: #23263b;
@@ -1301,6 +1306,10 @@ button.App-button {
 
   .App-card-long-content {
     grid-template-columns: 1fr;
+  }
+  .default-container {
+    padding-left: 2.2rem;
+    padding-right: 2.2rem;
   }
 }
 
