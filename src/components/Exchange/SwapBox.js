@@ -400,9 +400,10 @@ export default function SwapBox(props) {
   }, [toTokenInfo, fromTokenInfo]);
 
   const maxToTokenOut = useMemo(() => {
-    return toTokenInfo.availableAmount?.gt(toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount))
+    const value = toTokenInfo.availableAmount?.gt(toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount))
       ? toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount)
       : toTokenInfo.availableAmount;
+    return value.gt(0) ? value : bigNumberify(0);
   }, [toTokenInfo]);
 
   const maxToTokenOutUSD = useMemo(() => {
@@ -410,12 +411,22 @@ export default function SwapBox(props) {
   }, [maxToTokenOut, toTokenAddress, infoTokens]);
 
   const maxFromTokenInUSD = useMemo(() => {
-    return fromTokenInfo.maxUsdgAmount?.sub(fromTokenInfo.usdgAmount);
+    const value = fromTokenInfo.maxUsdgAmount
+      ?.sub(fromTokenInfo.usdgAmount)
+      .mul(expandDecimals(1, USD_DECIMALS))
+      .div(expandDecimals(1, USDG_DECIMALS));
+    return value.gt(0) ? value : bigNumberify(0);
   }, [fromTokenInfo]);
 
   const maxFromTokenIn = useMemo(() => {
-    return maxFromTokenInUSD?.mul(expandDecimals(1, USD_DECIMALS)).div(fromTokenInfo.maxPrice).toString();
+    return maxFromTokenInUSD?.mul(expandDecimals(1, fromTokenInfo.decimals)).div(fromTokenInfo.maxPrice).toString();
   }, [maxFromTokenInUSD, fromTokenInfo]);
+
+  let maxSwapAmountUsd = bigNumberify(0);
+
+  if (maxToTokenOutUSD && maxFromTokenInUSD) {
+    maxSwapAmountUsd = maxToTokenOutUSD.lt(maxFromTokenInUSD) ? maxToTokenOutUSD : maxFromTokenInUSD;
+  }
 
   const triggerRatio = useMemo(() => {
     if (!triggerRatioValue) {
@@ -2169,16 +2180,15 @@ export default function SwapBox(props) {
             <div className="Exchange-info-label">Available Liquidity:</div>
             <div className="align-right al-swap">
               <Tooltip
-                handle={`${formatAmount(maxToTokenOut, toTokenInfo.decimals, 2, true)}
-                ${toTokenInfo.symbol}`}
+                handle={`${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)} USD`}
                 position="right-bottom"
                 renderContent={() => {
                   return (
                     <div>
                       <div>
-                        Max {fromTokenInfo.symbol} in: {formatAmount(maxFromTokenIn, USDG_DECIMALS, 2, true)}{" "}
+                        Max {fromTokenInfo.symbol} in: {formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 2, true)}{" "}
                         {fromTokenInfo.symbol} <br />({"$ "}
-                        {formatAmount(maxFromTokenInUSD, USDG_DECIMALS, 2, true)})
+                        {formatAmount(maxFromTokenInUSD, USD_DECIMALS, 2, true)})
                       </div>
                       <br />
                       <div>

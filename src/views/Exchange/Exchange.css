@@ -679,6 +679,7 @@ table.Exchange-list th {
   top: 0;
   padding: 0.465rem 0.8rem;
   color: rgba(255, 255, 255, 0.7);
+  outline: 1rem solid rgba(33, 37, 64, 1);
   border-radius: 3px;
   z-index: 1;
   cursor: pointer;
@@ -705,6 +706,7 @@ input.Exchange-swap-input {
   max-width: 100%;
   font-size: 2.325rem;
   width: 100%;
+  padding-right: 2rem;
 }
 input.Exchange-swap-input.small {
   max-width: 14.725rem;
