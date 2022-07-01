@@ -429,6 +429,9 @@ export default function SwapBox(props) {
   }, [fromTokenInfo]);
 
   const maxFromTokenIn = useMemo(() => {
+    if (!fromTokenInfo.maxPrice) {
+      return bigNumberify(0);
+    }
     return maxFromTokenInUSD?.mul(expandDecimals(1, fromTokenInfo.decimals)).div(fromTokenInfo.maxPrice).toString();
   }, [maxFromTokenInUSD, fromTokenInfo]);
 
