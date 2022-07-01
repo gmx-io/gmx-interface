@@ -13,7 +13,7 @@ import {
   getExchangeRate,
   getPositionKey,
 } from "../../Helpers.js";
-import { cancelSwapOrder, cancelIncreaseOrder, cancelDecreaseOrder, cancelMultipleOrders } from "../../Api";
+import { cancelSwapOrder, cancelIncreaseOrder, cancelDecreaseOrder } from "../../Api";
 import { getContract } from "../../Addresses";
 
 import Tooltip from "../Tooltip/Tooltip";
@@ -281,7 +281,17 @@ export default function OrdersList(props) {
         </tr>
       );
     });
-  }, [orders, renderActions, infoTokens, positionsMap, hideActions, chainId, account, cancelOrderIdList]);
+  }, [
+    orders,
+    renderActions,
+    infoTokens,
+    positionsMap,
+    hideActions,
+    chainId,
+    account,
+    cancelOrderIdList,
+    setCancelOrderIdList,
+  ]);
 
   const renderSmallList = useCallback(() => {
     if (!orders || !orders.length) {
