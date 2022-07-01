@@ -68,27 +68,6 @@ button.Orders-list-action:hover {
   opacity: 1;
 }
 
-.cancel-order-heading {
-  opacity: 1 !important;
-  padding-top: 0.8rem !important;
-  padding-bottom: 0.8rem !important;
-}
-
-.cancel-order-heading button {
-  float: right;
-  padding: 0.75rem 1rem;
-  min-height: 0;
-  line-height: 1;
-}
-
-.cancel-order-heading button:active {
-  background: #5f6ffd;
-  border: none;
-  padding: 0.75rem 1rem;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
 @media (max-width: 1000px) {
   .Orders-list.small {
     display: block;

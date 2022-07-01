@@ -42,11 +42,11 @@ export default function OrdersList(props) {
     hideActions,
     chainId,
     savedShouldDisableOrderValidation,
+    cancelOrderIdList,
+    setCancelOrderIdList,
   } = props;
 
   const [editingOrder, setEditingOrder] = useState(null);
-  const [isCancelMultipleOrderProcessing, setIsCancelMultipleOrderProcessing] = useState(false);
-  const [cancelOrderIdList, setCancelOrderIdList] = useState([]);
 
   const onCancelClick = useCallback(
     (order) => {
@@ -70,30 +70,6 @@ export default function OrdersList(props) {
     [library, pendingTxns, setPendingTxns, chainId]
   );
 
-  const onMultipleCancelClick = useCallback(
-    async function (cancelOrderIds) {
-      setIsCancelMultipleOrderProcessing(true);
-      try {
-        const tx = await cancelMultipleOrders(chainId, library, cancelOrderIds, {
-          successMsg: "Orders cancelled.",
-          failMsg: "Cancel failed.",
-          sentMsg: "Cancel submitted.",
-          pendingTxns,
-          setPendingTxns,
-        });
-        const receipt = await tx.wait();
-        if (receipt.status === 1) {
-          setCancelOrderIdList([]);
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsCancelMultipleOrderProcessing(false);
-      }
-    },
-    [chainId, library, pendingTxns, setPendingTxns]
-  );
-
   const onEditClick = useCallback(
     (order) => {
       setEditingOrder(order);
@@ -101,41 +77,25 @@ export default function OrdersList(props) {
     [setEditingOrder]
   );
 
-  const renderButton = useCallback(() => {
-    if (orders.length === 0) return;
-
-    if (cancelOrderIdList.length === 0 || cancelOrderIdList.length === orders.length) {
-      return (
-        <button
-          disabled={isCancelMultipleOrderProcessing}
-          type="button"
-          className="default-btn cancel-order"
-          onClick={() => {
-            const allOrderIds = orders.map((o) => `${o.type}-${o.index}`);
-            setCancelOrderIdList(allOrderIds);
-            onMultipleCancelClick(allOrderIds);
-          }}
-        >
-          Cancel all
-        </button>
-      );
-    } else {
-      return (
-        <button
-          disabled={isCancelMultipleOrderProcessing}
-          type="button"
-          className="default-btn cancel-order"
-          onClick={() => onMultipleCancelClick(cancelOrderIdList)}
-        >
-          Cancel {cancelOrderIdList.length} {cancelOrderIdList.length > 1 ? "orders" : "order"}
-        </button>
-      );
-    }
-  }, [isCancelMultipleOrderProcessing, cancelOrderIdList, orders, onMultipleCancelClick]);
-
   const renderHead = useCallback(() => {
+    const isAllOrdersSelected = cancelOrderIdList.length > 0 && cancelOrderIdList.length === orders.length;
     return (
       <tr className="Exchange-list-header">
+        <th>
+          <div>
+            <Checkbox
+              isChecked={isAllOrdersSelected}
+              setIsChecked={() => {
+                if (isAllOrdersSelected) {
+                  setCancelOrderIdList([]);
+                } else {
+                  const allOrderIds = orders.map((o) => `${o.type}-${o.index}`);
+                  setCancelOrderIdList(allOrderIds);
+                }
+              }}
+            />
+          </div>
+        </th>
         <th>
           <div>Type</div>
         </th>
@@ -148,12 +108,9 @@ export default function OrdersList(props) {
         <th>
           <div>Mark Price</div>
         </th>
-        <th colSpan="3" className="cancel-order-heading">
-          {renderButton()}
-        </th>
       </tr>
     );
-  }, [renderButton]);
+  }, [cancelOrderIdList, orders, setCancelOrderIdList]);
 
   const renderEmptyRow = useCallback(() => {
     if (orders && orders.length) {
@@ -169,7 +126,6 @@ export default function OrdersList(props) {
 
   const renderActions = useCallback(
     (order) => {
-      const orderId = `${order.type}-${order.index}`;
       return (
         <>
           <td>
@@ -182,26 +138,10 @@ export default function OrdersList(props) {
               Cancel
             </button>
           </td>
-          <td>
-            <div>
-              <Checkbox
-                isChecked={cancelOrderIdList.includes(orderId)}
-                setIsChecked={() => {
-                  setCancelOrderIdList((prevState) => {
-                    if (prevState.includes(orderId)) {
-                      return prevState.filter((i) => i !== orderId);
-                    } else {
-                      return prevState.concat(orderId);
-                    }
-                  });
-                }}
-              />
-            </div>
-          </td>
         </>
       );
     },
-    [onEditClick, onCancelClick, cancelOrderIdList]
+    [onEditClick, onCancelClick]
   );
 
   const renderLargeList = useCallback(() => {
@@ -220,9 +160,26 @@ export default function OrdersList(props) {
         );
 
         const markExchangeRate = getExchangeRate(fromTokenInfo, toTokenInfo);
+        const orderId = `${order.type}-${order.index}`;
 
         return (
-          <tr className="Exchange-list-item" key={`${order.type}-${order.index}`}>
+          <tr className="Exchange-list-item" key={orderId}>
+            <td>
+              <div>
+                <Checkbox
+                  isChecked={cancelOrderIdList.includes(orderId)}
+                  setIsChecked={() => {
+                    setCancelOrderIdList((prevState) => {
+                      if (prevState.includes(orderId)) {
+                        return prevState.filter((i) => i !== orderId);
+                      } else {
+                        return prevState.concat(orderId);
+                      }
+                    });
+                  }}
+                />
+              </div>
+            </td>
             <td className="Exchange-list-item-type">Limit</td>
             <td>
               Swap{" "}
@@ -277,9 +234,26 @@ export default function OrdersList(props) {
           error = "Order size is bigger than position, will only be executable if position increases";
         }
       }
+      const orderId = `${order.type}-${order.index}`;
 
       return (
         <tr className="Exchange-list-item" key={`${order.isLong}-${order.type}-${order.index}`}>
+          <td className="Exchange-list-item-type">
+            <div>
+              <Checkbox
+                isChecked={cancelOrderIdList.includes(orderId)}
+                setIsChecked={() => {
+                  setCancelOrderIdList((prevState) => {
+                    if (prevState.includes(orderId)) {
+                      return prevState.filter((i) => i !== orderId);
+                    } else {
+                      return prevState.concat(orderId);
+                    }
+                  });
+                }}
+              />
+            </div>
+          </td>
           <td className="Exchange-list-item-type">{order.type === INCREASE ? "Limit" : "Trigger"}</td>
           <td>
             {order.type === INCREASE ? "Increase" : "Decrease"} {indexTokenSymbol} {order.isLong ? "Long" : "Short"}
@@ -307,7 +281,7 @@ export default function OrdersList(props) {
         </tr>
       );
     });
-  }, [orders, renderActions, infoTokens, positionsMap, hideActions, chainId, account]);
+  }, [orders, renderActions, infoTokens, positionsMap, hideActions, chainId, account, cancelOrderIdList]);
 
   const renderSmallList = useCallback(() => {
     if (!orders || !orders.length) {
