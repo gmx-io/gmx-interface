@@ -667,7 +667,7 @@ export default function PositionSeller(props) {
       return null;
     }
     return (
-      <ExchangeInfoRow label="Execution Fees">
+      <ExchangeInfoRow label="Execution Fee">
         {formatAmount(DECREASE_ORDER_EXECUTION_GAS_FEE, 18, 4)} {nativeTokenSymbol}
       </ExchangeInfoRow>
     );
@@ -916,6 +916,31 @@ export default function PositionSeller(props) {
                 {!positionFee && "-"}
               </div>
             </div>
+            {orderOption === MARKET && (
+              <div className="Exchange-info-row">
+                <div className="Exchange-info-label">Execution Fee</div>
+                <div className="align-right">
+                  <Tooltip
+                    handle={`${formatAmount(minExecutionFee, 18, 4)} ${nativeTokenSymbol}`}
+                    position="right-top"
+                    renderContent={() => {
+                      return (
+                        <>
+                          This is the network cost required to execute the decrease postion.{" "}
+                          <a
+                            href="https://gmxio.gitbook.io/gmx/trading#opening-a-position"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            More Info
+                          </a>
+                        </>
+                      );
+                    }}
+                  />
+                </div>
+              </div>
+            )}
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">Receive</div>
               <div className="align-right">
