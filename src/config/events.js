@@ -108,15 +108,15 @@ let eventsData = [
   },
   {
     id: "app-gmx-io",
-    title: "Launch of app.gmx.io",
+    title: "Frontend Updates",
     isActive: true,
     validTill: "6 Jul 2022, 12:00",
     bodyText:
-      "On 6 Jul 2022, the gmx.io site will be updated to be a purely informational site, all functionality will be moved to app.gmx.io.",
+      "On 6 Jul 2022, updates will be applied to the GMX frontend to inform users of the separation between gmx.io and app.gmx.io",
     buttons: [
       {
         text: "Read More",
-        link: "https://medium.com/@gmx.io/gmx-ipfs-site-6118103f067",
+        link: "https://medium.com/@gmx.io/gmx-frontend-updates-8d13f2346e1e",
         newTab: true,
       },
     ],
