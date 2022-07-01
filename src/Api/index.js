@@ -400,30 +400,49 @@ export function useMinExecutionFee(library, active, chainId) {
     fetcher: fetcher(library, PositionRouter),
   });
 
-  const { data: gasPrice } = useSWR(["gasPrice"], {
+  const { data: gasPrice } = useSWR(["gasPrice", chainId], {
     fetcher: () => {
       return new Promise(async (resolve, reject) => {
-        if (chainId !== ARBITRUM) {
-          resolve(undefined);
-          return;
-        }
-
         const provider = getFallbackProvider(chainId);
         if (!provider) {
           resolve(undefined);
           return;
         }
 
-        const gasPrice = await provider.getGasPrice();
-        resolve(gasPrice);
+        if (chainId === ARBITRUM) {
+          const gasPrice = await provider.getGasPrice();
+          resolve(gasPrice);
+          return;
+        }
+
+        if (chainId === AVALANCHE) {
+          const feeData = await provider.getFeeData();
+          resolve(feeData.maxFeePerGas);
+          return;
+        }
       });
     },
   });
 
+  let multiplier;
+
+  // if gas prices on Arbitrum are high, the main transaction costs would come from the L2 gas usage
+  // for executing positions this is around 65,000 gas
+  // if gas prices on Ethereum are high, than the gas usage might be higher, this calculation doesn't deal with that
+  // case yet
+  if (chainId === ARBITRUM) {
+    multiplier = 65000;
+  }
+
+  // multiplier for Avalanche is just the average gas usage
+  if (chainId === AVALANCHE) {
+    multiplier = 750000;
+  }
+
   let finalExecutionFee = minExecutionFee;
 
-  if (gasPrice) {
-    const estimatedExecutionFee = gasPrice.mul(65000);
+  if (gasPrice && minExecutionFee) {
+    const estimatedExecutionFee = gasPrice.mul(multiplier);
     if (estimatedExecutionFee.gt(minExecutionFee)) {
       finalExecutionFee = estimatedExecutionFee;
     }
