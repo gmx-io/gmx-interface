@@ -39,9 +39,9 @@ const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 function getSpread(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
   if (fromTokenInfo && fromTokenInfo.maxPrice && toTokenInfo && toTokenInfo.minPrice) {
     const fromDiff = fromTokenInfo.maxPrice.sub(fromTokenInfo.minPrice).div(2);
-    const fromSpread = fromDiff.mul(PRECISION).div(fromTokenInfo.maxPrice);
+    const fromSpread = fromDiff.mul(PRECISION).div(fromTokenInfo.maxPrice.add(fromTokenInfo.minPrice).div(2));
     const toDiff = toTokenInfo.maxPrice.sub(toTokenInfo.minPrice).div(2);
-    const toSpread = toDiff.mul(PRECISION).div(toTokenInfo.maxPrice);
+    const toSpread = toDiff.mul(PRECISION).div(toTokenInfo.maxPrice.add(toTokenInfo.minPrice).div(2));
 
     let value = fromSpread.add(toSpread);
 
@@ -93,6 +93,7 @@ export default function ConfirmationBox(props) {
     toUsdMax,
     nextAveragePrice,
     collateralTokenAddress,
+    minExecutionFee,
     feeBps,
     chainId,
     orders,
@@ -100,6 +101,8 @@ export default function ConfirmationBox(props) {
     setPendingTxns,
     pendingTxns,
   } = props;
+
+  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
@@ -253,7 +256,7 @@ export default function ConfirmationBox(props) {
   }, [isMarketOrder, spread]);
 
   const renderFeeWarning = useCallback(() => {
-    if (orderOption === LIMIT || !feeBps || feeBps <= 50) {
+    if (orderOption === LIMIT || !feeBps || feeBps <= 60) {
       return null;
     }
 
@@ -631,6 +634,30 @@ export default function ConfirmationBox(props) {
               (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
               "% / 1h"}
           </ExchangeInfoRow>
+          {isMarketOrder && (
+            <div className="PositionEditor-allow-higher-slippage">
+              <ExchangeInfoRow label="Execution Fee">
+                <Tooltip
+                  handle={`${formatAmount(minExecutionFee, 18, 4)} ${nativeTokenSymbol}`}
+                  position="right-top"
+                  renderContent={() => {
+                    return (
+                      <>
+                        This is the network cost required to execute the postion.{" "}
+                        <a
+                          href="https://gmxio.gitbook.io/gmx/trading#opening-a-position"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          More Info
+                        </a>
+                      </>
+                    );
+                  }}
+                />
+              </ExchangeInfoRow>
+            </div>
+          )}
           <ExchangeInfoRow label="Allowed Slippage">
             <Tooltip
               handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
@@ -703,6 +730,8 @@ export default function ConfirmationBox(props) {
     allowedSlippage,
     isTriggerWarningAccepted,
     decreaseOrdersThatWillBeExecuted,
+    minExecutionFee,
+    nativeTokenSymbol,
   ]);
 
   const renderSwapSection = useCallback(() => {

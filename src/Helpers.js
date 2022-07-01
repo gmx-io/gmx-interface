@@ -1982,7 +1982,7 @@ export async function setGasPrice(txnOpts, provider, chainId) {
 }
 
 export async function getGasLimit(contract, method, params = [], value, gasBuffer) {
-  const defaultGasBuffer = 300000;
+  const defaultGasBuffer = 50000;
   const defaultValue = bigNumberify(0);
 
   if (!value) {
@@ -2258,7 +2258,7 @@ export function setTokenUsingIndexPrices(token, indexPrices, nativeTokenAddress)
   }
 
   const spread = token.maxPrice.sub(token.minPrice);
-  const spreadBps = spread.mul(BASIS_POINTS_DIVISOR).div(token.maxPrice);
+  const spreadBps = spread.mul(BASIS_POINTS_DIVISOR).div(token.maxPrice.add(token.minPrice).div(2));
 
   if (spreadBps.gt(MAX_PRICE_DEVIATION_BASIS_POINTS - 50)) {
     // only set one of the values as there will be a spread between the index price and the Chainlink price
@@ -2737,4 +2737,15 @@ export function getTradePageUrl() {
   }
 
   return "https://app.gmx.io/#/trade";
+}
+
+export function importImage(name) {
+  let tokenImage = null;
+  try {
+    tokenImage = require("./img/" + name);
+  } catch (error) {
+    tokenImage = require("./img/ic_eth_40.svg");
+    console.error(error);
+  }
+  return tokenImage && tokenImage.default;
 }
