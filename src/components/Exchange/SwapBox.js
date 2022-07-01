@@ -273,6 +273,7 @@ export default function SwapBox(props) {
   const stableTokens = tokens.filter((token) => token.isStable);
   const indexTokens = whitelistedTokens.filter((token) => !token.isStable && !token.isWrapped);
   const shortableTokens = indexTokens.filter((token) => token.isShortable);
+
   let toTokens = tokens;
   if (isLong) {
     toTokens = indexTokens;
@@ -397,6 +398,35 @@ export default function SwapBox(props) {
   const triggerRatioInverted = useMemo(() => {
     return isTriggerRatioInverted(fromTokenInfo, toTokenInfo);
   }, [toTokenInfo, fromTokenInfo]);
+
+  const maxToTokenOut = useMemo(() => {
+    const value = toTokenInfo.availableAmount?.gt(toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount))
+      ? toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount)
+      : toTokenInfo.availableAmount;
+    return value.gt(0) ? value : bigNumberify(0);
+  }, [toTokenInfo]);
+
+  const maxToTokenOutUSD = useMemo(() => {
+    return getUsd(maxToTokenOut, toTokenAddress, false, infoTokens);
+  }, [maxToTokenOut, toTokenAddress, infoTokens]);
+
+  const maxFromTokenInUSD = useMemo(() => {
+    const value = fromTokenInfo.maxUsdgAmount
+      ?.sub(fromTokenInfo.usdgAmount)
+      .mul(expandDecimals(1, USD_DECIMALS))
+      .div(expandDecimals(1, USDG_DECIMALS));
+    return value.gt(0) ? value : bigNumberify(0);
+  }, [fromTokenInfo]);
+
+  const maxFromTokenIn = useMemo(() => {
+    return maxFromTokenInUSD?.mul(expandDecimals(1, fromTokenInfo.decimals)).div(fromTokenInfo.maxPrice).toString();
+  }, [maxFromTokenInUSD, fromTokenInfo]);
+
+  let maxSwapAmountUsd = bigNumberify(0);
+
+  if (maxToTokenOutUSD && maxFromTokenInUSD) {
+    maxSwapAmountUsd = maxToTokenOutUSD.lt(maxFromTokenInUSD) ? maxToTokenOutUSD : maxFromTokenInUSD;
+  }
 
   const triggerRatio = useMemo(() => {
     if (!triggerRatioValue) {
@@ -2144,6 +2174,32 @@ export default function SwapBox(props) {
             <div className="Exchange-info-label">{toToken.symbol} Price</div>
             <div className="align-right">
               {toTokenInfo && formatAmount(toTokenInfo.maxPrice, USD_DECIMALS, 2, true)} USD
+            </div>
+          </div>
+          <div className="Exchange-info-row">
+            <div className="Exchange-info-label">Available Liquidity:</div>
+            <div className="align-right al-swap">
+              <Tooltip
+                handle={`${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)} USD`}
+                position="right-bottom"
+                renderContent={() => {
+                  return (
+                    <div>
+                      <div>
+                        Max {fromTokenInfo.symbol} in: {formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 2, true)}{" "}
+                        {fromTokenInfo.symbol} <br />({"$ "}
+                        {formatAmount(maxFromTokenInUSD, USD_DECIMALS, 2, true)})
+                      </div>
+                      <br />
+                      <div>
+                        Max {toTokenInfo.symbol} out: {formatAmount(maxToTokenOut, toTokenInfo.decimals, 2, true)}{" "}
+                        {toTokenInfo.symbol} <br />({"$ "}
+                        {formatAmount(maxToTokenOutUSD, USD_DECIMALS, 2, true)})
+                      </div>
+                    </div>
+                  );
+                }}
+              />
             </div>
           </div>
           {!isMarketOrder && (
