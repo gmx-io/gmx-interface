@@ -403,7 +403,7 @@ export default function SwapBox(props) {
     const value = toTokenInfo.availableAmount?.gt(toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount))
       ? toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount)
       : toTokenInfo.availableAmount;
-    return value.gt(0) ? value : bigNumberify(0);
+    return value?.gt(0) ? value : bigNumberify(0);
   }, [toTokenInfo]);
 
   const maxToTokenOutUSD = useMemo(() => {
@@ -415,7 +415,7 @@ export default function SwapBox(props) {
       ?.sub(fromTokenInfo.usdgAmount)
       .mul(expandDecimals(1, USD_DECIMALS))
       .div(expandDecimals(1, USDG_DECIMALS));
-    return value.gt(0) ? value : bigNumberify(0);
+    return value?.gt(0) ? value : bigNumberify(0);
   }, [fromTokenInfo]);
 
   const maxFromTokenIn = useMemo(() => {
