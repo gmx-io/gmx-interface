@@ -924,7 +924,7 @@ export default function PositionSeller(props) {
                         <>
                           This is the network cost required to execute the decrease postion.{" "}
                           <a
-                            href="https://gmxio.gitbook.io/gmx/trading#opening-a-position"
+                            href="https://gmxio.gitbook.io/gmx/trading#execution-fee"
                             target="_blank"
                             rel="noopener noreferrer"
                           >
