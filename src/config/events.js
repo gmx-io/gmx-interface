@@ -106,5 +106,20 @@ let eventsData = [
       },
     ],
   },
+  {
+    id: "app-gmx-io",
+    title: "Launch of app.gmx.io",
+    isActive: true,
+    validTill: "6 Jul 2022, 12:00",
+    bodyText:
+      "On 6 Jul 2022, the gmx.io site will be updated to be a purely informational site, all functionality will be moved to app.gmx.io.",
+    buttons: [
+      {
+        text: "Read More",
+        link: "https://medium.com/@gmx.io/gmx-ipfs-site-6118103f067",
+        newTab: true,
+      },
+    ],
+  },
 ];
 export default eventsData;
