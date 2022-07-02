@@ -106,40 +106,40 @@ let eventsData = [
       },
     ],
   },
-  // {
-  //   id: "app-gmx-io",
-  //   title: "Frontend Updates",
-  //   isActive: true,
-  //   validTill: "6 Jul 2022, 12:00",
-  //   bodyText:
-  //     "On 6 Jul 2022, updates will be applied to the GMX frontend to inform users of the separation between gmx.io and app.gmx.io",
-  //   buttons: [
-  //     {
-  //       text: "Read More",
-  //       link: "https://medium.com/@gmx.io/gmx-frontend-updates-8d13f2346e1e",
-  //       newTab: true,
-  //     },
-  //   ],
-  // },
   {
-    id: "degraded-alchemy-performance",
-    title: "Alchemy RPC",
+    id: "app-gmx-io",
+    title: "Frontend Updates",
     isActive: true,
-    validTill: "3 Jul 2022, 12:00",
+    validTill: "6 Jul 2022, 12:00",
     bodyText:
-      "There are ongoing syncing issues on Alchemy for Arbitrum at the moment, please check their status page and use the public Arbitrum RPC in the meantime",
+      "On 6 Jul 2022, updates will be applied to the GMX frontend to inform users of the separation between gmx.io and app.gmx.io",
     buttons: [
       {
-        text: "Check Status",
-        link: "https://status.alchemy.com/",
-        newTab: true,
-      },
-      {
-        text: "Public RPC URL",
-        link: "https://metamask.zendesk.com/hc/en-us/articles/4415758358299-Network-profile-Arbitrum",
+        text: "Read More",
+        link: "https://medium.com/@gmx.io/gmx-frontend-updates-8d13f2346e1e",
         newTab: true,
       },
     ],
   },
+  // {
+  //   id: "degraded-alchemy-performance",
+  //   title: "Alchemy RPC",
+  //   isActive: true,
+  //   validTill: "3 Jul 2022, 12:00",
+  //   bodyText:
+  //     "There are ongoing syncing issues on Alchemy for Arbitrum at the moment, please check their status page and use the public Arbitrum RPC in the meantime",
+  //   buttons: [
+  //     {
+  //       text: "Check Status",
+  //       link: "https://status.alchemy.com/",
+  //       newTab: true,
+  //     },
+  //     {
+  //       text: "Public RPC URL",
+  //       link: "https://metamask.zendesk.com/hc/en-us/articles/4415758358299-Network-profile-Arbitrum",
+  //       newTab: true,
+  //     },
+  //   ],
+  // },
 ];
 export default eventsData;
