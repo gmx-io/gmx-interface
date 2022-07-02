@@ -81,21 +81,24 @@ export default function OrdersList(props) {
     const isAllOrdersSelected = cancelOrderIdList.length > 0 && cancelOrderIdList.length === orders.length;
     return (
       <tr className="Exchange-list-header">
-        <th>
-          <div>
-            <Checkbox
-              isChecked={isAllOrdersSelected}
-              setIsChecked={() => {
-                if (isAllOrdersSelected) {
-                  setCancelOrderIdList([]);
-                } else {
-                  const allOrderIds = orders.map((o) => `${o.type}-${o.index}`);
-                  setCancelOrderIdList(allOrderIds);
-                }
-              }}
-            />
-          </div>
-        </th>
+        {orders.length > 0 && (
+          <th>
+            <div>
+              <Checkbox
+                isChecked={isAllOrdersSelected}
+                setIsChecked={() => {
+                  if (isAllOrdersSelected) {
+                    setCancelOrderIdList([]);
+                  } else {
+                    const allOrderIds = orders.map((o) => `${o.type}-${o.index}`);
+                    setCancelOrderIdList(allOrderIds);
+                  }
+                }}
+              />
+            </div>
+          </th>
+        )}
+
         <th>
           <div>Type</div>
         </th>

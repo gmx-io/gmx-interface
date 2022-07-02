@@ -3,6 +3,7 @@ import React, { useEffect, useState, useMemo, useCallback, forwardRef, useImpera
 import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { ethers } from "ethers";
+import cx from "classnames";
 
 import {
   FUNDING_RATE_PRECISION,
@@ -819,8 +820,12 @@ export const Exchange = forwardRef((props, ref) => {
           />
           <div className="align-right Exchange-should-show-position-lines">
             {renderCancelOrderButton()}
-            <Checkbox isChecked={savedShouldShowPositionLines} setIsChecked={setSavedShouldShowPositionLines}>
-              <span className="muted">Chart positions</span>
+            <Checkbox
+              isChecked={savedShouldShowPositionLines}
+              setIsChecked={setSavedShouldShowPositionLines}
+              className={cx("muted chart-positions", { active: savedShouldShowPositionLines })}
+            >
+              <span>Chart positions</span>
             </Checkbox>
           </div>
         </div>
