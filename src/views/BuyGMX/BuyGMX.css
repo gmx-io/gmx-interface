@@ -50,7 +50,7 @@
   display: grid;
   grid-gap: 0.8rem;
   grid-template-columns: 1fr 1fr;
-  margin-top: 1.55rem;
+  margin-top: 1.5rem;
 }
 .buy-gmx {
   display: flex;
@@ -82,7 +82,7 @@
   border-radius: 0.4rem;
   text-decoration: none;
   height: 4.65rem;
-  padding: 0.8rem 1.55rem;
+  padding: 0.8rem 1.5rem;
   margin: 3.1rem 0;
 }
 
@@ -149,7 +149,7 @@
 .card-title {
   font-size: 3.41rem;
   font-weight: 500;
-  margin-bottom: 1.55rem;
+  margin-bottom: 1.5rem;
   font-family: "Relative Bold";
 }
 
@@ -165,7 +165,7 @@
     flex-direction: column;
   }
   .section-title-block {
-    margin-bottom: 1.55rem !important;
+    margin-bottom: 1.5rem !important;
   }
   .BuyGMXGLP-panel {
     flex-direction: column;

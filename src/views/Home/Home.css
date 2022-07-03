@@ -23,7 +23,7 @@
   font-size: 5.7rem;
   line-height: 6.8rem;
   font-weight: bold;
-  margin-bottom: 1.55rem;
+  margin-bottom: 1.5rem;
   letter-spacing: 0;
 }
 
@@ -71,7 +71,7 @@
   font-size: 2.2rem;
   line-height: 2.8rem;
   font-weight: normal;
-  margin-left: 1.55rem;
+  margin-left: 1.5rem;
 }
 
 .Home-benefit-description {
@@ -85,7 +85,7 @@
 .Home-benefit-icon {
   display: flex;
   align-items: center;
-  padding: 0 0 1.55rem;
+  padding: 0 0 1.5rem;
   font-size: 1.85rem;
 }
 
@@ -150,7 +150,7 @@
 
 .Home-cta-button {
   display: block;
-  padding: 1.55rem;
+  padding: 1.5rem;
   text-decoration: none;
   background: rgba(0, 0, 0, 0.3);
   border-radius: 0.3rem;
@@ -221,7 +221,7 @@
 .Home-token-card-options {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-column-gap: 1.55rem;
+  grid-column-gap: 1.5rem;
 }
 
 .Home-token-card-option {
@@ -273,7 +273,7 @@
 }
 
 .Home-token-card-option-action > .buy a:first-child {
-  margin-right: 1.55rem;
+  margin-right: 1.5rem;
 }
 
 /* .Home-token-card-option-action .read-more {
@@ -285,7 +285,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   padding-top: 6.2rem;
-  padding-bottom: 1.55rem;
+  padding-bottom: 1.5rem;
   width: 100%;
 }
 
@@ -377,7 +377,7 @@
   font-size: 1.8rem;
   line-height: 2.3rem;
   margin-bottom: 3.7rem;
-  margin-top: 1.55rem;
+  margin-top: 1.5rem;
   max-width: 29.8rem;
 }
 
@@ -401,7 +401,7 @@
 }
 
 .Home-faqs-content + .Home-faqs-content {
-  margin-top: 1.55rem;
+  margin-top: 1.5rem;
 }
 
 .Home-faqs-content-header {
@@ -436,7 +436,7 @@
 .Home-faqs-content-main.opened {
   height: fit-content;
   visibility: visible;
-  padding: 1.55rem 0rem 0 3.1rem;
+  padding: 1.5rem 0rem 0 3.1rem;
   transition: all 0.3s ease-in-out 0s;
 }
 
@@ -444,7 +444,7 @@
   .Home-token-card-option-action {
     display: grid;
     grid-template-columns: 1fr;
-    grid-row-gap: 1.55rem;
+    grid-row-gap: 1.5rem;
   }
   .Home-token-card-option-action a {
     justify-content: center;
@@ -456,7 +456,7 @@
   .Home-token-card-option-action > .buy {
     display: grid;
     grid-template-columns: 1fr;
-    grid-row-gap: 1.55rem;
+    grid-row-gap: 1.5rem;
   }
   .Home-token-card-option-action > .read-more {
     display: inline-block;
@@ -470,7 +470,7 @@
   .Home-token-card-options {
     display: grid;
     grid-template-columns: 1fr;
-    grid-row-gap: 1.55rem;
+    grid-row-gap: 1.5rem;
   }
 }
 
@@ -483,7 +483,7 @@
     font-size: 4.34rem;
     line-height: 5.58rem;
     font-weight: bold;
-    margin-bottom: 1.55rem;
+    margin-bottom: 1.5rem;
     letter-spacing: 0;
   }
 
@@ -524,7 +524,7 @@
   }
 
   .Home-faqs-content {
-    padding-right: 1.55rem;
+    padding-right: 1.5rem;
   }
 }
 
@@ -554,11 +554,11 @@
     font-size: 3.875rem;
     line-height: 4.65rem;
     font-weight: bold;
-    margin-bottom: 1.55rem;
+    margin-bottom: 1.5rem;
     letter-spacing: 0;
   }
 
   .Home-latest-info__icon {
-    margin: 0 1.55rem;
+    margin: 0 1.5rem;
   }
 }

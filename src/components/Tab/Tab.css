@@ -17,8 +17,8 @@
 .Tab.block .Tab-option {
   text-align: center;
   padding: 0.8rem;
-  padding-left: 1.55rem;
-  padding-right: 1.55rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
   cursor: pointer;
   /* font-size: 1.5rem; */
 }
@@ -42,7 +42,7 @@
 .Tab.inline .Tab-option {
   cursor: pointer;
   display: inline-block;
-  margin-right: 1.55rem;
+  margin-right: 1.5rem;
   font-size: 1.5rem;
 }
 
