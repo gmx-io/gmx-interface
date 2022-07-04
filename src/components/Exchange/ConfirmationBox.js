@@ -267,7 +267,7 @@ export default function ConfirmationBox(props) {
     if (spread && spread.isHigh) {
       return (
         <div className="Confirmation-box-warning">
-          The spread is > 1%, please ensure the trade details are acceptable before comfirming
+          The spread is {`>`} 1%, please ensure the trade details are acceptable before comfirming
         </div>
       );
     }
@@ -419,17 +419,7 @@ export default function ConfirmationBox(props) {
         {formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
       </div>
     );
-  }, [
-    existingOrder,
-    isSwap,
-    chainId,
-    existingOrders,
-    isLong,
-    isLimitOrdersVisible,
-    library,
-    pendingTxns,
-    setPendingTxns,
-  ]);
+  }, [existingOrder, isSwap, chainId, existingOrders, isLong, isLimitOrdersVisible, onCancelOrderClick]);
 
   const renderExistingTriggerErrors = useCallback(() => {
     if (isSwap || decreaseOrdersThatWillBeExecuted?.length < 1) {
