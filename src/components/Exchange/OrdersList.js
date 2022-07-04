@@ -13,7 +13,7 @@ import {
   getExchangeRate,
   getPositionKey,
 } from "../../Helpers.js";
-import { cancelSwapOrder, cancelIncreaseOrder, cancelDecreaseOrder, handleCancelOrder } from "../../Api";
+import { handleCancelOrder } from "../../Api";
 import { getContract } from "../../Addresses";
 
 import Tooltip from "../Tooltip/Tooltip";
