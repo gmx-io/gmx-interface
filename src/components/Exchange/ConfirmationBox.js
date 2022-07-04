@@ -31,7 +31,7 @@ import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
 import Checkbox from "../Checkbox/Checkbox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
-import { cancelDecreaseOrder } from "../../Api";
+import { cancelDecreaseOrder, handleCancelOrder } from "../../Api";
 import { getNativeToken, getToken, getWrappedToken } from "../../data/Tokens";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
@@ -108,6 +108,13 @@ export default function ConfirmationBox(props) {
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
   const [isLimitOrdersVisible, setIsLimitOrdersVisible] = useState(false);
+
+  const onCancelOrderClick = useCallback(
+    (order) => {
+      handleCancelOrder(chainId, library, order, { pendingTxns, setPendingTxns });
+    },
+    [library, pendingTxns, setPendingTxns, chainId]
+  );
 
   let minOut;
   let fromTokenUsd;
@@ -393,13 +400,10 @@ export default function ConfirmationBox(props) {
                 return (
                   <li key={id} className="font-sm">
                     <p>
-                      {type === INCREASE ? "Increase" : "Decrease"} $
-                      {formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)} {indexToken.symbol}{" "}
-                      {isLong ? "Long" : "Short"}{" "}
-                    </p>
-                    <p>
+                      {type === INCREASE ? "Increase" : "Decrease"} {indexToken.symbol} {isLong ? "Long" : "Short"}{" "}
                       &nbsp;{triggerPricePrefix} ${formatAmount(triggerPrice, USD_DECIMALS, 2, true)}
                     </p>
+                    <button onClick={() => onCancelOrderClick(order)}>Cancel</button>
                   </li>
                 );
               })}
@@ -415,7 +419,17 @@ export default function ConfirmationBox(props) {
         {formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
       </div>
     );
-  }, [existingOrder, isSwap, chainId, existingOrders, isLong, isLimitOrdersVisible]);
+  }, [
+    existingOrder,
+    isSwap,
+    chainId,
+    existingOrders,
+    isLong,
+    isLimitOrdersVisible,
+    library,
+    pendingTxns,
+    setPendingTxns,
+  ]);
 
   const renderExistingTriggerErrors = useCallback(() => {
     if (isSwap || decreaseOrdersThatWillBeExecuted?.length < 1) {
