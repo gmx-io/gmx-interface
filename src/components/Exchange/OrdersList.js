@@ -83,7 +83,7 @@ export default function OrdersList(props) {
       <tr className="Exchange-list-header">
         {orders.length > 0 && (
           <th>
-            <div>
+            <div className="checkbox-inline ">
               <Checkbox
                 isChecked={isAllOrdersSelected}
                 setIsChecked={() => {
@@ -168,7 +168,7 @@ export default function OrdersList(props) {
         return (
           <tr className="Exchange-list-item" key={orderId}>
             <td>
-              <div>
+              <div className="checkbox-inline ">
                 <Checkbox
                   isChecked={cancelOrderIdList.includes(orderId)}
                   setIsChecked={() => {

@@ -63,6 +63,10 @@ button.Orders-list-action {
   opacity: 0.9;
 }
 
+.checkbox-inline {
+  display: inline-flex;
+}
+
 button.Orders-list-action:hover {
   color: #d4b3f5;
   opacity: 1;
