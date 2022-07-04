@@ -35,6 +35,9 @@ import {
   expandDecimals,
   getInfoTokens,
   helperToast,
+  SWAP,
+  INCREASE,
+  DECREASE,
 } from "../Helpers";
 import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
 
@@ -790,6 +793,25 @@ export async function cancelIncreaseOrder(chainId, library, index, opts) {
   const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
 
   return callContract(chainId, contract, method, params, opts);
+}
+
+export function handleCancelOrder(chainId, library, order, opts) {
+  let func;
+  if (order.type === SWAP) {
+    func = cancelSwapOrder;
+  } else if (order.type === INCREASE) {
+    func = cancelIncreaseOrder;
+  } else if (order.type === DECREASE) {
+    func = cancelDecreaseOrder;
+  }
+
+  return func(chainId, library, order.index, {
+    successMsg: "Order cancelled.",
+    failMsg: "Cancel failed.",
+    sentMsg: "Cancel submitted.",
+    pendingTxns: opts.pendingTxns,
+    setPendingTxns: opts.setPendingTxns,
+  });
 }
 
 export async function updateDecreaseOrder(
