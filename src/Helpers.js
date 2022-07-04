@@ -1312,19 +1312,6 @@ export function hasEthereum() {
   return window.ethereum;
 }
 
-export function hasMetaMaskWalletExtension() {
-  return window.ethereum;
-}
-
-export function hasCoinBaseWalletExtension() {
-  const { ethereum } = window;
-
-  if (!ethereum?.providers && !ethereum?.isCoinbaseWallet) {
-    return false;
-  }
-  return window.ethereum.isCoinbaseWallet || ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
-}
-
 export function activateInjectedProvider(providerName) {
   const { ethereum } = window;
   if (!ethereum?.providers && !ethereum?.isCoinbaseWallet && !ethereum?.isMetaMask) {

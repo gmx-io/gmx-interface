@@ -853,6 +853,10 @@ function FullApp() {
           <img src={metamaskImg} alt="MetaMask" />
           <div>MetaMask</div>
         </button>
+        <button className="Wallet-btn WalletConnect-btn" onClick={() => activateWallet("Core")}>
+          <img src={coreWalletImg} alt="Core" />
+          <div>Core</div>
+        </button>
         <button className="Wallet-btn CoinbaseWallet-btn" onClick={() => activateWallet("CoinBase")}>
           <img src={coinbaseImg} alt="Coinbase Wallet" />
           <div>Coinbase Wallet</div>
@@ -860,10 +864,6 @@ function FullApp() {
         <button className="Wallet-btn WalletConnect-btn" onClick={activateWalletConnect}>
           <img src={walletConnectImg} alt="WalletConnect" />
           <div>WalletConnect</div>
-        </button>
-        <button className="Wallet-btn WalletConnect-btn" onClick={() => activateWallet("Core")}>
-          <img src={coreWalletImg} alt="Core" />
-          <div>Core</div>
         </button>
       </Modal>
       <Modal
