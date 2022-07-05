@@ -856,7 +856,7 @@ function FullApp() {
         {chainId === AVALANCHE && (
           <button className="Wallet-btn core-btn" onClick={() => activateWallet("Core")}>
             <img src={coreWalletImg} alt="Core" />
-            <div>Core</div>
+            <div>Avalanche Core</div>
           </button>
         )}
         <button className="Wallet-btn CoinbaseWallet-btn" onClick={() => activateWallet("CoinBase")}>
