@@ -358,6 +358,12 @@
   margin-right: 1.8rem;
 }
 
+.core-btn img {
+  display: inline-block;
+  height: 2.4rem;
+  margin-right: 1.8rem;
+}
+
 button.App-connect-wallet {
   cursor: pointer;
   display: inline-block;

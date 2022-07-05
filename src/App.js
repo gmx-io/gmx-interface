@@ -854,7 +854,7 @@ function FullApp() {
           <div>MetaMask</div>
         </button>
         {chainId === AVALANCHE && (
-          <button className="Wallet-btn WalletConnect-btn" onClick={() => activateWallet("Core")}>
+          <button className="Wallet-btn core-btn" onClick={() => activateWallet("Core")}>
             <img src={coreWalletImg} alt="Core" />
             <div>Core</div>
           </button>
