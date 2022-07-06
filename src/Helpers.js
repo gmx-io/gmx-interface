@@ -771,7 +771,6 @@ export function getNextToAmount(
   totalTokenWeights,
   forSwap
 ) {
-  // forSwap = false;
   const defaultValue = { amount: bigNumberify(0) };
   if (!fromAmount || !fromTokenAddress || !toTokenAddress || !infoTokens) {
     return defaultValue;
