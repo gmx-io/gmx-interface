@@ -868,10 +868,7 @@ function FullApp() {
         <a href="https://github.com/gmx-io/gmx-interface" target="_blank" rel="noopener noreferrer">
           GMX front end
         </a>
-        .
-        <br />
-        <br />
-        This front end is hosted and served on the distributed, peer-to-peer{" "}
+        , hosted and served on the distributed, peer-to-peer{" "}
         <a href="https://ipfs.io/" target="_blank" rel="noopener noreferrer">
           IPFS network
         </a>
