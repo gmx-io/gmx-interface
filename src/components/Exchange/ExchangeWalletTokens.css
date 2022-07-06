@@ -4,7 +4,7 @@
 }
 
 .ExchangeWalletTokens-token-name {
-  margin-right: 1.55rem;
+  margin-right: 1.5rem;
 }
 
 .ExchangeWalletTokens-box {
@@ -21,7 +21,7 @@
 
 .ExchangeWalletTokens-token-row {
   cursor: pointer;
-  padding: 0.8rem 1.55rem;
+  padding: 0.8rem 1.5rem;
 }
 
 .ExchangeWalletTokens-token-row:hover {

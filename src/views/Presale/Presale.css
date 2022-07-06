@@ -1,0 +1,155 @@
+.Presale-title {
+  position: relative;
+  text-align: center;
+  font-size: 4.65rem;
+  padding-top: 6.2rem;
+  margin-bottom: 1.5rem;
+  font-weight: bold;
+}
+
+.Presale-card .Card-title {
+  margin-top: 1.5rem;
+  margin-bottom: 4.65rem;
+}
+
+.Presale-subtitle {
+  text-align: center;
+  font-size: 1.7rem;
+  margin-bottom: 4.65rem;
+  opacity: 0.9;
+}
+
+.Presale-cards {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  grid-gap: 3.1rem;
+  padding: 3.1rem;
+  padding-bottom: 7.75rem;
+}
+
+.Presale-card {
+  border: 2px solid rgba(48, 31, 130, 0.5);
+  border-radius: 3px;
+  padding: 3.1rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.Presale-card-background {
+  position: absolute;
+  background: linear-gradient(
+    40deg,
+    rgba(96, 4, 189, 1) 0%,
+    rgba(65, 105, 224, 1) 22%,
+    rgba(99, 8, 191, 1) 23%,
+    rgba(51, 9, 115, 1) 37%,
+    rgba(255, 36, 145, 1) 38%,
+    rgba(201, 16, 161, 1) 50%,
+    rgba(171, 10, 163, 1) 59%,
+    rgba(117, 4, 128, 1) 67%,
+    rgba(96, 29, 196, 1) 68%,
+    rgba(92, 55, 204, 1) 84%,
+    rgba(84, 88, 214, 1) 100%
+  );
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  filter: blur(10rem);
+  opacity: 0.05;
+}
+
+.Presale-card-content {
+  position: relative;
+}
+
+.Presale-send-input {
+  margin-bottom: 3.1rem;
+}
+
+.Presale-receive {
+  margin-bottom: 3.1rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  width: 90%;
+  max-width: 46.5rem;
+}
+
+.Presale-approve {
+  font-size: 1.7rem;
+  opacity: 0.9;
+  cursor: pointer;
+  margin-bottom: 1.25rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  width: 90%;
+  max-width: 46.5rem;
+}
+
+.Presale-approve:hover {
+  opacity: 1;
+}
+
+.Presale-approve .App-icon {
+  margin-right: 1.085rem;
+}
+
+.Presale-approve.disabled {
+  cursor: default;
+  pointer-events: none;
+}
+
+.Presale-approve.disabled .App-icon {
+  opacity: 0.3;
+}
+
+button.Presale-buy-button.App-cta {
+  margin-bottom: 2.325rem;
+}
+
+.Card-content {
+  text-align: left;
+  display: inline-block;
+  width: 90%;
+  max-width: 46.5rem;
+}
+
+.Presale-account-label {
+  opacity: 0.9;
+}
+
+.Presale-slots {
+  margin-bottom: 3.1rem;
+  line-height: 1.85rem;
+}
+
+.Presale-account {
+  margin-bottom: 3.1rem;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.Presale-balance {
+  margin-bottom: 3.1rem;
+}
+
+.Presale-price {
+  margin-bottom: 3.1rem;
+  line-height: 1.85rem;
+}
+
+.Presale-slot-info {
+  padding-bottom: 0.465rem;
+}
+
+@media (max-width: 1000px) {
+  .Presale-cards {
+    grid-template-columns: 1fr;
+  }
+}
