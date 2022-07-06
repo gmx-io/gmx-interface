@@ -137,7 +137,7 @@ function AffiliatesStats({
                         <div className="table-referral-code">
                           <div
                             onClick={() => {
-                              copyToClipboard(`https://gmx.io?${REFERRAL_CODE_QUERY_PARAM}=${stat.referralCode}`);
+                              copyToClipboard(`https://gmx.io/#/?${REFERRAL_CODE_QUERY_PARAM}=${stat.referralCode}`);
                               helperToast.success("Referral link copied to your clipboard");
                             }}
                             className="referral-code copy-icon"

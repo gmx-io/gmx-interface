@@ -287,6 +287,10 @@ export function deserialize(data) {
   return data;
 }
 
+export function isHomeSite() {
+  return process.env.REACT_APP_IS_HOME_SITE === "true";
+}
+
 export const helperToast = {
   success: (content) => {
     toast.dismiss();
@@ -2703,7 +2707,35 @@ export function useDebounce(value, delay) {
 }
 
 export function isDevelopment() {
-  return !window.location.origin?.includes("gmx.io");
+  return !window.location.host?.includes("gmx.io");
+}
+
+export function isLocal() {
+  return window.location.host?.includes("localhost");
+}
+
+export function getHomeUrl() {
+  if (isLocal()) {
+    return "http://localhost:3010";
+  }
+
+  return "https://gmx.io";
+}
+
+export function getAppBaseUrl() {
+  if (isLocal()) {
+    return "http://localhost:3011/#";
+  }
+
+  return "https://app.gmx.io/#";
+}
+
+export function getTradePageUrl() {
+  if (isLocal()) {
+    return "http://localhost:3011/#/trade";
+  }
+
+  return "https://app.gmx.io/#/trade";
 }
 
 export function importImage(name) {
