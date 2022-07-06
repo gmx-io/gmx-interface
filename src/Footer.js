@@ -44,6 +44,11 @@ export default function Footer() {
                 Referral Terms
               </NavLink>
             </div>
+            <div>
+              <NavLink to="/terms-and-conditions" className="Footer-link" activeClassName="active">
+                Terms and Conditions
+              </NavLink>
+            </div>
           </div>
         )}
       </div>

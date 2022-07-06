@@ -102,6 +102,7 @@ import VaultV2b from "./abis/VaultV2b.json";
 import PositionRouter from "./abis/PositionRouter.json";
 import PageNotFound from "./views/PageNotFound/PageNotFound";
 import ReferralTerms from "./views/ReferralTerms/ReferralTerms";
+import TermsAndConditions from "./views/TermsAndConditions/TermsAndConditions";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -757,6 +758,9 @@ function FullApp() {
               </Route>
               <Route exact path="/referral-terms">
                 <ReferralTerms />
+              </Route>
+              <Route exact path="/terms-and-conditions">
+                <TermsAndConditions />
               </Route>
               <Route path="*">
                 <PageNotFound />
