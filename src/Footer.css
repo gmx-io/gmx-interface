@@ -68,6 +68,11 @@
 }
 .Footer-links {
   padding-bottom: 4rem;
+  display: flex;
+  justify-content: center;
+}
+.Footer-links > div {
+  margin-right: 1.5rem;
 }
 
 @media (max-width: 900px) {
