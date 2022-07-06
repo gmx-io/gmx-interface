@@ -272,7 +272,8 @@
   justify-content: space-between;
 }
 
-.Home-token-card-option-action > .buy a:first-child {
+.Home-token-card-option-action > .buy a:first-child,
+.Home-token-card-option-action > .buy .a:first-child {
   margin-right: 1.5rem;
 }
 
