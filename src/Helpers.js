@@ -1981,8 +1981,7 @@ export async function setGasPrice(txnOpts, provider, chainId) {
   }
 }
 
-export async function getGasLimit(contract, method, params = [], value, gasBuffer) {
-  const defaultGasBuffer = 50000;
+export async function getGasLimit(contract, method, params = [], value) {
   const defaultValue = bigNumberify(0);
 
   if (!value) {
@@ -1991,11 +1990,11 @@ export async function getGasLimit(contract, method, params = [], value, gasBuffe
 
   let gasLimit = await contract.estimateGas[method](...params, { value });
 
-  if (!gasBuffer) {
-    gasBuffer = defaultGasBuffer;
+  if (gasLimit.lt(22000)) {
+    gasLimit = bigNumberify(22000);
   }
 
-  return gasLimit.add(gasBuffer);
+  return gasLimit.mul(11000).div(10000); // add a 10% buffer
 }
 
 export function approveTokens({

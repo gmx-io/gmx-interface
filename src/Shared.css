@@ -29,7 +29,7 @@ body,
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: #383838;
-  border-radius: 1.55rem;
+  border-radius: 1.5rem;
   border: 1px solid #212121;
 }
 
@@ -166,7 +166,7 @@ ul {
 }
 
 ul li {
-  padding-bottom: 1.55rem;
+  padding-bottom: 1.5rem;
 }
 
 a.plain {
@@ -319,7 +319,7 @@ a.plain {
 }
 
 button.btn-link {
-  margin-top: 1.55rem;
+  margin-top: 1.5rem;
   background: none;
   color: white;
   border: none;
