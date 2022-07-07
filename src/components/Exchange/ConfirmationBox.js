@@ -380,7 +380,7 @@ export default function ConfirmationBox(props) {
     if (existingOrders?.length > 1) {
       return (
         <div>
-          <div className="Confirmation-box-warning">
+          <div className="Confirmation-box-info">
             <span>
               You have multiple existing Increase {existingOrder.isLong ? "Long" : "Short"} {indexToken.symbol} limit
               orders{" "}
@@ -413,7 +413,7 @@ export default function ConfirmationBox(props) {
       );
     }
     return (
-      <div className="Confirmation-box-warning">
+      <div className="Confirmation-box-info">
         You have an active Limit Order to Increase {existingOrder.isLong ? "Long" : "Short"} {sizeInToken}{" "}
         {indexToken.symbol} (${formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at price $
         {formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
@@ -478,7 +478,7 @@ export default function ConfirmationBox(props) {
     }
     const existingTriggerOrderLength = existingTriggerOrders.length;
     return (
-      <div className="Confirmation-box-warning">
+      <div className="Confirmation-box-info">
         You have {existingTriggerOrderLength > 1 ? `${existingTriggerOrderLength}` : "an"} active trigger{" "}
         {existingTriggerOrderLength > 1 ? "orders" : "order"} that could impact this position.
       </div>
@@ -598,7 +598,7 @@ export default function ConfirmationBox(props) {
   const renderMarginSection = useCallback(() => {
     return (
       <>
-        <div className="Confirmation-box-info">
+        <div>
           {renderMain()}
           {renderFeeWarning()}
           {renderMinProfitWarning()}
@@ -791,7 +791,7 @@ export default function ConfirmationBox(props) {
   const renderSwapSection = useCallback(() => {
     return (
       <>
-        <div className="Confirmation-box-info">
+        <div>
           {renderMain()}
           {renderFeeWarning()}
           {renderSpreadWarning()}
