@@ -801,7 +801,7 @@ export const Exchange = forwardRef((props, ref) => {
         type="button"
         onClick={onMultipleCancelClick}
       >
-        {cancelOrderIdList.length === orders.length ? "Cancel all" : `Cancel ${cancelOrderIdList.length} ${orderText}`}
+        Cancel {cancelOrderIdList.length} {orderText}
       </button>
     );
   };

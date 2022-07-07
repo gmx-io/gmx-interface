@@ -850,6 +850,9 @@ table.Exchange-list-small td {
 .cancel-order-btn:hover {
   opacity: 0.8;
 }
+.cancel-order-btn:disabled {
+  opacity: 0.6;
+}
 
 .chart-positions:hover {
   opacity: 0.8;
