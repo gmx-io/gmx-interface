@@ -1,12 +1,5 @@
-import { useEffect, useRef } from "react";
-
-const usePrevious = (value, initialValue) => {
-  const ref = useRef(initialValue);
-  useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current;
-};
+import { useEffect } from "react";
+import { usePrevious } from "../Helpers";
 
 const useEffectDebugger = (effectHook, dependencies, dependencyNames = []) => {
   const previousDeps = usePrevious(dependencies, []);
