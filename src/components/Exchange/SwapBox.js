@@ -528,7 +528,8 @@ export default function SwapBox(props) {
             undefined,
             !isMarketOrder && triggerRatio,
             usdgSupply,
-            totalTokenWeights
+            totalTokenWeights,
+            isSwap
           );
 
           const nextToValue = formatAmountFree(nextToAmount, toToken.decimals, toToken.decimals);
@@ -551,7 +552,8 @@ export default function SwapBox(props) {
           undefined,
           !isMarketOrder && triggerRatio,
           usdgSupply,
-          totalTokenWeights
+          totalTokenWeights,
+          isSwap
         );
         const nextFromValue = formatAmountFree(nextFromAmount, fromToken.decimals, fromToken.decimals);
         setFromValue(nextFromValue);
@@ -583,7 +585,8 @@ export default function SwapBox(props) {
             undefined,
             undefined,
             usdgSupply,
-            totalTokenWeights
+            totalTokenWeights,
+            isSwap
           );
 
           let fromUsdMinAfterFee = fromUsdMin;
@@ -629,7 +632,8 @@ export default function SwapBox(props) {
           undefined,
           undefined,
           usdgSupply,
-          totalTokenWeights
+          totalTokenWeights,
+          isSwap
         );
 
         if (feeBasisPoints) {
@@ -898,7 +902,8 @@ export default function SwapBox(props) {
           undefined,
           undefined,
           usdgSupply,
-          totalTokenWeights
+          totalTokenWeights,
+          isSwap
         );
         requiredAmount = requiredAmount.add(swapAmount);
 
@@ -957,7 +962,8 @@ export default function SwapBox(props) {
           undefined,
           undefined,
           usdgSupply,
-          totalTokenWeights
+          totalTokenWeights,
+          isSwap
         );
         stableTokenAmount = nextToAmount;
         if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
@@ -1183,7 +1189,8 @@ export default function SwapBox(props) {
           undefined,
           undefined,
           usdgSupply,
-          totalTokenWeights
+          totalTokenWeights,
+          isSwap
         );
         const nextToAmountUsd = nextToAmount
           .mul(indexTokenInfo.minPrice)
@@ -1304,7 +1311,8 @@ export default function SwapBox(props) {
         undefined,
         undefined,
         usdgSupply,
-        totalTokenWeights
+        totalTokenWeights,
+        isSwap
       );
       if (multiPath) {
         path = multiPath;
@@ -1319,7 +1327,8 @@ export default function SwapBox(props) {
         undefined,
         undefined,
         usdgSupply,
-        totalTokenWeights
+        totalTokenWeights,
+        isSwap
       );
       if (multiPath) {
         path = multiPath;
@@ -1488,7 +1497,8 @@ export default function SwapBox(props) {
         undefined,
         undefined,
         usdgSupply,
-        totalTokenWeights
+        totalTokenWeights,
+        isSwap
       );
       if (nextToAmount.eq(0)) {
         helperToast.error("Insufficient liquidity");
@@ -1708,7 +1718,8 @@ export default function SwapBox(props) {
         undefined,
         undefined,
         usdgSupply,
-        totalTokenWeights
+        totalTokenWeights,
+        isSwap
       );
       if (feeBasisPoints !== undefined) {
         fees = fromAmount.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
@@ -1731,7 +1742,8 @@ export default function SwapBox(props) {
       undefined,
       undefined,
       usdgSupply,
-      totalTokenWeights
+      totalTokenWeights,
+      isSwap
     );
     if (feeBasisPoints) {
       swapFees = fromUsdMin.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
