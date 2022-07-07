@@ -63,7 +63,7 @@ export default function OrdersList(props) {
   );
 
   const renderHead = useCallback(() => {
-    const isAllOrdersSelected = cancelOrderIdList.length > 0 && cancelOrderIdList.length === orders.length;
+    const isAllOrdersSelected = cancelOrderIdList?.length > 0 && cancelOrderIdList?.length === orders.length;
     return (
       <tr className="Exchange-list-header">
         {orders.length > 0 && (
@@ -155,7 +155,7 @@ export default function OrdersList(props) {
             <td>
               <div className="checkbox-inline ">
                 <Checkbox
-                  isChecked={cancelOrderIdList.includes(orderId)}
+                  isChecked={cancelOrderIdList?.includes(orderId)}
                   setIsChecked={() => {
                     setCancelOrderIdList((prevState) => {
                       if (prevState.includes(orderId)) {
@@ -229,7 +229,7 @@ export default function OrdersList(props) {
           <td className="Exchange-list-item-type">
             <div>
               <Checkbox
-                isChecked={cancelOrderIdList.includes(orderId)}
+                isChecked={cancelOrderIdList?.includes(orderId)}
                 setIsChecked={() => {
                   setCancelOrderIdList((prevState) => {
                     if (prevState.includes(orderId)) {
