@@ -545,13 +545,27 @@ table.Exchange-list th {
 .Exchange-info-value-warning {
   color: #fa3c58;
 }
+
+.Confirmation-box-info,
+.Confirmation-box-info a,
 .Confirmation-box-warning,
 .Confirmation-box-warning a {
-  color: #fa3c58;
   font-size: 1.4rem;
   text-align: center;
   margin-top: 1rem;
   margin-bottom: 1.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.Confirmation-box-info,
+.Confirmation-box-info a {
+  opacity: 0.7;
+}
+
+.Confirmation-box-warning,
+.Confirmation-box-warning a {
+  color: #fa3c58;
 }
 
 .Exchange-swap-usd {

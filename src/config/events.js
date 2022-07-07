@@ -174,4 +174,19 @@ export const appEventsData = [
       },
     ],
   },
+  {
+    id: "use-alchemy-rpc-url",
+    title: "Use Alchemy RPC URL",
+    isActive: true,
+    validTill: "10 Jul 2022, 12:00",
+    bodyText:
+      "If you experience data loading or transaction issues on Arbitrum, please use a free RPC URL from Alchemy.",
+    buttons: [
+      {
+        text: "Learn More",
+        link: "https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls",
+        newTab: true,
+      },
+    ],
+  },
 ];
