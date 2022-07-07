@@ -16,7 +16,7 @@
 }
 
 .StakeV2-address-input {
-  padding: 1.55rem 3.41rem;
+  padding: 1.5rem 3.41rem;
   padding-bottom: 0;
 }
 
@@ -35,7 +35,7 @@
   vertical-align: middle;
   margin-left: 0.31rem;
   border-radius: 2px;
-  width: 1.55rem;
+  width: 1.5rem;
   height: 0.8rem;
   border: 1px solid rgba(255, 255, 255, 0.5);
   display: inline-block;
@@ -59,7 +59,7 @@
 .StakeV2-cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: 1.55rem;
+  grid-gap: 1.5rem;
 }
 
 @media (max-width: 900px) {

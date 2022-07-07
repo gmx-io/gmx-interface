@@ -46,7 +46,7 @@
   background: var(--dark-blue);
   border: 1px solid var(--dark-blue-border);
   border-radius: 0.4rem;
-  padding: 0.8rem 1.55rem;
+  padding: 0.8rem 1.5rem;
   display: flex;
   align-items: center;
   position: relative;
@@ -61,7 +61,7 @@
 
 .Selector-option .Selector-option_icon {
   width: 3.2rem;
-  margin-right: 1.55rem;
+  margin-right: 1.5rem;
 }
 
 .Selector-option .Selector-option_label {
@@ -86,7 +86,7 @@
   width: 0.8rem;
   height: 0.8rem;
   border-radius: 50%;
-  right: 1.55rem;
+  right: 1.5rem;
 }
 
 .Selector-option.Arbitrum .selected-icon {
@@ -102,7 +102,7 @@
   width: 0.8rem;
   height: 0.8rem;
   border-radius: 50%;
-  right: 1.55rem;
+  right: 1.5rem;
 }
 
 .Selector .Modal {

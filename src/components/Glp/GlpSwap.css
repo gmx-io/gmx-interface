@@ -56,7 +56,7 @@
 
 .GlpSwap-content .GlpSwap-stats-card {
   max-width: 71.2rem;
-  margin-right: 1.55rem;
+  margin-right: 1.5rem;
 }
 
 .GlpSwap-stats-card .App-card-row .label {
@@ -67,12 +67,12 @@
 .GlpSwap-content .GlpSwap-box {
   max-width: 47.95rem;
   border-radius: 0.4rem;
-  padding: 1.55rem;
+  padding: 1.5rem;
   padding-top: 0;
 }
 
 .GlpSwap-box .Exchange-swap-option-tabs {
-  margin: 1.55rem 0;
+  margin: 1.5rem 0;
 }
 
 .App-card-title-mark-icon {
@@ -102,7 +102,7 @@
 
 .App-card-title-mark .App-card-title-mark-subtitle {
   font-size: 1.2rem;
-  line-height: 1.55rem;
+  line-height: 1.5rem;
   letter-spacing: 0px;
   color: #a9a9b0;
 }
@@ -111,14 +111,14 @@
   border: 1px solid #1e2136;
   border-radius: 4px;
   background: #16182e;
-  padding: 1.55rem;
+  padding: 1.5rem;
   padding-top: 0;
   text-align: left;
 }
 
 .GlpSwap-token-list-content {
   display: grid;
-  padding: 1.55rem;
+  padding: 1.5rem;
   padding-top: 0;
   text-align: left;
 }
@@ -128,7 +128,7 @@
 }
 
 .GlpSwap-box .Exchange-info-row {
-  height: 1.55rem;
+  height: 1.5rem;
   margin-bottom: 0.8rem;
   display: flex;
   justify-content: space-between;
@@ -155,8 +155,8 @@
 }
 
 .token-table {
-  margin-left: -1.55rem;
-  margin-right: -1.55rem;
+  margin-left: -1.5rem;
+  margin-right: -1.5rem;
   width: calc(100% + 3.1rem);
   border-spacing: 0;
   white-space: nowrap;
@@ -199,13 +199,13 @@
 
 .token-table th:first-child,
 .token-table td:first-child {
-  padding-left: 1.55rem;
+  padding-left: 1.5rem;
   width: 26.35rem;
 }
 
 .token-table th:last-child,
 .token-table td:last-child {
-  padding-right: 1.55rem;
+  padding-right: 1.5rem;
   text-align: right;
   width: 17rem;
 }
@@ -260,7 +260,7 @@
     overflow-y: auto;
     max-height: calc(80vh - 8.525rem);
     padding-right: 5px;
-    margin: 1.55rem calc(1rem - 0.5rem) 1.55rem 1.55rem;
+    margin: 1.5rem calc(1rem - 0.5rem) 1.5rem 1.5rem;
   }
 
   .GlpSwap-token-list {
@@ -280,7 +280,7 @@
   .token-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-gap: 1.55rem;
+    grid-gap: 1.5rem;
     margin-top: 0.8rem;
   }
 }
@@ -288,7 +288,7 @@
   .token-grid {
     display: grid;
     grid-template-columns: 1fr;
-    grid-gap: 1.55rem;
+    grid-gap: 1.5rem;
     margin-top: 0.8rem;
   }
 }
