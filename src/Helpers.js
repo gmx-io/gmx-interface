@@ -287,6 +287,10 @@ export function deserialize(data) {
   return data;
 }
 
+export function isHomeSite() {
+  return process.env.REACT_APP_IS_HOME_SITE === "true";
+}
+
 export const helperToast = {
   success: (content) => {
     toast.dismiss();
@@ -1977,8 +1981,7 @@ export async function setGasPrice(txnOpts, provider, chainId) {
   }
 }
 
-export async function getGasLimit(contract, method, params = [], value, gasBuffer) {
-  const defaultGasBuffer = 50000;
+export async function getGasLimit(contract, method, params = [], value) {
   const defaultValue = bigNumberify(0);
 
   if (!value) {
@@ -1987,11 +1990,11 @@ export async function getGasLimit(contract, method, params = [], value, gasBuffe
 
   let gasLimit = await contract.estimateGas[method](...params, { value });
 
-  if (!gasBuffer) {
-    gasBuffer = defaultGasBuffer;
+  if (gasLimit.lt(22000)) {
+    gasLimit = bigNumberify(22000);
   }
 
-  return gasLimit.add(gasBuffer);
+  return gasLimit.mul(11000).div(10000); // add a 10% buffer
 }
 
 export function approveTokens({
@@ -2704,7 +2707,35 @@ export function useDebounce(value, delay) {
 }
 
 export function isDevelopment() {
-  return !window.location.origin?.includes("gmx.io");
+  return !window.location.host?.includes("gmx.io") && !window.location.host?.includes("ipfs.io");
+}
+
+export function isLocal() {
+  return window.location.host?.includes("localhost");
+}
+
+export function getHomeUrl() {
+  if (isLocal()) {
+    return "http://localhost:3010";
+  }
+
+  return "https://gmx.io";
+}
+
+export function getAppBaseUrl() {
+  if (isLocal()) {
+    return "http://localhost:3011/#";
+  }
+
+  return "https://app.gmx.io/#";
+}
+
+export function getTradePageUrl() {
+  if (isLocal()) {
+    return "http://localhost:3011/#/trade";
+  }
+
+  return "https://app.gmx.io/#/trade";
 }
 
 export function importImage(name) {
