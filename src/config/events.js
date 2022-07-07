@@ -165,7 +165,7 @@ export const appEventsData = [
     isActive: true,
     validTill: "10 Jul 2022, 12:00",
     bodyText:
-      "You are currently using app.gmx.io. Customized settings have been reset, you may need to adjust your settings by clicking on the menu in the top right.",
+      "You are currently using app.gmx.io. Customized settings have been reset, you may need to adjust your settings by clicking on the menu in the top right after connecting your wallet.",
     buttons: [
       {
         text: "Read More",
