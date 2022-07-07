@@ -3,6 +3,7 @@ import React, { useEffect, useState, useMemo, useCallback, forwardRef, useImpera
 import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { ethers } from "ethers";
+import cx from "classnames";
 
 import {
   FUNDING_RATE_PRECISION,
@@ -29,7 +30,7 @@ import {
   getPageTitle,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
-import { approvePlugin, useInfoTokens } from "../../Api";
+import { approvePlugin, cancelMultipleOrders, useInfoTokens } from "../../Api";
 
 import { getContract } from "../../Addresses";
 import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
@@ -707,6 +708,40 @@ export const Exchange = forwardRef((props, ref) => {
   const [isWaitingForPositionRouterApproval, setIsWaitingForPositionRouterApproval] = useState(false);
   const [isPluginApproving, setIsPluginApproving] = useState(false);
   const [isPositionRouterApproving, setIsPositionRouterApproving] = useState(false);
+  const [isCancelMultipleOrderProcessing, setIsCancelMultipleOrderProcessing] = useState(false);
+  const [cancelOrderIdList, setCancelOrderIdList] = useState([]);
+
+  const onMultipleCancelClick = useCallback(
+    async function () {
+      setIsCancelMultipleOrderProcessing(true);
+      try {
+        const tx = await cancelMultipleOrders(chainId, library, cancelOrderIdList, {
+          successMsg: "Orders cancelled.",
+          failMsg: "Cancel failed.",
+          sentMsg: "Cancel submitted.",
+          pendingTxns,
+          setPendingTxns,
+        });
+        const receipt = await tx.wait();
+        if (receipt.status === 1) {
+          setCancelOrderIdList([]);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsCancelMultipleOrderProcessing(false);
+      }
+    },
+    [
+      chainId,
+      library,
+      pendingTxns,
+      setPendingTxns,
+      setCancelOrderIdList,
+      cancelOrderIdList,
+      setIsCancelMultipleOrderProcessing,
+    ]
+  );
 
   const approveOrderBook = () => {
     setIsPluginApproving(true);
@@ -756,6 +791,21 @@ export const Exchange = forwardRef((props, ref) => {
     return null;
   }
 
+  const renderCancelOrderButton = () => {
+    const orderText = cancelOrderIdList.length > 1 ? "orders" : "order";
+    if (cancelOrderIdList.length === 0) return;
+    return (
+      <button
+        className="muted font-base cancel-order-btn"
+        disabled={isCancelMultipleOrderProcessing}
+        type="button"
+        onClick={onMultipleCancelClick}
+      >
+        Cancel {cancelOrderIdList.length} {orderText}
+      </button>
+    );
+  };
+
   const getListSection = () => {
     return (
       <div>
@@ -769,8 +819,13 @@ export const Exchange = forwardRef((props, ref) => {
             className="Exchange-list-tabs"
           />
           <div className="align-right Exchange-should-show-position-lines">
-            <Checkbox isChecked={savedShouldShowPositionLines} setIsChecked={setSavedShouldShowPositionLines}>
-              <span className="muted">Chart positions</span>
+            {renderCancelOrderButton()}
+            <Checkbox
+              isChecked={savedShouldShowPositionLines}
+              setIsChecked={setSavedShouldShowPositionLines}
+              className={cx("muted chart-positions", { active: savedShouldShowPositionLines })}
+            >
+              <span>Chart positions</span>
             </Checkbox>
           </div>
         </div>
@@ -821,6 +876,8 @@ export const Exchange = forwardRef((props, ref) => {
             totalTokenWeights={totalTokenWeights}
             usdgSupply={usdgSupply}
             savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
+            cancelOrderIdList={cancelOrderIdList}
+            setCancelOrderIdList={setCancelOrderIdList}
           />
         )}
         {listSection === "Trades" && (

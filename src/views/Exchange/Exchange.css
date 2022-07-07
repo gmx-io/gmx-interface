@@ -16,6 +16,9 @@
 .Exchange-should-show-position-lines {
   font-size: 1.4rem;
 }
+.Exchange-should-show-position-lines .active {
+  opacity: 1;
+}
 
 .Exchange-empty-positions-list-note {
   padding-bottom: 0.465rem;
@@ -836,6 +839,26 @@ table.Exchange-list-small td {
   text-align: center;
   padding-top: 3.1rem;
   height: 7.75rem;
+}
+.cancel-order-btn {
+  margin-right: 1.5rem;
+  background: none;
+  border: none;
+  color: white;
+  padding: 0;
+}
+.cancel-order-btn:hover {
+  opacity: 0.8;
+}
+.cancel-order-btn:disabled {
+  opacity: 0.6;
+}
+
+.chart-positions:hover {
+  opacity: 0.8;
+}
+.chart-positions.span:hover {
+  opacity: 1;
 }
 
 .al-swap .Tooltip-popup {

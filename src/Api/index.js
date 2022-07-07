@@ -42,6 +42,7 @@ import {
 import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
 
 import { nissohGraphClient, arbitrumGraphClient, avalancheGraphClient } from "./common";
+import { groupBy } from "lodash";
 export * from "./prices";
 
 const { AddressZero } = ethers.constants;
@@ -812,6 +813,20 @@ export function handleCancelOrder(chainId, library, order, opts) {
     pendingTxns: opts.pendingTxns,
     setPendingTxns: opts.setPendingTxns,
   });
+}
+
+export async function cancelMultipleOrders(chainId, library, allIndexes = [], opts) {
+  const ordersWithTypes = groupBy(allIndexes, (v) => v.split("-")[0]);
+  function getIndexes(key) {
+    if (!ordersWithTypes[key]) return;
+    return ordersWithTypes[key].map((d) => d.split("-")[1]);
+  }
+  // params order => swap, increase, decrease
+  const params = ["Swap", "Increase", "Decrease"].map((key) => getIndexes(key) || []);
+  const method = "cancelMultiple";
+  const orderBookAddress = getContract(chainId, "OrderBook");
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  return callContract(chainId, contract, method, params, opts);
 }
 
 export async function updateDecreaseOrder(
