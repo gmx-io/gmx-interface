@@ -1,6 +1,8 @@
 .Checkbox {
   user-select: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 .Checkbox.disabled {
@@ -11,9 +13,6 @@
 .Checkbox-icon-wrapper {
   display: inline-flex;
   align-items: center;
-  vertical-align: middle;
-  position: relative;
-  top: 0.08rem;
 }
 
 .Checkbox .Checkbox-icon {
