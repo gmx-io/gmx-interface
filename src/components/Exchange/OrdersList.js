@@ -13,7 +13,7 @@ import {
   getExchangeRate,
   getPositionKey,
 } from "../../Helpers.js";
-import { cancelSwapOrder, cancelIncreaseOrder, cancelDecreaseOrder } from "../../Api";
+import { handleCancelOrder } from "../../Api";
 import { getContract } from "../../Addresses";
 
 import Tooltip from "../Tooltip/Tooltip";
@@ -50,22 +50,7 @@ export default function OrdersList(props) {
 
   const onCancelClick = useCallback(
     (order) => {
-      let func;
-      if (order.type === SWAP) {
-        func = cancelSwapOrder;
-      } else if (order.type === INCREASE) {
-        func = cancelIncreaseOrder;
-      } else if (order.type === DECREASE) {
-        func = cancelDecreaseOrder;
-      }
-
-      return func(chainId, library, order.index, {
-        successMsg: "Order cancelled.",
-        failMsg: "Cancel failed.",
-        sentMsg: "Cancel submitted.",
-        pendingTxns,
-        setPendingTxns,
-      });
+      handleCancelOrder(chainId, library, order, { pendingTxns, setPendingTxns });
     },
     [library, pendingTxns, setPendingTxns, chainId]
   );
