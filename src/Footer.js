@@ -40,13 +40,13 @@ export default function Footer() {
         {isHome && (
           <div className="Footer-links">
             <div>
-              <NavLink to="/referral-terms" className="Footer-link" activeClassName="active">
-                Referral Terms
+              <NavLink to="/terms-and-conditions" className="Footer-link" activeClassName="active">
+                Terms and Conditions
               </NavLink>
             </div>
             <div>
-              <NavLink to="/terms-and-conditions" className="Footer-link" activeClassName="active">
-                Terms and Conditions
+              <NavLink to="/referral-terms" className="Footer-link" activeClassName="active">
+                Referral Terms
               </NavLink>
             </div>
           </div>
