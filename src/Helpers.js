@@ -2707,7 +2707,7 @@ export function useDebounce(value, delay) {
 }
 
 export function isDevelopment() {
-  return !window.location.host?.includes("gmx.io");
+  return !window.location.host?.includes("gmx.io") && !window.location.host?.includes("ipfs.io");
 }
 
 export function isLocal() {
