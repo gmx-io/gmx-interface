@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 
-import { Switch, Route, NavLink, HashRouter as Router, Redirect, useLocation } from "react-router-dom";
+import { Switch, Route, NavLink, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
 
 import {
   ARBITRUM,
@@ -306,6 +306,8 @@ function FullApp() {
   const exchangeRef = useRef();
   const { connector, library, deactivate, activate, active } = useWeb3React();
   const { chainId } = useChainId();
+  const location = useLocation();
+  const history = useHistory();
   useEventToast();
   const [activatingConnector, setActivatingConnector] = useState();
   useEffect(() => {
@@ -329,9 +331,16 @@ function FullApp() {
       const encodedReferralCode = encodeReferralCode(referralCode);
       if (encodeReferralCode !== ethers.constants.HashZero) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
+        const queryParams = new URLSearchParams(location.search);
+        if (queryParams.has("ref")) {
+          queryParams.delete("ref");
+          history.replace({
+            search: queryParams.toString(),
+          });
+        }
       }
     }
-  }, [query]);
+  }, [query, history, location]);
 
   useEffect(() => {
     if (window.ethereum) {
@@ -516,8 +525,6 @@ function FullApp() {
     setRedirectModalVisible(true);
     setSelectedToPage(to);
   };
-
-  const location = useLocation();
 
   const HeaderLink = ({ isHomeLink, className, exact, to, children }) => {
     const isOnHomePage = location.pathname === "/";
