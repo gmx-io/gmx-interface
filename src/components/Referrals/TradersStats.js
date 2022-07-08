@@ -11,7 +11,6 @@ import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelp
 import { ReferralCodeForm } from "./JoinReferralCode";
 
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
-  const { referralTotalStats, discountDistributions } = referralsData;
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const editModalRef = useRef(null);
 
@@ -23,12 +22,12 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         <InfoCard
           label="Total Trading Volume"
           tooltipText="Volume traded by this account with an active referral code."
-          data={getUSDValue(referralTotalStats?.volume)}
+          data={getUSDValue(referralsData?.referralTotalStats?.volume)}
         />
         <InfoCard
           label="Total Rebates"
           tooltipText="Rebates earned by this account as a trader."
-          data={getUSDValue(referralTotalStats?.discountUsd, 4)}
+          data={getUSDValue(referralsData?.referralTotalStats?.discountUsd, 4)}
         />
         <InfoCard
           label="Active Referral Code"
@@ -70,7 +69,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           </div>
         </Modal>
       </div>
-      {discountDistributions.length > 0 ? (
+      {referralsData?.discountDistributions.length > 0 ? (
         <div className="reward-history">
           <Card title="Rebates Distribution History" tooltipText="Rebates are airdropped weekly.">
             <div className="table-wrapper">
@@ -89,7 +88,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                   </tr>
                 </thead>
                 <tbody>
-                  {discountDistributions.map((rebate, index) => {
+                  {referralsData?.discountDistributions.map((rebate, index) => {
                     let tokenInfo;
                     try {
                       tokenInfo = getToken(chainId, rebate.token);
