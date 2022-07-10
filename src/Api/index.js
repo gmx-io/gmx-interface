@@ -343,11 +343,8 @@ function invariant(condition, errorMsg) {
 }
 
 export function useTrades(chainId, account) {
-  const url =
-    account && account.length > 0
-      ? `${getServerBaseUrl(chainId)}/actions?account=${account}`
-      : `${getServerBaseUrl(chainId)}/actions`;
-  const { data: trades, mutate: updateTrades } = useSWR(url, {
+  const url = account && `${getServerBaseUrl(chainId)}/actions?account=${account}`;
+  const { data: trades, mutate: updateTrades } = useSWR(url && url, {
     dedupingInterval: 30000,
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
