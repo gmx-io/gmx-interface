@@ -103,6 +103,7 @@ import PositionRouter from "./abis/PositionRouter.json";
 import PageNotFound from "./views/PageNotFound/PageNotFound";
 import ReferralTerms from "./views/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "./views/TermsAndConditions/TermsAndConditions";
+import Jobs from "./views/Jobs/Jobs";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -173,6 +174,9 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
       </div>
       <div className="App-header-link-container">
         <HeaderLink to="/ecosystem">Ecosystem</HeaderLink>
+      </div>
+      <div className="App-header-link-container">
+        <HeaderLink to="/jobs">Jobs</HeaderLink>
       </div>
       <div className="App-header-link-container">
         <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
@@ -822,6 +826,9 @@ function FullApp() {
               </Route>
               <Route exact path="/referrals">
                 <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path="/jobs">
+                <Jobs />
               </Route>
               <Route exact path="/nft_wallet">
                 <NftWallet />
