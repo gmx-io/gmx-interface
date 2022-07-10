@@ -12,6 +12,7 @@ import {
   getTokenInfo,
   getExchangeRate,
   getPositionKey,
+  getUsd,
 } from "../../Helpers.js";
 import { handleCancelOrder } from "../../Api";
 import { getContract } from "../../Addresses";
@@ -243,11 +244,27 @@ export default function OrdersList(props) {
             </div>
           </td>
           <td className="Exchange-list-item-type">{order.type === INCREASE ? "Limit" : "Trigger"}</td>
-          <td>
-            {order.type === INCREASE ? "Increase" : "Decrease"} {indexTokenSymbol} {order.isLong ? "Long" : "Short"}
-            &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
-            {error && <div className="Exchange-list-item-error">{error}</div>}
-          </td>
+          <Tooltip
+            handle={
+              <td>
+                {order.type === INCREASE ? "Increase" : "Decrease"} {indexTokenSymbol} {order.isLong ? "Long" : "Short"}
+                &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
+                {error && <div className="Exchange-list-item-error">{error}</div>}
+              </td>
+            }
+            position="right-bottom"
+            renderContent={() => {
+              const collateralTokenInfo = getTokenInfo(infoTokens, order.purchaseToken);
+              const collateralUSD = getUsd(order.purchaseTokenAmount, order.purchaseToken, false, infoTokens);
+              return (
+                <span>
+                  Collateral: ${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (
+                  {formatAmount(order.purchaseTokenAmount, collateralTokenInfo.decimals, 4, true)}{" "}
+                  {collateralTokenInfo.baseSymbol || collateralTokenInfo.symbol})
+                </span>
+              );
+            }}
+          />
           <td>
             {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
           </td>
@@ -355,6 +372,9 @@ export default function OrdersList(props) {
       const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
       const indexTokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol;
 
+      const collateralTokenInfo = getTokenInfo(infoTokens, order.purchaseToken);
+      const collateralUSD = getUsd(order.purchaseTokenAmount, order.purchaseToken, true, infoTokens);
+
       let error;
       if (order.type === DECREASE) {
         const positionForOrder = getPositionForOrder(account, order, positionsMap);
@@ -395,6 +415,14 @@ export default function OrdersList(props) {
                     );
                   }}
                 />
+              </div>
+            </div>
+            <div className="App-card-row">
+              <div className="label">Collateral</div>
+              <div>
+                ${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (
+                {formatAmount(order.purchaseTokenAmount, collateralTokenInfo.decimals, 4, true)}{" "}
+                {collateralTokenInfo.baseSymbol || collateralTokenInfo.symbol})
               </div>
             </div>
             {!hideActions && (
