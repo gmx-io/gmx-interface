@@ -22,13 +22,11 @@ function Jobs() {
         <div className="page-body">
           <Card title="Senior front-end developer (full time position)">
             <div className="body-para">
-              <p className="subheading">
-                <b>What you'll do:</b>
-              </p>
+              <p className="subheading">What you'll do:</p>
               <ul>
                 <li>
                   Work closely with the rest of the GMX team in the main GMX frontends (including{" "}
-                  <a href="https://stats.gmx.io" rel="noopener noreferrer">
+                  <a target="_blank" href="https://stats.gmx.io" rel="noopener noreferrer">
                     stats.gmx.io
                   </a>
                   )
@@ -36,22 +34,18 @@ function Jobs() {
                 <li>Contribute with your experience and knowledge to its architecture.</li>
               </ul>
               <div className="mt-lg">
-                <p className="subheading">
-                  <b>What we’re looking for:</b>
-                </p>
+                <p className="subheading">What we’re looking for:</p>
                 <ul>
                   <li>Required skills: HTML5, CSS3, React, Ethers, Web3 JS.</li>
                   <li>Previous DeFi experience and knowledge.</li>
                   <li>You speak fluent English and be available to start right away.</li>
                   <li>You are comfortable making changes to the interface following our current design guidelines.</li>
                 </ul>
-                <p>
-                  The salary is <b>60,000</b> to <b>120,000 USD</b> + <b>1,000 GMX</b> a year.
-                </p>
+                <p>The salary is 60,000 to 120,000 USD + 1,000 GMX a year.</p>
                 <p className="jobs-contact">
                   Please contact{" "}
-                  <a href="mailto:jobs@gmx.io" rel="noopener noreferrer">
-                    <b>jobs@gmx.io</b>
+                  <a target="_blank" href="mailto:jobs@gmx.io" rel="noopener noreferrer">
+                    jobs@gmx.io
                   </a>{" "}
                   using the following email subject: Application for Senior front-end developer: [Your name]
                 </p>
