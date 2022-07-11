@@ -3,6 +3,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 2rem;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .body-para .subheading {
