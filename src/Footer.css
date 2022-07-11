@@ -71,8 +71,35 @@
   display: flex;
   justify-content: center;
 }
-.Footer-links > div {
-  margin-right: 1.5rem;
+.footer-column {
+  display: flex;
+}
+
+.footer-column > a {
+  margin-right: 3rem;
+}
+
+@media (max-width: 580px) {
+  .footer-column:first-child {
+    margin-right: 3rem;
+  }
+  .footer-column {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .footer-column a:first-child {
+    margin: 0.5rem 0;
+  }
+  .footer-column > a {
+    margin-right: 0;
+  }
+  .Footer-social-link-block {
+    margin-bottom: 1.4rem;
+  }
+  .Footer-wrapper {
+    padding-top: 2.5rem;
+  }
 }
 
 @media (max-width: 900px) {

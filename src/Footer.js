@@ -39,12 +39,18 @@ export default function Footer() {
         </div>
         {isHome && (
           <div className="Footer-links">
-            <div>
+            <div className="footer-column">
+              <NavLink to="/jobs" className="Footer-link" activeClassName="active">
+                Jobs
+              </NavLink>
+              <a href="https://gmxio.gitbook.io/gmx/media-kit" className="Footer-link" rel="noopener noreferrer">
+                Media Kit
+              </a>
+            </div>
+            <div className="footer-column">
               <NavLink to="/terms-and-conditions" className="Footer-link" activeClassName="active">
                 Terms and Conditions
               </NavLink>
-            </div>
-            <div>
               <NavLink to="/referral-terms" className="Footer-link" activeClassName="active">
                 Referral Terms
               </NavLink>

@@ -1,11 +1,14 @@
 import "./Jobs.css";
-import React from "react";
+import React, { useEffect } from "react";
 import SEO from "../../components/Common/SEO";
 import Footer from "../../Footer";
 import { getPageTitle } from "../../Helpers";
 import Card from "../../components/Common/Card";
 
 function Jobs() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <SEO title={getPageTitle("Job Openings")}>
       <div className="default-container page-layout Referrals">
