@@ -276,6 +276,7 @@ export default function SwapBox(props) {
   const stableTokens = tokens.filter((token) => token.isStable);
   const indexTokens = whitelistedTokens.filter((token) => !token.isStable && !token.isWrapped);
   const shortableTokens = indexTokens.filter((token) => token.isShortable);
+
   let toTokens = tokens;
   if (isLong) {
     toTokens = indexTokens;
@@ -395,6 +396,48 @@ export default function SwapBox(props) {
     return isTriggerRatioInverted(fromTokenInfo, toTokenInfo);
   }, [toTokenInfo, fromTokenInfo]);
 
+  const maxToTokenOut = useMemo(() => {
+    const value = toTokenInfo.availableAmount?.gt(toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount))
+      ? toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount)
+      : toTokenInfo.availableAmount;
+
+    if (!value) {
+      return bigNumberify(0);
+    }
+
+    return value.gt(0) ? value : bigNumberify(0);
+  }, [toTokenInfo]);
+
+  const maxToTokenOutUSD = useMemo(() => {
+    return getUsd(maxToTokenOut, toTokenAddress, false, infoTokens);
+  }, [maxToTokenOut, toTokenAddress, infoTokens]);
+
+  const maxFromTokenInUSD = useMemo(() => {
+    const value = fromTokenInfo.maxUsdgAmount
+      ?.sub(fromTokenInfo.usdgAmount)
+      .mul(expandDecimals(1, USD_DECIMALS))
+      .div(expandDecimals(1, USDG_DECIMALS));
+
+    if (!value) {
+      return bigNumberify(0);
+    }
+
+    return value.gt(0) ? value : bigNumberify(0);
+  }, [fromTokenInfo]);
+
+  const maxFromTokenIn = useMemo(() => {
+    if (!fromTokenInfo.maxPrice) {
+      return bigNumberify(0);
+    }
+    return maxFromTokenInUSD?.mul(expandDecimals(1, fromTokenInfo.decimals)).div(fromTokenInfo.maxPrice).toString();
+  }, [maxFromTokenInUSD, fromTokenInfo]);
+
+  let maxSwapAmountUsd = bigNumberify(0);
+
+  if (maxToTokenOutUSD && maxFromTokenInUSD) {
+    maxSwapAmountUsd = maxToTokenOutUSD.lt(maxFromTokenInUSD) ? maxToTokenOutUSD : maxFromTokenInUSD;
+  }
+
   const triggerRatio = useMemo(() => {
     if (!triggerRatioValue) {
       return bigNumberify(0);
@@ -482,7 +525,8 @@ export default function SwapBox(props) {
             undefined,
             !isMarketOrder && triggerRatio,
             usdgSupply,
-            totalTokenWeights
+            totalTokenWeights,
+            isSwap
           );
 
           const nextToValue = formatAmountFree(nextToAmount, toToken.decimals, toToken.decimals);
@@ -505,7 +549,8 @@ export default function SwapBox(props) {
           undefined,
           !isMarketOrder && triggerRatio,
           usdgSupply,
-          totalTokenWeights
+          totalTokenWeights,
+          isSwap
         );
         const nextFromValue = formatAmountFree(nextFromAmount, fromToken.decimals, fromToken.decimals);
         setFromValue(nextFromValue);
@@ -537,7 +582,8 @@ export default function SwapBox(props) {
             undefined,
             undefined,
             usdgSupply,
-            totalTokenWeights
+            totalTokenWeights,
+            isSwap
           );
 
           let fromUsdMinAfterFee = fromUsdMin;
@@ -583,7 +629,8 @@ export default function SwapBox(props) {
           undefined,
           undefined,
           usdgSupply,
-          totalTokenWeights
+          totalTokenWeights,
+          isSwap
         );
 
         if (feeBasisPoints) {
@@ -852,7 +899,8 @@ export default function SwapBox(props) {
           undefined,
           undefined,
           usdgSupply,
-          totalTokenWeights
+          totalTokenWeights,
+          isSwap
         );
         requiredAmount = requiredAmount.add(swapAmount);
 
@@ -911,7 +959,8 @@ export default function SwapBox(props) {
           undefined,
           undefined,
           usdgSupply,
-          totalTokenWeights
+          totalTokenWeights,
+          isSwap
         );
         stableTokenAmount = nextToAmount;
         if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
@@ -1137,7 +1186,8 @@ export default function SwapBox(props) {
           undefined,
           undefined,
           usdgSupply,
-          totalTokenWeights
+          totalTokenWeights,
+          isSwap
         );
         const nextToAmountUsd = nextToAmount
           .mul(indexTokenInfo.minPrice)
@@ -1258,7 +1308,8 @@ export default function SwapBox(props) {
         undefined,
         undefined,
         usdgSupply,
-        totalTokenWeights
+        totalTokenWeights,
+        isSwap
       );
       if (multiPath) {
         path = multiPath;
@@ -1273,7 +1324,8 @@ export default function SwapBox(props) {
         undefined,
         undefined,
         usdgSupply,
-        totalTokenWeights
+        totalTokenWeights,
+        isSwap
       );
       if (multiPath) {
         path = multiPath;
@@ -1442,7 +1494,8 @@ export default function SwapBox(props) {
         undefined,
         undefined,
         usdgSupply,
-        totalTokenWeights
+        totalTokenWeights,
+        isSwap
       );
       if (nextToAmount.eq(0)) {
         helperToast.error("Insufficient liquidity");
@@ -1662,7 +1715,8 @@ export default function SwapBox(props) {
         undefined,
         undefined,
         usdgSupply,
-        totalTokenWeights
+        totalTokenWeights,
+        isSwap
       );
       if (feeBasisPoints !== undefined) {
         fees = fromAmount.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
@@ -1685,7 +1739,8 @@ export default function SwapBox(props) {
       undefined,
       undefined,
       usdgSupply,
-      totalTokenWeights
+      totalTokenWeights,
+      isSwap
     );
     if (feeBasisPoints) {
       swapFees = fromUsdMin.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
@@ -2141,6 +2196,32 @@ export default function SwapBox(props) {
             <div className="Exchange-info-label">{toToken.symbol} Price</div>
             <div className="align-right">
               {toTokenInfo && formatAmount(toTokenInfo.maxPrice, USD_DECIMALS, 2, true)} USD
+            </div>
+          </div>
+          <div className="Exchange-info-row">
+            <div className="Exchange-info-label">Available Liquidity:</div>
+            <div className="align-right al-swap">
+              <Tooltip
+                handle={`${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)} USD`}
+                position="right-bottom"
+                renderContent={() => {
+                  return (
+                    <div>
+                      <div>
+                        Max {fromTokenInfo.symbol} in: {formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 2, true)}{" "}
+                        {fromTokenInfo.symbol} <br />({"$ "}
+                        {formatAmount(maxFromTokenInUSD, USD_DECIMALS, 2, true)})
+                      </div>
+                      <br />
+                      <div>
+                        Max {toTokenInfo.symbol} out: {formatAmount(maxToTokenOut, toTokenInfo.decimals, 2, true)}{" "}
+                        {toTokenInfo.symbol} <br />({"$ "}
+                        {formatAmount(maxToTokenOutUSD, USD_DECIMALS, 2, true)})
+                      </div>
+                    </div>
+                  );
+                }}
+              />
             </div>
           </div>
           {!isMarketOrder && (

@@ -292,6 +292,10 @@ export function deserialize(data) {
   return data;
 }
 
+export function isHomeSite() {
+  return process.env.REACT_APP_IS_HOME_SITE === "true";
+}
+
 export const helperToast = {
   success: (content) => {
     toast.dismiss();
@@ -681,7 +685,8 @@ export function getNextFromAmount(
   toTokenPriceUsd,
   ratio,
   usdgSupply,
-  totalTokenWeights
+  totalTokenWeights,
+  forSwap
 ) {
   const defaultValue = { amount: bigNumberify(0) };
 
@@ -704,7 +709,21 @@ export function getNextFromAmount(
     return { amount: toAmount };
   }
 
-  if (!fromToken || !fromToken.minPrice || !toToken || !toToken.maxPrice) {
+  // the realtime price should be used if it is for a transaction to open / close a position
+  // or if the transaction involves doing a swap and opening / closing a position
+  // otherwise use the contract price instead of realtime price for swaps
+
+  let fromTokenMinPrice;
+  if (fromToken) {
+    fromTokenMinPrice = forSwap ? fromToken.contractMinPrice : fromToken.minPrice;
+  }
+
+  let toTokenMaxPrice;
+  if (toToken) {
+    toTokenMaxPrice = forSwap ? toToken.contractMaxPrice : toToken.maxPrice;
+  }
+
+  if (!fromToken || !fromTokenMinPrice || !toToken || !toTokenMaxPrice) {
     return defaultValue;
   }
 
@@ -715,89 +734,10 @@ export function getNextFromAmount(
     fromAmountBasedOnRatio = toAmount.mul(ratio).div(PRECISION);
   }
 
-  if (toTokenAddress === USDG_ADDRESS) {
-    const feeBasisPoints = getSwapFeeBasisPoints(fromToken.isStable);
-
-    if (ratio && !ratio.isZero()) {
-      return {
-        amount: adjustDecimals(
-          fromAmountBasedOnRatio.mul(BASIS_POINTS_DIVISOR + feeBasisPoints).div(BASIS_POINTS_DIVISOR)
-        ),
-      };
-    }
-    const fromAmount = toAmount.mul(PRECISION).div(fromToken.maxPrice);
-    return {
-      amount: adjustDecimals(fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
-    };
-  }
-
-  if (fromTokenAddress === USDG_ADDRESS) {
-    const redemptionValue = toToken.redemptionAmount.mul(toToken.maxPrice).div(expandDecimals(1, toToken.decimals));
-    if (redemptionValue.gt(THRESHOLD_REDEMPTION_VALUE)) {
-      const feeBasisPoints = getSwapFeeBasisPoints(toToken.isStable);
-
-      const fromAmount =
-        ratio && !ratio.isZero()
-          ? fromAmountBasedOnRatio
-          : toAmount.mul(expandDecimals(1, toToken.decimals)).div(toToken.redemptionAmount);
-
-      return {
-        amount: adjustDecimals(fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
-      };
-    }
-
-    const expectedAmount = toAmount.mul(toToken.maxPrice).div(PRECISION);
-
-    const stableToken = getMostAbundantStableToken(chainId, infoTokens);
-    if (!stableToken || stableToken.availableAmount.lt(expectedAmount)) {
-      const feeBasisPoints = getSwapFeeBasisPoints(toToken.isStable);
-
-      const fromAmount =
-        ratio && !ratio.isZero()
-          ? fromAmountBasedOnRatio
-          : toAmount.mul(expandDecimals(1, toToken.decimals)).div(toToken.redemptionAmount);
-
-      return {
-        amount: adjustDecimals(fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
-      };
-    }
-
-    const feeBasisPoints0 = getSwapFeeBasisPoints(true);
-    const feeBasisPoints1 = getSwapFeeBasisPoints(false);
-
-    if (ratio && !ratio.isZero()) {
-      // apply fees twice usdg -> token1 -> token2
-      const fromAmount = fromAmountBasedOnRatio
-        .mul(BASIS_POINTS_DIVISOR + feeBasisPoints0 + feeBasisPoints1)
-        .div(BASIS_POINTS_DIVISOR);
-      return {
-        amount: adjustDecimals(fromAmount),
-        path: [USDG_ADDRESS, stableToken.address, toToken.address],
-      };
-    }
-
-    // get fromAmount for stableToken => toToken
-    let fromAmount = toAmount.mul(toToken.maxPrice).div(stableToken.minPrice);
-
-    // apply stableToken => toToken fees
-    fromAmount = fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints1).div(BASIS_POINTS_DIVISOR);
-
-    // get fromAmount for USDG => stableToken
-    fromAmount = fromAmount.mul(stableToken.maxPrice).div(PRECISION);
-
-    // apply USDG => stableToken fees
-    fromAmount = fromAmount.mul(BASIS_POINTS_DIVISOR + feeBasisPoints0).div(BASIS_POINTS_DIVISOR);
-
-    return {
-      amount: adjustDecimals(fromAmount),
-      path: [USDG_ADDRESS, stableToken.address, toToken.address],
-    };
-  }
-
   const fromAmount =
-    ratio && !ratio.isZero() ? fromAmountBasedOnRatio : toAmount.mul(toToken.maxPrice).div(fromToken.minPrice);
+    ratio && !ratio.isZero() ? fromAmountBasedOnRatio : toAmount.mul(toTokenMaxPrice).div(fromTokenMinPrice);
 
-  let usdgAmount = fromAmount.mul(fromToken.minPrice).div(PRECISION);
+  let usdgAmount = fromAmount.mul(fromTokenMinPrice).div(PRECISION);
   usdgAmount = adjustForDecimals(usdgAmount, toToken.decimals, USDG_DECIMALS);
   const swapFeeBasisPoints =
     fromToken.isStable && toToken.isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS;
@@ -837,7 +777,8 @@ export function getNextToAmount(
   toTokenPriceUsd,
   ratio,
   usdgSupply,
-  totalTokenWeights
+  totalTokenWeights,
+  forSwap
 ) {
   const defaultValue = { amount: bigNumberify(0) };
   if (!fromAmount || !fromTokenAddress || !toTokenAddress || !infoTokens) {
@@ -859,7 +800,21 @@ export function getNextToAmount(
     return { amount: fromAmount };
   }
 
-  if (!fromToken || !fromToken.minPrice || !toToken || !toToken.maxPrice) {
+  // the realtime price should be used if it is for a transaction to open / close a position
+  // or if the transaction involves doing a swap and opening / closing a position
+  // otherwise use the contract price instead of realtime price for swaps
+
+  let fromTokenMinPrice;
+  if (fromToken) {
+    fromTokenMinPrice = forSwap ? fromToken.contractMinPrice : fromToken.minPrice;
+  }
+
+  let toTokenMaxPrice;
+  if (toToken) {
+    toTokenMaxPrice = forSwap ? toToken.contractMaxPrice : toToken.maxPrice;
+  }
+
+  if (!fromTokenMinPrice || !toTokenMaxPrice) {
     return defaultValue;
   }
 
@@ -881,7 +836,7 @@ export function getNextToAmount(
       };
     }
 
-    const toAmount = fromAmount.mul(fromToken.minPrice).div(PRECISION);
+    const toAmount = fromAmount.mul(fromTokenMinPrice).div(PRECISION);
     return {
       amount: adjustDecimals(toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints).div(BASIS_POINTS_DIVISOR)),
       feeBasisPoints,
@@ -890,7 +845,7 @@ export function getNextToAmount(
 
   if (fromTokenAddress === USDG_ADDRESS) {
     const redemptionValue = toToken.redemptionAmount
-      .mul(toTokenPriceUsd || toToken.maxPrice)
+      .mul(toTokenPriceUsd || toTokenMaxPrice)
       .div(expandDecimals(1, toToken.decimals));
 
     if (redemptionValue.gt(THRESHOLD_REDEMPTION_VALUE)) {
@@ -942,7 +897,7 @@ export function getNextToAmount(
     toAmount = toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints0).div(BASIS_POINTS_DIVISOR);
 
     // get toAmount for stableToken => toToken
-    toAmount = toAmount.mul(stableToken.minPrice).div(toTokenPriceUsd || toToken.maxPrice);
+    toAmount = toAmount.mul(stableToken.minPrice).div(toTokenPriceUsd || toTokenMaxPrice);
     // apply stableToken => toToken fees
     toAmount = toAmount.mul(BASIS_POINTS_DIVISOR - feeBasisPoints1).div(BASIS_POINTS_DIVISOR);
 
@@ -956,9 +911,9 @@ export function getNextToAmount(
   const toAmount =
     ratio && !ratio.isZero()
       ? toAmountBasedOnRatio
-      : fromAmount.mul(fromToken.minPrice).div(toTokenPriceUsd || toToken.maxPrice);
+      : fromAmount.mul(fromTokenMinPrice).div(toTokenPriceUsd || toTokenMaxPrice);
 
-  let usdgAmount = fromAmount.mul(fromToken.minPrice).div(PRECISION);
+  let usdgAmount = fromAmount.mul(fromTokenMinPrice).div(PRECISION);
   usdgAmount = adjustForDecimals(usdgAmount, fromToken.decimals, USDG_DECIMALS);
   const swapFeeBasisPoints =
     fromToken.isStable && toToken.isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS;
@@ -1617,7 +1572,12 @@ export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
 };
 
 export function bigNumberify(n) {
-  return ethers.BigNumber.from(n);
+  try {
+    return ethers.BigNumber.from(n);
+  } catch (e) {
+    console.error("bigNumberify error", e);
+    return undefined;
+  }
 }
 
 export function expandDecimals(n, decimals) {
@@ -1967,23 +1927,29 @@ export async function setGasPrice(txnOpts, provider, chainId) {
   let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
   const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
 
+  const gasPrice = await provider.getGasPrice();
+
   if (maxGasPrice) {
-    const gasPrice = await provider.getGasPrice();
     if (gasPrice.gt(maxGasPrice)) {
       maxGasPrice = gasPrice;
     }
 
     const feeData = await provider.getFeeData();
-    txnOpts.maxFeePerGas = maxGasPrice;
-    txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
-  } else {
-    const gasPrice = await provider.getGasPrice();
-    txnOpts.gasPrice = gasPrice.add(premium);
+
+    // the wallet provider might not return maxPriorityFeePerGas in feeData
+    // in which case we should fallback to the usual getGasPrice flow handled below
+    if (feeData && feeData.maxPriorityFeePerGas) {
+      txnOpts.maxFeePerGas = maxGasPrice;
+      txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
+      return;
+    }
   }
+
+  txnOpts.gasPrice = gasPrice.add(premium);
+  return;
 }
 
-export async function getGasLimit(contract, method, params = [], value, gasBuffer) {
-  const defaultGasBuffer = 50000;
+export async function getGasLimit(contract, method, params = [], value) {
   const defaultValue = bigNumberify(0);
 
   if (!value) {
@@ -1992,11 +1958,11 @@ export async function getGasLimit(contract, method, params = [], value, gasBuffe
 
   let gasLimit = await contract.estimateGas[method](...params, { value });
 
-  if (!gasBuffer) {
-    gasBuffer = defaultGasBuffer;
+  if (gasLimit.lt(22000)) {
+    gasLimit = bigNumberify(22000);
   }
 
-  return gasLimit.add(gasBuffer);
+  return gasLimit.mul(11000).div(10000); // add a 10% buffer
 }
 
 export function approveTokens({
@@ -2259,7 +2225,7 @@ export function setTokenUsingIndexPrices(token, indexPrices, nativeTokenAddress)
   }
 
   const spread = token.maxPrice.sub(token.minPrice);
-  const spreadBps = spread.mul(BASIS_POINTS_DIVISOR).div(token.maxPrice);
+  const spreadBps = spread.mul(BASIS_POINTS_DIVISOR).div(token.maxPrice.add(token.minPrice).div(2));
 
   if (spreadBps.gt(MAX_PRICE_DEVIATION_BASIS_POINTS - 50)) {
     // only set one of the values as there will be a spread between the index price and the Chainlink price
@@ -2709,5 +2675,44 @@ export function useDebounce(value, delay) {
 }
 
 export function isDevelopment() {
-  return !window.location.origin?.includes("gmx.io");
+  return !window.location.host?.includes("gmx.io") && !window.location.host?.includes("ipfs.io");
+}
+
+export function isLocal() {
+  return window.location.host?.includes("localhost");
+}
+
+export function getHomeUrl() {
+  if (isLocal()) {
+    return "http://localhost:3010";
+  }
+
+  return "https://gmx.io";
+}
+
+export function getAppBaseUrl() {
+  if (isLocal()) {
+    return "http://localhost:3011/#";
+  }
+
+  return "https://app.gmx.io/#";
+}
+
+export function getTradePageUrl() {
+  if (isLocal()) {
+    return "http://localhost:3011/#/trade";
+  }
+
+  return "https://app.gmx.io/#/trade";
+}
+
+export function importImage(name) {
+  let tokenImage = null;
+  try {
+    tokenImage = require("./img/" + name);
+  } catch (error) {
+    tokenImage = require("./img/ic_eth_40.svg");
+    console.error(error);
+  }
+  return tokenImage && tokenImage.default;
 }

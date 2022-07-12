@@ -31,7 +31,7 @@ import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
 import Checkbox from "../Checkbox/Checkbox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
-import { cancelDecreaseOrder } from "../../Api";
+import { cancelDecreaseOrder, handleCancelOrder } from "../../Api";
 import { getNativeToken, getToken, getWrappedToken } from "../../data/Tokens";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
@@ -39,9 +39,9 @@ const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 function getSpread(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
   if (fromTokenInfo && fromTokenInfo.maxPrice && toTokenInfo && toTokenInfo.minPrice) {
     const fromDiff = fromTokenInfo.maxPrice.sub(fromTokenInfo.minPrice).div(2);
-    const fromSpread = fromDiff.mul(PRECISION).div(fromTokenInfo.maxPrice);
+    const fromSpread = fromDiff.mul(PRECISION).div(fromTokenInfo.maxPrice.add(fromTokenInfo.minPrice).div(2));
     const toDiff = toTokenInfo.maxPrice.sub(toTokenInfo.minPrice).div(2);
-    const toSpread = toDiff.mul(PRECISION).div(toTokenInfo.maxPrice);
+    const toSpread = toDiff.mul(PRECISION).div(toTokenInfo.maxPrice.add(toTokenInfo.minPrice).div(2));
 
     let value = fromSpread.add(toSpread);
 
@@ -109,6 +109,14 @@ export default function ConfirmationBox(props) {
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
   const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
+  const [isLimitOrdersVisible, setIsLimitOrdersVisible] = useState(false);
+
+  const onCancelOrderClick = useCallback(
+    (order) => {
+      handleCancelOrder(chainId, library, order, { pendingTxns, setPendingTxns });
+    },
+    [library, pendingTxns, setPendingTxns, chainId]
+  );
 
   let minOut;
   let fromTokenUsd;
@@ -147,6 +155,16 @@ export default function ConfirmationBox(props) {
         return order;
       }
     }
+  }, [orders, chainId, isLong, toToken.address, toToken.isNative]);
+
+  const existingOrders = useMemo(() => {
+    const wrappedToken = getWrappedToken(chainId);
+    return orders.filter((order) => {
+      if (order.type !== INCREASE) return false;
+      const sameToken =
+        order.indexToken === wrappedToken.address ? toToken.isNative : order.indexToken === toToken.address;
+      return order.isLong === isLong && sameToken;
+    });
   }, [orders, chainId, isLong, toToken.address, toToken.isNative]);
 
   const existingTriggerOrders = useMemo(() => {
@@ -251,7 +269,7 @@ export default function ConfirmationBox(props) {
     if (spread && spread.isHigh) {
       return (
         <div className="Confirmation-box-warning">
-          The spread is > 1%, please ensure the trade details are acceptable before comfirming
+          The spread is {`>`} 1%, please ensure the trade details are acceptable before comfirming
         </div>
       );
     }
@@ -361,14 +379,49 @@ export default function ConfirmationBox(props) {
       4,
       true
     );
+    if (existingOrders?.length > 1) {
+      return (
+        <div>
+          <div className="Confirmation-box-info">
+            <span>
+              You have multiple existing Increase {existingOrder.isLong ? "Long" : "Short"} {indexToken.symbol} limit
+              orders{" "}
+            </span>
+            <span onClick={() => setIsLimitOrdersVisible((p) => !p)} className="view-orders">
+              ({isLimitOrdersVisible ? "hide" : "view"})
+            </span>
+          </div>
+          {isLimitOrdersVisible && (
+            <ul className="order-list">
+              {existingOrders.map((order) => {
+                const { account, index, type, triggerAboveThreshold, triggerPrice } = order;
+                const id = `${account}-${index}`;
+                const triggerPricePrefix = triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
+                const indexToken = getToken(chainId, order.indexToken);
+
+                return (
+                  <li key={id} className="font-sm">
+                    <p>
+                      {type === INCREASE ? "Increase" : "Decrease"} {indexToken.symbol} {isLong ? "Long" : "Short"}{" "}
+                      &nbsp;{triggerPricePrefix} ${formatAmount(triggerPrice, USD_DECIMALS, 2, true)}
+                    </p>
+                    <button onClick={() => onCancelOrderClick(order)}>Cancel</button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      );
+    }
     return (
-      <div className="Confirmation-box-warning">
+      <div className="Confirmation-box-info">
         You have an active Limit Order to Increase {existingOrder.isLong ? "Long" : "Short"} {sizeInToken}{" "}
         {indexToken.symbol} (${formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at price $
         {formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
       </div>
     );
-  }, [existingOrder, isSwap, chainId]);
+  }, [existingOrder, isSwap, chainId, existingOrders, isLong, isLimitOrdersVisible, onCancelOrderClick]);
 
   const renderExistingTriggerErrors = useCallback(() => {
     if (isSwap || decreaseOrdersThatWillBeExecuted?.length < 1) {
@@ -383,20 +436,21 @@ export default function ConfirmationBox(props) {
           that might execute immediately after you open this position. Please cancel the {orderText} or accept the
           confirmation to continue.
         </div>
-        <ul className="trigger-order-list">
-          {decreaseOrdersThatWillBeExecuted.map((order, i) => {
-            const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
+        <ul className="order-list">
+          {decreaseOrdersThatWillBeExecuted.map((order) => {
+            const { account, index, type, triggerAboveThreshold, triggerPrice } = order;
+            const id = `${account}-${index}`;
+            const triggerPricePrefix = triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
             const indexToken = getToken(chainId, order.indexToken);
             return (
-              <li key={`${order.account}-${i}`}>
+              <li key={id}>
                 <p>
-                  {order.type === INCREASE ? "Increase" : "Decrease"} {indexToken.symbol}{" "}
-                  {order.isLong ? "Long" : "Short"}
-                  &nbsp;{triggerPricePrefix} ${formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
+                  {type === INCREASE ? "Increase" : "Decrease"} {indexToken.symbol} {isLong ? "Long" : "Short"}
+                  &nbsp;{triggerPricePrefix} ${formatAmount(triggerPrice, USD_DECIMALS, 2, true)}
                 </p>
                 <button
                   onClick={() =>
-                    cancelDecreaseOrder(chainId, library, order.index, {
+                    cancelDecreaseOrder(chainId, library, index, {
                       successMsg: "Order cancelled",
                       failMsg: "Cancel failed",
                       sentMsg: "Cancel submitted",
@@ -413,7 +467,7 @@ export default function ConfirmationBox(props) {
         </ul>
       </>
     );
-  }, [decreaseOrdersThatWillBeExecuted, isSwap, chainId, library, pendingTxns, setPendingTxns]);
+  }, [decreaseOrdersThatWillBeExecuted, isSwap, chainId, library, pendingTxns, setPendingTxns, isLong]);
 
   const renderExistingTriggerWarning = useCallback(() => {
     if (
@@ -426,7 +480,7 @@ export default function ConfirmationBox(props) {
     }
     const existingTriggerOrderLength = existingTriggerOrders.length;
     return (
-      <div className="Confirmation-box-warning">
+      <div className="Confirmation-box-info">
         You have {existingTriggerOrderLength > 1 ? `${existingTriggerOrderLength}` : "an"} active trigger{" "}
         {existingTriggerOrderLength > 1 ? "orders" : "order"} that could impact this position.
       </div>
@@ -546,7 +600,7 @@ export default function ConfirmationBox(props) {
   const renderMarginSection = useCallback(() => {
     return (
       <>
-        <div className="Confirmation-box-info">
+        <div>
           {renderMain()}
           {renderFeeWarning()}
           {renderMinProfitWarning()}
@@ -746,7 +800,7 @@ export default function ConfirmationBox(props) {
   const renderSwapSection = useCallback(() => {
     return (
       <>
-        <div className="Confirmation-box-info">
+        <div>
           {renderMain()}
           {renderFeeWarning()}
           {renderSpreadWarning()}

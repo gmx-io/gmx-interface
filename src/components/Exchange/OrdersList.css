@@ -17,7 +17,7 @@ table.Orders-list th,
 table.Orders-list td {
   font-weight: normal;
   text-align: left;
-  padding: 1.1rem 1.55rem;
+  padding: 1.1rem 1.5rem;
 }
 
 table.Orders-list tr {
@@ -61,6 +61,10 @@ button.Orders-list-action {
   border: none;
   color: #8b7fe3;
   opacity: 0.9;
+}
+
+.checkbox-inline {
+  display: inline-flex;
 }
 
 button.Orders-list-action:hover {
