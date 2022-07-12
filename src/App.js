@@ -176,6 +176,9 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
         <HeaderLink to="/ecosystem">Ecosystem</HeaderLink>
       </div>
       <div className="App-header-link-container">
+        <HeaderLink to="/jobs">Jobs</HeaderLink>
+      </div>
+      <div className="App-header-link-container">
         <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
           About
         </a>
@@ -817,6 +820,9 @@ function FullApp() {
                   setPendingTxns={setPendingTxns}
                   connectWallet={connectWallet}
                 />
+              </Route>
+              <Route exact path="/jobs">
+                <Jobs />
               </Route>
               <Route exact path="/buy_gmx">
                 <BuyGMX />
