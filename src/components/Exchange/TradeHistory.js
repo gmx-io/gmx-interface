@@ -78,7 +78,7 @@ function getLiquidationData(liquidationsDataMap, key, timestamp) {
 
 export default function TradeHistory(props) {
   const { account, infoTokens, getTokenInfo, chainId, nativeTokenAddress } = props;
-  const { trades, updateTrades } = useTrades(chainId, account, props.hideForNoUser);
+  const { trades, updateTrades } = useTrades(chainId, account, props.forSingleUser);
 
   const liquidationsData = useLiquidationsData(chainId, account);
   const liquidationsDataMap = useMemo(() => {
