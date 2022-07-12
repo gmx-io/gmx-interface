@@ -164,6 +164,9 @@ export default function SwapBox(props) {
     isPluginApproving,
     isPositionRouterApproving,
     savedShouldDisableOrderValidation,
+    minExecutionFee,
+    minExecutionFeeUSD,
+    minExecutionFeeErrorMessage,
   } = props;
 
   const [fromValue, setFromValue] = useState("");
@@ -321,8 +324,6 @@ export default function SwapBox(props) {
       fetcher: fetcher(library, Token),
     }
   );
-
-  const { minExecutionFee } = Api.useMinExecutionFee(library, active, chainId);
 
   const { data: hasOutdatedUi } = Api.useHasOutdatedUi();
 
@@ -2310,7 +2311,6 @@ export default function SwapBox(props) {
       {isConfirming && (
         <ConfirmationBox
           library={library}
-          minExecutionFee={minExecutionFee}
           isHigherSlippageAllowed={isHigherSlippageAllowed}
           setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
           orders={orders}
@@ -2349,6 +2349,9 @@ export default function SwapBox(props) {
           chainId={chainId}
           setPendingTxns={setPendingTxns}
           pendingTxns={pendingTxns}
+          minExecutionFee={minExecutionFee}
+          minExecutionFeeUSD={minExecutionFeeUSD}
+          minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
         />
       )}
     </div>

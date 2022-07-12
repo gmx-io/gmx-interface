@@ -37,6 +37,9 @@ import {
   getInfoTokens,
   getFallbackProvider,
   helperToast,
+  getUsd,
+  USD_DECIMALS,
+  HIGH_EXECUTION_FEES_MAP,
 } from "../Helpers";
 import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
 
@@ -393,8 +396,9 @@ export function useTrades(chainId, account) {
   return { trades, updateTrades };
 }
 
-export function useMinExecutionFee(library, active, chainId) {
+export function useMinExecutionFee(library, active, chainId, infoTokens) {
   const positionRouterAddress = getContract(chainId, "PositionRouter");
+  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
   const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
     fetcher: fetcher(library, PositionRouter),
@@ -448,7 +452,17 @@ export function useMinExecutionFee(library, active, chainId) {
     }
   }
 
-  return { minExecutionFee: finalExecutionFee };
+  const finalExecutionFeeUSD = getUsd(finalExecutionFee, nativeTokenAddress, false, infoTokens);
+  const isFeeHigh = finalExecutionFeeUSD?.gt(expandDecimals(HIGH_EXECUTION_FEES_MAP[chainId], USD_DECIMALS));
+  const errorMessage =
+    isFeeHigh &&
+    `The cost to send transactions is high at the moment, please check the "Execution Fee" value before proceeding"`;
+
+  return {
+    minExecutionFee: finalExecutionFee,
+    minExecutionFeeUSD: finalExecutionFeeUSD,
+    minExecutionFeeErrorMessage: errorMessage,
+  };
 }
 
 export function useStakedGmxSupply(library, active) {
