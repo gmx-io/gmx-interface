@@ -29,7 +29,7 @@ import {
   getPageTitle,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
-import { approvePlugin, useInfoTokens } from "../../Api";
+import { approvePlugin, useInfoTokens, useMinExecutionFee } from "../../Api";
 
 import { getContract } from "../../Addresses";
 import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
@@ -526,6 +526,12 @@ export const Exchange = forwardRef((props, ref) => {
   );
 
   const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo);
+  const { minExecutionFee, minExecutionFeeUSD, minExecutionFeeErrorMessage } = useMinExecutionFee(
+    library,
+    active,
+    chainId,
+    infoTokens
+  );
 
   useEffect(() => {
     const fromToken = getTokenInfo(infoTokens, fromTokenAddress);
@@ -805,6 +811,9 @@ export const Exchange = forwardRef((props, ref) => {
             setMarket={setMarket}
             orders={orders}
             showPnlAfterFees={savedShowPnlAfterFees}
+            minExecutionFee={minExecutionFee}
+            minExecutionFeeUSD={minExecutionFeeUSD}
+            minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
           />
         )}
         {listSection === "Orders" && (
@@ -908,6 +917,9 @@ export const Exchange = forwardRef((props, ref) => {
             totalTokenWeights={totalTokenWeights}
             usdgSupply={usdgSupply}
             savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
+            minExecutionFee={minExecutionFee}
+            minExecutionFeeUSD={minExecutionFeeUSD}
+            minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
           />
           <div className="Exchange-wallet-tokens">
             <div className="Exchange-wallet-tokens-content">

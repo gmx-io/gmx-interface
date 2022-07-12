@@ -84,6 +84,9 @@ export default function PositionsList(props) {
     approvePositionRouter,
     showPnlAfterFees,
     setMarket,
+    minExecutionFee,
+    minExecutionFeeUSD,
+    minExecutionFeeErrorMessage,
   } = props;
 
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
@@ -135,6 +138,9 @@ export default function PositionsList(props) {
         isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
         approvePositionRouter={approvePositionRouter}
         chainId={chainId}
+        minExecutionFee={minExecutionFee}
+        minExecutionFeeUSD={minExecutionFeeUSD}
+        minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
       />
       {ordersToaOpen && (
         <OrdersToa
