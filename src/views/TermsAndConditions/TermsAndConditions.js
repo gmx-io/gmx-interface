@@ -590,7 +590,7 @@ export default function TermsAndConditions() {
               <h3 className="body-title">CONTACT INFORMATION.</h3>
               <p className="body-text">
                 If you have any questions about these Terms, the Site, or the Interface, please contact GMX.io in any of
-                our official channels.
+                our community channels.
               </p>
             </div>
           </div>
