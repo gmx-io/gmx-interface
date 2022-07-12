@@ -349,7 +349,7 @@ export function useTrades(chainId, account, hideForNoUser) {
       : !hideForNoUser && `${getServerBaseUrl(chainId)}/actions`;
 
   const { data: trades, mutate: updateTrades } = useSWR(url && url, {
-    dedupingInterval: 30000,
+    dedupingInterval: 10000,
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
