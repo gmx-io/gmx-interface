@@ -29,12 +29,12 @@ function Jobs() {
                   <a target="_blank" href="https://stats.gmx.io" rel="noopener noreferrer">
                     stats.gmx.io
                   </a>
-                  )
+                  ).
                 </li>
                 <li>Contribute with your experience and knowledge to its architecture.</li>
                 <li>
                   Potential to work on other components, like in the subgraph repository. Our team is small, so there is
-                  opportunity to build new things and grow together.
+                  an opportunity to build new things and grow together.
                 </li>
                 <li>No strict working hours, and no bureaucracy.</li>
               </ul>

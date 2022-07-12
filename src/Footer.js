@@ -11,12 +11,25 @@ import mediumIcon from "./img/ic_medium.svg";
 import { NavLink } from "react-router-dom";
 import { isHomeSite } from "./Helpers";
 
+const fotterLinks = {
+  home: [
+    { text: "Media Kit", link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
+    { text: "Terms and Conditions", link: "/terms-and-conditions" },
+    { text: "Referral Terms", link: "/referral-terms" },
+    { text: "Jobs", link: "/jobs" },
+  ],
+  app: [
+    { text: "Media Kit", link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
+    { text: "Jobs", link: "/jobs" },
+  ],
+};
+
 export default function Footer() {
   const isHome = isHomeSite();
 
   return (
     <div className="Footer">
-      <div className="Footer-wrapper" style={{ height: !isHome && "17rem" }}>
+      <div className="Footer-wrapper">
         <div className="Footer-logo">
           <img src={logoImg} alt="MetaMask" />
         </div>
@@ -37,19 +50,22 @@ export default function Footer() {
             <img src={discordIcon} alt="Discord" />
           </a>
         </div>
-        {isHome && (
-          <div className="Footer-links">
-            <a href="https://gmxio.gitbook.io/gmx/media-kit" className="Footer-link" rel="noopener noreferrer">
-              Media Kit
-            </a>
-            <NavLink to="/terms-and-conditions" className="Footer-link" activeClassName="active">
-              Terms and Conditions
-            </NavLink>
-            <NavLink to="/referral-terms" className="Footer-link" activeClassName="active">
-              Referral Terms
-            </NavLink>
-          </div>
-        )}
+        <div className="Footer-links">
+          {fotterLinks[isHome ? "home" : "app"].map(({ external, text, link }) => {
+            if (external) {
+              return (
+                <a target="_blank" href={link} className="Footer-link" rel="noopener noreferrer">
+                  {text}
+                </a>
+              );
+            }
+            return (
+              <NavLink to={link} className="Footer-link" activeClassName="active">
+                {text}
+              </NavLink>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
