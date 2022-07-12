@@ -244,27 +244,31 @@ export default function OrdersList(props) {
             </div>
           </td>
           <td className="Exchange-list-item-type">{order.type === INCREASE ? "Limit" : "Trigger"}</td>
-          <Tooltip
-            handle={
-              <td>
-                {order.type === INCREASE ? "Increase" : "Decrease"} {indexTokenSymbol} {order.isLong ? "Long" : "Short"}
-                &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
-                {error && <div className="Exchange-list-item-error">{error}</div>}
-              </td>
-            }
-            position="right-bottom"
-            renderContent={() => {
-              const collateralTokenInfo = getTokenInfo(infoTokens, order.purchaseToken);
-              const collateralUSD = getUsd(order.purchaseTokenAmount, order.purchaseToken, false, infoTokens);
-              return (
-                <span>
-                  Collateral: ${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (
-                  {formatAmount(order.purchaseTokenAmount, collateralTokenInfo.decimals, 4, true)}{" "}
-                  {collateralTokenInfo.baseSymbol || collateralTokenInfo.symbol})
-                </span>
-              );
-            }}
-          />
+          <td>
+            <Tooltip
+              handle={
+                <>
+                  {order.type === INCREASE ? "Increase" : "Decrease"} {indexTokenSymbol}{" "}
+                  {order.isLong ? "Long" : "Short"}
+                  &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
+                  {error && <div className="Exchange-list-item-error">{error}</div>}
+                </>
+              }
+              position="right-bottom"
+              renderContent={() => {
+                const collateralTokenInfo = getTokenInfo(infoTokens, order.purchaseToken);
+                const collateralUSD = getUsd(order.purchaseTokenAmount, order.purchaseToken, false, infoTokens);
+                if (!collateralTokenInfo) return "";
+                return (
+                  <span>
+                    Collateral: ${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (
+                    {formatAmount(order.purchaseTokenAmount, collateralTokenInfo.decimals, 4, true)}{" "}
+                    {collateralTokenInfo.baseSymbol || collateralTokenInfo.symbol})
+                  </span>
+                );
+              }}
+            />
+          </td>
           <td>
             {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
           </td>
@@ -417,14 +421,16 @@ export default function OrdersList(props) {
                 />
               </div>
             </div>
-            <div className="App-card-row">
-              <div className="label">Collateral</div>
-              <div>
-                ${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (
-                {formatAmount(order.purchaseTokenAmount, collateralTokenInfo.decimals, 4, true)}{" "}
-                {collateralTokenInfo.baseSymbol || collateralTokenInfo.symbol})
+            {collateralTokenInfo && (
+              <div className="App-card-row">
+                <div className="label">Collateral</div>
+                <div>
+                  ${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (
+                  {formatAmount(order.purchaseTokenAmount, collateralTokenInfo.decimals, 4, true)}{" "}
+                  {collateralTokenInfo.baseSymbol || collateralTokenInfo.symbol})
+                </div>
               </div>
-            </div>
+            )}
             {!hideActions && (
               <>
                 <div className="App-card-divider"></div>
