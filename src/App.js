@@ -103,7 +103,7 @@ import PositionRouter from "./abis/PositionRouter.json";
 import PageNotFound from "./views/PageNotFound/PageNotFound";
 import ReferralTerms from "./views/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "./views/TermsAndConditions/TermsAndConditions";
-import useScrollZero from "./hooks/useScrollZero";
+import useScrollToTop from "./hooks/useScrollToTop";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -956,7 +956,7 @@ function FullApp() {
 }
 
 function App() {
-  useScrollZero();
+  useScrollToTop();
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
