@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useCallback } from "react";
 import Footer from "../../Footer";
 import "./BuyGMX.css";
 
@@ -30,10 +30,6 @@ export default function BuyGMX() {
     },
     [chainId, active]
   );
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   return (
     <div className="BuyGMXGLP default-container page-layout">
