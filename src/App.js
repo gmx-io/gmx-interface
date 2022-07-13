@@ -348,9 +348,9 @@ function FullApp() {
       // for some reason after network is changed to Avalanche through Metamask
       // it triggers event with chainId = 1
       // reload helps web3 to return correct chain data
-      return window.ethereum.on("chainChanged", () => {
-        document.location.reload();
-      });
+      // return window.ethereum.on("chainChanged", () => {
+      //   document.location.reload();
+      // });
     }
   }, []);
 
