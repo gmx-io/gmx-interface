@@ -25,7 +25,7 @@ function Jobs() {
               <p className="subheading">What you will do:</p>
               <ul>
                 <li>
-                  Work closely with the rest of the GMX team in the main GMX frontends (including{" "}
+                  Work closely with the rest of the GMX team in the main GMX front-ends (including{" "}
                   <a target="_blank" href="https://stats.gmx.io" rel="noopener noreferrer">
                     stats.gmx.io
                   </a>
@@ -36,7 +36,7 @@ function Jobs() {
                   Potential to work on other components, like in the subgraph repository. Our team is small, so there is
                   an opportunity to build new things and grow together.
                 </li>
-                <li>No strict working hours, and no bureaucracy.</li>
+                <li>We don't have strict working hours or bureaucracy.</li>
               </ul>
               <div className="mt-lg">
                 <p className="subheading">What we are looking for:</p>
@@ -48,7 +48,7 @@ function Jobs() {
                 </ul>
                 <p>The salary is 60,000 to 120,000 USD + 1,000 to 3,000 GMX a year.</p>
                 <p className="jobs-contact">
-                  Please contact{" "}
+                  Please get in touch with{" "}
                   <a target="_blank" href="mailto:jobs@gmx.io" rel="noopener noreferrer">
                     jobs@gmx.io
                   </a>{" "}
