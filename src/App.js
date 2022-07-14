@@ -827,6 +827,9 @@ function FullApp() {
               <Route exact path="/referrals">
                 <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
               </Route>
+              <Route exact path="/referrals/:account">
+                <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+              </Route>
               <Route exact path="/nft_wallet">
                 <NftWallet />
               </Route>
@@ -959,6 +962,7 @@ function FullApp() {
 }
 
 function App() {
+  useScrollToTop();
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
