@@ -1,14 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Footer from "../../Footer";
 import SEO from "../../components/Common/SEO";
 import { getPageTitle } from "../../Helpers";
 import "./ReferralTerms.css";
 
-export default function ReferralTerms(props) {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
+export default function ReferralTerms() {
   return (
     <SEO title={getPageTitle("Referral Terms")}>
       <div className="default-container Page page-layout">

@@ -1922,19 +1922,26 @@ export async function setGasPrice(txnOpts, provider, chainId) {
   let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
   const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
 
+  const gasPrice = await provider.getGasPrice();
+
   if (maxGasPrice) {
-    const gasPrice = await provider.getGasPrice();
     if (gasPrice.gt(maxGasPrice)) {
       maxGasPrice = gasPrice;
     }
 
     const feeData = await provider.getFeeData();
-    txnOpts.maxFeePerGas = maxGasPrice;
-    txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
-  } else {
-    const gasPrice = await provider.getGasPrice();
-    txnOpts.gasPrice = gasPrice.add(premium);
+
+    // the wallet provider might not return maxPriorityFeePerGas in feeData
+    // in which case we should fallback to the usual getGasPrice flow handled below
+    if (feeData && feeData.maxPriorityFeePerGas) {
+      txnOpts.maxFeePerGas = maxGasPrice;
+      txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
+      return;
+    }
   }
+
+  txnOpts.gasPrice = gasPrice.add(premium);
+  return;
 }
 
 export async function getGasLimit(contract, method, params = [], value) {

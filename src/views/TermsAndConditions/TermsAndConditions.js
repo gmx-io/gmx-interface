@@ -1,14 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Footer from "../../Footer";
 import SEO from "../../components/Common/SEO";
 import { getPageTitle } from "../../Helpers";
 import "./TermsAndConditions.css";
 
 export default function TermsAndConditions() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <SEO title={getPageTitle("Referral Terms")}>
       <div className="default-container Page page-layout">
@@ -590,7 +586,7 @@ export default function TermsAndConditions() {
               <h3 className="body-title">CONTACT INFORMATION.</h3>
               <p className="body-text">
                 If you have any questions about these Terms, the Site, or the Interface, please contact GMX.io in any of
-                our official channels.
+                our community channels.
               </p>
             </div>
           </div>

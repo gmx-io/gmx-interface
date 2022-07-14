@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useWeb3React } from "@web3-react/core";
 
@@ -1136,10 +1136,6 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       maxUnstakeableGmx = availableTokens.mul(stakedTokens).div(divisor);
     }
   }
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   const showStakeGmxModal = () => {
     if (!isGmxTransferEnabled) {
