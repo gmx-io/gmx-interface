@@ -767,9 +767,6 @@ function FullApp() {
               <Route exact path="/referral-terms">
                 <ReferralTerms />
               </Route>
-              <Route exact path="/jobs">
-                <Jobs />
-              </Route>
               <Route exact path="/terms-and-conditions">
                 <TermsAndConditions />
               </Route>

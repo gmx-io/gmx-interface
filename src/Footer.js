@@ -9,14 +9,14 @@ import telegramIcon from "./img/ic_telegram.svg";
 import githubIcon from "./img/ic_github.svg";
 import mediumIcon from "./img/ic_medium.svg";
 import { NavLink } from "react-router-dom";
-import { isHomeSite } from "./Helpers";
+import { isHomeSite, getAppBaseUrl } from "./Helpers";
 
 const fotterLinks = {
   home: [
     { text: "Media Kit", link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
     { text: "Terms and Conditions", link: "/terms-and-conditions" },
     { text: "Referral Terms", link: "/referral-terms" },
-    { text: "Jobs", link: "/jobs" },
+    { text: "Jobs", link: getAppBaseUrl() + "/jobs", external: true },
   ],
   app: [
     { text: "Media Kit", link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
@@ -25,6 +25,7 @@ const fotterLinks = {
 };
 
 export default function Footer() {
+  console.log(getAppBaseUrl());
   const isHome = isHomeSite();
 
   return (
