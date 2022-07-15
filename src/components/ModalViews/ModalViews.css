@@ -1,0 +1,11 @@
+.RedirectModal .Modal-content {
+  width: 34rem;
+  font-size: 1.5rem;
+  line-height: 1.9rem;
+}
+
+@media (max-width: 700px) {
+  .RedirectModal .Modal-content {
+    width: 90vw;
+  }
+}
