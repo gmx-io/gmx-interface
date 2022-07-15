@@ -10,10 +10,13 @@ export function RedirectPopupModal({
   setRedirectPopupTimestamp,
   setShouldHideRedirectModal,
   shouldHideRedirectModal,
+  removeRedirectPopupTimestamp,
 }) {
   useEffect(() => {
     if (shouldHideRedirectModal) {
       setRedirectPopupTimestamp(Date.now());
+    } else {
+      removeRedirectPopupTimestamp();
     }
   }, [setRedirectPopupTimestamp, shouldHideRedirectModal]);
   return (
@@ -39,7 +42,7 @@ export function RedirectPopupModal({
       <br />
       <div className="mb-sm">
         <Checkbox isChecked={shouldHideRedirectModal} setIsChecked={setShouldHideRedirectModal}>
-          I agree, don't show for 30 days.
+          I have read and agree to the message, don't show it again for 30 days
         </Checkbox>
       </div>
       <a href={appRedirectUrl} className="App-cta Exchange-swap-button">
