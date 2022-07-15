@@ -9,8 +9,11 @@ import telegramIcon from "./img/ic_telegram.svg";
 import githubIcon from "./img/ic_github.svg";
 import mediumIcon from "./img/ic_medium.svg";
 import { NavLink } from "react-router-dom";
+import { isHomeSite } from "./Helpers";
 
 export default function Footer() {
+  const isHome = isHomeSite();
+
   return (
     <div className="Footer">
       <div className="Footer-wrapper">
@@ -34,13 +37,20 @@ export default function Footer() {
             <img src={discordIcon} alt="Discord" />
           </a>
         </div>
-        <div className="Footer-links">
-          <div>
-            <NavLink to="/referral-terms" className="Footer-link" activeClassName="active">
-              Referral Terms
-            </NavLink>
+        {isHome && (
+          <div className="Footer-links">
+            <div>
+              <NavLink to="/terms-and-conditions" className="Footer-link" activeClassName="active">
+                Terms and Conditions
+              </NavLink>
+            </div>
+            <div>
+              <NavLink to="/referral-terms" className="Footer-link" activeClassName="active">
+                Referral Terms
+              </NavLink>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

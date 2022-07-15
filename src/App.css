@@ -2,6 +2,7 @@
   position: relative;
   overflow: hidden;
   min-height: 100%;
+  font-size: 1.5rem;
 }
 
 .App-header-backdrop {
@@ -16,6 +17,12 @@
 .App-content header {
   position: relative;
   z-index: 800;
+}
+
+.RedirectModal .Modal-content {
+  width: 34rem;
+  font-size: 1.5rem;
+  line-height: 1.9rem;
 }
 
 .App-header.large {
@@ -72,6 +79,7 @@
   display: none; /* Safari and Chrome */
 }
 
+.App-header-drawer .App-header-link-container .a,
 .App-header-drawer .App-header-link-container a {
   font-size: 1.4rem;
   line-height: 1.8rem;
@@ -83,6 +91,9 @@
   display: block;
 }
 
+.App-header-drawer .App-header-link-container .a:hover,
+.App-header-drawer .App-header-link-container .a:focus,
+.App-header-drawer .App-header-link-container .a:active,
 .App-header-drawer .App-header-link-container a:hover,
 .App-header-drawer .App-header-link-container a:focus,
 .App-header-drawer .App-header-link-container a.active {
@@ -150,7 +161,7 @@
   border: 1px solid #1e2136;
   border-radius: 0.4rem;
   background: #16182e;
-  font-size: 1.55rem;
+  font-size: 1.5rem;
 }
 
 .App-card-bottom-placeholder {
@@ -389,10 +400,15 @@ button.App-connect-wallet:hover {
   position: relative;
 }
 
+.mobile-menu-divider {
+  height: 1px;
+  background: #4e516a;
+}
+
 .App-card-divider {
   height: 1px;
   background: #23263b;
-  margin: 1.05rem -1.55rem;
+  margin: 1.05rem -1.5rem;
 }
 
 .App-box-solid {
@@ -407,7 +423,7 @@ button.App-connect-wallet:hover {
 
 .Page-content {
   padding: 4.65rem;
-  padding-top: 1.55rem;
+  padding-top: 1.5rem;
 }
 
 .section-title-block {
@@ -461,8 +477,8 @@ button.App-connect-wallet:hover {
 
 .Page-title-section {
   padding-left: 4.65rem;
-  padding-right: 1.55rem;
-  margin-top: 1.55rem;
+  padding-right: 1.5rem;
+  margin-top: 1.5rem;
   position: relative;
 }
 
@@ -481,7 +497,7 @@ button.App-connect-wallet:hover {
   /* opacity: 0.7; */
   color: #b7b7bd;
   line-height: 2.15rem;
-  font-size: 1.55rem;
+  font-size: 1.5rem;
 }
 
 .Page-description span,
@@ -518,10 +534,10 @@ button.App-connect-wallet:hover {
 }
 
 .App-card {
-  padding: 1.55rem 1.55rem 1.86rem;
+  padding: 1.5rem 1.5rem 1.86rem;
   border: 1px solid #1e2136;
   border-radius: 0.4rem;
-  font-size: 1.55rem;
+  font-size: 1.5rem;
 }
 
 .App-card-title {
@@ -530,7 +546,7 @@ button.App-connect-wallet:hover {
   font-weight: normal;
   letter-spacing: 0px;
   color: #ffffff;
-  margin-bottom: 1.55rem;
+  margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -538,7 +554,7 @@ button.App-connect-wallet:hover {
 
 .App-card-title-small {
   font-size: 1.7rem;
-  margin-bottom: 1.55rem;
+  margin-bottom: 1.5rem;
 }
 
 .App-card-content {
@@ -549,12 +565,12 @@ button.App-connect-wallet:hover {
 .App-card-row {
   display: grid;
   grid-template-columns: 1fr auto;
-  grid-column-gap: 1.55rem;
+  grid-column-gap: 1.5rem;
   padding: unset;
 }
 
 .App-card-row.inner {
-  padding-left: 1.55rem;
+  padding-left: 1.5rem;
 }
 .App-card-row .icon {
   vertical-align: baseline;
@@ -587,8 +603,8 @@ button.App-connect-wallet:hover {
 .App-header a.App-header-link-main,
 .App-header .App-header-link-main {
   font-size: 1.7rem;
-  padding: 1.55rem;
-  margin-left: -1.55rem;
+  padding: 1.5rem;
+  margin-left: -1.5rem;
   display: flex;
   margin-right: 1.2rem;
 }
@@ -603,23 +619,28 @@ button.App-connect-wallet:hover {
   display: none;
 }
 
+.App-header .a,
 .App-header a {
   text-decoration: none;
   vertical-align: middle;
   display: inline-block;
+  cursor: pointer;
 }
 
+.App-header .a.active,
 .App-header a.active {
   pointer-events: none;
   opacity: 1;
   color: #eee;
 }
 
+.App-header .a:hover,
 .App-header a:hover {
   opacity: 1;
   color: #eee;
 }
 
+.App-header-container-left .a,
 .App-header-container-left a {
   padding: 1.8rem 1.7rem;
   display: block;
@@ -629,13 +650,9 @@ button.App-connect-wallet:hover {
   font-weight: normal;
 }
 
+.App-header-container-left .a.active,
 .App-header-container-left a.active {
   color: white;
-}
-
-.App-header-container-left a.disabled {
-  cursor: not-allowed;
-  color: #ffffff61;
 }
 
 .Toastify {
@@ -735,7 +752,7 @@ button.App-connect-wallet:hover {
   text-align: center;
   font-size: 4.65rem;
   margin-top: 17vh;
-  margin-bottom: 1.55rem;
+  margin-bottom: 1.5rem;
   font-weight: bold;
 }
 
@@ -744,7 +761,7 @@ button.App-connect-wallet:hover {
   font-size: 1.7rem;
   margin-bottom: 7.75rem;
   opacity: 0.9;
-  padding: 0 1.55rem;
+  padding: 0 1.5rem;
 }
 
 .App-info-row {
@@ -759,9 +776,10 @@ button.App-connect-wallet:hover {
 }
 
 .App-cta {
+  text-align: center;
   cursor: pointer;
   display: inline-block;
-  padding: 1.55rem;
+  padding: 1.5rem;
   border-radius: 0.3rem;
   border: none;
   font-size: 1.4rem;
@@ -802,7 +820,7 @@ button.App-cta.transparent:hover:enabled {
 
 button.App-cta.option,
 a.App-cta.option {
-  padding: 0.8rem 1.55rem;
+  padding: 0.8rem 1.5rem;
   font-size: 1.4rem;
 }
 
@@ -852,8 +870,8 @@ button.App-button-option:disabled {
   display: inline-flex;
   cursor: pointer;
   border: none;
-  border-radius: 1.55rem;
-  font-size: 1.55rem;
+  border-radius: 1.5rem;
+  font-size: 1.5rem;
   background: none;
   color: white;
   padding: 0;
@@ -868,11 +886,11 @@ button.App-button-option:disabled {
 
 .App-settings-row {
   margin-bottom: 0.8rem;
-  font-size: 1.55rem;
+  font-size: 1.5rem;
 }
 
 .App-settings .App-cta {
-  margin-top: 1.55rem;
+  margin-top: 1.5rem;
 }
 
 .App-slippage-tolerance-input-container {
@@ -1275,7 +1293,7 @@ button.App-button {
   .App-card-long-content {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-row-gap: 1.55rem;
+    grid-row-gap: 1.5rem;
   }
 
   .App-card-divider-vertical {
@@ -1291,6 +1309,10 @@ button.App-button {
   .App-card-long-content {
     grid-template-columns: 1fr 1fr;
   }
+
+  .RedirectModal .Modal-content {
+    width: 90vw;
+  }
 }
 
 @media (max-width: 600px) {
@@ -1300,6 +1322,10 @@ button.App-button {
 
   .App-card-long-content {
     grid-template-columns: 1fr;
+  }
+  .default-container {
+    padding-left: 2.2rem;
+    padding-right: 2.2rem;
   }
 }
 
@@ -1343,7 +1369,7 @@ button.App-button {
   }
 
   .Home-faqs-content {
-    padding-left: 1.55rem;
+    padding-left: 1.5rem;
   }
 
   .header-connect-btn,

@@ -48,6 +48,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import Tooltip from "../Tooltip/Tooltip";
 
 const { AddressZero } = ethers.constants;
+const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
 
 const orderOptionLabels = {
   [MARKET]: "Market",
@@ -159,13 +160,15 @@ export default function PositionSeller(props) {
     return [delta, hasProfit, deltaPercentage];
   }, [position, orderOption, triggerPriceUsd]);
 
-  const existingOrder = useMemo(() => {
+  const existingOrders = useMemo(() => {
     if (orderOption === STOP && (!triggerPriceUsd || triggerPriceUsd.eq(0))) {
-      return null;
+      return [];
     }
     if (!orders || !position) {
-      return null;
+      return [];
     }
+
+    const ret = [];
     for (const order of orders) {
       // only Stop orders can't be executed without corresponding opened position
       if (order.type !== DECREASE) continue;
@@ -181,10 +184,12 @@ export default function PositionSeller(props) {
           ? position.indexToken.isNative
           : order.indexToken === position.indexToken.address;
       if (order.isLong === position.isLong && sameToken) {
-        return order;
+        ret.push(order);
       }
     }
+    return ret;
   }, [position, orders, triggerPriceUsd, orderOption, nativeTokenAddress]);
+  const existingOrder = existingOrders[0];
 
   const needOrderBookApproval = orderOption === STOP && !orderBookApproved;
 
@@ -232,6 +237,14 @@ export default function PositionSeller(props) {
     if (isClosing) {
       sizeDelta = position.size;
       receiveAmount = position.collateral;
+    } else if (orderOption === STOP && sizeDelta && existingOrders.length > 0) {
+      let residualSize = position.size;
+      for (const order of existingOrders) {
+        residualSize = residualSize.sub(order.sizeDelta);
+      }
+      if (residualSize.sub(sizeDelta).abs().lt(ORDER_SIZE_DUST_USD)) {
+        sizeDelta = residualSize;
+      }
     }
 
     if (sizeDelta) {
@@ -667,7 +680,7 @@ export default function PositionSeller(props) {
       return null;
     }
     return (
-      <ExchangeInfoRow label="Execution Fees">
+      <ExchangeInfoRow label="Execution Fee">
         {formatAmount(DECREASE_ORDER_EXECUTION_GAS_FEE, 18, 4)} {nativeTokenSymbol}
       </ExchangeInfoRow>
     );
@@ -916,6 +929,31 @@ export default function PositionSeller(props) {
                 {!positionFee && "-"}
               </div>
             </div>
+            {orderOption === MARKET && (
+              <div className="Exchange-info-row">
+                <div className="Exchange-info-label">Execution Fee</div>
+                <div className="align-right">
+                  <Tooltip
+                    handle={`${formatAmount(minExecutionFee, 18, 4)} ${nativeTokenSymbol}`}
+                    position="right-top"
+                    renderContent={() => {
+                      return (
+                        <>
+                          This is the network cost required to execute the decrease postion.{" "}
+                          <a
+                            href="https://gmxio.gitbook.io/gmx/trading#opening-a-position"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            More Info
+                          </a>
+                        </>
+                      );
+                    }}
+                  />
+                </div>
+              </div>
+            )}
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">Receive</div>
               <div className="align-right">

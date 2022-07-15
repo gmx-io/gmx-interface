@@ -7,7 +7,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   padding: 3.1rem;
-  grid-gap: 1.55rem;
+  grid-gap: 1.5rem;
   margin-top: 0.8rem;
 }
 
@@ -15,7 +15,7 @@
   width: 31rem;
 }
 .StakeModal .Modal-body {
-  font-size: 1.55rem;
+  font-size: 1.5rem;
 }
 
 .Stake-warning {

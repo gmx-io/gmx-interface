@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useCallback } from "react";
 import Footer from "../../Footer";
 import "./BuyGMX.css";
 
@@ -15,8 +15,6 @@ import avax30Icon from "../../img/ic_avax_30.svg";
 import gmxArbitrum from "../../img/ic_gmx_arbitrum.svg";
 import gmxAvax from "../../img/ic_gmx_avax.svg";
 import ohmArbitrum from "../../img/ic_olympus_arbitrum.svg";
-import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
-import avalanche16Icon from "../../img/ic_avalanche_16.svg";
 import Button from "../../components/Common/Button";
 
 export default function BuyGMX() {
@@ -33,10 +31,6 @@ export default function BuyGMX() {
     [chainId, active]
   );
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <div className="BuyGMXGLP default-container page-layout">
       <div className="BuyGMXGLP-container">
@@ -47,11 +41,8 @@ export default function BuyGMX() {
               <div className="Page-description">
                 ETH is needed on Arbitrum to purchase GMX.
                 <br />
-                To purchase GMX on{" "}
-                <span onClick={() => onNetworkSelect(AVALANCHE)}>
-                  Avalanche <img src={avalanche16Icon} alt="avalanche16Icon" />
-                </span>
-                , please change your network.
+                To purchase GMX on <span onClick={() => onNetworkSelect(AVALANCHE)}>Avalanche</span>, please change your
+                network.
               </div>
             </div>
           </div>
@@ -119,11 +110,8 @@ export default function BuyGMX() {
               <div className="Page-description">
                 Avax is needed on Avalanche to purchase GMX.
                 <br />
-                To purchase GMX on{" "}
-                <span onClick={() => onNetworkSelect(ARBITRUM)}>
-                  Arbitrum <img src={arbitrum16Icon} alt="arbitrum16Icon" />
-                </span>
-                , please change your network.
+                To purchase GMX on <span onClick={() => onNetworkSelect(ARBITRUM)}>Arbitrum</span>, please change your
+                network.
               </div>
             </div>
           </div>

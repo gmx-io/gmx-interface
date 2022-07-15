@@ -24,19 +24,25 @@ export default function Ecosystem() {
     {
       title: "GMX Governance",
       link: "https://gov.gmx.io/",
-      about: "GMX Governance page",
+      about: "GMX Governance Page",
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
       title: "GMX Stats",
       link: "https://stats.gmx.io/",
-      about: "GMX Stats page",
+      about: "GMX Stats Page",
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
       title: "GMX Proposals",
       link: "https://snapshot.org/#/gmx.eth",
       about: "GMX Proposals Voting page",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
+    {
+      title: "GMX Announcements",
+      link: "https://t.me/GMX_Announcements",
+      about: "GMX Announcements and Updates",
       chainIds: [ARBITRUM, AVALANCHE],
     },
   ];
@@ -75,11 +81,35 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM],
     },
     {
+      title: "GMX Referrals Dashboard",
+      link: "https://www.gmxreferrals.com/",
+      about: "Dashboard for GMX referral stats",
+      creatorLabel: "@s0berknight",
+      creatorLink: "https://twitter.com/s0berknight",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
+    {
       title: "GMX Analytics",
       link: "https://www.gmxstats.com/",
       about: "Financial reports and protocol analytics",
       creatorLabel: "@CryptoMessiah",
       creatorLink: "https://t.me/LarpCapital",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
+    {
+      title: "Blueberry Pulse",
+      link: "https://blueberrypulse.substack.com/",
+      about: "GMX Weekly Updates",
+      creatorLabel: "@puroscohiba",
+      creatorLink: "https://t.me/puroscohiba",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
+    {
+      title: "DegenClip",
+      link: "https://degenclip.com/gmx",
+      about: "Community curated tweet collection",
+      creatorLabel: "@ox21l",
+      creatorLink: "https://t.me/ox21l",
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
@@ -136,6 +166,14 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
+      title: "Rook",
+      link: "https://www.rook.fi/",
+      about: "MEV Optimizer",
+      announcementLabel: "https://twitter.com",
+      announcementLink: "https://twitter.com/Rook/status/1509613786600116251",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
+    {
       title: "Jones DAO",
       link: "https://jonesdao.io",
       about: "Decentralized Options Strategies",
@@ -160,6 +198,14 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM],
     },
     {
+      title: "Stabilize Protocol",
+      link: "https://www.stabilize.finance/",
+      about: "Yield Vaults",
+      announcementLabel: "https://twitter.com",
+      announcementLink: "https://twitter.com/StabilizePro/status/1532348674986082306",
+      chainIds: [ARBITRUM],
+    },
+    {
       title: "DODO",
       link: "https://dodoex.io/",
       about: "Decentralized Trading Protocol",
@@ -174,6 +220,29 @@ export default function Ecosystem() {
       announcementLabel: "https://twitter.com",
       announcementLink: "https://twitter.com/GMX_IO/status/1495780826016989191",
       chainIds: [ARBITRUM, AVALANCHE],
+    },
+  ];
+
+  const telegramGroups = [
+    {
+      title: "GMX",
+      link: "https://t.me/GMX_IO",
+      about: "Telegram Group",
+    },
+    {
+      title: "GMX (Chinese)",
+      link: "https://t.me/gmxch",
+      about: "Telegram Group (Chinese)",
+    },
+    {
+      title: "GMX (Portuguese)",
+      link: "https://t.me/GMX_Portuguese",
+      about: "Telegram Group (Portuguese)",
+    },
+    {
+      title: "GMX Trading Chat",
+      link: "https://t.me/gambittradingchat",
+      about: "GMX community discussion",
     },
   ];
 
@@ -302,6 +371,35 @@ export default function Ecosystem() {
                           {item.announcementLabel}
                         </a>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="Tab-title-section">
+            <div className="Page-title">Telegram Groups</div>
+            <div className="Page-description">Community-led Telegram groups.</div>
+          </div>
+          <div className="DashboardV2-projects">
+            {telegramGroups.map((item) => {
+              const linkLabel = item.linkLabel ? item.linkLabel : item.link;
+              return (
+                <div className="App-card">
+                  <div className="App-card-title">{item.title}</div>
+                  <div className="App-card-divider"></div>
+                  <div className="App-card-content">
+                    <div className="App-card-row">
+                      <div className="label">Link</div>
+                      <div>
+                        <a href={item.link} target="_blank" rel="noopener noreferrer">
+                          {linkLabel}
+                        </a>
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">About</div>
+                      <div>{item.about}</div>
                     </div>
                   </div>
                 </div>
