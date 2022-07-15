@@ -342,18 +342,6 @@ function FullApp() {
     }
   }, [query, history, location]);
 
-  useEffect(() => {
-    if (window.ethereum) {
-      // hack
-      // for some reason after network is changed to Avalanche through Metamask
-      // it triggers event with chainId = 1
-      // reload helps web3 to return correct chain data
-      // return window.ethereum.on("chainChanged", () => {
-      //   document.location.reload();
-      // });
-    }
-  }, []);
-
   const disconnectAccount = useCallback(() => {
     // only works with WalletConnect
     clearWalletConnectData();
