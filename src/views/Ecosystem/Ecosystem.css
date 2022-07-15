@@ -1,7 +1,7 @@
 .DashboardV2-projects {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: 1.55rem;
+  grid-gap: 1.5rem;
 }
 
 @media (max-width: 900px) {

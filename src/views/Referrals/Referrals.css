@@ -10,10 +10,10 @@
   margin-top: 3.1rem;
 }
 .mt-medium {
-  margin-top: 1.55rem;
+  margin-top: 1.5rem;
 }
 .referral-tab-container {
-  margin: 1.55rem auto 3.1rem auto;
+  margin: 1.5rem auto 3.1rem auto;
 }
 .referral-card {
   position: relative;
@@ -49,7 +49,7 @@
   font-size: 1.5rem;
   width: 100%;
   box-sizing: border-box;
-  margin-right: 1.55rem;
+  margin-right: 1.5rem;
 }
 .referral-body-container .list {
   margin-top: 3.1rem;
@@ -63,7 +63,7 @@
   justify-content: center;
 }
 .active-referral-code .edit span {
-  margin-right: 1.55rem;
+  margin-right: 1.5rem;
 }
 .active-referral-code .edit svg {
   cursor: pointer;
@@ -87,7 +87,7 @@
   font-size: 0;
 }
 .mb-sm {
-  margin-bottom: 1.55rem;
+  margin-bottom: 1.5rem;
 }
 .edit-referral-modal {
   width: 31rem;
@@ -114,7 +114,7 @@
   align-items: center;
   background: transparent;
   border: 1px solid var(--dark-blue-border);
-  padding: 0.775rem 1.55rem;
+  padding: 0.775rem 1.5rem;
   color: white;
   font-size: 1.4rem;
   border-radius: var(--border-radius-sm);
@@ -155,13 +155,13 @@
   width: 40rem;
 }
 .create-referrar-code form button {
-  margin-left: 1.55rem;
+  margin-left: 1.5rem;
 }
 
 .referral-stats {
   margin: 0 auto;
   display: grid;
-  grid-gap: 1.55rem;
+  grid-gap: 1.5rem;
   grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
 }
 
@@ -183,7 +183,7 @@
   font-weight: normal;
   letter-spacing: 0px;
   color: #ffffff;
-  margin-bottom: 1.55rem;
+  margin-bottom: 1.5rem;
   text-align: center;
 }
 .info-card .data {
@@ -191,7 +191,7 @@
   font-weight: normal;
   text-align: center;
   padding: 0;
-  margin: 1.55rem 0;
+  margin: 1.5rem 0;
 }
 .info-card .info-card-question-icon {
   vertical-align: middle;
@@ -248,7 +248,7 @@
 }
 .error {
   margin: 0;
-  padding: 0.775rem 0 1.55rem;
+  padding: 0.775rem 0 1.5rem;
   color: #fa3c58;
   font-size: 1.4rem;
 }
@@ -264,7 +264,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1.55rem;
+  padding: 1.5rem;
   border: 1px solid #1e2136;
   border-radius: 0.4rem;
   background: #16182e;
@@ -276,13 +276,13 @@
   grid-template-columns: 1fr auto;
   direction: rtl;
   font-size: 1.4rem;
-  margin-bottom: 1.55rem;
+  margin-bottom: 1.5rem;
 }
 
 @media (max-width: 800px) {
   .referral-table {
     width: auto;
-    margin-bottom: 1.55rem;
+    margin-bottom: 1.5rem;
   }
   .table-wrapper {
     overflow-x: auto;

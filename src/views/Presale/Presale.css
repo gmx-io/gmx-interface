@@ -3,12 +3,12 @@
   text-align: center;
   font-size: 4.65rem;
   padding-top: 6.2rem;
-  margin-bottom: 1.55rem;
+  margin-bottom: 1.5rem;
   font-weight: bold;
 }
 
 .Presale-card .Card-title {
-  margin-top: 1.55rem;
+  margin-top: 1.5rem;
   margin-bottom: 4.65rem;
 }
 
@@ -38,7 +38,20 @@
 
 .Presale-card-background {
   position: absolute;
-  background: linear-gradient(40deg, rgba(96,4,189,1) 0%, rgba(65,105,224,1) 22%, rgba(99,8,191,1) 23%, rgba(51,9,115,1) 37%, rgba(255,36,145,1) 38%, rgba(201,16,161,1) 50%, rgba(171,10,163,1) 59%, rgba(117,4,128,1) 67%, rgba(96,29,196,1) 68%, rgba(92,55,204,1) 84%, rgba(84,88,214,1) 100%);
+  background: linear-gradient(
+    40deg,
+    rgba(96, 4, 189, 1) 0%,
+    rgba(65, 105, 224, 1) 22%,
+    rgba(99, 8, 191, 1) 23%,
+    rgba(51, 9, 115, 1) 37%,
+    rgba(255, 36, 145, 1) 38%,
+    rgba(201, 16, 161, 1) 50%,
+    rgba(171, 10, 163, 1) 59%,
+    rgba(117, 4, 128, 1) 67%,
+    rgba(96, 29, 196, 1) 68%,
+    rgba(92, 55, 204, 1) 84%,
+    rgba(84, 88, 214, 1) 100%
+  );
   top: 0;
   left: 0;
   right: 0;

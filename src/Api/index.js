@@ -35,10 +35,14 @@ import {
   expandDecimals,
   getInfoTokens,
   helperToast,
+  SWAP,
+  INCREASE,
+  DECREASE,
 } from "../Helpers";
 import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
 
 import { nissohGraphClient, arbitrumGraphClient, avalancheGraphClient } from "./common";
+import { groupBy } from "lodash";
 export * from "./prices";
 
 const { AddressZero } = ethers.constants;
@@ -338,13 +342,14 @@ function invariant(condition, errorMsg) {
   }
 }
 
-export function useTrades(chainId, account) {
+export function useTrades(chainId, account, forSingleAccount) {
   const url =
     account && account.length > 0
       ? `${getServerBaseUrl(chainId)}/actions?account=${account}`
-      : `${getServerBaseUrl(chainId)}/actions`;
-  const { data: trades, mutate: updateTrades } = useSWR(url, {
-    dedupingInterval: 30000,
+      : !forSingleAccount && `${getServerBaseUrl(chainId)}/actions`;
+
+  const { data: trades, mutate: updateTrades } = useSWR(url && url, {
+    dedupingInterval: 10000,
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
@@ -789,6 +794,39 @@ export async function cancelIncreaseOrder(chainId, library, index, opts) {
   const orderBookAddress = getContract(chainId, "OrderBook");
   const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
 
+  return callContract(chainId, contract, method, params, opts);
+}
+
+export function handleCancelOrder(chainId, library, order, opts) {
+  let func;
+  if (order.type === SWAP) {
+    func = cancelSwapOrder;
+  } else if (order.type === INCREASE) {
+    func = cancelIncreaseOrder;
+  } else if (order.type === DECREASE) {
+    func = cancelDecreaseOrder;
+  }
+
+  return func(chainId, library, order.index, {
+    successMsg: "Order cancelled.",
+    failMsg: "Cancel failed.",
+    sentMsg: "Cancel submitted.",
+    pendingTxns: opts.pendingTxns,
+    setPendingTxns: opts.setPendingTxns,
+  });
+}
+
+export async function cancelMultipleOrders(chainId, library, allIndexes = [], opts) {
+  const ordersWithTypes = groupBy(allIndexes, (v) => v.split("-")[0]);
+  function getIndexes(key) {
+    if (!ordersWithTypes[key]) return;
+    return ordersWithTypes[key].map((d) => d.split("-")[1]);
+  }
+  // params order => swap, increase, decrease
+  const params = ["Swap", "Increase", "Decrease"].map((key) => getIndexes(key) || []);
+  const method = "cancelMultiple";
+  const orderBookAddress = getContract(chainId, "OrderBook");
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
   return callContract(chainId, contract, method, params, opts);
 }
 
