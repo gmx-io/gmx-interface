@@ -1,18 +1,21 @@
 import "./ModalViews.css";
 import { useEffect } from "react";
 import Modal from "../Modal/Modal";
+import Checkbox from "../Checkbox/Checkbox";
 
 export function RedirectPopupModal({
   redirectModalVisible,
   setRedirectModalVisible,
   appRedirectUrl,
   setRedirectPopupTimestamp,
+  setShouldHideRedirectModal,
+  shouldHideRedirectModal,
 }) {
   useEffect(() => {
-    if (redirectModalVisible) {
+    if (shouldHideRedirectModal) {
       setRedirectPopupTimestamp(Date.now());
     }
-  }, [setRedirectPopupTimestamp, redirectModalVisible]);
+  }, [setRedirectPopupTimestamp, shouldHideRedirectModal]);
   return (
     <Modal
       className="RedirectModal"
@@ -34,6 +37,11 @@ export function RedirectPopupModal({
       .
       <br />
       <br />
+      <div className="mb-sm">
+        <Checkbox isChecked={shouldHideRedirectModal} setIsChecked={setShouldHideRedirectModal}>
+          I agree, don't show for 30 days.
+        </Checkbox>
+      </div>
       <a href={appRedirectUrl} className="App-cta Exchange-swap-button">
         Agree
       </a>
