@@ -1,17 +1,21 @@
 import { useLocalStorage } from "react-use";
 import toast from "react-hot-toast";
-import eventsData from "../../config/events";
+import { homeEventsData, appEventsData } from "../../config/events";
 import { useEffect } from "react";
 import EventToast from "./EventToast";
-import { isFuture } from "date-fns";
+import { isFuture, parse } from "date-fns";
+import { isHomeSite } from "../../Helpers";
 
 function useEventToast() {
+  const isHome = isHomeSite();
   const [visited, setVisited] = useLocalStorage("visited-announcements", []);
 
   useEffect(() => {
+    const eventsData = isHome ? homeEventsData : appEventsData;
+
     eventsData
       .filter((event) => event.isActive)
-      .filter((event) => isFuture(new Date(event.validTill)))
+      .filter((event) => isFuture(parse(event.validTill + ", +00", "d MMM yyyy, H:mm, x", new Date())))
       .filter((event) => Array.isArray(visited) && !visited.includes(event.id))
       .forEach((event) => {
         toast.custom(
@@ -33,7 +37,7 @@ function useEventToast() {
           }
         );
       });
-  }, [visited, setVisited]);
+  }, [visited, setVisited, isHome]);
 }
 
 export default useEventToast;
