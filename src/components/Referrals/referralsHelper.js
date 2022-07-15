@@ -130,7 +130,6 @@ export function getCodeError(value) {
 }
 
 export function getTwitterShareUrl(referralCode) {
-  const message =
-    "Join me on the GMX Odyssey; you just need to mint GLP, spot swap, and open a leveraged trade to enter and win a prize!";
+  const message = "Trade with me on GMX with up to 30x leverage directly from your wallet! ";
   return `http://twitter.com/share?text=${message}&url=https://gmx.io?ref=${referralCode}&hashtags=GMX`;
 }
