@@ -12,14 +12,16 @@ import {
   getTokenInfo,
   getExchangeRate,
   getPositionKey,
+  getUsd,
 } from "../../Helpers.js";
-import { cancelSwapOrder, cancelIncreaseOrder, cancelDecreaseOrder } from "../../Api";
+import { handleCancelOrder } from "../../Api";
 import { getContract } from "../../Addresses";
 
 import Tooltip from "../Tooltip/Tooltip";
 import OrderEditor from "./OrderEditor";
 
 import "./OrdersList.css";
+import Checkbox from "../Checkbox/Checkbox.js";
 
 function getPositionForOrder(account, order, positionsMap) {
   const key = getPositionKey(account, order.collateralToken, order.indexToken, order.isLong);
@@ -41,28 +43,15 @@ export default function OrdersList(props) {
     hideActions,
     chainId,
     savedShouldDisableOrderValidation,
+    cancelOrderIdList,
+    setCancelOrderIdList,
   } = props;
 
   const [editingOrder, setEditingOrder] = useState(null);
 
   const onCancelClick = useCallback(
     (order) => {
-      let func;
-      if (order.type === SWAP) {
-        func = cancelSwapOrder;
-      } else if (order.type === INCREASE) {
-        func = cancelIncreaseOrder;
-      } else if (order.type === DECREASE) {
-        func = cancelDecreaseOrder;
-      }
-
-      return func(chainId, library, order.index, {
-        successMsg: "Order cancelled.",
-        failMsg: "Cancel failed.",
-        sentMsg: "Cancel submitted.",
-        pendingTxns,
-        setPendingTxns,
-      });
+      handleCancelOrder(chainId, library, order, { pendingTxns, setPendingTxns });
     },
     [library, pendingTxns, setPendingTxns, chainId]
   );
@@ -75,8 +64,27 @@ export default function OrdersList(props) {
   );
 
   const renderHead = useCallback(() => {
+    const isAllOrdersSelected = cancelOrderIdList?.length > 0 && cancelOrderIdList?.length === orders.length;
     return (
       <tr className="Exchange-list-header">
+        {orders.length > 0 && (
+          <th>
+            <div className="checkbox-inline ">
+              <Checkbox
+                isChecked={isAllOrdersSelected}
+                setIsChecked={() => {
+                  if (isAllOrdersSelected) {
+                    setCancelOrderIdList([]);
+                  } else {
+                    const allOrderIds = orders.map((o) => `${o.type}-${o.index}`);
+                    setCancelOrderIdList(allOrderIds);
+                  }
+                }}
+              />
+            </div>
+          </th>
+        )}
+
         <th>
           <div>Type</div>
         </th>
@@ -89,10 +97,9 @@ export default function OrdersList(props) {
         <th>
           <div>Mark Price</div>
         </th>
-        <th colSpan="2"></th>
       </tr>
     );
-  }, []);
+  }, [cancelOrderIdList, orders, setCancelOrderIdList]);
 
   const renderEmptyRow = useCallback(() => {
     if (orders && orders.length) {
@@ -130,7 +137,6 @@ export default function OrdersList(props) {
     if (!orders || !orders.length) {
       return null;
     }
-
     return orders.map((order) => {
       if (order.type === SWAP) {
         const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
@@ -143,9 +149,26 @@ export default function OrdersList(props) {
         );
 
         const markExchangeRate = getExchangeRate(fromTokenInfo, toTokenInfo);
+        const orderId = `${order.type}-${order.index}`;
 
         return (
-          <tr className="Exchange-list-item" key={`${order.type}-${order.index}`}>
+          <tr className="Exchange-list-item" key={orderId}>
+            <td>
+              <div className="checkbox-inline ">
+                <Checkbox
+                  isChecked={cancelOrderIdList?.includes(orderId)}
+                  setIsChecked={() => {
+                    setCancelOrderIdList((prevState) => {
+                      if (prevState.includes(orderId)) {
+                        return prevState.filter((i) => i !== orderId);
+                      } else {
+                        return prevState.concat(orderId);
+                      }
+                    });
+                  }}
+                />
+              </div>
+            </td>
             <td className="Exchange-list-item-type">Limit</td>
             <td>
               Swap{" "}
@@ -200,14 +223,54 @@ export default function OrdersList(props) {
           error = "Order size is bigger than position, will only be executable if position increases";
         }
       }
+      const orderId = `${order.type}-${order.index}`;
+      const orderText = (
+        <>
+          {order.type === INCREASE ? "Increase" : "Decrease"} {indexTokenSymbol} {order.isLong ? "Long" : "Short"}
+          &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
+          {error && <div className="Exchange-list-item-error">{error}</div>}
+        </>
+      );
 
       return (
         <tr className="Exchange-list-item" key={`${order.isLong}-${order.type}-${order.index}`}>
+          <td className="Exchange-list-item-type">
+            <div>
+              <Checkbox
+                isChecked={cancelOrderIdList?.includes(orderId)}
+                setIsChecked={() => {
+                  setCancelOrderIdList((prevState) => {
+                    if (prevState.includes(orderId)) {
+                      return prevState.filter((i) => i !== orderId);
+                    } else {
+                      return prevState.concat(orderId);
+                    }
+                  });
+                }}
+              />
+            </div>
+          </td>
           <td className="Exchange-list-item-type">{order.type === INCREASE ? "Limit" : "Trigger"}</td>
           <td>
-            {order.type === INCREASE ? "Increase" : "Decrease"} {indexTokenSymbol} {order.isLong ? "Long" : "Short"}
-            &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
-            {error && <div className="Exchange-list-item-error">{error}</div>}
+            {order.type === DECREASE ? (
+              orderText
+            ) : (
+              <Tooltip
+                handle={orderText}
+                position="right-bottom"
+                renderContent={() => {
+                  const collateralTokenInfo = getTokenInfo(infoTokens, order.purchaseToken);
+                  const collateralUSD = getUsd(order.purchaseTokenAmount, order.purchaseToken, false, infoTokens);
+                  return (
+                    <span>
+                      Collateral: ${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (
+                      {formatAmount(order.purchaseTokenAmount, collateralTokenInfo.decimals, 4, true)}{" "}
+                      {collateralTokenInfo.baseSymbol || collateralTokenInfo.symbol})
+                    </span>
+                  );
+                }}
+              />
+            )}
           </td>
           <td>
             {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
@@ -230,7 +293,17 @@ export default function OrdersList(props) {
         </tr>
       );
     });
-  }, [orders, renderActions, infoTokens, positionsMap, hideActions, chainId, account]);
+  }, [
+    orders,
+    renderActions,
+    infoTokens,
+    positionsMap,
+    hideActions,
+    chainId,
+    account,
+    cancelOrderIdList,
+    setCancelOrderIdList,
+  ]);
 
   const renderSmallList = useCallback(() => {
     if (!orders || !orders.length) {
@@ -306,6 +379,9 @@ export default function OrdersList(props) {
       const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
       const indexTokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol;
 
+      const collateralTokenInfo = getTokenInfo(infoTokens, order.purchaseToken);
+      const collateralUSD = getUsd(order.purchaseTokenAmount, order.purchaseToken, true, infoTokens);
+
       let error;
       if (order.type === DECREASE) {
         const positionForOrder = getPositionForOrder(account, order, positionsMap);
@@ -348,6 +424,16 @@ export default function OrdersList(props) {
                 />
               </div>
             </div>
+            {order.type === INCREASE && (
+              <div className="App-card-row">
+                <div className="label">Collateral</div>
+                <div>
+                  ${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (
+                  {formatAmount(order.purchaseTokenAmount, collateralTokenInfo.decimals, 4, true)}{" "}
+                  {collateralTokenInfo.baseSymbol || collateralTokenInfo.symbol})
+                </div>
+              </div>
+            )}
             {!hideActions && (
               <>
                 <div className="App-card-divider"></div>

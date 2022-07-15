@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Footer from "../../Footer";
 import "./Buy.css";
 import TokenCard from "../../components/TokenCard/TokenCard";
@@ -6,11 +6,7 @@ import buyGMXIcon from "../../img/buy_gmx.svg";
 import SEO from "../../components/Common/SEO";
 import { getPageTitle } from "../../Helpers";
 
-export default function BuyGMXGLP(props) {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
+export default function BuyGMXGLP() {
   return (
     <SEO title={getPageTitle("Buy GLP or GMX")}>
       <div className="BuyGMXGLP page-layout">
