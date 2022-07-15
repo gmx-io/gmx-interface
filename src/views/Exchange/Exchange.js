@@ -378,10 +378,6 @@ export const Exchange = forwardRef((props, ref) => {
   };
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
     if (new Date() > new Date("2021-11-30")) {
       setShowBanner(false);
     } else {
