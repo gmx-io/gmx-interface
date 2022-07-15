@@ -7,6 +7,7 @@ body,
   padding: 0;
   color: white;
   font-family: "Relative";
+  font-family: "Lexend Deca", sans-serif;
   letter-spacing: 0.5px;
   font-size: 10px;
   background-color: #101124;
@@ -391,6 +392,10 @@ button.btn-link:hover .logout-icon {
 }
 .font-base {
   font-size: 1.5rem;
+}
+.font-mono * {
+  font-family: "Lexend", sans-serif;
+  font-variation-settings: "LXND" 0;
 }
 
 .default-cursor.App-cta {
