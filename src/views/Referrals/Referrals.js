@@ -2,6 +2,7 @@ import "./Referrals.css";
 import React from "react";
 import { useLocalStorage } from "react-use";
 import { useWeb3React } from "@web3-react/core";
+import { useParams } from "react-router-dom";
 import SEO from "../../components/Common/SEO";
 import Tab from "../../components/Tab/Tab";
 import Loader from "../../components/Common/Loader";
@@ -25,13 +26,21 @@ import AffiliatesStats from "../../components/Referrals/AffiliatesStats";
 import TradersStats from "../../components/Referrals/TradersStats";
 import AddAffiliateCode from "../../components/Referrals/AddAffiliateCode";
 import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "../../components/Referrals/referralsHelper";
+import { ethers } from "ethers";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
 
 function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
-  const { active, account, library } = useWeb3React();
+  const { active, account: walletAccount, library } = useWeb3React();
+  const { account: queryAccount } = useParams();
+  let account;
+  if (queryAccount && ethers.utils.isAddress(queryAccount)) {
+    account = ethers.utils.getAddress(queryAccount);
+  } else {
+    account = walletAccount;
+  }
   const { chainId } = useChainId();
   const [activeTab, setActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, TRADERS);
   const { data: referralsData, loading } = useReferralsData(chainId, account);

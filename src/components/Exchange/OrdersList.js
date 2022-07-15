@@ -226,7 +226,7 @@ export default function OrdersList(props) {
       const orderId = `${order.type}-${order.index}`;
       const orderText = (
         <>
-          {order.type} {indexTokenSymbol} {order.isLong ? "Long" : "Short"}
+          {order.type === INCREASE ? "Increase" : "Decrease"} {indexTokenSymbol} {order.isLong ? "Long" : "Short"}
           &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
           {error && <div className="Exchange-list-item-error">{error}</div>}
         </>
@@ -395,7 +395,7 @@ export default function OrdersList(props) {
       return (
         <div key={`${order.isLong}-${order.type}-${order.index}`} className="App-card">
           <div className="App-card-title-small">
-            {order.type} {indexTokenSymbol} {order.isLong ? "Long" : "Short"}
+            {order.type === INCREASE ? "Increase" : "Decrease"} {indexTokenSymbol} {order.isLong ? "Long" : "Short"}
             &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
             {error && <div className="Exchange-list-item-error">{error}</div>}
           </div>
