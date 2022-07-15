@@ -42,11 +42,11 @@ function Jobs() {
                 <p className="subheading">What we are looking for:</p>
                 <ul>
                   <li>Required skills: HTML5, CSS3, React, Ethers, Web3 JS.</li>
+                  <li>Bonus skills: Node JS.</li>
+                  <li>5+ years of experience.</li>
                   <li>Previous DeFi experience and knowledge.</li>
                   <li>You speak fluent English and are available to start right away.</li>
                   <li>You are comfortable making changes to the interface following our current design guidelines.</li>
-                  <li>Bonus skills: Node JS.</li>
-                  <li>5+ years of experience.</li>
                 </ul>
                 <p>The salary is 60,000 to 120,000 USD + 1,000 to 3,000 GMX a year.</p>
                 <p className="jobs-contact">
