@@ -52,13 +52,13 @@ export default function Footer() {
           {fotterLinks[isHome ? "home" : "app"].map(({ external, text, link }) => {
             if (external) {
               return (
-                <a target="_blank" href={link} className="Footer-link" rel="noopener noreferrer">
+                <a key={link} target="_blank" href={link} className="Footer-link" rel="noopener noreferrer">
                   {text}
                 </a>
               );
             }
             return (
-              <NavLink to={link} className="Footer-link" activeClassName="active">
+              <NavLink key={link} to={link} className="Footer-link" activeClassName="active">
                 {text}
               </NavLink>
             );
