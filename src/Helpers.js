@@ -2711,3 +2711,7 @@ export function importImage(name) {
   }
   return tokenImage && tokenImage.default;
 }
+
+export function isValidTimestamp(timestamp) {
+  return new Date(timestamp).getTime() > 0;
+}
