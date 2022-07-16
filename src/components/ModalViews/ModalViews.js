@@ -18,7 +18,7 @@ export function RedirectPopupModal({
     } else {
       removeRedirectPopupTimestamp();
     }
-  }, [setRedirectPopupTimestamp, shouldHideRedirectModal]);
+  }, [setRedirectPopupTimestamp, shouldHideRedirectModal, removeRedirectPopupTimestamp]);
   return (
     <Modal
       className="RedirectModal"
