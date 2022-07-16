@@ -253,12 +253,12 @@ export default function Ecosystem() {
             {officialPages.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
               return (
-                <div className="App-card">
+                <div className="App-card" key={item.title}>
                   <div className="App-card-title">
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
@@ -289,12 +289,12 @@ export default function Ecosystem() {
             {communityProjects.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
               return (
-                <div className="App-card">
+                <div className="App-card" key={item.title}>
                   <div className="App-card-title">
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
@@ -333,12 +333,12 @@ export default function Ecosystem() {
             {integrations.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
               return (
-                <div className="App-card">
+                <div key={item.title} className="App-card">
                   <div className="App-card-title">
                     {item.title}
                     <div className="App-card-title-icon">
                       {item.chainIds.map((network) => (
-                        <img src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                        <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
                       ))}
                     </div>
                   </div>
@@ -377,7 +377,7 @@ export default function Ecosystem() {
             {telegramGroups.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
               return (
-                <div className="App-card">
+                <div className="App-card" key={item.title}>
                   <div className="App-card-title">{item.title}</div>
                   <div className="App-card-divider"></div>
                   <div className="App-card-content">

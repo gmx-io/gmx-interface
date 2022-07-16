@@ -6,8 +6,7 @@ body,
   margin: 0;
   padding: 0;
   color: white;
-  font-family: "Relative";
-  font-family: "Lexend Deca", sans-serif;
+  font-family: "Lato", sans-serif;
   letter-spacing: 0.5px;
   font-size: 10px;
   background-color: #101124;
@@ -15,7 +14,7 @@ body,
 
 * {
   box-sizing: border-box;
-  font-family: "Relative";
+  font-family: "Lato", sans-serif;
 }
 
 ::-webkit-scrollbar {
@@ -78,7 +77,7 @@ input {
   background: none;
   border: none;
   padding: 1.25rem;
-  font-family: "Relative";
+  font-family: "Lato", sans-serif;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -87,7 +86,7 @@ input {
 button {
   outline: none;
   cursor: pointer;
-  font-family: "Relative";
+  font-family: "Lato", sans-serif;
 }
 
 button:disabled,
@@ -183,7 +182,7 @@ a.plain {
   border-radius: 4px;
   font-size: 1.4rem;
   line-height: 2rem;
-  font-family: Relative;
+  font-family: "Lato", sans-serif;
   font-weight: normal;
   letter-spacing: 0px;
   color: #ffffff !important;
@@ -254,7 +253,7 @@ a.plain {
   border-radius: 4px;
   font-size: 1.4rem;
   line-height: 2rem;
-  font-family: Relative;
+  font-family: "Lato", sans-serif;
   font-weight: normal;
   letter-spacing: 0px;
   color: black;
@@ -392,10 +391,6 @@ button.btn-link:hover .logout-icon {
 }
 .font-base {
   font-size: 1.5rem;
-}
-.font-mono * {
-  font-family: "Lexend", sans-serif;
-  font-variation-settings: "LXND" 0;
 }
 
 .default-cursor.App-cta {

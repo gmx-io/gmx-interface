@@ -364,7 +364,7 @@ export default function PositionsList(props) {
           </div>
         </div>
       )}
-      <table className="Exchange-list large App-box font-mono">
+      <table className="Exchange-list large App-box">
         <tbody>
           <tr className="Exchange-list-header">
             <th>Position</th>
