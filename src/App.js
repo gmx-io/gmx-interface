@@ -345,6 +345,8 @@ function FullApp() {
 
   useEffect(() => {
     if (window.ethereum) {
+      // Attempt to auto-connect on mount
+      getInjectedHandler(activate)();
       // hack
       // for some reason after network is changed to Avalanche through Metamask
       // it triggers event with chainId = 1
@@ -353,7 +355,7 @@ function FullApp() {
         document.location.reload();
       });
     }
-  }, []);
+  }, [activate]);
 
   const disconnectAccount = useCallback(() => {
     // only works with WalletConnect
