@@ -1263,22 +1263,12 @@ export function formatDate(time) {
   return formatDateFn(time * 1000, "dd MMM yyyy");
 }
 
-export function hasMetaMaskWalletExtension() {
+export function hasEthereum() {
   return window.ethereum;
-}
-
-export function hasCoinBaseWalletExtension() {
-  const { ethereum } = window;
-
-  if (!ethereum?.providers && !ethereum?.isCoinbaseWallet) {
-    return false;
-  }
-  return window.ethereum.isCoinbaseWallet || ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
 }
 
 export function activateInjectedProvider(providerName) {
   const { ethereum } = window;
-
   if (!ethereum?.providers && !ethereum?.isCoinbaseWallet && !ethereum?.isMetaMask) {
     return undefined;
   }
@@ -1288,6 +1278,9 @@ export function activateInjectedProvider(providerName) {
     switch (providerName) {
       case "CoinBase":
         provider = ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
+        break;
+      case "Core":
+        provider = ethereum.providers.find(({ isAvalanche }) => isAvalanche);
         break;
       case "MetaMask":
       default:
