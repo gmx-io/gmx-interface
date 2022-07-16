@@ -104,6 +104,7 @@ import PageNotFound from "./views/PageNotFound/PageNotFound";
 import ReferralTerms from "./views/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "./views/TermsAndConditions/TermsAndConditions";
 import Jobs from "./views/Jobs/Jobs";
+import useScrollToTop from "./hooks/useScrollToTop";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -832,6 +833,9 @@ function FullApp() {
               <Route exact path="/referrals">
                 <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
               </Route>
+              <Route exact path="/referrals/:account">
+                <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+              </Route>
               <Route exact path="/nft_wallet">
                 <NftWallet />
               </Route>
@@ -964,6 +968,7 @@ function FullApp() {
 }
 
 function App() {
+  useScrollToTop();
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>

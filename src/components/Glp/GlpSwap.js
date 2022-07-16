@@ -14,7 +14,6 @@ import {
   helperToast,
   useLocalStorageByChainId,
   getTokenInfo,
-  // getChainName,
   useChainId,
   expandDecimals,
   fetcher,
@@ -22,7 +21,6 @@ import {
   formatAmount,
   formatAmountFree,
   formatKeyAmount,
-  // formatDateTime,
   getBuyGlpToAmount,
   getBuyGlpFromAmount,
   getSellGlpFromAmount,
@@ -397,10 +395,6 @@ export default function GlpSwap(props) {
     usdgSupply,
     totalTokenWeights,
   ]);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   const switchSwapOption = (hash = "") => {
     history.push(`${history.location.pathname}#${hash}`);
