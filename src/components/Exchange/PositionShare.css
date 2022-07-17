@@ -1,0 +1,21 @@
+.position-share .Modal-content {
+  min-width: 364px;
+  width: 364px;
+}
+
+.position-share-img {
+  border: 1px solid var(--dark-blue-border);
+  border-radius: 16px;
+  aspect-ratio: 1200 / 675;
+  background: url(../../img/position-share-bg.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 100%;
+  height: 100%;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+}

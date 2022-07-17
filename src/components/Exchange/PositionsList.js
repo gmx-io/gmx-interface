@@ -23,6 +23,7 @@ import {
   INCREASE,
   DECREASE,
 } from "../../Helpers";
+import SharePositionModal from "./SharePositionModal";
 
 const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -91,6 +92,7 @@ export default function PositionsList(props) {
   const [isPositionEditorVisible, setIsPositionEditorVisible] = useState(undefined);
   const [isPositionSellerVisible, setIsPositionSellerVisible] = useState(undefined);
   const [collateralTokenAddress, setCollateralTokenAddress] = useState(undefined);
+  const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [ordersToaOpen, setOrdersToaOpen] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
 
@@ -136,6 +138,19 @@ export default function PositionsList(props) {
         approvePositionRouter={approvePositionRouter}
         chainId={chainId}
       />
+      {ordersToaOpen && (
+        <OrdersToa
+          setIsVisible={setOrdersToaOpen}
+          approveOrderBook={approveOrderBook}
+          isPluginApproving={isPluginApproving}
+        />
+      )}
+      {isPositionShareModalOpen && (
+        <SharePositionModal
+          setIsPositionShareModalOpen={setIsPositionShareModalOpen}
+          isPositionShareModalOpen={isPositionShareModalOpen}
+        />
+      )}
       {ordersToaOpen && (
         <OrdersToa
           setIsVisible={setOrdersToaOpen}
@@ -357,6 +372,15 @@ export default function PositionsList(props) {
                     <button className="App-button-option App-card-option" onClick={() => sellPosition(position)}>
                       Close
                     </button>
+                    <td>
+                      <button
+                        className="Exchange-list-action"
+                        onClick={() => setIsPositionShareModalOpen(true)}
+                        disabled={isPositionShareModalOpen}
+                      >
+                        Share
+                      </button>
+                    </td>
                   </div>
                 </div>
               );
@@ -574,6 +598,15 @@ export default function PositionsList(props) {
                     disabled={position.size.eq(0)}
                   >
                     Close
+                  </button>
+                </td>
+                <td>
+                  <button
+                    className="Exchange-list-action"
+                    onClick={() => setIsPositionShareModalOpen(true)}
+                    disabled={isPositionShareModalOpen}
+                  >
+                    Share
                   </button>
                 </td>
               </tr>
