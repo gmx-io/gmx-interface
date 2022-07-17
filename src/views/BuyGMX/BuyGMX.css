@@ -148,9 +148,8 @@
 
 .card-title {
   font-size: 3.41rem;
-  font-weight: 500;
   margin-bottom: 1.5rem;
-  font-family: "Relative Bold";
+  font-weight: bold;
 }
 
 @media (max-width: 800px) {
