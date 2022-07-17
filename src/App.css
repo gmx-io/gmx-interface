@@ -490,7 +490,8 @@ button.App-connect-wallet:hover {
   font-size: 3.4rem;
   font-weight: 500;
   margin-bottom: 0.8rem;
-  font-family: "Relative Bold";
+  font-family: "Lato", sans-serif;
+  font-weight: bold;
 }
 
 .Page-description {
