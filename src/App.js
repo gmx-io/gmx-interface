@@ -103,6 +103,7 @@ import PositionRouter from "./abis/PositionRouter.json";
 import PageNotFound from "./views/PageNotFound/PageNotFound";
 import ReferralTerms from "./views/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "./views/TermsAndConditions/TermsAndConditions";
+import Jobs from "./views/Jobs/Jobs";
 import useScrollToTop from "./hooks/useScrollToTop";
 
 if ("ethereum" in window) {
@@ -180,7 +181,7 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
           About
         </a>
       </div>
-      {small && (
+      {small && !isHomeSite() && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
           <a href="#" onClick={openSettings}>
@@ -345,6 +346,10 @@ function FullApp() {
 
   useEffect(() => {
     if (window.ethereum) {
+      // Attempt to auto-connect on mount
+      if (!isHomeSite()) {
+        getInjectedHandler(activate)();
+      }
       // hack
       // for some reason after network is changed to Avalanche through Metamask
       // it triggers event with chainId = 1
@@ -353,7 +358,7 @@ function FullApp() {
         document.location.reload();
       });
     }
-  }, []);
+  }, [activate]);
 
   const disconnectAccount = useCallback(() => {
     // only works with WalletConnect
@@ -767,6 +772,9 @@ function FullApp() {
               <Route exact path="/referral-terms">
                 <ReferralTerms />
               </Route>
+              <Route exact path="/jobs">
+                <Jobs />
+              </Route>
               <Route exact path="/terms-and-conditions">
                 <TermsAndConditions />
               </Route>
@@ -814,6 +822,9 @@ function FullApp() {
                   setPendingTxns={setPendingTxns}
                   connectWallet={connectWallet}
                 />
+              </Route>
+              <Route exact path="/jobs">
+                <Jobs />
               </Route>
               <Route exact path="/buy_gmx">
                 <BuyGMX />

@@ -1,5 +1,4 @@
 .card {
-  padding: 1.5rem;
   border: 1px solid #1e2136;
   border-radius: 0.4rem;
   background: #16182e;
@@ -11,17 +10,16 @@
   font-weight: normal;
   letter-spacing: 0px;
   color: #ffffff;
-  margin-bottom: 0.775rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin: 1.5rem;
 }
 
 .card-divider {
   height: 1px;
   background: #23263b;
-  margin: 1.085rem -1.5rem;
 }
-
 .card-body {
+  padding: 1.5rem;
 }

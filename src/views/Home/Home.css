@@ -447,7 +447,8 @@
     grid-template-columns: 1fr;
     grid-row-gap: 1.5rem;
   }
-  .Home-token-card-option-action a {
+  .Home-token-card-option-action a,
+  .Home-token-card-option-action .a {
     justify-content: center;
     display: inline-block;
   }
@@ -462,7 +463,8 @@
   .Home-token-card-option-action > .read-more {
     display: inline-block;
   }
-  .Home-token-card-option-action > .buy a:first-child {
+  .Home-token-card-option-action > .buy a:first-child,
+  .Home-token-card-option-action > .buy .a:first-child {
     margin-right: 0;
   }
 }
