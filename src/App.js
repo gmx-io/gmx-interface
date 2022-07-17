@@ -347,7 +347,9 @@ function FullApp() {
   useEffect(() => {
     if (window.ethereum) {
       // Attempt to auto-connect on mount
-      getInjectedHandler(activate)();
+      if (!isHomeSite()) {
+        getInjectedHandler(activate)();
+      }
       // hack
       // for some reason after network is changed to Avalanche through Metamask
       // it triggers event with chainId = 1
