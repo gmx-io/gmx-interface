@@ -131,5 +131,5 @@ export function getCodeError(value) {
 
 export function getTwitterShareUrl(referralCode) {
   const message = "Trade with me on GMX with up to 30x leverage directly from your wallet! ";
-  return `http://twitter.com/share?text=${message}&url=https://gmx.io?ref=${referralCode}&hashtags=GMX`;
+  return `http://twitter.com/share?text=${message}&url=https://gmx.io?ref=${referralCode}`;
 }
