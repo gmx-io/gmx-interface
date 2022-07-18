@@ -15,28 +15,18 @@ function Jobs() {
         <div className="section-title-block">
           <div className="section-title-icon"></div>
           <div className="section-title-content">
-            <div className="Page-title">GMX Job Openings</div>
-            <div className="Page-description">Interested in working at GMX? Contact us.</div>
+            <div className="Page-title">Jobs</div>
+            <div className="Page-description">Job openings at GMX.</div>
           </div>
         </div>
         <div className="jobs-page-body">
-          <Card title="Senior front-end developer (full time position)">
+          <Card title="Senior front-end developer (Full-time position)">
             <div className="body-para">
               <p className="subheading">What you will do:</p>
               <ul>
-                <li>
-                  Work closely with the rest of the GMX team in the main GMX front-ends (including{" "}
-                  <a target="_blank" href="https://stats.gmx.io" rel="noopener noreferrer">
-                    stats.gmx.io
-                  </a>
-                  ).
-                </li>
-                <li>Contribute with your experience and knowledge to its architecture.</li>
-                <li>
-                  Potential to work on other components, like in the subgraph repository. Our team is small, so there is
-                  an opportunity to build new things and grow together.
-                </li>
-                <li>We don't have strict working hours or bureaucracy.</li>
+                <li>Work closely with the GMX team on the GMX front-end website.</li>
+                <li>Collaborate and discuss features to be worked on.</li>
+                <li>Remote full-time position, flexible working hours.</li>
               </ul>
               <div className="mt-lg">
                 <p className="subheading">What we are looking for:</p>
@@ -45,12 +35,12 @@ function Jobs() {
                   <li>Bonus skills: Node JS.</li>
                   <li>5+ years of experience.</li>
                   <li>Previous DeFi experience and knowledge.</li>
-                  <li>You speak fluent English and are available to start right away.</li>
-                  <li>You are comfortable making changes to the interface following our current design guidelines.</li>
+                  <li>Must speak fluent English and available to start right away.</li>
+                  <li>Comfortable making changes to the interface following our current design guidelines.</li>
                 </ul>
                 <p>The salary is 60,000 to 120,000 USD + 1,000 to 3,000 GMX a year.</p>
                 <p className="jobs-contact">
-                  Please get in touch with{" "}
+                  If the job suits you, please get in touch with{" "}
                   <a target="_blank" href="mailto:jobs@gmx.io" rel="noopener noreferrer">
                     jobs@gmx.io
                   </a>{" "}

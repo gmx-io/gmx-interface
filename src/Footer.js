@@ -9,11 +9,11 @@ import mediumIcon from "./img/ic_medium.svg";
 import { NavLink } from "react-router-dom";
 import { isHomeSite, getAppBaseUrl } from "./Helpers";
 
-const fotterLinks = {
+const footerLinks = {
   home: [
-    { text: "Media Kit", link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
     { text: "Terms and Conditions", link: "/terms-and-conditions" },
     { text: "Referral Terms", link: "/referral-terms" },
+    { text: "Media Kit", link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
     { text: "Jobs", link: getAppBaseUrl() + "/jobs", external: true },
   ],
   app: [
@@ -49,7 +49,7 @@ export default function Footer() {
           </a>
         </div>
         <div className="Footer-links">
-          {fotterLinks[isHome ? "home" : "app"].map(({ external, text, link }) => {
+          {footerLinks[isHome ? "home" : "app"].map(({ external, text, link }) => {
             if (external) {
               return (
                 <a key={link} target="_blank" href={link} className="Footer-link" rel="noopener noreferrer">
