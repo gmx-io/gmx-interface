@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
+import useScrollToTop from "./hooks/useScrollToTop";
 
 import { Switch, Route, NavLink, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
 
@@ -103,7 +104,7 @@ import PositionRouter from "./abis/PositionRouter.json";
 import PageNotFound from "./views/PageNotFound/PageNotFound";
 import ReferralTerms from "./views/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "./views/TermsAndConditions/TermsAndConditions";
-import useScrollToTop from "./hooks/useScrollToTop";
+import Jobs from "./views/Jobs/Jobs";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -180,7 +181,7 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
           About
         </a>
       </div>
-      {small && (
+      {small && !isHomeSite() && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
           <a href="#" onClick={openSettings}>
@@ -814,6 +815,9 @@ function FullApp() {
                   setPendingTxns={setPendingTxns}
                   connectWallet={connectWallet}
                 />
+              </Route>
+              <Route exact path="/jobs">
+                <Jobs />
               </Route>
               <Route exact path="/buy_gmx">
                 <BuyGMX />
