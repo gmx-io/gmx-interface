@@ -417,17 +417,8 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
           return;
         }
 
-        if (chainId === ARBITRUM) {
-          const gasPrice = await provider.getGasPrice();
-          resolve(gasPrice);
-          return;
-        }
-
-        if (chainId === AVALANCHE) {
-          const feeData = await provider.getFeeData();
-          resolve(feeData.maxFeePerGas);
-          return;
-        }
+        const gasPrice = await provider.getGasPrice();
+        resolve(gasPrice);
       });
     },
   });
@@ -444,7 +435,7 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
 
   // multiplier for Avalanche is just the average gas usage
   if (chainId === AVALANCHE) {
-    multiplier = 750000;
+    multiplier = 700000;
   }
 
   let finalExecutionFee = minExecutionFee;
