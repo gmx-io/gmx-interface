@@ -36,7 +36,7 @@ import {
   getTimeRemaining,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
-import { createDecreaseOrder, callContract, useHasOutdatedUi, useMinExecutionFee } from "../../Api";
+import { createDecreaseOrder, callContract, useHasOutdatedUi } from "../../Api";
 import { getContract } from "../../Addresses";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Checkbox from "../Checkbox/Checkbox";
@@ -75,7 +75,6 @@ function getTokenAmount(usdAmount, tokenAddress, max, infoTokens) {
 
 export default function PositionSeller(props) {
   const {
-    active,
     pendingPositions,
     setPendingPositions,
     positionsMap,
@@ -101,6 +100,9 @@ export default function PositionSeller(props) {
     approvePositionRouter,
     isHigherSlippageAllowed,
     setIsHigherSlippageAllowed,
+    minExecutionFee,
+    minExecutionFeeUSD,
+    minExecutionFeeErrorMessage,
   } = props;
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true);
@@ -116,8 +118,6 @@ export default function PositionSeller(props) {
   if (isHigherSlippageAllowed) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
-
-  const { minExecutionFee } = useMinExecutionFee(library, active, chainId);
 
   const orderOptions = [MARKET, STOP];
   let [orderOption, setOrderOption] = useState(MARKET);
@@ -761,6 +761,9 @@ export default function PositionSeller(props) {
           {renderMinProfitWarning()}
           {shouldShowExistingOrderWarning && renderExistingOrderWarning()}
           <div className="PositionEditor-info-box">
+            {minExecutionFeeErrorMessage && (
+              <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>
+            )}
             {hasPendingProfit && orderOption !== STOP && (
               <div className="PositionEditor-accept-profit-warning">
                 <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
@@ -922,6 +925,9 @@ export default function PositionSeller(props) {
                     renderContent={() => {
                       return (
                         <>
+                          Network fee: {formatAmount(minExecutionFee, 18, 4)} {nativeTokenSymbol} ($
+                          {formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})<br />
+                          <br />
                           This is the network cost required to execute the decrease postion.{" "}
                           <a
                             href="https://gmxio.gitbook.io/gmx/trading#execution-fee"

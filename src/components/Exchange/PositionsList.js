@@ -180,6 +180,9 @@ export default function PositionsList(props) {
           approvePositionRouter={approvePositionRouter}
           isHigherSlippageAllowed={isHigherSlippageAllowed}
           setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
+          minExecutionFee={minExecutionFee}
+          minExecutionFeeUSD={minExecutionFeeUSD}
+          minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
         />
       )}
       {positions && (
