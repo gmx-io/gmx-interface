@@ -176,14 +176,15 @@ export default function ConfirmationBox(props) {
   }, [orders, chainId, isLong, toToken.address, toToken.isNative]);
 
   const decreaseOrdersThatWillBeExecuted = useMemo(() => {
+    if (isSwap) return [];
     return existingTriggerOrders.filter((order) => {
       if (order.triggerAboveThreshold) {
-        return existingPosition.markPrice.gte(order.triggerPrice);
+        return existingPosition?.markPrice.gte(order.triggerPrice);
       } else {
-        return existingPosition.markPrice.lte(order.triggerPrice);
+        return existingPosition?.markPrice.lte(order.triggerPrice);
       }
     });
-  }, [existingPosition, existingTriggerOrders]);
+  }, [existingPosition, existingTriggerOrders, isSwap]);
 
   const getError = () => {
     if (!isSwap && hasExistingPosition && !isMarketOrder) {
