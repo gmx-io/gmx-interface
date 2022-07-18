@@ -81,6 +81,14 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM],
     },
     {
+      title: "GMX Referrals Dashboard",
+      link: "https://www.gmxreferrals.com/",
+      about: "Dashboard for GMX referral stats",
+      creatorLabel: "@s0berknight",
+      creatorLink: "https://twitter.com/s0berknight",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
+    {
       title: "GMX Analytics",
       link: "https://www.gmxstats.com/",
       about: "Financial reports and protocol analytics",

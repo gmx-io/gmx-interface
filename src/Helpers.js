@@ -2715,3 +2715,33 @@ export function importImage(name) {
 export function isValidTimestamp(timestamp) {
   return new Date(timestamp).getTime() > 0;
 }
+
+export function getPositionForOrder(account, order, positionsMap) {
+  const key = getPositionKey(account, order.collateralToken, order.indexToken, order.isLong);
+  const position = positionsMap[key];
+  return position && position.size && position.size.gt(0) ? position : null;
+}
+
+export function getOrderError(account, order, positionsMap, position) {
+  if (order.type !== DECREASE) {
+    return;
+  }
+
+  const positionForOrder = position ? position : getPositionForOrder(account, order, positionsMap);
+
+  if (!positionForOrder) {
+    return "No open position, order cannot be executed unless a position is opened";
+  }
+  if (positionForOrder.size.lt(order.sizeDelta)) {
+    return "Order size is bigger than position, will only be executable if position increases";
+  }
+
+  if (positionForOrder.size.gt(order.sizeDelta)) {
+    if (positionForOrder.size.sub(order.sizeDelta).lt(positionForOrder.collateral.sub(order.collateralDelta))) {
+      return "Order cannot be executed as it would reduce the position's leverage below 1";
+    }
+    if (positionForOrder.size.sub(order.sizeDelta).lt(expandDecimals(5, USD_DECIMALS))) {
+      return "Order cannot be executed as the remaining position would be smaller than $5.00";
+    }
+  }
+}
