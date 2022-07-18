@@ -80,7 +80,7 @@ const getChartOptions = (width, height) => ({
   layout: {
     backgroundColor: "rgba(255, 255, 255, 0)",
     textColor: "#ccc",
-    fontFamily: "Inter",
+    fontFamily: "Open Sans",
   },
   localization: {
     // https://github.com/tradingview/lightweight-charts/blob/master/docs/customization.md#time-format
