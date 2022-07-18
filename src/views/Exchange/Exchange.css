@@ -391,7 +391,9 @@
   overscroll-behavior: smooth;
   max-height: calc(80vh - 8.525rem);
   overflow-y: auto;
-  padding-right: 0.5rem;
+  padding-right: 1.25rem;
+  margin: 1.5rem;
+  margin-right: 0.25rem;
 }
 
 .PositionEditor .Tab {
