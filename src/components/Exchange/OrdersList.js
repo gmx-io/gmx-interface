@@ -6,12 +6,13 @@ import {
   DECREASE,
   USD_DECIMALS,
   formatAmount,
+  getOrderError,
   TRIGGER_PREFIX_ABOVE,
   TRIGGER_PREFIX_BELOW,
   getExchangeRateDisplay,
   getTokenInfo,
   getExchangeRate,
-  getPositionKey,
+  getPositionForOrder,
   getUsd,
 } from "../../Helpers.js";
 import { handleCancelOrder } from "../../Api";
@@ -22,30 +23,6 @@ import OrderEditor from "./OrderEditor";
 
 import "./OrdersList.css";
 import Checkbox from "../Checkbox/Checkbox.js";
-
-function getPositionForOrder(account, order, positionsMap) {
-  const key = getPositionKey(account, order.collateralToken, order.indexToken, order.isLong);
-  const position = positionsMap[key];
-  return position && position.size && position.size.gt(0) ? position : null;
-}
-
-function getOrderError(account, order, positionsMap) {
-  if (order.type !== DECREASE) {
-    return;
-  }
-
-  const positionForOrder = getPositionForOrder(account, order, positionsMap);
-  if (!positionForOrder) {
-    return "No open position, order cannot be executed unless a position is opened";
-  } else if (positionForOrder.size.lt(order.sizeDelta)) {
-    return "Order size is bigger than position, will only be executable if position increases";
-  } else if (
-    positionForOrder.size.gt(order.sizeDelta) &&
-    positionForOrder.size.sub(order.sizeDelta).lt(positionForOrder.collateral.sub(order.collateralDelta))
-  ) {
-    return "Order size is incorrect, will only be executable if position changes";
-  }
-}
 
 export default function OrdersList(props) {
   const {
