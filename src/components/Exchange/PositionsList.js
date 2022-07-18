@@ -15,6 +15,7 @@ import {
   getUsd,
   getLeverage,
   formatAmount,
+  getOrderError,
   USD_DECIMALS,
   FUNDING_RATE_PRECISION,
   SWAP,
@@ -24,7 +25,7 @@ import {
   DECREASE,
 } from "../../Helpers";
 
-const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
+const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
     return [];
   }
@@ -47,6 +48,7 @@ const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
       }
     })
     .map((order) => {
+      order.error = getOrderError(account, order, undefined, position);
       if (order.type === DECREASE && order.sizeDelta.gt(position.size)) {
         order.error = "Order size is bigger than position, will only be executable if position increases";
       }
@@ -186,7 +188,7 @@ export default function PositionsList(props) {
               <div className="Exchange-empty-positions-list-note App-card">No open positions</div>
             )}
             {positions.map((position) => {
-              const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
+              const positionOrders = getOrdersForPosition(account, position, orders, nativeTokenAddress);
               const liquidationPrice = getLiquidationPrice(position);
               const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
               const positionDelta =
@@ -393,7 +395,7 @@ export default function PositionsList(props) {
           )}
           {positions.map((position) => {
             const liquidationPrice = getLiquidationPrice(position) || bigNumberify(0);
-            const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
+            const positionOrders = getOrdersForPosition(account, position, orders, nativeTokenAddress);
             const hasOrderError = !!positionOrders.find((order) => order.error);
             const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
             const positionDelta =
