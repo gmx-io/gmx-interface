@@ -695,15 +695,14 @@ export default function ConfirmationBox(props) {
             <div className="PositionEditor-allow-higher-slippage">
               <ExchangeInfoRow label="Execution Fee">
                 <Tooltip
-                  handle={`${formatAmount(minExecutionFee, 18, 4)} ${nativeTokenSymbol} ($${formatAmount(
-                    minExecutionFeeUSD,
-                    USD_DECIMALS,
-                    2
-                  )})`}
+                  handle={`${formatAmount(minExecutionFee, 18, 4)} ${nativeTokenSymbol}`}
                   position="right-top"
                   renderContent={() => {
                     return (
                       <>
+                        Network fee: {formatAmount(minExecutionFee, 18, 4)} {nativeTokenSymbol} ($
+                        {formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})<br />
+                        <br />
                         This is the network cost required to execute the postion.{" "}
                         <a
                           href="https://gmxio.gitbook.io/gmx/trading#execution-fee"

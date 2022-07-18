@@ -451,7 +451,7 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
   const isFeeHigh = finalExecutionFeeUSD?.gt(expandDecimals(HIGH_EXECUTION_FEES_MAP[chainId], USD_DECIMALS));
   const errorMessage =
     isFeeHigh &&
-    `The cost to send transactions is high at the moment, please check the "Execution Fee" value before proceeding.`;
+    `The network cost to send transactions is high at the moment, please check the "Execution Fee" value before proceeding.`;
 
   return {
     minExecutionFee: finalExecutionFee,
