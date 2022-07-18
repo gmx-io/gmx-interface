@@ -490,7 +490,6 @@ button.App-connect-wallet:hover {
   font-size: 3.4rem;
   font-weight: 500;
   margin-bottom: 0.8rem;
-  font-family: "Lato", sans-serif;
   font-weight: bold;
 }
 
@@ -831,7 +830,6 @@ button.App-button-option {
   border-radius: 4px;
   font-size: 1.4rem;
   line-height: 2rem;
-  font-family: Relative;
   font-weight: normal;
   letter-spacing: 0px;
   color: white;
