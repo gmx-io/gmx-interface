@@ -75,6 +75,7 @@ import { FaTimes } from "react-icons/fa";
 import { FiX } from "react-icons/fi";
 
 import "./Shared.css";
+import "./Font.css";
 import "./App.css";
 import "./Input.css";
 import "./AppOrder.css";
