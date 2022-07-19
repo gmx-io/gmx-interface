@@ -141,6 +141,11 @@ export const GLPPOOLCOLORS = {
   LINK: "#3256D6",
 };
 
+export const HIGH_EXECUTION_FEES_MAP = {
+  [ARBITRUM]: 3, // 3 USD
+  [AVALANCHE]: 3, // 3 USD
+};
+
 export const ICONLINKS = {
   42161: {
     GMX: {

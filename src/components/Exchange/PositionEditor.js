@@ -28,6 +28,8 @@ import { callContract } from "../../Api";
 
 import PositionRouter from "../../abis/PositionRouter.json";
 import Token from "../../abis/Token.json";
+import Tooltip from "../Tooltip/Tooltip";
+import { getConstant } from "../../Constants";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -57,6 +59,9 @@ export default function PositionEditor(props) {
     isPositionRouterApproving,
     approvePositionRouter,
     chainId,
+    minExecutionFee,
+    minExecutionFeeUSD,
+    minExecutionFeeErrorMessage,
   } = props;
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const position = positionsMap && positionKey ? positionsMap[positionKey] : undefined;
@@ -76,9 +81,9 @@ export default function PositionEditor(props) {
     }
   );
 
-  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
-    fetcher: fetcher(library, PositionRouter),
-  });
+  // const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
+  //   fetcher: fetcher(library, PositionRouter),
+  // });
 
   const isDeposit = option === DEPOSIT;
   const isWithdrawal = option === WITHDRAW;
@@ -430,6 +435,7 @@ export default function PositionEditor(props) {
 
     withdrawCollateral();
   };
+  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
 
   return (
     <div className="PositionEditor">
@@ -483,6 +489,9 @@ export default function PositionEditor(props) {
                   </div>
                 </div>
                 <div className="PositionEditor-info-box">
+                  {minExecutionFeeErrorMessage && (
+                    <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>
+                  )}
                   <div className="Exchange-info-row">
                     <div className="Exchange-info-label">Size</div>
                     <div className="align-right">{formatAmount(position.size, USD_DECIMALS, 2, true)} USD</div>
@@ -539,6 +548,34 @@ export default function PositionEditor(props) {
                           ${formatAmount(nextLiquidationPrice, USD_DECIMALS, 2, true)}
                         </div>
                       )}
+                    </div>
+                  </div>
+                  <div className="Exchange-info-row">
+                    <div className="Exchange-info-label">Execution Fee</div>
+                    <div className="align-right">
+                      <Tooltip
+                        handle={`${formatAmount(minExecutionFee, 18, 4)} ${nativeTokenSymbol}`}
+                        position="right-top"
+                        renderContent={() => {
+                          return (
+                            <>
+                              Network fee: {formatAmount(minExecutionFee, 18, 4)} {nativeTokenSymbol} ($
+                              {formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})<br />
+                              <br />
+                              This is the network cost required to execute the {isDeposit
+                                ? "deposit"
+                                : "withdrawal"}.{" "}
+                              <a
+                                href="https://gmxio.gitbook.io/gmx/trading#execution-fee"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                More Info
+                              </a>
+                            </>
+                          );
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
