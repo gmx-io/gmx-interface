@@ -45,6 +45,7 @@ import {
   REFERRAL_CODE_QUERY_PARAM,
   isDevelopment,
   DISABLE_ORDER_VALIDATION_KEY,
+  isValidTimestamp,
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
@@ -104,6 +105,9 @@ import PositionRouter from "./abis/PositionRouter.json";
 import PageNotFound from "./views/PageNotFound/PageNotFound";
 import ReferralTerms from "./views/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "./views/TermsAndConditions/TermsAndConditions";
+import { useLocalStorage } from "react-use";
+import { RedirectPopupModal } from "./components/ModalViews/RedirectModal";
+import { REDIRECT_POPUP_TIMESTAMP_KEY } from "./utils/constants";
 import Jobs from "./views/Jobs/Jobs";
 
 if ("ethereum" in window) {
@@ -410,6 +414,9 @@ function FullApp() {
 
   const [walletModalVisible, setWalletModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
+  const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
+  const [redirectPopupTimestamp, setRedirectPopupTimestamp, removeRedirectPopupTimestamp] =
+    useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
   const [selectedToPage, setSelectedToPage] = useState("");
   const connectWallet = () => setWalletModalVisible(true);
 
@@ -518,13 +525,25 @@ function FullApp() {
 
   const HeaderLink = ({ isHomeLink, className, exact, to, children }) => {
     const isOnHomePage = location.pathname === "/";
+    const thirtyDays = 1000 * 60 * 60 * 24 * 30;
+    const expiryTime = redirectPopupTimestamp + thirtyDays;
+    const shouldShowRedirectModal = !isValidTimestamp(redirectPopupTimestamp) || Date.now() > expiryTime;
 
     if (isHome && !(isHomeLink && !isOnHomePage)) {
-      return (
-        <div className={cx("a", className, { active: isHomeLink })} onClick={() => showRedirectModal(to)}>
-          {children}
-        </div>
-      );
+      if (shouldShowRedirectModal) {
+        return (
+          <div className={cx("a", className, { active: isHomeLink })} onClick={() => showRedirectModal(to)}>
+            {children}
+          </div>
+        );
+      } else {
+        const baseUrl = getAppBaseUrl();
+        return (
+          <a className={cx("a", className, { active: isHomeLink })} href={baseUrl + to}>
+            {children}
+          </a>
+        );
+      }
     }
 
     if (isHomeLink) {
@@ -862,36 +881,15 @@ function FullApp() {
         pauseOnHover
       />
       <EventToastContainer />
-      <Modal
-        className="RedirectModal"
-        isVisible={redirectModalVisible}
-        setIsVisible={setRedirectModalVisible}
-        label="Launch App"
-      >
-        You are leaving GMX.io and will be redirected to a third party, independent website.
-        <br />
-        <br />
-        The website is a community deployed and maintained instance of the open source{" "}
-        <a href="https://github.com/gmx-io/gmx-interface" target="_blank" rel="noopener noreferrer">
-          GMX front end
-        </a>
-        , hosted and served on the distributed, peer-to-peer{" "}
-        <a href="https://ipfs.io/" target="_blank" rel="noopener noreferrer">
-          IPFS network
-        </a>
-        <br />
-        <br />
-        Alternative links can be found in the{" "}
-        <a href="https://gmxio.gitbook.io/gmx/app-links" target="_blank" rel="noopener noreferrer">
-          docs
-        </a>
-        .
-        <br />
-        <br />
-        <a href={appRedirectUrl} className="App-cta Exchange-swap-button">
-          Agree
-        </a>
-      </Modal>
+      <RedirectPopupModal
+        redirectModalVisible={redirectModalVisible}
+        setRedirectModalVisible={setRedirectModalVisible}
+        appRedirectUrl={appRedirectUrl}
+        setRedirectPopupTimestamp={setRedirectPopupTimestamp}
+        setShouldHideRedirectModal={setShouldHideRedirectModal}
+        shouldHideRedirectModal={shouldHideRedirectModal}
+        removeRedirectPopupTimestamp={removeRedirectPopupTimestamp}
+      />
       <Modal
         className="Connect-wallet-modal"
         isVisible={walletModalVisible}

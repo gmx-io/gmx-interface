@@ -2717,6 +2717,10 @@ export function importImage(name) {
   return tokenImage && tokenImage.default;
 }
 
+export function isValidTimestamp(timestamp) {
+  return new Date(timestamp).getTime() > 0;
+}
+
 export function getPositionForOrder(account, order, positionsMap) {
   const key = getPositionKey(account, order.collateralToken, order.indexToken, order.isLong);
   const position = positionsMap[key];
