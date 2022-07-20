@@ -82,13 +82,12 @@
     padding-right: 0;
     margin-bottom: 0.5rem;
   }
-}
-@media (max-width: 580px) {
   .Footer-social-link-block {
     margin-bottom: 1.4rem;
   }
   .Footer-wrapper {
     padding-top: 2.5rem;
+    height: 23rem;
   }
 }
 
