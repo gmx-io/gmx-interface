@@ -1,4 +1,4 @@
-import "./ModalViews.css";
+import "./RedirectModal.css";
 import { useEffect } from "react";
 import Modal from "../Modal/Modal";
 import Checkbox from "../Checkbox/Checkbox";
@@ -42,9 +42,16 @@ export function RedirectPopupModal({
       .
       <br />
       <br />
+      Alternative links can be found in the{" "}
+      <a href="https://gmxio.gitbook.io/gmx/app-links" target="_blank" rel="noopener noreferrer">
+        docs
+      </a>
+      .
+      <br />
+      <br />
       <div className="mb-sm">
         <Checkbox isChecked={shouldHideRedirectModal} setIsChecked={setShouldHideRedirectModal}>
-          I have read and agree to the message, don't show it again for 30 days.
+          I have read and agree to this message, don't show it again for 30 days.
         </Checkbox>
       </div>
       <a href={appRedirectUrl} className="App-cta Exchange-swap-button">
