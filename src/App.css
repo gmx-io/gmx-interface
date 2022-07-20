@@ -19,12 +19,6 @@
   z-index: 800;
 }
 
-.RedirectModal .Modal-content {
-  width: 34rem;
-  font-size: 1.5rem;
-  line-height: 1.9rem;
-}
-
 .App-header.large {
   height: 6.2rem;
   backdrop-filter: blur(4px);
@@ -1307,10 +1301,6 @@ button.App-button {
 @media (max-width: 700px) {
   .App-card-long-content {
     grid-template-columns: 1fr 1fr;
-  }
-
-  .RedirectModal .Modal-content {
-    width: 90vw;
   }
 }
 
