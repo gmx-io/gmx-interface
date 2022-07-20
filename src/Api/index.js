@@ -13,6 +13,7 @@ import UniPool from "../abis/UniPool.json";
 import UniswapV2 from "../abis/UniswapV2.json";
 import Token from "../abis/Token.json";
 import VaultReader from "../abis/VaultReader.json";
+import PositionRouter from "../abis/PositionRouter.json";
 
 import { getContract } from "../Addresses";
 import { getConstant } from "../Constants";
@@ -34,7 +35,11 @@ import {
   parseValue,
   expandDecimals,
   getInfoTokens,
+  getFallbackProvider,
   helperToast,
+  getUsd,
+  USD_DECIMALS,
+  HIGH_EXECUTION_FEES_MAP,
   SWAP,
   INCREASE,
   DECREASE,
@@ -394,6 +399,66 @@ export function useTrades(chainId, account, forSingleAccount) {
   }
 
   return { trades, updateTrades };
+}
+
+export function useMinExecutionFee(library, active, chainId, infoTokens) {
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
+  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+
+  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
+    fetcher: fetcher(library, PositionRouter),
+  });
+
+  const { data: gasPrice } = useSWR(["gasPrice", chainId], {
+    fetcher: () => {
+      return new Promise(async (resolve, reject) => {
+        const provider = getFallbackProvider(chainId);
+        if (!provider) {
+          resolve(undefined);
+          return;
+        }
+
+        const gasPrice = await provider.getGasPrice();
+        resolve(gasPrice);
+      });
+    },
+  });
+
+  let multiplier;
+
+  // if gas prices on Arbitrum are high, the main transaction costs would come from the L2 gas usage
+  // for executing positions this is around 65,000 gas
+  // if gas prices on Ethereum are high, than the gas usage might be higher, this calculation doesn't deal with that
+  // case yet
+  if (chainId === ARBITRUM) {
+    multiplier = 65000;
+  }
+
+  // multiplier for Avalanche is just the average gas usage
+  if (chainId === AVALANCHE) {
+    multiplier = 700000;
+  }
+
+  let finalExecutionFee = minExecutionFee;
+
+  if (gasPrice && minExecutionFee) {
+    const estimatedExecutionFee = gasPrice.mul(multiplier);
+    if (estimatedExecutionFee.gt(minExecutionFee)) {
+      finalExecutionFee = estimatedExecutionFee;
+    }
+  }
+
+  const finalExecutionFeeUSD = getUsd(finalExecutionFee, nativeTokenAddress, false, infoTokens);
+  const isFeeHigh = finalExecutionFeeUSD?.gt(expandDecimals(HIGH_EXECUTION_FEES_MAP[chainId], USD_DECIMALS));
+  const errorMessage =
+    isFeeHigh &&
+    `The network cost to send transactions is high at the moment, please check the "Execution Fee" value before proceeding.`;
+
+  return {
+    minExecutionFee: finalExecutionFee,
+    minExecutionFeeUSD: finalExecutionFeeUSD,
+    minExecutionFeeErrorMessage: errorMessage,
+  };
 }
 
 export function useStakedGmxSupply(library, active) {

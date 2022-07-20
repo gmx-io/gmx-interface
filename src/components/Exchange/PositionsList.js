@@ -86,6 +86,9 @@ export default function PositionsList(props) {
     approvePositionRouter,
     showPnlAfterFees,
     setMarket,
+    minExecutionFee,
+    minExecutionFeeUSD,
+    minExecutionFeeErrorMessage,
   } = props;
 
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
@@ -137,6 +140,9 @@ export default function PositionsList(props) {
         isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
         approvePositionRouter={approvePositionRouter}
         chainId={chainId}
+        minExecutionFee={minExecutionFee}
+        minExecutionFeeUSD={minExecutionFeeUSD}
+        minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
       />
       {ordersToaOpen && (
         <OrdersToa
@@ -176,6 +182,9 @@ export default function PositionsList(props) {
           approvePositionRouter={approvePositionRouter}
           isHigherSlippageAllowed={isHigherSlippageAllowed}
           setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
+          minExecutionFee={minExecutionFee}
+          minExecutionFeeUSD={minExecutionFeeUSD}
+          minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
         />
       )}
       {positions && (
@@ -353,10 +362,18 @@ export default function PositionsList(props) {
                   </div>
                   <div className="App-card-divider"></div>
                   <div className="App-card-options">
-                    <button className="App-button-option App-card-option" onClick={() => editPosition(position)}>
+                    <button
+                      disabled={position.size.eq(0)}
+                      className="App-button-option App-card-option"
+                      onClick={() => editPosition(position)}
+                    >
                       Edit
                     </button>
-                    <button className="App-button-option App-card-option" onClick={() => sellPosition(position)}>
+                    <button
+                      disabled={position.size.eq(0)}
+                      className="App-button-option App-card-option"
+                      onClick={() => sellPosition(position)}
+                    >
                       Close
                     </button>
                   </div>
