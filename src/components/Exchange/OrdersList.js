@@ -6,12 +6,13 @@ import {
   DECREASE,
   USD_DECIMALS,
   formatAmount,
+  getOrderError,
   TRIGGER_PREFIX_ABOVE,
   TRIGGER_PREFIX_BELOW,
   getExchangeRateDisplay,
   getTokenInfo,
   getExchangeRate,
-  getPositionKey,
+  getPositionForOrder,
   getUsd,
 } from "../../Helpers.js";
 import { handleCancelOrder } from "../../Api";
@@ -22,12 +23,6 @@ import OrderEditor from "./OrderEditor";
 
 import "./OrdersList.css";
 import Checkbox from "../Checkbox/Checkbox.js";
-
-function getPositionForOrder(account, order, positionsMap) {
-  const key = getPositionKey(account, order.collateralToken, order.indexToken, order.isLong);
-  const position = positionsMap[key];
-  return position && position.size && position.size.gt(0) ? position : null;
-}
 
 export default function OrdersList(props) {
   const {
@@ -214,15 +209,7 @@ export default function OrdersList(props) {
       const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
       const indexTokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol;
 
-      let error;
-      if (order.type === DECREASE) {
-        const positionForOrder = getPositionForOrder(account, order, positionsMap);
-        if (!positionForOrder) {
-          error = "No open position, order cannot be executed unless a position is opened";
-        } else if (positionForOrder.size.lt(order.sizeDelta)) {
-          error = "Order size is bigger than position, will only be executable if position increases";
-        }
-      }
+      const error = getOrderError(account, order, positionsMap);
       const orderId = `${order.type}-${order.index}`;
       const orderText = (
         <>
@@ -282,8 +269,8 @@ export default function OrdersList(props) {
               renderContent={() => {
                 return (
                   <>
-                    The price that the order can be executed at may differ slightly from the chart price as market
-                    orders can change the price while limit / trigger orders cannot.
+                    The price that orders can be executed at may differ slightly from the chart price, as market orders
+                    update oracle prices, while limit/trigger orders do not
                   </>
                 );
               }}
@@ -382,15 +369,7 @@ export default function OrdersList(props) {
       const collateralTokenInfo = getTokenInfo(infoTokens, order.purchaseToken);
       const collateralUSD = getUsd(order.purchaseTokenAmount, order.purchaseToken, true, infoTokens);
 
-      let error;
-      if (order.type === DECREASE) {
-        const positionForOrder = getPositionForOrder(account, order, positionsMap);
-        if (!positionForOrder) {
-          error = "No open position, order cannot be executed unless a position is opened";
-        } else if (positionForOrder.size.lt(order.sizeDelta)) {
-          error = "Order size is bigger than position, will only be executable if position increases";
-        }
-      }
+      const error = getOrderError(account, order, positionsMap);
 
       return (
         <div key={`${order.isLong}-${order.type}-${order.index}`} className="App-card">
