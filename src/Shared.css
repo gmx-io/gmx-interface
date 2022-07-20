@@ -389,10 +389,19 @@ button.btn-link:hover .logout-icon {
 .font-sm {
   font-size: 1.4rem;
 }
+
 .font-base {
   font-size: 1.5rem;
 }
-
+.mt-sm {
+  margin-top: 0.5rem;
+}
+.mt-base {
+  margin-top: 1rem;
+}
+.mt-lg {
+  margin-top: 1.5rem;
+}
 .default-cursor.App-cta {
   cursor: default;
 }

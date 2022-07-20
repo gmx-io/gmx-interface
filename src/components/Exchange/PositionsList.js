@@ -497,7 +497,7 @@ export default function PositionsList(props) {
                                 return (
                                   <div
                                     key={`${order.isLong}-${order.type}-${order.index}`}
-                                    className="Position-list-order"
+                                    className="Position-list-order mt-base"
                                   >
                                     {order.triggerAboveThreshold ? ">" : "<"}{" "}
                                     {formatAmount(order.triggerPrice, 30, 2, true)}:
