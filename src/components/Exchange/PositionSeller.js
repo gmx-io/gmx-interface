@@ -399,6 +399,9 @@ export default function PositionSeller(props) {
       if (position.size.sub(fromAmount).lt(expandDecimals(10, USD_DECIMALS))) {
         return "Leftover position below 10 USD";
       }
+      if (nextCollateral && nextCollateral.lt(expandDecimals(5, USD_DECIMALS))) {
+        return "Leftover collateral below 5 USD";
+      }
     }
 
     if (position && position.size && position.size.lt(fromAmount)) {

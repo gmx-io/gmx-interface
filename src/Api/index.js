@@ -35,7 +35,6 @@ import {
   parseValue,
   expandDecimals,
   getInfoTokens,
-  getFallbackProvider,
   helperToast,
   getUsd,
   USD_DECIMALS,
@@ -412,14 +411,18 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
   const { data: gasPrice } = useSWR(["gasPrice", chainId], {
     fetcher: () => {
       return new Promise(async (resolve, reject) => {
-        const provider = getFallbackProvider(chainId);
+        const provider = getProvider(library, chainId);
         if (!provider) {
           resolve(undefined);
           return;
         }
 
-        const gasPrice = await provider.getGasPrice();
-        resolve(gasPrice);
+        try {
+          const gasPrice = await provider.getGasPrice();
+          resolve(gasPrice);
+        } catch (e) {
+          console.error(e);
+        }
       });
     },
   });
