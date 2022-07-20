@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react";
-import useSWR from "swr";
 import { ethers } from "ethers";
 
 import { BsArrowRight } from "react-icons/bs";
@@ -17,7 +16,6 @@ import {
   TRIGGER_PREFIX_BELOW,
   TRIGGER_PREFIX_ABOVE,
   MIN_PROFIT_TIME,
-  fetcher,
   usePrevious,
   formatAmountFree,
   parseValue,
@@ -78,7 +76,6 @@ function getTokenAmount(usdAmount, tokenAddress, max, infoTokens) {
 
 export default function PositionSeller(props) {
   const {
-    active,
     pendingPositions,
     setPendingPositions,
     positionsMap,
@@ -104,6 +101,9 @@ export default function PositionSeller(props) {
     approvePositionRouter,
     isHigherSlippageAllowed,
     setIsHigherSlippageAllowed,
+    minExecutionFee,
+    minExecutionFeeUSD,
+    minExecutionFeeErrorMessage,
   } = props;
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true);
@@ -119,10 +119,6 @@ export default function PositionSeller(props) {
   if (isHigherSlippageAllowed) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
-
-  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
-    fetcher: fetcher(library, PositionRouter),
-  });
 
   const orderOptions = [MARKET, STOP];
   let [orderOption, setOrderOption] = useState(MARKET);
@@ -402,6 +398,9 @@ export default function PositionSeller(props) {
     if (!isClosing && position && position.size && fromAmount) {
       if (position.size.sub(fromAmount).lt(expandDecimals(10, USD_DECIMALS))) {
         return "Leftover position below 10 USD";
+      }
+      if (nextCollateral && nextCollateral.lt(expandDecimals(5, USD_DECIMALS))) {
+        return "Leftover collateral below 5 USD";
       }
     }
 
@@ -778,6 +777,9 @@ export default function PositionSeller(props) {
           {renderMinProfitWarning()}
           {shouldShowExistingOrderWarning && renderExistingOrderWarning()}
           <div className="PositionEditor-info-box">
+            {minExecutionFeeErrorMessage && (
+              <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>
+            )}
             {hasPendingProfit && orderOption !== STOP && (
               <div className="PositionEditor-accept-profit-warning">
                 <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
@@ -939,9 +941,12 @@ export default function PositionSeller(props) {
                     renderContent={() => {
                       return (
                         <>
+                          Network fee: {formatAmount(minExecutionFee, 18, 4)} {nativeTokenSymbol} ($
+                          {formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})<br />
+                          <br />
                           This is the network cost required to execute the decrease postion.{" "}
                           <a
-                            href="https://gmxio.gitbook.io/gmx/trading#opening-a-position"
+                            href="https://gmxio.gitbook.io/gmx/trading#execution-fee"
                             target="_blank"
                             rel="noopener noreferrer"
                           >

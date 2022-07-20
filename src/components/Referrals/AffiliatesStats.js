@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { FiPlus } from "react-icons/fi";
+import { FiPlus, FiTwitter } from "react-icons/fi";
 import { useCopyToClipboard } from "react-use";
 import { IoWarningOutline } from "react-icons/io5";
 import { BiCopy, BiErrorCircle } from "react-icons/bi";
@@ -18,7 +18,13 @@ import {
 } from "../../Helpers";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
-import { getTierIdDisplay, getUSDValue, isRecentReferralCodeNotExpired, tierRebateInfo } from "./referralsHelper";
+import {
+  getTierIdDisplay,
+  getTwitterShareUrl,
+  getUSDValue,
+  isRecentReferralCodeNotExpired,
+  tierRebateInfo,
+} from "./referralsHelper";
 import { AffiliateCodeForm } from "./AddAffiliateCode";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
@@ -135,16 +141,24 @@ function AffiliatesStats({
                     <tr key={index}>
                       <td data-label="Referral Code">
                         <div className="table-referral-code">
+                          <span className="referral-text ">{stat.referralCode}</span>
                           <div
                             onClick={() => {
                               copyToClipboard(`https://gmx.io/#/?${REFERRAL_CODE_QUERY_PARAM}=${stat.referralCode}`);
                               helperToast.success("Referral link copied to your clipboard");
                             }}
-                            className="referral-code copy-icon"
+                            className="copy-icon"
                           >
-                            <span>{stat.referralCode}</span>
                             <BiCopy />
                           </div>
+                          <a
+                            href={getTwitterShareUrl(stat.referralCode)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="copy-icon"
+                          >
+                            <FiTwitter />
+                          </a>
                           {ownerOnOtherChain && !ownerOnOtherChain?.isTaken && (
                             <div className="info">
                               <TooltipWithPortal

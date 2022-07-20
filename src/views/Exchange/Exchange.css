@@ -392,6 +392,8 @@
   max-height: calc(80vh - 8.525rem);
   overflow-y: auto;
   padding-right: 0.5rem;
+  margin: 1.5rem;
+  margin-right: 1rem;
 }
 
 .PositionEditor .Tab {
@@ -421,7 +423,7 @@
 
 .Position-list-order {
   white-space: nowrap;
-  margin-bottom: 8px;
+  margin-top: 8px;
 }
 
 .order-error span {

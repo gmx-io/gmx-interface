@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
+import useScrollToTop from "./hooks/useScrollToTop";
 
 import { Switch, Route, NavLink, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
 
@@ -103,7 +104,7 @@ import PositionRouter from "./abis/PositionRouter.json";
 import PageNotFound from "./views/PageNotFound/PageNotFound";
 import ReferralTerms from "./views/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "./views/TermsAndConditions/TermsAndConditions";
-import useScrollToTop from "./hooks/useScrollToTop";
+import Jobs from "./views/Jobs/Jobs";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -180,7 +181,7 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
           About
         </a>
       </div>
-      {small && (
+      {small && !isHomeSite() && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
           <a href="#" onClick={openSettings}>
@@ -815,6 +816,9 @@ function FullApp() {
                   connectWallet={connectWallet}
                 />
               </Route>
+              <Route exact path="/jobs">
+                <Jobs />
+              </Route>
               <Route exact path="/buy_gmx">
                 <BuyGMX />
               </Route>
@@ -886,6 +890,12 @@ function FullApp() {
         , hosted and served on the distributed, peer-to-peer{" "}
         <a href="https://ipfs.io/" target="_blank" rel="noopener noreferrer">
           IPFS network
+        </a>
+        <br />
+        <br />
+        Alternative links can be found in the{" "}
+        <a href="https://gmxio.gitbook.io/gmx/app-links" target="_blank" rel="noopener noreferrer">
+          docs
         </a>
         .
         <br />
