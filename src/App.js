@@ -891,6 +891,12 @@ function FullApp() {
         <a href="https://ipfs.io/" target="_blank" rel="noopener noreferrer">
           IPFS network
         </a>
+        <br />
+        <br />
+        Alternative links can be found in the{" "}
+        <a href="https://gmxio.gitbook.io/gmx/app-links" target="_blank" rel="noopener noreferrer">
+          docs
+        </a>
         .
         <br />
         <br />
