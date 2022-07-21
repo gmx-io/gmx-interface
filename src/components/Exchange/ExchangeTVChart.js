@@ -14,6 +14,7 @@ import {
   usePrevious,
   getLiquidationPrice,
   useLocalStorageSerializeKey,
+  numberWithCommas,
 } from "../../Helpers";
 import { useChartPrices } from "../../Api";
 import Tab from "../Tab/Tab";
@@ -439,10 +440,10 @@ export default function ExchangeTVChart(props) {
           </div>
           <div>
             <div className="ExchangeChart-main-price">
-              {chartToken.maxPrice && formatAmount(chartToken.maxPrice, USD_DECIMALS, 2)}
+              {chartToken.maxPrice && formatAmount(chartToken.maxPrice, USD_DECIMALS, 2, true)}
             </div>
             <div className="ExchangeChart-info-label">
-              ${chartToken.minPrice && formatAmount(chartToken.minPrice, USD_DECIMALS, 2)}
+              ${chartToken.minPrice && formatAmount(chartToken.minPrice, USD_DECIMALS, 2, true)}
             </div>
           </div>
           <div>
@@ -456,14 +457,14 @@ export default function ExchangeTVChart(props) {
             <div className="ExchangeChart-info-label">24h High</div>
             <div>
               {!high && "-"}
-              {high && high.toFixed(2)}
+              {high && numberWithCommas(high.toFixed(2))}
             </div>
           </div>
           <div className="ExchangeChart-additional-info">
             <div className="ExchangeChart-info-label">24h Low</div>
             <div>
               {!low && "-"}
-              {low && low.toFixed(2)}
+              {low && numberWithCommas(low.toFixed(2))}
             </div>
           </div>
         </div>

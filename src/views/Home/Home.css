@@ -321,6 +321,7 @@
 }
 
 .Home-latest-info__value {
+  font-family: "RelativeNumber";
   color: white;
   font-size: 3rem;
   line-height: 3.9rem;
