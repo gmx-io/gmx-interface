@@ -23,7 +23,6 @@
 }
 
 .Footer-social-link-block {
-  /* padding-bottom: 4rem; */
   max-width: 111rem;
   margin: 0 auto;
   display: flex;
@@ -77,6 +76,7 @@
 @media (max-width: 580px) {
   .Footer-links {
     flex-direction: column;
+    padding-bottom: 2.5rem;
   }
   .Footer-links > a {
     padding-right: 0;
@@ -87,7 +87,9 @@
   }
   .Footer-wrapper {
     padding-top: 2.5rem;
-    height: 23rem;
+  }
+  .Footer-wrapper-app {
+    height: 24.5rem;
   }
 }
 

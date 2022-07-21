@@ -1,4 +1,5 @@
 import React from "react";
+import cx from "classnames";
 import "./Footer.css";
 import logoImg from "./img/ic_gmx_footer.svg";
 import twitterIcon from "./img/ic_twitter.svg";
@@ -27,7 +28,7 @@ export default function Footer() {
 
   return (
     <div className="Footer">
-      <div className="Footer-wrapper">
+      <div className={cx("Footer-wrapper", { "Footer-wrapper-app": isHome })}>
         <div className="Footer-logo">
           <img src={logoImg} alt="MetaMask" />
         </div>
