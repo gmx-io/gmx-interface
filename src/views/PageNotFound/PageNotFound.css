@@ -1,0 +1,29 @@
+.page-not-found-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  margin-bottom: 7rem;
+}
+
+.page-not-found {
+  text-align: center;
+}
+.page-not-found img {
+  max-width: 225px;
+}
+.go-back span {
+  color: #a0a3c4;
+}
+.go-back a {
+  color: white;
+}
+
+@media (max-width: 500px) {
+  .page-not-found img {
+    max-width: 200px;
+  }
+  .page-not-found {
+    margin-top: 2.5rem;
+  }
+}

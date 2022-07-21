@@ -137,7 +137,7 @@ export default function PositionsList(props) {
       ...state,
       [position.key]: true,
     }));
-    let apiUrl = `https://gmx-og-image-vipineth.vercel.app/api/og`;
+    let apiUrl = `https://gmxs.vercel.app/api/og`;
     let data = {
       entryPrice: `$${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}`,
       currentPrice: `$${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}`,
