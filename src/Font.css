@@ -28,6 +28,7 @@
     /* Super Modern Browsers */ url("./fonts/inter/inter-v12-latin-regular.woff") format("woff"),
     /* Modern Browsers */ url("./fonts/inter/inter-v12-latin-regular.ttf") format("truetype"); /* Safari, Android, iOS */
   unicode-range: U+30-39, U+002C, U+002E;
+  size-adjust: 95%;
 }
 
 @font-face {
