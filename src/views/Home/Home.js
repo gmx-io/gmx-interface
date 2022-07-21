@@ -1,6 +1,7 @@
-import React, { useCallback } from "react";
+import React from "react";
 import Footer from "../../Footer";
-import { Link, NavLink } from "react-router-dom";
+
+import cx from "classnames";
 
 import "./Home.css";
 
@@ -23,20 +24,16 @@ import {
   numberWithCommas,
   getServerUrl,
   USD_DECIMALS,
-  useChainId,
   ARBITRUM,
   AVALANCHE,
-  switchNetwork,
   getTotalVolumeSum,
 } from "../../Helpers";
-
-import { useWeb3React } from "@web3-react/core";
 
 import { useUserStat } from "../../Api";
 
 import TokenCard from "../../components/TokenCard/TokenCard";
 
-export default function Home() {
+export default function Home({ showRedirectModal }) {
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
   // const faqContent = [{
   //   id: 1,
@@ -63,9 +60,6 @@ export default function Home() {
   //     setOpenedFAQIndex(index)
   //   }
   // }
-
-  const { chainId } = useChainId();
-  const { active } = useWeb3React();
 
   // ARBITRUM
 
@@ -136,21 +130,13 @@ export default function Home() {
     totalUsers += avalancheUserStats.uniqueCount;
   }
 
-  const changeNetwork = useCallback(
-    (network) => {
-      if (network === chainId) {
-        return;
-      }
-      if (!active) {
-        setTimeout(() => {
-          return switchNetwork(network, active);
-        }, 500);
-      } else {
-        return switchNetwork(network, active);
-      }
-    },
-    [chainId, active]
-  );
+  const LaunchExchangeButton = () => {
+    return (
+      <div className={cx("default-btn")} onClick={() => showRedirectModal("/trade")}>
+        Launch Exchange
+      </div>
+    );
+  };
 
   return (
     <div className="Home">
@@ -166,9 +152,7 @@ export default function Home() {
             <div className="Home-description">
               Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet
             </div>
-            <NavLink activeClassName="active" to="/trade" className="default-btn">
-              Launch Exchange
-            </NavLink>
+            <LaunchExchangeButton />
           </div>
         </div>
         <div className="Home-latest-info-container default-container">
@@ -243,9 +227,7 @@ export default function Home() {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Arbitrum</div>
                 <div className="Home-cta-option-action">
-                  <Link to="/trade" className="default-btn" onClick={() => changeNetwork(ARBITRUM)}>
-                    Launch Exchange
-                  </Link>
+                  <LaunchExchangeButton />
                 </div>
               </div>
             </div>
@@ -256,9 +238,7 @@ export default function Home() {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Avalanche</div>
                 <div className="Home-cta-option-action">
-                  <Link to="/trade" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>
-                    Launch Exchange
-                  </Link>
+                  <LaunchExchangeButton />
                 </div>
               </div>
             </div>
@@ -270,7 +250,7 @@ export default function Home() {
           <div className="Home-token-card-info">
             <div className="Home-token-card-info__title">Two tokens create our ecosystem</div>
           </div>
-          <TokenCard />
+          <TokenCard showRedirectModal={showRedirectModal} />
         </div>
       </div>
 

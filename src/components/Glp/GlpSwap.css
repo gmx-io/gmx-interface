@@ -1,27 +1,22 @@
 .GlpSwap-content {
   display: flex;
   justify-content: space-between;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-}
-
-.Tab-title-section {
-  padding: 2rem 1rem 0;
-  margin-bottom: 24px;
+  border-bottom-left-radius: 0.8rem;
+  border-bottom-right-radius: 0.8rem;
 }
 
 .Tab-title {
   letter-spacing: 0px;
   color: #ffffff;
-  font-size: 2.2rem;
+  font-size: 3.41rem;
   font-weight: 500;
-  font-family: 'Relative Bold';
+  font-family: "Relative Bold";
 }
 
 .Tab-description {
   letter-spacing: 0px;
   color: #a9a9b0;
-  margin-top: 0.5rem;
+  margin-top: 0.8rem;
 }
 
 .Tab-description span {
@@ -34,12 +29,12 @@
 }
 
 .GlpSwap-from-token .Modal .Modal-content {
-  width: 27rem;
+  width: 41.85rem;
 }
 
 .GlpSwap-from-token .Modal-content {
   position: absolute;
-  width: 25rem;
+  width: 38.75rem;
   max-height: 100vh;
   overflow: hidden;
   border: none;
@@ -47,8 +42,8 @@
   bottom: 0;
 }
 .GlpSwap-from-token .Modal-content .Modal-body {
-  padding-right: 5px;
-  max-height: calc(100vh - 5rem);
+  padding-right: 0.5rem;
+  max-height: calc(100vh - 7.75rem);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   -webkit-overflow-scrolling: auto;
@@ -60,8 +55,8 @@
 }
 
 .GlpSwap-content .GlpSwap-stats-card {
-  max-width: 45.935rem;
-  margin-right: 1rem;
+  max-width: 71.2rem;
+  margin-right: 1.5rem;
 }
 
 .GlpSwap-stats-card .App-card-row .label {
@@ -70,19 +65,19 @@
 }
 
 .GlpSwap-content .GlpSwap-box {
-  max-width: 30.935rem;
-  border-radius: 4px;
-  padding: 1rem;
+  max-width: 47.95rem;
+  border-radius: 0.4rem;
+  padding: 1.5rem;
   padding-top: 0;
 }
 
 .GlpSwap-box .Exchange-swap-option-tabs {
-  margin: 1rem 0;
+  margin: 1.5rem 0;
 }
 
 .App-card-title-mark-icon {
   position: relative;
-  margin-right: 0.5rem;
+  margin-right: 0.8rem;
   display: flex;
 }
 
@@ -99,15 +94,15 @@
 }
 
 .App-card-title-mark .App-card-title-mark-title {
-  font-size: 1.032rem;
-  line-height: 1.355rem;
+  font-size: 1.6rem;
+  line-height: 2.1rem;
   letter-spacing: 0px;
   color: #ffffff;
 }
 
 .App-card-title-mark .App-card-title-mark-subtitle {
-  font-size: 0.774rem;
-  line-height: 1rem;
+  font-size: 1.2rem;
+  line-height: 1.5rem;
   letter-spacing: 0px;
   color: #a9a9b0;
 }
@@ -116,32 +111,32 @@
   border: 1px solid #1e2136;
   border-radius: 4px;
   background: #16182e;
-  padding: 1rem;
+  padding: 1.5rem;
   padding-top: 0;
   text-align: left;
 }
 
 .GlpSwap-token-list-content {
   display: grid;
-  padding: 1rem;
+  padding: 1.5rem;
   padding-top: 0;
   text-align: left;
 }
 
 .GlpSwap-box .App-card-title {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
 }
 
 .GlpSwap-box .Exchange-info-row {
-  height: 1rem;
-  margin-bottom: 0.5rem;
+  height: 1.5rem;
+  margin-bottom: 0.8rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .GlpSwap-box .Exchange-info-row .Exchange-info-label {
-  margin-right: 0.5rem;
+  margin-right: 0.8rem;
   color: #a9a9b0;
   opacity: 1;
 }
@@ -155,16 +150,17 @@
 .GlpSwap-cta .Exchange-swap-button {
   margin: 0 auto;
   justify-content: center;
-  min-height: 3.097rem;
-  font-size: 1rem;
+  min-height: 4.8rem;
+  font-size: 1.5rem;
 }
 
 .token-table {
-  margin-left: -1rem;
-  margin-right: -1rem;
-  width: calc(100% + 2rem);
+  margin-left: -1.5rem;
+  margin-right: -1.5rem;
+  width: calc(100% + 3.1rem);
   border-spacing: 0;
   white-space: nowrap;
+  font-size: 1.5rem;
 }
 
 .token-grid {
@@ -173,27 +169,27 @@
 
 .token-table td,
 .token-table th {
-  padding: 0.75rem;
+  padding: 1.1625rem;
 }
 
 .token-table td:nth-child(2),
 .token-table th:nth-child(2) {
-  width: 110px;
+  width: 11rem;
 }
 
 .token-table td:nth-child(3),
 .token-table th:nth-child(3) {
-  width: 320px;
+  width: 32rem;
 }
 
 .token-table td:nth-child(4),
 .token-table th:nth-child(4) {
-  width: 200px;
+  width: 20rem;
 }
 
 .token-table td:nth-child(5),
 .token-table th:nth-child(5) {
-  width: 130px;
+  width: 13rem;
 }
 
 .token-table td {
@@ -203,15 +199,15 @@
 
 .token-table th:first-child,
 .token-table td:first-child {
-  padding-left: 1rem;
-  width: 17rem;
+  padding-left: 1.5rem;
+  width: 26.35rem;
 }
 
 .token-table th:last-child,
 .token-table td:last-child {
-  padding-right: 1rem;
+  padding-right: 1.5rem;
   text-align: right;
-  width: 170px;
+  width: 17rem;
 }
 
 .token-table th {
@@ -226,7 +222,7 @@
   justify-content: center;
 }
 .cap-reached {
-  margin-left: 8px;
+  margin-left: 0.8rem;
 }
 
 @media (max-width: 900px) {
@@ -236,7 +232,7 @@
 
   .GlpSwap-content .GlpSwap-stats-card {
     margin: 0;
-    margin-bottom: 2rem;
+    margin-bottom: 3.1rem;
     max-width: 100%;
   }
 
@@ -252,7 +248,7 @@
     justify-content: center;
   }
   .GlpSwap-from-token .Modal .Modal-content {
-    width: 27rem;
+    width: 41.85rem;
     position: absolute;
     max-height: 80vh;
     overflow: hidden;
@@ -262,9 +258,9 @@
   }
   .GlpSwap-from-token .Modal .Modal-content .Modal-body {
     overflow-y: auto;
-    max-height: calc(80vh - 5.5rem);
+    max-height: calc(80vh - 8.525rem);
     padding-right: 5px;
-    margin: 1rem calc(1rem - 5px) 1rem 1rem;
+    margin: 1.5rem calc(1rem - 0.5rem) 1.5rem 1.5rem;
   }
 
   .GlpSwap-token-list {
@@ -284,15 +280,15 @@
   .token-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    grid-gap: 1rem;
-    margin-top: 0.5rem;
+    grid-gap: 1.5rem;
+    margin-top: 0.8rem;
   }
 }
 @media (max-width: 510px) {
   .token-grid {
     display: grid;
     grid-template-columns: 1fr;
-    grid-gap: 1rem;
-    margin-top: 0.5rem;
+    grid-gap: 1.5rem;
+    margin-top: 0.8rem;
   }
 }

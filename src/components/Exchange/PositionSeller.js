@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react";
-import useSWR from "swr";
 import { ethers } from "ethers";
 
 import { BsArrowRight } from "react-icons/bs";
@@ -17,7 +16,6 @@ import {
   TRIGGER_PREFIX_BELOW,
   TRIGGER_PREFIX_ABOVE,
   MIN_PROFIT_TIME,
-  fetcher,
   usePrevious,
   formatAmountFree,
   parseValue,
@@ -48,6 +46,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import Tooltip from "../Tooltip/Tooltip";
 
 const { AddressZero } = ethers.constants;
+const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
 
 const orderOptionLabels = {
   [MARKET]: "Market",
@@ -77,7 +76,6 @@ function getTokenAmount(usdAmount, tokenAddress, max, infoTokens) {
 
 export default function PositionSeller(props) {
   const {
-    active,
     pendingPositions,
     setPendingPositions,
     positionsMap,
@@ -104,6 +102,9 @@ export default function PositionSeller(props) {
     isHigherSlippageAllowed,
     setIsHigherSlippageAllowed,
     sharePosition,
+    minExecutionFee,
+    minExecutionFeeUSD,
+    minExecutionFeeErrorMessage,
   } = props;
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true);
@@ -119,10 +120,6 @@ export default function PositionSeller(props) {
   if (isHigherSlippageAllowed) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
-
-  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
-    fetcher: fetcher(library, PositionRouter),
-  });
 
   const orderOptions = [MARKET, STOP];
   let [orderOption, setOrderOption] = useState(MARKET);
@@ -160,13 +157,15 @@ export default function PositionSeller(props) {
     return [delta, hasProfit, deltaPercentage];
   }, [position, orderOption, triggerPriceUsd]);
 
-  const existingOrder = useMemo(() => {
+  const existingOrders = useMemo(() => {
     if (orderOption === STOP && (!triggerPriceUsd || triggerPriceUsd.eq(0))) {
-      return null;
+      return [];
     }
     if (!orders || !position) {
-      return null;
+      return [];
     }
+
+    const ret = [];
     for (const order of orders) {
       // only Stop orders can't be executed without corresponding opened position
       if (order.type !== DECREASE) continue;
@@ -182,10 +181,12 @@ export default function PositionSeller(props) {
           ? position.indexToken.isNative
           : order.indexToken === position.indexToken.address;
       if (order.isLong === position.isLong && sameToken) {
-        return order;
+        ret.push(order);
       }
     }
+    return ret;
   }, [position, orders, triggerPriceUsd, orderOption, nativeTokenAddress]);
+  const existingOrder = existingOrders[0];
 
   const needOrderBookApproval = orderOption === STOP && !orderBookApproved;
 
@@ -233,6 +234,14 @@ export default function PositionSeller(props) {
     if (isClosing) {
       sizeDelta = position.size;
       receiveAmount = position.collateral;
+    } else if (orderOption === STOP && sizeDelta && existingOrders.length > 0) {
+      let residualSize = position.size;
+      for (const order of existingOrders) {
+        residualSize = residualSize.sub(order.sizeDelta);
+      }
+      if (residualSize.sub(sizeDelta).abs().lt(ORDER_SIZE_DUST_USD)) {
+        sizeDelta = residualSize;
+      }
     }
 
     if (sizeDelta) {
@@ -390,6 +399,9 @@ export default function PositionSeller(props) {
     if (!isClosing && position && position.size && fromAmount) {
       if (position.size.sub(fromAmount).lt(expandDecimals(10, USD_DECIMALS))) {
         return "Leftover position below 10 USD";
+      }
+      if (nextCollateral && nextCollateral.lt(expandDecimals(5, USD_DECIMALS))) {
+        return "Leftover collateral below 5 USD";
       }
     }
 
@@ -675,7 +687,7 @@ export default function PositionSeller(props) {
       return null;
     }
     return (
-      <ExchangeInfoRow label="Execution Fees">
+      <ExchangeInfoRow label="Execution Fee">
         {formatAmount(DECREASE_ORDER_EXECUTION_GAS_FEE, 18, 4)} {nativeTokenSymbol}
       </ExchangeInfoRow>
     );
@@ -773,6 +785,9 @@ export default function PositionSeller(props) {
           {renderMinProfitWarning()}
           {shouldShowExistingOrderWarning && renderExistingOrderWarning()}
           <div className="PositionEditor-info-box">
+            {minExecutionFeeErrorMessage && (
+              <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>
+            )}
             {hasPendingProfit && orderOption !== STOP && (
               <div className="PositionEditor-accept-profit-warning">
                 <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
@@ -782,13 +797,13 @@ export default function PositionSeller(props) {
             )}
             <div className="PositionEditor-keep-leverage-settings">
               <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                <span className="muted">Keep leverage at {formatAmount(position.leverage, 4, 2)}x</span>
+                <span className="muted font-sm">Keep leverage at {formatAmount(position.leverage, 4, 2)}x</span>
               </Checkbox>
             </div>
             {orderOption === MARKET && (
               <div className="PositionEditor-allow-higher-slippage">
                 <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
-                  <span className="muted">Allow up to 1% slippage</span>
+                  <span className="muted font-sm">Allow up to 1% slippage</span>
                 </Checkbox>
               </div>
             )}
@@ -924,6 +939,34 @@ export default function PositionSeller(props) {
                 {!positionFee && "-"}
               </div>
             </div>
+            {orderOption === MARKET && (
+              <div className="Exchange-info-row">
+                <div className="Exchange-info-label">Execution Fee</div>
+                <div className="align-right">
+                  <Tooltip
+                    handle={`${formatAmount(minExecutionFee, 18, 4)} ${nativeTokenSymbol}`}
+                    position="right-top"
+                    renderContent={() => {
+                      return (
+                        <>
+                          Network fee: {formatAmount(minExecutionFee, 18, 4)} {nativeTokenSymbol} ($
+                          {formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})<br />
+                          <br />
+                          This is the network cost required to execute the decrease postion.{" "}
+                          <a
+                            href="https://gmxio.gitbook.io/gmx/trading#execution-fee"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            More Info
+                          </a>
+                        </>
+                      );
+                    }}
+                  />
+                </div>
+              </div>
+            )}
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">Receive</div>
               <div className="align-right">

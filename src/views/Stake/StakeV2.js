@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useWeb3React } from "@web3-react/core";
 
@@ -339,7 +339,7 @@ function VesterDepositModal(props) {
     value,
     setValue,
     balance,
-    escrowedBalance,
+    vestedAmount,
     averageStakedAmount,
     maxVestableAmount,
     library,
@@ -355,9 +355,9 @@ function VesterDepositModal(props) {
 
   let nextReserveAmount = reserveAmount;
 
-  let nextDepositAmount = escrowedBalance;
+  let nextDepositAmount = vestedAmount;
   if (amount) {
-    nextDepositAmount = escrowedBalance.add(amount);
+    nextDepositAmount = vestedAmount.add(amount);
   }
 
   let additionalReserveAmount = bigNumberify(0);
@@ -471,7 +471,7 @@ function VesterDepositModal(props) {
                         Vault Capacity for your Account
                         <br />
                         <br />
-                        Deposited: {formatAmount(escrowedBalance, 18, 2, true)} esGMX
+                        Deposited: {formatAmount(vestedAmount, 18, 2, true)} esGMX
                         <br />
                         Max Capacity: {formatAmount(maxVestableAmount, 18, 2, true)} esGMX
                         <br />
@@ -481,36 +481,38 @@ function VesterDepositModal(props) {
                 />
               </div>
             </div>
-          </div>
-          <div className="Exchange-info-row">
-            <div className="Exchange-info-label">Reserve Amount</div>
-            <div className="align-right">
-              <Tooltip
-                handle={`${formatAmount(
-                  reserveAmount && reserveAmount.gte(additionalReserveAmount) ? reserveAmount : additionalReserveAmount,
-                  18,
-                  2,
-                  true
-                )} / ${formatAmount(maxReserveAmount, 18, 2, true)}`}
-                position="right-bottom"
-                renderContent={() => {
-                  return (
-                    <>
-                      Current Reserved: {formatAmount(reserveAmount, 18, 2, true)}
-                      <br />
-                      Additional reserve required: {formatAmount(additionalReserveAmount, 18, 2, true)}
-                      <br />
-                      {amount && nextReserveAmount.gt(maxReserveAmount) && (
-                        <div>
-                          <br />
-                          You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)} {stakeTokenLabel}{" "}
-                          to vest {formatAmount(amount, 18, 2, true)} esGMX.
-                        </div>
-                      )}
-                    </>
-                  );
-                }}
-              />
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Reserve Amount</div>
+              <div className="align-right">
+                <Tooltip
+                  handle={`${formatAmount(
+                    reserveAmount && reserveAmount.gte(additionalReserveAmount)
+                      ? reserveAmount
+                      : additionalReserveAmount,
+                    18,
+                    2,
+                    true
+                  )} / ${formatAmount(maxReserveAmount, 18, 2, true)}`}
+                  position="right-bottom"
+                  renderContent={() => {
+                    return (
+                      <>
+                        Current Reserved: {formatAmount(reserveAmount, 18, 2, true)}
+                        <br />
+                        Additional reserve required: {formatAmount(additionalReserveAmount, 18, 2, true)}
+                        <br />
+                        {amount && nextReserveAmount.gt(maxReserveAmount) && (
+                          <div>
+                            <br />
+                            You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)}{" "}
+                            {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.
+                          </div>
+                        )}
+                      </>
+                    );
+                  }}
+                />
+              </div>
             </div>
           </div>
           <div className="Exchange-swap-button-container">
@@ -602,10 +604,7 @@ function CompoundModal(props) {
     [chainId, "StakeV2-compound-should-stake-es-gmx"],
     true
   );
-  const [shouldStakeMultiplierPoints, setShouldStakeMultiplierPoints] = useLocalStorageSerializeKey(
-    [chainId, "StakeV2-compound-should-stake-multiplier-points"],
-    true
-  );
+  const [shouldStakeMultiplierPoints, setShouldStakeMultiplierPoints] = useState(true);
   const [shouldClaimWeth, setShouldClaimWeth] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-compound-should-claim-weth"],
     true
@@ -715,7 +714,11 @@ function CompoundModal(props) {
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label="Compound Rewards">
         <div className="CompoundModal-menu">
           <div>
-            <Checkbox isChecked={shouldStakeMultiplierPoints} setIsChecked={setShouldStakeMultiplierPoints}>
+            <Checkbox
+              isChecked={shouldStakeMultiplierPoints}
+              setIsChecked={setShouldStakeMultiplierPoints}
+              disabled={true}
+            >
               Stake Multiplier Points
             </Checkbox>
           </div>
@@ -905,6 +908,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   const [vesterDepositMaxAmount, setVesterDepositMaxAmount] = useState("");
   const [vesterDepositBalance, setVesterDepositBalance] = useState("");
   const [vesterDepositEscrowedBalance, setVesterDepositEscrowedBalance] = useState("");
+  const [vesterDepositVestedAmount, setVesterDepositVestedAmount] = useState("");
   const [vesterDepositAverageStakedAmount, setVesterDepositAverageStakedAmount] = useState("");
   const [vesterDepositMaxVestableAmount, setVesterDepositMaxVestableAmount] = useState("");
   const [vesterDepositValue, setVesterDepositValue] = useState("");
@@ -1133,10 +1137,6 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     }
   }
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   const showStakeGmxModal = () => {
     if (!isGmxTransferEnabled) {
       helperToast.error("GMX transfers not yet enabled");
@@ -1176,6 +1176,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     setVesterDepositMaxAmount(remainingVestableAmount);
     setVesterDepositBalance(processedData.esGmxBalance);
     setVesterDepositEscrowedBalance(vestingData.gmxVester.escrowedBalance);
+    setVesterDepositVestedAmount(vestingData.gmxVester.vestedAmount);
     setVesterDepositMaxVestableAmount(vestingData.gmxVester.maxVestableAmount);
     setVesterDepositAverageStakedAmount(vestingData.gmxVester.averageStakedAmount);
     setVesterDepositReserveAmount(vestingData.gmxVester.pairAmount);
@@ -1196,6 +1197,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     setVesterDepositMaxAmount(remainingVestableAmount);
     setVesterDepositBalance(processedData.esGmxBalance);
     setVesterDepositEscrowedBalance(vestingData.glpVester.escrowedBalance);
+    setVesterDepositVestedAmount(vestingData.glpVester.vestedAmount);
     setVesterDepositMaxVestableAmount(vestingData.glpVester.maxVestableAmount);
     setVesterDepositAverageStakedAmount(vestingData.glpVester.averageStakedAmount);
     setVesterDepositReserveAmount(vestingData.glpVester.pairAmount);
@@ -1323,7 +1325,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   }
 
   return (
-    <div className="StakeV2 Page page-layout">
+    <div className="default-container page-layout">
       <StakeModal
         isVisible={isStakeModalVisible}
         setIsVisible={setIsStakeModalVisible}
@@ -1371,6 +1373,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         maxAmount={vesterDepositMaxAmount}
         balance={vesterDepositBalance}
         escrowedBalance={vesterDepositEscrowedBalance}
+        vestedAmount={vesterDepositVestedAmount}
         averageStakedAmount={vesterDepositAverageStakedAmount}
         maxVestableAmount={vesterDepositMaxVestableAmount}
         reserveAmount={vesterDepositReserveAmount}
@@ -1416,20 +1419,23 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         library={library}
         chainId={chainId}
       />
-      <div className="Page-title-section mt-0">
-        <div className="Page-title">Earn</div>
-        <div className="Page-description">
-          Stake{" "}
-          <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">
-            GMX
-          </a>{" "}
-          and{" "}
-          <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
-            GLP
-          </a>{" "}
-          to earn rewards.
+      <div className="section-title-block">
+        <div className="section-title-icon"></div>
+        <div className="section-title-content">
+          <div className="Page-title">Earn</div>
+          <div className="Page-description">
+            Stake{" "}
+            <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">
+              GMX
+            </a>{" "}
+            and{" "}
+            <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
+              GLP
+            </a>{" "}
+            to earn rewards.
+          </div>
+          {earnMsg && <div className="Page-description">{earnMsg}</div>}
         </div>
-        {earnMsg && <div className="Page-description">{earnMsg}</div>}
       </div>
       <div className="StakeV2-content">
         <div className="StakeV2-cards">
@@ -1715,7 +1721,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">Price</div>
-                <div>${formatKeyAmount(processedData, "glpPrice", USD_DECIMALS, 2, true)}</div>
+                <div>${formatKeyAmount(processedData, "glpPrice", USD_DECIMALS, 3, true)}</div>
               </div>
               <div className="App-card-row">
                 <div className="label">Wallet</div>
@@ -1925,7 +1931,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       </div>
 
       <div>
-        <div className="Page-title-section">
+        <div className="Tab-title-section">
           <div className="Page-title">Vest</div>
           <div className="Page-description">
             Convert esGMX tokens to GMX tokens.

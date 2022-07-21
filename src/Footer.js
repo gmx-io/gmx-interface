@@ -1,15 +1,30 @@
 import React from "react";
-
 import "./Footer.css";
-
 import logoImg from "./img/ic_gmx_footer.svg";
 import twitterIcon from "./img/ic_twitter.svg";
 import discordIcon from "./img/ic_discord.svg";
 import telegramIcon from "./img/ic_telegram.svg";
 import githubIcon from "./img/ic_github.svg";
 import mediumIcon from "./img/ic_medium.svg";
+import { NavLink } from "react-router-dom";
+import { isHomeSite, getAppBaseUrl } from "./Helpers";
+
+const footerLinks = {
+  home: [
+    { text: "Terms and Conditions", link: "/terms-and-conditions" },
+    { text: "Referral Terms", link: "/referral-terms" },
+    { text: "Media Kit", link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
+    { text: "Jobs", link: getAppBaseUrl() + "/jobs", external: true },
+  ],
+  app: [
+    { text: "Media Kit", link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
+    { text: "Jobs", link: "/jobs" },
+  ],
+};
 
 export default function Footer() {
+  const isHome = isHomeSite();
+
   return (
     <div className="Footer">
       <div className="Footer-wrapper">
@@ -32,6 +47,22 @@ export default function Footer() {
           <a className="App-social-link" href="https://discord.gg/cxjZYR4gQK" target="_blank" rel="noopener noreferrer">
             <img src={discordIcon} alt="Discord" />
           </a>
+        </div>
+        <div className="Footer-links">
+          {footerLinks[isHome ? "home" : "app"].map(({ external, text, link }) => {
+            if (external) {
+              return (
+                <a key={link} target="_blank" href={link} className="Footer-link" rel="noopener noreferrer">
+                  {text}
+                </a>
+              );
+            }
+            return (
+              <NavLink key={link} to={link} className="Footer-link" activeClassName="active">
+                {text}
+              </NavLink>
+            );
+          })}
         </div>
       </div>
     </div>

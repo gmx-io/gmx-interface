@@ -6,8 +6,9 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
+import useScrollToTop from "./hooks/useScrollToTop";
 
-import { Switch, Route, NavLink } from "react-router-dom";
+import { Switch, Route, NavLink, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
 
 import {
   ARBITRUM,
@@ -18,6 +19,9 @@ import {
   SHOW_PNL_AFTER_FEES_KEY,
   BASIS_POINTS_DIVISOR,
   SHOULD_SHOW_POSITION_LINES_KEY,
+  getHomeUrl,
+  getAppBaseUrl,
+  isHomeSite,
   clearWalletConnectData,
   switchNetwork,
   helperToast,
@@ -38,11 +42,13 @@ import {
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   REFERRAL_CODE_KEY,
-  REFERRAL_CODE_QUERY_PARAMS,
+  REFERRAL_CODE_QUERY_PARAM,
+  isDevelopment,
+  DISABLE_ORDER_VALIDATION_KEY,
+  isValidTimestamp,
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
-import Presale from "./views/Presale/Presale";
 import Dashboard from "./views/Dashboard/Dashboard";
 import Ecosystem from "./views/Ecosystem/Ecosystem";
 import Stake from "./views/Stake/Stake";
@@ -53,13 +59,11 @@ import PositionsOverview from "./views/PositionsOverview/PositionsOverview";
 import Referrals from "./views/Referrals/Referrals";
 import BuyGlp from "./views/BuyGlp/BuyGlp";
 import BuyGMX from "./views/BuyGMX/BuyGMX";
-import SellGlp from "./views/SellGlp/SellGlp";
 import Buy from "./views/Buy/Buy";
 import NftWallet from "./views/NftWallet/NftWallet";
 import ClaimEsGmx from "./views/ClaimEsGmx/ClaimEsGmx";
 import BeginAccountTransfer from "./views/BeginAccountTransfer/BeginAccountTransfer";
 import CompleteAccountTransfer from "./views/CompleteAccountTransfer/CompleteAccountTransfer";
-import Debug from "./views/Debug/Debug";
 
 import cx from "classnames";
 import { cssTransition, ToastContainer } from "react-toastify";
@@ -89,16 +93,22 @@ import walletConnectImg from "./img/walletconnect-circle-blue.svg";
 import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
 import { ConnectWalletButton } from "./components/Common/Button";
 import useEventToast from "./components/EventToast/useEventToast";
-import { Link } from "react-router-dom";
 import EventToastContainer from "./components/EventToast/EventToastContainer";
 import SEO from "./components/Common/SEO";
 import useRouteQuery from "./hooks/useRouteQuery";
-import { encodeReferralCode } from "./Api/referrals";
+import { encodeReferralCode, decodeReferralCode } from "./Api/referrals";
 
 import { getContract } from "./Addresses";
 import VaultV2 from "./abis/VaultV2.json";
 import VaultV2b from "./abis/VaultV2b.json";
 import PositionRouter from "./abis/PositionRouter.json";
+import PageNotFound from "./views/PageNotFound/PageNotFound";
+import ReferralTerms from "./views/ReferralTerms/ReferralTerms";
+import TermsAndConditions from "./views/TermsAndConditions/TermsAndConditions";
+import { useLocalStorage } from "react-use";
+import { RedirectPopupModal } from "./components/ModalViews/RedirectModal";
+import { REDIRECT_POPUP_TIMESTAMP_KEY } from "./utils/constants";
+import Jobs from "./views/Jobs/Jobs";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -118,11 +128,9 @@ const Zoom = cssTransition({
   duration: 200,
 });
 
-function inPreviewMode() {
-  return false;
-}
-
-const arbWsProvider = new ethers.providers.WebSocketProvider("wss://arb1.arbitrum.io/ws");
+const arbWsProvider = new ethers.providers.WebSocketProvider(
+  "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"
+);
 
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
 
@@ -139,28 +147,7 @@ function getWsProvider(active, chainId) {
   }
 }
 
-function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
-  if (inPreviewMode()) {
-    return (
-      <div className="App-header-links preview">
-        <div className="App-header-link-container App-header-link-home">
-          <NavLink activeClassName="active" exact to="/">
-            HOME
-          </NavLink>
-        </div>
-        <div className="App-header-link-container">
-          <NavLink activeClassName="active" to="/earn">
-            EARN
-          </NavLink>
-        </div>
-        <div className="App-header-link-container">
-          <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
-            ABOUT
-          </a>
-        </div>
-      </div>
-    );
-  }
+function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
   return (
     <div className="App-header-links">
       {small && (
@@ -168,54 +155,37 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
           <div className="App-header-menu-icon-block" onClick={() => clickCloseIcon()}>
             <FiX className="App-header-menu-icon" />
           </div>
-          <Link className="App-header-link-main" to="/">
+          <HeaderLink isHomeLink={true} className="App-header-link-main" to="/">
             <img src={logoImg} alt="GMX Logo" />
-          </Link>
+          </HeaderLink>
         </div>
       )}
       <div className="App-header-link-container App-header-link-home">
-        <NavLink activeClassName="active" exact to="/">
+        <HeaderLink to="/" exact={true} isHomeLink={true}>
           Home
-        </NavLink>
-      </div>
-      {small && (
-        <div className="App-header-link-container">
-          <NavLink activeClassName="active" to="/trade">
-            Trade
-          </NavLink>
-        </div>
-      )}
-      <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/dashboard">
-          Dashboard
-        </NavLink>
+        </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/earn">
-          Earn
-        </NavLink>
+        <HeaderLink to="/dashboard">Dashboard</HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/buy">
-          Buy
-        </NavLink>
+        <HeaderLink to="/earn">Earn</HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/referrals">
-          Referrals
-        </NavLink>
+        <HeaderLink to="/buy">Buy</HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <NavLink activeClassName="active" to="/ecosystem">
-          Ecosystem
-        </NavLink>
+        <HeaderLink to="/referrals">Referrals</HeaderLink>
+      </div>
+      <div className="App-header-link-container">
+        <HeaderLink to="/ecosystem">Ecosystem</HeaderLink>
       </div>
       <div className="App-header-link-container">
         <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
           About
         </a>
       </div>
-      {small && (
+      {small && !isHomeSite() && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
           <a href="#" onClick={openSettings}>
@@ -228,6 +198,7 @@ function AppHeaderLinks({ small, openSettings, clickCloseIcon }) {
 }
 
 function AppHeaderUser({
+  HeaderLink,
   openSettings,
   small,
   setWalletModalVisible,
@@ -236,7 +207,8 @@ function AppHeaderUser({
 }) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
-  const showSelector = true;
+  const showConnectionOptions = !isHomeSite();
+
   const networkOptions = [
     {
       label: "Arbitrum",
@@ -274,11 +246,11 @@ function AppHeaderUser({
     return (
       <div className="App-header-user">
         <div className="App-header-user-link">
-          <NavLink activeClassName="active" className="default-btn" to="/trade">
+          <HeaderLink activeClassName="active" className="default-btn" to="/trade">
             Trade
-          </NavLink>
+          </HeaderLink>
         </div>
-        {showSelector && (
+        {showConnectionOptions && (
           <NetworkSelector
             options={networkOptions}
             label={selectorLabel}
@@ -290,9 +262,11 @@ function AppHeaderUser({
             showModal={showNetworkSelectorModal}
           />
         )}
-        <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
-          {small ? "Connect" : "Connect Wallet"}
-        </ConnectWalletButton>
+        {showConnectionOptions && (
+          <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
+            {small ? "Connect" : "Connect Wallet"}
+          </ConnectWalletButton>
+        )}
       </div>
     );
   }
@@ -302,11 +276,11 @@ function AppHeaderUser({
   return (
     <div className="App-header-user">
       <div className="App-header-user-link">
-        <NavLink activeClassName="active" className="default-btn" to="/trade">
+        <HeaderLink activeClassName="active" className="default-btn" to="/trade">
           Trade
-        </NavLink>
+        </HeaderLink>
       </div>
-      {showSelector && (
+      {showConnectionOptions && (
         <NetworkSelector
           options={networkOptions}
           label={selectorLabel}
@@ -318,23 +292,28 @@ function AppHeaderUser({
           showModal={showNetworkSelectorModal}
         />
       )}
-      <div className="App-header-user-address">
-        <AddressDropdown
-          account={account}
-          small={small}
-          accountUrl={accountUrl}
-          disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-          openSettings={openSettings}
-        />
-      </div>
+      {showConnectionOptions && (
+        <div className="App-header-user-address">
+          <AddressDropdown
+            account={account}
+            small={small}
+            accountUrl={accountUrl}
+            disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+            openSettings={openSettings}
+          />
+        </div>
+      )}
     </div>
   );
 }
 
 function FullApp() {
+  const isHome = isHomeSite();
   const exchangeRef = useRef();
   const { connector, library, deactivate, activate, active } = useWeb3React();
   const { chainId } = useChainId();
+  const location = useLocation();
+  const history = useHistory();
   useEventToast();
   const [activatingConnector, setActivatingConnector] = useState();
   useEffect(() => {
@@ -348,26 +327,26 @@ function FullApp() {
   const query = useRouteQuery();
 
   useEffect(() => {
-    let referralCode = query.get(REFERRAL_CODE_QUERY_PARAMS);
+    let referralCode = query.get(REFERRAL_CODE_QUERY_PARAM);
+    if (!referralCode || referralCode.length === 0) {
+      const params = new URLSearchParams(window.location.search);
+      referralCode = params.get(REFERRAL_CODE_QUERY_PARAM);
+    }
+
     if (referralCode && referralCode.length <= 20) {
       const encodedReferralCode = encodeReferralCode(referralCode);
       if (encodeReferralCode !== ethers.constants.HashZero) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
+        const queryParams = new URLSearchParams(location.search);
+        if (queryParams.has("ref")) {
+          queryParams.delete("ref");
+          history.replace({
+            search: queryParams.toString(),
+          });
+        }
       }
     }
-  }, [query]);
-
-  useEffect(() => {
-    if (window.ethereum) {
-      // hack
-      // for some reason after network is changed to Avalanche through Metamask
-      // it triggers event with chainId = 1
-      // reload helps web3 to return correct chain data
-      return window.ethereum.on("chainChanged", () => {
-        document.location.reload();
-      });
-    }
-  }, []);
+  }, [query, history, location]);
 
   const disconnectAccount = useCallback(() => {
     // only works with WalletConnect
@@ -433,7 +412,12 @@ function FullApp() {
     connectInjectedWallet();
   };
 
-  const [walletModalVisible, setWalletModalVisible] = useState();
+  const [walletModalVisible, setWalletModalVisible] = useState(false);
+  const [redirectModalVisible, setRedirectModalVisible] = useState(false);
+  const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
+  const [redirectPopupTimestamp, setRedirectPopupTimestamp, removeRedirectPopupTimestamp] =
+    useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
+  const [selectedToPage, setSelectedToPage] = useState("");
   const connectWallet = () => setWalletModalVisible(true);
 
   const [isDrawerVisible, setIsDrawerVisible] = useState(undefined);
@@ -454,6 +438,7 @@ function FullApp() {
   );
   const [slippageAmount, setSlippageAmount] = useState(0);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
+  const [shouldDisableOrderValidation, setShouldDisableOrderValidation] = useState(false);
   const [showPnlAfterFees, setShowPnlAfterFees] = useState(false);
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
@@ -463,6 +448,10 @@ function FullApp() {
 
   const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
+    false
+  );
+  const [savedShouldDisableOrderValidation, setSavedShouldDisableOrderValidation] = useLocalStorageSerializeKey(
+    [chainId, DISABLE_ORDER_VALIDATION_KEY],
     false
   );
 
@@ -476,6 +465,7 @@ function FullApp() {
     setSlippageAmount((slippage / BASIS_POINTS_DIVISOR) * 100);
     setIsPnlInLeverage(savedIsPnlInLeverage);
     setShowPnlAfterFees(savedShowPnlAfterFees);
+    setShouldDisableOrderValidation(savedShouldDisableOrderValidation);
     setIsSettingsVisible(true);
   };
 
@@ -502,9 +492,21 @@ function FullApp() {
 
     setSavedIsPnlInLeverage(isPnlInLeverage);
     setSavedShowPnlAfterFees(showPnlAfterFees);
+    setSavedShouldDisableOrderValidation(shouldDisableOrderValidation);
     setSavedSlippageAmount(basisPoints);
     setIsSettingsVisible(false);
   };
+
+  const localStorageCode = window.localStorage.getItem(REFERRAL_CODE_KEY);
+  const baseUrl = getAppBaseUrl();
+  let appRedirectUrl = baseUrl + selectedToPage;
+  if (localStorageCode && localStorageCode.length > 0 && localStorageCode !== ethers.constants.HashZero) {
+    const decodedRefCode = decodeReferralCode(localStorageCode);
+    if (decodedRefCode) {
+      appRedirectUrl = `${appRedirectUrl}?ref=${decodedRefCode}`;
+    }
+  }
+
   useEffect(() => {
     if (isDrawerVisible) {
       document.body.style.overflow = "hidden";
@@ -515,6 +517,49 @@ function FullApp() {
   }, [isDrawerVisible]);
 
   const [pendingTxns, setPendingTxns] = useState([]);
+
+  const showRedirectModal = (to) => {
+    setRedirectModalVisible(true);
+    setSelectedToPage(to);
+  };
+
+  const HeaderLink = ({ isHomeLink, className, exact, to, children }) => {
+    const isOnHomePage = location.pathname === "/";
+    const thirtyDays = 1000 * 60 * 60 * 24 * 30;
+    const expiryTime = redirectPopupTimestamp + thirtyDays;
+    const shouldShowRedirectModal = !isValidTimestamp(redirectPopupTimestamp) || Date.now() > expiryTime;
+
+    if (isHome && !(isHomeLink && !isOnHomePage)) {
+      if (shouldShowRedirectModal) {
+        return (
+          <div className={cx("a", className, { active: isHomeLink })} onClick={() => showRedirectModal(to)}>
+            {children}
+          </div>
+        );
+      } else {
+        const baseUrl = getAppBaseUrl();
+        return (
+          <a className={cx("a", className, { active: isHomeLink })} href={baseUrl + to}>
+            {children}
+          </a>
+        );
+      }
+    }
+
+    if (isHomeLink) {
+      return (
+        <a href={getHomeUrl()} className={cx(className)}>
+          {children}
+        </a>
+      );
+    }
+
+    return (
+      <NavLink activeClassName="active" className={cx(className)} exact={exact} to={to}>
+        {children}
+      </NavLink>
+    );
+  };
 
   useEffect(() => {
     const checkPendingTxns = async () => {
@@ -653,14 +698,15 @@ function FullApp() {
           <header>
             <div className="App-header large">
               <div className="App-header-container-left">
-                <Link className="App-header-link-main" to="/">
+                <HeaderLink isHomeLink={true} exact={true} className="App-header-link-main" to="/">
                   <img src={logoImg} className="big" alt="GMX Logo" />
                   <img src={logoSmallImg} className="small" alt="GMX Logo" />
-                </Link>
-                <AppHeaderLinks />
+                </HeaderLink>
+                <AppHeaderLinks HeaderLink={HeaderLink} />
               </div>
               <div className="App-header-container-right">
                 <AppHeaderUser
+                  HeaderLink={HeaderLink}
                   disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
                   openSettings={openSettings}
                   setActivatingConnector={setActivatingConnector}
@@ -688,6 +734,7 @@ function FullApp() {
                 </div>
                 <div className="App-header-container-right">
                   <AppHeaderUser
+                    HeaderLink={HeaderLink}
                     disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
                     openSettings={openSettings}
                     small
@@ -711,98 +758,115 @@ function FullApp() {
                 variants={slideVariants}
                 transition={{ duration: 0.2 }}
               >
-                <AppHeaderLinks small openSettings={openSettings} clickCloseIcon={() => setIsDrawerVisible(false)} />
+                <AppHeaderLinks
+                  HeaderLink={HeaderLink}
+                  small
+                  openSettings={openSettings}
+                  clickCloseIcon={() => setIsDrawerVisible(false)}
+                />
               </motion.div>
             )}
           </AnimatePresence>
-          <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-            <Route exact path="/trade">
-              <Exchange
-                ref={exchangeRef}
-                savedShowPnlAfterFees={savedShowPnlAfterFees}
-                savedIsPnlInLeverage={savedIsPnlInLeverage}
-                setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
-                savedSlippageAmount={savedSlippageAmount}
-                setPendingTxns={setPendingTxns}
-                pendingTxns={pendingTxns}
-                savedShouldShowPositionLines={savedShouldShowPositionLines}
-                setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
-                connectWallet={connectWallet}
-              />
-            </Route>
-            <Route exact path="/presale">
-              <Presale />
-            </Route>
-            <Route exact path="/dashboard">
-              <Dashboard />
-            </Route>
-            <Route exact path="/earn">
-              <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
-            </Route>
-            <Route exact path="/buy">
-              <Buy
-                savedSlippageAmount={savedSlippageAmount}
-                setPendingTxns={setPendingTxns}
-                connectWallet={connectWallet}
-              />
-            </Route>
-            <Route exact path="/buy_glp">
-              <BuyGlp
-                savedSlippageAmount={savedSlippageAmount}
-                setPendingTxns={setPendingTxns}
-                connectWallet={connectWallet}
-              />
-            </Route>
-            <Route exact path="/sell_glp">
-              <SellGlp
-                savedSlippageAmount={savedSlippageAmount}
-                setPendingTxns={setPendingTxns}
-                connectWallet={connectWallet}
-              />
-            </Route>
-            <Route exact path="/buy_gmx">
-              <BuyGMX />
-            </Route>
-            <Route exact path="/ecosystem">
-              <Ecosystem />
-            </Route>
-            <Route exact path="/referrals">
-              <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
-            </Route>
-            <Route exact path="/about">
-              <Home />
-            </Route>
-            <Route exact path="/nft_wallet">
-              <NftWallet />
-            </Route>
-            <Route exact path="/claim_es_gmx">
-              <ClaimEsGmx setPendingTxns={setPendingTxns} />
-            </Route>
-            <Route exact path="/actions/:account">
-              <Actions />
-            </Route>
-            <Route exact path="/orders_overview">
-              <OrdersOverview />
-            </Route>
-            <Route exact path="/positions_overview">
-              <PositionsOverview />
-            </Route>
-            <Route exact path="/actions">
-              <Actions />
-            </Route>
-            <Route exact path="/begin_account_transfer">
-              <BeginAccountTransfer setPendingTxns={setPendingTxns} />
-            </Route>
-            <Route exact path="/complete_account_transfer/:sender/:receiver">
-              <CompleteAccountTransfer setPendingTxns={setPendingTxns} />
-            </Route>
-            <Route exact path="/debug">
-              <Debug />
-            </Route>
-          </Switch>
+          {isHome && (
+            <Switch>
+              <Route exact path="/">
+                <Home showRedirectModal={showRedirectModal} />
+              </Route>
+              <Route exact path="/referral-terms">
+                <ReferralTerms />
+              </Route>
+              <Route exact path="/terms-and-conditions">
+                <TermsAndConditions />
+              </Route>
+              <Route path="*">
+                <PageNotFound />
+              </Route>
+            </Switch>
+          )}
+          {!isHome && (
+            <Switch>
+              <Route exact path="/">
+                <Redirect to="/dashboard" />
+              </Route>
+              <Route exact path="/trade">
+                <Exchange
+                  ref={exchangeRef}
+                  savedShowPnlAfterFees={savedShowPnlAfterFees}
+                  savedIsPnlInLeverage={savedIsPnlInLeverage}
+                  setSavedIsPnlInLeverage={setSavedIsPnlInLeverage}
+                  savedSlippageAmount={savedSlippageAmount}
+                  setPendingTxns={setPendingTxns}
+                  pendingTxns={pendingTxns}
+                  savedShouldShowPositionLines={savedShouldShowPositionLines}
+                  setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
+                  connectWallet={connectWallet}
+                  savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
+                />
+              </Route>
+              <Route exact path="/dashboard">
+                <Dashboard />
+              </Route>
+              <Route exact path="/earn">
+                <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
+              </Route>
+              <Route exact path="/buy">
+                <Buy
+                  savedSlippageAmount={savedSlippageAmount}
+                  setPendingTxns={setPendingTxns}
+                  connectWallet={connectWallet}
+                />
+              </Route>
+              <Route exact path="/buy_glp">
+                <BuyGlp
+                  savedSlippageAmount={savedSlippageAmount}
+                  setPendingTxns={setPendingTxns}
+                  connectWallet={connectWallet}
+                />
+              </Route>
+              <Route exact path="/jobs">
+                <Jobs />
+              </Route>
+              <Route exact path="/buy_gmx">
+                <BuyGMX />
+              </Route>
+              <Route exact path="/ecosystem">
+                <Ecosystem />
+              </Route>
+              <Route exact path="/referrals">
+                <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path="/referrals/:account">
+                <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path="/nft_wallet">
+                <NftWallet />
+              </Route>
+              <Route exact path="/claim_es_gmx">
+                <ClaimEsGmx setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path="/actions">
+                <Actions />
+              </Route>
+              <Route exact path="/actions/:account">
+                <Actions />
+              </Route>
+              <Route exact path="/orders_overview">
+                <OrdersOverview />
+              </Route>
+              <Route exact path="/positions_overview">
+                <PositionsOverview />
+              </Route>
+              <Route exact path="/begin_account_transfer">
+                <BeginAccountTransfer setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path="/complete_account_transfer/:sender/:receiver">
+                <CompleteAccountTransfer setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route path="*">
+                <PageNotFound />
+              </Route>
+            </Switch>
+          )}
         </div>
       </div>
       <ToastContainer
@@ -817,6 +881,15 @@ function FullApp() {
         pauseOnHover
       />
       <EventToastContainer />
+      <RedirectPopupModal
+        redirectModalVisible={redirectModalVisible}
+        setRedirectModalVisible={setRedirectModalVisible}
+        appRedirectUrl={appRedirectUrl}
+        setRedirectPopupTimestamp={setRedirectPopupTimestamp}
+        setShouldHideRedirectModal={setShouldHideRedirectModal}
+        shouldHideRedirectModal={shouldHideRedirectModal}
+        removeRedirectPopupTimestamp={removeRedirectPopupTimestamp}
+      />
       <Modal
         className="Connect-wallet-modal"
         isVisible={walletModalVisible}
@@ -865,6 +938,14 @@ function FullApp() {
             Include PnL in leverage display
           </Checkbox>
         </div>
+        {isDevelopment() && (
+          <div className="Exchange-settings-row">
+            <Checkbox isChecked={shouldDisableOrderValidation} setIsChecked={setShouldDisableOrderValidation}>
+              Disable order validations
+            </Checkbox>
+          </div>
+        )}
+
         <button className="App-cta Exchange-swap-button" onClick={saveAndCloseSettings}>
           Save
         </button>
@@ -873,117 +954,15 @@ function FullApp() {
   );
 }
 
-function PreviewApp() {
-  const [isDrawerVisible, setIsDrawerVisible] = useState(undefined);
-  const fadeVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-  };
-  const slideVariants = {
-    hidden: { x: "-100%" },
-    visible: { x: 0 },
-  };
-
-  return (
-    <>
-      <div className="App">
-        <div className="App-background-side-1"></div>
-        <div className="App-background-side-2"></div>
-        <div className="App-background"></div>
-        <div className="App-background-ball-1"></div>
-        <div className="App-background-ball-2"></div>
-        <div className="App-highlight"></div>
-        <div className="App-content">
-          {isDrawerVisible && (
-            <AnimatePresence>
-              {isDrawerVisible && (
-                <motion.div
-                  className="App-header-backdrop"
-                  initial="hidden"
-                  animate="visible"
-                  exit="hidden"
-                  variants={fadeVariants}
-                  transition={{ duration: 0.2 }}
-                  onClick={() => setIsDrawerVisible(!isDrawerVisible)}
-                ></motion.div>
-              )}
-            </AnimatePresence>
-          )}
-          <header>
-            <div className="App-header large preview">
-              <div className="App-header-container-left">
-                <NavLink exact activeClassName="active" className="App-header-link-main" to="/">
-                  <img src={logoImg} alt="GMX Logo" />
-                  GMX
-                </NavLink>
-              </div>
-              <div className="App-header-container-right">
-                <AppHeaderLinks />
-              </div>
-            </div>
-            <div className={cx("App-header", "small", { active: isDrawerVisible })}>
-              <div
-                className={cx("App-header-link-container", "App-header-top", {
-                  active: isDrawerVisible,
-                })}
-              >
-                <div className="App-header-container-left">
-                  <div className="App-header-link-main">
-                    <img src={logoImg} alt="GMX Logo" />
-                  </div>
-                </div>
-                <div className="App-header-container-right">
-                  <div onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
-                    {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
-                    {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
-                  </div>
-                </div>
-              </div>
-              <AnimatePresence>
-                {isDrawerVisible && (
-                  <motion.div
-                    onClick={() => setIsDrawerVisible(false)}
-                    className="App-header-links-container App-header-drawer"
-                    initial="hidden"
-                    animate="visible"
-                    exit="hidden"
-                    variants={slideVariants}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <AppHeaderLinks small />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </header>
-          <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-            <Route exact path="/earn">
-              <Stake />
-            </Route>
-          </Switch>
-        </div>
-      </div>
-    </>
-  );
-}
-
 function App() {
-  if (inPreviewMode()) {
-    return (
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <PreviewApp />
-      </Web3ReactProvider>
-    );
-  }
-
+  useScrollToTop();
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <SEO>
-          <FullApp />
+          <Router>
+            <FullApp />
+          </Router>
         </SEO>
       </Web3ReactProvider>
     </SWRConfig>

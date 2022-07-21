@@ -18,7 +18,7 @@ function SharePosition(props) {
         <img src={sharePositionInfo.image_url} alt="" />
       </div>
       <div className="social-share-btn">
-        <button className="default-btn" onClick={() => download(sharePositionImageUri, imageName)}>
+        <button className="default-btn mr-base" onClick={() => download(sharePositionImageUri, imageName)}>
           Download to share
         </button>
         <a

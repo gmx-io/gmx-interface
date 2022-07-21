@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useCallback } from "react";
 import Footer from "../../Footer";
 import "./BuyGMX.css";
 
@@ -15,8 +15,6 @@ import avax30Icon from "../../img/ic_avax_30.svg";
 import gmxArbitrum from "../../img/ic_gmx_arbitrum.svg";
 import gmxAvax from "../../img/ic_gmx_avax.svg";
 import ohmArbitrum from "../../img/ic_olympus_arbitrum.svg";
-import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
-import avalanche16Icon from "../../img/ic_avalanche_16.svg";
 import Button from "../../components/Common/Button";
 
 export default function BuyGMX() {
@@ -33,13 +31,9 @@ export default function BuyGMX() {
     [chainId, active]
   );
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
-    <div className="BuyGMXGLP page-layout">
-      <div className="BuyGMXGLP-container default-container">
+    <div className="BuyGMXGLP default-container page-layout">
+      <div className="BuyGMXGLP-container">
         {chainId === ARBITRUM && (
           <div className="section-title-block">
             <div className="section-title-content">
@@ -47,11 +41,8 @@ export default function BuyGMX() {
               <div className="Page-description">
                 ETH is needed on Arbitrum to purchase GMX.
                 <br />
-                To purchase GMX on{" "}
-                <span onClick={() => onNetworkSelect(AVALANCHE)}>
-                  Avalanche <img src={avalanche16Icon} alt="avalanche16Icon" />
-                </span>
-                , please change your network.
+                To purchase GMX on <span onClick={() => onNetworkSelect(AVALANCHE)}>Avalanche</span>, please change your
+                network.
               </div>
             </div>
           </div>
@@ -84,7 +75,7 @@ export default function BuyGMX() {
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
-                  You can transfer ETH from other networks to Arbitrum using any of the below options:
+                  You can also transfer ETH from other networks to Arbitrum using any of the below options:
                 </div>
                 <div className="bridge-options">
                   <Button
@@ -119,11 +110,8 @@ export default function BuyGMX() {
               <div className="Page-description">
                 Avax is needed on Avalanche to purchase GMX.
                 <br />
-                To purchase GMX on{" "}
-                <span onClick={() => onNetworkSelect(ARBITRUM)}>
-                  Arbitrum <img src={arbitrum16Icon} alt="arbitrum16Icon" />
-                </span>
-                , please change your network.
+                To purchase GMX on <span onClick={() => onNetworkSelect(ARBITRUM)}>Arbitrum</span>, please change your
+                network.
               </div>
             </div>
           </div>
@@ -156,10 +144,10 @@ export default function BuyGMX() {
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
-                  You can transfer AVAX to Avalanche using any of the below options. <br />
+                  You can also transfer AVAX to Avalanche using any of the below options. <br />
                   <br />
-                  Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and
-                  receive free AVAX to pay for the network's fees.
+                  If you use the Avalanche or Synapse bridges, you can transfer any other supported cryptocurrency, and
+                  receive AVAX to pay for the network fees.
                 </div>
                 <div className="bridge-options">
                   <Button align="left" href="https://bridge.avax.network/" imgSrc={avax30Icon}>
@@ -188,17 +176,21 @@ export default function BuyGMX() {
               <div className="App-card no-height">
                 <div className="App-card-content no-title">
                   <div className="BuyGMXGLP-description better-rates-description">
-                    After you have ETH, set your network to{" "}
-                    <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">
-                      Arbitrum
-                    </a>{" "}
-                    then click the button below:
+                    After you have AVAX, set your network to{" "}
+                    <a
+                      href="https://support.avax.network/en/articles/4626956-how-do-i-set-up-metamask-on-avalanche"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Avalanche
+                    </a>
+                    , then click the button below:
                   </div>
                   <div className="direct-purchase-options">
                     <Button
                       size="xl"
                       imgSrc={gmxAvax}
-                      href="https://traderjoexyz.com/#/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661"
+                      href="https://traderjoexyz.com/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661#/"
                     >
                       Purchase GMX
                     </Button>

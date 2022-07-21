@@ -1,37 +1,37 @@
 .ExchangeBanner {
-    background: linear-gradient(90deg, #105461, #28156e);
-    border-radius: 5px;
-    margin: 1.935rem 2rem 1rem;
-    padding: 12px 24px;
-    padding-right: 40px;
-    position: relative;
+  background: linear-gradient(90deg, #105461, #28156e);
+  border-radius: 0.5rem;
+  margin: 3rem 3.1rem 1.5rem;
+  padding: 1.2rem 2.4rem;
+  padding-right: 4rem;
+  position: relative;
 }
 
 .ExchangeBanner-text {
-    color: white;
-    font-size: 18px;
-    line-height: 23px;
-    margin: 0;
+  color: white;
+  font-size: 1.8rem;
+  line-height: 2.3rem;
+  margin: 0;
 }
 
 .ExchangeBanner-price {
-    color: #50d0fe;
+  color: #50d0fe;
 }
 
 .ExchangeBanner-link {
-    color: white;
+  color: white;
 }
 
 .ExchangeBanner-close {
-    position: absolute;
-    top: 12px;
-    right: 24px;
-    cursor: pointer;
+  position: absolute;
+  top: 1.2rem;
+  right: 2.4rem;
+  cursor: pointer;
 }
 
 @media (max-width: 700px) {
-    .ExchangeBanner {
-        margin: 1rem;
-        margin-top: 0.5rem;
-    }
+  .ExchangeBanner {
+    margin: 1.5rem;
+    margin-top: 0.8rem;
+  }
 }

@@ -6,14 +6,14 @@ import { Pool } from "@uniswap/v3-sdk";
 import useSWR from "swr";
 
 import OrderBook from "../abis/OrderBook.json";
-import OrderExecutor from "../abis/OrderExecutor.json";
+import PositionManager from "../abis/PositionManager.json";
 import Vault from "../abis/Vault.json";
 import Router from "../abis/Router.json";
 import UniPool from "../abis/UniPool.json";
 import UniswapV2 from "../abis/UniswapV2.json";
 import Token from "../abis/Token.json";
 import VaultReader from "../abis/VaultReader.json";
-import ReferralStorage from "../abis/ReferralStorage.json";
+import PositionRouter from "../abis/PositionRouter.json";
 
 import { getContract } from "../Addresses";
 import { getConstant } from "../Constants";
@@ -35,12 +35,18 @@ import {
   parseValue,
   expandDecimals,
   getInfoTokens,
-  isAddressZero,
   helperToast,
+  getUsd,
+  USD_DECIMALS,
+  HIGH_EXECUTION_FEES_MAP,
+  SWAP,
+  INCREASE,
+  DECREASE,
 } from "../Helpers";
 import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
 
 import { nissohGraphClient, arbitrumGraphClient, avalancheGraphClient } from "./common";
+import { groupBy } from "lodash";
 export * from "./prices";
 
 const { AddressZero } = ethers.constants;
@@ -89,7 +95,7 @@ export function useInfoTokens(library, chainId, active, tokenBalances, fundingRa
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
 
   const { data: vaultTokenInfo } = useSWR(
-    [`useInfoTokens:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV3"],
+    [`useInfoTokens:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV4"],
     {
       fetcher: fetcher(library, VaultReader, [
         vaultAddress,
@@ -340,13 +346,14 @@ function invariant(condition, errorMsg) {
   }
 }
 
-export function useTrades(chainId, account) {
+export function useTrades(chainId, account, forSingleAccount) {
   const url =
     account && account.length > 0
       ? `${getServerBaseUrl(chainId)}/actions?account=${account}`
-      : `${getServerBaseUrl(chainId)}/actions`;
-  const { data: trades, mutate: updateTrades } = useSWR(url, {
-    dedupingInterval: 30000,
+      : !forSingleAccount && `${getServerBaseUrl(chainId)}/actions`;
+
+  const { data: trades, mutate: updateTrades } = useSWR(url && url, {
+    dedupingInterval: 10000,
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
 
@@ -391,6 +398,70 @@ export function useTrades(chainId, account) {
   }
 
   return { trades, updateTrades };
+}
+
+export function useMinExecutionFee(library, active, chainId, infoTokens) {
+  const positionRouterAddress = getContract(chainId, "PositionRouter");
+  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
+
+  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
+    fetcher: fetcher(library, PositionRouter),
+  });
+
+  const { data: gasPrice } = useSWR(["gasPrice", chainId], {
+    fetcher: () => {
+      return new Promise(async (resolve, reject) => {
+        const provider = getProvider(library, chainId);
+        if (!provider) {
+          resolve(undefined);
+          return;
+        }
+
+        try {
+          const gasPrice = await provider.getGasPrice();
+          resolve(gasPrice);
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    },
+  });
+
+  let multiplier;
+
+  // if gas prices on Arbitrum are high, the main transaction costs would come from the L2 gas usage
+  // for executing positions this is around 65,000 gas
+  // if gas prices on Ethereum are high, than the gas usage might be higher, this calculation doesn't deal with that
+  // case yet
+  if (chainId === ARBITRUM) {
+    multiplier = 65000;
+  }
+
+  // multiplier for Avalanche is just the average gas usage
+  if (chainId === AVALANCHE) {
+    multiplier = 700000;
+  }
+
+  let finalExecutionFee = minExecutionFee;
+
+  if (gasPrice && minExecutionFee) {
+    const estimatedExecutionFee = gasPrice.mul(multiplier);
+    if (estimatedExecutionFee.gt(minExecutionFee)) {
+      finalExecutionFee = estimatedExecutionFee;
+    }
+  }
+
+  const finalExecutionFeeUSD = getUsd(finalExecutionFee, nativeTokenAddress, false, infoTokens);
+  const isFeeHigh = finalExecutionFeeUSD?.gt(expandDecimals(HIGH_EXECUTION_FEES_MAP[chainId], USD_DECIMALS));
+  const errorMessage =
+    isFeeHigh &&
+    `The network cost to send transactions is high at the moment, please check the "Execution Fee" value before proceeding.`;
+
+  return {
+    minExecutionFee: finalExecutionFee,
+    minExecutionFeeUSD: finalExecutionFeeUSD,
+    minExecutionFeeErrorMessage: errorMessage,
+  };
 }
 
 export function useStakedGmxSupply(library, active) {
@@ -556,46 +627,6 @@ export function useTotalGmxInLiquidity() {
   };
 }
 
-export function useUserReferralCode(library, chainId, account) {
-  const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: userReferralCode, mutate: mutateUserReferralCode } = useSWR(
-    account && [`ReferralStorage:traderReferralCodes`, chainId, referralStorageAddress, "traderReferralCodes", account],
-    {
-      fetcher: fetcher(library, ReferralStorage),
-    }
-  );
-  return {
-    userReferralCode,
-    mutateUserReferralCode,
-  };
-}
-export function useReferrerTier(library, chainId, account) {
-  const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: referrerTier, mutate: mutateReferrerTier } = useSWR(
-    account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
-    {
-      fetcher: fetcher(library, ReferralStorage),
-    }
-  );
-  return {
-    referrerTier,
-    mutateReferrerTier,
-  };
-}
-export function useCodeOwner(library, chainId, account, code) {
-  const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const { data: codeOwner, mutate: mutateCodeOwner } = useSWR(
-    account && code && [`ReferralStorage:codeOwners`, chainId, referralStorageAddress, "codeOwners", code],
-    {
-      fetcher: fetcher(library, ReferralStorage),
-    }
-  );
-  return {
-    codeOwner,
-    mutateCodeOwner,
-  };
-}
-
 function useGmxPriceFromAvalanche() {
   const poolAddress = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
 
@@ -689,33 +720,6 @@ export async function approvePlugin(
     pendingTxns,
     setPendingTxns,
   });
-}
-
-export async function registerReferralCode(chainId, referralCode, { library, ...props }) {
-  const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
-  return callContract(chainId, contract, "registerCode", [referralCode], { ...props });
-}
-export async function setTraderReferralCodeByUser(chainId, referralCode, { library, ...props }) {
-  const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, library.getSigner());
-  const codeOwner = await contract.codeOwners(referralCode);
-  if (isAddressZero(codeOwner)) {
-    helperToast.error("Referral code does not exist");
-    return new Promise((resolve, reject) => {
-      reject();
-    });
-  }
-  return callContract(chainId, contract, "setTraderReferralCodeByUser", [referralCode], {
-    ...props,
-  });
-}
-export async function getReferralCodeOwner(chainId, referralCode) {
-  const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const provider = getProvider(null, chainId);
-  const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, provider);
-  const codeOwner = await contract.codeOwners(referralCode);
-  return codeOwner;
 }
 
 export async function createSwapOrder(
@@ -861,6 +865,39 @@ export async function cancelIncreaseOrder(chainId, library, index, opts) {
   return callContract(chainId, contract, method, params, opts);
 }
 
+export function handleCancelOrder(chainId, library, order, opts) {
+  let func;
+  if (order.type === SWAP) {
+    func = cancelSwapOrder;
+  } else if (order.type === INCREASE) {
+    func = cancelIncreaseOrder;
+  } else if (order.type === DECREASE) {
+    func = cancelDecreaseOrder;
+  }
+
+  return func(chainId, library, order.index, {
+    successMsg: "Order cancelled.",
+    failMsg: "Cancel failed.",
+    sentMsg: "Cancel submitted.",
+    pendingTxns: opts.pendingTxns,
+    setPendingTxns: opts.setPendingTxns,
+  });
+}
+
+export async function cancelMultipleOrders(chainId, library, allIndexes = [], opts) {
+  const ordersWithTypes = groupBy(allIndexes, (v) => v.split("-")[0]);
+  function getIndexes(key) {
+    if (!ordersWithTypes[key]) return;
+    return ordersWithTypes[key].map((d) => d.split("-")[1]);
+  }
+  // params order => swap, increase, decrease
+  const params = ["Swap", "Increase", "Decrease"].map((key) => getIndexes(key) || []);
+  const method = "cancelMultiple";
+  const orderBookAddress = getContract(chainId, "OrderBook");
+  const contract = new ethers.Contract(orderBookAddress, OrderBook.abi, library.getSigner());
+  return callContract(chainId, contract, method, params, opts);
+}
+
 export async function updateDecreaseOrder(
   chainId,
   library,
@@ -907,8 +944,8 @@ export async function updateSwapOrder(chainId, library, index, minOut, triggerRa
 
 export async function _executeOrder(chainId, library, method, account, index, feeReceiver, opts) {
   const params = [account, index, feeReceiver];
-  const orderExecutorAddress = getContract(chainId, "OrderExecutor");
-  const contract = new ethers.Contract(orderExecutorAddress, OrderExecutor.abi, library.getSigner());
+  const positionManagerAddress = getContract(chainId, "PositionManager");
+  const contract = new ethers.Contract(positionManagerAddress, PositionManager.abi, library.getSigner());
   return callContract(chainId, contract, method, params, opts);
 }
 
@@ -1030,7 +1067,7 @@ export async function callContract(chainId, contract, method, params, opts) {
       default:
         failMsg = (
           <div>
-            {opts.failMsg || "Transaction failed."}
+            {opts.failMsg || "Transaction failed"}
             <br />
             {message && <ToastifyDebug>{message}</ToastifyDebug>}
           </div>

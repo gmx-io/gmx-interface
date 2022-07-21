@@ -14,39 +14,39 @@ a.btn {
   align-items: center;
   border: none;
   color: white;
-  font-size: 14px;
+  font-size: 1.4rem;
   border-radius: var(--border-radius-sm);
   cursor: pointer;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 .btn-sm {
-  padding: 5px 14px;
+  padding: 0.5rem 1.4rem;
 }
 
 .btn-lg,
 .btn-xl {
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 1.5rem;
 }
 
 .btn-sm .btn-label {
   font-weight: 400;
-  font-size: 14px;
-  margin-left: 8px;
+  font-size: 1.4rem;
+  margin-left: 0.8rem;
   letter-spacing: 0;
 }
 .btn-lg .btn-label {
-  margin-left: 0.75rem;
-  font-size: 1.1875rem;
+  margin-left: 1.1625rem;
+  font-size: 1.85rem;
   font-weight: normal;
-  line-height: 1.5rem;
+  line-height: 2.325rem;
   letter-spacing: 0;
 }
 .btn-xl .btn-label {
-  margin-left: 0.75rem;
-  font-size: 1.1875rem;
+  margin-left: 1.1625rem;
+  font-size: 1.85rem;
   font-weight: normal;
-  line-height: 1.5rem;
+  line-height: 2.325rem;
   letter-spacing: 0;
 }
 
@@ -54,22 +54,22 @@ a.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 2.4rem;
+  height: 2.4rem;
 }
 .btn-lg .btn-image {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 23px;
-  height: 23px;
+  width: 2.3rem;
+  height: 2.3rem;
 }
 .btn-xl .btn-image {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 27px;
-  height: 27px;
+  width: 2.7rem;
+  height: 2.7rem;
 }
 
 .btn-primary {
@@ -87,7 +87,7 @@ a.btn {
 
 @media (max-width: 450px) {
   .connect-wallet {
-    padding: 5px 8px;
+    padding: 0.5rem 0.8rem;
   }
 }
 @media (max-width: 350px) {
@@ -98,6 +98,6 @@ a.btn {
     margin-left: 0px;
   }
   .connect-wallet {
-    height: 36px;
+    height: 3.6rem;
   }
 }

@@ -183,7 +183,7 @@ function MigrationModal(props) {
       })
       .catch((e) => {
         console.error(e);
-        helperToast.error("Migration failed.");
+        helperToast.error("Migration failed");
       })
       .finally(() => {
         setIsMigrating(false);

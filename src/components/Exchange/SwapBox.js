@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 import Tooltip from "../Tooltip/Tooltip";
 import Modal from "../Modal/Modal";
@@ -59,8 +59,6 @@ import {
   calculatePositionDelta,
   replaceNativeTokenAddress,
   adjustForDecimals,
-  REFERRAL_CODE_KEY,
-  isHashZero,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import * as Api from "../../Api";
@@ -82,6 +80,7 @@ import WETH from "../../abis/WETH.json";
 import longImg from "../../img/long.svg";
 import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
+import { useUserReferralCode } from "../../Api/referrals";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -164,6 +163,10 @@ export default function SwapBox(props) {
     setIsWaitingForPositionRouterApproval,
     isPluginApproving,
     isPositionRouterApproving,
+    savedShouldDisableOrderValidation,
+    minExecutionFee,
+    minExecutionFeeUSD,
+    minExecutionFeeErrorMessage,
   } = props;
 
   const [fromValue, setFromValue] = useState("");
@@ -174,8 +177,7 @@ export default function SwapBox(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalError, setModalError] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
-  const { userReferralCode } = Api.useUserReferralCode(library, chainId, account);
-  const userReferralCodeInLocalStorage = window.localStorage.getItem(REFERRAL_CODE_KEY);
+  const { attachedOnChain, userReferralCode } = useUserReferralCode(library, chainId, account);
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -274,6 +276,7 @@ export default function SwapBox(props) {
   const stableTokens = tokens.filter((token) => token.isStable);
   const indexTokens = whitelistedTokens.filter((token) => !token.isStable && !token.isWrapped);
   const shortableTokens = indexTokens.filter((token) => token.isShortable);
+
   let toTokens = tokens;
   if (isLong) {
     toTokens = indexTokens;
@@ -323,12 +326,6 @@ export default function SwapBox(props) {
     }
   );
 
-  const positionRouterAddress = getContract(chainId, "PositionRouter");
-
-  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
-    fetcher: fetcher(library, PositionRouter),
-  });
-
   const { data: hasOutdatedUi } = Api.useHasOutdatedUi();
 
   const fromToken = getToken(chainId, fromTokenAddress);
@@ -337,7 +334,6 @@ export default function SwapBox(props) {
 
   const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
   const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
-  const toTokenAvailableUsd = toTokenInfo.availableUsd;
 
   const renderAvailableLongLiquidity = () => {
     if (!isLong) {
@@ -347,12 +343,27 @@ export default function SwapBox(props) {
     return (
       <div className="Exchange-info-row">
         <div className="Exchange-info-label">Available Liquidity</div>
-        <div className="align-right">{formatAmount(toTokenAvailableUsd, USD_DECIMALS, 2, true)}</div>
+        <div className="align-right">
+          <Tooltip
+            handle={`${formatAmount(toTokenInfo.maxAvailableLong, USD_DECIMALS, 2, true)}`}
+            position="right-bottom"
+            renderContent={() => {
+              return (
+                <>
+                  Max {toTokenInfo.symbol} long capacity: $
+                  {formatAmount(toTokenInfo.maxLongCapacity, USD_DECIMALS, 2, true)}
+                  <br />
+                  <br />
+                  Current {toTokenInfo.symbol} long: ${formatAmount(toTokenInfo.guaranteedUsd, USD_DECIMALS, 2, true)}
+                  <br />
+                </>
+              );
+            }}
+          ></Tooltip>
+        </div>
       </div>
     );
   };
-
-  const hasMaxAvailableShort = isShort && toTokenInfo.maxAvailableShort && toTokenInfo.maxAvailableShort.gt(0);
 
   const fromBalance = fromTokenInfo ? fromTokenInfo.balance : bigNumberify(0);
   const toBalance = toTokenInfo ? toTokenInfo.balance : bigNumberify(0);
@@ -384,6 +395,48 @@ export default function SwapBox(props) {
   const triggerRatioInverted = useMemo(() => {
     return isTriggerRatioInverted(fromTokenInfo, toTokenInfo);
   }, [toTokenInfo, fromTokenInfo]);
+
+  const maxToTokenOut = useMemo(() => {
+    const value = toTokenInfo.availableAmount?.gt(toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount))
+      ? toTokenInfo.poolAmount?.sub(toTokenInfo.bufferAmount)
+      : toTokenInfo.availableAmount;
+
+    if (!value) {
+      return bigNumberify(0);
+    }
+
+    return value.gt(0) ? value : bigNumberify(0);
+  }, [toTokenInfo]);
+
+  const maxToTokenOutUSD = useMemo(() => {
+    return getUsd(maxToTokenOut, toTokenAddress, false, infoTokens);
+  }, [maxToTokenOut, toTokenAddress, infoTokens]);
+
+  const maxFromTokenInUSD = useMemo(() => {
+    const value = fromTokenInfo.maxUsdgAmount
+      ?.sub(fromTokenInfo.usdgAmount)
+      .mul(expandDecimals(1, USD_DECIMALS))
+      .div(expandDecimals(1, USDG_DECIMALS));
+
+    if (!value) {
+      return bigNumberify(0);
+    }
+
+    return value.gt(0) ? value : bigNumberify(0);
+  }, [fromTokenInfo]);
+
+  const maxFromTokenIn = useMemo(() => {
+    if (!fromTokenInfo.maxPrice) {
+      return bigNumberify(0);
+    }
+    return maxFromTokenInUSD?.mul(expandDecimals(1, fromTokenInfo.decimals)).div(fromTokenInfo.maxPrice).toString();
+  }, [maxFromTokenInUSD, fromTokenInfo]);
+
+  let maxSwapAmountUsd = bigNumberify(0);
+
+  if (maxToTokenOutUSD && maxFromTokenInUSD) {
+    maxSwapAmountUsd = maxToTokenOutUSD.lt(maxFromTokenInUSD) ? maxToTokenOutUSD : maxFromTokenInUSD;
+  }
 
   const triggerRatio = useMemo(() => {
     if (!triggerRatioValue) {
@@ -472,7 +525,8 @@ export default function SwapBox(props) {
             undefined,
             !isMarketOrder && triggerRatio,
             usdgSupply,
-            totalTokenWeights
+            totalTokenWeights,
+            isSwap
           );
 
           const nextToValue = formatAmountFree(nextToAmount, toToken.decimals, toToken.decimals);
@@ -495,7 +549,8 @@ export default function SwapBox(props) {
           undefined,
           !isMarketOrder && triggerRatio,
           usdgSupply,
-          totalTokenWeights
+          totalTokenWeights,
+          isSwap
         );
         const nextFromValue = formatAmountFree(nextFromAmount, fromToken.decimals, fromToken.decimals);
         setFromValue(nextFromValue);
@@ -527,7 +582,8 @@ export default function SwapBox(props) {
             undefined,
             undefined,
             usdgSupply,
-            totalTokenWeights
+            totalTokenWeights,
+            isSwap
           );
 
           let fromUsdMinAfterFee = fromUsdMin;
@@ -573,7 +629,8 @@ export default function SwapBox(props) {
           undefined,
           undefined,
           usdgSupply,
-          totalTokenWeights
+          totalTokenWeights,
+          isSwap
         );
 
         if (feeBasisPoints) {
@@ -783,7 +840,7 @@ export default function SwapBox(props) {
     return [false];
   };
 
-  const getLeverageError = useCallback(() => {
+  const getLeverageError = () => {
     if (hasOutdatedUi) {
       return ["Page outdated, please refresh"];
     }
@@ -821,7 +878,7 @@ export default function SwapBox(props) {
       return ["Max leverage: 30.5x"];
     }
 
-    if (!isMarketOrder && entryMarkPrice && triggerPriceUsd) {
+    if (!isMarketOrder && entryMarkPrice && triggerPriceUsd && !savedShouldDisableOrderValidation) {
       if (isLong && entryMarkPrice.lt(triggerPriceUsd)) {
         return ["Price above Mark Price"];
       }
@@ -842,7 +899,8 @@ export default function SwapBox(props) {
           undefined,
           undefined,
           usdgSupply,
-          totalTokenWeights
+          totalTokenWeights,
+          isSwap
         );
         requiredAmount = requiredAmount.add(swapAmount);
 
@@ -877,6 +935,16 @@ export default function SwapBox(props) {
           }
         }
       }
+
+      const sizeUsd = toAmount.mul(toTokenInfo.maxPrice).div(expandDecimals(1, toTokenInfo.decimals));
+      if (
+        toTokenInfo.maxGlobalLongSize &&
+        toTokenInfo.maxGlobalLongSize.gt(0) &&
+        toTokenInfo.maxAvailableLong &&
+        sizeUsd.gt(toTokenInfo.maxAvailableLong)
+      ) {
+        return [`Max ${toTokenInfo.symbol} long exceeded`];
+      }
     }
 
     if (isShort) {
@@ -891,7 +959,8 @@ export default function SwapBox(props) {
           undefined,
           undefined,
           usdgSupply,
-          totalTokenWeights
+          totalTokenWeights,
+          isSwap
         );
         stableTokenAmount = nextToAmount;
         if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
@@ -940,8 +1009,9 @@ export default function SwapBox(props) {
       }
 
       if (
+        toTokenInfo.maxGlobalShortSize &&
+        toTokenInfo.maxGlobalShortSize.gt(0) &&
         toTokenInfo.maxAvailableShort &&
-        toTokenInfo.maxAvailableShort.gt(0) &&
         sizeUsd.gt(toTokenInfo.maxAvailableShort)
       ) {
         return [`Max ${toTokenInfo.symbol} short exceeded`];
@@ -954,30 +1024,7 @@ export default function SwapBox(props) {
     }
 
     return [false];
-  }, [
-    chainId,
-    fromAmount,
-    fromTokenAddress,
-    fromUsdMin,
-    hasExistingPosition,
-    infoTokens,
-    isLong,
-    isMarketOrder,
-    isShort,
-    leverage,
-    shortCollateralAddress,
-    shortCollateralToken,
-    swapOption,
-    toAmount,
-    toToken,
-    toTokenAddress,
-    totalTokenWeights,
-    triggerPriceUsd,
-    triggerPriceValue,
-    usdgSupply,
-    entryMarkPrice,
-    hasOutdatedUi,
-  ]);
+  };
 
   const getToLabel = () => {
     if (isSwap) {
@@ -996,7 +1043,7 @@ export default function SwapBox(props) {
     return getLeverageError();
   };
 
-  const renderOrdersToa = useCallback(() => {
+  const renderOrdersToa = () => {
     if (!ordersToaOpen) {
       return null;
     }
@@ -1008,9 +1055,9 @@ export default function SwapBox(props) {
         isPluginApproving={isPluginApproving}
       />
     );
-  }, [ordersToaOpen, setOrdersToaOpen, isPluginApproving, approveOrderBook]);
+  };
 
-  const renderErrorModal = useCallback(() => {
+  const renderErrorModal = () => {
     const inputCurrency = fromToken.address === AddressZero ? "ETH" : fromToken.address;
     let outputCurrency;
     if (isLong) {
@@ -1018,31 +1065,33 @@ export default function SwapBox(props) {
     } else {
       outputCurrency = shortCollateralToken.address;
     }
-    let uniswapUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}`;
+    let externalSwapUrl = "";
+    if (chainId === AVALANCHE) {
+      externalSwapUrl = `https://traderjoexyz.com/trade?outputCurrency=${outputCurrency}#/`;
+    } else {
+      externalSwapUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}`;
+    }
+    let externalSwapName = chainId === AVALANCHE ? "Trader Joe" : "Uniswap";
     const label =
       modalError === "BUFFER" ? `${shortCollateralToken.symbol} Required` : `${fromToken.symbol} Capacity Reached`;
     const swapTokenSymbol = isLong ? toToken.symbol : shortCollateralToken.symbol;
     return (
-      <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal">
-        You will need to select {swapTokenSymbol} as the "Pay" token to initiate this trade.
+      <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal font-base">
+        <div>You need to select {swapTokenSymbol} as the "Pay" token to initiate this trade.</div>
         <br />
-        <br />
-        <a href={uniswapUrl} target="_blank" rel="noreferrer">
-          Buy {swapTokenSymbol} on Uniswap
+        {isShort && (
+          <div>
+            Alternatively you can select a different "Profits In" token.
+            <br />
+            <br />
+          </div>
+        )}
+        <a href={externalSwapUrl} target="_blank" rel="noreferrer">
+          Buy {swapTokenSymbol} on {externalSwapName}
         </a>
       </Modal>
     );
-  }, [
-    modalError,
-    setModalError,
-    fromToken?.address,
-    toToken?.address,
-    shortCollateralToken?.address,
-    isLong,
-    shortCollateralToken?.symbol,
-    toToken?.symbol,
-    fromToken?.symbol,
-  ]);
+  };
 
   const isPrimaryEnabled = () => {
     if (!active) {
@@ -1137,7 +1186,8 @@ export default function SwapBox(props) {
           undefined,
           undefined,
           usdgSupply,
-          totalTokenWeights
+          totalTokenWeights,
+          isSwap
         );
         const nextToAmountUsd = nextToAmount
           .mul(indexTokenInfo.minPrice)
@@ -1258,7 +1308,8 @@ export default function SwapBox(props) {
         undefined,
         undefined,
         usdgSupply,
-        totalTokenWeights
+        totalTokenWeights,
+        isSwap
       );
       if (multiPath) {
         path = multiPath;
@@ -1273,7 +1324,8 @@ export default function SwapBox(props) {
         undefined,
         undefined,
         usdgSupply,
-        totalTokenWeights
+        totalTokenWeights,
+        isSwap
       );
       if (multiPath) {
         path = multiPath;
@@ -1398,8 +1450,8 @@ export default function SwapBox(props) {
   };
 
   let referralCode = ethers.constants.HashZero;
-  if (isHashZero(userReferralCode) && userReferralCodeInLocalStorage) {
-    referralCode = userReferralCodeInLocalStorage;
+  if (!attachedOnChain && userReferralCode) {
+    referralCode = userReferralCode;
   }
 
   const increasePosition = async () => {
@@ -1442,7 +1494,8 @@ export default function SwapBox(props) {
         undefined,
         undefined,
         usdgSupply,
-        totalTokenWeights
+        totalTokenWeights,
+        isSwap
       );
       if (nextToAmount.eq(0)) {
         helperToast.error("Insufficient liquidity");
@@ -1662,7 +1715,8 @@ export default function SwapBox(props) {
         undefined,
         undefined,
         usdgSupply,
-        totalTokenWeights
+        totalTokenWeights,
+        isSwap
       );
       if (feeBasisPoints !== undefined) {
         fees = fromAmount.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
@@ -1685,7 +1739,8 @@ export default function SwapBox(props) {
       undefined,
       undefined,
       usdgSupply,
-      totalTokenWeights
+      totalTokenWeights,
+      isSwap
     );
     if (feeBasisPoints) {
       swapFees = fromUsdMin.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
@@ -2143,6 +2198,32 @@ export default function SwapBox(props) {
               {toTokenInfo && formatAmount(toTokenInfo.maxPrice, USD_DECIMALS, 2, true)} USD
             </div>
           </div>
+          <div className="Exchange-info-row">
+            <div className="Exchange-info-label">Available Liquidity:</div>
+            <div className="align-right al-swap">
+              <Tooltip
+                handle={`${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)} USD`}
+                position="right-bottom"
+                renderContent={() => {
+                  return (
+                    <div>
+                      <div>
+                        Max {fromTokenInfo.symbol} in: {formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 2, true)}{" "}
+                        {fromTokenInfo.symbol} <br />({"$ "}
+                        {formatAmount(maxFromTokenInUSD, USD_DECIMALS, 2, true)})
+                      </div>
+                      <br />
+                      <div>
+                        Max {toTokenInfo.symbol} out: {formatAmount(maxToTokenOut, toTokenInfo.decimals, 2, true)}{" "}
+                        {toTokenInfo.symbol} <br />({"$ "}
+                        {formatAmount(maxToTokenOutUSD, USD_DECIMALS, 2, true)})
+                      </div>
+                    </div>
+                  );
+                }}
+              />
+            </div>
+          </div>
           {!isMarketOrder && (
             <ExchangeInfoRow label="Price">
               {getExchangeRateDisplay(getExchangeRate(fromTokenInfo, toTokenInfo), fromToken, toToken)}
@@ -2255,7 +2336,7 @@ export default function SwapBox(props) {
             </div>
           </div>
           {renderAvailableLongLiquidity()}
-          {hasMaxAvailableShort && (
+          {isShort && toTokenInfo.hasMaxAvailableShort && (
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">Available Liquidity</div>
               <div className="align-right">
@@ -2310,6 +2391,7 @@ export default function SwapBox(props) {
       {renderOrdersToa()}
       {isConfirming && (
         <ConfirmationBox
+          library={library}
           isHigherSlippageAllowed={isHigherSlippageAllowed}
           setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
           orders={orders}
@@ -2346,6 +2428,11 @@ export default function SwapBox(props) {
           collateralTokenAddress={collateralTokenAddress}
           infoTokens={infoTokens}
           chainId={chainId}
+          setPendingTxns={setPendingTxns}
+          pendingTxns={pendingTxns}
+          minExecutionFee={minExecutionFee}
+          minExecutionFeeUSD={minExecutionFeeUSD}
+          minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
         />
       )}
     </div>

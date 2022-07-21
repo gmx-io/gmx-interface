@@ -1,16 +1,19 @@
 import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 
+import cx from "classnames";
+
 import gmxBigIcon from "../../img/ic_gmx_custom.svg";
 import glpBigIcon from "../../img/ic_glp_custom.svg";
 
-import { ARBITRUM, AVALANCHE, switchNetwork, useChainId } from "../../Helpers";
+import { ARBITRUM, AVALANCHE, switchNetwork, useChainId, isHomeSite } from "../../Helpers";
 
 import { useWeb3React } from "@web3-react/core";
 
 import APRLabel from "../APRLabel/APRLabel";
 
-export default function TokenCard() {
+export default function TokenCard({ showRedirectModal }) {
+  const isHome = isHomeSite();
   const { chainId } = useChainId();
   const { active } = useWeb3React();
 
@@ -30,6 +33,22 @@ export default function TokenCard() {
     [chainId, active]
   );
 
+  const BuyLink = ({ className, to, children, network }) => {
+    if (isHome && showRedirectModal) {
+      return (
+        <div className={cx("a", className)} onClick={() => showRedirectModal(to)}>
+          {children}
+        </div>
+      );
+    }
+
+    return (
+      <Link to={to} className={cx(className)} onClick={() => changeNetwork(network)}>
+        {children}
+      </Link>
+    );
+  };
+
   return (
     <div className="Home-token-card-options">
       <div className="Home-token-card-option">
@@ -38,7 +57,7 @@ export default function TokenCard() {
         </div>
         <div className="Home-token-card-option-info">
           <div className="Home-token-card-option-title">
-            GMX is the utility and governance token, and also accrues 30% of the platform's generated fees.
+            GMX is the utility and governance token. Accrues 30% of the platform's generated fees.
           </div>
           <div className="Home-token-card-option-apr">
             Arbitrum APR: <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />, Avalanche APR:{" "}
@@ -46,12 +65,12 @@ export default function TokenCard() {
           </div>
           <div className="Home-token-card-option-action">
             <div className="buy">
-              <Link to="/buy_gmx" className="default-btn" onClick={() => changeNetwork(ARBITRUM)}>
+              <BuyLink to="/buy_gmx" className="default-btn" network={ARBITRUM}>
                 Buy on Arbitrum
-              </Link>
-              <Link to="/buy_gmx" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>
+              </BuyLink>
+              <BuyLink to="/buy_gmx" className="default-btn" network={AVALANCHE}>
                 Buy on Avalanche
-              </Link>
+              </BuyLink>
             </div>
             <a
               href="https://gmxio.gitbook.io/gmx/tokenomics"
@@ -70,7 +89,7 @@ export default function TokenCard() {
         </div>
         <div className="Home-token-card-option-info">
           <div className="Home-token-card-option-title">
-            GLP is the platform's liquidity provider token. Accrues 70% of its generated fees.
+            GLP is the liquidity provider token. Accrues 70% of the platform's generated fees.
           </div>
           <div className="Home-token-card-option-apr">
             Arbitrum APR: <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />, Avalanche APR:{" "}
@@ -78,12 +97,12 @@ export default function TokenCard() {
           </div>
           <div className="Home-token-card-option-action">
             <div className="buy">
-              <Link to="/buy_glp" className="default-btn" onClick={() => changeNetwork(ARBITRUM)}>
+              <BuyLink to="/buy_glp" className="default-btn" network={ARBITRUM}>
                 Buy on Arbitrum
-              </Link>
-              <Link to="/buy_glp" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>
+              </BuyLink>
+              <BuyLink to="/buy_glp" className="default-btn" network={AVALANCHE}>
                 Buy on Avalanche
-              </Link>
+              </BuyLink>
             </div>
             <a
               href="https://gmxio.gitbook.io/gmx/glp"

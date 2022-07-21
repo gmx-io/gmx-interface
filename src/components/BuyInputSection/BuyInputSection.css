@@ -1,9 +1,9 @@
 .buy-input .InputSection-static-input {
-  font-size: 1.5rem;
+  font-size: 2.325rem;
 }
 
 .buy-input.Exchange-swap-section {
-  min-height: 5.935rem;
+  min-height: 9.2rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -12,12 +12,12 @@
 .buy-input .TokenSelector-box {
   display: flex;
   align-items: center;
-  border-radius: 4px;
+  border-radius: 0.4rem;
   /* padding: 0.5rem 0; */
   color: #ffffff;
-  min-width: 3rem;
-  font-size: 1.25rem;
-  line-height: 1.625rem;
+  min-width: 4.65rem;
+  font-size: 1.9rem;
+  line-height: 2.5rem;
   justify-content: flex-end;
 }
 .buy-input .TokenSelector-box:hover {
@@ -33,26 +33,26 @@
 .buy-input .Exchange-swap-max {
   position: unset;
   color: white;
-  font-size: 1rem;
+  font-size: 1.5rem;
 }
 
 .buy-input .TokenSelector-caret {
   margin: 0;
-  margin-right: -5px;
+  margin-right: -0.5rem;
 }
 
 .buy-input .TokenSelector-box-symbol {
-  margin-left: 0.5rem;
+  margin-left: 0.8rem;
 }
 
 .buy-input .PositionEditor-token-symbol {
   display: flex;
   align-items: center;
-  margin-left: 0.9rem;
+  margin-left: 1.4rem;
 }
 
 .buy-input .PositionEditor-token-symbol img {
-  margin-left: 0.5rem;
+  margin-left: 0.8rem;
   display: none;
 }
 
