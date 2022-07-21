@@ -14,11 +14,12 @@ body,
   box-sizing: border-box;
   font-family: "Relative", sans-serif;
   letter-spacing: 0.5px;
-  /* font-variant-numeric: tabular-nums; */
+  font-variant-numeric: tabular-nums;
 }
 
 input {
   font-family: "RelativeInput";
+  font-variant-numeric: normal;
 }
 
 ::-webkit-scrollbar {
