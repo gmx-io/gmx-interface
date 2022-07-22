@@ -45,7 +45,7 @@ import {
   REFERRAL_CODE_QUERY_PARAM,
   isDevelopment,
   DISABLE_ORDER_VALIDATION_KEY,
-  isValidTimestamp,
+  shouldShowRedirectModal,
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
@@ -525,12 +525,8 @@ function FullApp() {
 
   const HeaderLink = ({ isHomeLink, className, exact, to, children }) => {
     const isOnHomePage = location.pathname === "/";
-    const thirtyDays = 1000 * 60 * 60 * 24 * 30;
-    const expiryTime = redirectPopupTimestamp + thirtyDays;
-    const shouldShowRedirectModal = !isValidTimestamp(redirectPopupTimestamp) || Date.now() > expiryTime;
-
     if (isHome && !(isHomeLink && !isOnHomePage)) {
-      if (shouldShowRedirectModal) {
+      if (shouldShowRedirectModal(redirectPopupTimestamp)) {
         return (
           <div className={cx("a", className, { active: isHomeLink })} onClick={() => showRedirectModal(to)}>
             {children}
@@ -770,7 +766,7 @@ function FullApp() {
           {isHome && (
             <Switch>
               <Route exact path="/">
-                <Home showRedirectModal={showRedirectModal} />
+                <Home showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
               </Route>
               <Route exact path="/referral-terms">
                 <ReferralTerms />

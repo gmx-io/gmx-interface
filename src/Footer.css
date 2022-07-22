@@ -36,6 +36,7 @@
   line-height: 1.85rem;
   font-weight: normal;
   text-decoration: none;
+  cursor: pointer;
 }
 .Footer-link:hover {
   color: white;
