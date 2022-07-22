@@ -25,6 +25,7 @@ import {
   clearWalletConnectData,
   switchNetwork,
   helperToast,
+  getAlchemyWsUrl,
   getChainName,
   useChainId,
   getAccountUrl,
@@ -128,9 +129,7 @@ const Zoom = cssTransition({
   duration: 200,
 });
 
-const arbWsProvider = new ethers.providers.WebSocketProvider(
-  "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"
-);
+const arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
 
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
 
