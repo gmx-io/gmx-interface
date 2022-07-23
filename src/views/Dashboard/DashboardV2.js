@@ -33,6 +33,7 @@ import {
   DEFAULT_MAX_USDG_AMOUNT,
   getPageTitle,
   importImage,
+  arrayFetcher,
 } from "../../Helpers";
 import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply, useInfoTokens } from "../../Api";
 
@@ -121,6 +122,14 @@ export default function DashboardV2() {
   const { data: hourlyVolume } = useSWR([hourlyVolumeUrl], {
     fetcher: (...args) => fetch(...args).then((res) => res.json()),
   });
+  // vipineth
+  const { data: volumes } = useSWR(
+    [getServerUrl(ARBITRUM, "/hourly_volume"), getServerUrl(AVALANCHE, "/hourly_volume")],
+    {
+      fetcher: arrayFetcher,
+    }
+  );
+  console.log({ volumes });
 
   const totalVolumeUrl = getServerUrl(chainId, "/total_volume");
   const { data: totalVolume } = useSWR([totalVolumeUrl], {
@@ -484,20 +493,72 @@ export default function DashboardV2() {
                 </div>
                 <div className="App-card-row">
                   <div className="label">24h Volume</div>
-                  <div>${formatAmount(volumeInfo.totalVolume, USD_DECIMALS, 0, true)}</div>
+                  <div>
+                    <TooltipComponent
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={`$${formatAmount(volumeInfo.totalVolume, USD_DECIMALS, 0, true)}`}
+                      renderContent={() => (
+                        <>
+                          Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                          <br />
+                          Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                        </>
+                      )}
+                    />
+                  </div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">Long Positions</div>
-                  <div>${formatAmount(totalLongPositionSizes, USD_DECIMALS, 0, true)}</div>
+                  <div>
+                    <TooltipComponent
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={`$${formatAmount(totalLongPositionSizes, USD_DECIMALS, 0, true)}`}
+                      renderContent={() => (
+                        <>
+                          Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                          <br />
+                          Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                        </>
+                      )}
+                    />
+                  </div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">Short Positions</div>
-                  <div>${formatAmount(totalShortPositionSizes, USD_DECIMALS, 0, true)}</div>
+                  <div>
+                    <TooltipComponent
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={`$${formatAmount(totalShortPositionSizes, USD_DECIMALS, 0, true)}`}
+                      renderContent={() => (
+                        <>
+                          Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                          <br />
+                          Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                        </>
+                      )}
+                    />
+                  </div>
                 </div>
                 {feeHistory.length ? (
                   <div className="App-card-row">
                     <div className="label">Fees since {formatDate(feeHistory[0].to)}</div>
-                    <div>${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}</div>
+                    <div>
+                      <TooltipComponent
+                        position="right-bottom"
+                        className="nowrap"
+                        handle={`$${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}`}
+                        renderContent={() => (
+                          <>
+                            Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                            <br />
+                            Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                          </>
+                        )}
+                      />
+                    </div>
                   </div>
                 ) : null}
               </div>
