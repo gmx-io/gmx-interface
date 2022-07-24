@@ -74,6 +74,13 @@
 .Footer-links > .a:not(:last-child) {
   padding-right: 2rem;
 }
+
+@media (max-width: 900px) {
+  .Footer-social-link-block .App-social-link {
+    margin: 0 1.6rem;
+  }
+}
+
 @media (max-width: 580px) {
   .Footer-links {
     flex-direction: column;
@@ -82,18 +89,20 @@
     padding-right: 0;
     margin-bottom: 0.5rem;
   }
-}
-@media (max-width: 580px) {
   .Footer-social-link-block {
     margin-bottom: 1.4rem;
   }
   .Footer-wrapper {
     padding-top: 2.5rem;
   }
-}
-
-@media (max-width: 900px) {
+  .home {
+    height: 23rem;
+  }
+  .Footer-links > a:not(:last-child),
+  .Footer-links > .a:not(:last-child) {
+    padding-right: 0;
+  }
   .Footer-social-link-block .App-social-link {
-    margin: 0 1.6rem;
+    margin: 0 0.8rem;
   }
 }
