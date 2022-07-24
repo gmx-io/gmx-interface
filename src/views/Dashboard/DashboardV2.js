@@ -33,7 +33,7 @@ import {
   DEFAULT_MAX_USDG_AMOUNT,
   getPageTitle,
   importImage,
-  arrayFetcher,
+  arrayURLFetcher,
 } from "../../Helpers";
 import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply, useInfoTokens } from "../../Api";
 
@@ -55,36 +55,61 @@ import avalanche24Icon from "../../img/ic_avalanche_24.svg";
 
 import AssetDropdown from "./AssetDropdown";
 import SEO from "../../components/Common/SEO";
+const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
 
-function getVolumeInfo(hourlyVolume) {
-  if (!hourlyVolume || hourlyVolume.length === 0) {
+function getVolumeInfo(hourlyVolumes) {
+  if (!hourlyVolumes || hourlyVolumes.length === 0) {
     return {};
   }
+  const dailyVolumes = hourlyVolumes.map((hourlyVolume) => {
+    const secondsPerHour = 60 * 60;
+    const minTime = parseInt(Date.now() / 1000 / secondsPerHour) * secondsPerHour - 24 * secondsPerHour;
+    const info = {};
+    let totalVolume = bigNumberify(0);
+    for (let i = 0; i < hourlyVolume.length; i++) {
+      const item = hourlyVolume[i].data;
+      if (parseInt(item.timestamp) < minTime) {
+        break;
+      }
 
-  const secondsPerHour = 60 * 60;
-  const minTime = parseInt(Date.now() / 1000 / secondsPerHour) * secondsPerHour - 24 * secondsPerHour;
+      if (!info[item.token]) {
+        info[item.token] = bigNumberify(0);
+      }
 
-  const info = {};
-  let totalVolume = bigNumberify(0);
-  for (let i = 0; i < hourlyVolume.length; i++) {
-    const item = hourlyVolume[i].data;
-    if (parseInt(item.timestamp) < minTime) {
-      break;
+      info[item.token] = info[item.token].add(item.volume);
+      totalVolume = totalVolume.add(item.volume);
     }
+    info.totalVolume = totalVolume;
+    return info;
+  });
+  return dailyVolumes.reduce(
+    (acc, cv, index) => {
+      acc.totalVolume = acc.totalVolume.add(cv.totalVolume);
+      acc[ACTIVE_CHAIN_IDS[index]] = cv;
+      return acc;
+    },
+    { totalVolume: bigNumberify(0) }
+  );
+}
 
-    if (!info[item.token]) {
-      info[item.token] = bigNumberify(0);
-    }
-
-    info[item.token] = info[item.token].add(item.volume);
-    totalVolume = totalVolume.add(item.volume);
+function getPositionStats(positionStats) {
+  if (!positionStats || positionStats.length === 0) {
+    return null;
   }
-
-  info.totalVolume = totalVolume;
-
-  return info;
+  return positionStats.reduce(
+    (acc, cv, i) => {
+      acc.totalLongPositionSizes = acc.totalLongPositionSizes.add(cv.totalLongPositionSizes);
+      acc.totalShortPositionSizes = acc.totalShortPositionSizes.add(cv.totalShortPositionSizes);
+      acc[ACTIVE_CHAIN_IDS[i]] = cv;
+      return acc;
+    },
+    {
+      totalLongPositionSizes: bigNumberify(0),
+      totalShortPositionSizes: bigNumberify(0),
+    }
+  );
 }
 
 function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
@@ -113,23 +138,19 @@ export default function DashboardV2() {
 
   const chainName = getChainName(chainId);
 
-  const positionStatsUrl = getServerUrl(chainId, "/position_stats");
-  const { data: positionStats } = useSWR([positionStatsUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
-  });
-
-  const hourlyVolumeUrl = getServerUrl(chainId, "/hourly_volume");
-  const { data: hourlyVolume } = useSWR([hourlyVolumeUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
-  });
-  // vipineth
-  const { data: volumes } = useSWR(
-    [getServerUrl(ARBITRUM, "/hourly_volume"), getServerUrl(AVALANCHE, "/hourly_volume")],
+  const { data: positionStats } = useSWR(
+    ACTIVE_CHAIN_IDS.map((chainId) => getServerUrl(chainId, "/position_stats")),
     {
-      fetcher: arrayFetcher,
+      fetcher: arrayURLFetcher,
     }
   );
-  console.log({ volumes });
+
+  const { data: hourlyVolumes } = useSWR(
+    ACTIVE_CHAIN_IDS.map((chainId) => getServerUrl(chainId, "/hourly_volume")),
+    {
+      fetcher: arrayURLFetcher,
+    }
+  );
 
   const totalVolumeUrl = getServerUrl(chainId, "/total_volume");
   const { data: totalVolume } = useSWR([totalVolumeUrl], {
@@ -138,16 +159,15 @@ export default function DashboardV2() {
 
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
-  let totalLongPositionSizes;
-  let totalShortPositionSizes;
-  if (positionStats && positionStats.totalLongPositionSizes && positionStats.totalShortPositionSizes) {
-    totalLongPositionSizes = bigNumberify(positionStats.totalLongPositionSizes);
-    totalShortPositionSizes = bigNumberify(positionStats.totalShortPositionSizes);
-  }
-
-  const volumeInfo = getVolumeInfo(hourlyVolume);
+  const volumeInfo = getVolumeInfo(hourlyVolumes);
+  const positionStatsInfo = getPositionStats(positionStats);
 
   const totalVolumeSum = getTotalVolumeSum(totalVolume);
+
+  function getWhitelistedTokenAddresses(chainId) {
+    const whitelistedTokens = getWhitelistedTokens(chainId);
+    return whitelistedTokens.map((token) => token.address);
+  }
 
   const whitelistedTokens = getWhitelistedTokens(chainId);
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
@@ -186,10 +206,46 @@ export default function DashboardV2() {
   );
 
   const { infoTokens } = useInfoTokens(library, chainId, active, undefined, undefined);
+  const { infoTokens: infoTokensArbitrum } = useInfoTokens(null, ARBITRUM, active, undefined, undefined);
+  const { infoTokens: infoTokensAvax } = useInfoTokens(null, AVALANCHE, active, undefined, undefined);
+
+  const { data: feesInfo } = useSWR(
+    infoTokensArbitrum[AddressZero].contractMinPrice && infoTokensAvax[AddressZero].contractMinPrice
+      ? "Dashboard:feesInfo"
+      : null,
+    {
+      fetcher: () => {
+        return Promise.all(
+          ACTIVE_CHAIN_IDS.map((chainId) =>
+            fetcher(null, ReaderV2, [getWhitelistedTokenAddresses(chainId)])(
+              `Dashboard:fees:${chainId}`,
+              chainId,
+              getContract(chainId, "Reader"),
+              "getFees",
+              getContract(chainId, "Vault")
+            )
+          )
+        ).then((fees) => {
+          return fees.reduce(
+            (acc, cv, i) => {
+              const feeUSD = getCurrentFeesUsd(
+                getWhitelistedTokenAddresses(ACTIVE_CHAIN_IDS[i]),
+                cv,
+                ACTIVE_CHAIN_IDS[i] === ARBITRUM ? infoTokensArbitrum : infoTokensAvax
+              );
+              acc[ACTIVE_CHAIN_IDS[i]] = feeUSD;
+              acc.total = acc.total.add(feeUSD);
+              return acc;
+            },
+            { total: bigNumberify(0) }
+          );
+        });
+      },
+    }
+  );
 
   const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
   const currentFeesUsd = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokens);
-
   const feeHistory = getFeeHistory(chainId);
   const shouldIncludeCurrrentFees = feeHistory.length && parseInt(Date.now() / 1000) - feeHistory[0].to > 60 * 60;
   let totalFeesDistributed = shouldIncludeCurrrentFees
@@ -497,12 +553,14 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${formatAmount(volumeInfo.totalVolume, USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(volumeInfo?.totalVolume, USD_DECIMALS, 0, true)}`}
                       renderContent={() => (
                         <>
-                          Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                          Volume on Arbitrum: {formatAmount(volumeInfo?.[ARBITRUM].totalVolume, USD_DECIMALS, 0, true)}
                           <br />
-                          Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                          <div className="gap" />
+                          Volume on Avalanche:{" "}
+                          {formatAmount(volumeInfo?.[AVALANCHE].totalVolume, USD_DECIMALS, 0, true)}
                         </>
                       )}
                     />
@@ -514,12 +572,15 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${formatAmount(totalLongPositionSizes, USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(positionStatsInfo?.totalLongPositionSizes, USD_DECIMALS, 0, true)}`}
                       renderContent={() => (
                         <>
-                          Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                          Long Positions on Arbitrum: $
+                          {formatAmount(positionStatsInfo?.[ARBITRUM].totalLongPositionSizes, USD_DECIMALS, 0, true)}
                           <br />
-                          Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                          <div className="gap" />
+                          Long Positions on Avalanche: $
+                          {formatAmount(positionStatsInfo?.[AVALANCHE].totalLongPositionSizes, USD_DECIMALS, 0, true)}
                         </>
                       )}
                     />
@@ -531,12 +592,15 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${formatAmount(totalShortPositionSizes, USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(positionStatsInfo?.totalShortPositionSizes, USD_DECIMALS, 0, true)}`}
                       renderContent={() => (
                         <>
-                          Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX
-                          <br />
-                          Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                          Short Positions on Arbitrum: $
+                          {formatAmount(positionStatsInfo?.[ARBITRUM].totalShortPositionSizes, USD_DECIMALS, 0, true)}
+                          <br className="gap" />
+                          <div className="gap" />
+                          Short Positions on Avalanche: $
+                          {formatAmount(positionStatsInfo?.[AVALANCHE].totalShortPositionSizes, USD_DECIMALS, 0, true)}
                         </>
                       )}
                     />
@@ -549,12 +613,13 @@ export default function DashboardV2() {
                       <TooltipComponent
                         position="right-bottom"
                         className="nowrap"
-                        handle={`$${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}`}
+                        handle={`$${formatAmount(feesInfo?.total, USD_DECIMALS, 2, true)}`}
                         renderContent={() => (
                           <>
-                            Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                            Fees on Arbitrum: ${formatAmount(feesInfo?.[ARBITRUM], USD_DECIMALS, 2, true)}
                             <br />
-                            Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX
+                            <div className="gap" />
+                            Fees on Avalanche: ${formatAmount(feesInfo?.[AVALANCHE], USD_DECIMALS, 2, true)}
                           </>
                         )}
                       />

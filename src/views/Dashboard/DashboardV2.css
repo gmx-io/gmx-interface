@@ -133,6 +133,10 @@
   margin-right: 0.8rem;
 }
 
+.gap {
+  margin-top: 0.5rem;
+}
+
 @media (max-width: 1024px) {
   .stats-wrapper {
     display: grid;
