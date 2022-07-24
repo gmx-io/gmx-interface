@@ -7,7 +7,13 @@ import { QRCodeCanvas } from "qrcode.react";
 import { formatAmount, USD_DECIMALS } from "../../Helpers";
 import { useAffiliateCodes } from "../../Api/referrals";
 
-const config = { canvasWidth: 1200, canvasHeight: 675 };
+const config = { canvasWidth: 1200, canvasHeight: 675, quality: 0.5 };
+const buttonStatus = {
+  INIT: "Copy and share on Twitter",
+  COPIED: "Copied!",
+  SHARE: "Share on Twitter",
+  ERROR: "Something went wrong!",
+};
 
 function generateTweetLink(referralCode = "") {
   return `https://twitter.com/intent/tweet?text=Checkout%20my%20ETH%20position%20on%20%40GMX_IO!%0A%0A%20Use%20my%20link%20to%20trade%20https%3A%2F%2Fapp.gmx.io%2Ftrade${
@@ -22,37 +28,56 @@ function SharePositionModal({
   account,
   chainId,
 }) {
-  const [copyText, setCopyText] = useState("Copy");
+  const [status, setStatus] = useState("INIT");
   const codes = useAffiliateCodes(chainId, account);
   const positionRef = useRef();
-  async function handleCopy() {
+  function handleCopy() {
     const element = positionRef.current;
-    if (!element) return;
-    const blob = await toBlob(element, config);
     try {
-      await navigator.clipboard.write([
+      navigator.clipboard.write([
         new window.ClipboardItem({
-          [blob.type]: blob,
+          "image/png": toBlob(element),
         }),
       ]);
-      setCopyText("Copied!");
+
+      setStatus("COPIED");
       setTimeout(() => {
-        setCopyText("Copy");
-      }, 5000);
+        setStatus("SHARE");
+      }, 2000);
     } catch {
-      setCopyText("Something went wrong!");
+      setStatus("ERROR");
     }
   }
+
   async function handleDownload() {
     const element = positionRef.current;
     if (!element) return;
-    const dataUrl = await toPng(element, { quality: 0.75 });
+    const dataUrl = await toPng(element, config);
     const link = document.createElement("a");
     link.download = `long-${Math.random() * 100000}.jpeg`;
     link.href = dataUrl;
     window.linkA = link;
     document.body.appendChild(link);
     link.click();
+  }
+  function renderCopyButton() {
+    if (!typeof ClipboardItem || !navigator.clipboard.write) {
+      return;
+    }
+    return status === "SHARE" ? (
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        className="default-btn"
+        href={generateTweetLink(codes.length > 0 && codes[0])}
+      >
+        {buttonStatus[status]}
+      </a>
+    ) : (
+      <button disabled={status === "COPIED"} className="default-btn" onClick={handleCopy}>
+        {buttonStatus[status]}
+      </button>
+    );
   }
   if (!positionToShare) return "Loading...";
   return (
@@ -70,20 +95,7 @@ function SharePositionModal({
         account={account}
       />
       <div className="actions">
-        {copyText === "Copied!" ? (
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            className="default-btn"
-            href={generateTweetLink(codes.length > 0 && codes[0])}
-          >
-            Share on Twitter
-          </a>
-        ) : (
-          <button className="default-btn" onClick={handleCopy}>
-            {copyText}
-          </button>
-        )}
+        {renderCopyButton()}
         <button className="default-btn" onClick={handleDownload}>
           Download
         </button>
