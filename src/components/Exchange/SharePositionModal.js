@@ -6,8 +6,8 @@ import "./PositionShare.css";
 import { QRCodeCanvas } from "qrcode.react";
 import { formatAmount, USD_DECIMALS } from "../../Helpers";
 import { useAffiliateCodes } from "../../Api/referrals";
-
-const config = { canvasWidth: 1200, canvasHeight: 675, quality: 0.5 };
+// canvasWidth: 1200, canvasHeight: 675,
+const config = { quality: 0.5 };
 const buttonStatus = {
   INIT: "Copy and share on Twitter",
   COPIED: "Copied!",
@@ -39,7 +39,6 @@ function SharePositionModal({
           "image/png": toBlob(element),
         }),
       ]);
-
       setStatus("COPIED");
       setTimeout(() => {
         setStatus("SHARE");
