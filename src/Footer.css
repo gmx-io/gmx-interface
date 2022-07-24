@@ -23,7 +23,6 @@
 }
 
 .Footer-social-link-block {
-  /* padding-bottom: 4rem; */
   max-width: 111rem;
   margin: 0 auto;
   display: flex;
@@ -72,7 +71,8 @@
   display: flex;
   justify-content: center;
 }
-.Footer-links > a {
+.Footer-links > a,
+.Footer-links > .a {
   padding-right: 2rem;
 }
 @media (max-width: 580px) {
