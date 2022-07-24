@@ -86,7 +86,6 @@ import logoImg from "./img/logo_GMX.svg";
 import logoSmallImg from "./img/logo_GMX_small.svg";
 import connectWalletImg from "./img/ic_wallet_24.svg";
 
-// import logoImg from './img/gmx-logo-final-white-small.png'
 import metamaskImg from "./img/metamask.png";
 import coinbaseImg from "./img/coinbaseWallet.png";
 import walletConnectImg from "./img/walletconnect-circle-blue.svg";
@@ -413,8 +412,8 @@ function FullApp() {
   };
 
   const [walletModalVisible, setWalletModalVisible] = useState(false);
-  const [redirectModalVisible, setRedirectModalVisible] = useState(true);
-  const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(true);
+  const [redirectModalVisible, setRedirectModalVisible] = useState(false);
+  const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
   const [redirectPopupTimestamp, setRedirectPopupTimestamp, removeRedirectPopupTimestamp] =
     useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
   const [selectedToPage, setSelectedToPage] = useState("");
