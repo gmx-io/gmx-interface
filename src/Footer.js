@@ -42,7 +42,13 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }) {
         <div className="Footer-social-link-block">
           {socialLinks.map((platform) => {
             return (
-              <a className="App-social-link" href={platform.link} target="_blank" rel="noopener noreferrer">
+              <a
+                key={platform.name}
+                className="App-social-link"
+                href={platform.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img src={platform.icon} alt={platform.name} />
               </a>
             );
@@ -52,7 +58,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }) {
           {footerLinks[isHome ? "home" : "app"].map(({ external, text, link, isAppLink }) => {
             if (external) {
               return (
-                <a key={link} target="_blank" href={link} className="Footer-link" rel="noopener noreferrer">
+                <a key={text} target="_blank" href={link} className="Footer-link" rel="noopener noreferrer">
                   {text}
                 </a>
               );
@@ -60,14 +66,14 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }) {
             if (isAppLink) {
               if (shouldShowRedirectModal(redirectPopupTimestamp)) {
                 return (
-                  <div className="Footer-link" onClick={() => showRedirectModal(link)}>
+                  <div key={text} className="Footer-link a" onClick={() => showRedirectModal(link)}>
                     {text}
                   </div>
                 );
               } else {
                 const baseUrl = getAppBaseUrl();
                 return (
-                  <a key={link} href={baseUrl + link} className="Footer-link">
+                  <a key={text} href={baseUrl + link} className="Footer-link">
                     {text}
                   </a>
                 );
