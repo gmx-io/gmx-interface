@@ -1,0 +1,10 @@
+.share-position-image img {
+  max-width: 700px;
+  width: 100%;
+}
+
+.social-share-btn {
+  justify-content: center;
+  display: flex;
+  margin-top: 1rem;
+}

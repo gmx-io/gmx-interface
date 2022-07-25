@@ -101,6 +101,7 @@ export default function PositionSeller(props) {
     approvePositionRouter,
     isHigherSlippageAllowed,
     setIsHigherSlippageAllowed,
+    sharePosition,
     minExecutionFee,
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
@@ -493,9 +494,13 @@ export default function PositionSeller(props) {
   };
 
   useEffect(() => {
-    if (prevIsVisible !== isVisible) {
+    let cancelled = false;
+    if (!cancelled && prevIsVisible !== isVisible) {
       resetForm();
     }
+    return () => {
+      cancelled = true;
+    };
   }, [prevIsVisible, isVisible]);
 
   const onClickPrimary = async () => {
@@ -594,7 +599,6 @@ export default function PositionSeller(props) {
       .then(async (res) => {
         setFromValue("");
         setIsVisible(false);
-
         let nextSize = position.size.sub(sizeDelta);
 
         pendingPositions[position.key] = {
@@ -605,6 +609,10 @@ export default function PositionSeller(props) {
         };
 
         setPendingPositions({ ...pendingPositions });
+        const receipt = await res.wait();
+        if (receipt.status === 1) {
+          sharePosition(position);
+        }
       })
       .finally(() => {
         setIsSubmitting(false);

@@ -5,6 +5,7 @@ import Tooltip from "../Tooltip/Tooltip";
 import PositionSeller from "./PositionSeller";
 import PositionEditor from "./PositionEditor";
 import OrdersToa from "./OrdersToa";
+import { FiShare2 } from "react-icons/fi";
 
 import { ImSpinner2 } from "react-icons/im";
 
@@ -24,6 +25,10 @@ import {
   INCREASE,
   DECREASE,
 } from "../../Helpers";
+import SharePosition from "./SharePosition";
+import SpinningLoader from "../Common/SpinningLoader";
+import { ethers } from "ethers";
+import { useAffiliateCodes } from "../../Api/referrals";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -55,6 +60,19 @@ const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => 
       return order;
     });
 };
+
+export function decodeReferralCode(hexCode) {
+  try {
+    return ethers.utils.parseBytes32String(hexCode);
+  } catch (ex) {
+    let code = "";
+    hexCode = hexCode.substring(2);
+    for (let i = 0; i < 32; i++) {
+      code += String.fromCharCode(parseInt(hexCode.substring(i * 2, i * 2 + 2), 16));
+    }
+    return code.trim();
+  }
+}
 
 export default function PositionsList(props) {
   const {
@@ -93,11 +111,18 @@ export default function PositionsList(props) {
 
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
   const [positionToSellKey, setPositionToSellKey] = useState(undefined);
+  const [positionToShare, setPositionToShare] = useState(undefined);
   const [isPositionEditorVisible, setIsPositionEditorVisible] = useState(undefined);
   const [isPositionSellerVisible, setIsPositionSellerVisible] = useState(undefined);
   const [collateralTokenAddress, setCollateralTokenAddress] = useState(undefined);
   const [ordersToaOpen, setOrdersToaOpen] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
+
+  const [isSharePositionModalVisible, setIsSharePositionModalVisible] = useState(null);
+  const [sharePositionImageUri, setSharePositionImageUri] = useState(null);
+  const [sharePositionInfo, setSharePositionInfo] = useState(null);
+  const [sharePositionImageStatus, setSharePositionImageStatus] = useState({});
+  const userAffiliateCodes = useAffiliateCodes(chainId, account);
 
   const editPosition = (position) => {
     setCollateralTokenAddress(position.collateralToken.address);
@@ -109,6 +134,42 @@ export default function PositionsList(props) {
     setPositionToSellKey(position.key);
     setIsPositionSellerVisible(true);
     setIsHigherSlippageAllowed(false);
+  };
+
+  const sharePosition = (position) => {
+    setPositionToShare(position);
+    setSharePositionImageStatus((state) => ({
+      ...state,
+      [position.key]: true,
+    }));
+    let apiUrl = `https://gmxs.vercel.app/api/og`;
+    let data = {
+      entryPrice: `$${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}`,
+      currentPrice: `$${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}`,
+      pnlPercentage: position.deltaPercentageStr,
+      isLong: position.isLong,
+      token: position.indexToken.symbol,
+      referralCode: userAffiliateCodes.length > 0 && userAffiliateCodes[0],
+      levrage: formatAmount(position.leverage, 4, 2, true),
+    };
+    fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then((imageInfo) => {
+        setSharePositionInfo(imageInfo);
+        setIsSharePositionModalVisible(true);
+      })
+      .finally(() => {
+        setSharePositionImageStatus((state) => ({
+          ...state,
+          [position.key]: false,
+        }));
+      });
   };
 
   const onPositionClick = (position) => {
@@ -182,9 +243,21 @@ export default function PositionsList(props) {
           approvePositionRouter={approvePositionRouter}
           isHigherSlippageAllowed={isHigherSlippageAllowed}
           setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
+          sharePosition={sharePosition}
           minExecutionFee={minExecutionFee}
           minExecutionFeeUSD={minExecutionFeeUSD}
           minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
+        />
+      )}
+      {isSharePositionModalVisible && (
+        <SharePosition
+          isVisible={isSharePositionModalVisible}
+          setIsVisible={setIsSharePositionModalVisible}
+          title="Share Position"
+          sharePositionImageUri={sharePositionImageUri}
+          setSharePositionImageUri={setSharePositionImageUri}
+          positionToShare={positionToShare}
+          sharePositionInfo={sharePositionInfo}
         />
       )}
       {positions && (
@@ -376,6 +449,17 @@ export default function PositionsList(props) {
                     >
                       Close
                     </button>
+                    <button
+                      className="App-button-option App-card-option"
+                      disabled={!position.size.eq(0)}
+                      onClick={() => sharePosition(position)}
+                    >
+                      {sharePositionImageStatus[position.key] ? (
+                        <SpinningLoader size={4} />
+                      ) : (
+                        <FiShare2 color="#ffffffb3" />
+                      )}
+                    </button>
                   </div>
                 </div>
               );
@@ -393,6 +477,7 @@ export default function PositionsList(props) {
             <th>Mark Price</th>
             <th>Entry Price</th>
             <th>Liq. Price</th>
+            <th>Share</th>
             <th></th>
             <th></th>
           </tr>
@@ -576,6 +661,19 @@ export default function PositionsList(props) {
                 </td>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
                   ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
+                </td>
+                <td>
+                  <button
+                    disabled={position.size.eq(0)}
+                    className="Exchange-list-action"
+                    onClick={() => sharePosition(position)}
+                  >
+                    {sharePositionImageStatus[position.key] ? (
+                      <SpinningLoader size={3} />
+                    ) : (
+                      <FiShare2 color="#ffffffb3" />
+                    )}
+                  </button>
                 </td>
                 <td>
                   <button
