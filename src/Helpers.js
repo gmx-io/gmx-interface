@@ -2750,3 +2750,9 @@ export function getOrderError(account, order, positionsMap, position) {
     }
   }
 }
+
+export function shouldShowRedirectModal(timestamp) {
+  const thirtyDays = 1000 * 60 * 60 * 24 * 30;
+  const expiryTime = timestamp + thirtyDays;
+  return !isValidTimestamp(timestamp) || Date.now() > expiryTime;
+}
