@@ -45,7 +45,7 @@ import {
   REFERRAL_CODE_QUERY_PARAM,
   isDevelopment,
   DISABLE_ORDER_VALIDATION_KEY,
-  isValidTimestamp,
+  shouldShowRedirectModal,
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
@@ -86,7 +86,6 @@ import logoImg from "./img/logo_GMX.svg";
 import logoSmallImg from "./img/logo_GMX_small.svg";
 import connectWalletImg from "./img/ic_wallet_24.svg";
 
-// import logoImg from './img/gmx-logo-final-white-small.png'
 import metamaskImg from "./img/metamask.png";
 import coinbaseImg from "./img/coinbaseWallet.png";
 import walletConnectImg from "./img/walletconnect-circle-blue.svg";
@@ -525,12 +524,8 @@ function FullApp() {
 
   const HeaderLink = ({ isHomeLink, className, exact, to, children }) => {
     const isOnHomePage = location.pathname === "/";
-    const thirtyDays = 1000 * 60 * 60 * 24 * 30;
-    const expiryTime = redirectPopupTimestamp + thirtyDays;
-    const shouldShowRedirectModal = !isValidTimestamp(redirectPopupTimestamp) || Date.now() > expiryTime;
-
     if (isHome && !(isHomeLink && !isOnHomePage)) {
-      if (shouldShowRedirectModal) {
+      if (shouldShowRedirectModal(redirectPopupTimestamp)) {
         return (
           <div className={cx("a", className, { active: isHomeLink })} onClick={() => showRedirectModal(to)}>
             {children}
@@ -770,7 +765,7 @@ function FullApp() {
           {isHome && (
             <Switch>
               <Route exact path="/">
-                <Home showRedirectModal={showRedirectModal} />
+                <Home showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
               </Route>
               <Route exact path="/referral-terms">
                 <ReferralTerms />
