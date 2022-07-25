@@ -23,7 +23,6 @@
 }
 
 .Footer-social-link-block {
-  max-width: 111rem;
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -35,6 +34,7 @@
   line-height: 1.85rem;
   font-weight: normal;
   text-decoration: none;
+  cursor: pointer;
 }
 .Footer-link:hover {
   color: white;
@@ -70,9 +70,17 @@
   display: flex;
   justify-content: center;
 }
-.Footer-links > a {
+.Footer-links > a:not(:last-child),
+.Footer-links > .a:not(:last-child) {
   padding-right: 2rem;
 }
+
+@media (max-width: 900px) {
+  .Footer-social-link-block .App-social-link {
+    margin: 0 1.6rem;
+  }
+}
+
 @media (max-width: 580px) {
   .Footer-links {
     flex-direction: column;
@@ -88,13 +96,14 @@
   .Footer-wrapper {
     padding-top: 2.5rem;
   }
-  .Footer-wrapper-app {
-    height: 24.5rem;
+  .home {
+    height: 23rem;
   }
-}
-
-@media (max-width: 900px) {
+  .Footer-links > a:not(:last-child),
+  .Footer-links > .a:not(:last-child) {
+    padding-right: 0;
+  }
   .Footer-social-link-block .App-social-link {
-    margin: 0 1.6rem;
+    margin: 0 0.8rem;
   }
 }

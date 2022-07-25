@@ -93,13 +93,15 @@ export default function ConfirmationBox(props) {
     toUsdMax,
     nextAveragePrice,
     collateralTokenAddress,
-    minExecutionFee,
     feeBps,
     chainId,
     orders,
     library,
     setPendingTxns,
     pendingTxns,
+    minExecutionFee,
+    minExecutionFeeUSD,
+    minExecutionFeeErrorMessage,
   } = props;
 
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
@@ -606,6 +608,7 @@ export default function ConfirmationBox(props) {
           {renderExistingOrderWarning()}
           {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
+          {minExecutionFeeErrorMessage && <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>}
           {hasPendingProfit && isMarketOrder && (
             <div className="PositionEditor-accept-profit-warning">
               <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
@@ -698,9 +701,12 @@ export default function ConfirmationBox(props) {
                   renderContent={() => {
                     return (
                       <>
+                        Network fee: {formatAmount(minExecutionFee, 18, 4)} {nativeTokenSymbol} ($
+                        {formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})<br />
+                        <br />
                         This is the network cost required to execute the postion.{" "}
                         <a
-                          href="https://gmxio.gitbook.io/gmx/trading#opening-a-position"
+                          href="https://gmxio.gitbook.io/gmx/trading#execution-fee"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -787,6 +793,8 @@ export default function ConfirmationBox(props) {
     decreaseOrdersThatWillBeExecuted,
     minExecutionFee,
     nativeTokenSymbol,
+    minExecutionFeeUSD,
+    minExecutionFeeErrorMessage,
   ]);
 
   const renderSwapSection = useCallback(() => {

@@ -269,8 +269,8 @@ export default function OrdersList(props) {
               renderContent={() => {
                 return (
                   <>
-                    The price that the order can be executed at may differ slightly from the chart price as market
-                    orders can change the price while limit / trigger orders cannot.
+                    The price that orders can be executed at may differ slightly from the chart price, as market orders
+                    update oracle prices, while limit/trigger orders do not.
                   </>
                 );
               }}

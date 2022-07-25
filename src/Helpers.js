@@ -141,6 +141,11 @@ export const GLPPOOLCOLORS = {
   LINK: "#3256D6",
 };
 
+export const HIGH_EXECUTION_FEES_MAP = {
+  [ARBITRUM]: 3, // 3 USD
+  [AVALANCHE]: 3, // 3 USD
+};
+
 export const ICONLINKS = {
   42161: {
     GMX: {
@@ -2712,6 +2717,10 @@ export function importImage(name) {
   return tokenImage && tokenImage.default;
 }
 
+export function isValidTimestamp(timestamp) {
+  return new Date(timestamp).getTime() > 0;
+}
+
 export function getPositionForOrder(account, order, positionsMap) {
   const key = getPositionKey(account, order.collateralToken, order.indexToken, order.isLong);
   const position = positionsMap[key];
@@ -2740,4 +2749,10 @@ export function getOrderError(account, order, positionsMap, position) {
       return "Order cannot be executed as the remaining position would be smaller than $5.00";
     }
   }
+}
+
+export function shouldShowRedirectModal(timestamp) {
+  const thirtyDays = 1000 * 60 * 60 * 24 * 30;
+  const expiryTime = timestamp + thirtyDays;
+  return !isValidTimestamp(timestamp) || Date.now() > expiryTime;
 }

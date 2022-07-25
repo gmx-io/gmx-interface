@@ -19,12 +19,6 @@
   z-index: 800;
 }
 
-.RedirectModal .Modal-content {
-  width: 34rem;
-  font-size: 1.5rem;
-  line-height: 1.9rem;
-}
-
 .App-header.large {
   height: 6.2rem;
   backdrop-filter: blur(4px);
@@ -490,7 +484,7 @@ button.App-connect-wallet:hover {
   font-size: 3.4rem;
   font-weight: 500;
   margin-bottom: 0.8rem;
-  font-family: "Relative Bold";
+  font-weight: bold;
 }
 
 .Page-description {
@@ -830,7 +824,6 @@ button.App-button-option {
   border-radius: 4px;
   font-size: 1.4rem;
   line-height: 2rem;
-  font-family: Relative;
   font-weight: normal;
   letter-spacing: 0px;
   color: white;
@@ -1308,10 +1301,6 @@ button.App-button {
 @media (max-width: 700px) {
   .App-card-long-content {
     grid-template-columns: 1fr 1fr;
-  }
-
-  .RedirectModal .Modal-content {
-    width: 90vw;
   }
 }
 
