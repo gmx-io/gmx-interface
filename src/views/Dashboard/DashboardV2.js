@@ -55,6 +55,7 @@ import avalanche24Icon from "../../img/ic_avalanche_24.svg";
 
 import AssetDropdown from "./AssetDropdown";
 import SEO from "../../components/Common/SEO";
+import TooltipCard from "./TooltipCard";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -553,15 +554,14 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${formatAmount(volumeInfo?.totalVolume, USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(volumeInfo?.[chainId]?.totalVolume, USD_DECIMALS, 0, true)}`}
                       renderContent={() => (
-                        <>
-                          Volume on Arbitrum: {formatAmount(volumeInfo?.[ARBITRUM].totalVolume, USD_DECIMALS, 0, true)}
-                          <br />
-                          <div className="gap" />
-                          Volume on Avalanche:{" "}
-                          {formatAmount(volumeInfo?.[AVALANCHE].totalVolume, USD_DECIMALS, 0, true)}
-                        </>
+                        <TooltipCard
+                          title="Volume"
+                          arbitrum={volumeInfo?.[ARBITRUM].totalVolume}
+                          avax={volumeInfo?.[AVALANCHE].totalVolume}
+                          total={volumeInfo?.totalVolume}
+                        />
                       )}
                     />
                   </div>
@@ -572,16 +572,19 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${formatAmount(positionStatsInfo?.totalLongPositionSizes, USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(
+                        positionStatsInfo?.[chainId].totalLongPositionSizes,
+                        USD_DECIMALS,
+                        0,
+                        true
+                      )}`}
                       renderContent={() => (
-                        <>
-                          Long Positions on Arbitrum: $
-                          {formatAmount(positionStatsInfo?.[ARBITRUM].totalLongPositionSizes, USD_DECIMALS, 0, true)}
-                          <br />
-                          <div className="gap" />
-                          Long Positions on Avalanche: $
-                          {formatAmount(positionStatsInfo?.[AVALANCHE].totalLongPositionSizes, USD_DECIMALS, 0, true)}
-                        </>
+                        <TooltipCard
+                          title="Long Positions"
+                          arbitrum={positionStatsInfo?.[ARBITRUM].totalLongPositionSizes}
+                          avax={positionStatsInfo?.[AVALANCHE].totalLongPositionSizes}
+                          total={positionStatsInfo?.totalLongPositionSizes}
+                        />
                       )}
                     />
                   </div>
@@ -592,16 +595,19 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${formatAmount(positionStatsInfo?.totalShortPositionSizes, USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(
+                        positionStatsInfo?.[chainId].totalShortPositionSizes,
+                        USD_DECIMALS,
+                        0,
+                        true
+                      )}`}
                       renderContent={() => (
-                        <>
-                          Short Positions on Arbitrum: $
-                          {formatAmount(positionStatsInfo?.[ARBITRUM].totalShortPositionSizes, USD_DECIMALS, 0, true)}
-                          <br className="gap" />
-                          <div className="gap" />
-                          Short Positions on Avalanche: $
-                          {formatAmount(positionStatsInfo?.[AVALANCHE].totalShortPositionSizes, USD_DECIMALS, 0, true)}
-                        </>
+                        <TooltipCard
+                          title="Short Positions"
+                          arbitrum={positionStatsInfo?.[ARBITRUM].totalShortPositionSizes}
+                          avax={positionStatsInfo?.[AVALANCHE].totalShortPositionSizes}
+                          total={positionStatsInfo?.totalShortPositionSizes}
+                        />
                       )}
                     />
                   </div>
@@ -613,14 +619,14 @@ export default function DashboardV2() {
                       <TooltipComponent
                         position="right-bottom"
                         className="nowrap"
-                        handle={`$${formatAmount(feesInfo?.total, USD_DECIMALS, 2, true)}`}
+                        handle={`$${formatAmount(feesInfo?.[chainId], USD_DECIMALS, 2, true)}`}
                         renderContent={() => (
-                          <>
-                            Fees on Arbitrum: ${formatAmount(feesInfo?.[ARBITRUM], USD_DECIMALS, 2, true)}
-                            <br />
-                            <div className="gap" />
-                            Fees on Avalanche: ${formatAmount(feesInfo?.[AVALANCHE], USD_DECIMALS, 2, true)}
-                          </>
+                          <TooltipCard
+                            title="Fees"
+                            arbitrum={feesInfo?.[ARBITRUM]}
+                            avax={feesInfo?.[AVALANCHE]}
+                            total={feesInfo?.total}
+                          />
                         )}
                       />
                     </div>

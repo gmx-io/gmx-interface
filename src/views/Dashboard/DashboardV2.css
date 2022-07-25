@@ -133,8 +133,20 @@
   margin-right: 0.8rem;
 }
 
-.gap {
+.divider {
+  height: 1px;
+  background-color: white;
+  margin: 0.5rem 0 !important;
+}
+.tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
   margin-top: 0.5rem;
+  color: white;
+}
+.tooltip-row > .t-label {
+  margin-right: 0.5rem;
 }
 
 @media (max-width: 1024px) {
