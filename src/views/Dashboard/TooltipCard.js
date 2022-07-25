@@ -11,7 +11,7 @@ function TooltipCard({ title, total, avax, arbitrum }) {
         <span className="t-label">{title} on Avalanche:</span>
         <span>${formatAmount(avax, USD_DECIMALS, 0, true)}</span>
       </p>
-      <div className="divider" />
+      <div className="tooltip-divider" />
       <p className="tooltip-row">
         <span className="t-label">Total:</span>
         <span>${formatAmount(total, USD_DECIMALS, 0, true)}</span>
