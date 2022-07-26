@@ -21,6 +21,7 @@ import Tab from "../Tab/Tab";
 
 import { getTokens, getToken } from "../../data/Tokens";
 import ChartTokenSelector from "./ChartTokenSelector";
+import TVChartContainer from "./TVChartContainer/TVChartContainer";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -228,23 +229,23 @@ export default function ExchangeTVChart(props) {
     [setHoveredCandlestick]
   );
 
-  useEffect(() => {
-    if (!ref.current || !priceData || !priceData.length || currentChart) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (!ref.current || !priceData || !priceData.length || currentChart) {
+  //     return;
+  //   }
 
-    const chart = createChart(
-      chartRef.current,
-      getChartOptions(chartRef.current.offsetWidth, chartRef.current.offsetHeight)
-    );
+  //   const chart = createChart(
+  //     chartRef.current,
+  //     getChartOptions(chartRef.current.offsetWidth, chartRef.current.offsetHeight)
+  //   );
 
-    chart.subscribeCrosshairMove(onCrosshairMove);
+  //   chart.subscribeCrosshairMove(onCrosshairMove);
 
-    const series = chart.addCandlestickSeries(getSeriesOptions());
+  //   const series = chart.addCandlestickSeries(getSeriesOptions());
 
-    setCurrentChart(chart);
-    setCurrentSeries(series);
-  }, [ref, priceData, currentChart, onCrosshairMove]);
+  //   setCurrentChart(chart);
+  //   setCurrentSeries(series);
+  // }, [ref, priceData, currentChart, onCrosshairMove]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -470,13 +471,14 @@ export default function ExchangeTVChart(props) {
         </div>
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">
-        <div className="ExchangeChart-bottom-header">
+        {/* <div className="ExchangeChart-bottom-header">
           <div className="ExchangeChart-bottom-controls">
             <Tab options={Object.keys(CHART_PERIODS)} option={period} setOption={setPeriod} />
           </div>
           {candleStatsHtml}
-        </div>
-        <div className="ExchangeChart-bottom-content" ref={chartRef}></div>
+        </div> */}
+        {/* <div className="ExchangeChart-bottom-content" ref={chartRef}></div> */}
+        <TVChartContainer symbol={chartToken.symbol} />
       </div>
     </div>
   );
