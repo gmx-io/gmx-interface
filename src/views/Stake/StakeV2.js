@@ -1509,6 +1509,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                                 <span className="label">{nativeTokenSymbol} Boosted APR</span>
                                 <span>{formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%</span>
                               </div>
+                              <div className="Tooltip-divider" />
                               <div className="Tooltip-row">
                                 <span className="label">{nativeTokenSymbol} Total APR</span>
                                 <span>
