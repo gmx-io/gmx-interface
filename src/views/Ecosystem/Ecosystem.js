@@ -460,6 +460,14 @@ export default function Ecosystem() {
                       <div className="label">About</div>
                       <div>{item.about}</div>
                     </div>
+                    <div className="App-card-row">
+                      <div className="label">Creator</div>
+                      <div>
+                        <a href={item.creatorLink} target="_blank" rel="noopener noreferrer">
+                          {item.creatorLabel}
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </div>
               );
