@@ -4,6 +4,12 @@
   justify-content: space-between;
 }
 
+.Exchange-trigger-order-info,
+.Exchange-trigger-order-info a {
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid #23263b;
+}
+
 .Exchange-list-tab-container {
   display: grid;
   grid-template-columns: auto auto;
