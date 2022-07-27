@@ -878,7 +878,16 @@ table.Exchange-list-small td {
 .al-swap .Tooltip-popup {
   min-width: 25rem;
 }
-
+.dots {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  display: inline-flex;
+  align-items: center;
+}
+.dots:hover {
+  color: rgba(255, 255, 255, 1);
+}
 @media (max-width: 1500px) {
   .Exchange-swap-box {
     width: 38.75rem;
