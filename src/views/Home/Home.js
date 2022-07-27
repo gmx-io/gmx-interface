@@ -33,7 +33,7 @@ import { useUserStat } from "../../Api";
 
 import TokenCard from "../../components/TokenCard/TokenCard";
 
-export default function Home({ showRedirectModal }) {
+export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
   // const faqContent = [{
   //   id: 1,
@@ -294,7 +294,7 @@ export default function Home({ showRedirectModal }) {
           </div>
         </div>
       </div> */}
-      <Footer />
+      <Footer showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
     </div>
   );
 }
