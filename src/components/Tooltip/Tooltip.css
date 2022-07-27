@@ -88,6 +88,16 @@
   content: unset;
 }
 
+.Tooltip-divider {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.45);
+  margin: 0.5rem 0;
+}
+
+.Tooltip-row {
+  margin: 0 0 0.5rem 0;
+}
+
 @media (max-width: 700px) {
   .Tooltip-popup {
     min-width: 20rem;
