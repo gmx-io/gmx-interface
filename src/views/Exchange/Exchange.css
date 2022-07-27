@@ -354,10 +354,10 @@
 
 .ExchangeChart.tv .ExchangeChart-bottom-content {
   position: absolute;
-  bottom: 0.8rem;
+  /* bottom: 0.8rem; */
   left: 0;
   right: 0;
-  top: 0.8rem;
+  /* top: 0.8rem; */
 }
 
 .Exchange-price-tooltip {

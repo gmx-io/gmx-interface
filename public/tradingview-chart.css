@@ -1,0 +1,27 @@
+body {
+  font-family: "Relative", sans-serif;
+}
+
+:root {
+  color-scheme: dark only;
+  --dark-blue: #17182c;
+  --dark-blue-bg: #16182e;
+  --dark-blue-accent: #a0a3c4;
+  --dark-blue-hover: #808aff14;
+  --dark-blue-border: #ffffff29;
+  --dark-blue-active: #818cef33;
+  --avax-red: #e84143;
+  --arbitrum-blue: #28a0f0;
+  --border-radius-sm: 4px;
+  --error-red: #fa3c58;
+  --tv-color-pane-background: #16182e;
+  --tv-color-platform-background: #16182e;
+}
+
+html .chart-page {
+  background: var(--dark-blue-bg);
+}
+
+.chart-container-border {
+  background-color: var(--dark-blue-bg);
+}

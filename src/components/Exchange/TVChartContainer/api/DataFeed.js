@@ -39,66 +39,35 @@ const Datafeed = {
     // Get symbols
     return onSymbolResolvedCallback(symbolInfo({ symbol: "ETH", baseAsset: "ETH" }));
   },
+
   getBars: async (symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) => {
     const { from, to, firstDataRequest } = periodParams;
     console.log("[getBars]: Method call", symbolInfo, resolution, from, to);
-    let prices;
-    try {
-      prices = await getChartPricesFromStats(ARBITRUM, symbolInfo.ticker, supportedResolutions[resolution]);
-    } catch (ex) {
-      console.warn(ex);
-      console.warn("Switching to graph chainlink data");
-      // try {
-      //   prices = await getChainlinkChartPricesFromGraph(symbolInfo.ticker?.toLowerCase(), resolution);
-      // } catch (ex2) {
-      //   console.warn("getChainlinkChartPricesFromGraph failed");
-      //   console.warn(ex2);
-      //   return [];
-      // }
-    }
-    if (prices.length > 0) {
-      return onHistoryCallback(prices);
-    }
 
-    console.log({ prices });
-    // const urlParameters = {
-    //   e: parsedSymbol.exchange,
-    //   fsym: parsedSymbol.fromSymbol,
-    //   tsym: parsedSymbol.toSymbol,
-    //   toTs: to,
-    //   limit: 2000,
-    // };
-    // const query = Object.keys(urlParameters)
-    //   .map((name) => `${name}=${encodeURIComponent(urlParameters[name])}`)
-    //   .join("&");
-    // try {
-    //   const data = await makeApiRequest(`data/histoday?${query}`);
-    //   if ((data.Response && data.Response === "Error") || data.Data.length === 0) {
-    //     // "noData" should be set if there is no data in the requested period.
-    //     onHistoryCallback([], { noData: true });
-    //     return;
-    //   }
-    //   let bars = [];
-    //   data.Data.forEach((bar) => {
-    //     if (bar.time >= from && bar.time < to) {
-    //       bars = [
-    //         ...bars,
-    //         {
-    //           time: bar.time * 1000,
-    //           low: bar.low,
-    //           high: bar.high,
-    //           open: bar.open,
-    //           close: bar.close,
-    //         },
-    //       ];
-    //     }
-    //   });
-    //   console.log(`[getBars]: returned ${bars.length} bar(s)`);
-    //   onHistoryCallback(bars, { noData: false });
-    // } catch (error) {
-    //   console.log("[getBars]: Get error", error);
-    //   onErrorCallback(error);
-    // }
+    try {
+      let prices = await getChartPricesFromStats(ARBITRUM, symbolInfo.ticker, supportedResolutions[resolution]);
+      if (prices.length === 0) {
+        onHistoryCallback([], { noData: true });
+        return;
+      }
+      let bars = prices.map((bar) => {
+        if (bar.time >= from && bar.time < to) {
+          return {
+            time: bar.time * 1000,
+            low: bar.low,
+            high: bar.high,
+            open: bar.open,
+            close: bar.close,
+          };
+        }
+        return bar;
+      });
+      console.log(`[getBars]: returned ${bars.length} bar(s)`);
+      onHistoryCallback(bars, { noData: false });
+    } catch (error) {
+      console.log("[getBars]: Get error", error);
+      onErrorCallback(error);
+    }
   },
   subscribeBars: (symbolInfo, resolution, onRealtimeCallback, subscribeUID, onResetCacheNeededCallback) => {
     console.log("=====subscribeBars runnning");
