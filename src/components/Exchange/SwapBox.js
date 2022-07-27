@@ -2141,7 +2141,7 @@ export default function SwapBox(props) {
           <div className="Exchange-swap-section Exchange-trigger-order-info">
             Take-profit and stop-loss orders can be set after opening a position. <br />
             <br />
-            On the position row, there will be a "Close" button, clicking this will display the option to set trigger
+            There will be a "Close" button on each position row, clicking this will display the option to set trigger
             orders. <br />
             <br />
             For screenshots and more information, please see the{" "}
