@@ -2755,3 +2755,9 @@ export function arrayURLFetcher(...urlArr) {
   const fetcher = (url) => fetch(url).then((res) => res.json());
   return Promise.all(urlArr.map(fetcher));
 }
+
+export function shouldShowRedirectModal(timestamp) {
+  const thirtyDays = 1000 * 60 * 60 * 24 * 30;
+  const expiryTime = timestamp + thirtyDays;
+  return !isValidTimestamp(timestamp) || Date.now() > expiryTime;
+}
