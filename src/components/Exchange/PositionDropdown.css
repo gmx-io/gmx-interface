@@ -1,0 +1,7 @@
+.extra-options {
+  position: relative;
+}
+.extra-options .menu-items {
+  top: 1rem;
+  min-width: 18rem;
+}
