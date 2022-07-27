@@ -707,20 +707,28 @@ export default function DashboardV2() {
                     <div className="App-card-row">
                       <div className="label">Total Staked</div>
                       <div>
-                        {
-                          <TooltipComponent
-                            position="right-bottom"
-                            className="nowrap"
-                            handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
-                            renderContent={() => (
-                              <>
-                                Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX
-                                <br />
-                                Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX
-                              </>
-                            )}
-                          />
-                        }
+                        <TooltipComponent
+                          position="right-bottom"
+                          className="nowrap"
+                          handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
+                          renderContent={() => (
+                            <>
+                              <p className="Tooltip-row">
+                                <span className="label">Staked on Arbitrum:</span>
+                                <span>{formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX</span>
+                              </p>
+                              <p className="Tooltip-row">
+                                <span className="label">Staked on Avalanche:</span>
+                                <span>{formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX</span>
+                              </p>
+                              <div className="Tooltip-divider" />
+                              <p className="Tooltip-row">
+                                <span className="label">Total:</span>
+                                <span>{formatAmount(totalStakedGmx, GMX_DECIMALS, 0, true)} GMX</span>
+                              </p>
+                            </>
+                          )}
+                        />
                       </div>
                     </div>
                     <div className="App-card-row">
