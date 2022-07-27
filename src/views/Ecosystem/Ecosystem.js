@@ -20,7 +20,7 @@ const NETWORK_ICON_ALTS = {
 };
 
 export default function Ecosystem() {
-  const officialPages = [
+  const gmxPages = [
     {
       title: "GMX Governance",
       link: "https://gov.gmx.io/",
@@ -158,7 +158,7 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
-      title: "Dune Shogun Arbitrum",
+      title: "Shogun Dashboard (Dune Arbitrum)",
       link: "https://dune.com/shogun/gmx-analytics-arbitrum",
       about: "Protocol analytics",
       creatorLabel: "@JamesCliffyz",
@@ -166,7 +166,7 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM],
     },
     {
-      title: "Dune Shogun Avalanche",
+      title: "Shogun Dashboard (Dune Avalanche)",
       link: "https://dune.com/shogun/gmx-analytics-avalanche",
       about: "Protocol analytics",
       creatorLabel: "@JamesCliffyz",
@@ -309,7 +309,7 @@ export default function Ecosystem() {
             </div>
           </div>
           <div className="DashboardV2-projects">
-            {officialPages.map((item) => {
+            {gmxPages.map((item) => {
               const linkLabel = item.linkLabel ? item.linkLabel : item.link;
               return (
                 <div className="App-card" key={item.title}>
@@ -385,6 +385,51 @@ export default function Ecosystem() {
             })}
           </div>
           <div className="Tab-title-section">
+            <div className="Page-title">Dashboards</div>
+            <div className="Page-description">GMX dashboards and analytics.</div>
+          </div>
+          <div className="DashboardV2-projects">
+            {dashboardProjects.map((item) => {
+              const linkLabel = item.linkLabel ? item.linkLabel : item.link;
+              return (
+                <div className="App-card" key={item.title}>
+                  <div className="App-card-title">
+                    {item.title}
+                    <div className="App-card-title-icon">
+                      {item.chainIds.map((network) => (
+                        <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="App-card-divider"></div>
+                  <div className="App-card-content">
+                    <div className="App-card-row">
+                      <div className="label">Link</div>
+                      <div>
+                        <a href={item.link} target="_blank" rel="noopener noreferrer">
+                          {linkLabel}
+                        </a>
+                      </div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">About</div>
+                      <div>{item.about}</div>
+                    </div>
+                    <div className="App-card-row">
+                      <div className="label">Creator</div>
+                      <div>
+                        <a href={item.creatorLink} target="_blank" rel="noopener noreferrer">
+                          {item.creatorLabel}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <div className="Tab-title-section">
             <div className="Page-title">Partnerships and Integrations</div>
             <div className="Page-description">Projects integrated with GMX.</div>
           </div>
@@ -420,51 +465,6 @@ export default function Ecosystem() {
                       <div>
                         <a href={item.announcementLink} target="_blank" rel="noopener noreferrer">
                           {item.announcementLabel}
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <div className="Tab-title-section">
-            <div className="Page-title">Dashboards</div>
-            <div className="Page-description">Visualize GMX analytics.</div>
-          </div>
-          <div className="DashboardV2-projects">
-            {dashboardProjects.map((item) => {
-              const linkLabel = item.linkLabel ? item.linkLabel : item.link;
-              return (
-                <div className="App-card" key={item.title}>
-                  <div className="App-card-title">
-                    {item.title}
-                    <div className="App-card-title-icon">
-                      {item.chainIds.map((network) => (
-                        <img key={network} src={NETWORK_ICONS[network]} alt={NETWORK_ICON_ALTS[network]} />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="App-card-divider"></div>
-                  <div className="App-card-content">
-                    <div className="App-card-row">
-                      <div className="label">Link</div>
-                      <div>
-                        <a href={item.link} target="_blank" rel="noopener noreferrer">
-                          {linkLabel}
-                        </a>
-                      </div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">About</div>
-                      <div>{item.about}</div>
-                    </div>
-                    <div className="App-card-row">
-                      <div className="label">Creator</div>
-                      <div>
-                        <a href={item.creatorLink} target="_blank" rel="noopener noreferrer">
-                          {item.creatorLabel}
                         </a>
                       </div>
                     </div>
