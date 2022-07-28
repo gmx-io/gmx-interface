@@ -144,8 +144,8 @@ export default function PositionsList(props) {
       ...state,
       [position.key]: true,
     }));
-    let apiUrl = `https://gmxs.vercel.app/api/og`;
-    let data = {
+    const apiUrl = `https://gmxs.vercel.app/api/og`;
+    const data = {
       entryPrice: `$${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}`,
       currentPrice: `$${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}`,
       pnlPercentage: position.deltaPercentageStr,
@@ -154,23 +154,21 @@ export default function PositionsList(props) {
       referralCode: userAffiliateCodes.length > 0 && userAffiliateCodes[0],
       levrage: formatAmount(position.leverage, 4, 2, true),
     };
-    fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((imageInfo) => {
-        setSharePositionInfo(imageInfo);
-      })
-      .finally(() => {
-        setSharePositionImageStatus((state) => ({
-          ...state,
-          [position.key]: false,
-        }));
-      });
+    try {
+      const imageInfo = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }).then((res) => res.json());
+      setSharePositionInfo(imageInfo);
+    } finally {
+      setSharePositionImageStatus((state) => ({
+        ...state,
+        [position.key]: false,
+      }));
+    }
   }
 
   const onPositionClick = (position) => {

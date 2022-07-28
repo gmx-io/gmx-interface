@@ -17,7 +17,7 @@ function download(dataurl, filename) {
 function getTweetLink(info, trade) {
   if (!info || !trade) return "";
   const text = `Checkout my latest ${trade.indexToken.symbol} trade on @gmx_io`;
-  const url = `https://gmxs.vercel.app/api/share?image_url=${info?.image_url}?ref=${info?.ref}`;
+  const url = `https://gmxs.vercel.app/api/s?v=${info?.version}&id=${info?.id.split("/")[1]}&ref=${info?.ref}`;
   return getTwitterIntentURL(text, url);
 }
 
@@ -44,7 +44,9 @@ function SharePosition(props) {
 
   function handleCopy() {
     if (!sharePositionInfo) return;
-    const url = `https://gmxs.vercel.app/api/share?image_url=${sharePositionInfo?.image_url}?ref=${sharePositionInfo?.ref}`;
+    const url = `https://gmxs.vercel.app/api/s?v=${sharePositionInfo?.version}&id=${
+      sharePositionInfo?.id.split("/")[1]
+    }&ref=${sharePositionInfo?.ref}`;
     copyToClipboard(url);
   }
 
@@ -52,7 +54,7 @@ function SharePosition(props) {
     <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
       {sharePositionInfo && (
         <div className={cx("share-position-image", { loaded: isLoaded })}>
-          <img onLoad={() => setIsLoaded(true)} src={sharePositionInfo.image_url} alt="" />
+          <img onLoad={() => setIsLoaded(true)} src={sharePositionInfo.image} alt="" />
         </div>
       )}
       {!isLoaded && (
@@ -69,7 +71,7 @@ function SharePosition(props) {
         <button
           disabled={!isLoaded}
           className="default-btn mr-base"
-          onClick={() => download(sharePositionInfo?.image_url, imageName)}
+          onClick={() => download(sharePositionInfo?.image, imageName)}
         >
           Download
         </button>
