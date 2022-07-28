@@ -17,19 +17,19 @@ function PositionDropdown({ handleEditCollateral, handleShare, handleMarketSelec
         <Menu.Items as="div" className="menu-items">
           <Menu.Item>
             <div className="menu-item" onClick={handleEditCollateral}>
-              <AiOutlineEdit fontSize={15} />
+              <AiOutlineEdit fontSize={16} />
               <p>Edit Collateral</p>
             </div>
           </Menu.Item>
           <Menu.Item>
             <div className="menu-item" onClick={handleMarketSelect}>
-              <BiSelectMultiple fontSize={15} />
+              <BiSelectMultiple fontSize={16} />
               <p>Select Market</p>
             </div>
           </Menu.Item>
           <Menu.Item>
             <div className="menu-item" onClick={handleShare}>
-              <FiShare2 fontSize={15} />
+              <FiShare2 fontSize={16} />
               <p>Share Position</p>
             </div>
           </Menu.Item>
