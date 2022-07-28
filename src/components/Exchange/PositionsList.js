@@ -29,6 +29,7 @@ import SharePosition from "./SharePosition";
 import SpinningLoader from "../Common/SpinningLoader";
 import { ethers } from "ethers";
 import { useAffiliateCodes } from "../../Api/referrals";
+import PositionDropdown from "./PositionDropdown";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -136,7 +137,8 @@ export default function PositionsList(props) {
     setIsHigherSlippageAllowed(false);
   };
 
-  const sharePosition = (position) => {
+  async function sharePosition(position) {
+    setIsSharePositionModalVisible(true);
     setPositionToShare(position);
     setSharePositionImageStatus((state) => ({
       ...state,
@@ -162,7 +164,6 @@ export default function PositionsList(props) {
       .then((res) => res.json())
       .then((imageInfo) => {
         setSharePositionInfo(imageInfo);
-        setIsSharePositionModalVisible(true);
       })
       .finally(() => {
         setSharePositionImageStatus((state) => ({
@@ -170,7 +171,7 @@ export default function PositionsList(props) {
           [position.key]: false,
         }));
       });
-  };
+  }
 
   const onPositionClick = (position) => {
     helperToast.success(`${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol} market selected`);
@@ -477,7 +478,6 @@ export default function PositionsList(props) {
             <th>Mark Price</th>
             <th>Entry Price</th>
             <th>Liq. Price</th>
-            <th>Share</th>
             <th></th>
             <th></th>
           </tr>
@@ -664,34 +664,20 @@ export default function PositionsList(props) {
                 </td>
                 <td>
                   <button
-                    disabled={position.size.eq(0)}
-                    className="Exchange-list-action"
-                    onClick={() => sharePosition(position)}
-                  >
-                    {sharePositionImageStatus[position.key] ? (
-                      <SpinningLoader size={3} />
-                    ) : (
-                      <FiShare2 color="#ffffffb3" />
-                    )}
-                  </button>
-                </td>
-                <td>
-                  <button
-                    className="Exchange-list-action"
-                    onClick={() => editPosition(position)}
-                    disabled={position.size.eq(0)}
-                  >
-                    Edit
-                  </button>
-                </td>
-                <td>
-                  <button
                     className="Exchange-list-action"
                     onClick={() => sellPosition(position)}
                     disabled={position.size.eq(0)}
                   >
                     Close
                   </button>
+                </td>
+                <td>
+                  <PositionDropdown
+                    position={position}
+                    editPosition={editPosition}
+                    sharePosition={sharePosition}
+                    onPositionClick={onPositionClick}
+                  />
                 </td>
               </tr>
             );

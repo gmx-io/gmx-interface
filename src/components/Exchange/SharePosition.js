@@ -1,5 +1,11 @@
+import { useState } from "react";
+import cx from "classnames";
+import { useCopyToClipboard } from "react-use";
+import SpinningLoader from "../Common/SpinningLoader";
 import Modal from "../Modal/Modal";
 import "./SharePosition.css";
+import { getTwitterIntentURL } from "../../Helpers";
+import { useEffect } from "react";
 
 function download(dataurl, filename) {
   const link = document.createElement("a");
@@ -8,27 +14,76 @@ function download(dataurl, filename) {
   link.click();
 }
 
+function getTweetLink(info, trade) {
+  if (!info || !trade) return "";
+  const text = `Checkout my latest ${trade.indexToken.symbol} trade on @gmx_io`;
+  const url = `https://gmxs.vercel.app/api/share?image_url=${info?.image_url}?ref=${info?.ref}`;
+  return getTwitterIntentURL(text, url);
+}
+
 function SharePosition(props) {
-  let { isVisible, setIsVisible, title, sharePositionImageUri, positionToShare, sharePositionInfo } = props;
-  let position = positionToShare;
-  let imageName = `${position.indexToken.symbol}-${position.isLong ? "long" : "short"}`;
+  const { isVisible, setIsVisible, title, positionToShare, sharePositionInfo } = props;
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [copyText, setCopyText] = useState("Copy");
+  const [copyState, copyToClipboard] = useCopyToClipboard();
+
+  let { indexToken, isLong } = positionToShare;
+  let imageName = `${indexToken.symbol}-${isLong ? "long" : "short"}`;
+
+  useEffect(() => {
+    if (copyState.value) {
+      setCopyText("Copied");
+      setTimeout(() => {
+        setCopyText("Copy");
+      }, 5000);
+    }
+    if (copyState.error) {
+      setCopyText("Unable to copy");
+    }
+  }, [copyState]);
+
+  function handleCopy() {
+    if (!sharePositionInfo) return;
+    const url = `https://gmxs.vercel.app/api/share?image_url=${sharePositionInfo?.image_url}?ref=${sharePositionInfo?.ref}`;
+    copyToClipboard(url);
+  }
+
   return (
     <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
-      <div className="share-position-image">
-        <img src={sharePositionInfo.image_url} alt="" />
-      </div>
+      {sharePositionInfo && (
+        <div className={cx("share-position-image", { loaded: isLoaded })}>
+          <img onLoad={() => setIsLoaded(true)} src={sharePositionInfo.image_url} alt="" />
+        </div>
+      )}
+      {!isLoaded && (
+        <div className="share-img-loading">
+          <div className="share-img-loading">
+            <SpinningLoader size={4} />
+          </div>
+        </div>
+      )}
       <div className="social-share-btn">
-        <button className="default-btn mr-base" onClick={() => download(sharePositionImageUri, imageName)}>
-          Download to share
+        <button disabled={!isLoaded} className="default-btn mr-base" onClick={handleCopy}>
+          {copyText}
         </button>
-        <a
-          target="_blank"
-          rel="noreferrer"
-          href={`https://twitter.com/intent/tweet?text=Latest%20trade%20on%20GMX&url=https://gmxs.vercel.app/api/share%3Fimage_url%3D${sharePositionInfo.image_url}%26ref%3D${sharePositionInfo.ref}`}
-          className="default-btn"
+        <button
+          disabled={!isLoaded}
+          className="default-btn mr-base"
+          onClick={() => download(sharePositionInfo?.image_url, imageName)}
         >
-          Tweet
-        </a>
+          Download
+        </button>
+        <span className="pointer-none">
+          <a
+            target="_blank"
+            className={cx("default-btn tweet-link", { disabled: !isLoaded })}
+            rel="noreferrer"
+            href={isLoaded ? getTweetLink(sharePositionInfo, positionToShare) : ""}
+            disabled={!isLoaded}
+          >
+            Tweet
+          </a>
+        </span>
       </div>
     </Modal>
   );

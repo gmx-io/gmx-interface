@@ -1,10 +1,38 @@
 .share-position-image img {
-  max-width: 700px;
+  max-width: 500px;
   width: 100%;
+}
+.share-position-image {
+  display: none;
+}
+
+.loaded {
+  display: block;
 }
 
 .social-share-btn {
   justify-content: center;
   display: flex;
   margin-top: 1rem;
+}
+
+.share-img-loading {
+  width: 500px;
+  height: 281px;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tweet-link {
+  text-decoration: none;
+}
+.tweet-link.disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.9;
+  box-shadow: none;
+  background: #2d2e3f 0% 0% no-repeat padding-box;
+  color: #ffffff61;
 }
