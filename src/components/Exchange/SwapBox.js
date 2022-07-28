@@ -1053,23 +1053,19 @@ export default function SwapBox(props) {
   };
 
   const renderErrorModal = () => {
-    const inputCurrency = fromToken.address === AddressZero ? "ETH" : fromToken.address;
+    const inputCurrency = fromToken.address === AddressZero ? "ETH" : fromToken.symbol;
     let outputCurrency;
     if (isLong) {
-      outputCurrency = toToken.address === AddressZero ? "ETH" : toToken.address;
+      const mainToken = chainId === ARBITRUM ? "ETH" : "AVAX";
+      outputCurrency = toToken.address === AddressZero ? mainToken : toToken.symbol;
     } else {
-      outputCurrency = shortCollateralToken.address;
+      outputCurrency = shortCollateralToken.symbol;
     }
-    let externalSwapUrl = "";
-    if (chainId === AVALANCHE) {
-      externalSwapUrl = `https://traderjoexyz.com/trade?outputCurrency=${outputCurrency}#/`;
-    } else {
-      externalSwapUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}`;
-    }
-    let externalSwapName = chainId === AVALANCHE ? "Trader Joe" : "Uniswap";
+
+    const swapTokenSymbol = isLong ? toToken.symbol : shortCollateralToken.symbol;
+    const externalSwapUrl = `https://app.1inch.io/#/${chainId}/swap/${inputCurrency}/${outputCurrency}`;
     const label =
       modalError === "BUFFER" ? `${shortCollateralToken.symbol} Required` : `${fromToken.symbol} Capacity Reached`;
-    const swapTokenSymbol = isLong ? toToken.symbol : shortCollateralToken.symbol;
     return (
       <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal font-base">
         <div>You need to select {swapTokenSymbol} as the "Pay" token to initiate this trade.</div>
@@ -1082,7 +1078,7 @@ export default function SwapBox(props) {
           </div>
         )}
         <a href={externalSwapUrl} target="_blank" rel="noreferrer">
-          Buy {swapTokenSymbol} on {externalSwapName}
+          Buy {swapTokenSymbol} on 1inch {inputCurrency} / {outputCurrency}
         </a>
       </Modal>
     );
