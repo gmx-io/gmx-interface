@@ -1078,7 +1078,7 @@ export default function SwapBox(props) {
           </div>
         )}
         <a href={externalSwapUrl} target="_blank" rel="noreferrer">
-          Buy {swapTokenSymbol} on 1inch {inputCurrency} / {outputCurrency}
+          Buy {swapTokenSymbol} on 1inch
         </a>
       </Modal>
     );
