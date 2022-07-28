@@ -7,11 +7,22 @@ import "./SharePosition.css";
 import { getTwitterIntentURL } from "../../Helpers";
 import { useEffect } from "react";
 
-function download(dataurl, filename) {
+function toDataURL(url) {
+  return fetch(url)
+    .then((response) => {
+      return response.blob();
+    })
+    .then((blob) => {
+      return URL.createObjectURL(blob);
+    });
+}
+
+async function download(url, filename) {
   const link = document.createElement("a");
-  link.href = dataurl;
+  link.href = await toDataURL(url);
   link.download = filename;
   link.click();
+  console.log(link);
 }
 
 function getTweetLink(info, trade) {
