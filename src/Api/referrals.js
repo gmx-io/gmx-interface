@@ -390,31 +390,30 @@ export async function validateReferralCodeExists(referralCode, chainId) {
 }
 
 export function useAffiliateCodes(chainId, account) {
-  const [affiliateCodes, setAffiliateCodes] = useState([]);
-  const query = gql(
-    `{
-    referrerTotalStats: referrerStats(
-      first: 1000
-      orderBy: volume
-      orderDirection: desc
-      where: {
-        period: total
-        referrer: "__ACCOUNT__"
+  const [affiliateCodes, setAffiliateCodes] = useState({ code: null, success: false });
+  const query = gql`
+    query userReferralCodes($account: String!) {
+      referrerTotalStats: referrerStats(
+        first: 1000
+        orderBy: volume
+        orderDirection: desc
+        where: { period: total, referrer: $account }
+      ) {
+        referralCode
       }
-    ) {
-      referralCode,
     }
-   }
-  `.replaceAll("__ACCOUNT__", (account || "").toLowerCase())
-  );
+  `;
   useEffect(() => {
     if (!chainId) return;
     getGraphClient(chainId)
-      .query({ query })
+      .query({ query, variables: { account: account?.toLowerCase() } })
       .then((res) => {
         const parsedAffiliateCodes = res?.data?.referrerTotalStats.map((c) => decodeReferralCode(c?.referralCode));
-        setAffiliateCodes(parsedAffiliateCodes);
+        setAffiliateCodes({ code: parsedAffiliateCodes[0], success: true });
       });
-  }, [chainId, query]);
+    return () => {
+      setAffiliateCodes({ code: null, success: false });
+    };
+  }, [chainId, query, account]);
   return affiliateCodes;
 }

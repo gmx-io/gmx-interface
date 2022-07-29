@@ -23,7 +23,7 @@ import {
   INCREASE,
   DECREASE,
 } from "../../Helpers";
-import SharePositionModal from "./SharePositionModal";
+import PositionShare from "./PositionShare";
 import PositionDropdown from "./PositionDropdown";
 
 const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
@@ -148,7 +148,7 @@ export default function PositionsList(props) {
         />
       )}
       {isPositionShareModalOpen && (
-        <SharePositionModal
+        <PositionShare
           setIsPositionShareModalOpen={setIsPositionShareModalOpen}
           isPositionShareModalOpen={isPositionShareModalOpen}
           positionToShare={positionToShare}

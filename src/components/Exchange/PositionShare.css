@@ -8,10 +8,7 @@
   justify-content: center;
   text-align: center;
 }
-.position-share-modal .actions button:first-child,
-.position-share-modal .actions a:first-child {
-  margin-right: 1rem;
-}
+
 .position-share {
   aspect-ratio: 1200 / 675;
   background: url(../../img/position-share-bg.png);
@@ -101,4 +98,16 @@
 }
 .position-share .code {
   font-weight: 600;
+}
+
+.tweet-link {
+  text-decoration: none;
+}
+.tweet-link.disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.9;
+  box-shadow: none;
+  background: #2d2e3f 0% 0% no-repeat padding-box;
+  color: #ffffff61;
 }
