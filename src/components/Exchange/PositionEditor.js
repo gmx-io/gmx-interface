@@ -554,12 +554,12 @@ export default function PositionEditor(props) {
                     <div className="Exchange-info-label">Execution Fee</div>
                     <div className="align-right">
                       <Tooltip
-                        handle={`${formatAmount(minExecutionFee, 18, 4)} ${nativeTokenSymbol}`}
+                        handle={`${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol}`}
                         position="right-top"
                         renderContent={() => {
                           return (
                             <>
-                              Network fee: {formatAmount(minExecutionFee, 18, 4)} {nativeTokenSymbol} ($
+                              Network fee: {formatAmountFree(minExecutionFee, 18, 5)} {nativeTokenSymbol} ($
                               {formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})<br />
                               <br />
                               This is the network cost required to execute the {isDeposit
