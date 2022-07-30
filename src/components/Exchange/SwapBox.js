@@ -164,6 +164,9 @@ export default function SwapBox(props) {
     isPluginApproving,
     isPositionRouterApproving,
     savedShouldDisableOrderValidation,
+    minExecutionFee,
+    minExecutionFeeUSD,
+    minExecutionFeeErrorMessage,
   } = props;
 
   const [fromValue, setFromValue] = useState("");
@@ -236,14 +239,9 @@ export default function SwapBox(props) {
     setOrderOption(option);
   };
 
-  const [sellValue, setSellValue] = useState("");
-
-  const onSellChange = (evt) => {
-    setSellValue(evt.target.value || "");
-  };
-
   const isMarketOrder = orderOption === MARKET;
   const orderOptions = isSwap ? SWAP_ORDER_OPTIONS : LEVERAGE_ORDER_OPTIONS;
+  const orderOptionLabels = { [STOP]: "Trigger" };
 
   const [triggerPriceValue, setTriggerPriceValue] = useState("");
   const triggerPriceUsd = isMarketOrder ? 0 : parseValue(triggerPriceValue, USD_DECIMALS);
@@ -322,12 +320,6 @@ export default function SwapBox(props) {
       fetcher: fetcher(library, Token),
     }
   );
-
-  const positionRouterAddress = getContract(chainId, "PositionRouter");
-
-  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
-    fetcher: fetcher(library, PositionRouter),
-  });
 
   const { data: hasOutdatedUi } = Api.useHasOutdatedUi();
 
@@ -939,14 +931,16 @@ export default function SwapBox(props) {
         }
       }
 
-      const sizeUsd = toAmount.mul(toTokenInfo.maxPrice).div(expandDecimals(1, toTokenInfo.decimals));
-      if (
-        toTokenInfo.maxGlobalLongSize &&
-        toTokenInfo.maxGlobalLongSize.gt(0) &&
-        toTokenInfo.maxAvailableLong &&
-        sizeUsd.gt(toTokenInfo.maxAvailableLong)
-      ) {
-        return [`Max ${toTokenInfo.symbol} long exceeded`];
+      if (toTokenInfo && toTokenInfo.maxPrice) {
+        const sizeUsd = toAmount.mul(toTokenInfo.maxPrice).div(expandDecimals(1, toTokenInfo.decimals));
+        if (
+          toTokenInfo.maxGlobalLongSize &&
+          toTokenInfo.maxGlobalLongSize.gt(0) &&
+          toTokenInfo.maxAvailableLong &&
+          sizeUsd.gt(toTokenInfo.maxAvailableLong)
+        ) {
+          return [`Max ${toTokenInfo.symbol} long exceeded`];
+        }
       }
     }
 
@@ -1097,6 +1091,9 @@ export default function SwapBox(props) {
   };
 
   const isPrimaryEnabled = () => {
+    if (isStopOrder) {
+      return true;
+    }
     if (!active) {
       return true;
     }
@@ -1127,6 +1124,9 @@ export default function SwapBox(props) {
   };
 
   const getPrimaryText = () => {
+    if (isStopOrder) {
+      return "Open a position";
+    }
     if (!active) {
       return "Connect Wallet";
     }
@@ -1590,6 +1590,9 @@ export default function SwapBox(props) {
 
   const onSwapOptionChange = (opt) => {
     setSwapOption(opt);
+    if (orderOption === STOP) {
+      setOrderOption(MARKET);
+    }
     setAnchorOnFromAmount(true);
     setFromValue("");
     setToValue("");
@@ -1651,6 +1654,11 @@ export default function SwapBox(props) {
   }
 
   const onClickPrimary = () => {
+    if (isStopOrder) {
+      setOrderOption(MARKET);
+      return;
+    }
+
     if (!active) {
       props.connectWallet();
       return;
@@ -1697,10 +1705,10 @@ export default function SwapBox(props) {
     setIsHigherSlippageAllowed(false);
   };
 
-  const showFromAndToSection = orderOption !== STOP;
-  const showSizeSection = orderOption === STOP;
-  const showTriggerPriceSection = !isSwap && !isMarketOrder;
-  const showTriggerRatioSection = isSwap && !isMarketOrder;
+  const isStopOrder = orderOption === STOP;
+  const showFromAndToSection = !isStopOrder;
+  const showTriggerPriceSection = !isSwap && !isMarketOrder && !isStopOrder;
+  const showTriggerRatioSection = isSwap && !isMarketOrder && !isStopOrder;
 
   let fees;
   let feesUsd;
@@ -1817,6 +1825,7 @@ export default function SwapBox(props) {
           {flagOrdersEnabled && (
             <Tab
               options={orderOptions}
+              optionLabels={orderOptionLabels}
               className="Exchange-swap-order-type-tabs"
               type="inline"
               option={orderOption}
@@ -1918,55 +1927,6 @@ export default function SwapBox(props) {
             </div>
           </React.Fragment>
         )}
-        {showSizeSection && (
-          <div className="Exchange-swap-section">
-            <div className="Exchange-swap-section-top">
-              <div className="muted">Sell, USD</div>
-              {existingPosition && (
-                <div
-                  className="muted align-right clickable"
-                  onClick={() => {
-                    setSellValue(formatAmountFree(existingPosition.size, USD_DECIMALS, 2));
-                  }}
-                >
-                  Position: {formatAmount(existingPosition.size, USD_DECIMALS, 2, true)}
-                </div>
-              )}
-            </div>
-            <div className="Exchange-swap-section-bottom">
-              <div className="Exchange-swap-input-container">
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="0.0"
-                  className="Exchange-swap-input"
-                  value={sellValue}
-                  onChange={onSellChange}
-                />
-                {existingPosition && sellValue !== formatAmountFree(existingPosition.size, USD_DECIMALS, 2) && (
-                  <div
-                    className="Exchange-swap-max"
-                    onClick={() => {
-                      setSellValue(formatAmountFree(existingPosition.size, USD_DECIMALS, 2));
-                    }}
-                  >
-                    MAX
-                  </div>
-                )}
-              </div>
-              <div>
-                <TokenSelector
-                  label="To"
-                  chainId={chainId}
-                  tokenAddress={toTokenAddress}
-                  onSelectToken={onSelectToToken}
-                  tokens={toTokens}
-                  infoTokens={infoTokens}
-                />
-              </div>
-            </div>
-          </div>
-        )}
         {showTriggerRatioSection && (
           <div className="Exchange-swap-section">
             <div className="Exchange-swap-section-top">
@@ -2057,7 +2017,7 @@ export default function SwapBox(props) {
             </ExchangeInfoRow>
           </div>
         )}
-        {(isLong || isShort) && (
+        {(isLong || isShort) && !isStopOrder && (
           <div className="Exchange-leverage-box">
             <div className="Exchange-leverage-slider-settings">
               <Checkbox isChecked={isLeverageSliderEnabled} setIsChecked={setIsLeverageSliderEnabled}>
@@ -2177,6 +2137,24 @@ export default function SwapBox(props) {
                 )}
               </div>
             </ExchangeInfoRow>
+          </div>
+        )}
+        {isStopOrder && (
+          <div className="Exchange-swap-section Exchange-trigger-order-info">
+            Take-profit and stop-loss orders can be set after opening a position. <br />
+            <br />
+            There will be a "Close" button on each position row, clicking this will display the option to set trigger
+            orders. <br />
+            <br />
+            For screenshots and more information, please see the{" "}
+            <a
+              href="https://gmxio.gitbook.io/gmx/trading#stop-loss-take-profit-orders"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              docs
+            </a>
+            .
           </div>
         )}
         <div className="Exchange-swap-button-container">
@@ -2395,7 +2373,6 @@ export default function SwapBox(props) {
       {isConfirming && (
         <ConfirmationBox
           library={library}
-          minExecutionFee={minExecutionFee}
           isHigherSlippageAllowed={isHigherSlippageAllowed}
           setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
           orders={orders}
@@ -2434,6 +2411,9 @@ export default function SwapBox(props) {
           chainId={chainId}
           setPendingTxns={setPendingTxns}
           pendingTxns={pendingTxns}
+          minExecutionFee={minExecutionFee}
+          minExecutionFeeUSD={minExecutionFeeUSD}
+          minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
         />
       )}
     </div>

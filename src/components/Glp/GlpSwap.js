@@ -101,6 +101,7 @@ export default function GlpSwap(props) {
   const tokens = getTokens(chainId);
   const whitelistedTokens = getWhitelistedTokens(chainId);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
+  const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
   const [swapValue, setSwapValue] = useState("");
   const [glpValue, setGlpValue] = useState("");
   const [swapTokenAddress, setSwapTokenAddress] = useLocalStorageByChainId(
@@ -974,7 +975,7 @@ export default function GlpSwap(props) {
             </tr>
           </thead>
           <tbody>
-            {tokenList.map((token) => {
+            {visibleTokens.map((token) => {
               let tokenFeeBps;
               if (isBuying) {
                 const { feeBasisPoints: feeBps } = getBuyGlpFromAmount(
@@ -1143,7 +1144,7 @@ export default function GlpSwap(props) {
           </tbody>
         </table>
         <div className="token-grid">
-          {tokenList.map((token) => {
+          {visibleTokens.map((token) => {
             let tokenFeeBps;
             if (isBuying) {
               const { feeBasisPoints: feeBps } = getBuyGlpFromAmount(

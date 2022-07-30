@@ -1,0 +1,23 @@
+.RedirectModal .Modal-content {
+  width: 34rem;
+  font-size: 1.5rem;
+  line-height: 1.9rem;
+}
+
+.RedirectModal .Modal-body .Checkbox {
+  align-items: flex-start;
+}
+
+.RedirectModal .Modal-body .Checkbox-icon-wrapper {
+  display: block;
+}
+
+.RedirectModal .Modal-body .Checkbox .Checkbox-label {
+  margin-left: 0.5rem;
+}
+
+@media (max-width: 700px) {
+  .RedirectModal .Modal-content {
+    width: 90vw;
+  }
+}

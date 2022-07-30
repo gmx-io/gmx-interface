@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
+import useScrollToTop from "./hooks/useScrollToTop";
 
 import { Switch, Route, NavLink, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
 
@@ -24,6 +25,7 @@ import {
   clearWalletConnectData,
   switchNetwork,
   helperToast,
+  getAlchemyWsUrl,
   getChainName,
   useChainId,
   getAccountUrl,
@@ -44,6 +46,7 @@ import {
   REFERRAL_CODE_QUERY_PARAM,
   isDevelopment,
   DISABLE_ORDER_VALIDATION_KEY,
+  shouldShowRedirectModal,
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
@@ -74,8 +77,8 @@ import { RiMenuLine } from "react-icons/ri";
 import { FaTimes } from "react-icons/fa";
 import { FiX } from "react-icons/fi";
 
-import "./Font.css";
 import "./Shared.css";
+import "./Font.css";
 import "./App.css";
 import "./Input.css";
 import "./AppOrder.css";
@@ -84,7 +87,6 @@ import logoImg from "./img/logo_GMX.svg";
 import logoSmallImg from "./img/logo_GMX_small.svg";
 import connectWalletImg from "./img/ic_wallet_24.svg";
 
-// import logoImg from './img/gmx-logo-final-white-small.png'
 import metamaskImg from "./img/metamask.png";
 import coinbaseImg from "./img/coinbaseWallet.png";
 import walletConnectImg from "./img/walletconnect-circle-blue.svg";
@@ -103,7 +105,10 @@ import PositionRouter from "./abis/PositionRouter.json";
 import PageNotFound from "./views/PageNotFound/PageNotFound";
 import ReferralTerms from "./views/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "./views/TermsAndConditions/TermsAndConditions";
-import useScrollToTop from "./hooks/useScrollToTop";
+import { useLocalStorage } from "react-use";
+import { RedirectPopupModal } from "./components/ModalViews/RedirectModal";
+import { REDIRECT_POPUP_TIMESTAMP_KEY } from "./utils/constants";
+import Jobs from "./views/Jobs/Jobs";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -123,9 +128,7 @@ const Zoom = cssTransition({
   duration: 200,
 });
 
-const arbWsProvider = new ethers.providers.WebSocketProvider(
-  "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"
-);
+const arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
 
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
 
@@ -180,7 +183,7 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
           About
         </a>
       </div>
-      {small && (
+      {small && !isHomeSite() && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
           <a href="#" onClick={openSettings}>
@@ -343,18 +346,6 @@ function FullApp() {
     }
   }, [query, history, location]);
 
-  useEffect(() => {
-    if (window.ethereum) {
-      // hack
-      // for some reason after network is changed to Avalanche through Metamask
-      // it triggers event with chainId = 1
-      // reload helps web3 to return correct chain data
-      return window.ethereum.on("chainChanged", () => {
-        document.location.reload();
-      });
-    }
-  }, []);
-
   const disconnectAccount = useCallback(() => {
     // only works with WalletConnect
     clearWalletConnectData();
@@ -421,6 +412,9 @@ function FullApp() {
 
   const [walletModalVisible, setWalletModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
+  const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
+  const [redirectPopupTimestamp, setRedirectPopupTimestamp, removeRedirectPopupTimestamp] =
+    useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
   const [selectedToPage, setSelectedToPage] = useState("");
   const connectWallet = () => setWalletModalVisible(true);
 
@@ -529,13 +523,21 @@ function FullApp() {
 
   const HeaderLink = ({ isHomeLink, className, exact, to, children }) => {
     const isOnHomePage = location.pathname === "/";
-
     if (isHome && !(isHomeLink && !isOnHomePage)) {
-      return (
-        <div className={cx("a", className, { active: isHomeLink })} onClick={() => showRedirectModal(to)}>
-          {children}
-        </div>
-      );
+      if (shouldShowRedirectModal(redirectPopupTimestamp)) {
+        return (
+          <div className={cx("a", className, { active: isHomeLink })} onClick={() => showRedirectModal(to)}>
+            {children}
+          </div>
+        );
+      } else {
+        const baseUrl = getAppBaseUrl();
+        return (
+          <a className={cx("a", className, { active: isHomeLink })} href={baseUrl + to}>
+            {children}
+          </a>
+        );
+      }
     }
 
     if (isHomeLink) {
@@ -762,7 +764,7 @@ function FullApp() {
           {isHome && (
             <Switch>
               <Route exact path="/">
-                <Home showRedirectModal={showRedirectModal} />
+                <Home showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
               </Route>
               <Route exact path="/referral-terms">
                 <ReferralTerms />
@@ -814,6 +816,9 @@ function FullApp() {
                   setPendingTxns={setPendingTxns}
                   connectWallet={connectWallet}
                 />
+              </Route>
+              <Route exact path="/jobs">
+                <Jobs />
               </Route>
               <Route exact path="/buy_gmx">
                 <BuyGMX />
@@ -870,30 +875,15 @@ function FullApp() {
         pauseOnHover
       />
       <EventToastContainer />
-      <Modal
-        className="RedirectModal"
-        isVisible={redirectModalVisible}
-        setIsVisible={setRedirectModalVisible}
-        label="Launch App"
-      >
-        You are leaving GMX.io and will be redirected to a third party, independent website.
-        <br />
-        <br />
-        The website is a community deployed and maintained instance of the open source{" "}
-        <a href="https://github.com/gmx-io/gmx-interface" target="_blank" rel="noopener noreferrer">
-          GMX front end
-        </a>
-        , hosted and served on the distributed, peer-to-peer{" "}
-        <a href="https://ipfs.io/" target="_blank" rel="noopener noreferrer">
-          IPFS network
-        </a>
-        .
-        <br />
-        <br />
-        <a href={appRedirectUrl} className="App-cta Exchange-swap-button">
-          Agree
-        </a>
-      </Modal>
+      <RedirectPopupModal
+        redirectModalVisible={redirectModalVisible}
+        setRedirectModalVisible={setRedirectModalVisible}
+        appRedirectUrl={appRedirectUrl}
+        setRedirectPopupTimestamp={setRedirectPopupTimestamp}
+        setShouldHideRedirectModal={setShouldHideRedirectModal}
+        shouldHideRedirectModal={shouldHideRedirectModal}
+        removeRedirectPopupTimestamp={removeRedirectPopupTimestamp}
+      />
       <Modal
         className="Connect-wallet-modal"
         isVisible={walletModalVisible}
