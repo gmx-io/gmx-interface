@@ -56,6 +56,7 @@ import avalanche24Icon from "../../img/ic_avalanche_24.svg";
 import AssetDropdown from "./AssetDropdown";
 import SEO from "../../components/Common/SEO";
 import TooltipCard, { TooltipCardRow } from "./TooltipCard";
+import useTotalVolume from "../../hooks/useTotalVolume";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -136,6 +137,7 @@ function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
 export default function DashboardV2() {
   const { active, library } = useWeb3React();
   const { chainId } = useChainId();
+  const totalVolume = useTotalVolume();
 
   const chainName = getChainName(chainId);
 
@@ -153,17 +155,10 @@ export default function DashboardV2() {
     }
   );
 
-  const totalVolumeUrl = getServerUrl(chainId, "/total_volume");
-  const { data: totalVolume } = useSWR([totalVolumeUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
-  });
-
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
   const volumeInfo = getVolumeInfo(hourlyVolumes);
   const positionStatsInfo = getPositionStats(positionStats);
-
-  const totalVolumeSum = getTotalVolumeSum(totalVolume);
 
   function getWhitelistedTokenAddresses(chainId) {
     const whitelistedTokens = getWhitelistedTokens(chainId);
@@ -649,12 +644,26 @@ export default function DashboardV2() {
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="App-card-row">
-                  <div className="label">Total Fees</div>
+                  <div className="label">Total Feess</div>
                   <div>${numberWithCommas(totalFeesDistributed.toFixed(0))}</div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">Total Volume</div>
-                  <div>${formatAmount(totalVolumeSum, USD_DECIMALS, 0, true)}</div>
+                  <div>
+                    <TooltipComponent
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={`$${formatAmount(totalVolume?.[chainId], USD_DECIMALS, 0, true)}`}
+                      renderContent={() => (
+                        <TooltipCard
+                          title="Total Volume"
+                          arbitrum={totalVolume?.[ARBITRUM]}
+                          avax={totalVolume?.[AVALANCHE]}
+                          total={totalVolume?.total}
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">Floor Price Fund</div>
