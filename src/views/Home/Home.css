@@ -321,8 +321,9 @@
 }
 
 .Home-latest-info__value {
+  font-family: "RelativeNumber";
   color: white;
-  font-size: 3rem;
+  font-size: 2.9rem;
   line-height: 3.9rem;
   letter-spacing: 0px;
 }
@@ -447,7 +448,8 @@
     grid-template-columns: 1fr;
     grid-row-gap: 1.5rem;
   }
-  .Home-token-card-option-action a {
+  .Home-token-card-option-action a,
+  .Home-token-card-option-action .a {
     justify-content: center;
     display: inline-block;
   }
@@ -462,7 +464,8 @@
   .Home-token-card-option-action > .read-more {
     display: inline-block;
   }
-  .Home-token-card-option-action > .buy a:first-child {
+  .Home-token-card-option-action > .buy a:first-child,
+  .Home-token-card-option-action > .buy .a:first-child {
     margin-right: 0;
   }
 }
@@ -537,17 +540,10 @@
     color: #a0a3c4;
     margin-bottom: 2.6rem;
   }
-  /*
-  .Home-token-card-option-action {
-    display: flex;
-    flex-wrap: wrap;
-    margin-left: -0.5rem;
-    margin-right: -0.5rem;
-  }
 
-  .Home-token-card-option-action .default-btn {
-    margin: 0.5rem;
-  } */
+  .Home-latest-info__value {
+    font-size: 2.7rem;
+  }
 }
 
 @media (max-width: 350px) {

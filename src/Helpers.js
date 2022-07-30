@@ -106,7 +106,7 @@ export const SHORT = "Short";
 export const MARKET = "Market";
 export const LIMIT = "Limit";
 export const STOP = "Stop";
-export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT];
+export const LEVERAGE_ORDER_OPTIONS = [MARKET, LIMIT, STOP];
 export const SWAP_ORDER_OPTIONS = [MARKET, LIMIT];
 export const SWAP_OPTIONS = [LONG, SHORT, SWAP];
 export const DEFAULT_SLIPPAGE_AMOUNT = 30;
@@ -139,6 +139,11 @@ export const GLPPOOLCOLORS = {
   UNI: "#E9167C",
   AVAX: "#E84142",
   LINK: "#3256D6",
+};
+
+export const HIGH_EXECUTION_FEES_MAP = {
+  [ARBITRUM]: 3, // 3 USD
+  [AVALANCHE]: 3, // 3 USD
 };
 
 export const ICONLINKS = {
@@ -1225,8 +1230,24 @@ const RPC_PROVIDERS = {
   [AVALANCHE]: AVALANCHE_RPC_PROVIDERS,
 };
 
+const alchemyWhitelistedDomains = ["gmx.io", "app.gmx.io"];
+
+export function getAlchemyHttpUrl() {
+  if (alchemyWhitelistedDomains.includes(window.location.host)) {
+    return "https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ";
+  }
+  return "https://arb-mainnet.g.alchemy.com/v2/EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
+}
+
+export function getAlchemyWsUrl() {
+  if (alchemyWhitelistedDomains.includes(window.location.host)) {
+    return "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ";
+  }
+  return "wss://arb-mainnet.g.alchemy.com/v2/EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
+}
+
 const FALLBACK_PROVIDERS = {
-  [ARBITRUM]: ["https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ"],
+  [ARBITRUM]: [getAlchemyHttpUrl()],
   [AVALANCHE]: ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
 };
 
@@ -2722,10 +2743,54 @@ export function getTwitterIntentURL(text, url, hashtag = []) {
     if (hashtag.length > 0) {
       finalURL += "&hashtags=" + encodeURIComponent(hashtag.replace(/#/g, ""));
     }
-
     if (url.length > 0) {
       finalURL += "&url=" + encodeURIComponent(url);
     }
   }
   return finalURL;
+}
+
+export function isValidTimestamp(timestamp) {
+  return new Date(timestamp).getTime() > 0;
+}
+
+export function getPositionForOrder(account, order, positionsMap) {
+  const key = getPositionKey(account, order.collateralToken, order.indexToken, order.isLong);
+  const position = positionsMap[key];
+  return position && position.size && position.size.gt(0) ? position : null;
+}
+
+export function getOrderError(account, order, positionsMap, position) {
+  if (order.type !== DECREASE) {
+    return;
+  }
+
+  const positionForOrder = position ? position : getPositionForOrder(account, order, positionsMap);
+
+  if (!positionForOrder) {
+    return "No open position, order cannot be executed unless a position is opened";
+  }
+  if (positionForOrder.size.lt(order.sizeDelta)) {
+    return "Order size is bigger than position, will only be executable if position increases";
+  }
+
+  if (positionForOrder.size.gt(order.sizeDelta)) {
+    if (positionForOrder.size.sub(order.sizeDelta).lt(positionForOrder.collateral.sub(order.collateralDelta))) {
+      return "Order cannot be executed as it would reduce the position's leverage below 1";
+    }
+    if (positionForOrder.size.sub(order.sizeDelta).lt(expandDecimals(5, USD_DECIMALS))) {
+      return "Order cannot be executed as the remaining position would be smaller than $5.00";
+    }
+  }
+}
+
+export function arrayURLFetcher(...urlArr) {
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+  return Promise.all(urlArr.map(fetcher));
+}
+
+export function shouldShowRedirectModal(timestamp) {
+  const thirtyDays = 1000 * 60 * 60 * 24 * 30;
+  const expiryTime = timestamp + thirtyDays;
+  return !isValidTimestamp(timestamp) || Date.now() > expiryTime;
 }

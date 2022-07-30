@@ -1,0 +1,29 @@
+.jobs-page-body {
+  /* margin: 3rem 0; */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 2rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.jobs-page-body a {
+  color: #b7b7bd;
+}
+
+.body-para .subheading {
+  margin: 0;
+}
+
+.mt-lg {
+  margin-top: 2rem;
+}
+
+.jobs-contact {
+  line-height: 1.5;
+}
+
+@media (max-width: 1000px) {
+  .jobs-page-body {
+    grid-template-columns: 1fr;
+  }
+}

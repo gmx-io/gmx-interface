@@ -33,6 +33,7 @@ import {
   DEFAULT_MAX_USDG_AMOUNT,
   getPageTitle,
   importImage,
+  arrayURLFetcher,
 } from "../../Helpers";
 import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply, useInfoTokens } from "../../Api";
 
@@ -54,36 +55,62 @@ import avalanche24Icon from "../../img/ic_avalanche_24.svg";
 
 import AssetDropdown from "./AssetDropdown";
 import SEO from "../../components/Common/SEO";
+import TooltipCard from "./TooltipCard";
+const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
 
-function getVolumeInfo(hourlyVolume) {
-  if (!hourlyVolume || hourlyVolume.length === 0) {
+function getVolumeInfo(hourlyVolumes) {
+  if (!hourlyVolumes || hourlyVolumes.length === 0) {
     return {};
   }
+  const dailyVolumes = hourlyVolumes.map((hourlyVolume) => {
+    const secondsPerHour = 60 * 60;
+    const minTime = parseInt(Date.now() / 1000 / secondsPerHour) * secondsPerHour - 24 * secondsPerHour;
+    const info = {};
+    let totalVolume = bigNumberify(0);
+    for (let i = 0; i < hourlyVolume.length; i++) {
+      const item = hourlyVolume[i].data;
+      if (parseInt(item.timestamp) < minTime) {
+        break;
+      }
 
-  const secondsPerHour = 60 * 60;
-  const minTime = parseInt(Date.now() / 1000 / secondsPerHour) * secondsPerHour - 24 * secondsPerHour;
+      if (!info[item.token]) {
+        info[item.token] = bigNumberify(0);
+      }
 
-  const info = {};
-  let totalVolume = bigNumberify(0);
-  for (let i = 0; i < hourlyVolume.length; i++) {
-    const item = hourlyVolume[i].data;
-    if (parseInt(item.timestamp) < minTime) {
-      break;
+      info[item.token] = info[item.token].add(item.volume);
+      totalVolume = totalVolume.add(item.volume);
     }
+    info.totalVolume = totalVolume;
+    return info;
+  });
+  return dailyVolumes.reduce(
+    (acc, cv, index) => {
+      acc.totalVolume = acc.totalVolume.add(cv.totalVolume);
+      acc[ACTIVE_CHAIN_IDS[index]] = cv;
+      return acc;
+    },
+    { totalVolume: bigNumberify(0) }
+  );
+}
 
-    if (!info[item.token]) {
-      info[item.token] = bigNumberify(0);
-    }
-
-    info[item.token] = info[item.token].add(item.volume);
-    totalVolume = totalVolume.add(item.volume);
+function getPositionStats(positionStats) {
+  if (!positionStats || positionStats.length === 0) {
+    return null;
   }
-
-  info.totalVolume = totalVolume;
-
-  return info;
+  return positionStats.reduce(
+    (acc, cv, i) => {
+      acc.totalLongPositionSizes = acc.totalLongPositionSizes.add(cv.totalLongPositionSizes);
+      acc.totalShortPositionSizes = acc.totalShortPositionSizes.add(cv.totalShortPositionSizes);
+      acc[ACTIVE_CHAIN_IDS[i]] = cv;
+      return acc;
+    },
+    {
+      totalLongPositionSizes: bigNumberify(0),
+      totalShortPositionSizes: bigNumberify(0),
+    }
+  );
 }
 
 function getCurrentFeesUsd(tokenAddresses, fees, infoTokens) {
@@ -112,15 +139,19 @@ export default function DashboardV2() {
 
   const chainName = getChainName(chainId);
 
-  const positionStatsUrl = getServerUrl(chainId, "/position_stats");
-  const { data: positionStats } = useSWR([positionStatsUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
-  });
+  const { data: positionStats } = useSWR(
+    ACTIVE_CHAIN_IDS.map((chainId) => getServerUrl(chainId, "/position_stats")),
+    {
+      fetcher: arrayURLFetcher,
+    }
+  );
 
-  const hourlyVolumeUrl = getServerUrl(chainId, "/hourly_volume");
-  const { data: hourlyVolume } = useSWR([hourlyVolumeUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
-  });
+  const { data: hourlyVolumes } = useSWR(
+    ACTIVE_CHAIN_IDS.map((chainId) => getServerUrl(chainId, "/hourly_volume")),
+    {
+      fetcher: arrayURLFetcher,
+    }
+  );
 
   const totalVolumeUrl = getServerUrl(chainId, "/total_volume");
   const { data: totalVolume } = useSWR([totalVolumeUrl], {
@@ -129,20 +160,20 @@ export default function DashboardV2() {
 
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
-  let totalLongPositionSizes;
-  let totalShortPositionSizes;
-  if (positionStats && positionStats.totalLongPositionSizes && positionStats.totalShortPositionSizes) {
-    totalLongPositionSizes = bigNumberify(positionStats.totalLongPositionSizes);
-    totalShortPositionSizes = bigNumberify(positionStats.totalShortPositionSizes);
-  }
-
-  const volumeInfo = getVolumeInfo(hourlyVolume);
+  const volumeInfo = getVolumeInfo(hourlyVolumes);
+  const positionStatsInfo = getPositionStats(positionStats);
 
   const totalVolumeSum = getTotalVolumeSum(totalVolume);
+
+  function getWhitelistedTokenAddresses(chainId) {
+    const whitelistedTokens = getWhitelistedTokens(chainId);
+    return whitelistedTokens.map((token) => token.address);
+  }
 
   const whitelistedTokens = getWhitelistedTokens(chainId);
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
+  const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
 
   const readerAddress = getContract(chainId, "Reader");
   const vaultAddress = getContract(chainId, "Vault");
@@ -177,10 +208,46 @@ export default function DashboardV2() {
   );
 
   const { infoTokens } = useInfoTokens(library, chainId, active, undefined, undefined);
+  const { infoTokens: infoTokensArbitrum } = useInfoTokens(null, ARBITRUM, active, undefined, undefined);
+  const { infoTokens: infoTokensAvax } = useInfoTokens(null, AVALANCHE, active, undefined, undefined);
+
+  const { data: feesInfo } = useSWR(
+    infoTokensArbitrum[AddressZero].contractMinPrice && infoTokensAvax[AddressZero].contractMinPrice
+      ? "Dashboard:feesInfo"
+      : null,
+    {
+      fetcher: () => {
+        return Promise.all(
+          ACTIVE_CHAIN_IDS.map((chainId) =>
+            fetcher(null, ReaderV2, [getWhitelistedTokenAddresses(chainId)])(
+              `Dashboard:fees:${chainId}`,
+              chainId,
+              getContract(chainId, "Reader"),
+              "getFees",
+              getContract(chainId, "Vault")
+            )
+          )
+        ).then((fees) => {
+          return fees.reduce(
+            (acc, cv, i) => {
+              const feeUSD = getCurrentFeesUsd(
+                getWhitelistedTokenAddresses(ACTIVE_CHAIN_IDS[i]),
+                cv,
+                ACTIVE_CHAIN_IDS[i] === ARBITRUM ? infoTokensArbitrum : infoTokensAvax
+              );
+              acc[ACTIVE_CHAIN_IDS[i]] = feeUSD;
+              acc.total = acc.total.add(feeUSD);
+              return acc;
+            },
+            { total: bigNumberify(0) }
+          );
+        });
+      },
+    }
+  );
 
   const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
   const currentFeesUsd = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokens);
-
   const feeHistory = getFeeHistory(chainId);
   const shouldIncludeCurrrentFees = feeHistory.length && parseInt(Date.now() / 1000) - feeHistory[0].to > 60 * 60;
   let totalFeesDistributed = shouldIncludeCurrrentFees
@@ -267,7 +334,8 @@ export default function DashboardV2() {
     }
 
     const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
-    const targetWeightBps = tokenInfo.weight.mul(BASIS_POINTS_DIVISOR).div(totalTokenWeights);
+    // use add(1).div(10).mul(10) to round numbers up
+    const targetWeightBps = tokenInfo.weight.mul(BASIS_POINTS_DIVISOR).div(totalTokenWeights).add(1).div(10).mul(10);
 
     const weightText = `${formatAmount(currentWeightBps, 2, 2, false)}% / ${formatAmount(
       targetWeightBps,
@@ -484,20 +552,86 @@ export default function DashboardV2() {
                 </div>
                 <div className="App-card-row">
                   <div className="label">24h Volume</div>
-                  <div>${formatAmount(volumeInfo.totalVolume, USD_DECIMALS, 0, true)}</div>
+                  <div>
+                    <TooltipComponent
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={`$${formatAmount(volumeInfo?.[chainId]?.totalVolume, USD_DECIMALS, 0, true)}`}
+                      renderContent={() => (
+                        <TooltipCard
+                          title="Volume"
+                          arbitrum={volumeInfo?.[ARBITRUM].totalVolume}
+                          avax={volumeInfo?.[AVALANCHE].totalVolume}
+                          total={volumeInfo?.totalVolume}
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">Long Positions</div>
-                  <div>${formatAmount(totalLongPositionSizes, USD_DECIMALS, 0, true)}</div>
+                  <div>
+                    <TooltipComponent
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={`$${formatAmount(
+                        positionStatsInfo?.[chainId].totalLongPositionSizes,
+                        USD_DECIMALS,
+                        0,
+                        true
+                      )}`}
+                      renderContent={() => (
+                        <TooltipCard
+                          title="Long Positions"
+                          arbitrum={positionStatsInfo?.[ARBITRUM].totalLongPositionSizes}
+                          avax={positionStatsInfo?.[AVALANCHE].totalLongPositionSizes}
+                          total={positionStatsInfo?.totalLongPositionSizes}
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">Short Positions</div>
-                  <div>${formatAmount(totalShortPositionSizes, USD_DECIMALS, 0, true)}</div>
+                  <div>
+                    <TooltipComponent
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={`$${formatAmount(
+                        positionStatsInfo?.[chainId].totalShortPositionSizes,
+                        USD_DECIMALS,
+                        0,
+                        true
+                      )}`}
+                      renderContent={() => (
+                        <TooltipCard
+                          title="Short Positions"
+                          arbitrum={positionStatsInfo?.[ARBITRUM].totalShortPositionSizes}
+                          avax={positionStatsInfo?.[AVALANCHE].totalShortPositionSizes}
+                          total={positionStatsInfo?.totalShortPositionSizes}
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
                 {feeHistory.length ? (
                   <div className="App-card-row">
                     <div className="label">Fees since {formatDate(feeHistory[0].to)}</div>
-                    <div>${formatAmount(currentFeesUsd, USD_DECIMALS, 2, true)}</div>
+                    <div>
+                      <TooltipComponent
+                        position="right-bottom"
+                        className="nowrap"
+                        handle={`$${formatAmount(feesInfo?.[chainId], USD_DECIMALS, 2, true)}`}
+                        renderContent={() => (
+                          <TooltipCard
+                            title="Fees"
+                            arbitrum={feesInfo?.[ARBITRUM]}
+                            avax={feesInfo?.[AVALANCHE]}
+                            total={feesInfo?.total}
+                          />
+                        )}
+                      />
+                    </div>
                   </div>
                 ) : null}
               </div>
@@ -575,20 +709,28 @@ export default function DashboardV2() {
                     <div className="App-card-row">
                       <div className="label">Total Staked</div>
                       <div>
-                        {
-                          <TooltipComponent
-                            position="right-bottom"
-                            className="nowrap"
-                            handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
-                            renderContent={() => (
-                              <>
-                                Staked on Arbitrum: {formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX
-                                <br />
-                                Staked on Avalanche: {formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX
-                              </>
-                            )}
-                          />
-                        }
+                        <TooltipComponent
+                          position="right-bottom"
+                          className="nowrap"
+                          handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
+                          renderContent={() => (
+                            <>
+                              <p className="Tooltip-row">
+                                <span className="label">Staked on Arbitrum:</span>
+                                <span>{formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX</span>
+                              </p>
+                              <p className="Tooltip-row">
+                                <span className="label">Staked on Avalanche:</span>
+                                <span>{formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX</span>
+                              </p>
+                              <div className="Tooltip-divider" />
+                              <p className="Tooltip-row">
+                                <span className="label">Total:</span>
+                                <span>{formatAmount(totalStakedGmx, GMX_DECIMALS, 0, true)} GMX</span>
+                              </p>
+                            </>
+                          )}
+                        />
                       </div>
                     </div>
                     <div className="App-card-row">
@@ -744,7 +886,7 @@ export default function DashboardV2() {
                   </tr>
                 </thead>
                 <tbody>
-                  {tokenList.map((token) => {
+                  {visibleTokens.map((token) => {
                     const tokenInfo = infoTokens[token.address];
                     let utilization = bigNumberify(0);
                     if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
@@ -805,7 +947,7 @@ export default function DashboardV2() {
               </table>
             </div>
             <div className="token-grid">
-              {tokenList.map((token) => {
+              {visibleTokens.map((token) => {
                 const tokenInfo = infoTokens[token.address];
                 let utilization = bigNumberify(0);
                 if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {

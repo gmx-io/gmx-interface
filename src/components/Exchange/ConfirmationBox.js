@@ -12,6 +12,7 @@ import {
   getProfitPrice,
   getTimeRemaining,
   formatAmount,
+  formatAmountFree,
   useLocalStorageSerializeKey,
   getExchangeRateDisplay,
   DEFAULT_SLIPPAGE_AMOUNT,
@@ -93,13 +94,15 @@ export default function ConfirmationBox(props) {
     toUsdMax,
     nextAveragePrice,
     collateralTokenAddress,
-    minExecutionFee,
     feeBps,
     chainId,
     orders,
     library,
     setPendingTxns,
     pendingTxns,
+    minExecutionFee,
+    minExecutionFeeUSD,
+    minExecutionFeeErrorMessage,
   } = props;
 
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
@@ -176,14 +179,15 @@ export default function ConfirmationBox(props) {
   }, [orders, chainId, isLong, toToken.address, toToken.isNative]);
 
   const decreaseOrdersThatWillBeExecuted = useMemo(() => {
+    if (isSwap) return [];
     return existingTriggerOrders.filter((order) => {
       if (order.triggerAboveThreshold) {
-        return existingPosition.markPrice.gte(order.triggerPrice);
+        return existingPosition?.markPrice.gte(order.triggerPrice);
       } else {
-        return existingPosition.markPrice.lte(order.triggerPrice);
+        return existingPosition?.markPrice.lte(order.triggerPrice);
       }
     });
-  }, [existingPosition, existingTriggerOrders]);
+  }, [existingPosition, existingTriggerOrders, isSwap]);
 
   const getError = () => {
     if (!isSwap && hasExistingPosition && !isMarketOrder) {
@@ -605,6 +609,7 @@ export default function ConfirmationBox(props) {
           {renderExistingOrderWarning()}
           {renderExistingTriggerErrors()}
           {renderExistingTriggerWarning()}
+          {minExecutionFeeErrorMessage && <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>}
           {hasPendingProfit && isMarketOrder && (
             <div className="PositionEditor-accept-profit-warning">
               <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
@@ -692,14 +697,17 @@ export default function ConfirmationBox(props) {
             <div className="PositionEditor-allow-higher-slippage">
               <ExchangeInfoRow label="Execution Fee">
                 <Tooltip
-                  handle={`${formatAmount(minExecutionFee, 18, 4)} ${nativeTokenSymbol}`}
+                  handle={`${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol}`}
                   position="right-top"
                   renderContent={() => {
                     return (
                       <>
+                        Network fee: {formatAmountFree(minExecutionFee, 18, 5)} {nativeTokenSymbol} ($
+                        {formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})<br />
+                        <br />
                         This is the network cost required to execute the postion.{" "}
                         <a
-                          href="https://gmxio.gitbook.io/gmx/trading#opening-a-position"
+                          href="https://gmxio.gitbook.io/gmx/trading#execution-fee"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -786,6 +794,8 @@ export default function ConfirmationBox(props) {
     decreaseOrdersThatWillBeExecuted,
     minExecutionFee,
     nativeTokenSymbol,
+    minExecutionFeeUSD,
+    minExecutionFeeErrorMessage,
   ]);
 
   const renderSwapSection = useCallback(() => {

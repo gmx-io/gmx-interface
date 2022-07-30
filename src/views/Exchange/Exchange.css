@@ -4,6 +4,12 @@
   justify-content: space-between;
 }
 
+.Exchange-trigger-order-info,
+.Exchange-trigger-order-info a {
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid #23263b;
+}
+
 .Exchange-list-tab-container {
   display: grid;
   grid-template-columns: auto auto;
@@ -392,6 +398,8 @@
   max-height: calc(80vh - 8.525rem);
   overflow-y: auto;
   padding-right: 0.5rem;
+  margin: 1.5rem;
+  margin-right: 1rem;
 }
 
 .PositionEditor .Tab {
@@ -421,7 +429,7 @@
 
 .Position-list-order {
   white-space: nowrap;
-  margin-bottom: 8px;
+  margin-top: 8px;
 }
 
 .order-error span {
