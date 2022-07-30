@@ -206,9 +206,9 @@ export default function DashboardV2() {
   const { infoTokens: infoTokensArbitrum } = useInfoTokens(null, ARBITRUM, active, undefined, undefined);
   const { infoTokens: infoTokensAvax } = useInfoTokens(null, AVALANCHE, active, undefined, undefined);
 
-  const { data: feesInfo } = useSWR(
+  const { data: currentFees } = useSWR(
     infoTokensArbitrum[AddressZero].contractMinPrice && infoTokensAvax[AddressZero].contractMinPrice
-      ? "Dashboard:feesInfo"
+      ? "Dashboard:currentFees"
       : null,
     {
       fetcher: () => {
@@ -248,9 +248,19 @@ export default function DashboardV2() {
   let totalFeesDistributed = shouldIncludeCurrrentFees
     ? parseFloat(bigNumberify(formatAmount(currentFeesUsd, USD_DECIMALS - 2, 0, false)).toNumber()) / 100
     : 0;
-  for (let i = 0; i < feeHistory.length; i++) {
-    totalFeesDistributed += parseFloat(feeHistory[i].feeUsd);
-  }
+
+  const totalFees = ACTIVE_CHAIN_IDS.map((chainId) =>
+    getFeeHistory(chainId).reduce((acc, fee) => acc + parseFloat(fee.feeUsd), totalFeesDistributed)
+  )
+    .map((v) => Math.round(v))
+    .reduce(
+      (acc, cv, i) => {
+        acc[ACTIVE_CHAIN_IDS[i]] = cv;
+        acc.total = acc.total + cv;
+        return acc;
+      },
+      { total: 0 }
+    );
 
   const { gmxPrice, gmxPriceFromArbitrum, gmxPriceFromAvalanche } = useGmxPrice(
     chainId,
@@ -624,13 +634,13 @@ export default function DashboardV2() {
                       <TooltipComponent
                         position="right-bottom"
                         className="nowrap"
-                        handle={`$${formatAmount(feesInfo?.[chainId], USD_DECIMALS, 2, true)}`}
+                        handle={`$${formatAmount(currentFees?.[chainId], USD_DECIMALS, 2, true)}`}
                         renderContent={() => (
                           <TooltipCard
                             title="Fees"
-                            arbitrum={feesInfo?.[ARBITRUM]}
-                            avax={feesInfo?.[AVALANCHE]}
-                            total={feesInfo?.total}
+                            arbitrum={currentFees?.[ARBITRUM]}
+                            avax={currentFees?.[AVALANCHE]}
+                            total={currentFees?.total}
                           />
                         )}
                       />
@@ -644,8 +654,23 @@ export default function DashboardV2() {
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="App-card-row">
-                  <div className="label">Total Feess</div>
-                  <div>${numberWithCommas(totalFeesDistributed.toFixed(0))}</div>
+                  <div className="label">Total Fees</div>
+                  <div>
+                    <TooltipComponent
+                      position="right-bottom"
+                      className="nowrap"
+                      handle={`$${numberWithCommas(totalFees?.[chainId])}`}
+                      renderContent={() => (
+                        <TooltipCard
+                          title="Total Fees"
+                          arbitrum={totalFees?.[ARBITRUM]}
+                          avax={totalFees?.[AVALANCHE]}
+                          total={totalFees?.total}
+                          decimalsForConversion={0}
+                        />
+                      )}
+                    />
+                  </div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">Total Volume</div>
