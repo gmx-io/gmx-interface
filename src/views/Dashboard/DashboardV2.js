@@ -28,7 +28,6 @@ import {
   BASIS_POINTS_DIVISOR,
   ARBITRUM,
   AVALANCHE,
-  getTotalVolumeSum,
   GLPPOOLCOLORS,
   DEFAULT_MAX_USDG_AMOUNT,
   getPageTitle,
@@ -157,7 +156,8 @@ export default function DashboardV2() {
 
   let { total: totalGmxSupply } = useTotalGmxSupply();
 
-  const volumeInfo = getVolumeInfo(hourlyVolumes);
+  const currentVolumeInfo = getVolumeInfo(hourlyVolumes);
+
   const positionStatsInfo = getPositionStats(positionStats);
 
   function getWhitelistedTokenAddresses(chainId) {
@@ -569,13 +569,13 @@ export default function DashboardV2() {
                     <TooltipComponent
                       position="right-bottom"
                       className="nowrap"
-                      handle={`$${formatAmount(volumeInfo?.[chainId]?.totalVolume, USD_DECIMALS, 0, true)}`}
+                      handle={`$${formatAmount(currentVolumeInfo?.[chainId]?.totalVolume, USD_DECIMALS, 0, true)}`}
                       renderContent={() => (
                         <TooltipCard
                           title="Volume"
-                          arbitrum={volumeInfo?.[ARBITRUM].totalVolume}
-                          avax={volumeInfo?.[AVALANCHE].totalVolume}
-                          total={volumeInfo?.totalVolume}
+                          arbitrum={currentVolumeInfo?.[ARBITRUM].totalVolume}
+                          avax={currentVolumeInfo?.[AVALANCHE].totalVolume}
+                          total={currentVolumeInfo?.totalVolume}
                         />
                       )}
                     />
