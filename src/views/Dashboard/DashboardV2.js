@@ -714,21 +714,14 @@ export default function DashboardV2() {
                           className="nowrap"
                           handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
                           renderContent={() => (
-                            <>
-                              <p className="Tooltip-row">
-                                <span className="label">Staked on Arbitrum:</span>
-                                <span>{formatAmount(arbitrumStakedGmx, GMX_DECIMALS, 0, true)} GMX</span>
-                              </p>
-                              <p className="Tooltip-row">
-                                <span className="label">Staked on Avalanche:</span>
-                                <span>{formatAmount(avaxStakedGmx, GMX_DECIMALS, 0, true)} GMX</span>
-                              </p>
-                              <div className="Tooltip-divider" />
-                              <p className="Tooltip-row">
-                                <span className="label">Total:</span>
-                                <span>{formatAmount(totalStakedGmx, GMX_DECIMALS, 0, true)} GMX</span>
-                              </p>
-                            </>
+                            <TooltipCard
+                              title="Staked"
+                              arbitrum={arbitrumStakedGmx}
+                              avax={avaxStakedGmx}
+                              total={totalStakedGmx}
+                              decimalsForConversion={GMX_DECIMALS}
+                              showDollar={false}
+                            />
                           )}
                         />
                       </div>
