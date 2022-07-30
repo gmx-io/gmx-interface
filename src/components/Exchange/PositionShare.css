@@ -111,3 +111,62 @@
   background: #2d2e3f 0% 0% no-repeat padding-box;
   color: #ffffff61;
 }
+
+.image-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1.5rem 0;
+}
+.image-loading p {
+  margin: 0 0 0 1rem;
+}
+
+@media (max-width: 400px) {
+  .position-share-modal .Modal-content {
+    min-width: 28rem;
+    width: 28rem;
+  }
+  .position-share-modal .Modal-body {
+    margin: 1rem;
+  }
+  .position-share-modal .Modal-title-bar {
+    margin: 1rem;
+  }
+  .position-share {
+    padding: 1rem;
+  }
+  .position-share .logo {
+    width: 4rem;
+  }
+  .position-share .info {
+    margin-top: 0.75rem;
+    font-size: 1rem;
+  }
+  .position-share .pnl {
+    font-size: 2rem;
+  }
+  .position-share .prices {
+    max-width: 14rem;
+    margin-top: 0.5rem;
+  }
+  .position-share .prices p {
+    font-size: 0.9rem;
+  }
+  .position-share .prices p.price {
+    font-size: 1rem;
+  }
+  .position-share .referral-code {
+    margin-top: 1rem;
+    width: 12rem;
+  }
+  .position-share .referral-code .label {
+    font-size: 0.8rem;
+  }
+  .position-share .referral-code p {
+    font-size: 1rem;
+  }
+  .position-share-modal .actions {
+    transform: scale(0.8);
+  }
+}

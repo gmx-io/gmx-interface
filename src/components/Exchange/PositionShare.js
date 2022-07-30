@@ -8,9 +8,10 @@ import "./PositionShare.css";
 import { QRCodeCanvas } from "qrcode.react";
 import { formatAmount, USD_DECIMALS } from "../../Helpers";
 import { useAffiliateCodes } from "../../Api/referrals";
-// canvasWidth: 1200, canvasHeight: 675,
-const config = { quality: 0.5 };
+import SpinningLoader from "../Common/SpinningLoader";
+
 const UPLOAD_URL = "https://gmxs.vercel.app/api/upload";
+const config = { quality: 0.5 };
 
 function getShareURL(imageInfo, ref) {
   if (!imageInfo) return;
@@ -82,6 +83,12 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
         chainId={chainId}
         account={account}
       />
+      {!uploadedImageInfo && (
+        <div className="image-loading">
+          <SpinningLoader />
+          <p>Generating shareable image..</p>
+        </div>
+      )}
       <div className="actions">
         <button disabled={!uploadedImageInfo} className="default-btn mr-base" onClick={handleCopy}>
           {copyText}
@@ -127,7 +134,7 @@ function PositionShareCard({ positionRef, position, userAffiliateCode }) {
       <div className="referral-code">
         <QRCodeCanvas
           includeMargin={true}
-          size={35}
+          size={20}
           level="M"
           value={success ? `https://gmx.io/trade?ref=${code}` : "https://gmx.io/trade"}
         />
