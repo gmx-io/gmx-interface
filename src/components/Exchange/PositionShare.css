@@ -31,8 +31,7 @@
   font-size: 1.25rem;
   display: flex;
   padding-left: 0;
-  margin: 0;
-  margin-top: 1rem;
+  margin: 1.25rem 0 0 0;
 }
 .position-share .info li {
   margin-right: 1rem;
@@ -70,19 +69,20 @@
 }
 .position-share .referral-code {
   display: flex;
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
   background: rgba(255, 255, 255, 0.05);
-  max-width: 20rem;
+  max-width: 18rem;
   border-radius: 5px;
   align-items: center;
-  padding: 0.25rem 0.5rem;
+  padding: 0.5rem;
 }
 .position-share .referral-code div {
   display: flex;
   flex-direction: column;
 }
 .position-share .referral-code .label {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
+  line-height: 1;
 }
 .position-share .referral-code > div {
   margin-left: 1rem;
@@ -97,7 +97,8 @@
   margin: 0;
 }
 .position-share .code {
-  font-weight: 600;
+  font-weight: 500;
+  line-height: 1;
 }
 
 .tweet-link {
@@ -118,7 +119,22 @@
   align-items: center;
   margin: 1.5rem 0;
 }
-.image-loading p {
+.image-overlay-wrapper {
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  background: #00000099;
+  color: #fff;
+}
+.image-overlay {
+  display: flex;
+  padding: 1rem 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-overlay p {
   margin: 0 0 0 1rem;
 }
 
