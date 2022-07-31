@@ -24,6 +24,7 @@ function getShareURL(imageInfo, ref) {
 }
 
 function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, positionToShare, account, chainId }) {
+  console.log({ positionToShare });
   const userAffiliateCode = useAffiliateCodes(chainId, account);
   const [uploadedImageInfo, setUploadedImageInfo] = useState();
   const [, copyToClipboard] = useCopyToClipboard();
@@ -46,11 +47,12 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
   }, [userAffiliateCode]);
 
   async function handleDownload() {
+    const { collateralToken, isLong } = positionToShare;
     const element = positionRef.current;
     if (!element) return;
     const dataUrl = await toJpeg(element, config);
     const link = document.createElement("a");
-    link.download = `long-${Math.random() * 100000}.jpeg`;
+    link.download = `${collateralToken.symbol}-${isLong ? "long" : "short"}.jpeg`;
     link.href = dataUrl;
     document.body.appendChild(link);
     link.click();
