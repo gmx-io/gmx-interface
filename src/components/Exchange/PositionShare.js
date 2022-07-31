@@ -24,7 +24,6 @@ function getShareURL(imageInfo, ref) {
 }
 
 function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, positionToShare, account, chainId }) {
-  console.log({ positionToShare });
   const userAffiliateCode = useAffiliateCodes(chainId, account);
   const [uploadedImageInfo, setUploadedImageInfo] = useState();
   const [, copyToClipboard] = useCopyToClipboard();
