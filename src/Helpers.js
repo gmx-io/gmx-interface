@@ -2733,7 +2733,7 @@ export function importImage(name) {
   return tokenImage && tokenImage.default;
 }
 
-export function getTwitterIntentURL(text, url, hashtag = []) {
+export function getTwitterIntentURL(text, url = "", hashtag = "") {
   let finalURL = "https://twitter.com/intent/tweet?text=";
   if (text.length > 0) {
     finalURL += encodeURIComponent(text.replace(/[\r\n]+/g, " "))

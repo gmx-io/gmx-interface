@@ -1,21 +1,22 @@
 import { useEffect, useRef, useState } from "react";
-import { toPng } from "html-to-image";
+import { toJpeg } from "html-to-image";
 import cx from "classnames";
 import { useCopyToClipboard } from "react-use";
 import Modal from "../Modal/Modal";
 import gmxLogo from "../../img/gmx-logo-with-name.svg";
 import "./PositionShare.css";
 import { QRCodeCanvas } from "qrcode.react";
-import { formatAmount, USD_DECIMALS } from "../../Helpers";
+import { formatAmount, getAppBaseUrl, getTwitterIntentURL, helperToast, USD_DECIMALS } from "../../Helpers";
 import { useAffiliateCodes } from "../../Api/referrals";
 import SpinningLoader from "../Common/SpinningLoader";
 
 const UPLOAD_URL = "https://gmxs.vercel.app/api/upload";
-const config = { quality: 0.5 };
+const UPLOAD_SHARE = "https://gmxs.vercel.app/api/s";
+const config = { quality: 0.95, canvasWidth: 518, canvasHeight: 292 };
 
 function getShareURL(imageInfo, ref) {
   if (!imageInfo) return;
-  let url = `https://gmxs.vercel.app/api/s?v=${imageInfo.version}&id=${imageInfo.id}`;
+  let url = `${UPLOAD_SHARE}?v=${imageInfo.version}&id=${imageInfo.id}`;
   if (ref.success) {
     url = url + `&ref=${ref.code}`;
   }
@@ -24,39 +25,30 @@ function getShareURL(imageInfo, ref) {
 
 function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, positionToShare, account, chainId }) {
   const userAffiliateCode = useAffiliateCodes(chainId, account);
-  const [copyText, setCopyText] = useState("Copy");
   const [uploadedImageInfo, setUploadedImageInfo] = useState();
-  const [copyState, copyToClipboard] = useCopyToClipboard();
+  const [, copyToClipboard] = useCopyToClipboard();
   const positionRef = useRef();
+  const tweetLink = getTwitterIntentURL(
+    `Checkout my latest ${positionToShare?.collateralToken?.symbol} trade @GMX_IO`,
+    getShareURL(uploadedImageInfo, userAffiliateCode)
+  );
 
   useEffect(() => {
     (async function () {
       const element = positionRef.current;
       if (!element) return;
-      const imagePng = await toPng(element);
+      const image = await toJpeg(element, config);
       if (userAffiliateCode.success) {
-        const imageInfo = await fetch(UPLOAD_URL, { method: "POST", body: imagePng }).then((res) => res.json());
+        const imageInfo = await fetch(UPLOAD_URL, { method: "POST", body: image }).then((res) => res.json());
         setUploadedImageInfo(imageInfo);
       }
     })();
   }, [userAffiliateCode]);
 
-  useEffect(() => {
-    if (copyState.value) {
-      setCopyText("Copied");
-      setTimeout(() => {
-        setCopyText("Copy");
-      }, 5000);
-    }
-    if (copyState.error) {
-      setCopyText("Unable to copy");
-    }
-  }, [copyState]);
-
   async function handleDownload() {
     const element = positionRef.current;
     if (!element) return;
-    const dataUrl = await toPng(element, config);
+    const dataUrl = await toJpeg(element, config);
     const link = document.createElement("a");
     link.download = `long-${Math.random() * 100000}.jpeg`;
     link.href = dataUrl;
@@ -68,6 +60,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
     if (!uploadedImageInfo) return;
     const url = getShareURL(uploadedImageInfo, userAffiliateCode);
     copyToClipboard(url);
+    helperToast.success("Link copied to clipboard.");
   }
   return (
     <Modal
@@ -82,16 +75,12 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
         position={positionToShare}
         chainId={chainId}
         account={account}
+        uploadedImageInfo={uploadedImageInfo}
       />
-      {!uploadedImageInfo && (
-        <div className="image-loading">
-          <SpinningLoader />
-          <p>Generating shareable image..</p>
-        </div>
-      )}
+
       <div className="actions">
         <button disabled={!uploadedImageInfo} className="default-btn mr-base" onClick={handleCopy}>
-          {copyText}
+          Copy
         </button>
         <button className="default-btn mr-base" onClick={handleDownload}>
           Download
@@ -100,7 +89,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
           target="_blank"
           className={cx("default-btn tweet-link", { disabled: !uploadedImageInfo })}
           rel="noreferrer"
-          href={getShareURL(uploadedImageInfo, userAffiliateCode)}
+          href={tweetLink}
         >
           Tweet
         </a>
@@ -109,46 +98,56 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
   );
 }
 
-function PositionShareCard({ positionRef, position, userAffiliateCode }) {
+function PositionShareCard({ positionRef, position, userAffiliateCode, uploadedImageInfo }) {
   const { code, success } = userAffiliateCode;
   const { deltaAfterFeesPercentageStr, isLong, leverage, indexToken, averagePrice, markPrice } = position;
+  const baseUrl = getAppBaseUrl();
   return (
-    <div ref={positionRef} className="position-share">
-      <img className="logo" src={gmxLogo} alt="GMX Logo" />
-      <ul className="info">
-        <li className="side">{isLong ? "LONG" : "SHORT"}</li>
-        <li>{formatAmount(leverage, 4, 2, true)}x&nbsp;</li>
-        <li>{indexToken.symbol} USD</li>
-      </ul>
-      <h3 className="pnl">{deltaAfterFeesPercentageStr}</h3>
-      <div className="prices">
-        <div>
-          <p>Entry Price</p>
-          <p className="price">${formatAmount(averagePrice, USD_DECIMALS, 2, true)}</p>
+    <div className="relative">
+      <div ref={positionRef} className="position-share">
+        <img className="logo" src={gmxLogo} alt="GMX Logo" />
+        <ul className="info">
+          <li className="side">{isLong ? "LONG" : "SHORT"}</li>
+          <li>{formatAmount(leverage, 4, 2, true)}x&nbsp;</li>
+          <li>{indexToken.symbol} USD</li>
+        </ul>
+        <h3 className="pnl">{deltaAfterFeesPercentageStr}</h3>
+        <div className="prices">
+          <div>
+            <p>Entry Price</p>
+            <p className="price">${formatAmount(averagePrice, USD_DECIMALS, 2, true)}</p>
+          </div>
+          <div>
+            <p>Index Price</p>
+            <p className="price">${formatAmount(markPrice, USD_DECIMALS, 2, true)}</p>
+          </div>
         </div>
-        <div>
-          <p>Index Price</p>
-          <p className="price">${formatAmount(markPrice, USD_DECIMALS, 2, true)}</p>
+        <div className="referral-code">
+          <QRCodeCanvas
+            includeMargin={true}
+            size={25}
+            value={success ? `${baseUrl}/trade?ref=${code}` : `${baseUrl}/trade`}
+          />
+          {success ? (
+            <div>
+              <p className="label">Referral Code:</p>
+              <p className="code">{code}</p>
+            </div>
+          ) : (
+            <div>
+              <p className="code">app.gmx.io/#/trade</p>
+            </div>
+          )}
         </div>
       </div>
-      <div className="referral-code">
-        <QRCodeCanvas
-          includeMargin={true}
-          size={20}
-          level="M"
-          value={success ? `https://gmx.io/trade?ref=${code}` : "https://gmx.io/trade"}
-        />
-        {success ? (
-          <div>
-            <p className="label">Referral Code:</p>
-            <p className="code">{code}</p>
+      {!uploadedImageInfo && (
+        <div className="image-overlay-wrapper">
+          <div className="image-overlay">
+            <SpinningLoader />
+            <p>Generating shareable image..</p>
           </div>
-        ) : (
-          <div>
-            <p className="code">app.gmx.io/trade</p>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
