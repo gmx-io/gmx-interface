@@ -549,7 +549,9 @@ export default function DashboardV2() {
                     <TooltipComponent
                       handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
-                      renderContent={() => `Assets Under Management: GMX staked (All chains) + GLP pool (${chainName})`}
+                      renderContent={() => (
+                        <span className="label">{`Assets Under Management: GMX staked (All chains) + GLP pool (${chainName})`}</span>
+                      )}
                     />
                   </div>
                 </div>
@@ -559,7 +561,9 @@ export default function DashboardV2() {
                     <TooltipComponent
                       handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
-                      renderContent={() => `Total value of tokens in GLP pool (${chainName})`}
+                      renderContent={() => (
+                        <span className="label">{`Total value of tokens in GLP pool (${chainName})`}</span>
+                      )}
                     />
                   </div>
                 </div>
@@ -735,9 +739,16 @@ export default function DashboardV2() {
                             handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
                             renderContent={() => (
                               <>
-                                Price on Arbitrum: ${formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
-                                <br />
-                                Price on Avalanche: ${formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                                <TooltipCardRow
+                                  label="Price on Arbitrum"
+                                  amount={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
+                                  showDollar={true}
+                                />
+                                <TooltipCardRow
+                                  label="Price on Avalanche"
+                                  amount={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                                  showDollar={true}
+                                />
                               </>
                             )}
                           />
@@ -974,7 +985,7 @@ export default function DashboardV2() {
                                     showDollar={false}
                                   />
                                   <TooltipCardRow
-                                    label={`Max ${tokenInfo.symbol} Capacity:`}
+                                    label={`Max ${tokenInfo.symbol} Capacity`}
                                     amount={formatAmount(maxUsdgAmount, 18, 0, true)}
                                     showDollar={true}
                                   />
