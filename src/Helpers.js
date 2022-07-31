@@ -2733,6 +2733,30 @@ export function importImage(name) {
   return tokenImage && tokenImage.default;
 }
 
+export function getTwitterIntentURL(text, url = "", hashtag = "") {
+  let finalURL = "https://twitter.com/intent/tweet?text=";
+  function encodeText(t) {
+    return encodeURIComponent(t.replace(/[\r\n]+/g, " "))
+      .replace(/\*%7C/g, "*|URL:")
+      .replace(/%7C\*/g, "|*");
+  }
+
+  if (text.length > 0) {
+    if (Array.isArray(text)) {
+      finalURL += text.map((t) => encodeText(t)).join("%0a%0a");
+    } else {
+      finalURL += encodeText(text);
+    }
+    if (hashtag.length > 0) {
+      finalURL += "&hashtags=" + encodeURIComponent(hashtag.replace(/#/g, ""));
+    }
+    if (url.length > 0) {
+      finalURL += "&url=" + encodeURIComponent(url);
+    }
+  }
+  return finalURL;
+}
+
 export function isValidTimestamp(timestamp) {
   return new Date(timestamp).getTime() > 0;
 }

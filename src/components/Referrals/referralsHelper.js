@@ -6,6 +6,9 @@ import {
   MAX_REFERRAL_CODE_LENGTH,
   ARBITRUM,
   AVALANCHE,
+  getAppBaseUrl,
+  getTwitterIntentURL,
+  REFERRAL_CODE_QUERY_PARAM,
 } from "../../Helpers";
 import { encodeReferralCode, getReferralCodeOwner } from "../../Api/referrals";
 
@@ -130,7 +133,7 @@ export function getCodeError(value) {
 }
 
 export function getTwitterShareUrl(referralCode) {
-  const message = "Trying out trading on @GMX_IO, up to 30x leverage on $BTC, $ETH 📈%0a%0aFor fee discounts use:";
-
-  return `http://twitter.com/intent/tweet?text=${message}&url=https://gmx.io?ref=${referralCode}`;
+  const message = ["Trying out trading on @GMX_IO, up to 30x leverage on $BTC, $ETH 📈", "For fee discounts use:"];
+  const url = `${getAppBaseUrl()}/?${REFERRAL_CODE_QUERY_PARAM}=${referralCode}`;
+  return getTwitterIntentURL(message, url);
 }
