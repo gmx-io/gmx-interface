@@ -1066,7 +1066,8 @@ export default function SwapBox(props) {
     const externalSwapUrl = `https://app.1inch.io/#/${chainId}/swap/${inputCurrency}/${outputCurrency}`;
     const label =
       modalError === "BUFFER" ? `${shortCollateralToken.symbol} Required` : `${fromToken.symbol} Capacity Reached`;
-    return (
+    
+      return (
       <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal font-base">
         <div>You need to select {swapTokenSymbol} as the "Pay" token to initiate this trade.</div>
         <br />
