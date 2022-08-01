@@ -121,21 +121,26 @@
 }
 .image-overlay-wrapper {
   position: absolute;
-  bottom: 0px;
-  left: 0px;
-  width: 100%;
-  background: #00000099;
+  bottom: 0;
+  right: 0;
+  background: #00000055;
   color: #fff;
+  display: inline-flex;
+  justify-content: flex-end;
+  align-items: center;
+  float: right;
+  padding: 0 0.25rem;
+  border-top-left-radius: 5px;
+}
+.image-overlay-wrapper .loading-text {
+  font-size: 1.1rem;
+  margin: 0 0 0 0.5rem;
 }
 .image-overlay {
   display: flex;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
   justify-content: center;
   align-items: center;
-}
-
-.image-overlay p {
-  margin: 0 0 0 1rem;
 }
 
 @media (max-width: 400px) {
