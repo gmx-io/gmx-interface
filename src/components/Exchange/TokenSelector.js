@@ -27,6 +27,8 @@ export default function TokenSelector(props) {
     showNewCaret = false,
   } = props;
 
+  const visibleTokens = tokens.filter((t) => !t.isTempHidden);
+
   const onSelectToken = (token) => {
     setIsModalVisible(false);
     props.onSelectToken(token);
@@ -54,7 +56,7 @@ export default function TokenSelector(props) {
     setSearchKeyword(e.target.value);
   };
 
-  const filteredTokens = tokens.filter((item) => {
+  const filteredTokens = visibleTokens.filter((item) => {
     return (
       item.name.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1 ||
       item.symbol.toLowerCase().indexOf(searchKeyword.toLowerCase()) > -1

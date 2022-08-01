@@ -173,6 +173,7 @@ export default function DashboardV2() {
   const whitelistedTokens = getWhitelistedTokens(chainId);
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
+  const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
 
   const readerAddress = getContract(chainId, "Reader");
   const vaultAddress = getContract(chainId, "Vault");
@@ -333,7 +334,8 @@ export default function DashboardV2() {
     }
 
     const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
-    const targetWeightBps = tokenInfo.weight.mul(BASIS_POINTS_DIVISOR).div(totalTokenWeights);
+    // use add(1).div(10).mul(10) to round numbers up
+    const targetWeightBps = tokenInfo.weight.mul(BASIS_POINTS_DIVISOR).div(totalTokenWeights).add(1).div(10).mul(10);
 
     const weightText = `${formatAmount(currentWeightBps, 2, 2, false)}% / ${formatAmount(
       targetWeightBps,
@@ -884,7 +886,7 @@ export default function DashboardV2() {
                   </tr>
                 </thead>
                 <tbody>
-                  {tokenList.map((token) => {
+                  {visibleTokens.map((token) => {
                     const tokenInfo = infoTokens[token.address];
                     let utilization = bigNumberify(0);
                     if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
@@ -945,7 +947,7 @@ export default function DashboardV2() {
               </table>
             </div>
             <div className="token-grid">
-              {tokenList.map((token) => {
+              {visibleTokens.map((token) => {
                 const tokenInfo = infoTokens[token.address];
                 let utilization = bigNumberify(0);
                 if (tokenInfo && tokenInfo.reservedAmount && tokenInfo.poolAmount && tokenInfo.poolAmount.gt(0)) {
