@@ -1,14 +1,21 @@
-import { useEffect } from "react";
-import { usePrevious } from "../Helpers";
+import { useEffect, useRef } from "react";
+
+const usePrevious = (value, initialValue) => {
+  const ref = useRef(initialValue);
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+};
 
 const useEffectDebugger = (effectHook, dependencies, dependencyNames = []) => {
   const previousDeps = usePrevious(dependencies, []);
 
-  const changedDeps = dependencies.reduce((accum, dependency, index) => {
+  const changedDeps = dependencies.reduce((acc, dependency, index) => {
     if (dependency !== previousDeps[index]) {
       const keyName = dependencyNames[index] || index;
       return {
-        ...accum,
+        ...acc,
         [keyName]: {
           before: previousDeps[index],
           after: dependency,
@@ -16,7 +23,7 @@ const useEffectDebugger = (effectHook, dependencies, dependencyNames = []) => {
       };
     }
 
-    return accum;
+    return acc;
   }, {});
 
   if (Object.keys(changedDeps).length) {

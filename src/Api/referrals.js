@@ -388,3 +388,32 @@ export async function validateReferralCodeExists(referralCode, chainId) {
   const referralCodeOwner = await getReferralCodeOwner(chainId, referralCodeBytes32);
   return !isAddressZero(referralCodeOwner);
 }
+
+export function useAffiliateCodes(chainId, account) {
+  const [affiliateCodes, setAffiliateCodes] = useState({ code: null, success: false });
+  const query = gql`
+    query userReferralCodes($account: String!) {
+      referrerTotalStats: referrerStats(
+        first: 1000
+        orderBy: volume
+        orderDirection: desc
+        where: { period: total, referrer: $account }
+      ) {
+        referralCode
+      }
+    }
+  `;
+  useEffect(() => {
+    if (!chainId) return;
+    getGraphClient(chainId)
+      .query({ query, variables: { account: account?.toLowerCase() } })
+      .then((res) => {
+        const parsedAffiliateCodes = res?.data?.referrerTotalStats.map((c) => decodeReferralCode(c?.referralCode));
+        setAffiliateCodes({ code: parsedAffiliateCodes[0], success: true });
+      });
+    return () => {
+      setAffiliateCodes({ code: null, success: false });
+    };
+  }, [chainId, query, account]);
+  return affiliateCodes;
+}
