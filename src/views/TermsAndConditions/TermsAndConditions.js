@@ -221,7 +221,7 @@ export default function TermsAndConditions() {
                 <li>
                   <p className="body-text">
                     4.2. GMX.io may use and share your comments, bug reports, ideas, or other feedback that you may
-                    provide, including suggestions about how we might improve. You agree that GMX.io are free to use or
+                    provide, including suggestions about how we might improve. You agree that GMX.io is free to use or
                     not use any feedback we receive from you as we see fit, including copying and sharing such feedback
                     with third parties, without any obligation to you.
                   </p>
