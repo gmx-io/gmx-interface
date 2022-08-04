@@ -1,6 +1,6 @@
 .ClaimEsGmx input {
   border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   width: 100%;
   box-sizing: border-box;
 }
@@ -12,12 +12,12 @@
 
 .ClaimEsGmx-content {
   padding: 4.65rem;
-  padding-top: 1.55rem;
+  padding-top: 1.5rem;
   max-width: 38.75rem;
 }
 
 .ClaimEsGmx-row {
-  margin-bottom: 1.55rem;
+  margin-bottom: 1.5rem;
 }
 
 .ClaimEsGmx button {
@@ -42,7 +42,7 @@
 }
 
 .ClaimEsGmx-vesting-options .Checkbox img {
-  height: 1.55rem;
+  height: 1.5rem;
 }
 
 .ClaimEsGmx-option-label {
@@ -83,11 +83,7 @@
 .ClaimEsGmx-max-button {
   position: absolute;
   padding: 0.465rem 0.8rem;
-  background: linear-gradient(
-    90deg,
-    rgba(45, 66, 252, 1) 0%,
-    rgba(46, 61, 205, 1) 100%
-  );
+  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
   left: 29.75rem;
   top: 0.93rem;
   font-size: 1.4rem;
@@ -99,9 +95,5 @@
 
 .ClaimEsGmx-max-button:hover {
   color: rgba(255, 255, 255, 1);
-  background: linear-gradient(
-    90deg,
-    rgba(58, 78, 252, 1) 0%,
-    rgba(51, 68, 222, 1) 100%
-  );
+  background: linear-gradient(90deg, rgba(58, 78, 252, 1) 0%, rgba(51, 68, 222, 1) 100%);
 }

@@ -1,8 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="47" height="40" viewBox="0 0 47 40">
-  <g id="ic_stats" transform="translate(-871 -1162)">
-    <rect id="Rectangle_89" data-name="Rectangle 89" width="40" height="32" rx="4" transform="translate(871 1162)" fill="#03cfcd"/>
-    <rect id="Rectangle_90" data-name="Rectangle 90" width="40" height="32" rx="4" transform="translate(878 1170)" fill="#303fd0"/>
-    <path id="Rectangle_91" data-name="Rectangle 91" d="M4,0H33a0,0,0,0,1,0,0V20a4,4,0,0,1-4,4H0a0,0,0,0,1,0,0V4A4,4,0,0,1,4,0Z" transform="translate(878 1170)" fill="#50d0fe"/>
-    <path id="Path_509" data-name="Path 509" d="M44.876-27.5H32.885a2.437,2.437,0,0,0-1.724,4.161l3.291,3.291L27-12.6l-7.452-7.452a3.249,3.249,0,0,0-4.6,0L7.976-13.071a1.625,1.625,0,0,0,0,2.3l2.3,2.3a1.625,1.625,0,0,0,2.3,0l4.678-4.679L24.7-5.7a3.249,3.249,0,0,0,4.6,0l9.75-9.75,3.291,3.291A2.438,2.438,0,0,0,46.5-13.885v-11.99A1.623,1.623,0,0,0,44.876-27.5Z" transform="translate(867.5 1199.75)" fill="#fff"/>
-  </g>
-</svg>
+<svg height="40" viewBox="0 0 47 40" width="47" xmlns="http://www.w3.org/2000/svg"><rect fill="#03cfcd" height="32" rx="4" width="40"/><rect fill="#303fd0" height="32" rx="4" width="40" x="7" y="8"/><path d="m4 0h29a0 0 0 0 1 0 0v20a4 4 0 0 1 -4 4h-29a0 0 0 0 1 0 0v-20a4 4 0 0 1 4-4z" fill="#50d0fe" transform="translate(7 8)"/><path d="m44.876-27.5h-11.991a2.437 2.437 0 0 0 -1.724 4.161l3.291 3.291-7.452 7.448-7.452-7.452a3.249 3.249 0 0 0 -4.6 0l-6.972 6.981a1.625 1.625 0 0 0 0 2.3l2.3 2.3a1.625 1.625 0 0 0 2.3 0l4.678-4.679 7.446 7.45a3.249 3.249 0 0 0 4.6 0l9.75-9.75 3.291 3.291a2.438 2.438 0 0 0 4.159-1.726v-11.99a1.623 1.623 0 0 0 -1.624-1.625z" fill="#fff" transform="translate(-3.5 37.75)"/></svg>

@@ -1,6 +1,7 @@
-import React, { useCallback } from "react";
+import React from "react";
 import Footer from "../../Footer";
-import { Link, NavLink } from "react-router-dom";
+
+import cx from "classnames";
 
 import "./Home.css";
 
@@ -23,22 +24,18 @@ import {
   numberWithCommas,
   getServerUrl,
   USD_DECIMALS,
-  useChainId,
   ARBITRUM,
   AVALANCHE,
-  switchNetwork,
   getTotalVolumeSum,
 } from "../../Helpers";
-
-import { useWeb3React } from "@web3-react/core";
 
 import { useUserStat } from "../../Api";
 
 import TokenCard from "../../components/TokenCard/TokenCard";
 
-import { Trans } from '@lingui/macro'
+import { Trans } from "@lingui/macro";
 
-export default function Home() {
+export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
   // const faqContent = [{
   //   id: 1,
@@ -65,9 +62,6 @@ export default function Home() {
   //     setOpenedFAQIndex(index)
   //   }
   // }
-
-  const { chainId } = useChainId();
-  const { active } = useWeb3React();
 
   // ARBITRUM
 
@@ -138,21 +132,13 @@ export default function Home() {
     totalUsers += avalancheUserStats.uniqueCount;
   }
 
-  const changeNetwork = useCallback(
-    (network) => {
-      if (network === chainId) {
-        return;
-      }
-      if (!active) {
-        setTimeout(() => {
-          return switchNetwork(network, active);
-        }, 500);
-      } else {
-        return switchNetwork(network, active);
-      }
-    },
-    [chainId, active]
-  );
+  const LaunchExchangeButton = () => {
+    return (
+      <div className={cx("default-btn")} onClick={() => showRedirectModal("/trade")}>
+        <Trans>Launch Exchange</Trans>
+      </div>
+    );
+  };
 
   return (
     <div className="Home">
@@ -168,32 +154,38 @@ export default function Home() {
               </Trans>
             </div>
             <div className="Home-description">
-              <Trans>Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet</Trans>
+              <Trans>
+                Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet
+              </Trans>
             </div>
-            <NavLink activeClassName="active" to="/trade" className="default-btn">
-              <Trans>Launch Exchange</Trans>
-            </NavLink>
+            <LaunchExchangeButton />
           </div>
         </div>
         <div className="Home-latest-info-container default-container">
           <div className="Home-latest-info-block">
             <img src={tradingIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title"><Trans>Total Trading Volume</Trans></div>
+              <div className="Home-latest-info__title">
+                <Trans>Total Trading Volume</Trans>
+              </div>
               <div className="Home-latest-info__value">${formatAmount(totalVolumeSum, USD_DECIMALS, 0, true)}</div>
             </div>
           </div>
           <div className="Home-latest-info-block">
             <img src={statsIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title"><Trans>Open Interest</Trans></div>
+              <div className="Home-latest-info__title">
+                <Trans>Open Interest</Trans>
+              </div>
               <div className="Home-latest-info__value">${formatAmount(openInterest, USD_DECIMALS, 0, true)}</div>
             </div>
           </div>
           <div className="Home-latest-info-block">
             <img src={totaluserIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title"><Trans>Total Users</Trans></div>
+              <div className="Home-latest-info__title">
+                <Trans>Total Users</Trans>
+              </div>
               <div className="Home-latest-info__value">{numberWithCommas(totalUsers.toFixed(0))}</div>
             </div>
           </div>
@@ -204,31 +196,43 @@ export default function Home() {
           <div className="Home-benefit">
             <div className="Home-benefit-icon">
               <img src={liquidityIcon} alt="liquidity" className="Home-benefit-icon-symbol" />
-              <div className="Home-benefit-title"><Trans>Reduce Liquidation Risks</Trans></div>
+              <div className="Home-benefit-title">
+                <Trans>Reduce Liquidation Risks</Trans>
+              </div>
             </div>
             <div className="Home-benefit-description">
-              <Trans>An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from
-              temporary wicks.</Trans>
+              <Trans>
+                An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe
+                from temporary wicks.
+              </Trans>
             </div>
           </div>
           <div className="Home-benefit">
             <div className="Home-benefit-icon">
               <img src={costIcon} alt="cost" className="Home-benefit-icon-symbol" />
-              <div className="Home-benefit-title"><Trans>Save on Costs</Trans></div>
+              <div className="Home-benefit-title">
+                <Trans>Save on Costs</Trans>
+              </div>
             </div>
             <div className="Home-benefit-description">
-              <Trans>Enter and exit positions with minimal spread and zero price impact. Get the optimal price without
-              incurring additional costs.</Trans>
+              <Trans>
+                Enter and exit positions with minimal spread and zero price impact. Get the optimal price without
+                incurring additional costs.
+              </Trans>
             </div>
           </div>
           <div className="Home-benefit">
             <div className="Home-benefit-icon">
               <img src={simpleSwapIcon} alt="simpleswap" className="Home-benefit-icon-symbol" />
-              <div className="Home-benefit-title"><Trans>Simple Swaps</Trans></div>
+              <div className="Home-benefit-title">
+                <Trans>Simple Swaps</Trans>
+              </div>
             </div>
             <div className="Home-benefit-description">
-              <Trans>Open positions through a simple swap interface. Conveniently swap from any supported asset into the
-              position of your choice.</Trans>
+              <Trans>
+                Open positions through a simple swap interface. Conveniently swap from any supported asset into the
+                position of your choice.
+              </Trans>
             </div>
           </div>
         </div>
@@ -236,8 +240,12 @@ export default function Home() {
       <div className="Home-cta-section">
         <div className="Home-cta-container default-container">
           <div className="Home-cta-info">
-            <div className="Home-cta-info__title"><Trans>Available on your preferred network</Trans></div>
-            <div className="Home-cta-info__description"><Trans>GMX is currently live on Arbitrum and Avalanche.</Trans></div>
+            <div className="Home-cta-info__title">
+              <Trans>Available on your preferred network</Trans>
+            </div>
+            <div className="Home-cta-info__description">
+              <Trans>GMX is currently live on Arbitrum and Avalanche.</Trans>
+            </div>
           </div>
           <div className="Home-cta-options">
             <div className="Home-cta-option Home-cta-option-arbitrum">
@@ -247,9 +255,7 @@ export default function Home() {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Arbitrum</div>
                 <div className="Home-cta-option-action">
-                  <Link to="/trade" className="default-btn" onClick={() => changeNetwork(ARBITRUM)}>
-                    <Trans>Launch Exchange</Trans>
-                  </Link>
+                  <LaunchExchangeButton />
                 </div>
               </div>
             </div>
@@ -260,9 +266,7 @@ export default function Home() {
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Avalanche</div>
                 <div className="Home-cta-option-action">
-                  <Link to="/trade" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>
-                    <Trans>Launch Exchange</Trans>
-                  </Link>
+                  <LaunchExchangeButton />
                 </div>
               </div>
             </div>
@@ -276,7 +280,7 @@ export default function Home() {
               <Trans>Two tokens create our ecosystem</Trans>
             </div>
           </div>
-          <TokenCard />
+          <TokenCard showRedirectModal={showRedirectModal} />
         </div>
       </div>
 
@@ -320,7 +324,7 @@ export default function Home() {
           </div>
         </div>
       </div> */}
-      <Footer />
+      <Footer showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
     </div>
   );
 }

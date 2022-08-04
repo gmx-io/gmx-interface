@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useCallback } from "react";
 import Footer from "../../Footer";
 import "./BuyGMX.css";
 
@@ -15,11 +15,9 @@ import avax30Icon from "../../img/ic_avax_30.svg";
 import gmxArbitrum from "../../img/ic_gmx_arbitrum.svg";
 import gmxAvax from "../../img/ic_gmx_avax.svg";
 import ohmArbitrum from "../../img/ic_olympus_arbitrum.svg";
-import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
-import avalanche16Icon from "../../img/ic_avalanche_16.svg";
 import Button from "../../components/Common/Button";
 
-import { Trans } from '@lingui/macro'
+import { Trans } from "@lingui/macro";
 
 export default function BuyGMX() {
   const { chainId } = useChainId();
@@ -35,26 +33,21 @@ export default function BuyGMX() {
     [chainId, active]
   );
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   return (
     <div className="BuyGMXGLP default-container page-layout">
       <div className="BuyGMXGLP-container">
         {chainId === ARBITRUM && (
           <div className="section-title-block">
             <div className="section-title-content">
-              <div className="Page-title"><Trans>Buy / Transfer ETH</Trans></div>
+              <div className="Page-title">
+                <Trans>Buy / Transfer ETH</Trans>
+              </div>
               <div className="Page-description">
                 <Trans>ETH is needed on Arbitrum to purchase GMX.</Trans>
                 <br />
                 <Trans>
-                  To purchase GMX on{" "}
-                  <span onClick={() => onNetworkSelect(AVALANCHE)}>
-                    Avalanche <img src={avalanche16Icon} alt="avalanche16Icon" />
-                  </span>
-                  , please change your network.
+                  To purchase GMX on <span onClick={() => onNetworkSelect(AVALANCHE)}>Avalanche</span>, please change
+                  your network.
                 </Trans>
               </div>
             </div>
@@ -63,7 +56,9 @@ export default function BuyGMX() {
         {chainId === ARBITRUM && (
           <div className="BuyGMXGLP-panel">
             <div className="App-card no-height">
-              <div className="App-card-title"><Trans>Buy ETH</Trans></div>
+              <div className="App-card-title">
+                <Trans>Buy ETH</Trans>
+              </div>
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
@@ -86,7 +81,9 @@ export default function BuyGMX() {
               </div>
             </div>
             <div className="App-card no-height">
-              <div className="App-card-title"><Trans>Transfer ETH</Trans></div>
+              <div className="App-card-title">
+                <Trans>Transfer ETH</Trans>
+              </div>
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
@@ -121,16 +118,16 @@ export default function BuyGMX() {
         {chainId === AVALANCHE && (
           <div className="section-title-block">
             <div className="section-title-content">
-              <div className="Page-title"><Trans>Buy / Transfer AVAX</Trans></div>
+              <div className="Page-title">
+                <Trans>Buy / Transfer AVAX</Trans>
+              </div>
               <div className="Page-description">
                 <Trans>Avax is needed on Avalanche to purchase GMX.</Trans>
                 <br />
                 <Trans>
-                  To purchase GMX on{" "}
-                  <span onClick={() => onNetworkSelect(ARBITRUM)}>
-                    Arbitrum <img src={arbitrum16Icon} alt="arbitrum16Icon" />
-                  </span>
-                  , please change your network.
+                  {" "}
+                  To purchase GMX on <span onClick={() => onNetworkSelect(ARBITRUM)}>Arbitrum</span>, please change your
+                  network.
                 </Trans>
               </div>
             </div>
@@ -139,7 +136,9 @@ export default function BuyGMX() {
         {chainId === AVALANCHE && (
           <div className="BuyGMXGLP-panel">
             <div className="App-card no-height">
-              <div className="App-card-title"><Trans>Buy AVAX</Trans></div>
+              <div className="App-card-title">
+                <Trans>Buy AVAX</Trans>
+              </div>
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
@@ -162,14 +161,18 @@ export default function BuyGMX() {
               </div>
             </div>
             <div className="App-card no-height">
-              <div className="App-card-title"><Trans>Transfer AVAX</Trans></div>
+              <div className="App-card-title">
+                <Trans>Transfer AVAX</Trans>
+              </div>
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
                   <Trans>You can transfer AVAX to Avalanche using any of the below options.</Trans> <br />
                   <br />
-                  <Trans>Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and
-                  receive free AVAX to pay for the network's fees.</Trans>
+                  <Trans>
+                    Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency,
+                    and receive free AVAX to pay for the network's fees.
+                  </Trans>
                 </div>
                 <div className="bridge-options">
                   <Button align="left" href="https://bridge.avax.network/" imgSrc={avax30Icon}>
@@ -193,7 +196,9 @@ export default function BuyGMX() {
           <div className="BuyGMXGLP-panel">
             <div className="buy-card">
               <div className="section-title-content">
-                <div className="card-title"><Trans>Buy GMX</Trans></div>
+                <div className="card-title">
+                  <Trans>Buy GMX</Trans>
+                </div>
               </div>
               <div className="App-card no-height">
                 <div className="App-card-content no-title">
@@ -225,7 +230,9 @@ export default function BuyGMX() {
           <div className="BuyGMXGLP-panel">
             <div className="buy-card">
               <div className="section-title-content">
-                <div className="card-title"><Trans>Buy GMX</Trans></div>
+                <div className="card-title">
+                  <Trans>Buy GMX</Trans>
+                </div>
               </div>
               <div className="App-card no-height">
                 <div className="App-card-content no-title">
@@ -252,7 +259,9 @@ export default function BuyGMX() {
             </div>
             <div className="buy-card">
               <div className="section-title-content">
-                <div className="card-title"><Trans>Buy GMX Bonds</Trans></div>
+                <div className="card-title">
+                  <Trans>Buy GMX Bonds</Trans>
+                </div>
               </div>
               <div className="App-card no-height">
                 <div className="App-card-content no-title">

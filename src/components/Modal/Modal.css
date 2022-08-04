@@ -11,6 +11,13 @@
   text-align: left;
 }
 
+.Modal-scrollable .Modal-content .Modal-body {
+  overscroll-behavior: smooth;
+  max-height: calc(80vh - 5.5rem);
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
 .Modal-backdrop {
   position: fixed;
   z-index: 10;
@@ -33,7 +40,7 @@
 
 .divider {
   border-bottom: 1px solid #ffffff29;
-  margin-bottom: 1.55rem;
+  margin-bottom: 1.5rem;
 }
 
 .Modal.non-scrollable .Modal-content {
@@ -44,10 +51,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1.55rem;
+  margin: 1.5rem;
 }
 .Modal-body {
-  margin: 1.55rem;
+  margin: 1.5rem;
 }
 .Modal-body::-webkit-scrollbar {
   width: 0.6rem;
@@ -85,6 +92,6 @@
 }
 
 .Modal-note {
-  margin-bottom: 1.55rem;
+  margin-bottom: 1.5rem;
   margin-top: 0.8rem;
 }

@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { Trans } from "@lingui/macro";
 import Footer from "../../Footer";
 import "./Buy.css";
 import TokenCard from "../../components/TokenCard/TokenCard";
@@ -6,13 +7,7 @@ import buyGMXIcon from "../../img/buy_gmx.svg";
 import SEO from "../../components/Common/SEO";
 import { getPageTitle } from "../../Helpers";
 
-import { Trans } from '@lingui/macro'
-
-export default function BuyGMXGLP(props) {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
+export default function BuyGMXGLP() {
   return (
     <SEO title={getPageTitle("Buy GLP or GMX")}>
       <div className="BuyGMXGLP page-layout">
@@ -22,7 +17,9 @@ export default function BuyGMXGLP(props) {
               <img src={buyGMXIcon} alt="buyGMXIcon" />
             </div>
             <div className="section-title-content">
-              <div className="Page-title"><Trans>Buy GMX or GLP</Trans></div>
+              <div className="Page-title">
+                <Trans>Buy GMX or GLP</Trans>
+              </div>
             </div>
           </div>
           <TokenCard />

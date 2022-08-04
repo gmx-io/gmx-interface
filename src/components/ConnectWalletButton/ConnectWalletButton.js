@@ -1,24 +1,15 @@
 import React, { useState, useEffect } from "react";
 import cx from "classnames";
 import { Menu } from "@headlessui/react";
-import './ConnectWalletButton.css';
+import "./ConnectWalletButton.css";
 import { FaChevronDown } from "react-icons/fa";
-import { Trans } from '@lingui/macro'
-import arbitrum16Icon from '../../img/ic_arbitrum_16.svg';
-import avalanche16Icon from '../../img/ic_avalanche_16.svg';
-import {
-  ARBITRUM,
-  AVALANCHE
-} from "../../Helpers";
+import { Trans } from "@lingui/macro";
+import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
+import avalanche16Icon from "../../img/ic_avalanche_16.svg";
+import { ARBITRUM, AVALANCHE } from "../../Helpers";
 
 function ConnectWalletButton(props) {
-  const {
-    imgSrc,
-    children,
-    onClick,
-    className,
-    label
-  } = props
+  const { imgSrc, children, onClick, className, label } = props;
   const [selectedLabel, setSelectedLabel] = useState(label);
   const [networkChanged, setNetworkChanged] = useState(false);
   useEffect(() => {
@@ -40,7 +31,7 @@ function ConnectWalletButton(props) {
     e.preventDefault();
     e.stopPropagation();
     onClick();
-  }
+  };
   let classNames = cx("btn btn-primary btn-sm connect-wallet-btn", className);
   return (
     <div className="connect-wallet">
@@ -56,10 +47,12 @@ function ConnectWalletButton(props) {
         </Menu.Button>
         <Menu.Items as="div" className="menu-items">
           <div className="network-selector-menu-items">
-            <p className="network-selector-menu-items-title"><Trans>Networks</Trans></p>
+            <p className="network-selector-menu-items-title">
+              <Trans>Networks</Trans>
+            </p>
             <Menu.Item>
               <div
-                className={cx("menu-item", { selected: selectedLabel === 'Arbitrum' } )}
+                className={cx("menu-item", { selected: selectedLabel === "Arbitrum" })}
                 onClick={() => {
                   onSelect({ value: ARBITRUM });
                 }}
@@ -74,7 +67,7 @@ function ConnectWalletButton(props) {
             </Menu.Item>
             <Menu.Item>
               <div
-                className={cx("menu-item", { selected: selectedLabel === 'Avalanche' } )}
+                className={cx("menu-item", { selected: selectedLabel === "Avalanche" })}
                 onClick={() => {
                   onSelect({ value: AVALANCHE });
                 }}
