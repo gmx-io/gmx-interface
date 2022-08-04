@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useMemo } from "react";
+import "./ConfirmationBox.css";
 import {
   USD_DECIMALS,
   PRECISION,
@@ -11,6 +12,7 @@ import {
   getProfitPrice,
   getTimeRemaining,
   formatAmount,
+  formatAmountFree,
   useLocalStorageSerializeKey,
   getExchangeRateDisplay,
   DEFAULT_SLIPPAGE_AMOUNT,
@@ -18,6 +20,9 @@ import {
   SLIPPAGE_BPS_KEY,
   formatDateTime,
   calculatePositionDelta,
+  DECREASE,
+  TRIGGER_PREFIX_ABOVE,
+  TRIGGER_PREFIX_BELOW,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import { getContract } from "../../Addresses";
@@ -27,16 +32,17 @@ import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
 import Checkbox from "../Checkbox/Checkbox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
+import { cancelDecreaseOrder, handleCancelOrder } from "../../Api";
 import { getNativeToken, getToken, getWrappedToken } from "../../data/Tokens";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
 function getSpread(fromTokenInfo, toTokenInfo, isLong, nativeTokenAddress) {
   if (fromTokenInfo && fromTokenInfo.maxPrice && toTokenInfo && toTokenInfo.minPrice) {
-    const fromDiff = fromTokenInfo.maxPrice.sub(fromTokenInfo.minPrice);
-    const fromSpread = fromDiff.mul(PRECISION).div(fromTokenInfo.maxPrice);
-    const toDiff = toTokenInfo.maxPrice.sub(toTokenInfo.minPrice);
-    const toSpread = toDiff.mul(PRECISION).div(toTokenInfo.maxPrice);
+    const fromDiff = fromTokenInfo.maxPrice.sub(fromTokenInfo.minPrice).div(2);
+    const fromSpread = fromDiff.mul(PRECISION).div(fromTokenInfo.maxPrice.add(fromTokenInfo.minPrice).div(2));
+    const toDiff = toTokenInfo.maxPrice.sub(toTokenInfo.minPrice).div(2);
+    const toSpread = toDiff.mul(PRECISION).div(toTokenInfo.maxPrice.add(toTokenInfo.minPrice).div(2));
 
     let value = fromSpread.add(toSpread);
 
@@ -91,10 +97,27 @@ export default function ConfirmationBox(props) {
     feeBps,
     chainId,
     orders,
+    library,
+    setPendingTxns,
+    pendingTxns,
+    minExecutionFee,
+    minExecutionFeeUSD,
+    minExecutionFeeErrorMessage,
   } = props;
+
+  const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
 
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
+  const [isTriggerWarningAccepted, setIsTriggerWarningAccepted] = useState(false);
+  const [isLimitOrdersVisible, setIsLimitOrdersVisible] = useState(false);
+
+  const onCancelOrderClick = useCallback(
+    (order) => {
+      handleCancelOrder(chainId, library, order, { pendingTxns, setPendingTxns });
+    },
+    [library, pendingTxns, setPendingTxns, chainId]
+  );
 
   let minOut;
   let fromTokenUsd;
@@ -135,6 +158,37 @@ export default function ConfirmationBox(props) {
     }
   }, [orders, chainId, isLong, toToken.address, toToken.isNative]);
 
+  const existingOrders = useMemo(() => {
+    const wrappedToken = getWrappedToken(chainId);
+    return orders.filter((order) => {
+      if (order.type !== INCREASE) return false;
+      const sameToken =
+        order.indexToken === wrappedToken.address ? toToken.isNative : order.indexToken === toToken.address;
+      return order.isLong === isLong && sameToken;
+    });
+  }, [orders, chainId, isLong, toToken.address, toToken.isNative]);
+
+  const existingTriggerOrders = useMemo(() => {
+    const wrappedToken = getWrappedToken(chainId);
+    return orders.filter((order) => {
+      if (order.type !== DECREASE) return false;
+      const sameToken =
+        order.indexToken === wrappedToken.address ? toToken.isNative : order.indexToken === toToken.address;
+      return order.isLong === isLong && sameToken;
+    });
+  }, [orders, chainId, isLong, toToken.address, toToken.isNative]);
+
+  const decreaseOrdersThatWillBeExecuted = useMemo(() => {
+    if (isSwap) return [];
+    return existingTriggerOrders.filter((order) => {
+      if (order.triggerAboveThreshold) {
+        return existingPosition?.markPrice.gte(order.triggerPrice);
+      } else {
+        return existingPosition?.markPrice.lte(order.triggerPrice);
+      }
+    });
+  }, [existingPosition, existingTriggerOrders, isSwap]);
+
   const getError = () => {
     if (!isSwap && hasExistingPosition && !isMarketOrder) {
       const { delta, hasProfit } = calculatePositionDelta(triggerPriceUsd, existingPosition);
@@ -149,6 +203,10 @@ export default function ConfirmationBox(props) {
   };
 
   const getPrimaryText = () => {
+    if (decreaseOrdersThatWillBeExecuted.length > 0 && !isTriggerWarningAccepted) {
+      return `Accept confirmation of trigger orders`;
+    }
+
     if (!isPendingConfirmation) {
       const error = getError();
       if (error) {
@@ -189,6 +247,9 @@ export default function ConfirmationBox(props) {
     if (getError()) {
       return false;
     }
+    if (decreaseOrdersThatWillBeExecuted.length > 0 && !isTriggerWarningAccepted) {
+      return false;
+    }
     return !isPendingConfirmation && !isSubmitting;
   };
 
@@ -210,14 +271,14 @@ export default function ConfirmationBox(props) {
     if (spread && spread.isHigh) {
       return (
         <div className="Confirmation-box-warning">
-          The spread is > 1%, please ensure the trade details are acceptable before comfirming
+          The spread is {`>`} 1%, please ensure the trade details are acceptable before comfirming
         </div>
       );
     }
   }, [isMarketOrder, spread]);
 
   const renderFeeWarning = useCallback(() => {
-    if (orderOption === LIMIT || !feeBps || feeBps <= 50) {
+    if (orderOption === LIMIT || !feeBps || feeBps <= 60) {
       return null;
     }
 
@@ -320,14 +381,113 @@ export default function ConfirmationBox(props) {
       4,
       true
     );
+    if (existingOrders?.length > 1) {
+      return (
+        <div>
+          <div className="Confirmation-box-info">
+            <span>
+              You have multiple existing Increase {existingOrder.isLong ? "Long" : "Short"} {indexToken.symbol} limit
+              orders{" "}
+            </span>
+            <span onClick={() => setIsLimitOrdersVisible((p) => !p)} className="view-orders">
+              ({isLimitOrdersVisible ? "hide" : "view"})
+            </span>
+          </div>
+          {isLimitOrdersVisible && (
+            <ul className="order-list">
+              {existingOrders.map((order) => {
+                const { account, index, type, triggerAboveThreshold, triggerPrice } = order;
+                const id = `${account}-${index}`;
+                const triggerPricePrefix = triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
+                const indexToken = getToken(chainId, order.indexToken);
+
+                return (
+                  <li key={id} className="font-sm">
+                    <p>
+                      {type === INCREASE ? "Increase" : "Decrease"} {indexToken.symbol} {isLong ? "Long" : "Short"}{" "}
+                      &nbsp;{triggerPricePrefix} ${formatAmount(triggerPrice, USD_DECIMALS, 2, true)}
+                    </p>
+                    <button onClick={() => onCancelOrderClick(order)}>Cancel</button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      );
+    }
     return (
-      <div className="Confirmation-box-warning">
+      <div className="Confirmation-box-info">
         You have an active Limit Order to Increase {existingOrder.isLong ? "Long" : "Short"} {sizeInToken}{" "}
         {indexToken.symbol} (${formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at price $
         {formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
       </div>
     );
-  }, [existingOrder, isSwap, chainId]);
+  }, [existingOrder, isSwap, chainId, existingOrders, isLong, isLimitOrdersVisible, onCancelOrderClick]);
+
+  const renderExistingTriggerErrors = useCallback(() => {
+    if (isSwap || decreaseOrdersThatWillBeExecuted?.length < 1) {
+      return;
+    }
+    const existingTriggerOrderLength = decreaseOrdersThatWillBeExecuted.length;
+    const orderText = existingTriggerOrderLength > 1 ? "orders" : "order";
+    return (
+      <>
+        <div className="Confirmation-box-warning">
+          You have {existingTriggerOrderLength > 1 ? `${existingTriggerOrderLength}` : "an"} active trigger {orderText}{" "}
+          that might execute immediately after you open this position. Please cancel the {orderText} or accept the
+          confirmation to continue.
+        </div>
+        <ul className="order-list">
+          {decreaseOrdersThatWillBeExecuted.map((order) => {
+            const { account, index, type, triggerAboveThreshold, triggerPrice } = order;
+            const id = `${account}-${index}`;
+            const triggerPricePrefix = triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
+            const indexToken = getToken(chainId, order.indexToken);
+            return (
+              <li key={id}>
+                <p>
+                  {type === INCREASE ? "Increase" : "Decrease"} {indexToken.symbol} {isLong ? "Long" : "Short"}
+                  &nbsp;{triggerPricePrefix} ${formatAmount(triggerPrice, USD_DECIMALS, 2, true)}
+                </p>
+                <button
+                  onClick={() =>
+                    cancelDecreaseOrder(chainId, library, index, {
+                      successMsg: "Order cancelled",
+                      failMsg: "Cancel failed",
+                      sentMsg: "Cancel submitted",
+                      pendingTxns,
+                      setPendingTxns,
+                    })
+                  }
+                >
+                  Cancel
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    );
+  }, [decreaseOrdersThatWillBeExecuted, isSwap, chainId, library, pendingTxns, setPendingTxns, isLong]);
+
+  const renderExistingTriggerWarning = useCallback(() => {
+    if (
+      isSwap ||
+      existingTriggerOrders.length < 1 ||
+      decreaseOrdersThatWillBeExecuted.length > 0 ||
+      renderExistingOrderWarning()
+    ) {
+      return;
+    }
+    const existingTriggerOrderLength = existingTriggerOrders.length;
+    return (
+      <div className="Confirmation-box-info">
+        You have {existingTriggerOrderLength > 1 ? `${existingTriggerOrderLength}` : "an"} active trigger{" "}
+        {existingTriggerOrderLength > 1 ? "orders" : "order"} that could impact this position.
+      </div>
+    );
+  }, [existingTriggerOrders, isSwap, decreaseOrdersThatWillBeExecuted, renderExistingOrderWarning]);
 
   // TODO handle unaprproved order plugin (very unlikely case)
   const renderMain = useCallback(() => {
@@ -442,11 +602,14 @@ export default function ConfirmationBox(props) {
   const renderMarginSection = useCallback(() => {
     return (
       <>
-        <div className="Confirmation-box-info">
+        <div>
           {renderMain()}
           {renderFeeWarning()}
           {renderMinProfitWarning()}
           {renderExistingOrderWarning()}
+          {renderExistingTriggerErrors()}
+          {renderExistingTriggerWarning()}
+          {minExecutionFeeErrorMessage && <div className="Confirmation-box-warning">{minExecutionFeeErrorMessage}</div>}
           {hasPendingProfit && isMarketOrder && (
             <div className="PositionEditor-accept-profit-warning">
               <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
@@ -530,6 +693,33 @@ export default function ConfirmationBox(props) {
               (isShort && shortCollateralToken && shortCollateralToken.fundingRate)) &&
               "% / 1h"}
           </ExchangeInfoRow>
+          {isMarketOrder && (
+            <div className="PositionEditor-allow-higher-slippage">
+              <ExchangeInfoRow label="Execution Fee">
+                <Tooltip
+                  handle={`${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol}`}
+                  position="right-top"
+                  renderContent={() => {
+                    return (
+                      <>
+                        Network fee: {formatAmountFree(minExecutionFee, 18, 5)} {nativeTokenSymbol} ($
+                        {formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})<br />
+                        <br />
+                        This is the network cost required to execute the postion.{" "}
+                        <a
+                          href="https://gmxio.gitbook.io/gmx/trading#execution-fee"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          More Info
+                        </a>
+                      </>
+                    );
+                  }}
+                />
+              </ExchangeInfoRow>
+            </div>
+          )}
           <ExchangeInfoRow label="Allowed Slippage">
             <Tooltip
               handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
@@ -550,7 +740,14 @@ export default function ConfirmationBox(props) {
           {isMarketOrder && (
             <div className="PositionEditor-allow-higher-slippage">
               <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
-                <span className="muted">Allow up to 1% slippage</span>
+                <span className="muted font-sm">Allow up to 1% slippage</span>
+              </Checkbox>
+            </div>
+          )}
+          {decreaseOrdersThatWillBeExecuted.length > 0 && (
+            <div className="PositionEditor-allow-higher-slippage">
+              <Checkbox isChecked={isTriggerWarningAccepted} setIsChecked={setIsTriggerWarningAccepted}>
+                <span className="muted font-sm">I am aware of the trigger orders</span>
               </Checkbox>
             </div>
           )}
@@ -579,7 +776,6 @@ export default function ConfirmationBox(props) {
     leverage,
     renderExecutionFee,
     shortCollateralToken,
-    renderExistingOrderWarning,
     chainId,
     renderFeeWarning,
     hasPendingProfit,
@@ -588,15 +784,24 @@ export default function ConfirmationBox(props) {
     orderOption,
     fromUsdMin,
     collateralAfterFees,
+    renderExistingOrderWarning,
+    renderExistingTriggerWarning,
+    renderExistingTriggerErrors,
     isHigherSlippageAllowed,
     setIsHigherSlippageAllowed,
     allowedSlippage,
+    isTriggerWarningAccepted,
+    decreaseOrdersThatWillBeExecuted,
+    minExecutionFee,
+    nativeTokenSymbol,
+    minExecutionFeeUSD,
+    minExecutionFeeErrorMessage,
   ]);
 
   const renderSwapSection = useCallback(() => {
     return (
       <>
-        <div className="Confirmation-box-info">
+        <div>
           {renderMain()}
           {renderFeeWarning()}
           {renderSpreadWarning()}

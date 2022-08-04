@@ -10,10 +10,10 @@
   margin-top: 3.1rem;
 }
 .mt-medium {
-  margin-top: 1.55rem;
+  margin-top: 1.5rem;
 }
 .referral-tab-container {
-  margin: 1.55rem auto 3.1rem auto;
+  margin: 1.5rem auto 3.1rem auto;
 }
 .referral-card {
   position: relative;
@@ -46,10 +46,10 @@
 
 .referral-card .card-action input {
   border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   width: 100%;
   box-sizing: border-box;
-  margin-right: 1.55rem;
+  margin-right: 1.5rem;
 }
 .referral-body-container .list {
   margin-top: 3.1rem;
@@ -63,7 +63,7 @@
   justify-content: center;
 }
 .active-referral-code .edit span {
-  margin-right: 1.55rem;
+  margin-right: 1.5rem;
 }
 .active-referral-code .edit svg {
   cursor: pointer;
@@ -87,7 +87,7 @@
   font-size: 0;
 }
 .mb-sm {
-  margin-bottom: 1.55rem;
+  margin-bottom: 1.5rem;
 }
 .edit-referral-modal {
   width: 31rem;
@@ -114,7 +114,7 @@
   align-items: center;
   background: transparent;
   border: 1px solid var(--dark-blue-border);
-  padding: 0.775rem 1.55rem;
+  padding: 0.775rem 1.5rem;
   color: white;
   font-size: 1.4rem;
   border-radius: var(--border-radius-sm);
@@ -151,17 +151,17 @@
   border: 1px solid #1e2136;
   border-radius: 0.4rem;
   padding: 1.1625rem;
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   width: 40rem;
 }
 .create-referrar-code form button {
-  margin-left: 1.55rem;
+  margin-left: 1.5rem;
 }
 
 .referral-stats {
   margin: 0 auto;
   display: grid;
-  grid-gap: 1.55rem;
+  grid-gap: 1.5rem;
   grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
 }
 
@@ -178,12 +178,12 @@
   align-items: center;
 }
 .info-card .label {
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   line-height: 2.1rem;
   font-weight: normal;
   letter-spacing: 0px;
   color: #ffffff;
-  margin-bottom: 1.55rem;
+  margin-bottom: 1.5rem;
   text-align: center;
 }
 .info-card .data {
@@ -191,7 +191,7 @@
   font-weight: normal;
   text-align: center;
   padding: 0;
-  margin: 1.55rem 0;
+  margin: 1.5rem 0;
 }
 .info-card .info-card-question-icon {
   vertical-align: middle;
@@ -201,23 +201,27 @@
 
 .table-referral-code {
   cursor: pointer;
-  display: inline-flex;
   align-items: center;
+  display: flex;
 }
+
+.table-referral-code .referral-text {
+  margin-right: 0.775rem;
+  font-family: monospace;
+}
+
+.table-referral-code .copy-icon {
+  margin-right: 1rem;
+}
+
 .table-referral-code .copy-icon:hover {
   opacity: 0.75;
 }
 
-.referral-code {
-  display: flex;
-}
-.referral-code span {
-  margin-right: 0.775rem;
-  font-family: monospace;
-}
 .table-referral-code .info {
   margin-left: 0.775rem;
 }
+
 .referral-table {
   border-collapse: collapse;
   margin: 0;
@@ -245,7 +249,7 @@
 }
 .error {
   margin: 0;
-  padding: 0.775rem 0 1.55rem;
+  padding: 0.775rem 0 1.5rem;
   color: #fa3c58;
   font-size: 1.4rem;
 }
@@ -253,6 +257,7 @@
 .table-wrapper {
   display: block;
   width: 100%;
+  font-size: 1.5rem;
 }
 
 .empty-message {
@@ -260,10 +265,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1.55rem;
+  padding: 1.5rem;
   border: 1px solid #1e2136;
   border-radius: 0.4rem;
   background: #16182e;
+  font-size: 1.5rem;
 }
 .confirm-checkbox .Checkbox {
   width: 100%;
@@ -271,18 +277,25 @@
   grid-template-columns: 1fr auto;
   direction: rtl;
   font-size: 1.4rem;
-  margin-bottom: 1.55rem;
+  margin-bottom: 1.5rem;
 }
 
 @media (max-width: 800px) {
   .referral-table {
     width: auto;
-    margin-bottom: 1.55rem;
+    margin-bottom: 1.5rem;
   }
   .table-wrapper {
     overflow-x: auto;
   }
   .table-head {
     white-space: nowrap;
+  }
+}
+@media (max-width: 500px) {
+  .referral-table-header .sub-title {
+    display: block;
+    margin-left: 0;
+    margin-top: 2px;
   }
 }

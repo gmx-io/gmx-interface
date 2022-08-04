@@ -5,7 +5,7 @@
   border-radius: 3px;
   overflow: hidden;
   color: rgba(255, 255, 255, 0.7);
-  background: linear-gradient(90deg, rgba(30,34,61,0.9) 0%, rgba(38,43,71,0.9) 100%);
+  background: linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%);
   box-shadow: inset 0px 0px 30px 5px rgba(255, 255, 255, 0.01);
 }
 
@@ -17,21 +17,21 @@
 .Tab.block .Tab-option {
   text-align: center;
   padding: 0.8rem;
-  padding-left: 1.55rem;
-  padding-right: 1.55rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
   cursor: pointer;
-  /* font-size: 1.55rem; */
+  /* font-size: 1.5rem; */
 }
 
 .Tab.block .Tab-option:hover {
   color: rgba(255, 255, 255, 1);
-  background: linear-gradient(90deg, rgba(35,57,172,1) 0%, rgba(43,59,147,1) 100%);
+  background: linear-gradient(90deg, rgba(35, 57, 172, 1) 0%, rgba(43, 59, 147, 1) 100%);
 }
 
 .Tab.block .Tab-option.active {
   opacity: 1;
   pointer-events: none;
-  background: linear-gradient(90deg, rgba(45,66,252,1) 0%, rgba(46,61,205,1) 100%);
+  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
   color: rgba(255, 255, 255, 1);
 }
 
@@ -42,8 +42,8 @@
 .Tab.inline .Tab-option {
   cursor: pointer;
   display: inline-block;
-  margin-right: 1.55rem;
-  font-size: 1.55rem;
+  margin-right: 1.5rem;
+  font-size: 1.5rem;
 }
 
 .Tab.inline .Tab-option:hover {

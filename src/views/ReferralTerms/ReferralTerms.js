@@ -1,14 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Footer from "../../Footer";
 import SEO from "../../components/Common/SEO";
 import { getPageTitle } from "../../Helpers";
 import "./ReferralTerms.css";
 
-export default function ReferralTerms(props) {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
+export default function ReferralTerms() {
   return (
     <SEO title={getPageTitle("Referral Terms")}>
       <div className="default-container Page page-layout">
@@ -41,7 +37,7 @@ export default function ReferralTerms(props) {
               <h3 className="body-title">1. Use of the Referral Program</h3>
               <p className="body-text">
                 The Referral Program allows you to provide a platform for advertising the GMX DApp thereby driving
-                traffic to it, whereby you may earn a portion of the revenue generated ( “Rebates”) if a person that is
+                traffic to it, whereby you may earn a portion of the revenue generated (“Rebates”) if a person that is
                 not you (“Trader”, “Referred User”) trades in the GMX DApp after being referred to it from an hyperlink
                 (“Link”) or manually input code (“Referral Code”). The Trader will benefit from a fee discount
                 (“Discount”) associated with the Referrer's tier.
@@ -69,12 +65,12 @@ export default function ReferralTerms(props) {
                 smart contracts.
               </p>
               <p className="body-text">
-                You will be excluded from the Referral Program, in our sole discretion: (i) if you use any languague
-                libelous, defamatory, profane, obscene, pornographic, sexually explicit, indecent, lewd, vulgar,
-                suggestive, harassing, stalking, hateful, threatening, offensive, discriminatory, bigoted, abusive,
-                inflammatory, fraudulent, deceptive, or otherwise objectionable or likely or intended to incite,
-                threaten, facilitate, promote, or encourage hate, racial intolerance, or violent acts against others;
-                (ii) if you try any form of gaming through self-referrals.
+                You may be excluded from the Referral Program, in accordance with the directives of the GMX
+                tokenholders: (i) if you use any languague libelous, defamatory, profane, obscene, pornographic,
+                sexually explicit, indecent, lewd, vulgar, suggestive, harassing, stalking, hateful, threatening,
+                offensive, discriminatory, bigoted, abusive, inflammatory, fraudulent, deceptive, or otherwise
+                objectionable or likely or intended to incite, threaten, facilitate, promote, or encourage hate, racial
+                intolerance, or violent acts against others; (ii) if you try any form of gaming through self-referrals.
               </p>
             </div>
             <div className="section">
@@ -214,7 +210,7 @@ export default function ReferralTerms(props) {
               <h3 className="body-title">12. Governing Law</h3>
               <p className="body-text">
                 The interpretation and enforcement of these Terms, and any dispute related to these Terms will be
-                governed by and construed and enforced under the laws of The Marshall Islands, as applicable.
+                governed by and construed and enforced under the laws of The Bahamas, as applicable.
               </p>
             </div>
           </div>

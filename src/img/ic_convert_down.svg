@@ -1,6 +1,1 @@
-<svg id="ic_convert_down" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
-  <g id="ic_convert" transform="translate(40) rotate(90)">
-    <circle id="Ellipse_29" data-name="Ellipse 29" cx="20" cy="20" r="20" transform="translate(0 0)" fill="#2d42fc"/>
-    <path id="Path_1651" data-name="Path 1651" d="M17.415,3.237A1.875,1.875,0,0,0,14.835.516L9,6.043,3.165.516A1.875,1.875,0,0,0,.585,3.237L7.71,9.986a1.875,1.875,0,0,0,2.58,0Z" transform="translate(15.5 29) rotate(-90)" fill="#fff"/>
-  </g>
-</svg>
+<svg height="40" viewBox="0 0 40 40" width="40" xmlns="http://www.w3.org/2000/svg"><g transform="matrix(0 1 -1 0 40 0)"><circle cx="20" cy="20" fill="#2d42fc" r="20"/><path d="m17.415 3.237a1.875 1.875 0 0 0 -2.58-2.721l-5.835 5.527-5.835-5.527a1.875 1.875 0 0 0 -2.58 2.721l7.125 6.749a1.875 1.875 0 0 0 2.58 0z" fill="#fff" transform="matrix(0 -1 1 0 15.5 29)"/></g></svg>

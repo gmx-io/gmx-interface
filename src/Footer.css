@@ -1,7 +1,7 @@
 .Footer-wrapper {
   text-align: center;
   padding-top: 4rem;
-  background: #16182E;
+  background: #16182e;
   width: 100vw;
   position: absolute;
   transform: translateX(-50%);
@@ -23,8 +23,6 @@
 }
 
 .Footer-social-link-block {
-  /* padding-bottom: 4rem; */
-  max-width: 111rem;
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -32,10 +30,11 @@
 }
 .Footer-link {
   color: #a0a3c4;
-  font-size: 1.55rem;
+  font-size: 1.5rem;
   line-height: 1.85rem;
   font-weight: normal;
   text-decoration: none;
+  cursor: pointer;
 }
 .Footer-link:hover {
   color: white;
@@ -68,10 +67,42 @@
 }
 .Footer-links {
   padding-bottom: 4rem;
+  display: flex;
+  justify-content: center;
+}
+.Footer-links > a:not(:last-child),
+.Footer-links > .a:not(:last-child) {
+  padding-right: 2rem;
 }
 
 @media (max-width: 900px) {
   .Footer-social-link-block .App-social-link {
     margin: 0 1.6rem;
+  }
+}
+
+@media (max-width: 580px) {
+  .Footer-links {
+    flex-direction: column;
+  }
+  .Footer-links > a {
+    padding-right: 0;
+    margin-bottom: 0.5rem;
+  }
+  .Footer-social-link-block {
+    margin-bottom: 1.4rem;
+  }
+  .Footer-wrapper {
+    padding-top: 2.5rem;
+  }
+  .home {
+    height: 23rem;
+  }
+  .Footer-links > a:not(:last-child),
+  .Footer-links > .a:not(:last-child) {
+    padding-right: 0;
+  }
+  .Footer-social-link-block .App-social-link {
+    margin: 0 0.8rem;
   }
 }

@@ -1,0 +1,32 @@
+.order-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+.order-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--dark-blue-hover);
+  border-radius: var(--border-radius-sm);
+  margin-bottom: 0.5rem;
+  padding: 1rem;
+}
+.order-list li p {
+  margin: 0;
+}
+.order-list li button {
+  font-size: 1.4rem;
+  background: none;
+  border: none;
+  color: white;
+  opacity: 0.8;
+}
+.order-list li button:hover {
+  opacity: 1;
+}
+
+.view-orders {
+  text-decoration: underline;
+  cursor: pointer;
+}

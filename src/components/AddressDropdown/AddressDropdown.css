@@ -66,7 +66,7 @@
   letter-spacing: 0px;
   margin: 0;
   padding-left: 0.8rem;
-  color: #A0A3C4;
+  color: #a0a3c4;
 }
 
 .menu-item__prepend.avatar-dropdown-item {
@@ -85,7 +85,7 @@
   left: 0.8rem;
   height: 4px;
   width: 4px;
-  background: #53D0A2;
+  background: #53d0a2;
   border-radius: 50%;
 }
 

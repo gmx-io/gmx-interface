@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useWeb3React } from "@web3-react/core";
 
@@ -481,36 +481,38 @@ function VesterDepositModal(props) {
                 />
               </div>
             </div>
-          </div>
-          <div className="Exchange-info-row">
-            <div className="Exchange-info-label">Reserve Amount</div>
-            <div className="align-right">
-              <Tooltip
-                handle={`${formatAmount(
-                  reserveAmount && reserveAmount.gte(additionalReserveAmount) ? reserveAmount : additionalReserveAmount,
-                  18,
-                  2,
-                  true
-                )} / ${formatAmount(maxReserveAmount, 18, 2, true)}`}
-                position="right-bottom"
-                renderContent={() => {
-                  return (
-                    <>
-                      Current Reserved: {formatAmount(reserveAmount, 18, 2, true)}
-                      <br />
-                      Additional reserve required: {formatAmount(additionalReserveAmount, 18, 2, true)}
-                      <br />
-                      {amount && nextReserveAmount.gt(maxReserveAmount) && (
-                        <div>
-                          <br />
-                          You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)} {stakeTokenLabel}{" "}
-                          to vest {formatAmount(amount, 18, 2, true)} esGMX.
-                        </div>
-                      )}
-                    </>
-                  );
-                }}
-              />
+            <div className="Exchange-info-row">
+              <div className="Exchange-info-label">Reserve Amount</div>
+              <div className="align-right">
+                <Tooltip
+                  handle={`${formatAmount(
+                    reserveAmount && reserveAmount.gte(additionalReserveAmount)
+                      ? reserveAmount
+                      : additionalReserveAmount,
+                    18,
+                    2,
+                    true
+                  )} / ${formatAmount(maxReserveAmount, 18, 2, true)}`}
+                  position="right-bottom"
+                  renderContent={() => {
+                    return (
+                      <>
+                        Current Reserved: {formatAmount(reserveAmount, 18, 2, true)}
+                        <br />
+                        Additional reserve required: {formatAmount(additionalReserveAmount, 18, 2, true)}
+                        <br />
+                        {amount && nextReserveAmount.gt(maxReserveAmount) && (
+                          <div>
+                            <br />
+                            You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)}{" "}
+                            {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.
+                          </div>
+                        )}
+                      </>
+                    );
+                  }}
+                />
+              </div>
             </div>
           </div>
           <div className="Exchange-swap-button-container">
@@ -602,10 +604,7 @@ function CompoundModal(props) {
     [chainId, "StakeV2-compound-should-stake-es-gmx"],
     true
   );
-  const [shouldStakeMultiplierPoints, setShouldStakeMultiplierPoints] = useLocalStorageSerializeKey(
-    [chainId, "StakeV2-compound-should-stake-multiplier-points"],
-    true
-  );
+  const [shouldStakeMultiplierPoints, setShouldStakeMultiplierPoints] = useState(true);
   const [shouldClaimWeth, setShouldClaimWeth] = useLocalStorageSerializeKey(
     [chainId, "StakeV2-compound-should-claim-weth"],
     true
@@ -715,7 +714,11 @@ function CompoundModal(props) {
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label="Compound Rewards">
         <div className="CompoundModal-menu">
           <div>
-            <Checkbox isChecked={shouldStakeMultiplierPoints} setIsChecked={setShouldStakeMultiplierPoints}>
+            <Checkbox
+              isChecked={shouldStakeMultiplierPoints}
+              setIsChecked={setShouldStakeMultiplierPoints}
+              disabled={true}
+            >
               Stake Multiplier Points
             </Checkbox>
           </div>
@@ -1134,10 +1137,6 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     }
   }
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   const showStakeGmxModal = () => {
     if (!isGmxTransferEnabled) {
       helperToast.error("GMX transfers not yet enabled");
@@ -1421,8 +1420,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         chainId={chainId}
       />
       <div className="section-title-block">
-        <div className="section-title-icon">
-        </div>
+        <div className="section-title-icon"></div>
         <div className="section-title-content">
           <div className="Page-title">Earn</div>
           <div className="Page-description">
@@ -1511,6 +1509,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                                 <span className="label">{nativeTokenSymbol} Boosted APR</span>
                                 <span>{formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%</span>
                               </div>
+                              <div className="Tooltip-divider" />
                               <div className="Tooltip-row">
                                 <span className="label">{nativeTokenSymbol} Total APR</span>
                                 <span>

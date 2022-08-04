@@ -9,7 +9,7 @@ function EventToastContainer() {
     <Toaster
       position="top-right"
       reverseOrder={true}
-      gutter={20}
+      gutter={30}
       containerClassName="event-toast-container"
       containerStyle={{
         zIndex: 2,

@@ -1,18 +1,20 @@
 import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
+import { Trans } from "@lingui/macro";
+
+import cx from "classnames";
 
 import gmxBigIcon from "../../img/ic_gmx_custom.svg";
 import glpBigIcon from "../../img/ic_glp_custom.svg";
 
-import { ARBITRUM, AVALANCHE, switchNetwork, useChainId } from "../../Helpers";
+import { ARBITRUM, AVALANCHE, switchNetwork, useChainId, isHomeSite } from "../../Helpers";
 
 import { useWeb3React } from "@web3-react/core";
 
 import APRLabel from "../APRLabel/APRLabel";
 
-import { Trans } from '@lingui/macro'
-
-export default function TokenCard() {
+export default function TokenCard({ showRedirectModal }) {
+  const isHome = isHomeSite();
   const { chainId } = useChainId();
   const { active } = useWeb3React();
 
@@ -32,6 +34,22 @@ export default function TokenCard() {
     [chainId, active]
   );
 
+  const BuyLink = ({ className, to, children, network }) => {
+    if (isHome && showRedirectModal) {
+      return (
+        <div className={cx("a", className)} onClick={() => showRedirectModal(to)}>
+          {children}
+        </div>
+      );
+    }
+
+    return (
+      <Link to={to} className={cx(className)} onClick={() => changeNetwork(network)}>
+        {children}
+      </Link>
+    );
+  };
+
   return (
     <div className="Home-token-card-options">
       <div className="Home-token-card-option">
@@ -43,17 +61,17 @@ export default function TokenCard() {
             <Trans>GMX is the utility and governance token. Accrues 30% of the platform's generated fees.</Trans>
           </div>
           <div className="Home-token-card-option-apr">
-            <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />, <Trans>Avalanche APR:</Trans>{" "}
-            <APRLabel chainId={AVALANCHE} label="gmxAprTotal" key="AVALANCHE" />
+            <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />,{" "}
+            <Trans>Avalanche APR:</Trans> <APRLabel chainId={AVALANCHE} label="gmxAprTotal" key="AVALANCHE" />
           </div>
           <div className="Home-token-card-option-action">
             <div className="buy">
-              <Link to="/buy_gmx" className="default-btn" onClick={() => changeNetwork(ARBITRUM)}>
+              <BuyLink to="/buy_gmx" className="default-btn" network={ARBITRUM}>
                 <Trans>Buy on Arbitrum</Trans>
-              </Link>
-              <Link to="/buy_gmx" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>
-                <Trans>Buy on Avalanche</Trans>
-              </Link>
+              </BuyLink>
+              <BuyLink to="/buy_gmx" className="default-btn" network={AVALANCHE}>
+                <Trans> Buy on Avalanche</Trans>
+              </BuyLink>
             </div>
             <a
               href="https://gmxio.gitbook.io/gmx/tokenomics"
@@ -75,17 +93,17 @@ export default function TokenCard() {
             <Trans>GLP is the liquidity provider token. Accrues 70% of the platform's generated fees.</Trans>
           </div>
           <div className="Home-token-card-option-apr">
-            <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />, <Trans>Avalanche APR:</Trans>{" "}
-            <APRLabel chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" />
+            <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />,{" "}
+            <Trans>Avalanche APR:</Trans> <APRLabel chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" />
           </div>
           <div className="Home-token-card-option-action">
             <div className="buy">
-              <Link to="/buy_glp" className="default-btn" onClick={() => changeNetwork(ARBITRUM)}>
+              <BuyLink to="/buy_glp" className="default-btn" network={ARBITRUM}>
                 <Trans>Buy on Arbitrum</Trans>
-              </Link>
-              <Link to="/buy_glp" className="default-btn" onClick={() => changeNetwork(AVALANCHE)}>
+              </BuyLink>
+              <BuyLink to="/buy_glp" className="default-btn" network={AVALANCHE}>
                 <Trans>Buy on Avalanche</Trans>
-              </Link>
+              </BuyLink>
             </div>
             <a
               href="https://gmxio.gitbook.io/gmx/glp"

@@ -15,6 +15,7 @@ import {
   getUsd,
   getLeverage,
   formatAmount,
+  getOrderError,
   USD_DECIMALS,
   FUNDING_RATE_PRECISION,
   SWAP,
@@ -24,7 +25,7 @@ import {
   DECREASE,
 } from "../../Helpers";
 
-const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
+const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
     return [];
   }
@@ -47,8 +48,9 @@ const getOrdersForPosition = (position, orders, nativeTokenAddress) => {
       }
     })
     .map((order) => {
+      order.error = getOrderError(account, order, undefined, position);
       if (order.type === DECREASE && order.sizeDelta.gt(position.size)) {
-        order.error = "Order size exceeds position size, order cannot be executed";
+        order.error = "Order size is bigger than position, will only be executable if position increases";
       }
       return order;
     });
@@ -84,6 +86,9 @@ export default function PositionsList(props) {
     approvePositionRouter,
     showPnlAfterFees,
     setMarket,
+    minExecutionFee,
+    minExecutionFeeUSD,
+    minExecutionFeeErrorMessage,
   } = props;
 
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
@@ -135,6 +140,9 @@ export default function PositionsList(props) {
         isWaitingForPositionRouterApproval={isWaitingForPositionRouterApproval}
         approvePositionRouter={approvePositionRouter}
         chainId={chainId}
+        minExecutionFee={minExecutionFee}
+        minExecutionFeeUSD={minExecutionFeeUSD}
+        minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
       />
       {ordersToaOpen && (
         <OrdersToa
@@ -174,6 +182,9 @@ export default function PositionsList(props) {
           approvePositionRouter={approvePositionRouter}
           isHigherSlippageAllowed={isHigherSlippageAllowed}
           setIsHigherSlippageAllowed={setIsHigherSlippageAllowed}
+          minExecutionFee={minExecutionFee}
+          minExecutionFeeUSD={minExecutionFeeUSD}
+          minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
         />
       )}
       {positions && (
@@ -186,7 +197,7 @@ export default function PositionsList(props) {
               <div className="Exchange-empty-positions-list-note App-card">No open positions</div>
             )}
             {positions.map((position) => {
-              const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
+              const positionOrders = getOrdersForPosition(account, position, orders, nativeTokenAddress);
               const liquidationPrice = getLiquidationPrice(position);
               const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
               const positionDelta =
@@ -305,17 +316,31 @@ export default function PositionsList(props) {
                       <div>
                         {positionOrders.length === 0 && "None"}
                         {positionOrders.map((order) => {
-                          return (
-                            <div key={`${order.isLong}-${order.type}-${order.index}`} className="Position-list-order">
+                          const orderText = () => (
+                            <>
                               {order.triggerAboveThreshold ? ">" : "<"} {formatAmount(order.triggerPrice, 30, 2, true)}:
                               {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
-                              {order.error && (
-                                <>
-                                  , <span className="negative">{order.error}</span>
-                                </>
-                              )}
-                            </div>
+                            </>
                           );
+                          if (order.error) {
+                            return (
+                              <div key={`${order.isLong}-${order.type}-${order.index}`} className="Position-list-order">
+                                <Tooltip
+                                  className="order-error"
+                                  handle={orderText()}
+                                  position="right-bottom"
+                                  handleClassName="plain"
+                                  renderContent={() => <span className="negative">{order.error}</span>}
+                                />
+                              </div>
+                            );
+                          } else {
+                            return (
+                              <div key={`${order.isLong}-${order.type}-${order.index}`} className="Position-list-order">
+                                {orderText()}
+                              </div>
+                            );
+                          }
                         })}
                       </div>
                     </div>
@@ -337,10 +362,18 @@ export default function PositionsList(props) {
                   </div>
                   <div className="App-card-divider"></div>
                   <div className="App-card-options">
-                    <button className="App-button-option App-card-option" onClick={() => editPosition(position)}>
+                    <button
+                      disabled={position.size.eq(0)}
+                      className="App-button-option App-card-option"
+                      onClick={() => editPosition(position)}
+                    >
                       Edit
                     </button>
-                    <button className="App-button-option App-card-option" onClick={() => sellPosition(position)}>
+                    <button
+                      disabled={position.size.eq(0)}
+                      className="App-button-option App-card-option"
+                      onClick={() => sellPosition(position)}
+                    >
                       Close
                     </button>
                   </div>
@@ -379,7 +412,7 @@ export default function PositionsList(props) {
           )}
           {positions.map((position) => {
             const liquidationPrice = getLiquidationPrice(position) || bigNumberify(0);
-            const positionOrders = getOrdersForPosition(position, orders, nativeTokenAddress);
+            const positionOrders = getOrdersForPosition(account, position, orders, nativeTokenAddress);
             const hasOrderError = !!positionOrders.find((order) => order.error);
             const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
             const positionDelta =
