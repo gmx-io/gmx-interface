@@ -2,30 +2,19 @@ import React, { useState, useEffect } from "react";
 import cx from "classnames";
 import "./AddressDropdown.css";
 import { Menu } from "@headlessui/react";
-import {
-  ARBITRUM,
-  AVALANCHE,
-  helperToast,
-  shortenAddress,
-  useENS
-} from "../../Helpers";
+import { ARBITRUM, AVALANCHE, helperToast, shortenAddress, useENS } from "../../Helpers";
 import { useCopyToClipboard, createBreakpoint } from "react-use";
 import externalLink from "../../img/ic_new_link_16.svg";
 import copy from "../../img/ic_copy_16.svg";
 import disconnect from "../../img/ic_sign_out_16.svg";
 import { FaChevronDown } from "react-icons/fa";
 import Davatar from "@davatar/react";
-import { Trans, t } from '@lingui/macro'
-import arbitrum16Icon from '../../img/ic_arbitrum_16.svg';
-import avalanche16Icon from '../../img/ic_avalanche_16.svg';
+import { Trans, t } from "@lingui/macro";
+import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
+import avalanche16Icon from "../../img/ic_avalanche_16.svg";
 
 function AddressDropdown(props) {
-  const {
-    account,
-    accountUrl,
-    disconnectAccountAndCloseSettings,
-    label
-  } = props
+  const { account, accountUrl, disconnectAccountAndCloseSettings, label } = props;
 
   const [selectedLabel, setSelectedLabel] = useState(label);
   const [networkChanged, setNetworkChanged] = useState(false);
@@ -34,7 +23,6 @@ function AddressDropdown(props) {
   const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
   const { ensName } = useENS(account);
-  console.log(label)
 
   useEffect(() => {
     setSelectedLabel(label);
@@ -64,10 +52,12 @@ function AddressDropdown(props) {
         <div>
           <Menu.Items as="div" className="menu-items">
             <div className="network-selector-menu-items">
-              <p className="network-selector-menu-items-title"><Trans>Networks</Trans></p>
+              <p className="network-selector-menu-items-title">
+                <Trans>Networks</Trans>
+              </p>
               <Menu.Item>
                 <div
-                  className={cx("menu-item", { selected: selectedLabel === 'Arbitrum' } )}
+                  className={cx("menu-item", { selected: selectedLabel === "Arbitrum" })}
                   onClick={() => {
                     onSelect({ value: ARBITRUM });
                   }}
@@ -82,7 +72,7 @@ function AddressDropdown(props) {
               </Menu.Item>
               <Menu.Item>
                 <div
-                  className={cx("menu-item", { selected: selectedLabel === 'Avalanche' } )}
+                  className={cx("menu-item", { selected: selectedLabel === "Avalanche" })}
                   onClick={() => {
                     onSelect({ value: AVALANCHE });
                   }}
@@ -113,12 +103,7 @@ function AddressDropdown(props) {
               </div>
             </Menu.Item>
             <Menu.Item>
-              <a
-                href={accountUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="menu-item"
-              >
+              <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="menu-item">
                 <div className="menu-item__prepend">
                   <img src={externalLink} alt="Open address in explorer" />
                 </div>
@@ -128,10 +113,7 @@ function AddressDropdown(props) {
               </a>
             </Menu.Item>
             <Menu.Item>
-              <div
-                className="menu-item"
-                onClick={disconnectAccountAndCloseSettings}
-              >
+              <div className="menu-item" onClick={disconnectAccountAndCloseSettings}>
                 <div className="menu-item__prepend">
                   <img src={disconnect} alt="Disconnect the wallet" />
                 </div>

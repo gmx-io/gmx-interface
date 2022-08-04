@@ -103,23 +103,23 @@ import PositionRouter from "./abis/PositionRouter.json";
 import PageNotFound from "./views/PageNotFound/PageNotFound";
 import ReferralTerms from "./views/ReferralTerms/ReferralTerms";
 
-import { i18n } from '@lingui/core'
-import { I18nProvider } from '@lingui/react'
-import { messages as enMessages } from './locales/en/messages'
-import { messages as esMessages} from './locales/es/messages'
-import { Trans, t } from '@lingui/macro'
+import { i18n } from "@lingui/core";
+import { I18nProvider } from "@lingui/react";
+import { messages as enMessages } from "./locales/en/messages";
+import { messages as esMessages } from "./locales/es/messages";
+import { Trans, t } from "@lingui/macro";
 
 i18n.load({
-  'en': enMessages,
-  'es': esMessages
-})
+  en: enMessages,
+  es: esMessages,
+});
 
-let currentLanguage = localStorage.getItem('LANGUAGE_KEY')
+let currentLanguage = localStorage.getItem("LANGUAGE_KEY");
 if (!currentLanguage) {
-  currentLanguage = 'en'
+  currentLanguage = "en";
 }
 
-i18n.activate(currentLanguage)
+i18n.activate(currentLanguage);
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -257,21 +257,6 @@ function AppHeaderUser({
 }) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
-  // const showSelector = true;
-  // const networkOptions = [
-  //   {
-  //     label: "Arbitrum",
-  //     value: ARBITRUM,
-  //     icon: "ic_arbitrum_24.svg",
-  //     color: "#264f79",
-  //   },
-  //   {
-  //     label: "Avalanche",
-  //     value: AVALANCHE,
-  //     icon: "ic_avalanche_24.svg",
-  //     color: "#E841424D",
-  //   },
-  // ];
 
   useEffect(() => {
     if (active) {
@@ -299,18 +284,6 @@ function AppHeaderUser({
             <Trans>Trade</Trans>
           </NavLink>
         </div>
-        {/* {showSelector && (
-          <NetworkSelector
-            options={networkOptions}
-            label={selectorLabel}
-            onSelect={onNetworkSelect}
-            className="App-header-user-netowork"
-            showCaret={true}
-            modalLabel="Select Network"
-            small={small}
-            showModal={showNetworkSelectorModal}
-          />
-        )} */}
         <ConnectWalletButton
           onClick={() => setWalletModalVisible(true)}
           imgSrc={connectWalletImg}
@@ -318,12 +291,10 @@ function AppHeaderUser({
           onSelect={onNetworkSelect}
           small={small}
         >
-          {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans> }
+          {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
         </ConnectWalletButton>
         <div className="setting-dropdown-icon-wrapper">
-          <SettingDropdown
-            openSettings={openSettings}
-          />
+          <SettingDropdown openSettings={openSettings} />
         </div>
       </div>
     );
@@ -348,9 +319,7 @@ function AppHeaderUser({
         />
       </div>
       <div className="setting-dropdown-icon-wrapper">
-        <SettingDropdown
-          openSettings={openSettings}
-        />
+        <SettingDropdown openSettings={openSettings} />
       </div>
     </div>
   );
@@ -426,7 +395,12 @@ function FullApp() {
           <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">
             <Trans>Install MetaMask</Trans>
           </a>
-          {userOnMobileDevice ? <Trans>, and use GMX with its built-in browser</Trans> : <Trans> to start using GMX</Trans> }.
+          {userOnMobileDevice ? (
+            <Trans>, and use GMX with its built-in browser</Trans>
+          ) : (
+            <Trans> to start using GMX</Trans>
+          )}
+          .
         </div>
       );
       return false;
@@ -443,7 +417,12 @@ function FullApp() {
           <a href="https://www.coinbase.com/wallet" target="_blank" rel="noopener noreferrer">
             <Trans>Install Coinbase Wallet</Trans>
           </a>
-          {userOnMobileDevice ? <Trans>, and use GMX with its built-in browser</Trans> : <Trans> to start using GMX</Trans> }.
+          {userOnMobileDevice ? (
+            <Trans>, and use GMX with its built-in browser</Trans>
+          ) : (
+            <Trans> to start using GMX</Trans>
+          )}
+          .
         </div>
       );
       return false;
@@ -856,15 +835,21 @@ function FullApp() {
       >
         <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
           <img src={metamaskImg} alt="MetaMask" />
-          <div><Trans>MetaMask</Trans></div>
+          <div>
+            <Trans>MetaMask</Trans>
+          </div>
         </button>
         <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
           <img src={coinbaseImg} alt="Coinbase Wallet" />
-          <div><Trans>Coinbase Wallet</Trans></div>
+          <div>
+            <Trans>Coinbase Wallet</Trans>
+          </div>
         </button>
         <button className="Wallet-btn WalletConnect-btn" onClick={activateWalletConnect}>
           <img src={walletConnectImg} alt="WalletConnect" />
-          <div><Trans>WalletConnect</Trans></div>
+          <div>
+            <Trans>WalletConnect</Trans>
+          </div>
         </button>
       </Modal>
       <Modal
@@ -874,7 +859,9 @@ function FullApp() {
         label="Settings"
       >
         <div className="App-settings-row">
-          <div><Trans>Allowed Slippage</Trans></div>
+          <div>
+            <Trans>Allowed Slippage</Trans>
+          </div>
           <div className="App-slippage-tolerance-input-container">
             <input
               type="number"
