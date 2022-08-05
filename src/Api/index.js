@@ -38,10 +38,11 @@ import {
   helperToast,
   getUsd,
   USD_DECIMALS,
-  HIGH_EXECUTION_FEES_MAP,
+  getHighExecutionFee,
   SWAP,
   INCREASE,
   DECREASE,
+  ARBITRUM_TESTNET,
 } from "../Helpers";
 import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
 
@@ -56,6 +57,8 @@ function getGmxGraphClient(chainId) {
     return arbitrumGraphClient;
   } else if (chainId === AVALANCHE) {
     return avalancheGraphClient;
+  } else if (chainId === ARBITRUM_TESTNET) {
+    return null;
   }
   throw new Error(`Unsupported chain ${chainId}`);
 }
@@ -78,7 +81,10 @@ export function useAllOrdersStats(chainId) {
   const [res, setRes] = useState();
 
   useEffect(() => {
-    getGmxGraphClient(chainId).query({ query }).then(setRes).catch(console.warn);
+    const graphClient = getGmxGraphClient(chainId);
+    if (graphClient) {
+      graphClient.query({ query }).then(setRes).catch(console.warn);
+    }
   }, [setRes, query, chainId]);
 
   return res ? res.data.orderStat : null;
@@ -167,6 +173,10 @@ export function useLiquidationsData(chainId, account) {
          }
       }`);
       const graphClient = getGmxGraphClient(chainId);
+      if (!graphClient) {
+        return;
+      }
+
       graphClient
         .query({ query })
         .then((res) => {
@@ -433,7 +443,7 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
   // for executing positions this is around 65,000 gas
   // if gas prices on Ethereum are high, than the gas usage might be higher, this calculation doesn't deal with that
   // case yet
-  if (chainId === ARBITRUM) {
+  if (chainId === ARBITRUM || chainId === ARBITRUM_TESTNET) {
     multiplier = 65000;
   }
 
@@ -452,7 +462,7 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
   }
 
   const finalExecutionFeeUSD = getUsd(finalExecutionFee, nativeTokenAddress, false, infoTokens);
-  const isFeeHigh = finalExecutionFeeUSD?.gt(expandDecimals(HIGH_EXECUTION_FEES_MAP[chainId], USD_DECIMALS));
+  const isFeeHigh = finalExecutionFeeUSD?.gt(expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS));
   const errorMessage =
     isFeeHigh &&
     `The network cost to send transactions is high at the moment, please check the "Execution Fee" value before proceeding.`;
