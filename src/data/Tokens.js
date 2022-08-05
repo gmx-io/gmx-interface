@@ -120,10 +120,10 @@ const TOKENS = {
   ],
   421611: [
     {
-      name: "Bitcoin (BTCB)",
+      name: "Bitcoin",
       symbol: "BTC",
       decimals: 18,
-      address: "0xab952e6801daB7920B65b8aC918FF0F66a8a0F44",
+      address: "0x4B944Eba658A87d7dFbE2dc4833d3Aec7A11D518",
     },
     {
       name: "Ethereum",
@@ -145,14 +145,14 @@ const TOKENS = {
       name: "USD Coin",
       symbol: "USDC",
       decimals: 18,
-      address: "0xb93cb5F5c6a56e060A5e5A9691229D2a7e2D234A",
+      address: "0xD276d41d343EACb74579114A0e7C031670504380",
       isStable: true,
     },
     {
       name: "Tether",
       symbol: "USDT",
       decimals: 18,
-      address: "0xaB7ee1A7D5bc677e3A7ac694f2c156b3fFCaABC1",
+      address: "0xdc5199597Cdc183E368c53fd53e44F05077eC804",
       isStable: true,
     },
   ],
