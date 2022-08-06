@@ -432,7 +432,7 @@ export function getServerBaseUrl(chainId) {
   if (chainId === MAINNET) {
     return "https://gambit-server-staging.uc.r.appspot.com";
   } else if (chainId === ARBITRUM_TESTNET) {
-    return "https://gambit-l2.as.r.appspot.com";
+    return "https://gambit-server-devnet.uc.r.appspot.com";
   } else if (chainId === ARBITRUM) {
     return "https://gmx-server-mainnet.uw.r.appspot.com";
   } else if (chainId === AVALANCHE) {
