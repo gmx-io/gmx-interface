@@ -9,7 +9,6 @@
     "@ethersproject/units": "5.5.0",
     "@headlessui/react": "1.6.1",
     "@lingui/core": "3.13.3",
-    "@lingui/macro": "3.13.3",
     "@lingui/react": "3.13.3",
     "@testing-library/jest-dom": "5.16.1",
     "@testing-library/react": "11.2.7",
@@ -85,6 +84,8 @@
   },
   "devDependencies": {
     "@lingui/cli": "^3.13.3",
+    "@lingui/loader": "3.14.0",
+    "@lingui/macro": "3.13.3",
     "eslint": "7.32.0",
     "husky": "7.0.4",
     "lint-staged": "12.3.4",

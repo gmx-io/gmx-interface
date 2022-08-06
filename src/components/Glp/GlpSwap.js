@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-
+import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { ethers } from "ethers";
-
 import Tab from "../Tab/Tab";
 import cx from "classnames";
-
 import { getToken, getTokens, getWhitelistedTokens, getWrappedToken, getNativeToken } from "../../data/Tokens";
 import { getContract } from "../../Addresses";
 import {
@@ -64,8 +62,6 @@ import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
 import AssetDropdown from "../../views/Dashboard/AssetDropdown";
-
-import { Trans, t } from "@lingui/macro";
 
 const { AddressZero } = ethers.constants;
 

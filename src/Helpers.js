@@ -62,6 +62,7 @@ export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
 export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
 export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
+export const LANGUAGE_LOCALSTORAGE_KEY = "LANGUAGE_KEY";
 
 export function getChainName(chainId) {
   return CHAIN_NAMES_MAP[chainId];
@@ -2727,7 +2728,6 @@ export function importImage(name) {
   try {
     tokenImage = require("./img/" + name);
   } catch (error) {
-    tokenImage = require("./img/ic_eth_40.svg");
     console.error(error);
   }
   return tokenImage && tokenImage.default;

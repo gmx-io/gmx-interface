@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Menu } from "@headlessui/react";
-import { i18n } from "@lingui/core";
 import cx from "classnames";
 import "./SettingDropdown.css";
 import setting24Icon from "../../img/ic_settings_24.svg";
@@ -8,56 +7,21 @@ import setting16Icon from "../../img/ic_settings_16.svg";
 import arrowright16Icon from "../../img/ic_arrowright16.svg";
 import language16Icon from "../../img/ic_language16.svg";
 import arrowleft16Icon from "../../img/ic_arrowleft16.svg";
-import englishFlag from "../../img/flag_english.svg";
-import frenchFlag from "../../img/flag-french.png";
-import spanishFlag from "../../img/flag_spanish.png";
 import checkedIcon from "../../img/ic_checked.svg";
-import { messages as enMessages } from "../../locales/en/messages";
-import { messages as esMessages } from "../../locales/es/messages";
-import { Trans, t } from "@lingui/macro";
-
-i18n.load({
-  en: enMessages,
-  es: esMessages,
-});
-i18n.activate("en");
+import { Trans } from "@lingui/macro";
+import { defaultLocale, dynamicActivate, locales } from "../../utils/i18n";
+import { importImage, LANGUAGE_LOCALSTORAGE_KEY } from "../../Helpers";
 
 export default function SettingDropdown(props) {
   const { openSettings } = props;
 
-  let currentLanguage = localStorage.getItem("LANGUAGE_KEY");
-  if (!currentLanguage) {
-    currentLanguage = "en";
-  }
+  let currentLanguage = useRef(localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale);
 
   const [languageMenuHidden, setLanguageMenuHidden] = useState(true);
 
   const toggleLanguageMenu = (e) => {
     e.preventDefault();
     setLanguageMenuHidden(!languageMenuHidden);
-  };
-
-  const availableLanguages = [
-    {
-      icon: englishFlag,
-      name: t`English`,
-      language: "en",
-    },
-    {
-      icon: spanishFlag,
-      name: t`Spanish`,
-      language: "es",
-    },
-    {
-      icon: frenchFlag,
-      name: t`French`,
-      language: "fr",
-    },
-  ];
-
-  const selectLanguage = (lang) => {
-    i18n.activate(lang);
-    localStorage.setItem("LANGUAGE_KEY", lang);
   };
 
   return (
@@ -110,16 +74,25 @@ export default function SettingDropdown(props) {
                 </span>
               </div>
             </Menu.Item>
-            {availableLanguages.map((item, index) => {
+            {Object.keys(locales).map((item) => {
+              const image = importImage(`flag_${item}.svg`);
               return (
-                <Menu.Item key={index}>
-                  <div className="settings-dropdown-menu-item menu-item" onClick={() => selectLanguage(item.language)}>
+                <Menu.Item key={item}>
+                  <div
+                    className="settings-dropdown-menu-item menu-item"
+                    onClick={() => {
+                      currentLanguage.current = item;
+                      dynamicActivate(item);
+                    }}
+                  >
                     <div className="settings-dropdown-menu-item__prepend menu-item__prepend">
-                      <img src={item.icon} alt="language-menu-open-icon" />
+                      <img className="language-image" src={image} alt="language-menu-open-icon" />
                     </div>
-                    <span className="settings-dropdown-menu-item-label menu-item-label">{item.name}</span>
+                    <span className="settings-dropdown-menu-item-label menu-item-label">
+                      <Trans>{locales[item]}</Trans>
+                    </span>
                     <div className="settings-dropdown-menu-item__append menu-item__append">
-                      {currentLanguage === item.language && <img src={checkedIcon} alt="checked-icon" />}
+                      {currentLanguage.current === item && <img src={checkedIcon} alt="checked-icon" />}
                     </div>
                   </div>
                 </Menu.Item>

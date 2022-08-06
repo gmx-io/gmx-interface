@@ -1,7 +1,21 @@
 {
-  "locales": ["es", "en"],
-  "catalogs": [{
-    "path": "src/locales/{locale}/messages",
-    "include": ["src"]
-  }]
+  "locales": [
+    "es",
+    "zh",
+    "ko",
+    "ru",
+    "ja",
+    "en",
+    "fr"
+  ],
+  "sourceLocale": "en",
+  "catalogs": [
+    {
+      "path": "src/locales/{locale}/messages",
+      "include": [
+        "src"
+      ]
+    }
+  ],
+  "format": "po"
 }
