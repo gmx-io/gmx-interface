@@ -559,7 +559,7 @@ msgstr ""
 
 #: src/views/Home/Home.js:157
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
-msgstr ""
+msgstr "Négociez BTC, ETH, AVAX et d'autres crypto-monnaies de premier plan avec un effet de levier jusqu'à 30x directement depuis votre portefeuille"
 
 #: src/components/SettingDropdown/SettingDropdown.js:43
 msgid "Trade settings"

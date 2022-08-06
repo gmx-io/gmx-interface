@@ -559,7 +559,7 @@ msgstr ""
 
 #: src/views/Home/Home.js:157
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
-msgstr ""
+msgstr "지갑에서 직접 최대 30배의 레버리지로 BTC, ETH, AVAX 및 기타 주요 암호화폐 거래"
 
 #: src/components/SettingDropdown/SettingDropdown.js:43
 msgid "Trade settings"
