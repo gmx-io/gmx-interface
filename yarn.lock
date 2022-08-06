@@ -2635,7 +2635,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lingui/cli@npm:^3.13.3":
+"@lingui/cli@npm:^3.13.3, @lingui/cli@npm:^3.14.0":
   version: 3.14.0
   resolution: "@lingui/cli@npm:3.14.0"
   dependencies:
@@ -2713,6 +2713,21 @@ __metadata:
     make-plural: ^6.2.2
     messageformat-parser: ^4.1.3
   checksum: eeb020eed94dde45466a28d63c34815e4e7b986069abcb9d94bb1c59f24e5ce9b887b89842aa47d87a237b140260d207db34e8713ed6f7dfe3b6c45f56c2f5f3
+  languageName: node
+  linkType: hard
+
+"@lingui/loader@npm:^3.14.0":
+  version: 3.14.0
+  resolution: "@lingui/loader@npm:3.14.0"
+  dependencies:
+    "@babel/runtime": ^7.11.2
+    "@lingui/cli": ^3.14.0
+    "@lingui/conf": ^3.14.0
+    loader-utils: ^2.0.0
+    ramda: ^0.27.1
+  peerDependencies:
+    webpack: ^4.0.0 || ^5.0.0
+  checksum: f0b41229a478b0f411466700b7832af2206240e61d62fc1c1d45649082f4daf9db84af76f5b1d227de97a1595d5d794b74bfa54465d12c3cabf280caabd4b12f
   languageName: node
   linkType: hard
 
@@ -9065,6 +9080,7 @@ __metadata:
     "@headlessui/react": 1.6.1
     "@lingui/cli": ^3.13.3
     "@lingui/core": 3.13.3
+    "@lingui/loader": ^3.14.0
     "@lingui/macro": 3.13.3
     "@lingui/react": 3.13.3
     "@testing-library/jest-dom": 5.16.1

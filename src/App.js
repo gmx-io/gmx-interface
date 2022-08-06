@@ -47,6 +47,7 @@ import {
   isDevelopment,
   DISABLE_ORDER_VALIDATION_KEY,
   shouldShowRedirectModal,
+  LANGUAGE_LOCALSTORAGE_KEY,
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
@@ -113,21 +114,8 @@ import Jobs from "./views/Jobs/Jobs";
 
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { messages as enMessages } from "./locales/en/messages";
-import { messages as esMessages } from "./locales/es/messages";
 import { Trans, t } from "@lingui/macro";
-
-i18n.load({
-  en: enMessages,
-  es: esMessages,
-});
-
-let currentLanguage = localStorage.getItem("LANGUAGE_KEY");
-if (!currentLanguage) {
-  currentLanguage = "en";
-}
-
-i18n.activate(currentLanguage);
+import { defaultLocale, dynamicActivate } from "./utils/i18n";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -965,17 +953,21 @@ function FullApp() {
 
 function App() {
   useScrollToTop();
+  useEffect(() => {
+    const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
+    dynamicActivate(defaultLanguage);
+  }, []);
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
-      <I18nProvider i18n={i18n}>
-        <Web3ReactProvider getLibrary={getLibrary}>
-          <SEO>
-            <Router>
+      <Web3ReactProvider getLibrary={getLibrary}>
+        <SEO>
+          <Router>
+            <I18nProvider i18n={i18n}>
               <FullApp />
-            </Router>
-          </SEO>
-        </Web3ReactProvider>
-      </I18nProvider>
+            </I18nProvider>
+          </Router>
+        </SEO>
+      </Web3ReactProvider>
     </SWRConfig>
   );
 }
