@@ -559,7 +559,7 @@ msgstr ""
 
 #: src/views/Home/Home.js:157
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
-msgstr ""
+msgstr "ウォレットから直接最大 30 倍のレバレッジで BTC、ETH、AVAX およびその他の主要な仮想通貨を取引できます"
 
 #: src/components/SettingDropdown/SettingDropdown.js:43
 msgid "Trade settings"

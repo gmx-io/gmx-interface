@@ -806,7 +806,7 @@ msgstr ""
 
 #: src/views/Home/Home.js:157
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
-msgstr ""
+msgstr "Opere BTC, ETH, AVAX y otras criptomonedas principales con un apalancamiento de hasta 30x directamente desde su billetera"
 
 #: src/components/SettingDropdown/SettingDropdown.js:43
 msgid "Trade settings"

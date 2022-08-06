@@ -555,11 +555,11 @@ msgstr ""
 #: src/App.js:249
 #: src/App.js:274
 msgid "Trade"
-msgstr ""
+msgstr "Màoyì"
 
 #: src/views/Home/Home.js:157
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
-msgstr ""
+msgstr "Zhíjiē cóng nín de qiánbāo yǐ gāodá 30 bèi de gànggǎn lǜ jiāoyì BTC,ETH,AVAX hé qítā dǐngjí jiāmì huòbì"
 
 #: src/components/SettingDropdown/SettingDropdown.js:43
 msgid "Trade settings"

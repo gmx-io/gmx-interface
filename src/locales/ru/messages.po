@@ -555,11 +555,11 @@ msgstr ""
 #: src/App.js:249
 #: src/App.js:274
 msgid "Trade"
-msgstr ""
+msgstr "Торговля"
 
 #: src/views/Home/Home.js:157
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
-msgstr ""
+msgstr "Торгуйте BTC, ETH, AVAX и другими популярными криптовалютами с кредитным плечом до 30x прямо из вашего кошелька."
 
 #: src/components/SettingDropdown/SettingDropdown.js:43
 msgid "Trade settings"
