@@ -32,14 +32,14 @@ export default function ChartTokenSelector(props) {
   var value = selectedToken;
 
   return (
-    <Menu>
-      <Menu.Button as="div" disabled={isSwap}>
-        <button className={cx("App-cta small transparent chart-token-selector", { "default-cursor": isSwap })}>
-          <span className="chart-token-selector--current">{value.symbol} / USD</span>
-          {!isSwap && <FaChevronDown />}
-        </button>
-      </Menu.Button>
-      <div className="chart-token-menu">
+    <div className={cx("asset-dropdown", { swap: isSwap })}>
+      <Menu>
+        <Menu.Button as="div" disabled={isSwap}>
+          <button className="chart-token-selector">
+            <span className="chart-token-selector--current">{value.symbol} / USD</span>
+            {!isSwap && <FaChevronDown />}
+          </button>
+        </Menu.Button>
         <Menu.Items as="div" className="menu-items chart-token-menu-items">
           {options.map((option, index) => (
             <Menu.Item key={index}>
@@ -56,7 +56,7 @@ export default function ChartTokenSelector(props) {
             </Menu.Item>
           ))}
         </Menu.Items>
-      </div>
-    </Menu>
+      </Menu>
+    </div>
   );
 }

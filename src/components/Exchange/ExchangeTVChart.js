@@ -427,17 +427,16 @@ export default function ExchangeTVChart(props) {
       <div className="ExchangeChart-top App-box App-box-border">
         <div className="ExchangeChart-top-inner">
           <div>
-            <div className="ExchangeChart-title">
-              <ChartTokenSelector
-                chainId={chainId}
-                selectedToken={chartToken}
-                swapOption={swapOption}
-                infoTokens={infoTokens}
-                onSelectToken={onSelectToken}
-                className="chart-token-selector"
-              />
-            </div>
+            <ChartTokenSelector
+              chainId={chainId}
+              selectedToken={chartToken}
+              swapOption={swapOption}
+              infoTokens={infoTokens}
+              onSelectToken={onSelectToken}
+              className="chart-token-selector"
+            />
           </div>
+
           <div>
             <div className="ExchangeChart-main-price">
               {chartToken.maxPrice && formatAmount(chartToken.maxPrice, USD_DECIMALS, 2, true)}
