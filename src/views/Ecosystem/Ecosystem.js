@@ -114,6 +114,15 @@ export default function Ecosystem() {
       creatorLink: "https://twitter.com/ChasenKaminsky",
       chainIds: [AVALANCHE],
     },
+    {
+      title: "GMX Trading Stats",
+      link: "https://t.me/GMXTradingStats",
+      linkLabel: "Telegram Bot",
+      about: "Telegram bot for Open Interest on GMX",
+      creatorLabel: "@SniperMonke2",
+      creatorLink: "https://twitter.com/SniperMonke2",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
   ];
 
   const dashboardProjects = [
@@ -144,6 +153,7 @@ export default function Ecosystem() {
     {
       title: "TokenTerminal",
       link: "https://tokenterminal.com/terminal/projects/gmx",
+      linkLabel: "TokenTerminal GMX",
       about: "GMX fundamentals",
       creatorLabel: "@tokenterminal",
       creatorLink: "https://twitter.com/tokenterminal",
@@ -160,6 +170,7 @@ export default function Ecosystem() {
     {
       title: "Shogun Dashboard (Dune Arbitrum)",
       link: "https://dune.com/shogun/gmx-analytics-arbitrum",
+      linkLabel: "GMX Analytics Arbitrum",
       about: "Protocol analytics",
       creatorLabel: "@JamesCliffyz",
       creatorLink: "https://twitter.com/JamesCliffyz",
@@ -168,6 +179,7 @@ export default function Ecosystem() {
     {
       title: "Shogun Dashboard (Dune Avalanche)",
       link: "https://dune.com/shogun/gmx-analytics-avalanche",
+      linkLabel: "GMX Analytics Avalanche",
       about: "Protocol analytics",
       creatorLabel: "@JamesCliffyz",
       creatorLink: "https://twitter.com/JamesCliffyz",
