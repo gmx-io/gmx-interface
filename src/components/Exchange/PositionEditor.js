@@ -187,10 +187,10 @@ export default function PositionEditor(props) {
 
     if (!isDeposit && fromAmount) {
       if (fromAmount.gte(position.collateral)) {
-        return "Min order: 10 USD";
+        return "Min collateral: 10 USD";
       }
       if (position.collateral.sub(fromAmount).lt(expandDecimals(10, USD_DECIMALS))) {
-        return "Min order: 10 USD";
+        return "Min collateral: 10 USD";
       }
     }
 
