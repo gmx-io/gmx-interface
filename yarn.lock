@@ -2716,7 +2716,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lingui/loader@npm:^3.14.0":
+"@lingui/loader@npm:3.14.0":
   version: 3.14.0
   resolution: "@lingui/loader@npm:3.14.0"
   dependencies:
@@ -9080,7 +9080,7 @@ __metadata:
     "@headlessui/react": 1.6.1
     "@lingui/cli": ^3.13.3
     "@lingui/core": 3.13.3
-    "@lingui/loader": ^3.14.0
+    "@lingui/loader": 3.14.0
     "@lingui/macro": 3.13.3
     "@lingui/react": 3.13.3
     "@testing-library/jest-dom": 5.16.1
