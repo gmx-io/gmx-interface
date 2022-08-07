@@ -1092,10 +1092,13 @@ export default function GlpSwap(props) {
                               <>
                                 <TooltipCardRow
                                   label="Current Pool Amount"
-                                  showDollar={false}
-                                  amount={`${formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} ${
-                                    token.symbol
-                                  }`}
+                                  amount={`${formatAmount(managedUsd, USD_DECIMALS, 2, true)} (${formatKeyAmount(
+                                    tokenInfo,
+                                    "poolAmount",
+                                    token.decimals,
+                                    2,
+                                    true
+                                  )} ${token.symbol})`}
                                 />
                                 <TooltipCardRow
                                   label="Max Pool Capacity"
@@ -1122,10 +1125,13 @@ export default function GlpSwap(props) {
                               <>
                                 <TooltipCardRow
                                   label="Current Pool Amount"
-                                  showDollar={false}
-                                  amount={`${formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} ${
-                                    token.symbol
-                                  }`}
+                                  amount={`${formatAmount(managedUsd, USD_DECIMALS, 2, true)} (${formatKeyAmount(
+                                    tokenInfo,
+                                    "poolAmount",
+                                    token.decimals,
+                                    2,
+                                    true
+                                  )} ${token.symbol})`}
                                 />
                                 <TooltipCardRow
                                   label="Max Pool Capacity"
@@ -1258,10 +1264,13 @@ export default function GlpSwap(props) {
                               <>
                                 <TooltipCardRow
                                   label="Current Pool Amount"
-                                  showDollar={false}
-                                  amount={`${formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} ${
-                                    token.symbol
-                                  }`}
+                                  amount={`${formatAmount(managedUsd, USD_DECIMALS, 2, true)} (${formatKeyAmount(
+                                    tokenInfo,
+                                    "poolAmount",
+                                    token.decimals,
+                                    2,
+                                    true
+                                  )} ${token.symbol})`}
                                 />
                                 <TooltipCardRow
                                   label="Max Pool Capacity"
@@ -1305,9 +1314,13 @@ export default function GlpSwap(props) {
                                 <TooltipCardRow
                                   label="Current Pool Amount"
                                   showDollar={false}
-                                  amount={`${formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} ${
-                                    token.symbol
-                                  }`}
+                                  amount={`${formatAmount(managedUsd, USD_DECIMALS, 2, true)} (${formatKeyAmount(
+                                    tokenInfo,
+                                    "poolAmount",
+                                    token.decimals,
+                                    2,
+                                    true
+                                  )} ${token.symbol})`}
                                 />
                                 <TooltipCardRow
                                   label="Max Pool Capacity"
