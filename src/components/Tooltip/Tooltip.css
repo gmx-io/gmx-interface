@@ -12,8 +12,12 @@
   min-width: 25rem;
   text-align: left;
   background: linear-gradient(90deg, #0b0b0f 0%, rgba(10, 13, 28, 1) 100%);
+  color: white !important;
   z-index: 1000;
 }
+
+/* --tooltip-gradient-1: #0b0b0f;
+  --tooltip-gradient-2: rgba(10, 13, 28, 1); */
 
 .Tooltip.nowrap .Tooltip-popup {
   min-width: auto;
@@ -78,6 +82,7 @@
   text-decoration-thickness: 1px;
   text-underline-offset: 2px;
   text-decoration-color: rgba(255, 255, 255, 0.6);
+  color: var(--text-color) !important;
 }
 
 .Tooltip-handle.plain:after {

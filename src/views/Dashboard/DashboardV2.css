@@ -74,6 +74,7 @@
   text-align: left;
   z-index: 1;
   background: linear-gradient(90deg, #0b0b0f 0%, rgba(10, 13, 28, 1) 100%);
+  color: white;
   cursor: pointer;
 }
 
@@ -81,6 +82,7 @@
   width: 0.4rem;
   height: 100%;
   margin-right: 1.5rem;
+  /* color: var(--text-color); */
 }
 
 .Available-network-group {

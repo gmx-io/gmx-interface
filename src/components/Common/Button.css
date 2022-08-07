@@ -76,6 +76,7 @@ a.btn {
   background: transparent;
   border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
+  color: var(--text-color);
 }
 
 .btn-primary:hover {

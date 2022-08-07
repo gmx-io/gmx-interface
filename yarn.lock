@@ -9011,6 +9011,7 @@ __metadata:
     react-router-dom: 5.3.0
     react-scripts: 4.0.3
     react-select: 5.2.1
+    react-switch: ^7.0.0
     react-tabs: 3.2.3
     react-toastify: 6.0.9
     react-use: 17.3.1
@@ -14942,6 +14943,18 @@ __metadata:
     react: ^15.0.0 || ^16.0.0 || ^17.0.0
     react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0
   checksum: 4eff3fb93067b538e046df2c56a2f99b25f4c3a2aafc1c59707d1a0150f7f0afab408afdc1a47ffa3556adbdb5c915d6035a9a28da878e68771dce7568cc6f69
+  languageName: node
+  linkType: hard
+
+"react-switch@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "react-switch@npm:7.0.0"
+  dependencies:
+    prop-types: ^15.7.2
+  peerDependencies:
+    react: ^15.3.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^15.3.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+  checksum: 1a3caa9a0271dad3acad9fb4c613583e738a8abf8ef67372fc829dfe3e837a23a7a1c1cd29c327ace526039c068a97538ea5659c25bd5bd6d94cc5f804ea843d
   languageName: node
   linkType: hard
 

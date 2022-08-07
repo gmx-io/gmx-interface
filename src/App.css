@@ -154,7 +154,7 @@
   position: relative;
   border: 1px solid #1e2136;
   border-radius: 0.4rem;
-  background: #16182e;
+  background: var(--card-bg);
   font-size: 1.5rem;
 }
 
@@ -177,7 +177,7 @@
 }
 
 .App-card-long {
-  background: #16182e;
+  background: var(--card-bg);
   margin-bottom: 2.4rem;
 }
 
@@ -288,7 +288,7 @@
   line-height: 2.1rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: #ffffff;
+  color: var(--text-color);
 }
 
 .App-card-info-subtitle {
@@ -485,6 +485,7 @@ button.App-connect-wallet:hover {
   font-weight: 500;
   margin-bottom: 0.8rem;
   font-weight: bold;
+  color: var(--text-color);
 }
 
 .Page-description {
@@ -539,7 +540,7 @@ button.App-connect-wallet:hover {
   line-height: 2.1rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: #ffffff;
+  color: var(--text-color);
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
@@ -561,6 +562,7 @@ button.App-connect-wallet:hover {
   grid-template-columns: 1fr auto;
   grid-column-gap: 1.5rem;
   padding: unset;
+  color: var(--text-color);
 }
 
 .App-card-row.inner {
@@ -801,7 +803,7 @@ a.App-cta.transparent,
 button.App-cta.transparent {
   box-shadow: none;
   background: none;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--card-secondary-text);
   opacity: 1;
 }
 

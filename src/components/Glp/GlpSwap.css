@@ -96,7 +96,7 @@
   font-size: 1.6rem;
   line-height: 2.1rem;
   letter-spacing: 0px;
-  color: #ffffff;
+  color: var(--text-color);
 }
 
 .App-card-title-mark .App-card-title-mark-subtitle {
@@ -193,7 +193,7 @@
 
 .token-table td {
   letter-spacing: 0.25px;
-  color: #ffffffde;
+  color: var(--text-color);
 }
 
 .token-table th:first-child,

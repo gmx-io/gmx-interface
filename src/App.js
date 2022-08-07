@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { SWRConfig } from "swr";
 import { ethers } from "ethers";
-
+import "./theme/stylesheet.css";
+import "./theme/theme.css";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import useScrollToTop from "./hooks/useScrollToTop";
+import SwitchBox from "react-switch";
 
 import { Switch, Route, NavLink, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
 
@@ -109,6 +111,7 @@ import { useLocalStorage } from "react-use";
 import { RedirectPopupModal } from "./components/ModalViews/RedirectModal";
 import { REDIRECT_POPUP_TIMESTAMP_KEY } from "./utils/constants";
 import Jobs from "./views/Jobs/Jobs";
+import { lazyThemeInitialState } from "./hooks";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -146,6 +149,22 @@ function getWsProvider(active, chainId) {
 }
 
 function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
+  const [checked, setChecked] = useState(lazyThemeInitialState);
+
+  const setTheme = (theme) => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  };
+
+  const changeThemeHandler = (val) => {
+    setChecked(val);
+    if (val) {
+      setTheme("dark");
+    } else {
+      setTheme("light");
+    }
+  };
+
   return (
     <div className="App-header-links">
       {small && (
@@ -183,6 +202,18 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
           About
         </a>
       </div>
+      <div className="flex items-center">
+        <SwitchBox
+          height={20}
+          width={48}
+          boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
+          activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
+          uncheckedIcon={false}
+          checkedIcon={false}
+          onChange={(val) => changeThemeHandler(val)}
+          checked={checked}
+        />
+      </div>
       {small && !isHomeSite() && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
@@ -203,6 +234,7 @@ function AppHeaderUser({
   showNetworkSelectorModal,
   disconnectAccountAndCloseSettings,
 }) {
+  
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
   const showConnectionOptions = !isHomeSite();
@@ -949,6 +981,12 @@ function FullApp() {
 }
 
 function App() {
+  useEffect(() => {
+    if (localStorage.getItem("theme")) {
+      document.documentElement.setAttribute("data-theme", localStorage.getItem("theme"));
+    }
+  }, []);
+
   useScrollToTop();
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>

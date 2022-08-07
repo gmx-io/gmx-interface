@@ -5,9 +5,9 @@ body,
   width: 100%;
   margin: 0;
   padding: 0;
-  color: white;
+  color: var(--text-color);
   font-size: 10px;
-  background-color: #101124;
+  background-color: var(--main-bg);
 }
 
 * {
@@ -42,7 +42,7 @@ input {
   background: #4a4a4a;
 }
 
-:root {
+/* :root {
   --dark-blue: #17182c;
   --dark-blue-bg: #16182e;
   --dark-blue-accent: #a0a3c4;
@@ -53,7 +53,7 @@ input {
   --arbitrum-blue: #28a0f0;
   --border-radius-sm: 4px;
   --error-red: #fa3c58;
-}
+} */
 
 a {
   color: white;
@@ -159,7 +159,11 @@ td {
 
 .label,
 .label a {
-  color: rgba(255, 255, 255, 0.7);
+  color: white;
+}
+
+.card-label {
+  color: var(--text-color);
 }
 
 ul {
@@ -396,3 +400,9 @@ button.btn-link:hover .logout-icon {
 .default-cursor.App-cta {
   cursor: default;
 }
+
+.card-tooltip-container {
+  color: var(--text-color);
+}
+
+/* react-select__control */

@@ -140,7 +140,7 @@
 .react-select__option.arbitrum:hover {
   border: 1px solid #4275a8;
   border-radius: 0.4rem;
-  color: #eee;
+  color: var(--navbar-dropdown-menu);
 }
 .react-select__option.arbitrum:active {
   background: #818cef33 !important;
@@ -151,7 +151,7 @@
 .react-select__option.avalanche:hover {
   border: 1px solid #e84142;
   border-radius: 0.4rem;
-  color: #eee;
+  color: var(--navbar-dropdown-menu);
 }
 .react-select__indicator {
   border-radius: 0.4rem;

@@ -10,6 +10,7 @@ import selectorDropdowns from "../../img/ic_selector_dropdowns.svg";
 import Select, { components } from "react-select";
 import { find } from "lodash";
 import { useLockBodyScroll } from "react-use";
+import { lazyThemeInitialState, themeBgHandler, themeHandler } from "../../hooks";
 
 function getDotColor(network) {
   switch (network) {
@@ -100,8 +101,8 @@ export default function NetworkSelector(props) {
         margin: 0,
         paddingLeft: 8,
         cursor: "pointer",
-        backgroundColor,
-        color: "#a0a3c4",
+        backgroundColor: themeBgHandler(),
+        color: themeHandler(),
         height: 36,
         paddingTop: 6,
       };
@@ -111,7 +112,7 @@ export default function NetworkSelector(props) {
         width: 144,
         height: 36,
         display: "flex",
-        border: "1px solid #FFFFFF29",
+        border: `1px solid ${lazyThemeInitialState() ? "#FFFFFF29" : "black"}`,
         borderRadius: 4,
         cursor: "pointer",
         fontSize: "14px",
@@ -129,10 +130,11 @@ export default function NetworkSelector(props) {
     }),
     menu: (provided) => ({
       ...provided,
-      background: "#16182E",
+      background: themeBgHandler(),
       boxShadow: "0px 5px 12px #00000052",
       border: "1px solid #32344C",
       borderRadius: 4,
+      color: themeHandler(),
       fontSize: "14px",
     }),
     menuList: (provided) => ({
@@ -141,7 +143,7 @@ export default function NetworkSelector(props) {
     }),
     singleValue: (provided, state) => ({
       ...provided,
-      color: "white",
+      color: themeHandler(),
       margin: 0,
       fontSize: "14px",
     }),
@@ -163,7 +165,6 @@ export default function NetworkSelector(props) {
   value = value || options[0];
 
   const valueIcon = require("../../img/" + value.icon);
-
   return (
     <div className={cx("Selector", className, { disabled })}>
       {isModalVisible && (
