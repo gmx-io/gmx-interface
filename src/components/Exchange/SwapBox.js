@@ -340,7 +340,7 @@ export default function SwapBox(props) {
         <div className="Exchange-info-label">Available Liquidity</div>
         <div className="align-right">
           <Tooltip
-            handle={`${formatAmount(toTokenInfo.maxAvailableLong, USD_DECIMALS, 2, true)}`}
+            handle={`$${formatAmount(toTokenInfo.maxAvailableLong, USD_DECIMALS, 2, true)}`}
             position="right-bottom"
             renderContent={() => {
               return (
@@ -2170,33 +2170,33 @@ export default function SwapBox(props) {
           <div className="Exchange-info-row">
             <div className="Exchange-info-label">{fromToken.symbol} Price</div>
             <div className="align-right">
-              {fromTokenInfo && formatAmount(fromTokenInfo.minPrice, USD_DECIMALS, 2, true)} USD
+              ${fromTokenInfo && formatAmount(fromTokenInfo.minPrice, USD_DECIMALS, 2, true)}
             </div>
           </div>
           <div className="Exchange-info-row">
             <div className="Exchange-info-label">{toToken.symbol} Price</div>
             <div className="align-right">
-              {toTokenInfo && formatAmount(toTokenInfo.maxPrice, USD_DECIMALS, 2, true)} USD
+              ${toTokenInfo && formatAmount(toTokenInfo.maxPrice, USD_DECIMALS, 2, true)}
             </div>
           </div>
           <div className="Exchange-info-row">
             <div className="Exchange-info-label">Available Liquidity:</div>
             <div className="align-right al-swap">
               <Tooltip
-                handle={`${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)} USD`}
+                handle={`$${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)}`}
                 position="right-bottom"
                 renderContent={() => {
                   return (
                     <div>
                       <div>
-                        Max {fromTokenInfo.symbol} in: {formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 2, true)}{" "}
-                        {fromTokenInfo.symbol} <br />({"$ "}
+                        Max {fromTokenInfo.symbol} in: {formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)}{" "}
+                        {fromTokenInfo.symbol} <br />({"$"}
                         {formatAmount(maxFromTokenInUSD, USD_DECIMALS, 2, true)})
                       </div>
                       <br />
                       <div>
-                        Max {toTokenInfo.symbol} out: {formatAmount(maxToTokenOut, toTokenInfo.decimals, 2, true)}{" "}
-                        {toTokenInfo.symbol} <br />({"$ "}
+                        Max {toTokenInfo.symbol} out: {formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)}{" "}
+                        {toTokenInfo.symbol} <br />({"$"}
                         {formatAmount(maxToTokenOutUSD, USD_DECIMALS, 2, true)})
                       </div>
                     </div>
@@ -2222,7 +2222,7 @@ export default function SwapBox(props) {
             <div className="Exchange-info-label">Entry Price</div>
             <div className="align-right">
               <Tooltip
-                handle={`${formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD`}
+                handle={`$${formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}`}
                 position="right-bottom"
                 renderContent={() => {
                   return (
@@ -2252,7 +2252,7 @@ export default function SwapBox(props) {
             <div className="Exchange-info-label">Exit Price</div>
             <div className="align-right">
               <Tooltip
-                handle={`${formatAmount(exitMarkPrice, USD_DECIMALS, 2, true)} USD`}
+                handle={`$${formatAmount(exitMarkPrice, USD_DECIMALS, 2, true)}`}
                 position="right-bottom"
                 renderContent={() => {
                   return (
@@ -2322,7 +2322,7 @@ export default function SwapBox(props) {
               <div className="Exchange-info-label">Available Liquidity</div>
               <div className="align-right">
                 <Tooltip
-                  handle={`${formatAmount(toTokenInfo.maxAvailableShort, USD_DECIMALS, 2, true)}`}
+                  handle={`$${formatAmount(toTokenInfo.maxAvailableShort, USD_DECIMALS, 2, true)}`}
                   position="right-bottom"
                   renderContent={() => {
                     return (
