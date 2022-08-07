@@ -1,6 +1,6 @@
 import { formatAmount, USD_DECIMALS } from "../../Helpers";
 
-function TooltipCard({ title, total, avax, arbitrum }) {
+export default function TooltipCard({ title, total, avax, arbitrum }) {
   return (
     <>
       <p className="Tooltip-row">
@@ -20,4 +20,14 @@ function TooltipCard({ title, total, avax, arbitrum }) {
   );
 }
 
-export default TooltipCard;
+export function TooltipCardRow({ label, amount, showDollar = true }) {
+  return (
+    <p className="Tooltip-row">
+      <span className="label">{label}:</span>
+      <span className="amount">
+        {showDollar && "$"}
+        {amount}
+      </span>
+    </p>
+  );
+}

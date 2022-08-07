@@ -55,7 +55,7 @@ import avalanche24Icon from "../../img/ic_avalanche_24.svg";
 
 import AssetDropdown from "./AssetDropdown";
 import SEO from "../../components/Common/SEO";
-import TooltipCard from "./TooltipCard";
+import TooltipCard, { TooltipCardRow } from "./TooltipCard";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -924,15 +924,24 @@ export default function DashboardV2() {
                             renderContent={() => {
                               return (
                                 <>
-                                  Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)}{" "}
-                                  {token.symbol}
-                                  <br />
-                                  <br />
-                                  Target Min Amount:{" "}
-                                  {formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 2, true)} {token.symbol}
-                                  <br />
-                                  <br />
-                                  Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                                  <TooltipCardRow
+                                    label="Pool Amount"
+                                    showDollar={false}
+                                    amount={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} ${
+                                      token.symbol
+                                    }`}
+                                  />
+                                  <TooltipCardRow
+                                    label="Target Min Amount"
+                                    showDollar={false}
+                                    amount={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 2, true)} ${
+                                      token.symbol
+                                    }`}
+                                  />
+                                  <TooltipCardRow
+                                    label={`Max ${tokenInfo.symbol} Capacity`}
+                                    amount={formatAmount(maxUsdgAmount, 18, 0, true)}
+                                  />
                                 </>
                               );
                             }}
@@ -985,15 +994,24 @@ export default function DashboardV2() {
                             renderContent={() => {
                               return (
                                 <>
-                                  Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)}{" "}
-                                  {token.symbol}
-                                  <br />
-                                  <br />
-                                  Target Min Amount:{" "}
-                                  {formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 2, true)} {token.symbol}
-                                  <br />
-                                  <br />
-                                  Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                                  <TooltipCardRow
+                                    label="Pool Amount"
+                                    showDollar={false}
+                                    amount={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} ${
+                                      token.symbol
+                                    }`}
+                                  />
+                                  <TooltipCardRow
+                                    label="Target Min Amount"
+                                    showDollar={false}
+                                    amount={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 2, true)} ${
+                                      token.symbol
+                                    }`}
+                                  />
+                                  <TooltipCardRow
+                                    label={`Max ${tokenInfo.symbol} Capacity`}
+                                    amount={formatAmount(maxUsdgAmount, 18, 0, true)}
+                                  />
                                 </>
                               );
                             }}

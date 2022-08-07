@@ -95,11 +95,23 @@
 }
 
 .Tooltip-row {
+  display: flex;
+  justify-content: space-between;
   margin: 0 0 0.5rem 0;
+}
+.Tooltip-row > span.label {
+  margin-right: 5px;
 }
 
 @media (max-width: 700px) {
   .Tooltip-popup {
     min-width: 20rem;
+  }
+  .Tooltip-row {
+    display: block;
+    margin-bottom: 1rem;
+  }
+  .Tooltip-row > span.label {
+    display: block;
   }
 }

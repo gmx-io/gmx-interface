@@ -64,6 +64,7 @@ import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
 import AssetDropdown from "../../views/Dashboard/AssetDropdown";
+import { TooltipCardRow } from "../../views/Dashboard/TooltipCard";
 
 const { AddressZero } = ethers.constants;
 
@@ -1089,11 +1090,17 @@ export default function GlpSwap(props) {
                           renderContent={() => {
                             return (
                               <>
-                                Current Pool Amount: ${formatAmount(managedUsd, USD_DECIMALS, 2, true)} (
-                                {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol})
-                                <br />
-                                <br />
-                                Max Pool Capacity: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
+                                <TooltipCardRow
+                                  label="Current Pool Amount"
+                                  showDollar={false}
+                                  amount={`${formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} ${
+                                    token.symbol
+                                  }`}
+                                />
+                                <TooltipCardRow
+                                  label="Max Pool Capacity"
+                                  amount={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
+                                />
                               </>
                             );
                           }}
@@ -1113,11 +1120,17 @@ export default function GlpSwap(props) {
                           renderContent={() => {
                             return (
                               <>
-                                Current Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)}
-                                {token.symbol}
-                                <br />
-                                <br />
-                                Max Pool Capacity: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
+                                <TooltipCardRow
+                                  label="Current Pool Amount"
+                                  showDollar={false}
+                                  amount={`${formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} ${
+                                    token.symbol
+                                  }`}
+                                />
+                                <TooltipCardRow
+                                  label="Max Pool Capacity"
+                                  amount={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
+                                />
                               </>
                             );
                           }}
@@ -1243,11 +1256,17 @@ export default function GlpSwap(props) {
                           renderContent={() => {
                             return (
                               <>
-                                Current Pool Amount: ${formatAmount(managedUsd, USD_DECIMALS, 2, true)} (
-                                {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol})
-                                <br />
-                                <br />
-                                Max Pool Capacity: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
+                                <TooltipCardRow
+                                  label="Current Pool Amount"
+                                  showDollar={false}
+                                  amount={`${formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} ${
+                                    token.symbol
+                                  }`}
+                                />
+                                <TooltipCardRow
+                                  label="Max Pool Capacity"
+                                  amount={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
+                                />
                               </>
                             );
                           }}
@@ -1283,11 +1302,17 @@ export default function GlpSwap(props) {
                           renderContent={() => {
                             return (
                               <>
-                                Current Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)}
-                                {token.symbol}
-                                <br />
-                                <br />
-                                Max Pool Capacity: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
+                                <TooltipCardRow
+                                  label="Current Pool Amount"
+                                  showDollar={false}
+                                  amount={`${formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} ${
+                                    token.symbol
+                                  }`}
+                                />
+                                <TooltipCardRow
+                                  label="Max Pool Capacity"
+                                  amount={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
+                                />
                               </>
                             );
                           }}
