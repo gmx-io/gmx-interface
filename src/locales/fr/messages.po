@@ -13,14 +13,14 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/App.js:367
-#: src/App.js:389
+#: src/App.js:360
+#: src/App.js:382
 msgid ", and use GMX with its built-in browser"
 msgstr ""
 
 #: src/App.js:200
 msgid "About"
-msgstr ""
+msgstr "À propos de"
 
 #: src/views/Actions/Actions.js:86
 msgid "Account"
@@ -51,7 +51,7 @@ msgstr ""
 msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
 msgstr ""
 
-#: src/App.js:915
+#: src/App.js:907
 msgid "Allowed Slippage"
 msgstr ""
 
@@ -116,7 +116,7 @@ msgstr ""
 
 #: src/App.js:185
 msgid "Buy"
-msgstr ""
+msgstr "Acheter"
 
 #: src/views/BuyGlp/BuyGlp.js:33
 msgid "Buy / Sell GLP"
@@ -185,11 +185,11 @@ msgstr ""
 msgid "Claiming..."
 msgstr ""
 
-#: src/App.js:897
+#: src/App.js:889
 msgid "Coinbase Wallet"
 msgstr ""
 
-#: src/App.js:382
+#: src/App.js:375
 msgid "Coinbase Wallet not detected."
 msgstr ""
 
@@ -201,11 +201,11 @@ msgstr ""
 msgid "Complete Transfer"
 msgstr ""
 
-#: src/App.js:259
+#: src/App.js:252
 msgid "Connect"
 msgstr ""
 
-#: src/App.js:259
+#: src/App.js:252
 msgid "Connect Wallet"
 msgstr ""
 
@@ -220,7 +220,7 @@ msgstr ""
 
 #: src/App.js:175
 msgid "Dashboard"
-msgstr ""
+msgstr "Tableau de bord"
 
 #: src/views/Home/Home.js:150
 msgid "Decentralized<0/>Perpetual Exchange"
@@ -230,7 +230,7 @@ msgstr ""
 msgid "Disconnect"
 msgstr ""
 
-#: src/App.js:930
+#: src/App.js:922
 msgid "Display PnL after fees"
 msgstr ""
 
@@ -240,11 +240,11 @@ msgstr ""
 
 #: src/App.js:180
 msgid "Earn"
-msgstr ""
+msgstr "Gagner"
 
 #: src/App.js:195
 msgid "Ecosystem"
-msgstr ""
+msgstr "Écosystème"
 
 #: src/components/SettingDropdown/SettingDropdown.js:43
 #~ msgid "English"
@@ -288,13 +288,13 @@ msgstr ""
 
 #: src/App.js:170
 msgid "Home"
-msgstr ""
+msgstr "Maison"
 
 #: src/views/BuyGMX/BuyGMX.js:108
 msgid "Hop"
 msgstr ""
 
-#: src/App.js:935
+#: src/App.js:927
 msgid "Include PnL in leverage display"
 msgstr ""
 
@@ -302,11 +302,11 @@ msgstr ""
 msgid "Incorrect Account"
 msgstr ""
 
-#: src/App.js:386
+#: src/App.js:379
 msgid "Install Coinbase Wallet"
 msgstr ""
 
-#: src/App.js:364
+#: src/App.js:357
 msgid "Install MetaMask"
 msgstr ""
 
@@ -318,7 +318,7 @@ msgstr ""
 msgid "Invalid Receiver Address"
 msgstr ""
 
-#: src/App.js:472
+#: src/App.js:465
 msgid "Invalid slippage value"
 msgstr ""
 
@@ -345,15 +345,15 @@ msgstr ""
 msgid "MAX"
 msgstr ""
 
-#: src/App.js:482
+#: src/App.js:475
 msgid "Max slippage precision is 0.01%"
 msgstr ""
 
-#: src/App.js:891
+#: src/App.js:883
 msgid "MetaMask"
 msgstr ""
 
-#: src/App.js:360
+#: src/App.js:353
 msgid "MetaMask not detected."
 msgstr ""
 
@@ -456,9 +456,9 @@ msgstr ""
 
 #: src/App.js:190
 msgid "Referrals"
-msgstr ""
+msgstr "Parrainages"
 
-#: src/App.js:947
+#: src/App.js:939
 msgid "Save"
 msgstr ""
 
@@ -492,7 +492,7 @@ msgstr ""
 
 #: src/App.js:207
 msgid "Settings"
-msgstr ""
+msgstr "Réglages"
 
 #: src/views/Actions/Actions.js:98
 #: src/views/Actions/Actions.js:102
@@ -503,7 +503,7 @@ msgstr ""
 msgid "Simple Swaps"
 msgstr ""
 
-#: src/App.js:476
+#: src/App.js:469
 msgid "Slippage should be less than 5%"
 msgstr ""
 
@@ -552,10 +552,10 @@ msgstr ""
 msgid "Total Users"
 msgstr ""
 
-#: src/App.js:249
-#: src/App.js:274
+#: src/App.js:242
+#: src/App.js:267
 msgid "Trade"
-msgstr ""
+msgstr "Échanger"
 
 #: src/views/Home/Home.js:157
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
@@ -611,7 +611,7 @@ msgstr ""
 msgid "Two tokens create our ecosystem"
 msgstr ""
 
-#: src/App.js:564
+#: src/App.js:557
 msgid "Txn failed."
 msgstr ""
 
@@ -643,8 +643,8 @@ msgstr ""
 msgid "Vested GMX not withdrawn"
 msgstr ""
 
-#: src/App.js:566
-#: src/App.js:578
+#: src/App.js:559
+#: src/App.js:571
 msgid "View"
 msgstr ""
 
@@ -665,7 +665,7 @@ msgstr ""
 msgid "Wallet not connected"
 msgstr ""
 
-#: src/App.js:903
+#: src/App.js:895
 msgid "WalletConnect"
 msgstr ""
 
@@ -721,8 +721,8 @@ msgstr ""
 msgid "Your transfer has been initiated."
 msgstr ""
 
-#: src/App.js:369
-#: src/App.js:391
+#: src/App.js:362
+#: src/App.js:384
 msgid "to start using GMX"
 msgstr ""
 

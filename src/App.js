@@ -212,14 +212,7 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
   );
 }
 
-function AppHeaderUser({
-  HeaderLink,
-  openSettings,
-  small,
-  setWalletModalVisible,
-  showNetworkSelectorModal,
-  disconnectAccountAndCloseSettings,
-}) {
+function AppHeaderUser({ HeaderLink, openSettings, small, setWalletModalVisible, disconnectAccountAndCloseSettings }) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
 
@@ -245,9 +238,9 @@ function AppHeaderUser({
     return (
       <div className="App-header-user">
         <div className="App-header-user-link">
-          <NavLink activeClassName="active" className="default-btn" to="/trade">
+          <HeaderLink activeClassName="active" className="default-btn" to="/trade">
             <Trans>Trade</Trans>
-          </NavLink>
+          </HeaderLink>
         </div>
         <ConnectWalletButton
           onClick={() => setWalletModalVisible(true)}
@@ -701,7 +694,6 @@ function FullApp() {
                   setActivatingConnector={setActivatingConnector}
                   walletModalVisible={walletModalVisible}
                   setWalletModalVisible={setWalletModalVisible}
-                  showNetworkSelectorModal={showNetworkSelectorModal}
                 />
               </div>
             </div>
