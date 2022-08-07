@@ -467,6 +467,11 @@ msgstr ""
 msgid "Invalid slippage value"
 msgstr ""
 
+#: src/Footer.js:19
+#: src/Footer.js:23
+msgid "Jobs"
+msgstr ""
+
 #: src/components/SettingDropdown/SettingDropdown.js:56
 msgid "Language"
 msgstr ""
@@ -509,6 +514,11 @@ msgstr ""
 
 #: src/App.js:475
 msgid "Max slippage precision is 0.01%"
+msgstr ""
+
+#: src/Footer.js:18
+#: src/Footer.js:22
+msgid "Media Kit"
 msgstr ""
 
 #: src/App.js:883
@@ -646,6 +656,10 @@ msgstr ""
 msgid "Reduce Liquidation Risks"
 msgstr ""
 
+#: src/Footer.js:17
+msgid "Referral Terms"
+msgstr ""
+
 #: src/App.js:190
 msgid "Referrals"
 msgstr "Referencias"
@@ -742,6 +756,10 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js:931
 #~ msgid "TOKEN"
 #~ msgstr ""
+
+#: src/Footer.js:16
+msgid "Terms and Conditions"
+msgstr ""
 
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:356
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
@@ -985,6 +1003,10 @@ msgstr ""
 msgid "Your transfer has been initiated."
 msgstr ""
 
+#: src/Footer.js:65
+#~ msgid "lolipopi"
+#~ msgstr ""
+
 #: src/App.js:362
 #: src/App.js:384
 msgid "to start using GMX"
@@ -1020,4 +1042,11 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.js:739
 #~ msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
+#~ msgstr ""
+
+#: src/Footer.js:64
+#: src/Footer.js:73
+#: src/Footer.js:80
+#: src/Footer.js:87
+#~ msgid "{text}"
 #~ msgstr ""
