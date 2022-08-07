@@ -5,9 +5,7 @@
 .connect-wallet-btn {
   padding: 0.5rem 2.5rem 0.5rem 0.8rem;
 }
-.connect-wallet-btn {
-  padding: 0.5rem 2.5rem 0.5rem 0.8rem;
-}
+
 .connect-wallet-btn .btn-label {
   margin: 0 0.5rem;
 }
@@ -31,4 +29,10 @@
 .connect-wallet .network-selector-menu-items {
   margin-bottom: 0;
   border-bottom: none;
+}
+
+@media (max-width: 350px) {
+  .connect-wallet-btn {
+    padding: 0.85rem 2.5rem 0.85rem 0.5rem;
+  }
 }
