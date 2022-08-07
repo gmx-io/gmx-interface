@@ -68,7 +68,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
       className="position-share-modal"
       isVisible={isPositionShareModalOpen}
       setIsVisible={setIsPositionShareModalOpen}
-      label="Launch App"
+      label="Share Position"
     >
       <PositionShareCard
         userAffiliateCode={userAffiliateCode}
