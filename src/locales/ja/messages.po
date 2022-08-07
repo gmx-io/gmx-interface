@@ -224,7 +224,7 @@ msgstr "ダッシュボード"
 
 #: src/views/Home/Home.js:150
 msgid "Decentralized<0/>Perpetual Exchange"
-msgstr ""
+msgstr "分散型<0/>パーペチュアルエクスチェンジ"
 
 #: src/components/AddressDropdown/AddressDropdown.js:121
 msgid "Disconnect"
@@ -322,13 +322,18 @@ msgstr ""
 msgid "Invalid slippage value"
 msgstr ""
 
+#: src/Footer.js:19
+#: src/Footer.js:23
+msgid "Jobs"
+msgstr ""
+
 #: src/components/SettingDropdown/SettingDropdown.js:56
 msgid "Language"
 msgstr ""
 
 #: src/views/Home/Home.js:138
 msgid "Launch Exchange"
-msgstr ""
+msgstr "Exchangeを起動します"
 
 #: src/views/Actions/Actions.js:98
 #: src/views/Actions/Actions.js:102
@@ -347,6 +352,11 @@ msgstr ""
 
 #: src/App.js:475
 msgid "Max slippage precision is 0.01%"
+msgstr ""
+
+#: src/Footer.js:18
+#: src/Footer.js:22
+msgid "Media Kit"
 msgstr ""
 
 #: src/App.js:883
@@ -454,6 +464,10 @@ msgstr ""
 msgid "Reduce Liquidation Risks"
 msgstr ""
 
+#: src/Footer.js:17
+msgid "Referral Terms"
+msgstr ""
+
 #: src/App.js:190
 msgid "Referrals"
 msgstr "紹介"
@@ -514,6 +528,10 @@ msgstr ""
 #: src/views/BuyGMX/BuyGMX.js:98
 #: src/views/BuyGMX/BuyGMX.js:182
 msgid "Synapse"
+msgstr ""
+
+#: src/Footer.js:16
+msgid "Terms and Conditions"
 msgstr ""
 
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:356
@@ -721,6 +739,10 @@ msgstr ""
 msgid "Your transfer has been initiated."
 msgstr ""
 
+#: src/Footer.js:65
+#~ msgid "lolipopi"
+#~ msgstr ""
+
 #: src/App.js:362
 #: src/App.js:384
 msgid "to start using GMX"
@@ -729,3 +751,10 @@ msgstr ""
 #: src/components/SettingDropdown/SettingDropdown.js:92
 msgid "{0}"
 msgstr ""
+
+#: src/Footer.js:64
+#: src/Footer.js:73
+#: src/Footer.js:80
+#: src/Footer.js:87
+#~ msgid "{text}"
+#~ msgstr ""

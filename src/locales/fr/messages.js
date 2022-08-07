@@ -60,7 +60,7 @@
     Continue: "Continue",
     "Copy Address": "Copy Address",
     Dashboard: "Tableau de bord",
-    "Decentralized<0/>Perpetual Exchange": "Decentralized<0/>Perpetual Exchange",
+    "Decentralized<0/>Perpetual Exchange": "Échange<0/>perpétuel décentralisé",
     Disconnect: "Disconnect",
     "Display PnL after fees": "Display PnL after fees",
     "ETH is needed on Arbitrum to purchase GMX.": "ETH is needed on Arbitrum to purchase GMX.",
@@ -228,5 +228,6 @@
     "Your transfer has been initiated.": "Your transfer has been initiated.",
     "to start using GMX": "to start using GMX",
     "{0}": [["0"]],
+    "{text}": [["text"]],
   },
 };

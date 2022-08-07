@@ -70,7 +70,7 @@ export default function TokenCard({ showRedirectModal }) {
                 <Trans>Buy on Arbitrum</Trans>
               </BuyLink>
               <BuyLink to="/buy_gmx" className="default-btn" network={AVALANCHE}>
-                <Trans> Buy on Avalanche</Trans>
+                <Trans>Buy on Avalanche</Trans>
               </BuyLink>
             </div>
             <a

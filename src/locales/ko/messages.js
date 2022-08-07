@@ -228,5 +228,6 @@
     "Your transfer has been initiated.": "Your transfer has been initiated.",
     "to start using GMX": "to start using GMX",
     "{0}": [["0"]],
+    "{text}": [["text"]],
   },
 };

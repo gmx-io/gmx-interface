@@ -310,5 +310,6 @@
     "{0} pool exceeded, try different token": [["0"], " pool exceeded, try different token"],
     "{0} selected in order form": [["0"], " selected in order form"],
     "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR": [["nativeTokenSymbol"], " (", ["wrappedTokenSymbol"], ") APR"],
+    "{text}": [["text"]],
   },
 };
