@@ -124,6 +124,7 @@ const TOKENS = {
       symbol: "BTC",
       decimals: 18,
       address: "0x4B944Eba658A87d7dFbE2dc4833d3Aec7A11D518",
+      isShortable: true,
     },
     {
       name: "Ethereum",
@@ -131,6 +132,7 @@ const TOKENS = {
       decimals: 18,
       address: ethers.constants.AddressZero,
       isNative: true,
+      isShortable: true,
     },
     // https://github.com/OffchainLabs/arbitrum/blob/950c2f91b2e951cd3764394e0a73eac3797aecf3/packages/arb-ts/src/lib/networks.ts#L65
     {
