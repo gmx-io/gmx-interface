@@ -1,20 +1,34 @@
 .connect-wallet {
-    position: relative;
+  position: relative;
 }
 
 .connect-wallet-btn {
-    padding-right: 2.5rem;
+  padding: 0.5rem 2.5rem 0.5rem 0.8rem;
+}
+.connect-wallet-btn {
+  padding: 0.5rem 2.5rem 0.5rem 0.8rem;
+}
+.connect-wallet-btn .btn-label {
+  margin: 0 0.5rem;
 }
 
 .network-dropdown-trigger-btn {
-    position: absolute;
-    right: 0;
-    top: 0.4rem;
-    padding: 1rem;
-    cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 0.75rem;
+  cursor: pointer;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 0.25rem;
+}
+.network-dropdown-trigger-btn:hover {
+  background-color: var(--dark-blue-hover);
 }
 
 .connect-wallet .network-selector-menu-items {
-    margin-bottom: 0;
-    border-bottom: none;
+  margin-bottom: 0;
+  border-bottom: none;
 }

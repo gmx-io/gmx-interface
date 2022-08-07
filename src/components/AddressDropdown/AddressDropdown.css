@@ -61,12 +61,13 @@
 }
 
 .network-selector-menu-items-title {
-  font-size: 10px;
+  font-size: 1.2rem;
   line-height: 13px;
   letter-spacing: 0px;
   margin: 0;
   padding-left: 0.8rem;
   color: #a0a3c4;
+  padding-bottom: 0.8rem;
 }
 
 .menu-item__prepend.avatar-dropdown-item {

@@ -32,7 +32,7 @@ function ConnectWalletButton(props) {
     e.stopPropagation();
     onClick();
   };
-  let classNames = cx("btn btn-primary btn-sm connect-wallet-btn", className);
+  let classNames = cx("btn btn-primary connect-wallet-btn", className);
   return (
     <div className="connect-wallet">
       <div className={classNames} onClick={onLabelClick}>
