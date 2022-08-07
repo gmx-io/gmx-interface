@@ -91,6 +91,24 @@ function getStakingData(stakingInfo) {
   return data;
 }
 
+function getTooltipContent(managedUsd, tokenInfo, token) {
+  return (
+    <>
+      <TooltipCardRow
+        label="Current Pool Amount"
+        amount={`${formatAmount(managedUsd, USD_DECIMALS, 2, true)} (${formatKeyAmount(
+          tokenInfo,
+          "poolAmount",
+          token.decimals,
+          2,
+          true
+        )} ${token.symbol})`}
+      />
+      <TooltipCardRow label="Max Pool Capacity" amount={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)} />
+    </>
+  );
+}
+
 export default function GlpSwap(props) {
   const { savedSlippageAmount, isBuying, setPendingTxns, connectWallet, setIsBuying } = props;
   const history = useHistory();
@@ -1087,26 +1105,7 @@ export default function GlpSwap(props) {
                           }
                           position="right-bottom"
                           tooltipIconPosition="right"
-                          renderContent={() => {
-                            return (
-                              <>
-                                <TooltipCardRow
-                                  label="Current Pool Amount"
-                                  amount={`${formatAmount(managedUsd, USD_DECIMALS, 2, true)} (${formatKeyAmount(
-                                    tokenInfo,
-                                    "poolAmount",
-                                    token.decimals,
-                                    2,
-                                    true
-                                  )} ${token.symbol})`}
-                                />
-                                <TooltipCardRow
-                                  label="Max Pool Capacity"
-                                  amount={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
-                                />
-                              </>
-                            );
-                          }}
+                          renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         />
                       </div>
                     )}
@@ -1120,26 +1119,7 @@ export default function GlpSwap(props) {
                           }
                           position="right-bottom"
                           tooltipIconPosition="right"
-                          renderContent={() => {
-                            return (
-                              <>
-                                <TooltipCardRow
-                                  label="Current Pool Amount"
-                                  amount={`${formatAmount(managedUsd, USD_DECIMALS, 2, true)} (${formatKeyAmount(
-                                    tokenInfo,
-                                    "poolAmount",
-                                    token.decimals,
-                                    2,
-                                    true
-                                  )} ${token.symbol})`}
-                                />
-                                <TooltipCardRow
-                                  label="Max Pool Capacity"
-                                  amount={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
-                                />
-                              </>
-                            );
-                          }}
+                          renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         />
                       </div>
                     )}
@@ -1259,26 +1239,7 @@ export default function GlpSwap(props) {
                           handle={amountLeftToDeposit && `$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`}
                           position="right-bottom"
                           tooltipIconPosition="right"
-                          renderContent={() => {
-                            return (
-                              <>
-                                <TooltipCardRow
-                                  label="Current Pool Amount"
-                                  amount={`${formatAmount(managedUsd, USD_DECIMALS, 2, true)} (${formatKeyAmount(
-                                    tokenInfo,
-                                    "poolAmount",
-                                    token.decimals,
-                                    2,
-                                    true
-                                  )} ${token.symbol})`}
-                                />
-                                <TooltipCardRow
-                                  label="Max Pool Capacity"
-                                  amount={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
-                                />
-                              </>
-                            );
-                          }}
+                          renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         />
                       </div>
                     </div>
@@ -1308,27 +1269,7 @@ export default function GlpSwap(props) {
                           }
                           position="right-bottom"
                           tooltipIconPosition="right"
-                          renderContent={() => {
-                            return (
-                              <>
-                                <TooltipCardRow
-                                  label="Current Pool Amount"
-                                  showDollar={false}
-                                  amount={`${formatAmount(managedUsd, USD_DECIMALS, 2, true)} (${formatKeyAmount(
-                                    tokenInfo,
-                                    "poolAmount",
-                                    token.decimals,
-                                    2,
-                                    true
-                                  )} ${token.symbol})`}
-                                />
-                                <TooltipCardRow
-                                  label="Max Pool Capacity"
-                                  amount={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
-                                />
-                              </>
-                            );
-                          }}
+                          renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         />
                       </div>
                     </div>
