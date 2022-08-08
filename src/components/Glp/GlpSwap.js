@@ -759,16 +759,16 @@ export default function GlpSwap(props) {
                   renderContent={() => {
                     return (
                       <>
-                        <div className="Tooltip-row">
-                          <span className="label">
-                            {nativeTokenSymbol} ({wrappedTokenSymbol}) APR
-                          </span>
-                          <span>{formatAmount(feeGlpTrackerApr, 2, 2, false)}%</span>
-                        </div>
-                        <div className="Tooltip-row">
-                          <span className="label">Escrowed GMX APR</span>
-                          <span>{formatAmount(stakedGlpTrackerApr, 2, 2, false)}%</span>
-                        </div>
+                        <TooltipCardRow
+                          label={`${nativeTokenSymbol} (${wrappedTokenSymbol}) APR`}
+                          amount={`${formatAmount(feeGlpTrackerApr, 2, 2, false)}%`}
+                          showDollar={false}
+                        />
+                        <TooltipCardRow
+                          label="Escrowed GMX APR"
+                          amount={`${formatAmount(stakedGlpTrackerApr, 2, 2, false)}%`}
+                          showDollar={false}
+                        />
                       </>
                     );
                   }}
