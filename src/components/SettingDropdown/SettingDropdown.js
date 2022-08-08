@@ -1,5 +1,6 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Menu } from "@headlessui/react";
+import { FaNetworkWired } from "react-icons/fa";
 import cx from "classnames";
 import "./SettingDropdown.css";
 import setting24Icon from "../../img/ic_settings_24.svg";
@@ -11,18 +12,22 @@ import checkedIcon from "../../img/ic_checked.svg";
 import { Trans } from "@lingui/macro";
 import { defaultLocale, dynamicActivate, locales } from "../../utils/i18n";
 import { importImage, LANGUAGE_LOCALSTORAGE_KEY } from "../../Helpers";
+const LANGUAGE_SUB_MENU = "LANGUAGE";
+const NETWORK_SUB_MENU = "NETWORK";
 
 export default function SettingDropdown(props) {
   const { openSettings } = props;
-
   let currentLanguage = useRef(localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale);
+  const [activeSubMenu, setActiveSubMenu] = useState(null);
 
-  const [languageMenuHidden, setLanguageMenuHidden] = useState(true);
-
-  const toggleLanguageMenu = (e) => {
+  function openMenu(e, name) {
     e.preventDefault();
-    setLanguageMenuHidden(!languageMenuHidden);
-  };
+    setActiveSubMenu(name);
+  }
+  function closeMenu(e) {
+    e.preventDefault();
+    setActiveSubMenu(null);
+  }
 
   return (
     <Menu>
@@ -32,7 +37,7 @@ export default function SettingDropdown(props) {
         </button>
       </Menu.Button>
       <div className="settings-dropdown-menu">
-        {languageMenuHidden && (
+        {!activeSubMenu && (
           <Menu.Items as="div" className="menu-items settings-dropdown-menu-items">
             <Menu.Item>
               <div className="settings-dropdown-menu-item menu-item" onClick={() => openSettings()}>
@@ -40,7 +45,7 @@ export default function SettingDropdown(props) {
                   <img src={setting16Icon} alt="settings-open-icon" />
                 </div>
                 <span className="settings-dropdown-menu-item-label menu-item-label">
-                  <Trans>Trade settings</Trans>
+                  <Trans>Trade Settings</Trans>
                 </span>
                 <div className="settings-dropdown-menu-item__append">
                   <img src={arrowright16Icon} alt="arrow-right-icon" />
@@ -48,7 +53,30 @@ export default function SettingDropdown(props) {
               </div>
             </Menu.Item>
             <Menu.Item>
-              <div className="settings-dropdown-menu-item menu-item" onClick={toggleLanguageMenu}>
+              <div
+                className="settings-dropdown-menu-item menu-item"
+                onClick={(e) => {
+                  openMenu(e, NETWORK_SUB_MENU);
+                }}
+              >
+                <div className="settings-dropdown-menu-item__prepend">
+                  <FaNetworkWired />
+                </div>
+                <span className="settings-dropdown-menu-item-label menu-item-label">
+                  <Trans>Switch Network</Trans>
+                </span>
+                <div className="settings-dropdown-menu-item__append">
+                  <img src={arrowright16Icon} alt="arrow-right-icon" />
+                </div>
+              </div>
+            </Menu.Item>
+            <Menu.Item>
+              <div
+                className="settings-dropdown-menu-item menu-item"
+                onClick={(e) => {
+                  openMenu(e, LANGUAGE_SUB_MENU);
+                }}
+              >
                 <div className="settings-dropdown-menu-item__prepend">
                   <img src={language16Icon} alt="language-menu-open-icon" />
                 </div>
@@ -62,10 +90,10 @@ export default function SettingDropdown(props) {
             </Menu.Item>
           </Menu.Items>
         )}
-        {!languageMenuHidden && (
+        {activeSubMenu === LANGUAGE_SUB_MENU && (
           <Menu.Items as="div" className="menu-items settings-dropdown-menu-items">
             <Menu.Item>
-              <div className="settings-dropdown-menu-item menu-item" onClick={toggleLanguageMenu}>
+              <div className="settings-dropdown-menu-item menu-item" onClick={closeMenu}>
                 <div className="settings-dropdown-menu-item__prepend">
                   <img src={arrowleft16Icon} alt="arrow-left-icon" />
                 </div>
@@ -98,6 +126,20 @@ export default function SettingDropdown(props) {
                 </Menu.Item>
               );
             })}
+          </Menu.Items>
+        )}
+        {activeSubMenu === NETWORK_SUB_MENU && (
+          <Menu.Items as="div" className="menu-items settings-dropdown-menu-items">
+            <Menu.Item>
+              <div className="settings-dropdown-menu-item menu-item" onClick={closeMenu}>
+                <div className="settings-dropdown-menu-item__prepend">
+                  <img src={arrowleft16Icon} alt="arrow-left-icon" />
+                </div>
+                <span className="settings-dropdown-menu-item-label menu-item-label">
+                  <Trans>Select Network</Trans>
+                </span>
+              </div>
+            </Menu.Item>
           </Menu.Items>
         )}
       </div>
