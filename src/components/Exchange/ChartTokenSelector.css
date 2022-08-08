@@ -1,16 +1,13 @@
-.asset-dropdown {
-  margin: 0 0.5rem;
-}
 .chart-token-selector {
   border: none;
   background: transparent;
   color: white;
   padding: 0.5rem 0.75rem;
+  opacity: 0.7;
 }
 
-.asset-dropdown:hover {
-  background-color: var(--dark-blue-hover);
-  border-radius: 0.4rem;
+.chart-token-selector:hover {
+  opacity: 1;
 }
 
 .asset-dropdown.swap {
