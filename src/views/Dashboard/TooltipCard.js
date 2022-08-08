@@ -40,7 +40,7 @@ export default function TooltipCard({
   );
 }
 
-export function TooltipCardRow({ label, amount, showDollar = true, values }) {
+export function TooltipCardRow({ label, value, showDollar = true, values }) {
   function renderValue() {
     if (values && Array.isArray(values)) {
       return (
@@ -52,9 +52,9 @@ export function TooltipCardRow({ label, amount, showDollar = true, values }) {
       );
     }
     return (
-      <span className="amount">
+      <span className="Tooltip-row-value">
         {showDollar && "$"}
-        {amount}
+        {value}
       </span>
     );
   }

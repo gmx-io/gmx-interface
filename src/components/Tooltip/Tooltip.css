@@ -97,13 +97,13 @@
 .Tooltip-row {
   display: grid;
   margin: 0 0 0.5rem 0;
-  grid-template-columns: auto auto;
+  grid-template-columns: 1fr auto;
 }
 
 .Tooltip-row > span.label {
   margin-right: 0.5rem;
 }
-.Tooltip-row > span.amount {
+.Tooltip-row > .Tooltip-row-value {
   color: white;
   text-align: right;
 }
@@ -133,7 +133,7 @@
   .Tooltip-popup {
     min-width: 20rem;
   }
-  .Tooltip-row > span.amount {
+  .Tooltip-row > .Tooltip-row-value {
     text-align: left;
   }
 }

@@ -101,7 +101,7 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
           `(${formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 0, true)} ${token.symbol})`,
         ]}
       />
-      <TooltipCardRow label="Max Pool Capacity" amount={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)} />
+      <TooltipCardRow label="Max Pool Capacity" value={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)} />
     </>
   );
 }
@@ -761,12 +761,12 @@ export default function GlpSwap(props) {
                       <>
                         <TooltipCardRow
                           label={`${nativeTokenSymbol} (${wrappedTokenSymbol}) APR`}
-                          amount={`${formatAmount(feeGlpTrackerApr, 2, 2, false)}%`}
+                          value={`${formatAmount(feeGlpTrackerApr, 2, 2, false)}%`}
                           showDollar={false}
                         />
                         <TooltipCardRow
                           label="Escrowed GMX APR"
-                          amount={`${formatAmount(stakedGlpTrackerApr, 2, 2, false)}%`}
+                          value={`${formatAmount(stakedGlpTrackerApr, 2, 2, false)}%`}
                           showDollar={false}
                         />
                       </>

@@ -348,11 +348,11 @@ export default function SwapBox(props) {
                 <>
                   <TooltipCardRow
                     label={`Max ${toTokenInfo.symbol} long capacity`}
-                    amount={formatAmount(toTokenInfo.maxLongCapacity, USD_DECIMALS, 2, true)}
+                    value={formatAmount(toTokenInfo.maxLongCapacity, USD_DECIMALS, 2, true)}
                   />
                   <TooltipCardRow
                     label={`Current ${toTokenInfo.symbol} long`}
-                    amount={formatAmount(toTokenInfo.guaranteedUsd, USD_DECIMALS, 2, true)}
+                    value={formatAmount(toTokenInfo.guaranteedUsd, USD_DECIMALS, 2, true)}
                   />
                 </>
               );

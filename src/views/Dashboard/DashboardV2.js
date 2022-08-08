@@ -358,12 +358,12 @@ export default function DashboardV2() {
             <>
               <TooltipCardRow
                 label="Current Weight"
-                amount={`${formatAmount(currentWeightBps, 2, 2, false)}%`}
+                value={`${formatAmount(currentWeightBps, 2, 2, false)}%`}
                 showDollar={false}
               />
               <TooltipCardRow
                 label="Target Weight"
-                amount={`${formatAmount(targetWeightBps, 2, 2, false)}%`}
+                value={`${formatAmount(targetWeightBps, 2, 2, false)}%`}
                 showDollar={false}
               />
               <br />
@@ -741,12 +741,12 @@ export default function DashboardV2() {
                               <>
                                 <TooltipCardRow
                                   label="Price on Arbitrum"
-                                  amount={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
+                                  value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
                                   showDollar={true}
                                 />
                                 <TooltipCardRow
                                   label="Price on Avalanche"
-                                  amount={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                                  value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
                                   showDollar={true}
                                 />
                               </>
@@ -972,21 +972,21 @@ export default function DashboardV2() {
                                 <>
                                   <TooltipCardRow
                                     label="Pool Amount"
-                                    amount={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${
+                                    value={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${
                                       token.symbol
                                     }`}
                                     showDollar={false}
                                   />
                                   <TooltipCardRow
                                     label="Target Min Amount"
-                                    amount={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 0, true)} ${
+                                    value={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 0, true)} ${
                                       token.symbol
                                     }`}
                                     showDollar={false}
                                   />
                                   <TooltipCardRow
                                     label={`Max ${tokenInfo.symbol} Capacity`}
-                                    amount={formatAmount(maxUsdgAmount, 18, 0, true)}
+                                    value={formatAmount(maxUsdgAmount, 18, 0, true)}
                                     showDollar={true}
                                   />
                                 </>
@@ -1043,21 +1043,21 @@ export default function DashboardV2() {
                                 <>
                                   <TooltipCardRow
                                     label="Pool Amount"
-                                    amount={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${
+                                    value={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${
                                       token.symbol
                                     }`}
                                     showDollar={false}
                                   />
                                   <TooltipCardRow
                                     label="Target Min Amount"
-                                    amount={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 0, true)} ${
+                                    value={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 0, true)} ${
                                       token.symbol
                                     }`}
                                     showDollar={false}
                                   />
                                   <TooltipCardRow
                                     label={`Max ${tokenInfo.symbol} Capacity`}
-                                    amount={formatAmount(maxUsdgAmount, 18, 0, true)}
+                                    value={formatAmount(maxUsdgAmount, 18, 0, true)}
                                   />
                                 </>
                               );
