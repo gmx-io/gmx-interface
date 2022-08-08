@@ -2230,8 +2230,10 @@ export default function SwapBox(props) {
                 renderContent={() => {
                   return (
                     <div className="label">
-                      The position will be opened at {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD with a
-                      max slippage of {parseFloat(savedSlippageAmount / 100.0).toFixed(2)}%.
+                      The position will be opened at{" "}
+                      <span className="Tooltip-number">{formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD </span>
+                      with a max slippage of{" "}
+                      <span className="Tooltip-number">{parseFloat(savedSlippageAmount / 100.0).toFixed(2)}%</span>.
                       <br />
                       <br />
                       The slippage amount can be configured under Settings, found by clicking on your address at the top
@@ -2261,7 +2263,7 @@ export default function SwapBox(props) {
                   return (
                     <div className="label">
                       If you have an existing position, the position will be closed at{" "}
-                      {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD.
+                      <span className="Tooltip-number">{formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD</span>.
                       <br />
                       <br />
                       This exit price will change with the price of the asset.
