@@ -96,13 +96,10 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
     <>
       <TooltipCardRow
         label="Current Pool Amount"
-        amount={`${formatAmount(managedUsd, USD_DECIMALS, 2, true)} (${formatKeyAmount(
-          tokenInfo,
-          "poolAmount",
-          token.decimals,
-          2,
-          true
-        )} ${token.symbol})`}
+        values={[
+          `$${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`,
+          `(${formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 0, true)} ${token.symbol})`,
+        ]}
       />
       <TooltipCardRow label="Max Pool Capacity" amount={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)} />
     </>
@@ -1068,7 +1065,7 @@ export default function GlpSwap(props) {
                         handle="NA"
                         position="right-bottom"
                         renderContent={() => (
-                          <div>
+                          <div className="label">
                             Max pool capacity reached for {tokenInfo.symbol}
                             <br />
                             <br />
@@ -1212,9 +1209,9 @@ export default function GlpSwap(props) {
                     <Tooltip
                       handle="NA"
                       position="right-bottom"
-                      renderContent={() =>
-                        `Max pool capacity reached for ${tokenInfo.symbol}. Please mint GLP using another token`
-                      }
+                      renderContent={() => (
+                        <div className="label">{`Max pool capacity reached for ${tokenInfo.symbol}. Please mint GLP using another token`}</div>
+                      )}
                     />
                   );
                 case (isBuying && !isCapReached) || (!isBuying && managedUsd?.gt(0)):
