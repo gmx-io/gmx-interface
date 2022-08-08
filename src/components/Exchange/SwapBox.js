@@ -81,6 +81,7 @@ import longImg from "../../img/long.svg";
 import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
 import { useUserReferralCode } from "../../Api/referrals";
+import { TooltipCardRow } from "../../views/Dashboard/TooltipCard";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -345,12 +346,14 @@ export default function SwapBox(props) {
             renderContent={() => {
               return (
                 <>
-                  Max {toTokenInfo.symbol} long capacity: $
-                  {formatAmount(toTokenInfo.maxLongCapacity, USD_DECIMALS, 2, true)}
-                  <br />
-                  <br />
-                  Current {toTokenInfo.symbol} long: ${formatAmount(toTokenInfo.guaranteedUsd, USD_DECIMALS, 2, true)}
-                  <br />
+                  <TooltipCardRow
+                    label={`Max ${toTokenInfo.symbol} long capacity`}
+                    amount={formatAmount(toTokenInfo.maxLongCapacity, USD_DECIMALS, 2, true)}
+                  />
+                  <TooltipCardRow
+                    label={`Current ${toTokenInfo.symbol} long`}
+                    amount={formatAmount(toTokenInfo.guaranteedUsd, USD_DECIMALS, 2, true)}
+                  />
                 </>
               );
             }}
@@ -2116,7 +2119,7 @@ export default function SwapBox(props) {
                     position="right-bottom"
                     renderContent={() => {
                       return (
-                        <>
+                        <div className="label">
                           {swapFees && (
                             <div>
                               {collateralToken.symbol} is required for collateral. <br />
@@ -2130,7 +2133,7 @@ export default function SwapBox(props) {
                           <div>
                             Position Fee (0.1% of position size): ${formatAmount(positionFee, USD_DECIMALS, 2, true)}
                           </div>
-                        </>
+                        </div>
                       );
                     }}
                   />
@@ -2226,7 +2229,7 @@ export default function SwapBox(props) {
                 position="right-bottom"
                 renderContent={() => {
                   return (
-                    <>
+                    <div className="label">
                       The position will be opened at {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD with a
                       max slippage of {parseFloat(savedSlippageAmount / 100.0).toFixed(2)}%.
                       <br />
@@ -2242,7 +2245,7 @@ export default function SwapBox(props) {
                       >
                         More Info
                       </a>
-                    </>
+                    </div>
                   );
                 }}
               />
@@ -2256,7 +2259,7 @@ export default function SwapBox(props) {
                 position="right-bottom"
                 renderContent={() => {
                   return (
-                    <>
+                    <div className="label">
                       If you have an existing position, the position will be closed at{" "}
                       {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD.
                       <br />
@@ -2271,7 +2274,7 @@ export default function SwapBox(props) {
                       >
                         More Info
                       </a>
-                    </>
+                    </div>
                   );
                 }}
               />
@@ -2285,7 +2288,7 @@ export default function SwapBox(props) {
                 position="right-bottom"
                 renderContent={() => {
                   return (
-                    <>
+                    <div className="label">
                       {hasZeroBorrowFee && (
                         <div>
                           {isLong && "There are more shorts than longs, borrow fees for longing is currently zero"}
@@ -2308,7 +2311,7 @@ export default function SwapBox(props) {
                       >
                         More Info
                       </a>
-                    </>
+                    </div>
                   );
                 }}
               >

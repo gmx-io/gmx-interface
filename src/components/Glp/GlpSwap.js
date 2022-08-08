@@ -887,6 +887,7 @@ export default function GlpSwap(props) {
               />
             </BuyInputSection>
           )}
+
           <div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">{feeBasisPoints > 50 ? "WARNING: High Fees" : "Fees"}</div>
@@ -896,11 +897,18 @@ export default function GlpSwap(props) {
                     handle={isBuying && isSwapTokenCapReached ? "NA" : feePercentageText}
                     position="right-bottom"
                     renderContent={() => {
+                      if (!feeBasisPoints) {
+                        return (
+                          <div className="label">
+                            Fees will be shown once you have entered an amount in the order form.
+                          </div>
+                        );
+                      }
                       return (
-                        <>
+                        <div className="label">
                           {feeBasisPoints > 50 && <div>To reduce fees, select a different asset to pay with.</div>}
                           Check the "Save on Fees" section below to get the lowest fee percentages.
-                        </>
+                        </div>
                       );
                     }}
                   />
@@ -910,11 +918,18 @@ export default function GlpSwap(props) {
                     handle={feePercentageText}
                     position="right-bottom"
                     renderContent={() => {
+                      if (!feeBasisPoints) {
+                        return (
+                          <div className="label">
+                            Fees will be shown once you have entered an amount in the order form.
+                          </div>
+                        );
+                      }
                       return (
-                        <>
+                        <div className="label">
                           {feeBasisPoints > 50 && <div>To reduce fees, select a different asset to receive.</div>}
                           Check the "Save on Fees" section below to get the lowest fee percentages.
-                        </>
+                        </div>
                       );
                     }}
                   />

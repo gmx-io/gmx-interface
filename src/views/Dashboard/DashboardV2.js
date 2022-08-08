@@ -355,7 +355,7 @@ export default function DashboardV2() {
               Target Weight: {formatAmount(targetWeightBps, 2, 2, false)}%<br />
               <br />
               {currentWeightBps.lt(targetWeightBps) && (
-                <div>
+                <div className="label">
                   {tokenInfo.symbol} is below its target weight.
                   <br />
                   <br />
@@ -371,7 +371,7 @@ export default function DashboardV2() {
                 </div>
               )}
               {currentWeightBps.gt(targetWeightBps) && (
-                <div>
+                <div className="label">
                   {tokenInfo.symbol} is above its target weight.
                   <br />
                   <br />
@@ -383,7 +383,7 @@ export default function DashboardV2() {
                 </div>
               )}
               <br />
-              <div>
+              <div className="label">
                 <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
                   More Info
                 </a>
