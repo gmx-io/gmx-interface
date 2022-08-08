@@ -83,17 +83,17 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
       />
 
       <div className="actions">
-        <button disabled={!uploadedImageInfo} className="mr-base" onClick={handleCopy}>
+        <button disabled={!uploadedImageInfo} className="mr-base App-button-option" onClick={handleCopy}>
           <BiCopy className="icon" />
           Copy
         </button>
-        <button className="dmr-base" onClick={handleDownload}>
+        <button className="mr-base App-button-option" onClick={handleDownload}>
           <RiFileDownloadLine className="icon" />
           Download
         </button>
         <a
           target="_blank"
-          className={cx("tweet-link", { disabled: !uploadedImageInfo })}
+          className={cx("tweet-link App-button-option", { disabled: !uploadedImageInfo })}
           rel="noreferrer"
           href={tweetLink}
         >
