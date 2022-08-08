@@ -580,6 +580,9 @@ button.App-connect-wallet:hover {
 .Tooltip-row > span.label {
   margin-right: 5px;
 }
+.Tooltip-row > span.amount {
+  color: white;
+}
 
 .App-card-row > div:last-child {
   text-align: right;
