@@ -20,14 +20,13 @@
 }
 
 .settings-dropdown-menu-items {
-  width: 16rem;
+  width: 17rem;
 }
 
 .settings-dropdown-menu-item {
   display: flex;
   align-items: center;
-  padding-left: 0.8rem;
-  padding-right: 0.8rem;
+  padding: 0.8rem 0.8rem;
 }
 
 .settings-dropdown-menu-item__prepend,

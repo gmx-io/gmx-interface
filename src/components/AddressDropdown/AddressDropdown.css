@@ -35,13 +35,13 @@
 .menu-item {
   display: flex !important;
   align-items: center;
-  height: 3.4rem;
-  align-items: center;
-  padding: 0 0.8rem;
+  font-size: 1.5rem;
+  color: #a0a3c4;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.4rem;
 }
 .menu-item:hover {
   background: #808aff14 !important;
-  /* border: 1px solid #4275a8; */
   opacity: 1;
   color: #eee;
 }
@@ -55,7 +55,7 @@
 
 .network-selector-menu-items {
   border-bottom: 1px solid #262638;
-  padding-bottom: 0.6rem;
+  padding-bottom: 0.8rem;
   margin-top: 0.8rem;
   margin-bottom: 0.8rem;
 }
