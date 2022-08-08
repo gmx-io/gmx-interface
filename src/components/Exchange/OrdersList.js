@@ -23,6 +23,7 @@ import OrderEditor from "./OrderEditor";
 
 import "./OrdersList.css";
 import Checkbox from "../Checkbox/Checkbox.js";
+import { TooltipCardRow } from "../../views/Dashboard/TooltipCard.js";
 
 export default function OrdersList(props) {
   const {
@@ -249,11 +250,12 @@ export default function OrdersList(props) {
                   const collateralTokenInfo = getTokenInfo(infoTokens, order.purchaseToken);
                   const collateralUSD = getUsd(order.purchaseTokenAmount, order.purchaseToken, false, infoTokens);
                   return (
-                    <span>
-                      Collateral: ${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (
-                      {formatAmount(order.purchaseTokenAmount, collateralTokenInfo.decimals, 4, true)}{" "}
-                      {collateralTokenInfo.baseSymbol || collateralTokenInfo.symbol})
-                    </span>
+                    <TooltipCardRow
+                      label="Collateral"
+                      value={`${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (
+                      ${formatAmount(order.purchaseTokenAmount, collateralTokenInfo.decimals, 4, true)}
+                      ${collateralTokenInfo.baseSymbol || collateralTokenInfo.symbol})`}
+                    />
                   );
                 }}
               />
@@ -268,10 +270,10 @@ export default function OrdersList(props) {
               position="right-bottom"
               renderContent={() => {
                 return (
-                  <>
+                  <span className="label">
                     The price that orders can be executed at may differ slightly from the chart price, as market orders
                     update oracle prices, while limit/trigger orders do not.
-                  </>
+                  </span>
                 );
               }}
             />

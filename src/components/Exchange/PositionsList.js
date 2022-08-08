@@ -24,6 +24,7 @@ import {
   INCREASE,
   DECREASE,
 } from "../../Helpers";
+import { TooltipCardRow } from "../../views/Dashboard/TooltipCard";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -202,13 +203,13 @@ export default function PositionsList(props) {
               const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
               const positionDelta =
                 position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || bigNumberify(0);
-              let borrowFeeText;
+              let borrowFeeUSD;
               if (position.collateralToken && position.collateralToken.fundingRate) {
                 const borrowFeeRate = position.collateralToken.fundingRate
                   .mul(position.size)
                   .mul(24)
                   .div(FUNDING_RATE_PRECISION);
-                borrowFeeText = `Borrow Fee / Day: $${formatAmount(borrowFeeRate, USD_DECIMALS, 2)}`;
+                borrowFeeUSD = formatAmount(borrowFeeRate, USD_DECIMALS, 2);
               }
 
               return (
@@ -254,12 +255,16 @@ export default function PositionsList(props) {
                                     <br />
                                   </div>
                                 )}
-                                Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                                <br />
-                                Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                                {borrowFeeText && <div>{borrowFeeText}</div>}
-                                <br />
-                                Use the "Edit" button to deposit or withdraw collateral.
+                                <TooltipCardRow
+                                  label="Initial Collateral"
+                                  value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                                />
+                                <TooltipCardRow
+                                  label="Borrow Fee"
+                                  value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
+                                />
+                                <TooltipCardRow label="Borrow Fee / Day" value={borrowFeeUSD} />
+                                <span className="label">Use the "Edit" button to deposit or withdraw collateral.</span>
                               </>
                             );
                           }}
@@ -290,21 +295,32 @@ export default function PositionsList(props) {
                           renderContent={() => {
                             return (
                               <>
-                                Net Value:{" "}
-                                {showPnlAfterFees
-                                  ? "Initial Collateral - Fees + PnL"
-                                  : "Initial Collateral - Borrow Fee + PnL"}
+                                <span className="label">
+                                  Net Value:{" "}
+                                  {showPnlAfterFees
+                                    ? "Initial Collateral - Fees + PnL"
+                                    : "Initial Collateral - Borrow Fee + PnL"}
+                                </span>
                                 <br />
                                 <br />
-                                Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                                <br />
-                                PnL: {position.deltaBeforeFeesStr}
-                                <br />
-                                Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                                <br />
-                                Open + Close fee: ${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
-                                <br />
-                                PnL After Fees: {position.deltaAfterFeesStr} ({position.deltaAfterFeesPercentageStr})
+                                <TooltipCardRow
+                                  label="Initial Collateral"
+                                  value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                                />
+                                <TooltipCardRow label="PnL" value={position.deltaBeforeFeesStr} showDollar={false} />
+                                <TooltipCardRow
+                                  label="Borrow Fee"
+                                  value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
+                                />
+                                <TooltipCardRow
+                                  label="Open + Close fee"
+                                  value={formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
+                                />
+                                <TooltipCardRow
+                                  label="PnL After Fees"
+                                  value={`${position.deltaAfterFeesStr} (${position.deltaAfterFeesPercentageStr})`}
+                                  showDollar={false}
+                                />
                               </>
                             );
                           }}
@@ -417,13 +433,13 @@ export default function PositionsList(props) {
             const hasPositionProfit = position[showPnlAfterFees ? "hasProfitAfterFees" : "hasProfit"];
             const positionDelta =
               position[showPnlAfterFees ? "pendingDeltaAfterFees" : "pendingDelta"] || bigNumberify(0);
-            let borrowFeeText;
+            let borrowFeeUSD;
             if (position.collateralToken && position.collateralToken.fundingRate) {
               const borrowFeeRate = position.collateralToken.fundingRate
                 .mul(position.size)
                 .mul(24)
                 .div(FUNDING_RATE_PRECISION);
-              borrowFeeText = `Borrow Fee / Day: $${formatAmount(borrowFeeRate, USD_DECIMALS, 2)}`;
+              borrowFeeUSD = formatAmount(borrowFeeRate, USD_DECIMALS, 2);
             }
 
             return (
@@ -453,22 +469,32 @@ export default function PositionsList(props) {
                         renderContent={() => {
                           return (
                             <>
-                              Net Value:{" "}
-                              {showPnlAfterFees
-                                ? "Initial Collateral - Fees + PnL"
-                                : "Initial Collateral - Borrow Fee + PnL"}
+                              <span className="label">
+                                Net Value:{" "}
+                                {showPnlAfterFees
+                                  ? "Initial Collateral - Fees + PnL"
+                                  : "Initial Collateral - Borrow Fee + PnL"}
+                              </span>
                               <br />
                               <br />
-                              Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                              <br />
-                              PnL: {position.deltaBeforeFeesStr}
-                              <br />
-                              Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                              <br />
-                              Open + Close fee: ${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
-                              <br />
-                              <br />
-                              PnL After Fees: {position.deltaAfterFeesStr} ({position.deltaAfterFeesPercentageStr})
+                              <TooltipCardRow
+                                label="Initial Collateral"
+                                value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                              />
+                              <TooltipCardRow label="PnL" value={position.deltaBeforeFeesStr} showDollar={false} />
+                              <TooltipCardRow
+                                label="Borrow Fee"
+                                value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
+                              />
+                              <TooltipCardRow
+                                label="Open + Close fee"
+                                value={formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
+                              />
+                              <TooltipCardRow
+                                label="PnL After Fees"
+                                value={`${position.deltaAfterFeesStr} (${position.deltaAfterFeesPercentageStr})`}
+                                showDollar={false}
+                              />
                             </>
                           );
                         }}
@@ -542,12 +568,17 @@ export default function PositionsList(props) {
                               <br />
                             </div>
                           )}
-                          Initial Collateral: ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                          <TooltipCardRow
+                            label="Initial Collateral"
+                            value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                          />
+                          <TooltipCardRow
+                            label="Borrow Fee"
+                            value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
+                          />
+                          <TooltipCardRow label="Borrow Fee / Day" value={borrowFeeUSD} />
                           <br />
-                          Borrow Fee: ${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
-                          {borrowFeeText && <div>{borrowFeeText}</div>}
-                          <br />
-                          Use the "Edit" button to deposit or withdraw collateral.
+                          <span className="label">Use the "Edit" button to deposit or withdraw collateral.</span>
                         </>
                       );
                     }}
@@ -560,13 +591,13 @@ export default function PositionsList(props) {
                     handleClassName="plain clickable"
                     renderContent={() => {
                       return (
-                        <>
+                        <div className="label">
                           Click on a row to select the position's market, then use the swap box to increase your
                           position size if needed.
                           <br />
                           <br />
                           Use the "Close" button to reduce your position size, or to set stop-loss / take-profit orders.
-                        </>
+                        </div>
                       );
                     }}
                   />
