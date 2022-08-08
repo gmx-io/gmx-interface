@@ -7,6 +7,7 @@ export default function TooltipCard({
   arbitrum,
   showDollar = true,
   decimalsForConversion = USD_DECIMALS,
+  symbol,
 }) {
   return (
     <>
@@ -15,6 +16,7 @@ export default function TooltipCard({
         <span className="amount">
           {showDollar && "$"}
           {formatAmount(arbitrum, decimalsForConversion, 0, true)}
+          {!showDollar && symbol && " " + symbol}
         </span>
       </p>
       <p className="Tooltip-row">
@@ -22,6 +24,7 @@ export default function TooltipCard({
         <span className="amount">
           {showDollar && "$"}
           {formatAmount(avax, decimalsForConversion, 0, true)}
+          {!showDollar && symbol && " " + symbol}
         </span>
       </p>
       <div className="Tooltip-divider" />
@@ -30,6 +33,7 @@ export default function TooltipCard({
         <span className="amount">
           {showDollar && "$"}
           {formatAmount(total, decimalsForConversion, 0, true)}
+          {!showDollar && symbol && " " + symbol}
         </span>
       </p>
     </>

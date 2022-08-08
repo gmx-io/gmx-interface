@@ -51,6 +51,7 @@ import { getContract } from "../../Addresses";
 
 import "./StakeV2.css";
 import SEO from "../../components/Common/SEO";
+import TooltipCard, { TooltipCardRow } from "../Dashboard/TooltipCard";
 
 const { AddressZero } = ethers.constants;
 
@@ -1283,13 +1284,13 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         position="right-bottom"
         renderContent={() => {
           return (
-            <>
+            <div className="label">
               Boost your rewards with Multiplier Points.&nbsp;
               <a href="https://gmxio.gitbook.io/gmx/rewards#multiplier-points" rel="noreferrer" target="_blank">
                 More info
               </a>
               .
-            </>
+            </div>
           );
         }}
       />
@@ -1454,9 +1455,14 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
                       renderContent={() => (
                         <>
-                          Price on Arbitrum: ${formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
-                          <br />
-                          Price on Avalanche: ${formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                          <TooltipCardRow
+                            label="Price on Avalanche"
+                            amount={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                          />
+                          <TooltipCardRow
+                            label="Price on Arbitrum"
+                            amount={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
+                          />
                         </>
                       )}
                     />
@@ -1487,35 +1493,46 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return (
                         <>
-                          <div className="Tooltip-row">
-                            <span className="label">Escrowed GMX APR</span>
-                            <span>{formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%</span>
-                          </div>
+                          <TooltipCardRow
+                            label="Escrowed GMX APR"
+                            showDollar={false}
+                            amount={`${formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%`}
+                          />
                           {(!processedData.gmxBoostAprForNativeToken ||
                             processedData.gmxBoostAprForNativeToken.eq(0)) && (
-                            <div className="Tooltip-row">
-                              <span className="label">{nativeTokenSymbol} APR</span>
-                              <span>{formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%</span>
-                            </div>
+                            <TooltipCardRow
+                              label={`${nativeTokenSymbol} APR`}
+                              showDollar={false}
+                              amount={`${formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%`}
+                            />
                           )}
                           {processedData.gmxBoostAprForNativeToken && processedData.gmxBoostAprForNativeToken.gt(0) && (
                             <div>
                               <br />
-                              <div className="Tooltip-row">
-                                <span className="label">{nativeTokenSymbol} Base APR</span>
-                                <span>{formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%</span>
-                              </div>
-                              <div className="Tooltip-row">
-                                <span className="label">{nativeTokenSymbol} Boosted APR</span>
-                                <span>{formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%</span>
-                              </div>
+
+                              <TooltipCardRow
+                                label={`${nativeTokenSymbol} Base APR`}
+                                showDollar={false}
+                                amount={`${formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%`}
+                              />
+                              <TooltipCardRow
+                                label={`${nativeTokenSymbol} Boosted APR`}
+                                showDollar={false}
+                                amount={`${formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%`}
+                              />
                               <div className="Tooltip-divider" />
-                              <div className="Tooltip-row">
-                                <span className="label">{nativeTokenSymbol} Total APR</span>
-                                <span>
-                                  {formatKeyAmount(processedData, "gmxAprForNativeTokenWithBoost", 2, 2, true)}%
-                                </span>
-                              </div>
+                              <TooltipCardRow
+                                label={`${nativeTokenSymbol} Total APR`}
+                                showDollar={false}
+                                amount={`${formatKeyAmount(
+                                  processedData,
+                                  "gmxAprForNativeTokenWithBoost",
+                                  2,
+                                  2,
+                                  true
+                                )}%`}
+                              />
+
                               <br />
                               <div className="muted">The Boosted APR is from your staked Multiplier Points.</div>
                             </div>
@@ -1535,22 +1552,32 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return (
                         <>
-                          <div className="Tooltip-row">
-                            <span className="label">
-                              {nativeTokenSymbol} ({wrappedTokenSymbol})
-                            </span>
-                            <span>
-                              {formatKeyAmount(processedData, "feeGmxTrackerRewards", 18, 4)} ($
-                              {formatKeyAmount(processedData, "feeGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})
-                            </span>
-                          </div>
-                          <div className="Tooltip-row">
-                            <span className="label">Escrowed GMX</span>
-                            <span>
-                              {formatKeyAmount(processedData, "stakedGmxTrackerRewards", 18, 4)} ($
-                              {formatKeyAmount(processedData, "stakedGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})
-                            </span>
-                          </div>
+                          <TooltipCardRow
+                            label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
+                            amount={`${formatKeyAmount(
+                              processedData,
+                              "feeGmxTrackerRewards",
+                              18,
+                              4
+                            )} ($${formatKeyAmount(processedData, "feeGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
+                            showDollar={false}
+                          />
+                          <TooltipCardRow
+                            label="Escrowed GMX"
+                            amount={`${formatKeyAmount(
+                              processedData,
+                              "stakedGmxTrackerRewards",
+                              18,
+                              4
+                            )} ($${formatKeyAmount(
+                              processedData,
+                              "stakedGmxTrackerRewardsUsd",
+                              USD_DECIMALS,
+                              2,
+                              true
+                            )})`}
+                            showDollar={false}
+                          />
                         </>
                       );
                     }}
@@ -1569,14 +1596,14 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     position="right-bottom"
                     renderContent={() => {
                       return (
-                        <>
+                        <div className="label">
                           You are earning {formatAmount(processedData.boostBasisPoints, 2, 2, false)}% more{" "}
                           {nativeTokenSymbol} rewards using {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)}{" "}
                           Staked Multiplier Points.
                           <br />
                           <br />
                           Use the "Compound" button to stake your Multiplier Points.
-                        </>
+                        </div>
                       );
                     }}
                   />
@@ -1597,11 +1624,15 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                         ` ($${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)})`
                       }
                       renderContent={() => (
-                        <>
-                          Arbitrum: {formatAmount(arbitrumGmxStaked, 18, 0, true)} GMX
-                          <br />
-                          Avalanche: {formatAmount(avaxGmxStaked, 18, 0, true)} GMX
-                        </>
+                        <TooltipCard
+                          showDollar={false}
+                          title="Staked"
+                          avax={avaxGmxStaked}
+                          arbitrum={arbitrumGmxStaked}
+                          total={totalGmxStaked}
+                          decimalsForConversion={18}
+                          symbol="GMX"
+                        />
                       )}
                     />
                   )}
@@ -1748,16 +1779,16 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return (
                         <>
-                          <div className="Tooltip-row">
-                            <span className="label">
-                              {nativeTokenSymbol} ({wrappedTokenSymbol}) APR
-                            </span>
-                            <span>{formatKeyAmount(processedData, "glpAprForNativeToken", 2, 2, true)}%</span>
-                          </div>
-                          <div className="Tooltip-row">
-                            <span className="label">Escrowed GMX APR</span>
-                            <span>{formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%</span>
-                          </div>
+                          <TooltipCardRow
+                            label={`${nativeTokenSymbol} (${wrappedTokenSymbol}) APR`}
+                            amount={`${formatKeyAmount(processedData, "glpAprForNativeToken", 2, 2, true)}%`}
+                            showDollar={false}
+                          />
+                          <TooltipCardRow
+                            label="Escrowed GMX APR"
+                            amount={`${formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%`}
+                            showDollar={false}
+                          />
                         </>
                       );
                     }}
@@ -1773,22 +1804,32 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return (
                         <>
-                          <div className="Tooltip-row">
-                            <span className="label">
-                              {nativeTokenSymbol} ({wrappedTokenSymbol})
-                            </span>
-                            <span>
-                              {formatKeyAmount(processedData, "feeGlpTrackerRewards", 18, 4)} ($
-                              {formatKeyAmount(processedData, "feeGlpTrackerRewardsUsd", USD_DECIMALS, 2, true)})
-                            </span>
-                          </div>
-                          <div className="Tooltip-row">
-                            <span className="label">Escrowed GMX</span>
-                            <span>
-                              {formatKeyAmount(processedData, "stakedGlpTrackerRewards", 18, 4)} ($
-                              {formatKeyAmount(processedData, "stakedGlpTrackerRewardsUsd", USD_DECIMALS, 2, true)})
-                            </span>
-                          </div>
+                          <TooltipCardRow
+                            label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
+                            amount={`${formatKeyAmount(
+                              processedData,
+                              "feeGlpTrackerRewards",
+                              18,
+                              4
+                            )} ($${formatKeyAmount(processedData, "feeGlpTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
+                            showDollar={false}
+                          />
+                          <TooltipCardRow
+                            label="Escrowed GMX:"
+                            amount={`${formatKeyAmount(
+                              processedData,
+                              "stakedGlpTrackerRewards",
+                              18,
+                              4
+                            )} ($${formatKeyAmount(
+                              processedData,
+                              "stakedGlpTrackerRewardsUsd",
+                              USD_DECIMALS,
+                              2,
+                              true
+                            )})`}
+                            showDollar={false}
+                          />
                         </>
                       );
                     }}
@@ -1864,24 +1905,23 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       renderContent={() => {
                         return (
                           <>
-                            <div className="Tooltip-row">
-                              <span className="label">
-                                {nativeTokenSymbol} ({wrappedTokenSymbol}) Base APR
-                              </span>
-                              <span>{formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%</span>
-                            </div>
+                            <TooltipCardRow
+                              label={`${nativeTokenSymbol} (${wrappedTokenSymbol}) Base APR`}
+                              amount={`${formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%`}
+                              showDollar={false}
+                            />
                             {processedData.bnGmxInFeeGmx && processedData.bnGmxInFeeGmx.gt(0) && (
-                              <div className="Tooltip-row">
-                                <span className="label">
-                                  {nativeTokenSymbol} ({wrappedTokenSymbol}) Boosted APR
-                                </span>
-                                <span>{formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%</span>
-                              </div>
+                              <TooltipCardRow
+                                label={`${nativeTokenSymbol} (${wrappedTokenSymbol}) Boosted APR`}
+                                amount={`${formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%`}
+                                showDollar={false}
+                              />
                             )}
-                            <div className="Tooltip-row">
-                              <span className="label">Escrowed GMX APR</span>
-                              <span>{formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%</span>
-                            </div>
+                            <TooltipCardRow
+                              label="Escrowed GMX APR"
+                              amount={`${formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%`}
+                              showDollar={false}
+                            />
                           </>
                         );
                       }}
@@ -1991,12 +2031,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       position="right-bottom"
                       renderContent={() => {
                         return (
-                          <>
+                          <div className="label">
                             {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} tokens have been converted
                             to GMX from the&nbsp;
                             {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX deposited for
                             vesting.
-                          </>
+                          </div>
                         );
                       }}
                     />
@@ -2008,15 +2048,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     <Tooltip
                       handle={`${formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)} GMX`}
                       position="right-bottom"
-                      renderContent={() =>
-                        `${formatKeyAmount(
-                          vestingData,
-                          "gmxVesterClaimable",
-                          18,
-                          4,
-                          true
-                        )} GMX tokens can be claimed, use the options under the Total Rewards section to claim them.`
-                      }
+                      renderContent={() => (
+                        <div className="label">
+                          {formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)} GMX tokens can be claimed,
+                          use the options under the Total Rewards section to claim them.
+                        </div>
+                      )}
                     />
                   </div>
                 </div>
@@ -2069,12 +2106,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       position="right-bottom"
                       renderContent={() => {
                         return (
-                          <>
+                          <div className="label">
                             {formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} tokens have been converted
                             to GMX from the&nbsp;
                             {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)} esGMX deposited for
                             vesting.
-                          </>
+                          </div>
                         );
                       }}
                     />
@@ -2086,15 +2123,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     <Tooltip
                       handle={`${formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX`}
                       position="right-bottom"
-                      renderContent={() =>
-                        `${formatKeyAmount(
-                          vestingData,
-                          "glpVesterClaimable",
-                          18,
-                          4,
-                          true
-                        )} GMX tokens can be claimed, use the options under the Total Rewards section to claim them.`
-                      }
+                      renderContent={() => (
+                        <div className="label">
+                          {formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX tokens can be claimed,
+                          use the options under the Total Rewards section to claim them.
+                        </div>
+                      )}
                     ></Tooltip>
                   </div>
                 </div>

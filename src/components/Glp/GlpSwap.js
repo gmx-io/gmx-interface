@@ -738,9 +738,14 @@ export default function GlpSwap(props) {
                       true
                     )})`}
                     position="right-bottom"
-                    renderContent={() =>
-                      `${formatAmount(reservedAmount, 18, 4, true)} GLP have been reserved for vesting.`
-                    }
+                    renderContent={() => (
+                      <div className="label">{`${formatAmount(
+                        reservedAmount,
+                        18,
+                        4,
+                        true
+                      )} GLP have been reserved for vesting.`}</div>
+                    )}
                   />
                 </div>
               </div>

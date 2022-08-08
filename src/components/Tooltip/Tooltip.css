@@ -95,9 +95,9 @@
 }
 
 .Tooltip-row {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
   margin: 0 0 0.5rem 0;
+  grid-template-columns: auto auto;
 }
 
 .Tooltip-row > span.label {
@@ -105,6 +105,7 @@
 }
 .Tooltip-row > span.amount {
   color: white;
+  text-align: right;
 }
 
 .Tooltip-row-values {
@@ -118,7 +119,7 @@
   text-align: right;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 700px) {
   .Tooltip-row {
     display: block;
     margin-bottom: 1rem;
@@ -129,10 +130,10 @@
   .Tooltip-row-values li {
     text-align: left;
   }
-}
-
-@media (max-width: 700px) {
   .Tooltip-popup {
     min-width: 20rem;
+  }
+  .Tooltip-row > span.amount {
+    text-align: left;
   }
 }
