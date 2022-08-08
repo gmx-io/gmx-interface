@@ -121,12 +121,16 @@
   line-height: 1;
 }
 
-.tweet-link {
-  text-decoration: none;
-}
-.tweet-link.disabled {
-  pointer-events: none;
+.tweet-link-container.disabled {
   cursor: not-allowed;
+}
+
+a.App-button-option.tweet-link {
+  text-decoration: none;
+  width: 100%;
+}
+a.App-button-option.tweet-link.disabled {
+  pointer-events: none;
 }
 
 .image-loading {

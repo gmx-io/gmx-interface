@@ -91,15 +91,17 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
           <RiFileDownloadLine className="icon" />
           Download
         </button>
-        <a
-          target="_blank"
-          className={cx("tweet-link App-button-option", { disabled: !uploadedImageInfo })}
-          rel="noreferrer"
-          href={tweetLink}
-        >
-          <FiTwitter className="icon" />
-          Tweet
-        </a>
+        <div className={cx("tweet-link-container", { disabled: !uploadedImageInfo })}>
+          <a
+            target="_blank"
+            className={cx("tweet-link App-button-option", { disabled: !uploadedImageInfo })}
+            rel="noreferrer"
+            href={tweetLink}
+          >
+            <FiTwitter className="icon" />
+            Tweet
+          </a>
+        </div>
       </div>
     </Modal>
   );
