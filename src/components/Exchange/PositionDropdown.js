@@ -2,14 +2,14 @@ import { Menu } from "@headlessui/react";
 import { HiDotsVertical } from "react-icons/hi";
 import { AiOutlineEdit } from "react-icons/ai";
 import { BiSelectMultiple } from "react-icons/bi";
-import { FiShare2 } from "react-icons/fi";
+import { RiShareBoxFill } from "react-icons/ri";
 import "./PositionDropdown.css";
 
 function PositionDropdown({ handleEditCollateral, handleShare, handleMarketSelect }) {
   return (
     <Menu>
       <Menu.Button as="div">
-        <button className="dots">
+        <button className="dots PositionDropdown-icon">
           <HiDotsVertical fontSize={20} fontWeight={700} />
         </button>
       </Menu.Button>
@@ -29,7 +29,7 @@ function PositionDropdown({ handleEditCollateral, handleShare, handleMarketSelec
           </Menu.Item>
           <Menu.Item>
             <div className="menu-item" onClick={handleShare}>
-              <FiShare2 fontSize={16} />
+              <RiShareBoxFill fontSize={16} />
               <p>Share Position</p>
             </div>
           </Menu.Item>

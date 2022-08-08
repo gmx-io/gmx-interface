@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { toJpeg } from "html-to-image";
 import cx from "classnames";
+import { BiCopy } from "react-icons/bi";
+import { RiFileDownloadLine } from "react-icons/ri";
+import { FiTwitter } from "react-icons/fi";
 import { useCopyToClipboard } from "react-use";
 import Modal from "../Modal/Modal";
 import gmxLogo from "../../img/gmx-logo-with-name.svg";
@@ -29,7 +32,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
   const [, copyToClipboard] = useCopyToClipboard();
   const positionRef = useRef();
   const tweetLink = getTwitterIntentURL(
-    `Checkout my latest ${positionToShare?.collateralToken?.symbol} trade @GMX_IO`,
+    `Latest $${positionToShare?.indexToken?.symbol} trade on @GMX_IO`,
     getShareURL(uploadedImageInfo, userAffiliateCode)
   );
 
@@ -80,18 +83,21 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
       />
 
       <div className="actions">
-        <button disabled={!uploadedImageInfo} className="default-btn mr-base" onClick={handleCopy}>
+        <button disabled={!uploadedImageInfo} className="mr-base" onClick={handleCopy}>
+          <BiCopy className="icon" />
           Copy
         </button>
-        <button className="default-btn mr-base" onClick={handleDownload}>
+        <button className="dmr-base" onClick={handleDownload}>
+          <RiFileDownloadLine className="icon" />
           Download
         </button>
         <a
           target="_blank"
-          className={cx("default-btn tweet-link", { disabled: !uploadedImageInfo })}
+          className={cx("tweet-link", { disabled: !uploadedImageInfo })}
           rel="noreferrer"
           href={tweetLink}
         >
+          <FiTwitter className="icon" />
           Tweet
         </a>
       </div>
