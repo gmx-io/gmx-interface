@@ -1299,7 +1299,10 @@ export default function GlpSwap(props) {
                       {tokenFeeBps ? (
                         "Fees"
                       ) : (
-                        <Tooltip handle="Fees" renderContent={() => `Please enter an amount to see fee percentages`} />
+                        <Tooltip
+                          handle="Fees"
+                          renderContent={() => `Fees will be shown once you have entered an amount in the order form.`}
+                        />
                       )}
                     </div>
                     <div>{renderFees()}</div>
