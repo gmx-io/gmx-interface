@@ -335,6 +335,13 @@
   background: var(--dark-blue-hover);
   border-color: var(--dark-blue-border);
 }
+
+.react-switch-bg > div {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
 .Wallet-btn:active {
   background: var(--dark-blue-active);
 }

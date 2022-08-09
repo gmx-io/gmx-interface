@@ -9,6 +9,7 @@ import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import useScrollToTop from "./hooks/useScrollToTop";
 import SwitchBox from "react-switch";
+import { Sun, Moon } from "react-feather";
 
 import { Switch, Route, NavLink, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
 
@@ -204,12 +205,14 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
       </div>
       <div className="flex items-center">
         <SwitchBox
-          height={20}
-          width={48}
+          height={25}
+          width={50}
+          handleDiameter={20}
+          onColor={"#888888"}
           boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
           activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
-          uncheckedIcon={false}
-          checkedIcon={false}
+          uncheckedIcon={<span>🌞</span>}
+          checkedIcon={<span>🌜</span>}
           onChange={(val) => changeThemeHandler(val)}
           checked={checked}
         />
@@ -234,7 +237,6 @@ function AppHeaderUser({
   showNetworkSelectorModal,
   disconnectAccountAndCloseSettings,
 }) {
-  
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
   const showConnectionOptions = !isHomeSite();

@@ -137,6 +137,15 @@
   border: 1px solid transparent;
   border-radius: 0.4rem;
 }
+
+.react-select__control {
+  border: 1px solid var(--dark-blue-border) !important;
+}
+
+.network-label {
+  color: var(--text-color) !important;
+}
+
 .react-select__option.arbitrum:hover {
   border: 1px solid #4275a8;
   border-radius: 0.4rem;
