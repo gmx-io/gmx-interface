@@ -75,19 +75,24 @@
   margin-right: 4px;
 }
 
-.network-selector-menu-items .menu-item {
-  position: relative;
-  padding-left: 2rem;
+.selected-icon {
+  position: absolute;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  right: 1.5rem;
+  background-color: red;
+  display: none;
 }
 
-.network-selector-menu-items .menu-item.selected::before {
-  content: " ";
-  position: absolute;
-  left: 0.8rem;
-  height: 4px;
-  width: 4px;
-  background: #53d0a2;
-  border-radius: 50%;
+.selected-icon.Arbitrum {
+  background-color: #4275a8;
+  display: block;
+}
+
+.selected-icon.Avalanche {
+  background-color: #e84142;
+  display: block;
 }
 
 @media screen and (max-width: 370px) {

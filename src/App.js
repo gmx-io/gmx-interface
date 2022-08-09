@@ -93,7 +93,7 @@ import coinbaseImg from "./img/coinbaseWallet.png";
 import walletConnectImg from "./img/walletconnect-circle-blue.svg";
 import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
 import SettingDropdown from "./components/SettingDropdown/SettingDropdown";
-import ConnectWalletButton from "./components/ConnectWalletButton/ConnectWalletButton";
+import { ConnectWalletButton } from "./components/Common/Button";
 import useEventToast from "./components/EventToast/useEventToast";
 import EventToastContainer from "./components/EventToast/EventToastContainer";
 import SEO from "./components/Common/SEO";
@@ -242,17 +242,11 @@ function AppHeaderUser({ HeaderLink, openSettings, small, setWalletModalVisible,
             <Trans>Trade</Trans>
           </HeaderLink>
         </div>
-        <ConnectWalletButton
-          onClick={() => setWalletModalVisible(true)}
-          imgSrc={connectWalletImg}
-          label={selectorLabel}
-          onSelect={onNetworkSelect}
-          small={small}
-        >
+        <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
           {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
         </ConnectWalletButton>
         <div className="setting-dropdown-icon-wrapper">
-          <SettingDropdown openSettings={openSettings} />
+          <SettingDropdown label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} />
         </div>
       </div>
     );
@@ -273,11 +267,11 @@ function AppHeaderUser({ HeaderLink, openSettings, small, setWalletModalVisible,
           accountUrl={accountUrl}
           disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
           label={selectorLabel}
-          onSelect={onNetworkSelect}
+          onNetworkSelect={onNetworkSelect}
         />
       </div>
       <div className="setting-dropdown-icon-wrapper">
-        <SettingDropdown openSettings={openSettings} />
+        <SettingDropdown label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} />
       </div>
     </div>
   );

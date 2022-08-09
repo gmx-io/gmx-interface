@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import cx from "classnames";
 import "./AddressDropdown.css";
 import { Menu } from "@headlessui/react";
@@ -14,30 +14,15 @@ import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 import avalanche16Icon from "../../img/ic_avalanche_16.svg";
 
 function AddressDropdown(props) {
-  const { account, accountUrl, disconnectAccountAndCloseSettings, label } = props;
-
-  const [selectedLabel, setSelectedLabel] = useState(label);
-  const [networkChanged, setNetworkChanged] = useState(false);
-
+  const { account, accountUrl, disconnectAccountAndCloseSettings, label, onNetworkSelect } = props;
   const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
   const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
   const { ensName } = useENS(account);
 
-  useEffect(() => {
-    setSelectedLabel(label);
-  }, [label, networkChanged]);
-
-  const onSelect = async (token) => {
-    let network;
-    try {
-      network = await props.onSelect(token);
-      setSelectedLabel(network);
-    } catch (error) {
-      console.error(error);
-    }
-    setNetworkChanged(true);
-  };
+  async function handleNetworkSelect(option) {
+    await onNetworkSelect(option);
+  }
 
   return (
     <div>
@@ -56,33 +41,25 @@ function AddressDropdown(props) {
                 <Trans>Networks</Trans>
               </p>
               <Menu.Item>
-                <div
-                  className={cx("menu-item", { selected: selectedLabel === "Arbitrum" })}
-                  onClick={() => {
-                    onSelect({ value: ARBITRUM });
-                  }}
-                >
+                <div className="menu-item" onClick={() => handleNetworkSelect({ value: ARBITRUM })}>
                   <div className="menu-item__prepend">
                     <img src={arbitrum16Icon} alt="arbitrum icon" />
                   </div>
                   <span className="menu-item-label">
                     <Trans>Arbitrum</Trans>
                   </span>
+                  <div className={cx("selected-icon", { [label]: label === "Arbitrum" })} />
                 </div>
               </Menu.Item>
               <Menu.Item>
-                <div
-                  className={cx("menu-item", { selected: selectedLabel === "Avalanche" })}
-                  onClick={() => {
-                    onSelect({ value: AVALANCHE });
-                  }}
-                >
+                <div className="menu-item" onClick={() => handleNetworkSelect({ value: AVALANCHE })}>
                   <div className="menu-item__prepend">
                     <img src={avalanche16Icon} alt="avalanche icon" />
                   </div>
                   <span className="menu-item-label">
                     <Trans>Avalanche</Trans>
                   </span>
+                  <div className={cx("selected-icon", { [label]: label === "Avalanche" })} />
                 </div>
               </Menu.Item>
             </div>
