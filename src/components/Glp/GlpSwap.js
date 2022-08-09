@@ -740,8 +740,8 @@ export default function GlpSwap(props) {
                     position="right-bottom"
                     renderContent={() => (
                       <>
-                        <span className="Tooltip-number">{formatAmount(reservedAmount, 18, 4, true)}</span>{" "}
-                        <span className="label">GLP have been reserved for vesting.</span>
+                        <span className="Tooltip-number">{formatAmount(reservedAmount, 18, 4, true)} GLP</span>{" "}
+                        <span className="label"> have been reserved for vesting.</span>
                       </>
                     )}
                   />

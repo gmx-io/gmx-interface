@@ -2043,9 +2043,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                             </span>{" "}
                             tokens have been converted to GMX from the&nbsp;
                             <span className="Tooltip-number">
-                              {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)}
+                              {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX
                             </span>{" "}
-                            esGMX deposited for vesting.
+                            deposited for vesting.
                           </div>
                         );
                       }}
@@ -2061,9 +2061,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       renderContent={() => (
                         <div className="label">
                           <span className="Tooltip-number">
-                            {formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)}
+                            {formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)} GMX
                           </span>{" "}
-                          GMX tokens can be claimed, use the options under the Total Rewards section to claim them.
+                          tokens can be claimed, use the options under the Total Rewards section to claim them.
                         </div>
                       )}
                     />
@@ -2124,9 +2124,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                             </span>{" "}
                             tokens have been converted to GMX from the&nbsp;
                             <span className="Tooltip-number">
-                              {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)}
+                              {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)} esGMX
                             </span>{" "}
-                            esGMX deposited for vesting.
+                            deposited for vesting.
                           </div>
                         );
                       }}
@@ -2142,9 +2142,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       renderContent={() => (
                         <div className="label">
                           <span className="Tooltip-number">
-                            {formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)}
+                            {formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX
                           </span>{" "}
-                          GMX tokens can be claimed, use the options under the Total Rewards section to claim them.
+                          tokens can be claimed, use the options under the Total Rewards section to claim them.
                         </div>
                       )}
                     ></Tooltip>

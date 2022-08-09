@@ -2183,7 +2183,7 @@ export default function SwapBox(props) {
             </div>
           </div>
           <div className="Exchange-info-row">
-            <div className="Exchange-info-label">Available Liquidity:</div>
+            <div className="Exchange-info-label">Available Liquidity</div>
             <div className="align-right al-swap">
               <Tooltip
                 handle={`$${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)}`}
@@ -2191,17 +2191,20 @@ export default function SwapBox(props) {
                 renderContent={() => {
                   return (
                     <div>
-                      <div>
-                        Max {fromTokenInfo.symbol} in: {formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)}{" "}
-                        {fromTokenInfo.symbol} <br />({"$"}
-                        {formatAmount(maxFromTokenInUSD, USD_DECIMALS, 2, true)})
-                      </div>
-                      <br />
-                      <div>
-                        Max {toTokenInfo.symbol} out: {formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)}{" "}
-                        {toTokenInfo.symbol} <br />({"$"}
-                        {formatAmount(maxToTokenOutUSD, USD_DECIMALS, 2, true)})
-                      </div>
+                      <TooltipCardRow
+                        label={`Max ${fromTokenInfo.symbol} in`}
+                        values={[
+                          `${formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 2, true)} ${fromTokenInfo.symbol}`,
+                          `($${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})}`,
+                        ]}
+                      />
+                      <TooltipCardRow
+                        label={`Max ${toTokenInfo.symbol} out`}
+                        values={[
+                          `${formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)} ${toTokenInfo.symbol}`,
+                          `($${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
+                        ]}
+                      />
                     </div>
                   );
                 }}
@@ -2332,13 +2335,14 @@ export default function SwapBox(props) {
                   renderContent={() => {
                     return (
                       <>
-                        Max {toTokenInfo.symbol} short capacity: $
-                        {formatAmount(toTokenInfo.maxGlobalShortSize, USD_DECIMALS, 2, true)}
-                        <br />
-                        <br />
-                        Current {toTokenInfo.symbol} shorts: $
-                        {formatAmount(toTokenInfo.globalShortSize, USD_DECIMALS, 2, true)}
-                        <br />
+                        <TooltipCardRow
+                          label={`Max ${toTokenInfo.symbol} short capacity`}
+                          value={formatAmount(toTokenInfo.maxGlobalShortSize, USD_DECIMALS, 2, true)}
+                        />
+                        <TooltipCardRow
+                          label={`Current ${toTokenInfo.symbol} shorts`}
+                          value={formatAmount(toTokenInfo.globalShortSize, USD_DECIMALS, 2, true)}
+                        />
                       </>
                     );
                   }}
