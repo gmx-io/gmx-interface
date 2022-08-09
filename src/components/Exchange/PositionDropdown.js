@@ -9,11 +9,11 @@ function PositionDropdown({ handleEditCollateral, handleShare, handleMarketSelec
   return (
     <Menu>
       <Menu.Button as="div">
-        <button className="dots PositionDropdown-icon">
+        <button className="PositionDropdown-dots-icon">
           <HiDotsVertical fontSize={20} fontWeight={700} />
         </button>
       </Menu.Button>
-      <div className="extra-options">
+      <div className="PositionDropdown-extra-options">
         <Menu.Items as="div" className="menu-items">
           <Menu.Item>
             <div className="menu-item" onClick={handleEditCollateral}>
