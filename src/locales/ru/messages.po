@@ -13,8 +13,8 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/App.js:360
-#: src/App.js:382
+#: src/App.js:354
+#: src/App.js:376
 msgid ", and use GMX with its built-in browser"
 msgstr ""
 
@@ -51,7 +51,7 @@ msgstr ""
 msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
 msgstr ""
 
-#: src/App.js:907
+#: src/App.js:901
 msgid "Allowed Slippage"
 msgstr ""
 
@@ -72,7 +72,6 @@ msgid "Approving..."
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.js:69
-#: src/components/ConnectWalletButton/ConnectWalletButton.js:64
 msgid "Arbitrum"
 msgstr ""
 
@@ -86,7 +85,6 @@ msgid "Available on your preferred network"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.js:84
-#: src/components/ConnectWalletButton/ConnectWalletButton.js:79
 #: src/views/BuyGMX/BuyGMX.js:179
 msgid "Avalanche"
 msgstr ""
@@ -185,11 +183,11 @@ msgstr ""
 msgid "Claiming..."
 msgstr ""
 
-#: src/App.js:889
+#: src/App.js:883
 msgid "Coinbase Wallet"
 msgstr ""
 
-#: src/App.js:375
+#: src/App.js:369
 msgid "Coinbase Wallet not detected."
 msgstr ""
 
@@ -201,11 +199,11 @@ msgstr ""
 msgid "Complete Transfer"
 msgstr ""
 
-#: src/App.js:252
+#: src/App.js:246
 msgid "Connect"
 msgstr ""
 
-#: src/App.js:252
+#: src/App.js:246
 msgid "Connect Wallet"
 msgstr ""
 
@@ -230,7 +228,7 @@ msgstr "Децентрализованная<0/>бессрочная биржа"
 msgid "Disconnect"
 msgstr ""
 
-#: src/App.js:922
+#: src/App.js:916
 msgid "Display PnL after fees"
 msgstr ""
 
@@ -286,6 +284,10 @@ msgstr ""
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr ""
 
+#: src/views/Referrals/Referrals.js:124
+msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
+msgstr ""
+
 #: src/App.js:170
 msgid "Home"
 msgstr "Дом"
@@ -294,7 +296,7 @@ msgstr "Дом"
 msgid "Hop"
 msgstr ""
 
-#: src/App.js:927
+#: src/App.js:921
 msgid "Include PnL in leverage display"
 msgstr ""
 
@@ -302,11 +304,11 @@ msgstr ""
 msgid "Incorrect Account"
 msgstr ""
 
-#: src/App.js:379
+#: src/App.js:373
 msgid "Install Coinbase Wallet"
 msgstr ""
 
-#: src/App.js:357
+#: src/App.js:351
 msgid "Install MetaMask"
 msgstr ""
 
@@ -318,7 +320,7 @@ msgstr ""
 msgid "Invalid Receiver Address"
 msgstr ""
 
-#: src/App.js:465
+#: src/App.js:459
 msgid "Invalid slippage value"
 msgstr ""
 
@@ -327,7 +329,7 @@ msgstr ""
 msgid "Jobs"
 msgstr ""
 
-#: src/components/SettingDropdown/SettingDropdown.js:56
+#: src/components/SettingDropdown/SettingDropdown.js:84
 msgid "Language"
 msgstr ""
 
@@ -350,7 +352,7 @@ msgstr ""
 msgid "MAX"
 msgstr ""
 
-#: src/App.js:475
+#: src/App.js:469
 msgid "Max slippage precision is 0.01%"
 msgstr ""
 
@@ -359,11 +361,11 @@ msgstr ""
 msgid "Media Kit"
 msgstr ""
 
-#: src/App.js:883
+#: src/App.js:877
 msgid "MetaMask"
 msgstr ""
 
-#: src/App.js:353
+#: src/App.js:347
 msgid "MetaMask not detected."
 msgstr ""
 
@@ -373,7 +375,6 @@ msgid "Multiswap"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.js:56
-#: src/components/ConnectWalletButton/ConnectWalletButton.js:51
 msgid "Networks"
 msgstr ""
 
@@ -469,10 +470,11 @@ msgid "Referral Terms"
 msgstr ""
 
 #: src/App.js:190
+#: src/views/Referrals/Referrals.js:121
 msgid "Referrals"
 msgstr "Рефералы"
 
-#: src/App.js:939
+#: src/App.js:933
 msgid "Save"
 msgstr ""
 
@@ -480,8 +482,12 @@ msgstr ""
 msgid "Save on Costs"
 msgstr ""
 
-#: src/components/SettingDropdown/SettingDropdown.js:73
+#: src/components/SettingDropdown/SettingDropdown.js:101
 msgid "Select Language"
+msgstr ""
+
+#: src/components/SettingDropdown/SettingDropdown.js:139
+msgid "Select Network"
 msgstr ""
 
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:279
@@ -517,13 +523,17 @@ msgstr ""
 msgid "Simple Swaps"
 msgstr ""
 
-#: src/App.js:469
+#: src/App.js:463
 msgid "Slippage should be less than 5%"
 msgstr ""
 
 #: src/components/SettingDropdown/SettingDropdown.js:48
 #~ msgid "Spanish"
 #~ msgstr ""
+
+#: src/components/SettingDropdown/SettingDropdown.js:66
+msgid "Switch Network"
+msgstr ""
 
 #: src/views/BuyGMX/BuyGMX.js:98
 #: src/views/BuyGMX/BuyGMX.js:182
@@ -571,7 +581,7 @@ msgid "Total Users"
 msgstr ""
 
 #: src/App.js:242
-#: src/App.js:267
+#: src/App.js:261
 msgid "Trade"
 msgstr "Торговля"
 
@@ -579,9 +589,13 @@ msgstr "Торговля"
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
 msgstr "Торгуйте BTC, ETH, AVAX и другими популярными криптовалютами с кредитным плечом до 30x прямо из вашего кошелька."
 
-#: src/components/SettingDropdown/SettingDropdown.js:43
-msgid "Trade settings"
+#: src/components/SettingDropdown/SettingDropdown.js:48
+msgid "Trade Settings"
 msgstr ""
+
+#: src/components/SettingDropdown/SettingDropdown.js:43
+#~ msgid "Trade settings"
+#~ msgstr ""
 
 #: src/components/Common/SEO.js:9
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet on Arbitrum and Avalanche."
@@ -629,7 +643,7 @@ msgstr ""
 msgid "Two tokens create our ecosystem"
 msgstr ""
 
-#: src/App.js:557
+#: src/App.js:551
 msgid "Txn failed."
 msgstr ""
 
@@ -661,8 +675,8 @@ msgstr ""
 msgid "Vested GMX not withdrawn"
 msgstr ""
 
-#: src/App.js:559
-#: src/App.js:571
+#: src/App.js:553
+#: src/App.js:565
 msgid "View"
 msgstr ""
 
@@ -683,7 +697,7 @@ msgstr ""
 msgid "Wallet not connected"
 msgstr ""
 
-#: src/App.js:895
+#: src/App.js:889
 msgid "WalletConnect"
 msgstr ""
 
@@ -743,12 +757,12 @@ msgstr ""
 #~ msgid "lolipopi"
 #~ msgstr ""
 
-#: src/App.js:362
-#: src/App.js:384
+#: src/App.js:356
+#: src/App.js:378
 msgid "to start using GMX"
 msgstr ""
 
-#: src/components/SettingDropdown/SettingDropdown.js:92
+#: src/components/SettingDropdown/SettingDropdown.js:120
 msgid "{0}"
 msgstr ""
 
