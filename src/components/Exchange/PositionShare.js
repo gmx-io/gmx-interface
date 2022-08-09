@@ -8,14 +8,14 @@ import { useCopyToClipboard } from "react-use";
 import Modal from "../Modal/Modal";
 import gmxLogo from "../../img/gmx-logo-with-name.svg";
 import "./PositionShare.css";
-import { QRCodeCanvas } from "qrcode.react";
-import { formatAmount, getAppBaseUrl, getTwitterIntentURL, helperToast, USD_DECIMALS } from "../../Helpers";
+import { QRCodeSVG } from "qrcode.react";
+import { formatAmount, getHomeUrl, getTwitterIntentURL, helperToast, USD_DECIMALS } from "../../Helpers";
 import { useAffiliateCodes } from "../../Api/referrals";
 import SpinningLoader from "../Common/SpinningLoader";
 
-const UPLOAD_URL = "https://gmxs.vercel.app/api/upload";
-const UPLOAD_SHARE = "https://gmxs.vercel.app/api/s";
-const config = { quality: 0.95, canvasWidth: 518, canvasHeight: 292 };
+const UPLOAD_URL = "https://gmx-share-api.vercel.app/api/upload";
+const UPLOAD_SHARE = "https://gmx-share-api.vercel.app/api/s";
+const config = { quality: 0.95, canvasWidth: 1036, canvasHeight: 584 };
 
 function getShareURL(imageInfo, ref) {
   if (!imageInfo) return;
@@ -49,12 +49,12 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
   }, [userAffiliateCode]);
 
   async function handleDownload() {
-    const { collateralToken, isLong } = positionToShare;
+    const { indexToken, isLong } = positionToShare;
     const element = positionRef.current;
     if (!element) return;
     const dataUrl = await toJpeg(element, config);
     const link = document.createElement("a");
-    link.download = `${collateralToken.symbol}-${isLong ? "long" : "short"}.jpeg`;
+    link.download = `${indexToken.symbol}-${isLong ? "long" : "short"}.jpeg`;
     link.href = dataUrl;
     document.body.appendChild(link);
     link.click();
@@ -110,7 +110,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
 function PositionShareCard({ positionRef, position, userAffiliateCode, uploadedImageInfo }) {
   const { code, success } = userAffiliateCode;
   const { deltaAfterFeesPercentageStr, isLong, leverage, indexToken, averagePrice, markPrice } = position;
-  const baseUrl = getAppBaseUrl();
+  const homeURL = getHomeUrl();
   return (
     <div className="relative">
       <div ref={positionRef} className="position-share">
@@ -132,11 +132,7 @@ function PositionShareCard({ positionRef, position, userAffiliateCode, uploadedI
           </div>
         </div>
         <div className="referral-code">
-          <QRCodeCanvas
-            includeMargin={true}
-            size={25}
-            value={success ? `${baseUrl}/trade?ref=${code}` : `${baseUrl}/trade`}
-          />
+          <QRCodeSVG size={25} value={success ? `${homeURL}/#/?ref=${code}` : `${homeURL}`} />
           {success ? (
             <div>
               <p className="label">Referral Code:</p>
@@ -153,7 +149,7 @@ function PositionShareCard({ positionRef, position, userAffiliateCode, uploadedI
         <div className="image-overlay-wrapper">
           <div className="image-overlay">
             <SpinningLoader size={2} />
-            <p class="loading-text">Generating shareable image...</p>
+            <p className="loading-text">Generating shareable image...</p>
           </div>
         </div>
       )}
