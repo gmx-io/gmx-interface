@@ -33,12 +33,12 @@ function NoJob() {
     <Card title="No open positions at GMX currently">
       <div className="body-para">
         <p className="subheading">
-          GMX is not actively looking for new hires at the moment. However, if you think you can be valuable, please
-          email{" "}
+          GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the
+          project, please email{" "}
           <a target="_blank" href="mailto:jobs@gmx.io" rel="noopener noreferrer">
             jobs@gmx.io
           </a>
-          , and we will happily review it!
+          .
         </p>
       </div>
     </Card>
