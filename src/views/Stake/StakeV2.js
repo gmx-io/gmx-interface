@@ -1518,12 +1518,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                               </div>
                               <br />
                               <div className="muted">The Boosted APR is from your staked Multiplier Points.</div>
-                              <br />
-                              <div className="muted">
-                                APRs are updated weekly on Wednesday and will depend on the fees collected for the week.
-                              </div>
                             </div>
                           )}
+                          <div className="muted">
+                            <br />
+                            APRs are updated weekly on Wednesday and will depend on the fees collected for the week.
+                          </div>
                         </>
                       );
                     }}
