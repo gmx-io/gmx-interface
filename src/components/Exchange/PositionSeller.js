@@ -350,7 +350,7 @@ export default function PositionSeller(props) {
     if (allowReceiveTokenChange && swapToken) {
       const swapTokenInfo = getTokenInfo(infoTokens, swapToken.address);
 
-      notEnoughReceiveTokenLiquidity = swapTokenInfo.availableAmount.lt(convertedReceiveAmount.mul(bigNumberify(10000000)));
+      notEnoughReceiveTokenLiquidity = swapTokenInfo.availableAmount.lt(convertedReceiveAmount);
 
       const { feeBasisPoints } = getNextToAmount(
         chainId,
