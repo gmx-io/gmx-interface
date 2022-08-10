@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react";
-import { ethers } from "ethers";
 
+import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
 
 import {
@@ -34,9 +34,19 @@ import {
   getProfitPrice,
   formatDateTime,
   getTimeRemaining,
+  getNextToAmount,
+  getUsd,
+  USDG_DECIMALS,
+  helperToast,
+  CLOSE_POSITION_RECEIVE_TOKEN_KEY,
+  useLocalStorageByChainId,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
-import { createDecreaseOrder, callContract, useHasOutdatedUi } from "../../Api";
+import { 
+  createDecreaseOrder,
+  callContract,
+  useHasOutdatedUi
+} from "../../Api";
 import { getContract } from "../../Addresses";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Checkbox from "../Checkbox/Checkbox";
@@ -44,6 +54,9 @@ import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import Tooltip from "../Tooltip/Tooltip";
+import TokenSelector from "./TokenSelector";
+import { getTokens } from "../../data/Tokens";
+import './PositionSeller.css';
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -74,6 +87,30 @@ function getTokenAmount(usdAmount, tokenAddress, max, infoTokens) {
   return usdAmount.mul(expandDecimals(1, info.decimals)).div(max ? info.minPrice : info.maxPrice);
 }
 
+function getSwapLimits(infoTokens, fromTokenAddress, toTokenAddress) {
+  const fromInfo =  getTokenInfo(infoTokens, fromTokenAddress)
+  const toInfo = getTokenInfo(infoTokens, toTokenAddress)
+
+  const maxInUsd = fromInfo.maxUsdgAmount
+    ?.sub(fromInfo.usdgAmount)
+      .mul(expandDecimals(1, USD_DECIMALS))
+      .div(expandDecimals(1, USDG_DECIMALS));
+
+  const maxIn = maxInUsd?.mul(expandDecimals(1, fromInfo.decimals)).div(fromInfo.maxPrice).toString();
+  const maxOut = toInfo.availableAmount?.gt(toInfo.poolAmount?.sub(toInfo.bufferAmount))
+                                    ? toInfo.poolAmount?.sub(toInfo.bufferAmount)
+                                    : toInfo.availableAmount;
+
+  const maxOutUsd = getUsd(maxOut, toInfo.address, false, infoTokens);
+
+  return {
+    maxIn,
+    maxInUsd,
+    maxOut,
+    maxOutUsd,
+  }
+}
+
 export default function PositionSeller(props) {
   const {
     pendingPositions,
@@ -102,8 +139,9 @@ export default function PositionSeller(props) {
     isHigherSlippageAllowed,
     setIsHigherSlippageAllowed,
     minExecutionFee,
-    minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
+    usdgSupply,
+    totalTokenWeights,
   } = props;
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true);
@@ -114,6 +152,18 @@ export default function PositionSeller(props) {
   const prevIsVisible = usePrevious(isVisible);
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
+  const toTokens = getTokens(chainId);
+
+  const [savedRecieveTokenAddress, setSavedRecieveTokenAddress] = useLocalStorageByChainId(
+    chainId,
+    `${CLOSE_POSITION_RECEIVE_TOKEN_KEY}-${position?.indexToken?.symbol}-${position.isLong ? 'long' : 'short'}`
+  );
+
+  const [swapToken, setSwapToken] = useState(() => (
+    savedRecieveTokenAddress 
+      ? toTokens.find(token => token.address === savedRecieveTokenAddress)
+      : undefined
+  ));
 
   let allowedSlippage = savedSlippageAmount;
   if (isHigherSlippageAllowed) {
@@ -136,6 +186,7 @@ export default function PositionSeller(props) {
   const onTriggerPriceChange = (evt) => {
     setTriggerPriceValue(evt.target.value || "");
   };
+
   const [triggerPriceValue, setTriggerPriceValue] = useState("");
   const triggerPriceUsd = orderOption === MARKET ? 0 : parseValue(triggerPriceValue, USD_DECIMALS);
 
@@ -185,13 +236,19 @@ export default function PositionSeller(props) {
     }
     return ret;
   }, [position, orders, triggerPriceUsd, orderOption, nativeTokenAddress]);
+
   const existingOrder = existingOrders[0];
 
   const needOrderBookApproval = orderOption === STOP && !orderBookApproved;
 
+  const allowReceiveTokenChange = orderOption === MARKET
+    && position.isLong;
+
+
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
   let collateralToken;
+  let receiveToken;
   let maxAmount;
   let maxAmountFormatted;
   let maxAmountFormattedFree;
@@ -212,10 +269,22 @@ export default function PositionSeller(props) {
   let convertedReceiveAmount = bigNumberify(0);
   let adjustedDelta = bigNumberify(0);
 
+  let notEnoughReceiveTokenLiquidity;
+
   let title;
   let fundingFee;
   let positionFee;
-  let totalFees;
+  let swapFee;
+  let swapFeeUsd;
+  let totalFees = bigNumberify(0);
+
+  let executionFee = orderOption === STOP
+    ? getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE")
+    : minExecutionFee;
+
+  let executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens);
+
+
   if (position) {
     fundingFee = position.fundingFee;
     fromAmount = parseValue(fromValue, USD_DECIMALS);
@@ -224,6 +293,7 @@ export default function PositionSeller(props) {
     title = `Close ${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol}`;
     collateralToken = position.collateralToken;
     liquidationPrice = getLiquidationPrice(position);
+
 
     if (fromAmount) {
       isClosing = position.size.sub(fromAmount).lt(DUST_USD);
@@ -270,18 +340,51 @@ export default function PositionSeller(props) {
       }
     }
 
+    receiveToken = (allowReceiveTokenChange && swapToken) 
+      ? swapToken
+      : collateralToken;
+
     receiveAmount = receiveAmount.add(collateralDelta);
+    convertedReceiveAmount = getTokenAmount(receiveAmount, receiveToken.address, false, infoTokens);
+
+    if (allowReceiveTokenChange && swapToken) {
+      const swapTokenInfo = getTokenInfo(infoTokens, swapToken.address);
+
+      notEnoughReceiveTokenLiquidity = swapTokenInfo.availableAmount.lt(convertedReceiveAmount.mul(bigNumberify(10000000)));
+
+      const { feeBasisPoints } = getNextToAmount(
+        chainId,
+        fromAmount,
+        collateralToken.address,
+        receiveToken.address,
+        infoTokens,
+        undefined,
+        undefined,
+        usdgSupply,
+        totalTokenWeights,
+        true
+      );
+
+      if (feeBasisPoints) {
+        const baseFromAmountUsd = fromAmount.mul(BASIS_POINTS_DIVISOR).div(position.leverage)
+        swapFeeUsd = baseFromAmountUsd.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR)
+        swapFee = getTokenAmount(swapFeeUsd, collateralToken.address, false, infoTokens)
+        totalFees = totalFees.add(swapFeeUsd)
+      }
+    }
 
     if (sizeDelta && positionFee && fundingFee) {
-      totalFees = positionFee.add(fundingFee);
+      totalFees = totalFees
+        .add(positionFee)
+        .add(fundingFee)
+    
+
       if (receiveAmount.gt(totalFees)) {
         receiveAmount = receiveAmount.sub(totalFees);
       } else {
         receiveAmount = bigNumberify(0);
       }
     }
-
-    convertedReceiveAmount = getTokenAmount(receiveAmount, collateralToken.address, false, infoTokens);
 
     if (isClosing) {
       nextCollateral = bigNumberify(0);
@@ -393,6 +496,10 @@ export default function PositionSeller(props) {
       if (profitPrice && nextDelta.eq(0) && nextHasProfit) {
         return "Invalid price, see warning";
       }
+    }
+
+    if (notEnoughReceiveTokenLiquidity) {
+      return 'Cannot pay in selected receive token'
     }
 
     if (!isClosing && position && position.size && fromAmount) {
@@ -557,16 +664,25 @@ export default function PositionSeller(props) {
     let priceLimit = refPrice.mul(priceBasisPoints).div(BASIS_POINTS_DIVISOR);
     const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME;
     const minProfitTimeExpired = parseInt(Date.now() / 1000) > minProfitExpiration;
+
     if (nextHasProfit && !minProfitTimeExpired && !isProfitWarningAccepted) {
       if ((position.isLong && priceLimit.lt(profitPrice)) || (!position.isLong && priceLimit.gt(profitPrice))) {
         priceLimit = profitPrice;
       }
     }
+    const path = [tokenAddress0];
 
-    const withdrawETH = collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress;
+    if ((receiveToken?.address !== tokenAddress0) && allowReceiveTokenChange) {
+      path.push(receiveToken.address)
+      setSavedRecieveTokenAddress(receiveToken.address)
+    }
+
+    const withdrawETH = receiveToken.address === nativeTokenAddress
+      || receiveToken.address === AddressZero
+
 
     const params = [
-      [tokenAddress0], // _path
+      path, // _path
       indexTokenAddress, // _indexToken
       collateralDelta, // _collateralDelta
       sizeDelta, // _sizeDelta
@@ -673,17 +789,7 @@ export default function PositionSeller(props) {
     }
   }
 
-  const DECREASE_ORDER_EXECUTION_GAS_FEE = getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE");
-  function renderExecutionFee() {
-    if (orderOption !== STOP) {
-      return null;
-    }
-    return (
-      <ExchangeInfoRow label="Execution Fee">
-        {formatAmount(DECREASE_ORDER_EXECUTION_GAS_FEE, 18, 4)} {nativeTokenSymbol}
-      </ExchangeInfoRow>
-    );
-  }
+
 
   const profitPrice = getProfitPrice(orderOption === MARKET ? position.markPrice : triggerPriceUsd, position);
 
@@ -921,53 +1027,140 @@ export default function PositionSeller(props) {
               </div>
             </div>
             <div className="Exchange-info-row top-line">
-              <div className="Exchange-info-label">Borrow Fee</div>
-              <div className="align-right">${formatAmount(fundingFee, USD_DECIMALS, 2, true)}</div>
             </div>
+
             <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Closing Fee</div>
-              <div className="align-right">
-                {positionFee && `$${formatAmount(positionFee, USD_DECIMALS, 2, true)}`}
-                {!positionFee && "-"}
-              </div>
-            </div>
-            {orderOption === MARKET && (
-              <div className="Exchange-info-row">
-                <div className="Exchange-info-label">Execution Fee</div>
-                <div className="align-right">
-                  <Tooltip
-                    handle={`${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol}`}
-                    position="right-top"
-                    renderContent={() => {
-                      return (
-                        <>
-                          Network fee: {formatAmountFree(minExecutionFee, 18, 5)} {nativeTokenSymbol} ($
-                          {formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})<br />
+                  <div className="Exchange-info-label">Fees</div>
+                  <div className="align-right">
+                    <Tooltip
+                      position="right-top"
+                      className="PositionSeller-fees-tooltip"
+                      handle={(
+                          <div>
+                            {totalFees
+                              ? `$${formatAmount(totalFees.add(executionFeeUsd), USD_DECIMALS, 2, true)}`
+                              : '-'
+                            }
+                          </div>
+                      )}
+                      renderContent={() => (
+                        <div>
+                          {fundingFee && (
+                            <div className="PositionSeller-fee-item">
+                              Borrow fee: ${formatAmount(fundingFee, USD_DECIMALS, 2, true)}
+                            </div>
+                          )}
+
+                          {positionFee && (
+                            <div className="PositionSeller-fee-item">
+                              Closing fee: ${formatAmount(positionFee, USD_DECIMALS, 2, true)}
+                            </div>
+                          )}
+
+                          {swapFee && (
+                            <div className="PositionSeller-fee-item">
+                              Swap fee: {formatAmountFree(swapFee, 18, 5)} {nativeTokenSymbol} (${formatAmount(swapFeeUsd, USD_DECIMALS, 2, true)})
+                            </div>
+                          )}
+
+                          <div className="PositionSeller-fee-item">
+                            Execution fee: {formatAmountFree(executionFee, 18, 5)} {nativeTokenSymbol} (${formatAmount(executionFeeUsd, USD_DECIMALS, 2)})
+                          </div>
+
                           <br />
-                          This is the network cost required to execute the decrease postion.{" "}
-                          <a
-                            href="https://gmxio.gitbook.io/gmx/trading#execution-fee"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            More Info
-                          </a>
-                        </>
-                      );
-                    }}
-                  />
-                </div>
+
+                          <div className="PositionSeller-fee-item">
+                            <a 
+                              href="https://gmxio.gitbook.io/gmx/trading#fees"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              More Info
+                            </a>
+                            {' '}about the fees.
+                          </div>
+                          
+                        </div>
+                      )}
+                    />
+                  </div>
               </div>
-            )}
-            <div className="Exchange-info-row">
+            <div className="Exchange-info-row top-line">
               <div className="Exchange-info-label">Receive</div>
-              <div className="align-right">
-                {formatAmount(convertedReceiveAmount, position.collateralToken.decimals, 4, true)}{" "}
-                {position.collateralToken.symbol} ($
-                {formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
-              </div>
+
+              {!allowReceiveTokenChange && receiveToken && 
+                <div className="align-right">
+                  {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}{" "}
+                  {receiveToken.symbol} (${formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
+                </div>
+              }
+
+              {allowReceiveTokenChange && receiveToken && 
+                  <div className="align-right">
+                    <TokenSelector
+                          className="PositionSeller-token-selector"
+                          label={"Select the currency to be paid in"}
+                          chainId={chainId}
+                          tokenAddress={receiveToken.address}
+                          onSelectToken={(token) => {
+                            setSwapToken(token)
+                            helperToast.success(`${token.symbol} Selected as Receive token. Fees have been updated.`)
+                          }}
+                          tokens={toTokens}
+                          getTokenState={(tokenOptionInfo) => {
+                            const convertedTokenAmount = 
+                              getTokenAmount(receiveAmount, tokenOptionInfo.address, false, infoTokens);
+                            
+                            if (tokenOptionInfo.availableAmount.lt(convertedTokenAmount)) {
+                              const {
+                                maxIn,
+                                maxOut,
+                                maxInUsd,
+                                maxOutUsd,
+                              } = getSwapLimits(infoTokens, collateralToken.address, tokenOptionInfo.address);
+
+                              const collateralInfo = getTokenInfo(infoTokens, collateralToken.address);
+                        
+                              return {
+                                disabled: true,
+                                message: (
+                                  <div>
+                                    There is not enough Available Liquidity to swap to {tokenOptionInfo.symbol}
+                              
+                                    <br />
+                                    <br />
+
+                                    Max {collateralInfo.symbol} in: {formatAmount(maxIn, collateralInfo.decimals, 2, true)} {collateralInfo.symbol}
+                                    <br />
+                                    (${formatAmount(maxInUsd, USD_DECIMALS, 2, true)})
+                                    <br />
+                                    <br />
+
+                                    Max {tokenOptionInfo.symbol} out: {formatAmount(maxOut, tokenOptionInfo.decimals, 2, true)} {tokenOptionInfo.symbol}
+                                    <br />
+                                    (${formatAmount(maxOutUsd, USD_DECIMALS, 2, true)})
+                                  </div>
+                                ),
+                              }
+                            }
+                          }}
+                          infoTokens={infoTokens}
+                          showTokenImgInDropdown={true}
+                          selectedTokenLabel={
+                            <span>
+                              {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}{" "}
+                              {receiveToken.symbol} (${formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
+                            </span>
+                          }
+                        /> 
+                </div>
+              }
             </div>
-            {renderExecutionFee()}
+            {notEnoughReceiveTokenLiquidity && 
+              <div className="align-right Position-Seller-swap-liquidity-warning">
+                Not enough liquidity
+              </div>
+            }
           </div>
           <div className="Exchange-swap-button-container">
             <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>

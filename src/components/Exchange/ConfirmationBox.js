@@ -619,9 +619,9 @@ export default function ConfirmationBox(props) {
           )}
           {orderOption === LIMIT && renderAvailableLiquidity()}
           {isShort && (
-            <ExchangeInfoRow label="Profits In">{getToken(chainId, shortCollateralAddress).symbol}</ExchangeInfoRow>
+            <ExchangeInfoRow label="Collateral In">{getToken(chainId, shortCollateralAddress).symbol}</ExchangeInfoRow>
           )}
-          {isLong && <ExchangeInfoRow label="Profits In" value={toTokenInfo.symbol} />}
+          {isLong && <ExchangeInfoRow label="Collateral In" value={toTokenInfo.symbol} />}
           <ExchangeInfoRow label="Leverage">
             {hasExistingPosition && toAmount && toAmount.gt(0) && (
               <div className="inline-block muted">

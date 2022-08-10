@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import cx from "classnames";
 
 import "./Tooltip.css";
+import { IS_TOUCH } from "../../utils/constants";
 
 function Portal({ children }) {
   const root = document.body;
@@ -15,8 +16,6 @@ function Portal({ children }) {
 
   return createPortal(children, el);
 }
-
-const isTouch = "ontouchstart" in window;
 
 const OPEN_DELAY = 0;
 const CLOSE_DELAY = 100;
@@ -40,7 +39,7 @@ export default function TooltipWithPortal(props) {
   }, [handlerRef]);
 
   const onMouseEnter = useCallback(() => {
-    if (trigger !== "hover" || isTouch) return;
+    if (trigger !== "hover" || IS_TOUCH) return;
 
     if (intervalCloseRef.current) {
       clearInterval(intervalCloseRef.current);
@@ -56,7 +55,7 @@ export default function TooltipWithPortal(props) {
   }, [setVisible, intervalCloseRef, intervalOpenRef, trigger, updateTooltipCoords]);
 
   const onMouseClick = useCallback(() => {
-    if (trigger !== "click" && !isTouch) return;
+    if (trigger !== "click" && !IS_TOUCH) return;
     if (intervalCloseRef.current) {
       clearInterval(intervalCloseRef.current);
       intervalCloseRef.current = null;
