@@ -13,8 +13,9 @@ import { formatAmount, getHomeUrl, getTwitterIntentURL, helperToast, USD_DECIMAL
 import { useAffiliateCodes } from "../../Api/referrals";
 import SpinningLoader from "../Common/SpinningLoader";
 
-const UPLOAD_URL = "https://share.gmx.io/api/upload";
-const UPLOAD_SHARE = "https://share.gmx.io/api/s";
+const ROOT_SHARE_URL = "https://gmx-share-6xuv3glue-gmx-team.vercel.app";
+const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
+const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
 const config = { quality: 0.95, canvasWidth: 1036, canvasHeight: 584 };
 
 function getShareURL(imageInfo, ref) {
