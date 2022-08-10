@@ -161,7 +161,7 @@ export default function TokenSelector(props) {
             </div>
           )
         : (
-            <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
+          <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
             {tokenInfo.symbol}
             {showSymbolImage && (
               <img src={tokenImage && tokenImage.default} alt={tokenInfo.symbol} className="TokenSelector-box-symbol" />
