@@ -501,7 +501,7 @@ export default function PositionSeller(props) {
     }
 
     if (notEnoughReceiveTokenLiquidity) {
-      return 'Cannot pay in selected receive token'
+      return 'Choose different receive token'
     }
 
     if (!isClosing && position && position.size && fromAmount) {
