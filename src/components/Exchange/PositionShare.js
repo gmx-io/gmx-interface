@@ -13,13 +13,13 @@ import { formatAmount, getHomeUrl, getTwitterIntentURL, helperToast, USD_DECIMAL
 import { useAffiliateCodes } from "../../Api/referrals";
 import SpinningLoader from "../Common/SpinningLoader";
 
-const UPLOAD_URL = "https://gmx-share-api.vercel.app/api/upload";
-const UPLOAD_SHARE = "https://gmx-share-api.vercel.app/api/s";
+const UPLOAD_URL = "https://share.gmx.io/api/upload";
+const UPLOAD_SHARE = "https://share.gmx.io/api/s";
 const config = { quality: 0.95, canvasWidth: 1036, canvasHeight: 584 };
 
 function getShareURL(imageInfo, ref) {
   if (!imageInfo) return;
-  let url = `${UPLOAD_SHARE}?v=${imageInfo.version}&id=${imageInfo.id}`;
+  let url = `${UPLOAD_SHARE}?id=${imageInfo.id}`;
   if (ref.success) {
     url = url + `&ref=${ref.code}`;
   }
