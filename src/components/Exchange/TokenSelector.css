@@ -63,6 +63,7 @@
 .TokenSelector-token-row {
   cursor: pointer;
   border: 1px solid #ffffff29;
+  position: relative;
   background: transparent;
   border-radius: var(--border-radius-sm);
   display: flex;
@@ -70,6 +71,30 @@
   align-items: center;
   padding: 0.8rem;
   margin-bottom: 0.8rem;
+}
+
+.TokenSelector-tooltip.Tooltip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+}
+
+.TokenSelector-tooltip .Tooltip-popup {
+  margin-top: 4px;
+}
+
+.TokenSelector-token-row.disabled {
+  cursor: not-allowed;
+}
+
+.TokenSelector-token-row.disabled .Token-info {
+  opacity: 0.3;
+}
+
+.TokenSelector-token-row.disabled .Token-balance {
+  opacity: 0.3;
 }
 
 .TokenSelector-token-row.TokenSelector-token-input-row {

@@ -1,0 +1,26 @@
+.PositionSeller-token-selector .Modal .Modal-content {
+  width: 38rem;
+}
+
+.PositionSeller-fee-item {
+  margin-bottom: 4px;
+}
+
+.PositionSeller-fees-tooltip .Tooltip-popup {
+  min-width: 30rem;
+}
+
+.Position-Seller-swap-liquidity-warning {
+  font-size: 12px;
+  color: orange;
+}
+
+@media (max-width: 700px) {
+  .PositionSeller-token-selector .Modal .Modal-content {
+    width: 90vw;
+  }
+
+  .PositionSeller-fees-tooltip .Tooltip-popup {
+    min-width: 30rem;
+  }
+}
