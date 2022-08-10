@@ -426,7 +426,7 @@ export default function ExchangeTVChart(props) {
     <div className="ExchangeChart tv" ref={ref}>
       <div className="ExchangeChart-top App-box App-box-border">
         <div className="ExchangeChart-top-inner">
-          <div>
+          <div className="ExchangeChart-dropdown">
             <ChartTokenSelector
               chainId={chainId}
               selectedToken={chartToken}
