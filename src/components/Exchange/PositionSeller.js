@@ -242,8 +242,7 @@ export default function PositionSeller(props) {
 
   const needOrderBookApproval = orderOption === STOP && !orderBookApproved;
 
-  const allowReceiveTokenChange = orderOption === MARKET
-    && position.isLong;
+  const allowReceiveTokenChange = orderOption === MARKET;
 
 
   const { data: hasOutdatedUi } = useHasOutdatedUi();
@@ -371,16 +370,15 @@ export default function PositionSeller(props) {
         const baseFromAmountUsd = fromAmount.mul(BASIS_POINTS_DIVISOR).div(position.leverage)
         swapFeeUsd = baseFromAmountUsd.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR)
         swapFee = getTokenAmount(swapFeeUsd, collateralToken.address, false, infoTokens)
-        totalFees = totalFees.add(swapFeeUsd)
       }
     }
 
-    if (sizeDelta && positionFee && fundingFee) {
-      totalFees = totalFees
-        .add(positionFee)
-        .add(fundingFee)
-    
+    totalFees = totalFees
+      .add(positionFee || bigNumberify(0))
+      .add(fundingFee || bigNumberify(0))
+      .add(swapFeeUsd || bigNumberify(0))
 
+    if (sizeDelta) {
       if (receiveAmount.gt(totalFees)) {
         receiveAmount = receiveAmount.sub(totalFees);
       } else {
@@ -678,9 +676,8 @@ export default function PositionSeller(props) {
       path.push(receiveToken.address)
     }
 
-    const withdrawETH = receiveToken.address === nativeTokenAddress
-      || receiveToken.address === AddressZero
-
+    const withdrawETH = path.length === 1 
+      && (receiveToken.address === nativeTokenAddress || receiveToken.address === AddressZero)
 
     const params = [
       path, // _path
@@ -1101,6 +1098,7 @@ export default function PositionSeller(props) {
                     <TokenSelector
                           className={cx('PositionSeller-token-selector', {warning: notEnoughReceiveTokenLiquidity})}
                           label={"Select the currency to be paid in"}
+                          showBalances={false}
                           chainId={chainId}
                           tokenAddress={receiveToken.address}
                           onSelectToken={(token) => {
