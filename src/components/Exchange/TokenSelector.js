@@ -24,6 +24,7 @@ export default function TokenSelector(props) {
     showMintingCap,
     disabled,
     selectedTokenLabel,
+    showBalances = true,
     showTokenImgInDropdown = false,
     showSymbolImage = false,
     showNewCaret = false,
@@ -134,7 +135,7 @@ export default function TokenSelector(props) {
                   </div>
                 </div>
                 <div className="Token-balance">
-                  {balance && (
+                  {showBalances && balance && (
                     <div className="Token-text">
                       {balance.gt(0) && formatAmount(balance, token.decimals, 4, true)}
                       {balance.eq(0) && "-"}
@@ -143,7 +144,7 @@ export default function TokenSelector(props) {
                   <span className="text-accent">
                     {mintAmount && <div>Mintable: {formatAmount(mintAmount, token.decimals, 2, true)} USDG</div>}
                     {showMintingCap && !mintAmount && <div>-</div>}
-                    {!showMintingCap && balanceUsd && balanceUsd.gt(0) && (
+                    {!showMintingCap && showBalances && balanceUsd && balanceUsd.gt(0) && (
                       <div>${formatAmount(balanceUsd, 30, 2, true)}</div>
                     )}
                   </span>

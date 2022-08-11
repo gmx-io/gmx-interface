@@ -1097,6 +1097,7 @@ export default function PositionSeller(props) {
                     <TokenSelector
                           className={cx('PositionSeller-token-selector', {warning: notEnoughReceiveTokenLiquidity})}
                           label={"Select the currency to be paid in"}
+                          showBalances={false}
                           chainId={chainId}
                           tokenAddress={receiveToken.address}
                           onSelectToken={(token) => {
