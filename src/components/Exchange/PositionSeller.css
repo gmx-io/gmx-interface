@@ -6,6 +6,11 @@
   color: rgb(247, 147, 26);
 }
 
+.PositionSelector-selected-receive-token {
+  white-space: normal;
+  max-width: 60vw;
+  display: inline-flex;
+}
 
 .PositionSeller-token-selector .TokenSelector-box .TokenSelector-caret {
   margin-left: 0;
