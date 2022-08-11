@@ -346,6 +346,7 @@ export default function PositionSeller(props) {
       : collateralToken;
 
     receiveAmount = receiveAmount.add(collateralDelta);
+    receiveAmount = receiveAmount.mul(bigNumberify(1000000));
     convertedReceiveAmount = getTokenAmount(receiveAmount, receiveToken.address, false, infoTokens);
 
     if (allowReceiveTokenChange && swapToken) {
