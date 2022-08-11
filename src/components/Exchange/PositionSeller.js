@@ -346,7 +346,6 @@ export default function PositionSeller(props) {
       : collateralToken;
 
     receiveAmount = receiveAmount.add(collateralDelta);
-    receiveAmount = receiveAmount.mul(bigNumberify(1000000));
     convertedReceiveAmount = getTokenAmount(receiveAmount, receiveToken.address, false, infoTokens);
 
     if (allowReceiveTokenChange && swapToken) {
@@ -1149,7 +1148,7 @@ export default function PositionSeller(props) {
                           infoTokens={infoTokens}
                           showTokenImgInDropdown={true}
                           selectedTokenLabel={
-                            <span>
+                            <span className="PositionSelector-selected-receive-token">
                               {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}{" "}
                               {receiveToken.symbol} (${formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
                             </span>
