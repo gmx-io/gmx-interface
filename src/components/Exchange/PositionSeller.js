@@ -1148,7 +1148,7 @@ export default function PositionSeller(props) {
                           infoTokens={infoTokens}
                           showTokenImgInDropdown={true}
                           selectedTokenLabel={
-                            <span>
+                            <span className="PositionSelector-selected-receive-token">
                               {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}{" "}
                               {receiveToken.symbol} (${formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
                             </span>
