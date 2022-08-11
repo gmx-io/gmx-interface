@@ -2,17 +2,22 @@
   width: 38rem;
 }
 
+.PositionSeller-token-selector.warning .TokenSelector-box {
+  color: rgb(247, 147, 26);
+}
+
+
+.PositionSeller-token-selector .TokenSelector-box .TokenSelector-caret {
+  margin-left: 0;
+  margin-right: -2px;
+}
+
 .PositionSeller-fee-item {
   margin-bottom: 4px;
 }
 
 .PositionSeller-fees-tooltip .Tooltip-popup {
   min-width: 30rem;
-}
-
-.Position-Seller-swap-liquidity-warning {
-  font-size: 12px;
-  color: orange;
 }
 
 @media (max-width: 700px) {

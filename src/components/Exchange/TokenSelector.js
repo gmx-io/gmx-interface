@@ -156,8 +156,8 @@ export default function TokenSelector(props) {
       {selectedTokenLabel
         ? (
             <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
-              {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}
               {selectedTokenLabel}
+              {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}
             </div>
           )
         : (

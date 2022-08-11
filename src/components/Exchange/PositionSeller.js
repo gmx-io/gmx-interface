@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react";
+import cx from "classnames";
 
 import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
@@ -499,7 +500,7 @@ export default function PositionSeller(props) {
     }
 
     if (notEnoughReceiveTokenLiquidity) {
-      return 'Choose different receive token'
+      return 'Insufficient receive token liquidity'
     }
 
     if (!isClosing && position && position.size && fromAmount) {
@@ -674,7 +675,6 @@ export default function PositionSeller(props) {
 
     if ((receiveToken?.address !== tokenAddress0) && allowReceiveTokenChange) {
       path.push(receiveToken.address)
-      setSavedRecieveTokenAddress(receiveToken.address)
     }
 
     const withdrawETH = receiveToken.address === nativeTokenAddress
@@ -1098,12 +1098,13 @@ export default function PositionSeller(props) {
               {allowReceiveTokenChange && receiveToken && 
                   <div className="align-right">
                     <TokenSelector
-                          className="PositionSeller-token-selector"
+                          className={cx('PositionSeller-token-selector', {warning: notEnoughReceiveTokenLiquidity})}
                           label={"Select the currency to be paid in"}
                           chainId={chainId}
                           tokenAddress={receiveToken.address}
                           onSelectToken={(token) => {
                             setSwapToken(token)
+                            setSavedRecieveTokenAddress(token.address);
                             helperToast.success(`${token.symbol} Selected as Receive token. Fees have been updated.`)
                           }}
                           tokens={toTokens}
@@ -1156,11 +1157,6 @@ export default function PositionSeller(props) {
                 </div>
               }
             </div>
-            {notEnoughReceiveTokenLiquidity && 
-              <div className="align-right Position-Seller-swap-liquidity-warning">
-                Not enough liquidity
-              </div>
-            }
           </div>
           <div className="Exchange-swap-button-container">
             <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
