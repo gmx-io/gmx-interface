@@ -669,14 +669,19 @@ export default function PositionSeller(props) {
         priceLimit = profitPrice;
       }
     }
+
+    const token0Info = getTokenInfo(infoTokens, tokenAddress0);
+    const isUnwrap = token0Info.isWrapped && (receiveToken.address === AddressZero);
+
     const path = [tokenAddress0];
 
-    if ((receiveToken?.address !== tokenAddress0) && allowReceiveTokenChange) {
+    if ((receiveToken?.address !== tokenAddress0) && allowReceiveTokenChange && !isUnwrap) {
       path.push(receiveToken.address)
     }
 
     const withdrawETH = path.length === 1 
-      && (receiveToken.address === nativeTokenAddress || receiveToken.address === AddressZero)
+      && (tokenAddress0 === nativeTokenAddress || tokenAddress0 === AddressZero)
+
 
     const params = [
       path, // _path
@@ -690,6 +695,8 @@ export default function PositionSeller(props) {
       minExecutionFee, // _executionFee
       withdrawETH, // _withdrawETH
     ];
+
+    console.log(params, position, {token0Info, nativeTokenAddress});
 
     const successMsg = `Requested decrease of ${position.indexToken.symbol} ${
       position.isLong ? "Long" : "Short"
