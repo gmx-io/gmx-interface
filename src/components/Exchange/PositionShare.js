@@ -9,11 +9,18 @@ import Modal from "../Modal/Modal";
 import gmxLogo from "../../img/gmx-logo-with-name.svg";
 import "./PositionShare.css";
 import { QRCodeSVG } from "qrcode.react";
-import { formatAmount, getHomeUrl, getTwitterIntentURL, helperToast, USD_DECIMALS } from "../../Helpers";
+import {
+  formatAmount,
+  getHomeUrl,
+  getRootShareApiUrl,
+  getTwitterIntentURL,
+  helperToast,
+  USD_DECIMALS,
+} from "../../Helpers";
 import { useAffiliateCodes } from "../../Api/referrals";
 import SpinningLoader from "../Common/SpinningLoader";
 
-const ROOT_SHARE_URL = "https://share.gmx.io";
+const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
 const config = { quality: 0.95, canvasWidth: 1036, canvasHeight: 584 };
