@@ -21,7 +21,6 @@ import { useAffiliateCodes } from "../../Api/referrals";
 import SpinningLoader from "../Common/SpinningLoader";
 
 const ROOT_SHARE_URL = getRootShareApiUrl();
-// const ROOT_SHARE_URL = "https://share.gmx.io";
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
 const config = { quality: 0.95, canvasWidth: 1036, canvasHeight: 584 };
@@ -125,7 +124,6 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
 }
 
 function PositionShareCard({ positionRef, position, userAffiliateCode, uploadedImageInfo, uploadedImageError }) {
-  console.log({ uploadedImageError });
   const { code, success } = userAffiliateCode;
   const { deltaAfterFeesPercentageStr, isLong, leverage, indexToken, averagePrice, markPrice } = position;
   const homeURL = getHomeUrl();
