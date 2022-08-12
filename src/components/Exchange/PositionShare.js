@@ -172,7 +172,7 @@ function PositionShareCard({
           )}
         </div>
       </div>
-      {!uploadedImageInfo && !uploadedImageError && (
+      {!uploadedImageInfo && !uploadedImageError && !sharePositionBgImg && (
         <div className="image-overlay-wrapper">
           <div className="image-overlay">
             <SpinningLoader />
