@@ -21,6 +21,7 @@ import { useAffiliateCodes } from "../../Api/referrals";
 import SpinningLoader from "../Common/SpinningLoader";
 
 const ROOT_SHARE_URL = getRootShareApiUrl();
+// const ROOT_SHARE_URL = "https://share.gmx.io";
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
 const config = { quality: 0.95, canvasWidth: 1036, canvasHeight: 584 };
@@ -37,6 +38,7 @@ function getShareURL(imageInfo, ref) {
 function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, positionToShare, account, chainId }) {
   const userAffiliateCode = useAffiliateCodes(chainId, account);
   const [uploadedImageInfo, setUploadedImageInfo] = useState();
+  const [uploadedImageError, setUploadedImageError] = useState();
   const [, copyToClipboard] = useCopyToClipboard();
   const positionRef = useRef();
   const tweetLink = getTwitterIntentURL(
@@ -50,8 +52,13 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
       if (!element) return;
       const image = await toJpeg(element, config);
       if (userAffiliateCode.success) {
-        const imageInfo = await fetch(UPLOAD_URL, { method: "POST", body: image }).then((res) => res.json());
-        setUploadedImageInfo(imageInfo);
+        try {
+          const imageInfo = await fetch(UPLOAD_URL, { method: "POST", body: image }).then((res) => res.json());
+          setUploadedImageInfo(imageInfo);
+        } catch {
+          setUploadedImageInfo(null);
+          setUploadedImageError("Image generation error, please refresh and try again.");
+        }
       }
     })();
   }, [userAffiliateCode]);
@@ -88,7 +95,9 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
         chainId={chainId}
         account={account}
         uploadedImageInfo={uploadedImageInfo}
+        uploadedImageError={uploadedImageError}
       />
+      {uploadedImageError && <span className="error">{uploadedImageError}</span>}
 
       <div className="actions">
         <button disabled={!uploadedImageInfo} className="mr-base App-button-option" onClick={handleCopy}>
@@ -115,7 +124,8 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
   );
 }
 
-function PositionShareCard({ positionRef, position, userAffiliateCode, uploadedImageInfo }) {
+function PositionShareCard({ positionRef, position, userAffiliateCode, uploadedImageInfo, uploadedImageError }) {
+  console.log({ uploadedImageError });
   const { code, success } = userAffiliateCode;
   const { deltaAfterFeesPercentageStr, isLong, leverage, indexToken, averagePrice, markPrice } = position;
   const homeURL = getHomeUrl();
@@ -153,7 +163,7 @@ function PositionShareCard({ positionRef, position, userAffiliateCode, uploadedI
           )}
         </div>
       </div>
-      {!uploadedImageInfo && (
+      {!uploadedImageInfo && !uploadedImageError && (
         <div className="image-overlay-wrapper">
           <div className="image-overlay">
             <SpinningLoader />
