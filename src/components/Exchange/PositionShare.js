@@ -63,7 +63,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
         }
       }
     })();
-  }, [userAffiliateCode]);
+  }, [userAffiliateCode, sharePositionBgImg]);
 
   async function handleDownload() {
     const { indexToken, isLong } = positionToShare;
