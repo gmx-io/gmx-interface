@@ -20,7 +20,7 @@ import {
 import { useAffiliateCodes } from "../../Api/referrals";
 import SpinningLoader from "../Common/SpinningLoader";
 import useLoadImage from "../../hooks/useLoadImage";
-import shareBgImd from "../../img/position-share-bg.png";
+import shareBgImg from "../../img/position-share-bg.png";
 
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
@@ -41,7 +41,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
   const [uploadedImageInfo, setUploadedImageInfo] = useState();
   const [uploadedImageError, setUploadedImageError] = useState();
   const [, copyToClipboard] = useCopyToClipboard();
-  const sharePositionBgImg = useLoadImage(shareBgImd);
+  const sharePositionBgImg = useLoadImage(shareBgImg);
   const positionRef = useRef();
   const tweetLink = getTwitterIntentURL(
     `Latest $${positionToShare?.indexToken?.symbol} trade on @GMX_IO`,
