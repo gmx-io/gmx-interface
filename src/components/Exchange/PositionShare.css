@@ -170,6 +170,10 @@ a.App-button-option.tweet-link.disabled {
   align-items: center;
 }
 
+.image-overlay .spinning-loader {
+  margin-left: 0.5rem;
+}
+
 @media (max-width: 400px) {
   .position-share-modal .Modal-content {
     min-width: 28rem;
