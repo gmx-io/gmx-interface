@@ -34,7 +34,6 @@
 
 .position-share {
   aspect-ratio: 1200 / 675;
-  /* background: url(../../img/position-share-bg.png); */
   background-repeat: no-repeat;
   background-size: contain;
   height: 100%;
