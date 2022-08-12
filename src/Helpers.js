@@ -2714,6 +2714,14 @@ export function getAppBaseUrl() {
   return "https://app.gmx.io/#";
 }
 
+export function getRootShareApiUrl() {
+  if (isLocal()) {
+    return "https://gmxs.vercel.app";
+  }
+
+  return "https://share.gmx.io";
+}
+
 export function getTradePageUrl() {
   if (isLocal()) {
     return "http://localhost:3011/#/trade";
