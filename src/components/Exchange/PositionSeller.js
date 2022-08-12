@@ -655,7 +655,6 @@ export default function PositionSeller(props) {
       return;
     }
 
-    const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
     const priceBasisPoints = position.isLong
       ? BASIS_POINTS_DIVISOR - allowedSlippage
       : BASIS_POINTS_DIVISOR + allowedSlippage;
@@ -663,25 +662,26 @@ export default function PositionSeller(props) {
     let priceLimit = refPrice.mul(priceBasisPoints).div(BASIS_POINTS_DIVISOR);
     const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME;
     const minProfitTimeExpired = parseInt(Date.now() / 1000) > minProfitExpiration;
-
+    
     if (nextHasProfit && !minProfitTimeExpired && !isProfitWarningAccepted) {
       if ((position.isLong && priceLimit.lt(profitPrice)) || (!position.isLong && priceLimit.gt(profitPrice))) {
         priceLimit = profitPrice;
       }
     }
-
+    
+    const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
     const token0Info = getTokenInfo(infoTokens, tokenAddress0);
-    const isUnwrap = token0Info.isWrapped && (receiveToken.address === AddressZero);
-
+    
     const path = [tokenAddress0];
 
-    if ((receiveToken?.address !== tokenAddress0) && allowReceiveTokenChange && !isUnwrap) {
-      path.push(receiveToken.address)
+    const isUnwrap = receiveToken.address === AddressZero;
+    const isSwap = receiveToken?.address !== tokenAddress0;
+    
+    if (isSwap) {
+      path.push(isUnwrap ? nativeTokenAddress : receiveToken.address)
     }
 
-    const withdrawETH = path.length === 1 
-      && (tokenAddress0 === nativeTokenAddress || tokenAddress0 === AddressZero)
-
+    const withdrawETH = isUnwrap;
 
     const params = [
       path, // _path
@@ -695,8 +695,6 @@ export default function PositionSeller(props) {
       minExecutionFee, // _executionFee
       withdrawETH, // _withdrawETH
     ];
-
-    console.log(params, position, {token0Info, nativeTokenAddress});
 
     const successMsg = `Requested decrease of ${position.indexToken.symbol} ${
       position.isLong ? "Long" : "Short"
@@ -1063,7 +1061,7 @@ export default function PositionSeller(props) {
 
                           {swapFee && (
                             <div className="PositionSeller-fee-item">
-                              Swap fee: {formatAmountFree(swapFee, 18, 5)} {nativeTokenSymbol} (${formatAmount(swapFeeUsd, USD_DECIMALS, 2, true)})
+                              Swap fee: {formatAmountFree(swapFee, collateralToken.decimals, 5)} {collateralToken.symbol} (${formatAmount(swapFeeUsd, USD_DECIMALS, 2, true)})
                             </div>
                           )}
 
