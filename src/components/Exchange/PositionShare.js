@@ -159,17 +159,19 @@ function PositionShareCard({
           </div>
         </div>
         <div className="referral-code">
-          <QRCodeSVG size={25} value={success ? `${homeURL}/#/?ref=${code}` : `${homeURL}`} />
-          {success ? (
-            <div>
-              <p className="label">Referral Code:</p>
-              <p className="code">{code}</p>
-            </div>
-          ) : (
-            <div>
-              <p className="code">app.gmx.io/#/trade</p>
-            </div>
-          )}
+          <div>
+            <QRCodeSVG size={32} value={success ? `${homeURL}/#/?ref=${code}` : `${homeURL}`} />
+          </div>
+          <div className="referral-code-info">
+            {success ? (
+              <>
+                <p className="label">Referral Code:</p>
+                <p className="code">{code}</p>
+              </>
+            ) : (
+              <p className="code">https://gmx.io</p>
+            )}
+          </div>
         </div>
       </div>
       {!uploadedImageInfo && !uploadedImageError && (
