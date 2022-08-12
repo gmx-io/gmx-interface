@@ -149,7 +149,7 @@ function PositionShareCard({ positionRef, position, userAffiliateCode, uploadedI
       {!uploadedImageInfo && (
         <div className="image-overlay-wrapper">
           <div className="image-overlay">
-            <SpinningLoader size={2} />
+            <SpinningLoader />
             <p className="loading-text">Generating shareable image...</p>
           </div>
         </div>
