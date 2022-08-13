@@ -19,6 +19,8 @@ import {
 } from "../../Helpers";
 import { useAffiliateCodes } from "../../Api/referrals";
 import SpinningLoader from "../Common/SpinningLoader";
+import useLoadImage from "../../hooks/useLoadImage";
+import shareBgImg from "../../img/position-share-bg.png";
 
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
@@ -39,6 +41,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
   const [uploadedImageInfo, setUploadedImageInfo] = useState();
   const [uploadedImageError, setUploadedImageError] = useState();
   const [, copyToClipboard] = useCopyToClipboard();
+  const sharePositionBgImg = useLoadImage(shareBgImg);
   const positionRef = useRef();
   const tweetLink = getTwitterIntentURL(
     `Latest $${positionToShare?.indexToken?.symbol} trade on @GMX_IO`,
@@ -50,7 +53,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
       const element = positionRef.current;
       if (!element) return;
       const image = await toJpeg(element, config);
-      if (userAffiliateCode.success) {
+      if (userAffiliateCode.success && sharePositionBgImg) {
         try {
           const imageInfo = await fetch(UPLOAD_URL, { method: "POST", body: image }).then((res) => res.json());
           setUploadedImageInfo(imageInfo);
@@ -60,7 +63,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
         }
       }
     })();
-  }, [userAffiliateCode]);
+  }, [userAffiliateCode, sharePositionBgImg]);
 
   async function handleDownload() {
     const { indexToken, isLong } = positionToShare;
@@ -95,6 +98,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
         account={account}
         uploadedImageInfo={uploadedImageInfo}
         uploadedImageError={uploadedImageError}
+        sharePositionBgImg={sharePositionBgImg}
       />
       {uploadedImageError && <span className="error">{uploadedImageError}</span>}
 
@@ -123,13 +127,20 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
   );
 }
 
-function PositionShareCard({ positionRef, position, userAffiliateCode, uploadedImageInfo, uploadedImageError }) {
+function PositionShareCard({
+  positionRef,
+  position,
+  userAffiliateCode,
+  uploadedImageInfo,
+  uploadedImageError,
+  sharePositionBgImg,
+}) {
   const { code, success } = userAffiliateCode;
   const { deltaAfterFeesPercentageStr, isLong, leverage, indexToken, averagePrice, markPrice } = position;
   const homeURL = getHomeUrl();
   return (
     <div className="relative">
-      <div ref={positionRef} className="position-share">
+      <div ref={positionRef} className="position-share" style={{ backgroundImage: `url(${sharePositionBgImg})` }}>
         <img className="logo" src={gmxLogo} alt="GMX Logo" />
         <ul className="info">
           <li className="side">{isLong ? "LONG" : "SHORT"}</li>
@@ -148,17 +159,19 @@ function PositionShareCard({ positionRef, position, userAffiliateCode, uploadedI
           </div>
         </div>
         <div className="referral-code">
-          <QRCodeSVG size={25} value={success ? `${homeURL}/#/?ref=${code}` : `${homeURL}`} />
-          {success ? (
-            <div>
-              <p className="label">Referral Code:</p>
-              <p className="code">{code}</p>
-            </div>
-          ) : (
-            <div>
-              <p className="code">app.gmx.io/#/trade</p>
-            </div>
-          )}
+          <div>
+            <QRCodeSVG size={32} value={success ? `${homeURL}/#/?ref=${code}` : `${homeURL}`} />
+          </div>
+          <div className="referral-code-info">
+            {success ? (
+              <>
+                <p className="label">Referral Code:</p>
+                <p className="code">{code}</p>
+              </>
+            ) : (
+              <p className="code">https://gmx.io</p>
+            )}
+          </div>
         </div>
       </div>
       {!uploadedImageInfo && !uploadedImageError && (
