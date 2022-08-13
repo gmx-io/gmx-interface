@@ -1291,20 +1291,24 @@ export function formatDate(time) {
   return formatDateFn(time * 1000, "dd MMM yyyy");
 }
 
-export function hasMetaMaskWalletExtension() {
-  return window.ethereum;
-}
-
-export function hasCoinBaseWalletExtension() {
+export function hasWallet(providerName = "MetaMask") {
+  const keyPairs = {
+    MetaMask: "isMetaMask",
+    Coinbase: "isCoinbaseWallet",
+    AvalancheCore: "isAvalanche",
+  };
+  const currentNetworkProperty = keyPairs[providerName];
   const { ethereum } = window;
 
-  if (!ethereum?.providers && !ethereum?.isCoinbaseWallet) {
+  if (!ethereum?.providers && !ethereum?.[currentNetworkProperty]) {
     return false;
   }
-  return window.ethereum.isCoinbaseWallet || ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
+  return (
+    window.ethereum[currentNetworkProperty] || ethereum.providers.find((provider) => provider[currentNetworkProperty])
+  );
 }
 
-export function activateInjectedProvider(providerName) {
+export async function activateInjectedProvider(providerName) {
   const { ethereum } = window;
 
   if (!ethereum?.providers && !ethereum?.isCoinbaseWallet && !ethereum?.isMetaMask) {
@@ -1317,6 +1321,9 @@ export function activateInjectedProvider(providerName) {
       case "CoinBase":
         provider = ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
         break;
+      case "AvalancheCore":
+        provider = ethereum.providers.find(({ isAvalanche }) => isAvalanche);
+        break;
       case "MetaMask":
       default:
         provider = ethereum.providers.find(({ isMetaMask }) => isMetaMask);
@@ -1325,8 +1332,15 @@ export function activateInjectedProvider(providerName) {
   }
 
   if (provider) {
-    ethereum.setSelectedProvider(provider);
+    await provider.request({
+      method: "eth_requestAccounts",
+      params: [],
+    });
   }
+
+  // if (provider) {
+  //   ethereum.setSelectedProvider(provider);
+  // }
 }
 
 export function getInjectedConnector() {

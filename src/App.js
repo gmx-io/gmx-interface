@@ -36,8 +36,6 @@ import {
   getExplorerUrl,
   getWalletConnectHandler,
   activateInjectedProvider,
-  hasMetaMaskWalletExtension,
-  hasCoinBaseWalletExtension,
   isMobileDevice,
   clearWalletLinkData,
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
@@ -47,6 +45,7 @@ import {
   isDevelopment,
   DISABLE_ORDER_VALIDATION_KEY,
   shouldShowRedirectModal,
+  hasWallet,
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
@@ -86,6 +85,7 @@ import "./AppOrder.css";
 import logoImg from "./img/logo_GMX.svg";
 import logoSmallImg from "./img/logo_GMX_small.svg";
 import connectWalletImg from "./img/ic_wallet_24.svg";
+import coreWalletImg from "./img/core.svg";
 
 import metamaskImg from "./img/metamask.png";
 import coinbaseImg from "./img/coinbaseWallet.png";
@@ -368,39 +368,52 @@ function FullApp() {
 
   const userOnMobileDevice = "navigator" in window && isMobileDevice(window.navigator);
 
-  const activateMetaMask = () => {
-    if (!hasMetaMaskWalletExtension()) {
-      helperToast.error(
-        <div>
-          MetaMask not detected.
-          <br />
-          <br />
-          <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">
-            Install MetaMask
-          </a>
-          {userOnMobileDevice ? ", and use GMX with its built-in browser" : " to start using GMX"}.
-        </div>
-      );
-      return false;
-    }
-    attemptActivateWallet("MetaMask");
+  const noWalletMessages = {
+    MetaMask: (
+      <div>
+        MetaMask not detected.
+        <br />
+        <br />
+        <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">
+          Install MetaMask
+        </a>
+        {userOnMobileDevice ? ", and use GMX with it's built-in browser" : " to start using GMX"}.
+      </div>
+    ),
+    Coinbase: (
+      <div>
+        Coinbase Wallet not detected.
+        <br />
+        <br />
+        <a href="https://www.coinbase.com/wallet" target="_blank" rel="noopener noreferrer">
+          Install Coinbase Wallet
+        </a>
+        {userOnMobileDevice ? ", and use GMX with it's built-in browser" : " to start using GMX"}.
+      </div>
+    ),
+    AvalancheCore: (
+      <div>
+        Core Wallet not detected.
+        <br />
+        <br />
+        <a
+          href="https://support.avax.network/en/articles/6066879-core-extension-how-do-i-add-the-core-extension"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Install Core Extension
+        </a>
+        {" to start using GMX"}.
+      </div>
+    ),
   };
-  const activateCoinBase = () => {
-    if (!hasCoinBaseWalletExtension()) {
-      helperToast.error(
-        <div>
-          Coinbase Wallet not detected.
-          <br />
-          <br />
-          <a href="https://www.coinbase.com/wallet" target="_blank" rel="noopener noreferrer">
-            Install Coinbase Wallet
-          </a>
-          {userOnMobileDevice ? ", and use GMX with its built-in browser" : " to start using GMX"}.
-        </div>
-      );
+
+  const activateWallet = (name) => {
+    if (!hasWallet(name)) {
+      helperToast.error(noWalletMessages[name]);
       return false;
     }
-    attemptActivateWallet("CoinBase");
+    attemptActivateWallet(name);
   };
 
   const attemptActivateWallet = (providerName) => {
@@ -890,11 +903,15 @@ function FullApp() {
         setIsVisible={setWalletModalVisible}
         label="Connect Wallet"
       >
-        <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
+        <button className="Wallet-btn MetaMask-btn" onClick={() => activateWallet("MetaMask")}>
           <img src={metamaskImg} alt="MetaMask" />
           <div>MetaMask</div>
         </button>
-        <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
+        <button className="Wallet-btn core-btn" onClick={() => activateWallet("AvalancheCore")}>
+          <img src={coreWalletImg} alt="Core" />
+          <div>Avalanche Core</div>
+        </button>
+        <button className="Wallet-btn CoinbaseWallet-btn" onClick={() => activateWallet("Coinbase")}>
           <img src={coinbaseImg} alt="Coinbase Wallet" />
           <div>Coinbase Wallet</div>
         </button>
