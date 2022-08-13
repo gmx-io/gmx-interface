@@ -51,9 +51,8 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
   useEffect(() => {
     (async function () {
       const element = positionRef.current;
-      if (!element) return;
-      const image = await toJpeg(element, config);
-      if (userAffiliateCode.success && sharePositionBgImg) {
+      if (element && userAffiliateCode.success && sharePositionBgImg && positionToShare) {
+        const image = await toJpeg(element, config);
         try {
           const imageInfo = await fetch(UPLOAD_URL, { method: "POST", body: image }).then((res) => res.json());
           setUploadedImageInfo(imageInfo);
@@ -63,7 +62,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
         }
       }
     })();
-  }, [userAffiliateCode, sharePositionBgImg]);
+  }, [userAffiliateCode, sharePositionBgImg, positionToShare]);
 
   async function handleDownload() {
     const { indexToken, isLong } = positionToShare;
