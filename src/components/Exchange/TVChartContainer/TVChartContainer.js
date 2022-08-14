@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { widget } from "../../../charting_library/charting_library";
 import Datafeed from "./api/DataFeed";
 import "./TVChartContainer.css";
@@ -10,7 +10,7 @@ function getLanguageFromURL() {
 }
 
 const defaultProps = {
-  symbol: "ETH/USD",
+  symbol: "ETH",
   interval: "15",
   theme: "Dark",
   containerId: "tv_chart_container",
@@ -27,7 +27,20 @@ const defaultProps = {
 
 export default function TVChartContainer(props) {
   const tvChartRef = useRef();
-  const tvWidget = useRef(null);
+  const tvWidgetRef = useRef(null);
+  const [chartReady, setChartReady] = useState(false);
+  useEffect(() => {
+    if (chartReady && tvWidgetRef.current && props.symbol !== tvWidgetRef.current?.activeChart()?.symbol()) {
+      console.log(props.symbol, "main");
+      tvWidgetRef.current.setSymbol(props.symbol, tvWidgetRef.current.activeChart().resolution(), () => {
+        // if (showOrderLines) {
+        //   deleteLines();
+        //   drawLinesForMarket();
+        // }
+      });
+    }
+  }, [props.symbol, chartReady]);
+
   useEffect(() => {
     const mainSeriesProperties = ["candleStyle", "hollowCandleStyle", "haStyle", "barStyle"];
     let chartStyleOverrides = {};
@@ -46,7 +59,7 @@ export default function TVChartContainer(props) {
     });
     const widgetOptions = {
       debug: false,
-      symbol: props.symbol || defaultProps.symbol,
+      symbol: defaultProps.symbol,
       datafeed: Datafeed,
       theme: defaultProps.theme,
       interval: defaultProps.interval,
@@ -92,29 +105,20 @@ export default function TVChartContainer(props) {
         ...chartStyleOverrides,
       },
     };
-    tvWidget.current = new widget(widgetOptions);
-    tvWidget.current.onChartReady(() => {
-      tvWidget.headerReady().then(() => {
-        const button = tvWidget.createButton();
-        button.setAttribute("title", "Click to show a notification popup");
-        button.classList.add("apply-common-tooltip");
-        button.addEventListener("click", () =>
-          tvWidget.showNoticeDialog({
-            title: "Notification",
-            body: "TradingView Charting Library API works correctly",
-            callback: () => {
-              console.log("Noticed!");
-            },
-          })
-        );
-
-        button.innerHTML = "Check API";
-      });
+    tvWidgetRef.current = new widget(widgetOptions);
+    tvWidgetRef.current.onChartReady(function () {
+      const button = tvWidgetRef?.current?.createButton();
+      if (!button) {
+        return;
+      }
+      setChartReady(true);
     });
+
     return () => {
-      tvWidget.current.remove();
-      tvWidget.current = null;
+      tvWidgetRef.current.remove();
+      tvWidgetRef.current = null;
     };
-  }, [props.symbol]);
+  }, []);
+
   return <div ref={tvChartRef} className="TVChartContainer ExchangeChart-bottom-content" />;
 }
