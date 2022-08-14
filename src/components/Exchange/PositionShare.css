@@ -1,0 +1,223 @@
+.position-share-modal .Modal-content {
+  min-width: 36rem;
+  width: 40rem;
+}
+.position-share-modal .actions {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.position-share-modal button,
+.position-share-modal a {
+  background: none;
+  color: white;
+  font-size: 1.45rem;
+  border: none;
+  opacity: 0.9;
+}
+
+.position-share-modal button:hover,
+.position-share-modal a:hover {
+  opacity: 1;
+}
+
+.position-share-modal button:active,
+.position-share-modal a:active {
+  opacity: 0.8;
+}
+
+.position-share-modal .icon {
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}
+
+.position-share {
+  aspect-ratio: 1200 / 675;
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.25rem 2rem;
+}
+
+.position-share .logo {
+  width: 5rem;
+}
+.position-share .info {
+  list-style: none;
+  color: white;
+  font-size: 1.25rem;
+  display: flex;
+  padding-left: 0;
+  margin: 1.25rem 0 0 0;
+}
+.position-share .info li {
+  margin-right: 1rem;
+  padding-bottom: 0;
+}
+.position-share .info > .side {
+  color: #00daff;
+  font-weight: 800;
+}
+.position-share .pnl {
+  font-weight: bold;
+  font-size: 3.25rem;
+  margin: 0.5rem 0 0 0;
+}
+
+.position-share .prices {
+  max-width: 20rem;
+  display: flex;
+  margin-top: 1rem;
+  justify-content: space-between;
+}
+.position-share .prices p {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.position-share .prices p.price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 0.25rem;
+}
+.position-share .prices div {
+  display: flex;
+  flex-direction: column;
+}
+.position-share .referral-code {
+  display: flex;
+  margin-top: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  max-width: 18rem;
+  border-radius: 5px;
+  align-items: center;
+  padding: 0.5rem;
+}
+.position-share .referral-code div {
+  display: flex;
+  flex-direction: column;
+}
+.position-share .referral-code .label {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+.position-share .referral-code .referral-code-info {
+  margin-left: 1rem;
+}
+
+.position-share .referral-code img {
+  width: 30px;
+  height: 30px;
+  margin-right: 1rem;
+}
+.position-share .referral-code p {
+  margin: 0;
+}
+.position-share .code {
+  font-weight: 500;
+  line-height: 1;
+}
+
+.tweet-link-container.disabled {
+  cursor: not-allowed;
+}
+
+.position-share-modal .App-button-option {
+  justify-content: center;
+}
+
+a.App-button-option.tweet-link {
+  text-decoration: none;
+  width: 100%;
+}
+a.App-button-option.tweet-link.disabled {
+  pointer-events: none;
+}
+
+.image-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1.5rem 0;
+}
+.image-overlay-wrapper {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #00000055;
+  color: #fff;
+  display: inline-flex;
+  justify-content: flex-end;
+  align-items: center;
+  float: right;
+  padding: 0 0.25rem;
+  border-top-left-radius: 5px;
+}
+.image-overlay-wrapper .loading-text {
+  font-size: 1.1rem;
+  margin: 0 0 0 0.5rem;
+}
+.image-overlay {
+  display: flex;
+  padding: 0.5rem 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-overlay .spinning-loader {
+  margin-left: 0.5rem;
+}
+
+@media (max-width: 400px) {
+  .position-share-modal .Modal-content {
+    min-width: 28rem;
+    width: 28rem;
+  }
+  .position-share-modal .Modal-body {
+    margin: 1rem;
+  }
+  .position-share-modal .Modal-title-bar {
+    margin: 1rem;
+  }
+  .position-share {
+    padding: 1rem;
+  }
+  .position-share .logo {
+    width: 4rem;
+  }
+  .position-share .info {
+    margin-top: 0.75rem;
+    font-size: 1rem;
+  }
+  .position-share .pnl {
+    font-size: 2rem;
+  }
+  .position-share .prices {
+    max-width: 14rem;
+    margin-top: 0.5rem;
+  }
+  .position-share .prices p {
+    font-size: 0.9rem;
+  }
+  .position-share .prices p.price {
+    font-size: 1rem;
+  }
+  .position-share .referral-code {
+    margin-top: 1rem;
+    width: 12rem;
+  }
+  .position-share .referral-code .label {
+    font-size: 0.8rem;
+  }
+  .position-share .referral-code p {
+    font-size: 1rem;
+  }
+  .position-share-modal .actions {
+    transform: scale(0.8);
+  }
+}

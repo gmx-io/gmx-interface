@@ -302,6 +302,7 @@ const TOKENS = {
       address: "0x130966628846BFd36ff31a822705796e8cb8C18D",
       decimals: 18,
       isStable: true,
+      isTempHidden: true,
       imageUrl: "https://assets.coingecko.com/coins/images/16786/small/mimlogopng.png",
     },
   ],
