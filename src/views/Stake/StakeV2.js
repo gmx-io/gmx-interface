@@ -1520,6 +1520,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                               <div className="muted">The Boosted APR is from your staked Multiplier Points.</div>
                             </div>
                           )}
+                          <div className="muted">
+                            <br />
+                            APRs are updated weekly on Wednesday and will depend on the fees collected for the week.
+                          </div>
                         </>
                       );
                     }}
@@ -1757,6 +1761,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                           <div className="Tooltip-row">
                             <span className="label">Escrowed GMX APR</span>
                             <span>{formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%</span>
+                          </div>
+                          <br />
+                          <div className="muted">
+                            APRs are updated weekly on Wednesday and will depend on the fees collected for the week.
                           </div>
                         </>
                       );
