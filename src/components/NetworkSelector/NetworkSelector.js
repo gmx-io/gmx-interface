@@ -38,7 +38,7 @@ export default function NetworkSelector(props) {
     var optionIcon = require("../../img/" + option.icon);
     return (
       <div className={cx("Selector-option", option.label)} onClick={() => onSelect(option)} key={option.value}>
-        <img src={require("../../img/" + option.icon).default} alt={option.icon} className="Selector-option_icon" />
+        <img src={optionIcon} alt={option.icon} className="Selector-option_icon" />
         <span className="Selector-option_label">{option.label}</span>
         {selectedLabel === option.label && <div className="selected-icon"></div>}
       </div>
@@ -83,7 +83,7 @@ export default function NetworkSelector(props) {
     return (
       <components.SingleValue {...props}>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <img src={icon.default} alt={data.label} className="network-icon" />
+          <img src={icon} alt={data.label} className="network-icon" />
           <span style={{ marginLeft: 5 }} className="network-label">
             {data.label}
           </span>
@@ -175,7 +175,7 @@ export default function NetworkSelector(props) {
       )}
       {small ? (
         <div className={cx("Selector-box", value.label)} onClick={() => toggleModal(true)}>
-          <img src={valueIcon.default} alt="valueIcon" />
+          <img src={valueIcon} alt="valueIcon" />
           {showCaret && <img src={selectorDropdowns} alt="selectorDropdowns" />}
         </div>
       ) : (
@@ -197,7 +197,7 @@ export default function NetworkSelector(props) {
             var optionIcon = require("../../img/" + e.icon);
             return (
               <div style={{ display: "flex", alignItems: "center" }}>
-                <img src={optionIcon.default} alt={e.icon} className="network-icon" />
+                <img src={optionIcon} alt={e.icon} className="network-icon" />
                 <span style={{ marginLeft: 5 }} className="network-label">
                   {e.label}
                 </span>

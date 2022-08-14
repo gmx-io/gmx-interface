@@ -2745,7 +2745,7 @@ export function importImage(name) {
     tokenImage = require("./img/ic_eth_40.svg");
     console.error(error);
   }
-  return tokenImage && tokenImage.default;
+  return tokenImage;
 }
 
 export function getTwitterIntentURL(text, url = "", hashtag = "") {
