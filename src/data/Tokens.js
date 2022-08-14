@@ -122,8 +122,8 @@ const TOKENS = {
     {
       name: "Bitcoin",
       symbol: "BTC",
-      decimals: 18,
-      address: "0x4B944Eba658A87d7dFbE2dc4833d3Aec7A11D518",
+      decimals: 8,
+      address: "0x27960f9A322BE96A1535E6c19B3958e80E6a2670",
       isShortable: true,
     },
     {
@@ -146,15 +146,15 @@ const TOKENS = {
     {
       name: "USD Coin",
       symbol: "USDC",
-      decimals: 18,
-      address: "0xD276d41d343EACb74579114A0e7C031670504380",
+      decimals: 6,
+      address: "0xf0DCd4737A20ED33481A49De94C599944a3Ca737",
       isStable: true,
     },
     {
       name: "Tether",
       symbol: "USDT",
-      decimals: 18,
-      address: "0xdc5199597Cdc183E368c53fd53e44F05077eC804",
+      decimals: 6,
+      address: "0x818ED84bA1927945b631016e0d402Db50cE8865f",
       isStable: true,
     },
   ],
