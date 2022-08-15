@@ -1,3 +1,8 @@
+.PositionEditor .PositionSeller-modal .Modal-content .Modal-body {
+  padding-right: 0.7rem;
+  margin-right: 0.8rem;
+}
+
 .PositionSeller-token-selector .Modal .Modal-content {
   width: 38rem;
 }
@@ -31,7 +36,6 @@
 }
 
 @media (max-width: 700px) {
- 
   .PositionSeller-token-selector .Modal .Modal-content {
     width: 90vw;
   }
