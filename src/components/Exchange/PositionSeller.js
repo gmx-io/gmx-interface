@@ -365,13 +365,26 @@ export default function PositionSeller(props) {
       convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
     }
 
+    totalFees = totalFees
+      .add(positionFee || bigNumberify(0))
+      .add(fundingFee || bigNumberify(0))
+
+    receiveAmount = receiveAmount.add(collateralDelta);
+
+    if (sizeDelta) {
+      if (receiveAmount.gt(totalFees)) {
+        receiveAmount = receiveAmount.sub(totalFees);
+      } else {
+        receiveAmount = bigNumberify(0);
+      }
+    }
+
     receiveToken = (allowReceiveTokenChange && swapToken) 
       ? swapToken
       : collateralToken;
 
     receiveAmount = receiveAmount.add(collateralDelta);
     receiveAmount = receiveAmount.mul(bigNumberify(1000000));
-    convertedReceiveAmount = getTokenAmount(receiveAmount, receiveToken.address, false, infoTokens);
 
     if (allowReceiveTokenChange && swapToken) {
       const swapTokenInfo = getTokenInfo(infoTokens, swapToken.address);
@@ -392,23 +405,16 @@ export default function PositionSeller(props) {
       );
 
       if (feeBasisPoints) {
-        swapFee = fromAmount.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR)
+        swapFee = receiveAmount.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR)
         swapFeeToken = getTokenAmount(swapFee, collateralToken.address, false, infoTokens)
+        totalFees = totalFees.add(swapFee || bigNumberify(0))
+        receiveAmount = receiveAmount.sub(swapFee)
       }
     }
 
-    totalFees = totalFees
-      .add(positionFee || bigNumberify(0))
-      .add(fundingFee || bigNumberify(0))
-      .add(swapFee || bigNumberify(0))
+    convertedReceiveAmount = getTokenAmount(receiveAmount, receiveToken.address, false, infoTokens);
 
-    if (sizeDelta) {
-      if (receiveAmount.gt(totalFees)) {
-        receiveAmount = receiveAmount.sub(totalFees);
-      } else {
-        receiveAmount = bigNumberify(0);
-      }
-    }
+
 
     if (isClosing) {
       nextCollateral = bigNumberify(0);
@@ -825,7 +831,7 @@ export default function PositionSeller(props) {
   return (
     <div className="PositionEditor">
       {position && (
-        <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
+        <Modal className="PositionSeller-modal" isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           {flagOrdersEnabled && (
             <Tab
               options={orderOptions}
@@ -1081,12 +1087,12 @@ export default function PositionSeller(props) {
 
                           {swapFee && (
                             <div className="PositionSeller-fee-item">
-                              Swap fee: {formatAmountFree(swapFeeToken, collateralToken.decimals, 5)} {collateralToken.symbol} (${formatAmount(swapFee, USD_DECIMALS, 2, true)})
+                              Swap fee: {formatAmount(swapFeeToken, collateralToken.decimals, 5)} {collateralToken.symbol} (${formatAmount(swapFee, USD_DECIMALS, 2, true)})
                             </div>
                           )}
 
                           <div className="PositionSeller-fee-item">
-                            Execution fee: {formatAmountFree(executionFee, 18, 5)} {nativeTokenSymbol} (${formatAmount(executionFeeUsd, USD_DECIMALS, 2)})
+                            Execution fee: {formatAmount(executionFee, 18, 5, true)} {nativeTokenSymbol} (${formatAmount(executionFeeUsd, USD_DECIMALS, 2)})
                           </div>
 
                           <br />
@@ -1107,13 +1113,13 @@ export default function PositionSeller(props) {
                     />
                   </div>
               </div>
-            <div className="Exchange-info-row top-line">
+            <div className="Exchange-info-row PositionSeller-receive-row top-line">
               <div className="Exchange-info-label">Receive</div>
 
-              {!allowReceiveTokenChange && receiveToken && 
-                <div className="align-right">
-                  {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}{" "}
-                  {receiveToken.symbol} (${formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
+              {!allowReceiveTokenChange && receiveToken &&
+                <div className="align-right PositionSelector-selected-receive-token">
+                  {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}&nbsp;{receiveToken.symbol} 
+                  {' '}(${formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
                 </div>
               }
 
@@ -1172,8 +1178,8 @@ export default function PositionSeller(props) {
                           showTokenImgInDropdown={true}
                           selectedTokenLabel={
                             <span className="PositionSelector-selected-receive-token">
-                              {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}{" "}
-                              {receiveToken.symbol} (${formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
+                              {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}&nbsp;{receiveToken.symbol}
+                              {' '}(${formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
                             </span>
                           }
                         /> 
