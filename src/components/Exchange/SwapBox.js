@@ -2070,7 +2070,7 @@ export default function SwapBox(props) {
                       <span className="SwapBox-collateral-tooltip-text">
                           A snapshot of the USD value of the collateral is taken when the position is opened.
                           <br /><br />
-                          When closing the position, you can select which token you'd like to receive the profits in.
+                          When closing the position, you can select which token you would like to receive the profits in.
                       </span>
                     )}
                 />
