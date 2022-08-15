@@ -13,8 +13,8 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/App.js:354
-#: src/App.js:376
+#: src/App.js:398
+#: src/App.js:420
 msgid ", and use GMX with its built-in browser"
 msgstr ""
 
@@ -34,9 +34,9 @@ msgstr ""
 msgid "Add to Metamask"
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js:94
-msgid "Address copied to your clipboard"
-msgstr ""
+#: src/components/AddressDropdown/AddressDropdown.js:71
+#~ msgid "Address copied to your clipboard"
+#~ msgstr ""
 
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:425
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -51,7 +51,7 @@ msgstr ""
 msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
 msgstr ""
 
-#: src/App.js:901
+#: src/App.js:945
 msgid "Allowed Slippage"
 msgstr ""
 
@@ -71,9 +71,10 @@ msgstr ""
 msgid "Approving..."
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js:69
-msgid "Arbitrum"
-msgstr ""
+#: src/components/AddressDropdown/AddressDropdown.js:49
+#: src/components/SettingDropdown/SettingDropdown.js:156
+#~ msgid "Arbitrum"
+#~ msgstr ""
 
 #: src/components/TokenCard/TokenCard.js:64
 #: src/components/TokenCard/TokenCard.js:96
@@ -84,7 +85,6 @@ msgstr ""
 msgid "Available on your preferred network"
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js:84
 #: src/views/BuyGMX/BuyGMX.js:179
 msgid "Avalanche"
 msgstr ""
@@ -183,11 +183,11 @@ msgstr ""
 msgid "Claiming..."
 msgstr ""
 
-#: src/App.js:883
+#: src/App.js:927
 msgid "Coinbase Wallet"
 msgstr ""
 
-#: src/App.js:369
+#: src/App.js:413
 msgid "Coinbase Wallet not detected."
 msgstr ""
 
@@ -199,11 +199,11 @@ msgstr ""
 msgid "Complete Transfer"
 msgstr ""
 
-#: src/App.js:246
+#: src/App.js:272
 msgid "Connect"
 msgstr ""
 
-#: src/App.js:246
+#: src/App.js:272
 msgid "Connect Wallet"
 msgstr ""
 
@@ -212,9 +212,9 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js:101
-msgid "Copy Address"
-msgstr ""
+#: src/components/AddressDropdown/AddressDropdown.js:78
+#~ msgid "Copy Address"
+#~ msgstr ""
 
 #: src/App.js:175
 msgid "Dashboard"
@@ -224,11 +224,11 @@ msgstr "계기반"
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js:121
-msgid "Disconnect"
-msgstr ""
+#: src/components/AddressDropdown/AddressDropdown.js:98
+#~ msgid "Disconnect"
+#~ msgstr ""
 
-#: src/App.js:916
+#: src/App.js:960
 msgid "Display PnL after fees"
 msgstr ""
 
@@ -296,7 +296,7 @@ msgstr "집"
 msgid "Hop"
 msgstr ""
 
-#: src/App.js:921
+#: src/App.js:965
 msgid "Include PnL in leverage display"
 msgstr ""
 
@@ -304,11 +304,11 @@ msgstr ""
 msgid "Incorrect Account"
 msgstr ""
 
-#: src/App.js:373
+#: src/App.js:417
 msgid "Install Coinbase Wallet"
 msgstr ""
 
-#: src/App.js:351
+#: src/App.js:395
 msgid "Install MetaMask"
 msgstr ""
 
@@ -320,16 +320,16 @@ msgstr ""
 msgid "Invalid Receiver Address"
 msgstr ""
 
-#: src/App.js:459
+#: src/App.js:503
 msgid "Invalid slippage value"
 msgstr ""
 
 #: src/Footer.js:19
 #: src/Footer.js:23
-msgid "Jobs"
-msgstr ""
+#~ msgid "Jobs"
+#~ msgstr ""
 
-#: src/components/SettingDropdown/SettingDropdown.js:84
+#: src/components/SettingDropdown/SettingDropdown.js:64
 msgid "Language"
 msgstr ""
 
@@ -352,20 +352,20 @@ msgstr ""
 msgid "MAX"
 msgstr ""
 
-#: src/App.js:469
+#: src/App.js:513
 msgid "Max slippage precision is 0.01%"
 msgstr ""
 
 #: src/Footer.js:18
 #: src/Footer.js:22
-msgid "Media Kit"
-msgstr ""
+#~ msgid "Media Kit"
+#~ msgstr ""
 
-#: src/App.js:877
+#: src/App.js:921
 msgid "MetaMask"
 msgstr ""
 
-#: src/App.js:347
+#: src/App.js:391
 msgid "MetaMask not detected."
 msgstr ""
 
@@ -374,9 +374,9 @@ msgstr ""
 msgid "Multiswap"
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js:56
-msgid "Networks"
-msgstr ""
+#: src/components/AddressDropdown/AddressDropdown.js:41
+#~ msgid "Networks"
+#~ msgstr ""
 
 #: src/views/Actions/Actions.js:90
 msgid "No PnLs found"
@@ -466,15 +466,15 @@ msgid "Reduce Liquidation Risks"
 msgstr ""
 
 #: src/Footer.js:17
-msgid "Referral Terms"
-msgstr ""
+#~ msgid "Referral Terms"
+#~ msgstr ""
 
 #: src/App.js:190
 #: src/views/Referrals/Referrals.js:121
 msgid "Referrals"
 msgstr "추천"
 
-#: src/App.js:933
+#: src/App.js:977
 msgid "Save"
 msgstr ""
 
@@ -482,13 +482,13 @@ msgstr ""
 msgid "Save on Costs"
 msgstr ""
 
-#: src/components/SettingDropdown/SettingDropdown.js:101
+#: src/components/SettingDropdown/SettingDropdown.js:81
 msgid "Select Language"
 msgstr ""
 
-#: src/components/SettingDropdown/SettingDropdown.js:139
-msgid "Select Network"
-msgstr ""
+#: src/components/SettingDropdown/SettingDropdown.js:146
+#~ msgid "Select Network"
+#~ msgstr ""
 
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:279
 msgid "Select an option"
@@ -523,7 +523,7 @@ msgstr ""
 msgid "Simple Swaps"
 msgstr ""
 
-#: src/App.js:463
+#: src/App.js:507
 msgid "Slippage should be less than 5%"
 msgstr ""
 
@@ -531,9 +531,9 @@ msgstr ""
 #~ msgid "Spanish"
 #~ msgstr ""
 
-#: src/components/SettingDropdown/SettingDropdown.js:66
-msgid "Switch Network"
-msgstr ""
+#: src/components/SettingDropdown/SettingDropdown.js:73
+#~ msgid "Switch Network"
+#~ msgstr ""
 
 #: src/views/BuyGMX/BuyGMX.js:98
 #: src/views/BuyGMX/BuyGMX.js:182
@@ -541,8 +541,8 @@ msgid "Synapse"
 msgstr ""
 
 #: src/Footer.js:16
-msgid "Terms and Conditions"
-msgstr ""
+#~ msgid "Terms and Conditions"
+#~ msgstr ""
 
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:356
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
@@ -580,8 +580,8 @@ msgstr ""
 msgid "Total Users"
 msgstr ""
 
-#: src/App.js:242
-#: src/App.js:261
+#: src/App.js:265
+#: src/App.js:295
 msgid "Trade"
 msgstr "거래"
 
@@ -589,7 +589,7 @@ msgstr "거래"
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
 msgstr "지갑에서 직접 최대 30배의 레버리지로 BTC, ETH, AVAX 및 기타 주요 암호화폐 거래"
 
-#: src/components/SettingDropdown/SettingDropdown.js:48
+#: src/components/SettingDropdown/SettingDropdown.js:46
 msgid "Trade Settings"
 msgstr ""
 
@@ -643,7 +643,7 @@ msgstr ""
 msgid "Two tokens create our ecosystem"
 msgstr ""
 
-#: src/App.js:551
+#: src/App.js:595
 msgid "Txn failed."
 msgstr ""
 
@@ -675,8 +675,8 @@ msgstr ""
 msgid "Vested GMX not withdrawn"
 msgstr ""
 
-#: src/App.js:553
-#: src/App.js:565
+#: src/App.js:597
+#: src/App.js:609
 msgid "View"
 msgstr ""
 
@@ -684,9 +684,9 @@ msgstr ""
 msgid "View <0>staking</0> page."
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js:111
-msgid "View in Explorer"
-msgstr ""
+#: src/components/AddressDropdown/AddressDropdown.js:88
+#~ msgid "View in Explorer"
+#~ msgstr ""
 
 #: src/views/BeginAccountTransfer/BeginAccountTransfer.js:125
 #: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:36
@@ -697,7 +697,7 @@ msgstr ""
 msgid "Wallet not connected"
 msgstr ""
 
-#: src/App.js:889
+#: src/App.js:933
 msgid "WalletConnect"
 msgstr ""
 
@@ -757,12 +757,13 @@ msgstr ""
 #~ msgid "lolipopi"
 #~ msgstr ""
 
-#: src/App.js:356
-#: src/App.js:378
+#: src/App.js:400
+#: src/App.js:422
 msgid "to start using GMX"
 msgstr ""
 
-#: src/components/SettingDropdown/SettingDropdown.js:120
+#: src/components/NetworkDropdown/NetworkDropdown.js:35
+#: src/components/SettingDropdown/SettingDropdown.js:100
 msgid "{0}"
 msgstr ""
 

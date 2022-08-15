@@ -70,7 +70,6 @@ import CompleteAccountTransfer from "./views/CompleteAccountTransfer/CompleteAcc
 import cx from "classnames";
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import NetworkSelector from "./components/NetworkSelector/NetworkSelector";
 import Modal from "./components/Modal/Modal";
 import Checkbox from "./components/Checkbox/Checkbox";
 
@@ -116,6 +115,7 @@ import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
 import { defaultLocale, dynamicActivate } from "./utils/i18n";
+import NetworkDropdown from "./components/NetworkDropdown/NetworkDropdown";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -212,9 +212,32 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
   );
 }
 
-function AppHeaderUser({ HeaderLink, openSettings, small, setWalletModalVisible, disconnectAccountAndCloseSettings }) {
+function AppHeaderUser({
+  HeaderLink,
+  openSettings,
+  small,
+  setWalletModalVisible,
+  disconnectAccountAndCloseSettings,
+  showNetworkSelectorModal,
+}) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
+  const showConnectionOptions = !isHomeSite();
+
+  const networkOptions = [
+    {
+      label: "Arbitrum",
+      value: ARBITRUM,
+      icon: "ic_arbitrum_24.svg",
+      color: "#264f79",
+    },
+    {
+      label: "Avalanche",
+      value: AVALANCHE,
+      icon: "ic_avalanche_24.svg",
+      color: "#E841424D",
+    },
+  ];
 
   useEffect(() => {
     if (active) {
@@ -242,12 +265,23 @@ function AppHeaderUser({ HeaderLink, openSettings, small, setWalletModalVisible,
             <Trans>Trade</Trans>
           </HeaderLink>
         </div>
-        <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
-          {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
-        </ConnectWalletButton>
-        <div className="setting-dropdown-icon-wrapper">
-          <SettingDropdown label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} />
-        </div>
+
+        {showConnectionOptions && (
+          <>
+            <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
+              {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
+            </ConnectWalletButton>
+            <div className="App-header-settings">
+              <NetworkDropdown
+                networkOptions={networkOptions}
+                activeChain={selectorLabel}
+                onNetworkSelect={onNetworkSelect}
+              />
+              <div className="App-header-verticle-line" />
+              <SettingDropdown label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} />
+            </div>
+          </>
+        )}
       </div>
     );
   }
@@ -261,18 +295,28 @@ function AppHeaderUser({ HeaderLink, openSettings, small, setWalletModalVisible,
           <Trans>Trade</Trans>
         </NavLink>
       </div>
-      <div className="App-header-user-address">
-        <AddressDropdown
-          account={account}
-          accountUrl={accountUrl}
-          disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-          label={selectorLabel}
-          onNetworkSelect={onNetworkSelect}
-        />
-      </div>
-      <div className="setting-dropdown-icon-wrapper">
-        <SettingDropdown label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} />
-      </div>
+      {showConnectionOptions && (
+        <>
+          <div className="App-header-user-address">
+            <AddressDropdown
+              account={account}
+              accountUrl={accountUrl}
+              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+              label={selectorLabel}
+              onNetworkSelect={onNetworkSelect}
+            />
+          </div>
+          <div className="App-header-settings">
+            <NetworkDropdown
+              networkOptions={networkOptions}
+              selectorLabel={selectorLabel}
+              onNetworkSelect={onNetworkSelect}
+            />
+            <div className="App-header-verticle-line" />
+            <SettingDropdown label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} />
+          </div>
+        </>
+      )}
     </div>
   );
 }
