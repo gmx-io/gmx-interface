@@ -365,12 +365,24 @@ export default function PositionSeller(props) {
       convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
     }
 
+    totalFees = totalFees
+      .add(positionFee || bigNumberify(0))
+      .add(fundingFee || bigNumberify(0))
+
+    receiveAmount = receiveAmount.add(collateralDelta);
+
+    if (sizeDelta) {
+      if (receiveAmount.gt(totalFees)) {
+        receiveAmount = receiveAmount.sub(totalFees);
+      } else {
+        receiveAmount = bigNumberify(0);
+      }
+    }
+
     receiveToken = (allowReceiveTokenChange && swapToken) 
       ? swapToken
       : collateralToken;
-
-    receiveAmount = receiveAmount.add(collateralDelta);
-    convertedReceiveAmount = getTokenAmount(receiveAmount, receiveToken.address, false, infoTokens);
+    
 
     if (allowReceiveTokenChange && swapToken) {
       const swapTokenInfo = getTokenInfo(infoTokens, swapToken.address);
@@ -391,23 +403,16 @@ export default function PositionSeller(props) {
       );
 
       if (feeBasisPoints) {
-        swapFee = fromAmount.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR)
+        swapFee = receiveAmount.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR)
         swapFeeToken = getTokenAmount(swapFee, collateralToken.address, false, infoTokens)
+        totalFees = totalFees.add(swapFee || bigNumberify(0))
+        receiveAmount = receiveAmount.sub(swapFee)
       }
     }
 
-    totalFees = totalFees
-      .add(positionFee || bigNumberify(0))
-      .add(fundingFee || bigNumberify(0))
-      .add(swapFee || bigNumberify(0))
+    convertedReceiveAmount = getTokenAmount(receiveAmount, receiveToken.address, false, infoTokens);
 
-    if (sizeDelta) {
-      if (receiveAmount.gt(totalFees)) {
-        receiveAmount = receiveAmount.sub(totalFees);
-      } else {
-        receiveAmount = bigNumberify(0);
-      }
-    }
+
 
     if (isClosing) {
       nextCollateral = bigNumberify(0);
