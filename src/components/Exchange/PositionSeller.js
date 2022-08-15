@@ -92,17 +92,33 @@ function getSwapLimits(infoTokens, fromTokenAddress, toTokenAddress) {
   const fromInfo =  getTokenInfo(infoTokens, fromTokenAddress)
   const toInfo = getTokenInfo(infoTokens, toTokenAddress)
 
-  const maxInUsd = fromInfo.maxUsdgAmount
-    ?.sub(fromInfo.usdgAmount)
-      .mul(expandDecimals(1, USD_DECIMALS))
-      .div(expandDecimals(1, USDG_DECIMALS));
+  let maxInUsd;
+  let maxIn;
+  let maxOut;
+  let maxOutUsd;
 
-  const maxIn = maxInUsd?.mul(expandDecimals(1, fromInfo.decimals)).div(fromInfo.maxPrice).toString();
-  const maxOut = toInfo.availableAmount?.gt(toInfo.poolAmount?.sub(toInfo.bufferAmount))
-                                    ? toInfo.poolAmount?.sub(toInfo.bufferAmount)
-                                    : toInfo.availableAmount;
+  if (!fromInfo?.maxUsdgAmount) {
+    maxInUsd = bigNumberify(0)
+    maxIn = bigNumberify(0)
+  } else {
+    maxInUsd = fromInfo.maxUsdgAmount
+      .sub(fromInfo.usdgAmount)
+        .mul(expandDecimals(1, USD_DECIMALS))
+        .div(expandDecimals(1, USDG_DECIMALS));
+    
+    maxIn = maxInUsd.mul(expandDecimals(1, fromInfo.decimals)).div(fromInfo.maxPrice).toString();
+  }
 
-  const maxOutUsd = getUsd(maxOut, toInfo.address, false, infoTokens);
+  if (!toInfo?.poolAmount || !toInfo?.bufferAmount) {
+    maxOut = bigNumberify(0);
+    maxOutUsd = bigNumberify(0);
+  } else {
+    maxOut = toInfo.availableAmount.gt(toInfo.poolAmount.sub(toInfo.bufferAmount))
+              ? toInfo.poolAmount.sub(toInfo.bufferAmount)
+              : toInfo.availableAmount;
+
+    maxOutUsd = getUsd(maxOut, toInfo.address, false, infoTokens);
+  }
 
   return {
     maxIn,
@@ -274,8 +290,8 @@ export default function PositionSeller(props) {
   let title;
   let fundingFee;
   let positionFee;
+  let swapFeeToken;
   let swapFee;
-  let swapFeeUsd;
   let totalFees = bigNumberify(0);
 
   let executionFee = orderOption === STOP
@@ -367,15 +383,15 @@ export default function PositionSeller(props) {
 
       if (feeBasisPoints) {
         const baseFromAmountUsd = fromAmount.mul(BASIS_POINTS_DIVISOR).div(position.leverage)
-        swapFeeUsd = baseFromAmountUsd.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR)
-        swapFee = getTokenAmount(swapFeeUsd, collateralToken.address, false, infoTokens)
+        swapFee = baseFromAmountUsd.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR)
+        swapFeeToken = getTokenAmount(swapFee, collateralToken.address, false, infoTokens)
       }
     }
 
     totalFees = totalFees
       .add(positionFee || bigNumberify(0))
       .add(fundingFee || bigNumberify(0))
-      .add(swapFeeUsd || bigNumberify(0))
+      .add(swapFee || bigNumberify(0))
 
     if (sizeDelta) {
       if (receiveAmount.gt(totalFees)) {
@@ -674,10 +690,14 @@ export default function PositionSeller(props) {
     const path = [tokenAddress0];
 
     const isUnwrap = receiveToken.address === AddressZero;
-    const isSwap = receiveToken?.address !== tokenAddress0;
+    const isSwap = receiveToken.address !== tokenAddress0;
     
     if (isSwap) {
-      path.push(isUnwrap ? nativeTokenAddress : receiveToken.address)
+      if (isUnwrap && tokenAddress0 !== nativeTokenAddress) {
+        path.push(nativeTokenAddress)
+      } else if (!isUnwrap) {
+        path.push(receiveToken.address)
+      }
     }
 
     const withdrawETH = isUnwrap;
@@ -1060,7 +1080,7 @@ export default function PositionSeller(props) {
 
                           {swapFee && (
                             <div className="PositionSeller-fee-item">
-                              Swap fee: {formatAmountFree(swapFee, collateralToken.decimals, 5)} {collateralToken.symbol} (${formatAmount(swapFeeUsd, USD_DECIMALS, 2, true)})
+                              Swap fee: {formatAmountFree(swapFeeToken, collateralToken.decimals, 5)} {collateralToken.symbol} (${formatAmount(swapFee, USD_DECIMALS, 2, true)})
                             </div>
                           )}
 
