@@ -356,6 +356,15 @@ export default function PositionSeller(props) {
       }
     }
 
+    maxAmount = position.size;
+    maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
+    maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
+
+    if (fromAmount && collateralToken.maxPrice) {
+      convertedAmount = fromAmount.mul(expandDecimals(1, collateralToken.decimals)).div(collateralToken.maxPrice);
+      convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
+    }
+
     receiveToken = (allowReceiveTokenChange && swapToken) 
       ? swapToken
       : collateralToken;
@@ -371,7 +380,7 @@ export default function PositionSeller(props) {
 
       const { feeBasisPoints } = getNextToAmount(
         chainId,
-        fromAmount,
+        convertedAmount,
         collateralToken.address,
         receiveToken.address,
         infoTokens,
@@ -383,8 +392,7 @@ export default function PositionSeller(props) {
       );
 
       if (feeBasisPoints) {
-        const baseFromAmountUsd = fromAmount.mul(BASIS_POINTS_DIVISOR).div(position.leverage)
-        swapFee = baseFromAmountUsd.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR)
+        swapFee = fromAmount.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR)
         swapFeeToken = getTokenAmount(swapFee, collateralToken.address, false, infoTokens)
       }
     }
@@ -415,14 +423,6 @@ export default function PositionSeller(props) {
           }
         }
       }
-    }
-
-    maxAmount = position.size;
-    maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
-    maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
-    if (fromAmount && collateralToken.maxPrice) {
-      convertedAmount = fromAmount.mul(expandDecimals(1, collateralToken.decimals)).div(collateralToken.maxPrice);
-      convertedAmountFormatted = formatAmount(convertedAmount, collateralToken.decimals, 4, true);
     }
 
     if (fromAmount) {
