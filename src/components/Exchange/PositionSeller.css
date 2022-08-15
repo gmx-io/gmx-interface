@@ -26,11 +26,21 @@
 }
 
 @media (max-width: 700px) {
+  .PositionSelector-selected-receive-token {
+    max-width: 200px;
+  }
+
   .PositionSeller-token-selector .Modal .Modal-content {
     width: 90vw;
   }
 
   .PositionSeller-fees-tooltip .Tooltip-popup {
     min-width: 30rem;
+  }
+}
+
+@media (max-width: 350px) {
+  .PositionSelector-selected-receive-token {
+    max-width: 120px;
   }
 }
