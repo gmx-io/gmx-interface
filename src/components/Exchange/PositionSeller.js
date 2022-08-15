@@ -670,7 +670,6 @@ export default function PositionSeller(props) {
     }
     
     const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
-    const token0Info = getTokenInfo(infoTokens, tokenAddress0);
     
     const path = [tokenAddress0];
 
