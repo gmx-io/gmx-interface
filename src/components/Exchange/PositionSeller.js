@@ -1080,12 +1080,12 @@ export default function PositionSeller(props) {
 
                           {swapFee && (
                             <div className="PositionSeller-fee-item">
-                              Swap fee: {formatAmountFree(swapFeeToken, collateralToken.decimals, 5)} {collateralToken.symbol} (${formatAmount(swapFee, USD_DECIMALS, 2, true)})
+                              Swap fee: {formatAmount(swapFeeToken, collateralToken.decimals, 5)} {collateralToken.symbol} (${formatAmount(swapFee, USD_DECIMALS, 2, true)})
                             </div>
                           )}
 
                           <div className="PositionSeller-fee-item">
-                            Execution fee: {formatAmountFree(executionFee, 18, 5)} {nativeTokenSymbol} (${formatAmount(executionFeeUsd, USD_DECIMALS, 2)})
+                            Execution fee: {formatAmount(executionFee, 18, 5, true)} {nativeTokenSymbol} (${formatAmount(executionFeeUsd, USD_DECIMALS, 2)})
                           </div>
 
                           <br />
