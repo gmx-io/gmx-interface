@@ -21,12 +21,12 @@
   position: absolute;
   right: 0;
   top: 4.3rem;
-  min-width: 16rem;
+  min-width: 15.5rem;
   width: 100%;
   transform-origin: top right;
   border-radius: 0.4rem;
   background: #16182e;
-  border: 1px solid #262638;
+  border: 1px solid #32344c;
   list-style: none;
   cursor: pointer;
   outline: none;
@@ -37,11 +37,15 @@
   align-items: center;
   font-size: 1.5rem;
   color: #a0a3c4;
-  padding: 0.6rem 0.8rem;
+  padding-bottom: 1.5rem;
+  font-size: 1.4rem;
+  padding: 0.85rem 0.8rem;
+  /* border: 1px solid transparent; */
   border-radius: 0.4rem;
 }
 .menu-item:hover {
   background: #808aff14 !important;
+  border-radius: 0.4rem;
   opacity: 1;
   color: #eee;
 }
@@ -51,48 +55,6 @@
 }
 .menu-item > a {
   display: inline-flex;
-}
-
-.network-selector-menu-items {
-  border-bottom: 1px solid #262638;
-  padding-bottom: 0.8rem;
-  margin-top: 0.8rem;
-  margin-bottom: 0.8rem;
-}
-
-.network-selector-menu-items-title {
-  font-size: 1.2rem;
-  line-height: 13px;
-  letter-spacing: 0px;
-  margin: 0;
-  padding-left: 0.8rem;
-  color: #a0a3c4;
-  padding-bottom: 0.8rem;
-}
-
-.menu-item__prepend.avatar-dropdown-item {
-  width: 2.4rem;
-  margin-right: 4px;
-}
-
-.selected-icon {
-  position: absolute;
-  width: 0.8rem;
-  height: 0.8rem;
-  border-radius: 50%;
-  right: 1.5rem;
-  background-color: red;
-  display: none;
-}
-
-.selected-icon.Arbitrum {
-  background-color: #4275a8;
-  display: block;
-}
-
-.selected-icon.Avalanche {
-  background-color: #e84142;
-  display: block;
 }
 
 @media screen and (max-width: 370px) {
