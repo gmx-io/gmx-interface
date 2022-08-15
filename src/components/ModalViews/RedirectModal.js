@@ -1,5 +1,6 @@
 import "./RedirectModal.css";
 import { useEffect } from "react";
+import cx from "classnames";
 import Modal from "../Modal/Modal";
 import Checkbox from "../Checkbox/Checkbox";
 
@@ -54,9 +55,11 @@ export function RedirectPopupModal({
           I have read and agree to this message, don't show it again for 30 days.
         </Checkbox>
       </div>
-      <a href={appRedirectUrl} className="App-cta Exchange-swap-button">
-        Agree
-      </a>
+      <div className={cx("Agree-button-container", { disabled: !shouldHideRedirectModal })}>
+        <a href={appRedirectUrl} className={cx("App-cta Exchange-swap-button", { disabled: !shouldHideRedirectModal })}>
+          Agree
+        </a>
+      </div>
     </Modal>
   );
 }

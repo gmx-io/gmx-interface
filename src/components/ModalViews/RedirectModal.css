@@ -4,6 +4,14 @@
   line-height: 1.9rem;
 }
 
+.Agree-button-container.disabled {
+  cursor: not-allowed;
+}
+a.App-cta.disabled {
+  pointer-events: none;
+  background: #2b375e;
+}
+
 .RedirectModal .Modal-body .Checkbox {
   align-items: flex-start;
 }
