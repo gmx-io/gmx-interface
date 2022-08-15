@@ -113,13 +113,13 @@ export default function TokenSelector(props) {
             return (
               <div 
                 key={token.address}
-                className={cx('TokenSelector-token-row', {disabled: tokenState?.disabled})}
+                className={cx('TokenSelector-token-row', {disabled: tokenState.disabled})}
                 onClick={() => !tokenState.disabled && onSelectToken(token)}
               >
                 {tokenState.disabled && tokenState.message && 
                   <Tooltip
                     className="TokenSelector-tooltip"
-                    handle={<div style={{width: '100%', height: '100%'}} />}
+                    handle={<div className="TokenSelector-tooltip-backing" />}
                     position="top"
                     disableHandleStyle
                     renderContent={() => tokenState.message}
