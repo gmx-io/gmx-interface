@@ -1106,11 +1106,11 @@ export default function PositionSeller(props) {
                     />
                   </div>
               </div>
-            <div className="Exchange-info-row top-line">
+            <div className="Exchange-info-row PositionSeller-receive-row top-line">
               <div className="Exchange-info-label">Receive</div>
 
-              {!allowReceiveTokenChange && receiveToken && 
-                <div className="align-right">
+              {!allowReceiveTokenChange && receiveToken &&
+                <div className="align-right PositionSelector-selected-receive-token">
                   {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}&nbsp;{receiveToken.symbol} 
                   {' '}(${formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
                 </div>

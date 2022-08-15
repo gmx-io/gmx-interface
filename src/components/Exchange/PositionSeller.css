@@ -6,15 +6,20 @@
   color: rgb(247, 147, 26);
 }
 
+.PositionSeller-token-selector .TokenSelector-box {
+  display: inline-flex;
+}
+
 .PositionSelector-selected-receive-token {
   white-space: normal;
-  max-width: 250px;
   display: inline-flex;
+  flex: 1;
 }
 
 .PositionSeller-token-selector .TokenSelector-box .TokenSelector-caret {
   margin-left: 0;
   margin-right: -2px;
+  margin-bottom: -2px;
 }
 
 .PositionSeller-fee-item {
@@ -26,10 +31,7 @@
 }
 
 @media (max-width: 700px) {
-  .PositionSelector-selected-receive-token {
-    max-width: 200px;
-  }
-
+ 
   .PositionSeller-token-selector .Modal .Modal-content {
     width: 90vw;
   }
@@ -40,7 +42,19 @@
 }
 
 @media (max-width: 350px) {
-  .PositionSelector-selected-receive-token {
-    max-width: 120px;
+  .PositionSeller-receive-row.Exchange-info-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .Exchange-info-row.PositionSeller-receive-row .TokenSelector-box {
+    margin-top: 8px;
+    text-align: left;
+  }
+
+  .PositionSelector-selected-receive-token.align-right {
+    margin-top: 8px;
+    text-align: left;
   }
 }
