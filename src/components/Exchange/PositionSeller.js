@@ -1111,8 +1111,8 @@ export default function PositionSeller(props) {
 
               {!allowReceiveTokenChange && receiveToken && 
                 <div className="align-right">
-                  {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}{" "}
-                  {receiveToken.symbol} (${formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
+                  {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}&nbsp;{receiveToken.symbol} 
+                  {' '}(${formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
                 </div>
               }
 
@@ -1171,8 +1171,8 @@ export default function PositionSeller(props) {
                           showTokenImgInDropdown={true}
                           selectedTokenLabel={
                             <span className="PositionSelector-selected-receive-token">
-                              {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}{" "}
-                              {receiveToken.symbol} (${formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
+                              {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}&nbsp;{receiveToken.symbol}
+                              {' '}(${formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
                             </span>
                           }
                         /> 
