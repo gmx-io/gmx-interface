@@ -1,0 +1,25 @@
+.PositionDropdown-dots-icon {
+  font-size: 1rem;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  display: inline-flex;
+  align-items: center;
+  margin-top: 0.3rem;
+  background: rgba(255, 255, 255, 0);
+  border-radius: 2rem;
+  padding: 0.5rem;
+}
+
+.PositionDropdown-dots-icon:hover {
+  color: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.PositionDropdown-extra-options {
+  position: relative;
+}
+
+.PositionDropdown-extra-options .menu-items {
+  top: 1rem;
+  min-width: 15.5rem;
+}

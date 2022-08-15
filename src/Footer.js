@@ -1,6 +1,5 @@
 import React from "react";
 import cx from "classnames";
-import { t } from "@lingui/macro";
 import "./Footer.css";
 import logoImg from "./img/ic_gmx_footer.svg";
 import twitterIcon from "./img/ic_twitter.svg";
@@ -13,14 +12,14 @@ import { isHomeSite, getAppBaseUrl, shouldShowRedirectModal } from "./Helpers";
 
 const footerLinks = {
   home: [
-    { text: t`Terms and Conditions`, link: "/terms-and-conditions" },
-    { text: t`Referral Terms`, link: "/referral-terms" },
-    { text: t`Media Kit`, link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
-    { text: t`Jobs`, link: "/jobs", isAppLink: true },
+    { text: "Terms and Conditions", link: "/terms-and-conditions" },
+    { text: "Referral Terms", link: "/referral-terms" },
+    { text: "Media Kit", link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
+    // { text: "Jobs", link: "/jobs", isAppLink: true },
   ],
   app: [
-    { text: t`Media Kit`, link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
-    { text: t`Jobs`, link: "/jobs" },
+    { text: "Media Kit", link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
+    // { text: "Jobs", link: "/jobs" },
   ],
 };
 
