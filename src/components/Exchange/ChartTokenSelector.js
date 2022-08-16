@@ -1,4 +1,5 @@
 import React from "react";
+import cx from "classnames";
 import { Menu } from "@headlessui/react";
 import { FaChevronDown } from "react-icons/fa";
 import "./ChartTokenSelector.css";
@@ -33,8 +34,8 @@ export default function ChartTokenSelector(props) {
   return (
     <Menu>
       <Menu.Button as="div" disabled={isSwap}>
-        <button className="chart-token-selector">
-          <span className="chart-token-selector--current">{value.symbol} / USD</span>
+        <button className={cx("chart-token-selector", { swap: isSwap })}>
+          <span className="chart-token-selector-token">{value.symbol} / USD</span>
           {!isSwap && <FaChevronDown />}
         </button>
       </Menu.Button>

@@ -1,24 +1,42 @@
-.chart-token-selector {
+.chart-token-selector.swap {
+  pointer-events: none;
   border: none;
-  background: transparent;
+}
+
+.chart-token-selector {
+  border: 1px solid #ffffff29;
+  border-radius: 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: white;
-  padding: 0.5rem 0.75rem;
+  position: relative;
+  box-shadow: none;
+  background: none;
+  color: rgba(255, 255, 255, 0.7);
+  opacity: 1;
+  padding: 0.6rem 1rem;
+}
+.chart-token-selector:hover {
+  background: #808aff14;
 }
 
 .asset-dropdown.swap {
   pointer-events: none;
 }
 
-.chart-token-selector--current {
-  font-size: 2.15rem;
+.chart-token-selector-token {
+  font-size: 2rem;
   font-weight: 700;
-  margin-right: 1rem;
+  margin-right: 1.5rem;
   color: white;
 }
 
 .chart-token-menu-items.menu-items {
-  width: 15.8rem;
   top: 6rem;
   right: unset;
   left: 0;
+}
+.chart-token-menu-items .menu-item .token-label {
+  font-size: 1.5rem;
 }

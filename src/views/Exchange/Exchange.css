@@ -298,12 +298,7 @@
 }
 .ExchangeChart-dropdown {
   margin-left: 0.5rem;
-}
-
-.ExchangeChart-dropdown:hover {
-  background: linear-gradient(90deg, rgba(30, 34, 61, 1) 0%, rgba(38, 43, 71, 1) 100%);
-  box-shadow: inset 0px 0px 3rem 0.5rem rgb(255 255 255 / 1%);
-  border-radius: var(--border-radius-sm);
+  position: relative;
 }
 
 .ExchangeChart.tv .ExchangeChart-top {
