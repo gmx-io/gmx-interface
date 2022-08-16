@@ -93,7 +93,7 @@ export default function TokenSelector(props) {
               autoFocus
             />
           </div>
-          {filteredTokens.map((token) => {
+          {filteredTokens.map((token, tokenIndex) => {
             let tokenPopupImage;
             try {
               tokenPopupImage = require("../../img/ic_" + token.symbol.toLowerCase() + "_40.svg");
@@ -127,7 +127,7 @@ export default function TokenSelector(props) {
                     className="TokenSelector-tooltip"
                     portalClassName="TokenSelector-tooltip-portal"
                     handle={<div className="TokenSelector-tooltip-backing" />}
-                    position="center-top"
+                    position={tokenIndex < (filteredTokens.length / 2) ? 'center-bottom' : 'center-top'}
                     disableHandleStyle
                     closeOnDoubleClick
                     fitHandleWidth

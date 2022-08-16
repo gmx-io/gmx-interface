@@ -34,8 +34,11 @@ export default function TooltipWithPortal(props) {
 
   const updateTooltipCoords = useCallback(() => {
     const rect = handlerRef.current.getBoundingClientRect();
+
     setCoords({
-      left: rect.x + rect.width / 2,
+      height: rect.height,
+      width: rect.width,
+      left: rect.x,
       top: rect.y + window.scrollY,
     });
 
@@ -109,7 +112,7 @@ export default function TooltipWithPortal(props) {
       </span>
       {visible && coords.left && (
         <Portal>
-          <div className={props.portalClassName} style={{ ...coords, position: "absolute" }}>
+          <div style={{ ...coords, position: "absolute" }}>
             <div 
               className={cx(["Tooltip-popup", position])}
               style={{width: tooltipWidth}}
