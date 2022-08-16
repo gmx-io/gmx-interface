@@ -369,6 +369,7 @@ export default function PositionSeller(props) {
       .add(fundingFee || bigNumberify(0))
 
     receiveAmount = receiveAmount.add(collateralDelta);
+    receiveAmount = receiveAmount.mul(1000000);
 
     if (sizeDelta) {
       if (receiveAmount.gt(totalFees)) {
