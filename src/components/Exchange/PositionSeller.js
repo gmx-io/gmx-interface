@@ -38,7 +38,6 @@ import {
   getNextToAmount,
   getUsd,
   USDG_DECIMALS,
-  helperToast,
   CLOSE_POSITION_RECEIVE_TOKEN_KEY,
   useLocalStorageByChainId,
 } from "../../Helpers";
@@ -1135,7 +1134,6 @@ export default function PositionSeller(props) {
                           onSelectToken={(token) => {
                             setSwapToken(token)
                             setSavedRecieveTokenAddress(token.address);
-                            helperToast.success(`${token.symbol} Selected as Receive token. Fees have been updated.`)
                           }}
                           tokens={toTokens}
                           getTokenState={(tokenOptionInfo) => {
