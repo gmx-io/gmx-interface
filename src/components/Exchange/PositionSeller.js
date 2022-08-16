@@ -38,7 +38,6 @@ import {
   getNextToAmount,
   getUsd,
   USDG_DECIMALS,
-  helperToast,
   CLOSE_POSITION_RECEIVE_TOKEN_KEY,
   useLocalStorageByChainId,
 } from "../../Helpers";
@@ -1126,6 +1125,9 @@ export default function PositionSeller(props) {
               {allowReceiveTokenChange && receiveToken && 
                   <div className="align-right">
                     <TokenSelector
+                          // Scroll lock lead to side effects 
+                          // if it applied on modal inside another modal
+                          disableBodyScrollLock={true}
                           className={cx('PositionSeller-token-selector', {warning: notEnoughReceiveTokenLiquidity})}
                           label={"Select the currency to be paid in"}
                           showBalances={false}
@@ -1134,7 +1136,6 @@ export default function PositionSeller(props) {
                           onSelectToken={(token) => {
                             setSwapToken(token)
                             setSavedRecieveTokenAddress(token.address);
-                            helperToast.success(`${token.symbol} Selected as Receive token. Fees have been updated.`)
                           }}
                           tokens={toTokens}
                           getTokenState={(tokenOptionInfo) => {

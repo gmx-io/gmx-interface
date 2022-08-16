@@ -2062,7 +2062,7 @@ export default function SwapBox(props) {
             {isLong && (
               <div className="Exchange-info-row">
                 <div className="Exchange-info-label">Collateral In</div>
-                <div className="align-right strong">
+                <div className="align-right">
                 <Tooltip
                     position="right-bottom"
                     handle="USD"
