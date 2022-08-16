@@ -42,7 +42,7 @@ export default function TooltipWithPortal(props) {
     if (props.fitHandleWidth) {
       setTooltipWidth(`${rect.width}px`);
     }
-  }, [handlerRef]);
+  }, [handlerRef, props.fitHandleWidth]);
 
   const onMouseEnter = useCallback(() => {
     if (trigger !== "hover" || IS_TOUCH) return;
@@ -77,7 +77,13 @@ export default function TooltipWithPortal(props) {
     } else {
       setVisible(true);
     }
-  }, [setVisible, intervalCloseRef, trigger, updateTooltipCoords]);
+  }, [
+    setVisible,
+    intervalCloseRef,
+    trigger,
+    updateTooltipCoords,
+    props.closeOnDoubleClick
+  ]);
 
   const onMouseLeave = useCallback(() => {
     intervalCloseRef.current = setTimeout(() => {
