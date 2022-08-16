@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import cx from "classnames";
 
@@ -7,12 +7,13 @@ import { IS_TOUCH } from "../../utils/constants";
 
 function Portal({ children }) {
   const root = document.body;
-  const el = document.createElement("div");
+
+  const el = useMemo(() => document.createElement("div"), []);
 
   useEffect(() => {
     root.appendChild(el);
     return () => root.removeChild(el);
-  }, [el, root]);
+  }, [root, el]);
 
   return createPortal(children, el);
 }
@@ -23,6 +24,7 @@ const CLOSE_DELAY = 100;
 export default function TooltipWithPortal(props) {
   const [visible, setVisible] = useState(false);
   const [coords, setCoords] = useState({});
+  const [tooltipWidth, setTooltipWidth] = useState();
   const intervalCloseRef = useRef(null);
   const intervalOpenRef = useRef(null);
 
@@ -36,6 +38,10 @@ export default function TooltipWithPortal(props) {
       left: rect.x + rect.width / 2,
       top: rect.y + window.scrollY,
     });
+
+    if (props.fitHandleWidth) {
+      setTooltipWidth(`${rect.width}px`);
+    }
   }, [handlerRef]);
 
   const onMouseEnter = useCallback(() => {
@@ -65,7 +71,12 @@ export default function TooltipWithPortal(props) {
       intervalOpenRef.current = null;
     }
     updateTooltipCoords();
-    setVisible(true);
+
+    if (props.closeOnDoubleClick) {
+      setVisible(old => !old);
+    } else {
+      setVisible(true);
+    }
   }, [setVisible, intervalCloseRef, trigger, updateTooltipCoords]);
 
   const onMouseLeave = useCallback(() => {
@@ -81,6 +92,7 @@ export default function TooltipWithPortal(props) {
   }, [setVisible, intervalCloseRef, updateTooltipCoords]);
 
   const className = cx("Tooltip", props.className);
+
   return (
     <span className={className} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
       <span
@@ -91,8 +103,13 @@ export default function TooltipWithPortal(props) {
       </span>
       {visible && coords.left && (
         <Portal>
-          <div style={{ ...coords, position: "absolute" }}>
-            <div className={cx(["Tooltip-popup", position])}>{props.renderContent()}</div>
+          <div className={props.portalClassName} style={{ ...coords, position: "absolute" }}>
+            <div 
+              className={cx(["Tooltip-popup", position])}
+              style={{width: tooltipWidth}}
+            >
+                {props.renderContent()}
+            </div>
           </div>
         </Portal>
       )}

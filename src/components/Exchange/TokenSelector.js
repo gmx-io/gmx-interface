@@ -11,7 +11,7 @@ import Modal from "../Modal/Modal";
 
 import dropDownIcon from "../../img/DROP_DOWN.svg";
 import "./TokenSelector.css";
-import Tooltip from "../Tooltip/Tooltip";
+import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
 export default function TokenSelector(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -123,11 +123,14 @@ export default function TokenSelector(props) {
                 onClick={() => !tokenState.disabled && onSelectToken(token)}
               >
                 {tokenState.disabled && tokenState.message && 
-                  <Tooltip
+                  <TooltipWithPortal
                     className="TokenSelector-tooltip"
+                    portalClassName="TokenSelector-tooltip-portal"
                     handle={<div className="TokenSelector-tooltip-backing" />}
-                    position="top"
+                    position="center-top"
                     disableHandleStyle
+                    closeOnDoubleClick
+                    fitHandleWidth
                     renderContent={() => tokenState.message}
                   />
                 }
