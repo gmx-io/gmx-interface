@@ -4,7 +4,7 @@ import Tooltip from "../Tooltip/Tooltip";
 import Modal from "../Modal/Modal";
 import Slider, { SliderTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
-import './SwapBox.css';
+import "./SwapBox.css";
 
 import cx from "classnames";
 import useSWR from "swr";
@@ -2063,17 +2063,18 @@ export default function SwapBox(props) {
               <div className="Exchange-info-row">
                 <div className="Exchange-info-label">Collateral In</div>
                 <div className="align-right">
-                <Tooltip
+                  <Tooltip
                     position="right-bottom"
                     handle="USD"
                     renderContent={() => (
                       <span className="SwapBox-collateral-tooltip-text">
-                          A snapshot of the USD value of the collateral is taken when the position is opened.
-                          <br /><br />
-                          When closing the position, you can select which token you would like to receive the profits in.
+                        A snapshot of the USD value of your collateral is taken when the position is opened.
+                        <br />
+                        <br />
+                        When closing the position, you can select which token you would like to receive.
                       </span>
                     )}
-                />
+                  />
                 </div>
               </div>
             )}
