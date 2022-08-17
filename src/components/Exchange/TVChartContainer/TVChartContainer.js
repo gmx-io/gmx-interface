@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { widget } from "../../../charting_library/charting_library";
+import { widget } from "../../../charting_library";
 import Datafeed from "./api/DataFeed";
 import "./TVChartContainer.css";
 
