@@ -252,8 +252,12 @@ export default function OrdersList(props) {
                   return (
                     <TooltipCardRow
                       label="Collateral"
-                      value={`${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (
-                      ${formatAmount(order.purchaseTokenAmount, collateralTokenInfo.decimals, 4, true)}
+                      value={`${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (${formatAmount(
+                        order.purchaseTokenAmount,
+                        collateralTokenInfo.decimals,
+                        4,
+                        true
+                      )}
                       ${collateralTokenInfo.baseSymbol || collateralTokenInfo.symbol})`}
                     />
                   );
