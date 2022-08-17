@@ -964,16 +964,22 @@ export function executeDecreaseOrder(chainId, library, account, index, feeReceiv
 const NOT_ENOUGH_FUNDS = "NOT_ENOUGH_FUNDS";
 const USER_DENIED = "USER_DENIED";
 const SLIPPAGE = "SLIPPAGE";
+const RPC_ERROR = "RPC_ERROR";
+
 const TX_ERROR_PATTERNS = {
   [NOT_ENOUGH_FUNDS]: ["not enough funds for gas", "failed to execute call with revert code InsufficientGasFunds"],
   [USER_DENIED]: ["User denied transaction signature"],
   [SLIPPAGE]: ["Router: mark price lower than limit", "Router: mark price higher than limit"],
+  [RPC_ERROR]: ["Non-200 status code", "Request limit exceeded", "Internal JSON-RPC error"],
 };
+
 export function extractError(ex) {
   if (!ex) {
     return [];
   }
+
   const message = ex.data?.message || ex.message;
+
   if (!message) {
     return [];
   }
@@ -1063,6 +1069,23 @@ export async function callContract(chainId, contract, method, params, opts) {
       case SLIPPAGE:
         failMsg =
           'The mark price has changed, consider increasing your Allowed Slippage by clicking on the "..." icon next to your address.';
+        break;
+      case RPC_ERROR:
+        failMsg = (
+          <div>
+            Transaction failed due to RPC error
+            <br />
+            <br />
+            Try to change the RPC url in{" "}
+            <a
+              href="https://metamask.zendesk.com/hc/en-us/articles/360043227612-How-to-add-a-custom-network-RPC"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Metamask settings
+            </a>
+          </div>
+        );
         break;
       default:
         failMsg = (
