@@ -1,4 +1,4 @@
-import { getChainlinkChartPricesFromGraph, getChartPricesFromStats } from "../../../../Api";
+import { getChartPricesFromStats } from "../../../../Api";
 import { ARBITRUM } from "../../../../Helpers";
 
 const supportedResolutions = { 5: "5m", 15: "15m", 60: "1h", 240: "4h", "1D": "1d" };

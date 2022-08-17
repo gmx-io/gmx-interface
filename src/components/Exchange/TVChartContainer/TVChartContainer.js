@@ -11,7 +11,7 @@ function getLanguageFromURL() {
 
 const defaultProps = {
   symbol: "ETH",
-  interval: "15",
+  interval: "4h",
   theme: "Dark",
   containerId: "tv_chart_container",
   libraryPath: "/charting_library/",
