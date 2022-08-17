@@ -8,9 +8,11 @@ import "./Modal.css";
 import useLockBodyScroll from "../../hooks/useLockBodyScroll";
 
 export default function Modal(props) {
-  const { isVisible, setIsVisible, className, zIndex, onAfterOpen } = props;
+  const { isVisible, setIsVisible, className, zIndex, onAfterOpen, disableBodyScrollLock } = props;
   const modalRef = useRef(null);
-  useLockBodyScroll(modalRef, isVisible);
+
+  useLockBodyScroll(modalRef, isVisible, disableBodyScrollLock);
+
   useEffect(() => {
     function close(e) {
       if (e.keyCode === 27) {
