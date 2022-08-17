@@ -77,7 +77,7 @@ export default function TokenSelector(props) {
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)}>
       <Modal 
-        ignoreBodyScrollLock={disableBodyScrollLock}
+        disableBodyScrollLock={disableBodyScrollLock}
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}
