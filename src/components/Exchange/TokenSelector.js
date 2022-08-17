@@ -28,7 +28,7 @@ export default function TokenSelector(props) {
     showTokenImgInDropdown = false,
     showSymbolImage = false,
     showNewCaret = false,
-    getTokenState = () => ({disabled: false, message: null}),
+    getTokenState = () => ({ disabled: false, message: null }),
     disableBodyScrollLock,
   } = props;
 
@@ -76,8 +76,8 @@ export default function TokenSelector(props) {
 
   return (
     <div className={cx("TokenSelector", { disabled }, props.className)}>
-      <Modal 
-        ignoreBodyScrollLock={disableBodyScrollLock}
+      <Modal
+        disableBodyScrollLock={disableBodyScrollLock}
         isVisible={isModalVisible}
         setIsVisible={setIsModalVisible}
         label={props.label}
@@ -114,26 +114,26 @@ export default function TokenSelector(props) {
               balanceUsd = balance.mul(info.maxPrice).div(expandDecimals(1, token.decimals));
             }
 
-            const tokenState = getTokenState(info)|| {};
+            const tokenState = getTokenState(info) || {};
 
             return (
-              <div 
+              <div
                 key={token.address}
-                className={cx('TokenSelector-token-row', {disabled: tokenState.disabled})}
+                className={cx("TokenSelector-token-row", { disabled: tokenState.disabled })}
                 onClick={() => !tokenState.disabled && onSelectToken(token)}
               >
-                {tokenState.disabled && tokenState.message && 
+                {tokenState.disabled && tokenState.message && (
                   <TooltipWithPortal
                     className="TokenSelector-tooltip"
                     portalClassName="TokenSelector-tooltip-portal"
                     handle={<div className="TokenSelector-tooltip-backing" />}
-                    position={tokenIndex < (filteredTokens.length / 2) ? 'center-bottom' : 'center-top'}
+                    position={tokenIndex < filteredTokens.length / 2 ? "center-bottom" : "center-top"}
                     disableHandleStyle
                     closeOnDoubleClick
                     fitHandleWidth
                     renderContent={() => tokenState.message}
                   />
-                }
+                )}
                 <div className="Token-info">
                   {showTokenImgInDropdown && (
                     <img src={tokenPopupImage?.default} alt={token.name} className="token-logo" />
@@ -163,24 +163,21 @@ export default function TokenSelector(props) {
           })}
         </div>
       </Modal>
-      {selectedTokenLabel
-        ? (
-            <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
-              {selectedTokenLabel}
-              {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}
-            </div>
-          )
-        : (
-          <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
-            {tokenInfo.symbol}
-            {showSymbolImage && (
-              <img src={tokenImage && tokenImage.default} alt={tokenInfo.symbol} className="TokenSelector-box-symbol" />
-            )}
-            {showNewCaret && <img src={dropDownIcon} alt="dropDownIcon" className="TokenSelector-box-caret" />}
-            {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}
-          </div>
-        )
-      }
+      {selectedTokenLabel ? (
+        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
+          {selectedTokenLabel}
+          {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}
+        </div>
+      ) : (
+        <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
+          {tokenInfo.symbol}
+          {showSymbolImage && (
+            <img src={tokenImage && tokenImage.default} alt={tokenInfo.symbol} className="TokenSelector-box-symbol" />
+          )}
+          {showNewCaret && <img src={dropDownIcon} alt="dropDownIcon" className="TokenSelector-box-caret" />}
+          {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}
+        </div>
+      )}
     </div>
   );
 }
