@@ -1,6 +1,8 @@
 .chart-token-selector.swap {
   pointer-events: none;
   border: none;
+  margin-right: 1.35rem;
+  border: 1px solid transparent;
 }
 
 .chart-token-selector {
@@ -15,7 +17,7 @@
   background: none;
   color: rgba(255, 255, 255, 0.7);
   opacity: 1;
-  padding: 0.6rem 1rem;
+  padding: 0.5rem 1rem;
 }
 .chart-token-selector:hover {
   background: #808aff14;
@@ -39,4 +41,13 @@
 }
 .chart-token-menu-items .menu-item .token-label {
   font-size: 1.5rem;
+}
+
+@media (max-width: 730px) {
+  .chart-token-selector.swap {
+    margin-right: 0;
+  }
+  .chart-token-selector-token {
+    margin-right: 0;
+  }
 }
