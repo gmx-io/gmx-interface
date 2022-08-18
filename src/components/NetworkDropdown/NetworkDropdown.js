@@ -4,7 +4,6 @@ import cx from "classnames";
 import "./NetworkDropdown.css";
 import arbitrumIcon from "../../img/ic_arbitrum_24.svg";
 import avaxIcon from "../../img/ic_avalanche_24.svg";
-import { Trans } from "@lingui/macro";
 import { importImage } from "../../Helpers";
 
 export default function NetworkDropdown({ networkOptions, selectorLabel, onNetworkSelect }) {
@@ -20,8 +19,6 @@ export default function NetworkDropdown({ networkOptions, selectorLabel, onNetwo
       </Menu.Button>
 
       <Menu.Items as="div" className="menu-items network-dropdown-menu-items">
-        {/* <div className="Network-label">Networks</div>
-        <div className="divider"></div> */}
         {networkOptions.map((network) => {
           const networkIcon = importImage(network.icon);
           return (
@@ -31,9 +28,7 @@ export default function NetworkDropdown({ networkOptions, selectorLabel, onNetwo
                 onClick={() => handleNetworkSelect({ value: network.value })}
               >
                 <img src={networkIcon} alt={network.label} />
-                <span className="network-dropdown-menu-item-label menu-item-label">
-                  <Trans>{network.label}</Trans>
-                </span>
+                <span className="network-dropdown-menu-item-label menu-item-label">{network.label}</span>
                 <div className={cx("selected-icon", { [selectorLabel]: selectorLabel === network.label })} />
               </div>
             </Menu.Item>

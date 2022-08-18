@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from "react";
-
 import Tooltip from "../Tooltip/Tooltip";
 import { Trans, t } from "@lingui/macro";
 import Modal from "../Modal/Modal";
@@ -209,11 +208,11 @@ export default function SwapBox(props) {
   function getTokenLabel() {
     switch (true) {
       case isLong:
-        return "Long";
+        return t`Long`;
       case isShort:
-        return "Short";
+        return t`Short`;
       case isSwap:
-        return "Receive";
+        return t`Receive`;
       default:
         return "";
     }
@@ -1028,12 +1027,12 @@ export default function SwapBox(props) {
 
   const getToLabel = () => {
     if (isSwap) {
-      return "Receive";
+      return t`Receive`;
     }
     if (isLong) {
-      return "Long";
+      return t`Long`;
     }
-    return "Short";
+    return t`Short`;
   };
 
   const getError = () => {
@@ -1898,10 +1897,14 @@ export default function SwapBox(props) {
                   {!toUsdMax && getToLabel()}
                 </div>
                 {toBalance && isSwap && (
-                  <div className="muted align-right">Balance: {formatAmount(toBalance, toToken.decimals, 4, true)}</div>
+                  <div className="muted align-right">
+                    <Trans>Balance</Trans>: {formatAmount(toBalance, toToken.decimals, 4, true)}
+                  </div>
                 )}
                 {(isLong || isShort) && hasLeverageOption && (
-                  <div className="muted align-right">Leverage: {parseFloat(leverageOption).toFixed(2)}x</div>
+                  <div className="muted align-right">
+                    <Trans>Leverage</Trans>: {parseFloat(leverageOption).toFixed(2)}x
+                  </div>
                 )}
               </div>
               <div className="Exchange-swap-section-bottom">

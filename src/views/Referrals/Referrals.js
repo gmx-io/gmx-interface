@@ -1,7 +1,7 @@
 import "./Referrals.css";
 import React from "react";
 import { useLocalStorage } from "react-use";
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import { useParams } from "react-router-dom";
 import SEO from "../../components/Common/SEO";
@@ -29,8 +29,8 @@ import AddAffiliateCode from "../../components/Referrals/AddAffiliateCode";
 import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "../../components/Referrals/referralsHelper";
 import { ethers } from "ethers";
 
-const TRADERS = "Traders";
-const AFFILIATES = "Affiliates";
+const TRADERS = t`Traders`;
+const AFFILIATES = t`Affiliates`;
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
 
 function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
@@ -54,8 +54,8 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
 
   function handleCreateReferralCode(referralCode) {
     return registerReferralCode(chainId, referralCode, library, {
-      sentMsg: "Referral code submitted!",
-      failMsg: "Referral code creation failed.",
+      sentMsg: t`Referral code submitted!`,
+      failMsg: t`Referral code creation failed.`,
       pendingTxns,
     });
   }

@@ -18,9 +18,26 @@ msgstr ""
 msgid ", and use GMX with its built-in browser"
 msgstr ""
 
+#: src/components/Exchange/OrdersToa.js:52
+msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
+msgstr ""
+
 #: src/App.js:200
+#: src/views/Ecosystem/Ecosystem.js:343
+#: src/views/Ecosystem/Ecosystem.js:387
+#: src/views/Ecosystem/Ecosystem.js:442
+#: src/views/Ecosystem/Ecosystem.js:496
+#: src/views/Ecosystem/Ecosystem.js:543
 msgid "About"
 msgstr "关于"
+
+#: src/components/Exchange/OrdersToa.js:24
+msgid "Accept terms to enable orders"
+msgstr ""
+
+#: src/components/Exchange/OrdersToa.js:68
+msgid "Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price"
+msgstr ""
 
 #: src/views/Actions/Actions.js:86
 msgid "Account"
@@ -30,13 +47,34 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
+#: src/components/Referrals/TradersStats.js:34
+msgid "Active Referral Code"
+msgstr ""
+
 #: src/views/Dashboard/AssetDropdown.js:74
 msgid "Add to Metamask"
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.js:91
+#: src/components/Referrals/JoinReferralCode.js:91
+msgid "Adding referral code failed."
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.js:55
+msgid "Adding..."
+msgstr ""
+
+#: src/components/Exchange/OrdersToa.js:60
+msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.js:71
 #~ msgid "Address copied to your clipboard"
 #~ msgstr ""
+
+#: src/views/Referrals/Referrals.js:33
+msgid "Affiliates"
+msgstr ""
 
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:425
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
@@ -55,12 +93,25 @@ msgstr ""
 msgid "Allowed Slippage"
 msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js:221
+#: src/components/Referrals/TradersStats.js:84
+msgid "Amount"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js:70
+msgid "Amount of traders you referred."
+msgstr ""
+
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:440
 msgid "Amount to claim"
 msgstr ""
 
 #: src/views/Home/Home.js:204
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
+msgstr ""
+
+#: src/views/Ecosystem/Ecosystem.js:502
+msgid "Announcement"
 msgstr ""
 
 #: src/views/BeginAccountTransfer/BeginAccountTransfer.js:174
@@ -112,6 +163,14 @@ msgstr ""
 msgid "Binance"
 msgstr ""
 
+#: src/components/Exchange/PositionsList.js:492
+msgid "Borrow Fee / Day: ${0}"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js:615
+msgid "Borrow Fee: ${0}"
+msgstr ""
+
 #: src/App.js:185
 msgid "Buy"
 msgstr "买"
@@ -159,6 +218,17 @@ msgstr ""
 msgid "Buy on Avalanche"
 msgstr ""
 
+#: src/components/Exchange/OrdersList.js:133
+#: src/components/Exchange/OrdersList.js:366
+#: src/components/Exchange/OrdersList.js:443
+msgid "Cancel"
+msgstr ""
+
+#: src/components/Referrals/AddAffiliateCode.js:92
+#: src/components/Referrals/JoinReferralCode.js:61
+msgid "Checking code..."
+msgstr ""
+
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:296
 msgid "Claim"
 msgstr ""
@@ -183,12 +253,30 @@ msgstr ""
 msgid "Claiming..."
 msgstr ""
 
+#: src/components/Referrals/AddAffiliateCode.js:89
+msgid "Code already taken"
+msgstr ""
+
 #: src/App.js:927
 msgid "Coinbase Wallet"
 msgstr ""
 
 #: src/App.js:413
 msgid "Coinbase Wallet not detected."
+msgstr ""
+
+#: src/components/Exchange/OrdersList.js:426
+#: src/components/Exchange/PositionsList.js:269
+#: src/components/Exchange/PositionsList.js:451
+msgid "Collateral"
+msgstr ""
+
+#: src/views/Ecosystem/Ecosystem.js:354
+msgid "Community Projects"
+msgstr ""
+
+#: src/views/Ecosystem/Ecosystem.js:520
+msgid "Community-led Telegram groups."
 msgstr ""
 
 #: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:95
@@ -204,6 +292,8 @@ msgid "Connect"
 msgstr ""
 
 #: src/App.js:272
+#: src/components/Referrals/AddAffiliateCode.js:34
+#: src/components/Referrals/JoinReferralCode.js:22
 msgid "Connect Wallet"
 msgstr ""
 
@@ -212,24 +302,62 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js:78
-#~ msgid "Copy Address"
-#~ msgstr ""
+#: src/components/Exchange/PositionShare.js:108
+msgid "Copy"
+msgstr ""
+
+#: src/components/AddressDropdown/AddressDropdown.js:39
+msgid "Copy Address"
+msgstr ""
+
+#: src/components/Referrals/AddAffiliateCode.js:109
+msgid "Create"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js:89
+msgid "Create Referral Code"
+msgstr ""
+
+#: src/components/Referrals/AddAffiliateCode.js:106
+msgid "Creating..."
+msgstr ""
+
+#: src/views/Ecosystem/Ecosystem.js:393
+#: src/views/Ecosystem/Ecosystem.js:448
+msgid "Creator"
+msgstr ""
 
 #: src/App.js:175
 msgid "Dashboard"
 msgstr "仪表板"
 
+#: src/views/Ecosystem/Ecosystem.js:408
+msgid "Dashboards"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js:218
+#: src/components/Referrals/TradersStats.js:81
+msgid "Date"
+msgstr ""
+
 #: src/views/Home/Home.js:150
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js:98
-#~ msgid "Disconnect"
-#~ msgstr ""
+#: src/App.js:971
+msgid "Disable order validations"
+msgstr ""
+
+#: src/components/AddressDropdown/AddressDropdown.js:55
+msgid "Disconnect"
+msgstr ""
 
 #: src/App.js:960
 msgid "Display PnL after fees"
+msgstr ""
+
+#: src/components/Exchange/PositionShare.js:112
+msgid "Download"
 msgstr ""
 
 #: src/views/BuyGMX/BuyGMX.js:46
@@ -244,12 +372,45 @@ msgstr "赚"
 msgid "Ecosystem"
 msgstr "生态系统"
 
+#: src/components/Exchange/OrdersList.js:128
+#: src/components/Exchange/OrdersList.js:363
+#: src/components/Exchange/OrdersList.js:440
+#: src/components/Exchange/PositionsList.js:419
+msgid "Edit"
+msgstr ""
+
+#: src/components/Exchange/PositionDropdown.js:23
+msgid "Edit Collateral"
+msgstr ""
+
+#: src/components/Referrals/TradersStats.js:59
+msgid "Edit Referral Code"
+msgstr ""
+
+#: src/components/Exchange/OrdersToa.js:26
+#: src/components/Exchange/OrdersToa.js:40
+msgid "Enable Orders"
+msgstr ""
+
+#: src/components/Exchange/OrdersToa.js:21
+msgid "Enabling Orders..."
+msgstr ""
+
 #: src/components/SettingDropdown/SettingDropdown.js:43
 #~ msgid "English"
 #~ msgstr ""
 
 #: src/views/BeginAccountTransfer/BeginAccountTransfer.js:134
 msgid "Enter Receiver Address"
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.js:12
+#: src/components/Referrals/JoinReferralCode.js:58
+msgid "Enter Referral Code"
+msgstr ""
+
+#: src/components/Referrals/AddAffiliateCode.js:86
+msgid "Enter a code"
 msgstr ""
 
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:275
@@ -260,6 +421,11 @@ msgstr ""
 msgid "Enter and exit positions with minimal spread and zero price impact. Get the optimal price without incurring additional costs."
 msgstr ""
 
+#: src/components/Exchange/PositionsList.js:394
+#: src/components/Exchange/PositionsList.js:457
+msgid "Entry Price"
+msgstr ""
+
 #: src/components/SettingDropdown/SettingDropdown.js:53
 #~ msgid "French"
 #~ msgstr ""
@@ -268,8 +434,20 @@ msgstr ""
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 msgstr ""
 
+#: src/views/Ecosystem/Ecosystem.js:309
+msgid "GMX Pages"
+msgstr ""
+
 #: src/views/BuyGMX/BuyGMX.js:269
 msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
+msgstr ""
+
+#: src/views/Ecosystem/Ecosystem.js:411
+msgid "GMX dashboards and analytics."
+msgstr ""
+
+#: src/views/Ecosystem/Ecosystem.js:312
+msgid "GMX ecosystem pages."
 msgstr ""
 
 #: src/views/Home/Home.js:247
@@ -282,6 +460,10 @@ msgstr ""
 
 #: src/components/Common/SEO.js:8
 msgid "GMX | Decentralized Perpetual Exchange"
+msgstr ""
+
+#: src/components/Referrals/AddAffiliateCode.js:18
+msgid "Generate Referral Code"
 msgstr ""
 
 #: src/views/Referrals/Referrals.js:124
@@ -302,6 +484,10 @@ msgstr ""
 
 #: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:39
 msgid "Incorrect Account"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js:613
+msgid "Initial Collateral: ${0}"
 msgstr ""
 
 #: src/App.js:417
@@ -337,9 +523,35 @@ msgstr ""
 msgid "Launch Exchange"
 msgstr ""
 
+#: src/components/Exchange/PositionsList.js:247
+msgid "Leverage"
+msgstr ""
+
+#: src/views/Ecosystem/Ecosystem.js:333
+#: src/views/Ecosystem/Ecosystem.js:377
+#: src/views/Ecosystem/Ecosystem.js:432
+#: src/views/Ecosystem/Ecosystem.js:486
+#: src/views/Ecosystem/Ecosystem.js:533
+msgid "Link"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js:400
+#: src/components/Exchange/PositionsList.js:460
+msgid "Liq. Price"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js:215
+msgid "Loading..."
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js:257
 #: src/views/Actions/Actions.js:98
 #: src/views/Actions/Actions.js:102
 msgid "Long"
+msgstr ""
+
+#: src/components/Referrals/AddAffiliateCode.js:21
+msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr ""
 
 #: src/views/Actions/Actions.js:102
@@ -352,14 +564,22 @@ msgstr ""
 msgid "MAX"
 msgstr ""
 
+#: src/components/Exchange/OrdersList.js:101
+#: src/components/Exchange/OrdersList.js:354
+#: src/components/Exchange/OrdersList.js:406
+#: src/components/Exchange/PositionsList.js:388
+#: src/components/Exchange/PositionsList.js:454
+msgid "Mark Price"
+msgstr ""
+
 #: src/App.js:513
 msgid "Max slippage precision is 0.01%"
 msgstr ""
 
 #: src/Footer.js:18
 #: src/Footer.js:22
-#~ msgid "Media Kit"
-#~ msgstr ""
+msgid "Media Kit"
+msgstr ""
 
 #: src/App.js:921
 msgid "MetaMask"
@@ -374,6 +594,11 @@ msgstr ""
 msgid "Multiswap"
 msgstr ""
 
+#: src/components/Exchange/PositionsList.js:317
+#: src/components/Exchange/PositionsList.js:445
+msgid "Net Value"
+msgstr ""
+
 #: src/components/AddressDropdown/AddressDropdown.js:41
 #~ msgid "Networks"
 #~ msgstr ""
@@ -384,6 +609,23 @@ msgstr ""
 
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:271
 msgid "No esGMX to claim"
+msgstr ""
+
+#: src/components/Exchange/OrdersList.js:116
+msgid "No open orders"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js:220
+msgid "No open positions"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js:265
+#: src/components/Referrals/TradersStats.js:125
+msgid "No rebates distribution history yet."
+msgstr ""
+
+#: src/components/Exchange/OrdersToa.js:44
+msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr ""
 
 #: src/views/BuyGlp/BuyGlp.js:43
@@ -411,8 +653,21 @@ msgstr ""
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr ""
 
+#: src/components/Exchange/OrdersList.js:91
+msgid "Order"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js:350
 #: src/views/Actions/Actions.js:131
 msgid "Orders"
+msgstr ""
+
+#: src/views/Ecosystem/Ecosystem.js:463
+msgid "Partnerships and Integrations"
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.js:15
+msgid "Please input a referral code to benefit from fee discounts."
 msgstr ""
 
 #: src/views/BeginAccountTransfer/BeginAccountTransfer.js:234
@@ -423,16 +678,34 @@ msgstr ""
 msgid "Please switch your network to Arbitrum."
 msgstr ""
 
+#: src/components/Exchange/PositionsList.js:301
 #: src/views/Actions/Actions.js:89
 msgid "PnL"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js:442
+msgid "Position"
 msgstr ""
 
 #: src/views/Actions/Actions.js:112
 msgid "Positions"
 msgstr ""
 
+#: src/components/Exchange/OrdersList.js:96
+#: src/components/Exchange/OrdersList.js:398
+msgid "Price"
+msgstr ""
+
 #: src/views/Actions/Actions.js:98
 msgid "Profit"
+msgstr ""
+
+#: src/views/Ecosystem/Ecosystem.js:357
+msgid "Projects developed by the GMX community."
+msgstr ""
+
+#: src/views/Ecosystem/Ecosystem.js:466
+msgid "Projects integrated with GMX."
 msgstr ""
 
 #: src/views/BuyGlp/BuyGlp.js:35
@@ -447,6 +720,19 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.js:82
 #: src/components/TokenCard/TokenCard.js:114
 msgid "Read more"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js:264
+#: src/components/Referrals/TradersStats.js:126
+msgid "Rebates are airdropped weekly."
+msgstr ""
+
+#: src/components/Referrals/TradersStats.js:30
+msgid "Rebates earned by this account as a trader."
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js:80
+msgid "Rebates earned by this account as an affiliate."
 msgstr ""
 
 #: src/views/BeginAccountTransfer/BeginAccountTransfer.js:251
@@ -465,14 +751,49 @@ msgstr ""
 msgid "Reduce Liquidation Risks"
 msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js:121
+msgid "Referral Code"
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.js:64
+msgid "Referral Code does not exist"
+msgstr ""
+
 #: src/Footer.js:17
-#~ msgid "Referral Terms"
-#~ msgstr ""
+msgid "Referral Terms"
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.js:90
+#: src/components/Referrals/JoinReferralCode.js:90
+msgid "Referral code added!"
+msgstr ""
+
+#: src/views/Referrals/Referrals.js:58
+msgid "Referral code creation failed."
+msgstr ""
+
+#: src/views/Referrals/Referrals.js:57
+msgid "Referral code submitted!"
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.js:91
+#: src/components/Referrals/JoinReferralCode.js:91
+msgid "Referral code updated failed."
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.js:90
+#: src/components/Referrals/JoinReferralCode.js:90
+msgid "Referral code updated!"
+msgstr ""
 
 #: src/App.js:190
 #: src/views/Referrals/Referrals.js:121
 msgid "Referrals"
 msgstr "推荐人"
+
+#: src/components/Referrals/JoinReferralCode.js:48
+msgid "Same as current active code"
+msgstr ""
 
 #: src/App.js:977
 msgid "Save"
@@ -484,6 +805,10 @@ msgstr ""
 
 #: src/components/SettingDropdown/SettingDropdown.js:81
 msgid "Select Language"
+msgstr ""
+
+#: src/components/Exchange/PositionDropdown.js:31
+msgid "Select Market"
 msgstr ""
 
 #: src/components/SettingDropdown/SettingDropdown.js:146
@@ -514,6 +839,15 @@ msgstr ""
 msgid "Settings"
 msgstr "设置"
 
+#: src/components/Exchange/PositionsList.js:429
+msgid "Share"
+msgstr ""
+
+#: src/components/Exchange/PositionDropdown.js:39
+msgid "Share Position"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js:257
 #: src/views/Actions/Actions.js:98
 #: src/views/Actions/Actions.js:102
 msgid "Short"
@@ -521,6 +855,11 @@ msgstr ""
 
 #: src/views/Home/Home.js:228
 msgid "Simple Swaps"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js:263
+#: src/components/Exchange/PositionsList.js:448
+msgid "Size"
 msgstr ""
 
 #: src/App.js:507
@@ -531,6 +870,10 @@ msgstr ""
 #~ msgid "Spanish"
 #~ msgstr ""
 
+#: src/components/Referrals/JoinReferralCode.js:67
+msgid "Submit"
+msgstr ""
+
 #: src/components/SettingDropdown/SettingDropdown.js:73
 #~ msgid "Switch Network"
 #~ msgstr ""
@@ -540,9 +883,13 @@ msgstr ""
 msgid "Synapse"
 msgstr ""
 
+#: src/views/Ecosystem/Ecosystem.js:517
+msgid "Telegram Groups"
+msgstr ""
+
 #: src/Footer.js:16
-#~ msgid "Terms and Conditions"
-#~ msgstr ""
+msgid "Terms and Conditions"
+msgstr ""
 
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:356
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
@@ -556,8 +903,20 @@ msgstr ""
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr ""
 
+#: src/components/Exchange/OrdersList.js:282
+msgid "The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not."
+msgstr ""
+
+#: src/components/Exchange/OrdersList.js:414
+msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
+msgstr ""
+
 #: src/views/BeginAccountTransfer/BeginAccountTransfer.js:236
 msgid "This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account."
+msgstr ""
+
+#: src/components/Referrals/TradersStats.js:44
+msgid "Tier {0} ({1}% discount)"
 msgstr ""
 
 #: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:98
@@ -572,12 +931,28 @@ msgstr ""
 msgid "To purchase GMX on <0>Avalanche</0>, please change your network."
 msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js:79
+#: src/components/Referrals/AffiliatesStats.js:130
+#: src/components/Referrals/TradersStats.js:29
+msgid "Total Rebates"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js:69
+msgid "Total Traders Referred"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js:74
+#: src/components/Referrals/TradersStats.js:24
 #: src/views/Home/Home.js:169
 msgid "Total Trading Volume"
 msgstr ""
 
 #: src/views/Home/Home.js:187
 msgid "Total Users"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js:124
+msgid "Total Volume"
 msgstr ""
 
 #: src/App.js:265
@@ -599,6 +974,19 @@ msgstr ""
 
 #: src/components/Common/SEO.js:9
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet on Arbitrum and Avalanche."
+msgstr ""
+
+#: src/views/Referrals/Referrals.js:32
+msgid "Traders"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js:127
+msgid "Traders Referred"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js:224
+#: src/components/Referrals/TradersStats.js:87
+msgid "Transaction"
 msgstr ""
 
 #: src/views/BuyGMX/BuyGMX.js:165
@@ -639,12 +1027,32 @@ msgstr ""
 msgid "Transfers are only supported if the receiving account has not staked GMX or GLP tokens before."
 msgstr ""
 
+#: src/components/Exchange/PositionShare.js:122
+msgid "Tweet"
+msgstr ""
+
 #: src/views/Home/Home.js:280
 msgid "Two tokens create our ecosystem"
 msgstr ""
 
 #: src/App.js:595
 msgid "Txn failed."
+msgstr ""
+
+#: src/components/Exchange/OrdersList.js:86
+msgid "Type"
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.js:67
+msgid "Update"
+msgstr ""
+
+#: src/components/Referrals/JoinReferralCode.js:51
+msgid "Updating..."
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js:618
+msgid "Use the \"Edit\" button to deposit or withdraw collateral."
 msgstr ""
 
 #: src/views/BuyGMX/BuyGMX.js:172
@@ -684,9 +1092,21 @@ msgstr ""
 msgid "View <0>staking</0> page."
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js:88
-#~ msgid "View in Explorer"
-#~ msgstr ""
+#: src/components/AddressDropdown/AddressDropdown.js:47
+msgid "View in Explorer"
+msgstr ""
+
+#: src/components/Referrals/TradersStats.js:25
+msgid "Volume traded by this account with an active referral code."
+msgstr ""
+
+#: src/components/Referrals/AffiliatesStats.js:75
+msgid "Volume traded by your referred traders."
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js:605
+msgid "WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk."
+msgstr ""
 
 #: src/views/BeginAccountTransfer/BeginAccountTransfer.js:125
 #: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:36
@@ -741,6 +1161,10 @@ msgstr ""
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr ""
 
+#: src/components/Referrals/TradersStats.js:47
+msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
+msgstr ""
+
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:367
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr ""
@@ -762,7 +1186,6 @@ msgstr ""
 msgid "to start using GMX"
 msgstr ""
 
-#: src/components/NetworkDropdown/NetworkDropdown.js:35
 #: src/components/SettingDropdown/SettingDropdown.js:100
 msgid "{0}"
 msgstr ""
