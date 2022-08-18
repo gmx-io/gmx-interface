@@ -2025,11 +2025,22 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       renderContent={() => {
                         return (
                           <>
-                            {formatAmount(processedData.gmxInStakedGmx, 18, 2, true)} GMX
-                            <br />
-                            {formatAmount(processedData.esGmxInStakedGmx, 18, 2, true)} esGMX
-                            <br />
-                            {formatAmount(processedData.bnGmxInFeeGmx, 18, 2, true)} Multiplier Points
+                            <TooltipCardRow
+                              showDollar={false}
+                              label="GMX"
+                              value={formatAmount(processedData.gmxInStakedGmx, 18, 2, true)}
+                            />
+
+                            <TooltipCardRow
+                              showDollar={false}
+                              label="esGMX"
+                              value={formatAmount(processedData.esGmxInStakedGmx, 18, 2, true)}
+                            />
+                            <TooltipCardRow
+                              showDollar={false}
+                              label="Multiplier Points"
+                              value={formatAmount(processedData.bnGmxInFeeGmx, 18, 2, true)}
+                            />
                           </>
                         );
                       }}
