@@ -59,9 +59,6 @@ const MAX_GAS_PRICE_MAP = {
 const alchemyWhitelistedDomains = ["gmx.io", "app.gmx.io"];
 
 export function getDefaultArbitrumRpcUrl() {
-  if (alchemyWhitelistedDomains.includes(window.location.host)) {
-    return "https://arb-mainnet.g.alchemy.com/v2/hxBqIr-vfpJ105JPYLei_ibbJLe66k46";
-  }
   return "https://arb1.arbitrum.io/rpc";
 }
 
