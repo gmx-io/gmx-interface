@@ -56,7 +56,30 @@ const MAX_GAS_PRICE_MAP = {
   [AVALANCHE]: "200000000000", // 200 gwei
 };
 
-const ARBITRUM_RPC_PROVIDERS = ["https://arb1.arbitrum.io/rpc"];
+const alchemyWhitelistedDomains = ["gmx.io", "app.gmx.io"];
+
+export function getDefaultArbitrumRpcUrl() {
+  if (alchemyWhitelistedDomains.includes(window.location.host)) {
+    return "https://arb-mainnet.g.alchemy.com/v2/hxBqIr-vfpJ105JPYLei_ibbJLe66k46";
+  }
+  return "https://arb1.arbitrum.io/rpc";
+}
+
+export function getAlchemyHttpUrl() {
+  if (alchemyWhitelistedDomains.includes(window.location.host)) {
+    return "https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ";
+  }
+  return "https://arb-mainnet.g.alchemy.com/v2/EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
+}
+
+export function getAlchemyWsUrl() {
+  if (alchemyWhitelistedDomains.includes(window.location.host)) {
+    return "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ";
+  }
+  return "wss://arb-mainnet.g.alchemy.com/v2/EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
+}
+
+const ARBITRUM_RPC_PROVIDERS = [getDefaultArbitrumRpcUrl()];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
@@ -113,6 +136,7 @@ export const DEFAULT_SLIPPAGE_AMOUNT = 30;
 export const DEFAULT_HIGHER_SLIPPAGE_AMOUNT = 100;
 
 export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3";
+export const CLOSE_POSITION_RECEIVE_TOKEN_KEY = "Close-position-receive-token";
 export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage";
 export const SHOW_PNL_AFTER_FEES_KEY = "Exchange-swap-show-pnl-after-fees";
 export const DISABLE_ORDER_VALIDATION_KEY = "disable-order-validation";
@@ -1229,22 +1253,6 @@ const RPC_PROVIDERS = {
   [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
   [AVALANCHE]: AVALANCHE_RPC_PROVIDERS,
 };
-
-const alchemyWhitelistedDomains = ["gmx.io", "app.gmx.io"];
-
-export function getAlchemyHttpUrl() {
-  if (alchemyWhitelistedDomains.includes(window.location.host)) {
-    return "https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ";
-  }
-  return "https://arb-mainnet.g.alchemy.com/v2/EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
-}
-
-export function getAlchemyWsUrl() {
-  if (alchemyWhitelistedDomains.includes(window.location.host)) {
-    return "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ";
-  }
-  return "wss://arb-mainnet.g.alchemy.com/v2/EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
-}
 
 const FALLBACK_PROVIDERS = {
   [ARBITRUM]: [getAlchemyHttpUrl()],
@@ -2714,6 +2722,14 @@ export function getAppBaseUrl() {
   return "https://app.gmx.io/#";
 }
 
+export function getRootShareApiUrl() {
+  if (isLocal()) {
+    return "https://gmxs.vercel.app";
+  }
+
+  return "https://share.gmx.io";
+}
+
 export function getTradePageUrl() {
   if (isLocal()) {
     return "http://localhost:3011/#/trade";
@@ -2731,6 +2747,23 @@ export function importImage(name) {
     console.error(error);
   }
   return tokenImage && tokenImage.default;
+}
+
+export function getTwitterIntentURL(text, url = "", hashtag = "") {
+  let finalURL = "https://twitter.com/intent/tweet?text=";
+  if (text.length > 0) {
+    finalURL += encodeURIComponent(text.replace(/[\r\n]+/g, " "))
+      .replace(/\*%7C/g, "*|URL:")
+      .replace(/%7C\*/g, "|*");
+
+    if (hashtag.length > 0) {
+      finalURL += "&hashtags=" + encodeURIComponent(hashtag.replace(/#/g, ""));
+    }
+    if (url.length > 0) {
+      finalURL += "&url=" + encodeURIComponent(url);
+    }
+  }
+  return finalURL;
 }
 
 export function isValidTimestamp(timestamp) {

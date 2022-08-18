@@ -24,7 +24,10 @@ import {
   INCREASE,
   DECREASE,
 } from "../../Helpers";
+
 import { TooltipCardRow } from "../../views/Dashboard/TooltipCard";
+import PositionShare from "./PositionShare";
+import PositionDropdown from "./PositionDropdown";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -90,13 +93,17 @@ export default function PositionsList(props) {
     minExecutionFee,
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
+    usdgSupply,
+    totalTokenWeights,
   } = props;
 
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
   const [positionToSellKey, setPositionToSellKey] = useState(undefined);
+  const [positionToShare, setPositionToShare] = useState(null);
   const [isPositionEditorVisible, setIsPositionEditorVisible] = useState(undefined);
   const [isPositionSellerVisible, setIsPositionSellerVisible] = useState(undefined);
   const [collateralTokenAddress, setCollateralTokenAddress] = useState(undefined);
+  const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [ordersToaOpen, setOrdersToaOpen] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
 
@@ -152,6 +159,22 @@ export default function PositionsList(props) {
           isPluginApproving={isPluginApproving}
         />
       )}
+      {isPositionShareModalOpen && (
+        <PositionShare
+          setIsPositionShareModalOpen={setIsPositionShareModalOpen}
+          isPositionShareModalOpen={isPositionShareModalOpen}
+          positionToShare={positionToShare}
+          chainId={chainId}
+          account={account}
+        />
+      )}
+      {ordersToaOpen && (
+        <OrdersToa
+          setIsVisible={setOrdersToaOpen}
+          approveOrderBook={approveOrderBook}
+          isPluginApproving={isPluginApproving}
+        />
+      )}
       {isPositionSellerVisible && (
         <PositionSeller
           pendingPositions={pendingPositions}
@@ -186,6 +209,8 @@ export default function PositionsList(props) {
           minExecutionFee={minExecutionFee}
           minExecutionFeeUSD={minExecutionFeeUSD}
           minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
+          usdgSupply={usdgSupply}
+          totalTokenWeights={totalTokenWeights}
         />
       )}
       {positions && (
@@ -379,18 +404,28 @@ export default function PositionsList(props) {
                   <div className="App-card-divider"></div>
                   <div className="App-card-options">
                     <button
-                      disabled={position.size.eq(0)}
                       className="App-button-option App-card-option"
+                      disabled={position.size.eq(0)}
+                      onClick={() => sellPosition(position)}
+                    >
+                      Close
+                    </button>
+                    <button
+                      className="App-button-option App-card-option"
+                      disabled={position.size.eq(0)}
                       onClick={() => editPosition(position)}
                     >
                       Edit
                     </button>
                     <button
+                      className="Exchange-list-action App-button-option App-card-option"
+                      onClick={() => {
+                        setPositionToShare(position);
+                        setIsPositionShareModalOpen(true);
+                      }}
                       disabled={position.size.eq(0)}
-                      className="App-button-option App-card-option"
-                      onClick={() => sellPosition(position)}
                     >
-                      Close
+                      Share
                     </button>
                   </div>
                 </div>
@@ -608,15 +643,7 @@ export default function PositionsList(props) {
                 <td className="clickable" onClick={() => onPositionClick(position)}>
                   ${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}
                 </td>
-                <td>
-                  <button
-                    className="Exchange-list-action"
-                    onClick={() => editPosition(position)}
-                    disabled={position.size.eq(0)}
-                  >
-                    Edit
-                  </button>
-                </td>
+
                 <td>
                   <button
                     className="Exchange-list-action"
@@ -625,6 +652,20 @@ export default function PositionsList(props) {
                   >
                     Close
                   </button>
+                </td>
+                <td>
+                  <PositionDropdown
+                    handleEditCollateral={() => {
+                      editPosition(position);
+                    }}
+                    handleShare={() => {
+                      setPositionToShare(position);
+                      setIsPositionShareModalOpen(true);
+                    }}
+                    handleMarketSelect={() => {
+                      onPositionClick(position);
+                    }}
+                  />
                 </td>
               </tr>
             );

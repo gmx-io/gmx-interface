@@ -468,15 +468,22 @@ function VesterDepositModal(props) {
                   position="right-bottom"
                   renderContent={() => {
                     return (
-                      <>
+                      <div className="label">
                         Vault Capacity for your Account
                         <br />
                         <br />
-                        Deposited: {formatAmount(vestedAmount, 18, 2, true)} esGMX
+                        <TooltipCardRow
+                          showDollar={false}
+                          label="Deposited"
+                          value={`${formatAmount(vestedAmount, 18, 2, true)} esGMX`}
+                        />
+                        <TooltipCardRow
+                          showDollar={false}
+                          label="Max Capacity"
+                          value={`${formatAmount(maxVestableAmount, 18, 2, true)} esGMX`}
+                        />
                         <br />
-                        Max Capacity: {formatAmount(maxVestableAmount, 18, 2, true)} esGMX
-                        <br />
-                      </>
+                      </div>
                     );
                   }}
                 />
@@ -498,12 +505,18 @@ function VesterDepositModal(props) {
                   renderContent={() => {
                     return (
                       <>
-                        Current Reserved: {formatAmount(reserveAmount, 18, 2, true)}
-                        <br />
-                        Additional reserve required: {formatAmount(additionalReserveAmount, 18, 2, true)}
-                        <br />
+                        <TooltipCardRow
+                          label="Current Reserved"
+                          value={formatAmount(reserveAmount, 18, 2, true)}
+                          showDollar={false}
+                        />
+                        <TooltipCardRow
+                          label="Additional reserve required"
+                          value={formatAmount(additionalReserveAmount, 18, 2, true)}
+                          showDollar={false}
+                        />
                         {amount && nextReserveAmount.gt(maxReserveAmount) && (
-                          <div>
+                          <div className="label">
                             <br />
                             You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)}{" "}
                             {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.
@@ -1537,6 +1550,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                               <div className="muted">The Boosted APR is from your staked Multiplier Points.</div>
                             </div>
                           )}
+                          <div className="muted">
+                            <br />
+                            APRs are updated weekly on Wednesday and will depend on the fees collected for the week.
+                          </div>
                         </>
                       );
                     }}
@@ -1795,6 +1812,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                             value={`${formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%`}
                             showDollar={false}
                           />
+                          <div className="muted">
+                            APRs are updated weekly on Wednesday and will depend on the fees collected for the week.
+                          </div>
                         </>
                       );
                     }}

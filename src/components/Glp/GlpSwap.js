@@ -1128,7 +1128,7 @@ export default function GlpSwap(props) {
                       <div>
                         <Tooltip
                           handle={
-                            amountLeftToDeposit && amountLeftToDeposit.lt(0)
+                            availableAmountUsd && availableAmountUsd.lt(0)
                               ? "$0.00"
                               : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
                           }
@@ -1278,7 +1278,7 @@ export default function GlpSwap(props) {
                       <div>
                         <Tooltip
                           handle={
-                            amountLeftToDeposit && amountLeftToDeposit.lt(0)
+                            availableAmountUsd && availableAmountUsd.lt(0)
                               ? "$0.00"
                               : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
                           }

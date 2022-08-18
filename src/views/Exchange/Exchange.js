@@ -865,6 +865,8 @@ export const Exchange = forwardRef((props, ref) => {
             minExecutionFee={minExecutionFee}
             minExecutionFeeUSD={minExecutionFeeUSD}
             minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
+            usdgSupply={usdgSupply}
+            totalTokenWeights={totalTokenWeights}
           />
         )}
         {listSection === "Orders" && (
