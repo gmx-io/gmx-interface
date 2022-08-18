@@ -15,7 +15,7 @@ import { importImage, LANGUAGE_LOCALSTORAGE_KEY } from "../../Helpers";
 const LANGUAGE_SUB_MENU = "LANGUAGE";
 
 export default function SettingDropdown({ openSettings }) {
-  let currentLanguage = useRef(localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale);
+  const currentLanguage = useRef(localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale);
   const [activeSubMenu, setActiveSubMenu] = useState(null);
 
   function openMenu(e, name) {

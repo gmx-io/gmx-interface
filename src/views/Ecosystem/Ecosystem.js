@@ -1,4 +1,5 @@
 import React from "react";
+import { Trans } from "@lingui/macro";
 import SEO from "../../components/Common/SEO";
 
 import Footer from "../../Footer";
@@ -304,8 +305,12 @@ export default function Ecosystem() {
           <div className="section-title-block">
             <div className="section-title-icon"></div>
             <div className="section-title-content">
-              <div className="Page-title">GMX Pages</div>
-              <div className="Page-description">GMX ecosystem pages.</div>
+              <div className="Page-title">
+                <Trans>GMX Pages</Trans>
+              </div>
+              <div className="Page-description">
+                <Trans>GMX ecosystem pages.</Trans>
+              </div>
             </div>
           </div>
           <div className="DashboardV2-projects">
@@ -324,7 +329,9 @@ export default function Ecosystem() {
                   <div className="App-card-divider"></div>
                   <div className="App-card-content">
                     <div className="App-card-row">
-                      <div className="label">Link</div>
+                      <div className="label">
+                        <Trans>Link</Trans>
+                      </div>
                       <div>
                         <a href={item.link} target="_blank" rel="noopener noreferrer">
                           {linkLabel}
@@ -332,7 +339,9 @@ export default function Ecosystem() {
                       </div>
                     </div>
                     <div className="App-card-row">
-                      <div className="label">About</div>
+                      <div className="label">
+                        <Trans>About</Trans>
+                      </div>
                       <div>{item.about}</div>
                     </div>
                   </div>
@@ -341,8 +350,12 @@ export default function Ecosystem() {
             })}
           </div>
           <div className="Tab-title-section">
-            <div className="Page-title">Community Projects</div>
-            <div className="Page-description">Projects developed by the GMX community.</div>
+            <div className="Page-title">
+              <Trans>Community Projects</Trans>
+            </div>
+            <div className="Page-description">
+              <Trans>Projects developed by the GMX community.</Trans>
+            </div>
           </div>
           <div className="DashboardV2-projects">
             {communityProjects.map((item) => {
@@ -360,7 +373,9 @@ export default function Ecosystem() {
                   <div className="App-card-divider"></div>
                   <div className="App-card-content">
                     <div className="App-card-row">
-                      <div className="label">Link</div>
+                      <div className="label">
+                        <Trans>Link</Trans>
+                      </div>
                       <div>
                         <a href={item.link} target="_blank" rel="noopener noreferrer">
                           {linkLabel}
@@ -368,11 +383,15 @@ export default function Ecosystem() {
                       </div>
                     </div>
                     <div className="App-card-row">
-                      <div className="label">About</div>
+                      <div className="label">
+                        <Trans>About</Trans>
+                      </div>
                       <div>{item.about}</div>
                     </div>
                     <div className="App-card-row">
-                      <div className="label">Creator</div>
+                      <div className="label">
+                        <Trans>Creator</Trans>
+                      </div>
                       <div>
                         <a href={item.creatorLink} target="_blank" rel="noopener noreferrer">
                           {item.creatorLabel}
@@ -385,8 +404,12 @@ export default function Ecosystem() {
             })}
           </div>
           <div className="Tab-title-section">
-            <div className="Page-title">Dashboards</div>
-            <div className="Page-description">GMX dashboards and analytics.</div>
+            <div className="Page-title">
+              <Trans>Dashboards</Trans>
+            </div>
+            <div className="Page-description">
+              <Trans>GMX dashboards and analytics.</Trans>
+            </div>
           </div>
           <div className="DashboardV2-projects">
             {dashboardProjects.map((item) => {
@@ -405,7 +428,9 @@ export default function Ecosystem() {
                   <div className="App-card-divider"></div>
                   <div className="App-card-content">
                     <div className="App-card-row">
-                      <div className="label">Link</div>
+                      <div className="label">
+                        <Trans>Link</Trans>
+                      </div>
                       <div>
                         <a href={item.link} target="_blank" rel="noopener noreferrer">
                           {linkLabel}
@@ -413,11 +438,15 @@ export default function Ecosystem() {
                       </div>
                     </div>
                     <div className="App-card-row">
-                      <div className="label">About</div>
+                      <div className="label">
+                        <Trans>About</Trans>
+                      </div>
                       <div>{item.about}</div>
                     </div>
                     <div className="App-card-row">
-                      <div className="label">Creator</div>
+                      <div className="label">
+                        <Trans>Creator</Trans>
+                      </div>
                       <div>
                         <a href={item.creatorLink} target="_blank" rel="noopener noreferrer">
                           {item.creatorLabel}
@@ -430,8 +459,12 @@ export default function Ecosystem() {
             })}
           </div>
           <div className="Tab-title-section">
-            <div className="Page-title">Partnerships and Integrations</div>
-            <div className="Page-description">Projects integrated with GMX.</div>
+            <div className="Page-title">
+              <Trans>Partnerships and Integrations</Trans>
+            </div>
+            <div className="Page-description">
+              <Trans>Projects integrated with GMX.</Trans>
+            </div>
           </div>
           <div className="DashboardV2-projects">
             {integrations.map((item) => {
@@ -449,7 +482,9 @@ export default function Ecosystem() {
                   <div className="App-card-divider"></div>
                   <div className="App-card-content">
                     <div className="App-card-row">
-                      <div className="label">Link</div>
+                      <div className="label">
+                        <Trans>Link</Trans>
+                      </div>
                       <div>
                         <a href={item.link} target="_blank" rel="noopener noreferrer">
                           {linkLabel}
@@ -457,11 +492,15 @@ export default function Ecosystem() {
                       </div>
                     </div>
                     <div className="App-card-row">
-                      <div className="label">About</div>
+                      <div className="label">
+                        <Trans>About</Trans>
+                      </div>
                       <div>{item.about}</div>
                     </div>
                     <div className="App-card-row">
-                      <div className="label">Announcement</div>
+                      <div className="label">
+                        <Trans>Announcement</Trans>
+                      </div>
                       <div>
                         <a href={item.announcementLink} target="_blank" rel="noopener noreferrer">
                           {item.announcementLabel}
@@ -474,8 +513,12 @@ export default function Ecosystem() {
             })}
           </div>
           <div className="Tab-title-section">
-            <div className="Page-title">Telegram Groups</div>
-            <div className="Page-description">Community-led Telegram groups.</div>
+            <div className="Page-title">
+              <Trans>Telegram Groups</Trans>
+            </div>
+            <div className="Page-description">
+              <Trans>Community-led Telegram groups.</Trans>
+            </div>
           </div>
           <div className="DashboardV2-projects">
             {telegramGroups.map((item) => {
@@ -486,7 +529,9 @@ export default function Ecosystem() {
                   <div className="App-card-divider"></div>
                   <div className="App-card-content">
                     <div className="App-card-row">
-                      <div className="label">Link</div>
+                      <div className="label">
+                        <Trans>Link</Trans>
+                      </div>
                       <div>
                         <a href={item.link} target="_blank" rel="noopener noreferrer">
                           {linkLabel}
@@ -494,7 +539,9 @@ export default function Ecosystem() {
                       </div>
                     </div>
                     <div className="App-card-row">
-                      <div className="label">About</div>
+                      <div className="label">
+                        <Trans>About</Trans>
+                      </div>
                       <div>{item.about}</div>
                     </div>
                   </div>

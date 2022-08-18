@@ -968,7 +968,7 @@ function FullApp() {
         {isDevelopment() && (
           <div className="Exchange-settings-row">
             <Checkbox isChecked={shouldDisableOrderValidation} setIsChecked={setShouldDisableOrderValidation}>
-              Disable order validations
+              <Trans>Disable order validations</Trans>
             </Checkbox>
           </div>
         )}

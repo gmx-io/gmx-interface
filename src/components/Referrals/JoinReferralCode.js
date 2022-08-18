@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "../../Api/referrals";
 import { REFERRAL_CODE_REGEX } from "./referralsHelper";
@@ -7,14 +8,18 @@ import { useDebounce } from "../../Helpers";
 function JoinReferralCode({ setPendingTxns, pendingTxns, active, connectWallet }) {
   return (
     <div className="referral-card section-center mt-medium">
-      <h2 className="title">Enter Referral Code</h2>
-      <p className="sub-title">Please input a referral code to benefit from fee discounts.</p>
+      <h2 className="title">
+        <Trans>Enter Referral Code</Trans>
+      </h2>
+      <p className="sub-title">
+        <Trans>Please input a referral code to benefit from fee discounts.</Trans>
+      </p>
       <div className="card-action">
         {active ? (
           <ReferralCodeForm setPendingTxns={setPendingTxns} pendingTxns={pendingTxns} />
         ) : (
           <button className="App-cta Exchange-swap-button" type="submit" onClick={connectWallet}>
-            Connect Wallet
+            <Trans>Connect Wallet</Trans>
           </button>
         )}
       </div>
@@ -40,26 +45,26 @@ export function ReferralCodeForm({
   function getPrimaryText() {
     const isEdit = type === "edit";
     if (isEdit && debouncedReferralCode === userReferralCodeString) {
-      return "Same as current active code";
+      return t`Same as current active code`;
     }
     if (isEdit && isSubmitting) {
-      return "Updating...";
+      return t`Updating...`;
     }
 
     if (isSubmitting) {
-      return "Adding...";
+      return t`Adding...`;
     }
     if (debouncedReferralCode === "") {
-      return "Enter Referral Code";
+      return t`Enter Referral Code`;
     }
     if (isValidating) {
-      return "Checking code...";
+      return t`Checking code...`;
     }
     if (!referralCodeExists) {
-      return "Referral Code does not exist";
+      return t`Referral Code does not exist`;
     }
 
-    return isEdit ? "Update" : "Submit";
+    return isEdit ? t`Update` : t`Submit`;
   }
   function isPrimaryEnabled() {
     if (
@@ -82,8 +87,8 @@ export function ReferralCodeForm({
     try {
       const tx = await setTraderReferralCodeByUser(chainId, referralCode, library, {
         account,
-        successMsg: isEdit ? "Referral code updated!" : "Referral code added!",
-        failMsg: isEdit ? "Referral code updated failed." : "Adding referral code failed.",
+        successMsg: isEdit ? t`Referral code updated!` : t`Referral code added!`,
+        failMsg: isEdit ? t`Referral code updated failed.` : t`Adding referral code failed.`,
         setPendingTxns,
         pendingTxns,
       });

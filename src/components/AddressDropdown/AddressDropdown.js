@@ -1,5 +1,6 @@
 import "./AddressDropdown.css";
 import { Menu } from "@headlessui/react";
+import { Trans } from "@lingui/macro";
 import { helperToast, shortenAddress, useENS } from "../../Helpers";
 import { useCopyToClipboard, createBreakpoint } from "react-use";
 import externalLink from "../../img/ic_new_link_16.svg";
@@ -34,19 +35,25 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
               }}
             >
               <img src={copy} alt="Copy user address" />
-              <p>Copy Address</p>
+              <p>
+                <Trans>Copy Address</Trans>
+              </p>
             </div>
           </Menu.Item>
           <Menu.Item>
             <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="menu-item">
               <img src={externalLink} alt="Open address in explorer" />
-              <p>View in Explorer</p>
+              <p>
+                <Trans>View in Explorer</Trans>
+              </p>
             </a>
           </Menu.Item>
           <Menu.Item>
             <div className="menu-item" onClick={disconnectAccountAndCloseSettings}>
               <img src={disconnect} alt="Disconnect the wallet" />
-              <p>Disconnect</p>
+              <p>
+                <Trans>Disconnect</Trans>
+              </p>
             </div>
           </Menu.Item>
         </Menu.Items>
