@@ -6,7 +6,7 @@ import "./TermsAndConditions.css";
 
 export default function TermsAndConditions() {
   return (
-    <SEO title={getPageTitle("Referral Terms")}>
+    <SEO title={getPageTitle("Terms and Conditions")}>
       <div className="default-container Page page-layout">
         <div>
           <div className="Page-title-section center">
