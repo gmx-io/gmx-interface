@@ -49,9 +49,20 @@ export function RedirectPopupModal({
       .
       <br />
       <br />
+      By clicking Agree you accept the{" "}
+      <a href="https://gmx.io/#/terms-and-conditions" target="_blank" rel="noopener noreferrer">
+        T&Cs
+      </a>{" "}
+      and{" "}
+      <a href="https://gmx.io/#/referral-terms" target="_blank" rel="noopener noreferrer">
+        Affiliate T&Cs
+      </a>
+      .
+      <br />
+      <br />
       <div className="mb-sm">
         <Checkbox isChecked={shouldHideRedirectModal} setIsChecked={setShouldHideRedirectModal}>
-          I have read and agree to this message, don't show it again for 30 days.
+          Don't show this message again for 30 days.
         </Checkbox>
       </div>
       <a href={appRedirectUrl} className="App-cta Exchange-swap-button">
