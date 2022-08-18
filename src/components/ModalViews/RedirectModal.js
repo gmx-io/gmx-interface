@@ -55,7 +55,7 @@ export function RedirectPopupModal({
       </a>{" "}
       and{" "}
       <a href="https://gmx.io/#/referral-terms" target="_blank" rel="noopener noreferrer">
-        Affiliate T&Cs
+        Referral T&Cs
       </a>
       .
       <br />
