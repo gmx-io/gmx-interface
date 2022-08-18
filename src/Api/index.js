@@ -1076,13 +1076,15 @@ export async function callContract(chainId, contract, method, params, opts) {
             Transaction failed due to RPC error
             <br />
             <br />
-            Try to change the RPC url in{" "}
+            Please try changing the RPC url in your wallet settings
+            <br />
+            <br />
             <a
               href="https://metamask.zendesk.com/hc/en-us/articles/360043227612-How-to-add-a-custom-network-RPC"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Metamask settings
+              More info
             </a>
           </div>
         );
