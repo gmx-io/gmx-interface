@@ -231,6 +231,10 @@ export const ICONLINKS = {
       coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
       avalanche: "https://snowtrace.io/address/0x50b7545627a5162f82a992c33b87adc75187b218",
     },
+    "BTC.b": {
+      coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
+      avalanche: "https://snowtrace.io/address/0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+    },
     MIM: {
       coingecko: "https://www.coingecko.com/en/coins/magic-internet-money",
       avalanche: "https://snowtrace.io/address/0x130966628846bfd36ff31a822705796e8cb8c18d",
