@@ -7,7 +7,6 @@ import checkedIcon from "../../img/ic_checked.svg";
 import { defaultLocale, dynamicActivate, locales } from "../../utils/i18n";
 
 function getLanguageImage(name) {
-  console.log(name);
   return importImage(`flag_${name}.svg`);
 }
 
@@ -17,7 +16,7 @@ export default function LanguageDropdownHome() {
     <Menu>
       <Menu.Button as="div">
         <button className={cx("btn-primary small transparent settings-dropdown-icon")}>
-          <img src={getLanguageImage(currentLanguage.current)} alt="settings-dropdown-icon" />
+          <img src={getLanguageImage(currentLanguage.current)} alt={currentLanguage.current} />
         </button>
       </Menu.Button>
       <Menu.Items as="div" className="menu-items settings-dropdown-menu-items">
