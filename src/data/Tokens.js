@@ -284,7 +284,7 @@ const TOKENS = {
       address: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
       decimals: 8,
       isShortable: false,
-      imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
+      imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
     },
     {
       name: "USD Coin (USDC.e)",
