@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState, useRef } from "react";
 import { Menu } from "@headlessui/react";
 import cx from "classnames";
 import "./SettingDropdown.css";
@@ -89,7 +89,7 @@ export default function SettingDropdown({ openSettings }) {
                 <div
                   className="settings-dropdown-menu-item menu-item"
                   onClick={() => {
-                    currentLanguage.current = item;
+                    localStorage.setItem(LANGUAGE_LOCALSTORAGE_KEY, item);
                     dynamicActivate(item);
                   }}
                 >

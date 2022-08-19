@@ -1203,6 +1203,10 @@ button.App-button {
   border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
 }
+.Home-language-menu {
+  display: flex;
+  align-items: center;
+}
 
 @media (max-width: 1033px) {
   .long-connect-btn {
