@@ -10,7 +10,7 @@ import arrowleft16Icon from "../../img/ic_arrowleft16.svg";
 import checkedIcon from "../../img/ic_checked.svg";
 import { Trans } from "@lingui/macro";
 import { defaultLocale, dynamicActivate, locales } from "../../utils/i18n";
-import { importImage, LANGUAGE_LOCALSTORAGE_KEY } from "../../Helpers";
+import { importImage, isHomeSite, LANGUAGE_LOCALSTORAGE_KEY } from "../../Helpers";
 
 const LANGUAGE_SUB_MENU = "LANGUAGE";
 
@@ -37,19 +37,21 @@ export default function SettingDropdown({ openSettings }) {
 
       {!activeSubMenu && (
         <Menu.Items as="div" className="menu-items settings-dropdown-menu-items">
-          <Menu.Item>
-            <div className="settings-dropdown-menu-item menu-item" onClick={() => openSettings()}>
-              <div className="settings-dropdown-menu-item__prepend">
-                <img src={setting16Icon} alt="settings-open-icon" />
+          {!isHomeSite() && (
+            <Menu.Item>
+              <div className="settings-dropdown-menu-item menu-item" onClick={() => openSettings()}>
+                <div className="settings-dropdown-menu-item__prepend">
+                  <img src={setting16Icon} alt="settings-open-icon" />
+                </div>
+                <span className="settings-dropdown-menu-item-label menu-item-label">
+                  <Trans>Trade Settings</Trans>
+                </span>
+                <div className="settings-dropdown-menu-item__append">
+                  <img src={arrowright16Icon} alt="arrow-right-icon" />
+                </div>
               </div>
-              <span className="settings-dropdown-menu-item-label menu-item-label">
-                <Trans>Trade Settings</Trans>
-              </span>
-              <div className="settings-dropdown-menu-item__append">
-                <img src={arrowright16Icon} alt="arrow-right-icon" />
-              </div>
-            </div>
-          </Menu.Item>
+            </Menu.Item>
+          )}
           <Menu.Item>
             <div
               className="settings-dropdown-menu-item menu-item"
