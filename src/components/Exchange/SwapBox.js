@@ -350,7 +350,7 @@ export default function SwapBox(props) {
                   {formatAmount(toTokenInfo.maxLongCapacity, USD_DECIMALS, 2, true)}
                   <br />
                   <br />
-                  Current {toTokenInfo.symbol} long: ${formatAmount(toTokenInfo.guaranteedUsd, USD_DECIMALS, 2, true)}
+                  Current {toTokenInfo.symbol} longs: ${formatAmount(toTokenInfo.guaranteedUsd, USD_DECIMALS, 2, true)}
                   <br />
                 </>
               );
