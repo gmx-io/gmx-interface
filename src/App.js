@@ -304,6 +304,9 @@ function AppHeaderUser({
             <SettingDropdown label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} />
           </div>
         )}
+      </div>
+
+      {showConnectionOptions && (
         <>
           <div className="App-header-user-address">
             <AddressDropdown
@@ -324,10 +327,7 @@ function AppHeaderUser({
             <SettingDropdown label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} />
           </div>
         </>
-      </div>
-      {/* {showConnectionOptions && (
-
-      )} */}
+      )}
     </div>
   );
 }
