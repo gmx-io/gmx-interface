@@ -116,6 +116,7 @@ import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
 import { defaultLocale, dynamicActivate } from "./utils/i18n";
 import NetworkDropdown from "./components/NetworkDropdown/NetworkDropdown";
+import LanguageDropdownHome from "./components/SettingDropdown/LanguageDropdownHome";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -260,10 +261,13 @@ function AppHeaderUser({
   if (!active) {
     return (
       <div className="App-header-user">
-        <div className="App-header-user-link">
+        <div className="App-header-user-link Home-language-menu">
           <HeaderLink activeClassName="active" className="default-btn" to="/trade">
             <Trans>Trade</Trans>
           </HeaderLink>
+          <div className="App-header-settings">
+            <LanguageDropdownHome label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} />
+          </div>
         </div>
 
         {showConnectionOptions && (
