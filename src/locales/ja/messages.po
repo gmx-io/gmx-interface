@@ -13,8 +13,8 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/App.js:398
-#: src/App.js:420
+#: src/App.js:402
+#: src/App.js:424
 msgid ", and use GMX with its built-in browser"
 msgstr ""
 
@@ -22,7 +22,7 @@ msgstr ""
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr ""
 
-#: src/App.js:200
+#: src/App.js:201
 #: src/views/Ecosystem/Ecosystem.js:343
 #: src/views/Ecosystem/Ecosystem.js:387
 #: src/views/Ecosystem/Ecosystem.js:442
@@ -89,7 +89,7 @@ msgstr ""
 msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
 msgstr ""
 
-#: src/App.js:945
+#: src/App.js:949
 msgid "Allowed Slippage"
 msgstr ""
 
@@ -171,7 +171,7 @@ msgstr ""
 msgid "Borrow Fee: ${0}"
 msgstr ""
 
-#: src/App.js:185
+#: src/App.js:186
 msgid "Buy"
 msgstr "買う"
 
@@ -257,11 +257,11 @@ msgstr ""
 msgid "Code already taken"
 msgstr ""
 
-#: src/App.js:927
+#: src/App.js:931
 msgid "Coinbase Wallet"
 msgstr ""
 
-#: src/App.js:413
+#: src/App.js:417
 msgid "Coinbase Wallet not detected."
 msgstr ""
 
@@ -287,11 +287,11 @@ msgstr ""
 msgid "Complete Transfer"
 msgstr ""
 
-#: src/App.js:272
+#: src/App.js:276
 msgid "Connect"
 msgstr ""
 
-#: src/App.js:272
+#: src/App.js:276
 #: src/components/Referrals/AddAffiliateCode.js:34
 #: src/components/Referrals/JoinReferralCode.js:22
 msgid "Connect Wallet"
@@ -327,7 +327,7 @@ msgstr ""
 msgid "Creator"
 msgstr ""
 
-#: src/App.js:175
+#: src/App.js:176
 msgid "Dashboard"
 msgstr "ダッシュボード"
 
@@ -344,7 +344,7 @@ msgstr ""
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr "分散型<0/>パーペチュアルエクスチェンジ"
 
-#: src/App.js:971
+#: src/App.js:975
 msgid "Disable order validations"
 msgstr ""
 
@@ -352,7 +352,7 @@ msgstr ""
 msgid "Disconnect"
 msgstr ""
 
-#: src/App.js:960
+#: src/App.js:964
 msgid "Display PnL after fees"
 msgstr ""
 
@@ -364,11 +364,11 @@ msgstr ""
 msgid "ETH is needed on Arbitrum to purchase GMX."
 msgstr ""
 
-#: src/App.js:180
+#: src/App.js:181
 msgid "Earn"
 msgstr "得る"
 
-#: src/App.js:195
+#: src/App.js:196
 msgid "Ecosystem"
 msgstr "生態系"
 
@@ -470,7 +470,7 @@ msgstr ""
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr ""
 
-#: src/App.js:170
+#: src/App.js:171
 msgid "Home"
 msgstr "家"
 
@@ -478,7 +478,7 @@ msgstr "家"
 msgid "Hop"
 msgstr ""
 
-#: src/App.js:965
+#: src/App.js:969
 msgid "Include PnL in leverage display"
 msgstr ""
 
@@ -490,11 +490,11 @@ msgstr ""
 msgid "Initial Collateral: ${0}"
 msgstr ""
 
-#: src/App.js:417
+#: src/App.js:421
 msgid "Install Coinbase Wallet"
 msgstr ""
 
-#: src/App.js:395
+#: src/App.js:399
 msgid "Install MetaMask"
 msgstr ""
 
@@ -506,7 +506,7 @@ msgstr ""
 msgid "Invalid Receiver Address"
 msgstr ""
 
-#: src/App.js:503
+#: src/App.js:507
 msgid "Invalid slippage value"
 msgstr ""
 
@@ -572,7 +572,7 @@ msgstr ""
 msgid "Mark Price"
 msgstr ""
 
-#: src/App.js:513
+#: src/App.js:517
 msgid "Max slippage precision is 0.01%"
 msgstr ""
 
@@ -581,11 +581,11 @@ msgstr ""
 msgid "Media Kit"
 msgstr ""
 
-#: src/App.js:921
+#: src/App.js:925
 msgid "MetaMask"
 msgstr ""
 
-#: src/App.js:391
+#: src/App.js:395
 msgid "MetaMask not detected."
 msgstr ""
 
@@ -786,7 +786,7 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr ""
 
-#: src/App.js:190
+#: src/App.js:191
 #: src/views/Referrals/Referrals.js:121
 msgid "Referrals"
 msgstr "紹介"
@@ -795,7 +795,7 @@ msgstr "紹介"
 msgid "Same as current active code"
 msgstr ""
 
-#: src/App.js:977
+#: src/App.js:981
 msgid "Save"
 msgstr ""
 
@@ -835,7 +835,7 @@ msgstr ""
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr ""
 
-#: src/App.js:207
+#: src/App.js:208
 msgid "Settings"
 msgstr "設定"
 
@@ -862,7 +862,7 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
-#: src/App.js:507
+#: src/App.js:511
 msgid "Slippage should be less than 5%"
 msgstr ""
 
@@ -955,8 +955,8 @@ msgstr ""
 msgid "Total Volume"
 msgstr ""
 
-#: src/App.js:265
-#: src/App.js:295
+#: src/App.js:266
+#: src/App.js:299
 msgid "Trade"
 msgstr "トレード"
 
@@ -1035,7 +1035,7 @@ msgstr ""
 msgid "Two tokens create our ecosystem"
 msgstr ""
 
-#: src/App.js:595
+#: src/App.js:599
 msgid "Txn failed."
 msgstr ""
 
@@ -1083,8 +1083,8 @@ msgstr ""
 msgid "Vested GMX not withdrawn"
 msgstr ""
 
-#: src/App.js:597
-#: src/App.js:609
+#: src/App.js:601
+#: src/App.js:613
 msgid "View"
 msgstr ""
 
@@ -1117,7 +1117,7 @@ msgstr ""
 msgid "Wallet not connected"
 msgstr ""
 
-#: src/App.js:933
+#: src/App.js:937
 msgid "WalletConnect"
 msgstr ""
 
@@ -1181,11 +1181,12 @@ msgstr ""
 #~ msgid "lolipopi"
 #~ msgstr ""
 
-#: src/App.js:400
-#: src/App.js:422
+#: src/App.js:404
+#: src/App.js:426
 msgid "to start using GMX"
 msgstr ""
 
+#: src/components/SettingDropdown/LanguageDropdownHome.js:38
 #: src/components/SettingDropdown/SettingDropdown.js:100
 msgid "{0}"
 msgstr ""
