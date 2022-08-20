@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { gql } from "@apollo/client";
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { Token as UniToken } from "@uniswap/sdk-core";
@@ -42,14 +42,25 @@ import {
   SWAP,
   INCREASE,
   DECREASE,
+  periodToTimestamp,
 } from "../Helpers";
 import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
 
-import { nissohGraphClient, arbitrumGraphClient, avalancheGraphClient } from "./common";
+import { nissohGraphClient, arbitrumGraphClient, avalancheGraphClient, avalancheLeaderboardClient, arbitrumLeaderboardClient } from "./common";
 import { groupBy } from "lodash";
+import { useWeb3React } from "@web3-react/core";
 export * from "./prices";
 
 const { AddressZero } = ethers.constants;
+
+function getLeaderboardGraphClient(chainId) {
+  if (chainId === AVALANCHE) {
+    return avalancheLeaderboardClient;
+  } else if (chainId === ARBITRUM) {
+    return arbitrumLeaderboardClient;
+  }
+  throw new Error(`Unsupported chain ${chainId}`);
+}
 
 function getGmxGraphClient(chainId) {
   if (chainId === ARBITRUM) {
@@ -126,6 +137,52 @@ export function useInfoTokens(library, chainId, active, tokenBalances, fundingRa
       nativeTokenAddress
     ),
   };
+}
+
+export function useLeaderboardStats(period, library) {
+  const ts = periodToTimestamp(period, 1660760486)
+
+  const query = gql(`{
+    userStats(
+      first: 25
+      orderBy: pnl
+      orderDirection: desc
+      where: {
+        period: "${period}"
+        timestamp: ${ts}
+      }
+    ) {
+      account
+      pnl
+      timestamp
+    }
+  }`)
+
+  const [res, setRes] = useState();
+
+  useEffect(() => {
+    Promise.all([
+      getLeaderboardGraphClient(AVALANCHE).query({ query }),
+      // getLeaderboardGraphClient(ARBITRUM).query({ query })
+    ]).then(data => {
+      const result = {}
+      data.forEach(d => {
+        d.data.userStats.forEach(user => {
+          if (!result[user.account]) {
+            result[user.account] = {
+              id: user.account,
+              pnl: BigNumber.from(user.pnl)
+            }
+          } else {
+            result[user.account].pnl = result[user.account].pnl.add(user.pnl)
+          }
+        })
+      })
+      setRes(Object.values(result).sort((a, b) => a.pnl.gt(b.pnl) ? -1 : 1))
+    })
+  }, [setRes, query]);
+
+  return res ? res : null;
 }
 
 export function useUserStat(chainId) {

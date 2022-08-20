@@ -11,6 +11,9 @@ export const avalancheReferralsGraphClient = createClient(
   "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-referrals"
 );
 
+export const avalancheLeaderboardClient = createClient("https://api.thegraph.com/subgraphs/id/QmUcNP47qB1fUtndaAncAxWhAEMQ65EuTsHdXMeAq47jJo");
+export const arbitrumLeaderboardClient = createClient("https://api.thegraph.com/subgraphs/name/morazzela/gmx_test_arb");
+
 function createClient(uri) {
   return new ApolloClient({
     uri,

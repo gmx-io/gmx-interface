@@ -10,7 +10,7 @@ import { useLocalStorage } from "react-use";
 import { ethers } from "ethers";
 import { format as formatDateFn } from "date-fns";
 import Token from "./abis/Token.json";
-import _ from "lodash";
+import _, { add, times } from "lodash";
 import { getContract } from "./Addresses";
 import useSWR from "swr";
 
@@ -2742,6 +2742,22 @@ export function importImage(name) {
 
 export function isValidTimestamp(timestamp) {
   return new Date(timestamp).getTime() > 0;
+}
+
+export function periodToTimestamp(period, timestamp) {
+  if ( ! timestamp) {
+    timestamp = Math.round(Date.now() / 1000)
+  }
+
+  if (period == "hourly") {
+    return timestamp - timestamp % (60 * 60)
+  } else if (period == "daily") {
+    return timestamp - timestamp % 86400
+  } else if (period == "weekly") {
+    return timestamp - timestamp % (86400 * 7)
+  } else if (period == "monthly") {
+    return timestamp - timestamp % (86400 * 30)
+  }
 }
 
 export function getPositionForOrder(account, order, positionsMap) {
