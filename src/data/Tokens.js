@@ -279,6 +279,14 @@ const TOKENS = {
       imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
     },
     {
+      name: "Bitcoin (BTC.b)",
+      symbol: "BTC.b",
+      address: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+      decimals: 8,
+      isShortable: false,
+      imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
+    },
+    {
       name: "USD Coin (USDC.e)",
       symbol: "USDC.e",
       address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
@@ -300,6 +308,7 @@ const TOKENS = {
       address: "0x130966628846BFd36ff31a822705796e8cb8C18D",
       decimals: 18,
       isStable: true,
+      isTempHidden: true,
       imageUrl: "https://assets.coingecko.com/coins/images/16786/small/mimlogopng.png",
     },
   ],
