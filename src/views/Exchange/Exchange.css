@@ -297,10 +297,6 @@
   height: auto;
   z-index: 2;
 }
-.ExchangeChart-dropdown {
-  margin-left: 0.5rem;
-  position: relative;
-}
 
 .ExchangeChart.tv .ExchangeChart-top {
   position: relative;

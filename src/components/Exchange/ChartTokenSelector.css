@@ -1,53 +1,18 @@
-.chart-token-selector.swap {
-  pointer-events: none;
-  border: none;
-  margin-right: 1.35rem;
-  border: 1px solid transparent;
-}
-
 .chart-token-selector {
-  border: 1px solid #ffffff29;
-  border-radius: 0.4rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  position: relative;
-  box-shadow: none;
-  background: none;
-  color: rgba(255, 255, 255, 0.7);
-  opacity: 1;
-  padding: 0.5rem 1rem;
-}
-.chart-token-selector:hover {
-  background: #808aff14;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 
-.asset-dropdown.swap {
-  pointer-events: none;
-}
-
-.chart-token-selector-token {
-  font-size: 2rem;
+.chart-token-selector--current {
+  font-size: 2.15rem;
   font-weight: 700;
-  margin-right: 1.5rem;
+  margin-right: 1rem;
   color: white;
 }
 
 .chart-token-menu-items.menu-items {
+  width: 15.8rem;
   top: 6rem;
   right: unset;
   left: 0;
-}
-.chart-token-menu-items .menu-item .token-label {
-  font-size: 1.5rem;
-}
-
-@media (max-width: 730px) {
-  .chart-token-selector.swap {
-    margin-right: 0;
-  }
-  .chart-token-selector-token {
-    margin-right: 0;
-  }
 }

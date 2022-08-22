@@ -1,7 +1,7 @@
 import React from "react";
-import cx from "classnames";
 import { Menu } from "@headlessui/react";
 import { FaChevronDown } from "react-icons/fa";
+import cx from "classnames";
 import "./ChartTokenSelector.css";
 import { getTokens, getWhitelistedTokens } from "../../data/Tokens";
 import { LONG, SHORT, SWAP } from "../../Helpers";
@@ -34,27 +34,29 @@ export default function ChartTokenSelector(props) {
   return (
     <Menu>
       <Menu.Button as="div" disabled={isSwap}>
-        <button className={cx("chart-token-selector", { swap: isSwap })}>
-          <span className="chart-token-selector-token">{value.symbol} / USD</span>
+        <button className={cx("App-cta small transparent chart-token-selector", { "default-cursor": isSwap })}>
+          <span className="chart-token-selector--current">{value.symbol} / USD</span>
           {!isSwap && <FaChevronDown />}
         </button>
       </Menu.Button>
-      <Menu.Items as="div" className="menu-items chart-token-menu-items">
-        {options.map((option, index) => (
-          <Menu.Item key={index}>
-            <div
-              className="menu-item"
-              onClick={() => {
-                onSelect(option);
-              }}
-            >
-              <span style={{ marginLeft: 5 }} className="token-label">
-                {option.symbol} / USD
-              </span>
-            </div>
-          </Menu.Item>
-        ))}
-      </Menu.Items>
+      <div className="chart-token-menu">
+        <Menu.Items as="div" className="menu-items chart-token-menu-items">
+          {options.map((option, index) => (
+            <Menu.Item key={index}>
+              <div
+                className="menu-item"
+                onClick={() => {
+                  onSelect(option);
+                }}
+              >
+                <span style={{ marginLeft: 5 }} className="token-label">
+                  {option.symbol} / USD
+                </span>
+              </div>
+            </Menu.Item>
+          ))}
+        </Menu.Items>
+      </div>
     </Menu>
   );
 }
