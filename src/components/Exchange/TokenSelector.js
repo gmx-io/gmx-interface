@@ -87,7 +87,7 @@ export default function TokenSelector(props) {
               autoFocus
             />
           </div>
-          {filteredTokens.map((token) => {
+          {filteredTokens.map((token, tokenIndex) => {
             const tokenPopupImage = importImage(`ic_${token.symbol.toLowerCase()}_40.svg`);
             let info = infoTokens ? infoTokens[token.address] : {};
             let mintAmount;
