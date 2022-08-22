@@ -109,7 +109,9 @@ import { useLocalStorage } from "react-use";
 import { RedirectPopupModal } from "./components/ModalViews/RedirectModal";
 import { REDIRECT_POPUP_TIMESTAMP_KEY } from "./utils/constants";
 import Jobs from "./views/Jobs/Jobs";
-import Leaderboard from "./views/Leaderboard/Leaderboard";
+import Competition from "./views/Competition/Competition";
+import RegisterTeam from "./views/Competition/RegisterTeam";
+import Team from "./views/Competition/Team";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -177,7 +179,7 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
         <HeaderLink to="/referrals">Referrals</HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink to="/leaderboard">Leaderboard</HeaderLink>
+        <HeaderLink to="/competition">Competition</HeaderLink>
       </div>
       <div className="App-header-link-container">
         <HeaderLink to="/ecosystem">Ecosystem</HeaderLink>
@@ -804,8 +806,14 @@ function FullApp() {
               <Route exact path="/dashboard">
                 <Dashboard />
               </Route>
-              <Route exact path="/leaderboard">
-                <Leaderboard />
+              <Route exact path="/competition">
+                <Competition setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
+              </Route>
+              <Route exact path="/competition/register-team">
+                <RegisterTeam setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
+              </Route>
+              <Route exact path="/competition/:address">
+                <Team setPendingTxns={setPendingTxns} connectWallet={connectWallet} />
               </Route>
               <Route exact path="/earn">
                 <Stake setPendingTxns={setPendingTxns} connectWallet={connectWallet} />

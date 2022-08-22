@@ -53,15 +53,6 @@ export * from "./prices";
 
 const { AddressZero } = ethers.constants;
 
-function getLeaderboardGraphClient(chainId) {
-  if (chainId === AVALANCHE) {
-    return avalancheLeaderboardClient;
-  } else if (chainId === ARBITRUM) {
-    return arbitrumLeaderboardClient;
-  }
-  throw new Error(`Unsupported chain ${chainId}`);
-}
-
 function getGmxGraphClient(chainId) {
   if (chainId === ARBITRUM) {
     return arbitrumGraphClient;
@@ -137,52 +128,6 @@ export function useInfoTokens(library, chainId, active, tokenBalances, fundingRa
       nativeTokenAddress
     ),
   };
-}
-
-export function useLeaderboardStats(period, library) {
-  const ts = periodToTimestamp(period, 1660760486)
-
-  const query = gql(`{
-    userStats(
-      first: 25
-      orderBy: pnl
-      orderDirection: desc
-      where: {
-        period: "${period}"
-        timestamp: ${ts}
-      }
-    ) {
-      account
-      pnl
-      timestamp
-    }
-  }`)
-
-  const [res, setRes] = useState();
-
-  useEffect(() => {
-    Promise.all([
-      getLeaderboardGraphClient(AVALANCHE).query({ query }),
-      // getLeaderboardGraphClient(ARBITRUM).query({ query })
-    ]).then(data => {
-      const result = {}
-      data.forEach(d => {
-        d.data.userStats.forEach(user => {
-          if (!result[user.account]) {
-            result[user.account] = {
-              id: user.account,
-              pnl: BigNumber.from(user.pnl)
-            }
-          } else {
-            result[user.account].pnl = result[user.account].pnl.add(user.pnl)
-          }
-        })
-      })
-      setRes(Object.values(result).sort((a, b) => a.pnl.gt(b.pnl) ? -1 : 1))
-    })
-  }, [setRes, query]);
-
-  return res ? res : null;
 }
 
 export function useUserStat(chainId) {

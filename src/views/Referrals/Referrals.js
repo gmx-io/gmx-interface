@@ -29,7 +29,7 @@ import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "../../co
 import { ethers } from "ethers";
 
 const TRADERS = "Traders";
-const AFFILIATES = "Affiliates";
+export const AFFILIATES = "Affiliates";
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
 
 function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
