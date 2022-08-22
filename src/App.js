@@ -273,9 +273,6 @@ function AppHeaderUser({
 
         {showConnectionOptions && (
           <>
-            <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
-              {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
-            </ConnectWalletButton>
             <div className="App-header-settings">
               <NetworkDropdown
                 networkOptions={networkOptions}
@@ -285,6 +282,9 @@ function AppHeaderUser({
               <div className="App-header-verticle-line" />
               <SettingDropdown label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} />
             </div>
+            <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
+              {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
+            </ConnectWalletButton>
           </>
         )}
       </div>
@@ -308,15 +308,6 @@ function AppHeaderUser({
 
       {showConnectionOptions && (
         <>
-          <div className="App-header-user-address">
-            <AddressDropdown
-              account={account}
-              accountUrl={accountUrl}
-              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-              label={selectorLabel}
-              onNetworkSelect={onNetworkSelect}
-            />
-          </div>
           <div className="App-header-settings">
             <NetworkDropdown
               networkOptions={networkOptions}
@@ -325,6 +316,15 @@ function AppHeaderUser({
             />
             <div className="App-header-verticle-line" />
             <SettingDropdown label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} />
+          </div>
+          <div className="App-header-user-address">
+            <AddressDropdown
+              account={account}
+              accountUrl={accountUrl}
+              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+              label={selectorLabel}
+              onNetworkSelect={onNetworkSelect}
+            />
           </div>
         </>
       )}
