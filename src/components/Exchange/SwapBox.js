@@ -968,7 +968,7 @@ export default function SwapBox(props) {
         );
         stableTokenAmount = nextToAmount;
         if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
-          return [`Insufficient liquidity, change "Profits In"`];
+          return [`Insufficient liquidity, change "Collateral In"`];
         }
 
         if (
@@ -1023,7 +1023,7 @@ export default function SwapBox(props) {
 
       stableTokenAmount = stableTokenAmount.add(sizeTokens);
       if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
-        return [`Insufficient liquidity, change "Profits In"`];
+        return [`Insufficient liquidity, change "Profits In..."`];
       }
     }
 
@@ -1062,31 +1062,31 @@ export default function SwapBox(props) {
   };
 
   const renderErrorModal = () => {
-    const inputCurrency = fromToken.address === AddressZero ? "ETH" : fromToken.symbol;
+    console.log({ fromToken, toToken });
+    const inputCurrency = fromToken.address === AddressZero ? "ETH" : fromToken.address;
     let outputCurrency;
     if (isLong) {
-      const mainToken = chainId === ARBITRUM ? "ETH" : "AVAX";
-      outputCurrency = toToken.address === AddressZero ? mainToken : toToken.symbol;
+      outputCurrency = toToken.address === AddressZero ? "ETH" : toToken.address;
     } else {
-      outputCurrency = shortCollateralToken.symbol;
+      outputCurrency = shortCollateralToken.address;
     }
-
     const swapTokenSymbol = isLong ? toToken.symbol : shortCollateralToken.symbol;
     const externalSwapUrl = `https://app.1inch.io/#/${chainId}/swap/${inputCurrency}/${outputCurrency}`;
     const label =
       modalError === "BUFFER" ? `${shortCollateralToken.symbol} Required` : `${fromToken.symbol} Capacity Reached`;
-    
-      return (
+
+    return (
       <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal font-base">
         <div>You need to select {swapTokenSymbol} as the "Pay" token to initiate this trade.</div>
         <br />
         {isShort && (
           <div>
-            Alternatively you can select a different "Profits In" token.
+            Alternatively you can select a different "Collateral In" token.
             <br />
             <br />
           </div>
         )}
+
         <a href={externalSwapUrl} target="_blank" rel="noreferrer">
           Buy {swapTokenSymbol} on 1inch
         </a>
