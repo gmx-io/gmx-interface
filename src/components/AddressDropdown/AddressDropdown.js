@@ -5,11 +5,12 @@ import { helperToast, shortenAddress, useENS } from "../../Helpers";
 import { useCopyToClipboard, createBreakpoint } from "react-use";
 import externalLink from "../../img/ic_new_link_16.svg";
 import copy from "../../img/ic_copy_16.svg";
+import settings from "../../img/ic_settings_16.svg";
 import disconnect from "../../img/ic_sign_out_16.svg";
 import { FaChevronDown } from "react-icons/fa";
 import Davatar from "@davatar/react";
 
-function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSettings }) {
+function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSettings, openSettings }) {
   const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
   const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
@@ -47,6 +48,12 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
                 <Trans>View in Explorer</Trans>
               </p>
             </a>
+          </Menu.Item>
+          <Menu.Item>
+            <div className="menu-item" onClick={openSettings}>
+              <img src={settings} alt="Open settings" />
+              <p>Settings</p>
+            </div>
           </Menu.Item>
           <Menu.Item>
             <div className="menu-item" onClick={disconnectAccountAndCloseSettings}>
