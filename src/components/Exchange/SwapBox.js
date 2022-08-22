@@ -72,7 +72,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import ConfirmationBox from "./ConfirmationBox";
 import OrdersToa from "./OrdersToa";
 
-import { getTokens, getWhitelistedTokens, getToken, getTokenBySymbol } from "../../data/Tokens";
+import { getTokens, getWhitelistedTokens, getToken, getTokenBySymbol, getNativeToken } from "../../data/Tokens";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Router from "../../abis/Router.json";
 import Token from "../../abis/Token.json";
@@ -1062,11 +1062,11 @@ export default function SwapBox(props) {
   };
 
   const renderErrorModal = () => {
-    console.log({ fromToken, toToken });
-    const inputCurrency = fromToken.address === AddressZero ? "ETH" : fromToken.address;
+    const nativeToken = getNativeToken(chainId).symbol;
+    const inputCurrency = fromToken.address === AddressZero ? nativeToken : fromToken.address;
     let outputCurrency;
     if (isLong) {
-      outputCurrency = toToken.address === AddressZero ? "ETH" : toToken.address;
+      outputCurrency = toToken.address === AddressZero ? nativeToken : toToken.address;
     } else {
       outputCurrency = shortCollateralToken.address;
     }
