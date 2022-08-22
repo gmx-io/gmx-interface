@@ -1191,19 +1191,6 @@ button.App-button {
   margin-bottom: 2.4rem;
 }
 
-.App-header-verticle-line {
-  width: 1px;
-  background: var(--dark-blue-border);
-  margin: 0.8rem 0;
-}
-
-.App-header-settings {
-  position: relative;
-  margin-right: 2.4rem;
-  display: flex;
-  border: 1px solid var(--dark-blue-border);
-  border-radius: var(--border-radius-sm);
-}
 .Home-language-menu {
   display: flex;
   align-items: center;
@@ -1301,10 +1288,6 @@ button.App-button {
   .App-card-long-content.card-list {
     grid-template-columns: 1fr 1fr;
   }
-
-  .App-header-settings {
-    margin-left: 1.6rem;
-  }
 }
 
 @media (max-width: 1000px) {
@@ -1400,10 +1383,6 @@ button.App-button {
   .App-header .App-header-link-main {
     padding: 0.155rem !important;
     margin-left: 0rem !important;
-  }
-
-  .App-header-settings {
-    margin-left: 0.6rem;
   }
 }
 
