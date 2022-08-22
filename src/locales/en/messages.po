@@ -13,8 +13,8 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/App.js:414
-#: src/App.js:436
+#: src/App.js:395
+#: src/App.js:417
 msgid ", and use GMX with its built-in browser"
 msgstr ""
 
@@ -48,7 +48,7 @@ msgstr "APRs are updated weekly on Wednesday and will depend on the fees collect
 msgid "AVAILABLE"
 msgstr ""
 
-#: src/App.js:200
+#: src/App.js:199
 #: src/views/Ecosystem/Ecosystem.js:343
 #: src/views/Ecosystem/Ecosystem.js:387
 #: src/views/Ecosystem/Ecosystem.js:442
@@ -114,7 +114,7 @@ msgstr "After claiming, the esGMX tokens will be airdropped to your account on t
 msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
 msgstr ""
 
-#: src/App.js:961
+#: src/App.js:942
 msgid "Allowed Slippage"
 msgstr ""
 
@@ -272,7 +272,7 @@ msgstr "Borrow Fee / Day: ${0}"
 msgid "Borrow Fee: ${0}"
 msgstr "Borrow Fee: ${0}"
 
-#: src/App.js:185
+#: src/App.js:184
 msgid "Buy"
 msgstr ""
 
@@ -456,11 +456,11 @@ msgstr "Closing..."
 msgid "Code already taken"
 msgstr "Code already taken"
 
-#: src/App.js:943
+#: src/App.js:924
 msgid "Coinbase Wallet"
 msgstr ""
 
-#: src/App.js:429
+#: src/App.js:410
 msgid "Coinbase Wallet not detected."
 msgstr ""
 
@@ -510,11 +510,11 @@ msgstr "Compound submitted!"
 msgid "Compounding..."
 msgstr "Compounding..."
 
-#: src/App.js:284
+#: src/App.js:278
 msgid "Connect"
 msgstr ""
 
-#: src/App.js:284
+#: src/App.js:278
 #: src/components/Exchange/SwapBox.js:1133
 #: src/components/Glp/GlpSwap.js:486
 #: src/components/Referrals/AddAffiliateCode.js:34
@@ -543,7 +543,7 @@ msgstr "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
 msgid "Copy"
 msgstr "Copy"
 
-#: src/components/AddressDropdown/AddressDropdown.js:39
+#: src/components/AddressDropdown/AddressDropdown.js:40
 msgid "Copy Address"
 msgstr ""
 
@@ -585,7 +585,7 @@ msgstr ""
 msgid "Current Reserved: {0}<0/>Additional reserve required: {1}<1/>{2}"
 msgstr "Current Reserved: {0}<0/>Additional reserve required: {1}<1/>{2}"
 
-#: src/App.js:175
+#: src/App.js:174
 msgid "Dashboard"
 msgstr ""
 
@@ -638,15 +638,15 @@ msgstr "Deposited!"
 msgid "Depositing..."
 msgstr "Depositing..."
 
-#: src/App.js:987
+#: src/App.js:968
 msgid "Disable order validations"
 msgstr "Disable order validations"
 
-#: src/components/AddressDropdown/AddressDropdown.js:55
+#: src/components/AddressDropdown/AddressDropdown.js:62
 msgid "Disconnect"
 msgstr ""
 
-#: src/App.js:976
+#: src/App.js:957
 msgid "Display PnL after fees"
 msgstr ""
 
@@ -666,12 +666,12 @@ msgstr "Download"
 msgid "ETH is needed on Arbitrum to purchase GMX."
 msgstr ""
 
-#: src/App.js:180
+#: src/App.js:179
 #: src/views/Stake/StakeV2.js:1444
 msgid "Earn"
 msgstr ""
 
-#: src/App.js:195
+#: src/App.js:194
 msgid "Ecosystem"
 msgstr ""
 
@@ -955,7 +955,7 @@ msgstr "High Slippage, Swap Anyway"
 msgid "High USDG Slippage, Long Anyway"
 msgstr "High USDG Slippage, Long Anyway"
 
-#: src/App.js:170
+#: src/App.js:169
 msgid "Home"
 msgstr ""
 
@@ -963,7 +963,7 @@ msgstr ""
 msgid "Hop"
 msgstr ""
 
-#: src/App.js:981
+#: src/App.js:962
 msgid "Include PnL in leverage display"
 msgstr ""
 
@@ -983,11 +983,11 @@ msgstr "Incorrect network"
 msgid "Initial Collateral: ${0}"
 msgstr "Initial Collateral: ${0}"
 
-#: src/App.js:433
+#: src/App.js:414
 msgid "Install Coinbase Wallet"
 msgstr ""
 
-#: src/App.js:411
+#: src/App.js:392
 msgid "Install MetaMask"
 msgstr ""
 
@@ -1040,7 +1040,7 @@ msgstr "Invalid liq. price"
 msgid "Invalid price, see warning"
 msgstr "Invalid price, see warning"
 
-#: src/App.js:519
+#: src/App.js:500
 msgid "Invalid slippage value"
 msgstr ""
 
@@ -1204,7 +1204,7 @@ msgstr ""
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgstr ""
 
-#: src/App.js:529
+#: src/App.js:510
 msgid "Max slippage precision is 0.01%"
 msgstr ""
 
@@ -1221,11 +1221,11 @@ msgstr "Max {0} short exceeded"
 msgid "Media Kit"
 msgstr "Media Kit"
 
-#: src/App.js:937
+#: src/App.js:918
 msgid "MetaMask"
 msgstr ""
 
-#: src/App.js:407
+#: src/App.js:388
 msgid "MetaMask not detected."
 msgstr ""
 
@@ -1544,7 +1544,7 @@ msgstr "Referral code updated failed."
 msgid "Referral code updated!"
 msgstr "Referral code updated!"
 
-#: src/App.js:190
+#: src/App.js:189
 #: src/views/Referrals/Referrals.js:121
 msgid "Referrals"
 msgstr ""
@@ -1587,7 +1587,7 @@ msgstr "Rewards"
 msgid "Same as current active code"
 msgstr "Same as current active code"
 
-#: src/App.js:993
+#: src/App.js:974
 msgid "Save"
 msgstr ""
 
@@ -1658,7 +1658,7 @@ msgstr ""
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr ""
 
-#: src/App.js:207
+#: src/App.js:206
 msgid "Settings"
 msgstr ""
 
@@ -1698,7 +1698,7 @@ msgstr ""
 msgid "Size"
 msgstr "Size"
 
-#: src/App.js:523
+#: src/App.js:504
 msgid "Slippage should be less than 5%"
 msgstr ""
 
@@ -1946,8 +1946,8 @@ msgstr "Total Volume"
 msgid "Total value of tokens in GLP pool ({chainName})"
 msgstr "Total value of tokens in GLP pool ({chainName})"
 
-#: src/App.js:265
-#: src/App.js:298
+#: src/App.js:264
+#: src/App.js:292
 msgid "Trade"
 msgstr ""
 
@@ -2034,7 +2034,7 @@ msgstr "Tweet"
 msgid "Two tokens create our ecosystem"
 msgstr ""
 
-#: src/App.js:611
+#: src/App.js:592
 msgid "Txn failed."
 msgstr ""
 
@@ -2129,8 +2129,8 @@ msgstr ""
 msgid "Vesting Status"
 msgstr "Vesting Status"
 
-#: src/App.js:613
-#: src/App.js:625
+#: src/App.js:594
+#: src/App.js:606
 msgid "View"
 msgstr ""
 
@@ -2138,7 +2138,7 @@ msgstr ""
 msgid "View <0>staking</0> page."
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js:47
+#: src/components/AddressDropdown/AddressDropdown.js:48
 msgid "View in Explorer"
 msgstr ""
 
@@ -2192,7 +2192,7 @@ msgstr ""
 msgid "Wallet not connected"
 msgstr "Wallet not connected"
 
-#: src/App.js:949
+#: src/App.js:930
 msgid "WalletConnect"
 msgstr ""
 
@@ -2314,12 +2314,12 @@ msgstr "order"
 msgid "orders"
 msgstr "orders"
 
-#: src/App.js:416
-#: src/App.js:438
+#: src/App.js:397
+#: src/App.js:419
 msgid "to start using GMX"
 msgstr ""
 
-#: src/components/SettingsDropdown/SettingsDropdown.js:90
+#: src/components/NetworksDropdown/NetworksDropdown.js:99
 msgid "{0}"
 msgstr "{0}"
 
