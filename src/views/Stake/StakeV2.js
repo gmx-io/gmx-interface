@@ -482,7 +482,6 @@ function VesterDepositModal(props) {
                           label="Max Capacity"
                           value={`${formatAmount(maxVestableAmount, 18, 2, true)} esGMX`}
                         />
-                        <br />
                       </div>
                     );
                   }}
@@ -1547,10 +1546,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                               />
 
                               <br />
-                              <div className="muted">The Boosted APR is from your staked Multiplier Points.</div>
+                              <div>The Boosted APR is from your staked Multiplier Points.</div>
                             </div>
                           )}
-                          <div className="muted">
+                          <div>
                             <br />
                             APRs are updated weekly on Wednesday and will depend on the fees collected for the week.
                           </div>
@@ -1812,7 +1811,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                             value={`${formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%`}
                             showDollar={false}
                           />
-                          <div className="muted">
+                          <br />
+                          <div>
                             APRs are updated weekly on Wednesday and will depend on the fees collected for the week.
                           </div>
                         </>
