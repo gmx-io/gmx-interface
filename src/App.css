@@ -1194,11 +1194,12 @@ button.App-button {
 .App-header-verticle-line {
   width: 1px;
   background: var(--dark-blue-border);
+  margin: 0.8rem 0;
 }
 
 .App-header-settings {
   position: relative;
-  margin-left: 2.4rem;
+  margin-right: 2.4rem;
   display: flex;
   border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
