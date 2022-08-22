@@ -114,7 +114,7 @@ import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
 import { defaultLocale, dynamicActivate } from "./utils/i18n";
-import NetworksDropdown from "./components/NetworksDropdown/NetworksDropdown";
+import NetworkDropdown from "./components/NetworkDropdown/NetworkDropdown";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -264,20 +264,18 @@ function AppHeaderUser({
             <Trans>Trade</Trans>
           </HeaderLink>
         </div>
+        <div className="App-header-settings">
+          <NetworkDropdown
+            networkOptions={networkOptions}
+            selectorLabel={selectorLabel}
+            onNetworkSelect={onNetworkSelect}
+          />
+        </div>
 
         {showConnectionOptions && (
-          <>
-            <div className="App-header-settings">
-              <NetworksDropdown
-                networkOptions={networkOptions}
-                selectorLabel={selectorLabel}
-                onNetworkSelect={onNetworkSelect}
-              />
-            </div>
-            <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
-              {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
-            </ConnectWalletButton>
-          </>
+          <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
+            {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
+          </ConnectWalletButton>
         )}
       </div>
     );
@@ -292,27 +290,25 @@ function AppHeaderUser({
           <Trans>Trade</Trans>
         </NavLink>
       </div>
+      <div className="App-header-settings">
+        <NetworkDropdown
+          networkOptions={networkOptions}
+          selectorLabel={selectorLabel}
+          onNetworkSelect={onNetworkSelect}
+        />
+      </div>
 
       {showConnectionOptions && (
-        <>
-          <div className="App-header-settings">
-            <NetworksDropdown
-              networkOptions={networkOptions}
-              selectorLabel={selectorLabel}
-              onNetworkSelect={onNetworkSelect}
-            />
-          </div>
-          <div className="App-header-user-address">
-            <AddressDropdown
-              account={account}
-              accountUrl={accountUrl}
-              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-              label={selectorLabel}
-              onNetworkSelect={onNetworkSelect}
-              openSettings={openSettings}
-            />
-          </div>
-        </>
+        <div className="App-header-user-address">
+          <AddressDropdown
+            account={account}
+            accountUrl={accountUrl}
+            disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+            label={selectorLabel}
+            onNetworkSelect={onNetworkSelect}
+            openSettings={openSettings}
+          />
+        </div>
       )}
     </div>
   );
