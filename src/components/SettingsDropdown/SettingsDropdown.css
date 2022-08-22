@@ -1,5 +1,5 @@
 .networks-dropdown {
-  display: flex;
+  display: inline-flex;
 }
 
 .networks-dropdown:hover {
@@ -18,9 +18,6 @@
   height: 3.6rem;
   border-radius: 0.4rem;
   border: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   padding: 0;
   pointer-events: none;
 }

@@ -309,6 +309,7 @@ function AppHeaderUser({
               disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
               label={selectorLabel}
               onNetworkSelect={onNetworkSelect}
+              openSettings={openSettings}
             />
           </div>
         </>
