@@ -1,70 +1,19 @@
-.network-dropdown-menu-items {
-  width: 17rem;
-}
-.network-dropdown-menu-items .divider {
-  margin-bottom: 0rem;
-}
-
-.Network-label {
-  padding: 0.8rem 1rem;
-  color: #a0a3c4;
-}
-
-.network-dropdown-menu-item {
+.networks-dropdown {
   display: flex;
-  align-items: center;
-  padding: 0.8rem 0.8rem;
 }
 
-.menu-item:hover .menu-item-label {
-  color: #eee;
+.networks-dropdown:hover {
+  background: var(--dark-blue-hover);
+  cursor: pointer;
 }
 
-.network-dropdown-menu-item-label {
-  margin-left: 0.5rem;
-}
-
-.selected-icon.Arbitrum {
-  background-color: #4275a8;
-}
-
-.selected-icon.Avalanche {
-  background-color: #e84142;
-}
-
-.selected-icon {
-  position: absolute;
-  width: 0.8rem;
-  height: 0.8rem;
-  border-radius: 50%;
-  right: 1.5rem;
-}
-
-.language-image {
-  border-radius: 50%;
-  width: 1.6rem;
-  height: 1.6rem;
-}
-
-.App-header-verticle-line {
+.networks-dropdown-seperator {
   width: 1px;
   background: var(--dark-blue-border);
   margin: 0.8rem 0;
 }
 
-.App-header-networks {
-  position: relative;
-  margin-right: 2.4rem;
-  display: flex;
-  border: 1px solid var(--dark-blue-border);
-  border-radius: var(--border-radius-sm);
-}
-.App-header-networks:hover {
-  background: var(--dark-blue-hover);
-  cursor: pointer;
-}
-
-.App-header-networks-icon {
+.networks-dropdown-icon {
   width: 4.1rem;
   height: 3.6rem;
   border-radius: 0.4rem;
@@ -76,18 +25,64 @@
   pointer-events: none;
 }
 
-.App-header-networks-icon img {
+.networks-dropdown-icon img {
   width: 20px;
   height: 20px;
+  border-radius: 50%;
 }
-@media (max-width: 1033px) {
-  .App-header-networks {
-    margin-left: 1.6rem;
-  }
+
+.networks-dropdown-language-img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.menu-item-group {
+  display: flex;
+  align-items: center;
+}
+
+.networks-dropdown-items {
+  width: 27rem;
+}
+
+.networks-dropdown-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0.8rem;
+  justify-content: space-between;
+}
+
+.networks-dropdown-menu-item-img {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+}
+
+.networks-dropdown-headings {
+  padding: 0.8rem 0.8rem 0.4rem 0.8rem;
+  opacity: 0.7;
+  font-size: 1.25rem;
+}
+
+.networks-dropdown-item-label {
+  margin-left: 0.8rem;
+}
+
+.networks-dropdown-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.menu-item:hover .menu-item-label {
+  color: #eee;
 }
 
 @media (max-width: 500px) {
-  .App-header-networks {
-    margin-left: 0.6rem;
+  .networks-dropdown-items {
+    width: 25rem;
+    left: 0;
+    transform: translate(-50%, 0);
   }
 }
