@@ -59,9 +59,6 @@ const MAX_GAS_PRICE_MAP = {
 const alchemyWhitelistedDomains = ["gmx.io", "app.gmx.io"];
 
 export function getDefaultArbitrumRpcUrl() {
-  if (alchemyWhitelistedDomains.includes(window.location.host)) {
-    return "https://arb-mainnet.g.alchemy.com/v2/hxBqIr-vfpJ105JPYLei_ibbJLe66k46";
-  }
   return "https://arb1.arbitrum.io/rpc";
 }
 
@@ -233,6 +230,10 @@ export const ICONLINKS = {
     BTC: {
       coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
       avalanche: "https://snowtrace.io/address/0x50b7545627a5162f82a992c33b87adc75187b218",
+    },
+    "BTC.b": {
+      coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
+      avalanche: "https://snowtrace.io/address/0x152b9d0FdC40C096757F570A51E494bd4b943E50",
     },
     MIM: {
       coingecko: "https://www.coingecko.com/en/coins/magic-internet-money",
@@ -2351,7 +2352,7 @@ export function getInfoTokens(
       token.maxLongCapacity =
         token.maxGlobalLongSize.gt(0) && token.maxGlobalLongSize.lt(token.availableUsd)
           ? token.maxGlobalLongSize
-          : token.availableUsd;
+          : token.availableUsd.add(token.guaranteedUsd);
 
       token.managedUsd = token.availableUsd.add(token.guaranteedUsd);
       token.managedAmount = token.managedUsd.mul(expandDecimals(1, token.decimals)).div(token.minPrice);
