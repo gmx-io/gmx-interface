@@ -91,7 +91,6 @@ import metamaskImg from "./img/metamask.png";
 import coinbaseImg from "./img/coinbaseWallet.png";
 import walletConnectImg from "./img/walletconnect-circle-blue.svg";
 import AddressDropdown from "./components/AddressDropdown/AddressDropdown";
-import SettingDropdown from "./components/SettingDropdown/SettingDropdown";
 import { ConnectWalletButton } from "./components/Common/Button";
 import useEventToast from "./components/EventToast/useEventToast";
 import EventToastContainer from "./components/EventToast/EventToastContainer";
@@ -264,11 +263,6 @@ function AppHeaderUser({
           <HeaderLink activeClassName="active" className="default-btn" to="/trade">
             <Trans>Trade</Trans>
           </HeaderLink>
-          {isHomeSite() && (
-            <div className="App-header-settings">
-              <SettingDropdown label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} />
-            </div>
-          )}
         </div>
 
         {showConnectionOptions && (
@@ -297,28 +291,17 @@ function AppHeaderUser({
         <NavLink activeClassName="active" className="default-btn" to="/trade">
           <Trans>Trade</Trans>
         </NavLink>
-        {isHomeSite() && (
-          <div className="App-header-settings">
-            <SettingDropdown label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} />
-          </div>
-        )}
       </div>
 
       {showConnectionOptions && (
         <>
-          <SettingsDropdown
-            networkOptions={networkOptions}
-            selectorLabel={selectorLabel}
-            onNetworkSelect={onNetworkSelect}
-          />
-          {/* <NetworkDropdown
+          <div className="App-header-settings">
+            <SettingsDropdown
               networkOptions={networkOptions}
               selectorLabel={selectorLabel}
               onNetworkSelect={onNetworkSelect}
             />
-            <div className="App-header-verticle-line" />
-            <SettingDropdown label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} /> */}
-
+          </div>
           <div className="App-header-user-address">
             <AddressDropdown
               account={account}
