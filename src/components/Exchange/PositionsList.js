@@ -91,6 +91,8 @@ export default function PositionsList(props) {
     minExecutionFee,
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
+    usdgSupply,
+    totalTokenWeights,
   } = props;
 
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
@@ -205,6 +207,8 @@ export default function PositionsList(props) {
           minExecutionFee={minExecutionFee}
           minExecutionFeeUSD={minExecutionFeeUSD}
           minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
+          usdgSupply={usdgSupply}
+          totalTokenWeights={totalTokenWeights}
         />
       )}
       {positions && (
