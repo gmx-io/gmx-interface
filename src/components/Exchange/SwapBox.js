@@ -977,7 +977,7 @@ export default function SwapBox(props) {
           shortCollateralToken.bufferAmount.gt(shortCollateralToken.poolAmount.sub(stableTokenAmount))
         ) {
           // suggest swapping to collateralToken
-          return [`Insufficient liquidity, change "Profits In"`, true, "BUFFER"];
+          return [`Insufficient liquidity, change "Collateral In"`, true, "BUFFER"];
         }
 
         if (
@@ -1023,7 +1023,7 @@ export default function SwapBox(props) {
 
       stableTokenAmount = stableTokenAmount.add(sizeTokens);
       if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
-        return [`Insufficient liquidity, change "Profits In..."`];
+        return [`Insufficient liquidity, change "Collateral In"`];
       }
     }
 
@@ -2314,7 +2314,7 @@ export default function SwapBox(props) {
                           The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour.
                           <br />
                           <br />
-                          {isShort && `You can change the "Profits In" token above to find lower fees`}
+                          {isShort && `You can change the "Collateral In" token above to find lower fees`}
                         </div>
                       )}
                       <br />
