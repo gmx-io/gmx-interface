@@ -75,6 +75,7 @@ export default function Ecosystem() {
     {
       title: "Blueberry Pulse",
       link: "https://blueberrypulse.substack.com/",
+      linkLabel: "Blueberry Pulse",
       about: "GMX Weekly Updates",
       creatorLabel: "@puroscohiba",
       creatorLink: "https://t.me/puroscohiba",
@@ -114,12 +115,38 @@ export default function Ecosystem() {
       creatorLink: "https://twitter.com/ChasenKaminsky",
       chainIds: [AVALANCHE],
     },
+    {
+      title: "GMX Trading Stats",
+      link: "https://t.me/GMXTradingStats",
+      linkLabel: "Telegram Bot",
+      about: "Telegram bot for Open Interest on GMX",
+      creatorLabel: "@SniperMonke2",
+      creatorLink: "https://twitter.com/SniperMonke2",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
+    {
+      title: "GMX Staking Bot",
+      link: "https://t.me/GMX_Staking_bot",
+      linkLabel: "Staking Bot",
+      about: "GMX staking rewards updates, insights & more.",
+      creatorLabel: "@GMX_Staking_bot",
+      creatorLink: "https://twitter.com/GMX_Staking_bot",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
+    {
+      title: "GMX Staking Calculator",
+      link: "https://gmxstaking.com",
+      about: "GMX staking calculator",
+      creatorLabel: "@n1njawtf",
+      creatorLink: "https://t.me/n1njawtf",
+      chainIds: [ARBITRUM, AVALANCHE],
+    },
   ];
 
   const dashboardProjects = [
     {
       title: "GMX Referrals Dashboard",
-      link: "https://www.gmxreferrals.com/",
+      link: "https://gmxreferrals.com/",
       about: "Dashboard for GMX referral stats",
       creatorLabel: "@s0berknight",
       creatorLink: "https://twitter.com/s0berknight",
@@ -135,7 +162,7 @@ export default function Ecosystem() {
     },
     {
       title: "GMX Analytics",
-      link: "https://www.gmxstats.com/",
+      link: "https://gmxstats.com/",
       about: "Financial reports and protocol analytics",
       creatorLabel: "@CryptoMessiah",
       creatorLink: "https://t.me/LarpCapital",
@@ -144,6 +171,7 @@ export default function Ecosystem() {
     {
       title: "TokenTerminal",
       link: "https://tokenterminal.com/terminal/projects/gmx",
+      linkLabel: "TokenTerminal GMX",
       about: "GMX fundamentals",
       creatorLabel: "@tokenterminal",
       creatorLink: "https://twitter.com/tokenterminal",
@@ -160,6 +188,7 @@ export default function Ecosystem() {
     {
       title: "Shogun Dashboard (Dune Arbitrum)",
       link: "https://dune.com/shogun/gmx-analytics-arbitrum",
+      linkLabel: "GMX Analytics Arbitrum",
       about: "Protocol analytics",
       creatorLabel: "@JamesCliffyz",
       creatorLink: "https://twitter.com/JamesCliffyz",
@@ -168,10 +197,20 @@ export default function Ecosystem() {
     {
       title: "Shogun Dashboard (Dune Avalanche)",
       link: "https://dune.com/shogun/gmx-analytics-avalanche",
+      linkLabel: "GMX Analytics Avalanche",
       about: "Protocol analytics",
       creatorLabel: "@JamesCliffyz",
       creatorLink: "https://twitter.com/JamesCliffyz",
       chainIds: [AVALANCHE],
+    },
+    {
+      title: "GMX Perpetuals Data",
+      link: "https://app.laevitas.ch/altsderivs/GMX/perpetualswaps",
+      linkLabel: "Perpetuals Data",
+      about: "GMX Perpetuals Data",
+      creatorLabel: "@laevitas1",
+      creatorLink: "https://twitter.com/laevitas1",
+      chainIds: [ARBITRUM],
     },
   ];
 
