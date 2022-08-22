@@ -1,0 +1,93 @@
+.network-dropdown-menu-items {
+  width: 17rem;
+}
+.network-dropdown-menu-items .divider {
+  margin-bottom: 0rem;
+}
+
+.Network-label {
+  padding: 0.8rem 1rem;
+  color: #a0a3c4;
+}
+
+.network-dropdown-menu-item {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 0.8rem;
+}
+
+.menu-item:hover .menu-item-label {
+  color: #eee;
+}
+
+.network-dropdown-menu-item-label {
+  margin-left: 0.5rem;
+}
+
+.selected-icon.Arbitrum {
+  background-color: #4275a8;
+}
+
+.selected-icon.Avalanche {
+  background-color: #e84142;
+}
+
+.selected-icon {
+  position: absolute;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  right: 1.5rem;
+}
+
+.language-image {
+  border-radius: 50%;
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.App-header-verticle-line {
+  width: 1px;
+  background: var(--dark-blue-border);
+  margin: 0.8rem 0;
+}
+
+.App-header-networks {
+  position: relative;
+  margin-right: 2.4rem;
+  display: flex;
+  border: 1px solid var(--dark-blue-border);
+  border-radius: var(--border-radius-sm);
+}
+.App-header-networks:hover {
+  background: var(--dark-blue-hover);
+  cursor: pointer;
+}
+
+.App-header-networks-icon {
+  width: 4.1rem;
+  height: 3.6rem;
+  border-radius: 0.4rem;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  pointer-events: none;
+}
+
+.App-header-networks-icon img {
+  width: 20px;
+  height: 20px;
+}
+@media (max-width: 1033px) {
+  .App-header-networks {
+    margin-left: 1.6rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .App-header-networks {
+    margin-left: 0.6rem;
+  }
+}

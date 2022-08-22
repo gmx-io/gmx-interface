@@ -115,7 +115,7 @@ import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
 import { defaultLocale, dynamicActivate } from "./utils/i18n";
-import NetworkDropdown from "./components/NetworkDropdown/NetworkDropdown";
+import SettingsDropdown from "./components/SettingsDropdown/SettingsDropdown";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -274,13 +274,11 @@ function AppHeaderUser({
         {showConnectionOptions && (
           <>
             <div className="App-header-settings">
-              <NetworkDropdown
+              <SettingsDropdown
                 networkOptions={networkOptions}
-                activeChain={selectorLabel}
+                selectorLabel={selectorLabel}
                 onNetworkSelect={onNetworkSelect}
               />
-              <div className="App-header-verticle-line" />
-              <SettingDropdown label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} />
             </div>
             <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
@@ -308,15 +306,19 @@ function AppHeaderUser({
 
       {showConnectionOptions && (
         <>
-          <div className="App-header-settings">
-            <NetworkDropdown
+          <SettingsDropdown
+            networkOptions={networkOptions}
+            selectorLabel={selectorLabel}
+            onNetworkSelect={onNetworkSelect}
+          />
+          {/* <NetworkDropdown
               networkOptions={networkOptions}
               selectorLabel={selectorLabel}
               onNetworkSelect={onNetworkSelect}
             />
             <div className="App-header-verticle-line" />
-            <SettingDropdown label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} />
-          </div>
+            <SettingDropdown label={selectorLabel} onNetworkSelect={onNetworkSelect} openSettings={openSettings} /> */}
+
           <div className="App-header-user-address">
             <AddressDropdown
               account={account}
