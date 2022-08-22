@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import "./SettingsDropdown.css";
+import "./NetworksDropdown.css";
 import language16Icon from "../../img/ic_language16.svg";
 import arbitrumIcon from "../../img/ic_arbitrum_24.svg";
 import avaxIcon from "../../img/ic_avalanche_24.svg";

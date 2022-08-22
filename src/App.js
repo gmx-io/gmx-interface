@@ -114,7 +114,7 @@ import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
 import { defaultLocale, dynamicActivate } from "./utils/i18n";
-import SettingsDropdown from "./components/SettingsDropdown/SettingsDropdown";
+import NetworksDropdown from "./components/NetworksDropdown/NetworksDropdown";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -268,7 +268,7 @@ function AppHeaderUser({
         {showConnectionOptions && (
           <>
             <div className="App-header-settings">
-              <SettingsDropdown
+              <NetworksDropdown
                 networkOptions={networkOptions}
                 selectorLabel={selectorLabel}
                 onNetworkSelect={onNetworkSelect}
@@ -296,7 +296,7 @@ function AppHeaderUser({
       {showConnectionOptions && (
         <>
           <div className="App-header-settings">
-            <SettingsDropdown
+            <NetworksDropdown
               networkOptions={networkOptions}
               selectorLabel={selectorLabel}
               onNetworkSelect={onNetworkSelect}
