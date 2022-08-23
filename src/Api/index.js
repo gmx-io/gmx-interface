@@ -1099,7 +1099,7 @@ export async function callContract(chainId, contract, method, params, opts) {
             <br />
             <br />
             <a
-              href="https://metamask.zendesk.com/hc/en-us/articles/360043227612-How-to-add-a-custom-network-RPC"
+              href="https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls"
               target="_blank"
               rel="noopener noreferrer"
             >
