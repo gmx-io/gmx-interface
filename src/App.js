@@ -532,7 +532,7 @@ function FullApp() {
         );
       } else {
         return (
-          <a className={cx("a", className, { active: isHomeLink })} href={appRedirectUrl}>
+          <a className={cx("a", className, { active: isHomeLink })} href={appRedirectUrl + to}>
             {children}
           </a>
         );
