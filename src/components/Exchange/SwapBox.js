@@ -1079,11 +1079,15 @@ export default function SwapBox(props) {
     const swapTokenSymbol = isLong ? toToken.symbol : shortCollateralToken.symbol;
     const externalSwapUrl = `https://app.1inch.io/#/${chainId}/swap/${inputCurrency}/${outputCurrency}`;
     const label =
-      modalError === "BUFFER" ? `${shortCollateralToken.symbol} Required` : `${fromToken.symbol} Capacity Reached`;
+      modalError === "BUFFER" ? `${shortCollateralToken.symbol} Required` : `${fromToken.symbol} Pool Capacity Reached`;
 
     return (
       <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal font-base">
-        <div>You need to select {swapTokenSymbol} as the "Pay" token to initiate this trade.</div>
+        <div>
+          You need to select {swapTokenSymbol} as the "Pay" token to initiate this trade, as there's not enough
+          liquidity in GLP to swap {fromToken.symbol} to {swapTokenSymbol} for Collateral. Use the option below to do
+          so:
+        </div>
         <br />
         {isShort && (
           <div>
