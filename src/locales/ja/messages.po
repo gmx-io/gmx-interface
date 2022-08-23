@@ -13,8 +13,8 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/App.js:409
-#: src/App.js:431
+#: src/App.js:391
+#: src/App.js:413
 msgid ", and use GMX with its built-in browser"
 msgstr ", そしてGMXをビルトインブラウザーで利用する"
 
@@ -44,7 +44,7 @@ msgstr "APR(実質年利)は毎週水曜日に更新され、その前一週間�
 msgid "AVAILABLE"
 msgstr "利用可能"
 
-#: src/App.js:200
+#: src/App.js:199
 #: src/views/Ecosystem/Ecosystem.js:343
 #: src/views/Ecosystem/Ecosystem.js:387
 #: src/views/Ecosystem/Ecosystem.js:442
@@ -86,7 +86,7 @@ msgid "Adding..."
 msgstr "追加中"
 
 #: src/components/Exchange/OrdersToa.js:60
-msgid "さらに、トリガー注文は成り行き注文であり、トリガー価格にての決済が保証されているわけではありません。"
+msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.js:71
@@ -110,7 +110,7 @@ msgstr "請求後7日以内にesGMXトークンは指定のネットワークの
 msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
 msgstr "ETH入手後、ネットワークを<0>Arbitrum</0>にセットし、以下のボタンをクリックしてください:"
 
-#: src/App.js:956
+#: src/App.js:938
 msgid "Allowed Slippage"
 msgstr "スリッページ許容量"
 
@@ -144,7 +144,7 @@ msgstr "GMXを承認する"
 #: src/components/Exchange/SwapBox.js:1160
 #: src/components/Glp/GlpSwap.js:503
 msgid "Approve {0}"
-msgstr  {0}を承認する"
+msgstr ""
 
 #: src/views/Stake/StakeV2.js:150
 msgid "Approve {stakingTokenSymbol}"
@@ -268,7 +268,7 @@ msgstr "1日あたり借入手数料: ${0}"
 msgid "Borrow Fee: ${0}"
 msgstr "借入手数料: ${0}"
 
-#: src/App.js:185
+#: src/App.js:184
 msgid "Buy"
 msgstr "購入"
 
@@ -452,11 +452,11 @@ msgstr "クローズ中"
 msgid "Code already taken"
 msgstr "そのコードは既に使用されています"
 
-#: src/App.js:938
+#: src/App.js:920
 msgid "Coinbase Wallet"
 msgstr "コインベースウォレット"
 
-#: src/App.js:424
+#: src/App.js:406
 msgid "Coinbase Wallet not detected."
 msgstr "コインベースウォレットが検出できません。"
 
@@ -539,7 +539,7 @@ msgstr "{wrappedTokenSymbol}から{nativeTokenSymbol}に転換する"
 msgid "Copy"
 msgstr "コピー"
 
-#: src/components/AddressDropdown/AddressDropdown.js:39
+#: src/components/AddressDropdown/AddressDropdown.js:40
 msgid "Copy Address"
 msgstr "アドレスのコピー"
 
@@ -581,7 +581,7 @@ msgstr "現在のプール額"
 msgid "Current Reserved: {0}<0/>Additional reserve required: {1}<1/>{2}"
 msgstr "現在のリザーブ額: {0}<0/>必要な追加リザーブ: {1}<1/>{2}"
 
-#: src/App.js:175
+#: src/App.js:174
 msgid "Dashboard"
 msgstr "ダッシュボード"
 
@@ -634,15 +634,15 @@ msgstr "入金完了!"
 msgid "Depositing..."
 msgstr "入金中"
 
-#: src/App.js:982
+#: src/App.js:964
 msgid "Disable order validations"
 msgstr "注文のバリデーションの無効化"
 
-#: src/components/AddressDropdown/AddressDropdown.js:55
+#: src/components/AddressDropdown/AddressDropdown.js:62
 msgid "Disconnect"
 msgstr "接続停止"
 
-#: src/App.js:971
+#: src/App.js:953
 msgid "Display PnL after fees"
 msgstr "手数料込損益の表示"
 
@@ -658,12 +658,12 @@ msgstr "ダウンロード"
 msgid "ETH is needed on Arbitrum to purchase GMX."
 msgstr "ArbitrumでGMXを購入するにはETHが必要です。"
 
-#: src/App.js:180
+#: src/App.js:179
 #: src/views/Stake/StakeV2.js:1444
 msgid "Earn"
 msgstr "報酬獲得"
 
-#: src/App.js:195
+#: src/App.js:194
 msgid "Ecosystem"
 msgstr "エコシステム"
 
@@ -917,7 +917,7 @@ msgstr "GMX移転は有効化されていません"
 
 #: src/components/Common/SEO.js:8
 msgid "GMX | Decentralized Perpetual Exchange"
-msgstr ""GMX | 分散型パーペチュアル取引所
+msgstr "\"GMX | 分散型パーペチュアル取引所"
 
 #: src/components/Referrals/AddAffiliateCode.js:18
 msgid "Generate Referral Code"
@@ -935,7 +935,7 @@ msgstr "大きなスリッページ。ともかく交換する"
 msgid "High USDG Slippage, Long Anyway"
 msgstr "大きなUSDGスリッページ。ともかくロングする"
 
-#: src/App.js:170
+#: src/App.js:169
 msgid "Home"
 msgstr "ホーム"
 
@@ -943,7 +943,7 @@ msgstr "ホーム"
 msgid "Hop"
 msgstr "ホップ"
 
-#: src/App.js:976
+#: src/App.js:958
 msgid "Include PnL in leverage display"
 msgstr "レバレッジ表示に損益を含める"
 
@@ -963,11 +963,11 @@ msgstr "誤ったネットワーク"
 msgid "Initial Collateral: ${0}"
 msgstr "初期担保: ${0}"
 
-#: src/App.js:428
+#: src/App.js:410
 msgid "Install Coinbase Wallet"
 msgstr "コインベースウォレットをインストール"
 
-#: src/App.js:406
+#: src/App.js:388
 msgid "Install MetaMask"
 msgstr "メタマスクをインストール"
 
@@ -1020,7 +1020,7 @@ msgstr "無効な清算価格"
 msgid "Invalid price, see warning"
 msgstr "無効な価格。警告を確認してください"
 
-#: src/App.js:514
+#: src/App.js:496
 msgid "Invalid slippage value"
 msgstr "無効なスリッページ値"
 
@@ -1030,8 +1030,8 @@ msgstr "無効なスリッページ値"
 #~ msgstr "仕事"
 
 #: src/components/SettingDropdown/SettingDropdown.js:66
-msgid "Language"
-msgstr "言語"
+#~ msgid "Language"
+#~ msgstr "言語"
 
 #: src/views/Home/Home.js:138
 msgid "Launch Exchange"
@@ -1184,7 +1184,7 @@ msgstr "{0}の最大プールキャパシティ到達"
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgstr "{0}の最大プールキャパシティ到達。別のトークンを使用してGLPをミントしてください。"
 
-#: src/App.js:524
+#: src/App.js:506
 msgid "Max slippage precision is 0.01%"
 msgstr "スリッページの最大精度は0.01%です"
 
@@ -1201,11 +1201,11 @@ msgstr "{0}のショートの最大値超過"
 msgid "Media Kit"
 msgstr "メディアキット"
 
-#: src/App.js:932
+#: src/App.js:914
 msgid "MetaMask"
 msgstr "メタマスク"
 
-#: src/App.js:402
+#: src/App.js:384
 msgid "MetaMask not detected."
 msgstr "メタマスクが検出できません。"
 
@@ -1524,7 +1524,7 @@ msgstr "紹介コードが更新できませんでした。"
 msgid "Referral code updated!"
 msgstr "紹介コードの更新完了!"
 
-#: src/App.js:190
+#: src/App.js:189
 #: src/views/Referrals/Referrals.js:121
 msgid "Referrals"
 msgstr "紹介アカウント"
@@ -1567,7 +1567,7 @@ msgstr "報酬"
 msgid "Same as current active code"
 msgstr "現状有効なコードと同じ"
 
-#: src/App.js:988
+#: src/App.js:970
 msgid "Save"
 msgstr "保存"
 
@@ -1576,8 +1576,8 @@ msgid "Save on Costs"
 msgstr "コスト削減"
 
 #: src/components/SettingDropdown/SettingDropdown.js:83
-msgid "Select Language"
-msgstr "言語選択"
+#~ msgid "Select Language"
+#~ msgstr "言語選択"
 
 #: src/components/Exchange/PositionDropdown.js:31
 msgid "Select Market"
@@ -1638,7 +1638,7 @@ msgstr "送信側はGLPのべスティングボールトからすべてのトー
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "送信側はGMXのべスティングボールトからすべてのトークンを引き出しました。"
 
-#: src/App.js:207
+#: src/App.js:206
 msgid "Settings"
 msgstr "設定"
 
@@ -1678,7 +1678,7 @@ msgstr "シンプルなスワップ"
 msgid "Size"
 msgstr "サイズ"
 
-#: src/App.js:518
+#: src/App.js:500
 msgid "Slippage should be less than 5%"
 msgstr "スリッページは5%未満"
 
@@ -1818,7 +1818,7 @@ msgstr "esGMX (IOU)は移転可能です。自分のウォレットに加えて�
 
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:365
 msgid "The esGMX tokens can be staked or vested at any time."
-msgstr ""esGMXはいつでもステークしたりべスティングしたりすることができます。"
+msgstr "\"esGMXはいつでもステークしたりべスティングしたりすることができます。"
 
 #: src/components/Exchange/OrdersList.js:282
 msgid "The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not."
@@ -1918,8 +1918,8 @@ msgstr "総取引量"
 msgid "Total value of tokens in GLP pool ({chainName})"
 msgstr "GLPプール ({chainName})のトークンの総額"
 
-#: src/App.js:265
-#: src/App.js:300
+#: src/App.js:264
+#: src/App.js:290
 msgid "Trade"
 msgstr "トレード"
 
@@ -1928,8 +1928,8 @@ msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x levera
 msgstr "BTC、ETH、AVAXなどの主要仮想通貨を最大30倍のレバレッジで直接自分のウォレットから取引可能"
 
 #: src/components/SettingDropdown/SettingDropdown.js:47
-msgid "Trade Settings"
-msgstr "トレード設定"
+#~ msgid "Trade Settings"
+#~ msgstr "トレード設定"
 
 #: src/components/SettingDropdown/SettingDropdown.js:43
 #~ msgid "Trade settings"
@@ -2006,7 +2006,7 @@ msgstr "ツイート"
 msgid "Two tokens create our ecosystem"
 msgstr "2つのトークンが私たちのエコシステムを作っています"
 
-#: src/App.js:606
+#: src/App.js:588
 msgid "Txn failed."
 msgstr "トランザクション失敗"
 
@@ -2101,8 +2101,8 @@ msgstr "べスティングされたGMXで引き出されていないもの"
 msgid "Vesting Status"
 msgstr "べスティング状況"
 
-#: src/App.js:608
-#: src/App.js:620
+#: src/App.js:590
+#: src/App.js:602
 msgid "View"
 msgstr "見る"
 
@@ -2110,7 +2110,7 @@ msgstr "見る"
 msgid "View <0>staking</0> page."
 msgstr "<0>staking</0> ページを見る"
 
-#: src/components/AddressDropdown/AddressDropdown.js:47
+#: src/components/AddressDropdown/AddressDropdown.js:48
 msgid "View in Explorer"
 msgstr "Explorerで見る"
 
@@ -2164,7 +2164,7 @@ msgstr "ウォレットが接続されていません"
 msgid "Wallet not connected"
 msgstr "ウォレットが接続されていません"
 
-#: src/App.js:944
+#: src/App.js:926
 msgid "WalletConnect"
 msgstr "WalletConnect"
 
@@ -2286,12 +2286,12 @@ msgstr "注文"
 msgid "orders"
 msgstr "注文"
 
-#: src/App.js:411
-#: src/App.js:433
+#: src/App.js:393
+#: src/App.js:415
 msgid "to start using GMX"
 msgstr "GMXを始めるには"
 
-#: src/components/SettingDropdown/SettingDropdown.js:102
+#: src/components/NetworkDropdown/NetworkDropdown.js:99
 msgid "{0}"
 msgstr "{0}"
 
@@ -2339,3 +2339,7 @@ msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR(実質年利)"
 #: src/Footer.js:87
 #~ msgid "{text}"
 #~ msgstr "{text}"
+
+#: src/components/Exchange/OrdersToa.js:60
+#~ msgid "さらに、トリガー注文は成り行き注文であり、トリガー価格にての決済が保証されているわけではありません。"
+#~ msgstr ""
