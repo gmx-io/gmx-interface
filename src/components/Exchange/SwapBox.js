@@ -4,6 +4,7 @@ import { Trans, t } from "@lingui/macro";
 import Modal from "../Modal/Modal";
 import Slider, { SliderTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
+import "./SwapBox.css";
 
 import cx from "classnames";
 import useSWR from "swr";
@@ -351,7 +352,7 @@ export default function SwapBox(props) {
                   {formatAmount(toTokenInfo.maxLongCapacity, USD_DECIMALS, 2, true)}
                   <br />
                   <br />
-                  Current {toTokenInfo.symbol} long: ${formatAmount(toTokenInfo.guaranteedUsd, USD_DECIMALS, 2, true)}
+                  Current {toTokenInfo.symbol} longs: ${formatAmount(toTokenInfo.guaranteedUsd, USD_DECIMALS, 2, true)}
                   <br />
                 </>
               );
@@ -2056,11 +2057,12 @@ export default function SwapBox(props) {
             {isShort && (
               <div className="Exchange-info-row">
                 <div className="Exchange-info-label">
-                  <Trans>Profits In</Trans>
+                  <Trans>Collateral In</Trans>
                 </div>
+
                 <div className="align-right">
                   <TokenSelector
-                    label="Profits In"
+                    label="Collateral In"
                     chainId={chainId}
                     tokenAddress={shortCollateralAddress}
                     onSelectToken={onSelectShortCollateralAddress}
@@ -2073,9 +2075,24 @@ export default function SwapBox(props) {
             {isLong && (
               <div className="Exchange-info-row">
                 <div className="Exchange-info-label">
-                  <Trans>Profits In</Trans>
+                  <Trans>Collateral In</Trans>
                 </div>
-                <div className="align-right strong">{toToken.symbol}</div>
+                <div className="align-right">
+                  <Tooltip
+                    position="right-bottom"
+                    handle="USD"
+                    renderContent={() => (
+                      <span className="SwapBox-collateral-tooltip-text">
+                        <Trans>
+                          A snapshot of the USD value of your collateral is taken when the position is opened.
+                        </Trans>
+                        <br />
+                        <br />
+                        <Trans>When closing the position, you can select which token you would like to receive.</Trans>
+                      </span>
+                    )}
+                  />
+                </div>
               </div>
             )}
             <div className="Exchange-info-row">

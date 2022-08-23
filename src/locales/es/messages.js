@@ -6,6 +6,8 @@
       "<0>Insuficiente liquidez para ejecutar la orden</0><1>El precio de marca, que es un agregado de precios de mercado, no alcanzó el precio especificado</1><2>Se alcanzó el precio especificado pero no lo suficiente como para ejecutarlo</2><3>Ningún guardián recogió la orden para ejecutarla</3>",
     '<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the "Claim" button under the Total Rewards section.<5/><6/></0>':
       '<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the "Claim" button under the Total Rewards section.<5/><6/></0>',
+    "A snapshot of the USD value of your collateral is taken when the position is opened.":
+      "A snapshot of the USD value of your collateral is taken when the position is opened.",
     ABOUT: "SOBRE",
     APR: "APR",
     "APRs are updated weekly on Wednesday and will depend on the fees collected for the week.":
@@ -124,6 +126,7 @@
     "Coinbase Wallet": "Coinbase Wallet",
     "Coinbase Wallet not detected.": "Coinbase Wallet no detectada.",
     Collateral: "Garantía",
+    "Collateral In": "Collateral In",
     "Community Projects": "Proyectos Comunitarios",
     "Community-led Telegram groups.": "Grupos de Telegram dirigidos por la comunidad",
     "Complete Account Transfer": "Transferencia de Cuenta Completa",
@@ -612,6 +615,8 @@
     "Wallet is not connected": "El monedero no está conectado",
     "Wallet not connected": "Monedero no conectado",
     WalletConnect: "WalletConnect",
+    "When closing the position, you can select which token you would like to receive.":
+      "When closing the position, you can select which token you would like to receive.",
     Withdraw: "Withdraw",
     "Withdraw failed.": "Withdraw failed.",
     "Withdraw from GLP Vault": "Withdraw from GLP Vault",

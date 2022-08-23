@@ -6,6 +6,8 @@
       "<0>注文執行に必要な流動性が不足しています</0><1>諸取引所の価格を集約したマーク価格が指値に達しませんでした</1><2>指値には達したものの執行にはロングの度合いが不十分でした</2><3>どのキーパーも注文を執行しませんでした</3>",
     '<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the "Claim" button under the Total Rewards section.<5/><6/></0>':
       '<0>これによりすべてのトークンは引き出され、リザーブから解除され、べスティングは停止されます。<1/><2/>GMXへ転換されたesGMXトークンはGMXトークンとなります。<3/><4/>引き出しをせずにGMXトークンを請求するには全報酬セクションの下部にある"請求"ボタンを使用してください。<5/><6/></0>',
+    "A snapshot of the USD value of your collateral is taken when the position is opened.":
+      "A snapshot of the USD value of your collateral is taken when the position is opened.",
     APR: "APR(実質年利)",
     "APRs are updated weekly on Wednesday and will depend on the fees collected for the week.":
       "APR(実質年利)は毎週水曜日に更新され、その前一週間に得られた手数料によって決まります。",
@@ -121,6 +123,7 @@
     "Coinbase Wallet": "コインベースウォレット",
     "Coinbase Wallet not detected.": "コインベースウォレットが検出できません。",
     Collateral: "担保",
+    "Collateral In": "Collateral In",
     "Community Projects": "コミュニティプロジェクト",
     "Community-led Telegram groups.": "コミュニティ主導のTelegramグループ",
     "Complete Account Transfer": "アカウント移転を完了させる",
@@ -579,6 +582,8 @@
     "Wallet is not connected": "ウォレットが接続されていません",
     "Wallet not connected": "ウォレットが接続されていません",
     WalletConnect: "WalletConnect",
+    "When closing the position, you can select which token you would like to receive.":
+      "When closing the position, you can select which token you would like to receive.",
     Withdraw: "出金",
     "Withdraw failed.": "出金できませんでした",
     "Withdraw from GLP Vault": "GLPボールトから出金",

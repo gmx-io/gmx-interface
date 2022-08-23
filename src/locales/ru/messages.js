@@ -6,6 +6,8 @@
       "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>",
     '<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the "Claim" button under the Total Rewards section.<5/><6/></0>':
       '<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the "Claim" button under the Total Rewards section.<5/><6/></0>',
+    "A snapshot of the USD value of your collateral is taken when the position is opened.":
+      "A snapshot of the USD value of your collateral is taken when the position is opened.",
     APR: "APR",
     "APRs are updated weekly on Wednesday and will depend on the fees collected for the week.":
       "APRs are updated weekly on Wednesday and will depend on the fees collected for the week.",
@@ -123,6 +125,7 @@
     "Coinbase Wallet": "Coinbase Wallet",
     "Coinbase Wallet not detected.": "Coinbase Wallet not detected.",
     Collateral: "Collateral",
+    "Collateral In": "Collateral In",
     "Community Projects": "Community Projects",
     "Community-led Telegram groups.": "Community-led Telegram groups.",
     "Complete Account Transfer": "Complete Account Transfer",
@@ -590,6 +593,8 @@
     "Wallet is not connected": "Wallet is not connected",
     "Wallet not connected": "Wallet not connected",
     WalletConnect: "WalletConnect",
+    "When closing the position, you can select which token you would like to receive.":
+      "When closing the position, you can select which token you would like to receive.",
     Withdraw: "Withdraw",
     "Withdraw failed.": "Withdraw failed.",
     "Withdraw from GLP Vault": "Withdraw from GLP Vault",
