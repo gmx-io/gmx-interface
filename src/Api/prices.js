@@ -56,6 +56,8 @@ function fillGaps(prices, periodSeconds) {
 async function getChartPricesFromStats(chainId, symbol, period) {
   if (["WBTC", "WETH", "WAVAX"].includes(symbol)) {
     symbol = symbol.substr(1);
+  } else if (symbol === "BTC.b") {
+    symbol = "BTC";
   }
   const hostname = "https://stats.gmx.io/";
   // const hostname = 'http://localhost:3113/'

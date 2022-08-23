@@ -1,0 +1,64 @@
+.PositionEditor .PositionSeller-modal .Modal-content .Modal-body {
+  padding-right: 0.7rem;
+  margin-right: 0.8rem;
+}
+
+.PositionSeller-token-selector .Modal .Modal-content {
+  width: 38rem;
+}
+
+.PositionSeller-token-selector.warning .TokenSelector-box {
+  color: rgb(247, 147, 26);
+}
+
+.PositionSeller-token-selector .TokenSelector-box {
+  display: inline-flex;
+}
+
+.PositionSelector-selected-receive-token {
+  white-space: normal;
+  display: inline-flex;
+  flex: 1;
+}
+
+.PositionSeller-token-selector .TokenSelector-box .TokenSelector-caret {
+  margin-left: 0;
+  margin-right: -2px;
+  margin-bottom: -2px;
+}
+
+.PositionSeller-fee-item {
+  margin-bottom: 4px;
+}
+
+.PositionSeller-fees-tooltip .Tooltip-popup {
+  min-width: 30rem;
+}
+
+@media (max-width: 700px) {
+  .PositionSeller-token-selector .Modal .Modal-content {
+    width: 90vw;
+  }
+
+  .PositionSeller-fees-tooltip .Tooltip-popup {
+    min-width: 30rem;
+  }
+}
+
+@media (max-width: 350px) {
+  .PositionSeller-receive-row.Exchange-info-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .Exchange-info-row.PositionSeller-receive-row .TokenSelector-box {
+    margin-top: 8px;
+    text-align: left;
+  }
+
+  .PositionSelector-selected-receive-token.align-right {
+    margin-top: 8px;
+    text-align: left;
+  }
+}

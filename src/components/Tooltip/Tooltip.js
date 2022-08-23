@@ -1,9 +1,6 @@
 import cx from "classnames";
 import { useCallback, useState, useRef } from "react";
-
-import "./Tooltip.css";
-
-const isTouch = "ontouchstart" in window;
+import { IS_TOUCH } from "../../utils/constants";
 
 const OPEN_DELAY = 0;
 const CLOSE_DELAY = 100;
@@ -17,7 +14,7 @@ export default function Tooltip(props) {
   const trigger = props.trigger ?? "hover";
 
   const onMouseEnter = useCallback(() => {
-    if (trigger !== "hover" || isTouch) return;
+    if (trigger !== "hover" || IS_TOUCH) return;
 
     if (intervalCloseRef.current) {
       clearInterval(intervalCloseRef.current);
@@ -32,7 +29,7 @@ export default function Tooltip(props) {
   }, [setVisible, intervalCloseRef, intervalOpenRef, trigger]);
 
   const onMouseClick = useCallback(() => {
-    if (trigger !== "click" && !isTouch) return;
+    if (trigger !== "click" && !IS_TOUCH) return;
     if (intervalCloseRef.current) {
       clearInterval(intervalCloseRef.current);
       intervalCloseRef.current = null;
@@ -41,6 +38,7 @@ export default function Tooltip(props) {
       clearInterval(intervalOpenRef.current);
       intervalOpenRef.current = null;
     }
+
     setVisible(true);
   }, [setVisible, intervalCloseRef, trigger]);
 
@@ -56,6 +54,7 @@ export default function Tooltip(props) {
   }, [setVisible, intervalCloseRef]);
 
   const className = cx("Tooltip", props.className);
+
   return (
     <span className={className} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
       <span
