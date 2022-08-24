@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { gql } from "@apollo/client";
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { Token as UniToken } from "@uniswap/sdk-core";
@@ -42,11 +42,13 @@ import {
   SWAP,
   INCREASE,
   DECREASE,
+  periodToTimestamp,
 } from "../Helpers";
 import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
 
-import { nissohGraphClient, arbitrumGraphClient, avalancheGraphClient } from "./common";
+import { nissohGraphClient, arbitrumGraphClient, avalancheGraphClient, avalancheLeaderboardClient, arbitrumLeaderboardClient } from "./common";
 import { groupBy } from "lodash";
+import { useWeb3React } from "@web3-react/core";
 export * from "./prices";
 
 const { AddressZero } = ethers.constants;
