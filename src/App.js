@@ -115,6 +115,7 @@ import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
 import { defaultLocale, dynamicActivate } from "./utils/i18n";
 import NetworkDropdown from "./components/NetworkDropdown/NetworkDropdown";
+import LanguagePopupHome from "./components/NetworkDropdown/LanguagePopupHome";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -265,18 +266,21 @@ function AppHeaderUser({
           </HeaderLink>
         </div>
 
-        <NetworkDropdown
-          small={small}
-          networkOptions={networkOptions}
-          selectorLabel={selectorLabel}
-          onNetworkSelect={onNetworkSelect}
-          openSettings={openSettings}
-        />
-
-        {showConnectionOptions && (
-          <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
-            {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
-          </ConnectWalletButton>
+        {showConnectionOptions ? (
+          <>
+            <NetworkDropdown
+              small={small}
+              networkOptions={networkOptions}
+              selectorLabel={selectorLabel}
+              onNetworkSelect={onNetworkSelect}
+              openSettings={openSettings}
+            />
+            <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
+              {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
+            </ConnectWalletButton>
+          </>
+        ) : (
+          <LanguagePopupHome />
         )}
       </div>
     );
@@ -292,24 +296,27 @@ function AppHeaderUser({
         </NavLink>
       </div>
 
-      <NetworkDropdown
-        small={small}
-        networkOptions={networkOptions}
-        selectorLabel={selectorLabel}
-        onNetworkSelect={onNetworkSelect}
-        openSettings={openSettings}
-      />
-
-      {showConnectionOptions && (
-        <div className="App-header-user-address">
-          <AddressDropdown
-            account={account}
-            accountUrl={accountUrl}
-            disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-            label={selectorLabel}
+      {showConnectionOptions ? (
+        <>
+          <NetworkDropdown
+            small={small}
+            networkOptions={networkOptions}
+            selectorLabel={selectorLabel}
             onNetworkSelect={onNetworkSelect}
+            openSettings={openSettings}
           />
-        </div>
+          <div className="App-header-user-address">
+            <AddressDropdown
+              account={account}
+              accountUrl={accountUrl}
+              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+              label={selectorLabel}
+              onNetworkSelect={onNetworkSelect}
+            />
+          </div>
+        </>
+      ) : (
+        <LanguagePopupHome />
       )}
     </div>
   );
