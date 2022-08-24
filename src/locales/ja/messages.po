@@ -13,8 +13,8 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/App.js:391
-#: src/App.js:413
+#: src/App.js:392
+#: src/App.js:414
 msgid ", and use GMX with its built-in browser"
 msgstr ", そしてGMXをビルトインブラウザーで利用する"
 
@@ -114,7 +114,7 @@ msgstr "請求後7日以内にesGMXトークンは指定のネットワークの
 msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
 msgstr "ETH入手後、ネットワークを<0>Arbitrum</0>にセットし、以下のボタンをクリックしてください:"
 
-#: src/App.js:938
+#: src/App.js:939
 msgid "Allowed Slippage"
 msgstr "スリッページ許容量"
 
@@ -455,11 +455,11 @@ msgstr "クローズ中"
 msgid "Code already taken"
 msgstr "そのコードは既に使用されています"
 
-#: src/App.js:920
+#: src/App.js:921
 msgid "Coinbase Wallet"
 msgstr "コインベースウォレット"
 
-#: src/App.js:406
+#: src/App.js:407
 msgid "Coinbase Wallet not detected."
 msgstr "コインベースウォレットが検出できません。"
 
@@ -514,11 +514,11 @@ msgstr "請求とステークの申し込み完了!"
 msgid "Compounding..."
 msgstr "請求およびステーク中"
 
-#: src/App.js:277
+#: src/App.js:278
 msgid "Connect"
 msgstr "接続"
 
-#: src/App.js:277
+#: src/App.js:278
 #: src/components/Exchange/SwapBox.js:1134
 #: src/components/Glp/GlpSwap.js:486
 #: src/components/Referrals/AddAffiliateCode.js:34
@@ -642,7 +642,7 @@ msgstr "入金完了!"
 msgid "Depositing..."
 msgstr "入金中"
 
-#: src/App.js:964
+#: src/App.js:965
 msgid "Disable order validations"
 msgstr "注文のバリデーションの無効化"
 
@@ -650,7 +650,7 @@ msgstr "注文のバリデーションの無効化"
 msgid "Disconnect"
 msgstr "接続停止"
 
-#: src/App.js:953
+#: src/App.js:954
 msgid "Display PnL after fees"
 msgstr "手数料込損益の表示"
 
@@ -951,7 +951,7 @@ msgstr "ホーム"
 msgid "Hop"
 msgstr "ホップ"
 
-#: src/App.js:958
+#: src/App.js:959
 msgid "Include PnL in leverage display"
 msgstr "レバレッジ表示に損益を含める"
 
@@ -971,11 +971,11 @@ msgstr "誤ったネットワーク"
 msgid "Initial Collateral: ${0}"
 msgstr "初期担保: ${0}"
 
-#: src/App.js:410
+#: src/App.js:411
 msgid "Install Coinbase Wallet"
 msgstr "コインベースウォレットをインストール"
 
-#: src/App.js:388
+#: src/App.js:389
 msgid "Install MetaMask"
 msgstr "メタマスクをインストール"
 
@@ -1028,7 +1028,7 @@ msgstr "無効な清算価格"
 msgid "Invalid price, see warning"
 msgstr "無効な価格。警告を確認してください"
 
-#: src/App.js:496
+#: src/App.js:497
 msgid "Invalid slippage value"
 msgstr "無効なスリッページ値"
 
@@ -1192,7 +1192,7 @@ msgstr "{0}の最大プールキャパシティ到達"
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgstr "{0}の最大プールキャパシティ到達。別のトークンを使用してGLPをミントしてください。"
 
-#: src/App.js:506
+#: src/App.js:507
 msgid "Max slippage precision is 0.01%"
 msgstr "スリッページの最大精度は0.01%です"
 
@@ -1209,11 +1209,11 @@ msgstr "{0}のショートの最大値超過"
 msgid "Media Kit"
 msgstr "メディアキット"
 
-#: src/App.js:914
+#: src/App.js:915
 msgid "MetaMask"
 msgstr "メタマスク"
 
-#: src/App.js:384
+#: src/App.js:385
 msgid "MetaMask not detected."
 msgstr "メタマスクが検出できません。"
 
@@ -1575,7 +1575,7 @@ msgstr "報酬"
 msgid "Same as current active code"
 msgstr "現状有効なコードと同じ"
 
-#: src/App.js:970
+#: src/App.js:971
 msgid "Save"
 msgstr "保存"
 
@@ -1584,8 +1584,8 @@ msgid "Save on Costs"
 msgstr "コスト削減"
 
 #: src/components/NetworkDropdown/NetworkDropdown.js:117
-msgid "Select Language"
-msgstr "言語選択"
+#~ msgid "Select Language"
+#~ msgstr "言語選択"
 
 #: src/components/Exchange/PositionDropdown.js:31
 msgid "Select Market"
@@ -1686,7 +1686,7 @@ msgstr "シンプルなスワップ"
 msgid "Size"
 msgstr "サイズ"
 
-#: src/App.js:500
+#: src/App.js:501
 msgid "Slippage should be less than 5%"
 msgstr "スリッページは5%未満"
 
@@ -1927,7 +1927,7 @@ msgid "Total value of tokens in GLP pool ({chainName})"
 msgstr "GLPプール ({chainName})のトークンの総額"
 
 #: src/App.js:264
-#: src/App.js:290
+#: src/App.js:291
 msgid "Trade"
 msgstr "トレード"
 
@@ -2014,7 +2014,7 @@ msgstr "ツイート"
 msgid "Two tokens create our ecosystem"
 msgstr "2つのトークンが私たちのエコシステムを作っています"
 
-#: src/App.js:588
+#: src/App.js:589
 msgid "Txn failed."
 msgstr "トランザクション失敗"
 
@@ -2109,8 +2109,8 @@ msgstr "べスティングされたGMXで引き出されていないもの"
 msgid "Vesting Status"
 msgstr "べスティング状況"
 
-#: src/App.js:590
-#: src/App.js:602
+#: src/App.js:591
+#: src/App.js:603
 msgid "View"
 msgstr "見る"
 
@@ -2172,7 +2172,7 @@ msgstr "ウォレットが接続されていません"
 msgid "Wallet not connected"
 msgstr "ウォレットが接続されていません"
 
-#: src/App.js:926
+#: src/App.js:927
 msgid "WalletConnect"
 msgstr "WalletConnect"
 
@@ -2298,8 +2298,8 @@ msgstr "注文"
 msgid "orders"
 msgstr "注文"
 
-#: src/App.js:393
-#: src/App.js:415
+#: src/App.js:394
+#: src/App.js:416
 msgid "to start using GMX"
 msgstr "GMXを始めるには"
 
