@@ -53,55 +53,52 @@ function MobileScreen({
   }
   return (
     <>
-      <div className="App-header-settings" onClick={() => setIsMobileModalOpen(true)}>
+      <div className="App-header-network" onClick={() => setIsMobileModalOpen(true)}>
         <div className="network-dropdown">
-          <button className={cx("btn-primary small transparent network-dropdown-icon")}>
-            <img src={selectorLabel === "Arbitrum" ? arbitrumIcon : avaxIcon} alt={selectorLabel} />
+          <button className={cx("btn-primary small transparent")}>
+            <img
+              className="network-dropdown-icon"
+              src={selectorLabel === "Arbitrum" ? arbitrumIcon : avaxIcon}
+              alt={selectorLabel}
+            />
           </button>
           <div className="network-dropdown-seperator" />
-          <button className={cx("btn-primary small transparent network-dropdown-icon")}>
-            <img src={language24Icon} alt={locales[currentLanguage]} />
+          <button className={cx("btn-primary small transparent")}>
+            <img className="network-dropdown-icon" src={language24Icon} alt={locales[currentLanguage]} />
           </button>
         </div>
       </div>
-      <ModalWithPortal isVisible={isMobileModalOpen} setIsVisible={setIsMobileModalOpen} label={t`Select Network`}>
+      <ModalWithPortal
+        className="network-popup"
+        isVisible={isMobileModalOpen}
+        setIsVisible={setIsMobileModalOpen}
+        label={t`Select Network`}
+      >
         <div className="network-dropdown-items">
-          {!isHomeSite() && (
-            <>
-              <div className="network-dropdown-list">
-                {networkOptions.map((network) => {
-                  const networkIcon = importImage(network.icon);
-                  return (
-                    <div
-                      className="network-dropdown-menu-item network-selector menu-item"
-                      onClick={() => handleNetworkSelect({ value: network.value })}
-                      key={network.value}
-                    >
-                      <div className="menu-item-group">
-                        <div className="menu-item-icon">
-                          <img src={networkIcon} alt={network.label} />
-                        </div>
-                        <span className="network-dropdown-item-label">{network.label}</span>
-                      </div>
-                      <div className="network-dropdown-menu-item-img">
-                        <div className={cx("active-dot", { [selectorLabel]: selectorLabel === network.label })} />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </>
-          )}
-          <div>
-            <div
-              className="network-dropdown-menu-item network-selector menu-item"
-              onClick={() => setIsLanguageModalOpen(true)}
-            >
-              <div className="menu-item-group">
-                <div className="menu-item-icon">
-                  <img src={language24Icon} alt="" />
+          <div className="network-dropdown-list">
+            {networkOptions.map((network) => {
+              const networkIcon = importImage(network.icon);
+              return (
+                <div
+                  className="network-option"
+                  onClick={() => handleNetworkSelect({ value: network.value })}
+                  key={network.value}
+                >
+                  <div className="menu-item-group">
+                    <img src={networkIcon} alt={network.label} />
+                    <span>{network.label}</span>
+                  </div>
+                  <div className={cx("active-dot", { [selectorLabel]: selectorLabel === network.label })} />
                 </div>
-                <span className="network-dropdown-item-label">Language</span>
+              );
+            })}
+          </div>
+
+          <div>
+            <div className="network-option" onClick={() => setIsLanguageModalOpen(true)}>
+              <div className="menu-item-group">
+                <img className="network-option-img" src={language24Icon} alt="" />
+                <span className="network-option-img-label">Language</span>
               </div>
               <div className="menu-item-icon">
                 <img src={arrowright16Icon} alt="arrow-right-icon" />
@@ -130,45 +127,39 @@ function DesktopScreen({
 }) {
   return (
     <>
-      <div className="App-header-settings">
+      <div className="App-header-network">
         <Menu>
           <Menu.Button as="div" className="network-dropdown">
-            {!isHomeSite() && (
-              <>
-                <button className={cx("btn-primary small transparent network-dropdown-icon")}>
-                  <img src={selectorLabel === "Arbitrum" ? arbitrumIcon : avaxIcon} alt={selectorLabel} />
-                </button>
-                <div className="network-dropdown-seperator" />
-              </>
-            )}
-
-            <button className={cx("btn-primary small transparent network-dropdown-icon")}>
-              <img src={language24Icon} alt={locales[currentLanguage]} />
+            <button className={cx("btn-primary small transparent")}>
+              <img
+                className="network-dropdown-icon"
+                src={selectorLabel === "Arbitrum" ? arbitrumIcon : avaxIcon}
+                alt={selectorLabel}
+              />
+            </button>
+            <div className="network-dropdown-seperator" />
+            <button className={cx("btn-primary small transparent")}>
+              <img className="network-dropdown-icon" src={language24Icon} alt={locales[currentLanguage]} />
             </button>
           </Menu.Button>
-
           <Menu.Items as="div" className="menu-items network-dropdown-items">
-            {!isHomeSite() && (
-              <>
-                <div className="network-dropdown-list">
-                  <NetworkMenuItems
-                    networkOptions={networkOptions}
-                    selectorLabel={selectorLabel}
-                    onNetworkSelect={onNetworkSelect}
-                  />
-                </div>
-              </>
-            )}
+            <div className="network-dropdown-list">
+              <NetworkMenuItems
+                networkOptions={networkOptions}
+                selectorLabel={selectorLabel}
+                onNetworkSelect={onNetworkSelect}
+              />
+            </div>
             <Menu.Item>
               <div className="network-dropdown-menu-item menu-item" onClick={() => setIsLanguageModalOpen(true)}>
                 <div className="menu-item-group">
                   <div className="menu-item-icon">
-                    <img src={language24Icon} alt="" />
+                    <img className="network-dropdown-icon" src={language24Icon} alt="" />
                   </div>
                   <span className="network-dropdown-item-label">Language</span>
                 </div>
                 <div className="menu-item-icon">
-                  <img src={arrowright16Icon} alt="arrow-right-icon" />
+                  <img className="network-dropdown-icon" src={arrowright16Icon} alt="arrow-right-icon" />
                 </div>
               </div>
             </Menu.Item>
@@ -198,7 +189,7 @@ function NetworkMenuItems({ networkOptions, selectorLabel, onNetworkSelect }) {
         >
           <div className="menu-item-group">
             <div className="menu-item-icon">
-              <img src={networkIcon} alt={network.label} />
+              <img className="network-dropdown-icon" src={networkIcon} alt={network.label} />
             </div>
             <span className="network-dropdown-item-label">{network.label}</span>
           </div>
@@ -234,7 +225,7 @@ function LanguageDropdown({ currentLanguage, isLanguageModalOpen, setIsLanguageM
           >
             <div className="menu-item-group">
               <div className="menu-item-icon">
-                <img src={image} alt="language-menu-open-icon" />
+                <img className="network-dropdown-icon" src={image} alt="language-menu-open-icon" />
               </div>
               <span className="network-dropdown-item-label menu-item-label">{locales[item]}</span>
             </div>

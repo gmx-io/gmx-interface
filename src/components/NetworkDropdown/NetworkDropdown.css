@@ -1,22 +1,22 @@
+.App-header-network {
+  position: relative;
+  margin-right: 2.4rem;
+  border: 1px solid var(--dark-blue-border);
+  border-radius: var(--border-radius-sm);
+  height: 3.6rem;
+  display: inline-flex;
+  align-items: center;
+  color: white;
+}
 .network-dropdown {
   display: inline-flex;
 }
-.language-modal .Modal-content {
-  width: 32rem;
-}
-
 .network-dropdown:hover {
   background: var(--dark-blue-hover);
   cursor: pointer;
 }
 
-.network-dropdown-seperator {
-  width: 1px;
-  background: var(--dark-blue-border);
-  margin: 0.8rem 0;
-}
-
-.network-dropdown-icon {
+.network-dropdown > button {
   width: 4.1rem;
   height: 3.6rem;
   border-radius: 0.4rem;
@@ -25,25 +25,25 @@
   pointer-events: none;
 }
 
-.network-dropdown-icon img {
+.network-dropdown-icon {
   width: 20px;
   height: 20px;
   border-radius: 50%;
 }
 
-.network-dropdown-language-img {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
+.language-modal .Modal-content {
+  width: 32rem;
+}
+
+.network-dropdown-seperator {
+  width: 1px;
+  background: var(--dark-blue-border);
+  margin: 0.8rem 0;
 }
 
 .menu-item-group {
   display: flex;
   align-items: center;
-}
-
-.network-dropdown-items {
-  width: 17rem;
 }
 
 .network-dropdown-menu-item {
@@ -53,7 +53,12 @@
   justify-content: space-between;
 }
 
-.network-selector {
+.network-popup .Modal-content {
+  width: 100%;
+  max-width: 29.6rem;
+  margin: auto;
+}
+.network-option {
   cursor: pointer;
   background: var(--dark-blue);
   border: 1px solid var(--dark-blue-border);
@@ -62,8 +67,29 @@
   display: flex;
   align-items: center;
   position: relative;
-  margin-bottom: 1rem;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
 }
+
+.network-option img {
+  width: 3.2rem;
+  margin-right: 1.5rem;
+}
+
+.network-option span {
+  font-size: 1.6rem;
+  line-height: 2rem;
+  letter-spacing: 0.29px;
+  color: #fff;
+}
+
+.network-option-img-label {
+  font-size: 1.6rem;
+  line-height: 2rem;
+  letter-spacing: 0.29px;
+  color: #fff;
+}
+
 .language-modal .Modal-body {
   display: grid;
   grid-gap: 1rem;
@@ -84,11 +110,6 @@
   justify-content: center;
   align-items: center;
   width: 20px;
-}
-.menu-item-icon img {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
 }
 
 .network-dropdown-headings {
@@ -120,4 +141,15 @@
 }
 .active-dot.Avalanche {
   background-color: #e84142;
+}
+
+@media (max-width: 1033px) {
+  .App-header-network {
+    margin-right: 1.6rem;
+  }
+}
+@media (max-width: 450px) {
+  .App-header-network {
+    margin-right: 0.6rem;
+  }
 }
