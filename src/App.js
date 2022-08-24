@@ -264,14 +264,13 @@ function AppHeaderUser({
             <Trans>Trade</Trans>
           </HeaderLink>
         </div>
-        <div className="App-header-settings">
-          <NetworkDropdown
-            small={small}
-            networkOptions={networkOptions}
-            selectorLabel={selectorLabel}
-            onNetworkSelect={onNetworkSelect}
-          />
-        </div>
+
+        <NetworkDropdown
+          small={small}
+          networkOptions={networkOptions}
+          selectorLabel={selectorLabel}
+          onNetworkSelect={onNetworkSelect}
+        />
 
         {showConnectionOptions && (
           <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
