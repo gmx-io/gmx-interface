@@ -146,7 +146,7 @@ export default function Ecosystem() {
   const dashboardProjects = [
     {
       title: "GMX Referrals Dashboard",
-      link: "https://gmxreferrals.com/",
+      link: "https://www.gmxreferrals.com/",
       about: "Dashboard for GMX referral stats",
       creatorLabel: "@s0berknight",
       creatorLink: "https://twitter.com/s0berknight",
