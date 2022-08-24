@@ -992,14 +992,14 @@ export function extractError(ex) {
   const message = ex.data?.message || ex.message;
   const code = ex.code;
 
-  if (!message) {
+  if (!message && !code) {
     return [];
   }
 
   for (const [type, patterns] of Object.entries(TX_ERROR_PATTERNS)) {
     for (const pattern of patterns) {
       const matchCode = pattern.code && code === pattern.code;
-      const matchMessage = pattern.msg && message.includes(pattern.msg);
+      const matchMessage = pattern.msg && message && message.includes(pattern.msg);
 
       if (matchCode || matchMessage) {
         return [message, type, ex.data];
