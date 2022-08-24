@@ -270,6 +270,7 @@ function AppHeaderUser({
           networkOptions={networkOptions}
           selectorLabel={selectorLabel}
           onNetworkSelect={onNetworkSelect}
+          openSettings={openSettings}
         />
 
         {showConnectionOptions && (
@@ -296,6 +297,7 @@ function AppHeaderUser({
         networkOptions={networkOptions}
         selectorLabel={selectorLabel}
         onNetworkSelect={onNetworkSelect}
+        openSettings={openSettings}
       />
 
       {showConnectionOptions && (

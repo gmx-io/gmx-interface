@@ -5,74 +5,78 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import "./NetworkDropdown.css";
 import language24Icon from "../../img/ic_language24.svg";
+import settingsIcon from "../../img/ic_settings_16.svg";
 import arbitrumIcon from "../../img/ic_arbitrum_24.svg";
 import avaxIcon from "../../img/ic_avalanche_24.svg";
 import checkedIcon from "../../img/ic_checked.svg";
 import arrowright16Icon from "../../img/ic_arrowright16.svg";
 import { importImage, isHomeSite, LANGUAGE_LOCALSTORAGE_KEY } from "../../Helpers";
 import { defaultLocale, dynamicActivate, locales } from "../../utils/i18n";
+import { IoOptionsSharp } from "react-icons/io5";
+
+const LANGUAGE_MODAL_KEY = "LANGUAGE";
+const NETWORK_MODAL_KEY = "NETWORK";
 
 export default function NetworkDropdown(props) {
   const currentLanguage = useRef(localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale);
-  const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(null);
-
+  const [activeModal, setActiveModal] = useState(null);
+  return props.small ? (
+    <MobileScreen
+      currentLanguage={currentLanguage}
+      activeModal={activeModal}
+      setActiveModal={setActiveModal}
+      {...props}
+    />
+  ) : (
+    <DesktopScreen
+      currentLanguage={currentLanguage}
+      activeModal={activeModal}
+      setActiveModal={setActiveModal}
+      {...props}
+    />
+  );
+}
+function NavIcons({ selectorLabel }) {
   return (
     <>
-      {props.small ? (
-        <>
-          <MobileScreen
-            currentLanguage={currentLanguage}
-            isLanguageModalOpen={isLanguageModalOpen}
-            setIsLanguageModalOpen={setIsLanguageModalOpen}
-            {...props}
-          />
-        </>
-      ) : (
-        <DesktopScreen
-          currentLanguage={currentLanguage}
-          isLanguageModalOpen={isLanguageModalOpen}
-          setIsLanguageModalOpen={setIsLanguageModalOpen}
-          {...props}
+      <button className={cx("btn-primary small transparent")}>
+        <img
+          className="network-dropdown-icon"
+          src={selectorLabel === "Arbitrum" ? arbitrumIcon : avaxIcon}
+          alt={selectorLabel}
         />
-      )}
+      </button>
+      <div className="network-dropdown-seperator" />
+      <button className={cx("btn-primary small transparent")}>
+        <IoOptionsSharp color="white" size={20} />
+      </button>
     </>
   );
 }
-
 function MobileScreen({
-  isLanguageModalOpen,
-  setIsLanguageModalOpen,
+  activeModal,
+  setActiveModal,
   currentLanguage,
   selectorLabel,
   networkOptions,
   onNetworkSelect,
+  openSettings,
 }) {
-  const [isMobileModalOpen, setIsMobileModalOpen] = useState(false);
   async function handleNetworkSelect(option) {
     await onNetworkSelect(option);
   }
   return (
     <>
-      <div className="App-header-network" onClick={() => setIsMobileModalOpen(true)}>
+      <div className="App-header-network" onClick={() => setActiveModal(NETWORK_MODAL_KEY)}>
         <div className="network-dropdown">
-          <button className={cx("btn-primary small transparent")}>
-            <img
-              className="network-dropdown-icon"
-              src={selectorLabel === "Arbitrum" ? arbitrumIcon : avaxIcon}
-              alt={selectorLabel}
-            />
-          </button>
-          <div className="network-dropdown-seperator" />
-          <button className={cx("btn-primary small transparent")}>
-            <img className="network-dropdown-icon" src={language24Icon} alt={locales[currentLanguage]} />
-          </button>
+          <NavIcons selectorLabel={selectorLabel} />
         </div>
       </div>
       <ModalWithPortal
         className="network-popup"
-        isVisible={isMobileModalOpen}
-        setIsVisible={setIsMobileModalOpen}
-        label={t`Select Network`}
+        isVisible={activeModal === NETWORK_MODAL_KEY}
+        setIsVisible={() => setActiveModal(null)}
+        label={t`Networks and Settings`}
       >
         <div className="network-dropdown-items">
           <div className="network-dropdown-list">
@@ -92,13 +96,31 @@ function MobileScreen({
                 </div>
               );
             })}
-          </div>
-
-          <div>
-            <div className="network-option" onClick={() => setIsLanguageModalOpen(true)}>
+            <div
+              className="network-option"
+              onClick={() => {
+                console.log("called");
+                setActiveModal(LANGUAGE_MODAL_KEY);
+              }}
+            >
               <div className="menu-item-group">
-                <img className="network-option-img" src={language24Icon} alt="" />
+                <img className="network-option-img" src={language24Icon} alt="Select Language" />
                 <span className="network-option-img-label">Language</span>
+              </div>
+              <div className="menu-item-icon">
+                <img src={arrowright16Icon} alt="arrow-right-icon" />
+              </div>
+            </div>
+            <div
+              className="network-option"
+              onClick={() => {
+                openSettings();
+                setActiveModal(null);
+              }}
+            >
+              <div className="menu-item-group">
+                <img className="network-option-img" src={settingsIcon} alt="" />
+                <span className="network-option-img-label">Settings</span>
               </div>
               <div className="menu-item-icon">
                 <img src={arrowright16Icon} alt="arrow-right-icon" />
@@ -106,43 +128,30 @@ function MobileScreen({
             </div>
           </div>
         </div>
-
-        <LanguageDropdown
-          currentLanguage={currentLanguage}
-          isLanguageModalOpen={isLanguageModalOpen}
-          setIsLanguageModalOpen={setIsLanguageModalOpen}
-        />
       </ModalWithPortal>
+      <LanguageDropdown currentLanguage={currentLanguage} activeModal={activeModal} setActiveModal={setActiveModal} />
     </>
   );
 }
 
 function DesktopScreen({
-  isLanguageModalOpen,
-  setIsLanguageModalOpen,
+  activeModal,
+  setActiveModal,
   currentLanguage,
   selectorLabel,
   networkOptions,
   onNetworkSelect,
+  openSettings,
 }) {
   return (
     <>
       <div className="App-header-network">
         <Menu>
           <Menu.Button as="div" className="network-dropdown">
-            <button className={cx("btn-primary small transparent")}>
-              <img
-                className="network-dropdown-icon"
-                src={selectorLabel === "Arbitrum" ? arbitrumIcon : avaxIcon}
-                alt={selectorLabel}
-              />
-            </button>
-            <div className="network-dropdown-seperator" />
-            <button className={cx("btn-primary small transparent")}>
-              <img className="network-dropdown-icon" src={language24Icon} alt={locales[currentLanguage]} />
-            </button>
+            <NavIcons selectorLabel={selectorLabel} />
           </Menu.Button>
           <Menu.Items as="div" className="menu-items network-dropdown-items">
+            <div className="dropdown-label">Networks</div>
             <div className="network-dropdown-list">
               <NetworkMenuItems
                 networkOptions={networkOptions}
@@ -150,8 +159,22 @@ function DesktopScreen({
                 onNetworkSelect={onNetworkSelect}
               />
             </div>
+            <div className="network-dropdown-divider" />
             <Menu.Item>
-              <div className="network-dropdown-menu-item menu-item" onClick={() => setIsLanguageModalOpen(true)}>
+              <div className="network-dropdown-menu-item menu-item" onClick={openSettings}>
+                <div className="menu-item-group">
+                  <div className="menu-item-icon">
+                    <img className="network-dropdown-icon" src={settingsIcon} alt="" />
+                  </div>
+                  <span className="network-dropdown-item-label">Settings</span>
+                </div>
+                <div className="menu-item-icon">
+                  <img className="network-dropdown-icon" src={arrowright16Icon} alt="arrow-right-icon" />
+                </div>
+              </div>
+            </Menu.Item>
+            <Menu.Item>
+              <div className="network-dropdown-menu-item menu-item" onClick={() => setActiveModal(LANGUAGE_MODAL_KEY)}>
                 <div className="menu-item-group">
                   <div className="menu-item-icon">
                     <img className="network-dropdown-icon" src={language24Icon} alt="" />
@@ -166,11 +189,7 @@ function DesktopScreen({
           </Menu.Items>
         </Menu>
       </div>
-      <LanguageDropdown
-        currentLanguage={currentLanguage}
-        isLanguageModalOpen={isLanguageModalOpen}
-        setIsLanguageModalOpen={setIsLanguageModalOpen}
-      />
+      <LanguageDropdown currentLanguage={currentLanguage} activeModal={activeModal} setActiveModal={setActiveModal} />
     </>
   );
 }
@@ -202,12 +221,12 @@ function NetworkMenuItems({ networkOptions, selectorLabel, onNetworkSelect }) {
   });
 }
 
-function LanguageDropdown({ currentLanguage, isLanguageModalOpen, setIsLanguageModalOpen }) {
+function LanguageDropdown({ currentLanguage, activeModal, setActiveModal }) {
   return (
     <ModalWithPortal
       className="language-modal"
-      isVisible={isLanguageModalOpen}
-      setIsVisible={setIsLanguageModalOpen}
+      isVisible={activeModal === LANGUAGE_MODAL_KEY}
+      setIsVisible={() => setActiveModal(null)}
       label={t`Select Language`}
     >
       {Object.keys(locales).map((item) => {
