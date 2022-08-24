@@ -1007,7 +1007,7 @@ export function extractError(ex) {
     }
   }
 
-  return [message, ex.data];
+  return [message, null, ex.data];
 }
 
 function ToastifyDebug(props) {
