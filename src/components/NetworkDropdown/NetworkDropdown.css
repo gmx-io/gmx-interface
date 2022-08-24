@@ -52,6 +52,18 @@
   padding: 0.8rem;
   justify-content: space-between;
 }
+
+.network-selector {
+  cursor: pointer;
+  background: var(--dark-blue);
+  border: 1px solid var(--dark-blue-border);
+  border-radius: 0.4rem;
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 1rem;
+}
 .language-modal .Modal-body {
   display: grid;
   grid-gap: 1rem;
