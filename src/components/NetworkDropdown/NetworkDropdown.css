@@ -16,12 +16,11 @@
   padding-bottom: 0.8rem;
 }
 .network-dropdown-items:last-child {
-  min-width: 17rem;
   padding-bottom: 0;
 }
 
 .network-dropdown-divider {
-  margin: 0.8rem 0;
+  margin-bottom: 0.8rem;
   border-bottom: 1px solid #ffffff29;
 }
 .network-dropdown:hover {
@@ -44,7 +43,7 @@
   border-radius: 50%;
 }
 
-.language-modal .Modal-content {
+.language-popup .Modal-content {
   width: 32rem;
 }
 
@@ -64,6 +63,9 @@
   align-items: center;
   padding: 0.8rem;
   justify-content: space-between;
+}
+.network-dropdown-menu-item:last-child {
+  margin-bottom: 0.8rem;
 }
 
 .network-popup .Modal-content {
@@ -108,11 +110,11 @@
 
 .dropdown-label {
   color: #a0a3c4;
-  padding: 0.8rem 0.8rem 0.4rem 0.8rem;
+  padding: 0.8rem;
   font-size: 1.25rem;
 }
 
-.language-modal .Modal-body {
+.language-popup .Modal-body {
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: repeat(2, 1fr);
