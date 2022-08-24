@@ -1196,17 +1196,6 @@ button.App-button {
   align-items: center;
 }
 
-.App-header-settings {
-  position: relative;
-  margin-right: 2.4rem;
-  border: 1px solid var(--dark-blue-border);
-  border-radius: var(--border-radius-sm);
-  height: 3.6rem;
-  display: inline-flex;
-  align-items: center;
-  color: white;
-}
-
 @media (max-width: 1033px) {
   .long-connect-btn {
     display: none !important;
@@ -1298,10 +1287,6 @@ button.App-button {
 
   .App-card-long-content.card-list {
     grid-template-columns: 1fr 1fr;
-  }
-
-  .App-header-settings {
-    margin-right: 1.6rem;
   }
 }
 
@@ -1398,10 +1383,6 @@ button.App-button {
   .App-header .App-header-link-main {
     padding: 0.155rem !important;
     margin-left: 0rem !important;
-  }
-
-  .App-header-settings {
-    margin-right: 0.6rem;
   }
 }
 
