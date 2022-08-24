@@ -147,6 +147,7 @@ export default function Ecosystem() {
     {
       title: "GMX Referrals Dashboard",
       link: "https://www.gmxreferrals.com/",
+      linkLabel: "https://gmxreferrals.com/",
       about: "Dashboard for GMX referral stats",
       creatorLabel: "@s0berknight",
       creatorLink: "https://twitter.com/s0berknight",
