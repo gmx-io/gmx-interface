@@ -1,6 +1,9 @@
 .network-dropdown {
   display: inline-flex;
 }
+.language-modal .Modal-content {
+  width: 32rem;
+}
 
 .network-dropdown:hover {
   background: var(--dark-blue-hover);
@@ -48,6 +51,20 @@
   align-items: center;
   padding: 0.8rem;
   justify-content: space-between;
+}
+.language-modal .Modal-body {
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.language-modal-item {
+  border: 1px solid var(--dark-blue-border);
+  cursor: pointer;
+}
+
+.language-modal-item.active {
+  border: 1px solid #a1a3c4;
 }
 
 .menu-item-icon {

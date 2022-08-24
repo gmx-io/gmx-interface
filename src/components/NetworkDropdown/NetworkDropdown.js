@@ -1,20 +1,16 @@
 import React, { useRef, useState } from "react";
 import { Menu } from "@headlessui/react";
-import { Trans } from "@lingui/macro";
+import ModalWithPortal from "../Modal/ModalWithPortal";
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import "./NetworkDropdown.css";
 import language24Icon from "../../img/ic_language24.svg";
 import arbitrumIcon from "../../img/ic_arbitrum_24.svg";
 import avaxIcon from "../../img/ic_avalanche_24.svg";
 import checkedIcon from "../../img/ic_checked.svg";
-import arrowleft16Icon from "../../img/ic_arrowleft16.svg";
 import arrowright16Icon from "../../img/ic_arrowright16.svg";
 import { importImage, isHomeSite, LANGUAGE_LOCALSTORAGE_KEY } from "../../Helpers";
 import { defaultLocale, dynamicActivate, locales } from "../../utils/i18n";
-import Modal from "../Modal/Modal";
-import ModalWithPortal from "../Modal/ModalWithPortal";
-
-const LANGUAGE_SUBMENU = "LANGUAGE";
 
 export default function NetworkDropdown({ networkOptions, selectorLabel, onNetworkSelect, small }) {
   const currentLanguage = useRef(localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale);
@@ -104,24 +100,33 @@ function NetworkMenuItems({ networkOptions, selectorLabel, onNetworkSelect }) {
 
 function LanguageDropdown({ currentLanguage, isLanguageModalOpen, setIsLanguageModalOpen }) {
   return (
-    <ModalWithPortal isVisible={isLanguageModalOpen} setIsVisible={setIsLanguageModalOpen} label="Select Language">
+    <ModalWithPortal
+      className="language-modal"
+      isVisible={isLanguageModalOpen}
+      setIsVisible={setIsLanguageModalOpen}
+      label={t`Select Language`}
+    >
       {Object.keys(locales).map((item) => {
         const image = importImage(`flag_${item}.svg`);
         return (
           <div
-            className=""
+            className={cx("network-dropdown-menu-item  menu-item language-modal-item", {
+              active: currentLanguage.current === item,
+            })}
             onClick={() => {
               localStorage.setItem(LANGUAGE_LOCALSTORAGE_KEY, item);
               dynamicActivate(item);
             }}
           >
-            <div className="">
-              <div className="">
+            <div className="menu-item-group">
+              <div className="menu-item-icon">
                 <img src={image} alt="language-menu-open-icon" />
               </div>
-              <span className="">{locales[item]}</span>
+              <span className="network-dropdown-item-label menu-item-label">{locales[item]}</span>
             </div>
-            <div className="">{currentLanguage.current === item && <img src={checkedIcon} alt={locales[item]} />}</div>
+            <div className="network-dropdown-menu-item-img">
+              {currentLanguage.current === item && <img src={checkedIcon} alt={locales[item]} />}
+            </div>
           </div>
         );
       })}

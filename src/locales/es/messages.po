@@ -13,8 +13,8 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/App.js:391
-#: src/App.js:413
+#: src/App.js:392
+#: src/App.js:414
 msgid ", and use GMX with its built-in browser"
 msgstr ", y utiliza GMX con el navegador incorporado"
 
@@ -118,7 +118,7 @@ msgstr "Tras reclamar, los tokens esGMX serán enviados a su cuenta en la red se
 msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
 msgstr "Después de tener ETH, establece tu red a <0>Arbitrum</0> y luego haz clic en el botón de abajo:"
 
-#: src/App.js:938
+#: src/App.js:939
 msgid "Allowed Slippage"
 msgstr "Deslizamiento permitido"
 
@@ -459,11 +459,11 @@ msgstr ""
 msgid "Code already taken"
 msgstr "Código ya tomado"
 
-#: src/App.js:920
+#: src/App.js:921
 msgid "Coinbase Wallet"
 msgstr "Coinbase Wallet"
 
-#: src/App.js:406
+#: src/App.js:407
 msgid "Coinbase Wallet not detected."
 msgstr "Coinbase Wallet no detectada."
 
@@ -518,11 +518,11 @@ msgstr ""
 msgid "Compounding..."
 msgstr ""
 
-#: src/App.js:277
+#: src/App.js:278
 msgid "Connect"
 msgstr "Conectar"
 
-#: src/App.js:277
+#: src/App.js:278
 #: src/components/Exchange/SwapBox.js:1134
 #: src/components/Glp/GlpSwap.js:486
 #: src/components/Referrals/AddAffiliateCode.js:34
@@ -646,7 +646,7 @@ msgstr ""
 msgid "Depositing..."
 msgstr ""
 
-#: src/App.js:964
+#: src/App.js:965
 msgid "Disable order validations"
 msgstr "Deshabilitar validación de órdenes"
 
@@ -654,7 +654,7 @@ msgstr "Deshabilitar validación de órdenes"
 msgid "Disconnect"
 msgstr "Desconectar"
 
-#: src/App.js:953
+#: src/App.js:954
 msgid "Display PnL after fees"
 msgstr ""
 
@@ -975,7 +975,7 @@ msgstr "Inicio"
 msgid "Hop"
 msgstr "Hop"
 
-#: src/App.js:958
+#: src/App.js:959
 msgid "Include PnL in leverage display"
 msgstr ""
 
@@ -999,11 +999,11 @@ msgstr ""
 msgid "Initial Collateral: ${0}"
 msgstr "Garantía Inicial: ${0}"
 
-#: src/App.js:410
+#: src/App.js:411
 msgid "Install Coinbase Wallet"
 msgstr "Instalar Coinbase Wallet"
 
-#: src/App.js:388
+#: src/App.js:389
 msgid "Install MetaMask"
 msgstr "Instalar MetaMask"
 
@@ -1056,7 +1056,7 @@ msgstr ""
 msgid "Invalid price, see warning"
 msgstr ""
 
-#: src/App.js:496
+#: src/App.js:497
 msgid "Invalid slippage value"
 msgstr "Valor de deslizamiento no válido"
 
@@ -1220,7 +1220,7 @@ msgstr "Capacidad máxima de reserva alcanzada para {0}"
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgstr "Capacidad máxima de reserva alcanzada para {0}. Por favor, acuñe GLP usando otro token."
 
-#: src/App.js:506
+#: src/App.js:507
 msgid "Max slippage precision is 0.01%"
 msgstr "La precisión máxima del deslizamiento es de 0.01%"
 
@@ -1237,11 +1237,11 @@ msgstr ""
 msgid "Media Kit"
 msgstr "Kit de Medios"
 
-#: src/App.js:914
+#: src/App.js:915
 msgid "MetaMask"
 msgstr "MetaMask"
 
-#: src/App.js:384
+#: src/App.js:385
 msgid "MetaMask not detected."
 msgstr "MetaMask no detectado."
 
@@ -1612,7 +1612,7 @@ msgstr ""
 msgid "Same as current active code"
 msgstr "Igual que el código activo actual"
 
-#: src/App.js:970
+#: src/App.js:971
 msgid "Save"
 msgstr "Guardar"
 
@@ -1621,8 +1621,8 @@ msgid "Save on Costs"
 msgstr "Ahorrar en Costes"
 
 #: src/components/NetworkDropdown/NetworkDropdown.js:117
-msgid "Select Language"
-msgstr "Seleccionar Idioma"
+#~ msgid "Select Language"
+#~ msgstr "Seleccionar Idioma"
 
 #: src/components/Exchange/PositionDropdown.js:31
 msgid "Select Market"
@@ -1727,7 +1727,7 @@ msgstr "Swaps Simples"
 msgid "Size"
 msgstr "Tamaño"
 
-#: src/App.js:500
+#: src/App.js:501
 msgid "Slippage should be less than 5%"
 msgstr "El deslizamiento debe ser inferior al 5%\""
 
@@ -1976,7 +1976,7 @@ msgid "Total value of tokens in GLP pool ({chainName})"
 msgstr ""
 
 #: src/App.js:264
-#: src/App.js:290
+#: src/App.js:291
 msgid "Trade"
 msgstr "Comercio"
 
@@ -2063,7 +2063,7 @@ msgstr "Tweet"
 msgid "Two tokens create our ecosystem"
 msgstr "Dos tokens crean nuestro ecosistema"
 
-#: src/App.js:588
+#: src/App.js:589
 msgid "Txn failed."
 msgstr "Transf. fallida."
 
@@ -2158,8 +2158,8 @@ msgstr "GMX adquirido no retirado."
 msgid "Vesting Status"
 msgstr ""
 
-#: src/App.js:590
-#: src/App.js:602
+#: src/App.js:591
+#: src/App.js:603
 msgid "View"
 msgstr "Ver"
 
@@ -2221,7 +2221,7 @@ msgstr "El monedero no está conectado"
 msgid "Wallet not connected"
 msgstr "Monedero no conectado"
 
-#: src/App.js:926
+#: src/App.js:927
 msgid "WalletConnect"
 msgstr "WalletConnect"
 
@@ -2347,8 +2347,8 @@ msgstr ""
 msgid "orders"
 msgstr ""
 
-#: src/App.js:393
-#: src/App.js:415
+#: src/App.js:394
+#: src/App.js:416
 msgid "to start using GMX"
 msgstr "para empezar a usar GMX"
 
