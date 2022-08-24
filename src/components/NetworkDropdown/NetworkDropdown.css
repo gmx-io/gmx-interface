@@ -11,6 +11,19 @@
 .network-dropdown {
   display: inline-flex;
 }
+.network-dropdown-items {
+  min-width: 17rem;
+  padding-bottom: 0.8rem;
+}
+.network-dropdown-items:last-child {
+  min-width: 17rem;
+  padding-bottom: 0;
+}
+
+.network-dropdown-divider {
+  margin: 0.8rem 0;
+  border-bottom: 1px solid #ffffff29;
+}
 .network-dropdown:hover {
   background: var(--dark-blue-hover);
   cursor: pointer;
@@ -70,6 +83,9 @@
   justify-content: space-between;
   margin-bottom: 0.8rem;
 }
+.network-option:last-child {
+  margin-bottom: 0;
+}
 
 .network-option img {
   width: 3.2rem;
@@ -88,6 +104,12 @@
   line-height: 2rem;
   letter-spacing: 0.29px;
   color: #fff;
+}
+
+.dropdown-label {
+  color: #a0a3c4;
+  padding: 0.8rem 0.8rem 0.4rem 0.8rem;
+  font-size: 1.25rem;
 }
 
 .language-modal .Modal-body {
