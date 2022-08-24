@@ -315,7 +315,7 @@ export default function Ecosystem() {
     {
       title: "Firebird Finance",
       link: "https://app.firebird.finance/swap",
-      linkLabel: "Firebird Finance",
+      linkLabel: "https://firebird.finance/",
       about: "DEX Aggregator",
       announcementLabel: "https://twitter.com",
       announcementLink: "https://twitter.com/financefirebird/status/1561767094064238595",
