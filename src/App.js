@@ -266,6 +266,7 @@ function AppHeaderUser({
         </div>
         <div className="App-header-settings">
           <NetworkDropdown
+            small={small}
             networkOptions={networkOptions}
             selectorLabel={selectorLabel}
             onNetworkSelect={onNetworkSelect}
@@ -290,13 +291,13 @@ function AppHeaderUser({
           <Trans>Trade</Trans>
         </NavLink>
       </div>
-      <div className="App-header-settings">
-        <NetworkDropdown
-          networkOptions={networkOptions}
-          selectorLabel={selectorLabel}
-          onNetworkSelect={onNetworkSelect}
-        />
-      </div>
+
+      <NetworkDropdown
+        small={small}
+        networkOptions={networkOptions}
+        selectorLabel={selectorLabel}
+        onNetworkSelect={onNetworkSelect}
+      />
 
       {showConnectionOptions && (
         <div className="App-header-user-address">

@@ -11,72 +11,67 @@ import arrowleft16Icon from "../../img/ic_arrowleft16.svg";
 import arrowright16Icon from "../../img/ic_arrowright16.svg";
 import { importImage, isHomeSite, LANGUAGE_LOCALSTORAGE_KEY } from "../../Helpers";
 import { defaultLocale, dynamicActivate, locales } from "../../utils/i18n";
+import Modal from "../Modal/Modal";
+import ModalWithPortal from "../Modal/ModalWithPortal";
 
 const LANGUAGE_SUBMENU = "LANGUAGE";
 
-export default function NetworkDropdown({ networkOptions, selectorLabel, onNetworkSelect }) {
+export default function NetworkDropdown({ networkOptions, selectorLabel, onNetworkSelect, small }) {
   const currentLanguage = useRef(localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale);
-  const [activeSubMenu, setActiveSubMenu] = useState(null);
+  const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(null);
 
-  function openMenu(e, name) {
-    e.preventDefault();
-    setActiveSubMenu(name);
-  }
-  function closeMenu(e) {
-    e.preventDefault();
-    setActiveSubMenu(null);
-  }
   return (
-    <Menu>
-      <Menu.Button as="div" className="network-dropdown">
-        {!isHomeSite() && (
-          <>
+    <>
+      <div className="App-header-settings">
+        <Menu>
+          <Menu.Button as="div" className="network-dropdown">
+            {!isHomeSite() && (
+              <>
+                <button className={cx("btn-primary small transparent network-dropdown-icon")}>
+                  <img src={selectorLabel === "Arbitrum" ? arbitrumIcon : avaxIcon} alt={selectorLabel} />
+                </button>
+                <div className="network-dropdown-seperator" />
+              </>
+            )}
+
             <button className={cx("btn-primary small transparent network-dropdown-icon")}>
-              <img src={selectorLabel === "Arbitrum" ? arbitrumIcon : avaxIcon} alt={selectorLabel} />
+              <img src={language24Icon} alt={locales[currentLanguage]} />
             </button>
-            <div className="network-dropdown-seperator" />
-          </>
-        )}
-
-        <button className={cx("btn-primary small transparent network-dropdown-icon")}>
-          <img src={language24Icon} alt={locales[currentLanguage]} />
-        </button>
-      </Menu.Button>
-
-      {!activeSubMenu && (
-        <Menu.Items as="div" className="menu-items network-dropdown-items">
-          {!isHomeSite() && (
-            <>
-              <div className="network-dropdown-list">
-                <NetworkMenuItems
-                  networkOptions={networkOptions}
-                  selectorLabel={selectorLabel}
-                  onNetworkSelect={onNetworkSelect}
-                />
-              </div>
-            </>
-          )}
-          <Menu.Item>
-            <div className="network-dropdown-menu-item menu-item" onClick={(e) => openMenu(e, LANGUAGE_SUBMENU)}>
-              <div className="menu-item-group">
-                <div className="menu-item-icon">
-                  <img src={language24Icon} alt="" />
+          </Menu.Button>
+          <Menu.Items as="div" className="menu-items network-dropdown-items">
+            {!isHomeSite() && (
+              <>
+                <div className="network-dropdown-list">
+                  <NetworkMenuItems
+                    networkOptions={networkOptions}
+                    selectorLabel={selectorLabel}
+                    onNetworkSelect={onNetworkSelect}
+                  />
                 </div>
-                <span className="network-dropdown-item-label">Language</span>
+              </>
+            )}
+            <Menu.Item>
+              <div className="network-dropdown-menu-item menu-item" onClick={() => setIsLanguageModalOpen(true)}>
+                <div className="menu-item-group">
+                  <div className="menu-item-icon">
+                    <img src={language24Icon} alt="" />
+                  </div>
+                  <span className="network-dropdown-item-label">Language</span>
+                </div>
+                <div className="menu-item-icon">
+                  <img src={arrowright16Icon} alt="arrow-right-icon" />
+                </div>
               </div>
-              <div className="menu-item-icon">
-                <img src={arrowright16Icon} alt="arrow-right-icon" />
-              </div>
-            </div>
-          </Menu.Item>
-        </Menu.Items>
-      )}
-      {activeSubMenu === LANGUAGE_SUBMENU && (
-        <Menu.Items as="div" className="menu-items network-dropdown-items">
-          <LanguageDropdown currentLanguage={currentLanguage} closeMenu={closeMenu} />
-        </Menu.Items>
-      )}
-    </Menu>
+            </Menu.Item>
+          </Menu.Items>
+        </Menu>
+      </div>
+      <LanguageDropdown
+        currentLanguage={currentLanguage}
+        isLanguageModalOpen={isLanguageModalOpen}
+        setIsLanguageModalOpen={setIsLanguageModalOpen}
+      />
+    </>
   );
 }
 
@@ -107,41 +102,29 @@ function NetworkMenuItems({ networkOptions, selectorLabel, onNetworkSelect }) {
   });
 }
 
-function LanguageDropdown({ currentLanguage, closeMenu }) {
+function LanguageDropdown({ currentLanguage, isLanguageModalOpen, setIsLanguageModalOpen }) {
   return (
-    <>
-      <Menu.Item>
-        <div className="network-dropdown-menu-item menu-item" onClick={closeMenu}>
-          <div className="menu-item-group">
-            <img src={arrowleft16Icon} alt="arrow-left-icon" />
-            <Trans>Select Language</Trans>
-          </div>
-        </div>
-      </Menu.Item>
+    <ModalWithPortal isVisible={isLanguageModalOpen} setIsVisible={setIsLanguageModalOpen} label="Select Language">
       {Object.keys(locales).map((item) => {
         const image = importImage(`flag_${item}.svg`);
         return (
-          <Menu.Item key={item}>
-            <div
-              className="network-dropdown-menu-item  menu-item"
-              onClick={() => {
-                localStorage.setItem(LANGUAGE_LOCALSTORAGE_KEY, item);
-                dynamicActivate(item);
-              }}
-            >
-              <div className="menu-item-group">
-                <div className="menu-item-icon">
-                  <img src={image} alt="language-menu-open-icon" />
-                </div>
-                <span className="network-dropdown-item-label menu-item-label">{locales[item]}</span>
+          <div
+            className=""
+            onClick={() => {
+              localStorage.setItem(LANGUAGE_LOCALSTORAGE_KEY, item);
+              dynamicActivate(item);
+            }}
+          >
+            <div className="">
+              <div className="">
+                <img src={image} alt="language-menu-open-icon" />
               </div>
-              <div className="network-dropdown-menu-item-img">
-                {currentLanguage.current === item && <img src={checkedIcon} alt={locales[item]} />}
-              </div>
+              <span className="">{locales[item]}</span>
             </div>
-          </Menu.Item>
+            <div className="">{currentLanguage.current === item && <img src={checkedIcon} alt={locales[item]} />}</div>
+          </div>
         );
       })}
-    </>
+    </ModalWithPortal>
   );
 }
