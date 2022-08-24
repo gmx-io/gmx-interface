@@ -312,6 +312,15 @@ export default function Ecosystem() {
       announcementLink: "https://twitter.com/GMX_IO/status/1522247451410845696",
       chainIds: [ARBITRUM, AVALANCHE],
     },
+    {
+      title: "Firebird Finance",
+      link: "https://app.firebird.finance/swap",
+      linkLabel: "Firebird Finance",
+      about: "DEX Aggregator",
+      announcementLabel: "https://twitter.com",
+      announcementLink: "https://twitter.com/financefirebird/status/1561767094064238595",
+      chainIds: [AVALANCHE],
+    },
   ];
 
   const telegramGroups = [
