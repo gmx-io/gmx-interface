@@ -10,15 +10,11 @@ import { REFERRAL_CODE_REGEX } from "../Referrals/referralsHelper"
 
 export function RegisterTeamForm ({ chainId, library, account, setPendingTxns })
 {
-  const history = useHistory()
-  const [activeReferralTab,setActiveReferralTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, AFFILIATES)
-
   const [name, setName] = useState("")
 
   const [code, setCode] = useState("")
   const debouncedCode = useDebounce(code, 300)
   const [codeDoesntExist, setCodeDoesntExist] = useState(false)
-  const [codeIsNotOwned, setCodeIsNotOwned] = useState(false)
   const [validatingCode, setValidatingCode] = useState(false)
 
   const getButtonText = () => {
@@ -34,10 +30,6 @@ export function RegisterTeamForm ({ chainId, library, account, setPendingTxns })
       return "This referral code does not exist"
     }
 
-    if (codeIsNotOwned) {
-      return "You must own the referral code"
-    }
-
     return "Create Team"
   }
 
@@ -50,7 +42,6 @@ export function RegisterTeamForm ({ chainId, library, account, setPendingTxns })
     } else {
       const owner = await getReferralCodeOwner(chainId, encodeReferralCode(debouncedCode))
       setCodeDoesntExist(isAddressZero(owner))
-      setCodeIsNotOwned(owner !== account);
     }
 
     setValidatingCode(false)
@@ -60,13 +51,6 @@ export function RegisterTeamForm ({ chainId, library, account, setPendingTxns })
     event.preventDefault()
 
     const tx = await registerTeam(chainId, library, name, code, { setPendingTxns })
-  }
-
-  const handleCreateCodeClick = () => {
-    if (activeReferralTab !== AFFILIATES) {
-      setActiveReferralTab(AFFILIATES)
-    }
-    history.push("/referrals")
   }
 
   return (
@@ -84,9 +68,6 @@ export function RegisterTeamForm ({ chainId, library, account, setPendingTxns })
       <button type="submit" className="App-cta Exchange-swap-button mt-medium">
         {getButtonText()}
       </button>
-      <div className="mt-medium">
-        <div className="create-code-link" onClick={handleCreateCodeClick}>Create a referral code</div>
-      </div>
     </form>
   )
 }

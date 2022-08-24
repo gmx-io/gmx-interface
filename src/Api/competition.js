@@ -1,5 +1,5 @@
 import { getContract } from "../Addresses";
-import CompetitionRegistration from "../abis/CompetitionRegistration.json";
+import Competition from "../abis/Competition.json";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from ".";
 import { decodeReferralCode, encodeReferralCode } from "./referrals";
@@ -16,9 +16,10 @@ export function useLeaderboardStats(chainId, library) {
     }
 
     const contract = getCompetitionContract(chainId, library)
-    const res = await contract.getTeams(0)
+    const leaders = await contract.getLeaders()
+    const teams = await Promise.all(leaders.map(contract.getTeam))
 
-    setData([res].map(team => ({
+    setData(teams.map(team => ({
       leader: team.leader,
       name: team.name,
       pnl: BigNumber.from("1000000000000000000000000000000000000")
@@ -77,8 +78,9 @@ export function useTeams(chainId, library)
 
   useEffect(async () => {
     const contract = getCompetitionContract(chainId, library)
-    const res = await contract.getTeams(0)
-    setData([res].map(team => ({
+    const leaders = await contract.getLeaders()
+    const teams = await Promise.all(leaders.map(contract.getTeam))
+    setData(teams.map(team => ({
       leader: team.leader,
       name: team.name,
       referralCode: team.referralCode
@@ -91,6 +93,7 @@ export function useTeams(chainId, library)
 export function useTimes(chainId, library)
 {
   const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(async () => {
     if (!library || !chainId) {
@@ -100,8 +103,8 @@ export function useTimes(chainId, library)
     const contract = getCompetitionContract(chainId, library)
 
     const times = await Promise.all([
-      contract.startTime(),
-      contract.endTime()
+      contract.registrationStart(),
+      contract.registrationEnd()
     ])
 
     const ts = Math.round(Date.now() / 1000)
@@ -116,9 +119,10 @@ export function useTimes(chainId, library)
       between: ts >= start && ts < end
     })
 
-  }, [setData, chainId])
+    setLoading(false)
+  }, [setLoading, setData, chainId])
 
-  return data
+  return { data, loading }
 }
 
 export function useTeam(chainId, library, account)
@@ -127,12 +131,16 @@ export function useTeam(chainId, library, account)
   const [loading, setLoading] = useState(true)
 
   useEffect(async () => {
-    if (!chainId || !library || !account) {
+    if (!chainId || !library) {
+      return
+    }
+
+    if (!account) {
+      setLoading(false)
       return
     }
 
     const contract = getCompetitionContract(chainId, library)
-
     const res = await contract.getTeam(account)
 
     if (isAddressZero(res.leader)) {
@@ -158,13 +166,13 @@ export async function registerTeam(chainId, library, name, referral, opts)
 {
   referral = encodeReferralCode(referral)
   const contract = getCompetitionContract(chainId, library)
-  return callContract(chainId, contract, "register", [name, referral], opts)
+  return callContract(chainId, contract, "registerTeam", [name, referral], opts)
 }
 
 function getCompetitionContract(chainId, library)
 {
-  const competitionRegistrationAddress = getContract(chainId, "CompetitionRegistration")
-  return new ethers.Contract(competitionRegistrationAddress, CompetitionRegistration.abi, library.getSigner())
+  const competitionRegistrationAddress = getContract(chainId, "Competition")
+  return new ethers.Contract(competitionRegistrationAddress, Competition.abi, library.getSigner())
 }
 
 function getLeaderboardGraphClient(chainId) {

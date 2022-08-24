@@ -9,13 +9,13 @@ import "./Competition.css"
 
 export default function Competition({ setPendingTxns, connectWallet })
 {
-  const { chainId, library, account } = useWeb3React()
+  const { chainId, library, account, active } = useWeb3React()
   const times = useTimes(chainId, library)
   const team = useTeam(chainId, library, account)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setLoading(times === null || team.loading)
+    setLoading(times.loading || team.loading)
   }, [times, team])
 
   const TeamButton = () => {
@@ -34,9 +34,15 @@ export default function Competition({ setPendingTxns, connectWallet })
               Get fee discounts and earn rebates through the GMX referral program.<br/>For more information, please read the <a target="_blank" rel="noopener noreferrer" href="https://gmxio.gitbook.io/gmx/referrals">referral program details</a>.
             </div>
           </div>
-          {loading || <TeamButton/>}
+          {loading || !active || <TeamButton/>}
         </div>
-        {loading ? <Loader/> : <Leaderboard/>}
+        {active ? (
+          <>{loading ? <Loader/> : <Leaderboard/>}</>
+        ) : (
+          <div className="App-card">
+            <button className="App-cta Exchange-swap-button" onClick={connectWallet}>Connect Wallet</button>
+          </div>
+        )}
       </div>
     </SEO>
   )
