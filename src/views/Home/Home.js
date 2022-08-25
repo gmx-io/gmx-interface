@@ -1,8 +1,5 @@
 import React from "react";
 import Footer from "../../Footer";
-
-import cx from "classnames";
-
 import "./Home.css";
 
 import simpleSwapIcon from "../../img/ic_simpleswaps.svg";
