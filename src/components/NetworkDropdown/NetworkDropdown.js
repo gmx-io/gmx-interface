@@ -26,7 +26,15 @@ export default function NetworkDropdown(props) {
       case LANGUAGE_MODAL_KEY:
         return <LanguageModalContent currentLanguage={currentLanguage} />;
       case NETWORK_MODAL_KEY:
-        return <NetworkModalContent {...props} setActiveModal={setActiveModal} currentLanguage={currentLanguage} />;
+        return (
+          <NetworkModalContent
+            setActiveModal={setActiveModal}
+            networkOptions={props.networkOptions}
+            onNetworkSelect={props.onNetworkSelect}
+            selectorLabel={props.selectorLabel}
+            openSettings={props.openSettings}
+          />
+        );
       default:
         return;
     }

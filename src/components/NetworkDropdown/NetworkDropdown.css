@@ -8,6 +8,11 @@
   align-items: center;
   color: white;
 }
+
+.App-header-language {
+  margin-left: 0;
+}
+
 .network-dropdown {
   display: inline-flex;
 }
@@ -35,6 +40,9 @@
   border: none;
   padding: 0;
   pointer-events: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .network-dropdown-icon {
@@ -171,9 +179,15 @@
   .App-header-network {
     margin-left: 1.6rem;
   }
+  .App-header-language {
+    margin-left: 0;
+  }
 }
 @media (max-width: 450px) {
   .App-header-network {
     margin-left: 0.6rem;
+  }
+  .App-header-language {
+    margin-left: 0;
   }
 }

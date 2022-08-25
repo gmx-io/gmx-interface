@@ -315,6 +315,7 @@
     Multiswap: "マルチスワップ",
     "Net Value": "ネット金額",
     Networks: "ネットワーク",
+    "Networks and Settings": "Networks and Settings",
     "No PnLs found": "損益が見つかりません",
     "No esGMX to claim": "請求できるesGMXはありません",
     "No open orders": "オープンの注文はありません",
