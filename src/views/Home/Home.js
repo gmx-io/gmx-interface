@@ -33,7 +33,7 @@ import { useUserStat } from "../../Api";
 
 import TokenCard from "../../components/TokenCard/TokenCard";
 
-export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
+export default function Home({ showRedirectModal, redirectPopupTimestamp, HeaderLink }) {
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
   // const faqContent = [{
   //   id: 1,
@@ -132,9 +132,9 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
 
   const LaunchExchangeButton = () => {
     return (
-      <div className={cx("default-btn")} onClick={() => showRedirectModal("/trade")}>
+      <HeaderLink activeClassName="active" className="default-btn" to="/trade">
         Launch Exchange
-      </div>
+      </HeaderLink>
     );
   };
 

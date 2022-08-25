@@ -763,7 +763,11 @@ function FullApp() {
           {isHome && (
             <Switch>
               <Route exact path="/">
-                <Home showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
+                <Home
+                  HeaderLink={HeaderLink}
+                  showRedirectModal={showRedirectModal}
+                  redirectPopupTimestamp={redirectPopupTimestamp}
+                />
               </Route>
               <Route exact path="/referral-terms">
                 <ReferralTerms />
