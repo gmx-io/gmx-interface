@@ -268,6 +268,9 @@ function AppHeaderUser({
 
         {showConnectionOptions ? (
           <>
+            <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
+              {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
+            </ConnectWalletButton>
             <NetworkDropdown
               small={small}
               networkOptions={networkOptions}
@@ -275,9 +278,6 @@ function AppHeaderUser({
               onNetworkSelect={onNetworkSelect}
               openSettings={openSettings}
             />
-            <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
-              {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
-            </ConnectWalletButton>
           </>
         ) : (
           <LanguagePopupHome />
@@ -298,13 +298,6 @@ function AppHeaderUser({
 
       {showConnectionOptions ? (
         <>
-          <NetworkDropdown
-            small={small}
-            networkOptions={networkOptions}
-            selectorLabel={selectorLabel}
-            onNetworkSelect={onNetworkSelect}
-            openSettings={openSettings}
-          />
           <div className="App-header-user-address">
             <AddressDropdown
               account={account}
@@ -314,6 +307,13 @@ function AppHeaderUser({
               onNetworkSelect={onNetworkSelect}
             />
           </div>
+          <NetworkDropdown
+            small={small}
+            networkOptions={networkOptions}
+            selectorLabel={selectorLabel}
+            onNetworkSelect={onNetworkSelect}
+            openSettings={openSettings}
+          />
         </>
       ) : (
         <LanguagePopupHome />

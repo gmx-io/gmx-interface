@@ -3,7 +3,7 @@ import { Menu } from "@headlessui/react";
 import ModalWithPortal from "../Modal/ModalWithPortal";
 import { t } from "@lingui/macro";
 import cx from "classnames";
-import { IoOptionsSharp } from "react-icons/io5";
+import { HiDotsVertical } from "react-icons/hi";
 import "./NetworkDropdown.css";
 import language24Icon from "../../img/ic_language24.svg";
 import settingsIcon from "../../img/ic_settings_16.svg";
@@ -85,7 +85,7 @@ function NavIcons({ selectorLabel }) {
       </button>
       <div className="network-dropdown-seperator" />
       <button className={cx("btn-primary small transparent")}>
-        <IoOptionsSharp color="white" size={20} />
+        <HiDotsVertical color="white" size={20} />
       </button>
     </>
   );
