@@ -2071,10 +2071,10 @@ export default function SwapBox(props) {
                     handle="USD"
                     renderContent={() => (
                       <span className="SwapBox-collateral-tooltip-text">
-                        A snapshot of the USD value of your collateral is taken when the position is opened.
+                        {existingPosition?.collateralToken?.symbol} collateral is taken when the position is opened.
                         <br />
                         <br />
-                        When closing the position, you can select which token you would like to receive.
+                        When closing the position, you can select which token you would like to receive the profits in.
                       </span>
                     )}
                   />
