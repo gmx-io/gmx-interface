@@ -656,13 +656,13 @@ export default function ConfirmationBox(props) {
                     Your position's collateral after deducting fees.
                     <br />
                     <br />
+                    <TooltipCardRow label="Pay Amount" value={formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} />
+                    <TooltipCardRow label="Fees" value={formatAmount(feesUsd, USD_DECIMALS, 2, true)} />
+                    <div className="Tooltip-divider" />
                     <TooltipCardRow
                       label="Collateral"
                       value={formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}
                     />
-                    <TooltipCardRow label="Fees" value={formatAmount(feesUsd, USD_DECIMALS, 2, true)} />
-                    <div className="Tooltip-divider" />
-                    <TooltipCardRow label="Pay Amount" value={formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} />
                   </>
                 );
               }}
