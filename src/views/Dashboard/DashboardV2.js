@@ -368,7 +368,7 @@ export default function DashboardV2() {
               />
               <br />
               {currentWeightBps.lt(targetWeightBps) && (
-                <div className="label">
+                <div className="text-white">
                   {tokenInfo.symbol} is below its target weight.
                   <br />
                   <br />
@@ -384,7 +384,7 @@ export default function DashboardV2() {
                 </div>
               )}
               {currentWeightBps.gt(targetWeightBps) && (
-                <div className="label">
+                <div className="text-white">
                   {tokenInfo.symbol} is above its target weight.
                   <br />
                   <br />
@@ -396,7 +396,7 @@ export default function DashboardV2() {
                 </div>
               )}
               <br />
-              <div className="label">
+              <div>
                 <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
                   More Info
                 </a>
@@ -550,7 +550,7 @@ export default function DashboardV2() {
                       handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
                       renderContent={() => (
-                        <span className="label">{`Assets Under Management: GMX staked (All chains) + GLP pool (${chainName})`}</span>
+                        <span>{`Assets Under Management: GMX staked (All chains) + GLP pool (${chainName})`}</span>
                       )}
                     />
                   </div>
@@ -561,9 +561,7 @@ export default function DashboardV2() {
                     <TooltipComponent
                       handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
-                      renderContent={() => (
-                        <span className="label">{`Total value of tokens in GLP pool (${chainName})`}</span>
-                      )}
+                      renderContent={() => <span>{`Total value of tokens in GLP pool (${chainName})`}</span>}
                     />
                   </div>
                 </div>

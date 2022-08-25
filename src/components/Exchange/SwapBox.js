@@ -2133,7 +2133,7 @@ export default function SwapBox(props) {
                     position="right-bottom"
                     renderContent={() => {
                       return (
-                        <div className="label">
+                        <div>
                           {swapFees && (
                             <div>
                               {collateralToken.symbol} is required for collateral. <br />
@@ -2209,7 +2209,7 @@ export default function SwapBox(props) {
                         label={`Max ${fromTokenInfo.symbol} in`}
                         values={[
                           `${formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)} ${fromTokenInfo.symbol}`,
-                          `($${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})}`,
+                          `($${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
                         ]}
                       />
                       <TooltipCardRow
@@ -2246,11 +2246,9 @@ export default function SwapBox(props) {
                 position="right-bottom"
                 renderContent={() => {
                   return (
-                    <div className="label">
-                      The position will be opened at{" "}
-                      <span className="Tooltip-number">{formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD </span>
-                      with a max slippage of{" "}
-                      <span className="Tooltip-number">{parseFloat(savedSlippageAmount / 100.0).toFixed(2)}%</span>.
+                    <div>
+                      The position will be opened at {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD with a
+                      max slippage of {parseFloat(savedSlippageAmount / 100.0).toFixed(2)}%.
                       <br />
                       <br />
                       The slippage amount can be configured under Settings, found by clicking on your address at the top
@@ -2278,9 +2276,9 @@ export default function SwapBox(props) {
                 position="right-bottom"
                 renderContent={() => {
                   return (
-                    <div className="label">
+                    <div>
                       If you have an existing position, the position will be closed at{" "}
-                      <span className="Tooltip-number">{formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD</span>.
+                      {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD.
                       <br />
                       <br />
                       This exit price will change with the price of the asset.
@@ -2307,7 +2305,7 @@ export default function SwapBox(props) {
                 position="right-bottom"
                 renderContent={() => {
                   return (
-                    <div className="label">
+                    <div>
                       {hasZeroBorrowFee && (
                         <div>
                           {isLong && "There are more shorts than longs, borrow fees for longing is currently zero"}

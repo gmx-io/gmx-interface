@@ -739,10 +739,7 @@ export default function GlpSwap(props) {
                     )})`}
                     position="right-bottom"
                     renderContent={() => (
-                      <>
-                        <span className="Tooltip-number">{formatAmount(reservedAmount, 18, 4, true)} GLP</span>{" "}
-                        <span className="label"> have been reserved for vesting.</span>
-                      </>
+                      <>{formatAmount(reservedAmount, 18, 4, true)} GLP have been reserved for vesting.</>
                     )}
                   />
                 </div>
@@ -899,13 +896,13 @@ export default function GlpSwap(props) {
                     renderContent={() => {
                       if (!feeBasisPoints) {
                         return (
-                          <div className="label">
+                          <div className="text-white">
                             Fees will be shown once you have entered an amount in the order form.
                           </div>
                         );
                       }
                       return (
-                        <div className="label">
+                        <div className="text-white">
                           {feeBasisPoints > 50 && <div>To reduce fees, select a different asset to pay with.</div>}
                           Check the "Save on Fees" section below to get the lowest fee percentages.
                         </div>
@@ -920,13 +917,13 @@ export default function GlpSwap(props) {
                     renderContent={() => {
                       if (!feeBasisPoints) {
                         return (
-                          <div className="label">
+                          <div className="text-white">
                             Fees will be shown once you have entered an amount in the order form.
                           </div>
                         );
                       }
                       return (
-                        <div className="label">
+                        <div className="text-white">
                           {feeBasisPoints > 50 && <div>To reduce fees, select a different asset to receive.</div>}
                           Check the "Save on Fees" section below to get the lowest fee percentages.
                         </div>
@@ -972,7 +969,7 @@ export default function GlpSwap(props) {
                     handle={"AVAILABLE"}
                     tooltipIconPosition="right"
                     position="right-bottom text-none"
-                    renderContent={() => "Available amount to deposit into GLP."}
+                    renderContent={() => <p className="text-white">Available amount to deposit into GLP.</p>}
                   />
                 ) : (
                   <Tooltip
@@ -981,10 +978,10 @@ export default function GlpSwap(props) {
                     position="right-bottom text-none"
                     renderContent={() => {
                       return (
-                        <>
+                        <p className="text-white">
                           <div>Available amount to withdraw from GLP.</div>
                           <div>Funds not utilized by current open positions.</div>
-                        </>
+                        </p>
                       );
                     }}
                   />
@@ -998,9 +995,9 @@ export default function GlpSwap(props) {
                   position="right-bottom text-none"
                   renderContent={() => {
                     return (
-                      <>
-                        <div>Fees will be shown once you have entered an amount in the order form.</div>
-                      </>
+                      <div className="text-white">
+                        Fees will be shown once you have entered an amount in the order form.
+                      </div>
                     );
                   }}
                 />
@@ -1244,10 +1241,9 @@ export default function GlpSwap(props) {
                   {isBuying && (
                     <div className="App-card-row">
                       <Tooltip
-                        className="label"
                         handle="Available"
                         position="left-bottom"
-                        renderContent={() => "Available amount to deposit into GLP."}
+                        renderContent={() => <p className="text-white">Available amount to deposit into GLP.</p>}
                       />
                       <div>
                         <Tooltip
@@ -1267,10 +1263,10 @@ export default function GlpSwap(props) {
                           position="left-bottom"
                           renderContent={() => {
                             return (
-                              <>
+                              <p className="text-white">
                                 <div>Available amount to withdraw from GLP.</div>
                                 <div>Funds not utilized by current open positions.</div>
-                              </>
+                              </p>
                             );
                           }}
                         />
@@ -1298,13 +1294,17 @@ export default function GlpSwap(props) {
                     </div>
                   </div>
                   <div className="App-card-row">
-                    <div className="label">
+                    <div>
                       {tokenFeeBps ? (
                         "Fees"
                       ) : (
                         <Tooltip
                           handle="Fees"
-                          renderContent={() => `Fees will be shown once you have entered an amount in the order form.`}
+                          renderContent={() => (
+                            <p className="text-white">
+                              Fees will be shown once you have entered an amount in the order form.
+                            </p>
+                          )}
                         />
                       )}
                     </div>

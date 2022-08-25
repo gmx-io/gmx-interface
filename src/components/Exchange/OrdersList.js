@@ -274,7 +274,7 @@ export default function OrdersList(props) {
               position="right-bottom"
               renderContent={() => {
                 return (
-                  <span className="label">
+                  <span>
                     The price that orders can be executed at may differ slightly from the chart price, as market orders
                     update oracle prices, while limit/trigger orders do not.
                   </span>

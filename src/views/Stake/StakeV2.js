@@ -468,7 +468,7 @@ function VesterDepositModal(props) {
                   position="right-bottom"
                   renderContent={() => {
                     return (
-                      <div className="label">
+                      <div>
                         Vault Capacity for your Account
                         <br />
                         <br />
@@ -515,7 +515,7 @@ function VesterDepositModal(props) {
                           showDollar={false}
                         />
                         {amount && nextReserveAmount.gt(maxReserveAmount) && (
-                          <div className="label">
+                          <div>
                             <br />
                             You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)}{" "}
                             {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.
@@ -1296,7 +1296,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         position="right-bottom"
         renderContent={() => {
           return (
-            <div className="label">
+            <div>
               Boost your rewards with Multiplier Points.&nbsp;
               <a href="https://gmxio.gitbook.io/gmx/rewards#multiplier-points" rel="noreferrer" target="_blank">
                 More info
@@ -1612,15 +1612,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     position="right-bottom"
                     renderContent={() => {
                       return (
-                        <div className="label">
-                          You are earning{" "}
-                          <span className="Tooltip-number">
-                            {formatAmount(processedData.boostBasisPoints, 2, 2, false)}%
-                          </span>{" "}
-                          more {nativeTokenSymbol} rewards using{" "}
-                          <span className="Tooltip-number">
-                            {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)}
-                          </span>{" "}
+                        <div>
+                          You are earning {formatAmount(processedData.boostBasisPoints, 2, 2, false)}% more{" "}
+                          {nativeTokenSymbol} rewards using {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)}{" "}
                           Staked Multiplier Points.
                           <br />
                           <br />
@@ -2068,14 +2062,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       position="right-bottom"
                       renderContent={() => {
                         return (
-                          <div className="label">
-                            <span className="Tooltip-number">
-                              {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)}
-                            </span>{" "}
-                            tokens have been converted to GMX from the&nbsp;
-                            <span className="Tooltip-number">
-                              {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX
-                            </span>{" "}
+                          <div>
+                            {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} tokens have been converted
+                            to GMX from the {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX
                             deposited for vesting.
                           </div>
                         );
@@ -2090,11 +2079,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       handle={`${formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)} GMX`}
                       position="right-bottom"
                       renderContent={() => (
-                        <div className="label">
-                          <span className="Tooltip-number">
-                            {formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)} GMX
-                          </span>{" "}
-                          tokens can be claimed, use the options under the Total Rewards section to claim them.
+                        <div>
+                          {formatKeyAmount(vestingData, "gmxVesterClaimable", 18, 4, true)} GMX tokens can be claimed,
+                          use the options under the Total Rewards section to claim them.
                         </div>
                       )}
                     />
@@ -2149,14 +2136,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       position="right-bottom"
                       renderContent={() => {
                         return (
-                          <div className="label">
-                            <span className="Tooltip-number">
-                              {formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)}
-                            </span>{" "}
-                            tokens have been converted to GMX from the&nbsp;
-                            <span className="Tooltip-number">
-                              {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)} esGMX
-                            </span>{" "}
+                          <div>
+                            {formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} tokens have been converted
+                            to GMX from the {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)} esGMX
                             deposited for vesting.
                           </div>
                         );
@@ -2171,11 +2153,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       handle={`${formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX`}
                       position="right-bottom"
                       renderContent={() => (
-                        <div className="label">
-                          <span className="Tooltip-number">
-                            {formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX
-                          </span>{" "}
-                          tokens can be claimed, use the options under the Total Rewards section to claim them.
+                        <div>
+                          {formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX tokens can be claimed,
+                          use the options under the Total Rewards section to claim them.
                         </div>
                       )}
                     ></Tooltip>

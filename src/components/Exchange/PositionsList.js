@@ -289,7 +289,7 @@ export default function PositionsList(props) {
                                   value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
                                 />
                                 <TooltipCardRow label="Borrow Fee / Day" value={borrowFeeUSD} />
-                                <span className="label">Use the "Edit" button to deposit or withdraw collateral.</span>
+                                <span>Use the "Edit" button to deposit or withdraw collateral.</span>
                               </>
                             );
                           }}
@@ -320,12 +320,10 @@ export default function PositionsList(props) {
                           renderContent={() => {
                             return (
                               <>
-                                <span className="label">
-                                  Net Value:{" "}
-                                  {showPnlAfterFees
-                                    ? "Initial Collateral - Fees + PnL"
-                                    : "Initial Collateral - Borrow Fee + PnL"}
-                                </span>
+                                Net Value:{" "}
+                                {showPnlAfterFees
+                                  ? "Initial Collateral - Fees + PnL"
+                                  : "Initial Collateral - Borrow Fee + PnL"}
                                 <br />
                                 <br />
                                 <TooltipCardRow
@@ -504,12 +502,10 @@ export default function PositionsList(props) {
                         renderContent={() => {
                           return (
                             <>
-                              <span className="label">
-                                Net Value:{" "}
-                                {showPnlAfterFees
-                                  ? "Initial Collateral - Fees + PnL"
-                                  : "Initial Collateral - Borrow Fee + PnL"}
-                              </span>
+                              Net Value:{" "}
+                              {showPnlAfterFees
+                                ? "Initial Collateral - Fees + PnL"
+                                : "Initial Collateral - Borrow Fee + PnL"}
                               <br />
                               <br />
                               <TooltipCardRow
@@ -613,7 +609,7 @@ export default function PositionsList(props) {
                           />
                           <TooltipCardRow label="Borrow Fee / Day" value={borrowFeeUSD} />
                           <br />
-                          <span className="label">Use the "Edit" button to deposit or withdraw collateral.</span>
+                          <span>Use the "Edit" button to deposit or withdraw collateral.</span>
                         </>
                       );
                     }}
@@ -626,7 +622,7 @@ export default function PositionsList(props) {
                     handleClassName="plain clickable"
                     renderContent={() => {
                       return (
-                        <div className="label">
+                        <div>
                           Click on a row to select the position's market, then use the swap box to increase your
                           position size if needed.
                           <br />

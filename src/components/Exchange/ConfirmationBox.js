@@ -34,6 +34,7 @@ import Checkbox from "../Checkbox/Checkbox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import { cancelDecreaseOrder, handleCancelOrder } from "../../Api";
 import { getNativeToken, getToken, getWrappedToken } from "../../data/Tokens";
+import { TooltipCardRow } from "../../views/Dashboard/TooltipCard";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -655,10 +656,13 @@ export default function ConfirmationBox(props) {
                     Your position's collateral after deducting fees.
                     <br />
                     <br />
-                    Pay amount: ${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}
-                    <br />
-                    Fees: ${formatAmount(feesUsd, USD_DECIMALS, 2, true)}
-                    <br />
+                    <TooltipCardRow
+                      label="Collateral"
+                      value={formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}
+                    />
+                    <TooltipCardRow label="Fees" value={formatAmount(feesUsd, USD_DECIMALS, 2, true)} />
+                    <div className="Tooltip-divider" />
+                    <TooltipCardRow label="Pay Amount" value={formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} />
                   </>
                 );
               }}
