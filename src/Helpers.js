@@ -151,6 +151,7 @@ export const MIN_PROFIT_BIPS = 0;
 export const GLPPOOLCOLORS = {
   ETH: "#6062a6",
   BTC: "#F7931A",
+  "BTC.b": "#F7931A",
   USDC: "#2775CA",
   "USDC.e": "#2A5ADA",
   USDT: "#67B18A",
