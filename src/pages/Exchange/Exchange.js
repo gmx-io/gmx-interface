@@ -22,8 +22,6 @@ import {
   getPositionKey,
   getPositionContractKey,
   getLeverage,
-  useLocalStorageSerializeKey,
-  useLocalStorageByChainId,
   getDeltaStr,
   useChainId,
   useAccountOrders,
@@ -52,6 +50,7 @@ import Tab from "../../components/Tab/Tab";
 import Footer from "../../components/Footer/Footer";
 
 import "./Exchange.css";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../data/localStorage/utils";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;

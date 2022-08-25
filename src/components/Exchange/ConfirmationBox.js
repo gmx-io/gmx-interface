@@ -13,11 +13,9 @@ import {
   getTimeRemaining,
   formatAmount,
   formatAmountFree,
-  useLocalStorageSerializeKey,
   getExchangeRateDisplay,
   DEFAULT_SLIPPAGE_AMOUNT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
-  SLIPPAGE_BPS_KEY,
   formatDateTime,
   calculatePositionDelta,
   DECREASE,
@@ -34,6 +32,8 @@ import Checkbox from "../Checkbox/Checkbox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import { cancelDecreaseOrder, handleCancelOrder } from "../../Api";
 import { getNativeToken, getToken, getWrappedToken } from "../../data/Tokens";
+import { SLIPPAGE_BPS_KEY } from "../../data/localStorage/constants";
+import { useLocalStorageSerializeKey } from "../../data/localStorage/utils";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 

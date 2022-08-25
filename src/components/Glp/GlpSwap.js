@@ -12,7 +12,6 @@ import { getToken, getTokens, getWhitelistedTokens, getWrappedToken, getNativeTo
 import { getContract } from "../../Addresses";
 import {
   helperToast,
-  useLocalStorageByChainId,
   getTokenInfo,
   useChainId,
   expandDecimals,
@@ -64,6 +63,7 @@ import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
 import AssetDropdown from "../../pages/Dashboard/AssetDropdown";
+import { useLocalStorageByChainId } from "../../data/localStorage/utils";
 
 const { AddressZero } = ethers.constants;
 

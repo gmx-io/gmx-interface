@@ -7,13 +7,7 @@ import SEO from "../../components/Common/SEO";
 import Tab from "../../components/Tab/Tab";
 import Loader from "../../components/Common/Loader";
 import Footer from "../../components/Footer/Footer";
-import {
-  useChainId,
-  getPageTitle,
-  REFERRALS_SELECTED_TAB_KEY,
-  useLocalStorageSerializeKey,
-  isHashZero,
-} from "../../Helpers";
+import { useChainId, getPageTitle, isHashZero } from "../../Helpers";
 import {
   useReferralsData,
   registerReferralCode,
@@ -27,6 +21,8 @@ import TradersStats from "../../components/Referrals/TradersStats";
 import AddAffiliateCode from "../../components/Referrals/AddAffiliateCode";
 import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "../../components/Referrals/referralsHelper";
 import { ethers } from "ethers";
+import { REFERRALS_SELECTED_TAB_KEY } from "../../data/localStorage/constants";
+import { useLocalStorageSerializeKey } from "../../data/localStorage/utils";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";

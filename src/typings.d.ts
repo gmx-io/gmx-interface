@@ -1,4 +1,4 @@
-import '@web3-react';
+import "@web3-react";
 
 declare global {
   interface Window {

@@ -13,7 +13,6 @@ import {
   DUST_USD,
   BASIS_POINTS_DIVISOR,
   USDG_ADDRESS,
-  SLIPPAGE_BPS_KEY,
   TRIGGER_PREFIX_BELOW,
   TRIGGER_PREFIX_ABOVE,
   MIN_PROFIT_TIME,
@@ -29,7 +28,6 @@ import {
   MARKET,
   STOP,
   DECREASE,
-  useLocalStorageSerializeKey,
   calculatePositionDelta,
   getDeltaStr,
   getProfitPrice,
@@ -38,8 +36,6 @@ import {
   getNextToAmount,
   getUsd,
   USDG_DECIMALS,
-  CLOSE_POSITION_RECEIVE_TOKEN_KEY,
-  useLocalStorageByChainId,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import { createDecreaseOrder, callContract, useHasOutdatedUi } from "../../Api";
@@ -53,6 +49,8 @@ import Tooltip from "../Tooltip/Tooltip";
 import TokenSelector from "./TokenSelector";
 import { getTokens } from "../../data/Tokens";
 import "./PositionSeller.css";
+import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "../../data/localStorage/constants";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../data/localStorage/utils";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10

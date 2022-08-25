@@ -1,12 +1,11 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import {
-  WalletConnectConnector,
   UserRejectedRequestError as UserRejectedRequestErrorWalletConnect,
+  WalletConnectConnector,
 } from "@web3-react/walletconnect-connector";
 import { toast } from "react-toastify";
-import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
-import { useLocalStorage } from "react-use";
+import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import { format as formatDateFn } from "date-fns";
 import Token from "./abis/Token.json";
@@ -18,6 +17,12 @@ import OrderBookReader from "./abis/OrderBookReader.json";
 import OrderBook from "./abis/OrderBook.json";
 
 import { getWhitelistedTokens, isValidToken } from "./data/Tokens";
+import {
+  CURRENT_PROVIDER_LOCALSTORAGE_KEY,
+  SELECTED_NETWORK_LOCAL_STORAGE_KEY,
+  SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
+  WALLET_CONNECT_LOCALSTORAGE_KEY,
+} from "./data/localStorage/constants";
 
 const { AddressZero } = ethers.constants;
 
@@ -36,8 +41,6 @@ export const DEFAULT_CHAIN_ID = ARBITRUM;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
 export const MIN_PROFIT_TIME = 0;
-
-const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
 
 const CHAIN_NAMES_MAP = {
   [MAINNET]: "BSC",
@@ -78,10 +81,7 @@ export function getAlchemyWsUrl() {
 
 const ARBITRUM_RPC_PROVIDERS = [getDefaultArbitrumRpcUrl()];
 const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
-export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
-export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
-export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
 
 export function getChainName(chainId) {
   return CHAIN_NAMES_MAP[chainId];
@@ -132,15 +132,7 @@ export const SWAP_OPTIONS = [LONG, SHORT, SWAP];
 export const DEFAULT_SLIPPAGE_AMOUNT = 30;
 export const DEFAULT_HIGHER_SLIPPAGE_AMOUNT = 100;
 
-export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3";
-export const CLOSE_POSITION_RECEIVE_TOKEN_KEY = "Close-position-receive-token";
-export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage";
-export const SHOW_PNL_AFTER_FEES_KEY = "Exchange-swap-show-pnl-after-fees";
-export const DISABLE_ORDER_VALIDATION_KEY = "disable-order-validation";
-export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-position-lines";
-export const REFERRAL_CODE_KEY = "GMX-referralCode";
 export const REFERRAL_CODE_QUERY_PARAM = "ref";
-export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
 export const MAX_REFERRAL_CODE_LENGTH = 20;
 
 export const TRIGGER_PREFIX_ABOVE = ">";
@@ -332,40 +324,6 @@ export const helperToast = {
     toast.error(content);
   },
 };
-
-export function useLocalStorageByChainId(chainId, key, defaultValue) {
-  const [internalValue, setInternalValue] = useLocalStorage(key, {});
-
-  const setValue = useCallback(
-    (value) => {
-      setInternalValue((internalValue) => {
-        if (typeof value === "function") {
-          value = value(internalValue[chainId] || defaultValue);
-        }
-        const newInternalValue = {
-          ...internalValue,
-          [chainId]: value,
-        };
-        return newInternalValue;
-      });
-    },
-    [chainId, setInternalValue, defaultValue]
-  );
-
-  let value;
-  if (chainId in internalValue) {
-    value = internalValue[chainId];
-  } else {
-    value = defaultValue;
-  }
-
-  return [value, setValue];
-}
-
-export function useLocalStorageSerializeKey(key, value, opts) {
-  key = JSON.stringify(key);
-  return useLocalStorage(key, value, opts);
-}
 
 function getTriggerPrice(tokenAddress, max, info, orderOption, triggerPriceUsd) {
   // Limit/stop orders are executed with price specified by user

@@ -14,12 +14,12 @@ import {
   getProvider,
   fetcher,
   isHashZero,
-  REFERRAL_CODE_KEY,
 } from "../Helpers";
 import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "./common";
 import { getContract } from "../Addresses";
 import { callContract } from ".";
 import { REGEX_VERIFY_BYTES32 } from "../components/Referrals/referralsHelper";
+import { REFERRAL_CODE_KEY } from "../data/localStorage/constants";
 
 const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
 const DISTRIBUTION_TYPE_REBATES = "1";

@@ -14,9 +14,7 @@ import {
   BASIS_POINTS_DIVISOR,
   clearWalletConnectData,
   clearWalletLinkData,
-  CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   DEFAULT_SLIPPAGE_AMOUNT,
-  DISABLE_ORDER_VALIDATION_KEY,
   getAlchemyWsUrl,
   getAppBaseUrl,
   getExplorerUrl,
@@ -28,17 +26,10 @@ import {
   isDevelopment,
   isHomeSite,
   isMobileDevice,
-  IS_PNL_IN_LEVERAGE_KEY,
-  REFERRAL_CODE_KEY,
   REFERRAL_CODE_QUERY_PARAM,
-  SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
-  SHOULD_SHOW_POSITION_LINES_KEY,
-  SHOW_PNL_AFTER_FEES_KEY,
-  SLIPPAGE_BPS_KEY,
   useChainId,
   useEagerConnect,
   useInactiveListener,
-  useLocalStorageSerializeKey,
 } from "../Helpers";
 
 import Actions from "pages/Actions/Actions";
@@ -89,6 +80,17 @@ import VaultV2 from "../abis/VaultV2.json";
 import VaultV2b from "../abis/VaultV2b.json";
 import { getContract } from "../Addresses";
 import { REDIRECT_POPUP_TIMESTAMP_KEY } from "../utils/constants";
+import {
+  CURRENT_PROVIDER_LOCALSTORAGE_KEY,
+  DISABLE_ORDER_VALIDATION_KEY,
+  IS_PNL_IN_LEVERAGE_KEY,
+  REFERRAL_CODE_KEY,
+  SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
+  SHOULD_SHOW_POSITION_LINES_KEY,
+  SHOW_PNL_AFTER_FEES_KEY,
+  SLIPPAGE_BPS_KEY,
+} from "../data/localStorage/constants";
+import { useLocalStorageSerializeKey } from "../data/localStorage/utils";
 
 const Exchange = ExchangeView as any;
 

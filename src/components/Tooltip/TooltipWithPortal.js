@@ -76,17 +76,11 @@ export default function TooltipWithPortal(props) {
     updateTooltipCoords();
 
     if (props.closeOnDoubleClick) {
-      setVisible(old => !old);
+      setVisible((old) => !old);
     } else {
       setVisible(true);
     }
-  }, [
-    setVisible,
-    intervalCloseRef,
-    trigger,
-    updateTooltipCoords,
-    props.closeOnDoubleClick
-  ]);
+  }, [setVisible, intervalCloseRef, trigger, updateTooltipCoords, props.closeOnDoubleClick]);
 
   const onMouseLeave = useCallback(() => {
     intervalCloseRef.current = setTimeout(() => {
@@ -113,11 +107,8 @@ export default function TooltipWithPortal(props) {
       {visible && coords.left && (
         <Portal>
           <div style={{ ...coords, position: "absolute" }}>
-            <div 
-              className={cx(["Tooltip-popup", position])}
-              style={{width: tooltipWidth}}
-            >
-                {props.renderContent()}
+            <div className={cx(["Tooltip-popup", position])} style={{ width: tooltipWidth }}>
+              {props.renderContent()}
             </div>
           </div>
         </Portal>

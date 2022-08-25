@@ -28,7 +28,6 @@ import {
   parseValue,
   approveTokens,
   getServerUrl,
-  useLocalStorageSerializeKey,
   useChainId,
   GLP_DECIMALS,
   USD_DECIMALS,
@@ -51,6 +50,7 @@ import { getContract } from "../../Addresses";
 
 import "./StakeV2.css";
 import SEO from "../../components/Common/SEO";
+import { useLocalStorageSerializeKey } from "../../data/localStorage/utils";
 
 const { AddressZero } = ethers.constants;
 
