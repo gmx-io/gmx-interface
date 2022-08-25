@@ -63,7 +63,7 @@ import avalanche16Icon from "../../img/ic_avalanche_16.svg";
 import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
-import AssetDropdown from "../../views/Dashboard/AssetDropdown";
+import AssetDropdown from "../../pages/Dashboard/AssetDropdown";
 
 const { AddressZero } = ethers.constants;
 
