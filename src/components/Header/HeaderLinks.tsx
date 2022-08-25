@@ -51,6 +51,7 @@ export function AppHeaderLinks({ small, clickCloseIcon = () => null, openSetting
       </div>
       {small && !isHomeSite() && (
         <div className="App-header-link-container">
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <a href="#" onClick={openSettings}>
             Settings
           </a>
