@@ -326,6 +326,7 @@
     Multiswap: "Multiswap",
     "Net Value": "Net Value",
     Networks: "Networks",
+    "Networks and Settings": "Networks and Settings",
     "No PnLs found": "No PnLs found",
     "No esGMX to claim": "No esGMX to claim",
     "No open orders": "No open orders",

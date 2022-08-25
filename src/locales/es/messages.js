@@ -328,6 +328,7 @@
     Multiswap: "Multiswap",
     "Net Value": "Valor Neto",
     Networks: "Redes",
+    "Networks and Settings": "Networks and Settings",
     "No PnLs found": "No PnLs found",
     "No PyGs found": "No se han encontrado PyGs",
     "No esGMX to claim": "No hay esGMX para reclamar",

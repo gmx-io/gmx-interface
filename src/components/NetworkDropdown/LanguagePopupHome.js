@@ -14,7 +14,7 @@ export default function LanguagePopupHome() {
 
   return (
     <>
-      <div className="App-header-network" onClick={() => setIsLanguageModalOpen(true)}>
+      <div className="App-header-network App-header-language" onClick={() => setIsLanguageModalOpen(true)}>
         <div className="network-dropdown">
           <button className={cx("btn-primary small transparent")}>
             <img className="network-dropdown-icon" src={language24Icon} alt="Select Language" />
