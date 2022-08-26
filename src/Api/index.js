@@ -1014,12 +1014,10 @@ function ToastifyDebug(props) {
   const [open, setOpen] = useState(false);
   return (
     <div className="Toastify-debug">
-      {!open && (
-        <span className="Toastify-debug-button" onClick={() => setOpen(true)}>
-          Show error
-        </span>
-      )}
-      {open && props.children}
+      <span className="Toastify-debug-button" onClick={() => setOpen((old) => !old)}>
+        {open ? "Hide error" : "Show error"}
+      </span>
+      {open && <div className="Toastify-debug-content">{props.children}</div>}
     </div>
   );
 }
@@ -1066,6 +1064,8 @@ export async function callContract(chainId, contract, method, params, opts) {
     return res;
   } catch (e) {
     let failMsg;
+    let autoCloseToast = 5000;
+
     const [message, type, errorData] = extractError(e);
     switch (type) {
       case NOT_ENOUGH_FUNDS:
@@ -1088,21 +1088,17 @@ export async function callContract(chainId, contract, method, params, opts) {
           'The mark price has changed, consider increasing your Allowed Slippage by clicking on the "..." icon next to your address.';
         break;
       case RPC_ERROR:
+        autoCloseToast = false;
+
         const originalError = errorData?.error?.message || errorData?.message || message;
 
         failMsg = (
           <div>
-            Transaction failed due to RPC error
+            Transaction failed due to RPC error.
             <br />
             <br />
-            Please try changing the RPC url in your wallet settings
-            <br />
-            <br />
-            <a
-              href="https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            Please try changing the RPC url in your wallet settings.{" "}
+            <a href="https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls" target="_blank" rel="noopener noreferrer">
               More info
             </a>
             <br />
@@ -1111,6 +1107,8 @@ export async function callContract(chainId, contract, method, params, opts) {
         );
         break;
       default:
+        autoCloseToast = false;
+
         failMsg = (
           <div>
             {opts.failMsg || "Transaction failed"}
@@ -1119,7 +1117,7 @@ export async function callContract(chainId, contract, method, params, opts) {
           </div>
         );
     }
-    helperToast.error(failMsg);
+    helperToast.error(failMsg, { autoClose: autoCloseToast });
     throw e;
   }
 }
