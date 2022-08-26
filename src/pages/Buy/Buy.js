@@ -4,7 +4,7 @@ import "./Buy.css";
 import TokenCard from "../../components/TokenCard/TokenCard";
 import buyGMXIcon from "../../img/buy_gmx.svg";
 import SEO from "../../components/Common/SEO";
-import { getPageTitle } from "../../Helpers";
+import { getPageTitle } from "../../helpers/Helpers";
 
 export default function BuyGMXGLP() {
   return (

@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 
-import { getContract } from "../../Addresses";
+import { getContract } from "../../helpers/contracts/addresses";
 import { callContract } from "../../Api";
 
 import Modal from "../../components/Modal/Modal";
@@ -17,7 +17,7 @@ import RewardRouter from "../../abis/RewardRouter.json";
 
 import { FaCheck, FaTimes } from "react-icons/fa";
 
-import { fetcher, approveTokens, useChainId } from "../../Helpers";
+import { fetcher, approveTokens, useChainId } from "../../helpers/Helpers";
 
 import "./BeginAccountTransfer.css";
 

@@ -6,7 +6,7 @@ import buyGLPIcon from "../../img/ic_buy_glp.svg";
 import Footer from "../../components/Footer/Footer";
 import "./BuyGlp.css";
 
-import { useChainId } from "../../Helpers";
+import { useChainId } from "../../helpers/Helpers";
 import { getNativeToken } from "../../data/Tokens";
 
 export default function BuyGlp(props) {

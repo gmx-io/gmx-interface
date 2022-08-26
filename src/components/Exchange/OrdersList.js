@@ -5,7 +5,6 @@ import {
   INCREASE,
   DECREASE,
   USD_DECIMALS,
-  formatAmount,
   getOrderError,
   TRIGGER_PREFIX_ABOVE,
   TRIGGER_PREFIX_BELOW,
@@ -14,15 +13,16 @@ import {
   getExchangeRate,
   getPositionForOrder,
   getUsd,
-} from "../../Helpers.js";
+} from "../../helpers/Helpers.js";
 import { handleCancelOrder } from "../../Api";
-import { getContract } from "../../Addresses";
+import { getContract } from "../../helpers/contracts/addresses";
 
 import Tooltip from "../Tooltip/Tooltip";
 import OrderEditor from "./OrderEditor";
 
 import "./OrdersList.css";
 import Checkbox from "../Checkbox/Checkbox.js";
+import { formatAmount } from "../../helpers/currencies/utils";
 
 export default function OrdersList(props) {
   const {

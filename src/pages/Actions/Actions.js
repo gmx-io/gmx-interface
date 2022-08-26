@@ -6,8 +6,8 @@ import { useParams } from "react-router-dom";
 
 import "./Actions.css";
 
-import { getContract } from "../../Addresses";
-import { formatAmount, fetcher, getTokenInfo, getServerBaseUrl, useChainId, useAccountOrders } from "../../Helpers";
+import { getContract } from "../../helpers/contracts/addresses";
+import { fetcher, getTokenInfo, getServerBaseUrl, useChainId, useAccountOrders } from "../../helpers/Helpers";
 
 import { useInfoTokens } from "../../Api";
 import { getToken, getTokens, getWhitelistedTokens } from "../../data/Tokens";
@@ -18,6 +18,7 @@ import OrdersList from "../../components/Exchange/OrdersList";
 
 import TradeHistory from "../../components/Exchange/TradeHistory";
 import Reader from "../../abis/Reader.json";
+import { formatAmount } from "../../helpers/currencies/utils";
 
 const USD_DECIMALS = 30;
 

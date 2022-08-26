@@ -5,7 +5,7 @@ import coingeckoIcon from "../../img/ic_coingecko_16.svg";
 import arbitrumIcon from "../../img/ic_arbitrum_16.svg";
 import avalancheIcon from "../../img/ic_avalanche_16.svg";
 import metamaskIcon from "../../img/ic_metamask_16.svg";
-import { addTokenToMetamask, ICONLINKS, platformTokens, useChainId } from "../../Helpers";
+import { addTokenToMetamask, ICONLINKS, platformTokens, useChainId } from "../../helpers/Helpers";
 import { useWeb3React } from "@web3-react/core";
 
 function AssetDropdown({ assetSymbol, assetInfo }) {

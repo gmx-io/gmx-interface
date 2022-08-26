@@ -5,8 +5,6 @@ import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
 
 import {
-  formatAmount,
-  bigNumberify,
   DEFAULT_SLIPPAGE_AMOUNT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   USD_DECIMALS,
@@ -16,10 +14,6 @@ import {
   TRIGGER_PREFIX_BELOW,
   TRIGGER_PREFIX_ABOVE,
   MIN_PROFIT_TIME,
-  usePrevious,
-  formatAmountFree,
-  parseValue,
-  expandDecimals,
   getTokenInfo,
   getLiquidationPrice,
   getLeverage,
@@ -31,15 +25,12 @@ import {
   calculatePositionDelta,
   getDeltaStr,
   getProfitPrice,
-  formatDateTime,
-  getTimeRemaining,
   getNextToAmount,
   getUsd,
   USDG_DECIMALS,
-} from "../../Helpers";
-import { getConstant } from "../../Constants";
+} from "../../helpers/Helpers";
 import { createDecreaseOrder, callContract, useHasOutdatedUi } from "../../Api";
-import { getContract } from "../../Addresses";
+import { getContract } from "../../helpers/contracts/addresses";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Checkbox from "../Checkbox/Checkbox";
 import Tab from "../Tab/Tab";
@@ -49,8 +40,13 @@ import Tooltip from "../Tooltip/Tooltip";
 import TokenSelector from "./TokenSelector";
 import { getTokens } from "../../data/Tokens";
 import "./PositionSeller.css";
-import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "../../data/localStorage/constants";
-import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../data/localStorage/utils";
+import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "../../helpers/localStorage/constants";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../helpers/localStorage/utils";
+import { formatDateTime, getTimeRemaining } from "../../helpers/date";
+import { bigNumberify, expandDecimals } from "../../helpers/numbers";
+import { formatAmount, formatAmountFree, parseValue } from "../../helpers/currencies/utils";
+import { usePrevious } from "../../hooks/usePrevious";
+import { getConstant } from "../../helpers/chains/utils";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10

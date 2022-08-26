@@ -2,7 +2,7 @@ import "./Jobs.css";
 import React, { useEffect } from "react";
 import SEO from "../../components/Common/SEO";
 import Footer from "../../components/Footer/Footer";
-import { getPageTitle } from "../../Helpers";
+import { getPageTitle } from "../../helpers/Helpers";
 import Card from "../../components/Common/Card";
 
 function Jobs() {

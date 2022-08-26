@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import cx from "classnames";
 
 import "./Tooltip.css";
-import { IS_TOUCH } from "../../utils/constants";
+import { IS_TOUCH } from "../../helpers/ui/constants";
 
 function Portal({ children }) {
   const root = document.body;

@@ -13,30 +13,20 @@ import { getFeeHistory } from "../../data/Fees";
 
 import {
   fetcher,
-  formatAmount,
-  formatKeyAmount,
-  expandDecimals,
-  bigNumberify,
-  numberWithCommas,
-  formatDate,
   getServerUrl,
-  getChainName,
   useChainId,
   USD_DECIMALS,
   GMX_DECIMALS,
   GLP_DECIMALS,
   BASIS_POINTS_DIVISOR,
-  ARBITRUM,
-  AVALANCHE,
-  GLPPOOLCOLORS,
   DEFAULT_MAX_USDG_AMOUNT,
   getPageTitle,
   importImage,
   arrayURLFetcher,
-} from "../../Helpers";
+} from "../../helpers/Helpers";
 import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply, useInfoTokens } from "../../Api";
 
-import { getContract } from "../../Addresses";
+import { getContract } from "../../helpers/contracts/addresses";
 
 import VaultV2 from "../../abis/VaultV2.json";
 import ReaderV2 from "../../abis/ReaderV2.json";
@@ -56,6 +46,12 @@ import AssetDropdown from "./AssetDropdown";
 import SEO from "../../components/Common/SEO";
 import TooltipCard, { TooltipCardRow } from "./TooltipCard";
 import useTotalVolume from "../../hooks/useTotalVolume";
+import { getChainName } from "../../helpers/chains/utils";
+import { formatDate } from "../../helpers/date";
+import { GLPPOOLCOLORS } from "../../helpers/currencies/constants";
+import { bigNumberify, expandDecimals, numberWithCommas } from "../../helpers/numbers";
+import { formatAmount, formatKeyAmount } from "../../helpers/currencies/utils";
+import { ARBITRUM, AVALANCHE } from "../../helpers/chains/chainIds";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;

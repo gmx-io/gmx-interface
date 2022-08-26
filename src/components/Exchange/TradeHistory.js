@@ -8,17 +8,17 @@ import {
   MAX_LEVERAGE,
   BASIS_POINTS_DIVISOR,
   LIQUIDATION_FEE,
-  formatAmount,
-  getExplorerUrl,
-  formatDateTime,
-  deserialize,
   getExchangeRateDisplay,
-  bigNumberify,
-} from "../../Helpers";
+} from "../../helpers/Helpers";
 import { useTrades, useLiquidationsData } from "../../Api";
-import { getContract } from "../../Addresses";
+import { getContract } from "../../helpers/contracts/addresses";
 
 import "./TradeHistory.css";
+import { formatDateTime } from "../../helpers/date";
+import { deserialize } from "../../helpers/requests/utils";
+import { bigNumberify } from "../../helpers/numbers";
+import { formatAmount } from "../../helpers/currencies/utils";
+import { getExplorerUrl } from "../../helpers/chains/utils";
 
 const { AddressZero } = ethers.constants;
 

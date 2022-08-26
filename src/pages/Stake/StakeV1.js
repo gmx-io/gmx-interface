@@ -4,25 +4,9 @@ import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { ethers } from "ethers";
 
-import {
-  getInjectedHandler,
-  fetcher,
-  formatKeyAmount,
-  formatAmount,
-  formatAmountFree,
-  parseValue,
-  useChainId,
-  expandDecimals,
-  getExplorerUrl,
-  approveTokens,
-  bigNumberify,
-  helperToast,
-  CHAIN_ID,
-  USD_DECIMALS,
-  PRECISION,
-} from "../../Helpers";
+import { fetcher, useChainId, approveTokens, USD_DECIMALS, PRECISION } from "../../helpers/Helpers";
 
-import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "../../Addresses";
+import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "../../helpers/contracts/addresses";
 import { getTokenBySymbol } from "../../data/Tokens";
 
 import Reader from "../../abis/Reader.json";
@@ -34,6 +18,12 @@ import Modal from "../../components/Modal/Modal";
 import Footer from "../../components/Footer/Footer";
 
 import "./Stake.css";
+import { helperToast } from "../../helpers/helperToast";
+import { bigNumberify, expandDecimals } from "../../helpers/numbers";
+import { formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "../../helpers/currencies/utils";
+import { getExplorerUrl } from "../../helpers/chains/utils";
+import { getInjectedHandler } from "../../helpers/wallets/utils";
+import { CHAIN_ID } from "../../helpers/chains/chainIds";
 
 const BASIS_POINTS_DIVISOR = 10000;
 const HOURS_PER_YEAR = 8760;

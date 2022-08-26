@@ -1,8 +1,8 @@
 import React from "react";
 
-import { formatAmount, expandDecimals, bigNumberify } from "../../Helpers";
-
 import "./ExchangeWalletTokens.css";
+import { bigNumberify, expandDecimals } from "../../helpers/numbers";
+import { formatAmount } from "../../helpers/currencies/utils";
 
 export default function ExchangeWalletTokens(props) {
   const { tokens, mintingCap, infoTokens, onSelectToken } = props;

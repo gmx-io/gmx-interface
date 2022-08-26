@@ -2,12 +2,15 @@ import { useWeb3React } from "@web3-react/core";
 import AddressDropdown from "components/AddressDropdown/AddressDropdown";
 import { ConnectWalletButton } from "components/Common/Button";
 import NetworkSelector from "components/NetworkSelector/NetworkSelector";
-import { ARBITRUM, AVALANCHE, getAccountUrl, getChainName, isHomeSite, switchNetwork, useChainId } from "Helpers";
+import { switchNetwork, useChainId } from "helpers/Helpers";
 import { useCallback, useEffect } from "react";
 import { HeaderLink } from "./HeaderLink";
 import connectWalletImg from "img/ic_wallet_24.svg";
 
 import "./Header.css";
+import {getAccountUrl, getChainName} from "../../helpers/chains/utils";
+import { isHomeSite } from "../../helpers/ui/utils";
+import {ARBITRUM, AVALANCHE} from "../../helpers/chains/chainIds";
 
 type Props = {
   openSettings: () => void;

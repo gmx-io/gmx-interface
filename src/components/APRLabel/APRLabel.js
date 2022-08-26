@@ -6,13 +6,12 @@ import {
   PLACEHOLDER_ACCOUNT,
   getServerUrl,
   fetcher,
-  formatKeyAmount,
   getBalanceAndSupplyData,
   getDepositBalanceData,
   getVestingData,
   getStakingData,
   getProcessedData,
-} from "../../Helpers";
+} from "../../helpers/Helpers";
 
 import Vault from "../../abis/Vault.json";
 import ReaderV2 from "../../abis/ReaderV2.json";
@@ -24,7 +23,8 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useGmxPrice } from "../../Api";
 
-import { getContract } from "../../Addresses";
+import { getContract } from "../../helpers/contracts/addresses";
+import { formatKeyAmount } from "../../helpers/currencies/utils";
 
 export default function APRLabel({ chainId, label }) {
   let { active } = useWeb3React();

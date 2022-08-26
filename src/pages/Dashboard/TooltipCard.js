@@ -1,4 +1,5 @@
-import { formatAmount, USD_DECIMALS } from "../../Helpers";
+import { USD_DECIMALS } from "../../helpers/Helpers";
+import { formatAmount } from "../../helpers/currencies/utils";
 
 export default function TooltipCard({
   title,

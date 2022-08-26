@@ -3,19 +3,8 @@ import useSWR from "swr";
 import { useWeb3React } from "@web3-react/core";
 
 import cx from "classnames";
-import {
-  bigNumberify,
-  expandDecimals,
-  formatAmount,
-  fetcher,
-  formatDate,
-  numberWithCommas,
-  getTokenUrl,
-  useChainId,
-  getServerUrl,
-  helperToast,
-} from "../../Helpers";
-import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "../../Addresses";
+import { fetcher, useChainId, getServerUrl } from "../../helpers/Helpers";
+import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "../../helpers/contracts/addresses";
 import { getToken, getTokens } from "../../data/Tokens";
 import { getFeeHistory } from "../../data/Fees";
 
@@ -29,6 +18,11 @@ import "./Dashboard.css";
 import metamaskImg from "../../img/metamask.png";
 import coingeckoImg from "../../img/coingecko.png";
 import bscscanImg from "../../img/bscscan.png";
+import { formatDate } from "../../helpers/date";
+import { helperToast } from "../../helpers/helperToast";
+import { bigNumberify, expandDecimals, numberWithCommas } from "../../helpers/numbers";
+import { formatAmount } from "../../helpers/currencies/utils";
+import { getTokenUrl } from "../../helpers/chains/utils";
 
 const USD_DECIMALS = 30;
 const PRECISION = expandDecimals(1, 30);

@@ -3,8 +3,9 @@ import { gql } from "@apollo/client";
 import useSWR from "swr";
 import { ethers } from "ethers";
 
-import { USD_DECIMALS, CHART_PERIODS, formatAmount, sleep } from "../Helpers";
+import { USD_DECIMALS, CHART_PERIODS, sleep } from "../helpers/Helpers";
 import { chainlinkClient } from "./common";
+import { formatAmount } from "../helpers/currencies/utils";
 
 const BigNumber = ethers.BigNumber;
 

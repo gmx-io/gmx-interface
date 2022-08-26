@@ -1,9 +1,9 @@
 import SEO from "../../components/Common/SEO";
 import Footer from "../../components/Footer/Footer";
-import { getPageTitle } from "../../Helpers";
+import { getPageTitle } from "../../helpers/Helpers";
 import "./PageNotFound.css";
 
-import { getHomeUrl, getTradePageUrl } from "../../Helpers";
+import { getHomeUrl, getTradePageUrl } from "../../helpers/Helpers";
 
 function PageNotFound() {
   const homeUrl = getHomeUrl();

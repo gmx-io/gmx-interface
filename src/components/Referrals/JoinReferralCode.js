@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "../../Api/referrals";
 import { REFERRAL_CODE_REGEX } from "./referralsHelper";
-import { useDebounce } from "../../Helpers";
+import { useDebounce } from "../../helpers/Helpers";
 
 function JoinReferralCode({ setPendingTxns, pendingTxns, active, connectWallet }) {
   return (

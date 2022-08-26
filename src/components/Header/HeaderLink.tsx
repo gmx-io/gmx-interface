@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 import cx from "classnames";
-import { getAppBaseUrl, getHomeUrl } from "Helpers";
+import { getAppBaseUrl, getHomeUrl } from "helpers/Helpers";
 
 import "./Header.css";
 

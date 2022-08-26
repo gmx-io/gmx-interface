@@ -8,29 +8,15 @@ import useScrollToTop from "../hooks/useScrollToTop";
 import { HashRouter as Router, Redirect, Route, Switch, useHistory, useLocation } from "react-router-dom";
 
 import {
-  activateInjectedProvider,
-  ARBITRUM,
-  AVALANCHE,
   BASIS_POINTS_DIVISOR,
-  clearWalletConnectData,
-  clearWalletLinkData,
   DEFAULT_SLIPPAGE_AMOUNT,
-  getAlchemyWsUrl,
   getAppBaseUrl,
-  getExplorerUrl,
-  getInjectedHandler,
-  getWalletConnectHandler,
-  hasCoinBaseWalletExtension,
-  hasMetaMaskWalletExtension,
-  helperToast,
   isDevelopment,
-  isHomeSite,
-  isMobileDevice,
   REFERRAL_CODE_QUERY_PARAM,
   useChainId,
   useEagerConnect,
   useInactiveListener,
-} from "../Helpers";
+} from "../helpers/Helpers";
 
 import Actions from "pages/Actions/Actions";
 import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
@@ -78,19 +64,29 @@ import { useLocalStorage } from "react-use";
 import PositionRouter from "../abis/PositionRouter.json";
 import VaultV2 from "../abis/VaultV2.json";
 import VaultV2b from "../abis/VaultV2b.json";
-import { getContract } from "../Addresses";
-import { REDIRECT_POPUP_TIMESTAMP_KEY } from "../utils/constants";
+import { getContract } from "../helpers/contracts/addresses";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
+  REDIRECT_POPUP_TIMESTAMP_KEY,
   REFERRAL_CODE_KEY,
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_PNL_AFTER_FEES_KEY,
   SLIPPAGE_BPS_KEY,
-} from "../data/localStorage/constants";
-import { useLocalStorageSerializeKey } from "../data/localStorage/utils";
+} from "../helpers/localStorage/constants";
+import { useLocalStorageSerializeKey } from "../helpers/localStorage/utils";
+import {
+  activateInjectedProvider, clearWalletConnectData, clearWalletLinkData, getInjectedHandler, getWalletConnectHandler,
+  hasCoinBaseWalletExtension,
+  hasMetaMaskWalletExtension,
+} from "../helpers/wallets/utils";
+import {isHomeSite, isMobileDevice} from "../helpers/ui/utils";
+import { helperToast } from "../helpers/helperToast";
+import {getExplorerUrl} from "../helpers/chains/utils";
+import {getAlchemyWsUrl} from "../helpers/chains/rpc";
+import {ARBITRUM, AVALANCHE} from "../helpers/chains/chainIds";
 
 const Exchange = ExchangeView as any;
 

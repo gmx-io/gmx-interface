@@ -18,20 +18,14 @@ import tradingIcon from "../../img/ic_trading.svg";
 
 import useSWR from "swr";
 
-import {
-  formatAmount,
-  bigNumberify,
-  numberWithCommas,
-  getServerUrl,
-  USD_DECIMALS,
-  ARBITRUM,
-  AVALANCHE,
-  getTotalVolumeSum,
-} from "../../Helpers";
+import { getServerUrl, USD_DECIMALS, getTotalVolumeSum } from "../../helpers/Helpers";
 
 import { useUserStat } from "../../Api";
 
 import TokenCard from "../../components/TokenCard/TokenCard";
+import { bigNumberify, numberWithCommas } from "../../helpers/numbers";
+import { formatAmount } from "../../helpers/currencies/utils";
+import { ARBITRUM, AVALANCHE } from "../../helpers/chains/chainIds";
 
 export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)

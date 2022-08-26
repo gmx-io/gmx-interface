@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import Footer from "../../components/Footer/Footer";
 import "./BuyGMX.css";
 
-import { ARBITRUM, AVALANCHE, switchNetwork, useChainId } from "../../Helpers";
+import { switchNetwork, useChainId } from "../../helpers/Helpers";
 
 import { useWeb3React } from "@web3-react/core";
 
@@ -16,6 +16,7 @@ import gmxArbitrum from "../../img/ic_gmx_arbitrum.svg";
 import gmxAvax from "../../img/ic_gmx_avax.svg";
 import ohmArbitrum from "../../img/ic_olympus_arbitrum.svg";
 import Button from "../../components/Common/Button";
+import { ARBITRUM, AVALANCHE } from "../../helpers/chains/chainIds";
 
 export default function BuyGMX() {
   const { chainId } = useChainId();

@@ -6,11 +6,13 @@ import cx from "classnames";
 import gmxBigIcon from "../../img/ic_gmx_custom.svg";
 import glpBigIcon from "../../img/ic_glp_custom.svg";
 
-import { ARBITRUM, AVALANCHE, switchNetwork, useChainId, isHomeSite } from "../../Helpers";
+import { switchNetwork, useChainId } from "../../helpers/Helpers";
 
 import { useWeb3React } from "@web3-react/core";
 
 import APRLabel from "../APRLabel/APRLabel";
+import { isHomeSite } from "../../helpers/ui/utils";
+import { ARBITRUM, AVALANCHE } from "../../helpers/chains/chainIds";
 
 export default function TokenCard({ showRedirectModal }) {
   const isHome = isHomeSite();

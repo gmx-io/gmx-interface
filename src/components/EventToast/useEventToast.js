@@ -1,10 +1,10 @@
 import { useLocalStorage } from "react-use";
 import toast from "react-hot-toast";
-import { homeEventsData, appEventsData } from "../../config/events";
+import { homeEventsData, appEventsData } from "../../helpers/events/events";
 import { useEffect } from "react";
 import EventToast from "./EventToast";
 import { isFuture, parse } from "date-fns";
-import { isHomeSite } from "../../Helpers";
+import { isHomeSite } from "../../helpers/ui/utils";
 
 function useEventToast() {
   const isHome = isHomeSite();

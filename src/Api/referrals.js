@@ -4,22 +4,15 @@ import { useState, useEffect, useMemo } from "react";
 import useSWR from "swr";
 
 import ReferralStorage from "../abis/ReferralStorage.json";
-import {
-  ARBITRUM,
-  AVALANCHE,
-  MAX_REFERRAL_CODE_LENGTH,
-  bigNumberify,
-  isAddressZero,
-  helperToast,
-  getProvider,
-  fetcher,
-  isHashZero,
-} from "../Helpers";
+import { MAX_REFERRAL_CODE_LENGTH, isAddressZero, getProvider, fetcher, isHashZero } from "../helpers/Helpers";
 import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "./common";
-import { getContract } from "../Addresses";
+import { getContract } from "../helpers/contracts/addresses";
 import { callContract } from ".";
 import { REGEX_VERIFY_BYTES32 } from "../components/Referrals/referralsHelper";
-import { REFERRAL_CODE_KEY } from "../data/localStorage/constants";
+import { REFERRAL_CODE_KEY } from "../helpers/localStorage/constants";
+import { helperToast } from "../helpers/helperToast";
+import { bigNumberify } from "../helpers/numbers";
+import { ARBITRUM, AVALANCHE } from "../helpers/chains/chainIds";
 
 const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
 const DISTRIBUTION_TYPE_REBATES = "1";

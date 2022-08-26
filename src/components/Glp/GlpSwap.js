@@ -9,22 +9,15 @@ import Tab from "../Tab/Tab";
 import cx from "classnames";
 
 import { getToken, getTokens, getWhitelistedTokens, getWrappedToken, getNativeToken } from "../../data/Tokens";
-import { getContract } from "../../Addresses";
+import { getContract } from "../../helpers/contracts/addresses";
 import {
-  helperToast,
   getTokenInfo,
   useChainId,
-  expandDecimals,
   fetcher,
-  bigNumberify,
-  formatAmount,
-  formatAmountFree,
-  formatKeyAmount,
   getBuyGlpToAmount,
   getBuyGlpFromAmount,
   getSellGlpFromAmount,
   getSellGlpToAmount,
-  parseValue,
   approveTokens,
   getUsd,
   adjustForDecimals,
@@ -34,10 +27,9 @@ import {
   GLP_COOLDOWN_DURATION,
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
-  ARBITRUM,
   PLACEHOLDER_ACCOUNT,
   importImage,
-} from "../../Helpers";
+} from "../../helpers/Helpers";
 
 import { callContract, useGmxPrice, useInfoTokens } from "../../Api";
 
@@ -63,7 +55,11 @@ import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
 import AssetDropdown from "../../pages/Dashboard/AssetDropdown";
-import { useLocalStorageByChainId } from "../../data/localStorage/utils";
+import { useLocalStorageByChainId } from "../../helpers/localStorage/utils";
+import { helperToast } from "../../helpers/helperToast";
+import { bigNumberify, expandDecimals } from "../../helpers/numbers";
+import { formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "../../helpers/currencies/utils";
+import { ARBITRUM } from "../../helpers/chains/chainIds";
 
 const { AddressZero } = ethers.constants;
 

@@ -14,11 +14,6 @@ import { IoMdSwap } from "react-icons/io";
 import { BsArrowRight } from "react-icons/bs";
 
 import {
-  helperToast,
-  formatAmount,
-  bigNumberify,
-  ARBITRUM,
-  AVALANCHE,
   USD_DECIMALS,
   USDG_DECIMALS,
   LONG,
@@ -39,17 +34,12 @@ import {
   SWAP_OPTIONS,
   DUST_BNB,
   isTriggerRatioInverted,
-  usePrevious,
-  formatAmountFree,
   fetcher,
-  parseValue,
-  expandDecimals,
   shouldRaiseGasError,
   getTokenInfo,
   getLiquidationPrice,
   approveTokens,
   getLeverage,
-  isSupportedChain,
   getExchangeRate,
   getExchangeRateDisplay,
   getNextToAmount,
@@ -58,10 +48,9 @@ import {
   calculatePositionDelta,
   replaceNativeTokenAddress,
   adjustForDecimals,
-} from "../../Helpers";
-import { getConstant } from "../../Constants";
+} from "../../helpers/Helpers";
 import * as Api from "../../Api";
-import { getContract } from "../../Addresses";
+import { getContract } from "../../helpers/contracts/addresses";
 
 import Checkbox from "../Checkbox/Checkbox";
 import Tab from "../Tab/Tab";
@@ -80,7 +69,13 @@ import longImg from "../../img/long.svg";
 import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
 import { useUserReferralCode } from "../../Api/referrals";
-import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../data/localStorage/utils";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../helpers/localStorage/utils";
+import { getConstant, isSupportedChain } from "../../helpers/chains/utils";
+import { helperToast } from "../../helpers/helperToast";
+import { bigNumberify, expandDecimals } from "../../helpers/numbers";
+import { formatAmount, formatAmountFree, parseValue } from "../../helpers/currencies/utils";
+import { usePrevious } from "../../hooks/usePrevious";
+import { ARBITRUM, AVALANCHE } from "../../helpers/chains/chainIds";
 
 const SWAP_ICONS = {
   [LONG]: longImg,

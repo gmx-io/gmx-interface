@@ -13,24 +13,21 @@ import {
   useChainId,
   getTokenInfo,
   isTriggerRatioInverted,
-  bigNumberify,
-  formatAmountFree,
-  parseValue,
   getNextToAmount,
   getExchangeRate,
-  formatAmount,
   getExchangeRateDisplay,
   calculatePositionDelta,
   getLiquidationPrice,
-  formatDateTime,
   getDeltaStr,
   getProfitPrice,
-  getTimeRemaining,
-} from "../../Helpers";
+} from "../../helpers/Helpers";
 import { updateSwapOrder, updateIncreaseOrder, updateDecreaseOrder } from "../../Api";
 import Modal from "../Modal/Modal";
 import ExchangeInfoRow from "./ExchangeInfoRow";
-import { getContract } from "../../Addresses";
+import { getContract } from "../../helpers/contracts/addresses";
+import { formatDateTime, getTimeRemaining } from "../../helpers/date";
+import { bigNumberify } from "../../helpers/numbers";
+import { formatAmount, formatAmountFree, parseValue } from "../../helpers/currencies/utils";
 
 export default function OrderEditor(props) {
   const {

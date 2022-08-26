@@ -1,9 +1,9 @@
 import { FiX } from "react-icons/fi";
 import { HeaderLink } from "./HeaderLink";
 import logoImg from "img/logo_GMX.svg";
-import { isHomeSite } from "Helpers";
 
 import "./Header.css";
+import { isHomeSite } from "../../helpers/ui/utils";
 
 type Props = {
   small?: boolean;

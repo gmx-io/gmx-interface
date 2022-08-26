@@ -14,22 +14,18 @@ import {
   useEagerConnect,
   useInactiveListener,
   fetcher,
-  formatArrayAmount,
-  formatAmount,
-  formatAmountFree,
-  parseValue,
-  expandDecimals,
-  getExplorerUrl,
   approveTokens,
-  bigNumberify,
-  helperToast,
-  CHAIN_ID,
-} from "../../Helpers";
-import { getContract } from "../../Addresses";
+} from "../../helpers/Helpers";
+import { getContract } from "../../helpers/contracts/addresses";
 
 import Reader from "../../abis/Reader.json";
 import Token from "../../abis/Token.json";
 import GmxMigrator from "../../abis/GmxMigrator.json";
+import { helperToast } from "../../helpers/helperToast";
+import { bigNumberify, expandDecimals } from "../../helpers/numbers";
+import { formatAmount, formatAmountFree, formatArrayAmount, parseValue } from "../../helpers/currencies/utils";
+import { getExplorerUrl } from "../../helpers/chains/utils";
+import { CHAIN_ID } from "../../helpers/chains/chainIds";
 
 const { MaxUint256, AddressZero } = ethers.constants;
 

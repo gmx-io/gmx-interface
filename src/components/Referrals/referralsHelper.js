@@ -1,13 +1,8 @@
-import {
-  formatAmount,
-  bigNumberify,
-  isAddressZero,
-  USD_DECIMALS,
-  MAX_REFERRAL_CODE_LENGTH,
-  ARBITRUM,
-  AVALANCHE,
-} from "../../Helpers";
+import { isAddressZero, USD_DECIMALS, MAX_REFERRAL_CODE_LENGTH } from "../../helpers/Helpers";
 import { encodeReferralCode, getReferralCodeOwner } from "../../Api/referrals";
+import { bigNumberify } from "../../helpers/numbers";
+import { formatAmount } from "../../helpers/currencies/utils";
+import { ARBITRUM, AVALANCHE } from "../../helpers/chains/chainIds";
 
 export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 export const REGEX_VERIFY_BYTES32 = /^0x[0-9a-f]{64}$/;

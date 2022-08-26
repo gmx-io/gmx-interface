@@ -15,15 +15,9 @@ import Token from "../abis/Token.json";
 import VaultReader from "../abis/VaultReader.json";
 import PositionRouter from "../abis/PositionRouter.json";
 
-import { getContract } from "../Addresses";
-import { getConstant } from "../Constants";
+import { getContract } from "../helpers/contracts/addresses";
 import {
-  UI_VERSION,
-  ARBITRUM,
-  AVALANCHE,
   // DEFAULT_GAS_LIMIT,
-  bigNumberify,
-  getExplorerUrl,
   getServerBaseUrl,
   getServerUrl,
   setGasPrice,
@@ -32,21 +26,24 @@ import {
   getProvider,
   getOrderKey,
   fetcher,
-  parseValue,
-  expandDecimals,
   getInfoTokens,
-  helperToast,
   getUsd,
   USD_DECIMALS,
   HIGH_EXECUTION_FEES_MAP,
   SWAP,
   INCREASE,
   DECREASE,
-} from "../Helpers";
+} from "../helpers/Helpers";
 import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
 
 import { nissohGraphClient, arbitrumGraphClient, avalancheGraphClient } from "./common";
 import { groupBy } from "lodash";
+import { UI_VERSION } from "../helpers/ui/constants";
+import { helperToast } from "../helpers/helperToast";
+import { bigNumberify, expandDecimals } from "../helpers/numbers";
+import { parseValue } from "../helpers/currencies/utils";
+import { getConstant, getExplorerUrl } from "../helpers/chains/utils";
+import { ARBITRUM, AVALANCHE } from "../helpers/chains/chainIds";
 export * from "./prices";
 
 const { AddressZero } = ethers.constants;

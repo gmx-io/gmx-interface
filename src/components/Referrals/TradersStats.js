@@ -4,11 +4,14 @@ import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
 import { getNativeToken, getToken } from "../../data/Tokens";
-import { formatAmount, formatDate, getExplorerUrl, shortenAddress } from "../../Helpers";
+import { shortenAddress } from "../../helpers/Helpers";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import { ReferralCodeForm } from "./JoinReferralCode";
+import { formatDate } from "../../helpers/date";
+import { formatAmount } from "../../helpers/currencies/utils";
+import { getExplorerUrl } from "../../helpers/chains/utils";
 
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);

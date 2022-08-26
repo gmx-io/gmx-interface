@@ -7,23 +7,17 @@ import {
   LIMIT,
   MIN_PROFIT_TIME,
   INCREASE,
-  expandDecimals,
   getExchangeRate,
   getProfitPrice,
-  getTimeRemaining,
-  formatAmount,
-  formatAmountFree,
   getExchangeRateDisplay,
   DEFAULT_SLIPPAGE_AMOUNT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
-  formatDateTime,
   calculatePositionDelta,
   DECREASE,
   TRIGGER_PREFIX_ABOVE,
   TRIGGER_PREFIX_BELOW,
-} from "../../Helpers";
-import { getConstant } from "../../Constants";
-import { getContract } from "../../Addresses";
+} from "../../helpers/Helpers";
+import { getContract } from "../../helpers/contracts/addresses";
 
 import { BsArrowRight } from "react-icons/bs";
 import Modal from "../Modal/Modal";
@@ -32,8 +26,12 @@ import Checkbox from "../Checkbox/Checkbox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import { cancelDecreaseOrder, handleCancelOrder } from "../../Api";
 import { getNativeToken, getToken, getWrappedToken } from "../../data/Tokens";
-import { SLIPPAGE_BPS_KEY } from "../../data/localStorage/constants";
-import { useLocalStorageSerializeKey } from "../../data/localStorage/utils";
+import { SLIPPAGE_BPS_KEY } from "../../helpers/localStorage/constants";
+import { useLocalStorageSerializeKey } from "../../helpers/localStorage/utils";
+import { formatDateTime, getTimeRemaining } from "../../helpers/date";
+import { expandDecimals } from "../../helpers/numbers";
+import { formatAmount, formatAmountFree } from "../../helpers/currencies/utils";
+import { getConstant } from "../../helpers/chains/utils";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 

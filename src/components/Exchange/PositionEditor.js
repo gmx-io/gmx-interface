@@ -8,20 +8,13 @@ import {
   BASIS_POINTS_DIVISOR,
   DEPOSIT_FEE,
   DUST_BNB,
-  helperToast,
-  formatAmount,
-  bigNumberify,
-  usePrevious,
-  formatAmountFree,
   fetcher,
-  parseValue,
-  expandDecimals,
   shouldRaiseGasError,
   getTokenInfo,
   getLiquidationPrice,
   approveTokens,
-} from "../../Helpers";
-import { getContract } from "../../Addresses";
+} from "../../helpers/Helpers";
+import { getContract } from "../../helpers/contracts/addresses";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
 import { callContract } from "../../Api";
@@ -29,7 +22,11 @@ import { callContract } from "../../Api";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Token from "../../abis/Token.json";
 import Tooltip from "../Tooltip/Tooltip";
-import { getConstant } from "../../Constants";
+import { helperToast } from "../../helpers/helperToast";
+import { bigNumberify, expandDecimals } from "../../helpers/numbers";
+import { formatAmount, formatAmountFree, parseValue } from "../../helpers/currencies/utils";
+import { usePrevious } from "../../hooks/usePrevious";
+import { getConstant } from "../../helpers/chains/utils";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";

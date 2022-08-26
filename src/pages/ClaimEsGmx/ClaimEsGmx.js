@@ -2,19 +2,9 @@ import React, { useState } from "react";
 import useSWR from "swr";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
-import {
-  ARBITRUM,
-  AVALANCHE,
-  PLACEHOLDER_ACCOUNT,
-  useChainId,
-  fetcher,
-  formatAmount,
-  formatAmountFree,
-  parseValue,
-  bigNumberify,
-} from "../../Helpers";
+import { PLACEHOLDER_ACCOUNT, useChainId, fetcher } from "../../helpers/Helpers";
 
-import { getContract } from "../../Addresses";
+import { getContract } from "../../helpers/contracts/addresses";
 
 import { callContract } from "../../Api";
 
@@ -27,6 +17,9 @@ import "./ClaimEsGmx.css";
 
 import arbitrumIcon from "../../img/ic_arbitrum_96.svg";
 import avaIcon from "../../img/ic_avalanche_96.svg";
+import { bigNumberify } from "../../helpers/numbers";
+import { formatAmount, formatAmountFree, parseValue } from "../../helpers/currencies/utils";
+import { ARBITRUM, AVALANCHE } from "../../helpers/chains/chainIds";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";
 const VEST_WITH_GLP_ARB = "VEST_WITH_GLP_ARB";

@@ -1,10 +1,26 @@
 import { ethers } from "ethers";
-
-import { MAINNET, TESTNET, ARBITRUM_TESTNET, ARBITRUM, AVALANCHE } from "./Helpers";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, MAINNET, TESTNET } from "./chainIds";
 
 const { parseEther } = ethers.utils;
 
-const constants = {
+export const CHAIN_NAMES_MAP = {
+  [MAINNET]: "BSC",
+  [TESTNET]: "BSC Testnet",
+  [ARBITRUM_TESTNET]: "Arbitrum Testnet",
+  [ARBITRUM]: "Arbitrum",
+  [AVALANCHE]: "Avalanche",
+};
+
+export const GAS_PRICE_ADJUSTMENT_MAP = {
+  [ARBITRUM]: "0",
+  [AVALANCHE]: "3000000000", // 3 gwei
+};
+
+export const MAX_GAS_PRICE_MAP = {
+  [AVALANCHE]: "200000000000", // 200 gwei
+};
+
+export const constants = {
   [MAINNET]: {
     nativeTokenSymbol: "BNB",
     defaultCollateralSymbol: "BUSD",
@@ -56,14 +72,4 @@ const constants = {
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
   },
-};
-
-export const getConstant = (chainId, key) => {
-  if (!constants[chainId]) {
-    throw new Error(`Unsupported chainId ${chainId}`);
-  }
-  if (!(key in constants[chainId])) {
-    throw new Error(`Key ${key} does not exist for chainId ${chainId}`);
-  }
-  return constants[chainId][key];
 };

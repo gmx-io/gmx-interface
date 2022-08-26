@@ -10,3 +10,5 @@ export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-positio
 export const REFERRAL_CODE_KEY = "GMX-referralCode";
 export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
 export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3";
+export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
+export const REDIRECT_POPUP_TIMESTAMP_KEY = "redirect-popup-timestamp";

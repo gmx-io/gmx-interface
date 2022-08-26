@@ -3,7 +3,7 @@ import cx from "classnames";
 
 import { NavLink } from "react-router-dom";
 
-import { getContract } from "../../Addresses";
+import { getContract } from "../../helpers/contracts/addresses";
 import { useAllOrders, useAllOrdersStats, usePositionsForOrders } from "../../Api";
 import {
   USD_DECIMALS,
@@ -11,19 +11,19 @@ import {
   INCREASE,
   SWAP,
   useChainId,
-  formatAmount,
   shortenAddress,
   getTokenInfo,
   getExchangeRateDisplay,
   getExchangeRate,
   shouldInvertTriggerRatio,
-  formatDateTime,
   getOrderKey,
-} from "../../Helpers";
+} from "../../helpers/Helpers";
 
 import * as Api from "../../Api";
 
 import "./OrdersOverview.css";
+import { formatDateTime } from "../../helpers/date";
+import { formatAmount } from "../../helpers/currencies/utils";
 
 export default function OrdersOverview() {
   const { chainId } = useChainId();

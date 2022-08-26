@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import cx from "classnames";
 
-import { formatAmount, expandDecimals, bigNumberify } from "../../Helpers";
-
 import { getToken } from "../../data/Tokens";
 
 import { BiChevronDown } from "react-icons/bi";
@@ -12,6 +10,8 @@ import Modal from "../Modal/Modal";
 import dropDownIcon from "../../img/DROP_DOWN.svg";
 import "./TokenSelector.css";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
+import { bigNumberify, expandDecimals } from "../../helpers/numbers";
+import { formatAmount } from "../../helpers/currencies/utils";
 
 export default function TokenSelector(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);

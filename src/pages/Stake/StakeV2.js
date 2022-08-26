@@ -17,22 +17,13 @@ import GlpManager from "../../abis/GlpManager.json";
 
 import { ethers } from "ethers";
 import {
-  helperToast,
-  bigNumberify,
   fetcher,
-  formatAmount,
-  formatKeyAmount,
-  formatAmountFree,
-  getChainName,
-  expandDecimals,
-  parseValue,
   approveTokens,
   getServerUrl,
   useChainId,
   GLP_DECIMALS,
   USD_DECIMALS,
   BASIS_POINTS_DIVISOR,
-  ARBITRUM,
   PLACEHOLDER_ACCOUNT,
   getBalanceAndSupplyData,
   getDepositBalanceData,
@@ -40,17 +31,21 @@ import {
   getStakingData,
   getProcessedData,
   getPageTitle,
-} from "../../Helpers";
+} from "../../helpers/Helpers";
 import { callContract, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "../../Api";
-import { getConstant } from "../../Constants";
 
 import useSWR from "swr";
 
-import { getContract } from "../../Addresses";
+import { getContract } from "../../helpers/contracts/addresses";
 
 import "./StakeV2.css";
 import SEO from "../../components/Common/SEO";
-import { useLocalStorageSerializeKey } from "../../data/localStorage/utils";
+import { useLocalStorageSerializeKey } from "../../helpers/localStorage/utils";
+import { getChainName, getConstant } from "../../helpers/chains/utils";
+import { helperToast } from "../../helpers/helperToast";
+import { bigNumberify, expandDecimals } from "../../helpers/numbers";
+import { formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "../../helpers/currencies/utils";
+import { ARBITRUM } from "../../helpers/chains/chainIds";
 
 const { AddressZero } = ethers.constants;
 

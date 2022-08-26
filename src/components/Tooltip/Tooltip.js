@@ -1,6 +1,6 @@
 import cx from "classnames";
 import { useCallback, useState, useRef } from "react";
-import { IS_TOUCH } from "../../utils/constants";
+import { IS_TOUCH } from "../../helpers/ui/constants";
 
 const OPEN_DELAY = 0;
 const CLOSE_DELAY = 100;

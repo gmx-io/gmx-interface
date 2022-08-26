@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { getContract } from "../Addresses";
+import { getContract } from "../helpers/contracts/addresses";
 
 const TOKENS = {
   56: [

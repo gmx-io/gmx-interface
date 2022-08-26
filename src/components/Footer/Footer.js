@@ -8,7 +8,8 @@ import telegramIcon from "../../img/ic_telegram.svg";
 import githubIcon from "../../img/ic_github.svg";
 import mediumIcon from "../../img/ic_medium.svg";
 import { NavLink } from "react-router-dom";
-import { isHomeSite, getAppBaseUrl, shouldShowRedirectModal } from "../../Helpers";
+import { getAppBaseUrl, shouldShowRedirectModal } from "../../helpers/Helpers";
+import { isHomeSite } from "../../helpers/ui/utils";
 
 const footerLinks = {
   home: [

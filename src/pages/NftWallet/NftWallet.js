@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
-import { useChainId } from "../../Helpers";
+import { useChainId } from "../../helpers/Helpers";
 
 import ERC721 from "../../abis/ERC721.json";
 

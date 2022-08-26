@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import cx from "classnames";
-import { ARBITRUM, helperToast, useDebounce } from "../../Helpers";
+import { useDebounce } from "../../helpers/Helpers";
 import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./referralsHelper";
 import { useWeb3React } from "@web3-react/core";
+import { helperToast } from "../../helpers/helperToast";
+import { ARBITRUM } from "../../helpers/chains/chainIds";
 
 function AddAffiliateCode({
   handleCreateReferralCode,

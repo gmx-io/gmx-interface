@@ -6,16 +6,7 @@ import { BiCopy, BiErrorCircle } from "react-icons/bi";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
 import { getNativeToken, getToken } from "../../data/Tokens";
-import {
-  AVALANCHE,
-  bigNumberify,
-  formatAmount,
-  formatDate,
-  getExplorerUrl,
-  helperToast,
-  REFERRAL_CODE_QUERY_PARAM,
-  shortenAddress,
-} from "../../Helpers";
+import { REFERRAL_CODE_QUERY_PARAM, shortenAddress } from "../../helpers/Helpers";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import {
@@ -27,6 +18,12 @@ import {
 } from "./referralsHelper";
 import { AffiliateCodeForm } from "./AddAffiliateCode";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
+import { formatDate } from "../../helpers/date";
+import { helperToast } from "../../helpers/helperToast";
+import { bigNumberify } from "../../helpers/numbers";
+import { formatAmount } from "../../helpers/currencies/utils";
+import { getExplorerUrl } from "../../helpers/chains/utils";
+import { AVALANCHE } from "../../helpers/chains/chainIds";
 
 function AffiliatesStats({
   referralsData,

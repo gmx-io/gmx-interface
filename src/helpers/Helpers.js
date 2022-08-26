@@ -1,91 +1,51 @@
-import React, { useEffect, useRef, useState } from "react";
-import { InjectedConnector } from "@web3-react/injected-connector";
-import {
-  UserRejectedRequestError as UserRejectedRequestErrorWalletConnect,
-  WalletConnectConnector,
-} from "@web3-react/walletconnect-connector";
-import { toast } from "react-toastify";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
+import React, { useEffect, useState } from "react";
+import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
-import { format as formatDateFn } from "date-fns";
-import Token from "./abis/Token.json";
+import Token from "../abis/Token.json";
 import _ from "lodash";
-import { getContract } from "./Addresses";
+import { getContract } from "./contracts/addresses";
 import useSWR from "swr";
 
-import OrderBookReader from "./abis/OrderBookReader.json";
-import OrderBook from "./abis/OrderBook.json";
+import OrderBookReader from "../abis/OrderBookReader.json";
+import OrderBook from "../abis/OrderBook.json";
 
-import { getWhitelistedTokens, isValidToken } from "./data/Tokens";
+import { getWhitelistedTokens, isValidToken } from "../data/Tokens";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   SELECTED_NETWORK_LOCAL_STORAGE_KEY,
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
   WALLET_CONNECT_LOCALSTORAGE_KEY,
-} from "./data/localStorage/constants";
+} from "./localStorage/constants";
+import { GAS_PRICE_ADJUSTMENT_MAP, MAX_GAS_PRICE_MAP } from "./chains/constants";
+import { getChainName, getExplorerUrl } from "./chains/utils";
+import {
+  activateInjectedProvider,
+  clearWalletConnectData,
+  clearWalletLinkData,
+  getInjectedConnector,
+  getWalletConnectConnector,
+} from "./wallets/utils";
+import { helperToast } from "./helperToast";
+import { bigNumberify, expandDecimals } from "./numbers";
+import { formatAmount } from "./currencies/utils";
+import { NETWORK_METADATA } from "./chains/metadata";
+import { FALLBACK_PROVIDERS, RPC_PROVIDERS } from "./chains/rpc";
+import {
+  ARBITRUM,
+  ARBITRUM_TESTNET,
+  AVALANCHE,
+  CHAIN_ID,
+  DEFAULT_CHAIN_ID,
+  MAINNET,
+  supportedChainIds,
+} from "./chains/chainIds";
 
 const { AddressZero } = ethers.constants;
-
-export const UI_VERSION = "1.3";
 
 // use a random placeholder account instead of the zero address as the zero address might have tokens
 export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
 
-export const MAINNET = 56;
-export const AVALANCHE = 43114;
-export const TESTNET = 97;
-export const ARBITRUM_TESTNET = 421611;
-export const ARBITRUM = 42161;
-// TODO take it from web3
-export const DEFAULT_CHAIN_ID = ARBITRUM;
-export const CHAIN_ID = DEFAULT_CHAIN_ID;
-
 export const MIN_PROFIT_TIME = 0;
-
-const CHAIN_NAMES_MAP = {
-  [MAINNET]: "BSC",
-  [TESTNET]: "BSC Testnet",
-  [ARBITRUM_TESTNET]: "Arbitrum Testnet",
-  [ARBITRUM]: "Arbitrum",
-  [AVALANCHE]: "Avalanche",
-};
-
-const GAS_PRICE_ADJUSTMENT_MAP = {
-  [ARBITRUM]: "0",
-  [AVALANCHE]: "3000000000", // 3 gwei
-};
-
-const MAX_GAS_PRICE_MAP = {
-  [AVALANCHE]: "200000000000", // 200 gwei
-};
-
-const alchemyWhitelistedDomains = ["gmx.io", "app.gmx.io"];
-
-export function getDefaultArbitrumRpcUrl() {
-  return "https://arb1.arbitrum.io/rpc";
-}
-
-export function getAlchemyHttpUrl() {
-  if (alchemyWhitelistedDomains.includes(window.location.host)) {
-    return "https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ";
-  }
-  return "https://arb-mainnet.g.alchemy.com/v2/EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
-}
-
-export function getAlchemyWsUrl() {
-  if (alchemyWhitelistedDomains.includes(window.location.host)) {
-    return "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ";
-  }
-  return "wss://arb-mainnet.g.alchemy.com/v2/EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
-}
-
-const ARBITRUM_RPC_PROVIDERS = [getDefaultArbitrumRpcUrl()];
-const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
-export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
-
-export function getChainName(chainId) {
-  return CHAIN_NAMES_MAP[chainId];
-}
 
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
 export const MAX_LEVERAGE = 100 * 10000;
@@ -139,21 +99,6 @@ export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
 
 export const MIN_PROFIT_BIPS = 0;
-
-export const GLPPOOLCOLORS = {
-  ETH: "#6062a6",
-  BTC: "#F7931A",
-  "BTC.b": "#F7931A",
-  USDC: "#2775CA",
-  "USDC.e": "#2A5ADA",
-  USDT: "#67B18A",
-  MIM: "#9695F8",
-  FRAX: "#000",
-  DAI: "#FAC044",
-  UNI: "#E9167C",
-  AVAX: "#E84142",
-  LINK: "#3256D6",
-};
 
 export const HIGH_EXECUTION_FEES_MAP = {
   [ARBITRUM]: 3, // 3 USD
@@ -277,51 +222,6 @@ export const platformTokens = {
       address: getContract(AVALANCHE, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
-  },
-};
-
-const supportedChainIds = [ARBITRUM, AVALANCHE];
-const injectedConnector = new InjectedConnector({
-  supportedChainIds,
-});
-
-const getWalletConnectConnector = () => {
-  const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID;
-  return new WalletConnectConnector({
-    rpc: {
-      [AVALANCHE]: AVALANCHE_RPC_PROVIDERS[0],
-      [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0],
-    },
-    qrcode: true,
-    chainId,
-  });
-};
-
-export function isSupportedChain(chainId) {
-  return supportedChainIds.includes(chainId);
-}
-
-export function deserialize(data) {
-  for (const [key, value] of Object.entries(data)) {
-    if (value._type === "BigNumber") {
-      data[key] = bigNumberify(value.value);
-    }
-  }
-  return data;
-}
-
-export function isHomeSite() {
-  return process.env.REACT_APP_IS_HOME_SITE === "true";
-}
-
-export const helperToast = {
-  success: (content) => {
-    toast.dismiss();
-    toast.success(content);
-  },
-  error: (content) => {
-    toast.dismiss();
-    toast.error(content);
   },
 };
 
@@ -1181,44 +1081,6 @@ export function getSwapFeeBasisPoints(isStable) {
   return isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS;
 }
 
-// BSC TESTNET
-// const RPC_PROVIDERS = [
-//   "https://data-seed-prebsc-1-s1.binance.org:8545",
-//   "https://data-seed-prebsc-2-s1.binance.org:8545",
-//   "https://data-seed-prebsc-1-s2.binance.org:8545",
-//   "https://data-seed-prebsc-2-s2.binance.org:8545",
-//   "https://data-seed-prebsc-1-s3.binance.org:8545",
-//   "https://data-seed-prebsc-2-s3.binance.org:8545"
-// ]
-
-// BSC MAINNET
-export const BSC_RPC_PROVIDERS = [
-  "https://bsc-dataseed.binance.org",
-  "https://bsc-dataseed1.defibit.io",
-  "https://bsc-dataseed1.ninicoin.io",
-  "https://bsc-dataseed2.defibit.io",
-  "https://bsc-dataseed3.defibit.io",
-  "https://bsc-dataseed4.defibit.io",
-  "https://bsc-dataseed2.ninicoin.io",
-  "https://bsc-dataseed3.ninicoin.io",
-  "https://bsc-dataseed4.ninicoin.io",
-  "https://bsc-dataseed1.binance.org",
-  "https://bsc-dataseed2.binance.org",
-  "https://bsc-dataseed3.binance.org",
-  "https://bsc-dataseed4.binance.org",
-];
-
-const RPC_PROVIDERS = {
-  [MAINNET]: BSC_RPC_PROVIDERS,
-  [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
-  [AVALANCHE]: AVALANCHE_RPC_PROVIDERS,
-};
-
-const FALLBACK_PROVIDERS = {
-  [ARBITRUM]: [getAlchemyHttpUrl()],
-  [AVALANCHE]: ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
-};
-
 export function shortenAddress(address, length) {
   if (!length) {
     return "";
@@ -1231,67 +1093,6 @@ export function shortenAddress(address, length) {
   }
   let left = Math.floor((length - 3) / 2) + 1;
   return address.substring(0, left) + "..." + address.substring(address.length - (length - (left + 3)), address.length);
-}
-
-export function formatDateTime(time) {
-  return formatDateFn(time * 1000, "dd MMM yyyy, h:mm a");
-}
-
-export function getTimeRemaining(time) {
-  const now = parseInt(Date.now() / 1000);
-  if (time < now) {
-    return "0h 0m";
-  }
-  const diff = time - now;
-  const hours = parseInt(diff / (60 * 60));
-  const minutes = parseInt((diff - hours * 60 * 60) / 60);
-  return `${hours}h ${minutes}m`;
-}
-
-export function formatDate(time) {
-  return formatDateFn(time * 1000, "dd MMM yyyy");
-}
-
-export function hasMetaMaskWalletExtension() {
-  return window.ethereum;
-}
-
-export function hasCoinBaseWalletExtension() {
-  const { ethereum } = window;
-
-  if (!ethereum?.providers && !ethereum?.isCoinbaseWallet) {
-    return false;
-  }
-  return window.ethereum.isCoinbaseWallet || ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
-}
-
-export function activateInjectedProvider(providerName) {
-  const { ethereum } = window;
-
-  if (!ethereum?.providers && !ethereum?.isCoinbaseWallet && !ethereum?.isMetaMask) {
-    return undefined;
-  }
-
-  let provider;
-  if (ethereum?.providers) {
-    switch (providerName) {
-      case "CoinBase":
-        provider = ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
-        break;
-      case "MetaMask":
-      default:
-        provider = ethereum.providers.find(({ isMetaMask }) => isMetaMask);
-        break;
-    }
-  }
-
-  if (provider) {
-    ethereum.setSelectedProvider(provider);
-  }
-}
-
-export function getInjectedConnector() {
-  return injectedConnector;
 }
 
 export function useChainId() {
@@ -1329,17 +1130,6 @@ export function useENS(address) {
   }, [address]);
 
   return { ensName };
-}
-
-export function clearWalletConnectData() {
-  localStorage.removeItem(WALLET_CONNECT_LOCALSTORAGE_KEY);
-}
-
-export function clearWalletLinkData() {
-  Object.entries(localStorage)
-    .map((x) => x[0])
-    .filter((x) => x.startsWith(WALLET_LINK_LOCALSTORAGE_PREFIX))
-    .map((x) => localStorage.removeItem(x));
 }
 
 export function useEagerConnect(setActivatingConnector) {
@@ -1555,74 +1345,6 @@ export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
   })
 };
 
-export function bigNumberify(n) {
-  try {
-    return ethers.BigNumber.from(n);
-  } catch (e) {
-    console.error("bigNumberify error", e);
-    return undefined;
-  }
-}
-
-export function expandDecimals(n, decimals) {
-  return bigNumberify(n).mul(bigNumberify(10).pow(decimals));
-}
-
-export const trimZeroDecimals = (amount) => {
-  if (parseFloat(amount) === parseInt(amount)) {
-    return parseInt(amount).toString();
-  }
-  return amount;
-};
-
-export const limitDecimals = (amount, maxDecimals) => {
-  let amountStr = amount.toString();
-  if (maxDecimals === undefined) {
-    return amountStr;
-  }
-  if (maxDecimals === 0) {
-    return amountStr.split(".")[0];
-  }
-  const dotIndex = amountStr.indexOf(".");
-  if (dotIndex !== -1) {
-    let decimals = amountStr.length - dotIndex - 1;
-    if (decimals > maxDecimals) {
-      amountStr = amountStr.substr(0, amountStr.length - (decimals - maxDecimals));
-    }
-  }
-  return amountStr;
-};
-
-export const padDecimals = (amount, minDecimals) => {
-  let amountStr = amount.toString();
-  const dotIndex = amountStr.indexOf(".");
-  if (dotIndex !== -1) {
-    const decimals = amountStr.length - dotIndex - 1;
-    if (decimals < minDecimals) {
-      amountStr = amountStr.padEnd(amountStr.length + (minDecimals - decimals), "0");
-    }
-  } else {
-    amountStr = amountStr + ".0000";
-  }
-  return amountStr;
-};
-
-export const formatKeyAmount = (map, key, tokenDecimals, displayDecimals, useCommas) => {
-  if (!map || !map[key]) {
-    return "...";
-  }
-
-  return formatAmount(map[key], tokenDecimals, displayDecimals, useCommas);
-};
-
-export const formatArrayAmount = (arr, index, tokenDecimals, displayDecimals, useCommas) => {
-  if (!arr || !arr[index]) {
-    return "...";
-  }
-
-  return formatAmount(arr[index], tokenDecimals, displayDecimals, useCommas);
-};
-
 function _parseOrdersData(ordersData, account, indexes, extractor, uintPropsLength, addressPropsLength) {
   if (!ordersData || ordersData.length === 0) {
     return [];
@@ -1817,96 +1539,6 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
   return [orders, updateOrders, ordersError];
 }
 
-export const formatAmount = (amount, tokenDecimals, displayDecimals, useCommas, defaultValue) => {
-  if (!defaultValue) {
-    defaultValue = "...";
-  }
-  if (amount === undefined || amount.toString().length === 0) {
-    return defaultValue;
-  }
-  if (displayDecimals === undefined) {
-    displayDecimals = 4;
-  }
-  let amountStr = ethers.utils.formatUnits(amount, tokenDecimals);
-  amountStr = limitDecimals(amountStr, displayDecimals);
-  if (displayDecimals !== 0) {
-    amountStr = padDecimals(amountStr, displayDecimals);
-  }
-  if (useCommas) {
-    return numberWithCommas(amountStr);
-  }
-  return amountStr;
-};
-
-export const formatAmountFree = (amount, tokenDecimals, displayDecimals) => {
-  if (!amount) {
-    return "...";
-  }
-  let amountStr = ethers.utils.formatUnits(amount, tokenDecimals);
-  amountStr = limitDecimals(amountStr, displayDecimals);
-  return trimZeroDecimals(amountStr);
-};
-
-export const parseValue = (value, tokenDecimals) => {
-  const pValue = parseFloat(value);
-  if (isNaN(pValue)) {
-    return undefined;
-  }
-  value = limitDecimals(value, tokenDecimals);
-  const amount = ethers.utils.parseUnits(value, tokenDecimals);
-  return bigNumberify(amount);
-};
-
-export function numberWithCommas(x) {
-  if (!x) {
-    return "...";
-  }
-  var parts = x.toString().split(".");
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return parts.join(".");
-}
-
-export function getExplorerUrl(chainId) {
-  if (chainId === 3) {
-    return "https://ropsten.etherscan.io/";
-  } else if (chainId === 42) {
-    return "https://kovan.etherscan.io/";
-  } else if (chainId === MAINNET) {
-    return "https://bscscan.com/";
-  } else if (chainId === TESTNET) {
-    return "https://testnet.bscscan.com/";
-  } else if (chainId === ARBITRUM_TESTNET) {
-    return "https://rinkeby-explorer.arbitrum.io/";
-  } else if (chainId === ARBITRUM) {
-    return "https://arbiscan.io/";
-  } else if (chainId === AVALANCHE) {
-    return "https://snowtrace.io/";
-  }
-  return "https://etherscan.io/";
-}
-
-export function getAccountUrl(chainId, account) {
-  if (!account) {
-    return getExplorerUrl(chainId);
-  }
-  return getExplorerUrl(chainId) + "address/" + account;
-}
-
-export function getTokenUrl(chainId, address) {
-  if (!address) {
-    return getExplorerUrl(chainId);
-  }
-  return getExplorerUrl(chainId) + "token/" + address;
-}
-
-export function usePrevious(value) {
-  const ref = useRef();
-  useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current;
-}
-
 export async function setGasPrice(txnOpts, provider, chainId) {
   let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
   const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
@@ -2045,64 +1677,6 @@ export const getTokenInfo = (infoTokens, tokenAddress, replaceNative, nativeToke
   return infoTokens[tokenAddress];
 };
 
-const NETWORK_METADATA = {
-  [MAINNET]: {
-    chainId: "0x" + MAINNET.toString(16),
-    chainName: "BSC",
-    nativeCurrency: {
-      name: "BNB",
-      symbol: "BNB",
-      decimals: 18,
-    },
-    rpcUrls: BSC_RPC_PROVIDERS,
-    blockExplorerUrls: ["https://bscscan.com"],
-  },
-  [TESTNET]: {
-    chainId: "0x" + TESTNET.toString(16),
-    chainName: "BSC Testnet",
-    nativeCurrency: {
-      name: "BNB",
-      symbol: "BNB",
-      decimals: 18,
-    },
-    rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
-    blockExplorerUrls: ["https://testnet.bscscan.com/"],
-  },
-  [ARBITRUM_TESTNET]: {
-    chainId: "0x" + ARBITRUM_TESTNET.toString(16),
-    chainName: "Arbitrum Testnet",
-    nativeCurrency: {
-      name: "ETH",
-      symbol: "ETH",
-      decimals: 18,
-    },
-    rpcUrls: ["https://rinkeby.arbitrum.io/rpc"],
-    blockExplorerUrls: ["https://rinkeby-explorer.arbitrum.io/"],
-  },
-  [ARBITRUM]: {
-    chainId: "0x" + ARBITRUM.toString(16),
-    chainName: "Arbitrum",
-    nativeCurrency: {
-      name: "ETH",
-      symbol: "ETH",
-      decimals: 18,
-    },
-    rpcUrls: ARBITRUM_RPC_PROVIDERS,
-    blockExplorerUrls: [getExplorerUrl(ARBITRUM)],
-  },
-  [AVALANCHE]: {
-    chainId: "0x" + AVALANCHE.toString(16),
-    chainName: "Avalanche",
-    nativeCurrency: {
-      name: "AVAX",
-      symbol: "AVAX",
-      decimals: 18,
-    },
-    rpcUrls: AVALANCHE_RPC_PROVIDERS,
-    blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
-  },
-};
-
 export const addBscNetwork = async () => {
   return addNetwork(NETWORK_METADATA[MAINNET]);
 };
@@ -2140,56 +1714,6 @@ export const switchNetwork = async (chainId, active) => {
     console.error("error", ex);
   }
 };
-
-export const getWalletConnectHandler = (activate, deactivate, setActivatingConnector) => {
-  const fn = async () => {
-    const walletConnect = getWalletConnectConnector();
-    setActivatingConnector(walletConnect);
-    activate(walletConnect, (ex) => {
-      if (ex instanceof UnsupportedChainIdError) {
-        helperToast.error("Unsupported chain. Switch to Arbitrum network on your wallet and try again");
-        console.warn(ex);
-      } else if (!(ex instanceof UserRejectedRequestErrorWalletConnect)) {
-        helperToast.error(ex.message);
-        console.warn(ex);
-      }
-      clearWalletConnectData();
-      deactivate();
-    });
-  };
-  return fn;
-};
-
-export const getInjectedHandler = (activate) => {
-  const fn = async () => {
-    activate(getInjectedConnector(), (e) => {
-      const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID;
-
-      if (e instanceof UnsupportedChainIdError) {
-        helperToast.error(
-          <div>
-            <div>Your wallet is not connected to {getChainName(chainId)}.</div>
-            <br />
-            <div className="clickable underline margin-bottom" onClick={() => switchNetwork(chainId, true)}>
-              Switch to {getChainName(chainId)}
-            </div>
-            <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
-              Add {getChainName(chainId)}
-            </div>
-          </div>
-        );
-        return;
-      }
-      const errString = e.message ?? e.toString();
-      helperToast.error(errString);
-    });
-  };
-  return fn;
-};
-
-export function isMobileDevice(navigator) {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-}
 
 export function setTokenUsingIndexPrices(token, indexPrices, nativeTokenAddress) {
   if (!indexPrices) {
@@ -2703,7 +2227,7 @@ export function importImage(name) {
   try {
     tokenImage = require("./img/" + name);
   } catch (error) {
-    tokenImage = require("./img/ic_eth_40.svg");
+    tokenImage = require("../img/ic_eth_40.svg");
     console.error(error);
   }
   return tokenImage && tokenImage.default;

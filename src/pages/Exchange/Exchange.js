@@ -13,10 +13,6 @@ import {
   LONG,
   SHORT,
   USD_DECIMALS,
-  getExplorerUrl,
-  helperToast,
-  formatAmount,
-  bigNumberify,
   getTokenInfo,
   fetcher,
   getPositionKey,
@@ -26,11 +22,10 @@ import {
   useChainId,
   useAccountOrders,
   getPageTitle,
-} from "../../Helpers";
-import { getConstant } from "../../Constants";
+} from "../../helpers/Helpers";
 import { approvePlugin, useInfoTokens, useMinExecutionFee, cancelMultipleOrders } from "../../Api";
 
-import { getContract } from "../../Addresses";
+import { getContract } from "../../helpers/contracts/addresses";
 import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from "../../data/Tokens";
 
 import Reader from "../../abis/ReaderV2.json";
@@ -50,7 +45,11 @@ import Tab from "../../components/Tab/Tab";
 import Footer from "../../components/Footer/Footer";
 
 import "./Exchange.css";
-import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../data/localStorage/utils";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../helpers/localStorage/utils";
+import { helperToast } from "../../helpers/helperToast";
+import { bigNumberify } from "../../helpers/numbers";
+import { formatAmount } from "../../helpers/currencies/utils";
+import { getConstant, getExplorerUrl } from "../../helpers/chains/utils";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;

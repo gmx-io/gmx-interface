@@ -1,7 +1,7 @@
 import React from "react";
 import Footer from "../../components/Footer/Footer";
 import SEO from "../../components/Common/SEO";
-import { getPageTitle } from "../../Helpers";
+import { getPageTitle } from "../../helpers/Helpers";
 import "./TermsAndConditions.css";
 
 export default function TermsAndConditions() {
