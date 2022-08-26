@@ -260,7 +260,7 @@ function AppHeaderUser({
   if (!active) {
     return (
       <div className="App-header-user">
-        <div className="App-header-user-link Home-language-menu">
+        <div className="App-header-trade-link">
           <HeaderLink activeClassName="active" className="default-btn" to="/trade">
             <Trans>Trade</Trans>
           </HeaderLink>
@@ -290,7 +290,7 @@ function AppHeaderUser({
 
   return (
     <div className="App-header-user">
-      <div className="App-header-user-link">
+      <div className="App-header-trade-link">
         <NavLink activeClassName="active" className="default-btn" to="/trade">
           <Trans>Trade</Trans>
         </NavLink>
