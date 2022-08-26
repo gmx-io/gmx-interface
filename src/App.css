@@ -670,9 +670,18 @@ button.App-connect-wallet:hover {
   font-size: 1.24rem;
   opacity: 0.7;
 }
+
 .Toastify-debug-button {
+  display: inline-block;
   border-bottom: 1px dashed;
   cursor: pointer;
+}
+
+.Toastify-debug-content {
+  margin-top: 4px;
+  padding-bottom: 8px;
+  max-width: 250px;
+  overflow-x: auto;
 }
 
 .App-icon {

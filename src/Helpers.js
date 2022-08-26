@@ -321,13 +321,13 @@ export function isHomeSite() {
 }
 
 export const helperToast = {
-  success: (content) => {
+  success: (content, opts) => {
     toast.dismiss();
-    toast.success(content);
+    toast.success(content, opts);
   },
-  error: (content) => {
+  error: (content, opts) => {
     toast.dismiss();
-    toast.error(content);
+    toast.error(content, opts);
   },
 };
 
