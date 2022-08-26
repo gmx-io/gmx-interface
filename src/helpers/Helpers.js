@@ -2225,9 +2225,9 @@ export function getTradePageUrl() {
 export function importImage(name) {
   let tokenImage = null;
   try {
-    tokenImage = require("./img/" + name);
+    tokenImage = require("img/" + name);
   } catch (error) {
-    tokenImage = require("../img/ic_eth_40.svg");
+    tokenImage = require("img/ic_eth_40.svg");
     console.error(error);
   }
   return tokenImage && tokenImage.default;

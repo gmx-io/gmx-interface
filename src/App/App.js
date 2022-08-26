@@ -27,7 +27,7 @@ import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
 import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import Dashboard from "pages/Dashboard/Dashboard";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
-import { Exchange as ExchangeView } from "pages/Exchange/Exchange";
+import { Exchange } from "pages/Exchange/Exchange";
 import Home from "pages/Home/Home";
 import NftWallet from "pages/NftWallet/NftWallet";
 import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
@@ -78,17 +78,19 @@ import {
 } from "../helpers/localStorage/constants";
 import { useLocalStorageSerializeKey } from "../helpers/localStorage/utils";
 import {
-  activateInjectedProvider, clearWalletConnectData, clearWalletLinkData, getInjectedHandler, getWalletConnectHandler,
+  activateInjectedProvider,
+  clearWalletConnectData,
+  clearWalletLinkData,
+  getInjectedHandler,
+  getWalletConnectHandler,
   hasCoinBaseWalletExtension,
   hasMetaMaskWalletExtension,
 } from "../helpers/wallets/utils";
-import {isHomeSite, isMobileDevice} from "../helpers/ui/utils";
+import { isHomeSite, isMobileDevice } from "../helpers/ui/utils";
 import { helperToast } from "../helpers/helperToast";
-import {getExplorerUrl} from "../helpers/chains/utils";
-import {getAlchemyWsUrl} from "../helpers/chains/rpc";
-import {ARBITRUM, AVALANCHE} from "../helpers/chains/chainIds";
-
-const Exchange = ExchangeView as any;
+import { getExplorerUrl } from "../helpers/chains/utils";
+import { getAlchemyWsUrl } from "../helpers/chains/rpc";
+import { ARBITRUM, AVALANCHE } from "../helpers/chains/chainIds";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -127,7 +129,7 @@ function getWsProvider(active, chainId) {
 
 function FullApp() {
   const isHome = isHomeSite();
-  const exchangeRef = useRef<any>();
+  const exchangeRef = useRef();
   const { connector, library, deactivate, activate, active } = useWeb3React();
   const { chainId } = useChainId();
   const location = useLocation();
@@ -277,7 +279,7 @@ function FullApp() {
   };
 
   const saveAndCloseSettings = () => {
-    const slippage = parseFloat(slippageAmount as any);
+    const slippage = parseFloat(slippageAmount);
     if (isNaN(slippage)) {
       helperToast.error("Invalid slippage value");
       return;
@@ -288,7 +290,7 @@ function FullApp() {
     }
 
     const basisPoints = (slippage * BASIS_POINTS_DIVISOR) / 100;
-    if (parseInt(basisPoints as any) !== parseFloat(basisPoints as any)) {
+    if (parseInt(basisPoints) !== parseFloat(basisPoints)) {
       helperToast.error("Max slippage precision is 0.01%");
       return;
     }
@@ -310,7 +312,7 @@ function FullApp() {
     }
   }
 
-  const [pendingTxns, setPendingTxns] = useState<any[]>([]);
+  const [pendingTxns, setPendingTxns] = useState([]);
 
   const showRedirectModal = (to) => {
     setRedirectModalVisible(true);
@@ -319,9 +321,9 @@ function FullApp() {
 
   useEffect(() => {
     const checkPendingTxns = async () => {
-      const updatedPendingTxns: any[] = [];
+      const updatedPendingTxns = [];
       for (let i = 0; i < pendingTxns.length; i++) {
-        const pendingTxn: any = pendingTxns[i];
+        const pendingTxn = pendingTxns[i];
         const receipt = await library.getTransactionReceipt(pendingTxn.hash);
         if (receipt) {
           if (receipt.status === 0) {
@@ -572,7 +574,7 @@ function FullApp() {
               className="App-slippage-tolerance-input"
               min="0"
               value={slippageAmount}
-              onChange={(e) => setSlippageAmount(e.target.value as any)}
+              onChange={(e) => setSlippageAmount(e.target.value)}
             />
             <div className="App-slippage-tolerance-input-percent">%</div>
           </div>
