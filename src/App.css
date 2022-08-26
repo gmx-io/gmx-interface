@@ -1023,7 +1023,8 @@ button.App-button {
 .Toastify__close-button {
   align-self: flex-start;
   border-radius: 0.4rem;
-  width: 2rem;
+  width: 2.1rem;
+  min-width: 2.1rem;
   height: 2rem;
   display: inline-flex;
   justify-content: center;
