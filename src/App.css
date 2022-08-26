@@ -680,7 +680,7 @@ button.App-connect-wallet:hover {
 .Toastify-debug-content {
   margin-top: 4px;
   padding-bottom: 8px;
-  max-width: 250px;
+  max-width: 300px;
   overflow-x: auto;
 }
 
