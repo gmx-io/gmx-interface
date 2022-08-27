@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { ethers } from "ethers";
 import { Link } from "react-router-dom";
 import Tooltip from "../../components/Tooltip/Tooltip";
@@ -77,8 +77,9 @@ function getLiquidationData(liquidationsDataMap, key, timestamp) {
 }
 
 export default function TradeHistory(props) {
-  const { account, infoTokens, getTokenInfo, chainId, nativeTokenAddress } = props;
-  const { trades, updateTrades } = useTrades(chainId, account, props.forSingleAccount);
+  const { account, infoTokens, getTokenInfo, chainId, nativeTokenAddress, shouldShowNextButton } = props;
+  const [afterId, setAfterId] = useState("");
+  const { trades, updateTrades } = useTrades(chainId, account, props.forSingleAccount, afterId);
 
   const liquidationsData = useLiquidationsData(chainId, account);
   const liquidationsDataMap = useMemo(() => {
@@ -98,6 +99,14 @@ export default function TradeHistory(props) {
     }, 10 * 1000);
     return () => clearInterval(interval);
   }, [updateTrades]);
+
+  const loadNextPage = () => {
+    if (!trades || trades.length === 0) {
+      return;
+    }
+    const lastTrade = trades[trades.length - 1];
+    setAfterId(lastTrade.id);
+  };
 
   const getMsg = useCallback(
     (trade) => {
@@ -456,6 +465,13 @@ export default function TradeHistory(props) {
             </div>
           );
         })}
+      {shouldShowNextButton && trades && trades.length > 0 && (
+        <div>
+          <button className="App-button-option App-card-option" onClick={loadNextPage}>
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }

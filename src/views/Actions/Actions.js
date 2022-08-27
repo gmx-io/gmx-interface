@@ -146,6 +146,7 @@ export default function Actions() {
           getTokenInfo={getTokenInfo}
           chainId={chainId}
           nativeTokenAddress={nativeTokenAddress}
+          shouldShowNextButton={true}
         />
       </div>
     </div>
