@@ -146,7 +146,7 @@ export default function Actions() {
           getTokenInfo={getTokenInfo}
           chainId={chainId}
           nativeTokenAddress={nativeTokenAddress}
-          shouldShowNextButton={true}
+          shouldShowPaginationButtons={true}
         />
       </div>
     </div>

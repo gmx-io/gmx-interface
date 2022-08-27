@@ -77,9 +77,15 @@ function getLiquidationData(liquidationsDataMap, key, timestamp) {
 }
 
 export default function TradeHistory(props) {
-  const { account, infoTokens, getTokenInfo, chainId, nativeTokenAddress, shouldShowNextButton } = props;
-  const [afterId, setAfterId] = useState("");
-  const { trades, updateTrades } = useTrades(chainId, account, props.forSingleAccount, afterId);
+  const { account, infoTokens, getTokenInfo, chainId, nativeTokenAddress, shouldShowPaginationButtons } = props;
+  const [pageIds, setPageIds] = useState({});
+  const [pageIndex, setPageIndex] = useState(0);
+
+  const getAfterId = () => {
+    return pageIds[pageIndex];
+  };
+
+  const { trades, updateTrades } = useTrades(chainId, account, props.forSingleAccount, getAfterId());
 
   const liquidationsData = useLiquidationsData(chainId, account);
   const liquidationsDataMap = useMemo(() => {
@@ -104,8 +110,15 @@ export default function TradeHistory(props) {
     if (!trades || trades.length === 0) {
       return;
     }
+
     const lastTrade = trades[trades.length - 1];
-    setAfterId(lastTrade.id);
+    pageIds[pageIndex + 1] = lastTrade.id;
+    setPageIds(pageIds);
+    setPageIndex(pageIndex + 1);
+  };
+
+  const loadPrevPage = () => {
+    setPageIndex(pageIndex - 1);
   };
 
   const getMsg = useCallback(
@@ -465,11 +478,18 @@ export default function TradeHistory(props) {
             </div>
           );
         })}
-      {shouldShowNextButton && trades && trades.length > 0 && (
+      {shouldShowPaginationButtons && (
         <div>
-          <button className="App-button-option App-card-option" onClick={loadNextPage}>
-            Next
-          </button>
+          {pageIndex > 0 && (
+            <button className="App-button-option App-card-option" onClick={loadPrevPage}>
+              Prev
+            </button>
+          )}
+          {trades && trades.length > 0 && (
+            <button className="App-button-option App-card-option" onClick={loadNextPage}>
+              Next
+            </button>
+          )}
         </div>
       )}
     </div>
