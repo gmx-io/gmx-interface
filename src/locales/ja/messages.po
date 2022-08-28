@@ -547,7 +547,7 @@ msgstr "{wrappedTokenSymbol}から{nativeTokenSymbol}に転換する"
 msgid "Copy"
 msgstr "コピー"
 
-#: src/components/AddressDropdown/AddressDropdown.js:39
+#: src/components/AddressDropdown/AddressDropdown.js:41
 msgid "Copy Address"
 msgstr "アドレスのコピー"
 
@@ -646,7 +646,7 @@ msgstr "入金中"
 msgid "Disable order validations"
 msgstr "注文のバリデーションの無効化"
 
-#: src/components/AddressDropdown/AddressDropdown.js:55
+#: src/components/AddressDropdown/AddressDropdown.js:57
 msgid "Disconnect"
 msgstr "接続停止"
 
@@ -2123,7 +2123,7 @@ msgstr "見る"
 msgid "View <0>staking</0> page."
 msgstr "<0>staking</0> ページを見る"
 
-#: src/components/AddressDropdown/AddressDropdown.js:47
+#: src/components/AddressDropdown/AddressDropdown.js:49
 msgid "View in Explorer"
 msgstr "Explorerで見る"
 
