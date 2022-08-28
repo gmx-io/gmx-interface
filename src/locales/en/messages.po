@@ -551,7 +551,7 @@ msgstr "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
 msgid "Copy"
 msgstr "Copy"
 
-#: src/components/AddressDropdown/AddressDropdown.js:39
+#: src/components/AddressDropdown/AddressDropdown.js:41
 msgid "Copy Address"
 msgstr ""
 
@@ -650,7 +650,7 @@ msgstr "Depositing..."
 msgid "Disable order validations"
 msgstr "Disable order validations"
 
-#: src/components/AddressDropdown/AddressDropdown.js:55
+#: src/components/AddressDropdown/AddressDropdown.js:57
 msgid "Disconnect"
 msgstr ""
 
@@ -2151,7 +2151,7 @@ msgstr ""
 msgid "View <0>staking</0> page."
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js:47
+#: src/components/AddressDropdown/AddressDropdown.js:49
 msgid "View in Explorer"
 msgstr ""
 
