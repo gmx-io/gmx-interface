@@ -209,6 +209,8 @@ function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, s
   return (
     <div className="network-dropdown-items">
       <div className="network-dropdown-list">
+        <span className="network-dropdown-label">Networks</span>
+
         {networkOptions.map((network) => {
           const networkIcon = importImage(network.icon);
           return (
@@ -225,6 +227,7 @@ function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, s
             </div>
           );
         })}
+        <span className="network-dropdown-label more-options">More Options</span>
         <div
           className="network-option"
           onClick={() => {
