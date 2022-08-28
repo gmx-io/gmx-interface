@@ -109,7 +109,7 @@ export default function Ecosystem() {
     {
       title: "GMX Returns Calculator",
       link: "https://docs.google.com/spreadsheets/u/4/d/1mQZlztz_NpTg5qQiYIzc_Ls1OTLfMOUtmEQN-WW8jj4/copy",
-      linkLabel: "Google Spreadsheet",
+      linkLabel: "docs.google.com",
       about: "Returns calculator for GMX and GLP",
       creatorLabel: "@AStoicTrader1",
       creatorLink: "https://twitter.com/AStoicTrader1",
@@ -118,7 +118,7 @@ export default function Ecosystem() {
     {
       title: "GMX Compound Calculator",
       link: "https://docs.google.com/spreadsheets/d/14DiIE1wZkK9-Y5xSx1PzIgmpcj4ccz1YVw5nwzIWLgI/edit#gid=0",
-      linkLabel: "Google Spreadsheet",
+      linkLabel: "docs.google.com",
       about: "Optimal compound interval calculator",
       creatorLabel: "@ChasenKaminsky",
       creatorLink: "https://twitter.com/ChasenKaminsky",
