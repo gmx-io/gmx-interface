@@ -784,7 +784,13 @@ export default function SwapBox(props) {
     if (!fromTokenInfo || !fromTokenInfo.minPrice) {
       return ["Incorrect network"];
     }
-    if (fromTokenInfo && fromTokenInfo.balance && fromAmount && fromAmount.gt(fromTokenInfo.balance)) {
+    if (
+      !savedShouldDisableOrderValidation &&
+      fromTokenInfo &&
+      fromTokenInfo.balance &&
+      fromAmount &&
+      fromAmount.gt(fromTokenInfo.balance)
+    ) {
       return [`Insufficient ${fromTokenInfo.symbol} balance`];
     }
 
@@ -854,7 +860,13 @@ export default function SwapBox(props) {
     }
 
     const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
-    if (fromTokenInfo && fromTokenInfo.balance && fromAmount && fromAmount.gt(fromTokenInfo.balance)) {
+    if (
+      !savedShouldDisableOrderValidation &&
+      fromTokenInfo &&
+      fromTokenInfo.balance &&
+      fromAmount &&
+      fromAmount.gt(fromTokenInfo.balance)
+    ) {
       return [`Insufficient ${fromTokenInfo.symbol} balance`];
     }
 
