@@ -59,11 +59,13 @@
 
 @media screen and (max-width: 370px) {
   .user-address {
-    display: none;
+    margin-left: 0;
   }
   .address-btn {
     display: flex;
-    width: 6rem;
     justify-content: space-between;
+  }
+  .user-avatar {
+    display: none;
   }
 }
