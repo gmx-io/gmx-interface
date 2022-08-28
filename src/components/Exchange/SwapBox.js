@@ -83,6 +83,7 @@ import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
 import { useUserReferralCode } from "../../Api/referrals";
 import { TooltipCardRow } from "../../views/Dashboard/TooltipCard";
+import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -920,7 +921,18 @@ export default function SwapBox(props) {
             return ["Liquidity data not loaded"];
           }
           if (toTokenInfo.availableAmount && requiredAmount.gt(toTokenInfo.availableAmount)) {
-            return ["Insufficient liquidity"];
+            return [
+              <TooltipWithPortal
+                position="center-bottom"
+                handle={<div>Insufficient liquidity</div>}
+                renderContent={() => (
+                  <span>
+                    Not enough Available Liquidity to swap {fromTokenInfo?.symbol} to and long{" "}
+                    {existingPosition?.collateralToken?.symbol}
+                  </span>
+                )}
+              />,
+            ];
           }
         }
 
@@ -2083,7 +2095,8 @@ export default function SwapBox(props) {
                     handle="USD"
                     renderContent={() => (
                       <span className="SwapBox-collateral-tooltip-text">
-                        {existingPosition?.collateralToken?.symbol} collateral is taken when the position is opened.
+                        A snapshot of the USD value of your {existingPosition?.collateralToken?.symbol} collateral is
+                        taken when the position is opened.
                         <br />
                         <br />
                         When closing the position, you can select which token you would like to receive the profits in.
@@ -2150,9 +2163,10 @@ export default function SwapBox(props) {
                             <div>
                               {collateralToken.symbol} is required for collateral. <br />
                               <br />
-                              Swap {fromToken.symbol} to {collateralToken.symbol} Fee: $
-                              {formatAmount(swapFees, USD_DECIMALS, 2, true)}
-                              <br />
+                              <TooltipCardRow
+                                label={`Swap ${fromToken.symbol} to ${collateralToken.symbol} Fee`}
+                                value={formatAmount(swapFees, USD_DECIMALS, 2, true)}
+                              />
                               <br />
                             </div>
                           )}
