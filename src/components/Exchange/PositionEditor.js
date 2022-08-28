@@ -30,6 +30,7 @@ import PositionRouter from "../../abis/PositionRouter.json";
 import Token from "../../abis/Token.json";
 import Tooltip from "../Tooltip/Tooltip";
 import { getConstant } from "../../Constants";
+import { TooltipCardRow } from "../../views/Dashboard/TooltipCard";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -559,8 +560,14 @@ export default function PositionEditor(props) {
                         renderContent={() => {
                           return (
                             <>
-                              Network fee: {formatAmountFree(minExecutionFee, 18, 5)} {nativeTokenSymbol} ($
-                              {formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})<br />
+                              <TooltipCardRow
+                                label="Network fee"
+                                value={`${formatAmountFree(
+                                  minExecutionFee,
+                                  18,
+                                  5
+                                )} ${nativeTokenSymbol} ($${formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})`}
+                              />
                               <br />
                               This is the network cost required to execute the {isDeposit
                                 ? "deposit"

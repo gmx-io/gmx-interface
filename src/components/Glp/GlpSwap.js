@@ -1065,7 +1065,7 @@ export default function GlpSwap(props) {
                         handle="NA"
                         position="right-bottom"
                         renderContent={() => (
-                          <div className="label">
+                          <div>
                             Max pool capacity reached for {tokenInfo.symbol}
                             <br />
                             <br />

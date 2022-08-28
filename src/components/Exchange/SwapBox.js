@@ -2145,7 +2145,10 @@ export default function SwapBox(props) {
                             </div>
                           )}
                           <div>
-                            Position Fee (0.1% of position size): ${formatAmount(positionFee, USD_DECIMALS, 2, true)}
+                            <TooltipCardRow
+                              label={`Position Fee (0.1% of position size)`}
+                              value={formatAmount(positionFee, USD_DECIMALS, 2, true)}
+                            />
                           </div>
                         </div>
                       );

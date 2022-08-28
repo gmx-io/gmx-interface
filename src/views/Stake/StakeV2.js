@@ -469,8 +469,7 @@ function VesterDepositModal(props) {
                   renderContent={() => {
                     return (
                       <div>
-                        Vault Capacity for your Account
-                        <br />
+                        <p className="text-white">Vault Capacity for your Account</p>
                         <br />
                         <TooltipCardRow
                           showDollar={false}

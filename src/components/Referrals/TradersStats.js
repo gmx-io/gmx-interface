@@ -42,9 +42,12 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                   <Tooltip
                     handle={`Tier ${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}
                     position="right-bottom"
-                    renderContent={() =>
-                      `You will receive a ${tierDiscountInfo[traderTier]}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday`
-                    }
+                    renderContent={() => (
+                      <p className="text-white">
+                        You will receive a {tierDiscountInfo[traderTier]}% discount on your opening and closing fees,
+                        this discount will be airdropped to your account every Wednesday
+                      </p>
+                    )}
                   />
                 </div>
               )}

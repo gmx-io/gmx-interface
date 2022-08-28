@@ -706,8 +706,14 @@ export default function ConfirmationBox(props) {
                   renderContent={() => {
                     return (
                       <>
-                        Network fee: {formatAmountFree(minExecutionFee, 18, 5)} {nativeTokenSymbol} ($
-                        {formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})<br />
+                        <TooltipCardRow
+                          label="Network fee"
+                          value={`${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol} ($${formatAmount(
+                            minExecutionFeeUSD,
+                            USD_DECIMALS,
+                            2
+                          )})`}
+                        />
                         <br />
                         This is the network cost required to execute the postion.{" "}
                         <a
