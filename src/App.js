@@ -847,7 +847,7 @@ function FullApp() {
                 <Leaderboard />
               </Route>
               <Route exact path="/leaderboard/register-team">
-                <RegisterTeam />
+                <RegisterTeam connectWallet={connectWallet} />
               </Route>
               <Route exact path="/referrals/:account">
                 <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />

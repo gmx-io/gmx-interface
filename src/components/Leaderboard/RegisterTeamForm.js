@@ -1,3 +1,4 @@
+import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useLocalStorage } from "react-use";
@@ -7,8 +8,9 @@ import { AFFILIATES } from "../../views/Referrals/Referrals";
 import "./../../views/Referrals/Referrals.css";
 import "./RegisterTeamForm.css";
 
-export default function RegisterTeamForm({ times }) {
+export default function RegisterTeamForm({ times, connectWallet }) {
   const history = useHistory();
+  const { active } = useWeb3React();
   const [referralActiveTab, setReferralActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, AFFILIATES);
 
   // Name
@@ -113,28 +115,35 @@ export default function RegisterTeamForm({ times }) {
     <div className="referral-card section-center mt-medium">
       <h2 className="title">Register Your Team</h2>
       <p className="sub-title">Please input a referral code to benefit from fee discounts.</p>
-      <div className="card-action">
-        <form>
-          <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-            placeholder="Team name"
-            className="text-input mb-sm"
-          />
-          <input
-            value={code}
-            onChange={({ target }) => setCode(target.value)}
-            placeholder="Referral code"
-            className="text-input mb-sm"
-          />
-          <button type="submit" className="App-cta Exchange-swap-button" disabled={!isFormValid()}>
-            {getButtonText()}
-          </button>
-          <div onClick={() => handleCreateReferralClick()} className="create-new-referral-link">
-            Create a new referral code
-          </div>
-        </form>
-      </div>
+      {active || (
+        <button onClick={connectWallet} className="App-cta Exchange-swap-button">
+          Connect Wallet
+        </button>
+      )}
+      {active && (
+        <div className="card-action">
+          <form>
+            <input
+              value={name}
+              onChange={({ target }) => setName(target.value)}
+              placeholder="Team name"
+              className="text-input mb-sm"
+            />
+            <input
+              value={code}
+              onChange={({ target }) => setCode(target.value)}
+              placeholder="Referral code"
+              className="text-input mb-sm"
+            />
+            <button type="submit" className="App-cta Exchange-swap-button" disabled={!isFormValid()}>
+              {getButtonText()}
+            </button>
+            <div onClick={() => handleCreateReferralClick()} className="create-new-referral-link">
+              Create a new referral code
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

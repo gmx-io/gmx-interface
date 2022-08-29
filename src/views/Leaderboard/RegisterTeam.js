@@ -5,7 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 import Loader from "./../../components/Common/Loader";
 import RegisterTeamForm from "../../components/Leaderboard/RegisterTeamForm";
 
-export default function RegisterTeam() {
+export default function RegisterTeam({ connectWallet }) {
   const { chainId, library } = useWeb3React();
   const times = useCompetitionTimes(chainId, library);
 
@@ -21,7 +21,7 @@ export default function RegisterTeam() {
             </div>
           </div>
         </div>
-        {!times ? <Loader /> : <RegisterTeamForm times={times} />}
+        {!times ? <Loader /> : <RegisterTeamForm connectWallet={connectWallet} times={times} />}
       </div>
     </SEO>
   );
