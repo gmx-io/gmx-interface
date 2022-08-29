@@ -3,18 +3,11 @@ import { getPageTitle } from "../../Helpers";
 import { useCompetitionTimes } from "../../Api/leaderboard";
 import { useWeb3React } from "@web3-react/core";
 import Loader from "./../../components/Common/Loader";
-import { useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import RegisterTeamForm from "../../components/Leaderboard/RegisterTeamForm";
 
 export default function RegisterTeam() {
   const { chainId, library } = useWeb3React();
   const times = useCompetitionTimes(chainId, library);
-  const history = useHistory();
-
-  const getButtonText = () => {
-    return "Register";
-  };
 
   return (
     <SEO title={getPageTitle("Team Registration")}>

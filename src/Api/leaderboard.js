@@ -29,7 +29,7 @@ export function useCompetitionTimes(chainId, library) {
         active: start <= ts && end > ts,
       });
     }, 1000);
-  }, [setTimes]);
+  }, [setTimes, ts]);
 
   return times;
 }

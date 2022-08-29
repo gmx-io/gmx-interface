@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 import { checkTeamName } from "../../Api/leaderboard";
 import { REFERRALS_SELECTED_TAB_KEY, useDebounce } from "../../Helpers";

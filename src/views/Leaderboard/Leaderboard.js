@@ -12,10 +12,6 @@ export default function Leaderboard() {
   const competitionTimes = useCompetitionTimes(chainId, library);
   const teamStats = useTeamLeaderboardStats(chainId, library);
 
-  const loading = () => {
-    return !(teamStats && competitionTimes);
-  };
-
   const resolveTeamLink = (stat) => {
     return `/leaderboard/teams/${stat.id}`;
   };
