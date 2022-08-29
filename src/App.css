@@ -101,6 +101,7 @@
   align-items: center;
   z-index: 3;
   margin-left: 1.6rem;
+  justify-content: space-between;
 }
 
 .App-header-container-left {
