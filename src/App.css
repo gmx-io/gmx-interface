@@ -68,6 +68,7 @@
   overflow-y: auto;
   -ms-overflow-style: none; /* Internet Explorer 10+ */
   scrollbar-width: none; /* Firefox */
+  max-width: 100%;
 }
 .App-header-drawer::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
