@@ -124,11 +124,6 @@
   align-items: center;
 }
 
-.mobile-menu-cross {
-  position: absolute;
-  right: 0;
-}
-
 .App-header-menu-icon {
   color: white;
   font-size: 2rem;
