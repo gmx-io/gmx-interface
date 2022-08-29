@@ -120,10 +120,11 @@ const TOKENS = {
   ],
   421611: [
     {
-      name: "Bitcoin (BTCB)",
+      name: "Bitcoin",
       symbol: "BTC",
-      decimals: 18,
-      address: "0xab952e6801daB7920B65b8aC918FF0F66a8a0F44",
+      decimals: 8,
+      address: "0x27960f9A322BE96A1535E6c19B3958e80E6a2670",
+      isShortable: true,
     },
     {
       name: "Ethereum",
@@ -131,6 +132,7 @@ const TOKENS = {
       decimals: 18,
       address: ethers.constants.AddressZero,
       isNative: true,
+      isShortable: true,
     },
     // https://github.com/OffchainLabs/arbitrum/blob/950c2f91b2e951cd3764394e0a73eac3797aecf3/packages/arb-ts/src/lib/networks.ts#L65
     {
@@ -144,15 +146,15 @@ const TOKENS = {
     {
       name: "USD Coin",
       symbol: "USDC",
-      decimals: 18,
-      address: "0xb93cb5F5c6a56e060A5e5A9691229D2a7e2D234A",
+      decimals: 6,
+      address: "0xf0DCd4737A20ED33481A49De94C599944a3Ca737",
       isStable: true,
     },
     {
       name: "Tether",
       symbol: "USDT",
-      decimals: 18,
-      address: "0xaB7ee1A7D5bc677e3A7ac694f2c156b3fFCaABC1",
+      decimals: 6,
+      address: "0x818ED84bA1927945b631016e0d402Db50cE8865f",
       isStable: true,
     },
   ],

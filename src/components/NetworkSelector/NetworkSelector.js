@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import cx from "classnames";
 
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE } from "../../Helpers";
 import Modal from "../Modal/Modal";
 
 import "./NetworkSelector.css";
@@ -11,11 +12,12 @@ import Select, { components } from "react-select";
 import { find } from "lodash";
 import { useLockBodyScroll } from "react-use";
 
-function getDotColor(network) {
-  switch (network) {
-    case "Arbitrum":
+function getDotColor(chainId) {
+  switch (chainId) {
+    case ARBITRUM:
+    case ARBITRUM_TESTNET:
       return "#4275a8";
-    case "Avalanche":
+    case AVALANCHE:
       return "#E84142";
     default:
       return "";
@@ -202,7 +204,7 @@ export default function NetworkSelector(props) {
                   {e.label}
                 </span>
                 {selectedLabel === e.label && (
-                  <div className="selected-icon " style={{ backgroundColor: getDotColor(e.label) }}></div>
+                  <div className="selected-icon " style={{ backgroundColor: getDotColor(e.value) }}></div>
                 )}
               </div>
             );

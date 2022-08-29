@@ -12,6 +12,7 @@ import { Switch, Route, NavLink, HashRouter as Router, Redirect, useLocation, us
 
 import {
   ARBITRUM,
+  ARBITRUM_TESTNET,
   AVALANCHE,
   DEFAULT_SLIPPAGE_AMOUNT,
   SLIPPAGE_BPS_KEY,
@@ -209,18 +210,26 @@ function AppHeaderUser({
 
   const networkOptions = [
     {
-      label: "Arbitrum",
+      label: getChainName(ARBITRUM),
       value: ARBITRUM,
       icon: "ic_arbitrum_24.svg",
       color: "#264f79",
     },
     {
-      label: "Avalanche",
+      label: getChainName(AVALANCHE),
       value: AVALANCHE,
       icon: "ic_avalanche_24.svg",
       color: "#E841424D",
     },
   ];
+  if (isDevelopment()) {
+    networkOptions.push({
+      label: getChainName(ARBITRUM_TESTNET),
+      value: ARBITRUM_TESTNET,
+      icon: "ic_arbitrum_24.svg",
+      color: "#264f79",
+    });
+  }
 
   useEffect(() => {
     if (active) {
