@@ -1084,9 +1084,12 @@ export default function SwapBox(props) {
     return (
       <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal font-base">
         <div>
-          You need to select {swapTokenSymbol} as the "Pay" token to initiate this trade, as there's not enough
-          liquidity in GLP to swap {fromToken.symbol} to {swapTokenSymbol} for Collateral. Use the option below to do
-          so:
+          You need to select {swapTokenSymbol} as the "Pay" token to use it for collateral to initiate this trade.
+        </div>
+        <br />
+        <div>
+          As there is not enough liquidity in GLP to swap {fromToken.symbol} to {swapTokenSymbol}, you can use the
+          option below to do so:
         </div>
         <br />
         {isShort && (
