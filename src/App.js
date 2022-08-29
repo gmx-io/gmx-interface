@@ -154,7 +154,7 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
           <HeaderLink isHomeLink={true} className="App-header-link-main" to="/">
             <img src={logoImg} alt="GMX Logo" />
           </HeaderLink>
-          <div className="App-header-menu-icon-block" onClick={() => clickCloseIcon()}>
+          <div className="App-header-menu-icon-block mobile-cross-menu" onClick={() => clickCloseIcon()}>
             <FiX className="App-header-menu-icon" />
           </div>
         </div>

@@ -1364,6 +1364,10 @@ button.App-button {
     margin-right: 0.4rem;
   }
 
+  .mobile-cross-menu {
+    margin-right: 1.2rem;
+  }
+
   .App-header-menu-icon {
     margin: 0.4rem 0.5rem;
   }
