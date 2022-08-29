@@ -110,6 +110,8 @@ import { useLocalStorage } from "react-use";
 import { RedirectPopupModal } from "./components/ModalViews/RedirectModal";
 import { REDIRECT_POPUP_TIMESTAMP_KEY } from "./utils/constants";
 import Jobs from "./views/Jobs/Jobs";
+import Leaderboard from "./views/Leaderboard/Leaderboard";
+import RegisterTeam from "./views/Leaderboard/RegisterTeam";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -175,6 +177,9 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
       </div>
       <div className="App-header-link-container">
         <HeaderLink to="/referrals">Referrals</HeaderLink>
+      </div>
+      <div className="App-header-link-container">
+        <HeaderLink to="/leaderboard">Leaderboard</HeaderLink>
       </div>
       <div className="App-header-link-container">
         <HeaderLink to="/ecosystem">Ecosystem</HeaderLink>
@@ -837,6 +842,12 @@ function FullApp() {
               </Route>
               <Route exact path="/referrals">
                 <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path="/leaderboard">
+                <Leaderboard />
+              </Route>
+              <Route exact path="/leaderboard/register-team">
+                <RegisterTeam />
               </Route>
               <Route exact path="/referrals/:account">
                 <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />

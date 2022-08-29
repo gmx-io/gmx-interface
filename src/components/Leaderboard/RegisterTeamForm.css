@@ -1,0 +1,10 @@
+.create-new-referral-link {
+  display: block;
+  margin-top: 2rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.create-new-referral-link:hover {
+  text-decoration: underline;
+}
