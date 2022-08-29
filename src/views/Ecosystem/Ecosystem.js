@@ -137,7 +137,7 @@ export default function Ecosystem() {
       title: "GMX Staking Bot",
       link: "https://t.me/GMX_Staking_bot",
       linkLabel: "t.me",
-      about: "GMX staking rewards updates, insights & more.",
+      about: "GMX staking rewards updates and insights",
       creatorLabel: "@GMX_Staking_bot",
       creatorLink: "https://twitter.com/GMX_Staking_bot",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -231,7 +231,7 @@ export default function Ecosystem() {
   const integrations = [
     {
       title: "DeBank",
-      link: "debank.com/",
+      link: "debank.com",
       linkLabe: "debank.com",
       about: "DeFi Portfolio Tracker",
       announcementLabel: "twitter.com",
