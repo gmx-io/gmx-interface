@@ -17,12 +17,12 @@ export const homeEventsData = [
     ],
   },
   {
-    id: "arbitrum-nitro-plan",
+    id: "arbitrum-nitro-plan-reminder",
     title: "Arbitrum Nitro Upgrade",
     isActive: true,
-    validTill: "29 Aug 2022, 12:00",
+    validTill: "31 Aug 2022, 12:00",
     bodyText:
-      "There will be some expected downtime during the Arbitrum Nitro upgrade on Wednesday, 31 Aug 2022, 2:30 PM UTC.",
+      "Reminder: There will be some expected downtime during the Arbitrum Nitro upgrade on Wednesday, 31 Aug 2022, 2:30 PM UTC.",
     buttons: [
       {
         text: "Read More",
@@ -205,12 +205,12 @@ export const appEventsData = [
     ],
   },
   {
-    id: "arbitrum-nitro-plan",
+    id: "arbitrum-nitro-plan-reminder",
     title: "Arbitrum Nitro Upgrade",
     isActive: true,
-    validTill: "29 Aug 2022, 12:00",
+    validTill: "31 Aug 2022, 12:00",
     bodyText:
-      "There will be some expected downtime during the Arbitrum Nitro upgrade on Wednesday, 31 Aug 2022, 2:30 PM UTC.",
+      "Reminder: There will be some expected downtime during the Arbitrum Nitro upgrade on Wednesday, 31 Aug 2022, 2:30 PM UTC.",
     buttons: [
       {
         text: "Read More",
