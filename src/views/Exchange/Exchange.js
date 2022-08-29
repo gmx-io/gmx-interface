@@ -899,6 +899,7 @@ export const Exchange = forwardRef((props, ref) => {
             getTokenInfo={getTokenInfo}
             chainId={chainId}
             nativeTokenAddress={nativeTokenAddress}
+            shouldShowPaginationButtons={true}
           />
         )}
       </div>

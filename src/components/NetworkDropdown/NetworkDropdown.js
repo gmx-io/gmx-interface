@@ -10,7 +10,6 @@ import settingsIcon from "../../img/ic_settings_16.svg";
 import arbitrumIcon from "../../img/ic_arbitrum_24.svg";
 import avaxIcon from "../../img/ic_avalanche_24.svg";
 import checkedIcon from "../../img/ic_checked.svg";
-import arrowright16Icon from "../../img/ic_arrowright16.svg";
 import { importImage, LANGUAGE_LOCALSTORAGE_KEY } from "../../Helpers";
 import { defaultLocale, dynamicActivate, locales } from "../../utils/i18n";
 
@@ -124,21 +123,18 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, onNetw
                 </div>
                 <span className="network-dropdown-item-label">Settings</span>
               </div>
-              <div className="menu-item-icon">
-                <img className="network-dropdown-icon" src={arrowright16Icon} alt="arrow-right-icon" />
-              </div>
             </div>
           </Menu.Item>
           <Menu.Item>
-            <div className="network-dropdown-menu-item menu-item" onClick={() => setActiveModal(LANGUAGE_MODAL_KEY)}>
+            <div
+              className="network-dropdown-menu-item menu-item last-dropdown-menu"
+              onClick={() => setActiveModal(LANGUAGE_MODAL_KEY)}
+            >
               <div className="menu-item-group">
                 <div className="menu-item-icon">
                   <img className="network-dropdown-icon" src={language24Icon} alt="" />
                 </div>
                 <span className="network-dropdown-item-label">Language</span>
-              </div>
-              <div className="menu-item-icon">
-                <img className="network-dropdown-icon" src={arrowright16Icon} alt="arrow-right-icon" />
               </div>
             </div>
           </Menu.Item>
@@ -238,9 +234,6 @@ function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, s
             <img className="network-option-img" src={language24Icon} alt="Select Language" />
             <span className="network-option-img-label">Language</span>
           </div>
-          <div className="menu-item-icon">
-            <img src={arrowright16Icon} alt="arrow-right-icon" />
-          </div>
         </div>
         <div
           className="network-option"
@@ -252,9 +245,6 @@ function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, s
           <div className="menu-item-group">
             <img className="network-option-img" src={settingsIcon} alt="" />
             <span className="network-option-img-label">Settings</span>
-          </div>
-          <div className="menu-item-icon">
-            <img src={arrowright16Icon} alt="arrow-right-icon" />
           </div>
         </div>
       </div>

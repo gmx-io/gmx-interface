@@ -13,11 +13,12 @@ import { Trans } from "@lingui/macro";
 function AssetDropdown({ assetSymbol, assetInfo }) {
   const { active } = useWeb3React();
   const { chainId } = useChainId();
-  let { coingecko, arbitrum, avalanche } = ICONLINKS[chainId][assetSymbol];
-  const unavailableTokenSymbols = {
-    42161: ["ETH"],
-    43114: ["AVAX"],
-  };
+  let { coingecko, arbitrum, avalanche } = ICONLINKS[chainId][assetSymbol] || {};
+  const unavailableTokenSymbols =
+    {
+      42161: ["ETH"],
+      43114: ["AVAX"],
+    }[chainId] || [];
 
   return (
     <Menu>
@@ -59,7 +60,7 @@ function AssetDropdown({ assetSymbol, assetInfo }) {
         </Menu.Item>
         <Menu.Item>
           <>
-            {active && unavailableTokenSymbols[chainId].indexOf(assetSymbol) < 0 && (
+            {active && unavailableTokenSymbols.indexOf(assetSymbol) < 0 && (
               <div
                 onClick={() => {
                   let token = assetInfo

@@ -19,7 +19,7 @@ import OrdersList from "../../components/Exchange/OrdersList";
 import TradeHistory from "../../components/Exchange/TradeHistory";
 import Reader from "../../abis/Reader.json";
 
-import { Trans, t } from '@lingui/macro'
+import { Trans, t } from "@lingui/macro";
 
 const USD_DECIMALS = 30;
 
@@ -83,11 +83,21 @@ export default function Actions() {
 
   return (
     <div className="Actions">
-      {checkSummedAccount.length > 0 && <div className="Actions-section"><Trans>Account</Trans>: {checkSummedAccount}</div>}
+      {checkSummedAccount.length > 0 && (
+        <div className="Actions-section">
+          <Trans>Account</Trans>: {checkSummedAccount}
+        </div>
+      )}
       {shouldShowPnl && (
         <div className="Actions-section">
-          <div className="Actions-title"><Trans>PnL</Trans></div>
-          {(!pnlData || pnlData.length === 0) && <div><Trans>No PnLs found</Trans></div>}
+          <div className="Actions-title">
+            <Trans>PnL</Trans>
+          </div>
+          {(!pnlData || pnlData.length === 0) && (
+            <div>
+              <Trans>No PnLs found</Trans>
+            </div>
+          )}
           {pnlData &&
             pnlData.length > 0 &&
             pnlData.map((pnlRow, index) => {
@@ -109,7 +119,9 @@ export default function Actions() {
       )}
       {checkSummedAccount.length > 0 && (
         <div className="Actions-section">
-          <div className="Actions-title"><Trans>Positions</Trans></div>
+          <div className="Actions-title">
+            <Trans>Positions</Trans>
+          </div>
           <PositionsList
             positions={positions}
             positionsMap={positionsMap}
@@ -128,7 +140,9 @@ export default function Actions() {
       )}
       {flagOrdersEnabled && checkSummedAccount.length > 0 && (
         <div className="Actions-section">
-          <div className="Actions-title"><Trans>Orders</Trans></div>
+          <div className="Actions-title">
+            <Trans>Orders</Trans>
+          </div>
           <OrdersList
             account={checkSummedAccount}
             infoTokens={infoTokens}
@@ -141,13 +155,16 @@ export default function Actions() {
         </div>
       )}
       <div className="Actions-section">
-        <div className="Actions-title"><Trans>Actions</Trans></div>
+        <div className="Actions-title">
+          <Trans>Actions</Trans>
+        </div>
         <TradeHistory
           account={checkSummedAccount}
           infoTokens={infoTokens}
           getTokenInfo={getTokenInfo}
           chainId={chainId}
           nativeTokenAddress={nativeTokenAddress}
+          shouldShowPaginationButtons={true}
         />
       </div>
     </div>

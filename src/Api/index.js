@@ -38,10 +38,11 @@ import {
   helperToast,
   getUsd,
   USD_DECIMALS,
-  HIGH_EXECUTION_FEES_MAP,
+  getHighExecutionFee,
   SWAP,
   INCREASE,
   DECREASE,
+  ARBITRUM_TESTNET,
 } from "../Helpers";
 import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../data/Tokens";
 
@@ -56,6 +57,8 @@ function getGmxGraphClient(chainId) {
     return arbitrumGraphClient;
   } else if (chainId === AVALANCHE) {
     return avalancheGraphClient;
+  } else if (chainId === ARBITRUM_TESTNET) {
+    return null;
   }
   throw new Error(`Unsupported chain ${chainId}`);
 }
@@ -78,7 +81,10 @@ export function useAllOrdersStats(chainId) {
   const [res, setRes] = useState();
 
   useEffect(() => {
-    getGmxGraphClient(chainId).query({ query }).then(setRes).catch(console.warn);
+    const graphClient = getGmxGraphClient(chainId);
+    if (graphClient) {
+      graphClient.query({ query }).then(setRes).catch(console.warn);
+    }
   }, [setRes, query, chainId]);
 
   return res ? res.data.orderStat : null;
@@ -167,6 +173,10 @@ export function useLiquidationsData(chainId, account) {
          }
       }`);
       const graphClient = getGmxGraphClient(chainId);
+      if (!graphClient) {
+        return;
+      }
+
       graphClient
         .query({ query })
         .then((res) => {
@@ -346,11 +356,17 @@ function invariant(condition, errorMsg) {
   }
 }
 
-export function useTrades(chainId, account, forSingleAccount) {
-  const url =
+export function useTrades(chainId, account, forSingleAccount, afterId) {
+  let url =
     account && account.length > 0
       ? `${getServerBaseUrl(chainId)}/actions?account=${account}`
       : !forSingleAccount && `${getServerBaseUrl(chainId)}/actions`;
+
+  if (afterId && afterId.length > 0) {
+    const urlItem = new URL(url);
+    urlItem.searchParams.append("after", afterId);
+    url = urlItem.toString();
+  }
 
   const { data: trades, mutate: updateTrades } = useSWR(url && url, {
     dedupingInterval: 10000,
@@ -433,7 +449,7 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
   // for executing positions this is around 65,000 gas
   // if gas prices on Ethereum are high, than the gas usage might be higher, this calculation doesn't deal with that
   // case yet
-  if (chainId === ARBITRUM) {
+  if (chainId === ARBITRUM || chainId === ARBITRUM_TESTNET) {
     multiplier = 65000;
   }
 
@@ -452,7 +468,7 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
   }
 
   const finalExecutionFeeUSD = getUsd(finalExecutionFee, nativeTokenAddress, false, infoTokens);
-  const isFeeHigh = finalExecutionFeeUSD?.gt(expandDecimals(HIGH_EXECUTION_FEES_MAP[chainId], USD_DECIMALS));
+  const isFeeHigh = finalExecutionFeeUSD?.gt(expandDecimals(getHighExecutionFee(chainId), USD_DECIMALS));
   const errorMessage =
     isFeeHigh &&
     `The network cost to send transactions is high at the moment, please check the "Execution Fee" value before proceeding.`;
@@ -964,39 +980,60 @@ export function executeDecreaseOrder(chainId, library, account, index, feeReceiv
 const NOT_ENOUGH_FUNDS = "NOT_ENOUGH_FUNDS";
 const USER_DENIED = "USER_DENIED";
 const SLIPPAGE = "SLIPPAGE";
+const RPC_ERROR = "RPC_ERROR";
+
 const TX_ERROR_PATTERNS = {
-  [NOT_ENOUGH_FUNDS]: ["not enough funds for gas", "failed to execute call with revert code InsufficientGasFunds"],
-  [USER_DENIED]: ["User denied transaction signature"],
-  [SLIPPAGE]: ["Router: mark price lower than limit", "Router: mark price higher than limit"],
+  [NOT_ENOUGH_FUNDS]: [
+    { msg: "not enough funds for gas" },
+    { msg: "failed to execute call with revert code InsufficientGasFunds" },
+  ],
+  [USER_DENIED]: [{ msg: "User denied transaction signature" }],
+  [SLIPPAGE]: [{ msg: "Router: mark price lower than limit" }, { msg: "Router: mark price higher than limit" }],
+  [RPC_ERROR]: [
+    // @see https://eips.ethereum.org/EIPS/eip-1474#error-codes
+    { code: -32005 },
+    { msg: "Non-200 status code" },
+    { msg: "Request limit exceeded" },
+    { msg: "Internal JSON-RPC error" },
+    { msg: "Response has no error or result" },
+    { msg: "couldn't connect to the network" },
+  ],
 };
+
 export function extractError(ex) {
   if (!ex) {
     return [];
   }
+
   const message = ex.data?.message || ex.message;
-  if (!message) {
+  const code = ex.code;
+
+  if (!message && !code) {
     return [];
   }
+
   for (const [type, patterns] of Object.entries(TX_ERROR_PATTERNS)) {
     for (const pattern of patterns) {
-      if (message.includes(pattern)) {
-        return [message, type];
+      const matchCode = pattern.code && code === pattern.code;
+      const matchMessage = pattern.msg && message && message.includes(pattern.msg);
+
+      if (matchCode || matchMessage) {
+        return [message, type, ex.data];
       }
     }
   }
-  return [message];
+
+  return [message, null, ex.data];
 }
 
 function ToastifyDebug(props) {
   const [open, setOpen] = useState(false);
   return (
     <div className="Toastify-debug">
-      {!open && (
-        <span className="Toastify-debug-button" onClick={() => setOpen(true)}>
-          Show error
-        </span>
-      )}
-      {open && props.children}
+      <span className="Toastify-debug-button" onClick={() => setOpen((old) => !old)}>
+        {open ? "Hide error" : "Show error"}
+      </span>
+      {open && <div className="Toastify-debug-content">{props.children}</div>}
     </div>
   );
 }
@@ -1043,7 +1080,9 @@ export async function callContract(chainId, contract, method, params, opts) {
     return res;
   } catch (e) {
     let failMsg;
-    const [message, type] = extractError(e);
+    let autoCloseToast = 5000;
+
+    const [message, type, errorData] = extractError(e);
     switch (type) {
       case NOT_ENOUGH_FUNDS:
         failMsg = (
@@ -1064,7 +1103,28 @@ export async function callContract(chainId, contract, method, params, opts) {
         failMsg =
           'The mark price has changed, consider increasing your Allowed Slippage by clicking on the "..." icon next to your address.';
         break;
+      case RPC_ERROR:
+        autoCloseToast = false;
+
+        const originalError = errorData?.error?.message || errorData?.message || message;
+
+        failMsg = (
+          <div>
+            Transaction failed due to RPC error.
+            <br />
+            <br />
+            Please try changing the RPC url in your wallet settings.{" "}
+            <a href="https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls" target="_blank" rel="noopener noreferrer">
+              More info
+            </a>
+            <br />
+            {originalError && <ToastifyDebug>{originalError}</ToastifyDebug>}
+          </div>
+        );
+        break;
       default:
+        autoCloseToast = false;
+
         failMsg = (
           <div>
             {opts.failMsg || "Transaction failed"}
@@ -1073,7 +1133,7 @@ export async function callContract(chainId, contract, method, params, opts) {
           </div>
         );
     }
-    helperToast.error(failMsg);
+    helperToast.error(failMsg, { autoClose: autoCloseToast });
     throw e;
   }
 }

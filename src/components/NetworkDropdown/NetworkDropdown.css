@@ -71,10 +71,9 @@
   padding: 0.8rem;
   justify-content: space-between;
 }
-.network-dropdown-menu-item:last-child {
+.last-dropdown-menu {
   margin-bottom: 0.8rem;
 }
-
 .network-popup .Modal-content {
   width: 100%;
   max-width: 29.6rem;
@@ -97,13 +96,12 @@
 }
 
 .network-option img {
-  width: 3.2rem;
+  width: 2.5rem;
   margin-right: 1.5rem;
 }
 
 .network-option span {
-  font-size: 1.6rem;
-  line-height: 2rem;
+  font-size: 1.5rem;
   letter-spacing: 0.29px;
   color: #fff;
 }
