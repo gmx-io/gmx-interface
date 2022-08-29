@@ -42,7 +42,7 @@ const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
 const CHAIN_NAMES_MAP = {
   [MAINNET]: "BSC",
   [TESTNET]: "BSC Testnet",
-  [ARBITRUM_TESTNET]: "Arbitrum Testnet",
+  [ARBITRUM_TESTNET]: "ArbRinkeby",
   [ARBITRUM]: "Arbitrum",
   [AVALANCHE]: "Avalanche",
 };
@@ -170,8 +170,21 @@ export const HIGH_EXECUTION_FEES_MAP = {
   [AVALANCHE]: 3, // 3 USD
 };
 
+export function getHighExecutionFee(chainId) {
+  return HIGH_EXECUTION_FEES_MAP[chainId] || 3;
+}
+
 export const ICONLINKS = {
-  42161: {
+  [ARBITRUM_TESTNET]: {
+    GMX: {
+      coingecko: "https://www.coingecko.com/en/coins/gmx",
+      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
+    },
+    GLP: {
+      arbitrum: "https://testnet.arbiscan.io/token/0xb4f81Fa74e06b5f762A104e47276BA9b2929cb27",
+    },
+  },
+  [ARBITRUM]: {
     GMX: {
       coingecko: "https://www.coingecko.com/en/coins/gmx",
       arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
@@ -215,7 +228,7 @@ export const ICONLINKS = {
       arbitrum: "https://arbiscan.io/address/0x17fc002b466eec40dae837fc4be5c67993ddbd6f",
     },
   },
-  43114: {
+  [AVALANCHE]: {
     GMX: {
       coingecko: "https://www.coingecko.com/en/coins/gmx",
       avalanche: "https://snowtrace.io/address/0x62edc0692bd897d2295872a9ffcac5425011c661",
@@ -291,6 +304,9 @@ export const platformTokens = {
 };
 
 const supportedChainIds = [ARBITRUM, AVALANCHE];
+if (isDevelopment()) {
+  supportedChainIds.push(ARBITRUM_TESTNET);
+}
 const injectedConnector = new InjectedConnector({
   supportedChainIds,
 });
@@ -301,6 +317,7 @@ const getWalletConnectConnector = () => {
     rpc: {
       [AVALANCHE]: AVALANCHE_RPC_PROVIDERS[0],
       [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0],
+      [ARBITRUM_TESTNET]: "https://rinkeby.arbitrum.io/rpc",
     },
     qrcode: true,
     chainId,
@@ -443,7 +460,7 @@ export function getServerBaseUrl(chainId) {
   if (chainId === MAINNET) {
     return "https://gambit-server-staging.uc.r.appspot.com";
   } else if (chainId === ARBITRUM_TESTNET) {
-    return "https://gambit-l2.as.r.appspot.com";
+    return "https://gambit-server-devnet.uc.r.appspot.com";
   } else if (chainId === ARBITRUM) {
     return "https://gmx-server-mainnet.uw.r.appspot.com";
   } else if (chainId === AVALANCHE) {
@@ -1920,7 +1937,7 @@ export function getExplorerUrl(chainId) {
   } else if (chainId === TESTNET) {
     return "https://testnet.bscscan.com/";
   } else if (chainId === ARBITRUM_TESTNET) {
-    return "https://rinkeby-explorer.arbitrum.io/";
+    return "https://testnet.arbiscan.io/";
   } else if (chainId === ARBITRUM) {
     return "https://arbiscan.io/";
   } else if (chainId === AVALANCHE) {

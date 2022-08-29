@@ -19,6 +19,7 @@ function createFeeList(data) {
 const FEES = {
   56: [],
   42161: createFeeList(FEES_42161),
+  421611: createFeeList(FEES_42161),
   43114: createFeeList(FEES_43113),
 };
 
