@@ -95,6 +95,7 @@ export default function PositionsList(props) {
     minExecutionFeeErrorMessage,
     usdgSupply,
     totalTokenWeights,
+    savedShouldDisableOrderValidation,
   } = props;
 
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);

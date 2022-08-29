@@ -562,6 +562,7 @@ export default function PositionEditor(props) {
                             <>
                               <TooltipCardRow
                                 label="Network fee"
+                                showDollar={false}
                                 value={`${formatAmountFree(
                                   minExecutionFee,
                                   18,

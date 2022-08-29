@@ -155,6 +155,7 @@ export default function PositionSeller(props) {
     minExecutionFeeErrorMessage,
     usdgSupply,
     totalTokenWeights,
+    savedShouldDisableOrderValidation,
   } = props;
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true);
@@ -1066,8 +1067,11 @@ export default function PositionSeller(props) {
                       <TooltipCardRow
                         label="Execution fee"
                         showDollar={false}
-                        value={`${formatAmount(executionFee, 18, 5, true)} ${nativeTokenSymbol} ($
-                        ${formatAmount(executionFeeUsd, USD_DECIMALS, 2)})`}
+                        value={`${formatAmount(executionFee, 18, 5, true)} ${nativeTokenSymbol} ($${formatAmount(
+                          executionFeeUsd,
+                          USD_DECIMALS,
+                          2
+                        )})`}
                       />
 
                       <br />
