@@ -13,8 +13,8 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/App.js:399
-#: src/App.js:421
+#: src/App.js:408
+#: src/App.js:430
 msgid ", and use GMX with its built-in browser"
 msgstr ""
 
@@ -48,7 +48,7 @@ msgstr ""
 msgid "AVAILABLE"
 msgstr ""
 
-#: src/App.js:200
+#: src/App.js:201
 #: src/views/Ecosystem/Ecosystem.js:343
 #: src/views/Ecosystem/Ecosystem.js:387
 #: src/views/Ecosystem/Ecosystem.js:442
@@ -77,7 +77,7 @@ msgstr ""
 msgid "Active Referral Code"
 msgstr ""
 
-#: src/views/Dashboard/AssetDropdown.js:74
+#: src/views/Dashboard/AssetDropdown.js:75
 msgid "Add to Metamask"
 msgstr ""
 
@@ -114,7 +114,7 @@ msgstr ""
 msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
 msgstr ""
 
-#: src/App.js:946
+#: src/App.js:955
 msgid "Allowed Slippage"
 msgstr ""
 
@@ -271,7 +271,7 @@ msgstr ""
 msgid "Borrow Fee: ${0}"
 msgstr ""
 
-#: src/App.js:185
+#: src/App.js:186
 msgid "Buy"
 msgstr "买"
 
@@ -343,8 +343,8 @@ msgid "Buying..."
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js:133
-#: src/components/Exchange/OrdersList.js:366
-#: src/components/Exchange/OrdersList.js:443
+#: src/components/Exchange/OrdersList.js:372
+#: src/components/Exchange/OrdersList.js:449
 msgid "Cancel"
 msgstr ""
 
@@ -427,19 +427,19 @@ msgstr ""
 msgid "Claiming..."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:595
+#: src/components/Exchange/PositionSeller.js:618
 msgid "Close"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:714
+#: src/components/Exchange/PositionSeller.js:737
 msgid "Close failed."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:712
+#: src/components/Exchange/PositionSeller.js:735
 msgid "Close submitted!"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:593
+#: src/components/Exchange/PositionSeller.js:616
 msgid "Close without profit"
 msgstr ""
 
@@ -447,7 +447,7 @@ msgstr ""
 #~ msgid "Closing Fee"
 #~ msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:595
+#: src/components/Exchange/PositionSeller.js:618
 msgid "Closing..."
 msgstr ""
 
@@ -455,17 +455,17 @@ msgstr ""
 msgid "Code already taken"
 msgstr ""
 
-#: src/App.js:928
+#: src/App.js:937
 msgid "Coinbase Wallet"
 msgstr ""
 
-#: src/App.js:414
+#: src/App.js:423
 msgid "Coinbase Wallet not detected."
 msgstr ""
 
-#: src/components/Exchange/OrdersList.js:426
+#: src/components/Exchange/OrdersList.js:432
 #: src/components/Exchange/PositionEditor.js:504
-#: src/components/Exchange/PositionSeller.js:1004
+#: src/components/Exchange/PositionSeller.js:1027
 #: src/components/Exchange/PositionsList.js:273
 #: src/components/Exchange/PositionsList.js:455
 msgid "Collateral"
@@ -514,11 +514,11 @@ msgstr ""
 msgid "Compounding..."
 msgstr ""
 
-#: src/App.js:272
+#: src/App.js:281
 msgid "Connect"
 msgstr ""
 
-#: src/App.js:272
+#: src/App.js:281
 #: src/components/Exchange/SwapBox.js:1134
 #: src/components/Glp/GlpSwap.js:486
 #: src/components/Referrals/AddAffiliateCode.js:34
@@ -555,7 +555,7 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:577
+#: src/components/Exchange/PositionSeller.js:600
 msgid "Create Order"
 msgstr ""
 
@@ -567,7 +567,7 @@ msgstr ""
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:565
+#: src/components/Exchange/PositionSeller.js:588
 msgid "Creating Order..."
 msgstr ""
 
@@ -589,7 +589,7 @@ msgstr ""
 msgid "Current Reserved: {0}<0/>Additional reserve required: {1}<1/>{2}"
 msgstr ""
 
-#: src/App.js:175
+#: src/App.js:176
 msgid "Dashboard"
 msgstr "仪表板"
 
@@ -642,7 +642,7 @@ msgstr ""
 msgid "Depositing..."
 msgstr ""
 
-#: src/App.js:972
+#: src/App.js:981
 msgid "Disable order validations"
 msgstr ""
 
@@ -650,7 +650,7 @@ msgstr ""
 msgid "Disconnect"
 msgstr ""
 
-#: src/App.js:961
+#: src/App.js:970
 msgid "Display PnL after fees"
 msgstr ""
 
@@ -666,18 +666,18 @@ msgstr ""
 msgid "ETH is needed on Arbitrum to purchase GMX."
 msgstr ""
 
-#: src/App.js:180
+#: src/App.js:181
 #: src/views/Stake/StakeV2.js:1444
 msgid "Earn"
 msgstr "赚"
 
-#: src/App.js:195
+#: src/App.js:196
 msgid "Ecosystem"
 msgstr "生态系统"
 
 #: src/components/Exchange/OrdersList.js:128
-#: src/components/Exchange/OrdersList.js:363
-#: src/components/Exchange/OrdersList.js:440
+#: src/components/Exchange/OrdersList.js:369
+#: src/components/Exchange/OrdersList.js:446
 #: src/components/Exchange/PositionsList.js:423
 msgid "Edit"
 msgstr ""
@@ -691,14 +691,14 @@ msgid "Edit Referral Code"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js:262
-#: src/components/Exchange/PositionSeller.js:589
+#: src/components/Exchange/PositionSeller.js:612
 #: src/components/Exchange/SwapBox.js:1151
 msgid "Enable Leverage"
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js:26
 #: src/components/Exchange/OrdersToa.js:40
-#: src/components/Exchange/PositionSeller.js:574
+#: src/components/Exchange/PositionSeller.js:597
 #: src/components/Exchange/SwapBox.js:1171
 msgid "Enable Orders"
 msgstr ""
@@ -711,12 +711,12 @@ msgstr ""
 msgid "Enable deposit sent."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:618
+#: src/components/Exchange/PositionSeller.js:641
 #: src/components/Exchange/SwapBox.js:1673
 msgid "Enable leverage failed."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:617
+#: src/components/Exchange/PositionSeller.js:640
 #: src/components/Exchange/SwapBox.js:1672
 msgid "Enable leverage sent."
 msgstr ""
@@ -742,16 +742,16 @@ msgid "Enabling Leverage"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js:258
-#: src/components/Exchange/PositionSeller.js:581
-#: src/components/Exchange/PositionSeller.js:585
+#: src/components/Exchange/PositionSeller.js:604
+#: src/components/Exchange/PositionSeller.js:608
 #: src/components/Exchange/SwapBox.js:1145
 #: src/components/Exchange/SwapBox.js:1148
 msgid "Enabling Leverage..."
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js:21
-#: src/components/Exchange/PositionSeller.js:568
-#: src/components/Exchange/PositionSeller.js:571
+#: src/components/Exchange/PositionSeller.js:591
+#: src/components/Exchange/PositionSeller.js:594
 #: src/components/Exchange/SwapBox.js:1165
 #: src/components/Exchange/SwapBox.js:1168
 msgid "Enabling Orders..."
@@ -761,7 +761,7 @@ msgstr ""
 #~ msgid "English"
 #~ msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:488
+#: src/components/Exchange/PositionSeller.js:507
 msgid "Enter Price"
 msgstr ""
 
@@ -785,8 +785,8 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js:183
 #: src/components/Exchange/PositionEditor.js:186
-#: src/components/Exchange/PositionSeller.js:481
-#: src/components/Exchange/PositionSeller.js:484
+#: src/components/Exchange/PositionSeller.js:500
+#: src/components/Exchange/PositionSeller.js:503
 #: src/components/Exchange/SwapBox.js:776
 #: src/components/Exchange/SwapBox.js:779
 #: src/components/Exchange/SwapBox.js:847
@@ -812,7 +812,7 @@ msgstr ""
 msgid "Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:955
+#: src/components/Exchange/PositionSeller.js:978
 #: src/components/Exchange/PositionsList.js:398
 #: src/components/Exchange/PositionsList.js:461
 #: src/components/Exchange/SwapBox.js:2116
@@ -836,7 +836,7 @@ msgstr ""
 msgid "FEES"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:1055
+#: src/components/Exchange/PositionSeller.js:1078
 #: src/components/Glp/GlpSwap.js:887
 #: src/components/Glp/GlpSwap.js:1353
 #: src/components/Glp/GlpSwap.js:1356
@@ -868,7 +868,7 @@ msgstr ""
 msgid "Floor Price Fund"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:528
+#: src/components/Exchange/PositionSeller.js:551
 msgid "Forfeit profit not checked"
 msgstr ""
 
@@ -943,7 +943,7 @@ msgstr ""
 msgid "High USDG Slippage, Long Anyway"
 msgstr ""
 
-#: src/App.js:170
+#: src/App.js:171
 msgid "Home"
 msgstr "家"
 
@@ -951,7 +951,7 @@ msgstr "家"
 msgid "Hop"
 msgstr ""
 
-#: src/App.js:966
+#: src/App.js:975
 msgid "Include PnL in leverage display"
 msgstr ""
 
@@ -971,11 +971,11 @@ msgstr ""
 msgid "Initial Collateral: ${0}"
 msgstr ""
 
-#: src/App.js:418
+#: src/App.js:427
 msgid "Install Coinbase Wallet"
 msgstr ""
 
-#: src/App.js:396
+#: src/App.js:405
 msgid "Install MetaMask"
 msgstr ""
 
@@ -1024,11 +1024,11 @@ msgstr ""
 msgid "Invalid liq. price"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:498
+#: src/components/Exchange/PositionSeller.js:517
 msgid "Invalid price, see warning"
 msgstr ""
 
-#: src/App.js:504
+#: src/App.js:513
 msgid "Invalid slippage value"
 msgstr ""
 
@@ -1053,16 +1053,16 @@ msgstr ""
 msgid "Leave at least {0} {1} for gas"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:511
+#: src/components/Exchange/PositionSeller.js:534
 msgid "Leftover collateral below 5 USD"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:508
+#: src/components/Exchange/PositionSeller.js:531
 msgid "Leftover position below 10 USD"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js:521
-#: src/components/Exchange/PositionSeller.js:1023
+#: src/components/Exchange/PositionSeller.js:1046
 #: src/components/Exchange/PositionsList.js:251
 #: src/components/Exchange/SwapBox.js:1907
 #: src/components/Exchange/SwapBox.js:2100
@@ -1086,7 +1086,7 @@ msgid "Link"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js:544
-#: src/components/Exchange/PositionSeller.js:961
+#: src/components/Exchange/PositionSeller.js:984
 #: src/components/Exchange/PositionsList.js:404
 #: src/components/Exchange/PositionsList.js:464
 #: src/components/Exchange/SwapBox.js:2131
@@ -1134,10 +1134,10 @@ msgid "MAX"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js:101
-#: src/components/Exchange/OrdersList.js:354
-#: src/components/Exchange/OrdersList.js:406
+#: src/components/Exchange/OrdersList.js:360
+#: src/components/Exchange/OrdersList.js:412
 #: src/components/Exchange/PositionEditor.js:538
-#: src/components/Exchange/PositionSeller.js:949
+#: src/components/Exchange/PositionSeller.js:972
 #: src/components/Exchange/PositionsList.js:392
 #: src/components/Exchange/PositionsList.js:458
 msgid "Mark Price"
@@ -1168,7 +1168,7 @@ msgstr ""
 msgid "Max amount exceeded"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:516
+#: src/components/Exchange/PositionSeller.js:539
 msgid "Max close amount exceeded"
 msgstr ""
 
@@ -1176,7 +1176,7 @@ msgstr ""
 msgid "Max leverage: 30.5x"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:524
+#: src/components/Exchange/PositionSeller.js:547
 msgid "Max leverage: 30.5xt"
 msgstr ""
 
@@ -1192,7 +1192,7 @@ msgstr ""
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgstr ""
 
-#: src/App.js:514
+#: src/App.js:523
 msgid "Max slippage precision is 0.01%"
 msgstr ""
 
@@ -1209,16 +1209,16 @@ msgstr ""
 msgid "Media Kit"
 msgstr ""
 
-#: src/App.js:922
+#: src/App.js:931
 msgid "MetaMask"
 msgstr ""
 
-#: src/App.js:392
+#: src/App.js:401
 msgid "MetaMask not detected."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js:208
-#: src/components/Exchange/PositionSeller.js:520
+#: src/components/Exchange/PositionSeller.js:543
 #: src/components/Exchange/SwapBox.js:872
 msgid "Min leverage: 1.1x"
 msgstr ""
@@ -1292,12 +1292,12 @@ msgstr ""
 msgid "Open a position"
 msgstr ""
 
-#: src/views/Dashboard/AssetDropdown.js:34
+#: src/views/Dashboard/AssetDropdown.js:35
 msgid "Open in Coingecko"
 msgstr ""
 
-#: src/views/Dashboard/AssetDropdown.js:46
-#: src/views/Dashboard/AssetDropdown.js:54
+#: src/views/Dashboard/AssetDropdown.js:47
+#: src/views/Dashboard/AssetDropdown.js:55
 msgid "Open in Explorer"
 msgstr ""
 
@@ -1309,15 +1309,15 @@ msgstr ""
 msgid "Order"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:645
+#: src/components/Exchange/PositionSeller.js:668
 msgid "Order created!"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:646
+#: src/components/Exchange/PositionSeller.js:669
 msgid "Order creation failed."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:644
+#: src/components/Exchange/PositionSeller.js:667
 msgid "Order submitted!"
 msgstr ""
 
@@ -1343,7 +1343,7 @@ msgstr ""
 msgid "PRICE"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:478
+#: src/components/Exchange/PositionSeller.js:497
 #: src/components/Exchange/SwapBox.js:843
 msgid "Page outdated, please refresh"
 msgstr ""
@@ -1381,7 +1381,7 @@ msgstr ""
 msgid "Please switch your network to Arbitrum."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:1046
+#: src/components/Exchange/PositionSeller.js:1069
 #: src/components/Exchange/PositionsList.js:305
 #: src/views/Actions/Actions.js:89
 msgid "PnL"
@@ -1396,8 +1396,8 @@ msgid "Positions"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js:96
-#: src/components/Exchange/OrdersList.js:398
-#: src/components/Exchange/PositionSeller.js:864
+#: src/components/Exchange/OrdersList.js:404
+#: src/components/Exchange/PositionSeller.js:887
 #: src/components/Exchange/SwapBox.js:1941
 #: src/components/Exchange/SwapBox.js:1990
 #: src/components/Glp/GlpSwap.js:692
@@ -1408,7 +1408,7 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:494
+#: src/components/Exchange/PositionSeller.js:513
 msgid "Price above Liq. Price"
 msgstr ""
 
@@ -1416,7 +1416,7 @@ msgstr ""
 msgid "Price above Mark Price"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:491
+#: src/components/Exchange/PositionSeller.js:510
 msgid "Price below Liq. Price"
 msgstr ""
 
@@ -1476,7 +1476,7 @@ msgstr ""
 msgid "Rebates earned by this account as an affiliate."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:1107
+#: src/components/Exchange/PositionSeller.js:1130
 #: src/components/Exchange/SwapBox.js:216
 #: src/components/Exchange/SwapBox.js:1031
 #: src/components/Glp/GlpSwap.js:608
@@ -1536,12 +1536,12 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr ""
 
-#: src/App.js:190
+#: src/App.js:191
 #: src/views/Referrals/Referrals.js:121
 msgid "Referrals"
 msgstr "推荐人"
 
-#: src/components/Exchange/PositionSeller.js:704
+#: src/components/Exchange/PositionSeller.js:727
 msgid "Requested decrease of {0} {1} by {2} USD."
 msgstr ""
 
@@ -1579,7 +1579,7 @@ msgstr ""
 msgid "Same as current active code"
 msgstr ""
 
-#: src/App.js:978
+#: src/App.js:987
 msgid "Save"
 msgstr ""
 
@@ -1651,7 +1651,7 @@ msgstr ""
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr ""
 
-#: src/App.js:207
+#: src/App.js:208
 msgid "Settings"
 msgstr "设置"
 
@@ -1685,13 +1685,13 @@ msgid "Simple Swaps"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js:498
-#: src/components/Exchange/PositionSeller.js:985
+#: src/components/Exchange/PositionSeller.js:1008
 #: src/components/Exchange/PositionsList.js:267
 #: src/components/Exchange/PositionsList.js:452
 msgid "Size"
 msgstr ""
 
-#: src/App.js:508
+#: src/App.js:517
 msgid "Slippage should be less than 5%"
 msgstr ""
 
@@ -1833,11 +1833,11 @@ msgstr ""
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr ""
 
-#: src/components/Exchange/OrdersList.js:282
+#: src/components/Exchange/OrdersList.js:288
 msgid "The price that orders can be executed at may differ slightly from the chart price, as market orders update oracle prices, while limit/trigger orders do not."
 msgstr ""
 
-#: src/components/Exchange/OrdersList.js:414
+#: src/components/Exchange/OrdersList.js:420
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr ""
 
@@ -1931,8 +1931,8 @@ msgstr ""
 msgid "Total value of tokens in GLP pool ({chainName})"
 msgstr ""
 
-#: src/App.js:265
-#: src/App.js:295
+#: src/App.js:274
+#: src/App.js:304
 msgid "Trade"
 msgstr "贸易"
 
@@ -2007,7 +2007,7 @@ msgstr ""
 msgid "Transfers are only supported if the receiving account has not staked GMX or GLP tokens before."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:939
+#: src/components/Exchange/PositionSeller.js:962
 msgid "Trigger Price"
 msgstr ""
 
@@ -2019,7 +2019,7 @@ msgstr ""
 msgid "Two tokens create our ecosystem"
 msgstr ""
 
-#: src/App.js:596
+#: src/App.js:605
 msgid "Txn failed."
 msgstr ""
 
@@ -2114,8 +2114,8 @@ msgstr ""
 msgid "Vesting Status"
 msgstr ""
 
-#: src/App.js:598
-#: src/App.js:610
+#: src/App.js:607
+#: src/App.js:619
 msgid "View"
 msgstr ""
 
@@ -2177,7 +2177,7 @@ msgstr ""
 msgid "Wallet not connected"
 msgstr ""
 
-#: src/App.js:934
+#: src/App.js:943
 msgid "WalletConnect"
 msgstr ""
 
@@ -2303,8 +2303,8 @@ msgstr ""
 msgid "orders"
 msgstr ""
 
-#: src/App.js:401
-#: src/App.js:423
+#: src/App.js:410
+#: src/App.js:432
 msgid "to start using GMX"
 msgstr ""
 

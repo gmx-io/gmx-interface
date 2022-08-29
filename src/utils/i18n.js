@@ -5,11 +5,11 @@ import { LANGUAGE_LOCALSTORAGE_KEY } from "../Helpers";
 export const locales = {
   en: "English",
   es: "Spanish",
-  zh: "Chinese",
+  // zh: "Chinese",
   ko: "Korean",
-  ru: "Russian",
+  // ru: "Russian",
   ja: "Japanese",
-  fr: "French",
+  // fr: "French",
 };
 
 export const defaultLocale = "en";

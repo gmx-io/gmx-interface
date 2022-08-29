@@ -448,7 +448,7 @@ export default function DashboardV2() {
 
   let glpPool = tokenList.map((token) => {
     const tokenInfo = infoTokens[token.address];
-    if (tokenInfo.usdgAmount && adjustedUsdgSupply) {
+    if (tokenInfo.usdgAmount && adjustedUsdgSupply && adjustedUsdgSupply.gt(0)) {
       const currentWeightBps = tokenInfo.usdgAmount.mul(BASIS_POINTS_DIVISOR).div(adjustedUsdgSupply);
       if (tokenInfo.isStable) {
         stableGlp += parseFloat(`${formatAmount(currentWeightBps, 2, 2, false)}`);
@@ -601,7 +601,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        positionStatsInfo?.[chainId].totalLongPositionSizes,
+                        positionStatsInfo?.[chainId]?.totalLongPositionSizes,
                         USD_DECIMALS,
                         0,
                         true
@@ -626,7 +626,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       className="nowrap"
                       handle={`$${formatAmount(
-                        positionStatsInfo?.[chainId].totalShortPositionSizes,
+                        positionStatsInfo?.[chainId]?.totalShortPositionSizes,
                         USD_DECIMALS,
                         0,
                         true
