@@ -159,8 +159,8 @@ export default function Ecosystem() {
       link: "https://www.gmxreferrals.com/",
       linkLabel: "gmxreferrals.com",
       about: "Dashboard for GMX referral stats",
-      creatorLabel: "@s0berknight",
-      creatorLink: "https://twitter.com/s0berknight",
+      creatorLabel: "@kyzoeth",
+      creatorLink: "https://twitter.com/kyzoeth",
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
