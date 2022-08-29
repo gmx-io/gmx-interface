@@ -8,6 +8,7 @@ import {
   MAX_LEVERAGE,
   BASIS_POINTS_DIVISOR,
   LIQUIDATION_FEE,
+  TRADES_PAGE_SIZE,
   formatAmount,
   getExplorerUrl,
   formatDateTime,
@@ -485,7 +486,7 @@ export default function TradeHistory(props) {
               Prev
             </button>
           )}
-          {trades && trades.length > 0 && (
+          {trades && trades.length >= TRADES_PAGE_SIZE && (
             <button className="App-button-option App-card-option" onClick={loadNextPage}>
               Next
             </button>
