@@ -205,7 +205,13 @@ export default function OrdersList(props) {
       }
 
       const indexToken = getTokenInfo(infoTokens, order.indexToken);
+
+      // Longs Increase: max price
+      // Longs Decrease: min price
+      // Short Increase: min price
+      // Short Decrease: max price
       const maximisePrice = (order.type === INCREASE && order.isLong) || (order.type === DECREASE && !order.isLong);
+
       const markPrice = maximisePrice ? indexToken.contractMaxPrice : indexToken.contractMinPrice;
       const triggerPricePrefix = order.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
       const indexTokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol;

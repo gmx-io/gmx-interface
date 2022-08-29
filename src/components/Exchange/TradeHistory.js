@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { ethers } from "ethers";
 import { Link } from "react-router-dom";
 import Tooltip from "../../components/Tooltip/Tooltip";
@@ -8,6 +8,7 @@ import {
   MAX_LEVERAGE,
   BASIS_POINTS_DIVISOR,
   LIQUIDATION_FEE,
+  TRADES_PAGE_SIZE,
   formatAmount,
   getExplorerUrl,
   formatDateTime,
@@ -77,8 +78,15 @@ function getLiquidationData(liquidationsDataMap, key, timestamp) {
 }
 
 export default function TradeHistory(props) {
-  const { account, infoTokens, getTokenInfo, chainId, nativeTokenAddress } = props;
-  const { trades, updateTrades } = useTrades(chainId, account, props.forSingleAccount);
+  const { account, infoTokens, getTokenInfo, chainId, nativeTokenAddress, shouldShowPaginationButtons } = props;
+  const [pageIds, setPageIds] = useState({});
+  const [pageIndex, setPageIndex] = useState(0);
+
+  const getAfterId = () => {
+    return pageIds[pageIndex];
+  };
+
+  const { trades, updateTrades } = useTrades(chainId, account, props.forSingleAccount, getAfterId());
 
   const liquidationsData = useLiquidationsData(chainId, account);
   const liquidationsDataMap = useMemo(() => {
@@ -98,6 +106,21 @@ export default function TradeHistory(props) {
     }, 10 * 1000);
     return () => clearInterval(interval);
   }, [updateTrades]);
+
+  const loadNextPage = () => {
+    if (!trades || trades.length === 0) {
+      return;
+    }
+
+    const lastTrade = trades[trades.length - 1];
+    pageIds[pageIndex + 1] = lastTrade.id;
+    setPageIds(pageIds);
+    setPageIndex(pageIndex + 1);
+  };
+
+  const loadPrevPage = () => {
+    setPageIndex(pageIndex - 1);
+  };
 
   const getMsg = useCallback(
     (trade) => {
@@ -456,6 +479,20 @@ export default function TradeHistory(props) {
             </div>
           );
         })}
+      {shouldShowPaginationButtons && (
+        <div>
+          {pageIndex > 0 && (
+            <button className="App-button-option App-card-option" onClick={loadPrevPage}>
+              Prev
+            </button>
+          )}
+          {trades && trades.length >= TRADES_PAGE_SIZE && (
+            <button className="App-button-option App-card-option" onClick={loadNextPage}>
+              Next
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

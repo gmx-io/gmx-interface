@@ -40,6 +40,7 @@ import {
   USDG_DECIMALS,
   CLOSE_POSITION_RECEIVE_TOKEN_KEY,
   useLocalStorageByChainId,
+  adjustForDecimals,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import { createDecreaseOrder, callContract, useHasOutdatedUi } from "../../Api";
@@ -280,6 +281,7 @@ export default function PositionSeller(props) {
   let adjustedDelta = bigNumberify(0);
 
   let notEnoughReceiveTokenLiquidity;
+  let collateralPoolCapacityExceeded;
 
   let title;
   let fundingFee;
@@ -393,6 +395,23 @@ export default function PositionSeller(props) {
         totalFees = totalFees.add(swapFee || bigNumberify(0));
         receiveAmount = receiveAmount.sub(swapFee);
       }
+
+      const collateralInfo = getTokenInfo(infoTokens, collateralToken.address);
+
+      if (
+        swapToken.address !== collateralToken.address &&
+        collateralInfo.maxUsdgAmount &&
+        collateralInfo.maxUsdgAmount.gt(0) &&
+        collateralInfo.usdgAmount &&
+        collateralInfo.maxPrice
+      ) {
+        const usdgFromAmount = adjustForDecimals(receiveAmount, USD_DECIMALS, USDG_DECIMALS);
+        const nextUsdgAmount = collateralInfo.usdgAmount.add(usdgFromAmount);
+
+        if (nextUsdgAmount.gt(collateralInfo.maxUsdgAmount)) {
+          collateralPoolCapacityExceeded = true;
+        }
+      }
     }
 
     convertedReceiveAmount = getTokenAmount(receiveAmount, receiveToken.address, false, infoTokens);
@@ -503,6 +522,10 @@ export default function PositionSeller(props) {
 
     if (notEnoughReceiveTokenLiquidity) {
       return "Insufficient receive token liquidity";
+    }
+
+    if (collateralPoolCapacityExceeded) {
+      return `${collateralToken.symbol} pool exceeded, can only Receive ${collateralToken.symbol}`;
     }
 
     if (!isClosing && position && position.size && fromAmount) {
@@ -1103,7 +1126,9 @@ export default function PositionSeller(props) {
                     // Scroll lock lead to side effects
                     // if it applied on modal inside another modal
                     disableBodyScrollLock={true}
-                    className={cx("PositionSeller-token-selector", { warning: notEnoughReceiveTokenLiquidity })}
+                    className={cx("PositionSeller-token-selector", {
+                      warning: notEnoughReceiveTokenLiquidity || collateralPoolCapacityExceeded,
+                    })}
                     label={"Receive"}
                     showBalances={false}
                     chainId={chainId}
