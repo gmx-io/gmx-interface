@@ -523,7 +523,7 @@ export default function PositionSeller(props) {
     }
 
     if (collateralPoolCapacityExceeded) {
-      return `${collateralToken.symbol} pool exceeded`;
+      return `${collateralToken.symbol} pool exceeded, can only Receive ${collateralToken.symbol}`;
     }
 
     if (!isClosing && position && position.size && fromAmount) {
@@ -1121,7 +1121,9 @@ export default function PositionSeller(props) {
                     // Scroll lock lead to side effects
                     // if it applied on modal inside another modal
                     disableBodyScrollLock={true}
-                    className={cx("PositionSeller-token-selector", { warning: notEnoughReceiveTokenLiquidity })}
+                    className={cx("PositionSeller-token-selector", {
+                      warning: notEnoughReceiveTokenLiquidity || collateralPoolCapacityExceeded,
+                    })}
                     label={"Receive"}
                     showBalances={false}
                     chainId={chainId}
