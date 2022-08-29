@@ -83,7 +83,6 @@ import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
 import { useUserReferralCode } from "../../Api/referrals";
 import { TooltipCardRow } from "../../views/Dashboard/TooltipCard";
-import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -921,18 +920,7 @@ export default function SwapBox(props) {
             return ["Liquidity data not loaded"];
           }
           if (toTokenInfo.availableAmount && requiredAmount.gt(toTokenInfo.availableAmount)) {
-            return [
-              <TooltipWithPortal
-                position="center-bottom"
-                handle={<div>Insufficient liquidity</div>}
-                renderContent={() => (
-                  <span>
-                    Not enough Available Liquidity to swap {fromTokenInfo?.symbol} to and long{" "}
-                    {existingPosition?.collateralToken?.symbol}
-                  </span>
-                )}
-              />,
-            ];
+            return ["Insufficient liquidity"];
           }
         }
 
