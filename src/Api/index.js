@@ -346,11 +346,17 @@ function invariant(condition, errorMsg) {
   }
 }
 
-export function useTrades(chainId, account, forSingleAccount) {
-  const url =
+export function useTrades(chainId, account, forSingleAccount, afterId) {
+  let url =
     account && account.length > 0
       ? `${getServerBaseUrl(chainId)}/actions?account=${account}`
       : !forSingleAccount && `${getServerBaseUrl(chainId)}/actions`;
+
+  if (afterId && afterId.length > 0) {
+    const urlItem = new URL(url);
+    urlItem.searchParams.append("after", afterId);
+    url = urlItem.toString();
+  }
 
   const { data: trades, mutate: updateTrades } = useSWR(url && url, {
     dedupingInterval: 10000,
