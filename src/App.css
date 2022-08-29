@@ -100,6 +100,7 @@
   display: flex;
   align-items: center;
   z-index: 3;
+  margin-left: 1.6rem;
 }
 
 .App-header-container-left {
@@ -120,6 +121,11 @@
   margin-left: 0px;
   display: flex;
   align-items: center;
+}
+
+.mobile-menu-cross {
+  position: absolute;
+  right: 0;
 }
 
 .App-header-menu-icon {

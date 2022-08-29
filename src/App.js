@@ -151,7 +151,7 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
     <div className="App-header-links">
       {small && (
         <div className="App-header-links-header">
-          <div className="App-header-menu-icon-block" onClick={() => clickCloseIcon()}>
+          <div className="App-header-menu-icon-block mobile-menu-cross" onClick={() => clickCloseIcon()}>
             <FiX className="App-header-menu-icon" />
           </div>
           <HeaderLink isHomeLink={true} className="App-header-link-main" to="/">
