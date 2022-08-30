@@ -1161,16 +1161,23 @@ export default function PositionSeller(props) {
                               Insufficient Available Liquidity to swap to {tokenOptionInfo.symbol}
                               <br />
                               <br />
-                              Max {collateralInfo.symbol} in: {formatAmount(maxIn, collateralInfo.decimals, 2, true)}{" "}
-                              {collateralInfo.symbol}
+                              <TooltipCardRow
+                                label={`Max ${collateralInfo.symbol} in`}
+                                values={[
+                                  `${formatAmount(maxIn, collateralInfo.decimals, 0, true)} ${collateralInfo.symbol}`,
+                                  `($${formatAmount(maxInUsd, USD_DECIMALS, 0, true)})`,
+                                ]}
+                              />
                               <br />
-                              (${formatAmount(maxInUsd, USD_DECIMALS, 2, true)})
-                              <br />
-                              <br />
-                              Max {tokenOptionInfo.symbol} out:{" "}
-                              {formatAmount(maxOut, tokenOptionInfo.decimals, 2, true)} {tokenOptionInfo.symbol}
-                              <br />
-                              (${formatAmount(maxOutUsd, USD_DECIMALS, 2, true)})
+                              <TooltipCardRow
+                                label={`Max ${tokenOptionInfo.symbol} out`}
+                                values={[
+                                  `${formatAmount(maxOut, tokenOptionInfo.decimals, 0, true)} ${
+                                    tokenOptionInfo.symbol
+                                  }`,
+                                  `($${formatAmount(maxOutUsd, USD_DECIMALS, 0, true)})`,
+                                ]}
+                              />
                             </div>
                           ),
                         };
