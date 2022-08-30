@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback, forwardRef, useImperativeHandle } from "react";
-
+import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { ethers } from "ethers";
@@ -718,9 +718,9 @@ export const Exchange = forwardRef((props, ref) => {
       setIsCancelMultipleOrderProcessing(true);
       try {
         const tx = await cancelMultipleOrders(chainId, library, cancelOrderIdList, {
-          successMsg: "Orders cancelled.",
-          failMsg: "Cancel failed.",
-          sentMsg: "Cancel submitted.",
+          successMsg: t`Orders cancelled.`,
+          failMsg: t`Cancel failed.`,
+          sentMsg: t`Cancel submitted.`,
           pendingTxns,
           setPendingTxns,
         });
@@ -751,8 +751,8 @@ export const Exchange = forwardRef((props, ref) => {
       library,
       pendingTxns,
       setPendingTxns,
-      sentMsg: "Enable orders sent.",
-      failMsg: "Enable orders failed.",
+      sentMsg: t`Enable orders sent.`,
+      failMsg: t`Enable orders failed.`,
     })
       .then(() => {
         setIsWaitingForPluginApproval(true);
@@ -794,7 +794,7 @@ export const Exchange = forwardRef((props, ref) => {
   }
 
   const renderCancelOrderButton = () => {
-    const orderText = cancelOrderIdList.length > 1 ? "orders" : "order";
+    const orderText = cancelOrderIdList.length > 1 ? t`orders` : t`order`;
     if (cancelOrderIdList.length === 0) return;
     return (
       <button
@@ -803,7 +803,9 @@ export const Exchange = forwardRef((props, ref) => {
         type="button"
         onClick={onMultipleCancelClick}
       >
-        Cancel {cancelOrderIdList.length} {orderText}
+        <Trans>
+          Cancel {cancelOrderIdList.length} {orderText}
+        </Trans>
       </button>
     );
   };
@@ -827,7 +829,9 @@ export const Exchange = forwardRef((props, ref) => {
               setIsChecked={setSavedShouldShowPositionLines}
               className={cx("muted chart-positions", { active: savedShouldShowPositionLines })}
             >
-              <span>Chart positions</span>
+              <span>
+                <Trans>Chart positions</Trans>
+              </span>
             </Checkbox>
           </div>
         </div>

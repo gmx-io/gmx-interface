@@ -15,6 +15,8 @@ import RewardRouter from "../../abis/RewardRouter.json";
 
 import "./CompleteAccountTransfer.css";
 
+import { Trans, t } from '@lingui/macro'
+
 export default function CompleteAccountTransfer(props) {
   const [, copyToClipboard] = useCopyToClipboard();
   const { sender, receiver } = useParams();
@@ -31,10 +33,10 @@ export default function CompleteAccountTransfer(props) {
 
   const getError = () => {
     if (!account) {
-      return "Wallet is not connected";
+      return t`Wallet is not connected`;
     }
     if (!isCorrectAccount) {
-      return "Incorrect Account";
+      return t`Incorrect Account`;
     }
   };
 
@@ -54,7 +56,7 @@ export default function CompleteAccountTransfer(props) {
     if (error) {
       return error;
     }
-    return "Complete Transfer";
+    return t`Complete Transfer`;
   };
 
   const onClickPrimary = () => {
@@ -63,8 +65,8 @@ export default function CompleteAccountTransfer(props) {
     const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
 
     callContract(chainId, contract, "acceptTransfer", [sender], {
-      sentMsg: "Transfer submitted!",
-      failMsg: "Transfer failed.",
+      sentMsg: t`Transfer submitted!`,
+      failMsg: t`Transfer failed.`,
       setPendingTxns,
     })
       .then(async (res) => {
@@ -82,37 +84,39 @@ export default function CompleteAccountTransfer(props) {
         setIsVisible={setIsTransferSubmittedModalVisible}
         label="Transfer Completed"
       >
-        Your transfer has been completed.
+        <Trans>Your transfer has been completed.</Trans>
         <br />
         <br />
         <Link className="App-cta" to="/earn">
-          Continue
+          <Trans>Continue</Trans>
         </Link>
       </Modal>
       <div className="Page-title-section">
-        <div className="Page-title">Complete Account Transfer</div>
+        <div className="Page-title"><Trans>Complete Account Transfer</Trans></div>
         {!isCorrectAccount && (
           <div className="Page-description">
-            To complete the transfer, you must switch your connected account to {receiver}.
+            <Trans>To complete the transfer, you must switch your connected account to {receiver}.</Trans>
             <br />
             <br />
-            You will need to be on this page to accept the transfer,{" "}
-            <span
-              onClick={() => {
-                copyToClipboard(window.location.href);
-                helperToast.success("Link copied to your clipboard");
-              }}
-            >
-              click here
-            </span>{" "}
-            to copy the link to this page if needed.
+            <Trans>
+              You will need to be on this page to accept the transfer,{" "}
+              <span
+                onClick={() => {
+                  copyToClipboard(window.location.href);
+                  helperToast.success("Link copied to your clipboard");
+                }}
+              >
+                click here
+              </span>{" "}
+              to copy the link to this page if needed.
+            </Trans>
             <br />
             <br />
           </div>
         )}
         {isCorrectAccount && (
           <div className="Page-description">
-            You have a pending transfer from {sender}.<br />
+            <Trans>You have a pending transfer from {sender}.</Trans><br />
           </div>
         )}
       </div>

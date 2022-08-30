@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react";
-import cx from "classnames";
-
 import { ethers } from "ethers";
+import cx from "classnames";
+import { Trans, t } from "@lingui/macro";
 import { BsArrowRight } from "react-icons/bs";
 
 import {
@@ -494,27 +494,27 @@ export default function PositionSeller(props) {
 
   const getError = () => {
     if (hasOutdatedUi) {
-      return "Page outdated, please refresh";
+      return t`Page outdated, please refresh`;
     }
     if (!fromAmount) {
-      return "Enter an amount";
+      return t`Enter an amount`;
     }
     if (nextLeverage && nextLeverage.eq(0)) {
-      return "Enter an amount";
+      return t`Enter an amount`;
     }
     if (orderOption === STOP) {
       if (!triggerPriceUsd || triggerPriceUsd.eq(0)) {
-        return "Enter Price";
+        return t`Enter Price`;
       }
       if (position.isLong && triggerPriceUsd.lte(liquidationPrice)) {
-        return "Price below Liq. Price";
+        return t`Price below Liq. Price`;
       }
       if (!position.isLong && triggerPriceUsd.gte(liquidationPrice)) {
-        return "Price above Liq. Price";
+        return t`Price above Liq. Price`;
       }
 
       if (profitPrice && nextDelta.eq(0) && nextHasProfit) {
-        return "Invalid price, see warning";
+        return t`Invalid price, see warning`;
       }
     }
 
@@ -528,27 +528,27 @@ export default function PositionSeller(props) {
 
     if (!isClosing && position && position.size && fromAmount) {
       if (position.size.sub(fromAmount).lt(expandDecimals(10, USD_DECIMALS))) {
-        return "Leftover position below 10 USD";
+        return t`Leftover position below 10 USD`;
       }
       if (nextCollateral && nextCollateral.lt(expandDecimals(5, USD_DECIMALS))) {
-        return "Leftover collateral below 5 USD";
+        return t`Leftover collateral below 5 USD`;
       }
     }
 
     if (position && position.size && position.size.lt(fromAmount)) {
-      return "Max close amount exceeded";
+      return t`Max close amount exceeded`;
     }
 
     if (nextLeverage && nextLeverage.lt(1.1 * BASIS_POINTS_DIVISOR)) {
-      return "Min leverage: 1.1x";
+      return t`Min leverage: 1.1x`;
     }
 
     if (nextLeverage && nextLeverage.gt(30.5 * BASIS_POINTS_DIVISOR)) {
-      return "Max leverage: 30.5x";
+      return t`Max leverage: 30.5xt`;
     }
 
     if (hasPendingProfit && orderOption !== STOP && !isProfitWarningAccepted) {
-      return "Forfeit profit not checked";
+      return t`Forfeit profit not checked`;
     }
   };
 
@@ -585,37 +585,37 @@ export default function PositionSeller(props) {
     }
 
     if (orderOption === STOP) {
-      if (isSubmitting) return "Creating Order...";
+      if (isSubmitting) return t`Creating Order...`;
 
       if (needOrderBookApproval && isWaitingForPluginApproval) {
-        return "Enabling Orders...";
+        return t`Enabling Orders...`;
       }
       if (isPluginApproving) {
-        return "Enabling Orders...";
+        return t`Enabling Orders...`;
       }
       if (needOrderBookApproval) {
-        return "Enable Orders";
+        return t`Enable Orders`;
       }
 
-      return "Create Order";
+      return t`Create Order`;
     }
 
     if (needPositionRouterApproval && isWaitingForPositionRouterApproval) {
-      return "Enabling Leverage...";
+      return t`Enabling Leverage...`;
     }
 
     if (isPositionRouterApproving) {
-      return "Enabling Leverage...";
+      return t`Enabling Leverage...`;
     }
 
     if (needPositionRouterApproval) {
-      return "Enable Leverage";
+      return t`Enable Leverage`;
     }
 
     if (hasPendingProfit) {
-      return "Close without profit";
+      return t`Close without profit`;
     }
-    return isSubmitting ? "Closing..." : "Close";
+    return isSubmitting ? t`Closing...` : t`Close`;
   };
 
   const resetForm = () => {
@@ -637,8 +637,8 @@ export default function PositionSeller(props) {
 
     if (needPositionRouterApproval) {
       approvePositionRouter({
-        sentMsg: "Enable leverage sent.",
-        failMsg: "Enable leverage failed.",
+        sentMsg: t`Enable leverage sent.`,
+        failMsg: t`Enable leverage failed.`,
       });
       return;
     }
@@ -664,9 +664,9 @@ export default function PositionSeller(props) {
         triggerPriceUsd,
         triggerAboveThreshold,
         {
-          sentMsg: "Order submitted!",
-          successMsg: "Order created!",
-          failMsg: "Order creation failed.",
+          sentMsg: t`Order submitted!`,
+          successMsg: t`Order created!`,
+          failMsg: t`Order creation failed.`,
           setPendingTxns,
         }
       )
@@ -724,7 +724,7 @@ export default function PositionSeller(props) {
       withdrawETH, // _withdrawETH
     ];
 
-    const successMsg = `Requested decrease of ${position.indexToken.symbol} ${
+    const successMsg = t`Requested decrease of ${position.indexToken.symbol} ${
       position.isLong ? "Long" : "Short"
     } by ${formatAmount(sizeDelta, USD_DECIMALS, 2)} USD.`;
 
@@ -732,9 +732,9 @@ export default function PositionSeller(props) {
 
     callContract(chainId, contract, "createDecreasePosition", params, {
       value: minExecutionFee,
-      sentMsg: "Close submitted!",
+      sentMsg: t`Close submitted!`,
       successMsg,
-      failMsg: "Close failed.",
+      failMsg: t`Close failed.`,
       setPendingTxns,
     })
       .then(async (res) => {
@@ -883,7 +883,9 @@ export default function PositionSeller(props) {
           {orderOption === STOP && (
             <div className="Exchange-swap-section">
               <div className="Exchange-swap-section-top">
-                <div className="muted">Price</div>
+                <div className="muted">
+                  <Trans>Price</Trans>
+                </div>
                 <div
                   className="muted align-right clickable"
                   onClick={() => {
@@ -956,7 +958,9 @@ export default function PositionSeller(props) {
             )}
             {orderOption === STOP && (
               <div className="Exchange-info-row">
-                <div className="Exchange-info-label">Trigger Price</div>
+                <div className="Exchange-info-label">
+                  <Trans>Trigger Price</Trans>
+                </div>
                 <div className="align-right">
                   {!triggerPriceUsd && "-"}
                   {triggerPriceUsd && `${triggerPricePrefix} ${formatAmount(triggerPriceUsd, USD_DECIMALS, 2, true)}`}
@@ -964,15 +968,21 @@ export default function PositionSeller(props) {
               </div>
             )}
             <div className="Exchange-info-row top-line">
-              <div className="Exchange-info-label">Mark Price</div>
+              <div className="Exchange-info-label">
+                <Trans>Mark Price</Trans>
+              </div>
               <div className="align-right">${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</div>
             </div>
             <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Entry Price</div>
+              <div className="Exchange-info-label">
+                <Trans>Entry Price</Trans>
+              </div>
               <div className="align-right">${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}</div>
             </div>
             <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Liq. Price</div>
+              <div className="Exchange-info-label">
+                <Trans>Liq. Price</Trans>
+              </div>
               <div className="align-right">
                 {isClosing && orderOption !== STOP && "-"}
                 {(!isClosing || orderOption === STOP) && (
@@ -994,7 +1004,9 @@ export default function PositionSeller(props) {
               </div>
             </div>
             <div className="Exchange-info-row top-line">
-              <div className="Exchange-info-label">Size</div>
+              <div className="Exchange-info-label">
+                <Trans>Size</Trans>
+              </div>
               <div className="align-right">
                 {position && position.size && fromAmount && (
                   <div>
@@ -1011,7 +1023,9 @@ export default function PositionSeller(props) {
               </div>
             </div>
             <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Collateral</div>
+              <div className="Exchange-info-label">
+                <Trans>Collateral</Trans>
+              </div>
               <div className="align-right">
                 {nextCollateral && !nextCollateral.eq(position.collateral) ? (
                   <div>
@@ -1028,7 +1042,9 @@ export default function PositionSeller(props) {
             </div>
             {!keepLeverage && (
               <div className="Exchange-info-row">
-                <div className="Exchange-info-label">Leverage</div>
+                <div className="Exchange-info-label">
+                  <Trans>Leverage</Trans>
+                </div>
                 <div className="align-right">
                   {isClosing && "-"}
                   {!isClosing && (
@@ -1049,14 +1065,18 @@ export default function PositionSeller(props) {
               </div>
             )}
             <div className="Exchange-info-row">
-              <div className="Exchange-info-label">PnL</div>
+              <div className="Exchange-info-label">
+                <Trans>PnL</Trans>
+              </div>
               <div className="align-right">
                 {deltaStr} ({deltaPercentageStr})
               </div>
             </div>
 
             <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Fees</div>
+              <div className="Exchange-info-label">
+                <Trans>Fees</Trans>
+              </div>
               <div className="align-right">
                 <Tooltip
                   position="right-top"
@@ -1106,7 +1126,9 @@ export default function PositionSeller(props) {
               </div>
             </div>
             <div className="Exchange-info-row PositionSeller-receive-row top-line">
-              <div className="Exchange-info-label">Receive</div>
+              <div className="Exchange-info-label">
+                <Trans>Receive</Trans>
+              </div>
 
               {!allowReceiveTokenChange && receiveToken && (
                 <div className="align-right PositionSelector-selected-receive-token">
