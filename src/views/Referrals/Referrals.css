@@ -228,6 +228,7 @@
   padding: 0;
   width: 100%;
   table-layout: fixed;
+  font-size: 1.5rem;
 }
 .referral-table th {
   font-weight: normal;
