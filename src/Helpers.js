@@ -42,7 +42,7 @@ const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
 const CHAIN_NAMES_MAP = {
   [MAINNET]: "BSC",
   [TESTNET]: "BSC Testnet",
-  [ARBITRUM_TESTNET]: "Arbitrum Testnet",
+  [ARBITRUM_TESTNET]: "ArbRinkeby",
   [ARBITRUM]: "Arbitrum",
   [AVALANCHE]: "Avalanche",
 };
@@ -82,6 +82,7 @@ export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
 export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
 export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
+export const LANGUAGE_LOCALSTORAGE_KEY = "LANGUAGE_KEY";
 
 export function getChainName(chainId) {
   return CHAIN_NAMES_MAP[chainId];
@@ -90,7 +91,7 @@ export function getChainName(chainId) {
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
 export const MAX_LEVERAGE = 100 * 10000;
 
-export const MAX_PRICE_DEVIATION_BASIS_POINTS = 250;
+export const MAX_PRICE_DEVIATION_BASIS_POINTS = 750;
 export const DEFAULT_GAS_LIMIT = 1 * 1000 * 1000;
 export const SECONDS_PER_YEAR = 31536000;
 export const USDG_DECIMALS = 18;
@@ -112,6 +113,8 @@ export const STABLE_SWAP_FEE_BASIS_POINTS = 1;
 export const MARGIN_FEE_BASIS_POINTS = 10;
 
 export const LIQUIDATION_FEE = expandDecimals(5, USD_DECIMALS);
+
+export const TRADES_PAGE_SIZE = 100;
 
 export const GLP_COOLDOWN_DURATION = 15 * 60;
 export const THRESHOLD_REDEMPTION_VALUE = expandDecimals(993, 27); // 0.993
@@ -151,6 +154,7 @@ export const MIN_PROFIT_BIPS = 0;
 export const GLPPOOLCOLORS = {
   ETH: "#6062a6",
   BTC: "#F7931A",
+  "BTC.b": "#F7931A",
   USDC: "#2775CA",
   "USDC.e": "#2A5ADA",
   USDT: "#67B18A",
@@ -167,8 +171,21 @@ export const HIGH_EXECUTION_FEES_MAP = {
   [AVALANCHE]: 3, // 3 USD
 };
 
+export function getHighExecutionFee(chainId) {
+  return HIGH_EXECUTION_FEES_MAP[chainId] || 3;
+}
+
 export const ICONLINKS = {
-  42161: {
+  [ARBITRUM_TESTNET]: {
+    GMX: {
+      coingecko: "https://www.coingecko.com/en/coins/gmx",
+      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
+    },
+    GLP: {
+      arbitrum: "https://testnet.arbiscan.io/token/0xb4f81Fa74e06b5f762A104e47276BA9b2929cb27",
+    },
+  },
+  [ARBITRUM]: {
     GMX: {
       coingecko: "https://www.coingecko.com/en/coins/gmx",
       arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
@@ -212,7 +229,7 @@ export const ICONLINKS = {
       arbitrum: "https://arbiscan.io/address/0x17fc002b466eec40dae837fc4be5c67993ddbd6f",
     },
   },
-  43114: {
+  [AVALANCHE]: {
     GMX: {
       coingecko: "https://www.coingecko.com/en/coins/gmx",
       avalanche: "https://snowtrace.io/address/0x62edc0692bd897d2295872a9ffcac5425011c661",
@@ -288,6 +305,9 @@ export const platformTokens = {
 };
 
 const supportedChainIds = [ARBITRUM, AVALANCHE];
+if (isDevelopment()) {
+  supportedChainIds.push(ARBITRUM_TESTNET);
+}
 const injectedConnector = new InjectedConnector({
   supportedChainIds,
 });
@@ -298,6 +318,7 @@ const getWalletConnectConnector = () => {
     rpc: {
       [AVALANCHE]: AVALANCHE_RPC_PROVIDERS[0],
       [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0],
+      [ARBITRUM_TESTNET]: "https://rinkeby.arbitrum.io/rpc",
     },
     qrcode: true,
     chainId,
@@ -322,13 +343,13 @@ export function isHomeSite() {
 }
 
 export const helperToast = {
-  success: (content) => {
+  success: (content, opts) => {
     toast.dismiss();
-    toast.success(content);
+    toast.success(content, opts);
   },
-  error: (content) => {
+  error: (content, opts) => {
     toast.dismiss();
-    toast.error(content);
+    toast.error(content, opts);
   },
 };
 
@@ -440,7 +461,7 @@ export function getServerBaseUrl(chainId) {
   if (chainId === MAINNET) {
     return "https://gambit-server-staging.uc.r.appspot.com";
   } else if (chainId === ARBITRUM_TESTNET) {
-    return "https://gambit-l2.as.r.appspot.com";
+    return "https://gambit-server-devnet.uc.r.appspot.com";
   } else if (chainId === ARBITRUM) {
     return "https://gmx-server-mainnet.uw.r.appspot.com";
   } else if (chainId === AVALANCHE) {
@@ -1917,7 +1938,7 @@ export function getExplorerUrl(chainId) {
   } else if (chainId === TESTNET) {
     return "https://testnet.bscscan.com/";
   } else if (chainId === ARBITRUM_TESTNET) {
-    return "https://rinkeby-explorer.arbitrum.io/";
+    return "https://testnet.arbiscan.io/";
   } else if (chainId === ARBITRUM) {
     return "https://arbiscan.io/";
   } else if (chainId === AVALANCHE) {
@@ -2744,7 +2765,6 @@ export function importImage(name) {
   try {
     tokenImage = require("./img/" + name);
   } catch (error) {
-    tokenImage = require("./img/ic_eth_40.svg");
     console.error(error);
   }
   return tokenImage && tokenImage.default;

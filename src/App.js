@@ -12,6 +12,7 @@ import { Switch, Route, NavLink, HashRouter as Router, Redirect, useLocation, us
 
 import {
   ARBITRUM,
+  ARBITRUM_TESTNET,
   AVALANCHE,
   DEFAULT_SLIPPAGE_AMOUNT,
   SLIPPAGE_BPS_KEY,
@@ -47,6 +48,7 @@ import {
   isDevelopment,
   DISABLE_ORDER_VALIDATION_KEY,
   shouldShowRedirectModal,
+  LANGUAGE_LOCALSTORAGE_KEY,
 } from "./Helpers";
 
 import Home from "./views/Home/Home";
@@ -69,7 +71,6 @@ import CompleteAccountTransfer from "./views/CompleteAccountTransfer/CompleteAcc
 import cx from "classnames";
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import NetworkSelector from "./components/NetworkSelector/NetworkSelector";
 import Modal from "./components/Modal/Modal";
 import Checkbox from "./components/Checkbox/Checkbox";
 
@@ -109,6 +110,13 @@ import { useLocalStorage } from "react-use";
 import { RedirectPopupModal } from "./components/ModalViews/RedirectModal";
 import { REDIRECT_POPUP_TIMESTAMP_KEY } from "./utils/constants";
 import Jobs from "./views/Jobs/Jobs";
+
+import { i18n } from "@lingui/core";
+import { I18nProvider } from "@lingui/react";
+import { Trans, t } from "@lingui/macro";
+import { defaultLocale, dynamicActivate } from "./utils/i18n";
+import NetworkDropdown from "./components/NetworkDropdown/NetworkDropdown";
+import LanguagePopupHome from "./components/NetworkDropdown/LanguagePopupHome";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -160,34 +168,44 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
       )}
       <div className="App-header-link-container App-header-link-home">
         <HeaderLink to="/" exact={true} isHomeLink={true}>
-          Home
+          <Trans>Home</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink to="/dashboard">Dashboard</HeaderLink>
+        <HeaderLink to="/dashboard">
+          <Trans>Dashboard</Trans>
+        </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink to="/earn">Earn</HeaderLink>
+        <HeaderLink to="/earn">
+          <Trans>Earn</Trans>
+        </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink to="/buy">Buy</HeaderLink>
+        <HeaderLink to="/buy">
+          <Trans>Buy</Trans>
+        </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink to="/referrals">Referrals</HeaderLink>
+        <HeaderLink to="/referrals">
+          <Trans>Referrals</Trans>
+        </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink to="/ecosystem">Ecosystem</HeaderLink>
+        <HeaderLink to="/ecosystem">
+          <Trans>Ecosystem</Trans>
+        </HeaderLink>
       </div>
       <div className="App-header-link-container">
         <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
-          About
+          <Trans>About</Trans>
         </a>
       </div>
       {small && !isHomeSite() && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
           <a href="#" onClick={openSettings}>
-            Settings
+            <Trans>Settings</Trans>
           </a>
         </div>
       )}
@@ -200,8 +218,8 @@ function AppHeaderUser({
   openSettings,
   small,
   setWalletModalVisible,
-  showNetworkSelectorModal,
   disconnectAccountAndCloseSettings,
+  showNetworkSelectorModal,
 }) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
@@ -209,18 +227,26 @@ function AppHeaderUser({
 
   const networkOptions = [
     {
-      label: "Arbitrum",
+      label: getChainName(ARBITRUM),
       value: ARBITRUM,
       icon: "ic_arbitrum_24.svg",
       color: "#264f79",
     },
     {
-      label: "Avalanche",
+      label: getChainName(AVALANCHE),
       value: AVALANCHE,
       icon: "ic_avalanche_24.svg",
       color: "#E841424D",
     },
   ];
+  if (isDevelopment()) {
+    networkOptions.push({
+      label: getChainName(ARBITRUM_TESTNET),
+      value: ARBITRUM_TESTNET,
+      icon: "ic_arbitrum_24.svg",
+      color: "#264f79",
+    });
+  }
 
   useEffect(() => {
     if (active) {
@@ -243,27 +269,27 @@ function AppHeaderUser({
   if (!active) {
     return (
       <div className="App-header-user">
-        <div className="App-header-user-link">
+        <div className="App-header-trade-link">
           <HeaderLink activeClassName="active" className="default-btn" to="/trade">
-            Trade
+            <Trans>Trade</Trans>
           </HeaderLink>
         </div>
-        {showConnectionOptions && (
-          <NetworkSelector
-            options={networkOptions}
-            label={selectorLabel}
-            onSelect={onNetworkSelect}
-            className="App-header-user-netowork"
-            showCaret={true}
-            modalLabel="Select Network"
-            small={small}
-            showModal={showNetworkSelectorModal}
-          />
-        )}
-        {showConnectionOptions && (
-          <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
-            {small ? "Connect" : "Connect Wallet"}
-          </ConnectWalletButton>
+
+        {showConnectionOptions ? (
+          <>
+            <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
+              {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
+            </ConnectWalletButton>
+            <NetworkDropdown
+              small={small}
+              networkOptions={networkOptions}
+              selectorLabel={selectorLabel}
+              onNetworkSelect={onNetworkSelect}
+              openSettings={openSettings}
+            />
+          </>
+        ) : (
+          <LanguagePopupHome />
         )}
       </div>
     );
@@ -273,33 +299,33 @@ function AppHeaderUser({
 
   return (
     <div className="App-header-user">
-      <div className="App-header-user-link">
-        <HeaderLink activeClassName="active" className="default-btn" to="/trade">
-          Trade
-        </HeaderLink>
+      <div className="App-header-trade-link">
+        <NavLink activeClassName="active" className="default-btn" to="/trade">
+          <Trans>Trade</Trans>
+        </NavLink>
       </div>
-      {showConnectionOptions && (
-        <NetworkSelector
-          options={networkOptions}
-          label={selectorLabel}
-          onSelect={onNetworkSelect}
-          className="App-header-user-netowork"
-          showCaret={true}
-          modalLabel="Select Network"
-          small={small}
-          showModal={showNetworkSelectorModal}
-        />
-      )}
-      {showConnectionOptions && (
-        <div className="App-header-user-address">
-          <AddressDropdown
-            account={account}
+
+      {showConnectionOptions ? (
+        <>
+          <div className="App-header-user-address">
+            <AddressDropdown
+              account={account}
+              accountUrl={accountUrl}
+              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+              label={selectorLabel}
+              onNetworkSelect={onNetworkSelect}
+            />
+          </div>
+          <NetworkDropdown
             small={small}
-            accountUrl={accountUrl}
-            disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+            networkOptions={networkOptions}
+            selectorLabel={selectorLabel}
+            onNetworkSelect={onNetworkSelect}
             openSettings={openSettings}
           />
-        </div>
+        </>
+      ) : (
+        <LanguagePopupHome />
       )}
     </div>
   );
@@ -372,13 +398,18 @@ function FullApp() {
     if (!hasMetaMaskWalletExtension()) {
       helperToast.error(
         <div>
-          MetaMask not detected.
+          <Trans>MetaMask not detected.</Trans>
           <br />
           <br />
           <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">
-            Install MetaMask
+            <Trans>Install MetaMask</Trans>
           </a>
-          {userOnMobileDevice ? ", and use GMX with its built-in browser" : " to start using GMX"}.
+          {userOnMobileDevice ? (
+            <Trans>, and use GMX with its built-in browser</Trans>
+          ) : (
+            <Trans> to start using GMX</Trans>
+          )}
+          .
         </div>
       );
       return false;
@@ -389,13 +420,18 @@ function FullApp() {
     if (!hasCoinBaseWalletExtension()) {
       helperToast.error(
         <div>
-          Coinbase Wallet not detected.
+          <Trans>Coinbase Wallet not detected.</Trans>
           <br />
           <br />
           <a href="https://www.coinbase.com/wallet" target="_blank" rel="noopener noreferrer">
-            Install Coinbase Wallet
+            <Trans>Install Coinbase Wallet</Trans>
           </a>
-          {userOnMobileDevice ? ", and use GMX with its built-in browser" : " to start using GMX"}.
+          {userOnMobileDevice ? (
+            <Trans>, and use GMX with its built-in browser</Trans>
+          ) : (
+            <Trans> to start using GMX</Trans>
+          )}
+          .
         </div>
       );
       return false;
@@ -474,17 +510,17 @@ function FullApp() {
   const saveAndCloseSettings = () => {
     const slippage = parseFloat(slippageAmount);
     if (isNaN(slippage)) {
-      helperToast.error("Invalid slippage value");
+      helperToast.error(t`Invalid slippage value`);
       return;
     }
     if (slippage > 5) {
-      helperToast.error("Slippage should be less than 5%");
+      helperToast.error(t`Slippage should be less than 5%`);
       return;
     }
 
     const basisPoints = (slippage * BASIS_POINTS_DIVISOR) / 100;
     if (parseInt(basisPoints) !== parseFloat(basisPoints)) {
-      helperToast.error("Max slippage precision is 0.01%");
+      helperToast.error(t`Max slippage precision is 0.01%`);
       return;
     }
 
@@ -566,9 +602,9 @@ function FullApp() {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.error(
               <div>
-                Txn failed.{" "}
+                <Trans>Txn failed.</Trans>{" "}
                 <a href={txUrl} target="_blank" rel="noopener noreferrer">
-                  View
+                  <Trans>View</Trans>
                 </a>
                 <br />
               </div>
@@ -580,7 +616,7 @@ function FullApp() {
               <div>
                 {pendingTxn.message}{" "}
                 <a href={txUrl} target="_blank" rel="noopener noreferrer">
-                  View
+                  <Trans>View</Trans>
                 </a>
                 <br />
               </div>
@@ -706,7 +742,6 @@ function FullApp() {
                   setActivatingConnector={setActivatingConnector}
                   walletModalVisible={walletModalVisible}
                   setWalletModalVisible={setWalletModalVisible}
-                  showNetworkSelectorModal={showNetworkSelectorModal}
                 />
               </div>
             </div>
@@ -892,15 +927,21 @@ function FullApp() {
       >
         <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
           <img src={metamaskImg} alt="MetaMask" />
-          <div>MetaMask</div>
+          <div>
+            <Trans>MetaMask</Trans>
+          </div>
         </button>
         <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
           <img src={coinbaseImg} alt="Coinbase Wallet" />
-          <div>Coinbase Wallet</div>
+          <div>
+            <Trans>Coinbase Wallet</Trans>
+          </div>
         </button>
         <button className="Wallet-btn WalletConnect-btn" onClick={activateWalletConnect}>
           <img src={walletConnectImg} alt="WalletConnect" />
-          <div>WalletConnect</div>
+          <div>
+            <Trans>WalletConnect</Trans>
+          </div>
         </button>
       </Modal>
       <Modal
@@ -910,7 +951,9 @@ function FullApp() {
         label="Settings"
       >
         <div className="App-settings-row">
-          <div>Allowed Slippage</div>
+          <div>
+            <Trans>Allowed Slippage</Trans>
+          </div>
           <div className="App-slippage-tolerance-input-container">
             <input
               type="number"
@@ -924,24 +967,24 @@ function FullApp() {
         </div>
         <div className="Exchange-settings-row">
           <Checkbox isChecked={showPnlAfterFees} setIsChecked={setShowPnlAfterFees}>
-            Display PnL after fees
+            <Trans>Display PnL after fees</Trans>
           </Checkbox>
         </div>
         <div className="Exchange-settings-row">
           <Checkbox isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
-            Include PnL in leverage display
+            <Trans>Include PnL in leverage display</Trans>
           </Checkbox>
         </div>
         {isDevelopment() && (
           <div className="Exchange-settings-row">
             <Checkbox isChecked={shouldDisableOrderValidation} setIsChecked={setShouldDisableOrderValidation}>
-              Disable order validations
+              <Trans>Disable order validations</Trans>
             </Checkbox>
           </div>
         )}
 
         <button className="App-cta Exchange-swap-button" onClick={saveAndCloseSettings}>
-          Save
+          <Trans>Save</Trans>
         </button>
       </Modal>
     </>
@@ -950,12 +993,18 @@ function FullApp() {
 
 function App() {
   useScrollToTop();
+  useEffect(() => {
+    const defaultLanguage = localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale;
+    dynamicActivate(defaultLanguage);
+  }, []);
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <SEO>
           <Router>
-            <FullApp />
+            <I18nProvider i18n={i18n}>
+              <FullApp />
+            </I18nProvider>
           </Router>
         </SEO>
       </Web3ReactProvider>

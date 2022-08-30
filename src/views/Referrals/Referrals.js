@@ -1,6 +1,7 @@
 import "./Referrals.css";
 import React from "react";
 import { useLocalStorage } from "react-use";
+import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import { useParams } from "react-router-dom";
 import SEO from "../../components/Common/SEO";
@@ -28,8 +29,8 @@ import AddAffiliateCode from "../../components/Referrals/AddAffiliateCode";
 import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "../../components/Referrals/referralsHelper";
 import { ethers } from "ethers";
 
-const TRADERS = "Traders";
-const AFFILIATES = "Affiliates";
+const TRADERS = t`Traders`;
+const AFFILIATES = t`Affiliates`;
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
 
 function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
@@ -53,8 +54,8 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
 
   function handleCreateReferralCode(referralCode) {
     return registerReferralCode(chainId, referralCode, library, {
-      sentMsg: "Referral code submitted!",
-      failMsg: "Referral code creation failed.",
+      sentMsg: t`Referral code submitted!`,
+      failMsg: t`Referral code creation failed.`,
       pendingTxns,
     });
   }
@@ -116,15 +117,19 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
         <div className="section-title-block">
           <div className="section-title-icon"></div>
           <div className="section-title-content">
-            <div className="Page-title">Referrals</div>
+            <div className="Page-title">
+              <Trans>Referrals</Trans>
+            </div>
             <div className="Page-description">
-              Get fee discounts and earn rebates through the GMX referral program.
-              <br />
-              For more information, please read the{" "}
-              <a target="_blank" rel="noopener noreferrer" href="https://gmxio.gitbook.io/gmx/referrals">
-                referral program details
-              </a>
-              .
+              <Trans>
+                Get fee discounts and earn rebates through the GMX referral program.
+                <br />
+                For more information, please read the{" "}
+                <a target="_blank" rel="noopener noreferrer" href="https://gmxio.gitbook.io/gmx/referrals">
+                  referral program details
+                </a>
+                .
+              </Trans>
             </div>
           </div>
         </div>
