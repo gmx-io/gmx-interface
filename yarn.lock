@@ -7844,7 +7844,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-react-app@npm:7.0.1, eslint-config-react-app@npm:^7.0.1":
+"eslint-config-react-app@npm:^7.0.1":
   version: 7.0.1
   resolution: "eslint-config-react-app@npm:7.0.1"
   dependencies:
@@ -8863,7 +8863,6 @@ __metadata:
     date-fns: 2.27.0
     env-cmd: ^10.1.0
     eslint: 8.21.0
-    eslint-config-react-app: 7.0.1
     ethers: 5.6.8
     framer-motion: 4.1.17
     graphql: 15.8.0
