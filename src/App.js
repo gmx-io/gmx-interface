@@ -158,12 +158,12 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
     <div className="App-header-links">
       {small && (
         <div className="App-header-links-header">
-          <div className="App-header-menu-icon-block" onClick={() => clickCloseIcon()}>
-            <FiX className="App-header-menu-icon" />
-          </div>
           <HeaderLink isHomeLink={true} className="App-header-link-main" to="/">
             <img src={logoImg} alt="GMX Logo" />
           </HeaderLink>
+          <div className="App-header-menu-icon-block mobile-cross-menu" onClick={() => clickCloseIcon()}>
+            <FiX className="App-header-menu-icon" />
+          </div>
         </div>
       )}
       <div className="App-header-link-container App-header-link-home">
@@ -269,7 +269,7 @@ function AppHeaderUser({
   if (!active) {
     return (
       <div className="App-header-user">
-        <div className="App-header-trade-link">
+        <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
           <HeaderLink activeClassName="active" className="default-btn" to="/trade">
             <Trans>Trade</Trans>
           </HeaderLink>
@@ -300,9 +300,9 @@ function AppHeaderUser({
   return (
     <div className="App-header-user">
       <div className="App-header-trade-link">
-        <NavLink activeClassName="active" className="default-btn" to="/trade">
+        <HeaderLink activeClassName="active" className="default-btn" to="/trade">
           <Trans>Trade</Trans>
-        </NavLink>
+        </HeaderLink>
       </div>
 
       {showConnectionOptions ? (
@@ -799,9 +799,9 @@ function FullApp() {
             <Switch>
               <Route exact path="/">
                 <Home
-                  HeaderLink={HeaderLink}
                   showRedirectModal={showRedirectModal}
                   redirectPopupTimestamp={redirectPopupTimestamp}
+                  HeaderLink={HeaderLink}
                 />
               </Route>
               <Route exact path="/referral-terms">

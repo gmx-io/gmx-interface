@@ -130,7 +130,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp, Header
 
   const LaunchExchangeButton = () => {
     return (
-      <HeaderLink activeClassName="active" className="default-btn" to="/trade">
+      <HeaderLink className="default-btn" to="/trade">
         <Trans>Launch Exchange</Trans>
       </HeaderLink>
     );
