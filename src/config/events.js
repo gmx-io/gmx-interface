@@ -16,6 +16,21 @@ export const homeEventsData = [
       },
     ],
   },
+  {
+    id: "arbitrum-nitro-plan-reminder",
+    title: "Arbitrum Nitro Upgrade",
+    isActive: true,
+    validTill: "31 Aug 2022, 12:00",
+    bodyText:
+      "Reminder: There will be some expected downtime during the Arbitrum Nitro upgrade on Wednesday, 31 Aug 2022, 2:30 PM UTC.",
+    buttons: [
+      {
+        text: "Read More",
+        link: "https://medium.com/@gmx.io/arbitrum-nitro-5f88c03a46fe",
+        newTab: true,
+      },
+    ],
+  },
 ];
 
 export const appEventsData = [
@@ -185,6 +200,21 @@ export const appEventsData = [
       {
         text: "Learn More",
         link: "https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls",
+        newTab: true,
+      },
+    ],
+  },
+  {
+    id: "arbitrum-nitro-plan-reminder",
+    title: "Arbitrum Nitro Upgrade",
+    isActive: true,
+    validTill: "31 Aug 2022, 12:00",
+    bodyText:
+      "Reminder: There will be some expected downtime during the Arbitrum Nitro upgrade on Wednesday, 31 Aug 2022, 2:30 PM UTC.",
+    buttons: [
+      {
+        text: "Read More",
+        link: "https://medium.com/@gmx.io/arbitrum-nitro-5f88c03a46fe",
         newTab: true,
       },
     ],

@@ -8,6 +8,8 @@
     "@ethersproject/providers": "5.5.1",
     "@ethersproject/units": "5.5.0",
     "@headlessui/react": "1.6.1",
+    "@lingui/core": "3.13.3",
+    "@lingui/react": "3.13.3",
     "@testing-library/jest-dom": "5.16.1",
     "@testing-library/react": "11.2.7",
     "@testing-library/user-event": "12.8.3",
@@ -25,7 +27,7 @@
     "framer-motion": "4.1.17",
     "graphql": "15.8.0",
     "hex-to-rgba": "2.0.1",
-    "html-to-image": "^1.9.0",
+    "html-to-image": "1.9.0",
     "krasulya-lightweight-charts": "3.4.3",
     "lodash": "4.17.21",
     "qrcode.react": "^3.1.0",
@@ -60,7 +62,10 @@
     "eject": "react-scripts eject",
     "lint": "node node_modules/.bin/eslint src",
     "pre-commit": "npm run test -- --watchAll=false && npm run lint",
-    "prepare": "husky install"
+    "prepare": "husky install && yarn lingui:prepare",
+    "extract": "NODE_ENV=development lingui extract",
+    "compile": "lingui compile",
+    "lingui:prepare": "yarn extract && yarn compile"
   },
   "eslintConfig": {
     "extends": [
@@ -81,18 +86,21 @@
     ]
   },
   "devDependencies": {
-    "assert": "^2.0.0",
-    "eslint": "^8.21.0",
-    "eslint-config-react-app": "^7.0.1",
-    "https-browserify": "^1.0.0",
+    "@lingui/cli": "3.13.3",
+    "@lingui/loader": "3.14.0",
+    "@lingui/macro": "3.13.3",
+    "assert": "2.0.0",
+    "eslint": "8.21.0",
+    "eslint-config-react-app": "7.0.1",
+    "https-browserify": "1.0.0",
     "husky": "7.0.4",
     "lint-staged": "12.3.4",
-    "os-browserify": "^0.3.0",
+    "os-browserify": "0.3.0",
     "prettier": "2.5.1",
-    "process": "^0.11.10",
-    "react-app-rewired": "^2.2.1",
-    "stream-browserify": "^3.0.0",
-    "stream-http": "^3.2.0"
+    "process": "0.11.10",
+    "react-app-rewired": "2.2.1",
+    "stream-browserify": "3.0.0",
+    "stream-http": "3.2.0"
   },
   "lint-staged": {
     "**/*.js?(x)": [

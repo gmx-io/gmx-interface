@@ -1,22 +1,9 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useCallback, useRef, useState } from "react";
 import cx from "classnames";
 
 import "./Tooltip.css";
 import { IS_TOUCH } from "../../utils/constants";
-
-function Portal({ children }) {
-  const root = document.body;
-
-  const el = useMemo(() => document.createElement("div"), []);
-
-  useEffect(() => {
-    root.appendChild(el);
-    return () => root.removeChild(el);
-  }, [root, el]);
-
-  return createPortal(children, el);
-}
+import Portal from "../Common/Portal";
 
 const OPEN_DELAY = 0;
 const CLOSE_DELAY = 100;
