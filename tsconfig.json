@@ -20,6 +20,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    
+    // Add a path alias for absolute imports e.g import {Button} from 'components/Button'
     "baseUrl": "src"
   },
   "include": ["src"]
