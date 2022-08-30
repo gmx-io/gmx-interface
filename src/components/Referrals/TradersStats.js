@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { Trans, t } from "@lingui/macro";
 import { BiEditAlt } from "react-icons/bi";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
@@ -20,17 +21,17 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
     <div className="rebate-container">
       <div className="referral-stats">
         <InfoCard
-          label="Total Trading Volume"
-          tooltipText="Volume traded by this account with an active referral code."
+          label={t`Total Trading Volume`}
+          tooltipText={t`Volume traded by this account with an active referral code.`}
           data={getUSDValue(referralsData?.referralTotalStats?.volume)}
         />
         <InfoCard
-          label="Total Rebates"
-          tooltipText="Rebates earned by this account as a trader."
+          label={t`Total Rebates`}
+          tooltipText={t`Rebates earned by this account as a trader.`}
           data={getUSDValue(referralsData?.referralTotalStats?.discountUsd, 4)}
         />
         <InfoCard
-          label="Active Referral Code"
+          label={t`Active Referral Code`}
           data={
             <div className="active-referral-code">
               <div className="edit">
@@ -40,12 +41,14 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
               {traderTier && (
                 <div className="tier">
                   <Tooltip
-                    handle={`Tier ${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}
+                    handle={t`Tier ${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}
                     position="right-bottom"
                     renderContent={() => (
                       <p className="text-white">
-                        You will receive a {tierDiscountInfo[traderTier]}% discount on your opening and closing fees,
-                        this discount will be airdropped to your account every Wednesday
+                        <Trans>
+                          You will receive a {tierDiscountInfo[traderTier]}% discount on your opening and closing fees,
+                          this discount will be airdropped to your account every Wednesday
+                        </Trans>
                       </p>
                     )}
                   />
@@ -58,7 +61,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           className="Connect-wallet-modal"
           isVisible={isEditModalOpen}
           setIsVisible={close}
-          label="Edit Referral Code"
+          label={t`Edit Referral Code`}
           onAfterOpen={() => editModalRef.current?.focus()}
         >
           <div className="edit-referral-modal">
@@ -80,13 +83,13 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                 <thead>
                   <tr>
                     <th className="table-head" scope="col">
-                      Date
+                      <Trans>Date</Trans>
                     </th>
                     <th className="table-head" scope="col">
-                      Amount
+                      <Trans>Amount</Trans>
                     </th>
                     <th className="table-head" scope="col">
-                      Transaction
+                      <Trans>Transaction</Trans>
                     </th>
                   </tr>
                 </thead>
@@ -123,7 +126,10 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           </Card>
         </div>
       ) : (
-        <EmptyMessage message="No rebates distribution history yet." tooltipText="Rebates are airdropped weekly." />
+        <EmptyMessage
+          message={t`No rebates distribution history yet.`}
+          tooltipText={t`Rebates are airdropped weekly.`}
+        />
       )}
     </div>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import { Trans, t } from "@lingui/macro";
 import Modal from "../Modal/Modal";
 import Checkbox from "../Checkbox/Checkbox";
 
@@ -18,12 +18,12 @@ export default function OrdersToa(props) {
 
   const getPrimaryText = () => {
     if (isPluginApproving) {
-      return "Enabling Orders...";
+      return t`Enabling Orders...`;
     }
     if (!isChecked) {
-      return "Accept terms to enable orders";
+      return t`Accept terms to enable orders`;
     }
-    return "Enable Orders";
+    return t`Enable Orders`;
   };
 
   const isPrimaryEnabled = () => {
@@ -37,27 +37,37 @@ export default function OrdersToa(props) {
     <Modal
       setIsVisible={setIsVisible}
       isVisible={true}
-      label="Enable Orders"
+      label={t`Enable Orders`}
       className="Orders-toa Modal-scrollable"
       zIndex="1000"
     >
-      Note that orders are not guaranteed to be executed.
-      <br />
-      <br />
-      This can occur in a few situations including but not exclusive to:
+      <Trans>
+        Note that orders are not guaranteed to be executed.
+        <br />
+        <br />
+        This can occur in a few situations including but not exclusive to:
+      </Trans>
       <br />
       <ul>
-        <li>Insufficient liquidity to execute the order</li>
-        <li>The mark price which is an aggregate of exchange prices did not reach the specified price</li>
-        <li>The specified price was reached but not long enough for it to be executed</li>
-        <li>No keeper picked up the order for execution</li>
+        <Trans>
+          <li>Insufficient liquidity to execute the order</li>
+          <li>The mark price which is an aggregate of exchange prices did not reach the specified price</li>
+          <li>The specified price was reached but not long enough for it to be executed</li>
+          <li>No keeper picked up the order for execution</li>
+        </Trans>
       </ul>
-      <div>Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price.</div>
+      <div>
+        <Trans>
+          Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price.
+        </Trans>
+      </div>
       <br />
       <div className="Orders-toa-accept-rules">
         <Checkbox isChecked={isChecked} setIsChecked={setIsChecked}>
           <span className="muted">
-            Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price
+            <Trans>
+              Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price
+            </Trans>
           </span>
         </Checkbox>
       </div>

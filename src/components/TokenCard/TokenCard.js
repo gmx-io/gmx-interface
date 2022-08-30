@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
+import { Trans } from "@lingui/macro";
 
 import cx from "classnames";
 
@@ -57,19 +58,19 @@ export default function TokenCard({ showRedirectModal }) {
         </div>
         <div className="Home-token-card-option-info">
           <div className="Home-token-card-option-title">
-            GMX is the utility and governance token. Accrues 30% of the platform's generated fees.
+            <Trans>GMX is the utility and governance token. Accrues 30% of the platform's generated fees.</Trans>
           </div>
           <div className="Home-token-card-option-apr">
-            Arbitrum APR: <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />, Avalanche APR:{" "}
-            <APRLabel chainId={AVALANCHE} label="gmxAprTotal" key="AVALANCHE" />
+            <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="gmxAprTotal" />,{" "}
+            <Trans>Avalanche APR:</Trans> <APRLabel chainId={AVALANCHE} label="gmxAprTotal" key="AVALANCHE" />
           </div>
           <div className="Home-token-card-option-action">
             <div className="buy">
               <BuyLink to="/buy_gmx" className="default-btn" network={ARBITRUM}>
-                Buy on Arbitrum
+                <Trans>Buy on Arbitrum</Trans>
               </BuyLink>
               <BuyLink to="/buy_gmx" className="default-btn" network={AVALANCHE}>
-                Buy on Avalanche
+                <Trans>Buy on Avalanche</Trans>
               </BuyLink>
             </div>
             <a
@@ -78,7 +79,7 @@ export default function TokenCard({ showRedirectModal }) {
               rel="noreferrer"
               className="default-btn read-more"
             >
-              Read more
+              <Trans>Read more</Trans>
             </a>
           </div>
         </div>
@@ -89,19 +90,19 @@ export default function TokenCard({ showRedirectModal }) {
         </div>
         <div className="Home-token-card-option-info">
           <div className="Home-token-card-option-title">
-            GLP is the liquidity provider token. Accrues 70% of the platform's generated fees.
+            <Trans>GLP is the liquidity provider token. Accrues 70% of the platform's generated fees.</Trans>
           </div>
           <div className="Home-token-card-option-apr">
-            Arbitrum APR: <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />, Avalanche APR:{" "}
-            <APRLabel chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" />
+            <Trans>Arbitrum APR:</Trans> <APRLabel chainId={ARBITRUM} label="glpAprTotal" key="ARBITRUM" />,{" "}
+            <Trans>Avalanche APR:</Trans> <APRLabel chainId={AVALANCHE} label="glpAprTotal" key="AVALANCHE" />
           </div>
           <div className="Home-token-card-option-action">
             <div className="buy">
               <BuyLink to="/buy_glp" className="default-btn" network={ARBITRUM}>
-                Buy on Arbitrum
+                <Trans>Buy on Arbitrum</Trans>
               </BuyLink>
               <BuyLink to="/buy_glp" className="default-btn" network={AVALANCHE}>
-                Buy on Avalanche
+                <Trans>Buy on Avalanche</Trans>
               </BuyLink>
             </div>
             <a
@@ -110,7 +111,7 @@ export default function TokenCard({ showRedirectModal }) {
               rel="noreferrer"
               className="default-btn read-more"
             >
-              Read more
+              <Trans>Read more</Trans>
             </a>
           </div>
         </div>

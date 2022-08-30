@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import { Trans } from "@lingui/macro";
 
 import {
   SWAP,
@@ -82,16 +83,24 @@ export default function OrdersList(props) {
         )}
 
         <th>
-          <div>Type</div>
+          <div>
+            <Trans>Type</Trans>
+          </div>
         </th>
         <th>
-          <div>Order</div>
+          <div>
+            <Trans>Order</Trans>
+          </div>
         </th>
         <th>
-          <div>Price</div>
+          <div>
+            <Trans>Price</Trans>
+          </div>
         </th>
         <th>
-          <div>Mark Price</div>
+          <div>
+            <Trans>Mark Price</Trans>
+          </div>
         </th>
       </tr>
     );
@@ -104,7 +113,9 @@ export default function OrdersList(props) {
 
     return (
       <tr>
-        <td colSpan="5">No open orders</td>
+        <td colSpan="5">
+          <Trans>No open orders</Trans>
+        </td>
       </tr>
     );
   }, [orders]);
@@ -115,12 +126,12 @@ export default function OrdersList(props) {
         <>
           <td>
             <button className="Exchange-list-action" onClick={() => onEditClick(order)}>
-              Edit
+              <Trans>Edit</Trans>
             </button>
           </td>
           <td>
             <button className="Exchange-list-action" onClick={() => onCancelClick(order)}>
-              Cancel
+              <Trans>Cancel</Trans>
             </button>
           </td>
         </>
@@ -280,10 +291,10 @@ export default function OrdersList(props) {
               position="right-bottom"
               renderContent={() => {
                 return (
-                  <span>
+                  <Trans>
                     The price that orders can be executed at may differ slightly from the chart price, as market orders
                     update oracle prices, while limit/trigger orders do not.
-                  </span>
+                  </Trans>
                 );
               }}
             />
@@ -351,7 +362,9 @@ export default function OrdersList(props) {
                 </div>
               </div>
               <div className="App-card-row">
-                <div className="label">Mark Price</div>
+                <div className="label">
+                  <Trans>Mark Price</Trans>
+                </div>
                 <div>{getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo)}</div>
               </div>
               {!hideActions && (
@@ -359,10 +372,10 @@ export default function OrdersList(props) {
                   <div className="App-card-divider"></div>
                   <div className="App-card-options">
                     <button className="App-button-option App-card-option" onClick={() => onEditClick(order)}>
-                      Edit
+                      <Trans>Edit</Trans>
                     </button>
                     <button className="App-button-option App-card-option" onClick={() => onCancelClick(order)}>
-                      Cancel
+                      <Trans>Cancel</Trans>
                     </button>
                   </div>
                 </>
@@ -393,23 +406,27 @@ export default function OrdersList(props) {
           <div className="App-card-divider"></div>
           <div className="App-card-content">
             <div className="App-card-row">
-              <div className="label">Price</div>
+              <div className="label">
+                <Trans>Price</Trans>
+              </div>
               <div>
                 {triggerPricePrefix} {formatAmount(order.triggerPrice, USD_DECIMALS, 2, true)}
               </div>
             </div>
             <div className="App-card-row">
-              <div className="label">Mark Price</div>
+              <div className="label">
+                <Trans>Mark Price</Trans>
+              </div>
               <div>
                 <Tooltip
                   handle={formatAmount(markPrice, USD_DECIMALS, 2, true)}
                   position="right-bottom"
                   renderContent={() => {
                     return (
-                      <>
+                      <Trans>
                         The price that the order can be executed at may differ slightly from the chart price as market
                         orders can change the price while limit / trigger orders cannot.
-                      </>
+                      </Trans>
                     );
                   }}
                 />
@@ -417,7 +434,9 @@ export default function OrdersList(props) {
             </div>
             {order.type === INCREASE && (
               <div className="App-card-row">
-                <div className="label">Collateral</div>
+                <div className="label">
+                  <Trans>Collateral</Trans>
+                </div>
                 <div>
                   ${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (
                   {formatAmount(order.purchaseTokenAmount, collateralTokenInfo.decimals, 4, true)}{" "}
@@ -430,10 +449,10 @@ export default function OrdersList(props) {
                 <div className="App-card-divider"></div>
                 <div className="App-card-options">
                   <button className="App-button-option App-card-option" onClick={() => onEditClick(order)}>
-                    Edit
+                    <Trans>Edit</Trans>
                   </button>
                   <button className="App-button-option App-card-option" onClick={() => onCancelClick(order)}>
-                    Cancel
+                    <Trans>Cancel</Trans>
                   </button>
                 </div>
               </>

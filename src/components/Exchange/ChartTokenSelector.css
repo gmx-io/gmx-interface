@@ -16,3 +16,9 @@
   right: unset;
   left: 0;
 }
+
+.chart-token-menu-items .menu-item {
+    font-size: 1.4rem;
+    height: 3.4rem;
+    color: #a0a3c4;
+}

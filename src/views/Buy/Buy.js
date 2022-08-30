@@ -1,4 +1,5 @@
 import React from "react";
+import { Trans } from "@lingui/macro";
 import Footer from "../../Footer";
 import "./Buy.css";
 import TokenCard from "../../components/TokenCard/TokenCard";
@@ -16,7 +17,9 @@ export default function BuyGMXGLP() {
               <img src={buyGMXIcon} alt="buyGMXIcon" />
             </div>
             <div className="section-title-content">
-              <div className="Page-title">Buy GMX or GLP</div>
+              <div className="Page-title">
+                <Trans>Buy GMX or GLP</Trans>
+              </div>
             </div>
           </div>
           <TokenCard />
