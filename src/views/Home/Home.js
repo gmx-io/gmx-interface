@@ -35,7 +35,7 @@ import TokenCard from "../../components/TokenCard/TokenCard";
 
 import { Trans } from "@lingui/macro";
 
-export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
+export default function Home({ showRedirectModal, redirectPopupTimestamp, HeaderLink }) {
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
   // const faqContent = [{
   //   id: 1,
@@ -134,9 +134,9 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
 
   const LaunchExchangeButton = () => {
     return (
-      <div className={cx("default-btn")} onClick={() => showRedirectModal("/trade")}>
+      <HeaderLink className={cx("default-btn")} to="/trade">
         <Trans>Launch Exchange</Trans>
-      </div>
+      </HeaderLink>
     );
   };
 
