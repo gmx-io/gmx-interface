@@ -5,7 +5,7 @@ import cx from "classnames";
 import "./NetworkDropdown.css";
 import language24Icon from "../../img/ic_language24.svg";
 import checkedIcon from "../../img/ic_checked.svg";
-import { importImage, LANGUAGE_LOCALSTORAGE_KEY } from "../../Helpers";
+import { importImage, isHomeSite, LANGUAGE_LOCALSTORAGE_KEY } from "../../Helpers";
 import { defaultLocale, dynamicActivate, locales } from "../../utils/i18n";
 
 export default function LanguagePopupHome() {
@@ -15,7 +15,7 @@ export default function LanguagePopupHome() {
   return (
     <>
       <div className="App-header-network App-header-language" onClick={() => setIsLanguageModalOpen(true)}>
-        <div className="network-dropdown">
+        <div className={cx("network-dropdown", { "homepage-header": isHomeSite() })}>
           <button className={cx("btn-primary small transparent")}>
             <img className="network-dropdown-icon" src={language24Icon} alt="Select Language" />
           </button>
