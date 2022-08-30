@@ -68,6 +68,7 @@
   overflow-y: auto;
   -ms-overflow-style: none; /* Internet Explorer 10+ */
   scrollbar-width: none; /* Firefox */
+  max-width: 100%;
 }
 .App-header-drawer::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
@@ -100,6 +101,8 @@
   display: flex;
   align-items: center;
   z-index: 3;
+  margin-left: 1.6rem;
+  justify-content: space-between;
 }
 
 .App-header-container-left {
@@ -1367,6 +1370,10 @@ button.App-button {
   .App-header-menu-icon-block {
     margin-left: 0;
     margin-right: 0.4rem;
+  }
+
+  .mobile-cross-menu {
+    margin-right: 1.2rem;
   }
 
   .App-header-menu-icon {
