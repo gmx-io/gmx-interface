@@ -38,8 +38,8 @@ msgstr ""
 msgid "APR"
 msgstr "APR(実質年利)"
 
-#: src/views/Stake/StakeV2.js:1556
-#: src/views/Stake/StakeV2.js:1826
+#: src/views/Stake/StakeV2.js:1555
+#: src/views/Stake/StakeV2.js:1825
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 msgstr "APR(実質年利)は毎週水曜日に更新され、その前一週間に得られた手数料によって決まります。"
 
@@ -49,11 +49,11 @@ msgid "AVAILABLE"
 msgstr "利用可能"
 
 #: src/App.js:201
-#: src/views/Ecosystem/Ecosystem.js:343
-#: src/views/Ecosystem/Ecosystem.js:387
-#: src/views/Ecosystem/Ecosystem.js:442
-#: src/views/Ecosystem/Ecosystem.js:496
-#: src/views/Ecosystem/Ecosystem.js:543
+#: src/views/Ecosystem/Ecosystem.js:421
+#: src/views/Ecosystem/Ecosystem.js:465
+#: src/views/Ecosystem/Ecosystem.js:520
+#: src/views/Ecosystem/Ecosystem.js:574
+#: src/views/Ecosystem/Ecosystem.js:621
 msgid "About"
 msgstr "内容"
 
@@ -65,11 +65,11 @@ msgstr "注文執行のため規約に同意する"
 msgid "Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price"
 msgstr "注文が執行される保証がないこと、トリガー注文がトリガー価格で決済されない可能性がないことを承諾する"
 
-#: src/views/Actions/Actions.js:86
+#: src/views/Actions/Actions.js:88
 msgid "Account"
 msgstr "アカウント"
 
-#: src/views/Actions/Actions.js:144
+#: src/views/Actions/Actions.js:159
 msgid "Actions"
 msgstr "機能"
 
@@ -114,7 +114,7 @@ msgstr "請求後7日以内にesGMXトークンは指定のネットワークの
 msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
 msgstr "ETH入手後、ネットワークを<0>Arbitrum</0>にセットし、以下のボタンをクリックしてください:"
 
-#: src/App.js:955
+#: src/App.js:959
 msgid "Allowed Slippage"
 msgstr "スリッページ許容量"
 
@@ -135,7 +135,7 @@ msgstr "請求額"
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr "清算が発生した時点で高品質の複数の価格フィードの集成価格が決定します。これによりポジションは一時的な変動から守られます。"
 
-#: src/views/Ecosystem/Ecosystem.js:502
+#: src/views/Ecosystem/Ecosystem.js:580
 msgid "Announcement"
 msgstr "告知"
 
@@ -251,7 +251,7 @@ msgstr "移転開始"
 msgid "Binance"
 msgstr "Binance"
 
-#: src/views/Stake/StakeV2.js:1605
+#: src/views/Stake/StakeV2.js:1604
 msgid "Boost Percentage"
 msgstr "ブースト率"
 
@@ -298,7 +298,7 @@ msgstr "ETHを購入"
 #: src/components/Glp/GlpSwap.js:95
 #: src/components/Glp/GlpSwap.js:510
 #: src/components/Glp/GlpSwap.js:782
-#: src/views/Stake/StakeV2.js:1891
+#: src/views/Stake/StakeV2.js:1890
 msgid "Buy GLP"
 msgstr "GLPを購入"
 
@@ -376,8 +376,8 @@ msgstr "コード確認中"
 
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:296
 #: src/views/Stake/StakeV2.js:817
-#: src/views/Stake/StakeV2.js:1741
-#: src/views/Stake/StakeV2.js:1764
+#: src/views/Stake/StakeV2.js:1740
+#: src/views/Stake/StakeV2.js:1763
 msgid "Claim"
 msgstr "請求"
 
@@ -418,7 +418,7 @@ msgstr "請求申し込み完了"
 msgid "Claim {wrappedTokenSymbol} Rewards"
 msgstr "{wrappedTokenSymbol}報酬の請求"
 
-#: src/views/Stake/StakeV2.js:2100
+#: src/views/Stake/StakeV2.js:2099
 msgid "Claimable"
 msgstr "請求可能"
 
@@ -455,7 +455,7 @@ msgstr "クローズ中"
 msgid "Code already taken"
 msgstr "そのコードは既に使用されています"
 
-#: src/App.js:937
+#: src/App.js:941
 msgid "Coinbase Wallet"
 msgstr "コインベースウォレット"
 
@@ -476,11 +476,11 @@ msgstr "担保"
 msgid "Collateral In"
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:354
+#: src/views/Ecosystem/Ecosystem.js:432
 msgid "Community Projects"
 msgstr "コミュニティプロジェクト"
 
-#: src/views/Ecosystem/Ecosystem.js:520
+#: src/views/Ecosystem/Ecosystem.js:598
 msgid "Community-led Telegram groups."
 msgstr "コミュニティ主導のTelegramグループ"
 
@@ -493,8 +493,8 @@ msgid "Complete Transfer"
 msgstr "移転を完了させる"
 
 #: src/views/Stake/StakeV2.js:659
-#: src/views/Stake/StakeV2.js:1736
-#: src/views/Stake/StakeV2.js:1759
+#: src/views/Stake/StakeV2.js:1735
+#: src/views/Stake/StakeV2.js:1758
 msgid "Compound"
 msgstr "請求とステーク"
 
@@ -523,10 +523,10 @@ msgstr "接続"
 #: src/components/Glp/GlpSwap.js:486
 #: src/components/Referrals/AddAffiliateCode.js:34
 #: src/components/Referrals/JoinReferralCode.js:22
-#: src/views/Stake/StakeV2.js:1769
-#: src/views/Stake/StakeV2.js:2010
-#: src/views/Stake/StakeV2.js:2122
-#: src/views/Stake/StakeV2.js:2206
+#: src/views/Stake/StakeV2.js:1768
+#: src/views/Stake/StakeV2.js:2009
+#: src/views/Stake/StakeV2.js:2121
+#: src/views/Stake/StakeV2.js:2205
 msgid "Connect Wallet"
 msgstr "ウォレット接続"
 
@@ -535,7 +535,7 @@ msgstr "ウォレット接続"
 msgid "Continue"
 msgstr "続ける"
 
-#: src/views/Stake/StakeV2.js:2023
+#: src/views/Stake/StakeV2.js:2022
 msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
 msgstr "esGMXトークンをGMXトークンに転換させる。<0/>ボールト使用前に <1>べスティングの詳細</1>を読んでください。"
 
@@ -575,8 +575,8 @@ msgstr "注文作成中"
 msgid "Creating..."
 msgstr "作成中"
 
-#: src/views/Ecosystem/Ecosystem.js:393
-#: src/views/Ecosystem/Ecosystem.js:448
+#: src/views/Ecosystem/Ecosystem.js:471
+#: src/views/Ecosystem/Ecosystem.js:526
 msgid "Creator"
 msgstr "作成者"
 
@@ -593,7 +593,7 @@ msgstr "現在のリザーブ額: {0}<0/>必要な追加リザーブ: {1}<1/>{2}
 msgid "Dashboard"
 msgstr "ダッシュボード"
 
-#: src/views/Ecosystem/Ecosystem.js:408
+#: src/views/Ecosystem/Ecosystem.js:486
 msgid "Dashboards"
 msgstr "ダッシュボード"
 
@@ -612,8 +612,8 @@ msgstr "分散型<0/>パーペチュアル取引所"
 #: src/components/Exchange/PositionEditor.js:458
 #: src/views/Stake/StakeV2.js:426
 #: src/views/Stake/StakeV2.js:437
-#: src/views/Stake/StakeV2.js:2127
-#: src/views/Stake/StakeV2.js:2211
+#: src/views/Stake/StakeV2.js:2126
+#: src/views/Stake/StakeV2.js:2210
 msgid "Deposit"
 msgstr "入金"
 
@@ -642,7 +642,7 @@ msgstr "入金完了!"
 msgid "Depositing..."
 msgstr "入金中"
 
-#: src/App.js:981
+#: src/App.js:985
 msgid "Disable order validations"
 msgstr "注文のバリデーションの無効化"
 
@@ -650,7 +650,7 @@ msgstr "注文のバリデーションの無効化"
 msgid "Disconnect"
 msgstr "接続停止"
 
-#: src/App.js:970
+#: src/App.js:974
 msgid "Display PnL after fees"
 msgstr "手数料込損益の表示"
 
@@ -889,7 +889,7 @@ msgstr "GLPインデックス構成"
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 msgstr "GLPは流動性提供者のトークンです。プラットフォームが得た手数料の70%を獲得します。"
 
-#: src/views/Ecosystem/Ecosystem.js:309
+#: src/views/Ecosystem/Ecosystem.js:387
 msgid "GMX Pages"
 msgstr "GMXのページ"
 
@@ -897,11 +897,11 @@ msgstr "GMXのページ"
 msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
 msgstr "GMXボンドはOlympus Proで短期のべスティング期間を条件として割引価格で購入できます:"
 
-#: src/views/Ecosystem/Ecosystem.js:411
+#: src/views/Ecosystem/Ecosystem.js:489
 msgid "GMX dashboards and analytics."
 msgstr "GMXのダッシュボードと分析"
 
-#: src/views/Ecosystem/Ecosystem.js:312
+#: src/views/Ecosystem/Ecosystem.js:390
 msgid "GMX ecosystem pages."
 msgstr "GMXエコシステムのページ"
 
@@ -913,8 +913,8 @@ msgstr "GMXは現在ArbitrumとAvalancheで稼働中です。"
 msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
 msgstr "GMXはユーティリティトークン兼ガバナンストークンです。プラットフォームが得た手数料の30%を獲得します。"
 
-#: src/views/Stake/StakeV2.js:2113
-#: src/views/Stake/StakeV2.js:2197
+#: src/views/Stake/StakeV2.js:2112
+#: src/views/Stake/StakeV2.js:2196
 msgid "GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
 msgstr "GMXトークンを請求することができます。請求するには全報酬セクションの下部にある選択肢を利用してください。"
 
@@ -951,7 +951,7 @@ msgstr "ホーム"
 msgid "Hop"
 msgstr "ホップ"
 
-#: src/App.js:975
+#: src/App.js:979
 msgid "Include PnL in leverage display"
 msgstr "レバレッジ表示に損益を含める"
 
@@ -986,14 +986,15 @@ msgstr "GLP残高不足"
 #: src/components/Exchange/SwapBox.js:811
 #: src/components/Exchange/SwapBox.js:820
 #: src/components/Exchange/SwapBox.js:910
+#: src/components/Exchange/SwapBox.js:919
 #: src/components/Exchange/SwapBox.js:1507
 #: src/components/Glp/GlpSwap.js:453
 msgid "Insufficient liquidity"
 msgstr "流動性不足"
 
 #: src/components/Exchange/SwapBox.js:919
-msgid "Insufficient liquidity\", true, \"BUFFER\""
-msgstr "流動性不足\", true, \"バッファー\""
+#~ msgid "Insufficient liquidity\", true, \"BUFFER\""
+#~ msgstr "流動性不足\", true, \"バッファー\""
 
 #: src/components/Exchange/SwapBox.js:967
 #: src/components/Exchange/SwapBox.js:976
@@ -1077,11 +1078,11 @@ msgstr "指値注文が作成できませんでした。"
 msgid "Limit order submitted!"
 msgstr "指値注文提出済!"
 
-#: src/views/Ecosystem/Ecosystem.js:333
-#: src/views/Ecosystem/Ecosystem.js:377
-#: src/views/Ecosystem/Ecosystem.js:432
-#: src/views/Ecosystem/Ecosystem.js:486
-#: src/views/Ecosystem/Ecosystem.js:533
+#: src/views/Ecosystem/Ecosystem.js:411
+#: src/views/Ecosystem/Ecosystem.js:455
+#: src/views/Ecosystem/Ecosystem.js:510
+#: src/views/Ecosystem/Ecosystem.js:564
+#: src/views/Ecosystem/Ecosystem.js:611
 msgid "Link"
 msgstr "リンク"
 
@@ -1105,8 +1106,8 @@ msgstr "ロード中"
 #: src/components/Exchange/PositionsList.js:261
 #: src/components/Exchange/SwapBox.js:212
 #: src/components/Exchange/SwapBox.js:1034
-#: src/views/Actions/Actions.js:98
-#: src/views/Actions/Actions.js:102
+#: src/views/Actions/Actions.js:108
+#: src/views/Actions/Actions.js:112
 msgid "Long"
 msgstr "ロング"
 
@@ -1123,7 +1124,7 @@ msgstr "ロング {0}"
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "シェアできる紹介コードがないようです。<0/> コードをすぐに作成してリベートを稼ぎましょう!"
 
-#: src/views/Actions/Actions.js:102
+#: src/views/Actions/Actions.js:112
 msgid "Loss"
 msgstr "損失"
 
@@ -1209,7 +1210,7 @@ msgstr "{0}のショートの最大値超過"
 msgid "Media Kit"
 msgstr "メディアキット"
 
-#: src/App.js:931
+#: src/App.js:935
 msgid "MetaMask"
 msgstr "メタマスク"
 
@@ -1247,11 +1248,11 @@ msgstr "ネット金額"
 #~ msgid "Networks"
 #~ msgstr "ネットワーク"
 
-#: src/components/NetworkDropdown/NetworkDropdown.js:57
+#: src/components/NetworkDropdown/NetworkDropdown.js:56
 msgid "Networks and Settings"
 msgstr ""
 
-#: src/views/Actions/Actions.js:90
+#: src/views/Actions/Actions.js:98
 msgid "No PnLs found"
 msgstr "損益が見つかりません"
 
@@ -1322,7 +1323,7 @@ msgid "Order submitted!"
 msgstr "注文提出完了!"
 
 #: src/components/Exchange/PositionsList.js:354
-#: src/views/Actions/Actions.js:131
+#: src/views/Actions/Actions.js:144
 msgid "Orders"
 msgstr "注文"
 
@@ -1348,7 +1349,7 @@ msgstr "価格"
 msgid "Page outdated, please refresh"
 msgstr "ページの内容が期限切れです。更新してください。"
 
-#: src/views/Ecosystem/Ecosystem.js:463
+#: src/views/Ecosystem/Ecosystem.js:541
 msgid "Partnerships and Integrations"
 msgstr "パートナーシップと統合"
 
@@ -1383,7 +1384,7 @@ msgstr "ネットワークをArbitrumに切り替えてください。"
 
 #: src/components/Exchange/PositionSeller.js:1069
 #: src/components/Exchange/PositionsList.js:305
-#: src/views/Actions/Actions.js:89
+#: src/views/Actions/Actions.js:94
 msgid "PnL"
 msgstr "損益"
 
@@ -1391,7 +1392,7 @@ msgstr "損益"
 msgid "Position"
 msgstr "ポジション"
 
-#: src/views/Actions/Actions.js:112
+#: src/views/Actions/Actions.js:123
 msgid "Positions"
 msgstr "ポジション"
 
@@ -1403,8 +1404,8 @@ msgstr "ポジション"
 #: src/components/Glp/GlpSwap.js:692
 #: src/views/Dashboard/DashboardV2.js:884
 #: src/views/Stake/StakeV2.js:1470
-#: src/views/Stake/StakeV2.js:1782
-#: src/views/Stake/StakeV2.js:1915
+#: src/views/Stake/StakeV2.js:1781
+#: src/views/Stake/StakeV2.js:1914
 msgid "Price"
 msgstr "価格"
 
@@ -1428,7 +1429,7 @@ msgstr "マーク価格を下回る価格"
 msgid "Price {0} Mark Price"
 msgstr "価格 {0} マーク価格"
 
-#: src/views/Actions/Actions.js:98
+#: src/views/Actions/Actions.js:108
 msgid "Profit"
 msgstr "利益"
 
@@ -1437,11 +1438,11 @@ msgstr "利益"
 #~ msgid "Profits In"
 #~ msgstr "利益"
 
-#: src/views/Ecosystem/Ecosystem.js:357
+#: src/views/Ecosystem/Ecosystem.js:435
 msgid "Projects developed by the GMX community."
 msgstr "GMXコミュニティが開発したプロジェクト"
 
-#: src/views/Ecosystem/Ecosystem.js:466
+#: src/views/Ecosystem/Ecosystem.js:544
 msgid "Projects integrated with GMX."
 msgstr "GMXと統合されているプロジェクト"
 
@@ -1454,7 +1455,7 @@ msgstr "<0>GLP tokens</0>を購入して、スワップとレバレッジ取引�
 msgid "Purchase GMX"
 msgstr "GMX購入"
 
-#: src/views/Stake/StakeV2.js:1903
+#: src/views/Stake/StakeV2.js:1902
 msgid "Purchase Insurance"
 msgstr "保険購入"
 
@@ -1565,13 +1566,13 @@ msgstr "リザーブ額"
 msgid "Reserved"
 msgstr "リザーブ済"
 
-#: src/views/Stake/StakeV2.js:2064
-#: src/views/Stake/StakeV2.js:2150
+#: src/views/Stake/StakeV2.js:2063
+#: src/views/Stake/StakeV2.js:2149
 msgid "Reserved for Vesting"
 msgstr "べスティング用リザーブ済"
 
-#: src/views/Stake/StakeV2.js:1568
-#: src/views/Stake/StakeV2.js:1838
+#: src/views/Stake/StakeV2.js:1567
+#: src/views/Stake/StakeV2.js:1837
 msgid "Rewards"
 msgstr "報酬"
 
@@ -1579,7 +1580,7 @@ msgstr "報酬"
 msgid "Same as current active code"
 msgstr "現状有効なコードと同じ"
 
-#: src/App.js:987
+#: src/App.js:991
 msgid "Save"
 msgstr "保存"
 
@@ -1588,7 +1589,7 @@ msgid "Save on Costs"
 msgstr "コスト削減"
 
 #: src/components/NetworkDropdown/LanguagePopupHome.js:29
-#: src/components/NetworkDropdown/NetworkDropdown.js:50
+#: src/components/NetworkDropdown/NetworkDropdown.js:49
 msgid "Select Language"
 msgstr "言語選択"
 
@@ -1622,7 +1623,7 @@ msgstr "自分への移転はサポートされていません"
 #: src/components/Glp/GlpSwap.js:95
 #: src/components/Glp/GlpSwap.js:510
 #: src/components/Glp/GlpSwap.js:782
-#: src/views/Stake/StakeV2.js:1894
+#: src/views/Stake/StakeV2.js:1893
 msgid "Sell GLP"
 msgstr "GLP売却"
 
@@ -1666,8 +1667,8 @@ msgstr "ポジションをシェア"
 #: src/components/Exchange/PositionsList.js:261
 #: src/components/Exchange/SwapBox.js:214
 #: src/components/Exchange/SwapBox.js:1036
-#: src/views/Actions/Actions.js:98
-#: src/views/Actions/Actions.js:102
+#: src/views/Actions/Actions.js:108
+#: src/views/Actions/Actions.js:112
 msgid "Short"
 msgstr "ショート"
 
@@ -1709,7 +1710,7 @@ msgstr "ステーブルコインの比率"
 
 #: src/views/Stake/StakeV2.js:155
 #: src/views/Stake/StakeV2.js:165
-#: src/views/Stake/StakeV2.js:2000
+#: src/views/Stake/StakeV2.js:1999
 msgid "Stake"
 msgstr "ステーク"
 
@@ -1738,14 +1739,14 @@ msgid "Stake submitted!"
 msgstr "ステーク申し込み完了!"
 
 #: src/views/Dashboard/DashboardV2.js:798
-#: src/views/Stake/StakeV2.js:1502
-#: src/views/Stake/StakeV2.js:1797
-#: src/views/Stake/StakeV2.js:1930
+#: src/views/Stake/StakeV2.js:1501
+#: src/views/Stake/StakeV2.js:1796
+#: src/views/Stake/StakeV2.js:1929
 msgid "Staked"
 msgstr "ステーク済"
 
-#: src/views/Stake/StakeV2.js:2042
-#: src/views/Stake/StakeV2.js:2144
+#: src/views/Stake/StakeV2.js:2041
+#: src/views/Stake/StakeV2.js:2143
 msgid "Staked Tokens"
 msgstr "ステークされたトークン"
 
@@ -1809,7 +1810,7 @@ msgstr "Synapse"
 msgid "TOKEN"
 msgstr "トークン"
 
-#: src/views/Ecosystem/Ecosystem.js:517
+#: src/views/Ecosystem/Ecosystem.js:595
 msgid "Telegram Groups"
 msgstr "Telegramグループ"
 
@@ -1817,7 +1818,7 @@ msgstr "Telegramグループ"
 msgid "Terms and Conditions"
 msgstr "規約"
 
-#: src/views/Stake/StakeV2.js:1550
+#: src/views/Stake/StakeV2.js:1549
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "APRブーストはステークされたマルチプライヤーポイントから来ています。"
 
@@ -1869,7 +1870,7 @@ msgstr "手数料を削減するには別のアセットで支払ってくださ
 msgid "To reduce fees, select a different asset to receive."
 msgstr "手数料を削減するには別のアセットで受け取ってください。"
 
-#: src/views/Stake/StakeV2.js:1727
+#: src/views/Stake/StakeV2.js:1726
 msgid "Total"
 msgstr "総計"
 
@@ -1884,15 +1885,15 @@ msgstr "手数料総額"
 msgid "Total Rebates"
 msgstr "リベート総額"
 
-#: src/views/Stake/StakeV2.js:1690
+#: src/views/Stake/StakeV2.js:1689
 msgid "Total Rewards"
 msgstr "報酬総額"
 
 #: src/views/Dashboard/DashboardV2.js:789
 #: src/views/Dashboard/DashboardV2.js:896
-#: src/views/Stake/StakeV2.js:1629
-#: src/views/Stake/StakeV2.js:1872
-#: src/views/Stake/StakeV2.js:1980
+#: src/views/Stake/StakeV2.js:1628
+#: src/views/Stake/StakeV2.js:1871
+#: src/views/Stake/StakeV2.js:1979
 msgid "Total Staked"
 msgstr "ステーク総額"
 
@@ -1901,9 +1902,9 @@ msgid "Total Stats"
 msgstr "全体統計"
 
 #: src/components/Glp/GlpSwap.js:769
-#: src/views/Stake/StakeV2.js:1655
-#: src/views/Stake/StakeV2.js:1881
-#: src/views/Stake/StakeV2.js:1989
+#: src/views/Stake/StakeV2.js:1654
+#: src/views/Stake/StakeV2.js:1880
+#: src/views/Stake/StakeV2.js:1988
 msgid "Total Supply"
 msgstr "総供給量"
 
@@ -2033,7 +2034,7 @@ msgstr "利用率"
 
 #: src/views/Stake/StakeV2.js:280
 #: src/views/Stake/StakeV2.js:291
-#: src/views/Stake/StakeV2.js:2005
+#: src/views/Stake/StakeV2.js:2004
 msgid "Unstake"
 msgstr "アンステーク"
 
@@ -2109,8 +2110,8 @@ msgstr "べスティングされたGLPで引き出されていないもの"
 msgid "Vested GMX not withdrawn"
 msgstr "べスティングされたGMXで引き出されていないもの"
 
-#: src/views/Stake/StakeV2.js:2073
-#: src/views/Stake/StakeV2.js:2159
+#: src/views/Stake/StakeV2.js:2072
+#: src/views/Stake/StakeV2.js:2158
 msgid "Vesting Status"
 msgstr "べスティング状況"
 
@@ -2162,9 +2163,9 @@ msgstr "許可の待機中"
 
 #: src/components/Glp/GlpSwap.js:698
 #: src/components/Glp/GlpSwap.js:1343
-#: src/views/Stake/StakeV2.js:1493
-#: src/views/Stake/StakeV2.js:1788
-#: src/views/Stake/StakeV2.js:1921
+#: src/views/Stake/StakeV2.js:1492
+#: src/views/Stake/StakeV2.js:1787
+#: src/views/Stake/StakeV2.js:1920
 msgid "Wallet"
 msgstr "ウォレット"
 
@@ -2177,7 +2178,7 @@ msgstr "ウォレットが接続されていません"
 msgid "Wallet not connected"
 msgstr "ウォレットが接続されていません"
 
-#: src/App.js:943
+#: src/App.js:947
 msgid "WalletConnect"
 msgstr "WalletConnect"
 
@@ -2189,8 +2190,8 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js:269
 #: src/components/Exchange/PositionEditor.js:454
 #: src/components/Exchange/PositionEditor.js:458
-#: src/views/Stake/StakeV2.js:2132
-#: src/views/Stake/StakeV2.js:2216
+#: src/views/Stake/StakeV2.js:2131
+#: src/views/Stake/StakeV2.js:2215
 msgid "Withdraw"
 msgstr "出金"
 

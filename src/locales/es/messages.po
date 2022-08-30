@@ -28,7 +28,7 @@ msgstr "<0>Insuficiente liquidez para ejecutar la orden</0><1>El precio de refer
 
 #: src/views/Stake/StakeV2.js:566
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
-msgstr "<0>Esto retirará y desreservará todos los tokens y pausará la adquisición.<1/><2/>Los tokens de esGMX que han sido convertidos a GMX permanecerán como tokens de GMX.<3/><4/>Para reclamar tokens de GMX sin retirarlos, utilice el botón \"Reclamar\" bajo la sección de Recompensas Totales.<5/><6/></0>"
+msgstr "<0>Esto retirará y desreservará todos los tokens y pausará la conversión.<1/><2/>Los tokens de esGMX que han sido convertidos a GMX permanecerán como tokens de GMX.<3/><4/>Para reclamar tokens de GMX sin retirarlos, utilice el botón \"Reclamar\" bajo la sección de Recompensas Totales.<5/><6/></0>"
 
 #: src/components/Exchange/SwapBox.js:2086
 msgid "A snapshot of the USD value of your collateral is taken when the position is opened."
@@ -36,14 +36,14 @@ msgstr ""
 
 #: src/App.js:170
 #~ msgid "ABOUT"
-#~ msgstr "SOBRE"
+#~ msgstr "DOCUMENTACIÓN"
 
 #: src/components/Glp/GlpSwap.js:738
 msgid "APR"
 msgstr "APR"
 
-#: src/views/Stake/StakeV2.js:1556
-#: src/views/Stake/StakeV2.js:1826
+#: src/views/Stake/StakeV2.js:1555
+#: src/views/Stake/StakeV2.js:1825
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 msgstr "Los APR se actualizan semanalmente en el Miércoles, y dependerán de las comisiones cobradas en la semana."
 
@@ -53,13 +53,13 @@ msgid "AVAILABLE"
 msgstr "DISPONIBLE"
 
 #: src/App.js:201
-#: src/views/Ecosystem/Ecosystem.js:343
-#: src/views/Ecosystem/Ecosystem.js:387
-#: src/views/Ecosystem/Ecosystem.js:442
-#: src/views/Ecosystem/Ecosystem.js:496
-#: src/views/Ecosystem/Ecosystem.js:543
+#: src/views/Ecosystem/Ecosystem.js:421
+#: src/views/Ecosystem/Ecosystem.js:465
+#: src/views/Ecosystem/Ecosystem.js:520
+#: src/views/Ecosystem/Ecosystem.js:574
+#: src/views/Ecosystem/Ecosystem.js:621
 msgid "About"
-msgstr "Sobre"
+msgstr "Documentación"
 
 #: src/components/Exchange/OrdersToa.js:24
 msgid "Accept terms to enable orders"
@@ -69,11 +69,11 @@ msgstr "Acepta las condiciones para habilitar las órdenes"
 msgid "Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price"
 msgstr "Acepta que las órdenes no tienen garantía de ejecución y que las órdenes de activación pueden no ejecutarse al precio de activación"
 
-#: src/views/Actions/Actions.js:86
+#: src/views/Actions/Actions.js:88
 msgid "Account"
 msgstr "Cuenta"
 
-#: src/views/Actions/Actions.js:144
+#: src/views/Actions/Actions.js:159
 msgid "Actions"
 msgstr "Acciones"
 
@@ -118,7 +118,7 @@ msgstr "Tras reclamar, los tokens esGMX serán enviados a su cuenta en la red se
 msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
 msgstr "Después de tener ETH, establece tu red a <0>Arbitrum</0> y luego haz clic en el botón de abajo:"
 
-#: src/App.js:955
+#: src/App.js:959
 msgid "Allowed Slippage"
 msgstr "Deslizamiento permitido"
 
@@ -139,7 +139,7 @@ msgstr "Cantidad a reclamar"
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr "Un conjunto de fuentes de precios de alta calidad determinan cuando se producen las liquidaciones. Esto mantiene las posiciones a salvo de altibajos temporales."
 
-#: src/views/Ecosystem/Ecosystem.js:502
+#: src/views/Ecosystem/Ecosystem.js:580
 msgid "Announcement"
 msgstr "Anuncio"
 
@@ -255,7 +255,7 @@ msgstr "Comenzar Transferencia"
 msgid "Binance"
 msgstr "Binance"
 
-#: src/views/Stake/StakeV2.js:1605
+#: src/views/Stake/StakeV2.js:1604
 msgid "Boost Percentage"
 msgstr "Porcentaje de Aumento"
 
@@ -302,7 +302,7 @@ msgstr "Comprar ETH"
 #: src/components/Glp/GlpSwap.js:95
 #: src/components/Glp/GlpSwap.js:510
 #: src/components/Glp/GlpSwap.js:782
-#: src/views/Stake/StakeV2.js:1891
+#: src/views/Stake/StakeV2.js:1890
 msgid "Buy GLP"
 msgstr "Comprar GLP"
 
@@ -380,8 +380,8 @@ msgstr "Comprobando código..."
 
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:296
 #: src/views/Stake/StakeV2.js:817
-#: src/views/Stake/StakeV2.js:1741
-#: src/views/Stake/StakeV2.js:1764
+#: src/views/Stake/StakeV2.js:1740
+#: src/views/Stake/StakeV2.js:1763
 msgid "Claim"
 msgstr "Reclamar"
 
@@ -422,7 +422,7 @@ msgstr "Reclamación enviada."
 msgid "Claim {wrappedTokenSymbol} Rewards"
 msgstr "Reclamar Recomensas {wrappedTokenSymbol}"
 
-#: src/views/Stake/StakeV2.js:2100
+#: src/views/Stake/StakeV2.js:2099
 msgid "Claimable"
 msgstr "Reclamable"
 
@@ -459,7 +459,7 @@ msgstr "Cerrando..."
 msgid "Code already taken"
 msgstr "Código ya tomado"
 
-#: src/App.js:937
+#: src/App.js:941
 msgid "Coinbase Wallet"
 msgstr "Coinbase Wallet"
 
@@ -480,11 +480,11 @@ msgstr "Garantía"
 msgid "Collateral In"
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:354
+#: src/views/Ecosystem/Ecosystem.js:432
 msgid "Community Projects"
 msgstr "Proyectos Comunitarios"
 
-#: src/views/Ecosystem/Ecosystem.js:520
+#: src/views/Ecosystem/Ecosystem.js:598
 msgid "Community-led Telegram groups."
 msgstr "Grupos de Telegram dirigidos por la comunidad"
 
@@ -497,8 +497,8 @@ msgid "Complete Transfer"
 msgstr "Transferencia Completa"
 
 #: src/views/Stake/StakeV2.js:659
-#: src/views/Stake/StakeV2.js:1736
-#: src/views/Stake/StakeV2.js:1759
+#: src/views/Stake/StakeV2.js:1735
+#: src/views/Stake/StakeV2.js:1758
 msgid "Compound"
 msgstr "Componer"
 
@@ -527,10 +527,10 @@ msgstr "Conectar"
 #: src/components/Glp/GlpSwap.js:486
 #: src/components/Referrals/AddAffiliateCode.js:34
 #: src/components/Referrals/JoinReferralCode.js:22
-#: src/views/Stake/StakeV2.js:1769
-#: src/views/Stake/StakeV2.js:2010
-#: src/views/Stake/StakeV2.js:2122
-#: src/views/Stake/StakeV2.js:2206
+#: src/views/Stake/StakeV2.js:1768
+#: src/views/Stake/StakeV2.js:2009
+#: src/views/Stake/StakeV2.js:2121
+#: src/views/Stake/StakeV2.js:2205
 msgid "Connect Wallet"
 msgstr "Conectar Monedero"
 
@@ -539,9 +539,9 @@ msgstr "Conectar Monedero"
 msgid "Continue"
 msgstr "Continuar"
 
-#: src/views/Stake/StakeV2.js:2023
+#: src/views/Stake/StakeV2.js:2022
 msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
-msgstr "Convertir los tokens esGMX en tokens GMX.<0/>Por favor, lea los <1>detalles de adquisición</1> antes de utilizar las cajas."
+msgstr "Convertir los tokens esGMX en tokens GMX.<0/>Por favor, lea los <1>detalles de conversión</1> antes de utilizar las cajas."
 
 #: src/views/Stake/StakeV2.js:880
 msgid "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}"
@@ -579,8 +579,8 @@ msgstr "Creando Order..."
 msgid "Creating..."
 msgstr "Creando..."
 
-#: src/views/Ecosystem/Ecosystem.js:393
-#: src/views/Ecosystem/Ecosystem.js:448
+#: src/views/Ecosystem/Ecosystem.js:471
+#: src/views/Ecosystem/Ecosystem.js:526
 msgid "Creator"
 msgstr "Creador"
 
@@ -597,7 +597,7 @@ msgstr "Actualmente Reservado: {0}<0/>Reserva adicional requerida: {1}<1/>{2}"
 msgid "Dashboard"
 msgstr "Panel"
 
-#: src/views/Ecosystem/Ecosystem.js:408
+#: src/views/Ecosystem/Ecosystem.js:486
 msgid "Dashboards"
 msgstr "Paneles"
 
@@ -616,8 +616,8 @@ msgstr "Exchange<0/>Perpetuo Decentralizado"
 #: src/components/Exchange/PositionEditor.js:458
 #: src/views/Stake/StakeV2.js:426
 #: src/views/Stake/StakeV2.js:437
-#: src/views/Stake/StakeV2.js:2127
-#: src/views/Stake/StakeV2.js:2211
+#: src/views/Stake/StakeV2.js:2126
+#: src/views/Stake/StakeV2.js:2210
 msgid "Deposit"
 msgstr "Depositar"
 
@@ -646,7 +646,7 @@ msgstr "¡Depósitado!"
 msgid "Depositing..."
 msgstr "Depositando..."
 
-#: src/App.js:981
+#: src/App.js:985
 msgid "Disable order validations"
 msgstr "Deshabilitar validación de órdenes"
 
@@ -654,7 +654,7 @@ msgstr "Deshabilitar validación de órdenes"
 msgid "Disconnect"
 msgstr "Desconectar"
 
-#: src/App.js:970
+#: src/App.js:974
 msgid "Display PnL after fees"
 msgstr "Mostrar GyP después de comisiones"
 
@@ -895,25 +895,25 @@ msgstr "Composición Índice GLP"
 
 #: src/components/TokenCard/TokenCard.js:93
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
-msgstr "GLP es el token proveedor de liquidez. Acumula el 70% de las comisiones generadas por la plataforma."
+msgstr "GLP es el token proveedor de liquidez. Recibe el 70% de las comisiones generadas por la plataforma."
 
 #: src/components/TokenCard/TokenCard.js:75
 #~ msgid "GLP is the platform's liquidity provider token. Accrues 70% of its generated fees."
-#~ msgstr "GLP es el token proveedor de liquidez de la plataforma. Acumula el 70% de las comisiones generadas."
+#~ msgstr "GLP es el token proveedor de liquidez de la plataforma. Recibe el 70% de las comisiones generadas."
 
-#: src/views/Ecosystem/Ecosystem.js:309
+#: src/views/Ecosystem/Ecosystem.js:387
 msgid "GMX Pages"
 msgstr "Páginas GMX"
 
 #: src/views/BuyGMX/BuyGMX.js:269
 msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
-msgstr "Los bonos GMX pueden ser comprados en Olympus Pro con un descuento y un pequeño periodo de adquisición:"
+msgstr "Los bonos GMX pueden ser comprados en Olympus Pro con un descuento y un pequeño periodo de conversión:"
 
-#: src/views/Ecosystem/Ecosystem.js:411
+#: src/views/Ecosystem/Ecosystem.js:489
 msgid "GMX dashboards and analytics."
 msgstr "Paneles y análisis de GMX."
 
-#: src/views/Ecosystem/Ecosystem.js:312
+#: src/views/Ecosystem/Ecosystem.js:390
 msgid "GMX ecosystem pages."
 msgstr "Páginas del ecosistema GMX."
 
@@ -923,14 +923,14 @@ msgstr "GMX esta actualmente en vivo en Arbitrum y Avalanche."
 
 #: src/components/TokenCard/TokenCard.js:43
 #~ msgid "GMX is the utility and governance token, and also accrues 30% of the platform's generated fees."
-#~ msgstr "GMX es el token de utilidad y gobierno, y también acumula el 30% de las comisiones generadas por la plataforma."
+#~ msgstr "GMX es el token de utilidad y gobierno, y recibe el 30% de las comisiones generadas por la plataforma."
 
 #: src/components/TokenCard/TokenCard.js:61
 msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
-msgstr "GMX es el token de utilidad y gobierno, y también acumula el 30% de las comisiones generadas por la plataforma."
+msgstr "GMX es el token de utilidad y gobierno, y recibe el 30% de las comisiones generadas por la plataforma."
 
-#: src/views/Stake/StakeV2.js:2113
-#: src/views/Stake/StakeV2.js:2197
+#: src/views/Stake/StakeV2.js:2112
+#: src/views/Stake/StakeV2.js:2196
 msgid "GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
 msgstr "Los tokens GMX pueden ser reclamados, utilice las opciones de la sección de Recompensas Totales para reclamarlos."
 
@@ -971,7 +971,7 @@ msgstr "Inicio"
 msgid "Hop"
 msgstr "Hop"
 
-#: src/App.js:975
+#: src/App.js:979
 msgid "Include PnL in leverage display"
 msgstr "Incluir GyP en la visualización de apalancamiento"
 
@@ -1006,14 +1006,15 @@ msgstr "Balance GLP insuficiente"
 #: src/components/Exchange/SwapBox.js:811
 #: src/components/Exchange/SwapBox.js:820
 #: src/components/Exchange/SwapBox.js:910
+#: src/components/Exchange/SwapBox.js:919
 #: src/components/Exchange/SwapBox.js:1507
 #: src/components/Glp/GlpSwap.js:453
 msgid "Insufficient liquidity"
 msgstr "Insuficiente liquidez"
 
 #: src/components/Exchange/SwapBox.js:919
-msgid "Insufficient liquidity\", true, \"BUFFER\""
-msgstr "Insuficiente Liquidez\", true, \"BUFFER\""
+#~ msgid "Insufficient liquidity\", true, \"BUFFER\""
+#~ msgstr "Insuficiente Liquidez\", true, \"BUFFER\""
 
 #: src/components/Exchange/SwapBox.js:967
 #: src/components/Exchange/SwapBox.js:976
@@ -1097,11 +1098,11 @@ msgstr "Falló la creación de la orden límite."
 msgid "Limit order submitted!"
 msgstr "¡Orden limite enviada!"
 
-#: src/views/Ecosystem/Ecosystem.js:333
-#: src/views/Ecosystem/Ecosystem.js:377
-#: src/views/Ecosystem/Ecosystem.js:432
-#: src/views/Ecosystem/Ecosystem.js:486
-#: src/views/Ecosystem/Ecosystem.js:533
+#: src/views/Ecosystem/Ecosystem.js:411
+#: src/views/Ecosystem/Ecosystem.js:455
+#: src/views/Ecosystem/Ecosystem.js:510
+#: src/views/Ecosystem/Ecosystem.js:564
+#: src/views/Ecosystem/Ecosystem.js:611
 msgid "Link"
 msgstr "Enlace"
 
@@ -1125,15 +1126,15 @@ msgstr "Cargando..."
 #: src/components/Exchange/PositionsList.js:261
 #: src/components/Exchange/SwapBox.js:212
 #: src/components/Exchange/SwapBox.js:1034
-#: src/views/Actions/Actions.js:98
-#: src/views/Actions/Actions.js:102
+#: src/views/Actions/Actions.js:108
+#: src/views/Actions/Actions.js:112
 msgid "Long"
 msgstr "Largo"
 
 #: src/views/Dashboard/DashboardV2.js:597
 #: src/views/Dashboard/DashboardV2.js:611
 msgid "Long Positions"
-msgstr "Posiciones Largas"
+msgstr "Posiciones a Largo"
 
 #: src/components/Exchange/SwapBox.js:1205
 msgid "Long {0}"
@@ -1143,7 +1144,7 @@ msgstr "Largo {0}"
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "Parece que no tienes un código de referencia para compartir. <0/> ¡Crea uno ahora y empieza a ganar reembolsos!"
 
-#: src/views/Actions/Actions.js:102
+#: src/views/Actions/Actions.js:112
 msgid "Loss"
 msgstr "Pérdida"
 
@@ -1229,7 +1230,7 @@ msgstr "Superados cortos Máx. de {0}"
 msgid "Media Kit"
 msgstr "Kit de Medios"
 
-#: src/App.js:931
+#: src/App.js:935
 msgid "MetaMask"
 msgstr "MetaMask"
 
@@ -1267,11 +1268,11 @@ msgstr "Valor Neto"
 #~ msgid "Networks"
 #~ msgstr "Redes"
 
-#: src/components/NetworkDropdown/NetworkDropdown.js:57
+#: src/components/NetworkDropdown/NetworkDropdown.js:56
 msgid "Networks and Settings"
 msgstr ""
 
-#: src/views/Actions/Actions.js:90
+#: src/views/Actions/Actions.js:98
 msgid "No PnLs found"
 msgstr "No se han encontrado GyPs"
 
@@ -1342,7 +1343,7 @@ msgid "Order submitted!"
 msgstr "¡Orden enviada!"
 
 #: src/components/Exchange/PositionsList.js:354
-#: src/views/Actions/Actions.js:131
+#: src/views/Actions/Actions.js:144
 msgid "Orders"
 msgstr "Órdenes"
 
@@ -1368,7 +1369,7 @@ msgstr "PRECIO"
 msgid "Page outdated, please refresh"
 msgstr "Página obsoleta, por favor actualice"
 
-#: src/views/Ecosystem/Ecosystem.js:463
+#: src/views/Ecosystem/Ecosystem.js:541
 msgid "Partnerships and Integrations"
 msgstr "Asociaciones e Integraciones"
 
@@ -1403,7 +1404,7 @@ msgstr "Por favor, cambie su red a Arbitrum."
 
 #: src/components/Exchange/PositionSeller.js:1069
 #: src/components/Exchange/PositionsList.js:305
-#: src/views/Actions/Actions.js:89
+#: src/views/Actions/Actions.js:94
 msgid "PnL"
 msgstr "GyP"
 
@@ -1411,7 +1412,7 @@ msgstr "GyP"
 msgid "Position"
 msgstr "Posición"
 
-#: src/views/Actions/Actions.js:112
+#: src/views/Actions/Actions.js:123
 msgid "Positions"
 msgstr "Posiciones"
 
@@ -1423,8 +1424,8 @@ msgstr "Posiciones"
 #: src/components/Glp/GlpSwap.js:692
 #: src/views/Dashboard/DashboardV2.js:884
 #: src/views/Stake/StakeV2.js:1470
-#: src/views/Stake/StakeV2.js:1782
-#: src/views/Stake/StakeV2.js:1915
+#: src/views/Stake/StakeV2.js:1781
+#: src/views/Stake/StakeV2.js:1914
 msgid "Price"
 msgstr "Precio"
 
@@ -1448,7 +1449,7 @@ msgstr "Precio inferior al Precio de Marca"
 msgid "Price {0} Mark Price"
 msgstr "Precio {0} Precio de Marca"
 
-#: src/views/Actions/Actions.js:98
+#: src/views/Actions/Actions.js:108
 msgid "Profit"
 msgstr "Ganancia"
 
@@ -1457,11 +1458,11 @@ msgstr "Ganancia"
 #~ msgid "Profits In"
 #~ msgstr "Ganancias En"
 
-#: src/views/Ecosystem/Ecosystem.js:357
+#: src/views/Ecosystem/Ecosystem.js:435
 msgid "Projects developed by the GMX community."
 msgstr "Proyectos desarrollados por la comunidad de GMX."
 
-#: src/views/Ecosystem/Ecosystem.js:466
+#: src/views/Ecosystem/Ecosystem.js:544
 msgid "Projects integrated with GMX."
 msgstr "Proyectos integrados con GMX."
 
@@ -1474,7 +1475,7 @@ msgstr "Compra <0>tokens GLP</0> para ganar {nativeTokenSymbol} comisiones por o
 msgid "Purchase GMX"
 msgstr "Comprar GMX"
 
-#: src/views/Stake/StakeV2.js:1903
+#: src/views/Stake/StakeV2.js:1902
 msgid "Purchase Insurance"
 msgstr "Comprar Seguro"
 
@@ -1585,13 +1586,13 @@ msgstr "Cantidad de Reserva"
 msgid "Reserved"
 msgstr "Reservado"
 
-#: src/views/Stake/StakeV2.js:2064
-#: src/views/Stake/StakeV2.js:2150
+#: src/views/Stake/StakeV2.js:2063
+#: src/views/Stake/StakeV2.js:2149
 msgid "Reserved for Vesting"
-msgstr "Reservado para Adquisición"
+msgstr "Reservado para Conversión"
 
-#: src/views/Stake/StakeV2.js:1568
-#: src/views/Stake/StakeV2.js:1838
+#: src/views/Stake/StakeV2.js:1567
+#: src/views/Stake/StakeV2.js:1837
 msgid "Rewards"
 msgstr "Recompensas"
 
@@ -1599,7 +1600,7 @@ msgstr "Recompensas"
 msgid "Same as current active code"
 msgstr "Igual que el código activo actual"
 
-#: src/App.js:987
+#: src/App.js:991
 msgid "Save"
 msgstr "Guardar"
 
@@ -1608,7 +1609,7 @@ msgid "Save on Costs"
 msgstr "Ahorrar en Costes"
 
 #: src/components/NetworkDropdown/LanguagePopupHome.js:29
-#: src/components/NetworkDropdown/NetworkDropdown.js:50
+#: src/components/NetworkDropdown/NetworkDropdown.js:49
 msgid "Select Language"
 msgstr "Seleccionar Idioma"
 
@@ -1633,7 +1634,7 @@ msgstr "Selecciona tokens diferentes"
 
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:361
 msgid "Select your vesting option below then click \"Claim\"."
-msgstr "Seleccione su opción de adquisición a continuación y haga clic en \"Reclamar\"."
+msgstr "Seleccione su opción de conversión a continuación y haga clic en \"Reclamar\"."
 
 #: src/views/BeginAccountTransfer/BeginAccountTransfer.js:143
 msgid "Self-transfer not supported"
@@ -1642,7 +1643,7 @@ msgstr "No se admite la autotransferencia"
 #: src/components/Glp/GlpSwap.js:95
 #: src/components/Glp/GlpSwap.js:510
 #: src/components/Glp/GlpSwap.js:782
-#: src/views/Stake/StakeV2.js:1894
+#: src/views/Stake/StakeV2.js:1893
 msgid "Sell GLP"
 msgstr "Vender GLP"
 
@@ -1665,15 +1666,15 @@ msgstr "Vendiendo..."
 
 #: src/views/BeginAccountTransfer/BeginAccountTransfer.js:266
 #~ msgid "Sender has withdrawn all tokens from GLP"
-#~ msgstr "El remitente ha retirado todos los tokens del Baúl de Adquisición GLP"
+#~ msgstr "El remitente ha retirado todos los tokens del Baúl de Conversión GLP"
 
 #: src/views/BeginAccountTransfer/BeginAccountTransfer.js:266
 msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
-msgstr "El remitente ha retirado todos los tokens del Baúl de Adquisición GLP"
+msgstr "El remitente ha retirado todos los tokens del Baúl de Conversión GLP"
 
 #: src/views/BeginAccountTransfer/BeginAccountTransfer.js:263
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
-msgstr "El remitente ha retirado todos los tokens del Cajas de Adquisición GMX"
+msgstr "El remitente ha retirado todos los tokens del Baúl de Conversión GMX"
 
 #: src/App.js:208
 msgid "Settings"
@@ -1690,8 +1691,8 @@ msgstr "Compartir Posición"
 #: src/components/Exchange/PositionsList.js:261
 #: src/components/Exchange/SwapBox.js:214
 #: src/components/Exchange/SwapBox.js:1036
-#: src/views/Actions/Actions.js:98
-#: src/views/Actions/Actions.js:102
+#: src/views/Actions/Actions.js:108
+#: src/views/Actions/Actions.js:112
 msgid "Short"
 msgstr "Corto"
 
@@ -1733,7 +1734,7 @@ msgstr "Porcentaje de Stablecoin"
 
 #: src/views/Stake/StakeV2.js:155
 #: src/views/Stake/StakeV2.js:165
-#: src/views/Stake/StakeV2.js:2000
+#: src/views/Stake/StakeV2.js:1999
 msgid "Stake"
 msgstr "Stake"
 
@@ -1762,14 +1763,14 @@ msgid "Stake submitted!"
 msgstr "¡Stake enviado!"
 
 #: src/views/Dashboard/DashboardV2.js:798
-#: src/views/Stake/StakeV2.js:1502
-#: src/views/Stake/StakeV2.js:1797
-#: src/views/Stake/StakeV2.js:1930
+#: src/views/Stake/StakeV2.js:1501
+#: src/views/Stake/StakeV2.js:1796
+#: src/views/Stake/StakeV2.js:1929
 msgid "Staked"
 msgstr "Stakeado"
 
-#: src/views/Stake/StakeV2.js:2042
-#: src/views/Stake/StakeV2.js:2144
+#: src/views/Stake/StakeV2.js:2041
+#: src/views/Stake/StakeV2.js:2143
 msgid "Staked Tokens"
 msgstr "Tokens Stakeados"
 
@@ -1788,7 +1789,7 @@ msgstr "Enviar"
 #: src/views/Dashboard/DashboardV2.js:783
 #: src/views/Dashboard/DashboardV2.js:890
 msgid "Supply"
-msgstr "Suministros"
+msgstr "Monedas en Circulación"
 
 #: src/components/Exchange/SwapBox.js:2206
 msgid "Swap"
@@ -1833,7 +1834,7 @@ msgstr "Synapse"
 msgid "TOKEN"
 msgstr "TOKEN"
 
-#: src/views/Ecosystem/Ecosystem.js:517
+#: src/views/Ecosystem/Ecosystem.js:595
 msgid "Telegram Groups"
 msgstr "Grupos de Telegram"
 
@@ -1841,7 +1842,7 @@ msgstr "Grupos de Telegram"
 msgid "Terms and Conditions"
 msgstr "Términos y Condiciones"
 
-#: src/views/Stake/StakeV2.js:1550
+#: src/views/Stake/StakeV2.js:1549
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "El APR aumentado es de sus Puntos Multiplicadores stakeados."
 
@@ -1901,7 +1902,7 @@ msgstr "Para reducir las comisiones, seleccione un activo diferente con el que p
 msgid "To reduce fees, select a different asset to receive."
 msgstr "Para reducir las comisiones, seleccione un activo diferente para recibir."
 
-#: src/views/Stake/StakeV2.js:1727
+#: src/views/Stake/StakeV2.js:1726
 msgid "Total"
 msgstr "Total"
 
@@ -1916,15 +1917,15 @@ msgstr "Comisiones Totales"
 msgid "Total Rebates"
 msgstr "Total de reembolsos"
 
-#: src/views/Stake/StakeV2.js:1690
+#: src/views/Stake/StakeV2.js:1689
 msgid "Total Rewards"
 msgstr "Recompensas Totales"
 
 #: src/views/Dashboard/DashboardV2.js:789
 #: src/views/Dashboard/DashboardV2.js:896
-#: src/views/Stake/StakeV2.js:1629
-#: src/views/Stake/StakeV2.js:1872
-#: src/views/Stake/StakeV2.js:1980
+#: src/views/Stake/StakeV2.js:1628
+#: src/views/Stake/StakeV2.js:1871
+#: src/views/Stake/StakeV2.js:1979
 msgid "Total Staked"
 msgstr "Total Stakeado"
 
@@ -1933,11 +1934,11 @@ msgid "Total Stats"
 msgstr "Estadísticas Totales"
 
 #: src/components/Glp/GlpSwap.js:769
-#: src/views/Stake/StakeV2.js:1655
-#: src/views/Stake/StakeV2.js:1881
-#: src/views/Stake/StakeV2.js:1989
+#: src/views/Stake/StakeV2.js:1654
+#: src/views/Stake/StakeV2.js:1880
+#: src/views/Stake/StakeV2.js:1988
 msgid "Total Supply"
-msgstr "Suministro Total"
+msgstr "Monedas Totales"
 
 #: src/components/Referrals/AffiliatesStats.js:69
 msgid "Total Traders Referred"
@@ -1966,7 +1967,7 @@ msgstr "Valor total de los tokens en la reserva de GLP ({chainName})"
 #: src/App.js:274
 #: src/App.js:304
 msgid "Trade"
-msgstr "Comercio"
+msgstr "Operar"
 
 #: src/views/Home/Home.js:157
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
@@ -2065,7 +2066,7 @@ msgstr "UTILIZACIÓN"
 
 #: src/views/Stake/StakeV2.js:280
 #: src/views/Stake/StakeV2.js:291
-#: src/views/Stake/StakeV2.js:2005
+#: src/views/Stake/StakeV2.js:2004
 msgid "Unstake"
 msgstr "Destakear"
 
@@ -2141,10 +2142,10 @@ msgstr "GLP adquirido no retirado."
 msgid "Vested GMX not withdrawn"
 msgstr "GMX adquirido no retirado."
 
-#: src/views/Stake/StakeV2.js:2073
-#: src/views/Stake/StakeV2.js:2159
+#: src/views/Stake/StakeV2.js:2072
+#: src/views/Stake/StakeV2.js:2158
 msgid "Vesting Status"
-msgstr "Estado de Adquisición"
+msgstr "Estado de Conversión"
 
 #: src/App.js:607
 #: src/App.js:619
@@ -2194,9 +2195,9 @@ msgstr "Esperando Aprobación"
 
 #: src/components/Glp/GlpSwap.js:698
 #: src/components/Glp/GlpSwap.js:1343
-#: src/views/Stake/StakeV2.js:1493
-#: src/views/Stake/StakeV2.js:1788
-#: src/views/Stake/StakeV2.js:1921
+#: src/views/Stake/StakeV2.js:1492
+#: src/views/Stake/StakeV2.js:1787
+#: src/views/Stake/StakeV2.js:1920
 msgid "Wallet"
 msgstr "Monedero"
 
@@ -2209,7 +2210,7 @@ msgstr "El monedero no está conectado"
 msgid "Wallet not connected"
 msgstr "Monedero no conectado"
 
-#: src/App.js:943
+#: src/App.js:947
 msgid "WalletConnect"
 msgstr "WalletConnect"
 
@@ -2221,8 +2222,8 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js:269
 #: src/components/Exchange/PositionEditor.js:454
 #: src/components/Exchange/PositionEditor.js:458
-#: src/views/Stake/StakeV2.js:2132
-#: src/views/Stake/StakeV2.js:2216
+#: src/views/Stake/StakeV2.js:2131
+#: src/views/Stake/StakeV2.js:2215
 msgid "Withdraw"
 msgstr "Retirar"
 
@@ -2297,7 +2298,7 @@ msgstr "Tiene una transferencia pendiente de {sender}."
 #: src/views/Stake/StakeV2.js:1227
 #: src/views/Stake/StakeV2.js:1238
 msgid "You have not deposited any tokens for vesting."
-msgstr "No has depositado ningún token para su adquisición."
+msgstr "No has depositado ningún token para su conversión."
 
 #: src/views/ClaimEsGmx/ClaimEsGmx.js:353
 msgid "You have {0} esGMX (IOU) tokens."
@@ -2354,7 +2355,7 @@ msgstr "{0} GLP comprado con {1} {2}!"
 
 #: src/components/Glp/GlpSwap.js:730
 msgid "{0} GLP have been reserved for vesting."
-msgstr "{0} GLP se han reservado para adquisiciones."
+msgstr "{0} GLP se han reservado para conversiones."
 
 #: src/components/Glp/GlpSwap.js:569
 msgid "{0} GLP sold for {1} {2}!"

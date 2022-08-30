@@ -5,15 +5,15 @@
     "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>":
       "<0>Insuficiente liquidez para ejecutar la orden</0><1>El precio de referencia, que es un agregado de precios de mercado, no alcanzó el precio especificado</1><2>Se alcanzó el precio especificado pero no lo suficiente como para ejecutarlo</2><3>Ningún guardián recogió la orden para ejecutarla</3>",
     '<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the "Claim" button under the Total Rewards section.<5/><6/></0>':
-      '<0>Esto retirará y desreservará todos los tokens y pausará la adquisición.<1/><2/>Los tokens de esGMX que han sido convertidos a GMX permanecerán como tokens de GMX.<3/><4/>Para reclamar tokens de GMX sin retirarlos, utilice el botón "Reclamar" bajo la sección de Recompensas Totales.<5/><6/></0>',
+      '<0>Esto retirará y desreservará todos los tokens y pausará la conversión.<1/><2/>Los tokens de esGMX que han sido convertidos a GMX permanecerán como tokens de GMX.<3/><4/>Para reclamar tokens de GMX sin retirarlos, utilice el botón "Reclamar" bajo la sección de Recompensas Totales.<5/><6/></0>',
     "A snapshot of the USD value of your collateral is taken when the position is opened.":
       "A snapshot of the USD value of your collateral is taken when the position is opened.",
-    ABOUT: "SOBRE",
+    ABOUT: "DOCUMENTACIÓN",
     APR: "APR",
     "APRs are updated weekly on Wednesday and will depend on the fees collected for the week.":
       "Los APR se actualizan semanalmente en el Miércoles, y dependerán de las comisiones cobradas en la semana.",
     AVAILABLE: "DISPONIBLE",
-    About: "Sobre",
+    About: "DOCUMENTACIÓN",
     "Accept terms to enable orders": "Acepta las condiciones para habilitar las órdenes",
     "Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price":
       "Acepta que las órdenes no tienen garantía de ejecución y que las órdenes de activación pueden no ejecutarse al precio de activación",
@@ -140,7 +140,7 @@
     "Connect Wallet": "Conectar Monedero",
     Continue: "Continuar",
     "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults.":
-      "Convertir los tokens esGMX en tokens GMX.<0/>Por favor, lea los <1>detalles de adquisición</1> antes de utilizar las cajas.",
+      "Convertir los tokens esGMX en tokens GMX.<0/>Por favor, lea los <1>detalles de conversión</1> antes de utilizar las cajas.",
     "Convert {wrappedTokenSymbol} to {nativeTokenSymbol}": [
       "Convertir ",
       ["wrappedTokenSymbol"],
@@ -234,19 +234,19 @@
     "Funds not utilized by current open positions.": "Fondos no utilizados por las posiciones abiertas actuales.",
     "GLP Index Composition": "Composición Índice GLP",
     "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees.":
-      "GLP es el token proveedor de liquidez. Acumula el 70% de las comisiones generadas por la plataforma.",
+      "GLP es el token proveedor de liquidez. Recibe el 70% de las comisiones generadas por la plataforma.",
     "GLP is the platform's liquidity provider token. Accrues 70% of its generated fees.":
-      "GLP es el token proveedor de liquidez de la plataforma. Acumula el 70% de las comisiones generadas.",
+      "GLP es el token proveedor de liquidez de la plataforma. Recibe el 70% de las comisiones generadas.",
     "GMX Pages": "Páginas GMX",
     "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:":
-      "Los bonos GMX pueden ser comprados en Olympus Pro con un descuento y un pequeño periodo de adquisición:",
+      "Los bonos GMX pueden ser comprados en Olympus Pro con un descuento y un pequeño periodo de conversión:",
     "GMX dashboards and analytics.": "Paneles y análisis de GMX.",
     "GMX ecosystem pages.": "Páginas del ecosistema GMX.",
     "GMX is currently live on Arbitrum and Avalanche.": "GMX esta actualmente en vivo en Arbitrum y Avalanche.",
     "GMX is the utility and governance token, and also accrues 30% of the platform's generated fees.":
-      "GMX es el token de utilidad y gobierno, y también acumula el 30% de las comisiones generadas por la plataforma.",
+      "GMX es el token de utilidad y gobierno, y recibe el 30% de las comisiones generadas por la plataforma.",
     "GMX is the utility and governance token. Accrues 30% of the platform's generated fees.":
-      "GMX es el token de utilidad y gobierno, y también acumula el 30% de las comisiones generadas por la plataforma.",
+      "GMX es el token de utilidad y gobierno, y recibe el 30% de las comisiones generadas por la plataforma.",
     "GMX tokens can be claimed, use the options under the Total Rewards section to claim them.":
       "Los tokens GMX pueden ser reclamados, utilice las opciones de la sección de Recompensas Totales para reclamarlos.",
     "GMX transfers not yet enabled": "Las transferencias GMX aún no están habilitadas",
@@ -292,7 +292,7 @@
     "Liquidity data not loaded": "Datos de liquidez no cargados",
     "Loading...": "Cargando...",
     Long: "Largo",
-    "Long Positions": "Posiciones Largas",
+    "Long Positions": "Posiciones a Largo",
     "Long {0}": ["Largo ", ["0"]],
     "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!":
       "Parece que no tienes un código de referencia para compartir. <0/> ¡Crea uno ahora y empieza a ganar reembolsos!",
@@ -442,7 +442,7 @@
     ],
     "Reserve Amount": "Cantidad de Reserva",
     Reserved: "Reservado",
-    "Reserved for Vesting": "Reservado para Adquisición",
+    "Reserved for Vesting": "Reservado para Conversión",
     Rewards: "Recompensas",
     "Same as current active code": "Igual que el código activo actual",
     Save: "Guardar",
@@ -453,18 +453,18 @@
     "Select an option": "Seleccionar una opción",
     "Select different tokens": "Selecciona tokens diferentes",
     'Select your vesting option below then click "Claim".':
-      'Seleccione su opción de adquisición a continuación y haga clic en "Reclamar".',
+      'Seleccione su opción de conversión a continuación y haga clic en "Reclamar".',
     "Self-transfer not supported": "No se admite la autotransferencia",
     "Sell GLP": "Vender GLP",
     "Sell failed.": "Venta fallida.",
     "Sell for {0}": ["Vender por ", ["0"]],
     "Sell submitted!": "¡Venta presentada!",
     "Selling...": "Vendiendo...",
-    "Sender has withdrawn all tokens from GLP": "El remitente ha retirado todos los tokens del Baúl de Adquisición GLP",
+    "Sender has withdrawn all tokens from GLP": "El remitente ha retirado todos los tokens del Baúl de Conversión GLP",
     "Sender has withdrawn all tokens from GLP Vesting Vault":
-      "El remitente ha retirado todos los tokens del Baúl de Adquisición GLP",
+      "El remitente ha retirado todos los tokens del Baúl de Conversión GLP",
     "Sender has withdrawn all tokens from GMX Vesting Vault":
-      "El remitente ha retirado todos los tokens del Cajas de Adquisición GMX",
+      "El remitente ha retirado todos los tokens del Baúl de Conversión GMX",
     Settings: "Ajustes",
     Share: "Compartir",
     "Share Position": "Compartir Posición",
@@ -489,7 +489,7 @@
     "Staking...": "Stakeando...",
     Stats: "Estadísticas",
     Submit: "Enviar",
-    Supply: "Suministros",
+    Supply: "Monedas en Circulación",
     Swap: "Intercambiar",
     "Swap Order created!": "¡Orden de Intercambio creada!",
     "Swap Order creation failed.": "Falló la creación de la Orden de Intercambio.",
@@ -543,7 +543,7 @@
     "Total Rewards": "Recompensas Totales",
     "Total Staked": "Total Stakeado",
     "Total Stats": "Estadísticas Totales",
-    "Total Supply": "Suministro Total",
+    "Total Supply": "Monedas Totales",
     "Total Traders Referred": "Total de Traders Referidos",
     "Total Trading Volume": "Volumen Total de Operaciones",
     "Total Users": "Usuarios Totales",
@@ -553,7 +553,7 @@
       ["chainName"],
       ")",
     ],
-    Trade: "Comercio",
+    Trade: "Operar",
     "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet":
       "Opere BTC, ETH, AVAX y otras criptomonedas principales con un apalancamiento de hasta 30x directamente desde su cartera",
     "Trade Settings": "Ajustes de Operaciones",
@@ -608,7 +608,7 @@
     "Vest with GMX on Avalanche": "Adquiera con GMX en Avalanche",
     "Vested GLP not withdrawn": "GLP adquirido no retirado.",
     "Vested GMX not withdrawn": "GMX adquirido no retirado.",
-    "Vesting Status": "Estado de Adquisición",
+    "Vesting Status": "Estado de Conversión",
     View: "Ver",
     "View <0>staking</0> page.": "Ver la página de <0>staking</0>.",
     "View in Explorer": "Ver en el Explorador",
@@ -670,7 +670,7 @@
       ".",
     ],
     "You have a pending transfer from {sender}.": ["Tiene una transferencia pendiente de ", ["sender"], "."],
-    "You have not deposited any tokens for vesting.": "No has depositado ningún token para su adquisición.",
+    "You have not deposited any tokens for vesting.": "No has depositado ningún token para su conversión.",
     "You have {0} esGMX (IOU) tokens.": ["Tienes ", ["0"], " tokens esGMX (IOU)."],
     "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed.":
       "Tendrá que estar en esta página para aceptar la transferencia, <0>haga clic aquí</0> para copiar el enlace a esta página si es necesario.",
@@ -691,7 +691,7 @@
     "{0}": [["0"]],
     "{0} GLP (${1})": [["0"], " GLP ($", ["1"], ")"],
     "{0} GLP bought with {1} {2}!": [["0"], " GLP comprado con ", ["1"], " ", ["2"], "!"],
-    "{0} GLP have been reserved for vesting.": [["0"], " GLP se han reservado para adquisiciones."],
+    "{0} GLP have been reserved for vesting.": [["0"], " GLP se han reservado para conversiones."],
     "{0} GLP sold for {1} {2}!": ["¡", ["0"], " GLP vendido por ", ["1"], " ", ["2"], "!"],
     "{0} pool exceeded, try different token": [["0"], " reserva superada, intente otro token"],
     "{0} selected in order form": [["0"], " seleccionado en el formulario de órden"],
