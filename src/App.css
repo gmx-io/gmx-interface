@@ -1397,6 +1397,9 @@ button.App-button {
     padding: 0.155rem !important;
     margin-left: 0rem !important;
   }
+  .App-header-trade-link.homepage-header {
+    margin-right: 1.6rem;
+  }
 }
 
 .walletconnect-modal__mobile__toggle a {

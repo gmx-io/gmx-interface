@@ -269,7 +269,7 @@ function AppHeaderUser({
   if (!active) {
     return (
       <div className="App-header-user">
-        <div className="App-header-trade-link">
+        <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
           <HeaderLink activeClassName="active" className="default-btn" to="/trade">
             <Trans>Trade</Trans>
           </HeaderLink>
