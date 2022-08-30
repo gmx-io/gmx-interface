@@ -277,12 +277,12 @@ export default function Ecosystem() {
     },
     {
       title: "Yield Yak Optimizer",
-      link: "https://yieldyak.com/",
+      link: "https://yieldyak.com/swap",
       linkLabel: "yieldyak.com",
-      about: "Yield Optimizer on Avalanche",
+      about: "DEX Aggregator",
       announcementLabel: "twitter.com",
-      announcementLink: "https://twitter.com/GMX_IO/status/1484601407378378754",
-      chainIds: [AVALANCHE],
+      announcementLink: "https://twitter.com/yieldyak_/status/1484458884827947008",
+      chainIds: [ARBITRUM, AVALANCHE],
     },
     {
       title: "Vovo Finance",
