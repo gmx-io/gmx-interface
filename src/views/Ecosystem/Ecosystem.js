@@ -276,7 +276,7 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM],
     },
     {
-      title: "Yield Yak",
+      title: "Yield Yak Optimizer",
       link: "https://yieldyak.com/",
       linkLabel: "yieldyak.com",
       about: "Yield Optimizer on Avalanche",

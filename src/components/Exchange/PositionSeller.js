@@ -1180,7 +1180,7 @@ export default function PositionSeller(props) {
                           disabled: true,
                           message: (
                             <div>
-                              Insufficient Available Liquidity to swap to {tokenOptionInfo.symbol}
+                              Insufficient Available Liquidity to swap to {tokenOptionInfo.symbol}:
                               <br />
                               <br />
                               <TooltipCardRow
