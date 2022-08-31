@@ -25,7 +25,7 @@ import {
   DECREASE,
 } from "../../Helpers";
 
-import { TooltipCardRow } from "../../views/Dashboard/TooltipCard";
+import { TooltipCardRow } from "../Tooltip/TooltipCard";
 import PositionShare from "./PositionShare";
 import PositionDropdown from "./PositionDropdown";
 

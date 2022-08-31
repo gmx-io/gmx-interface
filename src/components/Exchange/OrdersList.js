@@ -24,7 +24,7 @@ import OrderEditor from "./OrderEditor";
 
 import "./OrdersList.css";
 import Checkbox from "../Checkbox/Checkbox.js";
-import { TooltipCardRow } from "../../views/Dashboard/TooltipCard.js";
+import { TooltipCardRow } from "../Tooltip/TooltipCard.js";
 
 export default function OrdersList(props) {
   const {

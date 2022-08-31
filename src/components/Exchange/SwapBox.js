@@ -82,7 +82,7 @@ import longImg from "../../img/long.svg";
 import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
 import { useUserReferralCode } from "../../Api/referrals";
-import { TooltipCardRow } from "../../views/Dashboard/TooltipCard";
+import { TooltipCardRow } from "../Tooltip/TooltipCard";
 
 const SWAP_ICONS = {
   [LONG]: longImg,

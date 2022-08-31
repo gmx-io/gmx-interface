@@ -18,7 +18,7 @@ msgstr ""
 msgid ", and use GMX with its built-in browser"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:575
+#: src/views/Dashboard/DashboardV2.js:579
 msgid "24h Volume"
 msgstr ""
 
@@ -53,11 +53,11 @@ msgid "AVAILABLE"
 msgstr ""
 
 #: src/App.js:201
-#: src/views/Ecosystem/Ecosystem.js:355
-#: src/views/Ecosystem/Ecosystem.js:399
-#: src/views/Ecosystem/Ecosystem.js:454
-#: src/views/Ecosystem/Ecosystem.js:508
-#: src/views/Ecosystem/Ecosystem.js:555
+#: src/views/Ecosystem/Ecosystem.js:430
+#: src/views/Ecosystem/Ecosystem.js:474
+#: src/views/Ecosystem/Ecosystem.js:529
+#: src/views/Ecosystem/Ecosystem.js:583
+#: src/views/Ecosystem/Ecosystem.js:630
 msgid "About"
 msgstr "À propos de"
 
@@ -109,11 +109,11 @@ msgstr ""
 msgid "Affiliates"
 msgstr ""
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:425
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:441
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr ""
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:363
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:366
 msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
 msgstr ""
 
@@ -135,7 +135,7 @@ msgstr ""
 msgid "Amount of traders you referred."
 msgstr ""
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:440
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:452
 msgid "Amount to claim"
 msgstr ""
 
@@ -143,7 +143,7 @@ msgstr ""
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:514
+#: src/views/Ecosystem/Ecosystem.js:589
 msgid "Announcement"
 msgstr ""
 
@@ -190,7 +190,7 @@ msgstr ""
 msgid "Arbitrum APR:"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:558
+#: src/views/Dashboard/DashboardV2.js:562
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})"
 msgstr ""
 
@@ -289,7 +289,7 @@ msgstr ""
 msgid "Buy"
 msgstr "Acheter"
 
-#: src/views/BuyGlp/BuyGlp.js:33
+#: src/views/BuyGlp/BuyGlp.js:34
 msgid "Buy / Sell GLP"
 msgstr ""
 
@@ -490,15 +490,15 @@ msgstr ""
 msgid "Collateral In"
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:366
+#: src/views/Ecosystem/Ecosystem.js:441
 msgid "Community Projects"
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:532
+#: src/views/Ecosystem/Ecosystem.js:607
 msgid "Community-led Telegram groups."
 msgstr ""
 
-#: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:95
+#: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:96
 msgid "Complete Account Transfer"
 msgstr ""
 
@@ -589,8 +589,8 @@ msgstr ""
 msgid "Creating..."
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:405
-#: src/views/Ecosystem/Ecosystem.js:460
+#: src/views/Ecosystem/Ecosystem.js:480
+#: src/views/Ecosystem/Ecosystem.js:535
 msgid "Creator"
 msgstr ""
 
@@ -606,11 +606,15 @@ msgstr ""
 #~ msgid "Current Reserved: {0}<0/>Additional reserve required: {1}<1/>{2}"
 #~ msgstr ""
 
+#: src/views/Dashboard/DashboardV2.js:361
+msgid "Current Weight"
+msgstr ""
+
 #: src/App.js:176
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: src/views/Ecosystem/Ecosystem.js:420
+#: src/views/Ecosystem/Ecosystem.js:495
 msgid "Dashboards"
 msgstr ""
 
@@ -675,7 +679,7 @@ msgstr ""
 msgid "Display PnL after fees"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:850
+#: src/views/Dashboard/DashboardV2.js:854
 msgid "Distribution"
 msgstr ""
 
@@ -860,7 +864,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js:1079
 #: src/components/Glp/GlpSwap.js:900
 #: src/components/Glp/GlpSwap.js:1335
-#: src/views/Dashboard/DashboardV2.js:655
+#: src/views/Dashboard/DashboardV2.js:659
 msgid "Fees"
 msgstr ""
 
@@ -872,7 +876,7 @@ msgstr ""
 msgid "Fees may vary depending on which asset you use to buy GLP."
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:646
+#: src/views/Dashboard/DashboardV2.js:650
 msgid "Fees since"
 msgstr ""
 
@@ -885,7 +889,7 @@ msgstr ""
 msgid "Fetching token info..."
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:716
+#: src/views/Dashboard/DashboardV2.js:720
 msgid "Floor Price Fund"
 msgstr ""
 
@@ -902,7 +906,7 @@ msgstr ""
 msgid "Funds not utilized by current open positions."
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:957
+#: src/views/Dashboard/DashboardV2.js:961
 msgid "GLP Index Composition"
 msgstr ""
 
@@ -910,7 +914,7 @@ msgstr ""
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:321
+#: src/views/Ecosystem/Ecosystem.js:396
 msgid "GMX Pages"
 msgstr ""
 
@@ -918,11 +922,11 @@ msgstr ""
 msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:423
+#: src/views/Ecosystem/Ecosystem.js:498
 msgid "GMX dashboards and analytics."
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:324
+#: src/views/Ecosystem/Ecosystem.js:399
 msgid "GMX ecosystem pages."
 msgstr ""
 
@@ -1112,11 +1116,11 @@ msgstr ""
 msgid "Limit order submitted!"
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:345
-#: src/views/Ecosystem/Ecosystem.js:389
-#: src/views/Ecosystem/Ecosystem.js:444
-#: src/views/Ecosystem/Ecosystem.js:498
-#: src/views/Ecosystem/Ecosystem.js:545
+#: src/views/Ecosystem/Ecosystem.js:420
+#: src/views/Ecosystem/Ecosystem.js:464
+#: src/views/Ecosystem/Ecosystem.js:519
+#: src/views/Ecosystem/Ecosystem.js:573
+#: src/views/Ecosystem/Ecosystem.js:620
 msgid "Link"
 msgstr ""
 
@@ -1145,8 +1149,8 @@ msgstr ""
 msgid "Long"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:595
-#: src/views/Dashboard/DashboardV2.js:609
+#: src/views/Dashboard/DashboardV2.js:599
+#: src/views/Dashboard/DashboardV2.js:613
 msgid "Long Positions"
 msgstr ""
 
@@ -1164,7 +1168,7 @@ msgstr ""
 
 #: src/components/BuyInputSection/BuyInputSection.js:50
 #: src/components/InputSection/InputSection.js:43
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:448
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:461
 msgid "MAX"
 msgstr ""
 
@@ -1178,8 +1182,8 @@ msgstr ""
 msgid "Mark Price"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:809
-#: src/views/Dashboard/DashboardV2.js:900
+#: src/views/Dashboard/DashboardV2.js:813
+#: src/views/Dashboard/DashboardV2.js:904
 msgid "Market Cap"
 msgstr ""
 
@@ -1268,6 +1272,10 @@ msgstr ""
 msgid "Min order: 10 USD"
 msgstr ""
 
+#: src/views/Dashboard/DashboardV2.js:406
+msgid "More Info"
+msgstr ""
+
 #: src/views/Stake/StakeV2.js:1307
 msgid "Multiplier Points APR"
 msgstr ""
@@ -1315,7 +1323,7 @@ msgstr ""
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr ""
 
-#: src/views/BuyGlp/BuyGlp.js:43
+#: src/views/BuyGlp/BuyGlp.js:45
 msgid "Note that there is a minimum holding time of 15 minutes after a purchase."
 msgstr ""
 
@@ -1369,16 +1377,16 @@ msgstr ""
 msgid "Orders cancelled."
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:547
+#: src/views/Dashboard/DashboardV2.js:551
 msgid "Overview"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:972
+#: src/views/Dashboard/DashboardV2.js:976
 msgid "POOL"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js:984
-#: src/views/Dashboard/DashboardV2.js:969
+#: src/views/Dashboard/DashboardV2.js:973
 msgid "PRICE"
 msgstr ""
 
@@ -1387,7 +1395,7 @@ msgstr ""
 msgid "Page outdated, please refresh"
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:475
+#: src/views/Ecosystem/Ecosystem.js:550
 msgid "Partnerships and Integrations"
 msgstr ""
 
@@ -1396,7 +1404,7 @@ msgstr ""
 msgid "Pay"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:729
+#: src/views/Dashboard/DashboardV2.js:733
 msgid "Platform and GLP index tokens."
 msgstr ""
 
@@ -1412,7 +1420,7 @@ msgstr ""
 msgid "Please mint GLP using another token"
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:234
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:236
 msgid "Please only use this for full account transfers."
 msgstr ""
 
@@ -1440,7 +1448,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js:1956
 #: src/components/Exchange/SwapBox.js:2005
 #: src/components/Glp/GlpSwap.js:708
-#: src/views/Dashboard/DashboardV2.js:882
+#: src/views/Dashboard/DashboardV2.js:886
 #: src/views/Stake/StakeV2.js:1485
 #: src/views/Stake/StakeV2.js:1826
 #: src/views/Stake/StakeV2.js:1968
@@ -1476,15 +1484,15 @@ msgstr ""
 #~ msgid "Profits In"
 #~ msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:369
+#: src/views/Ecosystem/Ecosystem.js:444
 msgid "Projects developed by the GMX community."
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:478
+#: src/views/Ecosystem/Ecosystem.js:553
 msgid "Projects integrated with GMX."
 msgstr ""
 
-#: src/views/BuyGlp/BuyGlp.js:35
+#: src/views/BuyGlp/BuyGlp.js:37
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 msgstr ""
 
@@ -1523,15 +1531,15 @@ msgstr ""
 msgid "Receive"
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:251
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:258
 msgid "Receiver Address"
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:269
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:280
 msgid "Receiver has not staked GLP tokens before"
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:268
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:277
 msgid "Receiver has not staked GMX tokens before"
 msgstr ""
 
@@ -1650,7 +1658,7 @@ msgstr ""
 msgid "Select different tokens"
 msgstr ""
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:361
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:364
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr ""
 
@@ -1682,11 +1690,11 @@ msgstr ""
 msgid "Selling..."
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:266
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:274
 msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:263
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:271
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr ""
 
@@ -1710,8 +1718,8 @@ msgstr ""
 msgid "Short"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:620
-#: src/views/Dashboard/DashboardV2.js:634
+#: src/views/Dashboard/DashboardV2.js:624
+#: src/views/Dashboard/DashboardV2.js:638
 msgid "Short Positions"
 msgstr ""
 
@@ -1742,7 +1750,7 @@ msgstr ""
 msgid "Speed up page loading"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:906
+#: src/views/Dashboard/DashboardV2.js:910
 msgid "Stablecoin Percentage"
 msgstr ""
 
@@ -1776,7 +1784,7 @@ msgstr ""
 msgid "Stake submitted!"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:796
+#: src/views/Dashboard/DashboardV2.js:800
 #: src/views/Stake/StakeV2.js:1522
 #: src/views/Stake/StakeV2.js:1841
 #: src/views/Stake/StakeV2.js:1983
@@ -1792,7 +1800,7 @@ msgstr ""
 msgid "Staking..."
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:522
+#: src/views/Dashboard/DashboardV2.js:526
 msgid "Stats"
 msgstr ""
 
@@ -1800,8 +1808,8 @@ msgstr ""
 msgid "Submit"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:781
-#: src/views/Dashboard/DashboardV2.js:888
+#: src/views/Dashboard/DashboardV2.js:785
+#: src/views/Dashboard/DashboardV2.js:892
 msgid "Supply"
 msgstr ""
 
@@ -1844,11 +1852,15 @@ msgid "Synapse"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js:981
-#: src/views/Dashboard/DashboardV2.js:966
+#: src/views/Dashboard/DashboardV2.js:970
 msgid "TOKEN"
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:529
+#: src/views/Dashboard/DashboardV2.js:366
+msgid "Target Weight"
+msgstr ""
+
+#: src/views/Ecosystem/Ecosystem.js:604
 msgid "Telegram Groups"
 msgstr ""
 
@@ -1864,11 +1876,11 @@ msgstr ""
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr ""
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:357
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:358
 msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
 msgstr ""
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:365
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:371
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr ""
 
@@ -1880,7 +1892,7 @@ msgstr ""
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:236
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:238
 msgid "This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account."
 msgstr ""
 
@@ -1888,7 +1900,7 @@ msgstr ""
 msgid "Tier {0} ({1}% discount)"
 msgstr ""
 
-#: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:98
+#: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:100
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr ""
 
@@ -1912,8 +1924,8 @@ msgstr ""
 msgid "Total"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:675
-#: src/views/Dashboard/DashboardV2.js:684
+#: src/views/Dashboard/DashboardV2.js:679
+#: src/views/Dashboard/DashboardV2.js:688
 msgid "Total Fees"
 msgstr ""
 
@@ -1927,15 +1939,15 @@ msgstr ""
 msgid "Total Rewards"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:787
-#: src/views/Dashboard/DashboardV2.js:894
+#: src/views/Dashboard/DashboardV2.js:791
+#: src/views/Dashboard/DashboardV2.js:898
 #: src/views/Stake/StakeV2.js:1669
 #: src/views/Stake/StakeV2.js:1925
 #: src/views/Stake/StakeV2.js:2032
 msgid "Total Staked"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:669
+#: src/views/Dashboard/DashboardV2.js:673
 msgid "Total Stats"
 msgstr ""
 
@@ -1961,12 +1973,12 @@ msgid "Total Users"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js:124
-#: src/views/Dashboard/DashboardV2.js:696
-#: src/views/Dashboard/DashboardV2.js:705
+#: src/views/Dashboard/DashboardV2.js:700
+#: src/views/Dashboard/DashboardV2.js:709
 msgid "Total Volume"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:569
+#: src/views/Dashboard/DashboardV2.js:573
 msgid "Total value of tokens in GLP pool ({chainName})"
 msgstr ""
 
@@ -2012,7 +2024,7 @@ msgstr ""
 msgid "Transfer AVAX"
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:232
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:233
 msgid "Transfer Account"
 msgstr ""
 
@@ -2038,11 +2050,11 @@ msgstr ""
 msgid "Transferring"
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:240
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:242
 msgid "Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:238
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:240
 msgid "Transfers are only supported if the receiving account has not staked GMX or GLP tokens before."
 msgstr ""
 
@@ -2066,7 +2078,7 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:978
+#: src/views/Dashboard/DashboardV2.js:982
 msgid "UTILIZATION"
 msgstr ""
 
@@ -2128,19 +2140,19 @@ msgstr ""
 #~ msgid "Vault Capacity for your Account<0/><1/>Deposited: {0} esGMX<2/>Max Capacity: {1} esGMX<3/>"
 #~ msgstr ""
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:396
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:407
 msgid "Vest with GLP on Arbitrum"
 msgstr ""
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:412
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:427
 msgid "Vest with GLP on Avalanche"
 msgstr ""
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:388
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:397
 msgid "Vest with GMX on Arbitrum"
 msgstr ""
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:404
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:417
 msgid "Vest with GMX on Avalanche"
 msgstr ""
 
@@ -2162,7 +2174,7 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: src/views/BuyGlp/BuyGlp.js:45
+#: src/views/BuyGlp/BuyGlp.js:47
 msgid "View <0>staking</0> page."
 msgstr ""
 
@@ -2170,7 +2182,7 @@ msgstr ""
 msgid "View in Explorer"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:584
+#: src/views/Dashboard/DashboardV2.js:588
 msgid "Volume"
 msgstr ""
 
@@ -2194,7 +2206,7 @@ msgstr ""
 msgid "WARNING: This position has a low amount of collateral after deducting borrowing fees, deposit more collateral to reduce the position's liquidation risk."
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:975
+#: src/views/Dashboard/DashboardV2.js:979
 msgid "WEIGHT"
 msgstr ""
 
@@ -2285,11 +2297,11 @@ msgstr ""
 msgid "You can buy ETH directly on <0>Arbitrum</0> using Banxa:"
 msgstr ""
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:369
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:377
 msgid "You can check your claim history <0>here</0>."
 msgstr ""
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:419
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:435
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr ""
 
@@ -2301,11 +2313,11 @@ msgstr ""
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:244
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:248
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
 msgstr ""
 
-#: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:119
+#: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:121
 msgid "You have a pending transfer from {sender}."
 msgstr ""
 
@@ -2322,7 +2334,7 @@ msgstr ""
 msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
 msgstr ""
 
-#: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:101
+#: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:103
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr ""
 
@@ -2330,7 +2342,7 @@ msgstr ""
 msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
 msgstr ""
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:367
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:373
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr ""
 
@@ -2384,6 +2396,14 @@ msgstr ""
 msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
 msgstr ""
 
+#: src/views/Dashboard/DashboardV2.js:391
+msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
+msgstr ""
+
+#: src/views/Dashboard/DashboardV2.js:373
+msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1},  and to <3>swap</3> {2} for other tokens."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js:947
 #: src/components/Exchange/SwapBox.js:1003
 #: src/components/Glp/GlpSwap.js:452
@@ -2398,7 +2418,7 @@ msgstr ""
 msgid "{0} {1} not supported"
 msgstr ""
 
-#: src/views/Dashboard/DashboardV2.js:526
+#: src/views/Dashboard/DashboardV2.js:530
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
 msgstr ""
 

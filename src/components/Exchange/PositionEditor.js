@@ -31,7 +31,7 @@ import PositionRouter from "../../abis/PositionRouter.json";
 import Token from "../../abis/Token.json";
 import Tooltip from "../Tooltip/Tooltip";
 import { getConstant } from "../../Constants";
-import { TooltipCardRow } from "../../views/Dashboard/TooltipCard";
+import { TooltipCardRow } from "../Tooltip/TooltipCard";
 
 const DEPOSIT = t`Deposit`;
 const WITHDRAW = t`Withdraw`;

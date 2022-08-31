@@ -62,7 +62,7 @@ import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
 import AssetDropdown from "../../views/Dashboard/AssetDropdown";
-import { TooltipCardRow } from "../../views/Dashboard/TooltipCard";
+import { TooltipCardRow } from "../Tooltip/TooltipCard";
 
 const { AddressZero } = ethers.constants;
 

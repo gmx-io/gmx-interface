@@ -52,7 +52,7 @@ import { getContract } from "../../Addresses";
 
 import "./StakeV2.css";
 import SEO from "../../components/Common/SEO";
-import TooltipCard, { TooltipCardRow } from "../Dashboard/TooltipCard";
+import TooltipCard, { TooltipCardRow } from "../../components/Tooltip/TooltipCard";
 
 const { AddressZero } = ethers.constants;
 
