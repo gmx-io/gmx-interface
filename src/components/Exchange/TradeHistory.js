@@ -20,13 +20,14 @@ import { useTrades, useLiquidationsData } from "../../Api";
 import { getContract } from "../../Addresses";
 
 import "./TradeHistory.css";
+import { t, Trans } from "@lingui/macro";
 
 const { AddressZero } = ethers.constants;
 
 function getPositionDisplay(increase, indexToken, isLong, sizeDelta) {
   const symbol = indexToken ? (indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol) : "";
   return `
-    ${increase ? "Increase" : "Decrease"} ${symbol} ${isLong ? "Long" : "Short"}
+    ${increase ? t`Increase` : t`Decrease`} ${symbol} ${isLong ? t`Long` : t`Short`}
     ${increase ? "+" : "-"}${formatAmount(sizeDelta, USD_DECIMALS, 2, true)} USD`;
 }
 
@@ -34,28 +35,28 @@ function getOrderActionTitle(action) {
   let actionDisplay;
 
   if (action.startsWith("Create")) {
-    actionDisplay = "Create";
+    actionDisplay = t`Create`;
   } else if (action.startsWith("Cancel")) {
-    actionDisplay = "Cancel";
+    actionDisplay = t`Cancel`;
   } else {
-    actionDisplay = "Update";
+    actionDisplay = t`Update`;
   }
 
-  return `${actionDisplay} Order`;
+  return t`${actionDisplay} Order`;
 }
 
 function renderLiquidationTooltip(liquidationData, label) {
   const minCollateral = liquidationData.size.mul(BASIS_POINTS_DIVISOR).div(MAX_LEVERAGE);
   const text =
     liquidationData.type === "full"
-      ? "This position was liquidated as the max leverage of 100x was exceeded"
-      : "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account";
+      ? t`This position was liquidated as the max leverage of 100x was exceeded`
+      : t`Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account`;
   return (
     <Tooltip
       position="left-top"
       handle={label}
       renderContent={() => (
-        <>
+        <Trans>
           {text}
           <br />
           <br />
@@ -67,7 +68,7 @@ function renderLiquidationTooltip(liquidationData, label) {
           <br />
           PnL: -${formatAmount(liquidationData.loss, USD_DECIMALS, 2, true)}
           {liquidationData.type === "full" && <div>Liquidation fee: ${formatAmount(LIQUIDATION_FEE, 30, 2, true)}</div>}
-        </>
+        </Trans>
       )}
     />
   );
@@ -175,10 +176,10 @@ export default function TradeHistory(props) {
         }
 
         if (bigNumberify(params.sizeDelta).eq(0)) {
-          return `Request deposit into ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`;
+          return t`Request deposit into ${indexToken.symbol} ${params.isLong ? t`Longt` : t`Short`}`;
         }
 
-        return `Request increase ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}, +${formatAmount(
+        return t`Request increase ${indexToken.symbol} ${params.isLong ? t`Long` : t`Short`}, +${formatAmount(
           params.sizeDelta,
           USD_DECIMALS,
           2,
@@ -198,10 +199,10 @@ export default function TradeHistory(props) {
         }
 
         if (bigNumberify(params.sizeDelta).eq(0)) {
-          return `Request withdrawal from ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`;
+          return t`Request withdrawal from ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`;
         }
 
-        return `Request decrease ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}, -${formatAmount(
+        return t`Request decrease ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}, -${formatAmount(
           params.sizeDelta,
           USD_DECIMALS,
           2,
@@ -236,7 +237,9 @@ export default function TradeHistory(props) {
             <Tooltip
               position="left-top"
               handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, 2, true)} USD`}
-              renderContent={() => <>Try increasing the "Allowed Slippage", under the Settings menu on the top right</>}
+              renderContent={() => (
+                <Trans>Try increasing the "Allowed Slippage", under the Settings menu on the top right</Trans>
+              )}
             />
           </>
         );
@@ -249,7 +252,7 @@ export default function TradeHistory(props) {
         }
 
         if (bigNumberify(params.sizeDelta).eq(0)) {
-          return `Could not execute withdrawal from ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`;
+          return t`Could not execute withdrawal from ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}`;
         }
 
         return (
@@ -260,7 +263,9 @@ export default function TradeHistory(props) {
             <Tooltip
               position="left-top"
               handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, 2, true)} USD`}
-              renderContent={() => <>Try increasing the "Allowed Slippage", under the Settings menu on the top right</>}
+              renderContent={() => (
+                <Trans>Try increasing the "Allowed Slippage", under the Settings menu on the top right</Trans>
+              )}
             />
           </>
         );
@@ -276,11 +281,11 @@ export default function TradeHistory(props) {
           return defaultMsg;
         }
         if (bigNumberify(params.sizeDelta).eq(0)) {
-          return `Deposit ${formatAmount(params.collateralDelta, USD_DECIMALS, 2, true)} USD into ${
+          return t`Deposit ${formatAmount(params.collateralDelta, USD_DECIMALS, 2, true)} USD into ${
             indexToken.symbol
-          } ${params.isLong ? "Long" : "Short"}`;
+          } ${params.isLong ? t`Long` : t`Short`}`;
         }
-        return `Increase ${indexToken.symbol} ${params.isLong ? "Long" : "Short"}, +${formatAmount(
+        return t`Increase ${indexToken.symbol} ${params.isLong ? t`Long` : t`Short`}, +${formatAmount(
           params.sizeDelta,
           USD_DECIMALS,
           2,
@@ -298,9 +303,9 @@ export default function TradeHistory(props) {
           return defaultMsg;
         }
         if (bigNumberify(params.sizeDelta).eq(0)) {
-          return `Withdraw ${formatAmount(params.collateralDelta, USD_DECIMALS, 2, true)} USD from ${
+          return t`Withdraw ${formatAmount(params.collateralDelta, USD_DECIMALS, 2, true)} USD from ${
             indexToken.symbol
-          } ${params.isLong ? "Long" : "Short"}`;
+          } ${params.isLong ? t`Long` : t`Short`}`;
         }
         const isLiquidation = params.flags?.isLiquidation;
         const liquidationData = getLiquidationData(liquidationsDataMap, params.key, tradeData.timestamp);
@@ -337,8 +342,8 @@ export default function TradeHistory(props) {
             </>
           );
         }
-        return `
-        Liquidated ${indexToken.symbol} ${params.isLong ? "Long" : "Short"},
+        return t`
+        Liquidated ${indexToken.symbol} ${params.isLong ? t`Long` : t`Short`},
         -${formatAmount(params.size, USD_DECIMALS, 2, true)} USD,
         ${indexToken.symbol} Price: ${formatAmount(params.markPrice, USD_DECIMALS, 2, true)} USD
       `;
@@ -350,7 +355,7 @@ export default function TradeHistory(props) {
         if (!indexToken) {
           return defaultMsg;
         }
-        const longShortDisplay = order.isLong ? "Long" : "Short";
+        const longShortDisplay = order.isLong ? t`Long` : t`Short`;
         const executionPriceDisplay = formatAmount(order.executionPrice, USD_DECIMALS, 2, true);
         const sizeDeltaDisplay = `${order.type === "Increase" ? "+" : "-"}${formatAmount(
           order.sizeDelta,
@@ -390,7 +395,7 @@ export default function TradeHistory(props) {
         return `
         ${getOrderActionTitle(tradeData.action)}:
         ${getPositionDisplay(increase, indexToken, order.isLong, order.sizeDelta)},
-        Price: ${priceDisplay}
+        ${t`Price`}: ${priceDisplay}
       `;
       }
 
@@ -404,7 +409,7 @@ export default function TradeHistory(props) {
         }
         const fromAmountDisplay = formatAmount(order.amountIn, fromToken.decimals, fromToken.isStable ? 2 : 4, true);
         const toAmountDisplay = formatAmount(order.amountOut, toToken.decimals, toToken.isStable ? 2 : 4, true);
-        return `
+        return t`
         Execute Order: Swap ${fromAmountDisplay} ${fromToken.symbol} for ${toAmountDisplay} ${toToken.symbol}
       `;
       }
@@ -424,7 +429,7 @@ export default function TradeHistory(props) {
           ? formatAmount(order.minOut, toToken.decimals, toToken.isStable ? 2 : 4, true)
           : "";
 
-        return `
+        return t`
         ${getOrderActionTitle(tradeData.action)}:
         Swap ${amountInDisplay} ${fromToken?.symbol || ""} for ${minOutDisplay} ${toToken?.symbol || ""},
         Price: ${getExchangeRateDisplay(order.triggerRatio, fromToken, toToken)}`;
@@ -483,12 +488,12 @@ export default function TradeHistory(props) {
         <div>
           {pageIndex > 0 && (
             <button className="App-button-option App-card-option" onClick={loadPrevPage}>
-              Prev
+              <Trans>Prev</Trans>
             </button>
           )}
           {trades && trades.length >= TRADES_PAGE_SIZE && (
             <button className="App-button-option App-card-option" onClick={loadNextPage}>
-              Next
+              <Trans>Next</Trans>
             </button>
           )}
         </div>

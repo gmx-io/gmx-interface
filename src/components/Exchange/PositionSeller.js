@@ -298,7 +298,9 @@ export default function PositionSeller(props) {
     fromAmount = parseValue(fromValue, USD_DECIMALS);
     sizeDelta = fromAmount;
 
-    title = `Close ${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol}`;
+    title = position.isLong
+      ? t`Close Long ${position.indexToken.symbol}`
+      : t`Close Short ${position.indexToken.symbol}`;
     collateralToken = position.collateralToken;
     liquidationPrice = getLiquidationPrice(position);
 
@@ -520,11 +522,11 @@ export default function PositionSeller(props) {
     }
 
     if (notEnoughReceiveTokenLiquidity) {
-      return "Insufficient receive token liquidity";
+      return t`Insufficient receive token liquidity`;
     }
 
     if (collateralPoolCapacityExceeded) {
-      return `${collateralToken.symbol} pool exceeded, can only Receive ${collateralToken.symbol}`;
+      return t`${collateralToken.symbol} pool exceeded, can only Receive ${collateralToken.symbol}`;
     }
 
     if (!isClosing && position && position.size && fromAmount) {
@@ -726,7 +728,7 @@ export default function PositionSeller(props) {
     ];
 
     const successMsg = t`Requested decrease of ${position.indexToken.symbol} ${
-      position.isLong ? "Long" : "Short"
+      position.isLong ? t`Long` : t`Short`
     } by ${formatAmount(sizeDelta, USD_DECIMALS, 2)} USD.`;
 
     const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
@@ -772,10 +774,12 @@ export default function PositionSeller(props) {
     const prefix = existingOrder.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
     return (
       <div className="Confirmation-box-warning">
-        You have an active order to decrease {existingOrder.isLong ? "Long" : "Short"} {sizeInToken} {indexToken.symbol}{" "}
-        ($
-        {formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at {prefix}{" "}
-        {formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
+        <Trans>
+          You have an active order to decrease {existingOrder.isLong ? t`Long` : t`Short`} {sizeInToken}{" "}
+          {indexToken.symbol} ($
+          {formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at {prefix}{" "}
+          {formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
+        </Trans>
       </div>
     );
   }, [existingOrder, infoTokens]);
@@ -791,30 +795,38 @@ export default function PositionSeller(props) {
       if (orderOption === MARKET) {
         return (
           <div className="Confirmation-box-warning">
-            Reducing the position at the current price will forfeit a&nbsp;
-            <a
-              href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              pending profit
-            </a>{" "}
-            of {deltaStr}. <br />
-            <br />
-            Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
-            applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
+            <Trans>
+              Reducing the position at the current price will forfeit a&nbsp;
+              <a
+                href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                pending profit
+              </a>{" "}
+              of {deltaStr}. <br />
+              <br />
+              Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
+              applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
+            </Trans>
           </div>
         );
       }
       return (
         <div className="Confirmation-box-warning">
-          This order will forfeit a&nbsp;
-          <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
-            profit
-          </a>{" "}
-          of {deltaStr}. <br />
-          Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
-          applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
+          <Trans>
+            This order will forfeit a&nbsp;
+            <a
+              href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              profit
+            </a>{" "}
+            of {deltaStr}. <br />
+            Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
+            applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
+          </Trans>
         </div>
       );
     }
@@ -920,19 +932,25 @@ export default function PositionSeller(props) {
             {hasPendingProfit && orderOption !== STOP && (
               <div className="PositionEditor-accept-profit-warning">
                 <Checkbox isChecked={isProfitWarningAccepted} setIsChecked={setIsProfitWarningAccepted}>
-                  <span className="muted">Forfeit profit</span>
+                  <span className="muted">
+                    <Trans>Forfeit profit</Trans>
+                  </span>
                 </Checkbox>
               </div>
             )}
             <div className="PositionEditor-keep-leverage-settings">
               <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                <span className="muted font-sm">Keep leverage at {formatAmount(position.leverage, 4, 2)}x</span>
+                <span className="muted font-sm">
+                  <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
+                </span>
               </Checkbox>
             </div>
             {orderOption === MARKET && (
               <div className="PositionEditor-allow-higher-slippage">
                 <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
-                  <span className="muted font-sm">Allow up to 1% slippage</span>
+                  <span className="muted font-sm">
+                    <Trans>Allow up to 1% slippage</Trans>
+                  </span>
                 </Checkbox>
               </div>
             )}
@@ -944,13 +962,13 @@ export default function PositionSeller(props) {
                     position="right-bottom"
                     renderContent={() => {
                       return (
-                        <>
+                        <Trans>
                           You can change this in the settings menu on the top right of the page.
                           <br />
                           <br />
                           Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices
                           are volatile.
-                        </>
+                        </Trans>
                       );
                     }}
                   />
@@ -1090,16 +1108,19 @@ export default function PositionSeller(props) {
                   renderContent={() => (
                     <div>
                       {fundingFee && (
-                        <TooltipCardRow label="Borrow fee" value={formatAmount(fundingFee, USD_DECIMALS, 2, true)} />
+                        <TooltipCardRow label={t`Borrow fee`} value={formatAmount(fundingFee, USD_DECIMALS, 2, true)} />
                       )}
 
                       {positionFee && (
-                        <TooltipCardRow label="Closing fee" value={formatAmount(positionFee, USD_DECIMALS, 2, true)} />
+                        <TooltipCardRow
+                          label={t`Closing fee`}
+                          value={formatAmount(positionFee, USD_DECIMALS, 2, true)}
+                        />
                       )}
 
                       {swapFee && (
                         <TooltipCardRow
-                          label="Swap fee"
+                          label={t`Swap fee`}
                           showDollar={false}
                           value={`${formatAmount(swapFeeToken, collateralToken.decimals, 5)} ${collateralToken.symbol}
                            ($${formatAmount(swapFee, USD_DECIMALS, 2, true)})`}
@@ -1107,7 +1128,7 @@ export default function PositionSeller(props) {
                       )}
 
                       <TooltipCardRow
-                        label="Execution fee"
+                        label={t`Execution fee`}
                         showDollar={false}
                         value={`${formatAmount(executionFee, 18, 5, true)} ${nativeTokenSymbol} ($${formatAmount(
                           executionFeeUsd,
@@ -1119,10 +1140,12 @@ export default function PositionSeller(props) {
                       <br />
 
                       <div className="PositionSeller-fee-item">
-                        <a href="https://gmxio.gitbook.io/gmx/trading#fees" target="_blank" rel="noopener noreferrer">
-                          More Info
-                        </a>{" "}
-                        about fees.
+                        <Trans>
+                          <a href="https://gmxio.gitbook.io/gmx/trading#fees" target="_blank" rel="noopener noreferrer">
+                            More Info
+                          </a>{" "}
+                          about fees.
+                        </Trans>
                       </div>
                     </div>
                   )}
@@ -1180,11 +1203,11 @@ export default function PositionSeller(props) {
                           disabled: true,
                           message: (
                             <div>
-                              Insufficient Available Liquidity to swap to {tokenOptionInfo.symbol}:
+                              <Trans>Insufficient Available Liquidity to swap to {tokenOptionInfo.symbol}</Trans>:
                               <br />
                               <br />
                               <TooltipCardRow
-                                label={`Max ${collateralInfo.symbol} in`}
+                                label={t`Max ${collateralInfo.symbol} in`}
                                 values={[
                                   `${formatAmount(maxIn, collateralInfo.decimals, 0, true)} ${collateralInfo.symbol}`,
                                   `($${formatAmount(maxInUsd, USD_DECIMALS, 0, true)})`,
@@ -1192,7 +1215,7 @@ export default function PositionSeller(props) {
                               />
                               <br />
                               <TooltipCardRow
-                                label={`Max ${tokenOptionInfo.symbol} out`}
+                                label={t`Max ${tokenOptionInfo.symbol} out`}
                                 values={[
                                   `${formatAmount(maxOut, tokenOptionInfo.decimals, 0, true)} ${
                                     tokenOptionInfo.symbol

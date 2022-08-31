@@ -111,7 +111,7 @@ export default function PositionEditor(props) {
   let title;
   let collateralDelta;
   if (position) {
-    title = `Edit ${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol}`;
+    title = position.isLong ? `Edit Long ${position.indexToken.symbol}` : `Edit Short ${position.indexToken.symbol}`;
     collateralToken = position.collateralToken;
     liquidationPrice = getLiquidationPrice(position);
 
@@ -322,7 +322,7 @@ export default function PositionEditor(props) {
 
     if (shouldRaiseGasError(getTokenInfo(infoTokens, collateralTokenAddress), fromAmount)) {
       setIsSwapping(false);
-      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ETH for gas`);
+      helperToast.error(t`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ETH for gas`);
       return;
     }
 
@@ -332,7 +332,7 @@ export default function PositionEditor(props) {
       sentMsg: t`Deposit submitted.`,
       successMsg: t`Requested deposit of ${formatAmount(fromAmount, position.collateralToken.decimals, 4)} ${
         position.collateralToken.symbol
-      } into ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}.`,
+      } into ${position.indexToken.symbol} ${position.isLong ? t`Long` : t`Short`}.`,
       failMsg: t`Deposit failed.`,
       setPendingTxns,
     })
@@ -385,7 +385,7 @@ export default function PositionEditor(props) {
       sentMsg: t`Withdrawal submitted.`,
       successMsg: t`Requested withdrawal of ${formatAmount(fromAmount, USD_DECIMALS, 2)} USD from ${
         position.indexToken.symbol
-      } ${position.isLong ? "Long" : "Short"}.`,
+      } ${position.isLong ? t`Long` : t`Short`}.`,
       failMsg: t`Withdrawal failed.`,
       setPendingTxns,
     })
@@ -460,7 +460,7 @@ export default function PositionEditor(props) {
                     </div>
                     {maxAmount && (
                       <div className="muted align-right clickable" onClick={() => setFromValue(maxAmountFormattedFree)}>
-                        Max: {maxAmountFormatted}
+                        <Trans>Max</Trans>: {maxAmountFormatted}
                       </div>
                     )}
                   </div>
@@ -574,7 +574,7 @@ export default function PositionEditor(props) {
                           return (
                             <>
                               <TooltipCardRow
-                                label="Network fee"
+                                label={t`Network fee`}
                                 showDollar={false}
                                 value={`${formatAmountFree(
                                   minExecutionFee,
@@ -591,7 +591,7 @@ export default function PositionEditor(props) {
                                 target="_blank"
                                 rel="noopener noreferrer"
                               >
-                                More Info
+                                <Trans>More Info</Trans>
                               </a>
                             </>
                           );

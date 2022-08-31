@@ -65,6 +65,7 @@
     "prepare": "husky install && yarn lingui:prepare",
     "extract": "NODE_ENV=development lingui extract",
     "compile": "lingui compile",
+    "lingui:clean": "lingui extract --clean",
     "lingui:prepare": "yarn extract && yarn compile"
   },
   "eslintConfig": {

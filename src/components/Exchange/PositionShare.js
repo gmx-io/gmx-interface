@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { toJpeg } from "html-to-image";
 import cx from "classnames";
 import { BiCopy } from "react-icons/bi";
@@ -59,7 +59,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
           setUploadedImageInfo(imageInfo);
         } catch {
           setUploadedImageInfo(null);
-          setUploadedImageError("Image generation error, please refresh and try again.");
+          setUploadedImageError(t`Image generation error, please refresh and try again.`);
         }
       }
     })();
@@ -81,14 +81,14 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
     if (!uploadedImageInfo) return;
     const url = getShareURL(uploadedImageInfo, userAffiliateCode);
     copyToClipboard(url);
-    helperToast.success("Link copied to clipboard.");
+    helperToast.success(t`Link copied to clipboard.`);
   }
   return (
     <Modal
       className="position-share-modal"
       isVisible={isPositionShareModalOpen}
       setIsVisible={setIsPositionShareModalOpen}
-      label="Share Position"
+      label={t`Share Position`}
     >
       <PositionShareCard
         userAffiliateCode={userAffiliateCode}
@@ -178,7 +178,9 @@ function PositionShareCard({
         <div className="image-overlay-wrapper">
           <div className="image-overlay">
             <SpinningLoader />
-            <p className="loading-text">Generating shareable image...</p>
+            <p className="loading-text">
+              <Trans>Generating shareable image...</Trans>
+            </p>
           </div>
         </div>
       )}

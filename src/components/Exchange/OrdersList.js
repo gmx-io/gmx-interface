@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 
 import {
   SWAP,
@@ -176,7 +176,9 @@ export default function OrdersList(props) {
                 />
               </div>
             </td>
-            <td className="Exchange-list-item-type">Limit</td>
+            <td className="Exchange-list-item-type">
+              <Trans>Limit</Trans>
+            </td>
             <td>
               Swap{" "}
               {formatAmount(
@@ -197,7 +199,7 @@ export default function OrdersList(props) {
             <td>
               <Tooltip
                 handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}
-                renderContent={() => `
+                renderContent={() => t`
                   You will receive at least ${formatAmount(
                     order.minOut,
                     toTokenInfo.decimals,
@@ -231,7 +233,7 @@ export default function OrdersList(props) {
       const orderId = `${order.type}-${order.index}`;
       const orderText = (
         <>
-          {order.type === INCREASE ? "Increase" : "Decrease"} {indexTokenSymbol} {order.isLong ? "Long" : "Short"}
+          {order.type === INCREASE ? t`Increase` : t`Decrease`} {indexTokenSymbol} {order.isLong ? "Long" : "Short"}
           &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
           {error && <div className="Exchange-list-item-error">{error}</div>}
         </>
@@ -255,7 +257,7 @@ export default function OrdersList(props) {
               />
             </div>
           </td>
-          <td className="Exchange-list-item-type">{order.type === INCREASE ? "Limit" : "Trigger"}</td>
+          <td className="Exchange-list-item-type">{order.type === INCREASE ? t`Limit` : t`Trigger`}</td>
           <td>
             {order.type === DECREASE ? (
               orderText
@@ -348,7 +350,7 @@ export default function OrdersList(props) {
                   <Tooltip
                     position="right-bottom"
                     handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}
-                    renderContent={() => `
+                    renderContent={() => t`
                     You will receive at least ${formatAmount(
                       order.minOut,
                       toTokenInfo.decimals,
@@ -399,7 +401,7 @@ export default function OrdersList(props) {
       return (
         <div key={`${order.isLong}-${order.type}-${order.index}`} className="App-card">
           <div className="App-card-title-small">
-            {order.type === INCREASE ? "Increase" : "Decrease"} {indexTokenSymbol} {order.isLong ? "Long" : "Short"}
+            {order.type === INCREASE ? t`Increase` : t`Decrease`} {indexTokenSymbol} {order.isLong ? t`Long` : t`Short`}
             &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
             {error && <div className="Exchange-list-item-error">{error}</div>}
           </div>
@@ -474,7 +476,9 @@ export default function OrdersList(props) {
       </table>
       <div className="Exchange-list Orders small">
         {(!orders || orders.length === 0) && (
-          <div className="Exchange-empty-positions-list-note App-card">No open orders</div>
+          <div className="Exchange-empty-positions-list-note App-card">
+            <Trans>No open orders</Trans>
+          </div>
         )}
         {renderSmallList()}
       </div>
