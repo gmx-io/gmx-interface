@@ -21,6 +21,8 @@ import {
   getTokenInfo,
   getLiquidationPrice,
   approveTokens,
+  IS_NETWORK_DISABLED,
+  getChainName,
 } from "../../Helpers";
 import { getContract } from "../../Addresses";
 import Tab from "../Tab/Tab";
@@ -179,6 +181,10 @@ export default function PositionEditor(props) {
   }
 
   const getError = () => {
+    if (IS_NETWORK_DISABLED[chainId]) {
+      if (isDeposit) return [t`Deposit disabled, pending ${getChainName(chainId)} upgrade`];
+      return [t`Withdraw disabled, pending ${getChainName(chainId)} upgrade`];
+    }
     if (!fromAmount) {
       return t`Enter an amount`;
     }

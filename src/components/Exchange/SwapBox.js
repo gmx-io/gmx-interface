@@ -60,6 +60,8 @@ import {
   calculatePositionDelta,
   replaceNativeTokenAddress,
   adjustForDecimals,
+  IS_NETWORK_DISABLED,
+  getChainName,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import * as Api from "../../Api";
@@ -754,6 +756,10 @@ export default function SwapBox(props) {
   }
 
   const getSwapError = () => {
+    if (IS_NETWORK_DISABLED[chainId]) {
+      return [t`Swaps disabled, pending ${getChainName(chainId)} upgrade`];
+    }
+
     if (fromTokenAddress === toTokenAddress) {
       return [t`Select different tokens`];
     }
@@ -839,6 +845,9 @@ export default function SwapBox(props) {
   };
 
   const getLeverageError = () => {
+    if (IS_NETWORK_DISABLED[chainId]) {
+      return [t`Leverage disabled, pending ${getChainName(chainId)} upgrade`];
+    }
     if (hasOutdatedUi) {
       return [t`Page outdated, please refresh`];
     }
@@ -1094,6 +1103,9 @@ export default function SwapBox(props) {
   };
 
   const isPrimaryEnabled = () => {
+    if (IS_NETWORK_DISABLED[chainId]) {
+      return false;
+    }
     if (isStopOrder) {
       return true;
     }
