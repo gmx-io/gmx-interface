@@ -170,6 +170,7 @@
     Date: "Fecha",
     "Decentralized<0/>Perpetual Exchange": "Exchange<0/>Perpetuo Decentralizado",
     Deposit: "Depositar",
+    "Deposit disabled, pending {0} upgrade": ["Deposit disabled, pending ", ["0"], " upgrade"],
     "Deposit failed!": "¡Depósito fallido!",
     "Deposit failed.": "Depósito fallido.",
     "Deposit submitted!": "¡Depósito enviado!",
@@ -233,10 +234,12 @@
     French: "French",
     "Funds not utilized by current open positions.": "Fondos no utilizados por las posiciones abiertas actuales.",
     "GLP Index Composition": "Composición Índice GLP",
+    "GLP buy disabled, pending {0} upgrade": ["GLP buy disabled, pending ", ["0"], " upgrade"],
     "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees.":
       "GLP es el token proveedor de liquidez. Acumula el 70% de las comisiones generadas por la plataforma.",
     "GLP is the platform's liquidity provider token. Accrues 70% of its generated fees.":
       "GLP es el token proveedor de liquidez de la plataforma. Acumula el 70% de las comisiones generadas.",
+    "GLP sell disabled, pending {0} upgrade": ["GLP sell disabled, pending ", ["0"], " upgrade"],
     "GMX Pages": "Páginas GMX",
     "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:":
       "Los bonos GMX pueden ser comprados en Olympus Pro con un descuento y un pequeño periodo de adquisición:",
@@ -285,6 +288,7 @@
     "Leftover collateral below 5 USD": "Garantía restante inferior a 5 USD",
     "Leftover position below 10 USD": "Posición restante por debajo de 10 USD",
     Leverage: "Apalancamiento",
+    "Leverage disabled, pending {0} upgrade": ["Leverage disabled, pending ", ["0"], " upgrade"],
     "Limit order creation failed.": "Falló la creación de la orden límite.",
     "Limit order submitted!": "¡Orden limite enviada!",
     Link: "Enlace",
@@ -365,6 +369,7 @@
     "Please switch your network to Arbitrum.": "Por favor, cambie su red a Arbitrum.",
     PnL: "GyP",
     Position: "Posición",
+    "Position close disabled, pending {0} upgrade": ["Position close disabled, pending ", ["0"], " upgrade"],
     Positions: "Posiciones",
     Price: "Precio",
     "Price above Liq. Price": "Precio superior al de liquidación",
@@ -497,6 +502,7 @@
     "Swap failed.": "Falló el Intercambio.",
     "Swap on {0}": ["Intercambio en ", ["0"]],
     "Swap submitted!": "¡Intercambio Enviado!",
+    "Swaps disabled, pending {0} upgrade": ["Swaps disabled, pending ", ["0"], " upgrade"],
     "Switch Network": "Cambiar Red",
     Synapse: "Synapse",
     TOKEN: "TOKEN",
@@ -576,6 +582,7 @@
     "Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.":
       "Las transferencias solo son soportadas si la cuenta receptora no ha stakeado tokens GMX o GLP antes.",
     "Trigger Price": "Precio de Activación",
+    "Trigger order disabled, pending {0} upgrade": ["Trigger order disabled, pending ", ["0"], " upgrade"],
     Tweet: "Tweet",
     "Two tokens create our ecosystem": "Dos tokens crean nuestro ecosistema",
     "Txn failed.": "Transf. fallida.",
@@ -629,6 +636,7 @@
     "When closing the position, you can select which token you would like to receive.":
       "When closing the position, you can select which token you would like to receive.",
     Withdraw: "Retirar",
+    "Withdraw disabled, pending {0} upgrade": ["Withdraw disabled, pending ", ["0"], " upgrade"],
     "Withdraw failed.": "Retiro fallido.",
     "Withdraw from GLP Vault": "Retirar del Baúl GLP",
     "Withdraw from GMX Vault": "Retirar del Baúl GMX",
