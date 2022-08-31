@@ -30,8 +30,6 @@ export function HeaderLink({
   const isOnHomePage = window.location.pathname === "/";
   const isHome = isHomeSite();
 
-  console.log(redirectPopupTimestamp,showRedirectModal )
-
   if (isHome && !(isHomeLink && !isOnHomePage)) {
     if (shouldShowRedirectModal(redirectPopupTimestamp)) {
       return (
