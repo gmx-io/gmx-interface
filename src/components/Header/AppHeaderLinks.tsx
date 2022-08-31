@@ -105,7 +105,7 @@ export function AppHeaderLinks({
       {small && !isHomeSite() && (
         <div className="App-header-link-container">
           {/* eslint-disable-next-line */}
-          <a href="src/App/App#" onClick={openSettings}>
+          <a href="#" onClick={openSettings}>
             <Trans>Settings</Trans>
           </a>
         </div>
