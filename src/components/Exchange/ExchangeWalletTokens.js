@@ -1,6 +1,6 @@
 import React from "react";
 
-import { formatAmount, expandDecimals, bigNumberify } from "../../Helpers";
+import { formatAmount, expandDecimals, bigNumberify } from "../../lib/legacy";
 
 import "./ExchangeWalletTokens.css";
 

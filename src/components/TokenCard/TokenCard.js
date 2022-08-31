@@ -7,7 +7,7 @@ import cx from "classnames";
 import gmxBigIcon from "../../img/ic_gmx_custom.svg";
 import glpBigIcon from "../../img/ic_glp_custom.svg";
 
-import { ARBITRUM, AVALANCHE, switchNetwork, useChainId, isHomeSite } from "../../Helpers";
+import { ARBITRUM, AVALANCHE, switchNetwork, useChainId, isHomeSite } from "../../lib/legacy";
 
 import { useWeb3React } from "@web3-react/core";
 
