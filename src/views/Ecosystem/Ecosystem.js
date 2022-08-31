@@ -277,12 +277,12 @@ export default function Ecosystem() {
     },
     {
       title: "Yield Yak Optimizer",
-      link: "https://yieldyak.com/swap",
+      link: "https://yieldyak.com/",
       linkLabel: "yieldyak.com",
-      about: "DEX Aggregator",
+      about: "Yield Optimizer on Avalanche",
       announcementLabel: "twitter.com",
-      announcementLink: "https://twitter.com/yieldyak_/status/1484458884827947008",
-      chainIds: [ARBITRUM, AVALANCHE],
+      announcementLink: "https://twitter.com/GMX_IO/status/1484601407378378754",
+      chainIds: [AVALANCHE],
     },
     {
       title: "Vovo Finance",
@@ -345,6 +345,15 @@ export default function Ecosystem() {
       about: "DEX Aggregator",
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/financefirebird/status/1561767094064238595",
+      chainIds: [AVALANCHE],
+    },
+    {
+      title: "Yield Yak Swap",
+      link: "https://yieldyak.com/swap",
+      linkLabel: "yieldyak.com",
+      about: "DEX Aggregator",
+      announcementLabel: "twitter.com",
+      announcementLink: "https://twitter.com/yieldyak_/status/1484458884827947008",
       chainIds: [AVALANCHE],
     },
   ];
