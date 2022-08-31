@@ -6,8 +6,8 @@ import {
   MAX_REFERRAL_CODE_LENGTH,
   ARBITRUM,
   AVALANCHE,
-} from "../../Helpers";
-import { encodeReferralCode, getReferralCodeOwner } from "../../Api/referrals";
+} from "../../lib/legacy";
+import { encodeReferralCode, getReferralCodeOwner } from "../../domain/referrals";
 
 export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 export const REGEX_VERIFY_BYTES32 = /^0x[0-9a-f]{64}$/;

@@ -26,11 +26,11 @@ import {
   getDeltaStr,
   getProfitPrice,
   getTimeRemaining,
-} from "../../Helpers";
-import { updateSwapOrder, updateIncreaseOrder, updateDecreaseOrder } from "../../Api";
+} from "../../lib/legacy";
+import { updateSwapOrder, updateIncreaseOrder, updateDecreaseOrder } from "../../domain/legacy";
 import Modal from "../Modal/Modal";
 import ExchangeInfoRow from "./ExchangeInfoRow";
-import { getContract } from "../../Addresses";
+import { getContract } from "../../config/Addresses";
 
 export default function OrderEditor(props) {
   const {
