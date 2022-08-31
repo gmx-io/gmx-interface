@@ -33,7 +33,9 @@ import { useUserStat } from "../../Api";
 
 import TokenCard from "../../components/TokenCard/TokenCard";
 
-export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
+import { Trans } from "@lingui/macro";
+
+export default function Home({ showRedirectModal, redirectPopupTimestamp, HeaderLink }) {
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
   // const faqContent = [{
   //   id: 1,
@@ -132,9 +134,9 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
 
   const LaunchExchangeButton = () => {
     return (
-      <div className={cx("default-btn")} onClick={() => showRedirectModal("/trade")}>
-        Launch Exchange
-      </div>
+      <HeaderLink className={cx("default-btn")} to="/trade">
+        <Trans>Launch Exchange</Trans>
+      </HeaderLink>
     );
   };
 
@@ -145,12 +147,16 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
         <div className="Home-title-section-container default-container">
           <div className="Home-title-section">
             <div className="Home-title">
-              Decentralized
-              <br />
-              Perpetual Exchange
+              <Trans>
+                Decentralized
+                <br />
+                Perpetual Exchange
+              </Trans>
             </div>
             <div className="Home-description">
-              Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet
+              <Trans>
+                Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet
+              </Trans>
             </div>
             <LaunchExchangeButton />
           </div>
@@ -159,21 +165,27 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
           <div className="Home-latest-info-block">
             <img src={tradingIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">Total Trading Volume</div>
+              <div className="Home-latest-info__title">
+                <Trans>Total Trading Volume</Trans>
+              </div>
               <div className="Home-latest-info__value">${formatAmount(totalVolumeSum, USD_DECIMALS, 0, true)}</div>
             </div>
           </div>
           <div className="Home-latest-info-block">
             <img src={statsIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">Open Interest</div>
+              <div className="Home-latest-info__title">
+                <Trans>Open Interest</Trans>
+              </div>
               <div className="Home-latest-info__value">${formatAmount(openInterest, USD_DECIMALS, 0, true)}</div>
             </div>
           </div>
           <div className="Home-latest-info-block">
             <img src={totaluserIcon} alt="trading" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
-              <div className="Home-latest-info__title">Total Users</div>
+              <div className="Home-latest-info__title">
+                <Trans>Total Users</Trans>
+              </div>
               <div className="Home-latest-info__value">{numberWithCommas(totalUsers.toFixed(0))}</div>
             </div>
           </div>
@@ -184,31 +196,43 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
           <div className="Home-benefit">
             <div className="Home-benefit-icon">
               <img src={liquidityIcon} alt="liquidity" className="Home-benefit-icon-symbol" />
-              <div className="Home-benefit-title">Reduce Liquidation Risks</div>
+              <div className="Home-benefit-title">
+                <Trans>Reduce Liquidation Risks</Trans>
+              </div>
             </div>
             <div className="Home-benefit-description">
-              An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from
-              temporary wicks.
+              <Trans>
+                An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe
+                from temporary wicks.
+              </Trans>
             </div>
           </div>
           <div className="Home-benefit">
             <div className="Home-benefit-icon">
               <img src={costIcon} alt="cost" className="Home-benefit-icon-symbol" />
-              <div className="Home-benefit-title">Save on Costs</div>
+              <div className="Home-benefit-title">
+                <Trans>Save on Costs</Trans>
+              </div>
             </div>
             <div className="Home-benefit-description">
-              Enter and exit positions with minimal spread and zero price impact. Get the optimal price without
-              incurring additional costs.
+              <Trans>
+                Enter and exit positions with minimal spread and zero price impact. Get the optimal price without
+                incurring additional costs.
+              </Trans>
             </div>
           </div>
           <div className="Home-benefit">
             <div className="Home-benefit-icon">
               <img src={simpleSwapIcon} alt="simpleswap" className="Home-benefit-icon-symbol" />
-              <div className="Home-benefit-title">Simple Swaps</div>
+              <div className="Home-benefit-title">
+                <Trans>Simple Swaps</Trans>
+              </div>
             </div>
             <div className="Home-benefit-description">
-              Open positions through a simple swap interface. Conveniently swap from any supported asset into the
-              position of your choice.
+              <Trans>
+                Open positions through a simple swap interface. Conveniently swap from any supported asset into the
+                position of your choice.
+              </Trans>
             </div>
           </div>
         </div>
@@ -216,8 +240,12 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
       <div className="Home-cta-section">
         <div className="Home-cta-container default-container">
           <div className="Home-cta-info">
-            <div className="Home-cta-info__title">Available on your preferred network</div>
-            <div className="Home-cta-info__description">GMX is currently live on Arbitrum and Avalanche.</div>
+            <div className="Home-cta-info__title">
+              <Trans>Available on your preferred network</Trans>
+            </div>
+            <div className="Home-cta-info__description">
+              <Trans>GMX is currently live on Arbitrum and Avalanche.</Trans>
+            </div>
           </div>
           <div className="Home-cta-options">
             <div className="Home-cta-option Home-cta-option-arbitrum">
@@ -248,7 +276,9 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
       <div className="Home-token-card-section">
         <div className="Home-token-card-container default-container">
           <div className="Home-token-card-info">
-            <div className="Home-token-card-info__title">Two tokens create our ecosystem</div>
+            <div className="Home-token-card-info__title">
+              <Trans>Two tokens create our ecosystem</Trans>
+            </div>
           </div>
           <TokenCard showRedirectModal={showRedirectModal} />
         </div>

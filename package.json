@@ -8,6 +8,8 @@
     "@ethersproject/providers": "5.5.1",
     "@ethersproject/units": "5.5.0",
     "@headlessui/react": "1.6.1",
+    "@lingui/core": "3.13.3",
+    "@lingui/react": "3.13.3",
     "@testing-library/jest-dom": "5.16.1",
     "@testing-library/react": "11.2.7",
     "@testing-library/user-event": "12.8.3",
@@ -55,8 +57,8 @@
   },
   "scripts": {
     "start": "PORT=3010 react-scripts start",
-    "start-home": "PORT=3010 env-cmd -e development-home react-scripts start",
-    "start-app": "PORT=3011 env-cmd -e development-app react-scripts start",
+    "start-home": "yarn lingui:prepare && PORT=3010 env-cmd -e development-home react-scripts start",
+    "start-app": "yarn lingui:prepare && PORT=3011 env-cmd -e development-app react-scripts start",
     "start-win": "set PORT=3010&react-scripts start",
     "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
     "build-home": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-scripts build",
@@ -65,7 +67,10 @@
     "eject": "react-scripts eject",
     "lint": "node node_modules/.bin/eslint src",
     "pre-commit": "npm run test -- --watchAll=false && npm run lint",
-    "prepare": "husky install"
+    "prepare": "husky install && yarn lingui:prepare",
+    "extract": "NODE_ENV=development lingui extract",
+    "compile": "lingui compile",
+    "lingui:prepare": "yarn extract && yarn compile"
   },
   "eslintConfig": {
     "extends": [
@@ -86,6 +91,9 @@
     ]
   },
   "devDependencies": {
+    "@lingui/cli": "^3.13.3",
+    "@lingui/loader": "3.14.0",
+    "@lingui/macro": "3.13.3",
     "eslint": "7.32.0",
     "husky": "7.0.4",
     "lint-staged": "12.3.4",

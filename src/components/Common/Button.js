@@ -1,7 +1,7 @@
 import cx from "classnames";
 import "./Button.css";
 
-function Button({ href, imgSrc, children, onClick, className, size = "lg", align = "center", ...rest }) {
+export default function Button({ href, imgSrc, children, onClick, className, size = "lg", align = "center", ...rest }) {
   let classNames = cx("btn btn-primary", align === "left" ? "btn-left" : "btn-center", `btn-${size}`, className);
   if (typeof children === "object") {
     return (
@@ -36,5 +36,3 @@ export function ConnectWalletButton({ imgSrc, children, onClick, className }) {
     </button>
   );
 }
-
-export default Button;

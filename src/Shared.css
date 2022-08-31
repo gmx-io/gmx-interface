@@ -51,7 +51,7 @@ input {
   --dark-blue-active: #818cef33;
   --avax-red: #e84143;
   --arbitrum-blue: #28a0f0;
-  --border-radius-sm: 4px;
+  --border-radius-sm: 0.4rem;
   --error-red: #fa3c58;
 }
 

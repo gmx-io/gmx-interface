@@ -8,14 +8,17 @@ import metamaskIcon from "../../img/ic_metamask_16.svg";
 import { addTokenToMetamask, ICONLINKS, platformTokens, useChainId } from "../../Helpers";
 import { useWeb3React } from "@web3-react/core";
 
+import { Trans } from "@lingui/macro";
+
 function AssetDropdown({ assetSymbol, assetInfo }) {
   const { active } = useWeb3React();
   const { chainId } = useChainId();
-  let { coingecko, arbitrum, avalanche } = ICONLINKS[chainId][assetSymbol];
-  const unavailableTokenSymbols = {
-    42161: ["ETH"],
-    43114: ["AVAX"],
-  };
+  let { coingecko, arbitrum, avalanche } = ICONLINKS[chainId][assetSymbol] || {};
+  const unavailableTokenSymbols =
+    {
+      42161: ["ETH"],
+      43114: ["AVAX"],
+    }[chainId] || [];
 
   return (
     <Menu>
@@ -28,7 +31,9 @@ function AssetDropdown({ assetSymbol, assetInfo }) {
             {coingecko && (
               <a href={coingecko} className="asset-item" target="_blank" rel="noopener noreferrer">
                 <img src={coingeckoIcon} alt="Open in Coingecko" />
-                <p>Open in Coingecko</p>
+                <p>
+                  <Trans>Open in Coingecko</Trans>
+                </p>
               </a>
             )}
           </>
@@ -38,20 +43,24 @@ function AssetDropdown({ assetSymbol, assetInfo }) {
             {arbitrum && (
               <a href={arbitrum} className="asset-item" target="_blank" rel="noopener noreferrer">
                 <img src={arbitrumIcon} alt="Open in explorer" />
-                <p>Open in Explorer</p>
+                <p>
+                  <Trans>Open in Explorer</Trans>
+                </p>
               </a>
             )}
             {avalanche && (
               <a target="_blank" rel="noopener noreferrer" href={avalanche} className="asset-item">
                 <img src={avalancheIcon} alt="Open in explorer" />
-                <p>Open in Explorer</p>
+                <p>
+                  <Trans>Open in Explorer</Trans>
+                </p>
               </a>
             )}
           </>
         </Menu.Item>
         <Menu.Item>
           <>
-            {active && unavailableTokenSymbols[chainId].indexOf(assetSymbol) < 0 && (
+            {active && unavailableTokenSymbols.indexOf(assetSymbol) < 0 && (
               <div
                 onClick={() => {
                   let token = assetInfo
@@ -62,7 +71,9 @@ function AssetDropdown({ assetSymbol, assetInfo }) {
                 className="asset-item"
               >
                 <img src={metamaskIcon} alt="Add to Metamask" />
-                <p>Add to Metamask</p>
+                <p>
+                  <Trans>Add to Metamask</Trans>
+                </p>
               </div>
             )}
           </>
