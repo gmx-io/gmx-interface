@@ -1,18 +1,14 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { SWRConfig } from "swr";
 import { ethers } from "ethers";
-
-import { motion, AnimatePresence } from "framer-motion";
-
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import useScrollToTop from "../lib/useScrollToTop";
 
-import { Switch, Route, NavLink, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
+import { Switch, Route, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
 
 import {
   ARBITRUM,
-  ARBITRUM_TESTNET,
   AVALANCHE,
   DEFAULT_SLIPPAGE_AMOUNT,
   SLIPPAGE_BPS_KEY,
@@ -20,16 +16,12 @@ import {
   SHOW_PNL_AFTER_FEES_KEY,
   BASIS_POINTS_DIVISOR,
   SHOULD_SHOW_POSITION_LINES_KEY,
-  getHomeUrl,
   getAppBaseUrl,
   isHomeSite,
   clearWalletConnectData,
-  switchNetwork,
   helperToast,
   getAlchemyWsUrl,
-  getChainName,
   useChainId,
-  getAccountUrl,
   getInjectedHandler,
   useEagerConnect,
   useLocalStorageSerializeKey,
@@ -47,7 +39,6 @@ import {
   REFERRAL_CODE_QUERY_PARAM,
   isDevelopment,
   DISABLE_ORDER_VALIDATION_KEY,
-  shouldShowRedirectModal,
   LANGUAGE_LOCALSTORAGE_KEY,
 } from "../lib/legacy";
 
@@ -68,29 +59,19 @@ import ClaimEsGmx from "../pages/ClaimEsGmx/ClaimEsGmx";
 import BeginAccountTransfer from "../pages/BeginAccountTransfer/BeginAccountTransfer";
 import CompleteAccountTransfer from "../pages/CompleteAccountTransfer/CompleteAccountTransfer";
 
-import cx from "classnames";
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Modal from "../components/Modal/Modal";
 import Checkbox from "../components/Checkbox/Checkbox";
 
-import { RiMenuLine } from "react-icons/ri";
-import { FaTimes } from "react-icons/fa";
-import { FiX } from "react-icons/fi";
-
 import "../styles/Shared.css";
 import "../styles/Font.css";
 import "./App.css";
 import "../styles/Input.css";
-import logoImg from "../img/logo_GMX.svg";
-import logoSmallImg from "../img/logo_GMX_small.svg";
-import connectWalletImg from "../img/ic_wallet_24.svg";
 
 import metamaskImg from "../img/metamask.png";
 import coinbaseImg from "../img/coinbaseWallet.png";
 import walletConnectImg from "../img/walletconnect-circle-blue.svg";
-import AddressDropdown from "../components/AddressDropdown/AddressDropdown";
-import { ConnectWalletButton } from "../components/Common/Button";
 import useEventToast from "../components/EventToast/useEventToast";
 import EventToastContainer from "../components/EventToast/EventToastContainer";
 import SEO from "../components/Common/SEO";
@@ -113,8 +94,7 @@ import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
 import { defaultLocale, dynamicActivate } from "../lib/i18n";
-import NetworkDropdown from "../components/NetworkDropdown/NetworkDropdown";
-import LanguagePopupHome from "../components/NetworkDropdown/LanguagePopupHome";
+import { Header } from "../components/Header/Header";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -149,184 +129,6 @@ function getWsProvider(active, chainId) {
   if (chainId === AVALANCHE) {
     return avaxWsProvider;
   }
-}
-
-function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
-  return (
-    <div className="App-header-links">
-      {small && (
-        <div className="App-header-links-header">
-          <HeaderLink className="App-header-link-main" to="/">
-            <img src={logoImg} alt="GMX Logo" />
-          </HeaderLink>
-          <div className="App-header-menu-icon-block mobile-cross-menu" onClick={() => clickCloseIcon()}>
-            <FiX className="App-header-menu-icon" />
-          </div>
-        </div>
-      )}
-      <div className="App-header-link-container App-header-link-home">
-        <HeaderLink to="/" exact={true}>
-          <Trans>Home</Trans>
-        </HeaderLink>
-      </div>
-      <div className="App-header-link-container">
-        <HeaderLink to="/dashboard">
-          <Trans>Dashboard</Trans>
-        </HeaderLink>
-      </div>
-      <div className="App-header-link-container">
-        <HeaderLink to="/earn">
-          <Trans>Earn</Trans>
-        </HeaderLink>
-      </div>
-      <div className="App-header-link-container">
-        <HeaderLink to="/buy">
-          <Trans>Buy</Trans>
-        </HeaderLink>
-      </div>
-      <div className="App-header-link-container">
-        <HeaderLink to="/referrals">
-          <Trans>Referrals</Trans>
-        </HeaderLink>
-      </div>
-      <div className="App-header-link-container">
-        <HeaderLink to="/ecosystem">
-          <Trans>Ecosystem</Trans>
-        </HeaderLink>
-      </div>
-      <div className="App-header-link-container">
-        <a href="src/App/App" target="_blank" rel="noopener noreferrer">
-          <Trans>About</Trans>
-        </a>
-      </div>
-      {small && !isHomeSite() && (
-        <div className="App-header-link-container">
-          {/* eslint-disable-next-line */}
-          <a href="src/App/App#" onClick={openSettings}>
-            <Trans>Settings</Trans>
-          </a>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function AppHeaderUser({
-  HeaderLink,
-  openSettings,
-  small,
-  setWalletModalVisible,
-  disconnectAccountAndCloseSettings,
-  showNetworkSelectorModal,
-}) {
-  const { chainId } = useChainId();
-  const { active, account } = useWeb3React();
-  const showConnectionOptions = !isHomeSite();
-
-  const networkOptions = [
-    {
-      label: getChainName(ARBITRUM),
-      value: ARBITRUM,
-      icon: "ic_arbitrum_24.svg",
-      color: "#264f79",
-    },
-    {
-      label: getChainName(AVALANCHE),
-      value: AVALANCHE,
-      icon: "ic_avalanche_24.svg",
-      color: "#E841424D",
-    },
-  ];
-  if (isDevelopment()) {
-    networkOptions.push({
-      label: getChainName(ARBITRUM_TESTNET),
-      value: ARBITRUM_TESTNET,
-      icon: "ic_arbitrum_24.svg",
-      color: "#264f79",
-    });
-  }
-
-  useEffect(() => {
-    if (active) {
-      setWalletModalVisible(false);
-    }
-  }, [active, setWalletModalVisible]);
-
-  const onNetworkSelect = useCallback(
-    (option) => {
-      if (option.value === chainId) {
-        return;
-      }
-      return switchNetwork(option.value, active);
-    },
-    [chainId, active]
-  );
-
-  const selectorLabel = getChainName(chainId);
-
-  if (!active) {
-    return (
-      <div className="App-header-user">
-        <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
-          <HeaderLink activeClassName="active" className="default-btn" to="/trade">
-            <Trans>Trade</Trans>
-          </HeaderLink>
-        </div>
-
-        {showConnectionOptions ? (
-          <>
-            <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
-              {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
-            </ConnectWalletButton>
-            <NetworkDropdown
-              small={small}
-              networkOptions={networkOptions}
-              selectorLabel={selectorLabel}
-              onNetworkSelect={onNetworkSelect}
-              openSettings={openSettings}
-            />
-          </>
-        ) : (
-          <LanguagePopupHome />
-        )}
-      </div>
-    );
-  }
-
-  const accountUrl = getAccountUrl(chainId, account);
-
-  return (
-    <div className="App-header-user">
-      <div className="App-header-trade-link">
-        <HeaderLink activeClassName="active" className="default-btn" to="/trade">
-          <Trans>Trade</Trans>
-        </HeaderLink>
-      </div>
-
-      {showConnectionOptions ? (
-        <>
-          <div className="App-header-user-address">
-            <AddressDropdown
-              account={account}
-              accountUrl={accountUrl}
-              disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-              label={selectorLabel}
-              onNetworkSelect={onNetworkSelect}
-            />
-          </div>
-          <NetworkDropdown
-            small={small}
-            networkOptions={networkOptions}
-            selectorLabel={selectorLabel}
-            onNetworkSelect={onNetworkSelect}
-            openSettings={openSettings}
-          />
-        </>
-      ) : (
-        <LanguagePopupHome />
-      )}
-    </div>
-  );
 }
 
 function FullApp() {
@@ -452,17 +254,6 @@ function FullApp() {
   const [selectedToPage, setSelectedToPage] = useState("");
   const connectWallet = () => setWalletModalVisible(true);
 
-  const [isDrawerVisible, setIsDrawerVisible] = useState(undefined);
-  const [isNativeSelectorModalVisible, setisNativeSelectorModalVisible] = useState(false);
-  const fadeVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-  };
-  const slideVariants = {
-    hidden: { x: "-100%" },
-    visible: { x: 0 },
-  };
-
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [savedSlippageAmount, setSavedSlippageAmount] = useLocalStorageSerializeKey(
     [chainId, SLIPPAGE_BPS_KEY],
@@ -501,10 +292,6 @@ function FullApp() {
     setIsSettingsVisible(true);
   };
 
-  const showNetworkSelectorModal = (val) => {
-    setisNativeSelectorModalVisible(val);
-  };
-
   const saveAndCloseSettings = () => {
     const slippage = parseFloat(slippageAmount);
     if (isNaN(slippage)) {
@@ -539,54 +326,11 @@ function FullApp() {
     }
   }
 
-  useEffect(() => {
-    if (isDrawerVisible) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => (document.body.style.overflow = "unset");
-  }, [isDrawerVisible]);
-
   const [pendingTxns, setPendingTxns] = useState([]);
 
   const showRedirectModal = (to) => {
     setRedirectModalVisible(true);
     setSelectedToPage(to);
-  };
-
-  const HeaderLink = ({ isHomeLink, className, exact, to, children }) => {
-    const isOnHomePage = location.pathname === "/";
-    if (isHome && !(isHomeLink && !isOnHomePage)) {
-      if (shouldShowRedirectModal(redirectPopupTimestamp)) {
-        return (
-          <div className={cx("a", className, { active: isHomeLink })} onClick={() => showRedirectModal(to)}>
-            {children}
-          </div>
-        );
-      } else {
-        const baseUrl = getAppBaseUrl();
-        return (
-          <a className={cx("a", className, { active: isHomeLink })} href={baseUrl + to}>
-            {children}
-          </a>
-        );
-      }
-    }
-
-    if (isHomeLink) {
-      return (
-        <a href={getHomeUrl()} className={cx(className)}>
-          {children}
-        </a>
-      );
-    }
-
-    return (
-      <NavLink activeClassName="active" className={cx(className)} exact={exact} to={to}>
-        {children}
-      </NavLink>
-    );
   };
 
   useEffect(() => {
@@ -686,122 +430,18 @@ function FullApp() {
   return (
     <>
       <div className="App">
-        {/* <div className="App-background-side-1"></div>
-        <div className="App-background-side-2"></div>
-        <div className="App-background"></div>
-        <div className="App-background-ball-1"></div>
-        <div className="App-background-ball-2"></div>
-        <div className="App-highlight"></div> */}
         <div className="App-content">
-          {isDrawerVisible && (
-            <AnimatePresence>
-              {isDrawerVisible && (
-                <motion.div
-                  className="App-header-backdrop"
-                  initial="hidden"
-                  animate="visible"
-                  exit="hidden"
-                  variants={fadeVariants}
-                  transition={{ duration: 0.2 }}
-                  onClick={() => setIsDrawerVisible(!isDrawerVisible)}
-                ></motion.div>
-              )}
-            </AnimatePresence>
-          )}
-          {isNativeSelectorModalVisible && (
-            <AnimatePresence>
-              {isNativeSelectorModalVisible && (
-                <motion.div
-                  className="selector-backdrop"
-                  initial="hidden"
-                  animate="visible"
-                  exit="hidden"
-                  variants={fadeVariants}
-                  transition={{ duration: 0.2 }}
-                  onClick={() => setisNativeSelectorModalVisible(!isNativeSelectorModalVisible)}
-                ></motion.div>
-              )}
-            </AnimatePresence>
-          )}
-          <header>
-            <div className="App-header large">
-              <div className="App-header-container-left">
-                <HeaderLink exact={true} className="App-header-link-main" to="/">
-                  <img src={logoImg} className="big" alt="GMX Logo" />
-                  <img src={logoSmallImg} className="small" alt="GMX Logo" />
-                </HeaderLink>
-                <AppHeaderLinks HeaderLink={HeaderLink} />
-              </div>
-              <div className="App-header-container-right">
-                <AppHeaderUser
-                  HeaderLink={HeaderLink}
-                  disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-                  openSettings={openSettings}
-                  setActivatingConnector={setActivatingConnector}
-                  walletModalVisible={walletModalVisible}
-                  setWalletModalVisible={setWalletModalVisible}
-                />
-              </div>
-            </div>
-            <div className={cx("App-header", "small", { active: isDrawerVisible })}>
-              <div
-                className={cx("App-header-link-container", "App-header-top", {
-                  active: isDrawerVisible,
-                })}
-              >
-                <div className="App-header-container-left">
-                  <div className="App-header-menu-icon-block" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
-                    {!isDrawerVisible && <RiMenuLine className="App-header-menu-icon" />}
-                    {isDrawerVisible && <FaTimes className="App-header-menu-icon" />}
-                  </div>
-                  <div className="App-header-link-main clickable" onClick={() => setIsDrawerVisible(!isDrawerVisible)}>
-                    <img src={logoImg} className="big" alt="GMX Logo" />
-                    <img src={logoSmallImg} className="small" alt="GMX Logo" />
-                  </div>
-                </div>
-                <div className="App-header-container-right">
-                  <AppHeaderUser
-                    HeaderLink={HeaderLink}
-                    disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
-                    openSettings={openSettings}
-                    small
-                    setActivatingConnector={setActivatingConnector}
-                    walletModalVisible={walletModalVisible}
-                    setWalletModalVisible={setWalletModalVisible}
-                    showNetworkSelectorModal={showNetworkSelectorModal}
-                  />
-                </div>
-              </div>
-            </div>
-          </header>
-          <AnimatePresence>
-            {isDrawerVisible && (
-              <motion.div
-                onClick={() => setIsDrawerVisible(false)}
-                className="App-header-links-container App-header-drawer"
-                initial="hidden"
-                animate="visible"
-                exit="hidden"
-                variants={slideVariants}
-                transition={{ duration: 0.2 }}
-              >
-                <AppHeaderLinks
-                  HeaderLink={HeaderLink}
-                  small
-                  openSettings={openSettings}
-                  clickCloseIcon={() => setIsDrawerVisible(false)}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <Header
+            disconnectAccountAndCloseSettings={disconnectAccountAndCloseSettings}
+            openSettings={openSettings}
+            setWalletModalVisible={setWalletModalVisible}
+            redirectPopupTimestamp={redirectPopupTimestamp}
+            showRedirectModal={showRedirectModal}
+          />
           {isHome && (
             <Switch>
               <Route exact path="/">
-                <Home
-                  showRedirectModal={showRedirectModal}
-                  redirectPopupTimestamp={redirectPopupTimestamp}
-                  HeaderLink={HeaderLink}
-                />
+                <Home showRedirectModal={showRedirectModal} redirectPopupTimestamp={redirectPopupTimestamp} />
               </Route>
               <Route exact path="/referral-terms">
                 <ReferralTerms />
