@@ -916,7 +916,7 @@ export default function SwapBox(props) {
           toTokenInfo.bufferAmount &&
           toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(swapAmount))
         ) {
-          return [t`Insufficient liquidity", true, "BUFFER"`];
+          return [t`Insufficient liquidity`, true, "BUFFER"];
         }
 
         if (
