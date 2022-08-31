@@ -41,6 +41,8 @@ import {
   CLOSE_POSITION_RECEIVE_TOKEN_KEY,
   useLocalStorageByChainId,
   adjustForDecimals,
+  IS_NETWORK_DISABLED,
+  getChainName,
 } from "../../Helpers";
 import { getConstant } from "../../Constants";
 import { createDecreaseOrder, callContract, useHasOutdatedUi } from "../../Api";
@@ -493,6 +495,10 @@ export default function PositionSeller(props) {
   }, [position, triggerPriceUsd, orderOption, fromAmount]);
 
   const getError = () => {
+    if (IS_NETWORK_DISABLED[chainId]) {
+      if (orderOption === STOP) return [t`Trigger order disabled, pending ${getChainName(chainId)} upgrade`];
+      return [t`Position close disabled, pending ${getChainName(chainId)} upgrade`];
+    }
     if (hasOutdatedUi) {
       return t`Page outdated, please refresh`;
     }
