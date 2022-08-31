@@ -15,9 +15,9 @@ import {
   deserialize,
   getExchangeRateDisplay,
   bigNumberify,
-} from "../../Helpers";
-import { useTrades, useLiquidationsData } from "../../Api";
-import { getContract } from "../../Addresses";
+} from "../../lib/legacy";
+import { useTrades, useLiquidationsData } from "../../domain/legacy";
+import { getContract } from "../../config/Addresses";
 
 import "./TradeHistory.css";
 
