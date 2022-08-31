@@ -1507,7 +1507,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-row">
-                <div className="label">APR</div>
+                <div className="label"><Trans>APR</Trans></div>
                 <div>
                   <Tooltip
                     handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
@@ -1516,7 +1516,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       return (
                         <>
                           <div className="Tooltip-row">
-                            <span className="label">Escrowed GMX APR</span>
+                            <span className="label"><Trans>Escrowed GMX APR</Trans></span>
                             <span>{formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%</span>
                           </div>
                           {(!processedData.gmxBoostAprForNativeToken ||
@@ -1664,21 +1664,21 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               <div className="App-card-divider"></div>
               <div className="App-card-options">
                 <Link className="App-button-option App-card-option" to="/buy_gmx">
-                  Buy GMX
+                  <Trans>Buy GMX</Trans>
                 </Link>
                 {active && (
                   <button className="App-button-option App-card-option" onClick={() => showStakeGmxModal()}>
-                    Stake
+                    <Trans>Stake</Trans>
                   </button>
                 )}
                 {active && (
                   <button className="App-button-option App-card-option" onClick={() => showUnstakeGmxModal()}>
-                    Unstake
+                    <Trans>Unstake</Trans>
                   </button>
                 )}
                 {active && (
                   <Link className="App-button-option App-card-option" to="/begin_account_transfer">
-                    Transfer Account
+                    <Trans>Transfer Account</Trans>
                   </Link>
                 )}
               </div>
@@ -1742,7 +1742,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   )}
                   {!active && (
                     <button className="App-button-option App-card-option" onClick={() => connectWallet()}>
-                      Connect Wallet
+                      <Trans>Connect Wallet</Trans>
                     </button>
                   )}
                 </div>
@@ -1802,7 +1802,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-row">
-                <div className="label">APR</div>
+                <div className="label"><Trans>APR</Trans></div>
                 <div>
                   <Tooltip
                     handle={`${formatKeyAmount(processedData, "glpAprTotal", 2, 2, true)}%`}
@@ -1935,7 +1935,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-row">
-                <div className="label">APR</div>
+                <div className="label"><Trans>APR</Trans></div>
                 <div>
                   <div>
                     <Tooltip
@@ -2181,7 +2181,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   </div>
                 </div>
                 <div className="App-card-row">
-                  <div className="label">Claimable</div>
+                  <div className="label"><Trans>Claimable</Trans></div>
                   <div>
                     <Tooltip
                       handle={`${formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX`}

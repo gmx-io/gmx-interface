@@ -752,7 +752,9 @@ export default function DashboardV2() {
                   <div className="App-card-divider"></div>
                   <div className="App-card-content">
                     <div className="App-card-row">
-                      <div className="label">Price</div>
+                      <div className="label">
+                        <Trans>Price</Trans>
+                      </div>
                       <div>
                         {!gmxPrice && "..."}
                         {gmxPrice && (
