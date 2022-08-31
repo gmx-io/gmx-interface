@@ -15,11 +15,11 @@ import {
   getLiquidationPrice,
   useLocalStorageSerializeKey,
   numberWithCommas,
-} from "../../Helpers";
-import { useChartPrices } from "../../Api";
+} from "../../lib/legacy";
+import { useChartPrices } from "../../domain/legacy";
 import Tab from "../Tab/Tab";
 
-import { getTokens, getToken } from "../../data/Tokens";
+import { getTokens, getToken } from "../../config/Tokens";
 import ChartTokenSelector from "./ChartTokenSelector";
 
 const PRICE_LINE_TEXT_WIDTH = 15;

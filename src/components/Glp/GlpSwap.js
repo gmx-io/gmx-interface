@@ -6,8 +6,8 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 import Tab from "../Tab/Tab";
 import cx from "classnames";
-import { getToken, getTokens, getWhitelistedTokens, getWrappedToken, getNativeToken } from "../../data/Tokens";
-import { getContract } from "../../Addresses";
+import { getToken, getTokens, getWhitelistedTokens, getWrappedToken, getNativeToken } from "../../config/Tokens";
+import { getContract } from "../../config/Addresses";
 import {
   helperToast,
   useLocalStorageByChainId,
@@ -38,9 +38,9 @@ import {
   importImage,
   IS_NETWORK_DISABLED,
   getChainName,
-} from "../../Helpers";
+} from "../../lib/legacy";
 
-import { callContract, useGmxPrice, useInfoTokens } from "../../Api";
+import { callContract, useGmxPrice, useInfoTokens } from "../../domain/legacy";
 
 import TokenSelector from "../Exchange/TokenSelector";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
@@ -63,7 +63,7 @@ import avalanche16Icon from "../../img/ic_avalanche_16.svg";
 import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
-import AssetDropdown from "../../views/Dashboard/AssetDropdown";
+import AssetDropdown from "../../pages/Dashboard/AssetDropdown";
 
 const { AddressZero } = ethers.constants;
 

@@ -15,9 +15,9 @@ import {
   getExchangeRate,
   getPositionForOrder,
   getUsd,
-} from "../../Helpers.js";
-import { handleCancelOrder } from "../../Api";
-import { getContract } from "../../Addresses";
+} from "../../lib/legacy.js";
+import { handleCancelOrder } from "../../domain/legacy";
+import { getContract } from "../../config/Addresses";
 
 import Tooltip from "../Tooltip/Tooltip";
 import OrderEditor from "./OrderEditor";
