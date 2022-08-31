@@ -19,7 +19,7 @@ import { FaCheck, FaTimes } from "react-icons/fa";
 
 import { fetcher, approveTokens, useChainId } from "../../Helpers";
 
-import { Trans, t } from '@lingui/macro'
+import { Trans, t } from "@lingui/macro";
 
 import "./BeginAccountTransfer.css";
 
@@ -229,7 +229,9 @@ export default function BeginAccountTransfer(props) {
         </Link>
       </Modal>
       <div className="Page-title-section">
-        <div className="Page-title"><Trans>Transfer Account</Trans></div>
+        <div className="Page-title">
+          <Trans>Transfer Account</Trans>
+        </div>
         <div className="Page-description">
           <Trans>Please only use this for full account transfers.</Trans>
           <br />
@@ -237,18 +239,24 @@ export default function BeginAccountTransfer(props) {
           <br />
           <Trans>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.</Trans>
           <br />
-          <Trans>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account.</Trans>
+          <Trans>
+            Transfers are one-way, you will not be able to transfer staked tokens back to the sending account.
+          </Trans>
         </div>
         {hasPendingReceiver && (
           <div className="Page-description">
-            <Trans>You have a <Link to={pendingTransferLink}>pending transfer</Link> to {pendingReceiver}.</Trans>
+            <Trans>
+              You have a <Link to={pendingTransferLink}>pending transfer</Link> to {pendingReceiver}.
+            </Trans>
           </div>
         )}
       </div>
       <div className="Page-content">
         <div className="input-form">
           <div className="input-row">
-            <label className="input-label"><Trans>Receiver Address</Trans></label>
+            <label className="input-label">
+              <Trans>Receiver Address</Trans>
+            </label>
             <div>
               <input
                 type="text"
@@ -265,8 +273,12 @@ export default function BeginAccountTransfer(props) {
             <ValidationRow isValid={!hasVestedGlp}>
               <Trans>Sender has withdrawn all tokens from GLP Vesting Vault</Trans>
             </ValidationRow>
-            <ValidationRow isValid={!hasStakedGmx}><Trans>Receiver has not staked GMX tokens before</Trans></ValidationRow>
-            <ValidationRow isValid={!hasStakedGlp}><Trans>Receiver has not staked GLP tokens before</Trans></ValidationRow>
+            <ValidationRow isValid={!hasStakedGmx}>
+              <Trans>Receiver has not staked GMX tokens before</Trans>
+            </ValidationRow>
+            <ValidationRow isValid={!hasStakedGlp}>
+              <Trans>Receiver has not staked GLP tokens before</Trans>
+            </ValidationRow>
           </div>
           <div className="input-row">
             <button

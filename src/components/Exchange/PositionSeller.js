@@ -54,6 +54,7 @@ import Tooltip from "../Tooltip/Tooltip";
 import TokenSelector from "./TokenSelector";
 import { getTokens } from "../../data/Tokens";
 import "./PositionSeller.css";
+import { TooltipCardRow } from "../Tooltip/TooltipCard";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -1089,28 +1090,31 @@ export default function PositionSeller(props) {
                   renderContent={() => (
                     <div>
                       {fundingFee && (
-                        <div className="PositionSeller-fee-item">
-                          Borrow fee: ${formatAmount(fundingFee, USD_DECIMALS, 2, true)}
-                        </div>
+                        <TooltipCardRow label="Borrow fee" value={formatAmount(fundingFee, USD_DECIMALS, 2, true)} />
                       )}
 
                       {positionFee && (
-                        <div className="PositionSeller-fee-item">
-                          Closing fee: ${formatAmount(positionFee, USD_DECIMALS, 2, true)}
-                        </div>
+                        <TooltipCardRow label="Closing fee" value={formatAmount(positionFee, USD_DECIMALS, 2, true)} />
                       )}
 
                       {swapFee && (
-                        <div className="PositionSeller-fee-item">
-                          Swap fee: {formatAmount(swapFeeToken, collateralToken.decimals, 5)} {collateralToken.symbol}
-                           (${formatAmount(swapFee, USD_DECIMALS, 2, true)})
-                        </div>
+                        <TooltipCardRow
+                          label="Swap fee"
+                          showDollar={false}
+                          value={`${formatAmount(swapFeeToken, collateralToken.decimals, 5)} ${collateralToken.symbol}
+                           ($${formatAmount(swapFee, USD_DECIMALS, 2, true)})`}
+                        />
                       )}
 
-                      <div className="PositionSeller-fee-item">
-                        Execution fee: {formatAmount(executionFee, 18, 5, true)} {nativeTokenSymbol} ($
-                        {formatAmount(executionFeeUsd, USD_DECIMALS, 2)})
-                      </div>
+                      <TooltipCardRow
+                        label="Execution fee"
+                        showDollar={false}
+                        value={`${formatAmount(executionFee, 18, 5, true)} ${nativeTokenSymbol} ($${formatAmount(
+                          executionFeeUsd,
+                          USD_DECIMALS,
+                          2
+                        )})`}
+                      />
 
                       <br />
 
@@ -1176,19 +1180,26 @@ export default function PositionSeller(props) {
                           disabled: true,
                           message: (
                             <div>
-                              Insufficient Available Liquidity to swap to {tokenOptionInfo.symbol}
+                              Insufficient Available Liquidity to swap to {tokenOptionInfo.symbol}:
                               <br />
                               <br />
-                              Max {collateralInfo.symbol} in: {formatAmount(maxIn, collateralInfo.decimals, 2, true)}{" "}
-                              {collateralInfo.symbol}
+                              <TooltipCardRow
+                                label={`Max ${collateralInfo.symbol} in`}
+                                values={[
+                                  `${formatAmount(maxIn, collateralInfo.decimals, 0, true)} ${collateralInfo.symbol}`,
+                                  `($${formatAmount(maxInUsd, USD_DECIMALS, 0, true)})`,
+                                ]}
+                              />
                               <br />
-                              (${formatAmount(maxInUsd, USD_DECIMALS, 2, true)})
-                              <br />
-                              <br />
-                              Max {tokenOptionInfo.symbol} out:{" "}
-                              {formatAmount(maxOut, tokenOptionInfo.decimals, 2, true)} {tokenOptionInfo.symbol}
-                              <br />
-                              (${formatAmount(maxOutUsd, USD_DECIMALS, 2, true)})
+                              <TooltipCardRow
+                                label={`Max ${tokenOptionInfo.symbol} out`}
+                                values={[
+                                  `${formatAmount(maxOut, tokenOptionInfo.decimals, 0, true)} ${
+                                    tokenOptionInfo.symbol
+                                  }`,
+                                  `($${formatAmount(maxOutUsd, USD_DECIMALS, 0, true)})`,
+                                ]}
+                              />
                             </div>
                           ),
                         };

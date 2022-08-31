@@ -8,6 +8,11 @@
       '<0>これによりすべてのトークンは引き出され、リザーブから解除され、べスティングは停止されます。<1/><2/>GMXへ転換されたesGMXトークンはGMXトークンとなります。<3/><4/>引き出しをせずにGMXトークンを請求するには全報酬セクションの下部にある"請求"ボタンを使用してください。<5/><6/></0>',
     "A snapshot of the USD value of your collateral is taken when the position is opened.":
       "A snapshot of the USD value of your collateral is taken when the position is opened.",
+    "A snapshot of the USD value of your {0} collateral is taken when the position is opened.": [
+      "A snapshot of the USD value of your ",
+      ["0"],
+      " collateral is taken when the position is opened.",
+    ],
     APR: "APR(実質年利)",
     "APRs are updated weekly on Wednesday and will depend on the fees collected for the week.":
       "APR(実質年利)は毎週水曜日に更新され、その前一週間に得られた手数料によって決まります。",
@@ -22,6 +27,7 @@
     "Add to Metamask": "メタマスクに追加",
     "Adding referral code failed.": "紹介コードが追加できませんでした",
     "Adding...": "追加中",
+    "Additional reserve required": "Additional reserve required",
     "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price.":
       "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price.",
     "Address copied to your clipboard": "アドレスがクリップボードにコピーされました",
@@ -76,6 +82,7 @@
     "Boost your rewards with Multiplier Points. <0>More info</0>.":
       "マルチプライヤーポイントで報酬をブーストする。<0>より詳しい情報</0>",
     "Borrow Fee": "借入手数料",
+    "Borrow Fee / Day": "Borrow Fee / Day",
     "Borrow Fee / Day: ${0}": ["1日あたり借入手数料: $", ["0"]],
     "Borrow Fee: ${0}": ["借入手数料: $", ["0"]],
     Buy: "購入",
@@ -154,6 +161,7 @@
     "Creating...": "作成中",
     Creator: "作成者",
     "Current Pool Amount": "現在のプール額",
+    "Current Reserved": "Current Reserved",
     "Current Reserved: {0}<0/>Additional reserve required: {1}<1/>{2}": [
       "現在のリザーブ額: ",
       ["0"],
@@ -162,6 +170,7 @@
       "<1/>",
       ["2"],
     ],
+    "Current Weight": "Current Weight",
     Dashboard: "ダッシュボード",
     Dashboards: "ダッシュボード",
     Date: "日付",
@@ -171,6 +180,7 @@
     "Deposit failed.": "入金できませんでした。",
     "Deposit submitted!": "入金申し込み完了!",
     "Deposit submitted.": "入金申し込み完了。",
+    Deposited: "Deposited",
     "Deposited!": "入金完了!",
     "Depositing...": "入金中",
     "Disable order validations": "注文のバリデーションの無効化",
@@ -253,7 +263,11 @@
     "Incorrect Account": "誤ったアカウント",
     "Incorrect Network": "誤ったネットワーク",
     "Incorrect network": "誤ったネットワーク",
+    "Initial Collateral": "Initial Collateral",
+    "Initial Collateral - Borrow Fee + PnL": "Initial Collateral - Borrow Fee + PnL",
+    "Initial Collateral - Fees + PnL": "Initial Collateral - Fees + PnL",
     "Initial Collateral: ${0}": ["初期担保: $", ["0"]],
+    "Initial Collateralt": "Initial Collateralt",
     "Install Coinbase Wallet": "コインベースウォレットをインストール",
     "Install MetaMask": "メタマスクをインストール",
     "Insufficient GLP balance": "GLP残高不足",
@@ -291,6 +305,7 @@
     "Mark Price": "マーク価格",
     "Market Cap": "時価総額",
     Max: "最大",
+    "Max Capacity": "Max Capacity",
     "Max Capacity for {0} Reached": [["0"], "の最大キャパシティに到達しています"],
     "Max Pool Capacity": "プールの最大キャパシティ",
     "Max amount exceeded": "最大値超過",
@@ -311,6 +326,7 @@
     "MetaMask not detected.": "メタマスクが検出できません。",
     "Min leverage: 1.1x": "最小レバレッジ: 1.1倍",
     "Min order: 10 USD": "最小オーダー金額: 10 USD",
+    "More Info": "More Info",
     "Multiplier Points APR": "マルチプライヤーポイントのAPR(実質年利)",
     Multiswap: "マルチスワップ",
     "Net Value": "ネット金額",
@@ -552,6 +568,7 @@
     "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees.":
       "AvalancheやSynapseのブリッジを使用すると、サポートされている他のどの仮想通貨でも移転することができ、ネットワークフィーを支払うためのAVAXを無料で受け取ることができます。",
     "Vault Capacity": "ボールトのキャパシティ",
+    "Vault Capacity for your Account": "Vault Capacity for your Account",
     "Vault Capacity for your Account<0/><1/>Deposited: {0} esGMX<2/>Max Capacity: {1} esGMX<3/>": [
       "本アカウントのボールトキャパシティ<0/><1/>入金済: ",
       ["0"],
@@ -583,8 +600,8 @@
     "Wallet is not connected": "ウォレットが接続されていません",
     "Wallet not connected": "ウォレットが接続されていません",
     WalletConnect: "WalletConnect",
-    "When closing the position, you can select which token you would like to receive.":
-      "When closing the position, you can select which token you would like to receive.",
+    "When closing the position, you can select which token you would like to receive the profits in.":
+      "When closing the position, you can select which token you would like to receive the profits in.",
     Withdraw: "出金",
     "Withdraw failed.": "出金できませんでした",
     "Withdraw from GLP Vault": "GLPボールトから出金",
@@ -627,6 +644,15 @@
     "You have a pending transfer from {sender}.": [["sender"], "からの未完了の移転があります。"],
     "You have not deposited any tokens for vesting.": "べスティング用のトークンが入金されていません。",
     "You have {0} esGMX (IOU) tokens.": ["あなたは", ["0"], " esGMX (IOU)トークンを保有しています。"],
+    "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX.": [
+      "You need a total of at least ",
+      ["0"],
+      " ",
+      ["stakeTokenLabel"],
+      " to vest ",
+      ["1"],
+      " esGMX.",
+    ],
     "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed.":
       "移転を受け入れるにはこのページを開く必要があります。必要に応じて、このページへのリンクをコピーしておいてください。<0>click here</0>",
     "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday":
@@ -648,6 +674,25 @@
     "{0} GLP bought with {1} {2}!": [["1"], " ", ["2"], "で", ["0"], " GLPを購入しました!"],
     "{0} GLP have been reserved for vesting.": [["0"], " GLPがべスティングのためにリザーブされました。"],
     "{0} GLP sold for {1} {2}!": [["0"], " GLPを売却し、", ["1"], " ", ["2"], "を得ました!"],
+    "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them.": [
+      ["0"],
+      " GMX tokens can be claimed, use the options under the Total Rewards section to claim them.",
+    ],
+    "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}.": [
+      ["0"],
+      " is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for ",
+      ["1"],
+      ".",
+    ],
+    "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1},  and to <3>swap</3> {2} for other tokens.":
+      [
+        ["0"],
+        " is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with ",
+        ["1"],
+        ",  and to <3>swap</3> ",
+        ["2"],
+        " for other tokens.",
+      ],
     "{0} pool exceeded, try different token": [["0"], "プールは超過しています。別のトークンを試してください。"],
     "{0} selected in order form": [["0"], "がオーダーフォームで選択されました"],
     "{0} {1} not supported": [["0"], " ", ["1"], "はサポートされていません"],

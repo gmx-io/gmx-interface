@@ -1,8 +1,5 @@
 import React from "react";
 import Footer from "../../Footer";
-
-import cx from "classnames";
-
 import "./Home.css";
 
 import simpleSwapIcon from "../../img/ic_simpleswaps.svg";
@@ -32,7 +29,6 @@ import {
 import { useUserStat } from "../../Api";
 
 import TokenCard from "../../components/TokenCard/TokenCard";
-
 import { Trans } from "@lingui/macro";
 
 export default function Home({ showRedirectModal, redirectPopupTimestamp, HeaderLink }) {
@@ -134,7 +130,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp, Header
 
   const LaunchExchangeButton = () => {
     return (
-      <HeaderLink className={cx("default-btn")} to="/trade">
+      <HeaderLink className="default-btn" to="/trade">
         <Trans>Launch Exchange</Trans>
       </HeaderLink>
     );

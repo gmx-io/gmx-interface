@@ -15,7 +15,7 @@ import RewardRouter from "../../abis/RewardRouter.json";
 
 import "./CompleteAccountTransfer.css";
 
-import { Trans, t } from '@lingui/macro'
+import { Trans, t } from "@lingui/macro";
 
 export default function CompleteAccountTransfer(props) {
   const [, copyToClipboard] = useCopyToClipboard();
@@ -92,7 +92,9 @@ export default function CompleteAccountTransfer(props) {
         </Link>
       </Modal>
       <div className="Page-title-section">
-        <div className="Page-title"><Trans>Complete Account Transfer</Trans></div>
+        <div className="Page-title">
+          <Trans>Complete Account Transfer</Trans>
+        </div>
         {!isCorrectAccount && (
           <div className="Page-description">
             <Trans>To complete the transfer, you must switch your connected account to {receiver}.</Trans>
@@ -116,7 +118,8 @@ export default function CompleteAccountTransfer(props) {
         )}
         {isCorrectAccount && (
           <div className="Page-description">
-            <Trans>You have a pending transfer from {sender}.</Trans><br />
+            <Trans>You have a pending transfer from {sender}.</Trans>
+            <br />
           </div>
         )}
       </div>

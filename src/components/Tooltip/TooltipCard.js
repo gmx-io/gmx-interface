@@ -7,6 +7,7 @@ export default function TooltipCard({
   arbitrum,
   showDollar = true,
   decimalsForConversion = USD_DECIMALS,
+  symbol,
 }) {
   return (
     <>
@@ -15,6 +16,7 @@ export default function TooltipCard({
         <span className="amount">
           {showDollar && "$"}
           {formatAmount(arbitrum, decimalsForConversion, 0, true)}
+          {!showDollar && symbol && " " + symbol}
         </span>
       </p>
       <p className="Tooltip-row">
@@ -22,6 +24,7 @@ export default function TooltipCard({
         <span className="amount">
           {showDollar && "$"}
           {formatAmount(avax, decimalsForConversion, 0, true)}
+          {!showDollar && symbol && " " + symbol}
         </span>
       </p>
       <div className="Tooltip-divider" />
@@ -30,20 +33,35 @@ export default function TooltipCard({
         <span className="amount">
           {showDollar && "$"}
           {formatAmount(total, decimalsForConversion, 0, true)}
+          {!showDollar && symbol && " " + symbol}
         </span>
       </p>
     </>
   );
 }
 
-export function TooltipCardRow({ label, amount, showDollar = true }) {
-  return (
-    <p className="Tooltip-row">
-      <span className="label">{label}:</span>
-      <span className="amount">
+export function TooltipCardRow({ label, value, showDollar = true, values }) {
+  function renderValue() {
+    if (values && Array.isArray(values)) {
+      return (
+        <ul className="Tooltip-row-values">
+          {values.map((v) => (
+            <li key={v}>{v}</li>
+          ))}
+        </ul>
+      );
+    }
+    return (
+      <span className="Tooltip-row-value">
         {showDollar && "$"}
-        {amount}
+        {value}
       </span>
-    </p>
+    );
+  }
+  return (
+    <div className="Tooltip-row">
+      <span className="label">{label}:</span>
+      {renderValue()}
+    </div>
   );
 }

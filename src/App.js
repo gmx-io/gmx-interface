@@ -362,8 +362,8 @@ function FullApp() {
       if (encodeReferralCode !== ethers.constants.HashZero) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
         const queryParams = new URLSearchParams(location.search);
-        if (queryParams.has("ref")) {
-          queryParams.delete("ref");
+        if (queryParams.has(REFERRAL_CODE_QUERY_PARAM)) {
+          queryParams.delete(REFERRAL_CODE_QUERY_PARAM);
           history.replace({
             search: queryParams.toString(),
           });
@@ -567,9 +567,8 @@ function FullApp() {
           </div>
         );
       } else {
-        const baseUrl = getAppBaseUrl();
         return (
-          <a className={cx("a", className, { active: isHomeLink })} href={baseUrl + to}>
+          <a className={cx("a", className, { active: isHomeLink })} href={appRedirectUrl + to}>
             {children}
           </a>
         );

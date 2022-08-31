@@ -9,7 +9,7 @@ import "./BuyGlp.css";
 import { useChainId } from "../../Helpers";
 import { getNativeToken } from "../../data/Tokens";
 
-import { Trans } from '@lingui/macro'
+import { Trans } from "@lingui/macro";
 
 export default function BuyGlp(props) {
   const { chainId } = useChainId();
@@ -30,7 +30,9 @@ export default function BuyGlp(props) {
           <img src={buyGLPIcon} alt="buyGLPIcon" />
         </div>
         <div className="section-title-content">
-          <div className="Page-title"><Trans>Buy / Sell GLP</Trans></div>
+          <div className="Page-title">
+            <Trans>Buy / Sell GLP</Trans>
+          </div>
           <div className="Page-description">
             <Trans>
               Purchase{" "}
@@ -42,7 +44,9 @@ export default function BuyGlp(props) {
             <br />
             <Trans>Note that there is a minimum holding time of 15 minutes after a purchase.</Trans>
             <br />
-            <Trans>View <Link to="/earn">staking</Link> page.</Trans>
+            <Trans>
+              View <Link to="/earn">staking</Link> page.
+            </Trans>
           </div>
         </div>
       </div>
