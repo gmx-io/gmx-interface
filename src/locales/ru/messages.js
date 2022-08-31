@@ -245,6 +245,7 @@
     "Decreased {tokenSymbol} Long, -{0} USD.": ["Decreased ", ["tokenSymbol"], " Long, -", ["0"], " USD."],
     "Decreased {tokenSymbol} Short, -{0} USD.": ["Decreased ", ["tokenSymbol"], " Short, -", ["0"], " USD."],
     Deposit: "Deposit",
+    "Deposit disabled, pending {0} upgrade": ["Deposit disabled, pending ", ["0"], " upgrade"],
     "Deposit failed!": "Deposit failed!",
     "Deposit failed.": "Deposit failed.",
     "Deposit submitted!": "Deposit submitted!",
@@ -617,6 +618,7 @@
     Pool: "Pool",
     "Pool Amount": "Pool Amount",
     Position: "Position",
+    "Position close disabled, pending {0} upgrade": ["Position close disabled, pending ", ["0"], " upgrade"],
     Positions: "Positions",
     Prev: "Prev",
     Price: "Price",
@@ -1047,6 +1049,7 @@
     "When closing the position, you can select which token you would like to receive the profits in.":
       "When closing the position, you can select which token you would like to receive the profits in.",
     Withdraw: "Withdraw",
+    "Withdraw disabled, pending {0} upgrade": ["Withdraw disabled, pending ", ["0"], " upgrade"],
     "Withdraw failed.": "Withdraw failed.",
     "Withdraw from GLP Vault": "Withdraw from GLP Vault",
     "Withdraw from GMX Vault": "Withdraw from GMX Vault",

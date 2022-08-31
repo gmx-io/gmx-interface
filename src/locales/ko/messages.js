@@ -617,6 +617,7 @@
     Pool: "Pool",
     "Pool Amount": "Pool Amount",
     Position: "포지션",
+    "Position close disabled, pending {0} upgrade": ["Position close disabled, pending ", ["0"], " upgrade"],
     Positions: "포지션",
     Prev: "Prev",
     Price: "가격",

@@ -1227,6 +1227,10 @@ msgstr ""
 msgid "GLP Vault"
 msgstr ""
 
+#: src/components/Glp/GlpSwap.js:418
+msgid "GLP buy disabled, pending {0} upgrade"
+msgstr ""
+
 #: src/components/TokenCard/TokenCard.js:93
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 msgstr "GLP는 유동성 공급 토큰입니다. 플랫폼에서 생성되는 수수료의 70%를 축적하세요."
@@ -2992,6 +2996,10 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js:241
 #: src/components/Exchange/TradeHistory.js:267
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.js:499
+msgid "Trigger order disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/components/Exchange/PositionShare.js:122

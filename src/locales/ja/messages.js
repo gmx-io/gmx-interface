@@ -614,6 +614,7 @@
     Pool: "Pool",
     "Pool Amount": "Pool Amount",
     Position: "ポジション",
+    "Position close disabled, pending {0} upgrade": ["Position close disabled, pending ", ["0"], " upgrade"],
     Positions: "ポジション",
     Prev: "Prev",
     Price: "価格",

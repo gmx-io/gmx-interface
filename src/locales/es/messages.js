@@ -618,6 +618,7 @@
     Pool: "Pool",
     "Pool Amount": "Pool Amount",
     Position: "Posición",
+    "Position close disabled, pending {0} upgrade": ["Position close disabled, pending ", ["0"], " upgrade"],
     Positions: "Posiciones",
     Prev: "Prev",
     Price: "Precio",

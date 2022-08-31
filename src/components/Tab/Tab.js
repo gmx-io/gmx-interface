@@ -4,7 +4,6 @@ import "./Tab.css";
 
 export default function Tab(props) {
   const { options, option, setOption, onChange, type = "block", className, optionLabels, icons } = props;
-
   const onClick = (opt) => {
     if (setOption) {
       setOption(opt);
