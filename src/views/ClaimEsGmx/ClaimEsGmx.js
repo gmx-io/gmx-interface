@@ -350,31 +350,25 @@ export default function ClaimEsGmx({ setPendingTxns }) {
           <div>
             <div className="Page-description">
               <br />
-              <Trans>You have {formatAmount(esGmxIouBalance, 18, 2, true)} esGMX (IOU) tokens.</Trans>
-              <br />
-              <br />
-              <Trans>The address of the esGMX (IOU) token is {esGmxIouAddress}.</Trans>
-              <br />
               <Trans>
+                You have {formatAmount(esGmxIouBalance, 18, 2, true)} esGMX (IOU) tokens.
+                <br />
+                <br />
+                The address of the esGMX (IOU) token is {esGmxIouAddress}.
+                <br />
                 The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another
                 address to claim if you'd like.
-              </Trans>
-              <br />
-              <br />
-              <Trans>Select your vesting option below then click "Claim".</Trans>
-              <br />
-              <Trans>
+                <br />
+                <br />
+                Select your vesting option below then click "Claim".
+                <br />
                 After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7
                 days.
-              </Trans>
-              <br />
-              <Trans>The esGMX tokens can be staked or vested at any time.</Trans>
-              <br />
-              <Trans>
+                <br />
+                The esGMX tokens can be staked or vested at any time.
+                <br />
                 Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour.
-              </Trans>
-              <br />
-              <Trans>
+                <br />
                 You can check your claim history{" "}
                 <a
                   href={`https://arbiscan.io/token/${esGmxIouAddress}?a=${account}`}
@@ -435,11 +429,14 @@ export default function ClaimEsGmx({ setPendingTxns }) {
                 <Trans>
                   You can currently vest a maximum of {formatAmount(maxVestableAmount, 18, 2, true)} esGMX tokens at a
                   ratio of {formatAmount(currentRatio, 4, 2, true)} {stakingToken} to 1 esGMX.
-                </Trans>
-                {shouldShowStakingAmounts && `${formatAmount(initialStakingAmount, 18, 2, true)}.`}
-                <br />
-                <Trans>
-                  After claiming you will be able to vest a maximum of {formatAmount(nextMaxVestableEsGmx, 18, 2, true)}{" "}
+                  {shouldShowStakingAmounts && `${formatAmount(initialStakingAmount, 18, 2, true)}.`}
+                  <br />
+                  After claiming you will be able to vest a maximum of {formatAmount(
+                    nextMaxVestableEsGmx,
+                    18,
+                    2,
+                    true
+                  )}{" "}
                   esGMX at a ratio of {formatAmount(nextRatio, 4, 2, true)} {stakingToken} to 1 esGMX.
                 </Trans>
                 {shouldShowStakingAmounts && `${formatAmount(nextStakingAmount, 18, 2, true)}.`}

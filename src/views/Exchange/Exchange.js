@@ -73,7 +73,7 @@ function pushSuccessNotification(chainId, message, e) {
     <div>
       {message}{" "}
       <a href={txUrl} target="_blank" rel="noopener noreferrer">
-        View
+        <Trans>View</Trans>
       </a>
     </div>
   );
@@ -93,7 +93,7 @@ function pushErrorNotification(chainId, message, e) {
     <div>
       {message}{" "}
       <a href={txUrl} target="_blank" rel="noopener noreferrer">
-        View
+        <Trans>View</Trans>
       </a>
     </div>
   );
@@ -599,16 +599,13 @@ export const Exchange = forwardRef((props, ref) => {
 
       let message;
       if (sizeDelta.eq(0)) {
-        message = `Deposited ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD into ${tokenSymbol} ${
-          isLong ? "Long" : "Short."
-        }`;
+        message = isLong
+          ? t`Deposited ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD into Long`
+          : t`Deposited ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD into Long`;
       } else {
-        message = `Increased ${tokenSymbol} ${isLong ? "Long" : "Short"}, +${formatAmount(
-          sizeDelta,
-          USD_DECIMALS,
-          2,
-          true
-        )} USD.`;
+        message = isLong
+          ? t`Increased ${tokenSymbol} Long, +${formatAmount(sizeDelta, USD_DECIMALS, 2, true)} USD.`
+          : t`Increased ${tokenSymbol} Short, +${formatAmount(sizeDelta, USD_DECIMALS, 2, true)} USD.`;
       }
 
       pushSuccessNotification(chainId, message, e);
@@ -624,16 +621,13 @@ export const Exchange = forwardRef((props, ref) => {
 
       let message;
       if (sizeDelta.eq(0)) {
-        message = `Withdrew ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD from ${tokenSymbol} ${
-          isLong ? "Long" : "Short"
-        }.`;
+        message = isLong
+          ? `Withdrew ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD from ${tokenSymbol} Long`
+          : `Withdrew ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD from ${tokenSymbol} Short`;
       } else {
-        message = `Decreased ${tokenSymbol} ${isLong ? "Long" : "Short"}, -${formatAmount(
-          sizeDelta,
-          USD_DECIMALS,
-          2,
-          true
-        )} USD.`;
+        message = isLong
+          ? t`Decreased ${tokenSymbol} Long, -${formatAmount(sizeDelta, USD_DECIMALS, 2, true)} USD.`
+          : t`Decreased ${tokenSymbol} Short, -${formatAmount(sizeDelta, USD_DECIMALS, 2, true)} USD.`;
       }
 
       pushSuccessNotification(chainId, message, e);
@@ -659,9 +653,9 @@ export const Exchange = forwardRef((props, ref) => {
       const indexTokenItem = getToken(chainId, indexToken);
       const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
 
-      const message = `Could not increase ${tokenSymbol} ${
-        isLong ? "Long" : "Short"
-      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`;
+      const message = isLong
+        ? t`Could not increase ${tokenSymbol} Long within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`
+        : t`Could not increase ${tokenSymbol} Short within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`;
 
       pushErrorNotification(chainId, message, e);
 
@@ -691,9 +685,9 @@ export const Exchange = forwardRef((props, ref) => {
       const indexTokenItem = getToken(chainId, indexToken);
       const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
 
-      const message = `Could not decrease ${tokenSymbol} ${
-        isLong ? "Long" : "Short"
-      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`;
+      const message = isLong
+        ? t`Could not decrease ${tokenSymbol} Long within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`
+        : t`Could not decrease ${tokenSymbol} Short within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`;
 
       pushErrorNotification(chainId, message, e);
 

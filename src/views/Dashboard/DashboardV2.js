@@ -553,7 +553,9 @@ export default function DashboardV2() {
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="App-card-row">
-                  <div className="label">AUM</div>
+                  <div className="label">
+                    <Trans>AUM</Trans>
+                  </div>
                   <div>
                     <TooltipComponent
                       handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
@@ -565,7 +567,9 @@ export default function DashboardV2() {
                   </div>
                 </div>
                 <div className="App-card-row">
-                  <div className="label">GLP Pool</div>
+                  <div className="label">
+                    <Trans>GLP Pool</Trans>
+                  </div>
                   <div>
                     <TooltipComponent
                       handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
@@ -1081,11 +1085,15 @@ export default function DashboardV2() {
                     <div className="App-card-divider"></div>
                     <div className="App-card-content">
                       <div className="App-card-row">
-                        <div className="label">Price</div>
+                        <div className="label">
+                          <Trans>Price</Trans>
+                        </div>
                         <div>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</div>
                       </div>
                       <div className="App-card-row">
-                        <div className="label">Pool</div>
+                        <div className="label">
+                          <Trans>Pool</Trans>
+                        </div>
                         <div>
                           <TooltipComponent
                             handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
@@ -1094,21 +1102,21 @@ export default function DashboardV2() {
                               return (
                                 <>
                                   <TooltipCardRow
-                                    label="Pool Amount"
+                                    label={t`Pool Amount`}
                                     value={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${
                                       token.symbol
                                     }`}
                                     showDollar={false}
                                   />
                                   <TooltipCardRow
-                                    label="Target Min Amount"
+                                    label={t`Target Min Amount`}
                                     value={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 0, true)} ${
                                       token.symbol
                                     }`}
                                     showDollar={false}
                                   />
                                   <TooltipCardRow
-                                    label={`Max ${tokenInfo.symbol} Capacity`}
+                                    label={t`Max ${tokenInfo.symbol} Capacity`}
                                     value={formatAmount(maxUsdgAmount, 18, 0, true)}
                                   />
                                 </>
@@ -1118,11 +1126,15 @@ export default function DashboardV2() {
                         </div>
                       </div>
                       <div className="App-card-row">
-                        <div className="label">Weight</div>
+                        <div className="label">
+                          <Trans>Weight</Trans>
+                        </div>
                         <div>{getWeightText(tokenInfo)}</div>
                       </div>
                       <div className="App-card-row">
-                        <div className="label">Utilization</div>
+                        <div className="label">
+                          <Trans>Utilization</Trans>
+                        </div>
                         <div>{formatAmount(utilization, 2, 2, false)}%</div>
                       </div>
                     </div>

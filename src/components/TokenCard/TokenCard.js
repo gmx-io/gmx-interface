@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Trans } from "@lingui/macro";
-
 import cx from "classnames";
 
 import gmxBigIcon from "../../img/ic_gmx_custom.svg";

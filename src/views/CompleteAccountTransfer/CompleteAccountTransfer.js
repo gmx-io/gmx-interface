@@ -97,15 +97,15 @@ export default function CompleteAccountTransfer(props) {
         </div>
         {!isCorrectAccount && (
           <div className="Page-description">
-            <Trans>To complete the transfer, you must switch your connected account to {receiver}.</Trans>
-            <br />
-            <br />
             <Trans>
+              To complete the transfer, you must switch your connected account to {receiver}.
+              <br />
+              <br />
               You will need to be on this page to accept the transfer,{" "}
               <span
                 onClick={() => {
                   copyToClipboard(window.location.href);
-                  helperToast.success("Link copied to your clipboard");
+                  helperToast.success(t`Link copied to your clipboard`);
                 }}
               >
                 click here

@@ -1,4 +1,4 @@
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { formatAmount, USD_DECIMALS } from "../../Helpers";
 
 export default function TooltipCard({

@@ -30,6 +30,7 @@ import { getContract } from "./Addresses";
 import Reader from "./abis/Reader.json";
 import Token from "./abis/Token.json";
 import GmxMigrator from "./abis/GmxMigrator.json";
+import { t, Trans } from "@lingui/macro";
 
 const { MaxUint256, AddressZero } = ethers.constants;
 
@@ -145,7 +146,7 @@ function MigrationModal(props) {
       return "Enter an amount";
     }
     if (maxAmount && amount.gt(maxAmount)) {
-      return "Max amount exceeded";
+      return t`Max amount exceeded`;
     }
   };
 
@@ -183,7 +184,7 @@ function MigrationModal(props) {
       })
       .catch((e) => {
         console.error(e);
-        helperToast.error("Migration failed");
+        helperToast.error(t`Migration failed`);
       })
       .finally(() => {
         setIsMigrating(false);
@@ -213,18 +214,18 @@ function MigrationModal(props) {
       return error;
     }
     if (isApproving) {
-      return `Approving...`;
+      return t`Approving...`;
     }
     if (needApproval && isPendingApproval) {
-      return "Waiting for Approval";
+      return t`Waiting for Approval`;
     }
     if (needApproval) {
-      return `Approve ${token.name}`;
+      return t`Approve ${token.name}`;
     }
     if (isMigrating) {
-      return "Migrating...";
+      return t`Migrating...`;
     }
-    return "Migrate";
+    return t`Migrate`;
   };
 
   return (
@@ -236,7 +237,7 @@ function MigrationModal(props) {
               <div className="Exchange-swap-usd">Migrate</div>
             </div>
             <div className="muted align-right clickable" onClick={() => setValue(formatAmountFree(maxAmount, 18, 8))}>
-              Max: {formatAmount(maxAmount, 18, 4, true)}
+              <Trans>Max</Trans>: {formatAmount(maxAmount, 18, 4, true)}
             </div>
           </div>
           <div className="Exchange-swap-section-bottom">
@@ -268,7 +269,9 @@ function MigrationModal(props) {
           </div>
           {token.bonus > 0 && (
             <div className="App-info-row">
-              <div className="App-info-label">Bonus Tokens</div>
+              <div className="App-info-label">
+                <Trans>Bonus Tokens</Trans>
+              </div>
               <div className="align-right">
                 {bonusAmount &&
                   `${formatAmount(bonusAmount, 18, 4, true)} GMX ($${formatAmount(
@@ -283,7 +286,9 @@ function MigrationModal(props) {
           )}
           {token.bonus > 0 && (
             <div className="App-info-row">
-              <div className="App-info-label">To Receive</div>
+              <div className="App-info-label">
+                <Trans>To Receive</Trans>
+              </div>
               <div className="align-right">
                 {totalAmount &&
                   `${formatAmount(totalAmount, 18, 4, true)} GMX ($${formatAmount(
@@ -409,15 +414,17 @@ export default function Migration() {
       </div>
       <div className="Migration-note">Your wallet: {formatAmount(gmxBalance, 18, 4, true)} GMX</div>
       <div className="Migration-note">
-        Please read the&nbsp;
-        <a
-          href="https://gambitprotocol.medium.com/gambit-gmx-migration-now-live-2ba999d208dd"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Medium post
-        </a>{" "}
-        before migrating.
+        <Trans>
+          Please read the&nbsp;
+          <a
+            href="https://gambitprotocol.medium.com/gambit-gmx-migration-now-live-2ba999d208dd"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Medium post
+          </a>{" "}
+          before migrating.
+        </Trans>
       </div>
       <div className="Migration-cards">
         {tokens.map((token, index) => {
@@ -428,19 +435,27 @@ export default function Migration() {
               <div className="Stake-card-title App-card-title">{token.name}</div>
               <div className="Stake-card-bottom App-card-content">
                 <div className="Stake-info App-card-row">
-                  <div className="label">Wallet</div>
+                  <div className="label">
+                    <Trans>Wallet</Trans>
+                  </div>
                   <div>{formatArrayAmount(balances, index * 2, 18, 4, true)}</div>
                 </div>
                 <div className="Stake-info App-card-row">
-                  <div className="label">Migration Price</div>
+                  <div className="label">
+                    <Trans>Migration Price</Trans>
+                  </div>
                   <div>${formatAmount(price, decimals, 2, true)}</div>
                 </div>
                 <div className="Stake-info App-card-row">
-                  <div className="label">Bonus Tokens</div>
+                  <div className="label">
+                    <Trans>Bonus Tokens</Trans>
+                  </div>
                   <div>{parseFloat(bonus).toFixed(2)}%</div>
                 </div>
                 <div className="Stake-info App-card-row">
-                  <div className="label">Migrated</div>
+                  <div className="label">
+                    <Trans>Migrated</Trans>
+                  </div>
                   {!hasCap && <div>{formatArrayAmount(migratedAmounts, index, 18, 0, true)}</div>}
                   {hasCap && (
                     <div>
@@ -451,12 +466,12 @@ export default function Migration() {
                 <div className="App-card-options">
                   {!active && (
                     <button className="App-button-option App-card-option" onClick={connectWallet}>
-                      Connect Wallet
+                      <Trans>Connect Wallet</Trans>
                     </button>
                   )}
                   {active && (
                     <button className="App-button-option App-card-option" onClick={() => showMigrationModal(index)}>
-                      Migrate
+                      <Trans>Migrate</Trans>
                     </button>
                   )}
                 </div>

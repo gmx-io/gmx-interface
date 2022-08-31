@@ -4,6 +4,7 @@ import SEO from "../../components/Common/SEO";
 import Footer from "../../Footer";
 import { getPageTitle } from "../../Helpers";
 import Card from "../../components/Common/Card";
+import { Trans } from "@lingui/macro";
 
 function Jobs() {
   useEffect(() => {
@@ -33,8 +34,10 @@ function NoJob() {
     <Card title="No open positions at GMX currently">
       <div className="body-para">
         <p className="subheading">
-          GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the
-          project, please email{" "}
+          <Trans>
+            GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the
+            project, please email{" "}
+          </Trans>
           <a target="_blank" href="mailto:jobs@gmx.io" rel="noopener noreferrer">
             jobs@gmx.io
           </a>

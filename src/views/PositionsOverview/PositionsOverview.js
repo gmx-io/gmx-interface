@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 
@@ -15,18 +16,28 @@ export default function PositionsOverview() {
   return (
     <div className="Positions-overview">
       <p>
-        Open positions: {positions.length}
+        <Trans>Open positions</Trans>: {positions.length}
         <br />
-        Under risk: {positions.filter((p) => p.danger).length}
+        <Trans>Under risk</Trans>: {positions.filter((p) => p.danger).length}
       </p>
       <table className="Positions-overview-table">
         <thead>
           <tr>
-            <th>account</th>
-            <th>size</th>
-            <th>collateral</th>
-            <th>fee</th>
-            <th>time to liq</th>
+            <th>
+              <Trans>account</Trans>
+            </th>
+            <th>
+              <Trans>size</Trans>
+            </th>
+            <th>
+              <Trans>collateral</Trans>
+            </th>
+            <th>
+              <Trans>fee</Trans>
+            </th>
+            <th>
+              <Trans>time</Trans> to liq
+            </th>
           </tr>
         </thead>
         <tbody>
