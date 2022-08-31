@@ -649,7 +649,7 @@ export default function GlpSwap(props) {
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
 
   const onSwapOptionChange = (opt) => {
-    if (opt === "Sell GLP") {
+    if (opt === t`Sell GLP`) {
       switchSwapOption("redeem");
     } else {
       switchSwapOption();
