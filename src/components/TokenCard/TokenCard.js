@@ -13,7 +13,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import APRLabel from "../APRLabel/APRLabel";
 
-export default function TokenCard({ showRedirectModal }) {
+export default function TokenCard({ showRedirectModal, HeaderLink }) {
   const isHome = isHomeSite();
   const { chainId } = useChainId();
   const { active } = useWeb3React();
@@ -37,9 +37,9 @@ export default function TokenCard({ showRedirectModal }) {
   const BuyLink = ({ className, to, children, network }) => {
     if (isHome && showRedirectModal) {
       return (
-        <div className={cx("a", className)} onClick={() => showRedirectModal(to)}>
+        <HeaderLink to={to} className={cx(className)}>
           {children}
-        </div>
+        </HeaderLink>
       );
     }
 
