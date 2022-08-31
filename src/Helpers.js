@@ -41,7 +41,7 @@ const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
 
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: true,
-  [AVALANCHE]: true,
+  [AVALANCHE]: false,
 };
 
 const CHAIN_NAMES_MAP = {
