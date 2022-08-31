@@ -20,9 +20,8 @@ export const homeEventsData = [
     id: "arbitrum-nitro-upgrade",
     title: "Arbitrum Nitro Upgrade",
     isActive: true,
-    validTill: "1 Sep 2022, 12:00",
-    bodyText:
-      "The Arbitrum Nitro upgrade is in progress, transactions cannot be sent on Arbitrum until the upgrade completes.",
+    validTill: "31 Aug 2022, 20:00",
+    bodyText: "The Arbitrum Nitro upgrade has been completed.",
     buttons: [
       {
         text: "Read More",
@@ -208,9 +207,8 @@ export const appEventsData = [
     id: "arbitrum-nitro-upgrade",
     title: "Arbitrum Nitro Upgrade",
     isActive: true,
-    validTill: "1 Sep 2022, 12:00",
-    bodyText:
-      "The Arbitrum Nitro upgrade is in progress, transactions cannot be sent on Arbitrum until the upgrade completes.",
+    validTill: "31 Aug 2022, 20:00",
+    bodyText: "The Arbitrum Nitro upgrade has been completed.",
     buttons: [
       {
         text: "Read More",
