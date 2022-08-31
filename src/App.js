@@ -158,7 +158,7 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
     <div className="App-header-links">
       {small && (
         <div className="App-header-links-header">
-          <HeaderLink isHomeLink={true} className="App-header-link-main" to="/">
+          <HeaderLink className="App-header-link-main" to="/">
             <img src={logoImg} alt="GMX Logo" />
           </HeaderLink>
           <div className="App-header-menu-icon-block mobile-cross-menu" onClick={() => clickCloseIcon()}>
@@ -167,7 +167,7 @@ function AppHeaderLinks({ HeaderLink, small, openSettings, clickCloseIcon }) {
         </div>
       )}
       <div className="App-header-link-container App-header-link-home">
-        <HeaderLink to="/" exact={true} isHomeLink={true}>
+        <HeaderLink to="/" exact={true}>
           <Trans>Home</Trans>
         </HeaderLink>
       </div>
@@ -728,7 +728,7 @@ function FullApp() {
           <header>
             <div className="App-header large">
               <div className="App-header-container-left">
-                <HeaderLink isHomeLink={true} exact={true} className="App-header-link-main" to="/">
+                <HeaderLink exact={true} className="App-header-link-main" to="/">
                   <img src={logoImg} className="big" alt="GMX Logo" />
                   <img src={logoSmallImg} className="small" alt="GMX Logo" />
                 </HeaderLink>
