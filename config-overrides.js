@@ -3,6 +3,15 @@ const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
 
 module.exports = function override(config) {
   config.resolve.plugins = config.resolve.plugins.filter((plugin) => !(plugin instanceof ModuleScopePlugin));
+  // https://github.com/lingui/js-lingui/issues/1195
+  config.module.rules[0].oneOf.splice(2, 0, {
+    test: /\.po/,
+    use: [
+      {
+        loader: "@lingui/loader",
+      },
+    ],
+  });
   const fallback = config.resolve.fallback || {};
   Object.assign(fallback, {
     stream: require.resolve("stream-browserify"),
