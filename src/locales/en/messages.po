@@ -53,11 +53,11 @@ msgid "AVAILABLE"
 msgstr ""
 
 #: src/App.js:201
-#: src/views/Ecosystem/Ecosystem.js:343
-#: src/views/Ecosystem/Ecosystem.js:387
-#: src/views/Ecosystem/Ecosystem.js:442
-#: src/views/Ecosystem/Ecosystem.js:496
-#: src/views/Ecosystem/Ecosystem.js:543
+#: src/views/Ecosystem/Ecosystem.js:421
+#: src/views/Ecosystem/Ecosystem.js:465
+#: src/views/Ecosystem/Ecosystem.js:520
+#: src/views/Ecosystem/Ecosystem.js:574
+#: src/views/Ecosystem/Ecosystem.js:621
 msgid "About"
 msgstr ""
 
@@ -69,11 +69,11 @@ msgstr "Accept terms to enable orders"
 msgid "Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price"
 msgstr "Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price"
 
-#: src/views/Actions/Actions.js:86
+#: src/views/Actions/Actions.js:88
 msgid "Account"
 msgstr ""
 
-#: src/views/Actions/Actions.js:144
+#: src/views/Actions/Actions.js:159
 msgid "Actions"
 msgstr ""
 
@@ -105,11 +105,11 @@ msgstr "Additionally, trigger orders are market orders and are not guaranteed to
 msgid "Affiliates"
 msgstr "Affiliates"
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:425
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:441
 msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:363
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:366
 msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
 msgstr "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
 
@@ -118,7 +118,7 @@ msgstr "After claiming, the esGMX tokens will be airdropped to your account on t
 msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
 msgstr ""
 
-#: src/App.js:955
+#: src/App.js:959
 msgid "Allowed Slippage"
 msgstr ""
 
@@ -131,7 +131,7 @@ msgstr "Amount"
 msgid "Amount of traders you referred."
 msgstr "Amount of traders you referred."
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:440
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:452
 msgid "Amount to claim"
 msgstr "Amount to claim"
 
@@ -139,7 +139,7 @@ msgstr "Amount to claim"
 msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:502
+#: src/views/Ecosystem/Ecosystem.js:580
 msgid "Announcement"
 msgstr "Announcement"
 
@@ -279,7 +279,7 @@ msgstr "Borrow Fee: ${0}"
 msgid "Buy"
 msgstr ""
 
-#: src/views/BuyGlp/BuyGlp.js:33
+#: src/views/BuyGlp/BuyGlp.js:34
 msgid "Buy / Sell GLP"
 msgstr ""
 
@@ -459,7 +459,7 @@ msgstr "Closing..."
 msgid "Code already taken"
 msgstr "Code already taken"
 
-#: src/App.js:937
+#: src/App.js:941
 msgid "Coinbase Wallet"
 msgstr ""
 
@@ -480,15 +480,15 @@ msgstr "Collateral"
 msgid "Collateral In"
 msgstr "Collateral In"
 
-#: src/views/Ecosystem/Ecosystem.js:354
+#: src/views/Ecosystem/Ecosystem.js:432
 msgid "Community Projects"
 msgstr "Community Projects"
 
-#: src/views/Ecosystem/Ecosystem.js:520
+#: src/views/Ecosystem/Ecosystem.js:598
 msgid "Community-led Telegram groups."
 msgstr "Community-led Telegram groups."
 
-#: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:95
+#: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:96
 msgid "Complete Account Transfer"
 msgstr "Complete Account Transfer"
 
@@ -579,8 +579,8 @@ msgstr "Creating Order..."
 msgid "Creating..."
 msgstr "Creating..."
 
-#: src/views/Ecosystem/Ecosystem.js:393
-#: src/views/Ecosystem/Ecosystem.js:448
+#: src/views/Ecosystem/Ecosystem.js:471
+#: src/views/Ecosystem/Ecosystem.js:526
 msgid "Creator"
 msgstr "Creator"
 
@@ -597,7 +597,7 @@ msgstr "Current Reserved: {0}<0/>Additional reserve required: {1}<1/>{2}"
 msgid "Dashboard"
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:408
+#: src/views/Ecosystem/Ecosystem.js:486
 msgid "Dashboards"
 msgstr "Dashboards"
 
@@ -646,7 +646,7 @@ msgstr "Deposited!"
 msgid "Depositing..."
 msgstr "Depositing..."
 
-#: src/App.js:981
+#: src/App.js:985
 msgid "Disable order validations"
 msgstr "Disable order validations"
 
@@ -654,7 +654,7 @@ msgstr "Disable order validations"
 msgid "Disconnect"
 msgstr ""
 
-#: src/App.js:970
+#: src/App.js:974
 msgid "Display PnL after fees"
 msgstr ""
 
@@ -901,7 +901,7 @@ msgstr "GLP is the liquidity provider token. Accrues 70% of the platform's gener
 #~ msgid "GLP is the platform's liquidity provider token. Accrues 70% of its generated fees."
 #~ msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:309
+#: src/views/Ecosystem/Ecosystem.js:387
 msgid "GMX Pages"
 msgstr "GMX Pages"
 
@@ -909,11 +909,11 @@ msgstr "GMX Pages"
 msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:411
+#: src/views/Ecosystem/Ecosystem.js:489
 msgid "GMX dashboards and analytics."
 msgstr "GMX dashboards and analytics."
 
-#: src/views/Ecosystem/Ecosystem.js:312
+#: src/views/Ecosystem/Ecosystem.js:390
 msgid "GMX ecosystem pages."
 msgstr "GMX ecosystem pages."
 
@@ -971,7 +971,7 @@ msgstr ""
 msgid "Hop"
 msgstr ""
 
-#: src/App.js:975
+#: src/App.js:979
 msgid "Include PnL in leverage display"
 msgstr ""
 
@@ -1097,11 +1097,11 @@ msgstr "Limit order creation failed."
 msgid "Limit order submitted!"
 msgstr "Limit order submitted!"
 
-#: src/views/Ecosystem/Ecosystem.js:333
-#: src/views/Ecosystem/Ecosystem.js:377
-#: src/views/Ecosystem/Ecosystem.js:432
-#: src/views/Ecosystem/Ecosystem.js:486
-#: src/views/Ecosystem/Ecosystem.js:533
+#: src/views/Ecosystem/Ecosystem.js:411
+#: src/views/Ecosystem/Ecosystem.js:455
+#: src/views/Ecosystem/Ecosystem.js:510
+#: src/views/Ecosystem/Ecosystem.js:564
+#: src/views/Ecosystem/Ecosystem.js:611
 msgid "Link"
 msgstr "Link"
 
@@ -1125,8 +1125,8 @@ msgstr "Loading..."
 #: src/components/Exchange/PositionsList.js:261
 #: src/components/Exchange/SwapBox.js:212
 #: src/components/Exchange/SwapBox.js:1034
-#: src/views/Actions/Actions.js:98
-#: src/views/Actions/Actions.js:102
+#: src/views/Actions/Actions.js:108
+#: src/views/Actions/Actions.js:112
 msgid "Long"
 msgstr ""
 
@@ -1143,13 +1143,13 @@ msgstr "Long {0}"
 msgid "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 msgstr "Looks like you don't have a referral code to share. <0/> Create one now and start earning rebates!"
 
-#: src/views/Actions/Actions.js:102
+#: src/views/Actions/Actions.js:112
 msgid "Loss"
 msgstr ""
 
 #: src/components/BuyInputSection/BuyInputSection.js:50
 #: src/components/InputSection/InputSection.js:43
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:448
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:461
 msgid "MAX"
 msgstr ""
 
@@ -1229,7 +1229,7 @@ msgstr "Max {0} short exceeded"
 msgid "Media Kit"
 msgstr "Media Kit"
 
-#: src/App.js:931
+#: src/App.js:935
 msgid "MetaMask"
 msgstr ""
 
@@ -1267,11 +1267,11 @@ msgstr "Net Value"
 #~ msgid "Networks"
 #~ msgstr "Networks"
 
-#: src/components/NetworkDropdown/NetworkDropdown.js:57
+#: src/components/NetworkDropdown/NetworkDropdown.js:56
 msgid "Networks and Settings"
 msgstr "Networks and Settings"
 
-#: src/views/Actions/Actions.js:90
+#: src/views/Actions/Actions.js:98
 msgid "No PnLs found"
 msgstr ""
 
@@ -1296,7 +1296,7 @@ msgstr "No rebates distribution history yet."
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 
-#: src/views/BuyGlp/BuyGlp.js:43
+#: src/views/BuyGlp/BuyGlp.js:45
 msgid "Note that there is a minimum holding time of 15 minutes after a purchase."
 msgstr ""
 
@@ -1342,7 +1342,7 @@ msgid "Order submitted!"
 msgstr "Order submitted!"
 
 #: src/components/Exchange/PositionsList.js:354
-#: src/views/Actions/Actions.js:131
+#: src/views/Actions/Actions.js:144
 msgid "Orders"
 msgstr ""
 
@@ -1368,7 +1368,7 @@ msgstr ""
 msgid "Page outdated, please refresh"
 msgstr "Page outdated, please refresh"
 
-#: src/views/Ecosystem/Ecosystem.js:463
+#: src/views/Ecosystem/Ecosystem.js:541
 msgid "Partnerships and Integrations"
 msgstr "Partnerships and Integrations"
 
@@ -1393,7 +1393,7 @@ msgstr "Please input a referral code to benefit from fee discounts."
 msgid "Please mint GLP using another token"
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:234
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:236
 msgid "Please only use this for full account transfers."
 msgstr ""
 
@@ -1403,7 +1403,7 @@ msgstr "Please switch your network to Arbitrum."
 
 #: src/components/Exchange/PositionSeller.js:1069
 #: src/components/Exchange/PositionsList.js:305
-#: src/views/Actions/Actions.js:89
+#: src/views/Actions/Actions.js:94
 msgid "PnL"
 msgstr ""
 
@@ -1411,7 +1411,7 @@ msgstr ""
 msgid "Position"
 msgstr "Position"
 
-#: src/views/Actions/Actions.js:112
+#: src/views/Actions/Actions.js:123
 msgid "Positions"
 msgstr ""
 
@@ -1448,7 +1448,7 @@ msgstr "Price below Mark Price"
 msgid "Price {0} Mark Price"
 msgstr "Price {0} Mark Price"
 
-#: src/views/Actions/Actions.js:98
+#: src/views/Actions/Actions.js:108
 msgid "Profit"
 msgstr ""
 
@@ -1457,15 +1457,15 @@ msgstr ""
 #~ msgid "Profits In"
 #~ msgstr "Profits In"
 
-#: src/views/Ecosystem/Ecosystem.js:357
+#: src/views/Ecosystem/Ecosystem.js:435
 msgid "Projects developed by the GMX community."
 msgstr "Projects developed by the GMX community."
 
-#: src/views/Ecosystem/Ecosystem.js:466
+#: src/views/Ecosystem/Ecosystem.js:544
 msgid "Projects integrated with GMX."
 msgstr "Projects integrated with GMX."
 
-#: src/views/BuyGlp/BuyGlp.js:35
+#: src/views/BuyGlp/BuyGlp.js:37
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 msgstr ""
 
@@ -1504,15 +1504,15 @@ msgstr "Rebates earned by this account as an affiliate."
 msgid "Receive"
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:251
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:258
 msgid "Receiver Address"
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:269
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:280
 msgid "Receiver has not staked GLP tokens before"
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:268
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:277
 msgid "Receiver has not staked GMX tokens before"
 msgstr ""
 
@@ -1599,7 +1599,7 @@ msgstr "Rewards"
 msgid "Same as current active code"
 msgstr "Same as current active code"
 
-#: src/App.js:987
+#: src/App.js:991
 msgid "Save"
 msgstr ""
 
@@ -1608,7 +1608,7 @@ msgid "Save on Costs"
 msgstr ""
 
 #: src/components/NetworkDropdown/LanguagePopupHome.js:29
-#: src/components/NetworkDropdown/NetworkDropdown.js:50
+#: src/components/NetworkDropdown/NetworkDropdown.js:49
 msgid "Select Language"
 msgstr "Select Language"
 
@@ -1631,7 +1631,7 @@ msgstr "Select an option"
 msgid "Select different tokens"
 msgstr "Select different tokens"
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:361
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:364
 msgid "Select your vesting option below then click \"Claim\"."
 msgstr "Select your vesting option below then click \"Claim\"."
 
@@ -1663,11 +1663,11 @@ msgstr ""
 msgid "Selling..."
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:266
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:274
 msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:263
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:271
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr ""
 
@@ -1686,8 +1686,8 @@ msgstr "Share Position"
 #: src/components/Exchange/PositionsList.js:261
 #: src/components/Exchange/SwapBox.js:214
 #: src/components/Exchange/SwapBox.js:1036
-#: src/views/Actions/Actions.js:98
-#: src/views/Actions/Actions.js:102
+#: src/views/Actions/Actions.js:108
+#: src/views/Actions/Actions.js:112
 msgid "Short"
 msgstr ""
 
@@ -1829,7 +1829,7 @@ msgstr ""
 msgid "TOKEN"
 msgstr ""
 
-#: src/views/Ecosystem/Ecosystem.js:517
+#: src/views/Ecosystem/Ecosystem.js:595
 msgid "Telegram Groups"
 msgstr "Telegram Groups"
 
@@ -1845,11 +1845,11 @@ msgstr "The Boosted APR is from your staked Multiplier Points."
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 msgstr "The address of the esGMX (IOU) token is {esGmxIouAddress}."
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:357
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:358
 msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
 msgstr "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:365
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:371
 msgid "The esGMX tokens can be staked or vested at any time."
 msgstr "The esGMX tokens can be staked or vested at any time."
 
@@ -1861,7 +1861,7 @@ msgstr "The price that orders can be executed at may differ slightly from the ch
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:236
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:238
 msgid "This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account."
 msgstr ""
 
@@ -1869,7 +1869,7 @@ msgstr ""
 msgid "Tier {0} ({1}% discount)"
 msgstr "Tier {0} ({1}% discount)"
 
-#: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:98
+#: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:100
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "To complete the transfer, you must switch your connected account to {receiver}."
 
@@ -2001,7 +2001,7 @@ msgstr "Transaction"
 msgid "Transfer AVAX"
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:232
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:233
 msgid "Transfer Account"
 msgstr ""
 
@@ -2027,11 +2027,11 @@ msgstr ""
 msgid "Transferring"
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:240
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:242
 msgid "Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:238
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:240
 msgid "Transfers are only supported if the receiving account has not staked GMX or GLP tokens before."
 msgstr ""
 
@@ -2113,19 +2113,19 @@ msgstr "Vault Capacity"
 msgid "Vault Capacity for your Account<0/><1/>Deposited: {0} esGMX<2/>Max Capacity: {1} esGMX<3/>"
 msgstr "Vault Capacity for your Account<0/><1/>Deposited: {0} esGMX<2/>Max Capacity: {1} esGMX<3/>"
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:396
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:407
 msgid "Vest with GLP on Arbitrum"
 msgstr "Vest with GLP on Arbitrum"
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:412
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:427
 msgid "Vest with GLP on Avalanche"
 msgstr "Vest with GLP on Avalanche"
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:388
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:397
 msgid "Vest with GMX on Arbitrum"
 msgstr "Vest with GMX on Arbitrum"
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:404
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:417
 msgid "Vest with GMX on Avalanche"
 msgstr "Vest with GMX on Avalanche"
 
@@ -2147,7 +2147,7 @@ msgstr "Vesting Status"
 msgid "View"
 msgstr ""
 
-#: src/views/BuyGlp/BuyGlp.js:45
+#: src/views/BuyGlp/BuyGlp.js:47
 msgid "View <0>staking</0> page."
 msgstr ""
 
@@ -2205,7 +2205,7 @@ msgstr ""
 msgid "Wallet not connected"
 msgstr "Wallet not connected"
 
-#: src/App.js:943
+#: src/App.js:947
 msgid "WalletConnect"
 msgstr ""
 
@@ -2266,11 +2266,11 @@ msgstr ""
 msgid "You can buy ETH directly on <0>Arbitrum</0> using Banxa:"
 msgstr ""
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:369
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:377
 msgid "You can check your claim history <0>here</0>."
 msgstr "You can check your claim history <0>here</0>."
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:419
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:435
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 
@@ -2282,11 +2282,11 @@ msgstr ""
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr ""
 
-#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:244
+#: src/views/BeginAccountTransfer/BeginAccountTransfer.js:248
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}."
 msgstr ""
 
-#: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:119
+#: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:121
 msgid "You have a pending transfer from {sender}."
 msgstr "You have a pending transfer from {sender}."
 
@@ -2299,7 +2299,7 @@ msgstr "You have not deposited any tokens for vesting."
 msgid "You have {0} esGMX (IOU) tokens."
 msgstr "You have {0} esGMX (IOU) tokens."
 
-#: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:101
+#: src/views/CompleteAccountTransfer/CompleteAccountTransfer.js:103
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 
@@ -2307,7 +2307,7 @@ msgstr "You will need to be on this page to accept the transfer, <0>click here</
 msgid "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
 msgstr "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday"
 
-#: src/views/ClaimEsGmx/ClaimEsGmx.js:367
+#: src/views/ClaimEsGmx/ClaimEsGmx.js:373
 msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 
