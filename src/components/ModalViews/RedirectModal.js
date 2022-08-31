@@ -1,5 +1,4 @@
 import "./RedirectModal.css";
-import { useEffect } from "react";
 import Modal from "../Modal/Modal";
 import Checkbox from "../Checkbox/Checkbox";
 
@@ -12,15 +11,11 @@ export function RedirectPopupModal({
   shouldHideRedirectModal,
   removeRedirectPopupTimestamp,
 }) {
-  useEffect(() => {
-    if (redirectModalVisible) {
-      if (shouldHideRedirectModal) {
-        setRedirectPopupTimestamp(Date.now());
-      } else {
-        removeRedirectPopupTimestamp();
-      }
+  const onClickAgree = () => {
+    if (shouldHideRedirectModal) {
+      setRedirectPopupTimestamp(Date.now());
     }
-  }, [setRedirectPopupTimestamp, shouldHideRedirectModal, removeRedirectPopupTimestamp, redirectModalVisible]);
+  };
   return (
     <Modal
       className="RedirectModal"
@@ -65,7 +60,7 @@ export function RedirectPopupModal({
           Don't show this message again for 30 days.
         </Checkbox>
       </div>
-      <a href={appRedirectUrl} className="App-cta Exchange-swap-button">
+      <a href={appRedirectUrl} className="App-cta Exchange-swap-button" onClick={() => onClickAgree()}>
         Agree
       </a>
     </Modal>
