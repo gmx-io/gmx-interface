@@ -303,6 +303,7 @@
     "Entry Price": "Entry Price",
     "Escrowed GMX": "Escrowed GMX",
     "Escrowed GMX APR": "Escrowed GMX APR",
+    Execute: "Execute",
     "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}": [
       "Execute Order: Swap ",
       ["fromAmountDisplay"],
@@ -347,8 +348,10 @@
     "GLP Index Composition": "GLP Index Composition",
     "GLP Pool": "GLP Pool",
     "GLP Vault": "GLP Vault",
+    "GLP buy disabled, pending {0} upgrade": ["GLP buy disabled, pending ", ["0"], " upgrade"],
     "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees.":
       "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees.",
+    "GLP sell disabled, pending {0} upgrade": ["GLP sell disabled, pending ", ["0"], " upgrade"],
     "GMX Announcements and Updates": "GMX Announcements and Updates",
     "GMX Blueberry NFTs": "GMX Blueberry NFTs",
     "GMX Governance Page": "GMX Governance Page",
@@ -468,6 +471,7 @@
     "Leftover collateral below 5 USD": "Leftover collateral below 5 USD",
     "Leftover position below 10 USD": "Leftover position below 10 USD",
     Leverage: "Leverage",
+    "Leverage disabled, pending {0} upgrade": ["Leverage disabled, pending ", ["0"], " upgrade"],
     "Leverage slider": "Leverage slider",
     Limit: "Limit",
     "Limit Price": "Limit Price",
@@ -804,6 +808,7 @@
     "Swap {0} submitted!": ["Swap ", ["0"], " submitted!"],
     "Swapped {0} {1} for {2} {3}!": ["Swapped ", ["0"], " ", ["1"], " for ", ["2"], " ", ["3"], "!"],
     "Swapping...": "Swapping...",
+    "Swaps disabled, pending {0} upgrade": ["Swaps disabled, pending ", ["0"], " upgrade"],
     Synapse: "Synapse",
     TOKEN: "TOKEN",
     'Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a "Close" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>.':
@@ -992,6 +997,7 @@
       "Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.",
     Trigger: "Trigger",
     "Trigger Price": "Trigger Price",
+    "Trigger order disabled, pending {0} upgrade": ["Trigger order disabled, pending ", ["0"], " upgrade"],
     'Try increasing the "Allowed Slippage", under the Settings menu on the top right':
       'Try increasing the "Allowed Slippage", under the Settings menu on the top right',
     Tweet: "Tweet",

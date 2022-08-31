@@ -168,7 +168,9 @@ export default function OrdersOverview() {
 
               return (
                 <tr key={key}>
-                  <td>Swap</td>
+                  <td>
+                    <Trans>Swap</Trans>
+                  </td>
                   <td colSpan="2">
                     {!invalidToken && (
                       <>
@@ -196,7 +198,7 @@ export default function OrdersOverview() {
                   <td className="negative">{error}</td>
                   <td>
                     <button className="Orders-overview-action" onClick={(evt) => executeOrder(evt, order)}>
-                      Execute
+                      <Trans>Execute</Trans>
                     </button>
                   </td>
                 </tr>
@@ -275,7 +277,7 @@ export default function OrdersOverview() {
                   <td className="negative">{error}</td>
                   <td>
                     <button className="Orders-overview-action" onClick={(evt) => executeOrder(evt, order)}>
-                      Execute
+                      <Trans>Execute</Trans>
                     </button>
                   </td>
                 </tr>

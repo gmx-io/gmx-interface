@@ -243,6 +243,7 @@
     "Decreased {tokenSymbol} Long, -{0} USD.": ["Decreased ", ["tokenSymbol"], " Long, -", ["0"], " USD."],
     "Decreased {tokenSymbol} Short, -{0} USD.": ["Decreased ", ["tokenSymbol"], " Short, -", ["0"], " USD."],
     Deposit: "Deposit",
+    "Deposit disabled, pending {0} upgrade": ["Deposit disabled, pending ", ["0"], " upgrade"],
     "Deposit failed!": "Deposit failed!",
     "Deposit failed.": "Deposit failed.",
     "Deposit submitted!": "Deposit submitted!",
@@ -300,6 +301,7 @@
     "Entry Price": "エントリー価格",
     "Escrowed GMX": "Escrowed GMX",
     "Escrowed GMX APR": "Escrowed GMX APR",
+    Execute: "Execute",
     "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}": [
       "Execute Order: Swap ",
       ["fromAmountDisplay"],
@@ -344,8 +346,10 @@
     "GLP Index Composition": "GLP Index Composition",
     "GLP Pool": "GLP Pool",
     "GLP Vault": "GLP Vault",
+    "GLP buy disabled, pending {0} upgrade": ["GLP buy disabled, pending ", ["0"], " upgrade"],
     "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees.":
       "GLPは流動性提供者のトークンです。プラットフォームが得た手数料の70%を獲得します。",
+    "GLP sell disabled, pending {0} upgrade": ["GLP sell disabled, pending ", ["0"], " upgrade"],
     "GMX Announcements and Updates": "GMX Announcements and Updates",
     "GMX Blueberry NFTs": "GMX Blueberry NFTs",
     "GMX Governance Page": "GMX Governance Page",
@@ -465,6 +469,7 @@
     "Leftover collateral below 5 USD": "Leftover collateral below 5 USD",
     "Leftover position below 10 USD": "Leftover position below 10 USD",
     Leverage: "レバレッジ",
+    "Leverage disabled, pending {0} upgrade": ["Leverage disabled, pending ", ["0"], " upgrade"],
     "Leverage slider": "Leverage slider",
     Limit: "Limit",
     "Limit Price": "Limit Price",
@@ -802,6 +807,7 @@
     "Swap {0} submitted!": ["Swap ", ["0"], " submitted!"],
     "Swapped {0} {1} for {2} {3}!": ["Swapped ", ["0"], " ", ["1"], " for ", ["2"], " ", ["3"], "!"],
     "Swapping...": "Swapping...",
+    "Swaps disabled, pending {0} upgrade": ["Swaps disabled, pending ", ["0"], " upgrade"],
     Synapse: "Synapse",
     TOKEN: "TOKEN",
     'Take-profit and stop-loss orders can be set after opening a position. <0/><1/>There will be a "Close" button on each position row, clicking this will display the option to set trigger orders. <2/><3/>For screenshots and more information, please see the <4>docs</4>.':
@@ -991,6 +997,7 @@
       "移転は、移転先のアカウントがこれまでにGMXやGLPトークンをステークしたことがない場合に限り可能です。",
     Trigger: "Trigger",
     "Trigger Price": "Trigger Price",
+    "Trigger order disabled, pending {0} upgrade": ["Trigger order disabled, pending ", ["0"], " upgrade"],
     'Try increasing the "Allowed Slippage", under the Settings menu on the top right':
       'Try increasing the "Allowed Slippage", under the Settings menu on the top right',
     Tweet: "ツイート",
@@ -1048,6 +1055,7 @@
     "When closing the position, you can select which token you would like to receive the profits in.":
       "When closing the position, you can select which token you would like to receive the profits in.",
     Withdraw: "Withdraw",
+    "Withdraw disabled, pending {0} upgrade": ["Withdraw disabled, pending ", ["0"], " upgrade"],
     "Withdraw failed.": "Withdraw failed.",
     "Withdraw from GLP Vault": "Withdraw from GLP Vault",
     "Withdraw from GMX Vault": "Withdraw from GMX Vault",
