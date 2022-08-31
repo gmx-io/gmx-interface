@@ -34,8 +34,9 @@ import { useUserStat } from "../../domain/legacy";
 import TokenCard from "../../components/TokenCard/TokenCard";
 
 import { Trans } from "@lingui/macro";
+import { HeaderLink } from "../../components/Header/HeaderLink";
 
-export default function Home({ showRedirectModal, redirectPopupTimestamp, HeaderLink }) {
+export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)
   // const faqContent = [{
   //   id: 1,
@@ -134,7 +135,12 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp, Header
 
   const LaunchExchangeButton = () => {
     return (
-      <HeaderLink className={cx("default-btn")} to="/trade">
+      <HeaderLink
+        className={cx("default-btn")}
+        to="/trade"
+        redirectPopupTimestamp={redirectPopupTimestamp}
+        showRedirectModal={showRedirectModal}
+      >
         <Trans>Launch Exchange</Trans>
       </HeaderLink>
     );
