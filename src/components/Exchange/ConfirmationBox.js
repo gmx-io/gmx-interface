@@ -1,4 +1,5 @@
 import React, { useCallback, useState, useMemo } from "react";
+import { Trans, t } from "@lingui/macro";
 import "./ConfirmationBox.css";
 import {
   USD_DECIMALS,
@@ -138,12 +139,12 @@ export default function ConfirmationBox(props) {
 
   const getTitle = () => {
     if (!isMarketOrder) {
-      return "Confirm Limit Order";
+      return t`Confirm Limit Order`;
     }
     if (isSwap) {
-      return "Confirm Swap";
+      return t`Confirm Swap`;
     }
-    return isLong ? "Confirm Long" : "Confirm Short";
+    return isLong ? t`Confirm Long` : t`Confirm Short`;
   };
   const title = getTitle();
 
@@ -194,18 +195,18 @@ export default function ConfirmationBox(props) {
     if (!isSwap && hasExistingPosition && !isMarketOrder) {
       const { delta, hasProfit } = calculatePositionDelta(triggerPriceUsd, existingPosition);
       if (hasProfit && delta.eq(0)) {
-        return "Invalid price, see warning";
+        return t`Invalid price, see warning`;
       }
     }
     if (isMarketOrder && hasPendingProfit && !isProfitWarningAccepted) {
-      return "Forfeit profit not checked";
+      return t`Forfeit profit not checked`;
     }
     return false;
   };
 
   const getPrimaryText = () => {
     if (decreaseOrdersThatWillBeExecuted.length > 0 && !isTriggerWarningAccepted) {
-      return `Accept confirmation of trigger orders`;
+      return t`Accept confirmation of trigger orders`;
     }
 
     if (!isPendingConfirmation) {
@@ -217,7 +218,7 @@ export default function ConfirmationBox(props) {
       if (isSwap) {
         return title;
       }
-      const action = isMarketOrder ? (isLong ? "Long" : "Short") : "Create Order";
+      const action = isMarketOrder ? (isLong ? t`Long` : t`Short`) : t`Create Order`;
 
       if (
         isMarketOrder &&
@@ -226,22 +227,22 @@ export default function ConfirmationBox(props) {
         existingPosition.delta.eq(0) &&
         existingPosition.pendingDelta.gt(0)
       ) {
-        return isLong ? `Forfeit profit and ${action}` : `Forfeit profit and Short`;
+        return isLong ? t`Forfeit profit and ${action}` : t`Forfeit profit and Short`;
       }
 
-      return isMarketOrder && MIN_PROFIT_TIME > 0 ? `Accept minimum and ${action}` : action;
+      return isMarketOrder && MIN_PROFIT_TIME > 0 ? t`Accept minimum and ${action}` : action;
     }
 
     if (!isMarketOrder) {
-      return "Creating Order...";
+      return t`Creating Order...`;
     }
     if (isSwap) {
-      return "Swapping...";
+      return t`Swapping...`;
     }
     if (isLong) {
-      return "Longing...";
+      return t`Longing...`;
     }
-    return "Shorting...";
+    return t`Shorting...`;
   };
 
   const isPrimaryEnabled = () => {
@@ -272,7 +273,7 @@ export default function ConfirmationBox(props) {
     if (spread && spread.isHigh) {
       return (
         <div className="Confirmation-box-warning">
-          The spread is {`>`} 1%, please ensure the trade details are acceptable before comfirming
+          <Trans>The spread is {`>`} 1%, please ensure the trade details are acceptable before comfirming</Trans>
         </div>
       );
     }
@@ -286,7 +287,9 @@ export default function ConfirmationBox(props) {
     if (isSwap) {
       return (
         <div className="Confirmation-box-warning">
-          Fees are high to swap from {fromToken.symbol} to {toToken.symbol}.
+          <Trans>
+            Fees are high to swap from {fromToken.symbol} to {toToken.symbol}.
+          </Trans>
         </div>
       );
     }
@@ -298,8 +301,10 @@ export default function ConfirmationBox(props) {
     const collateralToken = getToken(chainId, collateralTokenAddress);
     return (
       <div className="Confirmation-box-warning">
-        Fees are high to swap from {fromToken.symbol} to {collateralToken.symbol}. <br />
-        {collateralToken.symbol} is needed for collateral.
+        <Trans>
+          Fees are high to swap from {fromToken.symbol} to {collateralToken.symbol}. <br />
+          {collateralToken.symbol} is needed for collateral.
+        </Trans>
       </div>
     );
   }, [feeBps, isSwap, collateralTokenAddress, chainId, fromToken.symbol, toToken.symbol, orderOption]);
@@ -318,19 +323,21 @@ export default function ConfirmationBox(props) {
           const profitPrice = getProfitPrice(existingPosition.markPrice, existingPosition);
           return (
             <div className="Confirmation-box-warning">
-              Increasing this position at the current price will forfeit a&nbsp;
-              <a
-                href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                pending profit
-              </a>{" "}
-              of {existingPosition.deltaStr}.<br />
-              <br />
-              Profit price: {existingPosition.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
-              This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until{" "}
-              {formatDateTime(minProfitExpiration)}.
+              <Trans>
+                Increasing this position at the current price will forfeit a&nbsp;
+                <a
+                  href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  pending profit
+                </a>{" "}
+                of {existingPosition.deltaStr}.<br />
+                <br />
+                Profit price: {existingPosition.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}.
+                This rule only applies for the next {getTimeRemaining(minProfitExpiration)}, until{" "}
+                {formatDateTime(minProfitExpiration)}.
+              </Trans>
             </div>
           );
         }

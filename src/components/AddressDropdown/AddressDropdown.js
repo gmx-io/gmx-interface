@@ -1,6 +1,6 @@
 import "./AddressDropdown.css";
 import { Menu } from "@headlessui/react";
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { helperToast, shortenAddress, useENS } from "../../Helpers";
 import { useCopyToClipboard, createBreakpoint } from "react-use";
 import externalLink from "../../img/ic_new_link_16.svg";
@@ -33,10 +33,10 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
               className="menu-item"
               onClick={() => {
                 copyToClipboard(account);
-                helperToast.success("Address copied to your clipboard");
+                helperToast.success(t`Address copied to your clipboard`);
               }}
             >
-              <img src={copy} alt="Copy user address" />
+              <img src={copy} alt={t`Copy user address`} />
               <p>
                 <Trans>Copy Address</Trans>
               </p>
@@ -44,7 +44,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
           </Menu.Item>
           <Menu.Item>
             <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="menu-item">
-              <img src={externalLink} alt="Open address in explorer" />
+              <img src={externalLink} alt={t`Open address in explorer`} />
               <p>
                 <Trans>View in Explorer</Trans>
               </p>
@@ -52,7 +52,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
           </Menu.Item>
           <Menu.Item>
             <div className="menu-item" onClick={disconnectAccountAndCloseSettings}>
-              <img src={disconnect} alt="Disconnect the wallet" />
+              <img src={disconnect} alt={t`Disconnect the wallet`} />
               <p>
                 <Trans>Disconnect</Trans>
               </p>

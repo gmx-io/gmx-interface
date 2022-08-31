@@ -1,7 +1,5 @@
 import React from "react";
-
 import cx from "classnames";
-
 import "./Checkbox.css";
 import { ImCheckboxUnchecked, ImCheckboxChecked } from "react-icons/im";
 
