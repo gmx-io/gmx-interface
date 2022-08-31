@@ -176,6 +176,7 @@
     Date: "日付",
     "Decentralized<0/>Perpetual Exchange": "分散型<0/>パーペチュアル取引所",
     Deposit: "入金",
+    "Deposit disabled, pending {0} upgrade": ["Deposit disabled, pending ", ["0"], " upgrade"],
     "Deposit failed!": "入金できませんでした!",
     "Deposit failed.": "入金できませんでした。",
     "Deposit submitted!": "入金申し込み完了!",
@@ -238,8 +239,10 @@
     French: "フランス語",
     "Funds not utilized by current open positions.": "現在オープンされているポジションで利用されていない資金",
     "GLP Index Composition": "GLPインデックス構成",
+    "GLP buy disabled, pending {0} upgrade": ["GLP buy disabled, pending ", ["0"], " upgrade"],
     "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees.":
       "GLPは流動性提供者のトークンです。プラットフォームが得た手数料の70%を獲得します。",
+    "GLP sell disabled, pending {0} upgrade": ["GLP sell disabled, pending ", ["0"], " upgrade"],
     "GMX Pages": "GMXのページ",
     "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:":
       "GMXボンドはOlympus Proで短期のべスティング期間を条件として割引価格で購入できます:",
@@ -289,6 +292,7 @@
     "Leftover collateral below 5 USD": "残りの担保が5 USD以下",
     "Leftover position below 10 USD": "残りのポジションが10 USD以下",
     Leverage: "レバレッジ",
+    "Leverage disabled, pending {0} upgrade": ["Leverage disabled, pending ", ["0"], " upgrade"],
     "Limit order creation failed.": "指値注文が作成できませんでした。",
     "Limit order submitted!": "指値注文提出済!",
     Link: "リンク",
@@ -368,6 +372,7 @@
     "Please switch your network to Arbitrum.": "ネットワークをArbitrumに切り替えてください。",
     PnL: "損益",
     Position: "ポジション",
+    "Position close disabled, pending {0} upgrade": ["Position close disabled, pending ", ["0"], " upgrade"],
     Positions: "ポジション",
     Price: "価格",
     "Price above Liq. Price": "清算価格を上回る価格",
@@ -480,6 +485,7 @@
     "Swap failed.": "スワップできませんでした。",
     "Swap on {0}": [["0"], "でスワップ"],
     "Swap submitted!": "スワップ申し込み完了!",
+    "Swaps disabled, pending {0} upgrade": ["Swaps disabled, pending ", ["0"], " upgrade"],
     "Switch Network": "ネットワーク変更",
     Synapse: "Synapse",
     TOKEN: "トークン",
@@ -550,6 +556,7 @@
     "Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.":
       "移転は、移転先のアカウントがこれまでにGMXやGLPトークンをステークしたことがない場合に限り可能です。",
     "Trigger Price": "トリガー価格",
+    "Trigger order disabled, pending {0} upgrade": ["Trigger order disabled, pending ", ["0"], " upgrade"],
     Tweet: "ツイート",
     "Two tokens create our ecosystem": "2つのトークンが私たちのエコシステムを作っています",
     "Txn failed.": "トランザクション失敗",
@@ -606,6 +613,7 @@
     "When closing the position, you can select which token you would like to receive.":
       "When closing the position, you can select which token you would like to receive.",
     Withdraw: "出金",
+    "Withdraw disabled, pending {0} upgrade": ["Withdraw disabled, pending ", ["0"], " upgrade"],
     "Withdraw failed.": "出金できませんでした",
     "Withdraw from GLP Vault": "GLPボールトから出金",
     "Withdraw from GMX Vault": "GMXボールトから出金",

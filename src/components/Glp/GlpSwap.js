@@ -36,6 +36,8 @@ import {
   ARBITRUM,
   PLACEHOLDER_ACCOUNT,
   importImage,
+  IS_NETWORK_DISABLED,
+  getChainName,
 } from "../../Helpers";
 
 import { callContract, useGmxPrice, useInfoTokens } from "../../Api";
@@ -428,6 +430,11 @@ export default function GlpSwap(props) {
   };
 
   const getError = () => {
+    if (IS_NETWORK_DISABLED[chainId]) {
+      if (isBuying) return [t`GLP buy disabled, pending ${getChainName(chainId)} upgrade`];
+      return [t`GLP sell disabled, pending ${getChainName(chainId)} upgrade`];
+    }
+
     if (!isBuying && inCooldownWindow) {
       return [t`Redemption time not yet reached`];
     }
@@ -474,6 +481,9 @@ export default function GlpSwap(props) {
   };
 
   const isPrimaryEnabled = () => {
+    if (IS_NETWORK_DISABLED[chainId]) {
+      return false;
+    }
     if (!active) {
       return true;
     }
@@ -655,7 +665,7 @@ export default function GlpSwap(props) {
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
 
   const onSwapOptionChange = (opt) => {
-    if (opt === "Sell GLP") {
+    if (opt === t`Sell GLP`) {
       switchSwapOption("redeem");
     } else {
       switchSwapOption();

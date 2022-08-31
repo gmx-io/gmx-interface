@@ -1509,7 +1509,6 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-row">
                 <div className="label">
-                  Wallet
                   <Trans>Wallet</Trans>
                 </div>
                 <div>
