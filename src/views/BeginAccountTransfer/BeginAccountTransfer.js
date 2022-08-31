@@ -219,7 +219,7 @@ export default function BeginAccountTransfer(props) {
       <Modal
         isVisible={isTransferSubmittedModalVisible}
         setIsVisible={setIsTransferSubmittedModalVisible}
-        label="Transfer Submitted"
+        label={t`Transfer Submitted`}
       >
         <Trans>Your transfer has been initiated.</Trans>
         <br />
@@ -233,13 +233,13 @@ export default function BeginAccountTransfer(props) {
           <Trans>Transfer Account</Trans>
         </div>
         <div className="Page-description">
-          <Trans>Please only use this for full account transfers.</Trans>
-          <br />
-          <Trans>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.</Trans>
-          <br />
-          <Trans>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.</Trans>
-          <br />
           <Trans>
+            Please only use this for full account transfers.
+            <br />
+            This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.
+            <br />
+            Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.
+            <br />
             Transfers are one-way, you will not be able to transfer staked tokens back to the sending account.
           </Trans>
         </div>

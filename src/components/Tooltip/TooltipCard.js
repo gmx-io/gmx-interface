@@ -1,3 +1,4 @@
+import { t, Trans } from "@lingui/macro";
 import { formatAmount, USD_DECIMALS } from "../../Helpers";
 
 export default function TooltipCard({
@@ -12,7 +13,9 @@ export default function TooltipCard({
   return (
     <>
       <p className="Tooltip-row">
-        <span className="label">{title} on Arbitrum:</span>
+        <span className="label">
+          <Trans>{title} on Arbitrum:</Trans>
+        </span>
         <span className="amount">
           {showDollar && "$"}
           {formatAmount(arbitrum, decimalsForConversion, 0, true)}
@@ -20,7 +23,9 @@ export default function TooltipCard({
         </span>
       </p>
       <p className="Tooltip-row">
-        <span className="label">{title} on Avalanche:</span>
+        <span className="label">
+          <Trans>{title} on Avalanche:</Trans>
+        </span>
         <span className="amount">
           {showDollar && "$"}
           {formatAmount(avax, decimalsForConversion, 0, true)}
@@ -29,7 +34,9 @@ export default function TooltipCard({
       </p>
       <div className="Tooltip-divider" />
       <p className="Tooltip-row">
-        <span className="label">Total:</span>
+        <span className="label">
+          <Trans>Total:</Trans>
+        </span>
         <span className="amount">
           {showDollar && "$"}
           {formatAmount(total, decimalsForConversion, 0, true)}

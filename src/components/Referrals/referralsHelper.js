@@ -8,6 +8,7 @@ import {
   AVALANCHE,
 } from "../../Helpers";
 import { encodeReferralCode, getReferralCodeOwner } from "../../Api/referrals";
+import { t } from "@lingui/macro";
 
 export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 export const REGEX_VERIFY_BYTES32 = /^0x[0-9a-f]{64}$/;
@@ -120,11 +121,11 @@ export function getCodeError(value) {
   if (!trimmedValue) return "";
 
   if (trimmedValue.length > MAX_REFERRAL_CODE_LENGTH) {
-    return `The referral code can't be more than ${MAX_REFERRAL_CODE_LENGTH} characters.`;
+    return t`The referral code can't be more than ${MAX_REFERRAL_CODE_LENGTH} characters.`;
   }
 
   if (!REFERRAL_CODE_REGEX.test(trimmedValue)) {
-    return "Only letters, numbers and underscores are allowed.";
+    return t`Only letters, numbers and underscores are allowed.`;
   }
   return "";
 }

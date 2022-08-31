@@ -40,11 +40,9 @@ export default function BuyGlp(props) {
                 GLP tokens
               </a>{" "}
               to earn {nativeTokenSymbol} fees from swaps and leverages trading.
-            </Trans>
-            <br />
-            <Trans>Note that there is a minimum holding time of 15 minutes after a purchase.</Trans>
-            <br />
-            <Trans>
+              <br />
+              Note that there is a minimum holding time of 15 minutes after a purchase.
+              <br />
               View <Link to="/earn">staking</Link> page.
             </Trans>
           </div>

@@ -3,7 +3,6 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import { useParams } from "react-router-dom";
-
 import "./Actions.css";
 
 import { getContract } from "../../Addresses";

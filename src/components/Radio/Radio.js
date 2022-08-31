@@ -1,7 +1,5 @@
 import React from "react";
-
 import cx from "classnames";
-
 import "./Radio.css";
 
 export default function Radio(props) {

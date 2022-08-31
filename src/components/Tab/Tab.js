@@ -1,7 +1,5 @@
 import React from "react";
-
 import cx from "classnames";
-
 import "./Tab.css";
 
 export default function Tab(props) {

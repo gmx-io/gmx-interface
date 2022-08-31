@@ -2426,11 +2426,11 @@ export default function SwapBox(props) {
                     return (
                       <>
                         <TooltipCardRow
-                          label={`Max ${toTokenInfo.symbol} short capacity`}
+                          label={t`Max ${toTokenInfo.symbol} short capacity`}
                           value={formatAmount(toTokenInfo.maxGlobalShortSize, USD_DECIMALS, 0, true)}
                         />
                         <TooltipCardRow
-                          label={`Current ${toTokenInfo.symbol} shorts`}
+                          label={t`Current ${toTokenInfo.symbol} shorts`}
                           value={formatAmount(toTokenInfo.globalShortSize, USD_DECIMALS, 0, true)}
                         />
                       </>

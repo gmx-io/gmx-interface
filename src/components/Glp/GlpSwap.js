@@ -99,7 +99,7 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
           `(${formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 0, true)} ${token.symbol})`,
         ]}
       />
-      <TooltipCardRow label="Max Pool Capacity" value={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)} />
+      <TooltipCardRow label={t`Max Pool Capacity`} value={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)} />
     </>
   );
 }
@@ -685,7 +685,7 @@ export default function GlpSwap(props) {
           <div className="App-card-title">
             <div className="App-card-title-mark">
               <div className="App-card-title-mark-icon">
-                <img src={glp40Icon} alt="glp40Icon" />
+                <img src={glp40Icon} alt="GLP" />
                 {chainId === ARBITRUM ? (
                   <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" />
                 ) : (
@@ -719,7 +719,9 @@ export default function GlpSwap(props) {
               </div>
             </div>
             <div className="App-card-row">
-              <div className="label">Staked</div>
+              <div className="label">
+                <Trans>Staked</Trans>
+              </div>
               <div className="value">
                 {formatAmount(glpBalance, GLP_DECIMALS, 4, true)} GLP ($
                 {formatAmount(glpBalanceUsd, USD_DECIMALS, 2, true)})
@@ -907,7 +909,7 @@ export default function GlpSwap(props) {
                       if (!feeBasisPoints) {
                         return (
                           <div className="text-white">
-                            Fees will be shown once you have entered an amount in the order form.
+                            <Trans>Fees will be shown once you have entered an amount in the order form.</Trans>
                           </div>
                         );
                       }
@@ -928,7 +930,7 @@ export default function GlpSwap(props) {
                       if (!feeBasisPoints) {
                         return (
                           <div className="text-white">
-                            Fees will be shown once you have entered an amount in the order form.
+                            <Trans>Fees will be shown once you have entered an amount in the order form.</Trans>
                           </div>
                         );
                       }
@@ -952,7 +954,9 @@ export default function GlpSwap(props) {
         </div>
       </div>
       <div className="Tab-title-section">
-        <div className="Page-title">Save on Fees</div>
+        <div className="Page-title">
+          <Trans>Save on Fees</Trans>
+        </div>
         {isBuying && (
           <div className="Page-description">
             <Trans>Fees may vary depending on which asset you use to buy GLP.</Trans>
@@ -1088,12 +1092,11 @@ export default function GlpSwap(props) {
                   case (isBuying && isCapReached) || (!isBuying && managedUsd?.lt(1)):
                     return (
                       <Tooltip
-                        handle="NA"
+                        handle={t`NA`}
                         position="right-bottom"
                         renderContent={() => (
                           <div className="text-white">
                             <Trans>Max pool capacity reached for {tokenInfo.symbol}</Trans>
-
                             <br />
                             <br />
                             <Trans>Please mint GLP using another token</Trans>
@@ -1264,7 +1267,9 @@ export default function GlpSwap(props) {
                 <div className="App-card-divider"></div>
                 <div className="App-card-content">
                   <div className="App-card-row">
-                    <div className="label">Price</div>
+                    <div className="label">
+                      <Trans>Price</Trans>
+                    </div>
                     <div>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</div>
                   </div>
                   {isBuying && (
@@ -1297,8 +1302,9 @@ export default function GlpSwap(props) {
                           renderContent={() => {
                             return (
                               <p className="text-white">
-                                <Trans>Available amount to withdraw from GLP.</Trans>
-                                <Trans>Funds not utilized by current open positions.</Trans>
+                                <Trans>
+                                  Available amount to withdraw from GLP. Funds not utilized by current open positions.
+                                </Trans>
                               </p>
                             );
                           }}
