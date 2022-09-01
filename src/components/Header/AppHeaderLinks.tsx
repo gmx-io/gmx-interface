@@ -98,7 +98,7 @@ export function AppHeaderLinks({
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <a href="src/App/App" target="_blank" rel="noopener noreferrer">
+        <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
           <Trans>About</Trans>
         </a>
       </div>
