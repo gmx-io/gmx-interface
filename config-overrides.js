@@ -4,7 +4,9 @@ const ModuleScopePlugin = require("react-dev-utils/ModuleScopePlugin");
 module.exports = function override(config) {
   config.resolve.plugins = config.resolve.plugins.filter((plugin) => !(plugin instanceof ModuleScopePlugin));
   // https://github.com/lingui/js-lingui/issues/1195
-  config.module.rules[0].oneOf.splice(2, 0, {
+  // Adding loader to use for .po files to webpack
+  const webpackLoaders = config.module.rules[0].oneOf;
+  webpackLoaders.splice(webpackLoaders.length - 1, 0, {
     test: /\.po/,
     use: [
       {
