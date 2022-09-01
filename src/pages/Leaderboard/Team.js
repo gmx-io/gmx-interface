@@ -7,7 +7,7 @@ import Loader from "./../../components/Common/Loader";
 import "./../Referrals/Referrals.css";
 
 export default function Team() {
-  const params = useParams();
+  // const params = useParams();
   const { chainId, library } = useWeb3React();
   const team = useTeam(chainId, library);
 
@@ -17,7 +17,7 @@ export default function Team() {
         <div className="section-title-block">
           <div className="section-title-content">
             <div className="Page-title">
-              Team stats <img src={getChainIcon(chainId)} />
+              Team stats <img alt="Chain Icon" src={getChainIcon(chainId)} />
             </div>
             <div className="Page-description">
               Get fee discounts and earn rebates through the GMX referral program. For more information, please read the
@@ -55,7 +55,7 @@ export default function Team() {
             </div>
             <div class="Tab-title-section">
               <div class="Page-title">
-                Positions <img src={getChainIcon(chainId)} />
+                Positions <img alt="Chain Icon" src={getChainIcon(chainId)} />
               </div>
               <div className="Page-description">Platform and GLP index tokens.</div>
             </div>

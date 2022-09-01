@@ -22,7 +22,7 @@ export default function Leaderboard() {
         <div className="section-title-block">
           <div className="section-title-content">
             <div className="Page-title">
-              Leaderboard <img src={getChainIcon(chainId)} />
+              Leaderboard <img alt="Chain Icon" src={getChainIcon(chainId)} />
             </div>
             <div className="Page-description">
               Get fee discounts and earn rebates through the GMX referral program. For more information, please read the
