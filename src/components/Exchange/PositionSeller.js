@@ -7,6 +7,7 @@ import { BsArrowRight } from "react-icons/bs";
 import {
   formatAmount,
   bigNumberify,
+  ARBITRUM,
   DEFAULT_SLIPPAGE_AMOUNT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   USD_DECIMALS,
@@ -292,7 +293,7 @@ export default function PositionSeller(props) {
 
   let executionFee = orderOption === STOP ? getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE") : minExecutionFee;
 
-  let executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens);
+  let executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens) || bigNumberify(0);
 
   if (position) {
     fundingFee = position.fundingFee;
@@ -742,6 +743,9 @@ export default function PositionSeller(props) {
       successMsg,
       failMsg: t`Close failed.`,
       setPendingTxns,
+      // for Arbitrum, sometimes the successMsg shows after the position has already been executed
+      // hide the success message for Arbitrum as a workaround
+      hideSuccessMsg: chainId === ARBITRUM,
     })
       .then(async (res) => {
         setFromValue("");
@@ -1169,7 +1173,7 @@ export default function PositionSeller(props) {
                         infoTokens
                       );
 
-                      if (tokenOptionInfo.availableAmount.lt(convertedTokenAmount)) {
+                      if (tokenOptionInfo?.availableAmount?.lt(convertedTokenAmount)) {
                         const { maxIn, maxOut, maxInUsd, maxOutUsd } = getSwapLimits(
                           infoTokens,
                           collateralToken.address,
