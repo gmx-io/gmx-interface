@@ -19,6 +19,9 @@ import OrderBook from "./abis/OrderBook.json";
 
 import { getWhitelistedTokens, isValidToken } from "./data/Tokens";
 
+import icavalanche24 from "./img/ic_avalanche_24.svg";
+import icarbitrum24 from "./img/ic_arbitrum_24.svg";
+
 const { AddressZero } = ethers.constants;
 
 export const UI_VERSION = "1.3";
@@ -2831,4 +2834,16 @@ export function shouldShowRedirectModal(timestamp) {
   const thirtyDays = 1000 * 60 * 60 * 24 * 30;
   const expiryTime = timestamp + thirtyDays;
   return !isValidTimestamp(timestamp) || Date.now() > expiryTime;
+}
+
+export function getChainIcon(chainId) {
+  if (chainId === AVALANCHE) {
+    return icavalanche24;
+  }
+
+  if (chainId === ARBITRUM) {
+    return icarbitrum24;
+  }
+
+  return null;
 }

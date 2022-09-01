@@ -1,12 +1,13 @@
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { useEffect, useState } from "react";
+import { getContract } from "../Addresses";
+import Competition from "./../../abis/Competition.json";
+
+const COMPETITION_INDEX = 0;
 
 export async function checkTeamName(chainId, library, name) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, 500);
-  });
+  const contract = getCompetitionContract(chainId, library);
+  return await contract.validateName(COMPETITION_INDEX, name);
 }
 
 export function useCompetitionTimes(chainId, library) {
@@ -45,7 +46,7 @@ export function useTeamLeaderboardStats(chainId, library) {
             id: "0x0000",
             rank: 1,
             label: "Morazzela",
-            pnl: BigNumber.from("100000000000000000000000000000000000"),
+            realizedPnl: BigNumber.from("100000000000000000000000000000000000").toString(),
           },
         ]);
       }, 1000);
@@ -55,4 +56,32 @@ export function useTeamLeaderboardStats(chainId, library) {
   }, [setStats]);
 
   return stats;
+}
+
+export function useTeam(chainId, library) {
+  const [team, setTeam] = useState(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setTeam({
+        leader: "000",
+        name: "Morazzela",
+        rank: 1,
+        realizedPnl: BigNumber.from("142029000000000000000000000000000000").toString(),
+        members: [
+          {
+            id: "0x001",
+          },
+        ],
+        positions: [],
+      });
+    }, 1000);
+  }, [setTeam]);
+
+  return team;
+}
+
+function getCompetitionContract(chainId, library) {
+  const address = getContract("Competition", chainId);
+  return new ethers.Contract(address, Competition.abi, library.getSigner());
 }

@@ -112,6 +112,7 @@ import { REDIRECT_POPUP_TIMESTAMP_KEY } from "./utils/constants";
 import Jobs from "./views/Jobs/Jobs";
 import Leaderboard from "./views/Leaderboard/Leaderboard";
 import RegisterTeam from "./views/Leaderboard/RegisterTeam";
+import Team from "./views/Leaderboard/Team";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -845,6 +846,9 @@ function FullApp() {
               </Route>
               <Route exact path="/leaderboard">
                 <Leaderboard />
+              </Route>
+              <Route exact path="/leaderboard/team/:address">
+                <Team />
               </Route>
               <Route exact path="/leaderboard/register-team">
                 <RegisterTeam connectWallet={connectWallet} />

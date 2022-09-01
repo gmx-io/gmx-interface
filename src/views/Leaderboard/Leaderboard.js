@@ -2,7 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useCompetitionTimes, useTeamLeaderboardStats } from "../../Api/leaderboard";
 import SEO from "../../components/Common/SEO";
 import LeaderboardTable from "../../components/Leaderboard/LeaderboardTable";
-import { getPageTitle } from "../../Helpers";
+import { getChainIcon, getPageTitle } from "../../Helpers";
 import Loader from "../../components/Common/Loader";
 import { Link } from "react-router-dom";
 import "./Leaderboard.css";
@@ -13,7 +13,7 @@ export default function Leaderboard() {
   const teamStats = useTeamLeaderboardStats(chainId, library);
 
   const resolveTeamLink = (stat) => {
-    return `/leaderboard/teams/${stat.id}`;
+    return `/leaderboard/team/${stat.id}`;
   };
 
   return (
@@ -21,7 +21,9 @@ export default function Leaderboard() {
       <div className="default-container page-layout Leaderboard">
         <div className="section-title-block">
           <div className="section-title-content">
-            <div className="Page-title">Leaderboard</div>
+            <div className="Page-title">
+              Leaderboard <img src={getChainIcon(chainId)} />
+            </div>
             <div className="Page-description">
               Get fee discounts and earn rebates through the GMX referral program. For more information, please read the
               referral program details.
