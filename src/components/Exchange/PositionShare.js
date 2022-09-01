@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Trans } from "@lingui/macro";
 import { toJpeg } from "html-to-image";
 import cx from "classnames";
 import { BiCopy } from "react-icons/bi";
@@ -16,10 +17,10 @@ import {
   getTwitterIntentURL,
   helperToast,
   USD_DECIMALS,
-} from "../../Helpers";
-import { useAffiliateCodes } from "../../Api/referrals";
+} from "../../lib/legacy";
+import { useAffiliateCodes } from "../../domain/referrals";
 import SpinningLoader from "../Common/SpinningLoader";
-import useLoadImage from "../../hooks/useLoadImage";
+import useLoadImage from "../../lib/useLoadImage";
 import shareBgImg from "../../img/position-share-bg.png";
 
 const ROOT_SHARE_URL = getRootShareApiUrl();
@@ -104,11 +105,11 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
       <div className="actions">
         <button disabled={!uploadedImageInfo} className="mr-base App-button-option" onClick={handleCopy}>
           <BiCopy className="icon" />
-          Copy
+          <Trans>Copy</Trans>
         </button>
         <button className="mr-base App-button-option" onClick={handleDownload}>
           <RiFileDownloadLine className="icon" />
-          Download
+          <Trans>Download</Trans>
         </button>
         <div className={cx("tweet-link-container", { disabled: !uploadedImageInfo })}>
           <a
@@ -118,7 +119,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
             href={tweetLink}
           >
             <FiTwitter className="icon" />
-            Tweet
+            <Trans>Tweet</Trans>
           </a>
         </div>
       </div>

@@ -2,16 +2,16 @@ import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useLocalStorage } from "react-use";
-import { checkTeamName } from "../../Api/leaderboard";
-import { REFERRALS_SELECTED_TAB_KEY, useDebounce } from "../../Helpers";
-import { AFFILIATES } from "../../views/Referrals/Referrals";
-import "./../../views/Referrals/Referrals.css";
+import { checkTeamName } from "../../domain/leaderboard";
+import { REFERRALS_SELECTED_TAB_KEY, useDebounce } from "../../lib/legacy";
+import { AFFILIATES_TAB } from "../../domain/referrals";
+import "./../../pages/Referrals/Referrals.css";
 import "./RegisterTeamForm.css";
 
 export default function RegisterTeamForm({ times, connectWallet }) {
   const history = useHistory();
   const { active } = useWeb3React();
-  const [referralActiveTab, setReferralActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, AFFILIATES);
+  const [referralActiveTab, setReferralActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, AFFILIATES_TAB);
 
   // Name
   const [name, setName] = useState("");
@@ -58,8 +58,8 @@ export default function RegisterTeamForm({ times, connectWallet }) {
   };
 
   const handleCreateReferralClick = () => {
-    if (referralActiveTab !== AFFILIATES) {
-      setReferralActiveTab(AFFILIATES);
+    if (referralActiveTab !== AFFILIATES_TAB) {
+      setReferralActiveTab(AFFILIATES_TAB);
     }
 
     history.push("/referrals");

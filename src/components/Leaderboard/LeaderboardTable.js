@@ -1,6 +1,6 @@
 import { useHistory } from "react-router-dom";
-import { formatAmount, USD_DECIMALS } from "../../Helpers";
-import "./../../views/Exchange/Exchange.css";
+import { formatAmount, USD_DECIMALS } from "../../lib/legacy";
+import "./../../pages/Exchange/Exchange.css";
 import "./LeaderboardTable.css";
 
 export default function LeaderboardTable({ resolveLink, stats }) {
