@@ -6,7 +6,8 @@
     "ru",
     "ja",
     "en",
-    "fr"
+    "fr",
+    "pseudo"
   ],
   "sourceLocale": "en",
   "catalogs": [
@@ -17,5 +18,13 @@
       ]
     }
   ],
-  "format": "po"
+  "formatOptions": {
+    "lineNumbers": false
+  },
+  "fallbackLocales": {
+    "default": "en"
+  },
+  "format": "po",
+  "orderBy": "messageId",
+  "pseudoLocale": "pseudo"
 }

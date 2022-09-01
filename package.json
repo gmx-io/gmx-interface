@@ -63,9 +63,10 @@
     "lint": "node node_modules/.bin/eslint src",
     "pre-commit": "npm run test -- --watchAll=false && npm run lint",
     "prepare": "husky install && yarn lingui:prepare",
-    "extract": "NODE_ENV=development lingui extract",
-    "compile": "lingui compile",
-    "lingui:prepare": "yarn extract && yarn compile"
+    "lingui:extract": "NODE_ENV=development lingui extract",
+    "lingui:compile": "lingui compile",
+    "lingui:pseudo": "lingui extract --locale pseudo && lingui compile",
+    "lingui:prepare": "yarn lingui:extract && yarn lingui:compile"
   },
   "eslintConfig": {
     "extends": [
