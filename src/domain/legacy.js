@@ -1071,9 +1071,10 @@ export async function callContract(chainId, contract, method, params, opts) {
       </div>
     );
     if (opts.setPendingTxns) {
+      const message = opts.hideSuccessMsg ? undefined : opts.successMsg || "Transaction completed!";
       const pendingTxn = {
         hash: res.hash,
-        message: opts.successMsg || "Transaction completed!",
+        message,
       };
       opts.setPendingTxns((pendingTxns) => [...pendingTxns, pendingTxn]);
     }
