@@ -1,7 +1,7 @@
 import cx from "classnames";
 import "./Button.css";
 
-export function ButtonWithExternalLink({ href, imgSrc, children, className, size = "lg", align = "center", ...rest }) {
+export default function Button({ href, imgSrc, children, className, size = "lg", align = "center", ...rest }) {
   let classNames = cx("btn btn-primary", align === "left" ? "btn-left" : "btn-center", `btn-${size}`, className);
 
   return (
