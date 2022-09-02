@@ -17,10 +17,10 @@ import {
   getTwitterIntentURL,
   helperToast,
   USD_DECIMALS,
-} from "../../Helpers";
-import { useAffiliateCodes } from "../../Api/referrals";
+} from "../../lib/legacy";
+import { useAffiliateCodes } from "../../domain/referrals";
 import SpinningLoader from "../Common/SpinningLoader";
-import useLoadImage from "../../hooks/useLoadImage";
+import useLoadImage from "../../lib/useLoadImage";
 import shareBgImg from "../../img/position-share-bg.png";
 
 const ROOT_SHARE_URL = getRootShareApiUrl();

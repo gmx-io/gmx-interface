@@ -224,6 +224,38 @@
   margin-left: 0.8rem;
 }
 
+.AppOrder-ball-container {
+  position: relative;
+  z-index: 2;
+}
+
+.AppOrder-ball-icon {
+  text-align: center;
+  display: block;
+  font-size: 2.325rem;
+  opacity: 0.7;
+}
+
+.AppOrder-ball {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 3.565rem;
+  height: 3.565rem;
+  left: 50%;
+  margin-left: -1.7825rem;
+  top: -2.2rem;
+  border-radius: 3.1rem;
+  user-select: none;
+  background: linear-gradient(90deg, rgba(45,66,252,1) 0%, rgba(46,61,205,1) 100%);
+  cursor: pointer;
+  opacity: 0.85;
+}
+.AppOrder-ball:hover {
+  opacity: 1;
+}
+
 @media (max-width: 900px) {
   .GlpSwap-content {
     flex-wrap: wrap;

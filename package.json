@@ -101,6 +101,7 @@
   },
   "lint-staged": {
     "**/*.js?(x)": [
+      "eslint --fix ./src",
       "prettier --write"
     ]
   },

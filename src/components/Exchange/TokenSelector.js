@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import cx from "classnames";
 
-import { formatAmount, expandDecimals, bigNumberify } from "../../Helpers";
+import { formatAmount, expandDecimals, bigNumberify } from "../../lib/legacy";
 
-import { getToken } from "../../data/Tokens";
+import { getToken } from "../../config/Tokens";
 
 import { BiChevronDown } from "react-icons/bi";
 
