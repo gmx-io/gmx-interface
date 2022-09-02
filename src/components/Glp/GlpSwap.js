@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
@@ -64,6 +64,7 @@ import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
 import AssetDropdown from "../../views/Dashboard/AssetDropdown";
+import Modal from "../Modal/Modal";
 
 const { AddressZero } = ethers.constants;
 
@@ -91,7 +92,14 @@ function getStakingData(stakingInfo) {
 }
 
 export default function GlpSwap(props) {
-  const { savedSlippageAmount, isBuying, setPendingTxns, connectWallet, setIsBuying } = props;
+  const {
+    savedSlippageAmount,
+    isBuying,
+    setPendingTxns,
+    connectWallet,
+    setIsBuying,
+    savedShouldDisableOrderValidation,
+  } = props;
   const history = useHistory();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
@@ -114,6 +122,7 @@ export default function GlpSwap(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [anchorOnSwapAmount, setAnchorOnSwapAmount] = useState(true);
   const [feeBasisPoints, setFeeBasisPoints] = useState("");
+  const [modalError, setModalError] = useState(false);
 
   const readerAddress = getContract(chainId, "Reader");
   const rewardReaderAddress = getContract(chainId, "RewardReader");
@@ -432,7 +441,13 @@ export default function GlpSwap(props) {
 
     if (isBuying) {
       const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
-      if (swapTokenInfo && swapTokenInfo.balance && swapAmount && swapAmount.gt(swapTokenInfo.balance)) {
+      if (
+        !savedShouldDisableOrderValidation &&
+        swapTokenInfo &&
+        swapTokenInfo.balance &&
+        swapAmount &&
+        swapAmount.gt(swapTokenInfo.balance)
+      ) {
         return [t`Insufficient ${swapTokenInfo.symbol} balance`];
       }
 
@@ -463,6 +478,23 @@ export default function GlpSwap(props) {
 
     return [false];
   };
+
+  const renderErrorModal = useCallback(() => {
+    const inputCurrency = swapToken.address;
+    const oneInchUrl = `https://app.1inch.io/#/${chainId}/swap/${inputCurrency}`;
+    const label = `${swapToken.symbol} Capacity Reached`;
+    return (
+      <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal">
+        <p>The pool's capacity has been reached for {swapToken.symbol}. Please use another token to buy GLP.</p>
+        <p>Check the "Save on Fees" section for tokens with the lowest fees.</p>
+        <p>
+          <a href={oneInchUrl} target="_blank" rel="noreferrer">
+            Swap {swapToken.symbol} on 1inch
+          </a>
+        </p>
+      </Modal>
+    );
+  }, [modalError, setModalError, swapToken.symbol, swapToken.address, chainId]);
 
   const isPrimaryEnabled = () => {
     if (IS_NETWORK_DISABLED[chainId]) {
@@ -604,6 +636,7 @@ export default function GlpSwap(props) {
     const [, modal] = getError();
 
     if (modal) {
+      setModalError(true);
       return;
     }
 
@@ -658,6 +691,7 @@ export default function GlpSwap(props) {
 
   return (
     <div className="GlpSwap">
+      {renderErrorModal()}
       {/* <div className="Page-title-section">
         <div className="Page-title">{isBuying ? "Buy GLP" : "Sell GLP"}</div>
         {isBuying && <div className="Page-description">
