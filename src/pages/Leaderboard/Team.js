@@ -1,5 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import { useTeam } from "../../domain/leaderboard";
 import SEO from "../../components/Common/SEO";
 import { formatAmount, getChainIcon, getPageTitle, USD_DECIMALS } from "../../lib/legacy";
