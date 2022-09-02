@@ -2,8 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "regenerator-runtime/runtime";
 import { BrowserRouter as Router } from "react-router-dom";
-import "./index.css";
-import App from "./App";
+import App from "./App/App";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(

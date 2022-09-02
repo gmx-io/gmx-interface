@@ -23,7 +23,7 @@ import {
   SHORT,
   INCREASE,
   DECREASE,
-} from "../../Helpers";
+} from "../../lib/legacy";
 import PositionShare from "./PositionShare";
 import PositionDropdown from "./PositionDropdown";
 

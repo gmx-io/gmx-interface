@@ -44,10 +44,10 @@ import {
   adjustForDecimals,
   IS_NETWORK_DISABLED,
   getChainName,
-} from "../../Helpers";
-import { getConstant } from "../../Constants";
-import { createDecreaseOrder, callContract, useHasOutdatedUi } from "../../Api";
-import { getContract } from "../../Addresses";
+} from "../../lib/legacy";
+import { getConstant } from "../../config/chains";
+import { createDecreaseOrder, callContract, useHasOutdatedUi } from "../../domain/legacy";
+import { getContract } from "../../config/Addresses";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Checkbox from "../Checkbox/Checkbox";
 import Tab from "../Tab/Tab";
@@ -55,7 +55,7 @@ import Modal from "../Modal/Modal";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import Tooltip from "../Tooltip/Tooltip";
 import TokenSelector from "./TokenSelector";
-import { getTokens } from "../../data/Tokens";
+import { getTokens } from "../../config/Tokens";
 import "./PositionSeller.css";
 
 const { AddressZero } = ethers.constants;
