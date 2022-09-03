@@ -2848,6 +2848,4 @@ export function getChainIcon(chainId) {
   if (chainId === ARBITRUM) {
     return icarbitrum24;
   }
-
-  return null;
 }

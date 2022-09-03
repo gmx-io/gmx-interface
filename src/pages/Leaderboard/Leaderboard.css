@@ -3,3 +3,19 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.section-title-block-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.Leaderboard-tabs {
+  width: 25%;
+  margin-bottom: 2.5rem;
+}
+
+.Leaderboard-tabs-container {
+  display: flex;
+  justify-content: center;
+}

@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 // import { useParams } from "react-router-dom";
-import { useTeam } from "../../domain/leaderboard";
+import { useTeam } from "../../domain/leaderboard/contracts";
 import SEO from "../../components/Common/SEO";
 import { formatAmount, getChainIcon, getPageTitle, USD_DECIMALS } from "../../lib/legacy";
 import Loader from "./../../components/Common/Loader";
@@ -9,7 +9,7 @@ import "./../Referrals/Referrals.css";
 export default function Team() {
   // const params = useParams();
   const { chainId, library } = useWeb3React();
-  const team = useTeam(chainId, library);
+  const { data: team, loading } = useTeam(chainId, library);
 
   return (
     <SEO title={getPageTitle("Leaderboard")}>
@@ -25,12 +25,12 @@ export default function Team() {
             </div>
           </div>
         </div>
-        {!team ? (
+        {loading ? (
           <Loader />
         ) : (
           <>
             <div className="referral-body-container">
-              <div class="referral-stats">
+              <div className="referral-stats">
                 <div className="info-card">
                   <div className="card-details">
                     <h3 className="label">Competition Rank</h3>
@@ -53,8 +53,8 @@ export default function Team() {
                 </div>
               </div>
             </div>
-            <div class="Tab-title-section">
-              <div class="Page-title">
+            <div className="Tab-title-section">
+              <div className="Page-title">
                 Positions <img alt="Chain Icon" src={getChainIcon(chainId)} />
               </div>
               <div className="Page-description">Platform and GLP index tokens.</div>
@@ -69,7 +69,7 @@ export default function Team() {
                 </tr>
                 {!team || team.positions.length === 0 ? (
                   <tr>
-                    <td colSpan="4">No open positions</td>
+                    <td colSpan={4}>No open positions</td>
                   </tr>
                 ) : (
                   ""

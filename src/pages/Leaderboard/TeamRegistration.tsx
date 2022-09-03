@@ -1,13 +1,15 @@
 import SEO from "../../components/Common/SEO";
 import { getPageTitle } from "../../lib/legacy";
-import { useCompetitionTimes } from "../../domain/leaderboard";
+import { useCompetitionDetails } from "../../domain/leaderboard/contracts";
 import { useWeb3React } from "@web3-react/core";
-import Loader from "./../../components/Common/Loader";
-import RegisterTeamForm from "../../components/Leaderboard/RegisterTeamForm";
+import Loader from "../../components/Common/Loader";
+import TeamRegistrationForm from "../../components/Leaderboard/TeamRegistrationForm";
+import { useParams } from "react-router-dom";
 
-export default function RegisterTeam({ connectWallet }) {
+export default function TeamRegistration({ connectWallet }) {
   const { chainId, library } = useWeb3React();
-  const times = useCompetitionTimes(chainId, library);
+  const params = useParams<any>();
+  const { data: times, loading } = useCompetitionDetails(chainId, library, params.competitionIndex);
 
   return (
     <SEO title={getPageTitle("Team Registration")}>
@@ -21,7 +23,7 @@ export default function RegisterTeam({ connectWallet }) {
             </div>
           </div>
         </div>
-        {!times ? <Loader /> : <RegisterTeamForm connectWallet={connectWallet} times={times} />}
+        {loading ? <Loader /> : <TeamRegistrationForm competitionIndex={params.competitionIndex} connectWallet={connectWallet} times={times} />}
       </div>
     </SEO>
   );

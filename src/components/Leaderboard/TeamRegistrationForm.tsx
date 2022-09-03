@@ -2,15 +2,15 @@ import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useLocalStorage } from "react-use";
-import { checkTeamName } from "../../domain/leaderboard";
+import { checkTeamName } from "../../domain/leaderboard/contracts";
 import { REFERRALS_SELECTED_TAB_KEY, useDebounce } from "../../lib/legacy";
 import { AFFILIATES_TAB } from "../../domain/referrals";
 import "./../../pages/Referrals/Referrals.css";
-import "./RegisterTeamForm.css";
+import "./TeamRegistrationForm.css";
 
-export default function RegisterTeamForm({ times, connectWallet }) {
+export default function TeamRegistrationForm({ competitionIndex, times, connectWallet }) {
   const history = useHistory();
-  const { active } = useWeb3React();
+  const { active, chainId, library } = useWeb3React();
   const [referralActiveTab, setReferralActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, AFFILIATES_TAB);
 
   // Name
@@ -86,14 +86,14 @@ export default function RegisterTeamForm({ times, connectWallet }) {
 
       setValidatingName(true);
 
-      const teamNameValid = await checkTeamName(debouncedName);
+      const teamNameValid = await checkTeamName(chainId, library, name, competitionIndex);
       setNameAlreadyUsed(!teamNameValid);
 
       setValidatingName(false);
     }
 
     checkName();
-  }, [setValidatingName, setNameAlreadyUsed, debouncedName]);
+  }, [setValidatingName, setNameAlreadyUsed, debouncedName, chainId, competitionIndex, library, name]);
 
   // Referral
   useEffect(() => {

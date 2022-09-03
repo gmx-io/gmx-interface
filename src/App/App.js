@@ -60,7 +60,7 @@ import BeginAccountTransfer from "../pages/BeginAccountTransfer/BeginAccountTran
 import CompleteAccountTransfer from "../pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import Leaderboard from "../pages/Leaderboard/Leaderboard";
 import Team from "../pages/Leaderboard/Team";
-import RegisterTeam from "../pages/Leaderboard/RegisterTeam";
+import TeamRegistration from "../pages/Leaderboard/TeamRegistration";
 
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -512,11 +512,11 @@ function FullApp() {
               <Route exact path="/leaderboard">
                 <Leaderboard />
               </Route>
-              <Route exact path="/leaderboard/team/:address">
+              <Route exact path="/leaderboard/team/:competitionIndex/:address">
                 <Team />
               </Route>
-              <Route exact path="/leaderboard/register-team">
-                <RegisterTeam connectWallet={connectWallet} />
+              <Route exact path="/leaderboard/register-team/:competitionIndex">
+                <TeamRegistration connectWallet={connectWallet} />
               </Route>
               <Route exact path="/referrals/:account">
                 <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
