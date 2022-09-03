@@ -1,5 +1,5 @@
 import SEO from "../../components/Common/SEO";
-import { getPageTitle } from "../../lib/legacy";
+import { getChainIcon, getPageTitle } from "../../lib/legacy";
 import { useCompetitionDetails } from "../../domain/leaderboard/contracts";
 import { useWeb3React } from "@web3-react/core";
 import Loader from "../../components/Common/Loader";
@@ -16,7 +16,9 @@ export default function TeamRegistration({ connectWallet }) {
       <div className="default-container page-layout Leaderboard">
         <div className="section-title-block">
           <div className="section-title-content">
-            <div className="Page-title">Team Registration</div>
+            <div className="Page-title">
+              Team Registration <img src={getChainIcon(chainId)}/>
+              </div>
             <div className="Page-description">
               Get fee discounts and earn rebates through the GMX referral program. For more information, please read the
               referral program details.
