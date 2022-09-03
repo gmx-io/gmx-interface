@@ -1,8 +1,7 @@
-import { BigNumber, ethers } from "ethers";
-import lib from "qrcode.react";
+import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
-import { getContract } from "../../config/Addresses";
-import Competition from "./../../abis/Competition.json";
+// import { getContract } from "../../config/Addresses";
+// import Competition from "./../../abis/Competition.json";
 
 export async function checkTeamName(chainId, library, name, competitionIndex) {
   return true;
@@ -50,7 +49,7 @@ export function useCompetitionDetails(chainId, library, competitionIndex) {
     }
 
     main()
-  }, [chainId, lib]);
+  }, [chainId, ts]);
 
   return { data, loading };
 }
@@ -81,7 +80,7 @@ export function useTeam(chainId, library) {
   return { data, loading };
 }
 
-function getCompetitionContract(chainId, library) {
-  const address = getContract("Competition", chainId);
-  return new ethers.Contract(address, Competition.abi, library.getSigner());
-}
+// function getCompetitionContract(chainId, library) {
+//   const address = getContract("Competition", chainId);
+//   return new ethers.Contract(address, Competition.abi, library.getSigner());
+// }
