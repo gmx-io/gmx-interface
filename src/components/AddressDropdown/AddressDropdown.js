@@ -1,7 +1,7 @@
 import "./AddressDropdown.css";
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
-import { helperToast, shortenAddress, useENS } from "../../Helpers";
+import { helperToast, shortenAddress, useENS } from "../../lib/legacy";
 import { useCopyToClipboard, createBreakpoint } from "react-use";
 import externalLink from "../../img/ic_new_link_16.svg";
 import copy from "../../img/ic_copy_16.svg";

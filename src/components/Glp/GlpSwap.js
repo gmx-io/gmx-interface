@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
@@ -6,8 +6,8 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 import Tab from "../Tab/Tab";
 import cx from "classnames";
-import { getToken, getTokens, getWhitelistedTokens, getWrappedToken, getNativeToken } from "../../data/Tokens";
-import { getContract } from "../../Addresses";
+import { getToken, getTokens, getWhitelistedTokens, getWrappedToken, getNativeToken } from "../../config/Tokens";
+import { getContract } from "../../config/Addresses";
 import {
   helperToast,
   useLocalStorageByChainId,
@@ -38,9 +38,9 @@ import {
   importImage,
   IS_NETWORK_DISABLED,
   getChainName,
-} from "../../Helpers";
+} from "../../lib/legacy";
 
-import { callContract, useGmxPrice, useInfoTokens } from "../../Api";
+import { callContract, useGmxPrice, useInfoTokens } from "../../domain/legacy";
 
 import TokenSelector from "../Exchange/TokenSelector";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
@@ -63,8 +63,8 @@ import avalanche16Icon from "../../img/ic_avalanche_16.svg";
 import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
-import AssetDropdown from "../../views/Dashboard/AssetDropdown";
 import Modal from "../Modal/Modal";
+import AssetDropdown from "../../pages/Dashboard/AssetDropdown";
 
 const { AddressZero } = ethers.constants;
 
@@ -479,12 +479,12 @@ export default function GlpSwap(props) {
     return [false];
   };
 
-  const renderErrorModal = useCallback(() => {
+  function renderErrorModal() {
     const inputCurrency = swapToken.address;
     const oneInchUrl = `https://app.1inch.io/#/${chainId}/swap/${inputCurrency}`;
     const label = `${swapToken.symbol} Capacity Reached`;
     return (
-      <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal">
+      <Modal isVisible={Boolean(modalError)} setIsVisible={setModalError} label={label} className="Error-modal">
         <p>The pool's capacity has been reached for {swapToken.symbol}. Please use another token to buy GLP.</p>
         <p>Check the "Save on Fees" section for tokens with the lowest fees.</p>
         <p>
@@ -494,7 +494,7 @@ export default function GlpSwap(props) {
         </p>
       </Modal>
     );
-  }, [modalError, setModalError, swapToken.symbol, swapToken.address, chainId]);
+  }
 
   const isPrimaryEnabled = () => {
     if (IS_NETWORK_DISABLED[chainId]) {
