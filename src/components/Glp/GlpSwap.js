@@ -98,7 +98,7 @@ export default function GlpSwap(props) {
     setPendingTxns,
     connectWallet,
     setIsBuying,
-    savedShouldDisableOrderValidation,
+    savedShouldDisableValidationForTesting,
   } = props;
   const history = useHistory();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
@@ -442,7 +442,7 @@ export default function GlpSwap(props) {
     if (isBuying) {
       const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
       if (
-        !savedShouldDisableOrderValidation &&
+        !savedShouldDisableValidationForTesting &&
         swapTokenInfo &&
         swapTokenInfo.balance &&
         swapAmount &&

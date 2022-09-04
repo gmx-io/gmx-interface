@@ -166,7 +166,7 @@ export default function SwapBox(props) {
     setIsWaitingForPositionRouterApproval,
     isPluginApproving,
     isPositionRouterApproving,
-    savedShouldDisableOrderValidation,
+    savedShouldDisableValidationForTesting,
     minExecutionFee,
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
@@ -885,7 +885,7 @@ export default function SwapBox(props) {
       return [t`Max leverage: 30.5x`];
     }
 
-    if (!isMarketOrder && entryMarkPrice && triggerPriceUsd && !savedShouldDisableOrderValidation) {
+    if (!isMarketOrder && entryMarkPrice && triggerPriceUsd && !savedShouldDisableValidationForTesting) {
       if (isLong && entryMarkPrice.lt(triggerPriceUsd)) {
         return [t`Price above Mark Price`];
       }

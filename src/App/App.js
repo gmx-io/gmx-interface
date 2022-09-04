@@ -261,7 +261,7 @@ function FullApp() {
   );
   const [slippageAmount, setSlippageAmount] = useState(0);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
-  const [shouldDisableOrderValidation, setShouldDisableOrderValidation] = useState(false);
+  const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
   const [showPnlAfterFees, setShowPnlAfterFees] = useState(false);
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
@@ -273,10 +273,8 @@ function FullApp() {
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
     false
   );
-  const [savedShouldDisableOrderValidation, setSavedShouldDisableOrderValidation] = useLocalStorageSerializeKey(
-    [chainId, DISABLE_ORDER_VALIDATION_KEY],
-    false
-  );
+  const [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] =
+    useLocalStorageSerializeKey([chainId, DISABLE_ORDER_VALIDATION_KEY], false);
 
   const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
     [chainId, SHOULD_SHOW_POSITION_LINES_KEY],
@@ -288,7 +286,7 @@ function FullApp() {
     setSlippageAmount((slippage / BASIS_POINTS_DIVISOR) * 100);
     setIsPnlInLeverage(savedIsPnlInLeverage);
     setShowPnlAfterFees(savedShowPnlAfterFees);
-    setShouldDisableOrderValidation(savedShouldDisableOrderValidation);
+    setShouldDisableValidationForTesting(savedShouldDisableValidationForTesting);
     setIsSettingsVisible(true);
   };
 
@@ -311,7 +309,7 @@ function FullApp() {
 
     setSavedIsPnlInLeverage(isPnlInLeverage);
     setSavedShowPnlAfterFees(showPnlAfterFees);
-    setSavedShouldDisableOrderValidation(shouldDisableOrderValidation);
+    setSavedShouldDisableValidationForTesting(shouldDisableValidationForTesting);
     setSavedSlippageAmount(basisPoints);
     setIsSettingsVisible(false);
   };
@@ -471,7 +469,7 @@ function FullApp() {
                   savedShouldShowPositionLines={savedShouldShowPositionLines}
                   setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                   connectWallet={connectWallet}
-                  savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
+                  savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
                 />
               </Route>
               <Route exact path="/dashboard">
@@ -492,7 +490,7 @@ function FullApp() {
                   savedSlippageAmount={savedSlippageAmount}
                   setPendingTxns={setPendingTxns}
                   connectWallet={connectWallet}
-                  savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
+                  savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
                 />
               </Route>
               <Route exact path="/jobs">
@@ -620,7 +618,7 @@ function FullApp() {
         </div>
         {isDevelopment() && (
           <div className="Exchange-settings-row">
-            <Checkbox isChecked={shouldDisableOrderValidation} setIsChecked={setShouldDisableOrderValidation}>
+            <Checkbox isChecked={shouldDisableValidationForTesting} setIsChecked={setShouldDisableValidationForTesting}>
               <Trans>Disable order validations</Trans>
             </Checkbox>
           </div>
