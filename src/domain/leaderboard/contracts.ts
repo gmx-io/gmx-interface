@@ -5,11 +5,8 @@ import { getContract } from "../../config/Addresses";
 import Competition from "./../../abis/Competition.json";
 
 export async function checkTeamName(chainId, library, name, competitionIndex) {
-  return await new Promise(resolve => {
-    setTimeout(() => {
-      resolve(true)
-    }, 1500)
-  })
+  const contract = getCompetitionContract(chainId, library)
+  return await contract.validateName(competitionIndex, name)
 }
 
 export function useCompetitionDetails(chainId, library, competitionIndex) {
@@ -91,6 +88,6 @@ export function createTeam(chainId, library, competitionIndex, name, opts) {
 }
 
 function getCompetitionContract(chainId, library) {
-  const address = getContract("Competition", chainId);
+  const address = getContract(chainId, "Competition");
   return new ethers.Contract(address, Competition.abi, library.getSigner());
 }
