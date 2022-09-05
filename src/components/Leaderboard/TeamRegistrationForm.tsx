@@ -2,13 +2,13 @@ import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { checkTeamName, createTeam } from "../../domain/leaderboard/contracts";
+import { getTeamUrl } from "../../domain/leaderboard/urls";
 import { useDebounce } from "../../lib/legacy";
 import "./TeamRegistrationForm.css";
 
 export default function TeamRegistrationForm({ competitionIndex, times, connectWallet, pendingTxns, setPendingTxns }) {
   const history = useHistory();
   const { active, chainId, library, account } = useWeb3React();
-  // const [referralActiveTab, setReferralActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, AFFILIATES_TAB);
   const [isProcessing, setIsProcessing] = useState(false)
   const [name, setName] = useState("");
   const debouncedName = useDebounce(name, 300);
@@ -47,7 +47,8 @@ export default function TeamRegistrationForm({ competitionIndex, times, connectW
     );
   };
 
-  const handleFormSubmit = async () => {
+  const handleFormSubmit = async (event) => {
+    event.preventDefault()
     setIsProcessing(true)
 
     try {
@@ -62,7 +63,7 @@ export default function TeamRegistrationForm({ competitionIndex, times, connectW
       const receipt = await tx.wait()
 
       if (receipt.status === 1) {
-        return history.push(`/leaderboard/team/${competitionIndex}/${account}`)
+        return history.replace(getTeamUrl(account))
       }
     } catch (err) {
       console.error(err)
@@ -81,14 +82,14 @@ export default function TeamRegistrationForm({ competitionIndex, times, connectW
 
       setValidatingName(true);
 
-      const teamNameValid = await checkTeamName(chainId, library, name, competitionIndex);
+      const teamNameValid = await checkTeamName(chainId, library, debouncedName, competitionIndex);
       setNameAlreadyUsed(!teamNameValid);
 
       setValidatingName(false);
     }
 
     checkName();
-  }, [setValidatingName, setNameAlreadyUsed, debouncedName, chainId, competitionIndex, library, name]);
+  }, [setValidatingName, setNameAlreadyUsed, debouncedName, chainId, competitionIndex, library]);
 
   // Referral
   // useEffect(() => {

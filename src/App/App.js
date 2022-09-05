@@ -514,10 +514,10 @@ function FullApp() {
               <Route exact path="/leaderboard">
                 <Leaderboard />
               </Route>
-              <Route exact path="/leaderboard/team/:competitionIndex/:address">
+              <Route exact path="/leaderboard/team/:leaderAddress">
                 <Team />
               </Route>
-              <Route exact path="/leaderboard/register-team/:competitionIndex">
+              <Route exact path="/leaderboard/register-team">
                 <TeamRegistration
                   pendingTxns={pendingTxns}
                   connectWallet={connectWallet}

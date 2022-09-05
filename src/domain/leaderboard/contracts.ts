@@ -3,8 +3,13 @@ import { useEffect, useState } from "react";
 import { callContract } from "../legacy";
 import { getContract } from "../../config/Addresses";
 import Competition from "./../../abis/Competition.json";
+import { isAddressZero } from "../../lib/legacy";
 
 export async function checkTeamName(chainId, library, name, competitionIndex) {
+  if (!chainId || !library) {
+    return false
+  }
+
   const contract = getCompetitionContract(chainId, library)
   return await contract.validateName(competitionIndex, name)
 }
@@ -24,62 +29,109 @@ export function useCompetitionDetails(chainId, library, competitionIndex) {
     active: false,
   });
 
-  const ts = Math.round(Date.now() / 1000);
-
   useEffect(() => {
     async function main() {
-      // const contract = getCompetitionContract(chainId, library);
-      // const res = await contract.competitions(competitionIndex);
+      if (!chainId || !library) {
+        return
+      }
 
-      // setData({
-      //   start: res.start,
-      //   end: res.end,
-      //   registrationActive: res.start > ts,
-      //   active: res.start <= ts && res.end > ts,
-      // })
+      const ts = Math.round(Date.now() / 1000);
 
-      setTimeout(() => {
-        setData({
-          start: ts + 0,
-          end: ts + 60,
-          registrationActive: true,
-          active: false,
-        })
-        setLoading(false)
-      }, 1000)
+      const contract = getCompetitionContract(chainId, library);
+      const { start, end } = await contract.competitions(competitionIndex);
 
+      setData({
+        start: start.toNumber(),
+        end: end.toNumber(),
+        registrationActive: start.gt(ts),
+        active: start.lte(ts) && end.gt(ts),
+      })
+
+      setLoading(false)
     }
 
     main()
-  }, [chainId, ts]);
+  }, [chainId, library, competitionIndex]);
 
   return { data, loading };
 }
 
-export function useTeam(chainId, library) {
-  const [loading, setLoading] = useState(true);
+export function useTeam(chainId, library, competitionIndex, leaderAddress) {
   const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => {
+    async function main() {
+      if (!chainId || !library) {
+        return
+      }
+
+      const contract = getCompetitionContract(chainId, library)
+
+      const team = await contract.getTeam(competitionIndex, leaderAddress)
+
+      let members: Array<any> = []
+      let i = 0
+      while (true) {
+        let tmpMembers = await contract.getTeamMembers(competitionIndex, leaderAddress, i * 50, (i + 1) * 50)
+
+        tmpMembers = tmpMembers.filter(member => !isAddressZero(member))
+        tmpMembers.forEach(member => { members.push(member) })
+
+        if (tmpMembers.length < 50) {
+          break
+        }
+
+        i++
+      }
+
       setData({
-        leader: "000",
-        name: "Morazzela",
         rank: 1,
-        realizedPnl: BigNumber.from("142029000000000000000000000000000000").toString(),
-        members: [
-          {
-            id: "0x001",
-          },
-        ],
-        positions: [],
-      });
+        realizedPnl: BigNumber.from("100000000000000000000000000000000000"),
+        leaderAddress: team.leaderAddress,
+        name: team.name,
+        members: members,
+        positions: []
+      })
 
       setLoading(false)
-    }, 1000);
-  }, [setData]);
+    }
+
+    main()
+  }, [chainId, library, leaderAddress, competitionIndex]);
 
   return { data, loading };
+}
+
+export function useUserTeam(chainId, library, competitionIndex, leaderAddress) {
+  const [data, setData] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function main () {
+      if (!leaderAddress) {
+        return setLoading(false)
+      }
+
+      const contract = getCompetitionContract(chainId, library)
+      const team = await contract.getTeam(competitionIndex, leaderAddress)
+
+      if (isAddressZero(team.leaderAddress)) {
+        return setLoading(false)
+      }
+
+      setData({
+        leader: team.leaderAddress,
+        name: team.name,
+      })
+
+      setLoading(false)
+    }
+
+    main()
+  }, [chainId, library, competitionIndex, leaderAddress])
+
+  return { data, loading }
 }
 
 export function createTeam(chainId, library, competitionIndex, name, opts) {

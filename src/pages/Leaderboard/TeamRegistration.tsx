@@ -4,12 +4,11 @@ import { useCompetitionDetails } from "../../domain/leaderboard/contracts";
 import { useWeb3React } from "@web3-react/core";
 import Loader from "../../components/Common/Loader";
 import TeamRegistrationForm from "../../components/Leaderboard/TeamRegistrationForm";
-import { useParams } from "react-router-dom";
+import { CURRENT_COMPETITION_INDEX } from "../../domain/leaderboard/constants";
 
 export default function TeamRegistration({ connectWallet, setPendingTxns, pendingTxns }) {
   const { chainId, library } = useWeb3React();
-  const params = useParams<any>();
-  const { data: times, loading } = useCompetitionDetails(chainId, library, params.competitionIndex);
+  const { data: times, loading } = useCompetitionDetails(chainId, library, CURRENT_COMPETITION_INDEX);
 
   return (
     <SEO title={getPageTitle("Team Registration")}>
@@ -27,7 +26,7 @@ export default function TeamRegistration({ connectWallet, setPendingTxns, pendin
         </div>
         {loading ? <Loader /> : <TeamRegistrationForm
           pendingTxns={pendingTxns}
-          competitionIndex={params.competitionIndex}
+          competitionIndex={CURRENT_COMPETITION_INDEX}
           connectWallet={connectWallet}
           times={times}
           setPendingTxns={setPendingTxns}
