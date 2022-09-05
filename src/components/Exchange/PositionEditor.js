@@ -23,17 +23,18 @@ import {
   approveTokens,
   IS_NETWORK_DISABLED,
   getChainName,
-} from "../../Helpers";
-import { getContract } from "../../Addresses";
+} from "../../lib/legacy";
+import { getContract } from "../../config/Addresses";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
-import { callContract } from "../../Api";
+import { callContract } from "../../domain/legacy";
 
 import PositionRouter from "../../abis/PositionRouter.json";
 import Token from "../../abis/Token.json";
 import Tooltip from "../Tooltip/Tooltip";
-import { getConstant } from "../../Constants";
 import { TooltipCardRow } from "../Tooltip/TooltipCard";
+
+import { getConstant } from "../../config/chains";
 
 const DEPOSIT = t`Deposit`;
 const WITHDRAW = t`Withdraw`;

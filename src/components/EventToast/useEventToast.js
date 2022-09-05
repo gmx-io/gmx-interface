@@ -4,7 +4,7 @@ import { homeEventsData, appEventsData } from "../../config/events";
 import { useEffect } from "react";
 import EventToast from "./EventToast";
 import { isFuture, parse } from "date-fns";
-import { isHomeSite } from "../../Helpers";
+import { isHomeSite } from "../../lib/legacy";
 
 function useEventToast() {
   const isHome = isHomeSite();

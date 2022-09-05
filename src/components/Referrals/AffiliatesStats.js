@@ -6,7 +6,7 @@ import { IoWarningOutline } from "react-icons/io5";
 import { BiCopy, BiErrorCircle } from "react-icons/bi";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
-import { getNativeToken, getToken } from "../../data/Tokens";
+import { getNativeToken, getToken } from "../../config/Tokens";
 import {
   AVALANCHE,
   bigNumberify,
@@ -16,7 +16,7 @@ import {
   helperToast,
   REFERRAL_CODE_QUERY_PARAM,
   shortenAddress,
-} from "../../Helpers";
+} from "../../lib/legacy";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import {

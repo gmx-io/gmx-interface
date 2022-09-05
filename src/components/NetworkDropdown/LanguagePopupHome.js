@@ -5,8 +5,8 @@ import cx from "classnames";
 import "./NetworkDropdown.css";
 import language24Icon from "../../img/ic_language24.svg";
 import checkedIcon from "../../img/ic_checked.svg";
-import { importImage, isHomeSite, LANGUAGE_LOCALSTORAGE_KEY } from "../../Helpers";
-import { defaultLocale, dynamicActivate, locales } from "../../utils/i18n";
+import { importImage, isHomeSite, LANGUAGE_LOCALSTORAGE_KEY } from "../../lib/legacy";
+import { defaultLocale, dynamicActivate, locales } from "../../lib/i18n";
 
 export default function LanguagePopupHome() {
   const currentLanguage = useRef(localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale);

@@ -23,8 +23,7 @@ import {
   SHORT,
   INCREASE,
   DECREASE,
-} from "../../Helpers";
-
+} from "../../lib/legacy";
 import { TooltipCardRow } from "../Tooltip/TooltipCard";
 import PositionShare from "./PositionShare";
 import PositionDropdown from "./PositionDropdown";

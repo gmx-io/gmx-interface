@@ -27,7 +27,7 @@ export default function Button({ href, imgSrc, children, onClick, className, siz
   );
 }
 
-export function ConnectWalletButton({ imgSrc, children, onClick, className }) {
+export function ConnectWalletButton({ imgSrc, children, onClick, className = undefined }) {
   let classNames = cx("btn btn-primary btn-sm connect-wallet", className);
   return (
     <button className={classNames} onClick={onClick}>

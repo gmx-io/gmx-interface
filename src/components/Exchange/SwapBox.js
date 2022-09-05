@@ -62,10 +62,10 @@ import {
   adjustForDecimals,
   IS_NETWORK_DISABLED,
   getChainName,
-} from "../../Helpers";
-import { getConstant } from "../../Constants";
-import * as Api from "../../Api";
-import { getContract } from "../../Addresses";
+} from "../../lib/legacy";
+import { getConstant } from "../../config/chains";
+import * as Api from "../../domain/legacy";
+import { getContract } from "../../config/Addresses";
 
 import Checkbox from "../Checkbox/Checkbox";
 import Tab from "../Tab/Tab";
@@ -74,7 +74,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import ConfirmationBox from "./ConfirmationBox";
 import OrdersToa from "./OrdersToa";
 
-import { getTokens, getWhitelistedTokens, getToken, getTokenBySymbol } from "../../data/Tokens";
+import { getTokens, getWhitelistedTokens, getToken, getTokenBySymbol } from "../../config/Tokens";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Router from "../../abis/Router.json";
 import Token from "../../abis/Token.json";
@@ -83,8 +83,9 @@ import WETH from "../../abis/WETH.json";
 import longImg from "../../img/long.svg";
 import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
-import { useUserReferralCode } from "../../Api/referrals";
 import { TooltipCardRow } from "../Tooltip/TooltipCard";
+
+import { useUserReferralCode } from "../../domain/referrals";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -1593,6 +1594,9 @@ export default function SwapBox(props) {
       sentMsg: `${isLong ? "Long" : "Short"} submitted.`,
       failMsg: `${isLong ? "Long" : "Short"} failed.`,
       successMsg,
+      // for Arbitrum, sometimes the successMsg shows after the position has already been executed
+      // hide the success message for Arbitrum as a workaround
+      hideSuccessMsg: chainId === ARBITRUM,
     })
       .then(async () => {
         setIsConfirming(false);
