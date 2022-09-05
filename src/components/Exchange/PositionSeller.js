@@ -87,6 +87,21 @@ function getTokenAmount(usdAmount, tokenAddress, max, infoTokens) {
   return usdAmount.mul(expandDecimals(1, info.decimals)).div(max ? info.minPrice : info.maxPrice);
 }
 
+function shouldSwap(collateralToken, receiveToken) {
+  // If position collateral is WETH in contract, then position.collateralToken is { symbol: “ETH”, isNative: true, … }
+  // @see https://github.com/gmx-io/gmx-interface/blob/master/src/pages/Exchange/Exchange.js#L162
+  // meaning if collateralToken.isNative === true in reality position has WETH as a collateral
+  // and if collateralToken.isNative === true and receiveToken.isNative === true then position’s WETH will be unwrapped and user will receive native ETH
+  const isCollateralWrapped = collateralToken.isNative;
+
+  const isSameToken =
+    collateralToken.address === receiveToken.address || (isCollateralWrapped && receiveToken.isWrapped);
+
+  const isUnwrap = isCollateralWrapped && receiveToken.isNative;
+
+  return !isSameToken && !isUnwrap;
+}
+
 function getSwapLimits(infoTokens, fromTokenAddress, toTokenAddress) {
   const fromInfo = getTokenInfo(infoTokens, fromTokenAddress);
   const toInfo = getTokenInfo(infoTokens, toTokenAddress);
@@ -175,7 +190,7 @@ export default function PositionSeller(props) {
     `${CLOSE_POSITION_RECEIVE_TOKEN_KEY}-${position?.indexToken?.symbol}-${position.isLong ? "long" : "short"}`
   );
 
-  const [swapToken, setSwapToken] = useState(() =>
+  const [swapToToken, setSwapToToken] = useState(() =>
     savedRecieveTokenAddress ? toTokens.find((token) => token.address === savedRecieveTokenAddress) : undefined
   );
 
@@ -255,7 +270,7 @@ export default function PositionSeller(props) {
 
   const needOrderBookApproval = orderOption === STOP && !orderBookApproved;
 
-  const allowReceiveTokenChange = orderOption === MARKET;
+  const isSwapAllowed = orderOption === MARKET;
 
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
@@ -281,8 +296,8 @@ export default function PositionSeller(props) {
   let convertedReceiveAmount = bigNumberify(0);
   let adjustedDelta = bigNumberify(0);
 
-  let notEnoughReceiveTokenLiquidity;
-  let collateralPoolCapacityExceeded;
+  let isNotEnoughReceiveTokenLiquidity;
+  let isCollateralPoolCapacityExceeded;
 
   let title;
   let fundingFee;
@@ -370,13 +385,10 @@ export default function PositionSeller(props) {
       }
     }
 
-    receiveToken = allowReceiveTokenChange && swapToken ? swapToken : collateralToken;
+    receiveToken = isSwapAllowed && swapToToken ? swapToToken : collateralToken;
 
-    if (allowReceiveTokenChange && swapToken) {
-      const swapTokenInfo = getTokenInfo(infoTokens, swapToken.address);
-
-      notEnoughReceiveTokenLiquidity = swapTokenInfo.availableAmount.lt(convertedReceiveAmount);
-
+    // Calculate swap fees
+    if (isSwapAllowed && swapToToken) {
       const { feeBasisPoints } = getNextToAmount(
         chainId,
         convertedAmount,
@@ -396,11 +408,20 @@ export default function PositionSeller(props) {
         totalFees = totalFees.add(swapFee || bigNumberify(0));
         receiveAmount = receiveAmount.sub(swapFee);
       }
+    }
 
+    convertedReceiveAmount = getTokenAmount(receiveAmount, receiveToken.address, false, infoTokens);
+
+    // Check swap limits (max in / max out)
+    if (isSwapAllowed && shouldSwap(collateralToken, receiveToken)) {
       const collateralInfo = getTokenInfo(infoTokens, collateralToken.address);
+      const receiveTokenInfo = getTokenInfo(infoTokens, receiveToken.address);
+
+      isNotEnoughReceiveTokenLiquidity =
+        receiveTokenInfo.availableAmount.lt(convertedReceiveAmount) ||
+        receiveTokenInfo.bufferAmount.gt(receiveTokenInfo.poolAmount.sub(convertedReceiveAmount));
 
       if (
-        swapToken.address !== collateralToken.address &&
         collateralInfo.maxUsdgAmount &&
         collateralInfo.maxUsdgAmount.gt(0) &&
         collateralInfo.usdgAmount &&
@@ -410,12 +431,10 @@ export default function PositionSeller(props) {
         const nextUsdgAmount = collateralInfo.usdgAmount.add(usdgFromAmount);
 
         if (nextUsdgAmount.gt(collateralInfo.maxUsdgAmount)) {
-          collateralPoolCapacityExceeded = true;
+          isCollateralPoolCapacityExceeded = true;
         }
       }
     }
-
-    convertedReceiveAmount = getTokenAmount(receiveAmount, receiveToken.address, false, infoTokens);
 
     if (isClosing) {
       nextCollateral = bigNumberify(0);
@@ -525,11 +544,11 @@ export default function PositionSeller(props) {
       }
     }
 
-    if (notEnoughReceiveTokenLiquidity) {
+    if (isNotEnoughReceiveTokenLiquidity) {
       return "Insufficient receive token liquidity";
     }
 
-    if (collateralPoolCapacityExceeded) {
+    if (isCollateralPoolCapacityExceeded) {
       return `${collateralToken.symbol} pool exceeded, can only Receive ${collateralToken.symbol}`;
     }
 
@@ -1034,7 +1053,7 @@ export default function PositionSeller(props) {
             </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">
-                <Trans>Collateral</Trans>
+                <Trans>Collateral ({collateralToken.symbol})</Trans>
               </div>
               <div className="align-right">
                 {nextCollateral && !nextCollateral.eq(position.collateral) ? (
@@ -1112,13 +1131,13 @@ export default function PositionSeller(props) {
 
                       {swapFee && (
                         <div className="PositionSeller-fee-item">
-                          Swap fee: {formatAmount(swapFeeToken, collateralToken.decimals, 5)} {collateralToken.symbol}
-                           (${formatAmount(swapFee, USD_DECIMALS, 2, true)})
+                          Swap fee: {formatAmount(swapFeeToken, collateralToken.decimals, 5)} {collateralToken.symbol}
+                          (${formatAmount(swapFee, USD_DECIMALS, 2, true)})
                         </div>
                       )}
 
                       <div className="PositionSeller-fee-item">
-                        Execution fee: {formatAmount(executionFee, 18, 5, true)} {nativeTokenSymbol} ($
+                        Execution fee: {formatAmount(executionFee, 18, 5, true)} {nativeTokenSymbol} ($
                         {formatAmount(executionFeeUsd, USD_DECIMALS, 2)})
                       </div>
 
@@ -1140,32 +1159,36 @@ export default function PositionSeller(props) {
                 <Trans>Receive</Trans>
               </div>
 
-              {!allowReceiveTokenChange && receiveToken && (
+              {!isSwapAllowed && receiveToken && (
                 <div className="align-right PositionSelector-selected-receive-token">
                   {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}&nbsp;{receiveToken.symbol} ($
                   {formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
                 </div>
               )}
 
-              {allowReceiveTokenChange && receiveToken && (
+              {isSwapAllowed && receiveToken && (
                 <div className="align-right">
                   <TokenSelector
                     // Scroll lock lead to side effects
                     // if it applied on modal inside another modal
                     disableBodyScrollLock={true}
                     className={cx("PositionSeller-token-selector", {
-                      warning: notEnoughReceiveTokenLiquidity || collateralPoolCapacityExceeded,
+                      warning: isNotEnoughReceiveTokenLiquidity || isCollateralPoolCapacityExceeded,
                     })}
                     label={"Receive"}
                     showBalances={false}
                     chainId={chainId}
                     tokenAddress={receiveToken.address}
                     onSelectToken={(token) => {
-                      setSwapToken(token);
+                      setSwapToToken(token);
                       setSavedRecieveTokenAddress(token.address);
                     }}
                     tokens={toTokens}
                     getTokenState={(tokenOptionInfo) => {
+                      if (!shouldSwap(collateralToken, tokenOptionInfo)) {
+                        return;
+                      }
+
                       const convertedTokenAmount = getTokenAmount(
                         receiveAmount,
                         tokenOptionInfo.address,
@@ -1173,7 +1196,11 @@ export default function PositionSeller(props) {
                         infoTokens
                       );
 
-                      if (tokenOptionInfo?.availableAmount?.lt(convertedTokenAmount)) {
+                      const isNotEnoughLiquidity =
+                        tokenOptionInfo.availableAmount.lt(convertedTokenAmount) ||
+                        tokenOptionInfo.bufferAmount.gt(tokenOptionInfo.poolAmount.sub(convertedTokenAmount));
+
+                      if (isNotEnoughLiquidity) {
                         const { maxIn, maxOut, maxInUsd, maxOutUsd } = getSwapLimits(
                           infoTokens,
                           collateralToken.address,

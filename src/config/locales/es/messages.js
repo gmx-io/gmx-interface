@@ -126,6 +126,7 @@
     "Coinbase Wallet": "Coinbase Wallet",
     "Coinbase Wallet not detected.": "Coinbase Wallet no detectada.",
     Collateral: "Garantía",
+    "Collateral ({0})": ["Collateral (", ["0"], ")"],
     "Collateral In": "Collateral In",
     "Community Projects": "Proyectos Comunitarios",
     "Community-led Telegram groups.": "Grupos de Telegram dirigidos por la comunidad",
