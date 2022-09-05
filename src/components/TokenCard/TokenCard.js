@@ -12,8 +12,9 @@ import { ARBITRUM, AVALANCHE, switchNetwork, useChainId, isHomeSite } from "../.
 import { useWeb3React } from "@web3-react/core";
 
 import APRLabel from "../APRLabel/APRLabel";
+import { HeaderLink } from "../Header/HeaderLink";
 
-export default function TokenCard({ showRedirectModal, HeaderLink }) {
+export default function TokenCard({ showRedirectModal }) {
   const isHome = isHomeSite();
   const { chainId } = useChainId();
   const { active } = useWeb3React();
