@@ -419,7 +419,9 @@ export default function PositionSeller(props) {
 
       isNotEnoughReceiveTokenLiquidity =
         receiveTokenInfo.availableAmount.lt(convertedReceiveAmount) ||
-        receiveTokenInfo.bufferAmount.gt(receiveTokenInfo.poolAmount.sub(convertedReceiveAmount));
+        receiveTokenInfo.bufferAmount
+          .mul(bigNumberify(10000000))
+          .gt(receiveTokenInfo.poolAmount.sub(convertedReceiveAmount));
 
       if (
         collateralInfo.maxUsdgAmount &&
@@ -1185,7 +1187,7 @@ export default function PositionSeller(props) {
                     }}
                     tokens={toTokens}
                     getTokenState={(tokenOptionInfo) => {
-                      if (!shouldSwap(collateralToken, tokenOptionInfo)) {
+                      if (!shouldSwap(collateralToken, tokenOptionInfo) || !receiveAmount.gt(bigNumberify(0))) {
                         return;
                       }
 
@@ -1198,7 +1200,9 @@ export default function PositionSeller(props) {
 
                       const isNotEnoughLiquidity =
                         tokenOptionInfo.availableAmount.lt(convertedTokenAmount) ||
-                        tokenOptionInfo.bufferAmount.gt(tokenOptionInfo.poolAmount.sub(convertedTokenAmount));
+                        tokenOptionInfo.bufferAmount
+                          .mul(bigNumberify(1000000))
+                          .gt(tokenOptionInfo.poolAmount.sub(convertedTokenAmount));
 
                       if (isNotEnoughLiquidity) {
                         const { maxIn, maxOut, maxInUsd, maxOutUsd } = getSwapLimits(
