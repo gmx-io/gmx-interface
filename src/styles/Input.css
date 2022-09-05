@@ -18,3 +18,23 @@
   width: 100%;
   box-sizing: border-box;
 }
+
+.input-small {
+  padding: .9rem;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper input {
+  width: 100%;
+}
+
+.input-wrapper .input-logo {
+  position: absolute;
+  top: 50%;
+  right: 1.25rem;
+  opacity: .6;
+  transform: translateY(-50%);
+}

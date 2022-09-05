@@ -1,3 +1,7 @@
-.Leaderboard-table tr {
+.leaderboard-table tr:hover  {
   cursor: pointer;
+}
+
+.leaderboard-table tr.simple-table-header:hover  {
+  cursor: inherit;
 }

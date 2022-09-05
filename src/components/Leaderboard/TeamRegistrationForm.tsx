@@ -5,7 +5,6 @@ import { useLocalStorage } from "react-use";
 import { checkTeamName } from "../../domain/leaderboard/contracts";
 import { REFERRALS_SELECTED_TAB_KEY, useDebounce } from "../../lib/legacy";
 import { AFFILIATES_TAB } from "../../domain/referrals";
-import "./../../pages/Referrals/Referrals.css";
 import "./TeamRegistrationForm.css";
 
 export default function TeamRegistrationForm({ competitionIndex, times, connectWallet }) {

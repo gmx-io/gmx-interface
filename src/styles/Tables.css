@@ -1,0 +1,42 @@
+.simple-table {
+  border-collapse: collapse;
+  position: relative;
+  border: 1px solid #1e2136;
+  border-radius: 0.4rem;
+  background: #16182e;
+  font-size: 1.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.simple-table tr {
+  border-bottom: 1px solid #23263b;
+}
+
+.simple-table th, .simple-table td {
+  font-weight: normal;
+  text-align: left;
+  padding: 1.05rem;
+  padding-left: 1.5rem;
+}
+
+.simple-table-header {
+  background: none;
+}
+
+.simple-table-header th {
+  padding-top: 1.4rem;
+  padding-bottom: 1.4rem;
+  opacity: 0.7;
+}
+
+table.simple-table tr:hover {
+  background: linear-gradient(90deg, rgba(30, 34, 61, 1) 0%, rgba(38, 43, 71, 1) 100%);
+  box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
+}
+
+table.simple-table tr.simple-table-header:hover {
+  background: inherit;
+  box-shadow: none;
+}

@@ -53,7 +53,7 @@ export function useTeamsStats(chainId) {
     }
 
     main();
-  }, [setData]);
+  }, [setData, chainId]);
 
   return { data, loading }
 }

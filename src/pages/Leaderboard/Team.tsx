@@ -4,7 +4,6 @@ import { useTeam } from "../../domain/leaderboard/contracts";
 import SEO from "../../components/Common/SEO";
 import { formatAmount, getChainIcon, getPageTitle, USD_DECIMALS } from "../../lib/legacy";
 import Loader from "./../../components/Common/Loader";
-import "./../Referrals/Referrals.css";
 
 export default function Team() {
   // const params = useParams();

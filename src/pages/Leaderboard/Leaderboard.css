@@ -1,9 +1,3 @@
-.Leaderboard-table-actions {
-  margin-bottom: 1.5rem;
-  display: flex;
-  justify-content: flex-end;
-}
-
 .section-title-block-wrapper {
   display: flex;
   align-items: center;
@@ -18,4 +12,6 @@
 .Leaderboard-tabs-container {
   display: flex;
   justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
 }

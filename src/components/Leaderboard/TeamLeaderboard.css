@@ -1,0 +1,10 @@
+.team-leaderboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.team-leaderboard-header .transparent-btn .ml-small {
+  margin-left: 0.775rem;
+}
