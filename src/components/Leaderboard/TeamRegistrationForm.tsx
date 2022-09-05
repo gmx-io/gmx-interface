@@ -1,28 +1,19 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useLocalStorage } from "react-use";
-import { checkTeamName } from "../../domain/leaderboard/contracts";
-import { REFERRALS_SELECTED_TAB_KEY, useDebounce } from "../../lib/legacy";
-import { AFFILIATES_TAB } from "../../domain/referrals";
+import { checkTeamName, createTeam } from "../../domain/leaderboard/contracts";
+import { useDebounce } from "../../lib/legacy";
 import "./TeamRegistrationForm.css";
 
-export default function TeamRegistrationForm({ competitionIndex, times, connectWallet }) {
+export default function TeamRegistrationForm({ competitionIndex, times, connectWallet, pendingTxns, setPendingTxns }) {
   const history = useHistory();
-  const { active, chainId, library } = useWeb3React();
-  const [referralActiveTab, setReferralActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, AFFILIATES_TAB);
-
-  // Name
+  const { active, chainId, library, account } = useWeb3React();
+  // const [referralActiveTab, setReferralActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, AFFILIATES_TAB);
+  const [isProcessing, setIsProcessing] = useState(false)
   const [name, setName] = useState("");
   const debouncedName = useDebounce(name, 300);
   const [nameAlreadyUsed, setNameAlreadyUsed] = useState(false);
   const [validatingName, setValidatingName] = useState(false);
-
-  // Code
-  const [code, setCode] = useState("");
-  const debouncedCode = useDebounce(code, 300);
-  const [codeDoesntExist, setCodeDoesntExist] = useState(false);
-  const [validatingCode, setValidatingCode] = useState(false);
 
   if (!times.registrationActive) {
     history.replace("/leaderboard");
@@ -33,10 +24,6 @@ export default function TeamRegistrationForm({ competitionIndex, times, connectW
       return "Checking team name...";
     }
 
-    if (validatingCode) {
-      return "Checking referral code...";
-    }
-
     if (debouncedName === "") {
       return "Enter Team Name";
     }
@@ -45,35 +32,44 @@ export default function TeamRegistrationForm({ competitionIndex, times, connectW
       return "Team name already registered";
     }
 
-    if (debouncedCode === "") {
-      return "Enter Referral Code";
-    }
-
-    if (codeDoesntExist) {
-      return "This referral code does not exist";
+    if (isProcessing) {
+      return "Creating the team...";
     }
 
     return "Register your team";
-  };
-
-  const handleCreateReferralClick = () => {
-    if (referralActiveTab !== AFFILIATES_TAB) {
-      setReferralActiveTab(AFFILIATES_TAB);
-    }
-
-    history.push("/referrals");
   };
 
   const isFormValid = () => {
     return (
       debouncedName !== "" &&
       !nameAlreadyUsed &&
-      debouncedCode !== "" &&
-      !codeDoesntExist &&
-      !validatingCode &&
       !validatingName
     );
   };
+
+  const handleFormSubmit = async () => {
+    setIsProcessing(true)
+
+    try {
+      const tx = await createTeam(chainId, library, competitionIndex, debouncedName, {
+        successMsg: "Team created!",
+        sentMsg: "Team creation submitted!",
+        failMsg: "Team creation failed.",
+        pendingTxns,
+        setPendingTxns
+      })
+
+      const receipt = await tx.wait()
+
+      if (receipt.status === 1) {
+        return history.push(`/leaderboard/team/${competitionIndex}/${account}`)
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setIsProcessing(false)
+    }
+  }
 
   // Team name check
   useEffect(() => {
@@ -95,20 +91,20 @@ export default function TeamRegistrationForm({ competitionIndex, times, connectW
   }, [setValidatingName, setNameAlreadyUsed, debouncedName, chainId, competitionIndex, library, name]);
 
   // Referral
-  useEffect(() => {
-    async function checkCode() {
-      if (debouncedCode === "") {
-        setValidatingCode(false);
-        return;
-      }
+  // useEffect(() => {
+  //   async function checkCode() {
+  //     if (debouncedCode === "") {
+  //       setValidatingCode(false);
+  //       return;
+  //     }
 
-      setValidatingCode(true);
-      setCodeDoesntExist(true);
-      setValidatingCode(false);
-    }
+  //     setValidatingCode(true);
+  //     setCodeDoesntExist(true);
+  //     setValidatingCode(false);
+  //   }
 
-    checkCode();
-  }, [setValidatingCode, setNameAlreadyUsed, debouncedCode]);
+  //   checkCode();
+  // }, [setValidatingCode, setNameAlreadyUsed, debouncedCode]);
 
   return (
     <div className="referral-card section-center mt-medium">
@@ -121,25 +117,25 @@ export default function TeamRegistrationForm({ competitionIndex, times, connectW
       )}
       {active && (
         <div className="card-action">
-          <form>
+          <form onSubmit={handleFormSubmit}>
             <input
               value={name}
               onChange={({ target }) => setName(target.value)}
               placeholder="Team name"
               className="text-input mb-sm"
             />
-            <input
+            {/* <input
               value={code}
               onChange={({ target }) => setCode(target.value)}
               placeholder="Referral code"
               className="text-input mb-sm"
-            />
+            /> */}
             <button type="submit" className="App-cta Exchange-swap-button" disabled={!isFormValid()}>
               {getButtonText()}
             </button>
-            <div onClick={() => handleCreateReferralClick()} className="create-new-referral-link">
+            {/* <div onClick={() => handleCreateReferralClick()} className="create-new-referral-link">
               Create a new referral code
-            </div>
+            </div> */}
           </form>
         </div>
       )}

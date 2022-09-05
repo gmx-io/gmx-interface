@@ -1,10 +1,15 @@
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { useEffect, useState } from "react";
-// import { getContract } from "../../config/Addresses";
-// import Competition from "./../../abis/Competition.json";
+import { callContract } from "../legacy";
+import { getContract } from "../../config/Addresses";
+import Competition from "./../../abis/Competition.json";
 
 export async function checkTeamName(chainId, library, name, competitionIndex) {
-  return true;
+  return await new Promise(resolve => {
+    setTimeout(() => {
+      resolve(true)
+    }, 1500)
+  })
 }
 
 export function useCompetitionDetails(chainId, library, competitionIndex) {
@@ -38,7 +43,7 @@ export function useCompetitionDetails(chainId, library, competitionIndex) {
 
       setTimeout(() => {
         setData({
-          start: ts + 20,
+          start: ts + 0,
           end: ts + 60,
           registrationActive: true,
           active: false,
@@ -80,7 +85,12 @@ export function useTeam(chainId, library) {
   return { data, loading };
 }
 
-// function getCompetitionContract(chainId, library) {
-//   const address = getContract("Competition", chainId);
-//   return new ethers.Contract(address, Competition.abi, library.getSigner());
-// }
+export function createTeam(chainId, library, competitionIndex, name, opts) {
+  const contract = getCompetitionContract(chainId, library)
+  return callContract(chainId, contract, "createTeam", [competitionIndex, name], opts)
+}
+
+function getCompetitionContract(chainId, library) {
+  const address = getContract("Competition", chainId);
+  return new ethers.Contract(address, Competition.abi, library.getSigner());
+}

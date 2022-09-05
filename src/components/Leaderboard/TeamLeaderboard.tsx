@@ -13,11 +13,15 @@ export function TeamLeaderboard({ competitionIndex }) {
   const { chainId, library } = useWeb3React();
   const [search, setSearch] = useState("")
   const debouncedSearch = useDebounce(search, 300)
-  const [page, setPage] = useState(1)
-  const { data: allStats, loading: teamLoading } = useTeamsStats(chainId);
+  const { data: allStats, loading: allStatsLoading } = useTeamsStats(chainId);
   const { data: details, loading: detailsLoading } = useCompetitionDetails(chainId, library, competitionIndex)
 
-  const perPage = 5
+  const page = 1
+  const perPage = 15
+
+  if (detailsLoading || allStatsLoading) {
+    return <Loader/>
+  }
 
   const displayedStats = () => {
     return allStats.filter(stat => {
@@ -27,10 +31,6 @@ export function TeamLeaderboard({ competitionIndex }) {
 
   const resolveLink = (stat) => {
     return `/leaderboard/team/${competitionIndex}/${stat.id}`;
-  }
-
-  if (detailsLoading || teamLoading) {
-    return <Loader/>
   }
 
   const handleSearchInput = ({ target }) => {
