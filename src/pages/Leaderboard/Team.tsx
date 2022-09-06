@@ -34,7 +34,7 @@ export default function Team() {
         {isLoading() && <Loader/>}
         {isLoading() || (
           <>
-            <TeamStats team={team} />
+            <TeamStats team={team} competition={competition}/>
             {competition.active && <TeamPositions chainId={chainId} positions={team.positions}/>}
           </>
         )}

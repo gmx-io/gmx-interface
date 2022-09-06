@@ -2,7 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useState } from "react";
 import { FiPlus, FiSearch } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import { useCompetitionDetails, useUserTeam } from "../../domain/leaderboard/contracts";
+import { useCompetitionDetails, useTeam } from "../../domain/leaderboard/contracts";
 import { useTeamsStats } from "../../domain/leaderboard/graph"
 import { getTeamRegistrationUrl, getTeamUrl } from "../../domain/leaderboard/urls";
 import { useDebounce } from "../../lib/legacy";
@@ -16,7 +16,7 @@ export function TeamLeaderboard({ competitionIndex }) {
   const debouncedSearch = useDebounce(search, 300)
   const { data: allStats, loading: allStatsLoading } = useTeamsStats(chainId);
   const { data: details, loading: detailsLoading } = useCompetitionDetails(chainId, library, competitionIndex)
-  const { data: userTeam, loading: userTeamLoading } = useUserTeam(chainId, library, competitionIndex, account)
+  const { exists: userHasTeam, loading: userTeamLoading } = useTeam(chainId, library, competitionIndex, account)
 
   const page = 1
   const perPage = 15
@@ -31,10 +31,6 @@ export function TeamLeaderboard({ competitionIndex }) {
     }).slice((page - 1) * perPage, (page - 1) * perPage + perPage)
   }
 
-  const resolveLink = (stat) => {
-    return `/leaderboard/team/${competitionIndex}/${stat.id}`;
-  }
-
   const handleSearchInput = ({ target }) => {
     setSearch(target.value)
   }
@@ -46,19 +42,19 @@ export function TeamLeaderboard({ competitionIndex }) {
           <input type="text" placeholder="Search for a team..." className="text-input input-small" value={search} onInput={handleSearchInput}/>
           <FiSearch className="input-logo"/>
         </div>
-        {details.registrationActive && !userTeam && (
+        {details.registrationActive && !userHasTeam && (
           <Link className="transparent-btn" to={getTeamRegistrationUrl()}>
             <FiPlus/>
             <span className="ml-small">Register your team</span>
           </Link>
         )}
-        {userTeam && (
+        {userHasTeam && (
           <Link className="transparent-btn" to={getTeamUrl(account)}>
             View your team
           </Link>
         )}
       </div>
-      <LeaderboardTable stats={displayedStats()} resolveLink={resolveLink} isTeamLeaderboard={true} />
+      <LeaderboardTable stats={displayedStats()} resolveLink={(stat) => getTeamUrl(stat.id)} isTeamLeaderboard={true} />
     </div>
   )
 }

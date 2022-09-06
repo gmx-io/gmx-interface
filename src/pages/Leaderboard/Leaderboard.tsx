@@ -11,7 +11,10 @@ import { CURRENT_COMPETITION_INDEX, LEADERBOARD_SELECTED_TAB_KEY } from "../../d
 export default function Leaderboard() {
   const { chainId } = useWeb3React();
 
-  const tabOptions = ["Individuals", "Competition"]
+  const tabOptions = ["Individuals"]
+  if (CURRENT_COMPETITION_INDEX !== null) {
+    tabOptions.push("Teams")
+  }
   const [activeTab, setActiveTab] = useLocalStorage(LEADERBOARD_SELECTED_TAB_KEY, tabOptions[0]);
 
   const handleTabChange = (option) => {
