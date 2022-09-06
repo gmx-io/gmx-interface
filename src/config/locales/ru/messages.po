@@ -30,7 +30,7 @@ msgstr ""
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js:2098
+#: src/components/Exchange/SwapBox.js:2101
 msgid "A snapshot of the USD value of your collateral is taken when the position is opened."
 msgstr ""
 
@@ -191,8 +191,8 @@ msgid "Available"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js:344
-#: src/components/Exchange/SwapBox.js:2235
-#: src/components/Exchange/SwapBox.js:2382
+#: src/components/Exchange/SwapBox.js:2238
+#: src/components/Exchange/SwapBox.js:2385
 msgid "Available Liquidity"
 msgstr ""
 
@@ -227,7 +227,7 @@ msgstr ""
 msgid "Avax is needed on Avalanche to purchase GMX."
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js:1914
+#: src/components/Exchange/SwapBox.js:1917
 msgid "Balance"
 msgstr ""
 
@@ -259,7 +259,7 @@ msgstr ""
 msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js:2339
+#: src/components/Exchange/SwapBox.js:2342
 msgid "Borrow Fee"
 msgstr ""
 
@@ -427,19 +427,19 @@ msgstr ""
 msgid "Claiming..."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:624
+#: src/components/Exchange/PositionSeller.js:625
 msgid "Close"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:743
+#: src/components/Exchange/PositionSeller.js:744
 msgid "Close failed."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:741
+#: src/components/Exchange/PositionSeller.js:742
 msgid "Close submitted!"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:622
+#: src/components/Exchange/PositionSeller.js:623
 msgid "Close without profit"
 msgstr ""
 
@@ -447,7 +447,7 @@ msgstr ""
 #~ msgid "Closing Fee"
 #~ msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:624
+#: src/components/Exchange/PositionSeller.js:625
 msgid "Closing..."
 msgstr ""
 
@@ -465,14 +465,14 @@ msgstr ""
 
 #: src/components/Exchange/OrdersList.js:432
 #: src/components/Exchange/PositionEditor.js:510
-#: src/components/Exchange/PositionSeller.js:1033
+#: src/components/Exchange/PositionSeller.js:1037
 #: src/components/Exchange/PositionsList.js:273
 #: src/components/Exchange/PositionsList.js:455
 msgid "Collateral"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js:2072
-#: src/components/Exchange/SwapBox.js:2090
+#: src/components/Exchange/SwapBox.js:2075
+#: src/components/Exchange/SwapBox.js:2093
 msgid "Collateral In"
 msgstr ""
 
@@ -555,7 +555,7 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:606
+#: src/components/Exchange/PositionSeller.js:607
 msgid "Create Order"
 msgstr ""
 
@@ -567,7 +567,7 @@ msgstr ""
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:594
+#: src/components/Exchange/PositionSeller.js:595
 msgid "Creating Order..."
 msgstr ""
 
@@ -695,14 +695,14 @@ msgid "Edit Referral Code"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js:268
-#: src/components/Exchange/PositionSeller.js:618
+#: src/components/Exchange/PositionSeller.js:619
 #: src/components/Exchange/SwapBox.js:1163
 msgid "Enable Leverage"
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js:26
 #: src/components/Exchange/OrdersToa.js:40
-#: src/components/Exchange/PositionSeller.js:603
+#: src/components/Exchange/PositionSeller.js:604
 #: src/components/Exchange/SwapBox.js:1183
 msgid "Enable Orders"
 msgstr ""
@@ -715,13 +715,13 @@ msgstr ""
 msgid "Enable deposit sent."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:647
-#: src/components/Exchange/SwapBox.js:1685
+#: src/components/Exchange/PositionSeller.js:648
+#: src/components/Exchange/SwapBox.js:1688
 msgid "Enable leverage failed."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:646
-#: src/components/Exchange/SwapBox.js:1684
+#: src/components/Exchange/PositionSeller.js:647
+#: src/components/Exchange/SwapBox.js:1687
 msgid "Enable leverage sent."
 msgstr ""
 
@@ -746,16 +746,16 @@ msgid "Enabling Leverage"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js:264
-#: src/components/Exchange/PositionSeller.js:610
-#: src/components/Exchange/PositionSeller.js:614
+#: src/components/Exchange/PositionSeller.js:611
+#: src/components/Exchange/PositionSeller.js:615
 #: src/components/Exchange/SwapBox.js:1157
 #: src/components/Exchange/SwapBox.js:1160
 msgid "Enabling Leverage..."
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js:21
-#: src/components/Exchange/PositionSeller.js:597
-#: src/components/Exchange/PositionSeller.js:600
+#: src/components/Exchange/PositionSeller.js:598
+#: src/components/Exchange/PositionSeller.js:601
 #: src/components/Exchange/SwapBox.js:1177
 #: src/components/Exchange/SwapBox.js:1180
 msgid "Enabling Orders..."
@@ -765,7 +765,7 @@ msgstr ""
 #~ msgid "English"
 #~ msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:513
+#: src/components/Exchange/PositionSeller.js:514
 msgid "Enter Price"
 msgstr ""
 
@@ -789,8 +789,8 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js:189
 #: src/components/Exchange/PositionEditor.js:192
-#: src/components/Exchange/PositionSeller.js:506
-#: src/components/Exchange/PositionSeller.js:509
+#: src/components/Exchange/PositionSeller.js:507
+#: src/components/Exchange/PositionSeller.js:510
 #: src/components/Exchange/SwapBox.js:782
 #: src/components/Exchange/SwapBox.js:785
 #: src/components/Exchange/SwapBox.js:856
@@ -816,11 +816,11 @@ msgstr ""
 msgid "Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:984
+#: src/components/Exchange/PositionSeller.js:988
 #: src/components/Exchange/PositionsList.js:398
 #: src/components/Exchange/PositionsList.js:461
-#: src/components/Exchange/SwapBox.js:2128
-#: src/components/Exchange/SwapBox.js:2276
+#: src/components/Exchange/SwapBox.js:2131
+#: src/components/Exchange/SwapBox.js:2279
 msgid "Entry Price"
 msgstr ""
 
@@ -832,7 +832,7 @@ msgstr ""
 msgid "Execution Fee"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js:2308
+#: src/components/Exchange/SwapBox.js:2311
 msgid "Exit Price"
 msgstr ""
 
@@ -840,7 +840,7 @@ msgstr ""
 msgid "FEES"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:1084
+#: src/components/Exchange/PositionSeller.js:1088
 #: src/components/Glp/GlpSwap.js:897
 #: src/components/Glp/GlpSwap.js:1363
 #: src/components/Glp/GlpSwap.js:1366
@@ -872,7 +872,7 @@ msgstr ""
 msgid "Floor Price Fund"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:557
+#: src/components/Exchange/PositionSeller.js:558
 msgid "Forfeit profit not checked"
 msgstr ""
 
@@ -1037,7 +1037,7 @@ msgstr ""
 msgid "Invalid liq. price"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:523
+#: src/components/Exchange/PositionSeller.js:524
 msgid "Invalid price, see warning"
 msgstr ""
 
@@ -1058,7 +1058,7 @@ msgstr ""
 msgid "Launch Exchange"
 msgstr "Запустить биржу"
 
-#: src/components/Exchange/SwapBox.js:2422
+#: src/components/Exchange/SwapBox.js:2425
 msgid "Leaderboard"
 msgstr ""
 
@@ -1066,19 +1066,19 @@ msgstr ""
 msgid "Leave at least {0} {1} for gas"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:540
+#: src/components/Exchange/PositionSeller.js:541
 msgid "Leftover collateral below 5 USD"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:537
+#: src/components/Exchange/PositionSeller.js:538
 msgid "Leftover position below 10 USD"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js:527
-#: src/components/Exchange/PositionSeller.js:1052
+#: src/components/Exchange/PositionSeller.js:1056
 #: src/components/Exchange/PositionsList.js:251
-#: src/components/Exchange/SwapBox.js:1919
-#: src/components/Exchange/SwapBox.js:2112
+#: src/components/Exchange/SwapBox.js:1922
+#: src/components/Exchange/SwapBox.js:2115
 msgid "Leverage"
 msgstr ""
 
@@ -1103,10 +1103,10 @@ msgid "Link"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js:550
-#: src/components/Exchange/PositionSeller.js:990
+#: src/components/Exchange/PositionSeller.js:994
 #: src/components/Exchange/PositionsList.js:404
 #: src/components/Exchange/PositionsList.js:464
-#: src/components/Exchange/SwapBox.js:2143
+#: src/components/Exchange/SwapBox.js:2146
 msgid "Liq. Price"
 msgstr ""
 
@@ -1154,7 +1154,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js:360
 #: src/components/Exchange/OrdersList.js:412
 #: src/components/Exchange/PositionEditor.js:544
-#: src/components/Exchange/PositionSeller.js:978
+#: src/components/Exchange/PositionSeller.js:982
 #: src/components/Exchange/PositionsList.js:392
 #: src/components/Exchange/PositionsList.js:458
 msgid "Mark Price"
@@ -1185,7 +1185,7 @@ msgstr ""
 msgid "Max amount exceeded"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:545
+#: src/components/Exchange/PositionSeller.js:546
 msgid "Max close amount exceeded"
 msgstr ""
 
@@ -1193,7 +1193,7 @@ msgstr ""
 msgid "Max leverage: 30.5x"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:553
+#: src/components/Exchange/PositionSeller.js:554
 msgid "Max leverage: 30.5xt"
 msgstr ""
 
@@ -1235,7 +1235,7 @@ msgid "MetaMask not detected."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js:214
-#: src/components/Exchange/PositionSeller.js:549
+#: src/components/Exchange/PositionSeller.js:550
 #: src/components/Exchange/SwapBox.js:881
 msgid "Min leverage: 1.1x"
 msgstr ""
@@ -1326,15 +1326,15 @@ msgstr ""
 msgid "Order"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:674
+#: src/components/Exchange/PositionSeller.js:675
 msgid "Order created!"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:675
+#: src/components/Exchange/PositionSeller.js:676
 msgid "Order creation failed."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:673
+#: src/components/Exchange/PositionSeller.js:674
 msgid "Order submitted!"
 msgstr ""
 
@@ -1360,7 +1360,7 @@ msgstr ""
 msgid "PRICE"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:503
+#: src/components/Exchange/PositionSeller.js:504
 #: src/components/Exchange/SwapBox.js:852
 msgid "Page outdated, please refresh"
 msgstr ""
@@ -1398,7 +1398,7 @@ msgstr ""
 msgid "Please switch your network to Arbitrum."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:1075
+#: src/components/Exchange/PositionSeller.js:1079
 #: src/components/Exchange/PositionsList.js:305
 #: src/pages/Actions/Actions.js:94
 msgid "PnL"
@@ -1408,7 +1408,7 @@ msgstr ""
 msgid "Position"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:500
+#: src/components/Exchange/PositionSeller.js:501
 msgid "Position close disabled, pending {0} upgrade"
 msgstr ""
 
@@ -1418,9 +1418,9 @@ msgstr ""
 
 #: src/components/Exchange/OrdersList.js:96
 #: src/components/Exchange/OrdersList.js:404
-#: src/components/Exchange/PositionSeller.js:893
-#: src/components/Exchange/SwapBox.js:1953
-#: src/components/Exchange/SwapBox.js:2002
+#: src/components/Exchange/PositionSeller.js:897
+#: src/components/Exchange/SwapBox.js:1956
+#: src/components/Exchange/SwapBox.js:2005
 #: src/components/Glp/GlpSwap.js:702
 #: src/pages/Dashboard/DashboardV2.js:890
 #: src/pages/Stake/StakeV2.js:1470
@@ -1429,7 +1429,7 @@ msgstr ""
 msgid "Price"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:519
+#: src/components/Exchange/PositionSeller.js:520
 msgid "Price above Liq. Price"
 msgstr ""
 
@@ -1437,7 +1437,7 @@ msgstr ""
 msgid "Price above Mark Price"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:516
+#: src/components/Exchange/PositionSeller.js:517
 msgid "Price below Liq. Price"
 msgstr ""
 
@@ -1497,7 +1497,7 @@ msgstr ""
 msgid "Rebates earned by this account as an affiliate."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:1136
+#: src/components/Exchange/PositionSeller.js:1140
 #: src/components/Exchange/SwapBox.js:218
 #: src/components/Exchange/SwapBox.js:1040
 #: src/components/Glp/GlpSwap.js:618
@@ -1562,7 +1562,7 @@ msgstr ""
 msgid "Referrals"
 msgstr "Рефералы"
 
-#: src/components/Exchange/PositionSeller.js:733
+#: src/components/Exchange/PositionSeller.js:734
 msgid "Requested decrease of {0} {1} by {2} USD."
 msgstr ""
 
@@ -1707,7 +1707,7 @@ msgid "Simple Swaps"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js:504
-#: src/components/Exchange/PositionSeller.js:1014
+#: src/components/Exchange/PositionSeller.js:1018
 #: src/components/Exchange/PositionsList.js:267
 #: src/components/Exchange/PositionsList.js:452
 msgid "Size"
@@ -1721,7 +1721,7 @@ msgstr ""
 #~ msgid "Spanish"
 #~ msgstr ""
 
-#: src/components/Exchange/SwapBox.js:2429
+#: src/components/Exchange/SwapBox.js:2432
 msgid "Speed up page loading"
 msgstr ""
 
@@ -1788,7 +1788,7 @@ msgstr ""
 msgid "Supply"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js:2218
+#: src/components/Exchange/SwapBox.js:2221
 msgid "Swap"
 msgstr ""
 
@@ -1986,7 +1986,7 @@ msgstr ""
 msgid "Traders Referred"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js:2415
+#: src/components/Exchange/SwapBox.js:2418
 msgid "Trading guide"
 msgstr ""
 
@@ -2033,11 +2033,11 @@ msgstr ""
 msgid "Transfers are only supported if the receiving account has not staked GMX or GLP tokens before."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:968
+#: src/components/Exchange/PositionSeller.js:972
 msgid "Trigger Price"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js:499
+#: src/components/Exchange/PositionSeller.js:500
 msgid "Trigger order disabled, pending {0} upgrade"
 msgstr ""
 
@@ -2099,7 +2099,7 @@ msgstr ""
 msgid "Use the \"Edit\" button to deposit or withdraw collateral."
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js:2409
+#: src/components/Exchange/SwapBox.js:2412
 msgid "Useful Links"
 msgstr ""
 
@@ -2211,7 +2211,7 @@ msgstr ""
 msgid "WalletConnect"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js:2103
+#: src/components/Exchange/SwapBox.js:2106
 msgid "When closing the position, you can select which token you would like to receive."
 msgstr ""
 
