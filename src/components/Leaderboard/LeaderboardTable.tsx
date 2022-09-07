@@ -33,8 +33,8 @@ export default function LeaderboardTable({ resolveLink, stats, isTeamLeaderboard
           <th>PnL</th>
           <th></th>
         </tr>
-        {stats.length && stats.map(stat => <Row stat={stat}/>)}
-        {!stats.length && (
+        {stats.length > 0 && stats.map(stat => <Row stat={stat}/>)}
+        {stats.length === 0 && (
           <tr>
             <td colSpan={3}>No {isTeamLeaderboard ? "team" : "account"} found...</td>
           </tr>
