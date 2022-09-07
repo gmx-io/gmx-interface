@@ -1,16 +1,12 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Trans } from "@lingui/macro";
-
 import cx from "classnames";
 
+import { useWeb3React } from "@web3-react/core";
 import gmxBigIcon from "../../img/ic_gmx_custom.svg";
 import glpBigIcon from "../../img/ic_glp_custom.svg";
-
 import { ARBITRUM, AVALANCHE, switchNetwork, useChainId, isHomeSite } from "../../lib/legacy";
-
-import { useWeb3React } from "@web3-react/core";
-
 import APRLabel from "../APRLabel/APRLabel";
 
 export default function TokenCard({ showRedirectModal }) {

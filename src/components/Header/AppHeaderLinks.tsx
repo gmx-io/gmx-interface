@@ -1,12 +1,9 @@
-
 import { FiX } from "react-icons/fi";
 import { HeaderLink } from "./HeaderLink";
 import logoImg from "../../img/logo_GMX.svg";
-
 import "./Header.css";
 import { isHomeSite } from "../../lib/legacy";
-import {Trans} from "@lingui/macro";
-import React from "react";
+import { Trans } from "@lingui/macro";
 
 type Props = {
   small?: boolean;
@@ -17,11 +14,11 @@ type Props = {
 };
 
 export function AppHeaderLinks({
-   small,
-   openSettings,
-   clickCloseIcon,
-   redirectPopupTimestamp,
-   showRedirectModal
+  small,
+  openSettings,
+  clickCloseIcon,
+  redirectPopupTimestamp,
+  showRedirectModal,
 }: Props) {
   return (
     <div className="App-header-links">
@@ -36,7 +33,10 @@ export function AppHeaderLinks({
           >
             <img src={logoImg} alt="GMX Logo" />
           </HeaderLink>
-          <div className="App-header-menu-icon-block mobile-cross-menu" onClick={() => clickCloseIcon && clickCloseIcon()}>
+          <div
+            className="App-header-menu-icon-block mobile-cross-menu"
+            onClick={() => clickCloseIcon && clickCloseIcon()}
+          >
             <FiX className="App-header-menu-icon" />
           </div>
         </div>
@@ -62,20 +62,12 @@ export function AppHeaderLinks({
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink
-          to="/earn"
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-        >
+        <HeaderLink to="/earn" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
           <Trans>Earn</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <HeaderLink
-          to="/buy"
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-        >
+        <HeaderLink to="/buy" redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal}>
           <Trans>Buy</Trans>
         </HeaderLink>
       </div>
