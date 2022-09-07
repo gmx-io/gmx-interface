@@ -2,8 +2,6 @@ import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Trans } from "@lingui/macro";
 
-import cx from "classnames";
-
 import gmxBigIcon from "../../img/ic_gmx_custom.svg";
 import glpBigIcon from "../../img/ic_glp_custom.svg";
 
@@ -14,7 +12,7 @@ import { useWeb3React } from "@web3-react/core";
 import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
 
-export default function TokenCard({ showRedirectModal }) {
+export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
   const isHome = isHomeSite();
   const { chainId } = useChainId();
   const { active } = useWeb3React();
@@ -38,14 +36,19 @@ export default function TokenCard({ showRedirectModal }) {
   const BuyLink = ({ className, to, children, network }) => {
     if (isHome && showRedirectModal) {
       return (
-        <HeaderLink to={to} className={cx(className)}>
+        <HeaderLink
+          to={to}
+          className={className}
+          redirectPopupTimestamp={redirectPopupTimestamp}
+          showRedirectModal={showRedirectModal}
+        >
           {children}
         </HeaderLink>
       );
     }
 
     return (
-      <Link to={to} className={cx(className)} onClick={() => changeNetwork(network)}>
+      <Link to={to} className={className} onClick={() => changeNetwork(network)}>
         {children}
       </Link>
     );
