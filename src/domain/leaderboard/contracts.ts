@@ -90,6 +90,7 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
       const team = await contract.getTeam(competitionIndex, leaderAddress)
 
       if (isAddressZero(team.leaderAddress)) {
+        setExists(false)
         return setLoading(false);
       }
 
@@ -117,8 +118,8 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
         positions: []
       })
 
-      setLoading(false)
       setExists(true)
+      setLoading(false)
     }
 
     main()

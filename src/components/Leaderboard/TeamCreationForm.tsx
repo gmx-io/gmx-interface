@@ -4,9 +4,9 @@ import { useHistory } from "react-router-dom";
 import { checkTeamName, createTeam } from "../../domain/leaderboard/contracts";
 import { getTeamUrl } from "../../domain/leaderboard/urls";
 import { useDebounce } from "../../lib/legacy";
-import "./TeamRegistrationForm.css";
+import "./TeamCreationForm.css";
 
-export default function TeamRegistrationForm({ competitionIndex, times, connectWallet, pendingTxns, setPendingTxns }) {
+export default function TeamCreationForm({ competitionIndex, times, connectWallet, pendingTxns, setPendingTxns }) {
   const history = useHistory();
   const { active, chainId, library, account } = useWeb3React();
   const [isProcessing, setIsProcessing] = useState(false)

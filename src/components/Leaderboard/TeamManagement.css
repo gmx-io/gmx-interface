@@ -1,0 +1,27 @@
+.invite-link-input {
+  position: relative;
+}
+
+.invite-link-input > * {
+  cursor: pointer;
+}
+
+.invite-link-input input {
+  padding-right: 3.5rem;
+}
+
+.invite-link-input svg {
+  position: absolute;
+  top: 50%;
+  right: 1.5rem;
+  transform: translateY(-50%);
+}
+
+.card-details-pending-request .label {
+  display: flex;
+  align-items: center;
+}
+
+.card-details-pending-request .label span {
+  margin-left: .775rem;
+}

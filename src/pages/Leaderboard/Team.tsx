@@ -8,10 +8,12 @@ import { CURRENT_COMPETITION_INDEX } from "../../domain/leaderboard/constants";
 import "./Team.css";
 import TeamPositions from "../../components/Leaderboard/TeamPositions";
 import TeamStats from "../../components/Leaderboard/TeamStats";
+import TeamManagement from "../../components/Leaderboard/TeamManagement";
+import { useEffect, useState } from "react";
 
 export default function Team() {
   const params = useParams<any>();
-  const { chainId, library } = useWeb3React();
+  const { chainId, library, account } = useWeb3React();
   const { data: team, loading: teamLoading } = useTeam(chainId, library, CURRENT_COMPETITION_INDEX, params.leaderAddress);
   const { data: competition, loading: competitionLoading } = useCompetitionDetails(chainId, library, CURRENT_COMPETITION_INDEX)
 
@@ -20,10 +22,10 @@ export default function Team() {
   return (
     <SEO title={getPageTitle("Leaderboard")}>
       <div className="default-container page-layout Leaderboard">
-        <div className="section-title-block">
+        <div className="team-section-title-block section-title-block">
           <div className="section-title-content">
             <div className="Page-title">
-              {isLoading() ? "" : <em>{team.name}</em>} Team stats <img alt="Chain Icon" src={getChainIcon(chainId)} />
+              {isLoading() ? "" : <em>{team.name}</em>} Team <img alt="Chain Icon" src={getChainIcon(chainId)} />
             </div>
             <div className="Page-description">
               Get fee discounts and earn rebates through the GMX referral program. For more information, please read the
@@ -35,6 +37,7 @@ export default function Team() {
         {isLoading() || (
           <>
             <TeamStats team={team} competition={competition}/>
+            {competition.registrationActive && <TeamManagement team={team} account={account} />}
             {competition.active && <TeamPositions chainId={chainId} positions={team.positions}/>}
           </>
         )}

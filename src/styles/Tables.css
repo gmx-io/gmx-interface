@@ -14,7 +14,8 @@
   border-bottom: 1px solid #23263b;
 }
 
-.simple-table th, .simple-table td {
+.simple-table th,
+.simple-table td {
   font-weight: normal;
   text-align: left;
   padding: 1.05rem;
@@ -31,12 +32,22 @@
   opacity: 0.7;
 }
 
-table.simple-table tr:hover {
+.simple-table tr:hover {
   background: linear-gradient(90deg, rgba(30, 34, 61, 1) 0%, rgba(38, 43, 71, 1) 100%);
   box-shadow: inset 0px 0px 3rem 0.5rem rgba(255, 255, 255, 0.01);
 }
 
-table.simple-table tr.simple-table-header:hover {
+.simple-table tr.simple-table-header:hover {
   background: inherit;
   box-shadow: none;
+}
+
+.simple-table-action {
+  font-size: 1.5rem;
+  padding: 0;
+  border-radius: 3px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0.3rem;
 }

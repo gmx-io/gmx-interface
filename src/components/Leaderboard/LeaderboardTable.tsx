@@ -13,6 +13,17 @@ export default function LeaderboardTable({ resolveLink, stats, isTeamLeaderboard
     history.push(resolveLink(stat));
   };
 
+  const Row = ({ stat }) => {
+    return <tr key={stat.id}>
+      <td>#{stat.rank}</td>
+      <td>{stat.label}</td>
+      <td>${formatAmount(stat.realizedPnl, USD_DECIMALS, 0, true, "...")}</td>
+      <td>
+        <button className="simple-table-action" onClick={() => handleClick(stat)}>Details</button>
+      </td>
+    </tr>
+  }
+
   return (
     <table className="simple-table leaderboard-table">
       <tbody>
@@ -20,21 +31,13 @@ export default function LeaderboardTable({ resolveLink, stats, isTeamLeaderboard
           <th>Rank</th>
           <th>Team</th>
           <th>PnL</th>
+          <th></th>
         </tr>
-        {!stats.length ? (
+        {stats.length && stats.map(stat => <Row stat={stat}/>)}
+        {!stats.length && (
           <tr>
             <td colSpan={3}>No {isTeamLeaderboard ? "team" : "account"} found...</td>
           </tr>
-        ) : (
-          <>
-            {stats.map((stat) => (
-              <tr key={stat.id} onClick={() => handleClick(stat)}>
-                <td>#{stat.rank}</td>
-                <td>{stat.label}</td>
-                <td>${formatAmount(stat.realizedPnl, USD_DECIMALS, 0, true, "...")}</td>
-              </tr>
-            ))}
-          </>
         )}
       </tbody>
     </table>
