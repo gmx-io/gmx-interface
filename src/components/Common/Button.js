@@ -3,7 +3,6 @@ import "./Button.css";
 
 export default function Button({ href, imgSrc, children, className, size = "lg", align = "center", ...rest }) {
   let classNames = cx("btn btn-primary", align === "left" ? "btn-left" : "btn-center", `btn-${size}`, className);
-
   return (
     <a className={classNames} href={href} target="_blank" rel="noopener noreferrer" {...rest}>
       {imgSrc && <img className="btn-image" src={imgSrc} alt={children} />}
