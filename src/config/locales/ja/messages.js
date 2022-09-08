@@ -123,6 +123,7 @@
     "Coinbase Wallet": "コインベースウォレット",
     "Coinbase Wallet not detected.": "コインベースウォレットが検出できません。",
     Collateral: "担保",
+    "Collateral ({0})": ["Collateral (", ["0"], ")"],
     "Collateral In": "Collateral In",
     "Community Projects": "コミュニティプロジェクト",
     "Community-led Telegram groups.": "コミュニティ主導のTelegramグループ",
