@@ -37,11 +37,11 @@ type Props = {
 };
 
 export function Header({
-   disconnectAccountAndCloseSettings,
-   openSettings,
-   setWalletModalVisible,
-   redirectPopupTimestamp,
-   showRedirectModal
+  disconnectAccountAndCloseSettings,
+  openSettings,
+  setWalletModalVisible,
+  redirectPopupTimestamp,
+  showRedirectModal,
 }: Props) {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isNativeSelectorModalVisible, setIsNativeSelectorModalVisible] = useState(false);
@@ -94,7 +94,6 @@ export function Header({
         <div className="App-header large">
           <div className="App-header-container-left">
             <HeaderLink
-              isHomeLink={true}
               exact={true}
               className="App-header-link-main"
               to="/"
