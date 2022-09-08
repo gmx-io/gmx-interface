@@ -236,7 +236,7 @@ export default function PositionsList(props) {
                   .mul(position.size)
                   .mul(24)
                   .div(FUNDING_RATE_PRECISION);
-                borrowFeeText = `Borrow Fee / Day: $${formatAmount(borrowFeeRate, USD_DECIMALS, 2)}`;
+                borrowFeeText = `Borrow Fee / Day: $${formatAmount(borrowFeeRate, USD_DECIMALS, 2, true)}`;
               }
 
               return (
@@ -493,7 +493,7 @@ export default function PositionsList(props) {
                 .mul(position.size)
                 .mul(24)
                 .div(FUNDING_RATE_PRECISION);
-              borrowFeeText = t`Borrow Fee / Day: $${formatAmount(borrowFeeRate, USD_DECIMALS, 2)}`;
+              borrowFeeText = t`Borrow Fee / Day: $${formatAmount(borrowFeeRate, USD_DECIMALS, 2, true)}`;
             }
 
             return (

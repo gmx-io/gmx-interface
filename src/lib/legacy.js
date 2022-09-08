@@ -2376,7 +2376,7 @@ export function getInfoTokens(
       }
 
       token.maxLongCapacity =
-        token.maxGlobalLongSize.gt(0) && token.maxGlobalLongSize.lt(token.availableUsd)
+        token.maxGlobalLongSize.gt(0) && token.maxGlobalLongSize.lt(token.availableUsd.add(token.guaranteedUsd))
           ? token.maxGlobalLongSize
           : token.availableUsd.add(token.guaranteedUsd);
 
