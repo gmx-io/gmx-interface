@@ -125,6 +125,7 @@
     "Coinbase Wallet": "Coinbase 지갑",
     "Coinbase Wallet not detected.": "Coinbase 지갑이 존재하지 않습니다.",
     Collateral: "담보",
+    "Collateral ({0})": ["Collateral (", ["0"], ")"],
     "Collateral In": "Collateral In",
     "Community Projects": "커뮤니티 프로젝트",
     "Community-led Telegram groups.": "커뮤니티 주도 텔레그램 그룹",

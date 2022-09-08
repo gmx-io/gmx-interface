@@ -30,7 +30,7 @@ msgstr "<0>注文執行に必要な流動性が不足しています</0><1>諸�
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>これによりすべてのトークンは引き出され、リザーブから解除され、べスティングは停止されます。<1/><2/>GMXへ転換されたesGMXトークンはGMXトークンとなります。<3/><4/>引き出しをせずにGMXトークンを請求するには全報酬セクションの下部にある\"請求\"ボタンを使用してください。<5/><6/></0>"
 
-#: src/components/Exchange/SwapBox.js:2098
+#: src/components/Exchange/SwapBox.js:2101
 msgid "A snapshot of the USD value of your collateral is taken when the position is opened."
 msgstr ""
 
@@ -191,8 +191,8 @@ msgid "Available"
 msgstr "入手可能"
 
 #: src/components/Exchange/SwapBox.js:344
-#: src/components/Exchange/SwapBox.js:2235
-#: src/components/Exchange/SwapBox.js:2382
+#: src/components/Exchange/SwapBox.js:2238
+#: src/components/Exchange/SwapBox.js:2385
 msgid "Available Liquidity"
 msgstr "入手可能な流動性"
 
@@ -227,7 +227,7 @@ msgstr "AvalancheでのAPR(実質年利)"
 msgid "Avax is needed on Avalanche to purchase GMX."
 msgstr "AvalancheでGMXを購入するにはAvaxが必要です。"
 
-#: src/components/Exchange/SwapBox.js:1914
+#: src/components/Exchange/SwapBox.js:1917
 msgid "Balance"
 msgstr "残高"
 
@@ -259,7 +259,7 @@ msgstr "ブースト率"
 msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "マルチプライヤーポイントで報酬をブーストする。<0>より詳しい情報</0>"
 
-#: src/components/Exchange/SwapBox.js:2339
+#: src/components/Exchange/SwapBox.js:2342
 msgid "Borrow Fee"
 msgstr "借入手数料"
 
@@ -427,19 +427,19 @@ msgstr "請求可能"
 msgid "Claiming..."
 msgstr "請求中"
 
-#: src/components/Exchange/PositionSeller.js:624
+#: src/components/Exchange/PositionSeller.js:644
 msgid "Close"
 msgstr "クローズ"
 
-#: src/components/Exchange/PositionSeller.js:743
+#: src/components/Exchange/PositionSeller.js:763
 msgid "Close failed."
 msgstr "クローズできませんでした"
 
-#: src/components/Exchange/PositionSeller.js:741
+#: src/components/Exchange/PositionSeller.js:761
 msgid "Close submitted!"
 msgstr "クローズ申し込み完了!"
 
-#: src/components/Exchange/PositionSeller.js:622
+#: src/components/Exchange/PositionSeller.js:642
 msgid "Close without profit"
 msgstr "利益なしでクローズ"
 
@@ -447,7 +447,7 @@ msgstr "利益なしでクローズ"
 #~ msgid "Closing Fee"
 #~ msgstr "クローズ手数料"
 
-#: src/components/Exchange/PositionSeller.js:624
+#: src/components/Exchange/PositionSeller.js:644
 msgid "Closing..."
 msgstr "クローズ中"
 
@@ -465,14 +465,17 @@ msgstr "コインベースウォレットが検出できません。"
 
 #: src/components/Exchange/OrdersList.js:432
 #: src/components/Exchange/PositionEditor.js:510
-#: src/components/Exchange/PositionSeller.js:1033
 #: src/components/Exchange/PositionsList.js:273
 #: src/components/Exchange/PositionsList.js:455
 msgid "Collateral"
 msgstr "担保"
 
-#: src/components/Exchange/SwapBox.js:2072
-#: src/components/Exchange/SwapBox.js:2090
+#: src/components/Exchange/PositionSeller.js:1056
+msgid "Collateral ({0})"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js:2075
+#: src/components/Exchange/SwapBox.js:2093
 msgid "Collateral In"
 msgstr ""
 
@@ -555,7 +558,7 @@ msgstr "アドレスのコピー"
 msgid "Create"
 msgstr "作成"
 
-#: src/components/Exchange/PositionSeller.js:606
+#: src/components/Exchange/PositionSeller.js:626
 msgid "Create Order"
 msgstr "注文の作成"
 
@@ -567,7 +570,7 @@ msgstr "紹介コード作成"
 msgid "Created limit order for {0} {1}: {2} USD!"
 msgstr "{0} {1}: {2} USDの指値注文の作成完了!"
 
-#: src/components/Exchange/PositionSeller.js:594
+#: src/components/Exchange/PositionSeller.js:614
 msgid "Creating Order..."
 msgstr "注文作成中"
 
@@ -695,14 +698,14 @@ msgid "Edit Referral Code"
 msgstr "紹介コード編集"
 
 #: src/components/Exchange/PositionEditor.js:268
-#: src/components/Exchange/PositionSeller.js:618
+#: src/components/Exchange/PositionSeller.js:638
 #: src/components/Exchange/SwapBox.js:1163
 msgid "Enable Leverage"
 msgstr "レバレッジ有効化"
 
 #: src/components/Exchange/OrdersToa.js:26
 #: src/components/Exchange/OrdersToa.js:40
-#: src/components/Exchange/PositionSeller.js:603
+#: src/components/Exchange/PositionSeller.js:623
 #: src/components/Exchange/SwapBox.js:1183
 msgid "Enable Orders"
 msgstr "注文有効化"
@@ -715,13 +718,13 @@ msgstr "入金有効化ができませんでした。"
 msgid "Enable deposit sent."
 msgstr "入金有効化申し込み完了。"
 
-#: src/components/Exchange/PositionSeller.js:647
-#: src/components/Exchange/SwapBox.js:1685
+#: src/components/Exchange/PositionSeller.js:667
+#: src/components/Exchange/SwapBox.js:1688
 msgid "Enable leverage failed."
 msgstr "レバレッジ有効化できませんでした。"
 
-#: src/components/Exchange/PositionSeller.js:646
-#: src/components/Exchange/SwapBox.js:1684
+#: src/components/Exchange/PositionSeller.js:666
+#: src/components/Exchange/SwapBox.js:1687
 msgid "Enable leverage sent."
 msgstr "レバレッジ有効化申し込み完了。"
 
@@ -746,16 +749,16 @@ msgid "Enabling Leverage"
 msgstr "レバレッジ有効化中"
 
 #: src/components/Exchange/PositionEditor.js:264
-#: src/components/Exchange/PositionSeller.js:610
-#: src/components/Exchange/PositionSeller.js:614
+#: src/components/Exchange/PositionSeller.js:630
+#: src/components/Exchange/PositionSeller.js:634
 #: src/components/Exchange/SwapBox.js:1157
 #: src/components/Exchange/SwapBox.js:1160
 msgid "Enabling Leverage..."
 msgstr "レバレッジ有効化中"
 
 #: src/components/Exchange/OrdersToa.js:21
-#: src/components/Exchange/PositionSeller.js:597
-#: src/components/Exchange/PositionSeller.js:600
+#: src/components/Exchange/PositionSeller.js:617
+#: src/components/Exchange/PositionSeller.js:620
 #: src/components/Exchange/SwapBox.js:1177
 #: src/components/Exchange/SwapBox.js:1180
 msgid "Enabling Orders..."
@@ -765,7 +768,7 @@ msgstr "注文有効化中"
 #~ msgid "English"
 #~ msgstr "英語"
 
-#: src/components/Exchange/PositionSeller.js:513
+#: src/components/Exchange/PositionSeller.js:533
 msgid "Enter Price"
 msgstr "価格を入力"
 
@@ -789,8 +792,8 @@ msgstr "価格を入力"
 
 #: src/components/Exchange/PositionEditor.js:189
 #: src/components/Exchange/PositionEditor.js:192
-#: src/components/Exchange/PositionSeller.js:506
-#: src/components/Exchange/PositionSeller.js:509
+#: src/components/Exchange/PositionSeller.js:526
+#: src/components/Exchange/PositionSeller.js:529
 #: src/components/Exchange/SwapBox.js:782
 #: src/components/Exchange/SwapBox.js:785
 #: src/components/Exchange/SwapBox.js:856
@@ -816,11 +819,11 @@ msgstr "購入したいGLPの額をオーダーフォームに入力し、ここ
 msgid "Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
 msgstr "売却したいGLPの額をオーダーフォームに入力し、ここをクリックして手数料を比較。"
 
-#: src/components/Exchange/PositionSeller.js:984
+#: src/components/Exchange/PositionSeller.js:1007
 #: src/components/Exchange/PositionsList.js:398
 #: src/components/Exchange/PositionsList.js:461
-#: src/components/Exchange/SwapBox.js:2128
-#: src/components/Exchange/SwapBox.js:2276
+#: src/components/Exchange/SwapBox.js:2131
+#: src/components/Exchange/SwapBox.js:2279
 msgid "Entry Price"
 msgstr "エントリー価格"
 
@@ -832,7 +835,7 @@ msgstr "esGMXのAPR(実質年利)"
 msgid "Execution Fee"
 msgstr "執行手数料"
 
-#: src/components/Exchange/SwapBox.js:2308
+#: src/components/Exchange/SwapBox.js:2311
 msgid "Exit Price"
 msgstr "退出価格"
 
@@ -840,7 +843,7 @@ msgstr "退出価格"
 msgid "FEES"
 msgstr "手数料"
 
-#: src/components/Exchange/PositionSeller.js:1084
+#: src/components/Exchange/PositionSeller.js:1107
 #: src/components/Glp/GlpSwap.js:897
 #: src/components/Glp/GlpSwap.js:1363
 #: src/components/Glp/GlpSwap.js:1366
@@ -872,7 +875,7 @@ msgstr "トークン情報入手中"
 msgid "Floor Price Fund"
 msgstr "フロアプライスファンド"
 
-#: src/components/Exchange/PositionSeller.js:557
+#: src/components/Exchange/PositionSeller.js:577
 msgid "Forfeit profit not checked"
 msgstr "喪失利益はチェックされていません"
 
@@ -1037,7 +1040,7 @@ msgstr "無効な受け取りアドレス"
 msgid "Invalid liq. price"
 msgstr "無効な清算価格"
 
-#: src/components/Exchange/PositionSeller.js:523
+#: src/components/Exchange/PositionSeller.js:543
 msgid "Invalid price, see warning"
 msgstr "無効な価格。警告を確認してください"
 
@@ -1058,7 +1061,7 @@ msgstr "無効なスリッページ値"
 msgid "Launch Exchange"
 msgstr "取引開始"
 
-#: src/components/Exchange/SwapBox.js:2422
+#: src/components/Exchange/SwapBox.js:2425
 msgid "Leaderboard"
 msgstr "順位"
 
@@ -1066,19 +1069,19 @@ msgstr "順位"
 msgid "Leave at least {0} {1} for gas"
 msgstr "ガスのため少なくとも{0} {1} を残しておいてください"
 
-#: src/components/Exchange/PositionSeller.js:540
+#: src/components/Exchange/PositionSeller.js:560
 msgid "Leftover collateral below 5 USD"
 msgstr "残りの担保が5 USD以下"
 
-#: src/components/Exchange/PositionSeller.js:537
+#: src/components/Exchange/PositionSeller.js:557
 msgid "Leftover position below 10 USD"
 msgstr "残りのポジションが10 USD以下"
 
 #: src/components/Exchange/PositionEditor.js:527
-#: src/components/Exchange/PositionSeller.js:1052
+#: src/components/Exchange/PositionSeller.js:1075
 #: src/components/Exchange/PositionsList.js:251
-#: src/components/Exchange/SwapBox.js:1919
-#: src/components/Exchange/SwapBox.js:2112
+#: src/components/Exchange/SwapBox.js:1922
+#: src/components/Exchange/SwapBox.js:2115
 msgid "Leverage"
 msgstr "レバレッジ"
 
@@ -1103,10 +1106,10 @@ msgid "Link"
 msgstr "リンク"
 
 #: src/components/Exchange/PositionEditor.js:550
-#: src/components/Exchange/PositionSeller.js:990
+#: src/components/Exchange/PositionSeller.js:1013
 #: src/components/Exchange/PositionsList.js:404
 #: src/components/Exchange/PositionsList.js:464
-#: src/components/Exchange/SwapBox.js:2143
+#: src/components/Exchange/SwapBox.js:2146
 msgid "Liq. Price"
 msgstr "清算価格"
 
@@ -1154,7 +1157,7 @@ msgstr "最大"
 #: src/components/Exchange/OrdersList.js:360
 #: src/components/Exchange/OrdersList.js:412
 #: src/components/Exchange/PositionEditor.js:544
-#: src/components/Exchange/PositionSeller.js:978
+#: src/components/Exchange/PositionSeller.js:1001
 #: src/components/Exchange/PositionsList.js:392
 #: src/components/Exchange/PositionsList.js:458
 msgid "Mark Price"
@@ -1185,7 +1188,7 @@ msgstr "プールの最大キャパシティ"
 msgid "Max amount exceeded"
 msgstr "最大値超過"
 
-#: src/components/Exchange/PositionSeller.js:545
+#: src/components/Exchange/PositionSeller.js:565
 msgid "Max close amount exceeded"
 msgstr "最大クローズ値超過"
 
@@ -1193,7 +1196,7 @@ msgstr "最大クローズ値超過"
 msgid "Max leverage: 30.5x"
 msgstr "最大レバレッジ: 30.5倍"
 
-#: src/components/Exchange/PositionSeller.js:553
+#: src/components/Exchange/PositionSeller.js:573
 msgid "Max leverage: 30.5xt"
 msgstr "最大レバレッジ: 30.5倍"
 
@@ -1235,7 +1238,7 @@ msgid "MetaMask not detected."
 msgstr "メタマスクが検出できません。"
 
 #: src/components/Exchange/PositionEditor.js:214
-#: src/components/Exchange/PositionSeller.js:549
+#: src/components/Exchange/PositionSeller.js:569
 #: src/components/Exchange/SwapBox.js:881
 msgid "Min leverage: 1.1x"
 msgstr "最小レバレッジ: 1.1倍"
@@ -1326,15 +1329,15 @@ msgstr "シンプルなスワップインターフェースでポジションを
 msgid "Order"
 msgstr "注文"
 
-#: src/components/Exchange/PositionSeller.js:674
+#: src/components/Exchange/PositionSeller.js:694
 msgid "Order created!"
 msgstr "注文作成完了!"
 
-#: src/components/Exchange/PositionSeller.js:675
+#: src/components/Exchange/PositionSeller.js:695
 msgid "Order creation failed."
 msgstr "注文が作成できませんでした。"
 
-#: src/components/Exchange/PositionSeller.js:673
+#: src/components/Exchange/PositionSeller.js:693
 msgid "Order submitted!"
 msgstr "注文提出完了!"
 
@@ -1360,7 +1363,7 @@ msgstr "プール"
 msgid "PRICE"
 msgstr "価格"
 
-#: src/components/Exchange/PositionSeller.js:503
+#: src/components/Exchange/PositionSeller.js:523
 #: src/components/Exchange/SwapBox.js:852
 msgid "Page outdated, please refresh"
 msgstr "ページの内容が期限切れです。更新してください。"
@@ -1398,7 +1401,7 @@ msgstr "この機能はアカウント全体の移転にのみ利用してくだ
 msgid "Please switch your network to Arbitrum."
 msgstr "ネットワークをArbitrumに切り替えてください。"
 
-#: src/components/Exchange/PositionSeller.js:1075
+#: src/components/Exchange/PositionSeller.js:1098
 #: src/components/Exchange/PositionsList.js:305
 #: src/pages/Actions/Actions.js:94
 msgid "PnL"
@@ -1408,7 +1411,7 @@ msgstr "損益"
 msgid "Position"
 msgstr "ポジション"
 
-#: src/components/Exchange/PositionSeller.js:500
+#: src/components/Exchange/PositionSeller.js:520
 msgid "Position close disabled, pending {0} upgrade"
 msgstr ""
 
@@ -1418,9 +1421,9 @@ msgstr "ポジション"
 
 #: src/components/Exchange/OrdersList.js:96
 #: src/components/Exchange/OrdersList.js:404
-#: src/components/Exchange/PositionSeller.js:893
-#: src/components/Exchange/SwapBox.js:1953
-#: src/components/Exchange/SwapBox.js:2002
+#: src/components/Exchange/PositionSeller.js:916
+#: src/components/Exchange/SwapBox.js:1956
+#: src/components/Exchange/SwapBox.js:2005
 #: src/components/Glp/GlpSwap.js:702
 #: src/pages/Dashboard/DashboardV2.js:890
 #: src/pages/Stake/StakeV2.js:1470
@@ -1429,7 +1432,7 @@ msgstr "ポジション"
 msgid "Price"
 msgstr "価格"
 
-#: src/components/Exchange/PositionSeller.js:519
+#: src/components/Exchange/PositionSeller.js:539
 msgid "Price above Liq. Price"
 msgstr "清算価格を上回る価格"
 
@@ -1437,7 +1440,7 @@ msgstr "清算価格を上回る価格"
 msgid "Price above Mark Price"
 msgstr "マーク価格を上回る価格"
 
-#: src/components/Exchange/PositionSeller.js:516
+#: src/components/Exchange/PositionSeller.js:536
 msgid "Price below Liq. Price"
 msgstr "清算価格を下回る価格"
 
@@ -1497,7 +1500,7 @@ msgstr "トレーダーとしてこのアカウントが獲得したリベート
 msgid "Rebates earned by this account as an affiliate."
 msgstr "アフィリエイトとしてこのアカウントが獲得したリベート"
 
-#: src/components/Exchange/PositionSeller.js:1136
+#: src/components/Exchange/PositionSeller.js:1159
 #: src/components/Exchange/SwapBox.js:218
 #: src/components/Exchange/SwapBox.js:1040
 #: src/components/Glp/GlpSwap.js:618
@@ -1562,7 +1565,7 @@ msgstr "紹介コードの更新完了!"
 msgid "Referrals"
 msgstr "紹介アカウント"
 
-#: src/components/Exchange/PositionSeller.js:733
+#: src/components/Exchange/PositionSeller.js:753
 msgid "Requested decrease of {0} {1} by {2} USD."
 msgstr "{0} {1} の {2} USDの削減を要求しました。"
 
@@ -1707,7 +1710,7 @@ msgid "Simple Swaps"
 msgstr "シンプルなスワップ"
 
 #: src/components/Exchange/PositionEditor.js:504
-#: src/components/Exchange/PositionSeller.js:1014
+#: src/components/Exchange/PositionSeller.js:1037
 #: src/components/Exchange/PositionsList.js:267
 #: src/components/Exchange/PositionsList.js:452
 msgid "Size"
@@ -1721,7 +1724,7 @@ msgstr "スリッページは5%未満"
 #~ msgid "Spanish"
 #~ msgstr "スペイン語"
 
-#: src/components/Exchange/SwapBox.js:2429
+#: src/components/Exchange/SwapBox.js:2432
 msgid "Speed up page loading"
 msgstr "ページの読み込みを速くする"
 
@@ -1788,7 +1791,7 @@ msgstr "提出"
 msgid "Supply"
 msgstr "供給量"
 
-#: src/components/Exchange/SwapBox.js:2218
+#: src/components/Exchange/SwapBox.js:2221
 msgid "Swap"
 msgstr "スワップ"
 
@@ -1986,7 +1989,7 @@ msgstr "トレーダー"
 msgid "Traders Referred"
 msgstr "紹介したトレーダー"
 
-#: src/components/Exchange/SwapBox.js:2415
+#: src/components/Exchange/SwapBox.js:2418
 msgid "Trading guide"
 msgstr "トレード案内"
 
@@ -2033,11 +2036,11 @@ msgstr "移転は一方通行であり、ステークされたトークンを送
 msgid "Transfers are only supported if the receiving account has not staked GMX or GLP tokens before."
 msgstr "移転は、移転先のアカウントがこれまでにGMXやGLPトークンをステークしたことがない場合に限り可能です。"
 
-#: src/components/Exchange/PositionSeller.js:968
+#: src/components/Exchange/PositionSeller.js:991
 msgid "Trigger Price"
 msgstr "トリガー価格"
 
-#: src/components/Exchange/PositionSeller.js:499
+#: src/components/Exchange/PositionSeller.js:519
 msgid "Trigger order disabled, pending {0} upgrade"
 msgstr ""
 
@@ -2099,7 +2102,7 @@ msgstr "更新中"
 msgid "Use the \"Edit\" button to deposit or withdraw collateral."
 msgstr "担保を入金または出金するには\"編集\"ボタンを使用してください。"
 
-#: src/components/Exchange/SwapBox.js:2409
+#: src/components/Exchange/SwapBox.js:2412
 msgid "Useful Links"
 msgstr "有用なリンク"
 
@@ -2211,7 +2214,7 @@ msgstr "ウォレットが接続されていません"
 msgid "WalletConnect"
 msgstr "WalletConnect"
 
-#: src/components/Exchange/SwapBox.js:2103
+#: src/components/Exchange/SwapBox.js:2106
 msgid "When closing the position, you can select which token you would like to receive."
 msgstr ""
 
