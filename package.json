@@ -70,7 +70,8 @@
     "prepare": "husky install && yarn lingui:prepare",
     "extract": "NODE_ENV=development lingui extract",
     "compile": "lingui compile",
-    "lingui:prepare": "yarn extract && yarn compile"
+    "lingui:prepare": "yarn extract && yarn compile",
+    "lingui:generate": "lingui extract --overwrite $(git diff --name-only --staged)"
   },
   "eslintConfig": {
     "extends": [
@@ -100,7 +101,7 @@
     "prettier": "2.5.1"
   },
   "lint-staged": {
-    "**/*.js?(x)": [
+    "**/*.{js, jsx, ts, tsx}": [
       "eslint --fix ./src",
       "prettier --write"
     ]
