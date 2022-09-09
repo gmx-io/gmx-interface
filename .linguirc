@@ -1,13 +1,12 @@
 {
   "locales": [
-    "es",
-    "zh",
-    "ko",
-    "ru",
-    "ja",
     "en",
-    "fr",
-    "pseudo"
+    "es",
+    "ko",
+    "ja",
+    "zh",
+    "ru",
+    "fr"
   ],
   "sourceLocale": "en",
   "catalogs": [
@@ -25,6 +24,5 @@
     "default": "en"
   },
   "format": "po",
-  "orderBy": "messageId",
-  "pseudoLocale": "pseudo"
+  "orderBy": "messageId"
 }
