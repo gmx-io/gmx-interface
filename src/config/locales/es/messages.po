@@ -52,7 +52,7 @@ msgstr "Los APR se actualizan semanalmente en el Miércoles, y dependerán de la
 msgid "AVAILABLE"
 msgstr "DISPONIBLE"
 
-#: src/components/Header/AppHeaderLinks.tsx:102
+#: src/components/Header/AppHeaderLinks.tsx:94
 #: src/pages/Ecosystem/Ecosystem.js:421
 #: src/pages/Ecosystem/Ecosystem.js:465
 #: src/pages/Ecosystem/Ecosystem.js:520
@@ -275,7 +275,7 @@ msgstr "Tasa de préstamo / Día: ${0}"
 msgid "Borrow Fee: ${0}"
 msgstr "Tasa de Préstamo: ${0}"
 
-#: src/components/Header/AppHeaderLinks.tsx:79
+#: src/components/Header/AppHeaderLinks.tsx:71
 msgid "Buy"
 msgstr "Comprar"
 
@@ -521,13 +521,13 @@ msgstr "¡Componer enviado!"
 msgid "Compounding..."
 msgstr "Componiendo"
 
-#: src/components/Header/AppHeaderUser.tsx:95
+#: src/components/Header/AppHeaderUser.tsx:103
 msgid "Connect"
 msgstr "Conectar"
 
 #: src/components/Exchange/SwapBox.js:1146
 #: src/components/Glp/GlpSwap.js:496
-#: src/components/Header/AppHeaderUser.tsx:95
+#: src/components/Header/AppHeaderUser.tsx:103
 #: src/components/Referrals/AddAffiliateCode.js:34
 #: src/components/Referrals/JoinReferralCode.js:22
 #: src/pages/Stake/StakeV2.js:1768
@@ -681,12 +681,12 @@ msgstr "Descargar"
 msgid "ETH is needed on Arbitrum to purchase GMX."
 msgstr "Se necesita ETH en Arbitrum para comprar GMX."
 
-#: src/components/Header/AppHeaderLinks.tsx:70
+#: src/components/Header/AppHeaderLinks.tsx:66
 #: src/pages/Stake/StakeV2.js:1444
 msgid "Earn"
 msgstr "Ganar"
 
-#: src/components/Header/AppHeaderLinks.tsx:97
+#: src/components/Header/AppHeaderLinks.tsx:89
 msgid "Ecosystem"
 msgstr "Ecosistema"
 
@@ -1580,7 +1580,7 @@ msgstr "Falló la actualización del código de referido."
 msgid "Referral code updated!"
 msgstr "¡Código de referido actualizado!"
 
-#: src/components/Header/AppHeaderLinks.tsx:88
+#: src/components/Header/AppHeaderLinks.tsx:80
 #: src/pages/Referrals/Referrals.js:121
 msgid "Referrals"
 msgstr "Referidos"
@@ -1700,7 +1700,7 @@ msgstr "El remitente ha retirado todos los tokens del Baúl de Adquisición GLP"
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "El remitente ha retirado todos los tokens del Cajas de Adquisición GMX"
 
-#: src/components/Header/AppHeaderLinks.tsx:109
+#: src/components/Header/AppHeaderLinks.tsx:101
 msgid "Settings"
 msgstr "Ajustes"
 
@@ -1992,8 +1992,8 @@ msgstr "Volumen Total"
 msgid "Total value of tokens in GLP pool ({chainName})"
 msgstr "Valor total de los tokens en la reserva de GLP ({chainName})"
 
-#: src/components/Header/AppHeaderUser.tsx:88
-#: src/components/Header/AppHeaderUser.tsx:123
+#: src/components/Header/AppHeaderUser.tsx:96
+#: src/components/Header/AppHeaderUser.tsx:131
 msgid "Trade"
 msgstr "Comercio"
 

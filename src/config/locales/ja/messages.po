@@ -48,7 +48,7 @@ msgstr "APR(実質年利)は毎週水曜日に更新され、その前一週間�
 msgid "AVAILABLE"
 msgstr "利用可能"
 
-#: src/components/Header/AppHeaderLinks.tsx:102
+#: src/components/Header/AppHeaderLinks.tsx:94
 #: src/pages/Ecosystem/Ecosystem.js:421
 #: src/pages/Ecosystem/Ecosystem.js:465
 #: src/pages/Ecosystem/Ecosystem.js:520
@@ -271,7 +271,7 @@ msgstr "1日あたり借入手数料: ${0}"
 msgid "Borrow Fee: ${0}"
 msgstr "借入手数料: ${0}"
 
-#: src/components/Header/AppHeaderLinks.tsx:79
+#: src/components/Header/AppHeaderLinks.tsx:71
 msgid "Buy"
 msgstr "購入"
 
@@ -517,13 +517,13 @@ msgstr "請求とステークの申し込み完了!"
 msgid "Compounding..."
 msgstr "請求およびステーク中"
 
-#: src/components/Header/AppHeaderUser.tsx:95
+#: src/components/Header/AppHeaderUser.tsx:103
 msgid "Connect"
 msgstr "接続"
 
 #: src/components/Exchange/SwapBox.js:1146
 #: src/components/Glp/GlpSwap.js:496
-#: src/components/Header/AppHeaderUser.tsx:95
+#: src/components/Header/AppHeaderUser.tsx:103
 #: src/components/Referrals/AddAffiliateCode.js:34
 #: src/components/Referrals/JoinReferralCode.js:22
 #: src/pages/Stake/StakeV2.js:1768
@@ -673,12 +673,12 @@ msgstr "ダウンロード"
 msgid "ETH is needed on Arbitrum to purchase GMX."
 msgstr "ArbitrumでGMXを購入するにはETHが必要です。"
 
-#: src/components/Header/AppHeaderLinks.tsx:70
+#: src/components/Header/AppHeaderLinks.tsx:66
 #: src/pages/Stake/StakeV2.js:1444
 msgid "Earn"
 msgstr "報酬獲得"
 
-#: src/components/Header/AppHeaderLinks.tsx:97
+#: src/components/Header/AppHeaderLinks.tsx:89
 msgid "Ecosystem"
 msgstr "エコシステム"
 
@@ -1560,7 +1560,7 @@ msgstr "紹介コードが更新できませんでした。"
 msgid "Referral code updated!"
 msgstr "紹介コードの更新完了!"
 
-#: src/components/Header/AppHeaderLinks.tsx:88
+#: src/components/Header/AppHeaderLinks.tsx:80
 #: src/pages/Referrals/Referrals.js:121
 msgid "Referrals"
 msgstr "紹介アカウント"
@@ -1676,7 +1676,7 @@ msgstr "送信側はGLPのべスティングボールトからすべてのトー
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "送信側はGMXのべスティングボールトからすべてのトークンを引き出しました。"
 
-#: src/components/Header/AppHeaderLinks.tsx:109
+#: src/components/Header/AppHeaderLinks.tsx:101
 msgid "Settings"
 msgstr "設定"
 
@@ -1960,8 +1960,8 @@ msgstr "総取引量"
 msgid "Total value of tokens in GLP pool ({chainName})"
 msgstr "GLPプール ({chainName})のトークンの総額"
 
-#: src/components/Header/AppHeaderUser.tsx:88
-#: src/components/Header/AppHeaderUser.tsx:123
+#: src/components/Header/AppHeaderUser.tsx:96
+#: src/components/Header/AppHeaderUser.tsx:131
 msgid "Trade"
 msgstr "トレード"
 

@@ -48,7 +48,7 @@ msgstr "APR은 매주 수요일에 업데이트되며 한 주 동안 쌓인 수�
 msgid "AVAILABLE"
 msgstr "사용가능"
 
-#: src/components/Header/AppHeaderLinks.tsx:102
+#: src/components/Header/AppHeaderLinks.tsx:94
 #: src/pages/Ecosystem/Ecosystem.js:421
 #: src/pages/Ecosystem/Ecosystem.js:465
 #: src/pages/Ecosystem/Ecosystem.js:520
@@ -271,7 +271,7 @@ msgstr "차용 수수료 / 일: ${0}"
 msgid "Borrow Fee: ${0}"
 msgstr "차용 수수료: ${0}"
 
-#: src/components/Header/AppHeaderLinks.tsx:79
+#: src/components/Header/AppHeaderLinks.tsx:71
 msgid "Buy"
 msgstr "구매"
 
@@ -517,13 +517,13 @@ msgstr "수령 후 스테이킹 제출 완료!"
 msgid "Compounding..."
 msgstr "수령 및 스테이킹중..."
 
-#: src/components/Header/AppHeaderUser.tsx:95
+#: src/components/Header/AppHeaderUser.tsx:103
 msgid "Connect"
 msgstr "연동"
 
 #: src/components/Exchange/SwapBox.js:1146
 #: src/components/Glp/GlpSwap.js:496
-#: src/components/Header/AppHeaderUser.tsx:95
+#: src/components/Header/AppHeaderUser.tsx:103
 #: src/components/Referrals/AddAffiliateCode.js:34
 #: src/components/Referrals/JoinReferralCode.js:22
 #: src/pages/Stake/StakeV2.js:1768
@@ -673,12 +673,12 @@ msgstr "다운로드"
 msgid "ETH is needed on Arbitrum to purchase GMX."
 msgstr "Arbitrum에서 GMX를 구매하기 위해서는 ETH가 필요합니다."
 
-#: src/components/Header/AppHeaderLinks.tsx:70
+#: src/components/Header/AppHeaderLinks.tsx:66
 #: src/pages/Stake/StakeV2.js:1444
 msgid "Earn"
 msgstr "보상"
 
-#: src/components/Header/AppHeaderLinks.tsx:97
+#: src/components/Header/AppHeaderLinks.tsx:89
 msgid "Ecosystem"
 msgstr "이코시스템"
 
@@ -1560,7 +1560,7 @@ msgstr "추천 코드 업데이트 실패."
 msgid "Referral code updated!"
 msgstr "추천 코드 업데이트 완료!"
 
-#: src/components/Header/AppHeaderLinks.tsx:88
+#: src/components/Header/AppHeaderLinks.tsx:80
 #: src/pages/Referrals/Referrals.js:121
 msgid "Referrals"
 msgstr "추천"
@@ -1676,7 +1676,7 @@ msgstr "GLP의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "GMX의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 
-#: src/components/Header/AppHeaderLinks.tsx:109
+#: src/components/Header/AppHeaderLinks.tsx:101
 msgid "Settings"
 msgstr "설정"
 
@@ -1960,8 +1960,8 @@ msgstr "총 거래량"
 msgid "Total value of tokens in GLP pool ({chainName})"
 msgstr "GLP 풀 ({chainName})의 토큰 총액"
 
-#: src/components/Header/AppHeaderUser.tsx:88
-#: src/components/Header/AppHeaderUser.tsx:123
+#: src/components/Header/AppHeaderUser.tsx:96
+#: src/components/Header/AppHeaderUser.tsx:131
 msgid "Trade"
 msgstr "트레이드"
 

@@ -48,7 +48,7 @@ msgstr ""
 msgid "AVAILABLE"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx:102
+#: src/components/Header/AppHeaderLinks.tsx:94
 #: src/pages/Ecosystem/Ecosystem.js:421
 #: src/pages/Ecosystem/Ecosystem.js:465
 #: src/pages/Ecosystem/Ecosystem.js:520
@@ -271,7 +271,7 @@ msgstr ""
 msgid "Borrow Fee: ${0}"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx:79
+#: src/components/Header/AppHeaderLinks.tsx:71
 msgid "Buy"
 msgstr "买"
 
@@ -517,13 +517,13 @@ msgstr ""
 msgid "Compounding..."
 msgstr ""
 
-#: src/components/Header/AppHeaderUser.tsx:95
+#: src/components/Header/AppHeaderUser.tsx:103
 msgid "Connect"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js:1146
 #: src/components/Glp/GlpSwap.js:496
-#: src/components/Header/AppHeaderUser.tsx:95
+#: src/components/Header/AppHeaderUser.tsx:103
 #: src/components/Referrals/AddAffiliateCode.js:34
 #: src/components/Referrals/JoinReferralCode.js:22
 #: src/pages/Stake/StakeV2.js:1768
@@ -673,12 +673,12 @@ msgstr ""
 msgid "ETH is needed on Arbitrum to purchase GMX."
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx:70
+#: src/components/Header/AppHeaderLinks.tsx:66
 #: src/pages/Stake/StakeV2.js:1444
 msgid "Earn"
 msgstr "赚"
 
-#: src/components/Header/AppHeaderLinks.tsx:97
+#: src/components/Header/AppHeaderLinks.tsx:89
 msgid "Ecosystem"
 msgstr "生态系统"
 
@@ -1560,7 +1560,7 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx:88
+#: src/components/Header/AppHeaderLinks.tsx:80
 #: src/pages/Referrals/Referrals.js:121
 msgid "Referrals"
 msgstr "推荐人"
@@ -1676,7 +1676,7 @@ msgstr ""
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx:109
+#: src/components/Header/AppHeaderLinks.tsx:101
 msgid "Settings"
 msgstr "设置"
 
@@ -1960,8 +1960,8 @@ msgstr ""
 msgid "Total value of tokens in GLP pool ({chainName})"
 msgstr ""
 
-#: src/components/Header/AppHeaderUser.tsx:88
-#: src/components/Header/AppHeaderUser.tsx:123
+#: src/components/Header/AppHeaderUser.tsx:96
+#: src/components/Header/AppHeaderUser.tsx:131
 msgid "Trade"
 msgstr "贸易"
 
