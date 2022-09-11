@@ -1,3 +1,6 @@
 .SwapBox-collateral-tooltip-text {
   font-weight: normal;
 }
+.Exchange-Disabled-button {
+  background: linear-gradient(90deg,rgba(30,34,61,.9),rgba(38,43,71,.9)) !important;
+}

@@ -1825,6 +1825,8 @@ export default function SwapBox(props) {
     return fromValue !== formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals);
   }
 
+  const DisabledButton = !isPrimaryEnabled() ? `Exchange-Disabled-button` : ``;
+
   return (
     <div className="Exchange-swap-box">
       {/* <div className="Exchange-swap-wallet-box App-box">
@@ -2210,7 +2212,11 @@ export default function SwapBox(props) {
           </div>
         )}
         <div className="Exchange-swap-button-container">
-          <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+          <button
+            className={`App-cta Exchange-swap-button ${DisabledButton}`}
+            onClick={onClickPrimary}
+            disabled={!isPrimaryEnabled()}
+          >
             {getPrimaryText()}
           </button>
         </div>
