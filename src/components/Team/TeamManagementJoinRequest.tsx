@@ -1,9 +1,8 @@
 import { useWeb3React } from "@web3-react/core"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { FiClock } from "react-icons/fi"
 import { cancelJoinRequest, createJoinRequest, useAccountJoinRequest } from "../../domain/leaderboard/contracts"
 import { Team } from "../../domain/leaderboard/types"
-import Loader from "../Common/Loader"
 
 type Props = {
   competitionIndex: number,
@@ -16,7 +15,7 @@ export default function TeamManagementJoinRequest({ competitionIndex, team, pend
   const { chainId, library, account } = useWeb3React()
   const [isCreating, setIsCreating] = useState(false)
   const [isCanceling, setIsCanceling] = useState(false)
-  const { data: joinRequest, loading } = useAccountJoinRequest(chainId, library, competitionIndex, account)
+  const { data: joinRequest } = useAccountJoinRequest(chainId, library, competitionIndex, account)
 
   const view = () => {
     return joinRequest.leaderAddress === team.leaderAddress ? 1 : 0;

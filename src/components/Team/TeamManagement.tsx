@@ -14,7 +14,7 @@ type Props = {
 }
 
 export default function TeamManagement({ team, competitionIndex, pendingTxns, setPendingTxns }: Props) {
-  const { chainId, library, account } = useWeb3React()
+  const { account } = useWeb3React()
   const [isTeamLeader, setIsTeamLeader] = useState(false)
 
   useEffect(() => {

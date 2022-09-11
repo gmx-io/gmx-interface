@@ -14,7 +14,7 @@ type Props = {
 export default function TeamManagementInviteLink({ team }: Props) {
   const { chainId, library, account } = useWeb3React()
   const [useReferralCode, setUseReferralCode] = useState(false)
-  const [_, copyToClipboard] = useCopyToClipboard()
+  const [, copyToClipboard] = useCopyToClipboard()
   let { userReferralCodeString } = useUserReferralCode(library, chainId, account)
 
 

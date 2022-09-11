@@ -17,7 +17,7 @@ type Props = {
 
 export default function Team({ pendingTxns, setPendingTxns }: Props) {
   const params = useParams<any>();
-  const { chainId, library, account } = useWeb3React();
+  const { chainId, library } = useWeb3React();
   const { data: team, loading: teamLoading } = useTeam(chainId, library, CURRENT_COMPETITION_INDEX, params.leaderAddress);
   const { data: competition, loading: competitionLoading } = useCompetitionDetails(chainId, library, CURRENT_COMPETITION_INDEX)
 
