@@ -1,17 +1,24 @@
+import { Position } from "../../domain/leaderboard/types";
 import { getChainIcon } from "../../lib/legacy";
 
-export default function TeamPositions({ chainId, positions }) {
+type Props = {
+  chainId: number|undefined,
+  positions: Position[],
+}
+
+export default function TeamPositions({ chainId, positions }: Props) {
   return (
     <>
       <div className="Tab-title-section">
         <div className="Page-title">
-          Positions <img alt="Chain Icon" src={getChainIcon(chainId)} />
+          Member Positions <img alt="Chain Icon" src={getChainIcon(chainId)} />
         </div>
         <div className="Page-description">Platform and GLP index tokens.</div>
       </div>
       <table className="Exchange-list Orders App-box large">
         <tbody>
           <tr className="Exchange-list-header">
+            <th>Account</th>
             <th>Type</th>
             <th>Order</th>
             <th>Price</th>
@@ -19,7 +26,7 @@ export default function TeamPositions({ chainId, positions }) {
           </tr>
           {positions.length === 0 ? (
             <tr>
-              <td colSpan={4}>No open positions</td>
+              <td colSpan={5}>No open positions</td>
             </tr>
           ) : (
             ""

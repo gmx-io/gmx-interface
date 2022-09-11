@@ -1,7 +1,7 @@
 export function getTeamUrl (leaderAddress) {
-  return `/leaderboard/team/${leaderAddress}`
+  return `/leaderboard/teams/${leaderAddress}`
 }
 
 export function getTeamRegistrationUrl () {
-  return "/leaderboard/register-team"
+  return "/leaderboard/teams/create"
 }

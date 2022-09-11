@@ -2,11 +2,20 @@ import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { checkTeamName, createTeam } from "../../domain/leaderboard/contracts";
+import { Competition } from "../../domain/leaderboard/types";
 import { getTeamUrl } from "../../domain/leaderboard/urls";
 import { useDebounce } from "../../lib/legacy";
 import "./TeamCreationForm.css";
 
-export default function TeamCreationForm({ competitionIndex, times, connectWallet, pendingTxns, setPendingTxns }) {
+type Props = {
+  competitionIndex: number,
+  competition: Competition,
+  connectWallet: any,
+  pendingTxns: any,
+  setPendingTxns: any,
+}
+
+export default function TeamCreationForm({ competitionIndex, competition, connectWallet, pendingTxns, setPendingTxns }: Props) {
   const history = useHistory();
   const { active, chainId, library, account } = useWeb3React();
   const [isProcessing, setIsProcessing] = useState(false)
@@ -15,7 +24,7 @@ export default function TeamCreationForm({ competitionIndex, times, connectWalle
   const [nameAlreadyUsed, setNameAlreadyUsed] = useState(false);
   const [validatingName, setValidatingName] = useState(false);
 
-  if (!times.registrationActive) {
+  if (!competition.registrationActive) {
     history.replace("/leaderboard");
   }
 

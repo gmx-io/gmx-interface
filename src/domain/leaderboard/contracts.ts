@@ -4,13 +4,7 @@ import { callContract } from "../legacy";
 import { getContract } from "../../config/Addresses";
 import Competition from "./../../abis/Competition.json";
 import { isAddressZero } from "../../lib/legacy";
-
-type CompetitionDetails = {
-  start: number;
-  end: number;
-  registrationActive: boolean;
-  active: boolean;
-}
+import { Competition as CompetitionType, JoinRequest, Team } from "./types";
 
 export async function checkTeamName(chainId, library, name, competitionIndex) {
   if (!chainId || !library) {
@@ -24,7 +18,7 @@ export async function checkTeamName(chainId, library, name, competitionIndex) {
 export function useCompetitionDetails(chainId, library, competitionIndex) {
   const [loading, setLoading] = useState(true)
 
-  const [data, setData] = useState<CompetitionDetails>({
+  const [data, setData] = useState<CompetitionType>({
     start: 0,
     end: 0,
     registrationActive: false,
@@ -56,15 +50,6 @@ export function useCompetitionDetails(chainId, library, competitionIndex) {
   }, [chainId, library, competitionIndex]);
 
   return { data, loading };
-}
-
-type Team = {
-  rank: number,
-  realizedPnl: BigNumber,
-  leaderAddress: string,
-  name: string;
-  members: string[],
-  positions: any[],
 }
 
 export function useTeam(chainId, library, competitionIndex, leaderAddress) {
@@ -131,6 +116,66 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
 export function createTeam(chainId, library, competitionIndex, name, opts) {
   const contract = getCompetitionContract(chainId, library)
   return callContract(chainId, contract, "createTeam", [competitionIndex, name], opts)
+}
+
+export function createJoinRequest(chainId, library, competitionIndex, leaderAddress, opts) {
+  const contract = getCompetitionContract(chainId, library)
+  return callContract(chainId, contract, "createJoinRequest", [competitionIndex, leaderAddress], opts)
+}
+
+export function cancelJoinRequest(chainId, library, competitionIndex, opts) {
+  const contract = getCompetitionContract(chainId, library)
+  return callContract(chainId, contract, "cancelJoinRequest", [competitionIndex], opts)
+}
+
+export function approveJoinRequest(chainId, library, competitionIndex, account, opts) {
+  const contract = getCompetitionContract(chainId, library)
+  return callContract(chainId, contract, "approveJoinRequest", [competitionIndex, account], opts)
+}
+
+export async function getAccountJoinRequest(chainId, library, competitionIndex, account): Promise<JoinRequest|null> {
+  const contract = getCompetitionContract(chainId, library)
+  const res = await contract.getJoinRequest(competitionIndex, account)
+
+  if (isAddressZero(res)) {
+    return null;
+  }
+
+  return {
+    leaderAddress: res,
+    account: account,
+  }
+}
+
+export function useAccountJoinRequest(chainId, library, competitionIndex, account) {
+  const [data, setData] = useState<JoinRequest>({
+    leaderAddress: ethers.constants.AddressZero,
+    account: ethers.constants.AddressZero,
+  })
+
+  const [loading, setLoading] = useState(true)
+  const [exists, setExists] = useState(false)
+
+  useEffect(() => {
+    async function main () {
+      const req = await getAccountJoinRequest(chainId, library, competitionIndex, account)
+
+      if (req === null) {
+        setExists(false)
+        setLoading(false)
+        return
+      }
+
+      setData(req)
+      setExists(true)
+      setLoading(false)
+    }
+
+    main()
+  }, [chainId, library, account, competitionIndex])
+
+  return { data, loading, exists }
+
 }
 
 function getCompetitionContract(chainId, library) {

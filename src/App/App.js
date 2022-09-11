@@ -59,8 +59,8 @@ import ClaimEsGmx from "../pages/ClaimEsGmx/ClaimEsGmx";
 import BeginAccountTransfer from "../pages/BeginAccountTransfer/BeginAccountTransfer";
 import CompleteAccountTransfer from "../pages/CompleteAccountTransfer/CompleteAccountTransfer";
 import Leaderboard from "../pages/Leaderboard/Leaderboard";
-import Team from "../pages/Leaderboard/Team";
-import TeamCreation from "../pages/Leaderboard/TeamCreation";
+import Team from "../pages/Team/Team";
+import TeamCreation from "../pages/TeamCreation/TeamCreation";
 
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -100,6 +100,7 @@ import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
 import { defaultLocale, dynamicActivate } from "../lib/i18n";
 import { Header } from "../components/Header/Header";
+import { getTeamRegistrationUrl, getTeamUrl } from "../domain/leaderboard/urls";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -514,11 +515,11 @@ function FullApp() {
               <Route exact path="/leaderboard">
                 <Leaderboard />
               </Route>
-              <Route exact path="/leaderboard/team/:leaderAddress">
-                <Team />
-              </Route>
-              <Route exact path="/leaderboard/register-team">
+              <Route exact path={getTeamRegistrationUrl()}>
                 <TeamCreation pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path={getTeamUrl(":leaderAddress")}>
+                <Team pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />
               </Route>
               <Route exact path="/referrals/:account">
                 <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />

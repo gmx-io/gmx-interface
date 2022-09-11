@@ -1,6 +1,12 @@
+import { Competition, Team } from "../../domain/leaderboard/types";
 import { formatAmount, USD_DECIMALS } from "../../lib/legacy";
 
-export default function TeamStats({ team, competition }) {
+type Props = {
+  team: Team,
+  competition: Competition,
+}
+
+export default function TeamStats({ team, competition }: Props) {
   return (
     <div className="referral-body-container">
       <div className="referral-stats">

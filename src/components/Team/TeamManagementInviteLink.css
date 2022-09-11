@@ -16,12 +16,3 @@
   right: 1.5rem;
   transform: translateY(-50%);
 }
-
-.card-details-pending-request .label {
-  display: flex;
-  align-items: center;
-}
-
-.card-details-pending-request .label span {
-  margin-left: .775rem;
-}

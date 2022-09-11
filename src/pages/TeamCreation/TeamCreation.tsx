@@ -3,15 +3,21 @@ import { getChainIcon, getPageTitle } from "../../lib/legacy";
 import { useCompetitionDetails, useTeam } from "../../domain/leaderboard/contracts";
 import { useWeb3React } from "@web3-react/core";
 import Loader from "../../components/Common/Loader";
-import TeamCreationForm from "../../components/Leaderboard/TeamCreationForm";
+import TeamCreationForm from "../../components/Team/TeamCreationForm";
 import { CURRENT_COMPETITION_INDEX } from "../../domain/leaderboard/constants";
 import { useHistory } from "react-router-dom";
 import { getTeamUrl } from "../../domain/leaderboard/urls";
 
-export default function TeamCreation({ connectWallet, setPendingTxns, pendingTxns }) {
+type Props = {
+  connectWallet: any,
+  setPendingTxns: any,
+  pendingTxns: any,
+}
+
+export default function TeamCreation({ connectWallet, setPendingTxns, pendingTxns }: Props) {
   const history = useHistory()
   const { chainId, library, account } = useWeb3React();
-  const { data: times, loading: competitionLoading } = useCompetitionDetails(chainId, library, CURRENT_COMPETITION_INDEX);
+  const { data: competition, loading: competitionLoading } = useCompetitionDetails(chainId, library, CURRENT_COMPETITION_INDEX);
   const { data: userTeam, exists: userHasTeam, loading: userTeamLoading } = useTeam(chainId, library, CURRENT_COMPETITION_INDEX, account)
 
   if (competitionLoading || userTeamLoading) {
@@ -40,7 +46,7 @@ export default function TeamCreation({ connectWallet, setPendingTxns, pendingTxn
           pendingTxns={pendingTxns}
           competitionIndex={CURRENT_COMPETITION_INDEX}
           connectWallet={connectWallet}
-          times={times}
+          competition={competition}
           setPendingTxns={setPendingTxns}
         />
       </div>

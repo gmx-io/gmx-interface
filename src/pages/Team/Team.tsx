@@ -6,12 +6,16 @@ import { getChainIcon, getPageTitle } from "../../lib/legacy";
 import Loader from "./../../components/Common/Loader";
 import { CURRENT_COMPETITION_INDEX } from "../../domain/leaderboard/constants";
 import "./Team.css";
-import TeamPositions from "../../components/Leaderboard/TeamPositions";
-import TeamStats from "../../components/Leaderboard/TeamStats";
-import TeamManagement from "../../components/Leaderboard/TeamManagement";
-import { useEffect, useState } from "react";
+import TeamPositions from "../../components/Team/TeamPositions";
+import TeamStats from "../../components/Team/TeamStats";
+import TeamManagement from "../../components/Team/TeamManagement";
 
-export default function Team() {
+type Props = {
+  pendingTxns: any,
+  setPendingTxns: any,
+}
+
+export default function Team({ pendingTxns, setPendingTxns }: Props) {
   const params = useParams<any>();
   const { chainId, library, account } = useWeb3React();
   const { data: team, loading: teamLoading } = useTeam(chainId, library, CURRENT_COMPETITION_INDEX, params.leaderAddress);
@@ -20,7 +24,7 @@ export default function Team() {
   const isLoading = () => teamLoading || competitionLoading
 
   return (
-    <SEO title={getPageTitle("Leaderboard")}>
+    <SEO title={getPageTitle("Team")}>
       <div className="default-container page-layout Leaderboard">
         <div className="team-section-title-block section-title-block">
           <div className="section-title-content">
@@ -37,8 +41,18 @@ export default function Team() {
         {isLoading() || (
           <>
             <TeamStats team={team} competition={competition}/>
-            {competition.registrationActive && <TeamManagement team={team} account={account} />}
-            {competition.active && <TeamPositions chainId={chainId} positions={team.positions}/>}
+
+            {competition.registrationActive && <TeamManagement
+              team={team}
+              competitionIndex={CURRENT_COMPETITION_INDEX}
+              pendingTxns={pendingTxns}
+              setPendingTxns={setPendingTxns}
+            />}
+
+            {competition.active && <TeamPositions
+              chainId={chainId}
+              positions={team.positions}
+            />}
           </>
         )}
       </div>
