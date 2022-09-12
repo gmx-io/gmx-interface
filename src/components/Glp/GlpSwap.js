@@ -63,8 +63,8 @@ import avalanche16Icon from "../../img/ic_avalanche_16.svg";
 import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
-import Modal from "../Modal/Modal";
 import AssetDropdown from "../../pages/Dashboard/AssetDropdown";
+import SwapErrorModal from "./SwapErrorModal";
 
 const { AddressZero } = ethers.constants;
 
@@ -479,23 +479,6 @@ export default function GlpSwap(props) {
     return [false];
   };
 
-  function renderErrorModal() {
-    const inputCurrency = swapToken.address;
-    const oneInchUrl = `https://app.1inch.io/#/${chainId}/swap/${inputCurrency}`;
-    const label = `${swapToken.symbol} Capacity Reached`;
-    return (
-      <Modal isVisible={Boolean(modalError)} setIsVisible={setModalError} label={label} className="Error-modal">
-        <p>The pool's capacity has been reached for {swapToken.symbol}. Please use another token to buy GLP.</p>
-        <p>Check the "Save on Fees" section for tokens with the lowest fees.</p>
-        <p>
-          <a href={oneInchUrl} target="_blank" rel="noreferrer">
-            Swap {swapToken.symbol} on 1inch
-          </a>
-        </p>
-      </Modal>
-    );
-  }
-
   const isPrimaryEnabled = () => {
     if (IS_NETWORK_DISABLED[chainId]) {
       return false;
@@ -691,7 +674,17 @@ export default function GlpSwap(props) {
 
   return (
     <div className="GlpSwap">
-      {renderErrorModal()}
+      <SwapErrorModal
+        isVisible={Boolean(modalError)}
+        setIsVisible={setModalError}
+        swapToken={swapToken}
+        chainId={chainId}
+        glpAmount={glpAmount}
+        usdgSupply={usdgSupply}
+        totalTokenWeights={totalTokenWeights}
+        glpPrice={glpPrice}
+        infoTokens={infoTokens}
+      />
       {/* <div className="Page-title-section">
         <div className="Page-title">{isBuying ? "Buy GLP" : "Sell GLP"}</div>
         {isBuying && <div className="Page-description">
@@ -1107,10 +1100,7 @@ export default function GlpSwap(props) {
                 );
               }
               function renderFees() {
-                const swapUrl =
-                  chainId === ARBITRUM
-                    ? `https://app.uniswap.org/#/swap?inputCurrency=${token.address}`
-                    : `https://traderjoexyz.com/trade?inputCurrency=${token.address}`;
+                const swapUrl = `https://app.1inch.io/#/${chainId}/swap/`;
                 switch (true) {
                   case (isBuying && isCapReached) || (!isBuying && managedUsd?.lt(1)):
                     return (
@@ -1126,7 +1116,7 @@ export default function GlpSwap(props) {
                             <br />
                             <p>
                               <a href={swapUrl} target="_blank" rel="noreferrer">
-                                <Trans>Swap on {chainId === ARBITRUM ? "Uniswap" : "Trader Joe"}</Trans>
+                                <Trans> Swap {tokenInfo.symbol} on 1inch</Trans>
                               </a>
                             </p>
                           </div>

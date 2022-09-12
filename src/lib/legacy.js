@@ -17,7 +17,7 @@ import useSWR from "swr";
 import OrderBookReader from "../abis/OrderBookReader.json";
 import OrderBook from "../abis/OrderBook.json";
 
-import { getWhitelistedTokens, isValidToken } from "../config/Tokens";
+import { getVisibleTokens, getWhitelistedTokens, isValidToken } from "../config/Tokens";
 
 const { AddressZero } = ethers.constants;
 
@@ -695,6 +695,39 @@ export function getBuyGlpFromAmount(toAmount, fromTokenAddress, infoTokens, glpP
   fromAmount = fromAmount.mul(BASIS_POINTS_DIVISOR).div(BASIS_POINTS_DIVISOR - feeBasisPoints);
 
   return { amount: fromAmount, feeBasisPoints };
+}
+
+export function getLowestFeeTokenForBuyGlp(
+  chainId,
+  toAmount,
+  glpPrice,
+  usdgSupply,
+  totalTokenWeights,
+  infoTokens,
+  fromTokenAddress
+) {
+  if (!chainId || !toAmount || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights) {
+    return;
+  }
+  const tokens = getVisibleTokens(chainId);
+  const usdgAmount = toAmount.mul(glpPrice).div(PRECISION);
+  return tokens
+    .map((token) => {
+      const fromToken = getTokenInfo(infoTokens, token.address);
+      const fees = getFeeBasisPoints(
+        fromToken,
+        usdgAmount,
+        MINT_BURN_FEE_BASIS_POINTS,
+        TAX_BASIS_POINTS,
+        true,
+        usdgSupply,
+        totalTokenWeights
+      );
+      return { ...token, fees };
+    })
+    .filter((t) => t.address !== fromTokenAddress)
+    .filter((t) => t.fees)
+    .sort((a, b) => a.fees - b.fees)[0];
 }
 
 export function getSellGlpToAmount(toAmount, fromTokenAddress, infoTokens, glpPrice, usdgSupply, totalTokenWeights) {
