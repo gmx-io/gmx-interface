@@ -5,13 +5,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MdClose } from "react-icons/md";
 
 import "./Modal.css";
-import useLockBodyScroll from "../../lib/useLockBodyScroll";
+import useLockBodyScroll, { TOUCH_MOVE_CONTAINER_CLASS_NAME } from "../../lib/useLockBodyScroll";
 
 export default function Modal(props) {
-  const { isVisible, setIsVisible, className, zIndex, onAfterOpen, disableBodyScrollLock } = props;
+  const { isVisible, setIsVisible, className, zIndex, onAfterOpen, disableBodyScrollLock, allowContentTouchMove } =
+    props;
+
   const modalRef = useRef(null);
 
-  useLockBodyScroll(modalRef, isVisible, disableBodyScrollLock);
+  useLockBodyScroll(modalRef, isVisible, {
+    disableLock: disableBodyScrollLock,
+    allowTouchMove: allowContentTouchMove,
+  });
 
   useEffect(() => {
     function close(e) {
@@ -52,7 +57,7 @@ export default function Modal(props) {
             }}
             onClick={() => setIsVisible(false)}
           ></div>
-          <div className="Modal-content">
+          <div className={cx("Modal-content", TOUCH_MOVE_CONTAINER_CLASS_NAME)}>
             <div className="Modal-title-bar">
               <div className="Modal-title">{props.label}</div>
               <div className="Modal-close-button" onClick={() => setIsVisible(false)}>
