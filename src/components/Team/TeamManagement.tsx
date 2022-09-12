@@ -49,26 +49,6 @@ export default function TeamManagement({ team, competitionIndex, pendingTxns, se
           />
         )}
       </div>
-      <div className="Tab-title-section">
-        <div className="Page-title">
-          Members
-        </div>
-        <div className="Page-description">Platform and GLP index tokens.</div>
-      </div>
-      <div>
-        <table className="simple-table">
-          <tbody>
-            <tr className="simple-table-header">
-              <th>Address</th>
-            </tr>
-            {team.members.map(member => (
-              <tr>
-                <td>{member}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
     </div>
   )
 }

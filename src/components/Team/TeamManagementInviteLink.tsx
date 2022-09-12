@@ -1,9 +1,8 @@
-import { useWeb3React } from "@web3-react/core"
 import { useState } from "react"
 import { FiCopy } from "react-icons/fi"
 import { useCopyToClipboard } from "react-use"
 import { Team } from "../../domain/leaderboard/types"
-import { useUserReferralCode } from "../../domain/referrals"
+import { getTeamUrl } from "../../domain/leaderboard/urls"
 import { helperToast } from "../../lib/legacy"
 import "./TeamManagementInviteLink.css"
 
@@ -12,20 +11,16 @@ type Props = {
 }
 
 export default function TeamManagementInviteLink({ team }: Props) {
-  const { chainId, library, account } = useWeb3React()
   const [useReferralCode, setUseReferralCode] = useState(false)
   const [, copyToClipboard] = useCopyToClipboard()
-  let { userReferralCodeString } = useUserReferralCode(library, chainId, account)
-
-
-  userReferralCodeString = "ABCD"
+  const [referralCode] = useState("ABCD")
 
   const referralLink = () => {
-    const link = new URL(window.location.href)
-    if (useReferralCode && userReferralCodeString !== undefined) {
-      link.searchParams.set("referral", userReferralCodeString)
+    let link = new URL(window.location.host).toString() + "#/" + getTeamUrl(team.leaderAddress)
+    if (useReferralCode && referralCode !== "") {
+      link += "?referral=" + referralCode
     }
-    return link.toString()
+    return link
   }
 
   const copyInviteLink = () => {
@@ -37,9 +32,9 @@ export default function TeamManagementInviteLink({ team }: Props) {
     <div className="info-card">
       <div className="card-details">
         <h3 className="label">1. Share Invite Link</h3>
-        {userReferralCodeString && (
+        {referralCode && (
           <div>
-            <span>Include Referral Code {userReferralCodeString}</span>
+            <span>Include Referral Code {referralCode}</span>
             <input type="checkbox" onChange={() => setUseReferralCode(v => !v)}/>
           </div>
         )}

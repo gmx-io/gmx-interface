@@ -61,6 +61,7 @@ export default function TeamManagementApproveRequest({ competitionIndex, pending
       console.error(err)
     } finally {
       setIsApproving(false)
+      setValue("")
     }
   }
 

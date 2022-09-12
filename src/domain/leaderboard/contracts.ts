@@ -5,6 +5,7 @@ import { getContract } from "../../config/Addresses";
 import Competition from "./../../abis/Competition.json";
 import { isAddressZero } from "../../lib/legacy";
 import { Competition as CompetitionType, JoinRequest, Team } from "./types";
+import { encodeReferralCode } from "../referrals"
 
 export async function checkTeamName(chainId, library, name, competitionIndex) {
   if (!chainId || !library) {
@@ -113,14 +114,34 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
   return { data, exists, loading };
 }
 
+export function useMemberTeam(chainId, library, competitionIndex, account) {
+  const [data, setData] = useState(ethers.constants.AddressZero);
+  const [hasTeam, setHasTeam] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    async function main() {
+      const contract = getCompetitionContract(chainId, library)
+      const res = await contract.getMemberTeam(competitionIndex, account)
+      setData(res)
+      setLoading(false)
+      setHasTeam(!isAddressZero(res))
+    }
+
+    main()
+  }, [chainId, library, competitionIndex, account])
+
+  return { data, loading, hasTeam }
+}
+
 export function createTeam(chainId, library, competitionIndex, name, opts) {
   const contract = getCompetitionContract(chainId, library)
   return callContract(chainId, contract, "createTeam", [competitionIndex, name], opts)
 }
 
-export function createJoinRequest(chainId, library, competitionIndex, leaderAddress, opts) {
+export function createJoinRequest(chainId, library, competitionIndex, leaderAddress, referralCode, opts) {
   const contract = getCompetitionContract(chainId, library)
-  return callContract(chainId, contract, "createJoinRequest", [competitionIndex, leaderAddress], opts)
+  return callContract(chainId, contract, "createJoinRequest", [competitionIndex, leaderAddress, encodeReferralCode(referralCode)], opts)
 }
 
 export function cancelJoinRequest(chainId, library, competitionIndex, opts) {

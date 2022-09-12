@@ -3,6 +3,7 @@ import { useState } from "react"
 import { FiClock } from "react-icons/fi"
 import { cancelJoinRequest, createJoinRequest, useAccountJoinRequest } from "../../domain/leaderboard/contracts"
 import { Team } from "../../domain/leaderboard/types"
+import useRouteQuery from "../../lib/useRouteQuery"
 
 type Props = {
   competitionIndex: number,
@@ -13,9 +14,12 @@ type Props = {
 
 export default function TeamManagementJoinRequest({ competitionIndex, team, pendingTxns, setPendingTxns }: Props) {
   const { chainId, library, account } = useWeb3React()
+  const query = useRouteQuery()
   const [isCreating, setIsCreating] = useState(false)
   const [isCanceling, setIsCanceling] = useState(false)
   const { data: joinRequest } = useAccountJoinRequest(chainId, library, competitionIndex, account)
+
+  const referralCode = query.get("referral") ?? ""
 
   const view = () => {
     return joinRequest.leaderAddress === team.leaderAddress ? 1 : 0;
@@ -25,7 +29,7 @@ export default function TeamManagementJoinRequest({ competitionIndex, team, pend
     setIsCreating(true)
 
     try {
-      const tx = await createJoinRequest(chainId, library, competitionIndex, team.leaderAddress, {
+      const tx = await createJoinRequest(chainId, library, competitionIndex, team.leaderAddress, referralCode, {
         successMsg: "Join request created!",
         sentMsg: "Join request submitted!",
         failMsg: "Join request failed.",
@@ -70,6 +74,7 @@ export default function TeamManagementJoinRequest({ competitionIndex, team, pend
               <span>Create Join Request</span>
             </h3>
             <p>The team leader have to accept your request.</p>
+            {referralCode && <input className="text-input" readOnly type="text" value={referralCode}/>}
             <button className="default-btn" onClick={() => handleCreateClick()} disabled={isCreating}>
               {isCreating ? "Creating join request..." : "Create Join Request"}
             </button>
