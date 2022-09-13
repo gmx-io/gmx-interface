@@ -2772,7 +2772,7 @@ export function importImage(name) {
   } catch (error) {
     console.error(error);
   }
-  return tokenImage && tokenImage.default;
+  return tokenImage;
 }
 
 export function getTwitterIntentURL(text, url = "", hashtag = "") {

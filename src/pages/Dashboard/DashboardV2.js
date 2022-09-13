@@ -61,8 +61,10 @@ import avalanche24Icon from "../../img/ic_avalanche_24.svg";
 
 import AssetDropdown from "./AssetDropdown";
 import SEO from "../../components/Common/SEO";
-import TooltipCard, { TooltipCardRow } from "./TooltipCard";
+
 import useTotalVolume from "../../domain/useTotalVolume";
+import TooltipCard, { TooltipCardRow } from "../../components/Tooltip/TooltipCard";
+
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
