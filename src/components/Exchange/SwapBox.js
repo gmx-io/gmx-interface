@@ -74,7 +74,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import ConfirmationBox from "./ConfirmationBox";
 import OrdersToa from "./OrdersToa";
 
-import { getTokens, getWhitelistedTokens, getToken, getTokenBySymbol } from "../../config/Tokens";
+import { getTokens, getWhitelistedTokens, getToken, getTokenBySymbol, getNativeToken } from "../../config/Tokens";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Router from "../../abis/Router.json";
 import Token from "../../abis/Token.json";
@@ -84,6 +84,7 @@ import longImg from "../../img/long.svg";
 import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
 import { useUserReferralCode } from "../../domain/referrals";
+import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -789,7 +790,14 @@ export default function SwapBox(props) {
     if (!fromTokenInfo || !fromTokenInfo.minPrice) {
       return [t`Incorrect network`];
     }
-    if (fromTokenInfo && fromTokenInfo.balance && fromAmount && fromAmount.gt(fromTokenInfo.balance)) {
+
+    if (
+      !savedShouldDisableValidationForTesting &&
+      fromTokenInfo &&
+      fromTokenInfo.balance &&
+      fromAmount &&
+      fromAmount.gt(fromTokenInfo.balance)
+    ) {
       return [t`Insufficient ${fromTokenInfo.symbol} balance`];
     }
 
@@ -862,7 +870,13 @@ export default function SwapBox(props) {
     }
 
     const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
-    if (fromTokenInfo && fromTokenInfo.balance && fromAmount && fromAmount.gt(fromTokenInfo.balance)) {
+    if (
+      !savedShouldDisableValidationForTesting &&
+      fromTokenInfo &&
+      fromTokenInfo.balance &&
+      fromAmount &&
+      fromAmount.gt(fromTokenInfo.balance)
+    ) {
       return [t`Insufficient ${fromTokenInfo.symbol} balance`];
     }
 
@@ -1063,42 +1077,6 @@ export default function SwapBox(props) {
         approveOrderBook={approveOrderBook}
         isPluginApproving={isPluginApproving}
       />
-    );
-  };
-
-  const renderErrorModal = () => {
-    const inputCurrency = fromToken.address === AddressZero ? "ETH" : fromToken.address;
-    let outputCurrency;
-    if (isLong) {
-      outputCurrency = toToken.address === AddressZero ? "ETH" : toToken.address;
-    } else {
-      outputCurrency = shortCollateralToken.address;
-    }
-    let externalSwapUrl = "";
-    if (chainId === AVALANCHE) {
-      externalSwapUrl = `https://traderjoexyz.com/trade?outputCurrency=${outputCurrency}#/`;
-    } else {
-      externalSwapUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}`;
-    }
-    let externalSwapName = chainId === AVALANCHE ? "Trader Joe" : "Uniswap";
-    const label =
-      modalError === "BUFFER" ? `${shortCollateralToken.symbol} Required` : `${fromToken.symbol} Capacity Reached`;
-    const swapTokenSymbol = isLong ? toToken.symbol : shortCollateralToken.symbol;
-    return (
-      <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal font-base">
-        <div>You need to select {swapTokenSymbol} as the "Pay" token to initiate this trade.</div>
-        <br />
-        {isShort && (
-          <div>
-            Alternatively you can select a different "Profits In" token.
-            <br />
-            <br />
-          </div>
-        )}
-        <a href={externalSwapUrl} target="_blank" rel="noreferrer">
-          Buy {swapTokenSymbol} on {externalSwapName}
-        </a>
-      </Modal>
     );
   };
 
@@ -2359,7 +2337,7 @@ export default function SwapBox(props) {
                           The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour.
                           <br />
                           <br />
-                          {isShort && `You can change the "Profits In" token above to find lower fees`}
+                          {isShort && `You can change the "Collateral In" token above to find lower fees`}
                         </div>
                       )}
                       <br />
@@ -2434,7 +2412,16 @@ export default function SwapBox(props) {
           </div>
         </div>
       </div>
-      {renderErrorModal()}
+      <NoLiquidityErrorModal
+        chainId={chainId}
+        fromToken={fromToken}
+        toToken={toToken}
+        shortCollateralToken={shortCollateralToken}
+        isLong={isLong}
+        isShort={isShort}
+        modalError={modalError}
+        setModalError={setModalError}
+      />
       {renderOrdersToa()}
       {isConfirming && (
         <ConfirmationBox
