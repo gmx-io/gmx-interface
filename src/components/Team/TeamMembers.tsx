@@ -9,10 +9,10 @@ type Props = {
 }
 
 export function TeamMembers({ team }: Props) {
-  const { chainId } = useWeb3React()
+  const { chainId, library } = useWeb3React()
   const [page, setPage] = useState(1)
   const perPage = 10
-  const { data, loading } = useTeamMembersStats(chainId, team.competitionIndex, page, perPage)
+  const { data, loading } = useTeamMembersStats(chainId, library, team.competitionIndex, team.leaderAddress, page, perPage)
 
   const pageCount = () => {
     return Math.ceil(data.length / perPage)

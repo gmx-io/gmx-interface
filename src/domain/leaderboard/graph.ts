@@ -1,5 +1,7 @@
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
+import { isAddressZero } from "../../lib/legacy";
+import { getCompetitionContract } from "./contracts";
 import { MemberStats } from "./types";
 
 interface Stats {
@@ -59,23 +61,31 @@ export function useTeamsStats(chainId) {
   return { data, loading }
 }
 
-export function useTeamMembersStats(chainId, competitionIndex, page, perPage) {
+export function useTeamMembersStats(chainId, library, competitionIndex, leaderAddress, page, perPage) {
   const [data, setData] = useState<MemberStats[]>([]);
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function main() {
-      setTimeout(() => {
-        setData([{
-          address: ethers.constants.AddressZero,
-        }])
+      const contract = getCompetitionContract(chainId, library)
 
-        setLoading(false)
-      }, 5000)
+      let res = await contract.getTeamMembers(
+        competitionIndex,
+        leaderAddress,
+        (page - 1) * perPage,
+        page * perPage,
+      )
+
+      res = res.filter(memberAddress => !isAddressZero(memberAddress)).map(memberAddress => ({
+        address: memberAddress,
+      }))
+
+      setData(res)
+      setLoading(false)
     }
 
     main()
-  }, [chainId, competitionIndex, page, perPage])
+  }, [chainId, library, competitionIndex, leaderAddress, page, perPage])
 
   return { data, loading }
 }

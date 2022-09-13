@@ -205,7 +205,7 @@ export function useAccountJoinRequest(chainId, library, competitionIndex, accoun
 
 }
 
-function getCompetitionContract(chainId, library) {
+export function getCompetitionContract(chainId, library) {
   const address = getContract(chainId, "Competition");
   return new ethers.Contract(address, Competition.abi, library.getSigner());
 }

@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { FiCopy } from "react-icons/fi"
 import { useCopyToClipboard } from "react-use"
 import { Team } from "../../domain/leaderboard/types"
 import { getTeamUrl } from "../../domain/leaderboard/urls"

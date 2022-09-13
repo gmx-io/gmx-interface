@@ -16,6 +16,26 @@
 }
 
 .approve-request-card .card-details input {
-  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.approve-input {
+  position: relative;
   width: 75%;
+  margin-bottom: 1.5rem;
+}
+
+.approve-input input {
+  padding-right: calc(3rem + 20px);
+}
+
+.approve-input svg {
+  position: absolute;
+  top: 50%;
+  right: 1.5rem;
+  transform: translateY(-50%);
+}
+
+.approve-btn-container > *:nth-child(1) {
+  margin-right: 1rem;
 }

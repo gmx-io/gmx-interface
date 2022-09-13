@@ -359,6 +359,10 @@ export const helperToast = {
     toast.dismiss();
     toast.error(content, opts);
   },
+  info: (content, opts) => {
+    toast.dismiss();
+    toast.info(content, opts);
+  },
 };
 
 export function useLocalStorageByChainId(chainId, key, defaultValue) {
