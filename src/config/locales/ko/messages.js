@@ -8,6 +8,11 @@
       '<0>모든 토큰이 인출되고 취소되며 베스팅이 중지됩니다.<1/><2/>GMX로 변환된 esGMX 토큰은 GMX 토큰으로 유지됩니다.<3/><4/>인출하지 않고 GMX 토큰을 수령하기 위해서는 총 보상 섹션 아래의 "수령하기" 버튼을 사용해주세요.',
     "A snapshot of the USD value of your collateral is taken when the position is opened.":
       "A snapshot of the USD value of your collateral is taken when the position is opened.",
+    "A snapshot of the USD value of your {0} collateral is taken when the position is opened.": [
+      "A snapshot of the USD value of your ",
+      ["0"],
+      " collateral is taken when the position is opened.",
+    ],
     APR: "APR",
     "APRs are updated weekly on Wednesday and will depend on the fees collected for the week.":
       "APR은 매주 수요일에 업데이트되며 한 주 동안 쌓인 수수료에 따라 달라집니다.",
@@ -22,6 +27,7 @@
     "Add to Metamask": "메타마스크에 추가해주세요",
     "Adding referral code failed.": "추천 코드 추가 실패",
     "Adding...": "추가중...",
+    "Additional reserve required": "Additional reserve required",
     "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price.":
       "추가로, 트리거 주문은 시장가 주문이며 트리거 가격으로 결제되지 않을 수도 있습니다.",
     "Address copied to your clipboard": "주소가 클립보드에 복사되었습니다.",
@@ -78,6 +84,7 @@
     "Boost your rewards with Multiplier Points. <0>More info</0>.":
       "멀티플라이어 포인트를 사용해서 보상을 증가시키세요. <0>더 자세한 정보</0>.",
     "Borrow Fee": "차용 수수료",
+    "Borrow Fee / Day": "Borrow Fee / Day",
     "Borrow Fee / Day: ${0}": ["차용 수수료 / 일: $", ["0"]],
     "Borrow Fee: ${0}": ["차용 수수료: $", ["0"]],
     Buy: "구매",
@@ -164,6 +171,7 @@
     "Creating...": "생성중...",
     Creator: "제작자",
     "Current Pool Amount": "현재 풀 양",
+    "Current Reserved": "Current Reserved",
     "Current Reserved: {0}<0/>Additional reserve required: {1}<1/>{2}": [
       "현재 리저브: ",
       ["0"],
@@ -172,6 +180,7 @@
       "><1/>",
       ["2"],
     ],
+    "Current Weight": "Current Weight",
     Dashboard: "대시보드",
     Dashboards: "대시보드",
     Date: "날짜",
@@ -182,6 +191,7 @@
     "Deposit failed.": "예치 실패.",
     "Deposit submitted!": "예치 제출 완료!",
     "Deposit submitted.": "예치 제출 완료.",
+    Deposited: "Deposited",
     "Deposited!": "예치되었습니다!",
     "Depositing...": "예치중...",
     "Disable order validations": "주문 밸리데이션 무효화",
@@ -267,7 +277,11 @@
     "Incorrect Account": "잘못된 계정입니다",
     "Incorrect Network": "잘못된 네트워크입니다",
     "Incorrect network": "잘못된 네트워크입니다",
+    "Initial Collateral": "Initial Collateral",
+    "Initial Collateral - Borrow Fee + PnL": "Initial Collateral - Borrow Fee + PnL",
+    "Initial Collateral - Fees + PnL": "Initial Collateral - Fees + PnL",
     "Initial Collateral: ${0}": ["초기 담보: $", ["0"]],
+    "Initial Collateralt": "Initial Collateralt",
     "Install Coinbase Wallet": "코인베이스 지갑을 설치하세요",
     "Install MetaMask": "메타마스크를 설치하세요",
     "Insufficient GLP balance": "GLP 잔고 부족",
@@ -306,6 +320,7 @@
     "Mark Price": "시장 평균가",
     "Market Cap": "시가총액",
     Max: "최대",
+    "Max Capacity": "Max Capacity",
     "Max Capacity for {0} Reached": [["0"], "의 최대치에 도달했습니다."],
     "Max Pool Capacity": "풀 최대 수용량",
     "Max amount exceeded": "최대 수량을 초과했습니다",
@@ -326,6 +341,7 @@
     "MetaMask not detected.": "메타마스크가 탐지되지 않았습니다.",
     "Min leverage: 1.1x": "최소 레버리지: 1.1x",
     "Min order: 10 USD": "최소 주문: 10 USD",
+    "More Info": "More Info",
     "Multiplier Points APR": "멀티플라이어 포인트 APR",
     Multiswap: "멀티스왑",
     "Net Value": "순이익",
@@ -476,6 +492,7 @@
     "Switch Network": "네트워크 변경",
     Synapse: "Synapse",
     TOKEN: "토큰",
+    "Target Weight": "Target Weight",
     "Telegram Groups": "텔레그램 그룹",
     "Terms and Conditions": "약관",
     "The Boosted APR is from your staked Multiplier Points.":
@@ -561,6 +578,7 @@
     "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees.":
       "Avalanche나 Synapse 브리지를 사용하면 지원되는 어떤 암호화폐든 이전할 수 있으며 네트워크 수수료 지불을 위한 AVAX를 무료로 받을 수 있습니다.",
     "Vault Capacity": "볼트 수용량",
+    "Vault Capacity for your Account": "Vault Capacity for your Account",
     "Vault Capacity for your Account<0/><1/>Deposited: {0} esGMX<2/>Max Capacity: {1} esGMX<3/>": [
       "귀하의 계정의 볼트 수용량<0/><1/>예치량: ",
       ["0"],
@@ -592,6 +610,8 @@
     "Wallet is not connected": "지갑이 연결되지 않았습니다",
     "Wallet not connected": "지갑이 연결되지 않음",
     WalletConnect: "지갑연결",
+    "When closing the position, you can select which token you would like to receive the profits in.":
+      "When closing the position, you can select which token you would like to receive the profits in.",
     "When closing the position, you can select which token you would like to receive.":
       "When closing the position, you can select which token you would like to receive.",
     Withdraw: "인출",
@@ -633,6 +653,15 @@
     "You have a pending transfer from {sender}.": [["sender"], "로부터 보류중인 전송이 있습니다."],
     "You have not deposited any tokens for vesting.": "베스트팅을 위한 토큰이 예치되지 않았습니다.",
     "You have {0} esGMX (IOU) tokens.": ["귀하는 ", ["0"], " esGMx (IOU) 토큰을 보유하고 있습니다."],
+    "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX.": [
+      "You need a total of at least ",
+      ["0"],
+      " ",
+      ["stakeTokenLabel"],
+      " to vest ",
+      ["1"],
+      " esGMX.",
+    ],
     "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed.":
       "이전을 수락하려면 이 페이지에 있어야 합니다. 필요에 따라, <0>여기를 클릭하세요</0>를 통해 페이지 링크를 복사하세요.",
     "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday":
@@ -654,6 +683,25 @@
     "{0} GLP bought with {1} {2}!": [["1"], " ", ["2"], "로 GLP를 구매하였습니다!"],
     "{0} GLP have been reserved for vesting.": [["0"], " GLP가 베스팅을 위해 리저브되었습니다."],
     "{0} GLP sold for {1} {2}!": [["0"], " GLP를 ", ["1"], " ", ["2"], "로 판매하였습니다!"],
+    "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them.": [
+      ["0"],
+      " GMX tokens can be claimed, use the options under the Total Rewards section to claim them.",
+    ],
+    "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}.": [
+      ["0"],
+      " is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for ",
+      ["1"],
+      ".",
+    ],
+    "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1},  and to <3>swap</3> {2} for other tokens.":
+      [
+        ["0"],
+        " is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with ",
+        ["1"],
+        ",  and to <3>swap</3> ",
+        ["2"],
+        " for other tokens.",
+      ],
     "{0} pool exceeded, try different token": [["0"], " 풀이 초과되었습니다. 다른 자산으로 시도해보세요"],
     "{0} selected in order form": [["0"], "이(가) 주문 폼에서 선택되었습니다."],
     "{0} {1} not supported": [["0"], " ", ["1"], "은(는) 지원되지 않습니다"],

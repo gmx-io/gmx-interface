@@ -8,6 +8,11 @@
       '<0>Esto retirará y desreservará todos los tokens y pausará la adquisición.<1/><2/>Los tokens de esGMX que han sido convertidos a GMX permanecerán como tokens de GMX.<3/><4/>Para reclamar tokens de GMX sin retirarlos, utilice el botón "Reclamar" bajo la sección de Recompensas Totales.<5/><6/></0>',
     "A snapshot of the USD value of your collateral is taken when the position is opened.":
       "A snapshot of the USD value of your collateral is taken when the position is opened.",
+    "A snapshot of the USD value of your {0} collateral is taken when the position is opened.": [
+      "A snapshot of the USD value of your ",
+      ["0"],
+      " collateral is taken when the position is opened.",
+    ],
     ABOUT: "SOBRE",
     APR: "APR",
     "APRs are updated weekly on Wednesday and will depend on the fees collected for the week.":
@@ -23,6 +28,7 @@
     "Add to Metamask": "Añadir a Metamask",
     "Adding referral code failed.": "Fallo al añadir el código de referido.",
     "Adding...": "Añadiendo...",
+    "Additional reserve required": "Additional reserve required",
     "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price.":
       "Además, las órdenes de activación son órdenes de mercado y no se garantiza que se ejecuten al precio de activación.",
     "Address copied to your clipboard": "Dirección copiada al portapepeles",
@@ -79,6 +85,7 @@
     "Boost your rewards with Multiplier Points. <0>More info</0>.":
       "Aumenta tus recompensas con los Puntos Multiplicadores. <0>Más información</0>.",
     "Borrow Fee": "Tasa de Préstamo",
+    "Borrow Fee / Day": "Borrow Fee / Day",
     "Borrow Fee / Day: ${0}": ["Tasa de préstamo / Día: $", ["0"]],
     "Borrow Fee: ${0}": ["Tasa de Préstamo: $", ["0"]],
     Buy: "Comprar",
@@ -158,6 +165,7 @@
     "Creating...": "Creando...",
     Creator: "Creador",
     "Current Pool Amount": "Cantidad Actual en la Reserva",
+    "Current Reserved": "Current Reserved",
     "Current Reserved: {0}<0/>Additional reserve required: {1}<1/>{2}": [
       "Actualmente Reservado: ",
       ["0"],
@@ -166,6 +174,7 @@
       "<1/>",
       ["2"],
     ],
+    "Current Weight": "Current Weight",
     Dashboard: "Panel",
     Dashboards: "Paneles",
     Date: "Fecha",
@@ -176,6 +185,7 @@
     "Deposit failed.": "Depósito fallido.",
     "Deposit submitted!": "¡Depósito enviado!",
     "Deposit submitted.": "Depósito enviado.",
+    Deposited: "Deposited",
     "Deposited!": "¡Depósitado!",
     "Depositing...": "Depositando...",
     "Disable order validations": "Deshabilitar validación de órdenes",
@@ -267,7 +277,11 @@
     "Incorrect Account": "Cantidad Incorrecta",
     "Incorrect Network": "Red Incorrecta",
     "Incorrect network": "Red incorrecta",
+    "Initial Collateral": "Initial Collateral",
+    "Initial Collateral - Borrow Fee + PnL": "Initial Collateral - Borrow Fee + PnL",
+    "Initial Collateral - Fees + PnL": "Initial Collateral - Fees + PnL",
     "Initial Collateral: ${0}": ["Garantía Inicial: $", ["0"]],
+    "Initial Collateralt": "Initial Collateralt",
     "Install Coinbase Wallet": "Instalar Coinbase Wallet",
     "Install MetaMask": "Instalar MetaMask",
     "Insufficient GLP balance": "Balance GLP insuficiente",
@@ -306,6 +320,7 @@
     "Mark Price": "Precio de Referencia",
     "Market Cap": "Capitalización de Mercado",
     Max: "Máximo",
+    "Max Capacity": "Max Capacity",
     "Max Capacity for {0} Reached": ["Capacidad Máxima para ", ["0"], " Alcanzada"],
     "Max Pool Capacity": "Capacidad Máxima de Reserva",
     "Max amount exceeded": "Superado el importe máximo de cierre",
@@ -327,6 +342,7 @@
     "MetaMask not detected.": "MetaMask no detectado.",
     "Min leverage: 1.1x": "Apalancamiento Mín.: 1.1x",
     "Min order: 10 USD": "Orden Mín. 10 USD",
+    "More Info": "More Info",
     "Multiplier Points APR": "APR de Puntos Multiplicadores",
     Multiswap: "Multi-intercambio",
     "Net Value": "Valor Neto",
@@ -507,6 +523,7 @@
     "Switch Network": "Cambiar Red",
     Synapse: "Synapse",
     TOKEN: "TOKEN",
+    "Target Weight": "Target Weight",
     "Telegram Groups": "Grupos de Telegram",
     "Terms and Conditions": "Términos y Condiciones",
     "The Boosted APR is from your staked Multiplier Points.":
@@ -603,6 +620,7 @@
     "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees.":
       "Usando los puentes Avalanche o Synapse, tambien puedes transferir cualquier otra criptodivisa soportada, y recibir AVAX gratis para pagar las tarifas de la red.",
     "Vault Capacity": "Capacidad del Baúl",
+    "Vault Capacity for your Account": "Vault Capacity for your Account",
     "Vault Capacity for your Account<0/><1/>Deposited: {0} esGMX<2/>Max Capacity: {1} esGMX<3/>": [
       "Capacidad del Baúl para su cuenta<0/><1/>Depositado: ",
       ["0"],
@@ -634,6 +652,8 @@
     "Wallet is not connected": "El monedero no está conectado",
     "Wallet not connected": "Monedero no conectado",
     WalletConnect: "WalletConnect",
+    "When closing the position, you can select which token you would like to receive the profits in.":
+      "When closing the position, you can select which token you would like to receive the profits in.",
     "When closing the position, you can select which token you would like to receive.":
       "When closing the position, you can select which token you would like to receive.",
     Withdraw: "Retirar",
@@ -681,6 +701,15 @@
     "You have a pending transfer from {sender}.": ["Tiene una transferencia pendiente de ", ["sender"], "."],
     "You have not deposited any tokens for vesting.": "No has depositado ningún token para su adquisición.",
     "You have {0} esGMX (IOU) tokens.": ["Tienes ", ["0"], " tokens esGMX (IOU)."],
+    "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX.": [
+      "You need a total of at least ",
+      ["0"],
+      " ",
+      ["stakeTokenLabel"],
+      " to vest ",
+      ["1"],
+      " esGMX.",
+    ],
     "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed.":
       "Tendrá que estar en esta página para aceptar la transferencia, <0>haga clic aquí</0> para copiar el enlace a esta página si es necesario.",
     "You will receive a {0}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday":
@@ -702,6 +731,25 @@
     "{0} GLP bought with {1} {2}!": [["0"], " GLP comprado con ", ["1"], " ", ["2"], "!"],
     "{0} GLP have been reserved for vesting.": [["0"], " GLP se han reservado para adquisiciones."],
     "{0} GLP sold for {1} {2}!": ["¡", ["0"], " GLP vendido por ", ["1"], " ", ["2"], "!"],
+    "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them.": [
+      ["0"],
+      " GMX tokens can be claimed, use the options under the Total Rewards section to claim them.",
+    ],
+    "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}.": [
+      ["0"],
+      " is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for ",
+      ["1"],
+      ".",
+    ],
+    "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1},  and to <3>swap</3> {2} for other tokens.":
+      [
+        ["0"],
+        " is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with ",
+        ["1"],
+        ",  and to <3>swap</3> ",
+        ["2"],
+        " for other tokens.",
+      ],
     "{0} pool exceeded, try different token": [["0"], " reserva superada, intente otro token"],
     "{0} selected in order form": [["0"], " seleccionado en el formulario de órden"],
     "{0} {1} not supported": [["0"], " ", ["1"], " no admitidos"],

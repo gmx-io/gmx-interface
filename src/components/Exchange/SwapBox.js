@@ -83,6 +83,8 @@ import WETH from "../../abis/WETH.json";
 import longImg from "../../img/long.svg";
 import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
+import { TooltipCardRow } from "../Tooltip/TooltipCard";
+
 import { useUserReferralCode } from "../../domain/referrals";
 
 const SWAP_ICONS = {
@@ -345,17 +347,19 @@ export default function SwapBox(props) {
         </div>
         <div className="align-right">
           <Tooltip
-            handle={`${formatAmount(toTokenInfo.maxAvailableLong, USD_DECIMALS, 2, true)}`}
+            handle={`$${formatAmount(toTokenInfo.maxAvailableLong, USD_DECIMALS, 2, true)}`}
             position="right-bottom"
             renderContent={() => {
               return (
                 <>
-                  Max {toTokenInfo.symbol} long capacity: $
-                  {formatAmount(toTokenInfo.maxLongCapacity, USD_DECIMALS, 2, true)}
-                  <br />
-                  <br />
-                  Current {toTokenInfo.symbol} longs: ${formatAmount(toTokenInfo.guaranteedUsd, USD_DECIMALS, 2, true)}
-                  <br />
+                  <TooltipCardRow
+                    label={`Max ${toTokenInfo.symbol} long capacity`}
+                    value={formatAmount(toTokenInfo.maxLongCapacity, USD_DECIMALS, 0, true)}
+                  />
+                  <TooltipCardRow
+                    label={`Current ${toTokenInfo.symbol} long`}
+                    value={formatAmount(toTokenInfo.guaranteedUsd, USD_DECIMALS, 0, true)}
+                  />
                 </>
               );
             }}
@@ -789,8 +793,14 @@ export default function SwapBox(props) {
     if (!fromTokenInfo || !fromTokenInfo.minPrice) {
       return [t`Incorrect network`];
     }
-    if (fromTokenInfo && fromTokenInfo.balance && fromAmount && fromAmount.gt(fromTokenInfo.balance)) {
-      return [t`Insufficient ${fromTokenInfo.symbol} balance`];
+    if (
+      !savedShouldDisableOrderValidation &&
+      fromTokenInfo &&
+      fromTokenInfo.balance &&
+      fromAmount &&
+      fromAmount.gt(fromTokenInfo.balance)
+    ) {
+      return [`Insufficient ${fromTokenInfo.symbol} balance`];
     }
 
     const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
@@ -862,8 +872,14 @@ export default function SwapBox(props) {
     }
 
     const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
-    if (fromTokenInfo && fromTokenInfo.balance && fromAmount && fromAmount.gt(fromTokenInfo.balance)) {
-      return [t`Insufficient ${fromTokenInfo.symbol} balance`];
+    if (
+      !savedShouldDisableOrderValidation &&
+      fromTokenInfo &&
+      fromTokenInfo.balance &&
+      fromAmount &&
+      fromAmount.gt(fromTokenInfo.balance)
+    ) {
+      return [`Insufficient ${fromTokenInfo.symbol} balance`];
     }
 
     if (leverage && leverage.eq(0)) {
@@ -2099,11 +2115,15 @@ export default function SwapBox(props) {
                     renderContent={() => (
                       <span className="SwapBox-collateral-tooltip-text">
                         <Trans>
-                          A snapshot of the USD value of your collateral is taken when the position is opened.
+                          A snapshot of the USD value of your {existingPosition?.collateralToken?.symbol} collateral is
+                          taken when the position is opened.
                         </Trans>
                         <br />
                         <br />
-                        <Trans>When closing the position, you can select which token you would like to receive.</Trans>
+                        <Trans>
+                          When closing the position, you can select which token you would like to receive the profits
+                          in.
+                        </Trans>
                       </span>
                     )}
                   />
@@ -2168,21 +2188,25 @@ export default function SwapBox(props) {
                     position="right-bottom"
                     renderContent={() => {
                       return (
-                        <>
+                        <div>
                           {swapFees && (
                             <div>
                               {collateralToken.symbol} is required for collateral. <br />
                               <br />
-                              Swap {fromToken.symbol} to {collateralToken.symbol} Fee: $
-                              {formatAmount(swapFees, USD_DECIMALS, 2, true)}
-                              <br />
+                              <TooltipCardRow
+                                label={`Swap ${fromToken.symbol} to ${collateralToken.symbol} Fee`}
+                                value={formatAmount(swapFees, USD_DECIMALS, 2, true)}
+                              />
                               <br />
                             </div>
                           )}
                           <div>
-                            Position Fee (0.1% of position size): ${formatAmount(positionFee, USD_DECIMALS, 2, true)}
+                            <TooltipCardRow
+                              label={`Position Fee (0.1% of position size)`}
+                              value={formatAmount(positionFee, USD_DECIMALS, 2, true)}
+                            />
                           </div>
-                        </>
+                        </div>
                       );
                     }}
                   />
@@ -2224,37 +2248,41 @@ export default function SwapBox(props) {
           <div className="Exchange-info-row">
             <div className="Exchange-info-label">{fromToken.symbol} Price</div>
             <div className="align-right">
-              {fromTokenInfo && formatAmount(fromTokenInfo.minPrice, USD_DECIMALS, 2, true)} USD
+              ${fromTokenInfo && formatAmount(fromTokenInfo.minPrice, USD_DECIMALS, 2, true)}
             </div>
           </div>
           <div className="Exchange-info-row">
             <div className="Exchange-info-label">{toToken.symbol} Price</div>
             <div className="align-right">
-              {toTokenInfo && formatAmount(toTokenInfo.maxPrice, USD_DECIMALS, 2, true)} USD
+              ${toTokenInfo && formatAmount(toTokenInfo.maxPrice, USD_DECIMALS, 2, true)}
             </div>
           </div>
           <div className="Exchange-info-row">
             <div className="Exchange-info-label">
-              <Trans>Available Liquidity</Trans>:
+              <Trans>Available Liquidity</Trans>
             </div>
+
             <div className="align-right al-swap">
               <Tooltip
-                handle={`${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)} USD`}
+                handle={`$${formatAmount(maxSwapAmountUsd, USD_DECIMALS, 2, true)}`}
                 position="right-bottom"
                 renderContent={() => {
                   return (
                     <div>
-                      <div>
-                        Max {fromTokenInfo.symbol} in: {formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 2, true)}{" "}
-                        {fromTokenInfo.symbol} <br />({"$ "}
-                        {formatAmount(maxFromTokenInUSD, USD_DECIMALS, 2, true)})
-                      </div>
-                      <br />
-                      <div>
-                        Max {toTokenInfo.symbol} out: {formatAmount(maxToTokenOut, toTokenInfo.decimals, 2, true)}{" "}
-                        {toTokenInfo.symbol} <br />({"$ "}
-                        {formatAmount(maxToTokenOutUSD, USD_DECIMALS, 2, true)})
-                      </div>
+                      <TooltipCardRow
+                        label={`Max ${fromTokenInfo.symbol} in`}
+                        values={[
+                          `${formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)} ${fromTokenInfo.symbol}`,
+                          `($${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
+                        ]}
+                      />
+                      <TooltipCardRow
+                        label={`Max ${toTokenInfo.symbol} out`}
+                        values={[
+                          `${formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)} ${toTokenInfo.symbol}`,
+                          `($${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
+                        ]}
+                      />
                     </div>
                   );
                 }}
@@ -2280,11 +2308,11 @@ export default function SwapBox(props) {
             </div>
             <div className="align-right">
               <Tooltip
-                handle={`${formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD`}
+                handle={`$${formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}`}
                 position="right-bottom"
                 renderContent={() => {
                   return (
-                    <>
+                    <div>
                       The position will be opened at {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD with a
                       max slippage of {parseFloat(savedSlippageAmount / 100.0).toFixed(2)}%.
                       <br />
@@ -2300,7 +2328,7 @@ export default function SwapBox(props) {
                       >
                         More Info
                       </a>
-                    </>
+                    </div>
                   );
                 }}
               />
@@ -2312,11 +2340,11 @@ export default function SwapBox(props) {
             </div>
             <div className="align-right">
               <Tooltip
-                handle={`${formatAmount(exitMarkPrice, USD_DECIMALS, 2, true)} USD`}
+                handle={`$${formatAmount(exitMarkPrice, USD_DECIMALS, 2, true)}`}
                 position="right-bottom"
                 renderContent={() => {
                   return (
-                    <>
+                    <div>
                       If you have an existing position, the position will be closed at{" "}
                       {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)} USD.
                       <br />
@@ -2331,7 +2359,7 @@ export default function SwapBox(props) {
                       >
                         More Info
                       </a>
-                    </>
+                    </div>
                   );
                 }}
               />
@@ -2347,7 +2375,7 @@ export default function SwapBox(props) {
                 position="right-bottom"
                 renderContent={() => {
                   return (
-                    <>
+                    <div>
                       {hasZeroBorrowFee && (
                         <div>
                           {isLong && "There are more shorts than longs, borrow fees for longing is currently zero"}
@@ -2370,7 +2398,7 @@ export default function SwapBox(props) {
                       >
                         More Info
                       </a>
-                    </>
+                    </div>
                   );
                 }}
               >
@@ -2386,18 +2414,19 @@ export default function SwapBox(props) {
               </div>
               <div className="align-right">
                 <Tooltip
-                  handle={`${formatAmount(toTokenInfo.maxAvailableShort, USD_DECIMALS, 2, true)}`}
+                  handle={`$${formatAmount(toTokenInfo.maxAvailableShort, USD_DECIMALS, 2, true)}`}
                   position="right-bottom"
                   renderContent={() => {
                     return (
                       <>
-                        Max {toTokenInfo.symbol} short capacity: $
-                        {formatAmount(toTokenInfo.maxGlobalShortSize, USD_DECIMALS, 2, true)}
-                        <br />
-                        <br />
-                        Current {toTokenInfo.symbol} shorts: $
-                        {formatAmount(toTokenInfo.globalShortSize, USD_DECIMALS, 2, true)}
-                        <br />
+                        <TooltipCardRow
+                          label={`Max ${toTokenInfo.symbol} short capacity`}
+                          value={formatAmount(toTokenInfo.maxGlobalShortSize, USD_DECIMALS, 0, true)}
+                        />
+                        <TooltipCardRow
+                          label={`Current ${toTokenInfo.symbol} shorts`}
+                          value={formatAmount(toTokenInfo.globalShortSize, USD_DECIMALS, 0, true)}
+                        />
                       </>
                     );
                   }}
