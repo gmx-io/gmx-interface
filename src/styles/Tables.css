@@ -51,3 +51,14 @@
   color: rgba(255, 255, 255, 0.7);
   margin: 0 0.3rem;
 }
+
+.simple-table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.simple-table-pagination button {
+  margin: 0 .5rem;
+}

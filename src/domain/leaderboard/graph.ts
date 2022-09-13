@@ -1,5 +1,6 @@
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { useEffect, useState } from "react";
+import { MemberStats } from "./types";
 
 interface Stats {
   id: string
@@ -54,6 +55,27 @@ export function useTeamsStats(chainId) {
 
     main();
   }, [setData, chainId]);
+
+  return { data, loading }
+}
+
+export function useTeamMembersStats(chainId, competitionIndex, page, perPage) {
+  const [data, setData] = useState<MemberStats[]>([]);
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function main() {
+      setTimeout(() => {
+        setData([{
+          address: ethers.constants.AddressZero,
+        }])
+
+        setLoading(false)
+      }, 5000)
+    }
+
+    main()
+  }, [chainId, competitionIndex, page, perPage])
 
   return { data, loading }
 }

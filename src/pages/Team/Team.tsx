@@ -1,5 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useCompetitionDetails, useTeam } from "../../domain/leaderboard/contracts";
 import SEO from "../../components/Common/SEO";
 import { getChainIcon, getPageTitle } from "../../lib/legacy";
@@ -10,6 +10,8 @@ import TeamPositions from "../../components/Team/TeamPositions";
 import TeamStats from "../../components/Team/TeamStats";
 import TeamManagement from "../../components/Team/TeamManagement";
 import { TeamMembers } from "../../components/Team/TeamMembers";
+import { FiChevronLeft } from "react-icons/fi";
+import { getLeaderboardUrl } from "../../domain/leaderboard/urls";
 
 type Props = {
   pendingTxns: any,
@@ -29,6 +31,10 @@ export default function Team({ pendingTxns, setPendingTxns }: Props) {
   return (
     <SEO title={getPageTitle("Team")}>
       <div className="default-container page-layout Leaderboard">
+        <Link to={getLeaderboardUrl()} className="back-btn default-btn disabled">
+          <FiChevronLeft/>
+          <span>Back to leaderboard</span>
+        </Link>
         <div className="team-section-title-block section-title-block">
           <div className="section-title-content">
             <div className="Page-title">

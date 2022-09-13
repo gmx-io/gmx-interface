@@ -256,7 +256,7 @@ a.plain {
   animation: ripple 600ms linear;
 }
 
-.default-btn:disabled {
+.default-btn:disabled, .default-btn.disabled {
   background: #2d2e3f 0% 0% no-repeat padding-box;
   color: #ffffff61;
 }

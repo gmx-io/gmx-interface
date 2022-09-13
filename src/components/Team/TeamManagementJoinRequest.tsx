@@ -4,6 +4,7 @@ import { FiClock } from "react-icons/fi"
 import { cancelJoinRequest, createJoinRequest, useAccountJoinRequest } from "../../domain/leaderboard/contracts"
 import { Team } from "../../domain/leaderboard/types"
 import useRouteQuery from "../../lib/useRouteQuery"
+import "./TeamManagementJoinRequest.css"
 
 type Props = {
   competitionIndex: number,
@@ -68,12 +69,11 @@ export default function TeamManagementJoinRequest({ competitionIndex, team, pend
   return (
     <>
       {view() === 0 && (
-        <div className="info-card">
+        <div className="info-card create-request-card">
           <div className="card-details card-details-pending-request">
             <h3 className="label">
               <span>Create Join Request</span>
             </h3>
-            <p>The team leader have to accept your request.</p>
             {referralCode && <input className="text-input" readOnly type="text" value={referralCode}/>}
             <button className="default-btn" onClick={() => handleCreateClick()} disabled={isCreating}>
               {isCreating ? "Creating join request..." : "Create Join Request"}
@@ -82,13 +82,12 @@ export default function TeamManagementJoinRequest({ competitionIndex, team, pend
         </div>
       )}
       {view() === 1 && (
-        <div className="info-card">
+        <div className="info-card create-request-card">
           <div className="card-details card-details-pending-request">
             <h3 className="label">
               <FiClock />
               <span>Pending Join Request</span>
             </h3>
-            <p>The team leader have to accept your request.</p>
             <button className="default-btn" disabled={isCanceling} onClick={() => handleCancelClick()}>
               {isCanceling ? "Canceling join request..." : "Cancel Join Request"}
             </button>

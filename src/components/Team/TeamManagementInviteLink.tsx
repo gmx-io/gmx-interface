@@ -13,10 +13,10 @@ type Props = {
 export default function TeamManagementInviteLink({ team }: Props) {
   const [useReferralCode, setUseReferralCode] = useState(false)
   const [, copyToClipboard] = useCopyToClipboard()
-  const [referralCode] = useState("ABCD")
+  const [referralCode] = useState("")
 
   const referralLink = () => {
-    let link = new URL(window.location.host).toString() + "#/" + getTeamUrl(team.leaderAddress)
+    let link = new URL(window.location.host).toString() + "/#" + getTeamUrl(team.leaderAddress)
     if (useReferralCode && referralCode !== "") {
       link += "?referral=" + referralCode
     }
@@ -29,7 +29,7 @@ export default function TeamManagementInviteLink({ team }: Props) {
   }
 
   return (
-    <div className="info-card">
+    <div className="info-card invite-link-card">
       <div className="card-details">
         <h3 className="label">1. Share Invite Link</h3>
         {referralCode && (
@@ -38,10 +38,7 @@ export default function TeamManagementInviteLink({ team }: Props) {
             <input type="checkbox" onChange={() => setUseReferralCode(v => !v)}/>
           </div>
         )}
-        <div className="invite-link-input" onClick={copyInviteLink}>
-          <input className="text-input w-2/3" disabled value={referralLink()} />
-          <FiCopy />
-        </div>
+        <button className="default-btn" onClick={() => copyInviteLink()}>Copy invite link to clipboard</button>
       </div>
     </div>
   )

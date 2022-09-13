@@ -4,3 +4,16 @@
   justify-content: space-between;
   width: 100%;
 }
+
+.back-btn {
+  display: inline;
+  justify-content: center;
+  align-self: flex-start;
+  align-items: center;
+  margin-bottom: 3rem;
+  text-decoration: none;
+}
+
+.back-btn span {
+  margin-left: .75rem;
+}

@@ -100,7 +100,7 @@ import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
 import { defaultLocale, dynamicActivate } from "../lib/i18n";
 import { Header } from "../components/Header/Header";
-import { getTeamRegistrationUrl, getTeamUrl } from "../domain/leaderboard/urls";
+import { getLeaderboardUrl, getTeamRegistrationUrl, getTeamUrl } from "../domain/leaderboard/urls";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -512,7 +512,7 @@ function FullApp() {
               <Route exact path="/referrals">
                 <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
               </Route>
-              <Route exact path="/leaderboard">
+              <Route exact path={getLeaderboardUrl()}>
                 <Leaderboard />
               </Route>
               <Route exact path={getTeamRegistrationUrl()}>

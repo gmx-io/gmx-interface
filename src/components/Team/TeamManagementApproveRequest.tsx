@@ -3,6 +3,7 @@ import { utils } from "ethers"
 import { useEffect, useState } from "react"
 import { approveJoinRequest, getAccountJoinRequest } from "../../domain/leaderboard/contracts"
 import { useDebounce } from "../../lib/legacy"
+import "./TeamManagementApproveRequest.css";
 
 type Props = {
   competitionIndex: number,
@@ -38,7 +39,7 @@ export default function TeamManagementApproveRequest({ competitionIndex, pending
     main()
   }, [chainId, library, competitionIndex, debouncedValue])
 
-  const isValid = () => isKnownAddress && isAddressValid
+  const isValid = () => debouncedValue !== "" && isKnownAddress && isAddressValid
 
   const handleInput = ({ target }) => {
     setValue(target.value)
@@ -70,16 +71,16 @@ export default function TeamManagementApproveRequest({ competitionIndex, pending
       return "Checking address..."
     }
 
-    if (!debouncedValue) {
+    if (debouncedValue === "") {
       return "Enter the member address"
     }
 
     if (!isAddressValid) {
-      return "Address is invalid"
+      return "Please enter a valid address"
     }
 
     if (!isKnownAddress) {
-      return "No join request found"
+      return "No join request found with this address"
     }
 
     if (isApproving) {
@@ -90,13 +91,11 @@ export default function TeamManagementApproveRequest({ competitionIndex, pending
   }
 
   return (
-    <div className="info-card">
+    <div className="info-card approve-request-card">
       <div className="card-details">
         <h3 className="label">2. Approve Join Request</h3>
-        <div>
-          <input className="text-input" value={value} onInput={handleInput} placeholder="Member address" />
-          <button className="default-btn" onClick={() => handleApproveClick()} disabled={!isValid}>{getButtonText()}</button>
-        </div>
+        <input className="text-input" value={value} onInput={handleInput} placeholder="Member address" />
+        <button className="default-btn" onClick={() => handleApproveClick()} disabled={!isValid()}>{getButtonText()}</button>
       </div>
     </div>
   )

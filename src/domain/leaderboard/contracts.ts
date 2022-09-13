@@ -61,6 +61,7 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
     name: "",
     members: [],
     positions: [],
+    competitionIndex: 0,
   });
   const [exists, setExists] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -101,7 +102,8 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
         leaderAddress: team.leaderAddress,
         name: team.name,
         members: members,
-        positions: []
+        positions: [],
+        competitionIndex: competitionIndex,
       })
 
       setExists(true)
@@ -121,6 +123,10 @@ export function useMemberTeam(chainId, library, competitionIndex, account) {
 
   useEffect(() => {
     async function main() {
+      if (!chainId || !library) {
+        return
+      }
+
       const contract = getCompetitionContract(chainId, library)
       const res = await contract.getMemberTeam(competitionIndex, account)
       setData(res)

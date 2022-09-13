@@ -1,0 +1,21 @@
+.approve-request-card {
+  align-items: center;
+}
+
+.approve-request-card .label {
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+.approve-request-card .card-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 2.5rem;
+}
+
+.approve-request-card .card-details input {
+  margin-bottom: 1.5rem;
+  width: 75%;
+}
