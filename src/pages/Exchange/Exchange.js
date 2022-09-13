@@ -363,7 +363,7 @@ export const Exchange = forwardRef((props, ref) => {
     savedShouldShowPositionLines,
     setSavedShouldShowPositionLines,
     connectWallet,
-    savedShouldDisableOrderValidation,
+    savedShouldDisableValidationForTesting,
   } = props;
   const [showBanner, setShowBanner] = useLocalStorageSerializeKey("showBanner", true);
   const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey("bannerHidden", null);
@@ -886,7 +886,7 @@ export const Exchange = forwardRef((props, ref) => {
             orders={orders}
             totalTokenWeights={totalTokenWeights}
             usdgSupply={usdgSupply}
-            savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
+            savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
             cancelOrderIdList={cancelOrderIdList}
             setCancelOrderIdList={setCancelOrderIdList}
           />
@@ -977,7 +977,7 @@ export const Exchange = forwardRef((props, ref) => {
             savedSlippageAmount={savedSlippageAmount}
             totalTokenWeights={totalTokenWeights}
             usdgSupply={usdgSupply}
-            savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
+            savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
             minExecutionFee={minExecutionFee}
             minExecutionFeeUSD={minExecutionFeeUSD}
             minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}
