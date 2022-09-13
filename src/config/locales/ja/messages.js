@@ -68,6 +68,8 @@
     "Available Liquidity": "入手可能な流動性",
     "Available amount to deposit into GLP.": "GLPに入金可能な金額",
     "Available amount to withdraw from GLP.": "GLPから出金可能な金額",
+    "Available amount to withdraw from GLP. Funds not utilized by current open positions.":
+      "Available amount to withdraw from GLP. Funds not utilized by current open positions.",
     "Available on your preferred network": "選択されたネットワークにて利用可能",
     "Available:": "利用可能",
     Avalanche: "Avalanche",

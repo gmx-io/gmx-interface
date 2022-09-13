@@ -1009,12 +1009,13 @@ export default function GlpSwap(props) {
                   <Tooltip
                     handle={t`AVAILABLE`}
                     tooltipIconPosition="right"
-                    position="right-bottom text-none"
+                    position="center-bottom text-none"
                     renderContent={() => {
                       return (
                         <p className="text-white">
-                          <Trans>Available amount to withdraw from GLP.</Trans>
-                          <Trans>Funds not utilized by current open positions.</Trans>
+                          <Trans>
+                            Available amount to withdraw from GLP. Funds not utilized by current open positions.
+                          </Trans>
                         </p>
                       );
                     }}
@@ -1307,8 +1308,9 @@ export default function GlpSwap(props) {
                           renderContent={() => {
                             return (
                               <p className="text-white">
-                                <Trans>Available amount to withdraw from GLP.</Trans>
-                                <Trans>Funds not utilized by current open positions.</Trans>
+                                <Trans>
+                                  Available amount to withdraw from GLP. Funds not utilized by current open positions.
+                                </Trans>
                               </p>
                             );
                           }}

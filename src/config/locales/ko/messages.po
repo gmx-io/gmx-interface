@@ -194,7 +194,7 @@ msgstr "Arbitrum APR:"
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})"
 msgstr "자산운용규모: 스테이킹된 GMX + GLP 풀 ({chainName})"
 
-#: src/components/Glp/GlpSwap.js:1305
+#: src/components/Glp/GlpSwap.js:1306
 msgid "Available"
 msgstr "사용가능"
 
@@ -205,14 +205,19 @@ msgid "Available Liquidity"
 msgstr "사용가능 유동성"
 
 #: src/components/Glp/GlpSwap.js:1004
-#: src/components/Glp/GlpSwap.js:1287
+#: src/components/Glp/GlpSwap.js:1288
 msgid "Available amount to deposit into GLP."
 msgstr "GLP에 예치할 수 있는 양"
 
 #: src/components/Glp/GlpSwap.js:1016
 #: src/components/Glp/GlpSwap.js:1310
-msgid "Available amount to withdraw from GLP."
-msgstr "GLP에서 인출할 수 있는 양"
+#~ msgid "Available amount to withdraw from GLP."
+#~ msgstr "GLP에서 인출할 수 있는 양"
+
+#: src/components/Glp/GlpSwap.js:1016
+#: src/components/Glp/GlpSwap.js:1311
+msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
+msgstr ""
 
 #: src/pages/Home/Home.js:247
 msgid "Available on your preferred network"
@@ -348,8 +353,8 @@ msgstr "Avalanche에서 구매"
 msgid "Buy submitted."
 msgstr "구매 제출 완료"
 
-#: src/components/Glp/GlpSwap.js:1186
-#: src/components/Glp/GlpSwap.js:1363
+#: src/components/Glp/GlpSwap.js:1187
+#: src/components/Glp/GlpSwap.js:1365
 msgid "Buy with {0}"
 msgstr "{0}로 구매"
 
@@ -865,13 +870,13 @@ msgstr "실행 수수료"
 msgid "Exit Price"
 msgstr "매도 가격"
 
-#: src/components/Glp/GlpSwap.js:1029
+#: src/components/Glp/GlpSwap.js:1030
 msgid "FEES"
 msgstr "수수료"
 
 #: src/components/Exchange/PositionSeller.js:1108
 #: src/components/Glp/GlpSwap.js:910
-#: src/components/Glp/GlpSwap.js:1345
+#: src/components/Glp/GlpSwap.js:1347
 #: src/pages/Dashboard/DashboardV2.js:665
 msgid "Fees"
 msgstr "수수료"
@@ -888,8 +893,8 @@ msgstr "수수료는 GLP를 구입하는 자산에 따라 달라질 수 있습�
 msgid "Fees since"
 msgstr "이후 수수료"
 
-#: src/components/Glp/GlpSwap.js:1035
-#: src/components/Glp/GlpSwap.js:1351
+#: src/components/Glp/GlpSwap.js:1036
+#: src/components/Glp/GlpSwap.js:1353
 msgid "Fees will be shown once you have entered an amount in the order form."
 msgstr "입력란에 수량을 입력하면 수수료가 표시됩니다."
 
@@ -911,8 +916,8 @@ msgstr "상실 이익이 확인되지 않았습니다."
 
 #: src/components/Glp/GlpSwap.js:1017
 #: src/components/Glp/GlpSwap.js:1311
-msgid "Funds not utilized by current open positions."
-msgstr "현재 열린 포지션에서 사용되지 않는 자금입니다."
+#~ msgid "Funds not utilized by current open positions."
+#~ msgstr "현재 열린 포지션에서 사용되지 않는 자금입니다."
 
 #: src/pages/Dashboard/DashboardV2.js:967
 msgid "GLP Index Composition"
@@ -1248,11 +1253,11 @@ msgstr "최대 레버리지: 30.5xt"
 msgid "Max leverage: 30x"
 msgstr "최대 레버리지: 30x"
 
-#: src/components/Glp/GlpSwap.js:1105
+#: src/components/Glp/GlpSwap.js:1106
 msgid "Max pool capacity reached for {0}"
 msgstr "{0}의 최대 풀 수용량에 도달했습니다"
 
-#: src/components/Glp/GlpSwap.js:1250
+#: src/components/Glp/GlpSwap.js:1251
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgstr "{0}의 최대 풀 수용량에 도달했습니다"
 
@@ -1437,7 +1442,7 @@ msgstr "플랫폼과 GLP 지수 토큰."
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr "수수료 할인의 혜택을 받으려면 추천 코드를 입력해주세요."
 
-#: src/components/Glp/GlpSwap.js:1109
+#: src/components/Glp/GlpSwap.js:1110
 msgid "Please mint GLP using another token"
 msgstr "다른 토큰을 사용하여 GLP를 발행해주세요."
 
@@ -1703,8 +1708,8 @@ msgstr "GLP 판매"
 msgid "Sell failed."
 msgstr "판매 실패"
 
-#: src/components/Glp/GlpSwap.js:1186
-#: src/components/Glp/GlpSwap.js:1368
+#: src/components/Glp/GlpSwap.js:1187
+#: src/components/Glp/GlpSwap.js:1370
 msgid "Sell for {0}"
 msgstr "{0}로 판매"
 
@@ -1860,7 +1865,7 @@ msgstr "스왑 주문 제출 완료!"
 msgid "Swap failed."
 msgstr "스왑 실패."
 
-#: src/components/Glp/GlpSwap.js:1113
+#: src/components/Glp/GlpSwap.js:1114
 msgid "Swap on {0}"
 msgstr "{0}로 스왑"
 
@@ -2228,7 +2233,7 @@ msgstr "유효한 추천 코드를 사용하여 이 계정으로 트레이드된
 msgid "Volume traded by your referred traders."
 msgstr "귀하가 추천한 트레이더들의 거래량"
 
-#: src/components/Glp/GlpSwap.js:1025
+#: src/components/Glp/GlpSwap.js:1026
 msgid "WALLET"
 msgstr "지갑이"
 
@@ -2250,7 +2255,7 @@ msgid "Waiting for Approval"
 msgstr "승인 대기중"
 
 #: src/components/Glp/GlpSwap.js:724
-#: src/components/Glp/GlpSwap.js:1335
+#: src/components/Glp/GlpSwap.js:1337
 #: src/pages/Stake/StakeV2.js:1512
 #: src/pages/Stake/StakeV2.js:1831
 #: src/pages/Stake/StakeV2.js:1973

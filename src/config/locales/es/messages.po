@@ -198,7 +198,7 @@ msgstr "Arbitrum APR:"
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})"
 msgstr "Activos bajo gestión: GMX stakeados (Todas las cadenas) + Reserva GLP ({chainName})"
 
-#: src/components/Glp/GlpSwap.js:1305
+#: src/components/Glp/GlpSwap.js:1306
 msgid "Available"
 msgstr "Disponible"
 
@@ -209,14 +209,19 @@ msgid "Available Liquidity"
 msgstr "Liquidez Disponible"
 
 #: src/components/Glp/GlpSwap.js:1004
-#: src/components/Glp/GlpSwap.js:1287
+#: src/components/Glp/GlpSwap.js:1288
 msgid "Available amount to deposit into GLP."
 msgstr "Cantidad disponible para depositar en GLP."
 
 #: src/components/Glp/GlpSwap.js:1016
 #: src/components/Glp/GlpSwap.js:1310
-msgid "Available amount to withdraw from GLP."
-msgstr "Cantidad disponible para retirar de GLP."
+#~ msgid "Available amount to withdraw from GLP."
+#~ msgstr "Cantidad disponible para retirar de GLP."
+
+#: src/components/Glp/GlpSwap.js:1016
+#: src/components/Glp/GlpSwap.js:1311
+msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
+msgstr ""
 
 #: src/pages/Home/Home.js:247
 msgid "Available on your preferred network"
@@ -352,8 +357,8 @@ msgstr "Comprar en Avalanche"
 msgid "Buy submitted."
 msgstr "Compra enviada."
 
-#: src/components/Glp/GlpSwap.js:1186
-#: src/components/Glp/GlpSwap.js:1363
+#: src/components/Glp/GlpSwap.js:1187
+#: src/components/Glp/GlpSwap.js:1365
 msgid "Buy with {0}"
 msgstr "Compra con {0}"
 
@@ -873,13 +878,13 @@ msgstr "Comisión de Ejecución"
 msgid "Exit Price"
 msgstr "Precio de Salida"
 
-#: src/components/Glp/GlpSwap.js:1029
+#: src/components/Glp/GlpSwap.js:1030
 msgid "FEES"
 msgstr "COMISIONES"
 
 #: src/components/Exchange/PositionSeller.js:1108
 #: src/components/Glp/GlpSwap.js:910
-#: src/components/Glp/GlpSwap.js:1345
+#: src/components/Glp/GlpSwap.js:1347
 #: src/pages/Dashboard/DashboardV2.js:665
 msgid "Fees"
 msgstr "Comisiones"
@@ -896,8 +901,8 @@ msgstr "Las comisiones pueden variar dependiendo del activo por el que se compre
 msgid "Fees since"
 msgstr "Comisiones desde"
 
-#: src/components/Glp/GlpSwap.js:1035
-#: src/components/Glp/GlpSwap.js:1351
+#: src/components/Glp/GlpSwap.js:1036
+#: src/components/Glp/GlpSwap.js:1353
 msgid "Fees will be shown once you have entered an amount in the order form."
 msgstr "Las comisiones se mostrarán una vez que haya introducido una cantidad en el formulario de pedido."
 
@@ -919,8 +924,8 @@ msgstr "Renuncia de ganancias no marcada"
 
 #: src/components/Glp/GlpSwap.js:1017
 #: src/components/Glp/GlpSwap.js:1311
-msgid "Funds not utilized by current open positions."
-msgstr "Fondos no utilizados por las posiciones abiertas actuales."
+#~ msgid "Funds not utilized by current open positions."
+#~ msgstr "Fondos no utilizados por las posiciones abiertas actuales."
 
 #: src/pages/Dashboard/DashboardV2.js:967
 msgid "GLP Index Composition"
@@ -1268,11 +1273,11 @@ msgstr "Apalancamiento Máx.: 30.5x"
 msgid "Max leverage: 30x"
 msgstr "Apalancamiento Máx.: 30x"
 
-#: src/components/Glp/GlpSwap.js:1105
+#: src/components/Glp/GlpSwap.js:1106
 msgid "Max pool capacity reached for {0}"
 msgstr "Capacidad máxima de reserva alcanzada para {0}"
 
-#: src/components/Glp/GlpSwap.js:1250
+#: src/components/Glp/GlpSwap.js:1251
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgstr "Capacidad máxima de reserva alcanzada para {0}. Por favor, acuñe GLP usando otro token."
 
@@ -1457,7 +1462,7 @@ msgstr "Plataforma y tokens del índice GLP"
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr "Por favor, introduzca un código de referido para beneficiarse de los descuentos en las comisiones."
 
-#: src/components/Glp/GlpSwap.js:1109
+#: src/components/Glp/GlpSwap.js:1110
 msgid "Please mint GLP using another token"
 msgstr "Por favor, acuñe GLP usando otro token"
 
@@ -1723,8 +1728,8 @@ msgstr "Vender GLP"
 msgid "Sell failed."
 msgstr "Venta fallida."
 
-#: src/components/Glp/GlpSwap.js:1186
-#: src/components/Glp/GlpSwap.js:1368
+#: src/components/Glp/GlpSwap.js:1187
+#: src/components/Glp/GlpSwap.js:1370
 msgid "Sell for {0}"
 msgstr "Vender por {0}"
 
@@ -1884,7 +1889,7 @@ msgstr "¡Orden de Intercambio enviada!"
 msgid "Swap failed."
 msgstr "Falló el Intercambio."
 
-#: src/components/Glp/GlpSwap.js:1113
+#: src/components/Glp/GlpSwap.js:1114
 msgid "Swap on {0}"
 msgstr "Intercambio en {0}"
 
@@ -2260,7 +2265,7 @@ msgstr "Volumen negociado por esta cuenta con un código de referido activo."
 msgid "Volume traded by your referred traders."
 msgstr "Volumen negociado por sus traders referidos."
 
-#: src/components/Glp/GlpSwap.js:1025
+#: src/components/Glp/GlpSwap.js:1026
 msgid "WALLET"
 msgstr "MONEDERO"
 
@@ -2282,7 +2287,7 @@ msgid "Waiting for Approval"
 msgstr "Esperando Aprobación"
 
 #: src/components/Glp/GlpSwap.js:724
-#: src/components/Glp/GlpSwap.js:1335
+#: src/components/Glp/GlpSwap.js:1337
 #: src/pages/Stake/StakeV2.js:1512
 #: src/pages/Stake/StakeV2.js:1831
 #: src/pages/Stake/StakeV2.js:1973

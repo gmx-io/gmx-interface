@@ -194,7 +194,7 @@ msgstr ""
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})"
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1305
+#: src/components/Glp/GlpSwap.js:1306
 msgid "Available"
 msgstr ""
 
@@ -205,13 +205,18 @@ msgid "Available Liquidity"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js:1004
-#: src/components/Glp/GlpSwap.js:1287
+#: src/components/Glp/GlpSwap.js:1288
 msgid "Available amount to deposit into GLP."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js:1016
 #: src/components/Glp/GlpSwap.js:1310
-msgid "Available amount to withdraw from GLP."
+#~ msgid "Available amount to withdraw from GLP."
+#~ msgstr ""
+
+#: src/components/Glp/GlpSwap.js:1016
+#: src/components/Glp/GlpSwap.js:1311
+msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr ""
 
 #: src/pages/Home/Home.js:247
@@ -348,8 +353,8 @@ msgstr ""
 msgid "Buy submitted."
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1186
-#: src/components/Glp/GlpSwap.js:1363
+#: src/components/Glp/GlpSwap.js:1187
+#: src/components/Glp/GlpSwap.js:1365
 msgid "Buy with {0}"
 msgstr ""
 
@@ -865,13 +870,13 @@ msgstr ""
 msgid "Exit Price"
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1029
+#: src/components/Glp/GlpSwap.js:1030
 msgid "FEES"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js:1108
 #: src/components/Glp/GlpSwap.js:910
-#: src/components/Glp/GlpSwap.js:1345
+#: src/components/Glp/GlpSwap.js:1347
 #: src/pages/Dashboard/DashboardV2.js:665
 msgid "Fees"
 msgstr ""
@@ -888,8 +893,8 @@ msgstr ""
 msgid "Fees since"
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1035
-#: src/components/Glp/GlpSwap.js:1351
+#: src/components/Glp/GlpSwap.js:1036
+#: src/components/Glp/GlpSwap.js:1353
 msgid "Fees will be shown once you have entered an amount in the order form."
 msgstr ""
 
@@ -911,8 +916,8 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.js:1017
 #: src/components/Glp/GlpSwap.js:1311
-msgid "Funds not utilized by current open positions."
-msgstr ""
+#~ msgid "Funds not utilized by current open positions."
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js:967
 msgid "GLP Index Composition"
@@ -1248,11 +1253,11 @@ msgstr ""
 msgid "Max leverage: 30x"
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1105
+#: src/components/Glp/GlpSwap.js:1106
 msgid "Max pool capacity reached for {0}"
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1250
+#: src/components/Glp/GlpSwap.js:1251
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgstr ""
 
@@ -1437,7 +1442,7 @@ msgstr ""
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1109
+#: src/components/Glp/GlpSwap.js:1110
 msgid "Please mint GLP using another token"
 msgstr ""
 
@@ -1703,8 +1708,8 @@ msgstr ""
 msgid "Sell failed."
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1186
-#: src/components/Glp/GlpSwap.js:1368
+#: src/components/Glp/GlpSwap.js:1187
+#: src/components/Glp/GlpSwap.js:1370
 msgid "Sell for {0}"
 msgstr ""
 
@@ -1860,7 +1865,7 @@ msgstr ""
 msgid "Swap failed."
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1113
+#: src/components/Glp/GlpSwap.js:1114
 msgid "Swap on {0}"
 msgstr ""
 
@@ -2228,7 +2233,7 @@ msgstr ""
 msgid "Volume traded by your referred traders."
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1025
+#: src/components/Glp/GlpSwap.js:1026
 msgid "WALLET"
 msgstr ""
 
@@ -2250,7 +2255,7 @@ msgid "Waiting for Approval"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js:724
-#: src/components/Glp/GlpSwap.js:1335
+#: src/components/Glp/GlpSwap.js:1337
 #: src/pages/Stake/StakeV2.js:1512
 #: src/pages/Stake/StakeV2.js:1831
 #: src/pages/Stake/StakeV2.js:1973

@@ -70,6 +70,8 @@
     "Available Liquidity": "사용가능 유동성",
     "Available amount to deposit into GLP.": "GLP에 예치할 수 있는 양",
     "Available amount to withdraw from GLP.": "GLP에서 인출할 수 있는 양",
+    "Available amount to withdraw from GLP. Funds not utilized by current open positions.":
+      "Available amount to withdraw from GLP. Funds not utilized by current open positions.",
     "Available on your preferred network": "선택한 네트워크에서 이용가능",
     "Available:": "사용가능",
     Avalanche: "Avalanche",

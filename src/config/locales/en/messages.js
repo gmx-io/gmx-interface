@@ -71,6 +71,8 @@
     "Available Liquidity": "Available Liquidity",
     "Available amount to deposit into GLP.": "Available amount to deposit into GLP.",
     "Available amount to withdraw from GLP.": "Available amount to withdraw from GLP.",
+    "Available amount to withdraw from GLP. Funds not utilized by current open positions.":
+      "Available amount to withdraw from GLP. Funds not utilized by current open positions.",
     "Available on your preferred network": "Available on your preferred network",
     "Available:": "Available:",
     Avalanche: "Avalanche",

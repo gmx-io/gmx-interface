@@ -194,7 +194,7 @@ msgstr "ArbitrumのAPR(実質年利)"
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})"
 msgstr "管理資産: 全チェーンでステークされているGMX + GLPプール ({chainName})"
 
-#: src/components/Glp/GlpSwap.js:1305
+#: src/components/Glp/GlpSwap.js:1306
 msgid "Available"
 msgstr "入手可能"
 
@@ -205,14 +205,19 @@ msgid "Available Liquidity"
 msgstr "入手可能な流動性"
 
 #: src/components/Glp/GlpSwap.js:1004
-#: src/components/Glp/GlpSwap.js:1287
+#: src/components/Glp/GlpSwap.js:1288
 msgid "Available amount to deposit into GLP."
 msgstr "GLPに入金可能な金額"
 
 #: src/components/Glp/GlpSwap.js:1016
 #: src/components/Glp/GlpSwap.js:1310
-msgid "Available amount to withdraw from GLP."
-msgstr "GLPから出金可能な金額"
+#~ msgid "Available amount to withdraw from GLP."
+#~ msgstr "GLPから出金可能な金額"
+
+#: src/components/Glp/GlpSwap.js:1016
+#: src/components/Glp/GlpSwap.js:1311
+msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
+msgstr ""
 
 #: src/pages/Home/Home.js:247
 msgid "Available on your preferred network"
@@ -348,8 +353,8 @@ msgstr "Avalancheで購入"
 msgid "Buy submitted."
 msgstr "購入申し込み完了"
 
-#: src/components/Glp/GlpSwap.js:1186
-#: src/components/Glp/GlpSwap.js:1363
+#: src/components/Glp/GlpSwap.js:1187
+#: src/components/Glp/GlpSwap.js:1365
 msgid "Buy with {0}"
 msgstr "{0}で購入"
 
@@ -865,13 +870,13 @@ msgstr "執行手数料"
 msgid "Exit Price"
 msgstr "退出価格"
 
-#: src/components/Glp/GlpSwap.js:1029
+#: src/components/Glp/GlpSwap.js:1030
 msgid "FEES"
 msgstr "手数料"
 
 #: src/components/Exchange/PositionSeller.js:1108
 #: src/components/Glp/GlpSwap.js:910
-#: src/components/Glp/GlpSwap.js:1345
+#: src/components/Glp/GlpSwap.js:1347
 #: src/pages/Dashboard/DashboardV2.js:665
 msgid "Fees"
 msgstr "手数料"
@@ -888,8 +893,8 @@ msgstr "GLPをどの資産で購入するかによって手数料は異なりま
 msgid "Fees since"
 msgstr "この時点からの手数料"
 
-#: src/components/Glp/GlpSwap.js:1035
-#: src/components/Glp/GlpSwap.js:1351
+#: src/components/Glp/GlpSwap.js:1036
+#: src/components/Glp/GlpSwap.js:1353
 msgid "Fees will be shown once you have entered an amount in the order form."
 msgstr "オーダーフォームに額を入れると手数料が表示されます。"
 
@@ -911,8 +916,8 @@ msgstr "喪失利益はチェックされていません"
 
 #: src/components/Glp/GlpSwap.js:1017
 #: src/components/Glp/GlpSwap.js:1311
-msgid "Funds not utilized by current open positions."
-msgstr "現在オープンされているポジションで利用されていない資金"
+#~ msgid "Funds not utilized by current open positions."
+#~ msgstr "現在オープンされているポジションで利用されていない資金"
 
 #: src/pages/Dashboard/DashboardV2.js:967
 msgid "GLP Index Composition"
@@ -1248,11 +1253,11 @@ msgstr "最大レバレッジ: 30.5倍"
 msgid "Max leverage: 30x"
 msgstr "最大レバレッジ: 30倍"
 
-#: src/components/Glp/GlpSwap.js:1105
+#: src/components/Glp/GlpSwap.js:1106
 msgid "Max pool capacity reached for {0}"
 msgstr "{0}の最大プールキャパシティ到達"
 
-#: src/components/Glp/GlpSwap.js:1250
+#: src/components/Glp/GlpSwap.js:1251
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgstr "{0}の最大プールキャパシティ到達。別のトークンを使用してGLPをミントしてください。"
 
@@ -1437,7 +1442,7 @@ msgstr "プラットフォームとGLPインデックストークン"
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr "紹介コードを入力すると手数料割引を受けられます。"
 
-#: src/components/Glp/GlpSwap.js:1109
+#: src/components/Glp/GlpSwap.js:1110
 msgid "Please mint GLP using another token"
 msgstr "別のトークンを使用してGLPをミントしてください"
 
@@ -1703,8 +1708,8 @@ msgstr "GLP売却"
 msgid "Sell failed."
 msgstr "売却できませんでした。"
 
-#: src/components/Glp/GlpSwap.js:1186
-#: src/components/Glp/GlpSwap.js:1368
+#: src/components/Glp/GlpSwap.js:1187
+#: src/components/Glp/GlpSwap.js:1370
 msgid "Sell for {0}"
 msgstr "売却して{0}にする"
 
@@ -1860,7 +1865,7 @@ msgstr "スワップ注文提出済!"
 msgid "Swap failed."
 msgstr "スワップできませんでした。"
 
-#: src/components/Glp/GlpSwap.js:1113
+#: src/components/Glp/GlpSwap.js:1114
 msgid "Swap on {0}"
 msgstr "{0}でスワップ"
 
@@ -2228,7 +2233,7 @@ msgstr "有効な紹介コードを使ってこのアカウントでトレード
 msgid "Volume traded by your referred traders."
 msgstr "あなたが紹介したトレーダーによる取引高"
 
-#: src/components/Glp/GlpSwap.js:1025
+#: src/components/Glp/GlpSwap.js:1026
 msgid "WALLET"
 msgstr "ウォレット"
 
@@ -2250,7 +2255,7 @@ msgid "Waiting for Approval"
 msgstr "許可の待機中"
 
 #: src/components/Glp/GlpSwap.js:724
-#: src/components/Glp/GlpSwap.js:1335
+#: src/components/Glp/GlpSwap.js:1337
 #: src/pages/Stake/StakeV2.js:1512
 #: src/pages/Stake/StakeV2.js:1831
 #: src/pages/Stake/StakeV2.js:1973
