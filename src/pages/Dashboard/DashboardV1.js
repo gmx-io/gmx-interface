@@ -7,7 +7,6 @@ import {
   bigNumberify,
   expandDecimals,
   formatAmount,
-  fetcher,
   formatDate,
   numberWithCommas,
   getTokenUrl,
@@ -29,6 +28,7 @@ import "./Dashboard.css";
 import metamaskImg from "../../img/metamask.png";
 import coingeckoImg from "../../img/coingecko.png";
 import bscscanImg from "../../img/bscscan.png";
+import { fetcher } from "../../lib/contracts/fetcher";
 
 const USD_DECIMALS = 30;
 const PRECISION = expandDecimals(1, 30);

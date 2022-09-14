@@ -13,7 +13,6 @@ import {
   getConnectWalletHandler,
   useEagerConnect,
   useInactiveListener,
-  fetcher,
   formatArrayAmount,
   formatAmount,
   formatAmountFree,
@@ -30,6 +29,7 @@ import { getContract } from "../../config/Addresses";
 import Reader from "../../abis/Reader.json";
 import Token from "../../abis/Token.json";
 import GmxMigrator from "../../abis/GmxMigrator.json";
+import { fetcher } from "../../lib/contracts/fetcher";
 
 const { MaxUint256, AddressZero } = ethers.constants;
 
