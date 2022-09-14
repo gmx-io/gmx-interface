@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Tooltip from "../Tooltip/Tooltip";
 import { Trans, t } from "@lingui/macro";
-import Modal from "../Modal/Modal";
 import Slider, { SliderTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 import "./SwapBox.css";
@@ -74,7 +73,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import ConfirmationBox from "./ConfirmationBox";
 import OrdersToa from "./OrdersToa";
 
-import { getTokens, getWhitelistedTokens, getToken, getTokenBySymbol, getNativeToken } from "../../config/Tokens";
+import { getTokens, getWhitelistedTokens, getToken, getTokenBySymbol } from "../../config/Tokens";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Router from "../../abis/Router.json";
 import Token from "../../abis/Token.json";
