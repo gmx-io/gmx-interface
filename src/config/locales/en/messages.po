@@ -181,8 +181,8 @@ msgstr ""
 #~ msgid "Arbitrum"
 #~ msgstr "Arbitrum"
 
-#: src/components/TokenCard/TokenCard.js:64
-#: src/components/TokenCard/TokenCard.js:96
+#: src/components/TokenCard/TokenCard.js:68
+#: src/components/TokenCard/TokenCard.js:100
 msgid "Arbitrum APR:"
 msgstr ""
 
@@ -222,8 +222,8 @@ msgstr ""
 msgid "Avalanche"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js:65
-#: src/components/TokenCard/TokenCard.js:97
+#: src/components/TokenCard/TokenCard.js:69
+#: src/components/TokenCard/TokenCard.js:101
 msgid "Avalanche APR:"
 msgstr ""
 
@@ -323,13 +323,13 @@ msgstr ""
 msgid "Buy failed."
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js:70
-#: src/components/TokenCard/TokenCard.js:102
+#: src/components/TokenCard/TokenCard.js:74
+#: src/components/TokenCard/TokenCard.js:106
 msgid "Buy on Arbitrum"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js:73
-#: src/components/TokenCard/TokenCard.js:105
+#: src/components/TokenCard/TokenCard.js:77
+#: src/components/TokenCard/TokenCard.js:109
 msgid "Buy on Avalanche"
 msgstr ""
 
@@ -904,7 +904,7 @@ msgstr "GLP Index Composition"
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "GLP buy disabled, pending {0} upgrade"
 
-#: src/components/TokenCard/TokenCard.js:93
+#: src/components/TokenCard/TokenCard.js:97
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 msgstr "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 
@@ -940,7 +940,7 @@ msgstr ""
 #~ msgid "GMX is the utility and governance token, and also accrues 30% of the platform's generated fees."
 #~ msgstr ""
 
-#: src/components/TokenCard/TokenCard.js:61
+#: src/components/TokenCard/TokenCard.js:65
 msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
 msgstr "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
 
@@ -1502,8 +1502,8 @@ msgstr ""
 msgid "Purchase Insurance"
 msgstr "Purchase Insurance"
 
-#: src/components/TokenCard/TokenCard.js:82
-#: src/components/TokenCard/TokenCard.js:114
+#: src/components/TokenCard/TokenCard.js:86
+#: src/components/TokenCard/TokenCard.js:118
 msgid "Read more"
 msgstr ""
 

@@ -177,8 +177,8 @@ msgstr "승인중..."
 #~ msgid "Arbitrum"
 #~ msgstr "Arbitrum"
 
-#: src/components/TokenCard/TokenCard.js:64
-#: src/components/TokenCard/TokenCard.js:96
+#: src/components/TokenCard/TokenCard.js:68
+#: src/components/TokenCard/TokenCard.js:100
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"
 
@@ -218,8 +218,8 @@ msgstr "사용가능"
 msgid "Avalanche"
 msgstr "Avalanche"
 
-#: src/components/TokenCard/TokenCard.js:65
-#: src/components/TokenCard/TokenCard.js:97
+#: src/components/TokenCard/TokenCard.js:69
+#: src/components/TokenCard/TokenCard.js:101
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
@@ -319,13 +319,13 @@ msgstr "GMX 혹은 GLP 구매"
 msgid "Buy failed."
 msgstr "구매 실패"
 
-#: src/components/TokenCard/TokenCard.js:70
-#: src/components/TokenCard/TokenCard.js:102
+#: src/components/TokenCard/TokenCard.js:74
+#: src/components/TokenCard/TokenCard.js:106
 msgid "Buy on Arbitrum"
 msgstr "Arbitrum에서 구매"
 
-#: src/components/TokenCard/TokenCard.js:73
-#: src/components/TokenCard/TokenCard.js:105
+#: src/components/TokenCard/TokenCard.js:77
+#: src/components/TokenCard/TokenCard.js:109
 msgid "Buy on Avalanche"
 msgstr "Avalanche에서 구매"
 
@@ -896,7 +896,7 @@ msgstr "GLP 인덱스 구성"
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js:93
+#: src/components/TokenCard/TokenCard.js:97
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 msgstr "GLP는 유동성 공급 토큰입니다. 플랫폼에서 생성되는 수수료의 70%를 축적하세요."
 
@@ -924,7 +924,7 @@ msgstr "GMX 이코시스템 페이지"
 msgid "GMX is currently live on Arbitrum and Avalanche."
 msgstr "GMX는 현재 Arbitrum과 Avalanche에서 이용할 수 있습니다."
 
-#: src/components/TokenCard/TokenCard.js:61
+#: src/components/TokenCard/TokenCard.js:65
 msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
 msgstr "GMX는 유틸리티 및 거버넌스 토큰입니다. 플랫폼에서 생성되는 수수료의 30%를 축적하세요."
 
@@ -1482,8 +1482,8 @@ msgstr "GMX 구입"
 msgid "Purchase Insurance"
 msgstr "보험 구입"
 
-#: src/components/TokenCard/TokenCard.js:82
-#: src/components/TokenCard/TokenCard.js:114
+#: src/components/TokenCard/TokenCard.js:86
+#: src/components/TokenCard/TokenCard.js:118
 msgid "Read more"
 msgstr "더 알아보기"
 
