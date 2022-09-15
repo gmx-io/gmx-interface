@@ -101,7 +101,7 @@
     "prettier": "2.5.1"
   },
   "lint-staged": {
-    "**/*.{js, jsx, ts, tsx}": [
+    "src/**/*.{js,ts,jsx,tsx}": [
       "eslint --fix ./src",
       "prettier --write"
     ]
