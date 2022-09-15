@@ -17,7 +17,7 @@ import gmxAvax from "../../img/ic_gmx_avax.svg";
 import ohmArbitrum from "../../img/ic_olympus_arbitrum.svg";
 
 import { Trans } from "@lingui/macro";
-import ButtonLink from "../../components/Common/ButtonLink";
+import Button from "../../components/Common/Button";
 
 export default function BuyGMX() {
   const { chainId } = useChainId();
@@ -71,12 +71,12 @@ export default function BuyGMX() {
                   </Trans>
                 </div>
                 <div className="direct-purchase-options">
-                  <ButtonLink
+                  <Button
                     href="https://gmx.banxa.com?coinType=ETH&fiatType=USD&fiatAmount=500&blockchain=arbitrum"
                     imgSrc={Banxa}
                   >
                     <Trans>Banxa</Trans>
-                  </ButtonLink>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -90,26 +90,26 @@ export default function BuyGMX() {
                   <Trans>You can transfer ETH from other networks to Arbitrum using any of the below options:</Trans>
                 </div>
                 <div className="bridge-options">
-                  <ButtonLink
+                  <Button
                     href="https://synapseprotocol.com/?inputCurrency=ETH&outputCurrency=ETH&outputChain=42161"
                     align="left"
                     imgSrc={Synapse}
                   >
                     <Trans>Synapse</Trans>
-                  </ButtonLink>
-                  <ButtonLink href="https://app.multichain.org/#/router" align="left" imgSrc={Multiswap}>
+                  </Button>
+                  <Button href="https://app.multichain.org/#/router" align="left" imgSrc={Multiswap}>
                     <Trans>Multiswap</Trans>
-                  </ButtonLink>
-                  <ButtonLink
+                  </Button>
+                  <Button
                     href="https://app.hop.exchange/send?token=ETH&sourceNetwork=ethereum&destNetwork=arbitrum"
                     align="left"
                     imgSrc={Hop}
                   >
                     <Trans>Hop</Trans>
-                  </ButtonLink>
-                  <ButtonLink href="https://binance.com/" align="left" imgSrc={Binance}>
+                  </Button>
+                  <Button href="https://binance.com/" align="left" imgSrc={Binance}>
                     <Trans>Binance</Trans>
-                  </ButtonLink>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -151,12 +151,12 @@ export default function BuyGMX() {
                   </Trans>
                 </div>
                 <div className="direct-purchase-options">
-                  <ButtonLink
+                  <Button
                     href="https://gmx.banxa.com?coinType=AVAX&fiatType=USD&fiatAmount=500&blockchain=avalanche"
                     imgSrc={Banxa}
                   >
                     <Trans>Banxa</Trans>
-                  </ButtonLink>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -175,18 +175,18 @@ export default function BuyGMX() {
                   </Trans>
                 </div>
                 <div className="bridge-options">
-                  <ButtonLink align="left" href="https://bridge.avax.network/" imgSrc={avax30Icon}>
+                  <Button align="left" href="https://bridge.avax.network/" imgSrc={avax30Icon}>
                     <Trans>Avalanche</Trans>
-                  </ButtonLink>
-                  <ButtonLink align="left" href="https://synapseprotocol.com/" imgSrc={Synapse}>
+                  </Button>
+                  <Button align="left" href="https://synapseprotocol.com/" imgSrc={Synapse}>
                     <Trans>Synapse</Trans>
-                  </ButtonLink>
-                  <ButtonLink align="left" href="https://app.multichain.org/" imgSrc={Multiswap}>
+                  </Button>
+                  <Button align="left" href="https://app.multichain.org/" imgSrc={Multiswap}>
                     <Trans>Multiswap</Trans>
-                  </ButtonLink>
-                  <ButtonLink align="left" href="https://binance.com" imgSrc={Binance}>
+                  </Button>
+                  <Button align="left" href="https://binance.com" imgSrc={Binance}>
                     <Trans>Binance</Trans>
-                  </ButtonLink>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -212,13 +212,13 @@ export default function BuyGMX() {
                     </Trans>
                   </div>
                   <div className="direct-purchase-options">
-                    <ButtonLink
+                    <Button
                       size="xl"
                       imgSrc={gmxAvax}
                       href="https://traderjoexyz.com/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661#/"
                     >
                       <Trans>Purchase GMX</Trans>
-                    </ButtonLink>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -246,13 +246,13 @@ export default function BuyGMX() {
                     </Trans>
                   </div>
                   <div className="buy-gmx">
-                    <ButtonLink
+                    <Button
                       size="xl"
                       imgSrc={gmxArbitrum}
                       href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a"
                     >
                       <Trans>Purchase GMX</Trans>
-                    </ButtonLink>
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -269,9 +269,9 @@ export default function BuyGMX() {
                     <Trans>GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:</Trans>
                   </div>
                   <div className="buy-gmx">
-                    <ButtonLink size="xl" imgSrc={ohmArbitrum} href="https://pro.olympusdao.finance/#/partners/GMX">
+                    <Button size="xl" imgSrc={ohmArbitrum} href="https://pro.olympusdao.finance/#/partners/GMX">
                       <Trans>Olympus Pro</Trans>
-                    </ButtonLink>
+                    </Button>
                   </div>
                 </div>
               </div>
