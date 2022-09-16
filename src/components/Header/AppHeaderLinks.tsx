@@ -6,6 +6,7 @@ import "./Header.css";
 import { isHomeSite } from "../../lib/legacy";
 import { Trans } from "@lingui/macro";
 import React from "react";
+import { Link } from "react-router-dom";
 
 type Props = {
   small?: boolean;
@@ -26,14 +27,9 @@ export function AppHeaderLinks({
     <div className="App-header-links">
       {small && (
         <div className="App-header-links-header">
-          <HeaderLink
-            className="App-header-link-main"
-            to="/"
-            redirectPopupTimestamp={redirectPopupTimestamp}
-            showRedirectModal={showRedirectModal}
-          >
+          <Link className="App-header-link-main" to="/">
             <img src={logoImg} alt="GMX Logo" />
-          </HeaderLink>
+          </Link>
           <div
             className="App-header-menu-icon-block mobile-cross-menu"
             onClick={() => clickCloseIcon && clickCloseIcon()}
@@ -42,16 +38,6 @@ export function AppHeaderLinks({
           </div>
         </div>
       )}
-      <div className="App-header-link-container App-header-link-home">
-        <HeaderLink
-          to="/"
-          exact={true}
-          redirectPopupTimestamp={redirectPopupTimestamp}
-          showRedirectModal={showRedirectModal}
-        >
-          <Trans>Home</Trans>
-        </HeaderLink>
-      </div>
       <div className="App-header-link-container">
         <HeaderLink
           to="/dashboard"
