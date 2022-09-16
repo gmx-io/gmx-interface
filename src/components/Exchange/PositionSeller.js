@@ -13,7 +13,6 @@ import {
   USD_DECIMALS,
   DUST_USD,
   BASIS_POINTS_DIVISOR,
-  USDG_ADDRESS,
   SLIPPAGE_BPS_KEY,
   TRIGGER_PREFIX_BELOW,
   TRIGGER_PREFIX_ABOVE,
@@ -57,6 +56,7 @@ import Tooltip from "../Tooltip/Tooltip";
 import TokenSelector from "./TokenSelector";
 import { getTokens } from "../../config/Tokens";
 import "./PositionSeller.css";
+import { getTokenAmountByUsd } from "../../domain/tokens/utils";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -65,27 +65,6 @@ const orderOptionLabels = {
   [MARKET]: "Market",
   [STOP]: "Trigger",
 };
-
-function getTokenAmount(usdAmount, tokenAddress, max, infoTokens) {
-  if (!usdAmount) {
-    return;
-  }
-  if (tokenAddress === USDG_ADDRESS) {
-    return usdAmount.mul(expandDecimals(1, 18)).div(PRECISION);
-  }
-  const info = getTokenInfo(infoTokens, tokenAddress);
-  if (!info) {
-    return;
-  }
-  if (max && !info.maxPrice) {
-    return;
-  }
-  if (!max && !info.minPrice) {
-    return;
-  }
-
-  return usdAmount.mul(expandDecimals(1, info.decimals)).div(max ? info.minPrice : info.maxPrice);
-}
 
 function shouldSwap(collateralToken, receiveToken) {
   // If position collateral is WETH in contract, then position.collateralToken is { symbol: “ETH”, isNative: true, … }
@@ -235,6 +214,8 @@ export default function PositionSeller(props) {
     const { delta, hasProfit, deltaPercentage } = calculatePositionDelta(triggerPriceUsd, position);
     return [delta, hasProfit, deltaPercentage];
   }, [position, orderOption, triggerPriceUsd]);
+
+  console.log("deltas", { nextDelta: Number(nextDelta), nextHasProfit: Number(nextHasProfit) });
 
   const existingOrders = useMemo(() => {
     if (orderOption === STOP && (!triggerPriceUsd || triggerPriceUsd.eq(0))) {
@@ -404,13 +385,24 @@ export default function PositionSeller(props) {
 
       if (feeBasisPoints) {
         swapFee = receiveAmount.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
-        swapFeeToken = getTokenAmount(swapFee, collateralToken.address, false, infoTokens);
+        swapFeeToken = getTokenAmountByUsd(infoTokens, collateralToken.address, swapFee);
         totalFees = totalFees.add(swapFee || bigNumberify(0));
         receiveAmount = receiveAmount.sub(swapFee);
       }
     }
 
-    convertedReceiveAmount = getTokenAmount(receiveAmount, receiveToken.address, false, infoTokens);
+    if (orderOption === STOP) {
+      convertedReceiveAmount = getTokenAmountByUsd(infoTokens, receiveToken.address, receiveAmount, {
+        price: triggerPriceUsd,
+      });
+    } else {
+      convertedReceiveAmount = getTokenAmountByUsd(infoTokens, receiveToken.address, receiveAmount);
+    }
+
+    console.log("receive", {
+      receiveAmount: Number(receiveAmount),
+      convertedReceiveAmount: Number(convertedReceiveAmount),
+    });
 
     // Check swap limits (max in / max out)
     if (isSwapAllowed && shouldSwap(collateralToken, receiveToken)) {
@@ -1189,11 +1181,10 @@ export default function PositionSeller(props) {
                         return;
                       }
 
-                      const convertedTokenAmount = getTokenAmount(
-                        receiveAmount,
+                      const convertedTokenAmount = getTokenAmountByUsd(
+                        infoTokens,
                         tokenOptionInfo.address,
-                        false,
-                        infoTokens
+                        receiveAmount
                       );
 
                       const isNotEnoughLiquidity =

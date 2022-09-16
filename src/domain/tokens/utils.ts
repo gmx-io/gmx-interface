@@ -1,0 +1,35 @@
+import { BigNumber } from "ethers";
+import { expandDecimals, getTokenInfo, PRECISION, USDG_ADDRESS } from "../../lib/legacy";
+import { InfoTokens, TokenInfo } from "./types";
+
+export function getTokenAmountByUsd(
+    infoTokens: InfoTokens,
+    tokenAddress: string,
+    usdAmount?: BigNumber,
+    opts: {
+        max?: boolean
+        price?: BigNumber,
+    } = {},
+) {
+    if (!usdAmount) {
+      return;
+    }
+
+    if (tokenAddress === USDG_ADDRESS) {
+      return usdAmount.mul(expandDecimals(1, 18)).div(PRECISION);
+    }
+
+    const info: TokenInfo | undefined = getTokenInfo(infoTokens, tokenAddress);
+
+    if (!info) {
+      return;
+    }
+
+    const price = opts.price || (opts.max ? info.maxPrice : info.minPrice);
+
+    if (!price?.gt(0)) {
+      return;
+    }
+  
+    return usdAmount.mul(expandDecimals(1, info.decimals)).div(price);
+  }
