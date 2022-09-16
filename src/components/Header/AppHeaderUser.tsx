@@ -1,15 +1,23 @@
 import { useWeb3React } from "@web3-react/core";
 import AddressDropdown from "../AddressDropdown/AddressDropdown";
-import { ConnectWalletButton } from "../Common/Button";
+import ConnectWalletButton from "../Common/ConnectWalletButton";
 import React, { useCallback, useEffect } from "react";
 import { HeaderLink } from "./HeaderLink";
 import connectWalletImg from "../../img/ic_wallet_24.svg";
 
 import "./Header.css";
-import { isHomeSite, ARBITRUM, AVALANCHE, getAccountUrl, getChainName,  switchNetwork, useChainId } from "../../lib/legacy";
-import {ARBITRUM_TESTNET, isDevelopment} from "../../lib/legacy";
+import {
+  isHomeSite,
+  ARBITRUM,
+  AVALANCHE,
+  getAccountUrl,
+  getChainName,
+  switchNetwork,
+  useChainId,
+} from "../../lib/legacy";
+import { ARBITRUM_TESTNET, isDevelopment } from "../../lib/legacy";
 import cx from "classnames";
-import {Trans} from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 
@@ -23,12 +31,12 @@ type Props = {
 };
 
 export function AppHeaderUser({
- openSettings,
- small,
- setWalletModalVisible,
- disconnectAccountAndCloseSettings,
- redirectPopupTimestamp,
- showRedirectModal
+  openSettings,
+  small,
+  setWalletModalVisible,
+  disconnectAccountAndCloseSettings,
+  redirectPopupTimestamp,
+  showRedirectModal,
 }: Props) {
   const { chainId } = useChainId();
   const { active, account } = useWeb3React();
@@ -80,10 +88,10 @@ export function AppHeaderUser({
       <div className="App-header-user">
         <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>
           <HeaderLink
-              className="default-btn"
-              to="/trade"
-              redirectPopupTimestamp={redirectPopupTimestamp}
-              showRedirectModal={showRedirectModal}
+            className="default-btn"
+            to="/trade"
+            redirectPopupTimestamp={redirectPopupTimestamp}
+            showRedirectModal={showRedirectModal}
           >
             <Trans>Trade</Trans>
           </HeaderLink>
