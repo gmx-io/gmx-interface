@@ -215,8 +215,6 @@ export default function PositionSeller(props) {
     return [delta, hasProfit, deltaPercentage];
   }, [position, orderOption, triggerPriceUsd]);
 
-  console.log("deltas", { nextDelta: Number(nextDelta), nextHasProfit: Number(nextHasProfit) });
-
   const existingOrders = useMemo(() => {
     if (orderOption === STOP && (!triggerPriceUsd || triggerPriceUsd.eq(0))) {
       return [];
@@ -398,11 +396,6 @@ export default function PositionSeller(props) {
     } else {
       convertedReceiveAmount = getTokenAmountByUsd(infoTokens, receiveToken.address, receiveAmount);
     }
-
-    console.log("receive", {
-      receiveAmount: Number(receiveAmount),
-      convertedReceiveAmount: Number(convertedReceiveAmount),
-    });
 
     // Check swap limits (max in / max out)
     if (isSwapAllowed && shouldSwap(collateralToken, receiveToken)) {
