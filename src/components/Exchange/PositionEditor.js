@@ -37,6 +37,7 @@ import { getConstant } from "../../config/chains";
 const DEPOSIT = t`Deposit`;
 const WITHDRAW = t`Withdraw`;
 const EDIT_OPTIONS = [DEPOSIT, WITHDRAW];
+const MIN_ORDER_USD = expandDecimals(10, USD_DECIMALS);
 const { AddressZero } = ethers.constants;
 
 export default function PositionEditor(props) {
@@ -127,7 +128,7 @@ export default function PositionEditor(props) {
       }
     } else {
       fromAmount = parseValue(fromValue, USD_DECIMALS);
-      maxAmount = position.collateral;
+      maxAmount = position.collateral.sub(MIN_ORDER_USD);
       maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
       maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
       if (fromAmount) {
@@ -194,10 +195,10 @@ export default function PositionEditor(props) {
 
     if (!isDeposit && fromAmount) {
       if (fromAmount.gte(position.collateral)) {
-        return t`Min order: 10 USD`;
+        return t`Min residual collateral: 10 USD`;
       }
-      if (position.collateral.sub(fromAmount).lt(expandDecimals(10, USD_DECIMALS))) {
-        return t`Min order: 10 USD`;
+      if (position.collateral.sub(fromAmount).lt(MIN_ORDER_USD)) {
+        return t`Min residual collateral: 10 USD`;
       }
     }
 
