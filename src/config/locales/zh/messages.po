@@ -94,8 +94,8 @@ msgid "Additionally, trigger orders are market orders and are not guaranteed to 
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.js
-msgid "Address copied to your clipboard"
-msgstr ""
+#~ msgid "Address copied to your clipboard"
+#~ msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
@@ -174,8 +174,8 @@ msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.js
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Arbitrum"
-msgstr ""
+#~ msgid "Arbitrum"
+#~ msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -444,8 +444,8 @@ msgid "Close without profit"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Closing Fee"
-msgstr ""
+#~ msgid "Closing Fee"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -765,8 +765,8 @@ msgid "Enabling Orders..."
 msgstr ""
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "English"
-msgstr ""
+#~ msgid "English"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Enter Price"
@@ -880,8 +880,8 @@ msgid "Forfeit profit not checked"
 msgstr ""
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "French"
-msgstr ""
+#~ msgid "French"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1008,8 +1008,8 @@ msgid "Insufficient liquidity"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity\", true, \"BUFFER\""
-msgstr ""
+#~ msgid "Insufficient liquidity\", true, \"BUFFER\""
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1050,12 +1050,12 @@ msgstr ""
 
 #: src/Footer.js
 #: src/Footer.js
-msgid "Jobs"
-msgstr ""
+#~ msgid "Jobs"
+#~ msgstr ""
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Language"
-msgstr ""
+#~ msgid "Language"
+#~ msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Launch Exchange"
@@ -1264,8 +1264,8 @@ msgid "Net Value"
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.js
-msgid "Networks"
-msgstr ""
+#~ msgid "Networks"
+#~ msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.js
 msgid "Networks and Settings"
@@ -1458,8 +1458,8 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Profits In"
-msgstr ""
+#~ msgid "Profits In"
+#~ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community."
@@ -1621,8 +1621,8 @@ msgid "Select Market"
 msgstr ""
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Select Network"
-msgstr ""
+#~ msgid "Select Network"
+#~ msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select an option"
@@ -1721,8 +1721,8 @@ msgid "Slippage should be less than 5%"
 msgstr ""
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Spanish"
-msgstr ""
+#~ msgid "Spanish"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Speed up page loading"
@@ -1825,8 +1825,8 @@ msgid "Swaps disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Switch Network"
-msgstr ""
+#~ msgid "Switch Network"
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
@@ -1847,8 +1847,8 @@ msgid "Terms and Conditions"
 msgstr ""
 
 #: src/pages/Home/Home.js
-msgid "Test"
-msgstr ""
+#~ msgid "Test"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "The Boosted APR is from your staked Multiplier Points."
@@ -1944,6 +1944,8 @@ msgstr ""
 msgid "Total Traders Referred"
 msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr ""
@@ -1972,12 +1974,12 @@ msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x levera
 msgstr "Zhíjiē cóng nín de qiánbāo yǐ gāodá 30 bèi de gànggǎn lǜ jiāoyì BTC,ETH,AVAX hé qítā dǐngjí jiāmì huòbì"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Trade Settings"
-msgstr ""
+#~ msgid "Trade Settings"
+#~ msgstr ""
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Trade settings"
-msgstr ""
+#~ msgid "Trade settings"
+#~ msgstr ""
 
 #: src/components/Common/SEO.js
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet on Arbitrum and Avalanche."
@@ -2331,8 +2333,8 @@ msgid "Your transfer has been initiated."
 msgstr ""
 
 #: src/Footer.js
-msgid "lolipopi"
-msgstr ""
+#~ msgid "lolipopi"
+#~ msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 msgid "order"
@@ -2348,8 +2350,8 @@ msgid "to start using GMX"
 msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.js
-msgid "{0}"
-msgstr ""
+#~ msgid "{0}"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP (${1})"
@@ -2393,5 +2395,5 @@ msgstr ""
 #: src/Footer.js
 #: src/Footer.js
 #: src/Footer.js
-msgid "{text}"
-msgstr ""
+#~ msgid "{text}"
+#~ msgstr ""

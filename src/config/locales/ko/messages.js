@@ -478,6 +478,7 @@
     TOKEN: "토큰",
     "Telegram Groups": "텔레그램 그룹",
     "Terms and Conditions": "약관",
+    Test: "Test",
     "The Boosted APR is from your staked Multiplier Points.":
       '"APR 부스트는 스테이킹된 멀티플라이어 포인트로부터 적용됩니다.',
     "The address of the esGMX (IOU) token is {esGmxIouAddress}.": [

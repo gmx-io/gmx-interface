@@ -94,8 +94,8 @@ msgid "Additionally, trigger orders are market orders and are not guaranteed to 
 msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.js
-msgid "Address copied to your clipboard"
-msgstr "アドレスがクリップボードにコピーされました"
+#~ msgid "Address copied to your clipboard"
+#~ msgstr "アドレスがクリップボードにコピーされました"
 
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
@@ -174,8 +174,8 @@ msgstr "承認中"
 
 #: src/components/AddressDropdown/AddressDropdown.js
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Arbitrum"
-msgstr "Arbitrum"
+#~ msgid "Arbitrum"
+#~ msgstr "Arbitrum"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -444,8 +444,8 @@ msgid "Close without profit"
 msgstr "利益なしでクローズ"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Closing Fee"
-msgstr "クローズ手数料"
+#~ msgid "Closing Fee"
+#~ msgstr "クローズ手数料"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -765,8 +765,8 @@ msgid "Enabling Orders..."
 msgstr "注文有効化中"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "English"
-msgstr "英語"
+#~ msgid "English"
+#~ msgstr "英語"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Enter Price"
@@ -880,8 +880,8 @@ msgid "Forfeit profit not checked"
 msgstr "喪失利益はチェックされていません"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "French"
-msgstr "フランス語"
+#~ msgid "French"
+#~ msgstr "フランス語"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1008,8 +1008,8 @@ msgid "Insufficient liquidity"
 msgstr "流動性不足"
 
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity\", true, \"BUFFER\""
-msgstr "流動性不足\", true, \"バッファー\""
+#~ msgid "Insufficient liquidity\", true, \"BUFFER\""
+#~ msgstr "流動性不足\", true, \"バッファー\""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1050,12 +1050,12 @@ msgstr "無効なスリッページ値"
 
 #: src/Footer.js
 #: src/Footer.js
-msgid "Jobs"
-msgstr "仕事"
+#~ msgid "Jobs"
+#~ msgstr "仕事"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Language"
-msgstr "言語"
+#~ msgid "Language"
+#~ msgstr "言語"
 
 #: src/pages/Home/Home.js
 msgid "Launch Exchange"
@@ -1264,8 +1264,8 @@ msgid "Net Value"
 msgstr "ネット金額"
 
 #: src/components/AddressDropdown/AddressDropdown.js
-msgid "Networks"
-msgstr "ネットワーク"
+#~ msgid "Networks"
+#~ msgstr "ネットワーク"
 
 #: src/components/NetworkDropdown/NetworkDropdown.js
 msgid "Networks and Settings"
@@ -1458,8 +1458,8 @@ msgstr "利益"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Profits In"
-msgstr "利益"
+#~ msgid "Profits In"
+#~ msgstr "利益"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community."
@@ -1621,8 +1621,8 @@ msgid "Select Market"
 msgstr "マーケット選択"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Select Network"
-msgstr "ネットワーク選択"
+#~ msgid "Select Network"
+#~ msgstr "ネットワーク選択"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select an option"
@@ -1721,8 +1721,8 @@ msgid "Slippage should be less than 5%"
 msgstr "スリッページは5%未満"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Spanish"
-msgstr "スペイン語"
+#~ msgid "Spanish"
+#~ msgstr "スペイン語"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Speed up page loading"
@@ -1825,8 +1825,8 @@ msgid "Swaps disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Switch Network"
-msgstr "ネットワーク変更"
+#~ msgid "Switch Network"
+#~ msgstr "ネットワーク変更"
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
@@ -1847,8 +1847,8 @@ msgid "Terms and Conditions"
 msgstr "規約"
 
 #: src/pages/Home/Home.js
-msgid "Test"
-msgstr ""
+#~ msgid "Test"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "The Boosted APR is from your staked Multiplier Points."
@@ -1944,6 +1944,8 @@ msgstr "総供給量"
 msgid "Total Traders Referred"
 msgstr "紹介した全トレーダー"
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "トレード総額"
@@ -1972,12 +1974,12 @@ msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x levera
 msgstr "BTC、ETH、AVAXなどの主要仮想通貨を最大30倍のレバレッジで直接自分のウォレットから取引可能"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Trade Settings"
-msgstr "トレード設定"
+#~ msgid "Trade Settings"
+#~ msgstr "トレード設定"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Trade settings"
-msgstr "トレード設定"
+#~ msgid "Trade settings"
+#~ msgstr "トレード設定"
 
 #: src/components/Common/SEO.js
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet on Arbitrum and Avalanche."
@@ -2331,8 +2333,8 @@ msgid "Your transfer has been initiated."
 msgstr "移転が開始されました。"
 
 #: src/Footer.js
-msgid "lolipopi"
-msgstr "lolipopi"
+#~ msgid "lolipopi"
+#~ msgstr "lolipopi"
 
 #: src/pages/Exchange/Exchange.js
 msgid "order"
@@ -2348,8 +2350,8 @@ msgid "to start using GMX"
 msgstr "GMXを始めるには"
 
 #: src/components/NetworkDropdown/NetworkDropdown.js
-msgid "{0}"
-msgstr "{0}"
+#~ msgid "{0}"
+#~ msgstr "{0}"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP (${1})"
@@ -2393,9 +2395,9 @@ msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR(実質年利)"
 #: src/Footer.js
 #: src/Footer.js
 #: src/Footer.js
-msgid "{text}"
-msgstr "{text}"
+#~ msgid "{text}"
+#~ msgstr "{text}"
 
 #: src/components/Exchange/OrdersToa.js
-msgid "さらに、トリガー注文は成り行き注文であり、トリガー価格にての決済が保証されているわけではありません。"
-msgstr ""
+#~ msgid "さらに、トリガー注文は成り行き注文であり、トリガー価格にての決済が保証されているわけではありません。"
+#~ msgstr ""

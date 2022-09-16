@@ -130,8 +130,8 @@ export default function Ecosystem() {
       link: "https://t.me/GMXTradingStats",
       linkLabel: "t.me",
       about: "Telegram bot for Open Interest on GMX",
-      creatorLabel: "@SniperMonke2",
-      creatorLink: "https://twitter.com/SniperMonke2",
+      creatorLabel: "@SniperMonke01",
+      creatorLink: "https://twitter.com/SniperMonke01",
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {

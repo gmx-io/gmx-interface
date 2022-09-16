@@ -496,6 +496,7 @@
     TOKEN: "TOKEN",
     "Telegram Groups": "Telegram Groups",
     "Terms and Conditions": "Terms and Conditions",
+    Test: "Test",
     "The Boosted APR is from your staked Multiplier Points.": "The Boosted APR is from your staked Multiplier Points.",
     "The address of the esGMX (IOU) token is {esGmxIouAddress}.": [
       "The address of the esGMX (IOU) token is ",

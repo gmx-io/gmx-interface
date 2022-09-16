@@ -94,8 +94,8 @@ msgid "Additionally, trigger orders are market orders and are not guaranteed to 
 msgstr "추가로, 트리거 주문은 시장가 주문이며 트리거 가격으로 결제되지 않을 수도 있습니다."
 
 #: src/components/AddressDropdown/AddressDropdown.js
-msgid "Address copied to your clipboard"
-msgstr "주소가 클립보드에 복사되었습니다."
+#~ msgid "Address copied to your clipboard"
+#~ msgstr "주소가 클립보드에 복사되었습니다."
 
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
@@ -174,8 +174,8 @@ msgstr "승인중..."
 
 #: src/components/AddressDropdown/AddressDropdown.js
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Arbitrum"
-msgstr "Arbitrum"
+#~ msgid "Arbitrum"
+#~ msgstr "Arbitrum"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -444,8 +444,8 @@ msgid "Close without profit"
 msgstr "수익없이 포지션 종료"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Closing Fee"
-msgstr "포지션 종료 수수료"
+#~ msgid "Closing Fee"
+#~ msgstr "포지션 종료 수수료"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -765,8 +765,8 @@ msgid "Enabling Orders..."
 msgstr "주문 유효화중.."
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "English"
-msgstr "영어"
+#~ msgid "English"
+#~ msgstr "영어"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Enter Price"
@@ -880,8 +880,8 @@ msgid "Forfeit profit not checked"
 msgstr "상실 이익이 확인되지 않았습니다."
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "French"
-msgstr "불어"
+#~ msgid "French"
+#~ msgstr "불어"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1008,8 +1008,8 @@ msgid "Insufficient liquidity"
 msgstr "유동성 부족"
 
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity\", true, \"BUFFER\""
-msgstr "유동성 부족\", true, \"버퍼\""
+#~ msgid "Insufficient liquidity\", true, \"BUFFER\""
+#~ msgstr "유동성 부족\", true, \"버퍼\""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1050,12 +1050,12 @@ msgstr "유효하지 않은 슬리피지 값"
 
 #: src/Footer.js
 #: src/Footer.js
-msgid "Jobs"
-msgstr "직업"
+#~ msgid "Jobs"
+#~ msgstr "직업"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Language"
-msgstr "언어"
+#~ msgid "Language"
+#~ msgstr "언어"
 
 #: src/pages/Home/Home.js
 msgid "Launch Exchange"
@@ -1264,8 +1264,8 @@ msgid "Net Value"
 msgstr "순이익"
 
 #: src/components/AddressDropdown/AddressDropdown.js
-msgid "Networks"
-msgstr "네트워크"
+#~ msgid "Networks"
+#~ msgstr "네트워크"
 
 #: src/components/NetworkDropdown/NetworkDropdown.js
 msgid "Networks and Settings"
@@ -1458,8 +1458,8 @@ msgstr "수익"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Profits In"
-msgstr "수익"
+#~ msgid "Profits In"
+#~ msgstr "수익"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community."
@@ -1621,8 +1621,8 @@ msgid "Select Market"
 msgstr "마켓 선택"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Select Network"
-msgstr "네트워크 선택"
+#~ msgid "Select Network"
+#~ msgstr "네트워크 선택"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select an option"
@@ -1721,8 +1721,8 @@ msgid "Slippage should be less than 5%"
 msgstr "슬리피지는 5%미만이어야 합니다."
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Spanish"
-msgstr "스페인어"
+#~ msgid "Spanish"
+#~ msgstr "스페인어"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Speed up page loading"
@@ -1825,8 +1825,8 @@ msgid "Swaps disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Switch Network"
-msgstr "네트워크 변경"
+#~ msgid "Switch Network"
+#~ msgstr "네트워크 변경"
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
@@ -1847,8 +1847,8 @@ msgid "Terms and Conditions"
 msgstr "약관"
 
 #: src/pages/Home/Home.js
-msgid "Test"
-msgstr ""
+#~ msgid "Test"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "The Boosted APR is from your staked Multiplier Points."
@@ -1944,6 +1944,8 @@ msgstr "총 공급량"
 msgid "Total Traders Referred"
 msgstr "추천한 총 트레이더"
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "총 트레이딩 거래량"
@@ -1972,12 +1974,12 @@ msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x levera
 msgstr "지갑에서 직접 최대 30배의 레버리지로 BTC, ETH, AVAX 및 기타 주요 암호화폐 거래"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Trade Settings"
-msgstr "트레이드 설정"
+#~ msgid "Trade Settings"
+#~ msgstr "트레이드 설정"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Trade settings"
-msgstr "트레이드 설정"
+#~ msgid "Trade settings"
+#~ msgstr "트레이드 설정"
 
 #: src/components/Common/SEO.js
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet on Arbitrum and Avalanche."
@@ -2331,8 +2333,8 @@ msgid "Your transfer has been initiated."
 msgstr "이전이 시작되었습니다."
 
 #: src/Footer.js
-msgid "lolipopi"
-msgstr "lolipopi"
+#~ msgid "lolipopi"
+#~ msgstr "lolipopi"
 
 #: src/pages/Exchange/Exchange.js
 msgid "order"
@@ -2348,8 +2350,8 @@ msgid "to start using GMX"
 msgstr "GMX를 시작하기 위해서는"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "{0}"
-msgstr "{0}"
+#~ msgid "{0}"
+#~ msgstr "{0}"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP (${1})"
@@ -2393,5 +2395,5 @@ msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 #: src/Footer.js
 #: src/Footer.js
 #: src/Footer.js
-msgid "{text}"
-msgstr "{text}"
+#~ msgid "{text}"
+#~ msgstr "{text}"

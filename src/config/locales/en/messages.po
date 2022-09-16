@@ -35,8 +35,8 @@ msgid "A snapshot of the USD value of your collateral is taken when the position
 msgstr "A snapshot of the USD value of your collateral is taken when the position is opened."
 
 #: src/App.js
-msgid "ABOUT"
-msgstr ""
+#~ msgid "ABOUT"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "APR"
@@ -98,8 +98,8 @@ msgid "Additionally, trigger orders are market orders and are not guaranteed to 
 msgstr "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 
 #: src/components/AddressDropdown/AddressDropdown.js
-msgid "Address copied to your clipboard"
-msgstr ""
+#~ msgid "Address copied to your clipboard"
+#~ msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
@@ -178,8 +178,8 @@ msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.js
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Arbitrum"
-msgstr "Arbitrum"
+#~ msgid "Arbitrum"
+#~ msgstr "Arbitrum"
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
@@ -448,8 +448,8 @@ msgid "Close without profit"
 msgstr "Close without profit"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Closing Fee"
-msgstr "Closing Fee"
+#~ msgid "Closing Fee"
+#~ msgstr "Closing Fee"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -674,8 +674,8 @@ msgid "Download"
 msgstr "Download"
 
 #: src/App.js
-msgid "EARN"
-msgstr ""
+#~ msgid "EARN"
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "ETH is needed on Arbitrum to purchase GMX."
@@ -773,8 +773,8 @@ msgid "Enabling Orders..."
 msgstr "Enabling Orders..."
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "English"
-msgstr "English"
+#~ msgid "English"
+#~ msgstr "English"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Enter Price"
@@ -888,8 +888,8 @@ msgid "Forfeit profit not checked"
 msgstr "Forfeit profit not checked"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "French"
-msgstr "French"
+#~ msgid "French"
+#~ msgstr "French"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -909,8 +909,8 @@ msgid "GLP is the liquidity provider token. Accrues 70% of the platform's genera
 msgstr "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GLP is the platform's liquidity provider token. Accrues 70% of its generated fees."
-msgstr ""
+#~ msgid "GLP is the platform's liquidity provider token. Accrues 70% of its generated fees."
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "GLP sell disabled, pending {0} upgrade"
@@ -937,8 +937,8 @@ msgid "GMX is currently live on Arbitrum and Avalanche."
 msgstr "GMX is currently live on Arbitrum and Avalanche."
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GMX is the utility and governance token, and also accrues 30% of the platform's generated fees."
-msgstr ""
+#~ msgid "GMX is the utility and governance token, and also accrues 30% of the platform's generated fees."
+#~ msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
@@ -967,8 +967,8 @@ msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>F
 msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 
 #: src/App.js
-msgid "HOME"
-msgstr ""
+#~ msgid "HOME"
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
@@ -1028,8 +1028,8 @@ msgid "Insufficient liquidity"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity\", true, \"BUFFER\""
-msgstr "Insufficient liquidity\", true, \"BUFFER\""
+#~ msgid "Insufficient liquidity\", true, \"BUFFER\""
+#~ msgstr "Insufficient liquidity\", true, \"BUFFER\""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1070,12 +1070,12 @@ msgstr ""
 
 #: src/Footer.js
 #: src/Footer.js
-msgid "Jobs"
-msgstr "Jobs"
+#~ msgid "Jobs"
+#~ msgstr "Jobs"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Language"
-msgstr "Language"
+#~ msgid "Language"
+#~ msgstr "Language"
 
 #: src/pages/Home/Home.js
 msgid "Launch Exchange"
@@ -1284,8 +1284,8 @@ msgid "Net Value"
 msgstr "Net Value"
 
 #: src/components/AddressDropdown/AddressDropdown.js
-msgid "Networks"
-msgstr "Networks"
+#~ msgid "Networks"
+#~ msgstr "Networks"
 
 #: src/components/NetworkDropdown/NetworkDropdown.js
 msgid "Networks and Settings"
@@ -1478,8 +1478,8 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Profits In"
-msgstr "Profits In"
+#~ msgid "Profits In"
+#~ msgstr "Profits In"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects developed by the GMX community."
@@ -1641,8 +1641,8 @@ msgid "Select Market"
 msgstr "Select Market"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Select Network"
-msgstr "Select Network"
+#~ msgid "Select Network"
+#~ msgstr "Select Network"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select an option"
@@ -1741,8 +1741,8 @@ msgid "Slippage should be less than 5%"
 msgstr ""
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Spanish"
-msgstr "Spanish"
+#~ msgid "Spanish"
+#~ msgstr "Spanish"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Speed up page loading"
@@ -1845,8 +1845,8 @@ msgid "Swaps disabled, pending {0} upgrade"
 msgstr "Swaps disabled, pending {0} upgrade"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Switch Network"
-msgstr "Switch Network"
+#~ msgid "Switch Network"
+#~ msgstr "Switch Network"
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
@@ -1867,8 +1867,8 @@ msgid "Terms and Conditions"
 msgstr "Terms and Conditions"
 
 #: src/pages/Home/Home.js
-msgid "Test"
-msgstr "Test"
+#~ msgid "Test"
+#~ msgstr "Test"
 
 #: src/pages/Stake/StakeV2.js
 msgid "The Boosted APR is from your staked Multiplier Points."
@@ -1907,16 +1907,16 @@ msgid "To complete the transfer, you must switch your connected account to {rece
 msgstr "To complete the transfer, you must switch your connected account to {receiver}."
 
 #: src/views/BuyGMX/BuyGMX.js
-msgid "To purchase GMX on <0>Arbitrum <1/></0>, please change your network."
-msgstr ""
+#~ msgid "To purchase GMX on <0>Arbitrum <1/></0>, please change your network."
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "To purchase GMX on <0>Arbitrum</0>, please change your network."
 msgstr "To purchase GMX on <0>Arbitrum</0>, please change your network."
 
 #: src/views/BuyGMX/BuyGMX.js
-msgid "To purchase GMX on <0>Avalanche <1/></0>, please change your network."
-msgstr ""
+#~ msgid "To purchase GMX on <0>Avalanche <1/></0>, please change your network."
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "To purchase GMX on <0>Avalanche</0>, please change your network."
@@ -1972,6 +1972,8 @@ msgstr ""
 msgid "Total Traders Referred"
 msgstr "Total Traders Referred"
 
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
@@ -2000,12 +2002,12 @@ msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x levera
 msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Trade Settings"
-msgstr "Trade Settings"
+#~ msgid "Trade Settings"
+#~ msgstr "Trade Settings"
 
 #: src/components/SettingDropdown/SettingDropdown.js
-msgid "Trade settings"
-msgstr "Trade settings"
+#~ msgid "Trade settings"
+#~ msgstr "Trade settings"
 
 #: src/components/Common/SEO.js
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet on Arbitrum and Avalanche."
@@ -2359,8 +2361,8 @@ msgid "Your transfer has been initiated."
 msgstr ""
 
 #: src/Footer.js
-msgid "lolipopi"
-msgstr "lolipopi"
+#~ msgid "lolipopi"
+#~ msgstr "lolipopi"
 
 #: src/pages/Exchange/Exchange.js
 msgid "order"
@@ -2376,8 +2378,8 @@ msgid "to start using GMX"
 msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.js
-msgid "{0}"
-msgstr "{0}"
+#~ msgid "{0}"
+#~ msgstr "{0}"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP (${1})"
@@ -2421,5 +2423,5 @@ msgstr ""
 #: src/Footer.js
 #: src/Footer.js
 #: src/Footer.js
-msgid "{text}"
-msgstr "{text}"
+#~ msgid "{text}"
+#~ msgstr "{text}"

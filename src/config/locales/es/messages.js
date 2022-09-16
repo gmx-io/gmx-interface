@@ -509,6 +509,7 @@
     TOKEN: "TOKEN",
     "Telegram Groups": "Grupos de Telegram",
     "Terms and Conditions": "Términos y Condiciones",
+    Test: "Test",
     "The Boosted APR is from your staked Multiplier Points.":
       "El APR aumentado es de sus Puntos Multiplicadores stakeados.",
     "The address of the esGMX (IOU) token is {esGmxIouAddress}.": [
