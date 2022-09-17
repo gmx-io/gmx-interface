@@ -1,6 +1,5 @@
-import { useWeb3React } from "@web3-react/core";
 import SEO from "../../components/Common/SEO";
-import { getChainIcon, getPageTitle } from "../../lib/legacy";
+import { getChainIcon, getPageTitle, useChainId } from "../../lib/legacy";
 import "./Leaderboard.css";
 import Tab from "../../components/Tab/Tab";
 import { IndividualLeaderboard } from "../../components/Leaderboard/IndividualLeaderboard";
@@ -9,7 +8,7 @@ import { useLocalStorage } from "react-use";
 import { CURRENT_COMPETITION_INDEX, LEADERBOARD_SELECTED_TAB_KEY } from "../../domain/leaderboard/constants";
 
 export default function Leaderboard() {
-  const { chainId } = useWeb3React();
+  const { chainId } = useChainId()
 
   const tabOptions = ["Individuals"]
   if (CURRENT_COMPETITION_INDEX !== null) {

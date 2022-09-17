@@ -1,8 +1,9 @@
 import { useWeb3React } from "@web3-react/core";
-import { Link, useParams } from "react-router-dom";
-import { useCompetitionDetails, useTeam } from "../../domain/leaderboard/contracts";
+import { Link, useHistory, useParams } from "react-router-dom";
+import { useCompetitionDetails } from "../../domain/leaderboard/contracts";
+import { useTeam } from "../../domain/leaderboard/mixed"
 import SEO from "../../components/Common/SEO";
-import { getChainIcon, getPageTitle } from "../../lib/legacy";
+import { getChainIcon, getPageTitle, useChainId } from "../../lib/legacy";
 import Loader from "./../../components/Common/Loader";
 import { CURRENT_COMPETITION_INDEX } from "../../domain/leaderboard/constants";
 import "./Team.css";
@@ -19,14 +20,20 @@ type Props = {
 }
 
 export default function Team({ pendingTxns, setPendingTxns }: Props) {
+  const history = useHistory()
   const params = useParams<any>();
-  const { chainId, library, account } = useWeb3React();
-  const { data: team, loading: teamLoading } = useTeam(chainId, library, CURRENT_COMPETITION_INDEX, params.leaderAddress);
+  const { chainId } = useChainId()
+  const { library, account } = useWeb3React();
+  const { data: team, exists: teamExists, loading: teamLoading } = useTeam(chainId, library, CURRENT_COMPETITION_INDEX, params.leaderAddress);
   const { data: competition, loading: competitionLoading } = useCompetitionDetails(chainId, library, CURRENT_COMPETITION_INDEX)
 
   const isLoading = () => teamLoading || competitionLoading
   const isTeamMember = () => account && team.members.includes(account)
   const isTeamLeader = () => account && account === team.leaderAddress;
+
+  if (!teamLoading && !teamExists) {
+    history.replace("/404")
+  }
 
   return (
     <SEO title={getPageTitle("Team")}>

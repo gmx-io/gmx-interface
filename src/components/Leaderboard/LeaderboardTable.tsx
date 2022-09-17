@@ -6,11 +6,9 @@ export default function LeaderboardTable({ resolveLink, stats, isTeamLeaderboard
   const history = useHistory();
 
   const handleClick = (stat) => {
-    if (!resolveLink) {
-      return;
+    if (resolveLink) {
+      history.push(resolveLink(stat));
     }
-
-    history.push(resolveLink(stat));
   };
 
   const Row = ({ stat }) => {

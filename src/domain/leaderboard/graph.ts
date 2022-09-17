@@ -1,6 +1,7 @@
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
-import { isAddressZero } from "../../lib/legacy";
+import { ARBITRUM, AVALANCHE, isAddressZero } from "../../lib/legacy";
 import { getCompetitionContract } from "./contracts";
 import { MemberStats } from "./types";
 
@@ -9,6 +10,22 @@ interface Stats {
   label: string
   rank: number
   realizedPnl: string
+}
+
+export function getGraphClient(chainId) {
+  if (chainId === ARBITRUM) {
+    return new ApolloClient({
+      uri: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-arbitrum-referrals",
+      cache: new InMemoryCache()
+    })
+  } else if (chainId === AVALANCHE) {
+    return new ApolloClient({
+      uri: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-referrals",
+      cache: new InMemoryCache()
+    })
+  }
+
+  throw new Error("Unsupported chain " + chainId);
 }
 
 export function useIndividualStats(chainId) {

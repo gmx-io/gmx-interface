@@ -20,6 +20,7 @@ export function useCompetitionDetails(chainId, library, competitionIndex) {
   const [loading, setLoading] = useState(true)
 
   const [data, setData] = useState<CompetitionType>({
+    index: 0,
     start: 0,
     end: 0,
     registrationActive: false,
@@ -38,6 +39,7 @@ export function useCompetitionDetails(chainId, library, competitionIndex) {
       const { start, end } = await contract.competitions(competitionIndex);
 
       setData({
+        index: competitionIndex,
         start: start.toNumber(),
         end: end.toNumber(),
         registrationActive: start.gt(ts),

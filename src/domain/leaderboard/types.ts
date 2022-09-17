@@ -1,6 +1,7 @@
 import { BigNumber } from "ethers";
 
 export type Competition = {
+  index: number;
   start: number;
   end: number;
   registrationActive: boolean;

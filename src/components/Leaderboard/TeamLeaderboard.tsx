@@ -2,27 +2,29 @@ import { useWeb3React } from "@web3-react/core";
 import { useState } from "react";
 import { FiPlus, FiSearch } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import { useCompetitionDetails, useMemberTeam, useTeam } from "../../domain/leaderboard/contracts";
+import { useCompetitionDetails, useMemberTeam } from "../../domain/leaderboard/contracts";
+import { useTeam } from "../../domain/leaderboard/mixed"
 import { useTeamsStats } from "../../domain/leaderboard/graph"
 import { getTeamRegistrationUrl, getTeamUrl } from "../../domain/leaderboard/urls";
-import { useDebounce } from "../../lib/legacy";
+import { useChainId, useDebounce } from "../../lib/legacy";
 import Loader from "../Common/Loader";
 import LeaderboardTable from "./LeaderboardTable";
 import "./TeamLeaderboard.css";
 
 export function TeamLeaderboard({ competitionIndex }) {
-  const { chainId, library, account } = useWeb3React();
+  const { chainId } = useChainId()
+  const { library, account } = useWeb3React();
   const [search, setSearch] = useState("")
   const debouncedSearch = useDebounce(search, 300)
   const { data: allStats, loading: allStatsLoading } = useTeamsStats(chainId);
   const { data: details, loading: detailsLoading } = useCompetitionDetails(chainId, library, competitionIndex)
-  const { exists: isLeader, loading: userTeamLoading } = useTeam(chainId, library, competitionIndex, account)
-  const { data: userTeam, hasTeam, loading: memberTeamLoader } = useMemberTeam(chainId, library, competitionIndex, account)
+  const { exists: isLeader, loading: teamLoading } = useTeam(chainId, library, competitionIndex, account)
+  const { data: userTeam, hasTeam, loading: memberTeamLoading } = useMemberTeam(chainId, library, competitionIndex, account)
 
   const page = 1
   const perPage = 15
 
-  if (detailsLoading || allStatsLoading || userTeamLoading || memberTeamLoader) {
+  if (allStatsLoading) {
     return <Loader/>
   }
 
@@ -43,16 +45,20 @@ export function TeamLeaderboard({ competitionIndex }) {
           <input type="text" placeholder="Search for a team..." className="text-input input-small" value={search} onInput={handleSearchInput}/>
           <FiSearch className="input-logo"/>
         </div>
-        {details.registrationActive && !isLeader && !hasTeam && (
-          <Link className="transparent-btn" to={getTeamRegistrationUrl()}>
-            <FiPlus/>
-            <span className="ml-small">Register your team</span>
-          </Link>
-        )}
-        {(isLeader || hasTeam) && (
-          <Link className="transparent-btn" to={getTeamUrl(isLeader ? account : userTeam)}>
-            View your team
-          </Link>
+        {(detailsLoading || teamLoading || memberTeamLoading) ? "" : (
+          <>
+            {details.registrationActive && !isLeader && !hasTeam && (
+              <Link className="transparent-btn" to={getTeamRegistrationUrl()}>
+                <FiPlus/>
+                <span className="ml-small">Register your team</span>
+              </Link>
+            )}
+            {(isLeader || hasTeam) && (
+              <Link className="transparent-btn" to={getTeamUrl(isLeader ? account : userTeam)}>
+                View your team
+              </Link>
+            )}
+          </>
         )}
       </div>
       <LeaderboardTable stats={displayedStats()} resolveLink={(stat) => getTeamUrl(stat.id)} isTeamLeaderboard={true} />

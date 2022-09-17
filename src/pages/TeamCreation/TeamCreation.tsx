@@ -44,7 +44,6 @@ export default function TeamCreation({ connectWallet, setPendingTxns, pendingTxn
         </div>
         <TeamCreationForm
           pendingTxns={pendingTxns}
-          competitionIndex={CURRENT_COMPETITION_INDEX}
           connectWallet={connectWallet}
           competition={competition}
           setPendingTxns={setPendingTxns}

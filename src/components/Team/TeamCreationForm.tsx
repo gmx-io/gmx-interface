@@ -8,14 +8,13 @@ import { useDebounce } from "../../lib/legacy";
 import "./TeamCreationForm.css";
 
 type Props = {
-  competitionIndex: number,
   competition: Competition,
   connectWallet: any,
   pendingTxns: any,
   setPendingTxns: any,
 }
 
-export default function TeamCreationForm({ competitionIndex, competition, connectWallet, pendingTxns, setPendingTxns }: Props) {
+export default function TeamCreationForm({ competition, connectWallet, pendingTxns, setPendingTxns }: Props) {
   const history = useHistory();
   const { active, chainId, library, account } = useWeb3React();
   const [isProcessing, setIsProcessing] = useState(false)
@@ -61,7 +60,7 @@ export default function TeamCreationForm({ competitionIndex, competition, connec
     setIsProcessing(true)
 
     try {
-      const tx = await createTeam(chainId, library, competitionIndex, debouncedName, {
+      const tx = await createTeam(chainId, library, competition.index, debouncedName, {
         successMsg: "Team created!",
         sentMsg: "Team creation submitted!",
         failMsg: "Team creation failed.",
@@ -91,30 +90,14 @@ export default function TeamCreationForm({ competitionIndex, competition, connec
 
       setValidatingName(true);
 
-      const teamNameValid = await checkTeamName(chainId, library, debouncedName, competitionIndex);
+      const teamNameValid = await checkTeamName(chainId, library, debouncedName, competition.index);
       setNameAlreadyUsed(!teamNameValid);
 
       setValidatingName(false);
     }
 
     checkName();
-  }, [setValidatingName, setNameAlreadyUsed, debouncedName, chainId, competitionIndex, library]);
-
-  // Referral
-  // useEffect(() => {
-  //   async function checkCode() {
-  //     if (debouncedCode === "") {
-  //       setValidatingCode(false);
-  //       return;
-  //     }
-
-  //     setValidatingCode(true);
-  //     setCodeDoesntExist(true);
-  //     setValidatingCode(false);
-  //   }
-
-  //   checkCode();
-  // }, [setValidatingCode, setNameAlreadyUsed, debouncedCode]);
+  }, [setValidatingName, setNameAlreadyUsed, debouncedName, chainId, competition, library]);
 
   return (
     <div className="referral-card section-center mt-medium">
@@ -134,18 +117,9 @@ export default function TeamCreationForm({ competitionIndex, competition, connec
               placeholder="Team name"
               className="text-input mb-sm"
             />
-            {/* <input
-              value={code}
-              onChange={({ target }) => setCode(target.value)}
-              placeholder="Referral code"
-              className="text-input mb-sm"
-            /> */}
             <button type="submit" className="App-cta Exchange-swap-button" disabled={!isFormValid()}>
               {getButtonText()}
             </button>
-            {/* <div onClick={() => handleCreateReferralClick()} className="create-new-referral-link">
-              Create a new referral code
-            </div> */}
           </form>
         </div>
       )}
