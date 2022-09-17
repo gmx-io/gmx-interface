@@ -180,6 +180,8 @@ const CONTRACTS = {
     TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98",
     ReferralStorage: "0x827ed045002ecdabeb6e2b0d1604cf5fc3d322f8",
     ReferralReader: "0x505Ce16D3017be7D76a7C2631C0590E71A975083",
+
+    Competition: "0x36b58F5C1969B7b6591D752ea6F5486D069010AB",
   },
 };
 
