@@ -860,13 +860,7 @@ export default function PositionSeller(props) {
   return (
     <div className="PositionEditor">
       {position && (
-        <Modal
-          className="PositionSeller-modal"
-          isVisible={isVisible}
-          setIsVisible={setIsVisible}
-          label={title}
-          allowContentTouchMove
-        >
+        <Modal className="PositionSeller-modal" isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           {flagOrdersEnabled && (
             <Tab
               options={orderOptions}
