@@ -3,8 +3,8 @@ import { Menu } from "@headlessui/react";
 import { FaChevronDown } from "react-icons/fa";
 import cx from "classnames";
 import "./ChartTokenSelector.css";
-import { getTokens, getWhitelistedTokens } from "../../data/Tokens";
-import { LONG, SHORT, SWAP } from "../../Helpers";
+import { getTokens, getWhitelistedTokens } from "../../config/Tokens";
+import { LONG, SHORT, SWAP } from "../../lib/legacy";
 
 export default function ChartTokenSelector(props) {
   const { chainId, selectedToken, onSelectToken, swapOption } = props;

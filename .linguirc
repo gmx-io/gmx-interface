@@ -1,0 +1,21 @@
+{
+  "locales": [
+    "es",
+    "zh",
+    "ko",
+    "ru",
+    "ja",
+    "en",
+    "fr"
+  ],
+  "sourceLocale": "en",
+  "catalogs": [
+    {
+      "path": "src/config/locales/{locale}/messages",
+      "include": [
+        "src"
+      ]
+    }
+  ],
+  "format": "po"
+}

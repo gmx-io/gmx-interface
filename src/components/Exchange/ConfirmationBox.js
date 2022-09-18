@@ -23,17 +23,17 @@ import {
   DECREASE,
   TRIGGER_PREFIX_ABOVE,
   TRIGGER_PREFIX_BELOW,
-} from "../../Helpers";
-import { getConstant } from "../../Constants";
-import { getContract } from "../../Addresses";
+} from "../../lib/legacy";
+import { getConstant } from "../../config/chains";
+import { getContract } from "../../config/Addresses";
 
 import { BsArrowRight } from "react-icons/bs";
 import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
 import Checkbox from "../Checkbox/Checkbox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
-import { cancelDecreaseOrder, handleCancelOrder } from "../../Api";
-import { getNativeToken, getToken, getWrappedToken } from "../../data/Tokens";
+import { cancelDecreaseOrder, handleCancelOrder } from "../../domain/legacy";
+import { getNativeToken, getToken, getWrappedToken } from "../../config/Tokens";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 

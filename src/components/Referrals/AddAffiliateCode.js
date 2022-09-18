@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { ARBITRUM, helperToast, useDebounce } from "../../Helpers";
+import { ARBITRUM, helperToast, useDebounce } from "../../lib/legacy";
 import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./referralsHelper";
 import { useWeb3React } from "@web3-react/core";
 
@@ -13,9 +14,13 @@ function AddAffiliateCode({
 }) {
   return (
     <div className="referral-card section-center mt-medium">
-      <h2 className="title">Generate Referral Code</h2>
+      <h2 className="title">
+        <Trans>Generate Referral Code</Trans>
+      </h2>
       <p className="sub-title">
-        Looks like you don't have a referral code to share. <br /> Create one now and start earning rebates!
+        <Trans>
+          Looks like you don't have a referral code to share. <br /> Create one now and start earning rebates!
+        </Trans>
       </p>
       <div className="card-action">
         {active ? (
@@ -26,7 +31,7 @@ function AddAffiliateCode({
           />
         ) : (
           <button className="App-cta Exchange-swap-button" type="submit" onClick={connectWallet}>
-            Connect Wallet
+            <Trans>Connect Wallet</Trans>
           </button>
         )}
       </div>
@@ -78,13 +83,13 @@ export function AffiliateCodeForm({
 
   function getButtonError() {
     if (!debouncedReferralCode) {
-      return "Enter a code";
+      return t`Enter a code`;
     }
     if (referralCodeCheckStatus === "taken") {
-      return "Code already taken";
+      return t`Code already taken`;
     }
     if (referralCodeCheckStatus === "checking") {
-      return "Checking code...";
+      return t`Checking code...`;
     }
 
     return false;
@@ -98,10 +103,10 @@ export function AffiliateCodeForm({
     }
 
     if (isProcessing) {
-      return "Creating...";
+      return t`Creating...`;
     }
 
-    return "Create";
+    return t`Create`;
   }
   function isPrimaryEnabled() {
     if (buttonError) {
