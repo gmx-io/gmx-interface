@@ -1,7 +1,7 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { useEffect, useState } from "react";
 import { InfoToken, Token } from "../../domain/tokens/types";
-import { getLowestFeeTokenForBuyGlp } from "../../lib/legacy";
+import { get1InchSwapUrl, getLowestFeeTokenForBuyGlp } from "../../lib/legacy";
 import Modal from "../Modal/Modal";
 
 type Props = {
@@ -50,7 +50,7 @@ export default function SwapErrorModal({
 
   if (!lowestFeeToken) return "";
 
-  const oneInchUrl = `https://app.1inch.io/#/${chainId}/swap/${swapToken.address}/${lowestFeeToken.symbol}`;
+  const oneInchUrl = get1InchSwapUrl(chainId, swapToken?.address, lowestFeeToken?.address);
   const label = `${swapToken?.symbol} Capacity Reached`;
 
   return (
