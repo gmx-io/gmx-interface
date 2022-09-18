@@ -17,3 +17,7 @@ function createClient(uri) {
     cache: new InMemoryCache(),
   });
 }
+
+export function get1InchSwapUrl(chainId, from, to) {
+  return `https://app.1inch.io/#/${chainId}/unified/swap/${from}/${to}`;
+}
