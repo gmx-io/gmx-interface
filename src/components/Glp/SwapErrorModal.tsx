@@ -1,8 +1,12 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { useEffect, useState } from "react";
+import { ethers } from "ethers";
+import { getNativeToken } from "../../config/Tokens";
 import { InfoToken, Token } from "../../domain/tokens/types";
 import { get1InchSwapUrl, getLowestFeeTokenForBuyGlp } from "../../lib/legacy";
 import Modal from "../Modal/Modal";
+
+const { AddressZero } = ethers.constants;
 
 type Props = {
   swapToken: Token;
@@ -48,9 +52,13 @@ export default function SwapErrorModal({
     );
   }, [chainId, glpAmount, glpPrice, usdgSupply, totalTokenWeights, infoTokens, swapToken.address]);
 
-  if (!lowestFeeToken) return "";
+  if (!lowestFeeToken || !swapToken) return "";
 
-  const oneInchUrl = get1InchSwapUrl(chainId, swapToken?.address, lowestFeeToken?.address);
+  const nativeToken = getNativeToken(chainId);
+  const inputCurrency = swapToken.address === AddressZero ? nativeToken.symbol : swapToken.address;
+  const outputCurrency = lowestFeeToken.address === AddressZero ? nativeToken.symbol : lowestFeeToken.address;
+
+  const oneInchUrl = get1InchSwapUrl(chainId, inputCurrency, outputCurrency);
   const label = `${swapToken?.symbol} Capacity Reached`;
 
   return (
