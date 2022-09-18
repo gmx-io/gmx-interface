@@ -2,6 +2,7 @@ import { getNativeToken } from "../../config/Tokens";
 import { ethers } from "ethers";
 import Modal from "../Modal/Modal";
 import { InfoToken, Token } from "../../domain/tokens/types";
+import { get1InchSwapUrl } from "../../lib/legacy";
 
 const { AddressZero } = ethers.constants;
 
@@ -35,7 +36,7 @@ export default function NoLiquidityErrorModal({
     outputCurrency = shortCollateralToken.address;
   }
   const swapTokenSymbol = isLong ? toToken.symbol : shortCollateralToken.symbol;
-  const externalSwapUrl = `https://app.1inch.io/#/${chainId}/swap/${inputCurrency}/${outputCurrency}`;
+  const oneInchSwapUrl = get1InchSwapUrl(chainId, inputCurrency, outputCurrency);
   const label =
     modalError === "BUFFER" ? `${shortCollateralToken.symbol} Required` : `${fromToken.symbol} Pool Capacity Reached`;
 
@@ -58,7 +59,7 @@ export default function NoLiquidityErrorModal({
         </div>
       )}
 
-      <a href={externalSwapUrl} target="_blank" rel="noreferrer">
+      <a href={oneInchSwapUrl} target="_blank" rel="noreferrer">
         Buy {swapTokenSymbol} on 1inch
       </a>
     </Modal>

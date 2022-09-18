@@ -2836,3 +2836,7 @@ export function shouldShowRedirectModal(timestamp) {
   const expiryTime = timestamp + thirtyDays;
   return !isValidTimestamp(timestamp) || Date.now() > expiryTime;
 }
+
+export function get1InchSwapUrl(chainId, from, to) {
+  return `https://app.1inch.io/#/${chainId}/unified/swap/${from}/${to}`;
+}
