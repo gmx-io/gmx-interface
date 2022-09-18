@@ -1,6 +1,6 @@
 import { useHistory } from "react-router-dom";
 import { Stats } from "../../domain/leaderboard/types";
-import { formatAmount, USD_DECIMALS } from "../../lib/legacy";
+import { formatAmount } from "../../lib/legacy";
 import "./LeaderboardTable.css";
 
 type Props = {
