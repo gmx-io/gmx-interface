@@ -2,23 +2,23 @@ import { useWeb3React } from "@web3-react/core"
 import { useState } from "react"
 import { FiClock } from "react-icons/fi"
 import { cancelJoinRequest, createJoinRequest, useAccountJoinRequest } from "../../domain/leaderboard/contracts"
-import { Team } from "../../domain/leaderboard/types"
+import { Competition, Team } from "../../domain/leaderboard/types"
 import useRouteQuery from "../../lib/useRouteQuery"
 import "./TeamManagementJoinRequest.css"
 
 type Props = {
-  competitionIndex: number,
+  competition: Competition,
   team: Team,
   pendingTxns: any,
   setPendingTxns: any
 }
 
-export default function TeamManagementJoinRequest({ competitionIndex, team, pendingTxns, setPendingTxns }: Props) {
+export default function TeamManagementJoinRequest({ competition, team, pendingTxns, setPendingTxns }: Props) {
   const { chainId, library, account } = useWeb3React()
   const query = useRouteQuery()
   const [isCreating, setIsCreating] = useState(false)
   const [isCanceling, setIsCanceling] = useState(false)
-  const { data: joinRequest } = useAccountJoinRequest(chainId, library, competitionIndex, account)
+  const { data: joinRequest } = useAccountJoinRequest(chainId, library, competition.index, account)
 
   const referralCode = query.get("referral") ?? ""
 
@@ -30,7 +30,7 @@ export default function TeamManagementJoinRequest({ competitionIndex, team, pend
     setIsCreating(true)
 
     try {
-      const tx = await createJoinRequest(chainId, library, competitionIndex, team.leaderAddress, referralCode, {
+      const tx = await createJoinRequest(chainId, library, competition.index, team.leaderAddress, referralCode, {
         successMsg: "Join request created!",
         sentMsg: "Join request submitted!",
         failMsg: "Join request failed.",
@@ -50,7 +50,7 @@ export default function TeamManagementJoinRequest({ competitionIndex, team, pend
     setIsCanceling(true)
 
     try {
-      const tx = await cancelJoinRequest(chainId, library, competitionIndex, {
+      const tx = await cancelJoinRequest(chainId, library, competition.index, {
         successMsg: "Join request canceled!",
         sentMsg: "Cancelation submitted!",
         failMsg: "Cancelation failed.",

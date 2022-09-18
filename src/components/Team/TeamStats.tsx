@@ -18,16 +18,25 @@ export default function TeamStats({ team, competition }: Props) {
         </div>
         <div className="info-card">
           <div className="card-details">
-            <h3 className="label">Realized PnL</h3>
+            <h3 className="label">P&L</h3>
             <div className="data">
-              {competition.active ? `$${formatAmount(team.realizedPnl, USD_DECIMALS, 0, true)}` : "..."}
+              {!competition.active ? (
+                <>
+                  <span>${formatAmount(team.pnl, USD_DECIMALS, 0, true)}</span>
+                  <span> / </span>
+                  <span>{formatAmount(team.pnlPercent, 0, 0, true)}%</span>
+                </>
+              ) : "..."}
             </div>
           </div>
         </div>
         <div className="info-card">
           <div className="card-details">
             <h3 className="label">Total members</h3>
-            <div className="data">{team.members.length}</div>
+            <div className="data">
+              <span>{team.members.length}</span>
+              {competition.registrationActive ? <span> / {competition.maxTeamSize}</span> : ""}
+            </div>
           </div>
         </div>
       </div>

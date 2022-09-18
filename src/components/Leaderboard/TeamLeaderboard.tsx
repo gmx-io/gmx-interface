@@ -2,8 +2,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useState } from "react";
 import { FiPlus, FiSearch } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import { useCompetitionDetails, useMemberTeam } from "../../domain/leaderboard/contracts";
-import { useTeam } from "../../domain/leaderboard/mixed"
+import { useCompetition, useMemberTeam, useTeam } from "../../domain/leaderboard/contracts";
 import { useTeamsStats } from "../../domain/leaderboard/graph"
 import { getTeamRegistrationUrl, getTeamUrl } from "../../domain/leaderboard/urls";
 import { useChainId, useDebounce } from "../../lib/legacy";
@@ -17,7 +16,7 @@ export function TeamLeaderboard({ competitionIndex }) {
   const [search, setSearch] = useState("")
   const debouncedSearch = useDebounce(search, 300)
   const { data: allStats, loading: allStatsLoading } = useTeamsStats(chainId);
-  const { data: details, loading: detailsLoading } = useCompetitionDetails(chainId, library, competitionIndex)
+  const { data: details, loading: detailsLoading } = useCompetition(chainId, library, competitionIndex)
   const { exists: isLeader, loading: teamLoading } = useTeam(chainId, library, competitionIndex, account)
   const { data: userTeam, hasTeam, loading: memberTeamLoading } = useMemberTeam(chainId, library, competitionIndex, account)
 

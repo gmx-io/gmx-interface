@@ -11,5 +11,8 @@ export function IndividualLeaderboard() {
     return `/leaderboard/team/${stat.id}`;
   }
 
-  return loading ? <Loader/> : <LeaderboardTable stats={data} resolveLink={resolveLink} />
+  return loading ? <Loader/> : <LeaderboardTable
+    stats={data}
+    resolveLink={resolveLink}
+  />
 }

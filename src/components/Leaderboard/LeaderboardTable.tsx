@@ -1,8 +1,15 @@
 import { useHistory } from "react-router-dom";
+import { Stats } from "../../domain/leaderboard/types";
 import { formatAmount, USD_DECIMALS } from "../../lib/legacy";
 import "./LeaderboardTable.css";
 
-export default function LeaderboardTable({ resolveLink, stats, isTeamLeaderboard = false }) {
+type Props = {
+  resolveLink: (any) => string;
+  stats: Stats[];
+  isTeamLeaderboard?: boolean;
+}
+
+export default function LeaderboardTable({ resolveLink, stats, isTeamLeaderboard = false }: Props) {
   const history = useHistory();
 
   const handleClick = (stat) => {
@@ -15,7 +22,7 @@ export default function LeaderboardTable({ resolveLink, stats, isTeamLeaderboard
     return <tr key={stat.id}>
       <td>#{stat.rank}</td>
       <td>{stat.label}</td>
-      <td>${formatAmount(stat.realizedPnl, USD_DECIMALS, 0, true, "...")}</td>
+      <td>{formatAmount(stat.pnlPercent, 0, 0, true, "...")}%</td>
       <td>
         <button className="simple-table-action" onClick={() => handleClick(stat)}>Details</button>
       </td>
@@ -28,7 +35,7 @@ export default function LeaderboardTable({ resolveLink, stats, isTeamLeaderboard
         <tr className="simple-table-header">
           <th>Rank</th>
           <th>Team</th>
-          <th>PnL</th>
+          <th>P&L</th>
           <th></th>
         </tr>
         {stats.length > 0 && stats.map(stat => <Row stat={stat}/>)}

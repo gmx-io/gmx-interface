@@ -3,14 +3,7 @@ import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
 import { ARBITRUM, AVALANCHE, isAddressZero } from "../../lib/legacy";
 import { getCompetitionContract } from "./contracts";
-import { MemberStats } from "./types";
-
-interface Stats {
-  id: string
-  label: string
-  rank: number
-  realizedPnl: string
-}
+import { MemberStats, Stats } from "./types";
 
 export function getGraphClient(chainId) {
   if (chainId === ARBITRUM) {
@@ -39,7 +32,8 @@ export function useIndividualStats(chainId) {
           id: "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
           rank: 1,
           label: "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
-          realizedPnl: BigNumber.from("100000000000000000000000000000000000").toString(),
+          pnl: BigNumber.from("100000000000000000000000000000000000"),
+          pnlPercent: BigNumber.from("15")
         }]);
 
         setLoading(false)
@@ -64,7 +58,8 @@ export function useTeamsStats(chainId) {
             id: "0x0000",
             rank: 1,
             label: "Morazzela",
-            realizedPnl: BigNumber.from("100000000000000000000000000000000000").toString(),
+            pnl: BigNumber.from("100000000000000000000000000000000000"),
+            pnlPercent: BigNumber.from("15"),
           },
         ]);
 
@@ -84,6 +79,10 @@ export function useTeamMembersStats(chainId, library, competitionIndex, leaderAd
 
   useEffect(() => {
     async function main() {
+      if (!chainId || !library) {
+        return
+      }
+
       const contract = getCompetitionContract(chainId, library)
 
       let res = await contract.getTeamMembers(

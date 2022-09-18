@@ -1,21 +1,58 @@
 import { useWeb3React } from "@web3-react/core"
 import { useState } from "react"
+import { removeMember } from "../../domain/leaderboard/contracts"
 import { useTeamMembersStats } from "../../domain/leaderboard/graph"
 import { Team } from "../../domain/leaderboard/types"
 import { shortenAddress } from "../../lib/legacy"
 
 type Props = {
-  team: Team
+  team: Team;
+  pendingTxns: any;
+  setPendingTxns: any;
 }
 
-export function TeamMembers({ team }: Props) {
+export function TeamMembers({ team, pendingTxns, setPendingTxns }: Props) {
   const { chainId, library } = useWeb3React()
   const [page, setPage] = useState(1)
   const perPage = 10
-  const { data, loading } = useTeamMembersStats(chainId, library, team.competitionIndex, team.leaderAddress, page, perPage)
+  const { data: members, loading } = useTeamMembersStats(chainId, library, team.competitionIndex, team.leaderAddress, page, perPage)
+  const [isRemoving, setIsRemoving] = useState(false)
 
   const pageCount = () => {
-    return Math.ceil(data.length / perPage)
+    return Math.ceil(members.length / perPage)
+  }
+
+  const handleRemoveClick = async (member) => {
+    setIsRemoving(true)
+
+    try {
+      const tx = await removeMember(chainId, library, team.competitionIndex, team.leaderAddress, member.address, {
+        successMsg: "User removed!",
+        sentMsg: "User removal submitted!",
+        failMsg: "User removal failed.",
+        pendingTxns,
+        setPendingTxns,
+      })
+
+      await tx.wait()
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setIsRemoving(false)
+    }
+  }
+
+  const Row = ({ member }) => {
+    return (
+      <tr key={member.address}>
+        <td>{shortenAddress(member.address, 12)}</td>
+        <td>
+          {member.address !== team.leaderAddress && (
+            <button className="simple-table-action" disabled={isRemoving} onClick={() => handleRemoveClick(member)}>Remove</button>
+          )}
+        </td>
+      </tr>
+    )
   }
 
   return (
@@ -37,11 +74,7 @@ export function TeamMembers({ team }: Props) {
                 <td>Loading stats...</td>
               </tr>
             )}
-            {!loading && data.map(member => (
-              <tr key={member.address}>
-                <td>{shortenAddress(member.address, 12)}</td>
-              </tr>
-            ))}
+            {!loading && members.map(member => <Row member={member}/>)}
           </tbody>
         </table>
       </div>

@@ -16,7 +16,7 @@ export async function checkTeamName(chainId, library, name, competitionIndex) {
   return await contract.validateName(competitionIndex, name)
 }
 
-export function useCompetitionDetails(chainId, library, competitionIndex) {
+export function useCompetition(chainId, library, competitionIndex) {
   const [loading, setLoading] = useState(true)
 
   const [data, setData] = useState<CompetitionType>({
@@ -25,6 +25,7 @@ export function useCompetitionDetails(chainId, library, competitionIndex) {
     end: 0,
     registrationActive: false,
     active: false,
+    maxTeamSize: 0
   });
 
   useEffect(() => {
@@ -36,7 +37,7 @@ export function useCompetitionDetails(chainId, library, competitionIndex) {
       const ts = Math.round(Date.now() / 1000);
 
       const contract = getCompetitionContract(chainId, library);
-      const { start, end } = await contract.competitions(competitionIndex);
+      const { start, end, maxTeamSize } = await contract.competitions(competitionIndex);
 
       setData({
         index: competitionIndex,
@@ -44,6 +45,7 @@ export function useCompetitionDetails(chainId, library, competitionIndex) {
         end: end.toNumber(),
         registrationActive: start.gt(ts),
         active: start.lte(ts) && end.gt(ts),
+        maxTeamSize: maxTeamSize.toNumber(),
       })
 
       setLoading(false)
@@ -58,7 +60,8 @@ export function useCompetitionDetails(chainId, library, competitionIndex) {
 export function useTeam(chainId, library, competitionIndex, leaderAddress) {
   const [data, setData] = useState<Team>({
     rank: 0,
-    realizedPnl: BigNumber.from("0"),
+    pnl: BigNumber.from(0),
+    pnlPercent: BigNumber.from(0),
     leaderAddress: "",
     name: "",
     members: [],
@@ -71,6 +74,12 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
   useEffect(() => {
     async function main() {
       if (!chainId || !library) {
+        return
+      }
+
+      if (!ethers.utils.isAddress(leaderAddress)) {
+        setExists(false)
+        setLoading(false)
         return
       }
 
@@ -100,7 +109,8 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
 
       setData({
         rank: 1,
-        realizedPnl: BigNumber.from("100000000000000000000000000000000000"),
+        pnl: BigNumber.from("100000000000000000000000000000000000"),
+        pnlPercent: BigNumber.from(15),
         leaderAddress: team.leaderAddress,
         name: team.name,
         members: members,
@@ -129,6 +139,12 @@ export function useMemberTeam(chainId, library, competitionIndex, account) {
         return
       }
 
+      if (!account) {
+        setLoading(false)
+        setHasTeam(false)
+        return
+      }
+
       const contract = getCompetitionContract(chainId, library)
       const res = await contract.getMemberTeam(competitionIndex, account)
       setData(res)
@@ -142,27 +158,11 @@ export function useMemberTeam(chainId, library, competitionIndex, account) {
   return { data, loading, hasTeam }
 }
 
-export function createTeam(chainId, library, competitionIndex, name, opts) {
-  const contract = getCompetitionContract(chainId, library)
-  return callContract(chainId, contract, "createTeam", [competitionIndex, name], opts)
-}
-
-export function createJoinRequest(chainId, library, competitionIndex, leaderAddress, referralCode, opts) {
-  const contract = getCompetitionContract(chainId, library)
-  return callContract(chainId, contract, "createJoinRequest", [competitionIndex, leaderAddress, encodeReferralCode(referralCode)], opts)
-}
-
-export function cancelJoinRequest(chainId, library, competitionIndex, opts) {
-  const contract = getCompetitionContract(chainId, library)
-  return callContract(chainId, contract, "cancelJoinRequest", [competitionIndex], opts)
-}
-
-export function approveJoinRequest(chainId, library, competitionIndex, account, opts) {
-  const contract = getCompetitionContract(chainId, library)
-  return callContract(chainId, contract, "approveJoinRequest", [competitionIndex, account], opts)
-}
-
 export async function getAccountJoinRequest(chainId, library, competitionIndex, account): Promise<JoinRequest|null> {
+  if (!chainId || !library) {
+    return null
+  }
+
   const contract = getCompetitionContract(chainId, library)
   const res = await contract.getJoinRequest(competitionIndex, account)
 
@@ -204,7 +204,31 @@ export function useAccountJoinRequest(chainId, library, competitionIndex, accoun
   }, [chainId, library, account, competitionIndex])
 
   return { data, loading, exists }
+}
 
+export function createTeam(chainId, library, competitionIndex, name, opts) {
+  const contract = getCompetitionContract(chainId, library)
+  return callContract(chainId, contract, "createTeam", [competitionIndex, name], opts)
+}
+
+export function createJoinRequest(chainId, library, competitionIndex, leaderAddress, referralCode, opts) {
+  const contract = getCompetitionContract(chainId, library)
+  return callContract(chainId, contract, "createJoinRequest", [competitionIndex, leaderAddress, encodeReferralCode(referralCode)], opts)
+}
+
+export function cancelJoinRequest(chainId, library, competitionIndex, opts) {
+  const contract = getCompetitionContract(chainId, library)
+  return callContract(chainId, contract, "cancelJoinRequest", [competitionIndex], opts)
+}
+
+export function approveJoinRequest(chainId, library, competitionIndex, account, opts) {
+  const contract = getCompetitionContract(chainId, library)
+  return callContract(chainId, contract, "approveJoinRequest", [competitionIndex, account], opts)
+}
+
+export function removeMember(chainId, library, competitionIndex, leaderAddress, account, opts) {
+  const contract = getCompetitionContract(chainId, library)
+  return callContract(chainId, contract, "removeMember", [competitionIndex, leaderAddress, account], opts)
 }
 
 export function getCompetitionContract(chainId, library) {

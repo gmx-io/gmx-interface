@@ -6,13 +6,23 @@ export type Competition = {
   end: number;
   registrationActive: boolean;
   active: boolean;
+  maxTeamSize: number;
+}
+
+export type Stats = {
+  id: string;
+  label: string;
+  rank: number;
+  pnl: BigNumber;
+  pnlPercent: BigNumber;
 }
 
 export type Position = {}
 
 export type Team = {
   rank: number,
-  realizedPnl: BigNumber,
+  pnl: BigNumber,
+  pnlPercent: BigNumber,
   leaderAddress: string,
   name: string;
   members: string[],

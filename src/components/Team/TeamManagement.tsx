@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
-import { Team } from "../../domain/leaderboard/types";
+import { Competition, Team } from "../../domain/leaderboard/types";
 import "./TeamManagement.css";
 import TeamManagementJoinRequest from "./TeamManagementJoinRequest";
 import TeamManagementInviteLink from "./TeamManagementInviteLink";
@@ -8,12 +8,12 @@ import TeamManagementApproveRequest from "./TeamManagementApproveRequest";
 
 type Props = {
   team: Team,
-  competitionIndex: number,
+  competition: Competition,
   pendingTxns: any,
   setPendingTxns: any,
 }
 
-export default function TeamManagement({ team, competitionIndex, pendingTxns, setPendingTxns }: Props) {
+export default function TeamManagement({ team, competition, pendingTxns, setPendingTxns }: Props) {
   const { account } = useWeb3React()
   const [isTeamLeader, setIsTeamLeader] = useState(false)
 
@@ -34,7 +34,8 @@ export default function TeamManagement({ team, competitionIndex, pendingTxns, se
           <>
             <TeamManagementInviteLink team={team}/>
             <TeamManagementApproveRequest
-              competitionIndex={competitionIndex}
+              team={team}
+              competition={competition}
               pendingTxns={pendingTxns}
               setPendingTxns={setPendingTxns}
             />
@@ -43,7 +44,7 @@ export default function TeamManagement({ team, competitionIndex, pendingTxns, se
         {!isTeamLeader && (
           <TeamManagementJoinRequest
             team={team}
-            competitionIndex={competitionIndex}
+            competition={competition}
             pendingTxns={pendingTxns}
             setPendingTxns={setPendingTxns}
           />
