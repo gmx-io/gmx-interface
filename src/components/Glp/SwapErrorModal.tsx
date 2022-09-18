@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { getNativeToken } from "../../config/Tokens";
 import { InfoToken, Token } from "../../domain/tokens/types";
-import { get1InchSwapUrl, getLowestFeeTokenForBuyGlp } from "../../lib/legacy";
 import Modal from "../Modal/Modal";
+import { get1InchSwapUrl } from "../../domain/common";
 
 const { AddressZero } = ethers.constants;
 
