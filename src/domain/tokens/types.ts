@@ -44,3 +44,7 @@ export type InfoToken = {
   usdgAmount: BigNumber;
   weight: BigNumber;
 };
+
+export type InfoTokens = {
+  [key: string]: InfoToken;
+};

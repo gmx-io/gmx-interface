@@ -684,6 +684,7 @@ export default function GlpSwap(props) {
         totalTokenWeights={totalTokenWeights}
         glpPrice={glpPrice}
         infoTokens={infoTokens}
+        swapUsdMin={swapUsdMin}
       />
       {/* <div className="Page-title-section">
         <div className="Page-title">{isBuying ? "Buy GLP" : "Sell GLP"}</div>
