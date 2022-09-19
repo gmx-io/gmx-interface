@@ -52,7 +52,7 @@ msgstr ""
 msgid "AVAILABLE"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx:102
+#: src/components/Header/AppHeaderLinks.tsx:80
 #: src/pages/Ecosystem/Ecosystem.js:430
 #: src/pages/Ecosystem/Ecosystem.js:474
 #: src/pages/Ecosystem/Ecosystem.js:529
@@ -185,8 +185,8 @@ msgstr ""
 #~ msgid "Arbitrum"
 #~ msgstr ""
 
-#: src/components/TokenCard/TokenCard.js:64
-#: src/components/TokenCard/TokenCard.js:96
+#: src/components/TokenCard/TokenCard.js:68
+#: src/components/TokenCard/TokenCard.js:100
 msgid "Arbitrum APR:"
 msgstr ""
 
@@ -194,7 +194,7 @@ msgstr ""
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})"
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1306
+#: src/components/Glp/GlpSwap.js:1314
 msgid "Available"
 msgstr ""
 
@@ -205,7 +205,7 @@ msgid "Available Liquidity"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js:1004
-#: src/components/Glp/GlpSwap.js:1288
+#: src/components/Glp/GlpSwap.js:1296
 msgid "Available amount to deposit into GLP."
 msgstr ""
 
@@ -215,7 +215,7 @@ msgstr ""
 #~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js:1016
-#: src/components/Glp/GlpSwap.js:1311
+#: src/components/Glp/GlpSwap.js:1319
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr ""
 
@@ -231,8 +231,8 @@ msgstr ""
 msgid "Avalanche"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js:65
-#: src/components/TokenCard/TokenCard.js:97
+#: src/components/TokenCard/TokenCard.js:69
+#: src/components/TokenCard/TokenCard.js:101
 msgid "Avalanche APR:"
 msgstr ""
 
@@ -291,7 +291,7 @@ msgstr ""
 #~ msgid "Borrow Fee: ${0}"
 #~ msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx:79
+#: src/components/Header/AppHeaderLinks.tsx:57
 msgid "Buy"
 msgstr "买"
 
@@ -339,13 +339,13 @@ msgstr ""
 msgid "Buy failed."
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js:70
-#: src/components/TokenCard/TokenCard.js:102
+#: src/components/TokenCard/TokenCard.js:74
+#: src/components/TokenCard/TokenCard.js:106
 msgid "Buy on Arbitrum"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js:73
-#: src/components/TokenCard/TokenCard.js:105
+#: src/components/TokenCard/TokenCard.js:77
+#: src/components/TokenCard/TokenCard.js:109
 msgid "Buy on Avalanche"
 msgstr ""
 
@@ -353,8 +353,8 @@ msgstr ""
 msgid "Buy submitted."
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1187
-#: src/components/Glp/GlpSwap.js:1365
+#: src/components/Glp/GlpSwap.js:1191
+#: src/components/Glp/GlpSwap.js:1373
 msgid "Buy with {0}"
 msgstr ""
 
@@ -537,13 +537,13 @@ msgstr ""
 msgid "Compounding..."
 msgstr ""
 
-#: src/components/Header/AppHeaderUser.tsx:95
+#: src/components/Header/AppHeaderUser.tsx:103
 msgid "Connect"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js:1162
 #: src/components/Glp/GlpSwap.js:512
-#: src/components/Header/AppHeaderUser.tsx:95
+#: src/components/Header/AppHeaderUser.tsx:103
 #: src/components/Referrals/AddAffiliateCode.js:34
 #: src/components/Referrals/JoinReferralCode.js:22
 #: src/pages/Stake/StakeV2.js:1812
@@ -619,7 +619,7 @@ msgstr ""
 msgid "Current Weight"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx:61
+#: src/components/Header/AppHeaderLinks.tsx:47
 msgid "Dashboard"
 msgstr "仪表板"
 
@@ -704,12 +704,12 @@ msgstr ""
 msgid "ETH is needed on Arbitrum to purchase GMX."
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx:70
+#: src/components/Header/AppHeaderLinks.tsx:52
 #: src/pages/Stake/StakeV2.js:1459
 msgid "Earn"
 msgstr "赚"
 
-#: src/components/Header/AppHeaderLinks.tsx:97
+#: src/components/Header/AppHeaderLinks.tsx:75
 msgid "Ecosystem"
 msgstr "生态系统"
 
@@ -876,7 +876,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js:1108
 #: src/components/Glp/GlpSwap.js:910
-#: src/components/Glp/GlpSwap.js:1347
+#: src/components/Glp/GlpSwap.js:1355
 #: src/pages/Dashboard/DashboardV2.js:665
 msgid "Fees"
 msgstr ""
@@ -894,7 +894,7 @@ msgid "Fees since"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js:1036
-#: src/components/Glp/GlpSwap.js:1353
+#: src/components/Glp/GlpSwap.js:1361
 msgid "Fees will be shown once you have entered an amount in the order form."
 msgstr ""
 
@@ -927,7 +927,7 @@ msgstr ""
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js:93
+#: src/components/TokenCard/TokenCard.js:97
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 msgstr ""
 
@@ -955,7 +955,7 @@ msgstr ""
 msgid "GMX is currently live on Arbitrum and Avalanche."
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js:61
+#: src/components/TokenCard/TokenCard.js:65
 msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
 msgstr ""
 
@@ -990,8 +990,8 @@ msgid "High USDG Slippage, Long Anyway"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx:52
-msgid "Home"
-msgstr "家"
+#~ msgid "Home"
+#~ msgstr "家"
 
 #: src/pages/BuyGMX/BuyGMX.js:108
 msgid "Hop"
@@ -1253,11 +1253,11 @@ msgstr ""
 msgid "Max leverage: 30x"
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1106
+#: src/components/Glp/GlpSwap.js:1110
 msgid "Max pool capacity reached for {0}"
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1251
+#: src/components/Glp/GlpSwap.js:1259
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgstr ""
 
@@ -1442,7 +1442,7 @@ msgstr ""
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1110
+#: src/components/Glp/GlpSwap.js:1114
 msgid "Please mint GLP using another token"
 msgstr ""
 
@@ -1535,8 +1535,8 @@ msgstr ""
 msgid "Purchase Insurance"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js:82
-#: src/components/TokenCard/TokenCard.js:114
+#: src/components/TokenCard/TokenCard.js:86
+#: src/components/TokenCard/TokenCard.js:118
 msgid "Read more"
 msgstr ""
 
@@ -1613,7 +1613,7 @@ msgstr ""
 msgid "Referral code updated!"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx:88
+#: src/components/Header/AppHeaderLinks.tsx:66
 #: src/pages/Referrals/Referrals.js:121
 msgid "Referrals"
 msgstr "推荐人"
@@ -1708,8 +1708,8 @@ msgstr ""
 msgid "Sell failed."
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1187
-#: src/components/Glp/GlpSwap.js:1370
+#: src/components/Glp/GlpSwap.js:1191
+#: src/components/Glp/GlpSwap.js:1378
 msgid "Sell for {0}"
 msgstr ""
 
@@ -1729,7 +1729,7 @@ msgstr ""
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr ""
 
-#: src/components/Header/AppHeaderLinks.tsx:109
+#: src/components/Header/AppHeaderLinks.tsx:87
 msgid "Settings"
 msgstr "设置"
 
@@ -1865,7 +1865,7 @@ msgstr ""
 msgid "Swap failed."
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js:1114
+#: src/components/Glp/GlpSwap.js:1118
 msgid "Swap on {0}"
 msgstr ""
 
@@ -2017,8 +2017,8 @@ msgstr ""
 msgid "Total value of tokens in GLP pool ({chainName})"
 msgstr ""
 
-#: src/components/Header/AppHeaderUser.tsx:88
-#: src/components/Header/AppHeaderUser.tsx:123
+#: src/components/Header/AppHeaderUser.tsx:96
+#: src/components/Header/AppHeaderUser.tsx:131
 msgid "Trade"
 msgstr "贸易"
 
@@ -2255,7 +2255,7 @@ msgid "Waiting for Approval"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js:724
-#: src/components/Glp/GlpSwap.js:1337
+#: src/components/Glp/GlpSwap.js:1345
 #: src/pages/Stake/StakeV2.js:1512
 #: src/pages/Stake/StakeV2.js:1831
 #: src/pages/Stake/StakeV2.js:1973
