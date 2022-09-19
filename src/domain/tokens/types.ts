@@ -11,43 +11,61 @@ export type Token = {
   isWrapped?: boolean;
   baseSymbol?: string;
 };
-export type InfoToken = {
+export type TokenInfo = {
   address: string;
-  availableAmount: BigNumber;
-  availableUsd: BigNumber;
-  balance: BigNumber;
-  bufferAmount: BigNumber;
-  contractMaxPrice: BigNumber;
-  contractMinPrice: BigNumber;
+  name: string;
+  symbol: string;
+  imageUrl: string;
   decimals: number;
-  globalShortSize: BigNumber;
-  guaranteedUsd: BigNumber;
+
   hasMaxAvailableLong: boolean;
   hasMaxAvailableShort: boolean;
-  imageUrl: string;
-  isNative: boolean;
-  isShortable: boolean;
+
+  isNative?: boolean;
+  isShortable?: boolean;
+  isWrapped?: boolean;
+  isStable?: boolean;
+
+  usdgAmount: BigNumber;
+  maxUsdgAmount: BigNumber;
+
+  poolAmount: BigNumber;
+  bufferAmount: BigNumber;
   managedAmount: BigNumber;
   managedUsd: BigNumber;
-  maxAvailableLong: BigNumber;
-  maxAvailableShort: BigNumber;
-  maxGlobalLongSize: BigNumber;
-  maxGlobalShortSize: BigNumber;
-  maxLongCapacity: BigNumber;
-  maxPrice: BigNumber;
-  maxPrimaryPrice: BigNumber;
-  maxUsdgAmount: BigNumber;
-  minPrice: BigNumber;
-  minPrimaryPrice: BigNumber;
-  name: string;
-  poolAmount: BigNumber;
+  availableAmount: BigNumber;
+  availableUsd: BigNumber;
+  guaranteedUsd: BigNumber;
   redemptionAmount: BigNumber;
   reservedAmount: BigNumber;
-  symbol: string;
-  usdgAmount: BigNumber;
+
+  balance: BigNumber;
+
   weight: BigNumber;
+
+  maxPrice?: BigNumber;
+  maxPrimaryPrice?: BigNumber;
+
+  minPrice?: BigNumber;
+  minPrimaryPrice?: BigNumber;
+
+  contractMaxPrice: BigNumber;
+  contractMinPrice: BigNumber;
+
+  cumulativeFundingRate: BigNumber;
+  fundingRate: BigNumber;
+
+  globalShortSize: BigNumber;
+
+  maxAvailableLong: BigNumber;
+  maxAvailableShort: BigNumber;
+
+  maxGlobalLongSize: BigNumber;
+  maxGlobalShortSize: BigNumber;
+
+  maxLongCapacity: BigNumber;
 };
 
 export type InfoTokens = {
-  [key: string]: InfoToken;
+  [key: string]: TokenInfo;
 };
