@@ -7,6 +7,9 @@ export type Token = {
   isStable: boolean;
   name: string;
   symbol: string;
+  isTempHidden?: boolean;
+  isWrapped?: boolean;
+  baseSymbol?: string;
 };
 export type InfoToken = {
   address: string;

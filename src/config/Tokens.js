@@ -434,10 +434,5 @@ export function getWhitelistedTokens(chainId) {
 }
 
 export function getVisibleTokens(chainId) {
-  return getWhitelistedTokens(chainId).filter((token) => {
-    if (token.isWrapped || token.isTempHidden) {
-      return false;
-    }
-    return true;
-  });
+  return getWhitelistedTokens(chainId).filter((token) => !token.isWrapped && !token.isTempHidden);
 }
