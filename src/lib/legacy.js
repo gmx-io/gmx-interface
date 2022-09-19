@@ -2849,7 +2849,7 @@ export function getChainIcon(chainId) {
     return icavalanche24;
   }
 
-  if (chainId === ARBITRUM) {
+  if (chainId === ARBITRUM || chainId === ARBITRUM_TESTNET) {
     return icarbitrum24;
   }
 }

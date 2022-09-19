@@ -19,14 +19,16 @@ export default function LeaderboardTable({ resolveLink, stats, isTeamLeaderboard
   };
 
   const Row = ({ stat }) => {
-    return <tr key={stat.id}>
-      <td>#{stat.rank}</td>
-      <td>{stat.label}</td>
-      <td>{formatAmount(stat.pnlPercent, 0, 0, true, "...")}%</td>
-      <td>
-        <button className="simple-table-action" onClick={() => handleClick(stat)}>Details</button>
-      </td>
-    </tr>
+    return (
+      <tr>
+        <td>#{stat.rank}</td>
+        <td>{stat.label}</td>
+        <td>{formatAmount(stat.pnlPercent, 0, 0, true, "...")}%</td>
+        <td>
+          <button className="simple-table-action" onClick={() => handleClick(stat)}>Details</button>
+        </td>
+      </tr>
+    )
   }
 
   return (
@@ -38,7 +40,7 @@ export default function LeaderboardTable({ resolveLink, stats, isTeamLeaderboard
           <th>P&L</th>
           <th></th>
         </tr>
-        {stats.length > 0 && stats.map(stat => <Row stat={stat}/>)}
+        {stats.length > 0 && stats.map(stat => <Row key={stat.id} stat={stat}/>)}
         {stats.length === 0 && (
           <tr>
             <td colSpan={3}>No {isTeamLeaderboard ? "team" : "account"} found...</td>
