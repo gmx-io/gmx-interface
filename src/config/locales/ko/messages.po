@@ -48,7 +48,7 @@ msgstr "APR은 매주 수요일에 업데이트되며 한 주 동안 쌓인 수�
 msgid "AVAILABLE"
 msgstr "사용가능"
 
-#: src/components/Header/AppHeaderLinks.tsx:102
+#: src/components/Header/AppHeaderLinks.tsx:94
 #: src/pages/Ecosystem/Ecosystem.js:421
 #: src/pages/Ecosystem/Ecosystem.js:465
 #: src/pages/Ecosystem/Ecosystem.js:520
@@ -177,8 +177,8 @@ msgstr "승인중..."
 #~ msgid "Arbitrum"
 #~ msgstr "Arbitrum"
 
-#: src/components/TokenCard/TokenCard.js:64
-#: src/components/TokenCard/TokenCard.js:96
+#: src/components/TokenCard/TokenCard.js:68
+#: src/components/TokenCard/TokenCard.js:100
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"
 
@@ -218,8 +218,8 @@ msgstr "사용가능"
 msgid "Avalanche"
 msgstr "Avalanche"
 
-#: src/components/TokenCard/TokenCard.js:65
-#: src/components/TokenCard/TokenCard.js:97
+#: src/components/TokenCard/TokenCard.js:69
+#: src/components/TokenCard/TokenCard.js:101
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
@@ -271,7 +271,7 @@ msgstr "차용 수수료 / 일: ${0}"
 msgid "Borrow Fee: ${0}"
 msgstr "차용 수수료: ${0}"
 
-#: src/components/Header/AppHeaderLinks.tsx:79
+#: src/components/Header/AppHeaderLinks.tsx:71
 msgid "Buy"
 msgstr "구매"
 
@@ -319,13 +319,13 @@ msgstr "GMX 혹은 GLP 구매"
 msgid "Buy failed."
 msgstr "구매 실패"
 
-#: src/components/TokenCard/TokenCard.js:70
-#: src/components/TokenCard/TokenCard.js:102
+#: src/components/TokenCard/TokenCard.js:74
+#: src/components/TokenCard/TokenCard.js:106
 msgid "Buy on Arbitrum"
 msgstr "Arbitrum에서 구매"
 
-#: src/components/TokenCard/TokenCard.js:73
-#: src/components/TokenCard/TokenCard.js:105
+#: src/components/TokenCard/TokenCard.js:77
+#: src/components/TokenCard/TokenCard.js:109
 msgid "Buy on Avalanche"
 msgstr "Avalanche에서 구매"
 
@@ -517,13 +517,13 @@ msgstr "수령 후 스테이킹 제출 완료!"
 msgid "Compounding..."
 msgstr "수령 및 스테이킹중..."
 
-#: src/components/Header/AppHeaderUser.tsx:95
+#: src/components/Header/AppHeaderUser.tsx:103
 msgid "Connect"
 msgstr "연동"
 
 #: src/components/Exchange/SwapBox.js:1146
 #: src/components/Glp/GlpSwap.js:496
-#: src/components/Header/AppHeaderUser.tsx:95
+#: src/components/Header/AppHeaderUser.tsx:103
 #: src/components/Referrals/AddAffiliateCode.js:34
 #: src/components/Referrals/JoinReferralCode.js:22
 #: src/pages/Stake/StakeV2.js:1768
@@ -673,12 +673,12 @@ msgstr "다운로드"
 msgid "ETH is needed on Arbitrum to purchase GMX."
 msgstr "Arbitrum에서 GMX를 구매하기 위해서는 ETH가 필요합니다."
 
-#: src/components/Header/AppHeaderLinks.tsx:70
+#: src/components/Header/AppHeaderLinks.tsx:66
 #: src/pages/Stake/StakeV2.js:1444
 msgid "Earn"
 msgstr "보상"
 
-#: src/components/Header/AppHeaderLinks.tsx:97
+#: src/components/Header/AppHeaderLinks.tsx:89
 msgid "Ecosystem"
 msgstr "이코시스템"
 
@@ -896,7 +896,7 @@ msgstr "GLP 인덱스 구성"
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr ""
 
-#: src/components/TokenCard/TokenCard.js:93
+#: src/components/TokenCard/TokenCard.js:97
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 msgstr "GLP는 유동성 공급 토큰입니다. 플랫폼에서 생성되는 수수료의 70%를 축적하세요."
 
@@ -924,7 +924,7 @@ msgstr "GMX 이코시스템 페이지"
 msgid "GMX is currently live on Arbitrum and Avalanche."
 msgstr "GMX는 현재 Arbitrum과 Avalanche에서 이용할 수 있습니다."
 
-#: src/components/TokenCard/TokenCard.js:61
+#: src/components/TokenCard/TokenCard.js:65
 msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
 msgstr "GMX는 유틸리티 및 거버넌스 토큰입니다. 플랫폼에서 생성되는 수수료의 30%를 축적하세요."
 
@@ -1482,8 +1482,8 @@ msgstr "GMX 구입"
 msgid "Purchase Insurance"
 msgstr "보험 구입"
 
-#: src/components/TokenCard/TokenCard.js:82
-#: src/components/TokenCard/TokenCard.js:114
+#: src/components/TokenCard/TokenCard.js:86
+#: src/components/TokenCard/TokenCard.js:118
 msgid "Read more"
 msgstr "더 알아보기"
 
@@ -1560,7 +1560,7 @@ msgstr "추천 코드 업데이트 실패."
 msgid "Referral code updated!"
 msgstr "추천 코드 업데이트 완료!"
 
-#: src/components/Header/AppHeaderLinks.tsx:88
+#: src/components/Header/AppHeaderLinks.tsx:80
 #: src/pages/Referrals/Referrals.js:121
 msgid "Referrals"
 msgstr "추천"
@@ -1676,7 +1676,7 @@ msgstr "GLP의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
 msgstr "GMX의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 
-#: src/components/Header/AppHeaderLinks.tsx:109
+#: src/components/Header/AppHeaderLinks.tsx:101
 msgid "Settings"
 msgstr "설정"
 
@@ -1960,8 +1960,8 @@ msgstr "총 거래량"
 msgid "Total value of tokens in GLP pool ({chainName})"
 msgstr "GLP 풀 ({chainName})의 토큰 총액"
 
-#: src/components/Header/AppHeaderUser.tsx:88
-#: src/components/Header/AppHeaderUser.tsx:123
+#: src/components/Header/AppHeaderUser.tsx:96
+#: src/components/Header/AppHeaderUser.tsx:131
 msgid "Trade"
 msgstr "트레이드"
 
