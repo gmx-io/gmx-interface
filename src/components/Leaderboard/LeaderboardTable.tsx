@@ -4,7 +4,7 @@ import { formatAmount } from "../../lib/legacy";
 import "./LeaderboardTable.css";
 
 type Props = {
-  resolveLink: (any) => string;
+  resolveLink?: (any) => string;
   stats: Stats[];
   isTeamLeaderboard?: boolean;
 }
@@ -25,7 +25,7 @@ export default function LeaderboardTable({ resolveLink, stats, isTeamLeaderboard
         <td>{stat.label}</td>
         <td>{formatAmount(stat.pnlPercent, 0, 0, true, "...")}%</td>
         <td>
-          <button className="simple-table-action" onClick={() => handleClick(stat)}>Details</button>
+          {resolveLink && <button className="simple-table-action" onClick={() => handleClick(stat)}>Details</button>}
         </td>
       </tr>
     )
@@ -36,7 +36,7 @@ export default function LeaderboardTable({ resolveLink, stats, isTeamLeaderboard
       <tbody>
         <tr className="simple-table-header">
           <th>Rank</th>
-          <th>Team</th>
+          <th>{isTeamLeaderboard ? "Team" : "Address"}</th>
           <th>P&L</th>
           <th></th>
         </tr>

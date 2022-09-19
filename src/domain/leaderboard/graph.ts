@@ -237,7 +237,7 @@ export function useTeamMembersStats(chainId, competitionIndex, leaderAddress, pa
 
 export function useCompetition(chainId, competitionIndex) {
   const [loading, setLoading] = useState(true)
-
+  const [exists, setExists] = useState(false)
   const [data, setData] = useState<Competition>({
     index: 0,
     start: 0,
@@ -259,10 +259,22 @@ export function useCompetition(chainId, competitionIndex) {
   `
 
   useEffect(() => {
+    if (!competitionIndex && competitionIndex !== 0) {
+      setExists(false)
+      setLoading(false)
+      return
+    }
+
     async function main() {
       const { data: graphData } = await getGraphClient(chainId).query({ query, variables: { id: competitionIndex } })
-      const ts = Math.round(Date.now() / 1000);
 
+      if (!graphData.competition) {
+        setLoading(false)
+        setExists(false)
+        return
+      }
+
+      const ts = Math.round(Date.now() / 1000);
       const start = Number(graphData.competition.start)
       const end = Number(graphData.competition.end)
 
@@ -275,11 +287,12 @@ export function useCompetition(chainId, competitionIndex) {
         maxTeamSize: Number(graphData.competition.maxTeamSize),
       })
 
+      setExists(true)
       setLoading(false)
     }
 
     main()
   }, [chainId, competitionIndex, query])
 
-  return { data, loading };
+  return { data, exists, loading };
 }

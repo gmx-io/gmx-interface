@@ -4,7 +4,7 @@ import { useCompetition, useTeam } from "../../domain/leaderboard/graph"
 import SEO from "../../components/Common/SEO";
 import { getChainIcon, getPageTitle, useChainId } from "../../lib/legacy";
 import Loader from "./../../components/Common/Loader";
-import { CURRENT_COMPETITION_INDEX } from "../../domain/leaderboard/constants";
+import { getCurrentCompetitionIndex } from "../../domain/leaderboard/constants";
 import "./Team.css";
 import TeamPositions from "../../components/Team/TeamPositions";
 import TeamStats from "../../components/Team/TeamStats";
@@ -23,9 +23,9 @@ export default function Team({ pendingTxns, setPendingTxns }: Props) {
   const params = useParams<any>();
   const { chainId } = useChainId()
   const { library, account } = useWeb3React();
-  const { data: team, exists: teamExists, loading: teamLoading } = useTeam(chainId, library, CURRENT_COMPETITION_INDEX, params.leaderAddress);
-  const { data: competition, loading: competitionLoading } = useCompetition(chainId, CURRENT_COMPETITION_INDEX)
-  const { exists: accountHasTeam } = useTeam(chainId, library, CURRENT_COMPETITION_INDEX, account)
+  const { data: team, exists: teamExists, loading: teamLoading } = useTeam(chainId, library, getCurrentCompetitionIndex(chainId), params.leaderAddress);
+  const { data: competition, loading: competitionLoading } = useCompetition(chainId, getCurrentCompetitionIndex(chainId))
+  const { exists: accountHasTeam } = useTeam(chainId, library, getCurrentCompetitionIndex(chainId), account)
 
   const isLoading = () => teamLoading || competitionLoading
   const isTeamMember = () => account && team.members.includes(account)
