@@ -28,7 +28,6 @@ export function getLowestFeeTokenForBuyGlp(
   }
 
   const tokens = getVisibleTokens(chainId);
-
   const usdgAmount = toAmount.mul(glpPrice).div(PRECISION);
   const tokensData = tokens.map((token) => {
     const fromToken = getTokenInfo(infoTokens, token.address);
@@ -51,10 +50,12 @@ export function getLowestFeeTokenForBuyGlp(
     return { ...token, fees, amountLeftToDeposit };
   });
 
-  const tokensWithLiquidity = tokensData.filter(
-    (token) =>
-      token.address !== fromTokenAddress && token.hasOwnProperty("fees") && swapUsdMin.lt(token.amountLeftToDeposit)
-  );
+  const tokensWithLiquidity = tokensData
+    .filter(
+      (token) =>
+        token.address !== fromTokenAddress && token.hasOwnProperty("fees") && swapUsdMin.lt(token.amountLeftToDeposit)
+    )
+    .sort((a, b) => a.fees - b.fees);
   return tokensWithLiquidity.length > 0
     ? tokensWithLiquidity[0]
     : tokensData.sort((a, b) => b.amountLeftToDeposit.sub(a.amountLeftToDeposit))[0];
