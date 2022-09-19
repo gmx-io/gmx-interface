@@ -28,7 +28,6 @@ export function useIndividualStats(chainId) {
         first: 10,
         orderBy: pnl,
         orderByDir: desc
-        where: { competition: null }
       ) {
         id
         pnl
@@ -249,7 +248,7 @@ export function useCompetition(chainId, competitionIndex) {
   });
 
   const query = gql`
-    query ($id: BigInt!) {
+    query ($id: Int!) {
       competition (id: $id) {
         id
         start
@@ -259,24 +258,28 @@ export function useCompetition(chainId, competitionIndex) {
     }
   `
 
-  useSWR([chainId, competitionIndex], async () => {
-    const { data } = await getGraphClient(chainId).query({ query, variables: { id: competitionIndex } })
-    const ts = Math.round(Date.now() / 1000);
+  useEffect(() => {
+    async function main() {
+      const { data: graphData } = await getGraphClient(chainId).query({ query, variables: { id: competitionIndex } })
+      const ts = Math.round(Date.now() / 1000);
 
-    const start = Number(data.start)
-    const end = Number(data.end)
+      const start = Number(graphData.competition.start)
+      const end = Number(graphData.competition.end)
 
-    setData({
-      index: competitionIndex,
-      start: start,
-      end: end,
-      registrationActive: data.start > ts,
-      active: start <= ts && end > ts,
-      maxTeamSize: Number(data.maxTeamSize),
-    })
+      setData({
+        index: competitionIndex,
+        start: start,
+        end: end,
+        registrationActive: start > ts,
+        active: start <= ts && end > ts,
+        maxTeamSize: Number(graphData.competition.maxTeamSize),
+      })
 
-    setLoading(false)
-  })
+      setLoading(false)
+    }
+
+    main()
+  }, [chainId, competitionIndex, query])
 
   return { data, loading };
 }

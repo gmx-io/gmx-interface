@@ -1,10 +1,10 @@
-import { useWeb3React } from "@web3-react/core";
 import { useIndividualStats } from "../../domain/leaderboard/graph";
+import { useChainId } from "../../lib/legacy";
 import Loader from "../Common/Loader";
 import LeaderboardTable from "./LeaderboardTable";
 
 export function IndividualLeaderboard() {
-  const { chainId } = useWeb3React();
+  const { chainId } = useChainId()
   const { data, loading } = useIndividualStats(chainId);
 
   const resolveLink = (stat) => {

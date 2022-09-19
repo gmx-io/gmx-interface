@@ -102,7 +102,7 @@ const CONTRACTS = {
     ReferralStorage: "0x902B74dAe2fff3BA564BDa930A7D687b84e0E9cC",
     ReferralReader: "0x0000000000000000000000000000000000000000",
 
-    Competition: "0x17fb5AEEF7221353B6B2D12EDDa0Dd5655Ec25b2",
+    Competition: "0x271B8D7b97A07207BAd07dc577F6D29D6a368C56",
   },
   42161: {
     // arbitrum mainnet

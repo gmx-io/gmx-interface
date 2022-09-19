@@ -43,7 +43,7 @@ export default function LeaderboardTable({ resolveLink, stats, isTeamLeaderboard
         {stats.length > 0 && stats.map(stat => <Row key={stat.id} stat={stat}/>)}
         {stats.length === 0 && (
           <tr>
-            <td colSpan={3}>No {isTeamLeaderboard ? "team" : "account"} found...</td>
+            <td colSpan={4}>No {isTeamLeaderboard ? "team" : "account"} found...</td>
           </tr>
         )}
       </tbody>

@@ -31,7 +31,7 @@ export default function Team({ pendingTxns, setPendingTxns }: Props) {
   const isTeamMember = () => account && team.members.includes(account)
   const isTeamLeader = () => account && account === team.leaderAddress;
 
-  const showTeamManagement = () => !competition.registrationActive && account && (isTeamLeader() || isTeamMember() || !accountHasTeam)
+  const showTeamManagement = () => competition.registrationActive && account && (isTeamLeader() || isTeamMember() || !accountHasTeam)
 
   if (!teamLoading && !teamExists) {
     history.replace("/404")

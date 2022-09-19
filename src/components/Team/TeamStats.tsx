@@ -20,7 +20,7 @@ export default function TeamStats({ team, competition }: Props) {
           <div className="card-details">
             <h3 className="label">P&L</h3>
             <div className="data">
-              {!competition.active ? (
+              {competition.active ? (
                 <>
                   <span>${formatAmount(team.pnl, USD_DECIMALS, 0, true)}</span>
                   <span> / </span>

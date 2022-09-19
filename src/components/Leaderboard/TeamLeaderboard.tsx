@@ -44,7 +44,7 @@ export function TeamLeaderboard({ competitionIndex }) {
           <input type="text" placeholder="Search for a team..." className="text-input input-small" value={search} onInput={handleSearchInput}/>
           <FiSearch className="input-logo"/>
         </div>
-        {(detailsLoading || teamLoading || memberTeamLoading) ? "" : (
+        {(detailsLoading || teamLoading || memberTeamLoading || !account) ? "" : (
           <>
             {details.registrationActive && !isLeader && !hasTeam && (
               <Link className="transparent-btn" to={getTeamRegistrationUrl()}>

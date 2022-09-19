@@ -32,7 +32,7 @@ export default function TeamCreationForm({ competition, connectWallet, pendingTx
       return "Checking team name...";
     }
 
-    if (debouncedName === "") {
+    if (debouncedName.trim() === "") {
       return "Enter Team Name";
     }
 
@@ -49,7 +49,7 @@ export default function TeamCreationForm({ competition, connectWallet, pendingTx
 
   const isFormValid = () => {
     return (
-      debouncedName !== "" &&
+      debouncedName.trim() !== "" &&
       !nameAlreadyUsed &&
       !validatingName
     );
@@ -60,7 +60,7 @@ export default function TeamCreationForm({ competition, connectWallet, pendingTx
     setIsProcessing(true)
 
     try {
-      const tx = await createTeam(chainId, library, competition.index, debouncedName, {
+      const tx = await createTeam(chainId, library, competition.index, debouncedName.trim(), {
         successMsg: "Team created!",
         sentMsg: "Team creation submitted!",
         failMsg: "Team creation failed.",
@@ -83,14 +83,14 @@ export default function TeamCreationForm({ competition, connectWallet, pendingTx
   // Team name check
   useEffect(() => {
     async function checkName() {
-      if (debouncedName === "") {
+      if (debouncedName.trim() === "") {
         setValidatingName(false);
         return;
       }
 
       setValidatingName(true);
 
-      const teamNameValid = await checkTeamName(chainId, library, debouncedName, competition.index);
+      const teamNameValid = await checkTeamName(chainId, library, debouncedName.trim(), competition.index);
       setNameAlreadyUsed(!teamNameValid);
 
       setValidatingName(false);
