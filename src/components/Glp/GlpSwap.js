@@ -1093,11 +1093,15 @@ export default function GlpSwap(props) {
               const tokenImage = importImage("ic_" + token.symbol.toLowerCase() + "_40.svg");
               let isCapReached = tokenInfo.managedAmount?.gt(tokenInfo.maxUsdgAmount);
 
-              let amountLeftToDeposit;
+              let amountLeftToDeposit = bigNumberify(0);
               if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
-                amountLeftToDeposit = adjustForDecimals(tokenInfo.maxUsdgAmount, USDG_DECIMALS, USD_DECIMALS).sub(
-                  tokenInfo.managedUsd
-                );
+                amountLeftToDeposit = tokenInfo.maxUsdgAmount
+                  .sub(tokenInfo.usdgAmount)
+                  .mul(expandDecimals(1, USD_DECIMALS))
+                  .div(expandDecimals(1, USDG_DECIMALS));
+              }
+              if (amountLeftToDeposit.lt(0)) {
+                amountLeftToDeposit = bigNumberify(0);
               }
               function renderFees() {
                 const swapUrl = `https://app.1inch.io/#/${chainId}/swap/`;
@@ -1165,6 +1169,10 @@ export default function GlpSwap(props) {
                               <>
                                 <Trans>Current Pool Amount</Trans>: ${formatAmount(managedUsd, USD_DECIMALS, 2, true)} (
                                 {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol})
+                                <br />
+                                <br />
+                                <Trans>Current Pool USD Reference Amount</Trans>: $
+                                {formatAmount(tokenInfo.usdgAmount, USDG_DECIMALS, 2, true)}
                                 <br />
                                 <br />
                                 <Trans>Max Pool Capacity</Trans>: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
@@ -1257,11 +1265,15 @@ export default function GlpSwap(props) {
               balanceUsd = tokenInfo.balance.mul(tokenInfo.minPrice).div(expandDecimals(1, token.decimals));
             }
 
-            let amountLeftToDeposit;
+            let amountLeftToDeposit = bigNumberify(0);
             if (tokenInfo.maxUsdgAmount && tokenInfo.maxUsdgAmount.gt(0)) {
-              amountLeftToDeposit = adjustForDecimals(tokenInfo.maxUsdgAmount, USDG_DECIMALS, USD_DECIMALS).sub(
-                tokenInfo.managedUsd
-              );
+              amountLeftToDeposit = tokenInfo.maxUsdgAmount
+                .sub(tokenInfo.usdgAmount)
+                .mul(expandDecimals(1, USD_DECIMALS))
+                .div(expandDecimals(1, USDG_DECIMALS));
+            }
+            if (amountLeftToDeposit.lt(0)) {
+              amountLeftToDeposit = bigNumberify(0);
             }
             let isCapReached = tokenInfo.managedAmount?.gt(tokenInfo.maxUsdgAmount);
 
@@ -1319,6 +1331,10 @@ export default function GlpSwap(props) {
                               <>
                                 <Trans>Current Pool Amount</Trans>: ${formatAmount(managedUsd, USD_DECIMALS, 2, true)} (
                                 {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol})
+                                <br />
+                                <br />
+                                <Trans>Current Pool USD Reference Amount</Trans>: $
+                                {formatAmount(tokenInfo.usdgAmount, USDG_DECIMALS, 2, true)}
                                 <br />
                                 <br />
                                 <Trans>Max Pool Capacity</Trans>: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}

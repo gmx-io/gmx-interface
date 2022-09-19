@@ -15,9 +15,9 @@ import avax30Icon from "../../img/ic_avax_30.svg";
 import gmxArbitrum from "../../img/ic_gmx_arbitrum.svg";
 import gmxAvax from "../../img/ic_gmx_avax.svg";
 import ohmArbitrum from "../../img/ic_olympus_arbitrum.svg";
-import Button from "../../components/Common/Button";
 
 import { Trans } from "@lingui/macro";
+import Button from "../../components/Common/Button";
 
 export default function BuyGMX() {
   const { chainId } = useChainId();
