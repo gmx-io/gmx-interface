@@ -3,7 +3,6 @@ type Props = {
   label: string;
   value: number | [number];
   showDollar?: boolean;
-  values?: [number];
 };
 
 export default function StatsTooltipRow({ label, value, showDollar = true }: Props) {
