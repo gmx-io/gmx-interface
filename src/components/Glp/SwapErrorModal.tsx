@@ -5,7 +5,7 @@ import { getNativeToken } from "../../config/Tokens";
 import { InfoToken, Token } from "../../domain/tokens/types";
 import Modal from "../Modal/Modal";
 import { get1InchSwapUrl } from "../../domain/common";
-import { getLowestFeeTokenForBuyGlp } from "../../lib/legacy";
+import { getLowestFeeTokenForBuyGlp } from "../../domain/prices";
 
 const { AddressZero } = ethers.constants;
 
@@ -40,17 +40,16 @@ export default function SwapErrorModal({
 }: Props) {
   const [lowestFeeToken, setLowestFeeToken] = useState<LowestFeeToken>();
   useEffect(() => {
-    setLowestFeeToken(
-      getLowestFeeTokenForBuyGlp(
-        chainId,
-        glpAmount,
-        glpPrice,
-        usdgSupply,
-        totalTokenWeights,
-        infoTokens,
-        swapToken?.address
-      )
+    const lowestFeeToken = getLowestFeeTokenForBuyGlp(
+      chainId,
+      glpAmount,
+      glpPrice,
+      usdgSupply,
+      totalTokenWeights,
+      infoTokens,
+      swapToken.address
     );
+    setLowestFeeToken(lowestFeeToken);
   }, [chainId, glpAmount, glpPrice, usdgSupply, totalTokenWeights, infoTokens, swapToken.address]);
 
   if (!lowestFeeToken || !swapToken) return "";
