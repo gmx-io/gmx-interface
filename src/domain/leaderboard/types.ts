@@ -1,5 +1,3 @@
-import { BigNumber } from "ethers";
-
 export type Competition = {
   index: number;
   start: number;
@@ -13,16 +11,16 @@ export type Stats = {
   id: string;
   label: string;
   rank: number;
-  pnl: BigNumber;
-  pnlPercent: BigNumber;
+  pnl: number;
+  pnlPercent: number;
 }
 
 export type Position = {}
 
 export type Team = {
   rank: number,
-  pnl: BigNumber,
-  pnlPercent: BigNumber,
+  pnl: number,
+  pnlPercent: number,
   leaderAddress: string,
   name: string;
   members: string[],
@@ -30,11 +28,13 @@ export type Team = {
   competitionIndex: number,
 }
 
+export type TeamMembersStats = {
+  id: string;
+  pnl: number;
+  pnlPercent: number;
+}
+
 export type JoinRequest = {
   leaderAddress: string,
   account: string,
-}
-
-export type MemberStats = {
-  address: string
 }

@@ -37,7 +37,7 @@ export default function TeamManagementInviteLink({ team }: Props) {
             <input type="checkbox" onChange={() => setUseReferralCode(v => !v)}/>
           </div>
         )}
-        <button className="default-btn" onClick={() => copyInviteLink()}>Copy invite link to clipboard</button>
+        <button className="default-btn" onClick={copyInviteLink}>Copy invite link to clipboard</button>
       </div>
     </div>
   )

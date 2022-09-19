@@ -1,19 +1,15 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { BigNumber } from "ethers";
+import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
+import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { ARBITRUM, AVALANCHE, isAddressZero } from "../../lib/legacy";
+import useSWR from "swr";
+import { ARBITRUM_TESTNET, isAddressZero } from "../../lib/legacy";
 import { getCompetitionContract } from "./contracts";
-import { MemberStats, Stats } from "./types";
+import { Competition, Stats, Team, TeamMembersStats } from "./types";
 
 export function getGraphClient(chainId) {
-  if (chainId === ARBITRUM) {
+  if (chainId === ARBITRUM_TESTNET) {
     return new ApolloClient({
-      uri: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-arbitrum-referrals",
-      cache: new InMemoryCache()
-    })
-  } else if (chainId === AVALANCHE) {
-    return new ApolloClient({
-      uri: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-referrals",
+      uri: "https://api.thegraph.com/subgraphs/name/morazzela/gmx-arbitrum-test-leaderboard",
       cache: new InMemoryCache()
     })
   }
@@ -25,83 +21,261 @@ export function useIndividualStats(chainId) {
   const [data, setData] = useState<Stats[]>([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    async function main() {
-      setTimeout(() => {
-        setData([{
-          id: "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
-          rank: 1,
-          label: "0x6887246668a3b87f54deb3b94ba47a6f63f32985",
-          pnl: BigNumber.from("100000000000000000000000000000000000"),
-          pnlPercent: BigNumber.from("15")
-        }]);
-
-        setLoading(false)
-      }, 1000);
+  const query = gql`
+    query {
+      accountStats (
+        first: 10,
+        orderBy: pnl,
+        orderByDir: desc
+        where: { competition: null }
+      ) {
+        id
+        pnl
+        pnlPercent
+      }
     }
+  `
 
-    main()
+  useSWR([chainId], async () => {
+    const { data } = await getGraphClient(chainId).query({ query })
+
+    setData(data.accountStats.map((stats, i) => ({
+      id: stats.id,
+      label: stats.id,
+      rank: i + 1,
+      pnl: Number(stats.pnl),
+      pnlPercent: Number(stats.pnlPercent)
+    })))
+
+    setLoading(false)
   })
 
   return { data, loading }
 }
 
-export function useTeamsStats(chainId) {
+export function useTeamsStats(chainId, competitionIndex) {
   const [data, setData] = useState<Stats[]>([]);
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    async function main() {
-      setTimeout(() => {
-        setData([
-          {
-            id: "0x0000",
-            rank: 1,
-            label: "Morazzela",
-            pnl: BigNumber.from("100000000000000000000000000000000000"),
-            pnlPercent: BigNumber.from("15"),
-          },
-        ]);
-
-        setLoading(false)
-      }, 1000);
+  const query = gql`
+    query ($competitionIndex: BigInt!) {
+      teams (
+        first: 1000,
+        orderBy: pnlPercent,
+        orderDirection: desc,
+        where: { competition: $competitionIndex }
+      ) {
+        id
+        name
+        pnlPercent
+        pnl
+        leader { id }
+      }
     }
+  `
 
-    main();
-  }, [setData, chainId]);
+  useSWR([chainId, competitionIndex], async () => {
+    const { data } = await getGraphClient(chainId).query({ query, variables: { competitionIndex } })
+
+    setData(data.teams.map((team, rank) => ({
+      id: team.leader.id,
+      rank: rank + 1,
+      pnl: team.pnl,
+      pnlPercent: team.pnlPercent,
+      leaderAddress: team.leader.id,
+      label: team.name,
+    })))
+
+    setLoading(false)
+  });
 
   return { data, loading }
 }
 
-export function useTeamMembersStats(chainId, library, competitionIndex, leaderAddress, page, perPage) {
-  const [data, setData] = useState<MemberStats[]>([]);
+export function useTeam(chainId, library, competitionIndex, leaderAddress) {
+  const [data, setData] = useState<Team>({
+    rank: 0,
+    pnl: 0,
+    pnlPercent: 0,
+    leaderAddress: "",
+    name: "",
+    members: [],
+    positions: [],
+    competitionIndex: 0,
+  });
   const [loading, setLoading] = useState(true)
+  const [exists, setExists] = useState(true)
 
-  useEffect(() => {
+  const query = gql`
+    query ($id: String!) {
+      team (id: $id) {
+        id
+        name
+        pnl
+        pnlPercent
+        members { id }
+      }
+    }
+  `
+
+  useEffect(() => {
+    if (!leaderAddress) {
+      setLoading(false)
+      setExists(false)
+      return
+    }
+
     async function main() {
-      if (!chainId || !library) {
+      const { data } = await getGraphClient(chainId).query({ query, variables: {
+        id: competitionIndex + "-" + leaderAddress.toLowerCase()
+      }})
+
+      if (data.team !== null) {
+        setData({
+          rank: 1,
+          pnl: Number(data.team.pnl),
+          pnlPercent: Number(data.team.pnlPercent),
+          leaderAddress: ethers.utils.getAddress(leaderAddress),
+          name: data.team.name,
+          members: data.team.members,
+          positions: [],
+          competitionIndex: competitionIndex
+        })
+
+        setExists(true)
+        setLoading(false)
         return
       }
 
       const contract = getCompetitionContract(chainId, library)
+      const team = await contract.getTeam(competitionIndex, leaderAddress)
 
-      let res = await contract.getTeamMembers(
-        competitionIndex,
-        leaderAddress,
-        (page - 1) * perPage,
-        page * perPage,
-      )
+      if (isAddressZero(team.leaderAddress)) {
+        setExists(false)
+        setLoading(false)
+        return
+      }
 
-      res = res.filter(memberAddress => !isAddressZero(memberAddress)).map(memberAddress => ({
-        address: memberAddress,
-      }))
+      let members: string[] = []
+      let start = 0
+      let offset = 50
+      while (true) {
+        const res = await contract.getTeamMembers(competitionIndex, leaderAddress, start, offset)
+        const filteredRes = res.filter(addr => !isAddressZero(addr))
 
-      setData(res)
+        filteredRes.forEach(addr => {
+          members.push(addr)
+        })
+
+        if (filteredRes.length < offset) {
+          break
+        }
+
+        start += offset
+      }
+
+      setData({
+        rank: 1,
+        pnl: 0,
+        pnlPercent: 0,
+        leaderAddress: ethers.utils.getAddress(leaderAddress),
+        name: team.name,
+        members: members,
+        positions: [],
+        competitionIndex: competitionIndex
+      })
+
       setLoading(false)
     }
 
     main()
-  }, [chainId, library, competitionIndex, leaderAddress, page, perPage])
+  }, [chainId, competitionIndex, leaderAddress, query, library])
+
+  return { data, loading, exists }
+}
+
+export function useTeamMembersStats(chainId, competitionIndex, leaderAddress, page, perPage) {
+  const [data, setData] = useState<TeamMembersStats[]>([]);
+  const [loading, setLoading] = useState(true)
+
+  const query = gql`
+    query ($perPage: BigInt!, $skip: BigInt!, $team: String!) {
+      accountStats (
+        first: $perPage,
+        skip: $skip,
+        orderBy: pnl,
+        orderByDir: desc,
+        where: {
+          team: $team
+        }
+      ) {
+        id
+        pnl
+        pnlPercent
+      }
+    }
+  `
+
+  useSWR([chainId, competitionIndex, leaderAddress, page, perPage], async () => {
+    const { data } = await getGraphClient(chainId).query({ query, variables: {
+      perPage: perPage,
+      skip: (page - 1) * perPage,
+      team: leaderAddress.toLowerCase(),
+    }})
+
+    setData(data.accountStats.map(stats => ({
+      id: stats.id,
+      pnl: Number(stats.pnl),
+      pnlPercent: Number(stats.pnlPercent)
+    })))
+
+    setLoading(false)
+  })
 
   return { data, loading }
+}
+
+export function useCompetition(chainId, competitionIndex) {
+  const [loading, setLoading] = useState(true)
+
+  const [data, setData] = useState<Competition>({
+    index: 0,
+    start: 0,
+    end: 0,
+    registrationActive: false,
+    active: false,
+    maxTeamSize: 0
+  });
+
+  const query = gql`
+    query ($id: BigInt!) {
+      competition (id: $id) {
+        id
+        start
+        end
+        maxTeamSize
+      }
+    }
+  `
+
+  useSWR([chainId, competitionIndex], async () => {
+    const { data } = await getGraphClient(chainId).query({ query, variables: { id: competitionIndex } })
+    const ts = Math.round(Date.now() / 1000);
+
+    const start = Number(data.start)
+    const end = Number(data.end)
+
+    setData({
+      index: competitionIndex,
+      start: start,
+      end: end,
+      registrationActive: data.start > ts,
+      active: start <= ts && end > ts,
+      maxTeamSize: Number(data.maxTeamSize),
+    })
+
+    setLoading(false)
+  })
+
+  return { data, loading };
 }

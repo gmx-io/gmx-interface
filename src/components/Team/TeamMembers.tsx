@@ -15,11 +15,13 @@ export function TeamMembers({ team, pendingTxns, setPendingTxns }: Props) {
   const { chainId, library } = useWeb3React()
   const [page, setPage] = useState(1)
   const perPage = 10
-  const { data: members, loading } = useTeamMembersStats(chainId, library, team.competitionIndex, team.leaderAddress, page, perPage)
+  const { data: members, loading } = useTeamMembersStats(chainId, team.competitionIndex, team.leaderAddress, page, perPage)
   const [isRemoving, setIsRemoving] = useState(false)
 
+  console.log(members)
+
   const pageCount = () => {
-    return Math.ceil(members.length / perPage)
+    return Math.ceil(team.members.length / perPage)
   }
 
   const handleRemoveClick = async (member) => {

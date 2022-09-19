@@ -1,6 +1,6 @@
 import { useWeb3React } from "@web3-react/core";
 import { Link, useHistory, useParams } from "react-router-dom";
-import { useCompetition, useTeam } from "../../domain/leaderboard/contracts";
+import { useCompetition, useTeam } from "../../domain/leaderboard/graph"
 import SEO from "../../components/Common/SEO";
 import { getChainIcon, getPageTitle, useChainId } from "../../lib/legacy";
 import Loader from "./../../components/Common/Loader";
@@ -24,14 +24,14 @@ export default function Team({ pendingTxns, setPendingTxns }: Props) {
   const { chainId } = useChainId()
   const { library, account } = useWeb3React();
   const { data: team, exists: teamExists, loading: teamLoading } = useTeam(chainId, library, CURRENT_COMPETITION_INDEX, params.leaderAddress);
-  const { data: competition, loading: competitionLoading } = useCompetition(chainId, library, CURRENT_COMPETITION_INDEX)
+  const { data: competition, loading: competitionLoading } = useCompetition(chainId, CURRENT_COMPETITION_INDEX)
   const { exists: accountHasTeam } = useTeam(chainId, library, CURRENT_COMPETITION_INDEX, account)
 
   const isLoading = () => teamLoading || competitionLoading
   const isTeamMember = () => account && team.members.includes(account)
   const isTeamLeader = () => account && account === team.leaderAddress;
 
-  const showTeamManagement = () => account && (isTeamLeader() || isTeamMember() || !accountHasTeam)
+  const showTeamManagement = () => !competition.registrationActive && account && (isTeamLeader() || isTeamMember() || !accountHasTeam)
 
   if (!teamLoading && !teamExists) {
     history.replace("/404")

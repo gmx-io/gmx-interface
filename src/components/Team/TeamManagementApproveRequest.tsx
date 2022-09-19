@@ -93,6 +93,9 @@ export default function TeamManagementApproveRequest({ team, competition, pendin
       })
 
       await tx.wait()
+
+      setAllAddresses([])
+      setValue("")
     } catch (err) {
       console.error(err)
     } finally {
