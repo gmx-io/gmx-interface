@@ -5,6 +5,7 @@ import { getNativeToken } from "../../config/Tokens";
 import { InfoToken, Token } from "../../domain/tokens/types";
 import Modal from "../Modal/Modal";
 import { get1InchSwapUrl } from "../../domain/common";
+import { getLowestFeeTokenForBuyGlp } from "../../lib/legacy";
 
 const { AddressZero } = ethers.constants;
 
