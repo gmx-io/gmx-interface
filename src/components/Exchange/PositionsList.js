@@ -24,9 +24,9 @@ import {
   INCREASE,
   DECREASE,
 } from "../../lib/legacy";
-import { TooltipCardRow } from "../Tooltip/TooltipCard";
 import PositionShare from "./PositionShare";
 import PositionDropdown from "./PositionDropdown";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -289,15 +289,15 @@ export default function PositionsList(props) {
                                     <br />
                                   </div>
                                 )}
-                                <TooltipCardRow
+                                <StatsTooltipRow
                                   label="Initial Collateral"
                                   value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
                                 />
-                                <TooltipCardRow
+                                <StatsTooltipRow
                                   label="Borrow Fee"
                                   value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
                                 />
-                                <TooltipCardRow label={t`Borrow Fee / Day`} value={borrowFeeUSD} />
+                                <StatsTooltipRow label={t`Borrow Fee / Day`} value={borrowFeeUSD} />
                                 <span>Use the "Edit" button to deposit or withdraw collateral.</span>
                               </>
                             );
@@ -339,20 +339,20 @@ export default function PositionsList(props) {
                                   : "Initial Collateral - Borrow Fee + PnL"}
                                 <br />
                                 <br />
-                                <TooltipCardRow
+                                <StatsTooltipRow
                                   label="Initial Collateral"
                                   value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
                                 />
-                                <TooltipCardRow label="PnL" value={position.deltaBeforeFeesStr} showDollar={false} />
-                                <TooltipCardRow
+                                <StatsTooltipRow label="PnL" value={position.deltaBeforeFeesStr} showDollar={false} />
+                                <StatsTooltipRow
                                   label="Borrow Fee"
                                   value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
                                 />
-                                <TooltipCardRow
+                                <StatsTooltipRow
                                   label="Open + Close fee"
                                   value={formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
                                 />
-                                <TooltipCardRow
+                                <StatsTooltipRow
                                   label="PnL After Fees"
                                   value={`${position.deltaAfterFeesStr} (${position.deltaAfterFeesPercentageStr})`}
                                   showDollar={false}
@@ -543,20 +543,20 @@ export default function PositionsList(props) {
                                 : t`Initial Collateral - Borrow Fee + PnL`}
                               <br />
                               <br />
-                              <TooltipCardRow
+                              <StatsTooltipRow
                                 label={t`Initial Collateralt`}
                                 value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
                               />
-                              <TooltipCardRow label={`PnL`} value={position.deltaBeforeFeesStr} showDollar={false} />
-                              <TooltipCardRow
+                              <StatsTooltipRow label={`PnL`} value={position.deltaBeforeFeesStr} showDollar={false} />
+                              <StatsTooltipRow
                                 label={t`Borrow Fee`}
                                 value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
                               />
-                              <TooltipCardRow
+                              <StatsTooltipRow
                                 label={`Open + Close fee`}
                                 value={formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
                               />
-                              <TooltipCardRow
+                              <StatsTooltipRow
                                 label={`PnL After Fees`}
                                 value={`${position.deltaAfterFeesStr} (${position.deltaAfterFeesPercentageStr})`}
                                 showDollar={false}
@@ -637,15 +637,15 @@ export default function PositionsList(props) {
                             </div>
                           )}
 
-                          <TooltipCardRow
+                          <StatsTooltipRow
                             label={t`Initial Collateral`}
                             value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
                           />
-                          <TooltipCardRow
+                          <StatsTooltipRow
                             label={t`Borrow Fee`}
                             value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
                           />
-                          <TooltipCardRow label={t`Borrow Fee / Day`} value={borrowFeeUSD} />
+                          <StatsTooltipRow label={t`Borrow Fee / Day`} value={borrowFeeUSD} />
                           <br />
                           <Trans>Use the "Edit" button to deposit or withdraw collateral.</Trans>
                         </>

@@ -83,9 +83,9 @@ import WETH from "../../abis/WETH.json";
 import longImg from "../../img/long.svg";
 import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
-import { TooltipCardRow } from "../Tooltip/TooltipCard";
 
 import { useUserReferralCode } from "../../domain/referrals";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -352,11 +352,11 @@ export default function SwapBox(props) {
             renderContent={() => {
               return (
                 <>
-                  <TooltipCardRow
+                  <StatsTooltipRow
                     label={`Max ${toTokenInfo.symbol} long capacity`}
                     value={formatAmount(toTokenInfo.maxLongCapacity, USD_DECIMALS, 0, true)}
                   />
-                  <TooltipCardRow
+                  <StatsTooltipRow
                     label={`Current ${toTokenInfo.symbol} long`}
                     value={formatAmount(toTokenInfo.guaranteedUsd, USD_DECIMALS, 0, true)}
                   />
@@ -2193,7 +2193,7 @@ export default function SwapBox(props) {
                             <div>
                               {collateralToken.symbol} is required for collateral. <br />
                               <br />
-                              <TooltipCardRow
+                              <StatsTooltipRow
                                 label={`Swap ${fromToken.symbol} to ${collateralToken.symbol} Fee`}
                                 value={formatAmount(swapFees, USD_DECIMALS, 2, true)}
                               />
@@ -2201,7 +2201,7 @@ export default function SwapBox(props) {
                             </div>
                           )}
                           <div>
-                            <TooltipCardRow
+                            <StatsTooltipRow
                               label={`Position Fee (0.1% of position size)`}
                               value={formatAmount(positionFee, USD_DECIMALS, 2, true)}
                             />
@@ -2269,16 +2269,16 @@ export default function SwapBox(props) {
                 renderContent={() => {
                   return (
                     <div>
-                      <TooltipCardRow
+                      <StatsTooltipRow
                         label={`Max ${fromTokenInfo.symbol} in`}
-                        values={[
+                        value={[
                           `${formatAmount(maxFromTokenIn, fromTokenInfo.decimals, 0, true)} ${fromTokenInfo.symbol}`,
                           `($${formatAmount(maxFromTokenInUSD, USD_DECIMALS, 0, true)})`,
                         ]}
                       />
-                      <TooltipCardRow
+                      <StatsTooltipRow
                         label={`Max ${toTokenInfo.symbol} out`}
-                        values={[
+                        value={[
                           `${formatAmount(maxToTokenOut, toTokenInfo.decimals, 0, true)} ${toTokenInfo.symbol}`,
                           `($${formatAmount(maxToTokenOutUSD, USD_DECIMALS, 0, true)})`,
                         ]}
@@ -2419,11 +2419,11 @@ export default function SwapBox(props) {
                   renderContent={() => {
                     return (
                       <>
-                        <TooltipCardRow
+                        <StatsTooltipRow
                           label={`Max ${toTokenInfo.symbol} short capacity`}
                           value={formatAmount(toTokenInfo.maxGlobalShortSize, USD_DECIMALS, 0, true)}
                         />
-                        <TooltipCardRow
+                        <StatsTooltipRow
                           label={`Current ${toTokenInfo.symbol} shorts`}
                           value={formatAmount(toTokenInfo.globalShortSize, USD_DECIMALS, 0, true)}
                         />

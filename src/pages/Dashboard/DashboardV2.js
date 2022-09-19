@@ -61,8 +61,9 @@ import avalanche24Icon from "../../img/ic_avalanche_24.svg";
 
 import AssetDropdown from "./AssetDropdown";
 import SEO from "../../components/Common/SEO";
-import TooltipCard, { TooltipCardRow } from "../../components/Tooltip/TooltipCard";
 import useTotalVolume from "../../domain/useTotalVolume";
+import StatsTooltip from "../../components/StatsTooltip/StatsTooltip";
+import StatsTooltipRow from "../../components/StatsTooltip/StatsTooltipRow";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -363,12 +364,12 @@ export default function DashboardV2() {
         renderContent={() => {
           return (
             <>
-              <TooltipCardRow
+              <StatsTooltipRow
                 label={t`Current Weight`}
                 value={`${formatAmount(currentWeightBps, 2, 2, false)}%`}
                 showDollar={false}
               />
-              <TooltipCardRow
+              <StatsTooltipRow
                 label={t`Target Weight`}
                 value={`${formatAmount(targetWeightBps, 2, 2, false)}%`}
                 showDollar={false}
@@ -590,10 +591,10 @@ export default function DashboardV2() {
                       className="nowrap"
                       handle={`$${formatAmount(currentVolumeInfo?.[chainId]?.totalVolume, USD_DECIMALS, 0, true)}`}
                       renderContent={() => (
-                        <TooltipCard
+                        <StatsTooltip
                           title={t`Volume`}
-                          arbitrum={currentVolumeInfo?.[ARBITRUM].totalVolume}
-                          avax={currentVolumeInfo?.[AVALANCHE].totalVolume}
+                          arbitrumValue={currentVolumeInfo?.[ARBITRUM].totalVolume}
+                          avaxValue={currentVolumeInfo?.[AVALANCHE].totalVolume}
                           total={currentVolumeInfo?.totalVolume}
                         />
                       )}
@@ -615,10 +616,10 @@ export default function DashboardV2() {
                         true
                       )}`}
                       renderContent={() => (
-                        <TooltipCard
+                        <StatsTooltip
                           title={t`Long Positions`}
-                          arbitrum={positionStatsInfo?.[ARBITRUM].totalLongPositionSizes}
-                          avax={positionStatsInfo?.[AVALANCHE].totalLongPositionSizes}
+                          arbitrumValue={positionStatsInfo?.[ARBITRUM].totalLongPositionSizes}
+                          avaxValue={positionStatsInfo?.[AVALANCHE].totalLongPositionSizes}
                           total={positionStatsInfo?.totalLongPositionSizes}
                         />
                       )}
@@ -640,10 +641,10 @@ export default function DashboardV2() {
                         true
                       )}`}
                       renderContent={() => (
-                        <TooltipCard
+                        <StatsTooltip
                           title={t`Short Positions`}
-                          arbitrum={positionStatsInfo?.[ARBITRUM].totalShortPositionSizes}
-                          avax={positionStatsInfo?.[AVALANCHE].totalShortPositionSizes}
+                          arbitrumValue={positionStatsInfo?.[ARBITRUM].totalShortPositionSizes}
+                          avaxValue={positionStatsInfo?.[AVALANCHE].totalShortPositionSizes}
                           total={positionStatsInfo?.totalShortPositionSizes}
                         />
                       )}
@@ -661,10 +662,10 @@ export default function DashboardV2() {
                         className="nowrap"
                         handle={`$${formatAmount(currentFees?.[chainId], USD_DECIMALS, 2, true)}`}
                         renderContent={() => (
-                          <TooltipCard
+                          <StatsTooltip
                             title={t`Fees`}
-                            arbitrum={currentFees?.[ARBITRUM]}
-                            avax={currentFees?.[AVALANCHE]}
+                            arbitrumValue={currentFees?.[ARBITRUM]}
+                            avaxValue={currentFees?.[AVALANCHE]}
                             total={currentFees?.total}
                           />
                         )}
@@ -690,10 +691,10 @@ export default function DashboardV2() {
                       className="nowrap"
                       handle={`$${numberWithCommas(totalFees?.[chainId])}`}
                       renderContent={() => (
-                        <TooltipCard
+                        <StatsTooltip
                           title={t`Total Fees`}
-                          arbitrum={totalFees?.[ARBITRUM]}
-                          avax={totalFees?.[AVALANCHE]}
+                          arbitrumValue={totalFees?.[ARBITRUM]}
+                          avaxValue={totalFees?.[AVALANCHE]}
                           total={totalFees?.total}
                           decimalsForConversion={0}
                         />
@@ -711,10 +712,10 @@ export default function DashboardV2() {
                       className="nowrap"
                       handle={`$${formatAmount(totalVolume?.[chainId], USD_DECIMALS, 0, true)}`}
                       renderContent={() => (
-                        <TooltipCard
+                        <StatsTooltip
                           title={t`Total Volume`}
-                          arbitrum={totalVolume?.[ARBITRUM]}
-                          avax={totalVolume?.[AVALANCHE]}
+                          arbitrumValue={totalVolume?.[ARBITRUM]}
+                          avaxValue={totalVolume?.[AVALANCHE]}
                           total={totalVolume?.total}
                         />
                       )}
@@ -770,12 +771,12 @@ export default function DashboardV2() {
                             handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
                             renderContent={() => (
                               <>
-                                <TooltipCardRow
+                                <StatsTooltipRow
                                   label="Price on Arbitrum"
                                   value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
                                   showDollar={true}
                                 />
-                                <TooltipCardRow
+                                <StatsTooltipRow
                                   label="Price on Avalanche"
                                   value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
                                   showDollar={true}
@@ -802,10 +803,10 @@ export default function DashboardV2() {
                           className="nowrap"
                           handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
                           renderContent={() => (
-                            <TooltipCard
+                            <StatsTooltip
                               title={t`Staked`}
-                              arbitrum={arbitrumStakedGmx}
-                              avax={avaxStakedGmx}
+                              arbitrumValue={arbitrumStakedGmx}
+                              avaxValue={avaxStakedGmx}
                               total={totalStakedGmx}
                               decimalsForConversion={GMX_DECIMALS}
                               showDollar={false}
@@ -1028,21 +1029,21 @@ export default function DashboardV2() {
                             renderContent={() => {
                               return (
                                 <>
-                                  <TooltipCardRow
+                                  <StatsTooltipRow
                                     label="Pool Amount"
                                     value={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${
                                       token.symbol
                                     }`}
                                     showDollar={false}
                                   />
-                                  <TooltipCardRow
+                                  <StatsTooltipRow
                                     label="Target Min Amount"
                                     value={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 0, true)} ${
                                       token.symbol
                                     }`}
                                     showDollar={false}
                                   />
-                                  <TooltipCardRow
+                                  <StatsTooltipRow
                                     label={`Max ${tokenInfo.symbol} Capacity`}
                                     value={formatAmount(maxUsdgAmount, 18, 0, true)}
                                     showDollar={true}
@@ -1099,21 +1100,21 @@ export default function DashboardV2() {
                             renderContent={() => {
                               return (
                                 <>
-                                  <TooltipCardRow
+                                  <StatsTooltipRow
                                     label="Pool Amount"
                                     value={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${
                                       token.symbol
                                     }`}
                                     showDollar={false}
                                   />
-                                  <TooltipCardRow
+                                  <StatsTooltipRow
                                     label="Target Min Amount"
                                     value={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 0, true)} ${
                                       token.symbol
                                     }`}
                                     showDollar={false}
                                   />
-                                  <TooltipCardRow
+                                  <StatsTooltipRow
                                     label={`Max ${tokenInfo.symbol} Capacity`}
                                     value={formatAmount(maxUsdgAmount, 18, 0, true)}
                                   />

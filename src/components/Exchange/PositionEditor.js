@@ -32,9 +32,9 @@ import { callContract } from "../../domain/legacy";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Token from "../../abis/Token.json";
 import Tooltip from "../Tooltip/Tooltip";
-import { TooltipCardRow } from "../Tooltip/TooltipCard";
 
 import { getConstant } from "../../config/chains";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 
 const DEPOSIT = t`Deposit`;
 const WITHDRAW = t`Withdraw`;
@@ -580,7 +580,7 @@ export default function PositionEditor(props) {
                         renderContent={() => {
                           return (
                             <>
-                              <TooltipCardRow
+                              <StatsTooltipRow
                                 label="Network fee"
                                 showDollar={false}
                                 value={`${formatAmountFree(

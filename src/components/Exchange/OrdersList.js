@@ -23,8 +23,8 @@ import Tooltip from "../Tooltip/Tooltip";
 import OrderEditor from "./OrderEditor";
 
 import "./OrdersList.css";
-import Checkbox from "../Checkbox/Checkbox.js";
-import { TooltipCardRow } from "../Tooltip/TooltipCard.js";
+import Checkbox from "../Checkbox/Checkbox";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 
 export default function OrdersList(props) {
   const {
@@ -267,7 +267,7 @@ export default function OrdersList(props) {
                   const collateralTokenInfo = getTokenInfo(infoTokens, order.purchaseToken);
                   const collateralUSD = getUsd(order.purchaseTokenAmount, order.purchaseToken, false, infoTokens);
                   return (
-                    <TooltipCardRow
+                    <StatsTooltipRow
                       label="Collateral"
                       value={`${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (${formatAmount(
                         order.purchaseTokenAmount,

@@ -63,8 +63,8 @@ import avalanche16Icon from "../../img/ic_avalanche_16.svg";
 import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
-import { TooltipCardRow } from "../Tooltip/TooltipCard";
 import AssetDropdown from "../../pages/Dashboard/AssetDropdown";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 
 const { AddressZero } = ethers.constants;
 
@@ -94,14 +94,14 @@ function getStakingData(stakingInfo) {
 function getTooltipContent(managedUsd, tokenInfo, token) {
   return (
     <>
-      <TooltipCardRow
+      <StatsTooltipRow
         label={t`Current Pool Amount`}
-        values={[
+        value={[
           `$${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`,
           `(${formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 0, true)} ${token.symbol})`,
         ]}
       />
-      <TooltipCardRow label="Max Pool Capacity" value={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)} />
+      <StatsTooltipRow label="Max Pool Capacity" value={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)} />
     </>
   );
 }
@@ -770,12 +770,12 @@ export default function GlpSwap(props) {
                   renderContent={() => {
                     return (
                       <>
-                        <TooltipCardRow
+                        <StatsTooltipRow
                           label={t`${nativeTokenSymbol} (${wrappedTokenSymbol}) APR`}
                           value={`${formatAmount(feeGlpTrackerApr, 2, 2, false)}%`}
                           showDollar={false}
                         />
-                        <TooltipCardRow
+                        <StatsTooltipRow
                           label={t`Escrowed GMX APR`}
                           value={`${formatAmount(stakedGlpTrackerApr, 2, 2, false)}%`}
                           showDollar={false}

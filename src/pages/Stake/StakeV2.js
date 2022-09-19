@@ -52,7 +52,8 @@ import { getContract } from "../../config/Addresses";
 
 import "./StakeV2.css";
 import SEO from "../../components/Common/SEO";
-import TooltipCard, { TooltipCardRow } from "../../components/Tooltip/TooltipCard";
+import StatsTooltip from "../../components/StatsTooltip/StatsTooltip";
+import StatsTooltipRow from "../../components/StatsTooltip/StatsTooltipRow";
 
 const { AddressZero } = ethers.constants;
 
@@ -483,12 +484,12 @@ function VesterDepositModal(props) {
                           <Trans>Vault Capacity for your Account</Trans>
                         </p>
                         <br />
-                        <TooltipCardRow
+                        <StatsTooltipRow
                           showDollar={false}
                           label={t`Deposited`}
                           value={`${formatAmount(vestedAmount, 18, 2, true)} esGMX`}
                         />
-                        <TooltipCardRow
+                        <StatsTooltipRow
                           showDollar={false}
                           label={t`Max Capacity`}
                           value={`${formatAmount(maxVestableAmount, 18, 2, true)} esGMX`}
@@ -517,12 +518,12 @@ function VesterDepositModal(props) {
                   renderContent={() => {
                     return (
                       <>
-                        <TooltipCardRow
+                        <StatsTooltipRow
                           label={t`Current Reserved`}
                           value={formatAmount(reserveAmount, 18, 2, true)}
                           showDollar={false}
                         />
-                        <TooltipCardRow
+                        <StatsTooltipRow
                           label={t`Additional reserve required`}
                           value={formatAmount(additionalReserveAmount, 18, 2, true)}
                           showDollar={false}
@@ -1493,11 +1494,11 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
                       renderContent={() => (
                         <>
-                          <TooltipCardRow
+                          <StatsTooltipRow
                             label="Price on Avalanche"
                             value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
                           />
-                          <TooltipCardRow
+                          <StatsTooltipRow
                             label="Price on Arbitrum"
                             value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
                           />
@@ -1535,14 +1536,14 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return (
                         <>
-                          <TooltipCardRow
+                          <StatsTooltipRow
                             label="Escrowed GMX APR"
                             showDollar={false}
                             value={`${formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%`}
                           />
                           {(!processedData.gmxBoostAprForNativeToken ||
                             processedData.gmxBoostAprForNativeToken.eq(0)) && (
-                            <TooltipCardRow
+                            <StatsTooltipRow
                               label={`${nativeTokenSymbol} APR`}
                               showDollar={false}
                               value={`${formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%`}
@@ -1552,18 +1553,18 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                             <div>
                               <br />
 
-                              <TooltipCardRow
+                              <StatsTooltipRow
                                 label={`${nativeTokenSymbol} Base APR`}
                                 showDollar={false}
                                 value={`${formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%`}
                               />
-                              <TooltipCardRow
+                              <StatsTooltipRow
                                 label={`${nativeTokenSymbol} Boosted APR`}
                                 showDollar={false}
                                 value={`${formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%`}
                               />
                               <div className="Tooltip-divider" />
-                              <TooltipCardRow
+                              <StatsTooltipRow
                                 label={`${nativeTokenSymbol} Total APR`}
                                 showDollar={false}
                                 value={`${formatKeyAmount(
@@ -1603,7 +1604,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return (
                         <>
-                          <TooltipCardRow
+                          <StatsTooltipRow
                             label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
                             value={`${formatKeyAmount(
                               processedData,
@@ -1613,7 +1614,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                             )} ($${formatKeyAmount(processedData, "feeGmxTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
                             showDollar={false}
                           />
-                          <TooltipCardRow
+                          <StatsTooltipRow
                             label="Escrowed GMX"
                             value={`${formatKeyAmount(
                               processedData,
@@ -1679,11 +1680,11 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                         ` ($${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)})`
                       }
                       renderContent={() => (
-                        <TooltipCard
+                        <StatsTooltip
                           showDollar={false}
                           title="Staked"
-                          avax={avaxGmxStaked}
-                          arbitrum={arbitrumGmxStaked}
+                          avaxValue={avaxGmxStaked}
+                          arbitrumValue={arbitrumGmxStaked}
                           total={totalGmxStaked}
                           decimalsForConversion={18}
                           symbol="GMX"
@@ -1854,12 +1855,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return (
                         <>
-                          <TooltipCardRow
+                          <StatsTooltipRow
                             label={`${nativeTokenSymbol} (${wrappedTokenSymbol}) APR`}
                             value={`${formatKeyAmount(processedData, "glpAprForNativeToken", 2, 2, true)}%`}
                             showDollar={false}
                           />
-                          <TooltipCardRow
+                          <StatsTooltipRow
                             label="Escrowed GMX APR"
                             value={`${formatKeyAmount(processedData, "glpAprForEsGmx", 2, 2, true)}%`}
                             showDollar={false}
@@ -1886,7 +1887,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return (
                         <>
-                          <TooltipCardRow
+                          <StatsTooltipRow
                             label={`${nativeTokenSymbol} (${wrappedTokenSymbol})`}
                             value={`${formatKeyAmount(
                               processedData,
@@ -1896,7 +1897,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                             )} ($${formatKeyAmount(processedData, "feeGlpTrackerRewardsUsd", USD_DECIMALS, 2, true)})`}
                             showDollar={false}
                           />
-                          <TooltipCardRow
+                          <StatsTooltipRow
                             label="Escrowed GMX"
                             value={`${formatKeyAmount(
                               processedData,
@@ -1997,19 +1998,19 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       renderContent={() => {
                         return (
                           <>
-                            <TooltipCardRow
+                            <StatsTooltipRow
                               label={`${nativeTokenSymbol} (${wrappedTokenSymbol}) Base APR`}
                               value={`${formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%`}
                               showDollar={false}
                             />
                             {processedData.bnGmxInFeeGmx && processedData.bnGmxInFeeGmx.gt(0) && (
-                              <TooltipCardRow
+                              <StatsTooltipRow
                                 label={`${nativeTokenSymbol} (${wrappedTokenSymbol}) Boosted APR`}
                                 value={`${formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%`}
                                 showDollar={false}
                               />
                             )}
-                            <TooltipCardRow
+                            <StatsTooltipRow
                               label="Escrowed GMX APR"
                               value={`${formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%`}
                               showDollar={false}
@@ -2099,18 +2100,18 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       renderContent={() => {
                         return (
                           <>
-                            <TooltipCardRow
+                            <StatsTooltipRow
                               showDollar={false}
                               label="GMX"
                               value={formatAmount(processedData.gmxInStakedGmx, 18, 2, true)}
                             />
 
-                            <TooltipCardRow
+                            <StatsTooltipRow
                               showDollar={false}
                               label="esGMX"
                               value={formatAmount(processedData.esGmxInStakedGmx, 18, 2, true)}
                             />
-                            <TooltipCardRow
+                            <StatsTooltipRow
                               showDollar={false}
                               label="Multiplier Points"
                               value={formatAmount(processedData.bnGmxInFeeGmx, 18, 2, true)}

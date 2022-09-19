@@ -34,7 +34,7 @@ import Checkbox from "../Checkbox/Checkbox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import { cancelDecreaseOrder, handleCancelOrder } from "../../domain/legacy";
 import { getNativeToken, getToken, getWrappedToken } from "../../config/Tokens";
-import { TooltipCardRow } from "../Tooltip/TooltipCard";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -656,10 +656,10 @@ export default function ConfirmationBox(props) {
                     Your position's collateral after deducting fees.
                     <br />
                     <br />
-                    <TooltipCardRow label="Pay Amount" value={formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} />
-                    <TooltipCardRow label="Fees" value={formatAmount(feesUsd, USD_DECIMALS, 2, true)} />
+                    <StatsTooltipRow label="Pay Amount" value={formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} />
+                    <StatsTooltipRow label="Fees" value={formatAmount(feesUsd, USD_DECIMALS, 2, true)} />
                     <div className="Tooltip-divider" />
-                    <TooltipCardRow
+                    <StatsTooltipRow
                       label="Collateral"
                       value={formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}
                     />
@@ -706,7 +706,7 @@ export default function ConfirmationBox(props) {
                   renderContent={() => {
                     return (
                       <>
-                        <TooltipCardRow
+                        <StatsTooltipRow
                           label="Network fee"
                           value={`${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol} ($${formatAmount(
                             minExecutionFeeUSD,

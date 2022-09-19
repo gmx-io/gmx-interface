@@ -57,7 +57,7 @@ import Tooltip from "../Tooltip/Tooltip";
 import TokenSelector from "./TokenSelector";
 import { getTokens } from "../../config/Tokens";
 import "./PositionSeller.css";
-import { TooltipCardRow } from "../Tooltip/TooltipCard";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -1119,15 +1119,15 @@ export default function PositionSeller(props) {
                   renderContent={() => (
                     <div>
                       {fundingFee && (
-                        <TooltipCardRow label="Borrow fee" value={formatAmount(fundingFee, USD_DECIMALS, 2, true)} />
+                        <StatsTooltipRow label="Borrow fee" value={formatAmount(fundingFee, USD_DECIMALS, 2, true)} />
                       )}
 
                       {positionFee && (
-                        <TooltipCardRow label="Closing fee" value={formatAmount(positionFee, USD_DECIMALS, 2, true)} />
+                        <StatsTooltipRow label="Closing fee" value={formatAmount(positionFee, USD_DECIMALS, 2, true)} />
                       )}
 
                       {swapFee && (
-                        <TooltipCardRow
+                        <StatsTooltipRow
                           label="Swap fee"
                           showDollar={false}
                           value={`${formatAmount(swapFeeToken, collateralToken.decimals, 5)} ${collateralToken.symbol}
@@ -1135,7 +1135,7 @@ export default function PositionSeller(props) {
                         />
                       )}
 
-                      <TooltipCardRow
+                      <StatsTooltipRow
                         label="Execution fee"
                         showDollar={false}
                         value={`${formatAmount(executionFee, 18, 5, true)} ${nativeTokenSymbol} ($${formatAmount(
@@ -1220,17 +1220,17 @@ export default function PositionSeller(props) {
                               Insufficient Available Liquidity to swap to {tokenOptionInfo.symbol}:
                               <br />
                               <br />
-                              <TooltipCardRow
+                              <StatsTooltipRow
                                 label={`Max ${collateralInfo.symbol} in`}
-                                values={[
+                                value={[
                                   `${formatAmount(maxIn, collateralInfo.decimals, 0, true)} ${collateralInfo.symbol}`,
                                   `($${formatAmount(maxInUsd, USD_DECIMALS, 0, true)})`,
                                 ]}
                               />
                               <br />
-                              <TooltipCardRow
+                              <StatsTooltipRow
                                 label={`Max ${tokenOptionInfo.symbol} out`}
-                                values={[
+                                value={[
                                   `${formatAmount(maxOut, tokenOptionInfo.decimals, 0, true)} ${
                                     tokenOptionInfo.symbol
                                   }`,
