@@ -29,7 +29,7 @@ export type Team = {
 }
 
 export type TeamMembersStats = {
-  id: string;
+  address: string;
   pnl: number;
   pnlPercent: number;
 }

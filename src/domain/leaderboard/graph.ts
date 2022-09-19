@@ -3,13 +3,14 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { ARBITRUM_TESTNET, isAddressZero } from "../../lib/legacy";
+import { ARBITRUM_TESTNET_GRAPH } from "./constants";
 import { getCompetitionContract } from "./contracts";
 import { Competition, Stats, Team, TeamMembersStats } from "./types";
 
 export function getGraphClient(chainId) {
   if (chainId === ARBITRUM_TESTNET) {
     return new ApolloClient({
-      uri: "https://api.thegraph.com/subgraphs/name/morazzela/gmx-arbitrum-test-leaderboard",
+      uri: ARBITRUM_TESTNET_GRAPH,
       cache: new InMemoryCache()
     })
   }
@@ -199,17 +200,17 @@ export function useTeamMembersStats(chainId, competitionIndex, leaderAddress, pa
   const [loading, setLoading] = useState(true)
 
   const query = gql`
-    query ($perPage: BigInt!, $skip: BigInt!, $team: String!) {
+    query ($team: String!, $perPage: Int!, $skip: Int!) {
       accountStats (
         first: $perPage,
-        skip: $skip,
+        skip: $skip
         orderBy: pnl,
         orderByDir: desc,
         where: {
           team: $team
         }
       ) {
-        id
+        account { address }
         pnl
         pnlPercent
       }
@@ -217,14 +218,14 @@ export function useTeamMembersStats(chainId, competitionIndex, leaderAddress, pa
   `
 
   useSWR([chainId, competitionIndex, leaderAddress, page, perPage], async () => {
-    const { data } = await getGraphClient(chainId).query({ query, variables: {
-      perPage: perPage,
-      skip: (page - 1) * perPage,
-      team: leaderAddress.toLowerCase(),
+    const res = await getGraphClient(chainId).query({ query, variables: {
+      team: competitionIndex + "-" + leaderAddress.toLowerCase(),
+      perPage: Number(perPage),
+      skip: Number((page - 1) * perPage),
     }})
 
-    setData(data.accountStats.map(stats => ({
-      id: stats.id,
+    setData(res.data.accountStats.map(stats => ({
+      address: ethers.utils.getAddress(stats.account.address),
       pnl: Number(stats.pnl),
       pnlPercent: Number(stats.pnlPercent)
     })))

@@ -3,7 +3,7 @@ import { useState } from "react"
 import { removeMember } from "../../domain/leaderboard/contracts"
 import { useTeamMembersStats } from "../../domain/leaderboard/graph"
 import { Team } from "../../domain/leaderboard/types"
-import { shortenAddress } from "../../lib/legacy"
+import { shortenAddress, useChainId } from "../../lib/legacy"
 
 type Props = {
   team: Team;
@@ -12,13 +12,12 @@ type Props = {
 }
 
 export function TeamMembers({ team, pendingTxns, setPendingTxns }: Props) {
-  const { chainId, library } = useWeb3React()
+  const { chainId } = useChainId()
+  const { library } = useWeb3React()
   const [page, setPage] = useState(1)
-  const perPage = 10
+  const perPage = 5
   const { data: members, loading } = useTeamMembersStats(chainId, team.competitionIndex, team.leaderAddress, page, perPage)
   const [isRemoving, setIsRemoving] = useState(false)
-
-  console.log(members)
 
   const pageCount = () => {
     return Math.ceil(team.members.length / perPage)
@@ -48,6 +47,8 @@ export function TeamMembers({ team, pendingTxns, setPendingTxns }: Props) {
     return (
       <tr key={member.address}>
         <td>{shortenAddress(member.address, 12)}</td>
+        <td>{member.pnl}</td>
+        <td>{member.pnlPercent}</td>
         <td>
           {member.address !== team.leaderAddress && (
             <button className="simple-table-action" disabled={isRemoving} onClick={() => handleRemoveClick(member)}>Remove</button>
@@ -70,13 +71,14 @@ export function TeamMembers({ team, pendingTxns, setPendingTxns }: Props) {
           <tbody>
             <tr className="simple-table-header">
               <th>Address</th>
+              <th>P&L ($)</th>
+              <th>P&L (%)</th>
             </tr>
-            {loading && (
+            {loading ? (
               <tr>
-                <td>Loading stats...</td>
+                <td colSpan={3}>Loading...</td>
               </tr>
-            )}
-            {!loading && members.map(member => <Row member={member}/>)}
+            ) : members.map(member => <Row member={member}/>)}
           </tbody>
         </table>
       </div>

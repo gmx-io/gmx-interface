@@ -56,7 +56,7 @@ export default function Team({ pendingTxns, setPendingTxns }: Props) {
           </div>
         </div>
         {isLoading() && <Loader/>}
-        {isLoading() || (
+        {!isLoading() && (
           <>
             <TeamStats team={team} competition={competition}/>
 
