@@ -56,7 +56,7 @@ import Tooltip from "../Tooltip/Tooltip";
 import TokenSelector from "./TokenSelector";
 import { getTokens } from "../../config/Tokens";
 import "./PositionSeller.css";
-import { getTokenAmountByUsd } from "../../domain/tokens/utils";
+import { getTokenAmountFromUsd } from "../../domain/tokens/utils";
 import { callContract } from "../../lib/contracts/callContract";
 
 const { AddressZero } = ethers.constants;
@@ -384,18 +384,18 @@ export default function PositionSeller(props) {
 
       if (feeBasisPoints) {
         swapFee = receiveAmount.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
-        swapFeeToken = getTokenAmountByUsd(infoTokens, collateralToken.address, swapFee);
+        swapFeeToken = getTokenAmountFromUsd(infoTokens, collateralToken.address, swapFee);
         totalFees = totalFees.add(swapFee || bigNumberify(0));
         receiveAmount = receiveAmount.sub(swapFee);
       }
     }
 
     if (orderOption === STOP) {
-      convertedReceiveAmount = getTokenAmountByUsd(infoTokens, receiveToken.address, receiveAmount, {
+      convertedReceiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveAmount, {
         price: triggerPriceUsd,
       });
     } else {
-      convertedReceiveAmount = getTokenAmountByUsd(infoTokens, receiveToken.address, receiveAmount);
+      convertedReceiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveAmount);
     }
 
     // Check swap limits (max in / max out)
@@ -1181,7 +1181,7 @@ export default function PositionSeller(props) {
                         return;
                       }
 
-                      const convertedTokenAmount = getTokenAmountByUsd(
+                      const convertedTokenAmount = getTokenAmountFromUsd(
                         infoTokens,
                         tokenOptionInfo.address,
                         receiveAmount
