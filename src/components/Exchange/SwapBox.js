@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Tooltip from "../Tooltip/Tooltip";
 import { t, Trans } from "@lingui/macro";
-import Modal from "../Modal/Modal";
 import Slider, { SliderTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 import "./SwapBox.css";
