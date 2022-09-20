@@ -1,7 +1,7 @@
-import {bigNumberify} from "../legacy";
-import {GAS_PRICE_ADJUSTMENT_MAP, MAX_GAS_PRICE_MAP} from "./constants";
-import {Provider} from "@ethersproject/providers";
-import {Contract} from "ethers";
+import { bigNumberify } from "../legacy";
+import { GAS_PRICE_ADJUSTMENT_MAP, MAX_GAS_PRICE_MAP } from "./constants";
+import { Provider } from "@ethersproject/providers";
+import { Contract } from "ethers";
 
 export async function setGasPrice(txnOpts: any, provider: Provider, chainId: number) {
   let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
@@ -36,7 +36,7 @@ export async function getGasLimit(contract: Contract, method, params = [], value
     value = defaultValue;
   }
 
-  let gasLimit = await contract.estimateGas[method](...params, {value});
+  let gasLimit = await contract.estimateGas[method](...params, { value });
 
   if (gasLimit.lt(22000)) {
     gasLimit = bigNumberify(22000)!;
@@ -44,4 +44,3 @@ export async function getGasLimit(contract: Contract, method, params = [], value
 
   return gasLimit.mul(11000).div(10000); // add a 10% buffer
 }
-

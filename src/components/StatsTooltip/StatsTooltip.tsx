@@ -1,27 +1,42 @@
+import { BigNumber } from "ethers";
 import { formatAmount, USD_DECIMALS } from "../../lib/legacy";
+import "./StatsTooltip.css";
 
-export default function TooltipCard({
+type Props = {
+  title: string;
+  total?: BigNumber;
+  avaxValue?: BigNumber;
+  arbitrumValue?: BigNumber;
+  showDollar?: boolean;
+  decimalsForConversion: number;
+  symbol: string;
+};
+
+export default function StatsTooltip({
   title,
   total,
-  avax,
-  arbitrum,
+  avaxValue,
+  arbitrumValue,
   showDollar = true,
   decimalsForConversion = USD_DECIMALS,
-}) {
+  symbol,
+}: Props) {
   return (
     <>
       <p className="Tooltip-row">
         <span className="label">{title} on Arbitrum:</span>
         <span className="amount">
           {showDollar && "$"}
-          {formatAmount(arbitrum, decimalsForConversion, 0, true)}
+          {formatAmount(arbitrumValue, decimalsForConversion, 0, true)}
+          {!showDollar && symbol && " " + symbol}
         </span>
       </p>
       <p className="Tooltip-row">
         <span className="label">{title} on Avalanche:</span>
         <span className="amount">
           {showDollar && "$"}
-          {formatAmount(avax, decimalsForConversion, 0, true)}
+          {formatAmount(avaxValue, decimalsForConversion, 0, true)}
+          {!showDollar && symbol && " " + symbol}
         </span>
       </p>
       <div className="Tooltip-divider" />
@@ -30,20 +45,9 @@ export default function TooltipCard({
         <span className="amount">
           {showDollar && "$"}
           {formatAmount(total, decimalsForConversion, 0, true)}
+          {!showDollar && symbol && " " + symbol}
         </span>
       </p>
     </>
-  );
-}
-
-export function TooltipCardRow({ label, amount, showDollar = true }) {
-  return (
-    <p className="Tooltip-row">
-      <span className="label">{label}:</span>
-      <span className="amount">
-        {showDollar && "$"}
-        {amount}
-      </span>
-    </p>
   );
 }
