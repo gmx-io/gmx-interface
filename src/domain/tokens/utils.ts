@@ -8,7 +8,7 @@ export function getTokenAmountFromUsd(
     usdAmount?: BigNumber,
     opts: {
         max?: boolean
-        price?: BigNumber,
+        overridePrice?: BigNumber,
     } = {},
 ) {
     if (!usdAmount) {
@@ -25,7 +25,7 @@ export function getTokenAmountFromUsd(
       return;
     }
 
-    const price = opts.price || (opts.max ? info.maxPrice : info.minPrice);
+    const price = opts.overridePrice || (opts.max ? info.maxPrice : info.minPrice);
 
     if (!price?.gt(0)) {
       return;

@@ -392,7 +392,7 @@ export default function PositionSeller(props) {
 
     if (orderOption === STOP) {
       convertedReceiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveAmount, {
-        price: triggerPriceUsd,
+        overridePrice: triggerPriceUsd,
       });
     } else {
       convertedReceiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveAmount);
