@@ -40,6 +40,9 @@ import {
   isDevelopment,
   DISABLE_ORDER_VALIDATION_KEY,
   LANGUAGE_LOCALSTORAGE_KEY,
+  CHAIN_ID_QUERY_PARAM,
+  switchNetwork,
+  IS_NETWORK_DISABLED,
 } from "../lib/legacy";
 
 import Home from "../pages/Home/Home";
@@ -155,6 +158,30 @@ function FullApp() {
   useInactiveListener(!triedEager || !!activatingConnector);
 
   const query = useRouteQuery();
+
+  useEffect(() => {
+    let chainId = query.get(CHAIN_ID_QUERY_PARAM);
+    if (!chainId) {
+      const params = new URLSearchParams(window.location.search);
+      chainId = params.get(CHAIN_ID_QUERY_PARAM);
+    }
+
+    if (!chainId) {
+      return;
+    }
+
+    const queryParams = new URLSearchParams(location.search);
+    if (queryParams.has(CHAIN_ID_QUERY_PARAM)) {
+      queryParams.delete(CHAIN_ID_QUERY_PARAM);
+      history.replace({
+        search: queryParams.toString(),
+      });
+    }
+
+    if (IS_NETWORK_DISABLED[chainId] === false) {
+      switchNetwork(chainId, active);
+    }
+  }, [query, history, location, active]);
 
   useEffect(() => {
     let referralCode = query.get(REFERRAL_CODE_QUERY_PARAM);
