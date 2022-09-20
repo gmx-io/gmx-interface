@@ -1,9 +1,11 @@
 import { useWeb3React } from "@web3-react/core"
 import { useState } from "react"
-import { removeMember } from "../../domain/leaderboard/contracts"
+import { getCurrentCompetitionIndex } from "../../domain/leaderboard/constants"
+import { removeMember, useMemberTeam } from "../../domain/leaderboard/contracts"
 import { useCompetition, useTeamMembersStats } from "../../domain/leaderboard/graph"
 import { Team } from "../../domain/leaderboard/types"
 import { shortenAddress, useChainId } from "../../lib/legacy"
+import TeamMembersHeader from "./TeamMembersHeader"
 
 type Props = {
   team: Team;
@@ -39,6 +41,10 @@ export function TeamMembers({ team, pendingTxns, setPendingTxns }: Props) {
 
     return false
   }
+
+  const { hasTeam: accountHasTeam, data: memberTeam } = useMemberTeam(chainId, library, getCurrentCompetitionIndex(chainId), account)
+  const isTeamLeader = () => account && account === team.leaderAddress;
+  const showTeamManagement = () => competition.registrationActive && account && (isTeamLeader() || (!accountHasTeam || memberTeam === team.leaderAddress))
 
   const pageCount = () => {
     return Math.ceil(team.members.length / perPage)
@@ -87,7 +93,12 @@ export function TeamMembers({ team, pendingTxns, setPendingTxns }: Props) {
         </div>
         <div className="Page-description">Platform and GLP index tokens.</div>
       </div>
-      <div>
+      <div className="simple-table-container">
+        {showTeamManagement() && <TeamMembersHeader
+          team={team}
+          pendingTxns={pendingTxns}
+          setPendingTxns={setPendingTxns}
+        />}
         <table className="simple-table">
           <tbody>
             <tr className="simple-table-header">
@@ -99,7 +110,7 @@ export function TeamMembers({ team, pendingTxns, setPendingTxns }: Props) {
               <tr>
                 <td colSpan={3}>Loading...</td>
               </tr>
-            ) : members.map(member => <Row member={member}/>)}
+            ) : members.map(member => <Row key={member.address} member={member}/>)}
           </tbody>
         </table>
       </div>

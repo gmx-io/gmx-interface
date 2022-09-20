@@ -8,7 +8,6 @@ import { getCurrentCompetitionIndex } from "../../domain/leaderboard/constants";
 import "./Team.css";
 import TeamPositions from "../../components/Team/TeamPositions";
 import TeamStats from "../../components/Team/TeamStats";
-import TeamManagement from "../../components/Team/TeamManagement";
 import { TeamMembers } from "../../components/Team/TeamMembers";
 import { FiChevronLeft } from "react-icons/fi";
 import { getLeaderboardUrl } from "../../domain/leaderboard/urls";
@@ -23,15 +22,11 @@ export default function Team({ pendingTxns, setPendingTxns }: Props) {
   const history = useHistory()
   const params = useParams<any>();
   const { chainId } = useChainId()
-  const { library, account } = useWeb3React();
+  const { library } = useWeb3React();
   const { data: team, exists: teamExists, loading: teamLoading } = useTeam(chainId, library, getCurrentCompetitionIndex(chainId), params.leaderAddress);
   const { data: competition, loading: competitionLoading } = useCompetition(chainId, getCurrentCompetitionIndex(chainId))
-  const { hasTeam: accountHasTeam } = useMemberTeam(chainId, library, getCurrentCompetitionIndex(chainId), account)
 
   const isLoading = () => teamLoading || competitionLoading
-  const isTeamLeader = () => account && account === team.leaderAddress;
-
-  const showTeamManagement = () => competition.registrationActive && account && (isTeamLeader() || !accountHasTeam)
 
   if (!teamLoading && !teamExists) {
     history.replace("/404")
@@ -59,13 +54,6 @@ export default function Team({ pendingTxns, setPendingTxns }: Props) {
         {!isLoading() && (
           <>
             <TeamStats team={team} competition={competition}/>
-
-            {showTeamManagement() && <TeamManagement
-              team={team}
-              competition={competition}
-              pendingTxns={pendingTxns}
-              setPendingTxns={setPendingTxns}
-            />}
 
             {competition.active && <TeamPositions
               chainId={chainId}

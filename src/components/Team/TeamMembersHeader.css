@@ -1,0 +1,28 @@
+.team-modal-content {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.team-modal-content button {
+  align-self: flex-end;
+}
+
+.team-modal-content p {
+  margin-top: 0;
+}
+
+.team-modal-referral-code {
+  font-family: monospace;
+  margin: 0;
+  text-align: center;
+  background-color: rgba(0, 0, 0, .2);
+  display: block;
+  padding: 1rem 2rem;
+  border-radius: 3px;
+  font-size: 1.75rem;
+}
+
+.team-modal-content .divider {
+  margin: 1.5rem -1.5rem;
+}

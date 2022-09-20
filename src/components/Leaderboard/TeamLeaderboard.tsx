@@ -39,7 +39,7 @@ export function TeamLeaderboard({ competitionIndex }) {
 
   return (
     <div>
-      <div className="team-leaderboard-header">
+      <div className="simple-table-top-header">
         <div className="input-wrapper w-1/4">
           <input type="text" placeholder="Search for a team..." className="text-input input-small" value={search} onInput={handleSearchInput}/>
           <FiSearch className="input-logo"/>
