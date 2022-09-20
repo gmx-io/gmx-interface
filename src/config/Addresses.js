@@ -102,7 +102,7 @@ const CONTRACTS = {
     ReferralStorage: "0x902B74dAe2fff3BA564BDa930A7D687b84e0E9cC",
     ReferralReader: "0x0000000000000000000000000000000000000000",
 
-    Competition: "0x271B8D7b97A07207BAd07dc577F6D29D6a368C56",
+    Competition: "0xB37907916837FdA41F44fFf565BB3654614C1d6a",
   },
   42161: {
     // arbitrum mainnet
@@ -182,8 +182,6 @@ const CONTRACTS = {
     TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98",
     ReferralStorage: "0x827ed045002ecdabeb6e2b0d1604cf5fc3d322f8",
     ReferralReader: "0x505Ce16D3017be7D76a7C2631C0590E71A975083",
-
-    Competition: "0x36b58F5C1969B7b6591D752ea6F5486D069010AB",
   },
 };
 

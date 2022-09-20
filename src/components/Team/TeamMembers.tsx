@@ -1,7 +1,7 @@
 import { useWeb3React } from "@web3-react/core"
 import { useState } from "react"
 import { removeMember } from "../../domain/leaderboard/contracts"
-import { useTeamMembersStats } from "../../domain/leaderboard/graph"
+import { useCompetition, useTeamMembersStats } from "../../domain/leaderboard/graph"
 import { Team } from "../../domain/leaderboard/types"
 import { shortenAddress, useChainId } from "../../lib/legacy"
 
@@ -13,11 +13,32 @@ type Props = {
 
 export function TeamMembers({ team, pendingTxns, setPendingTxns }: Props) {
   const { chainId } = useChainId()
-  const { library } = useWeb3React()
+  const { library, account } = useWeb3React()
   const [page, setPage] = useState(1)
   const perPage = 5
   const { data: members, loading } = useTeamMembersStats(chainId, team.competitionIndex, team.leaderAddress, page, perPage)
   const [isRemoving, setIsRemoving] = useState(false)
+  const { data: competition } = useCompetition(chainId, team.competitionIndex)
+
+  const canRemoveMember = (member) => {
+    if ( ! account) {
+      return false;
+    }
+
+    if ( ! competition.registrationActive) {
+      return false
+    }
+
+    if (team.leaderAddress === account && member.address !== account) {
+      return true
+    }
+
+    if (team.leaderAddress !== account && member.address === account) {
+      return true
+    }
+
+    return false
+  }
 
   const pageCount = () => {
     return Math.ceil(team.members.length / perPage)
@@ -50,7 +71,7 @@ export function TeamMembers({ team, pendingTxns, setPendingTxns }: Props) {
         <td>{member.pnl}</td>
         <td>{member.pnlPercent}</td>
         <td>
-          {member.address !== team.leaderAddress && (
+          {canRemoveMember(member) && (
             <button className="simple-table-action" disabled={isRemoving} onClick={() => handleRemoveClick(member)}>Remove</button>
           )}
         </td>

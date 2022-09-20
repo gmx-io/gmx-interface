@@ -23,6 +23,8 @@ export function useMemberTeam(chainId, library, competitionIndex, account) {
   useEffect(() => {
     async function main() {
       if (!chainId || !library) {
+        setHasTeam(false)
+        setLoading(false)
         return
       }
 

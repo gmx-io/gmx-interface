@@ -12,6 +12,7 @@ import TeamManagement from "../../components/Team/TeamManagement";
 import { TeamMembers } from "../../components/Team/TeamMembers";
 import { FiChevronLeft } from "react-icons/fi";
 import { getLeaderboardUrl } from "../../domain/leaderboard/urls";
+import { useMemberTeam } from "../../domain/leaderboard/contracts";
 
 type Props = {
   pendingTxns: any,
@@ -25,13 +26,12 @@ export default function Team({ pendingTxns, setPendingTxns }: Props) {
   const { library, account } = useWeb3React();
   const { data: team, exists: teamExists, loading: teamLoading } = useTeam(chainId, library, getCurrentCompetitionIndex(chainId), params.leaderAddress);
   const { data: competition, loading: competitionLoading } = useCompetition(chainId, getCurrentCompetitionIndex(chainId))
-  const { exists: accountHasTeam } = useTeam(chainId, library, getCurrentCompetitionIndex(chainId), account)
+  const { hasTeam: accountHasTeam } = useMemberTeam(chainId, library, getCurrentCompetitionIndex(chainId), account)
 
   const isLoading = () => teamLoading || competitionLoading
-  const isTeamMember = () => account && team.members.includes(account)
   const isTeamLeader = () => account && account === team.leaderAddress;
 
-  const showTeamManagement = () => competition.registrationActive && account && (isTeamLeader() || isTeamMember() || !accountHasTeam)
+  const showTeamManagement = () => competition.registrationActive && account && (isTeamLeader() || !accountHasTeam)
 
   if (!teamLoading && !teamExists) {
     history.replace("/404")

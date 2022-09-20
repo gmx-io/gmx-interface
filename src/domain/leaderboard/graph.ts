@@ -113,7 +113,7 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
         name
         pnl
         pnlPercent
-        members { id }
+        members { address }
       }
     }
   `
@@ -137,7 +137,7 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
           pnlPercent: Number(data.team.pnlPercent),
           leaderAddress: ethers.utils.getAddress(leaderAddress),
           name: data.team.name,
-          members: data.team.members,
+          members: data.team.members.map(member => ethers.utils.getAddress(member.address)),
           positions: [],
           competitionIndex: competitionIndex
         })
