@@ -23,13 +23,10 @@ export function TeamLeaderboard({ competitionIndex }) {
   const page = 1
   const perPage = 15
 
-  if (allStatsLoading) {
-    return <Loader/>
-  }
-
   const displayedStats = () => {
     return allStats.filter(stat => {
       return stat.label.toLowerCase().indexOf(debouncedSearch.toLowerCase()) !== -1
+          || stat.id.toLowerCase().indexOf(debouncedSearch.toLowerCase()) !== -1
     }).slice((page - 1) * perPage, (page - 1) * perPage + perPage)
   }
 
@@ -41,7 +38,7 @@ export function TeamLeaderboard({ competitionIndex }) {
     <div>
       <div className="simple-table-top-header">
         <div className="input-wrapper w-1/4">
-          <input type="text" placeholder="Search for a team..." className="text-input input-small" value={search} onInput={handleSearchInput}/>
+          <input type="text" placeholder="Search for a team..." className="leaderboard-search-input text-input input-small" value={search} onInput={handleSearchInput}/>
           <FiSearch className="input-logo"/>
         </div>
         {(detailsLoading || teamLoading || memberTeamLoading || !account) ? "" : (
@@ -60,7 +57,7 @@ export function TeamLeaderboard({ competitionIndex }) {
           </>
         )}
       </div>
-      <LeaderboardTable stats={displayedStats()} resolveLink={(stat) => getTeamUrl(stat.id)} isTeamLeaderboard={true} />
+      <LeaderboardTable loading={allStatsLoading} stats={displayedStats()} resolveLink={(stat) => getTeamUrl(stat.id)} isTeamLeaderboard={true} />
     </div>
   )
 }

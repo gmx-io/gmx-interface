@@ -80,7 +80,7 @@ export function TeamMembers({ team, pendingTxns, setPendingTxns }: Props) {
         <td>{member.pnl}</td>
         <td>{member.pnlPercent}</td>
         <td>
-          {canRemoveMember(member) && (
+          {isTeamLeader() && member.address !== team.leaderAddress && (
             <button className="simple-table-action" disabled={isRemoving} onClick={() => handleRemoveClick(member)}>Remove</button>
           )}
         </td>

@@ -23,8 +23,6 @@ export default function TeamStats({ team, competition }: Props) {
               {competition.active ? (
                 <>
                   <span>${formatAmount(team.pnl, USD_DECIMALS, 0, true)}</span>
-                  <span> / </span>
-                  <span>{formatAmount(team.pnlPercent, 0, 0, true)}%</span>
                 </>
               ) : "..."}
             </div>

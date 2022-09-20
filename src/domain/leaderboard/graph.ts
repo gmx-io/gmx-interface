@@ -29,7 +29,10 @@ export function useIndividualStats(chainId) {
       accountStats (
         first: 10,
         orderBy: pnl,
-        orderByDir: desc
+        orderByDir: desc,
+        where: {
+          team: null,
+        }
       ) {
         id
         pnl
@@ -264,6 +267,7 @@ export function useCompetition(chainId, competitionIndex) {
         start
         end
         maxTeamSize
+        canceled
       }
     }
   `
@@ -281,6 +285,12 @@ export function useCompetition(chainId, competitionIndex) {
       if (!graphData.competition) {
         setLoading(false)
         setExists(false)
+        return
+      }
+
+      if (graphData.competition.canceled) {
+        setExists(false)
+        setLoading(false)
         return
       }
 

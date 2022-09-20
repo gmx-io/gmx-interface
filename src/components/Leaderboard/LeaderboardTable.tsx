@@ -7,9 +7,10 @@ type Props = {
   resolveLink?: (any) => string;
   stats: Stats[];
   isTeamLeaderboard?: boolean;
+  loading?: boolean;
 }
 
-export default function LeaderboardTable({ resolveLink, stats, isTeamLeaderboard = false }: Props) {
+export default function LeaderboardTable({ loading, resolveLink, stats, isTeamLeaderboard = false }: Props) {
   const history = useHistory();
 
   const handleClick = (stat) => {
@@ -23,7 +24,7 @@ export default function LeaderboardTable({ resolveLink, stats, isTeamLeaderboard
       <tr>
         <td>#{stat.rank}</td>
         <td>{stat.label}</td>
-        <td>{formatAmount(stat.pnlPercent, 0, 0, true, "...")}%</td>
+        <td>${formatAmount(stat.pnl, 0, 0, true, "...")}</td>
         <td>
           {resolveLink && <button className="simple-table-action" onClick={() => handleClick(stat)}>Details</button>}
         </td>
@@ -40,8 +41,9 @@ export default function LeaderboardTable({ resolveLink, stats, isTeamLeaderboard
           <th>P&L</th>
           <th></th>
         </tr>
-        {stats.length > 0 && stats.map(stat => <Row key={stat.id} stat={stat}/>)}
-        {stats.length === 0 && (
+        {loading && <tr><td colSpan={4}>Loading...</td></tr>}
+        {!loading && stats.length > 0 && stats.map(stat => <Row key={stat.id} stat={stat}/>)}
+        {!loading && stats.length === 0 && (
           <tr>
             <td colSpan={4}>No {isTeamLeaderboard ? "team" : "account"} found...</td>
           </tr>
