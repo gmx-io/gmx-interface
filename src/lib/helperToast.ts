@@ -1,4 +1,4 @@
-import {toast, ToastContent, ToastOptions} from "react-toastify";
+import { toast, ToastContent, ToastOptions } from "react-toastify";
 
 export const helperToast = {
   success: (content: ToastContent, opts?: ToastOptions) => {

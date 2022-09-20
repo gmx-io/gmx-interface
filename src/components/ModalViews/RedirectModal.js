@@ -16,6 +16,7 @@ export function RedirectPopupModal({
       setRedirectPopupTimestamp(Date.now());
     }
   };
+
   return (
     <Modal
       className="RedirectModal"

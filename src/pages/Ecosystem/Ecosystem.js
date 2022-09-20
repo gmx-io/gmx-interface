@@ -276,7 +276,7 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM],
     },
     {
-      title: "Yield Yak",
+      title: "Yield Yak Optimizer",
       link: "https://yieldyak.com/",
       linkLabel: "yieldyak.com",
       about: "Yield Optimizer on Avalanche",
@@ -345,6 +345,15 @@ export default function Ecosystem() {
       about: "DEX Aggregator",
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/financefirebird/status/1561767094064238595",
+      chainIds: [AVALANCHE],
+    },
+    {
+      title: "Yield Yak Swap",
+      link: "https://yieldyak.com/swap",
+      linkLabel: "yieldyak.com",
+      about: "DEX Aggregator",
+      announcementLabel: "twitter.com",
+      announcementLink: "https://twitter.com/yieldyak_/status/1484458884827947008",
       chainIds: [AVALANCHE],
     },
   ];

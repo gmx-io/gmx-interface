@@ -1,9 +1,9 @@
-import {BigNumber, Contract} from "ethers";
-import {helperToast} from "../helperToast";
-import {ToastifyDebug} from "../../components/ToastifyDebug/ToastifyDebug";
-import {extractError, NOT_ENOUGH_FUNDS, RPC_ERROR, SLIPPAGE, USER_DENIED} from "./transactionErrors";
-import {getExplorerUrl} from "../legacy";
-import {getGasLimit, setGasPrice} from "./utils";
+import { BigNumber, Contract } from "ethers";
+import { helperToast } from "../helperToast";
+import { ToastifyDebug } from "../../components/ToastifyDebug/ToastifyDebug";
+import { extractError, NOT_ENOUGH_FUNDS, RPC_ERROR, SLIPPAGE, USER_DENIED } from "./transactionErrors";
+import { getExplorerUrl } from "../legacy";
+import { getGasLimit, setGasPrice } from "./utils";
 
 export async function callContract(
   chainId: number,
@@ -11,13 +11,13 @@ export async function callContract(
   method: string,
   params: any,
   opts: {
-    value?: BigNumber | number,
-    gasLimit?: BigNumber | number,
-    sentMsg?: string,
-    successMsg?: string,
-    hideSuccessMsg?: boolean,
-    failMsg?: string,
-    setPendingTxns?: (txns: any) => void,
+    value?: BigNumber | number;
+    gasLimit?: BigNumber | number;
+    sentMsg?: string;
+    successMsg?: string;
+    hideSuccessMsg?: boolean;
+    failMsg?: string;
+    setPendingTxns?: (txns: any) => void;
   }
 ) {
   try {
@@ -120,7 +120,7 @@ export async function callContract(
         );
     }
 
-    helperToast.error(failMsg, {autoClose: autoCloseToast});
+    helperToast.error(failMsg, { autoClose: autoCloseToast });
     throw e;
   }
 }
