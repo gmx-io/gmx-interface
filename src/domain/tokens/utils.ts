@@ -27,7 +27,7 @@ export function getTokenAmountFromUsd(
 
     const price = opts.overridePrice || (opts.max ? info.maxPrice : info.minPrice);
 
-    if (!price?.lte || price.lte(0)) {
+    if (!BigNumber.isBigNumber(price) || price.lte(0)) {
       return;
     }
 
