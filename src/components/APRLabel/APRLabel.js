@@ -5,7 +5,6 @@ import useSWR from "swr";
 import {
   PLACEHOLDER_ACCOUNT,
   getServerUrl,
-  fetcher,
   formatKeyAmount,
   getBalanceAndSupplyData,
   getDepositBalanceData,
@@ -25,6 +24,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useGmxPrice } from "../../domain/legacy";
 
 import { getContract } from "../../config/Addresses";
+import { fetcher } from "../../lib/contracts/fetcher";
 
 export default function APRLabel({ chainId, label }) {
   let { active } = useWeb3React();
