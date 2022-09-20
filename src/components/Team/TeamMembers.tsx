@@ -44,7 +44,10 @@ export function TeamMembers({ team, pendingTxns, setPendingTxns }: Props) {
 
   const { hasTeam: accountHasTeam, data: memberTeam } = useMemberTeam(chainId, library, getCurrentCompetitionIndex(chainId), account)
   const isTeamLeader = () => account && account === team.leaderAddress;
-  const showTeamManagement = () => competition.registrationActive && account && (isTeamLeader() || (!accountHasTeam || memberTeam === team.leaderAddress))
+  const showTeamMembersHeader = () =>
+    competition.registrationActive
+    && account
+    && (isTeamLeader() || (!accountHasTeam || memberTeam === team.leaderAddress))
 
   const pageCount = () => {
     return Math.ceil(team.members.length / perPage)
@@ -94,7 +97,7 @@ export function TeamMembers({ team, pendingTxns, setPendingTxns }: Props) {
         <div className="Page-description">Platform and GLP index tokens.</div>
       </div>
       <div className="simple-table-container">
-        {showTeamManagement() && <TeamMembersHeader
+        {showTeamMembersHeader() && <TeamMembersHeader
           team={team}
           pendingTxns={pendingTxns}
           setPendingTxns={setPendingTxns}

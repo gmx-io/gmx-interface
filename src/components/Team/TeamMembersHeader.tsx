@@ -8,7 +8,7 @@ import Modal from "../Modal/Modal";
 import { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
-import { approveJoinRequest, cancelJoinRequest, createJoinRequest, getAccountJoinRequest, useAccountJoinRequest } from "../../domain/leaderboard/contracts";
+import { approveJoinRequest, cancelJoinRequest, createJoinRequest, getAccountJoinRequest, removeMember, useAccountJoinRequest, useMemberTeam } from "../../domain/leaderboard/contracts";
 
 type InviteButtonprops = {
   team: Team,
@@ -70,17 +70,17 @@ function ApproveButton({ team, pendingTxns, setPendingTxns }: ApproveButtonProps
         return
       }
 
-      // const joinRequest = await getAccountJoinRequest(chainId, library, team.competitionIndex, account)
-      // if (joinRequest === null) {
-      //   setInputError("Please enter a valid address")
-      //   setIsChecking(false)
-      //   return
-      // }
+      const joinRequest = await getAccountJoinRequest(chainId, library, team.competitionIndex, ethers.utils.getAddress(value))
+      if (joinRequest === null) {
+        setInputError("Please enter a valid address")
+        setIsChecking(false)
+        return
+      }
 
-      // if (joinRequest.leaderAddress !== team.leaderAddress) {
-      //   setInputError("Please enter a valid address")
-      //   setIsChecking(false)
-      // }
+      if (joinRequest.leaderAddress !== team.leaderAddress) {
+        setInputError("Please enter a valid address")
+        setIsChecking(false)
+      }
 
       setInputError("")
       setIsChecking(false)
@@ -161,13 +161,14 @@ function ApproveButton({ team, pendingTxns, setPendingTxns }: ApproveButtonProps
   )
 }
 
-type CreateJoinRequestProps = {
+type CreateJoinRequestButtonProps = {
   team: Team,
   pendingTxns: any,
   setPendingTxns: any,
+  onCreate: () => any,
 }
 
-function CreateJoinRequest({ team, pendingTxns, setPendingTxns }: CreateJoinRequestProps) {
+function CreateJoinRequestButton({ team, pendingTxns, setPendingTxns, onCreate }: CreateJoinRequestButtonProps) {
   const { chainId, library } = useWeb3React()
   const query = useRouteQuery()
   const [open, setOpen] = useState(false)
@@ -201,7 +202,11 @@ function CreateJoinRequest({ team, pendingTxns, setPendingTxns }: CreateJoinRequ
         setPendingTxns,
       })
 
-      await tx.wait()
+      const receipt = await tx.wait()
+
+      if (receipt.status === 1) {
+        onCreate()
+      }
     } catch (err) {
       console.error(err)
     } finally {
@@ -224,13 +229,14 @@ function CreateJoinRequest({ team, pendingTxns, setPendingTxns }: CreateJoinRequ
   )
 }
 
-type CancelJoinRequestProps = {
+type CancelJoinRequestButtonProps = {
   team: Team,
   pendingTxns: any,
   setPendingTxns: any,
+  onCancel: () => any,
 }
 
-function CancelJoinRequest({ team, pendingTxns, setPendingTxns }: CancelJoinRequestProps) {
+function CancelJoinRequestButton({ team, pendingTxns, setPendingTxns, onCancel }: CancelJoinRequestButtonProps) {
   const { chainId, library } = useWeb3React()
   const [processing, setProcessing] = useState(false)
 
@@ -246,7 +252,11 @@ function CancelJoinRequest({ team, pendingTxns, setPendingTxns }: CancelJoinRequ
         setPendingTxns,
       })
 
-      await tx.wait()
+      const receipt = await tx.wait()
+
+      if (receipt.status === 1) {
+        onCancel()
+      }
     } catch (err) {
       console.error(err)
     } finally {
@@ -261,6 +271,49 @@ function CancelJoinRequest({ team, pendingTxns, setPendingTxns }: CancelJoinRequ
   )
 }
 
+
+type QuitTeamButtonProps = {
+  team: Team,
+  pendingTxns: any,
+  setPendingTxns: any,
+  onQuit: () => any,
+}
+
+function QuitTeamButton({ team, pendingTxns, setPendingTxns, onQuit }: QuitTeamButtonProps) {
+  const { chainId, library, account } = useWeb3React()
+  const [processing, setProcessing] = useState(false)
+
+  const sendTransaction = async () => {
+    setProcessing(true)
+
+    try {
+      const tx = await removeMember(chainId, library, team.competitionIndex, team.leaderAddress, account, {
+        successMsg: "Success!",
+        sentMsg: "Transaction submitted!",
+        failMsg: "Transaction failed.",
+        pendingTxns,
+        setPendingTxns,
+      })
+
+      const receipt = await tx.wait()
+
+      if (receipt.status === 1) {
+        onQuit()
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setProcessing(false)
+    }
+  }
+
+  return (
+    <button className="transparent-btn" onClick={() => sendTransaction()}>
+      {processing ? "Leaving team..." : "Leave Team"}
+    </button>
+  )
+}
+
 type TeamMemberHeaderProps = {
   team: Team,
   pendingTxns: any,
@@ -269,9 +322,11 @@ type TeamMemberHeaderProps = {
 
 export default function TeamMembersHeader({ team, pendingTxns, setPendingTxns }: TeamMemberHeaderProps) {
   const { chainId, library, account } = useWeb3React()
-  const { exists } = useAccountJoinRequest(chainId, library, team.competitionIndex, account)
+  const { exists: hasJoinRequest, revalidate: revalidateJoinRequest } = useAccountJoinRequest(chainId, library, team.competitionIndex, account)
+  const { data: memberTeam, revalidate: revalidateMemberTeam } = useMemberTeam(chainId, library, team.competitionIndex, account)
 
   const isLeader = () => account === team.leaderAddress
+  const isMember = () => memberTeam === team.leaderAddress
 
   return (
     <div className="simple-table-top-header simple-table-top-header-right">
@@ -282,8 +337,9 @@ export default function TeamMembersHeader({ team, pendingTxns, setPendingTxns }:
         </>
       ) : (
         <>
-          {!exists && <CreateJoinRequest team={team} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>}
-          {exists && <CancelJoinRequest team={team} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>}
+          {!isMember() && !hasJoinRequest && <CreateJoinRequestButton onCreate={revalidateJoinRequest} team={team} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>}
+          {!isMember() && hasJoinRequest && <CancelJoinRequestButton onCancel={revalidateJoinRequest} team={team} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>}
+          {isMember() && <QuitTeamButton team={team} onQuit={revalidateMemberTeam} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>}
         </>
       )}
     </div>

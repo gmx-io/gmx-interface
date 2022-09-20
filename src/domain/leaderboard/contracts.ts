@@ -1,11 +1,12 @@
 import { ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { callContract } from "../legacy";
 import { getContract } from "../../config/Addresses";
 import Competition from "./../../abis/Competition.json";
 import { isAddressZero } from "../../lib/legacy";
 import { JoinRequest } from "./types";
 import { encodeReferralCode } from "../referrals"
+import useSWR from "swr";
 
 export async function checkTeamName(chainId, library, name, competitionIndex) {
   if (!chainId || !library) {
@@ -20,31 +21,27 @@ export function useMemberTeam(chainId, library, competitionIndex, account) {
   const [hasTeam, setHasTeam] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    async function main() {
-      if (!chainId || !library) {
-        setHasTeam(false)
-        setLoading(false)
-        return
-      }
-
-      if (!account) {
-        setLoading(false)
-        setHasTeam(false)
-        return
-      }
-
-      const contract = getCompetitionContract(chainId, library)
-      const res = await contract.getMemberTeam(competitionIndex, account)
-      setData(res)
+  const { revalidate } = useSWR(chainId && library && [chainId, library, competitionIndex, account], async () => {
+    if (!chainId || !library) {
+      setHasTeam(false)
       setLoading(false)
-      setHasTeam(!isAddressZero(res))
+      return
     }
 
-    main()
-  }, [chainId, library, competitionIndex, account])
+    if (!account) {
+      setLoading(false)
+      setHasTeam(false)
+      return
+    }
 
-  return { data, loading, hasTeam }
+    const contract = getCompetitionContract(chainId, library)
+    const res = await contract.getMemberTeam(competitionIndex, account)
+    setData(res)
+    setLoading(false)
+    setHasTeam(!isAddressZero(res))
+  })
+
+  return { data, loading, hasTeam, revalidate }
 }
 
 export async function getAccountJoinRequest(chainId, library, competitionIndex, account): Promise<JoinRequest|null> {
@@ -74,25 +71,21 @@ export function useAccountJoinRequest(chainId, library, competitionIndex, accoun
   const [loading, setLoading] = useState(true)
   const [exists, setExists] = useState(false)
 
-  useEffect(() => {
-    async function main () {
-      const req = await getAccountJoinRequest(chainId, library, competitionIndex, account)
+  const { revalidate } = useSWR(chainId && library && [chainId, library, account, competitionIndex], async () => {
+    const req = await getAccountJoinRequest(chainId, library, competitionIndex, account)
 
-      if (req === null) {
-        setExists(false)
-        setLoading(false)
-        return
-      }
-
-      setData(req)
-      setExists(true)
+    if (req === null) {
+      setExists(false)
       setLoading(false)
+      return
     }
 
-    main()
-  }, [chainId, library, account, competitionIndex])
+    setData(req)
+    setExists(true)
+    setLoading(false)
+  })
 
-  return { data, loading, exists }
+  return { data, loading, exists, revalidate }
 }
 
 export function createTeam(chainId, library, competitionIndex, name, opts) {
