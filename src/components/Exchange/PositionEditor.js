@@ -14,7 +14,6 @@ import {
   bigNumberify,
   usePrevious,
   formatAmountFree,
-  fetcher,
   parseValue,
   expandDecimals,
   shouldRaiseGasError,
@@ -27,12 +26,13 @@ import {
 import { getContract } from "../../config/Addresses";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
-import { callContract } from "../../domain/legacy";
 
 import PositionRouter from "../../abis/PositionRouter.json";
 import Token from "../../abis/Token.json";
 import Tooltip from "../Tooltip/Tooltip";
 import { getConstant } from "../../config/chains";
+import { fetcher } from "../../lib/contracts/fetcher";
+import { callContract } from "../../lib/contracts/callContract";
 
 const DEPOSIT = t`Deposit`;
 const WITHDRAW = t`Withdraw`;

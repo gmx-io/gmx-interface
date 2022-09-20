@@ -6,7 +6,6 @@ import { ethers } from "ethers";
 
 import {
   getInjectedHandler,
-  fetcher,
   formatKeyAmount,
   formatAmount,
   formatAmountFree,
@@ -34,6 +33,7 @@ import Modal from "../../components/Modal/Modal";
 import Footer from "../../components/Footer/Footer";
 
 import "./Stake.css";
+import { fetcher } from "../../lib/contracts/fetcher";
 
 const BASIS_POINTS_DIVISOR = 10000;
 const HOURS_PER_YEAR = 8760;
