@@ -46,7 +46,7 @@ import {
   getChainName,
 } from "../../lib/legacy";
 import { getConstant } from "../../config/chains";
-import { createDecreaseOrder, callContract, useHasOutdatedUi } from "../../domain/legacy";
+import { createDecreaseOrder, useHasOutdatedUi } from "../../domain/legacy";
 import { getContract } from "../../config/Addresses";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Checkbox from "../Checkbox/Checkbox";
@@ -57,6 +57,7 @@ import Tooltip from "../Tooltip/Tooltip";
 import TokenSelector from "./TokenSelector";
 import { getTokens } from "../../config/Tokens";
 import "./PositionSeller.css";
+import { callContract } from "../../lib/contracts/callContract";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10

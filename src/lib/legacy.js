@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import {
-  WalletConnectConnector,
   UserRejectedRequestError as UserRejectedRequestErrorWalletConnect,
+  WalletConnectConnector,
 } from "@web3-react/walletconnect-connector";
 import { toast } from "react-toastify";
-import { useWeb3React, UnsupportedChainIdError } from "@web3-react/core";
+import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { useLocalStorage } from "react-use";
 import { ethers } from "ethers";
 import { format as formatDateFn } from "date-fns";
@@ -50,15 +50,6 @@ const CHAIN_NAMES_MAP = {
   [ARBITRUM_TESTNET]: "ArbRinkeby",
   [ARBITRUM]: "Arbitrum",
   [AVALANCHE]: "Avalanche",
-};
-
-const GAS_PRICE_ADJUSTMENT_MAP = {
-  [ARBITRUM]: "0",
-  [AVALANCHE]: "3000000000", // 3 gwei
-};
-
-const MAX_GAS_PRICE_MAP = {
-  [AVALANCHE]: "200000000000", // 200 gwei
 };
 
 const alchemyWhitelistedDomains = ["gmx.io", "app.gmx.io"];
@@ -1539,89 +1530,6 @@ export function getFallbackProvider(chainId) {
   return new ethers.providers.StaticJsonRpcProvider(provider, { chainId });
 }
 
-export const getContractCall = ({ provider, contractInfo, arg0, arg1, method, params, additionalArgs, onError }) => {
-  if (ethers.utils.isAddress(arg0)) {
-    const address = arg0;
-    const contract = new ethers.Contract(address, contractInfo.abi, provider);
-
-    if (additionalArgs) {
-      return contract[method](...params.concat(additionalArgs));
-    }
-    return contract[method](...params);
-  }
-
-  if (!provider) {
-    return;
-  }
-
-  return provider[method](arg1, ...params);
-};
-
-// prettier-ignore
-export const fetcher = (library, contractInfo, additionalArgs) => (...args) => {
-  // eslint-disable-next-line
-  const [id, chainId, arg0, arg1, ...params] = args;
-  const provider = getProvider(library, chainId);
-
-  const method = ethers.utils.isAddress(arg0) ? arg1 : arg0;
-
-  const contractCall = getContractCall({
-    provider,
-    contractInfo,
-    arg0,
-    arg1,
-    method,
-    params,
-    additionalArgs,
-  })
-
-  let shouldCallFallback = true
-
-  const handleFallback = async (resolve, reject, error) => {
-    if (!shouldCallFallback) {
-      return
-    }
-    // prevent fallback from being called twice
-    shouldCallFallback = false
-
-    const fallbackProvider = getFallbackProvider(chainId)
-    if (!fallbackProvider) {
-      reject(error)
-      return
-    }
-
-    console.info("using fallbackProvider for", method)
-    const fallbackContractCall = getContractCall({
-      provider: fallbackProvider,
-      contractInfo,
-      arg0,
-      arg1,
-      method,
-      params,
-      additionalArgs,
-    })
-
-    fallbackContractCall.then((result) => resolve(result)).catch((e) => {
-      console.error("fallback fetcher error", id, contractInfo.contractName, method, e);
-      reject(e)
-    })
-  }
-
-  return new Promise(async (resolve, reject) => {
-    contractCall.then((result) => {
-      shouldCallFallback = false
-      resolve(result)
-    }).catch((e) => {
-      console.error("fetcher error", id, contractInfo.contractName, method, e);
-      handleFallback(resolve, reject, e)
-    })
-
-    setTimeout(() => {
-      handleFallback(resolve, reject, "contractCall timeout")
-    }, 2000)
-  })
-};
-
 export function bigNumberify(n) {
   try {
     return ethers.BigNumber.from(n);
@@ -1972,48 +1880,6 @@ export function usePrevious(value) {
     ref.current = value;
   });
   return ref.current;
-}
-
-export async function setGasPrice(txnOpts, provider, chainId) {
-  let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];
-  const premium = GAS_PRICE_ADJUSTMENT_MAP[chainId] || bigNumberify(0);
-
-  const gasPrice = await provider.getGasPrice();
-
-  if (maxGasPrice) {
-    if (gasPrice.gt(maxGasPrice)) {
-      maxGasPrice = gasPrice;
-    }
-
-    const feeData = await provider.getFeeData();
-
-    // the wallet provider might not return maxPriorityFeePerGas in feeData
-    // in which case we should fallback to the usual getGasPrice flow handled below
-    if (feeData && feeData.maxPriorityFeePerGas) {
-      txnOpts.maxFeePerGas = maxGasPrice;
-      txnOpts.maxPriorityFeePerGas = feeData.maxPriorityFeePerGas.add(premium);
-      return;
-    }
-  }
-
-  txnOpts.gasPrice = gasPrice.add(premium);
-  return;
-}
-
-export async function getGasLimit(contract, method, params = [], value) {
-  const defaultValue = bigNumberify(0);
-
-  if (!value) {
-    value = defaultValue;
-  }
-
-  let gasLimit = await contract.estimateGas[method](...params, { value });
-
-  if (gasLimit.lt(22000)) {
-    gasLimit = bigNumberify(22000);
-  }
-
-  return gasLimit.mul(11000).div(10000); // add a 10% buffer
 }
 
 export function approveTokens({
