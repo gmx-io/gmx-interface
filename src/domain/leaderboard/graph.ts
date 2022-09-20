@@ -2,20 +2,22 @@ import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import useSWR from "swr";
-import { ARBITRUM_TESTNET, isAddressZero } from "../../lib/legacy";
-import { ARBITRUM_TESTNET_GRAPH } from "./constants";
+import { isAddressZero } from "../../lib/legacy";
+import { GRAPHS } from "./constants";
 import { getCompetitionContract } from "./contracts";
 import { Competition, Position, Stats, Team, TeamMembersStats } from "./types";
 
 export function getGraphClient(chainId) {
-  if (chainId === ARBITRUM_TESTNET) {
-    return new ApolloClient({
-      uri: ARBITRUM_TESTNET_GRAPH,
-      cache: new InMemoryCache()
-    })
+  const graphUrl = GRAPHS[chainId]
+
+  if ( ! graphUrl) {
+    throw new Error("Unsupported chain " + chainId);
   }
 
-  throw new Error("Unsupported chain " + chainId);
+  return new ApolloClient({
+    uri: graphUrl,
+    cache: new InMemoryCache()
+  })
 }
 
 export function useIndividualStats(chainId) {
@@ -147,7 +149,15 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
         return
       }
 
-      const contract = getCompetitionContract(chainId, library)
+      let contract
+      try {
+        contract = getCompetitionContract(chainId, library)
+      } catch (err) {
+        console.error(err)
+        setExists(false)
+        setLoading(false)
+        return
+      }
       const team = await contract.getTeam(competitionIndex, leaderAddress)
 
       if (isAddressZero(team.leaderAddress)) {

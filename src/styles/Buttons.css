@@ -14,3 +14,20 @@
 .transparent-btn:hover {
   background: rgba(128, 138, 255, 0.0784313725490196);
 }
+
+.icon-btn > span {
+  margin-left: 1rem;
+}
+
+.back-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-self: flex-start;
+  align-items: center;
+  margin-bottom: 3.5rem;
+  text-decoration: none;
+}
+
+.back-btn span {
+  margin-left: .75rem;
+}

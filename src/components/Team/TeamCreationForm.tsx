@@ -23,10 +23,6 @@ export default function TeamCreationForm({ competition, connectWallet, pendingTx
   const [nameAlreadyUsed, setNameAlreadyUsed] = useState(false);
   const [validatingName, setValidatingName] = useState(false);
 
-  if (!competition.registrationActive) {
-    history.replace("/leaderboard");
-  }
-
   const getButtonText = () => {
     if (validatingName) {
       return "Checking team name...";

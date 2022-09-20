@@ -8,6 +8,7 @@ import { getCurrentCompetitionIndex, LEADERBOARD_SELECTED_TAB_KEY } from "../../
 import { useCompetition } from "../../domain/leaderboard/graph";
 import Loader from "../../components/Common/Loader";
 import { TeamLeaderboard } from "../../components/Leaderboard/TeamLeaderboard";
+import { Trans } from "@lingui/macro";
 
 export default function Leaderboard() {
   const { chainId } = useChainId()
@@ -33,7 +34,7 @@ export default function Leaderboard() {
           <div className="section-title-block">
             <div className="section-title-content">
               <div className="Page-title">
-                Leaderboard <img alt="Chain Icon" src={getChainIcon(chainId)} />
+                <Trans>Leaderboard</Trans> <img alt="Chain Icon" src={getChainIcon(chainId)} />
               </div>
               <div className="Page-description">
                 Get fee discounts and earn rebates through the GMX referral program. For more information, please read the

@@ -28,13 +28,13 @@ export default function Team({ pendingTxns, setPendingTxns }: Props) {
   const isLoading = () => teamLoading || competitionLoading
 
   if (!teamLoading && !teamExists) {
-    history.replace("/404")
+    history.replace(getLeaderboardUrl())
   }
 
   return (
     <SEO title={getPageTitle("Team")}>
       <div className="default-container page-layout Leaderboard">
-        <Link to={getLeaderboardUrl()} className="back-btn default-btn disabled">
+        <Link to={getLeaderboardUrl()} className="back-btn transparent-btn">
           <FiChevronLeft/>
           <span>Back to leaderboard</span>
         </Link>

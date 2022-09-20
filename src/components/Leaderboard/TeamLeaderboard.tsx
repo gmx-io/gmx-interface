@@ -47,7 +47,7 @@ export function TeamLeaderboard({ competitionIndex }) {
         {(detailsLoading || teamLoading || memberTeamLoading || !account) ? "" : (
           <>
             {details.registrationActive && !isLeader && !hasTeam && (
-              <Link className="transparent-btn" to={getTeamRegistrationUrl()}>
+              <Link className="icon-btn transparent-btn" to={getTeamRegistrationUrl()}>
                 <FiPlus/>
                 <span className="ml-small">Register your team</span>
               </Link>
