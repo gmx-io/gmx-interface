@@ -879,7 +879,7 @@ export default function ConfirmationBox(props) {
 
   return (
     <div className="Confirmation-box">
-      <Modal isVisible={true} setIsVisible={() => setIsConfirming(false)} label={title}>
+      <Modal isVisible={true} setIsVisible={() => setIsConfirming(false)} label={title} allowContentTouchMove>
         {isSwap && renderSwapSection()}
         {!isSwap && renderMarginSection()}
         <div className="Confirmation-box-row">

@@ -13,7 +13,6 @@ import { getWhitelistedTokens, getTokenBySymbol } from "../../config/Tokens";
 import { getFeeHistory } from "../../config/Fees";
 
 import {
-  fetcher,
   formatAmount,
   formatKeyAmount,
   expandDecimals,
@@ -64,6 +63,7 @@ import SEO from "../../components/Common/SEO";
 import useTotalVolume from "../../domain/useTotalVolume";
 import StatsTooltip from "../../components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "../../components/StatsTooltip/StatsTooltipRow";
+import { fetcher } from "../../lib/contracts/fetcher";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;

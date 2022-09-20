@@ -20,7 +20,6 @@ import { ethers } from "ethers";
 import {
   helperToast,
   bigNumberify,
-  fetcher,
   formatAmount,
   formatKeyAmount,
   formatAmountFree,
@@ -43,7 +42,7 @@ import {
   getProcessedData,
   getPageTitle,
 } from "../../lib/legacy";
-import { callContract, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "../../domain/legacy";
+import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "../../domain/legacy";
 import { getConstant } from "../../config/chains";
 
 import useSWR from "swr";
@@ -54,6 +53,8 @@ import "./StakeV2.css";
 import SEO from "../../components/Common/SEO";
 import StatsTooltip from "../../components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "../../components/StatsTooltip/StatsTooltipRow";
+import { fetcher } from "../../lib/contracts/fetcher";
+import { callContract } from "../../lib/contracts/callContract";
 
 const { AddressZero } = ethers.constants;
 

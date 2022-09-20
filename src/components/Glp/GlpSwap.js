@@ -14,7 +14,6 @@ import {
   getTokenInfo,
   useChainId,
   expandDecimals,
-  fetcher,
   bigNumberify,
   formatAmount,
   formatAmountFree,
@@ -40,7 +39,7 @@ import {
   getChainName,
 } from "../../lib/legacy";
 
-import { callContract, useGmxPrice, useInfoTokens } from "../../domain/legacy";
+import { useGmxPrice, useInfoTokens } from "../../domain/legacy";
 
 import TokenSelector from "../Exchange/TokenSelector";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
@@ -65,6 +64,8 @@ import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 import "./GlpSwap.css";
 import AssetDropdown from "../../pages/Dashboard/AssetDropdown";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+import { fetcher } from "../../lib/contracts/fetcher";
+import { callContract } from "../../lib/contracts/callContract";
 
 const { AddressZero } = ethers.constants;
 

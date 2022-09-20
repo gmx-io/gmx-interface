@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Tooltip from "../Tooltip/Tooltip";
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import Modal from "../Modal/Modal";
 import Slider, { SliderTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
@@ -14,54 +14,53 @@ import { IoMdSwap } from "react-icons/io";
 import { BsArrowRight } from "react-icons/bs";
 
 import {
-  helperToast,
-  formatAmount,
-  bigNumberify,
+  adjustForDecimals,
+  approveTokens,
   ARBITRUM,
   AVALANCHE,
-  USD_DECIMALS,
-  USDG_DECIMALS,
-  LONG,
-  SHORT,
-  SWAP,
-  MARKET,
-  SWAP_ORDER_OPTIONS,
-  LEVERAGE_ORDER_OPTIONS,
-  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
-  getPositionKey,
-  getUsd,
   BASIS_POINTS_DIVISOR,
-  MARGIN_FEE_BASIS_POINTS,
-  PRECISION,
-  USDG_ADDRESS,
-  STOP,
-  LIMIT,
-  SWAP_OPTIONS,
+  bigNumberify,
+  calculatePositionDelta,
+  DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   DUST_BNB,
-  isTriggerRatioInverted,
-  usePrevious,
-  formatAmountFree,
-  fetcher,
-  parseValue,
   expandDecimals,
-  shouldRaiseGasError,
-  getTokenInfo,
-  getLiquidationPrice,
-  approveTokens,
-  getLeverage,
-  isSupportedChain,
+  formatAmount,
+  formatAmountFree,
+  getChainName,
   getExchangeRate,
   getExchangeRateDisplay,
-  getNextToAmount,
-  getNextFromAmount,
+  getLeverage,
+  getLiquidationPrice,
   getMostAbundantStableToken,
-  useLocalStorageSerializeKey,
-  useLocalStorageByChainId,
-  calculatePositionDelta,
-  replaceNativeTokenAddress,
-  adjustForDecimals,
+  getNextFromAmount,
+  getNextToAmount,
+  getPositionKey,
+  getTokenInfo,
+  getUsd,
+  helperToast,
   IS_NETWORK_DISABLED,
-  getChainName,
+  isSupportedChain,
+  isTriggerRatioInverted,
+  LEVERAGE_ORDER_OPTIONS,
+  LIMIT,
+  LONG,
+  MARGIN_FEE_BASIS_POINTS,
+  MARKET,
+  parseValue,
+  PRECISION,
+  replaceNativeTokenAddress,
+  SHORT,
+  shouldRaiseGasError,
+  STOP,
+  SWAP,
+  SWAP_OPTIONS,
+  SWAP_ORDER_OPTIONS,
+  USD_DECIMALS,
+  USDG_ADDRESS,
+  USDG_DECIMALS,
+  useLocalStorageByChainId,
+  useLocalStorageSerializeKey,
+  usePrevious,
 } from "../../lib/legacy";
 import { getConstant } from "../../config/chains";
 import * as Api from "../../domain/legacy";
@@ -74,7 +73,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import ConfirmationBox from "./ConfirmationBox";
 import OrdersToa from "./OrdersToa";
 
-import { getTokens, getWhitelistedTokens, getToken, getTokenBySymbol } from "../../config/Tokens";
+import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "../../config/Tokens";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Router from "../../abis/Router.json";
 import Token from "../../abis/Token.json";
@@ -86,6 +85,8 @@ import swapImg from "../../img/swap.svg";
 
 import { useUserReferralCode } from "../../domain/referrals";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+import { fetcher } from "../../lib/contracts/fetcher";
+import { callContract } from "../../lib/contracts/callContract";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -1286,7 +1287,7 @@ export default function SwapBox(props) {
     setIsSubmitting(true);
 
     const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, library.getSigner());
-    Api.callContract(chainId, contract, "deposit", {
+    callContract(chainId, contract, "deposit", {
       value: fromAmount,
       sentMsg: "Swap submitted.",
       successMsg: `Swapped ${formatAmount(fromAmount, fromToken.decimals, 4, true)} ${
@@ -1305,7 +1306,7 @@ export default function SwapBox(props) {
     setIsSubmitting(true);
 
     const contract = new ethers.Contract(nativeTokenAddress, WETH.abi, library.getSigner());
-    Api.callContract(chainId, contract, "withdraw", [fromAmount], {
+    callContract(chainId, contract, "withdraw", [fromAmount], {
       sentMsg: t`Swap submitted!`,
       failMsg: t`Swap failed.`,
       successMsg: `Swapped ${formatAmount(fromAmount, fromToken.decimals, 4, true)} ${
@@ -1415,7 +1416,7 @@ export default function SwapBox(props) {
     }
     contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner());
 
-    Api.callContract(chainId, contract, method, params, {
+    callContract(chainId, contract, method, params, {
       value,
       sentMsg: `Swap ${!isMarketOrder ? " order " : ""} submitted!`,
       successMsg: `Swapped ${formatAmount(fromAmount, fromToken.decimals, 4, true)} ${
@@ -1588,7 +1589,7 @@ export default function SwapBox(props) {
       2
     )} USD.`;
 
-    Api.callContract(chainId, contract, method, params, {
+    callContract(chainId, contract, method, params, {
       value,
       setPendingTxns,
       sentMsg: `${isLong ? "Long" : "Short"} submitted.`,
