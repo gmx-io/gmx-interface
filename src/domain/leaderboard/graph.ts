@@ -298,8 +298,8 @@ export function useCompetition(chainId, competitionIndex) {
 }
 
 export function useTeamPositions(chainId, leaderAddress) {
-  const [data, setData] = useState<Position[]>([])
-  const [loading, setLoading] = useState(true)
+  const [data] = useState<Position[]>([])
+  const [loading] = useState(true)
 
   return { data, loading }
 }

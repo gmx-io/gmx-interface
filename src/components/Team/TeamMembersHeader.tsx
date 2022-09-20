@@ -1,4 +1,4 @@
-import { Competition, Team } from "../../domain/leaderboard/types";
+import { Team } from "../../domain/leaderboard/types";
 import "./TeamMembersHeader.css";
 import { CHAIN_ID_QUERY_PARAM, helperToast, useChainId } from "../../lib/legacy";
 import { getTeamUrl } from "../../domain/leaderboard/urls";

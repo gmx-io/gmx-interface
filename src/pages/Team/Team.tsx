@@ -11,7 +11,6 @@ import TeamStats from "../../components/Team/TeamStats";
 import { TeamMembers } from "../../components/Team/TeamMembers";
 import { FiChevronLeft } from "react-icons/fi";
 import { getLeaderboardUrl } from "../../domain/leaderboard/urls";
-import { useMemberTeam } from "../../domain/leaderboard/contracts";
 
 type Props = {
   pendingTxns: any,
