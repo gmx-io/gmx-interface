@@ -6,7 +6,6 @@ import { useMemberTeam } from "../../domain/leaderboard/contracts";
 import { useCompetition, useTeam, useTeamsStats } from "../../domain/leaderboard/graph"
 import { getTeamRegistrationUrl, getTeamUrl } from "../../domain/leaderboard/urls";
 import { useChainId, useDebounce } from "../../lib/legacy";
-import Loader from "../Common/Loader";
 import LeaderboardTable from "./LeaderboardTable";
 import "./TeamLeaderboard.css";
 
