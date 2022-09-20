@@ -2448,7 +2448,3 @@ msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR(実質年利)"
 #: src/Footer.js
 msgid "{text}"
 msgstr "{text}"
-
-#: src/components/Exchange/OrdersToa.js
-msgid "さらに、トリガー注文は成り行き注文であり、トリガー価格にての決済が保証されているわけではありません。"
-msgstr ""
