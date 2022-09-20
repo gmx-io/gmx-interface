@@ -108,7 +108,7 @@ export function TeamMembers({ team, pendingTxns, setPendingTxns }: Props) {
             </tr>
             {loading ? (
               <tr>
-                <td colSpan={3}>Loading...</td>
+                <td colSpan={3}>Loading members...</td>
               </tr>
             ) : members.map(member => <Row key={member.address} member={member}/>)}
           </tbody>

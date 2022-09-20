@@ -54,12 +54,7 @@ export default function Team({ pendingTxns, setPendingTxns }: Props) {
         {!isLoading() && (
           <>
             <TeamStats team={team} competition={competition}/>
-
-            {competition.active && <TeamPositions
-              chainId={chainId}
-              positions={team.positions}
-            />}
-
+            {competition.active && <TeamPositions team={team}/>}
             <TeamMembers team={team} pendingTxns={pendingTxns} setPendingTxns={setPendingTxns}/>
           </>
         )}

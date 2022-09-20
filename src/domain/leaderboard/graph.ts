@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { ARBITRUM_TESTNET, isAddressZero } from "../../lib/legacy";
 import { ARBITRUM_TESTNET_GRAPH } from "./constants";
 import { getCompetitionContract } from "./contracts";
-import { Competition, Stats, Team, TeamMembersStats } from "./types";
+import { Competition, Position, Stats, Team, TeamMembersStats } from "./types";
 
 export function getGraphClient(chainId) {
   if (chainId === ARBITRUM_TESTNET) {
@@ -295,4 +295,11 @@ export function useCompetition(chainId, competitionIndex) {
   }, [chainId, competitionIndex, query])
 
   return { data, exists, loading };
+}
+
+export function useTeamPositions(chainId, leaderAddress) {
+  const [data, setData] = useState<Position[]>([])
+  const [loading, setLoading] = useState(true)
+
+  return { data, loading }
 }

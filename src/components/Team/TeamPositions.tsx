@@ -1,17 +1,28 @@
-import { Position } from "../../domain/leaderboard/types";
-import { getChainIcon } from "../../lib/legacy";
+import { useTeamPositions } from "../../domain/leaderboard/graph";
+import { Position, Team } from "../../domain/leaderboard/types";
+import { useChainId } from "../../lib/legacy";
 
 type Props = {
-  chainId: number|undefined,
-  positions: Position[],
+  team: Team
 }
 
-export default function TeamPositions({ chainId, positions }: Props) {
+export default function TeamPositions({ team }: Props) {
+  const { chainId } = useChainId()
+  const { data: positions, loading } = useTeamPositions(chainId, team.leaderAddress)
+
+  const Row = ({ position }: { position: Position }) => {
+    return (
+      <tr>
+        <td>0x000</td>
+      </tr>
+    )
+  }
+
   return (
     <>
       <div className="Tab-title-section">
         <div className="Page-title">
-          Member Positions <img alt="Chain Icon" src={getChainIcon(chainId)} />
+          Positions
         </div>
         <div className="Page-description">Platform and GLP index tokens.</div>
       </div>
@@ -24,23 +35,14 @@ export default function TeamPositions({ chainId, positions }: Props) {
             <th>Price</th>
             <th>Mark Price</th>
           </tr>
-          {positions.length === 0 ? (
-            <tr>
-              <td colSpan={5}>No open positions</td>
-            </tr>
-          ) : (
-            ""
-          )}
-        </tbody>
-      </table>
-      <table className="Exchange-list small">
-        <tbody>
-          {positions.length === 0 ? (
-            <tr>
-              <td className="Exchange-empty-positions-list-note App-card">No open positions</td>
-            </tr>
-          ) : (
-            ""
+          {loading ? <tr><td colSpan={5}>Loading positions...</td></tr> : (
+            <>
+              {positions.length === 0 ? (
+                <tr>
+                  <td colSpan={5}>No open positions</td>
+                </tr>
+              ) : positions.map(position => <Row position={position}/>)}
+            </>
           )}
         </tbody>
       </table>
