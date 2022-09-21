@@ -70,8 +70,8 @@
     "prepare": "husky install && yarn lingui:prepare",
     "extract": "NODE_ENV=development lingui extract",
     "compile": "lingui compile",
-    "lingui:prepare": "yarn extract && yarn compile",
-    "lingui:generate": "lingui extract --overwrite $(git diff --name-only --staged)"
+    "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
+    "lingui:generate": "NODE_ENV=development lingui extract --overwrite $(git diff --name-only --staged)"
   },
   "eslintConfig": {
     "extends": [

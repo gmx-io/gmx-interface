@@ -51,6 +51,11 @@ export default function NoLiquidityErrorModal({
         below to do so:
       </div>
       <br />
+
+      <a href={oneInchSwapUrl} target="_blank" rel="noreferrer">
+        Buy {swapTokenSymbol} on 1inch
+      </a>
+
       {isShort && (
         <div>
           Alternatively you can select a different "Collateral In" token.
@@ -58,10 +63,6 @@ export default function NoLiquidityErrorModal({
           <br />
         </div>
       )}
-
-      <a href={oneInchSwapUrl} target="_blank" rel="noreferrer">
-        Buy {swapTokenSymbol} on 1inch
-      </a>
     </Modal>
   );
 }

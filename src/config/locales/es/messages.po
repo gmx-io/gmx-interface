@@ -34,6 +34,10 @@ msgstr "<0>Esto retirará y desreservará todos los tokens y pausará la adquisi
 msgid "A snapshot of the USD value of your collateral is taken when the position is opened."
 msgstr ""
 
+#: src/components/Exchange/SwapBox.js
+msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
+msgstr ""
+
 #: src/App.js
 msgid "ABOUT"
 msgstr "SOBRE"
@@ -93,6 +97,10 @@ msgstr "Fallo al añadir el código de referido."
 msgid "Adding..."
 msgstr "Añadiendo..."
 
+#: src/pages/Stake/StakeV2.js
+msgid "Additional reserve required"
+msgstr ""
+
 #: src/components/Exchange/OrdersToa.js
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "Además, las órdenes de activación son órdenes de mercado y no se garantiza que se ejecuten al precio de activación."
@@ -144,6 +152,7 @@ msgid "Announcement"
 msgstr "Anuncio"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "Aprobar GMX"
 
@@ -209,6 +218,11 @@ msgstr "Cantidad disponible para depositar en GLP."
 msgid "Available amount to withdraw from GLP."
 msgstr "Cantidad disponible para retirar de GLP."
 
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
+msgstr ""
+
 #: src/pages/Home/Home.js
 msgid "Available on your preferred network"
 msgstr "Disponible en su red preferida"
@@ -262,9 +276,16 @@ msgstr "Porcentaje de Aumento"
 msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "Aumenta tus recompensas con los Puntos Multiplicadores. <0>Más información</0>."
 
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 msgid "Borrow Fee"
 msgstr "Tasa de Préstamo"
+
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
+msgid "Borrow Fee / Day"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Borrow Fee / Day: ${0}"
@@ -378,6 +399,9 @@ msgid "Checking code..."
 msgstr "Comprobando código..."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim"
 msgstr "Reclamar"
 
@@ -387,6 +411,7 @@ msgid "Claim GMX Rewards"
 msgstr "Reclamar Recompensas GMX"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr "¡Reclamación completada!"
 
@@ -400,6 +425,7 @@ msgid "Claim esGMX Rewards"
 msgstr "Reclamar Recompensas esGMX"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "Reclamación fallida."
 
@@ -421,6 +447,7 @@ msgid "Claimable"
 msgstr "Reclamable"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
 msgstr "Reclamando..."
 
@@ -581,13 +608,20 @@ msgid "Creator"
 msgstr "Creador"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
 msgid "Current Pool Amount"
 msgstr "Cantidad Actual en la Reserva"
 
 #: src/pages/Stake/StakeV2.js
+msgid "Current Reserved"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
 msgid "Current Reserved: {0}<0/>Additional reserve required: {1}<1/>{2}"
 msgstr "Actualmente Reservado: {0}<0/>Reserva adicional requerida: {1}<1/>{2}"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Current Weight"
+msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Dashboard"
@@ -636,6 +670,10 @@ msgstr "¡Depósito enviado!"
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit submitted."
 msgstr "Depósito enviado."
+
+#: src/pages/Stake/StakeV2.js
+msgid "Deposited"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposited!"
@@ -791,7 +829,20 @@ msgstr "Introduzca un código"
 msgid "Enter a price"
 msgstr "Introduce un precio"
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Enter an amount"
 msgstr "Introduzca una cantidad"
 
@@ -834,7 +885,6 @@ msgstr "COMISIONES"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr "Comisiones"
@@ -851,6 +901,7 @@ msgstr "Las comisiones pueden variar dependiendo del activo por el que se compre
 msgid "Fees since"
 msgstr "Comisiones desde"
 
+#: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Fees will be shown once you have entered an amount in the order form."
 msgstr "Las comisiones se mostrarán una vez que haya introducido una cantidad en el formulario de pedido."
@@ -983,8 +1034,24 @@ msgid "Incorrect network"
 msgstr "Red incorrecta"
 
 #: src/components/Exchange/PositionsList.js
+msgid "Initial Collateral"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js
+msgid "Initial Collateral - Borrow Fee + PnL"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js
+msgid "Initial Collateral - Fees + PnL"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral: ${0}"
 msgstr "Garantía Inicial: ${0}"
+
+#: src/components/Exchange/PositionsList.js
+msgid "Initial Collateralt"
+msgstr ""
 
 #: src/App/App.js
 msgid "Install Coinbase Wallet"
@@ -1122,6 +1189,9 @@ msgstr "Datos de liquidez no cargados"
 msgid "Loading..."
 msgstr "Cargando..."
 
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 msgid "Long"
@@ -1144,6 +1214,8 @@ msgstr "Parece que no tienes un código de referencia para compartir. <0/> ¡Cre
 msgid "Loss"
 msgstr "Pérdida"
 
+#: src/components/BuyInputSection/BuyInputSection.js
+#: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
 msgstr "MÁX"
@@ -1167,6 +1239,10 @@ msgstr "Capitalización de Mercado"
 #: src/pages/Stake/StakeV2.js
 msgid "Max"
 msgstr "Máximo"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Max Capacity"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Max Capacity for {0} Reached"
@@ -1243,6 +1319,10 @@ msgstr "Apalancamiento Mín.: 1.1x"
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
 msgstr "Orden Mín. 10 USD"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "More Info"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Multiplier Points APR"
@@ -1336,6 +1416,7 @@ msgstr "Falló la creación de la orden"
 msgid "Order submitted!"
 msgstr "¡Orden enviada!"
 
+#: src/components/Exchange/PositionsList.js
 #: src/pages/Actions/Actions.js
 msgid "Orders"
 msgstr "Órdenes"
@@ -1395,6 +1476,8 @@ msgstr "Por favor, utilice esto sólo para transferencias de cuentas completas."
 msgid "Please switch your network to Arbitrum."
 msgstr "Por favor, cambie su red a Arbitrum."
 
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "GyP"
@@ -1429,6 +1512,7 @@ msgid "Price above Liq. Price"
 msgstr "Precio superior al de liquidación"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Price above Mark Price"
 msgstr "Precio superior al Precio de Referencia"
 
@@ -1436,6 +1520,7 @@ msgstr "Precio superior al Precio de Referencia"
 msgid "Price below Liq. Price"
 msgstr "Precio inferior al de liquidación"
 
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Price below Mark Price"
 msgstr "Precio inferior al Precio de Marca"
@@ -1684,6 +1769,9 @@ msgstr "Compartir"
 msgid "Share Position"
 msgstr "Compartir Posición"
 
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
 msgid "Short"
@@ -1830,6 +1918,10 @@ msgstr "Synapse"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
 msgstr "TOKEN"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Target Weight"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Groups"
@@ -2120,6 +2212,10 @@ msgid "Vault Capacity"
 msgstr "Capacidad del Baúl"
 
 #: src/pages/Stake/StakeV2.js
+msgid "Vault Capacity for your Account"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
 msgid "Vault Capacity for your Account<0/><1/>Deposited: {0} esGMX<2/>Max Capacity: {1} esGMX<3/>"
 msgstr "Capacidad del Baúl para su cuenta<0/><1/>Depositado: {0} esGMX<2/>Capacidad máxima: {1} esGMX<3/>"
 
@@ -2220,6 +2316,10 @@ msgid "WalletConnect"
 msgstr "WalletConnect"
 
 #: src/components/Exchange/SwapBox.js
+msgid "When closing the position, you can select which token you would like to receive the profits in."
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
 msgid "When closing the position, you can select which token you would like to receive."
 msgstr ""
 
@@ -2313,6 +2413,10 @@ msgstr "No has depositado ningún token para su adquisición."
 msgid "You have {0} esGMX (IOU) tokens."
 msgstr "Tienes {0} tokens esGMX (IOU)."
 
+#: src/pages/Stake/StakeV2.js
+msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
+msgstr ""
+
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "Tendrá que estar en esta página para aceptar la transferencia, <0>haga clic aquí</0> para copiar el enlace a esta página si es necesario."
@@ -2369,6 +2473,19 @@ msgstr "{0} GLP se han reservado para adquisiciones."
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP sold for {1} {2}!"
 msgstr "¡{0} GLP vendido por {1} {2}!"
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
+msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
+msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1},  and to <3>swap</3> {2} for other tokens."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
