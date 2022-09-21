@@ -46,7 +46,11 @@ export function TeamMembers({ onMembersChange, team, pendingTxns, setPendingTxns
         setPendingTxns,
       })
 
-      await tx.wait()
+      const receipt = await tx.wait()
+
+      if (receipt.status === 1) {
+        onMembersChange()
+      }
     } catch (err) {
       console.error(err)
     } finally {
