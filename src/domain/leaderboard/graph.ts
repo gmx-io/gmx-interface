@@ -53,7 +53,7 @@ export function useIndividualStats(chainId) {
     })))
 
     setLoading(false)
-  })
+  }, { refreshInterval: 10000 })
 
   return { data, loading }
 }
@@ -92,7 +92,7 @@ export function useTeamsStats(chainId, competitionIndex) {
     })))
 
     setLoading(false)
-  });
+  }, { refreshInterval: 10000 });
 
   return { data, loading }
 }
@@ -207,7 +207,7 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
     })
 
     setLoading(false)
-  })
+  }, { refreshInterval: 10000 })
 
   return { data, loading, exists, revalidate }
 }
