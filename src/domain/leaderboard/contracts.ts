@@ -88,6 +88,23 @@ export function useAccountJoinRequest(chainId, library, competitionIndex, accoun
   return { data, loading, exists, revalidate }
 }
 
+export async function getTeamMembers(chainId, library, competitionIndex, leaderAddress): Promise<string[]> {
+  const members: string[] = []
+
+  const contract = getCompetitionContract(chainId, library)
+
+  for (let i = 0;; i++) {
+    let res = await contract.getTeamMembers(competitionIndex, leaderAddress, (i * 50), (i * 50) + 50)
+    res = res.filter(addr => !isAddressZero(addr))
+    res.forEach(addr => { members.push(addr) })
+    if (res.length < 50) {
+      break
+    }
+  }
+
+  return members
+}
+
 export function createTeam(chainId, library, competitionIndex, name, opts) {
   const contract = getCompetitionContract(chainId, library)
   return callContract(chainId, contract, "createTeam", [competitionIndex, name], opts)

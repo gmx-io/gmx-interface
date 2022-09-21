@@ -11,14 +11,15 @@ type Props = {
   team: Team;
   pendingTxns: any;
   setPendingTxns: any;
+  onMembersChange: () => any;
 }
 
-export function TeamMembers({ team, pendingTxns, setPendingTxns }: Props) {
+export function TeamMembers({ onMembersChange, team, pendingTxns, setPendingTxns }: Props) {
   const { chainId } = useChainId()
   const { library, account } = useWeb3React()
   const [page, setPage] = useState(1)
   const perPage = 5
-  const { data: members, loading } = useTeamMembersStats(chainId, team.competitionIndex, team.leaderAddress, page, perPage)
+  const { data: members, loading, revalidate: revalidateMembersStats } = useTeamMembersStats(chainId, library, team.competitionIndex, team.leaderAddress, page, perPage)
   const [isRemoving, setIsRemoving] = useState(false)
   const { data: competition } = useCompetition(chainId, team.competitionIndex)
 
@@ -81,6 +82,7 @@ export function TeamMembers({ team, pendingTxns, setPendingTxns }: Props) {
           team={team}
           pendingTxns={pendingTxns}
           setPendingTxns={setPendingTxns}
+          onMembersChange={() => { onMembersChange(); revalidateMembersStats(); }}
         />}
         <table className="simple-table">
           <tbody>

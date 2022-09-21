@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { isAddressZero } from "../../lib/legacy";
 import { GRAPHS } from "./constants";
-import { getCompetitionContract } from "./contracts";
+import { getCompetitionContract, getTeamMembers } from "./contracts";
 import { Competition, Position, Stats, Team, TeamMembersStats } from "./types";
 
 export function getGraphClient(chainId) {
@@ -123,91 +123,96 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
     }
   `
 
-  useEffect(() => {
+  const { revalidate } = useSWR([chainId, competitionIndex, leaderAddress, query, library], async () => {
     if (!leaderAddress) {
       setLoading(false)
       setExists(false)
       return
     }
 
-    async function main() {
-      const { data } = await getGraphClient(chainId).query({ query, variables: {
-        id: competitionIndex + "-" + leaderAddress.toLowerCase()
-      }})
-
-      if (data.team !== null) {
-        setData({
-          rank: 1,
-          pnl: Number(data.team.pnl),
-          pnlPercent: Number(data.team.pnlPercent),
-          leaderAddress: ethers.utils.getAddress(leaderAddress),
-          name: data.team.name,
-          members: data.team.members.map(member => ethers.utils.getAddress(member.address)),
-          positions: [],
-          competitionIndex: competitionIndex
-        })
-
-        setExists(true)
-        setLoading(false)
-        return
-      }
-
-      let contract
+    let membersLoadedFromChain = false
+    let membersFromChain: string[] = []
+    if (chainId && library) {
       try {
-        contract = getCompetitionContract(chainId, library)
-      } catch (err) {
-        console.error(err)
-        setExists(false)
-        setLoading(false)
-        return
-      }
-      const team = await contract.getTeam(competitionIndex, leaderAddress)
+        membersFromChain = await getTeamMembers(chainId, library, competitionIndex, leaderAddress)
+        membersLoadedFromChain = true
+      } catch (e) {}
+    }
 
-      if (isAddressZero(team.leaderAddress)) {
-        setExists(false)
-        setLoading(false)
-        return
-      }
+    const { data } = await getGraphClient(chainId).query({ query, variables: {
+      id: competitionIndex + "-" + leaderAddress.toLowerCase()
+    }})
 
-      let members: string[] = []
-      let start = 0
-      let offset = 50
-      while (true) {
-        const res = await contract.getTeamMembers(competitionIndex, leaderAddress, start, offset)
-        const filteredRes = res.filter(addr => !isAddressZero(addr))
-
-        filteredRes.forEach(addr => {
-          members.push(addr)
-        })
-
-        if (filteredRes.length < offset) {
-          break
-        }
-
-        start += offset
-      }
-
+    if (data.team !== null) {
       setData({
         rank: 1,
-        pnl: 0,
-        pnlPercent: 0,
+        pnl: Number(data.team.pnl),
+        pnlPercent: Number(data.team.pnlPercent),
         leaderAddress: ethers.utils.getAddress(leaderAddress),
-        name: team.name,
-        members: members,
+        name: data.team.name,
+        members: membersLoadedFromChain ? membersFromChain : data.team.members.map(member => ethers.utils.getAddress(member.address)),
         positions: [],
         competitionIndex: competitionIndex
       })
 
+      setExists(true)
       setLoading(false)
+      return
     }
 
-    main()
-  }, [chainId, competitionIndex, leaderAddress, query, library])
+    let contract
+    try {
+      contract = getCompetitionContract(chainId, library)
+    } catch (err) {
+      console.error(err)
+      setExists(false)
+      setLoading(false)
+      return
+    }
+    const team = await contract.getTeam(competitionIndex, leaderAddress)
 
-  return { data, loading, exists }
+    if (isAddressZero(team.leaderAddress)) {
+      setExists(false)
+      setLoading(false)
+      return
+    }
+
+    let members: string[] = []
+    let start = 0
+    let offset = 50
+    while (true) {
+      const res = await contract.getTeamMembers(competitionIndex, leaderAddress, start, offset)
+      const filteredRes = res.filter(addr => !isAddressZero(addr))
+
+      filteredRes.forEach(addr => {
+        members.push(addr)
+      })
+
+      if (filteredRes.length < offset) {
+        break
+      }
+
+      start += offset
+    }
+
+    setData({
+      rank: 1,
+      pnl: 0,
+      pnlPercent: 0,
+      leaderAddress: ethers.utils.getAddress(leaderAddress),
+      name: team.name,
+      members: members,
+      positions: [],
+      competitionIndex: competitionIndex
+    })
+
+    setLoading(false)
+  })
+
+  return { data, loading, exists, revalidate }
 }
 
-export function useTeamMembersStats(chainId, competitionIndex, leaderAddress, page, perPage) {
+export function useTeamMembersStats(chainId, library, competitionIndex, leaderAddress, page, perPage) {
   const [data, setData] = useState<TeamMembersStats[]>([]);
   const [loading, setLoading] = useState(true)
 
@@ -229,23 +234,54 @@ export function useTeamMembersStats(chainId, competitionIndex, leaderAddress, pa
     }
   `
 
-  useSWR([chainId, competitionIndex, leaderAddress, page, perPage], async () => {
+  const { revalidate } = useSWR([chainId, library, competitionIndex, leaderAddress, page, perPage], async () => {
+    let addresses: string[] = []
+    let loadedFromChain = false
+
+    if (chainId && library) {
+      try {
+        addresses = await getTeamMembers(chainId, library, competitionIndex, leaderAddress)
+        loadedFromChain = true
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
     const res = await getGraphClient(chainId).query({ query, variables: {
       team: competitionIndex + "-" + leaderAddress.toLowerCase(),
       perPage: Number(perPage),
       skip: Number((page - 1) * perPage),
     }})
 
-    setData(res.data.accountStats.map(stats => ({
-      address: ethers.utils.getAddress(stats.account.address),
-      pnl: Number(stats.pnl),
-      pnlPercent: Number(stats.pnlPercent)
-    })))
+    const stats: TeamMembersStats[] = []
+    res.data.accountStats.forEach(stat => {
+      stats.push({
+        address: ethers.utils.getAddress(stat.account.address),
+        pnl: Number(stat.pnl),
+        pnlPercent: Number(stat.pnlPercent)
+      })
+    })
 
+    let finalData: TeamMembersStats[] = []
+
+    if (loadedFromChain) {
+      addresses.forEach(addr => {
+        const addrStat = stats.find(stat => stat.address === addr)
+        finalData.push({
+          address: addr,
+          pnl: addrStat ? addrStat.pnl : 0,
+          pnlPercent: addrStat ? addrStat.pnl : 0,
+        })
+      })
+    } else {
+      finalData = stats
+    }
+
+    setData(finalData)
     setLoading(false)
   })
 
-  return { data, loading }
+  return { data, loading, revalidate }
 }
 
 export function useCompetition(chainId, competitionIndex) {

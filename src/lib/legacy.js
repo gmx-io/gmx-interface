@@ -32,7 +32,7 @@ export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
 export const MAINNET = 56;
 export const AVALANCHE = 43114;
 export const TESTNET = 97;
-export const ARBITRUM_TESTNET = 421611;
+export const ARBITRUM_TESTNET = 421613;
 export const ARBITRUM = 42161;
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = ARBITRUM;
@@ -45,7 +45,7 @@ const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: false,
   [AVALANCHE]: false,
-  [ARBITRUM_TESTNET]: isDevelopment(),
+  [ARBITRUM_TESTNET]: !isDevelopment(),
 };
 
 const CHAIN_NAMES_MAP = {

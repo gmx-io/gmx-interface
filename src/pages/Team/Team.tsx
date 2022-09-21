@@ -22,7 +22,7 @@ export default function Team({ pendingTxns, setPendingTxns }: Props) {
   const params = useParams<any>();
   const { chainId } = useChainId()
   const { library } = useWeb3React();
-  const { data: team, exists: teamExists, loading: teamLoading } = useTeam(chainId, library, getCurrentCompetitionIndex(chainId), params.leaderAddress);
+  const { data: team, exists: teamExists, loading: teamLoading, revalidate: revalidateTeam } = useTeam(chainId, library, getCurrentCompetitionIndex(chainId), params.leaderAddress);
   const { data: competition, loading: competitionLoading } = useCompetition(chainId, getCurrentCompetitionIndex(chainId))
 
   const isLoading = () => teamLoading || competitionLoading
@@ -54,7 +54,7 @@ export default function Team({ pendingTxns, setPendingTxns }: Props) {
           <>
             <TeamStats team={team} competition={competition}/>
             {competition.active && <TeamPositions team={team}/>}
-            <TeamMembers team={team} pendingTxns={pendingTxns} setPendingTxns={setPendingTxns}/>
+            <TeamMembers onMembersChange={revalidateTeam} team={team} pendingTxns={pendingTxns} setPendingTxns={setPendingTxns}/>
           </>
         )}
       </div>

@@ -44,9 +44,10 @@ type ApproveButtonProps = {
   team: Team,
   pendingTxns: any,
   setPendingTxns: any,
+  onApprove: () => any,
 }
 
-function ApproveButton({ team, pendingTxns, setPendingTxns }: ApproveButtonProps) {
+function ApproveButton({ onApprove, team, pendingTxns, setPendingTxns }: ApproveButtonProps) {
   const { chainId, library, account } = useWeb3React()
   const [value, setValue] = useState("")
   const [open, setOpen] = useState(false)
@@ -129,6 +130,7 @@ function ApproveButton({ team, pendingTxns, setPendingTxns }: ApproveButtonProps
 
       if (receipt.status === 1) {
         setOpen(false)
+        onApprove()
       }
     } catch (err) {
       console.error(err)
@@ -318,9 +320,10 @@ type TeamMemberHeaderProps = {
   team: Team,
   pendingTxns: any,
   setPendingTxns: any,
+  onMembersChange: () => any,
 }
 
-export default function TeamMembersHeader({ team, pendingTxns, setPendingTxns }: TeamMemberHeaderProps) {
+export default function TeamMembersHeader({ onMembersChange, team, pendingTxns, setPendingTxns }: TeamMemberHeaderProps) {
   const { chainId, library, account } = useWeb3React()
   const { exists: hasJoinRequest, revalidate: revalidateJoinRequest } = useAccountJoinRequest(chainId, library, team.competitionIndex, account)
   const { data: memberTeam, revalidate: revalidateMemberTeam } = useMemberTeam(chainId, library, team.competitionIndex, account)
@@ -328,18 +331,23 @@ export default function TeamMembersHeader({ team, pendingTxns, setPendingTxns }:
   const isLeader = () => account === team.leaderAddress
   const isMember = () => memberTeam === team.leaderAddress
 
+  const onQuit = () => {
+    revalidateMemberTeam()
+    onMembersChange()
+  }
+
   return (
     <div className="simple-table-top-header simple-table-top-header-right">
       {isLeader() ? (
         <>
           <InviteButton team={team}/>
-          <ApproveButton team={team} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>
+          <ApproveButton team={team} onApprove={onMembersChange} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>
         </>
       ) : (
         <>
           {!isMember() && !hasJoinRequest && <CreateJoinRequestButton onCreate={revalidateJoinRequest} team={team} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>}
           {!isMember() && hasJoinRequest && <CancelJoinRequestButton onCancel={revalidateJoinRequest} team={team} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>}
-          {isMember() && <QuitTeamButton team={team} onQuit={revalidateMemberTeam} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>}
+          {isMember() && <QuitTeamButton team={team} onQuit={onQuit} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>}
         </>
       )}
     </div>
