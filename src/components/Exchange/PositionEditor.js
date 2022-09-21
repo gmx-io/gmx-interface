@@ -30,7 +30,9 @@ import Modal from "../Modal/Modal";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Token from "../../abis/Token.json";
 import Tooltip from "../Tooltip/Tooltip";
+
 import { getConstant } from "../../config/chains";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { fetcher } from "../../lib/contracts/fetcher";
 import { callContract } from "../../lib/contracts/callContract";
 
@@ -578,8 +580,15 @@ export default function PositionEditor(props) {
                         renderContent={() => {
                           return (
                             <>
-                              Network fee: {formatAmountFree(minExecutionFee, 18, 5)} {nativeTokenSymbol} ($
-                              {formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})<br />
+                              <StatsTooltipRow
+                                label="Network fee"
+                                showDollar={false}
+                                value={`${formatAmountFree(
+                                  minExecutionFee,
+                                  18,
+                                  5
+                                )} ${nativeTokenSymbol} ($${formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})`}
+                              />
                               <br />
                               This is the network cost required to execute the {isDeposit
                                 ? "deposit"

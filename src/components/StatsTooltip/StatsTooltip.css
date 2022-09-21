@@ -1,0 +1,44 @@
+.Tooltip-row {
+  display: grid;
+  margin: 0 0 0.5rem 0;
+  grid-template-columns: 1fr auto;
+}
+
+.Tooltip-row > span.label {
+  margin-right: 0.5rem;
+}
+.Tooltip-row > .Tooltip-row-value {
+  color: white;
+  text-align: right;
+}
+
+.Tooltip-row-values {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.Tooltip-row-values li {
+  padding: 0.25rem 0 0 0;
+  text-align: right;
+}
+
+.Tooltip-number {
+  color: white;
+}
+
+@media (max-width: 700px) {
+  .Tooltip-row {
+    display: block;
+    margin-bottom: 1rem;
+  }
+  .Tooltip-row > span.label {
+    display: block;
+  }
+  .Tooltip-row-values li {
+    text-align: left;
+  }
+  .Tooltip-row > .Tooltip-row-value {
+    text-align: left;
+  }
+}

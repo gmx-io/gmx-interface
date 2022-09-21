@@ -576,17 +576,6 @@ button.App-connect-wallet:hover {
   top: 2px;
 }
 
-.Tooltip-row {
-  display: flex;
-  justify-content: space-between;
-}
-.Tooltip-row > span.label {
-  margin-right: 5px;
-}
-.Tooltip-row > span.amount {
-  color: white;
-}
-
 .App-card-row > div:last-child {
   text-align: right;
 }

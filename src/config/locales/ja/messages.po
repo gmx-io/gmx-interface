@@ -31,7 +31,7 @@ msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<
 msgstr "<0>これによりすべてのトークンは引き出され、リザーブから解除され、べスティングは停止されます。<1/><2/>GMXへ転換されたesGMXトークンはGMXトークンとなります。<3/><4/>引き出しをせずにGMXトークンを請求するには全報酬セクションの下部にある\"請求\"ボタンを使用してください。<5/><6/></0>"
 
 #: src/components/Exchange/SwapBox.js
-msgid "A snapshot of the USD value of your collateral is taken when the position is opened."
+msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -48,7 +48,6 @@ msgstr "APR(実質年利)は毎週水曜日に更新され、その前一週間�
 msgid "AVAILABLE"
 msgstr "利用可能"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -89,13 +88,13 @@ msgstr "紹介コードが追加できませんでした"
 msgid "Adding..."
 msgstr "追加中"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Additional reserve required"
+msgstr ""
+
 #: src/components/Exchange/OrdersToa.js
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr ""
-
-#: src/components/AddressDropdown/AddressDropdown.js
-msgid "Address copied to your clipboard"
-msgstr "アドレスがクリップボードにコピーされました"
 
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
@@ -118,7 +117,6 @@ msgstr "ETH入手後、ネットワークを<0>Arbitrum</0>にセットし、以
 msgid "Allowed Slippage"
 msgstr "スリッページ許容量"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "Amount"
 msgstr "額"
@@ -139,7 +137,7 @@ msgstr "清算が発生した時点で高品質の複数の価格フィードの
 msgid "Announcement"
 msgstr "告知"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "GMXを承認する"
 
@@ -171,11 +169,6 @@ msgstr "{stakingTokenSymbol}を承認中"
 msgid "Approving..."
 msgstr "承認中"
 
-#: src/components/AddressDropdown/AddressDropdown.js
-#: src/components/SettingDropdown/SettingDropdown.js
-msgid "Arbitrum"
-msgstr "Arbitrum"
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Arbitrum APR:"
@@ -202,8 +195,8 @@ msgstr "GLPに入金可能な金額"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-msgid "Available amount to withdraw from GLP."
-msgstr "GLPから出金可能な金額"
+msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
+msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Available on your preferred network"
@@ -258,17 +251,16 @@ msgstr "ブースト率"
 msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "マルチプライヤーポイントで報酬をブーストする。<0>より詳しい情報</0>"
 
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 msgid "Borrow Fee"
 msgstr "借入手数料"
 
 #: src/components/Exchange/PositionsList.js
-msgid "Borrow Fee / Day: ${0}"
-msgstr "1日あたり借入手数料: ${0}"
-
 #: src/components/Exchange/PositionsList.js
-msgid "Borrow Fee: ${0}"
-msgstr "借入手数料: ${0}"
+msgid "Borrow Fee / Day"
+msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Buy"
@@ -373,7 +365,9 @@ msgstr "最低手数料率で利用するには以下の\"手数料節約\"セ�
 msgid "Checking code..."
 msgstr "コード確認中"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim"
 msgstr "請求"
 
@@ -382,7 +376,7 @@ msgstr "請求"
 msgid "Claim GMX Rewards"
 msgstr "GMX報酬の請求"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr "請求完了!"
 
@@ -395,7 +389,7 @@ msgstr "esGMXの請求"
 msgid "Claim esGMX Rewards"
 msgstr "esGMX報酬の請求"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "請求できませんでした。"
 
@@ -416,7 +410,7 @@ msgstr "{wrappedTokenSymbol}報酬の請求"
 msgid "Claimable"
 msgstr "請求可能"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
 msgstr "請求中"
 
@@ -435,10 +429,6 @@ msgstr "クローズ申し込み完了!"
 #: src/components/Exchange/PositionSeller.js
 msgid "Close without profit"
 msgstr "利益なしでクローズ"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Closing Fee"
-msgstr "クローズ手数料"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -516,9 +506,6 @@ msgstr "接続"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Header/AppHeaderUser.tsx
-#: src/components/Referrals/AddAffiliateCode.js
-#: src/components/Referrals/JoinReferralCode.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -577,13 +564,16 @@ msgid "Creator"
 msgstr "作成者"
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
 msgid "Current Pool Amount"
 msgstr "現在のプール額"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Current Reserved: {0}<0/>Additional reserve required: {1}<1/>{2}"
-msgstr "現在のリザーブ額: {0}<0/>必要な追加リザーブ: {1}<1/>{2}"
+msgid "Current Reserved"
+msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Current Weight"
+msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Dashboard"
@@ -593,7 +583,6 @@ msgstr "ダッシュボード"
 msgid "Dashboards"
 msgstr "ダッシュボード"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "Date"
 msgstr "日付"
@@ -634,6 +623,10 @@ msgid "Deposit submitted."
 msgstr "入金申し込み完了。"
 
 #: src/pages/Stake/StakeV2.js
+msgid "Deposited"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
 msgid "Deposited!"
 msgstr "入金完了!"
 
@@ -666,7 +659,6 @@ msgstr "ダウンロード"
 msgid "ETH is needed on Arbitrum to purchase GMX."
 msgstr "ArbitrumでGMXを購入するにはETHが必要です。"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "報酬獲得"
@@ -696,8 +688,6 @@ msgstr "紹介コード編集"
 msgid "Enable Leverage"
 msgstr "レバレッジ有効化"
 
-#: src/components/Exchange/OrdersToa.js
-#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Orders"
@@ -749,17 +739,12 @@ msgstr "レバレッジ有効化中"
 msgid "Enabling Leverage..."
 msgstr "レバレッジ有効化中"
 
-#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enabling Orders..."
 msgstr "注文有効化中"
-
-#: src/components/SettingDropdown/SettingDropdown.js
-msgid "English"
-msgstr "英語"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Enter Price"
@@ -783,7 +768,19 @@ msgstr "コードを入力"
 msgid "Enter a price"
 msgstr "価格を入力"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Enter an amount"
 msgstr "額を入力"
 
@@ -826,7 +823,6 @@ msgstr "手数料"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr "手数料"
@@ -844,6 +840,7 @@ msgid "Fees since"
 msgstr "この時点からの手数料"
 
 #: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Fees will be shown once you have entered an amount in the order form."
 msgstr "オーダーフォームに額を入れると手数料が表示されます。"
 
@@ -858,15 +855,6 @@ msgstr "フロアプライスファンド"
 #: src/components/Exchange/PositionSeller.js
 msgid "Forfeit profit not checked"
 msgstr "喪失利益はチェックされていません"
-
-#: src/components/SettingDropdown/SettingDropdown.js
-msgid "French"
-msgstr "フランス語"
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-msgid "Funds not utilized by current open positions."
-msgstr "現在オープンされているポジションで利用されていない資金"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "GLP Index Composition"
@@ -910,11 +898,6 @@ msgstr "GMXはユーティリティトークン兼ガバナンストークンで
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
-msgstr "GMXトークンを請求することができます。請求するには全報酬セクションの下部にある選択肢を利用してください。"
-
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "GMX transfers not yet enabled"
 msgstr "GMX移転は有効化されていません"
 
@@ -938,10 +921,6 @@ msgstr "大きなスリッページ。ともかく交換する"
 msgid "High USDG Slippage, Long Anyway"
 msgstr "大きなUSDGスリッページ。ともかくロングする"
 
-#: src/components/Header/AppHeaderLinks.tsx
-msgid "Home"
-msgstr "ホーム"
-
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Hop"
 msgstr "ホップ"
@@ -963,8 +942,20 @@ msgid "Incorrect network"
 msgstr "誤ったネットワーク"
 
 #: src/components/Exchange/PositionsList.js
-msgid "Initial Collateral: ${0}"
-msgstr "初期担保: ${0}"
+msgid "Initial Collateral"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js
+msgid "Initial Collateral - Borrow Fee + PnL"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js
+msgid "Initial Collateral - Fees + PnL"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js
+msgid "Initial Collateralt"
+msgstr ""
 
 #: src/App/App.js
 msgid "Install Coinbase Wallet"
@@ -986,10 +977,6 @@ msgstr "GLP残高不足"
 #: src/components/Glp/GlpSwap.js
 msgid "Insufficient liquidity"
 msgstr "流動性不足"
-
-#: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity\", true, \"BUFFER\""
-msgstr "流動性不足\", true, \"バッファー\""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1027,15 +1014,6 @@ msgstr "無効な価格。警告を確認してください"
 #: src/App/App.js
 msgid "Invalid slippage value"
 msgstr "無効なスリッページ値"
-
-#: src/Footer.js
-#: src/Footer.js
-msgid "Jobs"
-msgstr "仕事"
-
-#: src/components/SettingDropdown/SettingDropdown.js
-msgid "Language"
-msgstr "言語"
 
 #: src/pages/Home/Home.js
 msgid "Launch Exchange"
@@ -1102,8 +1080,9 @@ msgstr "流動性データがロードされていません"
 msgid "Loading..."
 msgstr "ロード中"
 
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Long"
 msgstr "ロング"
 
@@ -1124,7 +1103,8 @@ msgstr "シェアできる紹介コードがないようです。<0/> コード�
 msgid "Loss"
 msgstr "損失"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/components/BuyInputSection/BuyInputSection.js
+#: src/components/InputSection/InputSection.js
 msgid "MAX"
 msgstr "最大"
 
@@ -1148,14 +1128,13 @@ msgstr "時価総額"
 msgid "Max"
 msgstr "最大"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Max Capacity"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "Max Capacity for {0} Reached"
 msgstr "{0}の最大キャパシティに到達しています"
-
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-msgid "Max Pool Capacity"
-msgstr "プールの最大キャパシティ"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1224,6 +1203,10 @@ msgstr "最小レバレッジ: 1.1倍"
 msgid "Min order: 10 USD"
 msgstr "最小オーダー金額: 10 USD"
 
+#: src/pages/Dashboard/DashboardV2.js
+msgid "More Info"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Multiplier Points APR"
 msgstr "マルチプライヤーポイントのAPR(実質年利)"
@@ -1237,10 +1220,6 @@ msgstr "マルチスワップ"
 #: src/components/Exchange/PositionsList.js
 msgid "Net Value"
 msgstr "ネット金額"
-
-#: src/components/AddressDropdown/AddressDropdown.js
-msgid "Networks"
-msgstr "ネットワーク"
 
 #: src/components/NetworkDropdown/NetworkDropdown.js
 msgid "Networks and Settings"
@@ -1262,7 +1241,6 @@ msgstr "オープンの注文はありません"
 msgid "No open positions"
 msgstr "オープンのポジションはありません"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "No rebates distribution history yet."
 msgstr "リベート支払い利益はまだありません。"
@@ -1316,7 +1294,7 @@ msgstr "注文が作成できませんでした。"
 msgid "Order submitted!"
 msgstr "注文提出完了!"
 
-#: src/pages/Actions/Actions.js
+#: src/components/Exchange/PositionsList.js
 msgid "Orders"
 msgstr "注文"
 
@@ -1355,10 +1333,6 @@ msgstr "支払い額"
 msgid "Platform and GLP index tokens."
 msgstr "プラットフォームとGLPインデックストークン"
 
-#: src/components/Glp/GlpSwap.js
-msgid "Please enter an amount to see fee percentages"
-msgstr "金額を入力して手数料率を確認してください"
-
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr "紹介コードを入力すると手数料割引を受けられます。"
@@ -1375,7 +1349,8 @@ msgstr "この機能はアカウント全体の移転にのみ利用してくだ
 msgid "Please switch your network to Arbitrum."
 msgstr "ネットワークをArbitrumに切り替えてください。"
 
-#: src/pages/Actions/Actions.js
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
 msgid "PnL"
 msgstr "損益"
 
@@ -1409,6 +1384,7 @@ msgid "Price above Liq. Price"
 msgstr "清算価格を上回る価格"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Price above Mark Price"
 msgstr "マーク価格を上回る価格"
 
@@ -1417,20 +1393,12 @@ msgid "Price below Liq. Price"
 msgstr "清算価格を下回る価格"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Price below Mark Price"
 msgstr "マーク価格を下回る価格"
 
-#: src/components/Exchange/SwapBox.js
-msgid "Price {0} Mark Price"
-msgstr "価格 {0} マーク価格"
-
 #: src/pages/Actions/Actions.js
 msgid "Profit"
-msgstr "利益"
-
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-msgid "Profits In"
 msgstr "利益"
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1459,7 +1427,6 @@ msgstr "保険購入"
 msgid "Read more"
 msgstr "詳細について読む"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates are airdropped weekly."
 msgstr "リベートは毎週エアドロップされます。"
@@ -1592,10 +1559,6 @@ msgstr "言語選択"
 msgid "Select Market"
 msgstr "マーケット選択"
 
-#: src/components/SettingDropdown/SettingDropdown.js
-msgid "Select Network"
-msgstr "ネットワーク選択"
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Select an option"
 msgstr "オプション選択"
@@ -1660,8 +1623,9 @@ msgstr "シェア"
 msgid "Share Position"
 msgstr "ポジションをシェア"
 
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Short"
 msgstr "ショート"
 
@@ -1688,10 +1652,6 @@ msgstr "サイズ"
 #: src/App/App.js
 msgid "Slippage should be less than 5%"
 msgstr "スリッページは5%未満"
-
-#: src/components/SettingDropdown/SettingDropdown.js
-msgid "Spanish"
-msgstr "スペイン語"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Speed up page loading"
@@ -1781,21 +1741,17 @@ msgstr "スワップ注文提出済!"
 msgid "Swap failed."
 msgstr "スワップできませんでした。"
 
-#: src/components/Glp/GlpSwap.js
-msgid "Swap on {0}"
-msgstr "{0}でスワップ"
-
 #: src/components/Exchange/SwapBox.js
 msgid "Swap submitted!"
 msgstr "スワップ申し込み完了!"
 
+#: src/components/Glp/GlpSwap.js
+msgid "Swap {0} on 1inch"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swaps disabled, pending {0} upgrade"
 msgstr ""
-
-#: src/components/SettingDropdown/SettingDropdown.js
-msgid "Switch Network"
-msgstr "ネットワーク変更"
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
@@ -1807,6 +1763,10 @@ msgstr "Synapse"
 msgid "TOKEN"
 msgstr "トークン"
 
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Target Weight"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Groups"
 msgstr "Telegramグループ"
@@ -1814,10 +1774,6 @@ msgstr "Telegramグループ"
 #: src/components/Footer/Footer.js
 msgid "Terms and Conditions"
 msgstr "規約"
-
-#: src/pages/Home/Home.js
-msgid "Test"
-msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "The Boosted APR is from your staked Multiplier Points."
@@ -1880,8 +1836,6 @@ msgstr "総計"
 msgid "Total Fees"
 msgstr "手数料総額"
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr "リベート総額"
@@ -1913,7 +1867,6 @@ msgstr "総供給量"
 msgid "Total Traders Referred"
 msgstr "紹介した全トレーダー"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
@@ -1923,7 +1876,6 @@ msgstr "トレード総額"
 msgid "Total Users"
 msgstr "ユーザー総数"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
@@ -1942,14 +1894,6 @@ msgstr "トレード"
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
 msgstr "BTC、ETH、AVAXなどの主要仮想通貨を最大30倍のレバレッジで直接自分のウォレットから取引可能"
 
-#: src/components/SettingDropdown/SettingDropdown.js
-msgid "Trade Settings"
-msgstr "トレード設定"
-
-#: src/components/SettingDropdown/SettingDropdown.js
-msgid "Trade settings"
-msgstr "トレード設定"
-
 #: src/components/Common/SEO.js
 msgid "Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet on Arbitrum and Avalanche."
 msgstr "BTC、ETH、AVAXなどの主要仮想通貨のスポットやパーペチュアルを最大30倍のレバレッジで直接自分のウォレットからArbitrumとAvalanche上で取引可能"
@@ -1966,7 +1910,6 @@ msgstr "紹介したトレーダー"
 msgid "Trading guide"
 msgstr "トレード案内"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "Transaction"
 msgstr "取引"
@@ -2088,8 +2031,8 @@ msgid "Vault Capacity"
 msgstr "ボールトのキャパシティ"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Vault Capacity for your Account<0/><1/>Deposited: {0} esGMX<2/>Max Capacity: {1} esGMX<3/>"
-msgstr "本アカウントのボールトキャパシティ<0/><1/>入金済: {0} esGMX<2/>最大キャパシティ: {1} esGMX<3/>"
+msgid "Vault Capacity for your Account"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Vest with GLP on Arbitrum"
@@ -2188,7 +2131,7 @@ msgid "WalletConnect"
 msgstr "WalletConnect"
 
 #: src/components/Exchange/SwapBox.js
-msgid "When closing the position, you can select which token you would like to receive."
+msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -2281,6 +2224,10 @@ msgstr "べスティング用のトークンが入金されていません。"
 msgid "You have {0} esGMX (IOU) tokens."
 msgstr "あなたは{0} esGMX (IOU)トークンを保有しています。"
 
+#: src/pages/Stake/StakeV2.js
+msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
+msgstr ""
+
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "You will need to be on this page to accept the transfer, <0>click here</0> to copy the link to this page if needed."
 msgstr "移転を受け入れるにはこのページを開く必要があります。必要に応じて、このページへのリンクをコピーしておいてください。<0>click here</0>"
@@ -2301,10 +2248,6 @@ msgstr "移転は完了しました。"
 msgid "Your transfer has been initiated."
 msgstr "移転が開始されました。"
 
-#: src/Footer.js
-msgid "lolipopi"
-msgstr "lolipopi"
-
 #: src/pages/Exchange/Exchange.js
 msgid "order"
 msgstr "注文"
@@ -2317,10 +2260,6 @@ msgstr "注文"
 #: src/App/App.js
 msgid "to start using GMX"
 msgstr "GMXを始めるには"
-
-#: src/components/NetworkDropdown/NetworkDropdown.js
-msgid "{0}"
-msgstr "{0}"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP (${1})"
@@ -2337,6 +2276,19 @@ msgstr "{0} GLPがべスティングのためにリザーブされました。"
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP sold for {1} {2}!"
 msgstr "{0} GLPを売却し、{1} {2}を得ました!"
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
+msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."
+msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1},  and to <3>swap</3> {2} for other tokens."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2359,14 +2311,3 @@ msgstr "{chainName}の全統計の開始日は{totalStatsStartDate}です。<0/>
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR(実質年利)"
-
-#: src/Footer.js
-#: src/Footer.js
-#: src/Footer.js
-#: src/Footer.js
-msgid "{text}"
-msgstr "{text}"
-
-#: src/components/Exchange/OrdersToa.js
-msgid "さらに、トリガー注文は成り行き注文であり、トリガー価格にての決済が保証されているわけではありません。"
-msgstr ""

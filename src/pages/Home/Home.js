@@ -1,8 +1,6 @@
 import React from "react";
 import Footer from "../../components/Footer/Footer";
-
 import cx from "classnames";
-
 import "./Home.css";
 
 import simpleSwapIcon from "../../img/ic_simpleswaps.svg";
@@ -32,7 +30,6 @@ import {
 import { useUserStat } from "../../domain/legacy";
 
 import TokenCard from "../../components/TokenCard/TokenCard";
-
 import { Trans } from "@lingui/macro";
 import { HeaderLink } from "../../components/Header/HeaderLink";
 

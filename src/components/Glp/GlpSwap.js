@@ -64,6 +64,7 @@ import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 import "./GlpSwap.css";
 import AssetDropdown from "../../pages/Dashboard/AssetDropdown";
 import SwapErrorModal from "./SwapErrorModal";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { fetcher } from "../../lib/contracts/fetcher";
 import { callContract } from "../../lib/contracts/callContract";
 
@@ -90,6 +91,21 @@ function getStakingData(stakingInfo) {
   }
 
   return data;
+}
+
+function getTooltipContent(managedUsd, tokenInfo, token) {
+  return (
+    <>
+      <StatsTooltipRow
+        label={t`Current Pool Amount`}
+        value={[
+          `$${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`,
+          `(${formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 0, true)} ${token.symbol})`,
+        ]}
+      />
+      <StatsTooltipRow label="Max Pool Capacity" value={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)} />
+    </>
+  );
 }
 
 export default function GlpSwap(props) {
@@ -783,20 +799,16 @@ export default function GlpSwap(props) {
                   renderContent={() => {
                     return (
                       <>
-                        <div className="Tooltip-row">
-                          <span className="label">
-                            <Trans>
-                              {nativeTokenSymbol} ({wrappedTokenSymbol}) APR
-                            </Trans>
-                          </span>
-                          <span>{formatAmount(feeGlpTrackerApr, 2, 2, false)}%</span>
-                        </div>
-                        <div className="Tooltip-row">
-                          <span className="label">
-                            <Trans>Escrowed GMX APR</Trans>
-                          </span>
-                          <span>{formatAmount(stakedGlpTrackerApr, 2, 2, false)}%</span>
-                        </div>
+                        <StatsTooltipRow
+                          label={t`${nativeTokenSymbol} (${wrappedTokenSymbol}) APR`}
+                          value={`${formatAmount(feeGlpTrackerApr, 2, 2, false)}%`}
+                          showDollar={false}
+                        />
+                        <StatsTooltipRow
+                          label={t`Escrowed GMX APR`}
+                          value={`${formatAmount(stakedGlpTrackerApr, 2, 2, false)}%`}
+                          showDollar={false}
+                        />
                       </>
                     );
                   }}
@@ -921,6 +933,7 @@ export default function GlpSwap(props) {
               />
             </BuyInputSection>
           )}
+
           <div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">{feeBasisPoints > 50 ? t`WARNING: High Fees` : t`Fees`}</div>
@@ -930,15 +943,18 @@ export default function GlpSwap(props) {
                     handle={isBuying && isSwapTokenCapReached ? "NA" : feePercentageText}
                     position="right-bottom"
                     renderContent={() => {
+                      if (!feeBasisPoints) {
+                        return (
+                          <div className="text-white">
+                            Fees will be shown once you have entered an amount in the order form.
+                          </div>
+                        );
+                      }
                       return (
-                        <>
-                          {feeBasisPoints > 50 && (
-                            <div>
-                              <Trans>To reduce fees, select a different asset to pay with.</Trans>
-                            </div>
-                          )}
+                        <div className="text-white">
+                          {feeBasisPoints > 50 && <Trans>To reduce fees, select a different asset to pay with.</Trans>}
                           <Trans>Check the "Save on Fees" section below to get the lowest fee percentages.</Trans>
-                        </>
+                        </div>
                       );
                     }}
                   />
@@ -948,15 +964,18 @@ export default function GlpSwap(props) {
                     handle={feePercentageText}
                     position="right-bottom"
                     renderContent={() => {
+                      if (!feeBasisPoints) {
+                        return (
+                          <div className="text-white">
+                            Fees will be shown once you have entered an amount in the order form.
+                          </div>
+                        );
+                      }
                       return (
-                        <>
-                          {feeBasisPoints > 50 && (
-                            <div>
-                              <Trans>To reduce fees, select a different asset to receive.</Trans>
-                            </div>
-                          )}
+                        <div className="text-white">
+                          {feeBasisPoints > 50 && <Trans>To reduce fees, select a different asset to receive.</Trans>}
                           <Trans>Check the "Save on Fees" section below to get the lowest fee percentages.</Trans>
-                        </>
+                        </div>
                       );
                     }}
                   />
@@ -1009,23 +1028,24 @@ export default function GlpSwap(props) {
                     handle={t`AVAILABLE`}
                     tooltipIconPosition="right"
                     position="right-bottom text-none"
-                    renderContent={() => t`Available amount to deposit into GLP.`}
+                    renderContent={() => (
+                      <p className="text-white">
+                        <Trans>Available amount to deposit into GLP.</Trans>
+                      </p>
+                    )}
                   />
                 ) : (
                   <Tooltip
                     handle={t`AVAILABLE`}
                     tooltipIconPosition="right"
-                    position="right-bottom text-none"
+                    position="center-bottom text-none"
                     renderContent={() => {
                       return (
-                        <>
-                          <div>
-                            <Trans>Available amount to withdraw from GLP.</Trans>
-                          </div>
-                          <div>
-                            <Trans>Funds not utilized by current open positions.</Trans>
-                          </div>
-                        </>
+                        <p className="text-white">
+                          <Trans>
+                            Available amount to withdraw from GLP. Funds not utilized by current open positions.
+                          </Trans>
+                        </p>
                       );
                     }}
                   />
@@ -1041,11 +1061,9 @@ export default function GlpSwap(props) {
                   position="right-bottom text-none"
                   renderContent={() => {
                     return (
-                      <>
-                        <div>
-                          <Trans>Fees will be shown once you have entered an amount in the order form.</Trans>
-                        </div>
-                      </>
+                      <div className="text-white">
+                        <Trans>Fees will be shown once you have entered an amount in the order form.</Trans>
+                      </div>
                     );
                   }}
                 />
@@ -1114,8 +1132,9 @@ export default function GlpSwap(props) {
                         handle="NA"
                         position="right-bottom"
                         renderContent={() => (
-                          <div>
+                          <div className="text-white">
                             <Trans>Max pool capacity reached for {tokenInfo.symbol}</Trans>
+
                             <br />
                             <br />
                             <Trans>Please mint GLP using another token</Trans>
@@ -1166,21 +1185,7 @@ export default function GlpSwap(props) {
                           }
                           position="right-bottom"
                           tooltipIconPosition="right"
-                          renderContent={() => {
-                            return (
-                              <>
-                                <Trans>Current Pool Amount</Trans>: ${formatAmount(managedUsd, USD_DECIMALS, 2, true)} (
-                                {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol})
-                                <br />
-                                <br />
-                                <Trans>Current Pool USD Reference Amount</Trans>: $
-                                {formatAmount(tokenInfo.usdgAmount, USDG_DECIMALS, 2, true)}
-                                <br />
-                                <br />
-                                <Trans>Max Pool Capacity</Trans>: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
-                              </>
-                            );
-                          }}
+                          renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         />
                       </div>
                     )}
@@ -1194,17 +1199,7 @@ export default function GlpSwap(props) {
                           }
                           position="right-bottom"
                           tooltipIconPosition="right"
-                          renderContent={() => {
-                            return (
-                              <>
-                                Current Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)}
-                                {token.symbol}
-                                <br />
-                                <br />
-                                Max Pool Capacity: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
-                              </>
-                            );
-                          }}
+                          renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         />
                       </div>
                     )}
@@ -1286,9 +1281,11 @@ export default function GlpSwap(props) {
                     <Tooltip
                       handle="NA"
                       position="right-bottom"
-                      renderContent={() =>
-                        t`Max pool capacity reached for ${tokenInfo.symbol}. Please mint GLP using another token`
-                      }
+                      renderContent={() => (
+                        <Trans>
+                          Max pool capacity reached for {tokenInfo.symbol}. Please mint GLP using another token
+                        </Trans>
+                      )}
                     />
                   );
                 case (isBuying && !isCapReached) || (!isBuying && managedUsd?.gt(0)):
@@ -1318,53 +1315,42 @@ export default function GlpSwap(props) {
                   {isBuying && (
                     <div className="App-card-row">
                       <Tooltip
-                        className="label"
                         handle="Available"
                         position="left-bottom"
-                        renderContent={() => t`Available amount to deposit into GLP.`}
+                        renderContent={() => (
+                          <p className="text-white">
+                            <Trans>Available amount to deposit into GLP.</Trans>
+                          </p>
+                        )}
                       />
                       <div>
                         <Tooltip
                           handle={amountLeftToDeposit && `$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`}
                           position="right-bottom"
                           tooltipIconPosition="right"
-                          renderContent={() => {
-                            return (
-                              <>
-                                <Trans>Current Pool Amount</Trans>: ${formatAmount(managedUsd, USD_DECIMALS, 2, true)} (
-                                {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)} {token.symbol})
-                                <br />
-                                <br />
-                                <Trans>Current Pool USD Reference Amount</Trans>: $
-                                {formatAmount(tokenInfo.usdgAmount, USDG_DECIMALS, 2, true)}
-                                <br />
-                                <br />
-                                <Trans>Max Pool Capacity</Trans>: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
-                              </>
-                            );
-                          }}
+                          renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         />
                       </div>
                     </div>
                   )}
                   {!isBuying && (
                     <div className="App-card-row">
-                      <Tooltip
-                        handle={t`Available`}
-                        position="left-bottom"
-                        renderContent={() => {
-                          return (
-                            <>
-                              <div>
-                                <Trans>Available amount to withdraw from GLP.</Trans>
-                              </div>
-                              <div>
-                                <Trans>Funds not utilized by current open positions.</Trans>
-                              </div>
-                            </>
-                          );
-                        }}
-                      />
+                      <div className="label">
+                        <Tooltip
+                          handle={t`Available`}
+                          position="left-bottom"
+                          renderContent={() => {
+                            return (
+                              <p className="text-white">
+                                <Trans>
+                                  Available amount to withdraw from GLP. Funds not utilized by current open positions.
+                                </Trans>
+                              </p>
+                            );
+                          }}
+                        />
+                      </div>
+
                       <div>
                         <Tooltip
                           handle={
@@ -1374,17 +1360,7 @@ export default function GlpSwap(props) {
                           }
                           position="right-bottom"
                           tooltipIconPosition="right"
-                          renderContent={() => {
-                            return (
-                              <>
-                                Current Pool Amount: {formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 2, true)}
-                                {token.symbol}
-                                <br />
-                                <br />
-                                Max Pool Capacity: ${formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)}
-                              </>
-                            );
-                          }}
+                          renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
                         />
                       </div>
                     </div>
@@ -1400,13 +1376,17 @@ export default function GlpSwap(props) {
                     </div>
                   </div>
                   <div className="App-card-row">
-                    <div className="label">
+                    <div>
                       {tokenFeeBps ? (
                         t`Fees`
                       ) : (
                         <Tooltip
-                          handle={t`Fees`}
-                          renderContent={() => t`Please enter an amount to see fee percentages`}
+                          handle="Fees"
+                          renderContent={() => (
+                            <p className="text-white">
+                              <Trans>Fees will be shown once you have entered an amount in the order form.</Trans>
+                            </p>
+                          )}
                         />
                       )}
                     </div>
