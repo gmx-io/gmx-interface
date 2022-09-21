@@ -68,10 +68,10 @@
     "lint": "node node_modules/.bin/eslint src",
     "pre-commit": "npm run test -- --watchAll=false && npm run lint",
     "prepare": "husky install && yarn lingui:prepare",
-    "extract": "NODE_ENV=development lingui extract",
+    "extract": "NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile",
-    "lingui:prepare": "yarn extract && yarn compile",
-    "lingui:generate": "lingui extract --overwrite $(git diff --name-only --staged)"
+    "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
+    "lingui:generate": "NODE_ENV=development lingui extract --overwrite $(git diff --name-only --staged)"
   },
   "eslintConfig": {
     "extends": [

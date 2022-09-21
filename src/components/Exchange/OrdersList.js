@@ -39,7 +39,7 @@ export default function OrdersList(props) {
     orders,
     hideActions,
     chainId,
-    savedShouldDisableOrderValidation,
+    savedShouldDisableValidationForTesting,
     cancelOrderIdList,
     setCancelOrderIdList,
   } = props;
@@ -491,7 +491,7 @@ export default function OrdersList(props) {
           library={library}
           totalTokenWeights={totalTokenWeights}
           usdgSupply={usdgSupply}
-          savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
+          savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
         />
       )}
     </React.Fragment>

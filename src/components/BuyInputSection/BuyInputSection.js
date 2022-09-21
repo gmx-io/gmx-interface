@@ -1,8 +1,6 @@
 import React from "react";
 import cx from "classnames";
-
 import "./BuyInputSection.css";
-
 import { Trans } from "@lingui/macro";
 
 export default function BuyInputSection(props) {
