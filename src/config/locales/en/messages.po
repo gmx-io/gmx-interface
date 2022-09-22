@@ -820,9 +820,6 @@ msgstr "Exit Price"
 msgid "FEES"
 msgstr "FEES"
 
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr "Fees"
@@ -1310,7 +1307,6 @@ msgstr "Overview"
 msgid "POOL"
 msgstr "POOL"
 
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
 msgstr "PRICE"
@@ -1366,16 +1362,7 @@ msgstr "Position close disabled, pending {0} upgrade"
 msgid "Positions"
 msgstr "Positions"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Price"
 msgstr "Price"
 
@@ -1692,9 +1679,6 @@ msgid "Stake submitted!"
 msgstr "Stake submitted!"
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Staked"
 msgstr "Staked"
 
@@ -1758,7 +1742,6 @@ msgstr "Swaps disabled, pending {0} upgrade"
 msgid "Synapse"
 msgstr "Synapse"
 
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
 msgstr "TOKEN"
@@ -1846,9 +1829,6 @@ msgstr "Total Rewards"
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Total Staked"
 msgstr "Total Staked"
 

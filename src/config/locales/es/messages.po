@@ -820,9 +820,6 @@ msgstr "Precio de Salida"
 msgid "FEES"
 msgstr "COMISIONES"
 
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr "Comisiones"
@@ -1310,7 +1307,6 @@ msgstr "Resumen"
 msgid "POOL"
 msgstr "RESERVA"
 
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
 msgstr "PRECIO"
@@ -1366,16 +1362,7 @@ msgstr ""
 msgid "Positions"
 msgstr "Posiciones"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Price"
 msgstr "Precio"
 
@@ -1692,9 +1679,6 @@ msgid "Stake submitted!"
 msgstr "¡Stake enviado!"
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Staked"
 msgstr "Stakeado"
 
@@ -1758,7 +1742,6 @@ msgstr ""
 msgid "Synapse"
 msgstr "Synapse"
 
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
 msgstr "TOKEN"
@@ -1846,9 +1829,6 @@ msgstr "Recompensas Totales"
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Total Staked"
 msgstr "Total Stakeado"
 

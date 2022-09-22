@@ -820,9 +820,6 @@ msgstr "退出価格"
 msgid "FEES"
 msgstr "手数料"
 
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr "手数料"
@@ -1310,7 +1307,6 @@ msgstr "概要"
 msgid "POOL"
 msgstr "プール"
 
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
 msgstr "価格"
@@ -1366,16 +1362,7 @@ msgstr ""
 msgid "Positions"
 msgstr "ポジション"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Price"
 msgstr "価格"
 
@@ -1692,9 +1679,6 @@ msgid "Stake submitted!"
 msgstr "ステーク申し込み完了!"
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Staked"
 msgstr "ステーク済"
 
@@ -1758,7 +1742,6 @@ msgstr ""
 msgid "Synapse"
 msgstr "Synapse"
 
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
 msgstr "トークン"
@@ -1846,9 +1829,6 @@ msgstr "報酬総額"
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Total Staked"
 msgstr "ステーク総額"
 

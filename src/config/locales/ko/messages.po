@@ -820,9 +820,6 @@ msgstr "매도 가격"
 msgid "FEES"
 msgstr "수수료"
 
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr "수수료"
@@ -1310,7 +1307,6 @@ msgstr "개요"
 msgid "POOL"
 msgstr "풀"
 
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
 msgstr "가격"
@@ -1366,16 +1362,7 @@ msgstr ""
 msgid "Positions"
 msgstr "포지션"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Price"
 msgstr "가격"
 
@@ -1692,9 +1679,6 @@ msgid "Stake submitted!"
 msgstr "스테이킹 제출 완료!"
 
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Staked"
 msgstr "스테이킹 완료"
 
@@ -1758,7 +1742,6 @@ msgstr ""
 msgid "Synapse"
 msgstr "Synapse"
 
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
 msgstr "토큰"
@@ -1846,9 +1829,6 @@ msgstr "총 보상"
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
 msgid "Total Staked"
 msgstr "총 스테이킹"
 
