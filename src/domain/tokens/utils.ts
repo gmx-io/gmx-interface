@@ -11,7 +11,7 @@ import {
   USDG_DECIMALS,
   USD_DECIMALS,
 } from "../../lib/legacy";
-import { InfoTokens } from "./types";
+import { InfoTokens, Token } from "./types";
 
 export function getLowestFeeTokenForBuyGlp(
   chainId: number,
@@ -22,7 +22,7 @@ export function getLowestFeeTokenForBuyGlp(
   infoTokens: InfoTokens,
   fromTokenAddress: string,
   swapUsdMin: BigNumber
-) {
+): { token: Token; fees: number; amountLeftToDeposit: BigNumber } | undefined {
   if (!chainId || !toAmount || !infoTokens || !glpPrice || !usdgSupply || !totalTokenWeights || !swapUsdMin) {
     return;
   }
@@ -47,13 +47,15 @@ export function getLowestFeeTokenForBuyGlp(
         .mul(expandDecimals(1, USD_DECIMALS))
         .div(expandDecimals(1, USDG_DECIMALS));
     }
-    return { ...token, fees, amountLeftToDeposit };
+    return { token, fees, amountLeftToDeposit };
   });
 
   const tokensWithLiquidity = tokensData
     .filter(
-      (token) =>
-        token.address !== fromTokenAddress && token.hasOwnProperty("fees") && swapUsdMin.lt(token.amountLeftToDeposit)
+      (asset) =>
+        asset.token.address !== fromTokenAddress &&
+        asset.hasOwnProperty("fees") &&
+        swapUsdMin.lt(asset.amountLeftToDeposit)
     )
     .sort((a, b) => a.fees - b.fees);
   return tokensWithLiquidity.length > 0

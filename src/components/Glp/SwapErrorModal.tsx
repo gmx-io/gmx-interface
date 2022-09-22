@@ -22,11 +22,6 @@ type Props = {
   infoTokens: InfoTokens;
 };
 
-interface LowestFeeToken extends Token {
-  fees: number;
-  amountLeftToDeposit: BigNumber;
-}
-
 export default function SwapErrorModal({
   swapToken,
   isVisible,
@@ -39,20 +34,21 @@ export default function SwapErrorModal({
   infoTokens,
   swapUsdMin,
 }: Props) {
-  const [lowestFeeToken, setLowestFeeToken] = useState<LowestFeeToken>();
+  const [lowestFeeToken, setLowestFeeToken] = useState<
+    { token: Token; fees: number; amountLeftToDeposit: BigNumber } | undefined
+  >();
   useEffect(() => {
-    setLowestFeeToken(
-      getLowestFeeTokenForBuyGlp(
-        chainId,
-        glpAmount,
-        glpPrice,
-        usdgSupply,
-        totalTokenWeights,
-        infoTokens,
-        swapToken.address,
-        swapUsdMin
-      )
+    const lowestFeeTokenInfo = getLowestFeeTokenForBuyGlp(
+      chainId,
+      glpAmount,
+      glpPrice,
+      usdgSupply,
+      totalTokenWeights,
+      infoTokens,
+      swapToken.address,
+      swapUsdMin
     );
+    setLowestFeeToken(lowestFeeTokenInfo);
   }, [chainId, glpAmount, glpPrice, usdgSupply, totalTokenWeights, infoTokens, swapUsdMin, swapToken.address]);
 
   const label = `${swapToken?.symbol} Capacity Reached`;
@@ -75,7 +71,8 @@ export default function SwapErrorModal({
 
   const nativeToken = getNativeToken(chainId);
   const inputCurrency = swapToken.address === AddressZero ? nativeToken.symbol : swapToken.address;
-  const outputCurrency = lowestFeeToken?.address === AddressZero ? nativeToken.symbol : lowestFeeToken?.address;
+  const outputCurrency =
+    lowestFeeToken?.token.address === AddressZero ? nativeToken.symbol : lowestFeeToken?.token.address;
   const oneInchUrl = get1InchSwapUrl(chainId, inputCurrency, outputCurrency);
 
   return (
@@ -84,7 +81,7 @@ export default function SwapErrorModal({
       <p>Check the "Save on Fees" section for tokens with the lowest fees.</p>
       <p>
         <a href={oneInchUrl} target="_blank" rel="noreferrer">
-          Swap {swapToken.symbol} to {lowestFeeToken?.symbol} on 1inch
+          Swap {swapToken.symbol} to {lowestFeeToken?.token.symbol} on 1inch
         </a>
       </p>
     </Modal>
