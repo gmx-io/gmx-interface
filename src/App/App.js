@@ -490,6 +490,7 @@ function FullApp() {
                   savedSlippageAmount={savedSlippageAmount}
                   setPendingTxns={setPendingTxns}
                   connectWallet={connectWallet}
+                  savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
                 />
               </Route>
               <Route exact path="/jobs">

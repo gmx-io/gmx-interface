@@ -19,5 +19,7 @@ function createClient(uri) {
 }
 
 export function get1InchSwapUrl(chainId, from, to) {
-  return `https://app.1inch.io/#/${chainId}/unified/swap/${from}/${to}`;
+  const rootUrl = `https://app.1inch.io/#/${chainId}/unified/swap`;
+  if (!from && !to) return rootUrl;
+  return `${rootUrl}/${from}/${to}`;
 }

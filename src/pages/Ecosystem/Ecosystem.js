@@ -227,6 +227,15 @@ export default function Ecosystem() {
       creatorLink: "https://twitter.com/laevitas1",
       chainIds: [ARBITRUM],
     },
+    {
+      title: "GMX Blueberry Leaderboard",
+      link: "https://www.blueberryboard.com",
+      linkLabel: "blueberryboard.com",
+      about: "GBC NFTs APR tracker and rewards",
+      creatorLabel: "@kyzoeth",
+      creatorLink: "https://twitter.com/kyzoeth",
+      chainIds: [ARBITRUM],
+    },
   ];
 
   const integrations = [

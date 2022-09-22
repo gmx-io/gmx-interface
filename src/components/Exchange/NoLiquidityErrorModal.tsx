@@ -1,7 +1,7 @@
 import { getNativeToken } from "../../config/Tokens";
 import { ethers } from "ethers";
 import Modal from "../Modal/Modal";
-import { InfoToken, Token } from "../../domain/tokens/types";
+import { TokenInfo, Token } from "../../domain/tokens/types";
 import { get1InchSwapUrl } from "../../domain/common";
 
 const { AddressZero } = ethers.constants;
@@ -13,7 +13,7 @@ type Props = {
   isLong: boolean;
   fromToken: Token;
   toToken: Token;
-  shortCollateralToken: InfoToken;
+  shortCollateralToken: TokenInfo;
   setModalError: () => void;
 };
 
