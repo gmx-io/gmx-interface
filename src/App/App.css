@@ -600,6 +600,10 @@ button.App-connect-wallet:hover {
   margin: 0.62rem;
 }
 
+.App-card-options-right {
+  text-align: right;
+}
+
 .App-header a.App-header-link-main,
 .App-header .App-header-link-main {
   font-size: 1.7rem;

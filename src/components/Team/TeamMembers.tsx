@@ -25,6 +25,7 @@ export function TeamMembers({ onMembersChange, team, pendingTxns, setPendingTxns
 
   const { hasTeam: accountHasTeam, data: memberTeam } = useMemberTeam(chainId, library, getCurrentCompetitionIndex(chainId), account)
   const isTeamLeader = () => account && account === team.leaderAddress;
+
   const showTeamMembersHeader = () =>
     competition.registrationActive
     && account
@@ -83,6 +84,7 @@ export function TeamMembers({ onMembersChange, team, pendingTxns, setPendingTxns
       </div>
       <div className="simple-table-container">
         {showTeamMembersHeader() && <TeamMembersHeader
+          competition={competition}
           team={team}
           pendingTxns={pendingTxns}
           setPendingTxns={setPendingTxns}

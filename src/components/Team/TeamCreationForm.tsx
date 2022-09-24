@@ -113,7 +113,7 @@ export default function TeamCreationForm({ competition, connectWallet, pendingTx
               placeholder="Team name"
               className="text-input mb-sm"
             />
-            <button type="submit" className="App-cta Exchange-swap-button" disabled={!isFormValid()}>
+            <button type="submit" className="App-cta Exchange-swap-button" disabled={!isFormValid() || isProcessing}>
               {getButtonText()}
             </button>
           </form>

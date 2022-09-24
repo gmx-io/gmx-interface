@@ -328,7 +328,7 @@ const getWalletConnectConnector = () => {
     rpc: {
       [AVALANCHE]: AVALANCHE_RPC_PROVIDERS[0],
       [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0],
-      [ARBITRUM_TESTNET]: "https://rinkeby.arbitrum.io/rpc",
+      [ARBITRUM_TESTNET]: "https://goerli-rollup.arbitrum.io/rpc",
     },
     qrcode: true,
     chainId,
@@ -2152,8 +2152,8 @@ const NETWORK_METADATA = {
       symbol: "ETH",
       decimals: 18,
     },
-    rpcUrls: ["https://rinkeby.arbitrum.io/rpc"],
-    blockExplorerUrls: ["https://rinkeby-explorer.arbitrum.io/"],
+    rpcUrls: ["https://goerli-rollup.arbitrum.io/rpc"],
+    blockExplorerUrls: ["https://goerli-rollup-explorer.arbitrum.io/"],
   },
   [ARBITRUM]: {
     chainId: "0x" + ARBITRUM.toString(16),

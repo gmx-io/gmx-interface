@@ -1,20 +1,21 @@
-import { Team } from "../../domain/leaderboard/types";
+import { Competition, Team } from "../../domain/leaderboard/types";
 import "./TeamMembersHeader.css";
-import { CHAIN_ID_QUERY_PARAM, helperToast, useChainId } from "../../lib/legacy";
+import { CHAIN_ID_QUERY_PARAM, helperToast, shortenAddress, useChainId } from "../../lib/legacy";
 import { getTeamUrl } from "../../domain/leaderboard/urls";
 import { useCopyToClipboard } from "react-use";
 import useRouteQuery from "../../lib/useRouteQuery";
 import Modal from "../Modal/Modal";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import { approveJoinRequest, cancelJoinRequest, createJoinRequest, getAccountJoinRequest, removeMember, useAccountJoinRequest, useMemberTeam } from "../../domain/leaderboard/contracts";
+import { FiX } from "react-icons/fi";
 
-type InviteButtonprops = {
+type Inviteprops = {
   team: Team,
 }
 
-function InviteButton({ team }: InviteButtonprops) {
+function Invite({ team }: Inviteprops) {
   const { chainId } = useChainId()
   const query = useRouteQuery()
   const [,copyToClipboard] = useCopyToClipboard()
@@ -34,26 +35,33 @@ function InviteButton({ team }: InviteButtonprops) {
   }
 
   return (
-    <button className="default-btn" onClick={copyInviteLink}>
+    <button className="App-button-option" onClick={copyInviteLink}>
       Copy Invite Link
     </button>
   )
 }
 
-type ApproveButtonProps = {
+type ApproveProps = {
   team: Team,
   pendingTxns: any,
   setPendingTxns: any,
   onApprove: () => any,
+  competition: Competition,
 }
 
-function ApproveButton({ onApprove, team, pendingTxns, setPendingTxns }: ApproveButtonProps) {
+function Approve({ competition, onApprove, team, pendingTxns, setPendingTxns }: ApproveProps) {
   const { chainId, library, account } = useWeb3React()
   const [value, setValue] = useState("")
   const [open, setOpen] = useState(false)
   const [inputError, setInputError] = useState("")
   const [isChecking, setIsChecking] = useState(false)
   const [processing, setProcessing] = useState(false)
+  const [addresses, setAddressess] = useState<string[]>([])
+  const addressInputRef = useRef<HTMLInputElement>(null)
+
+  const hasMembersOverload = () => {
+    return team.members.length + addresses.length >= competition.maxTeamSize
+  }
 
   useEffect(() => {
     async function main() {
@@ -66,21 +74,28 @@ function ApproveButton({ onApprove, team, pendingTxns, setPendingTxns }: Approve
       }
 
       if (!ethers.utils.isAddress(value)) {
-        setInputError("Please enter a valid address")
+        setInputError("Enter a valid address")
         setIsChecking(false)
         return
       }
 
       const joinRequest = await getAccountJoinRequest(chainId, library, team.competitionIndex, ethers.utils.getAddress(value))
       if (joinRequest === null) {
-        setInputError("Please enter a valid address")
+        setInputError("Account did not apply")
         setIsChecking(false)
         return
       }
 
       if (joinRequest.leaderAddress !== team.leaderAddress) {
-        setInputError("Please enter a valid address")
+        setInputError("Account did not apply")
         setIsChecking(false)
+        return
+      }
+
+      if (addresses.indexOf(value) !== -1) {
+        setInputError("Already added to the list")
+        setIsChecking(false)
+        return
       }
 
       setInputError("")
@@ -88,15 +103,15 @@ function ApproveButton({ onApprove, team, pendingTxns, setPendingTxns }: Approve
     }
 
     main()
-  }, [account, chainId, library, team.competitionIndex, value, team.leaderAddress])
+  }, [account, chainId, library, team.competitionIndex, value, team.leaderAddress, addresses])
 
   const getMainButtonText = () => {
-    if (value === "") {
-      return "Enter member address"
+    if (hasMembersOverload()) {
+      return "Max team size reached"
     }
 
-    if (processing) {
-      return "Approving..."
+    if (value === "") {
+      return "Enter member address"
     }
 
     if (isChecking) {
@@ -107,18 +122,37 @@ function ApproveButton({ onApprove, team, pendingTxns, setPendingTxns }: Approve
       return inputError
     }
 
-    return "Approve member"
+    return "Add member address"
   }
 
   const handleInput = ({ target }) => {
     setValue(target.value.trim())
   }
 
+  const handleAddAddressClick = () => {
+    setAddressess(addrs => [...addrs, value])
+    setValue("")
+    addressInputRef.current?.focus()
+  }
+
+  const handleRemoveAddress = (addr) => {
+    setAddressess(addrs => addrs.filter(a => a !== addr))
+  }
+
+  const handleModalChange = () => {
+    if (open) {
+      addressInputRef.current?.focus()
+    } else {
+      setAddressess([])
+      setValue("")
+    }
+  }
+
   const sendTransaction = async () => {
     setProcessing(true)
 
     try {
-      const tx = await approveJoinRequest(chainId, library, team.competitionIndex, [value], {
+      const tx = await approveJoinRequest(chainId, library, team.competitionIndex, addresses, {
         successMsg: "User approved!",
         sentMsg: "User approval submitted!",
         failMsg: "User approval failed.",
@@ -130,47 +164,67 @@ function ApproveButton({ onApprove, team, pendingTxns, setPendingTxns }: Approve
 
       if (receipt.status === 1) {
         setOpen(false)
+        setValue("")
+        setAddressess([])
         onApprove()
       }
     } catch (err) {
       console.error(err)
     } finally {
-      setValue("")
       setProcessing(false)
     }
   }
 
   return (
     <>
-      <button className="transparent-btn" onClick={() => setOpen(true)}>
+      <button className="App-button-option" disabled={processing} onClick={() => setOpen(true)}>
         {processing ? "Approving..." : "Approve members"}
       </button>
-      <Modal label="Approve members" isVisible={open} setIsVisible={setOpen}>
+      <Modal onAfterOpen={handleModalChange} label="Approve members" isVisible={open} setIsVisible={setOpen}>
         <div className="team-modal-content">
           <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
-          <input disabled={processing} placeholder="Member address" className="text-input text-input-approve" type="text" value={value} onInput={handleInput}/>
+          {addresses.length > 0 && (
+            <ul className="approve-address-list">
+              {addresses.map(address => (
+                <li key={address}>
+                  <span>{shortenAddress(address, 10)}</span>
+                  <FiX size={16} title="Remove address" onClick={() => handleRemoveAddress(address)}/>
+                </li>
+              ))}
+            </ul>
+          )}
+          {!hasMembersOverload() && (
+            <input ref={addressInputRef} disabled={processing} placeholder="Member address" className="text-input text-input-approve" type="text" value={value} onInput={handleInput}/>
+          )}
           <div className="divider"></div>
-          <button
-            className="default-btn"
-            disabled={value === "" || inputError || processing ? true : false}
-            onClick={() => sendTransaction()}
-          >
-            {getMainButtonText()}
-          </button>
+          <div className="App-card-options App-card-options-right">
+            {addresses.length > 0 && (
+              <button onClick={() => sendTransaction()} disabled={processing} className="default-btn App-card-option">{processing ? "Approving..." : "Approve members"}</button>
+            )}
+            {!processing && (value.length > 0 || addresses.length === 0) && (
+              <button
+                className={"App-card-option " + (addresses.length > 0 ? "App-button-option" : "default-btn")}
+                disabled={value === "" || inputError || processing ? true : false}
+                onClick={() => handleAddAddressClick()}
+              >
+                {getMainButtonText()}
+              </button>
+            )}
+          </div>
         </div>
       </Modal>
     </>
   )
 }
 
-type CreateJoinRequestButtonProps = {
+type CreateJoinRequestProps = {
   team: Team,
   pendingTxns: any,
   setPendingTxns: any,
   onCreate: () => any,
 }
 
-function CreateJoinRequestButton({ team, pendingTxns, setPendingTxns, onCreate }: CreateJoinRequestButtonProps) {
+function CreateJoinRequest({ team, pendingTxns, setPendingTxns, onCreate }: CreateJoinRequestProps) {
   const { chainId, library } = useWeb3React()
   const query = useRouteQuery()
   const [open, setOpen] = useState(false)
@@ -218,27 +272,31 @@ function CreateJoinRequestButton({ team, pendingTxns, setPendingTxns, onCreate }
 
   return (
     <>
-      <button className="default-btn" disabled={processing} onClick={() => handleButtonClick()}>{processing ? "Creating join request..." : "Create Join Request"}</button>
+      <button className="App-button-option" disabled={processing} onClick={() => handleButtonClick()}>
+        {processing ? "Creating join request..." : "Create join request"}
+      </button>
       <Modal label="Create Join Request" isVisible={open} setIsVisible={setOpen}>
         <div className="team-modal-content">
           <p>By creating this join request you accept to use the team leader's referral code: </p>
           <p className="team-modal-referral-code">{referralCode}</p>
           <div className="divider"></div>
-          <button className="default-btn" onClick={sendTransaction}>Create join request</button>
+          <button className="default-btn" onClick={sendTransaction} disabled={processing}>
+            {processing ? "Creating join request..." : "Create join request"}
+          </button>
         </div>
       </Modal>
     </>
   )
 }
 
-type CancelJoinRequestButtonProps = {
+type CancelJoinRequestProps = {
   team: Team,
   pendingTxns: any,
   setPendingTxns: any,
   onCancel: () => any,
 }
 
-function CancelJoinRequestButton({ team, pendingTxns, setPendingTxns, onCancel }: CancelJoinRequestButtonProps) {
+function CancelJoinRequest({ team, pendingTxns, setPendingTxns, onCancel }: CancelJoinRequestProps) {
   const { chainId, library } = useWeb3React()
   const [processing, setProcessing] = useState(false)
 
@@ -267,8 +325,8 @@ function CancelJoinRequestButton({ team, pendingTxns, setPendingTxns, onCancel }
   }
 
   return (
-    <button className="transparent-btn" onClick={() => sendTransaction()}>
-      {processing ? "Canceling join request..." : "Cancel Join Request"}
+    <button className="App-button-option" onClick={() => sendTransaction()} disabled={processing}>
+      {processing ? "Canceling join request..." : "Cancel join request"}
     </button>
   )
 }
@@ -310,23 +368,34 @@ function QuitTeamButton({ team, pendingTxns, setPendingTxns, onQuit }: QuitTeamB
   }
 
   return (
-    <button className="transparent-btn" onClick={() => sendTransaction()}>
-      {processing ? "Leaving team..." : "Leave Team"}
+    <button className="transparent-btn" disabled={processing} onClick={() => sendTransaction()}>
+      {processing ? "Leaving team..." : "Leave team"}
     </button>
   )
 }
 
 type TeamMemberHeaderProps = {
+  competition: Competition,
   team: Team,
   pendingTxns: any,
   setPendingTxns: any,
   onMembersChange: () => any,
 }
 
-export default function TeamMembersHeader({ onMembersChange, team, pendingTxns, setPendingTxns }: TeamMemberHeaderProps) {
+export default function TeamMembersHeader({ competition, onMembersChange, team, pendingTxns, setPendingTxns }: TeamMemberHeaderProps) {
   const { chainId, library, account } = useWeb3React()
-  const { exists: hasJoinRequest, revalidate: revalidateJoinRequest } = useAccountJoinRequest(chainId, library, team.competitionIndex, account)
-  const { data: memberTeam, revalidate: revalidateMemberTeam } = useMemberTeam(chainId, library, team.competitionIndex, account)
+
+  const {
+    exists: hasJoinRequest,
+    loading: accountJoinRequestLoading,
+    revalidate: revalidateJoinRequest
+  } = useAccountJoinRequest(chainId, library, team.competitionIndex, account)
+
+  const {
+    data: memberTeam,
+    loading: memberTeamLoading,
+    revalidate: revalidateMemberTeam
+  } = useMemberTeam(chainId, library, team.competitionIndex, account)
 
   const isLeader = () => account === team.leaderAddress
   const isMember = () => memberTeam === team.leaderAddress
@@ -336,17 +405,23 @@ export default function TeamMembersHeader({ onMembersChange, team, pendingTxns, 
     onMembersChange()
   }
 
+  if (memberTeamLoading || accountJoinRequestLoading) {
+    return <></>
+  }
+
   return (
     <div className="simple-table-top-header simple-table-top-header-right">
-      {isLeader() ? (
+      {isLeader() && team.members.length < competition.maxTeamSize && (
         <>
-          <InviteButton team={team}/>
-          <ApproveButton team={team} onApprove={onMembersChange} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>
+          <Invite team={team}/>
+          <Approve competition={competition} team={team} pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} onApprove={onMembersChange} />
         </>
-      ) : (
+      )}
+
+      {!isLeader() && (
         <>
-          {!isMember() && !hasJoinRequest && <CreateJoinRequestButton onCreate={revalidateJoinRequest} team={team} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>}
-          {!isMember() && hasJoinRequest && <CancelJoinRequestButton onCancel={revalidateJoinRequest} team={team} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>}
+          {!isMember() && !hasJoinRequest && <CreateJoinRequest onCreate={revalidateJoinRequest} team={team} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>}
+          {!isMember() && hasJoinRequest && <CancelJoinRequest onCancel={revalidateJoinRequest} team={team} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>}
           {isMember() && <QuitTeamButton team={team} onQuit={onQuit} setPendingTxns={setPendingTxns} pendingTxns={pendingTxns}/>}
         </>
       )}
