@@ -432,3 +432,7 @@ export function getTokenBySymbol(chainId, symbol) {
 export function getWhitelistedTokens(chainId) {
   return TOKENS[chainId].filter((token) => token.symbol !== "USDG");
 }
+
+export function getVisibleTokens(chainId) {
+  return getWhitelistedTokens(chainId).filter((token) => !token.isWrapped && !token.isTempHidden);
+}

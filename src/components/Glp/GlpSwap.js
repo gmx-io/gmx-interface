@@ -63,6 +63,7 @@ import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
 import AssetDropdown from "../../pages/Dashboard/AssetDropdown";
+import SwapErrorModal from "./SwapErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { fetcher } from "../../lib/contracts/fetcher";
 import { callContract } from "../../lib/contracts/callContract";
@@ -108,7 +109,14 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
 }
 
 export default function GlpSwap(props) {
-  const { savedSlippageAmount, isBuying, setPendingTxns, connectWallet, setIsBuying } = props;
+  const {
+    savedSlippageAmount,
+    isBuying,
+    setPendingTxns,
+    connectWallet,
+    setIsBuying,
+    savedShouldDisableValidationForTesting,
+  } = props;
   const history = useHistory();
   const swapLabel = isBuying ? "BuyGlp" : "SellGlp";
   const tabLabel = isBuying ? t`Buy GLP` : t`Sell GLP`;
@@ -131,6 +139,7 @@ export default function GlpSwap(props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [anchorOnSwapAmount, setAnchorOnSwapAmount] = useState(true);
   const [feeBasisPoints, setFeeBasisPoints] = useState("");
+  const [modalError, setModalError] = useState(false);
 
   const readerAddress = getContract(chainId, "Reader");
   const rewardReaderAddress = getContract(chainId, "RewardReader");
@@ -449,7 +458,13 @@ export default function GlpSwap(props) {
 
     if (isBuying) {
       const swapTokenInfo = getTokenInfo(infoTokens, swapTokenAddress);
-      if (swapTokenInfo && swapTokenInfo.balance && swapAmount && swapAmount.gt(swapTokenInfo.balance)) {
+      if (
+        !savedShouldDisableValidationForTesting &&
+        swapTokenInfo &&
+        swapTokenInfo.balance &&
+        swapAmount &&
+        swapAmount.gt(swapTokenInfo.balance)
+      ) {
         return [t`Insufficient ${swapTokenInfo.symbol} balance`];
       }
 
@@ -621,6 +636,7 @@ export default function GlpSwap(props) {
     const [, modal] = getError();
 
     if (modal) {
+      setModalError(true);
       return;
     }
 
@@ -675,6 +691,18 @@ export default function GlpSwap(props) {
 
   return (
     <div className="GlpSwap">
+      <SwapErrorModal
+        isVisible={Boolean(modalError)}
+        setIsVisible={setModalError}
+        swapToken={swapToken}
+        chainId={chainId}
+        glpAmount={glpAmount}
+        usdgSupply={usdgSupply}
+        totalTokenWeights={totalTokenWeights}
+        glpPrice={glpPrice}
+        infoTokens={infoTokens}
+        swapUsdMin={swapUsdMin}
+      />
       {/* <div className="Page-title-section">
         <div className="Page-title">{isBuying ? "Buy GLP" : "Sell GLP"}</div>
         {isBuying && <div className="Page-description">
@@ -1096,10 +1124,7 @@ export default function GlpSwap(props) {
                 amountLeftToDeposit = bigNumberify(0);
               }
               function renderFees() {
-                const swapUrl =
-                  chainId === ARBITRUM
-                    ? `https://app.uniswap.org/#/swap?inputCurrency=${token.address}`
-                    : `https://traderjoexyz.com/trade?inputCurrency=${token.address}`;
+                const swapUrl = `https://app.1inch.io/#/${chainId}/swap/`;
                 switch (true) {
                   case (isBuying && isCapReached) || (!isBuying && managedUsd?.lt(1)):
                     return (
@@ -1116,7 +1141,7 @@ export default function GlpSwap(props) {
                             <br />
                             <p>
                               <a href={swapUrl} target="_blank" rel="noreferrer">
-                                <Trans>Swap on {chainId === ARBITRUM ? "Uniswap" : "Trader Joe"}</Trans>
+                                <Trans> Swap {tokenInfo.symbol} on 1inch</Trans>
                               </a>
                             </p>
                           </div>

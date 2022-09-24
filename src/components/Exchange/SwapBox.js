@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Tooltip from "../Tooltip/Tooltip";
 import { t, Trans } from "@lingui/macro";
-import Modal from "../Modal/Modal";
 import Slider, { SliderTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 import "./SwapBox.css";
@@ -84,6 +83,7 @@ import shortImg from "../../img/short.svg";
 import swapImg from "../../img/swap.svg";
 
 import { useUserReferralCode } from "../../domain/referrals";
+import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { fetcher } from "../../lib/contracts/fetcher";
 import { callContract } from "../../lib/contracts/callContract";
@@ -169,7 +169,7 @@ export default function SwapBox(props) {
     setIsWaitingForPositionRouterApproval,
     isPluginApproving,
     isPositionRouterApproving,
-    savedShouldDisableOrderValidation,
+    savedShouldDisableValidationForTesting,
     minExecutionFee,
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
@@ -795,13 +795,13 @@ export default function SwapBox(props) {
       return [t`Incorrect network`];
     }
     if (
-      !savedShouldDisableOrderValidation &&
+      !savedShouldDisableValidationForTesting &&
       fromTokenInfo &&
       fromTokenInfo.balance &&
       fromAmount &&
       fromAmount.gt(fromTokenInfo.balance)
     ) {
-      return [`Insufficient ${fromTokenInfo.symbol} balance`];
+      return [t`Insufficient ${fromTokenInfo.symbol} balance`];
     }
 
     const toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
@@ -813,7 +813,7 @@ export default function SwapBox(props) {
 
       const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
       if (currentRate && currentRate.lt(triggerRatio)) {
-        return [t`Price ${triggerRatioInverted ? "below" : "above"} Mark Price`];
+        return triggerRatioInverted ? [t`Price below Mark Price`] : [t`Price above Mark Price`];
       }
     }
 
@@ -874,13 +874,13 @@ export default function SwapBox(props) {
 
     const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
     if (
-      !savedShouldDisableOrderValidation &&
+      !savedShouldDisableValidationForTesting &&
       fromTokenInfo &&
       fromTokenInfo.balance &&
       fromAmount &&
       fromAmount.gt(fromTokenInfo.balance)
     ) {
-      return [`Insufficient ${fromTokenInfo.symbol} balance`];
+      return [t`Insufficient ${fromTokenInfo.symbol} balance`];
     }
 
     if (leverage && leverage.eq(0)) {
@@ -902,7 +902,7 @@ export default function SwapBox(props) {
       return [t`Max leverage: 30.5x`];
     }
 
-    if (!isMarketOrder && entryMarkPrice && triggerPriceUsd && !savedShouldDisableOrderValidation) {
+    if (!isMarketOrder && entryMarkPrice && triggerPriceUsd && !savedShouldDisableValidationForTesting) {
       if (isLong && entryMarkPrice.lt(triggerPriceUsd)) {
         return [t`Price above Mark Price`];
       }
@@ -1080,42 +1080,6 @@ export default function SwapBox(props) {
         approveOrderBook={approveOrderBook}
         isPluginApproving={isPluginApproving}
       />
-    );
-  };
-
-  const renderErrorModal = () => {
-    const inputCurrency = fromToken.address === AddressZero ? "ETH" : fromToken.address;
-    let outputCurrency;
-    if (isLong) {
-      outputCurrency = toToken.address === AddressZero ? "ETH" : toToken.address;
-    } else {
-      outputCurrency = shortCollateralToken.address;
-    }
-    let externalSwapUrl = "";
-    if (chainId === AVALANCHE) {
-      externalSwapUrl = `https://traderjoexyz.com/trade?outputCurrency=${outputCurrency}#/`;
-    } else {
-      externalSwapUrl = `https://app.uniswap.org/#/swap?inputCurrency=${inputCurrency}&outputCurrency=${outputCurrency}`;
-    }
-    let externalSwapName = chainId === AVALANCHE ? "Trader Joe" : "Uniswap";
-    const label =
-      modalError === "BUFFER" ? `${shortCollateralToken.symbol} Required` : `${fromToken.symbol} Capacity Reached`;
-    const swapTokenSymbol = isLong ? toToken.symbol : shortCollateralToken.symbol;
-    return (
-      <Modal isVisible={!!modalError} setIsVisible={setModalError} label={label} className="Error-modal font-base">
-        <div>You need to select {swapTokenSymbol} as the "Pay" token to initiate this trade.</div>
-        <br />
-        {isShort && (
-          <div>
-            Alternatively you can select a different "Profits In" token.
-            <br />
-            <br />
-          </div>
-        )}
-        <a href={externalSwapUrl} target="_blank" rel="noreferrer">
-          Buy {swapTokenSymbol} on {externalSwapName}
-        </a>
-      </Modal>
     );
   };
 
@@ -2388,7 +2352,7 @@ export default function SwapBox(props) {
                           The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour.
                           <br />
                           <br />
-                          {isShort && `You can change the "Profits In" token above to find lower fees`}
+                          {isShort && `You can change the "Collateral In" token above to find lower fees`}
                         </div>
                       )}
                       <br />
@@ -2464,7 +2428,16 @@ export default function SwapBox(props) {
           </div>
         </div>
       </div>
-      {renderErrorModal()}
+      <NoLiquidityErrorModal
+        chainId={chainId}
+        fromToken={fromToken}
+        toToken={toToken}
+        shortCollateralToken={shortCollateralToken}
+        isLong={isLong}
+        isShort={isShort}
+        modalError={modalError}
+        setModalError={setModalError}
+      />
       {renderOrdersToa()}
       {isConfirming && (
         <ConfirmationBox

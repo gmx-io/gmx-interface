@@ -535,8 +535,8 @@ export default function DashboardV2() {
             </div>
             <div className="Page-description">
               <Trans>
-                {chainName} Total Stats start from {totalStatsStartDate}.<br /> For detailed stats:{" "}
-              </Trans>
+                {chainName} Total Stats start from {totalStatsStartDate}.<br /> For detailed stats:
+              </Trans>{" "}
               {chainId === ARBITRUM && (
                 <a href="https://stats.gmx.io" target="_blank" rel="noopener noreferrer">
                   https://stats.gmx.io
