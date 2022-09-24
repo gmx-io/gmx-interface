@@ -5,7 +5,6 @@ import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 
 import { getContract } from "../../config/Addresses";
-import { callContract } from "../../domain/legacy";
 
 import Modal from "../../components/Modal/Modal";
 import Footer from "../../components/Footer/Footer";
@@ -17,11 +16,13 @@ import RewardRouter from "../../abis/RewardRouter.json";
 
 import { FaCheck, FaTimes } from "react-icons/fa";
 
-import { fetcher, approveTokens, useChainId } from "../../lib/legacy";
+import { approveTokens, useChainId } from "../../lib/legacy";
 
 import { Trans, t } from "@lingui/macro";
 
 import "./BeginAccountTransfer.css";
+import { fetcher } from "../../lib/contracts/fetcher";
+import { callContract } from "../../lib/contracts/callContract";
 
 function ValidationRow({ isValid, children }) {
   return (

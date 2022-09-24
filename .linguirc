@@ -1,11 +1,11 @@
 {
   "locales": [
-    "es",
-    "zh",
-    "ko",
-    "ru",
-    "ja",
     "en",
+    "es",
+    "ko",
+    "ja",
+    "zh",
+    "ru",
     "fr"
   ],
   "sourceLocale": "en",
@@ -17,5 +17,12 @@
       ]
     }
   ],
-  "format": "po"
+  "formatOptions": {
+    "lineNumbers": false
+  },
+  "fallbackLocales": {
+    "default": "en"
+  },
+  "format": "po",
+  "orderBy": "messageId"
 }

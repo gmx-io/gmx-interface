@@ -23,7 +23,8 @@ import Tooltip from "../Tooltip/Tooltip";
 import OrderEditor from "./OrderEditor";
 
 import "./OrdersList.css";
-import Checkbox from "../Checkbox/Checkbox.js";
+import Checkbox from "../Checkbox/Checkbox";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 
 export default function OrdersList(props) {
   const {
@@ -38,7 +39,7 @@ export default function OrdersList(props) {
     orders,
     hideActions,
     chainId,
-    savedShouldDisableOrderValidation,
+    savedShouldDisableValidationForTesting,
     cancelOrderIdList,
     setCancelOrderIdList,
   } = props;
@@ -266,11 +267,16 @@ export default function OrdersList(props) {
                   const collateralTokenInfo = getTokenInfo(infoTokens, order.purchaseToken);
                   const collateralUSD = getUsd(order.purchaseTokenAmount, order.purchaseToken, false, infoTokens);
                   return (
-                    <span>
-                      Collateral: ${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (
-                      {formatAmount(order.purchaseTokenAmount, collateralTokenInfo.decimals, 4, true)}{" "}
-                      {collateralTokenInfo.baseSymbol || collateralTokenInfo.symbol})
-                    </span>
+                    <StatsTooltipRow
+                      label="Collateral"
+                      value={`${formatAmount(collateralUSD, USD_DECIMALS, 2, true)} (${formatAmount(
+                        order.purchaseTokenAmount,
+                        collateralTokenInfo.decimals,
+                        4,
+                        true
+                      )}
+                      ${collateralTokenInfo.baseSymbol || collateralTokenInfo.symbol})`}
+                    />
                   );
                 }}
               />
@@ -485,7 +491,7 @@ export default function OrdersList(props) {
           library={library}
           totalTokenWeights={totalTokenWeights}
           usdgSupply={usdgSupply}
-          savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
+          savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
         />
       )}
     </React.Fragment>

@@ -34,6 +34,7 @@ import Checkbox from "../Checkbox/Checkbox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import { cancelDecreaseOrder, handleCancelOrder } from "../../domain/legacy";
 import { getNativeToken, getToken, getWrappedToken } from "../../config/Tokens";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
@@ -445,7 +446,7 @@ export default function ConfirmationBox(props) {
             const triggerPricePrefix = triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
             const indexToken = getToken(chainId, order.indexToken);
             return (
-              <li key={id}>
+              <li key={id} className="font-sm">
                 <p>
                   {type === INCREASE ? "Increase" : "Decrease"} {indexToken.symbol} {isLong ? "Long" : "Short"}
                   &nbsp;{triggerPricePrefix} ${formatAmount(triggerPrice, USD_DECIMALS, 2, true)}
@@ -655,10 +656,13 @@ export default function ConfirmationBox(props) {
                     Your position's collateral after deducting fees.
                     <br />
                     <br />
-                    Pay amount: ${formatAmount(fromUsdMin, USD_DECIMALS, 2, true)}
-                    <br />
-                    Fees: ${formatAmount(feesUsd, USD_DECIMALS, 2, true)}
-                    <br />
+                    <StatsTooltipRow label="Pay Amount" value={formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} />
+                    <StatsTooltipRow label="Fees" value={formatAmount(feesUsd, USD_DECIMALS, 2, true)} />
+                    <div className="Tooltip-divider" />
+                    <StatsTooltipRow
+                      label="Collateral"
+                      value={formatAmount(collateralAfterFees, USD_DECIMALS, 2, true)}
+                    />
                   </>
                 );
               }}
@@ -702,8 +706,14 @@ export default function ConfirmationBox(props) {
                   renderContent={() => {
                     return (
                       <>
-                        Network fee: {formatAmountFree(minExecutionFee, 18, 5)} {nativeTokenSymbol} ($
-                        {formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})<br />
+                        <StatsTooltipRow
+                          label="Network fee"
+                          value={`${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol} ($${formatAmount(
+                            minExecutionFeeUSD,
+                            USD_DECIMALS,
+                            2
+                          )})`}
+                        />
                         <br />
                         This is the network cost required to execute the postion.{" "}
                         <a
@@ -869,7 +879,7 @@ export default function ConfirmationBox(props) {
 
   return (
     <div className="Confirmation-box">
-      <Modal isVisible={true} setIsVisible={() => setIsConfirming(false)} label={title}>
+      <Modal isVisible={true} setIsVisible={() => setIsConfirming(false)} label={title} allowContentTouchMove>
         {isSwap && renderSwapSection()}
         {!isSwap && renderMarginSection()}
         <div className="Confirmation-box-row">

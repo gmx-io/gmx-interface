@@ -18,7 +18,6 @@ import {
   formatAmount,
   bigNumberify,
   getTokenInfo,
-  fetcher,
   getPositionKey,
   getPositionContractKey,
   getLeverage,
@@ -52,6 +51,7 @@ import Tab from "../../components/Tab/Tab";
 import Footer from "../../components/Footer/Footer";
 
 import "./Exchange.css";
+import { fetcher } from "../../lib/contracts/fetcher";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -363,7 +363,7 @@ export const Exchange = forwardRef((props, ref) => {
     savedShouldShowPositionLines,
     setSavedShouldShowPositionLines,
     connectWallet,
-    savedShouldDisableOrderValidation,
+    savedShouldDisableValidationForTesting,
   } = props;
   const [showBanner, setShowBanner] = useLocalStorageSerializeKey("showBanner", true);
   const [bannerHidden, setBannerHidden] = useLocalStorageSerializeKey("bannerHidden", null);
@@ -886,7 +886,7 @@ export const Exchange = forwardRef((props, ref) => {
             orders={orders}
             totalTokenWeights={totalTokenWeights}
             usdgSupply={usdgSupply}
-            savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
+            savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
             cancelOrderIdList={cancelOrderIdList}
             setCancelOrderIdList={setCancelOrderIdList}
           />
@@ -977,7 +977,7 @@ export const Exchange = forwardRef((props, ref) => {
             savedSlippageAmount={savedSlippageAmount}
             totalTokenWeights={totalTokenWeights}
             usdgSupply={usdgSupply}
-            savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
+            savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
             minExecutionFee={minExecutionFee}
             minExecutionFeeUSD={minExecutionFeeUSD}
             minExecutionFeeErrorMessage={minExecutionFeeErrorMessage}

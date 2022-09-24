@@ -7,7 +7,6 @@ import {
   AVALANCHE,
   PLACEHOLDER_ACCOUNT,
   useChainId,
-  fetcher,
   formatAmount,
   formatAmountFree,
   parseValue,
@@ -15,8 +14,6 @@ import {
 } from "../../lib/legacy";
 
 import { getContract } from "../../config/Addresses";
-
-import { callContract } from "../../domain/legacy";
 
 import Token from "../../abis/Token.json";
 import RewardReader from "../../abis/RewardReader.json";
@@ -29,6 +26,8 @@ import arbitrumIcon from "../../img/ic_arbitrum_96.svg";
 import avaIcon from "../../img/ic_avalanche_96.svg";
 
 import { Trans, t } from "@lingui/macro";
+import { fetcher } from "../../lib/contracts/fetcher";
+import { callContract } from "../../lib/contracts/callContract";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";
 const VEST_WITH_GLP_ARB = "VEST_WITH_GLP_ARB";
