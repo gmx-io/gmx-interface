@@ -56,3 +56,12 @@
 .text-input-approve {
   margin-top: 1.5rem;
 }
+
+.team-modal-referral-select {
+  margin-top: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, .2);
+  font-size: 1.5rem;
+  background-color: transparent;
+  color: white;
+  padding: 1.25rem;
+}

@@ -10,34 +10,93 @@ import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import { approveJoinRequest, cancelJoinRequest, createJoinRequest, getAccountJoinRequest, removeMember, useAccountJoinRequest, useMemberTeam } from "../../domain/leaderboard/contracts";
 import { FiX } from "react-icons/fi";
+import Checkbox from "../Checkbox/Checkbox";
+import { useUserCodesOnAllChain } from "../../domain/referrals";
 
 type Inviteprops = {
   team: Team,
+  referralCodes: any,
 }
 
 function Invite({ team }: Inviteprops) {
+  const { account } = useWeb3React()
   const { chainId } = useChainId()
-  const query = useRouteQuery()
   const [,copyToClipboard] = useCopyToClipboard()
+  const [modalOpen, setModalOpen] = useState(false)
+  const [includeReferral, setIncludeReferral] = useState(false)
+  const allReferralCodes = useUserCodesOnAllChain(account)
+  const [chainReferralCodes, setChainReferralCodes] = useState<any[]>([])
+  const [referralCode, setReferralCode] = useState(null)
+
+  useEffect(() => {
+    setChainReferralCodes(
+      allReferralCodes !== null && allReferralCodes[chainId] ? Object.values(allReferralCodes[chainId]) : []
+    )
+  }, [allReferralCodes, chainId])
+
+  useEffect(() => {
+    if ( ! includeReferral) {
+      setReferralCode(null)
+    } else if (chainReferralCodes.length > 0) {
+      setReferralCode(chainReferralCodes[0].codeString)
+    }
+  }, [includeReferral, chainReferralCodes])
 
   const referralLink = () => {
     let link = new URL(window.location.host).toString() + "/#" + getTeamUrl(team.leaderAddress)
     link += `?${CHAIN_ID_QUERY_PARAM}=${chainId}`
-    if (query.has("referral") && query.get("referral") !== "") {
-      link += "&referral=" + query.get("referral")
+    if (referralCode) {
+      link += "&referral=" + referralCode
     }
     return link
   }
 
-  const copyInviteLink = () => {
+  const handleCopyClick = () => {
     copyToClipboard(referralLink())
-    helperToast.success("Invite link copied to clipboard!")
+    helperToast.success("Invitation link copied to clipboard!")
+    setModalOpen(false)
+  }
+
+  const handleReferralCodeChange = ({ target }) => {
+    setReferralCode(target.value.trim())
   }
 
   return (
-    <button className="App-button-option" onClick={copyInviteLink}>
-      Copy Invite Link
-    </button>
+    <>
+      <button className="App-button-option" onClick={() => setModalOpen(true)}>
+        Invitation Link
+      </button>
+      <Modal isVisible={modalOpen} setIsVisible={setModalOpen} label="Invitation Link">
+        <div className="team-modal-content">
+          <p>
+            You can include a referral code that will be used by future members using this referral link.
+          </p>
+          <div className="team-modal-referral-section">
+            <div className="Checkbox">
+              <span className="Checkbox-icon-wrapper">
+                <Checkbox isChecked={includeReferral} setIsChecked={setIncludeReferral}/>
+              </span>
+              <span className="Checkbox-label">
+                <span className="muted">Include Referral Code</span>
+              </span>
+            </div>
+            {includeReferral && (
+              <select onChange={handleReferralCodeChange} className="team-modal-referral-select text-input">
+                {chainReferralCodes.map(code => (
+                  <option value={code.codeString}>{code.codeString}</option>
+                ))}
+              </select>
+            )}
+          </div>
+          <div className="divider"></div>
+          <div className="App-card-options App-card-options-right">
+            <button onClick={() => handleCopyClick()} className="default-btn App-card-option">
+              Copy to clipboard
+            </button>
+          </div>
+        </div>
+      </Modal>
+    </>
   )
 }
 
@@ -59,7 +118,7 @@ function Approve({ competition, onApprove, team, pendingTxns, setPendingTxns }: 
   const [addresses, setAddressess] = useState<string[]>([])
   const addressInputRef = useRef<HTMLInputElement>(null)
 
-  const hasMembersOverload = () => {
+  const hasMembersO = () => {
     return team.members.length + addresses.length >= competition.maxTeamSize
   }
 
@@ -106,7 +165,7 @@ function Approve({ competition, onApprove, team, pendingTxns, setPendingTxns }: 
   }, [account, chainId, library, team.competitionIndex, value, team.leaderAddress, addresses])
 
   const getMainButtonText = () => {
-    if (hasMembersOverload()) {
+    if (hasMembersO()) {
       return "Max team size reached"
     }
 
@@ -143,7 +202,9 @@ function Approve({ competition, onApprove, team, pendingTxns, setPendingTxns }: 
     if (open) {
       addressInputRef.current?.focus()
     } else {
-      setAddressess([])
+      if (addresses.length > 0) {
+        setAddressess([])
+      }
       setValue("")
     }
   }
@@ -153,9 +214,9 @@ function Approve({ competition, onApprove, team, pendingTxns, setPendingTxns }: 
 
     try {
       const tx = await approveJoinRequest(chainId, library, team.competitionIndex, addresses, {
-        successMsg: "User approved!",
-        sentMsg: "User approval submitted!",
-        failMsg: "User approval failed.",
+        successMsg: "Approved!",
+        sentMsg: "Approval submitted!",
+        failMsg: "Approval failed.",
         pendingTxns,
         setPendingTxns,
       })
@@ -193,7 +254,7 @@ function Approve({ competition, onApprove, team, pendingTxns, setPendingTxns }: 
               ))}
             </ul>
           )}
-          {!hasMembersOverload() && (
+          {!hasMembersO() && (
             <input ref={addressInputRef} disabled={processing} placeholder="Member address" className="text-input text-input-approve" type="text" value={value} onInput={handleInput}/>
           )}
           <div className="divider"></div>
@@ -384,6 +445,7 @@ type TeamMemberHeaderProps = {
 
 export default function TeamMembersHeader({ competition, onMembersChange, team, pendingTxns, setPendingTxns }: TeamMemberHeaderProps) {
   const { chainId, library, account } = useWeb3React()
+  const referralCodes = useUserCodesOnAllChain(account)
 
   const {
     exists: hasJoinRequest,
@@ -413,7 +475,7 @@ export default function TeamMembersHeader({ competition, onMembersChange, team, 
     <div className="simple-table-top-header simple-table-top-header-right">
       {isLeader() && team.members.length < competition.maxTeamSize && (
         <>
-          <Invite team={team}/>
+          <Invite referralCodes={referralCodes} team={team}/>
           <Approve competition={competition} team={team} pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} onApprove={onMembersChange} />
         </>
       )}
