@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Trans } from "@lingui/macro";
-import { toJpeg, toBlob } from "html-to-image";
+import { toJpeg } from "html-to-image";
 import cx from "classnames";
 import { BiCopy } from "react-icons/bi";
 import { RiFileDownloadLine } from "react-icons/ri";
@@ -27,7 +27,7 @@ import downloadImage from "../../domain/downloadImage";
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
-const config = { quality: 0.95, canvasWidth: 518, canvasHeight: 292 };
+const config = { quality: 0.95, canvasWidth: 518, canvasHeight: 292, type: "image/jpeg" };
 
 function getShareURL(imageInfo, ref) {
   if (!imageInfo) return;
@@ -54,7 +54,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
     (async function () {
       const element = positionRef.current;
       if (element && userAffiliateCode.success && sharePositionBgImg && positionToShare) {
-        const image = await toJpeg(element, config);
+        const image = await toJpeg(element, config).then(async () => await toJpeg(element, config));
         try {
           const imageInfo = await fetch(UPLOAD_URL, { method: "POST", body: image }).then((res) => res.json());
           setUploadedImageInfo(imageInfo);
@@ -71,8 +71,8 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
     const element = positionRef.current;
     if (!element) return;
     const name = `${indexToken.symbol}-${isLong ? "long" : "short"}.jpeg`;
-    // We have to call the toBlob function multiple times to make it work on iOS devices https://github.com/bubkoo/html-to-image/issues/214#issuecomment-1002640937
-    const imgBlob = await toBlob(element, config).then(async () => await toBlob(element, config));
+    // We have to call the toJpeg function multiple times to make it work on iOS devices https://github.com/bubkoo/html-to-image/issues/214#issuecomment-1002640937
+    const imgBlob = await toJpeg(element, config).then(async () => await toJpeg(element, config));
     downloadImage(imgBlob, name);
   }
 
