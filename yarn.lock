@@ -9160,7 +9160,7 @@ __metadata:
     framer-motion: 4.1.17
     graphql: 15.8.0
     hex-to-rgba: 2.0.1
-    html-to-image: ^1.9.0
+    html-to-image: ^1.10.8
     husky: 7.0.4
     krasulya-lightweight-charts: 3.4.3
     lint-staged: 12.3.4
@@ -9748,10 +9748,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-to-image@npm:^1.9.0":
-  version: 1.9.0
-  resolution: "html-to-image@npm:1.9.0"
-  checksum: e4472be2481e85cdf85decdaa04b8acc6d2124ed8957d5fcaa07a6d0c4da4e3084e380793a96abfa1af58029fba100ec8b1a5fed8318c02439923c14377b6f78
+"html-to-image@npm:^1.10.8":
+  version: 1.10.8
+  resolution: "html-to-image@npm:1.10.8"
+  checksum: 05879b1b3e9f4222dfaa0dde803702cd59bcc500bce50ca16c4a556901c0167650a57136ebcec3213e9d9a85a086539748404035228270212d0d365a9f7b60e6
   languageName: node
   linkType: hard
 

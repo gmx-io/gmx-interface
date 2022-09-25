@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Trans } from "@lingui/macro";
-import { toJpeg } from "html-to-image";
+import { toJpeg, toBlob } from "html-to-image";
 import cx from "classnames";
 import { BiCopy } from "react-icons/bi";
 import { RiFileDownloadLine } from "react-icons/ri";
@@ -22,11 +22,12 @@ import { useAffiliateCodes } from "../../domain/referrals";
 import SpinningLoader from "../Common/SpinningLoader";
 import useLoadImage from "../../lib/useLoadImage";
 import shareBgImg from "../../img/position-share-bg.png";
+import downloadImage from "../../domain/downloadImage";
 
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
-const config = { quality: 0.95, canvasWidth: 1036, canvasHeight: 584 };
+const config = { quality: 0.95, canvasWidth: 518, canvasHeight: 292 };
 
 function getShareURL(imageInfo, ref) {
   if (!imageInfo) return;
@@ -69,12 +70,10 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
     const { indexToken, isLong } = positionToShare;
     const element = positionRef.current;
     if (!element) return;
-    const dataUrl = await toJpeg(element, config);
-    const link = document.createElement("a");
-    link.download = `${indexToken.symbol}-${isLong ? "long" : "short"}.jpeg`;
-    link.href = dataUrl;
-    document.body.appendChild(link);
-    link.click();
+    const name = `${indexToken.symbol}-${isLong ? "long" : "short"}.jpeg`;
+    // We have to call the toBlob function multiple times to make it work on iOS devices https://github.com/bubkoo/html-to-image/issues/214#issuecomment-1002640937
+    const imgBlob = await toBlob(element, config).then(async () => await toBlob(element, config));
+    downloadImage(imgBlob, name);
   }
 
   function handleCopy() {
@@ -107,7 +106,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
           <BiCopy className="icon" />
           <Trans>Copy</Trans>
         </button>
-        <button className="mr-base App-button-option" onClick={handleDownload}>
+        <button disabled={!uploadedImageInfo} className="mr-base App-button-option" onClick={handleDownload}>
           <RiFileDownloadLine className="icon" />
           <Trans>Download</Trans>
         </button>
