@@ -8,8 +8,6 @@ import useScrollToTop from "../lib/useScrollToTop";
 import { Switch, Route, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
 
 import {
-  ARBITRUM,
-  AVALANCHE,
   DEFAULT_SLIPPAGE_AMOUNT,
   SLIPPAGE_BPS_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
@@ -78,7 +76,7 @@ import SEO from "../components/Common/SEO";
 import useRouteQuery from "../lib/useRouteQuery";
 import { encodeReferralCode, decodeReferralCode } from "../domain/referrals";
 
-import { getContract } from "../config/Addresses";
+import { getContract } from "../config/addresses";
 import VaultV2 from "../abis/VaultV2.json";
 import VaultV2b from "../abis/VaultV2b.json";
 import PositionRouter from "../abis/PositionRouter.json";
@@ -95,6 +93,7 @@ import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
 import { defaultLocale, dynamicActivate } from "../lib/i18n";
 import { Header } from "../components/Header/Header";
+import { ARBITRUM, AVALANCHE } from "../config/chains";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;

@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { getVisibleTokens } from "../../config/Tokens";
+import { getVisibleTokens } from "../../config/tokens";
 import {
   bigNumberify,
   expandDecimals,

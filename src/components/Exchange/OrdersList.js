@@ -17,7 +17,7 @@ import {
   getUsd,
 } from "../../lib/legacy.js";
 import { handleCancelOrder } from "../../domain/legacy";
-import { getContract } from "../../config/Addresses";
+import { getContract } from "../../config/addresses";
 
 import Tooltip from "../Tooltip/Tooltip";
 import OrderEditor from "./OrderEditor";

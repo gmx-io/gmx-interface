@@ -16,13 +16,12 @@ import {
   approveTokens,
   bigNumberify,
   helperToast,
-  CHAIN_ID,
   USD_DECIMALS,
   PRECISION,
 } from "../../lib/legacy";
 
-import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "../../config/Addresses";
-import { getTokenBySymbol } from "../../config/Tokens";
+import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "../../config/addresses";
+import { getTokenBySymbol } from "../../config/tokens";
 
 import Reader from "../../abis/Reader.json";
 import Token from "../../abis/Token.json";
@@ -34,6 +33,7 @@ import Footer from "../../components/Footer/Footer";
 
 import "./Stake.css";
 import { fetcher } from "../../lib/contracts/fetcher";
+import { CHAIN_ID } from "../../config/chains";
 
 const BASIS_POINTS_DIVISOR = 10000;
 const HOURS_PER_YEAR = 8760;

@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import { useCopyToClipboard } from "react-use";
 
-import { getContract } from "../../config/Addresses";
+import { getContract } from "../../config/addresses";
 import { useChainId, helperToast } from "../../lib/legacy";
 
 import Modal from "../../components/Modal/Modal";

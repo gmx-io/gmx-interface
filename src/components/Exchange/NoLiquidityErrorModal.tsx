@@ -1,4 +1,4 @@
-import { getNativeToken } from "../../config/Tokens";
+import { getNativeToken } from "../../config/tokens";
 import { ethers } from "ethers";
 import Modal from "../Modal/Modal";
 import { TokenInfo, Token } from "../../domain/tokens/types";

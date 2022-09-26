@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { getContract } from "./Addresses";
+import { getContract } from "./addresses";
 
 const TOKENS = {
   56: [
@@ -382,6 +382,7 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
 
 const WRAPPED_TOKENS_MAP = {};
 const NATIVE_TOKENS_MAP = {};
+
 for (const chainId of CHAIN_IDS) {
   for (const token of TOKENS[chainId]) {
     if (token.isWrapped) {
@@ -392,26 +393,26 @@ for (const chainId of CHAIN_IDS) {
   }
 }
 
-export function getWrappedToken(chainId) {
+export function getWrappedToken(chainId: number) {
   return WRAPPED_TOKENS_MAP[chainId];
 }
 
-export function getNativeToken(chainId) {
+export function getNativeToken(chainId: number) {
   return NATIVE_TOKENS_MAP[chainId];
 }
 
-export function getTokens(chainId) {
+export function getTokens(chainId: number) {
   return TOKENS[chainId];
 }
 
-export function isValidToken(chainId, address) {
+export function isValidToken(chainId: number, address: string) {
   if (!TOKENS_MAP[chainId]) {
     throw new Error(`Incorrect chainId ${chainId}`);
   }
   return address in TOKENS_MAP[chainId];
 }
 
-export function getToken(chainId, address) {
+export function getToken(chainId: number, address: string) {
   if (!TOKENS_MAP[chainId]) {
     throw new Error(`Incorrect chainId ${chainId}`);
   }
@@ -421,7 +422,7 @@ export function getToken(chainId, address) {
   return TOKENS_MAP[chainId][address];
 }
 
-export function getTokenBySymbol(chainId, symbol) {
+export function getTokenBySymbol(chainId: number, symbol: string) {
   const token = TOKENS_BY_SYMBOL_MAP[chainId][symbol];
   if (!token) {
     throw new Error(`Incorrect symbol "${symbol}" for chainId ${chainId}`);

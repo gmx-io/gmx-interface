@@ -1,3 +1,10 @@
+export const XGMT_EXCLUDED_ACCOUNTS = [
+  "0x330eef6b9b1ea6edd620c825c9919dc8b611d5d5",
+  "0xd9b1c23411adbb984b1c4be515fafc47a12898b2",
+  "0xa633158288520807f91ccc98aa58e0ea43acb400",
+  "0xffd0a93b4362052a336a7b22494f1b77018dd34b",
+];
+
 const CONTRACTS = {
   56: {
     // bsc mainnet
@@ -183,19 +190,14 @@ const CONTRACTS = {
   },
 };
 
-export function getContract(chainId, name) {
+export function getContract(chainId: number, name: string): string {
   if (!CONTRACTS[chainId]) {
     throw new Error(`Unknown chainId ${chainId}`);
   }
+
   if (!CONTRACTS[chainId][name]) {
     throw new Error(`Unknown contract "${name}" for chainId ${chainId}`);
   }
+
   return CONTRACTS[chainId][name];
 }
-
-export const XGMT_EXCLUDED_ACCOUNTS = [
-  "0x330eef6b9b1ea6edd620c825c9919dc8b611d5d5",
-  "0xd9b1c23411adbb984b1c4be515fafc47a12898b2",
-  "0xa633158288520807f91ccc98aa58e0ea43acb400",
-  "0xffd0a93b4362052a336a7b22494f1b77018dd34b",
-];

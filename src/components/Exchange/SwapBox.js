@@ -15,8 +15,6 @@ import { BsArrowRight } from "react-icons/bs";
 import {
   adjustForDecimals,
   approveTokens,
-  ARBITRUM,
-  AVALANCHE,
   BASIS_POINTS_DIVISOR,
   bigNumberify,
   calculatePositionDelta,
@@ -37,7 +35,6 @@ import {
   getTokenInfo,
   getUsd,
   helperToast,
-  IS_NETWORK_DISABLED,
   isSupportedChain,
   isTriggerRatioInverted,
   LEVERAGE_ORDER_OPTIONS,
@@ -61,9 +58,9 @@ import {
   useLocalStorageSerializeKey,
   usePrevious,
 } from "../../lib/legacy";
-import { getConstant } from "../../config/chains";
+import { ARBITRUM, AVALANCHE, getConstant, IS_NETWORK_DISABLED } from "../../config/chains";
 import * as Api from "../../domain/legacy";
-import { getContract } from "../../config/Addresses";
+import { getContract } from "../../config/addresses";
 
 import Checkbox from "../Checkbox/Checkbox";
 import Tab from "../Tab/Tab";
@@ -72,7 +69,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import ConfirmationBox from "./ConfirmationBox";
 import OrdersToa from "./OrdersToa";
 
-import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "../../config/Tokens";
+import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "../../config/tokens";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Router from "../../abis/Router.json";
 import Token from "../../abis/Token.json";

@@ -5,6 +5,7 @@ import { ethers } from "ethers";
 
 import { USD_DECIMALS, CHART_PERIODS, formatAmount, sleep } from "../lib/legacy";
 import { chainlinkClient } from "./common";
+import { GMX_STATS_API_URL } from "../config/backend";
 
 const BigNumber = ethers.BigNumber;
 
@@ -59,11 +60,11 @@ async function getChartPricesFromStats(chainId, symbol, period) {
   } else if (symbol === "BTC.b") {
     symbol = "BTC";
   }
-  const hostname = "https://stats.gmx.io/";
-  // const hostname = 'http://localhost:3113/'
+
   const timeDiff = CHART_PERIODS[period] * 3000;
   const from = Math.floor(Date.now() / 1000 - timeDiff);
-  const url = `${hostname}api/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`;
+  const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`;
+
   const TIMEOUT = 5000;
   const res = await new Promise(async (resolve, reject) => {
     let done = false;

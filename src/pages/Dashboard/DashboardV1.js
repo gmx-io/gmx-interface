@@ -11,11 +11,10 @@ import {
   numberWithCommas,
   getTokenUrl,
   useChainId,
-  getServerUrl,
   helperToast,
 } from "../../lib/legacy";
-import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "../../config/Addresses";
-import { getToken, getTokens } from "../../config/Tokens";
+import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "../../config/addresses";
+import { getToken, getTokens } from "../../config/tokens";
 import { getFeeHistory } from "../../config/Fees";
 
 import Footer from "../../components/Footer/Footer";
@@ -29,6 +28,7 @@ import metamaskImg from "../../img/metamask.png";
 import coingeckoImg from "../../img/coingecko.png";
 import bscscanImg from "../../img/bscscan.png";
 import { fetcher } from "../../lib/contracts/fetcher";
+import { getServerUrl } from "../../config/backend";
 
 const USD_DECIMALS = 30;
 const PRECISION = expandDecimals(1, 30);

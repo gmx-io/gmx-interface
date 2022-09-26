@@ -16,22 +16,15 @@ import tradingIcon from "../../img/ic_trading.svg";
 
 import useSWR from "swr";
 
-import {
-  formatAmount,
-  bigNumberify,
-  numberWithCommas,
-  getServerUrl,
-  USD_DECIMALS,
-  ARBITRUM,
-  AVALANCHE,
-  getTotalVolumeSum,
-} from "../../lib/legacy";
+import { formatAmount, bigNumberify, numberWithCommas, USD_DECIMALS, getTotalVolumeSum } from "../../lib/legacy";
 
 import { useUserStat } from "../../domain/legacy";
 
 import TokenCard from "../../components/TokenCard/TokenCard";
 import { Trans } from "@lingui/macro";
 import { HeaderLink } from "../../components/Header/HeaderLink";
+import { ARBITRUM, AVALANCHE } from "../../config/chains";
+import { getServerUrl } from "../../config/backend";
 
 export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)

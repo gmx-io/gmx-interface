@@ -3,8 +3,15 @@ import { FEES_43113 } from "./FEES_43113";
 
 const SECONDS_PER_WEEK = 604800;
 
+type FeeItem = {
+  from: number;
+  to: number;
+  feeUsd: string;
+};
+
 function createFeeList(data) {
-  const list = [];
+  const list: FeeItem[] = [];
+
   for (let i = 0; i < data.length; i++) {
     const item = data[i];
     list.push({
@@ -23,6 +30,6 @@ const FEES = {
   43114: createFeeList(FEES_43113),
 };
 
-export function getFeeHistory(chainId) {
+export function getFeeHistory(chainId: number): FeeItem[] {
   return FEES[chainId].concat([]).reverse();
 }

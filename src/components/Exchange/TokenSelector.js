@@ -3,7 +3,7 @@ import cx from "classnames";
 
 import { formatAmount, expandDecimals, bigNumberify } from "../../lib/legacy";
 
-import { getToken } from "../../config/Tokens";
+import { getToken } from "../../config/tokens";
 
 import { BiChevronDown } from "react-icons/bi";
 

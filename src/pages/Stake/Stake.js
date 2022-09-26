@@ -1,7 +1,6 @@
 import React from "react";
 
-import { getConstant } from "../../config/chains";
-import { AVALANCHE } from "../../lib/legacy";
+import { AVALANCHE, getConstant } from "../../config/chains";
 
 import StakeV1 from "./StakeV1";
 import StakeV2 from "./StakeV2";

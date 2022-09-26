@@ -27,13 +27,11 @@ import {
   expandDecimals,
   parseValue,
   approveTokens,
-  getServerUrl,
   useLocalStorageSerializeKey,
   useChainId,
   GLP_DECIMALS,
   USD_DECIMALS,
   BASIS_POINTS_DIVISOR,
-  ARBITRUM,
   PLACEHOLDER_ACCOUNT,
   getBalanceAndSupplyData,
   getDepositBalanceData,
@@ -43,11 +41,11 @@ import {
   getPageTitle,
 } from "../../lib/legacy";
 import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "../../domain/legacy";
-import { getConstant } from "../../config/chains";
+import { ARBITRUM, getConstant } from "../../config/chains";
 
 import useSWR from "swr";
 
-import { getContract } from "../../config/Addresses";
+import { getContract } from "../../config/addresses";
 
 import "./StakeV2.css";
 import SEO from "../../components/Common/SEO";
@@ -55,6 +53,7 @@ import StatsTooltip from "../../components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "../../components/StatsTooltip/StatsTooltipRow";
 import { fetcher } from "../../lib/contracts/fetcher";
 import { callContract } from "../../lib/contracts/callContract";
+import { getServerUrl } from "../../config/backend";
 
 const { AddressZero } = ethers.constants;
 

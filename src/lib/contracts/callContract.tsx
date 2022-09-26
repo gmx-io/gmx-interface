@@ -62,6 +62,7 @@ export async function callContract(
       };
       opts.setPendingTxns((pendingTxns) => [...pendingTxns, pendingTxn]);
     }
+
     return res;
   } catch (e) {
     let failMsg;

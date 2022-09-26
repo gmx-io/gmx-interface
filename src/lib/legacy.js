@@ -11,46 +11,33 @@ import { ethers } from "ethers";
 import { format as formatDateFn } from "date-fns";
 import Token from "../abis/Token.json";
 import _ from "lodash";
-import { getContract } from "../config/Addresses";
+import { getContract } from "../config/addresses";
 import useSWR from "swr";
 
 import OrderBookReader from "../abis/OrderBookReader.json";
 import OrderBook from "../abis/OrderBook.json";
 
-import { getWhitelistedTokens, isValidToken } from "../config/Tokens";
+import { getWhitelistedTokens, isValidToken } from "../config/tokens";
+import {
+  ARBITRUM,
+  ARBITRUM_TESTNET,
+  AVALANCHE,
+  CHAIN_ID,
+  CHAIN_NAMES_MAP,
+  DEFAULT_CHAIN_ID,
+  MAINNET,
+  TESTNET,
+} from "../config/chains";
+import { getServerBaseUrl } from "../config/backend";
 
 const { AddressZero } = ethers.constants;
-
-export const UI_VERSION = "1.3";
 
 // use a random placeholder account instead of the zero address as the zero address might have tokens
 export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
 
-export const MAINNET = 56;
-export const AVALANCHE = 43114;
-export const TESTNET = 97;
-export const ARBITRUM_TESTNET = 421611;
-export const ARBITRUM = 42161;
-// TODO take it from web3
-export const DEFAULT_CHAIN_ID = ARBITRUM;
-export const CHAIN_ID = DEFAULT_CHAIN_ID;
-
 export const MIN_PROFIT_TIME = 0;
 
 const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
-
-export const IS_NETWORK_DISABLED = {
-  [ARBITRUM]: false,
-  [AVALANCHE]: false,
-};
-
-const CHAIN_NAMES_MAP = {
-  [MAINNET]: "BSC",
-  [TESTNET]: "BSC Testnet",
-  [ARBITRUM_TESTNET]: "ArbRinkeby",
-  [ARBITRUM]: "Arbitrum",
-  [AVALANCHE]: "Avalanche",
-};
 
 const alchemyWhitelistedDomains = ["gmx.io", "app.gmx.io"];
 
@@ -442,32 +429,6 @@ export function getMarginFee(sizeDelta) {
   }
   const afterFeeUsd = sizeDelta.mul(BASIS_POINTS_DIVISOR - MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
   return sizeDelta.sub(afterFeeUsd);
-}
-
-export function getServerBaseUrl(chainId) {
-  if (!chainId) {
-    throw new Error("chainId is not provided");
-  }
-  if (document.location.hostname.includes("deploy-preview")) {
-    const fromLocalStorage = localStorage.getItem("SERVER_BASE_URL");
-    if (fromLocalStorage) {
-      return fromLocalStorage;
-    }
-  }
-  if (chainId === MAINNET) {
-    return "https://gambit-server-staging.uc.r.appspot.com";
-  } else if (chainId === ARBITRUM_TESTNET) {
-    return "https://gambit-server-devnet.uc.r.appspot.com";
-  } else if (chainId === ARBITRUM) {
-    return "https://gmx-server-mainnet.uw.r.appspot.com";
-  } else if (chainId === AVALANCHE) {
-    return "https://gmx-avax-server.uc.r.appspot.com";
-  }
-  return "https://gmx-server-mainnet.uw.r.appspot.com";
-}
-
-export function getServerUrl(chainId, path) {
-  return `${getServerBaseUrl(chainId)}${path}`;
 }
 
 export function isTriggerRatioInverted(fromTokenInfo, toTokenInfo) {

@@ -7,7 +7,6 @@ import { BsArrowRight } from "react-icons/bs";
 import {
   formatAmount,
   bigNumberify,
-  ARBITRUM,
   DEFAULT_SLIPPAGE_AMOUNT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   USD_DECIMALS,
@@ -41,12 +40,11 @@ import {
   CLOSE_POSITION_RECEIVE_TOKEN_KEY,
   useLocalStorageByChainId,
   adjustForDecimals,
-  IS_NETWORK_DISABLED,
   getChainName,
 } from "../../lib/legacy";
-import { getConstant } from "../../config/chains";
+import { ARBITRUM, getConstant, IS_NETWORK_DISABLED } from "../../config/chains";
 import { createDecreaseOrder, useHasOutdatedUi } from "../../domain/legacy";
-import { getContract } from "../../config/Addresses";
+import { getContract } from "../../config/addresses";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Checkbox from "../Checkbox/Checkbox";
 import Tab from "../Tab/Tab";
@@ -54,7 +52,7 @@ import Modal from "../Modal/Modal";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import Tooltip from "../Tooltip/Tooltip";
 import TokenSelector from "./TokenSelector";
-import { getTokens } from "../../config/Tokens";
+import { getTokens } from "../../config/tokens";
 import "./PositionSeller.css";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { getTokenAmountFromUsd } from "../../domain/tokens/utils";

@@ -4,7 +4,7 @@ import { BiEditAlt } from "react-icons/bi";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
-import { getNativeToken, getToken } from "../../config/Tokens";
+import { getNativeToken, getToken } from "../../config/tokens";
 import { formatAmount, formatDate, getExplorerUrl, shortenAddress } from "../../lib/legacy";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";

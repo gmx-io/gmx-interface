@@ -20,10 +20,9 @@ import {
   getTokenInfo,
   getLiquidationPrice,
   approveTokens,
-  IS_NETWORK_DISABLED,
   getChainName,
 } from "../../lib/legacy";
-import { getContract } from "../../config/Addresses";
+import { getContract } from "../../config/addresses";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
 
@@ -31,7 +30,7 @@ import PositionRouter from "../../abis/PositionRouter.json";
 import Token from "../../abis/Token.json";
 import Tooltip from "../Tooltip/Tooltip";
 
-import { getConstant } from "../../config/chains";
+import { getConstant, IS_NETWORK_DISABLED } from "../../config/chains";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { fetcher } from "../../lib/contracts/fetcher";
 import { callContract } from "../../lib/contracts/callContract";

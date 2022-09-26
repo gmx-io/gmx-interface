@@ -17,7 +17,7 @@ import {
   bigNumberify,
 } from "../../lib/legacy";
 import { useTrades, useLiquidationsData } from "../../domain/legacy";
-import { getContract } from "../../config/Addresses";
+import { getContract } from "../../config/addresses";
 
 import "./TradeHistory.css";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";

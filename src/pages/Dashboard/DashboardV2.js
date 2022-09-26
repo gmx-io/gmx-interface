@@ -9,7 +9,7 @@ import TooltipComponent from "../../components/Tooltip/Tooltip";
 import hexToRgba from "hex-to-rgba";
 import { ethers } from "ethers";
 
-import { getWhitelistedTokens, getTokenBySymbol } from "../../config/Tokens";
+import { getWhitelistedTokens, getTokenBySymbol } from "../../config/tokens";
 import { getFeeHistory } from "../../config/Fees";
 
 import {
@@ -19,15 +19,12 @@ import {
   bigNumberify,
   numberWithCommas,
   formatDate,
-  getServerUrl,
   getChainName,
   useChainId,
   USD_DECIMALS,
   GMX_DECIMALS,
   GLP_DECIMALS,
   BASIS_POINTS_DIVISOR,
-  ARBITRUM,
-  AVALANCHE,
   GLPPOOLCOLORS,
   DEFAULT_MAX_USDG_AMOUNT,
   getPageTitle,
@@ -42,7 +39,7 @@ import {
   useInfoTokens,
 } from "../../domain/legacy";
 
-import { getContract } from "../../config/Addresses";
+import { getContract } from "../../config/addresses";
 
 import VaultV2 from "../../abis/VaultV2.json";
 import ReaderV2 from "../../abis/ReaderV2.json";
@@ -64,6 +61,8 @@ import useTotalVolume from "../../domain/useTotalVolume";
 import StatsTooltip from "../../components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "../../components/StatsTooltip/StatsTooltipRow";
 import { fetcher } from "../../lib/contracts/fetcher";
+import { ARBITRUM, AVALANCHE } from "../../config/chains";
+import { getServerUrl } from "../../config/backend";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;

@@ -22,14 +22,14 @@ import {
   approveTokens,
   bigNumberify,
   helperToast,
-  CHAIN_ID,
 } from "../../lib/legacy";
-import { getContract } from "../../config/Addresses";
+import { getContract } from "../../config/addresses";
 
 import Reader from "../../abis/Reader.json";
 import Token from "../../abis/Token.json";
 import GmxMigrator from "../../abis/GmxMigrator.json";
 import { fetcher } from "../../lib/contracts/fetcher";
+import { CHAIN_ID } from "../../config/chains";
 
 const { MaxUint256, AddressZero } = ethers.constants;
 

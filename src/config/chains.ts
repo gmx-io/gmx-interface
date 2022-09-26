@@ -1,8 +1,38 @@
 import { ethers } from "ethers";
 
-import { MAINNET, TESTNET, ARBITRUM_TESTNET, ARBITRUM, AVALANCHE } from "../lib/legacy";
-
 const { parseEther } = ethers.utils;
+
+export const MAINNET = 56;
+export const AVALANCHE = 43114;
+export const TESTNET = 97;
+export const ARBITRUM_TESTNET = 421611;
+export const ARBITRUM = 42161;
+
+// TODO take it from web3
+export const DEFAULT_CHAIN_ID = ARBITRUM;
+export const CHAIN_ID = DEFAULT_CHAIN_ID;
+
+export const IS_NETWORK_DISABLED = {
+  [ARBITRUM]: false,
+  [AVALANCHE]: false,
+};
+
+export const CHAIN_NAMES_MAP = {
+  [MAINNET]: "BSC",
+  [TESTNET]: "BSC Testnet",
+  [ARBITRUM_TESTNET]: "ArbRinkeby",
+  [ARBITRUM]: "Arbitrum",
+  [AVALANCHE]: "Avalanche",
+};
+
+export const GAS_PRICE_ADJUSTMENT_MAP = {
+  [ARBITRUM]: "0",
+  [AVALANCHE]: "3000000000", // 3 gwei
+};
+
+export const MAX_GAS_PRICE_MAP = {
+  [AVALANCHE]: "200000000000", // 200 gwei
+};
 
 const constants = {
   [MAINNET]: {
@@ -63,7 +93,7 @@ const constants = {
   },
 };
 
-export const getConstant = (chainId, key) => {
+export const getConstant = (chainId: number, key: string) => {
   if (!constants[chainId]) {
     throw new Error(`Unsupported chainId ${chainId}`);
   }

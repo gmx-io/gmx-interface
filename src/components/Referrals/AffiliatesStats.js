@@ -6,9 +6,8 @@ import { IoWarningOutline } from "react-icons/io5";
 import { BiCopy, BiErrorCircle } from "react-icons/bi";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
-import { getNativeToken, getToken } from "../../config/Tokens";
+import { getNativeToken, getToken } from "../../config/tokens";
 import {
-  AVALANCHE,
   bigNumberify,
   formatAmount,
   formatDate,
@@ -28,6 +27,7 @@ import {
 } from "./referralsHelper";
 import { AffiliateCodeForm } from "./AddAffiliateCode";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
+import { AVALANCHE } from "../../config/chains";
 
 function AffiliatesStats({
   referralsData,

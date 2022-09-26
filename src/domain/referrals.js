@@ -5,8 +5,6 @@ import useSWR from "swr";
 
 import ReferralStorage from "../abis/ReferralStorage.json";
 import {
-  ARBITRUM,
-  AVALANCHE,
   MAX_REFERRAL_CODE_LENGTH,
   bigNumberify,
   isAddressZero,
@@ -16,10 +14,11 @@ import {
   REFERRAL_CODE_KEY,
 } from "../lib/legacy";
 import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "./common";
-import { getContract } from "../config/Addresses";
+import { getContract } from "../config/addresses";
 import { REGEX_VERIFY_BYTES32 } from "../components/Referrals/referralsHelper";
 import { fetcher } from "../lib/contracts/fetcher";
 import { callContract } from "../lib/contracts/callContract";
+import { ARBITRUM, AVALANCHE } from "../config/chains";
 
 const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
 const DISTRIBUTION_TYPE_REBATES = "1";

@@ -31,8 +31,8 @@ import {
 import { getConstant } from "../../config/chains";
 import { approvePlugin, useInfoTokens, useMinExecutionFee, cancelMultipleOrders } from "../../domain/legacy";
 
-import { getContract } from "../../config/Addresses";
-import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from "../../config/Tokens";
+import { getContract } from "../../config/addresses";
+import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from "../../config/tokens";
 
 import Reader from "../../abis/ReaderV2.json";
 import VaultV2 from "../../abis/VaultV2.json";

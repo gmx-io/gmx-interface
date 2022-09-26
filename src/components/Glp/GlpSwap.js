@@ -6,8 +6,8 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 import Tab from "../Tab/Tab";
 import cx from "classnames";
-import { getToken, getTokens, getWhitelistedTokens, getWrappedToken, getNativeToken } from "../../config/Tokens";
-import { getContract } from "../../config/Addresses";
+import { getToken, getTokens, getWhitelistedTokens, getWrappedToken, getNativeToken } from "../../config/tokens";
+import { getContract } from "../../config/addresses";
 import {
   helperToast,
   useLocalStorageByChainId,
@@ -32,10 +32,8 @@ import {
   GLP_COOLDOWN_DURATION,
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
-  ARBITRUM,
   PLACEHOLDER_ACCOUNT,
   importImage,
-  IS_NETWORK_DISABLED,
   getChainName,
 } from "../../lib/legacy";
 
@@ -67,6 +65,7 @@ import SwapErrorModal from "./SwapErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { fetcher } from "../../lib/contracts/fetcher";
 import { callContract } from "../../lib/contracts/callContract";
+import { ARBITRUM, IS_NETWORK_DISABLED } from "../../config/chains";
 
 const { AddressZero } = ethers.constants;
 

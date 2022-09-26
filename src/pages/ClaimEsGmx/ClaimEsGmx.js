@@ -3,8 +3,6 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import {
-  ARBITRUM,
-  AVALANCHE,
   PLACEHOLDER_ACCOUNT,
   useChainId,
   formatAmount,
@@ -13,7 +11,7 @@ import {
   bigNumberify,
 } from "../../lib/legacy";
 
-import { getContract } from "../../config/Addresses";
+import { getContract } from "../../config/addresses";
 
 import Token from "../../abis/Token.json";
 import RewardReader from "../../abis/RewardReader.json";
@@ -28,6 +26,7 @@ import avaIcon from "../../img/ic_avalanche_96.svg";
 import { Trans, t } from "@lingui/macro";
 import { fetcher } from "../../lib/contracts/fetcher";
 import { callContract } from "../../lib/contracts/callContract";
+import { ARBITRUM, AVALANCHE } from "../../config/chains";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";
 const VEST_WITH_GLP_ARB = "VEST_WITH_GLP_ARB";
