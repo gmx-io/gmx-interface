@@ -196,6 +196,8 @@ a.App-button-option.tweet-link.disabled {
   }
   .position-share .pnl {
     font-size: 2rem;
+    margin-top: 0.5rem;
+    line-height: 1;
   }
   .position-share .prices {
     max-width: 14rem;
@@ -208,7 +210,7 @@ a.App-button-option.tweet-link.disabled {
     font-size: 1rem;
   }
   .position-share .referral-code {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     width: 12rem;
   }
   .position-share .referral-code .label {
@@ -218,6 +220,16 @@ a.App-button-option.tweet-link.disabled {
     font-size: 1rem;
   }
   .position-share-modal .actions {
-    transform: scale(0.8);
+    margin-top: 1rem;
+  }
+  .position-share-modal .actions .App-button-option {
+    font-size: 1rem;
+    line-height: 1.25rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    min-height: 3rem;
+  }
+  .image-overlay-wrapper .loading-text {
+    font-size: 1rem;
   }
 }

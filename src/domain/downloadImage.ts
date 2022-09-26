@@ -1,20 +1,5 @@
-function dataURLtoBlob(dataurl) {
-  var arr = dataurl.split(","),
-    mime = arr[0].match(/:(.*?);/)[1],
-    bstr = atob(arr[1]),
-    n = bstr.length,
-    u8arr = new Uint8Array(n);
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-  return new Blob([u8arr], { type: mime });
-}
-
-export default function downloadImage(data, filename) {
-  const imgBlob = dataURLtoBlob(data);
-  // It is necessary to create a new blob object with mime-type explicitly set
-  // otherwise only Chrome works like it should
-  const blob = new Blob([imgBlob], { type: "image/jpeg" });
+export default async function downloadImage(dataURI: string, filename: string) {
+  const blob = await (await fetch(dataURI)).blob();
   if (typeof window.navigator.msSaveBlob !== "undefined") {
     // IE doesn't allow using a blob object directly as link href.
     // Workaround for "HTML7007: One or more blob URLs were

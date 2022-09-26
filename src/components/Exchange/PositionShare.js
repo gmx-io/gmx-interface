@@ -5,7 +5,7 @@ import cx from "classnames";
 import { BiCopy } from "react-icons/bi";
 import { RiFileDownloadLine } from "react-icons/ri";
 import { FiTwitter } from "react-icons/fi";
-import { useCopyToClipboard } from "react-use";
+import { useCopyToClipboard, useMedia } from "react-use";
 import Modal from "../Modal/Modal";
 import gmxLogo from "../../img/gmx-logo-with-name.svg";
 import "./PositionShare.css";
@@ -134,8 +134,10 @@ function PositionShareCard({
   uploadedImageError,
   sharePositionBgImg,
 }) {
+  const isMobile = useMedia("(max-width: 400px)");
   const { code, success } = userAffiliateCode;
   const { deltaAfterFeesPercentageStr, isLong, leverage, indexToken, averagePrice, markPrice } = position;
+
   const homeURL = getHomeUrl();
   return (
     <div className="relative">
@@ -159,7 +161,7 @@ function PositionShareCard({
         </div>
         <div className="referral-code">
           <div>
-            <QRCodeSVG size={32} value={success ? `${homeURL}/#/?ref=${code}` : `${homeURL}`} />
+            <QRCodeSVG size={isMobile ? 24 : 32} value={success ? `${homeURL}/#/?ref=${code}` : `${homeURL}`} />
           </div>
           <div className="referral-code-info">
             {success ? (
