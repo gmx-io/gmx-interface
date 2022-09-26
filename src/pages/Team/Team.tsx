@@ -43,10 +43,6 @@ export default function Team({ pendingTxns, setPendingTxns }: Props) {
             <div className="Page-title">
               {isLoading() ? "" : <em>{team.name}</em>} Team <img alt="Chain Icon" src={getChainIcon(chainId)} />
             </div>
-            <div className="Page-description">
-              Get fee discounts and earn rebates through the GMX referral program. For more information, please read the
-              referral program details.
-            </div>
           </div>
         </div>
         {isLoading() && <Loader/>}

@@ -20,14 +20,16 @@ export function getGraphClient(chainId) {
   })
 }
 
-export function useIndividualStats(chainId) {
+export function useIndividualStats(chainId, page, perPage) {
   const [data, setData] = useState<Stats[]>([])
   const [loading, setLoading] = useState(true)
+  const [hasNextPage, setHasNextPage] = useState(false)
 
   const query = gql`
-    query {
-      accountStats (
-        first: 10,
+    query ($first: Int!, $skip: Int!) {
+      accountStats(
+        first: $first,
+        skip: $skip,
         orderBy: pnl,
         orderByDir: desc,
         where: {
@@ -41,11 +43,16 @@ export function useIndividualStats(chainId) {
     }
   `
 
-  useSWR([chainId], () => {
+  useSWR([chainId, page, perPage], () => {
     async function main() {
-      const { data } = await getGraphClient(chainId).query({ query })
+      const { data: graphData } = await getGraphClient(chainId).query({ query, variables: {
+        first: perPage + 1,
+        skip: perPage * (page - 1)
+      }})
 
-      setData(data.accountStats.map((stats, i) => ({
+      setHasNextPage(graphData.accountStats.length > perPage)
+
+      setData(graphData.accountStats.slice(0, perPage).map((stats, i) => ({
         id: stats.id,
         label: stats.id,
         rank: i + 1,
@@ -57,9 +64,9 @@ export function useIndividualStats(chainId) {
     }
 
     main()
-  }, { refreshInterval: 10000 })
+  })
 
-  return { data, loading }
+  return { data, loading, hasNextPage }
 }
 
 export function useTeamsStats(chainId, competitionIndex) {
@@ -72,27 +79,31 @@ export function useTeamsStats(chainId, competitionIndex) {
         first: 1000,
         orderBy: pnlPercent,
         orderDirection: desc,
-        where: { competition: $competitionIndex }
+        where: {
+          competition: $competitionIndex,
+        }
       ) {
         id
         name
         pnlPercent
         pnl
-        leader { id }
+        address
       }
     }
   `
 
-  useSWR([chainId, competitionIndex], () => {
+  useSWR([chainId, competitionIndex,], () => {
     async function main() {
-      const { data } = await getGraphClient(chainId).query({ query, variables: { competitionIndex } })
+      const { data: graphData } = await getGraphClient(chainId).query({ query, variables: {
+        competitionIndex,
+      }})
 
-      setData(data.teams.map((team, rank) => ({
-        id: team.leader.id,
+      setData(graphData.teams.map((team, rank) => ({
+        id: team.address,
         rank: rank + 1,
         pnl: team.pnl,
         pnlPercent: team.pnlPercent,
-        leaderAddress: team.leader.id,
+        leaderAddress: team.address,
         label: team.name,
       })))
 
@@ -100,7 +111,7 @@ export function useTeamsStats(chainId, competitionIndex) {
     }
 
     main()
-  }, { refreshInterval: 10000 });
+  });
 
   return { data, loading }
 }
@@ -219,7 +230,7 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
     }
 
     main()
-  }, { refreshInterval: 10000 })
+  })
 
   return { data, loading, exists, revalidate }
 }
@@ -361,7 +372,7 @@ export function useCompetition(chainId, competitionIndex) {
     }
 
     main()
-  }, { refreshInterval: 10000 })
+  })
 
   return { data, exists, loading };
 }

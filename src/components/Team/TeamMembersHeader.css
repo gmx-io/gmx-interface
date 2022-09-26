@@ -33,7 +33,7 @@
   font-size: 1.3rem;
   list-style: none;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
 
@@ -53,6 +53,10 @@
   cursor: pointer;
 }
 
+.approve-address-list li span {
+  font-family: monospace;
+}
+
 .text-input-approve {
   margin-top: 1.5rem;
 }
@@ -64,4 +68,16 @@
   background-color: transparent;
   color: white;
   padding: 1.25rem;
+}
+
+.team-modal-referral-empty {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+  justify-content: center;
+}
+
+.team-modal-referral-empty span {
+  margin-left: 1rem;
+  line-height: 1;
 }

@@ -1,17 +1,18 @@
 import { Competition, Team } from "../../domain/leaderboard/types";
 import "./TeamMembersHeader.css";
-import { CHAIN_ID_QUERY_PARAM, helperToast, shortenAddress, useChainId } from "../../lib/legacy";
+import { CHAIN_ID_QUERY_PARAM, helperToast, REFERRALS_SELECTED_TAB_KEY, shortenAddress, useChainId } from "../../lib/legacy";
 import { getTeamUrl } from "../../domain/leaderboard/urls";
-import { useCopyToClipboard } from "react-use";
+import { useCopyToClipboard, useLocalStorage, useLocation } from "react-use";
 import useRouteQuery from "../../lib/useRouteQuery";
 import Modal from "../Modal/Modal";
 import { useEffect, useRef, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import { approveJoinRequest, cancelJoinRequest, createJoinRequest, getAccountJoinRequest, removeMember, useAccountJoinRequest, useMemberTeam } from "../../domain/leaderboard/contracts";
-import { FiX } from "react-icons/fi";
+import { FiInfo, FiX } from "react-icons/fi";
 import Checkbox from "../Checkbox/Checkbox";
-import { useUserCodesOnAllChain } from "../../domain/referrals";
+import { AFFILIATES_TAB, useUserCodesOnAllChain } from "../../domain/referrals";
+import { useHistory } from "react-router-dom";
 
 type Inviteprops = {
   team: Team,
@@ -19,6 +20,7 @@ type Inviteprops = {
 }
 
 function Invite({ team }: Inviteprops) {
+  const history = useHistory()
   const { account } = useWeb3React()
   const { chainId } = useChainId()
   const [,copyToClipboard] = useCopyToClipboard()
@@ -27,6 +29,7 @@ function Invite({ team }: Inviteprops) {
   const allReferralCodes = useUserCodesOnAllChain(account)
   const [chainReferralCodes, setChainReferralCodes] = useState<any[]>([])
   const [referralCode, setReferralCode] = useState(null)
+  const [referralActiveTab, setReferralActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, AFFILIATES_TAB)
 
   useEffect(() => {
     setChainReferralCodes(
@@ -35,6 +38,10 @@ function Invite({ team }: Inviteprops) {
   }, [allReferralCodes, chainId])
 
   useEffect(() => {
+    if (chainReferralCodes.length === 0) {
+      setIncludeReferral(false)
+    }
+
     if ( ! includeReferral) {
       setReferralCode(null)
     } else if (chainReferralCodes.length > 0) {
@@ -61,6 +68,14 @@ function Invite({ team }: Inviteprops) {
     setReferralCode(target.value.trim())
   }
 
+  const handleNewReferralCodeClick = () => {
+    if (referralActiveTab !== AFFILIATES_TAB) {
+      setReferralActiveTab(AFFILIATES_TAB)
+    }
+
+    history.push("/referrals")
+  }
+
   return (
     <>
       <button className="App-button-option" onClick={() => setModalOpen(true)}>
@@ -69,29 +84,39 @@ function Invite({ team }: Inviteprops) {
       <Modal isVisible={modalOpen} setIsVisible={setModalOpen} label="Invitation Link">
         <div className="team-modal-content">
           <p>
-            You can include a referral code that will be used by future members using this referral link.
+            You can include a referral code that will be used by future members using this invitation link.
           </p>
-          <div className="team-modal-referral-section">
-            <div className="Checkbox">
-              <span className="Checkbox-icon-wrapper">
-                <Checkbox isChecked={includeReferral} setIsChecked={setIncludeReferral}/>
-              </span>
-              <span className="Checkbox-label">
-                <span className="muted">Include Referral Code</span>
-              </span>
+          {chainReferralCodes.length > 0 ? (
+            <div className="team-modal-referral-section">
+              <div className="Checkbox">
+                <span className="Checkbox-icon-wrapper">
+                  <Checkbox isChecked={includeReferral} setIsChecked={setIncludeReferral}/>
+                </span>
+                <span className="Checkbox-label">
+                  <span className="muted">Include Referral Code</span>
+                </span>
+              </div>
+              {includeReferral && (
+                <select onChange={handleReferralCodeChange} className="team-modal-referral-select text-input">
+                  {chainReferralCodes.map(code => (
+                    <option value={code.codeString}>{code.codeString}</option>
+                  ))}
+                </select>
+              )}
             </div>
-            {includeReferral && (
-              <select onChange={handleReferralCodeChange} className="team-modal-referral-select text-input">
-                {chainReferralCodes.map(code => (
-                  <option value={code.codeString}>{code.codeString}</option>
-                ))}
-              </select>
-            )}
-          </div>
+          ) : (
+            <div className="team-modal-referral-empty muted">
+              <FiInfo/>
+              <span>No referral code found on this chain</span>
+            </div>
+          )}
           <div className="divider"></div>
           <div className="App-card-options App-card-options-right">
+            <button onClick={() => handleNewReferralCodeClick()} className="App-button-option">
+              Create new referral code
+            </button>
             <button onClick={() => handleCopyClick()} className="default-btn App-card-option">
-              Copy to clipboard
+              Copy link to clipboard
             </button>
           </div>
         </div>
@@ -243,12 +268,14 @@ function Approve({ competition, onApprove, team, pendingTxns, setPendingTxns }: 
       </button>
       <Modal onAfterOpen={handleModalChange} label="Approve members" isVisible={open} setIsVisible={setOpen}>
         <div className="team-modal-content">
-          <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit.</p>
+          <p>
+            Enter the member addresses you want to approve below:
+          </p>
           {addresses.length > 0 && (
             <ul className="approve-address-list">
               {addresses.map(address => (
                 <li key={address}>
-                  <span>{shortenAddress(address, 10)}</span>
+                  <span>{shortenAddress(address, 16)}</span>
                   <FiX size={16} title="Remove address" onClick={() => handleRemoveAddress(address)}/>
                 </li>
               ))}
@@ -260,11 +287,11 @@ function Approve({ competition, onApprove, team, pendingTxns, setPendingTxns }: 
           <div className="divider"></div>
           <div className="App-card-options App-card-options-right">
             {addresses.length > 0 && (
-              <button onClick={() => sendTransaction()} disabled={processing} className="default-btn App-card-option">{processing ? "Approving..." : "Approve members"}</button>
+              <button onClick={() => sendTransaction()} disabled={processing} className="App-button-option App-card-option">{processing ? "Approving..." : "Approve members"}</button>
             )}
             {!processing && (value.length > 0 || addresses.length === 0) && (
               <button
-                className={"App-card-option " + (addresses.length > 0 ? "App-button-option" : "default-btn")}
+                className="App-card-option App-button-option"
                 disabled={value === "" || inputError || processing ? true : false}
                 onClick={() => handleAddAddressClick()}
               >

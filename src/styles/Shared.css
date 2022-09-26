@@ -421,3 +421,11 @@ button.btn-link:hover .logout-icon {
 .w-1\/4 {
   width: 25%;
 }
+
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}

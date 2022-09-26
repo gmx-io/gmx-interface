@@ -1,5 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiPlus, FiSearch } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { useMemberTeam } from "../../domain/leaderboard/contracts";
@@ -14,24 +14,35 @@ export function TeamLeaderboard({ competitionIndex }) {
   const { library, account } = useWeb3React();
   const [search, setSearch] = useState("")
   const debouncedSearch = useDebounce(search, 300)
+  const [page, setPage] = useState(1)
+  const perPage = 10
   const { data: allStats, loading: allStatsLoading } = useTeamsStats(chainId, competitionIndex);
-  const { data: details, loading: detailsLoading } = useCompetition(chainId, competitionIndex)
+  const { data: competition, loading: competitionLoading } = useCompetition(chainId, competitionIndex)
   const { exists: isLeader, loading: teamLoading } = useTeam(chainId, library, competitionIndex, account)
   const { data: userTeam, hasTeam, loading: memberTeamLoading } = useMemberTeam(chainId, library, competitionIndex, account)
 
-  const page = 1
-  const perPage = 15
-
-  const displayedStats = () => {
+  const filteredStats = () => {
     return allStats.filter(stat => {
       return stat.label.toLowerCase().indexOf(debouncedSearch.toLowerCase()) !== -1
           || stat.id.toLowerCase().indexOf(debouncedSearch.toLowerCase()) !== -1
-    }).slice((page - 1) * perPage, (page - 1) * perPage + perPage)
+    })
+  }
+
+  const displayedStats = () => {
+    return filteredStats().slice((page - 1) * perPage, (page - 1) * perPage + perPage)
   }
 
   const handleSearchInput = ({ target }) => {
     setSearch(target.value)
   }
+
+  const pageCount = () => {
+    return Math.ceil(filteredStats().length / perPage)
+  }
+
+  useEffect(() => {
+    setPage(1)
+  }, [debouncedSearch])
 
   return (
     <div>
@@ -40,9 +51,9 @@ export function TeamLeaderboard({ competitionIndex }) {
           <input type="text" placeholder="Search for a team..." className="leaderboard-search-input text-input input-small" value={search} onInput={handleSearchInput}/>
           <FiSearch className="input-logo"/>
         </div>
-        {(detailsLoading || teamLoading || memberTeamLoading || !account) ? "" : (
+        {(competitionLoading || teamLoading || memberTeamLoading || !account) ? "" : (
           <>
-            {details.registrationActive && !isLeader && !hasTeam && (
+            {competition.registrationActive && !isLeader && !hasTeam && (
               <Link className="icon-btn transparent-btn" to={getTeamRegistrationUrl()}>
                 <FiPlus/>
                 <span className="ml-small">Register your team</span>
@@ -57,6 +68,10 @@ export function TeamLeaderboard({ competitionIndex }) {
         )}
       </div>
       <LeaderboardTable loading={allStatsLoading} stats={displayedStats()} resolveLink={(stat) => getTeamUrl(stat.id)} isTeamLeaderboard={true} />
+      <div className="simple-table-pagination">
+        <button className="default-btn" onClick={() => setPage(p => p - 1)} disabled={page <= 1}>Previous</button>
+        <button className="default-btn" onClick={() => setPage(p => p + 1)} disabled={page >= pageCount()}>Next</button>
+      </div>
     </div>
   )
 }

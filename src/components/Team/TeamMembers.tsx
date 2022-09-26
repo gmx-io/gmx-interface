@@ -66,7 +66,7 @@ export function TeamMembers({ onMembersChange, team, pendingTxns, setPendingTxns
         <td>{member.pnl}</td>
         <td>{member.pnlPercent}</td>
         <td>
-          {isTeamLeader() && member.address !== team.leaderAddress && (
+          {isTeamLeader() && member.address !== team.leaderAddress && competition.registrationActive && (
             <button className="simple-table-action" disabled={isRemoving} onClick={() => handleRemoveClick(member)}>Remove</button>
           )}
         </td>
@@ -80,7 +80,6 @@ export function TeamMembers({ onMembersChange, team, pendingTxns, setPendingTxns
         <div className="Page-title">
           Members
         </div>
-        <div className="Page-description">Platform and GLP index tokens.</div>
       </div>
       <div className="simple-table-container">
         {showTeamMembersHeader() && <TeamMembersHeader

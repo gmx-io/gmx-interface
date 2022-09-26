@@ -24,7 +24,6 @@ export default function TeamPositions({ team }: Props) {
         <div className="Page-title">
           Positions
         </div>
-        <div className="Page-description">Platform and GLP index tokens.</div>
       </div>
       <table className="Exchange-list Orders App-box large">
         <tbody>

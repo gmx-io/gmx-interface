@@ -33,22 +33,24 @@ export default function LeaderboardTable({ loading, resolveLink, stats, isTeamLe
   }
 
   return (
-    <table className="simple-table leaderboard-table">
-      <tbody>
-        <tr className="simple-table-header">
-          <th>Rank</th>
-          <th>{isTeamLeaderboard ? "Team" : "Address"}</th>
-          <th>P&L</th>
-          <th></th>
-        </tr>
-        {loading && <tr><td colSpan={4}>Loading...</td></tr>}
-        {!loading && stats.length > 0 && stats.map(stat => <Row key={stat.id} stat={stat}/>)}
-        {!loading && stats.length === 0 && (
-          <tr>
-            <td colSpan={4}>No {isTeamLeaderboard ? "team" : "account"} found...</td>
+    <>
+      <table className="simple-table leaderboard-table">
+        <tbody>
+          <tr className="simple-table-header">
+            <th>Rank</th>
+            <th>{isTeamLeaderboard ? "Team" : "Address"}</th>
+            <th>P&L</th>
+            <th></th>
           </tr>
-        )}
-      </tbody>
-    </table>
+          {loading && <tr><td colSpan={4}>Loading...</td></tr>}
+          {!loading && stats.length > 0 && stats.map(stat => <Row key={stat.id} stat={stat}/>)}
+          {!loading && stats.length === 0 && (
+            <tr>
+              <td colSpan={4}>No {isTeamLeaderboard ? "team" : "account"} found...</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </>
   );
 }
