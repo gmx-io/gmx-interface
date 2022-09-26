@@ -32,7 +32,7 @@ export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
 export const MAINNET = 56;
 export const AVALANCHE = 43114;
 export const TESTNET = 97;
-export const ARBITRUM_TESTNET = 421613;
+export const ARBITRUM_TESTNET = 421611;
 export const ARBITRUM = 42161;
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = ARBITRUM;
@@ -328,7 +328,7 @@ const getWalletConnectConnector = () => {
     rpc: {
       [AVALANCHE]: AVALANCHE_RPC_PROVIDERS[0],
       [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0],
-      [ARBITRUM_TESTNET]: "https://goerli-rollup.arbitrum.io/rpc",
+      [ARBITRUM_TESTNET]: "https://rinkeby.arbitrum.io/rpc",
     },
     qrcode: true,
     chainId,
@@ -2152,8 +2152,8 @@ const NETWORK_METADATA = {
       symbol: "ETH",
       decimals: 18,
     },
-    rpcUrls: ["https://goerli-rollup.arbitrum.io/rpc"],
-    blockExplorerUrls: ["https://goerli-rollup-explorer.arbitrum.io/"],
+    rpcUrls: ["https://rinkeby.arbitrum.io/rpc"],
+    blockExplorerUrls: ["https://testnet.arbiscan.io/"],
   },
   [ARBITRUM]: {
     chainId: "0x" + ARBITRUM.toString(16),

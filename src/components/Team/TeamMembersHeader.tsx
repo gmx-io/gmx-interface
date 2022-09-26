@@ -2,7 +2,7 @@ import { Competition, Team } from "../../domain/leaderboard/types";
 import "./TeamMembersHeader.css";
 import { CHAIN_ID_QUERY_PARAM, helperToast, REFERRALS_SELECTED_TAB_KEY, shortenAddress, useChainId } from "../../lib/legacy";
 import { getTeamUrl } from "../../domain/leaderboard/urls";
-import { useCopyToClipboard, useLocalStorage, useLocation } from "react-use";
+import { useCopyToClipboard, useLocalStorage } from "react-use";
 import useRouteQuery from "../../lib/useRouteQuery";
 import Modal from "../Modal/Modal";
 import { useEffect, useRef, useState } from "react";

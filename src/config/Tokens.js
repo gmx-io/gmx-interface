@@ -118,7 +118,7 @@ const TOKENS = {
       isStable: true,
     },
   ],
-  421613: [
+  421611: [
     {
       name: "Bitcoin",
       symbol: "BTC",
@@ -359,7 +359,7 @@ const ADDITIONAL_TOKENS = {
   ],
 };
 
-const CHAIN_IDS = [56, 97, 42161, 421613, 43114];
+const CHAIN_IDS = [56, 97, 42161, 421611, 43114];
 
 const TOKENS_MAP = {};
 const TOKENS_BY_SYMBOL_MAP = {};
