@@ -23,7 +23,6 @@ import SpinningLoader from "../Common/SpinningLoader";
 import useLoadImage from "../../lib/useLoadImage";
 import shareBgImg from "../../img/position-share-bg.png";
 import downloadImage from "../../domain/downloadImage";
-
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
@@ -54,7 +53,11 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
     (async function () {
       const element = positionRef.current;
       if (element && userAffiliateCode.success && sharePositionBgImg && positionToShare) {
-        const image = await toJpeg(element, config).then(async () => await toJpeg(element, config));
+        // We have to call the toJpeg function multiple times to make sure the canvas renders all the elements like background image
+        // @refer https://github.com/tsayen/dom-to-image/issues/343#issuecomment-652831863
+        const image = await toJpeg(element, config)
+          .then(async () => await toJpeg(element, config))
+          .then(async () => await toJpeg(element, config));
         try {
           const imageInfo = await fetch(UPLOAD_URL, { method: "POST", body: image }).then((res) => res.json());
           setUploadedImageInfo(imageInfo);
@@ -71,8 +74,9 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
     const element = positionRef.current;
     if (!element) return;
     const name = `${indexToken.symbol}-${isLong ? "long" : "short"}.jpeg`;
-    // We have to call the toJpeg function multiple times to make it work on iOS devices https://github.com/bubkoo/html-to-image/issues/214#issuecomment-1002640937
-    const imgBlob = await toJpeg(element, config).then(async () => await toJpeg(element, config));
+    const imgBlob = await toJpeg(element, config)
+      .then(async () => await toJpeg(element, config))
+      .then(async () => await toJpeg(element, config));
     downloadImage(imgBlob, name);
   }
 
