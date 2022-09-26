@@ -53,7 +53,7 @@
   font-size: 1.25rem;
   display: flex;
   padding-left: 0;
-  margin: 1.25rem 0 0 0;
+  margin: 0;
 }
 .position-share .info li {
   margin-right: 1rem;
@@ -66,13 +66,13 @@
 .position-share .pnl {
   font-weight: bold;
   font-size: 3.25rem;
-  margin: 0.5rem 0 0 0;
+  margin: 0;
+  line-height: 1;
 }
 
 .position-share .prices {
   max-width: 20rem;
   display: flex;
-  margin-top: 1rem;
   justify-content: space-between;
 }
 .position-share .prices p {
@@ -91,7 +91,6 @@
 }
 .position-share .referral-code {
   display: flex;
-  margin-top: 1rem;
   background: rgba(255, 255, 255, 0.05);
   max-width: 18rem;
   border-radius: 5px;
@@ -191,17 +190,15 @@ a.App-button-option.tweet-link.disabled {
     width: 4rem;
   }
   .position-share .info {
-    margin-top: 0.75rem;
     font-size: 1rem;
   }
   .position-share .pnl {
     font-size: 2rem;
-    margin-top: 0.5rem;
+
     line-height: 1;
   }
   .position-share .prices {
     max-width: 14rem;
-    margin-top: 0.5rem;
   }
   .position-share .prices p {
     font-size: 0.9rem;
@@ -210,7 +207,6 @@ a.App-button-option.tweet-link.disabled {
     font-size: 1rem;
   }
   .position-share .referral-code {
-    margin-top: 0.5rem;
     width: 12rem;
   }
   .position-share .referral-code .label {
