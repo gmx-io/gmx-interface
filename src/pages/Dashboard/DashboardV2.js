@@ -9,7 +9,6 @@ import TooltipComponent from "../../components/Tooltip/Tooltip";
 import hexToRgba from "hex-to-rgba";
 import { ethers } from "ethers";
 
-import { getWhitelistedTokens, getTokenBySymbol } from "../../config/tokens";
 import { getFeeHistory } from "../../config/Fees";
 
 import {
@@ -39,7 +38,7 @@ import {
   useInfoTokens,
 } from "../../domain/legacy";
 
-import { getContract } from "../../config/addresses";
+import { getContract } from "../../config/contracts";
 
 import VaultV2 from "../../abis/VaultV2.json";
 import ReaderV2 from "../../abis/ReaderV2.json";
@@ -63,6 +62,7 @@ import StatsTooltipRow from "../../components/StatsTooltip/StatsTooltipRow";
 import { ARBITRUM, AVALANCHE } from "../../config/chains";
 import { getServerUrl } from "../../config/backend";
 import { contractFetcher } from "../../lib/contracts";
+import { getTokenBySymbol, getWhitelistedTokens } from "../../domain/tokens";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;

@@ -11,13 +11,12 @@ import { ethers } from "ethers";
 import { format as formatDateFn } from "date-fns";
 import Token from "../abis/Token.json";
 import _ from "lodash";
-import { getContract } from "../config/addresses";
+import { getContract } from "../config/contracts";
 import useSWR from "swr";
 
 import OrderBookReader from "../abis/OrderBookReader.json";
 import OrderBook from "../abis/OrderBook.json";
 
-import { getWhitelistedTokens, isValidToken } from "../config/tokens";
 import {
   ARBITRUM,
   ARBITRUM_TESTNET,
@@ -29,6 +28,7 @@ import {
   TESTNET,
 } from "../config/chains";
 import { getServerBaseUrl } from "../config/backend";
+import { getWhitelistedTokens, isValidToken } from "../domain/tokens";
 
 const { AddressZero } = ethers.constants;
 

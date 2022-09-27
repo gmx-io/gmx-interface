@@ -1,6 +1,19 @@
 // date format: d MMM yyyy, H:mm, time should be specifed based on UTC time
 
-export const homeEventsData = [
+export type EventData = {
+  id: string;
+  title: string;
+  isActive?: boolean;
+  validTill: string;
+  bodyText: string;
+  buttons: {
+    text: string;
+    link: string;
+    newTab: boolean;
+  }[];
+};
+
+export const homeEventsData: EventData[] = [
   {
     id: "app-gmx-io-launch",
     title: "Frontend Updates",
@@ -32,7 +45,7 @@ export const homeEventsData = [
   },
 ];
 
-export const appEventsData = [
+export const appEventsData: EventData[] = [
   // {
   //   id: "removal-of-min-profit-rule",
   //   title: "Trading improvements",

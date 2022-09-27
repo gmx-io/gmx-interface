@@ -19,8 +19,8 @@ import {
 import { useChartPrices } from "../../domain/legacy";
 import Tab from "../Tab/Tab";
 
-import { getTokens, getToken } from "../../config/tokens";
 import ChartTokenSelector from "./ChartTokenSelector";
+import { getToken, getTokens } from "../../domain/tokens";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 

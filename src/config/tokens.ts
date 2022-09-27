@@ -1,8 +1,26 @@
 import { ethers } from "ethers";
-import { getContract } from "./addresses";
+import { getContract } from "./contracts";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, MAINNET, TESTNET } from "./chains";
 
-const TOKENS = {
-  56: [
+export type TokenConfig = {
+  name: string;
+  symbol: string;
+  baseSymbol?: string;
+  decimals: number;
+  address: string;
+  coingeckoUrl?: string;
+  imageUrl?: string;
+
+  isUsdg?: boolean;
+  isNative?: boolean;
+  isWrapped?: boolean;
+  isShortable?: boolean;
+  isStable?: boolean;
+  isTempHidden?: boolean;
+};
+
+export const TOKENS: { [chainId: number]: TokenConfig[] } = {
+  [MAINNET]: [
     {
       name: "Bitcoin (BTCB)",
       symbol: "BTC",
@@ -32,7 +50,7 @@ const TOKENS = {
       name: "Wrapped Binance Coin",
       symbol: "WBNB",
       decimals: 18,
-      address: getContract(56, "NATIVE_TOKEN"),
+      address: getContract(MAINNET, "NATIVE_TOKEN"),
       isWrapped: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/binance-coin",
       imageUrl: "https://assets.coingecko.com/coins/images/825/small/binance-coin-logo.png",
@@ -42,7 +60,7 @@ const TOKENS = {
       name: "USD Gambit",
       symbol: "USDG",
       decimals: 18,
-      address: getContract(56, "USDG"),
+      address: getContract(MAINNET, "USDG"),
       isUsdg: true,
       coingeckoUrl: "https://www.coingecko.com/en/coins/usd-gambit",
       imageUrl: "https://assets.coingecko.com/coins/images/15886/small/usdg-02.png",
@@ -75,7 +93,7 @@ const TOKENS = {
       imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
     },
   ],
-  97: [
+  [TESTNET]: [
     {
       name: "Bitcoin (BTCB)",
       symbol: "BTC",
@@ -107,7 +125,7 @@ const TOKENS = {
       name: "USD Gambit",
       symbol: "USDG",
       decimals: 18,
-      address: getContract(97, "USDG"),
+      address: getContract(TESTNET, "USDG"),
       isUsdg: true,
     },
     {
@@ -118,7 +136,7 @@ const TOKENS = {
       isStable: true,
     },
   ],
-  421611: [
+  [ARBITRUM_TESTNET]: [
     {
       name: "Bitcoin",
       symbol: "BTC",
@@ -158,7 +176,7 @@ const TOKENS = {
       isStable: true,
     },
   ],
-  42161: [
+  [ARBITRUM]: [
     {
       name: "Ethereum",
       symbol: "ETH",
@@ -245,7 +263,7 @@ const TOKENS = {
       imageUrl: "https://assets.coingecko.com/coins/images/16786/small/mimlogopng.png",
     },
   ],
-  43114: [
+  [AVALANCHE]: [
     {
       name: "Avalanche",
       symbol: "AVAX",
@@ -316,53 +334,55 @@ const TOKENS = {
   ],
 };
 
-const ADDITIONAL_TOKENS = {
-  42161: [
+export const ADDITIONAL_TOKENS: { [chainId: number]: TokenConfig[] } = {
+  [ARBITRUM]: [
     {
       name: "GMX",
       symbol: "GMX",
-      address: getContract(42161, "GMX"),
+      address: getContract(ARBITRUM, "GMX"),
       decimals: 18,
     },
     {
       name: "Escrowed GMX",
       symbol: "esGMX",
-      address: getContract(42161, "ES_GMX"),
+      address: getContract(ARBITRUM, "ES_GMX"),
       decimals: 18,
     },
     {
       name: "GMX LP",
       symbol: "GLP",
-      address: getContract(42161, "GLP"),
+      address: getContract(ARBITRUM, "GLP"),
       decimals: 18,
     },
   ],
-  43114: [
+  [AVALANCHE]: [
     {
       name: "GMX",
       symbol: "GMX",
-      address: getContract(43114, "GMX"),
+      address: getContract(AVALANCHE, "GMX"),
       decimals: 18,
     },
     {
       name: "Escrowed GMX",
       symbol: "esGMX",
-      address: getContract(43114, "ES_GMX"),
+      address: getContract(AVALANCHE, "ES_GMX"),
       decimals: 18,
     },
     {
       name: "GMX LP",
       symbol: "GLP",
-      address: getContract(42161, "GLP"),
+      address: getContract(ARBITRUM, "GLP"),
       decimals: 18,
     },
   ],
 };
 
-const CHAIN_IDS = [56, 97, 42161, 421611, 43114];
+export const TOKENS_MAP: { [chainId: number]: { [address: string]: TokenConfig } } = {};
+export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: TokenConfig } } = {};
+export const WRAPPED_TOKENS_MAP: { [chainId: number]: TokenConfig } = {};
+export const NATIVE_TOKENS_MAP: { [chainId: number]: TokenConfig } = {};
 
-const TOKENS_MAP = {};
-const TOKENS_BY_SYMBOL_MAP = {};
+const CHAIN_IDS = [MAINNET, TESTNET, ARBITRUM, ARBITRUM_TESTNET, AVALANCHE];
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];
@@ -380,9 +400,6 @@ for (let j = 0; j < CHAIN_IDS.length; j++) {
   }
 }
 
-const WRAPPED_TOKENS_MAP = {};
-const NATIVE_TOKENS_MAP = {};
-
 for (const chainId of CHAIN_IDS) {
   for (const token of TOKENS[chainId]) {
     if (token.isWrapped) {
@@ -391,49 +408,4 @@ for (const chainId of CHAIN_IDS) {
       NATIVE_TOKENS_MAP[chainId] = token;
     }
   }
-}
-
-export function getWrappedToken(chainId: number) {
-  return WRAPPED_TOKENS_MAP[chainId];
-}
-
-export function getNativeToken(chainId: number) {
-  return NATIVE_TOKENS_MAP[chainId];
-}
-
-export function getTokens(chainId: number) {
-  return TOKENS[chainId];
-}
-
-export function isValidToken(chainId: number, address: string) {
-  if (!TOKENS_MAP[chainId]) {
-    throw new Error(`Incorrect chainId ${chainId}`);
-  }
-  return address in TOKENS_MAP[chainId];
-}
-
-export function getToken(chainId: number, address: string) {
-  if (!TOKENS_MAP[chainId]) {
-    throw new Error(`Incorrect chainId ${chainId}`);
-  }
-  if (!TOKENS_MAP[chainId][address]) {
-    throw new Error(`Incorrect address "${address}" for chainId ${chainId}`);
-  }
-  return TOKENS_MAP[chainId][address];
-}
-
-export function getTokenBySymbol(chainId: number, symbol: string) {
-  const token = TOKENS_BY_SYMBOL_MAP[chainId][symbol];
-  if (!token) {
-    throw new Error(`Incorrect symbol "${symbol}" for chainId ${chainId}`);
-  }
-  return token;
-}
-
-export function getWhitelistedTokens(chainId) {
-  return TOKENS[chainId].filter((token) => token.symbol !== "USDG");
-}
-
-export function getVisibleTokens(chainId) {
-  return getWhitelistedTokens(chainId).filter((token) => !token.isWrapped && !token.isTempHidden);
 }

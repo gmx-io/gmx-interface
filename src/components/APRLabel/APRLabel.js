@@ -22,7 +22,7 @@ import { useWeb3React } from "@web3-react/core";
 
 import { useGmxPrice } from "../../domain/legacy";
 
-import { getContract } from "../../config/addresses";
+import { getContract } from "../../config/contracts";
 import { getServerUrl } from "../../config/backend";
 import { contractFetcher } from "../../lib/contracts";
 

@@ -6,11 +6,10 @@ import { useParams } from "react-router-dom";
 
 import "./Actions.css";
 
-import { getContract } from "../../config/addresses";
+import { getContract } from "../../config/contracts";
 import { formatAmount, getTokenInfo, useChainId, useAccountOrders } from "../../lib/legacy";
 
 import { useInfoTokens } from "../../domain/legacy";
-import { getToken, getTokens, getWhitelistedTokens } from "../../config/tokens";
 import { getPositions, getPositionQuery } from "../Exchange/Exchange";
 
 import PositionsList from "../../components/Exchange/PositionsList";
@@ -22,6 +21,7 @@ import Reader from "../../abis/Reader.json";
 import { Trans, t } from "@lingui/macro";
 import { getServerBaseUrl } from "../../config/backend";
 import { contractFetcher } from "../../lib/contracts";
+import { getToken, getTokens, getWhitelistedTokens } from "../../domain/tokens";
 
 const USD_DECIMALS = 30;
 

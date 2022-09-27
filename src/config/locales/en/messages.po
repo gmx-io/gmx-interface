@@ -449,7 +449,6 @@ msgstr "Coinbase Wallet"
 msgid "Coinbase Wallet not detected."
 msgstr "Coinbase Wallet not detected."
 
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 msgid "Collateral"
 msgstr "Collateral"
@@ -507,8 +506,6 @@ msgstr "Connect"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Header/AppHeaderUser.tsx
-#: src/components/Referrals/AddAffiliateCode.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1107,9 +1104,6 @@ msgstr "Loss"
 msgid "MAX"
 msgstr "MAX"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 msgid "Mark Price"
@@ -1364,8 +1358,6 @@ msgstr "Position close disabled, pending {0} upgrade"
 msgid "Positions"
 msgstr "Positions"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1877,7 +1869,6 @@ msgstr "Total Trading Volume"
 msgid "Total Users"
 msgstr "Total Users"
 
-#: src/components/Referrals/AffiliatesStats.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"

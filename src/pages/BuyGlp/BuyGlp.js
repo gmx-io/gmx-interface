@@ -7,9 +7,9 @@ import Footer from "../../components/Footer/Footer";
 import "./BuyGlp.css";
 
 import { useChainId } from "../../lib/legacy";
-import { getNativeToken } from "../../config/tokens";
 
 import { Trans } from "@lingui/macro";
+import { getNativeToken } from "../../domain/tokens";
 
 export default function BuyGlp(props) {
   const { chainId } = useChainId();

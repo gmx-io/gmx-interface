@@ -76,7 +76,7 @@ import SEO from "../components/Common/SEO";
 import useRouteQuery from "../lib/useRouteQuery";
 import { encodeReferralCode, decodeReferralCode } from "../domain/referrals";
 
-import { getContract } from "../config/addresses";
+import { getContract } from "../config/contracts";
 import VaultV2 from "../abis/VaultV2.json";
 import VaultV2b from "../abis/VaultV2b.json";
 import PositionRouter from "../abis/PositionRouter.json";

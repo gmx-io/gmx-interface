@@ -44,7 +44,7 @@ import {
 } from "../../lib/legacy";
 import { ARBITRUM, getConstant, IS_NETWORK_DISABLED } from "../../config/chains";
 import { createDecreaseOrder, useHasOutdatedUi } from "../../domain/legacy";
-import { getContract } from "../../config/addresses";
+import { getContract } from "../../config/contracts";
 import PositionRouter from "../../abis/PositionRouter.json";
 import Checkbox from "../Checkbox/Checkbox";
 import Tab from "../Tab/Tab";
@@ -52,11 +52,10 @@ import Modal from "../Modal/Modal";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import Tooltip from "../Tooltip/Tooltip";
 import TokenSelector from "./TokenSelector";
-import { getTokens } from "../../config/tokens";
 import "./PositionSeller.css";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { getTokenAmountFromUsd } from "../../domain/tokens/utils";
 import { callContract } from "../../lib/contracts";
+import { getTokenAmountFromUsd, getTokens } from "../../domain/tokens";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10

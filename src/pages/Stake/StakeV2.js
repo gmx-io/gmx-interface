@@ -45,7 +45,7 @@ import { ARBITRUM, getConstant } from "../../config/chains";
 
 import useSWR from "swr";
 
-import { getContract } from "../../config/addresses";
+import { getContract } from "../../config/contracts";
 
 import "./StakeV2.css";
 import SEO from "../../components/Common/SEO";

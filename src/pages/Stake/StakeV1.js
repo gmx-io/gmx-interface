@@ -20,8 +20,7 @@ import {
   PRECISION,
 } from "../../lib/legacy";
 
-import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "../../config/addresses";
-import { getTokenBySymbol } from "../../config/tokens";
+import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "../../config/contracts";
 
 import Reader from "../../abis/Reader.json";
 import Token from "../../abis/Token.json";
@@ -34,6 +33,7 @@ import Footer from "../../components/Footer/Footer";
 import "./Stake.css";
 import { CHAIN_ID } from "../../config/chains";
 import { contractFetcher } from "../../lib/contracts";
+import { getTokenBySymbol } from "../../domain/tokens";
 
 const BASIS_POINTS_DIVISOR = 10000;
 const HOURS_PER_YEAR = 8760;

@@ -30,7 +30,7 @@ import {
 import { updateSwapOrder, updateIncreaseOrder, updateDecreaseOrder } from "../../domain/legacy";
 import Modal from "../Modal/Modal";
 import ExchangeInfoRow from "./ExchangeInfoRow";
-import { getContract } from "../../config/addresses";
+import { getContract } from "../../config/contracts";
 
 export default function OrderEditor(props) {
   const {

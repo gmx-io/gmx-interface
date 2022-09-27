@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 
-import { getContract } from "../../config/addresses";
+import { getContract } from "../../config/contracts";
 
 import Modal from "../../components/Modal/Modal";
 import Footer from "../../components/Footer/Footer";

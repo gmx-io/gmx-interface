@@ -15,7 +15,7 @@ import Token from "../abis/Token.json";
 import VaultReader from "../abis/VaultReader.json";
 import PositionRouter from "../abis/PositionRouter.json";
 
-import { getContract } from "../config/addresses";
+import { getContract } from "../config/contracts";
 import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, getConstant } from "../config/chains";
 import {
   bigNumberify,
@@ -32,13 +32,13 @@ import {
   SWAP,
   USD_DECIMALS,
 } from "../lib/legacy";
-import { getTokenBySymbol, getTokens, getWhitelistedTokens } from "../config/tokens";
 
 import { groupBy } from "lodash";
 import { UI_VERSION } from "../config/ui";
 import { getServerBaseUrl, getServerUrl } from "../config/backend";
 import { getGmxGraphClient, nissohGraphClient } from "../lib/subgraph/clients";
 import { callContract, contractFetcher } from "../lib/contracts";
+import { getTokenBySymbol, getTokens, getWhitelistedTokens } from "./tokens";
 
 export * from "./prices";
 

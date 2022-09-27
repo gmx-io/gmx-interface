@@ -31,8 +31,7 @@ import {
 import { getConstant } from "../../config/chains";
 import { approvePlugin, useInfoTokens, useMinExecutionFee, cancelMultipleOrders } from "../../domain/legacy";
 
-import { getContract } from "../../config/addresses";
-import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from "../../config/tokens";
+import { getContract } from "../../config/contracts";
 
 import Reader from "../../abis/ReaderV2.json";
 import VaultV2 from "../../abis/VaultV2.json";
@@ -52,6 +51,7 @@ import Footer from "../../components/Footer/Footer";
 
 import "./Exchange.css";
 import { contractFetcher } from "../../lib/contracts";
+import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "../../domain/tokens";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;

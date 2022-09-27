@@ -3,7 +3,7 @@ import cx from "classnames";
 
 import { NavLink } from "react-router-dom";
 
-import { getContract } from "../../config/addresses";
+import { getContract } from "../../config/contracts";
 import { useAllOrders, useAllOrdersStats, usePositionsForOrders } from "../../domain/legacy";
 import {
   USD_DECIMALS,

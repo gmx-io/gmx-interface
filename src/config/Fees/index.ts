@@ -1,5 +1,6 @@
 import { FEES_42161 } from "./FEES_42161";
 import { FEES_43113 } from "./FEES_43113";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, MAINNET } from "../chains";
 
 const SECONDS_PER_WEEK = 604800;
 
@@ -24,10 +25,10 @@ function createFeeList(data) {
 }
 
 const FEES = {
-  56: [],
-  42161: createFeeList(FEES_42161),
-  421611: createFeeList(FEES_42161),
-  43114: createFeeList(FEES_43113),
+  [MAINNET]: [],
+  [ARBITRUM]: createFeeList(FEES_42161),
+  [ARBITRUM_TESTNET]: createFeeList(FEES_42161),
+  [AVALANCHE]: createFeeList(FEES_43113),
 };
 
 export function getFeeHistory(chainId: number): FeeItem[] {

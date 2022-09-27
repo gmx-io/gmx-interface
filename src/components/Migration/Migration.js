@@ -23,7 +23,7 @@ import {
   bigNumberify,
   helperToast,
 } from "../../lib/legacy";
-import { getContract } from "../../config/addresses";
+import { getContract } from "../../config/contracts";
 
 import Reader from "../../abis/Reader.json";
 import Token from "../../abis/Token.json";

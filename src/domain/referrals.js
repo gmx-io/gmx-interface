@@ -13,7 +13,7 @@ import {
   isHashZero,
   REFERRAL_CODE_KEY,
 } from "../lib/legacy";
-import { getContract } from "../config/addresses";
+import { getContract } from "../config/contracts";
 import { REGEX_VERIFY_BYTES32 } from "../components/Referrals/referralsHelper";
 import { ARBITRUM, AVALANCHE } from "../config/chains";
 import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "../lib/subgraph/clients";

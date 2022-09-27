@@ -11,7 +11,7 @@ import {
   bigNumberify,
 } from "../../lib/legacy";
 
-import { getContract } from "../../config/addresses";
+import { getContract } from "../../config/contracts";
 
 import Token from "../../abis/Token.json";
 import RewardReader from "../../abis/RewardReader.json";

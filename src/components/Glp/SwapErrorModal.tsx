@@ -1,11 +1,9 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { getNativeToken } from "../../config/tokens";
-import { InfoTokens, Token } from "../../domain/tokens/types";
 import Modal from "../Modal/Modal";
 import { get1InchSwapUrl } from "../../domain/common";
-import { getLowestFeeTokenForBuyGlp } from "../../domain/tokens/utils";
+import { getLowestFeeTokenForBuyGlp, getNativeToken, InfoTokens, Token } from "../../domain/tokens";
 
 const { AddressZero } = ethers.constants;
 

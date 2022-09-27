@@ -22,7 +22,7 @@ import {
   approveTokens,
   getChainName,
 } from "../../lib/legacy";
-import { getContract } from "../../config/addresses";
+import { getContract } from "../../config/contracts";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
 

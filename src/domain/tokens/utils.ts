@@ -1,5 +1,4 @@
 import { BigNumber } from "ethers";
-import { getVisibleTokens } from "../../config/tokens";
 import {
   bigNumberify,
   expandDecimals,
@@ -8,11 +7,60 @@ import {
   MINT_BURN_FEE_BASIS_POINTS,
   PRECISION,
   TAX_BASIS_POINTS,
-  USDG_DECIMALS,
   USD_DECIMALS,
   USDG_ADDRESS,
+  USDG_DECIMALS,
 } from "../../lib/legacy";
-import { InfoTokens, Token, TokenInfo } from "./types";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, MAINNET, TESTNET } from "../../config/chains";
+import { ADDITIONAL_TOKENS, TOKENS } from "../../config/tokens";
+import { InfoTokens, Token, TokenInfo } from "./index";
+
+const { TOKENS_MAP, TOKENS_BY_SYMBOL_MAP, WRAPPED_TOKENS_MAP, NATIVE_TOKENS_MAP } = prepareTokens();
+
+export function getWrappedToken(chainId: number) {
+  return WRAPPED_TOKENS_MAP[chainId];
+}
+
+export function getNativeToken(chainId: number) {
+  return NATIVE_TOKENS_MAP[chainId];
+}
+
+export function getTokens(chainId: number) {
+  return TOKENS[chainId];
+}
+
+export function isValidToken(chainId: number, address: string) {
+  if (!TOKENS_MAP[chainId]) {
+    throw new Error(`Incorrect chainId ${chainId}`);
+  }
+  return address in TOKENS_MAP[chainId];
+}
+
+export function getToken(chainId: number, address: string) {
+  if (!TOKENS_MAP[chainId]) {
+    throw new Error(`Incorrect chainId ${chainId}`);
+  }
+  if (!TOKENS_MAP[chainId][address]) {
+    throw new Error(`Incorrect address "${address}" for chainId ${chainId}`);
+  }
+  return TOKENS_MAP[chainId][address];
+}
+
+export function getTokenBySymbol(chainId: number, symbol: string) {
+  const token = TOKENS_BY_SYMBOL_MAP[chainId][symbol];
+  if (!token) {
+    throw new Error(`Incorrect symbol "${symbol}" for chainId ${chainId}`);
+  }
+  return token;
+}
+
+export function getWhitelistedTokens(chainId) {
+  return TOKENS[chainId].filter((token) => token.symbol !== "USDG");
+}
+
+export function getVisibleTokens(chainId) {
+  return getWhitelistedTokens(chainId).filter((token) => !token.isWrapped && !token.isTempHidden);
+}
 
 export function getTokenAmountFromUsd(
   infoTokens: InfoTokens,
@@ -100,4 +148,46 @@ export function getLowestFeeTokenForBuyGlp(
   return tokensWithLiquidity.length > 0
     ? tokensWithLiquidity[0]
     : tokensData.sort((a, b) => b.amountLeftToDeposit.sub(a.amountLeftToDeposit))[0];
+}
+
+function prepareTokens() {
+  const CHAIN_IDS = [MAINNET, TESTNET, ARBITRUM, ARBITRUM_TESTNET, AVALANCHE];
+
+  const TOKENS_MAP = {};
+  const TOKENS_BY_SYMBOL_MAP = {};
+  const WRAPPED_TOKENS_MAP = {};
+  const NATIVE_TOKENS_MAP = {};
+
+  for (let j = 0; j < CHAIN_IDS.length; j++) {
+    const chainId = CHAIN_IDS[j];
+    TOKENS_MAP[chainId] = {};
+    TOKENS_BY_SYMBOL_MAP[chainId] = {};
+    let tokens = TOKENS[chainId];
+    if (ADDITIONAL_TOKENS[chainId]) {
+      tokens = tokens.concat(ADDITIONAL_TOKENS[chainId]);
+    }
+
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
+      TOKENS_MAP[chainId][token.address] = token;
+      TOKENS_BY_SYMBOL_MAP[chainId][token.symbol] = token;
+    }
+  }
+
+  for (const chainId of CHAIN_IDS) {
+    for (const token of TOKENS[chainId]) {
+      if (token.isWrapped) {
+        WRAPPED_TOKENS_MAP[chainId] = token;
+      } else if (token.isNative) {
+        NATIVE_TOKENS_MAP[chainId] = token;
+      }
+    }
+  }
+
+  return {
+    TOKENS_MAP,
+    TOKENS_BY_SYMBOL_MAP,
+    WRAPPED_TOKENS_MAP,
+    NATIVE_TOKENS_MAP,
+  };
 }
