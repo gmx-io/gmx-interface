@@ -449,6 +449,7 @@ msgstr ""
 msgid "Coinbase Wallet not detected."
 msgstr ""
 
+#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 msgid "Collateral"
 msgstr ""
@@ -1104,6 +1105,9 @@ msgstr ""
 msgid "MAX"
 msgstr ""
 
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 msgid "Mark Price"
@@ -1358,6 +1362,8 @@ msgstr ""
 msgid "Positions"
 msgstr ""
 
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1861,7 +1867,6 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
-#: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr ""
 
@@ -1869,6 +1874,7 @@ msgstr ""
 msgid "Total Users"
 msgstr ""
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"

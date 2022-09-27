@@ -449,6 +449,7 @@ msgstr "コインベースウォレット"
 msgid "Coinbase Wallet not detected."
 msgstr "コインベースウォレットが検出できません。"
 
+#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 msgid "Collateral"
 msgstr "担保"
@@ -1104,6 +1105,9 @@ msgstr "損失"
 msgid "MAX"
 msgstr "最大"
 
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 msgid "Mark Price"
@@ -1358,6 +1362,8 @@ msgstr ""
 msgid "Positions"
 msgstr "ポジション"
 
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1861,7 +1867,6 @@ msgstr "紹介した全トレーダー"
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
-#: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "トレード総額"
 
@@ -1869,6 +1874,7 @@ msgstr "トレード総額"
 msgid "Total Users"
 msgstr "ユーザー総数"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"

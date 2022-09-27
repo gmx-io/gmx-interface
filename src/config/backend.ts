@@ -26,6 +26,6 @@ export function getServerBaseUrl(chainId: number) {
   return BACKEND_URLS[chainId] || BACKEND_URLS.default;
 }
 
-export function getServerUrl(chainId, path) {
+export function getServerUrl(chainId: number, path: string) {
   return `${getServerBaseUrl(chainId)}${path}`;
 }
