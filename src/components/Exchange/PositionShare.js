@@ -31,7 +31,7 @@ const config = { quality: 0.95, canvasWidth: 518, canvasHeight: 292, type: "imag
 function getShareURL(imageInfo, ref) {
   if (!imageInfo) return;
   let url = `${UPLOAD_SHARE}?id=${imageInfo.id}`;
-  if (ref.success) {
+  if (ref.success && ref.code) {
     url = url + `&ref=${ref.code}`;
   }
   return url;
@@ -139,6 +139,7 @@ function PositionShareCard({
   sharePositionBgImg,
 }) {
   const isMobile = useMedia("(max-width: 400px)");
+  console.log({ userAffiliateCode });
   const { code, success } = userAffiliateCode;
   const { deltaAfterFeesPercentageStr, isLong, leverage, indexToken, averagePrice, markPrice } = position;
 
@@ -165,10 +166,10 @@ function PositionShareCard({
         </div>
         <div className="referral-code">
           <div>
-            <QRCodeSVG size={isMobile ? 24 : 32} value={success ? `${homeURL}/#/?ref=${code}` : `${homeURL}`} />
+            <QRCodeSVG size={isMobile ? 24 : 32} value={success && code ? `${homeURL}/#/?ref=${code}` : `${homeURL}`} />
           </div>
           <div className="referral-code-info">
-            {success ? (
+            {success && code ? (
               <>
                 <p className="label">Referral Code:</p>
                 <p className="code">{code}</p>
