@@ -139,7 +139,6 @@ function PositionShareCard({
   sharePositionBgImg,
 }) {
   const isMobile = useMedia("(max-width: 400px)");
-  console.log({ userAffiliateCode });
   const { code, success } = userAffiliateCode;
   const { deltaAfterFeesPercentageStr, isLong, leverage, indexToken, averagePrice, markPrice } = position;
 
