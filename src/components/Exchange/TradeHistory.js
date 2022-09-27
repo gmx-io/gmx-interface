@@ -20,6 +20,7 @@ import { useTrades, useLiquidationsData } from "../../domain/legacy";
 import { getContract } from "../../config/Addresses";
 
 import "./TradeHistory.css";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 
 const { AddressZero } = ethers.constants;
 
@@ -59,14 +60,29 @@ function renderLiquidationTooltip(liquidationData, label) {
           {text}
           <br />
           <br />
-          Initial collateral: ${formatAmount(liquidationData.collateral, USD_DECIMALS, 2, true)}
-          <br />
-          Min required collateral: ${formatAmount(minCollateral, USD_DECIMALS, 2, true)}
-          <br />
-          Borrow fee: ${formatAmount(liquidationData.borrowFee, USD_DECIMALS, 2, true)}
-          <br />
-          PnL: -${formatAmount(liquidationData.loss, USD_DECIMALS, 2, true)}
-          {liquidationData.type === "full" && <div>Liquidation fee: ${formatAmount(LIQUIDATION_FEE, 30, 2, true)}</div>}
+          <StatsTooltipRow
+            label="Initial collateral"
+            showDollar
+            value={formatAmount(liquidationData.collateral, USD_DECIMALS, 2, true)}
+          />
+          <StatsTooltipRow
+            label="Min required collateral"
+            showDollar
+            value={formatAmount(minCollateral, USD_DECIMALS, 2, true)}
+          />
+          <StatsTooltipRow
+            label="Borrow fee"
+            showDollar
+            value={formatAmount(liquidationData.borrowFee, USD_DECIMALS, 2, true)}
+          />
+          <StatsTooltipRow
+            label="PnL"
+            showDollar={false}
+            value={`-$${formatAmount(liquidationData.loss, USD_DECIMALS, 2, true)}`}
+          />
+          {liquidationData.type === "full" && (
+            <StatsTooltipRow label="Liquidation fee" showDollar value={formatAmount(LIQUIDATION_FEE, 30, 2, true)} />
+          )}
         </>
       )}
     />
