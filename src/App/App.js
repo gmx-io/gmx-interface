@@ -18,13 +18,11 @@ import {
   isHomeSite,
   clearWalletConnectData,
   helperToast,
-  getAlchemyWsUrl,
   useChainId,
   getInjectedHandler,
   useEagerConnect,
   useLocalStorageSerializeKey,
   useInactiveListener,
-  getExplorerUrl,
   getWalletConnectHandler,
   activateInjectedProvider,
   hasMetaMaskWalletExtension,
@@ -93,7 +91,7 @@ import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
 import { defaultLocale, dynamicActivate } from "../lib/i18n";
 import { Header } from "../components/Header/Header";
-import { ARBITRUM, AVALANCHE } from "../config/chains";
+import { ARBITRUM, AVALANCHE, getAlchemyWsUrl, getExplorerUrl } from "../config/chains";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;

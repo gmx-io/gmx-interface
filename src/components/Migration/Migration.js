@@ -18,7 +18,6 @@ import {
   formatAmountFree,
   parseValue,
   expandDecimals,
-  getExplorerUrl,
   approveTokens,
   bigNumberify,
   helperToast,
@@ -28,7 +27,7 @@ import { getContract } from "../../config/contracts";
 import Reader from "../../abis/Reader.json";
 import Token from "../../abis/Token.json";
 import GmxMigrator from "../../abis/GmxMigrator.json";
-import { CHAIN_ID } from "../../config/chains";
+import { CHAIN_ID, getExplorerUrl } from "../../config/chains";
 import { contractFetcher } from "../../lib/contracts";
 
 const { MaxUint256, AddressZero } = ethers.constants;

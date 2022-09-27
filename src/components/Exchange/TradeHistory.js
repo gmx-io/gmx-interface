@@ -10,7 +10,6 @@ import {
   LIQUIDATION_FEE,
   TRADES_PAGE_SIZE,
   formatAmount,
-  getExplorerUrl,
   formatDateTime,
   deserialize,
   getExchangeRateDisplay,
@@ -21,6 +20,7 @@ import { getContract } from "../../config/contracts";
 
 import "./TradeHistory.css";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+import { getExplorerUrl } from "../../config/chains";
 
 const { AddressZero } = ethers.constants;
 

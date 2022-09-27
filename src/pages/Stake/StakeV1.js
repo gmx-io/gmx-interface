@@ -12,7 +12,6 @@ import {
   parseValue,
   useChainId,
   expandDecimals,
-  getExplorerUrl,
   approveTokens,
   bigNumberify,
   helperToast,
@@ -31,7 +30,7 @@ import Modal from "../../components/Modal/Modal";
 import Footer from "../../components/Footer/Footer";
 
 import "./Stake.css";
-import { CHAIN_ID } from "../../config/chains";
+import { CHAIN_ID, getExplorerUrl } from "../../config/chains";
 import { contractFetcher } from "../../lib/contracts";
 import { getTokenBySymbol } from "../../domain/tokens";
 

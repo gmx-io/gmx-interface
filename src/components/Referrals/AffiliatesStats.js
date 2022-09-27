@@ -10,7 +10,6 @@ import {
   bigNumberify,
   formatAmount,
   formatDate,
-  getExplorerUrl,
   helperToast,
   REFERRAL_CODE_QUERY_PARAM,
   shortenAddress,
@@ -26,7 +25,7 @@ import {
 } from "./referralsHelper";
 import { AffiliateCodeForm } from "./AddAffiliateCode";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
-import { AVALANCHE } from "../../config/chains";
+import { AVALANCHE, getExplorerUrl } from "../../config/chains";
 import { getNativeToken, getToken } from "../../domain/tokens";
 
 function AffiliatesStats({

@@ -19,13 +19,18 @@ import OrderBook from "../abis/OrderBook.json";
 
 import {
   ARBITRUM,
+  ARBITRUM_RPC_PROVIDERS,
   ARBITRUM_TESTNET,
   AVALANCHE,
+  AVALANCHE_RPC_PROVIDERS,
   CHAIN_ID,
   CHAIN_NAMES_MAP,
   DEFAULT_CHAIN_ID,
+  FALLBACK_PROVIDERS,
+  getExplorerUrl,
   MAINNET,
-  TESTNET,
+  NETWORK_METADATA,
+  RPC_PROVIDERS,
 } from "../config/chains";
 import { getServerBaseUrl } from "../config/backend";
 import { getWhitelistedTokens, isValidToken } from "../domain/tokens";
@@ -39,28 +44,6 @@ export const MIN_PROFIT_TIME = 0;
 
 const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
 
-const alchemyWhitelistedDomains = ["gmx.io", "app.gmx.io"];
-
-export function getDefaultArbitrumRpcUrl() {
-  return "https://arb1.arbitrum.io/rpc";
-}
-
-export function getAlchemyHttpUrl() {
-  if (alchemyWhitelistedDomains.includes(window.location.host)) {
-    return "https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ";
-  }
-  return "https://arb-mainnet.g.alchemy.com/v2/EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
-}
-
-export function getAlchemyWsUrl() {
-  if (alchemyWhitelistedDomains.includes(window.location.host)) {
-    return "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ";
-  }
-  return "wss://arb-mainnet.g.alchemy.com/v2/EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
-}
-
-const ARBITRUM_RPC_PROVIDERS = [getDefaultArbitrumRpcUrl()];
-const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
 export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
 export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
 export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
@@ -1163,44 +1146,6 @@ export function getSwapFeeBasisPoints(isStable) {
   return isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS;
 }
 
-// BSC TESTNET
-// const RPC_PROVIDERS = [
-//   "https://data-seed-prebsc-1-s1.binance.org:8545",
-//   "https://data-seed-prebsc-2-s1.binance.org:8545",
-//   "https://data-seed-prebsc-1-s2.binance.org:8545",
-//   "https://data-seed-prebsc-2-s2.binance.org:8545",
-//   "https://data-seed-prebsc-1-s3.binance.org:8545",
-//   "https://data-seed-prebsc-2-s3.binance.org:8545"
-// ]
-
-// BSC MAINNET
-export const BSC_RPC_PROVIDERS = [
-  "https://bsc-dataseed.binance.org",
-  "https://bsc-dataseed1.defibit.io",
-  "https://bsc-dataseed1.ninicoin.io",
-  "https://bsc-dataseed2.defibit.io",
-  "https://bsc-dataseed3.defibit.io",
-  "https://bsc-dataseed4.defibit.io",
-  "https://bsc-dataseed2.ninicoin.io",
-  "https://bsc-dataseed3.ninicoin.io",
-  "https://bsc-dataseed4.ninicoin.io",
-  "https://bsc-dataseed1.binance.org",
-  "https://bsc-dataseed2.binance.org",
-  "https://bsc-dataseed3.binance.org",
-  "https://bsc-dataseed4.binance.org",
-];
-
-const RPC_PROVIDERS = {
-  [MAINNET]: BSC_RPC_PROVIDERS,
-  [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
-  [AVALANCHE]: AVALANCHE_RPC_PROVIDERS,
-};
-
-const FALLBACK_PROVIDERS = {
-  [ARBITRUM]: [getAlchemyHttpUrl()],
-  [AVALANCHE]: ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
-};
-
 export function shortenAddress(address, length) {
   if (!length) {
     return "";
@@ -1765,25 +1710,6 @@ export function numberWithCommas(x) {
   return parts.join(".");
 }
 
-export function getExplorerUrl(chainId) {
-  if (chainId === 3) {
-    return "https://ropsten.etherscan.io/";
-  } else if (chainId === 42) {
-    return "https://kovan.etherscan.io/";
-  } else if (chainId === MAINNET) {
-    return "https://bscscan.com/";
-  } else if (chainId === TESTNET) {
-    return "https://testnet.bscscan.com/";
-  } else if (chainId === ARBITRUM_TESTNET) {
-    return "https://testnet.arbiscan.io/";
-  } else if (chainId === ARBITRUM) {
-    return "https://arbiscan.io/";
-  } else if (chainId === AVALANCHE) {
-    return "https://snowtrace.io/";
-  }
-  return "https://etherscan.io/";
-}
-
 export function getAccountUrl(chainId, account) {
   if (!account) {
     return getExplorerUrl(chainId);
@@ -1900,64 +1826,6 @@ export const getTokenInfo = (infoTokens, tokenAddress, replaceNative, nativeToke
     return infoTokens[AddressZero];
   }
   return infoTokens[tokenAddress];
-};
-
-const NETWORK_METADATA = {
-  [MAINNET]: {
-    chainId: "0x" + MAINNET.toString(16),
-    chainName: "BSC",
-    nativeCurrency: {
-      name: "BNB",
-      symbol: "BNB",
-      decimals: 18,
-    },
-    rpcUrls: BSC_RPC_PROVIDERS,
-    blockExplorerUrls: ["https://bscscan.com"],
-  },
-  [TESTNET]: {
-    chainId: "0x" + TESTNET.toString(16),
-    chainName: "BSC Testnet",
-    nativeCurrency: {
-      name: "BNB",
-      symbol: "BNB",
-      decimals: 18,
-    },
-    rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
-    blockExplorerUrls: ["https://testnet.bscscan.com/"],
-  },
-  [ARBITRUM_TESTNET]: {
-    chainId: "0x" + ARBITRUM_TESTNET.toString(16),
-    chainName: "Arbitrum Testnet",
-    nativeCurrency: {
-      name: "ETH",
-      symbol: "ETH",
-      decimals: 18,
-    },
-    rpcUrls: ["https://rinkeby.arbitrum.io/rpc"],
-    blockExplorerUrls: ["https://rinkeby-explorer.arbitrum.io/"],
-  },
-  [ARBITRUM]: {
-    chainId: "0x" + ARBITRUM.toString(16),
-    chainName: "Arbitrum",
-    nativeCurrency: {
-      name: "ETH",
-      symbol: "ETH",
-      decimals: 18,
-    },
-    rpcUrls: ARBITRUM_RPC_PROVIDERS,
-    blockExplorerUrls: [getExplorerUrl(ARBITRUM)],
-  },
-  [AVALANCHE]: {
-    chainId: "0x" + AVALANCHE.toString(16),
-    chainName: "Avalanche",
-    nativeCurrency: {
-      name: "AVAX",
-      symbol: "AVAX",
-      decimals: 18,
-    },
-    rpcUrls: AVALANCHE_RPC_PROVIDERS,
-    blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
-  },
 };
 
 export const addBscNetwork = async () => {

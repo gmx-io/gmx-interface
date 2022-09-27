@@ -13,7 +13,6 @@ import {
   LONG,
   SHORT,
   USD_DECIMALS,
-  getExplorerUrl,
   helperToast,
   formatAmount,
   bigNumberify,
@@ -28,7 +27,7 @@ import {
   useAccountOrders,
   getPageTitle,
 } from "../../lib/legacy";
-import { getConstant } from "../../config/chains";
+import { getConstant, getExplorerUrl } from "../../config/chains";
 import { approvePlugin, useInfoTokens, useMinExecutionFee, cancelMultipleOrders } from "../../domain/legacy";
 
 import { getContract } from "../../config/contracts";
