@@ -34,27 +34,16 @@ import {
 } from "../lib/legacy";
 import { getTokenBySymbol, getTokens, getWhitelistedTokens } from "../config/tokens";
 
-import { arbitrumGraphClient, avalancheGraphClient, nissohGraphClient } from "./common";
 import { groupBy } from "lodash";
 import { fetcher } from "../lib/contracts/fetcher";
 import { callContract } from "../lib/contracts/callContract";
 import { UI_VERSION } from "../config/ui";
 import { getServerBaseUrl, getServerUrl } from "../config/backend";
+import { getGmxGraphClient, nissohGraphClient } from "../lib/subgraph/clients";
 
 export * from "./prices";
 
 const { AddressZero } = ethers.constants;
-
-function getGmxGraphClient(chainId) {
-  if (chainId === ARBITRUM) {
-    return arbitrumGraphClient;
-  } else if (chainId === AVALANCHE) {
-    return avalancheGraphClient;
-  } else if (chainId === ARBITRUM_TESTNET) {
-    return null;
-  }
-  throw new Error(`Unsupported chain ${chainId}`);
-}
 
 export function useAllOrdersStats(chainId) {
   const query = gql(`{

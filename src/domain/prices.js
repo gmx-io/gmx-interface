@@ -4,8 +4,8 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 
 import { USD_DECIMALS, CHART_PERIODS, formatAmount, sleep } from "../lib/legacy";
-import { chainlinkClient } from "./common";
 import { GMX_STATS_API_URL } from "../config/backend";
+import { chainlinkClient } from "../lib/subgraph/clients";
 
 const BigNumber = ethers.BigNumber;
 

@@ -13,12 +13,12 @@ import {
   isHashZero,
   REFERRAL_CODE_KEY,
 } from "../lib/legacy";
-import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "./common";
 import { getContract } from "../config/addresses";
 import { REGEX_VERIFY_BYTES32 } from "../components/Referrals/referralsHelper";
 import { fetcher } from "../lib/contracts/fetcher";
 import { callContract } from "../lib/contracts/callContract";
 import { ARBITRUM, AVALANCHE } from "../config/chains";
+import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "../lib/subgraph/clients";
 
 const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
 const DISTRIBUTION_TYPE_REBATES = "1";
