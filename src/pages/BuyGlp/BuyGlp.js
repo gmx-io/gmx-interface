@@ -9,7 +9,8 @@ import "./BuyGlp.css";
 import { useChainId } from "../../lib/legacy";
 import { getNativeToken } from "../../config/Tokens";
 
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
+import ExternalLink from "../../components/Common/ExternalLink";
 
 export default function BuyGlp(props) {
   const { chainId } = useChainId();
@@ -27,7 +28,7 @@ export default function BuyGlp(props) {
     <div className="default-container page-layout">
       <div className="section-title-block">
         <div className="section-title-icon">
-          <img src={buyGLPIcon} alt="buyGLPIcon" />
+          <img src={buyGLPIcon} alt={t`Buy GLP Icon`} />
         </div>
         <div className="section-title-content">
           <div className="Page-title">
@@ -35,16 +36,13 @@ export default function BuyGlp(props) {
           </div>
           <div className="Page-description">
             <Trans>
-              Purchase{" "}
-              <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
-                GLP tokens
-              </a>{" "}
-              to earn {nativeTokenSymbol} fees from swaps and leverages trading.
+              Purchase <ExternalLink href="https://gmxio.gitbook.io/gmx/glp">GLP tokens</ExternalLink> to earn{" "}
+              {nativeTokenSymbol} fees from swaps and leverages trading.
             </Trans>
             <br />
-            <Trans>Note that there is a minimum holding time of 15 minutes after a purchase.</Trans>
-            <br />
             <Trans>
+              Note that there is a minimum holding time of 15 minutes after a purchase.
+              <br />
               View <Link to="/earn">staking</Link> page.
             </Trans>
           </div>

@@ -11,7 +11,7 @@ import arbitrumIcon from "../../img/ic_arbitrum_24.svg";
 import avaxIcon from "../../img/ic_avalanche_24.svg";
 import checkedIcon from "../../img/ic_checked.svg";
 import { importImage, LANGUAGE_LOCALSTORAGE_KEY } from "../../lib/legacy";
-import { defaultLocale, dynamicActivate, locales } from "../../lib/i18n";
+import { defaultLocale, dynamicActivate, isTestLanguage, locales } from "../../lib/i18n";
 
 const LANGUAGE_MODAL_KEY = "LANGUAGE";
 const NETWORK_MODAL_KEY = "NETWORK";
@@ -173,7 +173,7 @@ function NetworkMenuItems({ networkOptions, selectorLabel, onNetworkSelect }) {
 
 function LanguageModalContent({ currentLanguage }) {
   return Object.keys(locales).map((item) => {
-    const image = importImage(`flag_${item}.svg`);
+    const image = !isTestLanguage(item) && importImage(`flag_${item}.svg`);
     return (
       <div
         key={item}
@@ -181,13 +181,15 @@ function LanguageModalContent({ currentLanguage }) {
           active: currentLanguage.current === item,
         })}
         onClick={() => {
-          localStorage.setItem(LANGUAGE_LOCALSTORAGE_KEY, item);
+          if (!isTestLanguage(item)) {
+            localStorage.setItem(LANGUAGE_LOCALSTORAGE_KEY, item);
+          }
           dynamicActivate(item);
         }}
       >
         <div className="menu-item-group">
           <div className="menu-item-icon">
-            <img className="network-dropdown-icon" src={image} alt="language-menu-open-icon" />
+            {isTestLanguage(item) ? "🫐" : <img className="network-dropdown-icon" src={image} alt={locales[item]} />}
           </div>
           <span className="network-dropdown-item-label menu-item-label">{locales[item]}</span>
         </div>

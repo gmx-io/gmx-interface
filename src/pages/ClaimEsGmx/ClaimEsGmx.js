@@ -28,6 +28,7 @@ import avaIcon from "../../img/ic_avalanche_96.svg";
 import { Trans, t } from "@lingui/macro";
 import { fetcher } from "../../lib/contracts/fetcher";
 import { callContract } from "../../lib/contracts/callContract";
+import ExternalLink from "../../components/Common/ExternalLink";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";
 const VEST_WITH_GLP_ARB = "VEST_WITH_GLP_ARB";
@@ -375,14 +376,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
               <br />
               <Trans>
                 You can check your claim history{" "}
-                <a
-                  href={`https://arbiscan.io/token/${esGmxIouAddress}?a=${account}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  here
-                </a>
-                .
+                <ExternalLink href={`https://arbiscan.io/token/${esGmxIouAddress}?a=${account}`}>here</ExternalLink>.
               </Trans>
             </div>
             <br />
@@ -395,7 +389,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
                 <div className="ClaimEsGmx-option-label">
                   <Trans>Vest with GMX on Arbitrum</Trans>
                 </div>
-                <img src={arbitrumIcon} alt="arbitrum" />
+                <img src={arbitrumIcon} alt="Arbitrum" />
               </Checkbox>
               <Checkbox
                 className="arbitrum btn btn-primary btn-left btn-lg"
@@ -405,7 +399,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
                 <div className="ClaimEsGmx-option-label">
                   <Trans>Vest with GLP on Arbitrum</Trans>
                 </div>
-                <img src={arbitrumIcon} alt="arbitrum" />
+                <img src={arbitrumIcon} alt="Arbitrum" />
               </Checkbox>
               <Checkbox
                 className="avalanche btn btn-primary btn-left btn-lg"
@@ -415,7 +409,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
                 <div className="ClaimEsGmx-option-label">
                   <Trans>Vest with GMX on Avalanche</Trans>
                 </div>
-                <img src={avaIcon} alt="avalanche" />
+                <img src={avaIcon} alt="Avalanche" />
               </Checkbox>
               <Checkbox
                 className="avalanche btn btn-primary btn-left btn-lg"
@@ -425,7 +419,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
                 <div className="ClaimEsGmx-option-label avalanche">
                   <Trans>Vest with GLP on Avalanche</Trans>
                 </div>
-                <img src={avaIcon} alt="avalanche" />
+                <img src={avaIcon} alt="Avalanche" />
               </Checkbox>
             </div>
             <br />

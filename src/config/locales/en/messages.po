@@ -13,14 +13,33 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/App/App.js
-#: src/App/App.js
-msgid ", and use GMX with its built-in browser"
-msgstr ", and use GMX with its built-in browser"
+#: src/pages/Dashboard/DashboardV2.js
+msgid "01 Sep 2021"
+msgstr "01 Sep 2021"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "06 Jan 2022"
+msgstr "06 Jan 2022"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24h Volume"
+
+#: src/App/App.js
+msgid "<0>Install Coinbase Wallet</0> to start using GMX"
+msgstr "<0>Install Coinbase Wallet</0> to start using GMX"
+
+#: src/App/App.js
+msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser"
+msgstr "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser"
+
+#: src/App/App.js
+msgid "<0>Install MetaMask</0> to start using GMX"
+msgstr "<0>Install MetaMask</0> to start using GMX"
+
+#: src/App/App.js
+msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser"
+msgstr "<0>Install MetaMask</0>, and use GMX with its built-in browser"
 
 #: src/components/Exchange/OrdersToa.js
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
@@ -42,6 +61,10 @@ msgstr "APR"
 #: src/pages/Stake/StakeV2.js
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 msgstr "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "AUM"
+msgstr "AUM"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -76,6 +99,7 @@ msgstr "Actions"
 msgid "Active Referral Code"
 msgstr "Active Referral Code"
 
+#: src/pages/Dashboard/AssetDropdown.js
 #: src/pages/Dashboard/AssetDropdown.js
 msgid "Add to Metamask"
 msgstr "Add to Metamask"
@@ -117,6 +141,7 @@ msgstr "After you have ETH, set your network to <0>Arbitrum</0> then click the b
 msgid "Allowed Slippage"
 msgstr "Allowed Slippage"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "Amount"
 msgstr "Amount"
@@ -137,10 +162,11 @@ msgstr "An aggregate of high-quality price feeds determine when liquidations occ
 msgid "Announcement"
 msgstr "Announcement"
 
-#: src/pages/Stake/StakeV2.js
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Approve GMX"
 msgstr "Approve GMX"
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 msgid "Approve {0}"
@@ -154,6 +180,7 @@ msgstr "Approve {stakingTokenSymbol}"
 msgid "Approving GMX..."
 msgstr "Approving GMX..."
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 msgid "Approving {0}..."
@@ -171,6 +198,16 @@ msgstr "Approving..."
 #: src/components/TokenCard/TokenCard.js
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"
+
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Arbitrum Icon"
+msgstr "Arbitrum Icon"
+
+#: src/pages/Dashboard/DashboardV1.js
+msgid "Assets Under Management"
+msgstr "Assets Under Management"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})"
@@ -213,6 +250,12 @@ msgstr "Avalanche"
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Avalanche Icon"
+msgstr "Avalanche Icon"
+
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Avax is needed on Avalanche to purchase GMX."
 msgstr "Avax is needed on Avalanche to purchase GMX."
@@ -249,6 +292,8 @@ msgstr "Boost Percentage"
 msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "Boost your rewards with Multiplier Points. <0>More info</0>."
 
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 msgid "Borrow Fee"
 msgstr "Borrow Fee"
@@ -285,8 +330,13 @@ msgstr "Buy ETH"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
 msgid "Buy GLP"
 msgstr "Buy GLP"
+
+#: src/pages/BuyGlp/BuyGlp.js
+msgid "Buy GLP Icon"
+msgstr "Buy GLP Icon"
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
@@ -360,9 +410,7 @@ msgstr "Check the \"Save on Fees\" section below to get the lowest fee percentag
 msgid "Checking code..."
 msgstr "Checking code..."
 
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Claim"
 msgstr "Claim"
 
@@ -371,7 +419,7 @@ msgstr "Claim"
 msgid "Claim GMX Rewards"
 msgstr "Claim GMX Rewards"
 
-#: src/pages/Stake/StakeV2.js
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Claim completed!"
 msgstr "Claim completed!"
 
@@ -384,7 +432,7 @@ msgstr "Claim esGMX"
 msgid "Claim esGMX Rewards"
 msgstr "Claim esGMX Rewards"
 
-#: src/pages/Stake/StakeV2.js
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Claim failed."
 msgstr "Claim failed."
 
@@ -405,7 +453,7 @@ msgstr "Claim {wrappedTokenSymbol} Rewards"
 msgid "Claimable"
 msgstr "Claimable"
 
-#: src/pages/Stake/StakeV2.js
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Claiming..."
 msgstr "Claiming..."
 
@@ -442,6 +490,9 @@ msgid "Coinbase Wallet not detected."
 msgstr "Coinbase Wallet not detected."
 
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 msgid "Collateral"
 msgstr "Collateral"
 
@@ -457,6 +508,10 @@ msgstr "Collateral In"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Community Projects"
 msgstr "Community Projects"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Community curated tweet collection"
+msgstr "Community curated tweet collection"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Community-led Telegram groups."
@@ -498,11 +553,17 @@ msgstr "Connect"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Header/AppHeaderUser.tsx
+#: src/components/Referrals/AddAffiliateCode.js
+#: src/components/Referrals/JoinReferralCode.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "Connect Wallet"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-#: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Continue"
 msgstr "Continue"
 
@@ -521,6 +582,11 @@ msgstr "Copy"
 #: src/components/AddressDropdown/AddressDropdown.js
 msgid "Copy Address"
 msgstr "Copy Address"
+
+#: src/pages/Dashboard/DashboardV1.js
+#: src/pages/Dashboard/DashboardV1.js
+msgid "Could not add token to MetaMask"
+msgstr "Could not add token to MetaMask"
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Create"
@@ -563,17 +629,50 @@ msgstr "Current Reserved"
 msgid "Current Weight"
 msgstr "Current Weight"
 
+#: src/pages/Ecosystem/Ecosystem.js
+#: src/pages/Ecosystem/Ecosystem.js
+#: src/pages/Ecosystem/Ecosystem.js
+#: src/pages/Ecosystem/Ecosystem.js
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "DEX Aggregator"
+msgstr "DEX Aggregator"
+
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Dashboard"
 msgstr "Dashboard"
 
 #: src/pages/Ecosystem/Ecosystem.js
+msgid "Dashboard for GMX referral stats"
+msgstr "Dashboard for GMX referral stats"
+
+#: src/pages/Ecosystem/Ecosystem.js
 msgid "Dashboards"
 msgstr "Dashboards"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "Date"
 msgstr "Date"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "DeFi Portfolio Tracker"
+msgstr "DeFi Portfolio Tracker"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Decentralized Finance Dashboard"
+msgstr "Decentralized Finance Dashboard"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Decentralized Options Protocol"
+msgstr "Decentralized Options Protocol"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Decentralized Options Strategies"
+msgstr "Decentralized Options Strategies"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Decentralized Trading Protocol"
+msgstr "Decentralized Trading Protocol"
 
 #: src/pages/Home/Home.js
 msgid "Decentralized<0/>Perpetual Exchange"
@@ -647,6 +746,7 @@ msgstr "Download"
 msgid "ETH is needed on Arbitrum to purchase GMX."
 msgstr "ETH is needed on Arbitrum to purchase GMX."
 
+#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "Earn"
@@ -658,6 +758,7 @@ msgstr "Ecosystem"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/PositionsList.js
 msgid "Edit"
 msgstr "Edit"
 
@@ -669,10 +770,15 @@ msgstr "Edit Collateral"
 msgid "Edit Referral Code"
 msgstr "Edit Referral Code"
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Leverage"
 msgstr "Enable Leverage"
 
+#: src/components/Exchange/OrdersToa.js
+#: src/components/Exchange/OrdersToa.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Orders"
 msgstr "Enable Orders"
@@ -685,10 +791,12 @@ msgstr "Enable deposit failed."
 msgid "Enable deposit sent."
 msgstr "Enable deposit sent."
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable leverage failed."
 msgstr "Enable leverage failed."
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable leverage sent."
 msgstr "Enable leverage sent."
@@ -713,11 +821,17 @@ msgstr "Enable withdraw sent."
 msgid "Enabling Leverage"
 msgstr "Enabling Leverage"
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enabling Leverage..."
 msgstr "Enabling Leverage..."
 
+#: src/components/Exchange/OrdersToa.js
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enabling Orders..."
@@ -745,12 +859,7 @@ msgstr "Enter a code"
 msgid "Enter a price"
 msgstr "Enter a price"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Enter an amount"
 msgstr "Enter an amount"
 
@@ -766,6 +875,9 @@ msgstr "Enter the amount of GLP you want to purchase in the order form, then che
 msgid "Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
 msgstr "Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
 
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Entry Price"
@@ -787,11 +899,14 @@ msgstr "Exit Price"
 msgid "FEES"
 msgstr "FEES"
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr "Fees"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Fees generated by GMX"
+msgstr "Fees generated by GMX"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Fees may vary depending on which asset you sell GLP for."
@@ -814,6 +929,10 @@ msgstr "Fees will be shown once you have entered an amount in the order form."
 msgid "Fetching token info..."
 msgstr "Fetching token info..."
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Financial reports and protocol analytics"
+msgstr "Financial reports and protocol analytics"
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Floor Price Fund"
 msgstr "Floor Price Fund"
@@ -822,9 +941,17 @@ msgstr "Floor Price Fund"
 msgid "Forfeit profit not checked"
 msgstr "Forfeit profit not checked"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GBC NFTs APR tracker and rewards"
+msgstr "GBC NFTs APR tracker and rewards"
+
 #: src/pages/Dashboard/DashboardV2.js
 msgid "GLP Index Composition"
 msgstr "GLP Index Composition"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "GLP Pool"
+msgstr "GLP Pool"
 
 #: src/components/Glp/GlpSwap.js
 msgid "GLP buy disabled, pending {0} upgrade"
@@ -839,12 +966,44 @@ msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "GLP sell disabled, pending {0} upgrade"
 
 #: src/pages/Ecosystem/Ecosystem.js
+msgid "GMX Announcements and Updates"
+msgstr "GMX Announcements and Updates"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GMX Blueberry NFTs"
+msgstr "GMX Blueberry NFTs"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GMX Governance Page"
+msgstr "GMX Governance Page"
+
+#: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Pages"
 msgstr "GMX Pages"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GMX Perpetuals Data"
+msgstr "GMX Perpetuals Data"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GMX Proposals Voting page"
+msgstr "GMX Proposals Voting page"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GMX Stats Page"
+msgstr "GMX Stats Page"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GMX Weekly Updates"
+msgstr "GMX Weekly Updates"
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
 msgstr "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GMX community discussion"
+msgstr "GMX community discussion"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX dashboards and analytics."
@@ -854,6 +1013,14 @@ msgstr "GMX dashboards and analytics."
 msgid "GMX ecosystem pages."
 msgstr "GMX ecosystem pages."
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GMX explorer for stats and traders"
+msgstr "GMX explorer for stats and traders"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GMX fundamentals"
+msgstr "GMX fundamentals"
+
 #: src/pages/Home/Home.js
 msgid "GMX is currently live on Arbitrum and Avalanche."
 msgstr "GMX is currently live on Arbitrum and Avalanche."
@@ -861,6 +1028,14 @@ msgstr "GMX is currently live on Arbitrum and Avalanche."
 #: src/components/TokenCard/TokenCard.js
 msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
 msgstr "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GMX staking calculator"
+msgstr "GMX staking calculator"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "GMX staking rewards updates and insights"
+msgstr "GMX staking rewards updates and insights"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -923,14 +1098,6 @@ msgstr "Initial Collateral - Fees + PnL"
 msgid "Initial Collateralt"
 msgstr "Initial Collateralt"
 
-#: src/App/App.js
-msgid "Install Coinbase Wallet"
-msgstr "Install Coinbase Wallet"
-
-#: src/App/App.js
-msgid "Install MetaMask"
-msgstr "Install MetaMask"
-
 #: src/components/Glp/GlpSwap.js
 msgid "Insufficient GLP balance"
 msgstr "Insufficient GLP balance"
@@ -989,6 +1156,10 @@ msgstr "Launch Exchange"
 msgid "Leaderboard"
 msgstr "Leaderboard"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Leaderboard for GMX traders"
+msgstr "Leaderboard for GMX traders"
+
 #: src/components/Exchange/SwapBox.js
 msgid "Leave at least {0} {1} for gas"
 msgstr "Leave at least {0} {1} for gas"
@@ -1001,6 +1172,9 @@ msgstr "Leftover collateral below 5 USD"
 msgid "Leftover position below 10 USD"
 msgstr "Leftover position below 10 USD"
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Leverage"
@@ -1026,6 +1200,10 @@ msgstr "Limit order submitted!"
 msgid "Link"
 msgstr "Link"
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 msgid "Liq. Price"
 msgstr "Liq. Price"
@@ -1039,8 +1217,11 @@ msgstr "Liquidity data not loaded"
 msgid "Loading..."
 msgstr "Loading..."
 
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.js
 msgid "Long"
 msgstr "Long"
 
@@ -1048,6 +1229,10 @@ msgstr "Long"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
 msgstr "Long Positions"
+
+#: src/pages/Dashboard/DashboardV1.js
+msgid "Long positions: {0} USD, Short positions: {1} USD, {volumeLabel} volume: {2} USD"
+msgstr "Long positions: {0} USD, Short positions: {1} USD, {volumeLabel} volume: {2} USD"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Long {0}"
@@ -1061,17 +1246,27 @@ msgstr "Looks like you don't have a referral code to share. <0/> Create one now 
 msgid "Loss"
 msgstr "Loss"
 
-#: src/components/BuyInputSection/BuyInputSection.js
-#: src/components/InputSection/InputSection.js
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
 msgstr "MAX"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "MEV Optimizer"
+msgstr "MEV Optimizer"
+
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 msgid "Mark Price"
 msgstr "Mark Price"
 
+#: src/pages/Dashboard/DashboardV1.js
+#: src/pages/Dashboard/DashboardV1.js
+#: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Market Cap"
@@ -1124,6 +1319,11 @@ msgstr "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgid "Max slippage precision is 0.01%"
 msgstr "Max slippage precision is 0.01%"
 
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Max {0} Capacity"
+msgstr "Max {0} Capacity"
+
 #: src/components/Exchange/SwapBox.js
 msgid "Max {0} long exceeded"
 msgstr "Max {0} long exceeded"
@@ -1145,10 +1345,14 @@ msgstr "MetaMask"
 msgid "MetaMask not detected."
 msgstr "MetaMask not detected."
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Min leverage: 1.1x"
 msgstr "Min leverage: 1.1x"
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
 msgstr "Min order: 10 USD"
@@ -1191,6 +1395,7 @@ msgstr "No open orders"
 msgid "No open positions"
 msgstr "No open positions"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "No rebates distribution history yet."
 msgstr "No rebates distribution history yet."
@@ -1200,8 +1405,8 @@ msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur
 msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 
 #: src/pages/BuyGlp/BuyGlp.js
-msgid "Note that there is a minimum holding time of 15 minutes after a purchase."
-msgstr "Note that there is a minimum holding time of 15 minutes after a purchase."
+msgid "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
+msgstr "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Olympus Pro"
@@ -1228,6 +1433,10 @@ msgstr "Open in Explorer"
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Optimal compound interval calculator"
+msgstr "Optimal compound interval calculator"
+
 #: src/components/Exchange/OrdersList.js
 msgid "Order"
 msgstr "Order"
@@ -1245,6 +1454,7 @@ msgid "Order submitted!"
 msgstr "Order submitted!"
 
 #: src/components/Exchange/PositionsList.js
+#: src/pages/Actions/Actions.js
 msgid "Orders"
 msgstr "Orders"
 
@@ -1260,11 +1470,11 @@ msgstr "Overview"
 msgid "POOL"
 msgstr "POOL"
 
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
 msgstr "PRICE"
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Page outdated, please refresh"
 msgstr "Page outdated, please refresh"
@@ -1291,8 +1501,8 @@ msgid "Please mint GLP using another token"
 msgstr "Please mint GLP using another token"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Please only use this for full account transfers."
-msgstr "Please only use this for full account transfers."
+msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
+msgstr "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Please switch your network to Arbitrum."
@@ -1300,8 +1510,19 @@ msgstr "Please switch your network to Arbitrum."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
+#: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
+
+#: src/pages/Dashboard/DashboardV1.js
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Pool"
+msgstr "Pool"
+
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Pool Amount"
+msgstr "Pool Amount"
 
 #: src/components/Exchange/PositionsList.js
 msgid "Position"
@@ -1315,11 +1536,11 @@ msgstr "Position close disabled, pending {0} upgrade"
 msgid "Positions"
 msgstr "Positions"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Dashboard/DashboardV1.js
+#: src/pages/Dashboard/DashboardV1.js
+#: src/pages/Dashboard/DashboardV1.js
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Price"
 msgstr "Price"
@@ -1342,6 +1563,14 @@ msgstr "Price below Liq. Price"
 msgid "Price below Mark Price"
 msgstr "Price below Mark Price"
 
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Price on Arbitrum"
+msgstr "Price on Arbitrum"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Price on Avalanche"
+msgstr "Price on Avalanche"
+
 #: src/pages/Actions/Actions.js
 msgid "Profit"
 msgstr "Profit"
@@ -1353,6 +1582,11 @@ msgstr "Projects developed by the GMX community."
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects integrated with GMX."
 msgstr "Projects integrated with GMX."
+
+#: src/pages/Ecosystem/Ecosystem.js
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Protocol analytics"
+msgstr "Protocol analytics"
 
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
@@ -1372,6 +1606,7 @@ msgstr "Purchase Insurance"
 msgid "Read more"
 msgstr "Read more"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "Rebates are airdropped weekly."
 msgstr "Rebates are airdropped weekly."
@@ -1384,6 +1619,7 @@ msgstr "Rebates earned by this account as a trader."
 msgid "Rebates earned by this account as an affiliate."
 msgstr "Rebates earned by this account as an affiliate."
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
@@ -1477,6 +1713,10 @@ msgstr "Reserved"
 msgid "Reserved for Vesting"
 msgstr "Reserved for Vesting"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Returns calculator for GMX and GLP"
+msgstr "Returns calculator for GMX and GLP"
+
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Rewards"
@@ -1494,7 +1734,6 @@ msgstr "Save"
 msgid "Save on Costs"
 msgstr "Save on Costs"
 
-#: src/components/NetworkDropdown/LanguagePopupHome.js
 #: src/components/NetworkDropdown/NetworkDropdown.js
 msgid "Select Language"
 msgstr "Select Language"
@@ -1526,6 +1765,7 @@ msgstr "Self-transfer not supported"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
 msgid "Sell GLP"
 msgstr "Sell GLP"
 
@@ -1566,8 +1806,11 @@ msgstr "Share"
 msgid "Share Position"
 msgstr "Share Position"
 
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.js
 msgid "Short"
 msgstr "Short"
 
@@ -1650,10 +1893,17 @@ msgstr "Staking..."
 msgid "Stats"
 msgstr "Stats"
 
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Structured Products"
+msgstr "Structured Products"
+
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Submit"
 msgstr "Submit"
 
+#: src/pages/Dashboard/DashboardV1.js
+#: src/pages/Dashboard/DashboardV1.js
+#: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Supply"
@@ -1697,18 +1947,42 @@ msgstr "Swaps disabled, pending {0} upgrade"
 msgid "Synapse"
 msgstr "Synapse"
 
-#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
 msgstr "TOKEN"
+
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Target Min Amount"
+msgstr "Target Min Amount"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Target Weight"
 msgstr "Target Weight"
 
 #: src/pages/Ecosystem/Ecosystem.js
+msgid "Telegram Group"
+msgstr "Telegram Group"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Telegram Group (Chinese)"
+msgstr "Telegram Group (Chinese)"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Telegram Group (Portuguese)"
+msgstr "Telegram Group (Portuguese)"
+
+#: src/pages/Ecosystem/Ecosystem.js
 msgid "Telegram Groups"
 msgstr "Telegram Groups"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Telegram bot for GMX position updates"
+msgstr "Telegram bot for GMX position updates"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Telegram bot for Open Interest on GMX"
+msgstr "Telegram bot for Open Interest on GMX"
 
 #: src/components/Footer/Footer.js
 msgid "Terms and Conditions"
@@ -1737,10 +2011,6 @@ msgstr "The price that orders can be executed at may differ slightly from the ch
 #: src/components/Exchange/OrdersList.js
 msgid "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
 msgstr "The price that the order can be executed at may differ slightly from the chart price as market orders can change the price while limit / trigger orders cannot."
-
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account."
-msgstr "This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account."
 
 #: src/components/Referrals/TradersStats.js
 msgid "Tier {0} ({1}% discount)"
@@ -1775,6 +2045,12 @@ msgstr "Total"
 msgid "Total Fees"
 msgstr "Total Fees"
 
+#: src/pages/Dashboard/DashboardV1.js
+msgid "Total Fees Distributed"
+msgstr "Total Fees Distributed"
+
+#: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr "Total Rebates"
@@ -1793,6 +2069,9 @@ msgid "Total Stats"
 msgstr "Total Stats"
 
 #: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Total Supply"
 msgstr "Total Supply"
 
@@ -1800,6 +2079,7 @@ msgstr "Total Supply"
 msgid "Total Traders Referred"
 msgstr "Total Traders Referred"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
@@ -1813,6 +2093,14 @@ msgstr "Total Users"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
 msgstr "Total Volume"
+
+#: src/pages/Dashboard/DashboardV1.js
+msgid "Total Volume Since 28 April 2021"
+msgstr "Total Volume Since 28 April 2021"
+
+#: src/pages/Dashboard/DashboardV1.js
+msgid "Total fees earned since {0}: {1} USD<0/>Fee assets: {feeText}"
+msgstr "Total fees earned since {0}: {1} USD<0/>Fee assets: {feeText}"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total value of tokens in GLP pool ({chainName})"
@@ -1843,6 +2131,7 @@ msgstr "Traders Referred"
 msgid "Trading guide"
 msgstr "Trading guide"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "Transaction"
 msgstr "Transaction"
@@ -1860,30 +2149,24 @@ msgid "Transfer ETH"
 msgstr "Transfer ETH"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+msgid "Transfer Submitted"
+msgstr "Transfer Submitted"
+
+#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transfer already initiated"
 msgstr "Transfer already initiated"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-#: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Transfer failed."
 msgstr "Transfer failed."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-#: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Transfer submitted!"
 msgstr "Transfer submitted!"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transferring"
 msgstr "Transferring"
-
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
-msgstr "Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
-
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Transfers are only supported if the receiving account has not staked GMX or GLP tokens before."
-msgstr "Transfers are only supported if the receiving account has not staked GMX or GLP tokens before."
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Trigger Price"
@@ -1902,12 +2185,16 @@ msgid "Two tokens create our ecosystem"
 msgstr "Two tokens create our ecosystem"
 
 #: src/App/App.js
-msgid "Txn failed."
-msgstr "Txn failed."
+msgid "Txn failed. <0>View</0>"
+msgstr "Txn failed. <0>View</0>"
 
 #: src/components/Exchange/OrdersList.js
 msgid "Type"
 msgstr "Type"
+
+#: src/pages/Dashboard/DashboardV1.js
+msgid "USDG Debt"
+msgstr "USDG Debt"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "UTILIZATION"
@@ -1959,6 +2246,11 @@ msgstr "Useful Links"
 msgid "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees."
 msgstr "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees."
 
+#: src/pages/Dashboard/DashboardV1.js
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Utilization"
+msgstr "Utilization"
+
 #: src/pages/Stake/StakeV2.js
 msgid "Vault Capacity"
 msgstr "Vault Capacity"
@@ -1997,18 +2289,14 @@ msgid "Vesting Status"
 msgstr "Vesting Status"
 
 #: src/App/App.js
-#: src/App/App.js
 msgid "View"
 msgstr "View"
-
-#: src/pages/BuyGlp/BuyGlp.js
-msgid "View <0>staking</0> page."
-msgstr "View <0>staking</0> page."
 
 #: src/components/AddressDropdown/AddressDropdown.js
 msgid "View in Explorer"
 msgstr "View in Explorer"
 
+#: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Volume"
 msgstr "Volume"
@@ -2044,11 +2332,13 @@ msgstr "Waiting for Approval"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Wallet"
 msgstr "Wallet"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-#: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Wallet is not connected"
 msgstr "Wallet is not connected"
 
@@ -2059,6 +2349,10 @@ msgstr "Wallet not connected"
 #: src/App/App.js
 msgid "WalletConnect"
 msgstr "WalletConnect"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Weight"
+msgstr "Weight"
 
 #: src/components/Exchange/SwapBox.js
 msgid "When closing the position, you can select which token you would like to receive the profits in."
@@ -2108,6 +2402,18 @@ msgstr "Withdrawing..."
 #: src/pages/Stake/StakeV2.js
 msgid "Withdrawn!"
 msgstr "Withdrawn!"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Yield Optimizer on Avalanche"
+msgstr "Yield Optimizer on Avalanche"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Yield Vaults"
+msgstr "Yield Vaults"
+
+#: src/pages/Ecosystem/Ecosystem.js
+msgid "Yield simulator for GMX"
+msgstr "Yield simulator for GMX"
 
 #: src/pages/Stake/StakeV2.js
 msgid "You are earning {nativeTokenSymbol} rewards with {0} tokens.<0/>Tokens: {amountStr}."
@@ -2186,11 +2492,6 @@ msgstr "order"
 msgid "orders"
 msgstr "orders"
 
-#: src/App/App.js
-#: src/App/App.js
-msgid "to start using GMX"
-msgstr "to start using GMX"
-
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP (${1})"
 msgstr "{0} GLP (${1})"
@@ -2241,3 +2542,7 @@ msgstr "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detail
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
+
+#: src/pages/Dashboard/DashboardV1.js
+msgid "{volumeLabel} Volume"
+msgstr "{volumeLabel} Volume"
