@@ -3,9 +3,10 @@ import { ethers } from "ethers";
 import { useState } from "react";
 import useSWR from "swr";
 import { isAddressZero } from "../../lib/legacy";
+import { getAdressesDomains } from "../ens/graph";
 import { GRAPHS } from "./constants";
 import { getCompetitionContract, getTeamMembers } from "./contracts";
-import { Competition, Position, Stats, Team, TeamMembersStats } from "./types";
+import { Competition, Position, Team, TeamMembersStats } from "./types";
 
 export function getGraphClient(chainId) {
   const graphUrl = GRAPHS[chainId]
@@ -20,16 +21,14 @@ export function getGraphClient(chainId) {
   })
 }
 
-export function useIndividualStats(chainId, page, perPage) {
-  const [data, setData] = useState<Stats[]>([])
+export function useIndividuals(chainId) {
+  const [data, setData] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [hasNextPage, setHasNextPage] = useState(false)
 
   const query = gql`
-    query ($first: Int!, $skip: Int!) {
+    query {
       accountStats(
-        first: $first,
-        skip: $skip,
+        first: 1000,
         orderBy: pnl,
         orderByDir: desc,
         where: {
@@ -38,75 +37,65 @@ export function useIndividualStats(chainId, page, perPage) {
       ) {
         id
         pnl
-        pnlPercent
+        positions { id }
       }
     }
   `
 
-  useSWR([chainId, page, perPage], () => {
+  useSWR([chainId], () => {
     async function main() {
-      const { data: graphData } = await getGraphClient(chainId).query({ query, variables: {
-        first: perPage + 1,
-        skip: perPage * (page - 1)
-      }})
+      const { data: graphData } = await getGraphClient(chainId).query({ query })
 
-      setHasNextPage(graphData.accountStats.length > perPage)
-
-      setData(graphData.accountStats.slice(0, perPage).map((stats, i) => ({
-        id: stats.id,
-        label: stats.id,
-        rank: i + 1,
-        pnl: Number(stats.pnl),
-        pnlPercent: Number(stats.pnlPercent)
-      })))
-
+      setData(graphData.accountStats)
       setLoading(false)
+
+      const ensDomains = await getAdressesDomains(graphData.accountStats.map(stat => stat.id))
+
+      setData(stats => stats.map(stat => {
+        if (ensDomains[stat.id]) {
+          stat.ens = ensDomains[stat.id]
+        }
+
+        return stat
+      }))
     }
 
     main()
   })
 
-  return { data, loading, hasNextPage }
+  return { data, loading }
 }
 
-export function useTeamsStats(chainId, competitionIndex) {
-  const [data, setData] = useState<Stats[]>([]);
+export function useTeams(chainId, competitionIndex) {
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true)
 
   const query = gql`
     query ($competitionIndex: BigInt!) {
       teams (
         first: 1000,
-        orderBy: pnlPercent,
+        orderBy: pnl,
         orderDirection: desc,
         where: {
           competition: $competitionIndex,
         }
       ) {
-        id
         name
-        pnlPercent
         pnl
         address
+        positions { id }
+        members { id }
       }
     }
   `
 
-  useSWR([chainId, competitionIndex,], () => {
+  useSWR([chainId, competitionIndex], () => {
     async function main() {
       const { data: graphData } = await getGraphClient(chainId).query({ query, variables: {
         competitionIndex,
       }})
 
-      setData(graphData.teams.map((team, rank) => ({
-        id: team.address,
-        rank: rank + 1,
-        pnl: team.pnl,
-        pnlPercent: team.pnlPercent,
-        leaderAddress: team.address,
-        label: team.name,
-      })))
-
+      setData(graphData.teams)
       setLoading(false)
     }
 
@@ -136,7 +125,6 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
         id
         name
         pnl
-        pnlPercent
         members { address }
       }
     }
@@ -252,7 +240,6 @@ export function useTeamMembersStats(chainId, library, competitionIndex, leaderAd
       ) {
         account { address }
         pnl
-        pnlPercent
       }
     }
   `

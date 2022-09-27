@@ -4,7 +4,6 @@ import { CHAIN_ID_QUERY_PARAM, helperToast, REFERRALS_SELECTED_TAB_KEY, shortenA
 import { getTeamUrl } from "../../domain/leaderboard/urls";
 import { useCopyToClipboard, useLocalStorage } from "react-use";
 import useRouteQuery from "../../lib/useRouteQuery";
-import Modal from "../Modal/Modal";
 import { useEffect, useRef, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
@@ -13,6 +12,7 @@ import { FiInfo, FiX } from "react-icons/fi";
 import Checkbox from "../Checkbox/Checkbox";
 import { AFFILIATES_TAB, useUserCodesOnAllChain } from "../../domain/referrals";
 import { useHistory } from "react-router-dom";
+import ModalWithPortal from "../Modal/ModalWithPortal";
 
 type Inviteprops = {
   team: Team,
@@ -81,7 +81,7 @@ function Invite({ team }: Inviteprops) {
       <button className="App-button-option" onClick={() => setModalOpen(true)}>
         Invitation Link
       </button>
-      <Modal isVisible={modalOpen} setIsVisible={setModalOpen} label="Invitation Link">
+      <ModalWithPortal isVisible={modalOpen} setIsVisible={setModalOpen} label="Invitation Link">
         <div className="team-modal-content">
           <p>
             You can include a referral code that will be used by future members using this invitation link.
@@ -120,7 +120,7 @@ function Invite({ team }: Inviteprops) {
             </button>
           </div>
         </div>
-      </Modal>
+      </ModalWithPortal>
     </>
   )
 }
@@ -266,7 +266,7 @@ function Approve({ competition, onApprove, team, pendingTxns, setPendingTxns }: 
       <button className="App-button-option" disabled={processing} onClick={() => setOpen(true)}>
         {processing ? "Approving..." : "Approve members"}
       </button>
-      <Modal onAfterOpen={handleModalChange} label="Approve members" isVisible={open} setIsVisible={setOpen}>
+      <ModalWithPortal onAfterOpen={handleModalChange} label="Approve members" isVisible={open} setIsVisible={setOpen}>
         <div className="team-modal-content">
           <p>
             Enter the member addresses you want to approve below:
@@ -300,7 +300,7 @@ function Approve({ competition, onApprove, team, pendingTxns, setPendingTxns }: 
             )}
           </div>
         </div>
-      </Modal>
+      </ModalWithPortal>
     </>
   )
 }
@@ -363,7 +363,7 @@ function CreateJoinRequest({ team, pendingTxns, setPendingTxns, onCreate }: Crea
       <button className="App-button-option" disabled={processing} onClick={() => handleButtonClick()}>
         {processing ? "Creating join request..." : "Create join request"}
       </button>
-      <Modal label="Create Join Request" isVisible={open} setIsVisible={setOpen}>
+      <ModalWithPortal label="Create Join Request" isVisible={open} setIsVisible={setOpen}>
         <div className="team-modal-content">
           <p>By creating this join request you accept to use the team leader's referral code: </p>
           <p className="team-modal-referral-code">{referralCode}</p>
@@ -372,7 +372,7 @@ function CreateJoinRequest({ team, pendingTxns, setPendingTxns, onCreate }: Crea
             {processing ? "Creating join request..." : "Create join request"}
           </button>
         </div>
-      </Modal>
+      </ModalWithPortal>
     </>
   )
 }
@@ -499,7 +499,7 @@ export default function TeamMembersHeader({ competition, onMembersChange, team, 
   }
 
   return (
-    <div className="simple-table-top-header simple-table-top-header-right">
+    <div className="team-members-table-top-header">
       {isLeader() && team.members.length < competition.maxTeamSize && (
         <>
           <Invite referralCodes={referralCodes} team={team}/>

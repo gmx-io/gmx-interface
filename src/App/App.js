@@ -74,7 +74,6 @@ import "../styles/Shared.css";
 import "../styles/Font.css";
 import "./App.css";
 import "../styles/Input.css";
-import "../styles/Tables.css";
 import "../styles/Buttons.css";
 
 import metamaskImg from "../img/metamask.png";

@@ -59,21 +59,6 @@ export function TeamMembers({ onMembersChange, team, pendingTxns, setPendingTxns
     }
   }
 
-  const Row = ({ member }) => {
-    return (
-      <tr key={member.address}>
-        <td>{shortenAddress(member.address, 12)}</td>
-        <td>{member.pnl}</td>
-        <td>{member.pnlPercent}</td>
-        <td>
-          {isTeamLeader() && member.address !== team.leaderAddress && competition.registrationActive && (
-            <button className="simple-table-action" disabled={isRemoving} onClick={() => handleRemoveClick(member)}>Remove</button>
-          )}
-        </td>
-      </tr>
-    )
-  }
-
   return (
     <>
       <div className="Tab-title-section">
@@ -81,7 +66,7 @@ export function TeamMembers({ onMembersChange, team, pendingTxns, setPendingTxns
           Members
         </div>
       </div>
-      <div className="simple-table-container">
+      <div className="team-members-table-container">
         {showTeamMembersHeader() && <TeamMembersHeader
           competition={competition}
           team={team}
@@ -89,18 +74,28 @@ export function TeamMembers({ onMembersChange, team, pendingTxns, setPendingTxns
           setPendingTxns={setPendingTxns}
           onMembersChange={() => { onMembersChange(); revalidateMembersStats(); }}
         />}
-        <table className="simple-table">
+        <table className="Exchange-list large App-box">
           <tbody>
-            <tr className="simple-table-header">
+            <tr className="Exchange-list-header">
               <th>Address</th>
-              <th>P&L ($)</th>
-              <th>P&L (%)</th>
+              <th>PnL</th>
             </tr>
-            {loading ? (
+            {loading && (
               <tr>
                 <td colSpan={3}>Loading members...</td>
               </tr>
-            ) : members.map(member => <Row key={member.address} member={member}/>)}
+            )}
+            {!loading && members.map(member => (
+              <tr key={member.address}>
+                <td>{shortenAddress(member.address, 12)}</td>
+                <td>{member.pnl}</td>
+                <td>
+                  {isTeamLeader() && member.address !== team.leaderAddress && competition.registrationActive && (
+                    <button className="Exchange-list-action" disabled={isRemoving} onClick={() => handleRemoveClick(member)}>Remove</button>
+                  )}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -110,6 +105,22 @@ export function TeamMembers({ onMembersChange, team, pendingTxns, setPendingTxns
           <button className="default-btn" onClick={() => setPage(p => p + 1)} disabled={page === pageCount()}>Next</button>
         </div>
       )}
+      <div className="Exchange-list small">
+        {members.map(member => (
+          <div key={member.address} className="App-card">
+            <div className="App-card-title">
+              <span className="label">{shortenAddress(member.address, 12)}</span>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">PnL</div>
+                <div>{member.pnl}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </>
   )
 }

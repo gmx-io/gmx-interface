@@ -1,20 +1,92 @@
+import { Trans } from "@lingui/macro";
 import { useState } from "react";
-import { useIndividualStats } from "../../domain/leaderboard/graph";
-import { useChainId } from "../../lib/legacy";
-import LeaderboardTable from "./LeaderboardTable";
+import { useIndividuals } from "../../domain/leaderboard/graph";
+import { shortenAddress, useChainId } from "../../lib/legacy";
 
 export function IndividualLeaderboard() {
   const { chainId } = useChainId()
+  const perPage = 10
   const [page, setPage] = useState(1)
-  const { data, loading, hasNextPage } = useIndividualStats(chainId, page, 10);
+  const { data: accounts, loading } = useIndividuals(chainId);
+
+  const filteredAccount = () => {
+    return accounts
+  }
+
+  const displayedAccounts = () => {
+    return accounts.slice((page - 1) * perPage, page * perPage)
+  }
+
+  const pageCount = () => {
+    return Math.ceil(filteredAccount().length / perPage)
+  }
 
   return (
     <>
-      <LeaderboardTable loading={loading} stats={data}/>
-      <div className="simple-table-pagination">
-        <button className="default-btn" onClick={() => setPage(p => p - 1)} disabled={page <= 1}>Previous</button>
-        <button className="default-btn" onClick={() => setPage(p => p + 1)} disabled={!hasNextPage}>Next</button>
+      <table className="Exchange-list large App-box">
+        <tbody>
+          <tr className="Exchange-list-header">
+            <th>
+              <Trans>Rank</Trans>
+            </th>
+            <th>
+              <Trans>Name</Trans>
+            </th>
+            <th>
+              <Trans>PnL</Trans>
+            </th>
+            <th>
+              <Trans>Open Positions</Trans>
+            </th>
+          </tr>
+          {loading && (
+            <tr>
+              <td colSpan={5}>Loading...</td>
+            </tr>
+          )}
+          {!loading && filteredAccount().length === 0 && (
+            <tr>
+              <td colSpan={9}>Not account found</td>
+            </tr>
+          )}
+          {displayedAccounts().map(account => (
+            <tr key={account.id}>
+              <td>#1</td>
+              <td>{account.ens ?? account.id}</td>
+              <td>-$1,425 (-5.8%)</td>
+              <td>{account.positions.length}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="Exchange-list small">
+        {loading && <div className="Exchange-empty-positions-list-note App-card">Loading...</div>}
+        {!loading && filteredAccount().length === 0 && <div className="Exchange-empty-positions-list-note App-card">No account found</div>}
+        {displayedAccounts().map((account, i) => (
+          <div key={account.id} className="App-card">
+            <div className="App-card-title">
+              <span className="Exchange-list-title">
+                #{i+1} - {account.ens ?? shortenAddress(account.id, 12)}
+              </span>
+            </div>
+            <div className="App-card-divider"></div>
+            <div className="App-card-content">
+              <div className="App-card-row">
+                <div className="label">
+                  PnL
+                </div>
+                <div>{account.pnl}</div>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
+      {pageCount() > 1 && (
+        <div className="leaderboard-table-pagination">
+          <button className="transparent-btn" onClick={() => setPage(p => p - 1)} disabled={page <= 1}>Previous</button>
+          <button className="transparent-btn" onClick={() => setPage(p => p + 1)} disabled={page >= pageCount()}>Next</button>
+        </div>
+      )}
     </>
   )
 }

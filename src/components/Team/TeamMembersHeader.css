@@ -23,6 +23,10 @@
   font-size: 1.75rem;
 }
 
+.team-modal-content {
+  font-size: 1.5rem;
+}
+
 .team-modal-content .divider {
   margin: 1.5rem -1.5rem;
 }
@@ -80,4 +84,18 @@
 .team-modal-referral-empty span {
   margin-left: 1rem;
   line-height: 1;
+}
+
+.team-members-table-container {
+  position: relative;
+}
+
+.team-members-table-top-header {
+  position: absolute;
+  bottom: calc(100% + 1.5rem);
+  right: 0;
+}
+
+.team-members-table-top-header button + button {
+  margin-left: 1rem;
 }
