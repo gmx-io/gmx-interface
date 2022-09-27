@@ -3,8 +3,8 @@ import { BigNumber } from "@ethersproject/bignumber";
 export type Token = {
   address: string;
   decimals: number;
-  imageUrl: string;
-  isStable: boolean;
+  imageUrl?: string;
+  isStable?: boolean;
   name: string;
   symbol: string;
   isTempHidden?: boolean;
@@ -16,7 +16,7 @@ export type TokenInfo = {
   address: string;
   name: string;
   symbol: string;
-  imageUrl: string;
+  imageUrl?: string;
   decimals: number;
 
   hasMaxAvailableLong: boolean;

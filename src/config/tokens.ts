@@ -99,12 +99,14 @@ export const TOKENS: { [chainId: number]: TokenConfig[] } = {
       symbol: "BTC",
       decimals: 8,
       address: "0xb19C12715134bee7c4b1Ca593ee9E430dABe7b56",
+      imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
     },
     {
       name: "Ethereum",
       symbol: "ETH",
       decimals: 18,
       address: "0x1958f7C067226c7C8Ac310Dc994D0cebAbfb2B02",
+      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
     },
     {
       name: "Binance Coin",
@@ -112,6 +114,7 @@ export const TOKENS: { [chainId: number]: TokenConfig[] } = {
       decimals: 18,
       address: ethers.constants.AddressZero,
       isNative: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/825/small/binance-coin-logo.png",
     },
     {
       name: "Wrapped Binance Coin",
@@ -120,6 +123,7 @@ export const TOKENS: { [chainId: number]: TokenConfig[] } = {
       address: "0x612777Eea37a44F7a95E3B101C39e1E2695fa6C2",
       isWrapped: true,
       baseSymbol: "BNB",
+      imageUrl: "https://assets.coingecko.com/coins/images/825/small/binance-coin-logo.png",
     },
     {
       name: "USD Gambit",
@@ -127,6 +131,7 @@ export const TOKENS: { [chainId: number]: TokenConfig[] } = {
       decimals: 18,
       address: getContract(TESTNET, "USDG"),
       isUsdg: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/15886/small/usdg-02.png",
     },
     {
       name: "Binance USD",
@@ -134,6 +139,7 @@ export const TOKENS: { [chainId: number]: TokenConfig[] } = {
       decimals: 18,
       address: "0x3F223C4E5ac67099CB695834b20cCd5E5D5AA9Ef",
       isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/9576/small/BUSD.png",
     },
   ],
   [ARBITRUM_TESTNET]: [
@@ -143,6 +149,7 @@ export const TOKENS: { [chainId: number]: TokenConfig[] } = {
       decimals: 8,
       address: "0x27960f9A322BE96A1535E6c19B3958e80E6a2670",
       isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
     },
     {
       name: "Ethereum",
@@ -151,6 +158,7 @@ export const TOKENS: { [chainId: number]: TokenConfig[] } = {
       address: ethers.constants.AddressZero,
       isNative: true,
       isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
     },
     // https://github.com/OffchainLabs/arbitrum/blob/950c2f91b2e951cd3764394e0a73eac3797aecf3/packages/arb-ts/src/lib/networks.ts#L65
     {
@@ -160,6 +168,7 @@ export const TOKENS: { [chainId: number]: TokenConfig[] } = {
       address: "0xB47e6A5f8b33b3F17603C83a0535A9dcD7E32681",
       isWrapped: true,
       baseSymbol: "ETH",
+      imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
     },
     {
       name: "USD Coin",
@@ -167,6 +176,7 @@ export const TOKENS: { [chainId: number]: TokenConfig[] } = {
       decimals: 6,
       address: "0xf0DCd4737A20ED33481A49De94C599944a3Ca737",
       isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
     },
     {
       name: "Tether",
@@ -174,6 +184,7 @@ export const TOKENS: { [chainId: number]: TokenConfig[] } = {
       decimals: 6,
       address: "0x818ED84bA1927945b631016e0d402Db50cE8865f",
       isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/325/small/Tether-logo.png",
     },
   ],
   [ARBITRUM]: [
@@ -341,6 +352,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: TokenConfig[] } = {
       symbol: "GMX",
       address: getContract(ARBITRUM, "GMX"),
       decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
     },
     {
       name: "Escrowed GMX",
@@ -353,6 +365,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: TokenConfig[] } = {
       symbol: "GLP",
       address: getContract(ARBITRUM, "GLP"),
       decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
   ],
   [AVALANCHE]: [
@@ -361,6 +374,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: TokenConfig[] } = {
       symbol: "GMX",
       address: getContract(AVALANCHE, "GMX"),
       decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
     },
     {
       name: "Escrowed GMX",
@@ -373,6 +387,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: TokenConfig[] } = {
       symbol: "GLP",
       address: getContract(ARBITRUM, "GLP"),
       decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
   ],
 };

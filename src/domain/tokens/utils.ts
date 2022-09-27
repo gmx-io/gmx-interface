@@ -125,7 +125,7 @@ export function getLowestFeeTokenForBuyGlp(
       totalTokenWeights
     );
 
-    let amountLeftToDeposit = bigNumberify(0);
+    let amountLeftToDeposit = bigNumberify(0)!;
 
     if (fromToken.maxUsdgAmount && fromToken.maxUsdgAmount.gt(0)) {
       amountLeftToDeposit = fromToken.maxUsdgAmount
@@ -147,7 +147,7 @@ export function getLowestFeeTokenForBuyGlp(
 
   return tokensWithLiquidity.length > 0
     ? tokensWithLiquidity[0]
-    : tokensData.sort((a, b) => b.amountLeftToDeposit.sub(a.amountLeftToDeposit))[0];
+    : tokensData.sort((a, b) => Number(b.amountLeftToDeposit.sub(a.amountLeftToDeposit)))[0];
 }
 
 function prepareTokens() {
