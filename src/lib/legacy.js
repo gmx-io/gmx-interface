@@ -250,43 +250,6 @@ export const ICONLINKS = {
   },
 };
 
-export const platformTokens = {
-  42161: {
-    // arbitrum
-    GMX: {
-      name: "GMX",
-      symbol: "GMX",
-      decimals: 18,
-      address: getContract(ARBITRUM, "GMX"),
-      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
-    },
-    GLP: {
-      name: "GMX LP",
-      symbol: "GLP",
-      decimals: 18,
-      address: getContract(ARBITRUM, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
-      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
-    },
-  },
-  43114: {
-    // avalanche
-    GMX: {
-      name: "GMX",
-      symbol: "GMX",
-      decimals: 18,
-      address: getContract(AVALANCHE, "GMX"),
-      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
-    },
-    GLP: {
-      name: "GMX LP",
-      symbol: "GLP",
-      decimals: 18,
-      address: getContract(AVALANCHE, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
-      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
-    },
-  },
-};
-
 const supportedChainIds = [ARBITRUM, AVALANCHE];
 if (isDevelopment()) {
   supportedChainIds.push(ARBITRUM_TESTNET);

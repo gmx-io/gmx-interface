@@ -377,6 +377,43 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: TokenConfig[] } = {
   ],
 };
 
+export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: TokenConfig } } = {
+  [ARBITRUM]: {
+    // arbitrum
+    GMX: {
+      name: "GMX",
+      symbol: "GMX",
+      decimals: 18,
+      address: getContract(ARBITRUM, "GMX"),
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+    },
+    GLP: {
+      name: "GMX LP",
+      symbol: "GLP",
+      decimals: 18,
+      address: getContract(ARBITRUM, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+  },
+  [AVALANCHE]: {
+    // avalanche
+    GMX: {
+      name: "GMX",
+      symbol: "GMX",
+      decimals: 18,
+      address: getContract(AVALANCHE, "GMX"),
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+    },
+    GLP: {
+      name: "GMX LP",
+      symbol: "GLP",
+      decimals: 18,
+      address: getContract(AVALANCHE, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+  },
+};
+
 export const TOKENS_MAP: { [chainId: number]: { [address: string]: TokenConfig } } = {};
 export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: TokenConfig } } = {};
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: TokenConfig } = {};
