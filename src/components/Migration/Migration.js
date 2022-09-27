@@ -28,8 +28,8 @@ import { getContract } from "../../config/addresses";
 import Reader from "../../abis/Reader.json";
 import Token from "../../abis/Token.json";
 import GmxMigrator from "../../abis/GmxMigrator.json";
-import { fetcher } from "../../lib/contracts/fetcher";
 import { CHAIN_ID } from "../../config/chains";
+import { contractFetcher } from "../../lib/contracts";
 
 const { MaxUint256, AddressZero } = ethers.constants;
 
@@ -99,7 +99,7 @@ function MigrationModal(props) {
   const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(
     [active, CHAIN_ID, token.address, "allowance", account, gmxMigratorAddress],
     {
-      fetcher: fetcher(library, Token),
+      fetcher: contractFetcher(library, Token),
     }
   );
 
@@ -330,21 +330,21 @@ export default function Migration() {
   const { data: iouBalances, mutate: updateIouBalances } = useSWR(
     ["Migration:iouBalances", CHAIN_ID, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero],
     {
-      fetcher: fetcher(library, Reader, [iouTokenAddresses]),
+      fetcher: contractFetcher(library, Reader, [iouTokenAddresses]),
     }
   );
 
   const { data: balances, mutate: updateBalances } = useSWR(
     ["Migration:balances", CHAIN_ID, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero],
     {
-      fetcher: fetcher(library, Reader, [tokenAddresses]),
+      fetcher: contractFetcher(library, Reader, [tokenAddresses]),
     }
   );
 
   const { data: migratedAmounts, mutate: updateMigratedAmounts } = useSWR(
     ["Migration:migratedAmounts", CHAIN_ID, gmxMigratorAddress, "getTokenAmounts"],
     {
-      fetcher: fetcher(library, GmxMigrator, [tokenAddresses]),
+      fetcher: contractFetcher(library, GmxMigrator, [tokenAddresses]),
     }
   );
 

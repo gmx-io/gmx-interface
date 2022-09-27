@@ -1,4 +1,5 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { createClient } from "./utils";
+
 import { SUBGRAPH_URLS } from "../../config/subgraph";
 import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE } from "../../config/chains";
 
@@ -11,13 +12,6 @@ export const nissohGraphClient = createClient(SUBGRAPH_URLS.nissohVault);
 
 export const arbitrumReferralsGraphClient = createClient(SUBGRAPH_URLS.arbitrumReferrals);
 export const avalancheReferralsGraphClient = createClient(SUBGRAPH_URLS.avalancheReferrals);
-
-function createClient(uri) {
-  return new ApolloClient({
-    uri,
-    cache: new InMemoryCache(),
-  });
-}
 
 export function getGmxGraphClient(chainId) {
   if (chainId === ARBITRUM) {

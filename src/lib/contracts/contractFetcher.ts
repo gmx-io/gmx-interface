@@ -1,9 +1,8 @@
-// prettier-ignore
-import {ethers} from "ethers";
+import { ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
 import { getFallbackProvider, getProvider } from "../legacy";
 
-export const fetcher =
+export const contractFetcher =
   (library: Web3Provider, contractInfo: any, additionalArgs: any[]) =>
   (...args: any) => {
     // eslint-disable-next-line

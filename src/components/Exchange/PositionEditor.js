@@ -32,8 +32,7 @@ import Tooltip from "../Tooltip/Tooltip";
 
 import { getConstant, IS_NETWORK_DISABLED } from "../../config/chains";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { fetcher } from "../../lib/contracts/fetcher";
-import { callContract } from "../../lib/contracts/callContract";
+import { callContract, contractFetcher } from "../../lib/contracts";
 
 const DEPOSIT = t`Deposit`;
 const WITHDRAW = t`Withdraw`;
@@ -81,7 +80,7 @@ export default function PositionEditor(props) {
   const { data: tokenAllowance } = useSWR(
     [active, chainId, collateralTokenAddress, "allowance", account, routerAddress],
     {
-      fetcher: fetcher(library, Token),
+      fetcher: contractFetcher(library, Token),
     }
   );
 

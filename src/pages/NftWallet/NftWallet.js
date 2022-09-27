@@ -6,7 +6,7 @@ import { useChainId } from "../../lib/legacy";
 import ERC721 from "../../abis/ERC721.json";
 
 import "./NftWallet.css";
-import { callContract } from "../../lib/contracts/callContract";
+import { callContract } from "../../lib/contracts";
 
 export default function NftWallet() {
   const [nftAddress, setNftAddress] = useState("");

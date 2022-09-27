@@ -60,9 +60,9 @@ import SEO from "../../components/Common/SEO";
 import useTotalVolume from "../../domain/useTotalVolume";
 import StatsTooltip from "../../components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "../../components/StatsTooltip/StatsTooltipRow";
-import { fetcher } from "../../lib/contracts/fetcher";
 import { ARBITRUM, AVALANCHE } from "../../config/chains";
 import { getServerUrl } from "../../config/backend";
+import { contractFetcher } from "../../lib/contracts";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -188,24 +188,24 @@ export default function DashboardV2() {
   const tokensForSupplyQuery = [gmxAddress, glpAddress, usdgAddress];
 
   const { data: aums } = useSWR([`Dashboard:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: fetcher(library, GlpManager),
+    fetcher: contractFetcher(library, GlpManager),
   });
 
   const { data: fees } = useSWR([`Dashboard:fees:${active}`, chainId, readerAddress, "getFees", vaultAddress], {
-    fetcher: fetcher(library, ReaderV2, [whitelistedTokenAddresses]),
+    fetcher: contractFetcher(library, ReaderV2, [whitelistedTokenAddresses]),
   });
 
   const { data: totalSupplies } = useSWR(
     [`Dashboard:totalSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", AddressZero],
     {
-      fetcher: fetcher(library, ReaderV2, [tokensForSupplyQuery]),
+      fetcher: contractFetcher(library, ReaderV2, [tokensForSupplyQuery]),
     }
   );
 
   const { data: totalTokenWeights } = useSWR(
     [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
-      fetcher: fetcher(library, VaultV2),
+      fetcher: contractFetcher(library, VaultV2),
     }
   );
 
@@ -221,7 +221,7 @@ export default function DashboardV2() {
       fetcher: () => {
         return Promise.all(
           ACTIVE_CHAIN_IDS.map((chainId) =>
-            fetcher(null, ReaderV2, [getWhitelistedTokenAddresses(chainId)])(
+            contractFetcher(null, ReaderV2, [getWhitelistedTokenAddresses(chainId)])(
               `Dashboard:fees:${chainId}`,
               chainId,
               getContract(chainId, "Reader"),

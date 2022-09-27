@@ -15,10 +15,9 @@ import {
 } from "../lib/legacy";
 import { getContract } from "../config/addresses";
 import { REGEX_VERIFY_BYTES32 } from "../components/Referrals/referralsHelper";
-import { fetcher } from "../lib/contracts/fetcher";
-import { callContract } from "../lib/contracts/callContract";
 import { ARBITRUM, AVALANCHE } from "../config/chains";
 import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "../lib/subgraph/clients";
+import { callContract, contractFetcher } from "../lib/contracts";
 
 const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
 const DISTRIBUTION_TYPE_REBATES = "1";
@@ -325,7 +324,7 @@ export function useUserReferralCode(library, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const { data: onChainCode } = useSWR(
     account && ["ReferralStorage", chainId, referralStorageAddress, "traderReferralCodes", account],
-    { fetcher: fetcher(library, ReferralStorage) }
+    { fetcher: contractFetcher(library, ReferralStorage) }
   );
   const { data: localStorageCodeOwner } = useSWR(
     localStorageCode &&
@@ -336,7 +335,7 @@ export function useUserReferralCode(library, chainId, account) {
         "codeOwners",
         localStorageCode,
       ],
-    { fetcher: fetcher(library, ReferralStorage) }
+    { fetcher: contractFetcher(library, ReferralStorage) }
   );
   const [attachedOnChain, userReferralCode, userReferralCodeString] = useMemo(() => {
     if (onChainCode && !isHashZero(onChainCode)) {
@@ -359,7 +358,7 @@ export function useReferrerTier(library, chainId, account) {
   const { data: referrerTier, mutate: mutateReferrerTier } = useSWR(
     account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
     {
-      fetcher: fetcher(library, ReferralStorage),
+      fetcher: contractFetcher(library, ReferralStorage),
     }
   );
   return {
@@ -373,7 +372,7 @@ export function useCodeOwner(library, chainId, account, code) {
   const { data: codeOwner, mutate: mutateCodeOwner } = useSWR(
     account && code && [`ReferralStorage:codeOwners`, chainId, referralStorageAddress, "codeOwners", code],
     {
-      fetcher: fetcher(library, ReferralStorage),
+      fetcher: contractFetcher(library, ReferralStorage),
     }
   );
   return {

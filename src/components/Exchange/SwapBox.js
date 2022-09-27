@@ -82,8 +82,7 @@ import swapImg from "../../img/swap.svg";
 import { useUserReferralCode } from "../../domain/referrals";
 import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { fetcher } from "../../lib/contracts/fetcher";
-import { callContract } from "../../lib/contracts/callContract";
+import { callContract, contractFetcher } from "../../lib/contracts";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -320,7 +319,7 @@ export default function SwapBox(props) {
   const { data: tokenAllowance } = useSWR(
     active && [active, chainId, tokenAllowanceAddress, "allowance", account, routerAddress],
     {
-      fetcher: fetcher(library, Token),
+      fetcher: contractFetcher(library, Token),
     }
   );
 

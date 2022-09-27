@@ -15,7 +15,7 @@ import RewardRouter from "../../abis/RewardRouter.json";
 import "./CompleteAccountTransfer.css";
 
 import { Trans, t } from "@lingui/macro";
-import { callContract } from "../../lib/contracts/callContract";
+import { callContract } from "../../lib/contracts";
 
 export default function CompleteAccountTransfer(props) {
   const [, copyToClipboard] = useCopyToClipboard();

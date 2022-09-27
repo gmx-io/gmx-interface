@@ -23,8 +23,8 @@ import { useWeb3React } from "@web3-react/core";
 import { useGmxPrice } from "../../domain/legacy";
 
 import { getContract } from "../../config/addresses";
-import { fetcher } from "../../lib/contracts/fetcher";
 import { getServerUrl } from "../../config/backend";
+import { contractFetcher } from "../../lib/contracts";
 
 export default function APRLabel({ chainId, label }) {
   let { active } = useWeb3React();
@@ -81,46 +81,46 @@ export default function APRLabel({ chainId, label }) {
   const { data: walletBalances } = useSWR(
     [`StakeV2:walletBalances:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", PLACEHOLDER_ACCOUNT],
     {
-      fetcher: fetcher(undefined, ReaderV2, [walletTokens]),
+      fetcher: contractFetcher(undefined, ReaderV2, [walletTokens]),
     }
   );
 
   const { data: depositBalances } = useSWR(
     [`StakeV2:depositBalances:${active}`, chainId, rewardReaderAddress, "getDepositBalances", PLACEHOLDER_ACCOUNT],
     {
-      fetcher: fetcher(undefined, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
+      fetcher: contractFetcher(undefined, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
     }
   );
 
   const { data: stakingInfo } = useSWR(
     [`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", PLACEHOLDER_ACCOUNT],
     {
-      fetcher: fetcher(undefined, RewardReader, [rewardTrackersForStakingInfo]),
+      fetcher: contractFetcher(undefined, RewardReader, [rewardTrackersForStakingInfo]),
     }
   );
 
   const { data: stakedGmxSupply } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress],
     {
-      fetcher: fetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, Token),
     }
   );
 
   const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: fetcher(undefined, GlpManager),
+    fetcher: contractFetcher(undefined, GlpManager),
   });
 
   const { data: nativeTokenPrice } = useSWR(
     [`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress],
     {
-      fetcher: fetcher(undefined, Vault),
+      fetcher: contractFetcher(undefined, Vault),
     }
   );
 
   const { data: vestingInfo } = useSWR(
     [`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", PLACEHOLDER_ACCOUNT],
     {
-      fetcher: fetcher(undefined, ReaderV2, [vesterAddresses]),
+      fetcher: contractFetcher(undefined, ReaderV2, [vesterAddresses]),
     }
   );
 

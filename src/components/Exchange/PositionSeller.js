@@ -56,7 +56,7 @@ import { getTokens } from "../../config/tokens";
 import "./PositionSeller.css";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { getTokenAmountFromUsd } from "../../domain/tokens/utils";
-import { callContract } from "../../lib/contracts/callContract";
+import { callContract } from "../../lib/contracts";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10

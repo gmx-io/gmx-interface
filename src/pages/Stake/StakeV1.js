@@ -32,8 +32,8 @@ import Modal from "../../components/Modal/Modal";
 import Footer from "../../components/Footer/Footer";
 
 import "./Stake.css";
-import { fetcher } from "../../lib/contracts/fetcher";
 import { CHAIN_ID } from "../../config/chains";
+import { contractFetcher } from "../../lib/contracts";
 
 const BASIS_POINTS_DIVISOR = 10000;
 const HOURS_PER_YEAR = 8760;
@@ -306,7 +306,7 @@ function StakeModal(props) {
   const { data: tokenAllowance, mutate: updateTokenAllowance } = useSWR(
     [active, chainId, stakingTokenAddress, "allowance", account, farmAddress],
     {
-      fetcher: fetcher(library, Token),
+      fetcher: contractFetcher(library, Token),
     }
   );
 
@@ -619,35 +619,35 @@ export default function StakeV1() {
   const { data: xgmtSupply, mutate: updateXgmtSupply } = useSWR(
     [active, chainId, readerAddress, "getTokenSupply", xgmtAddress],
     {
-      fetcher: fetcher(library, Reader, [XGMT_EXCLUDED_ACCOUNTS]),
+      fetcher: contractFetcher(library, Reader, [XGMT_EXCLUDED_ACCOUNTS]),
     }
   );
 
   const { data: balances, mutate: updateBalances } = useSWR(
     ["Stake:balances", chainId, readerAddress, "getTokenBalancesWithSupplies", account || AddressZero],
     {
-      fetcher: fetcher(library, Reader, [tokens]),
+      fetcher: contractFetcher(library, Reader, [tokens]),
     }
   );
 
   const { data: stakingInfo, mutate: updateStakingInfo } = useSWR(
     [active, chainId, readerAddress, "getStakingInfo", account || AddressZero],
     {
-      fetcher: fetcher(library, Reader, [yieldTrackers]),
+      fetcher: contractFetcher(library, Reader, [yieldTrackers]),
     }
   );
 
   const { data: totalStakedInfo, mutate: updateTotalStakedInfo } = useSWR(
     [active, chainId, readerAddress, "getTotalStaked"],
     {
-      fetcher: fetcher(library, Reader, [yieldTokens]),
+      fetcher: contractFetcher(library, Reader, [yieldTokens]),
     }
   );
 
   const { data: pairInfo, mutate: updatePairInfo } = useSWR(
     [active, chainId, readerAddress, "getPairInfo", ammFactoryAddressV2],
     {
-      fetcher: fetcher(library, Reader, [pairTokens]),
+      fetcher: contractFetcher(library, Reader, [pairTokens]),
     }
   );
 

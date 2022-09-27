@@ -20,8 +20,8 @@ import TradeHistory from "../../components/Exchange/TradeHistory";
 import Reader from "../../abis/Reader.json";
 
 import { Trans, t } from "@lingui/macro";
-import { fetcher } from "../../lib/contracts/fetcher";
 import { getServerBaseUrl } from "../../config/backend";
+import { contractFetcher } from "../../lib/contracts";
 
 const USD_DECIMALS = 30;
 
@@ -52,11 +52,11 @@ export default function Actions() {
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR([active, chainId, readerAddress, "getTokenBalances", account], {
-    fetcher: fetcher(library, Reader, [tokenAddresses]),
+    fetcher: contractFetcher(library, Reader, [tokenAddresses]),
   });
 
   const { data: positionData } = useSWR([active, chainId, readerAddress, "getPositions", vaultAddress, account], {
-    fetcher: fetcher(library, Reader, [
+    fetcher: contractFetcher(library, Reader, [
       positionQuery.collateralTokens,
       positionQuery.indexTokens,
       positionQuery.isLong,
@@ -64,7 +64,7 @@ export default function Actions() {
   });
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+    fetcher: contractFetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
   const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo);

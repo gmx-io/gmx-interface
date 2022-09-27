@@ -27,8 +27,8 @@ import "./Dashboard.css";
 import metamaskImg from "../../img/metamask.png";
 import coingeckoImg from "../../img/coingecko.png";
 import bscscanImg from "../../img/bscscan.png";
-import { fetcher } from "../../lib/contracts/fetcher";
 import { getServerUrl } from "../../config/backend";
+import { contractFetcher } from "../../lib/contracts";
 
 const USD_DECIMALS = 30;
 const PRECISION = expandDecimals(1, 30);
@@ -301,28 +301,28 @@ export default function DashboardV1() {
   const { data: pairInfo, mutate: updatePairInfo } = useSWR(
     [false, chainId, readerAddress, "getPairInfo", ammFactoryAddressV2],
     {
-      fetcher: fetcher(library, Reader, [[gmtAddress, usdgAddress, xgmtAddress, usdgAddress]]),
+      fetcher: contractFetcher(library, Reader, [[gmtAddress, usdgAddress, xgmtAddress, usdgAddress]]),
     }
   );
 
   const { data: usdgSupply, mutate: updateUsdgSupply } = useSWR(
     ["Dashboard:usdgSupply", chainId, usdgAddress, "totalSupply"],
     {
-      fetcher: fetcher(library, YieldToken),
+      fetcher: contractFetcher(library, YieldToken),
     }
   );
 
   const { data: xgmtSupply, mutate: updateXgmtSupply } = useSWR(
     ["Dashboard:xgmtSupply", chainId, readerAddress, "getTokenSupply", xgmtAddress],
     {
-      fetcher: fetcher(library, Reader, [XGMT_EXCLUDED_ACCOUNTS]),
+      fetcher: contractFetcher(library, Reader, [XGMT_EXCLUDED_ACCOUNTS]),
     }
   );
 
   const { data: fees, mutate: updateFees } = useSWR(
     ["Dashboard:fees", chainId, readerAddress, "getFees", vaultAddress],
     {
-      fetcher: fetcher(library, Reader, [whitelistedTokens]),
+      fetcher: contractFetcher(library, Reader, [whitelistedTokens]),
     }
   );
 

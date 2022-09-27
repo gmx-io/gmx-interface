@@ -24,9 +24,8 @@ import arbitrumIcon from "../../img/ic_arbitrum_96.svg";
 import avaIcon from "../../img/ic_avalanche_96.svg";
 
 import { Trans, t } from "@lingui/macro";
-import { fetcher } from "../../lib/contracts/fetcher";
-import { callContract } from "../../lib/contracts/callContract";
 import { ARBITRUM, AVALANCHE } from "../../config/chains";
+import { callContract, contractFetcher } from "../../lib/contracts";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";
 const VEST_WITH_GLP_ARB = "VEST_WITH_GLP_ARB";
@@ -150,7 +149,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: fetcher(library, Token),
+      fetcher: contractFetcher(library, Token),
     }
   );
 
@@ -169,7 +168,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: fetcher(undefined, RewardReader, [arbVesterAdddresses]),
+      fetcher: contractFetcher(undefined, RewardReader, [arbVesterAdddresses]),
     }
   );
 
@@ -182,7 +181,7 @@ export default function ClaimEsGmx({ setPendingTxns }) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: fetcher(undefined, RewardReader, [avaxVesterAdddresses]),
+      fetcher: contractFetcher(undefined, RewardReader, [avaxVesterAdddresses]),
     }
   );
 
