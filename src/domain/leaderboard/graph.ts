@@ -320,7 +320,7 @@ export function useCompetition(chainId, competitionIndex) {
   `
 
   useSWR([chainId, competitionIndex, query], () => {
-    if (!competitionIndex && competitionIndex !== 0) {
+    if (competitionIndex === null) {
       setExists(false)
       setLoading(false)
       return

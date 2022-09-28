@@ -1,28 +1,43 @@
 import { Trans } from "@lingui/macro";
 import { useState } from "react";
+import { FiSearch } from "react-icons/fi";
 import { useIndividuals } from "../../domain/leaderboard/graph";
-import { shortenAddress, useChainId } from "../../lib/legacy";
+import { shortenAddress, useChainId, useDebounce } from "../../lib/legacy";
 
 export function IndividualLeaderboard() {
   const { chainId } = useChainId()
   const perPage = 10
   const [page, setPage] = useState(1)
   const { data: accounts, loading } = useIndividuals(chainId);
+  const [search, setSearch] = useState("")
+  const debouncedSearch = useDebounce(search, 300)
 
   const filteredAccount = () => {
-    return accounts
+    return accounts.filter(account =>
+      account.id.indexOf(debouncedSearch.toLowerCase()) !== -1
+    )
   }
 
   const displayedAccounts = () => {
-    return accounts.slice((page - 1) * perPage, page * perPage)
+    return filteredAccount().slice((page - 1) * perPage, page * perPage)
   }
 
   const pageCount = () => {
     return Math.ceil(filteredAccount().length / perPage)
   }
 
+  const handleSearchInput = ({ target }) => {
+    setSearch(target.value.trim())
+  }
+
   return (
     <>
+      <div className="leaderboard-header">
+        <div className="input-wrapper">
+          <input type="text" placeholder="Search account" value={search} onInput={handleSearchInput} className="leaderboard-search-input text-input input-small"/>
+          <FiSearch className="input-logo"/>
+        </div>
+      </div>
       <table className="Exchange-list large App-box">
         <tbody>
           <tr className="Exchange-list-header">
