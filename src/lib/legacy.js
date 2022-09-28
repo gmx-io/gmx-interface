@@ -31,7 +31,7 @@ import {
   RPC_PROVIDERS,
 } from "../config/chains";
 import { getServerBaseUrl } from "../config/backend";
-import { getWhitelistedTokens, isValidToken } from "../domain/tokens";
+import { getMostAbundantStableToken, isValidToken } from "../domain/tokens";
 import { helperToast } from "./helperToast";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
@@ -158,23 +158,6 @@ export function getLiquidationPriceFromDelta({ liquidationAmount, size, collater
   return isLong ? averagePrice.sub(priceDelta) : averagePrice.add(priceDelta);
 }
 
-export const replaceNativeTokenAddress = (path, nativeTokenAddress) => {
-  if (!path) {
-    return;
-  }
-
-  let updatedPath = [];
-  for (let i = 0; i < path.length; i++) {
-    let address = path[i];
-    if (address === AddressZero) {
-      address = nativeTokenAddress;
-    }
-    updatedPath.push(address);
-  }
-
-  return updatedPath;
-};
-
 export function getMarginFee(sizeDelta) {
   if (!sizeDelta) {
     return bigNumberify(0);
@@ -198,25 +181,6 @@ export function getExchangeRate(tokenAInfo, tokenBInfo, inverted) {
     return tokenAInfo.minPrice.mul(PRECISION).div(tokenBInfo.maxPrice);
   }
   return tokenBInfo.maxPrice.mul(PRECISION).div(tokenAInfo.minPrice);
-}
-
-export function getMostAbundantStableToken(chainId, infoTokens) {
-  const whitelistedTokens = getWhitelistedTokens(chainId);
-  let availableAmount;
-  let stableToken = whitelistedTokens.find((t) => t.isStable);
-  for (let i = 0; i < whitelistedTokens.length; i++) {
-    const info = getTokenInfo(infoTokens, whitelistedTokens[i].address);
-    if (!info.isStable || !info.availableAmount) {
-      continue;
-    }
-
-    const adjustedAvailableAmount = adjustForDecimals(info.availableAmount, info.decimals, USD_DECIMALS);
-    if (!availableAmount || adjustedAvailableAmount.gt(availableAmount)) {
-      availableAmount = adjustedAvailableAmount;
-      stableToken = info;
-    }
-  }
-  return stableToken;
 }
 
 export function shouldInvertTriggerRatio(tokenA, tokenB) {

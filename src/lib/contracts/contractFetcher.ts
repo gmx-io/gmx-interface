@@ -3,8 +3,8 @@ import { Web3Provider } from "@ethersproject/providers";
 import { getFallbackProvider, getProvider } from "../legacy";
 
 export const contractFetcher =
-  (library: Web3Provider, contractInfo: any, additionalArgs: any[]) =>
-  (...args: any) => {
+  <T>(library: Web3Provider, contractInfo: any, additionalArgs: any[]) =>
+  (...args: any): Promise<T> => {
     // eslint-disable-next-line
     const [id, chainId, arg0, arg1, ...params] = args;
     const provider = getProvider(library, chainId);

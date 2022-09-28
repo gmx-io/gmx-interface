@@ -27,7 +27,6 @@ import {
   getExchangeRateDisplay,
   getLeverage,
   getLiquidationPrice,
-  getMostAbundantStableToken,
   getNextFromAmount,
   getNextToAmount,
   getPositionKey,
@@ -40,7 +39,6 @@ import {
   MARKET,
   parseValue,
   PRECISION,
-  replaceNativeTokenAddress,
   SHORT,
   STOP,
   SWAP,
@@ -74,7 +72,15 @@ import { useUserReferralCode } from "../../domain/referrals";
 import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { callContract, contractFetcher } from "../../lib/contracts";
-import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens, shouldRaiseGasError } from "../../domain/tokens";
+import {
+  getMostAbundantStableToken,
+  getToken,
+  getTokenBySymbol,
+  getTokens,
+  getWhitelistedTokens,
+  replaceNativeTokenAddress,
+  shouldRaiseGasError,
+} from "../../domain/tokens";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo, getUsd } from "../../domain/tokens/utils";

@@ -63,7 +63,7 @@ import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedTo
 import { useLocalStorageByChainId } from "../../lib/localStorage";
 import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo, getUsd } from "../../domain/tokens/utils";
-import { useInfoTokens } from "../../domain/tokens/contracts";
+import { useInfoTokens } from "../../domain/tokens/useInfoTokens";
 
 const { AddressZero } = ethers.constants;
 

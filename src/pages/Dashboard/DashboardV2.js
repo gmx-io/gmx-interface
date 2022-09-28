@@ -56,7 +56,7 @@ import { getServerUrl } from "../../config/backend";
 import { contractFetcher } from "../../lib/contracts";
 import { getTokenBySymbol, getWhitelistedTokens } from "../../domain/tokens";
 import { GLPPOOLCOLORS } from "../../config/tokens";
-import { useInfoTokens } from "../../domain/tokens/contracts";
+import { useInfoTokens } from "../../domain/tokens/useInfoTokens";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;

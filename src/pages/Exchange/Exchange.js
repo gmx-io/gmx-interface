@@ -50,7 +50,7 @@ import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "../
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo } from "../../domain/tokens/utils";
-import { useInfoTokens } from "../../domain/tokens/contracts";
+import { useInfoTokens } from "../../domain/tokens/useInfoTokens";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
