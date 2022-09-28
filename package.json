@@ -107,7 +107,7 @@
       "prettier --write"
     ],
     "src/**/*.{ts,tsx}": [
-      "tsc-files --noEmit src/react-app-env.d.ts"
+      "tsc-files --noEmit src/react-app-env.d.ts src/typings.d.ts"
     ]
   },
   "packageManager": "yarn@3.1.0"
