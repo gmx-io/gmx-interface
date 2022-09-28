@@ -119,7 +119,6 @@ msgid "Allowed Slippage"
 msgstr "スリッページ許容量"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "Amount"
 msgstr "額"
 
@@ -139,7 +138,6 @@ msgstr "清算が発生した時点で高品質の複数の価格フィードの
 msgid "Announcement"
 msgstr "告知"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "GMXを承認する"
@@ -364,11 +362,9 @@ msgid "Check the \"Save on Fees\" section below to get the lowest fee percentage
 msgstr "最低手数料率で利用するには以下の\"手数料節約\"セクションを確認してください。"
 
 #: src/components/Referrals/AddAffiliateCode.js
-#: src/components/Referrals/JoinReferralCode.js
 msgid "Checking code..."
 msgstr "コード確認中"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -380,7 +376,6 @@ msgstr "請求"
 msgid "Claim GMX Rewards"
 msgstr "GMX報酬の請求"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr "請求完了!"
@@ -394,7 +389,6 @@ msgstr "esGMXの請求"
 msgid "Claim esGMX Rewards"
 msgstr "esGMX報酬の請求"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "請求できませんでした。"
@@ -416,7 +410,6 @@ msgstr "{wrappedTokenSymbol}報酬の請求"
 msgid "Claimable"
 msgstr "請求可能"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
 msgstr "請求中"
@@ -453,7 +446,6 @@ msgstr "コインベースウォレット"
 msgid "Coinbase Wallet not detected."
 msgstr "コインベースウォレットが検出できません。"
 
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -513,9 +505,7 @@ msgstr "接続"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/Header/AppHeaderUser.tsx
 #: src/components/Referrals/AddAffiliateCode.js
-#: src/components/Referrals/JoinReferralCode.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -523,7 +513,6 @@ msgstr "接続"
 msgid "Connect Wallet"
 msgstr "ウォレット接続"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Continue"
 msgstr "続ける"
@@ -594,7 +583,6 @@ msgid "Dashboards"
 msgstr "ダッシュボード"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "Date"
 msgstr "日付"
 
@@ -670,7 +658,6 @@ msgstr "ダウンロード"
 msgid "ETH is needed on Arbitrum to purchase GMX."
 msgstr "ArbitrumでGMXを購入するにはETHが必要です。"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "Earn"
 msgstr "報酬獲得"
@@ -679,9 +666,6 @@ msgstr "報酬獲得"
 msgid "Ecosystem"
 msgstr "エコシステム"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Edit"
 msgstr "編集"
@@ -700,8 +684,6 @@ msgstr "紹介コード編集"
 msgid "Enable Leverage"
 msgstr "レバレッジ有効化"
 
-#: src/components/Exchange/OrdersToa.js
-#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Orders"
@@ -753,7 +735,6 @@ msgstr "レバレッジ有効化中"
 msgid "Enabling Leverage..."
 msgstr "レバレッジ有効化中"
 
-#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -793,7 +774,6 @@ msgstr "価格を入力"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -839,7 +819,6 @@ msgstr "手数料"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr "手数料"
 
@@ -1099,8 +1078,6 @@ msgstr "ロード中"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
 msgid "Long"
 msgstr "ロング"
 
@@ -1127,9 +1104,6 @@ msgstr "損失"
 msgid "MAX"
 msgstr "最大"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
@@ -1261,7 +1235,6 @@ msgid "No open positions"
 msgstr "オープンのポジションはありません"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "No rebates distribution history yet."
 msgstr "リベート支払い利益はまだありません。"
 
@@ -1315,7 +1288,6 @@ msgid "Order submitted!"
 msgstr "注文提出完了!"
 
 #: src/components/Exchange/PositionsList.js
-#: src/pages/Actions/Actions.js
 msgid "Orders"
 msgstr "注文"
 
@@ -1332,7 +1304,6 @@ msgid "POOL"
 msgstr "プール"
 
 #: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
 msgstr "価格"
 
@@ -1372,7 +1343,6 @@ msgstr "ネットワークをArbitrumに切り替えてください。"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
-#: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "損益"
 
@@ -1388,13 +1358,10 @@ msgstr ""
 msgid "Positions"
 msgstr "ポジション"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1450,7 +1417,6 @@ msgid "Read more"
 msgstr "詳細について読む"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "Rebates are airdropped weekly."
 msgstr "リベートは毎週エアドロップされます。"
 
@@ -1522,7 +1488,6 @@ msgstr "紹介コードが更新できませんでした。"
 msgid "Referral code updated!"
 msgstr "紹介コードの更新完了!"
 
-#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "紹介アカウント"
@@ -1649,8 +1614,6 @@ msgstr "ポジションをシェア"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
 msgid "Short"
 msgstr "ショート"
 
@@ -1716,7 +1679,6 @@ msgstr "ステークできませんでした。"
 msgid "Stake submitted!"
 msgstr "ステーク申し込み完了!"
 
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1784,7 +1746,6 @@ msgid "Synapse"
 msgstr "Synapse"
 
 #: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
 msgstr "トークン"
 
@@ -1863,7 +1824,6 @@ msgstr "手数料総額"
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr "リベート総額"
 
@@ -1871,8 +1831,6 @@ msgstr "リベート総額"
 msgid "Total Rewards"
 msgstr "報酬総額"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1895,8 +1853,6 @@ msgid "Total Traders Referred"
 msgstr "紹介した全トレーダー"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
-#: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "トレード総額"
 
@@ -1905,8 +1861,6 @@ msgid "Total Users"
 msgstr "ユーザー総数"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
 msgstr "総取引量"
 
@@ -1940,7 +1894,6 @@ msgid "Trading guide"
 msgstr "トレード案内"
 
 #: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 msgid "Transaction"
 msgstr "取引"
 
@@ -1960,12 +1913,10 @@ msgstr "ETHを送信する"
 msgid "Transfer already initiated"
 msgstr "移転はすでに開始されています"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Transfer failed."
 msgstr "移転できませんでした。"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Transfer submitted!"
 msgstr "移転申し込み完了!"
@@ -2147,7 +2098,6 @@ msgstr "許可の待機中"
 msgid "Wallet"
 msgstr "ウォレット"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Wallet is not connected"
 msgstr "ウォレットが接続されていません"

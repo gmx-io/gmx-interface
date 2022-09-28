@@ -1,6 +1,6 @@
 import { i18n } from "@lingui/core";
 import { en, es, zh, ko, ru, ja, fr } from "make-plural/plurals";
-import { LANGUAGE_LOCALSTORAGE_KEY } from "./legacy";
+import { LANGUAGE_LOCALSTORAGE_KEY } from "../config/localStorage";
 
 export const locales = {
   en: "English",

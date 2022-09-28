@@ -9,11 +9,7 @@ import { Switch, Route, HashRouter as Router, Redirect, useLocation, useHistory 
 
 import {
   DEFAULT_SLIPPAGE_AMOUNT,
-  SLIPPAGE_BPS_KEY,
-  IS_PNL_IN_LEVERAGE_KEY,
-  SHOW_PNL_AFTER_FEES_KEY,
   BASIS_POINTS_DIVISOR,
-  SHOULD_SHOW_POSITION_LINES_KEY,
   getAppBaseUrl,
   isHomeSite,
   clearWalletConnectData,
@@ -27,13 +23,8 @@ import {
   hasCoinBaseWalletExtension,
   isMobileDevice,
   clearWalletLinkData,
-  SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
-  CURRENT_PROVIDER_LOCALSTORAGE_KEY,
-  REFERRAL_CODE_KEY,
   REFERRAL_CODE_QUERY_PARAM,
   isDevelopment,
-  DISABLE_ORDER_VALIDATION_KEY,
-  LANGUAGE_LOCALSTORAGE_KEY,
 } from "../lib/legacy";
 
 import Home from "../pages/Home/Home";
@@ -92,6 +83,17 @@ import { Header } from "../components/Header/Header";
 import { ARBITRUM, AVALANCHE, getAlchemyWsUrl, getExplorerUrl } from "../config/chains";
 import { useLocalStorageSerializeKey } from "../lib/localStorage";
 import { helperToast } from "../lib/helperToast";
+import {
+  CURRENT_PROVIDER_LOCALSTORAGE_KEY,
+  DISABLE_ORDER_VALIDATION_KEY,
+  IS_PNL_IN_LEVERAGE_KEY,
+  LANGUAGE_LOCALSTORAGE_KEY,
+  REFERRAL_CODE_KEY,
+  SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
+  SHOULD_SHOW_POSITION_LINES_KEY,
+  SHOW_PNL_AFTER_FEES_KEY,
+  SLIPPAGE_BPS_KEY,
+} from "../config/localStorage";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;

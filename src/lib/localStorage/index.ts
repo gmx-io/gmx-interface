@@ -1,15 +1,20 @@
 import { useLocalStorage } from "react-use";
 import { useCallback } from "react";
 
-export function useLocalStorageByChainId(chainId, key, defaultValue) {
+export function useLocalStorageByChainId<T>(
+  chainId: number,
+  key: string,
+  defaultValue: T
+): [T | undefined, (value: T) => void] {
   const [internalValue, setInternalValue] = useLocalStorage(key, {});
 
   const setValue = useCallback(
     (value) => {
       setInternalValue((internalValue) => {
         if (typeof value === "function") {
-          value = value(internalValue[chainId] || defaultValue);
+          value = value(internalValue?.[chainId] || defaultValue);
         }
+
         const newInternalValue = {
           ...internalValue,
           [chainId]: value,
@@ -21,7 +26,8 @@ export function useLocalStorageByChainId(chainId, key, defaultValue) {
   );
 
   let value;
-  if (chainId in internalValue) {
+
+  if (internalValue && chainId in internalValue) {
     value = internalValue[chainId];
   } else {
     value = defaultValue;
@@ -30,7 +36,16 @@ export function useLocalStorageByChainId(chainId, key, defaultValue) {
   return [value, setValue];
 }
 
-export function useLocalStorageSerializeKey(key, value, opts) {
+export function useLocalStorageSerializeKey<T>(
+  key: string,
+  value: T,
+  opts?: {
+    raw: boolean;
+    serializer: (val: T) => string;
+    deserializer: (value: string) => T;
+  }
+) {
   key = JSON.stringify(key);
-  return useLocalStorage(key, value, opts);
+
+  return useLocalStorage<T>(key, value, opts);
 }

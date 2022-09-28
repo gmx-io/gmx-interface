@@ -10,8 +10,9 @@ import settingsIcon from "../../img/ic_settings_16.svg";
 import arbitrumIcon from "../../img/ic_arbitrum_24.svg";
 import avaxIcon from "../../img/ic_avalanche_24.svg";
 import checkedIcon from "../../img/ic_checked.svg";
-import { importImage, LANGUAGE_LOCALSTORAGE_KEY } from "../../lib/legacy";
+import { importImage } from "../../lib/legacy";
 import { defaultLocale, dynamicActivate, locales } from "../../lib/i18n";
+import { LANGUAGE_LOCALSTORAGE_KEY } from "../../config/localStorage";
 
 const LANGUAGE_MODAL_KEY = "LANGUAGE";
 const NETWORK_MODAL_KEY = "NETWORK";

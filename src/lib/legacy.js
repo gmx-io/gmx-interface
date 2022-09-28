@@ -33,6 +33,13 @@ import {
 import { getServerBaseUrl } from "../config/backend";
 import { getWhitelistedTokens, isValidToken } from "../domain/tokens";
 import { helperToast } from "./helperToast";
+import {
+  CURRENT_PROVIDER_LOCALSTORAGE_KEY,
+  SELECTED_NETWORK_LOCAL_STORAGE_KEY,
+  SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
+  WALLET_CONNECT_LOCALSTORAGE_KEY,
+  WALLET_LINK_LOCALSTORAGE_PREFIX,
+} from "../config/localStorage";
 
 const { AddressZero } = ethers.constants;
 
@@ -40,14 +47,6 @@ const { AddressZero } = ethers.constants;
 export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
 
 export const MIN_PROFIT_TIME = 0;
-
-const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
-
-export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
-export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
-export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
-export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
-export const LANGUAGE_LOCALSTORAGE_KEY = "LANGUAGE_KEY";
 
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
 export const MAX_LEVERAGE = 100 * 10000;
@@ -96,15 +95,7 @@ export const SWAP_OPTIONS = [LONG, SHORT, SWAP];
 export const DEFAULT_SLIPPAGE_AMOUNT = 30;
 export const DEFAULT_HIGHER_SLIPPAGE_AMOUNT = 100;
 
-export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3";
-export const CLOSE_POSITION_RECEIVE_TOKEN_KEY = "Close-position-receive-token";
-export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage";
-export const SHOW_PNL_AFTER_FEES_KEY = "Exchange-swap-show-pnl-after-fees";
-export const DISABLE_ORDER_VALIDATION_KEY = "disable-order-validation";
-export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-position-lines";
-export const REFERRAL_CODE_KEY = "GMX-referralCode";
 export const REFERRAL_CODE_QUERY_PARAM = "ref";
-export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
 export const MAX_REFERRAL_CODE_LENGTH = 20;
 
 export const MIN_PROFIT_BIPS = 0;

@@ -12,7 +12,6 @@ import {
   USD_DECIMALS,
   DUST_USD,
   BASIS_POINTS_DIVISOR,
-  SLIPPAGE_BPS_KEY,
   MIN_PROFIT_TIME,
   usePrevious,
   formatAmountFree,
@@ -34,7 +33,6 @@ import {
   getNextToAmount,
   getUsd,
   USDG_DECIMALS,
-  CLOSE_POSITION_RECEIVE_TOKEN_KEY,
   adjustForDecimals,
 } from "../../lib/legacy";
 import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED } from "../../config/chains";
@@ -53,6 +51,7 @@ import { callContract } from "../../lib/contracts";
 import { getTokenAmountFromUsd, getTokens } from "../../domain/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "../../config/ui";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../lib/localStorage";
+import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "../../config/localStorage";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10

@@ -16,7 +16,6 @@ import {
   getExchangeRateDisplay,
   DEFAULT_SLIPPAGE_AMOUNT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
-  SLIPPAGE_BPS_KEY,
   formatDateTime,
   calculatePositionDelta,
   DECREASE,
@@ -34,6 +33,7 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { getNativeToken, getToken, getWrappedToken } from "../../domain/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "../../config/ui";
 import { useLocalStorageSerializeKey } from "../../lib/localStorage";
+import { SLIPPAGE_BPS_KEY } from "../../config/localStorage";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 
