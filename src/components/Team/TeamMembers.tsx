@@ -77,6 +77,7 @@ export function TeamMembers({ onMembersChange, team, pendingTxns, setPendingTxns
         <table className="Exchange-list large App-box">
           <tbody>
             <tr className="Exchange-list-header">
+              <th>Team Rank</th>
               <th>Address</th>
               <th>PnL</th>
             </tr>
@@ -87,7 +88,8 @@ export function TeamMembers({ onMembersChange, team, pendingTxns, setPendingTxns
             )}
             {!loading && members.map(member => (
               <tr key={member.address}>
-                <td>{shortenAddress(member.address, 12)}</td>
+                <td>#1</td>
+                <td>{member.address}</td>
                 <td>{member.pnl}</td>
                 <td>
                   {isTeamLeader() && member.address !== team.leaderAddress && competition.registrationActive && (
