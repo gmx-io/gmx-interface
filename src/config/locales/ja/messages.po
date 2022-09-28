@@ -138,7 +138,6 @@ msgstr "清算が発生した時点で高品質の複数の価格フィードの
 msgid "Announcement"
 msgstr "告知"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "GMXを承認する"
@@ -364,7 +363,6 @@ msgstr "最低手数料率で利用するには以下の\"手数料節約\"セ�
 msgid "Checking code..."
 msgstr "コード確認中"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -376,7 +374,6 @@ msgstr "請求"
 msgid "Claim GMX Rewards"
 msgstr "GMX報酬の請求"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr "請求完了!"
@@ -390,7 +387,6 @@ msgstr "esGMXの請求"
 msgid "Claim esGMX Rewards"
 msgstr "esGMX報酬の請求"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "請求できませんでした。"
@@ -412,7 +408,6 @@ msgstr "{wrappedTokenSymbol}報酬の請求"
 msgid "Claimable"
 msgstr "請求可能"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
 msgstr "請求中"
@@ -507,6 +502,7 @@ msgstr "接続"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Header/AppHeaderUser.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -779,7 +775,6 @@ msgstr "価格を入力"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1079,8 +1074,6 @@ msgstr "ロード中"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
 msgid "Long"
 msgstr "ロング"
 
@@ -1346,7 +1339,6 @@ msgid "Please switch your network to Arbitrum."
 msgstr "ネットワークをArbitrumに切り替えてください。"
 
 #: src/components/Exchange/PositionSeller.js
-#: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "損益"
 
@@ -1622,8 +1614,6 @@ msgstr "ポジションをシェア"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
 msgid "Short"
 msgstr "ショート"
 
@@ -1874,7 +1864,8 @@ msgstr "トレード総額"
 msgid "Total Users"
 msgstr "ユーザー総数"
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
 msgstr "総取引量"
 

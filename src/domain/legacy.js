@@ -16,12 +16,11 @@ import VaultReader from "../abis/VaultReader.json";
 import PositionRouter from "../abis/PositionRouter.json";
 
 import { getContract } from "../config/contracts";
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, getConstant } from "../config/chains";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, getConstant, getHighExecutionFee } from "../config/chains";
 import {
   bigNumberify,
   DECREASE,
   expandDecimals,
-  getHighExecutionFee,
   getInfoTokens,
   getOrderKey,
   getProvider,

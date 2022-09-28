@@ -25,6 +25,10 @@ export const CHAIN_NAMES_MAP = {
   [AVALANCHE]: "Avalanche",
 };
 
+export function getChainName(chainId: number) {
+  return CHAIN_NAMES_MAP[chainId];
+}
+
 export const GAS_PRICE_ADJUSTMENT_MAP = {
   [ARBITRUM]: "0",
   [AVALANCHE]: "3000000000", // 3 gwei
@@ -33,6 +37,15 @@ export const GAS_PRICE_ADJUSTMENT_MAP = {
 export const MAX_GAS_PRICE_MAP = {
   [AVALANCHE]: "200000000000", // 200 gwei
 };
+
+export const HIGH_EXECUTION_FEES_MAP = {
+  [ARBITRUM]: 3, // 3 USD
+  [AVALANCHE]: 3, // 3 USD
+};
+
+export function getHighExecutionFee(chainId) {
+  return HIGH_EXECUTION_FEES_MAP[chainId] || 3;
+}
 
 const constants = {
   [MAINNET]: {

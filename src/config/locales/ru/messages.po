@@ -138,7 +138,6 @@ msgstr ""
 msgid "Announcement"
 msgstr ""
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr ""
@@ -364,7 +363,6 @@ msgstr ""
 msgid "Checking code..."
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -376,7 +374,6 @@ msgstr ""
 msgid "Claim GMX Rewards"
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr ""
@@ -390,7 +387,6 @@ msgstr ""
 msgid "Claim esGMX Rewards"
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr ""
@@ -412,7 +408,6 @@ msgstr ""
 msgid "Claimable"
 msgstr ""
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
 msgstr ""
@@ -507,6 +502,7 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Header/AppHeaderUser.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -779,7 +775,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1079,8 +1074,6 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
 msgid "Long"
 msgstr ""
 
@@ -1346,7 +1339,6 @@ msgid "Please switch your network to Arbitrum."
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
-#: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr ""
 
@@ -1622,8 +1614,6 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
 msgid "Short"
 msgstr ""
 
@@ -1874,7 +1864,8 @@ msgstr ""
 msgid "Total Users"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
 msgstr ""
 

@@ -33,7 +33,6 @@ import {
   USDG_DECIMALS,
   PLACEHOLDER_ACCOUNT,
   importImage,
-  getChainName,
 } from "../../lib/legacy";
 
 import { useGmxPrice, useInfoTokens } from "../../domain/legacy";
@@ -62,7 +61,7 @@ import "./GlpSwap.css";
 import AssetDropdown from "../../pages/Dashboard/AssetDropdown";
 import SwapErrorModal from "./SwapErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { ARBITRUM, IS_NETWORK_DISABLED } from "../../config/chains";
+import { ARBITRUM, getChainName, IS_NETWORK_DISABLED } from "../../config/chains";
 import { callContract, contractFetcher } from "../../lib/contracts";
 import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedToken } from "../../domain/tokens";
 

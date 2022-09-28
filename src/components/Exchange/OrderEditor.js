@@ -5,8 +5,6 @@ import {
   PRECISION,
   USD_DECIMALS,
   SWAP,
-  TRIGGER_PREFIX_ABOVE,
-  TRIGGER_PREFIX_BELOW,
   MIN_PROFIT_TIME,
   DECREASE,
   INCREASE,
@@ -31,6 +29,7 @@ import { updateSwapOrder, updateIncreaseOrder, updateDecreaseOrder } from "../..
 import Modal from "../Modal/Modal";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import { getContract } from "../../config/contracts";
+import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "../../config/ui";
 
 export default function OrderEditor(props) {
   const {

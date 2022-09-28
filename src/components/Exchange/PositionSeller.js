@@ -13,8 +13,6 @@ import {
   DUST_USD,
   BASIS_POINTS_DIVISOR,
   SLIPPAGE_BPS_KEY,
-  TRIGGER_PREFIX_BELOW,
-  TRIGGER_PREFIX_ABOVE,
   MIN_PROFIT_TIME,
   usePrevious,
   formatAmountFree,
@@ -40,9 +38,8 @@ import {
   CLOSE_POSITION_RECEIVE_TOKEN_KEY,
   useLocalStorageByChainId,
   adjustForDecimals,
-  getChainName,
 } from "../../lib/legacy";
-import { ARBITRUM, getConstant, IS_NETWORK_DISABLED } from "../../config/chains";
+import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED } from "../../config/chains";
 import { createDecreaseOrder, useHasOutdatedUi } from "../../domain/legacy";
 import { getContract } from "../../config/contracts";
 import PositionRouter from "../../abis/PositionRouter.json";
@@ -56,6 +53,7 @@ import "./PositionSeller.css";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { callContract } from "../../lib/contracts";
 import { getTokenAmountFromUsd, getTokens } from "../../domain/tokens";
+import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "../../config/ui";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10

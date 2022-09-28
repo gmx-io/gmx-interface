@@ -21,8 +21,6 @@ import {
   formatDateTime,
   calculatePositionDelta,
   DECREASE,
-  TRIGGER_PREFIX_ABOVE,
-  TRIGGER_PREFIX_BELOW,
 } from "../../lib/legacy";
 import { getConstant } from "../../config/chains";
 import { getContract } from "../../config/contracts";
@@ -35,6 +33,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import { cancelDecreaseOrder, handleCancelOrder } from "../../domain/legacy";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { getNativeToken, getToken, getWrappedToken } from "../../domain/tokens";
+import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "../../config/ui";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 

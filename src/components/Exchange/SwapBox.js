@@ -23,7 +23,6 @@ import {
   expandDecimals,
   formatAmount,
   formatAmountFree,
-  getChainName,
   getExchangeRate,
   getExchangeRateDisplay,
   getLeverage,
@@ -58,7 +57,7 @@ import {
   useLocalStorageSerializeKey,
   usePrevious,
 } from "../../lib/legacy";
-import { ARBITRUM, AVALANCHE, getConstant, IS_NETWORK_DISABLED } from "../../config/chains";
+import { ARBITRUM, AVALANCHE, getChainName, getConstant, IS_NETWORK_DISABLED } from "../../config/chains";
 import * as Api from "../../domain/legacy";
 import { getContract } from "../../config/contracts";
 

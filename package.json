@@ -49,7 +49,7 @@
     "react-use": "17.3.1",
     "recharts": "2.1.8",
     "swr": "0.4.2",
-    "tsc-files": "1.1.3",
+    "tsc-files": "^1.1.3",
     "typescript": "4.7.4",
     "web-vitals": "1.1.2"
   },
@@ -104,8 +104,10 @@
   "lint-staged": {
     "src/**/*.{js,ts,jsx,tsx}": [
       "eslint --fix ./src",
-      "prettier --write",
-      "tsc-files --noEmit"
+      "prettier --write"
+    ],
+    "src/**/*.{ts,tsx}": [
+      "tsc-files --noEmit src/react-app-env.d.ts"
     ]
   },
   "packageManager": "yarn@3.1.0"

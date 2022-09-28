@@ -18,13 +18,11 @@ import {
   bigNumberify,
   numberWithCommas,
   formatDate,
-  getChainName,
   useChainId,
   USD_DECIMALS,
   GMX_DECIMALS,
   GLP_DECIMALS,
   BASIS_POINTS_DIVISOR,
-  GLPPOOLCOLORS,
   DEFAULT_MAX_USDG_AMOUNT,
   getPageTitle,
   importImage,
@@ -59,10 +57,11 @@ import SEO from "../../components/Common/SEO";
 import useTotalVolume from "../../domain/useTotalVolume";
 import StatsTooltip from "../../components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "../../components/StatsTooltip/StatsTooltipRow";
-import { ARBITRUM, AVALANCHE } from "../../config/chains";
+import { ARBITRUM, AVALANCHE, getChainName } from "../../config/chains";
 import { getServerUrl } from "../../config/backend";
 import { contractFetcher } from "../../lib/contracts";
 import { getTokenBySymbol, getWhitelistedTokens } from "../../domain/tokens";
+import { GLPPOOLCOLORS } from "../../config/tokens";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;

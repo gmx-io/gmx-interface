@@ -138,7 +138,6 @@ msgstr "Un conjunto de fuentes de precios de alta calidad determinan cuando se p
 msgid "Announcement"
 msgstr "Anuncio"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "Aprobar GMX"
@@ -364,7 +363,6 @@ msgstr "Comprueba la sección \"Ahorrar en tasas\" para obtener los porcentajes 
 msgid "Checking code..."
 msgstr "Comprobando código..."
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -376,7 +374,6 @@ msgstr "Reclamar"
 msgid "Claim GMX Rewards"
 msgstr "Reclamar Recompensas GMX"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr "¡Reclamación completada!"
@@ -390,7 +387,6 @@ msgstr "Reclamar esGMX"
 msgid "Claim esGMX Rewards"
 msgstr "Reclamar Recompensas esGMX"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "Reclamación fallida."
@@ -412,7 +408,6 @@ msgstr "Reclamar Recomensas {wrappedTokenSymbol}"
 msgid "Claimable"
 msgstr "Reclamable"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
 msgstr "Reclamando..."
@@ -507,6 +502,7 @@ msgstr "Conectar"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Header/AppHeaderUser.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -779,7 +775,6 @@ msgstr "Introduce un precio"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1079,8 +1074,6 @@ msgstr "Cargando..."
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
 msgid "Long"
 msgstr "Largo"
 
@@ -1346,7 +1339,6 @@ msgid "Please switch your network to Arbitrum."
 msgstr "Por favor, cambie su red a Arbitrum."
 
 #: src/components/Exchange/PositionSeller.js
-#: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "GyP"
 
@@ -1622,8 +1614,6 @@ msgstr "Compartir Posición"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
 msgid "Short"
 msgstr "Corto"
 
@@ -1874,7 +1864,8 @@ msgstr "Volumen Total de Operaciones"
 msgid "Total Users"
 msgstr "Usuarios Totales"
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
 msgstr "Volumen Total"
 

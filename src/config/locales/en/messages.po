@@ -138,7 +138,6 @@ msgstr "An aggregate of high-quality price feeds determine when liquidations occ
 msgid "Announcement"
 msgstr "Announcement"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "Approve GMX"
@@ -364,7 +363,6 @@ msgstr "Check the \"Save on Fees\" section below to get the lowest fee percentag
 msgid "Checking code..."
 msgstr "Checking code..."
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -376,7 +374,6 @@ msgstr "Claim"
 msgid "Claim GMX Rewards"
 msgstr "Claim GMX Rewards"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr "Claim completed!"
@@ -390,7 +387,6 @@ msgstr "Claim esGMX"
 msgid "Claim esGMX Rewards"
 msgstr "Claim esGMX Rewards"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "Claim failed."
@@ -412,7 +408,6 @@ msgstr "Claim {wrappedTokenSymbol} Rewards"
 msgid "Claimable"
 msgstr "Claimable"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
 msgstr "Claiming..."
@@ -507,6 +502,7 @@ msgstr "Connect"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Header/AppHeaderUser.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -779,7 +775,6 @@ msgstr "Enter a price"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1079,8 +1074,6 @@ msgstr "Loading..."
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
 msgid "Long"
 msgstr "Long"
 
@@ -1346,7 +1339,6 @@ msgid "Please switch your network to Arbitrum."
 msgstr "Please switch your network to Arbitrum."
 
 #: src/components/Exchange/PositionSeller.js
-#: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
 
@@ -1622,8 +1614,6 @@ msgstr "Share Position"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
 msgid "Short"
 msgstr "Short"
 
@@ -1874,7 +1864,8 @@ msgstr "Total Trading Volume"
 msgid "Total Users"
 msgstr "Total Users"
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
 msgstr "Total Volume"
 

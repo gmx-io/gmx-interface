@@ -24,9 +24,9 @@ import {
   AVALANCHE,
   AVALANCHE_RPC_PROVIDERS,
   CHAIN_ID,
-  CHAIN_NAMES_MAP,
   DEFAULT_CHAIN_ID,
   FALLBACK_PROVIDERS,
+  getChainName,
   getExplorerUrl,
   MAINNET,
   NETWORK_METADATA,
@@ -49,10 +49,6 @@ export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
 export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
 export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
 export const LANGUAGE_LOCALSTORAGE_KEY = "LANGUAGE_KEY";
-
-export function getChainName(chainId) {
-  return CHAIN_NAMES_MAP[chainId];
-}
 
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
 export const MAX_LEVERAGE = 100 * 10000;
@@ -112,131 +108,14 @@ export const REFERRAL_CODE_QUERY_PARAM = "ref";
 export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
 export const MAX_REFERRAL_CODE_LENGTH = 20;
 
-export const TRIGGER_PREFIX_ABOVE = ">";
-export const TRIGGER_PREFIX_BELOW = "<";
-
 export const MIN_PROFIT_BIPS = 0;
 
-export const GLPPOOLCOLORS = {
-  ETH: "#6062a6",
-  BTC: "#F7931A",
-  "BTC.b": "#F7931A",
-  USDC: "#2775CA",
-  "USDC.e": "#2A5ADA",
-  USDT: "#67B18A",
-  MIM: "#9695F8",
-  FRAX: "#000",
-  DAI: "#FAC044",
-  UNI: "#E9167C",
-  AVAX: "#E84142",
-  LINK: "#3256D6",
-};
-
-export const HIGH_EXECUTION_FEES_MAP = {
-  [ARBITRUM]: 3, // 3 USD
-  [AVALANCHE]: 3, // 3 USD
-};
-
-export function getHighExecutionFee(chainId) {
-  return HIGH_EXECUTION_FEES_MAP[chainId] || 3;
-}
-
-export const ICONLINKS = {
-  [ARBITRUM_TESTNET]: {
-    GMX: {
-      coingecko: "https://www.coingecko.com/en/coins/gmx",
-      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
-    },
-    GLP: {
-      arbitrum: "https://testnet.arbiscan.io/token/0xb4f81Fa74e06b5f762A104e47276BA9b2929cb27",
-    },
-  },
-  [ARBITRUM]: {
-    GMX: {
-      coingecko: "https://www.coingecko.com/en/coins/gmx",
-      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
-    },
-    GLP: {
-      arbitrum: "https://arbiscan.io/token/0x1aDDD80E6039594eE970E5872D247bf0414C8903",
-    },
-    ETH: {
-      coingecko: "https://www.coingecko.com/en/coins/ethereum",
-    },
-    BTC: {
-      coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
-      arbitrum: "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
-    },
-    LINK: {
-      coingecko: "https://www.coingecko.com/en/coins/chainlink",
-      arbitrum: "https://arbiscan.io/address/0xf97f4df75117a78c1a5a0dbb814af92458539fb4",
-    },
-    UNI: {
-      coingecko: "https://www.coingecko.com/en/coins/uniswap",
-      arbitrum: "https://arbiscan.io/address/0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0",
-    },
-    USDC: {
-      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
-      arbitrum: "https://arbiscan.io/address/0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
-    },
-    USDT: {
-      coingecko: "https://www.coingecko.com/en/coins/tether",
-      arbitrum: "https://arbiscan.io/address/0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
-    },
-    DAI: {
-      coingecko: "https://www.coingecko.com/en/coins/dai",
-      arbitrum: "https://arbiscan.io/address/0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
-    },
-    MIM: {
-      coingecko: "https://www.coingecko.com/en/coins/magic-internet-money",
-      arbitrum: "https://arbiscan.io/address/0xfea7a6a0b346362bf88a9e4a88416b77a57d6c2a",
-    },
-    FRAX: {
-      coingecko: "https://www.coingecko.com/en/coins/frax",
-      arbitrum: "https://arbiscan.io/address/0x17fc002b466eec40dae837fc4be5c67993ddbd6f",
-    },
-  },
-  [AVALANCHE]: {
-    GMX: {
-      coingecko: "https://www.coingecko.com/en/coins/gmx",
-      avalanche: "https://snowtrace.io/address/0x62edc0692bd897d2295872a9ffcac5425011c661",
-    },
-    GLP: {
-      avalanche: "https://snowtrace.io/address/0x9e295B5B976a184B14aD8cd72413aD846C299660",
-    },
-    AVAX: {
-      coingecko: "https://www.coingecko.com/en/coins/avalanche",
-    },
-    ETH: {
-      coingecko: "https://www.coingecko.com/en/coins/weth",
-      avalanche: "https://snowtrace.io/address/0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
-    },
-    BTC: {
-      coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
-      avalanche: "https://snowtrace.io/address/0x50b7545627a5162f82a992c33b87adc75187b218",
-    },
-    "BTC.b": {
-      coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
-      avalanche: "https://snowtrace.io/address/0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-    },
-    MIM: {
-      coingecko: "https://www.coingecko.com/en/coins/magic-internet-money",
-      avalanche: "https://snowtrace.io/address/0x130966628846bfd36ff31a822705796e8cb8c18d",
-    },
-    "USDC.e": {
-      coingecko: "https://www.coingecko.com/en/coins/usd-coin-avalanche-bridged-usdc-e",
-      avalanche: "https://snowtrace.io/address/0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
-    },
-    USDC: {
-      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
-      avalanche: "https://snowtrace.io/address/0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e",
-    },
-  },
-};
-
 const supportedChainIds = [ARBITRUM, AVALANCHE];
+
 if (isDevelopment()) {
   supportedChainIds.push(ARBITRUM_TESTNET);
 }
+
 const injectedConnector = new InjectedConnector({
   supportedChainIds,
 });

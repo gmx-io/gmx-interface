@@ -138,7 +138,6 @@ msgstr "고품질의 여러 가격 피드를 통해 청산 발생 시기를 결�
 msgid "Announcement"
 msgstr "공지"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "GMX 승인"
@@ -364,7 +363,6 @@ msgstr "최저 수수료로 이용하려면 \"수수료 절약\" 섹션 아래�
 msgid "Checking code..."
 msgstr "코드 확인중..."
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -376,7 +374,6 @@ msgstr "수령하기"
 msgid "Claim GMX Rewards"
 msgstr "GMX 보상 수령하기"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr "수령 완료!"
@@ -390,7 +387,6 @@ msgstr "esGMX 수령하기"
 msgid "Claim esGMX Rewards"
 msgstr "esGMX 보상 수령하기"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "수령 실패"
@@ -412,7 +408,6 @@ msgstr "{wrappedTokenSymbol} 보상 수령하기"
 msgid "Claimable"
 msgstr "수령가능"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
 msgstr "수령중..."
@@ -507,6 +502,7 @@ msgstr "연동"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Header/AppHeaderUser.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -779,7 +775,6 @@ msgstr "가격 입력"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1079,8 +1074,6 @@ msgstr "로딩중..."
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
 msgid "Long"
 msgstr "롱"
 
@@ -1346,7 +1339,6 @@ msgid "Please switch your network to Arbitrum."
 msgstr "네트워크를 Arbitrum으로 변경해주세요."
 
 #: src/components/Exchange/PositionSeller.js
-#: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "손익"
 
@@ -1622,8 +1614,6 @@ msgstr "포지션 공유"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
 msgid "Short"
 msgstr "숏"
 
@@ -1874,7 +1864,8 @@ msgstr "총 트레이딩 거래량"
 msgid "Total Users"
 msgstr "총 유저"
 
-#: src/components/Referrals/AffiliatesStats.js
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
 msgstr "총 거래량"
 
