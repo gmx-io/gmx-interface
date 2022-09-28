@@ -15,7 +15,6 @@ import {
   parseValue,
   expandDecimals,
   getLiquidationPrice,
-  approveTokens,
 } from "../../lib/legacy";
 import { getContract } from "../../config/contracts";
 import Tab from "../Tab/Tab";
@@ -30,7 +29,7 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { callContract, contractFetcher } from "../../lib/contracts";
 import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo } from "../../domain/tokens/utils";
-import { shouldRaiseGasError } from "../../domain/tokens";
+import { approveTokens, shouldRaiseGasError } from "../../domain/tokens";
 import { usePrevious } from "../../lib/usePrevious";
 
 const DEPOSIT = t`Deposit`;

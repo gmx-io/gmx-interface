@@ -24,7 +24,6 @@ import {
   formatAmountFree,
   expandDecimals,
   parseValue,
-  approveTokens,
   useChainId,
   GLP_DECIMALS,
   USD_DECIMALS,
@@ -52,6 +51,7 @@ import { getServerUrl } from "../../config/backend";
 import { callContract, contractFetcher } from "../../lib/contracts";
 import { useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { helperToast } from "../../lib/helperToast";
+import { approveTokens } from "../../domain/tokens";
 
 const { AddressZero } = ethers.constants;
 

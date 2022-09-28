@@ -19,7 +19,6 @@ import {
   getSellGlpFromAmount,
   getSellGlpToAmount,
   parseValue,
-  approveTokens,
   adjustForDecimals,
   GLP_DECIMALS,
   USD_DECIMALS,
@@ -60,6 +59,7 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { ARBITRUM, getChainName, IS_NETWORK_DISABLED } from "../../config/chains";
 import { callContract, contractFetcher } from "../../lib/contracts";
 import {
+  approveTokens,
   getNativeToken,
   getToken,
   getTokens,

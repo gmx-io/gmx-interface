@@ -11,7 +11,6 @@ import {
   parseValue,
   useChainId,
   expandDecimals,
-  approveTokens,
   bigNumberify,
   USD_DECIMALS,
   PRECISION,
@@ -30,7 +29,7 @@ import Footer from "../../components/Footer/Footer";
 import "./Stake.css";
 import { CHAIN_ID, getExplorerUrl } from "../../config/chains";
 import { contractFetcher } from "../../lib/contracts";
-import { getTokenBySymbol } from "../../domain/tokens";
+import { approveTokens, getTokenBySymbol } from "../../domain/tokens";
 import { helperToast } from "../../lib/helperToast";
 import { getInjectedHandler } from "../../lib/wallets";
 

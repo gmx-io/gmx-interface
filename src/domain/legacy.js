@@ -21,7 +21,6 @@ import {
   DECREASE,
   expandDecimals,
   getOrderKey,
-  getProvider,
   INCREASE,
   parseValue,
   SWAP,
@@ -35,6 +34,7 @@ import { getGmxGraphClient, nissohGraphClient } from "../lib/subgraph/clients";
 import { callContract, contractFetcher } from "../lib/contracts";
 import { getTokenBySymbol, replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
+import { getProvider } from "../lib/rpc";
 
 export * from "./prices";
 

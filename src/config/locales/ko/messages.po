@@ -142,7 +142,7 @@ msgstr "공지"
 msgid "Approve GMX"
 msgstr "GMX 승인"
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
 msgid "Approve {0}"
 msgstr "{0} 승인"
 
@@ -154,7 +154,7 @@ msgstr "{stakingTokenSymbol} 승인"
 msgid "Approving GMX..."
 msgstr "GMX 승인중..."
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
 msgid "Approving {0}..."
 msgstr "{0} 승인중..."
 
@@ -495,7 +495,8 @@ msgstr "수령 및 스테이킹중..."
 msgid "Connect"
 msgstr "연동"
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Header/AppHeaderUser.tsx
 msgid "Connect Wallet"
 msgstr "지갑 연동"
 
@@ -738,8 +739,10 @@ msgstr "코드 입력"
 msgid "Enter a price"
 msgstr "가격 입력"
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Enter an amount"
 msgstr "수량 입력"
 
@@ -924,7 +927,11 @@ msgstr "메타마스크를 설치하세요"
 msgid "Insufficient GLP balance"
 msgstr "GLP 잔고 부족"
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Insufficient liquidity"
 msgstr "유동성 부족"
 
@@ -938,7 +945,8 @@ msgstr "유동성 부족, \"손익\"을 변경하세요"
 msgid "Insufficient staked tokens"
 msgstr "스테이킹된 토큰 부족"
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Insufficient {0} balance"
 msgstr "{0} 잔고 부족"
 
@@ -1021,8 +1029,8 @@ msgstr "유동성 데이터를 불러오지 못하였습니다."
 msgid "Loading..."
 msgstr "로딩중..."
 
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Long"
 msgstr "롱"
 
@@ -1296,8 +1304,8 @@ msgstr ""
 msgid "Positions"
 msgstr "포지션"
 
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Price"
 msgstr "가격"
 
@@ -1361,8 +1369,8 @@ msgstr "트레이더로서 이 계정이 획득한 리베이트."
 msgid "Rebates earned by this account as an affiliate."
 msgstr "어필리에이트로서 이 계정이 획득한 리베이트."
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Receive"
 msgstr "수령하기"
 
@@ -1540,8 +1548,8 @@ msgstr "공유"
 msgid "Share Position"
 msgstr "포지션 공유"
 
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Short"
 msgstr "숏"
 
@@ -2007,7 +2015,7 @@ msgstr "경고: 이 포지션은 차용수수료를 차감하면 담보액이 �
 msgid "WEIGHT"
 msgstr "비중"
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
 msgid "Waiting for Approval"
 msgstr "승인 대기중"
 
@@ -2186,7 +2194,8 @@ msgstr ""
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1},  and to <3>swap</3> {2} for other tokens."
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "{0} pool exceeded, try different token"
 msgstr "{0} 풀이 초과되었습니다. 다른 자산으로 시도해보세요"
 

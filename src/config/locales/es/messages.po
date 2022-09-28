@@ -142,7 +142,7 @@ msgstr "Anuncio"
 msgid "Approve GMX"
 msgstr "Aprobar GMX"
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
 msgid "Approve {0}"
 msgstr "Aprobar {0}"
 
@@ -154,7 +154,7 @@ msgstr "Aprobar {stakingTokenSymbol}"
 msgid "Approving GMX..."
 msgstr "Aprobando GMX..."
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
 msgid "Approving {0}..."
 msgstr "Aprobando {0}..."
 
@@ -495,7 +495,8 @@ msgstr "Componiendo"
 msgid "Connect"
 msgstr "Conectar"
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Header/AppHeaderUser.tsx
 msgid "Connect Wallet"
 msgstr "Conectar Monedero"
 
@@ -738,8 +739,10 @@ msgstr "Introduzca un código"
 msgid "Enter a price"
 msgstr "Introduce un precio"
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Enter an amount"
 msgstr "Introduzca una cantidad"
 
@@ -924,7 +927,11 @@ msgstr "Instalar MetaMask"
 msgid "Insufficient GLP balance"
 msgstr "Balance GLP insuficiente"
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Insufficient liquidity"
 msgstr "Insuficiente liquidez"
 
@@ -938,7 +945,8 @@ msgstr "Insuficiente liquidez, cambie \"Beneficios En\""
 msgid "Insufficient staked tokens"
 msgstr "Insuficientes tokens stakeados"
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Insufficient {0} balance"
 msgstr "Balance {0} insuficiente"
 
@@ -1021,8 +1029,8 @@ msgstr "Datos de liquidez no cargados"
 msgid "Loading..."
 msgstr "Cargando..."
 
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Long"
 msgstr "Largo"
 
@@ -1296,8 +1304,8 @@ msgstr ""
 msgid "Positions"
 msgstr "Posiciones"
 
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Price"
 msgstr "Precio"
 
@@ -1361,8 +1369,8 @@ msgstr "Reembolsos ganados por esta cuenta como trader."
 msgid "Rebates earned by this account as an affiliate."
 msgstr "Reembolsos ganados por esta cuenta como afiliado."
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Receive"
 msgstr "Recibir"
 
@@ -1540,8 +1548,8 @@ msgstr "Compartir"
 msgid "Share Position"
 msgstr "Compartir Posición"
 
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Short"
 msgstr "Corto"
 
@@ -2007,7 +2015,7 @@ msgstr "ADVERTENCIA: Esta posición tiene una cantidad baja de garantía despué
 msgid "WEIGHT"
 msgstr "PESO"
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
 msgid "Waiting for Approval"
 msgstr "Esperando Aprobación"
 
@@ -2186,7 +2194,8 @@ msgstr ""
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1},  and to <3>swap</3> {2} for other tokens."
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "{0} pool exceeded, try different token"
 msgstr "{0} reserva superada, intente otro token"
 

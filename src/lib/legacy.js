@@ -1,28 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
 import { format as formatDateFn } from "date-fns";
-import Token from "../abis/Token.json";
-import _ from "lodash";
 import { getContract } from "../config/contracts";
 import useSWR from "swr";
 
 import OrderBookReader from "../abis/OrderBookReader.json";
 import OrderBook from "../abis/OrderBook.json";
 
-import {
-  CHAIN_ID,
-  DEFAULT_CHAIN_ID,
-  FALLBACK_PROVIDERS,
-  getExplorerUrl,
-  RPC_PROVIDERS,
-  SUPPORTED_CHAIN_IDS,
-} from "../config/chains";
+import { CHAIN_ID, DEFAULT_CHAIN_ID, getExplorerUrl, SUPPORTED_CHAIN_IDS } from "../config/chains";
 import { getServerBaseUrl } from "../config/backend";
 import { getMostAbundantStableToken, isValidToken } from "../domain/tokens";
-import { helperToast } from "./helperToast";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "../config/localStorage";
 import { getTokenInfo } from "../domain/tokens/utils";
+import { getProvider } from "./rpc";
 
 const { AddressZero } = ethers.constants;
 
@@ -925,24 +916,6 @@ export function useENS(address) {
   return { ensName };
 }
 
-export function getProvider(library, chainId) {
-  let provider;
-  if (library) {
-    return library.getSigner();
-  }
-  provider = _.sample(RPC_PROVIDERS[chainId]);
-  return new ethers.providers.StaticJsonRpcProvider(provider, { chainId });
-}
-
-export function getFallbackProvider(chainId) {
-  if (!FALLBACK_PROVIDERS[chainId]) {
-    return;
-  }
-
-  const provider = _.sample(FALLBACK_PROVIDERS[chainId]);
-  return new ethers.providers.StaticJsonRpcProvider(provider, { chainId });
-}
-
 export function bigNumberify(n) {
   try {
     return ethers.BigNumber.from(n);
@@ -1259,76 +1232,6 @@ export function getAccountUrl(chainId, account) {
     return getExplorerUrl(chainId);
   }
   return getExplorerUrl(chainId) + "address/" + account;
-}
-
-export function approveTokens({
-  setIsApproving,
-  library,
-  tokenAddress,
-  spender,
-  chainId,
-  onApproveSubmitted,
-  getTokenInfo,
-  infoTokens,
-  pendingTxns,
-  setPendingTxns,
-  includeMessage,
-}) {
-  setIsApproving(true);
-  const contract = new ethers.Contract(tokenAddress, Token.abi, library.getSigner());
-  contract
-    .approve(spender, ethers.constants.MaxUint256)
-    .then(async (res) => {
-      const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
-      helperToast.success(
-        <div>
-          Approval submitted!{" "}
-          <a href={txUrl} target="_blank" rel="noopener noreferrer">
-            View status.
-          </a>
-          <br />
-        </div>
-      );
-      if (onApproveSubmitted) {
-        onApproveSubmitted();
-      }
-      if (getTokenInfo && infoTokens && pendingTxns && setPendingTxns) {
-        const token = getTokenInfo(infoTokens, tokenAddress);
-        const pendingTxn = {
-          hash: res.hash,
-          message: includeMessage ? `${token.symbol} Approved!` : false,
-        };
-        setPendingTxns([...pendingTxns, pendingTxn]);
-      }
-    })
-    .catch((e) => {
-      console.error(e);
-      let failMsg;
-      if (
-        ["not enough funds for gas", "failed to execute call with revert code InsufficientGasFunds"].includes(
-          e.data?.message
-        )
-      ) {
-        failMsg = (
-          <div>
-            There is not enough ETH in your account on Arbitrum to send this transaction.
-            <br />
-            <br />
-            <a href={"https://arbitrum.io/bridge-tutorial/"} target="_blank" rel="noopener noreferrer">
-              Bridge ETH to Arbitrum
-            </a>
-          </div>
-        );
-      } else if (e.message?.includes("User denied transaction signature")) {
-        failMsg = "Approval was cancelled";
-      } else {
-        failMsg = "Approval failed";
-      }
-      helperToast.error(failMsg);
-    })
-    .finally(() => {
-      setIsApproving(false);
-    });
 }
 
 export function isMobileDevice(navigator) {

@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
-import { getFallbackProvider, getProvider } from "../legacy";
+import { getFallbackProvider, getProvider } from "../rpc";
 
 export const contractFetcher =
   <T>(library: Web3Provider, contractInfo: any, additionalArgs: any[]) =>

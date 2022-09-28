@@ -16,7 +16,6 @@ import {
   formatAmountFree,
   parseValue,
   expandDecimals,
-  approveTokens,
   bigNumberify,
 } from "../../lib/legacy";
 import { getContract } from "../../config/contracts";
@@ -28,6 +27,7 @@ import { CHAIN_ID, getExplorerUrl } from "../../config/chains";
 import { contractFetcher } from "../../lib/contracts";
 import { helperToast } from "../../lib/helperToast";
 import { useEagerConnect, useInactiveListener } from "../../lib/wallets";
+import { approveTokens } from "../../domain/tokens";
 
 const { MaxUint256, AddressZero } = ethers.constants;
 

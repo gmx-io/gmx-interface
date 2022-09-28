@@ -14,7 +14,6 @@ import { BsArrowRight } from "react-icons/bs";
 
 import {
   adjustForDecimals,
-  approveTokens,
   BASIS_POINTS_DIVISOR,
   bigNumberify,
   calculatePositionDelta,
@@ -79,6 +78,7 @@ import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { callContract, contractFetcher } from "../../lib/contracts";
 import {
+  approveTokens,
   getMostAbundantStableToken,
   getToken,
   getTokenBySymbol,

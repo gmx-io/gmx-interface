@@ -142,7 +142,7 @@ msgstr "告知"
 msgid "Approve GMX"
 msgstr "GMXを承認する"
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
 msgid "Approve {0}"
 msgstr ""
 
@@ -154,7 +154,7 @@ msgstr "{stakingTokenSymbol}を承認する"
 msgid "Approving GMX..."
 msgstr "GMXを承認中"
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
 msgid "Approving {0}..."
 msgstr "{0}を承認中"
 
@@ -495,7 +495,8 @@ msgstr "請求およびステーク中"
 msgid "Connect"
 msgstr "接続"
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Header/AppHeaderUser.tsx
 msgid "Connect Wallet"
 msgstr "ウォレット接続"
 
@@ -738,8 +739,10 @@ msgstr "コードを入力"
 msgid "Enter a price"
 msgstr "価格を入力"
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Enter an amount"
 msgstr "額を入力"
 
@@ -924,7 +927,11 @@ msgstr "メタマスクをインストール"
 msgid "Insufficient GLP balance"
 msgstr "GLP残高不足"
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Insufficient liquidity"
 msgstr "流動性不足"
 
@@ -938,7 +945,8 @@ msgstr "流動性不足、\"利益\"を変更する"
 msgid "Insufficient staked tokens"
 msgstr "ステークされたトークンが足りていません"
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Insufficient {0} balance"
 msgstr "{0} 残高の不足"
 
@@ -1021,8 +1029,8 @@ msgstr "流動性データがロードされていません"
 msgid "Loading..."
 msgstr "ロード中"
 
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Long"
 msgstr "ロング"
 
@@ -1296,8 +1304,8 @@ msgstr ""
 msgid "Positions"
 msgstr "ポジション"
 
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Price"
 msgstr "価格"
 
@@ -1361,8 +1369,8 @@ msgstr "トレーダーとしてこのアカウントが獲得したリベート
 msgid "Rebates earned by this account as an affiliate."
 msgstr "アフィリエイトとしてこのアカウントが獲得したリベート"
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Receive"
 msgstr "受け取る"
 
@@ -1540,8 +1548,8 @@ msgstr "シェア"
 msgid "Share Position"
 msgstr "ポジションをシェア"
 
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Short"
 msgstr "ショート"
 
@@ -2007,7 +2015,7 @@ msgstr "警告: このポジションは借入手数料を差し引いたあと�
 msgid "WEIGHT"
 msgstr "ウェート"
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
 msgid "Waiting for Approval"
 msgstr "許可の待機中"
 
@@ -2186,7 +2194,8 @@ msgstr ""
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1},  and to <3>swap</3> {2} for other tokens."
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "{0} pool exceeded, try different token"
 msgstr "{0}プールは超過しています。別のトークンを試してください。"
 
