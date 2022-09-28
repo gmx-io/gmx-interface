@@ -4,7 +4,6 @@ import {
   UserRejectedRequestError as UserRejectedRequestErrorWalletConnect,
   WalletConnectConnector,
 } from "@web3-react/walletconnect-connector";
-import { toast } from "react-toastify";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import { useLocalStorage } from "react-use";
 import { ethers } from "ethers";
@@ -34,6 +33,7 @@ import {
 } from "../config/chains";
 import { getServerBaseUrl } from "../config/backend";
 import { getWhitelistedTokens, isValidToken } from "../domain/tokens";
+import { helperToast } from "./helperToast";
 
 const { AddressZero } = ethers.constants;
 
@@ -149,17 +149,6 @@ export function deserialize(data) {
 export function isHomeSite() {
   return process.env.REACT_APP_IS_HOME_SITE === "true";
 }
-
-export const helperToast = {
-  success: (content, opts) => {
-    toast.dismiss();
-    toast.success(content, opts);
-  },
-  error: (content, opts) => {
-    toast.dismiss();
-    toast.error(content, opts);
-  },
-};
 
 export function useLocalStorageByChainId(chainId, key, defaultValue) {
   const [internalValue, setInternalValue] = useLocalStorage(key, {});
