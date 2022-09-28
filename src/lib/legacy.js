@@ -5,7 +5,7 @@ import {
   WalletConnectConnector,
 } from "@web3-react/walletconnect-connector";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { format as formatDateFn } from "date-fns";
 import Token from "../abis/Token.json";
 import _ from "lodash";
@@ -1636,6 +1636,20 @@ export const CHART_PERIODS = {
   "4h": 60 * 60 * 4,
   "1d": 60 * 60 * 24,
 };
+
+export function getTotalVolumeSum(volumes) {
+  if (!volumes || volumes.length === 0) {
+    return;
+  }
+
+  let volume = bigNumberify(0);
+
+  for (let i = 0; i < volumes.length; i++) {
+    volume = volume.add(volumes[i].data.volume);
+  }
+
+  return volume;
+}
 
 export function getBalanceAndSupplyData(balances) {
   if (!balances || balances.length === 0) {

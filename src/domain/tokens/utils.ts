@@ -1,19 +1,19 @@
 import { BigNumber, ethers } from "ethers";
 import {
+  adjustForDecimals,
   bigNumberify,
+  DUST_BNB,
   expandDecimals,
   getFeeBasisPoints,
+  MARKET,
   MINT_BURN_FEE_BASIS_POINTS,
   PRECISION,
   TAX_BASIS_POINTS,
   USD_DECIMALS,
   USDG_ADDRESS,
   USDG_DECIMALS,
-  MARKET,
-  DUST_BNB,
-  adjustForDecimals,
 } from "../../lib/legacy";
-import { TOKENS, NATIVE_TOKENS_MAP, WRAPPED_TOKENS_MAP, TOKENS_BY_SYMBOL_MAP, TOKENS_MAP } from "../../config/tokens";
+import { NATIVE_TOKENS_MAP, TOKENS, TOKENS_BY_SYMBOL_MAP, TOKENS_MAP, WRAPPED_TOKENS_MAP } from "../../config/tokens";
 import { getExplorerUrl } from "../../config/chains";
 import { InfoTokens, Token, TokenInfo } from "./types";
 
@@ -218,20 +218,6 @@ export function getLowestFeeTokenForBuyGlp(
   return tokensWithLiquidity.length > 0
     ? tokensWithLiquidity[0]
     : tokensData.sort((a, b) => Number(b.amountLeftToDeposit.sub(a.amountLeftToDeposit)))[0];
-}
-
-export function getTotalVolumeSum(volumes: { data: { volume: BigNumber } }[]) {
-  if (!volumes || volumes.length === 0) {
-    return;
-  }
-
-  let volume = bigNumberify(0)!;
-
-  for (let i = 0; i < volumes.length; i++) {
-    volume = volume.add(volumes[i].data.volume);
-  }
-
-  return volume;
 }
 
 export function getMostAbundantStableToken(chainId: number, infoTokens: InfoTokens) {
