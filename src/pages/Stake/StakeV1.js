@@ -34,6 +34,8 @@ import Footer from "../../components/Footer/Footer";
 
 import "./Stake.css";
 import { fetcher } from "../../lib/contracts/fetcher";
+import { t, Trans } from "@lingui/macro";
+import ExternalLink from "../../components/Common/ExternalLink";
 
 const BASIS_POINTS_DIVISOR = 10000;
 const HOURS_PER_YEAR = 8760;
@@ -326,10 +328,10 @@ function StakeModal(props) {
 
   const getError = () => {
     if (!amount || amount.eq(0)) {
-      return "Enter an amount";
+      return t`Enter an amount`;
     }
     if (maxAmount && amount.gt(maxAmount)) {
-      return "Max amount exceeded";
+      return t`Max amount exceeded`;
     }
   };
 
@@ -353,10 +355,9 @@ function StakeModal(props) {
         const txUrl = getExplorerUrl(CHAIN_ID) + "tx/" + res.hash;
         helperToast.success(
           <div>
-            Stake submitted!{" "}
-            <a href={txUrl} target="_blank" rel="noopener noreferrer">
-              View status.
-            </a>
+            <Trans>
+              Stake submitted! <ExternalLink href={txUrl}>View status.</ExternalLink>
+            </Trans>
             <br />
           </div>
         );
@@ -364,7 +365,7 @@ function StakeModal(props) {
       })
       .catch((e) => {
         console.error(e);
-        helperToast.error("Stake failed");
+        helperToast.error(t`Stake failed`);
       })
       .finally(() => {
         setIsStaking(false);
@@ -391,15 +392,15 @@ function StakeModal(props) {
       return error;
     }
     if (isApproving) {
-      return `Approving ${stakingTokenSymbol}...`;
+      return t`Approving ${stakingTokenSymbol}...`;
     }
     if (needApproval) {
-      return `Approve ${stakingTokenSymbol}`;
+      return t`Approve ${stakingTokenSymbol}`;
     }
     if (isStaking) {
-      return "Staking...";
+      return t`Staking...`;
     }
-    return "Stake";
+    return t`Stake`;
   };
 
   return (
@@ -408,10 +409,12 @@ function StakeModal(props) {
         <div className="Exchange-swap-section">
           <div className="Exchange-swap-section-top">
             <div className="muted">
-              <div className="Exchange-swap-usd">Stake</div>
+              <div className="Exchange-swap-usd">
+                <Trans>Stake</Trans>
+              </div>
             </div>
             <div className="muted align-right clickable" onClick={() => setValue(formatAmountFree(maxAmount, 18, 18))}>
-              Max: {formatAmount(maxAmount, 18, 4, true)}
+              <Trans>Max: {formatAmount(maxAmount, 18, 4, true)}</Trans>
             </div>
           </div>
           <div className="Exchange-swap-section-bottom">
@@ -446,10 +449,10 @@ function UnstakeModal(props) {
 
   const getError = () => {
     if (!amount) {
-      return "Enter an amount";
+      return t`Enter an amount`;
     }
     if (amount.gt(maxAmount)) {
-      return "Max amount exceeded";
+      return t`Max amount exceeded`;
     }
   };
 
@@ -462,10 +465,9 @@ function UnstakeModal(props) {
         const txUrl = getExplorerUrl(CHAIN_ID) + "tx/" + res.hash;
         helperToast.success(
           <div>
-            Unstake submitted!{" "}
-            <a href={txUrl} target="_blank" rel="noopener noreferrer">
-              View status.
-            </a>
+            <Trans>
+              Unstake submitted! <ExternalLink href={txUrl}>View status.</ExternalLink>
+            </Trans>
             <br />
           </div>
         );
@@ -473,7 +475,7 @@ function UnstakeModal(props) {
       })
       .catch((e) => {
         console.error(e);
-        helperToast.error("Unstake failed");
+        helperToast.error(t`Unstake failed`);
       })
       .finally(() => {
         setIsUnstaking(false);
@@ -497,9 +499,9 @@ function UnstakeModal(props) {
       return error;
     }
     if (isUnstaking) {
-      return "Unstaking...";
+      return t`Unstaking...`;
     }
-    return "Unstake";
+    return t`Unstake`;
   };
 
   return (
@@ -508,10 +510,12 @@ function UnstakeModal(props) {
         <div className="Exchange-swap-section">
           <div className="Exchange-swap-section-top">
             <div className="muted">
-              <div className="Exchange-swap-usd">Unstake</div>
+              <div className="Exchange-swap-usd">
+                <Trans>Unstake</Trans>
+              </div>
             </div>
             <div className="muted align-right clickable" onClick={() => setValue(formatAmountFree(maxAmount, 18, 18))}>
-              Max: {formatAmount(maxAmount, 18, 4, true)}
+              <Trans>Max: {formatAmount(maxAmount, 18, 4, true)}</Trans>
             </div>
           </div>
           <div className="Exchange-swap-section-bottom">
@@ -684,15 +688,15 @@ export default function StakeV1() {
 
   const claim = (farmAddress, rewards) => {
     if (!active || !account) {
-      helperToast.error("Wallet not yet connected");
+      helperToast.error(t`Wallet not yet connected`);
       return;
     }
     if (chainId !== CHAIN_ID) {
-      helperToast.error("Incorrect Network");
+      helperToast.error(t`Incorrect Network`);
       return;
     }
     if (!rewards || rewards.eq(0)) {
-      helperToast.error("No rewards to claim yet");
+      helperToast.error(t`No rewards to claim yet`);
       return;
     }
 
@@ -703,17 +707,16 @@ export default function StakeV1() {
         const txUrl = getExplorerUrl(CHAIN_ID) + "tx/" + res.hash;
         helperToast.success(
           <div>
-            Claim submitted!{" "}
-            <a href={txUrl} target="_blank" rel="noopener noreferrer">
-              View status.
-            </a>
+            <Trans>
+              Claim submitted! <ExternalLink href={txUrl}>View status.</ExternalLink>
+            </Trans>
             <br />
           </div>
         );
       })
       .catch((e) => {
         console.error(e);
-        helperToast.error("Claim failed");
+        helperToast.error(t`Claim failed`);
       });
   };
 
@@ -783,69 +786,85 @@ export default function StakeV1() {
         <div className="Stake-title-primary App-hero-primary">
           ${formatKeyAmount(processedData, "totalStakedUsd", 30, 0, true)}
         </div>
-        <div className="Stake-title-secondary">Total Assets Staked</div>
+        <div className="Stake-title-secondary">
+          <Trans>Total Assets Staked</Trans>
+        </div>
       </div>
       <div className="Stake-note">
-        The Gambit protocol is in beta, please read the&nbsp;
-        <a href="https://gambit.gitbook.io/gambit/staking" target="_blank" rel="noopener noreferrer">
-          staking details
-        </a>
-        &nbsp; before participating.
+        <Trans>
+          The Gambit protocol is in beta, please read the&nbsp;
+          <ExternalLink href="https://gambit.gitbook.io/gambit/staking">staking details</ExternalLink>
+          &nbsp; before participating.
+        </Trans>
       </div>
       <div className="App-warning Stake-warning">
-        The <Link to="/migrate">GMX migration</Link> is in progress, please migrate your GMT, xGMT, GMT-USDG and
-        xGMT-USDG tokens.
-        <br />
-        USDG tokens will continue to function as before and do not need to be migrated.
+        <Trans>
+          The <Link to="/migrate">GMX migration</Link> is in progress, please migrate your GMT, xGMT, GMT-USDG and
+          xGMT-USDG tokens.
+          <br />
+          USDG tokens will continue to function as before and do not need to be migrated.
+        </Trans>
       </div>
       <div className="Stake-cards">
         <div className="App-card primary">
           <div className="Stake-card-title App-card-title">USDG</div>
           <div className="Stake-card-bottom App-card-content">
             <div className="Stake-info App-card-row">
-              <div className="label">APR</div>
+              <div className="label">
+                <Trans>APR</Trans>
+              </div>
               <div>
                 {!hasFeeDistribution && "TBC"}
                 {hasFeeDistribution && `${formatKeyAmount(processedData, "usdgApr", 2, 2, true)}%`}
               </div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Staked</div>
+              <div className="label">
+                <Trans>Staked</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "usdgBalance", 18, 2, true)} ($
                 {formatKeyAmount(processedData, "usdgBalance", 18, 2, true)})
               </div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Wallet</div>
+              <div className="label">
+                <Trans>Wallet</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "usdgBalance", 18, 2, true)} ($
                 {formatKeyAmount(processedData, "usdgBalance", 18, 2, true)})
               </div>
             </div>
             <div className="App-card-row">
-              <div className="label">Rewards</div>
+              <div className="label">
+                <Trans>Rewards</Trans>
+              </div>
               <div>
                 {!hasFeeDistribution && "TBC"}
                 {hasFeeDistribution && `${formatKeyAmount(processedData, "usdgRewards", 18, 8, true)} WBNB`}
               </div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Total Staked</div>
+              <div className="label">
+                <Trans>Total Staked</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "usdgTotalStaked", 18, 2, true)} ($
                 {formatKeyAmount(processedData, "usdgTotalStakedUsd", 30, 2, true)})
               </div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Total Supply</div>
+              <div className="label">
+                <Trans>Total Supply</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "usdgSupply", 18, 2, true)} ($
                 {formatKeyAmount(processedData, "usdgSupplyUsd", 30, 2, true)})
               </div>
             </div>
             <div className="App-card-options">
-              <Link className="App-button-option App-card-option" to="/trade" target="_blank" rel="noopener noreferrer">
+              <Link className="App-button-option App-card-option" to="/trade">
                 Get USDG
               </Link>
               {active && (
@@ -853,12 +872,12 @@ export default function StakeV1() {
                   className="App-button-option App-card-option"
                   onClick={() => claim(usdgAddress, processedData.usdgRewards)}
                 >
-                  Claim
+                  <Trans>Claim</Trans>
                 </button>
               )}
               {!active && (
                 <button className="App-button-option App-card-option" onClick={connectWallet}>
-                  Connect Wallet
+                  <Trans>Connect Wallet</Trans>
                 </button>
               )}
             </div>
@@ -870,64 +889,73 @@ export default function StakeV1() {
             <div className="Stake-info App-card-row">
               <div className="label">APR</div>
               <div>
-                0.00% (<Link to="/migrate">Migrate</Link>)
+                0.00% (
+                <Link to="/migrate">
+                  <Trans>Migrate</Trans>
+                </Link>
+                )
               </div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Staked</div>
+              <div className="label">
+                <Trans>Staked</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "xgmtBalance", 18, 2, true)} ($
                 {formatKeyAmount(processedData, "xgmtBalanceUsd", USD_DECIMALS, 2, true)})
               </div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Wallet</div>
+              <div className="label">
+                <Trans>Wallet</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "xgmtBalance", 18, 2, true)} ($
                 {formatKeyAmount(processedData, "xgmtBalanceUsd", USD_DECIMALS, 2, true)})
               </div>
             </div>
             <div className="App-card-row">
-              <div className="label">Rewards</div>
+              <div className="label">
+                <Trans>Rewards</Trans>
+              </div>
               <div>
                 {!hasFeeDistribution && "TBC"}
                 {hasFeeDistribution && `${formatKeyAmount(processedData, "xgmtRewards", 18, 8, true)} WBNB`}
               </div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Total Staked</div>
+              <div className="label">
+                <Trans>Total Staked</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "xgmtTotalStaked", 18, 2, true)} ($
                 {formatKeyAmount(processedData, "xgmtTotalStakedUsd", USD_DECIMALS, 2, true)})
               </div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Total Supply</div>
+              <div className="label">
+                <Trans>Total Supply</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "xgmtSupply", 18, 2, true)} ($
                 {formatKeyAmount(processedData, "xgmtSupplyUsd", USD_DECIMALS, 2, true)})
               </div>
             </div>
             <div className="App-card-options">
-              <a
-                className="App-button-option App-card-option"
-                href={buyXgmtUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <ExternalLink className="App-button-option App-card-option" href={buyXgmtUrl}>
                 Get xGMT
-              </a>
+              </ExternalLink>
               {active && (
                 <button
                   className="App-button-option App-card-option"
                   onClick={() => claim(xgmtAddress, processedData.xgmtRewards)}
                 >
-                  Claim
+                  <Trans>Claim</Trans>
                 </button>
               )}
               {!active && (
                 <button className="App-button-option App-card-option" onClick={connectWallet}>
-                  Connect Wallet
+                  <Trans>Connect Wallet</Trans>
                 </button>
               )}
             </div>
@@ -937,27 +965,39 @@ export default function StakeV1() {
           <div className="Stake-card-title App-card-title">GMT-USDG LP</div>
           <div className="Stake-card-bottom App-card-content">
             <div className="Stake-info App-card-row">
-              <div className="label">APR</div>
+              <div className="label">
+                <Trans>APR</Trans>
+              </div>
               <div>
-                0.00% (<Link to="/migrate">Migrate</Link>)
+                0.00% (
+                <Link to="/migrate">
+                  <Trans>Migrate</Trans>
+                </Link>
+                )
               </div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Staked</div>
+              <div className="label">
+                <Trans>Staked</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "gmtUsdgStaked", 18, 4, true)} ($
                 {formatKeyAmount(processedData, "gmtUsdgStakedUsd", 30, 2, true)})
               </div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Wallet</div>
+              <div className="label">
+                <Trans>Wallet</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "gmtUsdgBalance", 18, 2, true)} ($
                 {formatKeyAmount(processedData, "gmtUsdgBalanceUsd", USD_DECIMALS, 2, true)})
               </div>
             </div>
             <div className="App-card-row">
-              <div className="label">Rewards</div>
+              <div className="label">
+                <Trans>Rewards</Trans>
+              </div>
               <div>
                 {hasFeeDistribution &&
                   processedData.gmtUsdgNativeRewards &&
@@ -967,32 +1007,24 @@ export default function StakeV1() {
               </div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Total Staked</div>
+              <div className="label">
+                <Trans>Total Staked</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "gmtUsdgTotalStaked", 18, 4, true)} ($
                 {formatKeyAmount(processedData, "gmtUsdgTotalStakedUsd", 30, 2, true)})
               </div>
             </div>
             <div className="App-card-options">
-              <a
-                className="App-button-option App-card-option"
-                href={buyGmtUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <ExternalLink className="App-button-option App-card-option" href={buyGmtUrl}>
                 Get GMT
-              </a>
-              <a
-                className="App-button-option App-card-option"
-                href={addGmtUsdgLpUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Create
-              </a>
+              </ExternalLink>
+              <ExternalLink className="App-button-option App-card-option" href={addGmtUsdgLpUrl}>
+                <Trans>Create</Trans>
+              </ExternalLink>
               {active && (
                 <button className="App-button-option App-card-option" onClick={() => showUnstakeGmtUsdgModal()}>
-                  Unstake
+                  <Trans>Unstake</Trans>
                 </button>
               )}
               {active && (
@@ -1000,12 +1032,12 @@ export default function StakeV1() {
                   className="App-button-option App-card-option"
                   onClick={() => claim(gmtUsdgFarmAddress, processedData.gmtUsdgTotalRewards)}
                 >
-                  Claim
+                  <Trans>Claim</Trans>
                 </button>
               )}
               {!active && (
                 <button className="App-button-option App-card-option" onClick={connectWallet}>
-                  Connect Wallet
+                  <Trans>Connect Wallet</Trans>
                 </button>
               )}
             </div>
@@ -1015,27 +1047,39 @@ export default function StakeV1() {
           <div className="Stake-card-title App-card-title">xGMT-USDG LP</div>
           <div className="Stake-card-bottom App-card-content">
             <div className="Stake-info App-card-row">
-              <div className="label">APR</div>
+              <div className="label">
+                <Trans>APR</Trans>
+              </div>
               <div>
-                0.00% (<Link to="/migrate">Migrate</Link>)
+                0.00% (
+                <Link to="/migrate">
+                  <Trans>Migrate</Trans>
+                </Link>
+                )
               </div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Staked</div>
+              <div className="label">
+                <Trans>Staked</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "xgmtUsdgStaked", 18, 4, true)} ($
                 {formatKeyAmount(processedData, "xgmtUsdgStakedUsd", 30, 2, true)})
               </div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Wallet</div>
+              <div className="label">
+                <Trans>Wallet</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "xgmtUsdgBalance", 18, 2, true)} ($
                 {formatKeyAmount(processedData, "xgmtUsdgBalanceUsd", USD_DECIMALS, 2, true)})
               </div>
             </div>
             <div className="App-card-row">
-              <div className="label">Rewards</div>
+              <div className="label">
+                <Trans>Rewards</Trans>
+              </div>
               <div>
                 {hasFeeDistribution &&
                   processedData.xgmtUsdgNativeRewards &&
@@ -1045,32 +1089,24 @@ export default function StakeV1() {
               </div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Total Staked</div>
+              <div className="label">
+                <Trans>Total Staked</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "xgmtUsdgTotalStaked", 18, 4, true)} ($
                 {formatKeyAmount(processedData, "xgmtUsdgTotalStakedUsd", 30, 2, true)})
               </div>
             </div>
             <div className="App-card-options">
-              <a
-                className="App-button-option App-card-option"
-                href={buyXgmtUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <ExternalLink className="App-button-option App-card-option" href={buyXgmtUrl}>
                 Get xGMT
-              </a>
-              <a
-                className="App-button-option App-card-option"
-                href={addXgmtUsdgLpUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Create
-              </a>
+              </ExternalLink>
+              <ExternalLink className="App-button-option App-card-option" href={addXgmtUsdgLpUrl}>
+                <Trans>Create</Trans>
+              </ExternalLink>
               {active && (
                 <button className="App-button-option App-card-option" onClick={() => showUnstakeXgmtUsdgModal()}>
-                  Unstake
+                  <Trans>Unstake</Trans>
                 </button>
               )}
               {active && (
@@ -1078,12 +1114,12 @@ export default function StakeV1() {
                   className="App-button-option App-card-option"
                   onClick={() => claim(xgmtUsdgFarmAddress, processedData.xgmtUsdgTotalRewards)}
                 >
-                  Claim
+                  <Trans>Claim</Trans>
                 </button>
               )}
               {!active && (
                 <button className="App-button-option App-card-option" onClick={connectWallet}>
-                  Connect Wallet
+                  <Trans>Connect Wallet</Trans>
                 </button>
               )}
             </div>
@@ -1093,59 +1129,59 @@ export default function StakeV1() {
           <div className="Stake-card-title App-card-title">AUTO-USDG LP</div>
           <div className="Stake-card-bottom App-card-content">
             <div className="Stake-info App-card-row">
-              <div className="label">APR</div>
+              <div className="label">
+                <Trans>APR</Trans>
+              </div>
               <div>{formatKeyAmount(processedData, "autoUsdgApr", 2, 2, true)}%</div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Staked</div>
+              <div className="label">
+                <Trans>Staked</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "autoUsdgStaked", 18, 4, true)} ($
                 {formatKeyAmount(processedData, "autoUsdgStakedUsd", 30, 2, true)})
               </div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Wallet</div>
+              <div className="label">
+                <Trans>Wallet</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "autoUsdgBalance", 18, 2, true)} ($
                 {formatKeyAmount(processedData, "autoUsdgBalanceUsd", USD_DECIMALS, 2, true)})
               </div>
             </div>
             <div className="App-card-row">
-              <div className="label">Rewards</div>
+              <div className="label">
+                <Trans>Rewards</Trans>
+              </div>
               <div>{formatKeyAmount(processedData, "autoUsdgXgmtRewards", 18, 4, true)} xGMT</div>
             </div>
             <div className="Stake-info App-card-row">
-              <div className="label">Total Staked</div>
+              <div className="label">
+                <Trans>Total Staked</Trans>
+              </div>
               <div>
                 {formatKeyAmount(processedData, "autoUsdgTotalStaked", 18, 4, true)} ($
                 {formatKeyAmount(processedData, "autoUsdgTotalStakedUsd", 30, 2, true)})
               </div>
             </div>
             <div className="App-card-options">
-              <a
-                className="App-button-option App-card-option"
-                href={buyAutoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <ExternalLink className="App-button-option App-card-option" href={buyAutoUrl}>
                 Get AUTO
-              </a>
-              <a
-                className="App-button-option App-card-option"
-                href={addAutoUsdgLpUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Create
-              </a>
+              </ExternalLink>
+              <ExternalLink className="App-button-option App-card-option" href={addAutoUsdgLpUrl}>
+                <Trans>Create</Trans>
+              </ExternalLink>
               {active && (
                 <button className="App-button-option App-card-option" onClick={() => showStakeAutoUsdgModal()}>
-                  Stake
+                  <Trans>Stake</Trans>
                 </button>
               )}
               {active && (
                 <button className="App-button-option App-card-option" onClick={() => showUnstakeAutoUsdgModal()}>
-                  Unstake
+                  <Trans>Unstake</Trans>
                 </button>
               )}
               {active && (
@@ -1153,12 +1189,12 @@ export default function StakeV1() {
                   className="App-button-option App-card-option"
                   onClick={() => claim(autoUsdgFarmAddress, processedData.autoUsdgTotalRewards)}
                 >
-                  Claim
+                  <Trans>Claim</Trans>
                 </button>
               )}
               {!active && (
                 <button className="App-button-option App-card-option" onClick={connectWallet}>
-                  Connect Wallet
+                  <Trans>Connect Wallet</Trans>
                 </button>
               )}
             </div>

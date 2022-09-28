@@ -1,22 +1,25 @@
 import "./Jobs.css";
-import React, { useEffect } from "react";
+import React from "react";
 import SEO from "../../components/Common/SEO";
 import Footer from "../../components/Footer/Footer";
 import { getPageTitle } from "../../lib/legacy";
 import Card from "../../components/Common/Card";
+import { Trans } from "@lingui/macro";
+import ExternalLink from "../../components/Common/ExternalLink";
 
 function Jobs() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
   return (
     <SEO title={getPageTitle("Job Openings")}>
       <div className="default-container page-layout Referrals">
         <div className="section-title-block">
-          <div className="section-title-icon"></div>
+          <div className="section-title-icon" />
           <div className="section-title-content">
-            <div className="Page-title">Jobs</div>
-            <div className="Page-description">Job openings at GMX.</div>
+            <div className="Page-title">
+              <Trans>Jobs</Trans>
+            </div>
+            <div className="Page-description">
+              <Trans>Job openings at GMX.</Trans>
+            </div>
           </div>
         </div>
         <div className="jobs-page-body">
@@ -33,12 +36,10 @@ function NoJob() {
     <Card title="No open positions at GMX currently">
       <div className="body-para">
         <p className="subheading">
-          GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the
-          project, please email{" "}
-          <a target="_blank" href="mailto:jobs@gmx.io" rel="noopener noreferrer">
-            jobs@gmx.io
-          </a>
-          .
+          <Trans>
+            GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the
+            project, please email <ExternalLink href="mailto:jobs@gmx.io">jobs@gmx.io</ExternalLink>.
+          </Trans>
         </p>
       </div>
     </Card>

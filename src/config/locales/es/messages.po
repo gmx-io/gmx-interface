@@ -45,6 +45,10 @@ msgstr ""
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr "<0>Insuficiente liquidez para ejecutar la orden</0><1>El precio de referencia, que es un agregado de precios de mercado, no alcanzó el precio especificado</1><2>Se alcanzó el precio especificado pero no lo suficiente como para ejecutarlo</2><3>Ningún guardián recogió la orden para ejecutarla</3>"
 
+#: src/pages/PageNotFound/PageNotFound.js
+msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>Esto retirará y desreservará todos los tokens y pausará la adquisición.<1/><2/>Los tokens de esGMX que han sido convertidos a GMX permanecerán como tokens de GMX.<3/><4/>Para reclamar tokens de GMX sin retirarlos, utilice el botón \"Reclamar\" bajo la sección de Recompensas Totales.<5/><6/></0>"
@@ -53,7 +57,10 @@ msgstr "<0>Esto retirará y desreservará todos los tokens y pausará la adquisi
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "APR"
 msgstr "APR"
 
@@ -71,6 +78,7 @@ msgstr ""
 msgid "AVAILABLE"
 msgstr "DISPONIBLE"
 
+#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -87,7 +95,7 @@ msgstr "Acepta las condiciones para habilitar las órdenes"
 msgid "Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price"
 msgstr "Acepta que las órdenes no tienen garantía de ejecución y que las órdenes de activación pueden no ejecutarse al precio de activación"
 
-#: src/pages/Actions/Actions.js
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Account"
 msgstr "Cuenta"
 
@@ -163,6 +171,7 @@ msgid "Announcement"
 msgstr "Anuncio"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "Aprobar GMX"
 
@@ -172,7 +181,7 @@ msgstr "Aprobar GMX"
 msgid "Approve {0}"
 msgstr "Aprobar {0}"
 
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
 msgid "Approve {stakingTokenSymbol}"
 msgstr "Aprobar {stakingTokenSymbol}"
 
@@ -186,7 +195,7 @@ msgstr "Aprobando GMX..."
 msgid "Approving {0}..."
 msgstr "Aprobando {0}..."
 
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
 msgid "Approving {stakingTokenSymbol}..."
 msgstr "Aprobando {stakingTokenSymbol}..."
 
@@ -378,6 +387,10 @@ msgstr "Compra con {0}"
 msgid "Buying..."
 msgstr "Comprando..."
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Can't execute because of an error"
+msgstr ""
+
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -393,10 +406,6 @@ msgid "Cancel submitted."
 msgstr "Cancelación enviada."
 
 #: src/pages/Exchange/Exchange.js
-msgid "Cancel {0} {orderText}"
-msgstr "Cancelar {0} {orderText}"
-
-#: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "Posiciones en gráfca"
 
@@ -410,7 +419,11 @@ msgstr "Comprueba la sección \"Ahorrar en tasas\" para obtener los porcentajes 
 msgid "Checking code..."
 msgstr "Comprobando código..."
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Claim"
 msgstr "Reclamar"
 
@@ -420,6 +433,7 @@ msgid "Claim GMX Rewards"
 msgstr "Reclamar Recompensas GMX"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr "¡Reclamación completada!"
 
@@ -432,13 +446,22 @@ msgstr "Reclamar esGMX"
 msgid "Claim esGMX Rewards"
 msgstr "Reclamar Recompensas esGMX"
 
+#: src/pages/Stake/StakeV1.js
+msgid "Claim failed"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "Reclamación fallida."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Claim submitted!"
 msgstr "¡Reclamación enviada!"
+
+#: src/pages/Stake/StakeV1.js
+msgid "Claim submitted! <0>View status.</0>"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Claim submitted."
@@ -454,6 +477,7 @@ msgid "Claimable"
 msgstr "Reclamable"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
 msgstr "Reclamando..."
 
@@ -468,6 +492,10 @@ msgstr "Cierre fallido."
 #: src/components/Exchange/PositionSeller.js
 msgid "Close submitted!"
 msgstr "¡Cierre enviado!"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Close to execution price"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close without profit"
@@ -551,19 +579,16 @@ msgstr "Componiendo"
 msgid "Connect"
 msgstr "Conectar"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Header/AppHeaderUser.tsx
-#: src/components/Referrals/AddAffiliateCode.js
-#: src/components/Referrals/JoinReferralCode.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Connect Wallet"
 msgstr "Conectar Monedero"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Continue"
 msgstr "Continuar"
 
@@ -588,7 +613,17 @@ msgstr "Copiar Dirección"
 msgid "Could not add token to MetaMask"
 msgstr ""
 
-#: src/components/Referrals/AddAffiliateCode.js
+#: src/pages/Exchange/Exchange.js
+msgid "Could not decrease {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
+msgstr ""
+
+#: src/pages/Exchange/Exchange.js
+msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
+msgstr ""
+
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Create"
 msgstr "Crear"
 
@@ -599,6 +634,10 @@ msgstr "Crear Órden"
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Create Referral Code"
 msgstr "Crear Código de Referido"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Created"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Created limit order for {0} {1}: {2} USD!"
@@ -678,6 +717,14 @@ msgstr ""
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr "Exchange<0/>Perpetuo Decentralizado"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
+msgstr ""
+
+#: src/pages/Exchange/Exchange.js
+msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -713,6 +760,10 @@ msgstr "Depósito enviado."
 msgid "Deposited"
 msgstr ""
 
+#: src/pages/Exchange/Exchange.js
+msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Deposited!"
 msgstr "¡Depósitado!"
@@ -721,6 +772,10 @@ msgstr "¡Depósitado!"
 #: src/pages/Stake/StakeV2.js
 msgid "Depositing..."
 msgstr "Depositando..."
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Diff"
+msgstr ""
 
 #: src/App/App.js
 msgid "Disable order validations"
@@ -837,11 +892,19 @@ msgstr "Habilitando Apalancamiento..."
 msgid "Enabling Orders..."
 msgstr "Activando Órdenes"
 
+#: src/pages/NftWallet/NftWallet.js
+msgid "Enter NFT Address"
+msgstr ""
+
+#: src/pages/NftWallet/NftWallet.js
+msgid "Enter NFT ID"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Enter Price"
 msgstr "Introduce Precio"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/NftWallet/NftWallet.js
 msgid "Enter Receiver Address"
 msgstr "Introduzca la Dirección del Receptor"
 
@@ -859,7 +922,8 @@ msgstr "Introduzca un código"
 msgid "Enter a price"
 msgstr "Introduce un precio"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Enter an amount"
 msgstr "Introduzca una cantidad"
 
@@ -887,6 +951,10 @@ msgstr "Precio de Entrada"
 msgid "Escrowed GMX APR"
 msgstr "Escrowded GMX APR"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Execute"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 msgid "Execution Fee"
 msgstr "Comisión de Ejecución"
@@ -899,6 +967,9 @@ msgstr "Precio de Salida"
 msgid "FEES"
 msgstr "COMISIONES"
 
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
@@ -1025,6 +1096,10 @@ msgstr ""
 msgid "GMX is currently live on Arbitrum and Avalanche."
 msgstr "GMX esta actualmente en vivo en Arbitrum y Avalanche."
 
+#: src/pages/Jobs/Jobs.js
+msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
+msgstr ""
+
 #: src/components/TokenCard/TokenCard.js
 msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
 msgstr "GMX es el token de utilidad y gobierno, y también acumula el 30% de las comisiones generadas por la plataforma."
@@ -1074,13 +1149,25 @@ msgstr "Incluir GyP en la visualización de apalancamiento"
 msgid "Incorrect Account"
 msgstr "Cantidad Incorrecta"
 
-#: src/components/Exchange/SwapBox.js
+#: src/pages/Stake/StakeV1.js
 msgid "Incorrect Network"
 msgstr "Red Incorrecta"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Incorrect network"
 msgstr "Red incorrecta"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Increase active: {0}, executed: {1}, cancelled: {2}"
+msgstr ""
+
+#: src/pages/Exchange/Exchange.js
+msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
+msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Index"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral"
@@ -1127,11 +1214,15 @@ msgstr "Insuficientes tokens stakeados"
 msgid "Insufficient {0} balance"
 msgstr "Balance {0} insuficiente"
 
+#: src/pages/NftWallet/NftWallet.js
+msgid "Invalid NFT Address"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Invalid Receiver"
 msgstr "Receptor Inválido"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/NftWallet/NftWallet.js
 msgid "Invalid Receiver Address"
 msgstr "Dirección del Receptor Inválida"
 
@@ -1147,6 +1238,22 @@ msgstr "Precio no válido, ver advertencia"
 #: src/App/App.js
 msgid "Invalid slippage value"
 msgstr "Valor de deslizamiento no válido"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
+msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
+msgstr ""
+
+#: src/pages/Jobs/Jobs.js
+msgid "Job openings at GMX."
+msgstr ""
+
+#: src/pages/Jobs/Jobs.js
+msgid "Jobs"
+msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Launch Exchange"
@@ -1217,11 +1324,7 @@ msgstr "Datos de liquidez no cargados"
 msgid "Loading..."
 msgstr "Cargando..."
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Long"
 msgstr "Largo"
 
@@ -1246,12 +1349,18 @@ msgstr "Parece que no tienes un código de referencia para compartir. <0/> ¡Cre
 msgid "Loss"
 msgstr "Pérdida"
 
+#: src/components/BuyInputSection/BuyInputSection.js
+#: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
 msgstr "MÁX"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
+msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Mark"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js
@@ -1285,9 +1394,8 @@ msgstr ""
 msgid "Max Capacity for {0} Reached"
 msgstr "Capacidad Máxima para {0} Alcanzada"
 
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Max amount exceeded"
 msgstr "Superado el importe máximo de cierre"
 
@@ -1332,6 +1440,11 @@ msgstr "Superados largos Máx. de {0}"
 msgid "Max {0} short exceeded"
 msgstr "Superados cortos Máx. de {0}"
 
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+msgid "Max: {0}"
+msgstr ""
+
 #: src/components/Footer/Footer.js
 #: src/components/Footer/Footer.js
 msgid "Media Kit"
@@ -1344,6 +1457,12 @@ msgstr "MetaMask"
 #: src/App/App.js
 msgid "MetaMask not detected."
 msgstr "MetaMask no detectado."
+
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+msgid "Migrate"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -1370,6 +1489,18 @@ msgstr "APR de Puntos Multiplicadores"
 msgid "Multiswap"
 msgstr "Multi-intercambio"
 
+#: src/pages/NftWallet/NftWallet.js
+msgid "NFT Address"
+msgstr ""
+
+#: src/pages/NftWallet/NftWallet.js
+msgid "NFT ID"
+msgstr ""
+
+#: src/pages/NftWallet/NftWallet.js
+msgid "NFT Wallet"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Net Value"
@@ -1395,10 +1526,18 @@ msgstr "No hay ordenes abiertas."
 msgid "No open positions"
 msgstr "No hay posiciones abiertas"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "No position"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "No rebates distribution history yet."
 msgstr "Aún no hay historial de distribución de reembolsos."
+
+#: src/pages/Stake/StakeV1.js
+msgid "No rewards to claim yet"
+msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
@@ -1433,11 +1572,15 @@ msgstr "Abrir en el Explorador"
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr "Abre posiciones a través de una simple interfaz de intercambio. Intercambie desde cualquier activo soportado a la posición de su elección."
 
+#: src/pages/PositionsOverview/PositionsOverview.js
+msgid "Open positions: {0}<0/>Under risk: {1}"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Optimal compound interval calculator"
 msgstr ""
 
-#: src/components/Exchange/OrdersList.js
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order"
 msgstr "Orden"
 
@@ -1449,14 +1592,25 @@ msgstr "¡Orden creada!"
 msgid "Order creation failed."
 msgstr "Falló la creación de la orden"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Order size exceeds position"
+msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Order size is 0"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Order submitted!"
 msgstr "¡Orden enviada!"
 
-#: src/components/Exchange/PositionsList.js
-#: src/pages/Actions/Actions.js
+#: src/pages/Exchange/Exchange.js
 msgid "Orders"
 msgstr "Órdenes"
+
+#: src/pages/Exchange/Exchange.js
+msgid "Orders ({0})"
+msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 msgid "Orders cancelled."
@@ -1470,9 +1624,14 @@ msgstr "Resumen"
 msgid "POOL"
 msgstr "RESERVA"
 
+#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
 msgstr "PRECIO"
+
+#: src/pages/PageNotFound/PageNotFound.js
+msgid "Page not found"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -1532,16 +1691,15 @@ msgstr "Posición"
 msgid "Position close disabled, pending {0} upgrade"
 msgstr ""
 
-#: src/pages/Actions/Actions.js
+#: src/pages/Exchange/Exchange.js
 msgid "Positions"
 msgstr "Posiciones"
 
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Exchange/Exchange.js
+msgid "Positions ({0})"
+msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Price"
 msgstr "Precio"
 
@@ -1562,6 +1720,10 @@ msgstr "Precio inferior al de liquidación"
 #: src/components/Exchange/SwapBox.js
 msgid "Price below Mark Price"
 msgstr "Precio inferior al Precio de Marca"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Price conditions are met"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Price on Arbitrum"
@@ -1627,7 +1789,7 @@ msgstr "Reembolsos ganados por esta cuenta como afiliado."
 msgid "Receive"
 msgstr "Recibir"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/NftWallet/NftWallet.js
 msgid "Receiver Address"
 msgstr "Dirección del receptor"
 
@@ -1679,7 +1841,7 @@ msgstr "Falló la actualización del código de referido."
 msgid "Referral code updated!"
 msgstr "¡Código de referido actualizado!"
 
-#: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Referrals/Referrals.js
 #: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "Referidos"
@@ -1717,8 +1879,11 @@ msgstr "Reservado para Adquisición"
 msgid "Returns calculator for GMX and GLP"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Rewards"
 msgstr "Recompensas"
 
@@ -1734,6 +1899,7 @@ msgstr "Guardar"
 msgid "Save on Costs"
 msgstr "Ahorrar en Costes"
 
+#: src/components/NetworkDropdown/LanguagePopupHome.js
 #: src/components/NetworkDropdown/NetworkDropdown.js
 msgid "Select Language"
 msgstr "Seleccionar Idioma"
@@ -1806,11 +1972,7 @@ msgstr "Compartir"
 msgid "Share Position"
 msgstr "Compartir Posición"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Short"
 msgstr "Corto"
 
@@ -1846,9 +2008,9 @@ msgstr "Acelerar la carga de la página"
 msgid "Stablecoin Percentage"
 msgstr "Porcentaje de Stablecoin"
 
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Stake"
 msgstr "Stake"
 
@@ -1868,6 +2030,10 @@ msgstr "Stakea Puntos Multiplicadores"
 msgid "Stake esGMX Rewards"
 msgstr "Stakea Recompensas esGMX"
 
+#: src/pages/Stake/StakeV1.js
+msgid "Stake failed"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Stake failed."
 msgstr "Stake fallido."
@@ -1876,7 +2042,15 @@ msgstr "Stake fallido."
 msgid "Stake submitted!"
 msgstr "¡Stake enviado!"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV1.js
+msgid "Stake submitted! <0>View status.</0>"
+msgstr ""
+
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Staked"
 msgstr "Stakeado"
 
@@ -1885,7 +2059,7 @@ msgstr "Stakeado"
 msgid "Staked Tokens"
 msgstr "Tokens Stakeados"
 
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
 msgid "Staking..."
 msgstr "Stakeando..."
 
@@ -1909,7 +2083,7 @@ msgstr "Enviar"
 msgid "Supply"
 msgstr "Suministros"
 
-#: src/components/Exchange/SwapBox.js
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap"
 msgstr "Intercambiar"
 
@@ -1924,6 +2098,10 @@ msgstr "Falló la creación de la Orden de Intercambio."
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order submitted!"
 msgstr "¡Orden de Intercambio enviada!"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1947,6 +2125,7 @@ msgstr ""
 msgid "Synapse"
 msgstr "Synapse"
 
+#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
 msgstr "TOKEN"
@@ -1988,9 +2167,17 @@ msgstr ""
 msgid "Terms and Conditions"
 msgstr "Términos y Condiciones"
 
+#: src/pages/Stake/StakeV1.js
+msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "El APR aumentado es de sus Puntos Multiplicadores stakeados."
+
+#: src/pages/Stake/StakeV1.js
+msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
@@ -2040,6 +2227,10 @@ msgstr "Para reducir las comisiones, seleccione un activo diferente para recibir
 msgid "Total"
 msgstr "Total"
 
+#: src/pages/Stake/StakeV1.js
+msgid "Total Assets Staked"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Fees"
@@ -2059,8 +2250,11 @@ msgstr "Total de reembolsos"
 msgid "Total Rewards"
 msgstr "Recompensas Totales"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Total Staked"
 msgstr "Total Stakeado"
 
@@ -2068,10 +2262,8 @@ msgstr "Total Stakeado"
 msgid "Total Stats"
 msgstr "Estadísticas Totales"
 
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Total Supply"
 msgstr "Suministro Total"
 
@@ -2079,8 +2271,6 @@ msgstr "Suministro Total"
 msgid "Total Traders Referred"
 msgstr "Total de Traders Referidos"
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Volumen Total de Operaciones"
@@ -2089,6 +2279,7 @@ msgstr "Volumen Total de Operaciones"
 msgid "Total Users"
 msgstr "Usuarios Totales"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
@@ -2096,6 +2287,10 @@ msgstr "Volumen Total"
 
 #: src/pages/Dashboard/DashboardV1.js
 msgid "Total Volume Since 28 April 2021"
+msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV1.js
@@ -2127,9 +2322,17 @@ msgstr "Traders"
 msgid "Traders Referred"
 msgstr "Traders Referidos"
 
+#: src/pages/Exchange/Exchange.js
+msgid "Trades"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Trading guide"
 msgstr "Guía de Trading"
+
+#: src/pages/NftWallet/NftWallet.js
+msgid "Tranferring..."
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
@@ -2148,6 +2351,10 @@ msgstr "Transferir Cuenta"
 msgid "Transfer ETH"
 msgstr "Transferir ETH"
 
+#: src/pages/NftWallet/NftWallet.js
+msgid "Transfer NFT"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transfer Submitted"
 msgstr ""
@@ -2156,11 +2363,11 @@ msgstr ""
 msgid "Transfer already initiated"
 msgstr "Transferencia ya iniciada"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/NftWallet/NftWallet.js
 msgid "Transfer failed."
 msgstr "La transferencia ha fallado."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/NftWallet/NftWallet.js
 msgid "Transfer submitted!"
 msgstr "¡Transferencia enviada!"
 
@@ -2188,7 +2395,7 @@ msgstr "Dos tokens crean nuestro ecosistema"
 msgid "Txn failed. <0>View</0>"
 msgstr ""
 
-#: src/components/Exchange/OrdersList.js
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Type"
 msgstr "Tipo"
 
@@ -2200,9 +2407,11 @@ msgstr ""
 msgid "UTILIZATION"
 msgstr "UTILIZACIÓN"
 
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Unstake"
 msgstr "Destakear"
 
@@ -2214,6 +2423,10 @@ msgstr "Destakear GMX"
 msgid "Unstake completed!"
 msgstr "¡Destakeo completado!"
 
+#: src/pages/Stake/StakeV1.js
+msgid "Unstake failed"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Unstake failed."
 msgstr "Falló el Destakeo."
@@ -2222,7 +2435,11 @@ msgstr "Falló el Destakeo."
 msgid "Unstake submitted!"
 msgstr "¡Destakeo enviado!"
 
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
+msgid "Unstake submitted! <0>View status.</0>"
+msgstr ""
+
+#: src/pages/Stake/StakeV1.js
 msgid "Unstaking..."
 msgstr "Destakeando..."
 
@@ -2330,21 +2547,26 @@ msgstr "PESO"
 msgid "Waiting for Approval"
 msgstr "Esperando Aprobación"
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Wallet"
 msgstr "Monedero"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Wallet is not connected"
 msgstr "El monedero no está conectado"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/NftWallet/NftWallet.js
 msgid "Wallet not connected"
 msgstr "Monedero no conectado"
+
+#: src/pages/Stake/StakeV1.js
+msgid "Wallet not yet connected"
+msgstr ""
 
 #: src/App/App.js
 msgid "WalletConnect"
@@ -2402,6 +2624,10 @@ msgstr "Retirando..."
 #: src/pages/Stake/StakeV2.js
 msgid "Withdrawn!"
 msgstr "¡Retirado!"
+
+#: src/pages/Exchange/Exchange.js
+msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Yield Optimizer on Avalanche"
@@ -2484,13 +2710,29 @@ msgstr "Su transferencia ha sido completada."
 msgid "Your transfer has been initiated."
 msgstr "Su transferencia ha sido iniciada."
 
-#: src/pages/Exchange/Exchange.js
-msgid "order"
-msgstr "orden"
+#: src/pages/PositionsOverview/PositionsOverview.js
+msgid "account"
+msgstr ""
+
+#: src/pages/PositionsOverview/PositionsOverview.js
+msgid "collateral"
+msgstr ""
+
+#: src/pages/PositionsOverview/PositionsOverview.js
+msgid "fee"
+msgstr ""
+
+#: src/pages/PositionsOverview/PositionsOverview.js
+msgid "size"
+msgstr ""
+
+#: src/pages/PositionsOverview/PositionsOverview.js
+msgid "time to liq"
+msgstr ""
 
 #: src/pages/Exchange/Exchange.js
-msgid "orders"
-msgstr "órdenes"
+msgid "{0, plural, one {Cancel # order} other {Cancel # orders}}"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP (${1})"
@@ -2538,6 +2780,10 @@ msgstr "{0} {1} no admitidos"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
 msgstr "{chainName} Las estadísticas totales comienzan a partir de {totalStatsStartDate}.<0/> Para obtener estadísticas detalladas:"
+
+#: src/pages/Exchange/Exchange.js
+msgid "{isLong, select, true {Long} false {Short}}"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"

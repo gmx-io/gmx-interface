@@ -45,6 +45,10 @@ msgstr ""
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr "<0>주문을 체결하기 위한 유동성이 부족합니다</0><1>시장 평균가가 지정된 가격에 도달하지 않았습니다</1><2>지정된 가격에 도달했지만 실행하기에 충분한 시간이 지나지 않았습니다</2>주문을 체결할 수 있는 키퍼가 없습니다.<3>"
 
+#: src/pages/PageNotFound/PageNotFound.js
+msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>모든 토큰이 인출되고 취소되며 베스팅이 중지됩니다.<1/><2/>GMX로 변환된 esGMX 토큰은 GMX 토큰으로 유지됩니다.<3/><4/>인출하지 않고 GMX 토큰을 수령하기 위해서는 총 보상 섹션 아래의 \"수령하기\" 버튼을 사용해주세요."
@@ -53,7 +57,10 @@ msgstr "<0>모든 토큰이 인출되고 취소되며 베스팅이 중지됩니�
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr ""
 
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "APR"
 msgstr "APR"
 
@@ -71,6 +78,7 @@ msgstr ""
 msgid "AVAILABLE"
 msgstr "사용가능"
 
+#: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -87,7 +95,7 @@ msgstr "주문을 활성화하기 위해 약관에 동의해주세요"
 msgid "Accept that orders are not guaranteed to execute and trigger orders may not settle at the trigger price"
 msgstr "주문의 실행이 보장되지 않으며 트리거 주문이 트리거 가격으로 실행되지 않을 수 있음을 확인합니다."
 
-#: src/pages/Actions/Actions.js
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Account"
 msgstr "계정"
 
@@ -163,6 +171,7 @@ msgid "Announcement"
 msgstr "공지"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/Stake/StakeV2.js
 msgid "Approve GMX"
 msgstr "GMX 승인"
 
@@ -172,7 +181,7 @@ msgstr "GMX 승인"
 msgid "Approve {0}"
 msgstr "{0} 승인"
 
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
 msgid "Approve {stakingTokenSymbol}"
 msgstr "{stakingTokenSymbol} 승인"
 
@@ -186,7 +195,7 @@ msgstr "GMX 승인중..."
 msgid "Approving {0}..."
 msgstr "{0} 승인중..."
 
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
 msgid "Approving {stakingTokenSymbol}..."
 msgstr "{stakingTokenSymbol} 승인중..."
 
@@ -378,6 +387,10 @@ msgstr "{0}로 구매"
 msgid "Buying..."
 msgstr "구매중..."
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Can't execute because of an error"
+msgstr ""
+
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -393,10 +406,6 @@ msgid "Cancel submitted."
 msgstr "취소 제출 완료"
 
 #: src/pages/Exchange/Exchange.js
-msgid "Cancel {0} {orderText}"
-msgstr "{0} {orderText} 취소"
-
-#: src/pages/Exchange/Exchange.js
 msgid "Chart positions"
 msgstr "차트 포지션"
 
@@ -410,7 +419,11 @@ msgstr "최저 수수료로 이용하려면 \"수수료 절약\" 섹션 아래�
 msgid "Checking code..."
 msgstr "코드 확인중..."
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Claim"
 msgstr "수령하기"
 
@@ -420,6 +433,7 @@ msgid "Claim GMX Rewards"
 msgstr "GMX 보상 수령하기"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim completed!"
 msgstr "수령 완료!"
 
@@ -432,13 +446,22 @@ msgstr "esGMX 수령하기"
 msgid "Claim esGMX Rewards"
 msgstr "esGMX 보상 수령하기"
 
+#: src/pages/Stake/StakeV1.js
+msgid "Claim failed"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claim failed."
 msgstr "수령 실패"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Claim submitted!"
 msgstr "수령 제출 완료!"
+
+#: src/pages/Stake/StakeV1.js
+msgid "Claim submitted! <0>View status.</0>"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Claim submitted."
@@ -454,6 +477,7 @@ msgid "Claimable"
 msgstr "수령가능"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claiming..."
 msgstr "수령중..."
 
@@ -468,6 +492,10 @@ msgstr "포지션 종료 실패"
 #: src/components/Exchange/PositionSeller.js
 msgid "Close submitted!"
 msgstr "포지션 종료 제출 완료"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Close to execution price"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close without profit"
@@ -551,19 +579,16 @@ msgstr "수령 및 스테이킹중..."
 msgid "Connect"
 msgstr "연동"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Header/AppHeaderUser.tsx
-#: src/components/Referrals/AddAffiliateCode.js
-#: src/components/Referrals/JoinReferralCode.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Connect Wallet"
 msgstr "지갑 연동"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Continue"
 msgstr "계속하기"
 
@@ -588,7 +613,17 @@ msgstr "주소 복사"
 msgid "Could not add token to MetaMask"
 msgstr ""
 
-#: src/components/Referrals/AddAffiliateCode.js
+#: src/pages/Exchange/Exchange.js
+msgid "Could not decrease {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
+msgstr ""
+
+#: src/pages/Exchange/Exchange.js
+msgid "Could not increase {tokenSymbol} {longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page."
+msgstr ""
+
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Create"
 msgstr "생성"
 
@@ -599,6 +634,10 @@ msgstr "주문 생성"
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Create Referral Code"
 msgstr "추천 코드 생성"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Created"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Created limit order for {0} {1}: {2} USD!"
@@ -678,6 +717,14 @@ msgstr ""
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr "탈중화<0/>퍼페추얼 거래소"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Decrease active: {0}, executed: {1}, cancelled: {2}"
+msgstr ""
+
+#: src/pages/Exchange/Exchange.js
+msgid "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -713,6 +760,10 @@ msgstr "예치 제출 완료."
 msgid "Deposited"
 msgstr ""
 
+#: src/pages/Exchange/Exchange.js
+msgid "Deposited {0} USD into {tokenSymbol} {longOrShortText}"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Deposited!"
 msgstr "예치되었습니다!"
@@ -721,6 +772,10 @@ msgstr "예치되었습니다!"
 #: src/pages/Stake/StakeV2.js
 msgid "Depositing..."
 msgstr "예치중..."
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Diff"
+msgstr ""
 
 #: src/App/App.js
 msgid "Disable order validations"
@@ -837,11 +892,19 @@ msgstr "레버리지 유효화중"
 msgid "Enabling Orders..."
 msgstr "주문 유효화중.."
 
+#: src/pages/NftWallet/NftWallet.js
+msgid "Enter NFT Address"
+msgstr ""
+
+#: src/pages/NftWallet/NftWallet.js
+msgid "Enter NFT ID"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Enter Price"
 msgstr "가격 입력"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/NftWallet/NftWallet.js
 msgid "Enter Receiver Address"
 msgstr "수령 주소 입력"
 
@@ -859,7 +922,8 @@ msgstr "코드 입력"
 msgid "Enter a price"
 msgstr "가격 입력"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Enter an amount"
 msgstr "수량 입력"
 
@@ -887,6 +951,10 @@ msgstr "진입 가격"
 msgid "Escrowed GMX APR"
 msgstr "esGMX APR"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Execute"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 msgid "Execution Fee"
 msgstr "실행 수수료"
@@ -899,6 +967,9 @@ msgstr "매도 가격"
 msgid "FEES"
 msgstr "수수료"
 
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
@@ -1025,6 +1096,10 @@ msgstr ""
 msgid "GMX is currently live on Arbitrum and Avalanche."
 msgstr "GMX는 현재 Arbitrum과 Avalanche에서 이용할 수 있습니다."
 
+#: src/pages/Jobs/Jobs.js
+msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
+msgstr ""
+
 #: src/components/TokenCard/TokenCard.js
 msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
 msgstr "GMX는 유틸리티 및 거버넌스 토큰입니다. 플랫폼에서 생성되는 수수료의 30%를 축적하세요."
@@ -1074,13 +1149,25 @@ msgstr "레버리지 표시창에 손익 포함하기"
 msgid "Incorrect Account"
 msgstr "잘못된 계정입니다"
 
-#: src/components/Exchange/SwapBox.js
+#: src/pages/Stake/StakeV1.js
 msgid "Incorrect Network"
 msgstr "잘못된 네트워크입니다"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Incorrect network"
 msgstr "잘못된 네트워크입니다"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Increase active: {0}, executed: {1}, cancelled: {2}"
+msgstr ""
+
+#: src/pages/Exchange/Exchange.js
+msgid "Increased {tokenSymbol} {longOrShortText}, +{0} USD."
+msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Index"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral"
@@ -1127,11 +1214,15 @@ msgstr "스테이킹된 토큰 부족"
 msgid "Insufficient {0} balance"
 msgstr "{0} 잔고 부족"
 
+#: src/pages/NftWallet/NftWallet.js
+msgid "Invalid NFT Address"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Invalid Receiver"
 msgstr "유효하지 않은 수령인"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/NftWallet/NftWallet.js
 msgid "Invalid Receiver Address"
 msgstr "유효하지 않은 수령 주소"
 
@@ -1147,6 +1238,22 @@ msgstr "유효하지 않은 가격, 경고문을 보세요"
 #: src/App/App.js
 msgid "Invalid slippage value"
 msgstr "유효하지 않은 슬리피지 값"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Invalid token fromToken: \"{0}\" toToken: \"{toTokenAddress}\""
+msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
+msgstr ""
+
+#: src/pages/Jobs/Jobs.js
+msgid "Job openings at GMX."
+msgstr ""
+
+#: src/pages/Jobs/Jobs.js
+msgid "Jobs"
+msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Launch Exchange"
@@ -1217,11 +1324,7 @@ msgstr "유동성 데이터를 불러오지 못하였습니다."
 msgid "Loading..."
 msgstr "로딩중..."
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Long"
 msgstr "롱"
 
@@ -1246,12 +1349,18 @@ msgstr "공유할 수 있는 추천 코드가 없는 것 같습니다. <0/> 코�
 msgid "Loss"
 msgstr "손실"
 
+#: src/components/BuyInputSection/BuyInputSection.js
+#: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
 msgstr "최대"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
+msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Mark"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js
@@ -1285,9 +1394,8 @@ msgstr ""
 msgid "Max Capacity for {0} Reached"
 msgstr "{0}의 최대치에 도달했습니다."
 
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Max amount exceeded"
 msgstr "최대 수량을 초과했습니다"
 
@@ -1332,6 +1440,11 @@ msgstr "{0} 롱 최대치를 초과했습니다"
 msgid "Max {0} short exceeded"
 msgstr "{0} 숏 최대치를 초과했습니다."
 
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+msgid "Max: {0}"
+msgstr ""
+
 #: src/components/Footer/Footer.js
 #: src/components/Footer/Footer.js
 msgid "Media Kit"
@@ -1344,6 +1457,12 @@ msgstr "메타마스크"
 #: src/App/App.js
 msgid "MetaMask not detected."
 msgstr "메타마스크가 탐지되지 않았습니다."
+
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+msgid "Migrate"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -1370,6 +1489,18 @@ msgstr "멀티플라이어 포인트 APR"
 msgid "Multiswap"
 msgstr "멀티스왑"
 
+#: src/pages/NftWallet/NftWallet.js
+msgid "NFT Address"
+msgstr ""
+
+#: src/pages/NftWallet/NftWallet.js
+msgid "NFT ID"
+msgstr ""
+
+#: src/pages/NftWallet/NftWallet.js
+msgid "NFT Wallet"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Net Value"
@@ -1395,10 +1526,18 @@ msgstr "열려있는 주문이 없습니다"
 msgid "No open positions"
 msgstr "열려있는 포지션이 없습니다"
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "No position"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
 msgid "No rebates distribution history yet."
 msgstr "리베이트 분배 내역이 없습니다."
+
+#: src/pages/Stake/StakeV1.js
+msgid "No rewards to claim yet"
+msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
@@ -1433,11 +1572,15 @@ msgstr "Explorer에서 보기"
 msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 msgstr "간단한 스왑 인터페이스를 통해 포지션을 열어보세요. 지원되는 자산내에서 원하는 포지션으로 편리하게 스왑할 수 있습니다."
 
+#: src/pages/PositionsOverview/PositionsOverview.js
+msgid "Open positions: {0}<0/>Under risk: {1}"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Optimal compound interval calculator"
 msgstr ""
 
-#: src/components/Exchange/OrdersList.js
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Order"
 msgstr "주문"
 
@@ -1449,14 +1592,25 @@ msgstr "주문 생성!"
 msgid "Order creation failed."
 msgstr "주문 생성 실패."
 
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Order size exceeds position"
+msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Order size is 0"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Order submitted!"
 msgstr "주문 제출 완료!"
 
-#: src/components/Exchange/PositionsList.js
-#: src/pages/Actions/Actions.js
+#: src/pages/Exchange/Exchange.js
 msgid "Orders"
 msgstr "주문"
+
+#: src/pages/Exchange/Exchange.js
+msgid "Orders ({0})"
+msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 msgid "Orders cancelled."
@@ -1470,9 +1624,14 @@ msgstr "개요"
 msgid "POOL"
 msgstr "풀"
 
+#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
 msgstr "가격"
+
+#: src/pages/PageNotFound/PageNotFound.js
+msgid "Page not found"
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -1532,16 +1691,15 @@ msgstr "포지션"
 msgid "Position close disabled, pending {0} upgrade"
 msgstr ""
 
-#: src/pages/Actions/Actions.js
+#: src/pages/Exchange/Exchange.js
 msgid "Positions"
 msgstr "포지션"
 
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV1.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Exchange/Exchange.js
+msgid "Positions ({0})"
+msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Price"
 msgstr "가격"
 
@@ -1562,6 +1720,10 @@ msgstr "청산가 미만 가격"
 #: src/components/Exchange/SwapBox.js
 msgid "Price below Mark Price"
 msgstr "시장 평균가 미만 가격"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Price conditions are met"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Price on Arbitrum"
@@ -1627,7 +1789,7 @@ msgstr "어필리에이트로서 이 계정이 획득한 리베이트."
 msgid "Receive"
 msgstr "수령하기"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/NftWallet/NftWallet.js
 msgid "Receiver Address"
 msgstr "수령할 주소"
 
@@ -1679,7 +1841,7 @@ msgstr "추천 코드 업데이트 실패."
 msgid "Referral code updated!"
 msgstr "추천 코드 업데이트 완료!"
 
-#: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Referrals/Referrals.js
 #: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "추천"
@@ -1717,8 +1879,11 @@ msgstr "베스팅을 위해 리저브됨"
 msgid "Returns calculator for GMX and GLP"
 msgstr ""
 
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Rewards"
 msgstr "보상"
 
@@ -1734,6 +1899,7 @@ msgstr "저장"
 msgid "Save on Costs"
 msgstr "비용 절감"
 
+#: src/components/NetworkDropdown/LanguagePopupHome.js
 #: src/components/NetworkDropdown/NetworkDropdown.js
 msgid "Select Language"
 msgstr "언어 선택"
@@ -1806,11 +1972,7 @@ msgstr "공유"
 msgid "Share Position"
 msgstr "포지션 공유"
 
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Short"
 msgstr "숏"
 
@@ -1846,9 +2008,9 @@ msgstr "페이지 로드 속도 향상"
 msgid "Stablecoin Percentage"
 msgstr "스테이블코인 비율"
 
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Stake"
 msgstr "스테이킹"
 
@@ -1868,6 +2030,10 @@ msgstr "멀티플라이어 포인트 스테이킹"
 msgid "Stake esGMX Rewards"
 msgstr "esGMX 보상 스테이킹"
 
+#: src/pages/Stake/StakeV1.js
+msgid "Stake failed"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Stake failed."
 msgstr "스테이킹 실패."
@@ -1876,7 +2042,15 @@ msgstr "스테이킹 실패."
 msgid "Stake submitted!"
 msgstr "스테이킹 제출 완료!"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV1.js
+msgid "Stake submitted! <0>View status.</0>"
+msgstr ""
+
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Staked"
 msgstr "스테이킹 완료"
 
@@ -1885,7 +2059,7 @@ msgstr "스테이킹 완료"
 msgid "Staked Tokens"
 msgstr "스테이킹된 토큰"
 
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
 msgid "Staking..."
 msgstr "스테이킹중..."
 
@@ -1909,7 +2083,7 @@ msgstr "제출"
 msgid "Supply"
 msgstr "공급량"
 
-#: src/components/Exchange/SwapBox.js
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap"
 msgstr "스왑"
 
@@ -1924,6 +2098,10 @@ msgstr "스왑 주문 생성 실패."
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order submitted!"
 msgstr "스왑 주문 제출 완료!"
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Swap active: {0}, executed: {1}, cancelled: {2}"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1947,6 +2125,7 @@ msgstr ""
 msgid "Synapse"
 msgstr "Synapse"
 
+#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
 msgstr "토큰"
@@ -1988,9 +2167,17 @@ msgstr ""
 msgid "Terms and Conditions"
 msgstr "약관"
 
+#: src/pages/Stake/StakeV1.js
+msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "\"APR 부스트는 스테이킹된 멀티플라이어 포인트로부터 적용됩니다."
+
+#: src/pages/Stake/StakeV1.js
+msgid "The Gambit protocol is in beta, please read the <0>staking details</0>before participating."
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
@@ -2040,6 +2227,10 @@ msgstr "수수료를 줄이기 위해서는 다른 자산으로 수령해주세�
 msgid "Total"
 msgstr "총계"
 
+#: src/pages/Stake/StakeV1.js
+msgid "Total Assets Staked"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Fees"
@@ -2059,8 +2250,11 @@ msgstr "총 리베이트"
 msgid "Total Rewards"
 msgstr "총 보상"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Total Staked"
 msgstr "총 스테이킹"
 
@@ -2068,10 +2262,8 @@ msgstr "총 스테이킹"
 msgid "Total Stats"
 msgstr "전체 통계"
 
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Total Supply"
 msgstr "총 공급량"
 
@@ -2079,8 +2271,6 @@ msgstr "총 공급량"
 msgid "Total Traders Referred"
 msgstr "추천한 총 트레이더"
 
-#: src/components/Referrals/AffiliatesStats.js
-#: src/components/Referrals/TradersStats.js
 #: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "총 트레이딩 거래량"
@@ -2089,6 +2279,7 @@ msgstr "총 트레이딩 거래량"
 msgid "Total Users"
 msgstr "총 유저"
 
+#: src/components/Referrals/AffiliatesStats.js
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
@@ -2096,6 +2287,10 @@ msgstr "총 거래량"
 
 #: src/pages/Dashboard/DashboardV1.js
 msgid "Total Volume Since 28 April 2021"
+msgstr ""
+
+#: src/pages/OrdersOverview/OrdersOverview.js
+msgid "Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV1.js
@@ -2127,9 +2322,17 @@ msgstr "트레이더"
 msgid "Traders Referred"
 msgstr "추천한 트레이더"
 
+#: src/pages/Exchange/Exchange.js
+msgid "Trades"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Trading guide"
 msgstr "트레이딩 가이드"
+
+#: src/pages/NftWallet/NftWallet.js
+msgid "Tranferring..."
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
@@ -2148,6 +2351,10 @@ msgstr "계정 이전"
 msgid "Transfer ETH"
 msgstr "ETH 전송"
 
+#: src/pages/NftWallet/NftWallet.js
+msgid "Transfer NFT"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transfer Submitted"
 msgstr ""
@@ -2156,11 +2363,11 @@ msgstr ""
 msgid "Transfer already initiated"
 msgstr "이전이 이미 시작됐습니다"
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/NftWallet/NftWallet.js
 msgid "Transfer failed."
 msgstr "이전 실패."
 
-#: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/NftWallet/NftWallet.js
 msgid "Transfer submitted!"
 msgstr "이전 제출 완료!"
 
@@ -2188,7 +2395,7 @@ msgstr "두개의 토큰이 생태계를 형성하고 있습니다"
 msgid "Txn failed. <0>View</0>"
 msgstr ""
 
-#: src/components/Exchange/OrdersList.js
+#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Type"
 msgstr "타입"
 
@@ -2200,9 +2407,11 @@ msgstr ""
 msgid "UTILIZATION"
 msgstr "사용률"
 
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Unstake"
 msgstr "언스테이킹"
 
@@ -2214,6 +2423,10 @@ msgstr "GMX 언스테이킹"
 msgid "Unstake completed!"
 msgstr "언스테이킹 완료!"
 
+#: src/pages/Stake/StakeV1.js
+msgid "Unstake failed"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Unstake failed."
 msgstr "언스테이킹 실패."
@@ -2222,7 +2435,11 @@ msgstr "언스테이킹 실패."
 msgid "Unstake submitted!"
 msgstr "언스테이킹 제출 완료!"
 
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
+msgid "Unstake submitted! <0>View status.</0>"
+msgstr ""
+
+#: src/pages/Stake/StakeV1.js
 msgid "Unstaking..."
 msgstr "언스테이킹중..."
 
@@ -2330,21 +2547,26 @@ msgstr "비중"
 msgid "Waiting for Approval"
 msgstr "승인 대기중"
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV1.js
 msgid "Wallet"
 msgstr "지갑"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "Wallet is not connected"
 msgstr "지갑이 연결되지 않았습니다"
 
-#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/NftWallet/NftWallet.js
 msgid "Wallet not connected"
 msgstr "지갑이 연결되지 않음"
+
+#: src/pages/Stake/StakeV1.js
+msgid "Wallet not yet connected"
+msgstr ""
 
 #: src/App/App.js
 msgid "WalletConnect"
@@ -2402,6 +2624,10 @@ msgstr "인출중..."
 #: src/pages/Stake/StakeV2.js
 msgid "Withdrawn!"
 msgstr "인출 완료!"
+
+#: src/pages/Exchange/Exchange.js
+msgid "Withdrew {0} USD from {tokenSymbol} {longOrShortText}."
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Yield Optimizer on Avalanche"
@@ -2484,13 +2710,29 @@ msgstr "이전이 완료되었습니다."
 msgid "Your transfer has been initiated."
 msgstr "이전이 시작되었습니다."
 
-#: src/pages/Exchange/Exchange.js
-msgid "order"
-msgstr "주문"
+#: src/pages/PositionsOverview/PositionsOverview.js
+msgid "account"
+msgstr ""
+
+#: src/pages/PositionsOverview/PositionsOverview.js
+msgid "collateral"
+msgstr ""
+
+#: src/pages/PositionsOverview/PositionsOverview.js
+msgid "fee"
+msgstr ""
+
+#: src/pages/PositionsOverview/PositionsOverview.js
+msgid "size"
+msgstr ""
+
+#: src/pages/PositionsOverview/PositionsOverview.js
+msgid "time to liq"
+msgstr ""
 
 #: src/pages/Exchange/Exchange.js
-msgid "orders"
-msgstr "주문"
+msgid "{0, plural, one {Cancel # order} other {Cancel # orders}}"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP (${1})"
@@ -2538,6 +2780,10 @@ msgstr "{0} {1}은(는) 지원되지 않습니다"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
 msgstr "{chainName}의 전체 통계는 {totalStatsStartDate}부터 시작됩니다.<0/> 더 자세한 통계:"
+
+#: src/pages/Exchange/Exchange.js
+msgid "{isLong, select, true {Long} false {Short}}"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"

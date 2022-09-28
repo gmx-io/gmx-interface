@@ -28,6 +28,7 @@ import TradersStats from "../../components/Referrals/TradersStats";
 import AddAffiliateCode from "../../components/Referrals/AddAffiliateCode";
 import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "../../components/Referrals/referralsHelper";
 import { ethers } from "ethers";
+import ExternalLink from "../../components/Common/ExternalLink";
 
 const TRADERS = t`Traders`;
 const AFFILIATES = t`Affiliates`;
@@ -112,10 +113,10 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   }
 
   return (
-    <SEO title={getPageTitle("Referrals")}>
+    <SEO title={getPageTitle(t`Referrals`)}>
       <div className="default-container page-layout Referrals">
         <div className="section-title-block">
-          <div className="section-title-icon"></div>
+          <div className="section-title-icon" />
           <div className="section-title-content">
             <div className="Page-title">
               <Trans>Referrals</Trans>
@@ -125,10 +126,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
                 Get fee discounts and earn rebates through the GMX referral program.
                 <br />
                 For more information, please read the{" "}
-                <a target="_blank" rel="noopener noreferrer" href="https://gmxio.gitbook.io/gmx/referrals">
-                  referral program details
-                </a>
-                .
+                <ExternalLink href="https://gmxio.gitbook.io/gmx/referrals">referral program details</ExternalLink>.
               </Trans>
             </div>
           </div>
