@@ -10,7 +10,7 @@ type FeeItem = {
   feeUsd: string;
 };
 
-function createFeeList(data) {
+function createFeeList(data: { to: number; feeUsd: string }[]) {
   const list: FeeItem[] = [];
 
   for (let i = 0; i < data.length; i++) {
