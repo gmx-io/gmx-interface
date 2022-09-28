@@ -18,7 +18,6 @@ import GlpManager from "../../abis/GlpManager.json";
 
 import { ethers } from "ethers";
 import {
-  helperToast,
   bigNumberify,
   formatAmount,
   formatKeyAmount,
@@ -26,7 +25,6 @@ import {
   expandDecimals,
   parseValue,
   approveTokens,
-  useLocalStorageSerializeKey,
   useChainId,
   GLP_DECIMALS,
   USD_DECIMALS,
@@ -52,6 +50,8 @@ import StatsTooltip from "../../components/StatsTooltip/StatsTooltip";
 import StatsTooltipRow from "../../components/StatsTooltip/StatsTooltipRow";
 import { getServerUrl } from "../../config/backend";
 import { callContract, contractFetcher } from "../../lib/contracts";
+import { useLocalStorageSerializeKey } from "../../lib/localStorage";
+import { helperToast } from "../../lib/helperToast";
 
 const { AddressZero } = ethers.constants;
 

@@ -13,7 +13,6 @@ import {
   formatDateTime,
   usePrevious,
   getLiquidationPrice,
-  useLocalStorageSerializeKey,
   numberWithCommas,
 } from "../../lib/legacy";
 import { useChartPrices } from "../../domain/legacy";
@@ -21,6 +20,7 @@ import Tab from "../Tab/Tab";
 
 import ChartTokenSelector from "./ChartTokenSelector";
 import { getToken, getTokens } from "../../domain/tokens";
+import { useLocalStorageSerializeKey } from "../../lib/localStorage";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 

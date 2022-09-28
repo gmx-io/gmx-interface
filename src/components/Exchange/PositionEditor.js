@@ -9,7 +9,6 @@ import {
   BASIS_POINTS_DIVISOR,
   DEPOSIT_FEE,
   DUST_BNB,
-  helperToast,
   formatAmount,
   bigNumberify,
   usePrevious,
@@ -32,6 +31,7 @@ import Tooltip from "../Tooltip/Tooltip";
 import { getChainName, getConstant, IS_NETWORK_DISABLED } from "../../config/chains";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { callContract, contractFetcher } from "../../lib/contracts";
+import { helperToast } from "../../lib/helperToast";
 
 const DEPOSIT = t`Deposit`;
 const WITHDRAW = t`Withdraw`;

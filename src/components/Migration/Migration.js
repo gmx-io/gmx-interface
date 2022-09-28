@@ -20,7 +20,6 @@ import {
   expandDecimals,
   approveTokens,
   bigNumberify,
-  helperToast,
 } from "../../lib/legacy";
 import { getContract } from "../../config/contracts";
 
@@ -29,6 +28,7 @@ import Token from "../../abis/Token.json";
 import GmxMigrator from "../../abis/GmxMigrator.json";
 import { CHAIN_ID, getExplorerUrl } from "../../config/chains";
 import { contractFetcher } from "../../lib/contracts";
+import { helperToast } from "../../lib/helperToast";
 
 const { MaxUint256, AddressZero } = ethers.constants;
 

@@ -1,13 +1,14 @@
 import "./AddressDropdown.css";
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
-import { helperToast, shortenAddress, useENS } from "../../lib/legacy";
+import { shortenAddress, useENS } from "../../lib/legacy";
 import { useCopyToClipboard, createBreakpoint } from "react-use";
 import externalLink from "../../img/ic_new_link_16.svg";
 import copy from "../../img/ic_copy_16.svg";
 import disconnect from "../../img/ic_sign_out_16.svg";
 import { FaChevronDown } from "react-icons/fa";
 import Davatar from "@davatar/react";
+import { helperToast } from "../../lib/helperToast";
 
 function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSettings }) {
   const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });

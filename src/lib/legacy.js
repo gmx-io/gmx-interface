@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import {
   UserRejectedRequestError as UserRejectedRequestErrorWalletConnect,
   WalletConnectConnector,
 } from "@web3-react/walletconnect-connector";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
-import { useLocalStorage } from "react-use";
 import { ethers } from "ethers";
 import { format as formatDateFn } from "date-fns";
 import Token from "../abis/Token.json";
@@ -148,40 +147,6 @@ export function deserialize(data) {
 
 export function isHomeSite() {
   return process.env.REACT_APP_IS_HOME_SITE === "true";
-}
-
-export function useLocalStorageByChainId(chainId, key, defaultValue) {
-  const [internalValue, setInternalValue] = useLocalStorage(key, {});
-
-  const setValue = useCallback(
-    (value) => {
-      setInternalValue((internalValue) => {
-        if (typeof value === "function") {
-          value = value(internalValue[chainId] || defaultValue);
-        }
-        const newInternalValue = {
-          ...internalValue,
-          [chainId]: value,
-        };
-        return newInternalValue;
-      });
-    },
-    [chainId, setInternalValue, defaultValue]
-  );
-
-  let value;
-  if (chainId in internalValue) {
-    value = internalValue[chainId];
-  } else {
-    value = defaultValue;
-  }
-
-  return [value, setValue];
-}
-
-export function useLocalStorageSerializeKey(key, value, opts) {
-  key = JSON.stringify(key);
-  return useLocalStorage(key, value, opts);
 }
 
 function getTriggerPrice(tokenAddress, max, info, orderOption, triggerPriceUsd) {

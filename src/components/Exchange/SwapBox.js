@@ -33,7 +33,6 @@ import {
   getPositionKey,
   getTokenInfo,
   getUsd,
-  helperToast,
   isSupportedChain,
   isTriggerRatioInverted,
   LEVERAGE_ORDER_OPTIONS,
@@ -53,8 +52,6 @@ import {
   USD_DECIMALS,
   USDG_ADDRESS,
   USDG_DECIMALS,
-  useLocalStorageByChainId,
-  useLocalStorageSerializeKey,
   usePrevious,
 } from "../../lib/legacy";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant, IS_NETWORK_DISABLED } from "../../config/chains";
@@ -82,6 +79,8 @@ import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { callContract, contractFetcher } from "../../lib/contracts";
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "../../domain/tokens";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../lib/localStorage";
+import { helperToast } from "../../lib/helperToast";
 
 const SWAP_ICONS = {
   [LONG]: longImg,

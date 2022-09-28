@@ -8,7 +8,6 @@ import {
   MAX_REFERRAL_CODE_LENGTH,
   bigNumberify,
   isAddressZero,
-  helperToast,
   getProvider,
   isHashZero,
   REFERRAL_CODE_KEY,
@@ -18,6 +17,7 @@ import { REGEX_VERIFY_BYTES32 } from "../components/Referrals/referralsHelper";
 import { ARBITRUM, AVALANCHE } from "../config/chains";
 import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "../lib/subgraph/clients";
 import { callContract, contractFetcher } from "../lib/contracts";
+import { helperToast } from "../lib/helperToast";
 
 const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
 const DISTRIBUTION_TYPE_REBATES = "1";

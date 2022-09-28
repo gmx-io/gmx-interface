@@ -26,7 +26,6 @@ import {
   MARKET,
   STOP,
   DECREASE,
-  useLocalStorageSerializeKey,
   calculatePositionDelta,
   getDeltaStr,
   getProfitPrice,
@@ -36,7 +35,6 @@ import {
   getUsd,
   USDG_DECIMALS,
   CLOSE_POSITION_RECEIVE_TOKEN_KEY,
-  useLocalStorageByChainId,
   adjustForDecimals,
 } from "../../lib/legacy";
 import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED } from "../../config/chains";
@@ -54,6 +52,7 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { callContract } from "../../lib/contracts";
 import { getTokenAmountFromUsd, getTokens } from "../../domain/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "../../config/ui";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../lib/localStorage";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10

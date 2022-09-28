@@ -5,7 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useCopyToClipboard } from "react-use";
 
 import { getContract } from "../../config/contracts";
-import { useChainId, helperToast } from "../../lib/legacy";
+import { useChainId } from "../../lib/legacy";
 
 import Modal from "../../components/Modal/Modal";
 import Footer from "../../components/Footer/Footer";
@@ -16,6 +16,7 @@ import "./CompleteAccountTransfer.css";
 
 import { Trans, t } from "@lingui/macro";
 import { callContract } from "../../lib/contracts";
+import { helperToast } from "../../lib/helperToast";
 
 export default function CompleteAccountTransfer(props) {
   const [, copyToClipboard] = useCopyToClipboard();

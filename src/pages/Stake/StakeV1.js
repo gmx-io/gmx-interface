@@ -14,7 +14,6 @@ import {
   expandDecimals,
   approveTokens,
   bigNumberify,
-  helperToast,
   USD_DECIMALS,
   PRECISION,
 } from "../../lib/legacy";
@@ -33,6 +32,7 @@ import "./Stake.css";
 import { CHAIN_ID, getExplorerUrl } from "../../config/chains";
 import { contractFetcher } from "../../lib/contracts";
 import { getTokenBySymbol } from "../../domain/tokens";
+import { helperToast } from "../../lib/helperToast";
 
 const BASIS_POINTS_DIVISOR = 10000;
 const HOURS_PER_YEAR = 8760;

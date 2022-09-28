@@ -11,7 +11,6 @@ import {
   numberWithCommas,
   getTokenUrl,
   useChainId,
-  helperToast,
 } from "../../lib/legacy";
 import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "../../config/contracts";
 import { getFeeHistory } from "../../config/Fees";
@@ -29,6 +28,7 @@ import bscscanImg from "../../img/bscscan.png";
 import { getServerUrl } from "../../config/backend";
 import { contractFetcher } from "../../lib/contracts";
 import { getToken, getTokens } from "../../domain/tokens";
+import { helperToast } from "../../lib/helperToast";
 
 const USD_DECIMALS = 30;
 const PRECISION = expandDecimals(1, 30);

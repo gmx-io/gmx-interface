@@ -8,8 +8,6 @@ import Tab from "../Tab/Tab";
 import cx from "classnames";
 import { getContract } from "../../config/contracts";
 import {
-  helperToast,
-  useLocalStorageByChainId,
   getTokenInfo,
   useChainId,
   expandDecimals,
@@ -64,6 +62,8 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { ARBITRUM, getChainName, IS_NETWORK_DISABLED } from "../../config/chains";
 import { callContract, contractFetcher } from "../../lib/contracts";
 import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedToken } from "../../domain/tokens";
+import { useLocalStorageByChainId } from "../../lib/localStorage";
+import { helperToast } from "../../lib/helperToast";
 
 const { AddressZero } = ethers.constants;
 

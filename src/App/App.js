@@ -17,11 +17,9 @@ import {
   getAppBaseUrl,
   isHomeSite,
   clearWalletConnectData,
-  helperToast,
   useChainId,
   getInjectedHandler,
   useEagerConnect,
-  useLocalStorageSerializeKey,
   useInactiveListener,
   getWalletConnectHandler,
   activateInjectedProvider,
@@ -92,6 +90,8 @@ import { Trans, t } from "@lingui/macro";
 import { defaultLocale, dynamicActivate } from "../lib/i18n";
 import { Header } from "../components/Header/Header";
 import { ARBITRUM, AVALANCHE, getAlchemyWsUrl, getExplorerUrl } from "../config/chains";
+import { useLocalStorageSerializeKey } from "../lib/localStorage";
+import { helperToast } from "../lib/helperToast";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
