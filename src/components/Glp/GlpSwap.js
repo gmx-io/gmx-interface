@@ -59,11 +59,17 @@ import SwapErrorModal from "./SwapErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { ARBITRUM, getChainName, IS_NETWORK_DISABLED } from "../../config/chains";
 import { callContract, contractFetcher } from "../../lib/contracts";
-import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedToken } from "../../domain/tokens";
+import {
+  getNativeToken,
+  getToken,
+  getTokens,
+  getWhitelistedTokens,
+  getWrappedToken,
+  useInfoTokens,
+} from "../../domain/tokens";
 import { useLocalStorageByChainId } from "../../lib/localStorage";
 import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo, getUsd } from "../../domain/tokens/utils";
-import { useInfoTokens } from "../../domain/tokens/useInfoTokens";
 
 const { AddressZero } = ethers.constants;
 

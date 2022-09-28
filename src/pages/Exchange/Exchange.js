@@ -46,11 +46,10 @@ import Footer from "../../components/Footer/Footer";
 
 import "./Exchange.css";
 import { contractFetcher } from "../../lib/contracts";
-import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "../../domain/tokens";
+import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens, useInfoTokens } from "../../domain/tokens";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo } from "../../domain/tokens/utils";
-import { useInfoTokens } from "../../domain/tokens/useInfoTokens";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;

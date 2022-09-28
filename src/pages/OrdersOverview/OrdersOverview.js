@@ -23,7 +23,7 @@ import {
 
 import "./OrdersOverview.css";
 import { getTokenInfo } from "../../domain/tokens/utils";
-import { useInfoTokens } from "../../domain/tokens/useInfoTokens";
+import { useInfoTokens } from "../../domain/tokens";
 
 export default function OrdersOverview() {
   const { chainId } = useChainId();

@@ -20,9 +20,8 @@ import Reader from "../../abis/Reader.json";
 import { Trans, t } from "@lingui/macro";
 import { getServerBaseUrl } from "../../config/backend";
 import { contractFetcher } from "../../lib/contracts";
-import { getToken, getTokens, getWhitelistedTokens } from "../../domain/tokens";
+import { getToken, getTokens, getWhitelistedTokens, useInfoTokens } from "../../domain/tokens";
 import { getTokenInfo } from "../../domain/tokens/utils";
-import { useInfoTokens } from "../../domain/tokens/useInfoTokens";
 
 const USD_DECIMALS = 30;
 
