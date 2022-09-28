@@ -5,7 +5,7 @@ import {
   WalletConnectConnector,
 } from "@web3-react/walletconnect-connector";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { format as formatDateFn } from "date-fns";
 import Token from "../abis/Token.json";
 import _ from "lodash";
