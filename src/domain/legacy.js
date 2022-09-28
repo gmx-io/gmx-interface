@@ -21,10 +21,8 @@ import {
   bigNumberify,
   DECREASE,
   expandDecimals,
-  getInfoTokens,
   getOrderKey,
   getProvider,
-  getUsd,
   INCREASE,
   parseValue,
   replaceNativeTokenAddress,
@@ -38,6 +36,7 @@ import { getServerBaseUrl, getServerUrl } from "../config/backend";
 import { getGmxGraphClient, nissohGraphClient } from "../lib/subgraph/clients";
 import { callContract, contractFetcher } from "../lib/contracts";
 import { getTokenBySymbol, getTokens, getWhitelistedTokens } from "./tokens";
+import { getInfoTokens, getUsd } from "./tokens/utils";
 
 export * from "./prices";
 

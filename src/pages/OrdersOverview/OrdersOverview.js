@@ -13,7 +13,6 @@ import {
   useChainId,
   formatAmount,
   shortenAddress,
-  getTokenInfo,
   getExchangeRateDisplay,
   getExchangeRate,
   shouldInvertTriggerRatio,
@@ -24,6 +23,7 @@ import {
 import * as Api from "../../domain/legacy";
 
 import "./OrdersOverview.css";
+import { getTokenInfo } from "../../domain/tokens/utils";
 
 export default function OrdersOverview() {
   const { chainId } = useChainId();

@@ -16,7 +16,6 @@ import {
   parseValue,
   expandDecimals,
   shouldRaiseGasError,
-  getTokenInfo,
   getLiquidationPrice,
   approveTokens,
 } from "../../lib/legacy";
@@ -32,6 +31,7 @@ import { getChainName, getConstant, IS_NETWORK_DISABLED } from "../../config/cha
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { callContract, contractFetcher } from "../../lib/contracts";
 import { helperToast } from "../../lib/helperToast";
+import { getTokenInfo } from "../../domain/tokens/utils";
 
 const DEPOSIT = t`Deposit`;
 const WITHDRAW = t`Withdraw`;

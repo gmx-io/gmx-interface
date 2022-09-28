@@ -1,25 +1,9 @@
 import { ethers } from "ethers";
 import { getContract } from "./contracts";
 import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, MAINNET, TESTNET } from "./chains";
+import { Token } from "../domain/tokens";
 
-export type TokenConfig = {
-  name: string;
-  symbol: string;
-  baseSymbol?: string;
-  decimals: number;
-  address: string;
-  coingeckoUrl?: string;
-  imageUrl?: string;
-
-  isUsdg?: boolean;
-  isNative?: boolean;
-  isWrapped?: boolean;
-  isShortable?: boolean;
-  isStable?: boolean;
-  isTempHidden?: boolean;
-};
-
-export const TOKENS: { [chainId: number]: TokenConfig[] } = {
+export const TOKENS: { [chainId: number]: Token[] } = {
   [MAINNET]: [
     {
       name: "Bitcoin (BTCB)",
@@ -345,7 +329,7 @@ export const TOKENS: { [chainId: number]: TokenConfig[] } = {
   ],
 };
 
-export const ADDITIONAL_TOKENS: { [chainId: number]: TokenConfig[] } = {
+export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
   [ARBITRUM]: [
     {
       name: "GMX",
@@ -392,7 +376,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: TokenConfig[] } = {
   ],
 };
 
-export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: TokenConfig } } = {
+export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } } = {
   [ARBITRUM]: {
     // arbitrum
     GMX: {
@@ -536,10 +520,10 @@ export const GLPPOOLCOLORS = {
   LINK: "#3256D6",
 };
 
-export const TOKENS_MAP: { [chainId: number]: { [address: string]: TokenConfig } } = {};
-export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: TokenConfig } } = {};
-export const WRAPPED_TOKENS_MAP: { [chainId: number]: TokenConfig } = {};
-export const NATIVE_TOKENS_MAP: { [chainId: number]: TokenConfig } = {};
+export const TOKENS_MAP: { [chainId: number]: { [address: string]: Token } } = {};
+export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Token } } = {};
+export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
+export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
 const CHAIN_IDS = [MAINNET, TESTNET, ARBITRUM, ARBITRUM_TESTNET, AVALANCHE];
 

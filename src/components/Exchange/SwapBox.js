@@ -31,8 +31,6 @@ import {
   getNextFromAmount,
   getNextToAmount,
   getPositionKey,
-  getTokenInfo,
-  getUsd,
   isSupportedChain,
   isTriggerRatioInverted,
   LEVERAGE_ORDER_OPTIONS,
@@ -81,6 +79,7 @@ import { callContract, contractFetcher } from "../../lib/contracts";
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "../../domain/tokens";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { helperToast } from "../../lib/helperToast";
+import { getTokenInfo, getUsd } from "../../domain/tokens/utils";
 
 const SWAP_ICONS = {
   [LONG]: longImg,

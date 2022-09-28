@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import "./Actions.css";
 
 import { getContract } from "../../config/contracts";
-import { formatAmount, getTokenInfo, useChainId, useAccountOrders } from "../../lib/legacy";
+import { formatAmount, useChainId, useAccountOrders } from "../../lib/legacy";
 
 import { useInfoTokens } from "../../domain/legacy";
 import { getPositions, getPositionQuery } from "../Exchange/Exchange";
@@ -22,6 +22,7 @@ import { Trans, t } from "@lingui/macro";
 import { getServerBaseUrl } from "../../config/backend";
 import { contractFetcher } from "../../lib/contracts";
 import { getToken, getTokens, getWhitelistedTokens } from "../../domain/tokens";
+import { getTokenInfo } from "../../domain/tokens/utils";
 
 const USD_DECIMALS = 30;
 

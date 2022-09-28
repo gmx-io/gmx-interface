@@ -1,15 +1,20 @@
 import { BigNumber } from "@ethersproject/bignumber";
 
 export type Token = {
-  address: string;
-  decimals: number;
-  imageUrl?: string;
-  isStable?: boolean;
   name: string;
   symbol: string;
-  isTempHidden?: boolean;
-  isWrapped?: boolean;
   baseSymbol?: string;
+  decimals: number;
+  address: string;
+  coingeckoUrl?: string;
+  imageUrl?: string;
+
+  isUsdg?: boolean;
+  isNative?: boolean;
+  isWrapped?: boolean;
+  isShortable?: boolean;
+  isStable?: boolean;
+  isTempHidden?: boolean;
 };
 
 export type TokenInfo = {

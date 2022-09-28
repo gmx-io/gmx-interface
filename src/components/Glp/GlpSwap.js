@@ -8,7 +8,6 @@ import Tab from "../Tab/Tab";
 import cx from "classnames";
 import { getContract } from "../../config/contracts";
 import {
-  getTokenInfo,
   useChainId,
   expandDecimals,
   bigNumberify,
@@ -21,7 +20,6 @@ import {
   getSellGlpToAmount,
   parseValue,
   approveTokens,
-  getUsd,
   adjustForDecimals,
   GLP_DECIMALS,
   USD_DECIMALS,
@@ -64,6 +62,7 @@ import { callContract, contractFetcher } from "../../lib/contracts";
 import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedToken } from "../../domain/tokens";
 import { useLocalStorageByChainId } from "../../lib/localStorage";
 import { helperToast } from "../../lib/helperToast";
+import { getTokenInfo, getUsd } from "../../domain/tokens/utils";
 
 const { AddressZero } = ethers.constants;
 

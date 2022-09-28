@@ -11,7 +11,6 @@ import { ImSpinner2 } from "react-icons/im";
 import {
   bigNumberify,
   getLiquidationPrice,
-  getUsd,
   getLeverage,
   formatAmount,
   getOrderError,
@@ -27,6 +26,7 @@ import PositionShare from "./PositionShare";
 import PositionDropdown from "./PositionDropdown";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { helperToast } from "../../lib/helperToast";
+import { getUsd } from "../../domain/tokens/utils";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {

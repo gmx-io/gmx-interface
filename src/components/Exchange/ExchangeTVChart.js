@@ -8,7 +8,6 @@ import {
   SWAP,
   INCREASE,
   CHART_PERIODS,
-  getTokenInfo,
   formatAmount,
   formatDateTime,
   usePrevious,
@@ -21,6 +20,7 @@ import Tab from "../Tab/Tab";
 import ChartTokenSelector from "./ChartTokenSelector";
 import { getToken, getTokens } from "../../domain/tokens";
 import { useLocalStorageSerializeKey } from "../../lib/localStorage";
+import { getTokenInfo } from "../../domain/tokens/utils";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
