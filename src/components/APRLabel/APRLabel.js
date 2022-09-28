@@ -4,7 +4,6 @@ import useSWR from "swr";
 
 import {
   PLACEHOLDER_ACCOUNT,
-  formatKeyAmount,
   getBalanceAndSupplyData,
   getDepositBalanceData,
   getVestingData,
@@ -25,6 +24,7 @@ import { useGmxPrice } from "../../domain/legacy";
 import { getContract } from "../../config/contracts";
 import { getServerUrl } from "../../config/backend";
 import { contractFetcher } from "../../lib/contracts";
+import { formatKeyAmount } from "../../lib/numbers";
 
 export default function APRLabel({ chainId, label }) {
   let { active } = useWeb3React();

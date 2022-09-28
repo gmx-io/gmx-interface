@@ -6,7 +6,6 @@ import {
   INCREASE,
   DECREASE,
   USD_DECIMALS,
-  formatAmount,
   getOrderError,
   getExchangeRateDisplay,
   getExchangeRate,
@@ -23,6 +22,7 @@ import Checkbox from "../Checkbox/Checkbox";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "../../config/ui";
 import { getTokenInfo, getUsd } from "../../domain/tokens/utils";
+import { formatAmount } from "../../lib/numbers";
 
 export default function OrdersList(props) {
   const {

@@ -7,12 +7,9 @@ import {
   LIMIT,
   MIN_PROFIT_TIME,
   INCREASE,
-  expandDecimals,
   getExchangeRate,
   getProfitPrice,
   getTimeRemaining,
-  formatAmount,
-  formatAmountFree,
   getExchangeRateDisplay,
   DEFAULT_SLIPPAGE_AMOUNT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
@@ -34,6 +31,7 @@ import { getNativeToken, getToken, getWrappedToken } from "../../domain/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "../../config/ui";
 import { useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { SLIPPAGE_BPS_KEY } from "../../config/localStorage";
+import { expandDecimals, formatAmount, formatAmountFree } from "../../lib/numbers";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 

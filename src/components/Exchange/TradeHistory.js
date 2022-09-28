@@ -9,11 +9,9 @@ import {
   BASIS_POINTS_DIVISOR,
   LIQUIDATION_FEE,
   TRADES_PAGE_SIZE,
-  formatAmount,
   formatDateTime,
   deserialize,
   getExchangeRateDisplay,
-  bigNumberify,
 } from "../../lib/legacy";
 import { useTrades, useLiquidationsData } from "../../domain/legacy";
 import { getContract } from "../../config/contracts";
@@ -21,6 +19,7 @@ import { getContract } from "../../config/contracts";
 import "./TradeHistory.css";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { getExplorerUrl } from "../../config/chains";
+import { bigNumberify, formatAmount } from "../../lib/numbers";
 
 const { AddressZero } = ethers.constants;
 

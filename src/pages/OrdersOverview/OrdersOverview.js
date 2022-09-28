@@ -8,7 +8,6 @@ import * as Api from "../../domain/legacy";
 import { useAllOrders, useAllOrdersStats, usePositionsForOrders } from "../../domain/legacy";
 import {
   DECREASE,
-  formatAmount,
   formatDateTime,
   getExchangeRate,
   getExchangeRateDisplay,
@@ -24,6 +23,7 @@ import {
 import "./OrdersOverview.css";
 import { getTokenInfo } from "../../domain/tokens/utils";
 import { useInfoTokens } from "../../domain/tokens";
+import { formatAmount } from "../../lib/numbers";
 
 export default function OrdersOverview() {
   const { chainId } = useChainId();

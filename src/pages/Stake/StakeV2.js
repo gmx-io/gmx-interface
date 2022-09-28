@@ -18,12 +18,6 @@ import GlpManager from "../../abis/GlpManager.json";
 
 import { ethers } from "ethers";
 import {
-  bigNumberify,
-  formatAmount,
-  formatKeyAmount,
-  formatAmountFree,
-  expandDecimals,
-  parseValue,
   useChainId,
   GLP_DECIMALS,
   USD_DECIMALS,
@@ -52,6 +46,14 @@ import { callContract, contractFetcher } from "../../lib/contracts";
 import { useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { helperToast } from "../../lib/helperToast";
 import { approveTokens } from "../../domain/tokens";
+import {
+  bigNumberify,
+  expandDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatKeyAmount,
+  parseValue,
+} from "../../lib/numbers";
 
 const { AddressZero } = ethers.constants;
 

@@ -15,13 +15,9 @@ import { BsArrowRight } from "react-icons/bs";
 import {
   adjustForDecimals,
   BASIS_POINTS_DIVISOR,
-  bigNumberify,
   calculatePositionDelta,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   DUST_BNB,
-  expandDecimals,
-  formatAmount,
-  formatAmountFree,
   getExchangeRate,
   getExchangeRateDisplay,
   getLeverage,
@@ -35,7 +31,6 @@ import {
   LONG,
   MARGIN_FEE_BASIS_POINTS,
   MARKET,
-  parseValue,
   PRECISION,
   SHORT,
   STOP,
@@ -91,6 +86,7 @@ import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../lib
 import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo, getUsd } from "../../domain/tokens/utils";
 import { usePrevious } from "../../lib/usePrevious";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "../../lib/numbers";
 
 const SWAP_ICONS = {
   [LONG]: longImg,

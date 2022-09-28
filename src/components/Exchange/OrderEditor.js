@@ -10,12 +10,8 @@ import {
   INCREASE,
   useChainId,
   isTriggerRatioInverted,
-  bigNumberify,
-  formatAmountFree,
-  parseValue,
   getNextToAmount,
   getExchangeRate,
-  formatAmount,
   getExchangeRateDisplay,
   calculatePositionDelta,
   getLiquidationPrice,
@@ -30,6 +26,7 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import { getContract } from "../../config/contracts";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "../../config/ui";
 import { getTokenInfo } from "../../domain/tokens/utils";
+import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "../../lib/numbers";
 
 export default function OrderEditor(props) {
   const {

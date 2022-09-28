@@ -4,18 +4,7 @@ import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
 
-import {
-  USD_DECIMALS,
-  BASIS_POINTS_DIVISOR,
-  DEPOSIT_FEE,
-  DUST_BNB,
-  formatAmount,
-  bigNumberify,
-  formatAmountFree,
-  parseValue,
-  expandDecimals,
-  getLiquidationPrice,
-} from "../../lib/legacy";
+import { USD_DECIMALS, BASIS_POINTS_DIVISOR, DEPOSIT_FEE, DUST_BNB, getLiquidationPrice } from "../../lib/legacy";
 import { getContract } from "../../config/contracts";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
@@ -31,6 +20,7 @@ import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo } from "../../domain/tokens/utils";
 import { approveTokens, shouldRaiseGasError } from "../../domain/tokens";
 import { usePrevious } from "../../lib/usePrevious";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "../../lib/numbers";
 
 const DEPOSIT = t`Deposit`;
 const WITHDRAW = t`Withdraw`;

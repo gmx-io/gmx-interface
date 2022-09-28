@@ -9,16 +9,10 @@ import cx from "classnames";
 import { getContract } from "../../config/contracts";
 import {
   useChainId,
-  expandDecimals,
-  bigNumberify,
-  formatAmount,
-  formatAmountFree,
-  formatKeyAmount,
   getBuyGlpToAmount,
   getBuyGlpFromAmount,
   getSellGlpFromAmount,
   getSellGlpToAmount,
-  parseValue,
   adjustForDecimals,
   GLP_DECIMALS,
   USD_DECIMALS,
@@ -70,6 +64,14 @@ import {
 import { useLocalStorageByChainId } from "../../lib/localStorage";
 import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo, getUsd } from "../../domain/tokens/utils";
+import {
+  bigNumberify,
+  expandDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatKeyAmount,
+  parseValue,
+} from "../../lib/numbers";
 
 const { AddressZero } = ethers.constants;
 

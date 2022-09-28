@@ -1,7 +1,7 @@
-import { bigNumberify } from "../legacy";
 import { Provider } from "@ethersproject/providers";
 import { Contract } from "ethers";
 import { GAS_PRICE_ADJUSTMENT_MAP, MAX_GAS_PRICE_MAP } from "../../config/chains";
+import { bigNumberify } from "../numbers";
 
 export async function setGasPrice(txnOpts: any, provider: Provider, chainId: number) {
   let maxGasPrice = MAX_GAS_PRICE_MAP[chainId];

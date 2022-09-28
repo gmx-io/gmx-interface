@@ -9,15 +9,7 @@ import Modal from "../Modal/Modal";
 
 import "./Migration.css";
 
-import {
-  getConnectWalletHandler,
-  formatArrayAmount,
-  formatAmount,
-  formatAmountFree,
-  parseValue,
-  expandDecimals,
-  bigNumberify,
-} from "../../lib/legacy";
+import { getConnectWalletHandler } from "../../lib/legacy";
 import { getContract } from "../../config/contracts";
 
 import Reader from "../../abis/Reader.json";
@@ -28,6 +20,14 @@ import { contractFetcher } from "../../lib/contracts";
 import { helperToast } from "../../lib/helperToast";
 import { useEagerConnect, useInactiveListener } from "../../lib/wallets";
 import { approveTokens } from "../../domain/tokens";
+import {
+  bigNumberify,
+  expandDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatArrayAmount,
+  parseValue,
+} from "../../lib/numbers";
 
 const { MaxUint256, AddressZero } = ethers.constants;
 

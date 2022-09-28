@@ -5,17 +5,12 @@ import { Trans, t } from "@lingui/macro";
 import { BsArrowRight } from "react-icons/bs";
 
 import {
-  formatAmount,
-  bigNumberify,
   DEFAULT_SLIPPAGE_AMOUNT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   USD_DECIMALS,
   DUST_USD,
   BASIS_POINTS_DIVISOR,
   MIN_PROFIT_TIME,
-  formatAmountFree,
-  parseValue,
-  expandDecimals,
   getLiquidationPrice,
   getLeverage,
   getMarginFee,
@@ -51,6 +46,7 @@ import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../lib
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "../../config/localStorage";
 import { getTokenInfo, getUsd } from "../../domain/tokens/utils";
 import { usePrevious } from "../../lib/usePrevious";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "../../lib/numbers";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10

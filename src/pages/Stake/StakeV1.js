@@ -4,17 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { ethers } from "ethers";
 
-import {
-  formatKeyAmount,
-  formatAmount,
-  formatAmountFree,
-  parseValue,
-  useChainId,
-  expandDecimals,
-  bigNumberify,
-  USD_DECIMALS,
-  PRECISION,
-} from "../../lib/legacy";
+import { useChainId, USD_DECIMALS, PRECISION } from "../../lib/legacy";
 
 import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "../../config/contracts";
 
@@ -32,6 +22,14 @@ import { contractFetcher } from "../../lib/contracts";
 import { approveTokens, getTokenBySymbol } from "../../domain/tokens";
 import { helperToast } from "../../lib/helperToast";
 import { getInjectedHandler } from "../../lib/wallets";
+import {
+  bigNumberify,
+  expandDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatKeyAmount,
+  parseValue,
+} from "../../lib/numbers";
 
 const BASIS_POINTS_DIVISOR = 10000;
 const HOURS_PER_YEAR = 8760;

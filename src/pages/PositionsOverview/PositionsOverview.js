@@ -2,9 +2,10 @@ import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 
 import { useAllPositions } from "../../domain/legacy";
-import { USD_DECIMALS, useChainId, formatAmount, getTimeRemaining } from "../../lib/legacy";
+import { USD_DECIMALS, useChainId, getTimeRemaining } from "../../lib/legacy";
 
 import "./PositionsOverview.css";
+import { formatAmount } from "../../lib/numbers";
 
 export default function PositionsOverview() {
   const { chainId } = useChainId();

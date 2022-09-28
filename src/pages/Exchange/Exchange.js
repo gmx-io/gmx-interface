@@ -13,8 +13,6 @@ import {
   LONG,
   SHORT,
   USD_DECIMALS,
-  formatAmount,
-  bigNumberify,
   getPositionKey,
   getPositionContractKey,
   getLeverage,
@@ -50,6 +48,7 @@ import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens, useInfoTok
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo } from "../../domain/tokens/utils";
+import { bigNumberify, formatAmount } from "../../lib/numbers";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;

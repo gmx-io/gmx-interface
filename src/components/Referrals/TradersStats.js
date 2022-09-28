@@ -4,13 +4,14 @@ import { BiEditAlt } from "react-icons/bi";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
-import { formatAmount, formatDate, shortenAddress } from "../../lib/legacy";
+import { formatDate, shortenAddress } from "../../lib/legacy";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import { ReferralCodeForm } from "./JoinReferralCode";
 import { getNativeToken, getToken } from "../../domain/tokens";
 import { getExplorerUrl } from "../../config/chains";
+import { formatAmount } from "../../lib/numbers";
 
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);

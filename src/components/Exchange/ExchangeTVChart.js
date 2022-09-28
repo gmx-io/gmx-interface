@@ -3,16 +3,7 @@ import cx from "classnames";
 
 import { createChart } from "krasulya-lightweight-charts";
 
-import {
-  USD_DECIMALS,
-  SWAP,
-  INCREASE,
-  CHART_PERIODS,
-  formatAmount,
-  formatDateTime,
-  getLiquidationPrice,
-  numberWithCommas,
-} from "../../lib/legacy";
+import { USD_DECIMALS, SWAP, INCREASE, CHART_PERIODS, formatDateTime, getLiquidationPrice } from "../../lib/legacy";
 import { useChartPrices } from "../../domain/legacy";
 import Tab from "../Tab/Tab";
 
@@ -21,6 +12,7 @@ import { getToken, getTokens } from "../../domain/tokens";
 import { useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { getTokenInfo } from "../../domain/tokens/utils";
 import { usePrevious } from "../../lib/usePrevious";
+import { formatAmount, numberWithCommas } from "../../lib/numbers";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 

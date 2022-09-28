@@ -1,9 +1,7 @@
 import { BigNumber, ethers } from "ethers";
 import {
   adjustForDecimals,
-  bigNumberify,
   DUST_BNB,
-  expandDecimals,
   getFeeBasisPoints,
   MARKET,
   MINT_BURN_FEE_BASIS_POINTS,
@@ -16,6 +14,7 @@ import {
 import { NATIVE_TOKENS_MAP, TOKENS, TOKENS_BY_SYMBOL_MAP, TOKENS_MAP, WRAPPED_TOKENS_MAP } from "../../config/tokens";
 import { getExplorerUrl } from "../../config/chains";
 import { InfoTokens, Token, TokenInfo } from "./types";
+import { bigNumberify, expandDecimals } from "../../lib/numbers";
 
 const { AddressZero } = ethers.constants;
 

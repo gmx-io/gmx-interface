@@ -5,9 +5,7 @@ import { contractFetcher } from "../../lib/contracts";
 import VaultReader from "../../abis/VaultReader.json";
 import {
   BASIS_POINTS_DIVISOR,
-  bigNumberify,
   DEFAULT_MAX_USDG_AMOUNT,
-  expandDecimals,
   MAX_PRICE_DEVIATION_BASIS_POINTS,
   USD_DECIMALS,
   USDG_ADDRESS,
@@ -16,6 +14,7 @@ import { getServerUrl } from "../../config/backend";
 import { Token, TokenInfo } from "./types";
 import { BigNumber } from "ethers";
 import { Web3ReactContextInterface } from "@web3-react/core/dist/types";
+import { bigNumberify, expandDecimals } from "../../lib/numbers";
 
 export function useInfoTokens(
   library: Web3ReactContextInterface["library"],

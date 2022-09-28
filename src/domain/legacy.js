@@ -16,16 +16,7 @@ import PositionRouter from "../abis/PositionRouter.json";
 
 import { getContract } from "../config/contracts";
 import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, getConstant, getHighExecutionFee } from "../config/chains";
-import {
-  bigNumberify,
-  DECREASE,
-  expandDecimals,
-  getOrderKey,
-  INCREASE,
-  parseValue,
-  SWAP,
-  USD_DECIMALS,
-} from "../lib/legacy";
+import { DECREASE, getOrderKey, INCREASE, SWAP, USD_DECIMALS } from "../lib/legacy";
 
 import { groupBy } from "lodash";
 import { UI_VERSION } from "../config/ui";
@@ -35,6 +26,7 @@ import { callContract, contractFetcher } from "../lib/contracts";
 import { getTokenBySymbol, replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
 import { getProvider } from "../lib/rpc";
+import { bigNumberify, expandDecimals, parseValue } from "../lib/numbers";
 
 export * from "./prices";
 
