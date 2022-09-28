@@ -67,7 +67,7 @@ export function IndividualLeaderboard() {
           {displayedAccounts().map(account => (
             <tr key={account.id}>
               <td>#1</td>
-              <td>{account.ens ?? account.id}</td>
+              <td>{account.ens ?? shortenAddress(account.id, 12)}</td>
               <td>-$1,425 (-5.8%)</td>
               <td>{account.positions.length}</td>
             </tr>
