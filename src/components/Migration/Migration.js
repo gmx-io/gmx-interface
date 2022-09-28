@@ -11,8 +11,6 @@ import "./Migration.css";
 
 import {
   getConnectWalletHandler,
-  useEagerConnect,
-  useInactiveListener,
   formatArrayAmount,
   formatAmount,
   formatAmountFree,
@@ -29,6 +27,7 @@ import GmxMigrator from "../../abis/GmxMigrator.json";
 import { CHAIN_ID, getExplorerUrl } from "../../config/chains";
 import { contractFetcher } from "../../lib/contracts";
 import { helperToast } from "../../lib/helperToast";
+import { useEagerConnect, useInactiveListener } from "../../lib/wallets";
 
 const { MaxUint256, AddressZero } = ethers.constants;
 

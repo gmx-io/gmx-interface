@@ -30,7 +30,6 @@ import {
   getNextFromAmount,
   getNextToAmount,
   getPositionKey,
-  isSupportedChain,
   isTriggerRatioInverted,
   LEVERAGE_ORDER_OPTIONS,
   LIMIT,
@@ -48,7 +47,14 @@ import {
   USDG_ADDRESS,
   USDG_DECIMALS,
 } from "../../lib/legacy";
-import { ARBITRUM, AVALANCHE, getChainName, getConstant, IS_NETWORK_DISABLED } from "../../config/chains";
+import {
+  ARBITRUM,
+  AVALANCHE,
+  getChainName,
+  getConstant,
+  IS_NETWORK_DISABLED,
+  isSupportedChain,
+} from "../../config/chains";
 import * as Api from "../../domain/legacy";
 import { getContract } from "../../config/contracts";
 

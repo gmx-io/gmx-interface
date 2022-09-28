@@ -5,13 +5,14 @@ import { Trans } from "@lingui/macro";
 import gmxBigIcon from "../../img/ic_gmx_custom.svg";
 import glpBigIcon from "../../img/ic_glp_custom.svg";
 
-import { switchNetwork, useChainId, isHomeSite } from "../../lib/legacy";
+import { useChainId, isHomeSite } from "../../lib/legacy";
 
 import { useWeb3React } from "@web3-react/core";
 
 import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
 import { ARBITRUM, AVALANCHE } from "../../config/chains";
+import { switchNetwork } from "../../lib/wallets";
 
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
   const isHome = isHomeSite();

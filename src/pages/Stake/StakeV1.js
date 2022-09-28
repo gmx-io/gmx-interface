@@ -5,7 +5,6 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 
 import {
-  getInjectedHandler,
   formatKeyAmount,
   formatAmount,
   formatAmountFree,
@@ -33,6 +32,7 @@ import { CHAIN_ID, getExplorerUrl } from "../../config/chains";
 import { contractFetcher } from "../../lib/contracts";
 import { getTokenBySymbol } from "../../domain/tokens";
 import { helperToast } from "../../lib/helperToast";
+import { getInjectedHandler } from "../../lib/wallets";
 
 const BASIS_POINTS_DIVISOR = 10000;
 const HOURS_PER_YEAR = 8760;

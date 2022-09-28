@@ -12,17 +12,8 @@ import {
   BASIS_POINTS_DIVISOR,
   getAppBaseUrl,
   isHomeSite,
-  clearWalletConnectData,
   useChainId,
-  getInjectedHandler,
-  useEagerConnect,
-  useInactiveListener,
-  getWalletConnectHandler,
-  activateInjectedProvider,
-  hasMetaMaskWalletExtension,
-  hasCoinBaseWalletExtension,
   isMobileDevice,
-  clearWalletLinkData,
   REFERRAL_CODE_QUERY_PARAM,
   isDevelopment,
 } from "../lib/legacy";
@@ -94,6 +85,17 @@ import {
   SHOW_PNL_AFTER_FEES_KEY,
   SLIPPAGE_BPS_KEY,
 } from "../config/localStorage";
+import {
+  activateInjectedProvider,
+  clearWalletConnectData,
+  clearWalletLinkData,
+  getInjectedHandler,
+  getWalletConnectHandler,
+  hasCoinBaseWalletExtension,
+  hasMetaMaskWalletExtension,
+  useEagerConnect,
+  useInactiveListener,
+} from "../lib/wallets";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
