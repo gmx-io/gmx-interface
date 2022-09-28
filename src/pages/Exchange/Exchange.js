@@ -24,7 +24,7 @@ import {
   getPageTitle,
 } from "../../lib/legacy";
 import { getConstant, getExplorerUrl } from "../../config/chains";
-import { approvePlugin, useInfoTokens, useMinExecutionFee, cancelMultipleOrders } from "../../domain/legacy";
+import { approvePlugin, useMinExecutionFee, cancelMultipleOrders } from "../../domain/legacy";
 
 import { getContract } from "../../config/contracts";
 
@@ -50,6 +50,7 @@ import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "../
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo } from "../../domain/tokens/utils";
+import { useInfoTokens } from "../../domain/tokens/contracts";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;

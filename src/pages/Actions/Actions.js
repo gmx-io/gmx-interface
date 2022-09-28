@@ -9,7 +9,6 @@ import "./Actions.css";
 import { getContract } from "../../config/contracts";
 import { formatAmount, useChainId, useAccountOrders } from "../../lib/legacy";
 
-import { useInfoTokens } from "../../domain/legacy";
 import { getPositions, getPositionQuery } from "../Exchange/Exchange";
 
 import PositionsList from "../../components/Exchange/PositionsList";
@@ -23,6 +22,7 @@ import { getServerBaseUrl } from "../../config/backend";
 import { contractFetcher } from "../../lib/contracts";
 import { getToken, getTokens, getWhitelistedTokens } from "../../domain/tokens";
 import { getTokenInfo } from "../../domain/tokens/utils";
+import { useInfoTokens } from "../../domain/tokens/contracts";
 
 const USD_DECIMALS = 30;
 

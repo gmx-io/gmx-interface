@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import {
   UserRejectedRequestError as UserRejectedRequestErrorWalletConnect,
@@ -1507,14 +1507,6 @@ export function getAccountUrl(chainId, account) {
   return getExplorerUrl(chainId) + "address/" + account;
 }
 
-export function usePrevious(value) {
-  const ref = useRef();
-  useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current;
-}
-
 export function approveTokens({
   setIsApproving,
   library,
@@ -1584,25 +1576,6 @@ export function approveTokens({
       setIsApproving(false);
     });
 }
-
-export const shouldRaiseGasError = (token, amount) => {
-  if (!amount) {
-    return false;
-  }
-  if (token.address !== AddressZero) {
-    return false;
-  }
-  if (!token.balance) {
-    return false;
-  }
-  if (amount.gte(token.balance)) {
-    return true;
-  }
-  if (token.balance.sub(amount).lt(DUST_BNB)) {
-    return true;
-  }
-  return false;
-};
 
 export const addBscNetwork = async () => {
   return addNetwork(NETWORK_METADATA[MAINNET]);
@@ -1699,19 +1672,6 @@ export const CHART_PERIODS = {
   "4h": 60 * 60 * 4,
   "1d": 60 * 60 * 24,
 };
-
-export function getTotalVolumeSum(volumes) {
-  if (!volumes || volumes.length === 0) {
-    return;
-  }
-
-  let volume = bigNumberify(0);
-  for (let i = 0; i < volumes.length; i++) {
-    volume = volume.add(volumes[i].data.volume);
-  }
-
-  return volume;
-}
 
 export function getBalanceAndSupplyData(balances) {
   if (!balances || balances.length === 0) {
@@ -1979,10 +1939,6 @@ export async function addTokenToMetamask(token) {
   }
 }
 
-export function sleep(ms) {
-  return new Promise((resolve) => resolve(), ms);
-}
-
 export function getPageTitle(data) {
   return `${data} | Decentralized
   Perpetual Exchange | GMX`;
@@ -1993,27 +1949,6 @@ export function isHashZero(value) {
 }
 export function isAddressZero(value) {
   return value === ethers.constants.AddressZero;
-}
-
-export function useDebounce(value, delay) {
-  // State and setters for debounced value
-  const [debouncedValue, setDebouncedValue] = useState(value);
-  useEffect(
-    () => {
-      // Update debounced value after delay
-      const handler = setTimeout(() => {
-        setDebouncedValue(value);
-      }, delay);
-      // Cancel the timeout if value changes (also on delay change or unmount)
-      // This is how we prevent debounced value from updating if value is changed ...
-      // .. within the delay period. Timeout gets cleared and restarted.
-      return () => {
-        clearTimeout(handler);
-      };
-    },
-    [value, delay] // Only re-call effect if value or delay changes
-  );
-  return debouncedValue;
 }
 
 export function isDevelopment() {

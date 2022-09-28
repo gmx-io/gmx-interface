@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useDebounce } from "../../lib/legacy";
 import { getCodeError, getReferralCodeTakenStatus, getSampleReferrarStat } from "./referralsHelper";
 import { useWeb3React } from "@web3-react/core";
 import { ARBITRUM } from "../../config/chains";
 import { helperToast } from "../../lib/helperToast";
+import { useDebounce } from "../../lib/useDebounce";
 
 function AddAffiliateCode({
   handleCreateReferralCode,

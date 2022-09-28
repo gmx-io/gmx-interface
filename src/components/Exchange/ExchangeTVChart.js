@@ -10,7 +10,6 @@ import {
   CHART_PERIODS,
   formatAmount,
   formatDateTime,
-  usePrevious,
   getLiquidationPrice,
   numberWithCommas,
 } from "../../lib/legacy";
@@ -21,6 +20,7 @@ import ChartTokenSelector from "./ChartTokenSelector";
 import { getToken, getTokens } from "../../domain/tokens";
 import { useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { getTokenInfo } from "../../domain/tokens/utils";
+import { usePrevious } from "../../lib/usePrevious";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 

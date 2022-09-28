@@ -11,11 +11,9 @@ import {
   DUST_BNB,
   formatAmount,
   bigNumberify,
-  usePrevious,
   formatAmountFree,
   parseValue,
   expandDecimals,
-  shouldRaiseGasError,
   getLiquidationPrice,
   approveTokens,
 } from "../../lib/legacy";
@@ -32,6 +30,8 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { callContract, contractFetcher } from "../../lib/contracts";
 import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo } from "../../domain/tokens/utils";
+import { shouldRaiseGasError } from "../../domain/tokens";
+import { usePrevious } from "../../lib/usePrevious";
 
 const DEPOSIT = t`Deposit`;
 const WITHDRAW = t`Withdraw`;

@@ -31,7 +31,7 @@ import {
   importImage,
 } from "../../lib/legacy";
 
-import { useGmxPrice, useInfoTokens } from "../../domain/legacy";
+import { useGmxPrice } from "../../domain/legacy";
 
 import TokenSelector from "../Exchange/TokenSelector";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
@@ -63,6 +63,7 @@ import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedTo
 import { useLocalStorageByChainId } from "../../lib/localStorage";
 import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo, getUsd } from "../../domain/tokens/utils";
+import { useInfoTokens } from "../../domain/tokens/contracts";
 
 const { AddressZero } = ethers.constants;
 

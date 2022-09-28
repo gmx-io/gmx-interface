@@ -3,7 +3,7 @@ import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import { setTraderReferralCodeByUser, validateReferralCodeExists } from "../../domain/referrals";
 import { REFERRAL_CODE_REGEX } from "./referralsHelper";
-import { useDebounce } from "../../lib/legacy";
+import { useDebounce } from "../../lib/useDebounce";
 
 function JoinReferralCode({ setPendingTxns, pendingTxns, active, connectWallet }) {
   return (

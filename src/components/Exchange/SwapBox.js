@@ -42,7 +42,6 @@ import {
   PRECISION,
   replaceNativeTokenAddress,
   SHORT,
-  shouldRaiseGasError,
   STOP,
   SWAP,
   SWAP_OPTIONS,
@@ -50,7 +49,6 @@ import {
   USD_DECIMALS,
   USDG_ADDRESS,
   USDG_DECIMALS,
-  usePrevious,
 } from "../../lib/legacy";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant, IS_NETWORK_DISABLED } from "../../config/chains";
 import * as Api from "../../domain/legacy";
@@ -76,10 +74,11 @@ import { useUserReferralCode } from "../../domain/referrals";
 import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { callContract, contractFetcher } from "../../lib/contracts";
-import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "../../domain/tokens";
+import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens, shouldRaiseGasError } from "../../domain/tokens";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo, getUsd } from "../../domain/tokens/utils";
+import { usePrevious } from "../../lib/usePrevious";
 
 const SWAP_ICONS = {
   [LONG]: longImg,

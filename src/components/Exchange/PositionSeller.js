@@ -13,7 +13,6 @@ import {
   DUST_USD,
   BASIS_POINTS_DIVISOR,
   MIN_PROFIT_TIME,
-  usePrevious,
   formatAmountFree,
   parseValue,
   expandDecimals,
@@ -51,6 +50,7 @@ import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "../../config/ui";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "../../config/localStorage";
 import { getTokenInfo, getUsd } from "../../domain/tokens/utils";
+import { usePrevious } from "../../lib/usePrevious";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10

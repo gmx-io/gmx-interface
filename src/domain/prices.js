@@ -3,9 +3,10 @@ import { gql } from "@apollo/client";
 import useSWR from "swr";
 import { ethers } from "ethers";
 
-import { USD_DECIMALS, CHART_PERIODS, formatAmount, sleep } from "../lib/legacy";
+import { USD_DECIMALS, CHART_PERIODS, formatAmount } from "../lib/legacy";
 import { GMX_STATS_API_URL } from "../config/backend";
 import { chainlinkClient } from "../lib/subgraph/clients";
+import { sleep } from "../lib/sleep";
 
 const BigNumber = ethers.BigNumber;
 

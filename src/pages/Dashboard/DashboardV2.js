@@ -28,13 +28,7 @@ import {
   importImage,
   arrayURLFetcher,
 } from "../../lib/legacy";
-import {
-  useTotalGmxInLiquidity,
-  useGmxPrice,
-  useTotalGmxStaked,
-  useTotalGmxSupply,
-  useInfoTokens,
-} from "../../domain/legacy";
+import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "../../domain/legacy";
 
 import { getContract } from "../../config/contracts";
 
@@ -62,6 +56,7 @@ import { getServerUrl } from "../../config/backend";
 import { contractFetcher } from "../../lib/contracts";
 import { getTokenBySymbol, getWhitelistedTokens } from "../../domain/tokens";
 import { GLPPOOLCOLORS } from "../../config/tokens";
+import { useInfoTokens } from "../../domain/tokens/contracts";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;

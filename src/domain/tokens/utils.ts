@@ -13,6 +13,7 @@ import {
   MARKET,
   BASIS_POINTS_DIVISOR,
   MAX_PRICE_DEVIATION_BASIS_POINTS,
+  DUST_BNB,
 } from "../../lib/legacy";
 import { TOKENS, NATIVE_TOKENS_MAP, WRAPPED_TOKENS_MAP, TOKENS_BY_SYMBOL_MAP, TOKENS_MAP } from "../../config/tokens";
 import { getExplorerUrl } from "../../config/chains";
@@ -368,4 +369,37 @@ export function getLowestFeeTokenForBuyGlp(
   return tokensWithLiquidity.length > 0
     ? tokensWithLiquidity[0]
     : tokensData.sort((a, b) => Number(b.amountLeftToDeposit.sub(a.amountLeftToDeposit)))[0];
+}
+
+export function getTotalVolumeSum(volumes: { data: { volume: BigNumber } }[]) {
+  if (!volumes || volumes.length === 0) {
+    return;
+  }
+
+  let volume = bigNumberify(0)!;
+
+  for (let i = 0; i < volumes.length; i++) {
+    volume = volume.add(volumes[i].data.volume);
+  }
+
+  return volume;
+}
+
+export function shouldRaiseGasError(token: TokenInfo, amount?: BigNumber) {
+  if (!amount) {
+    return false;
+  }
+  if (token.address !== AddressZero) {
+    return false;
+  }
+  if (!token.balance) {
+    return false;
+  }
+  if (amount.gte(token.balance)) {
+    return true;
+  }
+  if (token.balance.sub(amount).lt(DUST_BNB)) {
+    return true;
+  }
+  return false;
 }
