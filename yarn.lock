@@ -9181,7 +9181,6 @@ __metadata:
     react-use: 17.3.1
     recharts: 2.1.8
     swr: 0.4.2
-    tsc-files: 1.1.3
     typescript: 4.7.4
     web-vitals: 1.1.2
   languageName: unknown
@@ -17757,17 +17756,6 @@ __metadata:
     typescript:
       optional: true
   checksum: c2a698b85d521298fe6f2435fbf2d3dc5834b423ea25abd321805ead3f399dbeedce7ca09492d7eb005b9d2c009c6b9587055bc3ab273dc6b9e40eefd7edb5b2
-  languageName: node
-  linkType: hard
-
-"tsc-files@npm:1.1.3":
-  version: 1.1.3
-  resolution: "tsc-files@npm:1.1.3"
-  peerDependencies:
-    typescript: ">=3"
-  bin:
-    tsc-files: lib/index.js
-  checksum: dd21524d9de841edf65278a00fe963679773a1dbde0b9316cc3ca9aed60b8903dae4c8819974ead0ab28efde7e1c112a572c8152050e02a3653d7b6416009605
   languageName: node
   linkType: hard
 
