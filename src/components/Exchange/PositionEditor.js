@@ -469,7 +469,7 @@ export default function PositionEditor(props) {
                     </div>
                     {maxAmount && (
                       <div className="muted align-right clickable" onClick={() => setFromValue(maxAmountFormattedFree)}>
-                        Max: {maxAmountFormatted}
+                        <Trans>Max: {maxAmountFormatted}</Trans>
                       </div>
                     )}
                   </div>
@@ -490,7 +490,7 @@ export default function PositionEditor(props) {
                             setFromValue(maxAmountFormattedFree);
                           }}
                         >
-                          MAX
+                          <Trans>MAX</Trans>
                         </div>
                       )}
                     </div>

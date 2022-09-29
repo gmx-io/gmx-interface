@@ -695,7 +695,7 @@ export default function PositionsList(props) {
                     onClick={() => sellPosition(position)}
                     disabled={position.size.eq(0)}
                   >
-                    Close
+                    <Trans>Close</Trans>
                   </button>
                 </td>
                 <td>
