@@ -17,37 +17,26 @@ export type Token = {
   isTempHidden?: boolean;
 };
 
-export type TokenInfo = {
-  address: string;
-  name: string;
-  symbol: string;
-  imageUrl?: string;
-  decimals: number;
+export type TokenInfo = Token & {
+  hasMaxAvailableLong?: boolean;
+  hasMaxAvailableShort?: boolean;
 
-  hasMaxAvailableLong: boolean;
-  hasMaxAvailableShort: boolean;
+  usdgAmount?: BigNumber;
+  maxUsdgAmount?: BigNumber;
 
-  isNative?: boolean;
-  isShortable?: boolean;
-  isWrapped?: boolean;
-  isStable?: boolean;
+  poolAmount?: BigNumber;
+  bufferAmount?: BigNumber;
+  managedAmount?: BigNumber;
+  managedUsd?: BigNumber;
+  availableAmount?: BigNumber;
+  availableUsd?: BigNumber;
+  guaranteedUsd?: BigNumber;
+  redemptionAmount?: BigNumber;
+  reservedAmount?: BigNumber;
 
-  usdgAmount: BigNumber;
-  maxUsdgAmount: BigNumber;
+  balance?: BigNumber;
 
-  poolAmount: BigNumber;
-  bufferAmount: BigNumber;
-  managedAmount: BigNumber;
-  managedUsd: BigNumber;
-  availableAmount: BigNumber;
-  availableUsd: BigNumber;
-  guaranteedUsd: BigNumber;
-  redemptionAmount: BigNumber;
-  reservedAmount: BigNumber;
-
-  balance: BigNumber;
-
-  weight: BigNumber;
+  weight?: BigNumber;
 
   maxPrice?: BigNumber;
   maxPrimaryPrice?: BigNumber;
@@ -55,21 +44,21 @@ export type TokenInfo = {
   minPrice?: BigNumber;
   minPrimaryPrice?: BigNumber;
 
-  contractMaxPrice: BigNumber;
-  contractMinPrice: BigNumber;
+  contractMaxPrice?: BigNumber;
+  contractMinPrice?: BigNumber;
 
-  cumulativeFundingRate: BigNumber;
-  fundingRate: BigNumber;
+  cumulativeFundingRate?: BigNumber;
+  fundingRate?: BigNumber;
 
-  globalShortSize: BigNumber;
+  globalShortSize?: BigNumber;
 
-  maxAvailableLong: BigNumber;
-  maxAvailableShort: BigNumber;
+  maxAvailableLong?: BigNumber;
+  maxAvailableShort?: BigNumber;
 
-  maxGlobalLongSize: BigNumber;
-  maxGlobalShortSize: BigNumber;
+  maxGlobalLongSize?: BigNumber;
+  maxGlobalShortSize?: BigNumber;
 
-  maxLongCapacity: BigNumber;
+  maxLongCapacity?: BigNumber;
 };
 
 export type InfoTokens = {

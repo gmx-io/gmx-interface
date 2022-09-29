@@ -11,7 +11,7 @@ import {
   USDG_ADDRESS,
 } from "../../lib/legacy";
 import { getServerUrl } from "../../config/backend";
-import { Token, TokenInfo } from "./types";
+import { InfoTokens, Token, TokenInfo } from "./types";
 import { BigNumber } from "ethers";
 import { Web3ReactContextInterface } from "@web3-react/core/dist/types";
 import { bigNumberify, expandDecimals } from "../../lib/numbers";
@@ -78,27 +78,31 @@ function getInfoTokens(
   vaultPropsLength: number | undefined,
   indexPrices: { [address: string]: BigNumber },
   nativeTokenAddress: string
-) {
+): InfoTokens {
   if (!vaultPropsLength) {
     vaultPropsLength = 15;
   }
   const fundingRatePropsLength = 2;
-  const infoTokens = {};
+  const infoTokens: InfoTokens = {};
 
   for (let i = 0; i < tokens.length; i++) {
-    const token = JSON.parse(JSON.stringify(tokens[i]));
+    const token = JSON.parse(JSON.stringify(tokens[i])) as TokenInfo;
+
     if (tokenBalances) {
       token.balance = tokenBalances[i];
     }
+
     if (token.address === USDG_ADDRESS) {
       token.minPrice = expandDecimals(1, USD_DECIMALS);
       token.maxPrice = expandDecimals(1, USD_DECIMALS);
     }
+
     infoTokens[token.address] = token;
   }
 
   for (let i = 0; i < whitelistedTokens.length; i++) {
-    const token = JSON.parse(JSON.stringify(whitelistedTokens[i]));
+    const token = JSON.parse(JSON.stringify(whitelistedTokens[i])) as TokenInfo;
+
     if (vaultTokenInfo) {
       token.poolAmount = vaultTokenInfo[i * vaultPropsLength];
       token.reservedAmount = vaultTokenInfo[i * vaultPropsLength + 1];
@@ -121,7 +125,8 @@ function getInfoTokens(
       token.contractMinPrice = token.minPrice;
       token.contractMaxPrice = token.maxPrice;
 
-      token.maxAvailableShort = bigNumberify(0);
+      token.maxAvailableShort = bigNumberify(0)!;
+
       token.hasMaxAvailableShort = false;
       if (token.maxGlobalShortSize.gt(0)) {
         token.hasMaxAvailableShort = true;
@@ -138,7 +143,7 @@ function getInfoTokens(
         ? token.poolAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals))
         : token.availableAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals));
 
-      token.maxAvailableLong = bigNumberify(0);
+      token.maxAvailableLong = bigNumberify(0)!;
       token.hasMaxAvailableLong = false;
       if (token.maxGlobalLongSize.gt(0)) {
         token.hasMaxAvailableLong = true;

@@ -196,7 +196,12 @@ export function getLowestFeeTokenForBuyGlp(
 
     let amountLeftToDeposit = bigNumberify(0)!;
 
-    if (fromToken.maxUsdgAmount && fromToken.maxUsdgAmount.gt(0)) {
+    if (
+      fromToken.maxUsdgAmount &&
+      fromToken.maxUsdgAmount.gt(0) &&
+      fromToken.usdgAmount &&
+      fromToken.usdgAmount.gt(0)
+    ) {
       amountLeftToDeposit = fromToken.maxUsdgAmount
         .sub(fromToken.usdgAmount)
         .mul(expandDecimals(1, USD_DECIMALS))
