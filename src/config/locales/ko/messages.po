@@ -282,9 +282,7 @@ msgstr "AVAX 구매 "
 msgid "Buy ETH"
 msgstr "ETH 구매 "
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
 msgid "Buy GLP"
 msgstr "GLP 구매"
 
@@ -496,8 +494,10 @@ msgstr "수령 및 스테이킹중..."
 msgid "Connect"
 msgstr "연동"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "지갑 연동"
 
@@ -579,10 +579,6 @@ msgstr "날짜"
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr "탈중화<0/>퍼페추얼 거래소"
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -618,7 +614,6 @@ msgstr ""
 msgid "Deposited!"
 msgstr "예치되었습니다!"
 
-#: src/components/Exchange/PositionEditor.js
 #: src/pages/Stake/StakeV2.js
 msgid "Depositing..."
 msgstr "예치중..."
@@ -745,12 +740,9 @@ msgstr "코드 입력"
 msgid "Enter a price"
 msgstr "가격 입력"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Enter an amount"
 msgstr "수량 입력"
 
@@ -1315,12 +1307,9 @@ msgstr ""
 msgid "Positions"
 msgstr "포지션"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Price"
 msgstr "가격"
 
@@ -1522,10 +1511,7 @@ msgstr "베스팅 옵션을 선택한 후 \"수령하기\" 버튼을 클릭해�
 msgid "Self-transfer not supported"
 msgstr "자신에게 전송하는 것은 지원되지 않습니다"
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
 msgid "Sell GLP"
 msgstr "GLP 판매"
 
@@ -1633,7 +1619,9 @@ msgstr "스테이킹 실패."
 msgid "Stake submitted!"
 msgstr "스테이킹 제출 완료!"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Staked"
 msgstr "스테이킹 완료"
 
@@ -1783,8 +1771,9 @@ msgstr "총 리베이트"
 msgid "Total Rewards"
 msgstr "총 보상"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Total Staked"
 msgstr "총 스테이킹"
 
@@ -1792,7 +1781,9 @@ msgstr "총 스테이킹"
 msgid "Total Stats"
 msgstr "전체 통계"
 
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Total Supply"
 msgstr "총 공급량"
 
@@ -1967,6 +1958,10 @@ msgstr "볼트 수용량"
 msgid "Vault Capacity for your Account"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Vault Capacity for your Account:"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Vest with GLP on Arbitrum"
 msgstr "Arbitrum에서 GLP로 베스팅하기"
@@ -2042,8 +2037,9 @@ msgstr "비중"
 msgid "Waiting for Approval"
 msgstr "승인 대기중"
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Wallet"
 msgstr "지갑"
 
@@ -2064,10 +2060,6 @@ msgstr "지갑연결"
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
