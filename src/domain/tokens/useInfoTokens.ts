@@ -20,9 +20,9 @@ export function useInfoTokens(
   library: Web3ReactContextInterface["library"],
   chainId: number,
   active: boolean,
-  tokenBalances: BigNumber[] | undefined,
-  fundingRateInfo: BigNumber[] | undefined,
-  vaultPropsLength: number | undefined
+  tokenBalances?: BigNumber[],
+  fundingRateInfo?: BigNumber[],
+  vaultPropsLength?: number
 ) {
   const tokens = getTokens(chainId);
   const vaultReaderAddress = getContract(chainId, "VaultReader");
