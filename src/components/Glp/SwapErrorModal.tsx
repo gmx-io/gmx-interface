@@ -6,6 +6,8 @@ import { InfoTokens, Token } from "../../domain/tokens/types";
 import Modal from "../Modal/Modal";
 import { get1InchSwapUrl } from "../../domain/common";
 import { getLowestFeeTokenForBuyGlp } from "../../domain/tokens/utils";
+import { t, Trans } from "@lingui/macro";
+import ExternalLink from "../Common/ExternalLink";
 
 const { AddressZero } = ethers.constants;
 
@@ -51,19 +53,21 @@ export default function SwapErrorModal({
     setLowestFeeToken(lowestFeeTokenInfo);
   }, [chainId, glpAmount, glpPrice, usdgSupply, totalTokenWeights, infoTokens, swapUsdMin, swapToken.address]);
 
-  const label = `${swapToken?.symbol} Capacity Reached`;
+  const label = t`${swapToken?.symbol} Capacity Reached`;
 
   if (lowestFeeToken && swapUsdMin && swapUsdMin.gt(lowestFeeToken.amountLeftToDeposit)) {
     return (
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={label} className="Error-modal">
         <p>
-          There is not enough liquidity in a single token for your size. Please check the Save on Fees section and
-          consider splitting your order into several different ones
+          <Trans>
+            There is not enough liquidity in a single token for your size. Please check the Save on Fees section and
+            consider splitting your order into several different ones
+          </Trans>
         </p>
         <p>
-          <a href={get1InchSwapUrl(chainId)} target="_blank" rel="noreferrer">
-            Swap on 1inch
-          </a>
+          <ExternalLink href={get1InchSwapUrl(chainId)}>
+            <Trans>Swap on 1inch</Trans>
+          </ExternalLink>
         </p>
       </Modal>
     );
@@ -77,12 +81,16 @@ export default function SwapErrorModal({
 
   return (
     <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={label} className="Error-modal">
-      <p>The pool's capacity has been reached for {swapToken.symbol}. Please use another token to buy GLP.</p>
-      <p>Check the "Save on Fees" section for tokens with the lowest fees.</p>
+      <Trans>
+        <p>The pool's capacity has been reached for {swapToken.symbol}. Please use another token to buy GLP.</p>
+        <p>Check the "Save on Fees" section for tokens with the lowest fees.</p>
+      </Trans>
       <p>
-        <a href={oneInchUrl} target="_blank" rel="noreferrer">
-          Swap {swapToken.symbol} to {lowestFeeToken?.token.symbol} on 1inch
-        </a>
+        <ExternalLink href={oneInchUrl}>
+          <Trans>
+            Swap {swapToken.symbol} to {lowestFeeToken?.token.symbol} on 1inch
+          </Trans>
+        </ExternalLink>
       </p>
     </Modal>
   );

@@ -137,7 +137,7 @@ export function AffiliateCodeForm({
         if (receipt.status === 1) {
           recentlyAddedCodes.push(getSampleReferrarStat(referralCode, ownerOnOtherNetwork, account));
 
-          helperToast.success("Referral code created!");
+          helperToast.success(t`Referral code created!`);
           setRecentlyAddedCodes(recentlyAddedCodes);
           setReferralCode("");
         }

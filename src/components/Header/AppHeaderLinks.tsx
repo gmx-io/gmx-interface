@@ -1,12 +1,13 @@
+import React from "react";
 import { FiX } from "react-icons/fi";
+import { Trans } from "@lingui/macro";
+import { Link } from "react-router-dom";
+
 import { HeaderLink } from "./HeaderLink";
 import logoImg from "../../img/logo_GMX.svg";
-
 import "./Header.css";
 import { isHomeSite } from "../../lib/legacy";
-import { Trans } from "@lingui/macro";
-import React from "react";
-import { Link } from "react-router-dom";
+import ExternalLink from "../Common/ExternalLink";
 
 type Props = {
   small?: boolean;
@@ -76,9 +77,9 @@ export function AppHeaderLinks({
         </HeaderLink>
       </div>
       <div className="App-header-link-container">
-        <a href="https://gmxio.gitbook.io/gmx/" target="_blank" rel="noopener noreferrer">
+        <ExternalLink href="https://gmxio.gitbook.io/gmx/">
           <Trans>About</Trans>
-        </a>
+        </ExternalLink>
       </div>
       {small && !isHomeSite() && (
         <div className="App-header-link-container">

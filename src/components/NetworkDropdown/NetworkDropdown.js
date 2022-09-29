@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Menu } from "@headlessui/react";
 import ModalWithPortal from "../Modal/ModalWithPortal";
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { HiDotsVertical } from "react-icons/hi";
 import "./NetworkDropdown.css";
@@ -106,7 +106,9 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, onNetw
           <NavIcons selectorLabel={selectorLabel} />
         </Menu.Button>
         <Menu.Items as="div" className="menu-items network-dropdown-items">
-          <div className="dropdown-label">Networks</div>
+          <div className="dropdown-label">
+            <Trans>Networks</Trans>
+          </div>
           <div className="network-dropdown-list">
             <NetworkMenuItems
               networkOptions={networkOptions}
@@ -121,7 +123,9 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, onNetw
                 <div className="menu-item-icon">
                   <img className="network-dropdown-icon" src={settingsIcon} alt="" />
                 </div>
-                <span className="network-dropdown-item-label">Settings</span>
+                <span className="network-dropdown-item-label">
+                  <Trans>Settings</Trans>
+                </span>
               </div>
             </div>
           </Menu.Item>
@@ -134,7 +138,9 @@ function DesktopDropdown({ setActiveModal, selectorLabel, networkOptions, onNetw
                 <div className="menu-item-icon">
                   <img className="network-dropdown-icon" src={language24Icon} alt="" />
                 </div>
-                <span className="network-dropdown-item-label">Language</span>
+                <span className="network-dropdown-item-label">
+                  <Trans>Language</Trans>
+                </span>
               </div>
             </div>
           </Menu.Item>
@@ -207,7 +213,9 @@ function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, s
   return (
     <div className="network-dropdown-items">
       <div className="network-dropdown-list">
-        <span className="network-dropdown-label">Networks</span>
+        <span className="network-dropdown-label">
+          <Trans>Networks</Trans>
+        </span>
 
         {networkOptions.map((network) => {
           const networkIcon = importImage(network.icon);
@@ -225,7 +233,9 @@ function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, s
             </div>
           );
         })}
-        <span className="network-dropdown-label more-options">More Options</span>
+        <span className="network-dropdown-label more-options">
+          <Trans>More Options</Trans>
+        </span>
         <div
           className="network-option"
           onClick={() => {
@@ -246,7 +256,9 @@ function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, s
         >
           <div className="menu-item-group">
             <img className="network-option-img" src={settingsIcon} alt="" />
-            <span className="network-option-img-label">Settings</span>
+            <span className="network-option-img-label">
+              <Trans>Settings</Trans>
+            </span>
           </div>
         </div>
       </div>

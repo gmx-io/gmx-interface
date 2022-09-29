@@ -28,6 +28,7 @@ import {
 } from "./referralsHelper";
 import { AffiliateCodeForm } from "./AddAffiliateCode";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
+import ExternalLink from "../Common/ExternalLink";
 
 function AffiliatesStats({
   referralsData,
@@ -102,13 +103,16 @@ function AffiliatesStats({
           title={
             <div className="referral-table-header">
               <p className="title">
-                Referral Codes{" "}
+                <Trans>Referral Codes</Trans>{" "}
                 <span className="sub-title">
-                  {referrerTierInfo && `Tier ${getTierIdDisplay(tierId)} (${tierRebateInfo[tierId]}% rebate)`}
+                  {referrerTierInfo && t`Tier ${getTierIdDisplay(tierId)} (${tierRebateInfo[tierId]}% rebate)`}
                 </span>
               </p>
               <button className="transparent-btn" onClick={open}>
-                <FiPlus /> <span className="ml-small">Create</span>
+                <FiPlus />{" "}
+                <span className="ml-small">
+                  <Trans>Create</Trans>
+                </span>
               </button>
             </div>
           }
@@ -167,13 +171,15 @@ function AffiliatesStats({
                                 handle={<IoWarningOutline color="#ffba0e" size={16} />}
                                 renderContent={() => (
                                   <div>
-                                    This code is not yet registered on{" "}
-                                    {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}, you will not receive rebates
-                                    there.
-                                    <br />
-                                    <br />
-                                    Switch your network to create this code on{" "}
-                                    {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}.
+                                    <Trans>
+                                      This code is not yet registered on{" "}
+                                      {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}, you will not receive rebates
+                                      there.
+                                      <br />
+                                      <br />
+                                      Switch your network to create this code on{" "}
+                                      {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}.
+                                    </Trans>
                                   </div>
                                 )}
                               />
@@ -186,9 +192,12 @@ function AffiliatesStats({
                                 handle={<BiErrorCircle color="#e82e56" size={16} />}
                                 renderContent={() => (
                                   <div>
-                                    This code has been taken by someone else on{" "}
-                                    {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}, you will not receive rebates
-                                    from traders using this code on {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}.
+                                    <Trans>
+                                      This code has been taken by someone else on{" "}
+                                      {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}, you will not receive rebates
+                                      from traders using this code on {chainId === AVALANCHE ? "Arbitrum" : "Avalanche"}
+                                      .
+                                    </Trans>
                                   </div>
                                 )}
                               />
@@ -209,7 +218,7 @@ function AffiliatesStats({
       </div>
       {rebateDistributions?.length > 0 ? (
         <div className="reward-history">
-          <Card title="Rewards Distribution History" tooltipText="Rewards are airdropped weekly.">
+          <Card title="Rewards Distribution History" tooltipText={t`Rewards are airdropped weekly.`}>
             <div className="table-wrapper">
               <table className="referral-table">
                 <thead>
@@ -243,13 +252,9 @@ function AffiliatesStats({
                           {formatAmount(rebate.amount, tokenInfo.decimals, 6, true)} {tokenInfo.symbol}
                         </td>
                         <td className="table-head" data-label="Transaction">
-                          <a
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href={explorerURL + `tx/${rebate.transactionHash}`}
-                          >
+                          <ExternalLink href={explorerURL + `tx/${rebate.transactionHash}`}>
                             {shortenAddress(rebate.transactionHash, 13)}
-                          </a>
+                          </ExternalLink>
                         </td>
                       </tr>
                     );

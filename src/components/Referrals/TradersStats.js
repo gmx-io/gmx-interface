@@ -10,6 +10,7 @@ import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import { ReferralCodeForm } from "./JoinReferralCode";
+import ExternalLink from "../Common/ExternalLink";
 
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -77,7 +78,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
       </div>
       {referralsData?.discountDistributions.length > 0 ? (
         <div className="reward-history">
-          <Card title="Rebates Distribution History" tooltipText="Rebates are airdropped weekly.">
+          <Card title={t`Rebates Distribution History`} tooltipText={t`Rebates are airdropped weekly.`}>
             <div className="table-wrapper">
               <table className="referral-table">
                 <thead>
@@ -109,13 +110,9 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                           {formatAmount(rebate.amount, tokenInfo.decimals, 6, true)} {tokenInfo.symbol}
                         </td>
                         <td data-label="Transaction">
-                          <a
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            href={explorerURL + `tx/${rebate.transactionHash}`}
-                          >
+                          <ExternalLink href={explorerURL + `tx/${rebate.transactionHash}`}>
                             {shortenAddress(rebate.transactionHash, 20)}
-                          </a>
+                          </ExternalLink>
                         </td>
                       </tr>
                     );
