@@ -7,5 +7,5 @@ export const SUBGRAPH_URLS = {
   nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
 
   arbitrumReferrals: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-arbitrum-referrals",
-  avalancheReferrals: null,
+  avalancheReferrals: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-referrals",
 };

@@ -2,4 +2,5 @@
 . "$(dirname "$0")/_/husky.sh"
 
 yarn lingui:generate
+yarn tscheck
 yarn lint-staged

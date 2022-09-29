@@ -72,7 +72,8 @@
     "extract": "NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile",
     "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
-    "lingui:generate": "NODE_ENV=development lingui extract --overwrite $(git diff --name-only --staged)"
+    "lingui:generate": "NODE_ENV=development lingui extract --overwrite $(git diff --name-only --staged)",
+    "tscheck": "tsc -p tsconfig.json --noEmit"
   },
   "eslintConfig": {
     "extends": [
@@ -105,9 +106,6 @@
     "src/**/*.{js,ts,jsx,tsx}": [
       "eslint --fix ./src",
       "prettier --write"
-    ],
-    "src/**/*.{ts,tsx}": [
-      "tsc-files --noEmit src/react-app-env.d.ts src/typings.d.ts"
     ]
   },
   "packageManager": "yarn@3.1.0"
