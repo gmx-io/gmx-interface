@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { toJpeg } from "html-to-image";
 import cx from "classnames";
 import { BiCopy } from "react-icons/bi";
@@ -59,7 +59,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
           setUploadedImageInfo(imageInfo);
         } catch {
           setUploadedImageInfo(null);
-          setUploadedImageError("Image generation error, please refresh and try again.");
+          setUploadedImageError(t`Image generation error, please refresh and try again.`);
         }
       }
     })();
@@ -81,14 +81,14 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
     if (!uploadedImageInfo) return;
     const url = getShareURL(uploadedImageInfo, userAffiliateCode);
     copyToClipboard(url);
-    helperToast.success("Link copied to clipboard.");
+    helperToast.success(t`Link copied to clipboard.`);
   }
   return (
     <Modal
       className="position-share-modal"
       isVisible={isPositionShareModalOpen}
       setIsVisible={setIsPositionShareModalOpen}
-      label="Share Position"
+      label={t`Share Position`}
     >
       <PositionShareCard
         userAffiliateCode={userAffiliateCode}
@@ -143,18 +143,22 @@ function PositionShareCard({
       <div ref={positionRef} className="position-share" style={{ backgroundImage: `url(${sharePositionBgImg})` }}>
         <img className="logo" src={gmxLogo} alt="GMX Logo" />
         <ul className="info">
-          <li className="side">{isLong ? "LONG" : "SHORT"}</li>
+          <li className="side">{isLong ? t`LONG` : t`SHORT`}</li>
           <li>{formatAmount(leverage, 4, 2, true)}x&nbsp;</li>
           <li>{indexToken.symbol} USD</li>
         </ul>
         <h3 className="pnl">{deltaAfterFeesPercentageStr}</h3>
         <div className="prices">
           <div>
-            <p>Entry Price</p>
+            <p>
+              <Trans>Entry Price</Trans>
+            </p>
             <p className="price">${formatAmount(averagePrice, USD_DECIMALS, 2, true)}</p>
           </div>
           <div>
-            <p>Index Price</p>
+            <p>
+              <Trans>Index Price</Trans>
+            </p>
             <p className="price">${formatAmount(markPrice, USD_DECIMALS, 2, true)}</p>
           </div>
         </div>
@@ -165,7 +169,9 @@ function PositionShareCard({
           <div className="referral-code-info">
             {success ? (
               <>
-                <p className="label">Referral Code:</p>
+                <p className="label">
+                  <Trans>Referral Code</Trans>:
+                </p>
                 <p className="code">{code}</p>
               </>
             ) : (
@@ -178,7 +184,9 @@ function PositionShareCard({
         <div className="image-overlay-wrapper">
           <div className="image-overlay">
             <SpinningLoader />
-            <p className="loading-text">Generating shareable image...</p>
+            <p className="loading-text">
+              <Trans>Generating shareable image...</Trans>
+            </p>
           </div>
         </div>
       )}

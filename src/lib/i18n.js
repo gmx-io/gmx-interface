@@ -23,6 +23,7 @@ i18n.loadLocaleData({
   ru: { plurals: ru },
   ja: { plurals: ja },
   fr: { plurals: fr },
+  ...(isDevelopment() && { pseudo: { plurals: en } }),
 });
 
 export function isTestLanguage(locale) {

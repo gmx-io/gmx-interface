@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useSWR from "swr";
-import { Trans, t } from "@lingui/macro";
+import { Trans, t, select, Select } from "@lingui/macro";
 import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
 
@@ -35,6 +35,7 @@ import { getConstant } from "../../config/chains";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { fetcher } from "../../lib/contracts/fetcher";
 import { callContract } from "../../lib/contracts/callContract";
+import ExternalLink from "../Common/ExternalLink";
 
 const DEPOSIT = t`Deposit`;
 const WITHDRAW = t`Withdraw`;
@@ -75,6 +76,7 @@ export default function PositionEditor(props) {
   const [isApproving, setIsApproving] = useState(false);
   const [isSwapping, setIsSwapping] = useState(false);
   const prevIsVisible = usePrevious(isVisible);
+  const longOrShortText = select(position?.isLong, { true: "Long", false: "Short" });
 
   const routerAddress = getContract(chainId, "Router");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -114,7 +116,7 @@ export default function PositionEditor(props) {
   let title;
   let collateralDelta;
   if (position) {
-    title = `Edit ${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol}`;
+    title = t`Edit ${longOrShortText} ${position.indexToken.symbol}`;
     collateralToken = position.collateralToken;
     liquidationPrice = getLiquidationPrice(position);
 
@@ -329,7 +331,7 @@ export default function PositionEditor(props) {
 
     if (shouldRaiseGasError(getTokenInfo(infoTokens, collateralTokenAddress), fromAmount)) {
       setIsSwapping(false);
-      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ETH for gas`);
+      helperToast.error(t`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ETH for gas`);
       return;
     }
 
@@ -339,7 +341,7 @@ export default function PositionEditor(props) {
       sentMsg: t`Deposit submitted.`,
       successMsg: t`Requested deposit of ${formatAmount(fromAmount, position.collateralToken.decimals, 4)} ${
         position.collateralToken.symbol
-      } into ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}.`,
+      } into ${position.indexToken.symbol} ${longOrShortText}.`,
       failMsg: t`Deposit failed.`,
       setPendingTxns,
     })
@@ -392,7 +394,7 @@ export default function PositionEditor(props) {
       sentMsg: t`Withdrawal submitted.`,
       successMsg: t`Requested withdrawal of ${formatAmount(fromAmount, USD_DECIMALS, 2)} USD from ${
         position.indexToken.symbol
-      } ${position.isLong ? "Long" : "Short"}.`,
+      } ${longOrShortText}.`,
       failMsg: t`Withdrawal failed.`,
       setPendingTxns,
     })
@@ -581,7 +583,7 @@ export default function PositionEditor(props) {
                           return (
                             <>
                               <StatsTooltipRow
-                                label="Network fee"
+                                label={t`Network fee`}
                                 showDollar={false}
                                 value={`${formatAmountFree(
                                   minExecutionFee,
@@ -590,16 +592,13 @@ export default function PositionEditor(props) {
                                 )} ${nativeTokenSymbol} ($${formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})`}
                               />
                               <br />
-                              This is the network cost required to execute the {isDeposit
-                                ? "deposit"
-                                : "withdrawal"}.{" "}
-                              <a
-                                href="https://gmxio.gitbook.io/gmx/trading#execution-fee"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                More Info
-                              </a>
+                              <Trans>
+                                This is the network cost required to execute the{" "}
+                                <Select value={isDeposit} true="deposit" false="withdrawal" />.{" "}
+                                <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#execution-fee">
+                                  More Info
+                                </ExternalLink>
+                              </Trans>
                             </>
                           );
                         }}

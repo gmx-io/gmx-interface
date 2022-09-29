@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import cx from "classnames";
-import { Trans, t } from "@lingui/macro";
+import { Trans, t, select } from "@lingui/macro";
 import Tooltip from "../Tooltip/Tooltip";
 import PositionSeller from "./PositionSeller";
 import PositionEditor from "./PositionEditor";
@@ -53,7 +53,7 @@ const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => 
     .map((order) => {
       order.error = getOrderError(account, order, undefined, position);
       if (order.type === DECREASE && order.sizeDelta.gt(position.size)) {
-        order.error = "Order size is bigger than position, will only be executable if position increases";
+        order.error = t`Order size is bigger than position, will only be executable if position increases`;
       }
       return order;
     });
@@ -119,7 +119,9 @@ export default function PositionsList(props) {
   };
 
   const onPositionClick = (position) => {
-    helperToast.success(`${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol} market selected`);
+    helperToast.success(
+      t`${select(position.isLong, { true: "Long", false: "Short" })} ${position.indexToken.symbol} market selected`
+    );
     setMarket(position.isLong ? LONG : SHORT, position.indexToken.address);
   };
 
@@ -245,7 +247,7 @@ export default function PositionsList(props) {
                   <div className="App-card-title">
                     <span className="Exchange-list-title">{position.indexToken.symbol}</span>
                   </div>
-                  <div className="App-card-divider"></div>
+                  <div className="App-card-divider" />
                   <div className="App-card-content">
                     <div className="App-card-row">
                       <div className="label">
@@ -283,22 +285,26 @@ export default function PositionsList(props) {
                               <>
                                 {position.hasLowCollateral && (
                                   <div>
-                                    WARNING: This position has a low amount of collateral after deducting borrowing
-                                    fees, deposit more collateral to reduce the position's liquidation risk.
+                                    <Trans>
+                                      WARNING: This position has a low amount of collateral after deducting borrowing
+                                      fees, deposit more collateral to reduce the position's liquidation risk.
+                                    </Trans>
                                     <br />
                                     <br />
                                   </div>
                                 )}
                                 <StatsTooltipRow
-                                  label="Initial Collateral"
+                                  label={t`Initial Collateral`}
                                   value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
                                 />
                                 <StatsTooltipRow
-                                  label="Borrow Fee"
+                                  label={t`Borrow Fee`}
                                   value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
                                 />
                                 <StatsTooltipRow label={t`Borrow Fee / Day`} value={borrowFeeUSD} />
-                                <span>Use the "Edit" button to deposit or withdraw collateral.</span>
+                                <span>
+                                  <Trans>Use the "Edit" button to deposit or withdraw collateral.</Trans>
+                                </span>
                               </>
                             );
                           }}
@@ -333,27 +339,27 @@ export default function PositionsList(props) {
                           renderContent={() => {
                             return (
                               <>
-                                Net Value:{" "}
+                                <Trans>Net Value: </Trans>
                                 {showPnlAfterFees
-                                  ? "Initial Collateral - Fees + PnL"
-                                  : "Initial Collateral - Borrow Fee + PnL"}
+                                  ? t`Initial Collateral - Fees + PnL`
+                                  : t`Initial Collateral - Borrow Fee + PnL`}
                                 <br />
                                 <br />
                                 <StatsTooltipRow
-                                  label="Initial Collateral"
+                                  label={t`Initial Collateral`}
                                   value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
                                 />
                                 <StatsTooltipRow label="PnL" value={position.deltaBeforeFeesStr} showDollar={false} />
                                 <StatsTooltipRow
-                                  label="Borrow Fee"
+                                  label={t`Borrow Fee`}
                                   value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
                                 />
                                 <StatsTooltipRow
-                                  label="Open + Close fee"
+                                  label={t`Open + Close fee`}
                                   value={formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
                                 />
                                 <StatsTooltipRow
-                                  label="PnL After Fees"
+                                  label={t`PnL After Fees`}
                                   value={`${position.deltaAfterFeesStr} (${position.deltaAfterFeesPercentageStr})`}
                                   showDollar={false}
                                 />
@@ -399,7 +405,7 @@ export default function PositionsList(props) {
                       </div>
                     </div>
                   </div>
-                  <div className="App-card-divider"></div>
+                  <div className="App-card-divider" />
                   <div className="App-card-content">
                     <div className="App-card-row">
                       <div className="label">
@@ -427,14 +433,14 @@ export default function PositionsList(props) {
                       disabled={position.size.eq(0)}
                       onClick={() => sellPosition(position)}
                     >
-                      Close
+                      <Trans>Close</Trans>
                     </button>
                     <button
                       className="App-button-option App-card-option"
                       disabled={position.size.eq(0)}
                       onClick={() => editPosition(position)}
                     >
-                      <Trans> Edit</Trans>
+                      <Trans>Edit</Trans>
                     </button>
                     <button
                       className="Exchange-list-action App-button-option App-card-option"
@@ -522,13 +528,13 @@ export default function PositionsList(props) {
                       <span className="muted">{formatAmount(position.leverage, 4, 2, true)}x&nbsp;</span>
                     )}
                     <span className={cx({ positive: position.isLong, negative: !position.isLong })}>
-                      {position.isLong ? "Long" : "Short"}
+                      {position.isLong ? t`Long` : t`Short`}
                     </span>
                   </div>
                 </td>
                 <td>
                   <div>
-                    {!position.netValue && "Opening..."}
+                    {!position.netValue && t`Opening...`}
                     {position.netValue && (
                       <Tooltip
                         handle={`$${formatAmount(position.netValue, USD_DECIMALS, 2, true)}`}
@@ -584,7 +590,7 @@ export default function PositionsList(props) {
                   {positionOrders.length > 0 && (
                     <div onClick={() => setListSection && setListSection("Orders")}>
                       <Tooltip
-                        handle={`Orders (${positionOrders.length})`}
+                        handle={t`Orders (${positionOrders.length})`}
                         position="left-bottom"
                         handleClassName={cx(
                           ["Exchange-list-info-label", "Exchange-position-list-orders", "plain", "clickable"],
@@ -661,11 +667,16 @@ export default function PositionsList(props) {
                     renderContent={() => {
                       return (
                         <div>
-                          Click on a row to select the position's market, then use the swap box to increase your
-                          position size if needed.
+                          <Trans>
+                            Click on a row to select the position's market, then use the swap box to increase your
+                            position size if needed.
+                          </Trans>
                           <br />
                           <br />
-                          Use the "Close" button to reduce your position size, or to set stop-loss / take-profit orders.
+                          <Trans>
+                            Use the "Close" button to reduce your position size, or to set stop-loss / take-profit
+                            orders.
+                          </Trans>
                         </div>
                       );
                     }}

@@ -7,7 +7,6 @@ import {
   SWAP,
   TRIGGER_PREFIX_ABOVE,
   TRIGGER_PREFIX_BELOW,
-  MIN_PROFIT_TIME,
   DECREASE,
   INCREASE,
   useChainId,
@@ -22,15 +21,12 @@ import {
   getExchangeRateDisplay,
   calculatePositionDelta,
   getLiquidationPrice,
-  formatDateTime,
-  getDeltaStr,
-  getProfitPrice,
-  getTimeRemaining,
 } from "../../lib/legacy";
 import { updateSwapOrder, updateIncreaseOrder, updateDecreaseOrder } from "../../domain/legacy";
 import Modal from "../Modal/Modal";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import { getContract } from "../../config/Addresses";
+import { select, t, Trans } from "@lingui/macro";
 
 export default function OrderEditor(props) {
   const {
@@ -142,9 +138,9 @@ export default function OrderEditor(props) {
     }
 
     params.push({
-      successMsg: "Order updated!",
-      failMsg: "Order update failed.",
-      sentMsg: "Order update submitted!",
+      successMsg: t`Order updated!`,
+      failMsg: t`Order update failed.`,
+      sentMsg: t`Order update submitted!`,
       pendingTxns,
       setPendingTxns,
     });
@@ -168,73 +164,44 @@ export default function OrderEditor(props) {
 
   const getError = () => {
     if ((!triggerRatio || triggerRatio.eq(0)) && (!triggerPrice || triggerPrice.eq(0))) {
-      return "Enter Price";
+      return t`Enter Price`;
     }
     if (order.type === SWAP && triggerRatio.eq(order.triggerRatio)) {
-      return "Enter new Price";
+      return t`Enter new Price`;
     }
     if (order.type !== SWAP && triggerPrice.eq(order.triggerPrice)) {
-      return "Enter new Price";
+      return t`Enter new Price`;
     }
     if (position) {
       if (order.type === DECREASE) {
         if (position.isLong && triggerPrice.lte(liquidationPrice)) {
-          return "Price below Liq. Price";
+          return t`Price below Liq. Price`;
         }
         if (!position.isLong && triggerPrice.gte(liquidationPrice)) {
-          return "Price above Liq. Price";
+          return t`Price above Liq. Price`;
         }
       }
 
       const { delta, hasProfit } = calculatePositionDelta(triggerPrice, position);
       if (hasProfit && delta.eq(0)) {
-        return "Invalid price, see warning";
+        return t`Invalid price, see warning`;
       }
     }
 
     if (order.type !== SWAP && indexTokenMarkPrice && !savedShouldDisableValidationForTesting) {
       if (order.triggerAboveThreshold && indexTokenMarkPrice.gt(triggerPrice)) {
-        return "Price below Mark Price";
+        return t`Price below Mark Price`;
       }
       if (!order.triggerAboveThreshold && indexTokenMarkPrice.lt(triggerPrice)) {
-        return "Price above Mark Price";
+        return t`Price above Mark Price`;
       }
     }
 
     if (order.type === SWAP) {
       const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
       if (currentRate && !currentRate.gte(triggerRatio)) {
-        return `Price is ${triggerRatioInverted ? "below" : "above"} Mark Price`;
+        return select(triggerRatioInverted, { true: "Price is below Mark Price", false: "Price is above Mark Price" });
       }
-    }
-  };
-
-  const renderMinProfitWarning = () => {
-    if (MIN_PROFIT_TIME === 0 || order.type === SWAP || !position || !triggerPrice || triggerPrice.eq(0)) {
-      return null;
-    }
-
-    const { delta, pendingDelta, pendingDeltaPercentage, hasProfit } = calculatePositionDelta(triggerPrice, position);
-    if (hasProfit && delta.eq(0)) {
-      const { deltaStr } = getDeltaStr({
-        delta: pendingDelta,
-        deltaPercentage: pendingDeltaPercentage,
-        hasProfit,
-      });
-      const profitPrice = getProfitPrice(triggerPrice, position);
-      const minProfitExpiration = position.lastIncreasedTime + MIN_PROFIT_TIME;
-      return (
-        <div className="Confirmation-box-warning">
-          This order will forfeit a&nbsp;
-          <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
-            profit
-          </a>{" "}
-          of {deltaStr}. <br />
-          Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
-          only applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}
-          .
-        </div>
-      );
     }
   };
 
@@ -257,9 +224,9 @@ export default function OrderEditor(props) {
     }
 
     if (isSubmitting) {
-      return "Updating Order...";
+      return t`Updating Order...`;
     }
-    return "Update Order";
+    return t`Update Order`;
   };
 
   if (order.type !== SWAP) {
@@ -269,19 +236,20 @@ export default function OrderEditor(props) {
         isVisible={true}
         className="Exchange-list-modal"
         setIsVisible={() => setEditingOrder(null)}
-        label="Edit order"
+        label={t`Edit order`}
       >
-        {renderMinProfitWarning()}
         <div className="Exchange-swap-section">
           <div className="Exchange-swap-section-top">
-            <div className="muted">Price</div>
+            <div className="muted">
+              <Trans>Price</Trans>
+            </div>
             <div
               className="muted align-right clickable"
               onClick={() => {
                 setTriggerPriceValue(formatAmountFree(indexTokenMarkPrice, USD_DECIMALS, 2));
               }}
             >
-              Mark: {formatAmount(indexTokenMarkPrice, USD_DECIMALS, 2)}
+              <Trans>Mark: {formatAmount(indexTokenMarkPrice, USD_DECIMALS, 2)}</Trans>
             </div>
           </div>
           <div className="Exchange-swap-section-bottom">
@@ -317,7 +285,9 @@ export default function OrderEditor(props) {
         </ExchangeInfoRow>
         {liquidationPrice && (
           <div className="Exchange-info-row">
-            <div className="Exchange-info-label">Liq. Price</div>
+            <div className="Exchange-info-label">
+              <Trans>Liq. Price</Trans>
+            </div>
             <div className="align-right">{`$${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}`}</div>
           </div>
         )}

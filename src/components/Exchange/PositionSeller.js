@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { ethers } from "ethers";
 import cx from "classnames";
-import { Trans, t } from "@lingui/macro";
+import { Trans, t, select } from "@lingui/macro";
 import { BsArrowRight } from "react-icons/bs";
 
 import {
@@ -59,6 +59,7 @@ import "./PositionSeller.css";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { getTokenAmountFromUsd } from "../../domain/tokens/utils";
 import { callContract } from "../../lib/contracts/callContract";
+import ExternalLink from "../Common/ExternalLink";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -165,6 +166,7 @@ export default function PositionSeller(props) {
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const toTokens = getTokens(chainId);
+  const longOrShortText = select(position?.isLong, { true: "Long", false: "Short" });
 
   const [savedRecieveTokenAddress, setSavedRecieveTokenAddress] = useLocalStorageByChainId(
     chainId,
@@ -296,7 +298,7 @@ export default function PositionSeller(props) {
     fromAmount = parseValue(fromValue, USD_DECIMALS);
     sizeDelta = fromAmount;
 
-    title = `Close ${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol}`;
+    title = t`Close ${longOrShortText} ${position.indexToken.symbol}`;
     collateralToken = position.collateralToken;
     liquidationPrice = getLiquidationPrice(position);
 
@@ -532,11 +534,11 @@ export default function PositionSeller(props) {
     }
 
     if (isNotEnoughReceiveTokenLiquidity) {
-      return "Insufficient receive token liquidity";
+      return t`Insufficient receive token liquidity`;
     }
 
     if (isCollateralPoolCapacityExceeded) {
-      return `${collateralToken.symbol} pool exceeded, can only Receive ${collateralToken.symbol}`;
+      return t`${collateralToken.symbol} pool exceeded, can only Receive ${collateralToken.symbol}`;
     }
 
     if (!isClosing && position && position.size && fromAmount) {
@@ -737,9 +739,11 @@ export default function PositionSeller(props) {
       withdrawETH, // _withdrawETH
     ];
 
-    const successMsg = t`Requested decrease of ${position.indexToken.symbol} ${
-      position.isLong ? "Long" : "Short"
-    } by ${formatAmount(sizeDelta, USD_DECIMALS, 2)} USD.`;
+    const successMsg = t`Requested decrease of ${position.indexToken.symbol} ${longOrShortText} by ${formatAmount(
+      sizeDelta,
+      USD_DECIMALS,
+      2
+    )} USD.`;
 
     const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
 
@@ -787,13 +791,14 @@ export default function PositionSeller(props) {
     const prefix = existingOrder.triggerAboveThreshold ? TRIGGER_PREFIX_ABOVE : TRIGGER_PREFIX_BELOW;
     return (
       <div className="Confirmation-box-warning">
-        You have an active order to decrease {existingOrder.isLong ? "Long" : "Short"} {sizeInToken} {indexToken.symbol}{" "}
-        ($
-        {formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at {prefix}{" "}
-        {formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
+        <Trans>
+          You have an active order to decrease {longOrShortText} {sizeInToken} {indexToken.symbol} ($
+          {formatAmount(existingOrder.sizeDelta, USD_DECIMALS, 2, true)}) at {prefix}{" "}
+          {formatAmount(existingOrder.triggerPrice, USD_DECIMALS, 2, true)}
+        </Trans>
       </div>
     );
-  }, [existingOrder, infoTokens]);
+  }, [existingOrder, infoTokens, longOrShortText]);
 
   function renderMinProfitWarning() {
     if (MIN_PROFIT_TIME === 0) {
@@ -806,30 +811,32 @@ export default function PositionSeller(props) {
       if (orderOption === MARKET) {
         return (
           <div className="Confirmation-box-warning">
-            Reducing the position at the current price will forfeit a&nbsp;
-            <a
-              href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              pending profit
-            </a>{" "}
-            of {deltaStr}. <br />
-            <br />
-            Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
-            applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
+            <Trans>
+              Reducing the position at the current price will forfeit a&nbsp;
+              <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change">
+                pending profit
+              </ExternalLink>{" "}
+              of {deltaStr}. <br />
+            </Trans>
+            <Trans>
+              <br />
+              Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
+              applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
+            </Trans>
           </div>
         );
       }
       return (
         <div className="Confirmation-box-warning">
-          This order will forfeit a&nbsp;
-          <a href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change" target="_blank" rel="noopener noreferrer">
-            profit
-          </a>{" "}
-          of {deltaStr}. <br />
-          Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
-          applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
+          <Trans>
+            This order will forfeit a&nbsp;
+            <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#minimum-price-change">profit</ExternalLink> of{" "}
+            {deltaStr}. <br />
+          </Trans>
+          <Trans>
+            Profit price: {position.isLong ? ">" : "<"} ${formatAmount(profitPrice, USD_DECIMALS, 2, true)}. This rule
+            applies for the next {getTimeRemaining(minProfitExpiration)}, until {formatDateTime(minProfitExpiration)}.
+          </Trans>
         </div>
       );
     }
@@ -870,11 +877,11 @@ export default function PositionSeller(props) {
                     Close: {convertedAmountFormatted} {position.collateralToken.symbol}
                   </div>
                 )}
-                {!convertedAmountFormatted && "Close"}
+                {!convertedAmountFormatted && t`Close`}
               </div>
               {maxAmount && (
                 <div className="muted align-right clickable" onClick={() => setFromValue(maxAmountFormattedFree)}>
-                  Max: {maxAmountFormatted}
+                  <Trans>Max: {maxAmountFormatted}</Trans>
                 </div>
               )}
             </div>
@@ -895,7 +902,7 @@ export default function PositionSeller(props) {
                       setFromValue(maxAmountFormattedFree);
                     }}
                   >
-                    MAX
+                    <Trans>MAX</Trans>
                   </div>
                 )}
               </div>
@@ -914,7 +921,7 @@ export default function PositionSeller(props) {
                     setTriggerPriceValue(formatAmountFree(position.markPrice, USD_DECIMALS, 2));
                   }}
                 >
-                  Mark: {formatAmount(position.markPrice, USD_DECIMALS, 2, true)}
+                  <Trans>Mark: {formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</Trans>
                 </div>
               </div>
               <div className="Exchange-swap-section-bottom">
@@ -947,31 +954,35 @@ export default function PositionSeller(props) {
             )}
             <div className="PositionEditor-keep-leverage-settings">
               <Checkbox isChecked={keepLeverage} setIsChecked={setKeepLeverage}>
-                <span className="muted font-sm">Keep leverage at {formatAmount(position.leverage, 4, 2)}x</span>
+                <span className="muted font-sm">
+                  <Trans>Keep leverage at {formatAmount(position.leverage, 4, 2)}x</Trans>
+                </span>
               </Checkbox>
             </div>
             {orderOption === MARKET && (
               <div className="PositionEditor-allow-higher-slippage">
                 <Checkbox isChecked={isHigherSlippageAllowed} setIsChecked={setIsHigherSlippageAllowed}>
-                  <span className="muted font-sm">Allow up to 1% slippage</span>
+                  <span className="muted font-sm">
+                    <Trans>Allow up to 1% slippage</Trans>
+                  </span>
                 </Checkbox>
               </div>
             )}
             {orderOption === MARKET && (
               <div>
-                <ExchangeInfoRow label="Allowed Slippage">
+                <ExchangeInfoRow label={t`Allowed Slippage`}>
                   <Tooltip
                     handle={`${formatAmount(allowedSlippage, 2, 2)}%`}
                     position="right-bottom"
                     renderContent={() => {
                       return (
-                        <>
+                        <Trans>
                           You can change this in the settings menu on the top right of the page.
                           <br />
                           <br />
                           Note that a low allowed slippage, e.g. less than 0.5%, may result in failed orders if prices
                           are volatile.
-                        </>
+                        </Trans>
                       );
                     }}
                   />
@@ -1111,16 +1122,22 @@ export default function PositionSeller(props) {
                   renderContent={() => (
                     <div>
                       {fundingFee && (
-                        <StatsTooltipRow label="Borrow fee" value={formatAmount(fundingFee, USD_DECIMALS, 2, true)} />
+                        <StatsTooltipRow
+                          label={t`Borrow fee`}
+                          value={formatAmount(fundingFee, USD_DECIMALS, 2, true)}
+                        />
                       )}
 
                       {positionFee && (
-                        <StatsTooltipRow label="Closing fee" value={formatAmount(positionFee, USD_DECIMALS, 2, true)} />
+                        <StatsTooltipRow
+                          label={t`Closing fee`}
+                          value={formatAmount(positionFee, USD_DECIMALS, 2, true)}
+                        />
                       )}
 
                       {swapFee && (
                         <StatsTooltipRow
-                          label="Swap fee"
+                          label={t`Swap fee`}
                           showDollar={false}
                           value={`${formatAmount(swapFeeToken, collateralToken.decimals, 5)} ${collateralToken.symbol}
                            ($${formatAmount(swapFee, USD_DECIMALS, 2, true)})`}
@@ -1128,7 +1145,7 @@ export default function PositionSeller(props) {
                       )}
 
                       <StatsTooltipRow
-                        label="Execution fee"
+                        label={t`Execution fee`}
                         showDollar={false}
                         value={`${formatAmount(executionFee, 18, 5, true)} ${nativeTokenSymbol} ($${formatAmount(
                           executionFeeUsd,
@@ -1140,10 +1157,8 @@ export default function PositionSeller(props) {
                       <br />
 
                       <div className="PositionSeller-fee-item">
-                        <a href="https://gmxio.gitbook.io/gmx/trading#fees" target="_blank" rel="noopener noreferrer">
-                          More Info
-                        </a>{" "}
-                        about fees.
+                        <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#fees">More Info</ExternalLink> about
+                        fees.
                       </div>
                     </div>
                   )}
@@ -1171,7 +1186,7 @@ export default function PositionSeller(props) {
                     className={cx("PositionSeller-token-selector", {
                       warning: isNotEnoughReceiveTokenLiquidity || isCollateralPoolCapacityExceeded,
                     })}
-                    label={"Receive"}
+                    label={t`Receive`}
                     showBalances={false}
                     chainId={chainId}
                     tokenAddress={receiveToken.address}
@@ -1208,22 +1223,26 @@ export default function PositionSeller(props) {
                           disabled: true,
                           message: (
                             <div>
-                              Insufficient Available Liquidity to swap to {tokenOptionInfo.symbol}:
+                              <Trans>Insufficient Available Liquidity to swap to {tokenOptionInfo.symbol}:</Trans>
                               <br />
                               <br />
                               <StatsTooltipRow
-                                label={`Max ${collateralInfo.symbol} in`}
+                                label={t`Max ${collateralInfo.symbol} in`}
                                 value={[
                                   `${formatAmount(maxIn, collateralInfo.decimals, 0, true)} ${collateralInfo.symbol}`,
                                   `($${formatAmount(maxInUsd, USD_DECIMALS, 0, true)})`,
                                 ]}
                               />
                               <br />
-                              <br />
-                              Max {tokenOptionInfo.symbol} out:{" "}
-                              {formatAmount(maxOut, tokenOptionInfo.decimals, 2, true)} {tokenOptionInfo.symbol}
-                              <br />
-                              (${formatAmount(maxOutUsd, USD_DECIMALS, 2, true)})
+                              <StatsTooltipRow
+                                label={t`Max ${tokenOptionInfo.symbol} out`}
+                                value={[
+                                  `${formatAmount(maxOut, tokenOptionInfo.decimals, 2, true)} ${
+                                    tokenOptionInfo.symbol
+                                  }`,
+                                  `($${formatAmount(maxOutUsd, USD_DECIMALS, 2, true)})`,
+                                ]}
+                              />
                             </div>
                           ),
                         };

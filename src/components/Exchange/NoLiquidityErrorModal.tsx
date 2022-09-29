@@ -3,6 +3,8 @@ import { ethers } from "ethers";
 import Modal from "../Modal/Modal";
 import { TokenInfo, Token } from "../../domain/tokens/types";
 import { get1InchSwapUrl } from "../../domain/common";
+import { Trans } from "@lingui/macro";
+import ExternalLink from "../Common/ExternalLink";
 
 const { AddressZero } = ethers.constants;
 
@@ -43,22 +45,26 @@ export default function NoLiquidityErrorModal({
   return (
     <Modal isVisible={Boolean(modalError)} setIsVisible={setModalError} label={label} className="Error-modal font-base">
       <div>
-        You need to select {swapTokenSymbol} as the "Pay" token to use it for collateral to initiate this trade.
+        <Trans>
+          You need to select {swapTokenSymbol} as the "Pay" token to use it for collateral to initiate this trade.
+        </Trans>
       </div>
       <br />
       <div>
-        As there is not enough liquidity in GLP to swap {fromToken.symbol} to {swapTokenSymbol}, you can use the option
-        below to do so:
+        <Trans>
+          As there is not enough liquidity in GLP to swap {fromToken.symbol} to {swapTokenSymbol}, you can use the
+          option below to do so:
+        </Trans>
       </div>
       <br />
 
-      <a href={oneInchSwapUrl} target="_blank" rel="noreferrer">
-        Buy {swapTokenSymbol} on 1inch
-      </a>
+      <ExternalLink href={oneInchSwapUrl}>
+        <Trans>Buy {swapTokenSymbol} on 1inch</Trans>
+      </ExternalLink>
 
       {isShort && (
         <div>
-          Alternatively you can select a different "Collateral In" token.
+          <Trans>Alternatively you can select a different "Collateral In" token.</Trans>
           <br />
           <br />
         </div>
