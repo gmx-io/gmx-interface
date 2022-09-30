@@ -22,7 +22,7 @@ import { useAffiliateCodes } from "../../domain/referrals";
 import SpinningLoader from "../Common/SpinningLoader";
 import useLoadImage from "../../lib/useLoadImage";
 import shareBgImg from "../../img/position-share-bg.png";
-import downloadImage from "../../domain/downloadImage";
+import downloadImage from "../../lib/downloadImage";
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
@@ -70,14 +70,12 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
   }, [userAffiliateCode, sharePositionBgImg, positionToShare]);
 
   async function handleDownload() {
-    const { indexToken, isLong } = positionToShare;
     const element = positionRef.current;
     if (!element) return;
-    const name = `${indexToken.symbol}-${isLong ? "long" : "short"}.jpeg`;
     const imgBlob = await toJpeg(element, config)
       .then(async () => await toJpeg(element, config))
       .then(async () => await toJpeg(element, config));
-    downloadImage(imgBlob, name);
+    downloadImage(imgBlob, "share.jpeg");
   }
 
   function handleCopy() {
