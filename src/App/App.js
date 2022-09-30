@@ -42,7 +42,7 @@ import Checkbox from "../components/Checkbox/Checkbox";
 
 import "../styles/Shared.css";
 import "../styles/Font.css";
-import "./App.css";
+import "./App.scss";
 import "../styles/Input.css";
 
 import metamaskImg from "../img/metamask.png";
