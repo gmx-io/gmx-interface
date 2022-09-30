@@ -11,6 +11,7 @@ export type Token = {
   isWrapped?: boolean;
   baseSymbol?: string;
 };
+
 export type TokenInfo = {
   address: string;
   name: string;
