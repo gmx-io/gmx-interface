@@ -12,8 +12,6 @@ import { ethers } from "ethers";
 import { getFeeHistory } from "../../config/Fees";
 
 import {
-  formatDate,
-  useChainId,
   USD_DECIMALS,
   GMX_DECIMALS,
   GLP_DECIMALS,
@@ -52,6 +50,8 @@ import { contractFetcher } from "../../lib/contracts";
 import { useInfoTokens } from "../../domain/tokens";
 import { getTokenBySymbol, getWhitelistedTokens, GLPPOOLCOLORS } from "../../config/tokens";
 import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "../../lib/numbers";
+import { useChainId } from "../../lib/chains";
+import { formatDate } from "../../lib/dates";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;

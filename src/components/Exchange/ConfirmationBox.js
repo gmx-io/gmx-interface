@@ -9,11 +9,9 @@ import {
   INCREASE,
   getExchangeRate,
   getProfitPrice,
-  getTimeRemaining,
   getExchangeRateDisplay,
   DEFAULT_SLIPPAGE_AMOUNT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
-  formatDateTime,
   calculatePositionDelta,
   DECREASE,
 } from "../../lib/legacy";
@@ -32,6 +30,7 @@ import { useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { SLIPPAGE_BPS_KEY } from "../../config/localStorage";
 import { expandDecimals, formatAmount, formatAmountFree } from "../../lib/numbers";
 import { getNativeToken, getToken, getWrappedToken } from "../../config/tokens";
+import { formatDateTime, getTimeRemaining } from "../../lib/dates";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 

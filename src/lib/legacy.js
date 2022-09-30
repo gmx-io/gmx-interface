@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
-import { format as formatDateFn } from "date-fns";
 import { getContract } from "../config/contracts";
 import useSWR from "swr";
 
 import OrderBookReader from "../abis/OrderBookReader.json";
 import OrderBook from "../abis/OrderBook.json";
 
-import { CHAIN_ID, DEFAULT_CHAIN_ID, getExplorerUrl, SUPPORTED_CHAIN_IDS } from "../config/chains";
+import { CHAIN_ID, getExplorerUrl } from "../config/chains";
 import { getServerBaseUrl } from "../config/backend";
 import { getMostAbundantStableToken } from "../domain/tokens";
-import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "../config/localStorage";
 import { getTokenInfo } from "../domain/tokens/utils";
 import { getProvider } from "./rpc";
 import { bigNumberify, expandDecimals, formatAmount } from "./numbers";
 import { isValidToken } from "../config/tokens";
+import { useChainId } from "./chains";
+import { isValidTimestamp } from "./dates";
 
 const { AddressZero } = ethers.constants;
 
@@ -862,45 +862,6 @@ export function shortenAddress(address, length) {
   return address.substring(0, left) + "..." + address.substring(address.length - (length - (left + 3)), address.length);
 }
 
-export function formatDateTime(time) {
-  return formatDateFn(time * 1000, "dd MMM yyyy, h:mm a");
-}
-
-export function getTimeRemaining(time) {
-  const now = parseInt(Date.now() / 1000);
-  if (time < now) {
-    return "0h 0m";
-  }
-  const diff = time - now;
-  const hours = parseInt(diff / (60 * 60));
-  const minutes = parseInt((diff - hours * 60 * 60) / 60);
-  return `${hours}h ${minutes}m`;
-}
-
-export function formatDate(time) {
-  return formatDateFn(time * 1000, "dd MMM yyyy");
-}
-
-export function useChainId() {
-  let { chainId } = useWeb3React();
-
-  if (!chainId) {
-    const chainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
-    if (chainIdFromLocalStorage) {
-      chainId = parseInt(chainIdFromLocalStorage);
-      if (!chainId) {
-        // localstorage value is invalid
-        localStorage.removeItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
-      }
-    }
-  }
-
-  if (!chainId || !SUPPORTED_CHAIN_IDS.includes(chainId)) {
-    chainId = DEFAULT_CHAIN_ID;
-  }
-  return { chainId };
-}
-
 export function useENS(address) {
   const [ensName, setENSName] = useState();
 
@@ -1465,10 +1426,6 @@ export function getTwitterIntentURL(text, url = "", hashtag = "") {
     }
   }
   return finalURL;
-}
-
-export function isValidTimestamp(timestamp) {
-  return new Date(timestamp).getTime() > 0;
 }
 
 export function getPositionForOrder(account, order, positionsMap) {

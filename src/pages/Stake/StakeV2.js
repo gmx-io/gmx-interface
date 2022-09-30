@@ -18,7 +18,6 @@ import GlpManager from "../../abis/GlpManager.json";
 
 import { ethers } from "ethers";
 import {
-  useChainId,
   GLP_DECIMALS,
   USD_DECIMALS,
   BASIS_POINTS_DIVISOR,
@@ -54,6 +53,7 @@ import {
   formatKeyAmount,
   parseValue,
 } from "../../lib/numbers";
+import { useChainId } from "../../lib/chains";
 
 const { AddressZero } = ethers.constants;
 

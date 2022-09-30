@@ -9,7 +9,6 @@ import {
   BASIS_POINTS_DIVISOR,
   LIQUIDATION_FEE,
   TRADES_PAGE_SIZE,
-  formatDateTime,
   deserialize,
   getExchangeRateDisplay,
 } from "../../lib/legacy";
@@ -20,6 +19,7 @@ import "./TradeHistory.css";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { getExplorerUrl } from "../../config/chains";
 import { bigNumberify, formatAmount } from "../../lib/numbers";
+import { formatDateTime } from "../../lib/dates";
 
 const { AddressZero } = ethers.constants;
 

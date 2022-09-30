@@ -6,7 +6,7 @@ import { IoWarningOutline } from "react-icons/io5";
 import { BiCopy, BiErrorCircle } from "react-icons/bi";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
-import { formatDate, REFERRAL_CODE_QUERY_PARAM, shortenAddress } from "../../lib/legacy";
+import { REFERRAL_CODE_QUERY_PARAM, shortenAddress } from "../../lib/legacy";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import {
@@ -22,6 +22,7 @@ import { AVALANCHE, getExplorerUrl } from "../../config/chains";
 import { helperToast } from "../../lib/helperToast";
 import { bigNumberify, formatAmount } from "../../lib/numbers";
 import { getNativeToken, getToken } from "../../config/tokens";
+import { formatDate } from "../../lib/dates";
 
 function AffiliatesStats({
   referralsData,

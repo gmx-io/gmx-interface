@@ -21,8 +21,6 @@ import {
   calculatePositionDelta,
   getDeltaStr,
   getProfitPrice,
-  formatDateTime,
-  getTimeRemaining,
   getNextToAmount,
   USDG_DECIMALS,
   adjustForDecimals,
@@ -48,6 +46,7 @@ import { getTokenInfo, getUsd } from "../../domain/tokens/utils";
 import { usePrevious } from "../../lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "../../lib/numbers";
 import { getTokens } from "../../config/tokens";
+import { formatDateTime, getTimeRemaining } from "../../lib/dates";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10

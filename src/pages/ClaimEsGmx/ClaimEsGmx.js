@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import useSWR from "swr";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
-import { PLACEHOLDER_ACCOUNT, useChainId } from "../../lib/legacy";
+import { PLACEHOLDER_ACCOUNT } from "../../lib/legacy";
 
 import { getContract } from "../../config/contracts";
 
@@ -20,6 +20,7 @@ import { Trans, t } from "@lingui/macro";
 import { ARBITRUM, AVALANCHE } from "../../config/chains";
 import { callContract, contractFetcher } from "../../lib/contracts";
 import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "../../lib/numbers";
+import { useChainId } from "../../lib/chains";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";
 const VEST_WITH_GLP_ARB = "VEST_WITH_GLP_ARB";

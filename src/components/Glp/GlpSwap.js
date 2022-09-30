@@ -8,7 +8,6 @@ import Tab from "../Tab/Tab";
 import cx from "classnames";
 import { getContract } from "../../config/contracts";
 import {
-  useChainId,
   getBuyGlpToAmount,
   getBuyGlpFromAmount,
   getSellGlpFromAmount,
@@ -65,6 +64,7 @@ import {
   parseValue,
 } from "../../lib/numbers";
 import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedToken } from "../../config/tokens";
+import { useChainId } from "../../lib/chains";
 
 const { AddressZero } = ethers.constants;
 

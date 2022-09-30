@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
-import { useChainId } from "../../lib/legacy";
 
 import ERC721 from "../../abis/ERC721.json";
 
 import "./NftWallet.css";
 import { callContract } from "../../lib/contracts";
+import { useChainId } from "../../lib/chains";
 
 export default function NftWallet() {
   const [nftAddress, setNftAddress] = useState("");

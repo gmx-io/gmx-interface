@@ -16,13 +16,12 @@ import RewardRouter from "../../abis/RewardRouter.json";
 
 import { FaCheck, FaTimes } from "react-icons/fa";
 
-import { useChainId } from "../../lib/legacy";
-
 import { Trans, t } from "@lingui/macro";
 
 import "./BeginAccountTransfer.css";
 import { callContract, contractFetcher } from "../../lib/contracts";
 import { approveTokens } from "../../domain/tokens";
+import { useChainId } from "../../lib/chains";
 
 function ValidationRow({ isValid, children }) {
   return (

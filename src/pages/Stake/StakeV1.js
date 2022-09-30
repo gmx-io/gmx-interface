@@ -4,7 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { ethers } from "ethers";
 
-import { useChainId, USD_DECIMALS, PRECISION } from "../../lib/legacy";
+import { USD_DECIMALS, PRECISION } from "../../lib/legacy";
 
 import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "../../config/contracts";
 
@@ -31,6 +31,7 @@ import {
   parseValue,
 } from "../../lib/numbers";
 import { getTokenBySymbol } from "../../config/tokens";
+import { useChainId } from "../../lib/chains";
 
 const BASIS_POINTS_DIVISOR = 10000;
 const HOURS_PER_YEAR = 8760;

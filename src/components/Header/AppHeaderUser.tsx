@@ -6,7 +6,7 @@ import { HeaderLink } from "./HeaderLink";
 import connectWalletImg from "../../img/ic_wallet_24.svg";
 
 import "./Header.css";
-import { isHomeSite, getAccountUrl, useChainId } from "../../lib/legacy";
+import { isHomeSite, getAccountUrl } from "../../lib/legacy";
 import { isDevelopment } from "../../lib/legacy";
 import cx from "classnames";
 import { Trans } from "@lingui/macro";
@@ -14,6 +14,7 @@ import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
 import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, getChainName } from "../../config/chains";
 import { switchNetwork } from "../../lib/wallets";
+import { useChainId } from "../../lib/chains";
 
 type Props = {
   openSettings: () => void;

@@ -12,7 +12,6 @@ import {
   BASIS_POINTS_DIVISOR,
   getAppBaseUrl,
   isHomeSite,
-  useChainId,
   isMobileDevice,
   REFERRAL_CODE_QUERY_PARAM,
   isDevelopment,
@@ -96,6 +95,7 @@ import {
   useEagerConnect,
   useInactiveListener,
 } from "../lib/wallets";
+import { useChainId } from "../lib/chains";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;

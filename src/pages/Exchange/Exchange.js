@@ -17,7 +17,6 @@ import {
   getPositionContractKey,
   getLeverage,
   getDeltaStr,
-  useChainId,
   useAccountOrders,
   getPageTitle,
 } from "../../lib/legacy";
@@ -50,6 +49,7 @@ import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo } from "../../domain/tokens/utils";
 import { bigNumberify, formatAmount } from "../../lib/numbers";
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "../../config/tokens";
+import { useChainId } from "../../lib/chains";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;

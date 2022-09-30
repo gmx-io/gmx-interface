@@ -3,7 +3,6 @@ import useSWR from "swr";
 import { useWeb3React } from "@web3-react/core";
 
 import cx from "classnames";
-import { formatDate, useChainId } from "../../lib/legacy";
 import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "../../config/contracts";
 import { getFeeHistory } from "../../config/Fees";
 
@@ -23,6 +22,8 @@ import { helperToast } from "../../lib/helperToast";
 import { getTokenUrl } from "../../domain/tokens/utils";
 import { bigNumberify, expandDecimals, formatAmount, numberWithCommas } from "../../lib/numbers";
 import { getToken, getTokens } from "../../config/tokens";
+import { useChainId } from "../../lib/chains";
+import { formatDate } from "../../lib/dates";
 
 const USD_DECIMALS = 30;
 const PRECISION = expandDecimals(1, 30);

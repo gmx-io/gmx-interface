@@ -2,8 +2,6 @@ import React, { useCallback } from "react";
 import Footer from "../../components/Footer/Footer";
 import "./BuyGMX.css";
 
-import { useChainId } from "../../lib/legacy";
-
 import { useWeb3React } from "@web3-react/core";
 
 import Synapse from "../../img/ic_synapse.svg";
@@ -20,6 +18,7 @@ import { Trans } from "@lingui/macro";
 import Button from "../../components/Common/Button";
 import { ARBITRUM, AVALANCHE } from "../../config/chains";
 import { switchNetwork } from "../../lib/wallets";
+import { useChainId } from "../../lib/chains";
 
 export default function BuyGMX() {
   const { chainId } = useChainId();

@@ -6,10 +6,9 @@ import buyGLPIcon from "../../img/ic_buy_glp.svg";
 import Footer from "../../components/Footer/Footer";
 import "./BuyGlp.css";
 
-import { useChainId } from "../../lib/legacy";
-
 import { Trans } from "@lingui/macro";
 import { getNativeToken } from "../../config/tokens";
+import { useChainId } from "../../lib/chains";
 
 export default function BuyGlp(props) {
   const { chainId } = useChainId();
