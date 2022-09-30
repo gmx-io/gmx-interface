@@ -1,7 +1,8 @@
 import { i18n } from "@lingui/core";
-import { en, es, zh, ko, ru, ja, fr } from "make-plural/plurals";
+import { en, es, zh, ko, ru, ja, fr, de } from "make-plural/plurals";
 import { isDevelopment, LANGUAGE_LOCALSTORAGE_KEY } from "./legacy";
 
+// uses BCP-47 codes from https://unicode-org.github.io/cldr-staging/charts/latest/supplemental/language_plural_rules.html
 export const locales = {
   en: "English",
   es: "Spanish",
@@ -10,6 +11,7 @@ export const locales = {
   // ru: "Russian",
   ja: "Japanese",
   // fr: "French",
+  // de: "German",
   ...(isDevelopment() && { pseudo: "Test" }),
 };
 
@@ -23,6 +25,7 @@ i18n.loadLocaleData({
   ru: { plurals: ru },
   ja: { plurals: ja },
   fr: { plurals: fr },
+  de: { plurals: de },
   ...(isDevelopment() && { pseudo: { plurals: en } }),
 });
 
