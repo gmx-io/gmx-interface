@@ -214,3 +214,17 @@ function Button(props) {...}
 </details>
 
 ---
+
+### SCSS
+
+Use the following syntax to import scss modules:
+
+```
+@use "src/styles/colors";
+
+.ClassName {
+  background: colors.$color-red;
+}
+```
+
+---
