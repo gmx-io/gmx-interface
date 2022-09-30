@@ -1,4 +1,4 @@
-import { FALLBACK_PROVIDERS, RPC_PROVIDERS } from "../../config/chains";
+import { FALLBACK_PROVIDERS, RPC_PROVIDERS } from "config/chains";
 import _ from "lodash";
 import { ethers } from "ethers";
 import { Web3ReactContextInterface } from "@web3-react/core/dist/types";

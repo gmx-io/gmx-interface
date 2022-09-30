@@ -3,7 +3,7 @@ import { SWRConfig } from "swr";
 import { ethers } from "ethers";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
-import useScrollToTop from "../lib/useScrollToTop";
+import useScrollToTop from "lib/useScrollToTop";
 
 import { Switch, Route, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
 
@@ -15,64 +15,64 @@ import {
   isMobileDevice,
   REFERRAL_CODE_QUERY_PARAM,
   isDevelopment,
-} from "../lib/legacy";
+} from "lib/legacy";
 
-import Home from "../pages/Home/Home";
-import Dashboard from "../pages/Dashboard/Dashboard";
-import Ecosystem from "../pages/Ecosystem/Ecosystem";
-import Stake from "../pages/Stake/Stake";
-import { Exchange } from "../pages/Exchange/Exchange";
-import Actions from "../pages/Actions/Actions";
-import OrdersOverview from "../pages/OrdersOverview/OrdersOverview";
-import PositionsOverview from "../pages/PositionsOverview/PositionsOverview";
-import Referrals from "../pages/Referrals/Referrals";
-import BuyGlp from "../pages/BuyGlp/BuyGlp";
-import BuyGMX from "../pages/BuyGMX/BuyGMX";
-import Buy from "../pages/Buy/Buy";
-import NftWallet from "../pages/NftWallet/NftWallet";
-import ClaimEsGmx from "../pages/ClaimEsGmx/ClaimEsGmx";
-import BeginAccountTransfer from "../pages/BeginAccountTransfer/BeginAccountTransfer";
-import CompleteAccountTransfer from "../pages/CompleteAccountTransfer/CompleteAccountTransfer";
+import Home from "pages/Home/Home";
+import Dashboard from "pages/Dashboard/Dashboard";
+import Ecosystem from "pages/Ecosystem/Ecosystem";
+import Stake from "pages/Stake/Stake";
+import { Exchange } from "pages/Exchange/Exchange";
+import Actions from "pages/Actions/Actions";
+import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
+import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
+import Referrals from "pages/Referrals/Referrals";
+import BuyGlp from "pages/BuyGlp/BuyGlp";
+import BuyGMX from "pages/BuyGMX/BuyGMX";
+import Buy from "pages/Buy/Buy";
+import NftWallet from "pages/NftWallet/NftWallet";
+import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
+import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
+import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Modal from "../components/Modal/Modal";
-import Checkbox from "../components/Checkbox/Checkbox";
+import Modal from "components/Modal/Modal";
+import Checkbox from "components/Checkbox/Checkbox";
 
-import "../styles/Shared.css";
-import "../styles/Font.css";
+import "styles/Shared.css";
+import "styles/Font.css";
 import "./App.scss";
-import "../styles/Input.css";
+import "styles/Input.css";
 
-import metamaskImg from "../img/metamask.png";
-import coinbaseImg from "../img/coinbaseWallet.png";
-import walletConnectImg from "../img/walletconnect-circle-blue.svg";
-import useEventToast from "../components/EventToast/useEventToast";
-import EventToastContainer from "../components/EventToast/EventToastContainer";
-import SEO from "../components/Common/SEO";
-import useRouteQuery from "../lib/useRouteQuery";
-import { encodeReferralCode, decodeReferralCode } from "../domain/referrals";
+import metamaskImg from "img/metamask.png";
+import coinbaseImg from "img/coinbaseWallet.png";
+import walletConnectImg from "img/walletconnect-circle-blue.svg";
+import useEventToast from "components/EventToast/useEventToast";
+import EventToastContainer from "components/EventToast/EventToastContainer";
+import SEO from "components/Common/SEO";
+import useRouteQuery from "lib/useRouteQuery";
+import { encodeReferralCode, decodeReferralCode } from "domain/referrals";
 
-import { getContract } from "../config/contracts";
-import VaultV2 from "../abis/VaultV2.json";
-import VaultV2b from "../abis/VaultV2b.json";
-import PositionRouter from "../abis/PositionRouter.json";
-import PageNotFound from "../pages/PageNotFound/PageNotFound";
-import ReferralTerms from "../pages/ReferralTerms/ReferralTerms";
-import TermsAndConditions from "../pages/TermsAndConditions/TermsAndConditions";
+import { getContract } from "config/contracts";
+import VaultV2 from "abis/VaultV2.json";
+import VaultV2b from "abis/VaultV2b.json";
+import PositionRouter from "abis/PositionRouter.json";
+import PageNotFound from "pages/PageNotFound/PageNotFound";
+import ReferralTerms from "pages/ReferralTerms/ReferralTerms";
+import TermsAndConditions from "pages/TermsAndConditions/TermsAndConditions";
 import { useLocalStorage } from "react-use";
-import { RedirectPopupModal } from "../components/ModalViews/RedirectModal";
-import { REDIRECT_POPUP_TIMESTAMP_KEY } from "../config/ui";
-import Jobs from "../pages/Jobs/Jobs";
+import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
+import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/ui";
+import Jobs from "pages/Jobs/Jobs";
 
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
-import { defaultLocale, dynamicActivate } from "../lib/i18n";
-import { Header } from "../components/Header/Header";
-import { ARBITRUM, AVALANCHE, getAlchemyWsUrl, getExplorerUrl } from "../config/chains";
-import { useLocalStorageSerializeKey } from "../lib/localStorage";
-import { helperToast } from "../lib/helperToast";
+import { defaultLocale, dynamicActivate } from "lib/i18n";
+import { Header } from "components/Header/Header";
+import { ARBITRUM, AVALANCHE, getAlchemyWsUrl, getExplorerUrl } from "config/chains";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { helperToast } from "lib/helperToast";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
@@ -83,7 +83,7 @@ import {
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_PNL_AFTER_FEES_KEY,
   SLIPPAGE_BPS_KEY,
-} from "../config/localStorage";
+} from "config/localStorage";
 import {
   activateInjectedProvider,
   clearWalletConnectData,
@@ -94,8 +94,8 @@ import {
   hasMetaMaskWalletExtension,
   useEagerConnect,
   useInactiveListener,
-} from "../lib/wallets";
-import { useChainId } from "../lib/chains";
+} from "lib/wallets";
+import { useChainId } from "lib/chains";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;

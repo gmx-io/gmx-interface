@@ -9,17 +9,17 @@ import Modal from "../Modal/Modal";
 
 import "./Migration.css";
 
-import { getConnectWalletHandler } from "../../lib/legacy";
-import { getContract } from "../../config/contracts";
+import { getConnectWalletHandler } from "lib/legacy";
+import { getContract } from "config/contracts";
 
-import Reader from "../../abis/Reader.json";
-import Token from "../../abis/Token.json";
-import GmxMigrator from "../../abis/GmxMigrator.json";
-import { CHAIN_ID, getExplorerUrl } from "../../config/chains";
-import { contractFetcher } from "../../lib/contracts";
-import { helperToast } from "../../lib/helperToast";
-import { useEagerConnect, useInactiveListener } from "../../lib/wallets";
-import { approveTokens } from "../../domain/tokens";
+import Reader from "abis/Reader.json";
+import Token from "abis/Token.json";
+import GmxMigrator from "abis/GmxMigrator.json";
+import { CHAIN_ID, getExplorerUrl } from "config/chains";
+import { contractFetcher } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
+import { useEagerConnect, useInactiveListener } from "lib/wallets";
+import { approveTokens } from "domain/tokens";
 import {
   bigNumberify,
   expandDecimals,
@@ -27,7 +27,7 @@ import {
   formatAmountFree,
   formatArrayAmount,
   parseValue,
-} from "../../lib/numbers";
+} from "lib/numbers";
 
 const { MaxUint256, AddressZero } = ethers.constants;
 

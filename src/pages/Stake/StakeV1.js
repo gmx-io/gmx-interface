@@ -4,34 +4,27 @@ import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { ethers } from "ethers";
 
-import { USD_DECIMALS, PRECISION } from "../../lib/legacy";
+import { USD_DECIMALS, PRECISION } from "lib/legacy";
 
-import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "../../config/contracts";
+import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "config/contracts";
 
-import Reader from "../../abis/Reader.json";
-import Token from "../../abis/Token.json";
-import YieldToken from "../../abis/YieldToken.json";
-import YieldFarm from "../../abis/YieldFarm.json";
+import Reader from "abis/Reader.json";
+import Token from "abis/Token.json";
+import YieldToken from "abis/YieldToken.json";
+import YieldFarm from "abis/YieldFarm.json";
 
-import Modal from "../../components/Modal/Modal";
-import Footer from "../../components/Footer/Footer";
+import Modal from "components/Modal/Modal";
+import Footer from "components/Footer/Footer";
 
 import "./Stake.css";
-import { CHAIN_ID, getExplorerUrl } from "../../config/chains";
-import { contractFetcher } from "../../lib/contracts";
-import { approveTokens } from "../../domain/tokens";
-import { helperToast } from "../../lib/helperToast";
-import { getInjectedHandler } from "../../lib/wallets";
-import {
-  bigNumberify,
-  expandDecimals,
-  formatAmount,
-  formatAmountFree,
-  formatKeyAmount,
-  parseValue,
-} from "../../lib/numbers";
-import { getTokenBySymbol } from "../../config/tokens";
-import { useChainId } from "../../lib/chains";
+import { CHAIN_ID, getExplorerUrl } from "config/chains";
+import { contractFetcher } from "lib/contracts";
+import { approveTokens } from "domain/tokens";
+import { helperToast } from "lib/helperToast";
+import { getInjectedHandler } from "lib/wallets";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
+import { getTokenBySymbol } from "config/tokens";
+import { useChainId } from "lib/chains";
 
 const BASIS_POINTS_DIVISOR = 10000;
 const HOURS_PER_YEAR = 8760;

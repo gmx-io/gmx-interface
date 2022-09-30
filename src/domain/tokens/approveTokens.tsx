@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
-import Token from "../../abis/Token.json";
-import { getExplorerUrl } from "../../config/chains";
-import { helperToast } from "../../lib/helperToast";
+import Token from "abis/Token.json";
+import { getExplorerUrl } from "config/chains";
+import { helperToast } from "lib/helperToast";
 import { Web3ReactContextInterface } from "@web3-react/core/dist/types";
 import { InfoTokens, TokenInfo } from "./types";
 

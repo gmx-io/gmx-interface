@@ -1,16 +1,16 @@
 import { Menu } from "@headlessui/react";
 import { FiChevronDown } from "react-icons/fi";
 import "./AssetDropdown.css";
-import coingeckoIcon from "../../img/ic_coingecko_16.svg";
-import arbitrumIcon from "../../img/ic_arbitrum_16.svg";
-import avalancheIcon from "../../img/ic_avalanche_16.svg";
-import metamaskIcon from "../../img/ic_metamask_16.svg";
+import coingeckoIcon from "img/ic_coingecko_16.svg";
+import arbitrumIcon from "img/ic_arbitrum_16.svg";
+import avalancheIcon from "img/ic_avalanche_16.svg";
+import metamaskIcon from "img/ic_metamask_16.svg";
 import { useWeb3React } from "@web3-react/core";
 
 import { Trans } from "@lingui/macro";
-import { ICONLINKS, PLATFORM_TOKENS } from "../../config/tokens";
-import { addTokenToMetamask } from "../../lib/wallets";
-import { useChainId } from "../../lib/chains";
+import { ICONLINKS, PLATFORM_TOKENS } from "config/tokens";
+import { addTokenToMetamask } from "lib/wallets";
+import { useChainId } from "lib/chains";
 
 function AssetDropdown({ assetSymbol, assetInfo }) {
   const { active } = useWeb3React();

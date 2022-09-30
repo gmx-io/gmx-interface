@@ -1,6 +1,6 @@
 import { createClient } from "./utils";
-import { SUBGRAPH_URLS } from "../../config/subgraph";
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE } from "../../config/chains";
+import { SUBGRAPH_URLS } from "config/subgraph";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE } from "config/chains";
 
 export const chainlinkClient = createClient(SUBGRAPH_URLS.chainLink);
 export const arbitrumGraphClient = createClient(SUBGRAPH_URLS.arbitrumStats);

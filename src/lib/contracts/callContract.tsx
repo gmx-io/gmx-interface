@@ -1,9 +1,9 @@
 import { BigNumber, Contract } from "ethers";
 import { helperToast } from "../helperToast";
-import { ToastifyDebug } from "../../components/ToastifyDebug/ToastifyDebug";
+import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { extractError, NOT_ENOUGH_FUNDS, RPC_ERROR, SLIPPAGE, USER_DENIED } from "./transactionErrors";
 import { getGasLimit, setGasPrice } from "./utils";
-import { getExplorerUrl } from "../../config/chains";
+import { getExplorerUrl } from "config/chains";
 
 export async function callContract(
   chainId: number,

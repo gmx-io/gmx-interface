@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { isDevelopment } from "../lib/legacy";
+import { isDevelopment } from "lib/legacy";
 
 const { parseEther } = ethers.utils;
 

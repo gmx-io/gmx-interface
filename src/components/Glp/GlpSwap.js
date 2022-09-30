@@ -6,7 +6,7 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 import Tab from "../Tab/Tab";
 import cx from "classnames";
-import { getContract } from "../../config/contracts";
+import { getContract } from "config/contracts";
 import {
   getBuyGlpToAmount,
   getBuyGlpFromAmount,
@@ -21,50 +21,43 @@ import {
   USDG_DECIMALS,
   PLACEHOLDER_ACCOUNT,
   importImage,
-} from "../../lib/legacy";
+} from "lib/legacy";
 
-import { useGmxPrice } from "../../domain/legacy";
+import { useGmxPrice } from "domain/legacy";
 
 import TokenSelector from "../Exchange/TokenSelector";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
 import Tooltip from "../Tooltip/Tooltip";
 
-import ReaderV2 from "../../abis/ReaderV2.json";
-import RewardReader from "../../abis/RewardReader.json";
-import VaultV2 from "../../abis/VaultV2.json";
-import GlpManager from "../../abis/GlpManager.json";
-import RewardTracker from "../../abis/RewardTracker.json";
-import Vester from "../../abis/Vester.json";
-import RewardRouter from "../../abis/RewardRouter.json";
-import Token from "../../abis/Token.json";
+import ReaderV2 from "abis/ReaderV2.json";
+import RewardReader from "abis/RewardReader.json";
+import VaultV2 from "abis/VaultV2.json";
+import GlpManager from "abis/GlpManager.json";
+import RewardTracker from "abis/RewardTracker.json";
+import Vester from "abis/Vester.json";
+import RewardRouter from "abis/RewardRouter.json";
+import Token from "abis/Token.json";
 
-import glp24Icon from "../../img/ic_glp_24.svg";
-import glp40Icon from "../../img/ic_glp_40.svg";
-import arrowIcon from "../../img/ic_convert_down.svg";
+import glp24Icon from "img/ic_glp_24.svg";
+import glp40Icon from "img/ic_glp_40.svg";
+import arrowIcon from "img/ic_convert_down.svg";
 
-import avalanche16Icon from "../../img/ic_avalanche_16.svg";
-import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
+import avalanche16Icon from "img/ic_avalanche_16.svg";
+import arbitrum16Icon from "img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
-import AssetDropdown from "../../pages/Dashboard/AssetDropdown";
+import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import SwapErrorModal from "./SwapErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { ARBITRUM, getChainName, IS_NETWORK_DISABLED } from "../../config/chains";
-import { callContract, contractFetcher } from "../../lib/contracts";
-import { approveTokens, useInfoTokens } from "../../domain/tokens";
-import { useLocalStorageByChainId } from "../../lib/localStorage";
-import { helperToast } from "../../lib/helperToast";
-import { getTokenInfo, getUsd } from "../../domain/tokens/utils";
-import {
-  bigNumberify,
-  expandDecimals,
-  formatAmount,
-  formatAmountFree,
-  formatKeyAmount,
-  parseValue,
-} from "../../lib/numbers";
-import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedToken } from "../../config/tokens";
-import { useChainId } from "../../lib/chains";
+import { ARBITRUM, getChainName, IS_NETWORK_DISABLED } from "config/chains";
+import { callContract, contractFetcher } from "lib/contracts";
+import { approveTokens, useInfoTokens } from "domain/tokens";
+import { useLocalStorageByChainId } from "lib/localStorage";
+import { helperToast } from "lib/helperToast";
+import { getTokenInfo, getUsd } from "domain/tokens/utils";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
+import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedToken } from "config/tokens";
+import { useChainId } from "lib/chains";
 
 const { AddressZero } = ethers.constants;
 

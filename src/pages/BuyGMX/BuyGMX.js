@@ -1,24 +1,24 @@
 import React, { useCallback } from "react";
-import Footer from "../../components/Footer/Footer";
+import Footer from "components/Footer/Footer";
 import "./BuyGMX.css";
 
 import { useWeb3React } from "@web3-react/core";
 
-import Synapse from "../../img/ic_synapse.svg";
-import Multiswap from "../../img/ic_multiswap.svg";
-import Hop from "../../img/ic_hop.svg";
-import Banxa from "../../img/ic_banxa.svg";
-import Binance from "../../img/ic_binance_logo.svg";
-import avax30Icon from "../../img/ic_avax_30.svg";
-import gmxArbitrum from "../../img/ic_gmx_arbitrum.svg";
-import gmxAvax from "../../img/ic_gmx_avax.svg";
-import ohmArbitrum from "../../img/ic_olympus_arbitrum.svg";
+import Synapse from "img/ic_synapse.svg";
+import Multiswap from "img/ic_multiswap.svg";
+import Hop from "img/ic_hop.svg";
+import Banxa from "img/ic_banxa.svg";
+import Binance from "img/ic_binance_logo.svg";
+import avax30Icon from "img/ic_avax_30.svg";
+import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
+import gmxAvax from "img/ic_gmx_avax.svg";
+import ohmArbitrum from "img/ic_olympus_arbitrum.svg";
 
 import { Trans } from "@lingui/macro";
-import Button from "../../components/Common/Button";
-import { ARBITRUM, AVALANCHE } from "../../config/chains";
-import { switchNetwork } from "../../lib/wallets";
-import { useChainId } from "../../lib/chains";
+import Button from "components/Common/Button";
+import { ARBITRUM, AVALANCHE } from "config/chains";
+import { switchNetwork } from "lib/wallets";
+import { useChainId } from "lib/chains";
 
 export default function BuyGMX() {
   const { chainId } = useChainId();

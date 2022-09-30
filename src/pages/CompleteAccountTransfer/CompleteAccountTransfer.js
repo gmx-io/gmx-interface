@@ -4,19 +4,19 @@ import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import { useCopyToClipboard } from "react-use";
 
-import { getContract } from "../../config/contracts";
+import { getContract } from "config/contracts";
 
-import Modal from "../../components/Modal/Modal";
-import Footer from "../../components/Footer/Footer";
+import Modal from "components/Modal/Modal";
+import Footer from "components/Footer/Footer";
 
-import RewardRouter from "../../abis/RewardRouter.json";
+import RewardRouter from "abis/RewardRouter.json";
 
 import "./CompleteAccountTransfer.css";
 
 import { Trans, t } from "@lingui/macro";
-import { callContract } from "../../lib/contracts";
-import { helperToast } from "../../lib/helperToast";
-import { useChainId } from "../../lib/chains";
+import { callContract } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
+import { useChainId } from "lib/chains";
 
 export default function CompleteAccountTransfer(props) {
   const [, copyToClipboard] = useCopyToClipboard();

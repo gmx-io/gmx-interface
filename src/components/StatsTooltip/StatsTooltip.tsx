@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers";
-import { USD_DECIMALS } from "../../lib/legacy";
+import { USD_DECIMALS } from "lib/legacy";
 import "./StatsTooltip.css";
-import { formatAmount } from "../../lib/numbers";
+import { formatAmount } from "lib/numbers";
 
 type Props = {
   title: string;

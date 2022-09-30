@@ -1,15 +1,15 @@
 import React from "react";
 import { Trans } from "@lingui/macro";
-import SEO from "../../components/Common/SEO";
+import SEO from "components/Common/SEO";
 
-import Footer from "../../components/Footer/Footer";
-import { getPageTitle } from "../../lib/legacy";
+import Footer from "components/Footer/Footer";
+import { getPageTitle } from "lib/legacy";
 
-import arbitrumIcon from "../../img/ic_arbitrum_16.svg";
-import avalancheIcon from "../../img/ic_avalanche_16.svg";
+import arbitrumIcon from "img/ic_arbitrum_16.svg";
+import avalancheIcon from "img/ic_avalanche_16.svg";
 
 import "./Ecosystem.css";
-import { ARBITRUM, AVALANCHE } from "../../config/chains";
+import { ARBITRUM, AVALANCHE } from "config/chains";
 
 const NETWORK_ICONS = {
   [ARBITRUM]: arbitrumIcon,

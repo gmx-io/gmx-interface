@@ -5,29 +5,29 @@ import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
 import useSWR from "swr";
 
-import OrderBook from "../abis/OrderBook.json";
-import PositionManager from "../abis/PositionManager.json";
-import Vault from "../abis/Vault.json";
-import Router from "../abis/Router.json";
-import UniPool from "../abis/UniPool.json";
-import UniswapV2 from "../abis/UniswapV2.json";
-import Token from "../abis/Token.json";
-import PositionRouter from "../abis/PositionRouter.json";
+import OrderBook from "abis/OrderBook.json";
+import PositionManager from "abis/PositionManager.json";
+import Vault from "abis/Vault.json";
+import Router from "abis/Router.json";
+import UniPool from "abis/UniPool.json";
+import UniswapV2 from "abis/UniswapV2.json";
+import Token from "abis/Token.json";
+import PositionRouter from "abis/PositionRouter.json";
 
-import { getContract } from "../config/contracts";
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, getConstant, getHighExecutionFee } from "../config/chains";
-import { DECREASE, getOrderKey, INCREASE, SWAP, USD_DECIMALS } from "../lib/legacy";
+import { getContract } from "config/contracts";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, getConstant, getHighExecutionFee } from "config/chains";
+import { DECREASE, getOrderKey, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
 
 import { groupBy } from "lodash";
-import { UI_VERSION } from "../config/ui";
-import { getServerBaseUrl, getServerUrl } from "../config/backend";
-import { getGmxGraphClient, nissohGraphClient } from "../lib/subgraph/clients";
-import { callContract, contractFetcher } from "../lib/contracts";
+import { UI_VERSION } from "config/ui";
+import { getServerBaseUrl, getServerUrl } from "config/backend";
+import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
+import { callContract, contractFetcher } from "lib/contracts";
 import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
-import { getProvider } from "../lib/rpc";
-import { bigNumberify, expandDecimals, parseValue } from "../lib/numbers";
-import { getTokenBySymbol } from "../config/tokens";
+import { getProvider } from "lib/rpc";
+import { bigNumberify, expandDecimals, parseValue } from "lib/numbers";
+import { getTokenBySymbol } from "config/tokens";
 
 export * from "./prices";
 

@@ -10,11 +10,11 @@ import {
   USD_DECIMALS,
   USDG_ADDRESS,
   USDG_DECIMALS,
-} from "../../lib/legacy";
-import { getVisibleTokens, getWhitelistedTokens } from "../../config/tokens";
-import { getExplorerUrl } from "../../config/chains";
+} from "lib/legacy";
+import { getVisibleTokens, getWhitelistedTokens } from "config/tokens";
+import { getExplorerUrl } from "config/chains";
 import { InfoTokens, Token, TokenInfo } from "./types";
-import { bigNumberify, expandDecimals } from "../../lib/numbers";
+import { bigNumberify, expandDecimals } from "lib/numbers";
 
 const { AddressZero } = ethers.constants;
 

@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { getContract } from "./contracts";
 import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, MAINNET, TESTNET } from "./chains";
-import { Token } from "../domain/tokens";
+import { Token } from "domain/tokens";
 
 export const TOKENS: { [chainId: number]: Token[] } = {
   [MAINNET]: [

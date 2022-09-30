@@ -3,18 +3,18 @@ import { Link } from "react-router-dom";
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 
-import Modal from "../../components/Modal/Modal";
-import Checkbox from "../../components/Checkbox/Checkbox";
-import Tooltip from "../../components/Tooltip/Tooltip";
-import Footer from "../../components/Footer/Footer";
+import Modal from "components/Modal/Modal";
+import Checkbox from "components/Checkbox/Checkbox";
+import Tooltip from "components/Tooltip/Tooltip";
+import Footer from "components/Footer/Footer";
 
-import Vault from "../../abis/Vault.json";
-import ReaderV2 from "../../abis/ReaderV2.json";
-import Vester from "../../abis/Vester.json";
-import RewardRouter from "../../abis/RewardRouter.json";
-import RewardReader from "../../abis/RewardReader.json";
-import Token from "../../abis/Token.json";
-import GlpManager from "../../abis/GlpManager.json";
+import Vault from "abis/Vault.json";
+import ReaderV2 from "abis/ReaderV2.json";
+import Vester from "abis/Vester.json";
+import RewardRouter from "abis/RewardRouter.json";
+import RewardReader from "abis/RewardReader.json";
+import Token from "abis/Token.json";
+import GlpManager from "abis/GlpManager.json";
 
 import { ethers } from "ethers";
 import {
@@ -28,32 +28,25 @@ import {
   getStakingData,
   getProcessedData,
   getPageTitle,
-} from "../../lib/legacy";
-import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "../../domain/legacy";
-import { ARBITRUM, getChainName, getConstant } from "../../config/chains";
+} from "lib/legacy";
+import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
+import { ARBITRUM, getChainName, getConstant } from "config/chains";
 
 import useSWR from "swr";
 
-import { getContract } from "../../config/contracts";
+import { getContract } from "config/contracts";
 
 import "./StakeV2.css";
-import SEO from "../../components/Common/SEO";
-import StatsTooltip from "../../components/StatsTooltip/StatsTooltip";
-import StatsTooltipRow from "../../components/StatsTooltip/StatsTooltipRow";
-import { getServerUrl } from "../../config/backend";
-import { callContract, contractFetcher } from "../../lib/contracts";
-import { useLocalStorageSerializeKey } from "../../lib/localStorage";
-import { helperToast } from "../../lib/helperToast";
-import { approveTokens } from "../../domain/tokens";
-import {
-  bigNumberify,
-  expandDecimals,
-  formatAmount,
-  formatAmountFree,
-  formatKeyAmount,
-  parseValue,
-} from "../../lib/numbers";
-import { useChainId } from "../../lib/chains";
+import SEO from "components/Common/SEO";
+import StatsTooltip from "components/StatsTooltip/StatsTooltip";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { getServerUrl } from "config/backend";
+import { callContract, contractFetcher } from "lib/contracts";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { helperToast } from "lib/helperToast";
+import { approveTokens } from "domain/tokens";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
+import { useChainId } from "lib/chains";
 
 const { AddressZero } = ethers.constants;
 

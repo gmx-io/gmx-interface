@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
-import { getContract } from "../config/contracts";
+import { getContract } from "config/contracts";
 import useSWR from "swr";
 
-import OrderBookReader from "../abis/OrderBookReader.json";
-import OrderBook from "../abis/OrderBook.json";
+import OrderBookReader from "abis/OrderBookReader.json";
+import OrderBook from "abis/OrderBook.json";
 
-import { CHAIN_ID, getExplorerUrl } from "../config/chains";
-import { getServerBaseUrl } from "../config/backend";
-import { getMostAbundantStableToken } from "../domain/tokens";
-import { getTokenInfo } from "../domain/tokens/utils";
+import { CHAIN_ID, getExplorerUrl } from "config/chains";
+import { getServerBaseUrl } from "config/backend";
+import { getMostAbundantStableToken } from "domain/tokens";
+import { getTokenInfo } from "domain/tokens/utils";
 import { getProvider } from "./rpc";
 import { bigNumberify, expandDecimals, formatAmount } from "./numbers";
-import { isValidToken } from "../config/tokens";
+import { isValidToken } from "config/tokens";
 import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
 
@@ -1404,7 +1404,7 @@ export function getTradePageUrl() {
 export function importImage(name) {
   let tokenImage = null;
   try {
-    tokenImage = require("../img/" + name);
+    tokenImage = require("img/" + name);
   } catch (error) {
     console.error(error);
   }

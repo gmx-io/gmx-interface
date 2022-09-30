@@ -1,5 +1,5 @@
-import { getLiquidationPrice } from "../lib/legacy";
-import { bigNumberify, expandDecimals } from "../lib/numbers";
+import { getLiquidationPrice } from "lib/legacy";
+import { bigNumberify, expandDecimals } from "lib/numbers";
 
 describe("Helpers", function () {
   const cases = [

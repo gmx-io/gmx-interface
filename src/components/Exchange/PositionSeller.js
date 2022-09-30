@@ -24,11 +24,11 @@ import {
   getNextToAmount,
   USDG_DECIMALS,
   adjustForDecimals,
-} from "../../lib/legacy";
-import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED } from "../../config/chains";
-import { createDecreaseOrder, useHasOutdatedUi } from "../../domain/legacy";
-import { getContract } from "../../config/contracts";
-import PositionRouter from "../../abis/PositionRouter.json";
+} from "lib/legacy";
+import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED } from "config/chains";
+import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
+import { getContract } from "config/contracts";
+import PositionRouter from "abis/PositionRouter.json";
 import Checkbox from "../Checkbox/Checkbox";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
@@ -37,16 +37,16 @@ import Tooltip from "../Tooltip/Tooltip";
 import TokenSelector from "./TokenSelector";
 import "./PositionSeller.css";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { callContract } from "../../lib/contracts";
-import { getTokenAmountFromUsd } from "../../domain/tokens";
-import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "../../config/ui";
-import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../lib/localStorage";
-import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "../../config/localStorage";
-import { getTokenInfo, getUsd } from "../../domain/tokens/utils";
-import { usePrevious } from "../../lib/usePrevious";
-import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "../../lib/numbers";
-import { getTokens } from "../../config/tokens";
-import { formatDateTime, getTimeRemaining } from "../../lib/dates";
+import { callContract } from "lib/contracts";
+import { getTokenAmountFromUsd } from "domain/tokens";
+import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
+import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
+import { getTokenInfo, getUsd } from "domain/tokens/utils";
+import { usePrevious } from "lib/usePrevious";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import { getTokens } from "config/tokens";
+import { formatDateTime, getTimeRemaining } from "lib/dates";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10

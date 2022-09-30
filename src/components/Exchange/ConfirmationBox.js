@@ -14,23 +14,23 @@ import {
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   calculatePositionDelta,
   DECREASE,
-} from "../../lib/legacy";
-import { getConstant } from "../../config/chains";
-import { getContract } from "../../config/contracts";
+} from "lib/legacy";
+import { getConstant } from "config/chains";
+import { getContract } from "config/contracts";
 
 import { BsArrowRight } from "react-icons/bs";
 import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
 import Checkbox from "../Checkbox/Checkbox";
 import ExchangeInfoRow from "./ExchangeInfoRow";
-import { cancelDecreaseOrder, handleCancelOrder } from "../../domain/legacy";
+import { cancelDecreaseOrder, handleCancelOrder } from "domain/legacy";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "../../config/ui";
-import { useLocalStorageSerializeKey } from "../../lib/localStorage";
-import { SLIPPAGE_BPS_KEY } from "../../config/localStorage";
-import { expandDecimals, formatAmount, formatAmountFree } from "../../lib/numbers";
-import { getNativeToken, getToken, getWrappedToken } from "../../config/tokens";
-import { formatDateTime, getTimeRemaining } from "../../lib/dates";
+import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { SLIPPAGE_BPS_KEY } from "config/localStorage";
+import { expandDecimals, formatAmount, formatAmountFree } from "lib/numbers";
+import { getNativeToken, getToken, getWrappedToken } from "config/tokens";
+import { formatDateTime, getTimeRemaining } from "lib/dates";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 

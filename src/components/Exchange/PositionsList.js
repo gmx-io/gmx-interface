@@ -19,13 +19,13 @@ import {
   SHORT,
   INCREASE,
   DECREASE,
-} from "../../lib/legacy";
+} from "lib/legacy";
 import PositionShare from "./PositionShare";
 import PositionDropdown from "./PositionDropdown";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { helperToast } from "../../lib/helperToast";
-import { getUsd } from "../../domain/tokens/utils";
-import { bigNumberify, formatAmount } from "../../lib/numbers";
+import { helperToast } from "lib/helperToast";
+import { getUsd } from "domain/tokens/utils";
+import { bigNumberify, formatAmount } from "lib/numbers";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {

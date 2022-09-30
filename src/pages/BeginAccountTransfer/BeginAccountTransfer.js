@@ -4,24 +4,24 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 
-import { getContract } from "../../config/contracts";
+import { getContract } from "config/contracts";
 
-import Modal from "../../components/Modal/Modal";
-import Footer from "../../components/Footer/Footer";
+import Modal from "components/Modal/Modal";
+import Footer from "components/Footer/Footer";
 
-import Token from "../../abis/Token.json";
-import Vester from "../../abis/Vester.json";
-import RewardTracker from "../../abis/RewardTracker.json";
-import RewardRouter from "../../abis/RewardRouter.json";
+import Token from "abis/Token.json";
+import Vester from "abis/Vester.json";
+import RewardTracker from "abis/RewardTracker.json";
+import RewardRouter from "abis/RewardRouter.json";
 
 import { FaCheck, FaTimes } from "react-icons/fa";
 
 import { Trans, t } from "@lingui/macro";
 
 import "./BeginAccountTransfer.css";
-import { callContract, contractFetcher } from "../../lib/contracts";
-import { approveTokens } from "../../domain/tokens";
-import { useChainId } from "../../lib/chains";
+import { callContract, contractFetcher } from "lib/contracts";
+import { approveTokens } from "domain/tokens";
+import { useChainId } from "lib/chains";
 
 function ValidationRow({ isValid, children }) {
   return (

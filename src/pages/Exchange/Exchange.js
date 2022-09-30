@@ -19,37 +19,37 @@ import {
   getDeltaStr,
   useAccountOrders,
   getPageTitle,
-} from "../../lib/legacy";
-import { getConstant, getExplorerUrl } from "../../config/chains";
-import { approvePlugin, useMinExecutionFee, cancelMultipleOrders } from "../../domain/legacy";
+} from "lib/legacy";
+import { getConstant, getExplorerUrl } from "config/chains";
+import { approvePlugin, useMinExecutionFee, cancelMultipleOrders } from "domain/legacy";
 
-import { getContract } from "../../config/contracts";
+import { getContract } from "config/contracts";
 
-import Reader from "../../abis/ReaderV2.json";
-import VaultV2 from "../../abis/VaultV2.json";
-import Router from "../../abis/Router.json";
-import Token from "../../abis/Token.json";
+import Reader from "abis/ReaderV2.json";
+import VaultV2 from "abis/VaultV2.json";
+import Router from "abis/Router.json";
+import Token from "abis/Token.json";
 
-import Checkbox from "../../components/Checkbox/Checkbox";
-import SwapBox from "../../components/Exchange/SwapBox";
-import ExchangeTVChart, { getChartToken } from "../../components/Exchange/ExchangeTVChart";
-import PositionsList from "../../components/Exchange/PositionsList";
-import OrdersList from "../../components/Exchange/OrdersList";
-import TradeHistory from "../../components/Exchange/TradeHistory";
-import ExchangeWalletTokens from "../../components/Exchange/ExchangeWalletTokens";
-import ExchangeBanner from "../../components/Exchange/ExchangeBanner";
-import Tab from "../../components/Tab/Tab";
-import Footer from "../../components/Footer/Footer";
+import Checkbox from "components/Checkbox/Checkbox";
+import SwapBox from "components/Exchange/SwapBox";
+import ExchangeTVChart, { getChartToken } from "components/Exchange/ExchangeTVChart";
+import PositionsList from "components/Exchange/PositionsList";
+import OrdersList from "components/Exchange/OrdersList";
+import TradeHistory from "components/Exchange/TradeHistory";
+import ExchangeWalletTokens from "components/Exchange/ExchangeWalletTokens";
+import ExchangeBanner from "components/Exchange/ExchangeBanner";
+import Tab from "components/Tab/Tab";
+import Footer from "components/Footer/Footer";
 
 import "./Exchange.css";
-import { contractFetcher } from "../../lib/contracts";
-import { useInfoTokens } from "../../domain/tokens";
-import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../lib/localStorage";
-import { helperToast } from "../../lib/helperToast";
-import { getTokenInfo } from "../../domain/tokens/utils";
-import { bigNumberify, formatAmount } from "../../lib/numbers";
-import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "../../config/tokens";
-import { useChainId } from "../../lib/chains";
+import { contractFetcher } from "lib/contracts";
+import { useInfoTokens } from "domain/tokens";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
+import { helperToast } from "lib/helperToast";
+import { getTokenInfo } from "domain/tokens/utils";
+import { bigNumberify, formatAmount } from "lib/numbers";
+import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
+import { useChainId } from "lib/chains";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;

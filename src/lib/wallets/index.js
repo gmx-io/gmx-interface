@@ -10,7 +10,7 @@ import {
   MAINNET,
   NETWORK_METADATA,
   SUPPORTED_CHAIN_IDS,
-} from "../../config/chains";
+} from "config/chains";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
 import React, { useEffect, useState } from "react";
 import {
@@ -19,7 +19,7 @@ import {
   SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
   WALLET_CONNECT_LOCALSTORAGE_KEY,
   WALLET_LINK_LOCALSTORAGE_PREFIX,
-} from "../../config/localStorage";
+} from "config/localStorage";
 import {
   UserRejectedRequestError as UserRejectedRequestErrorWalletConnect,
   WalletConnectConnector,

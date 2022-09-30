@@ -3,27 +3,27 @@ import useSWR from "swr";
 import { useWeb3React } from "@web3-react/core";
 
 import cx from "classnames";
-import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "../../config/contracts";
-import { getFeeHistory } from "../../config/Fees";
+import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "config/contracts";
+import { getFeeHistory } from "config/Fees";
 
-import Footer from "../../components/Footer/Footer";
+import Footer from "components/Footer/Footer";
 
-import Reader from "../../abis/Reader.json";
-import YieldToken from "../../abis/YieldToken.json";
+import Reader from "abis/Reader.json";
+import YieldToken from "abis/YieldToken.json";
 
 import "./Dashboard.css";
 
-import metamaskImg from "../../img/metamask.png";
-import coingeckoImg from "../../img/coingecko.png";
-import bscscanImg from "../../img/bscscan.png";
-import { getServerUrl } from "../../config/backend";
-import { contractFetcher } from "../../lib/contracts";
-import { helperToast } from "../../lib/helperToast";
-import { getTokenUrl } from "../../domain/tokens/utils";
-import { bigNumberify, expandDecimals, formatAmount, numberWithCommas } from "../../lib/numbers";
-import { getToken, getTokens } from "../../config/tokens";
-import { useChainId } from "../../lib/chains";
-import { formatDate } from "../../lib/dates";
+import metamaskImg from "img/metamask.png";
+import coingeckoImg from "img/coingecko.png";
+import bscscanImg from "img/bscscan.png";
+import { getServerUrl } from "config/backend";
+import { contractFetcher } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
+import { getTokenUrl } from "domain/tokens/utils";
+import { bigNumberify, expandDecimals, formatAmount, numberWithCommas } from "lib/numbers";
+import { getToken, getTokens } from "config/tokens";
+import { useChainId } from "lib/chains";
+import { formatDate } from "lib/dates";
 
 const USD_DECIMALS = 30;
 const PRECISION = expandDecimals(1, 30);

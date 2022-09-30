@@ -3,9 +3,9 @@ import cx from "classnames";
 
 import { NavLink } from "react-router-dom";
 
-import { getContract } from "../../config/contracts";
-import * as Api from "../../domain/legacy";
-import { useAllOrders, useAllOrdersStats, usePositionsForOrders } from "../../domain/legacy";
+import { getContract } from "config/contracts";
+import * as Api from "domain/legacy";
+import { useAllOrders, useAllOrdersStats, usePositionsForOrders } from "domain/legacy";
 import {
   DECREASE,
   getExchangeRate,
@@ -16,14 +16,14 @@ import {
   shouldInvertTriggerRatio,
   SWAP,
   USD_DECIMALS,
-} from "../../lib/legacy";
+} from "lib/legacy";
 
 import "./OrdersOverview.css";
-import { getTokenInfo } from "../../domain/tokens/utils";
-import { useInfoTokens } from "../../domain/tokens";
-import { formatAmount } from "../../lib/numbers";
-import { useChainId } from "../../lib/chains";
-import { formatDateTime } from "../../lib/dates";
+import { getTokenInfo } from "domain/tokens/utils";
+import { useInfoTokens } from "domain/tokens";
+import { formatAmount } from "lib/numbers";
+import { useChainId } from "lib/chains";
+import { formatDateTime } from "lib/dates";
 
 export default function OrdersOverview() {
   const { chainId } = useChainId();

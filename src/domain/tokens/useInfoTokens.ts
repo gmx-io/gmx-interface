@@ -1,20 +1,20 @@
-import { getContract } from "../../config/contracts";
+import { getContract } from "config/contracts";
 import useSWR from "swr";
-import { contractFetcher } from "../../lib/contracts";
-import VaultReader from "../../abis/VaultReader.json";
+import { contractFetcher } from "lib/contracts";
+import VaultReader from "abis/VaultReader.json";
 import {
   BASIS_POINTS_DIVISOR,
   DEFAULT_MAX_USDG_AMOUNT,
   MAX_PRICE_DEVIATION_BASIS_POINTS,
   USD_DECIMALS,
   USDG_ADDRESS,
-} from "../../lib/legacy";
-import { getServerUrl } from "../../config/backend";
+} from "lib/legacy";
+import { getServerUrl } from "config/backend";
 import { InfoTokens, Token, TokenInfo } from "./types";
 import { BigNumber } from "ethers";
 import { Web3ReactContextInterface } from "@web3-react/core/dist/types";
-import { bigNumberify, expandDecimals } from "../../lib/numbers";
-import { getTokens, getWhitelistedTokens } from "../../config/tokens";
+import { bigNumberify, expandDecimals } from "lib/numbers";
+import { getTokens, getWhitelistedTokens } from "config/tokens";
 
 export function useInfoTokens(
   library: Web3ReactContextInterface["library"],

@@ -6,25 +6,25 @@ import { useParams } from "react-router-dom";
 
 import "./Actions.css";
 
-import { getContract } from "../../config/contracts";
-import { useAccountOrders } from "../../lib/legacy";
+import { getContract } from "config/contracts";
+import { useAccountOrders } from "lib/legacy";
 
 import { getPositions, getPositionQuery } from "../Exchange/Exchange";
 
-import PositionsList from "../../components/Exchange/PositionsList";
-import OrdersList from "../../components/Exchange/OrdersList";
+import PositionsList from "components/Exchange/PositionsList";
+import OrdersList from "components/Exchange/OrdersList";
 
-import TradeHistory from "../../components/Exchange/TradeHistory";
-import Reader from "../../abis/Reader.json";
+import TradeHistory from "components/Exchange/TradeHistory";
+import Reader from "abis/Reader.json";
 
 import { Trans, t } from "@lingui/macro";
-import { getServerBaseUrl } from "../../config/backend";
-import { contractFetcher } from "../../lib/contracts";
-import { useInfoTokens } from "../../domain/tokens";
-import { getTokenInfo } from "../../domain/tokens/utils";
-import { formatAmount } from "../../lib/numbers";
-import { getToken, getTokens, getWhitelistedTokens } from "../../config/tokens";
-import { useChainId } from "../../lib/chains";
+import { getServerBaseUrl } from "config/backend";
+import { contractFetcher } from "lib/contracts";
+import { useInfoTokens } from "domain/tokens";
+import { getTokenInfo } from "domain/tokens/utils";
+import { formatAmount } from "lib/numbers";
+import { getToken, getTokens, getWhitelistedTokens } from "config/tokens";
+import { useChainId } from "lib/chains";
 
 const USD_DECIMALS = 30;
 

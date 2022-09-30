@@ -2,18 +2,18 @@ import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Trans } from "@lingui/macro";
 
-import gmxBigIcon from "../../img/ic_gmx_custom.svg";
-import glpBigIcon from "../../img/ic_glp_custom.svg";
+import gmxBigIcon from "img/ic_gmx_custom.svg";
+import glpBigIcon from "img/ic_glp_custom.svg";
 
-import { isHomeSite } from "../../lib/legacy";
+import { isHomeSite } from "lib/legacy";
 
 import { useWeb3React } from "@web3-react/core";
 
 import APRLabel from "../APRLabel/APRLabel";
 import { HeaderLink } from "../Header/HeaderLink";
-import { ARBITRUM, AVALANCHE } from "../../config/chains";
-import { switchNetwork } from "../../lib/wallets";
-import { useChainId } from "../../lib/chains";
+import { ARBITRUM, AVALANCHE } from "config/chains";
+import { switchNetwork } from "lib/wallets";
+import { useChainId } from "lib/chains";
 
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
   const isHome = isHomeSite();

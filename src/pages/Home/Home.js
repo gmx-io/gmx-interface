@@ -1,31 +1,31 @@
 import React from "react";
-import Footer from "../../components/Footer/Footer";
+import Footer from "components/Footer/Footer";
 import cx from "classnames";
 import "./Home.css";
 
-import simpleSwapIcon from "../../img/ic_simpleswaps.svg";
-import costIcon from "../../img/ic_cost.svg";
-import liquidityIcon from "../../img/ic_liquidity.svg";
-import totaluserIcon from "../../img/ic_totaluser.svg";
+import simpleSwapIcon from "img/ic_simpleswaps.svg";
+import costIcon from "img/ic_cost.svg";
+import liquidityIcon from "img/ic_liquidity.svg";
+import totaluserIcon from "img/ic_totaluser.svg";
 
-import arbitrumIcon from "../../img/ic_arbitrum_96.svg";
-import avaIcon from "../../img/ic_avalanche_96.svg";
+import arbitrumIcon from "img/ic_arbitrum_96.svg";
+import avaIcon from "img/ic_avalanche_96.svg";
 
-import statsIcon from "../../img/ic_stats.svg";
-import tradingIcon from "../../img/ic_trading.svg";
+import statsIcon from "img/ic_stats.svg";
+import tradingIcon from "img/ic_trading.svg";
 
 import useSWR from "swr";
 
-import { USD_DECIMALS, getTotalVolumeSum } from "../../lib/legacy";
+import { USD_DECIMALS, getTotalVolumeSum } from "lib/legacy";
 
-import { useUserStat } from "../../domain/legacy";
+import { useUserStat } from "domain/legacy";
 
-import TokenCard from "../../components/TokenCard/TokenCard";
+import TokenCard from "components/TokenCard/TokenCard";
 import { Trans } from "@lingui/macro";
-import { HeaderLink } from "../../components/Header/HeaderLink";
-import { ARBITRUM, AVALANCHE } from "../../config/chains";
-import { getServerUrl } from "../../config/backend";
-import { bigNumberify, formatAmount, numberWithCommas } from "../../lib/numbers";
+import { HeaderLink } from "components/Header/HeaderLink";
+import { ARBITRUM, AVALANCHE } from "config/chains";
+import { getServerUrl } from "config/backend";
+import { bigNumberify, formatAmount, numberWithCommas } from "lib/numbers";
 
 export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
   // const [openedFAQIndex, setOpenedFAQIndex] = useState(null)

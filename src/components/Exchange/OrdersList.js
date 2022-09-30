@@ -10,9 +10,9 @@ import {
   getExchangeRateDisplay,
   getExchangeRate,
   getPositionForOrder,
-} from "../../lib/legacy.js";
-import { handleCancelOrder } from "../../domain/legacy";
-import { getContract } from "../../config/contracts";
+} from "lib/legacy.js";
+import { handleCancelOrder } from "domain/legacy";
+import { getContract } from "config/contracts";
 
 import Tooltip from "../Tooltip/Tooltip";
 import OrderEditor from "./OrderEditor";
@@ -20,9 +20,9 @@ import OrderEditor from "./OrderEditor";
 import "./OrdersList.css";
 import Checkbox from "../Checkbox/Checkbox";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "../../config/ui";
-import { getTokenInfo, getUsd } from "../../domain/tokens/utils";
-import { formatAmount } from "../../lib/numbers";
+import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { getTokenInfo, getUsd } from "domain/tokens/utils";
+import { formatAmount } from "lib/numbers";
 
 export default function OrdersList(props) {
   const {
