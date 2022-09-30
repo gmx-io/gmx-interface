@@ -44,11 +44,12 @@ import Footer from "../../components/Footer/Footer";
 
 import "./Exchange.css";
 import { contractFetcher } from "../../lib/contracts";
-import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens, useInfoTokens } from "../../domain/tokens";
+import { useInfoTokens } from "../../domain/tokens";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo } from "../../domain/tokens/utils";
 import { bigNumberify, formatAmount } from "../../lib/numbers";
+import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "../../config/tokens";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;

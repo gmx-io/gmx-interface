@@ -23,10 +23,11 @@ import { UI_VERSION } from "../config/ui";
 import { getServerBaseUrl, getServerUrl } from "../config/backend";
 import { getGmxGraphClient, nissohGraphClient } from "../lib/subgraph/clients";
 import { callContract, contractFetcher } from "../lib/contracts";
-import { getTokenBySymbol, replaceNativeTokenAddress } from "./tokens";
+import { replaceNativeTokenAddress } from "./tokens";
 import { getUsd } from "./tokens/utils";
 import { getProvider } from "../lib/rpc";
 import { bigNumberify, expandDecimals, parseValue } from "../lib/numbers";
+import { getTokenBySymbol } from "../config/tokens";
 
 export * from "./prices";
 

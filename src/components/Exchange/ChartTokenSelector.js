@@ -4,7 +4,7 @@ import { FaChevronDown } from "react-icons/fa";
 import cx from "classnames";
 import "./ChartTokenSelector.css";
 import { LONG, SHORT, SWAP } from "../../lib/legacy";
-import { getTokens, getWhitelistedTokens } from "../../domain/tokens";
+import { getTokens, getWhitelistedTokens } from "../../config/tokens";
 
 export default function ChartTokenSelector(props) {
   const { chainId, selectedToken, onSelectToken, swapOption } = props;

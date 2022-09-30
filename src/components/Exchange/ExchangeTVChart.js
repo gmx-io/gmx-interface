@@ -8,11 +8,11 @@ import { useChartPrices } from "../../domain/legacy";
 import Tab from "../Tab/Tab";
 
 import ChartTokenSelector from "./ChartTokenSelector";
-import { getToken, getTokens } from "../../domain/tokens";
 import { useLocalStorageSerializeKey } from "../../lib/localStorage";
 import { getTokenInfo } from "../../domain/tokens/utils";
 import { usePrevious } from "../../lib/usePrevious";
 import { formatAmount, numberWithCommas } from "../../lib/numbers";
+import { getToken, getTokens } from "../../config/tokens";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 

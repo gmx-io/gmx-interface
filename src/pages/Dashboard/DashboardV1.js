@@ -19,10 +19,10 @@ import coingeckoImg from "../../img/coingecko.png";
 import bscscanImg from "../../img/bscscan.png";
 import { getServerUrl } from "../../config/backend";
 import { contractFetcher } from "../../lib/contracts";
-import { getToken, getTokens } from "../../domain/tokens";
 import { helperToast } from "../../lib/helperToast";
 import { getTokenUrl } from "../../domain/tokens/utils";
 import { bigNumberify, expandDecimals, formatAmount, numberWithCommas } from "../../lib/numbers";
+import { getToken, getTokens } from "../../config/tokens";
 
 const USD_DECIMALS = 30;
 const PRECISION = expandDecimals(1, 30);

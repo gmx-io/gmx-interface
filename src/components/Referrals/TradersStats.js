@@ -9,9 +9,9 @@ import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import { ReferralCodeForm } from "./JoinReferralCode";
-import { getNativeToken, getToken } from "../../domain/tokens";
 import { getExplorerUrl } from "../../config/chains";
 import { formatAmount } from "../../lib/numbers";
+import { getNativeToken, getToken } from "../../config/tokens";
 
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);

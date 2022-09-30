@@ -75,10 +75,6 @@ import { callContract, contractFetcher } from "../../lib/contracts";
 import {
   approveTokens,
   getMostAbundantStableToken,
-  getToken,
-  getTokenBySymbol,
-  getTokens,
-  getWhitelistedTokens,
   replaceNativeTokenAddress,
   shouldRaiseGasError,
 } from "../../domain/tokens";
@@ -87,6 +83,7 @@ import { helperToast } from "../../lib/helperToast";
 import { getTokenInfo, getUsd } from "../../domain/tokens/utils";
 import { usePrevious } from "../../lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "../../lib/numbers";
+import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "../../config/tokens";
 
 const SWAP_ICONS = {
   [LONG]: longImg,

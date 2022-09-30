@@ -49,8 +49,8 @@ import StatsTooltipRow from "../../components/StatsTooltip/StatsTooltipRow";
 import { ARBITRUM, AVALANCHE, getChainName } from "../../config/chains";
 import { getServerUrl } from "../../config/backend";
 import { contractFetcher } from "../../lib/contracts";
-import { getTokenBySymbol, getWhitelistedTokens, useInfoTokens } from "../../domain/tokens";
-import { GLPPOOLCOLORS } from "../../config/tokens";
+import { useInfoTokens } from "../../domain/tokens";
+import { getTokenBySymbol, getWhitelistedTokens, GLPPOOLCOLORS } from "../../config/tokens";
 import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "../../lib/numbers";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 

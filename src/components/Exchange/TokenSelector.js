@@ -8,8 +8,8 @@ import Modal from "../Modal/Modal";
 import dropDownIcon from "../../img/DROP_DOWN.svg";
 import "./TokenSelector.css";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
-import { getToken } from "../../domain/tokens";
 import { bigNumberify, expandDecimals, formatAmount } from "../../lib/numbers";
+import { getToken } from "../../config/tokens";
 
 export default function TokenSelector(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);

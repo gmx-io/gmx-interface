@@ -19,7 +19,7 @@ import Footer from "../../components/Footer/Footer";
 import "./Stake.css";
 import { CHAIN_ID, getExplorerUrl } from "../../config/chains";
 import { contractFetcher } from "../../lib/contracts";
-import { approveTokens, getTokenBySymbol } from "../../domain/tokens";
+import { approveTokens } from "../../domain/tokens";
 import { helperToast } from "../../lib/helperToast";
 import { getInjectedHandler } from "../../lib/wallets";
 import {
@@ -30,6 +30,7 @@ import {
   formatKeyAmount,
   parseValue,
 } from "../../lib/numbers";
+import { getTokenBySymbol } from "../../config/tokens";
 
 const BASIS_POINTS_DIVISOR = 10000;
 const HOURS_PER_YEAR = 8760;

@@ -10,11 +10,12 @@ import OrderBook from "../abis/OrderBook.json";
 
 import { CHAIN_ID, DEFAULT_CHAIN_ID, getExplorerUrl, SUPPORTED_CHAIN_IDS } from "../config/chains";
 import { getServerBaseUrl } from "../config/backend";
-import { getMostAbundantStableToken, isValidToken } from "../domain/tokens";
+import { getMostAbundantStableToken } from "../domain/tokens";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "../config/localStorage";
 import { getTokenInfo } from "../domain/tokens/utils";
 import { getProvider } from "./rpc";
 import { bigNumberify, expandDecimals, formatAmount } from "./numbers";
+import { isValidToken } from "../config/tokens";
 
 const { AddressZero } = ethers.constants;
 

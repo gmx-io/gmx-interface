@@ -9,7 +9,7 @@ import "./BuyGlp.css";
 import { useChainId } from "../../lib/legacy";
 
 import { Trans } from "@lingui/macro";
-import { getNativeToken } from "../../domain/tokens";
+import { getNativeToken } from "../../config/tokens";
 
 export default function BuyGlp(props) {
   const { chainId } = useChainId();

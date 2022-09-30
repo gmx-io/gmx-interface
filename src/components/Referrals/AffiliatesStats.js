@@ -19,9 +19,9 @@ import {
 import { AffiliateCodeForm } from "./AddAffiliateCode";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { AVALANCHE, getExplorerUrl } from "../../config/chains";
-import { getNativeToken, getToken } from "../../domain/tokens";
 import { helperToast } from "../../lib/helperToast";
 import { bigNumberify, formatAmount } from "../../lib/numbers";
+import { getNativeToken, getToken } from "../../config/tokens";
 
 function AffiliatesStats({
   referralsData,

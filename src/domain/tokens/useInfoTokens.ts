@@ -1,4 +1,3 @@
-import { getTokens, getWhitelistedTokens } from "./utils";
 import { getContract } from "../../config/contracts";
 import useSWR from "swr";
 import { contractFetcher } from "../../lib/contracts";
@@ -15,6 +14,7 @@ import { InfoTokens, Token, TokenInfo } from "./types";
 import { BigNumber } from "ethers";
 import { Web3ReactContextInterface } from "@web3-react/core/dist/types";
 import { bigNumberify, expandDecimals } from "../../lib/numbers";
+import { getTokens, getWhitelistedTokens } from "../../config/tokens";
 
 export function useInfoTokens(
   library: Web3ReactContextInterface["library"],

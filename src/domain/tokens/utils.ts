@@ -11,63 +11,18 @@ import {
   USDG_ADDRESS,
   USDG_DECIMALS,
 } from "../../lib/legacy";
-import { NATIVE_TOKENS_MAP, TOKENS, TOKENS_BY_SYMBOL_MAP, TOKENS_MAP, WRAPPED_TOKENS_MAP } from "../../config/tokens";
+import { getVisibleTokens, getWhitelistedTokens } from "../../config/tokens";
 import { getExplorerUrl } from "../../config/chains";
 import { InfoTokens, Token, TokenInfo } from "./types";
 import { bigNumberify, expandDecimals } from "../../lib/numbers";
 
 const { AddressZero } = ethers.constants;
 
-export function getWrappedToken(chainId: number) {
-  return WRAPPED_TOKENS_MAP[chainId];
-}
-
-export function getNativeToken(chainId: number) {
-  return NATIVE_TOKENS_MAP[chainId];
-}
-
-export function getTokens(chainId: number) {
-  return TOKENS[chainId];
-}
-
-export function isValidToken(chainId: number, address: string) {
-  if (!TOKENS_MAP[chainId]) {
-    throw new Error(`Incorrect chainId ${chainId}`);
-  }
-  return address in TOKENS_MAP[chainId];
-}
-
-export function getToken(chainId: number, address: string) {
-  if (!TOKENS_MAP[chainId]) {
-    throw new Error(`Incorrect chainId ${chainId}`);
-  }
-  if (!TOKENS_MAP[chainId][address]) {
-    throw new Error(`Incorrect address "${address}" for chainId ${chainId}`);
-  }
-  return TOKENS_MAP[chainId][address];
-}
-
 export function getTokenUrl(chainId: number, address: string) {
   if (!address) {
     return getExplorerUrl(chainId);
   }
   return getExplorerUrl(chainId) + "token/" + address;
-}
-
-export function getTokenBySymbol(chainId: number, symbol: string) {
-  const token = TOKENS_BY_SYMBOL_MAP[chainId][symbol];
-  if (!token) {
-    throw new Error(`Incorrect symbol "${symbol}" for chainId ${chainId}`);
-  }
-  return token;
-}
-
-export function getWhitelistedTokens(chainId: number) {
-  return TOKENS[chainId].filter((token) => token.symbol !== "USDG");
-}
-
-export function getVisibleTokens(chainId: number) {
-  return getWhitelistedTokens(chainId).filter((token) => !token.isWrapped && !token.isTempHidden);
 }
 
 export function getUsd(
