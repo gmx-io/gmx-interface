@@ -18,12 +18,3 @@ ReactDOM.render(
 // to log results (for example: reportWebVitals(console.info))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
-export { getTotalVolumeSum } from "./lib/legacy";
-export { getVisibleTokens } from "./config/tokens";
-export { getWhitelistedTokens } from "./config/tokens";
-export { getTokenBySymbol } from "./config/tokens";
-export { getToken } from "./config/tokens";
-export { isValidToken } from "./config/tokens";
-export { getTokens } from "./config/tokens";
-export { getNativeToken } from "./config/tokens";
-export { getWrappedToken } from "./config/tokens";
