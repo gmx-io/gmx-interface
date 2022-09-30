@@ -874,7 +874,9 @@ export default function PositionSeller(props) {
               <div className="muted">
                 {convertedAmountFormatted && (
                   <div className="Exchange-swap-usd">
-                    Close: {convertedAmountFormatted} {position.collateralToken.symbol}
+                    <Trans>
+                      Close: {convertedAmountFormatted} {position.collateralToken.symbol}
+                    </Trans>
                   </div>
                 )}
                 {!convertedAmountFormatted && t`Close`}
@@ -1157,8 +1159,10 @@ export default function PositionSeller(props) {
                       <br />
 
                       <div className="PositionSeller-fee-item">
-                        <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#fees">More Info</ExternalLink> about
-                        fees.
+                        <Trans>
+                          <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#fees">More Info</ExternalLink> about
+                          fees.
+                        </Trans>
                       </div>
                     </div>
                   )}

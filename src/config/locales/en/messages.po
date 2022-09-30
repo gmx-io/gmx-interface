@@ -61,6 +61,10 @@ msgstr "<0>Install MetaMask</0>, and use GMX with its built-in browser"
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "<0>More Info</0> about fees."
+msgstr "<0>More Info</0> about fees."
+
 #: src/pages/PageNotFound/PageNotFound.js
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
@@ -82,6 +86,9 @@ msgstr "A snapshot of the USD value of your {0} collateral is taken when the pos
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "APR"
 msgstr "APR"
 
@@ -421,6 +428,7 @@ msgstr "Buy GLP Icon"
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
 msgstr "Buy GMX"
 
@@ -564,6 +572,7 @@ msgid "Claim {wrappedTokenSymbol} Rewards"
 msgstr "Claim {wrappedTokenSymbol} Rewards"
 
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claimable"
 msgstr "Claimable"
 
@@ -602,6 +611,10 @@ msgstr "Close without profit"
 #: src/components/Exchange/PositionSeller.js
 msgid "Close {longOrShortText} {0}"
 msgstr "Close {longOrShortText} {0}"
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Close: {convertedAmountFormatted} {0}"
+msgstr "Close: {convertedAmountFormatted} {0}"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing fee"
@@ -1017,6 +1030,7 @@ msgid "Edit Referral Code"
 msgstr "Edit Referral Code"
 
 #: src/components/Exchange/OrderEditor.js
+#: src/components/Exchange/OrderEditor.js
 msgid "Edit order"
 msgstr "Edit order"
 
@@ -1161,6 +1175,10 @@ msgstr "Enter new Price"
 #: src/components/Exchange/SwapBox.js
 msgid "Entry Price"
 msgstr "Entry Price"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Escrowed GMX"
+msgstr "Escrowed GMX"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Escrowed GMX APR"
@@ -1750,6 +1768,7 @@ msgstr "MEV Optimizer"
 msgid "Mark"
 msgstr "Mark"
 
+#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1934,6 +1953,10 @@ msgstr "Min required collateral"
 msgid "Min. Receive"
 msgstr "Min. Receive"
 
+#: src/components/Exchange/OrderEditor.js
+msgid "Minimum received"
+msgstr "Minimum received"
+
 #: src/components/Exchange/SwapBox.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "More Info"
@@ -1942,6 +1965,10 @@ msgstr "More Info"
 #: src/components/NetworkDropdown/NetworkDropdown.js
 msgid "More Options"
 msgstr "More Options"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Multiplier Points"
+msgstr "Multiplier Points"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Multiplier Points APR"
@@ -2003,6 +2030,10 @@ msgstr "No esGMX to claim"
 #: src/components/Exchange/OrdersList.js
 msgid "No open orders"
 msgstr "No open orders"
+
+#: src/lib/legacy.js
+msgid "No open position, order cannot be executed unless a position is opened"
+msgstr "No open position, order cannot be executed unless a position is opened"
 
 #: src/components/Exchange/PositionsList.js
 msgid "No open positions"
@@ -2079,6 +2110,14 @@ msgstr "Order"
 msgid "Order cancelled"
 msgstr "Order cancelled"
 
+#: src/lib/legacy.js
+msgid "Order cannot be executed as it would reduce the position's leverage below 1"
+msgstr "Order cannot be executed as it would reduce the position's leverage below 1"
+
+#: src/lib/legacy.js
+msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
+msgstr "Order cannot be executed as the remaining position would be smaller than $5.00"
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Order created!"
 msgstr "Order created!"
@@ -2096,6 +2135,7 @@ msgid "Order size is 0"
 msgstr "Order size is 0"
 
 #: src/components/Exchange/PositionsList.js
+#: src/lib/legacy.js
 msgid "Order size is bigger than position, will only be executable if position increases"
 msgstr "Order size is bigger than position, will only be executable if position increases"
 
@@ -2200,6 +2240,7 @@ msgstr "Please switch your network to Arbitrum."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 msgid "PnL"
@@ -2245,6 +2286,8 @@ msgid "Prev"
 msgstr "Prev"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/OrderEditor.js
+#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2665,6 +2708,7 @@ msgstr "Stablecoin Percentage"
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Stake"
 msgstr "Stake"
 
@@ -2712,6 +2756,10 @@ msgstr "Stake submitted! <0>View status.</0>"
 #: src/pages/Stake/StakeV2.js
 msgid "Staked"
 msgstr "Staked"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Staked Multiplier Points"
+msgstr "Staked Multiplier Points"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -3097,6 +3145,10 @@ msgstr "Total fees earned since {0}: {1} USD<0/>Fee assets: {feeText}"
 msgid "Total value of tokens in GLP pool ({chainName})"
 msgstr "Total value of tokens in GLP pool ({chainName})"
 
+#: src/components/StatsTooltip/StatsTooltip.tsx
+msgid "Total:"
+msgstr "Total:"
+
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Trade"
@@ -3140,6 +3192,7 @@ msgid "Transfer AVAX"
 msgstr "Transfer AVAX"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/Stake/StakeV2.js
 msgid "Transfer Account"
 msgstr "Transfer Account"
 
@@ -3221,6 +3274,7 @@ msgstr "UTILIZATION"
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -3693,6 +3747,11 @@ msgstr "{0} pool exceeded, can only Receive {1}"
 msgid "{0} pool exceeded, try different token"
 msgstr "{0} pool exceeded, try different token"
 
+#: src/components/Exchange/OrderEditor.js
+#: src/components/Exchange/OrderEditor.js
+msgid "{0} price"
+msgstr "{0} price"
+
 #: src/components/Glp/GlpSwap.js
 msgid "{0} selected in order form"
 msgstr "{0} selected in order form"
@@ -3759,6 +3818,14 @@ msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 #: src/components/Exchange/SwapBox.js
 msgid "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} not supported"
 msgstr "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} not supported"
+
+#: src/components/StatsTooltip/StatsTooltip.tsx
+msgid "{title} on Arbitrum:"
+msgstr "{title} on Arbitrum:"
+
+#: src/components/StatsTooltip/StatsTooltip.tsx
+msgid "{title} on Avalanche:"
+msgstr "{title} on Avalanche:"
 
 #: src/components/Exchange/OrderEditor.js
 msgid "{triggerRatioInverted, select, true {Price is below Mark Price} false {Price is above Mark Price}}"

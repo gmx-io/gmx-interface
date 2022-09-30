@@ -61,6 +61,10 @@ msgstr ""
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr "<0>Insuficiente liquidez para ejecutar la orden</0><1>El precio de referencia, que es un agregado de precios de mercado, no alcanzó el precio especificado</1><2>Se alcanzó el precio especificado pero no lo suficiente como para ejecutarlo</2><3>Ningún guardián recogió la orden para ejecutarla</3>"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "<0>More Info</0> about fees."
+msgstr ""
+
 #: src/pages/PageNotFound/PageNotFound.js
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr ""
@@ -82,6 +86,9 @@ msgstr ""
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "APR"
 msgstr "APR"
 
@@ -421,6 +428,7 @@ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
 msgstr "Comprar GMX"
 
@@ -564,6 +572,7 @@ msgid "Claim {wrappedTokenSymbol} Rewards"
 msgstr "Reclamar Recomensas {wrappedTokenSymbol}"
 
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Claimable"
 msgstr "Reclamable"
 
@@ -601,6 +610,10 @@ msgstr "Cerrar sin profit"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Close {longOrShortText} {0}"
+msgstr ""
+
+#: src/components/Exchange/PositionSeller.js
+msgid "Close: {convertedAmountFormatted} {0}"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -1017,6 +1030,7 @@ msgid "Edit Referral Code"
 msgstr "Editar Código de Referido"
 
 #: src/components/Exchange/OrderEditor.js
+#: src/components/Exchange/OrderEditor.js
 msgid "Edit order"
 msgstr ""
 
@@ -1161,6 +1175,10 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "Entry Price"
 msgstr "Precio de Entrada"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Escrowed GMX"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Escrowed GMX APR"
@@ -1745,6 +1763,7 @@ msgstr ""
 msgid "Mark"
 msgstr ""
 
+#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1929,6 +1948,10 @@ msgstr ""
 msgid "Min. Receive"
 msgstr ""
 
+#: src/components/Exchange/OrderEditor.js
+msgid "Minimum received"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "More Info"
@@ -1936,6 +1959,10 @@ msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.js
 msgid "More Options"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+msgid "Multiplier Points"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -1998,6 +2025,10 @@ msgstr "No hay esGMX para reclamar"
 #: src/components/Exchange/OrdersList.js
 msgid "No open orders"
 msgstr "No hay ordenes abiertas."
+
+#: src/lib/legacy.js
+msgid "No open position, order cannot be executed unless a position is opened"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "No open positions"
@@ -2074,6 +2105,14 @@ msgstr "Orden"
 msgid "Order cancelled"
 msgstr ""
 
+#: src/lib/legacy.js
+msgid "Order cannot be executed as it would reduce the position's leverage below 1"
+msgstr ""
+
+#: src/lib/legacy.js
+msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
+msgstr ""
+
 #: src/components/Exchange/PositionSeller.js
 msgid "Order created!"
 msgstr "¡Orden creada!"
@@ -2091,6 +2130,7 @@ msgid "Order size is 0"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
+#: src/lib/legacy.js
 msgid "Order size is bigger than position, will only be executable if position increases"
 msgstr ""
 
@@ -2195,6 +2235,7 @@ msgstr "Por favor, cambie su red a Arbitrum."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 msgid "PnL"
@@ -2240,6 +2281,8 @@ msgid "Prev"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/OrderEditor.js
+#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2660,6 +2703,7 @@ msgstr "Porcentaje de Stablecoin"
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Stake"
 msgstr "Stake"
 
@@ -2707,6 +2751,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "Staked"
 msgstr "Stakeado"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Staked Multiplier Points"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -3092,6 +3140,10 @@ msgstr ""
 msgid "Total value of tokens in GLP pool ({chainName})"
 msgstr "Valor total de los tokens en la reserva de GLP ({chainName})"
 
+#: src/components/StatsTooltip/StatsTooltip.tsx
+msgid "Total:"
+msgstr ""
+
 #: src/components/Header/AppHeaderUser.tsx
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Trade"
@@ -3135,6 +3187,7 @@ msgid "Transfer AVAX"
 msgstr "Transferir AVAX"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
+#: src/pages/Stake/StakeV2.js
 msgid "Transfer Account"
 msgstr "Transferir Cuenta"
 
@@ -3216,6 +3269,7 @@ msgstr "UTILIZACIÓN"
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -3688,6 +3742,11 @@ msgstr ""
 msgid "{0} pool exceeded, try different token"
 msgstr "{0} reserva superada, intente otro token"
 
+#: src/components/Exchange/OrderEditor.js
+#: src/components/Exchange/OrderEditor.js
+msgid "{0} price"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "{0} selected in order form"
 msgstr "{0} seleccionado en el formulario de órden"
@@ -3744,6 +3803,14 @@ msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 
 #: src/components/Exchange/SwapBox.js
 msgid "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} not supported"
+msgstr ""
+
+#: src/components/StatsTooltip/StatsTooltip.tsx
+msgid "{title} on Arbitrum:"
+msgstr ""
+
+#: src/components/StatsTooltip/StatsTooltip.tsx
+msgid "{title} on Avalanche:"
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js

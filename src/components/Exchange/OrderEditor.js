@@ -309,11 +309,13 @@ export default function OrderEditor(props) {
       isVisible={true}
       className="Exchange-list-modal"
       setIsVisible={() => setEditingOrder(null)}
-      label="Edit order"
+      label={t`Edit order`}
     >
       <div className="Exchange-swap-section">
         <div className="Exchange-swap-section-top">
-          <div className="muted">Price</div>
+          <div className="muted">
+            <Trans>Price</Trans>
+          </div>
           {fromTokenInfo && toTokenInfo && (
             <div
               className="muted align-right clickable"
@@ -323,7 +325,7 @@ export default function OrderEditor(props) {
                 );
               }}
             >
-              Mark Price:{" "}
+              <Trans>Mark Price</Trans>:{" "}
               {formatAmount(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 2)}
             </div>
           )}
@@ -351,7 +353,7 @@ export default function OrderEditor(props) {
           })()}
         </div>
       </div>
-      <ExchangeInfoRow label="Minimum received">
+      <ExchangeInfoRow label={t`Minimum received`}>
         {triggerRatio && !triggerRatio.eq(order.triggerRatio) ? (
           <>
             <span className="muted">{formatAmount(order.minOut, toTokenInfo.decimals, 4, true)}</span>
@@ -365,7 +367,7 @@ export default function OrderEditor(props) {
         )}
         &nbsp;{toTokenInfo.symbol}
       </ExchangeInfoRow>
-      <ExchangeInfoRow label="Price">
+      <ExchangeInfoRow label={t`Price`}>
         {triggerRatio && !triggerRatio.eq(0) && !triggerRatio.eq(order.triggerRatio) ? (
           <>
             <span className="muted">
@@ -386,13 +388,17 @@ export default function OrderEditor(props) {
       </ExchangeInfoRow>
       {fromTokenInfo && (
         <div className="Exchange-info-row">
-          <div className="Exchange-info-label">{fromTokenInfo.symbol} price</div>
+          <div className="Exchange-info-label">
+            <Trans>{fromTokenInfo.symbol} price</Trans>
+          </div>
           <div className="align-right">{formatAmount(fromTokenInfo.minPrice, USD_DECIMALS, 2, true)} USD</div>
         </div>
       )}
       {toTokenInfo && (
         <div className="Exchange-info-row">
-          <div className="Exchange-info-label">{toTokenInfo.symbol} price</div>
+          <div className="Exchange-info-label">
+            <Trans>{toTokenInfo.symbol} price</Trans>
+          </div>
           <div className="align-right">{formatAmount(toTokenInfo.maxPrice, USD_DECIMALS, 2, true)} USD</div>
         </div>
       )}

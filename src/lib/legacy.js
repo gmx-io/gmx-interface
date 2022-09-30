@@ -18,6 +18,7 @@ import OrderBookReader from "../abis/OrderBookReader.json";
 import OrderBook from "../abis/OrderBook.json";
 
 import { getWhitelistedTokens, isValidToken } from "../config/Tokens";
+import { t } from "@lingui/macro";
 
 const { AddressZero } = ethers.constants;
 
@@ -2676,18 +2677,18 @@ export function getOrderError(account, order, positionsMap, position) {
   const positionForOrder = position ? position : getPositionForOrder(account, order, positionsMap);
 
   if (!positionForOrder) {
-    return "No open position, order cannot be executed unless a position is opened";
+    return t`No open position, order cannot be executed unless a position is opened`;
   }
   if (positionForOrder.size.lt(order.sizeDelta)) {
-    return "Order size is bigger than position, will only be executable if position increases";
+    return t`Order size is bigger than position, will only be executable if position increases`;
   }
 
   if (positionForOrder.size.gt(order.sizeDelta)) {
     if (positionForOrder.size.sub(order.sizeDelta).lt(positionForOrder.collateral.sub(order.collateralDelta))) {
-      return "Order cannot be executed as it would reduce the position's leverage below 1";
+      return t`Order cannot be executed as it would reduce the position's leverage below 1`;
     }
     if (positionForOrder.size.sub(order.sizeDelta).lt(expandDecimals(5, USD_DECIMALS))) {
-      return "Order cannot be executed as the remaining position would be smaller than $5.00";
+      return t`Order cannot be executed as the remaining position would be smaller than $5.00`;
     }
   }
 }

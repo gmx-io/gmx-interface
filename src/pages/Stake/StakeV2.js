@@ -1529,7 +1529,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-row">
-                <div className="label">APR</div>
+                <div className="label">
+                  <Trans>APR</Trans>
+                </div>
                 <div>
                   <Tooltip
                     handle={`${formatKeyAmount(processedData, "gmxAprTotalWithBoost", 2, 2, true)}%`}
@@ -1707,24 +1709,24 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   </div>
                 )}
               </div>
-              <div className="App-card-divider"></div>
+              <div className="App-card-divider" />
               <div className="App-card-options">
                 <Link className="App-button-option App-card-option" to="/buy_gmx">
-                  Buy GMX
+                  <Trans>Buy GMX</Trans>
                 </Link>
                 {active && (
                   <button className="App-button-option App-card-option" onClick={() => showStakeGmxModal()}>
-                    Stake
+                    <Trans>Stake</Trans>
                   </button>
                 )}
                 {active && (
                   <button className="App-button-option App-card-option" onClick={() => showUnstakeGmxModal()}>
-                    Unstake
+                    <Trans>Unstake</Trans>
                   </button>
                 )}
                 {active && (
                   <Link className="App-button-option App-card-option" to="/begin_account_transfer">
-                    Transfer Account
+                    <Trans>Transfer Account</Trans>
                   </Link>
                 )}
               </div>
@@ -1753,18 +1755,24 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 </div>
               </div>
               <div className="App-card-row">
-                <div className="label">Escrowed GMX</div>
+                <div className="label">
+                  <Trans>Escrowed GMX</Trans>
+                </div>
                 <div>
                   {formatKeyAmount(processedData, "totalEsGmxRewards", 18, 4, true)} ($
                   {formatKeyAmount(processedData, "totalEsGmxRewardsUsd", USD_DECIMALS, 2, true)})
                 </div>
               </div>
               <div className="App-card-row">
-                <div className="label">Multiplier Points</div>
+                <div className="label">
+                  <Trans>Multiplier Points</Trans>
+                </div>
                 <div>{formatKeyAmount(processedData, "bonusGmxTrackerRewards", 18, 4, true)}</div>
               </div>
               <div className="App-card-row">
-                <div className="label">Staked Multiplier Points</div>
+                <div className="label">
+                  <Trans>Staked Multiplier Points</Trans>
+                </div>
                 <div>{formatKeyAmount(processedData, "bnGmxInFeeGmx", 18, 4, true)}</div>
               </div>
               <div className="App-card-row">
@@ -1848,7 +1856,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-row">
-                <div className="label">APR</div>
+                <div className="label">
+                  <Trans>APR</Trans>
+                </div>
                 <div>
                   <Tooltip
                     handle={`${formatKeyAmount(processedData, "glpAprTotal", 2, 2, true)}%`}
@@ -1990,7 +2000,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-row">
-                <div className="label">APR</div>
+                <div className="label">
+                  <Trans>APR</Trans>
+                </div>
                 <div>
                   <div>
                     <Tooltip
@@ -2241,7 +2253,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   </div>
                 </div>
                 <div className="App-card-row">
-                  <div className="label">Claimable</div>
+                  <div className="label">
+                    <Trans>Claimable</Trans>
+                  </div>
                   <div>
                     <Tooltip
                       handle={`${formatKeyAmount(vestingData, "glpVesterClaimable", 18, 4, true)} GMX`}
