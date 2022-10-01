@@ -282,9 +282,7 @@ msgstr "AVAXを購入"
 msgid "Buy ETH"
 msgstr "ETHを購入"
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
 msgid "Buy GLP"
 msgstr "GLPを購入"
 
@@ -496,8 +494,10 @@ msgstr "請求およびステーク中"
 msgid "Connect"
 msgstr "接続"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "ウォレット接続"
 
@@ -579,10 +579,6 @@ msgstr "日付"
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr "分散型<0/>パーペチュアル取引所"
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -618,7 +614,6 @@ msgstr ""
 msgid "Deposited!"
 msgstr "入金完了!"
 
-#: src/components/Exchange/PositionEditor.js
 #: src/pages/Stake/StakeV2.js
 msgid "Depositing..."
 msgstr "入金中"
@@ -745,12 +740,9 @@ msgstr "コードを入力"
 msgid "Enter a price"
 msgstr "価格を入力"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Enter an amount"
 msgstr "額を入力"
 
@@ -1315,12 +1307,9 @@ msgstr ""
 msgid "Positions"
 msgstr "ポジション"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Price"
 msgstr "価格"
 
@@ -1522,10 +1511,7 @@ msgstr "べスティングオプションを選択して\"請求\"をクリッ�
 msgid "Self-transfer not supported"
 msgstr "自分への移転はサポートされていません"
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
 msgid "Sell GLP"
 msgstr "GLP売却"
 
@@ -1633,7 +1619,9 @@ msgstr "ステークできませんでした。"
 msgid "Stake submitted!"
 msgstr "ステーク申し込み完了!"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Staked"
 msgstr "ステーク済"
 
@@ -1783,8 +1771,9 @@ msgstr "リベート総額"
 msgid "Total Rewards"
 msgstr "報酬総額"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Total Staked"
 msgstr "ステーク総額"
 
@@ -1792,7 +1781,9 @@ msgstr "ステーク総額"
 msgid "Total Stats"
 msgstr "全体統計"
 
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Total Supply"
 msgstr "総供給量"
 
@@ -1967,6 +1958,10 @@ msgstr "ボールトのキャパシティ"
 msgid "Vault Capacity for your Account"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Vault Capacity for your Account:"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Vest with GLP on Arbitrum"
 msgstr "ArbitrumでGLPを使ってべスティングする"
@@ -2042,8 +2037,9 @@ msgstr "ウェート"
 msgid "Waiting for Approval"
 msgstr "許可の待機中"
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Wallet"
 msgstr "ウォレット"
 
@@ -2064,10 +2060,6 @@ msgstr "WalletConnect"
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw"

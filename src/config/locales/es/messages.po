@@ -282,9 +282,7 @@ msgstr "Comprar AVAX"
 msgid "Buy ETH"
 msgstr "Comprar ETH"
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
 msgid "Buy GLP"
 msgstr "Comprar GLP"
 
@@ -496,8 +494,10 @@ msgstr "Componiendo"
 msgid "Connect"
 msgstr "Conectar"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "Conectar Monedero"
 
@@ -579,10 +579,6 @@ msgstr "Fecha"
 msgid "Decentralized<0/>Perpetual Exchange"
 msgstr "Exchange<0/>Perpetuo Decentralizado"
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -618,7 +614,6 @@ msgstr ""
 msgid "Deposited!"
 msgstr "¡Depósitado!"
 
-#: src/components/Exchange/PositionEditor.js
 #: src/pages/Stake/StakeV2.js
 msgid "Depositing..."
 msgstr "Depositando..."
@@ -745,12 +740,9 @@ msgstr "Introduzca un código"
 msgid "Enter a price"
 msgstr "Introduce un precio"
 
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Enter an amount"
 msgstr "Introduzca una cantidad"
 
@@ -1315,12 +1307,9 @@ msgstr ""
 msgid "Positions"
 msgstr "Posiciones"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Glp/GlpSwap.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Price"
 msgstr "Precio"
 
@@ -1522,10 +1511,7 @@ msgstr "Seleccione su opción de adquisición a continuación y haga clic en \"R
 msgid "Self-transfer not supported"
 msgstr "No se admite la autotransferencia"
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
 msgid "Sell GLP"
 msgstr "Vender GLP"
 
@@ -1633,7 +1619,9 @@ msgstr "Stake fallido."
 msgid "Stake submitted!"
 msgstr "¡Stake enviado!"
 
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Staked"
 msgstr "Stakeado"
 
@@ -1783,8 +1771,9 @@ msgstr "Total de reembolsos"
 msgid "Total Rewards"
 msgstr "Recompensas Totales"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Total Staked"
 msgstr "Total Stakeado"
 
@@ -1792,7 +1781,9 @@ msgstr "Total Stakeado"
 msgid "Total Stats"
 msgstr "Estadísticas Totales"
 
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Total Supply"
 msgstr "Suministro Total"
 
@@ -1967,6 +1958,10 @@ msgstr "Capacidad del Baúl"
 msgid "Vault Capacity for your Account"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Vault Capacity for your Account:"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Vest with GLP on Arbitrum"
 msgstr "Adquiera con GLP en Arbitrum"
@@ -2042,8 +2037,9 @@ msgstr "PESO"
 msgid "Waiting for Approval"
 msgstr "Esperando Aprobación"
 
-#: src/components/Glp/GlpSwap.js
-#: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Wallet"
 msgstr "Monedero"
 
@@ -2064,10 +2060,6 @@ msgstr "WalletConnect"
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
