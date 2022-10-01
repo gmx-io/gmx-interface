@@ -2061,8 +2061,8 @@ msgid "Vault Capacity"
 msgstr "Vault Capacity"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Vault Capacity for your Account"
-msgstr "Vault Capacity for your Account"
+msgid "Vault Capacity for your Account:"
+msgstr "Vault Capacity for your Account:"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Vest with GLP on Arbitrum"

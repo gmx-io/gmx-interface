@@ -2061,7 +2061,7 @@ msgid "Vault Capacity"
 msgstr "Capacidad del Baúl"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Vault Capacity for your Account"
+msgid "Vault Capacity for your Account:"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js

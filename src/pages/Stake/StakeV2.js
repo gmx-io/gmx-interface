@@ -482,9 +482,8 @@ function VesterDepositModal(props) {
                     return (
                       <div>
                         <p className="text-white">
-                          <Trans>Vault Capacity for your Account</Trans>
+                          <Trans>Vault Capacity for your Account:</Trans>
                         </p>
-                        <br />
                         <StatsTooltipRow
                           showDollar={false}
                           label={t`Deposited`}
@@ -529,13 +528,14 @@ function VesterDepositModal(props) {
                           value={formatAmount(additionalReserveAmount, 18, 2, true)}
                           showDollar={false}
                         />
-                        <br />
-
                         {amount && nextReserveAmount.gt(maxReserveAmount) && (
-                          <Trans>
-                            You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)}{" "}
-                            {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.
-                          </Trans>
+                          <>
+                            <br />
+                            <Trans>
+                              You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)}{" "}
+                              {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.
+                            </Trans>
+                          </>
                         )}
                       </>
                     );
