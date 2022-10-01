@@ -148,7 +148,7 @@ function AffiliatesStats({
                               copyToClipboard(`https://gmx.io/#/?${REFERRAL_CODE_QUERY_PARAM}=${stat.referralCode}`);
                               helperToast.success("Referral link copied to your clipboard");
                             }}
-                            className="copy-icon"
+                            className="referral-code-icon"
                           >
                             <BiCopy />
                           </div>
@@ -156,7 +156,7 @@ function AffiliatesStats({
                             href={getTwitterShareUrl(stat.referralCode)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="copy-icon"
+                            className="referral-code-icon"
                           >
                             <FiTwitter />
                           </a>
