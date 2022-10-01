@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { isAddressZero } from "../../lib/legacy";
 import { getAdressesDomains } from "../ens/graph";
 import { GRAPHS } from "./constants";
-import { getCompetitionContract, getTeamMembers } from "./contracts";
+import { getCompetitionContract, getTeamMembers, hasCompetitionContract } from "./contracts";
 import { Competition, Position, Team, TeamMembersStats } from "./types";
 
 export function getGraphClient(chainId) {
@@ -80,6 +80,7 @@ export function useTeams(chainId, competitionIndex) {
           competition: $competitionIndex,
         }
       ) {
+        id
         name
         pnl
         address
@@ -91,6 +92,12 @@ export function useTeams(chainId, competitionIndex) {
 
   useSWR([chainId, competitionIndex], () => {
     async function main() {
+      if (competitionIndex === null) {
+        setData([])
+        setLoading(false)
+        return
+      }
+
       const { data: graphData } = await getGraphClient(chainId).query({ query, variables: {
         competitionIndex,
       }})
@@ -132,7 +139,7 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
 
   const { revalidate } = useSWR([chainId, competitionIndex, leaderAddress, query, library], () => {
     async function main() {
-      if (!leaderAddress) {
+      if (!ethers.utils.isAddress(leaderAddress)) {
         setLoading(false)
         setExists(false)
         return
@@ -168,15 +175,13 @@ export function useTeam(chainId, library, competitionIndex, leaderAddress) {
         return
       }
 
-      let contract
-      try {
-        contract = getCompetitionContract(chainId, library)
-      } catch (err) {
-        console.error(err)
+      if (!hasCompetitionContract(chainId) || !library || !chainId) {
         setExists(false)
         setLoading(false)
         return
       }
+
+      const contract = getCompetitionContract(chainId, library)
       const team = await contract.getTeam(competitionIndex, leaderAddress)
 
       if (isAddressZero(team.leaderAddress)) {
@@ -246,6 +251,12 @@ export function useTeamMembersStats(chainId, library, competitionIndex, leaderAd
 
   const { revalidate } = useSWR([chainId, library, competitionIndex, leaderAddress, page, perPage], () => {
     async function main() {
+      if (competitionIndex === null) {
+        setData([])
+        setLoading(false)
+        return
+      }
+
       let addresses: string[] = []
       let loadedFromChain = false
 
@@ -320,13 +331,13 @@ export function useCompetition(chainId, competitionIndex) {
   `
 
   useSWR([chainId, competitionIndex, query], () => {
-    if (competitionIndex === null) {
-      setExists(false)
-      setLoading(false)
-      return
-    }
-
     async function main() {
+      if (competitionIndex === null) {
+        setExists(false)
+        setLoading(false)
+        return
+      }
+
       const { data: graphData } = await getGraphClient(chainId).query({ query, variables: { id: competitionIndex } })
 
       if (!graphData.competition) {

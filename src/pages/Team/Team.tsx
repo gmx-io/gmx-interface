@@ -1,5 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
-import { Link, useHistory, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useCompetition, useTeam } from "../../domain/leaderboard/graph"
 import SEO from "../../components/Common/SEO";
 import { getChainIcon, getPageTitle, useChainId } from "../../lib/legacy";
@@ -11,6 +11,7 @@ import TeamStats from "../../components/Team/TeamStats";
 import { TeamMembers } from "../../components/Team/TeamMembers";
 import { FiChevronLeft } from "react-icons/fi";
 import { getLeaderboardUrl } from "../../domain/leaderboard/urls";
+import PageNotFound from "../PageNotFound/PageNotFound";
 
 type Props = {
   pendingTxns: any,
@@ -18,7 +19,6 @@ type Props = {
 }
 
 export default function Team({ pendingTxns, setPendingTxns }: Props) {
-  const history = useHistory()
   const params = useParams<any>();
   const { chainId } = useChainId()
   const { library } = useWeb3React();
@@ -28,26 +28,26 @@ export default function Team({ pendingTxns, setPendingTxns }: Props) {
   const isLoading = () => teamLoading || competitionLoading
 
   if (!teamLoading && !teamExists) {
-    history.replace(getLeaderboardUrl())
+    return <PageNotFound/>
   }
 
   return (
     <SEO title={getPageTitle("Team")}>
       <div className="default-container page-layout Leaderboard">
-        <Link to={getLeaderboardUrl()} className="back-btn transparent-btn">
-          <FiChevronLeft/>
-          <span>Back to leaderboard</span>
-        </Link>
-        <div className="team-section-title-block section-title-block">
-          <div className="section-title-content">
-            <div className="Page-title">
-              {isLoading() ? "" : <em>{team.name}</em>} Team <img alt="Chain Icon" src={getChainIcon(chainId)} />
-            </div>
-          </div>
-        </div>
         {isLoading() && <Loader/>}
         {!isLoading() && (
           <>
+            <Link to={getLeaderboardUrl()} className="back-btn transparent-btn">
+              <FiChevronLeft/>
+              <span>Back to leaderboard</span>
+            </Link>
+            <div className="team-section-title-block section-title-block">
+              <div className="section-title-content">
+                <div className="Page-title">
+                  {isLoading() ? "" : <em>{team.name}</em>} Team <img alt="Chain Icon" src={getChainIcon(chainId)} />
+                </div>
+              </div>
+            </div>
             <TeamStats team={team} competition={competition}/>
             {competition.active && <TeamPositions team={team}/>}
             <TeamMembers onMembersChange={revalidateTeam} team={team} pendingTxns={pendingTxns} setPendingTxns={setPendingTxns}/>

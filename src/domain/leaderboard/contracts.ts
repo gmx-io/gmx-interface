@@ -27,7 +27,17 @@ export function useMemberTeam(chainId, library, competitionIndex, account) {
         return
       }
 
+      if (competitionIndex === null) {
+        return
+      }
+
       if (!account || isAddressZero(account)) {
+        setLoading(false)
+        setHasTeam(false)
+        return
+      }
+
+      if (!hasCompetitionContract(chainId)) {
         setLoading(false)
         setHasTeam(false)
         return
@@ -48,6 +58,10 @@ export function useMemberTeam(chainId, library, competitionIndex, account) {
 
 export async function getAccountJoinRequest(chainId, library, competitionIndex, account): Promise<JoinRequest|null> {
   if (!chainId || !library) {
+    return null
+  }
+
+  if (!hasCompetitionContract(chainId)) {
     return null
   }
 
@@ -97,6 +111,10 @@ export function useAccountJoinRequest(chainId, library, competitionIndex, accoun
 export async function getTeamMembers(chainId, library, competitionIndex, leaderAddress): Promise<string[]> {
   const members: string[] = []
 
+  if (!hasCompetitionContract(chainId)) {
+    return members
+  }
+
   const contract = getCompetitionContract(chainId, library)
 
   for (let i = 0;; i++) {
@@ -139,4 +157,13 @@ export function removeMember(chainId, library, competitionIndex, leaderAddress, 
 export function getCompetitionContract(chainId, library) {
   const address = getContract(chainId, "Competition");
   return new ethers.Contract(address, Competition.abi, library.getSigner());
+}
+
+export function hasCompetitionContract(chainId) {
+  try {
+    getContract(chainId, "Competition");
+    return true
+  } catch (_) {
+    return false
+  }
 }

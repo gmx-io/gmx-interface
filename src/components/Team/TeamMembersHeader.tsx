@@ -1,6 +1,6 @@
 import { Competition, Team } from "../../domain/leaderboard/types";
 import "./TeamMembersHeader.css";
-import { CHAIN_ID_QUERY_PARAM, helperToast, REFERRALS_SELECTED_TAB_KEY, shortenAddress, useChainId } from "../../lib/legacy";
+import { helperToast, REFERRALS_SELECTED_TAB_KEY, shortenAddress, useChainId } from "../../lib/legacy";
 import { getTeamUrl } from "../../domain/leaderboard/urls";
 import { useCopyToClipboard, useLocalStorage } from "react-use";
 import useRouteQuery from "../../lib/useRouteQuery";
@@ -51,7 +51,7 @@ function Invite({ team }: Inviteprops) {
 
   const referralLink = () => {
     let link = new URL(window.location.host).toString() + "/#" + getTeamUrl(team.leaderAddress)
-    link += `?${CHAIN_ID_QUERY_PARAM}=${chainId}`
+    link += `?invite`
     if (referralCode) {
       link += "&referral=" + referralCode
     }
@@ -92,14 +92,14 @@ function Invite({ team }: Inviteprops) {
                 <span className="Checkbox-icon-wrapper">
                   <Checkbox isChecked={includeReferral} setIsChecked={setIncludeReferral}/>
                 </span>
-                <span className="Checkbox-label">
+                <span className="Checkbox-label" onClick={() => setIncludeReferral(v => !v)}>
                   <span className="muted">Include Referral Code</span>
                 </span>
               </div>
               {includeReferral && (
                 <select onChange={handleReferralCodeChange} className="team-modal-referral-select text-input">
                   {chainReferralCodes.map(code => (
-                    <option value={code.codeString}>{code.codeString}</option>
+                    <option key={code.code} value={code.codeString}>{code.codeString}</option>
                   ))}
                 </select>
               )}
@@ -318,13 +318,18 @@ function CreateJoinRequest({ team, pendingTxns, setPendingTxns, onCreate }: Crea
   const [open, setOpen] = useState(false)
   const [processing, setProcessing] = useState(false)
   const [referralCode, setReferralCode] = useState("")
+  const [modalManuallyOpened, setModalManuallyOpened] = useState(false)
 
   useEffect(() => {
     const code = query.get("referral")
     if (code !== null && code !== "") {
       setReferralCode(code)
     }
-  }, [query])
+    if (query.has("invite") && !modalManuallyOpened) {
+      setOpen(true)
+      setModalManuallyOpened(true)
+    }
+  }, [query, modalManuallyOpened])
 
   const handleButtonClick = () => {
     if (referralCode === "") {

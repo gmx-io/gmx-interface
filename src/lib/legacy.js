@@ -154,7 +154,6 @@ export const REFERRAL_CODE_KEY = "GMX-referralCode";
 export const REFERRAL_CODE_QUERY_PARAM = "ref";
 export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
 export const MAX_REFERRAL_CODE_LENGTH = 20;
-export const CHAIN_ID_QUERY_PARAM = "chain";
 
 export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
