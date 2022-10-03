@@ -18,6 +18,7 @@ import OrderBookReader from "../abis/OrderBookReader.json";
 import OrderBook from "../abis/OrderBook.json";
 
 import { getWhitelistedTokens, isValidToken } from "../config/Tokens";
+import { next } from "lodash/seq";
 
 const { AddressZero } = ethers.constants;
 
@@ -1138,8 +1139,11 @@ export function getLiquidationPrice(data) {
   let remainingCollateral = collateral;
 
   if (sizeDelta) {
+    console.log("sizeDelta", Number(sizeDelta));
     if (increaseSize) {
+      console.log("increaseSize");
       nextSize = size.add(sizeDelta);
+      console.log("sizes", Number(size), Number(nextSize));
     } else {
       if (sizeDelta.gte(size)) {
         return;
@@ -1165,6 +1169,7 @@ export function getLiquidationPrice(data) {
   }
 
   let positionFee = getMarginFee(size).add(LIQUIDATION_FEE);
+
   if (entryFundingRate && cumulativeFundingRate) {
     const fundingFee = size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
     positionFee = positionFee.add(fundingFee);
@@ -1186,9 +1191,14 @@ export function getLiquidationPrice(data) {
     isLong,
   });
 
+  console.log("liquidationPriceForMaxLeverage", Number(liquidationPriceForMaxLeverage));
+
   if (!liquidationPriceForFees) {
     return liquidationPriceForMaxLeverage;
   }
+
+  console.log("liquidationPriceForFees", Number(liquidationPriceForFees));
+
   if (!liquidationPriceForMaxLeverage) {
     return liquidationPriceForFees;
   }
