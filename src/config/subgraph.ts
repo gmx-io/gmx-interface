@@ -1,11 +1,18 @@
+import { ARBITRUM, AVALANCHE } from "./chains";
+
 export const SUBGRAPH_URLS = {
-  chainLink: "https://api.thegraph.com/subgraphs/name/deividask/chainlink",
+  [ARBITRUM]: {
+    stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-stats",
+    referrals: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-arbitrum-referrals",
+    nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
+  },
 
-  arbitrumStats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-stats",
-  avalancheStats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
+  [AVALANCHE]: {
+    stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
+    referrals: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-referrals",
+  },
 
-  nissohVault: "https://api.thegraph.com/subgraphs/name/nissoh/gmx-vault",
-
-  arbitrumReferrals: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-arbitrum-referrals",
-  avalancheReferrals: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-referrals",
+  common: {
+    chainLink: "https://api.thegraph.com/subgraphs/name/deividask/chainlink",
+  },
 };
