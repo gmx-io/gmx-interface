@@ -165,8 +165,6 @@ export default function SwapBox(props) {
     minExecutionFeeErrorMessage,
   } = props;
 
-  console.log("sdadad", infoTokens);
-
   const [fromValue, setFromValue] = useState("");
   const [toValue, setToValue] = useState("");
   const [anchorOnFromAmount, setAnchorOnFromAmount] = useState(true);

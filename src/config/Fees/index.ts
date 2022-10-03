@@ -11,16 +11,12 @@ type FeeItem = {
 };
 
 function createFeeList(data: { to: number; feeUsd: string }[]) {
-  const list: FeeItem[] = [];
+  const list: FeeItem[] = data.map((item) => ({
+    from: item.to - SECONDS_PER_WEEK,
+    to: item.to,
+    feeUsd: item.feeUsd,
+  }));
 
-  for (let i = 0; i < data.length; i++) {
-    const item = data[i];
-    list.push({
-      from: item.to - SECONDS_PER_WEEK,
-      to: item.to,
-      feeUsd: item.feeUsd,
-    });
-  }
   return list;
 }
 
