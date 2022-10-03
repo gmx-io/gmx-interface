@@ -346,11 +346,13 @@ export default function PositionsList(props) {
                                 <StatsTooltipRow label="PnL" value={position.deltaBeforeFeesStr} showDollar={false} />
                                 <StatsTooltipRow
                                   label="Borrow Fee"
-                                  value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
+                                  showDollar={false}
+                                  value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
                                 />
                                 <StatsTooltipRow
                                   label="Open + Close fee"
-                                  value={formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
+                                  showDollar={false}
+                                  value={`-$${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}`}
                                 />
                                 <StatsTooltipRow
                                   label="PnL After Fees"
@@ -550,11 +552,13 @@ export default function PositionsList(props) {
                               <StatsTooltipRow label={`PnL`} value={position.deltaBeforeFeesStr} showDollar={false} />
                               <StatsTooltipRow
                                 label={t`Borrow Fee`}
-                                value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
+                                showDollar={false}
+                                value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
                               />
                               <StatsTooltipRow
                                 label={`Open + Close fee`}
-                                value={formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
+                                showDollar={false}
+                                value={`-$${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}`}
                               />
                               <StatsTooltipRow
                                 label={`PnL After Fees`}
