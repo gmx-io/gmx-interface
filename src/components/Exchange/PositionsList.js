@@ -544,7 +544,7 @@ export default function PositionsList(props) {
                               <br />
                               <br />
                               <StatsTooltipRow
-                                label={t`Initial Collateralt`}
+                                label={t`Initial Collateral`}
                                 value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
                               />
                               <StatsTooltipRow label={`PnL`} value={position.deltaBeforeFeesStr} showDollar={false} />

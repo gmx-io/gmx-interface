@@ -958,6 +958,7 @@ msgid "Incorrect network"
 msgstr "Incorrect network"
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral"
 msgstr "Initial Collateral"
 
@@ -968,10 +969,6 @@ msgstr "Initial Collateral - Borrow Fee + PnL"
 #: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral - Fees + PnL"
 msgstr "Initial Collateral - Fees + PnL"
-
-#: src/components/Exchange/PositionsList.js
-msgid "Initial Collateralt"
-msgstr "Initial Collateralt"
 
 #: src/App/App.js
 msgid "Install Coinbase Wallet"
