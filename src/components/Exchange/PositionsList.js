@@ -295,9 +295,14 @@ export default function PositionsList(props) {
                                 />
                                 <StatsTooltipRow
                                   label="Borrow Fee"
-                                  value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
+                                  showDollar={false}
+                                  value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
                                 />
-                                <StatsTooltipRow label={t`Borrow Fee / Day`} value={borrowFeeUSD} />
+                                <StatsTooltipRow
+                                  showDollar={false}
+                                  label={t`Borrow Fee / Day`}
+                                  value={`-$${borrowFeeUSD}`}
+                                />
                                 <span>Use the "Edit" button to deposit or withdraw collateral.</span>
                               </>
                             );
@@ -647,9 +652,10 @@ export default function PositionsList(props) {
                           />
                           <StatsTooltipRow
                             label={t`Borrow Fee`}
-                            value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
+                            showDollar={false}
+                            value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
                           />
-                          <StatsTooltipRow label={t`Borrow Fee / Day`} value={borrowFeeUSD} />
+                          <StatsTooltipRow showDollar={false} label={t`Borrow Fee / Day`} value={`-$${borrowFeeUSD}`} />
                           <br />
                           <Trans>Use the "Edit" button to deposit or withdraw collateral.</Trans>
                         </>

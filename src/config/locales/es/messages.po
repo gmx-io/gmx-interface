@@ -256,7 +256,6 @@ msgstr "Aumenta tus recompensas con los Puntos Multiplicadores. <0>Más informa
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
 msgid "Borrow Fee"
 msgstr "Tasa de Préstamo"
 
@@ -453,8 +452,6 @@ msgstr "Coinbase Wallet"
 msgid "Coinbase Wallet not detected."
 msgstr "Coinbase Wallet no detectada."
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Collateral"
@@ -679,9 +676,6 @@ msgstr "Ganar"
 msgid "Ecosystem"
 msgstr "Ecosistema"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Edit"
 msgstr "Editar"
@@ -812,11 +806,8 @@ msgstr "Introduce la cantidad de GLP que quieres comprar en el formulario de ped
 msgid "Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
 msgstr "Introduzca la cantidad de GLP que desea canjear en el formulario de pedido, luego marque aquí para comparar las tarifas."
 
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 msgid "Entry Price"
 msgstr "Precio de Entrada"
 
@@ -1048,11 +1039,7 @@ msgstr "Garantía restante inferior a 5 USD"
 msgid "Leftover position below 10 USD"
 msgstr "Posición restante por debajo de 10 USD"
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 msgid "Leverage"
 msgstr "Apalancamiento"
 
@@ -1076,11 +1063,8 @@ msgstr "¡Orden limite enviada!"
 msgid "Link"
 msgstr "Enlace"
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
 msgid "Liq. Price"
 msgstr "Precio de Liq."
 
@@ -1094,10 +1078,6 @@ msgid "Loading..."
 msgstr "Cargando..."
 
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
 msgid "Long"
 msgstr "Largo"
 
@@ -1124,11 +1104,6 @@ msgstr "Pérdida"
 msgid "MAX"
 msgstr "MÁX"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Mark Price"
@@ -1312,7 +1287,6 @@ msgid "Order submitted!"
 msgstr "¡Orden enviada!"
 
 #: src/components/Exchange/PositionsList.js
-#: src/pages/Actions/Actions.js
 msgid "Orders"
 msgstr "Órdenes"
 
@@ -1367,9 +1341,7 @@ msgstr "Por favor, utilice esto sólo para transferencias de cuentas completas."
 msgid "Please switch your network to Arbitrum."
 msgstr "Por favor, cambie su red a Arbitrum."
 
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
-#: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "GyP"
 
@@ -1644,10 +1616,6 @@ msgid "Share Position"
 msgstr "Compartir Posición"
 
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
 msgid "Short"
 msgstr "Corto"
 
@@ -1664,8 +1632,6 @@ msgstr "Corto {0}"
 msgid "Simple Swaps"
 msgstr "Intercambios Simples"
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Size"
