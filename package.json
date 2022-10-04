@@ -42,7 +42,7 @@
     "react-hot-toast": "2.2.0",
     "react-icons": "4.3.1",
     "react-router-dom": "5.3.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "5.0.1",
     "react-select": "5.2.1",
     "react-tabs": "3.2.3",
     "react-toastify": "6.0.9",
@@ -57,14 +57,14 @@
     "react-error-overlay": "6.0.9"
   },
   "scripts": {
-    "start": "PORT=3010 react-scripts start",
-    "start-home": "yarn lingui:prepare && PORT=3010 env-cmd -e development-home react-scripts start",
-    "start-app": "yarn lingui:prepare && PORT=3011 env-cmd -e development-app react-scripts start",
-    "start-win": "set PORT=3010&react-scripts start",
-    "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
-    "build-home": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-scripts build",
-    "build-app": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-app react-scripts build",
-    "test": "react-scripts test",
+    "start": "PORT=3010 react-app-rewired start",
+    "start-home": "PORT=3010 env-cmd -e development-home react-app-rewired start",
+    "start-app": "PORT=3011 env-cmd -e development-app react-app-rewired start",
+    "start-win": "set PORT=3010&react-app-rewired start",
+    "build": "INLINE_RUNTIME_CHUNK=false react-app-rewired build",
+    "build-home": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-home react-app-rewired build",
+    "build-app": "INLINE_RUNTIME_CHUNK=false env-cmd -e production-app react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "lint": "node node_modules/.bin/eslint src",
     "pre-commit": "npm run test -- --watchAll=false && npm run lint",
@@ -94,13 +94,21 @@
     ]
   },
   "devDependencies": {
-    "@lingui/cli": "^3.13.3",
+    "@lingui/cli": "3.13.3",
     "@lingui/loader": "3.14.0",
     "@lingui/macro": "3.13.3",
-    "eslint": "7.32.0",
+    "assert": "2.0.0",
+    "eslint": "^8.23.0",
+    "eslint-config-react-app": "^7.0.1",
+    "https-browserify": "1.0.0",
     "husky": "7.0.4",
     "lint-staged": "12.3.4",
-    "prettier": "2.5.1"
+    "os-browserify": "0.3.0",
+    "prettier": "2.5.1",
+    "process": "0.11.10",
+    "react-app-rewired": "2.2.1",
+    "stream-browserify": "3.0.0",
+    "stream-http": "3.2.0"
   },
   "lint-staged": {
     "src/**/*.{js,ts,jsx,tsx}": [

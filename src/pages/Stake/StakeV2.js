@@ -282,7 +282,6 @@ function UnstakeModal(props) {
           <div className="Exchange-swap-section-top">
             <div className="muted">
               <div className="Exchange-swap-usd">
-                Unstake
                 <Trans>Unstake</Trans>
               </div>
             </div>
