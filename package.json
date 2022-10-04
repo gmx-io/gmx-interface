@@ -103,8 +103,7 @@
   "lint-staged": {
     "src/**/*.{js,ts,jsx,tsx}": [
       "eslint --fix ./src",
-      "prettier --write",
-      "yarn test --watchAll=false"
+      "prettier --write"
     ]
   },
   "packageManager": "yarn@3.1.0"

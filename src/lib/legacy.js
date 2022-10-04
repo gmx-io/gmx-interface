@@ -18,7 +18,6 @@ import OrderBookReader from "../abis/OrderBookReader.json";
 import OrderBook from "../abis/OrderBook.json";
 
 import { getWhitelistedTokens, isValidToken } from "../config/Tokens";
-import { next } from "lodash/seq";
 
 const { AddressZero } = ethers.constants;
 
