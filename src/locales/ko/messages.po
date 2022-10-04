@@ -144,7 +144,9 @@ msgstr "공지"
 msgid "Approve GMX"
 msgstr "GMX 승인"
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 msgid "Approve {0}"
 msgstr "{0} 승인"
 
@@ -156,7 +158,9 @@ msgstr "{stakingTokenSymbol} 승인"
 msgid "Approving GMX..."
 msgstr "GMX 승인중..."
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 msgid "Approving {0}..."
 msgstr "{0} 승인중..."
 
@@ -250,6 +254,8 @@ msgstr "증가된 비율"
 msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "멀티플라이어 포인트를 사용해서 보상을 증가시키세요. <0>더 자세한 정보</0>."
 
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 msgid "Borrow Fee"
 msgstr "차용 수수료"
@@ -286,6 +292,7 @@ msgstr "ETH 구매 "
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
 msgid "Buy GLP"
 msgstr "GLP 구매"
 
@@ -505,10 +512,14 @@ msgid "Connect"
 msgstr "연동"
 
 #: src/components/Exchange/SwapBox.js
-<<<<<<< HEAD
 #: src/components/Glp/GlpSwap.js
-=======
->>>>>>> 9d4e2284 ((refactor step three): fixes by review)
+#: src/components/Header/AppHeaderUser.tsx
+#: src/components/Referrals/AddAffiliateCode.js
+#: src/components/Referrals/JoinReferralCode.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "지갑 연동"
 
@@ -681,16 +692,17 @@ msgstr "담보 수정"
 
 #: src/components/Referrals/TradersStats.js
 msgid "Edit Referral Code"
-msgstr "추천 코드 수정"
+msgstr "추천 코드 수정<<<<<<< HEAD"
 
-<<<<<<< HEAD
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-=======
->>>>>>> 9d4e2284 ((refactor step three): fixes by review)
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Leverage"
 msgstr "레버리지 유효화"
 
+#: src/components/Exchange/OrdersToa.js
+#: src/components/Exchange/OrdersToa.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Orders"
 msgstr "주문 유효화"
@@ -703,10 +715,12 @@ msgstr "예치 유효화 실패."
 msgid "Enable deposit sent."
 msgstr "예치 유효화 제출 완료."
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable leverage failed."
 msgstr "레버리지 유효화 실패."
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable leverage sent."
 msgstr "레버리지 유효화 제출 완료"
@@ -729,18 +743,19 @@ msgstr "인출 유효화 제출 완료"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Enabling Leverage"
-msgstr "레버리지 유효화"
+msgstr "레버리지 유효화<<<<<<< HEAD"
 
-<<<<<<< HEAD
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
-=======
->>>>>>> 9d4e2284 ((refactor step three): fixes by review)
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enabling Leverage..."
 msgstr "레버리지 유효화중"
 
+#: src/components/Exchange/OrdersToa.js
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enabling Orders..."
@@ -766,22 +781,22 @@ msgstr "코드 입력"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enter a price"
-msgstr "가격 입력"
+msgstr "가격 입력<<<<<<< HEAD"
 
-<<<<<<< HEAD
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
-=======
->>>>>>> 9d4e2284 ((refactor step three): fixes by review)
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-<<<<<<< HEAD
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-=======
->>>>>>> 9d4e2284 ((refactor step three): fixes by review)
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Enter an amount"
 msgstr "수량 입력"
 
@@ -795,12 +810,11 @@ msgstr "구매하고자 하는 GLP 양을 입력한 후 수수료를 비교하�
 
 #: src/components/Glp/GlpSwap.js
 msgid "Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
-msgstr "판매하고자 하는 GLP 양을 입력한 후 수수료를 비교하려면 여기를 확인하세요."
+msgstr "판매하고자 하는 GLP 양을 입력한 후 수수료를 비교하려면 여기를 확인하세요.<<<<<<< HEAD"
 
-<<<<<<< HEAD
 #: src/components/Exchange/PositionSeller.js
-=======
->>>>>>> 9d4e2284 ((refactor step three): fixes by review)
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Entry Price"
@@ -976,6 +990,7 @@ msgstr "GLP 잔고 부족"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 msgid "Insufficient liquidity"
 msgstr "유동성 부족"
 
@@ -991,6 +1006,7 @@ msgstr "스테이킹된 토큰 부족"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 msgid "Insufficient {0} balance"
 msgstr "{0} 잔고 부족"
 
@@ -1033,12 +1049,11 @@ msgstr "남은 담보가 5 USD 미만입니다"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover position below 10 USD"
-msgstr "남은 포지션이 10 USD 미만입니다."
+msgstr "남은 포지션이 10 USD 미만입니다.<<<<<<< HEAD"
 
-<<<<<<< HEAD
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-=======
->>>>>>> 9d4e2284 ((refactor step three): fixes by review)
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Leverage"
@@ -1062,12 +1077,12 @@ msgstr "지정가 주문 제출 완료!"
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Link"
-msgstr "링크"
+msgstr "링크<<<<<<< HEAD"
 
-<<<<<<< HEAD
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-=======
->>>>>>> 9d4e2284 ((refactor step three): fixes by review)
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 msgid "Liq. Price"
 msgstr "청산가"
@@ -1081,8 +1096,11 @@ msgstr "유동성 데이터를 불러오지 못하였습니다."
 msgid "Loading..."
 msgstr "로딩중..."
 
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.js
 msgid "Long"
 msgstr "롱"
 
@@ -1109,7 +1127,13 @@ msgstr "손실"
 msgid "MAX"
 msgstr "최대"
 
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 msgid "Mark Price"
 msgstr "시장 평균가"
 
@@ -1184,16 +1208,16 @@ msgstr "메타마스크"
 
 #: src/App/App.js
 msgid "MetaMask not detected."
-msgstr "메타마스크가 탐지되지 않았습니다."
+msgstr "메타마스크가 탐지되지 않았습니다.<<<<<<< HEAD"
 
-<<<<<<< HEAD
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
-=======
->>>>>>> 9d4e2284 ((refactor step three): fixes by review)
 #: src/components/Exchange/SwapBox.js
 msgid "Min leverage: 1.1x"
 msgstr "최소 레버리지: 1.1x"
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
 msgstr "최소 주문: 10 USD"
@@ -1290,6 +1314,7 @@ msgstr "주문 생성 실패."
 msgid "Order submitted!"
 msgstr "주문 제출 완료!"
 
+#: src/components/Exchange/PositionsList.js
 #: src/pages/Actions/Actions.js
 msgid "Orders"
 msgstr "주문"
@@ -1311,6 +1336,7 @@ msgstr "풀"
 msgid "PRICE"
 msgstr "가격"
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Page outdated, please refresh"
 msgstr "페이지가 오래되었습니다. 새로고침해주세요."
@@ -1345,6 +1371,7 @@ msgid "Please switch your network to Arbitrum."
 msgstr "네트워크를 Arbitrum으로 변경해주세요."
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "손익"
@@ -1359,18 +1386,18 @@ msgstr ""
 
 #: src/pages/Actions/Actions.js
 msgid "Positions"
-msgstr "포지션"
+msgstr "포지션<<<<<<< HEAD"
 
-<<<<<<< HEAD
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
-=======
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
->>>>>>> 9d4e2284 ((refactor step three): fixes by review)
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Price"
 msgstr "가격"
 
@@ -1435,8 +1462,11 @@ msgstr "트레이더로서 이 계정이 획득한 리베이트."
 msgid "Rebates earned by this account as an affiliate."
 msgstr "어필리에이트로서 이 계정이 획득한 리베이트."
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Receive"
 msgstr "수령하기"
 
@@ -1575,6 +1605,7 @@ msgstr "자신에게 전송하는 것은 지원되지 않습니다"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
 msgid "Sell GLP"
 msgstr "GLP 판매"
 
@@ -1615,8 +1646,11 @@ msgstr "공유"
 msgid "Share Position"
 msgstr "포지션 공유"
 
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.js
 msgid "Short"
 msgstr "숏"
 
@@ -1633,7 +1667,10 @@ msgstr "{0} 숏"
 msgid "Simple Swaps"
 msgstr "간단한 스왑"
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 msgid "Size"
 msgstr "사이즈"
 
@@ -1680,6 +1717,9 @@ msgid "Stake submitted!"
 msgstr "스테이킹 제출 완료!"
 
 #: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Staked"
 msgstr "스테이킹 완료"
 
@@ -1833,6 +1873,9 @@ msgstr "총 보상"
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Total Staked"
 msgstr "총 스테이킹"
 
@@ -1841,6 +1884,9 @@ msgid "Total Stats"
 msgstr "전체 통계"
 
 #: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Total Supply"
 msgstr "총 공급량"
 
@@ -1850,6 +1896,7 @@ msgstr "추천한 총 트레이더"
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
+#: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "총 트레이딩 거래량"
 
@@ -2014,7 +2061,7 @@ msgid "Vault Capacity"
 msgstr "볼트 수용량"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Vault Capacity for your Account"
+msgid "Vault Capacity for your Account:"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -2088,11 +2135,15 @@ msgid "WEIGHT"
 msgstr "비중"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 msgid "Waiting for Approval"
 msgstr "승인 대기중"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Wallet"
 msgstr "지갑"
 
@@ -2271,6 +2322,7 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
 msgstr "{0} 풀이 초과되었습니다. 다른 자산으로 시도해보세요"
 
