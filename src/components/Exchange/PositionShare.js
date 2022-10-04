@@ -72,7 +72,9 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
   async function handleDownload() {
     const element = positionRef.current;
     if (!element) return;
-    const imgBlob = await toJpeg(element, config).then(toJpeg(element, config)).then(toJpeg(element, config));
+    const imgBlob = await toJpeg(element, config)
+      .then(async () => await toJpeg(element, config))
+      .then(async () => await toJpeg(element, config));
     downloadImage(imgBlob, "share.jpeg");
   }
 
