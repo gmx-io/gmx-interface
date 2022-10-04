@@ -51,8 +51,8 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
         // We have to call the toJpeg function multiple times to make sure the canvas renders all the elements like background image
         // @refer https://github.com/tsayen/dom-to-image/issues/343#issuecomment-652831863
         const image = await toJpeg(element, config)
-          .then(async () => await toJpeg(element, config))
-          .then(async () => await toJpeg(element, config));
+          .then(() => toJpeg(element, config))
+          .then(() => toJpeg(element, config));
         try {
           const imageInfo = await fetch(UPLOAD_URL, { method: "POST", body: image }).then((res) => res.json());
           setUploadedImageInfo(imageInfo);
@@ -67,7 +67,9 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
   async function handleDownload() {
     const element = positionRef.current;
     if (!element) return;
-    const imgBlob = await toJpeg(element, config).then(toJpeg(element, config)).then(toJpeg(element, config));
+    const imgBlob = await toJpeg(element, config)
+      .then(() => toJpeg(element, config))
+      .then(() => toJpeg(element, config));
     downloadImage(imgBlob, "share.jpeg");
   }
 
