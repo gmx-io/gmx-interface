@@ -1,10 +1,10 @@
 import React, { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 import cx from "classnames";
-import { getAppBaseUrl, getHomeUrl } from "../../lib/legacy";
+import { getAppBaseUrl, getHomeUrl } from "lib/legacy";
 
 import "./Header.css";
-import {isHomeSite, shouldShowRedirectModal} from "../../lib/legacy";
+import { isHomeSite, shouldShowRedirectModal } from "lib/legacy";
 
 type Props = {
   isHome?: boolean;
@@ -19,13 +19,13 @@ type Props = {
 };
 
 export function HeaderLink({
-   isHomeLink,
-   className,
-   exact,
-   to,
-   children,
-   redirectPopupTimestamp,
-   showRedirectModal
+  isHomeLink,
+  className,
+  exact,
+  to,
+  children,
+  redirectPopupTimestamp,
+  showRedirectModal,
 }: Props) {
   const isOnHomePage = window.location.pathname === "/";
   const isHome = isHomeSite();
@@ -60,4 +60,4 @@ export function HeaderLink({
       {children}
     </NavLink>
   );
-};
+}

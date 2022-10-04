@@ -9,12 +9,8 @@ import OrdersToa from "./OrdersToa";
 import { ImSpinner2 } from "react-icons/im";
 
 import {
-  helperToast,
-  bigNumberify,
   getLiquidationPrice,
-  getUsd,
   getLeverage,
-  formatAmount,
   getOrderError,
   USD_DECIMALS,
   FUNDING_RATE_PRECISION,
@@ -23,10 +19,13 @@ import {
   SHORT,
   INCREASE,
   DECREASE,
-} from "../../lib/legacy";
+} from "lib/legacy";
 import PositionShare from "./PositionShare";
 import PositionDropdown from "./PositionDropdown";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+import { helperToast } from "lib/helperToast";
+import { getUsd } from "domain/tokens/utils";
+import { bigNumberify, formatAmount } from "lib/numbers";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {

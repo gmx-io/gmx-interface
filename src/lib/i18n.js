@@ -1,6 +1,6 @@
 import { i18n } from "@lingui/core";
 import { en, es, zh, ko, ru, ja, fr } from "make-plural/plurals";
-import { LANGUAGE_LOCALSTORAGE_KEY } from "./legacy";
+import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 
 export const locales = {
   en: "English",
@@ -25,7 +25,7 @@ i18n.loadLocaleData({
 });
 
 export async function dynamicActivate(locale) {
-  const { messages } = await import(`@lingui/loader!../config/locales/${locale}/messages.po`);
+  const { messages } = await import(`@lingui/loader!locales/${locale}/messages.po`);
   localStorage.setItem(LANGUAGE_LOCALSTORAGE_KEY, locale);
   i18n.load(locale, messages);
   i18n.activate(locale);

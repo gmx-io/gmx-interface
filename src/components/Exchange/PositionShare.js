@@ -7,22 +7,17 @@ import { RiFileDownloadLine } from "react-icons/ri";
 import { FiTwitter } from "react-icons/fi";
 import { useCopyToClipboard, useMedia } from "react-use";
 import Modal from "../Modal/Modal";
-import gmxLogo from "../../img/gmx-logo-with-name.svg";
+import gmxLogo from "img/gmx-logo-with-name.svg";
 import "./PositionShare.css";
 import { QRCodeSVG } from "qrcode.react";
-import {
-  formatAmount,
-  getHomeUrl,
-  getRootShareApiUrl,
-  getTwitterIntentURL,
-  helperToast,
-  USD_DECIMALS,
-} from "../../lib/legacy";
-import { useAffiliateCodes } from "../../domain/referrals";
+import { getHomeUrl, getRootShareApiUrl, getTwitterIntentURL, USD_DECIMALS } from "lib/legacy";
+import { useAffiliateCodes } from "domain/referrals";
 import SpinningLoader from "../Common/SpinningLoader";
-import useLoadImage from "../../lib/useLoadImage";
-import shareBgImg from "../../img/position-share-bg.png";
-import downloadImage from "../../lib/downloadImage";
+import useLoadImage from "lib/useLoadImage";
+import shareBgImg from "img/position-share-bg.png";
+import { helperToast } from "lib/helperToast";
+import { formatAmount } from "lib/numbers";
+import downloadImage from "lib/downloadImage";
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";

@@ -48,6 +48,7 @@
     "react-toastify": "6.0.9",
     "react-use": "17.3.1",
     "recharts": "2.1.8",
+    "sass": "1.55.0",
     "swr": "0.4.2",
     "typescript": "4.7.4",
     "web-vitals": "1.1.2"
@@ -71,7 +72,8 @@
     "extract": "NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile",
     "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
-    "lingui:generate": "NODE_ENV=development lingui extract --overwrite $(git diff --name-only --staged)"
+    "lingui:generate": "NODE_ENV=development lingui extract --overwrite $(git diff --name-only --staged)",
+    "tscheck": "tsc -p tsconfig.json --noEmit"
   },
   "eslintConfig": {
     "extends": [

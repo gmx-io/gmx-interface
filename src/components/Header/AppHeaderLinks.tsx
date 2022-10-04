@@ -1,9 +1,9 @@
 import { FiX } from "react-icons/fi";
 import { HeaderLink } from "./HeaderLink";
-import logoImg from "../../img/logo_GMX.svg";
+import logoImg from "img/logo_GMX.svg";
 
 import "./Header.css";
-import { isHomeSite } from "../../lib/legacy";
+import { isHomeSite } from "lib/legacy";
 import { Trans } from "@lingui/macro";
 import React from "react";
 import { Link } from "react-router-dom";

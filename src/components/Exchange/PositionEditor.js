@@ -4,37 +4,23 @@ import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
 
-import {
-  USD_DECIMALS,
-  BASIS_POINTS_DIVISOR,
-  DEPOSIT_FEE,
-  DUST_BNB,
-  helperToast,
-  formatAmount,
-  bigNumberify,
-  usePrevious,
-  formatAmountFree,
-  parseValue,
-  expandDecimals,
-  shouldRaiseGasError,
-  getTokenInfo,
-  getLiquidationPrice,
-  approveTokens,
-  IS_NETWORK_DISABLED,
-  getChainName,
-} from "../../lib/legacy";
-import { getContract } from "../../config/Addresses";
+import { USD_DECIMALS, BASIS_POINTS_DIVISOR, DEPOSIT_FEE, DUST_BNB, getLiquidationPrice } from "lib/legacy";
+import { getContract } from "config/contracts";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
 
-import PositionRouter from "../../abis/PositionRouter.json";
-import Token from "../../abis/Token.json";
+import PositionRouter from "abis/PositionRouter.json";
+import Token from "abis/Token.json";
 import Tooltip from "../Tooltip/Tooltip";
 
-import { getConstant } from "../../config/chains";
+import { getChainName, getConstant, IS_NETWORK_DISABLED } from "config/chains";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { fetcher } from "../../lib/contracts/fetcher";
-import { callContract } from "../../lib/contracts/callContract";
+import { callContract, contractFetcher } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
+import { getTokenInfo } from "domain/tokens/utils";
+import { approveTokens, shouldRaiseGasError } from "domain/tokens";
+import { usePrevious } from "lib/usePrevious";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 
 const DEPOSIT = t`Deposit`;
 const WITHDRAW = t`Withdraw`;
@@ -82,7 +68,7 @@ export default function PositionEditor(props) {
   const { data: tokenAllowance } = useSWR(
     [active, chainId, collateralTokenAddress, "allowance", account, routerAddress],
     {
-      fetcher: fetcher(library, Token),
+      fetcher: contractFetcher(library, Token),
     }
   );
 

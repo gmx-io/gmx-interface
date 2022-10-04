@@ -5,23 +5,12 @@ import { Trans, t } from "@lingui/macro";
 import { BsArrowRight } from "react-icons/bs";
 
 import {
-  formatAmount,
-  bigNumberify,
-  ARBITRUM,
   DEFAULT_SLIPPAGE_AMOUNT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   USD_DECIMALS,
   DUST_USD,
   BASIS_POINTS_DIVISOR,
-  SLIPPAGE_BPS_KEY,
-  TRIGGER_PREFIX_BELOW,
-  TRIGGER_PREFIX_ABOVE,
   MIN_PROFIT_TIME,
-  usePrevious,
-  formatAmountFree,
-  parseValue,
-  expandDecimals,
-  getTokenInfo,
   getLiquidationPrice,
   getLeverage,
   getMarginFee,
@@ -29,36 +18,35 @@ import {
   MARKET,
   STOP,
   DECREASE,
-  useLocalStorageSerializeKey,
   calculatePositionDelta,
   getDeltaStr,
   getProfitPrice,
-  formatDateTime,
-  getTimeRemaining,
   getNextToAmount,
-  getUsd,
   USDG_DECIMALS,
-  CLOSE_POSITION_RECEIVE_TOKEN_KEY,
-  useLocalStorageByChainId,
   adjustForDecimals,
-  IS_NETWORK_DISABLED,
-  getChainName,
-} from "../../lib/legacy";
-import { getConstant } from "../../config/chains";
-import { createDecreaseOrder, useHasOutdatedUi } from "../../domain/legacy";
-import { getContract } from "../../config/Addresses";
-import PositionRouter from "../../abis/PositionRouter.json";
+} from "lib/legacy";
+import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED } from "config/chains";
+import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
+import { getContract } from "config/contracts";
+import PositionRouter from "abis/PositionRouter.json";
 import Checkbox from "../Checkbox/Checkbox";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import Tooltip from "../Tooltip/Tooltip";
 import TokenSelector from "./TokenSelector";
-import { getTokens } from "../../config/Tokens";
 import "./PositionSeller.css";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { getTokenAmountFromUsd } from "../../domain/tokens/utils";
-import { callContract } from "../../lib/contracts/callContract";
+import { callContract } from "lib/contracts";
+import { getTokenAmountFromUsd } from "domain/tokens";
+import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
+import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
+import { getTokenInfo, getUsd } from "domain/tokens/utils";
+import { usePrevious } from "lib/usePrevious";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import { getTokens } from "config/tokens";
+import { formatDateTime, getTimeRemaining } from "lib/dates";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10

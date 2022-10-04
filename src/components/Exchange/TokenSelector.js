@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
 import cx from "classnames";
 
-import { formatAmount, expandDecimals, bigNumberify } from "../../lib/legacy";
-
-import { getToken } from "../../config/Tokens";
-
 import { BiChevronDown } from "react-icons/bi";
 
 import Modal from "../Modal/Modal";
 
-import dropDownIcon from "../../img/DROP_DOWN.svg";
+import dropDownIcon from "img/DROP_DOWN.svg";
 import "./TokenSelector.css";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
+import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
+import { getToken } from "config/tokens";
 
 export default function TokenSelector(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -52,7 +50,7 @@ export default function TokenSelector(props) {
   var tokenImage = null;
 
   try {
-    tokenImage = require("../../img/ic_" + tokenInfo.symbol.toLowerCase() + "_24.svg");
+    tokenImage = require("img/ic_" + tokenInfo.symbol.toLowerCase() + "_24.svg");
   } catch (error) {
     console.error(error);
   }
@@ -96,9 +94,9 @@ export default function TokenSelector(props) {
           {filteredTokens.map((token, tokenIndex) => {
             let tokenPopupImage;
             try {
-              tokenPopupImage = require("../../img/ic_" + token.symbol.toLowerCase() + "_40.svg");
+              tokenPopupImage = require("img/ic_" + token.symbol.toLowerCase() + "_40.svg");
             } catch (error) {
-              tokenPopupImage = require("../../img/ic_eth_40.svg");
+              tokenPopupImage = require("img/ic_eth_40.svg");
             }
             let info = infoTokens ? infoTokens[token.address] : {};
             let mintAmount;
