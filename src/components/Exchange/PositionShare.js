@@ -5,7 +5,7 @@ import cx from "classnames";
 import { BiCopy } from "react-icons/bi";
 import { RiFileDownloadLine } from "react-icons/ri";
 import { FiTwitter } from "react-icons/fi";
-import { useCopyToClipboard } from "react-use";
+import { useCopyToClipboard, useMedia } from "react-use";
 import Modal from "../Modal/Modal";
 import gmxLogo from "img/gmx-logo-with-name.svg";
 import "./PositionShare.css";
@@ -17,16 +17,16 @@ import useLoadImage from "lib/useLoadImage";
 import shareBgImg from "img/position-share-bg.png";
 import { helperToast } from "lib/helperToast";
 import { formatAmount } from "lib/numbers";
-
+import downloadImage from "lib/downloadImage";
 const ROOT_SHARE_URL = getRootShareApiUrl();
 const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
-const config = { quality: 0.95, canvasWidth: 1036, canvasHeight: 584 };
+const config = { quality: 0.95, canvasWidth: 518, canvasHeight: 292, type: "image/jpeg" };
 
 function getShareURL(imageInfo, ref) {
   if (!imageInfo) return;
   let url = `${UPLOAD_SHARE}?id=${imageInfo.id}`;
-  if (ref.success) {
+  if (ref.success && ref.code) {
     url = url + `&ref=${ref.code}`;
   }
   return url;
@@ -48,7 +48,11 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
     (async function () {
       const element = positionRef.current;
       if (element && userAffiliateCode.success && sharePositionBgImg && positionToShare) {
-        const image = await toJpeg(element, config);
+        // We have to call the toJpeg function multiple times to make sure the canvas renders all the elements like background image
+        // @refer https://github.com/tsayen/dom-to-image/issues/343#issuecomment-652831863
+        const image = await toJpeg(element, config)
+          .then(async () => await toJpeg(element, config))
+          .then(async () => await toJpeg(element, config));
         try {
           const imageInfo = await fetch(UPLOAD_URL, { method: "POST", body: image }).then((res) => res.json());
           setUploadedImageInfo(imageInfo);
@@ -61,15 +65,10 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
   }, [userAffiliateCode, sharePositionBgImg, positionToShare]);
 
   async function handleDownload() {
-    const { indexToken, isLong } = positionToShare;
     const element = positionRef.current;
     if (!element) return;
-    const dataUrl = await toJpeg(element, config);
-    const link = document.createElement("a");
-    link.download = `${indexToken.symbol}-${isLong ? "long" : "short"}.jpeg`;
-    link.href = dataUrl;
-    document.body.appendChild(link);
-    link.click();
+    const imgBlob = await toJpeg(element, config).then(toJpeg(element, config)).then(toJpeg(element, config));
+    downloadImage(imgBlob, "share.jpeg");
   }
 
   function handleCopy() {
@@ -102,7 +101,7 @@ function PositionShare({ setIsPositionShareModalOpen, isPositionShareModalOpen, 
           <BiCopy className="icon" />
           <Trans>Copy</Trans>
         </button>
-        <button className="mr-base App-button-option" onClick={handleDownload}>
+        <button disabled={!uploadedImageInfo} className="mr-base App-button-option" onClick={handleDownload}>
           <RiFileDownloadLine className="icon" />
           <Trans>Download</Trans>
         </button>
@@ -130,8 +129,10 @@ function PositionShareCard({
   uploadedImageError,
   sharePositionBgImg,
 }) {
+  const isMobile = useMedia("(max-width: 400px)");
   const { code, success } = userAffiliateCode;
   const { deltaAfterFeesPercentageStr, isLong, leverage, indexToken, averagePrice, markPrice } = position;
+
   const homeURL = getHomeUrl();
   return (
     <div className="relative">
@@ -155,10 +156,10 @@ function PositionShareCard({
         </div>
         <div className="referral-code">
           <div>
-            <QRCodeSVG size={32} value={success ? `${homeURL}/#/?ref=${code}` : `${homeURL}`} />
+            <QRCodeSVG size={isMobile ? 24 : 32} value={success && code ? `${homeURL}/#/?ref=${code}` : `${homeURL}`} />
           </div>
           <div className="referral-code-info">
-            {success ? (
+            {success && code ? (
               <>
                 <p className="label">Referral Code:</p>
                 <p className="code">{code}</p>

@@ -256,7 +256,6 @@ msgstr "マルチプライヤーポイントで報酬をブーストする。<0>
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
 msgid "Borrow Fee"
 msgstr "借入手数料"
 
@@ -453,8 +452,6 @@ msgstr "コインベースウォレット"
 msgid "Coinbase Wallet not detected."
 msgstr "コインベースウォレットが検出できません。"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Collateral"
@@ -679,9 +676,6 @@ msgstr "報酬獲得"
 msgid "Ecosystem"
 msgstr "エコシステム"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Edit"
 msgstr "編集"
@@ -692,7 +686,7 @@ msgstr "担保編集"
 
 #: src/components/Referrals/TradersStats.js
 msgid "Edit Referral Code"
-msgstr "紹介コード編集<<<<<<< HEAD"
+msgstr "紹介コード編集"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -743,7 +737,7 @@ msgstr "出金有効化申し込み完了。"
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Enabling Leverage"
-msgstr "レバレッジ有効化中<<<<<<< HEAD"
+msgstr "レバレッジ有効化中"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -781,7 +775,7 @@ msgstr "コードを入力"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enter a price"
-msgstr "価格を入力<<<<<<< HEAD"
+msgstr "価格を入力"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -810,13 +804,10 @@ msgstr "購入したいGLPの額をオーダーフォームに入力し、ここ
 
 #: src/components/Glp/GlpSwap.js
 msgid "Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
-msgstr "売却したいGLPの額をオーダーフォームに入力し、ここをクリックして手数料を比較。<<<<<<< HEAD"
+msgstr "売却したいGLPの額をオーダーフォームに入力し、ここをクリックして手数料を比較。"
 
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 msgid "Entry Price"
 msgstr "エントリー価格"
 
@@ -958,6 +949,7 @@ msgid "Incorrect network"
 msgstr "誤ったネットワーク"
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral"
 msgstr ""
 
@@ -967,10 +959,6 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral - Fees + PnL"
-msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-msgid "Initial Collateralt"
 msgstr ""
 
 #: src/App/App.js
@@ -1049,13 +1037,9 @@ msgstr "残りの担保が5 USD以下"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Leftover position below 10 USD"
-msgstr "残りのポジションが10 USD以下<<<<<<< HEAD"
+msgstr "残りのポジションが10 USD以下"
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 msgid "Leverage"
 msgstr "レバレッジ"
 
@@ -1077,13 +1061,10 @@ msgstr "指値注文提出済!"
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Link"
-msgstr "リンク<<<<<<< HEAD"
+msgstr "リンク"
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
 msgid "Liq. Price"
 msgstr "清算価格"
 
@@ -1097,10 +1078,6 @@ msgid "Loading..."
 msgstr "ロード中"
 
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
 msgid "Long"
 msgstr "ロング"
 
@@ -1127,11 +1104,6 @@ msgstr "損失"
 msgid "MAX"
 msgstr "最大"
 
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Mark Price"
@@ -1208,7 +1180,7 @@ msgstr "メタマスク"
 
 #: src/App/App.js
 msgid "MetaMask not detected."
-msgstr "メタマスクが検出できません。<<<<<<< HEAD"
+msgstr "メタマスクが検出できません。"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -1315,7 +1287,6 @@ msgid "Order submitted!"
 msgstr "注文提出完了!"
 
 #: src/components/Exchange/PositionsList.js
-#: src/pages/Actions/Actions.js
 msgid "Orders"
 msgstr "注文"
 
@@ -1370,9 +1341,7 @@ msgstr "この機能はアカウント全体の移転にのみ利用してくだ
 msgid "Please switch your network to Arbitrum."
 msgstr "ネットワークをArbitrumに切り替えてください。"
 
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
-#: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "損益"
 
@@ -1386,7 +1355,7 @@ msgstr ""
 
 #: src/pages/Actions/Actions.js
 msgid "Positions"
-msgstr "ポジション<<<<<<< HEAD"
+msgstr "ポジション"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1647,10 +1616,6 @@ msgid "Share Position"
 msgstr "ポジションをシェア"
 
 #: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#: src/pages/Actions/Actions.js
-#: src/pages/Actions/Actions.js
 msgid "Short"
 msgstr "ショート"
 
@@ -1667,8 +1632,6 @@ msgstr "{0}をショート"
 msgid "Simple Swaps"
 msgstr "シンプルなスワップ"
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Size"
