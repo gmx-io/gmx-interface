@@ -3,98 +3,99 @@ import { SWRConfig } from "swr";
 import { ethers } from "ethers";
 import { Web3ReactProvider, useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
-import useScrollToTop from "../lib/useScrollToTop";
+import useScrollToTop from "lib/useScrollToTop";
 
 import { Switch, Route, HashRouter as Router, Redirect, useLocation, useHistory } from "react-router-dom";
 
 import {
-  ARBITRUM,
-  AVALANCHE,
   DEFAULT_SLIPPAGE_AMOUNT,
-  SLIPPAGE_BPS_KEY,
-  IS_PNL_IN_LEVERAGE_KEY,
-  SHOW_PNL_AFTER_FEES_KEY,
   BASIS_POINTS_DIVISOR,
-  SHOULD_SHOW_POSITION_LINES_KEY,
   getAppBaseUrl,
   isHomeSite,
-  clearWalletConnectData,
-  helperToast,
-  getAlchemyWsUrl,
-  useChainId,
-  getInjectedHandler,
-  useEagerConnect,
-  useLocalStorageSerializeKey,
-  useInactiveListener,
-  getExplorerUrl,
-  getWalletConnectHandler,
-  activateInjectedProvider,
-  hasMetaMaskWalletExtension,
-  hasCoinBaseWalletExtension,
   isMobileDevice,
-  clearWalletLinkData,
-  SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
-  CURRENT_PROVIDER_LOCALSTORAGE_KEY,
-  REFERRAL_CODE_KEY,
   REFERRAL_CODE_QUERY_PARAM,
   isDevelopment,
-  DISABLE_ORDER_VALIDATION_KEY,
-  LANGUAGE_LOCALSTORAGE_KEY,
-} from "../lib/legacy";
+} from "lib/legacy";
 
-import Home from "../pages/Home/Home";
-import Dashboard from "../pages/Dashboard/Dashboard";
-import Ecosystem from "../pages/Ecosystem/Ecosystem";
-import Stake from "../pages/Stake/Stake";
-import { Exchange } from "../pages/Exchange/Exchange";
-import Actions from "../pages/Actions/Actions";
-import OrdersOverview from "../pages/OrdersOverview/OrdersOverview";
-import PositionsOverview from "../pages/PositionsOverview/PositionsOverview";
-import Referrals from "../pages/Referrals/Referrals";
-import BuyGlp from "../pages/BuyGlp/BuyGlp";
-import BuyGMX from "../pages/BuyGMX/BuyGMX";
-import Buy from "../pages/Buy/Buy";
-import NftWallet from "../pages/NftWallet/NftWallet";
-import ClaimEsGmx from "../pages/ClaimEsGmx/ClaimEsGmx";
-import BeginAccountTransfer from "../pages/BeginAccountTransfer/BeginAccountTransfer";
-import CompleteAccountTransfer from "../pages/CompleteAccountTransfer/CompleteAccountTransfer";
+import Home from "pages/Home/Home";
+import Dashboard from "pages/Dashboard/Dashboard";
+import Ecosystem from "pages/Ecosystem/Ecosystem";
+import Stake from "pages/Stake/Stake";
+import { Exchange } from "pages/Exchange/Exchange";
+import Actions from "pages/Actions/Actions";
+import OrdersOverview from "pages/OrdersOverview/OrdersOverview";
+import PositionsOverview from "pages/PositionsOverview/PositionsOverview";
+import Referrals from "pages/Referrals/Referrals";
+import BuyGlp from "pages/BuyGlp/BuyGlp";
+import BuyGMX from "pages/BuyGMX/BuyGMX";
+import Buy from "pages/Buy/Buy";
+import NftWallet from "pages/NftWallet/NftWallet";
+import ClaimEsGmx from "pages/ClaimEsGmx/ClaimEsGmx";
+import BeginAccountTransfer from "pages/BeginAccountTransfer/BeginAccountTransfer";
+import CompleteAccountTransfer from "pages/CompleteAccountTransfer/CompleteAccountTransfer";
 
 import { cssTransition, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Modal from "../components/Modal/Modal";
-import Checkbox from "../components/Checkbox/Checkbox";
+import Modal from "components/Modal/Modal";
+import Checkbox from "components/Checkbox/Checkbox";
 
-import "../styles/Shared.css";
-import "../styles/Font.css";
-import "./App.css";
-import "../styles/Input.css";
+import "styles/Shared.css";
+import "styles/Font.css";
+import "./App.scss";
+import "styles/Input.css";
 
-import metamaskImg from "../img/metamask.png";
-import coinbaseImg from "../img/coinbaseWallet.png";
-import walletConnectImg from "../img/walletconnect-circle-blue.svg";
-import useEventToast from "../components/EventToast/useEventToast";
-import EventToastContainer from "../components/EventToast/EventToastContainer";
-import SEO from "../components/Common/SEO";
-import useRouteQuery from "../lib/useRouteQuery";
-import { encodeReferralCode, decodeReferralCode } from "../domain/referrals";
+import metamaskImg from "img/metamask.png";
+import coinbaseImg from "img/coinbaseWallet.png";
+import walletConnectImg from "img/walletconnect-circle-blue.svg";
+import useEventToast from "components/EventToast/useEventToast";
+import EventToastContainer from "components/EventToast/EventToastContainer";
+import SEO from "components/Common/SEO";
+import useRouteQuery from "lib/useRouteQuery";
+import { encodeReferralCode, decodeReferralCode } from "domain/referrals";
 
-import { getContract } from "../config/Addresses";
-import VaultV2 from "../abis/VaultV2.json";
-import VaultV2b from "../abis/VaultV2b.json";
-import PositionRouter from "../abis/PositionRouter.json";
-import PageNotFound from "../pages/PageNotFound/PageNotFound";
-import ReferralTerms from "../pages/ReferralTerms/ReferralTerms";
-import TermsAndConditions from "../pages/TermsAndConditions/TermsAndConditions";
+import { getContract } from "config/contracts";
+import VaultV2 from "abis/VaultV2.json";
+import VaultV2b from "abis/VaultV2b.json";
+import PositionRouter from "abis/PositionRouter.json";
+import PageNotFound from "pages/PageNotFound/PageNotFound";
+import ReferralTerms from "pages/ReferralTerms/ReferralTerms";
+import TermsAndConditions from "pages/TermsAndConditions/TermsAndConditions";
 import { useLocalStorage } from "react-use";
-import { RedirectPopupModal } from "../components/ModalViews/RedirectModal";
-import { REDIRECT_POPUP_TIMESTAMP_KEY } from "../config/ui";
-import Jobs from "../pages/Jobs/Jobs";
+import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
+import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/ui";
+import Jobs from "pages/Jobs/Jobs";
 
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
-import { defaultLocale, dynamicActivate } from "../lib/i18n";
-import { Header } from "../components/Header/Header";
+import { defaultLocale, dynamicActivate } from "lib/i18n";
+import { Header } from "components/Header/Header";
+import { ARBITRUM, AVALANCHE, getAlchemyWsUrl, getExplorerUrl } from "config/chains";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { helperToast } from "lib/helperToast";
+import {
+  CURRENT_PROVIDER_LOCALSTORAGE_KEY,
+  DISABLE_ORDER_VALIDATION_KEY,
+  IS_PNL_IN_LEVERAGE_KEY,
+  LANGUAGE_LOCALSTORAGE_KEY,
+  REFERRAL_CODE_KEY,
+  SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
+  SHOULD_SHOW_POSITION_LINES_KEY,
+  SHOW_PNL_AFTER_FEES_KEY,
+  SLIPPAGE_BPS_KEY,
+} from "config/localStorage";
+import {
+  activateInjectedProvider,
+  clearWalletConnectData,
+  clearWalletLinkData,
+  getInjectedHandler,
+  getWalletConnectHandler,
+  hasCoinBaseWalletExtension,
+  hasMetaMaskWalletExtension,
+  useEagerConnect,
+  useInactiveListener,
+} from "lib/wallets";
+import { useChainId } from "lib/chains";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -162,8 +163,8 @@ function FullApp() {
       if (encodeReferralCode !== ethers.constants.HashZero) {
         localStorage.setItem(REFERRAL_CODE_KEY, encodedReferralCode);
         const queryParams = new URLSearchParams(location.search);
-        if (queryParams.has("ref")) {
-          queryParams.delete("ref");
+        if (queryParams.has(REFERRAL_CODE_QUERY_PARAM)) {
+          queryParams.delete(REFERRAL_CODE_QUERY_PARAM);
           history.replace({
             search: queryParams.toString(),
           });
@@ -261,7 +262,7 @@ function FullApp() {
   );
   const [slippageAmount, setSlippageAmount] = useState(0);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
-  const [shouldDisableOrderValidation, setShouldDisableOrderValidation] = useState(false);
+  const [shouldDisableValidationForTesting, setShouldDisableValidationForTesting] = useState(false);
   const [showPnlAfterFees, setShowPnlAfterFees] = useState(false);
 
   const [savedIsPnlInLeverage, setSavedIsPnlInLeverage] = useLocalStorageSerializeKey(
@@ -273,10 +274,8 @@ function FullApp() {
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
     false
   );
-  const [savedShouldDisableOrderValidation, setSavedShouldDisableOrderValidation] = useLocalStorageSerializeKey(
-    [chainId, DISABLE_ORDER_VALIDATION_KEY],
-    false
-  );
+  const [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] =
+    useLocalStorageSerializeKey([chainId, DISABLE_ORDER_VALIDATION_KEY], false);
 
   const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
     [chainId, SHOULD_SHOW_POSITION_LINES_KEY],
@@ -288,7 +287,7 @@ function FullApp() {
     setSlippageAmount((slippage / BASIS_POINTS_DIVISOR) * 100);
     setIsPnlInLeverage(savedIsPnlInLeverage);
     setShowPnlAfterFees(savedShowPnlAfterFees);
-    setShouldDisableOrderValidation(savedShouldDisableOrderValidation);
+    setShouldDisableValidationForTesting(savedShouldDisableValidationForTesting);
     setIsSettingsVisible(true);
   };
 
@@ -311,7 +310,7 @@ function FullApp() {
 
     setSavedIsPnlInLeverage(isPnlInLeverage);
     setSavedShowPnlAfterFees(showPnlAfterFees);
-    setSavedShouldDisableOrderValidation(shouldDisableOrderValidation);
+    setSavedShouldDisableValidationForTesting(shouldDisableValidationForTesting);
     setSavedSlippageAmount(basisPoints);
     setIsSettingsVisible(false);
   };
@@ -471,7 +470,7 @@ function FullApp() {
                   savedShouldShowPositionLines={savedShouldShowPositionLines}
                   setSavedShouldShowPositionLines={setSavedShouldShowPositionLines}
                   connectWallet={connectWallet}
-                  savedShouldDisableOrderValidation={savedShouldDisableOrderValidation}
+                  savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
                 />
               </Route>
               <Route exact path="/dashboard">
@@ -492,6 +491,7 @@ function FullApp() {
                   savedSlippageAmount={savedSlippageAmount}
                   setPendingTxns={setPendingTxns}
                   connectWallet={connectWallet}
+                  savedShouldDisableValidationForTesting={savedShouldDisableValidationForTesting}
                 />
               </Route>
               <Route exact path="/jobs">
@@ -619,7 +619,7 @@ function FullApp() {
         </div>
         {isDevelopment() && (
           <div className="Exchange-settings-row">
-            <Checkbox isChecked={shouldDisableOrderValidation} setIsChecked={setShouldDisableOrderValidation}>
+            <Checkbox isChecked={shouldDisableValidationForTesting} setIsChecked={setShouldDisableValidationForTesting}>
               <Trans>Disable order validations</Trans>
             </Checkbox>
           </div>

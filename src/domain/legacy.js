@@ -1,67 +1,37 @@
 import { ethers } from "ethers";
 import { gql } from "@apollo/client";
-import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
 import useSWR from "swr";
 
-import OrderBook from "../abis/OrderBook.json";
-import PositionManager from "../abis/PositionManager.json";
-import Vault from "../abis/Vault.json";
-import Router from "../abis/Router.json";
-import UniPool from "../abis/UniPool.json";
-import UniswapV2 from "../abis/UniswapV2.json";
-import Token from "../abis/Token.json";
-import VaultReader from "../abis/VaultReader.json";
-import PositionRouter from "../abis/PositionRouter.json";
+import OrderBook from "abis/OrderBook.json";
+import PositionManager from "abis/PositionManager.json";
+import Vault from "abis/Vault.json";
+import Router from "abis/Router.json";
+import UniPool from "abis/UniPool.json";
+import UniswapV2 from "abis/UniswapV2.json";
+import Token from "abis/Token.json";
+import PositionRouter from "abis/PositionRouter.json";
 
-import { getContract } from "../config/Addresses";
-import { getConstant } from "../config/chains";
-import {
-  UI_VERSION,
-  ARBITRUM,
-  AVALANCHE,
-  // DEFAULT_GAS_LIMIT,
-  bigNumberify,
-  getExplorerUrl,
-  getServerBaseUrl,
-  getServerUrl,
-  setGasPrice,
-  getGasLimit,
-  replaceNativeTokenAddress,
-  getProvider,
-  getOrderKey,
-  fetcher,
-  parseValue,
-  expandDecimals,
-  getInfoTokens,
-  helperToast,
-  getUsd,
-  USD_DECIMALS,
-  getHighExecutionFee,
-  SWAP,
-  INCREASE,
-  DECREASE,
-  ARBITRUM_TESTNET,
-} from "../lib/legacy";
-import { getTokens, getTokenBySymbol, getWhitelistedTokens } from "../config/Tokens";
+import { getContract } from "config/contracts";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, getConstant, getHighExecutionFee } from "config/chains";
+import { DECREASE, getOrderKey, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
 
-import { nissohGraphClient, arbitrumGraphClient, avalancheGraphClient } from "./common";
 import { groupBy } from "lodash";
+import { UI_VERSION } from "config/ui";
+import { getServerBaseUrl, getServerUrl } from "config/backend";
+import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
+import { callContract, contractFetcher } from "lib/contracts";
+import { replaceNativeTokenAddress } from "./tokens";
+import { getUsd } from "./tokens/utils";
+import { getProvider } from "lib/rpc";
+import { bigNumberify, expandDecimals, parseValue } from "lib/numbers";
+import { getTokenBySymbol } from "config/tokens";
+
 export * from "./prices";
 
 const { AddressZero } = ethers.constants;
-
-function getGmxGraphClient(chainId) {
-  if (chainId === ARBITRUM) {
-    return arbitrumGraphClient;
-  } else if (chainId === AVALANCHE) {
-    return avalancheGraphClient;
-  } else if (chainId === ARBITRUM_TESTNET) {
-    return null;
-  }
-  throw new Error(`Unsupported chain ${chainId}`);
-}
 
 export function useAllOrdersStats(chainId) {
   const query = gql(`{
@@ -88,50 +58,6 @@ export function useAllOrdersStats(chainId) {
   }, [setRes, query, chainId]);
 
   return res ? res.data.orderStat : null;
-}
-
-export function useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo, vaultPropsLength) {
-  const tokens = getTokens(chainId);
-  const vaultReaderAddress = getContract(chainId, "VaultReader");
-  const vaultAddress = getContract(chainId, "Vault");
-  const positionRouterAddress = getContract(chainId, "PositionRouter");
-  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
-
-  const whitelistedTokens = getWhitelistedTokens(chainId);
-  const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
-
-  const { data: vaultTokenInfo } = useSWR(
-    [`useInfoTokens:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV4"],
-    {
-      fetcher: fetcher(library, VaultReader, [
-        vaultAddress,
-        positionRouterAddress,
-        nativeTokenAddress,
-        expandDecimals(1, 18),
-        whitelistedTokenAddresses,
-      ]),
-    }
-  );
-
-  const indexPricesUrl = getServerUrl(chainId, "/prices");
-  const { data: indexPrices } = useSWR([indexPricesUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
-    refreshInterval: 500,
-    refreshWhenHidden: true,
-  });
-
-  return {
-    infoTokens: getInfoTokens(
-      tokens,
-      tokenBalances,
-      whitelistedTokens,
-      vaultTokenInfo,
-      fundingRateInfo,
-      vaultPropsLength,
-      indexPrices,
-      nativeTokenAddress
-    ),
-  };
 }
 
 export function useUserStat(chainId) {
@@ -421,7 +347,7 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
   const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
-    fetcher: fetcher(library, PositionRouter),
+    fetcher: contractFetcher(library, PositionRouter),
   });
 
   const { data: gasPrice } = useSWR(["gasPrice", chainId], {
@@ -487,7 +413,7 @@ export function useStakedGmxSupply(library, active) {
   const { data: arbData, mutate: arbMutate } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, ARBITRUM, gmxAddressArb, "balanceOf", stakedGmxTrackerAddressArb],
     {
-      fetcher: fetcher(library, Token),
+      fetcher: contractFetcher(library, Token),
     }
   );
 
@@ -497,7 +423,7 @@ export function useStakedGmxSupply(library, active) {
   const { data: avaxData, mutate: avaxMutate } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, AVALANCHE, gmxAddressAvax, "balanceOf", stakedGmxTrackerAddressAvax],
     {
-      fetcher: fetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, Token),
     }
   );
 
@@ -575,7 +501,7 @@ export function useTotalGmxStaked() {
       stakedGmxTrackerAddressArbitrum,
     ],
     {
-      fetcher: fetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, Token),
     }
   );
   const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR(
@@ -587,7 +513,7 @@ export function useTotalGmxStaked() {
       stakedGmxTrackerAddressAvax,
     ],
     {
-      fetcher: fetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, Token),
     }
   );
 
@@ -617,13 +543,13 @@ export function useTotalGmxInLiquidity() {
   const { data: gmxInLiquidityOnArbitrum, mutate: mutateGMXInLiquidityOnArbitrum } = useSWR(
     [`StakeV2:gmxInLiquidity:${ARBITRUM}`, ARBITRUM, getContract(ARBITRUM, "GMX"), "balanceOf", poolAddressArbitrum],
     {
-      fetcher: fetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, Token),
     }
   );
   const { data: gmxInLiquidityOnAvax, mutate: mutateGMXInLiquidityOnAvax } = useSWR(
     [`StakeV2:gmxInLiquidity:${AVALANCHE}`, AVALANCHE, getContract(AVALANCHE, "GMX"), "balanceOf", poolAddressAvax],
     {
-      fetcher: fetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, Token),
     }
   );
   const mutate = useCallback(() => {
@@ -647,7 +573,7 @@ function useGmxPriceFromAvalanche() {
   const poolAddress = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
 
   const { data, mutate: updateReserves } = useSWR(["TraderJoeGmxAvaxReserves", AVALANCHE, poolAddress, "getReserves"], {
-    fetcher: fetcher(undefined, UniswapV2),
+    fetcher: contractFetcher(undefined, UniswapV2),
   });
   const { _reserve0: gmxReserve, _reserve1: avaxReserve } = data || {};
 
@@ -656,7 +582,7 @@ function useGmxPriceFromAvalanche() {
   const { data: avaxPrice, mutate: updateAvaxPrice } = useSWR(
     [`StakeV2:avaxPrice`, AVALANCHE, vaultAddress, "getMinPrice", avaxAddress],
     {
-      fetcher: fetcher(undefined, Vault),
+      fetcher: contractFetcher(undefined, Vault),
     }
   );
 
@@ -679,7 +605,7 @@ function useGmxPriceFromArbitrum(library, active) {
   const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR(
     [`StakeV2:uniPoolSlot0:${active}`, ARBITRUM, poolAddress, "slot0"],
     {
-      fetcher: fetcher(library, UniPool),
+      fetcher: contractFetcher(library, UniPool),
     }
   );
 
@@ -688,7 +614,7 @@ function useGmxPriceFromArbitrum(library, active) {
   const { data: ethPrice, mutate: updateEthPrice } = useSWR(
     [`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
     {
-      fetcher: fetcher(library, Vault),
+      fetcher: contractFetcher(library, Vault),
     }
   );
 
@@ -975,166 +901,4 @@ export function executeIncreaseOrder(chainId, library, account, index, feeReceiv
 
 export function executeDecreaseOrder(chainId, library, account, index, feeReceiver, opts) {
   return _executeOrder(chainId, library, "executeDecreaseOrder", account, index, feeReceiver, opts);
-}
-
-const NOT_ENOUGH_FUNDS = "NOT_ENOUGH_FUNDS";
-const USER_DENIED = "USER_DENIED";
-const SLIPPAGE = "SLIPPAGE";
-const RPC_ERROR = "RPC_ERROR";
-
-const TX_ERROR_PATTERNS = {
-  [NOT_ENOUGH_FUNDS]: [
-    { msg: "not enough funds for gas" },
-    { msg: "failed to execute call with revert code InsufficientGasFunds" },
-  ],
-  [USER_DENIED]: [{ msg: "User denied transaction signature" }],
-  [SLIPPAGE]: [{ msg: "Router: mark price lower than limit" }, { msg: "Router: mark price higher than limit" }],
-  [RPC_ERROR]: [
-    // @see https://eips.ethereum.org/EIPS/eip-1474#error-codes
-    { code: -32005 },
-    { msg: "Non-200 status code" },
-    { msg: "Request limit exceeded" },
-    { msg: "Internal JSON-RPC error" },
-    { msg: "Response has no error or result" },
-    { msg: "couldn't connect to the network" },
-  ],
-};
-
-export function extractError(ex) {
-  if (!ex) {
-    return [];
-  }
-
-  const message = ex.data?.message || ex.message;
-  const code = ex.code;
-
-  if (!message && !code) {
-    return [];
-  }
-
-  for (const [type, patterns] of Object.entries(TX_ERROR_PATTERNS)) {
-    for (const pattern of patterns) {
-      const matchCode = pattern.code && code === pattern.code;
-      const matchMessage = pattern.msg && message && message.includes(pattern.msg);
-
-      if (matchCode || matchMessage) {
-        return [message, type, ex.data];
-      }
-    }
-  }
-
-  return [message, null, ex.data];
-}
-
-function ToastifyDebug(props) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="Toastify-debug">
-      <span className="Toastify-debug-button" onClick={() => setOpen((old) => !old)}>
-        {open ? "Hide error" : "Show error"}
-      </span>
-      {open && <div className="Toastify-debug-content">{props.children}</div>}
-    </div>
-  );
-}
-
-export async function callContract(chainId, contract, method, params, opts) {
-  try {
-    if (!Array.isArray(params) && typeof params === "object" && opts === undefined) {
-      opts = params;
-      params = [];
-    }
-    if (!opts) {
-      opts = {};
-    }
-
-    const txnOpts = {};
-
-    if (opts.value) {
-      txnOpts.value = opts.value;
-    }
-
-    txnOpts.gasLimit = opts.gasLimit ? opts.gasLimit : await getGasLimit(contract, method, params, opts.value);
-
-    await setGasPrice(txnOpts, contract.provider, chainId);
-
-    const res = await contract[method](...params, txnOpts);
-    const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
-    const sentMsg = opts.sentMsg || "Transaction sent.";
-    helperToast.success(
-      <div>
-        {sentMsg}{" "}
-        <a href={txUrl} target="_blank" rel="noopener noreferrer">
-          View status.
-        </a>
-        <br />
-      </div>
-    );
-    if (opts.setPendingTxns) {
-      const message = opts.hideSuccessMsg ? undefined : opts.successMsg || "Transaction completed!";
-      const pendingTxn = {
-        hash: res.hash,
-        message,
-      };
-      opts.setPendingTxns((pendingTxns) => [...pendingTxns, pendingTxn]);
-    }
-    return res;
-  } catch (e) {
-    let failMsg;
-    let autoCloseToast = 5000;
-
-    const [message, type, errorData] = extractError(e);
-    switch (type) {
-      case NOT_ENOUGH_FUNDS:
-        failMsg = (
-          <div>
-            There is not enough ETH in your account on Arbitrum to send this transaction.
-            <br />
-            <br />
-            <a href={"https://arbitrum.io/bridge-tutorial/"} target="_blank" rel="noopener noreferrer">
-              Bridge ETH to Arbitrum
-            </a>
-          </div>
-        );
-        break;
-      case USER_DENIED:
-        failMsg = "Transaction was cancelled.";
-        break;
-      case SLIPPAGE:
-        failMsg =
-          'The mark price has changed, consider increasing your Allowed Slippage by clicking on the "..." icon next to your address.';
-        break;
-      case RPC_ERROR:
-        autoCloseToast = false;
-
-        const originalError = errorData?.error?.message || errorData?.message || message;
-
-        failMsg = (
-          <div>
-            Transaction failed due to RPC error.
-            <br />
-            <br />
-            Please try changing the RPC url in your wallet settings.{" "}
-            <a href="https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls" target="_blank" rel="noopener noreferrer">
-              More info
-            </a>
-            <br />
-            {originalError && <ToastifyDebug>{originalError}</ToastifyDebug>}
-          </div>
-        );
-        break;
-      default:
-        autoCloseToast = false;
-
-        failMsg = (
-          <div>
-            {opts.failMsg || "Transaction failed"}
-            <br />
-            {message && <ToastifyDebug>{message}</ToastifyDebug>}
-          </div>
-        );
-    }
-    helperToast.error(failMsg, { autoClose: autoCloseToast });
-    throw e;
-  }
 }

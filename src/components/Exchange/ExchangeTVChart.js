@@ -3,24 +3,17 @@ import cx from "classnames";
 
 import { createChart } from "krasulya-lightweight-charts";
 
-import {
-  USD_DECIMALS,
-  SWAP,
-  INCREASE,
-  CHART_PERIODS,
-  getTokenInfo,
-  formatAmount,
-  formatDateTime,
-  usePrevious,
-  getLiquidationPrice,
-  useLocalStorageSerializeKey,
-  numberWithCommas,
-} from "../../lib/legacy";
-import { useChartPrices } from "../../domain/legacy";
+import { USD_DECIMALS, SWAP, INCREASE, CHART_PERIODS, getLiquidationPrice } from "lib/legacy";
+import { useChartPrices } from "domain/legacy";
 import Tab from "../Tab/Tab";
 
-import { getTokens, getToken } from "../../config/Tokens";
 import ChartTokenSelector from "./ChartTokenSelector";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { getTokenInfo } from "domain/tokens/utils";
+import { usePrevious } from "lib/usePrevious";
+import { formatAmount, numberWithCommas } from "lib/numbers";
+import { getToken, getTokens } from "config/tokens";
+import { formatDateTime } from "lib/dates";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 

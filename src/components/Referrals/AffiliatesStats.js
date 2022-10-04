@@ -6,17 +6,7 @@ import { IoWarningOutline } from "react-icons/io5";
 import { BiCopy, BiErrorCircle } from "react-icons/bi";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
-import { getNativeToken, getToken } from "../../config/Tokens";
-import {
-  AVALANCHE,
-  bigNumberify,
-  formatAmount,
-  formatDate,
-  getExplorerUrl,
-  helperToast,
-  REFERRAL_CODE_QUERY_PARAM,
-  shortenAddress,
-} from "../../lib/legacy";
+import { REFERRAL_CODE_QUERY_PARAM, shortenAddress } from "lib/legacy";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import {
@@ -28,6 +18,11 @@ import {
 } from "./referralsHelper";
 import { AffiliateCodeForm } from "./AddAffiliateCode";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
+import { AVALANCHE, getExplorerUrl } from "config/chains";
+import { helperToast } from "lib/helperToast";
+import { bigNumberify, formatAmount } from "lib/numbers";
+import { getNativeToken, getToken } from "config/tokens";
+import { formatDate } from "lib/dates";
 
 function AffiliatesStats({
   referralsData,
@@ -148,7 +143,7 @@ function AffiliatesStats({
                               copyToClipboard(`https://gmx.io/#/?${REFERRAL_CODE_QUERY_PARAM}=${stat.referralCode}`);
                               helperToast.success("Referral link copied to your clipboard");
                             }}
-                            className="copy-icon"
+                            className="referral-code-icon"
                           >
                             <BiCopy />
                           </div>
@@ -156,7 +151,7 @@ function AffiliatesStats({
                             href={getTwitterShareUrl(stat.referralCode)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="copy-icon"
+                            className="referral-code-icon"
                           >
                             <FiTwitter />
                           </a>

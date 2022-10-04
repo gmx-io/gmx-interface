@@ -4,67 +4,54 @@ import { useWeb3React } from "@web3-react/core";
 import { Trans, t } from "@lingui/macro";
 import useSWR from "swr";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
-import TooltipComponent from "../../components/Tooltip/Tooltip";
+import TooltipComponent from "components/Tooltip/Tooltip";
 
 import hexToRgba from "hex-to-rgba";
 import { ethers } from "ethers";
 
-import { getWhitelistedTokens, getTokenBySymbol } from "../../config/Tokens";
-import { getFeeHistory } from "../../config/Fees";
+import { getFeeHistory } from "config/Fees";
 
 import {
-  fetcher,
-  formatAmount,
-  formatKeyAmount,
-  expandDecimals,
-  bigNumberify,
-  numberWithCommas,
-  formatDate,
-  getServerUrl,
-  getChainName,
-  useChainId,
   USD_DECIMALS,
   GMX_DECIMALS,
   GLP_DECIMALS,
   BASIS_POINTS_DIVISOR,
-  ARBITRUM,
-  AVALANCHE,
-  GLPPOOLCOLORS,
   DEFAULT_MAX_USDG_AMOUNT,
   getPageTitle,
   importImage,
   arrayURLFetcher,
-} from "../../lib/legacy";
-import {
-  useTotalGmxInLiquidity,
-  useGmxPrice,
-  useTotalGmxStaked,
-  useTotalGmxSupply,
-  useInfoTokens,
-} from "../../domain/legacy";
+} from "lib/legacy";
+import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 
-import { getContract } from "../../config/Addresses";
+import { getContract } from "config/contracts";
 
-import VaultV2 from "../../abis/VaultV2.json";
-import ReaderV2 from "../../abis/ReaderV2.json";
-import GlpManager from "../../abis/GlpManager.json";
-import Footer from "../../components/Footer/Footer";
+import VaultV2 from "abis/VaultV2.json";
+import ReaderV2 from "abis/ReaderV2.json";
+import GlpManager from "abis/GlpManager.json";
+import Footer from "components/Footer/Footer";
 
 import "./DashboardV2.css";
 
-import gmx40Icon from "../../img/ic_gmx_40.svg";
-import glp40Icon from "../../img/ic_glp_40.svg";
-import avalanche16Icon from "../../img/ic_avalanche_16.svg";
-import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
-import arbitrum24Icon from "../../img/ic_arbitrum_24.svg";
-import avalanche24Icon from "../../img/ic_avalanche_24.svg";
+import gmx40Icon from "img/ic_gmx_40.svg";
+import glp40Icon from "img/ic_glp_40.svg";
+import avalanche16Icon from "img/ic_avalanche_16.svg";
+import arbitrum16Icon from "img/ic_arbitrum_16.svg";
+import arbitrum24Icon from "img/ic_arbitrum_24.svg";
+import avalanche24Icon from "img/ic_avalanche_24.svg";
 
 import AssetDropdown from "./AssetDropdown";
-import SEO from "../../components/Common/SEO";
-
-import useTotalVolume from "../../domain/useTotalVolume";
-import TooltipCard, { TooltipCardRow } from "../../components/Tooltip/TooltipCard";
-
+import SEO from "components/Common/SEO";
+import useTotalVolume from "domain/useTotalVolume";
+import StatsTooltip from "components/StatsTooltip/StatsTooltip";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
+import { getServerUrl } from "config/backend";
+import { contractFetcher } from "lib/contracts";
+import { useInfoTokens } from "domain/tokens";
+import { getTokenBySymbol, getWhitelistedTokens, GLPPOOLCOLORS } from "config/tokens";
+import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";
+import { useChainId } from "lib/chains";
+import { formatDate } from "lib/dates";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;
@@ -190,24 +177,24 @@ export default function DashboardV2() {
   const tokensForSupplyQuery = [gmxAddress, glpAddress, usdgAddress];
 
   const { data: aums } = useSWR([`Dashboard:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: fetcher(library, GlpManager),
+    fetcher: contractFetcher(library, GlpManager),
   });
 
   const { data: fees } = useSWR([`Dashboard:fees:${active}`, chainId, readerAddress, "getFees", vaultAddress], {
-    fetcher: fetcher(library, ReaderV2, [whitelistedTokenAddresses]),
+    fetcher: contractFetcher(library, ReaderV2, [whitelistedTokenAddresses]),
   });
 
   const { data: totalSupplies } = useSWR(
     [`Dashboard:totalSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", AddressZero],
     {
-      fetcher: fetcher(library, ReaderV2, [tokensForSupplyQuery]),
+      fetcher: contractFetcher(library, ReaderV2, [tokensForSupplyQuery]),
     }
   );
 
   const { data: totalTokenWeights } = useSWR(
     [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
-      fetcher: fetcher(library, VaultV2),
+      fetcher: contractFetcher(library, VaultV2),
     }
   );
 
@@ -223,7 +210,7 @@ export default function DashboardV2() {
       fetcher: () => {
         return Promise.all(
           ACTIVE_CHAIN_IDS.map((chainId) =>
-            fetcher(null, ReaderV2, [getWhitelistedTokenAddresses(chainId)])(
+            contractFetcher(null, ReaderV2, [getWhitelistedTokenAddresses(chainId)])(
               `Dashboard:fees:${chainId}`,
               chainId,
               getContract(chainId, "Reader"),
@@ -365,49 +352,53 @@ export default function DashboardV2() {
         renderContent={() => {
           return (
             <>
-              <TooltipCardRow
-                label="Current Weight"
-                amount={`${formatAmount(currentWeightBps, 2, 2, false)}%`}
+              <StatsTooltipRow
+                label={t`Current Weight`}
+                value={`${formatAmount(currentWeightBps, 2, 2, false)}%`}
                 showDollar={false}
               />
-              <TooltipCardRow
-                label="Target Weight"
-                amount={`${formatAmount(targetWeightBps, 2, 2, false)}%`}
+              <StatsTooltipRow
+                label={t`Target Weight`}
+                value={`${formatAmount(targetWeightBps, 2, 2, false)}%`}
                 showDollar={false}
               />
               <br />
               {currentWeightBps.lt(targetWeightBps) && (
-                <div>
-                  {tokenInfo.symbol} is below its target weight.
-                  <br />
-                  <br />
-                  Get lower fees to{" "}
-                  <Link to="/buy_glp" target="_blank" rel="noopener noreferrer">
-                    buy GLP
-                  </Link>{" "}
-                  with {tokenInfo.symbol},&nbsp; and to{" "}
-                  <Link to="/trade" target="_blank" rel="noopener noreferrer">
-                    swap
-                  </Link>{" "}
-                  {tokenInfo.symbol} for other tokens.
+                <div className="text-white">
+                  <Trans>
+                    {tokenInfo.symbol} is below its target weight.
+                    <br />
+                    <br />
+                    Get lower fees to{" "}
+                    <Link to="/buy_glp" target="_blank" rel="noopener noreferrer">
+                      buy GLP
+                    </Link>{" "}
+                    with {tokenInfo.symbol},&nbsp; and to{" "}
+                    <Link to="/trade" target="_blank" rel="noopener noreferrer">
+                      swap
+                    </Link>{" "}
+                    {tokenInfo.symbol} for other tokens.
+                  </Trans>
                 </div>
               )}
               {currentWeightBps.gt(targetWeightBps) && (
-                <div>
-                  {tokenInfo.symbol} is above its target weight.
-                  <br />
-                  <br />
-                  Get lower fees to{" "}
-                  <Link to="/trade" target="_blank" rel="noopener noreferrer">
-                    swap
-                  </Link>{" "}
-                  tokens for {tokenInfo.symbol}.
+                <div className="text-white">
+                  <Trans>
+                    {tokenInfo.symbol} is above its target weight.
+                    <br />
+                    <br />
+                    Get lower fees to{" "}
+                    <Link to="/trade" target="_blank" rel="noopener noreferrer">
+                      swap
+                    </Link>{" "}
+                    tokens for {tokenInfo.symbol}.
+                  </Trans>
                 </div>
               )}
               <br />
               <div>
                 <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
-                  More Info
+                  <Trans>More Info</Trans>
                 </a>
               </div>
             </>
@@ -532,8 +523,8 @@ export default function DashboardV2() {
             </div>
             <div className="Page-description">
               <Trans>
-                {chainName} Total Stats start from {totalStatsStartDate}.<br /> For detailed stats:{" "}
-              </Trans>
+                {chainName} Total Stats start from {totalStatsStartDate}.<br /> For detailed stats:
+              </Trans>{" "}
               {chainId === ARBITRUM && (
                 <a href="https://stats.gmx.io" target="_blank" rel="noopener noreferrer">
                   https://stats.gmx.io
@@ -563,7 +554,7 @@ export default function DashboardV2() {
                       handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
                       renderContent={() => (
-                        <span className="label">{t`Assets Under Management: GMX staked (All chains) + GLP pool (${chainName})`}</span>
+                        <span>{t`Assets Under Management: GMX staked (All chains) + GLP pool (${chainName})`}</span>
                       )}
                     />
                   </div>
@@ -574,9 +565,7 @@ export default function DashboardV2() {
                     <TooltipComponent
                       handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
-                      renderContent={() => (
-                        <span className="label">{t`Total value of tokens in GLP pool (${chainName})`}</span>
-                      )}
+                      renderContent={() => <span>{t`Total value of tokens in GLP pool (${chainName})`}</span>}
                     />
                   </div>
                 </div>
@@ -590,10 +579,10 @@ export default function DashboardV2() {
                       className="nowrap"
                       handle={`$${formatAmount(currentVolumeInfo?.[chainId]?.totalVolume, USD_DECIMALS, 0, true)}`}
                       renderContent={() => (
-                        <TooltipCard
+                        <StatsTooltip
                           title={t`Volume`}
-                          arbitrum={currentVolumeInfo?.[ARBITRUM].totalVolume}
-                          avax={currentVolumeInfo?.[AVALANCHE].totalVolume}
+                          arbitrumValue={currentVolumeInfo?.[ARBITRUM].totalVolume}
+                          avaxValue={currentVolumeInfo?.[AVALANCHE].totalVolume}
                           total={currentVolumeInfo?.totalVolume}
                         />
                       )}
@@ -615,10 +604,10 @@ export default function DashboardV2() {
                         true
                       )}`}
                       renderContent={() => (
-                        <TooltipCard
+                        <StatsTooltip
                           title={t`Long Positions`}
-                          arbitrum={positionStatsInfo?.[ARBITRUM].totalLongPositionSizes}
-                          avax={positionStatsInfo?.[AVALANCHE].totalLongPositionSizes}
+                          arbitrumValue={positionStatsInfo?.[ARBITRUM].totalLongPositionSizes}
+                          avaxValue={positionStatsInfo?.[AVALANCHE].totalLongPositionSizes}
                           total={positionStatsInfo?.totalLongPositionSizes}
                         />
                       )}
@@ -640,10 +629,10 @@ export default function DashboardV2() {
                         true
                       )}`}
                       renderContent={() => (
-                        <TooltipCard
+                        <StatsTooltip
                           title={t`Short Positions`}
-                          arbitrum={positionStatsInfo?.[ARBITRUM].totalShortPositionSizes}
-                          avax={positionStatsInfo?.[AVALANCHE].totalShortPositionSizes}
+                          arbitrumValue={positionStatsInfo?.[ARBITRUM].totalShortPositionSizes}
+                          avaxValue={positionStatsInfo?.[AVALANCHE].totalShortPositionSizes}
                           total={positionStatsInfo?.totalShortPositionSizes}
                         />
                       )}
@@ -661,10 +650,10 @@ export default function DashboardV2() {
                         className="nowrap"
                         handle={`$${formatAmount(currentFees?.[chainId], USD_DECIMALS, 2, true)}`}
                         renderContent={() => (
-                          <TooltipCard
+                          <StatsTooltip
                             title={t`Fees`}
-                            arbitrum={currentFees?.[ARBITRUM]}
-                            avax={currentFees?.[AVALANCHE]}
+                            arbitrumValue={currentFees?.[ARBITRUM]}
+                            avaxValue={currentFees?.[AVALANCHE]}
                             total={currentFees?.total}
                           />
                         )}
@@ -690,10 +679,10 @@ export default function DashboardV2() {
                       className="nowrap"
                       handle={`$${numberWithCommas(totalFees?.[chainId])}`}
                       renderContent={() => (
-                        <TooltipCard
+                        <StatsTooltip
                           title={t`Total Fees`}
-                          arbitrum={totalFees?.[ARBITRUM]}
-                          avax={totalFees?.[AVALANCHE]}
+                          arbitrumValue={totalFees?.[ARBITRUM]}
+                          avaxValue={totalFees?.[AVALANCHE]}
                           total={totalFees?.total}
                           decimalsForConversion={0}
                         />
@@ -711,10 +700,10 @@ export default function DashboardV2() {
                       className="nowrap"
                       handle={`$${formatAmount(totalVolume?.[chainId], USD_DECIMALS, 0, true)}`}
                       renderContent={() => (
-                        <TooltipCard
+                        <StatsTooltip
                           title={t`Total Volume`}
-                          arbitrum={totalVolume?.[ARBITRUM]}
-                          avax={totalVolume?.[AVALANCHE]}
+                          arbitrumValue={totalVolume?.[ARBITRUM]}
+                          avaxValue={totalVolume?.[AVALANCHE]}
                           total={totalVolume?.total}
                         />
                       )}
@@ -770,14 +759,14 @@ export default function DashboardV2() {
                             handle={"$" + formatAmount(gmxPrice, USD_DECIMALS, 2, true)}
                             renderContent={() => (
                               <>
-                                <TooltipCardRow
+                                <StatsTooltipRow
                                   label="Price on Arbitrum"
-                                  amount={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
+                                  value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
                                   showDollar={true}
                                 />
-                                <TooltipCardRow
+                                <StatsTooltipRow
                                   label="Price on Avalanche"
-                                  amount={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
+                                  value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
                                   showDollar={true}
                                 />
                               </>
@@ -802,10 +791,10 @@ export default function DashboardV2() {
                           className="nowrap"
                           handle={`$${formatAmount(stakedGmxSupplyUsd, USD_DECIMALS, 0, true)}`}
                           renderContent={() => (
-                            <TooltipCard
+                            <StatsTooltip
                               title={t`Staked`}
-                              arbitrum={arbitrumStakedGmx}
-                              avax={avaxStakedGmx}
+                              arbitrumValue={arbitrumStakedGmx}
+                              avaxValue={avaxStakedGmx}
                               total={totalStakedGmx}
                               decimalsForConversion={GMX_DECIMALS}
                               showDollar={false}
@@ -1028,23 +1017,23 @@ export default function DashboardV2() {
                             renderContent={() => {
                               return (
                                 <>
-                                  <TooltipCardRow
+                                  <StatsTooltipRow
                                     label="Pool Amount"
-                                    amount={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)} ${
+                                    value={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${
                                       token.symbol
                                     }`}
                                     showDollar={false}
                                   />
-                                  <TooltipCardRow
+                                  <StatsTooltipRow
                                     label="Target Min Amount"
-                                    amount={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 2, true)} ${
+                                    value={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 0, true)} ${
                                       token.symbol
                                     }`}
                                     showDollar={false}
                                   />
-                                  <TooltipCardRow
+                                  <StatsTooltipRow
                                     label={`Max ${tokenInfo.symbol} Capacity`}
-                                    amount={formatAmount(maxUsdgAmount, 18, 0, true)}
+                                    value={formatAmount(maxUsdgAmount, 18, 0, true)}
                                     showDollar={true}
                                   />
                                 </>
@@ -1099,15 +1088,24 @@ export default function DashboardV2() {
                             renderContent={() => {
                               return (
                                 <>
-                                  Pool Amount: {formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 2, true)}{" "}
-                                  {token.symbol}
-                                  <br />
-                                  <br />
-                                  Target Min Amount:{" "}
-                                  {formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 2, true)} {token.symbol}
-                                  <br />
-                                  <br />
-                                  Max {tokenInfo.symbol} Capacity: ${formatAmount(maxUsdgAmount, 18, 0, true)}
+                                  <StatsTooltipRow
+                                    label="Pool Amount"
+                                    value={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${
+                                      token.symbol
+                                    }`}
+                                    showDollar={false}
+                                  />
+                                  <StatsTooltipRow
+                                    label="Target Min Amount"
+                                    value={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 0, true)} ${
+                                      token.symbol
+                                    }`}
+                                    showDollar={false}
+                                  />
+                                  <StatsTooltipRow
+                                    label={`Max ${tokenInfo.symbol} Capacity`}
+                                    value={formatAmount(maxUsdgAmount, 18, 0, true)}
+                                  />
                                 </>
                               );
                             }}

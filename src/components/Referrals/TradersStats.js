@@ -4,12 +4,15 @@ import { BiEditAlt } from "react-icons/bi";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
 import Tooltip from "../Tooltip/Tooltip";
-import { getNativeToken, getToken } from "../../config/Tokens";
-import { formatAmount, formatDate, getExplorerUrl, shortenAddress } from "../../lib/legacy";
+import { shortenAddress } from "lib/legacy";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import { getTierIdDisplay, getUSDValue, tierDiscountInfo } from "./referralsHelper";
 import { ReferralCodeForm } from "./JoinReferralCode";
+import { getExplorerUrl } from "config/chains";
+import { formatAmount } from "lib/numbers";
+import { getNativeToken, getToken } from "config/tokens";
+import { formatDate } from "lib/dates";
 
 function TradersStats({ referralsData, traderTier, chainId, userReferralCodeString, setPendingTxns, pendingTxns }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -43,9 +46,14 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                   <Tooltip
                     handle={t`Tier ${getTierIdDisplay(traderTier)} (${tierDiscountInfo[traderTier]}% discount)`}
                     position="right-bottom"
-                    renderContent={() =>
-                      t`You will receive a ${tierDiscountInfo[traderTier]}% discount on your opening and closing fees, this discount will be airdropped to your account every Wednesday`
-                    }
+                    renderContent={() => (
+                      <p className="text-white">
+                        <Trans>
+                          You will receive a {tierDiscountInfo[traderTier]}% discount on your opening and closing fees,
+                          this discount will be airdropped to your account every Wednesday
+                        </Trans>
+                      </p>
+                    )}
                   />
                 </div>
               )}

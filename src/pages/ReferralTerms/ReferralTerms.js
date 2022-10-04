@@ -1,7 +1,7 @@
 import React from "react";
-import Footer from "../../components/Footer/Footer";
-import SEO from "../../components/Common/SEO";
-import { getPageTitle } from "../../lib/legacy";
+import Footer from "components/Footer/Footer";
+import SEO from "components/Common/SEO";
+import { getPageTitle } from "lib/legacy";
 import "./ReferralTerms.css";
 
 export default function ReferralTerms() {

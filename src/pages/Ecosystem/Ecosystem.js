@@ -1,14 +1,15 @@
 import React from "react";
 import { Trans } from "@lingui/macro";
-import SEO from "../../components/Common/SEO";
+import SEO from "components/Common/SEO";
 
-import Footer from "../../components/Footer/Footer";
-import { getPageTitle, ARBITRUM, AVALANCHE } from "../../lib/legacy";
+import Footer from "components/Footer/Footer";
+import { getPageTitle } from "lib/legacy";
 
-import arbitrumIcon from "../../img/ic_arbitrum_16.svg";
-import avalancheIcon from "../../img/ic_avalanche_16.svg";
+import arbitrumIcon from "img/ic_arbitrum_16.svg";
+import avalancheIcon from "img/ic_avalanche_16.svg";
 
 import "./Ecosystem.css";
+import { ARBITRUM, AVALANCHE } from "config/chains";
 
 const NETWORK_ICONS = {
   [ARBITRUM]: arbitrumIcon,
@@ -130,8 +131,8 @@ export default function Ecosystem() {
       link: "https://t.me/GMXTradingStats",
       linkLabel: "t.me",
       about: "Telegram bot for Open Interest on GMX",
-      creatorLabel: "@SniperMonke2",
-      creatorLink: "https://twitter.com/SniperMonke2",
+      creatorLabel: "@SniperMonke01",
+      creatorLink: "https://twitter.com/SniperMonke01",
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
@@ -227,6 +228,15 @@ export default function Ecosystem() {
       creatorLink: "https://twitter.com/laevitas1",
       chainIds: [ARBITRUM],
     },
+    {
+      title: "GMX Blueberry Leaderboard",
+      link: "https://www.blueberryboard.com",
+      linkLabel: "blueberryboard.com",
+      about: "GBC NFTs APR tracker and rewards",
+      creatorLabel: "@kyzoeth",
+      creatorLink: "https://twitter.com/kyzoeth",
+      chainIds: [ARBITRUM],
+    },
   ];
 
   const integrations = [
@@ -276,7 +286,7 @@ export default function Ecosystem() {
       chainIds: [ARBITRUM],
     },
     {
-      title: "Yield Yak",
+      title: "Yield Yak Optimizer",
       link: "https://yieldyak.com/",
       linkLabel: "yieldyak.com",
       about: "Yield Optimizer on Avalanche",
@@ -345,6 +355,15 @@ export default function Ecosystem() {
       about: "DEX Aggregator",
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/financefirebird/status/1561767094064238595",
+      chainIds: [AVALANCHE],
+    },
+    {
+      title: "Yield Yak Swap",
+      link: "https://yieldyak.com/swap",
+      linkLabel: "yieldyak.com",
+      about: "DEX Aggregator",
+      announcementLabel: "twitter.com",
+      announcementLink: "https://twitter.com/yieldyak_/status/1484458884827947008",
       chainIds: [AVALANCHE],
     },
   ];
