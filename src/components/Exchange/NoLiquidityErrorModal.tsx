@@ -1,8 +1,8 @@
-import { getNativeToken } from "../../config/Tokens";
 import { ethers } from "ethers";
 import Modal from "../Modal/Modal";
-import { TokenInfo, Token } from "../../domain/tokens/types";
-import { get1InchSwapUrl } from "../../domain/common";
+import { get1InchSwapUrl } from "domain/common";
+import { Token, TokenInfo } from "domain/tokens";
+import { getNativeToken } from "config/tokens";
 
 const { AddressZero } = ethers.constants;
 

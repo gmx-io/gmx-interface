@@ -3,23 +3,17 @@ import { gql } from "@apollo/client";
 import { useState, useEffect, useMemo } from "react";
 import useSWR from "swr";
 
-import ReferralStorage from "../abis/ReferralStorage.json";
-import {
-  ARBITRUM,
-  AVALANCHE,
-  MAX_REFERRAL_CODE_LENGTH,
-  bigNumberify,
-  isAddressZero,
-  helperToast,
-  getProvider,
-  isHashZero,
-  REFERRAL_CODE_KEY,
-} from "../lib/legacy";
-import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "./common";
-import { getContract } from "../config/Addresses";
-import { REGEX_VERIFY_BYTES32 } from "../components/Referrals/referralsHelper";
-import { fetcher } from "../lib/contracts/fetcher";
-import { callContract } from "../lib/contracts/callContract";
+import ReferralStorage from "abis/ReferralStorage.json";
+import { MAX_REFERRAL_CODE_LENGTH, isAddressZero, isHashZero } from "lib/legacy";
+import { getContract } from "config/contracts";
+import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
+import { ARBITRUM, AVALANCHE } from "config/chains";
+import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "lib/subgraph/clients";
+import { callContract, contractFetcher } from "lib/contracts";
+import { helperToast } from "lib/helperToast";
+import { REFERRAL_CODE_KEY } from "config/localStorage";
+import { getProvider } from "lib/rpc";
+import { bigNumberify } from "lib/numbers";
 
 const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
 const DISTRIBUTION_TYPE_REBATES = "1";
@@ -326,7 +320,7 @@ export function useUserReferralCode(library, chainId, account) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const { data: onChainCode } = useSWR(
     account && ["ReferralStorage", chainId, referralStorageAddress, "traderReferralCodes", account],
-    { fetcher: fetcher(library, ReferralStorage) }
+    { fetcher: contractFetcher(library, ReferralStorage) }
   );
   const { data: localStorageCodeOwner } = useSWR(
     localStorageCode &&
@@ -337,7 +331,7 @@ export function useUserReferralCode(library, chainId, account) {
         "codeOwners",
         localStorageCode,
       ],
-    { fetcher: fetcher(library, ReferralStorage) }
+    { fetcher: contractFetcher(library, ReferralStorage) }
   );
   const [attachedOnChain, userReferralCode, userReferralCodeString] = useMemo(() => {
     if (onChainCode && !isHashZero(onChainCode)) {
@@ -360,7 +354,7 @@ export function useReferrerTier(library, chainId, account) {
   const { data: referrerTier, mutate: mutateReferrerTier } = useSWR(
     account && [`ReferralStorage:referrerTiers`, chainId, referralStorageAddress, "referrerTiers", account],
     {
-      fetcher: fetcher(library, ReferralStorage),
+      fetcher: contractFetcher(library, ReferralStorage),
     }
   );
   return {
@@ -374,7 +368,7 @@ export function useCodeOwner(library, chainId, account, code) {
   const { data: codeOwner, mutate: mutateCodeOwner } = useSWR(
     account && code && [`ReferralStorage:codeOwners`, chainId, referralStorageAddress, "codeOwners", code],
     {
-      fetcher: fetcher(library, ReferralStorage),
+      fetcher: contractFetcher(library, ReferralStorage),
     }
   );
   return {

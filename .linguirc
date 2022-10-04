@@ -11,7 +11,7 @@
   "sourceLocale": "en",
   "catalogs": [
     {
-      "path": "src/config/locales/{locale}/messages",
+      "path": "src/locales/{locale}/messages",
       "include": [
         "src"
       ]

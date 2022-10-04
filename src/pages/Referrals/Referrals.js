@@ -4,30 +4,27 @@ import { useLocalStorage } from "react-use";
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import { useParams } from "react-router-dom";
-import SEO from "../../components/Common/SEO";
-import Tab from "../../components/Tab/Tab";
-import Loader from "../../components/Common/Loader";
-import Footer from "../../components/Footer/Footer";
-import {
-  useChainId,
-  getPageTitle,
-  REFERRALS_SELECTED_TAB_KEY,
-  useLocalStorageSerializeKey,
-  isHashZero,
-} from "../../lib/legacy";
+import SEO from "components/Common/SEO";
+import Tab from "components/Tab/Tab";
+import Loader from "components/Common/Loader";
+import Footer from "components/Footer/Footer";
+import { getPageTitle, isHashZero } from "lib/legacy";
 import {
   useReferralsData,
   registerReferralCode,
   useCodeOwner,
   useReferrerTier,
   useUserReferralCode,
-} from "../../domain/referrals";
-import JoinReferralCode from "../../components/Referrals/JoinReferralCode";
-import AffiliatesStats from "../../components/Referrals/AffiliatesStats";
-import TradersStats from "../../components/Referrals/TradersStats";
-import AddAffiliateCode from "../../components/Referrals/AddAffiliateCode";
-import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "../../components/Referrals/referralsHelper";
+} from "domain/referrals";
+import JoinReferralCode from "components/Referrals/JoinReferralCode";
+import AffiliatesStats from "components/Referrals/AffiliatesStats";
+import TradersStats from "components/Referrals/TradersStats";
+import AddAffiliateCode from "components/Referrals/AddAffiliateCode";
+import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
 import { ethers } from "ethers";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
+import { useChainId } from "lib/chains";
 
 const TRADERS = t`Traders`;
 const AFFILIATES = t`Affiliates`;

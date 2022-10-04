@@ -1,11 +1,10 @@
 import { BigNumber } from "@ethersproject/bignumber";
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { getNativeToken } from "../../config/Tokens";
-import { InfoTokens, Token } from "../../domain/tokens/types";
 import Modal from "../Modal/Modal";
-import { get1InchSwapUrl } from "../../domain/common";
-import { getLowestFeeTokenForBuyGlp } from "../../domain/tokens/utils";
+import { get1InchSwapUrl } from "domain/common";
+import { getLowestFeeTokenForBuyGlp, InfoTokens, Token } from "domain/tokens";
+import { getNativeToken } from "config/tokens";
 
 const { AddressZero } = ethers.constants;
 
@@ -56,10 +55,8 @@ export default function SwapErrorModal({
   if (lowestFeeToken && swapUsdMin && swapUsdMin.gt(lowestFeeToken.amountLeftToDeposit)) {
     return (
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={label} className="Error-modal">
-        <p>
-          There is not enough liquidity in a single token for your size. Please check the Save on Fees section and
-          consider splitting your order into several different ones
-        </p>
+        <p>There is not enough liquidity in a single token for your size.</p>
+        <p>Please check the Save on Fees section and consider splitting your order into several different ones.</p>
         <p>
           <a href={get1InchSwapUrl(chainId)} target="_blank" rel="noreferrer">
             Swap on 1inch

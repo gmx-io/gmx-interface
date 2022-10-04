@@ -1,88 +1,28 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { InjectedConnector } from "@web3-react/injected-connector";
-import {
-  UserRejectedRequestError as UserRejectedRequestErrorWalletConnect,
-  WalletConnectConnector,
-} from "@web3-react/walletconnect-connector";
-import { toast } from "react-toastify";
-import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
-import { useLocalStorage } from "react-use";
+import { useEffect, useState } from "react";
+import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
-import { format as formatDateFn } from "date-fns";
-import Token from "../abis/Token.json";
-import _ from "lodash";
-import { getContract } from "../config/Addresses";
+import { getContract } from "config/contracts";
 import useSWR from "swr";
 
-import OrderBookReader from "../abis/OrderBookReader.json";
-import OrderBook from "../abis/OrderBook.json";
+import OrderBookReader from "abis/OrderBookReader.json";
+import OrderBook from "abis/OrderBook.json";
 
-import { getWhitelistedTokens, isValidToken } from "../config/Tokens";
+import { CHAIN_ID, getExplorerUrl } from "config/chains";
+import { getServerBaseUrl } from "config/backend";
+import { getMostAbundantStableToken } from "domain/tokens";
+import { getTokenInfo } from "domain/tokens/utils";
+import { getProvider } from "./rpc";
+import { bigNumberify, expandDecimals, formatAmount } from "./numbers";
+import { isValidToken } from "config/tokens";
+import { useChainId } from "./chains";
+import { isValidTimestamp } from "./dates";
 
 const { AddressZero } = ethers.constants;
-
-export const UI_VERSION = "1.3";
 
 // use a random placeholder account instead of the zero address as the zero address might have tokens
 export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
 
-export const MAINNET = 56;
-export const AVALANCHE = 43114;
-export const TESTNET = 97;
-export const ARBITRUM_TESTNET = 421611;
-export const ARBITRUM = 42161;
-// TODO take it from web3
-export const DEFAULT_CHAIN_ID = ARBITRUM;
-export const CHAIN_ID = DEFAULT_CHAIN_ID;
-
 export const MIN_PROFIT_TIME = 0;
-
-const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
-
-export const IS_NETWORK_DISABLED = {
-  [ARBITRUM]: false,
-  [AVALANCHE]: false,
-};
-
-const CHAIN_NAMES_MAP = {
-  [MAINNET]: "BSC",
-  [TESTNET]: "BSC Testnet",
-  [ARBITRUM_TESTNET]: "ArbRinkeby",
-  [ARBITRUM]: "Arbitrum",
-  [AVALANCHE]: "Avalanche",
-};
-
-const alchemyWhitelistedDomains = ["gmx.io", "app.gmx.io"];
-
-export function getDefaultArbitrumRpcUrl() {
-  return "https://arb1.arbitrum.io/rpc";
-}
-
-export function getAlchemyHttpUrl() {
-  if (alchemyWhitelistedDomains.includes(window.location.host)) {
-    return "https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ";
-  }
-  return "https://arb-mainnet.g.alchemy.com/v2/EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
-}
-
-export function getAlchemyWsUrl() {
-  if (alchemyWhitelistedDomains.includes(window.location.host)) {
-    return "wss://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ";
-  }
-  return "wss://arb-mainnet.g.alchemy.com/v2/EmVYwUw0N2tXOuG0SZfe5Z04rzBsCbr2";
-}
-
-const ARBITRUM_RPC_PROVIDERS = [getDefaultArbitrumRpcUrl()];
-const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
-export const WALLET_CONNECT_LOCALSTORAGE_KEY = "walletconnect";
-export const WALLET_LINK_LOCALSTORAGE_PREFIX = "-walletlink";
-export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
-export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
-export const LANGUAGE_LOCALSTORAGE_KEY = "LANGUAGE_KEY";
-
-export function getChainName(chainId) {
-  return CHAIN_NAMES_MAP[chainId];
-}
 
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
 export const MAX_LEVERAGE = 100 * 10000;
@@ -131,199 +71,10 @@ export const SWAP_OPTIONS = [LONG, SHORT, SWAP];
 export const DEFAULT_SLIPPAGE_AMOUNT = 30;
 export const DEFAULT_HIGHER_SLIPPAGE_AMOUNT = 100;
 
-export const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v3";
-export const CLOSE_POSITION_RECEIVE_TOKEN_KEY = "Close-position-receive-token";
-export const IS_PNL_IN_LEVERAGE_KEY = "Exchange-swap-is-pnl-in-leverage";
-export const SHOW_PNL_AFTER_FEES_KEY = "Exchange-swap-show-pnl-after-fees";
-export const DISABLE_ORDER_VALIDATION_KEY = "disable-order-validation";
-export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-position-lines";
-export const REFERRAL_CODE_KEY = "GMX-referralCode";
 export const REFERRAL_CODE_QUERY_PARAM = "ref";
-export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
 export const MAX_REFERRAL_CODE_LENGTH = 20;
 
-export const TRIGGER_PREFIX_ABOVE = ">";
-export const TRIGGER_PREFIX_BELOW = "<";
-
 export const MIN_PROFIT_BIPS = 0;
-
-export const GLPPOOLCOLORS = {
-  ETH: "#6062a6",
-  BTC: "#F7931A",
-  "BTC.b": "#F7931A",
-  USDC: "#2775CA",
-  "USDC.e": "#2A5ADA",
-  USDT: "#67B18A",
-  MIM: "#9695F8",
-  FRAX: "#000",
-  DAI: "#FAC044",
-  UNI: "#E9167C",
-  AVAX: "#E84142",
-  LINK: "#3256D6",
-};
-
-export const HIGH_EXECUTION_FEES_MAP = {
-  [ARBITRUM]: 3, // 3 USD
-  [AVALANCHE]: 3, // 3 USD
-};
-
-export function getHighExecutionFee(chainId) {
-  return HIGH_EXECUTION_FEES_MAP[chainId] || 3;
-}
-
-export const ICONLINKS = {
-  [ARBITRUM_TESTNET]: {
-    GMX: {
-      coingecko: "https://www.coingecko.com/en/coins/gmx",
-      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
-    },
-    GLP: {
-      arbitrum: "https://testnet.arbiscan.io/token/0xb4f81Fa74e06b5f762A104e47276BA9b2929cb27",
-    },
-  },
-  [ARBITRUM]: {
-    GMX: {
-      coingecko: "https://www.coingecko.com/en/coins/gmx",
-      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
-    },
-    GLP: {
-      arbitrum: "https://arbiscan.io/token/0x1aDDD80E6039594eE970E5872D247bf0414C8903",
-    },
-    ETH: {
-      coingecko: "https://www.coingecko.com/en/coins/ethereum",
-    },
-    BTC: {
-      coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
-      arbitrum: "https://arbiscan.io/address/0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
-    },
-    LINK: {
-      coingecko: "https://www.coingecko.com/en/coins/chainlink",
-      arbitrum: "https://arbiscan.io/address/0xf97f4df75117a78c1a5a0dbb814af92458539fb4",
-    },
-    UNI: {
-      coingecko: "https://www.coingecko.com/en/coins/uniswap",
-      arbitrum: "https://arbiscan.io/address/0xfa7f8980b0f1e64a2062791cc3b0871572f1f7f0",
-    },
-    USDC: {
-      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
-      arbitrum: "https://arbiscan.io/address/0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
-    },
-    USDT: {
-      coingecko: "https://www.coingecko.com/en/coins/tether",
-      arbitrum: "https://arbiscan.io/address/0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
-    },
-    DAI: {
-      coingecko: "https://www.coingecko.com/en/coins/dai",
-      arbitrum: "https://arbiscan.io/address/0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
-    },
-    MIM: {
-      coingecko: "https://www.coingecko.com/en/coins/magic-internet-money",
-      arbitrum: "https://arbiscan.io/address/0xfea7a6a0b346362bf88a9e4a88416b77a57d6c2a",
-    },
-    FRAX: {
-      coingecko: "https://www.coingecko.com/en/coins/frax",
-      arbitrum: "https://arbiscan.io/address/0x17fc002b466eec40dae837fc4be5c67993ddbd6f",
-    },
-  },
-  [AVALANCHE]: {
-    GMX: {
-      coingecko: "https://www.coingecko.com/en/coins/gmx",
-      avalanche: "https://snowtrace.io/address/0x62edc0692bd897d2295872a9ffcac5425011c661",
-    },
-    GLP: {
-      avalanche: "https://snowtrace.io/address/0x9e295B5B976a184B14aD8cd72413aD846C299660",
-    },
-    AVAX: {
-      coingecko: "https://www.coingecko.com/en/coins/avalanche",
-    },
-    ETH: {
-      coingecko: "https://www.coingecko.com/en/coins/weth",
-      avalanche: "https://snowtrace.io/address/0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
-    },
-    BTC: {
-      coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
-      avalanche: "https://snowtrace.io/address/0x50b7545627a5162f82a992c33b87adc75187b218",
-    },
-    "BTC.b": {
-      coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
-      avalanche: "https://snowtrace.io/address/0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-    },
-    MIM: {
-      coingecko: "https://www.coingecko.com/en/coins/magic-internet-money",
-      avalanche: "https://snowtrace.io/address/0x130966628846bfd36ff31a822705796e8cb8c18d",
-    },
-    "USDC.e": {
-      coingecko: "https://www.coingecko.com/en/coins/usd-coin-avalanche-bridged-usdc-e",
-      avalanche: "https://snowtrace.io/address/0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
-    },
-    USDC: {
-      coingecko: "https://www.coingecko.com/en/coins/usd-coin",
-      avalanche: "https://snowtrace.io/address/0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e",
-    },
-  },
-};
-
-export const platformTokens = {
-  42161: {
-    // arbitrum
-    GMX: {
-      name: "GMX",
-      symbol: "GMX",
-      decimals: 18,
-      address: getContract(ARBITRUM, "GMX"),
-      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
-    },
-    GLP: {
-      name: "GMX LP",
-      symbol: "GLP",
-      decimals: 18,
-      address: getContract(ARBITRUM, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
-      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
-    },
-  },
-  43114: {
-    // avalanche
-    GMX: {
-      name: "GMX",
-      symbol: "GMX",
-      decimals: 18,
-      address: getContract(AVALANCHE, "GMX"),
-      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
-    },
-    GLP: {
-      name: "GMX LP",
-      symbol: "GLP",
-      decimals: 18,
-      address: getContract(AVALANCHE, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
-      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
-    },
-  },
-};
-
-const supportedChainIds = [ARBITRUM, AVALANCHE];
-if (isDevelopment()) {
-  supportedChainIds.push(ARBITRUM_TESTNET);
-}
-const injectedConnector = new InjectedConnector({
-  supportedChainIds,
-});
-
-const getWalletConnectConnector = () => {
-  const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID;
-  return new WalletConnectConnector({
-    rpc: {
-      [AVALANCHE]: AVALANCHE_RPC_PROVIDERS[0],
-      [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0],
-      [ARBITRUM_TESTNET]: "https://rinkeby.arbitrum.io/rpc",
-    },
-    qrcode: true,
-    chainId,
-  });
-};
-
-export function isSupportedChain(chainId) {
-  return supportedChainIds.includes(chainId);
-}
 
 export function deserialize(data) {
   for (const [key, value] of Object.entries(data)) {
@@ -336,70 +87,6 @@ export function deserialize(data) {
 
 export function isHomeSite() {
   return process.env.REACT_APP_IS_HOME_SITE === "true";
-}
-
-export const helperToast = {
-  success: (content, opts) => {
-    toast.dismiss();
-    toast.success(content, opts);
-  },
-  error: (content, opts) => {
-    toast.dismiss();
-    toast.error(content, opts);
-  },
-};
-
-export function useLocalStorageByChainId(chainId, key, defaultValue) {
-  const [internalValue, setInternalValue] = useLocalStorage(key, {});
-
-  const setValue = useCallback(
-    (value) => {
-      setInternalValue((internalValue) => {
-        if (typeof value === "function") {
-          value = value(internalValue[chainId] || defaultValue);
-        }
-        const newInternalValue = {
-          ...internalValue,
-          [chainId]: value,
-        };
-        return newInternalValue;
-      });
-    },
-    [chainId, setInternalValue, defaultValue]
-  );
-
-  let value;
-  if (chainId in internalValue) {
-    value = internalValue[chainId];
-  } else {
-    value = defaultValue;
-  }
-
-  return [value, setValue];
-}
-
-export function useLocalStorageSerializeKey(key, value, opts) {
-  key = JSON.stringify(key);
-  return useLocalStorage(key, value, opts);
-}
-
-function getTriggerPrice(tokenAddress, max, info, orderOption, triggerPriceUsd) {
-  // Limit/stop orders are executed with price specified by user
-  if (orderOption && orderOption !== MARKET && triggerPriceUsd) {
-    return triggerPriceUsd;
-  }
-
-  // Market orders are executed with current market price
-  if (!info) {
-    return;
-  }
-  if (max && !info.maxPrice) {
-    return;
-  }
-  if (!max && !info.minPrice) {
-    return;
-  }
-  return max ? info.maxPrice : info.minPrice;
 }
 
 export function getLiquidationPriceFromDelta({ liquidationAmount, size, collateral, averagePrice, isLong }) {
@@ -419,55 +106,12 @@ export function getLiquidationPriceFromDelta({ liquidationAmount, size, collater
   return isLong ? averagePrice.sub(priceDelta) : averagePrice.add(priceDelta);
 }
 
-export const replaceNativeTokenAddress = (path, nativeTokenAddress) => {
-  if (!path) {
-    return;
-  }
-
-  let updatedPath = [];
-  for (let i = 0; i < path.length; i++) {
-    let address = path[i];
-    if (address === AddressZero) {
-      address = nativeTokenAddress;
-    }
-    updatedPath.push(address);
-  }
-
-  return updatedPath;
-};
-
 export function getMarginFee(sizeDelta) {
   if (!sizeDelta) {
     return bigNumberify(0);
   }
   const afterFeeUsd = sizeDelta.mul(BASIS_POINTS_DIVISOR - MARGIN_FEE_BASIS_POINTS).div(BASIS_POINTS_DIVISOR);
   return sizeDelta.sub(afterFeeUsd);
-}
-
-export function getServerBaseUrl(chainId) {
-  if (!chainId) {
-    throw new Error("chainId is not provided");
-  }
-  if (document.location.hostname.includes("deploy-preview")) {
-    const fromLocalStorage = localStorage.getItem("SERVER_BASE_URL");
-    if (fromLocalStorage) {
-      return fromLocalStorage;
-    }
-  }
-  if (chainId === MAINNET) {
-    return "https://gambit-server-staging.uc.r.appspot.com";
-  } else if (chainId === ARBITRUM_TESTNET) {
-    return "https://gambit-server-devnet.uc.r.appspot.com";
-  } else if (chainId === ARBITRUM) {
-    return "https://gmx-server-mainnet.uw.r.appspot.com";
-  } else if (chainId === AVALANCHE) {
-    return "https://gmx-avax-server.uc.r.appspot.com";
-  }
-  return "https://gmx-server-mainnet.uw.r.appspot.com";
-}
-
-export function getServerUrl(chainId, path) {
-  return `${getServerBaseUrl(chainId)}${path}`;
 }
 
 export function isTriggerRatioInverted(fromTokenInfo, toTokenInfo) {
@@ -485,25 +129,6 @@ export function getExchangeRate(tokenAInfo, tokenBInfo, inverted) {
     return tokenAInfo.minPrice.mul(PRECISION).div(tokenBInfo.maxPrice);
   }
   return tokenBInfo.maxPrice.mul(PRECISION).div(tokenAInfo.minPrice);
-}
-
-export function getMostAbundantStableToken(chainId, infoTokens) {
-  const whitelistedTokens = getWhitelistedTokens(chainId);
-  let availableAmount;
-  let stableToken = whitelistedTokens.find((t) => t.isStable);
-  for (let i = 0; i < whitelistedTokens.length; i++) {
-    const info = getTokenInfo(infoTokens, whitelistedTokens[i].address);
-    if (!info.isStable || !info.availableAmount) {
-      continue;
-    }
-
-    const adjustedAvailableAmount = adjustForDecimals(info.availableAmount, info.decimals, USD_DECIMALS);
-    if (!availableAmount || adjustedAvailableAmount.gt(availableAmount)) {
-      availableAmount = adjustedAvailableAmount;
-      stableToken = info;
-    }
-  }
-  return stableToken;
 }
 
 export function shouldInvertTriggerRatio(tokenA, tokenB) {
@@ -1215,22 +840,6 @@ export function getLiquidationPrice(data) {
     : liquidationPriceForMaxLeverage;
 }
 
-export function getUsd(amount, tokenAddress, max, infoTokens, orderOption, triggerPriceUsd) {
-  if (!amount) {
-    return;
-  }
-  if (tokenAddress === USDG_ADDRESS) {
-    return amount.mul(PRECISION).div(expandDecimals(1, 18));
-  }
-  const info = getTokenInfo(infoTokens, tokenAddress);
-  const price = getTriggerPrice(tokenAddress, max, info, orderOption, triggerPriceUsd);
-  if (!price) {
-    return;
-  }
-
-  return amount.mul(price).div(expandDecimals(1, info.decimals));
-}
-
 export function getPositionKey(account, collateralTokenAddress, indexTokenAddress, isLong, nativeTokenAddress) {
   const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
   const tokenAddress1 = indexTokenAddress === AddressZero ? nativeTokenAddress : indexTokenAddress;
@@ -1248,44 +857,6 @@ export function getSwapFeeBasisPoints(isStable) {
   return isStable ? STABLE_SWAP_FEE_BASIS_POINTS : SWAP_FEE_BASIS_POINTS;
 }
 
-// BSC TESTNET
-// const RPC_PROVIDERS = [
-//   "https://data-seed-prebsc-1-s1.binance.org:8545",
-//   "https://data-seed-prebsc-2-s1.binance.org:8545",
-//   "https://data-seed-prebsc-1-s2.binance.org:8545",
-//   "https://data-seed-prebsc-2-s2.binance.org:8545",
-//   "https://data-seed-prebsc-1-s3.binance.org:8545",
-//   "https://data-seed-prebsc-2-s3.binance.org:8545"
-// ]
-
-// BSC MAINNET
-export const BSC_RPC_PROVIDERS = [
-  "https://bsc-dataseed.binance.org",
-  "https://bsc-dataseed1.defibit.io",
-  "https://bsc-dataseed1.ninicoin.io",
-  "https://bsc-dataseed2.defibit.io",
-  "https://bsc-dataseed3.defibit.io",
-  "https://bsc-dataseed4.defibit.io",
-  "https://bsc-dataseed2.ninicoin.io",
-  "https://bsc-dataseed3.ninicoin.io",
-  "https://bsc-dataseed4.ninicoin.io",
-  "https://bsc-dataseed1.binance.org",
-  "https://bsc-dataseed2.binance.org",
-  "https://bsc-dataseed3.binance.org",
-  "https://bsc-dataseed4.binance.org",
-];
-
-const RPC_PROVIDERS = {
-  [MAINNET]: BSC_RPC_PROVIDERS,
-  [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
-  [AVALANCHE]: AVALANCHE_RPC_PROVIDERS,
-};
-
-const FALLBACK_PROVIDERS = {
-  [ARBITRUM]: [getAlchemyHttpUrl()],
-  [AVALANCHE]: ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
-};
-
 export function shortenAddress(address, length) {
   if (!length) {
     return "";
@@ -1298,87 +869,6 @@ export function shortenAddress(address, length) {
   }
   let left = Math.floor((length - 3) / 2) + 1;
   return address.substring(0, left) + "..." + address.substring(address.length - (length - (left + 3)), address.length);
-}
-
-export function formatDateTime(time) {
-  return formatDateFn(time * 1000, "dd MMM yyyy, h:mm a");
-}
-
-export function getTimeRemaining(time) {
-  const now = parseInt(Date.now() / 1000);
-  if (time < now) {
-    return "0h 0m";
-  }
-  const diff = time - now;
-  const hours = parseInt(diff / (60 * 60));
-  const minutes = parseInt((diff - hours * 60 * 60) / 60);
-  return `${hours}h ${minutes}m`;
-}
-
-export function formatDate(time) {
-  return formatDateFn(time * 1000, "dd MMM yyyy");
-}
-
-export function hasMetaMaskWalletExtension() {
-  return window.ethereum;
-}
-
-export function hasCoinBaseWalletExtension() {
-  const { ethereum } = window;
-
-  if (!ethereum?.providers && !ethereum?.isCoinbaseWallet) {
-    return false;
-  }
-  return window.ethereum.isCoinbaseWallet || ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
-}
-
-export function activateInjectedProvider(providerName) {
-  const { ethereum } = window;
-
-  if (!ethereum?.providers && !ethereum?.isCoinbaseWallet && !ethereum?.isMetaMask) {
-    return undefined;
-  }
-
-  let provider;
-  if (ethereum?.providers) {
-    switch (providerName) {
-      case "CoinBase":
-        provider = ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
-        break;
-      case "MetaMask":
-      default:
-        provider = ethereum.providers.find(({ isMetaMask }) => isMetaMask);
-        break;
-    }
-  }
-
-  if (provider) {
-    ethereum.setSelectedProvider(provider);
-  }
-}
-
-export function getInjectedConnector() {
-  return injectedConnector;
-}
-
-export function useChainId() {
-  let { chainId } = useWeb3React();
-
-  if (!chainId) {
-    const chainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
-    if (chainIdFromLocalStorage) {
-      chainId = parseInt(chainIdFromLocalStorage);
-      if (!chainId) {
-        // localstorage value is invalid
-        localStorage.removeItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
-      }
-    }
-  }
-
-  if (!chainId || !supportedChainIds.includes(chainId)) {
-    chainId = DEFAULT_CHAIN_ID;
-  }
-  return { chainId };
 }
 
 export function useENS(address) {
@@ -1397,215 +887,6 @@ export function useENS(address) {
 
   return { ensName };
 }
-
-export function clearWalletConnectData() {
-  localStorage.removeItem(WALLET_CONNECT_LOCALSTORAGE_KEY);
-}
-
-export function clearWalletLinkData() {
-  Object.entries(localStorage)
-    .map((x) => x[0])
-    .filter((x) => x.startsWith(WALLET_LINK_LOCALSTORAGE_PREFIX))
-    .map((x) => localStorage.removeItem(x));
-}
-
-export function useEagerConnect(setActivatingConnector) {
-  const { activate, active } = useWeb3React();
-  const [tried, setTried] = useState(false);
-
-  useEffect(() => {
-    (async function () {
-      if (Boolean(localStorage.getItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY)) !== true) {
-        // only works with WalletConnect
-        clearWalletConnectData();
-        // force clear localStorage connection for MM/CB Wallet (Brave legacy)
-        clearWalletLinkData();
-        return;
-      }
-
-      let shouldTryWalletConnect = false;
-      try {
-        // naive validation to not trigger Wallet Connect if data is corrupted
-        const rawData = localStorage.getItem(WALLET_CONNECT_LOCALSTORAGE_KEY);
-        if (rawData) {
-          const data = JSON.parse(rawData);
-          if (data && data.connected) {
-            shouldTryWalletConnect = true;
-          }
-        }
-      } catch (ex) {
-        if (ex instanceof SyntaxError) {
-          // rawData is not a valid json
-          clearWalletConnectData();
-        }
-      }
-
-      if (shouldTryWalletConnect) {
-        try {
-          const connector = getWalletConnectConnector();
-          setActivatingConnector(connector);
-          await activate(connector, undefined, true);
-          // in case Wallet Connect is activated no need to check injected wallet
-          return;
-        } catch (ex) {
-          // assume data in localstorage is corrupted and delete it to not retry on next page load
-          clearWalletConnectData();
-        }
-      }
-
-      try {
-        const connector = getInjectedConnector();
-        const currentProviderName = localStorage.getItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY) ?? false;
-        if (currentProviderName !== false) {
-          activateInjectedProvider(currentProviderName);
-        }
-        const authorized = await connector.isAuthorized();
-        if (authorized) {
-          setActivatingConnector(connector);
-          await activate(connector, undefined, true);
-        }
-      } catch (ex) {}
-
-      setTried(true);
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // intentionally only running on mount (make sure it's only mounted once :))
-
-  // if the connection worked, wait until we get confirmation of that to flip the flag
-  useEffect(() => {
-    if (!tried && active) {
-      setTried(true);
-    }
-  }, [tried, active]);
-
-  return tried;
-}
-
-export function useInactiveListener(suppress = false) {
-  const injected = getInjectedConnector();
-  const { active, error, activate } = useWeb3React();
-
-  useEffect(() => {
-    const { ethereum } = window;
-    if (ethereum && ethereum.on && !active && !error && !suppress) {
-      const handleConnect = () => {
-        activate(injected);
-      };
-      const handleChainChanged = (chainId) => {
-        activate(injected);
-      };
-      const handleAccountsChanged = (accounts) => {
-        if (accounts.length > 0) {
-          activate(injected);
-        }
-      };
-      const handleNetworkChanged = (networkId) => {
-        activate(injected);
-      };
-
-      ethereum.on("connect", handleConnect);
-      ethereum.on("chainChanged", handleChainChanged);
-      ethereum.on("accountsChanged", handleAccountsChanged);
-      ethereum.on("networkChanged", handleNetworkChanged);
-
-      return () => {
-        if (ethereum.removeListener) {
-          ethereum.removeListener("connect", handleConnect);
-          ethereum.removeListener("chainChanged", handleChainChanged);
-          ethereum.removeListener("accountsChanged", handleAccountsChanged);
-          ethereum.removeListener("networkChanged", handleNetworkChanged);
-        }
-      };
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active, error, suppress, activate]);
-}
-
-export function getProvider(library, chainId) {
-  let provider;
-  if (library) {
-    return library.getSigner();
-  }
-  provider = _.sample(RPC_PROVIDERS[chainId]);
-  return new ethers.providers.StaticJsonRpcProvider(provider, { chainId });
-}
-
-export function getFallbackProvider(chainId) {
-  if (!FALLBACK_PROVIDERS[chainId]) {
-    return;
-  }
-
-  const provider = _.sample(FALLBACK_PROVIDERS[chainId]);
-  return new ethers.providers.StaticJsonRpcProvider(provider, { chainId });
-}
-
-export function bigNumberify(n) {
-  try {
-    return ethers.BigNumber.from(n);
-  } catch (e) {
-    console.error("bigNumberify error", e);
-    return undefined;
-  }
-}
-
-export function expandDecimals(n, decimals) {
-  return bigNumberify(n).mul(bigNumberify(10).pow(decimals));
-}
-
-export const trimZeroDecimals = (amount) => {
-  if (parseFloat(amount) === parseInt(amount)) {
-    return parseInt(amount).toString();
-  }
-  return amount;
-};
-
-export const limitDecimals = (amount, maxDecimals) => {
-  let amountStr = amount.toString();
-  if (maxDecimals === undefined) {
-    return amountStr;
-  }
-  if (maxDecimals === 0) {
-    return amountStr.split(".")[0];
-  }
-  const dotIndex = amountStr.indexOf(".");
-  if (dotIndex !== -1) {
-    let decimals = amountStr.length - dotIndex - 1;
-    if (decimals > maxDecimals) {
-      amountStr = amountStr.substr(0, amountStr.length - (decimals - maxDecimals));
-    }
-  }
-  return amountStr;
-};
-
-export const padDecimals = (amount, minDecimals) => {
-  let amountStr = amount.toString();
-  const dotIndex = amountStr.indexOf(".");
-  if (dotIndex !== -1) {
-    const decimals = amountStr.length - dotIndex - 1;
-    if (decimals < minDecimals) {
-      amountStr = amountStr.padEnd(amountStr.length + (minDecimals - decimals), "0");
-    }
-  } else {
-    amountStr = amountStr + ".0000";
-  }
-  return amountStr;
-};
-
-export const formatKeyAmount = (map, key, tokenDecimals, displayDecimals, useCommas) => {
-  if (!map || !map[key]) {
-    return "...";
-  }
-
-  return formatAmount(map[key], tokenDecimals, displayDecimals, useCommas);
-};
-
-export const formatArrayAmount = (arr, index, tokenDecimals, displayDecimals, useCommas) => {
-  if (!arr || !arr[index]) {
-    return "...";
-  }
-
-  return formatAmount(arr[index], tokenDecimals, displayDecimals, useCommas);
-};
 
 function _parseOrdersData(ordersData, account, indexes, extractor, uintPropsLength, addressPropsLength) {
   if (!ordersData || ordersData.length === 0) {
@@ -1801,74 +1082,6 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
   return [orders, updateOrders, ordersError];
 }
 
-export const formatAmount = (amount, tokenDecimals, displayDecimals, useCommas, defaultValue) => {
-  if (!defaultValue) {
-    defaultValue = "...";
-  }
-  if (amount === undefined || amount.toString().length === 0) {
-    return defaultValue;
-  }
-  if (displayDecimals === undefined) {
-    displayDecimals = 4;
-  }
-  let amountStr = ethers.utils.formatUnits(amount, tokenDecimals);
-  amountStr = limitDecimals(amountStr, displayDecimals);
-  if (displayDecimals !== 0) {
-    amountStr = padDecimals(amountStr, displayDecimals);
-  }
-  if (useCommas) {
-    return numberWithCommas(amountStr);
-  }
-  return amountStr;
-};
-
-export const formatAmountFree = (amount, tokenDecimals, displayDecimals) => {
-  if (!amount) {
-    return "...";
-  }
-  let amountStr = ethers.utils.formatUnits(amount, tokenDecimals);
-  amountStr = limitDecimals(amountStr, displayDecimals);
-  return trimZeroDecimals(amountStr);
-};
-
-export const parseValue = (value, tokenDecimals) => {
-  const pValue = parseFloat(value);
-  if (isNaN(pValue)) {
-    return undefined;
-  }
-  value = limitDecimals(value, tokenDecimals);
-  const amount = ethers.utils.parseUnits(value, tokenDecimals);
-  return bigNumberify(amount);
-};
-
-export function numberWithCommas(x) {
-  if (!x) {
-    return "...";
-  }
-  var parts = x.toString().split(".");
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return parts.join(".");
-}
-
-export function getExplorerUrl(chainId) {
-  if (chainId === 3) {
-    return "https://ropsten.etherscan.io/";
-  } else if (chainId === 42) {
-    return "https://kovan.etherscan.io/";
-  } else if (chainId === MAINNET) {
-    return "https://bscscan.com/";
-  } else if (chainId === TESTNET) {
-    return "https://testnet.bscscan.com/";
-  } else if (chainId === ARBITRUM_TESTNET) {
-    return "https://testnet.arbiscan.io/";
-  } else if (chainId === ARBITRUM) {
-    return "https://arbiscan.io/";
-  } else if (chainId === AVALANCHE) {
-    return "https://snowtrace.io/";
-  }
-  return "https://etherscan.io/";
-}
-
 export function getAccountUrl(chainId, account) {
   if (!account) {
     return getExplorerUrl(chainId);
@@ -1876,404 +1089,8 @@ export function getAccountUrl(chainId, account) {
   return getExplorerUrl(chainId) + "address/" + account;
 }
 
-export function getTokenUrl(chainId, address) {
-  if (!address) {
-    return getExplorerUrl(chainId);
-  }
-  return getExplorerUrl(chainId) + "token/" + address;
-}
-
-export function usePrevious(value) {
-  const ref = useRef();
-  useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current;
-}
-
-export function approveTokens({
-  setIsApproving,
-  library,
-  tokenAddress,
-  spender,
-  chainId,
-  onApproveSubmitted,
-  getTokenInfo,
-  infoTokens,
-  pendingTxns,
-  setPendingTxns,
-  includeMessage,
-}) {
-  setIsApproving(true);
-  const contract = new ethers.Contract(tokenAddress, Token.abi, library.getSigner());
-  contract
-    .approve(spender, ethers.constants.MaxUint256)
-    .then(async (res) => {
-      const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
-      helperToast.success(
-        <div>
-          Approval submitted!{" "}
-          <a href={txUrl} target="_blank" rel="noopener noreferrer">
-            View status.
-          </a>
-          <br />
-        </div>
-      );
-      if (onApproveSubmitted) {
-        onApproveSubmitted();
-      }
-      if (getTokenInfo && infoTokens && pendingTxns && setPendingTxns) {
-        const token = getTokenInfo(infoTokens, tokenAddress);
-        const pendingTxn = {
-          hash: res.hash,
-          message: includeMessage ? `${token.symbol} Approved!` : false,
-        };
-        setPendingTxns([...pendingTxns, pendingTxn]);
-      }
-    })
-    .catch((e) => {
-      console.error(e);
-      let failMsg;
-      if (
-        ["not enough funds for gas", "failed to execute call with revert code InsufficientGasFunds"].includes(
-          e.data?.message
-        )
-      ) {
-        failMsg = (
-          <div>
-            There is not enough ETH in your account on Arbitrum to send this transaction.
-            <br />
-            <br />
-            <a href={"https://arbitrum.io/bridge-tutorial/"} target="_blank" rel="noopener noreferrer">
-              Bridge ETH to Arbitrum
-            </a>
-          </div>
-        );
-      } else if (e.message?.includes("User denied transaction signature")) {
-        failMsg = "Approval was cancelled";
-      } else {
-        failMsg = "Approval failed";
-      }
-      helperToast.error(failMsg);
-    })
-    .finally(() => {
-      setIsApproving(false);
-    });
-}
-
-export const shouldRaiseGasError = (token, amount) => {
-  if (!amount) {
-    return false;
-  }
-  if (token.address !== AddressZero) {
-    return false;
-  }
-  if (!token.balance) {
-    return false;
-  }
-  if (amount.gte(token.balance)) {
-    return true;
-  }
-  if (token.balance.sub(amount).lt(DUST_BNB)) {
-    return true;
-  }
-  return false;
-};
-
-export const getTokenInfo = (infoTokens, tokenAddress, replaceNative, nativeTokenAddress) => {
-  if (replaceNative && tokenAddress === nativeTokenAddress) {
-    return infoTokens[AddressZero];
-  }
-  return infoTokens[tokenAddress];
-};
-
-const NETWORK_METADATA = {
-  [MAINNET]: {
-    chainId: "0x" + MAINNET.toString(16),
-    chainName: "BSC",
-    nativeCurrency: {
-      name: "BNB",
-      symbol: "BNB",
-      decimals: 18,
-    },
-    rpcUrls: BSC_RPC_PROVIDERS,
-    blockExplorerUrls: ["https://bscscan.com"],
-  },
-  [TESTNET]: {
-    chainId: "0x" + TESTNET.toString(16),
-    chainName: "BSC Testnet",
-    nativeCurrency: {
-      name: "BNB",
-      symbol: "BNB",
-      decimals: 18,
-    },
-    rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
-    blockExplorerUrls: ["https://testnet.bscscan.com/"],
-  },
-  [ARBITRUM_TESTNET]: {
-    chainId: "0x" + ARBITRUM_TESTNET.toString(16),
-    chainName: "Arbitrum Testnet",
-    nativeCurrency: {
-      name: "ETH",
-      symbol: "ETH",
-      decimals: 18,
-    },
-    rpcUrls: ["https://rinkeby.arbitrum.io/rpc"],
-    blockExplorerUrls: ["https://rinkeby-explorer.arbitrum.io/"],
-  },
-  [ARBITRUM]: {
-    chainId: "0x" + ARBITRUM.toString(16),
-    chainName: "Arbitrum",
-    nativeCurrency: {
-      name: "ETH",
-      symbol: "ETH",
-      decimals: 18,
-    },
-    rpcUrls: ARBITRUM_RPC_PROVIDERS,
-    blockExplorerUrls: [getExplorerUrl(ARBITRUM)],
-  },
-  [AVALANCHE]: {
-    chainId: "0x" + AVALANCHE.toString(16),
-    chainName: "Avalanche",
-    nativeCurrency: {
-      name: "AVAX",
-      symbol: "AVAX",
-      decimals: 18,
-    },
-    rpcUrls: AVALANCHE_RPC_PROVIDERS,
-    blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
-  },
-};
-
-export const addBscNetwork = async () => {
-  return addNetwork(NETWORK_METADATA[MAINNET]);
-};
-
-export const addNetwork = async (metadata) => {
-  await window.ethereum.request({ method: "wallet_addEthereumChain", params: [metadata] }).catch();
-};
-
-export const switchNetwork = async (chainId, active) => {
-  if (!active) {
-    // chainId in localStorage allows to switch network even if wallet is not connected
-    // or there is no wallet at all
-    localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, chainId);
-    document.location.reload();
-    return;
-  }
-
-  try {
-    const chainIdHex = "0x" + chainId.toString(16);
-    await window.ethereum.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: chainIdHex }],
-    });
-    helperToast.success("Connected to " + getChainName(chainId));
-    return getChainName(chainId);
-  } catch (ex) {
-    // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
-    // This error code indicates that the chain has not been added to MetaMask.
-    // 4001 error means user has denied the request
-    // If the error code is not 4001, then we need to add the network
-    if (ex.code !== 4001) {
-      return await addNetwork(NETWORK_METADATA[chainId]);
-    }
-
-    console.error("error", ex);
-  }
-};
-
-export const getWalletConnectHandler = (activate, deactivate, setActivatingConnector) => {
-  const fn = async () => {
-    const walletConnect = getWalletConnectConnector();
-    setActivatingConnector(walletConnect);
-    activate(walletConnect, (ex) => {
-      if (ex instanceof UnsupportedChainIdError) {
-        helperToast.error("Unsupported chain. Switch to Arbitrum network on your wallet and try again");
-        console.warn(ex);
-      } else if (!(ex instanceof UserRejectedRequestErrorWalletConnect)) {
-        helperToast.error(ex.message);
-        console.warn(ex);
-      }
-      clearWalletConnectData();
-      deactivate();
-    });
-  };
-  return fn;
-};
-
-export const getInjectedHandler = (activate) => {
-  const fn = async () => {
-    activate(getInjectedConnector(), (e) => {
-      const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID;
-
-      if (e instanceof UnsupportedChainIdError) {
-        helperToast.error(
-          <div>
-            <div>Your wallet is not connected to {getChainName(chainId)}.</div>
-            <br />
-            <div className="clickable underline margin-bottom" onClick={() => switchNetwork(chainId, true)}>
-              Switch to {getChainName(chainId)}
-            </div>
-            <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
-              Add {getChainName(chainId)}
-            </div>
-          </div>
-        );
-        return;
-      }
-      const errString = e.message ?? e.toString();
-      helperToast.error(errString);
-    });
-  };
-  return fn;
-};
-
 export function isMobileDevice(navigator) {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-}
-
-export function setTokenUsingIndexPrices(token, indexPrices, nativeTokenAddress) {
-  if (!indexPrices) {
-    return;
-  }
-
-  const tokenAddress = token.isNative ? nativeTokenAddress : token.address;
-
-  const indexPrice = indexPrices[tokenAddress];
-  if (!indexPrice) {
-    return;
-  }
-
-  const indexPriceBn = bigNumberify(indexPrice);
-  if (indexPriceBn.eq(0)) {
-    return;
-  }
-
-  const spread = token.maxPrice.sub(token.minPrice);
-  const spreadBps = spread.mul(BASIS_POINTS_DIVISOR).div(token.maxPrice.add(token.minPrice).div(2));
-
-  if (spreadBps.gt(MAX_PRICE_DEVIATION_BASIS_POINTS - 50)) {
-    // only set one of the values as there will be a spread between the index price and the Chainlink price
-    if (indexPriceBn.gt(token.minPrimaryPrice)) {
-      token.maxPrice = indexPriceBn;
-    } else {
-      token.minPrice = indexPriceBn;
-    }
-    return;
-  }
-
-  const halfSpreadBps = spreadBps.div(2).toNumber();
-  token.maxPrice = indexPriceBn.mul(BASIS_POINTS_DIVISOR + halfSpreadBps).div(BASIS_POINTS_DIVISOR);
-  token.minPrice = indexPriceBn.mul(BASIS_POINTS_DIVISOR - halfSpreadBps).div(BASIS_POINTS_DIVISOR);
-}
-
-export function getInfoTokens(
-  tokens,
-  tokenBalances,
-  whitelistedTokens,
-  vaultTokenInfo,
-  fundingRateInfo,
-  vaultPropsLength,
-  indexPrices,
-  nativeTokenAddress
-) {
-  if (!vaultPropsLength) {
-    vaultPropsLength = 15;
-  }
-  const fundingRatePropsLength = 2;
-  const infoTokens = {};
-
-  for (let i = 0; i < tokens.length; i++) {
-    const token = JSON.parse(JSON.stringify(tokens[i]));
-    if (tokenBalances) {
-      token.balance = tokenBalances[i];
-    }
-    if (token.address === USDG_ADDRESS) {
-      token.minPrice = expandDecimals(1, USD_DECIMALS);
-      token.maxPrice = expandDecimals(1, USD_DECIMALS);
-    }
-    infoTokens[token.address] = token;
-  }
-
-  for (let i = 0; i < whitelistedTokens.length; i++) {
-    const token = JSON.parse(JSON.stringify(whitelistedTokens[i]));
-    if (vaultTokenInfo) {
-      token.poolAmount = vaultTokenInfo[i * vaultPropsLength];
-      token.reservedAmount = vaultTokenInfo[i * vaultPropsLength + 1];
-      token.availableAmount = token.poolAmount.sub(token.reservedAmount);
-      token.usdgAmount = vaultTokenInfo[i * vaultPropsLength + 2];
-      token.redemptionAmount = vaultTokenInfo[i * vaultPropsLength + 3];
-      token.weight = vaultTokenInfo[i * vaultPropsLength + 4];
-      token.bufferAmount = vaultTokenInfo[i * vaultPropsLength + 5];
-      token.maxUsdgAmount = vaultTokenInfo[i * vaultPropsLength + 6];
-      token.globalShortSize = vaultTokenInfo[i * vaultPropsLength + 7];
-      token.maxGlobalShortSize = vaultTokenInfo[i * vaultPropsLength + 8];
-      token.maxGlobalLongSize = vaultTokenInfo[i * vaultPropsLength + 9];
-      token.minPrice = vaultTokenInfo[i * vaultPropsLength + 10];
-      token.maxPrice = vaultTokenInfo[i * vaultPropsLength + 11];
-      token.guaranteedUsd = vaultTokenInfo[i * vaultPropsLength + 12];
-      token.maxPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 13];
-      token.minPrimaryPrice = vaultTokenInfo[i * vaultPropsLength + 14];
-
-      // save minPrice and maxPrice as setTokenUsingIndexPrices may override it
-      token.contractMinPrice = token.minPrice;
-      token.contractMaxPrice = token.maxPrice;
-
-      token.maxAvailableShort = bigNumberify(0);
-      token.hasMaxAvailableShort = false;
-      if (token.maxGlobalShortSize.gt(0)) {
-        token.hasMaxAvailableShort = true;
-        if (token.maxGlobalShortSize.gt(token.globalShortSize)) {
-          token.maxAvailableShort = token.maxGlobalShortSize.sub(token.globalShortSize);
-        }
-      }
-
-      if (token.maxUsdgAmount.eq(0)) {
-        token.maxUsdgAmount = DEFAULT_MAX_USDG_AMOUNT;
-      }
-
-      token.availableUsd = token.isStable
-        ? token.poolAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals))
-        : token.availableAmount.mul(token.minPrice).div(expandDecimals(1, token.decimals));
-
-      token.maxAvailableLong = bigNumberify(0);
-      token.hasMaxAvailableLong = false;
-      if (token.maxGlobalLongSize.gt(0)) {
-        token.hasMaxAvailableLong = true;
-
-        if (token.maxGlobalLongSize.gt(token.guaranteedUsd)) {
-          const remainingLongSize = token.maxGlobalLongSize.sub(token.guaranteedUsd);
-          token.maxAvailableLong = remainingLongSize.lt(token.availableUsd) ? remainingLongSize : token.availableUsd;
-        }
-      } else {
-        token.maxAvailableLong = token.availableUsd;
-      }
-
-      token.maxLongCapacity =
-        token.maxGlobalLongSize.gt(0) && token.maxGlobalLongSize.lt(token.availableUsd.add(token.guaranteedUsd))
-          ? token.maxGlobalLongSize
-          : token.availableUsd.add(token.guaranteedUsd);
-
-      token.managedUsd = token.availableUsd.add(token.guaranteedUsd);
-      token.managedAmount = token.managedUsd.mul(expandDecimals(1, token.decimals)).div(token.minPrice);
-
-      setTokenUsingIndexPrices(token, indexPrices, nativeTokenAddress);
-    }
-
-    if (fundingRateInfo) {
-      token.fundingRate = fundingRateInfo[i * fundingRatePropsLength];
-      token.cumulativeFundingRate = fundingRateInfo[i * fundingRatePropsLength + 1];
-    }
-
-    if (infoTokens[token.address]) {
-      token.balance = infoTokens[token.address].balance;
-    }
-
-    infoTokens[token.address] = token;
-  }
-
-  return infoTokens;
 }
 
 export const CHART_PERIODS = {
@@ -2290,6 +1107,7 @@ export function getTotalVolumeSum(volumes) {
   }
 
   let volume = bigNumberify(0);
+
   for (let i = 0; i < volumes.length; i++) {
     volume = volume.add(volumes[i].data.volume);
   }
@@ -2540,33 +1358,6 @@ export function getProcessedData(
   return data;
 }
 
-export async function addTokenToMetamask(token) {
-  try {
-    const wasAdded = await window.ethereum.request({
-      method: "wallet_watchAsset",
-      params: {
-        type: "ERC20",
-        options: {
-          address: token.address,
-          symbol: token.symbol,
-          decimals: token.decimals,
-          image: token.imageUrl,
-        },
-      },
-    });
-    if (wasAdded) {
-      // https://github.com/MetaMask/metamask-extension/issues/11377
-      // We can show a toast message when the token is added to metamask but because of the bug we can't. Once the bug is fixed we can show a toast message.
-    }
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-export function sleep(ms) {
-  return new Promise((resolve) => resolve(), ms);
-}
-
 export function getPageTitle(data) {
   return `${data} | Decentralized
   Perpetual Exchange | GMX`;
@@ -2577,27 +1368,6 @@ export function isHashZero(value) {
 }
 export function isAddressZero(value) {
   return value === ethers.constants.AddressZero;
-}
-
-export function useDebounce(value, delay) {
-  // State and setters for debounced value
-  const [debouncedValue, setDebouncedValue] = useState(value);
-  useEffect(
-    () => {
-      // Update debounced value after delay
-      const handler = setTimeout(() => {
-        setDebouncedValue(value);
-      }, delay);
-      // Cancel the timeout if value changes (also on delay change or unmount)
-      // This is how we prevent debounced value from updating if value is changed ...
-      // .. within the delay period. Timeout gets cleared and restarted.
-      return () => {
-        clearTimeout(handler);
-      };
-    },
-    [value, delay] // Only re-call effect if value or delay changes
-  );
-  return debouncedValue;
 }
 
 export function isDevelopment() {
@@ -2643,11 +1413,11 @@ export function getTradePageUrl() {
 export function importImage(name) {
   let tokenImage = null;
   try {
-    tokenImage = require("../img/" + name);
+    tokenImage = require("img/" + name);
   } catch (error) {
     console.error(error);
   }
-  return tokenImage && tokenImage.default;
+  return tokenImage;
 }
 
 export function getTwitterIntentURL(text, url = "", hashtag = "") {
@@ -2665,10 +1435,6 @@ export function getTwitterIntentURL(text, url = "", hashtag = "") {
     }
   }
   return finalURL;
-}
-
-export function isValidTimestamp(timestamp) {
-  return new Date(timestamp).getTime() > 0;
 }
 
 export function getPositionForOrder(account, order, positionsMap) {

@@ -3,37 +3,24 @@ import { Link } from "react-router-dom";
 import { Trans, t } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 
-import Modal from "../../components/Modal/Modal";
-import Checkbox from "../../components/Checkbox/Checkbox";
-import Tooltip from "../../components/Tooltip/Tooltip";
-import Footer from "../../components/Footer/Footer";
+import Modal from "components/Modal/Modal";
+import Checkbox from "components/Checkbox/Checkbox";
+import Tooltip from "components/Tooltip/Tooltip";
+import Footer from "components/Footer/Footer";
 
-import Vault from "../../abis/Vault.json";
-import ReaderV2 from "../../abis/ReaderV2.json";
-import Vester from "../../abis/Vester.json";
-import RewardRouter from "../../abis/RewardRouter.json";
-import RewardReader from "../../abis/RewardReader.json";
-import Token from "../../abis/Token.json";
-import GlpManager from "../../abis/GlpManager.json";
+import Vault from "abis/Vault.json";
+import ReaderV2 from "abis/ReaderV2.json";
+import Vester from "abis/Vester.json";
+import RewardRouter from "abis/RewardRouter.json";
+import RewardReader from "abis/RewardReader.json";
+import Token from "abis/Token.json";
+import GlpManager from "abis/GlpManager.json";
 
 import { ethers } from "ethers";
 import {
-  helperToast,
-  bigNumberify,
-  formatAmount,
-  formatKeyAmount,
-  formatAmountFree,
-  getChainName,
-  expandDecimals,
-  parseValue,
-  approveTokens,
-  getServerUrl,
-  useLocalStorageSerializeKey,
-  useChainId,
   GLP_DECIMALS,
   USD_DECIMALS,
   BASIS_POINTS_DIVISOR,
-  ARBITRUM,
   PLACEHOLDER_ACCOUNT,
   getBalanceAndSupplyData,
   getDepositBalanceData,
@@ -41,20 +28,25 @@ import {
   getStakingData,
   getProcessedData,
   getPageTitle,
-} from "../../lib/legacy";
-import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "../../domain/legacy";
-import { getConstant } from "../../config/chains";
+} from "lib/legacy";
+import { useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
+import { ARBITRUM, getChainName, getConstant } from "config/chains";
 
 import useSWR from "swr";
 
-import { getContract } from "../../config/Addresses";
+import { getContract } from "config/contracts";
 
 import "./StakeV2.css";
-import SEO from "../../components/Common/SEO";
-import StatsTooltip from "../../components/StatsTooltip/StatsTooltip";
-import StatsTooltipRow from "../../components/StatsTooltip/StatsTooltipRow";
-import { fetcher } from "../../lib/contracts/fetcher";
-import { callContract } from "../../lib/contracts/callContract";
+import SEO from "components/Common/SEO";
+import StatsTooltip from "components/StatsTooltip/StatsTooltip";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { getServerUrl } from "config/backend";
+import { callContract, contractFetcher } from "lib/contracts";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { helperToast } from "lib/helperToast";
+import { approveTokens } from "domain/tokens";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
+import { useChainId } from "lib/chains";
 
 const { AddressZero } = ethers.constants;
 
@@ -83,7 +75,7 @@ function StakeModal(props) {
   const { data: tokenAllowance } = useSWR(
     active && stakingTokenAddress && [active, chainId, stakingTokenAddress, "allowance", account, farmAddress],
     {
-      fetcher: fetcher(library, Token),
+      fetcher: contractFetcher(library, Token),
     }
   );
 
@@ -290,7 +282,6 @@ function UnstakeModal(props) {
           <div className="Exchange-swap-section-top">
             <div className="muted">
               <div className="Exchange-swap-usd">
-                Unstake
                 <Trans>Unstake</Trans>
               </div>
             </div>
@@ -482,9 +473,8 @@ function VesterDepositModal(props) {
                     return (
                       <div>
                         <p className="text-white">
-                          <Trans>Vault Capacity for your Account</Trans>
+                          <Trans>Vault Capacity for your Account:</Trans>
                         </p>
-                        <br />
                         <StatsTooltipRow
                           showDollar={false}
                           label={t`Deposited`}
@@ -529,13 +519,14 @@ function VesterDepositModal(props) {
                           value={formatAmount(additionalReserveAmount, 18, 2, true)}
                           showDollar={false}
                         />
-                        <br />
-
                         {amount && nextReserveAmount.gt(maxReserveAmount) && (
-                          <Trans>
-                            You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)}{" "}
-                            {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.
-                          </Trans>
+                          <>
+                            <br />
+                            <Trans>
+                              You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)}{" "}
+                              {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.
+                            </Trans>
+                          </>
                         )}
                       </>
                     );
@@ -653,7 +644,7 @@ function CompoundModal(props) {
   const { data: tokenAllowance } = useSWR(
     active && [active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress],
     {
-      fetcher: fetcher(library, Token),
+      fetcher: contractFetcher(library, Token),
     }
   );
 
@@ -1023,7 +1014,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: fetcher(library, ReaderV2, [walletTokens]),
+      fetcher: contractFetcher(library, ReaderV2, [walletTokens]),
     }
   );
 
@@ -1036,46 +1027,46 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: fetcher(library, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
+      fetcher: contractFetcher(library, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
     }
   );
 
   const { data: stakingInfo } = useSWR(
     [`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
+      fetcher: contractFetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
     }
   );
 
   const { data: stakedGmxSupply } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, chainId, gmxAddress, "balanceOf", stakedGmxTrackerAddress],
     {
-      fetcher: fetcher(library, Token),
+      fetcher: contractFetcher(library, Token),
     }
   );
 
   const { data: aums } = useSWR([`StakeV2:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: fetcher(library, GlpManager),
+    fetcher: contractFetcher(library, GlpManager),
   });
 
   const { data: nativeTokenPrice } = useSWR(
     [`StakeV2:nativeTokenPrice:${active}`, chainId, vaultAddress, "getMinPrice", nativeTokenAddress],
     {
-      fetcher: fetcher(library, Vault),
+      fetcher: contractFetcher(library, Vault),
     }
   );
 
   const { data: esGmxSupply } = useSWR(
     [`StakeV2:esGmxSupply:${active}`, chainId, readerAddress, "getTokenSupply", esGmxAddress],
     {
-      fetcher: fetcher(library, ReaderV2, [excludedEsGmxAccounts]),
+      fetcher: contractFetcher(library, ReaderV2, [excludedEsGmxAccounts]),
     }
   );
 
   const { data: vestingInfo } = useSWR(
     [`StakeV2:vestingInfo:${active}`, chainId, readerAddress, "getVestingInfo", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: fetcher(library, ReaderV2, [vesterAddresses]),
+      fetcher: contractFetcher(library, ReaderV2, [vesterAddresses]),
     }
   );
 

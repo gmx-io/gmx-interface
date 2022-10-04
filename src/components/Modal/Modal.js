@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { MdClose } from "react-icons/md";
 
 import "./Modal.css";
-import useLockBodyScroll, { TOUCH_MOVE_CONTAINER_CLASS_NAME } from "../../lib/useLockBodyScroll";
+import useLockBodyScroll, { TOUCH_MOVE_CONTAINER_CLASS_NAME } from "lib/useLockBodyScroll";
 
 export default function Modal(props) {
   const { isVisible, setIsVisible, className, zIndex, onAfterOpen, disableBodyScrollLock, allowContentTouchMove } =

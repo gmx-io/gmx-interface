@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from "react";
 import cx from "classnames";
 
 import "./Tooltip.css";
-import { IS_TOUCH } from "../../config/ui";
+import { IS_TOUCH } from "config/ui";
 import Portal from "../Common/Portal";
 
 const OPEN_DELAY = 0;
