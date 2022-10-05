@@ -276,11 +276,8 @@ export const getInjectedHandler = (activate, deactivate) => {
           <div>
             <div>Your wallet is not connected to {getChainName(chainId)}.</div>
             <br />
-            <div className="clickable underline margin-bottom" onClick={() => switchNetwork(chainId, true)}>
-              Switch to {getChainName(chainId)}
-            </div>
             <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
-              Add {getChainName(chainId)}
+              Switch to {getChainName(chainId)}
             </div>
           </div>
         );
