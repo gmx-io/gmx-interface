@@ -84,6 +84,7 @@ const SWAP_ICONS = {
   [SHORT]: shortImg,
   [SWAP]: swapImg,
 };
+
 const { AddressZero } = ethers.constants;
 
 const leverageSliderHandle = (props) => {
@@ -238,7 +239,7 @@ export default function SwapBox(props) {
 
   const isMarketOrder = orderOption === MARKET;
   const orderOptions = isSwap ? SWAP_ORDER_OPTIONS : LEVERAGE_ORDER_OPTIONS;
-  const orderOptionLabels = { [STOP]: "Trigger" };
+  const orderOptionLabels = { [STOP]: t`Trigger`, [MARKET]: t`Market`, [LIMIT]: t`Limit` };
 
   const [triggerPriceValue, setTriggerPriceValue] = useState("");
   const triggerPriceUsd = isMarketOrder ? 0 : parseValue(triggerPriceValue, USD_DECIMALS);
@@ -1798,6 +1799,12 @@ export default function SwapBox(props) {
     return fromValue !== formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals);
   }
 
+  const SWAP_LABELS = {
+    [LONG]: t`Long`,
+    [SHORT]: t`Short`,
+    [SWAP]: t`Swap`,
+  };
+
   return (
     <div className="Exchange-swap-box">
       {/* <div className="Exchange-swap-wallet-box App-box">
@@ -1809,6 +1816,7 @@ export default function SwapBox(props) {
           <Tab
             icons={SWAP_ICONS}
             options={SWAP_OPTIONS}
+            optionLabels={SWAP_LABELS}
             option={swapOption}
             onChange={onSwapOptionChange}
             className="Exchange-swap-option-tabs"

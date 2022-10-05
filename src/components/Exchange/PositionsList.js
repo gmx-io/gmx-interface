@@ -338,10 +338,9 @@ export default function PositionsList(props) {
                           renderContent={() => {
                             return (
                               <>
-                                <Trans>Net Value: </Trans>
                                 {showPnlAfterFees
-                                  ? t`Initial Collateral - Fees + PnL`
-                                  : t`Initial Collateral - Borrow Fee + PnL`}
+                                  ? t`Net Value: Initial Collateral - Fees + PnL`
+                                  : t`Net Value: Initial Collateral - Borrow Fee + PnL`}
                                 <br />
                                 <br />
                                 <StatsTooltipRow
@@ -499,7 +498,9 @@ export default function PositionsList(props) {
           {positions.length === 0 && !positionsDataIsLoading && (
             <tr>
               <td colSpan="15">
-                <div className="Exchange-empty-positions-list-note">No open positions</div>
+                <div className="Exchange-empty-positions-list-note">
+                  <Trans>No open positions</Trans>
+                </div>
               </td>
             </tr>
           )}
@@ -546,10 +547,9 @@ export default function PositionsList(props) {
                         renderContent={() => {
                           return (
                             <>
-                              Net Value:{" "}
                               {showPnlAfterFees
-                                ? t`Initial Collateral - Fees + PnL`
-                                : t`Initial Collateral - Borrow Fee + PnL`}
+                                ? t`Net Value: Initial Collateral - Fees + PnL`
+                                : t`Net Value: Initial Collateral - Borrow Fee + PnL`}
                               <br />
                               <br />
                               <StatsTooltipRow
@@ -563,12 +563,12 @@ export default function PositionsList(props) {
                                 value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
                               />
                               <StatsTooltipRow
-                                label={`Open + Close fee`}
+                                label={t`Open + Close fee`}
                                 showDollar={false}
                                 value={`-$${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}`}
                               />
                               <StatsTooltipRow
-                                label={`PnL After Fees`}
+                                label={t`PnL After Fees`}
                                 value={`${position.deltaAfterFeesStr} (${position.deltaAfterFeesPercentageStr})`}
                                 showDollar={false}
                               />
@@ -604,7 +604,9 @@ export default function PositionsList(props) {
                         renderContent={() => {
                           return (
                             <>
-                              <strong>Active Orders</strong>
+                              <strong>
+                                <Trans>Active Orders</Trans>
+                              </strong>
                               {positionOrders.map((order) => {
                                 return (
                                   <div

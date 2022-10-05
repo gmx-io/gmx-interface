@@ -453,7 +453,9 @@ function VesterDepositModal(props) {
           </div>
           <div className="VesterDepositModal-info-rows">
             <div className="Exchange-info-row">
-              <div className="Exchange-info-label">Wallet</div>
+              <div className="Exchange-info-label">
+                <Trans>Wallet</Trans>
+              </div>
               <div className="align-right">{formatAmount(balance, 18, 2, true)} esGMX</div>
             </div>
             <div className="Exchange-info-row">
@@ -1168,7 +1170,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     }
 
     setIsStakeModalVisible(true);
-    setStakeModalTitle("Stake GMX");
+    setStakeModalTitle(t`Stake GMX`);
     setStakeModalMaxAmount(processedData.gmxBalance);
     setStakeValue("");
     setStakingTokenSymbol("GMX");
@@ -1179,7 +1181,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
   const showStakeEsGmxModal = () => {
     setIsStakeModalVisible(true);
-    setStakeModalTitle("Stake esGMX");
+    setStakeModalTitle(t`Stake esGMX`);
     setStakeModalMaxAmount(processedData.esGmxBalance);
     setStakeValue("");
     setStakingTokenSymbol("esGMX");
@@ -1195,7 +1197,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     }
 
     setIsVesterDepositModalVisible(true);
-    setVesterDepositTitle("GMX Vault");
+    setVesterDepositTitle(t`GMX Vault`);
     setVesterDepositStakeTokenLabel("staked GMX + esGMX + Multiplier Points");
     setVesterDepositMaxAmount(remainingVestableAmount);
     setVesterDepositBalance(processedData.esGmxBalance);
@@ -1216,7 +1218,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     }
 
     setIsVesterDepositModalVisible(true);
-    setVesterDepositTitle("GLP Vault");
+    setVesterDepositTitle(t`GLP Vault`);
     setVesterDepositStakeTokenLabel("staked GLP");
     setVesterDepositMaxAmount(remainingVestableAmount);
     setVesterDepositBalance(processedData.esGmxBalance);
@@ -1278,7 +1280,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
   const showUnstakeEsGmxModal = () => {
     setIsUnstakeModalVisible(true);
-    setUnstakeModalTitle("Unstake esGMX");
+    setUnstakeModalTitle(t`Unstake esGMX`);
     let maxAmount = processedData.esGmxInStakedGmx;
     if (
       processedData.esGmxInStakedGmx &&
@@ -1962,7 +1964,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">Escrowed GMX</div>
+            <div className="App-card-title">
+              <Trans>Escrowed GMX</Trans>
+            </div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -2090,7 +2094,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
         <div>
           <div className="StakeV2-cards">
             <div className="App-card StakeV2-gmx-card">
-              <div className="App-card-title">GMX Vault</div>
+              <div className="App-card-title">
+                <Trans>GMX Vault</Trans>
+              </div>
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="App-card-row">
@@ -2199,7 +2205,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
             </div>
             <div className="App-card StakeV2-gmx-card">
-              <div className="App-card-title">GLP Vault</div>
+              <div className="App-card-title">
+                <Trans>GLP Vault</Trans>
+              </div>
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="App-card-row">

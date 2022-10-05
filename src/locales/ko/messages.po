@@ -140,6 +140,10 @@ msgstr "계정"
 msgid "Actions"
 msgstr "액션"
 
+#: src/components/Exchange/PositionsList.js
+msgid "Active Orders"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.js
 msgid "Active Referral Code"
 msgstr "활성화된 추천 코드"
@@ -234,6 +238,7 @@ msgstr "GMX 승인"
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Migration/Migration.js
 msgid "Approve {0}"
 msgstr "{0} 승인"
 
@@ -257,6 +262,7 @@ msgstr "{0} 승인중..."
 msgid "Approving {stakingTokenSymbol}..."
 msgstr "{stakingTokenSymbol} 승인중..."
 
+#: src/components/Migration/Migration.js
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Approving..."
 msgstr "승인중..."
@@ -1143,6 +1149,7 @@ msgstr "가격 입력"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Migration/Migration.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1171,6 +1178,7 @@ msgstr ""
 msgid "Entry Price"
 msgstr "진입 가격"
 
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Escrowed GMX"
 msgstr ""
@@ -1296,6 +1304,11 @@ msgstr "GLP 인덱스 구성"
 msgid "GLP Pool"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "GLP Vault"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr ""
@@ -1334,6 +1347,11 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Stats Page"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "GMX Vault"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1475,16 +1493,6 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral"
-msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Initial Collateral - Borrow Fee + PnL"
-msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Initial Collateral - Fees + PnL"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -1632,6 +1640,7 @@ msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/SwapBox.js
 msgid "Limit"
 msgstr ""
 
@@ -1705,6 +1714,7 @@ msgstr "로딩중..."
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -1771,6 +1781,10 @@ msgstr "시장 평균가"
 msgid "Mark: {0}"
 msgstr ""
 
+#: src/components/Exchange/SwapBox.js
+msgid "Market"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -1796,6 +1810,7 @@ msgstr "{0}의 최대치에 도달했습니다."
 msgid "Max Pool Capacity"
 msgstr ""
 
+#: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
@@ -1892,6 +1907,7 @@ msgid "MetaMask not detected."
 msgstr "메타마스크가 탐지되지 않았습니다."
 
 #: src/components/Migration/Migration.js
+#: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1903,7 +1919,15 @@ msgid "Migrated"
 msgstr ""
 
 #: src/components/Migration/Migration.js
+msgid "Migrating..."
+msgstr ""
+
+#: src/components/Migration/Migration.js
 msgid "Migration Price"
+msgstr ""
+
+#: src/components/Migration/Migration.js
+msgid "Migration failed"
 msgstr ""
 
 #: src/components/Migration/Migration.js
@@ -1974,7 +1998,13 @@ msgid "Net Value"
 msgstr "순이익"
 
 #: src/components/Exchange/PositionsList.js
-msgid "Net Value:"
+#: src/components/Exchange/PositionsList.js
+msgid "Net Value: Initial Collateral - Borrow Fee + PnL"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
+msgid "Net Value: Initial Collateral - Fees + PnL"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -2013,6 +2043,7 @@ msgid "No open position, order cannot be executed unless a position is opened"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 msgid "No open positions"
 msgstr "열려있는 포지션이 없습니다"
 
@@ -2029,6 +2060,10 @@ msgstr "리베이트 분배 내역이 없습니다."
 msgid "No rewards to claim yet"
 msgstr ""
 
+#: src/components/Exchange/TradeHistory.js
+msgid "No trades yet"
+msgstr ""
+
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "주문 실행은 보장되지 않습니다.<0/><1/>이것은 다음과 같은 상황에 일어날 수 있습니다:"
@@ -2041,6 +2076,7 @@ msgstr ""
 msgid "Olympus Pro"
 msgstr "Olympus Pro"
 
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Open + Close fee"
 msgstr ""
@@ -2223,6 +2259,7 @@ msgstr "네트워크를 Arbitrum으로 변경해주세요."
 msgid "PnL"
 msgstr "손익"
 
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "PnL After Fees"
 msgstr ""
@@ -2631,6 +2668,7 @@ msgstr "포지션 공유"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -2694,12 +2732,20 @@ msgid "Stake <0>GMX</0> and <1>GLP</1> to earn rewards."
 msgstr "<0>GMX</0>과 <1>GLP</1>를 스테이킹하여 보상을 획득하세요."
 
 #: src/pages/Stake/StakeV2.js
+msgid "Stake GMX"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
 msgid "Stake GMX Rewards"
 msgstr "GMX 보상 스테이킹"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Stake Multiplier Points"
 msgstr "멀티플라이어 포인트 스테이킹"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Stake esGMX"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Stake esGMX Rewards"
@@ -2769,6 +2815,7 @@ msgid "Supply"
 msgstr "공급량"
 
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap"
@@ -3029,6 +3076,10 @@ msgstr "수수료를 줄이기 위해서는 다른 자산으로 지불해주세�
 msgid "To reduce fees, select a different asset to receive."
 msgstr "수수료를 줄이기 위해서는 다른 자산으로 수령해주세요."
 
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Tokens"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Total"
 msgstr "총계"
@@ -3206,6 +3257,7 @@ msgid "Transferring"
 msgstr "이전중"
 
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/SwapBox.js
 msgid "Trigger"
 msgstr ""
 
@@ -3265,6 +3317,10 @@ msgstr "GMX 언스테이킹"
 #: src/pages/Stake/StakeV2.js
 msgid "Unstake completed!"
 msgstr "언스테이킹 완료!"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Unstake esGMX"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Unstake failed"
@@ -3403,6 +3459,7 @@ msgstr "비중"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Migration/Migration.js
 msgid "Waiting for Approval"
 msgstr "승인 대기중"
 
@@ -3414,6 +3471,7 @@ msgstr "승인 대기중"
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js

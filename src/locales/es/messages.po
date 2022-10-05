@@ -140,6 +140,10 @@ msgstr "Cuenta"
 msgid "Actions"
 msgstr "Acciones"
 
+#: src/components/Exchange/PositionsList.js
+msgid "Active Orders"
+msgstr ""
+
 #: src/components/Referrals/TradersStats.js
 msgid "Active Referral Code"
 msgstr "Código de Referido Activo"
@@ -234,6 +238,7 @@ msgstr "Aprobar GMX"
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Migration/Migration.js
 msgid "Approve {0}"
 msgstr "Aprobar {0}"
 
@@ -257,6 +262,7 @@ msgstr "Aprobando {0}..."
 msgid "Approving {stakingTokenSymbol}..."
 msgstr "Aprobando {stakingTokenSymbol}..."
 
+#: src/components/Migration/Migration.js
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Approving..."
 msgstr "Aprobando..."
@@ -1143,6 +1149,7 @@ msgstr "Introduce un precio"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Migration/Migration.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1171,6 +1178,7 @@ msgstr ""
 msgid "Entry Price"
 msgstr "Precio de Entrada"
 
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Escrowed GMX"
 msgstr ""
@@ -1296,6 +1304,11 @@ msgstr "Composición Índice GLP"
 msgid "GLP Pool"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "GLP Vault"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr ""
@@ -1334,6 +1347,11 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Stats Page"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+msgid "GMX Vault"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1475,16 +1493,6 @@ msgstr ""
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Initial Collateral"
-msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Initial Collateral - Borrow Fee + PnL"
-msgstr ""
-
-#: src/components/Exchange/PositionsList.js
-#: src/components/Exchange/PositionsList.js
-msgid "Initial Collateral - Fees + PnL"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -1632,6 +1640,7 @@ msgstr ""
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/SwapBox.js
 msgid "Limit"
 msgstr ""
 
@@ -1705,6 +1714,7 @@ msgstr "Cargando..."
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -1771,6 +1781,10 @@ msgstr "Precio de Referencia"
 msgid "Mark: {0}"
 msgstr ""
 
+#: src/components/Exchange/SwapBox.js
+msgid "Market"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -1796,6 +1810,7 @@ msgstr "Capacidad Máxima para {0} Alcanzada"
 msgid "Max Pool Capacity"
 msgstr ""
 
+#: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
@@ -1892,6 +1907,7 @@ msgid "MetaMask not detected."
 msgstr "MetaMask no detectado."
 
 #: src/components/Migration/Migration.js
+#: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1903,7 +1919,15 @@ msgid "Migrated"
 msgstr ""
 
 #: src/components/Migration/Migration.js
+msgid "Migrating..."
+msgstr ""
+
+#: src/components/Migration/Migration.js
 msgid "Migration Price"
+msgstr ""
+
+#: src/components/Migration/Migration.js
+msgid "Migration failed"
 msgstr ""
 
 #: src/components/Migration/Migration.js
@@ -1974,7 +1998,13 @@ msgid "Net Value"
 msgstr "Valor Neto"
 
 #: src/components/Exchange/PositionsList.js
-msgid "Net Value:"
+#: src/components/Exchange/PositionsList.js
+msgid "Net Value: Initial Collateral - Borrow Fee + PnL"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
+msgid "Net Value: Initial Collateral - Fees + PnL"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -2013,6 +2043,7 @@ msgid "No open position, order cannot be executed unless a position is opened"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 msgid "No open positions"
 msgstr "No hay posiciones abiertas"
 
@@ -2029,6 +2060,10 @@ msgstr "Aún no hay historial de distribución de reembolsos."
 msgid "No rewards to claim yet"
 msgstr ""
 
+#: src/components/Exchange/TradeHistory.js
+msgid "No trades yet"
+msgstr ""
+
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "Tenga en cuenta que no se garantiza la ejecución de las órdenes.<0/><1/>Esto puede ocurrir en algunas situaciones que incluyen, pero no exclusivamente:"
@@ -2041,6 +2076,7 @@ msgstr ""
 msgid "Olympus Pro"
 msgstr "Olympus Pro"
 
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Open + Close fee"
 msgstr ""
@@ -2223,6 +2259,7 @@ msgstr "Por favor, cambie su red a Arbitrum."
 msgid "PnL"
 msgstr "GyP"
 
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "PnL After Fees"
 msgstr ""
@@ -2631,6 +2668,7 @@ msgstr "Compartir Posición"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
@@ -2694,12 +2732,20 @@ msgid "Stake <0>GMX</0> and <1>GLP</1> to earn rewards."
 msgstr "Stakea <0>GMX</0> y <1>GLP</1> para ganar recompensas."
 
 #: src/pages/Stake/StakeV2.js
+msgid "Stake GMX"
+msgstr ""
+
+#: src/pages/Stake/StakeV2.js
 msgid "Stake GMX Rewards"
 msgstr "Stakea Recompensas GMX"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Stake Multiplier Points"
 msgstr "Stakea Puntos Multiplicadores"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Stake esGMX"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Stake esGMX Rewards"
@@ -2769,6 +2815,7 @@ msgid "Supply"
 msgstr "Suministros"
 
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap"
@@ -3029,6 +3076,10 @@ msgstr "Para reducir las comisiones, seleccione un activo diferente con el que p
 msgid "To reduce fees, select a different asset to receive."
 msgstr "Para reducir las comisiones, seleccione un activo diferente para recibir."
 
+#: src/pages/Dashboard/DashboardV2.js
+msgid "Tokens"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Total"
 msgstr "Total"
@@ -3206,6 +3257,7 @@ msgid "Transferring"
 msgstr "Transfiriendo"
 
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/SwapBox.js
 msgid "Trigger"
 msgstr ""
 
@@ -3265,6 +3317,10 @@ msgstr "Destakear GMX"
 #: src/pages/Stake/StakeV2.js
 msgid "Unstake completed!"
 msgstr "¡Destakeo completado!"
+
+#: src/pages/Stake/StakeV2.js
+msgid "Unstake esGMX"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 msgid "Unstake failed"
@@ -3403,6 +3459,7 @@ msgstr "PESO"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
+#: src/components/Migration/Migration.js
 msgid "Waiting for Approval"
 msgstr "Esperando Aprobación"
 
@@ -3414,6 +3471,7 @@ msgstr "Esperando Aprobación"
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
