@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { BigNumber, BigNumberish, ethers } from "ethers";
 import { gql } from "@apollo/client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Token as UniToken } from "@uniswap/sdk-core";
@@ -48,7 +48,7 @@ export function useAllOrdersStats(chainId) {
     }
   }`);
 
-  const [res, setRes] = useState();
+  const [res, setRes] = useState<any>();
 
   useEffect(() => {
     const graphClient = getGmxGraphClient(chainId);
@@ -68,10 +68,10 @@ export function useUserStat(chainId) {
     }
   }`);
 
-  const [res, setRes] = useState();
+  const [res, setRes] = useState<any>();
 
   useEffect(() => {
-    getGmxGraphClient(chainId).query({ query }).then(setRes).catch(console.warn);
+    getGmxGraphClient(chainId)!.query({ query }).then(setRes).catch(console.warn);
   }, [setRes, query, chainId]);
 
   return res ? res.data.userStat : null;
@@ -145,13 +145,14 @@ export function useAllPositions(chainId, library) {
     }
   }`);
 
-  const [res, setRes] = useState();
+  const [res, setRes] = useState<any>();
 
   useEffect(() => {
     nissohGraphClient.query({ query }).then(setRes).catch(console.warn);
   }, [setRes, query]);
 
-  const key = res ? `allPositions${count}__` : false;
+  const key = res ? `allPositions${count}__` : null;
+
   const { data: positions = [] } = useSWR(key, async () => {
     const provider = getProvider(library, chainId);
     const vaultAddress = getContract(chainId, "Vault");
@@ -161,7 +162,7 @@ export function useAllPositions(chainId, library) {
         try {
           const { indexToken, collateralToken, isLong } = dataItem.initialPosition;
           const positionData = await contract.getPosition(dataItem.account, collateralToken, indexToken, isLong);
-          const position = {
+          const position: any = {
             size: bigNumberify(positionData[0]),
             collateral: bigNumberify(positionData[1]),
             entryFundingRate: bigNumberify(positionData[3]),
@@ -204,10 +205,10 @@ export function useAllOrders(chainId, library) {
     }
   }`);
 
-  const [res, setRes] = useState();
+  const [res, setRes] = useState<any>();
 
   useEffect(() => {
-    getGmxGraphClient(chainId).query({ query }).then(setRes);
+    getGmxGraphClient(chainId)!.query({ query }).then(setRes);
   }, [setRes, query, chainId]);
 
   const key = res ? res.data.orders.map((order) => `${order.type}-${order.account}-${order.index}`) : null;
@@ -221,7 +222,7 @@ export function useAllOrders(chainId, library) {
           const type = order.type.charAt(0).toUpperCase() + order.type.substring(1);
           const method = `get${type}Order`;
           const orderFromChain = await contract[method](order.account, order.index);
-          const ret = {};
+          const ret: any = {};
           for (const [key, val] of Object.entries(orderFromChain)) {
             ret[key] = val;
           }
@@ -289,15 +290,20 @@ export function useTrades(chainId, account, forSingleAccount, afterId) {
       : !forSingleAccount && `${getServerBaseUrl(chainId)}/actions`;
 
   if (afterId && afterId.length > 0) {
-    const urlItem = new URL(url);
+    const urlItem = new URL(url as string);
     urlItem.searchParams.append("after", afterId);
     url = urlItem.toString();
   }
 
-  const { data: trades, mutate: updateTrades } = useSWR(url && url, {
-    dedupingInterval: 10000,
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
-  });
+  const { data: trades, mutate: updateTrades } = useSWR(
+    // @ts-ignore
+    url && url,
+    {
+      dedupingInterval: 10000,
+      // @ts-ignore
+      fetcher: (...args) => fetch(...args).then((res) => res.json()),
+    }
+  );
 
   if (trades) {
     trades.sort((item0, item1) => {
@@ -346,11 +352,14 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
-  const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
-    fetcher: contractFetcher(library, PositionRouter),
-  });
+  const { data: minExecutionFee } = useSWR<BigNumber | undefined>(
+    [active, chainId, positionRouterAddress, "minExecutionFee"],
+    {
+      fetcher: contractFetcher(library, PositionRouter),
+    }
+  );
 
-  const { data: gasPrice } = useSWR(["gasPrice", chainId], {
+  const { data: gasPrice } = useSWR<BigNumber | undefined>(["gasPrice", chainId], {
     fetcher: () => {
       return new Promise(async (resolve, reject) => {
         const provider = getProvider(library, chainId);
@@ -410,7 +419,7 @@ export function useStakedGmxSupply(library, active) {
   const gmxAddressArb = getContract(ARBITRUM, "GMX");
   const stakedGmxTrackerAddressArb = getContract(ARBITRUM, "StakedGmxTracker");
 
-  const { data: arbData, mutate: arbMutate } = useSWR(
+  const { data: arbData, mutate: arbMutate } = useSWR<any>(
     [`StakeV2:stakedGmxSupply:${active}`, ARBITRUM, gmxAddressArb, "balanceOf", stakedGmxTrackerAddressArb],
     {
       fetcher: contractFetcher(library, Token),
@@ -423,6 +432,7 @@ export function useStakedGmxSupply(library, active) {
   const { data: avaxData, mutate: avaxMutate } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, AVALANCHE, gmxAddressAvax, "balanceOf", stakedGmxTrackerAddressAvax],
     {
+      // @ts-ignore
       fetcher: contractFetcher(undefined, Token),
     }
   );
@@ -443,6 +453,7 @@ export function useStakedGmxSupply(library, active) {
 export function useHasOutdatedUi() {
   const url = getServerUrl(ARBITRUM, "/ui_version");
   const { data, mutate } = useSWR([url], {
+    // @ts-ignore
     fetcher: (...args) => fetch(...args).then((res) => res.text()),
   });
 
@@ -479,6 +490,7 @@ export function useTotalGmxSupply() {
   const gmxSupplyUrlArbitrum = getServerUrl(ARBITRUM, "/gmx_supply");
 
   const { data: gmxSupply, mutate: updateGmxSupply } = useSWR([gmxSupplyUrlArbitrum], {
+    // @ts-ignore
     fetcher: (...args) => fetch(...args).then((res) => res.text()),
   });
 
@@ -492,7 +504,7 @@ export function useTotalGmxStaked() {
   const stakedGmxTrackerAddressArbitrum = getContract(ARBITRUM, "StakedGmxTracker");
   const stakedGmxTrackerAddressAvax = getContract(AVALANCHE, "StakedGmxTracker");
   let totalStakedGmx = useRef(bigNumberify(0));
-  const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR(
+  const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR<BigNumberish | undefined>(
     [
       `StakeV2:stakedGmxSupply:${ARBITRUM}`,
       ARBITRUM,
@@ -501,10 +513,11 @@ export function useTotalGmxStaked() {
       stakedGmxTrackerAddressArbitrum,
     ],
     {
+      // @ts-ignore
       fetcher: contractFetcher(undefined, Token),
     }
   );
-  const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR(
+  const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR<BigNumberish | undefined>(
     [
       `StakeV2:stakedGmxSupply:${AVALANCHE}`,
       AVALANCHE,
@@ -513,6 +526,7 @@ export function useTotalGmxStaked() {
       stakedGmxTrackerAddressAvax,
     ],
     {
+      // @ts-ignore
       fetcher: contractFetcher(undefined, Token),
     }
   );
@@ -523,7 +537,7 @@ export function useTotalGmxStaked() {
   }, [updateStakedGmxSupplyArbitrum, updateStakedGmxSupplyAvax]);
 
   if (stakedGmxSupplyArbitrum && stakedGmxSupplyAvax) {
-    let total = bigNumberify(stakedGmxSupplyArbitrum).add(stakedGmxSupplyAvax);
+    let total = bigNumberify(stakedGmxSupplyArbitrum)!.add(stakedGmxSupplyAvax);
     totalStakedGmx.current = total;
   }
 
@@ -540,15 +554,17 @@ export function useTotalGmxInLiquidity() {
   let poolAddressAvax = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
   let totalGMX = useRef(bigNumberify(0));
 
-  const { data: gmxInLiquidityOnArbitrum, mutate: mutateGMXInLiquidityOnArbitrum } = useSWR(
+  const { data: gmxInLiquidityOnArbitrum, mutate: mutateGMXInLiquidityOnArbitrum } = useSWR<any>(
     [`StakeV2:gmxInLiquidity:${ARBITRUM}`, ARBITRUM, getContract(ARBITRUM, "GMX"), "balanceOf", poolAddressArbitrum],
     {
+      // @ts-ignore
       fetcher: contractFetcher(undefined, Token),
     }
   );
-  const { data: gmxInLiquidityOnAvax, mutate: mutateGMXInLiquidityOnAvax } = useSWR(
+  const { data: gmxInLiquidityOnAvax, mutate: mutateGMXInLiquidityOnAvax } = useSWR<any>(
     [`StakeV2:gmxInLiquidity:${AVALANCHE}`, AVALANCHE, getContract(AVALANCHE, "GMX"), "balanceOf", poolAddressAvax],
     {
+      // @ts-ignore
       fetcher: contractFetcher(undefined, Token),
     }
   );
@@ -558,7 +574,7 @@ export function useTotalGmxInLiquidity() {
   }, [mutateGMXInLiquidityOnArbitrum, mutateGMXInLiquidityOnAvax]);
 
   if (gmxInLiquidityOnAvax && gmxInLiquidityOnArbitrum) {
-    let total = bigNumberify(gmxInLiquidityOnArbitrum).add(gmxInLiquidityOnAvax);
+    let total = bigNumberify(gmxInLiquidityOnArbitrum)!.add(gmxInLiquidityOnAvax);
     totalGMX.current = total;
   }
   return {
@@ -573,20 +589,22 @@ function useGmxPriceFromAvalanche() {
   const poolAddress = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
 
   const { data, mutate: updateReserves } = useSWR(["TraderJoeGmxAvaxReserves", AVALANCHE, poolAddress, "getReserves"], {
+    // @ts-ignore
     fetcher: contractFetcher(undefined, UniswapV2),
   });
-  const { _reserve0: gmxReserve, _reserve1: avaxReserve } = data || {};
+  const { _reserve0: gmxReserve, _reserve1: avaxReserve }: any = data || {};
 
   const vaultAddress = getContract(AVALANCHE, "Vault");
   const avaxAddress = getTokenBySymbol(AVALANCHE, "WAVAX").address;
   const { data: avaxPrice, mutate: updateAvaxPrice } = useSWR(
     [`StakeV2:avaxPrice`, AVALANCHE, vaultAddress, "getMinPrice", avaxAddress],
     {
+      // @ts-ignore
       fetcher: contractFetcher(undefined, Vault),
     }
   );
 
-  const PRECISION = bigNumberify(10).pow(18);
+  const PRECISION = bigNumberify(10)!.pow(18);
   let gmxPrice;
   if (avaxReserve && gmxReserve && avaxPrice) {
     gmxPrice = avaxReserve.mul(PRECISION).div(gmxReserve).mul(avaxPrice).div(PRECISION);
@@ -602,7 +620,7 @@ function useGmxPriceFromAvalanche() {
 
 function useGmxPriceFromArbitrum(library, active) {
   const poolAddress = getContract(ARBITRUM, "UniswapGmxEthPool");
-  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR(
+  const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR<any>(
     [`StakeV2:uniPoolSlot0:${active}`, ARBITRUM, poolAddress, "slot0"],
     {
       fetcher: contractFetcher(library, UniPool),
@@ -611,7 +629,7 @@ function useGmxPriceFromArbitrum(library, active) {
 
   const vaultAddress = getContract(ARBITRUM, "Vault");
   const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address;
-  const { data: ethPrice, mutate: updateEthPrice } = useSWR(
+  const { data: ethPrice, mutate: updateEthPrice } = useSWR<BigNumberish | undefined>(
     [`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
     {
       fetcher: contractFetcher(library, Vault),
@@ -637,7 +655,7 @@ function useGmxPriceFromArbitrum(library, active) {
 
       const poolTokenPrice = pool.priceOf(tokenB).toSignificant(6);
       const poolTokenPriceAmount = parseValue(poolTokenPrice, 18);
-      return poolTokenPriceAmount.mul(ethPrice).div(expandDecimals(1, 18));
+      return poolTokenPriceAmount?.mul(ethPrice).div(expandDecimals(1, 18));
     }
   }, [ethPrice, uniPoolSlot0, ethAddress]);
 
@@ -649,17 +667,12 @@ function useGmxPriceFromArbitrum(library, active) {
   return { data: gmxPrice, mutate };
 }
 
-export async function approvePlugin(
-  chainId,
-  pluginAddress,
-  { library, pendingTxns, setPendingTxns, sentMsg, failMsg }
-) {
+export async function approvePlugin(chainId, pluginAddress, { library, setPendingTxns, sentMsg, failMsg }) {
   const routerAddress = getContract(chainId, "Router");
   const contract = new ethers.Contract(routerAddress, Router.abi, library.getSigner());
   return callContract(chainId, contract, "approvePlugin", [pluginAddress], {
     sentMsg,
     failMsg,
-    pendingTxns,
     setPendingTxns,
   });
 }
@@ -672,7 +685,7 @@ export async function createSwapOrder(
   minOut,
   triggerRatio,
   nativeTokenAddress,
-  opts = {}
+  opts: any = {}
 ) {
   const executionFee = getConstant(chainId, "SWAP_ORDER_EXECUTION_GAS_FEE");
   const triggerAboveThreshold = false;
@@ -709,7 +722,7 @@ export async function createIncreaseOrder(
   collateralTokenAddress,
   isLong,
   triggerPrice,
-  opts = {}
+  opts: any = {}
 ) {
   invariant(!isLong || indexTokenAddress === collateralTokenAddress, "invalid token addresses");
   invariant(indexTokenAddress !== AddressZero, "indexToken is 0");
@@ -756,7 +769,7 @@ export async function createDecreaseOrder(
   isLong,
   triggerPrice,
   triggerAboveThreshold,
-  opts = {}
+  opts: any = {}
 ) {
   invariant(!isLong || indexTokenAddress === collateralTokenAddress, "invalid token addresses");
   invariant(indexTokenAddress !== AddressZero, "indexToken is 0");

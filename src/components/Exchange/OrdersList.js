@@ -10,7 +10,7 @@ import {
   getExchangeRateDisplay,
   getExchangeRate,
   getPositionForOrder,
-} from "lib/legacy.js";
+} from "lib/legacy";
 import { handleCancelOrder } from "domain/legacy";
 import { getContract } from "config/contracts";
 

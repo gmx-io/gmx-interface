@@ -25,6 +25,19 @@ import {
   WalletConnectConnector,
 } from "@web3-react/walletconnect-connector";
 import { helperToast } from "../helperToast";
+import { Web3ReactManagerFunctions } from "@web3-react/core/dist/types";
+
+export type NetworkMetadata = {
+  chainId: string;
+  chainName: string;
+  nativeCurrency: {
+    name: string;
+    symbol: string;
+    decimals: number;
+  };
+  rpcUrls: string[];
+  blockExplorerUrls: string[];
+};
 
 const injectedConnector = new InjectedConnector({
   supportedChainIds: SUPPORTED_CHAIN_IDS,
@@ -44,7 +57,7 @@ export function hasCoinBaseWalletExtension() {
   return window.ethereum.isCoinbaseWallet || ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
 }
 
-export function activateInjectedProvider(providerName) {
+export function activateInjectedProvider(providerName: string) {
   const { ethereum } = window;
 
   if (!ethereum?.providers && !ethereum?.isCoinbaseWallet && !ethereum?.isMetaMask) {
@@ -98,7 +111,7 @@ export function clearWalletLinkData() {
     .map((x) => localStorage.removeItem(x));
 }
 
-export function useEagerConnect(setActivatingConnector) {
+export function useEagerConnect(setActivatingConnector: (connector: any) => void) {
   const { activate, active } = useWeb3React();
   const [tried, setTried] = useState(false);
 
@@ -214,15 +227,15 @@ export const addBscNetwork = async () => {
   return addNetwork(NETWORK_METADATA[MAINNET]);
 };
 
-export const addNetwork = async (metadata) => {
+export const addNetwork = async (metadata: NetworkMetadata) => {
   await window.ethereum.request({ method: "wallet_addEthereumChain", params: [metadata] }).catch();
 };
 
-export const switchNetwork = async (chainId, active) => {
+export const switchNetwork = async (chainId: number, active?: boolean) => {
   if (!active) {
     // chainId in localStorage allows to switch network even if wallet is not connected
     // or there is no wallet at all
-    localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, chainId);
+    localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, String(chainId));
     document.location.reload();
     return;
   }
@@ -248,7 +261,11 @@ export const switchNetwork = async (chainId, active) => {
   }
 };
 
-export const getWalletConnectHandler = (activate, deactivate, setActivatingConnector) => {
+export const getWalletConnectHandler = (
+  activate: Web3ReactManagerFunctions["activate"],
+  deactivate: Web3ReactManagerFunctions["deactivate"],
+  setActivatingConnector: (connector?: WalletConnectConnector) => void
+) => {
   const fn = async () => {
     const walletConnect = getWalletConnectConnector();
     setActivatingConnector(walletConnect);
@@ -267,7 +284,7 @@ export const getWalletConnectHandler = (activate, deactivate, setActivatingConne
   return fn;
 };
 
-export const getInjectedHandler = (activate) => {
+export const getInjectedHandler = (activate: Web3ReactManagerFunctions["activate"]) => {
   const fn = async () => {
     activate(getInjectedConnector(), (e) => {
       const chainId = Number(localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)) || DEFAULT_CHAIN_ID;
@@ -294,7 +311,12 @@ export const getInjectedHandler = (activate) => {
   return fn;
 };
 
-export async function addTokenToMetamask(token) {
+export async function addTokenToMetamask(token: {
+  address: string;
+  symbol: string;
+  decimals: number;
+  imageUrl?: string;
+}) {
   try {
     const wasAdded = await window.ethereum.request({
       method: "wallet_watchAsset",

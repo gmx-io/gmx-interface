@@ -24,7 +24,7 @@ i18n.loadLocaleData({
   fr: { plurals: fr },
 });
 
-export async function dynamicActivate(locale) {
+export async function dynamicActivate(locale: string) {
   const { messages } = await import(`@lingui/loader!locales/${locale}/messages.po`);
   localStorage.setItem(LANGUAGE_LOCALSTORAGE_KEY, locale);
   i18n.load(locale, messages);

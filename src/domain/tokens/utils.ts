@@ -26,7 +26,7 @@ export function getTokenUrl(chainId: number, address: string) {
 }
 
 export function getUsd(
-  amount: BigNumber,
+  amount: BigNumber | undefined,
   tokenAddress: string,
   max: boolean,
   infoTokens: InfoTokens,
@@ -197,7 +197,7 @@ export function getMostAbundantStableToken(chainId: number, infoTokens: InfoToke
     }
   }
 
-  return stableToken;
+  return stableToken as TokenInfo;
 }
 
 export function shouldRaiseGasError(token: TokenInfo, amount?: BigNumber) {

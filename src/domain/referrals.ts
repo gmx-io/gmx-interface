@@ -83,7 +83,7 @@ async function getCodeOwnersData(network, account, codes = []) {
 }
 
 export function useUserCodesOnAllChain(account) {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<any>(null);
   const query = gql`
     query referralCodesOnAllChain($account: String!) {
       referralCodes(first: 1000, where: { owner: $account }) {
@@ -111,11 +111,11 @@ export function useUserCodesOnAllChain(account) {
         [ARBITRUM]: codeOwnersOnAvax.reduce((acc, cv) => {
           acc[cv.code] = cv;
           return acc;
-        }, {}),
+        }, {} as any),
         [AVALANCHE]: codeOwnersOnArbitrum.reduce((acc, cv) => {
           acc[cv.code] = cv;
           return acc;
-        }, {}),
+        }, {} as any),
       });
     }
 
@@ -125,7 +125,7 @@ export function useUserCodesOnAllChain(account) {
 }
 
 export function useReferralsData(chainId, account) {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const ownerOnOtherChain = useUserCodesOnAllChain(account);
   useEffect(() => {
@@ -133,7 +133,7 @@ export function useReferralsData(chainId, account) {
       setLoading(false);
       return;
     }
-    const startOfDayTimestamp = Math.floor(parseInt(Date.now() / 1000) / 86400) * 86400;
+    const startOfDayTimestamp = Math.floor(parseInt(String(Date.now() / 1000)) / 86400) * 86400;
     const query = gql`
       query referralData($typeIds: [String!]!, $account: String!, $timestamp: Int!, $referralTotalStatsId: String!) {
         distributions(
@@ -202,8 +202,8 @@ export function useReferralsData(chainId, account) {
         },
       })
       .then((res) => {
-        const rebateDistributions = [];
-        const discountDistributions = [];
+        const rebateDistributions: any[] = [];
+        const discountDistributions: any[] = [];
         res.data.distributions.forEach((d) => {
           const item = {
             timestamp: parseInt(d.timestamp),
@@ -233,7 +233,7 @@ export function useReferralsData(chainId, account) {
           };
         }
 
-        function getCumulativeStats(data = []) {
+        function getCumulativeStats(data: any[] = []) {
           return data.reduce(
             (acc, cv) => {
               acc.totalRebateUsd = acc.totalRebateUsd.add(cv.totalRebateUsd);
@@ -251,7 +251,7 @@ export function useReferralsData(chainId, account) {
               trades: 0,
               tradedReferralsCount: 0,
               registeredReferralsCount: 0,
-            }
+            } as any
           );
         }
 
@@ -323,6 +323,7 @@ export function useUserReferralCode(library, chainId, account) {
     { fetcher: contractFetcher(library, ReferralStorage) }
   );
   const { data: localStorageCodeOwner } = useSWR(
+    // @ts-ignore useSWR does not accept false as a key
     localStorageCode &&
       REGEX_VERIFY_BYTES32.test(localStorageCode) && [
         "ReferralStorage",
