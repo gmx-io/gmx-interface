@@ -27,7 +27,7 @@ import {
 import { helperToast } from "../helperToast";
 
 const injectedConnector = new InjectedConnector({
-  SUPPORTED_CHAIN_IDS,
+  supportedChainIds: SUPPORTED_CHAIN_IDS,
 });
 
 export function hasMetaMaskWalletExtension() {
