@@ -782,9 +782,9 @@ export const Exchange = forwardRef((props, ref) => {
         setIsPositionRouterApproving(false);
       });
   };
-  const POSITIONS = t`Positions`;
-  const ORDERS = t`Orders`;
-  const TRADES = t`Trades`;
+  const POSITIONS = "Positions";
+  const ORDERS = "Orders";
+  const TRADES = "Trades";
 
   const LIST_SECTIONS = [POSITIONS, flagOrdersEnabled ? ORDERS : undefined, TRADES].filter(Boolean);
   let [listSection, setListSection] = useLocalStorageByChainId(chainId, "List-section-v2", LIST_SECTIONS[0]);

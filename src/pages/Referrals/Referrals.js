@@ -27,8 +27,8 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
 import { useChainId } from "lib/chains";
 
-const TRADERS = t`Traders`;
-const AFFILIATES = t`Affiliates`;
+const TRADERS = "Traders";
+const AFFILIATES = "Affiliates";
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
 
 function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
@@ -108,6 +108,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
       />
     );
   }
+  const TAB_OPTION_LABELS = { [TRADERS]: t`Traders`, [AFFILIATES]: t`Affiliates` };
 
   return (
     <SEO title={getPageTitle(t`Referrals`)}>
@@ -129,7 +130,13 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
           </div>
         </div>
         <div className="referral-tab-container">
-          <Tab options={TAB_OPTIONS} option={activeTab} setOption={setActiveTab} onChange={setActiveTab} />
+          <Tab
+            options={TAB_OPTIONS}
+            optionLabels={TAB_OPTION_LABELS}
+            option={activeTab}
+            setOption={setActiveTab}
+            onChange={setActiveTab}
+          />
         </div>
         {activeTab === AFFILIATES ? renderAffiliatesTab() : renderTradersTab()}
       </div>
