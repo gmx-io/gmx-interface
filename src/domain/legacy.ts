@@ -1,4 +1,4 @@
-import { BigNumber, BigNumberish, ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { gql } from "@apollo/client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Token as UniToken } from "@uniswap/sdk-core";
@@ -71,7 +71,7 @@ export function useUserStat(chainId) {
   const [res, setRes] = useState<any>();
 
   useEffect(() => {
-    getGmxGraphClient(chainId)!.query({ query }).then(setRes).catch(console.warn);
+    getGmxGraphClient(chainId)?.query({ query }).then(setRes).catch(console.warn);
   }, [setRes, query, chainId]);
 
   return res ? res.data.userStat : null;
@@ -208,7 +208,7 @@ export function useAllOrders(chainId, library) {
   const [res, setRes] = useState<any>();
 
   useEffect(() => {
-    getGmxGraphClient(chainId)!.query({ query }).then(setRes);
+    getGmxGraphClient(chainId)?.query({ query }).then(setRes);
   }, [setRes, query, chainId]);
 
   const key = res ? res.data.orders.map((order) => `${order.type}-${order.account}-${order.index}`) : null;
@@ -295,15 +295,11 @@ export function useTrades(chainId, account, forSingleAccount, afterId) {
     url = urlItem.toString();
   }
 
-  const { data: trades, mutate: updateTrades } = useSWR(
+  const { data: trades, mutate: updateTrades } = useSWR(url ? url : null, {
+    dedupingInterval: 10000,
     // @ts-ignore
-    url && url,
-    {
-      dedupingInterval: 10000,
-      // @ts-ignore
-      fetcher: (...args) => fetch(...args).then((res) => res.json()),
-    }
-  );
+    fetcher: (...args) => fetch(...args).then((res) => res.json()),
+  });
 
   if (trades) {
     trades.sort((item0, item1) => {
@@ -504,7 +500,7 @@ export function useTotalGmxStaked() {
   const stakedGmxTrackerAddressArbitrum = getContract(ARBITRUM, "StakedGmxTracker");
   const stakedGmxTrackerAddressAvax = getContract(AVALANCHE, "StakedGmxTracker");
   let totalStakedGmx = useRef(bigNumberify(0));
-  const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR<BigNumberish | undefined>(
+  const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR<BigNumber | undefined>(
     [
       `StakeV2:stakedGmxSupply:${ARBITRUM}`,
       ARBITRUM,
@@ -517,7 +513,7 @@ export function useTotalGmxStaked() {
       fetcher: contractFetcher(undefined, Token),
     }
   );
-  const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR<BigNumberish | undefined>(
+  const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR<BigNumber | undefined>(
     [
       `StakeV2:stakedGmxSupply:${AVALANCHE}`,
       AVALANCHE,
@@ -629,7 +625,7 @@ function useGmxPriceFromArbitrum(library, active) {
 
   const vaultAddress = getContract(ARBITRUM, "Vault");
   const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address;
-  const { data: ethPrice, mutate: updateEthPrice } = useSWR<BigNumberish | undefined>(
+  const { data: ethPrice, mutate: updateEthPrice } = useSWR<BigNumber | undefined>(
     [`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
     {
       fetcher: contractFetcher(library, Vault),

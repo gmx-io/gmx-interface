@@ -134,6 +134,7 @@ export function useReferralsData(chainId, account) {
       return;
     }
     const startOfDayTimestamp = Math.floor(parseInt(String(Date.now() / 1000)) / 86400) * 86400;
+
     const query = gql`
       query referralData($typeIds: [String!]!, $account: String!, $timestamp: Int!, $referralTotalStatsId: String!) {
         distributions(
@@ -322,18 +323,14 @@ export function useUserReferralCode(library, chainId, account) {
     account && ["ReferralStorage", chainId, referralStorageAddress, "traderReferralCodes", account],
     { fetcher: contractFetcher(library, ReferralStorage) }
   );
+
   const { data: localStorageCodeOwner } = useSWR(
-    // @ts-ignore useSWR does not accept false as a key
-    localStorageCode &&
-      REGEX_VERIFY_BYTES32.test(localStorageCode) && [
-        "ReferralStorage",
-        chainId,
-        referralStorageAddress,
-        "codeOwners",
-        localStorageCode,
-      ],
+    localStorageCode && REGEX_VERIFY_BYTES32.test(localStorageCode)
+      ? ["ReferralStorage", chainId, referralStorageAddress, "codeOwners", localStorageCode]
+      : null,
     { fetcher: contractFetcher(library, ReferralStorage) }
   );
+
   const [attachedOnChain, userReferralCode, userReferralCodeString] = useMemo(() => {
     if (onChainCode && !isHashZero(onChainCode)) {
       return [true, onChainCode, decodeReferralCode(onChainCode)];
