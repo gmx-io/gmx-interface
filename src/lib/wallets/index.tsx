@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import {
   ARBITRUM,
@@ -12,7 +13,6 @@ import {
   SUPPORTED_CHAIN_IDS,
 } from "config/chains";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
-import React, { useEffect, useState } from "react";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   SELECTED_NETWORK_LOCAL_STORAGE_KEY,
@@ -74,7 +74,8 @@ export function getInjectedConnector() {
 }
 
 export const getWalletConnectConnector = () => {
-  const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID;
+  const chainId = Number(localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)) || DEFAULT_CHAIN_ID;
+
   return new WalletConnectConnector({
     rpc: {
       [AVALANCHE]: AVALANCHE_RPC_PROVIDERS[0],
@@ -269,7 +270,7 @@ export const getWalletConnectHandler = (activate, deactivate, setActivatingConne
 export const getInjectedHandler = (activate) => {
   const fn = async () => {
     activate(getInjectedConnector(), (e) => {
-      const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID;
+      const chainId = Number(localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)) || DEFAULT_CHAIN_ID;
 
       if (e instanceof UnsupportedChainIdError) {
         helperToast.error(

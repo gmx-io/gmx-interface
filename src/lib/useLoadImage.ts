@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-export default function useLoadImage(src) {
-  const [sourceLoaded, setSourceLoaded] = useState(null);
+export default function useLoadImage(src: string) {
+  const [sourceLoaded, setSourceLoaded] = useState<string | null>(null);
 
   useEffect(() => {
     const img = new Image();
