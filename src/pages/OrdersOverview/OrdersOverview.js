@@ -3,28 +3,28 @@ import cx from "classnames";
 
 import { NavLink } from "react-router-dom";
 
-import { getContract } from "../../config/Addresses";
-import { useAllOrders, useAllOrdersStats, usePositionsForOrders } from "../../domain/legacy";
+import { getContract } from "config/contracts";
+import * as Api from "domain/legacy";
+import { useAllOrders, useAllOrdersStats, usePositionsForOrders } from "domain/legacy";
 import {
-  USD_DECIMALS,
   DECREASE,
-  INCREASE,
-  SWAP,
-  useChainId,
-  formatAmount,
-  shortenAddress,
-  getTokenInfo,
-  getExchangeRateDisplay,
   getExchangeRate,
-  shouldInvertTriggerRatio,
-  formatDateTime,
+  getExchangeRateDisplay,
   getOrderKey,
-} from "../../lib/legacy";
-
-import * as Api from "../../domain/legacy";
+  INCREASE,
+  shortenAddress,
+  shouldInvertTriggerRatio,
+  SWAP,
+  USD_DECIMALS,
+} from "lib/legacy";
 
 import "./OrdersOverview.css";
 import { t, Trans } from "@lingui/macro";
+import { getTokenInfo } from "domain/tokens/utils";
+import { useInfoTokens } from "domain/tokens";
+import { formatAmount } from "lib/numbers";
+import { useChainId } from "lib/chains";
+import { formatDateTime } from "lib/dates";
 
 export default function OrdersOverview() {
   const { chainId } = useChainId();
@@ -32,7 +32,7 @@ export default function OrdersOverview() {
 
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
-  const { infoTokens } = Api.useInfoTokens(library, chainId, active, undefined, undefined);
+  const { infoTokens } = useInfoTokens(library, chainId, active, undefined, undefined);
 
   const orders = useAllOrders(chainId, library);
   const stats = useAllOrdersStats(chainId);

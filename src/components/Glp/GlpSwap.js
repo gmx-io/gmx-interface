@@ -6,25 +6,12 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 import Tab from "../Tab/Tab";
 import cx from "classnames";
-import { getToken, getTokens, getWhitelistedTokens, getWrappedToken, getNativeToken } from "../../config/Tokens";
-import { getContract } from "../../config/Addresses";
+import { getContract } from "config/contracts";
 import {
-  helperToast,
-  useLocalStorageByChainId,
-  getTokenInfo,
-  useChainId,
-  expandDecimals,
-  bigNumberify,
-  formatAmount,
-  formatAmountFree,
-  formatKeyAmount,
   getBuyGlpToAmount,
   getBuyGlpFromAmount,
   getSellGlpFromAmount,
   getSellGlpToAmount,
-  parseValue,
-  approveTokens,
-  getUsd,
   adjustForDecimals,
   GLP_DECIMALS,
   USD_DECIMALS,
@@ -32,42 +19,46 @@ import {
   GLP_COOLDOWN_DURATION,
   SECONDS_PER_YEAR,
   USDG_DECIMALS,
-  ARBITRUM,
   PLACEHOLDER_ACCOUNT,
   importImage,
-  IS_NETWORK_DISABLED,
-  getChainName,
-} from "../../lib/legacy";
+} from "lib/legacy";
 
-import { useGmxPrice, useInfoTokens } from "../../domain/legacy";
+import { useGmxPrice } from "domain/legacy";
 
 import TokenSelector from "../Exchange/TokenSelector";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
 import Tooltip from "../Tooltip/Tooltip";
 
-import ReaderV2 from "../../abis/ReaderV2.json";
-import RewardReader from "../../abis/RewardReader.json";
-import VaultV2 from "../../abis/VaultV2.json";
-import GlpManager from "../../abis/GlpManager.json";
-import RewardTracker from "../../abis/RewardTracker.json";
-import Vester from "../../abis/Vester.json";
-import RewardRouter from "../../abis/RewardRouter.json";
-import Token from "../../abis/Token.json";
+import ReaderV2 from "abis/ReaderV2.json";
+import RewardReader from "abis/RewardReader.json";
+import VaultV2 from "abis/VaultV2.json";
+import GlpManager from "abis/GlpManager.json";
+import RewardTracker from "abis/RewardTracker.json";
+import Vester from "abis/Vester.json";
+import RewardRouter from "abis/RewardRouter.json";
+import Token from "abis/Token.json";
 
-import glp24Icon from "../../img/ic_glp_24.svg";
-import glp40Icon from "../../img/ic_glp_40.svg";
-import arrowIcon from "../../img/ic_convert_down.svg";
+import glp24Icon from "img/ic_glp_24.svg";
+import glp40Icon from "img/ic_glp_40.svg";
+import arrowIcon from "img/ic_convert_down.svg";
 
-import avalanche16Icon from "../../img/ic_avalanche_16.svg";
-import arbitrum16Icon from "../../img/ic_arbitrum_16.svg";
+import avalanche16Icon from "img/ic_avalanche_16.svg";
+import arbitrum16Icon from "img/ic_arbitrum_16.svg";
 
 import "./GlpSwap.css";
-import AssetDropdown from "../../pages/Dashboard/AssetDropdown";
+import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import SwapErrorModal from "./SwapErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { fetcher } from "../../lib/contracts/fetcher";
-import { callContract } from "../../lib/contracts/callContract";
-import ExternalLink from "../Common/ExternalLink";
+import { ARBITRUM, getChainName, IS_NETWORK_DISABLED } from "config/chains";
+import { callContract, contractFetcher } from "lib/contracts";
+import { approveTokens, useInfoTokens } from "domain/tokens";
+import { useLocalStorageByChainId } from "lib/localStorage";
+import { helperToast } from "lib/helperToast";
+import { getTokenInfo, getUsd } from "domain/tokens/utils";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
+import { getNativeToken, getToken, getTokens, getWhitelistedTokens, getWrappedToken } from "config/tokens";
+import { useChainId } from "lib/chains";
+import ExternalLink from "components/Common/ExternalLink";
 
 const { AddressZero } = ethers.constants;
 
@@ -157,7 +148,7 @@ export default function GlpSwap(props) {
   const { data: tokenBalances } = useSWR(
     [`GlpSwap:getTokenBalances:${active}`, chainId, readerAddress, "getTokenBalances", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: fetcher(library, ReaderV2, [tokenAddresses]),
+      fetcher: contractFetcher(library, ReaderV2, [tokenAddresses]),
     }
   );
 
@@ -170,18 +161,18 @@ export default function GlpSwap(props) {
       account || PLACEHOLDER_ACCOUNT,
     ],
     {
-      fetcher: fetcher(library, ReaderV2, [tokensForBalanceAndSupplyQuery]),
+      fetcher: contractFetcher(library, ReaderV2, [tokensForBalanceAndSupplyQuery]),
     }
   );
 
   const { data: aums } = useSWR([`GlpSwap:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
-    fetcher: fetcher(library, GlpManager),
+    fetcher: contractFetcher(library, GlpManager),
   });
 
   const { data: totalTokenWeights } = useSWR(
     [`GlpSwap:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
-      fetcher: fetcher(library, VaultV2),
+      fetcher: contractFetcher(library, VaultV2),
     }
   );
 
@@ -189,21 +180,21 @@ export default function GlpSwap(props) {
   const { data: tokenAllowance } = useSWR(
     [active, chainId, tokenAllowanceAddress, "allowance", account || PLACEHOLDER_ACCOUNT, glpManagerAddress],
     {
-      fetcher: fetcher(library, Token),
+      fetcher: contractFetcher(library, Token),
     }
   );
 
   const { data: lastPurchaseTime } = useSWR(
     [`GlpSwap:lastPurchaseTime:${active}`, chainId, glpManagerAddress, "lastAddedAt", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: fetcher(library, GlpManager),
+      fetcher: contractFetcher(library, GlpManager),
     }
   );
 
   const { data: glpBalance } = useSWR(
     [`GlpSwap:glpBalance:${active}`, chainId, feeGlpTrackerAddress, "stakedAmounts", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: fetcher(library, RewardTracker),
+      fetcher: contractFetcher(library, RewardTracker),
     }
   );
 
@@ -211,7 +202,7 @@ export default function GlpSwap(props) {
   const { data: reservedAmount } = useSWR(
     [`GlpSwap:reservedAmount:${active}`, chainId, glpVesterAddress, "pairAmounts", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: fetcher(library, Vester),
+      fetcher: contractFetcher(library, Vester),
     }
   );
 
@@ -221,7 +212,7 @@ export default function GlpSwap(props) {
   const { data: stakingInfo } = useSWR(
     [`GlpSwap:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
     {
-      fetcher: fetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
+      fetcher: contractFetcher(library, RewardReader, [rewardTrackersForStakingInfo]),
     }
   );
 

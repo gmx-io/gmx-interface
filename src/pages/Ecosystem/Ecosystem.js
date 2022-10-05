@@ -1,15 +1,17 @@
 import React from "react";
-import { t, Trans } from "@lingui/macro";
-import SEO from "../../components/Common/SEO";
+import { Trans } from "@lingui/macro";
+import SEO from "components/Common/SEO";
 
-import Footer from "../../components/Footer/Footer";
-import { getPageTitle, ARBITRUM, AVALANCHE } from "../../lib/legacy";
+import Footer from "components/Footer/Footer";
+import { getPageTitle } from "lib/legacy";
 
-import arbitrumIcon from "../../img/ic_arbitrum_16.svg";
-import avalancheIcon from "../../img/ic_avalanche_16.svg";
+import arbitrumIcon from "img/ic_arbitrum_16.svg";
+import avalancheIcon from "img/ic_avalanche_16.svg";
 
 import "./Ecosystem.css";
-import ExternalLink from "../../components/Common/ExternalLink";
+import ExternalLink from "components/Common/ExternalLink";
+import { ARBITRUM, AVALANCHE } from "config/chains";
+import { t } from "@lingui/macro";
 
 const NETWORK_ICONS = {
   [ARBITRUM]: arbitrumIcon,
@@ -17,8 +19,8 @@ const NETWORK_ICONS = {
 };
 
 const NETWORK_ICON_ALTS = {
-  [ARBITRUM]: t`Arbitrum Icon`,
-  [AVALANCHE]: t`Avalanche Icon`,
+  [ARBITRUM]: "Arbitrum Icon",
+  [AVALANCHE]: "Avalanche Icon",
 };
 
 export default function Ecosystem() {

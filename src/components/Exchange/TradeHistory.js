@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { ethers } from "ethers";
 import { Link } from "react-router-dom";
-import Tooltip from "../../components/Tooltip/Tooltip";
+import Tooltip from "components/Tooltip/Tooltip";
 
 import {
   USD_DECIMALS,
@@ -9,20 +9,19 @@ import {
   BASIS_POINTS_DIVISOR,
   LIQUIDATION_FEE,
   TRADES_PAGE_SIZE,
-  formatAmount,
-  getExplorerUrl,
-  formatDateTime,
   deserialize,
   getExchangeRateDisplay,
-  bigNumberify,
-} from "../../lib/legacy";
-import { useTrades, useLiquidationsData } from "../../domain/legacy";
-import { getContract } from "../../config/Addresses";
+} from "lib/legacy";
+import { useTrades, useLiquidationsData } from "domain/legacy";
+import { getContract } from "config/contracts";
 
 import "./TradeHistory.css";
-import { select, t, Trans } from "@lingui/macro";
+import { getExplorerUrl } from "config/chains";
+import { bigNumberify, formatAmount } from "lib/numbers";
+import { formatDateTime } from "lib/dates";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import ExternalLink from "../Common/ExternalLink";
+import { select, t, Trans } from "@lingui/macro";
+import ExternalLink from "components/Common/ExternalLink";
 
 const { AddressZero } = ethers.constants;
 

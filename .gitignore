@@ -7,8 +7,9 @@
 .vscode
 
 # lingui
-/src/config/locales/**/*.js
-/src/config/locales/_build/
+/src/locales/**/*.js
+/src/locales/en/messages.po
+/src/locales/_build/
 
 # testing
 /coverage

@@ -5,60 +5,33 @@ import { Token as UniToken } from "@uniswap/sdk-core";
 import { Pool } from "@uniswap/v3-sdk";
 import useSWR from "swr";
 
-import OrderBook from "../abis/OrderBook.json";
-import PositionManager from "../abis/PositionManager.json";
-import Vault from "../abis/Vault.json";
-import Router from "../abis/Router.json";
-import UniPool from "../abis/UniPool.json";
-import UniswapV2 from "../abis/UniswapV2.json";
-import Token from "../abis/Token.json";
-import VaultReader from "../abis/VaultReader.json";
-import PositionRouter from "../abis/PositionRouter.json";
+import OrderBook from "abis/OrderBook.json";
+import PositionManager from "abis/PositionManager.json";
+import Vault from "abis/Vault.json";
+import Router from "abis/Router.json";
+import UniPool from "abis/UniPool.json";
+import UniswapV2 from "abis/UniswapV2.json";
+import Token from "abis/Token.json";
+import PositionRouter from "abis/PositionRouter.json";
 
-import { getContract } from "../config/Addresses";
-import { getConstant } from "../config/chains";
-import {
-  ARBITRUM,
-  ARBITRUM_TESTNET,
-  AVALANCHE,
-  bigNumberify,
-  DECREASE,
-  expandDecimals,
-  getHighExecutionFee,
-  getInfoTokens,
-  getOrderKey,
-  getProvider,
-  getServerBaseUrl,
-  getServerUrl,
-  getUsd,
-  INCREASE,
-  parseValue,
-  replaceNativeTokenAddress,
-  SWAP,
-  UI_VERSION,
-  USD_DECIMALS,
-} from "../lib/legacy";
-import { getTokenBySymbol, getTokens, getWhitelistedTokens } from "../config/Tokens";
+import { getContract } from "config/contracts";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, getConstant, getHighExecutionFee } from "config/chains";
+import { DECREASE, getOrderKey, INCREASE, SWAP, USD_DECIMALS } from "lib/legacy";
 
-import { arbitrumGraphClient, avalancheGraphClient, nissohGraphClient } from "./common";
 import { groupBy } from "lodash";
-import { fetcher } from "../lib/contracts/fetcher";
-import { callContract } from "../lib/contracts/callContract";
+import { UI_VERSION } from "config/ui";
+import { getServerBaseUrl, getServerUrl } from "config/backend";
+import { getGmxGraphClient, nissohGraphClient } from "lib/subgraph/clients";
+import { callContract, contractFetcher } from "lib/contracts";
+import { replaceNativeTokenAddress } from "./tokens";
+import { getUsd } from "./tokens/utils";
+import { getProvider } from "lib/rpc";
+import { bigNumberify, expandDecimals, parseValue } from "lib/numbers";
+import { getTokenBySymbol } from "config/tokens";
 
 export * from "./prices";
 
 const { AddressZero } = ethers.constants;
-
-function getGmxGraphClient(chainId) {
-  if (chainId === ARBITRUM) {
-    return arbitrumGraphClient;
-  } else if (chainId === AVALANCHE) {
-    return avalancheGraphClient;
-  } else if (chainId === ARBITRUM_TESTNET) {
-    return null;
-  }
-  throw new Error(`Unsupported chain ${chainId}`);
-}
 
 export function useAllOrdersStats(chainId) {
   const query = gql(`{
@@ -85,50 +58,6 @@ export function useAllOrdersStats(chainId) {
   }, [setRes, query, chainId]);
 
   return res ? res.data.orderStat : null;
-}
-
-export function useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo, vaultPropsLength) {
-  const tokens = getTokens(chainId);
-  const vaultReaderAddress = getContract(chainId, "VaultReader");
-  const vaultAddress = getContract(chainId, "Vault");
-  const positionRouterAddress = getContract(chainId, "PositionRouter");
-  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
-
-  const whitelistedTokens = getWhitelistedTokens(chainId);
-  const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
-
-  const { data: vaultTokenInfo } = useSWR(
-    [`useInfoTokens:${active}`, chainId, vaultReaderAddress, "getVaultTokenInfoV4"],
-    {
-      fetcher: fetcher(library, VaultReader, [
-        vaultAddress,
-        positionRouterAddress,
-        nativeTokenAddress,
-        expandDecimals(1, 18),
-        whitelistedTokenAddresses,
-      ]),
-    }
-  );
-
-  const indexPricesUrl = getServerUrl(chainId, "/prices");
-  const { data: indexPrices } = useSWR([indexPricesUrl], {
-    fetcher: (...args) => fetch(...args).then((res) => res.json()),
-    refreshInterval: 500,
-    refreshWhenHidden: true,
-  });
-
-  return {
-    infoTokens: getInfoTokens(
-      tokens,
-      tokenBalances,
-      whitelistedTokens,
-      vaultTokenInfo,
-      fundingRateInfo,
-      vaultPropsLength,
-      indexPrices,
-      nativeTokenAddress
-    ),
-  };
 }
 
 export function useUserStat(chainId) {
@@ -418,7 +347,7 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
   const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
-    fetcher: fetcher(library, PositionRouter),
+    fetcher: contractFetcher(library, PositionRouter),
   });
 
   const { data: gasPrice } = useSWR(["gasPrice", chainId], {
@@ -484,7 +413,7 @@ export function useStakedGmxSupply(library, active) {
   const { data: arbData, mutate: arbMutate } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, ARBITRUM, gmxAddressArb, "balanceOf", stakedGmxTrackerAddressArb],
     {
-      fetcher: fetcher(library, Token),
+      fetcher: contractFetcher(library, Token),
     }
   );
 
@@ -494,7 +423,7 @@ export function useStakedGmxSupply(library, active) {
   const { data: avaxData, mutate: avaxMutate } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, AVALANCHE, gmxAddressAvax, "balanceOf", stakedGmxTrackerAddressAvax],
     {
-      fetcher: fetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, Token),
     }
   );
 
@@ -572,7 +501,7 @@ export function useTotalGmxStaked() {
       stakedGmxTrackerAddressArbitrum,
     ],
     {
-      fetcher: fetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, Token),
     }
   );
   const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR(
@@ -584,7 +513,7 @@ export function useTotalGmxStaked() {
       stakedGmxTrackerAddressAvax,
     ],
     {
-      fetcher: fetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, Token),
     }
   );
 
@@ -614,13 +543,13 @@ export function useTotalGmxInLiquidity() {
   const { data: gmxInLiquidityOnArbitrum, mutate: mutateGMXInLiquidityOnArbitrum } = useSWR(
     [`StakeV2:gmxInLiquidity:${ARBITRUM}`, ARBITRUM, getContract(ARBITRUM, "GMX"), "balanceOf", poolAddressArbitrum],
     {
-      fetcher: fetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, Token),
     }
   );
   const { data: gmxInLiquidityOnAvax, mutate: mutateGMXInLiquidityOnAvax } = useSWR(
     [`StakeV2:gmxInLiquidity:${AVALANCHE}`, AVALANCHE, getContract(AVALANCHE, "GMX"), "balanceOf", poolAddressAvax],
     {
-      fetcher: fetcher(undefined, Token),
+      fetcher: contractFetcher(undefined, Token),
     }
   );
   const mutate = useCallback(() => {
@@ -644,7 +573,7 @@ function useGmxPriceFromAvalanche() {
   const poolAddress = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
 
   const { data, mutate: updateReserves } = useSWR(["TraderJoeGmxAvaxReserves", AVALANCHE, poolAddress, "getReserves"], {
-    fetcher: fetcher(undefined, UniswapV2),
+    fetcher: contractFetcher(undefined, UniswapV2),
   });
   const { _reserve0: gmxReserve, _reserve1: avaxReserve } = data || {};
 
@@ -653,7 +582,7 @@ function useGmxPriceFromAvalanche() {
   const { data: avaxPrice, mutate: updateAvaxPrice } = useSWR(
     [`StakeV2:avaxPrice`, AVALANCHE, vaultAddress, "getMinPrice", avaxAddress],
     {
-      fetcher: fetcher(undefined, Vault),
+      fetcher: contractFetcher(undefined, Vault),
     }
   );
 
@@ -676,7 +605,7 @@ function useGmxPriceFromArbitrum(library, active) {
   const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR(
     [`StakeV2:uniPoolSlot0:${active}`, ARBITRUM, poolAddress, "slot0"],
     {
-      fetcher: fetcher(library, UniPool),
+      fetcher: contractFetcher(library, UniPool),
     }
   );
 
@@ -685,7 +614,7 @@ function useGmxPriceFromArbitrum(library, active) {
   const { data: ethPrice, mutate: updateEthPrice } = useSWR(
     [`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
     {
-      fetcher: fetcher(library, Vault),
+      fetcher: contractFetcher(library, Vault),
     }
   );
 

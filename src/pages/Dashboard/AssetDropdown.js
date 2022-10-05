@@ -1,15 +1,17 @@
 import { Menu } from "@headlessui/react";
 import { FiChevronDown } from "react-icons/fi";
 import "./AssetDropdown.css";
-import coingeckoIcon from "../../img/ic_coingecko_16.svg";
-import arbitrumIcon from "../../img/ic_arbitrum_16.svg";
-import avalancheIcon from "../../img/ic_avalanche_16.svg";
-import metamaskIcon from "../../img/ic_metamask_16.svg";
-import { addTokenToMetamask, ICONLINKS, platformTokens, useChainId } from "../../lib/legacy";
+import coingeckoIcon from "img/ic_coingecko_16.svg";
+import arbitrumIcon from "img/ic_arbitrum_16.svg";
+import avalancheIcon from "img/ic_avalanche_16.svg";
+import metamaskIcon from "img/ic_metamask_16.svg";
 import { useWeb3React } from "@web3-react/core";
 
 import { t, Trans } from "@lingui/macro";
-import ExternalLink from "../../components/Common/ExternalLink";
+import ExternalLink from "components/Common/ExternalLink";
+import { ICONLINKS, PLATFORM_TOKENS } from "config/tokens";
+import { addTokenToMetamask } from "lib/wallets";
+import { useChainId } from "lib/chains";
 
 function AssetDropdown({ assetSymbol, assetInfo }) {
   const { active } = useWeb3React();
@@ -66,7 +68,7 @@ function AssetDropdown({ assetSymbol, assetInfo }) {
                 onClick={() => {
                   let token = assetInfo
                     ? { ...assetInfo, image: assetInfo.imageUrl }
-                    : platformTokens[chainId][assetSymbol];
+                    : PLATFORM_TOKENS[chainId][assetSymbol];
                   addTokenToMetamask(token);
                 }}
                 className="asset-item"

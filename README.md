@@ -60,10 +60,10 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
     - `constants.ts`
   - `request.js` - example base function for http requests
   - `useLockBodyScroll.ts` - common ui hook
-  - `Helpers.js` - Unstrcutured legacy code (moved from Helpers.js)
+  - `legacy.js` - Unstrcutured legacy code (moved from Helpers.js)
 
 - `domain/` - Project specific domain logic separated by entities and features, may contain
-  data fetching, formatting, types and constants
+  data fetching, formatting, types and constants 
 
   - `orders/` - Example entity folder
     - `types.ts` - Entity related types
@@ -71,12 +71,13 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
     - `contracts.ts` - Contracts calls
     - `backend.ts` - Http requests
     - `graph.ts` - Subgraph queries
+    - `useActiveOrders.ts` - some complex hook with aggreation logic
     - `constants.ts`
     - `hooks.ts`
 
   - `legacy.js` - Unstructured legacy code (moved from Api/index.js)
 
-- `config/` - Often manually changed or environment-dependent global configs
+- `config/` - Often manually changed or environment-dependent global configs and constants, can contain simple getter functions
 - `styles/` - Global styles
 - `img/` - Images
 - `abis/` - Contract abis
@@ -220,3 +221,16 @@ function Button(props) {...}
 - The formatting used in `.po` files for each language is know as ICU MessageFormat. To understand it please refer to this [GUIDE](https://lingui.js.org/ref/message-format.html)
 
 
+### SCSS
+
+Use the following syntax to import scss modules:
+
+```
+@use "src/styles/colors";
+
+.ClassName {
+  background: colors.$color-red;
+}
+```
+
+---

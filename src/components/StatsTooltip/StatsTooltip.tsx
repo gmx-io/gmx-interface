@@ -1,7 +1,8 @@
 import { Trans } from "@lingui/macro";
 import { BigNumber } from "ethers";
-import { formatAmount, USD_DECIMALS } from "../../lib/legacy";
+import { USD_DECIMALS } from "lib/legacy";
 import "./StatsTooltip.css";
+import { formatAmount } from "lib/numbers";
 
 type Props = {
   title: string;

@@ -1,13 +1,12 @@
-import { BigNumber } from "@ethersproject/bignumber";
 import { useEffect, useState } from "react";
+import { BigNumber } from "ethers";
 import { ethers } from "ethers";
-import { getNativeToken } from "../../config/Tokens";
-import { InfoTokens, Token } from "../../domain/tokens/types";
 import Modal from "../Modal/Modal";
-import { get1InchSwapUrl } from "../../domain/common";
-import { getLowestFeeTokenForBuyGlp } from "../../domain/tokens/utils";
+import { get1InchSwapUrl } from "domain/common";
+import { getLowestFeeTokenForBuyGlp, InfoTokens, Token } from "domain/tokens";
+import { getNativeToken } from "config/tokens";
 import { t, Trans } from "@lingui/macro";
-import ExternalLink from "../Common/ExternalLink";
+import ExternalLink from "components/Common/ExternalLink";
 
 const { AddressZero } = ethers.constants;
 

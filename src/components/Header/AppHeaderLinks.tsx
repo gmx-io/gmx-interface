@@ -4,10 +4,10 @@ import { Trans } from "@lingui/macro";
 import { Link } from "react-router-dom";
 
 import { HeaderLink } from "./HeaderLink";
-import logoImg from "../../img/logo_GMX.svg";
 import "./Header.css";
-import { isHomeSite } from "../../lib/legacy";
-import ExternalLink from "../Common/ExternalLink";
+import { isHomeSite } from "lib/legacy";
+import ExternalLink from "components/Common/ExternalLink";
+import logoImg from "img/logo_GMX.svg";
 
 type Props = {
   small?: boolean;

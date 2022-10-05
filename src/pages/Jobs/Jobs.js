@@ -1,11 +1,11 @@
-import "./Jobs.css";
 import React from "react";
-import SEO from "../../components/Common/SEO";
-import Footer from "../../components/Footer/Footer";
-import { getPageTitle } from "../../lib/legacy";
-import Card from "../../components/Common/Card";
+import "./Jobs.css";
+import SEO from "components/Common/SEO";
+import Footer from "components/Footer/Footer";
+import { getPageTitle } from "lib/legacy";
+import Card from "components/Common/Card";
 import { Trans } from "@lingui/macro";
-import ExternalLink from "../../components/Common/ExternalLink";
+import ExternalLink from "components/Common/ExternalLink";
 
 function Jobs() {
   return (

@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 
-import GlpSwap from "../../components/Glp/GlpSwap";
-import buyGLPIcon from "../../img/ic_buy_glp.svg";
-import Footer from "../../components/Footer/Footer";
+import GlpSwap from "components/Glp/GlpSwap";
+import buyGLPIcon from "img/ic_buy_glp.svg";
+import Footer from "components/Footer/Footer";
 import "./BuyGlp.css";
 
-import { useChainId } from "../../lib/legacy";
-import { getNativeToken } from "../../config/Tokens";
-
-import { t, Trans } from "@lingui/macro";
-import ExternalLink from "../../components/Common/ExternalLink";
+import { Trans } from "@lingui/macro";
+import { getNativeToken } from "config/tokens";
+import { useChainId } from "lib/chains";
+import ExternalLink from "components/Common/ExternalLink";
+import { t } from "@lingui/macro";
 
 export default function BuyGlp(props) {
   const { chainId } = useChainId();

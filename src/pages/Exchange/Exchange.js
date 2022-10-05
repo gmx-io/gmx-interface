@@ -13,46 +13,44 @@ import {
   LONG,
   SHORT,
   USD_DECIMALS,
-  getExplorerUrl,
-  helperToast,
-  formatAmount,
-  bigNumberify,
-  getTokenInfo,
   getPositionKey,
   getPositionContractKey,
   getLeverage,
-  useLocalStorageSerializeKey,
-  useLocalStorageByChainId,
   getDeltaStr,
-  useChainId,
   useAccountOrders,
   getPageTitle,
-} from "../../lib/legacy";
-import { getConstant } from "../../config/chains";
-import { approvePlugin, useInfoTokens, useMinExecutionFee, cancelMultipleOrders } from "../../domain/legacy";
+} from "lib/legacy";
+import { getConstant, getExplorerUrl } from "config/chains";
+import { approvePlugin, useMinExecutionFee, cancelMultipleOrders } from "domain/legacy";
 
-import { getContract } from "../../config/Addresses";
-import { getTokens, getToken, getWhitelistedTokens, getTokenBySymbol } from "../../config/Tokens";
+import { getContract } from "config/contracts";
 
-import Reader from "../../abis/ReaderV2.json";
-import VaultV2 from "../../abis/VaultV2.json";
-import Router from "../../abis/Router.json";
-import Token from "../../abis/Token.json";
+import Reader from "abis/ReaderV2.json";
+import VaultV2 from "abis/VaultV2.json";
+import Router from "abis/Router.json";
+import Token from "abis/Token.json";
 
-import Checkbox from "../../components/Checkbox/Checkbox";
-import SwapBox from "../../components/Exchange/SwapBox";
-import ExchangeTVChart, { getChartToken } from "../../components/Exchange/ExchangeTVChart";
-import PositionsList from "../../components/Exchange/PositionsList";
-import OrdersList from "../../components/Exchange/OrdersList";
-import TradeHistory from "../../components/Exchange/TradeHistory";
-import ExchangeWalletTokens from "../../components/Exchange/ExchangeWalletTokens";
-import ExchangeBanner from "../../components/Exchange/ExchangeBanner";
-import Tab from "../../components/Tab/Tab";
-import Footer from "../../components/Footer/Footer";
+import Checkbox from "components/Checkbox/Checkbox";
+import SwapBox from "components/Exchange/SwapBox";
+import ExchangeTVChart, { getChartToken } from "components/Exchange/ExchangeTVChart";
+import PositionsList from "components/Exchange/PositionsList";
+import OrdersList from "components/Exchange/OrdersList";
+import TradeHistory from "components/Exchange/TradeHistory";
+import ExchangeWalletTokens from "components/Exchange/ExchangeWalletTokens";
+import ExchangeBanner from "components/Exchange/ExchangeBanner";
+import Tab from "components/Tab/Tab";
+import Footer from "components/Footer/Footer";
 
 import "./Exchange.css";
-import { fetcher } from "../../lib/contracts/fetcher";
-import ExternalLink from "../../components/Common/ExternalLink";
+import { contractFetcher } from "lib/contracts";
+import { useInfoTokens } from "domain/tokens";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
+import { helperToast } from "lib/helperToast";
+import { getTokenInfo } from "domain/tokens/utils";
+import { bigNumberify, formatAmount } from "lib/numbers";
+import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
+import { useChainId } from "lib/chains";
+import ExternalLink from "components/Common/ExternalLink";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -470,13 +468,13 @@ export const Exchange = forwardRef((props, ref) => {
 
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR(active && [active, chainId, readerAddress, "getTokenBalances", account], {
-    fetcher: fetcher(library, Reader, [tokenAddresses]),
+    fetcher: contractFetcher(library, Reader, [tokenAddresses]),
   });
 
   const { data: positionData, error: positionDataError } = useSWR(
     active && [active, chainId, readerAddress, "getPositions", vaultAddress, account],
     {
-      fetcher: fetcher(library, Reader, [
+      fetcher: contractFetcher(library, Reader, [
         positionQuery.collateralTokens,
         positionQuery.indexTokens,
         positionQuery.isLong,
@@ -487,18 +485,18 @@ export const Exchange = forwardRef((props, ref) => {
   const positionsDataIsLoading = active && !positionData && !positionDataError;
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+    fetcher: contractFetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
   const { data: totalTokenWeights } = useSWR(
     [`Exchange:totalTokenWeights:${active}`, chainId, vaultAddress, "totalTokenWeights"],
     {
-      fetcher: fetcher(library, VaultV2),
+      fetcher: contractFetcher(library, VaultV2),
     }
   );
 
   const { data: usdgSupply } = useSWR([`Exchange:usdgSupply:${active}`, chainId, usdgAddress, "totalSupply"], {
-    fetcher: fetcher(library, Token),
+    fetcher: contractFetcher(library, Token),
   });
 
   const orderBookAddress = getContract(chainId, "OrderBook");
@@ -506,14 +504,14 @@ export const Exchange = forwardRef((props, ref) => {
   const { data: orderBookApproved } = useSWR(
     active && [active, chainId, routerAddress, "approvedPlugins", account, orderBookAddress],
     {
-      fetcher: fetcher(library, Router),
+      fetcher: contractFetcher(library, Router),
     }
   );
 
   const { data: positionRouterApproved } = useSWR(
     active && [active, chainId, routerAddress, "approvedPlugins", account, positionRouterAddress],
     {
-      fetcher: fetcher(library, Router),
+      fetcher: contractFetcher(library, Router),
     }
   );
 
