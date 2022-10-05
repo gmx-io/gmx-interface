@@ -1,9 +1,10 @@
 import { BigNumber, Contract } from "ethers";
 import { helperToast } from "../helperToast";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
-import { extractError, NOT_ENOUGH_FUNDS, RPC_ERROR, SLIPPAGE, USER_DENIED } from "./transactionErrors";
+import { extractError, NETWORK_CHANGED, NOT_ENOUGH_FUNDS, RPC_ERROR, SLIPPAGE, USER_DENIED } from "./transactionErrors";
 import { getGasLimit, setGasPrice } from "./utils";
-import { getExplorerUrl } from "config/chains";
+import { getChainName, getExplorerUrl } from "config/chains";
+import { switchNetwork } from "lib/wallets";
 
 export async function callContract(
   chainId: number,
@@ -80,6 +81,18 @@ export async function callContract(
             <a href={"https://arbitrum.io/bridge-tutorial/"} target="_blank" rel="noopener noreferrer">
               Bridge ETH to Arbitrum
             </a>
+          </div>
+        );
+        break;
+      case NETWORK_CHANGED:
+        failMsg = (
+          <div>
+            The selected GMX DApp network ({getChainName(chainId)}) doesn't match the wallet's
+            <br />
+            <br />
+            <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
+              Switch wallet to {getChainName(chainId)}
+            </div>
           </div>
         );
         break;
