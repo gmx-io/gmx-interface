@@ -4,25 +4,24 @@ import useSWR from "swr";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 
-import { getContract } from "../../config/Addresses";
+import { getContract } from "config/contracts";
 
-import Modal from "../../components/Modal/Modal";
-import Footer from "../../components/Footer/Footer";
+import Modal from "components/Modal/Modal";
+import Footer from "components/Footer/Footer";
 
-import Token from "../../abis/Token.json";
-import Vester from "../../abis/Vester.json";
-import RewardTracker from "../../abis/RewardTracker.json";
-import RewardRouter from "../../abis/RewardRouter.json";
+import Token from "abis/Token.json";
+import Vester from "abis/Vester.json";
+import RewardTracker from "abis/RewardTracker.json";
+import RewardRouter from "abis/RewardRouter.json";
 
 import { FaCheck, FaTimes } from "react-icons/fa";
-
-import { approveTokens, useChainId } from "../../lib/legacy";
 
 import { Trans, t } from "@lingui/macro";
 
 import "./BeginAccountTransfer.css";
-import { fetcher } from "../../lib/contracts/fetcher";
-import { callContract } from "../../lib/contracts/callContract";
+import { callContract, contractFetcher } from "lib/contracts";
+import { approveTokens } from "domain/tokens";
+import { useChainId } from "lib/chains";
 
 function ValidationRow({ isValid, children }) {
   return (
@@ -57,18 +56,18 @@ export default function BeginAccountTransfer(props) {
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
 
   const { data: gmxVesterBalance } = useSWR([active, chainId, gmxVesterAddress, "balanceOf", account], {
-    fetcher: fetcher(library, Token),
+    fetcher: contractFetcher(library, Token),
   });
 
   const { data: glpVesterBalance } = useSWR([active, chainId, glpVesterAddress, "balanceOf", account], {
-    fetcher: fetcher(library, Token),
+    fetcher: contractFetcher(library, Token),
   });
 
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
   const { data: cumulativeGmxRewards } = useSWR(
     [active, chainId, stakedGmxTrackerAddress, "cumulativeRewards", parsedReceiver],
     {
-      fetcher: fetcher(library, RewardTracker),
+      fetcher: contractFetcher(library, RewardTracker),
     }
   );
 
@@ -76,36 +75,36 @@ export default function BeginAccountTransfer(props) {
   const { data: cumulativeGlpRewards } = useSWR(
     [active, chainId, stakedGlpTrackerAddress, "cumulativeRewards", parsedReceiver],
     {
-      fetcher: fetcher(library, RewardTracker),
+      fetcher: contractFetcher(library, RewardTracker),
     }
   );
 
   const { data: transferredCumulativeGmxRewards } = useSWR(
     [active, chainId, gmxVesterAddress, "transferredCumulativeRewards", parsedReceiver],
     {
-      fetcher: fetcher(library, Vester),
+      fetcher: contractFetcher(library, Vester),
     }
   );
 
   const { data: transferredCumulativeGlpRewards } = useSWR(
     [active, chainId, glpVesterAddress, "transferredCumulativeRewards", parsedReceiver],
     {
-      fetcher: fetcher(library, Vester),
+      fetcher: contractFetcher(library, Vester),
     }
   );
 
   const { data: pendingReceiver } = useSWR([active, chainId, rewardRouterAddress, "pendingReceivers", account], {
-    fetcher: fetcher(library, RewardRouter),
+    fetcher: contractFetcher(library, RewardRouter),
   });
 
   const { data: gmxAllowance } = useSWR([active, chainId, gmxAddress, "allowance", account, stakedGmxTrackerAddress], {
-    fetcher: fetcher(library, Token),
+    fetcher: contractFetcher(library, Token),
   });
 
   const { data: gmxStaked } = useSWR(
     [active, chainId, stakedGmxTrackerAddress, "depositBalances", account, gmxAddress],
     {
-      fetcher: fetcher(library, RewardTracker),
+      fetcher: contractFetcher(library, RewardTracker),
     }
   );
 

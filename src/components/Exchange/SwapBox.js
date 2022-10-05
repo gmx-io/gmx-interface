@@ -14,42 +14,25 @@ import { BsArrowRight } from "react-icons/bs";
 
 import {
   adjustForDecimals,
-  approveTokens,
-  ARBITRUM,
-  AVALANCHE,
   BASIS_POINTS_DIVISOR,
-  bigNumberify,
   calculatePositionDelta,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   DUST_BNB,
-  expandDecimals,
-  formatAmount,
-  formatAmountFree,
-  getChainName,
   getExchangeRate,
   getExchangeRateDisplay,
   getLeverage,
   getLiquidationPrice,
-  getMostAbundantStableToken,
   getNextFromAmount,
   getNextToAmount,
   getPositionKey,
-  getTokenInfo,
-  getUsd,
-  helperToast,
-  IS_NETWORK_DISABLED,
-  isSupportedChain,
   isTriggerRatioInverted,
   LEVERAGE_ORDER_OPTIONS,
   LIMIT,
   LONG,
   MARGIN_FEE_BASIS_POINTS,
   MARKET,
-  parseValue,
   PRECISION,
-  replaceNativeTokenAddress,
   SHORT,
-  shouldRaiseGasError,
   STOP,
   SWAP,
   SWAP_OPTIONS,
@@ -57,13 +40,10 @@ import {
   USD_DECIMALS,
   USDG_ADDRESS,
   USDG_DECIMALS,
-  useLocalStorageByChainId,
-  useLocalStorageSerializeKey,
-  usePrevious,
-} from "../../lib/legacy";
-import { getConstant } from "../../config/chains";
-import * as Api from "../../domain/legacy";
-import { getContract } from "../../config/Addresses";
+} from "lib/legacy";
+import { ARBITRUM, AVALANCHE, getChainName, getConstant, IS_NETWORK_DISABLED, isSupportedChain } from "config/chains";
+import * as Api from "domain/legacy";
+import { getContract } from "config/contracts";
 
 import Checkbox from "../Checkbox/Checkbox";
 import Tab from "../Tab/Tab";
@@ -72,21 +52,31 @@ import ExchangeInfoRow from "./ExchangeInfoRow";
 import ConfirmationBox from "./ConfirmationBox";
 import OrdersToa from "./OrdersToa";
 
-import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "../../config/Tokens";
-import PositionRouter from "../../abis/PositionRouter.json";
-import Router from "../../abis/Router.json";
-import Token from "../../abis/Token.json";
-import WETH from "../../abis/WETH.json";
+import PositionRouter from "abis/PositionRouter.json";
+import Router from "abis/Router.json";
+import Token from "abis/Token.json";
+import WETH from "abis/WETH.json";
 
-import longImg from "../../img/long.svg";
-import shortImg from "../../img/short.svg";
-import swapImg from "../../img/swap.svg";
+import longImg from "img/long.svg";
+import shortImg from "img/short.svg";
+import swapImg from "img/swap.svg";
 
-import { useUserReferralCode } from "../../domain/referrals";
+import { useUserReferralCode } from "domain/referrals";
 import NoLiquidityErrorModal from "./NoLiquidityErrorModal";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
-import { fetcher } from "../../lib/contracts/fetcher";
-import { callContract } from "../../lib/contracts/callContract";
+import { callContract, contractFetcher } from "lib/contracts";
+import {
+  approveTokens,
+  getMostAbundantStableToken,
+  replaceNativeTokenAddress,
+  shouldRaiseGasError,
+} from "domain/tokens";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
+import { helperToast } from "lib/helperToast";
+import { getTokenInfo, getUsd } from "domain/tokens/utils";
+import { usePrevious } from "lib/usePrevious";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -323,7 +313,7 @@ export default function SwapBox(props) {
   const { data: tokenAllowance } = useSWR(
     active && [active, chainId, tokenAllowanceAddress, "allowance", account, routerAddress],
     {
-      fetcher: fetcher(library, Token),
+      fetcher: contractFetcher(library, Token),
     }
   );
 

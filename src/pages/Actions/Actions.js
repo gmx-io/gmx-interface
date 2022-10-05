@@ -6,21 +6,25 @@ import { useParams } from "react-router-dom";
 
 import "./Actions.css";
 
-import { getContract } from "../../config/Addresses";
-import { formatAmount, getTokenInfo, getServerBaseUrl, useChainId, useAccountOrders } from "../../lib/legacy";
+import { getContract } from "config/contracts";
+import { useAccountOrders } from "lib/legacy";
 
-import { useInfoTokens } from "../../domain/legacy";
-import { getToken, getTokens, getWhitelistedTokens } from "../../config/Tokens";
 import { getPositions, getPositionQuery } from "../Exchange/Exchange";
 
-import PositionsList from "../../components/Exchange/PositionsList";
-import OrdersList from "../../components/Exchange/OrdersList";
+import PositionsList from "components/Exchange/PositionsList";
+import OrdersList from "components/Exchange/OrdersList";
 
-import TradeHistory from "../../components/Exchange/TradeHistory";
-import Reader from "../../abis/Reader.json";
+import TradeHistory from "components/Exchange/TradeHistory";
+import Reader from "abis/Reader.json";
 
 import { Trans, t } from "@lingui/macro";
-import { fetcher } from "../../lib/contracts/fetcher";
+import { getServerBaseUrl } from "config/backend";
+import { contractFetcher } from "lib/contracts";
+import { useInfoTokens } from "domain/tokens";
+import { getTokenInfo } from "domain/tokens/utils";
+import { formatAmount } from "lib/numbers";
+import { getToken, getTokens, getWhitelistedTokens } from "config/tokens";
+import { useChainId } from "lib/chains";
 
 const USD_DECIMALS = 30;
 
@@ -51,11 +55,11 @@ export default function Actions() {
   const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenAddresses = tokens.map((token) => token.address);
   const { data: tokenBalances } = useSWR([active, chainId, readerAddress, "getTokenBalances", account], {
-    fetcher: fetcher(library, Reader, [tokenAddresses]),
+    fetcher: contractFetcher(library, Reader, [tokenAddresses]),
   });
 
   const { data: positionData } = useSWR([active, chainId, readerAddress, "getPositions", vaultAddress, account], {
-    fetcher: fetcher(library, Reader, [
+    fetcher: contractFetcher(library, Reader, [
       positionQuery.collateralTokens,
       positionQuery.indexTokens,
       positionQuery.isLong,
@@ -63,7 +67,7 @@ export default function Actions() {
   });
 
   const { data: fundingRateInfo } = useSWR([active, chainId, readerAddress, "getFundingRates"], {
-    fetcher: fetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
+    fetcher: contractFetcher(library, Reader, [vaultAddress, nativeTokenAddress, whitelistedTokenAddresses]),
   });
 
   const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, fundingRateInfo);
