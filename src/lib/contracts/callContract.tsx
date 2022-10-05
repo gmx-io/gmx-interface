@@ -87,11 +87,10 @@ export async function callContract(
       case NETWORK_CHANGED:
         failMsg = (
           <div>
-            The selected GMX DApp network ({getChainName(chainId)}) doesn't match the wallet's
-            <br />
+            <div>Your wallet is not connected to {getChainName(chainId)}.</div>
             <br />
             <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
-              Switch wallet to {getChainName(chainId)}
+              Switch to {getChainName(chainId)}
             </div>
           </div>
         );

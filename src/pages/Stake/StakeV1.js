@@ -543,8 +543,8 @@ export default function StakeV1() {
   const [unstakeValue, setUnstakeValue] = useState("");
   const [unstakingFarmAddress, setUnstakingFarmAddress] = useState("");
 
-  const { activate, active, account, library } = useWeb3React();
-  const connectWallet = getInjectedHandler(activate);
+  const { activate, active, account, library, deactivate } = useWeb3React();
+  const connectWallet = getInjectedHandler(activate, deactivate);
 
   const readerAddress = getContract(CHAIN_ID, "Reader");
   const ammFactoryAddressV2 = getContract(CHAIN_ID, "AmmFactoryV2");

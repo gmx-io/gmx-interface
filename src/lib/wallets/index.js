@@ -266,7 +266,7 @@ export const getWalletConnectHandler = (activate, deactivate, setActivatingConne
   return fn;
 };
 
-export const getInjectedHandler = (activate) => {
+export const getInjectedHandler = (activate, deactivate) => {
   const fn = async () => {
     activate(getInjectedConnector(), (e) => {
       const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID;
@@ -284,6 +284,11 @@ export const getInjectedHandler = (activate) => {
             </div>
           </div>
         );
+
+        if (deactivate) {
+          deactivate();
+        }
+
         return;
       }
       const errString = e.message ?? e.toString();
