@@ -1,4 +1,5 @@
-import { getLiquidationPrice, bigNumberify, expandDecimals } from "../legacy";
+import { getLiquidationPrice } from "lib/legacy";
+import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
 
 describe("getLiquidationPrice", function () {
   const cases = [
@@ -102,6 +103,8 @@ describe("getLiquidationPrice", function () {
   for (const { name: caseName, expected, ...case_ } of cases) {
     it(`getLiquidationPrice: ${caseName}`, function () {
       const liqPrice = getLiquidationPrice(case_);
+
+      console.log("ahaha", Number(bigNumberify(10000)));
 
       expect(Number(liqPrice)).toEqual(Number(expected));
     });

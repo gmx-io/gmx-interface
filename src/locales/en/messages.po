@@ -1115,8 +1115,6 @@ msgstr "Looks like you don't have a referral code to share. <0/> Create one now 
 msgid "Loss"
 msgstr "Loss"
 
-#: src/components/BuyInputSection/BuyInputSection.js
-#: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
 msgstr "MAX"
@@ -1210,11 +1208,14 @@ msgstr "MetaMask not detected."
 msgid "Min leverage: 1.1x"
 msgstr "Min leverage: 1.1x"
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
 msgstr "Min order: 10 USD"
+
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
+msgid "Min residual collateral: 10 USD"
+msgstr "Min residual collateral: 10 USD"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "More Info"

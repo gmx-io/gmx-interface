@@ -97,11 +97,15 @@ export function getLiquidationPriceFromDelta({ liquidationAmount, size, collater
   if (liquidationAmount.gt(collateral)) {
     const liquidationDelta = liquidationAmount.sub(collateral);
     const priceDelta = liquidationDelta.mul(averagePrice).div(size);
+
+    console.log("return 1");
     return isLong ? averagePrice.add(priceDelta) : averagePrice.sub(priceDelta);
   }
 
   const liquidationDelta = collateral.sub(liquidationAmount);
   const priceDelta = liquidationDelta.mul(averagePrice).div(size);
+
+  console.log("return 2");
 
   return isLong ? averagePrice.sub(priceDelta) : averagePrice.add(priceDelta);
 }
@@ -794,6 +798,8 @@ export function getLiquidationPrice(data) {
 
   let positionFee = getMarginFee(size).add(LIQUIDATION_FEE);
 
+  console.log("position fee", Number(positionFee));
+
   if (entryFundingRate && cumulativeFundingRate) {
     const fundingFee = size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
     positionFee = positionFee.add(fundingFee);
@@ -815,23 +821,28 @@ export function getLiquidationPrice(data) {
     isLong,
   });
 
-  console.log("liquidationPriceForMaxLeverage", Number(liquidationPriceForMaxLeverage));
-
   if (!liquidationPriceForFees) {
+    console.log("liquidationPriceForMaxLeverage", Number(liquidationPriceForMaxLeverage));
     return liquidationPriceForMaxLeverage;
   }
 
-  console.log("liquidationPriceForFees", Number(liquidationPriceForFees));
-
   if (!liquidationPriceForMaxLeverage) {
+    console.log("liquidationPriceForFees", Number(liquidationPriceForFees));
+
     return liquidationPriceForFees;
   }
 
   if (isLong) {
+    console.log("return is Long");
     // return the higher price
-    return liquidationPriceForFees.gt(liquidationPriceForMaxLeverage)
+
+    const res = liquidationPriceForFees.gt(liquidationPriceForMaxLeverage)
       ? liquidationPriceForFees
       : liquidationPriceForMaxLeverage;
+
+    console.log("RESULT", Number(res), Number(liquidationPriceForFees), Number(liquidationPriceForMaxLeverage));
+
+    return res;
   }
 
   // return the lower price

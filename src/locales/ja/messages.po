@@ -1115,8 +1115,6 @@ msgstr "シェアできる紹介コードがないようです。<0/> コード�
 msgid "Loss"
 msgstr "損失"
 
-#: src/components/BuyInputSection/BuyInputSection.js
-#: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
 msgstr "最大"
@@ -1210,11 +1208,14 @@ msgstr "メタマスクが検出できません。"
 msgid "Min leverage: 1.1x"
 msgstr "最小レバレッジ: 1.1倍"
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
 msgstr "最小オーダー金額: 10 USD"
+
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
+msgid "Min residual collateral: 10 USD"
+msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "More Info"
