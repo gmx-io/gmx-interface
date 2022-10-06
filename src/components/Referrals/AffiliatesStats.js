@@ -23,6 +23,7 @@ import { helperToast } from "lib/helperToast";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { getNativeToken, getToken } from "config/tokens";
 import { formatDate } from "lib/dates";
+import { getRootUrl } from "domain/common";
 
 function AffiliatesStats({
   referralsData,
@@ -56,6 +57,7 @@ function AffiliatesStats({
   if (cumulativeStats && cumulativeStats.totalRebateUsd && cumulativeStats.discountUsd) {
     referrerRebates = cumulativeStats.totalRebateUsd.sub(cumulativeStats.discountUsd);
   }
+  const rootUrl = getRootUrl();
 
   return (
     <div className="referral-body-container">
@@ -140,7 +142,7 @@ function AffiliatesStats({
                           <span className="referral-text ">{stat.referralCode}</span>
                           <div
                             onClick={() => {
-                              copyToClipboard(`https://gmx.io/#/?${REFERRAL_CODE_QUERY_PARAM}=${stat.referralCode}`);
+                              copyToClipboard(`${rootUrl}/#/?${REFERRAL_CODE_QUERY_PARAM}=${stat.referralCode}`);
                               helperToast.success("Referral link copied to your clipboard");
                             }}
                             className="referral-code-icon"
