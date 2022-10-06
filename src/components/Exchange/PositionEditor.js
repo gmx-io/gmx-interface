@@ -73,10 +73,6 @@ export default function PositionEditor(props) {
     }
   );
 
-  // const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
-  //   fetcher: fetcher(library, PositionRouter),
-  // });
-
   const isDeposit = option === DEPOSIT;
   const isWithdrawal = option === WITHDRAW;
 
@@ -116,7 +112,7 @@ export default function PositionEditor(props) {
       }
     } else {
       fromAmount = parseValue(fromValue, USD_DECIMALS);
-      maxAmount = position.collateral.sub(MIN_ORDER_USD);
+      maxAmount = position.collateralAfterFee.sub(MIN_ORDER_USD);
       maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
       maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
       if (fromAmount) {
@@ -136,8 +132,6 @@ export default function PositionEditor(props) {
         collateral: position.collateral,
         collateralDelta,
         increaseCollateral: isDeposit,
-        entryFundingRate: position.entryFundingRate,
-        cumulativeFundingRate: position.cumulativeFundingRate,
         hasProfit: position.hasProfit,
         delta: position.delta,
         includeDelta: savedIsPnlInLeverage,
@@ -147,8 +141,6 @@ export default function PositionEditor(props) {
         collateral: position.collateral,
         collateralDelta,
         increaseCollateral: isDeposit,
-        entryFundingRate: position.entryFundingRate,
-        cumulativeFundingRate: position.cumulativeFundingRate,
         hasProfit: position.hasProfit,
         delta: position.delta,
         includeDelta: false,
@@ -159,8 +151,6 @@ export default function PositionEditor(props) {
         size: position.size,
         collateral: position.collateral,
         averagePrice: position.averagePrice,
-        entryFundingRate: position.entryFundingRate,
-        cumulativeFundingRate: position.cumulativeFundingRate,
         collateralDelta,
         increaseCollateral: isDeposit,
       });
@@ -499,11 +489,13 @@ export default function PositionEditor(props) {
                       <Trans>Collateral</Trans>
                     </div>
                     <div className="align-right">
-                      {!nextCollateral && <div>${formatAmount(position.collateral, USD_DECIMALS, 2, true)}</div>}
+                      {!nextCollateral && (
+                        <div>${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}</div>
+                      )}
                       {nextCollateral && (
                         <div>
                           <div className="inline-block muted">
-                            ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                            ${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
                             <BsArrowRight className="transition-arrow" />
                           </div>
                           ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
