@@ -6,6 +6,11 @@
 .pnp.js
 .vscode
 
+# lingui
+/src/locales/**/*.js
+/src/locales/**/en.po
+/src/locales/_build/
+
 # testing
 /coverage
 

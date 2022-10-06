@@ -1,23 +1,23 @@
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { checkTeamName, createTeam } from "../../domain/leaderboard/contracts";
-import { Competition } from "../../domain/leaderboard/types";
-import { getTeamUrl } from "../../domain/leaderboard/urls";
-import { useDebounce } from "../../lib/legacy";
+import { checkTeamName, createTeam } from "domain/leaderboard/contracts";
+import { Competition } from "domain/leaderboard/types";
+import { getTeamUrl } from "domain/leaderboard/urls";
 import "./TeamCreationForm.css";
+import { useDebounce } from "lib/useDebounce";
 
 type Props = {
-  competition: Competition,
-  connectWallet: any,
-  pendingTxns: any,
-  setPendingTxns: any,
-}
+  competition: Competition;
+  connectWallet: any;
+  pendingTxns: any;
+  setPendingTxns: any;
+};
 
 export default function TeamCreationForm({ competition, connectWallet, pendingTxns, setPendingTxns }: Props) {
   const history = useHistory();
   const { active, chainId, library, account } = useWeb3React();
-  const [isProcessing, setIsProcessing] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false);
   const [name, setName] = useState("");
   const debouncedName = useDebounce(name, 300);
   const [nameAlreadyUsed, setNameAlreadyUsed] = useState(false);
@@ -44,16 +44,12 @@ export default function TeamCreationForm({ competition, connectWallet, pendingTx
   };
 
   const isFormValid = () => {
-    return (
-      debouncedName.trim() !== "" &&
-      !nameAlreadyUsed &&
-      !validatingName
-    );
+    return debouncedName.trim() !== "" && !nameAlreadyUsed && !validatingName;
   };
 
   const handleFormSubmit = async (event) => {
-    event.preventDefault()
-    setIsProcessing(true)
+    event.preventDefault();
+    setIsProcessing(true);
 
     try {
       const tx = await createTeam(chainId, library, competition.index, debouncedName.trim(), {
@@ -61,20 +57,20 @@ export default function TeamCreationForm({ competition, connectWallet, pendingTx
         sentMsg: "Team creation submitted!",
         failMsg: "Team creation failed.",
         pendingTxns,
-        setPendingTxns
-      })
+        setPendingTxns,
+      });
 
-      const receipt = await tx.wait()
+      const receipt = await tx.wait();
 
       if (receipt.status === 1) {
-        return history.replace(getTeamUrl(account))
+        return history.replace(getTeamUrl(account));
       }
     } catch (err) {
-      console.error(err)
+      console.error(err);
     } finally {
-      setIsProcessing(false)
+      setIsProcessing(false);
     }
-  }
+  };
 
   // Team name check
   useEffect(() => {

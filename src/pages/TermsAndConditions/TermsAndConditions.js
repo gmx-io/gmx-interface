@@ -1,12 +1,12 @@
 import React from "react";
-import Footer from "../../components/Footer/Footer";
-import SEO from "../../components/Common/SEO";
-import { getPageTitle } from "../../lib/legacy";
+import Footer from "components/Footer/Footer";
+import SEO from "components/Common/SEO";
+import { getPageTitle } from "lib/legacy";
 import "./TermsAndConditions.css";
 
 export default function TermsAndConditions() {
   return (
-    <SEO title={getPageTitle("Referral Terms")}>
+    <SEO title={getPageTitle("Terms and Conditions")}>
       <div className="default-container Page page-layout">
         <div>
           <div className="Page-title-section center">
