@@ -826,12 +826,9 @@ export function getLiquidationPrice(data) {
 
   if (isLong) {
     // return the higher price
-
-    const res = liquidationPriceForFees.gt(liquidationPriceForMaxLeverage)
+    return liquidationPriceForFees.gt(liquidationPriceForMaxLeverage)
       ? liquidationPriceForFees
       : liquidationPriceForMaxLeverage;
-
-    return res;
   }
 
   // return the lower price
