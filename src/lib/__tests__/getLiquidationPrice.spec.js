@@ -104,8 +104,6 @@ describe("getLiquidationPrice", function () {
     it(`getLiquidationPrice: ${caseName}`, function () {
       const liqPrice = getLiquidationPrice(case_);
 
-      console.log("ahaha", Number(bigNumberify(10000)));
-
       expect(Number(liqPrice)).toEqual(Number(expected));
     });
   }

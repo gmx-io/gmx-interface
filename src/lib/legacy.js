@@ -98,14 +98,11 @@ export function getLiquidationPriceFromDelta({ liquidationAmount, size, collater
     const liquidationDelta = liquidationAmount.sub(collateral);
     const priceDelta = liquidationDelta.mul(averagePrice).div(size);
 
-    console.log("return 1");
     return isLong ? averagePrice.add(priceDelta) : averagePrice.sub(priceDelta);
   }
 
   const liquidationDelta = collateral.sub(liquidationAmount);
   const priceDelta = liquidationDelta.mul(averagePrice).div(size);
-
-  console.log("return 2");
 
   return isLong ? averagePrice.sub(priceDelta) : averagePrice.add(priceDelta);
 }
@@ -767,11 +764,8 @@ export function getLiquidationPrice(data) {
   let remainingCollateral = collateral;
 
   if (sizeDelta) {
-    console.log("sizeDelta", Number(sizeDelta));
     if (increaseSize) {
-      console.log("increaseSize");
       nextSize = size.add(sizeDelta);
-      console.log("sizes", Number(size), Number(nextSize));
     } else {
       if (sizeDelta.gte(size)) {
         return;
@@ -801,8 +795,6 @@ export function getLiquidationPrice(data) {
 
   let positionFee = getMarginFee(size).add(LIQUIDATION_FEE);
 
-  console.log("position fee", Number(positionFee));
-
   if (entryFundingRate && cumulativeFundingRate) {
     const fundingFee = size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
     positionFee = positionFee.add(fundingFee);
@@ -825,25 +817,19 @@ export function getLiquidationPrice(data) {
   });
 
   if (!liquidationPriceForFees) {
-    console.log("liquidationPriceForMaxLeverage", Number(liquidationPriceForMaxLeverage));
     return liquidationPriceForMaxLeverage;
   }
 
   if (!liquidationPriceForMaxLeverage) {
-    console.log("liquidationPriceForFees", Number(liquidationPriceForFees));
-
     return liquidationPriceForFees;
   }
 
   if (isLong) {
-    console.log("return is Long");
     // return the higher price
 
     const res = liquidationPriceForFees.gt(liquidationPriceForMaxLeverage)
       ? liquidationPriceForFees
       : liquidationPriceForMaxLeverage;
-
-    console.log("RESULT", Number(res), Number(liquidationPriceForFees), Number(liquidationPriceForMaxLeverage));
 
     return res;
   }
