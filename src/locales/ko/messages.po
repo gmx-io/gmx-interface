@@ -700,6 +700,8 @@ msgstr "추천 코드 수정"
 msgid "Enable Leverage"
 msgstr "레버리지 유효화"
 
+#: src/components/Exchange/OrdersToa.js
+#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Orders"
@@ -751,6 +753,7 @@ msgstr "레버리지 유효화"
 msgid "Enabling Leverage..."
 msgstr "레버리지 유효화중"
 
+#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -1031,6 +1034,7 @@ msgstr "트레이드 시작하기"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Leaderboard/Leaderboard.tsx
 msgid "Leaderboard"
 msgstr "리더보드"
 
@@ -1197,6 +1201,10 @@ msgstr "{0} 숏 최대치를 초과했습니다."
 msgid "Media Kit"
 msgstr "미디어 키트"
 
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Members"
+msgstr ""
+
 #: src/App/App.js
 msgid "MetaMask"
 msgstr "메타마스크"
@@ -1229,6 +1237,11 @@ msgstr "멀티플라이어 포인트 APR"
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Multiswap"
 msgstr "멀티스왑"
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Name"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1275,6 +1288,11 @@ msgstr "Olympus Pro"
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "미결제 약정"
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Open Positions"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
@@ -1367,6 +1385,8 @@ msgstr "네트워크를 Arbitrum으로 변경해주세요."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "손익"
@@ -1438,6 +1458,11 @@ msgstr "GMX 구입"
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
 msgstr "보험 구입"
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Rank"
+msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js

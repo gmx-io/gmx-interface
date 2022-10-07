@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE } from "./chains";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE } from "./chains";
 
 export const SUBGRAPH_URLS = {
   [ARBITRUM]: {
@@ -10,6 +10,10 @@ export const SUBGRAPH_URLS = {
   [AVALANCHE]: {
     stats: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-stats",
     referrals: "https://api.thegraph.com/subgraphs/name/gmx-io/gmx-avalanche-referrals",
+  },
+
+  [ARBITRUM_TESTNET]: {
+    referrals: "https://api.thegraph.com/subgraphs/name/morazzela/gmx-arbitrum-referrals-staging",
   },
 
   common: {

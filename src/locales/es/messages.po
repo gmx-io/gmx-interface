@@ -700,6 +700,8 @@ msgstr "Editar Código de Referido"
 msgid "Enable Leverage"
 msgstr "Habilitar Apalancamiento"
 
+#: src/components/Exchange/OrdersToa.js
+#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Orders"
@@ -751,6 +753,7 @@ msgstr "Habilitando Apalancamiento"
 msgid "Enabling Leverage..."
 msgstr "Habilitando Apalancamiento..."
 
+#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -1031,6 +1034,7 @@ msgstr "Lanzar Exchange"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Leaderboard/Leaderboard.tsx
 msgid "Leaderboard"
 msgstr "Tabla de clasificación"
 
@@ -1197,6 +1201,10 @@ msgstr "Superados cortos Máx. de {0}"
 msgid "Media Kit"
 msgstr "Kit de Medios"
 
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Members"
+msgstr ""
+
 #: src/App/App.js
 msgid "MetaMask"
 msgstr "MetaMask"
@@ -1229,6 +1237,11 @@ msgstr "APR de Puntos Multiplicadores"
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Multiswap"
 msgstr "Multi-intercambio"
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Name"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1275,6 +1288,11 @@ msgstr "Olympus Pro"
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "Interés Abierto"
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Open Positions"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
@@ -1367,6 +1385,8 @@ msgstr "Por favor, cambie su red a Arbitrum."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "GyP"
@@ -1438,6 +1458,11 @@ msgstr "Comprar GMX"
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
 msgstr "Comprar Seguro"
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Rank"
+msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js

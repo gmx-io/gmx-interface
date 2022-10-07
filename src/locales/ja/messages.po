@@ -700,6 +700,8 @@ msgstr "紹介コード編集"
 msgid "Enable Leverage"
 msgstr "レバレッジ有効化"
 
+#: src/components/Exchange/OrdersToa.js
+#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Orders"
@@ -751,6 +753,7 @@ msgstr "レバレッジ有効化中"
 msgid "Enabling Leverage..."
 msgstr "レバレッジ有効化中"
 
+#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -1031,6 +1034,7 @@ msgstr "取引開始"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Leaderboard/Leaderboard.tsx
 msgid "Leaderboard"
 msgstr "順位"
 
@@ -1197,6 +1201,10 @@ msgstr "{0}のショートの最大値超過"
 msgid "Media Kit"
 msgstr "メディアキット"
 
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Members"
+msgstr ""
+
 #: src/App/App.js
 msgid "MetaMask"
 msgstr "メタマスク"
@@ -1229,6 +1237,11 @@ msgstr "マルチプライヤーポイントのAPR(実質年利)"
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Multiswap"
 msgstr "マルチスワップ"
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Name"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1275,6 +1288,11 @@ msgstr "Olympus Pro"
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "建玉"
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Open Positions"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
@@ -1367,6 +1385,8 @@ msgstr "ネットワークをArbitrumに切り替えてください。"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "損益"
@@ -1438,6 +1458,11 @@ msgstr "GMX購入"
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
 msgstr "保険購入"
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Rank"
+msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js

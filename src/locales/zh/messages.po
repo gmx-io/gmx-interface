@@ -700,6 +700,8 @@ msgstr ""
 msgid "Enable Leverage"
 msgstr ""
 
+#: src/components/Exchange/OrdersToa.js
+#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Orders"
@@ -751,6 +753,7 @@ msgstr ""
 msgid "Enabling Leverage..."
 msgstr ""
 
+#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -1031,6 +1034,7 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Header/AppHeaderLinks.tsx
+#: src/pages/Leaderboard/Leaderboard.tsx
 msgid "Leaderboard"
 msgstr ""
 
@@ -1197,6 +1201,10 @@ msgstr ""
 msgid "Media Kit"
 msgstr ""
 
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Members"
+msgstr ""
+
 #: src/App/App.js
 msgid "MetaMask"
 msgstr ""
@@ -1228,6 +1236,11 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Multiswap"
+msgstr ""
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Name"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -1274,6 +1287,11 @@ msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Open Interest"
+msgstr ""
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Open Positions"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -1367,6 +1385,8 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
 #: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr ""
@@ -1437,6 +1457,11 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
+msgstr ""
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Rank"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
