@@ -310,7 +310,7 @@ export async function setTraderReferralCodeByUser(chainId, referralCode, library
 
 export async function getReferralCodeOwner(chainId, referralCode) {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
-  const provider = getProvider(null, chainId);
+  const provider = getProvider(undefined, chainId);
   const contract = new ethers.Contract(referralStorageAddress, ReferralStorage.abi, provider);
   const codeOwner = await contract.codeOwners(referralCode);
   return codeOwner;
