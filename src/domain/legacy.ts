@@ -505,7 +505,6 @@ export function useTotalGmxStaked() {
       stakedGmxTrackerAddressArbitrum,
     ],
     {
-      // @ts-ignore
       fetcher: contractFetcher(undefined, Token),
     }
   );
@@ -518,7 +517,6 @@ export function useTotalGmxStaked() {
       stakedGmxTrackerAddressAvax,
     ],
     {
-      // @ts-ignore
       fetcher: contractFetcher(undefined, Token),
     }
   );
@@ -549,14 +547,12 @@ export function useTotalGmxInLiquidity() {
   const { data: gmxInLiquidityOnArbitrum, mutate: mutateGMXInLiquidityOnArbitrum } = useSWR<any>(
     [`StakeV2:gmxInLiquidity:${ARBITRUM}`, ARBITRUM, getContract(ARBITRUM, "GMX"), "balanceOf", poolAddressArbitrum],
     {
-      // @ts-ignore
       fetcher: contractFetcher(undefined, Token),
     }
   );
   const { data: gmxInLiquidityOnAvax, mutate: mutateGMXInLiquidityOnAvax } = useSWR<any>(
     [`StakeV2:gmxInLiquidity:${AVALANCHE}`, AVALANCHE, getContract(AVALANCHE, "GMX"), "balanceOf", poolAddressAvax],
     {
-      // @ts-ignore
       fetcher: contractFetcher(undefined, Token),
     }
   );
@@ -581,7 +577,6 @@ function useGmxPriceFromAvalanche() {
   const poolAddress = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
 
   const { data, mutate: updateReserves } = useSWR(["TraderJoeGmxAvaxReserves", AVALANCHE, poolAddress, "getReserves"], {
-    // @ts-ignore
     fetcher: contractFetcher(undefined, UniswapV2),
   });
   const { _reserve0: gmxReserve, _reserve1: avaxReserve }: any = data || {};
@@ -591,7 +586,6 @@ function useGmxPriceFromAvalanche() {
   const { data: avaxPrice, mutate: updateAvaxPrice } = useSWR(
     [`StakeV2:avaxPrice`, AVALANCHE, vaultAddress, "getMinPrice", avaxAddress],
     {
-      // @ts-ignore
       fetcher: contractFetcher(undefined, Vault),
     }
   );
