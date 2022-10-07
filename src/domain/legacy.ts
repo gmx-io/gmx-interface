@@ -348,12 +348,9 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
 
-  const { data: minExecutionFee } = useSWR<BigNumber | undefined>(
-    [active, chainId, positionRouterAddress, "minExecutionFee"],
-    {
-      fetcher: contractFetcher(library, PositionRouter),
-    }
-  );
+  const { data: minExecutionFee } = useSWR<BigNumber>([active, chainId, positionRouterAddress, "minExecutionFee"], {
+    fetcher: contractFetcher(library, PositionRouter),
+  });
 
   const { data: gasPrice } = useSWR<BigNumber | undefined>(["gasPrice", chainId], {
     fetcher: () => {
@@ -428,7 +425,6 @@ export function useStakedGmxSupply(library, active) {
   const { data: avaxData, mutate: avaxMutate } = useSWR(
     [`StakeV2:stakedGmxSupply:${active}`, AVALANCHE, gmxAddressAvax, "balanceOf", stakedGmxTrackerAddressAvax],
     {
-      // @ts-ignore
       fetcher: contractFetcher(undefined, Token),
     }
   );
@@ -500,7 +496,7 @@ export function useTotalGmxStaked() {
   const stakedGmxTrackerAddressArbitrum = getContract(ARBITRUM, "StakedGmxTracker");
   const stakedGmxTrackerAddressAvax = getContract(AVALANCHE, "StakedGmxTracker");
   let totalStakedGmx = useRef(bigNumberify(0));
-  const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR<BigNumber | undefined>(
+  const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR<BigNumber>(
     [
       `StakeV2:stakedGmxSupply:${ARBITRUM}`,
       ARBITRUM,
@@ -513,7 +509,7 @@ export function useTotalGmxStaked() {
       fetcher: contractFetcher(undefined, Token),
     }
   );
-  const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR<BigNumber | undefined>(
+  const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR<BigNumber>(
     [
       `StakeV2:stakedGmxSupply:${AVALANCHE}`,
       AVALANCHE,
@@ -625,7 +621,7 @@ function useGmxPriceFromArbitrum(library, active) {
 
   const vaultAddress = getContract(ARBITRUM, "Vault");
   const ethAddress = getTokenBySymbol(ARBITRUM, "WETH").address;
-  const { data: ethPrice, mutate: updateEthPrice } = useSWR<BigNumber | undefined>(
+  const { data: ethPrice, mutate: updateEthPrice } = useSWR<BigNumber>(
     [`StakeV2:ethPrice:${active}`, ARBITRUM, vaultAddress, "getMinPrice", ethAddress],
     {
       fetcher: contractFetcher(library, Vault),
