@@ -23,7 +23,7 @@ import { helperToast } from "lib/helperToast";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { getNativeToken, getToken } from "config/tokens";
 import { formatDate } from "lib/dates";
-import { getRootUrl } from "domain/common";
+import { getRootUrl } from "lib/url";
 
 function AffiliatesStats({
   referralsData,
