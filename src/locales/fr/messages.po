@@ -2170,6 +2170,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/pages/Actions/Actions.js
+#: src/pages/Exchange/Exchange.js
 msgid "Orders"
 msgstr ""
 
@@ -2286,6 +2287,7 @@ msgid "Position close disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/pages/Actions/Actions.js
+#: src/pages/Exchange/Exchange.js
 msgid "Positions"
 msgstr ""
 
@@ -3193,6 +3195,10 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Traders Referred"
+msgstr ""
+
+#: src/pages/Exchange/Exchange.js
+msgid "Trades"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js

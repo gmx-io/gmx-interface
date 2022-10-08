@@ -786,11 +786,12 @@ export const Exchange = forwardRef((props, ref) => {
   const ORDERS = "Orders";
   const TRADES = "Trades";
 
-  const LIST_SECTIONS = [POSITIONS, flagOrdersEnabled ? ORDERS : undefined, TRADES].filter(Boolean);
+  const LIST_SECTIONS = [POSITIONS, flagOrdersEnabled && ORDERS, TRADES].filter(Boolean);
   let [listSection, setListSection] = useLocalStorageByChainId(chainId, "List-section-v2", LIST_SECTIONS[0]);
   const LIST_SECTIONS_LABELS = {
-    [ORDERS]: orders.length ? t`Orders (${orders.length})` : undefined,
-    [POSITIONS]: positions.length ? t`Positions (${positions.length})` : undefined,
+    [ORDERS]: orders.length ? t`Orders (${orders.length})` : t`Orders`,
+    [POSITIONS]: positions.length ? t`Positions (${positions.length})` : t`Positions`,
+    [TRADES]: t`Trades`,
   };
   if (!LIST_SECTIONS.includes(listSection)) {
     listSection = LIST_SECTIONS[0];
