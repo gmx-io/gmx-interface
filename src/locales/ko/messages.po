@@ -2492,7 +2492,6 @@ msgstr "추천 코드 업데이트 완료!"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Referrals/Referrals.js
-#: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "추천"
 
@@ -2513,7 +2512,7 @@ msgid "Request withdrawal from {0} {longOrShortText}"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Requested decrease of {0} {longOrShortText} by {1} USD."
+msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -3195,10 +3194,6 @@ msgstr "트레이더"
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Traders Referred"
 msgstr "추천한 트레이더"
-
-#: src/pages/Exchange/Exchange.js
-#~ msgid "Trades"
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Trading guide"

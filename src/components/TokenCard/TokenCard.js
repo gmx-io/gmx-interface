@@ -14,7 +14,7 @@ import { HeaderLink } from "../Header/HeaderLink";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
-import ExternalLink from "components/Common/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
   const isHome = isHomeSite();

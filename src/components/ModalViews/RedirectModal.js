@@ -2,7 +2,7 @@ import "./RedirectModal.css";
 import Modal from "../Modal/Modal";
 import Checkbox from "../Checkbox/Checkbox";
 import { t, Trans } from "@lingui/macro";
-import ExternalLink from "../Common/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export function RedirectPopupModal({
   redirectModalVisible,

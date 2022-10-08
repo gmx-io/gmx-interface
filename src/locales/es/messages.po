@@ -2492,7 +2492,6 @@ msgstr "¡Código de referido actualizado!"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Referrals/Referrals.js
-#: src/pages/Referrals/Referrals.js
 msgid "Referrals"
 msgstr "Referidos"
 
@@ -2513,7 +2512,7 @@ msgid "Request withdrawal from {0} {longOrShortText}"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Requested decrease of {0} {longOrShortText} by {1} USD."
+msgid "Requested decrease of {0} {longOrShortText} by {sizeDeltaUsd} USD."
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -3195,10 +3194,6 @@ msgstr "Traders"
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Traders Referred"
 msgstr "Traders Referidos"
-
-#: src/pages/Exchange/Exchange.js
-#~ msgid "Trades"
-#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Trading guide"

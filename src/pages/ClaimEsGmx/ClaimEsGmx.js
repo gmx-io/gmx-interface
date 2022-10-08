@@ -21,7 +21,7 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import { callContract, contractFetcher } from "lib/contracts";
 import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { useChainId } from "lib/chains";
-import ExternalLink from "components/Common/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const VEST_WITH_GMX_ARB = "VEST_WITH_GMX_ARB";
 const VEST_WITH_GLP_ARB = "VEST_WITH_GLP_ARB";

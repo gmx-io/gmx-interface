@@ -6,7 +6,7 @@ import { get1InchSwapUrl } from "domain/common";
 import { getLowestFeeTokenForBuyGlp, InfoTokens, Token } from "domain/tokens";
 import { getNativeToken } from "config/tokens";
 import { t, Trans } from "@lingui/macro";
-import ExternalLink from "components/Common/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const { AddressZero } = ethers.constants;
 

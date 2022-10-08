@@ -21,7 +21,7 @@ import { bigNumberify, formatAmount } from "lib/numbers";
 import { formatDateTime } from "lib/dates";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { select, t, Trans } from "@lingui/macro";
-import ExternalLink from "components/Common/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const { AddressZero } = ethers.constants;
 

@@ -4,7 +4,7 @@ import { get1InchSwapUrl } from "domain/common";
 import { Token, TokenInfo } from "domain/tokens";
 import { getNativeToken } from "config/tokens";
 import { Trans } from "@lingui/macro";
-import ExternalLink from "components/Common/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const { AddressZero } = ethers.constants;
 

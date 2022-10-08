@@ -28,7 +28,7 @@ import {
   formatArrayAmount,
   parseValue,
 } from "lib/numbers";
-import ExternalLink from "components/Common/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { t, Trans } from "@lingui/macro";
 
 const { MaxUint256, AddressZero } = ethers.constants;

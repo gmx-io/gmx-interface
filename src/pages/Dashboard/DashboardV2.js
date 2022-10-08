@@ -40,7 +40,7 @@ import arbitrum24Icon from "img/ic_arbitrum_24.svg";
 import avalanche24Icon from "img/ic_avalanche_24.svg";
 
 import AssetDropdown from "./AssetDropdown";
-import ExternalLink from "components/Common/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import SEO from "components/Common/SEO";
 import useTotalVolume from "domain/useTotalVolume";
 import StatsTooltip from "components/StatsTooltip/StatsTooltip";

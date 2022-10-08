@@ -96,7 +96,7 @@ import {
   useInactiveListener,
 } from "lib/wallets";
 import { useChainId } from "lib/chains";
-import ExternalLink from "components/Common/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;

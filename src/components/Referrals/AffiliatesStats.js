@@ -23,7 +23,7 @@ import { helperToast } from "lib/helperToast";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { getNativeToken, getToken } from "config/tokens";
 import { formatDate } from "lib/dates";
-import ExternalLink from "components/Common/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 function AffiliatesStats({
   referralsData,

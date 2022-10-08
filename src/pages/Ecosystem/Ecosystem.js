@@ -9,7 +9,7 @@ import arbitrumIcon from "img/ic_arbitrum_16.svg";
 import avalancheIcon from "img/ic_avalanche_16.svg";
 
 import "./Ecosystem.css";
-import ExternalLink from "components/Common/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { t } from "@lingui/macro";
 

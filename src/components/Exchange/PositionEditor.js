@@ -21,7 +21,7 @@ import { getTokenInfo } from "domain/tokens/utils";
 import { approveTokens, shouldRaiseGasError } from "domain/tokens";
 import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
-import ExternalLink from "components/Common/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const DEPOSIT = t`Deposit`;
 const WITHDRAW = t`Withdraw`;

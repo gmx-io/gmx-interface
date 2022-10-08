@@ -5,7 +5,7 @@ import Footer from "components/Footer/Footer";
 import { getPageTitle } from "lib/legacy";
 import Card from "components/Common/Card";
 import { Trans } from "@lingui/macro";
-import ExternalLink from "components/Common/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 function Jobs() {
   return (

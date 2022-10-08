@@ -47,7 +47,7 @@ import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { getTokens } from "config/tokens";
 import { formatDateTime, getTimeRemaining } from "lib/dates";
-import ExternalLink from "components/Common/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -726,12 +726,8 @@ export default function PositionSeller(props) {
       minExecutionFee, // _executionFee
       withdrawETH, // _withdrawETH
     ];
-
-    const successMsg = t`Requested decrease of ${position.indexToken.symbol} ${longOrShortText} by ${formatAmount(
-      sizeDelta,
-      USD_DECIMALS,
-      2
-    )} USD.`;
+    const sizeDeltaUsd = formatAmount(sizeDelta, USD_DECIMALS, 2);
+    const successMsg = t`Requested decrease of ${position.indexToken.symbol} ${longOrShortText} by ${sizeDeltaUsd} USD.`;
 
     const contract = new ethers.Contract(positionRouterAddress, PositionRouter.abi, library.getSigner());
 

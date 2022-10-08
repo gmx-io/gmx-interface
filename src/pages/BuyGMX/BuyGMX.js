@@ -19,7 +19,7 @@ import Button from "components/Common/Button";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
-import ExternalLink from "components/Common/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export default function BuyGMX() {
   const { chainId } = useChainId();

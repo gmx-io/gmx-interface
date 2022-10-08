@@ -29,8 +29,8 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { SLIPPAGE_BPS_KEY } from "config/localStorage";
 import { expandDecimals, formatAmount, formatAmountFree } from "lib/numbers";
 import { getNativeToken, getToken, getWrappedToken } from "config/tokens";
-import ExternalLink from "components/Common/ExternalLink";
 import { Plural, select, t, Trans } from "@lingui/macro";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
 

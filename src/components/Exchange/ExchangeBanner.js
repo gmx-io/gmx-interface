@@ -1,6 +1,6 @@
-import { Trans } from "@lingui/macro";
 import React from "react";
-import ExternalLink from "../Common/ExternalLink";
+import { Trans } from "@lingui/macro";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import "./ExchangeBanner.css";
 

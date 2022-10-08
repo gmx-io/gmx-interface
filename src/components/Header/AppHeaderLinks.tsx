@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { HeaderLink } from "./HeaderLink";
 import "./Header.css";
 import { isHomeSite } from "lib/legacy";
-import ExternalLink from "components/Common/ExternalLink";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import logoImg from "img/logo_GMX.svg";
 
 type Props = {

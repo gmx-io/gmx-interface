@@ -18,7 +18,6 @@ import Footer from "components/Footer/Footer";
 
 import "./Stake.css";
 import { t, Trans } from "@lingui/macro";
-import ExternalLink from "../../components/Common/ExternalLink";
 import { CHAIN_ID, getExplorerUrl } from "config/chains";
 import { contractFetcher } from "lib/contracts";
 import { approveTokens } from "domain/tokens";
@@ -27,6 +26,7 @@ import { getInjectedHandler } from "lib/wallets";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
 import { getTokenBySymbol } from "config/tokens";
 import { useChainId } from "lib/chains";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const BASIS_POINTS_DIVISOR = 10000;
 const HOURS_PER_YEAR = 8760;

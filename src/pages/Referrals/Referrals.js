@@ -22,10 +22,10 @@ import TradersStats from "components/Referrals/TradersStats";
 import AddAffiliateCode from "components/Referrals/AddAffiliateCode";
 import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
 import { ethers } from "ethers";
-import ExternalLink from "../../components/Common/ExternalLink";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
 import { useChainId } from "lib/chains";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const TRADERS = "Traders";
 const AFFILIATES = "Affiliates";
@@ -111,7 +111,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const TAB_OPTION_LABELS = { [TRADERS]: t`Traders`, [AFFILIATES]: t`Affiliates` };
 
   return (
-    <SEO title={getPageTitle(t`Referrals`)}>
+    <SEO title={getPageTitle("Referrals")}>
       <div className="default-container page-layout Referrals">
         <div className="section-title-block">
           <div className="section-title-icon" />
