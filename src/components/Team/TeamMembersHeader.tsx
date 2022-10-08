@@ -313,6 +313,7 @@ type CreateJoinRequestProps = {
 }
 
 function CreateJoinRequest({ team, pendingTxns, setPendingTxns, onCreate }: CreateJoinRequestProps) {
+  const history = useHistory()
   const { chainId, library } = useWeb3React()
   const query = useRouteQuery()
   const [open, setOpen] = useState(false)
@@ -355,6 +356,12 @@ function CreateJoinRequest({ team, pendingTxns, setPendingTxns, onCreate }: Crea
 
       if (receipt.status === 1) {
         onCreate()
+        const url = new URL(window.location.href)
+        url.searchParams.delete("invite")
+        url.searchParams.delete("referral")
+        history.replace({
+          search: url.searchParams.toString()
+        })
       }
     } catch (err) {
       console.error(err)
