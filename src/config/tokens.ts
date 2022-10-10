@@ -482,12 +482,12 @@ export const ICONLINKS = {
       coingecko: "https://www.coingecko.com/en/coins/weth",
       avalanche: "https://snowtrace.io/address/0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
     },
-    BTC: {
+    WBTC: {
       coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
       avalanche: "https://snowtrace.io/address/0x50b7545627a5162f82a992c33b87adc75187b218",
     },
-    "BTC.b": {
-      coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
+    BTC: {
+      coingecko: "https://www.coingecko.com/en/coins/bitcoin-avalanche-bridged-btc-b",
       avalanche: "https://snowtrace.io/address/0x152b9d0FdC40C096757F570A51E494bd4b943E50",
     },
     MIM: {
