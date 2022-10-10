@@ -10,6 +10,7 @@ import { REFERRAL_CODE_QUERY_PARAM, shortenAddress } from "lib/legacy";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import {
+  getReferralCodeTradeUrl,
   getTierIdDisplay,
   getTwitterShareUrl,
   getUSDValue,
@@ -142,7 +143,7 @@ function AffiliatesStats({
                           <span className="referral-text ">{stat.referralCode}</span>
                           <div
                             onClick={() => {
-                              copyToClipboard(`${rootUrl}/#/trade/?${REFERRAL_CODE_QUERY_PARAM}=${stat.referralCode}`);
+                              copyToClipboard(getReferralCodeTradeUrl(stat.referralCode));
                               helperToast.success("Referral link copied to your clipboard");
                             }}
                             className="referral-code-icon"

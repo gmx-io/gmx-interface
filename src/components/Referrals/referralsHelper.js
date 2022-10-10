@@ -1,4 +1,10 @@
-import { isAddressZero, USD_DECIMALS, MAX_REFERRAL_CODE_LENGTH, getTwitterIntentURL } from "lib/legacy";
+import {
+  isAddressZero,
+  USD_DECIMALS,
+  MAX_REFERRAL_CODE_LENGTH,
+  getTwitterIntentURL,
+  REFERRAL_CODE_QUERY_PARAM,
+} from "lib/legacy";
 import { encodeReferralCode, getReferralCodeOwner } from "domain/referrals";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { bigNumberify, formatAmount } from "lib/numbers";
@@ -124,9 +130,13 @@ export function getCodeError(value) {
   return "";
 }
 
+export function getReferralCodeTradeUrl(referralCode) {
+  return `${getRootUrl()}/#/trade/?${REFERRAL_CODE_QUERY_PARAM}=${referralCode}`;
+}
+
 export function getTwitterShareUrl(referralCode) {
-  const message = "Trying out trading on @GMX_IO, up to 30x leverage on $BTC, $ETH 📈%0a%0aFor fee discounts use:";
-  const shareURL = `${getRootUrl()}/#/?ref=${referralCode}`;
+  const message = ["Trying out trading on @GMX_IO, up to 30x leverage on $BTC, $ETH 📈", "For fee discounts use:"];
+  const shareURL = getReferralCodeTradeUrl(referralCode);
 
   return getTwitterIntentURL(message, shareURL);
 }
