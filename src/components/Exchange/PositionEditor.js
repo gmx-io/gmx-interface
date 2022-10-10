@@ -135,6 +135,8 @@ export default function PositionEditor(props) {
         collateral: position.collateral,
         collateralDelta,
         increaseCollateral: isDeposit,
+        entryFundingRate: position.entryFundingRate,
+        cumulativeFundingRate: position.cumulativeFundingRate,
         hasProfit: position.hasProfit,
         delta: position.delta,
         includeDelta: savedIsPnlInLeverage,
@@ -144,6 +146,8 @@ export default function PositionEditor(props) {
         size: position.size,
         collateral: position.collateral,
         collateralDelta,
+        entryFundingRate: position.entryFundingRate,
+        cumulativeFundingRate: position.cumulativeFundingRate,
         increaseCollateral: isDeposit,
         hasProfit: position.hasProfit,
         delta: position.delta,
@@ -155,6 +159,8 @@ export default function PositionEditor(props) {
         size: position.size,
         collateral: position.collateral,
         averagePrice: position.averagePrice,
+        entryFundingRate: position.entryFundingRate,
+        cumulativeFundingRate: position.cumulativeFundingRate,
         collateralDelta,
         increaseCollateral: isDeposit,
       });
@@ -170,17 +176,20 @@ export default function PositionEditor(props) {
       if (isDeposit) return [t`Deposit disabled, pending ${getChainName(chainId)} upgrade`];
       return [t`Withdraw disabled, pending ${getChainName(chainId)} upgrade`];
     }
+
     if (!fromAmount) {
       return t`Enter an amount`;
     }
-    if (nextLeverage && nextLeverage.eq(0)) {
-      return t`Enter an amount`;
+
+    if (fromAmount.lte(0)) {
+      return t`Amount should be greater than zero`;
     }
 
     if (!isDeposit && fromAmount) {
       if (fromAmount.gte(position.collateral)) {
         return t`Min residual collateral: 10 USD`;
       }
+
       if (position.collateral.sub(fromAmount).lt(MIN_ORDER_USD)) {
         return t`Min residual collateral: 10 USD`;
       }
