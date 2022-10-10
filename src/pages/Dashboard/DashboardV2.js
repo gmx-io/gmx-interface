@@ -48,7 +48,7 @@ import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { getServerUrl } from "config/backend";
 import { contractFetcher } from "lib/contracts";
 import { useInfoTokens } from "domain/tokens";
-import { getTokenBySymbol, getWhitelistedTokens, GLPPOOLCOLORS } from "config/tokens";
+import { getTokenBySymbol, getWhitelistedTokens, GLP_POOL_COLORS } from "config/tokens";
 import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
@@ -929,15 +929,15 @@ export default function DashboardV2() {
                         {glpPool.map((entry, index) => (
                           <Cell
                             key={`cell-${index}`}
-                            fill={GLPPOOLCOLORS[entry.name]}
+                            fill={GLP_POOL_COLORS[entry.name]}
                             style={{
                               filter:
                                 glpActiveIndex === index
-                                  ? `drop-shadow(0px 0px 6px ${hexToRgba(GLPPOOLCOLORS[entry.name], 0.7)})`
+                                  ? `drop-shadow(0px 0px 6px ${hexToRgba(GLP_POOL_COLORS[entry.name], 0.7)})`
                                   : "none",
                               cursor: "pointer",
                             }}
-                            stroke={GLPPOOLCOLORS[entry.name]}
+                            stroke={GLP_POOL_COLORS[entry.name]}
                             strokeWidth={glpActiveIndex === index ? 1 : 1}
                           />
                         ))}

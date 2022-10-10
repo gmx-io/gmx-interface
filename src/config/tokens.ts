@@ -505,10 +505,10 @@ export const ICONLINKS = {
   },
 };
 
-export const GLPPOOLCOLORS = {
+export const GLP_POOL_COLORS = {
   ETH: "#6062a6",
   BTC: "#F7931A",
-  "BTC.b": "#F7931A",
+  WBTC: "#F7931A",
   USDC: "#2775CA",
   "USDC.e": "#2A5ADA",
   USDT: "#67B18A",
