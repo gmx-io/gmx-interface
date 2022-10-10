@@ -124,9 +124,11 @@ export default function PositionEditor(props) {
 
     if (fromAmount) {
       collateralDelta = isDeposit ? convertedAmount : fromAmount;
-      if (position.isLong) {
+
+      if (position.isLong && isDeposit) {
         collateralDelta = collateralDelta.mul(BASIS_POINTS_DIVISOR - DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR);
       }
+
       nextLeverage = getLeverage({
         size: position.size,
         collateral: position.collateral,
@@ -136,6 +138,7 @@ export default function PositionEditor(props) {
         delta: position.delta,
         includeDelta: savedIsPnlInLeverage,
       });
+
       nextLeverageExcludingPnl = getLeverage({
         size: position.size,
         collateral: position.collateral,
