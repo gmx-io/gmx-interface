@@ -96,6 +96,7 @@ export default function PositionEditor(props) {
 
   let title;
   let collateralDelta;
+
   if (position) {
     title = `Edit ${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol}`;
     collateralToken = position.collateralToken;
@@ -158,7 +159,9 @@ export default function PositionEditor(props) {
         increaseCollateral: isDeposit,
       });
 
-      nextCollateral = isDeposit ? position.collateral.add(collateralDelta) : position.collateral.sub(collateralDelta);
+      nextCollateral = isDeposit
+        ? position.collateral.add(collateralDelta)
+        : position.collateralAfterFee.sub(collateralDelta);
     }
   }
 
