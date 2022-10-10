@@ -1,21 +1,28 @@
 {
   "locales": [
-    "es",
-    "zh",
-    "ko",
-    "ru",
-    "ja",
     "en",
+    "es",
+    "ko",
+    "ja",
+    "zh",
+    "ru",
     "fr"
   ],
   "sourceLocale": "en",
   "catalogs": [
     {
-      "path": "src/config/locales/{locale}/messages",
+      "path": "src/locales/{locale}/messages",
       "include": [
         "src"
       ]
     }
   ],
-  "format": "po"
+  "formatOptions": {
+    "lineNumbers": false
+  },
+  "fallbackLocales": {
+    "default": "en"
+  },
+  "format": "po",
+  "orderBy": "messageId"
 }

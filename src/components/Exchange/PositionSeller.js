@@ -5,23 +5,12 @@ import { Trans, t } from "@lingui/macro";
 import { BsArrowRight } from "react-icons/bs";
 
 import {
-  formatAmount,
-  bigNumberify,
   DEFAULT_SLIPPAGE_AMOUNT,
   DEFAULT_HIGHER_SLIPPAGE_AMOUNT,
   USD_DECIMALS,
   DUST_USD,
   BASIS_POINTS_DIVISOR,
-  USDG_ADDRESS,
-  SLIPPAGE_BPS_KEY,
-  TRIGGER_PREFIX_BELOW,
-  TRIGGER_PREFIX_ABOVE,
   MIN_PROFIT_TIME,
-  usePrevious,
-  formatAmountFree,
-  parseValue,
-  expandDecimals,
-  getTokenInfo,
   getLiquidationPrice,
   getLeverage,
   getMarginFee,
@@ -29,33 +18,35 @@ import {
   MARKET,
   STOP,
   DECREASE,
-  useLocalStorageSerializeKey,
   calculatePositionDelta,
   getDeltaStr,
   getProfitPrice,
-  formatDateTime,
-  getTimeRemaining,
   getNextToAmount,
-  getUsd,
   USDG_DECIMALS,
-  CLOSE_POSITION_RECEIVE_TOKEN_KEY,
-  useLocalStorageByChainId,
   adjustForDecimals,
-  IS_NETWORK_DISABLED,
-  getChainName,
-} from "../../lib/legacy";
-import { getConstant } from "../../config/chains";
-import { createDecreaseOrder, callContract, useHasOutdatedUi } from "../../domain/legacy";
-import { getContract } from "../../config/Addresses";
-import PositionRouter from "../../abis/PositionRouter.json";
+} from "lib/legacy";
+import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED } from "config/chains";
+import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
+import { getContract } from "config/contracts";
+import PositionRouter from "abis/PositionRouter.json";
 import Checkbox from "../Checkbox/Checkbox";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import Tooltip from "../Tooltip/Tooltip";
 import TokenSelector from "./TokenSelector";
-import { getTokens } from "../../config/Tokens";
 import "./PositionSeller.css";
+import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
+import { callContract } from "lib/contracts";
+import { getTokenAmountFromUsd } from "domain/tokens";
+import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
+import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
+import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
+import { getTokenInfo, getUsd } from "domain/tokens/utils";
+import { usePrevious } from "lib/usePrevious";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import { getTokens } from "config/tokens";
+import { formatDateTime, getTimeRemaining } from "lib/dates";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -65,25 +56,19 @@ const orderOptionLabels = {
   [STOP]: "Trigger",
 };
 
-function getTokenAmount(usdAmount, tokenAddress, max, infoTokens) {
-  if (!usdAmount) {
-    return;
-  }
-  if (tokenAddress === USDG_ADDRESS) {
-    return usdAmount.mul(expandDecimals(1, 18)).div(PRECISION);
-  }
-  const info = getTokenInfo(infoTokens, tokenAddress);
-  if (!info) {
-    return;
-  }
-  if (max && !info.maxPrice) {
-    return;
-  }
-  if (!max && !info.minPrice) {
-    return;
-  }
+function shouldSwap(collateralToken, receiveToken) {
+  // If position collateral is WETH in contract, then position.collateralToken is { symbol: “ETH”, isNative: true, … }
+  // @see https://github.com/gmx-io/gmx-interface/blob/master/src/pages/Exchange/Exchange.js#L162
+  // meaning if collateralToken.isNative === true in reality position has WETH as a collateral
+  // and if collateralToken.isNative === true and receiveToken.isNative === true then position’s WETH will be unwrapped and user will receive native ETH
+  const isCollateralWrapped = collateralToken.isNative;
 
-  return usdAmount.mul(expandDecimals(1, info.decimals)).div(max ? info.minPrice : info.maxPrice);
+  const isSameToken =
+    collateralToken.address === receiveToken.address || (isCollateralWrapped && receiveToken.isWrapped);
+
+  const isUnwrap = isCollateralWrapped && receiveToken.isNative;
+
+  return !isSameToken && !isUnwrap;
 }
 
 function getSwapLimits(infoTokens, fromTokenAddress, toTokenAddress) {
@@ -174,7 +159,7 @@ export default function PositionSeller(props) {
     `${CLOSE_POSITION_RECEIVE_TOKEN_KEY}-${position?.indexToken?.symbol}-${position.isLong ? "long" : "short"}`
   );
 
-  const [swapToken, setSwapToken] = useState(() =>
+  const [swapToToken, setSwapToToken] = useState(() =>
     savedRecieveTokenAddress ? toTokens.find((token) => token.address === savedRecieveTokenAddress) : undefined
   );
 
@@ -254,7 +239,7 @@ export default function PositionSeller(props) {
 
   const needOrderBookApproval = orderOption === STOP && !orderBookApproved;
 
-  const allowReceiveTokenChange = orderOption === MARKET;
+  const isSwapAllowed = orderOption === MARKET;
 
   const { data: hasOutdatedUi } = useHasOutdatedUi();
 
@@ -280,8 +265,8 @@ export default function PositionSeller(props) {
   let convertedReceiveAmount = bigNumberify(0);
   let adjustedDelta = bigNumberify(0);
 
-  let notEnoughReceiveTokenLiquidity;
-  let collateralPoolCapacityExceeded;
+  let isNotEnoughReceiveTokenLiquidity;
+  let isCollateralPoolCapacityExceeded;
 
   let title;
   let fundingFee;
@@ -292,7 +277,7 @@ export default function PositionSeller(props) {
 
   let executionFee = orderOption === STOP ? getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE") : minExecutionFee;
 
-  let executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens);
+  let executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens) || bigNumberify(0);
 
   if (position) {
     fundingFee = position.fundingFee;
@@ -369,13 +354,10 @@ export default function PositionSeller(props) {
       }
     }
 
-    receiveToken = allowReceiveTokenChange && swapToken ? swapToken : collateralToken;
+    receiveToken = isSwapAllowed && swapToToken ? swapToToken : collateralToken;
 
-    if (allowReceiveTokenChange && swapToken) {
-      const swapTokenInfo = getTokenInfo(infoTokens, swapToken.address);
-
-      notEnoughReceiveTokenLiquidity = swapTokenInfo.availableAmount.lt(convertedReceiveAmount);
-
+    // Calculate swap fees
+    if (isSwapAllowed && swapToToken) {
       const { feeBasisPoints } = getNextToAmount(
         chainId,
         convertedAmount,
@@ -391,15 +373,30 @@ export default function PositionSeller(props) {
 
       if (feeBasisPoints) {
         swapFee = receiveAmount.mul(feeBasisPoints).div(BASIS_POINTS_DIVISOR);
-        swapFeeToken = getTokenAmount(swapFee, collateralToken.address, false, infoTokens);
+        swapFeeToken = getTokenAmountFromUsd(infoTokens, collateralToken.address, swapFee);
         totalFees = totalFees.add(swapFee || bigNumberify(0));
         receiveAmount = receiveAmount.sub(swapFee);
       }
+    }
 
+    if (orderOption === STOP) {
+      convertedReceiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveAmount, {
+        overridePrice: triggerPriceUsd,
+      });
+    } else {
+      convertedReceiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveAmount);
+    }
+
+    // Check swap limits (max in / max out)
+    if (isSwapAllowed && shouldSwap(collateralToken, receiveToken)) {
       const collateralInfo = getTokenInfo(infoTokens, collateralToken.address);
+      const receiveTokenInfo = getTokenInfo(infoTokens, receiveToken.address);
+
+      isNotEnoughReceiveTokenLiquidity =
+        receiveTokenInfo.availableAmount.lt(convertedReceiveAmount) ||
+        receiveTokenInfo.bufferAmount.gt(receiveTokenInfo.poolAmount.sub(convertedReceiveAmount));
 
       if (
-        swapToken.address !== collateralToken.address &&
         collateralInfo.maxUsdgAmount &&
         collateralInfo.maxUsdgAmount.gt(0) &&
         collateralInfo.usdgAmount &&
@@ -409,12 +406,10 @@ export default function PositionSeller(props) {
         const nextUsdgAmount = collateralInfo.usdgAmount.add(usdgFromAmount);
 
         if (nextUsdgAmount.gt(collateralInfo.maxUsdgAmount)) {
-          collateralPoolCapacityExceeded = true;
+          isCollateralPoolCapacityExceeded = true;
         }
       }
     }
-
-    convertedReceiveAmount = getTokenAmount(receiveAmount, receiveToken.address, false, infoTokens);
 
     if (isClosing) {
       nextCollateral = bigNumberify(0);
@@ -524,11 +519,11 @@ export default function PositionSeller(props) {
       }
     }
 
-    if (notEnoughReceiveTokenLiquidity) {
+    if (isNotEnoughReceiveTokenLiquidity) {
       return "Insufficient receive token liquidity";
     }
 
-    if (collateralPoolCapacityExceeded) {
+    if (isCollateralPoolCapacityExceeded) {
       return `${collateralToken.symbol} pool exceeded, can only Receive ${collateralToken.symbol}`;
     }
 
@@ -742,6 +737,9 @@ export default function PositionSeller(props) {
       successMsg,
       failMsg: t`Close failed.`,
       setPendingTxns,
+      // for Arbitrum, sometimes the successMsg shows after the position has already been executed
+      // hide the success message for Arbitrum as a workaround
+      hideSuccessMsg: chainId === ARBITRUM,
     })
       .then(async (res) => {
         setFromValue("");
@@ -837,7 +835,13 @@ export default function PositionSeller(props) {
   return (
     <div className="PositionEditor">
       {position && (
-        <Modal className="PositionSeller-modal" isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
+        <Modal
+          className="PositionSeller-modal"
+          isVisible={isVisible}
+          setIsVisible={setIsVisible}
+          label={title}
+          allowContentTouchMove
+        >
           {flagOrdersEnabled && (
             <Tab
               options={orderOptions}
@@ -1030,7 +1034,7 @@ export default function PositionSeller(props) {
             </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">
-                <Trans>Collateral</Trans>
+                <Trans>Collateral ({collateralToken.symbol})</Trans>
               </div>
               <div className="align-right">
                 {nextCollateral && !nextCollateral.eq(position.collateral) ? (
@@ -1095,28 +1099,31 @@ export default function PositionSeller(props) {
                   renderContent={() => (
                     <div>
                       {fundingFee && (
-                        <div className="PositionSeller-fee-item">
-                          Borrow fee: ${formatAmount(fundingFee, USD_DECIMALS, 2, true)}
-                        </div>
+                        <StatsTooltipRow label="Borrow fee" value={formatAmount(fundingFee, USD_DECIMALS, 2, true)} />
                       )}
 
                       {positionFee && (
-                        <div className="PositionSeller-fee-item">
-                          Closing fee: ${formatAmount(positionFee, USD_DECIMALS, 2, true)}
-                        </div>
+                        <StatsTooltipRow label="Closing fee" value={formatAmount(positionFee, USD_DECIMALS, 2, true)} />
                       )}
 
                       {swapFee && (
-                        <div className="PositionSeller-fee-item">
-                          Swap fee: {formatAmount(swapFeeToken, collateralToken.decimals, 5)} {collateralToken.symbol}
-                           (${formatAmount(swapFee, USD_DECIMALS, 2, true)})
-                        </div>
+                        <StatsTooltipRow
+                          label="Swap fee"
+                          showDollar={false}
+                          value={`${formatAmount(swapFeeToken, collateralToken.decimals, 5)} ${collateralToken.symbol}
+                           ($${formatAmount(swapFee, USD_DECIMALS, 2, true)})`}
+                        />
                       )}
 
-                      <div className="PositionSeller-fee-item">
-                        Execution fee: {formatAmount(executionFee, 18, 5, true)} {nativeTokenSymbol} ($
-                        {formatAmount(executionFeeUsd, USD_DECIMALS, 2)})
-                      </div>
+                      <StatsTooltipRow
+                        label="Execution fee"
+                        showDollar={false}
+                        value={`${formatAmount(executionFee, 18, 5, true)} ${nativeTokenSymbol} ($${formatAmount(
+                          executionFeeUsd,
+                          USD_DECIMALS,
+                          2
+                        )})`}
+                      />
 
                       <br />
 
@@ -1136,40 +1143,47 @@ export default function PositionSeller(props) {
                 <Trans>Receive</Trans>
               </div>
 
-              {!allowReceiveTokenChange && receiveToken && (
+              {!isSwapAllowed && receiveToken && (
                 <div className="align-right PositionSelector-selected-receive-token">
                   {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}&nbsp;{receiveToken.symbol} ($
                   {formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
                 </div>
               )}
 
-              {allowReceiveTokenChange && receiveToken && (
+              {isSwapAllowed && receiveToken && (
                 <div className="align-right">
                   <TokenSelector
                     // Scroll lock lead to side effects
                     // if it applied on modal inside another modal
                     disableBodyScrollLock={true}
                     className={cx("PositionSeller-token-selector", {
-                      warning: notEnoughReceiveTokenLiquidity || collateralPoolCapacityExceeded,
+                      warning: isNotEnoughReceiveTokenLiquidity || isCollateralPoolCapacityExceeded,
                     })}
                     label={"Receive"}
                     showBalances={false}
                     chainId={chainId}
                     tokenAddress={receiveToken.address}
                     onSelectToken={(token) => {
-                      setSwapToken(token);
+                      setSwapToToken(token);
                       setSavedRecieveTokenAddress(token.address);
                     }}
                     tokens={toTokens}
                     getTokenState={(tokenOptionInfo) => {
-                      const convertedTokenAmount = getTokenAmount(
-                        receiveAmount,
+                      if (!shouldSwap(collateralToken, tokenOptionInfo)) {
+                        return;
+                      }
+
+                      const convertedTokenAmount = getTokenAmountFromUsd(
+                        infoTokens,
                         tokenOptionInfo.address,
-                        false,
-                        infoTokens
+                        receiveAmount
                       );
 
-                      if (tokenOptionInfo.availableAmount.lt(convertedTokenAmount)) {
+                      const isNotEnoughLiquidity =
+                        tokenOptionInfo.availableAmount.lt(convertedTokenAmount) ||
+                        tokenOptionInfo.bufferAmount.gt(tokenOptionInfo.poolAmount.sub(convertedTokenAmount));
+
+                      if (isNotEnoughLiquidity) {
                         const { maxIn, maxOut, maxInUsd, maxOutUsd } = getSwapLimits(
                           infoTokens,
                           collateralToken.address,
@@ -1182,13 +1196,16 @@ export default function PositionSeller(props) {
                           disabled: true,
                           message: (
                             <div>
-                              Insufficient Available Liquidity to swap to {tokenOptionInfo.symbol}
+                              Insufficient Available Liquidity to swap to {tokenOptionInfo.symbol}:
                               <br />
                               <br />
-                              Max {collateralInfo.symbol} in: {formatAmount(maxIn, collateralInfo.decimals, 2, true)}{" "}
-                              {collateralInfo.symbol}
-                              <br />
-                              (${formatAmount(maxInUsd, USD_DECIMALS, 2, true)})
+                              <StatsTooltipRow
+                                label={`Max ${collateralInfo.symbol} in`}
+                                value={[
+                                  `${formatAmount(maxIn, collateralInfo.decimals, 0, true)} ${collateralInfo.symbol}`,
+                                  `($${formatAmount(maxInUsd, USD_DECIMALS, 0, true)})`,
+                                ]}
+                              />
                               <br />
                               <br />
                               Max {tokenOptionInfo.symbol} out:{" "}

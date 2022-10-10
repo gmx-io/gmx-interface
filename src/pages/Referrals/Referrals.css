@@ -185,7 +185,6 @@
 }
 
 .table-referral-code {
-  cursor: pointer;
   align-items: center;
   display: flex;
 }
@@ -195,11 +194,13 @@
   font-family: monospace;
 }
 
-.table-referral-code .copy-icon {
+.table-referral-code .referral-code-icon {
   margin-right: 1rem;
+  cursor: pointer;
+  display: inline-flex;
 }
 
-.table-referral-code .copy-icon:hover {
+.table-referral-code .referral-code-icon:hover {
   opacity: 0.75;
 }
 

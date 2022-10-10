@@ -1,10 +1,11 @@
+import { formatAmount } from "lib/numbers";
 import { Competition, Team } from "../../domain/leaderboard/types";
-import { formatAmount, USD_DECIMALS } from "../../lib/legacy";
+import { USD_DECIMALS } from "../../lib/legacy";
 
 type Props = {
-  team: Team,
-  competition: Competition,
-}
+  team: Team;
+  competition: Competition;
+};
 
 export default function TeamStats({ team, competition }: Props) {
   return (
@@ -24,7 +25,9 @@ export default function TeamStats({ team, competition }: Props) {
                 <>
                   <span>${formatAmount(team.pnl, USD_DECIMALS, 0, true)}</span>
                 </>
-              ) : "..."}
+              ) : (
+                "..."
+              )}
             </div>
           </div>
         </div>
@@ -39,5 +42,5 @@ export default function TeamStats({ team, competition }: Props) {
         </div>
       </div>
     </div>
-  )
+  );
 }

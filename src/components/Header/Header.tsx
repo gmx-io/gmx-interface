@@ -2,16 +2,16 @@ import React, { ReactNode, useEffect, useState } from "react";
 import cx from "classnames";
 
 import { AppHeaderUser } from "./AppHeaderUser";
-import { HeaderLink } from "./HeaderLink";
 import { AppHeaderLinks } from "./AppHeaderLinks";
 
-import logoImg from "../../img/logo_GMX.svg";
-import logoSmallImg from "../../img/logo_GMX_small.svg";
+import logoImg from "img/logo_GMX.svg";
+import logoSmallImg from "img/logo_GMX_small.svg";
 import { RiMenuLine } from "react-icons/ri";
 import { FaTimes } from "react-icons/fa";
 import { AnimatePresence as FramerAnimatePresence, motion } from "framer-motion";
 
 import "./Header.css";
+import { Link } from "react-router-dom";
 
 // Fix framer-motion old React FC type (solved in react 18)
 const AnimatePresence = (props: React.ComponentProps<typeof FramerAnimatePresence> & { children: ReactNode }) => (
@@ -37,11 +37,11 @@ type Props = {
 };
 
 export function Header({
-   disconnectAccountAndCloseSettings,
-   openSettings,
-   setWalletModalVisible,
-   redirectPopupTimestamp,
-   showRedirectModal
+  disconnectAccountAndCloseSettings,
+  openSettings,
+  setWalletModalVisible,
+  redirectPopupTimestamp,
+  showRedirectModal,
 }: Props) {
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
   const [isNativeSelectorModalVisible, setIsNativeSelectorModalVisible] = useState(false);
@@ -93,17 +93,10 @@ export function Header({
       <header>
         <div className="App-header large">
           <div className="App-header-container-left">
-            <HeaderLink
-              isHomeLink={true}
-              exact={true}
-              className="App-header-link-main"
-              to="/"
-              redirectPopupTimestamp={redirectPopupTimestamp}
-              showRedirectModal={showRedirectModal}
-            >
+            <Link className="App-header-link-main" to="/">
               <img src={logoImg} className="big" alt="GMX Logo" />
               <img src={logoSmallImg} className="small" alt="GMX Logo" />
-            </HeaderLink>
+            </Link>
             <AppHeaderLinks redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal} />
           </div>
           <div className="App-header-container-right">

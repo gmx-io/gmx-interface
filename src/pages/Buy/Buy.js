@@ -1,11 +1,11 @@
 import React from "react";
 import { Trans } from "@lingui/macro";
-import Footer from "../../components/Footer/Footer";
+import Footer from "components/Footer/Footer";
 import "./Buy.css";
-import TokenCard from "../../components/TokenCard/TokenCard";
-import buyGMXIcon from "../../img/buy_gmx.svg";
-import SEO from "../../components/Common/SEO";
-import { getPageTitle } from "../../lib/legacy";
+import TokenCard from "components/TokenCard/TokenCard";
+import buyGMXIcon from "img/buy_gmx.svg";
+import SEO from "components/Common/SEO";
+import { getPageTitle } from "lib/legacy";
 
 export default function BuyGMXGLP() {
   return (
