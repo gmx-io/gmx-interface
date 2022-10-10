@@ -104,7 +104,7 @@ describe("getLiquidationPrice", function () {
     it(`getLiquidationPrice: ${caseName}`, function () {
       const liqPrice = getLiquidationPrice(case_);
 
-      expect(Number(liqPrice)).toEqual(Number(expected));
+      expect(liqPrice).toEqual(expected);
     });
   }
 });
