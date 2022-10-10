@@ -53,6 +53,7 @@ export function useAllOrdersStats(chainId) {
   useEffect(() => {
     const graphClient = getGmxGraphClient(chainId);
     if (graphClient) {
+      // eslint-disable-next-line no-console
       graphClient.query({ query }).then(setRes).catch(console.warn);
     }
   }, [setRes, query, chainId]);
@@ -71,6 +72,7 @@ export function useUserStat(chainId) {
   const [res, setRes] = useState<any>();
 
   useEffect(() => {
+    // eslint-disable-next-line no-console
     getGmxGraphClient(chainId)?.query({ query }).then(setRes).catch(console.warn);
   }, [setRes, query, chainId]);
 
@@ -116,6 +118,7 @@ export function useLiquidationsData(chainId, account) {
           });
           setData(_data);
         })
+        // eslint-disable-next-line no-console
         .catch(console.warn);
     }
   }, [setData, chainId, account]);
@@ -148,6 +151,7 @@ export function useAllPositions(chainId, library) {
   const [res, setRes] = useState<any>();
 
   useEffect(() => {
+    // eslint-disable-next-line no-console
     nissohGraphClient.query({ query }).then(setRes).catch(console.warn);
   }, [setRes, query]);
 
@@ -178,6 +182,7 @@ export function useAllPositions(chainId, library) {
 
           return position;
         } catch (ex) {
+          // eslint-disable-next-line no-console
           console.error(ex);
         }
       })
@@ -235,6 +240,7 @@ export function useAllOrders(chainId, library) {
           ret.createdTimestamp = order.createdTimestamp;
           return ret;
         } catch (ex) {
+          // eslint-disable-next-line no-console
           console.error(ex);
         }
       })
@@ -264,6 +270,7 @@ export function usePositionsForOrders(chainId, library, orders) {
           }
           return [position, order];
         } catch (ex) {
+          // eslint-disable-next-line no-console
           console.error(ex);
         }
       })
@@ -365,6 +372,7 @@ export function useMinExecutionFee(library, active, chainId, infoTokens) {
           const gasPrice = await provider.getGasPrice();
           resolve(gasPrice);
         } catch (e) {
+          // eslint-disable-next-line no-console
           console.error(e);
         }
       });

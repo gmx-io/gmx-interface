@@ -211,6 +211,7 @@ function printVolumeSummary(summary) {
       lines.push(`${item1.symbol}: ${formatAmount(item1.volume, USD_DECIMALS, 0, true)} USD`);
     }
   }
+  // eslint-disable-next-line no-console
   console.info(lines.join("\n"));
 }
 

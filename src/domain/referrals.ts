@@ -276,6 +276,7 @@ export function useReferralsData(chainId, account) {
               },
         });
       })
+      // eslint-disable-next-line no-console
       .catch(console.warn)
       .finally(() => {
         setLoading(false);

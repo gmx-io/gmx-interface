@@ -180,6 +180,7 @@ function MigrationModal(props) {
         setIsVisible(false);
       })
       .catch((e) => {
+        // eslint-disable-next-line no-console
         console.error(e);
         helperToast.error("Migration failed");
       })

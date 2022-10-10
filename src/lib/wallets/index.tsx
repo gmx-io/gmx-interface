@@ -257,6 +257,7 @@ export const switchNetwork = async (chainId: number, active?: boolean) => {
       return await addNetwork(NETWORK_METADATA[chainId]);
     }
 
+    // eslint-disable-next-line no-console
     console.error("error", ex);
   }
 };
@@ -272,9 +273,11 @@ export const getWalletConnectHandler = (
     activate(walletConnect, (ex) => {
       if (ex instanceof UnsupportedChainIdError) {
         helperToast.error("Unsupported chain. Switch to Arbitrum network on your wallet and try again");
+        // eslint-disable-next-line no-console
         console.warn(ex);
       } else if (!(ex instanceof UserRejectedRequestErrorWalletConnect)) {
         helperToast.error(ex.message);
+        // eslint-disable-next-line no-console
         console.warn(ex);
       }
       clearWalletConnectData();
@@ -335,6 +338,7 @@ export async function addTokenToMetamask(token: {
       // We can show a toast message when the token is added to metamask but because of the bug we can't. Once the bug is fixed we can show a toast message.
     }
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(error);
   }
 }

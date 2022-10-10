@@ -60,6 +60,7 @@ export function approveTokens({
       }
     })
     .catch((e) => {
+      // eslint-disable-next-line no-console
       console.error(e);
       let failMsg;
       if (

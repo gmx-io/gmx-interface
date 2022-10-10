@@ -36,6 +36,7 @@ export const contractFetcher =
         return;
       }
 
+      // eslint-disable-next-line no-console
       console.info("using fallbackProvider for", method);
       const fallbackContractCall = getContractCall({
         provider: fallbackProvider,
@@ -50,6 +51,7 @@ export const contractFetcher =
       fallbackContractCall
         .then((result) => resolve(result))
         .catch((e) => {
+          // eslint-disable-next-line no-console
           console.error("fallback fetcher error", id, contractInfo.contractName, method, e);
           reject(e);
         });
@@ -62,6 +64,7 @@ export const contractFetcher =
           resolve(result);
         })
         .catch((e) => {
+          // eslint-disable-next-line no-console
           console.error("fetcher error", id, contractInfo.contractName, method, e);
           handleFallback(resolve, reject, e);
         });

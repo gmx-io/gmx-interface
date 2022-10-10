@@ -207,6 +207,7 @@ function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
       return prices;
     })
     .catch((err) => {
+      // eslint-disable-next-line no-console
       console.error(err);
     });
 }
@@ -218,12 +219,16 @@ export function useChartPrices(chainId, symbol, isStable, period, currentAverage
       try {
         return await getChartPricesFromStats(chainId, symbol, period);
       } catch (ex) {
+        // eslint-disable-next-line no-console
         console.warn(ex);
+        // eslint-disable-next-line no-console
         console.warn("Switching to graph chainlink data");
         try {
           return await getChainlinkChartPricesFromGraph(symbol, period);
         } catch (ex2) {
+          // eslint-disable-next-line no-console
           console.warn("getChainlinkChartPricesFromGraph failed");
+          // eslint-disable-next-line no-console
           console.warn(ex2);
           return [];
         }

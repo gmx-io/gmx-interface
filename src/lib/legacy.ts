@@ -1071,6 +1071,7 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
         ]);
         return [...swapOrders, ...increaseOrders, ...decreaseOrders];
       } catch (ex) {
+        // eslint-disable-next-line no-console
         console.error(ex);
       }
     },
@@ -1412,6 +1413,7 @@ export function importImage(name) {
   try {
     tokenImage = require("img/" + name);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(error);
   }
   return tokenImage;
