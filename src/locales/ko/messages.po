@@ -994,8 +994,8 @@ msgstr "유동성 부족"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity, change \"Profits In\""
-msgstr "유동성 부족, \"손익\"을 변경하세요"
+msgid "Insufficient liquidity, change \"Collateral In\""
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Insufficient staked tokens"

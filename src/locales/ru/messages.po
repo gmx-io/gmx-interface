@@ -994,7 +994,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity, change \"Profits In\""
+msgid "Insufficient liquidity, change \"Collateral In\""
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js

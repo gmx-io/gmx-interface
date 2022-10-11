@@ -980,7 +980,7 @@ export default function SwapBox(props) {
         );
         stableTokenAmount = nextToAmount;
         if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
-          return [t`Insufficient liquidity, change "Profits In"`];
+          return [t`Insufficient liquidity, change "Collateral In"`];
         }
 
         if (
@@ -989,7 +989,7 @@ export default function SwapBox(props) {
           shortCollateralToken.bufferAmount.gt(shortCollateralToken.poolAmount.sub(stableTokenAmount))
         ) {
           // suggest swapping to collateralToken
-          return [t`Insufficient liquidity, change "Profits In"`, true, "BUFFER"];
+          return [t`Insufficient liquidity, change "Collateral In"`, true, "BUFFER"];
         }
 
         if (
@@ -1035,7 +1035,7 @@ export default function SwapBox(props) {
 
       stableTokenAmount = stableTokenAmount.add(sizeTokens);
       if (stableTokenAmount.gt(shortCollateralToken.availableAmount)) {
-        return [t`Insufficient liquidity, change "Profits In"`];
+        return [t`Insufficient liquidity, change "Collateral In"`];
       }
     }
 

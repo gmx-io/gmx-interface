@@ -994,8 +994,8 @@ msgstr "Insufficient liquidity"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity, change \"Profits In\""
-msgstr "Insufficient liquidity, change \"Profits In\""
+msgid "Insufficient liquidity, change \"Collateral In\""
+msgstr "Insufficient liquidity, change \"Collateral In\""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Insufficient staked tokens"
