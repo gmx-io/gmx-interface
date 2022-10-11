@@ -203,3 +203,18 @@
     grid-template-columns: 1fr;
   }
 }
+
+.cards-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-gap: 2rem;
+  margin-bottom: 2rem;
+}
+.card-description {
+  opacity: 0.7;
+  margin: 0;
+}
+
+.Uniswap {
+  margin-top: 2rem;
+}
