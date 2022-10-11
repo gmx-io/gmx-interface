@@ -1839,14 +1839,14 @@ export default function SwapBox(props) {
                 <div className="muted">
                   {fromUsdMin && (
                     <div className="Exchange-swap-usd">
-                      <Trans>Pay</Trans>: {formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} USD
+                      <Trans>Pay: {formatAmount(fromUsdMin, USD_DECIMALS, 2, true)} USD</Trans>
                     </div>
                   )}
                   {!fromUsdMin && t`Pay`}
                 </div>
                 {fromBalance && (
                   <div className="muted align-right clickable" onClick={setFromValueToMaximumAvailable}>
-                    <Trans>Balance</Trans>: {formatAmount(fromBalance, fromToken.decimals, 4, true)}
+                    <Trans>Balance: {formatAmount(fromBalance, fromToken.decimals, 4, true)}</Trans>
                   </div>
                 )}
               </div>
@@ -1993,7 +1993,7 @@ export default function SwapBox(props) {
                   setTriggerPriceValue(formatAmountFree(entryMarkPrice, USD_DECIMALS, 2));
                 }}
               >
-                <Trans>Mark</Trans>: {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}
+                <Trans>Mark: {formatAmount(entryMarkPrice, USD_DECIMALS, 2, true)}</Trans>
               </div>
             </div>
             <div className="Exchange-swap-section-bottom">

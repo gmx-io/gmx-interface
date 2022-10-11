@@ -337,7 +337,6 @@ msgid "Avax is needed on Avalanche to purchase GMX."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 msgid "Balance"
 msgstr ""
 
@@ -345,6 +344,10 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Balance:"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
+msgid "Balance: {0}"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
@@ -1760,12 +1763,10 @@ msgstr ""
 msgid "MEV Optimizer"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark"
 msgstr ""
 
-#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1777,7 +1778,12 @@ msgid "Mark Price"
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
+msgid "Mark Price:"
+msgstr ""
+
+#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/SwapBox.js
 msgid "Mark: {0}"
 msgstr ""
 
@@ -1791,11 +1797,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Market Cap"
-msgstr ""
-
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Max"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -1885,6 +1886,9 @@ msgstr ""
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Max: {0}"
 msgstr ""
 
@@ -2221,7 +2225,6 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Pay"
@@ -2229,6 +2232,10 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Pay Amount"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
+msgid "Pay: {0} USD"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -2252,6 +2259,7 @@ msgid "Please switch your network to Arbitrum."
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
@@ -3698,8 +3706,20 @@ msgstr ""
 msgid "hide"
 msgstr ""
 
+#: src/pages/Dashboard/DashboardV2.js
+msgid "in liquidity"
+msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "not staked"
+msgstr ""
+
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "size"
+msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "staked"
 msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js

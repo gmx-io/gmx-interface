@@ -321,7 +321,7 @@ export default function OrderEditor(props) {
                 );
               }}
             >
-              <Trans>Mark Price</Trans>:{" "}
+              <Trans>Mark Price: </Trans>
               {formatAmount(getExchangeRate(fromTokenInfo, toTokenInfo, triggerRatioInverted), USD_DECIMALS, 2)}
             </div>
           )}

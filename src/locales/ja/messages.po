@@ -337,7 +337,6 @@ msgid "Avax is needed on Avalanche to purchase GMX."
 msgstr "AvalancheでGMXを購入するにはAvaxが必要です。"
 
 #: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 msgid "Balance"
 msgstr "残高"
 
@@ -346,6 +345,10 @@ msgstr "残高"
 #: src/components/Glp/GlpSwap.js
 msgid "Balance:"
 msgstr "残高"
+
+#: src/components/Exchange/SwapBox.js
+msgid "Balance: {0}"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
@@ -1760,12 +1763,10 @@ msgstr "最大"
 msgid "MEV Optimizer"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark"
 msgstr ""
 
-#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1777,7 +1778,12 @@ msgid "Mark Price"
 msgstr "マーク価格"
 
 #: src/components/Exchange/OrderEditor.js
+msgid "Mark Price:"
+msgstr ""
+
+#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/SwapBox.js
 msgid "Mark: {0}"
 msgstr ""
 
@@ -1792,11 +1798,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Market Cap"
 msgstr "時価総額"
-
-#: src/pages/Stake/StakeV2.js
-#: src/pages/Stake/StakeV2.js
-msgid "Max"
-msgstr "最大"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Max Capacity"
@@ -1885,6 +1886,9 @@ msgstr "{0}のショートの最大値超過"
 #: src/components/Migration/Migration.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Max: {0}"
 msgstr ""
 
@@ -2221,7 +2225,6 @@ msgstr "パートナーシップと統合"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Pay"
@@ -2229,6 +2232,10 @@ msgstr "支払い額"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Pay Amount"
+msgstr ""
+
+#: src/components/Exchange/SwapBox.js
+msgid "Pay: {0} USD"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -2252,6 +2259,7 @@ msgid "Please switch your network to Arbitrum."
 msgstr "ネットワークをArbitrumに切り替えてください。"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/TradeHistory.js
@@ -3698,8 +3706,20 @@ msgstr ""
 msgid "hide"
 msgstr ""
 
+#: src/pages/Dashboard/DashboardV2.js
+msgid "in liquidity"
+msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "not staked"
+msgstr ""
+
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "size"
+msgstr ""
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "staked"
 msgstr ""
 
 #: src/pages/PositionsOverview/PositionsOverview.js

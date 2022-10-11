@@ -161,7 +161,7 @@ function StakeModal(props) {
               </div>
             </div>
             <div className="muted align-right clickable" onClick={() => setValue(formatAmountFree(maxAmount, 18, 18))}>
-              Max: {formatAmount(maxAmount, 18, 4, true)}
+              <Trans>Max: {formatAmount(maxAmount, 18, 4, true)}</Trans>
             </div>
           </div>
           <div className="Exchange-swap-section-bottom">
@@ -286,7 +286,7 @@ function UnstakeModal(props) {
               </div>
             </div>
             <div className="muted align-right clickable" onClick={() => setValue(formatAmountFree(maxAmount, 18, 18))}>
-              <Trans>Max</Trans>: {formatAmount(maxAmount, 18, 4, true)}
+              <Trans>Max: {formatAmount(maxAmount, 18, 4, true)}</Trans>
             </div>
           </div>
           <div className="Exchange-swap-section-bottom">
@@ -435,7 +435,7 @@ function VesterDepositModal(props) {
                 className="muted align-right clickable"
                 onClick={() => setValue(formatAmountFree(maxAmount, 18, 18))}
               >
-                <Trans>Max</Trans>: {formatAmount(maxAmount, 18, 4, true)}
+                <Trans>Max: {formatAmount(maxAmount, 18, 4, true)}</Trans>
               </div>
             </div>
             <div className="Exchange-swap-section-bottom">

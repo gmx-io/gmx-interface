@@ -425,17 +425,17 @@ export default function DashboardV2() {
 
   let gmxDistributionData = [
     {
-      name: "staked",
+      name: t`staked`,
       value: stakedPercent,
       color: "#4353fa",
     },
     {
-      name: "in liquidity",
+      name: t`in liquidity`,
       value: liquidityPercent,
       color: "#0598fa",
     },
     {
-      name: "not staked",
+      name: t`not staked`,
       value: notStakedPercent,
       color: "#5c0af5",
     },
