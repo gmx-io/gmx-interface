@@ -4,7 +4,6 @@ import { useWeb3React } from "@web3-react/core";
 
 import cx from "classnames";
 import { getContract, XGMT_EXCLUDED_ACCOUNTS } from "config/contracts";
-import { getFeeHistory } from "config/Fees";
 
 import Footer from "components/Footer/Footer";
 
@@ -263,7 +262,7 @@ export default function DashboardV1() {
     tokenSymbols.push(token.symbol);
   });
 
-  const feeHistory = getFeeHistory();
+  const feeHistory = [];
   let totalFeesDistributed = 0;
   for (let i = 0; i < feeHistory.length; i++) {
     totalFeesDistributed += parseFloat(feeHistory[i].feeUsd);
