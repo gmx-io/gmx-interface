@@ -1,5 +1,7 @@
 import { ethers } from "ethers";
 import { isDevelopment } from "lib/legacy";
+import icavalanche24 from "img/ic_avalanche_24.svg";
+import icarbitrum24 from "img/ic_arbitrum_24.svg";
 
 const { parseEther } = ethers.utils;
 
@@ -22,6 +24,7 @@ if (isDevelopment()) {
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: false,
   [AVALANCHE]: false,
+  [ARBITRUM_TESTNET]: !isDevelopment(),
 };
 
 export const CHAIN_NAMES_MAP = {
@@ -136,10 +139,13 @@ export const BSC_RPC_PROVIDERS = [
   "https://bsc-dataseed4.binance.org",
 ];
 
+export const ARBITRUM_TESTNET_RPC_PROVIDERS = ["https://rinkeby.arbitrum.io/rpc"];
+
 export const RPC_PROVIDERS = {
   [MAINNET]: BSC_RPC_PROVIDERS,
   [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
   [AVALANCHE]: AVALANCHE_RPC_PROVIDERS,
+  [ARBITRUM_TESTNET]: ARBITRUM_RPC_PROVIDERS,
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -179,7 +185,7 @@ export const NETWORK_METADATA = {
       decimals: 18,
     },
     rpcUrls: ["https://rinkeby.arbitrum.io/rpc"],
-    blockExplorerUrls: ["https://rinkeby-explorer.arbitrum.io/"],
+    blockExplorerUrls: ["https://testnet.arbiscan.io/"],
   },
   [ARBITRUM]: {
     chainId: "0x" + ARBITRUM.toString(16),
@@ -219,6 +225,16 @@ export const getConstant = (chainId: number, key: string) => {
 
 export function getChainName(chainId: number) {
   return CHAIN_NAMES_MAP[chainId];
+}
+
+export function getChainIcon(chainId) {
+  if (chainId === AVALANCHE) {
+    return icavalanche24;
+  }
+
+  if (chainId === ARBITRUM || chainId === ARBITRUM_TESTNET) {
+    return icarbitrum24;
+  }
 }
 
 export function getDefaultArbitrumRpcUrl() {

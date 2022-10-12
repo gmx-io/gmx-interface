@@ -15,6 +15,8 @@ import {
   useCodeOwner,
   useReferrerTier,
   useUserReferralCode,
+  TRADERS_TAB,
+  AFFILIATES_TAB,
 } from "domain/referrals";
 import JoinReferralCode from "components/Referrals/JoinReferralCode";
 import AffiliatesStats from "components/Referrals/AffiliatesStats";
@@ -26,9 +28,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
 import { useChainId } from "lib/chains";
 
-const TRADERS = t`Traders`;
-const AFFILIATES = t`Affiliates`;
-const TAB_OPTIONS = [TRADERS, AFFILIATES];
+const TAB_OPTIONS = [TRADERS_TAB, AFFILIATES_TAB];
 
 function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
   const { active, account: walletAccount, library } = useWeb3React();
@@ -40,7 +40,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
     account = walletAccount;
   }
   const { chainId } = useChainId();
-  const [activeTab, setActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, TRADERS);
+  const [activeTab, setActiveTab] = useLocalStorage(REFERRALS_SELECTED_TAB_KEY, TRADERS_TAB);
   const { data: referralsData, loading } = useReferralsData(chainId, account);
   const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey([chainId, "REFERRAL", account], [], {
     deserializer: deserializeSampleStats,
@@ -133,7 +133,7 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
         <div className="referral-tab-container">
           <Tab options={TAB_OPTIONS} option={activeTab} setOption={setActiveTab} onChange={setActiveTab} />
         </div>
-        {activeTab === AFFILIATES ? renderAffiliatesTab() : renderTradersTab()}
+        {activeTab === AFFILIATES_TAB ? renderAffiliatesTab() : renderTradersTab()}
       </div>
       <Footer />
     </SEO>

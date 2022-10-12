@@ -17,6 +17,9 @@ import {
   isDevelopment,
 } from "lib/legacy";
 
+import Leaderboard from "pages/Leaderboard/Leaderboard";
+import Team from "pages/Team/Team";
+import TeamCreation from "pages/TeamCreation/TeamCreation";
 import Home from "pages/Home/Home";
 import Dashboard from "pages/Dashboard/Dashboard";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
@@ -39,9 +42,10 @@ import "react-toastify/dist/ReactToastify.css";
 import Modal from "components/Modal/Modal";
 import Checkbox from "components/Checkbox/Checkbox";
 
+import "./App.scss";
+import "styles/Buttons.css";
 import "styles/Shared.css";
 import "styles/Font.css";
-import "./App.scss";
 import "styles/Input.css";
 
 import metamaskImg from "img/metamask.png";
@@ -68,6 +72,7 @@ import Jobs from "pages/Jobs/Jobs";
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
+import { getLeaderboardUrl, getTeamRegistrationUrl, getTeamUrl } from "domain/leaderboard/urls";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { Header } from "components/Header/Header";
 import { ARBITRUM, AVALANCHE, getAlchemyWsUrl, getExplorerUrl } from "config/chains";
@@ -505,6 +510,15 @@ function FullApp() {
               </Route>
               <Route exact path="/referrals">
                 <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path={getLeaderboardUrl()}>
+                <Leaderboard />
+              </Route>
+              <Route exact path={getTeamRegistrationUrl()}>
+                <TeamCreation pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />
+              </Route>
+              <Route exact path={getTeamUrl(":leaderAddress")}>
+                <Team pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />
               </Route>
               <Route exact path="/referrals/:account">
                 <Referrals pendingTxns={pendingTxns} connectWallet={connectWallet} setPendingTxns={setPendingTxns} />

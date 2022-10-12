@@ -8,22 +8,37 @@ import { MAX_REFERRAL_CODE_LENGTH, isAddressZero, isHashZero } from "lib/legacy"
 import { getContract } from "config/contracts";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
 import { ARBITRUM, AVALANCHE } from "config/chains";
-import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "lib/subgraph/clients";
+import {
+  arbitrumReferralsGraphClient,
+  avalancheReferralsGraphClient,
+  arbitrumTestnetReferralsGraphClient,
+} from "lib/subgraph/clients";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
 import { getProvider } from "lib/rpc";
 import { bigNumberify } from "lib/numbers";
+import { isDevelopment } from "lib/legacy";
+import { ARBITRUM_TESTNET } from "config/chains";
 
 const ACTIVE_CHAINS = [ARBITRUM, AVALANCHE];
+
+if (isDevelopment()) {
+  ACTIVE_CHAINS.push(ARBITRUM_TESTNET);
+}
 const DISTRIBUTION_TYPE_REBATES = "1";
 const DISTRIBUTION_TYPE_DISCOUNT = "2";
+
+export const TRADERS_TAB = "Traders";
+export const AFFILIATES_TAB = "Affiliates";
 
 function getGraphClient(chainId) {
   if (chainId === ARBITRUM) {
     return arbitrumReferralsGraphClient;
   } else if (chainId === AVALANCHE) {
     return avalancheReferralsGraphClient;
+  } else if (chainId === ARBITRUM_TESTNET) {
+    return arbitrumTestnetReferralsGraphClient;
   }
   throw new Error(`Unsupported chain ${chainId}`);
 }
@@ -93,7 +108,7 @@ export function useUserCodesOnAllChain(account) {
   `;
   useEffect(() => {
     async function main() {
-      const [arbitrumCodes, avalancheCodes] = await Promise.all(
+      const codes = await Promise.all(
         ACTIVE_CHAINS.map((chainId) => {
           return getGraphClient(chainId)
             .query({ query, variables: { account: (account || "").toLowerCase() } })
@@ -102,21 +117,52 @@ export function useUserCodesOnAllChain(account) {
             });
         })
       );
-      const [codeOwnersOnAvax = [], codeOwnersOnArbitrum = []] = await Promise.all([
-        getCodeOwnersData(AVALANCHE, account, arbitrumCodes),
-        getCodeOwnersData(ARBITRUM, account, avalancheCodes),
-      ]);
 
-      setData({
-        [ARBITRUM]: codeOwnersOnAvax.reduce((acc, cv) => {
+      const owners = await Promise.all(
+        ACTIVE_CHAINS.map((chainId, i) => {
+          return getCodeOwnersData(chainId, account, codes[i]);
+        })
+      );
+
+      const result = {};
+      ACTIVE_CHAINS.forEach((chainId, i) => {
+        if (!owners[i]) {
+          result[chainId] = {};
+          return;
+        }
+
+        result[chainId] = owners[i].reduce((acc, cv) => {
           acc[cv.code] = cv;
           return acc;
-        }, {}),
-        [AVALANCHE]: codeOwnersOnArbitrum.reduce((acc, cv) => {
-          acc[cv.code] = cv;
-          return acc;
-        }, {}),
+        }, {});
       });
+
+      setData(result);
+
+      // const [arbitrumCodes, avalancheCodes] = await Promise.all(
+      //   ACTIVE_CHAINS.map((chainId) => {
+      //     return getGraphClient(chainId)
+      //       .query({ query, variables: { account: (account || "").toLowerCase() } })
+      //       .then(({ data }) => {
+      //         return data.referralCodes.map((c) => c.code);
+      //       });
+      //   })
+      // );
+      // const [codeOwnersOnAvax = [], codeOwnersOnArbitrum = []] = await Promise.all([
+      //   getCodeOwnersData(AVALANCHE, account, arbitrumCodes),
+      //   getCodeOwnersData(ARBITRUM, account, avalancheCodes),
+      // ]);
+
+      // setData({
+      //   [ARBITRUM]: codeOwnersOnAvax.reduce((acc, cv) => {
+      //     acc[cv.code] = cv;
+      //     return acc;
+      //   }, {}),
+      //   [AVALANCHE]: codeOwnersOnArbitrum.reduce((acc, cv) => {
+      //     acc[cv.code] = cv;
+      //     return acc;
+      //   }, {}),
+      // });
     }
 
     main();

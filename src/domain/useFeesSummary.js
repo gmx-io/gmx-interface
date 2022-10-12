@@ -1,8 +1,12 @@
 import useSWR from "swr";
-import { arrayURLFetcher } from "lib/legacy";
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { arrayURLFetcher, isDevelopment } from "lib/legacy";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE } from "config/chains";
 import { getServerUrl } from "config/backend";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
+
+if (isDevelopment()) {
+  ACTIVE_CHAIN_IDS.push(ARBITRUM_TESTNET);
+}
 
 export default function useFeesSummary() {
   const { data: feesSummary } = useSWR(

@@ -1,0 +1,21 @@
+.leaderboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.leaderboard-header .transparent-btn .ml-small {
+  margin-left: 0.775rem;
+}
+
+.leaderboard-search-input {
+  padding-right: 3rem !important;
+}
+
+.leaderboard-table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+}

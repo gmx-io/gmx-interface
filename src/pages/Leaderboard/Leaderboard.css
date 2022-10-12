@@ -1,0 +1,16 @@
+.section-title-block-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.Leaderboard-tabs {
+  margin-bottom: 2.5rem;
+}
+
+.Leaderboard-tabs-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}

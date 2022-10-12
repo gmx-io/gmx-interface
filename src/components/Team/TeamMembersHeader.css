@@ -1,0 +1,101 @@
+.team-modal-content {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.team-modal-content button {
+  align-self: flex-end;
+}
+
+.team-modal-content p {
+  margin-top: 0;
+}
+
+.team-modal-referral-code {
+  font-family: monospace;
+  margin: 0;
+  text-align: center;
+  background-color: rgba(0, 0, 0, .2);
+  display: block;
+  padding: 1rem 2rem;
+  border-radius: 3px;
+  font-size: 1.75rem;
+}
+
+.team-modal-content {
+  font-size: 1.5rem;
+}
+
+.team-modal-content .divider {
+  margin: 1.5rem -1.5rem;
+}
+
+.approve-address-list {
+  padding: 0;
+  margin: .5rem 0;
+  font-size: 1.3rem;
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.approve-address-list li {
+  font-family: monospace;
+  padding: 0;
+  padding: 1rem 1rem;
+  background-color: rgba(0, 0, 0, .2);
+  text-align: center;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.approve-address-list li svg {
+  cursor: pointer;
+}
+
+.approve-address-list li span {
+  font-family: monospace;
+}
+
+.text-input-approve {
+  margin-top: 1.5rem;
+}
+
+.team-modal-referral-select {
+  margin-top: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, .2);
+  font-size: 1.5rem;
+  background-color: transparent;
+  color: white;
+  padding: 1.25rem;
+}
+
+.team-modal-referral-empty {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+  justify-content: center;
+}
+
+.team-modal-referral-empty span {
+  margin-left: 1rem;
+  line-height: 1;
+}
+
+.team-members-table-container {
+  position: relative;
+}
+
+.team-members-table-top-header {
+  position: absolute;
+  bottom: calc(100% + 1.5rem);
+  right: 0;
+}
+
+.team-members-table-top-header button + button {
+  margin-left: 1rem;
+}

@@ -47,6 +47,7 @@ export function ReferralCodeForm({
     if (isEdit && debouncedReferralCode === userReferralCodeString) {
       return t`Same as current active code`;
     }
+
     if (isEdit && isSubmitting) {
       return t`Updating...`;
     }
