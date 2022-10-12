@@ -17,7 +17,6 @@ import Binance from "img/binance.svg";
 import Bybit from "img/bybit.svg";
 import Ftx from "img/ftx.svg";
 import avax30Icon from "img/ic_avax_30.svg";
-import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
 import gmxAvax from "img/ic_gmx_avax.svg";
 import ohmArbitrum from "img/ic_olympus_arbitrum.svg";
 
