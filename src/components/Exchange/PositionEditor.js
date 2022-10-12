@@ -23,8 +23,8 @@ import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-const DEPOSIT = t`Deposit`;
-const WITHDRAW = t`Withdraw`;
+const DEPOSIT = "Deposit";
+const WITHDRAW = "Withdraw";
 const EDIT_OPTIONS = [DEPOSIT, WITHDRAW];
 const { AddressZero } = ethers.constants;
 
@@ -433,13 +433,23 @@ export default function PositionEditor(props) {
     withdrawCollateral();
   };
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
+  const EDIT_OPTIONS_LABELS = {
+    [DEPOSIT]: t`Deposit`,
+    [WITHDRAW]: t`Withdraw`,
+  };
 
   return (
     <div className="PositionEditor">
       {position && (
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           <div>
-            <Tab options={EDIT_OPTIONS} option={option} setOption={setOption} onChange={resetForm} />
+            <Tab
+              options={EDIT_OPTIONS}
+              optionLabels={EDIT_OPTIONS_LABELS}
+              option={option}
+              setOption={setOption}
+              onChange={resetForm}
+            />
             {(isDeposit || isWithdrawal) && (
               <div>
                 <div className="Exchange-swap-section">

@@ -4,7 +4,7 @@ import SEO from "components/Common/SEO";
 import Footer from "components/Footer/Footer";
 import { getPageTitle } from "lib/legacy";
 import Card from "components/Common/Card";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 function Jobs() {
@@ -33,7 +33,7 @@ function Jobs() {
 
 function NoJob() {
   return (
-    <Card title="No open positions at GMX currently">
+    <Card title={t`No open positions at GMX currently`}>
       <div className="body-para">
         <p className="subheading">
           <Trans>

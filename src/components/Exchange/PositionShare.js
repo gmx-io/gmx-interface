@@ -141,22 +141,18 @@ function PositionShareCard({
       <div ref={positionRef} className="position-share" style={{ backgroundImage: `url(${sharePositionBgImg})` }}>
         <img className="logo" src={gmxLogo} alt="GMX Logo" />
         <ul className="info">
-          <li className="side">{isLong ? t`LONG` : t`SHORT`}</li>
+          <li className="side">{isLong ? "LONG" : "SHORT"}</li>
           <li>{formatAmount(leverage, 4, 2, true)}x&nbsp;</li>
           <li>{indexToken.symbol} USD</li>
         </ul>
         <h3 className="pnl">{deltaAfterFeesPercentageStr}</h3>
         <div className="prices">
           <div>
-            <p>
-              <Trans>Entry Price</Trans>
-            </p>
+            <p>Entry Price</p>
             <p className="price">${formatAmount(averagePrice, USD_DECIMALS, 2, true)}</p>
           </div>
           <div>
-            <p>
-              <Trans>Index Price</Trans>
-            </p>
+            <p>Index Price</p>
             <p className="price">${formatAmount(markPrice, USD_DECIMALS, 2, true)}</p>
           </div>
         </div>
@@ -167,9 +163,7 @@ function PositionShareCard({
           <div className="referral-code-info">
             {success && code ? (
               <>
-                <p className="label">
-                  <Trans>Referral Code</Trans>:
-                </p>
+                <p className="label">Referral Code:</p>
                 <p className="code">{code}</p>
               </>
             ) : (

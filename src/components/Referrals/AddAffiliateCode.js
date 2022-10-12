@@ -159,7 +159,7 @@ export function AffiliateCodeForm({
         value={referralCode}
         disabled={isProcessing}
         className={cx("text-input", { "mb-sm": !error })}
-        placeholder="Enter a code"
+        placeholder={t`Enter a code`}
         onChange={({ target }) => {
           const { value } = target;
           setReferralCode(value);

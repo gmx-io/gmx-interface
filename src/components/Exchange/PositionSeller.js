@@ -52,11 +52,6 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
 
-const orderOptionLabels = {
-  [MARKET]: "Market",
-  [STOP]: "Trigger",
-};
-
 function shouldSwap(collateralToken, receiveToken) {
   // If position collateral is WETH in contract, then position.collateralToken is { symbol: “ETH”, isNative: true, … }
   // @see https://github.com/gmx-io/gmx-interface/blob/master/src/pages/Exchange/Exchange.js#L162
@@ -170,7 +165,11 @@ export default function PositionSeller(props) {
     allowedSlippage = DEFAULT_HIGHER_SLIPPAGE_AMOUNT;
   }
 
-  const orderOptions = [MARKET, STOP];
+  const ORDER_OPTIONS = [MARKET, STOP];
+  const ORDER_OPTION_LABELS = {
+    [MARKET]: t`Market`,
+    [STOP]: t`Trigger`,
+  };
   let [orderOption, setOrderOption] = useState(MARKET);
 
   if (!flagOrdersEnabled) {
@@ -847,9 +846,9 @@ export default function PositionSeller(props) {
         >
           {flagOrdersEnabled && (
             <Tab
-              options={orderOptions}
+              options={ORDER_OPTIONS}
               option={orderOption}
-              optionLabels={orderOptionLabels}
+              optionLabels={ORDER_OPTION_LABELS}
               onChange={onOrderOptionChange}
             />
           )}

@@ -70,7 +70,10 @@ function pushSuccessNotification(chainId, message, e) {
   const txUrl = getExplorerUrl(chainId) + "tx/" + transactionHash;
   helperToast.success(
     <div>
-      {message} <ExternalLink href={txUrl}>View</ExternalLink>
+      {message}{" "}
+      <ExternalLink href={txUrl}>
+        <Trans>View</Trans>
+      </ExternalLink>
     </div>
   );
 }
@@ -87,7 +90,10 @@ function pushErrorNotification(chainId, message, e) {
   const txUrl = getExplorerUrl(chainId) + "tx/" + transactionHash;
   helperToast.error(
     <div>
-      {message} <ExternalLink href={txUrl}>View</ExternalLink>
+      {message}{" "}
+      <ExternalLink href={txUrl}>
+        <Trans>View</Trans>
+      </ExternalLink>
     </div>
   );
 }

@@ -735,7 +735,7 @@ function CompoundModal(props) {
 
   return (
     <div className="StakeModal">
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label="Compound Rewards">
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Compound Rewards`}>
         <div className="CompoundModal-menu">
           <div>
             <Checkbox
@@ -773,7 +773,9 @@ function CompoundModal(props) {
           </div>
           <div>
             <Checkbox isChecked={shouldConvertWeth} setIsChecked={toggleConvertWeth}>
-              Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
+              <Trans>
+                Convert {wrappedTokenSymbol} to {nativeTokenSymbol}
+              </Trans>
             </Checkbox>
           </div>
         </div>
@@ -868,7 +870,7 @@ function ClaimModal(props) {
 
   return (
     <div className="StakeModal">
-      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label="Claim Rewards">
+      <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Claim Rewards`}>
         <div className="CompoundModal-menu">
           <div>
             <Checkbox isChecked={shouldClaimGmx} setIsChecked={setShouldClaimGmx}>
@@ -1489,11 +1491,11 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       renderContent={() => (
                         <>
                           <StatsTooltipRow
-                            label="Price on Avalanche"
+                            label={t`Price on Avalanche`}
                             value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
                           />
                           <StatsTooltipRow
-                            label="Price on Arbitrum"
+                            label={t`Price on Arbitrum`}
                             value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
                           />
                         </>
@@ -1647,12 +1649,14 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                     renderContent={() => {
                       return (
                         <div>
-                          You are earning {formatAmount(processedData.boostBasisPoints, 2, 2, false)}% more{" "}
-                          {nativeTokenSymbol} rewards using {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)}{" "}
-                          Staked Multiplier Points.
+                          <Trans>
+                            You are earning {formatAmount(processedData.boostBasisPoints, 2, 2, false)}% more{" "}
+                            {nativeTokenSymbol} rewards using{" "}
+                            {formatAmount(processedData.bnGmxInFeeGmx, 18, 4, 2, true)} Staked Multiplier Points.
+                          </Trans>
                           <br />
                           <br />
-                          Use the "Compound" button to stake your Multiplier Points.
+                          <Trans>Use the "Compound" button to stake your Multiplier Points.</Trans>
                         </div>
                       );
                     }}
@@ -1678,7 +1682,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       renderContent={() => (
                         <StatsTooltip
                           showDollar={false}
-                          title="Staked"
+                          title={t`Staked`}
                           avaxValue={avaxGmxStaked}
                           arbitrumValue={arbitrumGmxStaked}
                           total={totalGmxStaked}
@@ -2078,7 +2082,9 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
       <div>
         <div className="Tab-title-section">
-          <div className="Page-title">Vest</div>
+          <div className="Page-title">
+            <Trans>Vest</Trans>
+          </div>
           <div className="Page-description">
             <Trans>
               Convert esGMX tokens to GMX tokens.
@@ -2158,9 +2164,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       renderContent={() => {
                         return (
                           <div>
-                            {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} tokens have been converted
-                            to GMX from the {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX
-                            deposited for vesting.
+                            <Trans>
+                              {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} tokens have been
+                              converted to GMX from the{" "}
+                              {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX deposited for
+                              vesting.
+                            </Trans>
                           </div>
                         );
                       }}
@@ -2242,9 +2251,12 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                       renderContent={() => {
                         return (
                           <div>
-                            {formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} tokens have been converted
-                            to GMX from the {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)} esGMX
-                            deposited for vesting.
+                            <Trans>
+                              {formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} tokens have been
+                              converted to GMX from the{" "}
+                              {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)} esGMX deposited for
+                              vesting.
+                            </Trans>
                           </div>
                         );
                       }}

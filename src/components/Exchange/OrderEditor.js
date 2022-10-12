@@ -262,7 +262,7 @@ export default function OrderEditor(props) {
             <div className="PositionEditor-token-symbol">USD</div>
           </div>
         </div>
-        <ExchangeInfoRow label="Price">
+        <ExchangeInfoRow label={t`Price`}>
           {triggerPrice && !triggerPrice.eq(order.triggerPrice) ? (
             <>
               <span className="muted">

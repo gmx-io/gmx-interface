@@ -1162,7 +1162,7 @@ export default function SwapBox(props) {
       if (toUsdMax && toUsdMax.lt(fromUsdMin.mul(95).div(100))) {
         return t`High Slippage, Swap Anyway`;
       }
-      return "Swap";
+      return t`Swap`;
     }
 
     if (isLong) {
@@ -2158,7 +2158,7 @@ export default function SwapBox(props) {
                         <div>
                           {swapFees && (
                             <div>
-                              {collateralToken.symbol} is required for collateral. <br />
+                              <Trans>{collateralToken.symbol} is required for collateral.</Trans> <br />
                               <br />
                               <StatsTooltipRow
                                 label={t`Swap ${fromToken.symbol} to ${collateralToken.symbol} Fee`}

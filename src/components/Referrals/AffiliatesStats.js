@@ -213,7 +213,7 @@ function AffiliatesStats({
       </div>
       {rebateDistributions?.length > 0 ? (
         <div className="reward-history">
-          <Card title="Rewards Distribution History" tooltipText={t`Rewards are airdropped weekly.`}>
+          <Card title={t`Rewards Distribution History`} tooltipText={t`Rewards are airdropped weekly.`}>
             <div className="table-wrapper">
               <table className="referral-table">
                 <thead>

@@ -568,7 +568,7 @@ function FullApp() {
         className="Connect-wallet-modal"
         isVisible={walletModalVisible}
         setIsVisible={setWalletModalVisible}
-        label="Connect Wallet"
+        label={t`Connect Wallet`}
       >
         <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
           <img src={metamaskImg} alt="MetaMask" />
@@ -593,7 +593,7 @@ function FullApp() {
         className="App-settings"
         isVisible={isSettingsVisible}
         setIsVisible={setIsSettingsVisible}
-        label="Settings"
+        label={t`Settings`}
       >
         <div className="App-settings-row">
           <div>
