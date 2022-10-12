@@ -9,8 +9,6 @@ import TooltipComponent from "components/Tooltip/Tooltip";
 import hexToRgba from "hex-to-rgba";
 import { ethers } from "ethers";
 
-import { getFeeHistory } from "config/Fees";
-
 import {
   USD_DECIMALS,
   GMX_DECIMALS,
@@ -22,6 +20,7 @@ import {
   arrayURLFetcher,
 } from "lib/legacy";
 import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
+import useFeesSummary from "domain/useFeesSummary";
 
 import { getContract } from "config/contracts";
 
@@ -162,7 +161,6 @@ export default function DashboardV2() {
   }
 
   const whitelistedTokens = getWhitelistedTokens(chainId);
-  const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
 
@@ -178,10 +176,6 @@ export default function DashboardV2() {
 
   const { data: aums } = useSWR([`Dashboard:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
     fetcher: contractFetcher(library, GlpManager),
-  });
-
-  const { data: fees } = useSWR([`Dashboard:fees:${active}`, chainId, readerAddress, "getFees", vaultAddress], {
-    fetcher: contractFetcher(library, ReaderV2, [whitelistedTokenAddresses]),
   });
 
   const { data: totalSupplies } = useSWR(
@@ -237,17 +231,21 @@ export default function DashboardV2() {
     }
   );
 
-  const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
-  const currentFeesUsd = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokens);
-  const feeHistory = getFeeHistory(chainId);
-  const shouldIncludeCurrrentFees = feeHistory.length && parseInt(Date.now() / 1000) - feeHistory[0].to > 60 * 60;
-  let totalFeesDistributed = shouldIncludeCurrrentFees
-    ? parseFloat(bigNumberify(formatAmount(currentFeesUsd, USD_DECIMALS - 2, 0, false)).toNumber()) / 100
-    : 0;
+  const { data: feesSummaryByChain } = useFeesSummary();
+  const feesSummary = feesSummaryByChain[chainId];
 
-  const totalFees = ACTIVE_CHAIN_IDS.map((chainId) =>
-    getFeeHistory(chainId).reduce((acc, fee) => acc + parseFloat(fee.feeUsd), totalFeesDistributed)
-  )
+  const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
+  const shouldIncludeCurrrentFees =
+    feesSummaryByChain[chainId].lastUpdatedAt &&
+    parseInt(Date.now() / 1000) - feesSummaryByChain[chainId].lastUpdatedAt > 60 * 60;
+
+  const totalFees = ACTIVE_CHAIN_IDS.map((chainId) => {
+    if (shouldIncludeCurrrentFees && currentFees && currentFees[chainId]) {
+      return currentFees[chainId].div(expandDecimals(1, USD_DECIMALS)).add(feesSummaryByChain[chainId].totalFees || 0);
+    }
+
+    return feesSummaryByChain[chainId].totalFees || 0;
+  })
     .map((v) => Math.round(v))
     .reduce(
       (acc, cv, i) => {
@@ -639,10 +637,10 @@ export default function DashboardV2() {
                     />
                   </div>
                 </div>
-                {feeHistory.length ? (
+                {feesSummary.lastUpdatedAt ? (
                   <div className="App-card-row">
                     <div className="label">
-                      <Trans>Fees since</Trans> {formatDate(feeHistory[0].to)}
+                      <Trans>Fees since</Trans> {formatDate(feesSummary.lastUpdatedAt)}
                     </div>
                     <div>
                       <TooltipComponent
