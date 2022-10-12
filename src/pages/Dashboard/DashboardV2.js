@@ -161,7 +161,6 @@ export default function DashboardV2() {
   }
 
   const whitelistedTokens = getWhitelistedTokens(chainId);
-  const whitelistedTokenAddresses = whitelistedTokens.map((token) => token.address);
   const tokenList = whitelistedTokens.filter((t) => !t.isWrapped);
   const visibleTokens = tokenList.filter((t) => !t.isTempHidden);
 
@@ -177,10 +176,6 @@ export default function DashboardV2() {
 
   const { data: aums } = useSWR([`Dashboard:getAums:${active}`, chainId, glpManagerAddress, "getAums"], {
     fetcher: contractFetcher(library, GlpManager),
-  });
-
-  const { data: fees } = useSWR([`Dashboard:fees:${active}`, chainId, readerAddress, "getFees", vaultAddress], {
-    fetcher: contractFetcher(library, ReaderV2, [whitelistedTokenAddresses]),
   });
 
   const { data: totalSupplies } = useSWR(
@@ -240,7 +235,6 @@ export default function DashboardV2() {
   const feesSummary = feesSummaryByChain[chainId];
 
   const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
-  const currentFeesUsd = getCurrentFeesUsd(whitelistedTokenAddresses, fees, infoTokens);
   const shouldIncludeCurrrentFees =
     feesSummaryByChain[chainId].lastUpdatedAt &&
     parseInt(Date.now() / 1000) - feesSummaryByChain[chainId].lastUpdatedAt > 60 * 60;
