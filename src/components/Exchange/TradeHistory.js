@@ -253,7 +253,7 @@ export default function TradeHistory(props) {
               position="left-top"
               handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, 2, true)} USD`}
               renderContent={() => (
-                <Trans>Try increasing the "Allowed Slippage", under the Settings menu on the top right</Trans>
+                <Trans>Try increasing the "Allowed Slippage", under the Settings menu on the top right.</Trans>
               )}
             />
           </>
@@ -378,11 +378,9 @@ export default function TradeHistory(props) {
           2,
           true
         )}`;
-
-        return t`
-        Execute Order: ${order.type} ${indexToken.symbol} ${longShortDisplay}
-        ${sizeDeltaDisplay} USD, Price: ${executionPriceDisplay} USD
-      `;
+        return t`Execute Order: ${select(order.type, { Increase: "Increase", Decrease: "Decrease" })} ${
+          indexToken.symbol
+        } ${longShortDisplay} ${sizeDeltaDisplay} USD, Price: ${executionPriceDisplay} USD`;
       }
 
       if (

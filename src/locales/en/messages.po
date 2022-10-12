@@ -1235,12 +1235,8 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 
 #: src/components/Exchange/TradeHistory.js
-msgid ""
-"Execute Order: {0} {1} {longShortDisplay}\n"
-"{sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
-msgstr ""
-"Execute Order: {0} {1} {longShortDisplay}\n"
-"{sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+msgid "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+msgstr "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -3384,8 +3380,8 @@ msgid "Trigger order disabled, pending {0} upgrade"
 msgstr "Trigger order disabled, pending {0} upgrade"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
-msgstr "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
+msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
+msgstr "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
 
 #: src/components/Exchange/PositionShare.js
 msgid "Tweet"

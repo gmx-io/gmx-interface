@@ -1235,9 +1235,7 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid ""
-"Execute Order: {0} {1} {longShortDisplay}\n"
-"{sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+msgid "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -3379,7 +3377,7 @@ msgid "Trigger order disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
+msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
 msgstr ""
 
 #: src/components/Exchange/PositionShare.js
