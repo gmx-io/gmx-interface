@@ -10,7 +10,12 @@ import Synapse from "img/ic_synapse.svg";
 import Multiswap from "img/ic_multiswap.svg";
 import Hop from "img/ic_hop.svg";
 import Banxa from "img/ic_banxa.svg";
-import Binance from "img/ic_binance_logo.svg";
+import Bungee from "img/bungee.png";
+import O3 from "img/o3.png";
+import Crypto_com from "img/crypto_com.svg";
+import Binance from "img/binance.svg";
+import Bybit from "img/bybit.svg";
+import Ftx from "img/ftx.svg";
 import avax30Icon from "img/ic_avax_30.svg";
 import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
 import gmxAvax from "img/ic_gmx_avax.svg";
@@ -18,10 +23,11 @@ import ohmArbitrum from "img/ic_olympus_arbitrum.svg";
 
 import { Trans } from "@lingui/macro";
 import Button from "components/Common/Button";
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import Card from "components/Common/Card";
+import { getContract } from "config/contracts";
 
 const uniswapWidgetTheme = {
   ...darkTheme,
@@ -76,6 +82,13 @@ const TOKEN_LIST = [
 export default function BuyGMX() {
   const { chainId } = useChainId();
   const { active } = useWeb3React();
+  const links = {
+    getBungeeUrl: () =>
+      `https://multitx.bungee.exchange/?toChainId=${chainId}&toTokenAddress=${getContract(chainId, "GMX")}`,
+    getBanxaUrl: () =>
+      `https://gmx.banxa.com?coinType=ETH&fiatType=USD&fiatAmount=500&blockchain=${getChainName(chainId)}`,
+    getO3Url: () => "https://o3swap.com/",
+  };
 
   const onNetworkSelect = useCallback(
     (value) => {
@@ -107,83 +120,143 @@ export default function BuyGMX() {
             </div>
           </div>
         )}
-        <div className="cards-row">
-          <Card title="Buy GMX on Uniswap Arbitrum">
-            <div>
-              <p className="card-description">
-                If you already have ETH on Arbitrum, you can directly purchase GMX on Uniswap. Set your network to
-                Arbitrum and use the widget below:
-              </p>
-              <div className="Uniswap">
-                <SwapWidget
-                  tokenList={TOKEN_LIST}
-                  width="100%"
-                  theme={uniswapWidgetTheme}
-                  defaultChainId={ARBITRUM}
-                  defaultOutputTokenAddress={{ [ARBITRUM]: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" }}
-                />
+        {chainId === AVALANCHE && (
+          <div className="section-title-block">
+            <div className="section-title-content">
+              <div className="Page-title">
+                <Trans>Buy GMX on Avalanche</Trans>
+              </div>
+              <div className="Page-description">
+                <Trans>Choose to buy from decentralized or centralized exchanges.</Trans>
+                <br />
+                <Trans>
+                  To purchase GMX on the Arbitrum blockchain, please{" "}
+                  <span onClick={() => onNetworkSelect(ARBITRUM)}>change your network</span>.
+                </Trans>
               </div>
             </div>
-          </Card>
-          <Card title="Buy GMX Bonds">
-            <div>
-              <p className="card-description">
-                GMX bonds can be bought on Olympus Pro on Arbitrum using ETH with a discount and a short vesting period.
-                Set your network to Arbitrum, then click the button below:
-              </p>
-              <div className="buy-gmx">
-                <Button size="xl" imgSrc={ohmArbitrum} href="https://pro.olympusdao.finance/#/partners/GMX">
-                  <Trans>Olympus Pro</Trans>
+          </div>
+        )}
+        <div className="cards-row">
+          {chainId === ARBITRUM && (
+            <Card title="Buy GMX on Uniswap Arbitrum">
+              <div>
+                <p className="card-description">
+                  If you already have ETH on Arbitrum, you can directly purchase GMX on Uniswap. Set your network to
+                  Arbitrum and use the widget below:
+                </p>
+                <div className="Uniswap">
+                  <SwapWidget
+                    tokenList={TOKEN_LIST}
+                    width="100%"
+                    theme={uniswapWidgetTheme}
+                    defaultChainId={ARBITRUM}
+                    defaultOutputTokenAddress={{ [ARBITRUM]: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" }}
+                  />
+                </div>
+              </div>
+            </Card>
+          )}
+          {chainId === AVALANCHE && (
+            <Card title="Buy GMX on Avalanche">
+              <div className="direct-purchase-options">
+                <Button
+                  size="xl"
+                  imgSrc={gmxAvax}
+                  href="https://traderjoexyz.com/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661#/"
+                >
+                  <Trans>Purchase GMX</Trans>
                 </Button>
               </div>
-            </div>
-          </Card>
-        </div>
-        <div className="cards-row">
+            </Card>
+          )}
+
           <Card title="Buy GMX from any network, token, or FIAT using centralized exchanges.">
             <div className="App-card-content">
               <div className="BuyGMXGLP-description">
                 <Trans>Buy GMX using multiple tokens from any network:</Trans>
               </div>
-              <div className="bridge-options">
-                <Button
-                  href="https://synapseprotocol.com/?inputCurrency=ETH&outputCurrency=ETH&outputChain=42161"
-                  align="left"
-                  imgSrc={Synapse}
-                >
-                  <Trans>Synapse</Trans>
+              <div className="buttons-group">
+                <Button href={links.getBungeeUrl()} align="left" imgSrc={Bungee}>
+                  Bungee
                 </Button>
-                <Button href="https://app.multichain.org/#/router" align="left" imgSrc={Multiswap}>
-                  <Trans>Multiswap</Trans>
+                <Button href={links.getBanxaUrl()} align="left" imgSrc={Banxa}>
+                  Banxa
                 </Button>
-                <Button
-                  href="https://app.hop.exchange/send?token=ETH&sourceNetwork=ethereum&destNetwork=arbitrum"
-                  align="left"
-                  imgSrc={Hop}
-                >
-                  <Trans>Hop</Trans>
-                </Button>
-                <Button href="https://binance.com/" align="left" imgSrc={Binance}>
-                  <Trans>Binance</Trans>
+                <Button href={links.getO3Url()} align="left" imgSrc={O3}>
+                  O3
                 </Button>
               </div>
-            </div>
-          </Card>
-          <Card title="Buy GMX Bonds">
-            <div>
-              <p className="card-description">
-                GMX bonds can be bought on Olympus Pro on Arbitrum using ETH with a discount and a short vesting period.
-                Set your network to Arbitrum, then click the button below:
-              </p>
-              <div className="buy-gmx">
-                <Button size="xl" imgSrc={ohmArbitrum} href="https://pro.olympusdao.finance/#/partners/GMX">
-                  <Trans>Olympus Pro</Trans>
+              <div className="BuyGMXGLP-description">
+                <Trans>Buy GMX using FIAT:</Trans>
+              </div>
+              <div className="buttons-group">
+                <Button href={links.getBanxaUrl()} align="left" imgSrc={Banxa}>
+                  Banxa
+                </Button>
+                <Button href="https://crypto.com/exchange/trade/spot/GMX_USDT" align="left" imgSrc={Crypto_com}>
+                  Crypto.com
                 </Button>
               </div>
+              <div className="BuyGMXGLP-description">
+                <Trans>Buy GMX from other exchanges:</Trans>
+              </div>
+              <div className="buttons-group">
+                <Button href="https://www.binance.com/en/trade/GMX_USDT?_from=markets" align="left" imgSrc={Binance}>
+                  Binance
+                </Button>
+                <Button href="https://www.bybit.com/en-US/trade/spot/GMX/USDT" align="left" imgSrc={Bybit}>
+                  Bybit
+                </Button>
+                <Button href="https://ftx.com/trade/GMX/USD" align="left" imgSrc={Ftx}>
+                  FTX
+                </Button>
+              </div>
+              {chainId === ARBITRUM && (
+                <>
+                  <div className="BuyGMXGLP-description">
+                    <Trans>Buy GMX Bonds:</Trans>
+                  </div>
+                  <div className="buttons-group">
+                    <Button size="xl" imgSrc={ohmArbitrum} href="https://pro.olympusdao.finance/#/partners/GMX">
+                      <Trans>Olympus Pro</Trans>
+                    </Button>
+                  </div>
+                </>
+              )}
             </div>
           </Card>
         </div>
 
+        {chainId === ARBITRUM && (
+          <div className="section-title-block mt-top">
+            <div className="section-title-content">
+              <div className="Page-title">
+                <Trans>Buy or Transfer ETH to Arbitrum</Trans>
+              </div>
+              <div className="Page-description">
+                <Trans>
+                  If you wish, you can buy ETH directly to Arbitrum or use one option to transfer it to Arbitrum.
+                </Trans>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {chainId === AVALANCHE && (
+          <div className="section-title-block mt-top">
+            <div className="section-title-content">
+              <div className="Page-title">
+                <Trans>Buy or Transfer AVAX to Avalanche</Trans>
+              </div>
+              <div className="Page-description">
+                <Trans>
+                  If you wish, you can buy AVAX directly to Avalanche or use one option to transfer it to Avalanche.
+                </Trans>
+              </div>
+            </div>
+          </div>
+        )}
         {chainId === ARBITRUM && (
           <div className="BuyGMXGLP-panel">
             <div className="App-card no-height">
@@ -198,15 +271,21 @@ export default function BuyGMX() {
                     <a href="https://arbitrum.io/" target="_blank" rel="noopener noreferrer">
                       Arbitrum
                     </a>{" "}
-                    using Banxa:
+                    using these options:
                   </Trans>
                 </div>
-                <div className="direct-purchase-options">
-                  <Button
-                    href="https://gmx.banxa.com?coinType=ETH&fiatType=USD&fiatAmount=500&blockchain=arbitrum"
-                    imgSrc={Banxa}
-                  >
-                    <Trans>Banxa</Trans>
+                <div className="buttons-group">
+                  <Button href={links.getBungeeUrl()} imgSrc={Bungee}>
+                    Bungee
+                  </Button>
+                  <Button href={links.getBanxaUrl()} imgSrc={Banxa}>
+                    Banxa
+                  </Button>
+                  <Button href={links.getO3Url()} imgSrc={O3}>
+                    O3
+                  </Button>
+                  <Button href="https://ftx.com/trade/ETH/USD" align="left" imgSrc={Ftx}>
+                    FTX
                   </Button>
                 </div>
               </div>
@@ -220,50 +299,39 @@ export default function BuyGMX() {
                 <div className="BuyGMXGLP-description">
                   <Trans>You can transfer ETH from other networks to Arbitrum using any of the below options:</Trans>
                 </div>
-                <div className="bridge-options">
+                <div className="buttons-group">
                   <Button
                     href="https://synapseprotocol.com/?inputCurrency=ETH&outputCurrency=ETH&outputChain=42161"
                     align="left"
                     imgSrc={Synapse}
                   >
-                    <Trans>Synapse</Trans>
+                    Synapse
                   </Button>
                   <Button href="https://app.multichain.org/#/router" align="left" imgSrc={Multiswap}>
-                    <Trans>Multiswap</Trans>
+                    Multiswap
                   </Button>
                   <Button
                     href="https://app.hop.exchange/send?token=ETH&sourceNetwork=ethereum&destNetwork=arbitrum"
                     align="left"
                     imgSrc={Hop}
                   >
-                    <Trans>Hop</Trans>
+                    Hop
                   </Button>
-                  <Button href="https://binance.com/" align="left" imgSrc={Binance}>
-                    <Trans>Binance</Trans>
+                  <Button href={links.getBungeeUrl()} align="left" imgSrc={Bungee}>
+                    Bungee
+                  </Button>
+                  <Button href={links.getO3Url()} align="left" imgSrc={O3}>
+                    O3
+                  </Button>
+                  <Button href="https://ftx.com/trade/ETH/USD" align="left" imgSrc={Ftx}>
+                    FTX
                   </Button>
                 </div>
               </div>
             </div>
           </div>
         )}
-        {chainId === AVALANCHE && (
-          <div className="section-title-block">
-            <div className="section-title-content">
-              <div className="Page-title">
-                <Trans>Buy GMX on Avalanche</Trans>
-              </div>
-              <div className="Page-description">
-                <Trans>Avax is needed on Avalanche to purchase GMX.</Trans>
-                <br />
-                <Trans>
-                  {" "}
-                  To purchase GMX on <span onClick={() => onNetworkSelect(ARBITRUM)}>Arbitrum</span>, please change your
-                  network.
-                </Trans>
-              </div>
-            </div>
-          </div>
-        )}
+
         {chainId === AVALANCHE && (
           <div className="BuyGMXGLP-panel">
             <div className="App-card no-height">
@@ -281,12 +349,18 @@ export default function BuyGMX() {
                     using Banxa:
                   </Trans>
                 </div>
-                <div className="direct-purchase-options">
-                  <Button
-                    href="https://gmx.banxa.com?coinType=AVAX&fiatType=USD&fiatAmount=500&blockchain=avalanche"
-                    imgSrc={Banxa}
-                  >
-                    <Trans>Banxa</Trans>
+                <div className="buttons-group">
+                  <Button href={links.getBungeeUrl()} imgSrc={Bungee}>
+                    Bungee
+                  </Button>
+                  <Button href={links.getBanxaUrl()} imgSrc={Banxa}>
+                    Banxa
+                  </Button>
+                  <Button href={links.getO3Url()} imgSrc={O3}>
+                    O3
+                  </Button>
+                  <Button href="https://ftx.com/trade/ETH/USD" align="left" imgSrc={Ftx}>
+                    FTX
                   </Button>
                 </div>
               </div>
@@ -305,7 +379,7 @@ export default function BuyGMX() {
                     and receive free AVAX to pay for the network's fees.
                   </Trans>
                 </div>
-                <div className="bridge-options">
+                <div className="buttons-group">
                   <Button align="left" href="https://bridge.avax.network/" imgSrc={avax30Icon}>
                     <Trans>Avalanche</Trans>
                   </Button>
@@ -318,92 +392,12 @@ export default function BuyGMX() {
                   <Button align="left" href="https://binance.com" imgSrc={Binance}>
                     <Trans>Binance</Trans>
                   </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-        {chainId === AVALANCHE && (
-          <div className="BuyGMXGLP-panel">
-            <div className="buy-card">
-              <div className="section-title-content">
-                <div className="card-title">
-                  <Trans>Buy GMX</Trans>
-                </div>
-              </div>
-              <div className="App-card no-height">
-                <div className="App-card-content no-title">
-                  <div className="BuyGMXGLP-description better-rates-description">
-                    <Trans>
-                      After you have ETH, set your network to{" "}
-                      <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">
-                        Arbitrum
-                      </a>{" "}
-                      then click the button below:
-                    </Trans>
-                  </div>
-                  <div className="direct-purchase-options">
-                    <Button
-                      size="xl"
-                      imgSrc={gmxAvax}
-                      href="https://traderjoexyz.com/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661#/"
-                    >
-                      <Trans>Purchase GMX</Trans>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {chainId === ARBITRUM && (
-          <div className="BuyGMXGLP-panel">
-            <div className="buy-card">
-              <div className="section-title-content">
-                <div className="card-title">
-                  <Trans>Buy GMX</Trans>
-                </div>
-              </div>
-              <div className="App-card no-height">
-                <div className="App-card-content no-title">
-                  <div className="BuyGMXGLP-description better-rates-description">
-                    <Trans>
-                      After you have ETH, set your network to{" "}
-                      <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">
-                        Arbitrum
-                      </a>{" "}
-                      then click the button below:
-                    </Trans>
-                  </div>
-                  <div className="buy-gmx">
-                    <Button
-                      size="xl"
-                      imgSrc={gmxArbitrum}
-                      href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a"
-                    >
-                      <Trans>Purchase GMX</Trans>
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="buy-card">
-              <div className="section-title-content">
-                <div className="card-title">
-                  <Trans>Buy GMX Bonds</Trans>
-                </div>
-              </div>
-              <div className="App-card no-height">
-                <div className="App-card-content no-title">
-                  <div className="BuyGMXGLP-description">
-                    <Trans>GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:</Trans>
-                  </div>
-                  <div className="buy-gmx">
-                    <Button size="xl" imgSrc={ohmArbitrum} href="https://pro.olympusdao.finance/#/partners/GMX">
-                      <Trans>Olympus Pro</Trans>
-                    </Button>
-                  </div>
+                  <Button href={links.getBungeeUrl()} align="left" imgSrc={Bungee}>
+                    Bungee
+                  </Button>
+                  <Button href={links.getO3Url()} align="left" imgSrc={O3}>
+                    O3
+                  </Button>
                 </div>
               </div>
             </div>

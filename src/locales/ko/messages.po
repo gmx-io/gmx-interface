@@ -109,11 +109,6 @@ msgstr "수령 후 {1} {stake} 대 1 esGMX 비율로 최대 {0}개의 esGMX를 �
 msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
 msgstr "수령 후, esGMX 토큰은 7일 이내에 선택한 네트워크의 계정으로 에어드랍됩니다."
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
-msgstr "ETH를 소지한 후 네트워크를 <0>Arbitrum</0>으로 설정한 뒤 아래의 버튼을 클릭합니다."
-
 #: src/App/App.js
 msgid "Allowed Slippage"
 msgstr "허용 가능한 슬리피지"
@@ -218,10 +213,6 @@ msgstr "Avalanche"
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Avax is needed on Avalanche to purchase GMX."
-msgstr "Avalanche에서 GMX를 구입하기 위해서는 Avax가 필요합니다."
-
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
 msgstr "잔고"
@@ -232,16 +223,10 @@ msgstr "잔고"
 msgid "Balance:"
 msgstr "잔고:"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Banxa"
-msgstr "Banxa"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
 msgstr "전송시작"
 
-#: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Binance"
 msgstr "Binance"
@@ -274,14 +259,6 @@ msgid "Buy / Sell GLP"
 msgstr "GLP 구매 / 판매"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy / Transfer AVAX"
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy / Transfer ETH"
-msgstr "ETH 구매 / 전송"
-
-#: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy AVAX"
 msgstr "AVAX 구매 "
 
@@ -297,17 +274,32 @@ msgid "Buy GLP"
 msgstr "GLP 구매"
 
 #: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX"
-msgstr "GMX 구매"
+msgid "Buy GMX Bonds:"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX Bonds"
-msgstr "GMX 채권 구매"
+msgid "Buy GMX from other exchanges:"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX on Arbitrum"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX on Avalanche"
+msgstr ""
 
 #: src/pages/Buy/Buy.js
 msgid "Buy GMX or GLP"
 msgstr "GMX 혹은 GLP 구매"
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX using FIAT:"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX using multiple tokens from any network:"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buy failed."
@@ -322,6 +314,14 @@ msgstr "Arbitrum에서 구매"
 #: src/components/TokenCard/TokenCard.js
 msgid "Buy on Avalanche"
 msgstr "Avalanche에서 구매"
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy or Transfer AVAX to Avalanche"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy or Transfer ETH to Arbitrum"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buy submitted."
@@ -367,6 +367,11 @@ msgstr "최저 수수료로 이용하려면 \"수수료 절약\" 섹션 아래�
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Checking code..."
 msgstr "코드 확인중..."
+
+#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Choose to buy from decentralized or centralized exchanges."
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV2.js
@@ -666,10 +671,6 @@ msgstr "배분"
 msgid "Download"
 msgstr "다운로드"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "ETH is needed on Arbitrum to purchase GMX."
-msgstr "Arbitrum에서 GMX를 구매하기 위해서는 ETH가 필요합니다."
-
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "Earn"
@@ -700,6 +701,8 @@ msgstr "추천 코드 수정"
 msgid "Enable Leverage"
 msgstr "레버리지 유효화"
 
+#: src/components/Exchange/OrdersToa.js
+#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Orders"
@@ -751,6 +754,7 @@ msgstr "레버리지 유효화"
 msgid "Enabling Leverage..."
 msgstr "레버리지 유효화중"
 
+#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -889,10 +893,6 @@ msgstr ""
 msgid "GMX Pages"
 msgstr "GMX 페이지"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
-msgstr "GMX 채권은 Olympus Pro에서 약간의 베스팅 기간과 함께 할인된 가격으로 구매할 수 있습니다."
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX dashboards and analytics."
 msgstr "GMX 대시보드 및 통계"
@@ -935,8 +935,12 @@ msgid "High USDG Slippage, Long Anyway"
 msgstr "높은 USDG 슬리피지 상관 없이 롱 포지션 체결"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Hop"
-msgstr "Hop"
+msgid "If you wish, you can buy AVAX directly to Avalanche or use one option to transfer it to Avalanche."
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "If you wish, you can buy ETH directly to Arbitrum or use one option to transfer it to Arbitrum."
+msgstr ""
 
 #: src/App/App.js
 msgid "Include PnL in leverage display"
@@ -1225,7 +1229,6 @@ msgid "Multiplier Points APR"
 msgstr "멀티플라이어 포인트 APR"
 
 #: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
 msgid "Multiswap"
 msgstr "멀티스왑"
 
@@ -1429,7 +1432,6 @@ msgstr "GMX와 통합된 프로젝트"
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 msgstr "<0>GLP 토큰<0/>을 구입해서, 스왑 및 레버리지 트레이딩을 통해 생성되는 {nativeTokenSymbol} 수수료를 획득하세요."
 
-#: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Purchase GMX"
 msgstr "GMX 구입"
@@ -1773,7 +1775,6 @@ msgid "Swaps disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
 msgid "Synapse"
 msgstr "Synapse"
 
@@ -1831,12 +1832,12 @@ msgid "To complete the transfer, you must switch your connected account to {rece
 msgstr "전송을 완료하려면 {receiver} 계정에 다시 연결해야 합니다."
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "To purchase GMX on <0>Arbitrum</0>, please change your network."
-msgstr "<0>Arbitrum</0>에서 GMX를 구입하려면 네트워크를 변경해주세요."
+msgid "To purchase GMX on the Arbitrum blockchain, please <0>change your network</0>."
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "To purchase GMX on <0>Avalanche</0>, please change your network."
-msgstr "<0>Avalanche</0>에서 GMX를 구입하려면 네트워크를 변경해주세요."
+msgid "To purchase GMX on the Avalanche blockchain, please <0>change your network</0>."
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "To reduce fees, select a different asset to pay with."
@@ -2212,8 +2213,8 @@ msgid "You can buy AVAX directly on <0>Avalanche</0> using Banxa:"
 msgstr "Banxa를 사용하여 <0>Avalanche</0>상에서 직접 AVAX를 구입:"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "You can buy ETH directly on <0>Arbitrum</0> using Banxa:"
-msgstr "Banxa를 사용하여 <0>Arbitrum</0>상에서 직접 ETH를 구입:"
+msgid "You can buy ETH directly on <0>Arbitrum</0> using these options:"
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "You can check your claim history <0>here</0>."

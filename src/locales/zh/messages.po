@@ -109,11 +109,6 @@ msgstr ""
 msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
-msgstr ""
-
 #: src/App/App.js
 msgid "Allowed Slippage"
 msgstr ""
@@ -218,10 +213,6 @@ msgstr ""
 msgid "Avalanche APR:"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Avax is needed on Avalanche to purchase GMX."
-msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
 msgstr ""
@@ -232,16 +223,10 @@ msgstr ""
 msgid "Balance:"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Banxa"
-msgstr ""
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Binance"
 msgstr ""
@@ -274,14 +259,6 @@ msgid "Buy / Sell GLP"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy / Transfer AVAX"
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy / Transfer ETH"
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy AVAX"
 msgstr ""
 
@@ -297,16 +274,31 @@ msgid "Buy GLP"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX"
+msgid "Buy GMX Bonds:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX Bonds"
+msgid "Buy GMX from other exchanges:"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX on Arbitrum"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX on Avalanche"
 msgstr ""
 
 #: src/pages/Buy/Buy.js
 msgid "Buy GMX or GLP"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX using FIAT:"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX using multiple tokens from any network:"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -321,6 +313,14 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Buy on Avalanche"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy or Transfer AVAX to Avalanche"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy or Transfer ETH to Arbitrum"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -366,6 +366,11 @@ msgstr ""
 #: src/components/Referrals/AddAffiliateCode.js
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Checking code..."
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -666,10 +671,6 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "ETH is needed on Arbitrum to purchase GMX."
-msgstr ""
-
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "Earn"
@@ -700,6 +701,8 @@ msgstr ""
 msgid "Enable Leverage"
 msgstr ""
 
+#: src/components/Exchange/OrdersToa.js
+#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Orders"
@@ -751,6 +754,7 @@ msgstr ""
 msgid "Enabling Leverage..."
 msgstr ""
 
+#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -889,10 +893,6 @@ msgstr ""
 msgid "GMX Pages"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
-msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX dashboards and analytics."
 msgstr ""
@@ -935,7 +935,11 @@ msgid "High USDG Slippage, Long Anyway"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Hop"
+msgid "If you wish, you can buy AVAX directly to Avalanche or use one option to transfer it to Avalanche."
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "If you wish, you can buy ETH directly to Arbitrum or use one option to transfer it to Arbitrum."
 msgstr ""
 
 #: src/App/App.js
@@ -1225,7 +1229,6 @@ msgid "Multiplier Points APR"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
 msgid "Multiswap"
 msgstr ""
 
@@ -1429,7 +1432,6 @@ msgstr ""
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Purchase GMX"
 msgstr ""
@@ -1773,7 +1775,6 @@ msgid "Swaps disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
 msgid "Synapse"
 msgstr ""
 
@@ -1831,11 +1832,11 @@ msgid "To complete the transfer, you must switch your connected account to {rece
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "To purchase GMX on <0>Arbitrum</0>, please change your network."
+msgid "To purchase GMX on the Arbitrum blockchain, please <0>change your network</0>."
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "To purchase GMX on <0>Avalanche</0>, please change your network."
+msgid "To purchase GMX on the Avalanche blockchain, please <0>change your network</0>."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -2212,7 +2213,7 @@ msgid "You can buy AVAX directly on <0>Avalanche</0> using Banxa:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "You can buy ETH directly on <0>Arbitrum</0> using Banxa:"
+msgid "You can buy ETH directly on <0>Arbitrum</0> using these options:"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js

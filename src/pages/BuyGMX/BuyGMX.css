@@ -215,6 +215,22 @@
   margin: 0;
 }
 
+.buttons-group {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  margin-top: 1rem;
+}
+
+.buttons-group > *:not(:last-child) {
+  margin-right: 1.5rem;
+}
+
 .Uniswap {
   margin-top: 2rem;
+}
+
+.mt-top {
+  margin-top: 5rem;
 }
