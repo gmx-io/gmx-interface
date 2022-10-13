@@ -56,7 +56,7 @@ function fillGaps(prices, periodSeconds) {
   return newPrices;
 }
 
-async function getChartPricesFromStats(chainId, symbol, period) {
+export async function getChartPricesFromStats(chainId, symbol, period) {
   if (["WBTC", "WETH", "WAVAX"].includes(symbol)) {
     symbol = symbol.substr(1);
   } else if (symbol === "BTC.b") {
@@ -158,7 +158,7 @@ function getCandlesFromPrices(prices, period) {
   }));
 }
 
-function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
+export function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
   if (["WBTC", "WETH", "WAVAX"].includes(tokenSymbol)) {
     tokenSymbol = tokenSymbol.substr(1);
   }
@@ -276,11 +276,11 @@ function appendCurrentAveragePrice(prices, currentAveragePrice, period) {
   }
 }
 
-function getStablePriceData(period) {
+export function getStablePriceData(period) {
   const periodSeconds = CHART_PERIODS[period];
   const now = Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds;
   let priceData = [];
-  for (let i = 100; i > 0; i--) {
+  for (let i = 1000; i > 0; i--) {
     priceData.push({
       time: now - i * periodSeconds,
       open: 1,
