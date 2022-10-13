@@ -771,8 +771,8 @@ msgid "Connect Wallet"
 msgstr "Connect Wallet"
 
 #: src/lib/wallets/index.js
-msgid "Connected to"
-msgstr "Connected to"
+msgid "Connected to {0}"
+msgstr "Connected to {0}"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
@@ -1702,10 +1702,6 @@ msgstr "Link"
 msgid "Link copied to clipboard."
 msgstr "Link copied to clipboard."
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "Liq."
-msgstr "Liq."
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionEditor.js
@@ -1715,6 +1711,10 @@ msgstr "Liq."
 #: src/components/Exchange/SwapBox.js
 msgid "Liq. Price"
 msgstr "Liq. Price"
+
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "Liq. {0} {longOrShortText}"
+msgstr "Liq. {0} {longOrShortText}"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
@@ -1747,8 +1747,6 @@ msgstr "Loading..."
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ExchangeTVChart.js
-#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2129,10 +2127,6 @@ msgstr "Olympus Pro"
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Only letters, numbers and underscores are allowed."
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "Open"
-msgstr "Open"
-
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Open + Close fee"
@@ -2162,6 +2156,10 @@ msgstr "Open positions through a simple swap interface. Conveniently swap from a
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr "Open positions: {0}<0/>Under risk: {1}"
+
+#: src/components/Exchange/ExchangeTVChart.js
+msgid "Open {0} {longOrShortText}"
+msgstr "Open {0} {longOrShortText}"
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
@@ -2732,8 +2730,6 @@ msgstr "Share Position"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ExchangeTVChart.js
-#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -3380,6 +3376,10 @@ msgid "Trigger order disabled, pending {0} upgrade"
 msgstr "Trigger order disabled, pending {0} upgrade"
 
 #: src/components/Exchange/TradeHistory.js
+msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
+msgstr "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"
+
+#: src/components/Exchange/TradeHistory.js
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
 msgstr "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right."
 
@@ -3860,6 +3860,7 @@ msgid "{0, plural, one {Cancel # order} other {Cancel # orders}}"
 msgstr "{0, plural, one {Cancel # order} other {Cancel # orders}}"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/TradeHistory.js
@@ -3900,12 +3901,20 @@ msgstr "{0} GLP sold for {1} {2}!"
 msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
 msgstr "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
 
+#: src/components/Exchange/NoLiquidityErrorModal.tsx
+msgid "{0} Pool Capacity Reached"
+msgstr "{0} Pool Capacity Reached"
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "{0} Price"
 msgstr "{0} Price"
+
+#: src/components/Exchange/NoLiquidityErrorModal.tsx
+msgid "{0} Required"
+msgstr "{0} Required"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> tokens for {1}."

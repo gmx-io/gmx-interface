@@ -233,7 +233,7 @@ export const switchNetwork = async (chainId, active) => {
       method: "wallet_switchEthereumChain",
       params: [{ chainId: chainIdHex }],
     });
-    helperToast.success(t`Connected to ` + getChainName(chainId));
+    helperToast.success(t`Connected to ${getChainName(chainId)}`);
     return getChainName(chainId);
   } catch (ex) {
     // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods

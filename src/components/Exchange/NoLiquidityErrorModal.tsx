@@ -3,7 +3,7 @@ import Modal from "../Modal/Modal";
 import { get1InchSwapUrl } from "domain/common";
 import { Token, TokenInfo } from "domain/tokens";
 import { getNativeToken } from "config/tokens";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const { AddressZero } = ethers.constants;
@@ -40,7 +40,7 @@ export default function NoLiquidityErrorModal({
   const swapTokenSymbol = isLong ? toToken.symbol : shortCollateralToken.symbol;
   const oneInchSwapUrl = get1InchSwapUrl(chainId, inputCurrency, outputCurrency);
   const label =
-    modalError === "BUFFER" ? `${shortCollateralToken.symbol} Required` : `${fromToken.symbol} Pool Capacity Reached`;
+    modalError === "BUFFER" ? t`${shortCollateralToken.symbol} Required` : t`${fromToken.symbol} Pool Capacity Reached`;
 
   return (
     <Modal isVisible={Boolean(modalError)} setIsVisible={setModalError} label={label} className="Error-modal font-base">

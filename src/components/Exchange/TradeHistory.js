@@ -280,7 +280,9 @@ export default function TradeHistory(props) {
             <Tooltip
               position="left-top"
               handle={`${formatAmount(params.acceptablePrice, USD_DECIMALS, 2, true)} USD`}
-              renderContent={() => <>Try increasing the "Allowed Slippage", under the Settings menu on the top right</>}
+              renderContent={() => (
+                <Trans>Try increasing the "Allowed Slippage", under the Settings menu on the top right</Trans>
+              )}
             />
           </>
         );
