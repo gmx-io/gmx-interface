@@ -1,10 +1,9 @@
 export function getRootUrl() {
-  const { origin } = window.location;
+  const { origin, protocol, hostname, port } = window.location;
   let url = origin;
   if (!origin) {
-    url = `${window.location.protocol}//${window.location.hostname}${
-      window.location.port && `:${window.location.port}`
-    }`;
+    const portString = port && `:${port}`;
+    url = `${protocol}//${hostname}${portString}`;
   }
   return url;
 }
