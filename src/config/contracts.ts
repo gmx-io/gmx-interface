@@ -143,8 +143,8 @@ const CONTRACTS = {
     OrderExecutor: "0x7257ac5D0a0aaC04AA7bA2AC0A6Eb742E332c3fB",
     OrderBookReader: "0xa27C20A7CF0e1C68C0460706bB674f98F362Bc21",
 
-    PositionRouter: "0x3D6bA331e3D9702C5e8A8d254e5d8a285F223aba",
-    PositionManager: "0x87a4088Bd721F83b6c2E5102e2FA47022Cb1c831",
+    PositionRouter: "0xb87a436B93fFE9D75c5cFA7bAcFff96430b09868",
+    PositionManager: "0x75E42e6f01baf1D6022bEa862A28774a9f8a4A0C",
 
     UniswapGmxEthPool: "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E",
     ReferralStorage: "0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d",
