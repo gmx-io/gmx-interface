@@ -183,8 +183,8 @@ const CONTRACTS = {
     OrderExecutor: "0x4296e307f108B2f583FF2F7B7270ee7831574Ae5",
     OrderBookReader: "0xccFE3E576f8145403d3ce8f3c2f6519Dae40683B",
 
-    PositionRouter: "0x195256074192170d1530527abC9943759c7167d8",
-    PositionManager: "0xF2ec2e52c3b5F8b8bd5A3f93945d05628A233216",
+    PositionRouter: "0xffF6D276Bc37c61A23f06410Dce4A400f66420f8",
+    PositionManager: "0xA21B83E579f4315951bA658654c371520BDcB866",
 
     TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98",
     ReferralStorage: "0x827ed045002ecdabeb6e2b0d1604cf5fc3d322f8",

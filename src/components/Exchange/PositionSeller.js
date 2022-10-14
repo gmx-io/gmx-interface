@@ -723,6 +723,7 @@ export default function PositionSeller(props) {
       0, // _minOut
       minExecutionFee, // _executionFee
       withdrawETH, // _withdrawETH
+      AddressZero, // _callbackTarget
     ];
 
     const successMsg = t`Requested decrease of ${position.indexToken.symbol} ${
