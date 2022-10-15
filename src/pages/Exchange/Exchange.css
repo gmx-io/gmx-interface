@@ -888,6 +888,22 @@ table.Exchange-list-small td {
   min-width: 25rem;
 }
 
+.position-list-collateral {
+  display: flex;
+  align-items: flex-end;
+}
+
+.position-list-collateral .edit-icon {
+  cursor: pointer;
+  margin-left: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.7;
+}
+.position-list-collateral .edit-icon:hover {
+  opacity: 1;
+}
+
 @media (max-width: 1500px) {
   .Exchange-swap-box {
     width: 38.75rem;
