@@ -1408,7 +1408,7 @@ export function importImage(name) {
   } catch (error) {
     console.error(error);
   }
-  return tokenImage;
+  return tokenImage.default;
 }
 
 export function getTwitterIntentURL(text, url = "", hashtag = "") {
