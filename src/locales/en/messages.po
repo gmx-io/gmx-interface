@@ -119,6 +119,7 @@ msgid "Allowed Slippage"
 msgstr "Allowed Slippage"
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
 msgid "Amount"
 msgstr "Amount"
 
@@ -255,6 +256,7 @@ msgstr "Boost your rewards with Multiplier Points. <0>More info</0>."
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/SwapBox.js
 msgid "Borrow Fee"
 msgstr "Borrow Fee"
 
@@ -451,6 +453,8 @@ msgstr "Coinbase Wallet"
 msgid "Coinbase Wallet not detected."
 msgstr "Coinbase Wallet not detected."
 
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Collateral"
@@ -590,6 +594,7 @@ msgid "Dashboards"
 msgstr "Dashboards"
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
 msgid "Date"
 msgstr "Date"
 
@@ -674,11 +679,14 @@ msgstr "Earn"
 msgid "Ecosystem"
 msgstr "Ecosystem"
 
-#: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
 msgid "Edit"
 msgstr "Edit"
 
 #: src/components/Exchange/PositionDropdown.js
+#: src/components/Exchange/PositionsList.js
 msgid "Edit Collateral"
 msgstr "Edit Collateral"
 
@@ -804,8 +812,11 @@ msgstr "Enter the amount of GLP you want to purchase in the order form, then che
 msgid "Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
 msgstr "Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Entry Price"
 msgstr "Entry Price"
 
@@ -983,8 +994,8 @@ msgstr "Insufficient liquidity"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity, change \"Profits In\""
-msgstr "Insufficient liquidity, change \"Profits In\""
+msgid "Insufficient liquidity, change \"Collateral In\""
+msgstr "Insufficient liquidity, change \"Collateral In\""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Insufficient staked tokens"
@@ -1037,7 +1048,11 @@ msgstr "Leftover collateral below 5 USD"
 msgid "Leftover position below 10 USD"
 msgstr "Leftover position below 10 USD"
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
 msgid "Leverage"
 msgstr "Leverage"
 
@@ -1061,8 +1076,11 @@ msgstr "Limit order submitted!"
 msgid "Link"
 msgstr "Link"
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/SwapBox.js
 msgid "Liq. Price"
 msgstr "Liq. Price"
 
@@ -1076,6 +1094,10 @@ msgid "Loading..."
 msgstr "Loading..."
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.js
 msgid "Long"
 msgstr "Long"
 
@@ -1102,6 +1124,11 @@ msgstr "Loss"
 msgid "MAX"
 msgstr "MAX"
 
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Mark Price"
@@ -1231,6 +1258,7 @@ msgid "No open positions"
 msgstr "No open positions"
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
 msgid "No rebates distribution history yet."
 msgstr "No rebates distribution history yet."
 
@@ -1284,6 +1312,7 @@ msgid "Order submitted!"
 msgstr "Order submitted!"
 
 #: src/components/Exchange/PositionsList.js
+#: src/pages/Actions/Actions.js
 msgid "Orders"
 msgstr "Orders"
 
@@ -1338,7 +1367,9 @@ msgstr "Please only use this for full account transfers."
 msgid "Please switch your network to Arbitrum."
 msgstr "Please switch your network to Arbitrum."
 
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
+#: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
 
@@ -1416,6 +1447,7 @@ msgid "Read more"
 msgstr "Read more"
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
 msgid "Rebates are airdropped weekly."
 msgstr "Rebates are airdropped weekly."
 
@@ -1612,6 +1644,10 @@ msgid "Share Position"
 msgstr "Share Position"
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/SwapBox.js
+#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.js
 msgid "Short"
 msgstr "Short"
 
@@ -1628,6 +1664,8 @@ msgstr "Short {0}"
 msgid "Simple Swaps"
 msgstr "Simple Swaps"
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Size"
@@ -1822,6 +1860,7 @@ msgstr "Total Fees"
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr "Total Rebates"
 
@@ -1853,6 +1892,8 @@ msgid "Total Traders Referred"
 msgstr "Total Traders Referred"
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+#: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
 
@@ -1861,6 +1902,8 @@ msgid "Total Users"
 msgstr "Total Users"
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Dashboard/DashboardV2.js
 msgid "Total Volume"
 msgstr "Total Volume"
 
@@ -1894,6 +1937,7 @@ msgid "Trading guide"
 msgstr "Trading guide"
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
 msgid "Transaction"
 msgstr "Transaction"
 
@@ -1998,8 +2042,9 @@ msgid "Updating..."
 msgstr "Updating..."
 
 #: src/components/Exchange/PositionsList.js
-msgid "Use the \"Edit\" button to deposit or withdraw collateral."
-msgstr "Use the \"Edit\" button to deposit or withdraw collateral."
+#: src/components/Exchange/PositionsList.js
+msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
+msgstr "Use the Edit Collateral icon to deposit or withdraw collateral."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Useful Links"

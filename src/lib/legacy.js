@@ -1408,16 +1408,13 @@ export function importImage(name) {
   } catch (error) {
     console.error(error);
   }
-  return tokenImage && tokenImage.default;
+  return tokenImage;
 }
 
 export function getTwitterIntentURL(text, url = "", hashtag = "") {
   let finalURL = "https://twitter.com/intent/tweet?text=";
   if (text.length > 0) {
-    finalURL += encodeURIComponent(text.replace(/[\r\n]+/g, " "))
-      .replace(/\*%7C/g, "*|URL:")
-      .replace(/%7C\*/g, "|*");
-
+    finalURL += Array.isArray(text) ? text.map((t) => encodeURIComponent(t)).join("%0a%0a") : encodeURIComponent(text);
     if (hashtag.length > 0) {
       finalURL += "&hashtags=" + encodeURIComponent(hashtag.replace(/#/g, ""));
     }

@@ -10,6 +10,7 @@ import "./TokenSelector.css";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
 import { getToken } from "config/tokens";
+import { importImage } from "lib/legacy";
 
 export default function TokenSelector(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -47,13 +48,7 @@ export default function TokenSelector(props) {
     return null;
   }
 
-  var tokenImage = null;
-
-  try {
-    tokenImage = require("img/ic_" + tokenInfo.symbol.toLowerCase() + "_24.svg");
-  } catch (error) {
-    console.error(error);
-  }
+  const tokenImage = showSymbolImage && importImage(`ic_${tokenInfo.symbol.toLowerCase()}_24.svg`);
 
   const onSearchKeywordChange = (e) => {
     setSearchKeyword(e.target.value);
@@ -92,12 +87,7 @@ export default function TokenSelector(props) {
             />
           </div>
           {filteredTokens.map((token, tokenIndex) => {
-            let tokenPopupImage;
-            try {
-              tokenPopupImage = require("img/ic_" + token.symbol.toLowerCase() + "_40.svg");
-            } catch (error) {
-              tokenPopupImage = require("img/ic_eth_40.svg");
-            }
+            const tokenPopupImage = importImage(`ic_${token.symbol.toLowerCase()}_40.svg`);
             let info = infoTokens ? infoTokens[token.address] : {};
             let mintAmount;
             let balance = info.balance;
@@ -133,9 +123,7 @@ export default function TokenSelector(props) {
                   />
                 )}
                 <div className="Token-info">
-                  {showTokenImgInDropdown && (
-                    <img src={tokenPopupImage?.default} alt={token.name} className="token-logo" />
-                  )}
+                  {showTokenImgInDropdown && <img src={tokenPopupImage} alt={token.name} className="token-logo" />}
                   <div className="Token-symbol">
                     <div className="Token-text">{token.symbol}</div>
                     <span className="text-accent">{token.name}</span>
@@ -169,10 +157,8 @@ export default function TokenSelector(props) {
       ) : (
         <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
           {tokenInfo.symbol}
-          {showSymbolImage && (
-            <img src={tokenImage && tokenImage.default} alt={tokenInfo.symbol} className="TokenSelector-box-symbol" />
-          )}
-          {showNewCaret && <img src={dropDownIcon} alt="dropDownIcon" className="TokenSelector-box-caret" />}
+          {showSymbolImage && <img src={tokenImage} alt={tokenInfo.symbol} className="TokenSelector-box-symbol" />}
+          {showNewCaret && <img src={dropDownIcon} alt="Dropdown Icon" className="TokenSelector-box-caret" />}
           {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}
         </div>
       )}
