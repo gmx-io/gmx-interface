@@ -30,36 +30,40 @@ async function main() {
 }
 
 async function getFleekIpfsHash() {
-  let ipfsHash
+  let ipfsHash;
 
-  console.log('Waiting for fleek build')
+  console.log("Waiting for fleek build");
 
   await sleep(10000);
 
   while (!ipfsHash) {
-    const result = await fetch('https://api.fleek.co/graphql', {
-      method: 'POST',
+    const result = await fetch("https://api.fleek.co/graphql", {
+      method: "POST",
       headers: {
-        Authorization: FLEEK_API_KEY,
+        Authorization: env.FLEEK_API_KEY,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        query: `{ getSiteById(siteId: "${FLEEK_SITE_ID}") { latestDeploy { status ipfsHash } } }`
-      })
+        query: `{ getSiteById(siteId: "${env.FLEEK_SITE_ID}") { latestDeploy { status ipfsHash } } }`,
+      }),
     });
 
-    const {data: {getSiteById: {latestDeploy}}} = await result.json();
+    const {
+      data: {
+        getSiteById: { latestDeploy },
+      },
+    } = await result.json();
 
-    console.log('Fleek deploy info', latestDeploy);
+    console.log("Fleek deploy info", latestDeploy);
 
-    if (latestDeploy.status === 'DEPLOYED') {
-      ipfsHash = latestDeploy.ipfsHash
+    if (latestDeploy.status === "DEPLOYED") {
+      ipfsHash = latestDeploy.ipfsHash;
     } else {
       await sleep(5000);
     }
   }
 
-  return ipfsHash
+  return ipfsHash;
 }
 
 async function updateDnslinkNetifly(cid) {
