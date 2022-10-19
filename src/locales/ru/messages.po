@@ -682,11 +682,11 @@ msgstr "Экосистема"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionsList.js
 msgid "Edit"
 msgstr ""
 
 #: src/components/Exchange/PositionDropdown.js
+#: src/components/Exchange/PositionsList.js
 msgid "Edit Collateral"
 msgstr ""
 
@@ -700,6 +700,8 @@ msgstr ""
 msgid "Enable Leverage"
 msgstr ""
 
+#: src/components/Exchange/OrdersToa.js
+#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Orders"
@@ -751,6 +753,7 @@ msgstr ""
 msgid "Enabling Leverage..."
 msgstr ""
 
+#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -991,7 +994,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity, change \"Profits In\""
+msgid "Insufficient liquidity, change \"Collateral In\""
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -2039,7 +2042,8 @@ msgid "Updating..."
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
-msgid "Use the \"Edit\" button to deposit or withdraw collateral."
+#: src/components/Exchange/PositionsList.js
+msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
