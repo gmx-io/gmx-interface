@@ -11,9 +11,8 @@ jobs:
     environment: deploy
 
     env:
-      PINATA_API_KEY: ${{ secrets.PINATA_API_KEY }}
-      PINATA_API_SECRET: ${{ secrets.PINATA_API_SECRET }}
-      PINATA_PIN_ALIAS: ${{ secrets.PINATA_PIN_ALIAS }}
+      FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
+      FLEEK_SITE_ID: ${{ secrets.FLEEK_SITE_ID }}
 
       NETIFLY_API_KEY: ${{ secrets.NETIFLY_API_KEY }}
       NETIFLY_DNS_ZONE_ID: ${{ secrets.NETIFLY_DNS_ZONE_ID }}
@@ -28,5 +27,4 @@ jobs:
           cache: yarn
 
       - run: yarn
-      - run: yarn build
       - run: yarn deploy

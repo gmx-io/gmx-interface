@@ -9,9 +9,8 @@ const NETIFLY_API_URL = "https://api.netlify.com/api/v1";
 dotenv.config({ path: ".env.deploy" });
 
 const env = envalid.cleanEnv(process.env, {
-  PINATA_API_KEY: str(),
-  PINATA_API_SECRET: str(),
-  PINATA_PIN_ALIAS: str(),
+  FLEEK_API_KEY: str(),
+  FLEEK_SITE_ID: str(),
 
   NETIFLY_API_KEY: str(),
   NETIFLY_DNS_ZONE_ID: str(),
@@ -21,7 +20,7 @@ const env = envalid.cleanEnv(process.env, {
 main();
 
 async function main() {
-  const cid = await uploadToPinata("./build");
+  const cid = await getFleekIpfsHash();
 
   await waitForCloudflareIpfs(cid);
 
@@ -30,66 +29,37 @@ async function main() {
   process.exit(0);
 }
 
-async function uploadToPinata(path) {
-  const pinata = pinataSDK(env.PINATA_API_KEY, env.PINATA_API_SECRET);
+async function getFleekIpfsHash() {
+  let ipfsHash
 
-  console.log("Upload to Pinata");
+  console.log('Waiting for fleek build')
 
-  await pinata.testAuthentication();
+  await sleep(10000);
 
-  console.log("Auth successful");
-
-  const previousPins = await pinata.pinList({
-    metadata: { name: env.PINATA_PIN_ALIAS },
-    status: "pinned",
-  });
-
-  if (previousPins.rows.length) {
-    console.log(`Found previous pins: ${previousPins.rows.map((r) => r.ipfs_pin_hash).join(", ")}`);
-  }
-
-  console.log("Uploading assets");
-
-  const pinResult = await pinata.pinFromFS(path, {
-    pinataMetadata: {
-      name: env.PINATA_PIN_ALIAS,
-    },
-    pinataOptions: {
-      customPinPolicy: {
-        regions: [
-          {
-            id: "FRA1",
-            desiredReplicationCount: 1,
-          },
-          {
-            id: "NYC1",
-            desiredReplicationCount: 1,
-          },
-        ],
+  while (!ipfsHash) {
+    const result = await fetch('https://api.fleek.co/graphql', {
+      method: 'POST',
+      headers: {
+        Authorization: FLEEK_API_KEY,
+        "Content-Type": "application/json",
       },
-      cidVersion: 1,
-    },
-  });
+      body: JSON.stringify({
+        query: `{ getSiteById(siteId: "${FLEEK_SITE_ID}") { latestDeploy { status ipfsHash } } }`
+      })
+    });
 
-  console.log(`Uploaded: ${pinResult.IpfsHash}`);
+    const {data: {getSiteById: {latestDeploy}}} = await result.json();
 
-  const pinsToClean = previousPins.rows.filter((row) => row.ipfs_pin_hash !== pinResult.IpfsHash);
+    console.log('Fleek deploy info', latestDeploy);
 
-  if (pinsToClean.length) {
-    console.log(`Cleaning up the previous pins`);
-
-    for (let pin of previousPins.rows) {
-      try {
-        await pinata.unpin(pin.ipfs_pin_hash);
-        console.log(`${pin.ipfs_pin_hash} - deleted`);
-      } catch (e) {
-        console.log(`Failed to unpin ${pin.ipfs_pin_hash}`);
-        console.error(e);
-      }
+    if (latestDeploy.status === 'DEPLOYED') {
+      ipfsHash = latestDeploy.ipfsHash
+    } else {
+      await sleep(5000);
     }
   }
 
-  return pinResult.IpfsHash;
+  return ipfsHash
 }
 
 async function updateDnslinkNetifly(cid) {
