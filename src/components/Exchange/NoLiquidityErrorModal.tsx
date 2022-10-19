@@ -58,8 +58,8 @@ export default function NoLiquidityErrorModal({
 
       {isShort && (
         <div>
-          Alternatively you can select a different "Collateral In" token.
           <br />
+          Alternatively, you can select a different "Collateral In" token.
           <br />
         </div>
       )}

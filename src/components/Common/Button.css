@@ -61,8 +61,8 @@ a.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.3rem;
-  height: 2.3rem;
+  max-height: 2.3rem;
+  max-width: 2.3rem;
 }
 .btn-xl .btn-image {
   display: inline-flex;

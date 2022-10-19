@@ -6,10 +6,11 @@ import { IoWarningOutline } from "react-icons/io5";
 import { BiCopy, BiErrorCircle } from "react-icons/bi";
 import Card from "../Common/Card";
 import Modal from "../Modal/Modal";
-import { REFERRAL_CODE_QUERY_PARAM, shortenAddress } from "lib/legacy";
+import { shortenAddress } from "lib/legacy";
 import EmptyMessage from "./EmptyMessage";
 import InfoCard from "./InfoCard";
 import {
+  getReferralCodeTradeUrl,
   getTierIdDisplay,
   getTwitterShareUrl,
   getUSDValue,
@@ -56,7 +57,6 @@ function AffiliatesStats({
   if (cumulativeStats && cumulativeStats.totalRebateUsd && cumulativeStats.discountUsd) {
     referrerRebates = cumulativeStats.totalRebateUsd.sub(cumulativeStats.discountUsd);
   }
-
   return (
     <div className="referral-body-container">
       <div className="referral-stats">
@@ -140,7 +140,7 @@ function AffiliatesStats({
                           <span className="referral-text ">{stat.referralCode}</span>
                           <div
                             onClick={() => {
-                              copyToClipboard(`https://gmx.io/#/?${REFERRAL_CODE_QUERY_PARAM}=${stat.referralCode}`);
+                              copyToClipboard(getReferralCodeTradeUrl(stat.referralCode));
                               helperToast.success("Referral link copied to your clipboard");
                             }}
                             className="referral-code-icon"

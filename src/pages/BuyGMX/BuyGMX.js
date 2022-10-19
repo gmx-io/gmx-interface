@@ -1,24 +1,9 @@
 import React, { useCallback } from "react";
 import Footer from "components/Footer/Footer";
 import "./BuyGMX.css";
-import { SwapWidget, darkTheme } from "@uniswap/widgets";
-import "@uniswap/widgets/fonts.css";
-
+import { SwapWidget, darkTheme } from "@uniswap/widgets/dist/index.js";
 import { useWeb3React } from "@web3-react/core";
-
-import Synapse from "img/ic_synapse.svg";
-import Multiswap from "img/ic_multiswap.svg";
-import Hop from "img/ic_hop.svg";
-import Banxa from "img/ic_banxa.svg";
-import Bungee from "img/bungee.png";
-import O3 from "img/o3.png";
-import Crypto_com from "img/crypto_com.svg";
-import Binance from "img/binance.svg";
-import Bybit from "img/bybit.svg";
-import Ftx from "img/ftx.svg";
-import avax30Icon from "img/ic_avax_30.svg";
-import gmxAvax from "img/ic_gmx_avax.svg";
-import ohmArbitrum from "img/ic_olympus_arbitrum.svg";
+import { getProvider } from "lib/rpc";
 
 import { Trans } from "@lingui/macro";
 import Button from "components/Common/Button";
@@ -28,14 +13,62 @@ import { useChainId } from "lib/chains";
 import Card from "components/Common/Card";
 import { getContract } from "config/contracts";
 
+import Synapse from "img/ic_synapse.svg";
+import Multiswap from "img/ic_multiswap.svg";
+import Hop from "img/ic_hop.svg";
+import Banxa from "img/ic_banxa.svg";
+import Bungee from "img/bungee.png";
+import O3 from "img/o3.png";
+import Crypto_com from "img/crypto_com.svg";
+import Binance from "img/binance.svg";
+import Huobi from "img/huobi.svg";
+import Bybit from "img/bybit.svg";
+import Ftx from "img/ftx.svg";
+import avax30Icon from "img/ic_avax_30.svg";
+import gmxAvax from "img/ic_gmx_avax.svg";
+import ohmArbitrum from "img/ic_olympus_arbitrum.svg";
+import Kucoin from "img/kucoin.svg";
+
+const CENTRALISED_EXCHANGES = [
+  {
+    name: "Binance",
+    icon: Binance,
+    link: "https://www.binance.com/en/trade/GMX_USDT?_from=markets",
+  },
+  {
+    name: "Bybit",
+    icon: Bybit,
+    link: "https://www.bybit.com/en-US/trade/spot/GMX/USDT",
+  },
+  {
+    name: "FTX",
+    icon: Ftx,
+    link: "https://ftx.com/trade/GMX/USD",
+  },
+  {
+    name: "Crypto.com",
+    icon: Crypto_com,
+    link: "https://crypto.com/exchange/trade/spot/GMX_USDT",
+  },
+  {
+    name: "Kucoin",
+    icon: Kucoin,
+    link: "https://www.kucoin.com/trade/GMX-USDT",
+  },
+  {
+    name: "Huobi",
+    icon: Huobi,
+    link: "https://www.huobi.com/en-us/exchange/gmx_usdt/",
+  },
+];
+
 const uniswapWidgetTheme = {
   ...darkTheme,
   fontFamily: "Relative, sans-serif",
   borderRadius: 0.4,
-  darkTheme: true,
   container: "#20253f",
   interactive: "#16182e",
-  module: "#222633",
+  module: "#20253f",
   accent: "#2d42fc",
 };
 
@@ -78,9 +111,13 @@ const TOKEN_LIST = [
   },
 ];
 
+const GMX_ADDRESS = "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a";
+
 export default function BuyGMX() {
   const { chainId } = useChainId();
-  const { active } = useWeb3React();
+  const isArbitrum = chainId === ARBITRUM;
+  const { active, library } = useWeb3React();
+  const { provider } = getProvider(library, chainId);
   const links = {
     getBungeeUrl: () =>
       `https://multitx.bungee.exchange/?toChainId=${chainId}&toTokenAddress=${getContract(chainId, "GMX")}`,
@@ -102,60 +139,23 @@ export default function BuyGMX() {
   return (
     <div className="BuyGMXGLP default-container page-layout">
       <div className="BuyGMXGLP-container">
-        {chainId === ARBITRUM && (
-          <div className="section-title-block">
-            <div className="section-title-content">
-              <div className="Page-title">
-                <Trans>Buy GMX on Arbitrum</Trans>
-              </div>
-              <div className="Page-description">
-                <Trans>Choose to buy from decentralized or centralized exchanges.</Trans>
-                <br />
-                <Trans>
-                  To purchase GMX on the Avalanche blockchain, please{" "}
-                  <span onClick={() => onNetworkSelect(AVALANCHE)}>change your network</span>.
-                </Trans>
-              </div>
+        <div className="section-title-block">
+          <div className="section-title-content">
+            <div className="Page-title">
+              <Trans>Buy GMX on {getChainName(chainId)}</Trans>
+            </div>
+            <div className="Page-description">
+              <Trans>Choose to buy from decentralized or centralized exchanges.</Trans>
+              <br />
+              <Trans>
+                To purchase GMX on the {isArbitrum ? "Avalanche" : "Arbitrum"} blockchain, please{" "}
+                <span onClick={() => onNetworkSelect(isArbitrum ? AVALANCHE : ARBITRUM)}>change your network</span>.
+              </Trans>
             </div>
           </div>
-        )}
-        {chainId === AVALANCHE && (
-          <div className="section-title-block">
-            <div className="section-title-content">
-              <div className="Page-title">
-                <Trans>Buy GMX on Avalanche</Trans>
-              </div>
-              <div className="Page-description">
-                <Trans>Choose to buy from decentralized or centralized exchanges.</Trans>
-                <br />
-                <Trans>
-                  To purchase GMX on the Arbitrum blockchain, please{" "}
-                  <span onClick={() => onNetworkSelect(ARBITRUM)}>change your network</span>.
-                </Trans>
-              </div>
-            </div>
-          </div>
-        )}
+        </div>
         <div className="cards-row">
-          {chainId === ARBITRUM && (
-            <Card title="Buy GMX on Uniswap Arbitrum">
-              <div>
-                <p className="card-description">
-                  If you already have ETH on Arbitrum, you can directly purchase GMX on Uniswap. Set your network to
-                  Arbitrum and use the widget below:
-                </p>
-                <div className="Uniswap">
-                  <SwapWidget
-                    tokenList={TOKEN_LIST}
-                    width="100%"
-                    theme={uniswapWidgetTheme}
-                    defaultChainId={ARBITRUM}
-                    defaultOutputTokenAddress={{ [ARBITRUM]: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a" }}
-                  />
-                </div>
-              </div>
-            </Card>
-          )}
+          {chainId === ARBITRUM && <UniswapWidget provider={provider} />}
           {chainId === AVALANCHE && (
             <Card title="Buy GMX on Avalanche">
               <div className="direct-purchase-options">
@@ -170,10 +170,20 @@ export default function BuyGMX() {
             </Card>
           )}
 
-          <Card title="Buy GMX from any network, token, or FIAT using centralized exchanges.">
+          <Card title="Buy GMX from centralized services or bonds.">
             <div className="App-card-content">
               <div className="BuyGMXGLP-description">
-                <Trans>Buy GMX using multiple tokens from any network:</Trans>
+                <Trans>Buy GMX from centralized exchanges:</Trans>
+              </div>
+              <div className="buttons-group">
+                {CENTRALISED_EXCHANGES.map(({ name, icon, link }) => (
+                  <Button href={link} align="left" imgSrc={icon}>
+                    {name}
+                  </Button>
+                ))}
+              </div>
+              <div className="BuyGMXGLP-description">
+                <Trans>Buy GMX using any token from any network:</Trans>
               </div>
               <div className="buttons-group">
                 <Button href={links.getBungeeUrl()} align="left" imgSrc={Bungee}>
@@ -187,34 +197,18 @@ export default function BuyGMX() {
                 </Button>
               </div>
               <div className="BuyGMXGLP-description">
-                <Trans>Buy GMX using FIAT:</Trans>
+                <Trans>Buy GMX using FIAT gateways:</Trans>
               </div>
               <div className="buttons-group">
                 <Button href={links.getBanxaUrl()} align="left" imgSrc={Banxa}>
                   Banxa
                 </Button>
-                <Button href="https://crypto.com/exchange/trade/spot/GMX_USDT" align="left" imgSrc={Crypto_com}>
-                  Crypto.com
-                </Button>
               </div>
-              <div className="BuyGMXGLP-description">
-                <Trans>Buy GMX from other exchanges:</Trans>
-              </div>
-              <div className="buttons-group">
-                <Button href="https://www.binance.com/en/trade/GMX_USDT?_from=markets" align="left" imgSrc={Binance}>
-                  Binance
-                </Button>
-                <Button href="https://www.bybit.com/en-US/trade/spot/GMX/USDT" align="left" imgSrc={Bybit}>
-                  Bybit
-                </Button>
-                <Button href="https://ftx.com/trade/GMX/USD" align="left" imgSrc={Ftx}>
-                  FTX
-                </Button>
-              </div>
+
               {chainId === ARBITRUM && (
                 <>
                   <div className="BuyGMXGLP-description">
-                    <Trans>Buy GMX Bonds:</Trans>
+                    <Trans>GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:</Trans>
                   </div>
                   <div className="buttons-group">
                     <Button size="xl" imgSrc={ohmArbitrum} href="https://pro.olympusdao.finance/#/partners/GMX">
@@ -234,9 +228,7 @@ export default function BuyGMX() {
                 <Trans>Buy or Transfer ETH to Arbitrum</Trans>
               </div>
               <div className="Page-description">
-                <Trans>
-                  If you wish, you can buy ETH directly to Arbitrum or use one option to transfer it to Arbitrum.
-                </Trans>
+                <Trans>Buy ETH directly to Arbitrum or transfer it there.</Trans>
               </div>
             </div>
           </div>
@@ -325,6 +317,9 @@ export default function BuyGMX() {
                   <Button href="https://ftx.com/trade/ETH/USD" align="left" imgSrc={Ftx}>
                     FTX
                   </Button>
+                  <Button align="left" href="https://binance.com" imgSrc={Binance}>
+                    <Trans>Binance</Trans>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -405,5 +400,28 @@ export default function BuyGMX() {
       </div>
       <Footer />
     </div>
+  );
+}
+
+function UniswapWidget({ provider }) {
+  return (
+    <Card title="Buy GMX on Uniswap Arbitrum">
+      <div>
+        <p className="card-description">
+          If you already have ETH on Arbitrum, you can directly purchase GMX on Uniswap. Set your network to Arbitrum
+          and use the widget below:
+        </p>
+        <div className="Uniswap">
+          <SwapWidget
+            tokenList={TOKEN_LIST}
+            width="100%"
+            theme={uniswapWidgetTheme}
+            defaultChainId={ARBITRUM}
+            defaultOutputTokenAddress={{ [ARBITRUM]: GMX_ADDRESS }}
+            provider={provider}
+          />
+        </div>
+      </div>
+    </Card>
   );
 }

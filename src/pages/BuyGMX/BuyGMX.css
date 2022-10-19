@@ -230,6 +230,9 @@
 .Uniswap {
   margin-top: 2rem;
 }
+.Uniswap .dialog {
+  z-index: 899;
+}
 
 .mt-top {
   margin-top: 5rem;
