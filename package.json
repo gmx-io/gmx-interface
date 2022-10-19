@@ -99,7 +99,7 @@
     "@lingui/loader": "3.14.0",
     "@lingui/macro": "3.13.3",
     "@pinata/sdk": "1.2.0",
-    "dotenv": "^16.0.2",
+    "dotenv": "16.0.2",
     "envalid": "7.3.1",
     "eslint": "7.32.0",
     "husky": "7.0.4",
