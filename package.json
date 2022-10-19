@@ -73,7 +73,8 @@
     "compile": "lingui compile",
     "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
     "lingui:generate": "NODE_ENV=development lingui extract --overwrite $(git diff --name-only --staged)",
-    "tscheck": "tsc -p tsconfig.json --noEmit"
+    "tscheck": "tsc -p tsconfig.json --noEmit",
+    "deploy": "node ./scripts/deploy.mjs"
   },
   "eslintConfig": {
     "extends": [
