@@ -7,7 +7,7 @@ import { isDevelopment } from "./legacy";
 export const locales = {
   en: "English",
   es: "Spanish",
-  // zh: "Chinese",
+  zh: "Chinese",
   ko: "Korean",
   // ru: "Russian",
   ja: "Japanese",
