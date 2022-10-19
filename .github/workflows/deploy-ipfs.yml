@@ -21,8 +21,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      - name: Build
+      - name: Deploy
         uses: actions/setup-node@v3
         with:
           node-version: 16.x
@@ -30,15 +29,4 @@ jobs:
 
       - run: yarn
       - run: yarn build
-     
-      - name: 'Upload to Pinata'
-        id: 'pinata'
-        uses: './actions/upload-pinata'
-        with:
-          PINATA_API_KEY: ${{ secrets.PINATA_API_KEY }}
-          PINATA_API_SECRET: ${{ secrets.PINATA_API_SECRET }}
-          PINATA_PIN_ALIAS: ${{ secrets.PINATA_PIN_ALIAS }}
-          BUILD_PATH: './build'
-
-      - name: 'Test'
-        run:  echo "ipfs hash ${{ steps.pinata.outputs.IPFS_HASH }}"
+      - run: yarn deploy
