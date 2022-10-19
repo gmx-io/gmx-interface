@@ -724,6 +724,7 @@ export default function PositionSeller(props) {
       0, // _minOut
       minExecutionFee, // _executionFee
       withdrawETH, // _withdrawETH
+      AddressZero, // _callbackTarget
     ];
     const sizeDeltaUsd = formatAmount(sizeDelta, USD_DECIMALS, 2);
     const successMsg = t`Requested decrease of ${position.indexToken.symbol} ${longOrShortText} by ${sizeDeltaUsd} USD.`;

@@ -210,8 +210,8 @@ msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agr
 msgstr "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agree you accept the <3>T&Cs</3> and <4>Referral T&Cs</4>.<5/><6/>"
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "Alternatively you can select a different \"Collateral In\" token."
-msgstr "Alternatively you can select a different \"Collateral In\" token."
+msgid "Alternatively, you can select a different \"Collateral In\" token."
+msgstr "Alternatively, you can select a different \"Collateral In\" token."
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
@@ -1058,11 +1058,11 @@ msgstr "Ecosystem"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionsList.js
 msgid "Edit"
 msgstr "Edit"
 
 #: src/components/Exchange/PositionDropdown.js
+#: src/components/Exchange/PositionsList.js
 msgid "Edit Collateral"
 msgstr "Edit Collateral"
 
@@ -1556,8 +1556,8 @@ msgstr "Insufficient liquidity"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity, change \"Profits In\""
-msgstr "Insufficient liquidity, change \"Profits In\""
+msgid "Insufficient liquidity, change \"Collateral In\""
+msgstr "Insufficient liquidity, change \"Collateral In\""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient receive token liquidity"
@@ -3484,8 +3484,8 @@ msgstr "Use the \"Compound\" button to stake your Multiplier Points."
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Use the \"Edit\" button to deposit or withdraw collateral."
-msgstr "Use the \"Edit\" button to deposit or withdraw collateral."
+msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
+msgstr "Use the Edit Collateral icon to deposit or withdraw collateral."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Useful Links"

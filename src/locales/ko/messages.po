@@ -210,7 +210,7 @@ msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agr
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "Alternatively you can select a different \"Collateral In\" token."
+msgid "Alternatively, you can select a different \"Collateral In\" token."
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
@@ -1058,11 +1058,11 @@ msgstr "이코시스템"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionsList.js
 msgid "Edit"
 msgstr "수정"
 
 #: src/components/Exchange/PositionDropdown.js
+#: src/components/Exchange/PositionsList.js
 msgid "Edit Collateral"
 msgstr "담보 수정"
 
@@ -1556,8 +1556,8 @@ msgstr "유동성 부족"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity, change \"Profits In\""
-msgstr "유동성 부족, \"손익\"을 변경하세요"
+msgid "Insufficient liquidity, change \"Collateral In\""
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient receive token liquidity"
@@ -3481,8 +3481,8 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Use the \"Edit\" button to deposit or withdraw collateral."
-msgstr "담보를 예치 또는 인출하시려면 \"편집\" 버튼을 사용해주세요."
+msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Useful Links"

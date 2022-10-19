@@ -210,7 +210,7 @@ msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agr
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "Alternatively you can select a different \"Collateral In\" token."
+msgid "Alternatively, you can select a different \"Collateral In\" token."
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
@@ -1058,11 +1058,11 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionsList.js
 msgid "Edit"
 msgstr ""
 
 #: src/components/Exchange/PositionDropdown.js
+#: src/components/Exchange/PositionsList.js
 msgid "Edit Collateral"
 msgstr ""
 
@@ -1556,7 +1556,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity, change \"Profits In\""
+msgid "Insufficient liquidity, change \"Collateral In\""
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -3481,7 +3481,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Use the \"Edit\" button to deposit or withdraw collateral."
+msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js

@@ -1,8 +1,15 @@
-import { isAddressZero, USD_DECIMALS, MAX_REFERRAL_CODE_LENGTH } from "lib/legacy";
+import {
+  isAddressZero,
+  USD_DECIMALS,
+  MAX_REFERRAL_CODE_LENGTH,
+  getTwitterIntentURL,
+  REFERRAL_CODE_QUERY_PARAM,
+} from "lib/legacy";
 import { encodeReferralCode, getReferralCodeOwner } from "domain/referrals";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { t } from "@lingui/macro";
+import { getRootUrl } from "lib/url";
 
 export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
 export const REGEX_VERIFY_BYTES32 = /^0x[0-9a-f]{64}$/;
@@ -124,8 +131,13 @@ export function getCodeError(value) {
   return "";
 }
 
-export function getTwitterShareUrl(referralCode) {
-  const message = "Trying out trading on @GMX_IO, up to 30x leverage on $BTC, $ETH 📈%0a%0aFor fee discounts use:";
+export function getReferralCodeTradeUrl(referralCode) {
+  return `${getRootUrl()}/#/trade/?${REFERRAL_CODE_QUERY_PARAM}=${referralCode}`;
+}
 
-  return `http://twitter.com/intent/tweet?text=${message}&url=https://gmx.io?ref=${referralCode}`;
+export function getTwitterShareUrl(referralCode) {
+  const message = ["Trying out trading on @GMX_IO, up to 30x leverage on $BTC, $ETH 📈", "For fee discounts use:"];
+  const shareURL = getReferralCodeTradeUrl(referralCode);
+
+  return getTwitterIntentURL(message, shareURL);
 }

@@ -26,6 +26,7 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { helperToast } from "lib/helperToast";
 import { getUsd } from "domain/tokens/utils";
 import { bigNumberify, formatAmount } from "lib/numbers";
+import { AiOutlineEdit } from "react-icons/ai";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -274,7 +275,7 @@ export default function PositionsList(props) {
                       <div className="label">
                         <Trans>Collateral</Trans>
                       </div>
-                      <div>
+                      <div className="position-list-collateral">
                         <Tooltip
                           handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
                           position="right-bottom"
@@ -302,12 +303,15 @@ export default function PositionsList(props) {
                                 />
                                 <StatsTooltipRow label={t`Borrow Fee / Day`} value={borrowFeeUSD} />
                                 <span>
-                                  <Trans>Use the "Edit" button to deposit or withdraw collateral.</Trans>
+                                  <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
                                 </span>
                               </>
                             );
                           }}
                         />
+                        <span className="edit-icon" onClick={() => editPosition(position)}>
+                          <AiOutlineEdit fontSize={16} />
+                        </span>
                       </div>
                     </div>
                     <div className="App-card-row">
@@ -442,7 +446,7 @@ export default function PositionsList(props) {
                       disabled={position.size.eq(0)}
                       onClick={() => editPosition(position)}
                     >
-                      <Trans>Edit</Trans>
+                      <Trans>Edit Collateral</Trans>
                     </button>
                     <button
                       className="Exchange-list-action App-button-option App-card-option"
@@ -632,40 +636,49 @@ export default function PositionsList(props) {
                   )}
                 </td>
                 <td>
-                  <Tooltip
-                    handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
-                    position="left-bottom"
-                    handleClassName={cx("plain", { negative: position.hasLowCollateral })}
-                    renderContent={() => {
-                      return (
-                        <>
-                          {position.hasLowCollateral && (
-                            <div>
-                              <Trans>
-                                WARNING: This position has a low amount of collateral after deducting borrowing fees,
-                                deposit more collateral to reduce the position's liquidation risk.
-                              </Trans>
-                              <br />
-                              <br />
-                            </div>
-                          )}
+                  <div className="position-list-collateral">
+                    <Tooltip
+                      handle={`$${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}`}
+                      position="left-bottom"
+                      handleClassName={cx("plain", { negative: position.hasLowCollateral })}
+                      renderContent={() => {
+                        return (
+                          <>
+                            {position.hasLowCollateral && (
+                              <div>
+                                <Trans>
+                                  WARNING: This position has a low amount of collateral after deducting borrowing fees,
+                                  deposit more collateral to reduce the position's liquidation risk.
+                                </Trans>
+                                <br />
+                                <br />
+                              </div>
+                            )}
 
-                          <StatsTooltipRow
-                            label={t`Initial Collateral`}
-                            value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
-                          />
-                          <StatsTooltipRow
-                            label={t`Borrow Fee`}
-                            showDollar={false}
-                            value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
-                          />
-                          <StatsTooltipRow showDollar={false} label={t`Borrow Fee / Day`} value={`-$${borrowFeeUSD}`} />
-                          <br />
-                          <Trans>Use the "Edit" button to deposit or withdraw collateral.</Trans>
-                        </>
-                      );
-                    }}
-                  />
+                            <StatsTooltipRow
+                              label={t`Initial Collateral`}
+                              value={formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                            />
+                            <StatsTooltipRow
+                              label={t`Borrow Fee`}
+                              showDollar={false}
+                              value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
+                            />
+                            <StatsTooltipRow
+                              showDollar={false}
+                              label={t`Borrow Fee / Day`}
+                              value={`-$${borrowFeeUSD}`}
+                            />
+                            <br />
+                            <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
+                          </>
+                        );
+                      }}
+                    />
+                    <span className="edit-icon" onClick={() => editPosition(position)}>
+                      <AiOutlineEdit fontSize={16} />
+                    </span>
+                  </div>
                 </td>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
                   <Tooltip

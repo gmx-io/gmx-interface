@@ -210,7 +210,7 @@ msgid "Alternative links can be found in the <0>docs</0>.<1/><2/>By clicking Agr
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "Alternatively you can select a different \"Collateral In\" token."
+msgid "Alternatively, you can select a different \"Collateral In\" token."
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
@@ -1058,11 +1058,11 @@ msgstr "エコシステム"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/PositionsList.js
 msgid "Edit"
 msgstr "編集"
 
 #: src/components/Exchange/PositionDropdown.js
+#: src/components/Exchange/PositionsList.js
 msgid "Edit Collateral"
 msgstr "担保編集"
 
@@ -1556,8 +1556,8 @@ msgstr "流動性不足"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-msgid "Insufficient liquidity, change \"Profits In\""
-msgstr "流動性不足、\"利益\"を変更する"
+msgid "Insufficient liquidity, change \"Collateral In\""
+msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Insufficient receive token liquidity"
@@ -3481,8 +3481,8 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Use the \"Edit\" button to deposit or withdraw collateral."
-msgstr "担保を入金または出金するには\"編集\"ボタンを使用してください。"
+msgid "Use the Edit Collateral icon to deposit or withdraw collateral."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Useful Links"
