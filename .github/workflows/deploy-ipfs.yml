@@ -1,0 +1,32 @@
+name: Deploy IPFS
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    environment: deploy
+
+    env:
+      PINATA_API_KEY: ${{ secrets.PINATA_API_KEY }}
+      PINATA_API_SECRET: ${{ secrets.PINATA_API_SECRET }}
+      PINATA_PIN_ALIAS: ${{ secrets.PINATA_PIN_ALIAS }}
+
+      NETIFLY_API_KEY: ${{ secrets.NETIFLY_API_KEY }}
+      NETIFLY_DNS_ZONE_ID: ${{ secrets.NETIFLY_DNS_ZONE_ID }}
+      NETIFLY_DNS_LINK: ${{ secrets.NETIFLY_DNS_LINK }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: yarn
+
+      - run: yarn
+      - run: yarn build
+      - run: yarn deploy
