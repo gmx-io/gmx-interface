@@ -155,8 +155,9 @@ export default function BuyGMX() {
           </div>
         </div>
         <div className="cards-row">
-          {chainId === ARBITRUM && <UniswapWidget provider={provider} />}
-          {chainId === AVALANCHE && (
+          {isArbitrum ? (
+            <UniswapWidget provider={provider} />
+          ) : (
             <Card title="Buy GMX on Avalanche">
               <div className="direct-purchase-options">
                 <Button
@@ -177,7 +178,7 @@ export default function BuyGMX() {
               </div>
               <div className="buttons-group">
                 {CENTRALISED_EXCHANGES.map(({ name, icon, link }) => (
-                  <Button href={link} align="left" imgSrc={icon}>
+                  <Button key={name} href={link} align="left" imgSrc={icon}>
                     {name}
                   </Button>
                 ))}
@@ -212,7 +213,7 @@ export default function BuyGMX() {
                   </div>
                   <div className="buttons-group">
                     <Button size="xl" imgSrc={ohmArbitrum} href="https://pro.olympusdao.finance/#/partners/GMX">
-                      <Trans>Olympus Pro</Trans>
+                      Olympus Pro
                     </Button>
                   </div>
                 </>
@@ -221,7 +222,7 @@ export default function BuyGMX() {
           </Card>
         </div>
 
-        {chainId === ARBITRUM && (
+        {isArbitrum ? (
           <div className="section-title-block mt-top">
             <div className="section-title-content">
               <div className="Page-title">
@@ -232,9 +233,7 @@ export default function BuyGMX() {
               </div>
             </div>
           </div>
-        )}
-
-        {chainId === AVALANCHE && (
+        ) : (
           <div className="section-title-block mt-top">
             <div className="section-title-content">
               <div className="Page-title">
@@ -248,6 +247,7 @@ export default function BuyGMX() {
             </div>
           </div>
         )}
+
         {chainId === ARBITRUM && (
           <div className="BuyGMXGLP-panel">
             <div className="App-card no-height">
@@ -317,8 +317,8 @@ export default function BuyGMX() {
                   <Button href="https://ftx.com/trade/ETH/USD" align="left" imgSrc={Ftx}>
                     FTX
                   </Button>
-                  <Button align="left" href="https://binance.com" imgSrc={Binance}>
-                    <Trans>Binance</Trans>
+                  <Button align="left" href="https://www.binance.com/en/trade/ETH_USDT" imgSrc={Binance}>
+                    Binance
                   </Button>
                 </div>
               </div>
@@ -353,7 +353,7 @@ export default function BuyGMX() {
                   <Button href={links.getO3Url()} imgSrc={O3}>
                     O3
                   </Button>
-                  <Button href="https://ftx.com/trade/ETH/USD" align="left" imgSrc={Ftx}>
+                  <Button href="https://ftx.com/trade/AVAX/USD" align="left" imgSrc={Ftx}>
                     FTX
                   </Button>
                 </div>
@@ -375,16 +375,16 @@ export default function BuyGMX() {
                 </div>
                 <div className="buttons-group">
                   <Button align="left" href="https://bridge.avax.network/" imgSrc={avax30Icon}>
-                    <Trans>Avalanche</Trans>
+                    Avalanche
                   </Button>
                   <Button align="left" href="https://synapseprotocol.com/" imgSrc={Synapse}>
-                    <Trans>Synapse</Trans>
+                    Synapse
                   </Button>
                   <Button align="left" href="https://app.multichain.org/" imgSrc={Multiswap}>
-                    <Trans>Multiswap</Trans>
+                    Multiswap
                   </Button>
-                  <Button align="left" href="https://binance.com" imgSrc={Binance}>
-                    <Trans>Binance</Trans>
+                  <Button align="left" href="https://www.binance.com/en/trade/AVAX_USDT" imgSrc={Binance}>
+                    Binance
                   </Button>
                   <Button href={links.getBungeeUrl()} align="left" imgSrc={Bungee}>
                     Bungee
@@ -408,8 +408,10 @@ function UniswapWidget({ provider }) {
     <Card title="Buy GMX on Uniswap Arbitrum">
       <div>
         <p className="card-description">
-          If you already have ETH on Arbitrum, you can directly purchase GMX on Uniswap. Set your network to Arbitrum
-          and use the widget below:
+          <Trans>
+            If you already have ETH on Arbitrum, you can directly purchase GMX on Uniswap. Set your network to Arbitrum
+            and use the widget below:
+          </Trans>
         </p>
         <div className="Uniswap">
           <SwapWidget

@@ -114,6 +114,7 @@ msgid "Allowed Slippage"
 msgstr "Allowed Slippage"
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
 msgid "Amount"
 msgstr "Amount"
 
@@ -140,6 +141,7 @@ msgstr "Approve GMX"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 msgid "Approve {0}"
 msgstr "Approve {0}"
 
@@ -153,6 +155,7 @@ msgstr "Approving GMX..."
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 msgid "Approving {0}..."
 msgstr "Approving {0}..."
 
@@ -201,10 +204,6 @@ msgstr "Available on your preferred network"
 msgid "Available:"
 msgstr "Available:"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Avalanche"
-msgstr "Avalanche"
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
@@ -223,11 +222,6 @@ msgstr "Balance:"
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
 msgstr "Begin Transfer"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Binance"
-msgstr "Binance"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Boost Percentage"
@@ -278,14 +272,6 @@ msgstr "Buy GLP"
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX from centralized exchanges:"
 msgstr "Buy GMX from centralized exchanges:"
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX on Arbitrum"
-msgstr "Buy GMX on Arbitrum"
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX on Avalanche"
-msgstr "Buy GMX on Avalanche"
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX on {0}"
@@ -459,6 +445,7 @@ msgstr "Coinbase Wallet"
 msgid "Coinbase Wallet not detected."
 msgstr "Coinbase Wallet not detected."
 
+#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -517,6 +504,14 @@ msgid "Connect"
 msgstr "Connect"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Header/AppHeaderUser.tsx
+#: src/components/Referrals/AddAffiliateCode.js
+#: src/components/Referrals/JoinReferralCode.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Connect Wallet"
 msgstr "Connect Wallet"
 
@@ -591,6 +586,7 @@ msgid "Dashboards"
 msgstr "Dashboards"
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
 msgid "Date"
 msgstr "Date"
 
@@ -602,6 +598,10 @@ msgstr "Decentralized<0/>Perpetual Exchange"
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Deposit"
 msgstr "Deposit"
 
@@ -634,6 +634,7 @@ msgid "Deposited!"
 msgstr "Deposited!"
 
 #: src/components/Exchange/PositionEditor.js
+#: src/pages/Stake/StakeV2.js
 msgid "Depositing..."
 msgstr "Depositing..."
 
@@ -672,6 +673,7 @@ msgstr "Ecosystem"
 msgid "Edit"
 msgstr "Edit"
 
+#: src/components/Exchange/PositionDropdown.js
 #: src/components/Exchange/PositionsList.js
 msgid "Edit Collateral"
 msgstr "Edit Collateral"
@@ -686,6 +688,8 @@ msgstr "Edit Referral Code"
 msgid "Enable Leverage"
 msgstr "Enable Leverage"
 
+#: src/components/Exchange/OrdersToa.js
+#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 msgid "Enable Orders"
@@ -737,6 +741,7 @@ msgstr "Enabling Leverage"
 msgid "Enabling Leverage..."
 msgstr "Enabling Leverage..."
 
+#: src/components/Exchange/OrdersToa.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -774,6 +779,12 @@ msgstr "Enter a price"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
+#: src/pages/ClaimEsGmx/ClaimEsGmx.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Enter an amount"
 msgstr "Enter an amount"
 
@@ -814,6 +825,8 @@ msgid "FEES"
 msgstr "FEES"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Fees"
 msgstr "Fees"
@@ -913,6 +926,10 @@ msgid "High USDG Slippage, Long Anyway"
 msgstr "High USDG Slippage, Long Anyway"
 
 #: src/pages/BuyGMX/BuyGMX.js
+msgid "If you already have ETH on Arbitrum, you can directly purchase GMX on Uniswap. Set your network to Arbitrum and use the widget below:"
+msgstr "If you already have ETH on Arbitrum, you can directly purchase GMX on Uniswap. Set your network to Arbitrum and use the widget below:"
+
+#: src/pages/BuyGMX/BuyGMX.js
 msgid "If you wish, you can buy AVAX directly to Avalanche or use one option to transfer it to Avalanche."
 msgstr "If you wish, you can buy AVAX directly to Avalanche or use one option to transfer it to Avalanche."
 
@@ -962,6 +979,7 @@ msgstr "Insufficient GLP balance"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 msgid "Insufficient liquidity"
 msgstr "Insufficient liquidity"
 
@@ -977,6 +995,7 @@ msgstr "Insufficient staked tokens"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 msgid "Insufficient {0} balance"
 msgstr "Insufficient {0} balance"
 
@@ -1069,6 +1088,8 @@ msgstr "Loading..."
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.js
 msgid "Long"
 msgstr "Long"
 
@@ -1095,6 +1116,9 @@ msgstr "Loss"
 msgid "MAX"
 msgstr "MAX"
 
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
@@ -1195,10 +1219,6 @@ msgstr "More Info"
 msgid "Multiplier Points APR"
 msgstr "Multiplier Points APR"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Multiswap"
-msgstr "Multiswap"
-
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Net Value"
@@ -1225,6 +1245,7 @@ msgid "No open positions"
 msgstr "No open positions"
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
 msgid "No rebates distribution history yet."
 msgstr "No rebates distribution history yet."
 
@@ -1235,10 +1256,6 @@ msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occu
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Note that there is a minimum holding time of 15 minutes after a purchase."
 msgstr "Note that there is a minimum holding time of 15 minutes after a purchase."
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Olympus Pro"
-msgstr "Olympus Pro"
 
 #: src/pages/Home/Home.js
 msgid "Open Interest"
@@ -1278,6 +1295,7 @@ msgid "Order submitted!"
 msgstr "Order submitted!"
 
 #: src/components/Exchange/PositionsList.js
+#: src/pages/Actions/Actions.js
 msgid "Orders"
 msgstr "Orders"
 
@@ -1293,6 +1311,7 @@ msgstr "Overview"
 msgid "POOL"
 msgstr "POOL"
 
+#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "PRICE"
 msgstr "PRICE"
@@ -1333,6 +1352,7 @@ msgstr "Please switch your network to Arbitrum."
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
+#: src/pages/Actions/Actions.js
 msgid "PnL"
 msgstr "PnL"
 
@@ -1348,10 +1368,16 @@ msgstr "Position close disabled, pending {0} upgrade"
 msgid "Positions"
 msgstr "Positions"
 
+#: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Price"
 msgstr "Price"
 
@@ -1403,6 +1429,7 @@ msgid "Read more"
 msgstr "Read more"
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
 msgid "Rebates are airdropped weekly."
 msgstr "Rebates are airdropped weekly."
 
@@ -1417,6 +1444,8 @@ msgstr "Rebates earned by this account as an affiliate."
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
+#: src/components/Glp/GlpSwap.js
 msgid "Receive"
 msgstr "Receive"
 
@@ -1599,6 +1628,8 @@ msgstr "Share Position"
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/pages/Actions/Actions.js
+#: src/pages/Actions/Actions.js
 msgid "Short"
 msgstr "Short"
 
@@ -1665,6 +1696,9 @@ msgid "Stake submitted!"
 msgstr "Stake submitted!"
 
 #: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Staked"
 msgstr "Staked"
 
@@ -1723,10 +1757,7 @@ msgstr "Swap {0} on 1inch"
 msgid "Swaps disabled, pending {0} upgrade"
 msgstr "Swaps disabled, pending {0} upgrade"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Synapse"
-msgstr "Synapse"
-
+#: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
 msgstr "TOKEN"
@@ -1780,14 +1811,6 @@ msgid "To complete the transfer, you must switch your connected account to {rece
 msgstr "To complete the transfer, you must switch your connected account to {receiver}."
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "To purchase GMX on the Arbitrum blockchain, please <0>change your network</0>."
-msgstr "To purchase GMX on the Arbitrum blockchain, please <0>change your network</0>."
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "To purchase GMX on the Avalanche blockchain, please <0>change your network</0>."
-msgstr "To purchase GMX on the Avalanche blockchain, please <0>change your network</0>."
-
-#: src/pages/BuyGMX/BuyGMX.js
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
 msgstr "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
 
@@ -1810,6 +1833,7 @@ msgstr "Total Fees"
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
 msgid "Total Rebates"
 msgstr "Total Rebates"
 
@@ -1819,6 +1843,9 @@ msgstr "Total Rewards"
 
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Total Staked"
 msgstr "Total Staked"
 
@@ -1838,6 +1865,8 @@ msgid "Total Traders Referred"
 msgstr "Total Traders Referred"
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
+#: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
 
@@ -1881,6 +1910,7 @@ msgid "Trading guide"
 msgstr "Trading guide"
 
 #: src/components/Referrals/AffiliatesStats.js
+#: src/components/Referrals/TradersStats.js
 msgid "Transaction"
 msgstr "Transaction"
 
@@ -2076,6 +2106,7 @@ msgid "WEIGHT"
 msgstr "WEIGHT"
 
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 msgid "Waiting for Approval"
 msgstr "Waiting for Approval"
 
@@ -2108,6 +2139,8 @@ msgstr "When closing the position, you can select which token you would like to 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/pages/Stake/StakeV2.js
+#: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
 msgstr "Withdraw"
 
@@ -2260,6 +2293,7 @@ msgstr "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> 
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Glp/GlpSwap.js
 msgid "{0} pool exceeded, try different token"
 msgstr "{0} pool exceeded, try different token"
 
