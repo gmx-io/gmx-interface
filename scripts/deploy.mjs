@@ -119,7 +119,7 @@ async function waitForCloudflareIpfs(cid) {
     throw new Error("No CID provided");
   }
 
-  const url = `https://${cid}.ipfs.cf-ipfs.com/`;
+  const url = `https://cloudflare-ipfs/ipfs/${cid}`;
 
   console.log(`Waiting the CID to be resolved on Cloudflare: ${url}`);
 
