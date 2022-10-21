@@ -274,6 +274,14 @@ msgid "Buy GMX from centralized exchanges:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX from centralized services or bonds"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX on Avalanche"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX on {0}"
 msgstr ""
 
@@ -1914,14 +1922,11 @@ msgstr "트레이딩 가이드"
 msgid "Transaction"
 msgstr "거래"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Transfer AVAX"
-msgstr "AVAX 전송"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transfer Account"
 msgstr "계정 이전"
 
+#: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Transfer ETH"
 msgstr "ETH 전송"
@@ -2185,8 +2190,8 @@ msgid "You are earning {nativeTokenSymbol} rewards with {0} tokens.<0/>Tokens: {
 msgstr "귀하는 {nativeTokenSymbol} 보상을 {0} 토큰으로 얻고 있습니다.<0/> 토큰: {amountStr}"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "You can buy AVAX directly on <0>Avalanche</0> using Banxa:"
-msgstr "Banxa를 사용하여 <0>Avalanche</0>상에서 직접 AVAX를 구입:"
+msgid "You can buy AVAX directly on <0>Avalanche</0> using these options:"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "You can buy ETH directly on <0>Arbitrum</0> using these options:"

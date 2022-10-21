@@ -1,11 +1,11 @@
 import React, { useCallback } from "react";
 import Footer from "components/Footer/Footer";
 import "./BuyGMX.css";
-import { SwapWidget, darkTheme } from "@uniswap/widgets/dist/index.js";
+import { SwapWidget, darkTheme } from "@uniswap/widgets";
 import { useWeb3React } from "@web3-react/core";
 import { getProvider } from "lib/rpc";
 
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import Button from "components/Common/Button";
 import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
@@ -67,9 +67,10 @@ const uniswapWidgetTheme = {
   fontFamily: "Relative, sans-serif",
   borderRadius: 0.4,
   container: "#20253f",
-  interactive: "#16182e",
-  module: "#20253f",
+  interactive: "#20253f",
+  module: "#16182e",
   accent: "#2d42fc",
+  error: "#fa3c58",
 };
 
 const TOKEN_LIST = [
@@ -158,7 +159,7 @@ export default function BuyGMX() {
           {isArbitrum ? (
             <UniswapWidget provider={provider} />
           ) : (
-            <Card title="Buy GMX on Avalanche">
+            <Card title={t`Buy GMX on Avalanche`}>
               <div className="direct-purchase-options">
                 <Button
                   size="xl"
@@ -171,7 +172,7 @@ export default function BuyGMX() {
             </Card>
           )}
 
-          <Card title="Buy GMX from centralized services or bonds.">
+          <Card title={t`Buy GMX from centralized services or bonds`}>
             <div className="App-card-content">
               <div className="BuyGMXGLP-description">
                 <Trans>Buy GMX from centralized exchanges:</Trans>
@@ -249,12 +250,8 @@ export default function BuyGMX() {
         )}
 
         {chainId === ARBITRUM && (
-          <div className="BuyGMXGLP-panel">
-            <div className="App-card no-height">
-              <div className="App-card-title">
-                <Trans>Buy ETH</Trans>
-              </div>
-              <div className="App-card-divider"></div>
+          <div className="cards-row">
+            <Card title={t`Buy ETH`}>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
                   <Trans>
@@ -280,12 +277,8 @@ export default function BuyGMX() {
                   </Button>
                 </div>
               </div>
-            </div>
-            <div className="App-card no-height">
-              <div className="App-card-title">
-                <Trans>Transfer ETH</Trans>
-              </div>
-              <div className="App-card-divider"></div>
+            </Card>
+            <Card title={t`Transfer ETH`}>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
                   <Trans>You can transfer ETH from other networks to Arbitrum using any of the below options:</Trans>
@@ -322,17 +315,13 @@ export default function BuyGMX() {
                   </Button>
                 </div>
               </div>
-            </div>
+            </Card>
           </div>
         )}
 
         {chainId === AVALANCHE && (
-          <div className="BuyGMXGLP-panel">
-            <div className="App-card no-height">
-              <div className="App-card-title">
-                <Trans>Buy AVAX</Trans>
-              </div>
-              <div className="App-card-divider"></div>
+          <div className="cards-row">
+            <Card title={t`Buy AVAX`}>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
                   <Trans>
@@ -340,7 +329,7 @@ export default function BuyGMX() {
                     <a href="https://www.avax.network/" target="_blank" rel="noopener noreferrer">
                       Avalanche
                     </a>{" "}
-                    using Banxa:
+                    using these options:
                   </Trans>
                 </div>
                 <div className="buttons-group">
@@ -358,12 +347,8 @@ export default function BuyGMX() {
                   </Button>
                 </div>
               </div>
-            </div>
-            <div className="App-card no-height">
-              <div className="App-card-title">
-                <Trans>Transfer AVAX</Trans>
-              </div>
-              <div className="App-card-divider"></div>
+            </Card>
+            <Card title={t`Transfer ETH`}>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
                   <Trans>You can transfer AVAX to Avalanche using any of the below options.</Trans> <br />
@@ -394,7 +379,7 @@ export default function BuyGMX() {
                   </Button>
                 </div>
               </div>
-            </div>
+            </Card>
           </div>
         )}
       </div>
@@ -419,6 +404,7 @@ function UniswapWidget({ provider }) {
             width="100%"
             theme={uniswapWidgetTheme}
             defaultChainId={ARBITRUM}
+            defaultInputTokenAddress="NATIVE"
             defaultOutputTokenAddress={{ [ARBITRUM]: GMX_ADDRESS }}
             provider={provider}
           />

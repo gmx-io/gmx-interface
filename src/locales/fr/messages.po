@@ -274,6 +274,14 @@ msgid "Buy GMX from centralized exchanges:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX from centralized services or bonds"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX on Avalanche"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX on {0}"
 msgstr ""
 
@@ -1914,14 +1922,11 @@ msgstr ""
 msgid "Transaction"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Transfer AVAX"
-msgstr ""
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transfer Account"
 msgstr ""
 
+#: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Transfer ETH"
 msgstr ""
@@ -2185,7 +2190,7 @@ msgid "You are earning {nativeTokenSymbol} rewards with {0} tokens.<0/>Tokens: {
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "You can buy AVAX directly on <0>Avalanche</0> using Banxa:"
+msgid "You can buy AVAX directly on <0>Avalanche</0> using these options:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js

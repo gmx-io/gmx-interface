@@ -9,33 +9,6 @@
   width: 100%;
 }
 
-.BuyGMXGLP-panel {
-  padding-top: 0;
-  padding-bottom: 3.875rem;
-  border-bottom-left-radius: 0.8rem;
-  border-bottom-right-radius: 0.8rem;
-  display: flex;
-  justify-content: space-between;
-}
-.BuyGMXGLP-panel .App-card:first-child {
-  margin-right: 2rem;
-}
-
-.BuyGMXGLP-panel .App-card {
-  max-width: 59rem;
-  width: 100%;
-  height: fit-content;
-  flex: auto;
-}
-
-.BuyGMXGLP-panel .App-card.no-height {
-  height: unset;
-}
-
-.BuyGMXGLP-panel:last-child {
-  padding-bottom: 0;
-}
-
 .BuyGMXGLP-description {
   letter-spacing: 0px;
   color: #a9a9b0;
@@ -136,16 +109,6 @@
   display: none !important;
 }
 
-.BuyGMXGLP-panel .buy-card {
-  display: flex;
-  flex-direction: column;
-}
-
-.BuyGMXGLP-panel .buy-card:first-child,
-.BuyGMXGLP-panel .section-title-block:first-child {
-  margin-right: 2rem;
-}
-
 .card-title {
   font-size: 3.41rem;
   margin-bottom: 1.5rem;
@@ -165,21 +128,6 @@
   }
   .section-title-block {
     margin-bottom: 1.5rem !important;
-  }
-  .BuyGMXGLP-panel {
-    flex-direction: column;
-  }
-  .BuyGMXGLP-panel .App-card:first-child {
-    margin-right: 0;
-    margin-bottom: 2rem;
-  }
-  .BuyGMXGLP-panel .App-card {
-    max-width: 100%;
-  }
-  .BuyGMXGLP-panel .buy-card:first-child,
-  .BuyGMXGLP-panel .section-title-block:first-child {
-    margin-right: 0;
-    margin-bottom: 2rem;
   }
 }
 

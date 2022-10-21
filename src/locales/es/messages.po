@@ -274,6 +274,14 @@ msgid "Buy GMX from centralized exchanges:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX from centralized services or bonds"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX on Avalanche"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX on {0}"
 msgstr ""
 
@@ -1914,14 +1922,11 @@ msgstr "Guía de Trading"
 msgid "Transaction"
 msgstr "Transacción"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Transfer AVAX"
-msgstr "Transferir AVAX"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transfer Account"
 msgstr "Transferir Cuenta"
 
+#: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Transfer ETH"
 msgstr "Transferir ETH"
@@ -2185,8 +2190,8 @@ msgid "You are earning {nativeTokenSymbol} rewards with {0} tokens.<0/>Tokens: {
 msgstr "Estás ganando {nativeTokenSymbol} recompensas con {0} tokens.<0/>Tokens: {amountStr}."
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "You can buy AVAX directly on <0>Avalanche</0> using Banxa:"
-msgstr "Puedes comprar AVAX directamente en <0>Avalanche</0> usando Banxa:"
+msgid "You can buy AVAX directly on <0>Avalanche</0> using these options:"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "You can buy ETH directly on <0>Arbitrum</0> using these options:"
