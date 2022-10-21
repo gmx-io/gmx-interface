@@ -662,6 +662,10 @@ msgstr "수수료포함 손익 표시"
 msgid "Distribution"
 msgstr "배분"
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Docs"
+msgstr ""
+
 #: src/components/Exchange/PositionShare.js
 msgid "Download"
 msgstr "다운로드"
@@ -892,6 +896,10 @@ msgstr ""
 msgid "GMX Pages"
 msgstr "GMX 페이지"
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "GMX Protocol"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
 msgstr "GMX 채권은 Olympus Pro에서 약간의 베스팅 기간과 함께 할인된 가격으로 구매할 수 있습니다."
@@ -928,6 +936,10 @@ msgstr "추천 코드 생성"
 #: src/pages/Referrals/Referrals.js
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr "GMX 추천 프로그램을 통해 수수료 할인 및 리베이트를 받으세요.<0/>자세한 내용은 <1>추천 프로그램 세부 정보를 참조하세요."
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Governance"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
@@ -2115,6 +2127,10 @@ msgstr "유효한 추천 코드를 사용하여 이 계정으로 트레이드된
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Volume traded by your referred traders."
 msgstr "귀하가 추천한 트레이더들의 거래량"
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Voting"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "WALLET"

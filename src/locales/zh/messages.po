@@ -662,6 +662,10 @@ msgstr ""
 msgid "Distribution"
 msgstr ""
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Docs"
+msgstr ""
+
 #: src/components/Exchange/PositionShare.js
 msgid "Download"
 msgstr ""
@@ -892,6 +896,10 @@ msgstr ""
 msgid "GMX Pages"
 msgstr ""
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "GMX Protocol"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
 msgstr ""
@@ -927,6 +935,10 @@ msgstr ""
 
 #: src/pages/Referrals/Referrals.js
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
+msgstr ""
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Governance"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -2114,6 +2126,10 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Volume traded by your referred traders."
+msgstr ""
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Voting"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js

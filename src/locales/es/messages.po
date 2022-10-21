@@ -662,6 +662,10 @@ msgstr "Mostrar GyP después de comisiones"
 msgid "Distribution"
 msgstr "Distribución"
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Docs"
+msgstr ""
+
 #: src/components/Exchange/PositionShare.js
 msgid "Download"
 msgstr "Descargar"
@@ -892,6 +896,10 @@ msgstr ""
 msgid "GMX Pages"
 msgstr "Páginas GMX"
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "GMX Protocol"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
 msgstr "Los bonos GMX pueden ser comprados en Olympus Pro con un descuento y un pequeño periodo de adquisición:"
@@ -928,6 +936,10 @@ msgstr "Generar Código de Referido"
 #: src/pages/Referrals/Referrals.js
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr "Obtenga descuentos en las comisiones y gane reembolsos a través del programa de referidos de GMX.<0/>Para más información, por favor lea los <1>detalles del programa de referidos</1>."
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Governance"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
@@ -2115,6 +2127,10 @@ msgstr "Volumen negociado por esta cuenta con un código de referido activo."
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Volume traded by your referred traders."
 msgstr "Volumen negociado por sus traders referidos."
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Voting"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "WALLET"
