@@ -1,0 +1,34 @@
+name: Deploy IPFS
+
+on:
+  push:
+    branches: ["master"]
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    environment: deploy
+
+    env:
+      FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
+      FLEEK_SITE_ID: ${{ secrets.FLEEK_SITE_ID }}
+
+      NETIFLY_API_KEY: ${{ secrets.NETIFLY_API_KEY }}
+      NETIFLY_DNS_ZONE_ID: ${{ secrets.NETIFLY_DNS_ZONE_ID }}
+      NETIFLY_DNS_LINK: ${{ secrets.NETIFLY_DNS_LINK }}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: yarn
+
+      - run: yarn
+      - run: yarn deploy
