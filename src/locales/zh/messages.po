@@ -1196,6 +1196,10 @@ msgstr ""
 msgid "Media Kit"
 msgstr ""
 
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Members"
+msgstr ""
+
 #: src/App/App.js
 msgid "MetaMask"
 msgstr ""
@@ -1227,6 +1231,11 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Multiswap"
+msgstr ""
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Name"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -1273,6 +1282,11 @@ msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Open Interest"
+msgstr ""
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Open Positions"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -1364,9 +1378,8 @@ msgstr ""
 msgid "Please switch your network to Arbitrum."
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/pages/Actions/Actions.js
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "PnL"
 msgstr ""
 
@@ -1436,6 +1449,11 @@ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
+msgstr ""
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Rank"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js

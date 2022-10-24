@@ -1196,6 +1196,10 @@ msgstr "{0}のショートの最大値超過"
 msgid "Media Kit"
 msgstr "メディアキット"
 
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Members"
+msgstr ""
+
 #: src/App/App.js
 msgid "MetaMask"
 msgstr "メタマスク"
@@ -1228,6 +1232,11 @@ msgstr "マルチプライヤーポイントのAPR(実質年利)"
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Multiswap"
 msgstr "マルチスワップ"
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Name"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1274,6 +1283,11 @@ msgstr "Olympus Pro"
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "建玉"
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Open Positions"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
@@ -1364,9 +1378,8 @@ msgstr "この機能はアカウント全体の移転にのみ利用してくだ
 msgid "Please switch your network to Arbitrum."
 msgstr "ネットワークをArbitrumに切り替えてください。"
 
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/pages/Actions/Actions.js
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "PnL"
 msgstr "損益"
 
@@ -1437,6 +1450,11 @@ msgstr "GMX購入"
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
 msgstr "保険購入"
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Rank"
+msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js

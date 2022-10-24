@@ -1196,6 +1196,10 @@ msgstr "Superados cortos Máx. de {0}"
 msgid "Media Kit"
 msgstr "Kit de Medios"
 
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Members"
+msgstr ""
+
 #: src/App/App.js
 msgid "MetaMask"
 msgstr "MetaMask"
@@ -1228,6 +1232,11 @@ msgstr "APR de Puntos Multiplicadores"
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Multiswap"
 msgstr "Multi-intercambio"
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Name"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -1274,6 +1283,11 @@ msgstr "Olympus Pro"
 #: src/pages/Home/Home.js
 msgid "Open Interest"
 msgstr "Interés Abierto"
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Open Positions"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
@@ -1364,9 +1378,8 @@ msgstr "Por favor, utilice esto sólo para transferencias de cuentas completas."
 msgid "Please switch your network to Arbitrum."
 msgstr "Por favor, cambie su red a Arbitrum."
 
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/PositionsList.js
-#: src/pages/Actions/Actions.js
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "PnL"
 msgstr "GyP"
 
@@ -1437,6 +1450,11 @@ msgstr "Comprar GMX"
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
 msgstr "Comprar Seguro"
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
+msgid "Rank"
+msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
