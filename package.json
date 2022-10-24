@@ -73,7 +73,8 @@
     "compile": "lingui compile",
     "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",
     "lingui:generate": "NODE_ENV=development lingui extract --overwrite $(git diff --name-only --staged)",
-    "tscheck": "tsc -p tsconfig.json --noEmit"
+    "tscheck": "tsc -p tsconfig.json --noEmit",
+    "deploy": "node ./scripts/deploy.mjs"
   },
   "eslintConfig": {
     "extends": [
@@ -97,9 +98,13 @@
     "@lingui/cli": "^3.13.3",
     "@lingui/loader": "3.14.0",
     "@lingui/macro": "3.13.3",
+    "@pinata/sdk": "1.2.0",
+    "dotenv": "16.0.2",
+    "envalid": "7.3.1",
     "eslint": "7.32.0",
     "husky": "7.0.4",
     "lint-staged": "12.3.4",
+    "node-fetch": "3.2.10",
     "prettier": "2.5.1"
   },
   "lint-staged": {
