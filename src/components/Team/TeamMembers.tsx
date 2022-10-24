@@ -7,6 +7,7 @@ import { useCompetition, useTeamMembersStats } from "domain/leaderboard/graph";
 import { Team } from "domain/leaderboard/types";
 import { shortenAddress } from "lib/legacy";
 import TeamMembersHeader from "./TeamMembersHeader";
+import Pagination from "components/Pagination/Pagination";
 
 type Props = {
   team: Team;
@@ -121,16 +122,7 @@ export function TeamMembers({ onMembersChange, team, pendingTxns, setPendingTxns
           </tbody>
         </table>
       </div>
-      {pageCount() > 1 && (
-        <div className="simple-table-pagination">
-          <button className="default-btn" onClick={() => setPage((p) => p - 1)} disabled={page === 1}>
-            Previous
-          </button>
-          <button className="default-btn" onClick={() => setPage((p) => p + 1)} disabled={page === pageCount()}>
-            Next
-          </button>
-        </div>
-      )}
+      <Pagination page={page} pageCount={pageCount()} onPageChange={(page) => setPage(page)} />
       <div className="Exchange-list small">
         {members.map((member) => (
           <div key={member.address} className="App-card">
