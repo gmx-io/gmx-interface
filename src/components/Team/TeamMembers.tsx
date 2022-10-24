@@ -3,11 +3,12 @@ import { useChainId } from "lib/chains";
 import { useState } from "react";
 import { getCurrentCompetitionIndex } from "domain/leaderboard/constants";
 import { removeMember, useMemberTeam } from "domain/leaderboard/contracts";
-import { useCompetition, useTeamMembersStats } from "domain/leaderboard/graph";
-import { Team } from "domain/leaderboard/types";
 import { shortenAddress } from "lib/legacy";
 import TeamMembersHeader from "./TeamMembersHeader";
 import Pagination from "components/Pagination/Pagination";
+import { useTeamMembersStats } from "domain/leaderboard/useTeamMembers";
+import { useCompetition } from "domain/leaderboard/useCompetition";
+import { Team } from "domain/leaderboard/useTeam";
 
 type Props = {
   team: Team;

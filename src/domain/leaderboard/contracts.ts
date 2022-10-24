@@ -4,9 +4,13 @@ import { callContract } from "lib/contracts";
 import { getContract } from "config/contracts";
 import Competition from "abis/Competition.json";
 import { isAddressZero } from "lib/legacy";
-import { JoinRequest } from "./types";
 import { encodeReferralCode } from "domain/referrals";
 import useSWR from "swr";
+
+type JoinRequest = {
+  leaderAddress: string;
+  account: string;
+};
 
 export async function checkTeamName(chainId, library, name, competitionIndex) {
   if (!chainId || !library) {

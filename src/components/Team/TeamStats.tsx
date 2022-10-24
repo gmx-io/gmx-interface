@@ -1,5 +1,6 @@
+import { Competition } from "domain/leaderboard/useCompetition";
+import { Team } from "domain/leaderboard/useTeam";
 import { formatAmount } from "lib/numbers";
-import { Competition, Team } from "../../domain/leaderboard/types";
 import { USD_DECIMALS } from "../../lib/legacy";
 
 type Props = {

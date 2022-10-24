@@ -1,6 +1,6 @@
+import { Team } from "domain/leaderboard/useTeam";
+import { Position, useTeamPositions } from "domain/leaderboard/useTeamPositions";
 import { useChainId } from "lib/chains";
-import { useTeamPositions } from "domain/leaderboard/graph";
-import { Position, Team } from "domain/leaderboard/types";
 
 type Props = {
   team: Team;

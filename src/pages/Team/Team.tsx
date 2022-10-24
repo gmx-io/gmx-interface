@@ -1,6 +1,5 @@
 import { useWeb3React } from "@web3-react/core";
 import { Link, useParams } from "react-router-dom";
-import { useCompetition, useTeam } from "domain/leaderboard/graph";
 import SEO from "components/Common/SEO";
 import { getPageTitle } from "lib/legacy";
 import Loader from "components/Common/Loader";
@@ -14,6 +13,8 @@ import { getLeaderboardUrl } from "domain/leaderboard/urls";
 import PageNotFound from "../PageNotFound/PageNotFound";
 import { useChainId } from "lib/chains";
 import { getChainIcon } from "config/chains";
+import { useCompetition } from "domain/leaderboard/useCompetition";
+import { useTeam } from "domain/leaderboard/useTeam";
 
 type Props = {
   pendingTxns: any;

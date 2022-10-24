@@ -6,11 +6,13 @@ import { FiPlus, FiSearch } from "react-icons/fi";
 import { Link, useHistory } from "react-router-dom";
 import { useDebounce } from "lib/useDebounce";
 import { useMemberTeam } from "domain/leaderboard/contracts";
-import { useCompetition, useTeam, useTeams } from "domain/leaderboard/graph";
 import { getTeamRegistrationUrl, getTeamUrl } from "domain/leaderboard/urls";
 import "./Leaderboard.css";
 import { formatAmount } from "lib/numbers";
 import Pagination from "components/Pagination/Pagination";
+import useTeamLeaderboard from "domain/leaderboard/useTeamLeaderboard";
+import { useCompetition } from "domain/leaderboard/useCompetition";
+import { useTeam } from "domain/leaderboard/useTeam";
 
 export function TeamLeaderboard({ competitionIndex }) {
   const history = useHistory();
@@ -20,7 +22,7 @@ export function TeamLeaderboard({ competitionIndex }) {
   const debouncedSearch = useDebounce(search, 300);
   const [page, setPage] = useState(1);
   const perPage = 1;
-  const { data: teams, loading: teamsLoading } = useTeams(chainId, competitionIndex);
+  const { data: teams, loading: teamsLoading } = useTeamLeaderboard(chainId, competitionIndex);
   const { data: competition, loading: competitionLoading } = useCompetition(chainId, competitionIndex);
   const { exists: isLeader, loading: teamLoading } = useTeam(chainId, library, competitionIndex, account);
   const {

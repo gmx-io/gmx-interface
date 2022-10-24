@@ -1,4 +1,3 @@
-import { Competition, Team } from "domain/leaderboard/types";
 import "./TeamMembersHeader.css";
 import { shortenAddress } from "lib/legacy";
 import { getTeamUrl } from "domain/leaderboard/urls";
@@ -24,6 +23,8 @@ import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
+import { Team } from "domain/leaderboard/useTeam";
+import { Competition } from "domain/leaderboard/useCompetition";
 
 type Inviteprops = {
   team: Team;

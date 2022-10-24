@@ -6,10 +6,11 @@ import TeamCreationForm from "components/Team/TeamCreationForm";
 import { getCurrentCompetitionIndex } from "domain/leaderboard/constants";
 import { Link, useHistory } from "react-router-dom";
 import { getLeaderboardUrl, getTeamUrl } from "domain/leaderboard/urls";
-import { useCompetition, useTeam } from "domain/leaderboard/graph";
 import { FiChevronLeft } from "react-icons/fi";
 import { useChainId } from "lib/chains";
 import { getChainIcon } from "config/chains";
+import { useCompetition } from "domain/leaderboard/useCompetition";
+import { useTeam } from "domain/leaderboard/useTeam";
 
 type Props = {
   connectWallet: any;

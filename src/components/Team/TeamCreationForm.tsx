@@ -2,10 +2,10 @@ import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { checkTeamName, createTeam } from "domain/leaderboard/contracts";
-import { Competition } from "domain/leaderboard/types";
 import { getTeamUrl } from "domain/leaderboard/urls";
 import "./TeamCreationForm.css";
 import { useDebounce } from "lib/useDebounce";
+import { Competition } from "domain/leaderboard/useCompetition";
 
 type Props = {
   competition: Competition;

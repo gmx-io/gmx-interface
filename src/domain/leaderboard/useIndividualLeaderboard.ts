@@ -3,7 +3,7 @@ import { useState } from "react";
 import useSWR from "swr";
 // import { getGraphClient } from "./graph";
 
-type Stat = {
+export type Stat = {
   rank: number;
   account: string;
   realizedPnl: string;

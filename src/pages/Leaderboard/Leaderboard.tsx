@@ -4,7 +4,6 @@ import Tab from "components/Tab/Tab";
 import { IndividualLeaderboard } from "components/Leaderboard/IndividualLeaderboard";
 import { useLocalStorage } from "react-use";
 import { getCurrentCompetitionIndex, LEADERBOARD_SELECTED_TAB_KEY } from "domain/leaderboard/constants";
-import { useCompetition } from "domain/leaderboard/graph";
 import Loader from "components/Common/Loader";
 import { TeamLeaderboard } from "components/Leaderboard/TeamLeaderboard";
 import { Trans } from "@lingui/macro";
@@ -12,6 +11,7 @@ import { useChainId } from "lib/chains";
 import { getChainIcon } from "config/chains";
 
 import "./Leaderboard.css";
+import { useCompetition } from "domain/leaderboard/useCompetition";
 
 export default function Leaderboard() {
   const { chainId } = useChainId();
