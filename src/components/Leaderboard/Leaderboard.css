@@ -12,10 +12,3 @@
 .leaderboard-search-input {
   padding-right: 3rem !important;
 }
-
-.leaderboard-table-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-}

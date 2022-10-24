@@ -10,6 +10,7 @@ import { useCompetition, useTeam, useTeams } from "domain/leaderboard/graph";
 import { getTeamRegistrationUrl, getTeamUrl } from "domain/leaderboard/urls";
 import "./Leaderboard.css";
 import { formatAmount } from "lib/numbers";
+import Pagination from "components/Pagination/Pagination";
 
 export function TeamLeaderboard({ competitionIndex }) {
   const history = useHistory();
@@ -18,7 +19,7 @@ export function TeamLeaderboard({ competitionIndex }) {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
   const [page, setPage] = useState(1);
-  const perPage = 10;
+  const perPage = 1;
   const { data: teams, loading: teamsLoading } = useTeams(chainId, competitionIndex);
   const { data: competition, loading: competitionLoading } = useCompetition(chainId, competitionIndex);
   const { exists: isLeader, loading: teamLoading } = useTeam(chainId, library, competitionIndex, account);
@@ -155,16 +156,7 @@ export function TeamLeaderboard({ competitionIndex }) {
           </div>
         ))}
       </div>
-      {pageCount() > 1 && (
-        <div className="leaderboard-table-pagination">
-          <button className="transparent-btn" onClick={() => setPage((p) => p - 1)} disabled={page <= 1}>
-            Previous
-          </button>
-          <button className="transparent-btn" onClick={() => setPage((p) => p + 1)} disabled={page >= pageCount()}>
-            Next
-          </button>
-        </div>
-      )}
+      <Pagination page={page} pageCount={pageCount()} onPageChange={(page) => setPage(page)} />
     </div>
   );
 }
