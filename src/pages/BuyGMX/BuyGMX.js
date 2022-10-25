@@ -1,9 +1,7 @@
 import React, { useCallback } from "react";
 import Footer from "components/Footer/Footer";
 import "./BuyGMX.css";
-import { SwapWidget, darkTheme } from "@uniswap/widgets";
 import { useWeb3React } from "@web3-react/core";
-import { getProvider } from "lib/rpc";
 
 import { Trans, t } from "@lingui/macro";
 import Button from "components/Common/Button";
@@ -26,8 +24,10 @@ import Bybit from "img/bybit.svg";
 import Ftx from "img/ftx.svg";
 import avax30Icon from "img/ic_avax_30.svg";
 import gmxAvax from "img/ic_gmx_avax.svg";
+import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
 import ohmArbitrum from "img/ic_olympus_arbitrum.svg";
 import Kucoin from "img/kucoin.svg";
+import { getNativeToken } from "config/tokens";
 
 const CENTRALISED_EXCHANGES = [
   {
@@ -62,68 +62,18 @@ const CENTRALISED_EXCHANGES = [
   },
 ];
 
-const uniswapWidgetTheme = {
-  ...darkTheme,
-  fontFamily: "Relative, sans-serif",
-  borderRadius: 0.4,
-  container: "#20253f",
-  interactive: "#20253f",
-  module: "#16182e",
-  accent: "#2d42fc",
-  error: "#fa3c58",
-};
-
-const TOKEN_LIST = [
-  {
-    name: "GMX",
-    address: "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
-    symbol: "GMX",
-    decimals: 18,
-    chainId: 42161,
-    logoURI:
-      "https://github.com/trustwallet/assets/blob/master/blockchains/arbitrum/assets/0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a/logo.png?raw=true",
-  },
-  {
-    name: "Dai Stablecoin",
-    address: "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1",
-    symbol: "DAI",
-    decimals: 18,
-    chainId: 42161,
-    logoURI:
-      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png",
-  },
-  {
-    name: "Tether USD",
-    address: "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9",
-    symbol: "USDT",
-    decimals: 6,
-    chainId: 42161,
-    logoURI:
-      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
-  },
-  {
-    name: "USD Coin",
-    address: "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
-    symbol: "USDC",
-    decimals: 6,
-    chainId: 42161,
-    logoURI:
-      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-  },
-];
-
-const GMX_ADDRESS = "0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a";
-
 export default function BuyGMX() {
   const { chainId } = useChainId();
   const isArbitrum = chainId === ARBITRUM;
-  const { active, library } = useWeb3React();
-  const { provider } = getProvider(library, chainId);
-  const links = {
+  const { active } = useWeb3React();
+  const { symbol: nativeTokenSymbol } = getNativeToken(chainId);
+  const EXCHANGE_LINKS = {
     getBungeeUrl: () =>
       `https://multitx.bungee.exchange/?toChainId=${chainId}&toTokenAddress=${getContract(chainId, "GMX")}`,
     getBanxaUrl: () =>
-      `https://gmx.banxa.com?coinType=ETH&fiatType=USD&fiatAmount=500&blockchain=${getChainName(chainId)}`,
+      `https://gmx.banxa.com?coinType=${nativeTokenSymbol}&fiatType=USD&fiatAmount=500&blockchain=${getChainName(
+        chainId
+      )}`,
     getO3Url: () => "https://o3swap.com/",
   };
 
@@ -157,7 +107,17 @@ export default function BuyGMX() {
         </div>
         <div className="cards-row">
           {isArbitrum ? (
-            <UniswapWidget provider={provider} />
+            <Card title={t`Buy GMX on Arbitrum`}>
+              <div className="direct-purchase-options">
+                <Button
+                  size="xl"
+                  imgSrc={gmxArbitrum}
+                  href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a"
+                >
+                  <Trans>Purchase GMX</Trans>
+                </Button>
+              </div>
+            </Card>
           ) : (
             <Card title={t`Buy GMX on Avalanche`}>
               <div className="direct-purchase-options">
@@ -188,13 +148,13 @@ export default function BuyGMX() {
                 <Trans>Buy GMX using any token from any network:</Trans>
               </div>
               <div className="buttons-group">
-                <Button href={links.getBungeeUrl()} align="left" imgSrc={Bungee}>
+                <Button href={EXCHANGE_LINKS.getBungeeUrl()} align="left" imgSrc={Bungee}>
                   Bungee
                 </Button>
-                <Button href={links.getBanxaUrl()} align="left" imgSrc={Banxa}>
+                <Button href={EXCHANGE_LINKS.getBanxaUrl()} align="left" imgSrc={Banxa}>
                   Banxa
                 </Button>
-                <Button href={links.getO3Url()} align="left" imgSrc={O3}>
+                <Button href={EXCHANGE_LINKS.getO3Url()} align="left" imgSrc={O3}>
                   O3
                 </Button>
               </div>
@@ -202,7 +162,7 @@ export default function BuyGMX() {
                 <Trans>Buy GMX using FIAT gateways:</Trans>
               </div>
               <div className="buttons-group">
-                <Button href={links.getBanxaUrl()} align="left" imgSrc={Banxa}>
+                <Button href={EXCHANGE_LINKS.getBanxaUrl()} align="left" imgSrc={Banxa}>
                   Banxa
                 </Button>
               </div>
@@ -263,13 +223,13 @@ export default function BuyGMX() {
                   </Trans>
                 </div>
                 <div className="buttons-group">
-                  <Button href={links.getBungeeUrl()} imgSrc={Bungee}>
+                  <Button href={EXCHANGE_LINKS.getBungeeUrl()} imgSrc={Bungee}>
                     Bungee
                   </Button>
-                  <Button href={links.getBanxaUrl()} imgSrc={Banxa}>
+                  <Button href={EXCHANGE_LINKS.getBanxaUrl()} imgSrc={Banxa}>
                     Banxa
                   </Button>
-                  <Button href={links.getO3Url()} imgSrc={O3}>
+                  <Button href={EXCHANGE_LINKS.getO3Url()} imgSrc={O3}>
                     O3
                   </Button>
                   <Button href="https://ftx.com/trade/ETH/USD" align="left" imgSrc={Ftx}>
@@ -301,10 +261,10 @@ export default function BuyGMX() {
                   >
                     Hop
                   </Button>
-                  <Button href={links.getBungeeUrl()} align="left" imgSrc={Bungee}>
+                  <Button href={EXCHANGE_LINKS.getBungeeUrl()} align="left" imgSrc={Bungee}>
                     Bungee
                   </Button>
-                  <Button href={links.getO3Url()} align="left" imgSrc={O3}>
+                  <Button href={EXCHANGE_LINKS.getO3Url()} align="left" imgSrc={O3}>
                     O3
                   </Button>
                   <Button href="https://ftx.com/trade/ETH/USD" align="left" imgSrc={Ftx}>
@@ -333,13 +293,13 @@ export default function BuyGMX() {
                   </Trans>
                 </div>
                 <div className="buttons-group">
-                  <Button href={links.getBungeeUrl()} imgSrc={Bungee}>
+                  <Button href={EXCHANGE_LINKS.getBungeeUrl()} imgSrc={Bungee}>
                     Bungee
                   </Button>
-                  <Button href={links.getBanxaUrl()} imgSrc={Banxa}>
+                  <Button href={EXCHANGE_LINKS.getBanxaUrl()} imgSrc={Banxa}>
                     Banxa
                   </Button>
-                  <Button href={links.getO3Url()} imgSrc={O3}>
+                  <Button href={EXCHANGE_LINKS.getO3Url()} imgSrc={O3}>
                     O3
                   </Button>
                   <Button href="https://ftx.com/trade/AVAX/USD" align="left" imgSrc={Ftx}>
@@ -371,10 +331,10 @@ export default function BuyGMX() {
                   <Button align="left" href="https://www.binance.com/en/trade/AVAX_USDT" imgSrc={Binance}>
                     Binance
                   </Button>
-                  <Button href={links.getBungeeUrl()} align="left" imgSrc={Bungee}>
+                  <Button href={EXCHANGE_LINKS.getBungeeUrl()} align="left" imgSrc={Bungee}>
                     Bungee
                   </Button>
-                  <Button href={links.getO3Url()} align="left" imgSrc={O3}>
+                  <Button href={EXCHANGE_LINKS.getO3Url()} align="left" imgSrc={O3}>
                     O3
                   </Button>
                 </div>
@@ -385,31 +345,5 @@ export default function BuyGMX() {
       </div>
       <Footer />
     </div>
-  );
-}
-
-function UniswapWidget({ provider }) {
-  return (
-    <Card title="Buy GMX on Uniswap Arbitrum">
-      <div>
-        <p className="card-description">
-          <Trans>
-            If you already have ETH on Arbitrum, you can directly purchase GMX on Uniswap. Set your network to Arbitrum
-            and use the widget below:
-          </Trans>
-        </p>
-        <div className="Uniswap">
-          <SwapWidget
-            tokenList={TOKEN_LIST}
-            width="100%"
-            theme={uniswapWidgetTheme}
-            defaultChainId={ARBITRUM}
-            defaultInputTokenAddress="NATIVE"
-            defaultOutputTokenAddress={{ [ARBITRUM]: GMX_ADDRESS }}
-            provider={provider}
-          />
-        </div>
-      </div>
-    </Card>
   );
 }
