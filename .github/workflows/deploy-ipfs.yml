@@ -18,9 +18,9 @@ jobs:
       FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
       FLEEK_SITE_ID: ${{ secrets.FLEEK_SITE_ID }}
 
-      NETIFLY_API_KEY: ${{ secrets.NETIFLY_API_KEY }}
-      NETIFLY_DNS_ZONE_ID: ${{ secrets.NETIFLY_DNS_ZONE_ID }}
-      NETIFLY_DNS_LINK: ${{ secrets.NETIFLY_DNS_LINK }}
+      NETLIFY_API_KEY: ${{ secrets.NETLIFY_API_KEY }}
+      NETLIFY_DNS_ZONE_ID: ${{ secrets.NETLIFY_DNS_ZONE_ID }}
+      NETLIFY_DNS_LINK: ${{ secrets.NETLIFY_DNS_LINK }}
 
     steps:
       - uses: actions/checkout@v3
