@@ -3,7 +3,7 @@ import pinataSDK from "@pinata/sdk";
 import fetch from "node-fetch";
 import envalid, { str } from "envalid";
 
-const NETIFLY_API_URL = "https://api.netlify.com/api/v1";
+const NETLIFY_API_URL = "https://api.netlify.com/api/v1";
 
 // For local testing
 dotenv.config({ path: ".env.deploy" });
@@ -13,9 +13,9 @@ const env = envalid.cleanEnv(process.env, {
   PINATA_API_SECRET: str(),
   PINATA_PIN_ALIAS: str(),
 
-  NETIFLY_API_KEY: str(),
-  NETIFLY_DNS_ZONE_ID: str(),
-  NETIFLY_DNS_LINK: str(),
+  NETLIFY_API_KEY: str(),
+  NETLIFY_DNS_ZONE_ID: str(),
+  NETLIFY_DNS_LINK: str(),
 });
 
 main();
@@ -25,7 +25,7 @@ async function main() {
 
   await waitForCloudflareIpfs(cid);
 
-  await updateDnslinkNetifly(cid);
+  await updateDnslinkNetlify(cid);
 
   process.exit(0);
 }
@@ -92,7 +92,7 @@ async function uploadToPinata(path) {
   return pinResult.IpfsHash;
 }
 
-async function updateDnslinkNetifly(cid) {
+async function updateDnslinkNetlify(cid) {
   if (!cid) {
     throw new Error("No CID provided");
   }
@@ -102,10 +102,10 @@ async function updateDnslinkNetifly(cid) {
   console.log(`Updating dnslink to ${dnslink}`);
 
   console.log("Retrieving an old dnslink record");
-  const records = await requestNetifly(`/dns_zones/${env.NETIFLY_DNS_ZONE_ID}/dns_records`);
+  const records = await requestNetlify(`/dns_zones/${env.NETLIFY_DNS_ZONE_ID}/dns_records`);
 
   const oldDnsLinkRecord = (records || []).find(
-    (record) => record.type === "TXT" && record.hostname === env.NETIFLY_DNS_LINK
+    (record) => record.type === "TXT" && record.hostname === env.NETLIFY_DNS_LINK
   );
 
   if (oldDnsLinkRecord) {
@@ -118,11 +118,11 @@ async function updateDnslinkNetifly(cid) {
   }
 
   console.log("Create a new DNS record");
-  const newRecord = await requestNetifly(`/dns_zones/${env.NETIFLY_DNS_ZONE_ID}/dns_records`, {
+  const newRecord = await requestNetlify(`/dns_zones/${env.NETLIFY_DNS_ZONE_ID}/dns_records`, {
     method: "POST",
     body: JSON.stringify({
       type: "TXT",
-      hostname: env.NETIFLY_DNS_LINK,
+      hostname: env.NETLIFY_DNS_LINK,
       value: dnslink,
       ttl: 300,
     }),
@@ -132,7 +132,7 @@ async function updateDnslinkNetifly(cid) {
 
   if (oldDnsLinkRecord) {
     console.log("Delete the old dnslink record");
-    await requestNetifly(`/dns_zones/${env.NETIFLY_DNS_ZONE_ID}/dns_records/${oldDnsLinkRecord.id}`, {
+    await requestNetlify(`/dns_zones/${env.NETLIFY_DNS_ZONE_ID}/dns_records/${oldDnsLinkRecord.id}`, {
       method: "DELETE",
     });
 
@@ -172,10 +172,10 @@ async function waitForCloudflareIpfs(cid) {
   }
 }
 
-async function requestNetifly(path, opts) {
-  const res = await fetch(`${NETIFLY_API_URL}${path}`, {
+async function requestNetlify(path, opts) {
+  const res = await fetch(`${NETLIFY_API_URL}${path}`, {
     headers: {
-      Authorization: `Bearer ${env.NETIFLY_API_KEY}`,
+      Authorization: `Bearer ${env.NETLIFY_API_KEY}`,
       "Content-Type": "application/json",
     },
     ...opts,
@@ -184,7 +184,7 @@ async function requestNetifly(path, opts) {
   if (res.ok) {
     return res.json().catch(() => null);
   } else {
-    throw new Error(`Netifly error: ${await res.text()}`);
+    throw new Error(`Netlify error: ${await res.text()}`);
   }
 }
 
