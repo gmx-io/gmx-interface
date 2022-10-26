@@ -118,6 +118,7 @@ const Zoom = cssTransition({
 const arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
 
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
+avaxWsProvider.pollingInterval = 2000;
 
 function getWsProvider(active, chainId) {
   if (!active) {
