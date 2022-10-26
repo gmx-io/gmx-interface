@@ -1233,7 +1233,7 @@ msgstr "Multiplier Points APR"
 msgid "Multiswap"
 msgstr "Multiswap"
 
-#: src/components/Leaderboard/TeamLeaderboard.tsx
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
 msgid "Name"
 msgstr "Name"
 
@@ -1283,7 +1283,7 @@ msgstr "Olympus Pro"
 msgid "Open Interest"
 msgstr "Open Interest"
 
-#: src/components/Leaderboard/TeamLeaderboard.tsx
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
 msgid "Open Positions"
 msgstr "Open Positions"
 
@@ -1376,7 +1376,7 @@ msgstr "Please only use this for full account transfers."
 msgid "Please switch your network to Arbitrum."
 msgstr "Please switch your network to Arbitrum."
 
-#: src/components/Leaderboard/TeamLeaderboard.tsx
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
 msgid "PnL"
 msgstr "PnL"
 
@@ -1448,7 +1448,7 @@ msgstr "Purchase GMX"
 msgid "Purchase Insurance"
 msgstr "Purchase Insurance"
 
-#: src/components/Leaderboard/TeamLeaderboard.tsx
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
 msgid "Rank"
 msgstr "Rank"
 
