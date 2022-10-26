@@ -102,7 +102,7 @@ export function IndividualLeaderboard() {
             <div className="App-card-content">
               <div className="App-card-row">
                 <div className="label">PnL</div>
-                <div>{stat.realizedPnl}</div>
+                <div>{formatAmount(stat.realizedPnl, USD_DECIMALS, 0, true)}</div>
               </div>
             </div>
           </div>
