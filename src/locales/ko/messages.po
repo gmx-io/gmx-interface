@@ -1029,7 +1029,7 @@ msgstr "유효하지 않은 슬리피지 값"
 msgid "Launch Exchange"
 msgstr "트레이드 시작하기"
 
-#: src/components/Exchange/SwapBox.js
+#: src/pages/Leaderboard/Leaderboard.tsx
 msgid "Leaderboard"
 msgstr "리더보드"
 
@@ -1233,7 +1233,6 @@ msgstr "멀티플라이어 포인트 APR"
 msgid "Multiswap"
 msgstr "멀티스왑"
 
-#: src/components/Leaderboard/IndividualLeaderboard.tsx
 #: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "Name"
 msgstr ""
@@ -1284,7 +1283,6 @@ msgstr "Olympus Pro"
 msgid "Open Interest"
 msgstr "미결제 약정"
 
-#: src/components/Leaderboard/IndividualLeaderboard.tsx
 #: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "Open Positions"
 msgstr ""
@@ -1378,7 +1376,6 @@ msgstr "계정 전체 전송에만 사용해주세요."
 msgid "Please switch your network to Arbitrum."
 msgstr "네트워크를 Arbitrum으로 변경해주세요."
 
-#: src/components/Leaderboard/IndividualLeaderboard.tsx
 #: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "PnL"
 msgstr "손익"
@@ -1451,7 +1448,6 @@ msgstr "GMX 구입"
 msgid "Purchase Insurance"
 msgstr "보험 구입"
 
-#: src/components/Leaderboard/IndividualLeaderboard.tsx
 #: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "Rank"
 msgstr ""

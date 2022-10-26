@@ -1029,7 +1029,7 @@ msgstr "Valor de deslizamiento no válido"
 msgid "Launch Exchange"
 msgstr "Lanzar Exchange"
 
-#: src/components/Exchange/SwapBox.js
+#: src/pages/Leaderboard/Leaderboard.tsx
 msgid "Leaderboard"
 msgstr "Tabla de clasificación"
 
@@ -1233,7 +1233,6 @@ msgstr "APR de Puntos Multiplicadores"
 msgid "Multiswap"
 msgstr "Multi-intercambio"
 
-#: src/components/Leaderboard/IndividualLeaderboard.tsx
 #: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "Name"
 msgstr ""
@@ -1284,7 +1283,6 @@ msgstr "Olympus Pro"
 msgid "Open Interest"
 msgstr "Interés Abierto"
 
-#: src/components/Leaderboard/IndividualLeaderboard.tsx
 #: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "Open Positions"
 msgstr ""
@@ -1378,7 +1376,6 @@ msgstr "Por favor, utilice esto sólo para transferencias de cuentas completas."
 msgid "Please switch your network to Arbitrum."
 msgstr "Por favor, cambie su red a Arbitrum."
 
-#: src/components/Leaderboard/IndividualLeaderboard.tsx
 #: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "PnL"
 msgstr "GyP"
@@ -1451,7 +1448,6 @@ msgstr "Comprar GMX"
 msgid "Purchase Insurance"
 msgstr "Comprar Seguro"
 
-#: src/components/Leaderboard/IndividualLeaderboard.tsx
 #: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "Rank"
 msgstr ""
