@@ -31,11 +31,7 @@
   display: flex;
 }
 
-.pagination-btn.secondary {
-  border: 1px solid var(--dark-blue-border);
-  border-radius: var(--border-radius-sm);
-  padding-right: 1.5rem;
-  padding-left: 1.5rem;
+.pagination-button-secondary {
   margin: 0 .5rem;
 }
 
