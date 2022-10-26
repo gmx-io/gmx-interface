@@ -26,16 +26,11 @@ code {
 * {
   box-sizing: border-box;
   font-family: "Relative", sans-serif;
-  letter-spacing: 0.5px;
-  /* font-variant-numeric: tabular-nums; */
+  letter-spacing: 0.05rem;
 }
 
 input {
   font-family: "RelativeNumber";
-}
-
-::-webkit-scrollbar {
-  /* width: 10px; */
 }
 
 /* Track */
@@ -70,6 +65,14 @@ input {
 
 a {
   color: white;
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: white;
+  opacity: 0.9;
+  text-decoration: underline;
 }
 
 .Card-title {

@@ -78,7 +78,7 @@
   justify-content: center;
 }
 .active-referral-code .tier span {
-  font-size: 1.3175rem;
+  font-size: 1.4rem;
   color: #a9a9b0;
   margin-right: 0.775rem;
 }
@@ -178,7 +178,7 @@
   align-items: center;
 }
 .info-card .label {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   line-height: 2.1rem;
   font-weight: normal;
   letter-spacing: 0px;
@@ -187,7 +187,7 @@
   text-align: center;
 }
 .info-card .data {
-  font-size: 2.325rem;
+  font-size: 2.4rem;
   font-weight: normal;
   text-align: center;
   padding: 0;

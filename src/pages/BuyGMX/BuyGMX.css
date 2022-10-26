@@ -41,11 +41,6 @@
   color: #a9a9b0;
 }
 
-.BuyGMXGLP-description a {
-  text-decoration: none;
-  position: relative;
-}
-
 .bridge-options {
   display: grid;
   grid-gap: 0.8rem;

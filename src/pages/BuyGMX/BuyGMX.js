@@ -93,22 +93,20 @@ export default function BuyGMX() {
                 <div className="bridge-options">
                   <Button
                     href="https://synapseprotocol.com/?inputCurrency=ETH&outputCurrency=ETH&outputChain=42161"
-                    align="left"
                     imgSrc={Synapse}
                   >
                     <Trans>Synapse</Trans>
                   </Button>
-                  <Button href="https://app.multichain.org/#/router" align="left" imgSrc={Multiswap}>
+                  <Button href="https://app.multichain.org/#/router" imgSrc={Multiswap}>
                     <Trans>Multiswap</Trans>
                   </Button>
                   <Button
                     href="https://app.hop.exchange/send?token=ETH&sourceNetwork=ethereum&destNetwork=arbitrum"
-                    align="left"
                     imgSrc={Hop}
                   >
                     <Trans>Hop</Trans>
                   </Button>
-                  <Button href="https://binance.com/" align="left" imgSrc={Binance}>
+                  <Button href="https://binance.com/" imgSrc={Binance}>
                     <Trans>Binance</Trans>
                   </Button>
                 </div>
@@ -176,16 +174,16 @@ export default function BuyGMX() {
                   </Trans>
                 </div>
                 <div className="bridge-options">
-                  <Button align="left" href="https://bridge.avax.network/" imgSrc={avax30Icon}>
+                  <Button href="https://bridge.avax.network/" imgSrc={avax30Icon}>
                     <Trans>Avalanche</Trans>
                   </Button>
-                  <Button align="left" href="https://synapseprotocol.com/" imgSrc={Synapse}>
+                  <Button href="https://synapseprotocol.com/" imgSrc={Synapse}>
                     <Trans>Synapse</Trans>
                   </Button>
-                  <Button align="left" href="https://app.multichain.org/" imgSrc={Multiswap}>
+                  <Button href="https://app.multichain.org/" imgSrc={Multiswap}>
                     <Trans>Multiswap</Trans>
                   </Button>
-                  <Button align="left" href="https://binance.com" imgSrc={Binance}>
+                  <Button href="https://binance.com" imgSrc={Binance}>
                     <Trans>Binance</Trans>
                   </Button>
                 </div>

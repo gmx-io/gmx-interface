@@ -505,6 +505,11 @@ button.App-connect-wallet:hover {
   color: inherit;
 }
 
+.Page-description span:hover {
+  color: #fff;
+  opacity: 0.9;
+}
+
 .Page-description span img,
 .Page-description a img {
   margin-left: 0.4rem;
@@ -550,7 +555,7 @@ button.App-connect-wallet:hover {
 }
 
 .App-card-title-small {
-  font-size: 1.7rem;
+  font-size: 1.6rem;
   margin-bottom: 1.5rem;
 }
 

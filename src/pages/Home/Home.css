@@ -68,7 +68,7 @@
 }
 
 .Home-benefit-title {
-  font-size: 2.2rem;
+  font-size: 2.4rem;
   line-height: 2.8rem;
   font-weight: normal;
   margin-left: 1.5rem;
@@ -239,8 +239,8 @@
   display: flex;
   align-items: center;
   font-weight: 500;
-  font-size: 2.325rem;
-  line-height: 3.1rem;
+  font-size: 2.4rem;
+  line-height: 1.2;
   letter-spacing: 0px;
   color: #ffffff;
   height: 3.1rem;

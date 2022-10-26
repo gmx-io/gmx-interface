@@ -1,7 +1,7 @@
 .Tab.block {
   display: grid;
   grid-auto-flow: column;
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   border-radius: 3px;
   overflow: hidden;
   color: rgba(255, 255, 255, 0.7);
@@ -43,7 +43,7 @@
   cursor: pointer;
   display: inline-block;
   margin-right: 1.5rem;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
 }
 
 .Tab.inline .Tab-option:hover {

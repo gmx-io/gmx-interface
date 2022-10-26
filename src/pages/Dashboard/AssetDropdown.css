@@ -30,6 +30,7 @@
   color: #a0a3c4;
   text-decoration: none;
   padding: 0.85rem 0.8rem;
+  font-size: 1.4rem;
 }
 .asset-item:hover {
   background: var(--dark-blue-hover);

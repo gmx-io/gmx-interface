@@ -4,7 +4,7 @@
 }
 
 .chart-token-selector--current {
-  font-size: 2.15rem;
+  font-size: 2.1rem;
   font-weight: 700;
   margin-right: 1rem;
   color: white;
@@ -18,7 +18,7 @@
 }
 
 .chart-token-menu-items .menu-item {
-    font-size: 1.4rem;
-    height: 3.4rem;
-    color: #a0a3c4;
+  font-size: 1.4rem;
+  height: 3.4rem;
+  color: #a0a3c4;
 }
