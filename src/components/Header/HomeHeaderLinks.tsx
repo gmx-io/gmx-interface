@@ -47,7 +47,7 @@ export function HomeHeaderLinks({ small, clickCloseIcon }: Props) {
         </div>
       )}
       {HOME_MENUS.map(({ link, label }) => (
-        <div className="App-header-link-container">
+        <div key={label} className="App-header-link-container">
           <ExternalLink href={link}>{label}</ExternalLink>
         </div>
       ))}
