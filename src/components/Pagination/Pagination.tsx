@@ -26,6 +26,7 @@ export default function Pagination({ page, pageCount, onPageChange }: Props) {
 
       buttons.push(
         <button
+          key={currentPage}
           className={"pagination-btn" + (currentPage === page ? " active" : "")}
           onClick={() => onPageChange(currentPage)}
         >
@@ -42,6 +43,10 @@ export default function Pagination({ page, pageCount, onPageChange }: Props) {
 
     return buttons;
   };
+
+  if (pageCount <= 1) {
+    return <></>;
+  }
 
   return (
     <div className="pagination">

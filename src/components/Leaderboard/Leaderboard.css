@@ -10,5 +10,11 @@
 }
 
 .leaderboard-search-input {
+  padding: .8rem;
   padding-right: 3rem !important;
+  border-radius: var(--border-radius-sm);
+}
+
+.leaderboard-search-input:hover {
+  background: var(--dark-blue-hover);
 }
