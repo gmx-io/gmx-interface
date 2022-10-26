@@ -1747,18 +1747,29 @@ msgstr "Loading..."
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
+#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Long"
 msgstr "Long"
@@ -2415,6 +2426,14 @@ msgstr "Price below Mark Price"
 msgid "Price conditions are met"
 msgstr "Price conditions are met"
 
+#: src/components/Exchange/OrderEditor.js
+msgid "Price is above Mark Price"
+msgstr "Price is above Mark Price"
+
+#: src/components/Exchange/OrderEditor.js
+msgid "Price is below Mark Price"
+msgstr "Price is below Mark Price"
+
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Price on Arbitrum"
@@ -2730,18 +2749,29 @@ msgstr "Share Position"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
+#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Short"
 msgstr "Short"
@@ -3118,8 +3148,8 @@ msgid "This is the network cost required to execute the postion. <0>More Info</0
 msgstr "This is the network cost required to execute the postion. <0>More Info</0>"
 
 #: src/components/Exchange/PositionEditor.js
-msgid "This is the network cost required to execute the {isDeposit, select, true {deposit} false {withdrawal}}. <0>More Info</0>"
-msgstr "This is the network cost required to execute the {isDeposit, select, true {deposit} false {withdrawal}}. <0>More Info</0>"
+msgid "This is the network cost required to execute the {depositOrWithdrawalText}.<0/><1/><2>More Info</2>"
+msgstr "This is the network cost required to execute the {depositOrWithdrawalText}.<0/><1/><2>More Info</2>"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
@@ -3823,6 +3853,10 @@ msgstr "account"
 msgid "collateral"
 msgstr "collateral"
 
+#: src/components/Exchange/PositionEditor.js
+msgid "deposit"
+msgstr "deposit"
+
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "fee"
 msgstr "fee"
@@ -3855,18 +3889,13 @@ msgstr "time to liq"
 msgid "view"
 msgstr "view"
 
-#: src/pages/Exchange/Exchange.js
-msgid "{0, plural, one {Cancel # order} other {Cancel # orders}}"
-msgstr "{0, plural, one {Cancel # order} other {Cancel # orders}}"
-
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/TradeHistory.js
-#: src/components/Exchange/TradeHistory.js
-msgid "{0, select, true {Long} false {Short}}"
-msgstr "{0, select, true {Long} false {Short}}"
+msgid "withdrawal"
+msgstr "withdrawal"
+
+#: src/pages/Exchange/Exchange.js
+msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
+msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 
 #: src/components/Exchange/PositionsList.js
 msgid "{0, select, true {Long} false {Short}} {1} market selected"
@@ -4006,11 +4035,6 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 
-#: src/components/Exchange/SwapBox.js
-#: src/pages/Exchange/Exchange.js
-msgid "{isLong, select, true {Long} false {Short}}"
-msgstr "{isLong, select, true {Long} false {Short}}"
-
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
@@ -4026,10 +4050,6 @@ msgstr "{title} on Arbitrum:"
 #: src/components/StatsTooltip/StatsTooltip.tsx
 msgid "{title} on Avalanche:"
 msgstr "{title} on Avalanche:"
-
-#: src/components/Exchange/OrderEditor.js
-msgid "{triggerRatioInverted, select, true {Price is below Mark Price} false {Price is above Mark Price}}"
-msgstr "{triggerRatioInverted, select, true {Price is below Mark Price} false {Price is above Mark Price}}"
 
 #: src/pages/Dashboard/DashboardV1.js
 msgid "{volumeLabel} Volume"

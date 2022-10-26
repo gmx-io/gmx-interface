@@ -1541,7 +1541,7 @@ export default function SwapBox(props) {
     const contract = new ethers.Contract(contractAddress, PositionRouter.abi, library.getSigner());
     const indexToken = getTokenInfo(infoTokens, indexTokenAddress);
     const tokenSymbol = indexToken.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexToken.symbol;
-    const longOrShortText = select(isLong, { true: "Long", false: "Short" });
+    const longOrShortText = isLong ? t`Long` : t`Short`;
     const successMsg = t`Requested increase of ${tokenSymbol} ${longOrShortText} by ${formatAmount(
       toUsdMax,
       USD_DECIMALS,

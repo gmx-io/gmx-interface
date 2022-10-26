@@ -29,7 +29,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { SLIPPAGE_BPS_KEY } from "config/localStorage";
 import { expandDecimals, formatAmount, formatAmountFree } from "lib/numbers";
 import { getNativeToken, getToken, getWrappedToken } from "config/tokens";
-import { Plural, select, t, Trans } from "@lingui/macro";
+import { Plural, t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const HIGH_SPREAD_THRESHOLD = expandDecimals(1, USD_DECIMALS).div(100); // 1%;
@@ -318,7 +318,7 @@ export default function ConfirmationBox(props) {
       4,
       true
     );
-    const longOrShortText = select(existingOrder.isLong, { true: "Long", false: "Short" });
+    const longOrShortText = existingOrder.isLong ? t`Long` : t`Short`;
     if (existingOrders?.length > 1) {
       return (
         <div>

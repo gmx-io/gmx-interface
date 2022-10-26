@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback, forwardRef, useImperativeHandle } from "react";
-import { Trans, t, select, Plural } from "@lingui/macro";
+import { Trans, t, Plural } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { ethers } from "ethers";
@@ -550,13 +550,6 @@ export const Exchange = forwardRef((props, ref) => {
     updatedPositions
   );
 
-  function getLongOrShortText(isLong) {
-    return select(isLong, {
-      true: "Long",
-      false: "Short",
-    });
-  }
-
   useImperativeHandle(ref, () => ({
     onUpdatePosition(key, size, collateral, averagePrice, entryFundingRate, reserveAmount, realisedPnl) {
       for (let i = 0; i < positions.length; i++) {
@@ -602,7 +595,7 @@ export const Exchange = forwardRef((props, ref) => {
 
       const indexTokenItem = getToken(chainId, indexToken);
       const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
-      const longOrShortText = getLongOrShortText(isLong);
+      const longOrShortText = isLong ? t`Long` : t`Short`;
       let message;
       if (sizeDelta.eq(0)) {
         message = t`Deposited ${formatAmount(
@@ -630,7 +623,7 @@ export const Exchange = forwardRef((props, ref) => {
 
       const indexTokenItem = getToken(chainId, indexToken);
       const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
-      const longOrShortText = getLongOrShortText(isLong);
+      const longOrShortText = isLong ? t`Long` : t`Short`;
 
       let message;
       if (sizeDelta.eq(0)) {
@@ -671,7 +664,7 @@ export const Exchange = forwardRef((props, ref) => {
       }
       const indexTokenItem = getToken(chainId, indexToken);
       const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
-      const longOrShortText = getLongOrShortText(isLong);
+      const longOrShortText = isLong ? t`Long` : t`Short`;
 
       const message = t`Could not increase ${tokenSymbol} ${longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`;
       pushErrorNotification(chainId, message, e);
@@ -701,7 +694,7 @@ export const Exchange = forwardRef((props, ref) => {
       }
       const indexTokenItem = getToken(chainId, indexToken);
       const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
-      const longOrShortText = getLongOrShortText(isLong);
+      const longOrShortText = isLong ? t`Long` : t`Short`;
 
       const message = t`Could not decrease ${tokenSymbol} ${longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`;
 
@@ -816,7 +809,7 @@ export const Exchange = forwardRef((props, ref) => {
         type="button"
         onClick={onMultipleCancelClick}
       >
-        <Plural value={cancelOrderIdList.length} one="Cancel # order" other="Cancel # orders" />
+        <Plural value={cancelOrderIdList.length} one="Cancel order" other="Cancel # orders" />
       </button>
     );
   };

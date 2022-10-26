@@ -14,7 +14,7 @@ import { usePrevious } from "lib/usePrevious";
 import { formatAmount, numberWithCommas } from "lib/numbers";
 import { getToken, getTokens } from "config/tokens";
 import { formatDateTime } from "lib/dates";
-import { select, t, Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -295,7 +295,7 @@ export default function ExchangeTVChart(props) {
       if (positions && positions.length > 0) {
         const color = "#3a3e5e";
         positions.forEach((position) => {
-          const longOrShortText = select(position.isLong, { true: "Long", false: "Short" });
+          const longOrShortText = position.isLong ? t`Long` : t`Short`;
           lines.push(
             currentSeries.createPriceLine({
               price: parseFloat(formatAmount(position.averagePrice, USD_DECIMALS, 2)),

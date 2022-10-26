@@ -22,7 +22,7 @@ import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { getTokenInfo } from "domain/tokens/utils";
 import { bigNumberify, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { useChainId } from "lib/chains";
-import { select, t, Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 
 export default function OrderEditor(props) {
   const {
@@ -196,7 +196,7 @@ export default function OrderEditor(props) {
     if (order.type === SWAP) {
       const currentRate = getExchangeRate(fromTokenInfo, toTokenInfo);
       if (currentRate && !currentRate.gte(triggerRatio)) {
-        return select(triggerRatioInverted, { true: "Price is below Mark Price", false: "Price is above Mark Price" });
+        return triggerRatioInverted ? t`Price is below Mark Price` : t`Price is above Mark Price`;
       }
     }
   };

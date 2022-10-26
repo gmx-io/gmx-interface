@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { ethers } from "ethers";
 import cx from "classnames";
-import { Trans, t, select } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { BsArrowRight } from "react-icons/bs";
 
 import {
@@ -149,7 +149,7 @@ export default function PositionSeller(props) {
   const positionRouterAddress = getContract(chainId, "PositionRouter");
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const toTokens = getTokens(chainId);
-  const longOrShortText = select(position?.isLong, { true: "Long", false: "Short" });
+  const longOrShortText = position?.isLong ? t`Long` : t`Short`;
 
   const [savedRecieveTokenAddress, setSavedRecieveTokenAddress] = useLocalStorageByChainId(
     chainId,

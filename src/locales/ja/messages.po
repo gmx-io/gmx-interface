@@ -1744,18 +1744,29 @@ msgstr "ロード中"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
+#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Long"
 msgstr "ロング"
@@ -2412,6 +2423,14 @@ msgstr "マーク価格を下回る価格"
 msgid "Price conditions are met"
 msgstr ""
 
+#: src/components/Exchange/OrderEditor.js
+msgid "Price is above Mark Price"
+msgstr ""
+
+#: src/components/Exchange/OrderEditor.js
+msgid "Price is below Mark Price"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Price on Arbitrum"
@@ -2727,18 +2746,29 @@ msgstr "ポジションをシェア"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/Actions/Actions.js
 #: src/pages/Actions/Actions.js
+#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.js
+#: src/pages/Exchange/Exchange.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Short"
 msgstr "ショート"
@@ -3115,7 +3145,7 @@ msgid "This is the network cost required to execute the postion. <0>More Info</0
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
-msgid "This is the network cost required to execute the {isDeposit, select, true {deposit} false {withdrawal}}. <0>More Info</0>"
+msgid "This is the network cost required to execute the {depositOrWithdrawalText}.<0/><1/><2>More Info</2>"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -3820,6 +3850,10 @@ msgstr ""
 msgid "collateral"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "deposit"
+msgstr ""
+
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "fee"
 msgstr ""
@@ -3852,17 +3886,12 @@ msgstr ""
 msgid "view"
 msgstr ""
 
-#: src/pages/Exchange/Exchange.js
-msgid "{0, plural, one {Cancel # order} other {Cancel # orders}}"
+#: src/components/Exchange/PositionEditor.js
+msgid "withdrawal"
 msgstr ""
 
-#: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ExchangeTVChart.js
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/TradeHistory.js
-#: src/components/Exchange/TradeHistory.js
-msgid "{0, select, true {Long} false {Short}}"
+#: src/pages/Exchange/Exchange.js
+msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -3994,11 +4023,6 @@ msgstr ""
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
-#: src/pages/Exchange/Exchange.js
-msgid "{isLong, select, true {Long} false {Short}}"
-msgstr ""
-
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR(実質年利)"
@@ -4013,10 +4037,6 @@ msgstr ""
 
 #: src/components/StatsTooltip/StatsTooltip.tsx
 msgid "{title} on Avalanche:"
-msgstr ""
-
-#: src/components/Exchange/OrderEditor.js
-msgid "{triggerRatioInverted, select, true {Price is below Mark Price} false {Price is above Mark Price}}"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV1.js

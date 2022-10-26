@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useSWR from "swr";
-import { Trans, t, select, Select } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
 
@@ -62,7 +62,7 @@ export default function PositionEditor(props) {
   const [isApproving, setIsApproving] = useState(false);
   const [isSwapping, setIsSwapping] = useState(false);
   const prevIsVisible = usePrevious(isVisible);
-  const longOrShortText = select(position?.isLong, { true: "Long", false: "Short" });
+  const longOrShortText = position?.isLong ? t`Long` : t`Short`;
 
   const routerAddress = getContract(chainId, "Router");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -579,6 +579,7 @@ export default function PositionEditor(props) {
                         handle={`${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol}`}
                         position="right-top"
                         renderContent={() => {
+                          const depositOrWithdrawalText = isDeposit ? t`deposit` : t`withdrawal`;
                           return (
                             <>
                               <StatsTooltipRow
@@ -592,8 +593,9 @@ export default function PositionEditor(props) {
                               />
                               <br />
                               <Trans>
-                                This is the network cost required to execute the{" "}
-                                <Select value={isDeposit} true="deposit" false="withdrawal" />.{" "}
+                                This is the network cost required to execute the {depositOrWithdrawalText}.
+                                <br />
+                                <br />
                                 <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#execution-fee">
                                   More Info
                                 </ExternalLink>

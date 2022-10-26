@@ -139,7 +139,7 @@ export default function TradeHistory(props) {
     (trade) => {
       const tradeData = trade.data;
       const params = JSON.parse(tradeData.params);
-      const longOrShortText = select(params?.isLong, { true: "Long", false: "Short" });
+      const longOrShortText = params?.isLong ? t`Long` : t`Short`;
       const defaultMsg = "";
 
       if (tradeData.action === "BuyUSDG") {
@@ -372,7 +372,7 @@ export default function TradeHistory(props) {
         if (!indexToken) {
           return defaultMsg;
         }
-        const longShortDisplay = select(order.isLong, { true: "Long", false: "Short" });
+        const longShortDisplay = order.isLong ? t`Long` : t`Short`;
         const executionPriceDisplay = formatAmount(order.executionPrice, USD_DECIMALS, 2, true);
         const sizeDeltaDisplay = `${order.type === "Increase" ? "+" : "-"}${formatAmount(
           order.sizeDelta,
