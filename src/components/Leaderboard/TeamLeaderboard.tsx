@@ -124,7 +124,7 @@ export function TeamLeaderboard({ competitionIndex }) {
               <td>-$1,425 (-5.8%)</td>
               <td>{team.positions.length}</td>
               <td>{team.members.length}</td>
-              <td>
+              <td className="text-right">
                 <button className="Exchange-list-action" onClick={() => history.push(getTeamUrl(team.address))}>
                   Details
                 </button>

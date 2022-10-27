@@ -433,3 +433,11 @@ button.btn-link:hover .logout-icon {
 .items-center {
   align-items: center;
 }
+
+.text-right {
+  text-align: right !important;
+}
+
+.text-center {
+  text-align: center !important;
+}

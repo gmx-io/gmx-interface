@@ -62,7 +62,10 @@ export function IndividualLeaderboard() {
             <th>
               <Trans>PnL</Trans>
             </th>
-            <th>
+            <th className="text-center">
+              <Trans>Win / Loss</Trans>
+            </th>
+            <th className="text-right">
               <Trans>Open Positions</Trans>
             </th>
           </tr>
@@ -81,7 +84,10 @@ export function IndividualLeaderboard() {
               <td>#{stat.rank}</td>
               <td>{shortenAddress(stat.account, 12)}</td>
               <td>{formatAmount(stat.realizedPnl, USD_DECIMALS, 0, true)}</td>
-              <td>{stat.openPositions}</td>
+              <td className="text-center">
+                {stat.winCount} / {stat.lossCount}
+              </td>
+              <td className="text-right">{stat.openPositions}</td>
             </tr>
           ))}
         </tbody>

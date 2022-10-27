@@ -8,6 +8,8 @@ export type Stat = {
   account: string;
   realizedPnl: string;
   openPositions: number;
+  winCount: number;
+  lossCount: number;
 };
 
 export default function useIndividualLeaderboard(chainId, period) {
@@ -48,10 +50,12 @@ export default function useIndividualLeaderboard(chainId, period) {
     //   }
     // }
 
-    const dummyStat = {
+    const dummyStat: any = {
       account: { address: "0x0000000000000000000000000000000000000000" },
       realizedPnl: "1000000000000000000000000000000000",
       positions: [{ id: 1 }, { id: 2 }, { id: 3 }],
+      winCount: Math.round(Math.random() * 100),
+      lossCount: Math.round(Math.random() * 100),
     };
 
     const stats: any = [];
@@ -71,6 +75,8 @@ export default function useIndividualLeaderboard(chainId, period) {
         account: stat.account.address,
         realizedPnl: stat.realizedPnl,
         openPositions: stat.positions.length,
+        winCount: stat.winCount,
+        lossCount: stat.lossCount,
       });
     }
 

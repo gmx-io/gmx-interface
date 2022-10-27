@@ -30,7 +30,7 @@ export default function TeamPositions({ team }: Props) {
             <th>Type</th>
             <th>Order</th>
             <th>Price</th>
-            <th>Mark Price</th>
+            <th className="text-right">Mark Price</th>
           </tr>
           {loading ? (
             <tr>

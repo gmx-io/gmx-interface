@@ -94,7 +94,7 @@ export function TeamMembers({ onMembersChange, team, pendingTxns, setPendingTxns
             <tr className="Exchange-list-header">
               <th>Team Rank</th>
               <th>Address</th>
-              <th>PnL</th>
+              <th className="text-right">PnL</th>
             </tr>
             {loading && (
               <tr>
@@ -106,9 +106,9 @@ export function TeamMembers({ onMembersChange, team, pendingTxns, setPendingTxns
                 <tr key={member.address}>
                   <td>#1</td>
                   <td>{member.address}</td>
-                  <td>{member.pnl}</td>
-                  <td>
-                    {isTeamLeader() && member.address !== team.leaderAddress && competition.registrationActive && (
+                  <td className="text-right">{member.pnl}</td>
+                  {isTeamLeader() && member.address !== team.leaderAddress && competition.registrationActive && (
+                    <td>
                       <button
                         className="Exchange-list-action"
                         disabled={isRemoving}
@@ -116,8 +116,8 @@ export function TeamMembers({ onMembersChange, team, pendingTxns, setPendingTxns
                       >
                         Remove
                       </button>
-                    )}
-                  </td>
+                    </td>
+                  )}
                 </tr>
               ))}
           </tbody>
