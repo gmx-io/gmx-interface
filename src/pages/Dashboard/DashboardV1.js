@@ -12,6 +12,8 @@ import YieldToken from "abis/YieldToken.json";
 
 import "./Dashboard.css";
 
+import { t, Trans } from "@lingui/macro";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import metamaskImg from "img/metamask.png";
 import coingeckoImg from "img/coingecko.png";
 import bscscanImg from "img/bscscan.png";
@@ -401,7 +403,7 @@ export default function DashboardV1() {
 
   const addToken = async (token) => {
     if (!window.ethereum) {
-      helperToast.error("Could not add token to MetaMask");
+      helperToast.error(t`Could not add token to MetaMask`);
       return;
     }
 
@@ -420,7 +422,7 @@ export default function DashboardV1() {
         },
       });
     } catch (error) {
-      helperToast.error("Could not add token to MetaMask");
+      helperToast.error(t`Could not add token to MetaMask`);
     }
   };
 
@@ -430,20 +432,26 @@ export default function DashboardV1() {
         <div className="Dashboard-title-primary App-hero-primary">
           ${formatAmount(tokenStats.aum, USD_DECIMALS, 0, true)}
         </div>
-        <div className="Dashboard-title-secondary">Assets Under Management</div>
+        <div className="Dashboard-title-secondary">
+          <Trans>Assets Under Management</Trans>
+        </div>
       </div>
       {feeText && (
         <div className="Dashboard-fee-info">
-          Total fees earned since {formatDate(feeHistory[0].to)}: {formatAmount(totalFeesUsd, USD_DECIMALS, 2, true)}{" "}
-          USD
-          <br />
-          Fee assets: {feeText}
+          <Trans>
+            Total fees earned since {formatDate(feeHistory[0].to)}: {formatAmount(totalFeesUsd, USD_DECIMALS, 2, true)}{" "}
+            USD
+            <br />
+            Fee assets: {feeText}
+          </Trans>
         </div>
       )}
       <div className="Dashboard-note">
-        Long positions: {formatAmount(totalLongPositionSizes, USD_DECIMALS, 2, true)} USD, Short positions:{" "}
-        {formatAmount(totalShortPositionSizes, USD_DECIMALS, 2, true)} USD,&nbsp;
-        {volumeLabel} volume: {formatAmount(volumeInfo.totalVolume, USD_DECIMALS, 2, true)} USD
+        <Trans>
+          Long positions: {formatAmount(totalLongPositionSizes, USD_DECIMALS, 2, true)} USD, Short positions:{" "}
+          {formatAmount(totalShortPositionSizes, USD_DECIMALS, 2, true)} USD,&nbsp;
+          {volumeLabel} volume: {formatAmount(volumeInfo.totalVolume, USD_DECIMALS, 2, true)} USD
+        </Trans>
       </div>
       <div className="Dashboard-token-list-container">
         <div className="Dashboard-token-list Dashboard-list">
@@ -465,29 +473,31 @@ export default function DashboardV1() {
                     })
                   }
                 />
-                <a href="https://www.coingecko.com/en/coins/usd-gambit" target="_blank" rel="noopener noreferrer">
+                <ExternalLink href="https://www.coingecko.com/en/coins/usd-gambit">
                   <img src={coingeckoImg} alt="CoinGecko" />
-                </a>
-                <a
-                  href="https://bscscan.com/token/0x85E76cbf4893c1fbcB34dCF1239A91CE2A4CF5a7"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                </ExternalLink>
+                <ExternalLink href="https://bscscan.com/token/0x85E76cbf4893c1fbcB34dCF1239A91CE2A4CF5a7">
                   <img src={bscscanImg} alt="BscScan" />
-                </a>
+                </ExternalLink>
               </div>
             </div>
             <div className="Dashboard-token-card-bottom App-card-content">
               <div className="Dashboard-token-info App-card-row">
-                <div className="label">Supply</div>
+                <div className="label">
+                  <Trans>Supply</Trans>
+                </div>
                 <div>{formatAmount(usdgSupply, 18, 0, true)} USDG</div>
               </div>
               <div className="App-card-row">
-                <div className="label">Price</div>
+                <div className="label">
+                  <Trans>Price</Trans>
+                </div>
                 <div>1.00 USD</div>
               </div>
               <div className="App-card-row">
-                <div className="label">Market Cap</div>
+                <div className="label">
+                  <Trans>Market Cap</Trans>
+                </div>
                 <div>{formatAmount(usdgSupply, 18, 0, true)} USD</div>
               </div>
             </div>
@@ -510,29 +520,31 @@ export default function DashboardV1() {
                     })
                   }
                 />
-                <a href="https://www.coingecko.com/en/coins/gambit" target="_blank" rel="noopener noreferrer">
+                <ExternalLink href="https://www.coingecko.com/en/coins/gambit">
                   <img src={coingeckoImg} alt="CoinGecko" />
-                </a>
-                <a
-                  href="https://bscscan.com/token/0x99e92123eB77Bc8f999316f622e5222498438784"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                </ExternalLink>
+                <ExternalLink href="https://bscscan.com/token/0x99e92123eB77Bc8f999316f622e5222498438784">
                   <img src={bscscanImg} alt="BscScan" />
-                </a>
+                </ExternalLink>
               </div>
             </div>
             <div className="Dashboard-token-card-bottom App-card-content">
               <div className="Dashboard-token-info App-card-row">
-                <div className="label">Supply</div>
+                <div className="label">
+                  <Trans>Supply</Trans>
+                </div>
                 <div>{formatAmount(gmtSupply, 18, 0, true)} GMT</div>
               </div>
               <div className="App-card-row">
-                <div className="label">Price</div>
+                <div className="label">
+                  <Trans>Price</Trans>
+                </div>
                 <div>{formatAmount(gmtPrice, USD_DECIMALS, 2, true)} USD</div>
               </div>
               <div className="App-card-row">
-                <div className="label">Market Cap</div>
+                <div className="label">
+                  <Trans>Market Cap</Trans>
+                </div>
                 <div>{formatAmount(gmtMarketCap, USD_DECIMALS, 0, true)} USD</div>
               </div>
             </div>
@@ -556,29 +568,31 @@ export default function DashboardV1() {
                     })
                   }
                 />
-                <a href="https://www.coingecko.com/en/coins/xgambit" target="_blank" rel="noopener noreferrer">
+                <ExternalLink href="https://www.coingecko.com/en/coins/xgambit">
                   <img src={coingeckoImg} alt="CoinGecko" />
-                </a>
-                <a
-                  href="https://bscscan.com/token/0xe304ff0983922787Fd84BC9170CD21bF78B16B10"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                </ExternalLink>
+                <ExternalLink href="https://bscscan.com/token/0xe304ff0983922787Fd84BC9170CD21bF78B16B10">
                   <img src={bscscanImg} alt="BscScan" />
-                </a>
+                </ExternalLink>
               </div>
             </div>
             <div className="Dashboard-token-card-bottom App-card-content">
               <div className="Dashboard-token-info App-card-row">
-                <div className="label">Supply</div>
+                <div className="label">
+                  <Trans>Supply</Trans>
+                </div>
                 <div>{formatAmount(xgmtSupply, 18, 0, true)} xGMT</div>
               </div>
               <div className="App-card-row">
-                <div className="label">Price</div>
+                <div className="label">
+                  <Trans>Price</Trans>
+                </div>
                 <div>{formatAmount(xgmtPrice, USD_DECIMALS, 2, true)} USD</div>
               </div>
               <div className="App-card-row">
-                <div className="label">Market Cap</div>
+                <div className="label">
+                  <Trans>Market Cap</Trans>
+                </div>
                 <div>{formatAmount(xgmtMarketCap, USD_DECIMALS, 0, true)} USD</div>
               </div>
             </div>
@@ -590,17 +604,19 @@ export default function DashboardV1() {
                   <div className="Dashboard-token-title-text">{token.symbol}</div>
                   <div className="Dashboard-token-title-options">
                     <img src={metamaskImg} alt="MetaMask" onClick={() => addToken(token)} />
-                    <a href={token.info.coingeckoUrl} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink href={token.info.coingeckoUrl}>
                       <img src={coingeckoImg} alt="CoinGecko" />
-                    </a>
-                    <a href={getTokenUrl(chainId, token.address)} target="_blank" rel="noopener noreferrer">
+                    </ExternalLink>
+                    <ExternalLink href={getTokenUrl(chainId, token.address)}>
                       <img src={bscscanImg} alt="BscScan" />
-                    </a>
+                    </ExternalLink>
                   </div>
                 </div>
                 <div className="Dashboard-token-card-bottom App-card-content">
                   <div className="Dashboard-token-info App-card-row">
-                    <div className="label">Pool</div>
+                    <div className="label">
+                      <Trans>Pool</Trans>
+                    </div>
                     <div>
                       {formatAmount(token.managedAmount, token.decimals, 0, true)} {token.symbol} ($
                       {formatAmount(token.managedUsd, USD_DECIMALS, 0, true)})
@@ -608,16 +624,22 @@ export default function DashboardV1() {
                   </div>
                   {showUsdgAmount && (
                     <div className="Dashboard-token-info App-card-row">
-                      <div className="label">USDG Debt</div>
+                      <div className="label">
+                        <Trans>USDG Debt</Trans>
+                      </div>
                       <div>{formatAmount(token.usdgAmount, 18, 0, true)} USD</div>
                     </div>
                   )}
                   <div className="App-card-row">
-                    <div className="label">{volumeLabel} Volume</div>
+                    <div className="label">
+                      <Trans>{volumeLabel} Volume</Trans>
+                    </div>
                     <div>{formatAmount(volumeInfo[token.address] || bigNumberify(0), USD_DECIMALS, 2, true)} USD</div>
                   </div>
                   <div className="App-card-row">
-                    <div className="label">Utilization</div>
+                    <div className="label">
+                      <Trans>Utilization</Trans>
+                    </div>
                     <div>{formatAmount(token.utilization, 2, 2, true)}%</div>
                   </div>
                 </div>
@@ -631,7 +653,9 @@ export default function DashboardV1() {
             <div className="Dashboard-volumes-header App-hero-primary">
               ${formatAmount(totalVolumeSum, USD_DECIMALS, 0, true)}
             </div>
-            <div className="Dashboard-title-secondary">Total Volume Since 28 April 2021</div>
+            <div className="Dashboard-title-secondary">
+              <Trans>Total Volume Since 28 April 2021</Trans>
+            </div>
           </div>
           <div className="Dashboard-volume-list Dashboard-list">
             {dailyVolumes.map((volume, index) => (
@@ -639,7 +663,9 @@ export default function DashboardV1() {
                 <div className={cx("Dashboard-token-title", "App-card-title")}>{formatDate(volume.timestamp)}</div>
                 <div className="Dashboard-token-card-bottom App-card-content">
                   <div className="Dashboard-token-info App-card-row">
-                    <div className="label">Volume</div>
+                    <div className="label">
+                      <Trans>Volume</Trans>
+                    </div>
                     <div>{formatAmount(volume.volume, USD_DECIMALS, 2, true)} USD</div>
                   </div>
                 </div>
@@ -654,7 +680,9 @@ export default function DashboardV1() {
           <div className="Dashboard-fees-header App-hero-primary">
             ${numberWithCommas(totalFeesDistributed.toFixed(0))}
           </div>
-          <div className="Dashboard-title-secondary">Total Fees Distributed</div>
+          <div className="Dashboard-title-secondary">
+            <Trans>Total Fees Distributed</Trans>
+          </div>
         </div>
         <div className="Dashboard-list Dashboard-fees-list">
           {feeHistory.map((feeItem, index) => (
@@ -664,7 +692,9 @@ export default function DashboardV1() {
               </div>
               <div className="Dashboard-token-card-bottom App-card-content">
                 <div className="Dashboard-token-info App-card-row">
-                  <div className="label">Fees</div>
+                  <div className="label">
+                    <Trans>Fees</Trans>
+                  </div>
                   <div>{numberWithCommas(parseFloat(feeItem.feeUsd))} USD</div>
                 </div>
               </div>

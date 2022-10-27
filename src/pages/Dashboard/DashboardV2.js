@@ -39,6 +39,7 @@ import arbitrum24Icon from "img/ic_arbitrum_24.svg";
 import avalanche24Icon from "img/ic_avalanche_24.svg";
 
 import AssetDropdown from "./AssetDropdown";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import SEO from "components/Common/SEO";
 import useTotalVolume from "domain/useTotalVolume";
 import StatsTooltip from "components/StatsTooltip/StatsTooltip";
@@ -395,9 +396,9 @@ export default function DashboardV2() {
               )}
               <br />
               <div>
-                <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
+                <ExternalLink href="https://gmxio.gitbook.io/gmx/glp">
                   <Trans>More Info</Trans>
-                </a>
+                </ExternalLink>
               </div>
             </>
           );
@@ -422,23 +423,23 @@ export default function DashboardV2() {
 
   let gmxDistributionData = [
     {
-      name: "staked",
+      name: t`staked`,
       value: stakedPercent,
       color: "#4353fa",
     },
     {
-      name: "in liquidity",
+      name: t`in liquidity`,
       value: liquidityPercent,
       color: "#0598fa",
     },
     {
-      name: "not staked",
+      name: t`not staked`,
       value: notStakedPercent,
       color: "#5c0af5",
     },
   ];
 
-  const totalStatsStartDate = chainId === AVALANCHE ? "06 Jan 2022" : "01 Sep 2021";
+  const totalStatsStartDate = chainId === AVALANCHE ? t`06 Jan 2022` : t`01 Sep 2021`;
 
   let stableGlp = 0;
   let totalGlp = 0;
@@ -523,15 +524,9 @@ export default function DashboardV2() {
               <Trans>
                 {chainName} Total Stats start from {totalStatsStartDate}.<br /> For detailed stats:
               </Trans>{" "}
-              {chainId === ARBITRUM && (
-                <a href="https://stats.gmx.io" target="_blank" rel="noopener noreferrer">
-                  https://stats.gmx.io
-                </a>
-              )}
+              {chainId === ARBITRUM && <ExternalLink href="https://stats.gmx.io">https://stats.gmx.io</ExternalLink>}
               {chainId === AVALANCHE && (
-                <a href="https://stats.gmx.io/avalanche" target="_blank" rel="noopener noreferrer">
-                  https://stats.gmx.io/avalanche
-                </a>
+                <ExternalLink href="https://stats.gmx.io/avalanche">https://stats.gmx.io/avalanche</ExternalLink>
               )}
               .
             </div>
@@ -546,7 +541,9 @@ export default function DashboardV2() {
               <div className="App-card-divider"></div>
               <div className="App-card-content">
                 <div className="App-card-row">
-                  <div className="label">AUM</div>
+                  <div className="label">
+                    <Trans>AUM</Trans>
+                  </div>
                   <div>
                     <TooltipComponent
                       handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
@@ -558,7 +555,9 @@ export default function DashboardV2() {
                   </div>
                 </div>
                 <div className="App-card-row">
-                  <div className="label">GLP Pool</div>
+                  <div className="label">
+                    <Trans>GLP Pool</Trans>
+                  </div>
                   <div>
                     <TooltipComponent
                       handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
@@ -719,7 +718,7 @@ export default function DashboardV2() {
           </div>
           <div className="Tab-title-section">
             <div className="Page-title">
-              Tokens {chainId === AVALANCHE && <img src={avalanche24Icon} alt="avalanche24Icon" />}
+              <Trans>Tokens</Trans> {chainId === AVALANCHE && <img src={avalanche24Icon} alt="avalanche24Icon" />}
               {chainId === ARBITRUM && <img src={arbitrum24Icon} alt="arbitrum24Icon" />}
             </div>
             <div className="Page-description">
@@ -733,7 +732,7 @@ export default function DashboardV2() {
                   <div className="App-card-title">
                     <div className="App-card-title-mark">
                       <div className="App-card-title-mark-icon">
-                        <img src={gmx40Icon} alt="gmx40Icon" />
+                        <img src={gmx40Icon} alt="GMX Token Icon" />
                       </div>
                       <div className="App-card-title-mark-info">
                         <div className="App-card-title-mark-title">GMX</div>
@@ -747,7 +746,9 @@ export default function DashboardV2() {
                   <div className="App-card-divider"></div>
                   <div className="App-card-content">
                     <div className="App-card-row">
-                      <div className="label">Price</div>
+                      <div className="label">
+                        <Trans>Price</Trans>
+                      </div>
                       <div>
                         {!gmxPrice && "..."}
                         {gmxPrice && (
@@ -758,12 +759,12 @@ export default function DashboardV2() {
                             renderContent={() => (
                               <>
                                 <StatsTooltipRow
-                                  label="Price on Arbitrum"
+                                  label={t`Price on Arbitrum`}
                                   value={formatAmount(gmxPriceFromArbitrum, USD_DECIMALS, 2, true)}
                                   showDollar={true}
                                 />
                                 <StatsTooltipRow
-                                  label="Price on Avalanche"
+                                  label={t`Price on Avalanche`}
                                   value={formatAmount(gmxPriceFromAvalanche, USD_DECIMALS, 2, true)}
                                   showDollar={true}
                                 />
@@ -858,9 +859,9 @@ export default function DashboardV2() {
                       <div className="App-card-title-mark-icon">
                         <img src={glp40Icon} alt="glp40Icon" />
                         {chainId === ARBITRUM ? (
-                          <img src={arbitrum16Icon} alt="arbitrum16Icon" className="selected-network-symbol" />
+                          <img src={arbitrum16Icon} alt={t`Arbitrum Icon`} className="selected-network-symbol" />
                         ) : (
-                          <img src={avalanche16Icon} alt="avalanche16Icon" className="selected-network-symbol" />
+                          <img src={avalanche16Icon} alt={t`Avalanche Icon`} className="selected-network-symbol" />
                         )}
                       </div>
                       <div className="App-card-title-mark-info">
@@ -952,8 +953,8 @@ export default function DashboardV2() {
             <div className="token-table-wrapper App-card">
               <div className="App-card-title">
                 <Trans>GLP Index Composition</Trans>{" "}
-                {chainId === AVALANCHE && <img src={avalanche16Icon} alt="avalanche16Icon" />}
-                {chainId === ARBITRUM && <img src={arbitrum16Icon} alt="arbitrum16Icon" />}
+                {chainId === AVALANCHE && <img src={avalanche16Icon} alt={t`Avalanche Icon`} />}
+                {chainId === ARBITRUM && <img src={arbitrum16Icon} alt={t`Arbitrum Icon`} />}
               </div>
               <div className="App-card-divider"></div>
               <table className="token-table">
@@ -1016,21 +1017,21 @@ export default function DashboardV2() {
                               return (
                                 <>
                                   <StatsTooltipRow
-                                    label="Pool Amount"
+                                    label={t`Pool Amount`}
                                     value={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${
                                       token.symbol
                                     }`}
                                     showDollar={false}
                                   />
                                   <StatsTooltipRow
-                                    label="Target Min Amount"
+                                    label={t`Target Min Amount`}
                                     value={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 0, true)} ${
                                       token.symbol
                                     }`}
                                     showDollar={false}
                                   />
                                   <StatsTooltipRow
-                                    label={`Max ${tokenInfo.symbol} Capacity`}
+                                    label={t`Max ${tokenInfo.symbol} Capacity`}
                                     value={formatAmount(maxUsdgAmount, 18, 0, true)}
                                     showDollar={true}
                                   />
@@ -1074,11 +1075,15 @@ export default function DashboardV2() {
                     <div className="App-card-divider"></div>
                     <div className="App-card-content">
                       <div className="App-card-row">
-                        <div className="label">Price</div>
+                        <div className="label">
+                          <Trans>Price</Trans>
+                        </div>
                         <div>${formatKeyAmount(tokenInfo, "minPrice", USD_DECIMALS, 2, true)}</div>
                       </div>
                       <div className="App-card-row">
-                        <div className="label">Pool</div>
+                        <div className="label">
+                          <Trans>Pool</Trans>
+                        </div>
                         <div>
                           <TooltipComponent
                             handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
@@ -1087,21 +1092,21 @@ export default function DashboardV2() {
                               return (
                                 <>
                                   <StatsTooltipRow
-                                    label="Pool Amount"
+                                    label={t`Pool Amount`}
                                     value={`${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${
                                       token.symbol
                                     }`}
                                     showDollar={false}
                                   />
                                   <StatsTooltipRow
-                                    label="Target Min Amount"
+                                    label={t`Target Min Amount`}
                                     value={`${formatKeyAmount(tokenInfo, "bufferAmount", token.decimals, 0, true)} ${
                                       token.symbol
                                     }`}
                                     showDollar={false}
                                   />
                                   <StatsTooltipRow
-                                    label={`Max ${tokenInfo.symbol} Capacity`}
+                                    label={t`Max ${tokenInfo.symbol} Capacity`}
                                     value={formatAmount(maxUsdgAmount, 18, 0, true)}
                                   />
                                 </>
@@ -1111,11 +1116,15 @@ export default function DashboardV2() {
                         </div>
                       </div>
                       <div className="App-card-row">
-                        <div className="label">Weight</div>
+                        <div className="label">
+                          <Trans>Weight</Trans>
+                        </div>
                         <div>{getWeightText(tokenInfo)}</div>
                       </div>
                       <div className="App-card-row">
-                        <div className="label">Utilization</div>
+                        <div className="label">
+                          <Trans>Utilization</Trans>
+                        </div>
                         <div>{formatAmount(utilization, 2, 2, false)}%</div>
                       </div>
                     </div>

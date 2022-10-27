@@ -19,6 +19,7 @@ import {
 } from "lib/legacy";
 
 import "./OrdersOverview.css";
+import { t, Trans } from "@lingui/macro";
 import { getTokenInfo } from "domain/tokens/utils";
 import { useInfoTokens } from "domain/tokens";
 import { formatAmount } from "lib/numbers";
@@ -73,36 +74,66 @@ export default function OrdersOverview() {
     <div className="Orders-overview">
       {stats && (
         <p className="Orders-overview-stats">
-          Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}
+          <Trans>
+            Total active: {openTotal}, executed: {executedTotal}, cancelled: {cancelledTotal}
+          </Trans>
           <br />
-          Increase active: {stats.openIncrease}, executed: {stats.executedIncrease}, cancelled:{" "}
-          {stats.cancelledIncrease}
+          <Trans>
+            Increase active: {stats.openIncrease}, executed: {stats.executedIncrease}, cancelled:{" "}
+            {stats.cancelledIncrease}
+          </Trans>
           <br />
-          Decrease active: {stats.openDecrease}, executed: {stats.executedDecrease}, cancelled:{" "}
-          {stats.cancelledDecrease}
+          <Trans>
+            Decrease active: {stats.openDecrease}, executed: {stats.executedDecrease}, cancelled:{" "}
+            {stats.cancelledDecrease}
+          </Trans>
           <br />
-          Swap active: {stats.openSwap}, executed: {stats.executedSwap}, cancelled: {stats.cancelledSwap}
+          <Trans>
+            Swap active: {stats.openSwap}, executed: {stats.executedSwap}, cancelled: {stats.cancelledSwap}
+          </Trans>
           <br />
         </p>
       )}
       <p>
-        <span className="positive">Price conditions are met</span>
+        <span className="positive">
+          <Trans>Price conditions are met</Trans>
+        </span>
         <br />
-        <span style={{ color: "orange" }}>Close to execution price</span>
+        <span style={{ color: "orange" }}>
+          <Trans>Close to execution price</Trans>
+        </span>
         <br />
-        <span className="negative">Can't execute because of an error</span>
+        <span className="negative">
+          <Trans>Can't execute because of an error</Trans>
+        </span>
       </p>
       <table className="Orders-overview-table">
         <thead>
           <tr>
-            <th>Type</th>
-            <th colSpan="2">Order</th>
-            <th>Price</th>
-            <th>Mark Price</th>
-            <th>Diff</th>
-            <th>Account</th>
-            <th>Created At</th>
-            <th>Index</th>
+            <th>
+              <Trans>Type</Trans>
+            </th>
+            <th colSpan="2">
+              <Trans>Order</Trans>
+            </th>
+            <th>
+              <Trans>Price</Trans>
+            </th>
+            <th>
+              <Trans>Mark</Trans> Price
+            </th>
+            <th>
+              <Trans>Diff</Trans>
+            </th>
+            <th>
+              <Trans>Account</Trans>
+            </th>
+            <th>
+              <Trans>Created</Trans> At
+            </th>
+            <th>
+              <Trans>Index</Trans>
+            </th>
             <th></th>
           </tr>
         </thead>
@@ -138,12 +169,14 @@ export default function OrdersOverview() {
                 }
               } else {
                 invalidToken = true;
-                error = `Invalid token fromToken: "${order.path0}" toToken: "${toTokenAddress}"`;
+                error = t`Invalid token fromToken: "${order.path0}" toToken: "${toTokenAddress}"`;
               }
 
               return (
                 <tr key={key}>
-                  <td>Swap</td>
+                  <td>
+                    <Trans>Swap</Trans>
+                  </td>
                   <td colSpan="2">
                     {!invalidToken && (
                       <>
@@ -186,7 +219,7 @@ export default function OrdersOverview() {
               if (indexToken && collateralToken && (order.type === DECREASE || purchaseToken)) {
                 markPrice = order.triggerAboveThreshold ? indexToken.minPrice : indexToken.maxPrice;
               } else {
-                error = `Invalid token indexToken: "${order.indexToken}" collateralToken: "${order.collateralToken}"`;
+                error = t`Invalid token indexToken: "${order.indexToken}" collateralToken: "${order.collateralToken}"`;
                 if (order.type === "increase") {
                   error += ` purchaseToken: ${order.purchaseToken}`;
                 }
@@ -214,11 +247,11 @@ export default function OrdersOverview() {
                 if (positionsForOrders && key in positionsForOrders) {
                   const position = positionsForOrders[key];
                   if (!position) {
-                    error = "No position";
+                    error = t`No position`;
                   } else if (order.sizeDelta.gt(position[0])) {
-                    error = `Order size exceeds position`;
+                    error = t`Order size exceeds position`;
                   } else if (order.sizeDelta.eq(0)) {
-                    error = "Order size is 0";
+                    error = t`Order size is 0`;
                   }
                 }
               }
@@ -227,7 +260,7 @@ export default function OrdersOverview() {
                 <tr key={key}>
                   <td>{order.type}</td>
                   <td>
-                    {order.isLong ? "Long" : "Short"} {indexToken && indexToken.symbol}
+                    {order.isLong ? t`Long` : t`Short`} {indexToken && indexToken.symbol}
                   </td>
                   <td>
                     {type === INCREASE ? "+" : "-"}${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
@@ -250,7 +283,7 @@ export default function OrdersOverview() {
                   <td className="negative">{error}</td>
                   <td>
                     <button className="Orders-overview-action" onClick={(evt) => executeOrder(evt, order)}>
-                      Execute
+                      <Trans>Execute</Trans>
                     </button>
                   </td>
                 </tr>

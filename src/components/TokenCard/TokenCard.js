@@ -14,6 +14,7 @@ import { HeaderLink } from "../Header/HeaderLink";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export default function TokenCard({ showRedirectModal, redirectPopupTimestamp }) {
   const isHome = isHomeSite();
@@ -80,14 +81,9 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
                 <Trans>Buy on Avalanche</Trans>
               </BuyLink>
             </div>
-            <a
-              href="https://gmxio.gitbook.io/gmx/tokenomics"
-              target="_blank"
-              rel="noreferrer"
-              className="default-btn read-more"
-            >
+            <ExternalLink href="https://gmxio.gitbook.io/gmx/tokenomics" className="default-btn read-more">
               <Trans>Read more</Trans>
-            </a>
+            </ExternalLink>
           </div>
         </div>
       </div>
