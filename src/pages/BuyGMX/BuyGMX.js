@@ -108,26 +108,36 @@ export default function BuyGMX() {
         <div className="cards-row">
           {isArbitrum ? (
             <Card title={t`Buy GMX on Arbitrum`}>
-              <div className="direct-purchase-options">
-                <Button
-                  size="xl"
-                  imgSrc={gmxArbitrum}
-                  href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a"
-                >
-                  <Trans>Purchase GMX</Trans>
-                </Button>
+              <div className="App-card-content">
+                <div className="BuyGMXGLP-description">
+                  <Trans>Buy GMX from Uniswap Arbitrum:</Trans>
+                </div>
+                <div className="direct-purchase-options">
+                  <Button
+                    size="xl"
+                    imgSrc={gmxArbitrum}
+                    href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a"
+                  >
+                    <Trans>Purchase GMX</Trans>
+                  </Button>
+                </div>
               </div>
             </Card>
           ) : (
             <Card title={t`Buy GMX on Avalanche`}>
-              <div className="direct-purchase-options">
-                <Button
-                  size="xl"
-                  imgSrc={gmxAvax}
-                  href="https://traderjoexyz.com/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661#/"
-                >
-                  <Trans>Purchase GMX</Trans>
-                </Button>
+              <div className="App-card-content">
+                <div className="BuyGMXGLP-description">
+                  <Trans>Buy GMX from Trader Joe:</Trans>
+                </div>
+                <div className="direct-purchase-options">
+                  <Button
+                    size="xl"
+                    imgSrc={gmxAvax}
+                    href="https://traderjoexyz.com/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661#/"
+                  >
+                    <Trans>Purchase GMX</Trans>
+                  </Button>
+                </div>
               </div>
             </Card>
           )}

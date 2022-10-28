@@ -270,12 +270,24 @@ msgid "Buy GLP"
 msgstr "Buy GLP"
 
 #: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX from Trader Joe:"
+msgstr "Buy GMX from Trader Joe:"
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX from Uniswap Arbitrum:"
+msgstr "Buy GMX from Uniswap Arbitrum:"
+
+#: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX from centralized exchanges:"
 msgstr "Buy GMX from centralized exchanges:"
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX from centralized services or bonds"
 msgstr "Buy GMX from centralized services or bonds"
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX on Arbitrum"
+msgstr "Buy GMX on Arbitrum"
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX on Avalanche"
@@ -934,10 +946,6 @@ msgid "High USDG Slippage, Long Anyway"
 msgstr "High USDG Slippage, Long Anyway"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "If you already have ETH on Arbitrum, you can directly purchase GMX on Uniswap. Set your network to Arbitrum and use the widget below:"
-msgstr "If you already have ETH on Arbitrum, you can directly purchase GMX on Uniswap. Set your network to Arbitrum and use the widget below:"
-
-#: src/pages/BuyGMX/BuyGMX.js
 msgid "If you wish, you can buy AVAX directly to Avalanche or use one option to transfer it to Avalanche."
 msgstr "If you wish, you can buy AVAX directly to Avalanche or use one option to transfer it to Avalanche."
 
@@ -1423,6 +1431,7 @@ msgstr "Projects integrated with GMX."
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 msgstr "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 
+#: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Purchase GMX"
 msgstr "Purchase GMX"

@@ -42,9 +42,8 @@
 .direct-purchase-options {
   display: flex;
   align-items: center;
-  justify-content: center;
   flex: 1 1 auto;
-  margin: 3.1rem 0;
+  margin: 1.5rem 0;
 }
 
 .GMX-btn {
