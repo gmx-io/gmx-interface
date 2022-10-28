@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback, forwardRef, useImperativeHandle } from "react";
-import { Trans, t } from "@lingui/macro";
+import { Trans, t, Plural } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { ethers } from "ethers";
@@ -50,6 +50,7 @@ import { getTokenInfo } from "domain/tokens/utils";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
 import { useChainId } from "lib/chains";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -70,9 +71,9 @@ function pushSuccessNotification(chainId, message, e) {
   helperToast.success(
     <div>
       {message}{" "}
-      <a href={txUrl} target="_blank" rel="noopener noreferrer">
-        View
-      </a>
+      <ExternalLink href={txUrl}>
+        <Trans>View</Trans>
+      </ExternalLink>
     </div>
   );
 }
@@ -90,9 +91,9 @@ function pushErrorNotification(chainId, message, e) {
   helperToast.error(
     <div>
       {message}{" "}
-      <a href={txUrl} target="_blank" rel="noopener noreferrer">
-        View
-      </a>
+      <ExternalLink href={txUrl}>
+        <Trans>View</Trans>
+      </ExternalLink>
     </div>
   );
 }
@@ -594,14 +595,17 @@ export const Exchange = forwardRef((props, ref) => {
 
       const indexTokenItem = getToken(chainId, indexToken);
       const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
-
+      const longOrShortText = isLong ? t`Long` : t`Short`;
       let message;
       if (sizeDelta.eq(0)) {
-        message = `Deposited ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD into ${tokenSymbol} ${
-          isLong ? "Long" : "Short."
-        }`;
+        message = t`Deposited ${formatAmount(
+          collateralDelta,
+          USD_DECIMALS,
+          2,
+          true
+        )} USD into ${tokenSymbol} ${longOrShortText}`;
       } else {
-        message = `Increased ${tokenSymbol} ${isLong ? "Long" : "Short"}, +${formatAmount(
+        message = t`Increased ${tokenSymbol} ${longOrShortText}, +${formatAmount(
           sizeDelta,
           USD_DECIMALS,
           2,
@@ -619,14 +623,18 @@ export const Exchange = forwardRef((props, ref) => {
 
       const indexTokenItem = getToken(chainId, indexToken);
       const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
+      const longOrShortText = isLong ? t`Long` : t`Short`;
 
       let message;
       if (sizeDelta.eq(0)) {
-        message = `Withdrew ${formatAmount(collateralDelta, USD_DECIMALS, 2, true)} USD from ${tokenSymbol} ${
-          isLong ? "Long" : "Short"
-        }.`;
+        message = t`Withdrew ${formatAmount(
+          collateralDelta,
+          USD_DECIMALS,
+          2,
+          true
+        )} USD from ${tokenSymbol} ${longOrShortText}.`;
       } else {
-        message = `Decreased ${tokenSymbol} ${isLong ? "Long" : "Short"}, -${formatAmount(
+        message = t`Decreased ${tokenSymbol} ${longOrShortText}, -${formatAmount(
           sizeDelta,
           USD_DECIMALS,
           2,
@@ -656,11 +664,9 @@ export const Exchange = forwardRef((props, ref) => {
       }
       const indexTokenItem = getToken(chainId, indexToken);
       const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
+      const longOrShortText = isLong ? t`Long` : t`Short`;
 
-      const message = `Could not increase ${tokenSymbol} ${
-        isLong ? "Long" : "Short"
-      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`;
-
+      const message = t`Could not increase ${tokenSymbol} ${longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`;
       pushErrorNotification(chainId, message, e);
 
       const key = getPositionKey(account, path[path.length - 1], indexToken, isLong);
@@ -688,10 +694,9 @@ export const Exchange = forwardRef((props, ref) => {
       }
       const indexTokenItem = getToken(chainId, indexToken);
       const tokenSymbol = indexTokenItem.isWrapped ? getConstant(chainId, "nativeTokenSymbol") : indexTokenItem.symbol;
+      const longOrShortText = isLong ? t`Long` : t`Short`;
 
-      const message = `Could not decrease ${tokenSymbol} ${
-        isLong ? "Long" : "Short"
-      } within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`;
+      const message = t`Could not decrease ${tokenSymbol} ${longOrShortText} within the allowed slippage, you can adjust the allowed slippage in the settings on the top right of the page.`;
 
       pushErrorNotification(chainId, message, e);
 
@@ -776,12 +781,16 @@ export const Exchange = forwardRef((props, ref) => {
         setIsPositionRouterApproving(false);
       });
   };
+  const POSITIONS = "Positions";
+  const ORDERS = "Orders";
+  const TRADES = "Trades";
 
-  const LIST_SECTIONS = ["Positions", flagOrdersEnabled ? "Orders" : undefined, "Trades"].filter(Boolean);
+  const LIST_SECTIONS = [POSITIONS, flagOrdersEnabled && ORDERS, TRADES].filter(Boolean);
   let [listSection, setListSection] = useLocalStorageByChainId(chainId, "List-section-v2", LIST_SECTIONS[0]);
   const LIST_SECTIONS_LABELS = {
-    Orders: orders.length ? `Orders (${orders.length})` : undefined,
-    Positions: positions.length ? `Positions (${positions.length})` : undefined,
+    [ORDERS]: orders.length ? t`Orders (${orders.length})` : t`Orders`,
+    [POSITIONS]: positions.length ? t`Positions (${positions.length})` : t`Positions`,
+    [TRADES]: t`Trades`,
   };
   if (!LIST_SECTIONS.includes(listSection)) {
     listSection = LIST_SECTIONS[0];
@@ -792,7 +801,6 @@ export const Exchange = forwardRef((props, ref) => {
   }
 
   const renderCancelOrderButton = () => {
-    const orderText = cancelOrderIdList.length > 1 ? t`orders` : t`order`;
     if (cancelOrderIdList.length === 0) return;
     return (
       <button
@@ -801,9 +809,7 @@ export const Exchange = forwardRef((props, ref) => {
         type="button"
         onClick={onMultipleCancelClick}
       >
-        <Trans>
-          Cancel {cancelOrderIdList.length} {orderText}
-        </Trans>
+        <Plural value={cancelOrderIdList.length} one="Cancel order" other="Cancel # orders" />
       </button>
     );
   };
@@ -833,7 +839,7 @@ export const Exchange = forwardRef((props, ref) => {
             </Checkbox>
           </div>
         </div>
-        {listSection === "Positions" && (
+        {listSection === POSITIONS && (
           <PositionsList
             positionsDataIsLoading={positionsDataIsLoading}
             pendingPositions={pendingPositions}
@@ -871,7 +877,7 @@ export const Exchange = forwardRef((props, ref) => {
             totalTokenWeights={totalTokenWeights}
           />
         )}
-        {listSection === "Orders" && (
+        {listSection === ORDERS && (
           <OrdersList
             account={account}
             active={active}
@@ -889,7 +895,7 @@ export const Exchange = forwardRef((props, ref) => {
             setCancelOrderIdList={setCancelOrderIdList}
           />
         )}
-        {listSection === "Trades" && (
+        {listSection === TRADES && (
           <TradeHistory
             account={account}
             forSingleAccount={true}

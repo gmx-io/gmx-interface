@@ -21,9 +21,10 @@ import { getTokenInfo } from "domain/tokens/utils";
 import { approveTokens, shouldRaiseGasError } from "domain/tokens";
 import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
-const DEPOSIT = t`Deposit`;
-const WITHDRAW = t`Withdraw`;
+const DEPOSIT = "Deposit";
+const WITHDRAW = "Withdraw";
 const EDIT_OPTIONS = [DEPOSIT, WITHDRAW];
 const { AddressZero } = ethers.constants;
 
@@ -61,6 +62,7 @@ export default function PositionEditor(props) {
   const [isApproving, setIsApproving] = useState(false);
   const [isSwapping, setIsSwapping] = useState(false);
   const prevIsVisible = usePrevious(isVisible);
+  const longOrShortText = position?.isLong ? t`Long` : t`Short`;
 
   const routerAddress = getContract(chainId, "Router");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
@@ -100,7 +102,7 @@ export default function PositionEditor(props) {
   let title;
   let collateralDelta;
   if (position) {
-    title = `Edit ${position.isLong ? "Long" : "Short"} ${position.indexToken.symbol}`;
+    title = t`Edit ${longOrShortText} ${position.indexToken.symbol}`;
     collateralToken = position.collateralToken;
     liquidationPrice = getLiquidationPrice(position);
 
@@ -317,7 +319,7 @@ export default function PositionEditor(props) {
 
     if (shouldRaiseGasError(getTokenInfo(infoTokens, collateralTokenAddress), fromAmount)) {
       setIsSwapping(false);
-      helperToast.error(`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ETH for gas`);
+      helperToast.error(t`Leave at least ${formatAmount(DUST_BNB, 18, 3)} ETH for gas`);
       return;
     }
 
@@ -327,7 +329,7 @@ export default function PositionEditor(props) {
       sentMsg: t`Deposit submitted.`,
       successMsg: t`Requested deposit of ${formatAmount(fromAmount, position.collateralToken.decimals, 4)} ${
         position.collateralToken.symbol
-      } into ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}.`,
+      } into ${position.indexToken.symbol} ${longOrShortText}.`,
       failMsg: t`Deposit failed.`,
       setPendingTxns,
     })
@@ -381,7 +383,7 @@ export default function PositionEditor(props) {
       sentMsg: t`Withdrawal submitted.`,
       successMsg: t`Requested withdrawal of ${formatAmount(fromAmount, USD_DECIMALS, 2)} USD from ${
         position.indexToken.symbol
-      } ${position.isLong ? "Long" : "Short"}.`,
+      } ${longOrShortText}.`,
       failMsg: t`Withdrawal failed.`,
       setPendingTxns,
     })
@@ -434,13 +436,23 @@ export default function PositionEditor(props) {
     withdrawCollateral();
   };
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
+  const EDIT_OPTIONS_LABELS = {
+    [DEPOSIT]: t`Deposit`,
+    [WITHDRAW]: t`Withdraw`,
+  };
 
   return (
     <div className="PositionEditor">
       {position && (
         <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={title}>
           <div>
-            <Tab options={EDIT_OPTIONS} option={option} setOption={setOption} onChange={resetForm} />
+            <Tab
+              options={EDIT_OPTIONS}
+              optionLabels={EDIT_OPTIONS_LABELS}
+              option={option}
+              setOption={setOption}
+              onChange={resetForm}
+            />
             {(isDeposit || isWithdrawal) && (
               <div>
                 <div className="Exchange-swap-section">
@@ -456,7 +468,7 @@ export default function PositionEditor(props) {
                     </div>
                     {maxAmount && (
                       <div className="muted align-right clickable" onClick={() => setFromValue(maxAmountFormattedFree)}>
-                        Max: {maxAmountFormatted}
+                        <Trans>Max: {maxAmountFormatted}</Trans>
                       </div>
                     )}
                   </div>
@@ -477,7 +489,7 @@ export default function PositionEditor(props) {
                             setFromValue(maxAmountFormattedFree);
                           }}
                         >
-                          MAX
+                          <Trans>MAX</Trans>
                         </div>
                       )}
                     </div>
@@ -567,10 +579,11 @@ export default function PositionEditor(props) {
                         handle={`${formatAmountFree(minExecutionFee, 18, 5)} ${nativeTokenSymbol}`}
                         position="right-top"
                         renderContent={() => {
+                          const depositOrWithdrawalText = isDeposit ? t`deposit` : t`withdrawal`;
                           return (
                             <>
                               <StatsTooltipRow
-                                label="Network fee"
+                                label={t`Network fee`}
                                 showDollar={false}
                                 value={`${formatAmountFree(
                                   minExecutionFee,
@@ -579,16 +592,14 @@ export default function PositionEditor(props) {
                                 )} ${nativeTokenSymbol} ($${formatAmount(minExecutionFeeUSD, USD_DECIMALS, 2)})`}
                               />
                               <br />
-                              This is the network cost required to execute the {isDeposit
-                                ? "deposit"
-                                : "withdrawal"}.{" "}
-                              <a
-                                href="https://gmxio.gitbook.io/gmx/trading#execution-fee"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                More Info
-                              </a>
+                              <Trans>
+                                This is the network cost required to execute the {depositOrWithdrawalText}.
+                                <br />
+                                <br />
+                                <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#execution-fee">
+                                  More Info
+                                </ExternalLink>
+                              </Trans>
                             </>
                           );
                         }}

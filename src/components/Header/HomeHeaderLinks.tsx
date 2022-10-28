@@ -13,7 +13,7 @@ type Props = {
 
 const HOME_MENUS = [
   {
-    label: t`GMX Protocol`,
+    label: t`Protocol`,
     link: "https://github.com/gmx-io",
   },
   {
