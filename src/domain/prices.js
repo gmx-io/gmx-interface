@@ -30,7 +30,6 @@ function fillGaps(prices, periodSeconds) {
   if (prices.length < 2) {
     return prices;
   }
-
   const newPrices = [prices[0]];
   let prevTime = prices[0].time;
   for (let i = 1; i < prices.length; i++) {

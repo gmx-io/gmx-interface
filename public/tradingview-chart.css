@@ -16,12 +16,13 @@
   --tv-color-toolbar-toggle-button-background-active-hover: magenta; */
 }
 
-.resolution-btn {
+.resolution-btn,
+.indicator-btn {
   cursor: pointer;
 }
 .resolution-btn:hover {
   opacity: 0.7;
 }
 .active-resolution-btn {
-  color: red !important;
+  color: #fa3c58 !important;
 }

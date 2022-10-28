@@ -182,7 +182,7 @@ function getInfoTokens(
   return infoTokens;
 }
 
-function setTokenUsingIndexPrices(
+export function setTokenUsingIndexPrices(
   token: TokenInfo,
   indexPrices: { [address: string]: BigNumber },
   nativeTokenAddress: string

@@ -8,7 +8,6 @@ import { useChartPrices } from "domain/legacy";
 // import Tab from "../Tab/Tab";
 
 import ChartTokenSelector from "./ChartTokenSelector";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getTokenInfo } from "domain/tokens/utils";
 // import { usePrevious } from "lib/usePrevious";
 import { formatAmount, numberWithCommas } from "lib/numbers";
@@ -71,7 +70,7 @@ export default function ExchangeTVChart(props) {
   // const [currentSeries, setCurrentSeries] = useState();
 
   // let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
-  let [period] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
+  let period = localStorage.getItem(JSON.stringify([chainId, "Chart-period-main"]));
   if (!(period in CHART_PERIODS)) {
     period = DEFAULT_PERIOD;
   }
@@ -291,7 +290,7 @@ export default function ExchangeTVChart(props) {
         </div>
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">
-        <TVChartContainer symbol={chartToken.symbol} chainId={chainId} />
+        {chartToken.symbol && chainId && <TVChartContainer symbol={chartToken.symbol} chainId={chainId} />}
       </div>
     </div>
   );

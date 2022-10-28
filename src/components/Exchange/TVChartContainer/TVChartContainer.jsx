@@ -1,16 +1,11 @@
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useEffect, useRef, useState } from "react";
 import { widget } from "../../../../public/charting_library";
 import Datafeed, { supportedResolutions } from "./datafeed";
 import "./TVChartContainer.css";
-
-function getLanguageFromURL() {
-  const regex = new RegExp("[\\?&]lang=([^&#]*)");
-  const results = regex.exec(window.location.search);
-  return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
-
+const DEFAULT_PERIOD = "4h";
 const defaultProps = {
-  interval: "4h",
+  interval: DEFAULT_PERIOD,
   theme: "Dark",
   containerId: "tv_chart_container",
   libraryPath: "/charting_library/",
@@ -28,15 +23,11 @@ export default function TVChartContainer({ symbol, chainId }) {
   const tvChartRef = useRef();
   const tvWidgetRef = useRef(null);
   const [chartReady, setChartReady] = useState(false);
+  let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
   useEffect(() => {
     if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart()?.symbol()) {
       const CHAINID_SYMBOL = `${symbol}_${chainId}`;
-      tvWidgetRef.current.setSymbol(CHAINID_SYMBOL, tvWidgetRef.current.activeChart().resolution(), () => {
-        // if (showOrderLines) {
-        //   deleteLines();
-        //   drawLinesForMarket();
-        // }
-      });
+      tvWidgetRef.current.setSymbol(CHAINID_SYMBOL, tvWidgetRef.current.activeChart().resolution(), () => {});
     }
   }, [symbol, chartReady, chainId]);
 
@@ -57,15 +48,14 @@ export default function TVChartContainer({ symbol, chainId }) {
       };
     });
     const widgetOptions = {
-      debug: false,
+      debug: true,
       symbol: `${symbol}_${chainId}`,
-      // symbol: defaultProps.symbol,
       datafeed: Datafeed,
       theme: defaultProps.theme,
-      interval: defaultProps.interval,
+      interval: period,
       container: tvChartRef.current,
       library_path: defaultProps.libraryPath,
-      locale: getLanguageFromURL() || "en",
+      locale: "en",
       enabled_features: ["hide_left_toolbar_by_default"],
       disabled_features: [
         "use_localstorage_for_settings",
@@ -115,20 +105,24 @@ export default function TVChartContainer({ symbol, chainId }) {
         Object.keys(supportedResolutions).forEach((res) => {
           const btn = tvWidgetRef.current.createButton();
           btn.classList.add("resolution-btn");
-          btn.textContent = supportedResolutions[res];
-          btn.addEventListener("click", () => {
-            tvWidgetRef.current.chart().setResolution(res);
+          if (period === supportedResolutions[res]) {
+            btn.classList.add("active-resolution-btn");
+          }
 
-            // , (event) => {
-            // if (tvWidgetRef.current.activeChart().resolution() === supportedResolutions[res]) {
-            // event.target.classList.add("active-resolution-btn");
-            // }
-            // });
+          btn.textContent = supportedResolutions[res];
+          btn.addEventListener("click", (event) => {
+            tvWidgetRef.current.chart().setResolution(res, () => {
+              setPeriod(supportedResolutions[res]);
+              const allButtons =
+                event.target.parentElement.parentElement.parentElement.querySelectorAll(".resolution-btn");
+              allButtons.forEach((btn) => btn.classList.remove("active-resolution-btn"));
+              event.target.classList.add("active-resolution-btn");
+            });
           });
         });
         const indicatorsBtn = tvWidgetRef.current.createButton();
         indicatorsBtn.textContent = "Indicators";
-        indicatorsBtn.classList.add("resolution-btn");
+        indicatorsBtn.classList.add("indicator-btn");
         indicatorsBtn.addEventListener("click", () => {
           tvWidgetRef.current.activeChart().executeActionById("insertIndicator");
         });
@@ -141,7 +135,8 @@ export default function TVChartContainer({ symbol, chainId }) {
       tvWidgetRef.current.remove();
       tvWidgetRef.current = null;
     };
-  }, [chainId, symbol]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return <div ref={tvChartRef} className="TVChartContainer ExchangeChart-bottom-content" />;
 }
