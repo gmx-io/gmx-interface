@@ -1,6 +1,8 @@
 import "./RedirectModal.css";
 import Modal from "../Modal/Modal";
 import Checkbox from "../Checkbox/Checkbox";
+import { t, Trans } from "@lingui/macro";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export function RedirectPopupModal({
   redirectModalVisible,
@@ -22,48 +24,38 @@ export function RedirectPopupModal({
       className="RedirectModal"
       isVisible={redirectModalVisible}
       setIsVisible={setRedirectModalVisible}
-      label="Launch App"
+      label={t`Launch App`}
     >
-      You are leaving GMX.io and will be redirected to a third party, independent website.
+      <Trans>You are leaving GMX.io and will be redirected to a third party, independent website.</Trans>
       <br />
       <br />
-      The website is a community deployed and maintained instance of the open source{" "}
-      <a href="https://github.com/gmx-io/gmx-interface" target="_blank" rel="noopener noreferrer">
-        GMX front end
-      </a>
-      , hosted and served on the distributed, peer-to-peer{" "}
-      <a href="https://ipfs.io/" target="_blank" rel="noopener noreferrer">
-        IPFS network
-      </a>
-      .
+      <Trans>
+        The website is a community deployed and maintained instance of the open source{" "}
+        <ExternalLink href="https://github.com/gmx-io/gmx-interface">GMX front end</ExternalLink>, hosted and served on
+        the distributed, peer-to-peer <ExternalLink href="https://ipfs.io/">IPFS network</ExternalLink>.
+      </Trans>
       <br />
       <br />
-      Alternative links can be found in the{" "}
-      <a href="https://gmxio.gitbook.io/gmx/app-links" target="_blank" rel="noopener noreferrer">
-        docs
-      </a>
-      .
-      <br />
-      <br />
-      By clicking Agree you accept the{" "}
-      <a href="https://gmx.io/#/terms-and-conditions" target="_blank" rel="noopener noreferrer">
-        T&Cs
-      </a>{" "}
-      and{" "}
-      <a href="https://gmx.io/#/referral-terms" target="_blank" rel="noopener noreferrer">
-        Referral T&Cs
-      </a>
-      .
-      <br />
-      <br />
+      <Trans>
+        Alternative links can be found in the{" "}
+        <ExternalLink href="https://gmxio.gitbook.io/gmx/app-links">docs</ExternalLink>.
+        <br />
+        <br />
+        By clicking Agree you accept the <ExternalLink href="https://gmx.io/#/terms-and-conditions">
+          T&Cs
+        </ExternalLink>{" "}
+        and <ExternalLink href="https://gmx.io/#/referral-terms">Referral T&Cs</ExternalLink>.
+        <br />
+        <br />
+      </Trans>
       <div className="mb-sm">
         <Checkbox isChecked={shouldHideRedirectModal} setIsChecked={setShouldHideRedirectModal}>
-          Don't show this message again for 30 days.
+          <Trans>Don't show this message again for 30 days.</Trans>
         </Checkbox>
       </div>
-      <a href={appRedirectUrl} className="App-cta Exchange-swap-button" onClick={() => onClickAgree()}>
-        Agree
-      </a>
+      <ExternalLink href={appRedirectUrl} className="App-cta Exchange-swap-button" onClick={() => onClickAgree()}>
+        <Trans>Agree</Trans>
+      </ExternalLink>
     </Modal>
   );
 }

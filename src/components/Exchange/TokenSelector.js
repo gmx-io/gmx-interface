@@ -11,6 +11,7 @@ import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
 import { getToken } from "config/tokens";
 import { importImage } from "lib/legacy";
+import { t } from "@lingui/macro";
 
 export default function TokenSelector(props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -79,7 +80,7 @@ export default function TokenSelector(props) {
           <div className="TokenSelector-token-row TokenSelector-token-input-row">
             <input
               type="text"
-              placeholder="Search Token"
+              placeholder={t`Search Token`}
               value={searchKeyword}
               onChange={(e) => onSearchKeywordChange(e)}
               onKeyDown={_handleKeyDown}

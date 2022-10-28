@@ -28,6 +28,7 @@ import { getUsd } from "./tokens/utils";
 import { getProvider } from "lib/rpc";
 import { bigNumberify, expandDecimals, parseValue } from "lib/numbers";
 import { getTokenBySymbol } from "config/tokens";
+import { t } from "@lingui/macro";
 
 export * from "./prices";
 
@@ -818,9 +819,9 @@ export function handleCancelOrder(chainId, library, order, opts) {
   }
 
   return func(chainId, library, order.index, {
-    successMsg: "Order cancelled.",
-    failMsg: "Cancel failed.",
-    sentMsg: "Cancel submitted.",
+    successMsg: t`Order cancelled.`,
+    failMsg: t`Cancel failed.`,
+    sentMsg: t`Cancel submitted.`,
     pendingTxns: opts.pendingTxns,
     setPendingTxns: opts.setPendingTxns,
   });

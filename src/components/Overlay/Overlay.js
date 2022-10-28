@@ -7,7 +7,7 @@ import "./Overlay.css";
 export default function Overlay(props) {
   return (
     <div className="Overlay">
-      <div className="Overlay-backdrop"></div>
+      <div className="Overlay-backdrop" />
       <div className="Overlay-content-outer">
         <div className="Overlay-top-bar">
           <div className="Overlay-title">{props.title}</div>
