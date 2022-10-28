@@ -278,20 +278,16 @@ msgid "Buy GMX from Uniswap Arbitrum:"
 msgstr "Buy GMX from Uniswap Arbitrum:"
 
 #: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX from a Decentralised Exchange"
+msgstr "Buy GMX from a Decentralised Exchange"
+
+#: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX from centralized exchanges:"
 msgstr "Buy GMX from centralized exchanges:"
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX from centralized services or bonds"
 msgstr "Buy GMX from centralized services or bonds"
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX on Arbitrum"
-msgstr "Buy GMX on Arbitrum"
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX on Avalanche"
-msgstr "Buy GMX on Avalanche"
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX on {0}"

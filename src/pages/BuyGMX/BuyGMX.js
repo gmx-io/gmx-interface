@@ -106,8 +106,8 @@ export default function BuyGMX() {
           </div>
         </div>
         <div className="cards-row">
-          {isArbitrum ? (
-            <Card title={t`Buy GMX on Arbitrum`}>
+          <Card title={t`Buy GMX from a Decentralised Exchange`}>
+            {isArbitrum ? (
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
                   <Trans>Buy GMX from Uniswap Arbitrum:</Trans>
@@ -122,9 +122,7 @@ export default function BuyGMX() {
                   </Button>
                 </div>
               </div>
-            </Card>
-          ) : (
-            <Card title={t`Buy GMX on Avalanche`}>
+            ) : (
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
                   <Trans>Buy GMX from Trader Joe:</Trans>
@@ -139,9 +137,8 @@ export default function BuyGMX() {
                   </Button>
                 </div>
               </div>
-            </Card>
-          )}
-
+            )}
+          </Card>
           <Card title={t`Buy GMX from centralized services or bonds`}>
             <div className="App-card-content">
               <div className="BuyGMXGLP-description">
