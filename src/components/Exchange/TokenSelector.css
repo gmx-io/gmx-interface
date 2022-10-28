@@ -56,7 +56,7 @@
   vertical-align: middle;
   display: inline-block;
   margin-left: 0.465rem;
-  font-size: 2.325rem;
+  font-size: 2.4rem;
   margin-top: -0.465rem;
 }
 
@@ -87,7 +87,6 @@
   position: relative;
   z-index: 10;
 }
-
 
 .TokenSelector-token-row.disabled {
   cursor: not-allowed;

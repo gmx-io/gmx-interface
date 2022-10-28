@@ -17,7 +17,7 @@
 }
 .referral-card {
   position: relative;
-  padding: 2.325rem;
+  padding: 2.4rem;
   border-radius: 1.3rem;
   max-width: 59.2rem;
   background: #16182e;
@@ -27,7 +27,7 @@
 }
 .referral-card .title {
   font-weight: 500;
-  font-size: 2.325rem;
+  font-size: 2.4rem;
   line-height: 3.1rem;
   color: #ffffff;
   padding: 0.775rem 0;

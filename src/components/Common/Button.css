@@ -28,18 +28,12 @@ a.btn {
   padding: 0.8rem 1.5rem;
 }
 
-.btn-sm .btn-label {
-  font-weight: 400;
-  font-size: 1.4rem;
-  margin-left: 0.8rem;
-  letter-spacing: 0;
-}
-
-.btn-xl .btn-label {
+.btn-label {
   margin-left: 1.1625rem;
   font-weight: normal;
   line-height: 2.325rem;
   letter-spacing: 0;
+  font-size: 2rem;
 }
 
 .btn-lg .btn-image {
