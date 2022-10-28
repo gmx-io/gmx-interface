@@ -18,6 +18,7 @@ a.btn {
   border-radius: var(--border-radius-sm);
   cursor: pointer;
 }
+
 .btn-sm {
   padding: 0.5rem 1.4rem;
 }
@@ -27,12 +28,13 @@ a.btn {
   padding: 0.8rem 1.5rem;
 }
 
-.btn-lg .btn-label {
-  margin-left: 1.1625rem;
-  font-weight: normal;
-  line-height: 2.325rem;
+.btn-sm .btn-label {
+  font-weight: 400;
+  font-size: 1.4rem;
+  margin-left: 0.8rem;
   letter-spacing: 0;
 }
+
 .btn-xl .btn-label {
   margin-left: 1.1625rem;
   font-weight: normal;
@@ -40,13 +42,6 @@ a.btn {
   letter-spacing: 0;
 }
 
-.btn-sm .btn-image {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.4rem;
-  height: 2.4rem;
-}
 .btn-lg .btn-image {
   display: inline-flex;
   align-items: center;
@@ -73,21 +68,4 @@ a.btn {
 }
 .btn-primary:active {
   background: var(--dark-blue-active);
-}
-
-@media (max-width: 450px) {
-  .connect-wallet {
-    padding: 0.5rem 0.8rem;
-  }
-}
-@media (max-width: 350px) {
-  .connect-wallet .btn-image {
-    display: none;
-  }
-  .connect-wallet .btn-label {
-    margin-left: 0px;
-  }
-  .connect-wallet {
-    height: 3.6rem;
-  }
 }

@@ -65,14 +65,6 @@ input {
 
 a {
   color: white;
-  opacity: 0.7;
-  text-decoration: underline;
-}
-
-a:hover {
-  color: white;
-  opacity: 0.9;
-  text-decoration: underline;
 }
 
 .Card-title {
