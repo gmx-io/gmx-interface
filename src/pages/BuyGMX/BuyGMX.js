@@ -19,6 +19,7 @@ import Button from "components/Common/Button";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export default function BuyGMX() {
   const { chainId } = useChainId();
@@ -60,15 +61,12 @@ export default function BuyGMX() {
               <div className="App-card-title">
                 <Trans>Buy ETH</Trans>
               </div>
-              <div className="App-card-divider"></div>
+              <div className="App-card-divider" />
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
                   <Trans>
-                    You can buy ETH directly on{" "}
-                    <a href="https://arbitrum.io/" target="_blank" rel="noopener noreferrer">
-                      Arbitrum
-                    </a>{" "}
-                    using Banxa:
+                    You can buy ETH directly on <ExternalLink href="https://arbitrum.io/">Arbitrum</ExternalLink> using
+                    Banxa:
                   </Trans>
                 </div>
                 <div className="direct-purchase-options">
@@ -85,7 +83,7 @@ export default function BuyGMX() {
               <div className="App-card-title">
                 <Trans>Transfer ETH</Trans>
               </div>
-              <div className="App-card-divider"></div>
+              <div className="App-card-divider" />
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
                   <Trans>You can transfer ETH from other networks to Arbitrum using any of the below options:</Trans>
@@ -124,7 +122,6 @@ export default function BuyGMX() {
                 <Trans>Avax is needed on Avalanche to purchase GMX.</Trans>
                 <br />
                 <Trans>
-                  {" "}
                   To purchase GMX on <span onClick={() => onNetworkSelect(ARBITRUM)}>Arbitrum</span>, please change your
                   network.
                 </Trans>
@@ -138,14 +135,11 @@ export default function BuyGMX() {
               <div className="App-card-title">
                 <Trans>Buy AVAX</Trans>
               </div>
-              <div className="App-card-divider"></div>
+              <div className="App-card-divider" />
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
                   <Trans>
-                    You can buy AVAX directly on{" "}
-                    <a href="https://www.avax.network/" target="_blank" rel="noopener noreferrer">
-                      Avalanche
-                    </a>{" "}
+                    You can buy AVAX directly on <ExternalLink href="https://www.avax.network/">Avalanche</ExternalLink>{" "}
                     using Banxa:
                   </Trans>
                 </div>
@@ -163,7 +157,7 @@ export default function BuyGMX() {
               <div className="App-card-title">
                 <Trans>Transfer AVAX</Trans>
               </div>
-              <div className="App-card-divider"></div>
+              <div className="App-card-divider" />
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
                   <Trans>You can transfer AVAX to Avalanche using any of the below options.</Trans> <br />
@@ -204,10 +198,8 @@ export default function BuyGMX() {
                   <div className="BuyGMXGLP-description better-rates-description">
                     <Trans>
                       After you have ETH, set your network to{" "}
-                      <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">
-                        Arbitrum
-                      </a>{" "}
-                      then click the button below:
+                      <ExternalLink href="https://arbitrum.io/bridge-tutorial/">Arbitrum</ExternalLink> then click the
+                      button below:
                     </Trans>
                   </div>
                   <div className="direct-purchase-options">
@@ -238,10 +230,8 @@ export default function BuyGMX() {
                   <div className="BuyGMXGLP-description better-rates-description">
                     <Trans>
                       After you have ETH, set your network to{" "}
-                      <a href="https://arbitrum.io/bridge-tutorial/" target="_blank" rel="noopener noreferrer">
-                        Arbitrum
-                      </a>{" "}
-                      then click the button below:
+                      <ExternalLink href="https://arbitrum.io/bridge-tutorial/">Arbitrum</ExternalLink> then click the
+                      button below:
                     </Trans>
                   </div>
                   <div className="buy-gmx">

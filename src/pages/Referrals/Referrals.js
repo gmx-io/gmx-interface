@@ -25,9 +25,10 @@ import { ethers } from "ethers";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { REFERRALS_SELECTED_TAB_KEY } from "config/localStorage";
 import { useChainId } from "lib/chains";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
-const TRADERS = t`Traders`;
-const AFFILIATES = t`Affiliates`;
+const TRADERS = "Traders";
+const AFFILIATES = "Affiliates";
 const TAB_OPTIONS = [TRADERS, AFFILIATES];
 
 function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
@@ -107,12 +108,13 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
       />
     );
   }
+  const TAB_OPTION_LABELS = { [TRADERS]: t`Traders`, [AFFILIATES]: t`Affiliates` };
 
   return (
     <SEO title={getPageTitle("Referrals")}>
       <div className="default-container page-layout Referrals">
         <div className="section-title-block">
-          <div className="section-title-icon"></div>
+          <div className="section-title-icon" />
           <div className="section-title-content">
             <div className="Page-title">
               <Trans>Referrals</Trans>
@@ -122,16 +124,19 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
                 Get fee discounts and earn rebates through the GMX referral program.
                 <br />
                 For more information, please read the{" "}
-                <a target="_blank" rel="noopener noreferrer" href="https://gmxio.gitbook.io/gmx/referrals">
-                  referral program details
-                </a>
-                .
+                <ExternalLink href="https://gmxio.gitbook.io/gmx/referrals">referral program details</ExternalLink>.
               </Trans>
             </div>
           </div>
         </div>
         <div className="referral-tab-container">
-          <Tab options={TAB_OPTIONS} option={activeTab} setOption={setActiveTab} onChange={setActiveTab} />
+          <Tab
+            options={TAB_OPTIONS}
+            optionLabels={TAB_OPTION_LABELS}
+            option={activeTab}
+            setOption={setActiveTab}
+            onChange={setActiveTab}
+          />
         </div>
         {activeTab === AFFILIATES ? renderAffiliatesTab() : renderTradersTab()}
       </div>
