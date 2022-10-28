@@ -47,6 +47,7 @@ import { helperToast } from "lib/helperToast";
 import { approveTokens } from "domain/tokens";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, formatKeyAmount, parseValue } from "lib/numbers";
 import { useChainId } from "lib/chains";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const { AddressZero } = ethers.constants;
 
@@ -310,9 +311,9 @@ function UnstakeModal(props) {
         {burnAmount && burnAmount.gt(0) && rewardReductionBasisPoints && rewardReductionBasisPoints.gt(0) && (
           <div className="Modal-note">
             Unstaking will burn&nbsp;
-            <a href="https://gmxio.gitbook.io/gmx/rewards" target="_blank" rel="noopener noreferrer">
+            <ExternalLink href="https://gmxio.gitbook.io/gmx/rewards">
               {formatAmount(burnAmount, 18, 4, true)} Multiplier Points
-            </a>
+            </ExternalLink>
             .&nbsp;
             {shouldShowReductionAmount && (
               <span>Boost Percentage: -{formatAmount(rewardReductionBasisPoints, 2, 2)}%.</span>
@@ -1313,10 +1314,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           return (
             <Trans>
               Boost your rewards with Multiplier Points.&nbsp;
-              <a href="https://gmxio.gitbook.io/gmx/rewards#multiplier-points" rel="noreferrer" target="_blank">
-                More info
-              </a>
-              .
+              <ExternalLink href="https://gmxio.gitbook.io/gmx/rewards#multiplier-points">More info</ExternalLink>.
             </Trans>
           );
         }}
@@ -1457,15 +1455,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           </div>
           <div className="Page-description">
             <Trans>
-              Stake{" "}
-              <a href="https://gmxio.gitbook.io/gmx/tokenomics" target="_blank" rel="noopener noreferrer">
-                GMX
-              </a>{" "}
-              and{" "}
-              <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
-                GLP
-              </a>{" "}
-              to earn rewards.
+              Stake <ExternalLink href="https://gmxio.gitbook.io/gmx/tokenomics">GMX</ExternalLink> and{" "}
+              <ExternalLink href="https://gmxio.gitbook.io/gmx/glp">GLP</ExternalLink> to earn rewards.
             </Trans>
           </div>
           {earnMsg && <div className="Page-description">{earnMsg}</div>}
@@ -2090,10 +2081,8 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               Convert esGMX tokens to GMX tokens.
               <br />
               Please read the{" "}
-              <a href="https://gmxio.gitbook.io/gmx/rewards#vesting" target="_blank" rel="noopener noreferrer">
-                vesting details
-              </a>{" "}
-              before using the vaults.
+              <ExternalLink href="https://gmxio.gitbook.io/gmx/rewards#vesting">vesting details</ExternalLink> before
+              using the vaults.
             </Trans>
           </div>
         </div>

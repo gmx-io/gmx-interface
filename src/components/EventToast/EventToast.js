@@ -1,6 +1,7 @@
 import "./EventToast.css";
 import Icon from "./AnnouncementIcon";
 import { MdOutlineClose } from "react-icons/md";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export default function EventToast({ event, id, onClick, t }) {
   return (
@@ -17,9 +18,9 @@ export default function EventToast({ event, id, onClick, t }) {
         {event.buttons.map((button) => {
           if (button.newTab) {
             return (
-              <a key={event.id + button.text} target="_blank" rel="noreferrer noopener" href={button.link}>
+              <ExternalLink key={event.id + button.text} href={button.link}>
                 {button.text}
-              </a>
+              </ExternalLink>
             );
           } else {
             return (

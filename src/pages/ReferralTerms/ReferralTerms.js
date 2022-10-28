@@ -3,6 +3,7 @@ import Footer from "components/Footer/Footer";
 import SEO from "components/Common/SEO";
 import { getPageTitle } from "lib/legacy";
 import "./ReferralTerms.css";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export default function ReferralTerms() {
   return (
@@ -88,9 +89,9 @@ export default function ReferralTerms() {
               <p className="body-text">
                 The Rebates and Discounts percentages for the default tier Tier 1, and instructions to upgrade to Tier 2
                 and Tier 3, are contained in{" "}
-                <a target="_blank" rel="noopener noreferrer" href="https://gmxio.gitbook.io/gmx/referrals">
+                <ExternalLink href="https://gmxio.gitbook.io/gmx/referrals">
                   https://gmxio.gitbook.io/gmx/referrals.
-                </a>
+                </ExternalLink>
               </p>
             </div>
             <div className="section">
