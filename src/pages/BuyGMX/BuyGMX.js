@@ -106,7 +106,7 @@ export default function BuyGMX() {
           </div>
         </div>
         <div className="cards-row">
-          <Card title={t`Buy GMX from a Decentralised Exchange`}>
+          <Card title={t`Buy GMX from a Decentralized Exchange`}>
             {isArbitrum ? (
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
@@ -141,41 +141,47 @@ export default function BuyGMX() {
           </Card>
           <Card title={t`Buy GMX from centralized services or bonds`}>
             <div className="App-card-content">
-              <div className="BuyGMXGLP-description">
-                <Trans>Buy GMX from centralized exchanges:</Trans>
+              <div className="exchange-info-group">
+                <div className="BuyGMXGLP-description">
+                  <Trans>Buy GMX from centralized exchanges:</Trans>
+                </div>
+                <div className="buttons-group">
+                  {CENTRALISED_EXCHANGES.map(({ name, icon, link }) => (
+                    <Button key={name} href={link} align="left" imgSrc={icon}>
+                      {name}
+                    </Button>
+                  ))}
+                </div>
               </div>
-              <div className="buttons-group">
-                {CENTRALISED_EXCHANGES.map(({ name, icon, link }) => (
-                  <Button key={name} href={link} align="left" imgSrc={icon}>
-                    {name}
+              <div className="exchange-info-group">
+                <div className="BuyGMXGLP-description">
+                  <Trans>Buy GMX using any token from any network:</Trans>
+                </div>
+                <div className="buttons-group">
+                  <Button href={EXCHANGE_LINKS.getBungeeUrl()} align="left" imgSrc={Bungee}>
+                    Bungee
                   </Button>
-                ))}
+                  <Button href={EXCHANGE_LINKS.getBanxaUrl()} align="left" imgSrc={Banxa}>
+                    Banxa
+                  </Button>
+                  <Button href={EXCHANGE_LINKS.getO3Url()} align="left" imgSrc={O3}>
+                    O3
+                  </Button>
+                </div>
               </div>
-              <div className="BuyGMXGLP-description">
-                <Trans>Buy GMX using any token from any network:</Trans>
-              </div>
-              <div className="buttons-group">
-                <Button href={EXCHANGE_LINKS.getBungeeUrl()} align="left" imgSrc={Bungee}>
-                  Bungee
-                </Button>
-                <Button href={EXCHANGE_LINKS.getBanxaUrl()} align="left" imgSrc={Banxa}>
-                  Banxa
-                </Button>
-                <Button href={EXCHANGE_LINKS.getO3Url()} align="left" imgSrc={O3}>
-                  O3
-                </Button>
-              </div>
-              <div className="BuyGMXGLP-description">
-                <Trans>Buy GMX using FIAT gateways:</Trans>
-              </div>
-              <div className="buttons-group">
-                <Button href={EXCHANGE_LINKS.getBanxaUrl()} align="left" imgSrc={Banxa}>
-                  Banxa
-                </Button>
+              <div className="exchange-info-group">
+                <div className="BuyGMXGLP-description">
+                  <Trans>Buy GMX using FIAT gateways:</Trans>
+                </div>
+                <div className="buttons-group">
+                  <Button href={EXCHANGE_LINKS.getBanxaUrl()} align="left" imgSrc={Banxa}>
+                    Banxa
+                  </Button>
+                </div>
               </div>
 
               {chainId === ARBITRUM && (
-                <>
+                <div className="exchange-info-group">
                   <div className="BuyGMXGLP-description">
                     <Trans>GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:</Trans>
                   </div>
@@ -184,7 +190,7 @@ export default function BuyGMX() {
                       Olympus Pro
                     </Button>
                   </div>
-                </>
+                </div>
               )}
             </div>
           </Card>
@@ -208,9 +214,7 @@ export default function BuyGMX() {
                 <Trans>Buy or Transfer AVAX to Avalanche</Trans>
               </div>
               <div className="Page-description">
-                <Trans>
-                  If you wish, you can buy AVAX directly to Avalanche or use one option to transfer it to Avalanche.
-                </Trans>
+                <Trans>Buy AVAX directly to Avalanche or transfer it there.</Trans>
               </div>
             </div>
           </div>
@@ -315,15 +319,10 @@ export default function BuyGMX() {
                 </div>
               </div>
             </Card>
-            <Card title={t`Transfer ETH`}>
+            <Card title={t`Transfer AVAX`}>
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
-                  <Trans>You can transfer AVAX to Avalanche using any of the below options.</Trans> <br />
-                  <br />
-                  <Trans>
-                    Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency,
-                    and receive free AVAX to pay for the network's fees.
-                  </Trans>
+                  <Trans>You can transfer AVAX from other networks to Avalanche using any of the below options:</Trans>
                 </div>
                 <div className="buttons-group">
                   <Button align="left" href="https://bridge.avax.network/" imgSrc={avax30Icon}>
