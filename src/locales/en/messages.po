@@ -402,6 +402,10 @@ msgid "Buy AVAX"
 msgstr "Buy AVAX"
 
 #: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy AVAX directly to Avalanche or transfer it there."
+msgstr "Buy AVAX directly to Avalanche or transfer it there."
+
+#: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy ETH"
 msgstr "Buy ETH"
 
@@ -433,8 +437,12 @@ msgid "Buy GMX from Uniswap Arbitrum:"
 msgstr "Buy GMX from Uniswap Arbitrum:"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX from a Decentralised Exchange"
-msgstr "Buy GMX from a Decentralised Exchange"
+#~ msgid "Buy GMX from a Decentralised Exchange"
+#~ msgstr "Buy GMX from a Decentralised Exchange"
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX from a Decentralized Exchange"
+msgstr "Buy GMX from a Decentralized Exchange"
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX from centralized exchanges:"
@@ -1480,8 +1488,8 @@ msgid "If you have an existing position, the position will be closed at {0} USD.
 msgstr "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "If you wish, you can buy AVAX directly to Avalanche or use one option to transfer it to Avalanche."
-msgstr "If you wish, you can buy AVAX directly to Avalanche or use one option to transfer it to Avalanche."
+#~ msgid "If you wish, you can buy AVAX directly to Avalanche or use one option to transfer it to Avalanche."
+#~ msgstr "If you wish, you can buy AVAX directly to Avalanche or use one option to transfer it to Avalanche."
 
 #: src/components/Exchange/PositionShare.js
 msgid "Image generation error, please refresh and try again."
@@ -3339,12 +3347,15 @@ msgstr "Transaction sent."
 msgid "Transaction was cancelled."
 msgstr "Transaction was cancelled."
 
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Transfer AVAX"
+msgstr "Transfer AVAX"
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
 msgid "Transfer Account"
 msgstr "Transfer Account"
 
-#: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Transfer ETH"
 msgstr "Transfer ETH"
@@ -3508,8 +3519,8 @@ msgid "Useful Links"
 msgstr "Useful Links"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees."
-msgstr "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees."
+#~ msgid "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees."
+#~ msgstr "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees."
 
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3751,8 +3762,12 @@ msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {s
 msgstr "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "You can transfer AVAX to Avalanche using any of the below options."
-msgstr "You can transfer AVAX to Avalanche using any of the below options."
+msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
+msgstr "You can transfer AVAX from other networks to Avalanche using any of the below options:"
+
+#: src/pages/BuyGMX/BuyGMX.js
+#~ msgid "You can transfer AVAX to Avalanche using any of the below options."
+#~ msgstr "You can transfer AVAX to Avalanche using any of the below options."
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"

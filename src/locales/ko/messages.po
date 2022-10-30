@@ -402,6 +402,10 @@ msgid "Buy AVAX"
 msgstr "AVAX 구매 "
 
 #: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy AVAX directly to Avalanche or transfer it there."
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy ETH"
 msgstr "ETH 구매 "
 
@@ -433,7 +437,11 @@ msgid "Buy GMX from Uniswap Arbitrum:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX from a Decentralised Exchange"
+#~ msgid "Buy GMX from a Decentralised Exchange"
+#~ msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX from a Decentralized Exchange"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
@@ -1480,8 +1488,8 @@ msgid "If you have an existing position, the position will be closed at {0} USD.
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "If you wish, you can buy AVAX directly to Avalanche or use one option to transfer it to Avalanche."
-msgstr ""
+#~ msgid "If you wish, you can buy AVAX directly to Avalanche or use one option to transfer it to Avalanche."
+#~ msgstr ""
 
 #: src/components/Exchange/PositionShare.js
 msgid "Image generation error, please refresh and try again."
@@ -3336,12 +3344,15 @@ msgstr ""
 msgid "Transaction was cancelled."
 msgstr ""
 
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Transfer AVAX"
+msgstr ""
+
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
 msgid "Transfer Account"
 msgstr "계정 이전"
 
-#: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Transfer ETH"
 msgstr "ETH 전송"
@@ -3505,8 +3516,8 @@ msgid "Useful Links"
 msgstr "유용한 링크"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees."
-msgstr "Avalanche나 Synapse 브리지를 사용하면 지원되는 어떤 암호화폐든 이전할 수 있으며 네트워크 수수료 지불을 위한 AVAX를 무료로 받을 수 있습니다."
+#~ msgid "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees."
+#~ msgstr "Avalanche나 Synapse 브리지를 사용하면 지원되는 어떤 암호화폐든 이전할 수 있으며 네트워크 수수료 지불을 위한 AVAX를 무료로 받을 수 있습니다."
 
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3748,8 +3759,12 @@ msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {s
 msgstr "{1} {stakingToken} 대 1 esGMX 비율로 최대 {0} esGMX 토큰을 현재 베스팅 할 수 있습니다."
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "You can transfer AVAX to Avalanche using any of the below options."
-msgstr "아래의 옵션중 하나를 사용해, AVAX를 Avalanche에 보낼 수 있습니다."
+msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+#~ msgid "You can transfer AVAX to Avalanche using any of the below options."
+#~ msgstr "아래의 옵션중 하나를 사용해, AVAX를 Avalanche에 보낼 수 있습니다."
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
