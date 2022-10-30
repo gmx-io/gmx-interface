@@ -1621,7 +1621,7 @@ msgstr ""
 msgid "Keep leverage at {0}x"
 msgstr ""
 
-#: src/components/NetworkDropdown/NetworkDropdown.js
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
 msgstr ""
 
@@ -2014,7 +2014,7 @@ msgstr ""
 msgid "More Info"
 msgstr ""
 
-#: src/components/NetworkDropdown/NetworkDropdown.js
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "More Options"
 msgstr ""
 
@@ -2063,12 +2063,12 @@ msgstr ""
 msgid "Network fee"
 msgstr ""
 
-#: src/components/NetworkDropdown/NetworkDropdown.js
-#: src/components/NetworkDropdown/NetworkDropdown.js
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks"
 msgstr ""
 
-#: src/components/NetworkDropdown/NetworkDropdown.js
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
 msgstr ""
 
@@ -2665,8 +2665,8 @@ msgstr ""
 msgid "Search Token"
 msgstr ""
 
-#: src/components/NetworkDropdown/LanguagePopupHome.js
-#: src/components/NetworkDropdown/NetworkDropdown.js
+#: src/components/NetworkDropdown/LanguagePopupHome.tsx
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Select Language"
 msgstr ""
 
@@ -2728,8 +2728,8 @@ msgstr ""
 
 #: src/App/App.js
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/components/NetworkDropdown/NetworkDropdown.js
-#: src/components/NetworkDropdown/NetworkDropdown.js
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Settings"
 msgstr ""
 

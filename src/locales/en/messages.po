@@ -1621,7 +1621,7 @@ msgstr "Jobs"
 msgid "Keep leverage at {0}x"
 msgstr "Keep leverage at {0}x"
 
-#: src/components/NetworkDropdown/NetworkDropdown.js
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Language"
 msgstr "Language"
 
@@ -2017,7 +2017,7 @@ msgstr "Minimum received"
 msgid "More Info"
 msgstr "More Info"
 
-#: src/components/NetworkDropdown/NetworkDropdown.js
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "More Options"
 msgstr "More Options"
 
@@ -2066,12 +2066,12 @@ msgstr "Net Value: Initial Collateral - Fees + PnL"
 msgid "Network fee"
 msgstr "Network fee"
 
-#: src/components/NetworkDropdown/NetworkDropdown.js
-#: src/components/NetworkDropdown/NetworkDropdown.js
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks"
 msgstr "Networks"
 
-#: src/components/NetworkDropdown/NetworkDropdown.js
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Networks and Settings"
 msgstr "Networks and Settings"
 
@@ -2668,8 +2668,8 @@ msgstr "Save on Fees"
 msgid "Search Token"
 msgstr "Search Token"
 
-#: src/components/NetworkDropdown/LanguagePopupHome.js
-#: src/components/NetworkDropdown/NetworkDropdown.js
+#: src/components/NetworkDropdown/LanguagePopupHome.tsx
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Select Language"
 msgstr "Select Language"
 
@@ -2731,8 +2731,8 @@ msgstr "Sender has withdrawn all tokens from GMX Vesting Vault"
 
 #: src/App/App.js
 #: src/components/Header/AppHeaderLinks.tsx
-#: src/components/NetworkDropdown/NetworkDropdown.js
-#: src/components/NetworkDropdown/NetworkDropdown.js
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
+#: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Settings"
 msgstr "Settings"
 
