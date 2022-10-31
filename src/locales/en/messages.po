@@ -4039,6 +4039,10 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
+msgstr "{nativeTokenSymbol} can not be sent to smart contract addresses. Select another token."
+
 #: src/components/Exchange/SwapBox.js
 msgid "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} not supported"
 msgstr "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} not supported"

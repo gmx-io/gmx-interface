@@ -236,3 +236,8 @@ export const replaceNativeTokenAddress = (path: string[], nativeTokenAddress: st
 
   return updatedPath;
 };
+
+export async function isContractAddress(provider, address) {
+  const code = await provider.getCode(address);
+  return code !== "0x";
+}
