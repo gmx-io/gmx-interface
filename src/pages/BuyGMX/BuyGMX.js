@@ -1,15 +1,16 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import Footer from "components/Footer/Footer";
 import "./BuyGMX.css";
 import { useWeb3React } from "@web3-react/core";
 
 import { Trans, t } from "@lingui/macro";
 import Button from "components/Common/Button";
-import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
+import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import Card from "components/Common/Card";
 import { getContract } from "config/contracts";
+import { setup1inchWidget } from "@1inch/embedded-widget";
 
 import Synapse from "img/ic_synapse.svg";
 import Multiswap from "img/ic_multiswap.svg";
@@ -63,10 +64,26 @@ const CENTRALISED_EXCHANGES = [
 ];
 
 export default function BuyGMX() {
+  const oneInchRef = useRef();
   const { chainId } = useChainId();
   const isArbitrum = chainId === ARBITRUM;
-  const { active } = useWeb3React();
+  const { active, library } = useWeb3React();
   const { symbol: nativeTokenSymbol } = getNativeToken(chainId);
+  useEffect(() => {
+    const iframeJsonRpcManager = setup1inchWidget({
+      chainId: chainId,
+      sourceTokenSymbol: getConstant(chainId, "nativeTokenSymbol"),
+      destinationTokenSymbol: "GMX",
+      hostElement: oneInchRef.current,
+      provider: library,
+      theme: "dark",
+      sourceTokenAmount: "15",
+    });
+    return () => {
+      iframeJsonRpcManager.destroy();
+    };
+  }, [library, chainId]);
+
   const EXCHANGE_LINKS = {
     getBungeeUrl: () =>
       `https://multitx.bungee.exchange/?toChainId=${chainId}&toTokenAddress=${getContract(chainId, "GMX")}`,
@@ -107,7 +124,8 @@ export default function BuyGMX() {
         </div>
         <div className="cards-row">
           <Card title={t`Buy GMX from a Decentralized Exchange`}>
-            {isArbitrum ? (
+            <div style={{ height: "350px" }} ref={oneInchRef}></div>
+            {/* {isArbitrum ? (
               <div className="App-card-content">
                 <div className="BuyGMXGLP-description">
                   <Trans>Buy GMX from Uniswap Arbitrum:</Trans>
@@ -137,7 +155,7 @@ export default function BuyGMX() {
                   </Button>
                 </div>
               </div>
-            )}
+            )} */}
           </Card>
           <Card title={t`Buy GMX from centralized services or bonds`}>
             <div className="App-card-content">
