@@ -1,7 +1,7 @@
 import "./StatsTooltip.css";
 type Props = {
   label: string;
-  value: number | [number];
+  value: number | string | [string] | [number];
   showDollar?: boolean;
 };
 
