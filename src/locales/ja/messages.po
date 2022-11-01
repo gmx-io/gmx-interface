@@ -96,7 +96,7 @@ msgstr ""
 msgid "APR"
 msgstr "APR(実質年利)"
 
-#: src/pages/Stake/StakeV2.js
+#: src/components/Stake/GMXAprTooltip.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 msgstr "APR(実質年利)は毎週水曜日に更新され、その前一週間に得られた手数料によって決まります。"
@@ -3055,7 +3055,7 @@ msgstr "規約"
 msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
 msgstr ""
 
-#: src/pages/Stake/StakeV2.js
+#: src/components/Stake/GMXAprTooltip.tsx
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "APRブーストはステークされたマルチプライヤーポイントから来ています。"
 
