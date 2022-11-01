@@ -92,7 +92,7 @@ function getTooltipContent(managedUsd, tokenInfo, token) {
         label={t`Current Pool Amount`}
         value={[
           `$${formatAmount(managedUsd, USD_DECIMALS, 0, true)}`,
-          `(${formatKeyAmount(tokenInfo, "poolAmount", token.decimals, 0, true)} ${token.symbol})`,
+          `(${formatKeyAmount(tokenInfo, "managedAmount", token.decimals, 0, true)} ${token.symbol})`,
         ]}
       />
       <StatsTooltipRow label={t`Max Pool Capacity`} value={formatAmount(tokenInfo.maxUsdgAmount, 18, 0, true)} />
