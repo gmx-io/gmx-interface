@@ -835,7 +835,7 @@ export default function PositionSeller(props) {
 
   const shouldShowExistingOrderWarning = false;
 
-  if (!isSwapAllowed && receiveToken.isStable && !triggerPriceUsd) {
+  if (orderOption === STOP && !triggerPriceUsd) {
     receiveAmount = bigNumberify(0);
     convertedReceiveAmount = bigNumberify(0);
   }
