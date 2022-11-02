@@ -382,8 +382,7 @@ export default function PositionSeller(props) {
 
     if (orderOption === STOP) {
       convertedReceiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveAmount, {
-        overridePrice: triggerPriceUsd,
-        isShort: !position?.isLong,
+        overridePrice: receiveToken.isStable && triggerPriceUsd,
       });
     } else {
       convertedReceiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveAmount);
@@ -836,8 +835,9 @@ export default function PositionSeller(props) {
 
   const shouldShowExistingOrderWarning = false;
 
-  if (!isSwapAllowed && !position.isLong && !triggerPriceUsd) {
+  if (!isSwapAllowed && receiveToken.isStable && !triggerPriceUsd) {
     receiveAmount = bigNumberify(0);
+    convertedReceiveAmount = bigNumberify(0);
   }
 
   return (
@@ -1165,9 +1165,7 @@ export default function PositionSeller(props) {
 
               {!isSwapAllowed && receiveToken && (
                 <div className="align-right PositionSelector-selected-receive-token">
-                  {position?.isLong
-                    ? formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)
-                    : formatAmount(receiveAmount, USD_DECIMALS, 4, true)}
+                  {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}
                   &nbsp;{receiveToken.symbol} ($
                   {formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
                 </div>
