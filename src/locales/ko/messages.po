@@ -429,16 +429,16 @@ msgid "Buy GMX"
 msgstr "GMX 구매"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX from Trader Joe:"
+msgid "Buy GMX from DEXes aggregators:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX from Uniswap Arbitrum:"
+msgid "Buy GMX from Traderjoe:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Buy GMX from a Decentralised Exchange"
-#~ msgstr ""
+msgid "Buy GMX from Uniswap:"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX from a Decentralized Exchange"
@@ -1486,10 +1486,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "If you have an existing position, the position will be closed at {0} USD.<0/><1/>This exit price will change with the price of the asset.<2/><3/><4>More Info</4>"
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "If you wish, you can buy AVAX directly to Avalanche or use one option to transfer it to Avalanche."
-#~ msgstr ""
 
 #: src/components/Exchange/PositionShare.js
 msgid "Image generation error, please refresh and try again."
@@ -3515,10 +3511,6 @@ msgstr ""
 msgid "Useful Links"
 msgstr "유용한 링크"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees."
-#~ msgstr "Avalanche나 Synapse 브리지를 사용하면 지원되는 어떤 암호화폐든 이전할 수 있으며 네트워크 수수료 지불을 위한 AVAX를 무료로 받을 수 있습니다."
-
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Utilization"
@@ -3763,10 +3755,6 @@ msgid "You can transfer AVAX from other networks to Avalanche using any of the b
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "You can transfer AVAX to Avalanche using any of the below options."
-#~ msgstr "아래의 옵션중 하나를 사용해, AVAX를 Avalanche에 보낼 수 있습니다."
-
-#: src/pages/BuyGMX/BuyGMX.js
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "아래의 옵션중 하나를 사용해, ETH를 Arbitrum에 보낼 수 있습니다."
 
@@ -3897,6 +3885,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "{0, select, true {Long} false {Short}} {1} market selected"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "{0}"
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx

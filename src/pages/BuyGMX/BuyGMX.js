@@ -1,16 +1,15 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback } from "react";
 import Footer from "components/Footer/Footer";
 import "./BuyGMX.css";
 import { useWeb3React } from "@web3-react/core";
 
 import { Trans, t } from "@lingui/macro";
 import Button from "components/Common/Button";
-import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
+import { ARBITRUM, AVALANCHE, getChainName } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import Card from "components/Common/Card";
 import { getContract } from "config/contracts";
-import { setup1inchWidget } from "@1inch/embedded-widget";
 
 import Synapse from "img/ic_synapse.svg";
 import Multiswap from "img/ic_multiswap.svg";
@@ -28,6 +27,17 @@ import gmxAvax from "img/ic_gmx_avax.svg";
 import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
 import ohmArbitrum from "img/ic_olympus_arbitrum.svg";
 import Kucoin from "img/kucoin.svg";
+import OneInch from "img/ic_1inch.svg";
+import Dodo from "img/ic_dodo.svg";
+import Firebird from "img/ic_firebird.png";
+import Matcha from "img/ic_matcha.png";
+import Odos from "img/ic_odos.png";
+import Openocean from "img/ic_openocean.svg";
+import Paraswap from "img/ic_paraswap.svg";
+import Slingshot from "img/ic_slingshot.svg";
+import YieldYak from "img/ic_yield_yak.png";
+import Across from "img/ic_across.svg";
+import Arbitrum from "img/ic_arbitrum_24.svg";
 import { getNativeToken } from "config/tokens";
 
 const CENTRALISED_EXCHANGES = [
@@ -63,26 +73,68 @@ const CENTRALISED_EXCHANGES = [
   },
 ];
 
+const DECENTRALISED_AGGRIGATORS = [
+  {
+    name: "1inch",
+    icon: OneInch,
+    link: "https://app.1inch.io/",
+    networks: [ARBITRUM, AVALANCHE],
+  },
+  {
+    name: "Matcha",
+    icon: Matcha,
+    link: "https://www.matcha.xyz/",
+    networks: [ARBITRUM, AVALANCHE],
+  },
+  {
+    name: "Paraswap",
+    icon: Paraswap,
+    link: "https://www.paraswap.io/",
+    networks: [ARBITRUM, AVALANCHE],
+  },
+  {
+    name: "Firebird",
+    icon: Firebird,
+    link: "https://firebird.finance/",
+    networks: [ARBITRUM, AVALANCHE],
+  },
+  {
+    name: "OpenOcean",
+    icon: Openocean,
+    link: "https://openocean.finance/",
+    networks: [ARBITRUM, AVALANCHE],
+  },
+  {
+    name: "DODO",
+    icon: Dodo,
+    link: "https://dodoex.io/",
+    networks: [ARBITRUM, AVALANCHE],
+  },
+  {
+    name: "Odos",
+    icon: Odos,
+    link: "https://app.odos.xyz/",
+    networks: [ARBITRUM],
+  },
+  {
+    name: "Slingshot",
+    icon: Slingshot,
+    link: "https://slingshot.finance/",
+    networks: [ARBITRUM],
+  },
+  {
+    name: "Yieldyak",
+    icon: YieldYak,
+    link: "https://yieldyak.com/swap",
+    networks: [AVALANCHE],
+  },
+];
+
 export default function BuyGMX() {
-  const oneInchRef = useRef();
   const { chainId } = useChainId();
   const isArbitrum = chainId === ARBITRUM;
-  const { active, library } = useWeb3React();
+  const { active } = useWeb3React();
   const { symbol: nativeTokenSymbol } = getNativeToken(chainId);
-  useEffect(() => {
-    const iframeJsonRpcManager = setup1inchWidget({
-      chainId: chainId,
-      sourceTokenSymbol: getConstant(chainId, "nativeTokenSymbol"),
-      destinationTokenSymbol: "GMX",
-      hostElement: oneInchRef.current,
-      provider: library,
-      theme: "dark",
-      sourceTokenAmount: "15",
-    });
-    return () => {
-      iframeJsonRpcManager.destroy();
-    };
-  }, [library, chainId]);
 
   const EXCHANGE_LINKS = {
     getBungeeUrl: () =>
@@ -124,49 +176,44 @@ export default function BuyGMX() {
         </div>
         <div className="cards-row">
           <Card title={t`Buy GMX from a Decentralized Exchange`}>
-            <div style={{ height: "350px" }} ref={oneInchRef}></div>
-            {/* {isArbitrum ? (
-              <div className="App-card-content">
-                <div className="BuyGMXGLP-description">
-                  <Trans>Buy GMX from Uniswap Arbitrum:</Trans>
-                </div>
-                <div className="direct-purchase-options">
-                  <Button
-                    size="xl"
-                    imgSrc={gmxArbitrum}
-                    href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a"
-                  >
-                    <Trans>Purchase GMX</Trans>
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="App-card-content">
-                <div className="BuyGMXGLP-description">
-                  <Trans>Buy GMX from Trader Joe:</Trans>
-                </div>
-                <div className="direct-purchase-options">
-                  <Button
-                    size="xl"
-                    imgSrc={gmxAvax}
-                    href="https://traderjoexyz.com/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661#/"
-                  >
-                    <Trans>Purchase GMX</Trans>
-                  </Button>
-                </div>
-              </div>
-            )} */}
-          </Card>
-          <Card title={t`Buy GMX from centralized services or bonds`}>
             <div className="App-card-content">
+              {isArbitrum ? (
+                <div className="exchange-info-group">
+                  <div className="BuyGMXGLP-description">
+                    <Trans>Buy GMX from Uniswap:</Trans>
+                  </div>
+                  <div className="buttons-group col-1">
+                    <Button
+                      imgSrc={gmxArbitrum}
+                      href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a"
+                    >
+                      <Trans>Purchase GMX</Trans>
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="exchange-info-group">
+                  <div className="BuyGMXGLP-description">
+                    <Trans>Buy GMX from Traderjoe:</Trans>
+                  </div>
+                  <div className="buttons-group col-1">
+                    <Button
+                      imgSrc={gmxAvax}
+                      href="https://traderjoexyz.com/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661#/"
+                    >
+                      <Trans>Purchase GMX</Trans>
+                    </Button>
+                  </div>
+                </div>
+              )}
               <div className="exchange-info-group">
                 <div className="BuyGMXGLP-description">
-                  <Trans>Buy GMX from centralized exchanges:</Trans>
+                  <Trans>Buy GMX from DEXes aggregators:</Trans>
                 </div>
                 <div className="buttons-group">
-                  {CENTRALISED_EXCHANGES.map(({ name, icon, link }) => (
-                    <Button key={name} href={link} align="left" imgSrc={icon}>
-                      {name}
+                  {DECENTRALISED_AGGRIGATORS.filter((e) => e.networks.includes(chainId)).map((exchange) => (
+                    <Button imgSrc={exchange.icon} href={exchange.link}>
+                      <Trans>{exchange.name}</Trans>
                     </Button>
                   ))}
                 </div>
@@ -187,29 +234,48 @@ export default function BuyGMX() {
                   </Button>
                 </div>
               </div>
-              <div className="exchange-info-group">
-                <div className="BuyGMXGLP-description">
-                  <Trans>Buy GMX using FIAT gateways:</Trans>
-                </div>
-                <div className="buttons-group">
-                  <Button href={EXCHANGE_LINKS.getBanxaUrl()} align="left" imgSrc={Banxa}>
-                    Banxa
-                  </Button>
-                </div>
-              </div>
-
-              {chainId === ARBITRUM && (
+              {isArbitrum && (
                 <div className="exchange-info-group">
                   <div className="BuyGMXGLP-description">
                     <Trans>GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:</Trans>
                   </div>
                   <div className="buttons-group">
-                    <Button size="xl" imgSrc={ohmArbitrum} href="https://pro.olympusdao.finance/#/partners/GMX">
+                    <Button imgSrc={ohmArbitrum} href="https://pro.olympusdao.finance/#/partners/GMX">
                       Olympus Pro
                     </Button>
                   </div>
                 </div>
               )}
+            </div>
+          </Card>
+          <Card title={t`Buy GMX from centralized services or bonds`}>
+            <div className="App-card-content">
+              <div className="exchange-info-group">
+                <div className="BuyGMXGLP-description">
+                  <Trans>Buy GMX from centralized exchanges:</Trans>
+                </div>
+                <div className="buttons-group">
+                  {CENTRALISED_EXCHANGES.map(({ name, icon, link }) => (
+                    <Button key={name} href={link} align="left" imgSrc={icon}>
+                      {name}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="exchange-info-group">
+                <div className="BuyGMXGLP-description">
+                  <Trans>Buy GMX using FIAT gateways:</Trans>
+                </div>
+                <div className="buttons-group col-2">
+                  <Button href="https://www.binancecnt.com/en/buy-sell-crypto" align="left" imgSrc={Binance}>
+                    Binance Connect
+                  </Button>
+                  <Button href={EXCHANGE_LINKS.getBanxaUrl()} align="left" imgSrc={Banxa}>
+                    Banxa
+                  </Button>
+                </div>
+              </div>
             </div>
           </Card>
         </div>
@@ -275,32 +341,37 @@ export default function BuyGMX() {
                 <div className="buttons-group">
                   <Button
                     href="https://synapseprotocol.com/?inputCurrency=ETH&outputCurrency=ETH&outputChain=42161"
-                    align="left"
                     imgSrc={Synapse}
                   >
                     Synapse
                   </Button>
-                  <Button href="https://app.multichain.org/#/router" align="left" imgSrc={Multiswap}>
+                  <Button href="https://app.multichain.org/#/router" imgSrc={Multiswap}>
                     Multiswap
                   </Button>
+
                   <Button
                     href="https://app.hop.exchange/send?token=ETH&sourceNetwork=ethereum&destNetwork=arbitrum"
-                    align="left"
                     imgSrc={Hop}
                   >
                     Hop
                   </Button>
-                  <Button href={EXCHANGE_LINKS.getBungeeUrl()} align="left" imgSrc={Bungee}>
+                  <Button href="https://bridge.arbitrum.io/" imgSrc={Arbitrum}>
+                    Arbitrum
+                  </Button>
+                  <Button href={EXCHANGE_LINKS.getBungeeUrl()} imgSrc={Bungee}>
                     Bungee
                   </Button>
-                  <Button href={EXCHANGE_LINKS.getO3Url()} align="left" imgSrc={O3}>
+                  <Button href={EXCHANGE_LINKS.getO3Url()} imgSrc={O3}>
                     O3
                   </Button>
-                  <Button href="https://ftx.com/trade/ETH/USD" align="left" imgSrc={Ftx}>
+                  <Button href="https://ftx.com/trade/ETH/USD" imgSrc={Ftx}>
                     FTX
                   </Button>
-                  <Button align="left" href="https://www.binance.com/en/trade/ETH_USDT" imgSrc={Binance}>
+                  <Button href="https://www.binance.com/en/trade/ETH_USDT" imgSrc={Binance}>
                     Binance
+                  </Button>
+                  <Button href="https://across.to/" imgSrc={Across}>
+                    Across
                   </Button>
                 </div>
               </div>
@@ -360,6 +431,9 @@ export default function BuyGMX() {
                   </Button>
                   <Button href={EXCHANGE_LINKS.getO3Url()} align="left" imgSrc={O3}>
                     O3
+                  </Button>
+                  <Button href="https://across.to/" imgSrc={Across}>
+                    Across
                   </Button>
                 </div>
               </div>
