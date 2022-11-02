@@ -387,7 +387,7 @@ function DecentralisedExchanges({ chainId }) {
             <div className="BuyGMXGLP-description">
               <Trans>GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:</Trans>
             </div>
-            <div className="buttons-group">
+            <div className="buttons-group col-1">
               <Button imgSrc={ohmArbitrum} href="https://pro.olympusdao.finance/#/partners/GMX">
                 Olympus Pro
               </Button>

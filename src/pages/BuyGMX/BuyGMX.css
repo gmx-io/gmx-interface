@@ -181,6 +181,9 @@
   .buttons-group {
     grid-template-columns: auto;
   }
+  .col-1 {
+    display: grid;
+  }
 }
 
 @media (max-width: 370px) {
