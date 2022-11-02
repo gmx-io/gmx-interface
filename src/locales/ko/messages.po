@@ -398,16 +398,8 @@ msgid "Buy / Sell GLP"
 msgstr "GLP 구매 / 판매"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy AVAX"
-msgstr "AVAX 구매 "
-
-#: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy AVAX directly to Avalanche or transfer it there."
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy ETH"
-msgstr "ETH 구매 "
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy ETH directly to Arbitrum or transfer it there."
@@ -498,6 +490,10 @@ msgstr "구매 제출 완료"
 #: src/components/Glp/GlpSwap.js
 msgid "Buy with {0}"
 msgstr "{0}로 구매"
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy {nativeTokenSymbol}"
+msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "Buy {swapTokenSymbol} on 1inch"
@@ -3340,18 +3336,10 @@ msgstr ""
 msgid "Transaction was cancelled."
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Transfer AVAX"
-msgstr ""
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
 msgid "Transfer Account"
 msgstr "계정 이전"
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Transfer ETH"
-msgstr "ETH 전송"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Transfer NFT"
@@ -3376,6 +3364,10 @@ msgstr "이전 실패."
 #: src/pages/NftWallet/NftWallet.js
 msgid "Transfer submitted!"
 msgstr "이전 제출 완료!"
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Transfer {nativeTokenSymbol}"
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transferring"

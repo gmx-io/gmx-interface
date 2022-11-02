@@ -398,15 +398,7 @@ msgid "Buy / Sell GLP"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy AVAX"
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy AVAX directly to Avalanche or transfer it there."
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy ETH"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
@@ -497,6 +489,10 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Buy with {0}"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy {nativeTokenSymbol}"
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
@@ -3340,17 +3336,9 @@ msgstr ""
 msgid "Transaction was cancelled."
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Transfer AVAX"
-msgstr ""
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
 msgid "Transfer Account"
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Transfer ETH"
 msgstr ""
 
 #: src/pages/NftWallet/NftWallet.js
@@ -3375,6 +3363,10 @@ msgstr ""
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
 msgid "Transfer submitted!"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Transfer {nativeTokenSymbol}"
 msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
