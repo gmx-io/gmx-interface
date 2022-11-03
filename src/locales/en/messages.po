@@ -421,10 +421,6 @@ msgid "Buy GMX"
 msgstr "Buy GMX"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX from DEXes aggregators:"
-msgstr "Buy GMX from DEXes aggregators:"
-
-#: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX from Traderjoe:"
 msgstr "Buy GMX from Traderjoe:"
 
@@ -441,8 +437,8 @@ msgid "Buy GMX from centralized exchanges:"
 msgstr "Buy GMX from centralized exchanges:"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX from centralized services or bonds"
-msgstr "Buy GMX from centralized services or bonds"
+msgid "Buy GMX from centralized services"
+msgstr "Buy GMX from centralized services"
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX on {0}"
@@ -451,6 +447,10 @@ msgstr "Buy GMX on {0}"
 #: src/pages/Buy/Buy.js
 msgid "Buy GMX or GLP"
 msgstr "Buy GMX or GLP"
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Buy GMX using Decentralized Exchanges aggregators:"
+msgstr "Buy GMX using Decentralized Exchanges aggregators:"
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX using FIAT gateways:"

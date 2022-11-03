@@ -353,7 +353,7 @@ function DecentralisedExchanges({ chainId }) {
         )}
         <div className="exchange-info-group">
           <div className="BuyGMXGLP-description">
-            <Trans>Buy GMX from DEXes aggregators:</Trans>
+            <Trans>Buy GMX using Decentralized Exchanges aggregators:</Trans>
           </div>
           <div className="buttons-group">
             {DECENTRALISED_AGGRIGATORS.filter((e) => e.networks.includes(chainId)).map((exchange) => {
@@ -373,9 +373,6 @@ function DecentralisedExchanges({ chainId }) {
           <div className="buttons-group">
             <Button href={EXTERNAL_LINKS.bungee[chainId]} imgSrc={Bungee}>
               Bungee
-            </Button>
-            <Button href={EXTERNAL_LINKS.banxa[chainId]} imgSrc={Banxa}>
-              Banxa
             </Button>
             <Button href={EXTERNAL_LINKS.o3[chainId]} imgSrc={O3}>
               O3
@@ -401,7 +398,7 @@ function DecentralisedExchanges({ chainId }) {
 
 function CentralisedExchanges({ chainId }) {
   return (
-    <Card title={t`Buy GMX from centralized services or bonds`}>
+    <Card title={t`Buy GMX from centralized services`}>
       <div className="App-card-content">
         <div className="exchange-info-group">
           <div className="BuyGMXGLP-description">
