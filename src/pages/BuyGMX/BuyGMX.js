@@ -2,24 +2,23 @@ import React, { useCallback } from "react";
 import Footer from "components/Footer/Footer";
 import "./BuyGMX.css";
 import { useWeb3React } from "@web3-react/core";
-
 import { Trans, t } from "@lingui/macro";
 import Button from "components/Common/Button";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import Card from "components/Common/Card";
+import { importImage } from "lib/legacy";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import Banxa from "img/ic_banxa.svg";
+import Uniswap from "img/ic_uni_24.svg";
+import Traderjoe from "img/ic_traderjoe.png";
 import Bungee from "img/ic_bungee.png";
 import O3 from "img/ic_o3.png";
 import Binance from "img/ic_binance.svg";
 import Ftx from "img/ic_ftx.svg";
-import gmxAvax from "img/ic_gmx_avax.svg";
-import gmxArbitrum from "img/ic_gmx_arbitrum.svg";
 import ohmArbitrum from "img/ic_olympus_arbitrum.svg";
-import { importImage } from "lib/legacy";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const EXTERNAL_LINKS = {
   bungee: { [ARBITRUM]: "https://multitx.bungee.exchange/", [AVALANCHE]: "https://multitx.bungee.exchange/" },
@@ -334,7 +333,7 @@ function DecentralisedExchanges({ chainId }) {
               <Trans>Buy GMX from Uniswap:</Trans>
             </div>
             <div className="buttons-group col-1">
-              <Button imgSrc={gmxArbitrum} href={EXTERNAL_LINKS.buyGmx.main[chainId]}>
+              <Button imgSrc={Uniswap} href={EXTERNAL_LINKS.buyGmx.main[chainId]}>
                 <Trans>Purchase GMX</Trans>
               </Button>
             </div>
@@ -345,7 +344,7 @@ function DecentralisedExchanges({ chainId }) {
               <Trans>Buy GMX from Traderjoe:</Trans>
             </div>
             <div className="buttons-group col-1">
-              <Button imgSrc={gmxAvax} href={EXTERNAL_LINKS.buyGmx.main[chainId]}>
+              <Button imgSrc={Traderjoe} href={EXTERNAL_LINKS.buyGmx.main[chainId]}>
                 <Trans>Purchase GMX</Trans>
               </Button>
             </div>
