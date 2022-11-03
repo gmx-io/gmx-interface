@@ -206,11 +206,11 @@ function FullApp() {
           {userOnMobileDevice ? (
             <Trans>
               <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink>, and use GMX with its built-in
-              browser
+              browser.
             </Trans>
           ) : (
             <Trans>
-              <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink> to start using GMX
+              <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink> to start using GMX.
             </Trans>
           )}
         </div>
@@ -229,12 +229,12 @@ function FullApp() {
           {userOnMobileDevice ? (
             <Trans>
               <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink>, and use GMX
-              with its built-in browser
+              with its built-in browser.
             </Trans>
           ) : (
             <Trans>
               <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink> to start using
-              GMX
+              GMX.
             </Trans>
           )}
         </div>

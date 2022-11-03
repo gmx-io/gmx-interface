@@ -42,20 +42,20 @@ msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}
 msgstr "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
 
 #: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0> to start using GMX"
-msgstr "<0>Install Coinbase Wallet</0> to start using GMX"
+msgid "<0>Install Coinbase Wallet</0> to start using GMX."
+msgstr "<0>Install Coinbase Wallet</0> to start using GMX."
 
 #: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser"
-msgstr "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser"
+msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser."
+msgstr "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser."
 
 #: src/App/App.js
-msgid "<0>Install MetaMask</0> to start using GMX"
-msgstr "<0>Install MetaMask</0> to start using GMX"
+msgid "<0>Install MetaMask</0> to start using GMX."
+msgstr "<0>Install MetaMask</0> to start using GMX."
 
 #: src/App/App.js
-msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser"
-msgstr "<0>Install MetaMask</0>, and use GMX with its built-in browser"
+msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser."
+msgstr "<0>Install MetaMask</0>, and use GMX with its built-in browser."
 
 #: src/components/Exchange/OrdersToa.js
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
