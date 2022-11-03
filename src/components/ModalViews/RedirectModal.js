@@ -11,7 +11,6 @@ export function RedirectPopupModal({
   setRedirectPopupTimestamp,
   setShouldHideRedirectModal,
   shouldHideRedirectModal,
-  removeRedirectPopupTimestamp,
 }) {
   const onClickAgree = () => {
     if (shouldHideRedirectModal) {
@@ -53,9 +52,9 @@ export function RedirectPopupModal({
           <Trans>Don't show this message again for 30 days.</Trans>
         </Checkbox>
       </div>
-      <ExternalLink href={appRedirectUrl} className="App-cta Exchange-swap-button" onClick={() => onClickAgree()}>
+      <a href={appRedirectUrl} className="App-cta Exchange-swap-button" onClick={onClickAgree}>
         <Trans>Agree</Trans>
-      </ExternalLink>
+      </a>
     </Modal>
   );
 }
