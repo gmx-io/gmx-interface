@@ -124,6 +124,11 @@
 .transparent-btn:hover {
   background: var(--dark-blue-hover);
 }
+
+.transparent-btn:active {
+  background: var(--dark-blue-active);
+}
+
 .referral-table-header {
   display: flex;
   justify-content: space-between;

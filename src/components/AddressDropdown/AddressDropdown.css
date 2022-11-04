@@ -16,6 +16,9 @@
 .App-header-user-address:hover {
   background: #808aff14;
 }
+.App-header-user-address:active {
+  background: var(--dark-blue-active);
+}
 
 .menu-items {
   position: absolute;
