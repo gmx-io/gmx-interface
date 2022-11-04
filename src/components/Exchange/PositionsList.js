@@ -615,16 +615,12 @@ export default function PositionsList(props) {
                                 return (
                                   <div
                                     key={`${order.isLong}-${order.type}-${order.index}`}
-                                    className="Position-list-order"
+                                    className="Position-list-order active-order-tooltip"
                                   >
                                     {order.triggerAboveThreshold ? ">" : "<"}{" "}
                                     {formatAmount(order.triggerPrice, 30, 2, true)}:
                                     {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
-                                    {order.error && (
-                                      <>
-                                        , <span className="negative">{order.error}</span>
-                                      </>
-                                    )}
+                                    {order.error && <div className="negative active-oredr-error">{order.error}</div>}
                                   </div>
                                 );
                               })}
