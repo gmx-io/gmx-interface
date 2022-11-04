@@ -229,11 +229,23 @@ export default function OrdersList(props) {
 
       const error = getOrderError(account, order, positionsMap);
       const orderId = `${order.type}-${order.index}`;
+      const orderTitle = `${order.type === INCREASE ? t`Increase` : t`Decrease`} ${indexTokenSymbol} ${
+        order.isLong ? t`Long` : t`Short`
+      }
+      by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}`;
       const orderText = (
         <>
-          {order.type === INCREASE ? t`Increase` : t`Decrease`} {indexTokenSymbol} {order.isLong ? t`Long` : t`Short`}
-          &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
-          {error && <div className="Exchange-list-item-error">{error}</div>}
+          {error ? (
+            <Tooltip
+              className="order-error"
+              handle={orderTitle}
+              position="right-bottom"
+              handleClassName="plain"
+              renderContent={() => <span className="negative">{error}</span>}
+            />
+          ) : (
+            orderTitle
+          )}
         </>
       );
 
@@ -397,13 +409,23 @@ export default function OrdersList(props) {
       const collateralUSD = getUsd(order.purchaseTokenAmount, order.purchaseToken, true, infoTokens);
 
       const error = getOrderError(account, order, positionsMap);
-
+      const orderTitle = `${order.type === INCREASE ? t`Increase` : t`Decrease`} ${indexTokenSymbol} ${
+        order.isLong ? t`Long` : t`Short`
+      } by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}`;
       return (
         <div key={`${order.isLong}-${order.type}-${order.index}`} className="App-card">
           <div className="App-card-title-small">
-            {order.type === INCREASE ? t`Increase` : t`Decrease`} {indexTokenSymbol} {order.isLong ? t`Long` : t`Short`}
-            &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
-            {error && <div className="Exchange-list-item-error">{error}</div>}
+            {error ? (
+              <Tooltip
+                className="order-error"
+                handle={orderTitle}
+                position="left-bottom"
+                handleClassName="plain"
+                renderContent={() => <span className="negative">{error}</span>}
+              />
+            ) : (
+              orderTitle
+            )}
           </div>
           <div className="App-card-divider"></div>
           <div className="App-card-content">

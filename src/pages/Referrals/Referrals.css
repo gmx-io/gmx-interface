@@ -113,15 +113,16 @@
   display: inline-flex;
   align-items: center;
   background: transparent;
-  border: 1px solid var(--dark-blue-border);
-  padding: 0.775rem 1.5rem;
+  padding: 0.75rem 1.25rem;
   color: white;
   font-size: 1.4rem;
+  border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
   cursor: pointer;
 }
+
 .transparent-btn:hover {
-  background: rgba(128, 138, 255, 0.0784313725490196);
+  background: var(--dark-blue-hover);
 }
 .referral-table-header {
   display: flex;
