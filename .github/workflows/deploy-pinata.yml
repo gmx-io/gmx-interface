@@ -1,0 +1,77 @@
+name: Deploy Pinata
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    environment: deploy
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: yarn
+
+      - run: yarn
+      - run: yarn build
+
+      # FIXME: Remove
+      - run: echo "pinata tests" >> ./build/ci-version.txt
+
+      - name: Pinata
+        id: pinata
+        uses: anantaramdas/ipfs-pinata-deploy-action@v1.6.4
+        with:
+          pin-name: gmx-site-pinata
+          path: './build'
+          pinata-api-key: ${{ secrets.PINATA_API_KEY }}
+          pinata-secret-api-key: ${{ secrets.PINATA_API_SECRET_KEY }}
+          verbose: true
+          remove-old: true
+
+      - name: Resolve CID on gateway
+        id: resolve-cid
+        uses: maku693/action-puppeteer-script@v0
+        with:
+          script: |
+            for (let tests = 5; tests > 0; tests--) {
+                console.log(`Remaining tests: ${tests}`)
+
+                for (let retries = 30; retries >= 0; retries--) {
+                  if (retries === 0) {
+                    throw new Error('Unable to resolve CID')
+                  } else {
+                    console.log(`Resolve CID, remaining retries: ${retries}`)
+                  }
+  
+                  const page = await browser.newPage();
+
+                  try {
+                    await page.goto('https://cloudflare-ipfs.com/ipfs/${{ steps.pinata.outputs.hash }}');
+                    await page.waitForSelector('.App')
+
+                    await page.waitForNetworkIdle({idleTime: 500})
+                    
+                    console.log('App succesfully rendered')
+                    break;
+                  } catch (e) {
+                    continue;
+                  }
+                }
+            }
+
+      - name: Update DNS Netlify
+        env:
+          NETLIFY_API_KEY: ${{ secrets.NETLIFY_API_KEY }}
+          NETLIFY_DNS_ZONE_ID: ${{ secrets.NETLIFY_DNS_ZONE_ID }}
+          NETLIFY_DNS_LINK: ${{ secrets.NETLIFY_DNS_LINK }}
+          IPFS_HASH: ${{ steps.pinata.outputs.hash }}
+        run: node ./scripts/update-dns-netlify.mjs
