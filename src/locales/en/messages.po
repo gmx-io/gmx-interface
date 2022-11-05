@@ -425,8 +425,12 @@ msgid "Buy GMX from Traderjoe:"
 msgstr "Buy GMX from Traderjoe:"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX from Uniswap:"
-msgstr "Buy GMX from Uniswap:"
+msgid "Buy GMX from Uniswap (make sure you are on Arbitrum):"
+msgstr "Buy GMX from Uniswap (make sure you are on Arbitrum):"
+
+#: src/pages/BuyGMX/BuyGMX.js
+#~ msgid "Buy GMX from Uniswap:"
+#~ msgstr "Buy GMX from Uniswap:"
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX from a Decentralized Exchange"
@@ -449,8 +453,12 @@ msgid "Buy GMX or GLP"
 msgstr "Buy GMX or GLP"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX using Decentralized Exchanges aggregators:"
-msgstr "Buy GMX using Decentralized Exchanges aggregators:"
+msgid "Buy GMX using Decentralized Exchange Aggregators:"
+msgstr "Buy GMX using Decentralized Exchange Aggregators:"
+
+#: src/pages/BuyGMX/BuyGMX.js
+#~ msgid "Buy GMX using Decentralized Exchanges aggregators:"
+#~ msgstr "Buy GMX using Decentralized Exchanges aggregators:"
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX using FIAT gateways:"
@@ -2469,8 +2477,8 @@ msgstr "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps a
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Purchase GMX"
-msgstr "Purchase GMX"
+#~ msgid "Purchase GMX"
+#~ msgstr "Purchase GMX"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
@@ -3294,6 +3302,10 @@ msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x lever
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "TraderJoe"
+msgstr "TraderJoe"
+
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"
 msgstr "Traders"
@@ -3422,6 +3434,10 @@ msgstr "USDG Debt"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "UTILIZATION"
 msgstr "UTILIZATION"
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Uniswap"
+msgstr "Uniswap"
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js

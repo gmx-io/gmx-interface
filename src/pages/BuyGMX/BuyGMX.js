@@ -12,12 +12,11 @@ import { importImage } from "lib/legacy";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import Banxa from "img/ic_banxa.svg";
-import Uniswap from "img/ic_uni_24.svg";
-import Traderjoe from "img/ic_traderjoe.png";
+import Uniswap from "img/ic_uni_arbitrum.svg";
+import Traderjoe from "img/ic_traderjoe_avax.png";
 import Bungee from "img/ic_bungee.png";
 import O3 from "img/ic_o3.png";
 import Binance from "img/ic_binance.svg";
-import Ftx from "img/ic_ftx.svg";
 import ohmArbitrum from "img/ic_olympus_arbitrum.svg";
 
 const EXTERNAL_LINKS = {
@@ -54,6 +53,12 @@ const TRANSFER_EXCHANGES = [
     icon: "ic_synapse.svg",
     networks: [ARBITRUM, AVALANCHE],
     link: "https://synapseprotocol.com/",
+  },
+  {
+    name: "Crypto.com",
+    icon: "crypto_com.svg",
+    networks: [ARBITRUM, AVALANCHE],
+    link: "https://crypto.com",
   },
   {
     name: "Arbitrum",
@@ -280,14 +285,11 @@ export default function BuyGMX() {
                 <Button href={EXTERNAL_LINKS.bungee[chainId]} imgSrc={Bungee}>
                   Bungee
                 </Button>
-                <Button href={EXTERNAL_LINKS.banxa[chainId]} imgSrc={Banxa}>
-                  Banxa
-                </Button>
                 <Button href={EXTERNAL_LINKS.o3[chainId]} imgSrc={O3}>
                   O3
                 </Button>
-                <Button href={EXTERNAL_LINKS.ftx[chainId]} imgSrc={Ftx}>
-                  FTX
+                <Button href={EXTERNAL_LINKS.banxa[chainId]} imgSrc={Banxa}>
+                  Banxa
                 </Button>
               </div>
             </div>
@@ -330,11 +332,11 @@ function DecentralisedExchanges({ chainId }) {
         {isArbitrum ? (
           <div className="exchange-info-group">
             <div className="BuyGMXGLP-description">
-              <Trans>Buy GMX from Uniswap:</Trans>
+              <Trans>Buy GMX from Uniswap (make sure you are on Arbitrum):</Trans>
             </div>
             <div className="buttons-group col-1">
               <Button imgSrc={Uniswap} href={EXTERNAL_LINKS.buyGmx.main[chainId]}>
-                <Trans>Purchase GMX</Trans>
+                <Trans>Uniswap</Trans>
               </Button>
             </div>
           </div>
@@ -345,14 +347,14 @@ function DecentralisedExchanges({ chainId }) {
             </div>
             <div className="buttons-group col-1">
               <Button imgSrc={Traderjoe} href={EXTERNAL_LINKS.buyGmx.main[chainId]}>
-                <Trans>Purchase GMX</Trans>
+                <Trans>TraderJoe</Trans>
               </Button>
             </div>
           </div>
         )}
         <div className="exchange-info-group">
           <div className="BuyGMXGLP-description">
-            <Trans>Buy GMX using Decentralized Exchanges aggregators:</Trans>
+            <Trans>Buy GMX using Decentralized Exchange Aggregators:</Trans>
           </div>
           <div className="buttons-group">
             {DECENTRALISED_AGGRIGATORS.filter((e) => e.networks.includes(chainId)).map((exchange) => {

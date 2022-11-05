@@ -425,8 +425,12 @@ msgid "Buy GMX from Traderjoe:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX from Uniswap:"
+msgid "Buy GMX from Uniswap (make sure you are on Arbitrum):"
 msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+#~ msgid "Buy GMX from Uniswap:"
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX from a Decentralized Exchange"
@@ -449,8 +453,12 @@ msgid "Buy GMX or GLP"
 msgstr "购买GMX或GLP"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX using Decentralized Exchanges aggregators:"
+msgid "Buy GMX using Decentralized Exchange Aggregators:"
 msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.js
+#~ msgid "Buy GMX using Decentralized Exchanges aggregators:"
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy GMX using FIAT gateways:"
@@ -2466,8 +2474,8 @@ msgstr "购买<0>GLP代币</0>，从掉期和杠杆交易中获得{nativeTokenSy
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Purchase GMX"
-msgstr "购买GMX"
+#~ msgid "Purchase GMX"
+#~ msgstr "购买GMX"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
@@ -3291,6 +3299,10 @@ msgstr "直接从你的钱包交易BTC、ETH、AVAX和其他顶级加密货币�
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr ""
 
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "TraderJoe"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"
 msgstr "交易者"
@@ -3419,6 +3431,10 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "UTILIZATION"
 msgstr "使用方法"
+
+#: src/pages/BuyGMX/BuyGMX.js
+msgid "Uniswap"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
