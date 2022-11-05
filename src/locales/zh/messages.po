@@ -1875,18 +1875,6 @@ msgstr "超出最大成交金额"
 msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
-msgid "Max leverage: 30.5x"
-msgstr "最大杠杆率:30.5x"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Max leverage: 30.5xt"
-msgstr "最大杠杆率:30.5xt"
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Max leverage: 30x"
-msgstr ""
-
 #: src/components/Glp/GlpSwap.js
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgstr "已达到{0}池的最大容量。请使用另一个代币挖GLP"
@@ -3295,8 +3283,8 @@ msgid "Trade"
 msgstr "交易"
 
 #: src/pages/Home/Home.js
-msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
-msgstr "直接从你的钱包交易BTC、ETH、AVAX和其他顶级加密货币，杠杆率最高可达30倍"
+msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
+msgstr ""
 
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."

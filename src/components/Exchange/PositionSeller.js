@@ -24,6 +24,7 @@ import {
   getNextToAmount,
   USDG_DECIMALS,
   adjustForDecimals,
+  MAX_INITIAL_LEVERAGE,
 } from "lib/legacy";
 import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED } from "config/chains";
 import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
@@ -153,7 +154,7 @@ export default function PositionSeller(props) {
 
   const [savedRecieveTokenAddress, setSavedRecieveTokenAddress] = useLocalStorageByChainId(
     chainId,
-    `${CLOSE_POSITION_RECEIVE_TOKEN_KEY}-${position?.indexToken?.symbol}-${position.isLong ? "long" : "short"}`
+    `${CLOSE_POSITION_RECEIVE_TOKEN_KEY}-${position?.indexToken?.symbol}-${position?.isLong ? "long" : "short"}`
   );
 
   const [swapToToken, setSwapToToken] = useState(() =>
@@ -545,8 +546,8 @@ export default function PositionSeller(props) {
       return t`Min leverage: 1.1x`;
     }
 
-    if (nextLeverage && nextLeverage.gt(30.5 * BASIS_POINTS_DIVISOR)) {
-      return t`Max leverage: 30.5xt`;
+    if (nextLeverage && nextLeverage.gt(MAX_INITIAL_LEVERAGE)) {
+      return `Max leverage: ${(MAX_INITIAL_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
     }
 
     if (hasPendingProfit && orderOption !== STOP && !isProfitWarningAccepted) {

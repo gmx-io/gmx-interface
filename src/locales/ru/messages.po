@@ -1875,18 +1875,6 @@ msgstr ""
 msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
-msgid "Max leverage: 30.5x"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Max leverage: 30.5xt"
-msgstr ""
-
-#: src/components/Exchange/PositionEditor.js
-msgid "Max leverage: 30x"
-msgstr ""
-
 #: src/components/Glp/GlpSwap.js
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
 msgstr ""
@@ -3295,8 +3283,8 @@ msgid "Trade"
 msgstr "Торговля"
 
 #: src/pages/Home/Home.js
-msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
-msgstr "Торгуйте BTC, ETH, AVAX и другими популярными криптовалютами с кредитным плечом до 30x прямо из вашего кошелька."
+msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
+msgstr ""
 
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
