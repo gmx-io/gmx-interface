@@ -33,7 +33,7 @@ jobs:
           pin-name: gmx-site-pinata
           path: './build'
           pinata-api-key: ${{ secrets.PINATA_API_KEY }}
-          pinata-secret-api-key: ${{ secrets.PINATA_API_SECRET_KEY }}
+          pinata-secret-api-key: ${{ secrets.PINATA_API_SECRET }}
           verbose: true
           remove-old: true
 
@@ -72,6 +72,6 @@ jobs:
         env:
           NETLIFY_API_KEY: ${{ secrets.NETLIFY_API_KEY }}
           NETLIFY_DNS_ZONE_ID: ${{ secrets.NETLIFY_DNS_ZONE_ID }}
-          NETLIFY_DNS_LINK: ${{ secrets.NETLIFY_DNS_LINK }}
+          NETLIFY_DNS_LINK: _dnslink.pinata.dhead.io
           IPFS_HASH: ${{ steps.pinata.outputs.hash }}
         run: node ./scripts/update-dns-netlify.mjs
