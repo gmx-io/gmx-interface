@@ -23,14 +23,11 @@ jobs:
       - run: yarn
       - run: yarn build
 
-      # FIXME: Remove
-      - run: echo "pinata tests" >> ./build/ci-version.txt
-
       - name: Pinata
         id: pinata
         uses: anantaramdas/ipfs-pinata-deploy-action@v1.6.4
         with:
-          pin-name: gmx-site-pinata
+          pin-name: gmx-interface
           path: './build'
           pinata-api-key: ${{ secrets.PINATA_API_KEY }}
           pinata-secret-api-key: ${{ secrets.PINATA_API_SECRET }}

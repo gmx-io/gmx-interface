@@ -5,17 +5,17 @@ const NETLIFY_API_URL = "https://api.netlify.com/api/v1";
 const NETLIFY_API_KEY = process.env.NETLIFY_API_KEY;
 const NETLIFY_DNS_ZONE_ID = process.env.NETLIFY_DNS_ZONE_ID;
 const NETLIFY_DNS_LINK = process.env.NETLIFY_DNS_LINK;
-const cid = process.env.IPFS_HASH;
+const IPFS_HASH = process.env.IPFS_HASH;
 
 if (!NETLIFY_API_KEY) throw new Error('NETLIFY_API_KEY is required');
 if (!NETLIFY_DNS_ZONE_ID) throw new Error('NETLIFY_DNS_ZONE_ID is required');
 if (!NETLIFY_DNS_LINK) throw new Error('NETLIFY_DNS_LINK is required');
-if (!cid) throw new Error('IPFS_HASH is required');
+if (!IPFS_HASH) throw new Error('IPFS_HASH is required');
 
 main();
 
 async function main() {
-    await updateNetlifyDnsLink(cid);
+    await updateNetlifyDnsLink(IPFS_HASH);
 
     await purgeCloudflareDNSCache();
 }
