@@ -1,8 +1,19 @@
 import { Trans } from "@lingui/macro";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { BigNumber } from "ethers";
 import { formatKeyAmount } from "lib/numbers";
 
-export default function GMXAprTooltip({ processedData, nativeTokenSymbol }) {
+type Props = {
+  processedData: {
+    gmxAprForEsGmx: BigNumber;
+    gmxAprForNativeToken: BigNumber;
+    gmxAprForNativeTokenWithBoost: BigNumber;
+    gmxBoostAprForNativeToken?: BigNumber;
+  };
+  nativeTokenSymbol: string;
+};
+
+export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Props) {
   return (
     <>
       <StatsTooltipRow
