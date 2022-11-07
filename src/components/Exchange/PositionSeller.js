@@ -547,7 +547,7 @@ export default function PositionSeller(props) {
     }
 
     if (nextLeverage && nextLeverage.gt(MAX_INITIAL_LEVERAGE)) {
-      return `Max leverage: ${(MAX_INITIAL_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
+      return t`Max leverage: ${(MAX_INITIAL_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
     }
 
     if (hasPendingProfit && orderOption !== STOP && !isProfitWarningAccepted) {

@@ -892,7 +892,7 @@ export default function SwapBox(props) {
     }
 
     if (leverage && leverage.gt(MAX_INITIAL_LEVERAGE)) {
-      return [`Max leverage: ${(MAX_INITIAL_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
+      return [t`Max leverage: ${(MAX_INITIAL_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
     if (!isMarketOrder && entryMarkPrice && triggerPriceUsd && !savedShouldDisableValidationForTesting) {
