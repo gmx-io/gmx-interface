@@ -1,11 +1,7 @@
 import { getServerUrl } from "config/backend";
-import { getContract } from "config/contracts";
-import { getTokenBySymbol, getTokens } from "config/tokens";
+import { getTokenBySymbol, getTokens, getWrappedToken } from "config/tokens";
 import { getChainlinkChartPricesFromGraph, getChartPricesFromStats, getStablePriceData } from "domain/prices";
-import { setTokenUsingIndexPrices } from "domain/tokens";
-import { contractFetcher } from "lib/contracts";
-import { expandDecimals, formatAmount } from "lib/numbers";
-import VaultReader from "abis/VaultReader.json";
+import { formatAmount } from "lib/numbers";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 
 export const supportedResolutions = { 5: "5m", 15: "15m", 60: "1h", 240: "4h", "1D": "1d" };
@@ -48,56 +44,31 @@ async function getPriceOfToken(chainId, symbol, period, isStable) {
   });
 }
 
-async function getVaultTokenInfo(chainId, symbol) {
-  const vaultAddress = getContract(chainId, "Vault");
-  const vaultReaderAddress = getContract(chainId, "VaultReader");
-  const positionRouterAddress = getContract(chainId, "PositionRouter");
-  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
-  const token = [getTokenBySymbol(chainId, symbol).address];
-  const vaultTokenInfo = await contractFetcher(undefined, VaultReader, [
-    vaultAddress,
-    positionRouterAddress,
-    nativeTokenAddress,
-    expandDecimals(1, 18),
-    token,
-  ])("getVaultInfoInDatafeed", chainId, vaultReaderAddress, "getVaultTokenInfoV4");
-  return vaultTokenInfo;
+async function getCurrentPrice(chainId, symbol) {
+  const indexPricesUrl = getServerUrl(chainId, "/prices");
+  const indexPrices = await fetch(indexPricesUrl).then((res) => res.json());
+  let symbolInfo = getTokenBySymbol(chainId, symbol);
+  if (symbolInfo.isNative) {
+    symbolInfo = getWrappedToken(chainId);
+  }
+  return indexPrices[symbolInfo.address];
 }
 
-async function getCurrentAveragePrice(chainId, ticker) {
-  const token = getTokenBySymbol(chainId, ticker);
-  const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
-  const indexPricesUrl = getServerUrl(chainId, "/prices");
-  const vaultTokenInfo = await getVaultTokenInfo(chainId, ticker);
-  const indexPrices = await fetch(indexPricesUrl).then((res) => res.json());
-  token.minPrice = vaultTokenInfo[10];
-  token.maxPrice = vaultTokenInfo[11];
-  token.guaranteedUsd = vaultTokenInfo[12];
-  token.maxPrimaryPrice = vaultTokenInfo[13];
-  token.minPrimaryPrice = vaultTokenInfo[14];
-  await setTokenUsingIndexPrices(token, indexPrices, nativeTokenAddress);
-  return token.maxPrice && token.minPrice ? token.maxPrice.add(token.minPrice).div(2) : null;
-}
-let currentAveragePrice;
-let lastUpdate;
 let prices;
 let lastTicker;
 async function getLivePriceBar(chainId, ticker, period, isStable) {
   if (!ticker) return;
-  const timezoneOffset = -new Date().getTimezoneOffset() * 60;
-  const periodSeconds = CHART_PERIODS[period];
-  const currentCandleTime = (Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + timezoneOffset) * 1000;
-
-  if (!lastUpdate || Date.now() > lastUpdate + 5000) {
-    lastUpdate = Date.now();
-    currentAveragePrice = await getCurrentAveragePrice(chainId, ticker);
-  }
-  if (!lastTicker || lastTicker !== ticker || !prices || Date.now() > lastUpdate + 60000) {
+  if (!lastTicker || lastTicker !== ticker || !prices) {
     lastTicker = ticker;
     prices = await getPriceOfToken(chainId, ticker, period, isStable);
   }
+  const timezoneOffset = -new Date().getTimezoneOffset() * 60;
+  const periodSeconds = CHART_PERIODS[period];
+  const currentCandleTime = (Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + timezoneOffset) * 1000;
+  const currentPrice = await getCurrentPrice(chainId, ticker);
+
   const last = prices[prices.length - 1];
-  const averagePriceValue = parseFloat(formatAmount(currentAveragePrice, USD_DECIMALS, 2));
+  const averagePriceValue = parseFloat(formatAmount(currentPrice, USD_DECIMALS, 4));
   if (currentCandleTime === last.time) {
     return {
       ...last,
@@ -171,10 +142,11 @@ const Datafeed = {
     intervalId = setInterval(function () {
       getLivePriceBar(chainId, ticker, period, isStable).then((bar) => {
         if (lastTicker === bar.ticker) {
+          console.log(bar);
           onRealtimeCallback(bar);
         }
       });
-    }, 2000);
+    }, 500);
   },
   unsubscribeBars: () => {
     clearInterval(intervalId);
