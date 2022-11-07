@@ -1,0 +1,18 @@
+name: 'Update DNSlink Netlify'
+description: ''
+inputs:
+  API_KEY:
+    description: 'Netlify API key'
+    required: true
+  DNS_ZONE:
+    description: 'Netlify DNS zone'
+    required: true
+  DNS_LINK:
+    description: 'dnsLink to update'
+    required: true
+  IPFS_HASH:
+    description: 'ipfsHash'
+    required: true
+runs:
+  using: 'node16'
+  main: './index.mjs'

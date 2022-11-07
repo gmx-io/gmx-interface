@@ -1,0 +1,21 @@
+name: 'Pin to Pinata'
+description: ''
+inputs:
+  API_KEY:
+    description: 'Pinata API key'
+    required: true
+  API_SECRET:
+    description: 'Pinata API secret'
+    required: true
+  PIN_NAME:
+    description: 'Pin name'
+    required: true
+  PATH:
+    description: 'Path to assets'
+    required: true
+outputs:
+  hash:
+    description: 'Pinned ipfsHash'
+runs:
+  using: 'node16'
+  main: './index.mjs'

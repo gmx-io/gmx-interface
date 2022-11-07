@@ -1,4 +1,4 @@
-name: Deploy Pinata
+name: Deploy Proxy
 
 on:
   workflow_dispatch:
@@ -68,6 +68,6 @@ jobs:
         with:
           API_KEY: ${{ secrets.NETLIFY_API_KEY }}
           DNS_ZONE: ${{ secrets.NETLIFY_DNS_ZONE_ID }}
-          DNS_LINK: _dnslink.base.dhead.io
+          DNS_LINK: _dnslink.proxy.dhead.io
           IPFS_HASH: ${{ steps.pinata.outputs.hash }}
 
