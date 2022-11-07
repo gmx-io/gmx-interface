@@ -4,8 +4,8 @@ import { widget } from "../../../../public/charting_library";
 import Datafeed, { supportedResolutions } from "./datafeed";
 import "./TVChartContainer.css";
 const DEFAULT_PERIOD = "4h";
+
 const defaultProps = {
-  interval: DEFAULT_PERIOD,
   theme: "Dark",
   containerId: "tv_chart_container",
   libraryPath: "/charting_library/",
@@ -24,6 +24,7 @@ export default function TVChartContainer({ symbol, chainId }) {
   const tvWidgetRef = useRef(null);
   const [chartReady, setChartReady] = useState(false);
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
+
   useEffect(() => {
     if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart()?.symbol()) {
       const CHAINID_SYMBOL = `${symbol}_${chainId}`;
@@ -47,12 +48,13 @@ export default function TVChartContainer({ symbol, chainId }) {
         [`mainSeriesProperties.${prop}.wickDownColor`]: "#fa3c58",
       };
     });
+
     const widgetOptions = {
-      debug: true,
+      debug: false,
       symbol: `${symbol}_${chainId}`,
       datafeed: Datafeed,
       theme: defaultProps.theme,
-      interval: period,
+      interval: supportedResolutions[period],
       container: tvChartRef.current,
       library_path: defaultProps.libraryPath,
       locale: "en",
@@ -92,10 +94,8 @@ export default function TVChartContainer({ symbol, chainId }) {
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         "paneProperties.background": "#16182e",
         "paneProperties.backgroundType": "solid",
-        "paneProperties.vertGridProperties.color": "rgba(35, 38, 59, 1)",
-        "paneProperties.vertGridProperties.style": 2,
-        "paneProperties.horzGridProperties.color": "rgba(35, 38, 59, 1)",
-        "paneProperties.horzGridProperties.style": 2,
+        "paneProperties.vertGridProperties.color": "transparent",
+        "paneProperties.horzGridProperties.color": "transparent",
         ...chartStyleOverrides,
       },
     };
@@ -107,6 +107,7 @@ export default function TVChartContainer({ symbol, chainId }) {
           btn.classList.add("resolution-btn");
           if (period === supportedResolutions[res]) {
             btn.classList.add("active-resolution-btn");
+            tvWidgetRef.current.chart().setResolution(res);
           }
 
           btn.textContent = supportedResolutions[res];
