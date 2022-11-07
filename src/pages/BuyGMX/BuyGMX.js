@@ -13,14 +13,19 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import Banxa from "img/ic_banxa.svg";
 import Uniswap from "img/ic_uni_arbitrum.svg";
-import Traderjoe from "img/ic_traderjoe_avax.png";
+import Traderjoe from "img/ic_traderjoe.png";
 import Bungee from "img/ic_bungee.png";
 import O3 from "img/ic_o3.png";
 import Binance from "img/ic_binance.svg";
 import ohmArbitrum from "img/ic_olympus_arbitrum.svg";
 
 const EXTERNAL_LINKS = {
-  bungee: { [ARBITRUM]: "https://multitx.bungee.exchange/", [AVALANCHE]: "https://multitx.bungee.exchange/" },
+  bungee: {
+    [ARBITRUM]:
+      "https://multitx.bungee.exchange/?toChainId=42161&toTokenAddress=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
+    [AVALANCHE]:
+      "https://multitx.bungee.exchange/?toChainId=43114&toTokenAddress=0x62edc0692bd897d2295872a9ffcac5425011c661",
+  },
   banxa: {
     [ARBITRUM]: "https://gmx.banxa.com/?coinType=ETH&fiatType=USD&fiatAmount=500&blockchain=arbitrum",
     [AVALANCHE]: "https://gmx.banxa.com/?coinType=AVAX&fiatType=USD&fiatAmount=500&blockchain=avalanche",
@@ -332,7 +337,7 @@ function DecentralisedExchanges({ chainId }) {
         {isArbitrum ? (
           <div className="exchange-info-group">
             <div className="BuyGMXGLP-description">
-              <Trans>Buy GMX from Uniswap (make sure you are on Arbitrum):</Trans>
+              <Trans>Buy GMX from Uniswap (make sure to select Arbitrum):</Trans>
             </div>
             <div className="buttons-group col-1">
               <Button imgSrc={Uniswap} href={EXTERNAL_LINKS.buyGmx.main[chainId]}>
