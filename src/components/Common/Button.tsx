@@ -5,9 +5,9 @@ import "./Button.css";
 type Props = {
   imgSrc: string;
   children: ReactNode;
-  imgName: string;
-  href?: string;
+  imgName?: string;
   className?: string;
+  href?: string;
   size?: string;
   onClick?: () => void;
 };

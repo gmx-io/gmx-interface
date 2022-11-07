@@ -397,11 +397,11 @@ msgstr "Buy"
 msgid "Buy / Sell GLP"
 msgstr "Buy / Sell GLP"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy AVAX directly to Avalanche or transfer it there."
 msgstr "Buy AVAX directly to Avalanche or transfer it there."
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy ETH directly to Arbitrum or transfer it there."
 msgstr "Buy ETH directly to Arbitrum or transfer it there."
 
@@ -420,35 +420,27 @@ msgstr "Buy GLP Icon"
 msgid "Buy GMX"
 msgstr "Buy GMX"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Traderjoe:"
 msgstr "Buy GMX from Traderjoe:"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Uniswap (make sure to select Arbitrum):"
 msgstr "Buy GMX from Uniswap (make sure to select Arbitrum):"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Buy GMX from Uniswap (make sure you are on Arbitrum):"
-#~ msgstr "Buy GMX from Uniswap (make sure you are on Arbitrum):"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Buy GMX from Uniswap:"
-#~ msgstr "Buy GMX from Uniswap:"
-
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from a Decentralized Exchange"
 msgstr "Buy GMX from a Decentralized Exchange"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized exchanges:"
 msgstr "Buy GMX from centralized exchanges:"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized services"
 msgstr "Buy GMX from centralized services"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {0}"
 msgstr "Buy GMX on {0}"
 
@@ -456,19 +448,15 @@ msgstr "Buy GMX on {0}"
 msgid "Buy GMX or GLP"
 msgstr "Buy GMX or GLP"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using Decentralized Exchange Aggregators:"
 msgstr "Buy GMX using Decentralized Exchange Aggregators:"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Buy GMX using Decentralized Exchanges aggregators:"
-#~ msgstr "Buy GMX using Decentralized Exchanges aggregators:"
-
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using FIAT gateways:"
 msgstr "Buy GMX using FIAT gateways:"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using any token from any network:"
 msgstr "Buy GMX using any token from any network:"
 
@@ -486,11 +474,11 @@ msgstr "Buy on Arbitrum"
 msgid "Buy on Avalanche"
 msgstr "Buy on Avalanche"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer AVAX to Avalanche"
 msgstr "Buy or Transfer AVAX to Avalanche"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer ETH to Arbitrum"
 msgstr "Buy or Transfer ETH to Arbitrum"
 
@@ -503,7 +491,7 @@ msgstr "Buy submitted."
 msgid "Buy with {0}"
 msgstr "Buy with {0}"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol}"
 msgstr "Buy {nativeTokenSymbol}"
 
@@ -560,7 +548,7 @@ msgstr "Check the \"Save on Fees\" section below to get the lowest fee percentag
 msgid "Checking code..."
 msgstr "Checking code..."
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Choose to buy from decentralized or centralized exchanges."
 msgstr "Choose to buy from decentralized or centralized exchanges."
 
@@ -1418,7 +1406,7 @@ msgstr "GMX Vault"
 msgid "GMX Weekly Updates"
 msgstr "GMX Weekly Updates"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
 msgstr "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
 
@@ -1966,8 +1954,8 @@ msgstr "Max: {0}"
 msgid "Max: {maxAmountFormatted}"
 msgstr "Max: {maxAmountFormatted}"
 
-#: src/components/Footer/Footer.js
-#: src/components/Footer/Footer.js
+#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.ts
 msgid "Media Kit"
 msgstr "Media Kit"
 
@@ -2479,11 +2467,6 @@ msgstr "Protocol analytics"
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 msgstr "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Purchase GMX"
-#~ msgstr "Purchase GMX"
-
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
 msgstr "Purchase Insurance"
@@ -2558,7 +2541,7 @@ msgstr "Referral Code does not exist"
 msgid "Referral Codes"
 msgstr "Referral Codes"
 
-#: src/components/Footer/Footer.js
+#: src/components/Footer/constants.ts
 msgid "Referral Terms"
 msgstr "Referral Terms"
 
@@ -3055,7 +3038,7 @@ msgstr "Telegram bot for GMX position updates"
 msgid "Telegram bot for Open Interest on GMX"
 msgstr "Telegram bot for Open Interest on GMX"
 
-#: src/components/Footer/Footer.js
+#: src/components/Footer/constants.ts
 msgid "Terms and Conditions"
 msgstr "Terms and Conditions"
 
@@ -3180,7 +3163,7 @@ msgstr "To Receive"
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "To complete the transfer, you must switch your connected account to {receiver}."
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
 msgstr "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
 
@@ -3306,7 +3289,7 @@ msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x lever
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "TraderJoe"
 msgstr "TraderJoe"
 
@@ -3384,7 +3367,7 @@ msgstr "Transfer failed."
 msgid "Transfer submitted!"
 msgstr "Transfer submitted!"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Transfer {nativeTokenSymbol}"
 msgstr "Transfer {nativeTokenSymbol}"
 
@@ -3439,7 +3422,7 @@ msgstr "USDG Debt"
 msgid "UTILIZATION"
 msgstr "UTILIZATION"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Uniswap"
 msgstr "Uniswap"
 
@@ -3740,11 +3723,11 @@ msgstr "You are earning {nativeTokenSymbol} rewards with {0} tokens.<0/>Tokens: 
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "You are leaving GMX.io and will be redirected to a third party, independent website."
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can buy AVAX directly on <0>Avalanche</0> using these options:"
 msgstr "You can buy AVAX directly on <0>Avalanche</0> using these options:"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can buy ETH directly on <0>Arbitrum</0> using these options:"
 msgstr "You can buy ETH directly on <0>Arbitrum</0> using these options:"
 
@@ -3765,11 +3748,11 @@ msgstr "You can check your claim history <0>here</0>."
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
 msgstr "You can transfer AVAX from other networks to Avalanche using any of the below options:"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 
@@ -3902,7 +3885,7 @@ msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgid "{0, select, true {Long} false {Short}} {1} market selected"
 msgstr "{0, select, true {Long} false {Short}} {1} market selected"
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "{0}"
 msgstr "{0}"
 
