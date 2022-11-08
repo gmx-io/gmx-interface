@@ -20,7 +20,7 @@
 }
 
 .Exchange-should-show-position-lines {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
 }
 .Exchange-should-show-position-lines .active {
   opacity: 1;
@@ -74,7 +74,7 @@
 }
 
 .Exchange-leverage-slider-settings {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   margin-bottom: 0.8rem;
 }
 
@@ -214,7 +214,7 @@
   display: grid;
   grid-template-columns: 1fr auto;
   direction: rtl;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   margin-bottom: 0.465rem;
 }
 
@@ -223,7 +223,7 @@
   display: grid;
   grid-template-columns: 1fr auto;
   direction: rtl;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   margin-bottom: 0.465rem;
 }
 
@@ -232,14 +232,14 @@
   display: grid;
   grid-template-columns: 1fr auto;
   direction: rtl;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   margin-bottom: 0.465rem;
 }
 
 .ExchangeChart-range-option {
   display: inline-block;
   margin-right: 1.5rem;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   cursor: pointer;
   opacity: 0.6;
 }
@@ -328,7 +328,7 @@
   z-index: 5;
 }
 .ExchangeChart.tv .ExchangeChart-bottom-stats {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   padding: 0.8rem 0;
   margin-left: 3.1rem;
   white-space: nowrap;
@@ -368,7 +368,7 @@
 }
 
 .Exchange-price-tooltip {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   background: linear-gradient(90deg, rgba(57, 28, 147, 0.9) 0%, rgba(66, 24, 140, 0.9) 100%);
   padding: 0.9rem;
   border: 1px solid rgba(30, 9, 94, 0.5);
@@ -449,7 +449,7 @@
 .Exchange-list-item-error {
   color: #fa3c58;
   margin-top: 0.465rem;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
 }
 
 .Exchange-list.small {
@@ -457,7 +457,7 @@
 }
 
 button.Exchange-list-action {
-  font-size: 1.5rem;
+  font-size: var(--font-base);
   padding: 0;
   border-radius: 3px;
   background: none;
@@ -502,7 +502,7 @@ table.Exchange-list tr:hover {
 
 table.Exchange-list tr.Exchange-list-header {
   background: none;
-  font-size: 1.6rem;
+  font-size: var(--font-md);
 }
 
 table.Exchange-list tr.Exchange-list-header th {
@@ -525,7 +525,7 @@ table.Exchange-list th {
 .Exchange-info-row {
   display: grid;
   grid-template-columns: auto auto;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   margin-bottom: 0.465rem;
 }
 
@@ -547,7 +547,7 @@ table.Exchange-list th {
 .Confirmation-box-info a,
 .Confirmation-box-warning,
 .Confirmation-box-warning a {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   text-align: center;
   margin-top: 1rem;
   margin-bottom: 1.5rem;
@@ -567,7 +567,7 @@ table.Exchange-list th {
 
 .Exchange-swap-usd {
   display: inline-block;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
 }
 
 .Exchange-swap-box {
@@ -577,7 +577,7 @@ table.Exchange-list th {
 }
 
 .Exchange-swap-market-box-title {
-  font-size: 1.6rem;
+  font-size: var(--font-md);
   margin-bottom: 1.25rem;
 }
 
@@ -666,7 +666,7 @@ table.Exchange-list th {
 .Exchange-swap-section-top {
   display: grid;
   grid-template-columns: auto auto;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   padding-bottom: 1.25rem;
 }
 
@@ -677,7 +677,7 @@ table.Exchange-list th {
 }
 
 .Exchange-swap-message {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   opacity: 0.7;
   margin: 0.5rem 0;
 }
@@ -697,7 +697,7 @@ table.Exchange-list th {
   border-radius: 3px;
   z-index: 1;
   cursor: pointer;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
 }
 
@@ -711,14 +711,14 @@ table.Exchange-list th {
 }
 
 .Exchange-leverage-box .TokenSelector-caret {
-  font-size: 1.5rem;
+  font-size: var(--font-base);
   margin-left: 0.31rem;
 }
 
 input.Exchange-swap-input {
   padding: 0;
   max-width: 100%;
-  font-size: 2.4rem;
+  font-size: var(--font-lg);
   width: 100%;
   padding-right: 2rem;
 }
@@ -797,12 +797,12 @@ table.Exchange-list-small td {
 }
 
 .Exchange-list-info-label {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   margin-top: 0.31rem;
 }
 
 .Exchange-list-muted {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
 }
 
 .Exchange-list-card .Exchange-list-side {

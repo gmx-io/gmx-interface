@@ -16,7 +16,7 @@
   margin: 0;
 }
 .order-list li button {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   background: none;
   border: none;
   color: white;

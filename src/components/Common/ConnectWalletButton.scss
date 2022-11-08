@@ -5,7 +5,7 @@
   align-items: center;
   border: none;
   color: #fff;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   cursor: pointer;
   border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
@@ -17,7 +17,7 @@
   }
   .btn-label {
     font-weight: 400;
-    font-size: 1.4rem;
+    font-size: var(--font-sm);
     margin-left: 0.8rem;
     letter-spacing: 0;
   }

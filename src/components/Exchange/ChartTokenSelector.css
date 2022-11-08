@@ -18,7 +18,7 @@
 }
 
 .chart-token-menu-items .menu-item {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   height: 3.4rem;
   color: #a0a3c4;
 }

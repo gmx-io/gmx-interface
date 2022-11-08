@@ -2,7 +2,7 @@
   position: relative;
   overflow: hidden;
   min-height: 100%;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
 }
 
 .App-header-backdrop {
@@ -76,7 +76,7 @@
 
 .App-header-drawer .App-header-link-container .a,
 .App-header-drawer .App-header-link-container a {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   line-height: 1.8rem;
   font-weight: normal;
   letter-spacing: 0.1px;
@@ -158,7 +158,7 @@
   border: 1px solid #1e2136;
   border-radius: 0.4rem;
   background: #16182e;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
 }
 
 .App-card-bottom-placeholder {
@@ -202,7 +202,7 @@
 }
 
 .App-card-long_sub__info___title {
-  font-size: 1.6rem;
+  font-size: var(--font-md);
   line-height: 2.1rem;
   font-weight: normal;
   letter-spacing: 0px;
@@ -256,7 +256,7 @@
 
 .App-card-long_sub__title {
   color: #a0a3c4;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   line-height: 1.8rem;
   font-weight: normal;
   letter-spacing: 0.25px;
@@ -287,7 +287,7 @@
 }
 
 .App-card-info-title {
-  font-size: 1.6rem;
+  font-size: var(--font-md);
   line-height: 2.1rem;
   font-weight: normal;
   letter-spacing: 0px;
@@ -369,7 +369,7 @@ button.App-connect-wallet {
   cursor: pointer;
   display: inline-block;
   border: none;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   line-height: 2rem;
   font-weight: 500;
   padding: 0.9rem 2.4rem;
@@ -452,7 +452,7 @@ button.App-connect-wallet:hover {
 }
 
 .section-title-content .section-title-content__title {
-  font-size: 2.4rem;
+  font-size: var(--font-lg);
   line-height: 3.1rem;
   color: white;
   letter-spacing: 0px;
@@ -484,7 +484,7 @@ button.App-connect-wallet:hover {
 }
 
 .Page-title {
-  font-size: 3.4rem;
+  font-size: var(--font-xl);
   font-weight: 500;
   margin-bottom: 0.8rem;
   font-weight: bold;
@@ -493,7 +493,7 @@ button.App-connect-wallet:hover {
 .Page-description {
   color: #b7b7bd;
   line-height: 2.15rem;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
 }
 
 .Page-description span,
@@ -530,7 +530,7 @@ button.App-connect-wallet:hover {
 .App-note {
   text-align: center;
   font-weight: bold;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   padding: 0 3.1rem;
 }
 
@@ -538,11 +538,11 @@ button.App-connect-wallet:hover {
   padding: 1.5rem 1.5rem 1.86rem;
   border: 1px solid #1e2136;
   border-radius: 0.4rem;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
 }
 
 .App-card-title {
-  font-size: 1.6rem;
+  font-size: var(--font-md);
   line-height: 2.1rem;
   font-weight: normal;
   letter-spacing: 0px;
@@ -554,7 +554,7 @@ button.App-connect-wallet:hover {
 }
 
 .App-card-title-small {
-  font-size: 1.6rem;
+  font-size: var(--font-md);
   margin-bottom: 1.5rem;
 }
 
@@ -638,7 +638,7 @@ button.App-connect-wallet:hover {
   padding: 1.8rem 1.7rem;
   display: block;
   color: #a0a3c4;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
   line-height: 1.8rem;
   font-weight: normal;
 }
@@ -649,7 +649,7 @@ button.App-connect-wallet:hover {
 }
 
 .Toastify {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
 }
 
 .Toastify__toast {
@@ -769,7 +769,7 @@ button.App-connect-wallet:hover {
 .App-info-row {
   display: grid;
   grid-template-columns: auto auto;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   margin-bottom: 0.465rem;
 }
 
@@ -784,7 +784,7 @@ button.App-connect-wallet:hover {
   padding: 1.5rem;
   border-radius: 0.3rem;
   border: none;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
 }
 
 a.App-cta,
@@ -823,14 +823,14 @@ button.App-cta.transparent:hover:enabled {
 button.App-cta.option,
 a.App-cta.option {
   padding: 0.8rem 1.5rem;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
 }
 
 a.App-button-option,
 button.App-button-option {
   cursor: pointer;
   border-radius: 4px;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
@@ -872,7 +872,7 @@ button.App-button-option:disabled {
   cursor: pointer;
   border: none;
   border-radius: 1.5rem;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
   background: none;
   color: white;
   padding: 0;
@@ -887,7 +887,7 @@ button.App-button-option:disabled {
 
 .App-settings-row {
   margin-bottom: 0.8rem;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
 }
 
 .App-settings .App-cta {
