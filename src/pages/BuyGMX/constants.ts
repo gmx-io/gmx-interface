@@ -92,7 +92,7 @@ export const TRANSFER_EXCHANGES: Exchange[] = [
   {
     name: "Across",
     icon: "ic_across.svg",
-    networks: [ARBITRUM, AVALANCHE],
+    networks: [ARBITRUM],
     link: "https://across.to/",
   },
   {

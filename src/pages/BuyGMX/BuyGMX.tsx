@@ -226,7 +226,7 @@ function CentralisedExchanges({ chainId }) {
             <Trans>Buy GMX from centralized exchanges:</Trans>
           </div>
           <div className="buttons-group">
-            {CENTRALISED_EXCHANGES.map((exchange) => {
+            {CENTRALISED_EXCHANGES.filter((e) => e.networks.includes(chainId)).map((exchange) => {
               const icon = importImage(exchange.icon);
               return (
                 <Button key={exchange.name} href={exchange.link} imgSrc={icon}>
