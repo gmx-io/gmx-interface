@@ -97,6 +97,7 @@ import {
 } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { PoolsPage } from "pages/PoolsPage/PoolsPage";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -487,6 +488,11 @@ function FullApp() {
                   savedSlippageAmount={savedSlippageAmount}
                   setPendingTxns={setPendingTxns}
                   connectWallet={connectWallet}
+                />
+              </Route>
+              <Route exact path="/pools">
+                <PoolsPage
+
                 />
               </Route>
               <Route exact path="/buy_glp">

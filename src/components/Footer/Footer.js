@@ -32,7 +32,8 @@ const socialLinks = [
   { link: "https://discord.gg/cxjZYR4gQK", name: "Discord", icon: discordIcon },
 ];
 
-export default function Footer({ showRedirectModal, redirectPopupTimestamp }) {
+export default function Footer(props) {
+  const { showRedirectModal, redirectPopupTimestamp } = props
   const isHome = isHomeSite();
 
   return (
