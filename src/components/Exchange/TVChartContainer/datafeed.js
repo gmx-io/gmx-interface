@@ -6,6 +6,10 @@ import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 
 export const supportedResolutions = { 5: "5m", 15: "15m", 60: "1h", 240: "4h", "1D": "1d" };
 
+export function getKeyByValue(object, value) {
+  return Object.keys(object).find((key) => object[key] === value);
+}
+
 const configurationData = {
   supported_resolutions: Object.keys(supportedResolutions),
   supports_marks: false,

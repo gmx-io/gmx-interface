@@ -1,7 +1,7 @@
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useEffect, useRef, useState } from "react";
 import { widget } from "../../../../public/charting_library";
-import Datafeed, { supportedResolutions } from "./datafeed";
+import Datafeed, { getKeyByValue, supportedResolutions } from "./datafeed";
 import "./TVChartContainer.css";
 const DEFAULT_PERIOD = "4h";
 
@@ -54,7 +54,7 @@ export default function TVChartContainer({ symbol, chainId }) {
       symbol: `${symbol}_${chainId}`,
       datafeed: Datafeed,
       theme: defaultProps.theme,
-      interval: supportedResolutions[period],
+      interval: getKeyByValue(period),
       container: tvChartRef.current,
       library_path: defaultProps.libraryPath,
       locale: "en",
@@ -94,8 +94,11 @@ export default function TVChartContainer({ symbol, chainId }) {
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         "paneProperties.background": "#16182e",
         "paneProperties.backgroundType": "solid",
-        "paneProperties.vertGridProperties.color": "transparent",
-        "paneProperties.horzGridProperties.color": "transparent",
+        "paneProperties.vertGridProperties.color": "rgba(35, 38, 59, 1)",
+        "paneProperties.vertGridProperties.style": 2,
+        "paneProperties.horzGridProperties.color": "rgba(35, 38, 59, 1)",
+        "paneProperties.horzGridProperties.style": 2,
+        "mainSeriesProperties.priceLineColor": "rgb(93, 96, 107)",
         ...chartStyleOverrides,
       },
     };
