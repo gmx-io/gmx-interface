@@ -16,6 +16,7 @@ import { bigNumberify, expandDecimals, formatAmount } from "./numbers";
 import { isValidToken } from "config/tokens";
 import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
+import { t } from "@lingui/macro";
 
 const { AddressZero } = ethers.constants;
 
@@ -1416,16 +1417,13 @@ export function importImage(name) {
     // eslint-disable-next-line no-console
     console.error(error);
   }
-  return tokenImage;
+  return tokenImage.default;
 }
 
 export function getTwitterIntentURL(text, url = "", hashtag = "") {
   let finalURL = "https://twitter.com/intent/tweet?text=";
   if (text.length > 0) {
-    finalURL += encodeURIComponent(text.replace(/[\r\n]+/g, " "))
-      .replace(/\*%7C/g, "*|URL:")
-      .replace(/%7C\*/g, "|*");
-
+    finalURL += Array.isArray(text) ? text.map((t) => encodeURIComponent(t)).join("%0a%0a") : encodeURIComponent(text);
     if (hashtag.length > 0) {
       finalURL += "&hashtags=" + encodeURIComponent(hashtag.replace(/#/g, ""));
     }
@@ -1452,18 +1450,18 @@ export function getOrderError(account, order, positionsMap, position) {
   const positionForOrder = position ? position : getPositionForOrder(account, order, positionsMap);
 
   if (!positionForOrder) {
-    return "No open position, order cannot be executed unless a position is opened";
+    return t`No open position, order cannot be executed unless a position is opened`;
   }
   if (positionForOrder.size.lt(order.sizeDelta)) {
-    return "Order size is bigger than position, will only be executable if position increases";
+    return t`Order size is bigger than position, will only be executable if position increases`;
   }
 
   if (positionForOrder.size.gt(order.sizeDelta)) {
     if (positionForOrder.size.sub(order.sizeDelta).lt(positionForOrder.collateral.sub(order.collateralDelta))) {
-      return "Order cannot be executed as it would reduce the position's leverage below 1";
+      return t`Order cannot be executed as it would reduce the position's leverage below 1`;
     }
     if (positionForOrder.size.sub(order.sizeDelta).lt(expandDecimals(5, USD_DECIMALS))) {
-      return "Order cannot be executed as the remaining position would be smaller than $5.00";
+      return t`Order cannot be executed as the remaining position would be smaller than $5.00`;
     }
   }
 }

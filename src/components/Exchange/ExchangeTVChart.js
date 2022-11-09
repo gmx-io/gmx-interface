@@ -14,6 +14,7 @@ import { usePrevious } from "lib/usePrevious";
 import { formatAmount, numberWithCommas } from "lib/numbers";
 import { getToken, getTokens } from "config/tokens";
 import { formatDateTime } from "lib/dates";
+import { t, Trans } from "@lingui/macro";
 
 const PRICE_LINE_TEXT_WIDTH = 15;
 
@@ -278,8 +279,8 @@ export default function ExchangeTVChart(props) {
           if (indexToken && indexToken.symbol) {
             tokenSymbol = indexToken.isWrapped ? indexToken.baseSymbol : indexToken.symbol;
           }
-          const title = `${order.type === INCREASE ? "Inc." : "Dec."} ${tokenSymbol} ${
-            order.isLong ? "Long" : "Short"
+          const title = `${order.type === INCREASE ? t`Inc.` : t`Dec.`} ${tokenSymbol} ${
+            order.isLong ? t`Long` : t`Short`
           }`;
           const color = "#3a3e5e";
           lines.push(
@@ -293,16 +294,13 @@ export default function ExchangeTVChart(props) {
       }
       if (positions && positions.length > 0) {
         const color = "#3a3e5e";
-
         positions.forEach((position) => {
+          const longOrShortText = position.isLong ? t`Long` : t`Short`;
           lines.push(
             currentSeries.createPriceLine({
               price: parseFloat(formatAmount(position.averagePrice, USD_DECIMALS, 2)),
               color,
-              title: `Open ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}`.padEnd(
-                PRICE_LINE_TEXT_WIDTH,
-                " "
-              ),
+              title: t`Open ${position.indexToken.symbol} ${longOrShortText}`.padEnd(PRICE_LINE_TEXT_WIDTH, " "),
             })
           );
 
@@ -311,10 +309,7 @@ export default function ExchangeTVChart(props) {
             currentSeries.createPriceLine({
               price: parseFloat(formatAmount(liquidationPrice, USD_DECIMALS, 2)),
               color,
-              title: `Liq. ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}`.padEnd(
-                PRICE_LINE_TEXT_WIDTH,
-                " "
-              ),
+              title: t`Liq. ${position.indexToken.symbol} ${longOrShortText}`.padEnd(PRICE_LINE_TEXT_WIDTH, " "),
             })
           );
         });
@@ -440,21 +435,27 @@ export default function ExchangeTVChart(props) {
             </div>
           </div>
           <div>
-            <div className="ExchangeChart-info-label">24h Change</div>
+            <div className="ExchangeChart-info-label">
+              <Trans>24h Change</Trans>
+            </div>
             <div className={cx({ positive: deltaPercentage > 0, negative: deltaPercentage < 0 })}>
               {!deltaPercentageStr && "-"}
               {deltaPercentageStr && deltaPercentageStr}
             </div>
           </div>
           <div className="ExchangeChart-additional-info">
-            <div className="ExchangeChart-info-label">24h High</div>
+            <div className="ExchangeChart-info-label">
+              <Trans>24h High</Trans>
+            </div>
             <div>
               {!high && "-"}
               {high && numberWithCommas(high.toFixed(2))}
             </div>
           </div>
           <div className="ExchangeChart-additional-info">
-            <div className="ExchangeChart-info-label">24h Low</div>
+            <div className="ExchangeChart-info-label">
+              <Trans>24h Low</Trans>
+            </div>
             <div>
               {!low && "-"}
               {low && numberWithCommas(low.toFixed(2))}

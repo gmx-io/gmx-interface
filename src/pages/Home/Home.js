@@ -1,6 +1,5 @@
 import React from "react";
 import Footer from "components/Footer/Footer";
-import cx from "classnames";
 import "./Home.css";
 
 import simpleSwapIcon from "img/ic_simpleswaps.svg";
@@ -127,7 +126,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
   const LaunchExchangeButton = () => {
     return (
       <HeaderLink
-        className={cx("default-btn")}
+        className="default-btn"
         to="/trade"
         redirectPopupTimestamp={redirectPopupTimestamp}
         showRedirectModal={showRedirectModal}
@@ -160,7 +159,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
         </div>
         <div className="Home-latest-info-container default-container">
           <div className="Home-latest-info-block">
-            <img src={tradingIcon} alt="trading" className="Home-latest-info__icon" />
+            <img src={tradingIcon} alt="Total Trading Volume Icon" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
               <div className="Home-latest-info__title">
                 <Trans>Total Trading Volume</Trans>
@@ -169,7 +168,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
             </div>
           </div>
           <div className="Home-latest-info-block">
-            <img src={statsIcon} alt="trading" className="Home-latest-info__icon" />
+            <img src={statsIcon} alt="Open Interest Icon" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
               <div className="Home-latest-info__title">
                 <Trans>Open Interest</Trans>
@@ -178,7 +177,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
             </div>
           </div>
           <div className="Home-latest-info-block">
-            <img src={totaluserIcon} alt="trading" className="Home-latest-info__icon" />
+            <img src={totaluserIcon} alt="Total Users Icon" className="Home-latest-info__icon" />
             <div className="Home-latest-info-content">
               <div className="Home-latest-info__title">
                 <Trans>Total Users</Trans>
@@ -192,7 +191,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
         <div className="Home-benefits default-container">
           <div className="Home-benefit">
             <div className="Home-benefit-icon">
-              <img src={liquidityIcon} alt="liquidity" className="Home-benefit-icon-symbol" />
+              <img src={liquidityIcon} alt="Reduce Liquidation Risks Icon" className="Home-benefit-icon-symbol" />
               <div className="Home-benefit-title">
                 <Trans>Reduce Liquidation Risks</Trans>
               </div>
@@ -206,7 +205,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
           </div>
           <div className="Home-benefit">
             <div className="Home-benefit-icon">
-              <img src={costIcon} alt="cost" className="Home-benefit-icon-symbol" />
+              <img src={costIcon} alt="Save on Costs Icon" className="Home-benefit-icon-symbol" />
               <div className="Home-benefit-title">
                 <Trans>Save on Costs</Trans>
               </div>
@@ -220,7 +219,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
           </div>
           <div className="Home-benefit">
             <div className="Home-benefit-icon">
-              <img src={simpleSwapIcon} alt="simpleswap" className="Home-benefit-icon-symbol" />
+              <img src={simpleSwapIcon} alt="Simple Swaps Icon" className="Home-benefit-icon-symbol" />
               <div className="Home-benefit-title">
                 <Trans>Simple Swaps</Trans>
               </div>
@@ -247,7 +246,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
           <div className="Home-cta-options">
             <div className="Home-cta-option Home-cta-option-arbitrum">
               <div className="Home-cta-option-icon">
-                <img src={arbitrumIcon} alt="arbitrum" />
+                <img src={arbitrumIcon} alt="Arbitrum Icon" />
               </div>
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Arbitrum</div>
@@ -258,7 +257,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
             </div>
             <div className="Home-cta-option Home-cta-option-ava">
               <div className="Home-cta-option-icon">
-                <img src={avaIcon} alt="ava" />
+                <img src={avaIcon} alt="Avalanche Icon" />
               </div>
               <div className="Home-cta-option-info">
                 <div className="Home-cta-option-title">Avalanche</div>

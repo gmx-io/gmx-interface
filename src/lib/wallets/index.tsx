@@ -25,6 +25,8 @@ import {
   WalletConnectConnector,
 } from "@web3-react/walletconnect-connector";
 import { helperToast } from "../helperToast";
+import { t, Trans } from "@lingui/macro";
+
 import { Web3ReactManagerFunctions } from "@web3-react/core/dist/types";
 
 export type NetworkMetadata = {
@@ -246,7 +248,7 @@ export const switchNetwork = async (chainId: number, active?: boolean) => {
       method: "wallet_switchEthereumChain",
       params: [{ chainId: chainIdHex }],
     });
-    helperToast.success("Connected to " + getChainName(chainId));
+    helperToast.success(t`Connected to ${getChainName(chainId)}`);
     return getChainName(chainId);
   } catch (ex) {
     // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
@@ -272,7 +274,7 @@ export const getWalletConnectHandler = (
     setActivatingConnector(walletConnect);
     activate(walletConnect, (ex) => {
       if (ex instanceof UnsupportedChainIdError) {
-        helperToast.error("Unsupported chain. Switch to Arbitrum network on your wallet and try again");
+        helperToast.error(t`Unsupported chain. Switch to Arbitrum network on your wallet and try again`);
         // eslint-disable-next-line no-console
         console.warn(ex);
       } else if (!(ex instanceof UserRejectedRequestErrorWalletConnect)) {
@@ -295,14 +297,16 @@ export const getInjectedHandler = (activate: Web3ReactManagerFunctions["activate
       if (e instanceof UnsupportedChainIdError) {
         helperToast.error(
           <div>
-            <div>Your wallet is not connected to {getChainName(chainId)}.</div>
-            <br />
-            <div className="clickable underline margin-bottom" onClick={() => switchNetwork(chainId, true)}>
-              Switch to {getChainName(chainId)}
-            </div>
-            <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
-              Add {getChainName(chainId)}
-            </div>
+            <Trans>
+              <div>Your wallet is not connected to {getChainName(chainId)}.</div>
+              <br />
+              <div className="clickable underline margin-bottom" onClick={() => switchNetwork(chainId, true)}>
+                Switch to {getChainName(chainId)}
+              </div>
+              <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
+                Add {getChainName(chainId)}
+              </div>
+            </Trans>
           </div>
         );
         return;

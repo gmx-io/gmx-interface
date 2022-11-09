@@ -9,7 +9,9 @@ import arbitrumIcon from "img/ic_arbitrum_16.svg";
 import avalancheIcon from "img/ic_avalanche_16.svg";
 
 import "./Ecosystem.css";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ARBITRUM, AVALANCHE } from "config/chains";
+import { t } from "@lingui/macro";
 
 const NETWORK_ICONS = {
   [ARBITRUM]: arbitrumIcon,
@@ -27,28 +29,28 @@ export default function Ecosystem() {
       title: "GMX Governance",
       link: "https://gov.gmx.io/",
       linkLabel: "gov.gmx.io",
-      about: "GMX Governance Page",
+      about: t`GMX Governance Page`,
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
       title: "GMX Stats",
       link: "https://stats.gmx.io/",
       linkLabel: "stats.gmx.io",
-      about: "GMX Stats Page",
+      about: t`GMX Stats Page`,
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
       title: "GMX Proposals",
       link: "https://snapshot.org/#/gmx.eth",
       linkLabel: "snapshot.org",
-      about: "GMX Proposals Voting page",
+      about: t`GMX Proposals Voting page`,
       chainIds: [ARBITRUM, AVALANCHE],
     },
     {
       title: "GMX Announcements",
       link: "https://t.me/GMX_Announcements",
       linkLabel: "t.me",
-      about: "GMX Announcements and Updates",
+      about: t`GMX Announcements and Updates`,
       chainIds: [ARBITRUM, AVALANCHE],
     },
   ];
@@ -58,7 +60,7 @@ export default function Ecosystem() {
       title: "GMX Blueberry Club",
       link: "https://www.blueberry.club/",
       linkLabel: "blueberry.club",
-      about: "GMX Blueberry NFTs",
+      about: t`GMX Blueberry NFTs`,
       creatorLabel: "@xm92boi",
       creatorLink: "https://t.me/xm92boi",
       chainIds: [ARBITRUM],
@@ -67,7 +69,7 @@ export default function Ecosystem() {
       title: "GMX Leaderboard",
       link: "https://www.gmx.house/",
       linkLabel: "gmx.house",
-      about: "Leaderboard for GMX traders",
+      about: t`Leaderboard for GMX traders`,
       creatorLabel: "@Itburnz",
       creatorLink: "https://t.me/Itburnz",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -76,7 +78,7 @@ export default function Ecosystem() {
       title: "GMX Positions Bot",
       link: "https://t.me/GMXPositions",
       linkLabel: "t.me",
-      about: "Telegram bot for GMX position updates",
+      about: t`Telegram bot for GMX position updates`,
       creatorLabel: "@zhongfu",
       creatorLink: "https://t.me/zhongfu",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -85,7 +87,7 @@ export default function Ecosystem() {
       title: "Blueberry Pulse",
       link: "https://blueberrypulse.substack.com/",
       linkLabel: "substack.com",
-      about: "GMX Weekly Updates",
+      about: t`GMX Weekly Updates`,
       creatorLabel: "@puroscohiba",
       creatorLink: "https://t.me/puroscohiba",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -94,7 +96,7 @@ export default function Ecosystem() {
       title: "DegenClip",
       link: "https://degenclip.com/gmx",
       linkLabel: "degenclip.com",
-      about: "Community curated tweet collection",
+      about: t`Community curated tweet collection`,
       creatorLabel: "@ox21l",
       creatorLink: "https://t.me/ox21l",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -103,7 +105,7 @@ export default function Ecosystem() {
       title: "GMX Yield Simulator",
       link: "https://gmx.defisims.com/",
       linkLabel: "defisims.com",
-      about: "Yield simulator for GMX",
+      about: t`Yield simulator for GMX`,
       creatorLabel: "@kyzoeth",
       creatorLink: "https://twitter.com/kyzoeth",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -112,7 +114,7 @@ export default function Ecosystem() {
       title: "GMX Returns Calculator",
       link: "https://docs.google.com/spreadsheets/u/4/d/1mQZlztz_NpTg5qQiYIzc_Ls1OTLfMOUtmEQN-WW8jj4/copy",
       linkLabel: "docs.google.com",
-      about: "Returns calculator for GMX and GLP",
+      about: t`Returns calculator for GMX and GLP`,
       creatorLabel: "@AStoicTrader1",
       creatorLink: "https://twitter.com/AStoicTrader1",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -121,7 +123,7 @@ export default function Ecosystem() {
       title: "GMX Compound Calculator",
       link: "https://docs.google.com/spreadsheets/d/14DiIE1wZkK9-Y5xSx1PzIgmpcj4ccz1YVw5nwzIWLgI/edit#gid=0",
       linkLabel: "docs.google.com",
-      about: "Optimal compound interval calculator",
+      about: t`Optimal compound interval calculator`,
       creatorLabel: "@ChasenKaminsky",
       creatorLink: "https://twitter.com/ChasenKaminsky",
       chainIds: [AVALANCHE],
@@ -130,7 +132,7 @@ export default function Ecosystem() {
       title: "GMX Trading Stats",
       link: "https://t.me/GMXTradingStats",
       linkLabel: "t.me",
-      about: "Telegram bot for Open Interest on GMX",
+      about: t`Telegram bot for Open Interest on GMX`,
       creatorLabel: "@SniperMonke01",
       creatorLink: "https://twitter.com/SniperMonke01",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -139,7 +141,7 @@ export default function Ecosystem() {
       title: "GMX Staking Bot",
       link: "https://t.me/GMX_Staking_bot",
       linkLabel: "t.me",
-      about: "GMX staking rewards updates and insights",
+      about: t`GMX staking rewards updates and insights`,
       creatorLabel: "@GMX_Staking_bot",
       creatorLink: "https://twitter.com/GMX_Staking_bot",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -148,7 +150,7 @@ export default function Ecosystem() {
       title: "GMX Staking Calculator",
       link: "https://gmxstaking.com",
       linkLabel: "gmxstaking.com",
-      about: "GMX staking calculator",
+      about: t`GMX staking calculator`,
       creatorLabel: "@n1njawtf",
       creatorLink: "https://t.me/n1njawtf",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -160,7 +162,7 @@ export default function Ecosystem() {
       title: "GMX Referrals Dashboard",
       link: "https://www.gmxreferrals.com/",
       linkLabel: "gmxreferrals.com",
-      about: "Dashboard for GMX referral stats",
+      about: t`Dashboard for GMX referral stats`,
       creatorLabel: "@kyzoeth",
       creatorLink: "https://twitter.com/kyzoeth",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -169,7 +171,7 @@ export default function Ecosystem() {
       title: "GMX Terminal",
       link: "https://gmxterminal.com",
       linkLabel: "gmxterminal.com",
-      about: "GMX explorer for stats and traders",
+      about: t`GMX explorer for stats and traders`,
       creatorLabel: "@vipineth",
       creatorLink: "https://t.me/vipineth",
       chainIds: [ARBITRUM],
@@ -178,7 +180,7 @@ export default function Ecosystem() {
       title: "GMX Analytics",
       link: "https://gmxstats.com/",
       linkLabel: "gmxstats.com",
-      about: "Financial reports and protocol analytics",
+      about: t`Financial reports and protocol analytics`,
       creatorLabel: "@CryptoMessiah",
       creatorLink: "https://t.me/LarpCapital",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -187,7 +189,7 @@ export default function Ecosystem() {
       title: "TokenTerminal",
       link: "https://tokenterminal.com/terminal/projects/gmx",
       linkLabel: "tokenterminal.com",
-      about: "GMX fundamentals",
+      about: t`GMX fundamentals`,
       creatorLabel: "@tokenterminal",
       creatorLink: "https://twitter.com/tokenterminal",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -196,7 +198,7 @@ export default function Ecosystem() {
       title: "CryptoFees",
       link: "https://cryptofees.info",
       linkLabel: "cryptofees.info",
-      about: "Fees generated by GMX",
+      about: t`Fees generated by GMX`,
       creatorLabel: "@CryptoFeesInfo",
       creatorLink: "https://twitter.com/CryptoFeesInfo",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -205,7 +207,7 @@ export default function Ecosystem() {
       title: "Shogun Dashboard (Dune Arbitrum)",
       link: "https://dune.com/shogun/gmx-analytics-arbitrum",
       linkLabel: "dune.com",
-      about: "Protocol analytics",
+      about: t`Protocol analytics`,
       creatorLabel: "@JamesCliffyz",
       creatorLink: "https://twitter.com/JamesCliffyz",
       chainIds: [ARBITRUM],
@@ -214,7 +216,7 @@ export default function Ecosystem() {
       title: "Shogun Dashboard (Dune Avalanche)",
       link: "https://dune.com/shogun/gmx-analytics-avalanche",
       linkLabel: "dune.com",
-      about: "Protocol analytics",
+      about: t`Protocol analytics`,
       creatorLabel: "@JamesCliffyz",
       creatorLink: "https://twitter.com/JamesCliffyz",
       chainIds: [AVALANCHE],
@@ -223,7 +225,7 @@ export default function Ecosystem() {
       title: "GMX Perpetuals Data",
       link: "https://app.laevitas.ch/altsderivs/GMX/perpetualswaps",
       linkLabel: "laevitas.ch",
-      about: "GMX Perpetuals Data",
+      about: t`GMX Perpetuals Data`,
       creatorLabel: "@laevitas1",
       creatorLink: "https://twitter.com/laevitas1",
       chainIds: [ARBITRUM],
@@ -232,7 +234,7 @@ export default function Ecosystem() {
       title: "GMX Blueberry Leaderboard",
       link: "https://www.blueberryboard.com",
       linkLabel: "blueberryboard.com",
-      about: "GBC NFTs APR tracker and rewards",
+      about: t`GBC NFTs APR tracker and rewards`,
       creatorLabel: "@kyzoeth",
       creatorLink: "https://twitter.com/kyzoeth",
       chainIds: [ARBITRUM],
@@ -244,7 +246,7 @@ export default function Ecosystem() {
       title: "DeBank",
       link: "debank.com",
       linkLabe: "debank.com",
-      about: "DeFi Portfolio Tracker",
+      about: t`DeFi Portfolio Tracker`,
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/GMX_IO/status/1439711532884152324",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -253,7 +255,7 @@ export default function Ecosystem() {
       title: "Defi Llama",
       link: "https://defillama.com",
       linkLabel: "defillama.com",
-      about: "Decentralized Finance Dashboard",
+      about: t`Decentralized Finance Dashboard`,
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/GMX_IO/status/1438124768033660938",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -262,7 +264,7 @@ export default function Ecosystem() {
       title: "Dopex",
       link: "https://dopex.io",
       linkLabel: "dopex.io",
-      about: "Decentralized Options Protocol",
+      about: t`Decentralized Options Protocol`,
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/GMX_IO/status/1482445801523716099",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -271,7 +273,7 @@ export default function Ecosystem() {
       title: "Rook",
       link: "https://www.rook.fi/",
       linkLabel: "rook.fi",
-      about: "MEV Optimizer",
+      about: t`MEV Optimizer`,
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/Rook/status/1509613786600116251",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -280,7 +282,7 @@ export default function Ecosystem() {
       title: "Jones DAO",
       link: "https://jonesdao.io",
       linkLabel: "jonesdao.io",
-      about: "Decentralized Options Strategies",
+      about: t`Decentralized Options Strategies`,
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/GMX_IO/status/1482788805635678212",
       chainIds: [ARBITRUM],
@@ -289,7 +291,7 @@ export default function Ecosystem() {
       title: "Yield Yak Optimizer",
       link: "https://yieldyak.com/",
       linkLabel: "yieldyak.com",
-      about: "Yield Optimizer on Avalanche",
+      about: t`Yield Optimizer on Avalanche`,
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/GMX_IO/status/1484601407378378754",
       chainIds: [AVALANCHE],
@@ -298,7 +300,7 @@ export default function Ecosystem() {
       title: "Vovo Finance",
       link: "https://vovo.finance/",
       linkLabel: "vovo.finance",
-      about: "Structured Products",
+      about: t`Structured Products`,
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/VovoFinance/status/1531517177790345217",
       chainIds: [ARBITRUM],
@@ -307,7 +309,7 @@ export default function Ecosystem() {
       title: "Stabilize Protocol",
       link: "https://www.stabilize.finance/",
       linkLabel: "stabilize.finance",
-      about: "Yield Vaults",
+      about: t`Yield Vaults`,
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/StabilizePro/status/1532348674986082306",
       chainIds: [ARBITRUM],
@@ -316,7 +318,7 @@ export default function Ecosystem() {
       title: "DODO",
       link: "https://dodoex.io/",
       linkLabel: "dodoex.io",
-      about: "Decentralized Trading Protocol",
+      about: t`Decentralized Trading Protocol`,
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/GMX_IO/status/1438899138549145605",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -325,7 +327,7 @@ export default function Ecosystem() {
       title: "Open Ocean",
       link: "https://openocean.finance/",
       linkLabel: "openocean.finance",
-      about: "DEX Aggregator",
+      about: t`DEX Aggregator`,
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/GMX_IO/status/1495780826016989191",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -334,7 +336,7 @@ export default function Ecosystem() {
       title: "Paraswap",
       link: "https://www.paraswap.io/",
       linkLabel: "paraswap.io",
-      about: "DEX Aggregator",
+      about: t`DEX Aggregator`,
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/paraswap/status/1546869879336222728",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -343,7 +345,7 @@ export default function Ecosystem() {
       title: "1inch",
       link: "https://1inch.io/",
       linkLabel: "1inch.io",
-      about: "DEX Aggregator",
+      about: t`DEX Aggregator`,
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/GMX_IO/status/1522247451410845696",
       chainIds: [ARBITRUM, AVALANCHE],
@@ -352,7 +354,7 @@ export default function Ecosystem() {
       title: "Firebird Finance",
       link: "https://app.firebird.finance/swap",
       linkLabel: "firebird.finance",
-      about: "DEX Aggregator",
+      about: t`DEX Aggregator`,
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/financefirebird/status/1561767094064238595",
       chainIds: [AVALANCHE],
@@ -361,7 +363,7 @@ export default function Ecosystem() {
       title: "Yield Yak Swap",
       link: "https://yieldyak.com/swap",
       linkLabel: "yieldyak.com",
-      about: "DEX Aggregator",
+      about: t`DEX Aggregator`,
       announcementLabel: "twitter.com",
       announcementLink: "https://twitter.com/yieldyak_/status/1484458884827947008",
       chainIds: [AVALANCHE],
@@ -373,25 +375,25 @@ export default function Ecosystem() {
       title: "GMX",
       link: "https://t.me/GMX_IO",
       linkLabel: "t.me",
-      about: "Telegram Group",
+      about: t`Telegram Group`,
     },
     {
       title: "GMX (Chinese)",
       link: "https://t.me/gmxch",
       linkLabel: "t.me",
-      about: "Telegram Group (Chinese)",
+      about: t`Telegram Group (Chinese)`,
     },
     {
       title: "GMX (Portuguese)",
       link: "https://t.me/GMX_Portuguese",
       linkLabel: "t.me",
-      about: "Telegram Group (Portuguese)",
+      about: t`Telegram Group (Portuguese)`,
     },
     {
       title: "GMX Trading Chat",
       link: "https://t.me/gambittradingchat",
       linkLabel: "t.me",
-      about: "GMX community discussion",
+      about: t`GMX community discussion`,
     },
   ];
 
@@ -400,7 +402,7 @@ export default function Ecosystem() {
       <div className="default-container page-layout">
         <div>
           <div className="section-title-block">
-            <div className="section-title-icon"></div>
+            <div className="section-title-icon" />
             <div className="section-title-content">
               <div className="Page-title">
                 <Trans>GMX Pages</Trans>
@@ -430,9 +432,7 @@ export default function Ecosystem() {
                         <Trans>Link</Trans>
                       </div>
                       <div>
-                        <a href={item.link} target="_blank" rel="noopener noreferrer">
-                          {linkLabel}
-                        </a>
+                        <ExternalLink href={item.link}>{linkLabel}</ExternalLink>
                       </div>
                     </div>
                     <div className="App-card-row">
@@ -467,16 +467,14 @@ export default function Ecosystem() {
                       ))}
                     </div>
                   </div>
-                  <div className="App-card-divider"></div>
+                  <div className="App-card-divider" />
                   <div className="App-card-content">
                     <div className="App-card-row">
                       <div className="label">
                         <Trans>Link</Trans>
                       </div>
                       <div>
-                        <a href={item.link} target="_blank" rel="noopener noreferrer">
-                          {linkLabel}
-                        </a>
+                        <ExternalLink href={item.link}>{linkLabel}</ExternalLink>
                       </div>
                     </div>
                     <div className="App-card-row">
@@ -490,9 +488,7 @@ export default function Ecosystem() {
                         <Trans>Creator</Trans>
                       </div>
                       <div>
-                        <a href={item.creatorLink} target="_blank" rel="noopener noreferrer">
-                          {item.creatorLabel}
-                        </a>
+                        <ExternalLink href={item.creatorLink}>{item.creatorLabel}</ExternalLink>
                       </div>
                     </div>
                   </div>
@@ -529,9 +525,7 @@ export default function Ecosystem() {
                         <Trans>Link</Trans>
                       </div>
                       <div>
-                        <a href={item.link} target="_blank" rel="noopener noreferrer">
-                          {linkLabel}
-                        </a>
+                        <ExternalLink href={item.link}>{linkLabel}</ExternalLink>
                       </div>
                     </div>
                     <div className="App-card-row">
@@ -545,9 +539,7 @@ export default function Ecosystem() {
                         <Trans>Creator</Trans>
                       </div>
                       <div>
-                        <a href={item.creatorLink} target="_blank" rel="noopener noreferrer">
-                          {item.creatorLabel}
-                        </a>
+                        <ExternalLink href={item.creatorLink}>{item.creatorLabel}</ExternalLink>
                       </div>
                     </div>
                   </div>
@@ -583,9 +575,7 @@ export default function Ecosystem() {
                         <Trans>Link</Trans>
                       </div>
                       <div>
-                        <a href={item.link} target="_blank" rel="noopener noreferrer">
-                          {linkLabel}
-                        </a>
+                        <ExternalLink href={item.link}>{linkLabel}</ExternalLink>
                       </div>
                     </div>
                     <div className="App-card-row">
@@ -599,9 +589,7 @@ export default function Ecosystem() {
                         <Trans>Announcement</Trans>
                       </div>
                       <div>
-                        <a href={item.announcementLink} target="_blank" rel="noopener noreferrer">
-                          {item.announcementLabel}
-                        </a>
+                        <ExternalLink href={item.announcementLink}>{item.announcementLabel}</ExternalLink>
                       </div>
                     </div>
                   </div>
@@ -630,9 +618,7 @@ export default function Ecosystem() {
                         <Trans>Link</Trans>
                       </div>
                       <div>
-                        <a href={item.link} target="_blank" rel="noopener noreferrer">
-                          {linkLabel}
-                        </a>
+                        <ExternalLink href={item.link}>{linkLabel}</ExternalLink>
                       </div>
                     </div>
                     <div className="App-card-row">

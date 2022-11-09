@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import "./StatsTooltip.css";
@@ -25,7 +26,9 @@ export default function StatsTooltip({
   return (
     <>
       <p className="Tooltip-row">
-        <span className="label">{title} on Arbitrum:</span>
+        <span className="label">
+          <Trans>{title} on Arbitrum:</Trans>
+        </span>
         <span className="amount">
           {showDollar && "$"}
           {formatAmount(arbitrumValue, decimalsForConversion, 0, true)}
@@ -33,7 +36,9 @@ export default function StatsTooltip({
         </span>
       </p>
       <p className="Tooltip-row">
-        <span className="label">{title} on Avalanche:</span>
+        <span className="label">
+          <Trans>{title} on Avalanche:</Trans>
+        </span>
         <span className="amount">
           {showDollar && "$"}
           {formatAmount(avaxValue, decimalsForConversion, 0, true)}
@@ -42,7 +47,9 @@ export default function StatsTooltip({
       </p>
       <div className="Tooltip-divider" />
       <p className="Tooltip-row">
-        <span className="label">Total:</span>
+        <span className="label">
+          <Trans>Total:</Trans>
+        </span>
         <span className="amount">
           {showDollar && "$"}
           {formatAmount(total, decimalsForConversion, 0, true)}

@@ -96,6 +96,7 @@ import {
   useInactiveListener,
 } from "lib/wallets";
 import { useChainId } from "lib/chains";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -202,15 +203,16 @@ function FullApp() {
           <Trans>MetaMask not detected.</Trans>
           <br />
           <br />
-          <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">
-            <Trans>Install MetaMask</Trans>
-          </a>
           {userOnMobileDevice ? (
-            <Trans>, and use GMX with its built-in browser</Trans>
+            <Trans>
+              <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink>, and use GMX with its built-in
+              browser
+            </Trans>
           ) : (
-            <Trans> to start using GMX</Trans>
+            <Trans>
+              <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink> to start using GMX
+            </Trans>
           )}
-          .
         </div>
       );
       return false;
@@ -224,15 +226,17 @@ function FullApp() {
           <Trans>Coinbase Wallet not detected.</Trans>
           <br />
           <br />
-          <a href="https://www.coinbase.com/wallet" target="_blank" rel="noopener noreferrer">
-            <Trans>Install Coinbase Wallet</Trans>
-          </a>
           {userOnMobileDevice ? (
-            <Trans>, and use GMX with its built-in browser</Trans>
+            <Trans>
+              <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink>, and use GMX
+              with its built-in browser
+            </Trans>
           ) : (
-            <Trans> to start using GMX</Trans>
+            <Trans>
+              <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink> to start using
+              GMX
+            </Trans>
           )}
-          .
         </div>
       );
       return false;
@@ -343,10 +347,9 @@ function FullApp() {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.error(
               <div>
-                <Trans>Txn failed.</Trans>{" "}
-                <a href={txUrl} target="_blank" rel="noopener noreferrer">
-                  <Trans>View</Trans>
-                </a>
+                <Trans>
+                  Txn failed. <ExternalLink href={txUrl}>View</ExternalLink>
+                </Trans>
                 <br />
               </div>
             );
@@ -356,9 +359,9 @@ function FullApp() {
             helperToast.success(
               <div>
                 {pendingTxn.message}{" "}
-                <a href={txUrl} target="_blank" rel="noopener noreferrer">
+                <ExternalLink href={txUrl}>
                   <Trans>View</Trans>
-                </a>
+                </ExternalLink>
                 <br />
               </div>
             );
@@ -565,7 +568,7 @@ function FullApp() {
         className="Connect-wallet-modal"
         isVisible={walletModalVisible}
         setIsVisible={setWalletModalVisible}
-        label="Connect Wallet"
+        label={t`Connect Wallet`}
       >
         <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
           <img src={metamaskImg} alt="MetaMask" />
@@ -590,7 +593,7 @@ function FullApp() {
         className="App-settings"
         isVisible={isSettingsVisible}
         setIsVisible={setIsSettingsVisible}
-        label="Settings"
+        label={t`Settings`}
       >
         <div className="App-settings-row">
           <div>

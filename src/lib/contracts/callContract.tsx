@@ -4,6 +4,8 @@ import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { extractError, NOT_ENOUGH_FUNDS, RPC_ERROR, SLIPPAGE, USER_DENIED } from "./transactionErrors";
 import { getGasLimit, setGasPrice } from "./utils";
 import { getExplorerUrl } from "config/chains";
+import { t, Trans } from "@lingui/macro";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export async function callContract(
   chainId: number,
@@ -42,20 +44,20 @@ export async function callContract(
 
     const res = await contract[method](...params, txnOpts);
     const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
-    const sentMsg = opts.sentMsg || "Transaction sent.";
+    const sentMsg = opts.sentMsg || t`Transaction sent.`;
 
     helperToast.success(
       <div>
         {sentMsg}{" "}
-        <a href={txUrl} target="_blank" rel="noopener noreferrer">
-          View status.
-        </a>
+        <ExternalLink href={txUrl}>
+          <Trans>View status.</Trans>
+        </ExternalLink>
         <br />
       </div>
     );
 
     if (opts.setPendingTxns) {
-      const message = opts.hideSuccessMsg ? undefined : opts.successMsg || "Transaction completed!";
+      const message = opts.hideSuccessMsg ? undefined : opts.successMsg || t`Transaction completed!`;
       const pendingTxn = {
         hash: res.hash,
         message,
@@ -74,21 +76,20 @@ export async function callContract(
       case NOT_ENOUGH_FUNDS:
         failMsg = (
           <div>
-            There is not enough ETH in your account on Arbitrum to send this transaction.
-            <br />
-            <br />
-            <a href={"https://arbitrum.io/bridge-tutorial/"} target="_blank" rel="noopener noreferrer">
-              Bridge ETH to Arbitrum
-            </a>
+            <Trans>
+              There is not enough ETH in your account on Arbitrum to send this transaction.
+              <br />
+              <br />
+              <ExternalLink href="https://arbitrum.io/bridge-tutorial/">Bridge ETH to Arbitrum</ExternalLink>
+            </Trans>
           </div>
         );
         break;
       case USER_DENIED:
-        failMsg = "Transaction was cancelled.";
+        failMsg = t`Transaction was cancelled.`;
         break;
       case SLIPPAGE:
-        failMsg =
-          'The mark price has changed, consider increasing your Allowed Slippage by clicking on the "..." icon next to your address.';
+        failMsg = t`The mark price has changed, consider increasing your Allowed Slippage by clicking on the "..." icon next to your address.`;
         break;
       case RPC_ERROR:
         autoCloseToast = false;
@@ -97,13 +98,13 @@ export async function callContract(
 
         failMsg = (
           <div>
-            Transaction failed due to RPC error.
-            <br />
-            <br />
-            Please try changing the RPC url in your wallet settings.{" "}
-            <a href="https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls" target="_blank" rel="noopener noreferrer">
-              More info
-            </a>
+            <Trans>
+              Transaction failed due to RPC error.
+              <br />
+              <br />
+              Please try changing the RPC url in your wallet settings.{" "}
+              <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#backup-rpc-urls">More info</ExternalLink>
+            </Trans>
             <br />
             {originalError && <ToastifyDebug>{originalError}</ToastifyDebug>}
           </div>
@@ -114,7 +115,7 @@ export async function callContract(
 
         failMsg = (
           <div>
-            {opts.failMsg || "Transaction failed"}
+            {opts.failMsg || t`Transaction failed`}
             <br />
             {message && <ToastifyDebug>{message}</ToastifyDebug>}
           </div>

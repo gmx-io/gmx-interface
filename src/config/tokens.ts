@@ -286,33 +286,33 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
     },
     {
-      name: "Bitcoin (WBTC.e)",
+      name: "Bitcoin (BTC.b)",
       symbol: "BTC",
+      address: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+      decimals: 8,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
+    },
+    {
+      name: "Bitcoin (WBTC.e)",
+      symbol: "WBTC",
       address: "0x50b7545627a5162F82A992c33b87aDc75187B218",
       decimals: 8,
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
     },
     {
-      name: "Bitcoin (BTC.b)",
-      symbol: "BTC.b",
-      address: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
-      decimals: 8,
-      isShortable: false,
-      imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
-    },
-    {
-      name: "USD Coin (USDC.e)",
-      symbol: "USDC.e",
-      address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
+      name: "USD Coin",
+      symbol: "USDC",
+      address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
     },
     {
-      name: "USD Coin",
-      symbol: "USDC",
-      address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+      name: "USD Coin (USDC.e)",
+      symbol: "USDC.e",
+      address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664",
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
@@ -482,33 +482,33 @@ export const ICONLINKS = {
       coingecko: "https://www.coingecko.com/en/coins/weth",
       avalanche: "https://snowtrace.io/address/0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
     },
-    BTC: {
+    WBTC: {
       coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
       avalanche: "https://snowtrace.io/address/0x50b7545627a5162f82a992c33b87adc75187b218",
     },
-    "BTC.b": {
-      coingecko: "https://www.coingecko.com/en/coins/wrapped-bitcoin",
+    BTC: {
+      coingecko: "https://www.coingecko.com/en/coins/bitcoin-avalanche-bridged-btc-b",
       avalanche: "https://snowtrace.io/address/0x152b9d0FdC40C096757F570A51E494bd4b943E50",
     },
     MIM: {
       coingecko: "https://www.coingecko.com/en/coins/magic-internet-money",
       avalanche: "https://snowtrace.io/address/0x130966628846bfd36ff31a822705796e8cb8c18d",
     },
-    "USDC.e": {
-      coingecko: "https://www.coingecko.com/en/coins/usd-coin-avalanche-bridged-usdc-e",
-      avalanche: "https://snowtrace.io/address/0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
-    },
     USDC: {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
       avalanche: "https://snowtrace.io/address/0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e",
     },
+    "USDC.e": {
+      coingecko: "https://www.coingecko.com/en/coins/usd-coin-avalanche-bridged-usdc-e",
+      avalanche: "https://snowtrace.io/address/0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
+    },
   },
 };
 
-export const GLPPOOLCOLORS = {
+export const GLP_POOL_COLORS = {
   ETH: "#6062a6",
   BTC: "#F7931A",
-  "BTC.b": "#F7931A",
+  WBTC: "#F7931A",
   USDC: "#2775CA",
   "USDC.e": "#2A5ADA",
   USDT: "#67B18A",

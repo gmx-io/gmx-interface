@@ -6,7 +6,9 @@
     "ja",
     "zh",
     "ru",
-    "fr"
+    "fr",
+    "de",
+    "pseudo"
   ],
   "sourceLocale": "en",
   "catalogs": [
@@ -24,5 +26,6 @@
     "default": "en"
   },
   "format": "po",
-  "orderBy": "messageId"
+  "orderBy": "messageId",
+  "pseudoLocale": "pseudo"
 }
