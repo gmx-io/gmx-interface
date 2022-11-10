@@ -839,7 +839,6 @@ export default function GlpSwap(props) {
               showMaxButton={swapValue !== formatAmountFree(swapTokenBalance, swapToken.decimals, swapToken.decimals)}
               onClickTopRightLabel={fillMaxAmount}
               onClickMax={fillMaxAmount}
-              selectedToken={swapToken}
               balance={payBalance}
             >
               <TokenSelector
@@ -867,7 +866,6 @@ export default function GlpSwap(props) {
               onClickTopRightLabel={fillMaxAmount}
               onClickMax={fillMaxAmount}
               balance={payBalance}
-              defaultTokenName={"GLP"}
             >
               <div className="selected-token">
                 GLP <img src={glp24Icon} alt="glp24Icon" />
@@ -896,7 +894,6 @@ export default function GlpSwap(props) {
               inputValue={glpValue}
               onInputValueChange={onGlpValueChange}
               balance={receiveBalance}
-              defaultTokenName={"GLP"}
             >
               <div className="selected-token">
                 GLP <img src={glp24Icon} alt="glp24Icon" />
@@ -912,7 +909,6 @@ export default function GlpSwap(props) {
               inputValue={swapValue}
               onInputValueChange={onSwapValueChange}
               balance={receiveBalance}
-              selectedToken={swapToken}
             >
               <TokenSelector
                 label={t`Receive`}

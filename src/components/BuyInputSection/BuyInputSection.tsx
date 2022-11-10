@@ -1,9 +1,23 @@
-import React from "react";
-import cx from "classnames";
-import "./BuyInputSection.css";
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
+import { ChangeEvent, ReactNode } from "react";
+import "./BuyInputSection.css";
 
-export default function BuyInputSection(props) {
+type Props = {
+  topLeftLabel: string;
+  topRightLabel: string;
+  onClickTopRightLabel?: () => void;
+  inputValue?: number | string;
+  onInputValueChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onClickMax?: () => void;
+  showMaxButton?: boolean;
+  staticInput?: boolean;
+  balance: string;
+  tokenBalance: string;
+  children?: ReactNode;
+};
+
+export default function BuyInputSection(props: Props) {
   const {
     topLeftLabel,
     topRightLabel,
@@ -15,6 +29,7 @@ export default function BuyInputSection(props) {
     staticInput,
     balance,
     tokenBalance,
+    children,
   } = props;
 
   return (
@@ -25,9 +40,7 @@ export default function BuyInputSection(props) {
         </div>
         <div className={cx("align-right", { clickable: onClickTopRightLabel })} onClick={onClickTopRightLabel}>
           <span className="Exchange-swap-label muted">{topRightLabel}</span>&nbsp;
-          <span className="Exchange-swap-balance">
-            {tokenBalance} {/*(selectedToken && selectedToken.symbol) || defaultTokenName*/}
-          </span>
+          <span className="Exchange-swap-balance">{tokenBalance}</span>
         </div>
       </div>
       <div className="Exchange-swap-section-bottom">
@@ -49,7 +62,7 @@ export default function BuyInputSection(props) {
             </div>
           )}
         </div>
-        <div className="PositionEditor-token-symbol">{props.children}</div>
+        <div className="PositionEditor-token-symbol">{children}</div>
       </div>
     </div>
   );

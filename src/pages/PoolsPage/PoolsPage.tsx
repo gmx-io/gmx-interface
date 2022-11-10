@@ -16,8 +16,9 @@ export function PoolsPage() {
               </div>
             </div>
           </div>
+
+          <GDSwap />
         </div>
-        <GDSwap />
         <Footer />
       </div>
     </SEO>

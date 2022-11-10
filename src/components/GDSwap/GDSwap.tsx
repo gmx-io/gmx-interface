@@ -49,12 +49,14 @@ import "./GlpSwap.css";
 import { useChainId } from "lib/chains";
 
 import { GDMarketInfo } from "./GDMarketInfo";
+import { GDSwapBox } from "./GDSwapBox/GDSwapBox";
 
 export function GDSwap() {
   return (
     <div className="GlpSwap">
       <div className="GlpSwap-content">
         <GDMarketInfo />
+        <GDSwapBox />
       </div>
     </div>
   );
