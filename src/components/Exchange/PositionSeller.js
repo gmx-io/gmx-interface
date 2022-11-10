@@ -380,9 +380,10 @@ export default function PositionSeller(props) {
       }
     }
 
-    if (orderOption === STOP) {
+    // For Shorts trigger orders the collateral is a stable coin, it should not depend on the triggerPrice
+    if (orderOption === STOP && position.isLong) {
       convertedReceiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveAmount, {
-        overridePrice: !receiveToken.isStable && triggerPriceUsd,
+        overridePrice: triggerPriceUsd,
       });
     } else {
       convertedReceiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveAmount);
