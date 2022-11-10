@@ -70,7 +70,7 @@ export default function ExchangeTVChart(props) {
   // const [currentSeries, setCurrentSeries] = useState();
 
   // let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
-  let period = localStorage.getItem(JSON.stringify([chainId, "Chart-period-main"]));
+  let period = "5m";
   if (!(period in CHART_PERIODS)) {
     period = DEFAULT_PERIOD;
   }

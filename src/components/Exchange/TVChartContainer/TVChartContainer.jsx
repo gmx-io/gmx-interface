@@ -54,7 +54,7 @@ export default function TVChartContainer({ symbol, chainId }) {
       symbol: `${symbol}_${chainId}`,
       datafeed: Datafeed,
       theme: defaultProps.theme,
-      interval: getKeyByValue(period),
+      interval: getKeyByValue(supportedResolutions, period),
       container: tvChartRef.current,
       library_path: defaultProps.libraryPath,
       locale: "en",
@@ -91,7 +91,6 @@ export default function TVChartContainer({ symbol, chainId }) {
       custom_font_family: "'Inter', sans-serif",
       studies_overrides: defaultProps.studiesOverrides,
       overrides: {
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         "paneProperties.background": "#16182e",
         "paneProperties.backgroundType": "solid",
         "paneProperties.vertGridProperties.color": "rgba(35, 38, 59, 1)",

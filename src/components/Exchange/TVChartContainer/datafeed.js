@@ -1,10 +1,11 @@
 import { getServerUrl } from "config/backend";
 import { getTokenBySymbol, getTokens, getWrappedToken } from "config/tokens";
-import { getChainlinkChartPricesFromGraph, getChartPricesFromStats, getStablePriceData } from "domain/prices";
+import { fillGaps, getChainlinkChartPricesFromGraph, getChartPricesFromStats, getStablePriceData } from "domain/prices";
 import { formatAmount } from "lib/numbers";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 
-export const supportedResolutions = { 5: "5m", 15: "15m", 60: "1h", 240: "4h", "1D": "1d" };
+export const supportedResolutions = { 5: "5m", 15: "15m", 60: "1h", 240: "4h", "1d": "1d" };
+const timezoneOffset = -new Date().getTimezoneOffset() * 60;
 
 export function getKeyByValue(object, value) {
   return Object.keys(object).find((key) => object[key] === value);
@@ -39,13 +40,35 @@ async function getPriceOfToken(chainId, symbol, period, isStable) {
   const prices = isStable ? getStablePriceData(period) : await getTokenChartPrice(chainId, symbol, period);
   return prices.map((bar) => {
     return {
-      time: bar.time * 1000,
+      time: bar.time,
       low: bar.low,
       high: bar.high,
       open: bar.open,
       close: bar.close,
     };
   });
+}
+function getFormattedPrice(prices) {
+  return prices.map((p) => ({ ...p, time: p.time * 1000 }));
+}
+
+async function getFilledPrice(chainId, ticker, period, isStable) {
+  const _prices = await getPriceOfToken(chainId, ticker, period, isStable);
+  const last = _prices[_prices.length - 1];
+  const periodSeconds = CHART_PERIODS[period];
+  const currentCandleTime = Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + timezoneOffset;
+
+  if (currentCandleTime !== last.time) {
+    _prices.push({
+      ...last,
+      close: last.close,
+      high: Math.max(last.high, last.close),
+      low: Math.max(last.low, last.close),
+      time: currentCandleTime,
+      ticker,
+    });
+  }
+  return getFormattedPrice(fillGaps(_prices, periodSeconds));
 }
 
 async function getCurrentPrice(chainId, symbol) {
@@ -64,14 +87,15 @@ async function getLivePriceBar(chainId, ticker, period, isStable) {
   if (!ticker) return;
   if (!lastTicker || lastTicker !== ticker || !prices) {
     lastTicker = ticker;
-    prices = await getPriceOfToken(chainId, ticker, period, isStable);
+    prices = await getFilledPrice(chainId, ticker, period, isStable);
   }
-  const timezoneOffset = -new Date().getTimezoneOffset() * 60;
+
   const periodSeconds = CHART_PERIODS[period];
   const currentCandleTime = (Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + timezoneOffset) * 1000;
   const currentPrice = await getCurrentPrice(chainId, ticker);
 
   const last = prices[prices.length - 1];
+
   const averagePriceValue = parseFloat(formatAmount(currentPrice, USD_DECIMALS, 4));
   if (currentCandleTime === last.time) {
     return {
@@ -131,10 +155,10 @@ const Datafeed = {
     }
     const { ticker, chainId, isStable } = symbolInfo;
     const period = supportedResolutions[resolution].toLowerCase();
+    const bars = await getFilledPrice(chainId, ticker, period, isStable);
 
-    const bars = await getPriceOfToken(chainId, ticker, period, isStable, periodParams);
     const filteredBars =
-      resolution === "1D" ? bars.filter((bar) => bar.time >= from * 1000 && bar.time < to * 1000) : bars;
+      resolution === "1d" ? bars.filter((bar) => bar.time >= from * 1000 && bar.time < to * 1000) : bars;
     bars.length > 0 ? onHistoryCallback(filteredBars) : onErrorCallback("Something went wrong!");
   },
 
@@ -146,7 +170,6 @@ const Datafeed = {
     intervalId = setInterval(function () {
       getLivePriceBar(chainId, ticker, period, isStable).then((bar) => {
         if (lastTicker === bar.ticker) {
-          console.log(bar);
           onRealtimeCallback(bar);
         }
       });

@@ -26,7 +26,7 @@ const FEED_ID_MAP = {
 };
 const timezoneOffset = -new Date().getTimezoneOffset() * 60;
 
-function fillGaps(prices, periodSeconds) {
+export function fillGaps(prices, periodSeconds) {
   if (prices.length < 2) {
     return prices;
   }
