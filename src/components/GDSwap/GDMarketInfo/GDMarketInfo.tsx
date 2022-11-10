@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { GLP_DECIMALS, USD_DECIMALS } from "lib/legacy";
 
-import Tooltip from "../Tooltip/Tooltip";
+import Tooltip from "../../Tooltip/Tooltip";
 
 import glp40Icon from "img/ic_glp_40.svg";
 
@@ -12,13 +12,13 @@ import { ARBITRUM } from "config/chains";
 import { useChainId } from "lib/chains";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
-import "./GlpSwap.css";
+import "./GDMarketInfo.css";
 
 export function GDMarketInfo() {
   const { chainId } = useChainId();
 
   return (
-    <div className="App-card GlpSwap-stats-card">
+    <div className="App-card GDMarketInfo-card">
       <div className="App-card-title">
         <div className="App-card-title-mark">
           <div className="App-card-title-mark-icon">
@@ -75,7 +75,7 @@ export function GDMarketInfo() {
             <Trans>Wallet</Trans>
           </div>
           <div className="value">
-            {formatAmount(bigNumberify(100000), GLP_DECIMALS, 4, true)} GLP ($
+            {formatAmount(bigNumberify(100000), GLP_DECIMALS, 4, true)} GD ($
             {formatAmount(bigNumberify(100000), USD_DECIMALS, 2, true)})
           </div>
         </div>
@@ -85,7 +85,7 @@ export function GDMarketInfo() {
             <Trans>Market worth</Trans>
           </div>
           <div className="value">
-            {formatAmount(bigNumberify(100000), GLP_DECIMALS, 4, true)} GLP ($
+            {formatAmount(bigNumberify(100000), GLP_DECIMALS, 4, true)} GD ($
             {formatAmount(bigNumberify(100000), USD_DECIMALS, 2, true)})
           </div>
         </div>

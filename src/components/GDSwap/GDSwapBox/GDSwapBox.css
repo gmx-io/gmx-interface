@@ -1,0 +1,36 @@
+.GDSwapBox {
+  max-width: 47.95rem;
+  border-radius: 0.4rem;
+  padding: 1.5rem;
+  padding-top: 0;
+  width: 100%;
+}
+
+.GDSwapBox .Exchange-swap-option-tabs {
+  margin: 1.5rem 0;
+}
+
+.GDSwapBox-asset-options-tabs {
+  margin: 1.5rem 0;
+}
+
+.GDSwapBox-info-section {
+  margin-bottom: 0.8rem;
+}
+
+@media (max-width: 900px) {
+  .GlpSwap-content {
+    flex-wrap: wrap;
+  }
+
+  .GlpSwap-content .GlpSwap-stats-card {
+    margin: 0;
+    margin-bottom: 3.1rem;
+    max-width: 100%;
+  }
+
+  .GlpSwap-content .GlpSwap-box {
+    margin: 0;
+    max-width: 100%;
+  }
+}
