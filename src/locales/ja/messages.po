@@ -152,8 +152,8 @@ msgstr ""
 msgid "Active Referral Code"
 msgstr "有効な紹介コード"
 
-#: src/pages/Dashboard/AssetDropdown.js
-#: src/pages/Dashboard/AssetDropdown.js
+#: src/pages/Dashboard/AssetDropdown.tsx
+#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
 msgstr "メタマスクに追加"
 
@@ -2148,12 +2148,12 @@ msgstr "建玉"
 msgid "Open a position"
 msgstr "ポジションを開く"
 
-#: src/pages/Dashboard/AssetDropdown.js
+#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Coingecko"
 msgstr "Coingeckoで見る"
 
-#: src/pages/Dashboard/AssetDropdown.js
-#: src/pages/Dashboard/AssetDropdown.js
+#: src/pages/Dashboard/AssetDropdown.tsx
+#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Explorer"
 msgstr "Explorerで見る"
 
@@ -2456,6 +2456,10 @@ msgstr "GMXコミュニティが開発したプロジェクト"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects integrated with GMX."
 msgstr "GMXと統合されているプロジェクト"
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Proof of Reserves"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js

@@ -152,8 +152,8 @@ msgstr ""
 msgid "Active Referral Code"
 msgstr ""
 
-#: src/pages/Dashboard/AssetDropdown.js
-#: src/pages/Dashboard/AssetDropdown.js
+#: src/pages/Dashboard/AssetDropdown.tsx
+#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
 msgstr ""
 
@@ -2148,12 +2148,12 @@ msgstr ""
 msgid "Open a position"
 msgstr ""
 
-#: src/pages/Dashboard/AssetDropdown.js
+#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Coingecko"
 msgstr ""
 
-#: src/pages/Dashboard/AssetDropdown.js
-#: src/pages/Dashboard/AssetDropdown.js
+#: src/pages/Dashboard/AssetDropdown.tsx
+#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Explorer"
 msgstr ""
 
@@ -2455,6 +2455,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects integrated with GMX."
+msgstr ""
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Proof of Reserves"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
