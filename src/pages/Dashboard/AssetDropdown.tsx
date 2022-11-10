@@ -17,7 +17,7 @@ import { Token } from "domain/tokens";
 
 type Props = {
   assetSymbol: string;
-  assetInfo: Token;
+  assetInfo?: Token;
 };
 
 function AssetDropdown({ assetSymbol, assetInfo }: Props) {
