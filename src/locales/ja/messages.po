@@ -85,6 +85,7 @@ msgstr ""
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr ""
 
+#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -356,6 +357,10 @@ msgstr "AvalancheでGMXを購入するにはAvaxが必要です。"
 msgid "Balance"
 msgstr "残高"
 
+#: src/components/GDSwap/GDSwapBox/BuyGD.tsx
+#: src/components/GDSwap/GDSwapBox/BuyGD.tsx
+#: src/components/GDSwap/GDSwapBox/SellGD.tsx
+#: src/components/GDSwap/GDSwapBox/SellGD.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -966,6 +971,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1269,6 +1275,10 @@ msgstr "手数料"
 msgid "Fees"
 msgstr "手数料"
 
+#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+msgid "Fees and price impact"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Fees are high to swap from {0} to {1}."
 msgstr ""
@@ -1293,6 +1303,7 @@ msgstr ""
 msgid "Fees since"
 msgstr "この時点からの手数料"
 
+#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1771,6 +1782,11 @@ msgstr "ロード中"
 msgid "Long"
 msgstr "ロング"
 
+#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+msgid "Long Collateral"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Long Positions"
@@ -1796,7 +1812,7 @@ msgstr "シェアできる紹介コードがないようです。<0/> コード�
 msgid "Loss"
 msgstr "損失"
 
-#: src/components/BuyInputSection/BuyInputSection.js
+#: src/components/BuyInputSection/BuyInputSection.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -1845,6 +1861,10 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Market Cap"
 msgstr "時価総額"
+
+#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+msgid "Market worth"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Max Capacity"
@@ -2272,6 +2292,10 @@ msgstr ""
 msgid "Page outdated, please refresh"
 msgstr "ページの内容が期限切れです。更新してください。"
 
+#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+msgid "Pair"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "Partial Liquidation"
 msgstr ""
@@ -2299,6 +2323,15 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Pay: {0} USD"
+msgstr ""
+
+#: src/components/GDSwap/GDSwapBox/BuyGD.tsx
+#: src/components/GDSwap/GDSwapBox/SellGD.tsx
+msgid "Pay: {0}$"
+msgstr ""
+
+#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+msgid "Perp"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -2382,6 +2415,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -2462,6 +2496,10 @@ msgstr "GMXと統合されているプロジェクト"
 msgid "Protocol analytics"
 msgstr ""
 
+#: src/pages/PoolsPage/PoolsPage.tsx
+msgid "Purchase <0>GD tokens</0>"
+msgstr ""
+
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 msgstr ""
@@ -2507,6 +2545,11 @@ msgstr "アフィリエイトとしてこのアカウントが獲得したリベ
 #: src/components/Glp/GlpSwap.js
 msgid "Receive"
 msgstr "受け取る"
+
+#: src/components/GDSwap/GDSwapBox/BuyGD.tsx
+#: src/components/GDSwap/GDSwapBox/SellGD.tsx
+msgid "Receive: {0}$"
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
@@ -2773,6 +2816,11 @@ msgstr "ポジションをシェア"
 msgid "Short"
 msgstr "ショート"
 
+#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+msgid "Short Collateral"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Short Positions"
@@ -3004,6 +3052,10 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Synapse"
 msgstr "Synapse"
+
+#: src/pages/PoolsPage/PoolsPage.tsx
+msgid "Synthetics Pools"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3240,6 +3292,7 @@ msgstr "ステーク総額"
 msgid "Total Stats"
 msgstr "全体統計"
 
+#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3618,6 +3671,7 @@ msgstr "ウェート"
 msgid "Waiting for Approval"
 msgstr "許可の待機中"
 
+#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
@@ -3663,6 +3717,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
@@ -3904,6 +3959,10 @@ msgstr ""
 
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "{0} Capacity Reached"
+msgstr ""
+
+#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+msgid "{0} GD (${1})"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
