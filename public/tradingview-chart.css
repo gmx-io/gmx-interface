@@ -2,6 +2,8 @@
 
 .theme-dark:root {
   --tv-color-pane-background: #16182e;
+  --tv-color-platform-background: #16182e;
+
   /*
   --tv-color-pane-background-secondary: #16182e;
   --tv-color-toolbar-button-text-active-hover: #fff;
@@ -25,4 +27,11 @@
 }
 .active-resolution-btn {
   color: #fa3c58 !important;
+}
+
+html.theme-dark .chart-page {
+  background-color: transparent;
+}
+html.theme-dark .chart-container {
+  border: none;
 }

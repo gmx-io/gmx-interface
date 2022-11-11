@@ -16,6 +16,7 @@ const configurationData = {
   supports_marks: false,
   supports_timescale_marks: false,
   supports_time: true,
+  reset_cache_timeout: 100,
 };
 
 async function getTokenChartPrice(chainId, symbol, period) {
@@ -83,7 +84,7 @@ async function getCurrentPrice(chainId, symbol) {
 
 let prices;
 let lastTicker;
-async function getLivePriceBar(chainId, ticker, period, isStable) {
+async function getLivePriceBar(chainId, ticker, period, isStable, onResetCache) {
   if (!ticker) return;
   if (!lastTicker || lastTicker !== ticker || !prices) {
     lastTicker = ticker;
@@ -94,17 +95,18 @@ async function getLivePriceBar(chainId, ticker, period, isStable) {
   const currentCandleTime = (Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds + timezoneOffset) * 1000;
   const currentPrice = await getCurrentPrice(chainId, ticker);
 
-  const last = prices[prices.length - 1];
-
+  let last = prices[prices.length - 1];
   const averagePriceValue = parseFloat(formatAmount(currentPrice, USD_DECIMALS, 4));
+  let temp;
   if (currentCandleTime === last.time) {
-    return {
+    temp = {
       ...last,
       close: averagePriceValue,
       high: Math.max(last.high, averagePriceValue),
       low: Math.max(last.low, averagePriceValue),
       ticker,
     };
+    return temp;
   } else {
     return {
       time: currentCandleTime,
@@ -122,7 +124,7 @@ const Datafeed = {
     setTimeout(() => callback(configurationData));
   },
   resolveSymbol: async (symbolName, onSymbolResolvedCallback) => {
-    const symbolInfo = (ticker) => {
+    const symbolInfo = async (ticker) => {
       const [symbol, chainId] = ticker.split("_");
       const stableTokens = getTokens(chainId)
         .filter((t) => t.isStable)
@@ -143,7 +145,7 @@ const Datafeed = {
         isStable: stableTokens.includes(symbol),
       };
     };
-    const symbol = await onSymbolResolvedCallback(symbolInfo(symbolName));
+    const symbol = onSymbolResolvedCallback(await symbolInfo(symbolName));
 
     return symbol;
   },
@@ -156,13 +158,12 @@ const Datafeed = {
     const { ticker, chainId, isStable } = symbolInfo;
     const period = supportedResolutions[resolution].toLowerCase();
     const bars = await getFilledPrice(chainId, ticker, period, isStable);
-
     const filteredBars =
       resolution === "1d" ? bars.filter((bar) => bar.time >= from * 1000 && bar.time < to * 1000) : bars;
     bars.length > 0 ? onHistoryCallback(filteredBars) : onErrorCallback("Something went wrong!");
   },
 
-  subscribeBars: async (symbolInfo, resolution, onRealtimeCallback) => {
+  subscribeBars: async (symbolInfo, resolution, onRealtimeCallback, uid, onResetCacheNeededCallback) => {
     const { chainId, ticker, isStable } = symbolInfo;
     const period = supportedResolutions[resolution].toLowerCase();
     clearInterval(intervalId);
