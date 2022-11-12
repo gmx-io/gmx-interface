@@ -40,7 +40,7 @@ import {
   USD_DECIMALS,
   USDG_ADDRESS,
   USDG_DECIMALS,
-  MAX_INITIAL_LEVERAGE,
+  MAX_ALLOWED_LEVERAGE,
 } from "lib/legacy";
 import { ARBITRUM, AVALANCHE, getChainName, getConstant, IS_NETWORK_DISABLED, isSupportedChain } from "config/chains";
 import * as Api from "domain/legacy";
@@ -891,8 +891,8 @@ export default function SwapBox(props) {
       return [t`Min leverage: 1.1x`];
     }
 
-    if (leverage && leverage.gt(MAX_INITIAL_LEVERAGE)) {
-      return [t`Max leverage: ${(MAX_INITIAL_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
+    if (leverage && leverage.gt(MAX_ALLOWED_LEVERAGE)) {
+      return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
 
     if (!isMarketOrder && entryMarkPrice && triggerPriceUsd && !savedShouldDisableValidationForTesting) {
@@ -2049,7 +2049,7 @@ export default function SwapBox(props) {
               >
                 <Slider
                   min={1.1}
-                  max={MAX_INITIAL_LEVERAGE / BASIS_POINTS_DIVISOR}
+                  max={MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR}
                   step={0.1}
                   marks={leverageMarks}
                   handle={leverageSliderHandle}
