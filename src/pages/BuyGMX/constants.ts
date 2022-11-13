@@ -31,7 +31,6 @@ export const EXTERNAL_LINKS = {
     },
   },
   nativeNetwork: { [ARBITRUM]: "https://arbitrum.io/", [AVALANCHE]: "https://www.avax.network/" },
-  ftx: { [ARBITRUM]: "https://ftx.com/trade/ETH/USD", [AVALANCHE]: "https://ftx.com/trade/AVAX/USD" },
 };
 
 export const TRANSFER_EXCHANGES: Exchange[] = [
@@ -46,12 +45,6 @@ export const TRANSFER_EXCHANGES: Exchange[] = [
     icon: "ic_synapse.svg",
     networks: [ARBITRUM, AVALANCHE],
     link: "https://synapseprotocol.com/",
-  },
-  {
-    name: "Crypto.com",
-    icon: "crypto_com.svg",
-    networks: [ARBITRUM, AVALANCHE],
-    link: "https://crypto.com",
   },
   {
     name: "Arbitrum",
@@ -95,12 +88,6 @@ export const TRANSFER_EXCHANGES: Exchange[] = [
     networks: [ARBITRUM],
     link: "https://across.to/",
   },
-  {
-    name: "FTX",
-    icon: "ic_ftx.svg",
-    networks: [ARBITRUM],
-    link: "https://ftx.com/trade/ETH/USD",
-  },
 ];
 
 export const CENTRALISED_EXCHANGES: Exchange[] = [
@@ -114,18 +101,6 @@ export const CENTRALISED_EXCHANGES: Exchange[] = [
     name: "Bybit",
     icon: "ic_bybit.svg",
     link: "https://www.bybit.com/en-US/trade/spot/GMX/USDT",
-    networks: [ARBITRUM, AVALANCHE],
-  },
-  {
-    name: "FTX",
-    icon: "ic_ftx.svg",
-    link: "https://ftx.com/trade/GMX/USD",
-    networks: [ARBITRUM, AVALANCHE],
-  },
-  {
-    name: "Crypto.com",
-    icon: "crypto_com.svg",
-    link: "https://crypto.com/exchange/trade/spot/GMX_USDT",
     networks: [ARBITRUM, AVALANCHE],
   },
   {
