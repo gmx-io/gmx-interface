@@ -85,7 +85,7 @@ msgstr "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Ad
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -357,10 +357,10 @@ msgstr "Avax is needed on Avalanche to purchase GMX."
 msgid "Balance"
 msgstr "Balance"
 
-#: src/components/GDSwap/GDSwapBox/BuyGD.tsx
-#: src/components/GDSwap/GDSwapBox/BuyGD.tsx
-#: src/components/GDSwap/GDSwapBox/SellGD.tsx
-#: src/components/GDSwap/GDSwapBox/SellGD.tsx
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GMSwap/GMSwapBox/SellGM.tsx
+#: src/components/GMSwap/GMSwapBox/SellGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -971,7 +971,7 @@ msgstr "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1275,7 +1275,7 @@ msgstr "FEES"
 msgid "Fees"
 msgstr "Fees"
 
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 msgid "Fees and price impact"
 msgstr "Fees and price impact"
 
@@ -1303,7 +1303,7 @@ msgstr "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the
 msgid "Fees since"
 msgstr "Fees since"
 
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1785,8 +1785,8 @@ msgstr "Loading..."
 msgid "Long"
 msgstr "Long"
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 msgid "Long Collateral"
 msgstr "Long Collateral"
 
@@ -1865,7 +1865,7 @@ msgstr "Market"
 msgid "Market Cap"
 msgstr "Market Cap"
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 msgid "Market worth"
 msgstr "Market worth"
 
@@ -2295,7 +2295,7 @@ msgstr "Page not found"
 msgid "Page outdated, please refresh"
 msgstr "Page outdated, please refresh"
 
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 msgid "Pair"
 msgstr "Pair"
 
@@ -2328,12 +2328,12 @@ msgstr "Pay Amount"
 msgid "Pay: {0} USD"
 msgstr "Pay: {0} USD"
 
-#: src/components/GDSwap/GDSwapBox/BuyGD.tsx
-#: src/components/GDSwap/GDSwapBox/SellGD.tsx
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GMSwap/GMSwapBox/SellGM.tsx
 msgid "Pay: {0}$"
 msgstr "Pay: {0}$"
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 msgid "Perp"
 msgstr "Perp"
 
@@ -2418,7 +2418,7 @@ msgstr "Prev"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -2500,12 +2500,16 @@ msgid "Protocol analytics"
 msgstr "Protocol analytics"
 
 #: src/pages/PoolsPage/PoolsPage.tsx
-msgid "Purchase <0>GD tokens</0>"
-msgstr "Purchase <0>GD tokens</0>"
+#~ msgid "Purchase <0>GD tokens</0>"
+#~ msgstr "Purchase <0>GD tokens</0>"
 
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 msgstr "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
+
+#: src/pages/PoolsPage/PoolsPage.tsx
+msgid "Purchase <0>GM tokens</0>"
+msgstr "Purchase <0>GM tokens</0>"
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
@@ -2549,8 +2553,8 @@ msgstr "Rebates earned by this account as an affiliate."
 msgid "Receive"
 msgstr "Receive"
 
-#: src/components/GDSwap/GDSwapBox/BuyGD.tsx
-#: src/components/GDSwap/GDSwapBox/SellGD.tsx
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GMSwap/GMSwapBox/SellGM.tsx
 msgid "Receive: {0}$"
 msgstr "Receive: {0}$"
 
@@ -2819,8 +2823,8 @@ msgstr "Share Position"
 msgid "Short"
 msgstr "Short"
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 msgid "Short Collateral"
 msgstr "Short Collateral"
 
@@ -3295,7 +3299,7 @@ msgstr "Total Staked"
 msgid "Total Stats"
 msgstr "Total Stats"
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3674,7 +3678,7 @@ msgstr "WEIGHT"
 msgid "Waiting for Approval"
 msgstr "Waiting for Approval"
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
@@ -3720,7 +3724,7 @@ msgstr "When closing the position, you can select which token you would like to 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
@@ -3965,8 +3969,8 @@ msgid "{0} Capacity Reached"
 msgstr "{0} Capacity Reached"
 
 #: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
-msgid "{0} GD (${1})"
-msgstr "{0} GD (${1})"
+#~ msgid "{0} GD (${1})"
+#~ msgstr "{0} GD (${1})"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP (${1})"
@@ -3983,6 +3987,10 @@ msgstr "{0} GLP have been reserved for vesting."
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP sold for {1} {2}!"
 msgstr "{0} GLP sold for {1} {2}!"
+
+#: src/components/GMSwap/GMStats/GMStats.tsx
+msgid "{0} GM (${1})"
+msgstr "{0} GM (${1})"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js

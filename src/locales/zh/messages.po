@@ -85,7 +85,7 @@ msgstr ""
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr ""
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -357,10 +357,10 @@ msgstr "在Avalanche上需要Avax来购买GMX"
 msgid "Balance"
 msgstr "余额"
 
-#: src/components/GDSwap/GDSwapBox/BuyGD.tsx
-#: src/components/GDSwap/GDSwapBox/BuyGD.tsx
-#: src/components/GDSwap/GDSwapBox/SellGD.tsx
-#: src/components/GDSwap/GDSwapBox/SellGD.tsx
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GMSwap/GMSwapBox/SellGM.tsx
+#: src/components/GMSwap/GMSwapBox/SellGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -971,7 +971,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1275,7 +1275,7 @@ msgstr "费用"
 msgid "Fees"
 msgstr "费用"
 
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 msgid "Fees and price impact"
 msgstr ""
 
@@ -1303,7 +1303,7 @@ msgstr ""
 msgid "Fees since"
 msgstr "费用來自"
 
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1782,8 +1782,8 @@ msgstr "加载中..."
 msgid "Long"
 msgstr "做多"
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 msgid "Long Collateral"
 msgstr ""
 
@@ -1862,7 +1862,7 @@ msgstr ""
 msgid "Market Cap"
 msgstr "标记上限"
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 msgid "Market worth"
 msgstr ""
 
@@ -2292,7 +2292,7 @@ msgstr ""
 msgid "Page outdated, please refresh"
 msgstr "页面已过期，请刷新"
 
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 msgid "Pair"
 msgstr ""
 
@@ -2325,12 +2325,12 @@ msgstr ""
 msgid "Pay: {0} USD"
 msgstr ""
 
-#: src/components/GDSwap/GDSwapBox/BuyGD.tsx
-#: src/components/GDSwap/GDSwapBox/SellGD.tsx
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GMSwap/GMSwapBox/SellGM.tsx
 msgid "Pay: {0}$"
 msgstr ""
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 msgid "Perp"
 msgstr ""
 
@@ -2415,7 +2415,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -2497,12 +2497,16 @@ msgid "Protocol analytics"
 msgstr ""
 
 #: src/pages/PoolsPage/PoolsPage.tsx
-msgid "Purchase <0>GD tokens</0>"
-msgstr ""
+#~ msgid "Purchase <0>GD tokens</0>"
+#~ msgstr ""
 
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 msgstr "购买<0>GLP代币</0>，从掉期和杠杆交易中获得{nativeTokenSymbol}费用"
+
+#: src/pages/PoolsPage/PoolsPage.tsx
+msgid "Purchase <0>GM tokens</0>"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
@@ -2546,8 +2550,8 @@ msgstr "该账户作为合作公司赚取的回扣"
 msgid "Receive"
 msgstr "收取"
 
-#: src/components/GDSwap/GDSwapBox/BuyGD.tsx
-#: src/components/GDSwap/GDSwapBox/SellGD.tsx
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GMSwap/GMSwapBox/SellGM.tsx
 msgid "Receive: {0}$"
 msgstr ""
 
@@ -2816,8 +2820,8 @@ msgstr "分享仓位"
 msgid "Short"
 msgstr "做空"
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 msgid "Short Collateral"
 msgstr ""
 
@@ -3292,7 +3296,7 @@ msgstr "质押总额"
 msgid "Total Stats"
 msgstr "总统计表"
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3671,7 +3675,7 @@ msgstr "重量"
 msgid "Waiting for Approval"
 msgstr "等待核准"
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
@@ -3717,7 +3721,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
@@ -3962,8 +3966,8 @@ msgid "{0} Capacity Reached"
 msgstr ""
 
 #: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
-msgid "{0} GD (${1})"
-msgstr ""
+#~ msgid "{0} GD (${1})"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP (${1})"
@@ -3980,6 +3984,10 @@ msgstr "{0}GLP已被保留用于授权"
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP sold for {1} {2}!"
 msgstr "{0}GLP以{1}{2}售出 !"
+
+#: src/components/GMSwap/GMStats/GMStats.tsx
+msgid "{0} GM (${1})"
+msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js

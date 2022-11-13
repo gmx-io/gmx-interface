@@ -85,7 +85,7 @@ msgstr ""
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr ""
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -357,10 +357,10 @@ msgstr ""
 msgid "Balance"
 msgstr ""
 
-#: src/components/GDSwap/GDSwapBox/BuyGD.tsx
-#: src/components/GDSwap/GDSwapBox/BuyGD.tsx
-#: src/components/GDSwap/GDSwapBox/SellGD.tsx
-#: src/components/GDSwap/GDSwapBox/SellGD.tsx
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GMSwap/GMSwapBox/SellGM.tsx
+#: src/components/GMSwap/GMSwapBox/SellGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -971,7 +971,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1275,7 +1275,7 @@ msgstr ""
 msgid "Fees"
 msgstr ""
 
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 msgid "Fees and price impact"
 msgstr ""
 
@@ -1303,7 +1303,7 @@ msgstr ""
 msgid "Fees since"
 msgstr ""
 
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1782,8 +1782,8 @@ msgstr ""
 msgid "Long"
 msgstr ""
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 msgid "Long Collateral"
 msgstr ""
 
@@ -1862,7 +1862,7 @@ msgstr ""
 msgid "Market Cap"
 msgstr ""
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 msgid "Market worth"
 msgstr ""
 
@@ -2292,7 +2292,7 @@ msgstr ""
 msgid "Page outdated, please refresh"
 msgstr ""
 
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 msgid "Pair"
 msgstr ""
 
@@ -2325,12 +2325,12 @@ msgstr ""
 msgid "Pay: {0} USD"
 msgstr ""
 
-#: src/components/GDSwap/GDSwapBox/BuyGD.tsx
-#: src/components/GDSwap/GDSwapBox/SellGD.tsx
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GMSwap/GMSwapBox/SellGM.tsx
 msgid "Pay: {0}$"
 msgstr ""
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 msgid "Perp"
 msgstr ""
 
@@ -2415,7 +2415,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -2497,11 +2497,15 @@ msgid "Protocol analytics"
 msgstr ""
 
 #: src/pages/PoolsPage/PoolsPage.tsx
-msgid "Purchase <0>GD tokens</0>"
-msgstr ""
+#~ msgid "Purchase <0>GD tokens</0>"
+#~ msgstr ""
 
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
+msgstr ""
+
+#: src/pages/PoolsPage/PoolsPage.tsx
+msgid "Purchase <0>GM tokens</0>"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
@@ -2546,8 +2550,8 @@ msgstr ""
 msgid "Receive"
 msgstr ""
 
-#: src/components/GDSwap/GDSwapBox/BuyGD.tsx
-#: src/components/GDSwap/GDSwapBox/SellGD.tsx
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GMSwap/GMSwapBox/SellGM.tsx
 msgid "Receive: {0}$"
 msgstr ""
 
@@ -2816,8 +2820,8 @@ msgstr ""
 msgid "Short"
 msgstr ""
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 msgid "Short Collateral"
 msgstr ""
 
@@ -3292,7 +3296,7 @@ msgstr ""
 msgid "Total Stats"
 msgstr ""
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3671,7 +3675,7 @@ msgstr ""
 msgid "Waiting for Approval"
 msgstr ""
 
-#: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
+#: src/components/GMSwap/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
@@ -3717,7 +3721,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/GDSwap/GDSwapBox/GDSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
@@ -3962,8 +3966,8 @@ msgid "{0} Capacity Reached"
 msgstr ""
 
 #: src/components/GDSwap/GDMarketInfo/GDMarketInfo.tsx
-msgid "{0} GD (${1})"
-msgstr ""
+#~ msgid "{0} GD (${1})"
+#~ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP (${1})"
@@ -3979,6 +3983,10 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP sold for {1} {2}!"
+msgstr ""
+
+#: src/components/GMSwap/GMStats/GMStats.tsx
+msgid "{0} GM (${1})"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
