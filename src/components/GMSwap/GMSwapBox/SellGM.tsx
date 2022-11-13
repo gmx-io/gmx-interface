@@ -3,26 +3,26 @@ import { t } from "@lingui/macro";
 import arrowIcon from "img/ic_convert_down.svg";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import glp24Icon from "img/ic_glp_24.svg";
-import { GD_DECIMALS } from "lib/legacy";
+import { GM_DECIMALS } from "lib/legacy";
 import { bigNumberify, formatAmount } from "lib/numbers";
 
 type Props = {
   onSwapArrowClick: () => void;
 };
 
-export function SellGD(p: Props) {
+export function SellGM(p: Props) {
   return (
     <>
       <BuyInputSection
         topLeftLabel={t`Receive: ${100}$`}
         topRightLabel={t`Balance:`}
-        tokenBalance={`${formatAmount(bigNumberify(1000), GD_DECIMALS, 4, true)}`}
+        tokenBalance={`${formatAmount(bigNumberify(1000), GM_DECIMALS, 4, true)}`}
         inputValue={0}
         onInputValueChange={() => null}
         balance={"0.0$"}
       >
         <div className="selected-token">
-          GD <img src={glp24Icon} alt="glp24Icon" />
+          GM <img src={glp24Icon} alt="glp24Icon" />
         </div>
       </BuyInputSection>
 

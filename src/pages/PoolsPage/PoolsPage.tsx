@@ -1,13 +1,18 @@
 import { Trans } from "@lingui/macro";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { GDMarketInfo } from "components/GDSwap/GDMarketInfo/GDMarketInfo";
-import { GDSwapBox } from "components/GDSwap/GDSwapBox/GDSwapBox";
+import { GMMarketInfo } from "components/GMSwap/GMStats/GMStats";
+import { GMSwapBox } from "components/GMSwap/GMSwapBox/GMSwapBox";
+import { getSyntheticsMarkets } from "config/syntheticsMarkets";
 import { getPageTitle } from "lib/legacy";
+import { useState } from "react";
 
-import "./PoolsPage.css";
+import "./PoolsPage.scss";
 
 export function PoolsPage() {
+  const markets = getSyntheticsMarkets();
+  const [selectedMarket, setSelectedMarket] = useState(markets[0]);
+
   return (
     <SEO title={getPageTitle("Synthetics pools")}>
       <div className="default-container page-layout">
@@ -18,7 +23,7 @@ export function PoolsPage() {
             </div>
             <div className="Page-description">
               <Trans>
-                Purchase <ExternalLink href="https://gmxio.gitbook.io/gmx/gd">GD tokens</ExternalLink>
+                Purchase <ExternalLink href="https://gmxio.gitbook.io/gmx/gd">GM tokens</ExternalLink>
               </Trans>
               <br />
             </div>
@@ -26,8 +31,10 @@ export function PoolsPage() {
         </div>
 
         <div className="PoolsPage-content">
-          <GDMarketInfo />
-          <GDSwapBox className="PoolsPage-swap-box" />
+          <GMMarketInfo market={selectedMarket} />
+          <div className="PoolsPage-swap-box">
+            <GMSwapBox selectedMarket={selectedMarket} markets={markets} onSelectMarket={setSelectedMarket} />
+          </div>
         </div>
       </div>
 

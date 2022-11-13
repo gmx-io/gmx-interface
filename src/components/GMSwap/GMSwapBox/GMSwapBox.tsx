@@ -1,14 +1,17 @@
 import { t, Trans } from "@lingui/macro";
 import { useState } from "react";
-import "./GDSwapBox.css";
-
 import Tab from "components/Tab/Tab";
-import { BuyGD } from "./BuyGD";
-import { SellGD } from "./SellGD";
+import { BuyGM } from "./BuyGM";
+import { SellGM } from "./SellGM";
 import Tooltip from "components/Tooltip/Tooltip";
+import { MarketDropdown } from "../MarketDropdown/MarketDropdown";
+import { SyntheticsMarket } from "domain/synthetics/types";
+import "./GMSwapBox.scss";
 
 type Props = {
-  className?: string;
+  selectedMarket: SyntheticsMarket;
+  markets: SyntheticsMarket[];
+  onSelectMarket: (market: SyntheticsMarket) => void;
 };
 
 const tabs = {
@@ -22,13 +25,15 @@ const operationTypes = {
   pair: t`Pair`,
 };
 
-export function GDSwapBox(p: Props) {
+export function GMSwapBox(p: Props) {
   const [currentTab, setCurrentTab] = useState(tabs.deposit);
   const [operationType, setOperationType] = useState(operationTypes.longCollateral);
 
   return (
-    <div className={`GDSwapBox App-box ${p.className}`}>
-      {/* <MarketDropdown onSelect={() => null} /> */}
+    <div className={`App-box GMSwapBox`}>
+      <div className="GMSwapBox-market-dropdown">
+        <MarketDropdown selectedMarket={p.selectedMarket} markets={p.markets} onSelect={p.onSelectMarket} />
+      </div>
       <Tab
         options={Object.values(tabs)}
         option={currentTab}
@@ -37,17 +42,17 @@ export function GDSwapBox(p: Props) {
       />
       <Tab
         options={Object.values(operationTypes)}
-        className="GDSwapBox-asset-options-tabs"
+        className="GMSwapBox-asset-options-tabs"
         type="inline"
         option={operationType}
         onChange={setOperationType}
       />
       {currentTab === tabs.deposit ? (
-        <BuyGD onSwapArrowClick={() => setCurrentTab(tabs.withdraw)} />
+        <BuyGM onSwapArrowClick={() => setCurrentTab(tabs.withdraw)} />
       ) : (
-        <SellGD onSwapArrowClick={() => setCurrentTab(tabs.deposit)} />
+        <SellGM onSwapArrowClick={() => setCurrentTab(tabs.deposit)} />
       )}
-      <div className="GDSwapBox-info-section">
+      <div className="GMSwapBox-info-section">
         <div className="Exchange-info-row">
           <div className="Exchange-info-label">
             <Trans>Fees and price impact</Trans>
