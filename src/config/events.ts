@@ -16,7 +16,7 @@ export type EventData = {
 export const homeEventsData: EventData[] = [
   {
     id: "avax-norush-contest",
-    title: "Trading Contest",
+    title: "GMXRUSH Trading Contest",
     isActive: true,
     validTill: "23 Nov 2022, 12:00",
     bodyText: [
@@ -65,7 +65,7 @@ export const homeEventsData: EventData[] = [
 export const appEventsData: EventData[] = [
   {
     id: "avax-norush-contest",
-    title: "Trading Contest",
+    title: "GMXRUSH Trading Contest",
     isActive: true,
     validTill: "23 Nov 2022, 12:00",
     bodyText: [
