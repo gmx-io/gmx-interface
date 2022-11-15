@@ -1,7 +1,7 @@
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useEffect, useRef, useState } from "react";
 import { widget } from "../../../../public/charting_library";
-import Datafeed, { getKeyByValue, supportedResolutions } from "./datafeed";
+import datafeed, { getKeyByValue, getOnResetCache, supportedResolutions } from "./datafeed";
 import "./TVChartContainer.css";
 const DEFAULT_PERIOD = "4h";
 
@@ -26,6 +26,13 @@ export default function TVChartContainer({ symbol, chainId }) {
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
 
   useEffect(() => {
+    if (document.visibilityState === "visible" && tvWidgetRef.current) {
+      getOnResetCache()();
+      tvWidgetRef.current.activeChart().resetData();
+    }
+  }, [document.visibilityState]);
+
+  useEffect(() => {
     if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart()?.symbol()) {
       const CHAINID_SYMBOL = `${symbol}_${chainId}`;
       tvWidgetRef.current.setSymbol(CHAINID_SYMBOL, tvWidgetRef.current.activeChart().resolution(), () => {});
@@ -40,7 +47,7 @@ export default function TVChartContainer({ symbol, chainId }) {
         ...chartStyleOverrides,
         [`mainSeriesProperties.${prop}.barColorsOnPrevClose`]: true,
         [`mainSeriesProperties.${prop}.drawWick`]: true,
-        [`mainSeriesProperties.${prop}.drawBorder`]: true,
+        [`mainSeriesProperties.${prop}.drawBorder`]: false,
         [`mainSeriesProperties.${prop}.borderVisible`]: false,
         [`mainSeriesProperties.${prop}.upColor`]: "#0ecc83",
         [`mainSeriesProperties.${prop}.downColor`]: "#fa3c58",
@@ -52,7 +59,7 @@ export default function TVChartContainer({ symbol, chainId }) {
     const widgetOptions = {
       debug: false,
       symbol: `${symbol}_${chainId}`,
-      datafeed: Datafeed,
+      datafeed: datafeed,
       theme: defaultProps.theme,
       interval: getKeyByValue(supportedResolutions, period),
       container: tvChartRef.current,
