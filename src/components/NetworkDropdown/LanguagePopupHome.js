@@ -6,7 +6,7 @@ import "./NetworkDropdown.css";
 import language24Icon from "img/ic_language24.svg";
 import checkedIcon from "img/ic_checked.svg";
 import { importImage, isHomeSite } from "lib/legacy";
-import { defaultLocale, dynamicActivate, locales } from "lib/i18n";
+import { defaultLocale, dynamicActivate, isTestLanguage, locales } from "lib/i18n";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 
 export default function LanguagePopupHome() {
@@ -30,7 +30,7 @@ export default function LanguagePopupHome() {
         label={t`Select Language`}
       >
         {Object.keys(locales).map((item) => {
-          const image = importImage(`flag_${item}.svg`);
+          const image = !isTestLanguage(item) && importImage(`flag_${item}.svg`);
           return (
             <div
               key={item}
