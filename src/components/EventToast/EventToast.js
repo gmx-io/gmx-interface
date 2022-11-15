@@ -12,7 +12,15 @@ export default function EventToast({ event, id, onClick, t }) {
         </div>
         <MdOutlineClose onClick={onClick} className="cross-icon" color="white" />
       </header>
-      <p className="toast-body">{event.bodyText}</p>
+      {Array.isArray(event.bodyText) ? (
+        event.bodyText.map((s, i) => (
+          <p key={i} className="toast-body">
+            {s}
+          </p>
+        ))
+      ) : (
+        <p className="toast-body">{event.bodyText}</p>
+      )}
       <div className="toast-links">
         {event.buttons.map((button) => {
           if (button.newTab) {
