@@ -69,7 +69,7 @@ export function GMMarketInfo(p: Props) {
           <div className="label">
             <Trans>Price</Trans>
           </div>
-          <div className="value">${formatAmount(bigNumberify(100000), USD_DECIMALS, 3, true)}</div>
+          <div className="value">$100.000</div>
         </div>
 
         <div className="App-card-row">

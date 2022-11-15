@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import { useState } from "react";
 import Tab from "components/Tab/Tab";
 import { BuyGM } from "./BuyGM";
-import { SellGM } from "./SellGM";
 import Tooltip from "components/Tooltip/Tooltip";
 import { MarketDropdown } from "../MarketDropdown/MarketDropdown";
 import { SyntheticsMarket } from "domain/synthetics/types";
@@ -51,16 +50,15 @@ export function GMSwapBox(p: Props) {
         onChange={setModeTab}
       />
 
-      {operationTab === OperationType.deposit ? (
-        <BuyGM
-          infoTokens={p.infoTokens}
-          mode={modeTab}
-          availableTokens={availableTokens}
-          onSwapArrowClick={() => setOperationTab(OperationType.withdraw)}
-        />
-      ) : (
-        <SellGM onSwapArrowClick={() => setOperationTab(OperationType.deposit)} />
-      )}
+      <BuyGM
+        operationType={operationTab}
+        infoTokens={p.infoTokens}
+        mode={modeTab}
+        availableTokens={availableTokens}
+        onSwapArrowClick={() =>
+          setOperationTab((val) => (val === OperationType.withdraw ? OperationType.deposit : OperationType.withdraw))
+        }
+      />
 
       <div className="GMSwapBox-info-section">
         <div className="Exchange-info-row">

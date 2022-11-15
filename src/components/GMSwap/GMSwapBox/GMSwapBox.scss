@@ -4,6 +4,12 @@
   padding-top: 0;
 }
 
+.disabled {
+  input {
+    cursor: not-allowed !important;
+  }
+}
+
 .GMSwapBox .Exchange-swap-option-tabs {
   margin: 1.5rem 0;
 }

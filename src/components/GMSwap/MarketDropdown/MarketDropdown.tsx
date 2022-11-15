@@ -24,7 +24,6 @@ export function MarketDropdown(p: Props) {
             <FaChevronDown className="MarketDropdown-current-arrow" />
           </button>
         </Menu.Button>
-
         <Menu.Items as="div" className="MarketDropdown-options menu-items">
           {p.markets.map((market) => (
             <Menu.Item key={market.indexTokenSymbol}>

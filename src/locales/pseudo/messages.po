@@ -359,6 +359,7 @@ msgstr ""
 
 #: src/components/GMSwap/GMSwapBox/BuyGM.tsx
 #: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
 #: src/components/GMSwap/GMSwapBox/SellGM.tsx
 #: src/components/GMSwap/GMSwapBox/SellGM.tsx
 #: src/components/Glp/GlpSwap.js
@@ -971,7 +972,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/constants.ts
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1783,7 +1784,6 @@ msgid "Long"
 msgstr ""
 
 #: src/components/GMSwap/GMStats/GMStats.tsx
-#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 msgid "Long Collateral"
 msgstr ""
 
@@ -2292,7 +2292,7 @@ msgstr ""
 msgid "Page outdated, please refresh"
 msgstr ""
 
-#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/constants.ts
 msgid "Pair"
 msgstr ""
 
@@ -2312,6 +2312,9 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Pay"
@@ -2325,7 +2328,6 @@ msgstr ""
 msgid "Pay: {0} USD"
 msgstr ""
 
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
 #: src/components/GMSwap/GMSwapBox/SellGM.tsx
 msgid "Pay: {0}$"
 msgstr ""
@@ -2545,12 +2547,12 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Receive"
 msgstr ""
 
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
 #: src/components/GMSwap/GMSwapBox/SellGM.tsx
 msgid "Receive: {0}$"
 msgstr ""
@@ -2821,7 +2823,6 @@ msgid "Short"
 msgstr ""
 
 #: src/components/GMSwap/GMStats/GMStats.tsx
-#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
 msgid "Short Collateral"
 msgstr ""
 
@@ -2840,6 +2841,10 @@ msgstr ""
 
 #: src/pages/Home/Home.js
 msgid "Simple Swaps"
+msgstr ""
+
+#: src/components/GMSwap/GMSwapBox/constants.ts
+msgid "Single"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -3721,7 +3726,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
+#: src/components/GMSwap/GMSwapBox/constants.ts
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
