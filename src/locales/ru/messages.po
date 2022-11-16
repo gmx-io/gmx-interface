@@ -1034,6 +1034,10 @@ msgstr ""
 msgid "Distribution"
 msgstr ""
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Docs"
+msgstr ""
+
 #: src/components/ModalViews/RedirectModal.js
 msgid "Don't show this message again for 30 days."
 msgstr ""
@@ -1456,6 +1460,10 @@ msgstr ""
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr ""
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Governance"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
 msgstr ""
@@ -1625,13 +1633,11 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+#: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.js
+#: src/pages/Home/Home.js
 msgid "Launch App"
 msgstr ""
-
-#: src/pages/Home/Home.js
-msgid "Launch Exchange"
-msgstr "Запустить биржу"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Leaderboard"
@@ -2459,6 +2465,10 @@ msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of Reserves"
+msgstr ""
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Protocol"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -3597,6 +3607,10 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Volume traded by your referred traders."
+msgstr ""
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Voting"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js

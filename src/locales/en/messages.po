@@ -1034,6 +1034,10 @@ msgstr "Display PnL after fees"
 msgid "Distribution"
 msgstr "Distribution"
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Docs"
+msgstr "Docs"
+
 #: src/components/ModalViews/RedirectModal.js
 msgid "Don't show this message again for 30 days."
 msgstr "Don't show this message again for 30 days."
@@ -1456,6 +1460,10 @@ msgstr "Generating shareable image..."
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Governance"
+msgstr "Governance"
+
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
 msgstr "High Slippage, Swap Anyway"
@@ -1625,13 +1633,11 @@ msgstr "Keep leverage at {0}x"
 msgid "Language"
 msgstr "Language"
 
+#: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.js
+#: src/pages/Home/Home.js
 msgid "Launch App"
 msgstr "Launch App"
-
-#: src/pages/Home/Home.js
-msgid "Launch Exchange"
-msgstr "Launch Exchange"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Leaderboard"
@@ -2463,6 +2469,10 @@ msgstr "Projects integrated with GMX."
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of Reserves"
 msgstr "Proof of Reserves"
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Protocol"
+msgstr "Protocol"
 
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -3601,6 +3611,10 @@ msgstr "Volume traded by this account with an active referral code."
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Volume traded by your referred traders."
 msgstr "Volume traded by your referred traders."
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Voting"
+msgstr "Voting"
 
 #: src/components/Glp/GlpSwap.js
 msgid "WALLET"

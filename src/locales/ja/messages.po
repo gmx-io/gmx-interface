@@ -1034,6 +1034,10 @@ msgstr "手数料込損益の表示"
 msgid "Distribution"
 msgstr "配分"
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Docs"
+msgstr ""
+
 #: src/components/ModalViews/RedirectModal.js
 msgid "Don't show this message again for 30 days."
 msgstr ""
@@ -1456,6 +1460,10 @@ msgstr ""
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr "GMX紹介プログラムで手数料が割引されリベートが得られます。<0/>より詳しくは、 <1>こちらの紹介プログラム詳細を読んでください</1>."
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Governance"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
 msgstr "大きなスリッページ。ともかく交換する"
@@ -1625,13 +1633,11 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+#: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.js
+#: src/pages/Home/Home.js
 msgid "Launch App"
 msgstr ""
-
-#: src/pages/Home/Home.js
-msgid "Launch Exchange"
-msgstr "取引開始"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Leaderboard"
@@ -2459,6 +2465,10 @@ msgstr "GMXと統合されているプロジェクト"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of Reserves"
+msgstr ""
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Protocol"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -3598,6 +3608,10 @@ msgstr "有効な紹介コードを使ってこのアカウントでトレード
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Volume traded by your referred traders."
 msgstr "あなたが紹介したトレーダーによる取引高"
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Voting"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "WALLET"
