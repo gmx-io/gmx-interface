@@ -360,9 +360,6 @@ msgstr "잔고"
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -2322,7 +2319,6 @@ msgstr "파트너쉽 및 합병"
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Pay"
@@ -2563,9 +2559,6 @@ msgstr "어필리에이트로서 이 계정이 획득한 리베이트."
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js

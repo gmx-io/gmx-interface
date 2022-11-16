@@ -360,9 +360,6 @@ msgstr "Balance"
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -2325,7 +2322,6 @@ msgstr "Partnerships and Integrations"
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Pay"
@@ -2566,9 +2562,6 @@ msgstr "Rebates earned by this account as an affiliate."
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js

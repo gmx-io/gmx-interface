@@ -360,9 +360,6 @@ msgstr "余额"
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -2322,7 +2319,6 @@ msgstr "合作伙伴与整合"
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Pay"
@@ -2563,9 +2559,6 @@ msgstr "该账户作为合作公司赚取的回扣"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
