@@ -2319,6 +2319,7 @@ msgstr ""
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Pay"
@@ -2559,6 +2560,8 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
