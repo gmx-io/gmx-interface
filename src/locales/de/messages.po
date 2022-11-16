@@ -85,7 +85,7 @@ msgstr ""
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr ""
 
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -357,14 +357,12 @@ msgstr ""
 msgid "Balance"
 msgstr ""
 
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/SellGM.tsx
-#: src/components/GMSwap/GMSwapBox/SellGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -975,7 +973,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/GMSwap/GMSwapBox/constants.ts
+#: src/components/GM/GMSwapBox/constants.ts
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1279,7 +1277,7 @@ msgstr ""
 msgid "Fees"
 msgstr ""
 
-#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
 msgid "Fees and price impact"
 msgstr ""
 
@@ -1307,7 +1305,7 @@ msgstr ""
 msgid "Fees since"
 msgstr ""
 
-#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1786,7 +1784,7 @@ msgstr ""
 msgid "Long"
 msgstr ""
 
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 msgid "Long Collateral"
 msgstr ""
 
@@ -1865,7 +1863,7 @@ msgstr ""
 msgid "Market Cap"
 msgstr ""
 
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 msgid "Market worth"
 msgstr ""
 
@@ -2295,7 +2293,7 @@ msgstr ""
 msgid "Page outdated, please refresh"
 msgstr ""
 
-#: src/components/GMSwap/GMSwapBox/constants.ts
+#: src/components/GM/GMSwapBox/constants.ts
 msgid "Pair"
 msgstr ""
 
@@ -2315,10 +2313,10 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Pay"
@@ -2333,10 +2331,10 @@ msgid "Pay: {0} USD"
 msgstr ""
 
 #: src/components/GMSwap/GMSwapBox/SellGM.tsx
-msgid "Pay: {0}$"
-msgstr ""
+#~ msgid "Pay: {0}$"
+#~ msgstr ""
 
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 msgid "Perp"
 msgstr ""
 
@@ -2421,7 +2419,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -2551,18 +2549,18 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Receive"
 msgstr ""
 
 #: src/components/GMSwap/GMSwapBox/SellGM.tsx
-msgid "Receive: {0}$"
-msgstr ""
+#~ msgid "Receive: {0}$"
+#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
@@ -2829,7 +2827,7 @@ msgstr ""
 msgid "Short"
 msgstr ""
 
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 msgid "Short Collateral"
 msgstr ""
 
@@ -2850,7 +2848,7 @@ msgstr ""
 msgid "Simple Swaps"
 msgstr ""
 
-#: src/components/GMSwap/GMSwapBox/constants.ts
+#: src/components/GM/GMSwapBox/constants.ts
 msgid "Single"
 msgstr ""
 
@@ -3308,7 +3306,7 @@ msgstr ""
 msgid "Total Stats"
 msgstr ""
 
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3687,7 +3685,7 @@ msgstr ""
 msgid "Waiting for Approval"
 msgstr ""
 
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
@@ -3733,7 +3731,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/GMSwap/GMSwapBox/constants.ts
+#: src/components/GM/GMSwapBox/constants.ts
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
@@ -3997,7 +3995,7 @@ msgstr ""
 msgid "{0} GLP sold for {1} {2}!"
 msgstr ""
 
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 msgid "{0} GM (${1})"
 msgstr ""
 

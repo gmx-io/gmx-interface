@@ -16,7 +16,7 @@ type Props = {
   market: SyntheticsMarket;
 };
 
-export function GMMarketInfo(p: Props) {
+export function GMStats(p: Props) {
   const { chainId } = useChainId();
 
   return (

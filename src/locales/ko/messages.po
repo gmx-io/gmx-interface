@@ -85,7 +85,7 @@ msgstr ""
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr ""
 
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -357,14 +357,12 @@ msgstr "Avalanche에서 GMX를 구입하기 위해서는 Avax가 필요합니다
 msgid "Balance"
 msgstr "잔고"
 
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/SellGM.tsx
-#: src/components/GMSwap/GMSwapBox/SellGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -975,7 +973,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/GMSwap/GMSwapBox/constants.ts
+#: src/components/GM/GMSwapBox/constants.ts
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1279,7 +1277,7 @@ msgstr "수수료"
 msgid "Fees"
 msgstr "수수료"
 
-#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
 msgid "Fees and price impact"
 msgstr ""
 
@@ -1307,7 +1305,7 @@ msgstr ""
 msgid "Fees since"
 msgstr "이후 수수료"
 
-#: src/components/GMSwap/GMSwapBox/GMSwapBox.tsx
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -1786,7 +1784,7 @@ msgstr "로딩중..."
 msgid "Long"
 msgstr "롱"
 
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 msgid "Long Collateral"
 msgstr ""
 
@@ -1865,7 +1863,7 @@ msgstr ""
 msgid "Market Cap"
 msgstr "시가총액"
 
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 msgid "Market worth"
 msgstr ""
 
@@ -2295,7 +2293,7 @@ msgstr ""
 msgid "Page outdated, please refresh"
 msgstr "페이지가 오래되었습니다. 새로고침해주세요."
 
-#: src/components/GMSwap/GMSwapBox/constants.ts
+#: src/components/GM/GMSwapBox/constants.ts
 msgid "Pair"
 msgstr ""
 
@@ -2315,10 +2313,10 @@ msgstr "파트너쉽 및 합병"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Pay"
@@ -2333,10 +2331,10 @@ msgid "Pay: {0} USD"
 msgstr ""
 
 #: src/components/GMSwap/GMSwapBox/SellGM.tsx
-msgid "Pay: {0}$"
-msgstr ""
+#~ msgid "Pay: {0}$"
+#~ msgstr ""
 
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 msgid "Perp"
 msgstr ""
 
@@ -2421,7 +2419,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -2551,18 +2549,18 @@ msgstr "어필리에이트로서 이 계정이 획득한 리베이트."
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
-#: src/components/GMSwap/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/BuyGM.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Receive"
 msgstr "수령하기"
 
 #: src/components/GMSwap/GMSwapBox/SellGM.tsx
-msgid "Receive: {0}$"
-msgstr ""
+#~ msgid "Receive: {0}$"
+#~ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
@@ -2829,7 +2827,7 @@ msgstr "포지션 공유"
 msgid "Short"
 msgstr "숏"
 
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 msgid "Short Collateral"
 msgstr ""
 
@@ -2850,7 +2848,7 @@ msgstr ""
 msgid "Simple Swaps"
 msgstr "간단한 스왑"
 
-#: src/components/GMSwap/GMSwapBox/constants.ts
+#: src/components/GM/GMSwapBox/constants.ts
 msgid "Single"
 msgstr ""
 
@@ -3308,7 +3306,7 @@ msgstr "총 스테이킹"
 msgid "Total Stats"
 msgstr "전체 통계"
 
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3687,7 +3685,7 @@ msgstr "비중"
 msgid "Waiting for Approval"
 msgstr "승인 대기중"
 
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Migration/Migration.js
@@ -3733,7 +3731,7 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/GMSwap/GMSwapBox/constants.ts
+#: src/components/GM/GMSwapBox/constants.ts
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
@@ -3997,7 +3995,7 @@ msgstr "{0} GLP가 베스팅을 위해 리저브되었습니다."
 msgid "{0} GLP sold for {1} {2}!"
 msgstr "{0} GLP를 {1} {2}로 판매하였습니다!"
 
-#: src/components/GMSwap/GMStats/GMStats.tsx
+#: src/components/GM/GMStats/GMStats.tsx
 msgid "{0} GM (${1})"
 msgstr ""
 

@@ -32,21 +32,21 @@ export function GMSwapBox(p: Props) {
     shortAmountUsd: bigNumberify(0),
   });
 
-  const priceImpact = usePriceImpact(chainId, {
-    market: p.selectedMarket.perp,
-    longDeltaUsd:
-      operationTab === OperationType.deposit
-        ? swapAmounts.longAmountUsd!
-        : bigNumberify(0)!.sub(swapAmounts.longAmountUsd!),
-    shortDeltaUsd:
-      operationTab === OperationType.deposit
-        ? swapAmounts.shortAmountUsd!
-        : bigNumberify(0)!.sub(swapAmounts.shortAmountUsd!),
-  });
+  // const priceImpact = usePriceImpact(chainId, {
+  //   market: p.selectedMarket.perp,
+  //   longDeltaUsd:
+  //     operationTab === OperationType.deposit
+  //       ? swapAmounts.longAmountUsd!
+  //       : bigNumberify(0)!.sub(swapAmounts.longAmountUsd!),
+  //   shortDeltaUsd:
+  //     operationTab === OperationType.deposit
+  //       ? swapAmounts.shortAmountUsd!
+  //       : bigNumberify(0)!.sub(swapAmounts.shortAmountUsd!),
+  // });
 
-  console.log("price impact", Number(priceImpact?.priceImpactDiff), Number(priceImpact?.priceImpactShare));
+  // console.log("price impact", Number(priceImpact?.priceImpactDiff), Number(priceImpact?.priceImpactShare));
 
-  console.log("rerender");
+  // console.log("rerender");
 
   const availableTokens = [p.selectedMarket.longCollateralSymbol, p.selectedMarket.shortCollateralSymbol].map(
     (symbol) => getTokenBySymbol(chainId, symbol)
@@ -93,9 +93,7 @@ export function GMSwapBox(p: Props) {
           </div>
           <div className="align-right">
             <Tooltip
-              handle={
-                priceImpact?.priceImpactDiff && `${formatAmountFree(priceImpact.priceImpactDiff, USD_DECIMALS, 3)}`
-              }
+              handle={"..."}
               position="right-bottom"
               renderContent={() => (
                 <div className="text-white">

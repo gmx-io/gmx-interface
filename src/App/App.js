@@ -491,9 +491,7 @@ function FullApp() {
                 />
               </Route>
               <Route exact path="/pools">
-                <PoolsPage
-
-                />
+                <PoolsPage />
               </Route>
               <Route exact path="/buy_glp">
                 <BuyGlp
