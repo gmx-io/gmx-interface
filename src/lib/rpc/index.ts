@@ -1,13 +1,9 @@
 import { FALLBACK_PROVIDERS, RPC_PROVIDERS } from "config/chains";
 import _ from "lodash";
 import { ethers } from "ethers";
-import { Web3ReactContextInterface } from "@web3-react/core/dist/types";
-import { JsonRpcProvider } from "@ethersproject/providers";
+import { Web3Provider } from "@ethersproject/providers";
 
-export function getProvider(
-  library: Web3ReactContextInterface["library"] | undefined,
-  chainId: number
-): JsonRpcProvider {
+export function getProvider(library: Web3Provider | undefined, chainId: number) {
   let provider;
 
   if (library) {

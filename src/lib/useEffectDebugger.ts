@@ -27,6 +27,7 @@ const useEffectDebugger = (effectHook, dependencies, dependencyNames = []) => {
   }, {});
 
   if (Object.keys(changedDeps).length) {
+    // eslint-disable-next-line no-console
     console.log("[use-effect-debugger] ", changedDeps);
   }
 
