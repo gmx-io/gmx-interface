@@ -14,7 +14,7 @@ export default function LanguageModalContent({ currentLanguage }: Props) {
   return (
     <>
       {Object.keys(locales).map((item) => {
-        const image = !isTestLanguage(item) && importImage(`flag_${item}.svg`);
+        const image = importImage(`flag_${item}.svg`);
         return (
           <div
             key={item}

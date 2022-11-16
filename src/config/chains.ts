@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { isDevelopment } from "lib/legacy";
+import { NetworkMetadata } from "lib/wallets";
 
 const { parseEther } = ethers.utils;
 
@@ -147,7 +148,7 @@ export const FALLBACK_PROVIDERS = {
   [AVALANCHE]: ["https://avax-mainnet.gateway.pokt.network/v1/lb/626f37766c499d003aada23b"],
 };
 
-export const NETWORK_METADATA = {
+export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
   [MAINNET]: {
     chainId: "0x" + MAINNET.toString(16),
     chainName: "BSC",

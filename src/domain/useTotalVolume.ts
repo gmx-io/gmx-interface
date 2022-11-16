@@ -6,7 +6,7 @@ import { bigNumberify } from "lib/numbers";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 export default function useTotalVolume() {
-  const { data: totalVolume } = useSWR(
+  const { data: totalVolume } = useSWR<any>(
     ACTIVE_CHAIN_IDS.map((chain) => getServerUrl(chain, "/total_volume")),
     {
       fetcher: arrayURLFetcher,
@@ -15,12 +15,12 @@ export default function useTotalVolume() {
   if (totalVolume?.length > 0) {
     return ACTIVE_CHAIN_IDS.reduce(
       (acc, chainId, index) => {
-        const sum = getTotalVolumeSum(totalVolume[index]);
+        const sum = getTotalVolumeSum(totalVolume[index])!;
         acc[chainId] = sum;
         acc.total = acc.total.add(sum);
         return acc;
       },
-      { total: bigNumberify(0) }
+      { total: bigNumberify(0)! }
     );
   }
 }
