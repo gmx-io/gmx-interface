@@ -131,7 +131,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
         redirectPopupTimestamp={redirectPopupTimestamp}
         showRedirectModal={showRedirectModal}
       >
-        <Trans>Launch Exchange</Trans>
+        <Trans>Launch App</Trans>
       </HeaderLink>
     );
   };

@@ -355,6 +355,7 @@ function StakeModal(props) {
         setIsVisible(false);
       })
       .catch((e) => {
+        // eslint-disable-next-line no-console
         console.error(e);
         helperToast.error(t`Stake failed`);
       })
@@ -465,6 +466,7 @@ function UnstakeModal(props) {
         setIsVisible(false);
       })
       .catch((e) => {
+        // eslint-disable-next-line no-console
         console.error(e);
         helperToast.error(t`Unstake failed`);
       })
@@ -706,6 +708,7 @@ export default function StakeV1() {
         );
       })
       .catch((e) => {
+        // eslint-disable-next-line no-console
         console.error(e);
         helperToast.error(t`Claim failed`);
       });

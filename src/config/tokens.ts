@@ -458,6 +458,7 @@ export const EXPLORER_LINKS = {
     },
     GLP: {
       arbitrum: "https://arbiscan.io/token/0x1aDDD80E6039594eE970E5872D247bf0414C8903",
+      reserves: "https://arbiscan.io/address/0x489ee077994b6658eafa855c308275ead8097c4a",
     },
     GM: {
       coingecko: "https://www.coingecko.com/en/coins/gmx",
@@ -506,6 +507,7 @@ export const EXPLORER_LINKS = {
     },
     GLP: {
       avalanche: "https://snowtrace.io/address/0x9e295B5B976a184B14aD8cd72413aD846C299660",
+      reserves: "https://core.app/account/0x9ab2De34A33fB459b538c43f251eB825645e8595",
     },
     GM: {
       coingecko: "https://www.coingecko.com/en/coins/gmx",

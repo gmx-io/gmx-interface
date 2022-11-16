@@ -12,11 +12,18 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { EXPLORER_LINKS, PLATFORM_TOKENS } from "config/tokens";
 import { addTokenToMetamask } from "lib/wallets";
 import { useChainId } from "lib/chains";
+import { ARBITRUM } from "config/chains";
+import { Token } from "domain/tokens";
 
-function AssetDropdown({ assetSymbol, assetInfo }) {
+type Props = {
+  assetSymbol: string;
+  assetInfo?: Token;
+};
+
+function AssetDropdown({ assetSymbol, assetInfo }: Props) {
   const { active } = useWeb3React();
   const { chainId } = useChainId();
-  let { coingecko, arbitrum, avalanche } = EXPLORER_LINKS[chainId][assetSymbol] || {};
+  let { coingecko, arbitrum, avalanche, reserves } = EXPLORER_LINKS[chainId][assetSymbol] || {};
   const unavailableTokenSymbols =
     {
       42161: ["ETH"],
@@ -29,6 +36,18 @@ function AssetDropdown({ assetSymbol, assetInfo }) {
         <FiChevronDown size={20} />
       </Menu.Button>
       <Menu.Items as="div" className="asset-menu-items">
+        <Menu.Item>
+          <>
+            {reserves && assetSymbol === "GLP" && (
+              <ExternalLink href={reserves} className="asset-item">
+                <img src={chainId === ARBITRUM ? arbitrumIcon : avalancheIcon} alt="Proof of Reserves" />
+                <p>
+                  <Trans>Proof of Reserves</Trans>
+                </p>
+              </ExternalLink>
+            )}
+          </>
+        </Menu.Item>
         <Menu.Item>
           <>
             {coingecko && (

@@ -30,11 +30,11 @@ i18n.loadLocaleData({
   ...(isDevelopment() && { pseudo: { plurals: en } }),
 });
 
-export function isTestLanguage(locale) {
+export function isTestLanguage(locale: string) {
   return locale === "pseudo";
 }
 
-export async function dynamicActivate(locale) {
+export async function dynamicActivate(locale: string) {
   const { messages } = await import(`@lingui/loader!locales/${locale}/messages.po`);
   if (!isTestLanguage(locale)) {
     localStorage.setItem(LANGUAGE_LOCALSTORAGE_KEY, locale);
