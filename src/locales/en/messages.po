@@ -77,7 +77,7 @@ msgstr "<0>The pool's capacity has been reached for {0}. Please use another toke
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 
-#: src/lib/wallets/index.js
+#: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
 msgstr "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
 
@@ -509,7 +509,7 @@ msgstr "Cancel"
 msgid "Cancel failed"
 msgstr "Cancel failed"
 
-#: src/domain/legacy.js
+#: src/domain/legacy.ts
 #: src/pages/Exchange/Exchange.js
 msgid "Cancel failed."
 msgstr "Cancel failed."
@@ -518,7 +518,7 @@ msgstr "Cancel failed."
 msgid "Cancel submitted"
 msgstr "Cancel submitted"
 
-#: src/domain/legacy.js
+#: src/domain/legacy.ts
 #: src/pages/Exchange/Exchange.js
 msgid "Cancel submitted."
 msgstr "Cancel submitted."
@@ -770,7 +770,7 @@ msgstr "Connect"
 msgid "Connect Wallet"
 msgstr "Connect Wallet"
 
-#: src/lib/wallets/index.js
+#: src/lib/wallets/index.tsx
 msgid "Connected to {0}"
 msgstr "Connected to {0}"
 
@@ -2092,7 +2092,7 @@ msgstr "No esGMX to claim"
 msgid "No open orders"
 msgstr "No open orders"
 
-#: src/lib/legacy.js
+#: src/lib/legacy.ts
 msgid "No open position, order cannot be executed unless a position is opened"
 msgstr "No open position, order cannot be executed unless a position is opened"
 
@@ -2189,15 +2189,15 @@ msgstr "Order"
 msgid "Order cancelled"
 msgstr "Order cancelled"
 
-#: src/domain/legacy.js
+#: src/domain/legacy.ts
 msgid "Order cancelled."
 msgstr "Order cancelled."
 
-#: src/lib/legacy.js
+#: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
 msgstr "Order cannot be executed as it would reduce the position's leverage below 1"
 
-#: src/lib/legacy.js
+#: src/lib/legacy.ts
 msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
 msgstr "Order cannot be executed as the remaining position would be smaller than $5.00"
 
@@ -2218,7 +2218,7 @@ msgid "Order size is 0"
 msgstr "Order size is 0"
 
 #: src/components/Exchange/PositionsList.js
-#: src/lib/legacy.js
+#: src/lib/legacy.ts
 msgid "Order size is bigger than position, will only be executable if position increases"
 msgstr "Order size is bigger than position, will only be executable if position increases"
 
@@ -3483,7 +3483,7 @@ msgstr "Unstake submitted! <0>View status.</0>"
 msgid "Unstaking..."
 msgstr "Unstaking..."
 
-#: src/lib/wallets/index.js
+#: src/lib/wallets/index.tsx
 msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
 msgstr "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
 

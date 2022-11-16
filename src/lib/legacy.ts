@@ -836,7 +836,7 @@ export function getPositionKey(
   account: string,
   collateralTokenAddress: string,
   indexTokenAddress: string,
-  isLong?: boolean,
+  isLong: boolean,
   nativeTokenAddress?: string
 ) {
   const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
@@ -1410,14 +1410,16 @@ export function getTradePageUrl() {
 }
 
 export function importImage(name) {
-  let tokenImage = null;
+  let tokenImage: { default: string } | null = null;
+
   try {
     tokenImage = require("img/" + name);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
   }
-  return tokenImage.default;
+
+  return tokenImage?.default;
 }
 
 export function getTwitterIntentURL(text, url = "", hashtag = "") {

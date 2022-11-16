@@ -133,7 +133,7 @@ export function useReferralsData(chainId, account) {
       setLoading(false);
       return;
     }
-    const startOfDayTimestamp = Math.floor(parseInt(String(Date.now() / 1000)) / 86400) * 86400;
+    const startOfDayTimestamp = Math.floor(Math.floor(Date.now() / 1000) / 86400) * 86400;
 
     const query = gql`
       query referralData($typeIds: [String!]!, $account: String!, $timestamp: Int!, $referralTotalStatsId: String!) {
