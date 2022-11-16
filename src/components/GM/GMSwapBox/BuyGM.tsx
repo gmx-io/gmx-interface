@@ -1,14 +1,13 @@
 import { t } from "@lingui/macro";
 import arrowIcon from "img/ic_convert_down.svg";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import glp24Icon from "img/ic_glp_24.svg";
-import { GM_DECIMALS, USD_DECIMALS } from "lib/legacy";
-import { bigNumberify, expandDecimals, formatAmount, parseValue } from "lib/numbers";
-import { useState } from "react";
+import { GM_DECIMALS, PRECISION, USD_DECIMALS } from "lib/legacy";
+import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import { useEffect, useState } from "react";
 import { Mode, OperationType } from "./constants";
 import TokenSelector from "components/Exchange/TokenSelector";
 import { useChainId } from "lib/chains";
-import { getTokenInfo, getUsd, InfoTokens, Token, TokenInfo } from "domain/tokens";
+import { getTokenAmountFromUsd, getTokenInfo, getUsd, InfoTokens, Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 
 type Props = {
@@ -26,58 +25,101 @@ enum FocusInputId {
   gm = "gm",
 }
 
-function formatTokenBalance(tokenInfo: TokenInfo) {
-  const balance = tokenInfo && tokenInfo.balance ? tokenInfo.balance : bigNumberify(0);
-  return `${formatAmount(balance, tokenInfo.decimals, 4, true)}`;
-}
+// TODO
+export function useGmTokenState() {
+  const [inputValue, setInputValue] = useState<string | undefined>();
 
-export function getSwapTokenAmounts(infoTokens: InfoTokens, tokenAdress: string, inputValue: string) {
-  const info = getTokenInfo(infoTokens, tokenAdress);
+  const gmPrice = parseValue("100", USD_DECIMALS)!;
 
-  const tokenAmount = parseValue(inputValue, info.decimals) || BigNumber.from(0);
-  const usdAmount = getUsd(tokenAmount, tokenAdress, false, infoTokens);
+  const tokenAmount = parseValue(inputValue || "0", GM_DECIMALS) || BigNumber.from(0);
+  const usdAmount = tokenAmount.mul(gmPrice).div(expandDecimals(1, GM_DECIMALS));
+  const balance = bigNumberify(0);
+
+  const tokenAmountFormatted = formatAmount(tokenAmount, GM_DECIMALS, 4);
+  const usdAmountFormatted = `${formatAmount(usdAmount, USD_DECIMALS, 2, true)}`;
+  const balanceFormatted = formatAmount(balance, GM_DECIMALS, 4);
 
   return {
-    info,
+    inputValue: inputValue !== "0" ? inputValue : undefined,
+    setInputValue,
     tokenAmount,
     usdAmount,
+    balance,
+    gmPrice,
+    tokenAmountFormatted,
+    usdAmountFormatted,
+    balanceFormatted,
   };
 }
 
-export function getGmTokenAmounts(inputValue: string | undefined, gmPrice: BigNumber) {
-  const tokenAmount = parseValue(inputValue || "0", GM_DECIMALS) || BigNumber.from(0);
+function useSwapTokenState(infoTokens: InfoTokens, initial: { tokenAddress?: string } = {}) {
+  const [inputValue, setInputValue] = useState<string | undefined>();
+  const [tokenAddress, setTokenAddress] = useState<string | undefined>(initial.tokenAddress);
 
-  const usdAmount = tokenAmount.mul(gmPrice).div(expandDecimals(1, GM_DECIMALS));
+  if (!tokenAddress) {
+    return {
+      info: undefined,
+      inputValue: inputValue !== "0" ? inputValue : undefined,
+      setInputValue,
+      setTokenAddress,
+      tokenAmount: BigNumber.from(0),
+      usdAmount: BigNumber.from(0),
+      balance: BigNumber.from(0),
+      tokenAmountFormatted: formatAmount(BigNumber.from(0), 4, 4),
+      usdAmountFormatted: formatAmount(BigNumber.from(0), 2, 2, true),
+      balanceFormatted: formatAmount(BigNumber.from(0), 4, 4),
+    };
+  }
+
+  const info = getTokenInfo(infoTokens, tokenAddress);
+
+  const tokenAmount = parseValue(inputValue || "0", info.decimals) || BigNumber.from(0);
+  const usdAmount = getUsd(tokenAmount, tokenAddress, false, infoTokens) || BigNumber.from(0);
+  const balance = info.balance;
+
+  const tokenAmountFormatted = formatAmount(tokenAmount, info.decimals, 4);
+  const usdAmountFormatted = `${formatAmount(usdAmount, USD_DECIMALS, 2, true)}`;
+  const balanceFormatted = formatAmount(balance, info.decimals, 4);
 
   return {
+    inputValue: inputValue !== "0" ? inputValue : undefined,
+    setInputValue,
+    setTokenAddress,
+    info,
+    tokenAddress,
     tokenAmount,
-    usdAmount: usdAmount,
+    usdAmount,
+    balance,
+    tokenAmountFormatted,
+    usdAmountFormatted,
+    balanceFormatted,
   };
 }
-
-type TokenInputState = {
-  value?: string;
-  tokenAddress?: string;
-};
 
 export function BuyGM(p: Props) {
   const { chainId } = useChainId();
 
-  const [swapInputValue, setSwapInputValue] = useState<{ first?: string; second?: string }>({
-    first: undefined,
-    second: undefined,
-  });
-
-  const [firstTokenInput, setFirstTokenInput] = useState<TokenInputState>({});
-  const [secondTokenInput, setSecondTokenInput] = useState<TokenInputState>({});
-  const [gmInputValue, setGmInputValue] = useState<string | undefined>(undefined);
-
   const [focusedInput, setFocusedInput] = useState<FocusInputId | undefined>();
+  const firstTokenState = useSwapTokenState(p.infoTokens, { tokenAddress: p.availableTokens[0].address });
+  const secondTokenState = useSwapTokenState(p.infoTokens);
+  const gmTokenState = useGmTokenState();
 
-  const [selectedTokenAddress, setSelectedTokenAddress] = useState<string>(p.availableTokens[0].address);
-  const [GMInputValue, setGMInputValue] = useState<string | undefined>();
+  useEffect(
+    function updateInputsByModeEff() {
+      if (p.mode === Mode.pair && !secondTokenState.tokenAddress) {
+        const secondToken = p.availableTokens.filter((token) => token.address !== firstTokenState.tokenAddress)[0];
 
-  const firstTokenInfo = getTokenInfo(p.infoTokens, firstTokenInput.tokenAddress);
+        secondTokenState.setTokenAddress(secondToken.address);
+      } else if (p.mode === Mode.single && secondTokenState.tokenAddress) {
+        secondTokenState.setInputValue(undefined);
+        secondTokenState.setTokenAddress(undefined);
+      }
+    },
+    [firstTokenState.tokenAddress, p.availableTokens, p.mode, secondTokenState]
+  );
+
+  // const [firstTokenInput, setFirstTokenInput] = useState<TokenInputState>({});
+  // const [secondTokenInput, setSecondTokenInput] = useState<TokenInputState>({});
 
   // const swapTokensInfo = {
   //   first: getTokenInfo(p.infoTokens, selectedTokenAddress || p.availableTokens[0].address),
@@ -98,15 +140,106 @@ export function BuyGM(p: Props) {
   // const gmPrice = parseValue("100", USD_DECIMALS)!;
   // const gmAmountUsd = gmAmount.mul(gmPrice).div(expandDecimals(1, GM_DECIMALS));
 
-  // useEffect(
-  //   function onModeChangedEff() {
-  //     if (p.mode === Mode.single && swapInputValue.second) {
-  //       setSwapInputValue((val) => ({ ...val, second: undefined }));
-  //       setFocusedInput(FocusInputId.swapFirst);
-  //     }
-  //   },
-  //   [p.mode, swapInputValue.second]
-  // );
+  const setGmValue = gmTokenState.setInputValue;
+  const setFirstTokenValue = firstTokenState.setInputValue;
+  const setSecondTokenValue = secondTokenState.setInputValue;
+
+  useEffect(
+    function syncInputValuesEff() {
+      if (!focusedInput) return;
+
+      if ([FocusInputId.swapFirst, FocusInputId.swapSecond].includes(focusedInput)) {
+        const swapSumUsd = firstTokenState.usdAmount.add(secondTokenState.usdAmount);
+        const nextGmAmount = swapSumUsd.div(gmTokenState.gmPrice).mul(expandDecimals(1, GM_DECIMALS));
+
+        console.log(Number(nextGmAmount));
+
+        const nextGmInputValue = formatAmountFree(nextGmAmount, GM_DECIMALS, GM_DECIMALS);
+
+        if (gmTokenState.inputValue !== nextGmInputValue) {
+          setGmValue(nextGmInputValue);
+        }
+
+        return;
+      }
+
+      if (focusedInput === FocusInputId.gm) {
+        if (p.mode === Mode.single && firstTokenState.tokenAddress) {
+          const newSwapTokenAmount = getTokenAmountFromUsd(
+            p.infoTokens,
+            firstTokenState.tokenAddress,
+            gmTokenState.usdAmount
+          )!;
+
+          const nextTokenValue = formatAmountFree(
+            newSwapTokenAmount,
+            firstTokenState.info.decimals,
+            firstTokenState.info.decimals
+          );
+
+          if (firstTokenState.inputValue !== nextTokenValue) {
+            setFirstTokenValue(nextTokenValue);
+          }
+
+          return;
+        }
+
+        if (p.mode === Mode.pair && firstTokenState.tokenAddress && secondTokenState.tokenAddress) {
+          const biggestToken = firstTokenState.usdAmount.gt(secondTokenState.usdAmount)
+            ? firstTokenState
+            : secondTokenState;
+
+          const lowestToken = firstTokenState.usdAmount.lte(secondTokenState.usdAmount)
+            ? firstTokenState
+            : secondTokenState;
+
+          const ratio = biggestToken.usdAmount.div(lowestToken.usdAmount || bigNumberify(1));
+
+          const lowestUsd = gmTokenState.usdAmount.mul(PRECISION).div(ratio);
+          const bigestUsd = gmTokenState.usdAmount.sub(lowestUsd.div(PRECISION));
+
+          const nextBiggestTokenAmount = getTokenAmountFromUsd(p.infoTokens, biggestToken.tokenAddress, bigestUsd)!;
+          const nextLowestTokenAmount = getTokenAmountFromUsd(p.infoTokens, lowestToken.tokenAddress, lowestUsd)!;
+
+          const nextBiggestTokenValue = formatAmountFree(
+            nextBiggestTokenAmount,
+            biggestToken.info.decimals,
+            biggestToken.info.decimals
+          );
+
+          const nextLowestTokenValue = formatAmountFree(
+            nextLowestTokenAmount,
+            lowestToken.info.decimals,
+            lowestToken.info.decimals
+          );
+
+          if (biggestToken.inputValue !== nextBiggestTokenValue && lowestToken.inputValue !== nextLowestTokenValue) {
+            biggestToken.setInputValue(nextBiggestTokenValue);
+            lowestToken.setInputValue(nextBiggestTokenValue);
+          }
+
+          return;
+        }
+      }
+    },
+    [
+      firstTokenState.inputValue,
+      secondTokenState.inputValue,
+      gmTokenState.inputValue,
+      focusedInput,
+      firstTokenState.usdAmount,
+      secondTokenState.usdAmount,
+      gmTokenState.gmPrice,
+      setGmValue,
+      setFirstTokenValue,
+      setSecondTokenValue,
+      p.mode,
+      firstTokenState,
+      secondTokenState,
+      gmTokenState.usdAmount,
+      p.infoTokens,
+    ]
+  );
 
   // useEffect(
   //   function onSwapValuesChangedEff() {
@@ -207,53 +340,55 @@ export function BuyGM(p: Props) {
 
   return (
     <>
-      <BuyInputSection
-        topLeftLabel={t`Pay`}
-        topRightLabel={t`Balance:`}
-        tokenBalance={formatTokenBalance(swapTokensInfo.first)}
-        inputValue={swapInputValue.first}
-        onInputValueChange={(e) => {
-          setFocusedInput(FocusInputId.swapFirst);
-          setSwapInputValue((val) => ({ ...val, first: e.target.value }));
-        }}
-        showMaxButton={false}
-        onClickTopRightLabel={() => null}
-        onClickMax={() => null}
-        balance={`$${formatAmount(swapTokensAmountUsd.first, USD_DECIMALS, 2, true)}`}
-      >
-        {p.mode === Mode.single ? (
-          <TokenSelector
-            label={t`Pay`}
-            chainId={chainId}
-            tokenAddress={selectedTokenAddress}
-            onSelectToken={(token) => setSelectedTokenAddress(token.address)}
-            tokens={p.availableTokens}
-            infoTokens={p.infoTokens}
-            className="GlpSwap-from-token"
-            showSymbolImage={true}
-            showTokenImgInDropdown={true}
-          />
-        ) : (
-          <div className="selected-token">{p.availableTokens[0].symbol}</div>
-        )}
-      </BuyInputSection>
-
-      {p.mode === Mode.pair && (
+      {firstTokenState.tokenAddress && (
         <BuyInputSection
-          topLeftLabel={t`Pay`}
+          topLeftLabel={p.operationType === OperationType.deposit ? t`Pay` : t`Receive`}
           topRightLabel={t`Balance:`}
-          tokenBalance={formatTokenBalance(swapTokensInfo.second)}
-          inputValue={swapInputValue.second}
+          tokenBalance={firstTokenState.balanceFormatted}
+          inputValue={firstTokenState.inputValue}
           onInputValueChange={(e) => {
-            setFocusedInput(FocusInputId.swapSecond);
-            setSwapInputValue((val) => ({ ...val, second: e.target.value }));
+            setFocusedInput(FocusInputId.swapFirst);
+            firstTokenState.setInputValue(e.target.value);
           }}
           showMaxButton={false}
           onClickTopRightLabel={() => null}
           onClickMax={() => null}
-          balance={`$${formatAmount(swapTokensAmountUsd.second, USD_DECIMALS, 2, true)}`}
+          balance={firstTokenState.usdAmountFormatted}
         >
-          <div className="selected-token">{p.availableTokens[1].symbol}</div>
+          {p.mode === Mode.single ? (
+            <TokenSelector
+              label={t`Pay`}
+              chainId={chainId}
+              tokenAddress={firstTokenState.tokenAddress}
+              onSelectToken={(token) => firstTokenState.setTokenAddress(token.address)}
+              tokens={p.availableTokens}
+              infoTokens={p.infoTokens}
+              className="GlpSwap-from-token"
+              showSymbolImage={true}
+              showTokenImgInDropdown={true}
+            />
+          ) : (
+            <div className="selected-token">{firstTokenState.info?.symbol}</div>
+          )}
+        </BuyInputSection>
+      )}
+
+      {secondTokenState.tokenAddress && (
+        <BuyInputSection
+          topLeftLabel={p.operationType === OperationType.deposit ? t`Pay` : t`Receive`}
+          topRightLabel={t`Balance:`}
+          tokenBalance={secondTokenState.balanceFormatted}
+          inputValue={secondTokenState.inputValue}
+          onInputValueChange={(e) => {
+            setFocusedInput(FocusInputId.swapSecond);
+            secondTokenState.setInputValue(e.target.value);
+          }}
+          showMaxButton={false}
+          onClickTopRightLabel={() => null}
+          onClickMax={() => null}
+          balance={secondTokenState.usdAmountFormatted}
+        >
+          <div className="selected-token">{secondTokenState.info?.symbol}</div>
         </BuyInputSection>
       )}
 
@@ -265,20 +400,19 @@ export function BuyGM(p: Props) {
 
       <div className={p.mode === Mode.pair ? "disabled" : ""}>
         <BuyInputSection
-          topLeftLabel={t`Receive`}
+          topLeftLabel={p.operationType === OperationType.withdraw ? t`Pay` : t`Receive`}
           topRightLabel={t`Balance:`}
-          tokenBalance={`${formatAmount(bigNumberify(1000), GM_DECIMALS, 4, true)}`}
-          inputValue={GMInputValue}
+          tokenBalance={gmTokenState.balanceFormatted}
+          inputValue={gmTokenState.inputValue}
           onInputValueChange={(e) => {
             if (p.mode === Mode.pair) return;
+
             setFocusedInput(FocusInputId.gm);
-            setGMInputValue(e.target.value);
+            gmTokenState.setInputValue(e.target.value);
           }}
-          balance={`$${formatAmount(gmAmountUsd, USD_DECIMALS, 2, true)}`}
+          balance={gmTokenState.usdAmountFormatted}
         >
-          <div className="selected-token">
-            GM <img src={glp24Icon} alt="glp24Icon" />
-          </div>
+          <div className="selected-token">GM</div>
         </BuyInputSection>
       </div>
     </>

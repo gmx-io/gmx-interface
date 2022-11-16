@@ -36,7 +36,7 @@ export function GMStats(p: Props) {
             <div className="App-card-title-mark-subtitle">GMX Market tokens</div>
           </div>
           <div>
-            <AssetDropdown assetSymbol="GM" assetInfo={{}} />
+            <AssetDropdown assetSymbol="GM" />
           </div>
         </div>
       </div>
