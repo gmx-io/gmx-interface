@@ -9,6 +9,7 @@ import { Mode, OperationType } from "./constants";
 import TokenSelector from "components/Exchange/TokenSelector";
 import { useChainId } from "lib/chains";
 import { getTokenAmountFromUsd, getTokenInfo, getUsd, InfoTokens, Token, TokenInfo } from "domain/tokens";
+import { BigNumber } from "ethers";
 
 type Props = {
   onSwapArrowClick: () => void;
@@ -16,6 +17,7 @@ type Props = {
   operationType: OperationType;
   infoTokens: InfoTokens;
   availableTokens: Token[];
+  onAmountsChange: (p: { longAmountUsd?: BigNumber; shortAmountUsd?: BigNumber }) => void;
 };
 
 enum FocusInputId {
@@ -158,6 +160,13 @@ export function BuyGM(p: Props) {
       swapTokensInfo.second.address,
       swapTokensInfo.second.decimals,
     ]
+  );
+
+  useEffect(
+    function onAmountsChangeEff() {
+      p.onAmountsChange({ longAmountUsd: swapTokensAmountUsd.first, shortAmountUsd: swapTokensAmountUsd.second });
+    },
+    [p.onAmountsChange, Number(swapTokensAmountUsd.first), Number(swapTokensAmountUsd.second)]
   );
 
   return p.operationType === OperationType.deposit ? (

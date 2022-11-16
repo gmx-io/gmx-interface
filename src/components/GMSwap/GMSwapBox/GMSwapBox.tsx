@@ -10,6 +10,10 @@ import { Mode, modesTexts, OperationType, operationTypesTexts } from "./constant
 import { InfoTokens } from "domain/tokens";
 import { getTokenBySymbol } from "config/tokens";
 import { useChainId } from "lib/chains";
+import { bigNumberify, formatAmountFree } from "lib/numbers";
+import { BigNumber } from "ethers";
+import { usePriceImpact } from "domain/synthetics/usePriceImpact";
+import { USD_DECIMALS } from "lib/legacy";
 
 type Props = {
   selectedMarket: SyntheticsMarket;
@@ -22,6 +26,27 @@ export function GMSwapBox(p: Props) {
   const { chainId } = useChainId();
   const [operationTab, setOperationTab] = useState(OperationType.deposit);
   const [modeTab, setModeTab] = useState(Mode.single);
+
+  const [swapAmounts, setSwapAmounts] = useState<{ longAmountUsd?: BigNumber; shortAmountUsd?: BigNumber }>({
+    longAmountUsd: bigNumberify(0),
+    shortAmountUsd: bigNumberify(0),
+  });
+
+  const priceImpact = usePriceImpact(chainId, {
+    market: p.selectedMarket.perp,
+    longDeltaUsd:
+      operationTab === OperationType.deposit
+        ? swapAmounts.longAmountUsd!
+        : bigNumberify(0)!.sub(swapAmounts.longAmountUsd!),
+    shortDeltaUsd:
+      operationTab === OperationType.deposit
+        ? swapAmounts.shortAmountUsd!
+        : bigNumberify(0)!.sub(swapAmounts.shortAmountUsd!),
+  });
+
+  console.log("price impact", Number(priceImpact?.priceImpactDiff), Number(priceImpact?.priceImpactShare));
+
+  console.log("rerender");
 
   const availableTokens = [p.selectedMarket.longCollateralSymbol, p.selectedMarket.shortCollateralSymbol].map(
     (symbol) => getTokenBySymbol(chainId, symbol)
@@ -58,6 +83,7 @@ export function GMSwapBox(p: Props) {
         onSwapArrowClick={() =>
           setOperationTab((val) => (val === OperationType.withdraw ? OperationType.deposit : OperationType.withdraw))
         }
+        onAmountsChange={setSwapAmounts}
       />
 
       <div className="GMSwapBox-info-section">
@@ -67,7 +93,9 @@ export function GMSwapBox(p: Props) {
           </div>
           <div className="align-right">
             <Tooltip
-              handle={"..."}
+              handle={
+                priceImpact?.priceImpactDiff && `${formatAmountFree(priceImpact.priceImpactDiff, USD_DECIMALS, 3)}`
+              }
               position="right-bottom"
               renderContent={() => (
                 <div className="text-white">
