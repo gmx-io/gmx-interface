@@ -43,12 +43,13 @@ import { getTokenAmountFromUsd } from "domain/tokens";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/localStorage";
-import { getTokenInfo, getUsd, isContractAddress } from "domain/tokens/utils";
+import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { getTokens } from "config/tokens";
 import { formatDateTime, getTimeRemaining } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import useIsAddressAContract from "lib/wallets/useIsAddressAContract";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -144,7 +145,6 @@ export default function PositionSeller(props) {
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true);
   const position = positionsMap && positionKey ? positionsMap[positionKey] : undefined;
   const [fromValue, setFromValue] = useState("");
-  const [isUserAContractAddress, setIsUserAContractAddress] = useState();
   const [isProfitWarningAccepted, setIsProfitWarningAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const prevIsVisible = usePrevious(isVisible);
@@ -152,15 +152,7 @@ export default function PositionSeller(props) {
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const longOrShortText = position?.isLong ? t`Long` : t`Short`;
 
-  useEffect(() => {
-    (async function () {
-      if (library && account) {
-        const isContract = await isContractAddress(library, account);
-        setIsUserAContractAddress(isContract);
-      }
-    })();
-  }, [library, account]);
-
+  const isUserAContractAddress = useIsAddressAContract();
   const toTokens = isUserAContractAddress ? getTokens(chainId).filter((t) => !t.isNative) : getTokens(chainId);
 
   const [savedRecieveTokenAddress, setSavedRecieveTokenAddress] = useLocalStorageByChainId(
@@ -369,7 +361,8 @@ export default function PositionSeller(props) {
 
     receiveToken = isSwapAllowed && swapToToken ? swapToToken : collateralToken;
 
-    if (isUserAContractAddress && isAddressZero(receiveToken.address)) {
+    // receiveToken does not need to change for STOP order
+    if (isSwapAllowed && isUserAContractAddress && isAddressZero(receiveToken.address)) {
       const wrappedToken = toTokens.find((t) => t.baseSymbol === nativeTokenSymbol);
       setSwapToToken(wrappedToken);
       setSavedRecieveTokenAddress(wrappedToken.address);
@@ -510,7 +503,7 @@ export default function PositionSeller(props) {
   }, [position, triggerPriceUsd, orderOption, fromAmount]);
 
   const getError = () => {
-    if (isUserAContractAddress && isAddressZero(receiveToken?.address)) {
+    if (isSwapAllowed && isUserAContractAddress && isAddressZero(receiveToken?.address)) {
       return t`${nativeTokenSymbol} can not be sent to smart contract addresses. Select another token.`;
     }
     if (IS_NETWORK_DISABLED[chainId]) {
