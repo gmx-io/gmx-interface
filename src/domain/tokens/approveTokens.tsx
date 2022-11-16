@@ -2,14 +2,14 @@ import { ethers } from "ethers";
 import Token from "abis/Token.json";
 import { getExplorerUrl } from "config/chains";
 import { helperToast } from "lib/helperToast";
-import { Web3ReactContextInterface } from "@web3-react/core/dist/types";
 import { InfoTokens, TokenInfo } from "./types";
+import { Web3Provider } from "@ethersproject/providers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { t, Trans } from "@lingui/macro";
 
 type Params = {
   setIsApproving: (val: boolean) => void;
-  library: Web3ReactContextInterface["library"];
+  library: Web3Provider;
   tokenAddress: string;
   spender: string;
   chainId: number;
@@ -61,6 +61,7 @@ export function approveTokens({
       }
     })
     .catch((e) => {
+      // eslint-disable-next-line no-console
       console.error(e);
       let failMsg;
       if (

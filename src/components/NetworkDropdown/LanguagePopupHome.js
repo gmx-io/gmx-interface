@@ -4,10 +4,10 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import "./NetworkDropdown.css";
 import language24Icon from "img/ic_language24.svg";
-import checkedIcon from "img/ic_checked.svg";
-import { importImage, isHomeSite } from "lib/legacy";
-import { defaultLocale, dynamicActivate, locales } from "lib/i18n";
+import { isHomeSite } from "lib/legacy";
+import { defaultLocale } from "lib/i18n";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
+import LanguageModalContent from "./LanguageModalContent";
 
 export default function LanguagePopupHome() {
   const currentLanguage = useRef(localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale);
@@ -29,31 +29,7 @@ export default function LanguagePopupHome() {
         setIsVisible={setIsLanguageModalOpen}
         label={t`Select Language`}
       >
-        {Object.keys(locales).map((item) => {
-          const image = importImage(`flag_${item}.svg`);
-          return (
-            <div
-              key={item}
-              className={cx("network-dropdown-menu-item  menu-item language-modal-item", {
-                active: currentLanguage.current === item,
-              })}
-              onClick={() => {
-                localStorage.setItem(LANGUAGE_LOCALSTORAGE_KEY, item);
-                dynamicActivate(item);
-              }}
-            >
-              <div className="menu-item-group">
-                <div className="menu-item-icon">
-                  <img className="network-dropdown-icon" src={image} alt="language-menu-open-icon" />
-                </div>
-                <span className="network-dropdown-item-label menu-item-label">{locales[item]}</span>
-              </div>
-              <div className="network-dropdown-menu-item-img">
-                {currentLanguage.current === item && <img src={checkedIcon} alt={locales[item]} />}
-              </div>
-            </div>
-          );
-        })}
+        <LanguageModalContent currentLanguage={currentLanguage} />
       </ModalWithPortal>
     </>
   );

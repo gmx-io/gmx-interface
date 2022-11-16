@@ -77,7 +77,7 @@ msgstr ""
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>Esto retirará y desreservará todos los tokens y pausará la adquisición.<1/><2/>Los tokens de esGMX que han sido convertidos a GMX permanecerán como tokens de GMX.<3/><4/>Para reclamar tokens de GMX sin retirarlos, utilice el botón \"Reclamar\" bajo la sección de Recompensas Totales.<5/><6/></0>"
 
-#: src/lib/wallets/index.js
+#: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
 msgstr ""
 
@@ -96,7 +96,7 @@ msgstr ""
 msgid "APR"
 msgstr "APR"
 
-#: src/pages/Stake/StakeV2.js
+#: src/components/Stake/GMXAprTooltip.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 msgstr "Los APR se actualizan semanalmente en el Miércoles, y dependerán de las comisiones cobradas en la semana."
@@ -152,8 +152,8 @@ msgstr ""
 msgid "Active Referral Code"
 msgstr "Código de Referido Activo"
 
-#: src/pages/Dashboard/AssetDropdown.js
-#: src/pages/Dashboard/AssetDropdown.js
+#: src/pages/Dashboard/AssetDropdown.tsx
+#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
 msgstr "Añadir a Metamask"
 
@@ -509,7 +509,7 @@ msgstr "Cancelar"
 msgid "Cancel failed"
 msgstr ""
 
-#: src/domain/legacy.js
+#: src/domain/legacy.ts
 #: src/pages/Exchange/Exchange.js
 msgid "Cancel failed."
 msgstr "Cancelación fallida."
@@ -518,7 +518,7 @@ msgstr "Cancelación fallida."
 msgid "Cancel submitted"
 msgstr ""
 
-#: src/domain/legacy.js
+#: src/domain/legacy.ts
 #: src/pages/Exchange/Exchange.js
 msgid "Cancel submitted."
 msgstr "Cancelación enviada."
@@ -770,7 +770,7 @@ msgstr "Conectar"
 msgid "Connect Wallet"
 msgstr "Conectar Monedero"
 
-#: src/lib/wallets/index.js
+#: src/lib/wallets/index.tsx
 msgid "Connected to {0}"
 msgstr ""
 
@@ -1033,6 +1033,10 @@ msgstr "Mostrar GyP después de comisiones"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Distribution"
 msgstr "Distribución"
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Docs"
+msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Don't show this message again for 30 days."
@@ -1456,6 +1460,10 @@ msgstr ""
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr "Obtenga descuentos en las comisiones y gane reembolsos a través del programa de referidos de GMX.<0/>Para más información, por favor lea los <1>detalles del programa de referidos</1>."
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Governance"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
 msgstr "Alto Deslizamiento, Intercambiar de todos modos"
@@ -1625,13 +1633,11 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+#: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.js
+#: src/pages/Home/Home.js
 msgid "Launch App"
 msgstr ""
-
-#: src/pages/Home/Home.js
-msgid "Launch Exchange"
-msgstr "Lanzar Exchange"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Leaderboard"
@@ -2083,7 +2089,7 @@ msgstr "No hay esGMX para reclamar"
 msgid "No open orders"
 msgstr "No hay ordenes abiertas."
 
-#: src/lib/legacy.js
+#: src/lib/legacy.ts
 msgid "No open position, order cannot be executed unless a position is opened"
 msgstr ""
 
@@ -2142,12 +2148,12 @@ msgstr "Interés Abierto"
 msgid "Open a position"
 msgstr "Abre una posición"
 
-#: src/pages/Dashboard/AssetDropdown.js
+#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Coingecko"
 msgstr "Abrir en Coingecko"
 
-#: src/pages/Dashboard/AssetDropdown.js
-#: src/pages/Dashboard/AssetDropdown.js
+#: src/pages/Dashboard/AssetDropdown.tsx
+#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Explorer"
 msgstr "Abrir en el Explorador"
 
@@ -2180,15 +2186,15 @@ msgstr "Orden"
 msgid "Order cancelled"
 msgstr ""
 
-#: src/domain/legacy.js
+#: src/domain/legacy.ts
 msgid "Order cancelled."
 msgstr ""
 
-#: src/lib/legacy.js
+#: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
 msgstr ""
 
-#: src/lib/legacy.js
+#: src/lib/legacy.ts
 msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
 msgstr ""
 
@@ -2209,7 +2215,7 @@ msgid "Order size is 0"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
-#: src/lib/legacy.js
+#: src/lib/legacy.ts
 msgid "Order size is bigger than position, will only be executable if position increases"
 msgstr ""
 
@@ -2450,6 +2456,14 @@ msgstr "Proyectos desarrollados por la comunidad de GMX."
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects integrated with GMX."
 msgstr "Proyectos integrados con GMX."
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Proof of Reserves"
+msgstr ""
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Protocol"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -3049,7 +3063,7 @@ msgstr "Términos y Condiciones"
 msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
 msgstr ""
 
-#: src/pages/Stake/StakeV2.js
+#: src/components/Stake/GMXAprTooltip.tsx
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "El APR aumentado es de sus Puntos Multiplicadores stakeados."
 
@@ -3474,7 +3488,7 @@ msgstr ""
 msgid "Unstaking..."
 msgstr "Destakeando..."
 
-#: src/lib/wallets/index.js
+#: src/lib/wallets/index.tsx
 msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
 msgstr ""
 
@@ -3588,6 +3602,10 @@ msgstr "Volumen negociado por esta cuenta con un código de referido activo."
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Volume traded by your referred traders."
 msgstr "Volumen negociado por sus traders referidos."
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Voting"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "WALLET"

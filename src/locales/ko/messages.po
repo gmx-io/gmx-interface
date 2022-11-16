@@ -77,7 +77,7 @@ msgstr ""
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>모든 토큰이 인출되고 취소되며 베스팅이 중지됩니다.<1/><2/>GMX로 변환된 esGMX 토큰은 GMX 토큰으로 유지됩니다.<3/><4/>인출하지 않고 GMX 토큰을 수령하기 위해서는 총 보상 섹션 아래의 \"수령하기\" 버튼을 사용해주세요."
 
-#: src/lib/wallets/index.js
+#: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
 msgstr ""
 
@@ -96,7 +96,7 @@ msgstr ""
 msgid "APR"
 msgstr "APR"
 
-#: src/pages/Stake/StakeV2.js
+#: src/components/Stake/GMXAprTooltip.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "APRs are updated weekly on Wednesday and will depend on the fees collected for the week."
 msgstr "APR은 매주 수요일에 업데이트되며 한 주 동안 쌓인 수수료에 따라 달라집니다."
@@ -152,8 +152,8 @@ msgstr ""
 msgid "Active Referral Code"
 msgstr "활성화된 추천 코드"
 
-#: src/pages/Dashboard/AssetDropdown.js
-#: src/pages/Dashboard/AssetDropdown.js
+#: src/pages/Dashboard/AssetDropdown.tsx
+#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Add to Metamask"
 msgstr "메타마스크에 추가해주세요"
 
@@ -509,7 +509,7 @@ msgstr "취소"
 msgid "Cancel failed"
 msgstr ""
 
-#: src/domain/legacy.js
+#: src/domain/legacy.ts
 #: src/pages/Exchange/Exchange.js
 msgid "Cancel failed."
 msgstr "취소 실패"
@@ -518,7 +518,7 @@ msgstr "취소 실패"
 msgid "Cancel submitted"
 msgstr ""
 
-#: src/domain/legacy.js
+#: src/domain/legacy.ts
 #: src/pages/Exchange/Exchange.js
 msgid "Cancel submitted."
 msgstr "취소 제출 완료"
@@ -770,7 +770,7 @@ msgstr "연동"
 msgid "Connect Wallet"
 msgstr "지갑 연동"
 
-#: src/lib/wallets/index.js
+#: src/lib/wallets/index.tsx
 msgid "Connected to {0}"
 msgstr ""
 
@@ -1033,6 +1033,10 @@ msgstr "수수료포함 손익 표시"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Distribution"
 msgstr "배분"
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Docs"
+msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Don't show this message again for 30 days."
@@ -1456,6 +1460,10 @@ msgstr ""
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr "GMX 추천 프로그램을 통해 수수료 할인 및 리베이트를 받으세요.<0/>자세한 내용은 <1>추천 프로그램 세부 정보를 참조하세요."
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Governance"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
 msgstr "높은 슬리피지 상관 없이 스왑"
@@ -1625,13 +1633,11 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+#: src/components/Header/AppHeaderUser.tsx
 #: src/components/ModalViews/RedirectModal.js
+#: src/pages/Home/Home.js
 msgid "Launch App"
 msgstr ""
-
-#: src/pages/Home/Home.js
-msgid "Launch Exchange"
-msgstr "트레이드 시작하기"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Leaderboard"
@@ -2083,7 +2089,7 @@ msgstr "수령할 수 있는 esGMX가 없습니다"
 msgid "No open orders"
 msgstr "열려있는 주문이 없습니다"
 
-#: src/lib/legacy.js
+#: src/lib/legacy.ts
 msgid "No open position, order cannot be executed unless a position is opened"
 msgstr ""
 
@@ -2142,12 +2148,12 @@ msgstr "미결제 약정"
 msgid "Open a position"
 msgstr "포지션 열기"
 
-#: src/pages/Dashboard/AssetDropdown.js
+#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Coingecko"
 msgstr "Coingecko에서 보기"
 
-#: src/pages/Dashboard/AssetDropdown.js
-#: src/pages/Dashboard/AssetDropdown.js
+#: src/pages/Dashboard/AssetDropdown.tsx
+#: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Explorer"
 msgstr "Explorer에서 보기"
 
@@ -2180,15 +2186,15 @@ msgstr "주문"
 msgid "Order cancelled"
 msgstr ""
 
-#: src/domain/legacy.js
+#: src/domain/legacy.ts
 msgid "Order cancelled."
 msgstr ""
 
-#: src/lib/legacy.js
+#: src/lib/legacy.ts
 msgid "Order cannot be executed as it would reduce the position's leverage below 1"
 msgstr ""
 
-#: src/lib/legacy.js
+#: src/lib/legacy.ts
 msgid "Order cannot be executed as the remaining position would be smaller than $5.00"
 msgstr ""
 
@@ -2209,7 +2215,7 @@ msgid "Order size is 0"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
-#: src/lib/legacy.js
+#: src/lib/legacy.ts
 msgid "Order size is bigger than position, will only be executable if position increases"
 msgstr ""
 
@@ -2450,6 +2456,14 @@ msgstr "GMX 커뮤니티가 개발한 프로젝트"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Projects integrated with GMX."
 msgstr "GMX와 통합된 프로젝트"
+
+#: src/pages/Dashboard/AssetDropdown.tsx
+msgid "Proof of Reserves"
+msgstr ""
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Protocol"
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
@@ -3049,7 +3063,7 @@ msgstr "약관"
 msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
 msgstr ""
 
-#: src/pages/Stake/StakeV2.js
+#: src/components/Stake/GMXAprTooltip.tsx
 msgid "The Boosted APR is from your staked Multiplier Points."
 msgstr "\"APR 부스트는 스테이킹된 멀티플라이어 포인트로부터 적용됩니다."
 
@@ -3474,7 +3488,7 @@ msgstr ""
 msgid "Unstaking..."
 msgstr "언스테이킹중..."
 
-#: src/lib/wallets/index.js
+#: src/lib/wallets/index.tsx
 msgid "Unsupported chain. Switch to Arbitrum network on your wallet and try again"
 msgstr ""
 
@@ -3588,6 +3602,10 @@ msgstr "유효한 추천 코드를 사용하여 이 계정으로 트레이드된
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Volume traded by your referred traders."
 msgstr "귀하가 추천한 트레이더들의 거래량"
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "Voting"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "WALLET"
