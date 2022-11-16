@@ -9,14 +9,14 @@ import { useWeb3React } from "@web3-react/core";
 
 import { t, Trans } from "@lingui/macro";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { ICONLINKS, PLATFORM_TOKENS } from "config/tokens";
+import { EXPLORER_LINKS, PLATFORM_TOKENS } from "config/tokens";
 import { addTokenToMetamask } from "lib/wallets";
 import { useChainId } from "lib/chains";
 
 function AssetDropdown({ assetSymbol, assetInfo }) {
   const { active } = useWeb3React();
   const { chainId } = useChainId();
-  let { coingecko, arbitrum, avalanche } = ICONLINKS[chainId][assetSymbol] || {};
+  let { coingecko, arbitrum, avalanche } = EXPLORER_LINKS[chainId][assetSymbol] || {};
   const unavailableTokenSymbols =
     {
       42161: ["ETH"],

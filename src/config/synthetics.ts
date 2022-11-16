@@ -1,5 +1,11 @@
 import { SyntheticsMarket } from "domain/synthetics/types";
 
+const SYNTHETICS_LP_TOKEN = {
+  symbol: "GM",
+  name: "GMX Market tokens",
+  decimals: 18,
+};
+
 const SYNTHETICS_MARKETS: SyntheticsMarket[] = [
   {
     perp: "ETH/USD",

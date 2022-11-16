@@ -351,6 +351,13 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
+    {
+      name: "GMX Market tokens",
+      symbol: "GM",
+      address: "todo",
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
   ],
   [AVALANCHE]: [
     {
@@ -370,6 +377,13 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
       name: "GMX LP",
       symbol: "GLP",
       address: getContract(ARBITRUM, "GLP"),
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+    {
+      name: "GMX Market tokens",
+      symbol: "GM",
+      address: "todo",
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
@@ -413,7 +427,7 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
   },
 };
 
-export const ICONLINKS = {
+export const EXPLORER_LINKS = {
   [ARBITRUM_TESTNET]: {
     GMX: {
       coingecko: "https://www.coingecko.com/en/coins/gmx",
@@ -430,6 +444,10 @@ export const ICONLINKS = {
     },
     GLP: {
       arbitrum: "https://arbiscan.io/token/0x1aDDD80E6039594eE970E5872D247bf0414C8903",
+    },
+    GM: {
+      coingecko: "https://www.coingecko.com/en/coins/gmx",
+      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
     },
     ETH: {
       coingecko: "https://www.coingecko.com/en/coins/ethereum",
@@ -474,6 +492,10 @@ export const ICONLINKS = {
     },
     GLP: {
       avalanche: "https://snowtrace.io/address/0x9e295B5B976a184B14aD8cd72413aD846C299660",
+    },
+    GM: {
+      coingecko: "https://www.coingecko.com/en/coins/gmx",
+      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
     },
     AVAX: {
       coingecko: "https://www.coingecko.com/en/coins/avalanche",
