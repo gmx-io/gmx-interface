@@ -1,18 +1,16 @@
-import "./AddressDropdown.css";
+import Davatar from "@davatar/react";
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
-import { shortenAddress, useENS } from "lib/legacy";
-import { useCopyToClipboard, createBreakpoint } from "react-use";
-import externalLink from "img/ic_new_link_16.svg";
+import { ETH_MAINNET } from "config/chains";
 import copy from "img/ic_copy_16.svg";
+import externalLink from "img/ic_new_link_16.svg";
 import disconnect from "img/ic_sign_out_16.svg";
-import { FaChevronDown } from "react-icons/fa";
-import Davatar from "@davatar/react";
 import { helperToast } from "lib/helperToast";
-import { ethers } from "ethers";
-import { ETH_MAINNET, getRpcUrl } from "config/chains";
-import { useEffect, useState } from "react";
-import { StaticJsonRpcProvider } from "@ethersproject/providers";
+import { shortenAddress, useENS } from "lib/legacy";
+import { useJsonRpcProvider } from "lib/rpc";
+import { FaChevronDown } from "react-icons/fa";
+import { createBreakpoint, useCopyToClipboard } from "react-use";
+import "./AddressDropdown.css";
 
 type Props = {
   account: string;
@@ -22,29 +20,17 @@ type Props = {
 
 function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSettings }: Props) {
   const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
-  const [ethProvider, setEthProvider] = useState<StaticJsonRpcProvider>();
   const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
   const { ensName } = useENS(account);
-
-  useEffect(() => {
-    async function initializeProvider() {
-      const provider = new ethers.providers.StaticJsonRpcProvider(getRpcUrl(ETH_MAINNET));
-
-      await provider.ready;
-
-      setEthProvider(provider);
-    }
-
-    initializeProvider();
-  }, []);
+  const { provider: etheriumProvider } = useJsonRpcProvider({ chainId: ETH_MAINNET });
 
   return (
     <Menu>
       <Menu.Button as="div">
         <button className="App-cta small transparent address-btn">
           <div className="user-avatar">
-            {ethProvider && <Davatar size={20} address={account} provider={ethProvider} />}
+            {etheriumProvider && <Davatar size={20} address={account} provider={etheriumProvider} />}
           </div>
           <span className="user-address">{ensName || shortenAddress(account, breakpoint === "S" ? 9 : 13)}</span>
           <FaChevronDown />
