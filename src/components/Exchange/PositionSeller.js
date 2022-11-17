@@ -49,7 +49,6 @@ import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValu
 import { getTokens } from "config/tokens";
 import { formatDateTime, getTimeRemaining } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import useIsAddressAContract from "lib/wallets/useIsAddressAContract";
 
 const { AddressZero } = ethers.constants;
 const ORDER_SIZE_DUST_USD = expandDecimals(1, USD_DECIMALS - 1); // $0.10
@@ -140,6 +139,7 @@ export default function PositionSeller(props) {
     minExecutionFeeErrorMessage,
     usdgSupply,
     totalTokenWeights,
+    isUserAContractAddress,
   } = props;
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true);
@@ -152,7 +152,6 @@ export default function PositionSeller(props) {
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const longOrShortText = position?.isLong ? t`Long` : t`Short`;
 
-  const isUserAContractAddress = useIsAddressAContract();
   const toTokens = isUserAContractAddress ? getTokens(chainId).filter((t) => !t.isNative) : getTokens(chainId);
 
   const [savedRecieveTokenAddress, setSavedRecieveTokenAddress] = useLocalStorageByChainId(
