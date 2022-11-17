@@ -26,6 +26,8 @@ export function PoolsPage() {
   const { tokenBalances } = useTokenBalances({ tokenAddresses });
   const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, undefined);
 
+  console.log("test");
+
   return (
     <SEO title={getPageTitle("Synthetics pools")}>
       <div className="default-container page-layout">
