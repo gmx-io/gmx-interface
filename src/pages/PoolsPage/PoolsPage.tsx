@@ -11,7 +11,6 @@ import { useTokenBalances } from "domain/tokens/useTokenBalances";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useState } from "react";
-import Button from "components/Common/Button";
 
 import "./PoolsPage.scss";
 
@@ -26,8 +25,6 @@ export function PoolsPage() {
   const tokenAddresses = tokens.map((token) => token.address);
   const { tokenBalances } = useTokenBalances({ tokenAddresses });
   const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, undefined);
-
-  console.log("test");
 
   return (
     <SEO title={getPageTitle("Synthetics pools")}>

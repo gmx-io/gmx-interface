@@ -107,7 +107,7 @@
   },
   "lint-staged": {
     "src/**/*.{js,ts,jsx,tsx}": [
-      "eslint --fix ./src",
+      "eslint --fix --max-warnings=0 ./src",
       "prettier --write"
     ]
   },
