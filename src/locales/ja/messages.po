@@ -792,7 +792,7 @@ msgstr "{wrappedTokenSymbol}から{nativeTokenSymbol}に転換する"
 msgid "Copy"
 msgstr "コピー"
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Copy Address"
 msgstr "アドレスのコピー"
 
@@ -1022,7 +1022,7 @@ msgstr ""
 msgid "Disable order validations"
 msgstr "注文のバリデーションの無効化"
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Disconnect"
 msgstr "接続停止"
 
@@ -3588,7 +3588,7 @@ msgstr "べスティング状況"
 msgid "View"
 msgstr "見る"
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
 msgstr "Explorerで見る"
 

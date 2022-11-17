@@ -792,7 +792,7 @@ msgstr "将{wrappedTokenSymbol}转换为{nativeTokenSymbol}"
 msgid "Copy"
 msgstr "复制"
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Copy Address"
 msgstr "复制地址"
 
@@ -1022,7 +1022,7 @@ msgstr ""
 msgid "Disable order validations"
 msgstr "关闭订单验证"
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Disconnect"
 msgstr "连线中断"
 
@@ -3588,7 +3588,7 @@ msgstr "授权状态"
 msgid "View"
 msgstr "浏览"
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
 msgstr "在浏览器中查看"
 

@@ -792,7 +792,7 @@ msgstr "{wrappedTokenSymbol}를 {nativeTokenSymbol}로 변환"
 msgid "Copy"
 msgstr "복사"
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Copy Address"
 msgstr "주소 복사"
 
@@ -1022,7 +1022,7 @@ msgstr ""
 msgid "Disable order validations"
 msgstr "주문 밸리데이션 무효화"
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Disconnect"
 msgstr "연결 끊기"
 
@@ -3588,7 +3588,7 @@ msgstr "베스팅 상황"
 msgid "View"
 msgstr "보기"
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
 msgstr "Explorer에서 보기"
 
