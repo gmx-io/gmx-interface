@@ -7,6 +7,7 @@ import { isHomeSite } from "lib/legacy";
 import { Trans } from "@lingui/macro";
 import React from "react";
 import { Link } from "react-router-dom";
+import { getLeaderboardUrl } from "domain/leaderboard/urls";
 
 type Props = {
   small?: boolean;
@@ -68,11 +69,11 @@ export function AppHeaderLinks({
       </div>
       <div className="App-header-link-container">
         <HeaderLink
-          to="/leaderboard"
+          to={getLeaderboardUrl()}
           redirectPopupTimestamp={redirectPopupTimestamp}
           showRedirectModal={showRedirectModal}
         >
-          <Trans>Leaderboard</Trans>
+          <Trans>Leaderboards</Trans>
         </HeaderLink>
       </div>
       <div className="App-header-link-container">

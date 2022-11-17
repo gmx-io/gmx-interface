@@ -401,7 +401,7 @@ function CreateJoinRequest({ team, pendingTxns, setPendingTxns, onCreate }: Crea
 
   return (
     <>
-      <button className="App-button-option" disabled={processing} onClick={() => handleButtonClick()}>
+      <button className="transparent-btn" disabled={processing} onClick={() => handleButtonClick()}>
         {processing ? "Creating join request..." : "Create join request"}
       </button>
       <ModalWithPortal label="Create Join Request" isVisible={open} setIsVisible={setOpen}>

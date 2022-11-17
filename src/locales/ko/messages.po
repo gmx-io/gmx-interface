@@ -1234,6 +1234,7 @@ msgid "Multiswap"
 msgstr "멀티스왑"
 
 #: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "Name"
 msgstr ""
 
@@ -1284,6 +1285,7 @@ msgid "Open Interest"
 msgstr "미결제 약정"
 
 #: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "Open Positions"
 msgstr ""
 
@@ -1377,6 +1379,7 @@ msgid "Please switch your network to Arbitrum."
 msgstr "네트워크를 Arbitrum으로 변경해주세요."
 
 #: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "PnL"
 msgstr "손익"
 
@@ -1449,6 +1452,7 @@ msgid "Purchase Insurance"
 msgstr "보험 구입"
 
 #: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "Rank"
 msgstr ""
 
@@ -2170,6 +2174,10 @@ msgstr "지갑연결"
 
 #: src/components/Exchange/SwapBox.js
 msgid "When closing the position, you can select which token you would like to receive the profits in."
+msgstr ""
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+msgid "Win / Loss"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js

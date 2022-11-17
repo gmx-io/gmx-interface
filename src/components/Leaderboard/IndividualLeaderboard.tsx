@@ -42,7 +42,7 @@ export function IndividualLeaderboard() {
         <div className="input-wrapper">
           <input
             type="text"
-            placeholder="Search account"
+            placeholder="Search Address"
             value={search}
             onInput={handleSearchInput}
             className="leaderboard-search-input text-input input-small"
@@ -57,7 +57,7 @@ export function IndividualLeaderboard() {
               <Trans>Rank</Trans>
             </th>
             <th>
-              <Trans>Name</Trans>
+              <Trans>Address</Trans>
             </th>
             <th>
               <Trans>PnL</Trans>

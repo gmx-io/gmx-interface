@@ -1,11 +1,11 @@
 export function getLeaderboardUrl() {
-  return "/leaderboard";
+  return "/leaderboards";
 }
 
 export function getTeamUrl(leaderAddress) {
-  return `/leaderboard/teams/${leaderAddress}`;
+  return `/leaderboards/teams/${leaderAddress}`;
 }
 
 export function getTeamRegistrationUrl() {
-  return "/leaderboard/teams/create";
+  return "/leaderboards/teams/create";
 }

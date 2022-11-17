@@ -1234,6 +1234,7 @@ msgid "Multiswap"
 msgstr "Multiswap"
 
 #: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "Name"
 msgstr "Name"
 
@@ -1284,6 +1285,7 @@ msgid "Open Interest"
 msgstr "Open Interest"
 
 #: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "Open Positions"
 msgstr "Open Positions"
 
@@ -1377,6 +1379,7 @@ msgid "Please switch your network to Arbitrum."
 msgstr "Please switch your network to Arbitrum."
 
 #: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "PnL"
 msgstr "PnL"
 
@@ -1449,6 +1452,7 @@ msgid "Purchase Insurance"
 msgstr "Purchase Insurance"
 
 #: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/TeamLeaderboard.tsx
 msgid "Rank"
 msgstr "Rank"
 
@@ -2171,6 +2175,10 @@ msgstr "WalletConnect"
 #: src/components/Exchange/SwapBox.js
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr "When closing the position, you can select which token you would like to receive the profits in."
+
+#: src/components/Leaderboard/IndividualLeaderboard.tsx
+msgid "Win / Loss"
+msgstr "Win / Loss"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js

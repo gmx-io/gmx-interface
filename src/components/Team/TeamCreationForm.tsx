@@ -94,7 +94,7 @@ export default function TeamCreationForm({ competition, connectWallet, pendingTx
   return (
     <div className="referral-card section-center mt-medium">
       <h2 className="title">Register Your Team</h2>
-      <p className="sub-title">Please input a referral code to benefit from fee discounts.</p>
+      <p className="sub-title">Register your team and invite people to participate in this competition.</p>
       {active || (
         <button onClick={connectWallet} className="App-cta Exchange-swap-button">
           Connect Wallet

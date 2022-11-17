@@ -31,17 +31,16 @@ export default function Leaderboard() {
   };
 
   return (
-    <SEO title={getPageTitle("Leaderboard")}>
+    <SEO title={getPageTitle("Leaderboards")}>
       <div className="default-container page-layout Leaderboard">
         <div className="section-title-block-wrapper">
           <div className="section-title-block">
             <div className="section-title-content">
               <div className="Page-title">
-                <Trans>Leaderboard</Trans> <img alt="Chain Icon" src={getChainIcon(chainId)} />
+                <Trans>Leaderboards</Trans> <img alt="Chain Icon" src={getChainIcon(chainId)} />
               </div>
               <div className="Page-description">
-                Get fee discounts and earn rebates through the GMX referral program. For more information, please read
-                the referral program details.
+                Addresses trading statistics. Choose between general or competitions leaderboards.
               </div>
             </div>
           </div>

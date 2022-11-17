@@ -99,3 +99,9 @@
 .team-members-table-top-header button + button {
   margin-left: 1rem;
 }
+
+@media screen and (max-width: 450px) {
+  .team-members-table-container {
+    margin-top: 3rem;
+  }
+}

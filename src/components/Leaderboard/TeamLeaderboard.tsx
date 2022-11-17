@@ -58,11 +58,11 @@ export function TeamLeaderboard({ competitionIndex }) {
 
   return (
     <div>
-      <div className="leaderboard-header">
+      <div className={`leaderboard-header`}>
         <div className="input-wrapper">
           <input
             type="text"
-            placeholder="Search for a team"
+            placeholder="Search Team"
             className="leaderboard-search-input text-input input-small"
             value={search}
             onInput={handleSearchInput}
@@ -74,9 +74,9 @@ export function TeamLeaderboard({ competitionIndex }) {
         ) : (
           <>
             {competition.registrationActive && !isLeader && !hasTeam && (
-              <Link className="icon-btn App-button-option" to={getTeamRegistrationUrl()}>
+              <Link className="transparent-btn" to={getTeamRegistrationUrl()}>
                 <FiPlus />
-                <span className="ml-small">Register your team</span>
+                <span className="ml-small">Create Team</span>
               </Link>
             )}
             {(isLeader || hasTeam) && (
@@ -94,7 +94,7 @@ export function TeamLeaderboard({ competitionIndex }) {
               <Trans>Rank</Trans>
             </th>
             <th>
-              <Trans>Name</Trans>
+              <Trans>Team Name</Trans>
             </th>
             <th>
               <Trans>PnL</Trans>

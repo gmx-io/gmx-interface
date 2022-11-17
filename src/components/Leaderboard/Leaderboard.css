@@ -18,3 +18,16 @@
 .leaderboard-search-input:hover {
   background: var(--dark-blue-hover);
 }
+
+@media screen and (max-width:450px) {
+  .leaderboard-header {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+  }
+
+  .leaderboard-header .input-wrapper {
+    margin-top: 1.5rem;
+    width: 100%;
+  }
+}
