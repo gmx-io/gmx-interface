@@ -81,7 +81,7 @@
       "react-app/jest"
     ],
     "rules": {
-      "no-console": "error"
+      "no-console": "warn"
     }
   },
   "browserslist": {
