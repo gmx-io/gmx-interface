@@ -9,19 +9,42 @@ import disconnect from "img/ic_sign_out_16.svg";
 import { FaChevronDown } from "react-icons/fa";
 import Davatar from "@davatar/react";
 import { helperToast } from "lib/helperToast";
+import { ethers } from "ethers";
+import { ETH_MAINNET, getRpcUrl } from "config/chains";
+import { useEffect, useState } from "react";
+import { StaticJsonRpcProvider } from "@ethersproject/providers";
 
-function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSettings }) {
+type Props = {
+  account: string;
+  accountUrl: string;
+  disconnectAccountAndCloseSettings: () => void;
+};
+
+function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSettings }: Props) {
   const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
+  const [ethProvider, setEthProvider] = useState<StaticJsonRpcProvider>();
   const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
   const { ensName } = useENS(account);
+
+  useEffect(() => {
+    async function initializeProvider() {
+      const provider = new ethers.providers.StaticJsonRpcProvider(getRpcUrl(ETH_MAINNET));
+
+      await provider.ready;
+
+      setEthProvider(provider);
+    }
+
+    initializeProvider();
+  }, []);
 
   return (
     <Menu>
       <Menu.Button as="div">
         <button className="App-cta small transparent address-btn">
           <div className="user-avatar">
-            <Davatar size={20} address={account} />
+            {ethProvider?.network && <Davatar size={20} address={account} provider={ethProvider} />}
           </div>
           <span className="user-address">{ensName || shortenAddress(account, breakpoint === "S" ? 9 : 13)}</span>
           <FaChevronDown />
