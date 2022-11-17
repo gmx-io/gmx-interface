@@ -10,6 +10,12 @@ export enum Mode {
   pair = "pair",
 }
 
+export enum FocusInputId {
+  swapFirst = "swapFirst",
+  swapSecond = "swapSecod",
+  gm = "gm",
+}
+
 export const operationTypesTexts = {
   [OperationType.deposit]: t`Deposit`,
   [OperationType.withdraw]: t`Withdraw`,

@@ -10,12 +10,8 @@
   box-shadow: none;
   outline: none;
   border: none;
-  // border-bottom: 1px solid rgba(255, 255, 255, 0.1607843137);
   padding-bottom: 0.4rem;
-  margin-left: 4px;
-  border-radius: 2px;
   box-sizing: border-box;
-  // width: 45rem;
 }
 
 .MarketDropdown-current-label {
@@ -30,9 +26,18 @@
 }
 
 .MarketDropdown-options {
-  max-width: 20rem;
+  max-width: 23rem;
   left: 1.3rem;
   top: 5rem;
+}
+
+.MarketDropdown-options-container {
+  position: relative;
+}
+
+.MarketDropdown-options-container2 {
+  display: flex;
+  flex-direction: column;
 }
 
 .MarketDropdown-option {

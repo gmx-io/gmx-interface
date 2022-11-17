@@ -357,9 +357,9 @@ msgstr "Se necesita Avax en Avalanche para comprar GMX."
 msgid "Balance"
 msgstr "Balance"
 
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -2316,10 +2316,10 @@ msgstr "Asociaciones e Integraciones"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Pay"
@@ -2560,9 +2560,9 @@ msgstr "Reembolsos ganados por esta cuenta como afiliado."
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
-#: src/components/GM/GMSwapBox/BuyGM.tsx
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 msgid "Receive"

@@ -4,12 +4,6 @@
   padding-top: 0;
 }
 
-.disabled {
-  input {
-    cursor: not-allowed !important;
-  }
-}
-
 .GMSwapBox .Exchange-swap-option-tabs {
   margin: 1.5rem 0;
 }
@@ -25,6 +19,15 @@
 .GMSwapBox-market-dropdown {
   margin-top: 1.5rem;
   margin-left: -0.5rem;
+}
+
+.GMSwapBox-form-layout {
+  display: flex;
+  flex-direction: column;
+
+  &.reverse {
+    flex-direction: column-reverse;
+  }
 }
 
 @media (max-width: 900px) {
