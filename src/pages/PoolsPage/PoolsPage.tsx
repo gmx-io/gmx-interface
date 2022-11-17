@@ -11,6 +11,7 @@ import { useTokenBalances } from "domain/tokens/useTokenBalances";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useState } from "react";
+import Button from "components/Common/Button";
 
 import "./PoolsPage.scss";
 
