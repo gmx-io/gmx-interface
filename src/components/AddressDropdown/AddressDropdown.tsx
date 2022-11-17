@@ -44,7 +44,7 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
       <Menu.Button as="div">
         <button className="App-cta small transparent address-btn">
           <div className="user-avatar">
-            {ethProvider?.network && <Davatar size={20} address={account} provider={ethProvider} />}
+            {ethProvider && <Davatar size={20} address={account} provider={ethProvider} />}
           </div>
           <span className="user-address">{ensName || shortenAddress(account, breakpoint === "S" ? 9 : 13)}</span>
           <FaChevronDown />
