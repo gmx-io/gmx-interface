@@ -1881,17 +1881,11 @@ msgstr "닫을 수 있는 최댜 수량을 초과했습니다"
 msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
-msgid "Max leverage: 30.5x"
-msgstr "최대 레버리지: 30.5x"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Max leverage: 30.5xt"
-msgstr "최대 레버리지: 30.5xt"
-
 #: src/components/Exchange/PositionEditor.js
-msgid "Max leverage: 30x"
-msgstr "최대 레버리지: 30x"
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/SwapBox.js
+msgid "Max leverage: {0}x"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
@@ -3309,8 +3303,8 @@ msgid "Trade"
 msgstr "트레이드"
 
 #: src/pages/Home/Home.js
-msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
-msgstr "지갑에서 직접 최대 30배의 레버리지로 BTC, ETH, AVAX 및 기타 주요 암호화폐 거래"
+msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
+msgstr ""
 
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."

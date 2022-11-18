@@ -1881,16 +1881,10 @@ msgstr ""
 msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
 msgstr ""
 
-#: src/components/Exchange/SwapBox.js
-msgid "Max leverage: 30.5x"
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Max leverage: 30.5xt"
-msgstr ""
-
 #: src/components/Exchange/PositionEditor.js
-msgid "Max leverage: 30x"
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/SwapBox.js
+msgid "Max leverage: {0}x"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
@@ -3309,7 +3303,7 @@ msgid "Trade"
 msgstr ""
 
 #: src/pages/Home/Home.js
-msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
+msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
 msgstr ""
 
 #: src/components/Exchange/ExchangeBanner.js

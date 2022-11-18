@@ -1884,17 +1884,11 @@ msgstr "Max close amount exceeded"
 msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
 msgstr "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
 
-#: src/components/Exchange/SwapBox.js
-msgid "Max leverage: 30.5x"
-msgstr "Max leverage: 30.5x"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Max leverage: 30.5xt"
-msgstr "Max leverage: 30.5xt"
-
 #: src/components/Exchange/PositionEditor.js
-msgid "Max leverage: 30x"
-msgstr "Max leverage: 30x"
+#: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/SwapBox.js
+msgid "Max leverage: {0}x"
+msgstr "Max leverage: {0}x"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
@@ -3312,8 +3306,8 @@ msgid "Trade"
 msgstr "Trade"
 
 #: src/pages/Home/Home.js
-msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
-msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
+msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
+msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
 
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
