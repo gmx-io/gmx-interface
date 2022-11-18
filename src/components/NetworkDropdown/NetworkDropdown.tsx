@@ -9,18 +9,17 @@ import language24Icon from "img/ic_language24.svg";
 import settingsIcon from "img/ic_settings_16.svg";
 import arbitrumIcon from "img/ic_arbitrum_24.svg";
 import avaxIcon from "img/ic_avalanche_24.svg";
-
 import { importImage } from "lib/legacy";
 import { defaultLocale } from "lib/i18n";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import LanguageModalContent from "./LanguageModalContent";
 
-const LANGUAGE_MODAL_KEY = "LANGUAGE";
-const NETWORK_MODAL_KEY = "NETWORK";
+const LANGUAGE_MODAL_KEY: string = "LANGUAGE";
+const NETWORK_MODAL_KEY: string = "NETWORK";
 
 export default function NetworkDropdown(props) {
   const currentLanguage = useRef(localStorage.getItem(LANGUAGE_LOCALSTORAGE_KEY) || defaultLocale);
-  const [activeModal, setActiveModal] = useState(null);
+  const [activeModal, setActiveModal] = useState<string | null>(null);
 
   function getModalContent(modalName) {
     switch (modalName) {
