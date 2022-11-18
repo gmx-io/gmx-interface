@@ -41,22 +41,6 @@ msgstr "24h Volume"
 msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
 msgstr "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
 
-#: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0> to start using GMX"
-msgstr "<0>Install Coinbase Wallet</0> to start using GMX"
-
-#: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser"
-msgstr "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser"
-
-#: src/App/App.js
-msgid "<0>Install MetaMask</0> to start using GMX"
-msgstr "<0>Install MetaMask</0> to start using GMX"
-
-#: src/App/App.js
-msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser"
-msgstr "<0>Install MetaMask</0>, and use GMX with its built-in browser"
-
 #: src/components/Exchange/OrdersToa.js
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
 msgstr "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
@@ -660,8 +644,8 @@ msgid "Coinbase Wallet"
 msgstr "Coinbase Wallet"
 
 #: src/App/App.js
-msgid "Coinbase Wallet not detected."
-msgstr "Coinbase Wallet not detected."
+msgid "Coinbase Wallet not detected.<0/><1/><2>Install Coinbase Wallet</2>{0}."
+msgstr "Coinbase Wallet not detected.<0/><1/><2>Install Coinbase Wallet</2>{0}."
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1963,8 +1947,8 @@ msgid "MetaMask"
 msgstr "MetaMask"
 
 #: src/App/App.js
-msgid "MetaMask not detected."
-msgstr "MetaMask not detected."
+msgid "MetaMask not detected.<0/><1/><2>Install MetaMask</2>{0}."
+msgstr "MetaMask not detected.<0/><1/><2>Install MetaMask</2>{0}."
 
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
@@ -3418,6 +3402,14 @@ msgstr "Trigger Price"
 #: src/components/Exchange/PositionSeller.js
 msgid "Trigger order disabled, pending {0} upgrade"
 msgstr "Trigger order disabled, pending {0} upgrade"
+
+#: src/App/App.js
+msgid "Trust Wallet"
+msgstr "Trust Wallet"
+
+#: src/App/App.js
+msgid "Trust Wallet not detected.<0/><1/><2>Install Trust Wallet</2> to start using GMX."
+msgstr "Trust Wallet not detected.<0/><1/><2>Install Trust Wallet</2> to start using GMX."
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Try increasing the \"Allowed Slippage\", under the Settings menu on the top right"

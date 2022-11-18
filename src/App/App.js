@@ -45,6 +45,7 @@ import "./App.scss";
 import "styles/Input.css";
 
 import metamaskImg from "img/metamask.png";
+import trustWalletImg from "img/trust_wallet.svg";
 import coinbaseImg from "img/coinbaseWallet.png";
 import walletConnectImg from "img/walletconnect-circle-blue.svg";
 import useEventToast from "components/EventToast/useEventToast";
@@ -90,13 +91,13 @@ import {
   clearWalletLinkData,
   getInjectedHandler,
   getWalletConnectHandler,
-  hasCoinBaseWalletExtension,
-  hasMetaMaskWalletExtension,
+  hasWallet,
   useEagerConnect,
   useInactiveListener,
 } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { COINBASE_WALLET, METAMASK_WALLET, TRUST_WALLET } from "lib/wallets/constants";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -197,52 +198,33 @@ function FullApp() {
 
   const userOnMobileDevice = "navigator" in window && isMobileDevice(window.navigator);
 
-  const activateMetaMask = () => {
-    if (!hasMetaMaskWalletExtension()) {
-      helperToast.error(
-        <div>
-          <Trans>MetaMask not detected.</Trans>
-          <br />
-          <br />
-          {userOnMobileDevice ? (
-            <Trans>
-              <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink>, and use GMX with its built-in
-              browser
-            </Trans>
-          ) : (
-            <Trans>
-              <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink> to start using GMX
-            </Trans>
-          )}
-        </div>
-      );
-      return false;
-    }
-    attemptActivateWallet("MetaMask");
-  };
-  const activateCoinBase = () => {
-    if (!hasCoinBaseWalletExtension()) {
-      helperToast.error(
-        <div>
-          <Trans>Coinbase Wallet not detected.</Trans>
-          <br />
-          <br />
-          {userOnMobileDevice ? (
-            <Trans>
-              <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink>, and use GMX
-              with its built-in browser
-            </Trans>
-          ) : (
-            <Trans>
-              <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink> to start using
-              GMX
-            </Trans>
-          )}
-        </div>
-      );
-      return false;
-    }
-    attemptActivateWallet("CoinBase");
+  const noWalletMessages = {
+    [METAMASK_WALLET]: (
+      <Trans>
+        MetaMask not detected.
+        <br />
+        <br />
+        <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink>
+        {userOnMobileDevice ? ", and use GMX with it's built-in browser" : " to start using GMX"}.
+      </Trans>
+    ),
+    [COINBASE_WALLET]: (
+      <Trans>
+        Coinbase Wallet not detected.
+        <br />
+        <br />
+        <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink>
+        {userOnMobileDevice ? ", and use GMX with it's built-in browser" : " to start using GMX"}.
+      </Trans>
+    ),
+    [TRUST_WALLET]: (
+      <Trans>
+        Trust Wallet not detected.
+        <br />
+        <br />
+        <ExternalLink href="https://trustwallet.com/download/">Install Trust Wallet</ExternalLink> to start using GMX.
+      </Trans>
+    ),
   };
 
   const attemptActivateWallet = (providerName) => {
@@ -250,6 +232,14 @@ function FullApp() {
     localStorage.setItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY, providerName);
     activateInjectedProvider(providerName);
     connectInjectedWallet();
+  };
+
+  const activateWallet = (name) => {
+    if (!hasWallet(name)) {
+      helperToast.error(noWalletMessages[name]);
+      return false;
+    }
+    attemptActivateWallet(name);
   };
 
   const [walletModalVisible, setWalletModalVisible] = useState(false);
@@ -569,13 +559,19 @@ function FullApp() {
         setIsVisible={setWalletModalVisible}
         label={t`Connect Wallet`}
       >
-        <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
+        <button className="Wallet-btn MetaMask-btn" onClick={() => activateWallet(METAMASK_WALLET)}>
           <img src={metamaskImg} alt="MetaMask" />
           <div>
             <Trans>MetaMask</Trans>
           </div>
         </button>
-        <button className="Wallet-btn CoinbaseWallet-btn" onClick={activateCoinBase}>
+        <button className="Wallet-btn CoinbaseWallet-btn" onClick={() => activateWallet(TRUST_WALLET)}>
+          <img src={trustWalletImg} alt="Trust Wallet" />
+          <div>
+            <Trans>Trust Wallet</Trans>
+          </div>
+        </button>
+        <button className="Wallet-btn CoinbaseWallet-btn" onClick={() => activateWallet(COINBASE_WALLET)}>
           <img src={coinbaseImg} alt="Coinbase Wallet" />
           <div>
             <Trans>Coinbase Wallet</Trans>

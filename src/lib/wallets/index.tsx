@@ -28,6 +28,7 @@ import { helperToast } from "../helperToast";
 import { t, Trans } from "@lingui/macro";
 
 import { Web3ReactManagerFunctions } from "@web3-react/core/dist/types";
+import { COINBASE_WALLET, METAMASK_WALLET, TRUST_WALLET, walletCheckKeys } from "./constants";
 
 export type NetworkMetadata = {
   chainId: string;
@@ -45,34 +46,22 @@ const injectedConnector = new InjectedConnector({
   supportedChainIds: SUPPORTED_CHAIN_IDS,
 });
 
-export function hasMetaMaskWalletExtension() {
-  return window.ethereum;
-}
-
-export function hasCoinBaseWalletExtension() {
-  const { ethereum } = window;
-
-  if (!ethereum?.providers && !ethereum?.isCoinbaseWallet) {
-    return false;
-  }
-
-  return window.ethereum.isCoinbaseWallet || ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
-}
-
 export function activateInjectedProvider(providerName: string) {
   const { ethereum } = window;
-
-  if (!ethereum?.providers && !ethereum?.isCoinbaseWallet && !ethereum?.isMetaMask) {
+  if (!ethereum?.providers) {
     return undefined;
   }
 
   let provider;
   if (ethereum?.providers) {
     switch (providerName) {
-      case "CoinBase":
+      case COINBASE_WALLET:
         provider = ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
         break;
-      case "MetaMask":
+      case TRUST_WALLET:
+        provider = ethereum.providers.find(({ isTrust }) => isTrust);
+        break;
+      case METAMASK_WALLET:
       default:
         provider = ethereum.providers.find(({ isMetaMask }) => isMetaMask);
         break;
@@ -345,4 +334,21 @@ export async function addTokenToMetamask(token: {
     // eslint-disable-next-line no-console
     console.error(error);
   }
+}
+
+export function hasWallet(providerName = METAMASK_WALLET) {
+  const currentNetworkProperty = walletCheckKeys[providerName];
+  const { ethereum } = window;
+
+  if (!ethereum?.providers && !ethereum?.[currentNetworkProperty]) {
+    return false;
+  }
+
+  if (providerName === METAMASK_WALLET && ethereum) {
+    return true;
+  }
+
+  return (
+    window.ethereum[currentNetworkProperty] || ethereum.providers.find((provider) => provider[currentNetworkProperty])
+  );
 }
