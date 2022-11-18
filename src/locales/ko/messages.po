@@ -451,6 +451,10 @@ msgstr "GLP 구매"
 msgid "Buy GLP Icon"
 msgstr ""
 
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
+msgid "Buy GM"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/Stake/StakeV2.js
@@ -1306,7 +1310,6 @@ msgstr ""
 msgid "Fees since"
 msgstr "이후 수수료"
 
-#: src/components/GM/GMSwapBox/GMSwapBox.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -2464,6 +2467,10 @@ msgstr "시장 평균가 미만 가격"
 msgid "Price conditions are met"
 msgstr ""
 
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
+msgid "Price impact description"
+msgstr ""
+
 #: src/components/Exchange/OrderEditor.js
 msgid "Price is above Mark Price"
 msgstr ""
@@ -2764,6 +2771,10 @@ msgstr "자신에게 전송하는 것은 지원되지 않습니다"
 #: src/pages/Stake/StakeV2.js
 msgid "Sell GLP"
 msgstr "GLP 판매"
+
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
+msgid "Sell GM"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Sell failed."

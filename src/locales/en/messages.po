@@ -451,6 +451,10 @@ msgstr "Buy GLP"
 msgid "Buy GLP Icon"
 msgstr "Buy GLP Icon"
 
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
+msgid "Buy GM"
+msgstr "Buy GM"
+
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/Stake/StakeV2.js
@@ -1306,7 +1310,6 @@ msgstr "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the
 msgid "Fees since"
 msgstr "Fees since"
 
-#: src/components/GM/GMSwapBox/GMSwapBox.tsx
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -2467,6 +2470,10 @@ msgstr "Price below Mark Price"
 msgid "Price conditions are met"
 msgstr "Price conditions are met"
 
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
+msgid "Price impact description"
+msgstr "Price impact description"
+
 #: src/components/Exchange/OrderEditor.js
 msgid "Price is above Mark Price"
 msgstr "Price is above Mark Price"
@@ -2767,6 +2774,10 @@ msgstr "Self-transfer not supported"
 #: src/pages/Stake/StakeV2.js
 msgid "Sell GLP"
 msgstr "Sell GLP"
+
+#: src/components/GM/GMSwapBox/GMSwapBox.tsx
+msgid "Sell GM"
+msgstr "Sell GM"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Sell failed."
