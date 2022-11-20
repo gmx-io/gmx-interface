@@ -222,10 +222,6 @@ msgstr "Amount"
 msgid "Amount of traders you referred."
 msgstr "Amount of traders you referred."
 
-#: src/components/Exchange/PositionEditor.js
-msgid "Amount should be greater than zero"
-msgstr "Amount should be greater than zero"
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Amount to claim"
 msgstr "Amount to claim"
@@ -665,7 +661,7 @@ msgstr "Coinbase Wallet"
 
 #: src/App/App.js
 msgid "Coinbase Wallet not detected."
-msgstr "Coinbase Wallet not detected.<<<<<<< HEAD======="
+msgstr "Coinbase Wallet not detected."
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1187,6 +1183,7 @@ msgstr "Enter a code"
 msgid "Enter a price"
 msgstr "Enter a price"
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -1806,7 +1803,7 @@ msgstr "Looks like you don't have a referral code to share. <0/> Create one now 
 
 #: src/pages/Actions/Actions.js
 msgid "Loss"
-msgstr "Loss<<<<<<< HEAD======="
+msgstr "Loss"
 
 #: src/components/BuyInputSection/BuyInputSection.js
 #: src/components/Exchange/PositionEditor.js
@@ -1815,7 +1812,7 @@ msgstr "Loss<<<<<<< HEAD======="
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
-msgstr "MAX<<<<<<< HEAD======="
+msgstr "MAX"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
@@ -1997,18 +1994,15 @@ msgstr "Migration submitted! <0>View status.</0>"
 msgid "Min leverage: 1.1x"
 msgstr "Min leverage: 1.1x"
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
-msgstr "Min order: 10 USD<<<<<<< HEAD"
+msgstr "Min order: 10 USD"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Min required collateral"
 msgstr "Min required collateral"
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-msgid "Min residual collateral: 10 USD"
-msgstr "Min residual collateral: 10 USD======="
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Min. Receive"

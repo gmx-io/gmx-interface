@@ -222,10 +222,6 @@ msgstr ""
 msgid "Amount of traders you referred."
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.js
-msgid "Amount should be greater than zero"
-msgstr ""
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Amount to claim"
 msgstr ""
@@ -665,7 +661,7 @@ msgstr ""
 
 #: src/App/App.js
 msgid "Coinbase Wallet not detected."
-msgstr "<<<<<<< HEAD======="
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1187,6 +1183,7 @@ msgstr ""
 msgid "Enter a price"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -1803,7 +1800,7 @@ msgstr ""
 
 #: src/pages/Actions/Actions.js
 msgid "Loss"
-msgstr "<<<<<<< HEAD======="
+msgstr ""
 
 #: src/components/BuyInputSection/BuyInputSection.js
 #: src/components/Exchange/PositionEditor.js
@@ -1812,7 +1809,7 @@ msgstr "<<<<<<< HEAD======="
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
-msgstr "<<<<<<< HEAD======="
+msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
@@ -1994,17 +1991,14 @@ msgstr ""
 msgid "Min leverage: 1.1x"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Min required collateral"
-msgstr ""
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-msgid "Min residual collateral: 10 USD"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js

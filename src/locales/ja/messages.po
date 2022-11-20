@@ -222,10 +222,6 @@ msgstr "額"
 msgid "Amount of traders you referred."
 msgstr "あなたがリファーしたトレーダー数"
 
-#: src/components/Exchange/PositionEditor.js
-msgid "Amount should be greater than zero"
-msgstr ""
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Amount to claim"
 msgstr "請求額"
@@ -665,7 +661,7 @@ msgstr "コインベースウォレット"
 
 #: src/App/App.js
 msgid "Coinbase Wallet not detected."
-msgstr "コインベースウォレットが検出できません。<<<<<<< HEAD======="
+msgstr "コインベースウォレットが検出できません。"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1187,6 +1183,7 @@ msgstr "コードを入力"
 msgid "Enter a price"
 msgstr "価格を入力"
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -1803,7 +1800,7 @@ msgstr "シェアできる紹介コードがないようです。<0/> コード�
 
 #: src/pages/Actions/Actions.js
 msgid "Loss"
-msgstr "損失<<<<<<< HEAD======="
+msgstr "損失"
 
 #: src/components/BuyInputSection/BuyInputSection.js
 #: src/components/Exchange/PositionEditor.js
@@ -1812,7 +1809,7 @@ msgstr "損失<<<<<<< HEAD======="
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
-msgstr "最大<<<<<<< HEAD======="
+msgstr "最大"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
@@ -1994,18 +1991,15 @@ msgstr ""
 msgid "Min leverage: 1.1x"
 msgstr "最小レバレッジ: 1.1倍"
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
-msgstr "最小オーダー金額: 10 USD<<<<<<< HEAD"
+msgstr "最小オーダー金額: 10 USD"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Min required collateral"
 msgstr ""
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-msgid "Min residual collateral: 10 USD"
-msgstr "======="
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Min. Receive"

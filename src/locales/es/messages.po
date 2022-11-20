@@ -222,10 +222,6 @@ msgstr "Cantidad"
 msgid "Amount of traders you referred."
 msgstr "Cantidad de comerciantes que ha referido."
 
-#: src/components/Exchange/PositionEditor.js
-msgid "Amount should be greater than zero"
-msgstr ""
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Amount to claim"
 msgstr "Cantidad a reclamar"
@@ -665,7 +661,7 @@ msgstr "Coinbase Wallet"
 
 #: src/App/App.js
 msgid "Coinbase Wallet not detected."
-msgstr "Coinbase Wallet no detectada.<<<<<<< HEAD======="
+msgstr "Coinbase Wallet no detectada."
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1187,6 +1183,7 @@ msgstr "Introduzca un código"
 msgid "Enter a price"
 msgstr "Introduce un precio"
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -1803,7 +1800,7 @@ msgstr "Parece que no tienes un código de referencia para compartir. <0/> ¡Cre
 
 #: src/pages/Actions/Actions.js
 msgid "Loss"
-msgstr "Pérdida<<<<<<< HEAD======="
+msgstr "Pérdida"
 
 #: src/components/BuyInputSection/BuyInputSection.js
 #: src/components/Exchange/PositionEditor.js
@@ -1812,7 +1809,7 @@ msgstr "Pérdida<<<<<<< HEAD======="
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
-msgstr "MÁX<<<<<<< HEAD======="
+msgstr "MÁX"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
@@ -1994,18 +1991,15 @@ msgstr ""
 msgid "Min leverage: 1.1x"
 msgstr "Apalancamiento Mín.: 1.1x"
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
-msgstr "Orden Mín. 10 USD<<<<<<< HEAD"
+msgstr "Orden Mín. 10 USD"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Min required collateral"
 msgstr ""
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-msgid "Min residual collateral: 10 USD"
-msgstr "======="
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Min. Receive"

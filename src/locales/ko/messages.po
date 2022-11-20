@@ -222,10 +222,6 @@ msgstr "수량"
 msgid "Amount of traders you referred."
 msgstr "추천한 거래자 수"
 
-#: src/components/Exchange/PositionEditor.js
-msgid "Amount should be greater than zero"
-msgstr ""
-
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Amount to claim"
 msgstr "수령할 양"
@@ -665,7 +661,7 @@ msgstr "Coinbase 지갑"
 
 #: src/App/App.js
 msgid "Coinbase Wallet not detected."
-msgstr "Coinbase 지갑이 존재하지 않습니다.<<<<<<< HEAD======="
+msgstr "Coinbase 지갑이 존재하지 않습니다."
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1187,6 +1183,7 @@ msgstr "코드 입력"
 msgid "Enter a price"
 msgstr "가격 입력"
 
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
@@ -1803,7 +1800,7 @@ msgstr "공유할 수 있는 추천 코드가 없는 것 같습니다. <0/> 코�
 
 #: src/pages/Actions/Actions.js
 msgid "Loss"
-msgstr "손실<<<<<<< HEAD======="
+msgstr "손실"
 
 #: src/components/BuyInputSection/BuyInputSection.js
 #: src/components/Exchange/PositionEditor.js
@@ -1812,7 +1809,7 @@ msgstr "손실<<<<<<< HEAD======="
 #: src/components/InputSection/InputSection.js
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "MAX"
-msgstr "최대<<<<<<< HEAD======="
+msgstr "최대"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
@@ -1994,18 +1991,15 @@ msgstr ""
 msgid "Min leverage: 1.1x"
 msgstr "최소 레버리지: 1.1x"
 
+#: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
-msgstr "최소 주문: 10 USD<<<<<<< HEAD"
+msgstr "최소 주문: 10 USD"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Min required collateral"
 msgstr ""
-
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
-msgid "Min residual collateral: 10 USD"
-msgstr "======="
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Min. Receive"
