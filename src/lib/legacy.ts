@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { getContract } from "config/contracts";
 import useSWR from "swr";
 
@@ -741,6 +741,20 @@ export function getLeverage({
   }
 
   return nextSize.mul(BASIS_POINTS_DIVISOR).div(remainingCollateral);
+}
+
+export function getFundingFee(data: {
+  size: BigNumber;
+  entryFundingRate?: BigNumber;
+  cumulativeFundingRate?: BigNumber;
+}) {
+  let { entryFundingRate, cumulativeFundingRate, size } = data;
+
+  if (entryFundingRate && cumulativeFundingRate) {
+    return size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
+  }
+
+  return;
 }
 
 export function getLiquidationPrice(data) {

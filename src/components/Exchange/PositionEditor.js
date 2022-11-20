@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 import { Trans, t } from "@lingui/macro";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
 
 import {
@@ -11,6 +11,7 @@ import {
   DUST_BNB,
   getLiquidationPrice,
   MAX_ALLOWED_LEVERAGE,
+  getFundingFee,
 } from "lib/legacy";
 import { getContract } from "config/contracts";
 import Tab from "../Tab/Tab";
@@ -105,11 +106,13 @@ export default function PositionEditor(props) {
 
   let title;
   let collateralDelta;
+  let fundingFee;
 
   if (position) {
     title = t`Edit ${longOrShortText} ${position.indexToken.symbol}`;
     collateralToken = position.collateralToken;
     liquidationPrice = getLiquidationPrice(position);
+    fundingFee = getFundingFee(position);
 
     if (isDeposit) {
       fromAmount = parseValue(fromValue, collateralToken.decimals);
@@ -122,7 +125,11 @@ export default function PositionEditor(props) {
       }
     } else {
       fromAmount = parseValue(fromValue, USD_DECIMALS);
-      maxAmount = position.collateralAfterFee.sub(MIN_ORDER_USD);
+
+      maxAmount = position.collateralAfterFee.sub(MIN_ORDER_USD).gt(0)
+        ? position.collateralAfterFee.sub(MIN_ORDER_USD)
+        : bigNumberify(0);
+
       maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
       maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
       if (fromAmount) {
@@ -174,9 +181,7 @@ export default function PositionEditor(props) {
         increaseCollateral: isDeposit,
       });
 
-      nextCollateral = isDeposit
-        ? position.collateral.add(collateralDelta)
-        : position.collateralAfterFee.sub(collateralDelta);
+      nextCollateral = position.collateralAfterFee.add(collateralDelta);
     }
   }
 
@@ -373,11 +378,14 @@ export default function PositionEditor(props) {
     const priceBasisPoints = position.isLong ? 9000 : 11000;
     const priceLimit = position.indexToken.maxPrice.mul(priceBasisPoints).div(10000);
 
+    const withdrawAmount = fromAmount.add(fundingFee || bigNumberify(0));
+
     const withdrawETH = collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress;
+
     const params = [
       [tokenAddress0], // _path
       indexTokenAddress, // _indexToken
-      fromAmount, // _collateralDelta
+      withdrawAmount, // _collateralDelta
       0, // _sizeDelta
       position.isLong, // _isLong
       account, // _receiver
@@ -453,7 +461,6 @@ export default function PositionEditor(props) {
     [DEPOSIT]: t`Deposit`,
     [WITHDRAW]: t`Withdraw`,
   };
-
   return (
     <div className="PositionEditor">
       {position && (
@@ -495,7 +502,7 @@ export default function PositionEditor(props) {
                         value={fromValue}
                         onChange={(e) => setFromValue(e.target.value)}
                       />
-                      {fromValue !== maxAmountFormattedFree && (
+                      {fromValue !== maxAmountFormattedFree && maxAmount?.gt(0) && (
                         <div
                           className="Exchange-swap-max"
                           onClick={() => {
@@ -585,6 +592,30 @@ export default function PositionEditor(props) {
                       )}
                     </div>
                   </div>
+                  {fromAmount?.gt(0) && fundingFee?.gt(0) && (
+                    <div className="Exchange-info-row">
+                      <div className="Exchange-info-label">
+                        <Trans>Borrow Fee</Trans>
+                      </div>
+                      <div className="align-right">
+                        <Tooltip
+                          handle={
+                            <>
+                              <div className="inline-block muted">
+                                ${formatAmount(fundingFee, USD_DECIMALS, 2, true)}
+                                <BsArrowRight className="transition-arrow" />
+                              </div>
+                              $0
+                            </>
+                          }
+                          position="right-top"
+                          renderContent={() => (
+                            <Trans>A pending borrow fee will be deducted during the transaction.</Trans>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  )}
                   <div className="Exchange-info-row">
                     <div className="Exchange-info-label">
                       <Trans>Execution Fee</Trans>
