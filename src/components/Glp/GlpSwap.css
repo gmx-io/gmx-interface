@@ -93,7 +93,7 @@
 }
 
 .App-card-title-mark .App-card-title-mark-title {
-  font-size: 1.6rem;
+  font-size: var(--font-md);
   line-height: 2.1rem;
   letter-spacing: 0px;
   color: #ffffff;
@@ -150,7 +150,7 @@
   margin: 0 auto;
   justify-content: center;
   min-height: 4.8rem;
-  font-size: 1.5rem;
+  font-size: var(--font-sm);
 }
 
 .token-table {
@@ -159,7 +159,7 @@
   width: calc(100% + 3.1rem);
   border-spacing: 0;
   white-space: nowrap;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
 }
 
 .token-grid {
@@ -232,7 +232,7 @@
 .AppOrder-ball-icon {
   text-align: center;
   display: block;
-  font-size: 2.325rem;
+  font-size: var(--font-lg);
   opacity: 0.7;
 }
 
@@ -248,7 +248,7 @@
   top: -2.2rem;
   border-radius: 3.1rem;
   user-select: none;
-  background: linear-gradient(90deg, rgba(45,66,252,1) 0%, rgba(46,61,205,1) 100%);
+  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
   cursor: pointer;
   opacity: 0.85;
 }

@@ -10,6 +10,7 @@ import githubIcon from "img/ic_github.svg";
 import mediumIcon from "img/ic_medium.svg";
 import { NavLink } from "react-router-dom";
 import { isHomeSite, getAppBaseUrl, shouldShowRedirectModal } from "lib/legacy";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const footerLinks = {
   home: [
@@ -44,15 +45,9 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }) {
         <div className="Footer-social-link-block">
           {socialLinks.map((platform) => {
             return (
-              <a
-                key={platform.name}
-                className="App-social-link"
-                href={platform.link}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <ExternalLink key={platform.name} className="App-social-link" href={platform.link}>
                 <img src={platform.icon} alt={platform.name} />
-              </a>
+              </ExternalLink>
             );
           })}
         </div>
@@ -60,9 +55,9 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }) {
           {footerLinks[isHome ? "home" : "app"].map(({ external, text, link, isAppLink }) => {
             if (external) {
               return (
-                <a key={text} target="_blank" href={link} className="Footer-link" rel="noopener noreferrer">
+                <ExternalLink key={text} href={link} className="Footer-link">
                   {text}
-                </a>
+                </ExternalLink>
               );
             }
             if (isAppLink) {

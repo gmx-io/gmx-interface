@@ -139,11 +139,12 @@ export function AffiliateCodeForm({
         if (receipt.status === 1) {
           recentlyAddedCodes.push(getSampleReferrarStat(referralCode, ownerOnOtherNetwork, account));
 
-          helperToast.success("Referral code created!");
+          helperToast.success(t`Referral code created!`);
           setRecentlyAddedCodes(recentlyAddedCodes);
           setReferralCode("");
         }
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.error(err);
       } finally {
         setIsProcessing(false);
@@ -159,7 +160,7 @@ export function AffiliateCodeForm({
         value={referralCode}
         disabled={isProcessing}
         className={cx("text-input", { "mb-sm": !error })}
-        placeholder="Enter a code"
+        placeholder={t`Enter a code`}
         onChange={({ target }) => {
           const { value } = target;
           setReferralCode(value);

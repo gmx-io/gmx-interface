@@ -1,6 +1,7 @@
 import "./EventToast.css";
 import Icon from "./AnnouncementIcon";
 import { MdOutlineClose } from "react-icons/md";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export default function EventToast({ event, id, onClick, t }) {
   return (
@@ -12,14 +13,22 @@ export default function EventToast({ event, id, onClick, t }) {
         </div>
         <MdOutlineClose onClick={onClick} className="cross-icon" color="white" />
       </header>
-      <p className="toast-body">{event.bodyText}</p>
+      {Array.isArray(event.bodyText) ? (
+        event.bodyText.map((text, i) => (
+          <p key={i} className="toast-body">
+            {text}
+          </p>
+        ))
+      ) : (
+        <p className="toast-body">{event.bodyText}</p>
+      )}
       <div className="toast-links">
         {event.buttons.map((button) => {
           if (button.newTab) {
             return (
-              <a key={event.id + button.text} target="_blank" rel="noreferrer noopener" href={button.link}>
+              <ExternalLink key={event.id + button.text} href={button.link}>
                 {button.text}
-              </a>
+              </ExternalLink>
             );
           } else {
             return (

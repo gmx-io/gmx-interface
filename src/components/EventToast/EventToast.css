@@ -1,6 +1,6 @@
 .event-toast-container .toast-links {
   margin-top: 1.5rem;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   padding: 0 1.5rem 1.5rem 1.5rem;
 }
 .zoomIn {
@@ -13,7 +13,7 @@
 }
 .event-toast-container .toast-links a {
   text-decoration: underline;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   opacity: 0.7;
   margin-right: 1.5rem;
 }
@@ -67,13 +67,13 @@
   margin: 0;
   padding: 0.3875rem 0;
   margin-left: 1.1625rem;
-  font-size: 1.6rem;
+  font-size: var(--font-md);
 }
 
 .single-toast .toast-body {
   margin: 0.8rem 0;
   padding: 0;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   line-height: 1.5;
   padding: 0 1.5rem;
 }

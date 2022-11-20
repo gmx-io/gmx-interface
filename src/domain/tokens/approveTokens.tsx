@@ -2,12 +2,14 @@ import { ethers } from "ethers";
 import Token from "abis/Token.json";
 import { getExplorerUrl } from "config/chains";
 import { helperToast } from "lib/helperToast";
-import { Web3ReactContextInterface } from "@web3-react/core/dist/types";
 import { InfoTokens, TokenInfo } from "./types";
+import { Web3Provider } from "@ethersproject/providers";
+import ExternalLink from "components/ExternalLink/ExternalLink";
+import { t, Trans } from "@lingui/macro";
 
 type Params = {
   setIsApproving: (val: boolean) => void;
-  library: Web3ReactContextInterface["library"];
+  library: Web3Provider;
   tokenAddress: string;
   spender: string;
   chainId: number;
@@ -40,10 +42,9 @@ export function approveTokens({
       const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
       helperToast.success(
         <div>
-          Approval submitted!{" "}
-          <a href={txUrl} target="_blank" rel="noopener noreferrer">
-            View status.
-          </a>
+          <Trans>
+            Approval submitted! <ExternalLink href={txUrl}>View status.</ExternalLink>
+          </Trans>
           <br />
         </div>
       );
@@ -54,12 +55,13 @@ export function approveTokens({
         const token = getTokenInfo(infoTokens, tokenAddress);
         const pendingTxn = {
           hash: res.hash,
-          message: includeMessage ? `${token.symbol} Approved!` : false,
+          message: includeMessage ? t`${token.symbol} Approved!` : false,
         };
         setPendingTxns([...pendingTxns, pendingTxn]);
       }
     })
     .catch((e) => {
+      // eslint-disable-next-line no-console
       console.error(e);
       let failMsg;
       if (
@@ -69,18 +71,18 @@ export function approveTokens({
       ) {
         failMsg = (
           <div>
-            There is not enough ETH in your account on Arbitrum to send this transaction.
-            <br />
-            <br />
-            <a href={"https://arbitrum.io/bridge-tutorial/"} target="_blank" rel="noopener noreferrer">
-              Bridge ETH to Arbitrum
-            </a>
+            <Trans>
+              There is not enough ETH in your account on Arbitrum to send this transaction.
+              <br />
+              <br />
+              <ExternalLink href="https://arbitrum.io/bridge-tutorial/">Bridge ETH to Arbitrum</ExternalLink>
+            </Trans>
           </div>
         );
       } else if (e.message?.includes("User denied transaction signature")) {
-        failMsg = "Approval was cancelled";
+        failMsg = t`Approval was cancelled`;
       } else {
-        failMsg = "Approval failed";
+        failMsg = t`Approval failed`;
       }
       helperToast.error(failMsg);
     })

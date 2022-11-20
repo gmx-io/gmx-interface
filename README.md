@@ -215,6 +215,12 @@ function Button(props) {...}
 
 ---
 
+### Translation
+
+- The language code should be a valid [BCP-47](https://unicode-org.github.io/cldr-staging/charts/latest/supplemental/language_plural_rules.html) code like `es` for `Spanish`.
+- The formatting used in `.po` files for each language is know as ICU MessageFormat. To understand it please refer to this [GUIDE](https://lingui.js.org/ref/message-format.html)
+
+
 ### SCSS
 
 Use the following syntax to import scss modules:

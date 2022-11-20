@@ -8,7 +8,7 @@
 
 # lingui
 /src/locales/**/*.js
-/src/locales/**/en.po
+/src/locales/en/messages.po
 /src/locales/_build/
 
 # testing

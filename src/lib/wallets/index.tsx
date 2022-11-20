@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import {
   ARBITRUM,
@@ -12,7 +13,6 @@ import {
   SUPPORTED_CHAIN_IDS,
 } from "config/chains";
 import { UnsupportedChainIdError, useWeb3React } from "@web3-react/core";
-import React, { useEffect, useState } from "react";
 import {
   CURRENT_PROVIDER_LOCALSTORAGE_KEY,
   SELECTED_NETWORK_LOCAL_STORAGE_KEY,
@@ -25,6 +25,21 @@ import {
   WalletConnectConnector,
 } from "@web3-react/walletconnect-connector";
 import { helperToast } from "../helperToast";
+import { t, Trans } from "@lingui/macro";
+
+import { Web3ReactManagerFunctions } from "@web3-react/core/dist/types";
+
+export type NetworkMetadata = {
+  chainId: string;
+  chainName: string;
+  nativeCurrency: {
+    name: string;
+    symbol: string;
+    decimals: number;
+  };
+  rpcUrls: string[];
+  blockExplorerUrls: string[];
+};
 
 const injectedConnector = new InjectedConnector({
   supportedChainIds: SUPPORTED_CHAIN_IDS,
@@ -44,7 +59,7 @@ export function hasCoinBaseWalletExtension() {
   return window.ethereum.isCoinbaseWallet || ethereum.providers.find(({ isCoinbaseWallet }) => isCoinbaseWallet);
 }
 
-export function activateInjectedProvider(providerName) {
+export function activateInjectedProvider(providerName: string) {
   const { ethereum } = window;
 
   if (!ethereum?.providers && !ethereum?.isCoinbaseWallet && !ethereum?.isMetaMask) {
@@ -74,7 +89,8 @@ export function getInjectedConnector() {
 }
 
 export const getWalletConnectConnector = () => {
-  const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID;
+  const chainId = Number(localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)) || DEFAULT_CHAIN_ID;
+
   return new WalletConnectConnector({
     rpc: {
       [AVALANCHE]: AVALANCHE_RPC_PROVIDERS[0],
@@ -97,7 +113,7 @@ export function clearWalletLinkData() {
     .map((x) => localStorage.removeItem(x));
 }
 
-export function useEagerConnect(setActivatingConnector) {
+export function useEagerConnect(setActivatingConnector: (connector: any) => void) {
   const { activate, active } = useWeb3React();
   const [tried, setTried] = useState(false);
 
@@ -213,15 +229,15 @@ export const addBscNetwork = async () => {
   return addNetwork(NETWORK_METADATA[MAINNET]);
 };
 
-export const addNetwork = async (metadata) => {
+export const addNetwork = async (metadata: NetworkMetadata) => {
   await window.ethereum.request({ method: "wallet_addEthereumChain", params: [metadata] }).catch();
 };
 
-export const switchNetwork = async (chainId, active) => {
+export const switchNetwork = async (chainId: number, active?: boolean) => {
   if (!active) {
     // chainId in localStorage allows to switch network even if wallet is not connected
     // or there is no wallet at all
-    localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, chainId);
+    localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, String(chainId));
     document.location.reload();
     return;
   }
@@ -232,7 +248,7 @@ export const switchNetwork = async (chainId, active) => {
       method: "wallet_switchEthereumChain",
       params: [{ chainId: chainIdHex }],
     });
-    helperToast.success("Connected to " + getChainName(chainId));
+    helperToast.success(t`Connected to ${getChainName(chainId)}`);
     return getChainName(chainId);
   } catch (ex) {
     // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
@@ -243,20 +259,27 @@ export const switchNetwork = async (chainId, active) => {
       return await addNetwork(NETWORK_METADATA[chainId]);
     }
 
+    // eslint-disable-next-line no-console
     console.error("error", ex);
   }
 };
 
-export const getWalletConnectHandler = (activate, deactivate, setActivatingConnector) => {
+export const getWalletConnectHandler = (
+  activate: Web3ReactManagerFunctions["activate"],
+  deactivate: Web3ReactManagerFunctions["deactivate"],
+  setActivatingConnector: (connector?: WalletConnectConnector) => void
+) => {
   const fn = async () => {
     const walletConnect = getWalletConnectConnector();
     setActivatingConnector(walletConnect);
     activate(walletConnect, (ex) => {
       if (ex instanceof UnsupportedChainIdError) {
-        helperToast.error("Unsupported chain. Switch to Arbitrum network on your wallet and try again");
+        helperToast.error(t`Unsupported chain. Switch to Arbitrum network on your wallet and try again`);
+        // eslint-disable-next-line no-console
         console.warn(ex);
       } else if (!(ex instanceof UserRejectedRequestErrorWalletConnect)) {
         helperToast.error(ex.message);
+        // eslint-disable-next-line no-console
         console.warn(ex);
       }
       clearWalletConnectData();
@@ -266,22 +289,24 @@ export const getWalletConnectHandler = (activate, deactivate, setActivatingConne
   return fn;
 };
 
-export const getInjectedHandler = (activate) => {
+export const getInjectedHandler = (activate: Web3ReactManagerFunctions["activate"]) => {
   const fn = async () => {
     activate(getInjectedConnector(), (e) => {
-      const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID;
+      const chainId = Number(localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)) || DEFAULT_CHAIN_ID;
 
       if (e instanceof UnsupportedChainIdError) {
         helperToast.error(
           <div>
-            <div>Your wallet is not connected to {getChainName(chainId)}.</div>
-            <br />
-            <div className="clickable underline margin-bottom" onClick={() => switchNetwork(chainId, true)}>
-              Switch to {getChainName(chainId)}
-            </div>
-            <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
-              Add {getChainName(chainId)}
-            </div>
+            <Trans>
+              <div>Your wallet is not connected to {getChainName(chainId)}.</div>
+              <br />
+              <div className="clickable underline margin-bottom" onClick={() => switchNetwork(chainId, true)}>
+                Switch to {getChainName(chainId)}
+              </div>
+              <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
+                Add {getChainName(chainId)}
+              </div>
+            </Trans>
           </div>
         );
         return;
@@ -293,7 +318,12 @@ export const getInjectedHandler = (activate) => {
   return fn;
 };
 
-export async function addTokenToMetamask(token) {
+export async function addTokenToMetamask(token: {
+  address: string;
+  symbol: string;
+  decimals: number;
+  imageUrl?: string;
+}) {
   try {
     const wasAdded = await window.ethereum.request({
       method: "wallet_watchAsset",
@@ -312,6 +342,7 @@ export async function addTokenToMetamask(token) {
       // We can show a toast message when the token is added to metamask but because of the bug we can't. Once the bug is fixed we can show a toast message.
     }
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(error);
   }
 }

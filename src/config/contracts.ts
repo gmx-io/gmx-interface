@@ -143,8 +143,8 @@ const CONTRACTS = {
     OrderExecutor: "0x7257ac5D0a0aaC04AA7bA2AC0A6Eb742E332c3fB",
     OrderBookReader: "0xa27C20A7CF0e1C68C0460706bB674f98F362Bc21",
 
-    PositionRouter: "0x3D6bA331e3D9702C5e8A8d254e5d8a285F223aba",
-    PositionManager: "0x87a4088Bd721F83b6c2E5102e2FA47022Cb1c831",
+    PositionRouter: "0xb87a436B93fFE9D75c5cFA7bAcFff96430b09868",
+    PositionManager: "0x75E42e6f01baf1D6022bEa862A28774a9f8a4A0C",
 
     UniswapGmxEthPool: "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E",
     ReferralStorage: "0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d",
@@ -183,8 +183,8 @@ const CONTRACTS = {
     OrderExecutor: "0x4296e307f108B2f583FF2F7B7270ee7831574Ae5",
     OrderBookReader: "0xccFE3E576f8145403d3ce8f3c2f6519Dae40683B",
 
-    PositionRouter: "0x195256074192170d1530527abC9943759c7167d8",
-    PositionManager: "0xF2ec2e52c3b5F8b8bd5A3f93945d05628A233216",
+    PositionRouter: "0xffF6D276Bc37c61A23f06410Dce4A400f66420f8",
+    PositionManager: "0xA21B83E579f4315951bA658654c371520BDcB866",
 
     TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98",
     ReferralStorage: "0x827ed045002ecdabeb6e2b0d1604cf5fc3d322f8",
