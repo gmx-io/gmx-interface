@@ -1,6 +1,6 @@
 .ClaimEsGmx input {
   border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 1.5rem;
+  font-size: var(--font-base);
   width: 100%;
   box-sizing: border-box;
 }
@@ -86,7 +86,7 @@
   background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
   left: 29.75rem;
   top: 0.93rem;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   border-radius: 3px;
   z-index: 1;
   cursor: pointer;

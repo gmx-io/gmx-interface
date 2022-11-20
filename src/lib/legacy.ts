@@ -16,6 +16,7 @@ import { bigNumberify, expandDecimals, formatAmount } from "./numbers";
 import { isValidToken } from "config/tokens";
 import { useChainId } from "./chains";
 import { isValidTimestamp } from "./dates";
+import { t } from "@lingui/macro";
 
 const { AddressZero } = ethers.constants;
 
@@ -25,14 +26,16 @@ export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
 export const MIN_PROFIT_TIME = 0;
 
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
-export const MAX_LEVERAGE = 100 * 10000;
+
+export const BASIS_POINTS_DIVISOR = 10000;
+export const MAX_LEVERAGE = 100 * BASIS_POINTS_DIVISOR;
+export const MAX_ALLOWED_LEVERAGE = 50 * BASIS_POINTS_DIVISOR;
 
 export const MAX_PRICE_DEVIATION_BASIS_POINTS = 750;
 export const DEFAULT_GAS_LIMIT = 1 * 1000 * 1000;
 export const SECONDS_PER_YEAR = 31536000;
 export const USDG_DECIMALS = 18;
 export const USD_DECIMALS = 30;
-export const BASIS_POINTS_DIVISOR = 10000;
 export const DEPOSIT_FEE = 30;
 export const DUST_BNB = "2000000000000000";
 export const DUST_USD = expandDecimals(1, USD_DECIMALS);
@@ -77,7 +80,7 @@ export const MAX_REFERRAL_CODE_LENGTH = 20;
 export const MIN_PROFIT_BIPS = 0;
 
 export function deserialize(data) {
-  for (const [key, value] of Object.entries(data)) {
+  for (const [key, value] of Object.entries(data) as any) {
     if (value._type === "BigNumber") {
       data[key] = bigNumberify(value.value);
     }
@@ -137,7 +140,7 @@ export function shouldInvertTriggerRatio(tokenA, tokenB) {
   return false;
 }
 
-export function getExchangeRateDisplay(rate, tokenA, tokenB, opts = {}) {
+export function getExchangeRateDisplay(rate, tokenA, tokenB, opts: { omitSymbols?: boolean } = {}) {
   if (!rate || !tokenA || !tokenB) return "...";
   if (shouldInvertTriggerRatio(tokenA, tokenB)) {
     [tokenA, tokenB] = [tokenB, tokenA];
@@ -487,7 +490,7 @@ export function getNextToAmount(
 
   const adjustDecimals = adjustForDecimalsFactory(toToken.decimals - fromToken.decimals);
 
-  let toAmountBasedOnRatio = bigNumberify(0);
+  let toAmountBasedOnRatio = bigNumberify(0)!;
   if (ratio && !ratio.isZero()) {
     toAmountBasedOnRatio = fromAmount.mul(PRECISION).div(ratio);
   }
@@ -512,10 +515,10 @@ export function getNextToAmount(
 
   if (fromTokenAddress === USDG_ADDRESS) {
     const redemptionValue = toToken.redemptionAmount
-      .mul(toTokenPriceUsd || toTokenMaxPrice)
+      ?.mul(toTokenPriceUsd || toTokenMaxPrice)
       .div(expandDecimals(1, toToken.decimals));
 
-    if (redemptionValue.gt(THRESHOLD_REDEMPTION_VALUE)) {
+    if (redemptionValue && redemptionValue.gt(THRESHOLD_REDEMPTION_VALUE)) {
       const feeBasisPoints = getSwapFeeBasisPoints(toToken.isStable);
 
       const toAmount =
@@ -532,7 +535,7 @@ export function getNextToAmount(
     const expectedAmount = fromAmount;
 
     const stableToken = getMostAbundantStableToken(chainId, infoTokens);
-    if (!stableToken || stableToken.availableAmount.lt(expectedAmount)) {
+    if (!stableToken?.availableAmount || stableToken.availableAmount.lt(expectedAmount)) {
       const toAmount =
         ratio && !ratio.isZero()
           ? toAmountBasedOnRatio
@@ -831,7 +834,13 @@ export function getLiquidationPrice(data) {
     : liquidationPriceForMaxLeverage;
 }
 
-export function getPositionKey(account, collateralTokenAddress, indexTokenAddress, isLong, nativeTokenAddress) {
+export function getPositionKey(
+  account: string,
+  collateralTokenAddress: string,
+  indexTokenAddress: string,
+  isLong: boolean,
+  nativeTokenAddress?: string
+) {
   const tokenAddress0 = collateralTokenAddress === AddressZero ? nativeTokenAddress : collateralTokenAddress;
   const tokenAddress1 = indexTokenAddress === AddressZero ? nativeTokenAddress : indexTokenAddress;
   return account + ":" + tokenAddress0 + ":" + tokenAddress1 + ":" + isLong;
@@ -863,7 +872,7 @@ export function shortenAddress(address, length) {
 }
 
 export function useENS(address) {
-  const [ensName, setENSName] = useState();
+  const [ensName, setENSName] = useState<string | undefined>();
 
   useEffect(() => {
     async function resolveENS() {
@@ -886,7 +895,7 @@ function _parseOrdersData(ordersData, account, indexes, extractor, uintPropsLeng
   const [uintProps, addressProps] = ordersData;
   const count = uintProps.length / uintPropsLength;
 
-  const orders = [];
+  const orders: any[] = [];
   for (let i = 0; i < count; i++) {
     const sliced = addressProps
       .slice(addressPropsLength * i, addressPropsLength * (i + 1))
@@ -986,7 +995,7 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
 
   const orderBookAddress = getContract(chainId, "OrderBook");
   const orderBookReaderAddress = getContract(chainId, "OrderBookReader");
-  const key = shouldRequest ? [active, chainId, orderBookAddress, account] : false;
+  const key: any = shouldRequest ? [active, chainId, orderBookAddress, account] : false;
   const {
     data: orders = [],
     mutate: updateOrders,
@@ -1015,7 +1024,7 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
 
       const fetchLastIndex = async (type) => {
         const method = type.toLowerCase() + "OrdersIndex";
-        return await orderBookContract[method](account).then((res) => bigNumberify(res._hex).toNumber());
+        return await orderBookContract[method](account).then((res) => bigNumberify(res._hex)!.toNumber());
       };
 
       const fetchLastIndexes = async () => {
@@ -1028,9 +1037,9 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
         return { swap, increase, decrease };
       };
 
-      const getRange = (to, from) => {
+      const getRange = (to: number, from?: number) => {
         const LIMIT = 10;
-        const _indexes = [];
+        const _indexes: number[] = [];
         from = from || Math.max(to - LIMIT, 0);
         for (let i = to - 1; i >= from; i--) {
           _indexes.push(i);
@@ -1057,7 +1066,7 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
       };
 
       try {
-        const [serverIndexes, lastIndexes] = await Promise.all([fetchIndexesFromServer(), fetchLastIndexes()]);
+        const [serverIndexes, lastIndexes]: any = await Promise.all([fetchIndexesFromServer(), fetchLastIndexes()]);
         const [swapOrders = [], increaseOrders = [], decreaseOrders = []] = await Promise.all([
           getOrders("getSwapOrders", serverIndexes.swap, lastIndexes.swap, parseSwapOrdersData),
           getOrders("getIncreaseOrders", serverIndexes.increase, lastIndexes.increase, parseIncreaseOrdersData),
@@ -1065,6 +1074,7 @@ export function useAccountOrders(flagOrdersEnabled, overrideAccount) {
         ]);
         return [...swapOrders, ...increaseOrders, ...decreaseOrders];
       } catch (ex) {
+        // eslint-disable-next-line no-console
         console.error(ex);
       }
     },
@@ -1097,7 +1107,7 @@ export function getTotalVolumeSum(volumes) {
     return;
   }
 
-  let volume = bigNumberify(0);
+  let volume = bigNumberify(0)!;
 
   for (let i = 0; i < volumes.length; i++) {
     volume = volume.add(volumes[i].data.volume);
@@ -1231,7 +1241,7 @@ export function getProcessedData(
     return {};
   }
 
-  const data = {};
+  const data: any = {};
 
   data.gmxBalance = balanceData.gmx;
   data.gmxBalanceUsd = balanceData.gmx.mul(gmxPrice).div(expandDecimals(1, 18));
@@ -1402,22 +1412,22 @@ export function getTradePageUrl() {
 }
 
 export function importImage(name) {
-  let tokenImage = null;
+  let tokenImage: { default: string } | null = null;
+
   try {
     tokenImage = require("img/" + name);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(error);
   }
-  return tokenImage;
+
+  return tokenImage?.default;
 }
 
 export function getTwitterIntentURL(text, url = "", hashtag = "") {
   let finalURL = "https://twitter.com/intent/tweet?text=";
   if (text.length > 0) {
-    finalURL += encodeURIComponent(text.replace(/[\r\n]+/g, " "))
-      .replace(/\*%7C/g, "*|URL:")
-      .replace(/%7C\*/g, "|*");
-
+    finalURL += Array.isArray(text) ? text.map((t) => encodeURIComponent(t)).join("%0a%0a") : encodeURIComponent(text);
     if (hashtag.length > 0) {
       finalURL += "&hashtags=" + encodeURIComponent(hashtag.replace(/#/g, ""));
     }
@@ -1430,7 +1440,9 @@ export function getTwitterIntentURL(text, url = "", hashtag = "") {
 
 export function getPositionForOrder(account, order, positionsMap) {
   const key = getPositionKey(account, order.collateralToken, order.indexToken, order.isLong);
+
   const position = positionsMap[key];
+
   return position && position.size && position.size.gt(0) ? position : null;
 }
 
@@ -1442,18 +1454,18 @@ export function getOrderError(account, order, positionsMap, position) {
   const positionForOrder = position ? position : getPositionForOrder(account, order, positionsMap);
 
   if (!positionForOrder) {
-    return "No open position, order cannot be executed unless a position is opened";
+    return t`No open position, order cannot be executed unless a position is opened`;
   }
   if (positionForOrder.size.lt(order.sizeDelta)) {
-    return "Order size is bigger than position, will only be executable if position increases";
+    return t`Order size is bigger than position, will only be executable if position increases`;
   }
 
   if (positionForOrder.size.gt(order.sizeDelta)) {
     if (positionForOrder.size.sub(order.sizeDelta).lt(positionForOrder.collateral.sub(order.collateralDelta))) {
-      return "Order cannot be executed as it would reduce the position's leverage below 1";
+      return t`Order cannot be executed as it would reduce the position's leverage below 1`;
     }
     if (positionForOrder.size.sub(order.sizeDelta).lt(expandDecimals(5, USD_DECIMALS))) {
-      return "Order cannot be executed as the remaining position would be smaller than $5.00";
+      return t`Order cannot be executed as the remaining position would be smaller than $5.00`;
     }
   }
 }

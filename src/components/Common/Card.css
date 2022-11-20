@@ -5,7 +5,7 @@
 }
 
 .card-header {
-  font-size: 1.6rem;
+  font-size: var(--font-md);
   line-height: 2.1rem;
   font-weight: normal;
   letter-spacing: 0px;

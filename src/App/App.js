@@ -96,6 +96,7 @@ import {
   useInactiveListener,
 } from "lib/wallets";
 import { useChainId } from "lib/chains";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -118,6 +119,7 @@ const Zoom = cssTransition({
 const arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
 
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
+avaxWsProvider.pollingInterval = 2000;
 
 function getWsProvider(active, chainId) {
   if (!active) {
@@ -202,15 +204,16 @@ function FullApp() {
           <Trans>MetaMask not detected.</Trans>
           <br />
           <br />
-          <a href="https://metamask.io" target="_blank" rel="noopener noreferrer">
-            <Trans>Install MetaMask</Trans>
-          </a>
           {userOnMobileDevice ? (
-            <Trans>, and use GMX with its built-in browser</Trans>
+            <Trans>
+              <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink>, and use GMX with its built-in
+              browser
+            </Trans>
           ) : (
-            <Trans> to start using GMX</Trans>
+            <Trans>
+              <ExternalLink href="https://metamask.io">Install MetaMask</ExternalLink> to start using GMX
+            </Trans>
           )}
-          .
         </div>
       );
       return false;
@@ -224,15 +227,17 @@ function FullApp() {
           <Trans>Coinbase Wallet not detected.</Trans>
           <br />
           <br />
-          <a href="https://www.coinbase.com/wallet" target="_blank" rel="noopener noreferrer">
-            <Trans>Install Coinbase Wallet</Trans>
-          </a>
           {userOnMobileDevice ? (
-            <Trans>, and use GMX with its built-in browser</Trans>
+            <Trans>
+              <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink>, and use GMX
+              with its built-in browser
+            </Trans>
           ) : (
-            <Trans> to start using GMX</Trans>
+            <Trans>
+              <ExternalLink href="https://www.coinbase.com/wallet">Install Coinbase Wallet</ExternalLink> to start using
+              GMX
+            </Trans>
           )}
-          .
         </div>
       );
       return false;
@@ -250,8 +255,7 @@ function FullApp() {
   const [walletModalVisible, setWalletModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
-  const [redirectPopupTimestamp, setRedirectPopupTimestamp, removeRedirectPopupTimestamp] =
-    useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
+  const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
   const [selectedToPage, setSelectedToPage] = useState("");
   const connectWallet = () => setWalletModalVisible(true);
 
@@ -343,10 +347,9 @@ function FullApp() {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.error(
               <div>
-                <Trans>Txn failed.</Trans>{" "}
-                <a href={txUrl} target="_blank" rel="noopener noreferrer">
-                  <Trans>View</Trans>
-                </a>
+                <Trans>
+                  Txn failed. <ExternalLink href={txUrl}>View</ExternalLink>
+                </Trans>
                 <br />
               </div>
             );
@@ -356,9 +359,9 @@ function FullApp() {
             helperToast.success(
               <div>
                 {pendingTxn.message}{" "}
-                <a href={txUrl} target="_blank" rel="noopener noreferrer">
+                <ExternalLink href={txUrl}>
                   <Trans>View</Trans>
-                </a>
+                </ExternalLink>
                 <br />
               </div>
             );
@@ -559,13 +562,12 @@ function FullApp() {
         setRedirectPopupTimestamp={setRedirectPopupTimestamp}
         setShouldHideRedirectModal={setShouldHideRedirectModal}
         shouldHideRedirectModal={shouldHideRedirectModal}
-        removeRedirectPopupTimestamp={removeRedirectPopupTimestamp}
       />
       <Modal
         className="Connect-wallet-modal"
         isVisible={walletModalVisible}
         setIsVisible={setWalletModalVisible}
-        label="Connect Wallet"
+        label={t`Connect Wallet`}
       >
         <button className="Wallet-btn MetaMask-btn" onClick={activateMetaMask}>
           <img src={metamaskImg} alt="MetaMask" />
@@ -590,7 +592,7 @@ function FullApp() {
         className="App-settings"
         isVisible={isSettingsVisible}
         setIsVisible={setIsSettingsVisible}
-        label="Settings"
+        label={t`Settings`}
       >
         <div className="App-settings-row">
           <div>

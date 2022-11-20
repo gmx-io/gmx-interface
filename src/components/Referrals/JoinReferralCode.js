@@ -100,6 +100,7 @@ export function ReferralCodeForm({
         setReferralCode("");
       }
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(error);
     } finally {
       setIsSubmitting(false);

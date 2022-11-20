@@ -7,15 +7,23 @@ import avalancheIcon from "img/ic_avalanche_16.svg";
 import metamaskIcon from "img/ic_metamask_16.svg";
 import { useWeb3React } from "@web3-react/core";
 
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ICONLINKS, PLATFORM_TOKENS } from "config/tokens";
 import { addTokenToMetamask } from "lib/wallets";
 import { useChainId } from "lib/chains";
+import { ARBITRUM } from "config/chains";
+import { Token } from "domain/tokens";
 
-function AssetDropdown({ assetSymbol, assetInfo }) {
+type Props = {
+  assetSymbol: string;
+  assetInfo?: Token;
+};
+
+function AssetDropdown({ assetSymbol, assetInfo }: Props) {
   const { active } = useWeb3React();
   const { chainId } = useChainId();
-  let { coingecko, arbitrum, avalanche } = ICONLINKS[chainId][assetSymbol] || {};
+  let { coingecko, arbitrum, avalanche, reserves } = ICONLINKS[chainId][assetSymbol] || {};
   const unavailableTokenSymbols =
     {
       42161: ["ETH"],
@@ -30,33 +38,45 @@ function AssetDropdown({ assetSymbol, assetInfo }) {
       <Menu.Items as="div" className="asset-menu-items">
         <Menu.Item>
           <>
+            {reserves && assetSymbol === "GLP" && (
+              <ExternalLink href={reserves} className="asset-item">
+                <img src={chainId === ARBITRUM ? arbitrumIcon : avalancheIcon} alt="Proof of Reserves" />
+                <p>
+                  <Trans>Proof of Reserves</Trans>
+                </p>
+              </ExternalLink>
+            )}
+          </>
+        </Menu.Item>
+        <Menu.Item>
+          <>
             {coingecko && (
-              <a href={coingecko} className="asset-item" target="_blank" rel="noopener noreferrer">
+              <ExternalLink href={coingecko} className="asset-item">
                 <img src={coingeckoIcon} alt="Open in Coingecko" />
                 <p>
                   <Trans>Open in Coingecko</Trans>
                 </p>
-              </a>
+              </ExternalLink>
             )}
           </>
         </Menu.Item>
         <Menu.Item>
           <>
             {arbitrum && (
-              <a href={arbitrum} className="asset-item" target="_blank" rel="noopener noreferrer">
+              <ExternalLink href={arbitrum} className="asset-item">
                 <img src={arbitrumIcon} alt="Open in explorer" />
                 <p>
                   <Trans>Open in Explorer</Trans>
                 </p>
-              </a>
+              </ExternalLink>
             )}
             {avalanche && (
-              <a target="_blank" rel="noopener noreferrer" href={avalanche} className="asset-item">
+              <ExternalLink href={avalanche} className="asset-item">
                 <img src={avalancheIcon} alt="Open in explorer" />
                 <p>
                   <Trans>Open in Explorer</Trans>
                 </p>
-              </a>
+              </ExternalLink>
             )}
           </>
         </Menu.Item>
@@ -72,7 +92,7 @@ function AssetDropdown({ assetSymbol, assetInfo }) {
                 }}
                 className="asset-item"
               >
-                <img src={metamaskIcon} alt="Add to Metamask" />
+                <img src={metamaskIcon} alt={t`Add to Metamask`} />
                 <p>
                   <Trans>Add to Metamask</Trans>
                 </p>
