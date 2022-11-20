@@ -93,6 +93,7 @@ import {
   hasCoinBaseWalletExtension,
   hasMetaMaskWalletExtension,
   useEagerConnect,
+  useHandleUnsupportedNetwork,
   useInactiveListener,
 } from "lib/wallets";
 import { useChainId } from "lib/chains";
@@ -150,6 +151,8 @@ function FullApp() {
   }, [activatingConnector, connector, chainId]);
   const triedEager = useEagerConnect(setActivatingConnector);
   useInactiveListener(!triedEager || !!activatingConnector);
+
+  useHandleUnsupportedNetwork();
 
   const query = useRouteQuery();
 
