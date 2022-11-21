@@ -181,7 +181,9 @@ export default function PositionEditor(props) {
         increaseCollateral: isDeposit,
       });
 
-      nextCollateral = position.collateralAfterFee.add(collateralDelta);
+      nextCollateral = isDeposit
+        ? position.collateralAfterFee.add(collateralDelta)
+        : position.collateralAfterFee.sub(collateralDelta);
     }
   }
 
@@ -610,7 +612,7 @@ export default function PositionEditor(props) {
                           }
                           position="right-top"
                           renderContent={() => (
-                            <Trans>A pending borrow fee will be deducted during the transaction.</Trans>
+                            <Trans>The pending borrow fee will be charged on this transaction.</Trans>
                           )}
                         />
                       </div>
