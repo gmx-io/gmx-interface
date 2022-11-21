@@ -6,7 +6,6 @@ import { ethers } from "ethers";
 import cx from "classnames";
 
 import {
-  FUNDING_RATE_PRECISION,
   BASIS_POINTS_DIVISOR,
   MARGIN_FEE_BASIS_POINTS,
   SWAP,
