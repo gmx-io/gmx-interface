@@ -24,6 +24,14 @@ import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 
+function getOrderTitle(order, indexTokenSymbol) {
+  const orderTypeText = order.type === INCREASE ? t`Increase` : t`Decrease`;
+  const longShortText = order.isLong ? t`Long` : t`Short`;
+  const sizeDeltaText = formatAmount(order.sizeDelta, USD_DECIMALS, 2, true);
+
+  return `${orderTypeText} ${indexTokenSymbol} ${longShortText} by $${sizeDeltaText}`;
+}
+
 export default function OrdersList(props) {
   const {
     account,
@@ -229,10 +237,8 @@ export default function OrdersList(props) {
 
       const error = getOrderError(account, order, positionsMap);
       const orderId = `${order.type}-${order.index}`;
-      const orderTitle = `${order.type === INCREASE ? t`Increase` : t`Decrease`} ${indexTokenSymbol} ${
-        order.isLong ? t`Long` : t`Short`
-      }
-      by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}`;
+      const orderTitle = getOrderTitle(order, indexTokenSymbol);
+
       const orderText = (
         <>
           {error ? (
@@ -409,9 +415,8 @@ export default function OrdersList(props) {
       const collateralUSD = getUsd(order.purchaseTokenAmount, order.purchaseToken, true, infoTokens);
 
       const error = getOrderError(account, order, positionsMap);
-      const orderTitle = `${order.type === INCREASE ? t`Increase` : t`Decrease`} ${indexTokenSymbol} ${
-        order.isLong ? t`Long` : t`Short`
-      } by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}`;
+      const orderTitle = getOrderTitle(order, indexTokenSymbol);
+
       return (
         <div key={`${order.isLong}-${order.type}-${order.index}`} className="App-card">
           <div className="App-card-title-small">
