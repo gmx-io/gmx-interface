@@ -81,10 +81,6 @@ msgstr "<0>This will withdraw and unreserve all tokens as well as pause vesting.
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
 msgstr "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
 
-#: src/components/Exchange/PositionEditor.js
-#~ msgid "A pending borrow fee will be deducted during the transaction."
-#~ msgstr "A pending borrow fee will be deducted during the transaction."
-
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "A snapshot of the USD value of your {0} collateral is taken when the position is opened."

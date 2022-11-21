@@ -81,10 +81,6 @@ msgstr "<0>これによりすべてのトークンは引き出され、リザー
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
 msgstr ""
 
-#: src/components/Exchange/PositionEditor.js
-#~ msgid "A pending borrow fee will be deducted during the transaction."
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr ""
