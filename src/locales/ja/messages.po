@@ -185,11 +185,6 @@ msgstr "請求後、最大で{1} {stakingToken} 対 1esGMXトークンの比率�
 msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
 msgstr "請求後7日以内にesGMXトークンは指定のネットワークのあなたのアカウントにエアドロップされます"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
-msgstr ""
-
 #: src/components/ModalViews/RedirectModal.js
 msgid "Agree"
 msgstr ""
@@ -334,10 +329,6 @@ msgstr "選択されたネットワークにて利用可能"
 msgid "Available:"
 msgstr "利用可能"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Avalanche"
-msgstr ""
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
@@ -346,10 +337,6 @@ msgstr "AvalancheでのAPR(実質年利)"
 #: src/pages/Dashboard/DashboardV2.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Avalanche Icon"
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Avax is needed on Avalanche to purchase GMX."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -366,19 +353,9 @@ msgstr "残高"
 msgid "Balance: {0}"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Banxa"
-msgstr ""
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
 msgstr "移転開始"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Binance"
-msgstr ""
 
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
@@ -420,24 +397,8 @@ msgstr "購入"
 msgid "Buy / Sell GLP"
 msgstr "GLPの購入/売却"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy / Transfer AVAX"
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy / Transfer ETH"
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy AVAX"
-msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy AVAX directly to Avalanche or transfer it there."
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy ETH"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -455,15 +416,9 @@ msgstr "GLPを購入"
 msgid "Buy GLP Icon"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
 msgstr "GMXを購入"
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX Bonds"
-msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Traderjoe:"
@@ -1106,10 +1061,6 @@ msgstr ""
 msgid "Download"
 msgstr "ダウンロード"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "ETH is needed on Arbitrum to purchase GMX."
-msgstr ""
-
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "Earn"
@@ -1459,7 +1410,6 @@ msgstr ""
 msgid "GMX Weekly Updates"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
 msgstr ""
@@ -1532,10 +1482,6 @@ msgstr "大きなスリッページ。ともかく交換する"
 #: src/components/Exchange/SwapBox.js
 msgid "High USDG Slippage, Long Anyway"
 msgstr "大きなUSDGスリッページ。ともかくロングする"
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Hop"
-msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "I am aware of the trigger orders"
@@ -2087,11 +2033,6 @@ msgstr ""
 msgid "Multiplier Points APR"
 msgstr "マルチプライヤーポイントのAPR(実質年利)"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Multiswap"
-msgstr ""
-
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Address"
 msgstr ""
@@ -2186,10 +2127,6 @@ msgstr "注文は必ず執行される保証がないことに留意ください
 
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Olympus Pro"
 msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
@@ -2533,11 +2470,6 @@ msgstr ""
 
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Purchase GMX"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -3069,11 +3001,6 @@ msgstr ""
 msgid "Swaps disabled, pending {0} upgrade"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Synapse"
-msgstr ""
-
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
@@ -3240,14 +3167,6 @@ msgstr ""
 #: src/pages/CompleteAccountTransfer/CompleteAccountTransfer.js
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "移転を完了するには、{receiver}のアカウントに接続しなおす必要があります。"
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "To purchase GMX on <0>Arbitrum</0>, please change your network."
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "To purchase GMX on <0>Avalanche</0>, please change your network."
-msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
@@ -3424,18 +3343,10 @@ msgstr ""
 msgid "Transaction was cancelled."
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Transfer AVAX"
-msgstr ""
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
 msgid "Transfer Account"
 msgstr "アカウント移転"
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Transfer ETH"
-msgstr ""
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Transfer NFT"
@@ -3602,10 +3513,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "Useful Links"
 msgstr "有用なリンク"
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees."
-msgstr ""
 
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3825,16 +3732,8 @@ msgstr "あなたは{nativeTokenSymbol}報酬を{0}トークンで稼いでい�
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "You can buy AVAX directly on <0>Avalanche</0> using Banxa:"
-msgstr ""
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can buy AVAX directly on <0>Avalanche</0> using these options:"
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "You can buy ETH directly on <0>Arbitrum</0> using Banxa:"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -3862,11 +3761,6 @@ msgstr "{1} {stakingToken}対1 esGMXの比率で最大{0} esGMXトークンを�
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "You can transfer AVAX to Avalanche using any of the below options."
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "以下のいずれかを使い、ETHをArbitrumへ他のネットワークから送ることができます。"
