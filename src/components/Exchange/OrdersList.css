@@ -1,7 +1,7 @@
 .Orders-list {
   width: 100%;
   background: linear-gradient(45deg, rgba(11, 5, 55, 0.6) 0%, rgba(21, 3, 48, 0.6) 100%);
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
 }
 
 .Orders-list.small {
@@ -54,7 +54,7 @@ table.Orders-list th {
 }
 
 button.Orders-list-action {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   padding: 0;
   border-radius: 3px;
   background: none;

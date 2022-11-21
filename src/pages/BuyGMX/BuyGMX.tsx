@@ -126,7 +126,7 @@ export default function BuyGMX() {
               )}
               <div className="buttons-group">
                 {TRANSFER_EXCHANGES.filter((e) => e.networks.includes(chainId)).map((exchange) => {
-                  const icon = importImage(exchange.icon);
+                  const icon = importImage(exchange.icon) || "";
                   return (
                     <Button key={exchange.name} href={exchange.link} imgSrc={icon}>
                       {exchange.name}
@@ -177,7 +177,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
           </div>
           <div className="buttons-group">
             {DECENTRALISED_AGGRIGATORS.filter((e) => e.networks.includes(chainId)).map((exchange) => {
-              const icon = importImage(exchange.icon);
+              const icon = importImage(exchange.icon) || "";
               const link = exchange.links ? exchange.links[chainId] : exchange.link;
               return (
                 <Button key={exchange.name} imgSrc={icon} href={link}>
@@ -227,7 +227,7 @@ function CentralisedExchanges({ chainId, externalLinks }) {
           </div>
           <div className="buttons-group">
             {CENTRALISED_EXCHANGES.filter((e) => e.networks.includes(chainId)).map((exchange) => {
-              const icon = importImage(exchange.icon);
+              const icon = importImage(exchange.icon) || "";
               return (
                 <Button key={exchange.name} href={exchange.link} imgSrc={icon}>
                   {exchange.name}

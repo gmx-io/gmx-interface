@@ -4,7 +4,14 @@ import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { BsArrowRight } from "react-icons/bs";
 
-import { USD_DECIMALS, BASIS_POINTS_DIVISOR, DEPOSIT_FEE, DUST_BNB, getLiquidationPrice } from "lib/legacy";
+import {
+  USD_DECIMALS,
+  BASIS_POINTS_DIVISOR,
+  DEPOSIT_FEE,
+  DUST_BNB,
+  getLiquidationPrice,
+  MAX_ALLOWED_LEVERAGE,
+} from "lib/legacy";
 import { getContract } from "config/contracts";
 import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
@@ -204,8 +211,8 @@ export default function PositionEditor(props) {
       return t`Min leverage: 1.1x`;
     }
 
-    if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.gt(30.5 * BASIS_POINTS_DIVISOR)) {
-      return t`Max leverage: 30x`;
+    if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
+      return t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
     }
   };
 

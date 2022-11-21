@@ -68,7 +68,7 @@ async function getChartPricesFromStats(chainId, symbol, period) {
   const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`;
 
   const TIMEOUT = 5000;
-  const res = await new Promise(async (resolve, reject) => {
+  const res: Response = await new Promise(async (resolve, reject) => {
     let done = false;
     setTimeout(() => {
       done = true;
@@ -126,7 +126,7 @@ function getCandlesFromPrices(prices, period) {
     return [];
   }
 
-  const candles = [];
+  const candles: any[] = [];
   const first = prices[0];
   let prevTsGroup = Math.floor(first[0] / periodTime) * periodTime;
   let prevPrice = first[1];
@@ -170,7 +170,7 @@ function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
 
   const PER_CHUNK = 1000;
   const CHUNKS_TOTAL = 6;
-  const requests = [];
+  const requests: any[] = [];
   for (let i = 0; i < CHUNKS_TOTAL; i++) {
     const query = gql(`{
       rounds(
@@ -189,7 +189,7 @@ function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
 
   return Promise.all(requests)
     .then((chunks) => {
-      let prices = [];
+      let prices: any[] = [];
       const uniqTs = new Set();
       chunks.forEach((chunk) => {
         chunk.data.rounds.forEach((item) => {
@@ -207,6 +207,7 @@ function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
       return prices;
     })
     .catch((err) => {
+      // eslint-disable-next-line no-console
       console.error(err);
     });
 }
@@ -218,12 +219,16 @@ export function useChartPrices(chainId, symbol, isStable, period, currentAverage
       try {
         return await getChartPricesFromStats(chainId, symbol, period);
       } catch (ex) {
+        // eslint-disable-next-line no-console
         console.warn(ex);
+        // eslint-disable-next-line no-console
         console.warn("Switching to graph chainlink data");
         try {
           return await getChainlinkChartPricesFromGraph(symbol, period);
         } catch (ex2) {
+          // eslint-disable-next-line no-console
           console.warn("getChainlinkChartPricesFromGraph failed");
+          // eslint-disable-next-line no-console
           console.warn(ex2);
           return [];
         }
@@ -279,7 +284,7 @@ function appendCurrentAveragePrice(prices, currentAveragePrice, period) {
 function getStablePriceData(period) {
   const periodSeconds = CHART_PERIODS[period];
   const now = Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds;
-  let priceData = [];
+  let priceData: any = [];
   for (let i = 100; i > 0; i--) {
     priceData.push({
       time: now - i * periodSeconds,

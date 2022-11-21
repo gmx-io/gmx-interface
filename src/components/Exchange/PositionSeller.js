@@ -24,6 +24,7 @@ import {
   getNextToAmount,
   USDG_DECIMALS,
   adjustForDecimals,
+  MAX_ALLOWED_LEVERAGE,
 } from "lib/legacy";
 import { ARBITRUM, getChainName, getConstant, IS_NETWORK_DISABLED } from "config/chains";
 import { createDecreaseOrder, useHasOutdatedUi } from "domain/legacy";
@@ -153,7 +154,7 @@ export default function PositionSeller(props) {
 
   const [savedRecieveTokenAddress, setSavedRecieveTokenAddress] = useLocalStorageByChainId(
     chainId,
-    `${CLOSE_POSITION_RECEIVE_TOKEN_KEY}-${position?.indexToken?.symbol}-${position.isLong ? "long" : "short"}`
+    `${CLOSE_POSITION_RECEIVE_TOKEN_KEY}-${position.indexToken.symbol}-${position?.isLong ? "long" : "short"}`
   );
 
   const [swapToToken, setSwapToToken] = useState(() =>
@@ -380,7 +381,8 @@ export default function PositionSeller(props) {
       }
     }
 
-    if (orderOption === STOP) {
+    // For Shorts trigger orders the collateral is a stable coin, it should not depend on the triggerPrice
+    if (orderOption === STOP && position.isLong) {
       convertedReceiveAmount = getTokenAmountFromUsd(infoTokens, receiveToken.address, receiveAmount, {
         overridePrice: triggerPriceUsd,
       });
@@ -545,8 +547,8 @@ export default function PositionSeller(props) {
       return t`Min leverage: 1.1x`;
     }
 
-    if (nextLeverage && nextLeverage.gt(30.5 * BASIS_POINTS_DIVISOR)) {
-      return t`Max leverage: 30.5xt`;
+    if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
+      return t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
     }
 
     if (hasPendingProfit && orderOption !== STOP && !isProfitWarningAccepted) {
@@ -834,6 +836,11 @@ export default function PositionSeller(props) {
   }
 
   const shouldShowExistingOrderWarning = false;
+
+  if (orderOption === STOP && !triggerPriceUsd) {
+    receiveAmount = bigNumberify(0);
+    convertedReceiveAmount = bigNumberify(0);
+  }
 
   return (
     <div className="PositionEditor">
@@ -1160,7 +1167,8 @@ export default function PositionSeller(props) {
 
               {!isSwapAllowed && receiveToken && (
                 <div className="align-right PositionSelector-selected-receive-token">
-                  {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}&nbsp;{receiveToken.symbol} ($
+                  {formatAmount(convertedReceiveAmount, receiveToken.decimals, 4, true)}
+                  &nbsp;{receiveToken.symbol} ($
                   {formatAmount(receiveAmount, USD_DECIMALS, 2, true)})
                 </div>
               )}

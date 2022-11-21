@@ -144,6 +144,7 @@ export function AffiliateCodeForm({
           setReferralCode("");
         }
       } catch (err) {
+        // eslint-disable-next-line no-console
         console.error(err);
       } finally {
         setIsProcessing(false);

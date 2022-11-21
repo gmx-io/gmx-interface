@@ -5,6 +5,7 @@ import logoImg from "img/ic_gmx_footer.svg";
 import { NavLink } from "react-router-dom";
 import { isHomeSite, getAppBaseUrl, shouldShowRedirectModal } from "lib/legacy";
 import { FOOTER_LINKS, SOCIAL_LINKS } from "./constants";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 type Props = { showRedirectModal?: (to: string) => void; redirectPopupTimestamp?: () => void };
 
@@ -20,15 +21,9 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
         <div className="Footer-social-link-block">
           {SOCIAL_LINKS.map((platform) => {
             return (
-              <a
-                key={platform.name}
-                className="App-social-link"
-                href={platform.link}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <ExternalLink key={platform.name} className="App-social-link" href={platform.link}>
                 <img src={platform.icon} alt={platform.name} />
-              </a>
+              </ExternalLink>
             );
           })}
         </div>
@@ -36,9 +31,9 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Pr
           {FOOTER_LINKS[isHome ? "home" : "app"].map(({ external, text, link, isAppLink }) => {
             if (external) {
               return (
-                <a key={text} target="_blank" href={link} className="Footer-link" rel="noopener noreferrer">
+                <ExternalLink key={text} href={link} className="Footer-link">
                   {text}
-                </a>
+                </ExternalLink>
               );
             }
             if (isAppLink) {

@@ -14,11 +14,6 @@
   color: #a9a9b0;
 }
 
-.BuyGMXGLP-description a {
-  text-decoration: none;
-  position: relative;
-}
-
 .bridge-options {
   display: grid;
   grid-gap: 0.8rem;
@@ -175,7 +170,7 @@
 
 @media (max-width: 400px) {
   .BuyGMXGLP-description {
-    font-size: 1.5rem;
+    font-size: var(--font-base);
     line-height: 2rem;
   }
   .buttons-group {
