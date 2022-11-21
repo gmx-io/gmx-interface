@@ -1,36 +1,37 @@
 import { ARBITRUM, AVALANCHE } from "config/chains";
+import { getContract } from "config/contracts";
+
+const ARBITRUM_GMX = getContract(ARBITRUM, "GMX");
+const AVALANCHE_GMX = getContract(AVALANCHE, "GMX");
 
 type Exchange = {
   name: string;
   icon: string;
   networks: number[];
-  link: string;
+  link?: string;
+  links?: { [ARBITRUM]: string; [AVALANCHE]: string };
 };
 
 export const EXTERNAL_LINKS = {
-  bungee: {
-    [ARBITRUM]:
-      "https://multitx.bungee.exchange/?toChainId=42161&toTokenAddress=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
-    [AVALANCHE]:
-      "https://multitx.bungee.exchange/?toChainId=43114&toTokenAddress=0x62edc0692bd897d2295872a9ffcac5425011c661",
-  },
-  banxa: {
-    [AVALANCHE]: "https://gmx.banxa.com/?coinType=AVAX&fiatType=USD&fiatAmount=500&blockchain=avalanche",
-    [ARBITRUM]: "https://gmx.banxa.com/?coinType=ETH&fiatType=USD&fiatAmount=500&blockchain=arbitrum",
-  },
-  o3: { [ARBITRUM]: "https://o3swap.com/", [AVALANCHE]: "https://o3swap.com/" },
-  buyGmx: {
-    banxa: {
-      [ARBITRUM]: "https://gmx.banxa.com/?coinType=GMX&fiatType=USD&fiatAmount=500&blockchain=arbitrum",
-      [AVALANCHE]: "https://gmx.banxa.com/?coinType=GMX&fiatType=USD&fiatAmount=500&blockchain=avalanche",
-    },
-    main: {
-      [ARBITRUM]:
-        "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
-      [AVALANCHE]: "https://traderjoexyz.com/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661#/",
+  [ARBITRUM]: {
+    bungee: `https://multitx.bungee.exchange/?toChainId=42161&toTokenAddress=${ARBITRUM_GMX}`,
+    banxa: "https://gmx.banxa.com/?coinType=ETH&fiatType=USD&fiatAmount=500&blockchain=arbitrum",
+    o3: "https://o3swap.com/",
+    networkWebsite: "https://arbitrum.io/",
+    buyGmx: {
+      banxa: "https://gmx.banxa.com/?coinType=GMX&fiatType=USD&fiatAmount=500&blockchain=arbitrum",
+      uniswap: `https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=${ARBITRUM_GMX}`,
     },
   },
-  nativeNetwork: { [ARBITRUM]: "https://arbitrum.io/", [AVALANCHE]: "https://www.avax.network/" },
+  [AVALANCHE]: {
+    bungee: `https://multitx.bungee.exchange/?toChainId=43114&toTokenAddress=${AVALANCHE_GMX}`,
+    banxa: "https://gmx.banxa.com/?coinType=AVAX&fiatType=USD&fiatAmount=500&blockchain=avalanche",
+    networkWebsite: "https://www.avax.network/",
+    buyGmx: {
+      banxa: "https://gmx.banxa.com/?coinType=GMX&fiatType=USD&fiatAmount=500&blockchain=avalanche",
+      traderjoe: `https://traderjoexyz.com/trade?outputCurrency=${AVALANCHE_GMX}`,
+    },
+  },
 };
 
 export const TRANSFER_EXCHANGES: Exchange[] = [
@@ -121,37 +122,52 @@ export const DECENTRALISED_AGGRIGATORS: Exchange[] = [
   {
     name: "1inch",
     icon: "ic_1inch.svg",
-    link: "https://app.1inch.io/",
+    links: {
+      [ARBITRUM]: "https://app.1inch.io/#/42161/unified/swap/ETH/GMX",
+      [AVALANCHE]: "https://app.1inch.io/#/43114/unified/swap/AVAX/GMX",
+    },
     networks: [ARBITRUM, AVALANCHE],
   },
   {
     name: "Matcha",
     icon: "ic_matcha.png",
-    link: "https://www.matcha.xyz/",
+    links: {
+      [ARBITRUM]: `https://www.matcha.xyz/markets/42161/${ARBITRUM_GMX}`,
+      [AVALANCHE]: `https://www.matcha.xyz/markets/43114/${AVALANCHE_GMX}`,
+    },
     networks: [ARBITRUM, AVALANCHE],
   },
   {
     name: "Paraswap",
     icon: "ic_paraswap.svg",
-    link: "https://www.paraswap.io/",
+    links: {
+      [ARBITRUM]: "https://app.paraswap.io/#/?network=arbitrum",
+      [AVALANCHE]: "https://app.paraswap.io/#/?network=avalanche",
+    },
     networks: [ARBITRUM, AVALANCHE],
   },
   {
     name: "Firebird",
     icon: "ic_firebird.png",
-    link: "https://firebird.finance/",
+    link: "https://app.firebird.finance/swap",
     networks: [ARBITRUM, AVALANCHE],
   },
   {
     name: "OpenOcean",
     icon: "ic_openocean.svg",
-    link: "https://openocean.finance/",
+    links: {
+      [ARBITRUM]: "https://app.openocean.finance/CLASSIC#/ARBITRUM/ETH/GMX",
+      [AVALANCHE]: "https://app.openocean.finance/CLASSIC#/AVAX/AVAX/GMX",
+    },
     networks: [ARBITRUM, AVALANCHE],
   },
   {
     name: "DODO",
     icon: "ic_dodo.svg",
-    link: "https://dodoex.io/",
+    links: {
+      [ARBITRUM]: `https://app.dodoex.io/?from=ETH&to=${ARBITRUM_GMX}&network=arbitrum`,
+      [AVALANCHE]: `https://app.dodoex.io/?from=AVAX&to=${AVALANCHE_GMX}&network=avalanche`,
+    },
     networks: [ARBITRUM, AVALANCHE],
   },
   {
@@ -163,7 +179,7 @@ export const DECENTRALISED_AGGRIGATORS: Exchange[] = [
   {
     name: "Slingshot",
     icon: "ic_slingshot.svg",
-    link: "https://slingshot.finance/",
+    link: "https://app.slingshot.finance/swap/ETH",
     networks: [ARBITRUM],
   },
   {
