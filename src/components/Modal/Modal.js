@@ -41,7 +41,7 @@ export default function Modal(props) {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          className={cx("Modal", className)}
+          className={cx("Modal Modal-scrollable", className)}
           style={{ zIndex }}
           initial="hidden"
           animate="visible"
