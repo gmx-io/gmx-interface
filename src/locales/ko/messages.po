@@ -82,8 +82,8 @@ msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
-msgid "A pending borrow fee will be deducted during the transaction."
-msgstr ""
+#~ msgid "A pending borrow fee will be deducted during the transaction."
+#~ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
@@ -3104,6 +3104,10 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "The pending borrow fee will be charged on this transaction."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js

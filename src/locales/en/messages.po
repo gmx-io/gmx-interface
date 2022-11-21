@@ -82,8 +82,8 @@ msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add
 msgstr "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
 
 #: src/components/Exchange/PositionEditor.js
-msgid "A pending borrow fee will be deducted during the transaction."
-msgstr "A pending borrow fee will be deducted during the transaction."
+#~ msgid "A pending borrow fee will be deducted during the transaction."
+#~ msgstr "A pending borrow fee will be deducted during the transaction."
 
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
@@ -3108,6 +3108,10 @@ msgstr "The mark price has changed, consider increasing your Allowed Slippage by
 #: src/components/Exchange/ConfirmationBox.js
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
 msgstr "The order will only execute if the price conditions are met and there is sufficient liquidity"
+
+#: src/components/Exchange/PositionEditor.js
+msgid "The pending borrow fee will be charged on this transaction."
+msgstr "The pending borrow fee will be charged on this transaction."
 
 #: src/components/Exchange/SwapBox.js
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
