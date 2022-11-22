@@ -10,7 +10,7 @@ import Pagination from "components/Pagination/Pagination";
 
 export function IndividualLeaderboard() {
   const { chainId } = useChainId();
-  const perPage = 10;
+  const perPage = 15;
   const [page, setPage] = useState(1);
   const { data: stats, loading } = useIndividualLeaderboard(chainId, "total");
   const [search, setSearch] = useState("");
@@ -60,13 +60,10 @@ export function IndividualLeaderboard() {
               <Trans>Address</Trans>
             </th>
             <th>
-              <Trans>PnL</Trans>
-            </th>
-            <th className="text-center">
-              <Trans>Win / Loss</Trans>
+              <Trans>PnL ($)</Trans>
             </th>
             <th className="text-right">
-              <Trans>Open Positions</Trans>
+              <Trans>Win / Loss</Trans>
             </th>
           </tr>
           {loading && (
@@ -87,7 +84,6 @@ export function IndividualLeaderboard() {
               <td className="text-center">
                 {stat.winCount} / {stat.lossCount}
               </td>
-              <td className="text-right">{stat.openPositions}</td>
             </tr>
           ))}
         </tbody>

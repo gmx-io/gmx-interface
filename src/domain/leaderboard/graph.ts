@@ -13,3 +13,16 @@ export function getGraphClient(chainId) {
     cache: new InMemoryCache(),
   });
 }
+
+export function getNissohGraphClient(chainId) {
+  const graphUrl = "https://api.thegraph.com/subgraphs/name/nissoh/gmx-arbitrum";
+
+  if (!graphUrl) {
+    throw new Error("Unsupported chain " + chainId);
+  }
+
+  return new ApolloClient({
+    uri: graphUrl,
+    cache: new InMemoryCache(),
+  });
+}

@@ -1,13 +1,13 @@
-// import { gql } from "@apollo/client";
+import { gql } from "@apollo/client";
+import { BigNumber } from "ethers";
 import { useState } from "react";
 import useSWR from "swr";
-// import { getGraphClient } from "./graph";
+import { getGraphClient, getNissohGraphClient } from "./graph";
 
 export type Stat = {
   rank: number;
   account: string;
   realizedPnl: string;
-  openPositions: number;
   winCount: number;
   lossCount: number;
 };
@@ -16,73 +16,87 @@ export default function useIndividualLeaderboard(chainId, period) {
   const [data, setData] = useState<Stat[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // const query = gql`
-  //   query ($period: String!, $timestamp: Int!, $skip: Int!) {
-  //     accountStats (
-  //       first: 1000
-  //       skip: $skip
-  //       where: {
-  //         period: $period,
-  //         timestamp: $timestamp
-  //       }
-  //     ) {
-  //       account { address }
-  //       realizedPnl
-  //       positions { id }
-  //     }
-  //   }
-  // `
-
-  useSWR([chainId, period], async () => {
-    // const stats: any = []
-
-    // for (let page = 0;; page++) {
-    //   const { data } = await getGraphClient(chainId).query({ query, variables: {
-    //     skip: page * 1000,
-    //     period: period,
-    //     timestamp: 0
-    //   }})
-
-    //   stats.push(...data.accountStats)
-
-    //   if (data.accountStats.length === 1000) {
-    //     break
-    //   }
-    // }
-
-    const dummyStat: any = {
-      account: { address: "0x0000000000000000000000000000000000000000" },
-      realizedPnl: "1000000000000000000000000000000000",
-      positions: [{ id: 1 }, { id: 2 }, { id: 3 }],
-      winCount: Math.round(Math.random() * 100),
-      lossCount: Math.round(Math.random() * 100),
-    };
-
-    const stats: any = [];
-    for (let i = 0; i < 2000; i++) {
-      stats.push(dummyStat);
+  const query = gql`
+    query ($timestamp: Int!, $skip: Int!) {
+      trades(first: 1000, skip: $skip, where: { timestamp_gte: $timestamp }) {
+        account
+        realisedPnl
+      }
     }
+  `;
 
-    const data = { accountStats: stats };
+  useSWR(
+    [chainId],
+    () => {
+      async function main() {
+        const trades: any = [];
 
-    const result: Stat[] = [];
+        for (let page = 0; ; page++) {
+          const { data } = await getNissohGraphClient(chainId).query({
+            query,
+            variables: {
+              skip: page * 1000,
+              timestamp: Math.round(Date.now() / 1000) - 86400,
+            },
+          });
 
-    for (let i = 0; i < data.accountStats.length; i++) {
-      const stat = data.accountStats[i];
+          trades.push(...data.trades);
 
-      result.push({
-        rank: i + 1,
-        account: stat.account.address,
-        realizedPnl: stat.realizedPnl,
-        openPositions: stat.positions.length,
-        winCount: stat.winCount,
-        lossCount: stat.lossCount,
-      });
+          if (data.trades.length < 1000) {
+            break;
+          }
+        }
+
+        let tmpTraders: any = {};
+        for (const trade of trades) {
+          if (!tmpTraders[trade.account]) {
+            tmpTraders[trade.account] = {
+              account: trade.account,
+              realizedPnl: BigNumber.from(0),
+              winCount: 0,
+              lossCount: 0,
+            };
+          }
+
+          if (BigNumber.from(trade.realisedPnl).gt(0)) {
+            tmpTraders[trade.account].winCount++;
+          } else {
+            tmpTraders[trade.account].lossCount++;
+          }
+
+          tmpTraders[trade.account].realizedPnl = tmpTraders[trade.account].realizedPnl.add(trade.realisedPnl);
+        }
+
+        tmpTraders = Object.values(tmpTraders);
+
+        tmpTraders.sort((a, b) => (a.realizedPnl.gt(b.realizedPnl) ? -1 : 1));
+
+        const traders: Stat[] = [];
+        for (const i in tmpTraders) {
+          const tmpTrader = tmpTraders[i];
+
+          traders.push({
+            rank: Number(i) + 1,
+            account: tmpTrader.account,
+            realizedPnl: tmpTrader.realizedPnl,
+            winCount: tmpTrader.winCount,
+            lossCount: tmpTrader.lossCount,
+          });
+        }
+
+        setData(traders);
+        setLoading(false);
+      }
+
+      main();
+    },
+    {
+      refreshWhenHidden: false,
+      refreshWhenOffline: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     }
-
-    setData(result);
-    setLoading(false);
-  });
+  );
 
   return { data, loading };
 }
