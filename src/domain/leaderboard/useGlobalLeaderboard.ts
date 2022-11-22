@@ -64,7 +64,12 @@ export default function useGlobalLeaderboard(chainId, type: "settled" | "open", 
         traders[trade.account].realizedPnl = traders[trade.account].realizedPnl.add(trade.realisedPnl);
       }
 
-      traders = Object.values(traders).sort((a: any, b: any) => (a.realizedPnl.gt(b.realizedPnl) ? -1 : 1));
+      traders = Object.values(traders)
+        .sort((a: any, b: any) => (a.realizedPnl.gt(b.realizedPnl) ? -1 : 1))
+        .map((trader: any, i: number) => {
+          trader.rank = i + 1;
+          return trader;
+        });
 
       setData(traders);
       setLoading(false);

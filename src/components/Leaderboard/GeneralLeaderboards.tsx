@@ -32,7 +32,7 @@ export default function GeneralLeaderboards() {
   };
 
   const pageCount = () => {
-    return Math.ceil(stats.length / perPage);
+    return Math.ceil(filteredStats().length / perPage);
   };
 
   const displayedStats = () => {
