@@ -1,7 +1,15 @@
+import { ReactNode } from "react";
 import Tooltip from "../Tooltip/Tooltip";
 import "./Card.css";
 
-function Card({ title, children, className, tooltipText }) {
+type Props = {
+  title: string;
+  children: ReactNode;
+  className?: string;
+  tooltipText?: string;
+};
+
+function Card({ title, children, className, tooltipText }: Props) {
   return (
     <div className={`card ${className ? className : ""}`}>
       {tooltipText ? (

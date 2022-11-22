@@ -185,11 +185,6 @@ msgstr "申领后，您将能够以{1}比{1}的比例获得最多{0}esGMX的。{
 msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
 msgstr "申领后，esGMX代币将在7天内空投到您所选网络的账户中"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
-msgstr "在你钱包中有了ETH后，将你的网络设置为<0>Arbitrum</0>，然后点击以下按钮："
-
 #: src/components/ModalViews/RedirectModal.js
 msgid "Agree"
 msgstr ""
@@ -334,10 +329,6 @@ msgstr "可在您的首选网络上使用"
 msgid "Available:"
 msgstr "可用的"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Avalanche"
-msgstr "Avalanche"
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
@@ -347,10 +338,6 @@ msgstr "Avalanche年利率"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Avalanche Icon"
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Avax is needed on Avalanche to purchase GMX."
-msgstr "在Avalanche上需要Avax来购买GMX"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
@@ -366,19 +353,9 @@ msgstr "余额"
 msgid "Balance: {0}"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Banxa"
-msgstr "Banxa"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
 msgstr "开始转移"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Binance"
-msgstr "Binance"
 
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
@@ -420,21 +397,13 @@ msgstr "购买"
 msgid "Buy / Sell GLP"
 msgstr "购买/出售GLP"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy / Transfer AVAX"
-msgstr "购买/转移AVAX"
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy AVAX directly to Avalanche or transfer it there."
+msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy / Transfer ETH"
-msgstr "购买/转移ETH"
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy AVAX"
-msgstr "购买AVAX"
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy ETH"
-msgstr "购买ETH"
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy ETH directly to Arbitrum or transfer it there."
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
@@ -447,19 +416,49 @@ msgstr "购买GLP"
 msgid "Buy GLP Icon"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
 msgstr "购买GMX"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX Bonds"
-msgstr "购买GMX债券"
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy GMX from Traderjoe:"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy GMX from Uniswap (make sure to select Arbitrum):"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy GMX from a Decentralized Exchange"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy GMX from centralized exchanges:"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy GMX from centralized services"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy GMX on {0}"
+msgstr ""
 
 #: src/pages/Buy/Buy.js
 msgid "Buy GMX or GLP"
 msgstr "购买GMX或GLP"
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy GMX using Decentralized Exchange Aggregators:"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy GMX using FIAT gateways:"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy GMX using any token from any network:"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buy failed."
@@ -475,6 +474,14 @@ msgstr "在Arbitrum上购买"
 msgid "Buy on Avalanche"
 msgstr "在Avalanche上购买"
 
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy or Transfer AVAX to Avalanche"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy or Transfer ETH to Arbitrum"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "Buy submitted."
 msgstr "送出购买"
@@ -483,6 +490,10 @@ msgstr "送出购买"
 #: src/components/Glp/GlpSwap.js
 msgid "Buy with {0}"
 msgstr "以{0}购买"
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Buy {nativeTokenSymbol}"
+msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "Buy {swapTokenSymbol} on 1inch"
@@ -536,6 +547,10 @@ msgstr "检查下方的 \"节省费用 \"，以获得最低的费用百分比"
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Checking code..."
 msgstr "检查代码..."
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Choose to buy from decentralized or centralized exchanges."
+msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
@@ -1046,10 +1061,6 @@ msgstr ""
 msgid "Download"
 msgstr "下载"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "ETH is needed on Arbitrum to purchase GMX."
-msgstr "在Arbitrum上需使用ETH来购买GMX"
-
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "Earn"
@@ -1399,7 +1410,7 @@ msgstr ""
 msgid "GMX Weekly Updates"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
 msgstr "GMX债券可以在Olympus Pro上购买，可获得折扣，并且有较小的归属期"
 
@@ -1471,10 +1482,6 @@ msgstr "高滑点，继续交易"
 #: src/components/Exchange/SwapBox.js
 msgid "High USDG Slippage, Long Anyway"
 msgstr "高 USDG 滑点，继续做多"
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Hop"
-msgstr "Hop"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "I am aware of the trigger orders"
@@ -1944,8 +1951,8 @@ msgstr ""
 msgid "Max: {maxAmountFormatted}"
 msgstr ""
 
-#: src/components/Footer/Footer.js
-#: src/components/Footer/Footer.js
+#: src/components/Footer/constants.ts
+#: src/components/Footer/constants.ts
 msgid "Media Kit"
 msgstr "多媒体工具"
 
@@ -2025,11 +2032,6 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "Multiplier Points APR"
 msgstr "加乘点数年利率"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Multiswap"
-msgstr "多次交换"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Address"
@@ -2126,10 +2128,6 @@ msgstr "请注意，订单不保证被执行。<0/><1/>可能发生在几种情�
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Olympus Pro"
-msgstr "Olympus Pro"
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -2474,11 +2472,6 @@ msgstr ""
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 msgstr "购买<0>GLP代币</0>，从掉期和杠杆交易中获得{nativeTokenSymbol}费用"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Purchase GMX"
-msgstr "购买GMX"
-
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
 msgstr "购买保险"
@@ -2553,7 +2546,7 @@ msgstr "推荐代码不存在"
 msgid "Referral Codes"
 msgstr ""
 
-#: src/components/Footer/Footer.js
+#: src/components/Footer/constants.ts
 msgid "Referral Terms"
 msgstr "推荐条款"
 
@@ -3008,11 +3001,6 @@ msgstr ""
 msgid "Swaps disabled, pending {0} upgrade"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Synapse"
-msgstr "协同作用"
-
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
 msgid "TOKEN"
@@ -3055,7 +3043,7 @@ msgstr ""
 msgid "Telegram bot for Open Interest on GMX"
 msgstr ""
 
-#: src/components/Footer/Footer.js
+#: src/components/Footer/constants.ts
 msgid "Terms and Conditions"
 msgstr "条款及细则"
 
@@ -3180,13 +3168,9 @@ msgstr ""
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "为了完成转移，你必须将你的连接账户切换到{receiver}"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "To purchase GMX on <0>Arbitrum</0>, please change your network."
-msgstr "要在<0>Arbitrum</0>上购买GMX，请更换你的网络"
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "To purchase GMX on <0>Avalanche</0>, please change your network."
-msgstr "要在<0>Avalanche</0>上购买GMX，请改变你的网络"
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "To reduce fees, select a different asset to pay with."
@@ -3310,6 +3294,10 @@ msgstr ""
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr ""
 
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "TraderJoe"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"
 msgstr "交易者"
@@ -3355,18 +3343,10 @@ msgstr ""
 msgid "Transaction was cancelled."
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Transfer AVAX"
-msgstr "转让AVAX"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
 msgid "Transfer Account"
 msgstr "转移账户"
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Transfer ETH"
-msgstr "转让ETH"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Transfer NFT"
@@ -3391,6 +3371,10 @@ msgstr "转移失败"
 #: src/pages/NftWallet/NftWallet.js
 msgid "Transfer submitted!"
 msgstr "转移送出"
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Transfer {nativeTokenSymbol}"
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Transferring"
@@ -3442,6 +3426,10 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "UTILIZATION"
 msgstr "使用方法"
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "Uniswap"
+msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3525,10 +3513,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 msgid "Useful Links"
 msgstr "实用链接"
-
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees."
-msgstr "使用Avalanche或Synapse桥接，你也可以转移任何其他支持的加密货币，并收到免费的AVAX来支付网络费用"
 
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3748,13 +3732,13 @@ msgstr "你正在用{0}代币赚取{nativeTokenSymbol}奖励。<0/>代币：{amo
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "You can buy AVAX directly on <0>Avalanche</0> using Banxa:"
-msgstr "你可以直接在<0>Avalanche</0>上使用Banxa购买AVAX："
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "You can buy AVAX directly on <0>Avalanche</0> using these options:"
+msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "You can buy ETH directly on <0>Arbitrum</0> using Banxa:"
-msgstr "你可以直接在<0>Arbitrum</0>上使用Banxa购买ETH"
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "You can buy ETH directly on <0>Arbitrum</0> using these options:"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "You can change the \"Collateral In\" token above to find lower fees"
@@ -3773,11 +3757,11 @@ msgstr "你可以在这里查看你的提领历史<0></0>"
 msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
 msgstr "目前，您最多可以授权{0}个esGMX代币，比例为{1}个esGMX。 {stakingToken}对1esGMX"
 
-#: src/pages/BuyGMX/BuyGMX.js
-msgid "You can transfer AVAX to Avalanche using any of the below options."
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.js
+#: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
 msgstr "您可以使用以下任何一种方式将ETH从其他网络转移到Arbitrum："
 
@@ -3908,6 +3892,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "{0, select, true {Long} false {Short}} {1} market selected"
+msgstr ""
+
+#: src/pages/BuyGMX/BuyGMX.tsx
+msgid "{0}"
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
