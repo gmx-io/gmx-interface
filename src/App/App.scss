@@ -791,12 +791,13 @@ a.App-cta,
 button.App-cta {
   color: white;
   text-decoration: none;
-  background: #2d42fc;
-}
-
-a.App-cta:hover,
-button.App-cta:hover:enabled {
-  background-color: var(--primary-btn-hover);
+  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+  &:hover:enabled {
+    background: var(--primary-btn-hover);
+  }
+  &:active:enabled {
+    background: var(--primary-btn-active);
+  }
 }
 
 .App-cta.small {
@@ -847,7 +848,12 @@ button.App-button-option {
 
 a.App-button-option:hover,
 button.App-button-option:hover:enabled {
-  background: #2d42fc;
+  background: var(--primary-btn-hover);
+}
+
+a.App-button-option:active,
+button.App-button-option:active:enabled {
+  background: var(--primary-btn-active);
 }
 
 button.App-button-option:disabled {
