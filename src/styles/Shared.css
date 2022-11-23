@@ -54,6 +54,7 @@ input {
   --dark-blue: #17182c;
   --dark-blue-bg: #16182e;
   --dark-blue-accent: #a0a3c4;
+  --primary-btn-hover: #4f60fc;
   --dark-blue-hover: #808aff14;
   --dark-blue-border: #ffffff29;
   --dark-blue-active: #818cef33;
@@ -225,37 +226,6 @@ a.plain {
 
 .default-btn:hover {
   background: #4f60fc;
-}
-
-/* .default-btn:focus {
-  background: #515ed8;
-  border: 1px solid #3D4FFE;
-  box-sizing: border-box;
-  padding-left: 15px;
-  padding-right: 15px;
-} */
-
-.default-btn:active {
-  background: #5f6ffd;
-  border: none;
-  padding-left: 1.6rem;
-  padding-right: 1.6rem;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-.default-btn:active::after {
-  opacity: 0.239;
-  content: " ";
-  width: 5.2rem;
-  height: 5.2rem;
-  position: absolute;
-  left: calc(50% - 2.6rem);
-  top: -0.8rem;
-  background: white;
-  border-radius: 50%;
-  transform: scale(0);
-  animation: ripple 600ms linear;
 }
 
 .default-btn:disabled {
