@@ -419,3 +419,6 @@ button.btn-link:hover .logout-icon {
 .default-cursor.App-cta {
   cursor: default;
 }
+.nowrap {
+  white-space: nowrap;
+}
