@@ -1013,6 +1013,7 @@ export default function DashboardV2() {
                           <TooltipComponent
                             handle={`$${formatKeyAmount(tokenInfo, "managedUsd", USD_DECIMALS, 0, true)}`}
                             position="right-bottom"
+                            className="nowrap"
                             renderContent={() => {
                               return (
                                 <>
