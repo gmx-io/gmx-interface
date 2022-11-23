@@ -21,18 +21,6 @@ msgstr "01 Sep 2021"
 msgid "06 Jan 2022"
 msgstr "06 Jan 2022"
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Change"
-msgstr "24h Change"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h High"
-msgstr "24h High"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Low"
-msgstr "24h Low"
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24h Volume"
@@ -933,10 +921,6 @@ msgstr "Date"
 msgid "DeFi Portfolio Tracker"
 msgstr "DeFi Portfolio Tracker"
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "Dec."
-msgstr "Dec."
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Finance Dashboard"
 msgstr "Decentralized Finance Dashboard"
@@ -1495,10 +1479,6 @@ msgstr "If you have an existing position, the position will be closed at {0} USD
 msgid "Image generation error, please refresh and try again."
 msgstr "Image generation error, please refresh and try again."
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "Inc."
-msgstr "Inc."
-
 #: src/App/App.js
 msgid "Include PnL in leverage display"
 msgstr "Include PnL in leverage display"
@@ -1725,10 +1705,6 @@ msgstr "Link copied to clipboard."
 msgid "Liq. Price"
 msgstr "Liq. Price"
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "Liq. {0} {longOrShortText}"
-msgstr "Liq. {0} {longOrShortText}"
-
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
 msgstr "Liquidated"
@@ -1761,8 +1737,6 @@ msgstr "Loading..."
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ExchangeTVChart.js
-#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
@@ -2165,10 +2139,6 @@ msgstr "Open positions through a simple swap interface. Conveniently swap from a
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "Open positions: {0}<0/>Under risk: {1}"
 msgstr "Open positions: {0}<0/>Under risk: {1}"
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "Open {0} {longOrShortText}"
-msgstr "Open {0} {longOrShortText}"
 
 #: src/components/Exchange/PositionsList.js
 msgid "Opening..."
@@ -2751,8 +2721,6 @@ msgstr "Share Position"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ExchangeTVChart.js
-#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js

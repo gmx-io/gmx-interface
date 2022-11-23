@@ -26,7 +26,7 @@ const FEED_ID_MAP = {
 };
 const timezoneOffset = -new Date().getTimezoneOffset() * 60;
 
-function fillGaps(prices, periodSeconds) {
+export function fillGaps(prices, periodSeconds) {
   if (prices.length < 2) {
     return prices;
   }
@@ -56,16 +56,22 @@ function fillGaps(prices, periodSeconds) {
   return newPrices;
 }
 
-async function getChartPricesFromStats(chainId, symbol, period) {
+export async function getChartPricesFromStats(chainId, symbol, period, to = null, from = null) {
   if (["WBTC", "WETH", "WAVAX"].includes(symbol)) {
     symbol = symbol.substr(1);
   } else if (symbol === "BTC.b") {
     symbol = "BTC";
   }
 
-  const timeDiff = CHART_PERIODS[period] * 3000;
-  const from = Math.floor(Date.now() / 1000 - timeDiff);
-  const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`;
+  let url;
+
+  if (from && to) {
+    url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&to=${to}&preferableSource=fast`;
+  } else {
+    const timeDiff = CHART_PERIODS[period] * 3000;
+    const from = Math.floor(Date.now() / 1000 - timeDiff);
+    url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`;
+  }
 
   const TIMEOUT = 5000;
   const res: Response = await new Promise(async (resolve, reject) => {
@@ -93,8 +99,9 @@ async function getChartPricesFromStats(chainId, symbol, period) {
     throw new Error(`request failed ${res.status} ${res.statusText}`);
   }
   const json = await res.json();
+  console.log({ json });
   let prices = json?.prices;
-  if (!prices || prices.length < 10) {
+  if (!prices || prices.length < 1) {
     throw new Error(`not enough prices data: ${prices?.length}`);
   }
 
@@ -158,7 +165,7 @@ function getCandlesFromPrices(prices, period) {
   }));
 }
 
-function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
+export function getChainlinkChartPricesFromGraph(tokenSymbol, period) {
   if (["WBTC", "WETH", "WAVAX"].includes(tokenSymbol)) {
     tokenSymbol = tokenSymbol.substr(1);
   }
@@ -281,7 +288,7 @@ function appendCurrentAveragePrice(prices, currentAveragePrice, period) {
   }
 }
 
-function getStablePriceData(period) {
+export function getStablePriceData(period) {
   const periodSeconds = CHART_PERIODS[period];
   const now = Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds;
   let priceData: any = [];

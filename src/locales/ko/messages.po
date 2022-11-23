@@ -21,18 +21,6 @@ msgstr ""
 msgid "06 Jan 2022"
 msgstr ""
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Change"
-msgstr ""
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h High"
-msgstr ""
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "24h Low"
-msgstr ""
-
 #: src/pages/Dashboard/DashboardV2.js
 msgid "24h Volume"
 msgstr "24시간 거래량"
@@ -933,10 +921,6 @@ msgstr "날짜"
 msgid "DeFi Portfolio Tracker"
 msgstr ""
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "Dec."
-msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Decentralized Finance Dashboard"
 msgstr ""
@@ -1495,10 +1479,6 @@ msgstr ""
 msgid "Image generation error, please refresh and try again."
 msgstr ""
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "Inc."
-msgstr ""
-
 #: src/App/App.js
 msgid "Include PnL in leverage display"
 msgstr "레버리지 표시창에 손익 포함하기"
@@ -1725,10 +1705,6 @@ msgstr ""
 msgid "Liq. Price"
 msgstr "청산가"
 
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "Liq. {0} {longOrShortText}"
-msgstr ""
-
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidated"
 msgstr ""
@@ -1758,8 +1734,6 @@ msgstr "로딩중..."
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ExchangeTVChart.js
-#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
@@ -2161,10 +2135,6 @@ msgstr "간단한 스왑 인터페이스를 통해 포지션을 열어보세요.
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "Open positions: {0}<0/>Under risk: {1}"
-msgstr ""
-
-#: src/components/Exchange/ExchangeTVChart.js
-msgid "Open {0} {longOrShortText}"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
@@ -2748,8 +2718,6 @@ msgstr "포지션 공유"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/ExchangeTVChart.js
-#: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
