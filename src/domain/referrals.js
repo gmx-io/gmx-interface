@@ -7,7 +7,7 @@ import ReferralStorage from "abis/ReferralStorage.json";
 import { MAX_REFERRAL_CODE_LENGTH, isAddressZero, isHashZero } from "lib/legacy";
 import { getContract } from "config/contracts";
 import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, AVALANCHE, TESTNET } from "config/chains";
 import { arbitrumReferralsGraphClient, avalancheReferralsGraphClient } from "lib/subgraph/clients";
 import { callContract, contractFetcher } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
@@ -24,6 +24,8 @@ function getGraphClient(chainId) {
     return arbitrumReferralsGraphClient;
   } else if (chainId === AVALANCHE) {
     return avalancheReferralsGraphClient;
+  } else if (chainId === TESTNET) {
+    return null;
   }
   throw new Error(`Unsupported chain ${chainId}`);
 }

@@ -414,6 +414,15 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
 };
 
 export const ICONLINKS = {
+  [TESTNET]: {
+    GMX: {
+      coingecko: "https://www.coingecko.com/en/coins/gmx",
+      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
+    },
+    GLP: {
+      arbitrum: "https://testnet.arbiscan.io/token/0xb4f81Fa74e06b5f762A104e47276BA9b2929cb27",
+    },
+  },
   [ARBITRUM_TESTNET]: {
     GMX: {
       coingecko: "https://www.coingecko.com/en/coins/gmx",
@@ -573,6 +582,7 @@ export function isValidToken(chainId: number, address: string) {
 }
 
 export function getToken(chainId: number, address: string) {
+  console.log("meo ne", TOKENS_MAP);
   if (!TOKENS_MAP[chainId]) {
     throw new Error(`Incorrect chainId ${chainId}`);
   }

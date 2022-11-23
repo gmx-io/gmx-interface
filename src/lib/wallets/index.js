@@ -273,6 +273,7 @@ export const getInjectedHandler = (activate) => {
       const chainId = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY) || DEFAULT_CHAIN_ID;
 
       if (e instanceof UnsupportedChainIdError) {
+        console.log("1");
         helperToast.error(
           <div>
             <Trans>
@@ -289,6 +290,7 @@ export const getInjectedHandler = (activate) => {
         );
         return;
       }
+      console.log("2");
       const errString = e.message ?? e.toString();
       helperToast.error(errString);
     });

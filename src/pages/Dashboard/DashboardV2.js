@@ -237,8 +237,8 @@ export default function DashboardV2() {
 
   const eth = infoTokens[getTokenBySymbol(chainId, "ETH").address];
   const shouldIncludeCurrrentFees =
-    feesSummaryByChain[chainId].lastUpdatedAt &&
-    parseInt(Date.now() / 1000) - feesSummaryByChain[chainId].lastUpdatedAt > 60 * 60;
+    feesSummaryByChain[chainId]?.lastUpdatedAt &&
+    parseInt(Date.now() / 1000) - feesSummaryByChain[chainId]?.lastUpdatedAt > 60 * 60;
 
   const totalFees = ACTIVE_CHAIN_IDS.map((chainId) => {
     if (shouldIncludeCurrrentFees && currentFees && currentFees[chainId]) {
@@ -636,10 +636,10 @@ export default function DashboardV2() {
                     />
                   </div>
                 </div>
-                {feesSummary.lastUpdatedAt ? (
+                {feesSummary?.lastUpdatedAt ? (
                   <div className="App-card-row">
                     <div className="label">
-                      <Trans>Fees since</Trans> {formatDate(feesSummary.lastUpdatedAt)}
+                      <Trans>Fees since</Trans> {formatDate(feesSummary?.lastUpdatedAt)}
                     </div>
                     <div>
                       <TooltipComponent

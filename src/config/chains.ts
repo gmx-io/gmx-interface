@@ -10,10 +10,10 @@ export const ARBITRUM_TESTNET = 421611;
 export const ARBITRUM = 42161;
 
 // TODO take it from web3
-export const DEFAULT_CHAIN_ID = ARBITRUM;
+export const DEFAULT_CHAIN_ID = TESTNET;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
+export const SUPPORTED_CHAIN_IDS = [TESTNET];
 
 if (isDevelopment()) {
   SUPPORTED_CHAIN_IDS.push(ARBITRUM_TESTNET);
@@ -57,6 +57,7 @@ const constants = {
 
   [TESTNET]: {
     nativeTokenSymbol: "BNB",
+    wrappedTokenSymbol: "TBNB",
     defaultCollateralSymbol: "BUSD",
     defaultFlagOrdersEnabled: true,
     positionReaderPropsLength: 8,
