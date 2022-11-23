@@ -97,6 +97,14 @@ msgstr ""
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr ""
 
+#: src/components/Leaderboard/GeneralLeaderboards.tsx
+msgid "Address"
+msgstr ""
+
+#: src/pages/Leaderboard/Leaderboard.tsx
+msgid "Addresses trading statistics. Choose between general or competitions leaderboards."
+msgstr ""
+
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
 msgstr "アフィリエイト"
@@ -918,6 +926,10 @@ msgstr "GMX移転は有効化されていません"
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr "\"GMX | 分散型パーペチュアル取引所"
 
+#: src/pages/Leaderboard/Leaderboard.tsx
+msgid "General"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "紹介コード作成"
@@ -1032,6 +1044,10 @@ msgstr "取引開始"
 #: src/pages/Leaderboard/Leaderboard.tsx
 msgid "Leaderboard"
 msgstr "順位"
+
+#: src/pages/Leaderboard/Leaderboard.tsx
+msgid "Leaderboards"
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Leave at least {0} {1} for gas"
@@ -1383,6 +1399,10 @@ msgstr "ネットワークをArbitrumに切り替えてください。"
 msgid "PnL"
 msgstr "損益"
 
+#: src/components/Leaderboard/GeneralLeaderboards.tsx
+msgid "PnL ($)"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 msgid "Position"
 msgstr "ポジション"
@@ -1451,8 +1471,7 @@ msgstr "GMX購入"
 msgid "Purchase Insurance"
 msgstr "保険購入"
 
-#: src/components/Leaderboard/IndividualLeaderboard.tsx
-#: src/components/Leaderboard/TeamLeaderboard.tsx
+#: src/components/Leaderboard/GeneralLeaderboards.tsx
 msgid "Rank"
 msgstr ""
 
@@ -2176,7 +2195,7 @@ msgstr "WalletConnect"
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr ""
 
-#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/GeneralLeaderboards.tsx
 msgid "Win / Loss"
 msgstr ""
 

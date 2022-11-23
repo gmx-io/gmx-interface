@@ -97,6 +97,14 @@ msgstr ""
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr ""
 
+#: src/components/Leaderboard/GeneralLeaderboards.tsx
+msgid "Address"
+msgstr ""
+
+#: src/pages/Leaderboard/Leaderboard.tsx
+msgid "Addresses trading statistics. Choose between general or competitions leaderboards."
+msgstr ""
+
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
 msgstr ""
@@ -918,6 +926,10 @@ msgstr ""
 msgid "GMX | Decentralized Perpetual Exchange"
 msgstr ""
 
+#: src/pages/Leaderboard/Leaderboard.tsx
+msgid "General"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr ""
@@ -1031,6 +1043,10 @@ msgstr "Запустить биржу"
 
 #: src/pages/Leaderboard/Leaderboard.tsx
 msgid "Leaderboard"
+msgstr ""
+
+#: src/pages/Leaderboard/Leaderboard.tsx
+msgid "Leaderboards"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -1383,6 +1399,10 @@ msgstr ""
 msgid "PnL"
 msgstr ""
 
+#: src/components/Leaderboard/GeneralLeaderboards.tsx
+msgid "PnL ($)"
+msgstr ""
+
 #: src/components/Exchange/PositionsList.js
 msgid "Position"
 msgstr ""
@@ -1451,8 +1471,7 @@ msgstr ""
 msgid "Purchase Insurance"
 msgstr ""
 
-#: src/components/Leaderboard/IndividualLeaderboard.tsx
-#: src/components/Leaderboard/TeamLeaderboard.tsx
+#: src/components/Leaderboard/GeneralLeaderboards.tsx
 msgid "Rank"
 msgstr ""
 
@@ -2176,7 +2195,7 @@ msgstr ""
 msgid "When closing the position, you can select which token you would like to receive the profits in."
 msgstr ""
 
-#: src/components/Leaderboard/IndividualLeaderboard.tsx
+#: src/components/Leaderboard/GeneralLeaderboards.tsx
 msgid "Win / Loss"
 msgstr ""
 

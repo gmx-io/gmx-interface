@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import { BigNumber } from "ethers";
 import { useState } from "react";
 import useSWR from "swr";
-import { getGraphClient, getNissohGraphClient } from "./graph";
+import { getNissohGraphClient } from "./graph";
 
 export type Stat = {
   rank: number;

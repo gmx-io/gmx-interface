@@ -9,7 +9,6 @@ import { formatAmount } from "lib/numbers";
 import { useWeb3React } from "@web3-react/core";
 import Pagination from "components/Pagination/Pagination";
 import "../../components/Leaderboard/Leaderboard.css";
-import Loader from "components/Common/Loader";
 
 export default function GeneralLeaderboards() {
   const { chainId } = useWeb3React();
@@ -55,14 +54,6 @@ export default function GeneralLeaderboards() {
       </div>
 
       <div className="leaderboard-header">
-        <Tab
-          className="Exchange-swap-order-type-tabs"
-          type="inline"
-          option={activePeriod}
-          options={[0, 1, 2]}
-          onChange={(val) => setActivePeriod(val)}
-          optionLabels={["24 hours", "1 week", "1 month"]}
-        />
         <div className="input-wrapper">
           <input
             type="text"
@@ -73,6 +64,14 @@ export default function GeneralLeaderboards() {
           />
           <FiSearch className="input-logo" />
         </div>
+        <Tab
+          className="Exchange-swap-order-type-tabs"
+          type="inline"
+          option={activePeriod}
+          options={[0, 1, 2]}
+          onChange={(val) => setActivePeriod(val)}
+          optionLabels={["24 hours", "7 days", "1 month"]}
+        />
       </div>
       <table className="Exchange-list large App-box">
         <tbody>

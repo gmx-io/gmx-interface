@@ -1,6 +1,5 @@
 import { gql } from "@apollo/client";
-import { useState } from "react";
-import useSWR from "swr";
+import { useState, useEffect } from "react";
 import { getGraphClient } from "./graph";
 
 export type Competition = {
@@ -10,6 +9,7 @@ export type Competition = {
   registrationActive: boolean;
   active: boolean;
   maxTeamSize: number;
+  type: number;
 };
 
 export function useCompetition(chainId, competitionIndex) {
@@ -22,6 +22,7 @@ export function useCompetition(chainId, competitionIndex) {
     registrationActive: false,
     active: false,
     maxTeamSize: 0,
+    type: 0,
   });
 
   const query = gql`
@@ -36,8 +37,10 @@ export function useCompetition(chainId, competitionIndex) {
     }
   `;
 
-  useSWR([chainId, competitionIndex, query], () => {
+  useEffect(() => {
     async function main() {
+      setLoading(true);
+
       if (competitionIndex === null) {
         setExists(false);
         setLoading(false);
@@ -69,6 +72,7 @@ export function useCompetition(chainId, competitionIndex) {
         registrationActive: start > ts,
         active: start <= ts && end > ts,
         maxTeamSize: Number(graphData.competition.maxTeamSize),
+        type: 3,
       });
 
       setExists(true);
@@ -76,7 +80,7 @@ export function useCompetition(chainId, competitionIndex) {
     }
 
     main();
-  });
+  }, [chainId, competitionIndex, query]);
 
   return { data, exists, loading };
 }

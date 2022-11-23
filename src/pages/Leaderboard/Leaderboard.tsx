@@ -17,10 +17,7 @@ export default function Leaderboard() {
   return (
     <SEO title={getPageTitle("Leaderboards")}>
       <div className="default-container page-layout Leaderboard">
-        <div
-          className="section-title-block-wrapper"
-          style={{ display: "flex", alignItems: "start", justifyContent: "space-between" }}
-        >
+        <div className="section-title-block-wrapper">
           <div className="section-title-block">
             <div className="section-title-content">
               <div className="Page-title">
@@ -29,18 +26,24 @@ export default function Leaderboard() {
               <div className="Page-description">
                 <Trans>Addresses trading statistics. Choose between general or competitions leaderboards.</Trans>
               </div>
+              {ALL_COMPETITIONS[chainId].length > 0 && (
+                <div style={{ marginTop: "2.5rem" }}>
+                  <select
+                    value={selectedCompetition}
+                    onChange={(event) => setSelectedCompetition(event.target.value)}
+                    className="transparent-btn"
+                  >
+                    <option value="">{t`General`}</option>
+                    {ALL_COMPETITIONS[chainId].map((comp) => (
+                      <option key={comp.index} value={comp.index}>
+                        {comp.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </div>
           </div>
-          {ALL_COMPETITIONS[chainId].length > 0 && (
-            <div className="section-title-block" style={{ display: "flex", justifyContent: "flex-end" }}>
-              <select onChange={(event) => setSelectedCompetition(event.target.value)} className="transparent-btn">
-                <option value="">{t`General`}</option>
-                {ALL_COMPETITIONS[chainId].map((comp) => (
-                  <option value={comp.index}>{comp.name}</option>
-                ))}
-              </select>
-            </div>
-          )}
         </div>
         {selectedCompetition === "" ? (
           <GeneralLeaderboards />

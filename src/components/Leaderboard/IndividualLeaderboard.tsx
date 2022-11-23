@@ -7,11 +7,17 @@ import { shortenAddress, USD_DECIMALS } from "lib/legacy";
 import useIndividualLeaderboard from "domain/leaderboard/useIndividualLeaderboard";
 import { formatAmount } from "lib/numbers";
 import Pagination from "components/Pagination/Pagination";
+import Tab from "components/Tab/Tab";
 
-export function IndividualLeaderboard() {
+type Props = {
+  competitionIndex: number;
+};
+
+export function IndividualLeaderboard({ competitionIndex }: Props) {
   const { chainId } = useChainId();
   const perPage = 15;
   const [page, setPage] = useState(1);
+  const [ranking, setRanking] = useState(0);
   const { data: stats, loading } = useIndividualLeaderboard(chainId, "total");
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
@@ -49,6 +55,14 @@ export function IndividualLeaderboard() {
           />
           <FiSearch className="input-logo" />
         </div>
+        <Tab
+          className="Exchange-swap-order-type-tabs"
+          type="inline"
+          option={ranking}
+          options={[0, 1]}
+          onChange={(val) => setRanking(val)}
+          optionLabels={["Top PnL ($)", "Top PnL (%)"]}
+        />
       </div>
       <table className="Exchange-list large App-box">
         <tbody>
@@ -81,7 +95,7 @@ export function IndividualLeaderboard() {
               <td>#{stat.rank}</td>
               <td>{shortenAddress(stat.account, 12)}</td>
               <td>{formatAmount(stat.realizedPnl, USD_DECIMALS, 0, true)}</td>
-              <td className="text-center">
+              <td className="text-right">
                 {stat.winCount} / {stat.lossCount}
               </td>
             </tr>
