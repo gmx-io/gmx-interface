@@ -17,7 +17,7 @@
 }
 .referral-card {
   position: relative;
-  padding: 2.325rem;
+  padding: 2.4rem;
   border-radius: 1.3rem;
   max-width: 59.2rem;
   background: #16182e;
@@ -27,7 +27,7 @@
 }
 .referral-card .title {
   font-weight: 500;
-  font-size: 2.325rem;
+  font-size: var(--font-lg);
   line-height: 3.1rem;
   color: #ffffff;
   padding: 0.775rem 0;
@@ -46,7 +46,7 @@
 
 .referral-card .card-action input {
   border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 1.5rem;
+  font-size: var(--font-base);
   width: 100%;
   box-sizing: border-box;
   margin-right: 1.5rem;
@@ -78,7 +78,7 @@
   justify-content: center;
 }
 .active-referral-code .tier span {
-  font-size: 1.3175rem;
+  font-size: var(--font-sm);
   color: #a9a9b0;
   margin-right: 0.775rem;
 }
@@ -115,7 +115,7 @@
   background: transparent;
   padding: 0.75rem 1.25rem;
   color: white;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   border: 1px solid var(--dark-blue-border);
   border-radius: var(--border-radius-sm);
   cursor: pointer;
@@ -140,7 +140,7 @@
 }
 .referral-table-header .sub-title {
   color: #a9a9b0;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   margin-left: 0.775rem;
 }
 
@@ -157,7 +157,7 @@
   border: 1px solid #1e2136;
   border-radius: 0.4rem;
   padding: 1.1625rem;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
   width: 40rem;
 }
 .create-referrar-code form button {
@@ -184,7 +184,7 @@
   align-items: center;
 }
 .info-card .label {
-  font-size: 1.5rem;
+  font-size: var(--font-md);
   line-height: 2.1rem;
   font-weight: normal;
   letter-spacing: 0px;
@@ -193,7 +193,7 @@
   text-align: center;
 }
 .info-card .data {
-  font-size: 2.325rem;
+  font-size: var(--font-lg);
   font-weight: normal;
   text-align: center;
   padding: 0;
@@ -201,7 +201,7 @@
 }
 .info-card .info-card-question-icon {
   vertical-align: middle;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   opacity: 0.8;
 }
 
@@ -235,7 +235,7 @@
   padding: 0;
   width: 100%;
   table-layout: fixed;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
 }
 .referral-table th {
   font-weight: normal;
@@ -258,13 +258,13 @@
   margin: 0;
   padding: 0.775rem 0 1.5rem;
   color: #fa3c58;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
 }
 
 .table-wrapper {
   display: block;
   width: 100%;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
 }
 
 .empty-message {
@@ -276,14 +276,14 @@
   border: 1px solid #1e2136;
   border-radius: 0.4rem;
   background: #16182e;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
 }
 .confirm-checkbox .Checkbox {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr auto;
   direction: rtl;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   margin-bottom: 1.5rem;
 }
 

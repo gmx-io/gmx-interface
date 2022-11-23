@@ -119,6 +119,7 @@ const Zoom = cssTransition({
 const arbWsProvider = new ethers.providers.WebSocketProvider(getAlchemyWsUrl());
 
 const avaxWsProvider = new ethers.providers.JsonRpcProvider("https://api.avax.network/ext/bc/C/rpc");
+avaxWsProvider.pollingInterval = 2000;
 
 function getWsProvider(active, chainId) {
   if (!active) {
@@ -254,8 +255,7 @@ function FullApp() {
   const [walletModalVisible, setWalletModalVisible] = useState(false);
   const [redirectModalVisible, setRedirectModalVisible] = useState(false);
   const [shouldHideRedirectModal, setShouldHideRedirectModal] = useState(false);
-  const [redirectPopupTimestamp, setRedirectPopupTimestamp, removeRedirectPopupTimestamp] =
-    useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
+  const [redirectPopupTimestamp, setRedirectPopupTimestamp] = useLocalStorage(REDIRECT_POPUP_TIMESTAMP_KEY);
   const [selectedToPage, setSelectedToPage] = useState("");
   const connectWallet = () => setWalletModalVisible(true);
 
@@ -562,7 +562,6 @@ function FullApp() {
         setRedirectPopupTimestamp={setRedirectPopupTimestamp}
         setShouldHideRedirectModal={setShouldHideRedirectModal}
         shouldHideRedirectModal={shouldHideRedirectModal}
-        removeRedirectPopupTimestamp={removeRedirectPopupTimestamp}
       />
       <Modal
         className="Connect-wallet-modal"

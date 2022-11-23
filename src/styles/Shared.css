@@ -26,16 +26,11 @@ code {
 * {
   box-sizing: border-box;
   font-family: "Relative", sans-serif;
-  letter-spacing: 0.5px;
-  /* font-variant-numeric: tabular-nums; */
+  letter-spacing: 0.05rem;
 }
 
 input {
   font-family: "RelativeNumber";
-}
-
-::-webkit-scrollbar {
-  /* width: 10px; */
 }
 
 /* Track */
@@ -66,6 +61,11 @@ input {
   --arbitrum-blue: #28a0f0;
   --border-radius-sm: 0.4rem;
   --error-red: #fa3c58;
+  --font-sm: 1.4rem;
+  --font-base: 1.5rem;
+  --font-md: 1.6rem;
+  --font-lg: 2.4rem;
+  --font-xl: 3.4rem;
 }
 
 a {
@@ -203,7 +203,7 @@ a.plain {
 .default-btn {
   background: #2d42fc;
   border-radius: 4px;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
@@ -273,7 +273,7 @@ a.plain {
 .secondary-btn {
   background: #03d1cf;
   border-radius: 4px;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   line-height: 2rem;
   font-weight: normal;
   letter-spacing: 0px;
@@ -345,7 +345,7 @@ button.btn-link {
   color: white;
   border: none;
   padding: 0;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
   display: block;
   text-align: left;
 }
@@ -408,10 +408,10 @@ button.btn-link:hover .logout-icon {
 }
 
 .font-sm {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
 }
 .font-base {
-  font-size: 1.5rem;
+  font-size: var(--font-base);
 }
 .mr-base {
   margin-right: 1.5rem;

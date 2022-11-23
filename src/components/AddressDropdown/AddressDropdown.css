@@ -38,10 +38,10 @@
 .menu-item {
   display: flex !important;
   align-items: center;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
   color: #a0a3c4;
   padding-bottom: 1.5rem;
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   padding: 0.85rem 0.8rem;
   border-radius: 0.4rem;
 }

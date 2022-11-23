@@ -104,13 +104,13 @@
 }
 
 .network-option span {
-  font-size: 1.5rem;
+  font-size: var(--font-base);
   letter-spacing: 0.29px;
   color: #fff;
 }
 
 .network-option-img-label {
-  font-size: 1.6rem;
+  font-size: var(--font-md);
   line-height: 2rem;
   letter-spacing: 0.29px;
   color: #fff;
