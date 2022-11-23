@@ -14,23 +14,23 @@ export type EventData = {
 };
 
 export const homeEventsData: EventData[] = [
-  {
-    id: "avax-norush-contest",
-    title: "GMXRUSH Trading Contest",
-    isActive: true,
-    validTill: "23 Nov 2022, 12:00",
-    bodyText: [
-      "The #GMXRUSH Trading Contest is active on #Avalanche from November 16 12:00 UTC to November 23 12:00 UTC.",
-      "Showcase your trading abilities transparently on-chain, and win big prizes.",
-    ],
-    buttons: [
-      {
-        text: "Learn More",
-        link: "https://medium.com/@gmx.io/sign-up-for-the-gmxrush-avalanche-trading-contest-win-100-000-usd-in-prizes-546b1ab2e416",
-        newTab: true,
-      },
-    ],
-  },
+  // {
+  //   id: "avax-norush-contest",
+  //   title: "GMXRUSH Trading Contest",
+  //   isActive: true,
+  //   validTill: "23 Nov 2022, 12:00",
+  //   bodyText: [
+  //     "The #GMXRUSH Trading Contest is active on #Avalanche from November 16 12:00 UTC to November 23 12:00 UTC.",
+  //     "Showcase your trading abilities transparently on-chain, and win big prizes.",
+  //   ],
+  //   buttons: [
+  //     {
+  //       text: "Learn More",
+  //       link: "https://medium.com/@gmx.io/sign-up-for-the-gmxrush-avalanche-trading-contest-win-100-000-usd-in-prizes-546b1ab2e416",
+  //       newTab: true,
+  //     },
+  //   ],
+  // },
   // {
   //   id: "app-gmx-io-launch",
   //   title: "Frontend Updates",
@@ -63,23 +63,23 @@ export const homeEventsData: EventData[] = [
 ];
 
 export const appEventsData: EventData[] = [
-  {
-    id: "avax-norush-contest",
-    title: "GMXRUSH Trading Contest",
-    isActive: true,
-    validTill: "23 Nov 2022, 12:00",
-    bodyText: [
-      "The #GMXRUSH Trading Contest is active on #Avalanche from November 16 12:00 UTC to November 23 12:00 UTC.",
-      "Showcase your trading abilities transparently on-chain, and win big prizes.",
-    ],
-    buttons: [
-      {
-        text: "Learn More",
-        link: "https://medium.com/@gmx.io/sign-up-for-the-gmxrush-avalanche-trading-contest-win-100-000-usd-in-prizes-546b1ab2e416",
-        newTab: true,
-      },
-    ],
-  },
+  // {
+  //   id: "avax-norush-contest",
+  //   title: "GMXRUSH Trading Contest",
+  //   isActive: true,
+  //   validTill: "23 Nov 2022, 12:00",
+  //   bodyText: [
+  //     "The #GMXRUSH Trading Contest is active on #Avalanche from November 16 12:00 UTC to November 23 12:00 UTC.",
+  //     "Showcase your trading abilities transparently on-chain, and win big prizes.",
+  //   ],
+  //   buttons: [
+  //     {
+  //       text: "Learn More",
+  //       link: "https://medium.com/@gmx.io/sign-up-for-the-gmxrush-avalanche-trading-contest-win-100-000-usd-in-prizes-546b1ab2e416",
+  //       newTab: true,
+  //     },
+  //   ],
+  // },
   // {
   //   id: "removal-of-min-profit-rule",
   //   title: "Trading improvements",
