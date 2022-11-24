@@ -11,6 +11,8 @@ import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { SyntheticsMarket } from "domain/synthetics/types";
 
 import "./GMStats.scss";
+import { useMcTokenBalances } from "lib/multicall";
+import { getWhitelistedTokens } from "config/tokens";
 
 type Props = {
   market: SyntheticsMarket;
@@ -18,6 +20,21 @@ type Props = {
 
 export function GMStats(p: Props) {
   const { chainId } = useChainId();
+
+  const tokens = getWhitelistedTokens(chainId);
+  const tokenAddresses = tokens.map((token) => token.address);
+
+  const req1 = useMcTokenBalances({ tokenAddresses });
+
+  console.log(req1);
+
+  const req2 = useMcTokenBalances({ tokenAddresses });
+
+  console.log(req2);
+
+  const req3 = useMcTokenBalances({ tokenAddresses: tokenAddresses.slice(0, 4) });
+
+  console.log(req3);
 
   return (
     <div className="App-card GMMarketInfo-card">

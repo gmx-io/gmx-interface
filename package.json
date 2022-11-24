@@ -27,6 +27,7 @@
     "classnames": "2.3.1",
     "date-fns": "2.27.0",
     "env-cmd": "^10.1.0",
+    "ethereum-multicall": "^2.15.0",
     "ethers": "5.6.8",
     "framer-motion": "4.1.17",
     "graphql": "15.8.0",
