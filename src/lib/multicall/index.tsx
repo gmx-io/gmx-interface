@@ -44,6 +44,7 @@ export function useMultiCall<T>(key?: string, request?: ContractCallContext[]) {
     if (!key || !request?.length) return;
 
     registerRequest(key, request);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
   return getRequestState(key);
@@ -107,8 +108,6 @@ function useMultiCallContextImplementation() {
 
       setRequestsState((old) => ({ ...old, ...pendingState }));
 
-      console.log("PROCESS MULTICALL", reqKeys);
-
       const result = await multicall!.call(fullCallCtx);
 
       const resultGroups = Object.keys(result.results).reduce((acc, resKey) => {
@@ -136,6 +135,8 @@ function useMultiCallContextImplementation() {
     }
 
     processMultiCall();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestKeysHash, multicall]);
 
   return useMemo(
@@ -179,16 +180,5 @@ export function useMcTokenBalances(p: { tokenAddresses: string[] }) {
 
   return {
     balances: result?.reader.balances.returnValues,
-  };
-}
-
-export function useReq2(p: { a: string }) {
-  const { active } = useWeb3React();
-
-  //   const { data, isLoading } = useMultiCall(key, { address: "req1", method: "method", params: "a" });
-
-  return {
-    data: "a",
-    isLoading: false,
   };
 }

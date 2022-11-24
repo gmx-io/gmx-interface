@@ -2,8 +2,6 @@ import { ARBITRUM, RPC_PROVIDERS } from "config/chains";
 import { getContract } from "config/contracts";
 import ReaderV2 from "abis/ReaderV2.json";
 import { useChainId } from "lib/chains";
-import { useWeb3React } from "@web3-react/core";
-import { getProvider } from "lib/rpc";
 import { Multicall } from "ethereum-multicall";
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";

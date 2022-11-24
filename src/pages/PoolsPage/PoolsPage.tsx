@@ -10,7 +10,6 @@ import { useInfoTokens } from "domain/tokens";
 import { useTokenBalances } from "domain/tokens/useTokenBalances";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
-import { useMcTokenBalances } from "lib/multicall";
 import { useState } from "react";
 
 import "./PoolsPage.scss";
