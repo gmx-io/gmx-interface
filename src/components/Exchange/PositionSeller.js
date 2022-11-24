@@ -139,7 +139,7 @@ export default function PositionSeller(props) {
     minExecutionFeeErrorMessage,
     usdgSupply,
     totalTokenWeights,
-    isUserAContractAddress,
+    isContractAccount,
   } = props;
   const [savedSlippageAmount] = useLocalStorageSerializeKey([chainId, SLIPPAGE_BPS_KEY], DEFAULT_SLIPPAGE_AMOUNT);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey([chainId, "Exchange-keep-leverage"], true);
@@ -152,7 +152,7 @@ export default function PositionSeller(props) {
   const nativeTokenSymbol = getConstant(chainId, "nativeTokenSymbol");
   const longOrShortText = position?.isLong ? t`Long` : t`Short`;
 
-  const toTokens = isUserAContractAddress ? getTokens(chainId).filter((t) => !t.isNative) : getTokens(chainId);
+  const toTokens = isContractAccount ? getTokens(chainId).filter((t) => !t.isNative) : getTokens(chainId);
 
   const [savedRecieveTokenAddress, setSavedRecieveTokenAddress] = useLocalStorageByChainId(
     chainId,
@@ -361,7 +361,7 @@ export default function PositionSeller(props) {
     receiveToken = isSwapAllowed && swapToToken ? swapToToken : collateralToken;
 
     // receiveToken does not need to change for STOP order
-    if (isSwapAllowed && isUserAContractAddress && isAddressZero(receiveToken.address)) {
+    if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken.address)) {
       const wrappedToken = toTokens.find((t) => t.baseSymbol === nativeTokenSymbol);
       setSwapToToken(wrappedToken);
       setSavedRecieveTokenAddress(wrappedToken.address);
@@ -502,7 +502,7 @@ export default function PositionSeller(props) {
   }, [position, triggerPriceUsd, orderOption, fromAmount]);
 
   const getError = () => {
-    if (isSwapAllowed && isUserAContractAddress && isAddressZero(receiveToken?.address)) {
+    if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken?.address)) {
       return t`${nativeTokenSymbol} can not be sent to smart contract addresses. Select another token.`;
     }
     if (IS_NETWORK_DISABLED[chainId]) {
@@ -725,7 +725,7 @@ export default function PositionSeller(props) {
       }
     }
 
-    const withdrawETH = isUnwrap && !isUserAContractAddress;
+    const withdrawETH = isUnwrap && !isContractAccount;
 
     const params = [
       path, // _path
