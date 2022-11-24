@@ -3982,8 +3982,8 @@ msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for ve
 msgstr "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
 
 #: src/components/Exchange/TradeHistory.js
-msgid "{0} {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
-msgstr "{0} {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
+#~ msgid "{0} {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
+#~ msgstr "{0} {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
 
 #: src/components/Exchange/TradeHistory.js
 msgid ""
@@ -4004,6 +4004,10 @@ msgstr ""
 "{0}:\n"
 "{1},\n"
 "Price: {priceDisplay}"
+
+#: src/components/Exchange/TradeHistory.js
+msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
+msgstr "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "{actionDisplay} Order"
