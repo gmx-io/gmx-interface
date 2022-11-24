@@ -12,12 +12,12 @@ import {
 import { getServerUrl } from "config/backend";
 import { InfoTokens, Token, TokenInfo } from "./types";
 import { BigNumber } from "ethers";
-import { Web3ReactContextInterface } from "@web3-react/core/dist/types";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getTokens, getWhitelistedTokens } from "config/tokens";
+import { Web3Provider } from "@ethersproject/providers";
 
 export function useInfoTokens(
-  library: Web3ReactContextInterface["library"],
+  library: Web3Provider,
   chainId: number,
   active: boolean,
   tokenBalances?: BigNumber[],

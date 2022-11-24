@@ -131,7 +131,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
         redirectPopupTimestamp={redirectPopupTimestamp}
         showRedirectModal={showRedirectModal}
       >
-        <Trans>Launch Exchange</Trans>
+        <Trans>Launch App</Trans>
       </HeaderLink>
     );
   };
@@ -151,7 +151,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
             </div>
             <div className="Home-description">
               <Trans>
-                Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet
+                Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet
               </Trans>
             </div>
             <LaunchExchangeButton />

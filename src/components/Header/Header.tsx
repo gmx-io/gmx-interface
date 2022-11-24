@@ -12,6 +12,8 @@ import { AnimatePresence as FramerAnimatePresence, motion } from "framer-motion"
 
 import "./Header.css";
 import { Link } from "react-router-dom";
+import { isHomeSite } from "lib/legacy";
+import { HomeHeaderLinks } from "./HomeHeaderLinks";
 
 // Fix framer-motion old React FC type (solved in react 18)
 const AnimatePresence = (props: React.ComponentProps<typeof FramerAnimatePresence> & { children: ReactNode }) => (
@@ -97,7 +99,11 @@ export function Header({
               <img src={logoImg} className="big" alt="GMX Logo" />
               <img src={logoSmallImg} className="small" alt="GMX Logo" />
             </Link>
-            <AppHeaderLinks redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal} />
+            {isHomeSite() ? (
+              <HomeHeaderLinks />
+            ) : (
+              <AppHeaderLinks redirectPopupTimestamp={redirectPopupTimestamp} showRedirectModal={showRedirectModal} />
+            )}
           </div>
           <div className="App-header-container-right">
             <AppHeaderUser
@@ -149,13 +155,17 @@ export function Header({
             variants={slideVariants}
             transition={{ duration: 0.2 }}
           >
-            <AppHeaderLinks
-              small
-              openSettings={openSettings}
-              clickCloseIcon={() => setIsDrawerVisible(false)}
-              redirectPopupTimestamp={redirectPopupTimestamp}
-              showRedirectModal={showRedirectModal}
-            />
+            {isHomeSite() ? (
+              <HomeHeaderLinks small clickCloseIcon={() => setIsDrawerVisible(false)} />
+            ) : (
+              <AppHeaderLinks
+                small
+                openSettings={openSettings}
+                clickCloseIcon={() => setIsDrawerVisible(false)}
+                redirectPopupTimestamp={redirectPopupTimestamp}
+                showRedirectModal={showRedirectModal}
+              />
+            )}
           </motion.div>
         )}
       </AnimatePresence>
