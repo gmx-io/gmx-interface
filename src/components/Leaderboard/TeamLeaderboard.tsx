@@ -21,7 +21,7 @@ export function TeamLeaderboard({ competitionIndex }) {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
   const [page, setPage] = useState(1);
-  const perPage = 1;
+  const perPage = 15;
   const { data: teams, loading: teamsLoading } = useTeamLeaderboard(chainId, competitionIndex);
   const { data: competition, loading: competitionLoading } = useCompetition(chainId, competitionIndex);
   const { exists: isLeader, loading: teamLoading } = useTeam(chainId, library, competitionIndex, account);
