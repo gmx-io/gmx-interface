@@ -848,12 +848,12 @@ button.App-button-option {
 
 a.App-button-option:hover,
 button.App-button-option:hover:enabled {
-  background: var(--primary-btn-hover);
+  background: rgb(64, 82, 141);
 }
 
 a.App-button-option:active,
 button.App-button-option:active:enabled {
-  background: var(--primary-btn-active);
+  background: rgb(54, 69, 117);
 }
 
 button.App-button-option:disabled {
