@@ -15,6 +15,7 @@ import { BigNumber } from "ethers";
 import { bigNumberify, expandDecimals } from "lib/numbers";
 import { getTokens, getWhitelistedTokens } from "config/tokens";
 import { Web3Provider } from "@ethersproject/providers";
+import { useMultiCall } from "lib/multicall";
 
 export function useInfoTokens(
   library: Web3Provider,
