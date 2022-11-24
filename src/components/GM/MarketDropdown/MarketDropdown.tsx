@@ -3,6 +3,7 @@ import { FaChevronDown } from "react-icons/fa";
 import { SyntheticsMarket } from "domain/synthetics/types";
 import { getMarketFullName } from "domain/synthetics/utils";
 import "./MarketDropdown.scss";
+import { useReq2 } from "lib/multicall";
 
 export type MarketOption = {
   symbol: string;
@@ -15,6 +16,10 @@ export type Props = {
 };
 
 export function MarketDropdown(p: Props) {
+  const req2 = useReq2({ a: "1" });
+
+  console.log(req2);
+
   return (
     <div className="MarketDropdown-root">
       <Menu>

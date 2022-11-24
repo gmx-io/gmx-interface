@@ -44,6 +44,22 @@ export function useSwapTokenState(infoTokens: InfoTokens, initial: { tokenAddres
 
   const info = getTokenInfo(infoTokens, tokenAddress);
 
+  if (!info) {
+    return {
+      info: undefined,
+      inputValue: formattedInputValue,
+      setInputValue,
+      setTokenAddress,
+      setValueByTokenAmount: () => null,
+      tokenAmount: BigNumber.from(0),
+      usdAmount: BigNumber.from(0),
+      balance: BigNumber.from(0),
+      tokenAmountFormatted: formatAmount(BigNumber.from(0), 4, 4),
+      usdAmountFormatted: `$${formatAmount(BigNumber.from(0), 2, 2, true)}`,
+      balanceFormatted: formatAmount(BigNumber.from(0), 4, 4),
+    };
+  }
+
   const tokenAmount = parseValue(inputValue || "0", info.decimals) || BigNumber.from(0);
   const usdAmount = getUsd(tokenAmount, tokenAddress, false, infoTokens) || BigNumber.from(0);
   const balance = info.balance || BigNumber.from(0);

@@ -4,7 +4,7 @@ import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import TokenSelector from "components/Exchange/TokenSelector";
 import Tab from "components/Tab/Tab";
 import Tooltip from "components/Tooltip/Tooltip";
-import { getTokenBySymbol } from "config/tokens";
+import { getTokenBySymbol, getWhitelistedTokens } from "config/tokens";
 import { SyntheticsMarket } from "domain/synthetics/types";
 import { getTokenAmountFromUsd, InfoTokens } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -21,6 +21,7 @@ import { getMarketKey } from "domain/synthetics/utils";
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
 import "./GMSwapBox.scss";
+import { useMcTokenBalances, useReq2 } from "lib/multicall";
 
 type Props = {
   selectedMarket: SyntheticsMarket;
@@ -35,6 +36,16 @@ export function GMSwapBox(p: Props) {
   const [operationTab, setOperationTab] = useState(OperationType.deposit);
   const [modeTab, setModeTab] = useState(Mode.single);
   const [focusedInput, setFocusedInput] = useState<FocusInputId | undefined>();
+
+  const tokens = getWhitelistedTokens(chainId);
+  const tokenAddresses = tokens.map((token) => token.address);
+  const req3 = useMcTokenBalances({ tokenAddresses: tokenAddresses.slice(0, 7) });
+
+  console.log(req3);
+
+  const req2 = useMcTokenBalances({ tokenAddresses });
+
+  console.log(req2);
 
   const availableTokens = [p.selectedMarket.longCollateralSymbol, p.selectedMarket.shortCollateralSymbol].map(
     (symbol) => getTokenBySymbol(chainId, symbol)
