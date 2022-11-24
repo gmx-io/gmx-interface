@@ -1,5 +1,5 @@
 .Positions-overview {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   margin: 1.5rem 3.1rem;
 }
 

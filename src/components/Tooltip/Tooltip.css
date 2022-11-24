@@ -3,7 +3,7 @@
 }
 
 .Tooltip-popup {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   line-height: 1.6rem;
   position: absolute;
   border-radius: 4px;

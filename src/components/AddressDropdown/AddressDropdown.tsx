@@ -11,6 +11,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { FaChevronDown } from "react-icons/fa";
 import { createBreakpoint, useCopyToClipboard } from "react-use";
 import "./AddressDropdown.css";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 type Props = {
   account: string;
@@ -53,12 +54,12 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
             </div>
           </Menu.Item>
           <Menu.Item>
-            <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="menu-item">
+            <ExternalLink href={accountUrl} className="menu-item">
               <img src={externalLink} alt="Open address in explorer" />
               <p>
                 <Trans>View in Explorer</Trans>
               </p>
-            </a>
+            </ExternalLink>
           </Menu.Item>
           <Menu.Item>
             <div className="menu-item" onClick={disconnectAccountAndCloseSettings}>
