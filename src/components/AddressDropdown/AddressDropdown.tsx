@@ -23,14 +23,14 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
   const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
   const { ensName } = useENS(account);
-  const { provider: etheriumProvider } = useJsonRpcProvider({ chainId: ETH_MAINNET });
+  const { provider: ethereumProvider } = useJsonRpcProvider(ETH_MAINNET);
 
   return (
     <Menu>
       <Menu.Button as="div">
         <button className="App-cta small transparent address-btn">
           <div className="user-avatar">
-            {etheriumProvider && <Davatar size={20} address={account} provider={etheriumProvider} />}
+            {ethereumProvider && <Davatar size={20} address={account} provider={ethereumProvider} />}
           </div>
           <span className="user-address">{ensName || shortenAddress(account, breakpoint === "S" ? 9 : 13)}</span>
           <FaChevronDown />

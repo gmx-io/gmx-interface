@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import _ from "lodash";
+import { sample } from "lodash";
 import { isDevelopment } from "lib/legacy";
 import { NetworkMetadata } from "lib/wallets";
 
@@ -233,7 +233,7 @@ export function getDefaultArbitrumRpcUrl() {
 }
 
 export function getRpcUrl(chainId: number): string | undefined {
-  return _.sample(RPC_PROVIDERS[chainId]);
+  return sample(RPC_PROVIDERS[chainId]);
 }
 
 export function getAlchemyHttpUrl() {

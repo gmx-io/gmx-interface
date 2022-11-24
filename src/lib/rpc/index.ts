@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import { FALLBACK_PROVIDERS, getRpcUrl, RPC_PROVIDERS } from "config/chains";
-import _ from "lodash";
+import { FALLBACK_PROVIDERS, getRpcUrl } from "config/chains";
 import { ethers } from "ethers";
-import { StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
+import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 
 export function getProvider(library: Web3Provider | undefined, chainId: number) {
   let provider;
@@ -11,7 +10,7 @@ export function getProvider(library: Web3Provider | undefined, chainId: number) 
     return library.getSigner();
   }
 
-  provider = _.sample(RPC_PROVIDERS[chainId]);
+  provider = getRpcUrl(chainId);
 
   return new ethers.providers.StaticJsonRpcProvider(
     provider,
@@ -25,7 +24,7 @@ export function getFallbackProvider(chainId: number) {
     return;
   }
 
-  const provider = _.sample(FALLBACK_PROVIDERS[chainId]);
+  const provider = getRpcUrl(chainId);
 
   return new ethers.providers.StaticJsonRpcProvider(
     provider,
@@ -34,12 +33,16 @@ export function getFallbackProvider(chainId: number) {
   );
 }
 
-export function useJsonRpcProvider(p: { chainId: number }) {
-  const [provider, setProvider] = useState<StaticJsonRpcProvider>();
+export function useJsonRpcProvider(chainId: number) {
+  const [provider, setProvider] = useState<JsonRpcProvider>();
 
   useEffect(() => {
     async function initializeProvider() {
-      const provider = new ethers.providers.JsonRpcProvider(getRpcUrl(p.chainId));
+      const rpcUrl = getRpcUrl(chainId);
+
+      if (!rpcUrl) return;
+
+      const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
 
       await provider.ready;
 
@@ -47,7 +50,7 @@ export function useJsonRpcProvider(p: { chainId: number }) {
     }
 
     initializeProvider();
-  }, [p.chainId]);
+  }, [chainId]);
 
   return { provider };
 }
