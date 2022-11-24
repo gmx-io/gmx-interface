@@ -25,7 +25,7 @@ export function usePriceImpact(p: { marketKey: string; shortDeltaUsd?: BigNumber
 
   const newPriceImpact = newLongInterest.sub(newShortInterest).abs();
 
-  const hasPositiveImpact = newPriceImpact.lt(0);
+  const hasPositiveImpact = currentPriceImpact.sub(newPriceImpact).gt(0);
 
   let priceImpactDiff = applyImpactFactor(currentPriceImpact.sub(newPriceImpact));
 
