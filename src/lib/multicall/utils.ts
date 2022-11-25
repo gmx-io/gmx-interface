@@ -34,8 +34,6 @@ export function useMulticallLib() {
       { chainId }
     );
 
-    // const provider = ethers.providers.getDefaultProvider();
-
     // @ts-ignore
     const multicall = new Multicall({ ethersProvider: provider, tryAggregate: true });
     setInstance(multicall);

@@ -1,15 +1,11 @@
-import { useWeb3React } from "@web3-react/core";
 import { ContractCallContext } from "ethereum-multicall";
-import { BigNumber } from "ethers";
 import React, { ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { useContract, useMulticallLib } from "./utils";
+import { useMulticallLib } from "./utils";
 
 type MultiCallRequestState<T> = {
   result?: T;
   success?: boolean;
   isLoading?: boolean;
-  // TODO?
-  // retry?: () => void;
 };
 
 type RequestsMap = {
@@ -60,11 +56,14 @@ function parseFullReferenceKey(fullReference: string): [key: string, reference: 
 
 function useMultiCallContextImplementation() {
   const multicall = useMulticallLib();
+  //   const pollingInterval = 3000;
   const [requests, setRequests] = useState<RequestsMap>({});
   const [requestsState, setRequestsState] = useState<RequestsStateMap>({});
 
   const registerRequest = useCallback(
     (key: string, params: ContractCallContext[]) => {
+      //   console.log("key", key);
+
       setRequests((old) => ({ ...old, [key]: params }));
     },
     [setRequests]
@@ -86,6 +85,8 @@ function useMultiCallContextImplementation() {
     if (!requestKeysHash?.length || !multicall) return;
 
     async function processMultiCall() {
+      //   console.log("PROCESS MULTICALL", reqKeys);
+
       const fullCallCtx = reqKeys.reduce((acc, key) => {
         const requestCtx = requests[key].map((reqParams) => ({
           ...reqParams,
@@ -134,7 +135,9 @@ function useMultiCallContextImplementation() {
       setRequestsState(resultGroups);
     }
 
-    processMultiCall();
+    setTimeout(processMultiCall);
+
+    // processMultiCall();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestKeysHash, multicall]);
@@ -152,33 +155,4 @@ export function MultiCallProvider(p: { children: ReactNode }) {
   const state = useMultiCallContextImplementation();
 
   return <MultiCallContext.Provider value={state}>{p.children}</MultiCallContext.Provider>;
-}
-
-type TokenBalances = {
-  reader: {
-    balances: {
-      returnValues: BigNumber[];
-    };
-  };
-};
-
-// EXAMPLES
-export function useMcTokenBalances(p: { tokenAddresses: string[] }) {
-  const Reader = useContract("ReaderV2");
-
-  const { account, active } = useWeb3React();
-
-  const key = active && account ? `${"getTokenBalances"}-${account}-${p.tokenAddresses.join("-")}` : undefined;
-
-  const { result } = useMultiCall<TokenBalances>(key, [
-    {
-      reference: "reader",
-      ...Reader,
-      calls: [{ reference: "balances", methodName: "getTokenBalances", methodParameters: [account, p.tokenAddresses] }],
-    },
-  ]);
-
-  return {
-    balances: result?.reader.balances.returnValues,
-  };
 }

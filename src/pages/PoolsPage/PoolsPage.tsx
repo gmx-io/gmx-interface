@@ -6,6 +6,7 @@ import { GMStats } from "components/GM/GMStats/GMStats";
 import { GMSwapBox } from "components/GM/GMSwapBox/GMSwapBox";
 import { getSyntheticsMarkets } from "config/synthetics";
 import { getWhitelistedTokens } from "config/tokens";
+import { useMcTokenBalances } from "domain/synthetics/tokens/useTokenBalances";
 import { useInfoTokens } from "domain/tokens";
 import { useTokenBalances } from "domain/tokens/useTokenBalances";
 import { useChainId } from "lib/chains";
@@ -15,16 +16,21 @@ import { useState } from "react";
 import "./PoolsPage.scss";
 
 export function PoolsPage() {
-  const markets = getSyntheticsMarkets();
-  const [selectedMarket, setSelectedMarket] = useState(markets[0]);
   const { chainId } = useChainId();
   const { library, active } = useWeb3React();
+
+  const markets = getSyntheticsMarkets(chainId);
+  const [selectedMarket, setSelectedMarket] = useState(markets[0]);
 
   // TODO: Synthetics tokens
   const tokens = getWhitelistedTokens(chainId);
   const tokenAddresses = tokens.map((token) => token.address);
   const { tokenBalances } = useTokenBalances({ tokenAddresses });
   const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, undefined);
+
+  useMcTokenBalances(chainId, { tokenAddresses });
+
+  useMcTokenBalances(chainId, { tokenAddresses: tokenAddresses.slice(0, 2) });
 
   return (
     <SEO title={getPageTitle("Synthetics pools")}>
