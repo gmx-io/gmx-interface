@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import {
   ARBITRUM,
-  ARBITRUM_RPC_PROVIDERS,
   ARBITRUM_TESTNET,
   AVALANCHE,
-  AVALANCHE_RPC_PROVIDERS,
+  AVALANCHE_FUJI_TESTNET,
   DEFAULT_CHAIN_ID,
   getChainName,
+  getRpcUrl,
   MAINNET,
   NETWORK_METADATA,
   SUPPORTED_CHAIN_IDS,
@@ -93,9 +93,10 @@ export const getWalletConnectConnector = () => {
 
   return new WalletConnectConnector({
     rpc: {
-      [AVALANCHE]: AVALANCHE_RPC_PROVIDERS[0],
-      [ARBITRUM]: ARBITRUM_RPC_PROVIDERS[0],
-      [ARBITRUM_TESTNET]: "https://rinkeby.arbitrum.io/rpc",
+      [AVALANCHE]: getRpcUrl(AVALANCHE)!,
+      [ARBITRUM]: getRpcUrl(ARBITRUM)!,
+      [ARBITRUM_TESTNET]: getRpcUrl(ARBITRUM_TESTNET)!,
+      [AVALANCHE_FUJI_TESTNET]: getRpcUrl(AVALANCHE_FUJI_TESTNET)!,
     },
     qrcode: true,
     chainId,
