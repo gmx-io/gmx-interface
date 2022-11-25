@@ -63,7 +63,7 @@
 
 .App-header-drawer .App-header-link-container .a,
 .App-header-drawer .App-header-link-container a {
-  font-size: 1.4rem;
+  font-size: var(--font-sm);
   line-height: 1.8rem;
   font-weight: normal;
   letter-spacing: 0.1px;
@@ -167,7 +167,7 @@
   padding: 1.8rem 1.7rem;
   display: block;
   color: #a0a3c4;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
   line-height: 1.8rem;
   font-weight: normal;
 }
@@ -192,7 +192,7 @@
   cursor: pointer;
   border: none;
   border-radius: 1.5rem;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
   background: none;
   color: white;
   padding: 0;

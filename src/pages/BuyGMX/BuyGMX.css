@@ -9,41 +9,9 @@
   width: 100%;
 }
 
-.BuyGMXGLP-panel {
-  padding-top: 0;
-  padding-bottom: 3.875rem;
-  border-bottom-left-radius: 0.8rem;
-  border-bottom-right-radius: 0.8rem;
-  display: flex;
-  justify-content: space-between;
-}
-.BuyGMXGLP-panel .App-card:first-child {
-  margin-right: 2rem;
-}
-
-.BuyGMXGLP-panel .App-card {
-  max-width: 59rem;
-  width: 100%;
-  height: fit-content;
-  flex: auto;
-}
-
-.BuyGMXGLP-panel .App-card.no-height {
-  height: unset;
-}
-
-.BuyGMXGLP-panel:last-child {
-  padding-bottom: 0;
-}
-
 .BuyGMXGLP-description {
   letter-spacing: 0px;
   color: #a9a9b0;
-}
-
-.BuyGMXGLP-description a {
-  text-decoration: none;
-  position: relative;
 }
 
 .bridge-options {
@@ -69,9 +37,9 @@
 .direct-purchase-options {
   display: flex;
   align-items: center;
-  justify-content: center;
   flex: 1 1 auto;
-  margin: 3.1rem 0;
+  margin: 3rem 0;
+  justify-content: center;
 }
 
 .GMX-btn {
@@ -136,20 +104,49 @@
   display: none !important;
 }
 
-.BuyGMXGLP-panel .buy-card {
-  display: flex;
-  flex-direction: column;
-}
-
-.BuyGMXGLP-panel .buy-card:first-child,
-.BuyGMXGLP-panel .section-title-block:first-child {
-  margin-right: 2rem;
-}
-
 .card-title {
   font-size: 3.41rem;
   margin-bottom: 1.5rem;
   font-weight: bold;
+}
+
+.cards-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 2rem;
+  margin-bottom: 2rem;
+}
+.card-description {
+  opacity: 0.7;
+  margin: 0;
+}
+
+.buttons-group {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.col-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+.col-1 {
+  display: inline-flex;
+}
+
+.mt-top {
+  margin-top: 5rem;
+}
+.exchange-info-group:not(:last-child) {
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 1200px) {
+  .buttons-group {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 800px) {
@@ -166,40 +163,26 @@
   .section-title-block {
     margin-bottom: 1.5rem !important;
   }
-  .BuyGMXGLP-panel {
-    flex-direction: column;
-  }
-  .BuyGMXGLP-panel .App-card:first-child {
-    margin-right: 0;
-    margin-bottom: 2rem;
-  }
-  .BuyGMXGLP-panel .App-card {
-    max-width: 100%;
-  }
-  .BuyGMXGLP-panel .buy-card:first-child,
-  .BuyGMXGLP-panel .section-title-block:first-child {
-    margin-right: 0;
-    margin-bottom: 2rem;
-  }
-}
-
-@media (max-width: 450px) {
-  .alternative-bridges {
+  .cards-row {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 400px) {
-  .BuyGMXGLP-container {
-    padding-left: 1.6rem !important;
-    padding-right: 1.6rem !important;
-  }
-
   .BuyGMXGLP-description {
-    font-size: 1.5rem;
+    font-size: var(--font-base);
     line-height: 2rem;
   }
-  .bridge-options {
-    grid-template-columns: 1fr;
+  .buttons-group {
+    grid-template-columns: auto;
+  }
+  .col-1 {
+    display: grid;
+  }
+}
+
+@media (max-width: 370px) {
+  .cards-row {
+    grid-template-columns: auto;
   }
 }

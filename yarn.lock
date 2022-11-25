@@ -3074,7 +3074,7 @@ __metadata:
     ramda: ^0.27.1
   peerDependencies:
     "@babel/core": ^7.0.0
-    babel-plugin-macros: 2 || 3
+    babel-plugin-macros: 2 || 3
     typescript: 2 || 3 || 4
   bin:
     lingui: lingui.js
@@ -3143,7 +3143,7 @@ __metadata:
   peerDependencies:
     "@lingui/core": ^3.13.0
     "@lingui/react": ^3.13.0
-    babel-plugin-macros: 2 || 3
+    babel-plugin-macros: 2 || 3
   checksum: e8ea2e79e2d5b237bb2516be14dc4ad58655dfb49af4c7ae420d99cb22281cedc0a383d7996b3b3db00323acc5afe7db6839a37b38ffbd35b1c346d84264762b
   languageName: node
   linkType: hard

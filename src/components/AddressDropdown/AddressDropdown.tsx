@@ -1,27 +1,37 @@
-import "./AddressDropdown.css";
+import Davatar from "@davatar/react";
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
-import { shortenAddress, useENS } from "lib/legacy";
-import { useCopyToClipboard, createBreakpoint } from "react-use";
-import externalLink from "img/ic_new_link_16.svg";
+import { ETH_MAINNET } from "config/chains";
 import copy from "img/ic_copy_16.svg";
+import externalLink from "img/ic_new_link_16.svg";
 import disconnect from "img/ic_sign_out_16.svg";
-import { FaChevronDown } from "react-icons/fa";
-import Davatar from "@davatar/react";
 import { helperToast } from "lib/helperToast";
+import { shortenAddress, useENS } from "lib/legacy";
+import { useJsonRpcProvider } from "lib/rpc";
+import { FaChevronDown } from "react-icons/fa";
+import { createBreakpoint, useCopyToClipboard } from "react-use";
+import "./AddressDropdown.css";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
-function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSettings }) {
+type Props = {
+  account: string;
+  accountUrl: string;
+  disconnectAccountAndCloseSettings: () => void;
+};
+
+function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSettings }: Props) {
   const useBreakpoint = createBreakpoint({ L: 600, M: 550, S: 400 });
   const breakpoint = useBreakpoint();
   const [, copyToClipboard] = useCopyToClipboard();
   const { ensName } = useENS(account);
+  const { provider: ethereumProvider } = useJsonRpcProvider(ETH_MAINNET);
 
   return (
     <Menu>
       <Menu.Button as="div">
         <button className="App-cta small transparent address-btn">
           <div className="user-avatar">
-            <Davatar size={20} address={account} />
+            {ethereumProvider && <Davatar size={20} address={account} provider={ethereumProvider} />}
           </div>
           <span className="user-address">{ensName || shortenAddress(account, breakpoint === "S" ? 9 : 13)}</span>
           <FaChevronDown />
@@ -44,12 +54,12 @@ function AddressDropdown({ account, accountUrl, disconnectAccountAndCloseSetting
             </div>
           </Menu.Item>
           <Menu.Item>
-            <a href={accountUrl} target="_blank" rel="noopener noreferrer" className="menu-item">
+            <ExternalLink href={accountUrl} className="menu-item">
               <img src={externalLink} alt="Open address in explorer" />
               <p>
                 <Trans>View in Explorer</Trans>
               </p>
-            </a>
+            </ExternalLink>
           </Menu.Item>
           <Menu.Item>
             <div className="menu-item" onClick={disconnectAccountAndCloseSettings}>

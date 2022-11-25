@@ -7,7 +7,7 @@ import useSWR from "swr";
 import OrderBookReader from "abis/OrderBookReader.json";
 import OrderBook from "abis/OrderBook.json";
 
-import { CHAIN_ID, getExplorerUrl } from "config/chains";
+import { CHAIN_ID, ETH_MAINNET, getExplorerUrl, getRpcUrl } from "config/chains";
 import { getServerBaseUrl } from "config/backend";
 import { getMostAbundantStableToken } from "domain/tokens";
 import { getTokenInfo } from "domain/tokens/utils";
@@ -26,14 +26,16 @@ export const PLACEHOLDER_ACCOUNT = ethers.Wallet.createRandom().address;
 export const MIN_PROFIT_TIME = 0;
 
 export const USDG_ADDRESS = getContract(CHAIN_ID, "USDG");
-export const MAX_LEVERAGE = 100 * 10000;
+
+export const BASIS_POINTS_DIVISOR = 10000;
+export const MAX_LEVERAGE = 100 * BASIS_POINTS_DIVISOR;
+export const MAX_ALLOWED_LEVERAGE = 50 * BASIS_POINTS_DIVISOR;
 
 export const MAX_PRICE_DEVIATION_BASIS_POINTS = 750;
 export const DEFAULT_GAS_LIMIT = 1 * 1000 * 1000;
 export const SECONDS_PER_YEAR = 31536000;
 export const USDG_DECIMALS = 18;
 export const USD_DECIMALS = 30;
-export const BASIS_POINTS_DIVISOR = 10000;
 export const DEPOSIT_FEE = 30;
 export const DUST_BNB = "2000000000000000";
 export const DUST_USD = expandDecimals(1, USD_DECIMALS);
@@ -876,7 +878,7 @@ export function useENS(address) {
   useEffect(() => {
     async function resolveENS() {
       if (address) {
-        const provider = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/eth");
+        const provider = new ethers.providers.JsonRpcProvider(getRpcUrl(ETH_MAINNET));
         const name = await provider.lookupAddress(address.toLowerCase());
         if (name) setENSName(name);
       }

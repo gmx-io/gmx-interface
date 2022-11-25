@@ -1,4 +1,7 @@
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, MAINNET, TESTNET } from "./chains";
+import { ethers } from "ethers";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI_TESTNET, MAINNET, TESTNET } from "./chains";
+
+const { AddressZero } = ethers.constants;
 
 export const XGMT_EXCLUDED_ACCOUNTS = [
   "0x330eef6b9b1ea6edd620c825c9919dc8b611d5d5",
@@ -189,6 +192,46 @@ const CONTRACTS = {
     TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98",
     ReferralStorage: "0x827ed045002ecdabeb6e2b0d1604cf5fc3d322f8",
     ReferralReader: "0x505Ce16D3017be7D76a7C2631C0590E71A975083",
+  },
+
+  [AVALANCHE_FUJI_TESTNET]: {
+    Vault: AddressZero,
+    Router: AddressZero,
+    VaultReader: AddressZero,
+    Reader: AddressZero,
+    GlpManager: AddressZero,
+    RewardRouter: AddressZero,
+    RewardReader: AddressZero,
+    NATIVE_TOKEN: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
+    GLP: AddressZero,
+    GMX: AddressZero,
+    ES_GMX: AddressZero,
+    BN_GMX: AddressZero,
+    USDG: AddressZero,
+    ES_GMX_IOU: AddressZero,
+
+    StakedGmxTracker: AddressZero,
+    BonusGmxTracker: AddressZero,
+    FeeGmxTracker: AddressZero,
+    StakedGlpTracker: AddressZero,
+    FeeGlpTracker: AddressZero,
+
+    StakedGmxDistributor: AddressZero,
+    StakedGlpDistributor: AddressZero,
+
+    GmxVester: AddressZero,
+    GlpVester: AddressZero,
+
+    OrderBook: AddressZero,
+    OrderExecutor: AddressZero,
+    OrderBookReader: AddressZero,
+
+    PositionRouter: AddressZero,
+    PositionManager: AddressZero,
+
+    TraderJoeGmxAvaxPool: AddressZero,
+    ReferralStorage: AddressZero,
+    ReferralReader: AddressZero,
   },
 };
 

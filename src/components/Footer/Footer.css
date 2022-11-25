@@ -30,7 +30,7 @@
 }
 .Footer-link {
   color: #a0a3c4;
-  font-size: 1.5rem;
+  font-size: var(--font-base);
   line-height: 1.85rem;
   font-weight: normal;
   text-decoration: none;

@@ -1,11 +1,14 @@
 import { ethers } from "ethers";
+import { sample } from "lodash";
 import { isDevelopment } from "lib/legacy";
 import { NetworkMetadata } from "lib/wallets";
 
 const { parseEther } = ethers.utils;
 
 export const MAINNET = 56;
+export const ETH_MAINNET = 1;
 export const AVALANCHE = 43114;
+export const AVALANCHE_FUJI_TESTNET = 43113;
 export const TESTNET = 97;
 export const ARBITRUM_TESTNET = 421611;
 export const ARBITRUM = 42161;
@@ -17,7 +20,7 @@ export const CHAIN_ID = DEFAULT_CHAIN_ID;
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 if (isDevelopment()) {
-  SUPPORTED_CHAIN_IDS.push(ARBITRUM_TESTNET);
+  SUPPORTED_CHAIN_IDS.push(ARBITRUM_TESTNET, AVALANCHE_FUJI_TESTNET);
 }
 
 export const IS_NETWORK_DISABLED = {
@@ -31,6 +34,7 @@ export const CHAIN_NAMES_MAP = {
   [ARBITRUM_TESTNET]: "ArbRinkeby",
   [ARBITRUM]: "Arbitrum",
   [AVALANCHE]: "Avalanche",
+  [AVALANCHE_FUJI_TESTNET]: "Avalanche Fuji",
 };
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
@@ -104,43 +108,46 @@ const constants = {
     // contract requires that execution fee be strictly greater than instead of gte
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
   },
+
+  [AVALANCHE_FUJI_TESTNET]: {
+    nativeTokenSymbol: "AVAX",
+    wrappedTokenSymbol: "WAVAX",
+    defaultCollateralSymbol: "USDC",
+    defaultFlagOrdersEnabled: true,
+    positionReaderPropsLength: 9,
+    v2: true,
+
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.01"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
+  },
 };
 
 const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"];
 
-export const ARBITRUM_RPC_PROVIDERS = [getDefaultArbitrumRpcUrl()];
-export const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"]; // BSC MAINNET
-
-// BSC TESTNET
-// const RPC_PROVIDERS = [
-//   "https://data-seed-prebsc-1-s1.binance.org:8545",
-//   "https://data-seed-prebsc-2-s1.binance.org:8545",
-//   "https://data-seed-prebsc-1-s2.binance.org:8545",
-//   "https://data-seed-prebsc-2-s2.binance.org:8545",
-//   "https://data-seed-prebsc-1-s3.binance.org:8545",
-//   "https://data-seed-prebsc-2-s3.binance.org:8545"
-// ]
-
-export const BSC_RPC_PROVIDERS = [
-  "https://bsc-dataseed.binance.org",
-  "https://bsc-dataseed1.defibit.io",
-  "https://bsc-dataseed1.ninicoin.io",
-  "https://bsc-dataseed2.defibit.io",
-  "https://bsc-dataseed3.defibit.io",
-  "https://bsc-dataseed4.defibit.io",
-  "https://bsc-dataseed2.ninicoin.io",
-  "https://bsc-dataseed3.ninicoin.io",
-  "https://bsc-dataseed4.ninicoin.io",
-  "https://bsc-dataseed1.binance.org",
-  "https://bsc-dataseed2.binance.org",
-  "https://bsc-dataseed3.binance.org",
-  "https://bsc-dataseed4.binance.org",
-];
-
 export const RPC_PROVIDERS = {
-  [MAINNET]: BSC_RPC_PROVIDERS,
-  [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
-  [AVALANCHE]: AVALANCHE_RPC_PROVIDERS,
+  [ETH_MAINNET]: ["https://rpc.ankr.com/eth"],
+  [MAINNET]: [
+    "https://bsc-dataseed.binance.org",
+    "https://bsc-dataseed1.defibit.io",
+    "https://bsc-dataseed1.ninicoin.io",
+    "https://bsc-dataseed2.defibit.io",
+    "https://bsc-dataseed3.defibit.io",
+    "https://bsc-dataseed4.defibit.io",
+    "https://bsc-dataseed2.ninicoin.io",
+    "https://bsc-dataseed3.ninicoin.io",
+    "https://bsc-dataseed4.ninicoin.io",
+    "https://bsc-dataseed1.binance.org",
+    "https://bsc-dataseed2.binance.org",
+    "https://bsc-dataseed3.binance.org",
+    "https://bsc-dataseed4.binance.org",
+  ],
+  [TESTNET]: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
+  [ARBITRUM]: [getDefaultArbitrumRpcUrl()],
+  [ARBITRUM_TESTNET]: ["https://rinkeby.arbitrum.io/rpc"],
+  [AVALANCHE]: ["https://api.avax.network/ext/bc/C/rpc"],
+  [AVALANCHE_FUJI_TESTNET]: ["https://api.avax-test.network/ext/bc/C/rpc"],
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -157,7 +164,7 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
       symbol: "BNB",
       decimals: 18,
     },
-    rpcUrls: BSC_RPC_PROVIDERS,
+    rpcUrls: RPC_PROVIDERS[MAINNET],
     blockExplorerUrls: ["https://bscscan.com"],
   },
   [TESTNET]: {
@@ -168,7 +175,7 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
       symbol: "BNB",
       decimals: 18,
     },
-    rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
+    rpcUrls: RPC_PROVIDERS[TESTNET],
     blockExplorerUrls: ["https://testnet.bscscan.com/"],
   },
   [ARBITRUM_TESTNET]: {
@@ -179,7 +186,7 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
       symbol: "ETH",
       decimals: 18,
     },
-    rpcUrls: ["https://rinkeby.arbitrum.io/rpc"],
+    rpcUrls: RPC_PROVIDERS[ARBITRUM_TESTNET],
     blockExplorerUrls: ["https://rinkeby-explorer.arbitrum.io/"],
   },
   [ARBITRUM]: {
@@ -190,7 +197,7 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
       symbol: "ETH",
       decimals: 18,
     },
-    rpcUrls: ARBITRUM_RPC_PROVIDERS,
+    rpcUrls: RPC_PROVIDERS[ARBITRUM],
     blockExplorerUrls: [getExplorerUrl(ARBITRUM)],
   },
   [AVALANCHE]: {
@@ -201,8 +208,19 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
       symbol: "AVAX",
       decimals: 18,
     },
-    rpcUrls: AVALANCHE_RPC_PROVIDERS,
+    rpcUrls: RPC_PROVIDERS[AVALANCHE],
     blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
+  },
+  [AVALANCHE_FUJI_TESTNET]: {
+    chainId: "0x" + AVALANCHE.toString(16),
+    chainName: "Avalanche",
+    nativeCurrency: {
+      name: "AVAX",
+      symbol: "AVAX",
+      decimals: 18,
+    },
+    rpcUrls: RPC_PROVIDERS[AVALANCHE_FUJI_TESTNET],
+    blockExplorerUrls: [getExplorerUrl(AVALANCHE_FUJI_TESTNET)],
   },
 };
 
@@ -224,6 +242,10 @@ export function getChainName(chainId: number) {
 
 export function getDefaultArbitrumRpcUrl() {
   return "https://arb1.arbitrum.io/rpc";
+}
+
+export function getRpcUrl(chainId: number): string | undefined {
+  return sample(RPC_PROVIDERS[chainId]);
 }
 
 export function getAlchemyHttpUrl() {
@@ -255,6 +277,8 @@ export function getExplorerUrl(chainId) {
     return "https://arbiscan.io/";
   } else if (chainId === AVALANCHE) {
     return "https://snowtrace.io/";
+  } else if (chainId === AVALANCHE_FUJI_TESTNET) {
+    return "https://testnet.snowtrace.io/";
   }
   return "https://etherscan.io/";
 }
