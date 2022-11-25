@@ -418,7 +418,7 @@ msgstr "Buy GLP"
 
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Buy GLP Icon"
-msgstr "Buy GLP Icon<<<<<<< HEAD"
+msgstr "Buy GLP Icon"
 
 #: src/components/GM/GMSwapBox/GMSwapBox.tsx
 msgid "Buy GM"
@@ -2511,7 +2511,7 @@ msgstr "Protocol analytics"
 
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
-msgstr "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading.<<<<<<< HEAD"
+msgstr "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 
 #: src/pages/PoolsPage/PoolsPage.tsx
 msgid "Purchase <0>GM tokens</0>"
@@ -3059,11 +3059,11 @@ msgstr "Swapping..."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Swaps disabled, pending {0} upgrade"
-msgstr "Swaps disabled, pending {0} upgrade<<<<<<< HEAD"
+msgstr "Swaps disabled, pending {0} upgrade"
 
 #: src/pages/PoolsPage/PoolsPage.tsx
 msgid "Synthetics Pools"
-msgstr "Synthetics Pools=======>>>>>>> 907bbbb178fc0e7556c0e7c1a3cf01353c0fff40"
+msgstr "Synthetics Pools"
 
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
