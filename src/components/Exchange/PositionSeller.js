@@ -280,6 +280,14 @@ export default function PositionSeller(props) {
   let swapFee;
   let totalFees = bigNumberify(0);
 
+  useEffect(() => {
+    if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken?.address)) {
+      const wrappedToken = toTokens.find((t) => t.baseSymbol === nativeTokenSymbol);
+      setSwapToToken(wrappedToken);
+      setSavedRecieveTokenAddress(wrappedToken.address);
+    }
+  }, [isContractAccount, isSwapAllowed, nativeTokenSymbol, receiveToken, setSavedRecieveTokenAddress, toTokens]);
+
   let executionFee = orderOption === STOP ? getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE") : minExecutionFee;
 
   let executionFeeUsd = getUsd(executionFee, nativeTokenAddress, false, infoTokens) || bigNumberify(0);
@@ -311,7 +319,7 @@ export default function PositionSeller(props) {
       }
     }
 
-    if (sizeDelta) {
+    if (sizeDelta && position.size.gt(0)) {
       adjustedDelta = nextDelta.mul(sizeDelta).div(position.size);
     }
 
@@ -364,8 +372,6 @@ export default function PositionSeller(props) {
     // receiveToken does not need to change for STOP order
     if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken.address)) {
       const wrappedToken = toTokens.find((t) => t.baseSymbol === nativeTokenSymbol);
-      setSwapToToken(wrappedToken);
-      setSavedRecieveTokenAddress(wrappedToken.address);
       receiveToken = wrappedToken;
     }
 
@@ -727,7 +733,7 @@ export default function PositionSeller(props) {
       }
     }
 
-    const withdrawETH = isUnwrap && !isContractAccount;
+    const withdrawETH = isUnwrap && isContractAccount === false;
 
     const params = [
       path, // _path
