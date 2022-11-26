@@ -1,25 +1,8 @@
-import { ARBITRUM, RPC_PROVIDERS } from "config/chains";
-import { getContract } from "config/contracts";
-import ReaderV2 from "abis/ReaderV2.json";
-import { useChainId } from "lib/chains";
+import { RPC_PROVIDERS } from "config/chains";
 import { Multicall } from "ethereum-multicall";
-import { useEffect, useState } from "react";
 import { ethers } from "ethers";
-
-const CONFIG = {
-  [ARBITRUM]: {
-    ReaderV2: {
-      contractAddress: getContract(ARBITRUM, "Reader"),
-      abi: ReaderV2.abi,
-    },
-  },
-};
-
-export function useContract(name: string) {
-  const { chainId } = useChainId();
-
-  return CONFIG[chainId]?.[name];
-}
+import { useChainId } from "lib/chains";
+import { useEffect, useState } from "react";
 
 export function useMulticallLib() {
   const [instance, setInstance] = useState<Multicall>();

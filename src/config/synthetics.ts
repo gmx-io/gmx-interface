@@ -1,28 +1,35 @@
 import { SyntheticsMarket } from "domain/synthetics/types";
+import { ethers } from "ethers";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI_TESTNET } from "./chains";
+
+const { AddressZero } = ethers.constants;
 
 const SYNTHETICS_MARKETS: { [chainId: number]: SyntheticsMarket[] } = {
   [ARBITRUM]: [
     {
       perp: "ETH/USD",
+      marketTokenAddress: AddressZero,
       indexTokenSymbol: "ETH",
       longCollateralSymbol: "ETH",
       shortCollateralSymbol: "USDC",
     },
     {
       perp: "BNB/USD",
+      marketTokenAddress: AddressZero,
       indexTokenSymbol: "BNB",
       longCollateralSymbol: "ETH",
       shortCollateralSymbol: "USDC",
     },
     {
       perp: "BTC/USD",
+      marketTokenAddress: AddressZero,
       indexTokenSymbol: "BTC",
       longCollateralSymbol: "BTC",
       shortCollateralSymbol: "USDC",
     },
     {
       perp: "SOL/USD",
+      marketTokenAddress: AddressZero,
       indexTokenSymbol: "SOL",
       longCollateralSymbol: "ETH",
       shortCollateralSymbol: "USDC",
@@ -31,24 +38,28 @@ const SYNTHETICS_MARKETS: { [chainId: number]: SyntheticsMarket[] } = {
   [AVALANCHE]: [
     {
       perp: "ETH/USD",
+      marketTokenAddress: AddressZero,
       indexTokenSymbol: "ETH",
       longCollateralSymbol: "ETH",
       shortCollateralSymbol: "USDC",
     },
     {
       perp: "BNB/USD",
+      marketTokenAddress: AddressZero,
       indexTokenSymbol: "BNB",
       longCollateralSymbol: "ETH",
       shortCollateralSymbol: "USDC",
     },
     {
       perp: "BTC/USD",
+      marketTokenAddress: AddressZero,
       indexTokenSymbol: "BTC",
       longCollateralSymbol: "BTC",
       shortCollateralSymbol: "USDC",
     },
     {
       perp: "SOL/USD",
+      marketTokenAddress: AddressZero,
       indexTokenSymbol: "SOL",
       longCollateralSymbol: "ETH",
       shortCollateralSymbol: "USDC",
@@ -57,24 +68,28 @@ const SYNTHETICS_MARKETS: { [chainId: number]: SyntheticsMarket[] } = {
   [AVALANCHE_FUJI_TESTNET]: [
     {
       perp: "ETH/USD",
+      marketTokenAddress: AddressZero,
       indexTokenSymbol: "ETH",
       longCollateralSymbol: "ETH",
       shortCollateralSymbol: "USDC",
     },
     {
       perp: "BNB/USD",
+      marketTokenAddress: AddressZero,
       indexTokenSymbol: "BNB",
       longCollateralSymbol: "ETH",
       shortCollateralSymbol: "USDC",
     },
     {
       perp: "BTC/USD",
+      marketTokenAddress: AddressZero,
       indexTokenSymbol: "BTC",
       longCollateralSymbol: "BTC",
       shortCollateralSymbol: "USDC",
     },
     {
       perp: "SOL/USD",
+      marketTokenAddress: AddressZero,
       indexTokenSymbol: "SOL",
       longCollateralSymbol: "ETH",
       shortCollateralSymbol: "USDC",
