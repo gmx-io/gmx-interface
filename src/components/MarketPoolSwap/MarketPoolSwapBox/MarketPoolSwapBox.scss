@@ -1,27 +1,27 @@
-.GMSwapBox {
+.MarketPoolSwapBox {
   border-radius: 0.4rem;
   padding: 1.5rem;
   padding-top: 0;
 }
 
-.GMSwapBox .Exchange-swap-option-tabs {
+.MarketPoolSwapBox .Exchange-swap-option-tabs {
   margin: 1.5rem 0;
 }
 
-.GMSwapBox-asset-options-tabs {
+.MarketPoolSwapBox-asset-options-tabs {
   margin: 1.5rem 0;
 }
 
-.GMSwapBox-info-section {
+.MarketPoolSwapBox-info-section {
   margin-bottom: 0.8rem;
 }
 
-.GMSwapBox-market-dropdown {
+.MarketPoolSwapBox-market-dropdown {
   margin-top: 1.5rem;
   margin-left: -0.5rem;
 }
 
-.GMSwapBox-form-layout {
+.MarketPoolSwapBox-form-layout {
   display: flex;
   flex-direction: column;
 
@@ -31,17 +31,17 @@
 }
 
 @media (max-width: 900px) {
-  .GlpSwap-content {
+  .MarketPoolSwapBox-content {
     flex-wrap: wrap;
   }
 
-  .GlpSwap-content .GlpSwap-stats-card {
+  .MarketPoolSwapBox-content .GlpSwap-stats-card {
     margin: 0;
     margin-bottom: 3.1rem;
     max-width: 100%;
   }
 
-  .GlpSwap-content .GlpSwap-box {
+  .MarketPoolSwapBox-content .GlpSwap-box {
     margin: 0;
     max-width: 100%;
   }

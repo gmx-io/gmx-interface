@@ -10,38 +10,37 @@ import { GM_DECIMALS } from "lib/legacy";
 import { useEffect, useMemo, useState } from "react";
 
 import { MarketDropdown } from "../MarketDropdown/MarketDropdown";
-import { FocusInputId, Mode, modesTexts, OperationType, operationTypesTexts } from "./constants";
-import {
-  formatPriceImpact,
-  formatTokenAmount,
-  formatUsdAmount,
-  shouldShowMaxButton,
-  useGmTokenState,
-  useSwapTokenState,
-} from "./utils";
+import { FocusInputId, Mode, modesTexts, OperationType, operationTypesTexts } from "../constants";
+import { shouldShowMaxButton, useGmTokenState, useSwapTokenState } from "../utils";
 
 import { getMarketKey, getTokenPoolType } from "domain/synthetics/markets/utils";
-import { usePriceImpact } from "domain/synthetics/usePriceImpact";
+import { usePriceImpact } from "domain/synthetics/priceImpact/usePriceImpact";
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
-
-import { useTokensData } from "domain/synthetics/tokens/useTokensData";
-import "./GMSwapBox.scss";
+import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import { adaptToInfoTokens } from "domain/synthetics/tokens/utils";
+import { useTokensData } from "domain/synthetics/tokens/useTokensData";
+import { adaptToInfoTokens, formatTokenAmount, formatUsdAmount } from "domain/synthetics/tokens/utils";
+
+import "./MarketPoolSwapBox.scss";
+import { InfoRow } from "components/InfoRow/InfoRow";
+import { formatPriceImpact } from "domain/synthetics/priceImpact/utils";
+import { MarketPoolSwapConfirmation } from "../MarketPoolSwapConfirmation/MarketPoolSwapConfirmation";
 
 type Props = {
   selectedMarket: SyntheticsMarket;
   markets: SyntheticsMarket[];
   onSelectMarket: (market: SyntheticsMarket) => void;
+  onConnectWallet: () => void;
 };
 
-export function GMSwapBox(p: Props) {
+export function MarketPoolSwapBox(p: Props) {
   const { chainId } = useChainId();
 
   const [operationTab, setOperationTab] = useState(OperationType.deposit);
   const [modeTab, setModeTab] = useState(Mode.single);
   const [focusedInput, setFocusedInput] = useState<FocusInputId | undefined>();
+  const [isConfirming, setIsConfirming] = useState(false);
 
   const tokensData = useTokensData(chainId, {
     tokenAddresses: getWhitelistedTokens(chainId).map((token) => token.address),
@@ -65,39 +64,68 @@ export function GMSwapBox(p: Props) {
     shortDeltaUsd: shortDelta,
   });
 
+  const tokenSelectorOptionsMap = useMemo(() => adaptToInfoTokens(tokensData), [tokensData]);
+
   const submitButtonState = getSubmitButtonState();
 
-  const infoTokens = useMemo(() => adaptToInfoTokens(tokensData), [tokensData]);
-
   function getDeltaByPoolType(poolType: MarketPoolType) {
-    const relevantTokenState = [firstTokenState, secondTokenState].find(
+    const poolTokenState = [firstTokenState, secondTokenState].find(
       (tokenState) =>
         tokenState.token?.symbol && getTokenPoolType(p.selectedMarket, tokenState.token.symbol) === poolType
     );
 
-    if (!relevantTokenState) return BigNumber.from(0);
+    if (!poolTokenState) return BigNumber.from(0);
 
     return operationTab === OperationType.deposit
-      ? relevantTokenState.usdAmount
-      : BigNumber.from(0).sub(relevantTokenState.usdAmount);
+      ? poolTokenState.usdAmount
+      : BigNumber.from(0).sub(poolTokenState.usdAmount);
   }
 
-  function getSubmitButtonState() {
-    if (operationTab === OperationType.deposit) {
+  function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
+    if (!gmTokenState.usdAmount.gt(0)) {
       return {
-        text: t`Buy GM`,
+        text: t`Enter an amount`,
+        disabled: true,
       };
     }
 
-    if (operationTab === OperationType.withdraw) {
+    if (operationTab === OperationType.deposit) {
+      const insuficcientBalanceToken = [firstTokenState, secondTokenState].find((tokenState) =>
+        tokenState.tokenAmount.gt(tokenState.balance)
+      );
+
+      if (insuficcientBalanceToken) {
+        return {
+          text: t`Insufficient ${insuficcientBalanceToken.token!.symbol} balance`,
+          disabled: true,
+        };
+      }
+
+      return {
+        text: t`Buy GM`,
+        onClick: onSubmit,
+      };
+    } else {
+      if (gmTokenState.tokenAmount.gt(gmTokenState.balance)) {
+        return {
+          text: t`Insufficient ${gmTokenState.token?.symbol} balance`,
+          disabled: true,
+        };
+      }
+
       return {
         text: t`Sell GM`,
+        onClick: onSubmit,
       };
     }
   }
 
   function onSwitchOperation() {
     setOperationTab((prev) => (prev === OperationType.deposit ? OperationType.withdraw : OperationType.deposit));
+  }
+
+  function onSubmit() {
+    setIsConfirming(true);
   }
 
   useEffect(
@@ -153,8 +181,8 @@ export function GMSwapBox(p: Props) {
   );
 
   return (
-    <div className={`App-box GMSwapBox`}>
-      <div className="GMSwapBox-market-dropdown">
+    <div className={`App-box MarketPoolSwapBox`}>
+      <div className="MarketPoolSwapBox-market-dropdown">
         <MarketDropdown selectedMarket={p.selectedMarket} markets={p.markets} onSelect={p.onSelectMarket} />
       </div>
 
@@ -169,13 +197,13 @@ export function GMSwapBox(p: Props) {
       <Tab
         options={Object.values(Mode)}
         optionLabels={modesTexts}
-        className="GMSwapBox-asset-options-tabs"
+        className="MarketPoolSwapBox-asset-options-tabs"
         type="inline"
         option={modeTab}
         onChange={setModeTab}
       />
 
-      <div className={cx("GMSwapBox-form-layout", { reverse: operationTab === OperationType.withdraw })}>
+      <div className={cx("MarketPoolSwapBox-form-layout", { reverse: operationTab === OperationType.withdraw })}>
         {firstTokenState.tokenAddress && firstTokenState.token && (
           <BuyInputSection
             topLeftLabel={operationTab === OperationType.deposit ? t`Pay` : t`Receive`}
@@ -187,7 +215,10 @@ export function GMSwapBox(p: Props) {
               firstTokenState.setInputValue(e.target.value);
             }}
             showMaxButton={operationTab === OperationType.deposit && shouldShowMaxButton(firstTokenState)}
-            onClickMax={() => firstTokenState.setValueByTokenAmount(firstTokenState.balance)}
+            onClickMax={() => {
+              setFocusedInput(FocusInputId.swapFirst);
+              firstTokenState.setValueByTokenAmount(firstTokenState.balance);
+            }}
             balance={formatUsdAmount(firstTokenState.usdAmount)}
           >
             {modeTab === Mode.single ? (
@@ -197,7 +228,7 @@ export function GMSwapBox(p: Props) {
                 tokenAddress={firstTokenState.tokenAddress}
                 onSelectToken={(token) => firstTokenState.setTokenAddress(token.address)}
                 tokens={availableTokens}
-                infoTokens={infoTokens}
+                infoTokens={tokenSelectorOptionsMap}
                 className="GlpSwap-from-token"
                 showSymbolImage={true}
                 showTokenImgInDropdown={true}
@@ -219,7 +250,10 @@ export function GMSwapBox(p: Props) {
               secondTokenState.setInputValue(e.target.value);
             }}
             showMaxButton={operationTab === OperationType.deposit && shouldShowMaxButton(secondTokenState)}
-            onClickMax={() => secondTokenState.setValueByTokenAmount(secondTokenState.balance)}
+            onClickMax={() => {
+              setFocusedInput(FocusInputId.swapSecond);
+              secondTokenState.setValueByTokenAmount(secondTokenState.balance);
+            }}
             balance={formatUsdAmount(secondTokenState.usdAmount)}
           >
             <div className="selected-token">{secondTokenState.token.symbol}</div>
@@ -242,19 +276,20 @@ export function GMSwapBox(p: Props) {
             gmTokenState.setInputValue(e.target.value);
           }}
           showMaxButton={operationTab === OperationType.withdraw && shouldShowMaxButton(gmTokenState)}
-          onClickMax={() => gmTokenState.setValueByTokenAmount(gmTokenState.balance)}
+          onClickMax={() => {
+            setFocusedInput(FocusInputId.gm);
+            gmTokenState.setValueByTokenAmount(gmTokenState.balance);
+          }}
           balance={formatUsdAmount(gmTokenState.usdAmount)}
         >
           <div className="selected-token">GM</div>
         </BuyInputSection>
       </div>
 
-      <div className="GMSwapBox-info-section">
-        <div className="Exchange-info-row">
-          <div className="Exchange-info-label">
-            <Trans>Fees and price impact</Trans>
-          </div>
-          <div className="align-right">
+      <div className="MarketPoolSwapBox-info-section">
+        <InfoRow
+          label={<Trans>Fees and price impact</Trans>}
+          value={
             <Tooltip
               handle={formatPriceImpact(priceImpact)}
               position="right-bottom"
@@ -264,14 +299,35 @@ export function GMSwapBox(p: Props) {
                 </div>
               )}
             />
-          </div>
-        </div>
+          }
+        />
       </div>
       <div className="Exchange-swap-button-container">
-        <button className="App-cta Exchange-swap-button" onClick={() => null} disabled={false}>
-          {submitButtonState?.text}
-        </button>
+        <SubmitButton
+          authRequired
+          onConnectWallet={p.onConnectWallet}
+          onClick={submitButtonState.onClick}
+          disabled={submitButtonState.disabled}
+        >
+          {submitButtonState.text}
+        </SubmitButton>
       </div>
+
+      {isConfirming && (
+        <MarketPoolSwapConfirmation
+          firstSwapTokenAddress={firstTokenState.tokenAddress!}
+          firstSwapTokenAmount={firstTokenState.tokenAmount}
+          secondSwapTokenAddress={secondTokenState.tokenAddress}
+          secondSwapTokenAmount={secondTokenState.tokenAmount}
+          gmSwapAmount={gmTokenState.tokenAmount}
+          onClose={() => setIsConfirming(false)}
+          tokensData={tokensData}
+          priceImpact={priceImpact}
+          operationType={operationTab}
+          onSubmit={() => null}
+          onApproveToken={() => null}
+        />
+      )}
     </div>
   );
 }

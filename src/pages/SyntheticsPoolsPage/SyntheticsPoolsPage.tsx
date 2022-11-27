@@ -1,16 +1,20 @@
 import { Trans } from "@lingui/macro";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { GMStats } from "components/GM/GMStats/GMStats";
-import { GMSwapBox } from "components/GM/GMSwapBox/GMSwapBox";
+import { SyntheticsMarketStats } from "components/SyntheticsMarketStats/SyntheticsMarketStats";
+import { MarketPoolSwapBox } from "components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox";
 import { getSyntheticsMarkets } from "config/synthetics";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useState } from "react";
 
-import "./PoolsPage.scss";
+import "./SyntheticsPoolsPage.scss";
 
-export function PoolsPage() {
+type Props = {
+  connectWallet: () => void;
+};
+
+export function SyntheticsPoolsPage(p: Props) {
   const { chainId } = useChainId();
 
   const markets = getSyntheticsMarkets(chainId);
@@ -33,10 +37,15 @@ export function PoolsPage() {
           </div>
         </div>
 
-        <div className="PoolsPage-content">
-          <GMStats market={selectedMarket} />
-          <div className="PoolsPage-swap-box">
-            <GMSwapBox selectedMarket={selectedMarket} markets={markets} onSelectMarket={setSelectedMarket} />
+        <div className="SyntheticsPoolsPage-content">
+          <SyntheticsMarketStats market={selectedMarket} />
+          <div className="SyntheticsPoolsPage-swap-box">
+            <MarketPoolSwapBox
+              onConnectWallet={p.connectWallet}
+              selectedMarket={selectedMarket}
+              markets={markets}
+              onSelectMarket={setSelectedMarket}
+            />
           </div>
         </div>
       </div>

@@ -1,11 +1,11 @@
-.GMMarketInfo-card {
+.SyntheticsMarketStats-card {
   flex: 1;
   max-width: 71.2rem;
   min-width: 40rem;
   margin-right: 1.5rem;
 }
 
-.GMMarketInfo-card .App-card-row .label {
+.SyntheticsMarketStats-card .App-card-row .label {
   color: #a9a9b0;
   opacity: 1;
 }
@@ -43,7 +43,7 @@
 }
 
 @media (max-width: 900px) {
-  .GMMarketInfo-card {
+  .SyntheticsMarketStats-card {
     margin: 0;
     margin-bottom: 3.1rem;
     max-width: 100%;

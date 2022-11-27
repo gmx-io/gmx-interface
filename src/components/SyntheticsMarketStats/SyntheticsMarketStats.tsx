@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { GLP_DECIMALS, USD_DECIMALS } from "lib/legacy";
-import Tooltip from "../../Tooltip/Tooltip";
+import Tooltip from "../Tooltip/Tooltip";
 import gmIcon from "img/gm_icon.svg";
 import arbitrum16Icon from "img/ic_arbitrum_16.svg";
 import avalanche16Icon from "img/ic_avalanche_16.svg";
@@ -10,17 +10,17 @@ import { bigNumberify, formatAmount } from "lib/numbers";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { SyntheticsMarket } from "domain/synthetics/markets/types";
 
-import "./GMStats.scss";
+import "./SyntheticsMarketStats.scss";
 
 type Props = {
   market: SyntheticsMarket;
 };
 
-export function GMStats(p: Props) {
+export function SyntheticsMarketStats(p: Props) {
   const { chainId } = useChainId();
 
   return (
-    <div className="App-card GMMarketInfo-card">
+    <div className="App-card SyntheticsMarketStats-card">
       <div className="App-card-title">
         <div className="App-card-title-mark">
           <div className="App-card-title-mark-icon">

@@ -1,6 +1,7 @@
 import { InfoTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { expandDecimals } from "lib/numbers";
+import { USD_DECIMALS } from "lib/legacy";
+import { expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { TokenBalancesData, TokenConfigsData, TokenPricesData } from "./types";
 
 export function getTokenPriceData(data: TokenPricesData, tokenAddress?: string) {
@@ -91,3 +92,27 @@ export function convertFromUsdByPrice(usdAmount: BigNumber, tokenDecimals: numbe
 export function convertToUsdByPrice(tokenAmount: BigNumber, tokenDecimals: number, price: BigNumber) {
   return tokenAmount.mul(price).div(expandDecimals(1, tokenDecimals));
 }
+
+export function formatTokenAmount(amount?: BigNumber, tokenDecimals?: number, showAllSignificant?: boolean) {
+  if (!tokenDecimals || !amount) return formatAmount(BigNumber.from(0), 4, 4);
+
+  if (showAllSignificant) return formatAmountFree(amount, tokenDecimals, tokenDecimals);
+
+  return formatAmount(amount, tokenDecimals, 4);
+}
+
+export function formatUsdAmount(amount?: BigNumber) {
+  return `$${formatAmount(amount || BigNumber.from(0), USD_DECIMALS, 2, true)}`;
+}
+
+export function formatTokenAmountWithUsd(
+  tokenAmount?: BigNumber,
+  usdAmount?: BigNumber,
+  tokenSymbol?: string,
+  tokenDecimals?: number
+) {
+  return `${formatTokenAmount(tokenAmount, tokenDecimals)} ${tokenSymbol} (${formatUsdAmount(usdAmount)})`;
+}
+
+// TODO
+export const MOCK_GM_PRICE = parseValue("100", USD_DECIMALS)!;

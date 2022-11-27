@@ -7,6 +7,7 @@ export function useNativeTokenBalance() {
 
   const key = active && account ? [account] : null;
 
+  // TODO: SWR is used only for polling here
   const { data } = useSWR<BigNumber>(key, {
     fetcher: async () => {
       const signer = library.getSigner();

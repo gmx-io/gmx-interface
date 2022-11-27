@@ -97,7 +97,7 @@ import {
 } from "lib/wallets";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { PoolsPage } from "pages/PoolsPage/PoolsPage";
+import { SyntheticsPoolsPage } from "pages/SyntheticsPoolsPage/SyntheticsPoolsPage";
 import { MultiCallProvider } from "lib/multicall";
 
 if ("ethereum" in window) {
@@ -492,7 +492,7 @@ function FullApp() {
                 />
               </Route>
               <Route exact path="/pools">
-                <PoolsPage />
+                <SyntheticsPoolsPage connectWallet={connectWallet} />
               </Route>
               <Route exact path="/buy_glp">
                 <BuyGlp

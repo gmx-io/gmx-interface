@@ -5,13 +5,16 @@ import { parseValue } from "lib/numbers";
 const EXPONENT_FACTOR = 2;
 const FACTOR = 1000000;
 
-function applyImpactFactor(diff: BigNumber) {
-  const exp = diff.pow(EXPONENT_FACTOR).div(FACTOR).div(PRECISION);
+export type PriceImpactData = {
+  priceImpactDiff: BigNumber;
+  priceImpactBasisPoints: BigNumber;
+};
 
-  return exp;
-}
-
-export function usePriceImpact(p: { marketKey: string; shortDeltaUsd?: BigNumber; longDeltaUsd?: BigNumber }) {
+export function usePriceImpact(p: {
+  marketKey: string;
+  shortDeltaUsd?: BigNumber;
+  longDeltaUsd?: BigNumber;
+}): PriceImpactData {
   const longInterest: BigNumber = parseValue("1000000", USD_DECIMALS)!;
   const shortInterest: BigNumber = parseValue("2000000", USD_DECIMALS)!;
 
@@ -41,4 +44,10 @@ export function usePriceImpact(p: { marketKey: string; shortDeltaUsd?: BigNumber
     priceImpactDiff,
     priceImpactBasisPoints,
   };
+}
+
+function applyImpactFactor(diff: BigNumber) {
+  const exp = diff.pow(EXPONENT_FACTOR).div(FACTOR).div(PRECISION);
+
+  return exp;
 }

@@ -1,15 +1,15 @@
-.PoolsPage-content {
+.SyntheticsPoolsPage-content {
   display: flex;
   justify-content: space-between;
 }
 
-.PoolsPage-content .PoolsPage-swap-box {
+.SyntheticsPoolsPage-content .SyntheticsPoolsPage-swap-box {
   max-width: 47.95rem;
   width: 100%;
 }
 
 @media (max-width: 900px) {
-  .PoolsPage-content {
+  .SyntheticsPoolsPage-content {
     flex-wrap: wrap;
   }
 }

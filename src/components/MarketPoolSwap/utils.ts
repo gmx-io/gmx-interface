@@ -1,16 +1,18 @@
 import { getTokenBySymbol } from "config/tokens";
 import { TokensData } from "domain/synthetics/tokens/types";
 import {
+  formatTokenAmount,
   getTokenAmountFromUsd,
   getTokenBalance,
   getTokenConfig,
   getTokenPrice,
   getUsdFromTokenAmount,
+  MOCK_GM_PRICE,
 } from "domain/synthetics/tokens/utils";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { GM_DECIMALS, USD_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import { GM_DECIMALS } from "lib/legacy";
+import { expandDecimals, parseValue } from "lib/numbers";
 import { useState } from "react";
 
 type SwapTokenState = {
@@ -91,7 +93,7 @@ export function useGmTokenState(chainId: number): SwapTokenState {
 
   const token = getTokenBySymbol(chainId, "GM");
 
-  const price = parseValue("100", USD_DECIMALS)!;
+  const price = MOCK_GM_PRICE;
   const tokenAmount = parseValue(inputValue || "0", GM_DECIMALS) || BigNumber.from(0);
   const usdAmount = tokenAmount.mul(price).div(expandDecimals(1, GM_DECIMALS));
   const balance = parseValue("3.214", GM_DECIMALS)!;
@@ -128,66 +130,6 @@ export function useGmTokenState(chainId: number): SwapTokenState {
   };
 }
 
-export function formatTokenAmount(amount?: BigNumber, tokenDecimals?: number, showAllSignificant?: boolean) {
-  if (!tokenDecimals || !amount) return formatAmount(BigNumber.from(0), 4, 4);
-
-  if (showAllSignificant) return formatAmountFree(amount, tokenDecimals, tokenDecimals);
-
-  return formatAmount(amount, tokenDecimals, 4);
-}
-
-export function formatUsdAmount(amount?: BigNumber) {
-  return `$${formatAmount(amount || BigNumber.from(0), USD_DECIMALS, 2, true)}`;
-}
-
-export function formatPriceImpact(p: { priceImpactBasisPoints: BigNumber; priceImpactDiff: BigNumber }) {
-  if (!p.priceImpactBasisPoints.gt(0)) {
-    return "...";
-  }
-
-  const formattedUsd = formatUsdAmount(p.priceImpactDiff);
-  const formattedBp = formatAmount(p.priceImpactBasisPoints, 2, 2);
-
-  return `${formattedBp}% ($${formattedUsd})`;
-}
-
 export function shouldShowMaxButton(tokenState: { balance?: BigNumber; tokenAmount: BigNumber }) {
   return tokenState.balance?.gt(0) && tokenState.tokenAmount.lt(tokenState.balance);
 }
-
-// export function getDeltas(
-//   selectedMarket: SyntheticsMarket,
-//   operationType: OperationType,
-//   tokenAmounts: { usdAmount: BigNumber; symbol: string }[]
-// ) {
-//   const deltas = {
-//     longDelta: BigNumber.from(0),
-//     shortDelta: BigNumber.from(0),
-//   };
-
-//   const deltas = tokenAmounts.reduce(
-//     (acc, { usdAmount, symbol }) => {
-//       if (usdAmount?.lte(0)) {
-//         return acc;
-//       }
-
-//       if (symbol === selectedMarket.longCollateralSymbol) {
-//         acc.longDelta;
-//       }
-
-//       if (tokenState.usdAmount.gt(0)) {
-//         if (tokenState.token?.symbol === p.selectedMarket.longCollateralSymbol) {
-//           acc.longDelta = tokenState.usdAmount;
-//         } else if (tokenState.token?.symbol === p.selectedMarket.shortCollateralSymbol) {
-//           acc.shortDelta = tokenState.usdAmount;
-//         }
-//       }
-
-//       return acc;
-//     },
-//     {
-//       longDelta: BigNumber.from(0),
-//       shortDelta: BigNumber.from(0),
-//     }
-//   );
-// }
