@@ -1,9 +1,10 @@
 import { gql } from "@apollo/client";
 import { BigNumber } from "ethers";
 import { useState, useEffect } from "react";
+import { Period } from "./constants";
 import { getNissohGraphClient } from "./graph";
 
-export function useGeneralSettledLeaderboard(chainId, period: number) {
+export function useGeneralSettledLeaderboard(chainId, period: Period) {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -26,13 +27,22 @@ export function useGeneralSettledLeaderboard(chainId, period: number) {
     async function main() {
       setLoading(true);
 
+      let seconds = 0;
+      if (period === Period.day) {
+        seconds = 86400;
+      } else if (period === Period.week) {
+        seconds = 86400 * 7;
+      } else if (period === Period.month) {
+        seconds = 86400 * 7 * 4;
+      }
+
       const allTrades: any[] = [];
 
       for (let i = 0; ; i++) {
         const { data: res } = await getNissohGraphClient(chainId).query({
           query,
           variables: {
-            timestamp: Math.round(Date.now() / 1000) - 86400,
+            timestamp: Math.round(Date.now() / 1000) - seconds,
             skip: i * 1000,
           },
         });

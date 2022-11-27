@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/macro";
 import Pagination from "components/Pagination/Pagination";
 import Tab from "components/Tab/Tab";
+import { Period } from "domain/leaderboard/constants";
 import { useGeneralSettledLeaderboard } from "domain/leaderboard/useGeneralLeaderboards";
 import { useChainId } from "lib/chains";
 import { shortenAddress, USD_DECIMALS } from "lib/legacy";
@@ -11,9 +12,9 @@ import { FiSearch } from "react-icons/fi";
 
 export default function GeneralSettledLeaderboard() {
   const { chainId } = useChainId();
-  const { data: stats, loading } = useGeneralSettledLeaderboard(chainId, 0);
   const [page, setPage] = useState(1);
-  const [period, setPeriod] = useState(0);
+  const [period, setPeriod] = useState(Period.day);
+  const { data: stats, loading } = useGeneralSettledLeaderboard(chainId, period);
   const perPage = 15;
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 300);
@@ -52,7 +53,7 @@ export default function GeneralSettledLeaderboard() {
           type="inline"
           option={period}
           onChange={(val) => setPeriod(val)}
-          options={[0, 1, 2]}
+          options={[Period.day, Period.week, Period.month]}
           optionLabels={["24 hours", "7 days", "1 month"]}
         />
       </div>
@@ -82,16 +83,17 @@ export default function GeneralSettledLeaderboard() {
               <td colSpan={9}>Not account found</td>
             </tr>
           )}
-          {displayedStats().map((stat) => (
-            <tr key={stat.rank}>
-              <td>#{stat.rank}</td>
-              <td>{shortenAddress(stat.account, 12)}</td>
-              <td>{formatAmount(stat.realizedPnl, USD_DECIMALS, 0, true)}</td>
-              <td className="text-right">
-                {stat.winCount} / {stat.lossCount}
-              </td>
-            </tr>
-          ))}
+          {!loading &&
+            displayedStats().map((stat) => (
+              <tr key={stat.rank}>
+                <td>#{stat.rank}</td>
+                <td>{shortenAddress(stat.account, 12)}</td>
+                <td>{formatAmount(stat.realizedPnl, USD_DECIMALS, 0, true)}</td>
+                <td className="text-right">
+                  {stat.winCount} / {stat.lossCount}
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
       <Pagination page={page} pageCount={pageCount()} onPageChange={(p) => setPage(p)} />

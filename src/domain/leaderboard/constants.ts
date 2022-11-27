@@ -30,3 +30,9 @@ export const GRAPHS = {
 export function getCurrentCompetitionIndex(chainId) {
   return CURRENT_COMPETITION_INDEX[chainId];
 }
+
+export enum Period {
+  day,
+  week,
+  month,
+}
