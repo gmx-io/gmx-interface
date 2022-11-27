@@ -47,7 +47,7 @@ import { CLOSE_POSITION_RECEIVE_TOKEN_KEY, SLIPPAGE_BPS_KEY } from "config/local
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
-import { getTokens } from "config/tokens";
+import { getTokens, getWrappedToken } from "config/tokens";
 import { formatDateTime, getTimeRemaining } from "lib/dates";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
@@ -154,6 +154,7 @@ export default function PositionSeller(props) {
   const longOrShortText = position?.isLong ? t`Long` : t`Short`;
 
   const toTokens = isContractAccount ? getTokens(chainId).filter((t) => !t.isNative) : getTokens(chainId);
+  const wrappedToken = getWrappedToken(chainId);
 
   const [savedRecieveTokenAddress, setSavedRecieveTokenAddress] = useLocalStorageByChainId(
     chainId,
@@ -282,11 +283,17 @@ export default function PositionSeller(props) {
 
   useEffect(() => {
     if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken?.address)) {
-      const wrappedToken = toTokens.find((t) => t.baseSymbol === nativeTokenSymbol);
       setSwapToToken(wrappedToken);
       setSavedRecieveTokenAddress(wrappedToken.address);
     }
-  }, [isContractAccount, isSwapAllowed, nativeTokenSymbol, receiveToken, setSavedRecieveTokenAddress, toTokens]);
+  }, [
+    isContractAccount,
+    isSwapAllowed,
+    nativeTokenSymbol,
+    receiveToken?.address,
+    wrappedToken,
+    setSavedRecieveTokenAddress,
+  ]);
 
   let executionFee = orderOption === STOP ? getConstant(chainId, "DECREASE_ORDER_EXECUTION_GAS_FEE") : minExecutionFee;
 
@@ -371,7 +378,6 @@ export default function PositionSeller(props) {
 
     // receiveToken does not need to change for STOP order
     if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken.address)) {
-      const wrappedToken = toTokens.find((t) => t.baseSymbol === nativeTokenSymbol);
       receiveToken = wrappedToken;
     }
 
