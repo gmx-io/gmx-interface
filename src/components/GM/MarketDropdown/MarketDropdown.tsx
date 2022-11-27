@@ -1,7 +1,7 @@
 import { Menu } from "@headlessui/react";
 import { FaChevronDown } from "react-icons/fa";
-import { SyntheticsMarket } from "domain/synthetics/types";
-import { getMarketFullName } from "domain/synthetics/utils";
+import { SyntheticsMarket } from "domain/synthetics/markets/types";
+import { getMarketTokenFullName } from "domain/synthetics/markets/utils";
 import "./MarketDropdown.scss";
 
 export type MarketOption = {
@@ -20,7 +20,7 @@ export function MarketDropdown(p: Props) {
       <Menu>
         <Menu.Button as="div">
           <button className="MarketDropdown-current">
-            <span className="MarketDropdown-current-label">{getMarketFullName(p.selectedMarket)}</span>
+            <span className="MarketDropdown-current-label">{getMarketTokenFullName(p.selectedMarket)}</span>
             <FaChevronDown className="MarketDropdown-current-arrow" />
           </button>
         </Menu.Button>
@@ -28,7 +28,7 @@ export function MarketDropdown(p: Props) {
           {p.markets.map((market) => (
             <Menu.Item key={market.indexTokenSymbol}>
               <div className="MarketDropdown-option" onClick={() => p.onSelect(market)}>
-                {getMarketFullName(market)}
+                {getMarketTokenFullName(market)}
               </div>
             </Menu.Item>
           ))}

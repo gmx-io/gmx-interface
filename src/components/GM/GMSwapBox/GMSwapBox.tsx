@@ -1,33 +1,39 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import TokenSelector from "components/Exchange/TokenSelector";
 import Tab from "components/Tab/Tab";
 import Tooltip from "components/Tooltip/Tooltip";
-import { getTokenBySymbol } from "config/tokens";
-import { SyntheticsMarket } from "domain/synthetics/types";
-import { getTokenAmountFromUsd, InfoTokens } from "domain/tokens";
+import { getTokenBySymbol, getWhitelistedTokens } from "config/tokens";
+import { MarketPoolType, SyntheticsMarket } from "domain/synthetics/markets/types";
 import { useChainId } from "lib/chains";
-import { GM_DECIMALS, USD_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmount, formatAmountFree } from "lib/numbers";
-import { useEffect, useState } from "react";
+import { GM_DECIMALS } from "lib/legacy";
+import { useEffect, useMemo, useState } from "react";
 
 import { MarketDropdown } from "../MarketDropdown/MarketDropdown";
 import { FocusInputId, Mode, modesTexts, OperationType, operationTypesTexts } from "./constants";
-import { shouldShowMaxButton, useGmTokenState, useSwapTokenState } from "./utils";
+import {
+  formatPriceImpact,
+  formatTokenAmount,
+  formatUsdAmount,
+  shouldShowMaxButton,
+  useGmTokenState,
+  useSwapTokenState,
+} from "./utils";
 
+import { getMarketKey, getTokenPoolType } from "domain/synthetics/markets/utils";
 import { usePriceImpact } from "domain/synthetics/usePriceImpact";
-import { getMarketKey } from "domain/synthetics/utils";
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
 
+import { useTokensData } from "domain/synthetics/tokens/useTokensData";
 import "./GMSwapBox.scss";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+import { adaptToInfoTokens } from "domain/synthetics/tokens/utils";
 
 type Props = {
   selectedMarket: SyntheticsMarket;
   markets: SyntheticsMarket[];
   onSelectMarket: (market: SyntheticsMarket) => void;
-  infoTokens: InfoTokens;
 };
 
 export function GMSwapBox(p: Props) {
@@ -37,14 +43,58 @@ export function GMSwapBox(p: Props) {
   const [modeTab, setModeTab] = useState(Mode.single);
   const [focusedInput, setFocusedInput] = useState<FocusInputId | undefined>();
 
+  const tokensData = useTokensData(chainId, {
+    tokenAddresses: getWhitelistedTokens(chainId).map((token) => token.address),
+  });
+
   const availableTokens = [p.selectedMarket.longCollateralSymbol, p.selectedMarket.shortCollateralSymbol].map(
     (symbol) => getTokenBySymbol(chainId, symbol)
   );
 
-  const firstTokenState = useSwapTokenState(p.infoTokens, { tokenAddress: availableTokens[0].address });
-  const secondTokenState = useSwapTokenState(p.infoTokens);
+  const firstTokenState = useSwapTokenState(tokensData, { tokenAddress: availableTokens[0].address });
+  const secondTokenState = useSwapTokenState(tokensData);
 
-  const gmTokenState = useGmTokenState();
+  const gmTokenState = useGmTokenState(chainId);
+
+  const longDelta = getDeltaByPoolType(MarketPoolType.Long);
+  const shortDelta = getDeltaByPoolType(MarketPoolType.Short);
+
+  const priceImpact = usePriceImpact({
+    marketKey: getMarketKey(p.selectedMarket),
+    longDeltaUsd: longDelta,
+    shortDeltaUsd: shortDelta,
+  });
+
+  const submitButtonState = getSubmitButtonState();
+
+  const infoTokens = useMemo(() => adaptToInfoTokens(tokensData), [tokensData]);
+
+  function getDeltaByPoolType(poolType: MarketPoolType) {
+    const relevantTokenState = [firstTokenState, secondTokenState].find(
+      (tokenState) =>
+        tokenState.token?.symbol && getTokenPoolType(p.selectedMarket, tokenState.token.symbol) === poolType
+    );
+
+    if (!relevantTokenState) return BigNumber.from(0);
+
+    return operationTab === OperationType.deposit
+      ? relevantTokenState.usdAmount
+      : BigNumber.from(0).sub(relevantTokenState.usdAmount);
+  }
+
+  function getSubmitButtonState() {
+    if (operationTab === OperationType.deposit) {
+      return {
+        text: t`Buy GM`,
+      };
+    }
+
+    if (operationTab === OperationType.withdraw) {
+      return {
+        text: t`Sell GM`,
+      };
+    }
+  }
 
   function onSwitchOperation() {
     setOperationTab((prev) => (prev === OperationType.deposit ? OperationType.withdraw : OperationType.deposit));
@@ -71,34 +121,14 @@ export function GMSwapBox(p: Props) {
       if ([FocusInputId.swapFirst, FocusInputId.swapSecond].includes(focusedInput)) {
         const swapSumUsd = firstTokenState.usdAmount.add(secondTokenState.usdAmount);
 
-        const nextGmAmount = swapSumUsd.mul(expandDecimals(1, GM_DECIMALS)).div(gmTokenState.gmPrice);
-
-        const nextGmInputValue = formatAmountFree(nextGmAmount, GM_DECIMALS, GM_DECIMALS);
-
-        if (gmTokenState.inputValue !== nextGmInputValue) {
-          gmTokenState.setInputValue(nextGmInputValue);
-        }
+        gmTokenState.setValueByUsdAmount(swapSumUsd);
 
         return;
       }
 
       if (focusedInput === FocusInputId.gm) {
         if (modeTab === Mode.single && firstTokenState.tokenAddress) {
-          const newSwapTokenAmount = getTokenAmountFromUsd(
-            p.infoTokens,
-            firstTokenState.tokenAddress,
-            gmTokenState.usdAmount
-          )!;
-
-          const nextTokenValue = formatAmountFree(
-            newSwapTokenAmount,
-            firstTokenState.info!.decimals,
-            firstTokenState.info!.decimals
-          );
-
-          if (firstTokenState.inputValue !== nextTokenValue) {
-            firstTokenState.setInputValue(nextTokenValue);
-          }
+          firstTokenState.setValueByUsdAmount(gmTokenState.usdAmount);
 
           return;
         }
@@ -109,100 +139,18 @@ export function GMSwapBox(p: Props) {
           const firstTokenUsd = firstTokenState.usdAmount
             .mul(gmTokenState.usdAmount)
             .div(previousSum.gt(0) ? previousSum : 1);
+
           const secondTokenUsd = gmTokenState.usdAmount.sub(firstTokenUsd);
 
-          const nextFirstTokenAmount = getTokenAmountFromUsd(
-            p.infoTokens,
-            firstTokenState.tokenAddress,
-            firstTokenUsd
-          )!;
-
-          const nextSecondTokenAmount = getTokenAmountFromUsd(
-            p.infoTokens,
-            secondTokenState.tokenAddress,
-            secondTokenUsd
-          )!;
-
-          const nextFirstTokenValue = formatAmountFree(
-            nextFirstTokenAmount,
-            firstTokenState.info!.decimals,
-            firstTokenState.info!.decimals
-          );
-
-          const nextSecondTokenValue = formatAmountFree(
-            nextSecondTokenAmount,
-            secondTokenState.info!.decimals,
-            secondTokenState.info!.decimals
-          );
-
-          if (
-            firstTokenState.inputValue !== nextFirstTokenValue ||
-            secondTokenState.inputValue !== nextSecondTokenValue
-          ) {
-            firstTokenState.setInputValue(nextFirstTokenValue);
-            secondTokenState.setInputValue(nextSecondTokenValue);
-          }
+          firstTokenState.setValueByUsdAmount(firstTokenUsd);
+          secondTokenState.setValueByUsdAmount(secondTokenUsd);
 
           return;
         }
       }
     },
-    [focusedInput, firstTokenState, secondTokenState, gmTokenState, modeTab, p.infoTokens]
+    [focusedInput, firstTokenState, secondTokenState, gmTokenState, modeTab]
   );
-
-  let { longDelta, shortDelta } = [firstTokenState, secondTokenState].reduce(
-    (acc, tokenState) => {
-      if (tokenState.usdAmount?.gt(0)) {
-        if (tokenState.info?.symbol === p.selectedMarket.longCollateralSymbol) {
-          acc.longDelta = tokenState.usdAmount;
-        } else if (tokenState.info?.symbol === p.selectedMarket.shortCollateralSymbol) {
-          acc.shortDelta = tokenState.usdAmount;
-        }
-      }
-
-      return acc;
-    },
-    {
-      longDelta: BigNumber.from(0),
-      shortDelta: BigNumber.from(0),
-    }
-  );
-
-  if (operationTab === OperationType.deposit) {
-    longDelta = BigNumber.from(0).sub(longDelta);
-    shortDelta = BigNumber.from(0).sub(shortDelta);
-  }
-
-  const priceImpact = usePriceImpact({
-    marketKey: getMarketKey(p.selectedMarket),
-    longDeltaUsd: longDelta,
-    shortDeltaUsd: shortDelta,
-  });
-
-  let formattedPriceImpact = "...";
-
-  if (priceImpact.priceImpactBasisPoints.gt(0)) {
-    const formattedPriceImpactUsd = formatAmount(priceImpact.priceImpactDiff, USD_DECIMALS, 2, true);
-    const formattedPriceImpactBp = formatAmount(priceImpact.priceImpactBasisPoints, 2, 2);
-
-    formattedPriceImpact = `${formattedPriceImpactBp}% ($${formattedPriceImpactUsd})`;
-  }
-
-  function getSubmitButtonState() {
-    if (operationTab === OperationType.deposit) {
-      return {
-        text: t`Buy GM`,
-      };
-    }
-
-    if (operationTab === OperationType.withdraw) {
-      return {
-        text: t`Sell GM`,
-      };
-    }
-  }
-
-  const submitButtonState = getSubmitButtonState();
 
   return (
     <div className={`App-box GMSwapBox`}>
@@ -228,11 +176,11 @@ export function GMSwapBox(p: Props) {
       />
 
       <div className={cx("GMSwapBox-form-layout", { reverse: operationTab === OperationType.withdraw })}>
-        {firstTokenState.tokenAddress && (
+        {firstTokenState.tokenAddress && firstTokenState.token && (
           <BuyInputSection
             topLeftLabel={operationTab === OperationType.deposit ? t`Pay` : t`Receive`}
             topRightLabel={t`Balance:`}
-            tokenBalance={firstTokenState.balanceFormatted}
+            tokenBalance={formatTokenAmount(firstTokenState.balance, firstTokenState.token?.decimals)}
             inputValue={firstTokenState.inputValue}
             onInputValueChange={(e) => {
               setFocusedInput(FocusInputId.swapFirst);
@@ -240,7 +188,7 @@ export function GMSwapBox(p: Props) {
             }}
             showMaxButton={operationTab === OperationType.deposit && shouldShowMaxButton(firstTokenState)}
             onClickMax={() => firstTokenState.setValueByTokenAmount(firstTokenState.balance)}
-            balance={firstTokenState.usdAmountFormatted}
+            balance={formatUsdAmount(firstTokenState.usdAmount)}
           >
             {modeTab === Mode.single ? (
               <TokenSelector
@@ -249,22 +197,22 @@ export function GMSwapBox(p: Props) {
                 tokenAddress={firstTokenState.tokenAddress}
                 onSelectToken={(token) => firstTokenState.setTokenAddress(token.address)}
                 tokens={availableTokens}
-                infoTokens={p.infoTokens}
+                infoTokens={infoTokens}
                 className="GlpSwap-from-token"
                 showSymbolImage={true}
                 showTokenImgInDropdown={true}
               />
             ) : (
-              <div className="selected-token">{firstTokenState.info?.symbol}</div>
+              <div className="selected-token">{firstTokenState.token?.symbol}</div>
             )}
           </BuyInputSection>
         )}
 
-        {secondTokenState.tokenAddress && (
+        {secondTokenState.token && (
           <BuyInputSection
             topLeftLabel={operationTab === OperationType.deposit ? t`Pay` : t`Receive`}
             topRightLabel={t`Balance:`}
-            tokenBalance={secondTokenState.balanceFormatted}
+            tokenBalance={formatTokenAmount(secondTokenState.balance, secondTokenState.token?.decimals)}
             inputValue={secondTokenState.inputValue}
             onInputValueChange={(e) => {
               setFocusedInput(FocusInputId.swapSecond);
@@ -272,9 +220,9 @@ export function GMSwapBox(p: Props) {
             }}
             showMaxButton={operationTab === OperationType.deposit && shouldShowMaxButton(secondTokenState)}
             onClickMax={() => secondTokenState.setValueByTokenAmount(secondTokenState.balance)}
-            balance={secondTokenState.usdAmountFormatted}
+            balance={formatUsdAmount(secondTokenState.usdAmount)}
           >
-            <div className="selected-token">{secondTokenState.info?.symbol}</div>
+            <div className="selected-token">{secondTokenState.token.symbol}</div>
           </BuyInputSection>
         )}
 
@@ -287,7 +235,7 @@ export function GMSwapBox(p: Props) {
         <BuyInputSection
           topLeftLabel={operationTab === OperationType.withdraw ? t`Pay` : t`Receive`}
           topRightLabel={t`Balance:`}
-          tokenBalance={gmTokenState.balanceFormatted}
+          tokenBalance={formatTokenAmount(gmTokenState.balance, GM_DECIMALS)}
           inputValue={gmTokenState.inputValue}
           onInputValueChange={(e) => {
             setFocusedInput(FocusInputId.gm);
@@ -295,7 +243,7 @@ export function GMSwapBox(p: Props) {
           }}
           showMaxButton={operationTab === OperationType.withdraw && shouldShowMaxButton(gmTokenState)}
           onClickMax={() => gmTokenState.setValueByTokenAmount(gmTokenState.balance)}
-          balance={gmTokenState.usdAmountFormatted}
+          balance={formatUsdAmount(gmTokenState.usdAmount)}
         >
           <div className="selected-token">GM</div>
         </BuyInputSection>
@@ -308,7 +256,7 @@ export function GMSwapBox(p: Props) {
           </div>
           <div className="align-right">
             <Tooltip
-              handle={formattedPriceImpact}
+              handle={formatPriceImpact(priceImpact)}
               position="right-bottom"
               renderContent={() => (
                 <div className="text-white">

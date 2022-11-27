@@ -1,14 +1,9 @@
 import { Trans } from "@lingui/macro";
-import { useWeb3React } from "@web3-react/core";
 import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GMStats } from "components/GM/GMStats/GMStats";
 import { GMSwapBox } from "components/GM/GMSwapBox/GMSwapBox";
 import { getSyntheticsMarkets } from "config/synthetics";
-import { getWhitelistedTokens } from "config/tokens";
-import { useMcTokenBalances } from "domain/synthetics/tokens/useTokenBalances";
-import { useInfoTokens } from "domain/tokens";
-import { useTokenBalances } from "domain/tokens/useTokenBalances";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useState } from "react";
@@ -17,20 +12,9 @@ import "./PoolsPage.scss";
 
 export function PoolsPage() {
   const { chainId } = useChainId();
-  const { library, active } = useWeb3React();
 
   const markets = getSyntheticsMarkets(chainId);
   const [selectedMarket, setSelectedMarket] = useState(markets[0]);
-
-  // TODO: Synthetics tokens
-  const tokens = getWhitelistedTokens(chainId);
-  const tokenAddresses = tokens.map((token) => token.address);
-  const { tokenBalances } = useTokenBalances({ tokenAddresses });
-  const { infoTokens } = useInfoTokens(library, chainId, active, tokenBalances, undefined);
-
-  useMcTokenBalances(chainId, { tokenAddresses });
-
-  useMcTokenBalances(chainId, { tokenAddresses: tokenAddresses.slice(0, 2) });
 
   return (
     <SEO title={getPageTitle("Synthetics pools")}>
@@ -52,12 +36,7 @@ export function PoolsPage() {
         <div className="PoolsPage-content">
           <GMStats market={selectedMarket} />
           <div className="PoolsPage-swap-box">
-            <GMSwapBox
-              infoTokens={infoTokens}
-              selectedMarket={selectedMarket}
-              markets={markets}
-              onSelectMarket={setSelectedMarket}
-            />
+            <GMSwapBox selectedMarket={selectedMarket} markets={markets} onSelectMarket={setSelectedMarket} />
           </div>
         </div>
       </div>

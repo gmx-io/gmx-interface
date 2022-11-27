@@ -48,7 +48,7 @@ import { getContract } from "config/contracts";
 
 import Checkbox from "../Checkbox/Checkbox";
 import Tab from "../Tab/Tab";
-import TokenSelector from "./TokenSelector";
+import TokenSelector from "components/TokenSelector/TokenSelector";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import ConfirmationBox from "./ConfirmationBox";
 import OrdersToa from "./OrdersToa";

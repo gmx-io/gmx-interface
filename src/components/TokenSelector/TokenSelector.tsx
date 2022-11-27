@@ -12,11 +12,41 @@ import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
 import { getToken } from "config/tokens";
 import { importImage } from "lib/legacy";
 import { t } from "@lingui/macro";
+import { InfoTokens, Token, TokenInfo } from "domain/tokens";
+import { BigNumber } from "ethers";
 
-export default function TokenSelector(props) {
+// TODO: Separate TokenSelector for Synthetics / GMX tokens
+
+type TokenState = {
+  disabled?: boolean;
+  message?: string;
+};
+
+type Props = {
+  chainId: number;
+  label?: string;
+  className?: string;
+  tokenAddress: string;
+  tokens: Token[];
+  infoTokens?: InfoTokens;
+  showMintingCap?: boolean;
+  mintingCap?: BigNumber;
+  disabled?: boolean;
+  selectedTokenLabel?: string;
+  showBalances?: boolean;
+  showTokenImgInDropdown?: boolean;
+  showSymbolImage?: boolean;
+  showNewCaret?: boolean;
+  getTokenState?: (info: TokenInfo) => TokenState | undefined;
+  disableBodyScrollLock?: boolean;
+  onSelectToken: (token: Token) => void;
+};
+
+export default function TokenSelector(props: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
   const tokenInfo = getToken(props.chainId, props.tokenAddress);
+
   const {
     tokens,
     mintingCap,
@@ -28,7 +58,7 @@ export default function TokenSelector(props) {
     showTokenImgInDropdown = false,
     showSymbolImage = false,
     showNewCaret = false,
-    getTokenState = () => ({ disabled: false, message: null }),
+    getTokenState = () => ({ disabled: false }),
     disableBodyScrollLock,
   } = props;
 
@@ -49,7 +79,7 @@ export default function TokenSelector(props) {
     return null;
   }
 
-  const tokenImage = showSymbolImage && importImage(`ic_${tokenInfo.symbol.toLowerCase()}_24.svg`);
+  const tokenImage = showSymbolImage ? importImage(`ic_${tokenInfo.symbol.toLowerCase()}_24.svg`) : undefined;
 
   const onSearchKeywordChange = (e) => {
     setSearchKeyword(e.target.value);
@@ -89,7 +119,7 @@ export default function TokenSelector(props) {
           </div>
           {filteredTokens.map((token, tokenIndex) => {
             const tokenPopupImage = importImage(`ic_${token.symbol.toLowerCase()}_40.svg`);
-            let info = infoTokens ? infoTokens[token.address] : {};
+            let info = infoTokens ? infoTokens[token.address] : ({} as TokenInfo);
             let mintAmount;
             let balance = info.balance;
             if (showMintingCap && mintingCap && info.usdgAmount) {

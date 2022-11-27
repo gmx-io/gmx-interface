@@ -8,7 +8,7 @@ import { ARBITRUM } from "config/chains";
 import { useChainId } from "lib/chains";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
-import { SyntheticsMarket } from "domain/synthetics/types";
+import { SyntheticsMarket } from "domain/synthetics/markets/types";
 
 import "./GMStats.scss";
 

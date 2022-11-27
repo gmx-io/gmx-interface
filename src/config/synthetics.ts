@@ -1,4 +1,4 @@
-import { SyntheticsMarket } from "domain/synthetics/types";
+import { SyntheticsMarket } from "domain/synthetics/markets/types";
 import { ethers } from "ethers";
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI_TESTNET } from "./chains";
 
@@ -40,14 +40,14 @@ const SYNTHETICS_MARKETS: { [chainId: number]: SyntheticsMarket[] } = {
       perp: "ETH/USD",
       marketTokenAddress: AddressZero,
       indexTokenSymbol: "ETH",
-      longCollateralSymbol: "ETH",
+      longCollateralSymbol: "AVAX",
       shortCollateralSymbol: "USDC",
     },
     {
       perp: "BNB/USD",
       marketTokenAddress: AddressZero,
       indexTokenSymbol: "BNB",
-      longCollateralSymbol: "ETH",
+      longCollateralSymbol: "AVAX",
       shortCollateralSymbol: "USDC",
     },
     {
@@ -61,7 +61,7 @@ const SYNTHETICS_MARKETS: { [chainId: number]: SyntheticsMarket[] } = {
       perp: "SOL/USD",
       marketTokenAddress: AddressZero,
       indexTokenSymbol: "SOL",
-      longCollateralSymbol: "ETH",
+      longCollateralSymbol: "AVAX",
       shortCollateralSymbol: "USDC",
     },
   ],
@@ -70,28 +70,28 @@ const SYNTHETICS_MARKETS: { [chainId: number]: SyntheticsMarket[] } = {
       perp: "ETH/USD",
       marketTokenAddress: AddressZero,
       indexTokenSymbol: "ETH",
-      longCollateralSymbol: "ETH",
+      longCollateralSymbol: "AVAX",
       shortCollateralSymbol: "USDC",
     },
     {
       perp: "BNB/USD",
       marketTokenAddress: AddressZero,
       indexTokenSymbol: "BNB",
-      longCollateralSymbol: "ETH",
+      longCollateralSymbol: "AVAX",
       shortCollateralSymbol: "USDC",
     },
     {
       perp: "BTC/USD",
       marketTokenAddress: AddressZero,
       indexTokenSymbol: "BTC",
-      longCollateralSymbol: "BTC",
+      longCollateralSymbol: "AVAX",
       shortCollateralSymbol: "USDC",
     },
     {
       perp: "SOL/USD",
       marketTokenAddress: AddressZero,
       indexTokenSymbol: "SOL",
-      longCollateralSymbol: "ETH",
+      longCollateralSymbol: "AVAX",
       shortCollateralSymbol: "USDC",
     },
   ],

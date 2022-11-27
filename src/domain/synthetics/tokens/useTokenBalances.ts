@@ -2,8 +2,9 @@ import { useWeb3React } from "@web3-react/core";
 import Token from "abis/Token.json";
 import { useMultiCall } from "lib/multicall";
 import { bigNumberify } from "lib/numbers";
-import { useEffect, useState } from "react";
 import { BigNumber, ethers } from "ethers";
+import { useNativeTokenBalance } from "./useNativeTokenBalance";
+import { TokenBalancesData } from "./types";
 
 const { AddressZero } = ethers.constants;
 
@@ -14,20 +15,10 @@ const { AddressZero } = ethers.constants;
  * - Common patterns of request states
  * - Polling interval
  */
-function formatResults(response = {}) {
-  const result = {};
-
-  Object.keys(response).forEach((address) => {
-    result[address] = bigNumberify(response[address].balance.returnValues[0]) || BigNumber.from(0);
-  });
-
-  return result;
-}
-
-export function useMcTokenBalances(chainId: number, p: { tokenAddresses: string[] }) {
+export function useTokenBalances(chainId: number, p: { tokenAddresses: string[] }): TokenBalancesData {
   const { account, active } = useWeb3React();
 
-  const key = active && account ? `${"useMcTokenBalances"}-${account}-${p.tokenAddresses.join("-")}` : undefined;
+  const key = active && account ? `${"useTokenBalances"}-${account}-${p.tokenAddresses.join("-")}` : undefined;
 
   const { result: ERC20MulticallResult } = useMultiCall(
     key,
@@ -46,31 +37,21 @@ export function useMcTokenBalances(chainId: number, p: { tokenAddresses: string[
   const nativeTokenBalance = useNativeTokenBalance();
 
   const result = {
-    [AddressZero]: nativeTokenBalance,
+    [AddressZero]: nativeTokenBalance || BigNumber.from(0),
     ...formattedERC20Balances,
   };
 
-  return result;
+  return {
+    tokenBalances: result,
+  };
 }
 
-export function useNativeTokenBalance() {
-  const { library, active } = useWeb3React();
+function formatResults(response = {}) {
+  const result = {};
 
-  const [balance, setBalance] = useState<BigNumber>();
+  Object.keys(response).forEach((address) => {
+    result[address] = bigNumberify(response[address].balance.returnValues[0]) || BigNumber.from(0);
+  });
 
-  useEffect(() => {
-    async function getBalance() {
-      if (active && library && !balance) {
-        const signer = library.getSigner();
-
-        const result = await signer.getBalance("latest");
-
-        setBalance(result);
-      }
-    }
-
-    getBalance();
-  }, [active, balance, library]);
-
-  return balance;
+  return result;
 }

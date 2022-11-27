@@ -424,6 +424,35 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
   ],
+  [AVALANCHE_FUJI_TESTNET]: [
+    {
+      name: "GMX",
+      symbol: "GMX",
+      address: getContract(AVALANCHE, "GMX"),
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+    },
+    {
+      name: "Escrowed GMX",
+      symbol: "esGMX",
+      address: getContract(AVALANCHE, "ES_GMX"),
+      decimals: 18,
+    },
+    {
+      name: "GMX LP",
+      symbol: "GLP",
+      address: getContract(ARBITRUM, "GLP"),
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+    {
+      name: "GMX Market tokens",
+      symbol: "GM",
+      address: "todo",
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+  ],
 };
 
 export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } } = {
@@ -650,6 +679,10 @@ export function getNativeToken(chainId: number) {
 
 export function getTokens(chainId: number) {
   return TOKENS[chainId];
+}
+
+export function getTokensMap(chainId: number) {
+  return TOKENS_MAP[chainId];
 }
 
 export function isValidToken(chainId: number, address: string) {

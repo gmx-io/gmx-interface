@@ -17,7 +17,6 @@ import {
   DEFAULT_MAX_USDG_AMOUNT,
   getPageTitle,
   importImage,
-  arrayURLFetcher,
 } from "lib/legacy";
 import { useTotalGmxInLiquidity, useGmxPrice, useTotalGmxStaked, useTotalGmxSupply } from "domain/legacy";
 import useFeesSummary from "domain/useFeesSummary";
@@ -52,6 +51,7 @@ import { getTokenBySymbol, getWhitelistedTokens, GLP_POOL_COLORS } from "config/
 import { bigNumberify, expandDecimals, formatAmount, formatKeyAmount, numberWithCommas } from "lib/numbers";
 import { useChainId } from "lib/chains";
 import { formatDate } from "lib/dates";
+import { arrayURLFetcher } from "lib/http";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 const { AddressZero } = ethers.constants;

@@ -25,7 +25,7 @@ import {
 
 import { useGmxPrice } from "domain/legacy";
 
-import TokenSelector from "../Exchange/TokenSelector";
+import TokenSelector from "components/TokenSelector/TokenSelector";
 import BuyInputSection from "../BuyInputSection/BuyInputSection";
 import Tooltip from "../Tooltip/Tooltip";
 

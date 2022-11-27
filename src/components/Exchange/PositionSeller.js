@@ -35,7 +35,7 @@ import Tab from "../Tab/Tab";
 import Modal from "../Modal/Modal";
 import ExchangeInfoRow from "./ExchangeInfoRow";
 import Tooltip from "../Tooltip/Tooltip";
-import TokenSelector from "./TokenSelector";
+import TokenSelector from "components/TokenSelector/TokenSelector";
 import "./PositionSeller.css";
 import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { callContract } from "lib/contracts";
