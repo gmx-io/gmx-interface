@@ -2710,7 +2710,7 @@ msgstr "Save on Costs"
 msgid "Save on Fees"
 msgstr "Save on Fees"
 
-#: src/components/Exchange/TokenSelector.js
+#: src/components/TokenSelector/TokenSelector.tsx
 msgid "Search Token"
 msgstr "Search Token"
 

@@ -2707,7 +2707,7 @@ msgstr "コスト削減"
 msgid "Save on Fees"
 msgstr ""
 
-#: src/components/Exchange/TokenSelector.js
+#: src/components/TokenSelector/TokenSelector.tsx
 msgid "Search Token"
 msgstr ""
 
