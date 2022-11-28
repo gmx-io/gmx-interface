@@ -1,7 +1,5 @@
 import Checkbox from "components/Checkbox/Checkbox";
 
-import "./ApproveTokenButton.scss";
-
 type Props = {};
 
 export function ApproveTokenButton(p: Props) {
