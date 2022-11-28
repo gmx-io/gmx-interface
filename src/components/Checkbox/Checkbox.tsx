@@ -1,11 +1,19 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 import cx from "classnames";
 
 import "./Checkbox.css";
 import { ImCheckboxUnchecked, ImCheckboxChecked } from "react-icons/im";
 
-export default function Checkbox(props) {
+type Props = {
+  isChecked: boolean;
+  setIsChecked: (checked: boolean) => void;
+  disabled?: boolean;
+  className?: string;
+  children?: ReactNode;
+};
+
+export default function Checkbox(props: Props) {
   const { isChecked, setIsChecked, disabled, className } = props;
 
   return (

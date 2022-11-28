@@ -2,3 +2,19 @@
   display: flex;
   flex-direction: column;
 }
+
+.MarketPoolSwapConfirmation-approve-tokens {
+  display: flex;
+  flex-direction: column;
+}
+
+.MarketPoolSwapConfirmation-approve-token {
+  height: 2.2rem;
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}

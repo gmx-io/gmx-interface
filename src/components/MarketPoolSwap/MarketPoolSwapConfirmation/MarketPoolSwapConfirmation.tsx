@@ -18,6 +18,9 @@ import {
 import { BigNumber } from "ethers";
 import { GM_DECIMALS } from "lib/legacy";
 import { OperationType, operationTypesTexts } from "../constants";
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+
+import "./MarketPoolSwapConfirmation.scss";
 
 type Props = {
   onClose: () => void;
@@ -107,6 +110,20 @@ export function MarketPoolSwapConfirmation(p: Props) {
         </div>
 
         <InfoRow label={t`Price impact`} value={formatPriceImpact(p.priceImpact)} />
+
+        <div className="App-card-divider" />
+
+        <div className="MarketPoolSwapConfirmation-approve-tokens">
+          <div className="MarketPoolSwapConfirmation-approve-token">
+            <ApproveTokenButton />
+          </div>
+
+          <div className="MarketPoolSwapConfirmation-approve-token">
+            <ApproveTokenButton />
+          </div>
+        </div>
+
+        <div className="App-card-divider" />
 
         <div className="Confirmation-box-row">
           <SubmitButton onClick={submitButtonState.onClick} disabled={submitButtonState.disabled}>
