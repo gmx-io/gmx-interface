@@ -99,7 +99,6 @@ export async function getChartPricesFromStats(chainId, symbol, period, to = null
     throw new Error(`request failed ${res.status} ${res.statusText}`);
   }
   const json = await res.json();
-  console.log({ json });
   let prices = json?.prices;
   if (!prices || prices.length < 1) {
     throw new Error(`not enough prices data: ${prices?.length}`);
