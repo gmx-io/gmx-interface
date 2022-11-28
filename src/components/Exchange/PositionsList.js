@@ -343,8 +343,8 @@ export default function PositionsList(props) {
                             return (
                               <>
                                 {showPnlAfterFees
-                                  ? t`Net Value: Initial Collateral - Fees + PnL`
-                                  : t`Net Value: Initial Collateral - Borrow Fee + PnL`}
+                                  ? t`Net Value: Initial Collateral + PnL - Fees`
+                                  : t`Net Value: Initial Collateral + PnL - Borrow Fee`}
                                 <br />
                                 <br />
                                 <StatsTooltipRow
@@ -552,8 +552,8 @@ export default function PositionsList(props) {
                           return (
                             <>
                               {showPnlAfterFees
-                                ? t`Net Value: Initial Collateral - Fees + PnL`
-                                : t`Net Value: Initial Collateral - Borrow Fee + PnL`}
+                                ? t`Net Value: Initial Collateral + PnL - Fees`
+                                : t`Net Value: Initial Collateral + PnL - Borrow Fee`}
                               <br />
                               <br />
                               <StatsTooltipRow

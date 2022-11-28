@@ -2049,12 +2049,12 @@ msgstr "净值"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral - Borrow Fee + PnL"
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral - Fees + PnL"
+msgid "Net Value: Initial Collateral + PnL - Fees"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
