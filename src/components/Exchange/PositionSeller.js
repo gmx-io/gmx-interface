@@ -480,7 +480,7 @@ export default function PositionSeller(props) {
   }
 
   const [deltaStr, deltaPercentageStr] = useMemo(() => {
-    if (!position || !position.markPrice) {
+    if (!position || !position.markPrice || position.collateral.eq(0)) {
       return ["-", "-"];
     }
     if (orderOption !== STOP) {
