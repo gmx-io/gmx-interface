@@ -2,7 +2,7 @@ import { InfoTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
-import { TokenBalancesData, TokenConfigsData, TokenPricesData } from "./types";
+import { TokenBalancesData, TokenConfigsData, TokenPricesData, TokensData } from "./types";
 
 export function getTokenPriceData(data: TokenPricesData, tokenAddress?: string) {
   if (!tokenAddress) return undefined;
@@ -75,6 +75,18 @@ export function adaptToInfoTokens(data: TokenConfigsData & TokenPricesData & Tok
   }, {} as InfoTokens);
 
   return infoTokens;
+}
+
+export function getTokenData(data: TokensData, tokenAddress?: string) {
+  const config = getTokenConfig(data, tokenAddress);
+  const balance = getTokenBalance(data, tokenAddress);
+  const priceData = getTokenPriceData(data, tokenAddress);
+
+  return {
+    ...config,
+    ...priceData,
+    balance,
+  };
 }
 
 export function getTokenBalance(data: TokenBalancesData, tokenAddress?: string) {
