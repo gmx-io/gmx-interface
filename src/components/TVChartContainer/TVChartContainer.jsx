@@ -92,7 +92,6 @@ export default function TVChartContainer({ symbol, chainId }) {
       fullscreen: defaultProps.fullscreen,
       autosize: defaultProps.autosize,
       custom_css_url: "/tradingview-chart.css",
-      custom_font_family: "'Inter', sans-serif",
       studies_overrides: defaultProps.studiesOverrides,
       overrides: {
         "paneProperties.background": "#16182e",

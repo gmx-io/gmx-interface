@@ -1,21 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;300&display=swap");
-
 .theme-dark:root {
   --tv-color-pane-background: #16182e;
   --tv-color-platform-background: #16182e;
-
-  /*
-  --tv-color-pane-background-secondary: #16182e;
-  --tv-color-toolbar-button-text-active-hover: #fff;
-  --tv-color-toolbar-button-background-hover: rgb(244, 143, 177);
-  --tv-color-toolbar-button-background-expanded: #16182e;
-  --tv-color-toolbar-button-background-secondary-hover: red;
-  --tv-color-toolbar-button-text: rgb(136, 24, 79);
-  --tv-color-toolbar-button-text-hover: rgb(74, 20, 140);
-  --tv-color-toolbar-button-text-active: red;
-  --tv-color-item-active-text: rgb(6, 255, 6);
-  --tv-color-toolbar-toggle-button-background-active: red;
-  --tv-color-toolbar-toggle-button-background-active-hover: magenta; */
+  --tv-color-toolbar-button-text-active: #2d42fc;
+  --tv-color-toolbar-button-background-hover: #1e223de6;
 }
 
 .resolution-btn,
@@ -31,6 +18,7 @@
 
 html.theme-dark .chart-page {
   background-color: transparent;
+  font-family: "Relative", sans-serif;
 }
 html.theme-dark .chart-container {
   border: none;
