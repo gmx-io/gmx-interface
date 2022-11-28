@@ -366,7 +366,7 @@ export default function PositionsList(props) {
                                 />
                                 <StatsTooltipRow
                                   label={t`PnL After Fees`}
-                                  value={`${position.deltaAfterFeesStr} (${position.deltaAfterFeesPercentageStr})`}
+                                  value={[position.deltaAfterFeesStr, `(${position.deltaAfterFeesPercentageStr})`]}
                                   showDollar={false}
                                 />
                               </>
@@ -573,7 +573,7 @@ export default function PositionsList(props) {
                               />
                               <StatsTooltipRow
                                 label={t`PnL After Fees`}
-                                value={`${position.deltaAfterFeesStr} (${position.deltaAfterFeesPercentageStr})`}
+                                value={[position.deltaAfterFeesStr, `(${position.deltaAfterFeesPercentageStr})`]}
                                 showDollar={false}
                               />
                             </>
