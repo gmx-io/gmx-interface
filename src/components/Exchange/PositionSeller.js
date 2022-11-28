@@ -282,7 +282,7 @@ export default function PositionSeller(props) {
   let totalFees = bigNumberify(0);
 
   useEffect(() => {
-    if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken?.address)) {
+    if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken.address)) {
       setSwapToToken(wrappedToken);
       setSavedRecieveTokenAddress(wrappedToken.address);
     }
@@ -376,7 +376,6 @@ export default function PositionSeller(props) {
 
     receiveToken = isSwapAllowed && swapToToken ? swapToToken : collateralToken;
 
-    // receiveToken does not need to change for STOP order
     if (isSwapAllowed && isContractAccount && isAddressZero(receiveToken.address)) {
       receiveToken = wrappedToken;
     }
@@ -739,7 +738,7 @@ export default function PositionSeller(props) {
       }
     }
 
-    const withdrawETH = isUnwrap && isContractAccount === false;
+    const withdrawETH = isUnwrap && !isContractAccount;
 
     const params = [
       path, // _path

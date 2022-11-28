@@ -27,7 +27,7 @@ import { helperToast } from "lib/helperToast";
 import { getUsd } from "domain/tokens/utils";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import { AiOutlineEdit } from "react-icons/ai";
-import useIsContractAccount from "lib/wallets/useIsContractAccount";
+import useAccountType, { AccountType } from "lib/wallets/useAccountType";
 
 const getOrdersForPosition = (account, position, orders, nativeTokenAddress) => {
   if (!orders || orders.length === 0) {
@@ -106,7 +106,8 @@ export default function PositionsList(props) {
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [ordersToaOpen, setOrdersToaOpen] = useState(false);
   const [isHigherSlippageAllowed, setIsHigherSlippageAllowed] = useState(false);
-  const isContractAccount = useIsContractAccount();
+  const accountType = useAccountType();
+  const isContractAccount = accountType === AccountType.CONTRACT;
 
   const editPosition = (position) => {
     setCollateralTokenAddress(position.collateralToken.address);
