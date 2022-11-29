@@ -807,7 +807,7 @@ msgstr ""
 msgid "Copy"
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Copy Address"
 msgstr ""
 
@@ -1037,7 +1037,7 @@ msgstr ""
 msgid "Disable order validations"
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Disconnect"
 msgstr ""
 
@@ -3566,7 +3566,7 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
 msgstr ""
 

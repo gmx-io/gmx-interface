@@ -807,7 +807,7 @@ msgstr "Convertir {wrappedTokenSymbol} to {nativeTokenSymbol}"
 msgid "Copy"
 msgstr "Copiar"
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Copy Address"
 msgstr "Copiar Dirección"
 
@@ -1037,7 +1037,7 @@ msgstr ""
 msgid "Disable order validations"
 msgstr "Deshabilitar validación de órdenes"
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "Disconnect"
 msgstr "Desconectar"
 
@@ -3566,7 +3566,7 @@ msgstr "Estado de Adquisición"
 msgid "View"
 msgstr "Ver"
 
-#: src/components/AddressDropdown/AddressDropdown.js
+#: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
 msgstr "Ver en el Explorador"
 

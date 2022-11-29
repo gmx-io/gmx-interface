@@ -78,7 +78,7 @@ export function AppHeaderUser({
 
   const selectorLabel = getChainName(chainId);
 
-  if (!active) {
+  if (!active || !account) {
     return (
       <div className="App-header-user">
         <div className={cx("App-header-trade-link", { "homepage-header": isHomeSite() })}>

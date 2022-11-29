@@ -1,10 +1,12 @@
 import { ethers } from "ethers";
+import { sample } from "lodash";
 import { isDevelopment } from "lib/legacy";
 import { NetworkMetadata } from "lib/wallets";
 
 const { parseEther } = ethers.utils;
 
 export const MAINNET = 56;
+export const ETH_MAINNET = 1;
 export const AVALANCHE = 43114;
 export const TESTNET = 97;
 export const ARBITRUM_TESTNET = 421611;
@@ -109,7 +111,7 @@ const constants = {
 const ALCHEMY_WHITELISTED_DOMAINS = ["gmx.io", "app.gmx.io"];
 
 export const ARBITRUM_RPC_PROVIDERS = [getDefaultArbitrumRpcUrl()];
-export const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"]; // BSC MAINNET
+export const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"];
 
 // BSC TESTNET
 // const RPC_PROVIDERS = [
@@ -121,6 +123,7 @@ export const AVALANCHE_RPC_PROVIDERS = ["https://api.avax.network/ext/bc/C/rpc"]
 //   "https://data-seed-prebsc-2-s3.binance.org:8545"
 // ]
 
+// BSC MAINNET
 export const BSC_RPC_PROVIDERS = [
   "https://bsc-dataseed.binance.org",
   "https://bsc-dataseed1.defibit.io",
@@ -137,7 +140,10 @@ export const BSC_RPC_PROVIDERS = [
   "https://bsc-dataseed4.binance.org",
 ];
 
+export const ETH_MAINNET_PROVIDERS = ["https://rpc.ankr.com/eth"];
+
 export const RPC_PROVIDERS = {
+  [ETH_MAINNET]: ETH_MAINNET_PROVIDERS,
   [MAINNET]: BSC_RPC_PROVIDERS,
   [ARBITRUM]: ARBITRUM_RPC_PROVIDERS,
   [AVALANCHE]: AVALANCHE_RPC_PROVIDERS,
@@ -224,6 +230,10 @@ export function getChainName(chainId: number) {
 
 export function getDefaultArbitrumRpcUrl() {
   return "https://arb1.arbitrum.io/rpc";
+}
+
+export function getRpcUrl(chainId: number): string | undefined {
+  return sample(RPC_PROVIDERS[chainId]);
 }
 
 export function getAlchemyHttpUrl() {
