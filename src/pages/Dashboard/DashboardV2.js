@@ -562,7 +562,14 @@ export default function DashboardV2() {
                     <TooltipComponent
                       handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
-                      renderContent={() => <span>{t`Total value of tokens in GLP pool (${chainName})`}</span>}
+                      renderContent={() => (
+                        <Trans>
+                          <p>The total value of tokens in the ({chainName}) GLP pool.</p>
+                          <p>
+                            Other websites may show a higher value as they add positions' collaterals to the GLP pool.
+                          </p>
+                        </Trans>
+                      )}
                     />
                   </div>
                 </div>

@@ -430,7 +430,7 @@ export const ICONLINKS = {
     },
     GLP: {
       arbitrum: "https://arbiscan.io/token/0x1aDDD80E6039594eE970E5872D247bf0414C8903",
-      reserves: "https://portfolio.nansen.ai/dashboard/gmx",
+      reserves: "https://portfolio.nansen.ai/dashboard/gmx?chain=ARBITRUM",
     },
     ETH: {
       coingecko: "https://www.coingecko.com/en/coins/ethereum",
@@ -475,7 +475,7 @@ export const ICONLINKS = {
     },
     GLP: {
       avalanche: "https://snowtrace.io/address/0x9e295B5B976a184B14aD8cd72413aD846C299660",
-      reserves: "https://portfolio.nansen.ai/dashboard/gmx",
+      reserves: "https://portfolio.nansen.ai/dashboard/gmx?chain=AVAX",
     },
     AVAX: {
       coingecko: "https://www.coingecko.com/en/coins/avalanche",
