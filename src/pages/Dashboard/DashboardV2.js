@@ -549,7 +549,7 @@ export default function DashboardV2() {
                       handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
                       renderContent={() => (
-                        <span>{t`Assets Under Management: GMX staked (All chains) + GLP pool (${chainName})`}</span>
+                        <span>{t`Assets Under Management: GMX staked (All chains) + GLP pool (${chainName}).`}</span>
                       )}
                     />
                   </div>
@@ -564,7 +564,7 @@ export default function DashboardV2() {
                       position="right-bottom"
                       renderContent={() => (
                         <Trans>
-                          <p>The total value of tokens in the ({chainName}) GLP pool.</p>
+                          <p>Total value of tokens in GLP pool ({chainName}).</p>
                           <p>
                             Other websites may show a higher value as they add positions' collaterals to the GLP pool.
                           </p>
