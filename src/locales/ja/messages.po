@@ -283,11 +283,6 @@ msgstr "承認中"
 msgid "Arbitrum APR:"
 msgstr "ArbitrumのAPR(実質年利)"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Arbitrum Icon"
-msgstr ""
-
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr ""
@@ -333,11 +328,6 @@ msgstr "利用可能"
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "AvalancheでのAPR(実質年利)"
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Avalanche Icon"
-msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
