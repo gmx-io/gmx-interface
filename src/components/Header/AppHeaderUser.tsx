@@ -7,14 +7,21 @@ import connectWalletImg from "img/ic_wallet_24.svg";
 
 import "./Header.css";
 import { isHomeSite, getAccountUrl } from "lib/legacy";
-import { isDevelopment } from "lib/legacy";
 import cx from "classnames";
 import { Trans } from "@lingui/macro";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI_TESTNET, getChainName } from "config/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_TESTNET,
+  AVALANCHE,
+  AVALANCHE_FUJI_TESTNET,
+  getChainIcon,
+  getChainName,
+} from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
+import { isDevelopment } from "config/env";
 
 type Props = {
   openSettings: () => void;
@@ -29,13 +36,13 @@ const NETWORK_OPTIONS = [
   {
     label: getChainName(ARBITRUM),
     value: ARBITRUM,
-    icon: "ic_arbitrum_24.svg",
+    icon: getChainIcon(ARBITRUM, 24),
     color: "#264f79",
   },
   {
     label: getChainName(AVALANCHE),
     value: AVALANCHE,
-    icon: "ic_avalanche_24.svg",
+    icon: getChainIcon(AVALANCHE, 24),
     color: "#E841424D",
   },
 ];
@@ -44,13 +51,13 @@ if (isDevelopment()) {
   NETWORK_OPTIONS.push({
     label: getChainName(ARBITRUM_TESTNET),
     value: ARBITRUM_TESTNET,
-    icon: "ic_arbitrum_24.svg",
+    icon: getChainIcon(ARBITRUM_TESTNET, 24),
     color: "#264f79",
   });
   NETWORK_OPTIONS.push({
     label: getChainName(AVALANCHE_FUJI_TESTNET),
     value: AVALANCHE_FUJI_TESTNET,
-    icon: "ic_avalanche_24.svg",
+    icon: getChainIcon(AVALANCHE_FUJI_TESTNET, 24),
     color: "#E841424D",
   });
 }

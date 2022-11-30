@@ -1,7 +1,7 @@
 import { i18n } from "@lingui/core";
 import { en, es, zh, ko, ru, ja, fr, de } from "make-plural/plurals";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
-import { isDevelopment } from "./legacy";
+import { isDevelopment } from "config/env";
 
 // uses BCP-47 codes from https://unicode-org.github.io/cldr-staging/charts/latest/supplemental/language_plural_rules.html
 export const locales = {

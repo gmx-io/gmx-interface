@@ -14,7 +14,6 @@ import {
   isHomeSite,
   isMobileDevice,
   REFERRAL_CODE_QUERY_PARAM,
-  isDevelopment,
 } from "lib/legacy";
 
 import Home from "pages/Home/Home";
@@ -62,7 +61,7 @@ import ReferralTerms from "pages/ReferralTerms/ReferralTerms";
 import TermsAndConditions from "pages/TermsAndConditions/TermsAndConditions";
 import { useLocalStorage } from "react-use";
 import { RedirectPopupModal } from "components/ModalViews/RedirectModal";
-import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/ui";
+import { REDIRECT_POPUP_TIMESTAMP_KEY } from "config/localStorage";
 import Jobs from "pages/Jobs/Jobs";
 
 import { i18n } from "@lingui/core";
@@ -100,6 +99,7 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SyntheticsPoolsPage } from "pages/SyntheticsPoolsPage/SyntheticsPoolsPage";
 import { MultiCallProvider } from "lib/multicall";
+import { isDevelopment } from "config/env";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
