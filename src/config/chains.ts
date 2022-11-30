@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 import { sample } from "lodash";
-import { isDevelopment } from "lib/legacy";
 import { NetworkMetadata } from "lib/wallets";
+import { isDevelopment } from "./env";
 
 const { parseEther } = ethers.utils;
 
