@@ -6,12 +6,12 @@ import { isDevelopment } from "./env";
 const { parseEther } = ethers.utils;
 
 export const MAINNET = 56;
+export const TESTNET = 97;
 export const ETH_MAINNET = 1;
 export const AVALANCHE = 43114;
 export const AVALANCHE_FUJI_TESTNET = 43113;
-export const TESTNET = 97;
-export const ARBITRUM_TESTNET = 421611;
 export const ARBITRUM = 42161;
+export const ARBITRUM_TESTNET = 421611;
 
 // TODO take it from web3
 export const DEFAULT_CHAIN_ID = ARBITRUM;
@@ -224,6 +224,29 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
   },
 };
 
+export const CHAIN_ICONS = {
+  [ARBITRUM]: {
+    16: "ic_arbitrum_16.svg",
+    24: "ic_arbitrum_24.svg",
+    96: "ic_arbitrum_96.svg",
+  },
+  [AVALANCHE]: {
+    16: "ic_avalanche_16.svg",
+    24: "ic_avalanche_24.svg",
+    96: "ic_avalanche_96.svg",
+  },
+  [ARBITRUM_TESTNET]: {
+    16: "ic_arbitrum_16.svg",
+    24: "ic_arbitrum_24.svg",
+    96: "ic_arbitrum_96.svg",
+  },
+  [AVALANCHE_FUJI_TESTNET]: {
+    16: "ic_avalanche_testnet_16.svg",
+    24: "ic_avalanche_testnet_24.svg",
+    96: "ic_avalanche_testnet_96.svg",
+  },
+};
+
 export const getConstant = (chainId: number, key: string) => {
   if (!constants[chainId]) {
     throw new Error(`Unsupported chainId ${chainId}`);
@@ -238,6 +261,10 @@ export const getConstant = (chainId: number, key: string) => {
 
 export function getChainName(chainId: number) {
   return CHAIN_NAMES_MAP[chainId];
+}
+
+export function getChainIcon(chainId: number, size: 16 | 24 | 96): string | undefined {
+  return CHAIN_ICONS[chainId]?.[size];
 }
 
 export function getDefaultArbitrumRpcUrl() {
