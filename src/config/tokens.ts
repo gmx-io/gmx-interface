@@ -612,11 +612,11 @@ export const EXPLORER_LINKS = {
     },
     ETH: {
       coingecko: "https://www.coingecko.com/en/coins/weth",
-      avalanche: "https://snowtrace.io/address/0x8226EC2c1926c9162b6F815153d10018A7ccdf07",
+      avalanche: "https://testnet.snowtrace.io/address/0x8226EC2c1926c9162b6F815153d10018A7ccdf07",
     },
     USDC: {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
-      avalanche: "https://snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+      avalanche: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
     },
   },
 };
