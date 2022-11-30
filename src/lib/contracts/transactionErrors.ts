@@ -2,6 +2,7 @@ export const NOT_ENOUGH_FUNDS = "NOT_ENOUGH_FUNDS";
 export const USER_DENIED = "USER_DENIED";
 export const SLIPPAGE = "SLIPPAGE";
 export const RPC_ERROR = "RPC_ERROR";
+export const NETWORK_CHANGED = "NETWORK_CHANGED";
 
 type ErrorPattern = { msg?: string; code?: number };
 
@@ -12,6 +13,7 @@ const TX_ERROR_PATTERNS: { [key: string]: ErrorPattern[] } = {
   ],
   [USER_DENIED]: [{ msg: "User denied transaction signature" }],
   [SLIPPAGE]: [{ msg: "Router: mark price lower than limit" }, { msg: "Router: mark price higher than limit" }],
+  [NETWORK_CHANGED]: [{ msg: "underlying network changed" }],
   [RPC_ERROR]: [
     // @see https://eips.ethereum.org/EIPS/eip-1474#error-codes
     { code: -32005 },

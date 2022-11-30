@@ -290,28 +290,20 @@ export const getWalletConnectHandler = (
   return fn;
 };
 
-export const getInjectedHandler = (activate: Web3ReactManagerFunctions["activate"]) => {
+export const getInjectedHandler = (
+  activate: Web3ReactManagerFunctions["activate"],
+  deactivate: Web3ReactManagerFunctions["deactivate"]
+) => {
   const fn = async () => {
     activate(getInjectedConnector(), (e) => {
-      const chainId = Number(localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)) || DEFAULT_CHAIN_ID;
-
       if (e instanceof UnsupportedChainIdError) {
-        helperToast.error(
-          <div>
-            <Trans>
-              <div>Your wallet is not connected to {getChainName(chainId)}.</div>
-              <br />
-              <div className="clickable underline margin-bottom" onClick={() => switchNetwork(chainId, true)}>
-                Switch to {getChainName(chainId)}
-              </div>
-              <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
-                Add {getChainName(chainId)}
-              </div>
-            </Trans>
-          </div>
-        );
+        showUnsupportedNetworkToast();
+
+        deactivate();
+
         return;
       }
+
       const errString = e.message ?? e.toString();
       helperToast.error(errString);
     });
@@ -346,4 +338,32 @@ export async function addTokenToMetamask(token: {
     // eslint-disable-next-line no-console
     console.error(error);
   }
+}
+
+export function showUnsupportedNetworkToast() {
+  const chainId = Number(localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY)) || DEFAULT_CHAIN_ID;
+
+  helperToast.error(
+    <div>
+      <Trans>
+        <div>Your wallet is not connected to {getChainName(chainId)}.</div>
+        <br />
+        <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
+          Switch to {getChainName(chainId)}
+        </div>
+      </Trans>
+    </div>
+  );
+}
+
+export function useHandleUnsupportedNetwork() {
+  const { error, deactivate } = useWeb3React();
+
+  useEffect(() => {
+    if (error instanceof UnsupportedChainIdError) {
+      showUnsupportedNetworkToast();
+
+      deactivate();
+    }
+  }, [error, deactivate]);
 }

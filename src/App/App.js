@@ -93,6 +93,7 @@ import {
   hasCoinBaseWalletExtension,
   hasMetaMaskWalletExtension,
   useEagerConnect,
+  useHandleUnsupportedNetwork,
   useInactiveListener,
 } from "lib/wallets";
 import { useChainId } from "lib/chains";
@@ -153,6 +154,8 @@ function FullApp() {
   const triedEager = useEagerConnect(setActivatingConnector);
   useInactiveListener(!triedEager || !!activatingConnector);
 
+  useHandleUnsupportedNetwork();
+
   const query = useRouteQuery();
 
   useEffect(() => {
@@ -192,7 +195,7 @@ function FullApp() {
     setIsSettingsVisible(false);
   };
 
-  const connectInjectedWallet = getInjectedHandler(activate);
+  const connectInjectedWallet = getInjectedHandler(activate, deactivate);
   const activateWalletConnect = () => {
     getWalletConnectHandler(activate, deactivate, setActivatingConnector)();
   };
