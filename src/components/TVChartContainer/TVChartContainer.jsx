@@ -1,7 +1,7 @@
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { useEffect, useRef, useState } from "react";
-import { widget } from "../../charting_library";
-import datafeed, { getKeyByValue, supportedResolutions } from "./datafeed";
+import { getKeyByValue, supportedResolutions } from "./datafeed";
+import useDatafeed from "./useDatafeed";
 const DEFAULT_PERIOD = "4h";
 
 const defaultProps = {
@@ -23,6 +23,7 @@ export default function TVChartContainer({ symbol, chainId }) {
   const tvWidgetRef = useRef(null);
   const [chartReady, setChartReady] = useState(false);
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
+  const datafeed = useDatafeed();
 
   //   useEffect(() => {
   //     if (document.visibilityState === "visible" && tvWidgetRef.current) {
@@ -33,10 +34,9 @@ export default function TVChartContainer({ symbol, chainId }) {
 
   useEffect(() => {
     if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart()?.symbol()) {
-      const CHAINID_SYMBOL = `${symbol}_${chainId}`;
-      tvWidgetRef.current.setSymbol(CHAINID_SYMBOL, tvWidgetRef.current.activeChart().resolution(), () => {});
+      tvWidgetRef.current.setSymbol(symbol, tvWidgetRef.current.activeChart().resolution(), () => {});
     }
-  }, [symbol, chartReady, chainId]);
+  }, [symbol, chartReady]);
 
   useEffect(() => {
     const mainSeriesProperties = ["candleStyle", "hollowCandleStyle", "haStyle", "barStyle"];
@@ -57,7 +57,7 @@ export default function TVChartContainer({ symbol, chainId }) {
 
     const widgetOptions = {
       debug: true,
-      symbol: `${symbol}_${chainId}`,
+      symbol: symbol,
       datafeed: datafeed,
       theme: defaultProps.theme,
       interval: getKeyByValue(supportedResolutions, period),
@@ -107,7 +107,7 @@ export default function TVChartContainer({ symbol, chainId }) {
         ...chartStyleOverrides,
       },
     };
-    tvWidgetRef.current = new widget(widgetOptions);
+    tvWidgetRef.current = new window.TradingView.widget(widgetOptions);
     tvWidgetRef.current.onChartReady(function () {
       tvWidgetRef.current.headerReady().then(() => {
         Object.keys(supportedResolutions).forEach((res) => {
