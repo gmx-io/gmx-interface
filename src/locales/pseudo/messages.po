@@ -963,6 +963,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr ""
@@ -1252,7 +1253,7 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+msgid "Execute Order: {0} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -1523,6 +1524,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr ""
@@ -1767,6 +1769,7 @@ msgstr ""
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
@@ -2756,6 +2759,7 @@ msgstr ""
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2917,6 +2921,7 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap"
 msgstr ""
@@ -3882,10 +3887,6 @@ msgstr ""
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr ""
 
-#: src/components/Exchange/PositionsList.js
-msgid "{0, select, true {Long} false {Short}} {1} market selected"
-msgstr ""
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
 msgstr ""
@@ -3935,7 +3936,7 @@ msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> toke
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1},  and to <3>swap</3> {2} for other tokens."
+msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -3977,15 +3978,15 @@ msgstr ""
 #: src/components/Exchange/TradeHistory.js
 msgid ""
 "{0}:\n"
-"Swap {amountInDisplay} {1} for {minOutDisplay} {2},\n"
-"Price: {3}"
+"{1},\n"
+"Price: {priceDisplay}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid ""
-"{0}:\n"
-"{1},\n"
-"Price: {priceDisplay}"
+"{0}: Swap {amountInDisplay}\n"
+"{1} for {minOutDisplay} {2},\n"
+"Price: {3}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -4009,6 +4010,10 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
+msgstr ""
+
+#: src/components/Exchange/PositionsList.js
+msgid "{longOrShortText} {0} market selected"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js

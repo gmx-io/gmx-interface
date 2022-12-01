@@ -963,6 +963,7 @@ msgstr "Децентрализованная<0/>Бессрочная Биржа"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
 msgstr "Уменьшить"
@@ -1252,8 +1253,8 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "Выполнить Ордер: Поменять {fromAmountDisplay} {0} на {toAmountDisplay} {1}"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
-msgstr "Выполнить Ордер: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Цена: {executionPriceDisplay} USD"
+msgid "Execute Order: {0} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1523,6 +1524,7 @@ msgstr "Неправильная сеть"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
 msgstr "Увеличить"
@@ -1770,6 +1772,7 @@ msgstr "Загрузка..."
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
@@ -2759,6 +2762,7 @@ msgstr "Позиция Акции"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2920,6 +2924,7 @@ msgstr "Обеспечение"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap"
 msgstr "Обмен"
@@ -3145,7 +3150,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "This is the network cost required to execute the {depositOrWithdrawalText}.<0/><1/><2>More Info</2>"
-msgstr "Это затраты на сеть, необходимые для выполнения {depositOrWithdrawalText. <0/><1/><2>Более подробная информация</2>"
+msgstr "Это затраты на сеть, необходимые для выполнения {depositOrWithdrawalText}. <0/><1/><2>Более подробная информация</2>"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "This order will forfeit a <0>profit</0> of {deltaStr}. <1/>"
@@ -3885,10 +3890,6 @@ msgstr "вывод"
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 
-#: src/components/Exchange/PositionsList.js
-msgid "{0, select, true {Long} false {Short}} {1} market selected"
-msgstr "{0, select, true {Long} false {Short}} {1} рынок выбран"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
 msgstr "{0} Одобрено!"
@@ -3938,8 +3939,8 @@ msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> toke
 msgstr "{0} превышает целевой вес.<0/><1/>Получите меньшую комиссию, чтобы <2>обменять</2> токены на {1}."
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1},  and to <3>swap</3> {2} for other tokens."
-msgstr "{0} ниже целевого веса.<0/><1/>Получите меньшую комиссию, чтобы <2>купить GLP</2> с помощью {1}, и чтобы <3>обменять</3> {2} на другие токены."
+msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
@@ -3947,7 +3948,7 @@ msgstr "{0} требуется для обеспечения залога."
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} pool exceeded"
-msgstr "0} пул превышен"
+msgstr "{0} пул превышен"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "{0} pool exceeded, can only Receive {1}"
@@ -3962,7 +3963,7 @@ msgstr "{0} пул превышен, попробуйте другой токе�
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
 msgid "{0} price"
-msgstr "0} цена"
+msgstr "{0} цена"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{0} selected in order form"
@@ -3980,22 +3981,19 @@ msgstr "{0} {1} {longOrShortText}, -{2} USD, {3} Цена: ${4} USD"
 #: src/components/Exchange/TradeHistory.js
 msgid ""
 "{0}:\n"
-"Swap {amountInDisplay} {1} for {minOutDisplay} {2},\n"
-"Price: {3}"
-msgstr ""
-"{0}:\n"
-"Обмен {amountInDisplay} {1} для {minOutDisplay} {2},\n"
-"Цена: {3}"
-
-#: src/components/Exchange/TradeHistory.js
-msgid ""
-"{0}:\n"
 "{1},\n"
 "Price: {priceDisplay}"
 msgstr ""
 "{0}:\n"
 "{1},\n"
 "Цена: {priceDisplay}"
+
+#: src/components/Exchange/TradeHistory.js
+msgid ""
+"{0}: Swap {amountInDisplay}\n"
+"{1} for {minOutDisplay} {2},\n"
+"Price: {3}"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "{actionDisplay} Order"
@@ -4007,9 +4005,6 @@ msgid ""
 "-{1} USD,\n"
 "{2} Price: {3} USD"
 msgstr ""
-"{actionDisplay} {0} {longOrShortText},\n"
-"-{1} USD,\n"
-"{2} Цена: {3} USD"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
@@ -4022,6 +4017,10 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 #: src/components/Exchange/ConfirmationBox.js
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
+
+#: src/components/Exchange/PositionsList.js
+msgid "{longOrShortText} {0} market selected"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"

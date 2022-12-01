@@ -82,10 +82,6 @@ msgstr "<0>これによりすべてのトークンは引き出され、リザー
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
 
-#: src/lib/wallets/index.js
-#~ msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
-#~ msgstr "<0>ウォレットが{0}に接続されていません。</0><1/><2>切り替える {1}</2><3>追加する {2}</3>"
-
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "{0}の担保のUSドル建の価値は、ポジションがオープンされた時点でスナップショットされ確定します。"
@@ -189,11 +185,6 @@ msgstr "請求後、最大で{1} {stakingToken} 対 1esGMXトークンの比率�
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
 msgstr "請求後7日以内に指定のネットワーク上のあなたのアカウントにesGMXトークンがエアドロップされます"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
-#~ msgstr "ETH入手後、ネットワークを<0>Arbitrum</0>にセットし、以下のボタンをクリックしてください:"
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Agree"
@@ -339,10 +330,6 @@ msgstr "選択されたネットワークにて利用可能"
 msgid "Available:"
 msgstr "利用可能"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Avalanche"
-#~ msgstr "Avalanche"
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
@@ -352,10 +339,6 @@ msgstr "AvalancheでのAPR(実質年利)"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Avalanche Icon"
 msgstr "Avalancheのアイコン"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Avax is needed on Avalanche to purchase GMX."
-#~ msgstr "AvalancheでGMXを購入するにはAvaxが必要です。"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
@@ -371,19 +354,9 @@ msgstr "残高"
 msgid "Balance: {0}"
 msgstr "残高: {0}"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Banxa"
-#~ msgstr "Banxa"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
 msgstr "移転開始"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Binance"
-#~ msgstr "バイナンス"
 
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
@@ -425,25 +398,9 @@ msgstr "購入"
 msgid "Buy / Sell GLP"
 msgstr "GLPの購入/売却"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Buy / Transfer AVAX"
-#~ msgstr "AVAXの購入/送信"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Buy / Transfer ETH"
-#~ msgstr "ETHの購入/送信"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Buy AVAX"
-#~ msgstr "AVAXを購入"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy AVAX directly to Avalanche or transfer it there."
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Buy ETH"
-#~ msgstr "ETHを購入"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy ETH directly to Arbitrum or transfer it there."
@@ -463,10 +420,6 @@ msgstr "GLP購入アイコン"
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
 msgstr "GMXを購入"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Buy GMX Bonds"
-#~ msgstr "GMXボンドを購入"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Traderjoe:"
@@ -911,10 +864,6 @@ msgid "Create {0} Order"
 msgstr "{0}の注文を作成する"
 
 #: src/pages/OrdersOverview/OrdersOverview.js
-#~ msgid "Created"
-#~ msgstr "作成しました"
-
-#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Created At"
 msgstr ""
 
@@ -1013,6 +962,7 @@ msgstr "分散型<0/>パーペチュアル取引所"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
@@ -1113,10 +1063,6 @@ msgstr "30日間このメッセージを表示しない"
 #: src/components/Exchange/PositionShare.js
 msgid "Download"
 msgstr "ダウンロード"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "ETH is needed on Arbitrum to purchase GMX."
-#~ msgstr "ArbitrumでGMXを購入するにはETHが必要です。"
 
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
@@ -1307,8 +1253,8 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "注文執行: {fromAmountDisplay} {0}を {toAmountDisplay} {1}にスワップ"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
-msgstr "注文執行: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, 価格: {executionPriceDisplay} USD"
+msgid "Execute Order: {0} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1540,10 +1486,6 @@ msgstr "スリッページが大きいです。ともかく交換する"
 msgid "High USDG Slippage, Long Anyway"
 msgstr "USDGスリッページが大きいです。ともかくロングする"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Hop"
-#~ msgstr "ホップ"
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "I am aware of the trigger orders"
 msgstr "トリガー注文について承知しています"
@@ -1581,6 +1523,7 @@ msgstr "誤ったネットワーク"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
@@ -1708,10 +1651,6 @@ msgstr "言語"
 msgid "Launch App"
 msgstr "アプリ起動"
 
-#: src/pages/Home/Home.js
-#~ msgid "Launch Exchange"
-#~ msgstr "取引開始"
-
 #: src/components/Exchange/SwapBox.js
 msgid "Leaderboard"
 msgstr "順位表"
@@ -1835,6 +1774,7 @@ msgstr "ロード中"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1890,10 +1830,6 @@ msgstr "最大"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
 msgstr "MEVオプティマイザー"
-
-#: src/pages/OrdersOverview/OrdersOverview.js
-#~ msgid "Mark"
-#~ msgstr "マーク"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1957,18 +1893,6 @@ msgstr "最大クローズ値超過"
 #: src/components/Exchange/TradeHistory.js
 msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
 msgstr "最大レバレッジ100倍を超過し、損失と手数料を差し引き後に残った担保はアカウントに返送されました"
-
-#: src/components/Exchange/SwapBox.js
-#~ msgid "Max leverage: 30.5x"
-#~ msgstr "最大レバレッジ: 30.5倍"
-
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Max leverage: 30.5xt"
-#~ msgstr "最大レバレッジ: 30.5倍"
-
-#: src/components/Exchange/PositionEditor.js
-#~ msgid "Max leverage: 30x"
-#~ msgstr "最大レバレッジ: 30倍"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2115,11 +2039,6 @@ msgstr "マルチプライヤーポイント"
 msgid "Multiplier Points APR"
 msgstr "マルチプライヤーポイントのAPR(実質年利)"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Multiswap"
-#~ msgstr "マルチスワップ"
-
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Address"
 msgstr "NFTアドレス"
@@ -2215,10 +2134,6 @@ msgstr "注文が必ず執行される保証がないことに注意してくだ
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
 msgstr "購入後15分の最低保有期間があることに注意してください。<0/><1>ステーキング</1> ページを確認する。"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Olympus Pro"
-#~ msgstr "Olympus Pro"
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -2563,11 +2478,6 @@ msgstr "プロトコルの分析"
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 msgstr "<0>GLPトークン</0>を購入して、スワップとレバレッジ取引からの手数料を{nativeTokenSymbol}トークンで得る。"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Purchase GMX"
-#~ msgstr "GMX購入"
-
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
 msgstr "保険購入"
@@ -2852,6 +2762,7 @@ msgstr "ポジションをシェアする"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3013,6 +2924,7 @@ msgstr "供給量"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap"
 msgstr "スワップ"
@@ -3096,11 +3008,6 @@ msgstr "スワップ中..."
 #: src/components/Exchange/SwapBox.js
 msgid "Swaps disabled, pending {0} upgrade"
 msgstr "{0}の更新が未完了のためスワップが停止中です"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Synapse"
-#~ msgstr "Synapse"
 
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3269,14 +3176,6 @@ msgstr "受け取り"
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "移転を完了するには、{receiver}のアカウントに接続しなおす必要があります。"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "To purchase GMX on <0>Arbitrum</0>, please change your network."
-#~ msgstr "<0>Arbitrum</0>でGMXを購入するにはネットワークを切り替えてください。"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "To purchase GMX on <0>Avalanche</0>, please change your network."
-#~ msgstr "<0>Avalanche</0>でGMXを購入するにはネットワークを切り替えてください。"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
 msgstr ""
@@ -3396,10 +3295,6 @@ msgid "Trade"
 msgstr "トレード"
 
 #: src/pages/Home/Home.js
-#~ msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
-#~ msgstr "BTC、ETH、AVAXなどの主要仮想通貨を最大30倍のレバレッジで直接自分のウォレットから取引可能"
-
-#: src/pages/Home/Home.js
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
 msgstr ""
 
@@ -3452,18 +3347,10 @@ msgstr "取引は送信済です。"
 msgid "Transaction was cancelled."
 msgstr "取引はキャンセルされました。"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Transfer AVAX"
-#~ msgstr "AVAXを送信する"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
 msgid "Transfer Account"
 msgstr "アカウント移転"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Transfer ETH"
-#~ msgstr "ETHを送信する"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Transfer NFT"
@@ -3626,10 +3513,6 @@ msgstr "担保を入金または出金するときは「担保を編集」のア
 #: src/components/Exchange/SwapBox.js
 msgid "Useful Links"
 msgstr "有用なリンク"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees."
-#~ msgstr "AvalancheやSynapseのブリッジを使用すると、サポートされている他のどの仮想通貨でも移転でき、ネットワーク手数料支払いのためのAVAXを無料で受け取ることができます。"
 
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3849,17 +3732,9 @@ msgstr "あなたは{nativeTokenSymbol}報酬を{0}トークンで稼いでい�
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "あなたはGMX.ioを離れ、第三者の別のウェブサイトへ転送されます。"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "You can buy AVAX directly on <0>Avalanche</0> using Banxa:"
-#~ msgstr "Banxaを使用して<0>Avalanche</0>上で直接AVAXを購入できます:"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can buy AVAX directly on <0>Avalanche</0> using these options:"
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "You can buy ETH directly on <0>Arbitrum</0> using Banxa:"
-#~ msgstr "Banxaを使用して<0>Arbitrum</0>上で直接ETHを購入できます:"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can buy ETH directly on <0>Arbitrum</0> using these options:"
@@ -3885,10 +3760,6 @@ msgstr "{1} {stakingToken}対1 esGMXの比率で最大{0} esGMXトークンを�
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "You can transfer AVAX to Avalanche using any of the below options."
-#~ msgstr "以下の選択肢のいずれかを使い、AVAXをAvalancheへ送ることができます。"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
@@ -4019,10 +3890,6 @@ msgstr "出金"
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {オーダーをキャンセルする} other {#オーダーをキャンセルする}}"
 
-#: src/components/Exchange/PositionsList.js
-msgid "{0, select, true {Long} false {Short}} {1} market selected"
-msgstr "{0, select, true {ロング} false {ショート}} {1} 選択されたマーケット"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
 msgstr "{0}が承認されました!"
@@ -4072,8 +3939,8 @@ msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> toke
 msgstr "{0}はターゲットウェイトを超過しています。<0/><1/>トークンを{1}に<2>スワップ</2>すると手数料が低くなります。"
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1},  and to <3>swap</3> {2} for other tokens."
-msgstr "{0}はターゲットウェイトより低くなっています。<0/><1/>手数料を低くするには、{1}で<2>GLPを購入</2>し、{2}を別のトークンに<3>スワップ</3>\"してください。"
+msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
@@ -4114,22 +3981,19 @@ msgstr "{0} {1} {longOrShortText}, -{2} USD, {3} 価格: ${4} USD"
 #: src/components/Exchange/TradeHistory.js
 msgid ""
 "{0}:\n"
-"Swap {amountInDisplay} {1} for {minOutDisplay} {2},\n"
-"Price: {3}"
-msgstr ""
-"{0}:\n"
-"スワップ {amountInDisplay} {1} を {minOutDisplay} {2}に,\n"
-"価格: {3}"
-
-#: src/components/Exchange/TradeHistory.js
-msgid ""
-"{0}:\n"
 "{1},\n"
 "Price: {priceDisplay}"
 msgstr ""
 "{0}:\n"
 "{1},\n"
 "価格: {priceDisplay}"
+
+#: src/components/Exchange/TradeHistory.js
+msgid ""
+"{0}: Swap {amountInDisplay}\n"
+"{1} for {minOutDisplay} {2},\n"
+"Price: {3}"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "{actionDisplay} Order"
@@ -4141,9 +4005,6 @@ msgid ""
 "-{1} USD,\n"
 "{2} Price: {3} USD"
 msgstr ""
-"{actionDisplay} {0} {longOrShortText},\n"
-"-{1} USD,\n"
-"{2} 価格: {3} USD"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
@@ -4156,6 +4017,10 @@ msgstr "{existingTriggerOrderLength, plural, one {このポジションに影響
 #: src/components/Exchange/ConfirmationBox.js
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {このポジションをオープンした後ただちに執行される可能性があるアクティブなトリガー注文があります。注文をキャンセルするか、または確認を押して続けてください。} other {このポジションをオープンした後ただちに執行される可能性があるアクティブなトリガー注文が#あります。注文をキャンセルするか、または確認を押して続けてください。}}"
+
+#: src/components/Exchange/PositionsList.js
+msgid "{longOrShortText} {0} market selected"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"

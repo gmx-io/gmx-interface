@@ -82,10 +82,6 @@ msgstr "<0>Damit werden alle Token abgehoben und die Reservierung aufgehoben, so
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr "<0>Dein Wallet ist nicht mit {0} verbunden.</0><1/><2>Wechsle zu {1}</2>"
 
-#: src/lib/wallets/index.js
-#~ msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
-#~ msgstr "<0>Dein Wallet ist nicht mit {0} verbunden.</0><1/><2>Wechsle zu {1}</2><3>Hinzufügen {2}</3>"
-
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "Bei der Eröffnung der Position wird eine Momentaufnahme des USD-Wertes deines {0} Kollaterals erstellt."
@@ -189,11 +185,6 @@ msgstr "Nach Inanspruchnahme kannst du maximal {0} esGMX in einem Verhältnis vo
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
 msgstr "Nach Inanspruchnahme werden die esGMX-Tokens innerhalb von 7 Tagen auf dein Konto im ausgewählten Netzwerk überwiesen."
-
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "After you have ETH, set your network to <0>Arbitrum</0> then click the button below:"
-#~ msgstr "Nachdem du ETH hast, stelle dein Netzwerk auf <0>Arbitrum</0> um und klicke dann auf den Button unten:"
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Agree"
@@ -339,10 +330,6 @@ msgstr "Verfügbar in deinem bevorzugten Netzwerk"
 msgid "Available:"
 msgstr "Verfügbar:"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Avalanche"
-#~ msgstr "Avalanche"
-
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
@@ -352,10 +339,6 @@ msgstr "Aclanche APR"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Avalanche Icon"
 msgstr "Avalanche Icon"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Avax is needed on Avalanche to purchase GMX."
-#~ msgstr "Avax wird auf Avalanche benötigt, um GMX zu kaufen."
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
@@ -371,19 +354,9 @@ msgstr "Balance:"
 msgid "Balance: {0}"
 msgstr "Balance: {0}"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Banxa"
-#~ msgstr "Banxa"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 msgid "Begin Transfer"
 msgstr "Übertragung beginnen"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Binance"
-#~ msgstr "Binance"
 
 #: src/components/Migration/Migration.js
 #: src/components/Migration/Migration.js
@@ -425,25 +398,9 @@ msgstr "Kaufen"
 msgid "Buy / Sell GLP"
 msgstr "GLP Kaufen / Verkaufen"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Buy / Transfer AVAX"
-#~ msgstr "AVAX Kaufen / Übertragen"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Buy / Transfer ETH"
-#~ msgstr "ETH Kaufen / Übertragen"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Buy AVAX"
-#~ msgstr "AVAX Kaufen"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy AVAX directly to Avalanche or transfer it there."
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Buy ETH"
-#~ msgstr "ETH Kaufen"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy ETH directly to Arbitrum or transfer it there."
@@ -463,10 +420,6 @@ msgstr "GLP Kaufen Icon"
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
 msgstr "GMX Kaufen"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Buy GMX Bonds"
-#~ msgstr "GMX Bonds Kaufen"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Traderjoe:"
@@ -911,10 +864,6 @@ msgid "Create {0} Order"
 msgstr "{0} Auftrag erstellen"
 
 #: src/pages/OrdersOverview/OrdersOverview.js
-#~ msgid "Created"
-#~ msgstr "Erstellt"
-
-#: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Created At"
 msgstr ""
 
@@ -1013,6 +962,7 @@ msgstr "Dezentralisierte<0/>Perpetual Börse"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Decrease"
@@ -1114,10 +1064,6 @@ msgstr "Diese Meldung 30 Tage lang nicht mehr anzeigen."
 msgid "Download"
 msgstr "Download"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "ETH is needed on Arbitrum to purchase GMX."
-#~ msgstr "ETH wird auf Arbitrum benötigt, um GMX zu kaufen."
-
 #: src/components/Header/AppHeaderLinks.tsx
 #: src/pages/Stake/StakeV2.js
 msgid "Earn"
@@ -1176,11 +1122,6 @@ msgstr "Einzahlung ermöglichen gesendet."
 #: src/components/Exchange/SwapBox.js
 msgid "Enable leverage failed."
 msgstr "Aktivieren der Hebelwirkung fehlgeschlagen."
-
-#: src/components/Exchange/PositionSeller.js
-#: src/components/Exchange/SwapBox.js
-#~ msgid "Enable leverage sent"
-#~ msgstr "Hebelwirkung aktivieren gesendet"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -1312,8 +1253,8 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr "Order ausführen: Tausche {fromAmountDisplay} {0} gegen {toAmountDisplay} {1}"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
-msgstr "Ausführungsreihenfolge: {0, select, Erhöhen {Increase} Verringern {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Preis: {executionPriceDisplay} USD"
+msgid "Execute Order: {0} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
@@ -1545,10 +1486,6 @@ msgstr "Hoher Slippage, trotzdem tauschen"
 msgid "High USDG Slippage, Long Anyway"
 msgstr "Hohe USDG-Abweichung, trotzdem Long"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Hop"
-#~ msgstr "Hop"
-
 #: src/components/Exchange/ConfirmationBox.js
 msgid "I am aware of the trigger orders"
 msgstr "Ich bin mir der Trigger-Orders bewusst"
@@ -1586,6 +1523,7 @@ msgstr "Falsches Netzwerk"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
+#: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Increase"
@@ -1713,10 +1651,6 @@ msgstr "Sprache"
 msgid "Launch App"
 msgstr "App starten"
 
-#: src/pages/Home/Home.js
-#~ msgid "Launch Exchange"
-#~ msgstr "Börse starten"
-
 #: src/components/Exchange/SwapBox.js
 msgid "Leaderboard"
 msgstr "Bestenliste"
@@ -1840,6 +1774,7 @@ msgstr "Lädt..."
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1895,10 +1830,6 @@ msgstr "MAX"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "MEV Optimizer"
 msgstr "MEV-Optimierer"
-
-#: src/pages/OrdersOverview/OrdersOverview.js
-#~ msgid "Mark"
-#~ msgstr "Mark"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -1962,18 +1893,6 @@ msgstr "Maximaler Abschlussbetrag überschritten"
 #: src/components/Exchange/TradeHistory.js
 msgid "Max leverage of 100x was exceeded, the remaining collateral after deducting losses and fees have been sent back to your account"
 msgstr "Die max. Hebelwirkung von 100x wurde überschritten, das verbleibende Kollateral wird nach Abzug von Verlusten und Gebühren wurde auf dein Konto zurücküberwiesen"
-
-#: src/components/Exchange/SwapBox.js
-#~ msgid "Max leverage: 30.5x"
-#~ msgstr "Max. Hebelwirkung: 30.5x"
-
-#: src/components/Exchange/PositionSeller.js
-#~ msgid "Max leverage: 30.5xt"
-#~ msgstr "Max. Hebelwirkung: 30.5xt"
-
-#: src/components/Exchange/PositionEditor.js
-#~ msgid "Max leverage: 30x"
-#~ msgstr "Max. Hebelwirkung: 30x"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2120,11 +2039,6 @@ msgstr "Multiplikator-Punkte"
 msgid "Multiplier Points APR"
 msgstr "Multiplikator-Punkte APR"
 
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Multiswap"
-#~ msgstr "Multiswap"
-
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Address"
 msgstr "NFT Adresse"
@@ -2220,10 +2134,6 @@ msgstr "Beachte, dass die Ausführung von Aufträgen nicht garantiert ist.<0/><1
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
 msgstr "Beachte, dass nach einem Kauf eine Mindesthaltezeit von 15 Minuten gilt.<0/>Seite <1>Stehlen</1> ansehen."
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Olympus Pro"
-#~ msgstr "Olympus Pro"
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -2503,12 +2413,6 @@ msgid "Price above Mark Price"
 msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
-#: src/components/Exchange/SwapBox.js
-#: src/components/Exchange/SwapBox.js
-#~ msgid "Price above Mark price"
-#~ msgstr "Preis über Mark Preis"
-
-#: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 msgid "Price below Liq. Price"
 msgstr "Preis unter Liq. Preis"
@@ -2573,11 +2477,6 @@ msgstr "Protokoll-Analytik"
 #: src/pages/BuyGlp/BuyGlp.js
 msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 msgstr "Kaufe <0>GLP-Token</0>, um {nativeTokenSymbol} Gebühren aus Swaps und Hebeltrading zu verdienen."
-
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Purchase GMX"
-#~ msgstr "GMX kaufen"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
@@ -2863,6 +2762,7 @@ msgstr "Position teilen"
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -3024,6 +2924,7 @@ msgstr "Supply"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Swap"
 msgstr "Swap"
@@ -3107,11 +3008,6 @@ msgstr "Swapping..."
 #: src/components/Exchange/SwapBox.js
 msgid "Swaps disabled, pending {0} upgrade"
 msgstr "Swaps deaktiviert, {0} Upgrade steht an"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Synapse"
-#~ msgstr "Synapse"
 
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3280,14 +3176,6 @@ msgstr "Zu Empfangen"
 msgid "To complete the transfer, you must switch your connected account to {receiver}."
 msgstr "Um die Übertragung abzuschließen, musst du dein verbundenes Konto auf {receiver} umstellen."
 
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "To purchase GMX on <0>Arbitrum</0>, please change your network."
-#~ msgstr "Um GMX auf <0>Arbitrum</0> zu erwerben, wechsle bitte das Netzwerk."
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "To purchase GMX on <0>Avalanche</0>, please change your network."
-#~ msgstr "Um GMX auf <0>Avalanche</0> zu erwerben, wechsle bitte das Netzwerk."
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To purchase GMX on the {0} blockchain, please <0>change your network</0>."
 msgstr ""
@@ -3407,10 +3295,6 @@ msgid "Trade"
 msgstr "Handeln"
 
 #: src/pages/Home/Home.js
-#~ msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x leverage directly from your wallet"
-#~ msgstr "Handle BTC, ETH, AVAX und andere Top-Kryptowährungen mit bis zu 30-facher Hebelwirkung direkt aus deiner Wallet"
-
-#: src/pages/Home/Home.js
 msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
 msgstr ""
 
@@ -3463,18 +3347,10 @@ msgstr "Transaktion gesendet."
 msgid "Transaction was cancelled."
 msgstr "Transaktion wurde abgebrochen."
 
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Transfer AVAX"
-#~ msgstr "Transferiere AVAX"
-
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
 msgid "Transfer Account"
 msgstr "Transferiere Konto"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Transfer ETH"
-#~ msgstr "Transferiere ETH"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Transfer NFT"
@@ -3637,10 +3513,6 @@ msgstr "Verwende das Symbol Kollateral bearbeiten, um Kollateral zu hinterlegen 
 #: src/components/Exchange/SwapBox.js
 msgid "Useful Links"
 msgstr "Nützliche Links"
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "Using the Avalanche or Synapse bridges, you can also transfer any other supported cryptocurrency, and receive free AVAX to pay for the network's fees."
-#~ msgstr "Wenn du die Avalanche- oder Synapse-Bridges verwendest, kannst du auch jede andere unterstützte Kryptowährung übertragen und erhältst kostenlos AVAX, um die Gebühren des Netzwerks zu bezahlen."
 
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3860,17 +3732,9 @@ msgstr "Du verdienst {0}% mehr {nativeTokenSymbol} Rewards mit {1} gestaketen Mu
 msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
 msgstr "Du verlässt GMX.io und wirst  auf eine unabhängige Website eines Drittanbieters weitergeleitet."
 
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "You can buy AVAX directly on <0>Avalanche</0> using Banxa:"
-#~ msgstr "Du kannst AVAX direkt auf <0>Avalanche</0> über Banxa kaufen:"
-
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can buy AVAX directly on <0>Avalanche</0> using these options:"
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "You can buy ETH directly on <0>Arbitrum</0> using Banxa:"
-#~ msgstr "Du kannst ETH direkt auf <0>Arbitrum</0> über Banxa kaufen:"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can buy ETH directly on <0>Arbitrum</0> using these options:"
@@ -3896,10 +3760,6 @@ msgstr "Du kannst derzeit maximal {0} esGMX-Token in einem Verhältnis von {1} {
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer AVAX from other networks to Avalanche using any of the below options:"
 msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.js
-#~ msgid "You can transfer AVAX to Avalanche using any of the below options."
-#~ msgstr "Du kannst AVAX nach Avalanche transferieren, indem du eine der folgenden Möglichkeiten nutzt."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "You can transfer ETH from other networks to Arbitrum using any of the below options:"
@@ -4030,10 +3890,6 @@ msgstr "Abheben"
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {Order abbrechen} other {# Order abbrechen}}"
 
-#: src/components/Exchange/PositionsList.js
-msgid "{0, select, true {Long} false {Short}} {1} market selected"
-msgstr "{0, select, true {Long} false {Short}} {1} Markt ausgewählt"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
 msgstr "{0} Genehmigt!"
@@ -4083,8 +3939,8 @@ msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> toke
 msgstr "{0} liegt über der Zielgewichtung.<0/><1/>Erhalte niedrigere Gebühren, um <2>Token für {1} zu tauschen</2>."
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1},  and to <3>swap</3> {2} for other tokens."
-msgstr "{0} liegt unter der Zielgewichtung.{<0/><1/>Erhalte niedrigere Gebühren, um <2>GLP</2> mit {1} zu kaufen und <3>zu tauschen</3> {2} für andere Token."
+msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
+msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
@@ -4125,22 +3981,19 @@ msgstr "{0} {1} {longOrShortText}, -{2} USD, {3} Preis: ${4} USD"
 #: src/components/Exchange/TradeHistory.js
 msgid ""
 "{0}:\n"
-"Swap {amountInDisplay} {1} for {minOutDisplay} {2},\n"
-"Price: {3}"
-msgstr ""
-"{0}:\n"
-"Swappe {amountInDisplay} {1} für {minOutDisplay} {2},\n"
-"Preis: {3}"
-
-#: src/components/Exchange/TradeHistory.js
-msgid ""
-"{0}:\n"
 "{1},\n"
 "Price: {priceDisplay}"
 msgstr ""
 "{0}:\n"
 "{1},\n"
 "Preis: {priceDisplay}"
+
+#: src/components/Exchange/TradeHistory.js
+msgid ""
+"{0}: Swap {amountInDisplay}\n"
+"{1} for {minOutDisplay} {2},\n"
+"Price: {3}"
+msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "{actionDisplay} Order"
@@ -4152,9 +4005,6 @@ msgid ""
 "-{1} USD,\n"
 "{2} Price: {3} USD"
 msgstr ""
-"{actionDisplay} {0} {longOrShortText},\n"
-"-{1} USD,\n"
-"{2} Preis: {3} USD"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{chainName} Total Stats start from {totalStatsStartDate}.<0/> For detailed stats:"
@@ -4167,6 +4017,10 @@ msgstr "{existingTriggerOrderLength, plural, one {Du hast einen aktiven Triggera
 #: src/components/Exchange/ConfirmationBox.js
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr "{existingTriggerOrderLength, plural, one {Du hast eine aktiven Trigger-Order, die unmittelbar nach dem Öffnen dieser Position ausgeführt werden könnte. Bitte storniere den Auftrag oder akzeptiere die Bestätigung, um fortzufahren.} other {Du hast # aktive Trigger-Orders, die sofort ausgeführt werden könnten, nachdem du diese Position eröffnet hast. Bitte storniere die Aufträge oder akzeptieren die Bestätigung, um fortzufahren.}}"
+
+#: src/components/Exchange/PositionsList.js
+msgid "{longOrShortText} {0} market selected"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
@@ -4182,7 +4036,7 @@ msgstr "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} nicht unterst�
 
 #: src/components/StatsTooltip/StatsTooltip.tsx
 msgid "{title} on Arbitrum:"
-msgstr "title} auf Arbitrum:"
+msgstr "{title} auf Arbitrum:"
 
 #: src/components/StatsTooltip/StatsTooltip.tsx
 msgid "{title} on Avalanche:"
