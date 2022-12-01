@@ -11,7 +11,7 @@ export const locales = {
   ko: "Korean",
   ru: "Russian",
   ja: "Japanese",
-  fr: "French",
+  // fr: "French",
   de: "German",
   ...(isDevelopment() && { pseudo: "Test" }),
 };
