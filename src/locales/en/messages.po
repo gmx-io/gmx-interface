@@ -1312,8 +1312,8 @@ msgid "Fees"
 msgstr "Fees"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-msgid "Fees and price impact"
-msgstr "Fees and price impact"
+#~ msgid "Fees and price impact"
+#~ msgstr "Fees and price impact"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Fees are high to swap from {0} to {1}."
@@ -2486,8 +2486,8 @@ msgid "Price impact"
 msgstr "Price impact"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-msgid "Price impact description"
-msgstr "Price impact description"
+#~ msgid "Price impact description"
+#~ msgstr "Price impact description"
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Price is above Mark Price"

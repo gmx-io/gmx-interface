@@ -25,6 +25,14 @@ export type MarketTokenPricesData = {
   };
 };
 
+export type MarketPoolsData = {
+  marketPools: {
+    [marketAddress: string]: {
+      [tokenAddress: string]: BigNumber;
+    };
+  };
+};
+
 export enum MarketPoolType {
   Long = "Long",
   Short = "Short",

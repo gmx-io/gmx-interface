@@ -2,7 +2,7 @@ import { InfoTokens } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
-import { TokenBalancesData, TokenConfigsData, TokenPricesData, TokensData } from "./types";
+import { TokenBalancesData, TokenConfigsData, TokenPricesData, TokensData, TokenTotalSupplyData } from "./types";
 
 export function getTokenPriceData(data: TokenPricesData & TokenConfigsData, tokenAddress?: string) {
   if (!tokenAddress) return undefined;
@@ -64,6 +64,18 @@ export function getTokenAmountFromUsd(
   return convertFromUsdByPrice(usdAmount, tokenConfig.decimals, price);
 }
 
+export function getTokenBalance(data: TokenBalancesData, tokenAddress?: string) {
+  if (!tokenAddress) return undefined;
+
+  return data.tokenBalances[tokenAddress];
+}
+
+export function getTokenTotalSupply(data: TokenTotalSupplyData, tokenAddress?: string) {
+  if (!tokenAddress) return undefined;
+
+  return data.totalSupply[tokenAddress];
+}
+
 export function adaptToInfoTokens(data: TokenConfigsData & TokenPricesData & TokenBalancesData): InfoTokens {
   const infoTokens = Object.keys(data.tokenConfigs).reduce((acc, address) => {
     const tokenConfigData = getTokenConfig(data, address);
@@ -95,12 +107,6 @@ export function getTokenData(data: TokensData, tokenAddress?: string) {
     ...priceData,
     balance,
   };
-}
-
-export function getTokenBalance(data: TokenBalancesData, tokenAddress?: string) {
-  if (!tokenAddress) return undefined;
-
-  return data.tokenBalances[tokenAddress];
 }
 
 export function convertFromUsdByPrice(usdAmount: BigNumber, tokenDecimals: number, price: BigNumber) {

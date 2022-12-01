@@ -30,4 +30,10 @@ export type TokenConfigsData = {
   tokenConfigs: TokenConfigsMap;
 };
 
+export type TokenTotalSupplyData = {
+  totalSupply: {
+    [address: string]: BigNumber;
+  };
+};
+
 export type TokensData = TokenConfigsData & TokenBalancesData & TokenPricesData;

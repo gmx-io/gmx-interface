@@ -1,7 +1,7 @@
 import { getMarketConfig } from "config/synthetics";
 import { TokenConfigsData } from "../tokens/types";
 import { getTokenConfig } from "../tokens/utils";
-import { MarketPoolType, MarketsData, MarketTokenPricesData, SyntheticsMarket } from "./types";
+import { MarketPoolsData, MarketPoolType, MarketsData, MarketTokenPricesData, SyntheticsMarket } from "./types";
 
 export function getMarket(data: MarketsData, marketAddress?: string) {
   if (!marketAddress) return undefined;
@@ -28,6 +28,12 @@ export function getMarketName(chainId: number, data: MarketsData & TokenConfigsD
   if (!indexToken || !longToken || !shortToken) return undefined;
 
   return `GM: ${indexToken.symbol}/${marketConfig.perp} : [${longToken.symbol}/${shortToken.symbol}]`;
+}
+
+export function getMarketPoolAmount(data: MarketPoolsData, marketAddress?: string, tokenAddress?: string) {
+  if (!marketAddress || !tokenAddress) return undefined;
+
+  return data.marketPools[marketAddress]?.[tokenAddress];
 }
 
 export function getMarketTokenPrice(data: MarketTokenPricesData, marketTokenAddress?: string) {

@@ -65,8 +65,6 @@ export function useMarketTokenPrices(
     },
   });
 
-  console.log("asdsadad", data);
-
   const result = useMemo(() => {
     if (!data?.reader) {
       return {
@@ -77,7 +75,7 @@ export function useMarketTokenPrices(
     const marketTokenPrices = Object.keys(data.reader).reduce((acc, marketAddress) => {
       acc[marketAddress] = data.reader[marketAddress].returnValues[0];
 
-      // If poolValue === 0, marketPrice === 0
+      // If poolValue === 0 then marketPrice === 0
       if (acc[marketAddress].eq(0)) {
         acc[marketAddress] = expandDecimals(1, USD_DECIMALS);
       }
