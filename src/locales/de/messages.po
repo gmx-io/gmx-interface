@@ -1018,8 +1018,16 @@ msgstr ""
 msgid "Deposit"
 msgstr ""
 
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+msgid "Deposit created"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
+msgstr ""
+
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+msgid "Deposit failed"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -1028,6 +1036,10 @@ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit failed."
+msgstr ""
+
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+msgid "Deposit submitted"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -2088,6 +2100,10 @@ msgstr ""
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "NFT Wallet"
+msgstr ""
+
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+msgid "Need tokens approval"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
