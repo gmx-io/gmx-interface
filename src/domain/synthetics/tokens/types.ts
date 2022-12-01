@@ -36,4 +36,10 @@ export type TokenTotalSupplyData = {
   };
 };
 
+export type TokenAllowanceData = {
+  tokenAllowance: {
+    [address: string]: BigNumber;
+  };
+};
+
 export type TokensData = TokenConfigsData & TokenBalancesData & TokenPricesData;

@@ -340,13 +340,13 @@ export function MarketPoolSwapBox(p: Props) {
           firstSwapTokenAmount={firstTokenState.tokenAmount}
           secondSwapTokenAddress={secondTokenState.tokenAddress}
           secondSwapTokenAmount={secondTokenState.tokenAmount}
+          marketTokenAddress={p.selectedMarketAddress!}
           gmSwapAmount={gmTokenState.tokenAmount}
           onClose={() => setIsConfirming(false)}
           tokensData={tokensData}
           priceImpact={priceImpact}
           operationType={operationTab}
           onSubmit={() => null}
-          onApproveToken={() => null}
         />
       )}
     </div>
