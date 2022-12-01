@@ -4,13 +4,21 @@ import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { TokenBalancesData, TokenConfigsData, TokenPricesData, TokensData } from "./types";
 
-export function getTokenPriceData(data: TokenPricesData, tokenAddress?: string) {
+export function getTokenPriceData(data: TokenPricesData & TokenConfigsData, tokenAddress?: string) {
   if (!tokenAddress) return undefined;
+
+  const token = getTokenConfig(data, tokenAddress);
+
+  if (token?.isStable)
+    return {
+      minPrice: expandDecimals(1, USD_DECIMALS),
+      maxPrice: expandDecimals(1, USD_DECIMALS),
+    };
 
   return data.tokenPrices[tokenAddress];
 }
 
-export function getTokenPrice(data: TokenPricesData, tokenAddress?: string, useMaxPrice?: boolean) {
+export function getTokenPrice(data: TokenPricesData & TokenConfigsData, tokenAddress?: string, useMaxPrice?: boolean) {
   const priceData = getTokenPriceData(data, tokenAddress);
 
   if (!priceData) return undefined;

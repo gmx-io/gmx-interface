@@ -232,6 +232,19 @@ const CONTRACTS = {
     TraderJoeGmxAvaxPool: AddressZero,
     ReferralStorage: AddressZero,
     ReferralReader: AddressZero,
+
+    // Synthetics
+    DataStore: "0x261105d1830Ea56729B705B9F3D579dA461dE771",
+    DepositHandler: "0xbbF22bD72Af3F613d1ee36582B1f72E9a1d8584F",
+    DepositStore: "0xf40B316bd0FC2f8A50d9898de972c38d2C0FB588",
+    EventEmitter: "0x024171a88D545580fEe403224579b024E49b50D0",
+    FeeReceiver: "0xBd00b5c1286d4D30BB441e111314828f27466E33",
+    GasUtils: "0x91246319D9798421649b6a7CccD5bF97f2e7cA29",
+    MarketStore: "0x2552b5b73064bB4E139657a14039AaC4a82442da",
+    Oracle: "0xb10e91E9B73a9E724bEaE36BD4CbdD2F7a898F89",
+    OracleStore: "0xE14f26972Faf06e4942893Bb2d2a41c47b4114a0",
+    SyntheticsReader: "0x2ce843AfE4B524f58870504535f3Fa936818A406",
+    RoleStore: "0xFc371E380262536c819D12B9569106bf032cC41c",
   },
 };
 

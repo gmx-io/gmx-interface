@@ -1,12 +1,10 @@
 import { useWeb3React } from "@web3-react/core";
 import { getContract } from "config/contracts";
 import Reader from "abis/ReaderV2.json";
-import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import useSWR from "swr";
 
-export function useTokenBalances(p: { tokenAddresses: string[] }) {
-  const { chainId } = useChainId();
+export function useTokenBalances(chainId: number, p: { tokenAddresses: string[] }) {
   const { library, active, account } = useWeb3React();
   const readerAddress = getContract(chainId, "Reader");
 

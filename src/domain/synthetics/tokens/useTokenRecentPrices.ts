@@ -20,11 +20,11 @@ export function useTokenRecentPrices(chainId: number): TokenPricesData {
 
   const { data } = useSWR<BackendResponse>([url], { fetcher: jsonFetcher });
 
-  const result = useMemo(() => formatResponse(chainId, data), [chainId, data]);
-
-  return {
-    tokenPrices: result,
-  };
+  return useMemo(() => {
+    return {
+      tokenPrices: formatResponse(chainId, data),
+    };
+  }, [data, chainId]);
 }
 
 function formatResponse(chainId: number, response: BackendResponse = []) {

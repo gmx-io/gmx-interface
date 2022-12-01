@@ -1,106 +1,37 @@
-import { SyntheticsMarket } from "domain/synthetics/markets/types";
-import { ethers } from "ethers";
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI_TESTNET } from "./chains";
+import { MarketConfig } from "domain/synthetics/markets/types";
+import { AVALANCHE_FUJI_TESTNET, SUPPORTED_CHAIN_IDS } from "./chains";
 
-const { AddressZero } = ethers.constants;
-
-const SYNTHETICS_MARKETS: { [chainId: number]: SyntheticsMarket[] } = {
-  [ARBITRUM]: [
-    {
-      perp: "ETH/USD",
-      marketTokenAddress: AddressZero,
-      indexTokenSymbol: "ETH",
-      longCollateralSymbol: "ETH",
-      shortCollateralSymbol: "USDC",
-    },
-    {
-      perp: "BNB/USD",
-      marketTokenAddress: AddressZero,
-      indexTokenSymbol: "BNB",
-      longCollateralSymbol: "ETH",
-      shortCollateralSymbol: "USDC",
-    },
-    {
-      perp: "BTC/USD",
-      marketTokenAddress: AddressZero,
-      indexTokenSymbol: "BTC",
-      longCollateralSymbol: "BTC",
-      shortCollateralSymbol: "USDC",
-    },
-    {
-      perp: "SOL/USD",
-      marketTokenAddress: AddressZero,
-      indexTokenSymbol: "SOL",
-      longCollateralSymbol: "ETH",
-      shortCollateralSymbol: "USDC",
-    },
-  ],
-  [AVALANCHE]: [
-    {
-      perp: "ETH/USD",
-      marketTokenAddress: AddressZero,
-      indexTokenSymbol: "ETH",
-      longCollateralSymbol: "AVAX",
-      shortCollateralSymbol: "USDC",
-    },
-    {
-      perp: "BNB/USD",
-      marketTokenAddress: AddressZero,
-      indexTokenSymbol: "BNB",
-      longCollateralSymbol: "AVAX",
-      shortCollateralSymbol: "USDC",
-    },
-    {
-      perp: "BTC/USD",
-      marketTokenAddress: AddressZero,
-      indexTokenSymbol: "BTC",
-      longCollateralSymbol: "BTC",
-      shortCollateralSymbol: "USDC",
-    },
-    {
-      perp: "SOL/USD",
-      marketTokenAddress: AddressZero,
-      indexTokenSymbol: "SOL",
-      longCollateralSymbol: "AVAX",
-      shortCollateralSymbol: "USDC",
-    },
-  ],
+const MARKETS: { [chainId: number]: MarketConfig[] } = {
   [AVALANCHE_FUJI_TESTNET]: [
     {
-      perp: "ETH/USD",
-      marketTokenAddress: AddressZero,
-      indexTokenSymbol: "ETH",
-      longCollateralSymbol: "AVAX",
-      shortCollateralSymbol: "USDC",
+      marketTokenAddress: "0xFaD1967a5216271b8c60F399D6dF391be99E53f4",
+      perp: "USD",
     },
     {
-      perp: "BNB/USD",
-      marketTokenAddress: AddressZero,
-      indexTokenSymbol: "BNB",
-      longCollateralSymbol: "AVAX",
-      shortCollateralSymbol: "USDC",
+      marketTokenAddress: "0x8952fA89904eDE63E7Fe0dB4fA6b3CE4b7a74F0D",
+      perp: "USD",
     },
     {
-      perp: "BTC/USD",
-      marketTokenAddress: AddressZero,
-      indexTokenSymbol: "BTC",
-      longCollateralSymbol: "AVAX",
-      shortCollateralSymbol: "USDC",
-    },
-    {
-      perp: "SOL/USD",
-      marketTokenAddress: AddressZero,
-      indexTokenSymbol: "SOL",
-      longCollateralSymbol: "AVAX",
-      shortCollateralSymbol: "USDC",
+      marketTokenAddress: "0x193Eb518225bc2823C06286AC4A14fb298789C1f",
+      perp: "USD",
     },
   ],
 };
 
-export function getSyntheticsMarkets(chainId: number) {
-  return SYNTHETICS_MARKETS[chainId];
+const MARKETS_MAP: { [chainId: number]: { [marketAddress: string]: MarketConfig } } = {};
+
+for (const chainId of SUPPORTED_CHAIN_IDS) {
+  if (!(chainId in MARKETS)) continue;
+
+  MARKETS_MAP[chainId] = MARKETS[chainId].reduce((acc, conf) => {
+    acc[conf.marketTokenAddress] = conf;
+
+    return acc;
+  }, {} as { [marketAddress: string]: MarketConfig });
 }
 
-export function getSyntheticsMarketByIndexToken(chainId: number, symbol: string) {
-  return getSyntheticsMarkets(chainId).find((market) => market.indexTokenSymbol === symbol);
+export function getMarketConfig(chainId: number, marketTokenAddress?: string): MarketConfig | undefined {
+  if (!marketTokenAddress) return undefined;
+
+  return MARKETS_MAP[chainId][marketTokenAddress];
 }

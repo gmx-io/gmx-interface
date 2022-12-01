@@ -8,16 +8,37 @@ import { ARBITRUM } from "config/chains";
 import { useChainId } from "lib/chains";
 import { bigNumberify, formatAmount } from "lib/numbers";
 import AssetDropdown from "pages/Dashboard/AssetDropdown";
-import { SyntheticsMarket } from "domain/synthetics/markets/types";
 
 import "./SyntheticsMarketStats.scss";
+import { useMarkets } from "domain/synthetics/markets/useMarkets";
+import { getMarket, getMarketName } from "domain/synthetics/markets/utils";
+import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
+import { getToken } from "config/tokens";
+import { useMemo } from "react";
 
 type Props = {
-  market: SyntheticsMarket;
+  marketKey?: string;
 };
 
 export function SyntheticsMarketStats(p: Props) {
   const { chainId } = useChainId();
+
+  const marketsData = useMarkets(chainId);
+  const tokensData = useWhitelistedTokensData(chainId);
+
+  const data = { ...marketsData, ...tokensData };
+
+  const market = getMarket(data, p.marketKey);
+  const marketName = getMarketName(chainId, data, p.marketKey);
+
+  const { longCollateral, shortCollateral } = useMemo(() => {
+    if (!market) return { longCollateral: undefined, shortCollateral: undefined };
+
+    return {
+      longCollateral: getToken(chainId, market.longTokenAddress),
+      shortCollateral: getToken(chainId, market.shortTokenAddress),
+    };
+  }, [chainId, market]);
 
   return (
     <div className="App-card SyntheticsMarketStats-card">
@@ -46,21 +67,21 @@ export function SyntheticsMarketStats(p: Props) {
           <div className="label">
             <Trans>Perp</Trans>
           </div>
-          <div className="value">{p.market.perp}</div>
+          <div className="value">{marketName}</div>
         </div>
 
         <div className="App-card-row">
           <div className="label">
             <Trans>Long Collateral</Trans>
           </div>
-          <div className="value">{p.market.longCollateralSymbol}</div>
+          <div className="value">{longCollateral?.symbol}</div>
         </div>
 
         <div className="App-card-row">
           <div className="label">
             <Trans>Short Collateral</Trans>
           </div>
-          <div className="value">{p.market.shortCollateralSymbol}</div>
+          <div className="value">{shortCollateral?.symbol}</div>
         </div>
 
         <div className="App-card-divider" />

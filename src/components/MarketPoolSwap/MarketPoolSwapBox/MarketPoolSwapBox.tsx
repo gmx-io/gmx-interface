@@ -1,9 +1,8 @@
-import { t, Trans } from "@lingui/macro";
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Tab from "components/Tab/Tab";
-import Tooltip from "components/Tooltip/Tooltip";
-import { getTokenBySymbol, getWhitelistedTokens } from "config/tokens";
+import { getToken } from "config/tokens";
 import { MarketPoolType, SyntheticsMarket } from "domain/synthetics/markets/types";
 import { useChainId } from "lib/chains";
 import { GM_DECIMALS } from "lib/legacy";
@@ -13,24 +12,21 @@ import { MarketDropdown } from "../MarketDropdown/MarketDropdown";
 import { FocusInputId, Mode, modesTexts, OperationType, operationTypesTexts } from "../constants";
 import { shouldShowMaxButton, useGmTokenState, useSwapTokenState } from "../utils";
 
-import { getMarketKey, getTokenPoolType } from "domain/synthetics/markets/utils";
-import { usePriceImpact } from "domain/synthetics/priceImpact/usePriceImpact";
+import { getMarket, getTokenPoolType } from "domain/synthetics/markets/utils";
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import { useTokensData } from "domain/synthetics/tokens/useTokensData";
+import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
 import { adaptToInfoTokens, formatTokenAmount, formatUsdAmount } from "domain/synthetics/tokens/utils";
 
 import "./MarketPoolSwapBox.scss";
-import { InfoRow } from "components/InfoRow/InfoRow";
-import { formatPriceImpact } from "domain/synthetics/priceImpact/utils";
-import { MarketPoolSwapConfirmation } from "../MarketPoolSwapConfirmation/MarketPoolSwapConfirmation";
+import { useMarkets } from "domain/synthetics/markets/useMarkets";
 
 type Props = {
-  selectedMarket: SyntheticsMarket;
+  selectedMarketAddress?: string;
   markets: SyntheticsMarket[];
-  onSelectMarket: (market: SyntheticsMarket) => void;
+  onSelectMarket: (marketAddress: string) => void;
   onConnectWallet: () => void;
 };
 
@@ -42,36 +38,44 @@ export function MarketPoolSwapBox(p: Props) {
   const [focusedInput, setFocusedInput] = useState<FocusInputId | undefined>();
   const [isConfirming, setIsConfirming] = useState(false);
 
-  const tokensData = useTokensData(chainId, {
-    tokenAddresses: getWhitelistedTokens(chainId).map((token) => token.address),
-  });
+  const tokensData = useWhitelistedTokensData(chainId);
+  const marketsData = useMarkets(chainId);
 
-  const availableTokens = [p.selectedMarket.longCollateralSymbol, p.selectedMarket.shortCollateralSymbol].map(
-    (symbol) => getTokenBySymbol(chainId, symbol)
-  );
+  const selectedMarket = getMarket(marketsData, p.selectedMarketAddress);
 
-  const firstTokenState = useSwapTokenState(tokensData, { tokenAddress: availableTokens[0].address });
+  const availableTokens = useMemo(() => {
+    if (!selectedMarket) return [];
+
+    return [selectedMarket.longTokenAddress, selectedMarket.shortTokenAddress].map((address) =>
+      getToken(chainId, address)
+    );
+  }, [chainId, selectedMarket]);
+
+  const firstTokenState = useSwapTokenState(tokensData);
   const secondTokenState = useSwapTokenState(tokensData);
 
-  const gmTokenState = useGmTokenState(chainId);
+  const gmTokenState = useGmTokenState(chainId, { marketAddress: p.selectedMarketAddress });
 
   const longDelta = getDeltaByPoolType(MarketPoolType.Long);
   const shortDelta = getDeltaByPoolType(MarketPoolType.Short);
 
-  const priceImpact = usePriceImpact({
-    marketKey: getMarketKey(p.selectedMarket),
-    longDeltaUsd: longDelta,
-    shortDeltaUsd: shortDelta,
-  });
+  // const priceImpact = usePriceImpact({
+  //   marketKey: getMarketKey(selectedMarket),
+  //   longDeltaUsd: longDelta,
+  //   shortDeltaUsd: shortDelta,
+  // });
+
+  const priceImpact = null;
 
   const tokenSelectorOptionsMap = useMemo(() => adaptToInfoTokens(tokensData), [tokensData]);
 
   const submitButtonState = getSubmitButtonState();
 
   function getDeltaByPoolType(poolType: MarketPoolType) {
+    if (!selectedMarket) return BigNumber.from(0);
+
     const poolTokenState = [firstTokenState, secondTokenState].find(
-      (tokenState) =>
-        tokenState.token?.symbol && getTokenPoolType(p.selectedMarket, tokenState.token.symbol) === poolType
+      (tokenState) => tokenState.token?.symbol && getTokenPoolType(selectedMarket, tokenState.token.symbol) === poolType
     );
 
     if (!poolTokenState) return BigNumber.from(0);
@@ -128,6 +132,12 @@ export function MarketPoolSwapBox(p: Props) {
     setIsConfirming(true);
   }
 
+  useEffect(() => {
+    if (!firstTokenState.tokenAddress && availableTokens.length > 0) {
+      firstTokenState.setTokenAddress(availableTokens[0].address);
+    }
+  }, [availableTokens, firstTokenState]);
+
   useEffect(
     function updateInputsByModeEff() {
       if (modeTab === Mode.pair && !secondTokenState.tokenAddress) {
@@ -183,7 +193,7 @@ export function MarketPoolSwapBox(p: Props) {
   return (
     <div className={`App-box MarketPoolSwapBox`}>
       <div className="MarketPoolSwapBox-market-dropdown">
-        <MarketDropdown selectedMarket={p.selectedMarket} markets={p.markets} onSelect={p.onSelectMarket} />
+        <MarketDropdown selectedMarketKey={p.selectedMarketAddress} markets={p.markets} onSelect={p.onSelectMarket} />
       </div>
 
       <Tab
@@ -286,7 +296,7 @@ export function MarketPoolSwapBox(p: Props) {
         </BuyInputSection>
       </div>
 
-      <div className="MarketPoolSwapBox-info-section">
+      {/* <div className="MarketPoolSwapBox-info-section">
         <InfoRow
           label={<Trans>Fees and price impact</Trans>}
           value={
@@ -301,7 +311,7 @@ export function MarketPoolSwapBox(p: Props) {
             />
           }
         />
-      </div>
+      </div> */}
       <div className="Exchange-swap-button-container">
         <SubmitButton
           authRequired
@@ -313,7 +323,7 @@ export function MarketPoolSwapBox(p: Props) {
         </SubmitButton>
       </div>
 
-      {isConfirming && (
+      {/* {isConfirming && (
         <MarketPoolSwapConfirmation
           firstSwapTokenAddress={firstTokenState.tokenAddress!}
           firstSwapTokenAmount={firstTokenState.tokenAmount}
@@ -327,7 +337,7 @@ export function MarketPoolSwapBox(p: Props) {
           onSubmit={() => null}
           onApproveToken={() => null}
         />
-      )}
+      )} */}
     </div>
   );
 }

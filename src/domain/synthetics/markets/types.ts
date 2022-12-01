@@ -1,11 +1,28 @@
-export type SyntheticsMarket = {
-  perp: string;
+import { BigNumber } from "ethers";
 
+export type MarketConfig = {
   marketTokenAddress: string;
+  perp: string;
+};
 
-  indexTokenSymbol: string;
-  longCollateralSymbol: string;
-  shortCollateralSymbol: string;
+export type SyntheticsMarket = {
+  marketTokenAddress: string;
+  indexTokenAddress: string;
+  longTokenAddress: string;
+  shortTokenAddress: string;
+  data: string;
+};
+
+export type MarketsData = {
+  markets: {
+    [marketKey: string]: SyntheticsMarket;
+  };
+};
+
+export type MarketTokenPricesData = {
+  marketTokenPrices: {
+    [marketKey: string]: BigNumber;
+  };
 };
 
 export enum MarketPoolType {

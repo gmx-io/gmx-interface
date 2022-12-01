@@ -3,12 +3,12 @@ import SEO from "components/Common/SEO";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SyntheticsMarketStats } from "components/SyntheticsMarketStats/SyntheticsMarketStats";
 import { MarketPoolSwapBox } from "components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox";
-import { getSyntheticsMarkets } from "config/synthetics";
 import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
 import "./SyntheticsPoolsPage.scss";
+import { useMarkets } from "domain/synthetics/markets/useMarkets";
+import { getMarkets } from "domain/synthetics/markets/utils";
 
 type Props = {
   connectWallet: () => void;
@@ -17,8 +17,17 @@ type Props = {
 export function SyntheticsPoolsPage(p: Props) {
   const { chainId } = useChainId();
 
-  const markets = getSyntheticsMarkets(chainId);
-  const [selectedMarket, setSelectedMarket] = useState(markets[0]);
+  const marketsData = useMarkets(chainId);
+  const markets = getMarkets(marketsData);
+
+  // TODO: localStorage?
+  const [selectedMarketKey, setSelectedMarketKey] = useState<string>();
+
+  useEffect(() => {
+    if (markets.length > 0 && !selectedMarketKey) {
+      setSelectedMarketKey(markets[0].marketTokenAddress);
+    }
+  }, [selectedMarketKey, markets]);
 
   return (
     <SEO title={getPageTitle("Synthetics pools")}>
@@ -38,13 +47,13 @@ export function SyntheticsPoolsPage(p: Props) {
         </div>
 
         <div className="SyntheticsPoolsPage-content">
-          <SyntheticsMarketStats market={selectedMarket} />
+          <SyntheticsMarketStats marketKey={selectedMarketKey} />
           <div className="SyntheticsPoolsPage-swap-box">
             <MarketPoolSwapBox
               onConnectWallet={p.connectWallet}
-              selectedMarket={selectedMarket}
+              selectedMarketAddress={selectedMarketKey}
               markets={markets}
-              onSelectMarket={setSelectedMarket}
+              onSelectMarket={setSelectedMarketKey}
             />
           </div>
         </div>

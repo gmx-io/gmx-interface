@@ -1,13 +1,16 @@
 import { getTokenBySymbol } from "config/tokens";
+import { useMarketTokenPrices } from "domain/synthetics/markets/useMarketTokenPrices";
+import { getMarketTokenPrice } from "domain/synthetics/markets/utils";
 import { TokensData } from "domain/synthetics/tokens/types";
+import { useTokenBalances } from "domain/synthetics/tokens/useTokenBalances";
 import {
+  convertToUsdByPrice,
   formatTokenAmount,
   getTokenAmountFromUsd,
   getTokenBalance,
   getTokenConfig,
   getTokenPrice,
   getUsdFromTokenAmount,
-  MOCK_GM_PRICE,
 } from "domain/synthetics/tokens/utils";
 import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
@@ -87,16 +90,25 @@ export function useSwapTokenState(tokensData: TokensData, initial: { tokenAddres
 }
 
 // TODO
-export function useGmTokenState(chainId: number): SwapTokenState {
+export function useGmTokenState(chainId: number, p: { marketAddress?: string }): SwapTokenState {
+  const marketPricesData = useMarketTokenPrices(chainId, { maximize: false });
+
+  const marketTokenBalancesData = useTokenBalances(chainId, {
+    tokenAddresses: p.marketAddress ? [p.marketAddress] : [],
+  });
+
   const [inputValue, setInputValue] = useState<string | undefined>();
   const formattedInputValue = Number(inputValue) > 0 ? inputValue : "";
 
   const token = getTokenBySymbol(chainId, "GM");
 
-  const price = MOCK_GM_PRICE;
+  const price = getMarketTokenPrice(marketPricesData, p.marketAddress);
+
   const tokenAmount = parseValue(inputValue || "0", GM_DECIMALS) || BigNumber.from(0);
-  const usdAmount = tokenAmount.mul(price).div(expandDecimals(1, GM_DECIMALS));
-  const balance = parseValue("3.214", GM_DECIMALS)!;
+
+  const usdAmount = price ? convertToUsdByPrice(tokenAmount, GM_DECIMALS, price) : BigNumber.from(0);
+
+  const balance = getTokenBalance(marketTokenBalancesData, p.marketAddress) || BigNumber.from(0);
 
   function setValueByTokenAmount(amount?: BigNumber) {
     const value = formatTokenAmount(amount, GM_DECIMALS, true);
