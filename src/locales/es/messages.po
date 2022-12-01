@@ -3294,10 +3294,6 @@ msgstr ""
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr ""
 
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "TraderJoe"
-msgstr ""
-
 #: src/pages/Referrals/Referrals.js
 msgid "Traders"
 msgstr "Traders"
@@ -3426,10 +3422,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "UTILIZATION"
 msgstr "UTILIZACIÓN"
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "Uniswap"
-msgstr ""
 
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -3892,10 +3884,6 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 msgid "{0, select, true {Long} false {Short}} {1} market selected"
-msgstr ""
-
-#: src/pages/BuyGMX/BuyGMX.tsx
-msgid "{0}"
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
