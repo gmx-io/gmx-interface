@@ -13,7 +13,11 @@
   opacity: 0.7;
 }
 .active-resolution-btn {
-  color: #fa3c58 !important;
+  padding: 0.3rem 0.5rem;
+  opacity: 1;
+  pointer-events: none;
+  background: linear-gradient(90deg, #2d42fc, #2e3dcd);
+  color: #fff !important;
 }
 
 html.theme-dark .chart-page {
