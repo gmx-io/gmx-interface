@@ -81,8 +81,7 @@ export function useMarkets(chainId: number): MarketsData {
   return result;
 }
 
-function toUnwrappedNativeToken(chainId: number, address: string) {
-  // TODO: invalid token address in Fuji
+export function toUnwrappedNativeToken(chainId: number, address: string) {
   try {
     const token = getToken(chainId, address);
 

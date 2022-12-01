@@ -1,11 +1,11 @@
 import { useWeb3React } from "@web3-react/core";
-import { getNativeToken } from "config/tokens";
 import Token from "abis/Token.json";
+import { getWrappedToken } from "config/tokens";
 import { isAddressZero } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { MulticallRequestConfig } from "lib/multicall/types";
-import { TokenAllowanceData } from "./types";
 import { useMemo } from "react";
+import { TokenAllowanceData } from "./types";
 
 export function useTokenAllowance(
   chainId: number,
@@ -13,7 +13,7 @@ export function useTokenAllowance(
 ): TokenAllowanceData {
   const { account } = useWeb3React();
 
-  const nativeToken = getNativeToken(chainId);
+  const wrappedToken = getWrappedToken(chainId);
 
   const reqKey =
     p.spenderAddress && p.tokenAddresses.length > 0 && account
@@ -25,7 +25,7 @@ export function useTokenAllowance(
     reqKey,
     p.tokenAddresses.reduce((acc, address) => {
       acc[address] = {
-        contractAddress: isAddressZero(address) ? nativeToken.address : address,
+        contractAddress: isAddressZero(address) ? wrappedToken.address : address,
         abi: Token.abi,
         calls: {
           allowance: {

@@ -251,6 +251,10 @@ msgstr ""
 msgid "Approve GMX"
 msgstr "Aprobar GMX"
 
+#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
+msgid "Approve token {0}"
+msgstr ""
+
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
@@ -2349,6 +2353,10 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "Pay: {0} USD"
+msgstr ""
+
+#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
+msgid "Pending approve {0}"
 msgstr ""
 
 #: src/components/SyntheticsMarketStats/SyntheticsMarketStats.tsx
