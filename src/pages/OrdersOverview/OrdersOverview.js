@@ -36,6 +36,11 @@ export default function OrdersOverview() {
 
   const orders = useAllOrders(chainId, library);
   const stats = useAllOrdersStats(chainId);
+  const ORDER_TYPE_LABELS = {
+    Increase: t`Increase`,
+    Decrease: t`Decrease`,
+    Swap: t`Swap`,
+  };
 
   const positionsForOrders = usePositionsForOrders(
     chainId,
@@ -120,7 +125,7 @@ export default function OrdersOverview() {
               <Trans>Price</Trans>
             </th>
             <th>
-              <Trans>Mark</Trans> Price
+              <Trans>Mark Price</Trans>
             </th>
             <th>
               <Trans>Diff</Trans>
@@ -129,7 +134,7 @@ export default function OrdersOverview() {
               <Trans>Account</Trans>
             </th>
             <th>
-              <Trans>Created</Trans> At
+              <Trans>Created At</Trans>
             </th>
             <th>
               <Trans>Index</Trans>
@@ -174,9 +179,7 @@ export default function OrdersOverview() {
 
               return (
                 <tr key={key}>
-                  <td>
-                    <Trans>Swap</Trans>
-                  </td>
+                  <td>{ORDER_TYPE_LABELS[order.type]}</td>
                   <td colSpan="2">
                     {!invalidToken && (
                       <>
@@ -255,10 +258,9 @@ export default function OrdersOverview() {
                   }
                 }
               }
-
               return (
                 <tr key={key}>
-                  <td>{order.type}</td>
+                  <td>{ORDER_TYPE_LABELS[order.type]}</td>
                   <td>
                     {order.isLong ? t`Long` : t`Short`} {indexToken && indexToken.symbol}
                   </td>
