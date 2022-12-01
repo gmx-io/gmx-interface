@@ -1,5 +1,7 @@
+import { getLiquidationPrice, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useEffect, useRef, useState } from "react";
+import { formatAmount } from "lib/numbers";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getKeyByValue, supportedResolutions } from "./datafeed";
 import useDatafeed from "./useDatafeed";
 const DEFAULT_PERIOD = "4h";
@@ -18,19 +20,60 @@ const defaultProps = {
   header_widget_dom_node: false,
 };
 
-export default function TVChartContainer({ symbol, chainId }) {
+export default function TVChartContainer({ symbol, chainId, savedShouldShowPositionLines, currentPositions }) {
   const tvChartRef = useRef();
   const tvWidgetRef = useRef(null);
   const [chartReady, setChartReady] = useState(false);
   let [period, setPeriod] = useLocalStorageSerializeKey([chainId, "Chart-period"], DEFAULT_PERIOD);
   const datafeed = useDatafeed();
 
-  //   useEffect(() => {
-  //     if (document.visibilityState === "visible" && tvWidgetRef.current) {
-  //       getOnResetCache()();
-  //       tvWidgetRef.current.activeChart().resetData();
-  //     }
-  //   }, [document.visibilityState]);
+  const positionsChartInfo = useMemo(() => {
+    return currentPositions.reduce((acc, position) => {
+      acc[position.key] = {
+        open: {
+          price: parseFloat(formatAmount(position.averagePrice, USD_DECIMALS, 2)),
+          title: `Open ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}`,
+        },
+        liq: {
+          price: parseFloat(formatAmount(getLiquidationPrice(position), USD_DECIMALS, 2)),
+          title: `Liq. ${position.indexToken.symbol} ${position.isLong ? "Long" : "Short"}`,
+        },
+      };
+      return acc;
+    }, {});
+  }, [currentPositions]);
+
+  function createPositionLine(title, price) {
+    return tvWidgetRef.current
+      .activeChart()
+      .createPositionLine()
+      .setText(title)
+      .setPrice(price)
+      .setQuantity("")
+      .setLineStyle(1)
+      .setBodyTextColor("#fff")
+      .setLineColor("#3a3e5e")
+      .setBodyBackgroundColor("#3a3e5e")
+      .setBodyBorderColor("#3a3e5e");
+  }
+
+  useEffect(() => {
+    const lines = [];
+    if (!chartReady || !positionsChartInfo) return;
+    if (savedShouldShowPositionLines) {
+      currentPositions.forEach((position) => {
+        const positionChartInfo = positionsChartInfo[position.key];
+        if (positionChartInfo) {
+          const { open, liq } = positionChartInfo;
+          lines.push(createPositionLine(open.title, open.price));
+          lines.push(createPositionLine(liq.title, liq.price));
+        }
+      });
+    }
+    return () => {
+      lines.forEach((line) => line.remove());
+    };
+  }, [chartReady, positionsChartInfo, currentPositions, savedShouldShowPositionLines]);
 
   useEffect(() => {
     if (chartReady && tvWidgetRef.current && symbol !== tvWidgetRef.current?.activeChart()?.symbol()) {
@@ -56,7 +99,7 @@ export default function TVChartContainer({ symbol, chainId }) {
     });
 
     const widgetOptions = {
-      debug: true,
+      debug: false,
       symbol: symbol,
       datafeed: datafeed,
       theme: defaultProps.theme,

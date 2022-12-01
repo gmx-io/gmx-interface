@@ -90,7 +90,3 @@ export async function getLiveBar({ ticker, resolution, chainId, isStable }) {
   }
   return finalBar.ticker === lastTicker && finalBar;
 }
-
-// [{ time: 1669833.6, open: 16795.1, high: 16837.49, low: 16787.41, close: 16837.49 }];
-
-// [{"time":1669833.9,"open":16797.04,"high":16835.1,"low":16835.1,"close":16835.1}]

@@ -101,6 +101,13 @@ export default function ExchangeTVChart(props) {
     });
   }, [orders, chartToken, swapOption, chainId]);
 
+  const currentPositions = useMemo(() => {
+    if (!positions || !chartToken) {
+      return [];
+    }
+    return positions.filter((p) => p.indexToken.address === chartToken.address);
+  }, [chartToken, positions]);
+
   const ref = useRef(null);
 
   const currentAveragePrice =
@@ -283,7 +290,14 @@ export default function ExchangeTVChart(props) {
         </div>
       </div>
       <div className="ExchangeChart-bottom App-box App-box-border">
-        {chartToken.symbol && chainId && <TVChartContainer symbol={chartToken.symbol} chainId={chainId} />}
+        {chartToken.symbol && chainId && (
+          <TVChartContainer
+            currentPositions={currentPositions}
+            savedShouldShowPositionLines={savedShouldShowPositionLines}
+            symbol={chartToken.symbol}
+            chainId={chainId}
+          />
+        )}
       </div>
     </div>
   );
