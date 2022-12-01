@@ -1312,8 +1312,8 @@ msgid "Fees"
 msgstr "Fees"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#~ msgid "Fees and price impact"
-#~ msgstr "Fees and price impact"
+msgid "Fees and price impact"
+msgstr "Fees and price impact"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Fees are high to swap from {0} to {1}."
@@ -2402,6 +2402,11 @@ msgstr "Pool"
 msgid "Pool Amount"
 msgstr "Pool Amount"
 
+#: src/components/SyntheticsMarketStats/SyntheticsMarketStats.tsx
+#: src/components/SyntheticsMarketStats/SyntheticsMarketStats.tsx
+msgid "Pool amount"
+msgstr "Pool amount"
+
 #: src/components/Exchange/PositionsList.js
 msgid "Position"
 msgstr "Position"
@@ -2486,8 +2491,8 @@ msgid "Price impact"
 msgstr "Price impact"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#~ msgid "Price impact description"
-#~ msgstr "Price impact description"
+msgid "Price impact description"
+msgstr "Price impact description"
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Price is above Mark Price"
@@ -4020,8 +4025,8 @@ msgid "{0} GLP sold for {1} {2}!"
 msgstr "{0} GLP sold for {1} {2}!"
 
 #: src/components/SyntheticsMarketStats/SyntheticsMarketStats.tsx
-msgid "{0} GM (${1})"
-msgstr "{0} GM (${1})"
+#~ msgid "{0} GM (${1})"
+#~ msgstr "{0} GM (${1})"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
