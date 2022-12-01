@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Tab from "components/Tab/Tab";
@@ -19,9 +19,15 @@ import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
 import { adaptToInfoTokens, formatTokenAmount, formatUsdAmount } from "domain/synthetics/tokens/utils";
+import { useMarkets } from "domain/synthetics/markets/useMarkets";
+import { usePriceImpactData } from "domain/synthetics/priceImpact/usePriceImpact";
+import { useMarketPools } from "domain/synthetics/markets/useMarketPools";
+import { formatPriceImpact, getPriceImpact } from "domain/synthetics/priceImpact/utils";
+import { InfoRow } from "components/InfoRow/InfoRow";
+import Tooltip from "components/Tooltip/Tooltip";
 
 import "./MarketPoolSwapBox.scss";
-import { useMarkets } from "domain/synthetics/markets/useMarkets";
+import { MarketPoolSwapConfirmation } from "../MarketPoolSwapConfirmation/MarketPoolSwapConfirmation";
 
 type Props = {
   selectedMarketAddress?: string;
@@ -40,6 +46,17 @@ export function MarketPoolSwapBox(p: Props) {
 
   const tokensData = useWhitelistedTokensData(chainId);
   const marketsData = useMarkets(chainId);
+  const marketPoolsData = useMarketPools(chainId);
+  const priceImpactConfigsData = usePriceImpactData(chainId, {
+    marketAddresses: p.markets.map((market) => market.marketTokenAddress),
+  });
+
+  const data = {
+    ...tokensData,
+    ...marketsData,
+    ...marketPoolsData,
+    ...priceImpactConfigsData,
+  };
 
   const selectedMarket = getMarket(marketsData, p.selectedMarketAddress);
 
@@ -59,13 +76,7 @@ export function MarketPoolSwapBox(p: Props) {
   const longDelta = getDeltaByPoolType(MarketPoolType.Long);
   const shortDelta = getDeltaByPoolType(MarketPoolType.Short);
 
-  // const priceImpact = usePriceImpact({
-  //   marketKey: getMarketKey(selectedMarket),
-  //   longDeltaUsd: longDelta,
-  //   shortDeltaUsd: shortDelta,
-  // });
-
-  const priceImpact = null;
+  const priceImpact = getPriceImpact(data, selectedMarket?.marketTokenAddress, longDelta, shortDelta);
 
   const tokenSelectorOptionsMap = useMemo(() => adaptToInfoTokens(tokensData), [tokensData]);
 
@@ -75,7 +86,7 @@ export function MarketPoolSwapBox(p: Props) {
     if (!selectedMarket) return BigNumber.from(0);
 
     const poolTokenState = [firstTokenState, secondTokenState].find(
-      (tokenState) => tokenState.token?.symbol && getTokenPoolType(selectedMarket, tokenState.token.symbol) === poolType
+      (tokenState) => tokenState.tokenAddress && getTokenPoolType(selectedMarket, tokenState.tokenAddress) === poolType
     );
 
     if (!poolTokenState) return BigNumber.from(0);
@@ -296,12 +307,12 @@ export function MarketPoolSwapBox(p: Props) {
         </BuyInputSection>
       </div>
 
-      {/* <div className="MarketPoolSwapBox-info-section">
+      <div className="MarketPoolSwapBox-info-section">
         <InfoRow
           label={<Trans>Fees and price impact</Trans>}
           value={
             <Tooltip
-              handle={formatPriceImpact(priceImpact)}
+              handle={priceImpact ? formatPriceImpact(priceImpact) : "..."}
               position="right-bottom"
               renderContent={() => (
                 <div className="text-white">
@@ -311,7 +322,7 @@ export function MarketPoolSwapBox(p: Props) {
             />
           }
         />
-      </div> */}
+      </div>
       <div className="Exchange-swap-button-container">
         <SubmitButton
           authRequired
@@ -323,7 +334,7 @@ export function MarketPoolSwapBox(p: Props) {
         </SubmitButton>
       </div>
 
-      {/* {isConfirming && (
+      {isConfirming && (
         <MarketPoolSwapConfirmation
           firstSwapTokenAddress={firstTokenState.tokenAddress!}
           firstSwapTokenAmount={firstTokenState.tokenAmount}
@@ -337,7 +348,7 @@ export function MarketPoolSwapBox(p: Props) {
           onSubmit={() => null}
           onApproveToken={() => null}
         />
-      )} */}
+      )}
     </div>
   );
 }

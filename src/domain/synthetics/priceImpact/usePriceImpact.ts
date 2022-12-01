@@ -1,53 +1,45 @@
-import { BigNumber } from "ethers";
-import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "lib/legacy";
-import { parseValue } from "lib/numbers";
+import { useMemo } from "react";
+import { swapImpactExponentFactorKey, swapImpactFactorKey } from "../dataStore/keys";
+import { useDataStoreData } from "../dataStore/useDataStoreData";
+import { PriceImpactConfig, PriceImpactConfigsData } from "./types";
+import { decimalToFloat } from "./utils";
 
-const EXPONENT_FACTOR = 2;
-const FACTOR = 1000000;
+export function usePriceImpactData(chainId: number, p: { marketAddresses: string[] }): PriceImpactConfigsData {
+  const dataStoreReq = p.marketAddresses.reduce((acc, address) => {
+    acc[`${address}_impactFactor_positive`] = swapImpactFactorKey(address, true);
+    acc[`${address}_impactFactor_negative`] = swapImpactFactorKey(address, false);
+    acc[`${address}_exponentImpactFactor`] = swapImpactExponentFactorKey(address);
 
-export type PriceImpactData = {
-  priceImpactDiff: BigNumber;
-  priceImpactBasisPoints: BigNumber;
-};
+    return acc;
+  }, {});
 
-export function usePriceImpact(p: {
-  marketKey: string;
-  shortDeltaUsd?: BigNumber;
-  longDeltaUsd?: BigNumber;
-}): PriceImpactData {
-  const longInterest: BigNumber = parseValue("1000000", USD_DECIMALS)!;
-  const shortInterest: BigNumber = parseValue("2000000", USD_DECIMALS)!;
+  const dataStoreResult = useDataStoreData(chainId, { keys: dataStoreReq, method: "getUint" });
 
-  const currentPriceImpact = longInterest.sub(shortInterest).abs();
+  const result: PriceImpactConfigsData = useMemo(() => {
+    if (!dataStoreResult)
+      return {
+        priceImpactConfigs: {},
+      };
 
-  const longDeltaUsd = p.longDeltaUsd || BigNumber.from(0);
-  const shortDeltaUsd = p.shortDeltaUsd || BigNumber.from(0);
+    const priceImpactConfigs = p.marketAddresses.reduce((acc, address) => {
+      const factorPositive = dataStoreResult[`${address}_impactFactor_positive`];
+      const factorNegative = dataStoreResult[`${address}_impactFactor_negative`];
+      const exponentFactor = dataStoreResult[`${address}_exponentImpactFactor`];
 
-  const newLongInterest = longInterest.add(longDeltaUsd);
-  const newShortInterest = shortInterest.add(shortDeltaUsd);
+      acc[address] = {
+        factorPositive: factorPositive?.gt(0) ? factorPositive : decimalToFloat(2, 8),
+        factorNegative: factorNegative?.gt(0) ? factorNegative : decimalToFloat(2, 8),
+        exponentFactor: exponentFactor?.gt(0) ? exponentFactor : decimalToFloat(2, 0),
+      };
 
-  const newPriceImpact = newLongInterest.sub(newShortInterest).abs();
+      return acc;
+    }, {} as { [marketAddress: string]: PriceImpactConfig });
 
-  const hasPositiveImpact = currentPriceImpact.sub(newPriceImpact).gt(0);
+    return {
+      priceImpactConfigs,
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataStoreResult, p.marketAddresses.join("-")]);
 
-  let priceImpactDiff = applyImpactFactor(currentPriceImpact.sub(newPriceImpact));
-
-  priceImpactDiff = hasPositiveImpact ? priceImpactDiff : BigNumber.from(0).sub(priceImpactDiff);
-
-  const totalTradeSize = longDeltaUsd.abs().add(shortDeltaUsd.abs());
-
-  const priceImpactBasisPoints = totalTradeSize.gt(0)
-    ? priceImpactDiff.mul(BASIS_POINTS_DIVISOR).div(totalTradeSize).abs()
-    : BigNumber.from(0);
-
-  return {
-    priceImpactDiff,
-    priceImpactBasisPoints,
-  };
-}
-
-function applyImpactFactor(diff: BigNumber) {
-  const exp = diff.pow(EXPONENT_FACTOR).div(FACTOR).div(PRECISION);
-
-  return exp;
+  return result;
 }

@@ -2,7 +2,6 @@ import { t, Trans } from "@lingui/macro";
 import { InfoRow } from "components/InfoRow/InfoRow";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
-import { PriceImpactData } from "domain/synthetics/priceImpact/usePriceImpact";
 import { formatPriceImpact } from "domain/synthetics/priceImpact/utils";
 import { TokensData } from "domain/synthetics/tokens/types";
 import cx from "classnames";
@@ -21,10 +20,11 @@ import { OperationType, operationTypesTexts } from "../constants";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 
 import "./MarketPoolSwapConfirmation.scss";
+import { PriceImpactData } from "domain/synthetics/priceImpact/types";
 
 type Props = {
   onClose: () => void;
-  priceImpact: PriceImpactData;
+  priceImpact?: PriceImpactData;
   firstSwapTokenAddress: string;
   firstSwapTokenAmount: BigNumber;
   secondSwapTokenAddress?: string;
@@ -109,7 +109,10 @@ export function MarketPoolSwapConfirmation(p: Props) {
           )}
         </div>
 
-        <InfoRow label={t`Price impact`} value={formatPriceImpact(p.priceImpact)} />
+        <InfoRow
+          label={t`Price impact`}
+          value={p.priceImpact?.priceImpact.gt(0) ? formatPriceImpact(p.priceImpact) : "..."}
+        />
 
         <div className="App-card-divider" />
 
