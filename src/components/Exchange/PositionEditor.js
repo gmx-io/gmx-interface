@@ -11,6 +11,7 @@ import {
   DUST_BNB,
   getLiquidationPrice,
   MAX_ALLOWED_LEVERAGE,
+  getFundingFee,
 } from "lib/legacy";
 import { getContract } from "config/contracts";
 import Tab from "../Tab/Tab";
@@ -33,6 +34,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
 const EDIT_OPTIONS = [DEPOSIT, WITHDRAW];
+const MIN_ORDER_USD = expandDecimals(10, USD_DECIMALS);
 const { AddressZero } = ethers.constants;
 
 export default function PositionEditor(props) {
@@ -82,10 +84,6 @@ export default function PositionEditor(props) {
     }
   );
 
-  // const { data: minExecutionFee } = useSWR([active, chainId, positionRouterAddress, "minExecutionFee"], {
-  //   fetcher: fetcher(library, PositionRouter),
-  // });
-
   const isDeposit = option === DEPOSIT;
   const isWithdrawal = option === WITHDRAW;
 
@@ -109,10 +107,13 @@ export default function PositionEditor(props) {
 
   let title;
   let collateralDelta;
+  let fundingFee;
+
   if (position) {
     title = t`Edit ${longOrShortText} ${position.indexToken.symbol}`;
     collateralToken = position.collateralToken;
     liquidationPrice = getLiquidationPrice(position);
+    fundingFee = getFundingFee(position);
 
     if (isDeposit) {
       fromAmount = parseValue(fromValue, collateralToken.decimals);
@@ -125,7 +126,11 @@ export default function PositionEditor(props) {
       }
     } else {
       fromAmount = parseValue(fromValue, USD_DECIMALS);
-      maxAmount = position.collateral;
+
+      maxAmount = position.collateralAfterFee.sub(MIN_ORDER_USD).gt(0)
+        ? position.collateralAfterFee.sub(MIN_ORDER_USD)
+        : bigNumberify(0);
+
       maxAmountFormatted = formatAmount(maxAmount, USD_DECIMALS, 2, true);
       maxAmountFormattedFree = formatAmountFree(maxAmount, USD_DECIMALS, 2);
       if (fromAmount) {
@@ -137,9 +142,11 @@ export default function PositionEditor(props) {
 
     if (fromAmount) {
       collateralDelta = isDeposit ? convertedAmount : fromAmount;
-      if (position.isLong) {
+
+      if (position.isLong && isDeposit) {
         collateralDelta = collateralDelta.mul(BASIS_POINTS_DIVISOR - DEPOSIT_FEE).div(BASIS_POINTS_DIVISOR);
       }
+
       nextLeverage = getLeverage({
         size: position.size,
         collateral: position.collateral,
@@ -151,6 +158,7 @@ export default function PositionEditor(props) {
         delta: position.delta,
         includeDelta: savedIsPnlInLeverage,
       });
+
       nextLeverageExcludingPnl = getLeverage({
         size: position.size,
         collateral: position.collateral,
@@ -174,7 +182,9 @@ export default function PositionEditor(props) {
         increaseCollateral: isDeposit,
       });
 
-      nextCollateral = isDeposit ? position.collateral.add(collateralDelta) : position.collateral.sub(collateralDelta);
+      nextCollateral = isDeposit
+        ? position.collateralAfterFee.add(collateralDelta)
+        : position.collateralAfterFee.sub(collateralDelta);
     }
   }
 
@@ -183,19 +193,22 @@ export default function PositionEditor(props) {
       if (isDeposit) return [t`Deposit disabled, pending ${getChainName(chainId)} upgrade`];
       return [t`Withdraw disabled, pending ${getChainName(chainId)} upgrade`];
     }
+
     if (!fromAmount) {
       return t`Enter an amount`;
     }
-    if (nextLeverage && nextLeverage.eq(0)) {
-      return t`Enter an amount`;
+
+    if (fromAmount.lte(0)) {
+      return t`Amount should be greater than zero`;
     }
 
     if (!isDeposit && fromAmount) {
       if (fromAmount.gte(position.collateral)) {
-        return t`Min order: 10 USD`;
+        return t`Min residual collateral: 10 USD`;
       }
-      if (position.collateral.sub(fromAmount).lt(expandDecimals(10, USD_DECIMALS))) {
-        return t`Min order: 10 USD`;
+
+      if (position.collateral.sub(fromAmount).lt(MIN_ORDER_USD)) {
+        return t`Min residual collateral: 10 USD`;
       }
     }
 
@@ -370,10 +383,13 @@ export default function PositionEditor(props) {
 
     const withdrawETH =
       !isContractAccount && (collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress);
+
+    const withdrawAmount = fromAmount.add(fundingFee || bigNumberify(0));
+
     const params = [
       [tokenAddress0], // _path
       indexTokenAddress, // _indexToken
-      fromAmount, // _collateralDelta
+      withdrawAmount, // _collateralDelta
       0, // _sizeDelta
       position.isLong, // _isLong
       account, // _receiver
@@ -449,7 +465,6 @@ export default function PositionEditor(props) {
     [DEPOSIT]: t`Deposit`,
     [WITHDRAW]: t`Withdraw`,
   };
-
   return (
     <div className="PositionEditor">
       {position && (
@@ -491,7 +506,7 @@ export default function PositionEditor(props) {
                         value={fromValue}
                         onChange={(e) => setFromValue(e.target.value)}
                       />
-                      {fromValue !== maxAmountFormattedFree && (
+                      {fromValue !== maxAmountFormattedFree && maxAmount?.gt(0) && (
                         <div
                           className="Exchange-swap-max"
                           onClick={() => {
@@ -522,11 +537,13 @@ export default function PositionEditor(props) {
                       <Trans>Collateral</Trans>
                     </div>
                     <div className="align-right">
-                      {!nextCollateral && <div>${formatAmount(position.collateral, USD_DECIMALS, 2, true)}</div>}
+                      {!nextCollateral && (
+                        <div>${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}</div>
+                      )}
                       {nextCollateral && (
                         <div>
                           <div className="inline-block muted">
-                            ${formatAmount(position.collateral, USD_DECIMALS, 2, true)}
+                            ${formatAmount(position.collateralAfterFee, USD_DECIMALS, 2, true)}
                             <BsArrowRight className="transition-arrow" />
                           </div>
                           ${formatAmount(nextCollateral, USD_DECIMALS, 2, true)}
@@ -579,6 +596,30 @@ export default function PositionEditor(props) {
                       )}
                     </div>
                   </div>
+                  {fromAmount?.gt(0) && fundingFee?.gt(0) && (
+                    <div className="Exchange-info-row">
+                      <div className="Exchange-info-label">
+                        <Trans>Borrow Fee</Trans>
+                      </div>
+                      <div className="align-right">
+                        <Tooltip
+                          handle={
+                            <>
+                              <div className="inline-block muted">
+                                ${formatAmount(fundingFee, USD_DECIMALS, 2, true)}
+                                <BsArrowRight className="transition-arrow" />
+                              </div>
+                              $0
+                            </>
+                          }
+                          position="right-top"
+                          renderContent={() => (
+                            <Trans>The pending borrow fee will be charged on this transaction.</Trans>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  )}
                   <div className="Exchange-info-row">
                     <div className="Exchange-info-label">
                       <Trans>Execution Fee</Trans>
