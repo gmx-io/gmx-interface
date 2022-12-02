@@ -23,6 +23,7 @@ import StatsTooltipRow from "../StatsTooltip/StatsTooltipRow";
 import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 
 export default function OrdersList(props) {
   const {
@@ -292,8 +293,17 @@ export default function OrdersList(props) {
               renderContent={() => {
                 return (
                   <Trans>
-                    The price that orders can be executed at may differ slightly from the chart price, as market orders
-                    update oracle prices, while limit/trigger orders do not.
+                    <p>
+                      The price that orders can be executed at may differ slightly from the chart price, as market
+                      orders update oracle prices, while limit/trigger orders do not.
+                    </p>
+                    <p>
+                      This can also cause limit/triggers to not be executed if the price is not reached for long enough.{" "}
+                      <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#stop-loss-take-profit-orders">
+                        Read more
+                      </ExternalLink>
+                      .
+                    </p>
                   </Trans>
                 );
               }}
