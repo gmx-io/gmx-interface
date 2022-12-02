@@ -970,6 +970,7 @@ msgstr "탈중화<0/>퍼페추얼 거래소"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
 msgid "Decrease"
 msgstr ""
 
@@ -1258,7 +1259,11 @@ msgid "Execute Order: Swap {fromAmountDisplay} {0} for {toAmountDisplay} {1}"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+#~ msgid "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
+#~ msgstr ""
+
+#: src/components/Exchange/TradeHistory.js
+msgid "Execute Order: {orderTypeText} {0} {longShortDisplay} {sizeDeltaDisplay} USD, Price: {executionPriceDisplay} USD"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -1529,6 +1534,7 @@ msgstr "잘못된 네트워크입니다"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
+#: src/components/Exchange/TradeHistory.js
 msgid "Increase"
 msgstr ""
 
@@ -1772,6 +1778,7 @@ msgstr "로딩중..."
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
@@ -2762,6 +2769,7 @@ msgstr "포지션 공유"
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
+#: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
@@ -3899,8 +3907,8 @@ msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
-msgid "{0, select, true {Long} false {Short}} {1} market selected"
-msgstr ""
+#~ msgid "{0, select, true {Long} false {Short}} {1} market selected"
+#~ msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "{0}"
@@ -3990,6 +3998,10 @@ msgstr "{0}이(가) 주문 폼에서 선택되었습니다."
 msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
 msgstr ""
 
+#: src/components/Exchange/SwapBox.js
+msgid "{0} {1} not supported"
+msgstr ""
+
 #: src/components/Exchange/TradeHistory.js
 msgid "{0} {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
 msgstr ""
@@ -4031,6 +4043,10 @@ msgstr ""
 msgid "{existingTriggerOrderLength, plural, one {You have an active trigger order that might execute immediately after you open this position. Please cancel the order or accept the confirmation to continue.} other {You have # active trigger orders that might execute immediately after you open this position. Please cancel the orders or accept the confirmation to continue.}}"
 msgstr ""
 
+#: src/components/Exchange/PositionsList.js
+msgid "{longOrShortText} {0} market selected"
+msgstr ""
+
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
 msgstr "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"
@@ -4040,8 +4056,8 @@ msgid "{nativeTokenSymbol} can not be sent to smart contract addresses. Select a
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
-msgid "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} not supported"
-msgstr ""
+#~ msgid "{swapOption, select, LONG {Longing} SHORT {Shorting}} {0} not supported"
+#~ msgstr ""
 
 #: src/components/StatsTooltip/StatsTooltip.tsx
 msgid "{title} on Arbitrum:"

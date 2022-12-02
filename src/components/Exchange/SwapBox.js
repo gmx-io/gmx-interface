@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Tooltip from "../Tooltip/Tooltip";
-import { select, t, Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import Slider, { SliderTooltip } from "rc-slider";
 import "rc-slider/assets/index.css";
 import "./SwapBox.css";
@@ -862,7 +862,11 @@ export default function SwapBox(props) {
 
     let toTokenInfo = getTokenInfo(infoTokens, toTokenAddress);
     if (toTokenInfo && toTokenInfo.isStable) {
-      return [t`${select(swapOption, { [LONG]: "Longing", [SHORT]: "Shorting" })} ${toTokenInfo.symbol} not supported`];
+      const SWAP_OPTION_LABEL = {
+        [LONG]: "Longing",
+        [SHORT]: "Shorting",
+      };
+      return [t`${SWAP_OPTION_LABEL[swapOption]} ${toTokenInfo.symbol} not supported`];
     }
 
     const fromTokenInfo = getTokenInfo(infoTokens, fromTokenAddress);
