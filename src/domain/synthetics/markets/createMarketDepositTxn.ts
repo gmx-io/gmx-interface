@@ -5,7 +5,7 @@ import { getWrappedToken } from "config/tokens";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
-import { expandDecimals } from "lib/numbers";
+import { bigNumberify, expandDecimals } from "lib/numbers";
 
 export async function createMarketDepositTxn(
   chainId: number,
@@ -26,14 +26,12 @@ export async function createMarketDepositTxn(
 
   const wrappedToken = getWrappedToken(chainId);
 
-  // const longToken = getToken(chainId, p.longTokenAddress);
-  // const shortToken = getToken(chainId, p.shortTokenAddress);
-
   const longTokenAddress = isAddressZero(p.longTokenAddress) ? wrappedToken.address : p.longTokenAddress;
   const shortTokenAddress = isAddressZero(p.shortTokenAddress) ? wrappedToken.address : p.shortTokenAddress;
 
-  const shouldUnwrapNativeToken = false;
-  // (longToken.isNative && p.longTokenAmount?.gt(0)) || (shortToken.isNative && p.shortTokenAmount?.gt(0));
+  const shouldUnwrapNativeToken =
+    (isAddressZero(p.longTokenAddress) && p.longTokenAmount?.gt(0)) ||
+    (isAddressZero(p.shortTokenAddress) && p.shortTokenAmount?.gt(0));
 
   const params = [
     longTokenAddress,
@@ -46,11 +44,11 @@ export async function createMarketDepositTxn(
       executionFee: expandDecimals(1, 15),
       callbackGasLimit: BigNumber.from(0),
       receiver: p.account,
-      minMarketTokens: p.minMarketTokens,
+      minMarketTokens: BigNumber.from(0),
       market: p.marketTokenAddress,
       shouldUnwrapNativeToken,
     },
   ];
 
-  return callContract(chainId, contract, "createDeposit", params, opts);
+  return callContract(chainId, contract, "createDeposit", params, { ...opts, gasLimit: bigNumberify(1000000) });
 }
