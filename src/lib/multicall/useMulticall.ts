@@ -1,40 +1,52 @@
 import { useWeb3React } from "@web3-react/core";
-import { useMemo } from "react";
 import useSWR from "swr";
 import { MulticallRequestConfig, MulticallResult } from "./types";
-import { formatMulticallRequest, formatMulticallResult, getMulticallLib } from "./utils";
+import { executeMulticall, formatMulticallRequest, formatMulticallResult } from "./utils";
 
-export function useMulticall<TKeys extends string>(
+/**
+ * TODO: Update swr to 1.1 to allow use object-like keys safely
+ * @see https://swr.vercel.app/docs/arguments#passing-objects
+ */
+type CacheKey = string | number | boolean | null | undefined;
+type SkipKey = null | undefined | false;
+
+export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResult = MulticallResult<TConfig>>(
   chainId: number,
-  key: any[] | null,
-  request: MulticallRequestConfig<TKeys>
+  name: string,
+  key: CacheKey[] | SkipKey,
+  params: {
+    request: TConfig | ((chainId: number, key: CacheKey[]) => TConfig);
+    parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey[]) => TResult;
+  },
+  opts: { aggregate?: boolean; refreshInterval?: number } = {}
 ) {
   const { library } = useWeb3React();
-  const multicall = getMulticallLib(library, chainId);
 
-  const fullKey = key ? [chainId, ...key] : null;
+  const swrCacheKey = Array.isArray(key) ? [chainId, name, ...key] : null;
 
-  const { data: swrData, ...swrState } = useSWR(fullKey, {
+  const swrResult = useSWR<TResult | undefined>(swrCacheKey, {
     fetcher: async () => {
+      // prettier-ignore
+      const request = typeof params.request === "function" 
+        ? params.request(chainId, key as CacheKey[]) 
+        : params.request;
+
       const requestContext = formatMulticallRequest(request);
 
-      try {
-        const res = await multicall.call(requestContext);
+      const multicallResponse = opts.aggregate
+        ? await executeMulticall(chainId, library, requestContext)
+        : await executeMulticall(chainId, library, requestContext);
 
-        return res;
-      } catch (e) {
-        throw e;
-      }
+      const formattedResponse = formatMulticallResult(multicallResponse.results);
+
+      // prettier-ignore
+      const result = typeof params.parseResponse === "function" 
+        ? params.parseResponse(formattedResponse, chainId, key as CacheKey[]) 
+        : formattedResponse;
+
+      return result as TResult;
     },
   });
 
-  const data: MulticallResult<TKeys> | undefined = useMemo(
-    () => (swrData ? formatMulticallResult(swrData) : undefined),
-    [swrData]
-  );
-
-  return {
-    data,
-    ...swrState,
-  };
+  return swrResult;
 }

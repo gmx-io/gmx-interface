@@ -5,80 +5,102 @@ import { useMemo } from "react";
 import { ethers } from "ethers";
 import { MarketsData, SyntheticsMarket } from "./types";
 import { getToken } from "config/tokens";
+import { ContractCallConfig } from "lib/multicall/types";
 
 export function useMarkets(chainId: number): MarketsData {
-  const { data: marketsCountResult } = useMulticall(chainId, [], {
-    marketStore: {
-      contractAddress: getContract(chainId, "MarketStore"),
-      abi: MarketStore.abi,
-      calls: {
-        count: {
-          methodName: "getMarketCount",
-          params: [],
+  const { data: marketsCount } = useMulticall(
+    chainId,
+    "useMarkets-count",
+    [],
+    {
+      request: {
+        marketStore: {
+          contractAddress: getContract(chainId, "MarketStore"),
+          abi: MarketStore.abi,
+          calls: {
+            count: {
+              methodName: "getMarketCount",
+              params: [],
+            },
+          },
         },
       },
+      parseResponse: (res) => res.marketStore.count.returnValues[0] as number,
     },
-  });
+    { refreshInterval: 15000 }
+  );
 
-  const count = Number(marketsCountResult?.marketStore.count.returnValues[0]);
-
-  const { data: marketKeysResult } = useMulticall(chainId, count > 0 ? [count] : null, {
-    marketStore: {
-      contractAddress: getContract(chainId, "MarketStore"),
-      abi: MarketStore.abi,
-      calls: {
-        marketKeys: {
-          methodName: "getMarketKeys",
-          params: [0, count],
+  const { data: marketKeys } = useMulticall(
+    chainId,
+    "useMarkets-keys",
+    Boolean(marketsCount) && [marketsCount],
+    {
+      request: {
+        marketStore: {
+          contractAddress: getContract(chainId, "MarketStore"),
+          abi: MarketStore.abi,
+          calls: {
+            marketKeys: {
+              methodName: "getMarketKeys",
+              params: [0, marketsCount!],
+            },
+          },
         },
       },
+      parseResponse: (res) => res.marketStore.marketKeys.returnValues as string[],
     },
-  });
+    { refreshInterval: 15000 }
+  );
 
-  const marketKeys = marketKeysResult?.marketStore.marketKeys.returnValues || [];
+  const { data: marketsMap } = useMulticall(
+    chainId,
+    "useMarkets-markets",
+    Boolean(marketKeys?.length) && marketKeys,
+    {
+      request: () => ({
+        marketStore: {
+          contractAddress: getContract(chainId, "MarketStore"),
+          abi: MarketStore.abi,
+          calls: marketKeys!.reduce((calls, marketAddress) => {
+            calls[marketAddress] = {
+              methodName: "get",
+              params: [marketAddress],
+            };
 
-  const { data: marketsResult } = useMulticall(chainId, marketKeys.length > 0 ? marketKeys : null, {
-    marketStore: {
-      contractAddress: getContract(chainId, "MarketStore"),
-      abi: MarketStore.abi,
-      calls: marketKeys.reduce((acc, marketKey) => {
-        acc[marketKey] = {
-          methodName: "get",
-          params: [marketKey],
-        };
+            return calls;
+          }, {} as { [address: string]: ContractCallConfig }),
+        },
+      }),
+      parseResponse: (res) => {
+        const marketsMap: { [address: string]: SyntheticsMarket } = {};
 
-        return acc;
-      }, {}),
+        const addresses = Object.keys(res.marketStore);
+
+        for (let marketAddress of addresses) {
+          const returnValues = res.marketStore[marketAddress].returnValues;
+
+          marketsMap[marketAddress] = {
+            marketTokenAddress: returnValues[0],
+            indexTokenAddress: returnValues[1],
+            longTokenAddress: toUnwrappedNativeToken(chainId, returnValues[2]),
+            shortTokenAddress: toUnwrappedNativeToken(chainId, returnValues[3]),
+            data: returnValues[4],
+          };
+        }
+
+        return marketsMap;
+      },
     },
-  });
+    { refreshInterval: 15000 }
+  );
 
-  const result = useMemo(() => {
-    if (!marketsResult) {
-      return {
-        markets: {},
-      };
-    }
-
-    const marketsMap = Object.keys(marketsResult.marketStore).reduce((acc, marketKey) => {
-      const marketValues = marketsResult.marketStore[marketKey].returnValues;
-
-      acc[marketKey] = {
-        marketTokenAddress: marketValues[0],
-        indexTokenAddress: toUnwrappedNativeToken(chainId, marketValues[1]),
-        longTokenAddress: toUnwrappedNativeToken(chainId, marketValues[2]),
-        shortTokenAddress: toUnwrappedNativeToken(chainId, marketValues[3]),
-        data: marketValues[4],
-      };
-
-      return acc;
-    }, {} as { [marketAddress: string]: SyntheticsMarket });
-
-    return {
-      markets: marketsMap,
-    };
-  }, [marketsResult, chainId]);
-
-  return result;
+  return useMemo(
+    () => ({
+      markets: marketsMap || {},
+      marketKeys: marketKeys || [],
+    }),
+    [marketsMap, marketKeys]
+  );
 }
 
 export function toUnwrappedNativeToken(chainId: number, address: string) {

@@ -3,16 +3,16 @@ export type ContractCallConfig = {
   params: any[];
 };
 
-export type ContractCallsConfig = {
+export type ContractCallsConfig<T extends { calls: ContractCallConfig }> = {
   contractAddress: string;
   abi: any;
   calls: {
-    [key: string]: ContractCallConfig;
+    [callKey in keyof T["calls"]]: ContractCallConfig;
   };
 };
 
-export type MulticallRequestConfig<TContractFields extends string> = {
-  [fieldName in TContractFields]: ContractCallsConfig;
+export type MulticallRequestConfig<T extends { [key: string]: any }> = {
+  [contractKey in keyof T]: ContractCallsConfig<T[contractKey]>;
 };
 
 export type ContractCallResult = {
@@ -20,16 +20,14 @@ export type ContractCallResult = {
   success?: boolean;
 };
 
-export type ContractCallsResult = {
-  [fieldName: string]: ContractCallResult;
+export type ContractCallsResult<T extends ContractCallsConfig<any>> = {
+  [callKey in keyof T["calls"]]: ContractCallResult;
 };
 
-export type MulticallResult<TRequestFields extends string> = {
-  [fieldName in TRequestFields]: ContractCallsResult;
+export type MulticallResult<T extends MulticallRequestConfig<any>> = {
+  [contractKey in keyof T]: ContractCallsResult<T[contractKey]>;
 };
 
-export function multicallId<TContractFields extends string>(
-  request: MulticallRequestConfig<TContractFields>
-): MulticallResult<TContractFields> {
+export function multicall<T extends MulticallRequestConfig<any>>(request: T): MulticallResult<T> {
   return request as any;
 }

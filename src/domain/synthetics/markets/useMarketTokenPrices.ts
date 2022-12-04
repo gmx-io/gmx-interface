@@ -1,15 +1,15 @@
+import Reader from "abis/SyntheticsReader.json";
 import { useMulticall } from "lib/multicall";
 import { useMarkets } from "./useMarkets";
 import { getMarkets } from "./utils";
 import { useTokenConfigs } from "../tokens/useTokenConfigs";
-import Reader from "abis/SyntheticsReader.json";
 import { useTokenRecentPrices } from "../tokens/useTokenRecentPrices";
 import { getContract } from "config/contracts";
-import { ContractCallsConfig } from "lib/multicall/types";
+import { ContractCallConfig } from "lib/multicall/types";
 import { getTokenPriceData } from "../tokens/utils";
 import { useMemo } from "react";
 import { TokenPriceData } from "../tokens/types";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { MarketTokenPricesData } from "./types";
 import { getWrappedToken } from "config/tokens";
 import { expandDecimals } from "lib/numbers";
@@ -37,12 +37,11 @@ export function useMarketTokenPrices(
         return acc;
       }
 
-      // TODO: not format?
       const marketProps = {
         marketToken: market.marketTokenAddress,
         longToken: toWrappedNativeToken(chainId, market.longTokenAddress),
         shortToken: toWrappedNativeToken(chainId, market.shortTokenAddress),
-        indexToken: toWrappedNativeToken(chainId, market.indexTokenAddress),
+        indexToken: market.indexTokenAddress,
         data: market.data,
       };
 
@@ -52,41 +51,43 @@ export function useMarketTokenPrices(
       };
 
       return acc;
-    }, {} as ContractCallsConfig["calls"]);
+    }, {} as { [marketAddress: string]: ContractCallConfig });
   }, [tokenPricesData, tokenConfigsData, marketsData, chainId, dataStoreAddress, p.maximize]);
 
-  const needToCall = Object.keys(calls).length > 0;
+  const callKeys = Object.keys(calls).join("-");
 
-  const { data } = useMulticall(chainId, needToCall ? ["useMarketTokenPrices", p.maximize] : null, {
-    reader: {
-      contractAddress: getContract(chainId, "SyntheticsReader"),
-      abi: Reader.abi,
-      calls,
-    },
-  });
+  const { data: marketTokenPrices } = useMulticall(
+    chainId,
+    "useMarketTokenPrices",
+    callKeys.length > 0 ? [p.maximize, callKeys] : null,
+    {
+      request: {
+        reader: {
+          contractAddress: getContract(chainId, "SyntheticsReader"),
+          abi: Reader.abi,
+          calls,
+        },
+      },
+      parseResponse: (res) => {
+        const marketTokenPrices: { [marketAddress: string]: BigNumber } = {};
 
-  const result = useMemo(() => {
-    if (!data?.reader) {
-      return {
-        marketTokenPrices: {},
-      };
+        Object.keys(res.reader).forEach((marketAddress) => {
+          const price = res.reader[marketAddress].returnValues[0];
+
+          marketTokenPrices[marketAddress] = price.gt(0)
+            ? price
+            : // If pool is empty then market token price === 0
+              expandDecimals(1, USD_DECIMALS);
+        });
+      },
     }
+  );
 
-    const marketTokenPrices = Object.keys(data.reader).reduce((acc, marketAddress) => {
-      acc[marketAddress] = data.reader[marketAddress].returnValues[0];
-
-      // If poolValue === 0 then marketPrice === 0
-      if (acc[marketAddress].eq(0)) {
-        acc[marketAddress] = expandDecimals(1, USD_DECIMALS);
-      }
-
-      return acc;
-    }, {});
-
-    return { marketTokenPrices };
-  }, [data]);
-
-  return result;
+  return useMemo(() => {
+    return {
+      marketTokenPrices: marketTokenPrices || {},
+    };
+  }, [marketTokenPrices]);
 }
 
 function formatPriceData(price?: TokenPriceData) {

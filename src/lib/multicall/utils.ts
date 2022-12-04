@@ -1,23 +1,96 @@
 import { Web3Provider } from "@ethersproject/providers";
+import { CHAIN_NAMES_MAP, getRpcUrl } from "config/chains";
 import { ContractCallContext, Multicall } from "ethereum-multicall";
 import { CallContext, ContractCallResults } from "ethereum-multicall/dist/esm/models";
+import { ethers } from "ethers";
 import { bigNumberify } from "lib/numbers";
-import { getProvider } from "lib/rpc";
+import { getFallbackProvider } from "lib/rpc";
+import { sleep } from "lib/sleep";
 import { MulticallRequestConfig, MulticallResult } from "./types";
 
-export function getMulticallLib(library: Web3Provider | undefined, chainId: number) {
-  const provider = getProvider(undefined, chainId);
+const MAX_TIMEOUT = 2000;
 
-  // library.get
+let totalRequestTime = 0;
+let callsNumber = 0;
 
-  const multicall = new Multicall({
-    // @ts-ignore
+class Profiler {
+  _start = 0;
+
+  start() {
+    this._start = Date.now();
+  }
+
+  end() {
+    return Date.now() - this._start;
+  }
+}
+
+const profiler = new Profiler();
+
+export async function executeMulticall(
+  chainId: number,
+  library: Web3Provider | undefined,
+  request: ContractCallContext[]
+) {
+  // Try to use rpc provider of connected wallet
+  let provider = library ? library.getSigner().provider : undefined;
+
+  // TODO: cover with tests?
+  // If wallet network doesn't match the chainId of the request, create new rpc provider
+  if (!provider || provider.network?.chainId !== chainId) {
+    const rpcUrl = getRpcUrl(chainId);
+
+    // TODO: memoize providers by chainId?
+    provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl, { chainId, name: CHAIN_NAMES_MAP[chainId] });
+  }
+  const multicall = getMulticallLib(provider as ethers.providers.JsonRpcProvider);
+
+  console.log("executeMulticall", request);
+
+  profiler.start();
+  callsNumber += 1;
+
+  // prettier-ignore
+  return Promise.race([
+    multicall.call(request).then((res) => {
+      totalRequestTime += profiler.end();
+
+      console.log('TOTAL', totalRequestTime, callsNumber)
+
+      return res;
+    }),
+    sleep(MAX_TIMEOUT).then(() => Promise.reject("rpc timeout"))
+  ]).catch((e) => {
+      // eslint-disable-next-line no-console
+      console.error("multicall error:", e, request);
+
+      const fallbackProvider = getFallbackProvider(chainId);
+
+      if (!fallbackProvider) {
+        throw e;
+      }
+
+      // eslint-disable-next-line no-console
+      console.log("using multicall fallback");
+
+      const multicall = getMulticallLib(fallbackProvider);
+
+      return multicall.call(request).catch((e) => {
+        // eslint-disable-next-line no-console
+        console.error("multicall fallback error", e);
+
+        throw e;
+      });
+    }
+  );
+}
+
+function getMulticallLib(provider: ethers.providers.JsonRpcProvider) {
+  return new Multicall({
+    // @ts-ignore inconsistent provider types from diff
     ethersProvider: provider,
     tryAggregate: true,
-    // web3Instance: provider,
   });
-
-  return multicall;
 }
 
 export function formatMulticallRequest(requestConfig: MulticallRequestConfig<any>): ContractCallContext[] {
@@ -44,9 +117,9 @@ export function formatMulticallRequest(requestConfig: MulticallRequestConfig<any
   return result;
 }
 
-export function formatMulticallResult(response: ContractCallResults): MulticallResult<any> {
-  const result = Object.keys(response.results).reduce((acc, contractReference) => {
-    const contractResponse = response.results[contractReference].callsReturnContext;
+export function formatMulticallResult(response: ContractCallResults["results"]): MulticallResult<any> {
+  const result = Object.keys(response).reduce((acc, contractReference) => {
+    const contractResponse = response[contractReference].callsReturnContext;
 
     const callsResults = contractResponse.reduce((callsObj, call) => {
       callsObj[call.reference] = call;

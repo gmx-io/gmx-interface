@@ -1,19 +1,19 @@
 import { useMemo } from "react";
 import { swapImpactExponentFactorKey, swapImpactFactorKey } from "../dataStore/keys";
-import { useDataStoreData } from "../dataStore/useDataStoreData";
+import { useDataStore } from "../dataStore/useDataStore";
 import { PriceImpactConfig, PriceImpactConfigsData } from "./types";
 import { decimalToFloat } from "./utils";
 
 export function usePriceImpactData(chainId: number, p: { marketAddresses: string[] }): PriceImpactConfigsData {
-  const dataStoreReq = p.marketAddresses.reduce((acc, address) => {
-    acc[`${address}_impactFactor_positive`] = swapImpactFactorKey(address, true);
-    acc[`${address}_impactFactor_negative`] = swapImpactFactorKey(address, false);
-    acc[`${address}_exponentImpactFactor`] = swapImpactExponentFactorKey(address);
+  const dataStoreReq: { [key: string]: string } = {};
 
-    return acc;
-  }, {});
+  p.marketAddresses.forEach((address) => {
+    dataStoreReq[`${address}_impactFactor_positive`] = swapImpactFactorKey(address, true);
+    dataStoreReq[`${address}_impactFactor_negative`] = swapImpactFactorKey(address, false);
+    dataStoreReq[`${address}_exponentImpactFactor`] = swapImpactExponentFactorKey(address);
+  });
 
-  const dataStoreResult = useDataStoreData(chainId, { keys: dataStoreReq, method: "getUint" });
+  const dataStoreResult = useDataStore(chainId, { requestKeys: dataStoreReq, method: "getUint" });
 
   const result: PriceImpactConfigsData = useMemo(() => {
     if (!dataStoreResult)

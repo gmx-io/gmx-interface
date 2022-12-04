@@ -1,58 +1,64 @@
 import { useWeb3React } from "@web3-react/core";
+import Multicall from "abis/Multicall.json";
 import Token from "abis/Token.json";
-import { useMulticall } from "lib/multicall";
-import { BigNumber, ethers } from "ethers";
-import { useNativeTokenBalance } from "./useNativeTokenBalance";
-import { TokenBalancesData } from "./types";
+import { getContract } from "config/contracts";
+import { BigNumber } from "ethers";
 import { isAddressZero } from "lib/legacy";
-import { MulticallResult } from "lib/multicall/types";
-
-const { AddressZero } = ethers.constants;
+import { useMulticall } from "lib/multicall";
+import { useMemo } from "react";
+import { TokenBalancesData } from "./types";
 
 export function useTokenBalances(chainId: number, p: { tokenAddresses: string[] }): TokenBalancesData {
   const { account, active } = useWeb3React();
 
-  const { data: ERC20Data } = useMulticall(
+  const { data: tokenBalances } = useMulticall(
     chainId,
-    active && account ? ["useTokenBalances", account, p.tokenAddresses.join("-")] : null,
-    p.tokenAddresses
-      .filter((address) => !isAddressZero(address))
-      .reduce((acc, address) => {
-        acc[address] = {
-          contractAddress: address,
-          abi: Token.abi,
-          calls: {
-            balance: {
-              methodName: "balanceOf",
-              params: [account],
-            },
-          },
-        };
+    "useTokenBalances",
+    active && account ? [account, p.tokenAddresses.join("-")] : null,
+    {
+      request: () =>
+        p.tokenAddresses.reduce((acc, address) => {
+          if (isAddressZero(address)) {
+            acc[address] = {
+              contractAddress: getContract(chainId, "Multicall"),
+              abi: Multicall.abi,
+              calls: {
+                balance: {
+                  methodName: "getEthBalance",
+                  params: [account],
+                },
+              },
+            };
+          } else {
+            acc[address] = {
+              contractAddress: address,
+              abi: Token.abi,
+              calls: {
+                balance: {
+                  methodName: "balanceOf",
+                  params: [account],
+                },
+              },
+            };
+          }
 
-        return acc;
-      }, {})
+          return acc;
+        }, {}),
+      parseResponse: (res) => {
+        const tokenBalances: { [address: string]: BigNumber } = {};
+
+        Object.keys(res).forEach((address) => {
+          tokenBalances[address] = res[address].balance.returnValues[0] || BigNumber.from(0);
+        });
+
+        return tokenBalances;
+      },
+    }
   );
 
-  const formattedERC20Balances = formatResults(ERC20Data);
-
-  const nativeTokenBalance = useNativeTokenBalance();
-
-  const result = {
-    [AddressZero]: nativeTokenBalance || BigNumber.from(0),
-    ...formattedERC20Balances,
-  };
-
-  return {
-    tokenBalances: result,
-  };
-}
-
-function formatResults(response: MulticallResult<any> = {}) {
-  const result = {};
-
-  Object.keys(response).forEach((address) => {
-    result[address] = response[address].balance.returnValues[0] || BigNumber.from(0);
-  });
-
-  return result;
+  return useMemo(() => {
+    return {
+      tokenBalances: tokenBalances || {},
+    };
+  }, [tokenBalances]);
 }

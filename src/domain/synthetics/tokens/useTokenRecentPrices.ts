@@ -1,6 +1,5 @@
 import { getTokenBySymbol } from "config/tokens";
 import { jsonFetcher } from "lib/http";
-import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import { getOracleKeeperEndpoint } from "lib/oracleKeeper";
 import { TokenPricesData, TokenPricesMap } from "./types";
@@ -36,8 +35,8 @@ function formatResponse(chainId: number, response: BackendResponse = []) {
     }
 
     acc[tokenConfig.address] = {
-      minPrice: parseOraclePrice(priceItem.minPrice, priceItem.oracleDecimals),
-      maxPrice: parseOraclePrice(priceItem.maxPrice, priceItem.oracleDecimals),
+      minPrice: parseOraclePrice(priceItem.minPrice, tokenConfig.decimals, priceItem.oracleDecimals),
+      maxPrice: parseOraclePrice(priceItem.maxPrice, tokenConfig.decimals, priceItem.oracleDecimals),
     };
 
     return acc;
@@ -46,6 +45,6 @@ function formatResponse(chainId: number, response: BackendResponse = []) {
   return result;
 }
 
-function parseOraclePrice(price: string, oracleDecimals: number) {
-  return expandDecimals(price, USD_DECIMALS - oracleDecimals);
+function parseOraclePrice(price: string, tokenDecimals: number, oracleDecimals: number) {
+  return expandDecimals(price, tokenDecimals + oracleDecimals);
 }

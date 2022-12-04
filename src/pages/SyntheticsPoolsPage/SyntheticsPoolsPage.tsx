@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import "./SyntheticsPoolsPage.scss";
 import { useMarkets } from "domain/synthetics/markets/useMarkets";
 import { getMarkets } from "domain/synthetics/markets/utils";
+import { useWeb3React } from "@web3-react/core";
 
 type Props = {
   connectWallet: () => void;
