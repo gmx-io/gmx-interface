@@ -201,7 +201,7 @@ a.plain {
 }
 
 .default-btn {
-  background: #2d42fc;
+  background: #472F50;
   border-radius: 4px;
   font-size: 1.4rem;
   line-height: 2rem;
@@ -224,7 +224,7 @@ a.plain {
 }
 
 .default-btn:hover {
-  background: #4f60fc;
+  background: #55395f;
 }
 
 /* .default-btn:focus {
