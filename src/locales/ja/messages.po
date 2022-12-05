@@ -237,6 +237,10 @@ msgstr "清算が発生した時点で高品質の複数の価格フィードの
 msgid "Announcement"
 msgstr "告知"
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "App"
+msgstr ""
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval failed"
 msgstr ""
