@@ -961,7 +961,6 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
   const esGmxAddress = getContract(chainId, "ES_GMX");
   const bnGmxAddress = getContract(chainId, "BN_GMX");
   const glpAddress = getContract(chainId, "GLP");
-
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");
   const bonusGmxTrackerAddress = getContract(chainId, "BonusGmxTracker");
   const feeGmxTrackerAddress = getContract(chainId, "FeeGmxTracker");
@@ -1034,6 +1033,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       fetcher: contractFetcher(library, RewardReader, [depositTokens, rewardTrackersForDepositBalances]),
     }
   );
+  console.log("depositBalances", depositBalances);
 
   const { data: stakingInfo } = useSWR(
     [`StakeV2:stakingInfo:${active}`, chainId, rewardReaderAddress, "getStakingInfo", account || PLACEHOLDER_ACCOUNT],
@@ -1059,6 +1059,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       fetcher: contractFetcher(library, Vault),
     }
   );
+  console.log("nativeTokenPrice: ", nativeTokenPrice, nativeTokenAddress);
 
   const { data: esGmxSupply } = useSWR(
     [`StakeV2:esGmxSupply:${active}`, chainId, readerAddress, "getTokenSupply", esGmxAddress],
@@ -1463,7 +1464,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </a>{" "}
               and{" "}
               <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">
-                GLP
+                OLP
               </a>{" "}
               to earn rewards.
             </Trans>
@@ -1824,7 +1825,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             </div>
           </div>
           <div className="App-card">
-            <div className="App-card-title">GLP ({chainName})</div>
+            <div className="App-card-title">OLP ({chainName})</div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
               <div className="App-card-row">
@@ -1838,7 +1839,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   <Trans>Wallet</Trans>
                 </div>
                 <div>
-                  {formatKeyAmount(processedData, "glpBalance", GLP_DECIMALS, 2, true)} GLP ($
+                  {formatKeyAmount(processedData, "glpBalance", GLP_DECIMALS, 2, true)} OLP ($
                   {formatKeyAmount(processedData, "glpBalanceUsd", USD_DECIMALS, 2, true)})
                 </div>
               </div>
@@ -1933,7 +1934,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   <Trans>Total Staked</Trans>
                 </div>
                 <div>
-                  {formatKeyAmount(processedData, "glpSupply", 18, 2, true)} GLP ($
+                  {formatKeyAmount(processedData, "glpSupply", 18, 2, true)} OLP ($
                   {formatKeyAmount(processedData, "glpSupplyUsd", USD_DECIMALS, 2, true)})
                 </div>
               </div>
@@ -1942,7 +1943,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   <Trans>Total Supply</Trans>
                 </div>
                 <div>
-                  {formatKeyAmount(processedData, "glpSupply", 18, 2, true)} GLP ($
+                  {formatKeyAmount(processedData, "glpSupply", 18, 2, true)} OLP ($
                   {formatKeyAmount(processedData, "glpSupplyUsd", USD_DECIMALS, 2, true)})
                 </div>
               </div>

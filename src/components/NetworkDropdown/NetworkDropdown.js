@@ -180,7 +180,7 @@ function NetworkMenuItems({ networkOptions, selectorLabel, onNetworkSelect }) {
 
 function LanguageModalContent({ currentLanguage }) {
   return Object.keys(locales).map((item) => {
-    const image = !isTestLanguage(item) && importImage(`flag_${item}.svg`);
+    // const image = !isTestLanguage(item) && importImage(`flag_${item}.svg`);
     return (
       <div
         key={item}
@@ -196,7 +196,7 @@ function LanguageModalContent({ currentLanguage }) {
       >
         <div className="menu-item-group">
           <div className="menu-item-icon">
-            {isTestLanguage(item) ? "🫐" : <img className="network-dropdown-icon" src={image} alt={locales[item]} />}
+            {/* {isTestLanguage(item) ? "🫐" : <img className="network-dropdown-icon" src={image} alt={locales[item]} />} */}
           </div>
           <span className="network-dropdown-item-label menu-item-label">{locales[item]}</span>
         </div>
@@ -219,7 +219,7 @@ function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, s
         </span>
 
         {networkOptions.map((network) => {
-          const networkIcon = importImage(network.icon);
+          // const networkIcon = importImage(network.icon);
           return (
             <div
               className="network-option"
@@ -227,7 +227,7 @@ function NetworkModalContent({ networkOptions, onNetworkSelect, selectorLabel, s
               key={network.value}
             >
               <div className="menu-item-group">
-                <img src={networkIcon} alt={network.label} />
+                {/* <img src={networkIcon} alt={network.label} /> */}
                 <span>{network.label}</span>
               </div>
               <div className={cx("active-dot", { [selectorLabel]: selectorLabel === network.label })} />

@@ -81,15 +81,16 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Bitcoin (BTCB)",
       symbol: "BTC",
-      decimals: 8,
-      address: "0xb19C12715134bee7c4b1Ca593ee9E430dABe7b56",
+      decimals: 18,
+      address: "0x8530E5595C07F4075d00a25515E416487a07D6d3",
+      isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
     },
     {
       name: "Ethereum",
       symbol: "ETH",
       decimals: 18,
-      address: "0x1958f7C067226c7C8Ac310Dc994D0cebAbfb2B02",
+      address: "0x612777Eea37a44F7a95E3B101C39e1E2695fa6C2",
       imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
     },
     {
@@ -98,6 +99,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       address: ethers.constants.AddressZero,
       isNative: true,
+      isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/825/small/binance-coin-logo.png",
     },
     {
@@ -107,6 +109,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: "0x612777Eea37a44F7a95E3B101C39e1E2695fa6C2",
       isWrapped: true,
       baseSymbol: "BNB",
+      isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/825/small/binance-coin-logo.png",
     },
     {
@@ -121,7 +124,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       name: "Binance USD",
       symbol: "BUSD",
       decimals: 18,
-      address: "0x3F223C4E5ac67099CB695834b20cCd5E5D5AA9Ef",
+      address: "0x78867bbeef44f2326bf8ddd1941a4439382ef2a7",
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/9576/small/BUSD.png",
     },
@@ -582,7 +585,6 @@ export function isValidToken(chainId: number, address: string) {
 }
 
 export function getToken(chainId: number, address: string) {
-  console.log("meo ne", TOKENS_MAP);
   if (!TOKENS_MAP[chainId]) {
     throw new Error(`Incorrect chainId ${chainId}`);
   }
@@ -601,6 +603,10 @@ export function getTokenBySymbol(chainId: number, symbol: string) {
 }
 
 export function getWhitelistedTokens(chainId: number) {
+  // Only test BTC in testnet
+  if (chainId === 97) {
+    return TOKENS[chainId].filter((token) => token.symbol !== "USDG" && token.symbol !== "BUSD");
+  }
   return TOKENS[chainId].filter((token) => token.symbol !== "USDG");
 }
 

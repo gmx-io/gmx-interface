@@ -13,7 +13,7 @@ export const ARBITRUM = 42161;
 export const DEFAULT_CHAIN_ID = TESTNET;
 export const CHAIN_ID = DEFAULT_CHAIN_ID;
 
-export const SUPPORTED_CHAIN_IDS = [TESTNET];
+export const SUPPORTED_CHAIN_IDS = [TESTNET, ARBITRUM];
 
 if (isDevelopment()) {
   SUPPORTED_CHAIN_IDS.push(ARBITRUM_TESTNET);
@@ -22,6 +22,7 @@ if (isDevelopment()) {
 export const IS_NETWORK_DISABLED = {
   [ARBITRUM]: false,
   [AVALANCHE]: false,
+  [TESTNET]: false,
 };
 
 export const CHAIN_NAMES_MAP = {
@@ -62,6 +63,10 @@ const constants = {
     defaultFlagOrdersEnabled: true,
     positionReaderPropsLength: 8,
     v2: false,
+    SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
+    INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
+    // contract requires that execution fee be strictly greater than instead of gte
+    DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.000300001"),
   },
 
   [ARBITRUM_TESTNET]: {
@@ -70,7 +75,6 @@ const constants = {
     defaultFlagOrdersEnabled: false,
     positionReaderPropsLength: 9,
     v2: true,
-
     SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
     INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
     // contract requires that execution fee be strictly greater than instead of gte

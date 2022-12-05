@@ -1184,57 +1184,52 @@ export default function PositionSeller(props) {
                     }}
                     tokens={toTokens}
                     getTokenState={(tokenOptionInfo) => {
-                      if (!shouldSwap(collateralToken, tokenOptionInfo)) {
-                        return;
-                      }
-
-                      const convertedTokenAmount = getTokenAmountFromUsd(
-                        infoTokens,
-                        tokenOptionInfo.address,
-                        receiveAmount
-                      );
-
-                      const isNotEnoughLiquidity =
-                        tokenOptionInfo.availableAmount.lt(convertedTokenAmount) ||
-                        tokenOptionInfo.bufferAmount.gt(tokenOptionInfo.poolAmount.sub(convertedTokenAmount));
-
-                      if (isNotEnoughLiquidity) {
-                        const { maxIn, maxOut, maxInUsd, maxOutUsd } = getSwapLimits(
-                          infoTokens,
-                          collateralToken.address,
-                          tokenOptionInfo.address
-                        );
-
-                        const collateralInfo = getTokenInfo(infoTokens, collateralToken.address);
-
-                        return {
-                          disabled: true,
-                          message: (
-                            <div>
-                              <Trans>Insufficient Available Liquidity to swap to {tokenOptionInfo.symbol}:</Trans>
-                              <br />
-                              <br />
-                              <StatsTooltipRow
-                                label={t`Max ${collateralInfo.symbol} in`}
-                                value={[
-                                  `${formatAmount(maxIn, collateralInfo.decimals, 0, true)} ${collateralInfo.symbol}`,
-                                  `($${formatAmount(maxInUsd, USD_DECIMALS, 0, true)})`,
-                                ]}
-                              />
-                              <br />
-                              <StatsTooltipRow
-                                label={t`Max ${tokenOptionInfo.symbol} out`}
-                                value={[
-                                  `${formatAmount(maxOut, tokenOptionInfo.decimals, 2, true)} ${
-                                    tokenOptionInfo.symbol
-                                  }`,
-                                  `($${formatAmount(maxOutUsd, USD_DECIMALS, 2, true)})`,
-                                ]}
-                              />
-                            </div>
-                          ),
-                        };
-                      }
+                      // if (!shouldSwap(collateralToken, tokenOptionInfo)) {
+                      //   return;
+                      // }
+                      // const convertedTokenAmount = getTokenAmountFromUsd(
+                      //   infoTokens,
+                      //   tokenOptionInfo.address,
+                      //   receiveAmount
+                      // );
+                      // const isNotEnoughLiquidity =
+                      //   tokenOptionInfo.availableAmount.lt(convertedTokenAmount) ||
+                      //   tokenOptionInfo.bufferAmount.gt(tokenOptionInfo.poolAmount.sub(convertedTokenAmount));
+                      // if (isNotEnoughLiquidity) {
+                      //   const { maxIn, maxOut, maxInUsd, maxOutUsd } = getSwapLimits(
+                      //     infoTokens,
+                      //     collateralToken.address,
+                      //     tokenOptionInfo.address
+                      //   );
+                      //   const collateralInfo = getTokenInfo(infoTokens, collateralToken.address);
+                      //   return {
+                      //     disabled: true,
+                      //     message: (
+                      //       <div>
+                      //         <Trans>Insufficient Available Liquidity to swap to {tokenOptionInfo.symbol}:</Trans>
+                      //         <br />
+                      //         <br />
+                      //         <StatsTooltipRow
+                      //           label={t`Max ${collateralInfo.symbol} in`}
+                      //           value={[
+                      //             `${formatAmount(maxIn, collateralInfo.decimals, 0, true)} ${collateralInfo.symbol}`,
+                      //             `($${formatAmount(maxInUsd, USD_DECIMALS, 0, true)})`,
+                      //           ]}
+                      //         />
+                      //         <br />
+                      //         <StatsTooltipRow
+                      //           label={t`Max ${tokenOptionInfo.symbol} out`}
+                      //           value={[
+                      //             `${formatAmount(maxOut, tokenOptionInfo.decimals, 2, true)} ${
+                      //               tokenOptionInfo.symbol
+                      //             }`,
+                      //             `($${formatAmount(maxOutUsd, USD_DECIMALS, 2, true)})`,
+                      //           ]}
+                      //         />
+                      //       </div>
+                      //     ),
+                      //   };
+                      // }
                     }}
                     infoTokens={infoTokens}
                     showTokenImgInDropdown={true}

@@ -118,7 +118,7 @@ export function getMarginFee(sizeDelta) {
 export function isTriggerRatioInverted(fromTokenInfo, toTokenInfo) {
   if (!toTokenInfo || !fromTokenInfo) return false;
   if (toTokenInfo.isStable || toTokenInfo.isUsdg) return true;
-  if (toTokenInfo.maxPrice) return toTokenInfo.maxPrice.lt(fromTokenInfo.maxPrice);
+  // if (toTokenInfo?.maxPrice) return toTokenInfo.maxPrice.lt(fromTokenInfo.maxPrice);
   return false;
 }
 
@@ -1298,6 +1298,7 @@ export function getProcessedData(
   data.totalGmxRewardsUsd = data.stakedGmxTrackerRewardsUsd.add(data.feeGmxTrackerRewardsUsd);
 
   data.glpSupply = supplyData.glp;
+  console.log("supply: ", data.glpSupply, aum);
   data.glpPrice =
     data.glpSupply && data.glpSupply.gt(0)
       ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(data.glpSupply)

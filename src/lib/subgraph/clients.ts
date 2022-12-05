@@ -1,6 +1,6 @@
 import { createClient } from "./utils";
 import { SUBGRAPH_URLS } from "config/subgraph";
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE } from "config/chains";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, TESTNET } from "config/chains";
 
 export const chainlinkClient = createClient(SUBGRAPH_URLS.common.chainLink);
 
@@ -16,8 +16,8 @@ export function getGmxGraphClient(chainId: number) {
     return arbitrumGraphClient;
   } else if (chainId === AVALANCHE) {
     return avalancheGraphClient;
-  } else if (chainId === ARBITRUM_TESTNET) {
-    return null;
+  } else if (chainId === TESTNET) {
+    return arbitrumGraphClient;
   }
 
   throw new Error(`Unsupported chain ${chainId}`);

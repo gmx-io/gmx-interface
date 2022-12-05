@@ -49,7 +49,7 @@ export default function TokenSelector(props) {
     return null;
   }
 
-  const tokenImage = showSymbolImage && importImage(`ic_${tokenInfo.symbol.toLowerCase()}_24.svg`);
+  // const tokenImage = showSymbolImage && importImage(`ic_${tokenInfo.symbol.toLowerCase()}_24.svg`);
 
   const onSearchKeywordChange = (e) => {
     setSearchKeyword(e.target.value);
@@ -88,7 +88,7 @@ export default function TokenSelector(props) {
             />
           </div>
           {filteredTokens.map((token, tokenIndex) => {
-            const tokenPopupImage = importImage(`ic_${token.symbol.toLowerCase()}_40.svg`);
+            // const tokenPopupImage = importImage(`ic_${token.symbol.toLowerCase()}_40.svg`);
             let info = infoTokens ? infoTokens[token.address] : {};
             let mintAmount;
             let balance = info.balance;
@@ -124,7 +124,7 @@ export default function TokenSelector(props) {
                   />
                 )}
                 <div className="Token-info">
-                  {showTokenImgInDropdown && <img src={tokenPopupImage} alt={token.name} className="token-logo" />}
+                  {/* {showTokenImgInDropdown && <img src={tokenPopupImage} alt={token.name} className="token-logo" />} */}
                   <div className="Token-symbol">
                     <div className="Token-text">{token.symbol}</div>
                     <span className="text-accent">{token.name}</span>
@@ -158,7 +158,7 @@ export default function TokenSelector(props) {
       ) : (
         <div className="TokenSelector-box" onClick={() => setIsModalVisible(true)}>
           {tokenInfo.symbol}
-          {showSymbolImage && <img src={tokenImage} alt={tokenInfo.symbol} className="TokenSelector-box-symbol" />}
+          {/* {showSymbolImage && <img src={tokenImage} alt={tokenInfo.symbol} className="TokenSelector-box-symbol" />} */}
           {showNewCaret && <img src={dropDownIcon} alt="Dropdown Icon" className="TokenSelector-box-caret" />}
           {!showNewCaret && <BiChevronDown className="TokenSelector-caret" />}
         </div>

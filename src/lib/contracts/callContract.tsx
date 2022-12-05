@@ -72,6 +72,12 @@ export async function callContract(
     let autoCloseToast: number | boolean = 5000;
 
     const [message, type, errorData] = extractError(e);
+
+    console.log("message", message);
+    console.log("========");
+    console.log("type", type);
+    console.log("========");
+    console.log("error data", errorData);
     switch (type) {
       case NOT_ENOUGH_FUNDS:
         failMsg = (

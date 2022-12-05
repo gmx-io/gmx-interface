@@ -55,7 +55,11 @@ export default function Modal(props) {
               overflow: isVisible ? "hidden" : "visible",
               position: "fixed",
             }}
-            onClick={() => setIsVisible(false)}
+            onClick={() => {
+              if (typeof setIsVisible === "function") {
+                setIsVisible(false);
+              }
+            }}
           ></div>
           <div className="Modal-content">
             <div className="Modal-title-bar">
