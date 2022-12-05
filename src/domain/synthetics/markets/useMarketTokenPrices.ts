@@ -79,6 +79,8 @@ export function useMarketTokenPrices(
             : // If pool is empty then market token price === 0
               expandDecimals(1, USD_DECIMALS);
         });
+
+        return marketTokenPrices;
       },
     }
   );

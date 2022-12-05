@@ -12,6 +12,7 @@ const MAX_TIMEOUT = 2000;
 
 let totalRequestTime = 0;
 let callsNumber = 0;
+let avgTime = 0;
 
 class Profiler {
   _start = 0;
@@ -25,12 +26,11 @@ class Profiler {
   }
 }
 
-const profiler = new Profiler();
-
 export async function executeMulticall(
   chainId: number,
   library: Web3Provider | undefined,
-  request: ContractCallContext[]
+  request: ContractCallContext[],
+  key?: string
 ) {
   // Try to use rpc provider of connected wallet
   let provider = library ? library.getSigner().provider : undefined;
@@ -43,19 +43,24 @@ export async function executeMulticall(
     // TODO: memoize providers by chainId?
     provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl, { chainId, name: CHAIN_NAMES_MAP[chainId] });
   }
+
   const multicall = getMulticallLib(provider as ethers.providers.JsonRpcProvider);
 
-  console.log("executeMulticall", request);
-
+  const profiler = new Profiler();
   profiler.start();
-  callsNumber += 1;
 
   // prettier-ignore
   return Promise.race([
     multicall.call(request).then((res) => {
-      totalRequestTime += profiler.end();
+      const end = profiler.end();
 
-      console.log('TOTAL', totalRequestTime, callsNumber)
+      callsNumber += 1;
+      totalRequestTime += end;
+      avgTime += end/callsNumber
+
+
+      // eslint-disable-next-line no-console
+      console.log('MULTICALL', key, `req: ${end}ms;`, `avg: ${Math.round(avgTime)}ms;`, `total: ${totalRequestTime}ms;`, `calls: ${request.length};` ,`requests: ${callsNumber}`);
 
       return res;
     }),
@@ -87,7 +92,7 @@ export async function executeMulticall(
 
 function getMulticallLib(provider: ethers.providers.JsonRpcProvider) {
   return new Multicall({
-    // @ts-ignore inconsistent provider types from diff
+    // @ts-ignore inconsistent provider types
     ethersProvider: provider,
     tryAggregate: true,
   });

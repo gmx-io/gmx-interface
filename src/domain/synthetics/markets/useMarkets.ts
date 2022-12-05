@@ -81,7 +81,7 @@ export function useMarkets(chainId: number): MarketsData {
 
           marketsMap[marketAddress] = {
             marketTokenAddress: returnValues[0],
-            indexTokenAddress: returnValues[1],
+            indexTokenAddress: toUnwrappedNativeToken(chainId, returnValues[1]),
             longTokenAddress: toUnwrappedNativeToken(chainId, returnValues[2]),
             shortTokenAddress: toUnwrappedNativeToken(chainId, returnValues[3]),
             data: returnValues[4],

@@ -1,3 +1,10 @@
+/**
+ * TODO: Update swr to 1.1 to allow use object-like keys safely
+ * @see https://swr.vercel.app/docs/arguments#passing-objects
+ */
+export type CacheKey = (string | number | boolean | null | undefined)[];
+export type SkipKey = null | undefined | false;
+
 export type ContractCallConfig = {
   methodName: string;
   params: any[];

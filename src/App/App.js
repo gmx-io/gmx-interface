@@ -98,7 +98,6 @@ import {
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SyntheticsPoolsPage } from "pages/SyntheticsPoolsPage/SyntheticsPoolsPage";
-import { MultiCallProvider } from "lib/multicall";
 import { isDevelopment } from "config/env";
 
 if ("ethereum" in window) {
@@ -652,15 +651,13 @@ function App() {
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <MultiCallProvider>
-          <SEO>
-            <Router>
-              <I18nProvider i18n={i18n}>
-                <FullApp />
-              </I18nProvider>
-            </Router>
-          </SEO>
-        </MultiCallProvider>
+        <SEO>
+          <Router>
+            <I18nProvider i18n={i18n}>
+              <FullApp />
+            </I18nProvider>
+          </Router>
+        </SEO>
       </Web3ReactProvider>
     </SWRConfig>
   );

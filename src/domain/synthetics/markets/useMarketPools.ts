@@ -11,42 +11,49 @@ export function useMarketPools(chainId: number): MarketPoolsData {
   const dataStoreAddress = getContract(chainId, "DataStore");
   const marketsData = useMarkets(chainId);
 
-  const { data: marketPools } = useMulticall(chainId, "useMarketPools", marketsData.marketKeys, {
-    request: () => ({
-      reader: {
-        contractAddress: getContract(chainId, "SyntheticsReader"),
-        abi: Reader.abi,
-        calls: Object.keys(marketsData.markets).reduce((calls, marketAddress) => {
-          const market = getMarket(marketsData, marketAddress)!;
+  const marketKeys = Object.keys(marketsData.markets);
 
-          calls[`${marketAddress}--${market.longTokenAddress}`] = {
-            methodName: "getPoolAmount",
-            params: [dataStoreAddress, market.marketTokenAddress, market.longTokenAddress],
-          };
+  const { data: marketPools } = useMulticall(
+    chainId,
+    "useMarketPools",
+    marketKeys.length > 0 && [marketKeys.join("-")],
+    {
+      request: () => ({
+        reader: {
+          contractAddress: getContract(chainId, "SyntheticsReader"),
+          abi: Reader.abi,
+          calls: marketKeys.reduce((calls, marketAddress) => {
+            const market = getMarket(marketsData, marketAddress)!;
 
-          calls[`${marketAddress}--${market.shortTokenAddress}`] = {
-            methodName: "getPoolAmount",
-            params: [dataStoreAddress, market.marketTokenAddress, market.shortTokenAddress],
-          };
+            calls[`${marketAddress}--${market.longTokenAddress}`] = {
+              methodName: "getPoolAmount",
+              params: [dataStoreAddress, market.marketTokenAddress, market.longTokenAddress],
+            };
 
-          return calls;
-        }, {}),
+            calls[`${marketAddress}--${market.shortTokenAddress}`] = {
+              methodName: "getPoolAmount",
+              params: [dataStoreAddress, market.marketTokenAddress, market.shortTokenAddress],
+            };
+
+            return calls;
+          }, {}),
+        },
+      }),
+      parseResponse: (res) => {
+        const poolsMap: { [marketAddress: string]: { [tokenAddress: string]: BigNumber } } = {};
+
+        Object.keys(res.reader).forEach((key) => {
+          const [marketAddress, tokenAddress] = key.split("--");
+
+          poolsMap[marketAddress] = poolsMap[marketAddress] || {};
+
+          poolsMap[marketAddress][tokenAddress] = res.reader[key].returnValues[0];
+        });
+
+        return poolsMap;
       },
-    }),
-    parseResponse: (res) => {
-      const poolsMap: { [marketAddress: string]: { [tokenAddress: string]: BigNumber } } = {};
-
-      Object.keys(res.reader).forEach((key) => {
-        const [marketAddress, tokenAddress] = key.split("--");
-
-        poolsMap[marketAddress] = poolsMap[marketAddress] || {};
-
-        poolsMap[marketAddress][tokenAddress] = res.reader[key].returnValues[0];
-      });
-
-      return poolsMap;
-    },
-  });
+    }
+  );
 
   return useMemo(() => {
     return {

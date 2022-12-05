@@ -9,12 +9,12 @@ import { useMemo } from "react";
 import { TokenBalancesData } from "./types";
 
 export function useTokenBalances(chainId: number, p: { tokenAddresses: string[] }): TokenBalancesData {
-  const { account, active } = useWeb3React();
+  const { account } = useWeb3React();
 
   const { data: tokenBalances } = useMulticall(
     chainId,
     "useTokenBalances",
-    active && account ? [account, p.tokenAddresses.join("-")] : null,
+    account && p.tokenAddresses.length > 0 ? [account, p.tokenAddresses.join("-")] : null,
     {
       request: () =>
         p.tokenAddresses.reduce((acc, address) => {
