@@ -330,6 +330,15 @@ export const TOKENS: { [chainId: number]: Token[] } = {
   [AVALANCHE_FUJI_TESTNET]: [
     {
       name: "Avalanche",
+      symbol: "SOL",
+      decimals: 18,
+      address: "0x36E6dc3CF44FDb8C62c5a11B457A28041f4C6eEF",
+      isNative: true,
+      isShortable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
+    },
+    {
+      name: "Avalanche",
       symbol: "AVAX",
       decimals: 18,
       address: ethers.constants.AddressZero,

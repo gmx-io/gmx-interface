@@ -1,5 +1,5 @@
 import { InfoTokens } from "domain/tokens";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import {
@@ -16,11 +16,16 @@ export function getTokenPriceData(data: TokenPricesData & TokenConfigsData, toke
 
   const token = getTokenConfig(data, tokenAddress);
 
-  if (token?.isStable)
+  if (token?.isStable) {
     return {
       minPrice: expandDecimals(1, USD_DECIMALS),
       maxPrice: expandDecimals(1, USD_DECIMALS),
     };
+  }
+
+  if (token?.isWrapped) {
+    return data.tokenPrices[ethers.constants.AddressZero];
+  }
 
   return data.tokenPrices[tokenAddress];
 }

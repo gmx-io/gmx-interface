@@ -144,10 +144,25 @@ export function MarketPoolSwapBox(p: Props) {
   }
 
   useEffect(() => {
-    if (!firstTokenState.tokenAddress && availableTokens.length > 0) {
+    if (!availableTokens.length) return;
+
+    if (
+      !firstTokenState.tokenAddress ||
+      !availableTokens.find((token) => token.address === firstTokenState.tokenAddress)
+    ) {
       firstTokenState.setTokenAddress(availableTokens[0].address);
     }
-  }, [availableTokens, firstTokenState]);
+
+    if (
+      secondTokenState.tokenAddress &&
+      !availableTokens.find((token) => token.address === secondTokenState.tokenAddress)
+    ) {
+      const secondToken = availableTokens.find((token) => token.address !== firstTokenState.tokenAddress);
+      if (secondToken) {
+        secondTokenState.setTokenAddress(secondToken.address);
+      }
+    }
+  }, [availableTokens, firstTokenState, secondTokenState]);
 
   useEffect(
     function updateInputsByModeEff() {

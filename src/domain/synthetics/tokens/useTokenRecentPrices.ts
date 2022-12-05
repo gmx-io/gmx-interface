@@ -5,6 +5,7 @@ import { getOracleKeeperEndpoint } from "lib/oracleKeeper";
 import { TokenPricesData, TokenPricesMap } from "./types";
 import useSWR from "swr";
 import { useMemo } from "react";
+import { BigNumber } from "ethers";
 
 type BackendResponse = {
   minPrice: string;
@@ -28,7 +29,11 @@ export function useTokenRecentPrices(chainId: number): TokenPricesData {
 
 function formatResponse(chainId: number, response: BackendResponse = []) {
   const result = response.reduce((acc, priceItem) => {
-    const tokenConfig = getTokenBySymbol(chainId, priceItem.tokenSymbol);
+    let tokenConfig: any = {};
+
+    try {
+      tokenConfig = getTokenBySymbol(chainId, priceItem.tokenSymbol);
+    } catch (e) {}
 
     if (!tokenConfig) {
       return acc;
@@ -46,5 +51,12 @@ function formatResponse(chainId: number, response: BackendResponse = []) {
 }
 
 function parseOraclePrice(price: string, tokenDecimals: number, oracleDecimals: number) {
-  return expandDecimals(price, tokenDecimals + oracleDecimals);
+  try {
+    return expandDecimals(price, tokenDecimals + oracleDecimals);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(price);
+
+    return BigNumber.from(0);
+  }
 }

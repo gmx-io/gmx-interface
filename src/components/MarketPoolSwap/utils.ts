@@ -37,7 +37,7 @@ export function useSwapTokenState(tokensData: TokensData, initial: { tokenAddres
   const [inputValue, setInputValue] = useState<string | undefined>();
   const [tokenAddress, setTokenAddress] = useState<string | undefined>(initial.tokenAddress);
 
-  const formattedInputValue = Number(inputValue) > 0 ? inputValue : "";
+  const formattedInputValue = inputValue;
 
   const token = getTokenConfig(tokensData, tokenAddress);
 

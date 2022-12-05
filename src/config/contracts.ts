@@ -155,6 +155,20 @@ const CONTRACTS = {
     ReferralStorage: "0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d",
     ReferralReader: "0x8Aa382760BCdCe8644C33e6C2D52f6304A76F5c8",
 
+    DataStore: AddressZero,
+    DepositHandler: AddressZero,
+    DepositStore: AddressZero,
+    EventEmitter: AddressZero,
+    FeeReceiver: AddressZero,
+    GasUtils: AddressZero,
+    MarketStore: AddressZero,
+    OracleStore: AddressZero,
+    Oracle: AddressZero,
+    SyntheticsReader: AddressZero,
+    RoleStore: AddressZero,
+    ExchangeRouter: AddressZero,
+    SyntheticsRouter: AddressZero,
+
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
   [AVALANCHE]: {
@@ -196,6 +210,21 @@ const CONTRACTS = {
     TraderJoeGmxAvaxPool: "0x0c91a070f862666bbcce281346be45766d874d98",
     ReferralStorage: "0x827ed045002ecdabeb6e2b0d1604cf5fc3d322f8",
     ReferralReader: "0x505Ce16D3017be7D76a7C2631C0590E71A975083",
+
+    // Synthetics
+    DataStore: AddressZero,
+    DepositHandler: AddressZero,
+    DepositStore: AddressZero,
+    EventEmitter: AddressZero,
+    FeeReceiver: AddressZero,
+    GasUtils: AddressZero,
+    MarketStore: AddressZero,
+    Oracle: AddressZero,
+    OracleStore: AddressZero,
+    SyntheticsReader: AddressZero,
+    RoleStore: AddressZero,
+    ExchangeRouter: AddressZero,
+    SyntheticsRouter: AddressZero,
 
     Multicall: "0xcA11bde05977b3631167028862bE2a173976CA11",
   },
