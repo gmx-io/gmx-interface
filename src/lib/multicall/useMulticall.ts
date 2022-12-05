@@ -5,27 +5,27 @@ import { MulticallBatcher } from "./batcher";
 import { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
 import { executeMulticall, formatMulticallRequest, formatMulticallResult } from "./utils";
 
-const batcher = new MulticallBatcher();
+const batcher = new MulticallBatcher(50);
 
 export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResult = MulticallResult<TConfig>>(
   chainId: number,
   name: string,
-  key: CacheKey | SkipKey,
   params: {
+    key: CacheKey | SkipKey;
+    aggregate?: boolean;
+    refreshInterval?: number;
     request: TConfig | ((chainId: number, key: CacheKey) => TConfig);
     parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
-  },
-  opts: { aggregate?: boolean; refreshInterval?: number } = {}
+  }
 ) {
   const { library } = useWeb3React();
 
-  const swrFullKey = Array.isArray(key) ? [chainId, name, ...key] : null;
-
-  const swrOpts: any = {};
+  const swrFullKey = Array.isArray(params.key) ? [chainId, name, ...params.key] : null;
 
   // SWR resets options if pass undefined explicitly
-  if (opts.refreshInterval) {
-    swrOpts.refreshInterval = opts.refreshInterval;
+  const swrOpts: any = {};
+  if (params.refreshInterval) {
+    swrOpts.refreshInterval = params.refreshInterval;
   }
 
   const swrResult = useSWR<TResult | undefined>(swrFullKey, {
@@ -33,13 +33,13 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
     fetcher: async (...fullKey: CacheKey) => {
       // prettier-ignore
       const request = typeof params.request === "function" 
-        ? params.request(chainId, key as CacheKey) 
+        ? params.request(chainId, params.key as CacheKey) 
         : params.request;
 
       const requestContext = formatMulticallRequest(request);
 
       try {
-        const multicallResponse = true
+        const multicallResponse = params.aggregate
           ? await batcher.registerRequest(chainId, requestContext, fullKey)
           : await executeMulticall(chainId, library, requestContext, name);
 
@@ -47,7 +47,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
         // prettier-ignore
         const result = typeof params.parseResponse === "function" 
-            ? params.parseResponse(formattedResponse, chainId, key as CacheKey) 
+            ? params.parseResponse(formattedResponse, chainId, params.key as CacheKey) 
             : formattedResponse;
 
         return result as TResult;

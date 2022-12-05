@@ -13,47 +13,44 @@ export function useMarketPools(chainId: number): MarketPoolsData {
 
   const marketKeys = Object.keys(marketsData.markets);
 
-  const { data: marketPools } = useMulticall(
-    chainId,
-    "useMarketPools",
-    marketKeys.length > 0 && [marketKeys.join("-")],
-    {
-      request: () => ({
-        reader: {
-          contractAddress: getContract(chainId, "SyntheticsReader"),
-          abi: Reader.abi,
-          calls: marketKeys.reduce((calls, marketAddress) => {
-            const market = getMarket(marketsData, marketAddress)!;
+  const { data: marketPools } = useMulticall(chainId, "useMarketPools", {
+    key: marketKeys.length > 0 && [marketKeys.join("-")],
+    aggregate: true,
+    request: () => ({
+      reader: {
+        contractAddress: getContract(chainId, "SyntheticsReader"),
+        abi: Reader.abi,
+        calls: marketKeys.reduce((calls, marketAddress) => {
+          const market = getMarket(marketsData, marketAddress)!;
 
-            calls[`${marketAddress}--${market.longTokenAddress}`] = {
-              methodName: "getPoolAmount",
-              params: [dataStoreAddress, market.marketTokenAddress, market.longTokenAddress],
-            };
+          calls[`${marketAddress}--${market.longTokenAddress}`] = {
+            methodName: "getPoolAmount",
+            params: [dataStoreAddress, market.marketTokenAddress, market.longTokenAddress],
+          };
 
-            calls[`${marketAddress}--${market.shortTokenAddress}`] = {
-              methodName: "getPoolAmount",
-              params: [dataStoreAddress, market.marketTokenAddress, market.shortTokenAddress],
-            };
+          calls[`${marketAddress}--${market.shortTokenAddress}`] = {
+            methodName: "getPoolAmount",
+            params: [dataStoreAddress, market.marketTokenAddress, market.shortTokenAddress],
+          };
 
-            return calls;
-          }, {}),
-        },
-      }),
-      parseResponse: (res) => {
-        const poolsMap: { [marketAddress: string]: { [tokenAddress: string]: BigNumber } } = {};
-
-        Object.keys(res.reader).forEach((key) => {
-          const [marketAddress, tokenAddress] = key.split("--");
-
-          poolsMap[marketAddress] = poolsMap[marketAddress] || {};
-
-          poolsMap[marketAddress][tokenAddress] = res.reader[key].returnValues[0];
-        });
-
-        return poolsMap;
+          return calls;
+        }, {}),
       },
-    }
-  );
+    }),
+    parseResponse: (res) => {
+      const poolsMap: { [marketAddress: string]: { [tokenAddress: string]: BigNumber } } = {};
+
+      Object.keys(res.reader).forEach((key) => {
+        const [marketAddress, tokenAddress] = key.split("--");
+
+        poolsMap[marketAddress] = poolsMap[marketAddress] || {};
+
+        poolsMap[marketAddress][tokenAddress] = res.reader[key].returnValues[0];
+      });
+
+      return poolsMap;
+    },
+  });
 
   return useMemo(() => {
     return {

@@ -6,30 +6,27 @@ import { isAddressZero } from "lib/legacy";
 import { useMemo } from "react";
 
 export function useTokenTotalSupply(chainId: number, p: { tokenAddresses: string[] }): TokenTotalSupplyData {
-  const { data } = useMulticall(
-    chainId,
-    "useTokenTotalSupply",
-    p.tokenAddresses.length > 0 && [p.tokenAddresses.join("-")],
-    {
-      request: () =>
-        p.tokenAddresses
-          .filter((address) => !isAddressZero(address))
-          .reduce((acc, address) => {
-            acc[address] = {
-              contractAddress: address,
-              abi: Token.abi,
-              calls: {
-                totalSupply: {
-                  methodName: "totalSupply",
-                  params: [],
-                },
+  const { data } = useMulticall(chainId, "useTokenTotalSupply", {
+    key: p.tokenAddresses.length > 0 && [p.tokenAddresses.join("-")],
+    aggregate: true,
+    request: () =>
+      p.tokenAddresses
+        .filter((address) => !isAddressZero(address))
+        .reduce((acc, address) => {
+          acc[address] = {
+            contractAddress: address,
+            abi: Token.abi,
+            calls: {
+              totalSupply: {
+                methodName: "totalSupply",
+                params: [],
               },
-            };
+            },
+          };
 
-            return acc;
-          }, {}),
-    }
-  );
+          return acc;
+        }, {}),
+  });
 
   const result: TokenTotalSupplyData = useMemo(() => {
     if (!data || Object.keys(data).length === 0) {

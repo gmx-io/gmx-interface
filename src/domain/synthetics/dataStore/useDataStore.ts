@@ -13,9 +13,8 @@ export function useDataStore<TKeys extends string>(
   chainId: number,
   p: { requestKeys: { [key in TKeys]: string }; method: Method }
 ): DataStoreValues<TKeys> | undefined {
-  const cacheKey = Object.keys(p.requestKeys).length > 0 && [JSON.stringify(p.requestKeys)];
-
-  const { data } = useMulticall(chainId, "useDataStore", cacheKey, {
+  const { data } = useMulticall(chainId, "useDataStore", {
+    key: Object.keys(p.requestKeys).length > 0 && [JSON.stringify(p.requestKeys)],
     request: () => ({
       dataStore: {
         contractAddress: getContract(chainId, "DataStore"),

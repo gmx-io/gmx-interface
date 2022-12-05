@@ -56,34 +56,31 @@ export function useMarketTokenPrices(
 
   const callKeys = Object.keys(calls).join("-");
 
-  const { data: marketTokenPrices } = useMulticall(
-    chainId,
-    "useMarketTokenPrices",
-    callKeys.length > 0 ? [p.maximize, callKeys] : null,
-    {
-      request: {
-        reader: {
-          contractAddress: getContract(chainId, "SyntheticsReader"),
-          abi: Reader.abi,
-          calls,
-        },
+  const { data: marketTokenPrices } = useMulticall(chainId, "useMarketTokenPrices", {
+    key: callKeys.length > 0 ? [p.maximize, callKeys] : null,
+    aggregate: true,
+    request: {
+      reader: {
+        contractAddress: getContract(chainId, "SyntheticsReader"),
+        abi: Reader.abi,
+        calls,
       },
-      parseResponse: (res) => {
-        const marketTokenPrices: { [marketAddress: string]: BigNumber } = {};
+    },
+    parseResponse: (res) => {
+      const marketTokenPrices: { [marketAddress: string]: BigNumber } = {};
 
-        Object.keys(res.reader).forEach((marketAddress) => {
-          const price = res.reader[marketAddress].returnValues[0];
+      Object.keys(res.reader).forEach((marketAddress) => {
+        const price = res.reader[marketAddress].returnValues[0];
 
-          marketTokenPrices[marketAddress] = price.gt(0)
-            ? price
-            : // If pool is empty then market token price === 0
-              expandDecimals(1, USD_DECIMALS);
-        });
+        marketTokenPrices[marketAddress] = price.gt(0)
+          ? price
+          : // If pool is empty then market token price === 0
+            expandDecimals(1, USD_DECIMALS);
+      });
 
-        return marketTokenPrices;
-      },
-    }
-  );
+      return marketTokenPrices;
+    },
+  });
 
   return useMemo(() => {
     return {

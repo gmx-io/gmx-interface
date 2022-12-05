@@ -15,41 +15,39 @@ export function useTokenAllowance(
 
   const wrappedToken = getWrappedToken(chainId);
 
-  const { data: tokenAllowance } = useMulticall(
-    chainId,
-    "useTokenAllowance",
-    account && p.spenderAddress && p.tokenAddresses.length > 0
-      ? [account, p.spenderAddress, p.tokenAddresses.join("-")]
-      : null,
-    {
-      request: () =>
-        p.tokenAddresses.reduce((contracts, address) => {
-          contracts[address] = {
-            contractAddress: isAddressZero(address) ? wrappedToken.address : address,
-            abi: Token.abi,
-            calls: {
-              allowance: {
-                methodName: "allowance",
-                params: [account, p.spenderAddress],
-              },
+  const { data: tokenAllowance } = useMulticall(chainId, "useTokenAllowance", {
+    key:
+      account && p.spenderAddress && p.tokenAddresses.length > 0
+        ? [account, p.spenderAddress, p.tokenAddresses.join("-")]
+        : null,
+
+    request: () =>
+      p.tokenAddresses.reduce((contracts, address) => {
+        contracts[address] = {
+          contractAddress: isAddressZero(address) ? wrappedToken.address : address,
+          abi: Token.abi,
+          calls: {
+            allowance: {
+              methodName: "allowance",
+              params: [account, p.spenderAddress],
             },
-          };
+          },
+        };
 
-          return contracts;
-        }, {}),
-      parseResponse: (res) => {
-        const tokenAllowance: { [address: string]: BigNumber } = {};
+        return contracts;
+      }, {}),
+    parseResponse: (res) => {
+      const tokenAllowance: { [address: string]: BigNumber } = {};
 
-        Object.keys(res).forEach((address) => {
-          const tokenResult = res[address];
+      Object.keys(res).forEach((address) => {
+        const tokenResult = res[address];
 
-          tokenAllowance[address] = tokenResult.allowance.returnValues[0];
-        });
+        tokenAllowance[address] = tokenResult.allowance.returnValues[0];
+      });
 
-        return tokenAllowance;
-      },
-    }
-  );
+      return tokenAllowance;
+    },
+  });
 
   return useMemo(() => {
     return {
