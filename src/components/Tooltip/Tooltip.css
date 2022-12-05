@@ -123,6 +123,11 @@
   color: white;
 }
 
+.Tooltip-flex {
+  display: flex;
+  flex-direction: column;
+}
+
 @media (max-width: 700px) {
   .Tooltip-row {
     display: block;

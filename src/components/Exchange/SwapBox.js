@@ -79,6 +79,7 @@ import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { ErrorCodes, ErrorTypes } from "./constants";
 
 const SWAP_ICONS = {
   [LONG]: longImg,
@@ -841,7 +842,7 @@ export default function SwapBox(props) {
       const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount);
 
       if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
-        return [t`${fromTokenInfo.symbol} pool exceeded`];
+        return [t`${fromTokenInfo.symbol} pool exceeded`, ErrorTypes.tooltip, ErrorCodes.poolExceeded];
       }
     }
 
@@ -935,7 +936,7 @@ export default function SwapBox(props) {
           toTokenInfo.bufferAmount &&
           toTokenInfo.bufferAmount.gt(toTokenInfo.poolAmount.sub(swapAmount))
         ) {
-          return [t`Insufficient liquidity`, true, "BUFFER"];
+          return [t`Insufficient liquidity`, ErrorTypes.modal, ErrorCodes.buffer];
         }
 
         if (
@@ -948,7 +949,11 @@ export default function SwapBox(props) {
           const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS);
           const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount);
           if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
-            return [t`${fromTokenInfo.symbol} pool exceeded, try different token`, true, "MAX_USDG"];
+            return [
+              t`${fromTokenInfo.symbol} pool exceeded, try different token`,
+              ErrorTypes.modal,
+              ErrorCodes.maxUSDG,
+            ];
           }
         }
       }
@@ -992,7 +997,7 @@ export default function SwapBox(props) {
           shortCollateralToken.bufferAmount.gt(shortCollateralToken.poolAmount.sub(stableTokenAmount))
         ) {
           // suggest swapping to collateralToken
-          return [t`Insufficient liquidity, change "Collateral In"`, true, "BUFFER"];
+          return [t`Insufficient liquidity, change "Collateral In"`, ErrorTypes.modal, ErrorCodes.buffer];
         }
 
         if (
@@ -1004,7 +1009,11 @@ export default function SwapBox(props) {
           const usdgFromAmount = adjustForDecimals(fromUsdMin, USD_DECIMALS, USDG_DECIMALS);
           const nextUsdgAmount = fromTokenInfo.usdgAmount.add(usdgFromAmount);
           if (nextUsdgAmount.gt(fromTokenInfo.maxUsdgAmount)) {
-            return [t`${fromTokenInfo.symbol} pool exceeded, try different token`, true, "MAX_USDG"];
+            return [
+              t`${fromTokenInfo.symbol} pool exceeded, try different token`,
+              ErrorTypes.modal,
+              ErrorCodes.maxUSDG,
+            ];
           }
         }
       }
@@ -1086,8 +1095,8 @@ export default function SwapBox(props) {
     if (!active) {
       return true;
     }
-    const [error, modal] = getError();
-    if (error && !modal) {
+    const [error, errorType] = getError();
+    if (error && errorType !== ErrorTypes.modal) {
       return false;
     }
     if (needOrderBookApproval && isWaitingForPluginApproval) {
@@ -1122,8 +1131,8 @@ export default function SwapBox(props) {
     if (!isSupportedChain(chainId)) {
       return t`Incorrect Network`;
     }
-    const [error, modal] = getError();
-    if (error && !modal) {
+    const [error, errorType] = getError();
+    if (error && errorType !== ErrorTypes.modal) {
       return error;
     }
 
@@ -1677,9 +1686,9 @@ export default function SwapBox(props) {
       return;
     }
 
-    const [, modal, errorCode] = getError();
+    const [, errorType, errorCode] = getError();
 
-    if (modal) {
+    if (errorType === ErrorTypes.modal) {
       setModalError(errorCode);
       return;
     }
@@ -1806,11 +1815,39 @@ export default function SwapBox(props) {
     return fromValue !== formatAmountFree(maxAvailableAmount, fromToken.decimals, fromToken.decimals);
   }
 
+  const ERROR_TOOLTIP_MSG = {
+    [ErrorCodes.poolExceeded]: t`GLP doesn't accept more ${fromTokenInfo.symbol}.`,
+  };
+
   const SWAP_LABELS = {
     [LONG]: t`Long`,
     [SHORT]: t`Short`,
     [SWAP]: t`Swap`,
   };
+
+  function renderPrimaryButton() {
+    const [errorMessage, errorType, errorCode] = getError();
+    const primaryTextMessage = getPrimaryText();
+    if (errorType === ErrorTypes.tooltip && errorMessage === primaryTextMessage) {
+      return (
+        <Tooltip
+          handle={
+            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+              {primaryTextMessage}
+            </button>
+          }
+          className="Tooltip-flex"
+          position="center-bottom"
+          renderContent={() => ERROR_TOOLTIP_MSG[errorCode]}
+        />
+      );
+    }
+    return (
+      <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+        {primaryTextMessage}
+      </button>
+    );
+  }
 
   return (
     <div className="Exchange-swap-box">
@@ -2202,11 +2239,7 @@ export default function SwapBox(props) {
             </Trans>
           </div>
         )}
-        <div className="Exchange-swap-button-container">
-          <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
-            {getPrimaryText()}
-          </button>
-        </div>
+        <div className="Exchange-swap-button-container">{renderPrimaryButton()}</div>
       </div>
       {isSwap && (
         <div className="Exchange-swap-market-box App-box App-box-border">
