@@ -29,6 +29,7 @@ import { approveTokens, shouldRaiseGasError } from "domain/tokens";
 import { usePrevious } from "lib/usePrevious";
 import { bigNumberify, expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { ErrorCodes, ErrorTypes } from "./constants";
 
 const DEPOSIT = "Deposit";
 const WITHDRAW = "Withdraw";
@@ -184,41 +185,42 @@ export default function PositionEditor(props) {
       return [t`Withdraw disabled, pending ${getChainName(chainId)} upgrade`];
     }
     if (!fromAmount) {
-      return t`Enter an amount`;
+      return [t`Enter an amount`];
     }
     if (nextLeverage && nextLeverage.eq(0)) {
-      return t`Enter an amount`;
+      return [t`Enter an amount`];
     }
 
     if (!isDeposit && fromAmount) {
       if (fromAmount.gte(position.collateral)) {
-        return t`Min order: 10 USD`;
+        return [t`Min order: 10 USD`];
       }
       if (position.collateral.sub(fromAmount).lt(expandDecimals(10, USD_DECIMALS))) {
-        return t`Min order: 10 USD`;
+        return [t`Min order: 10 USD`];
       }
     }
 
     if (!isDeposit && fromAmount && nextLiquidationPrice) {
       if (position.isLong && position.markPrice.lt(nextLiquidationPrice)) {
-        return t`Invalid liq. price`;
+        return [t`Invalid liq. price`, ErrorTypes.tooltip, ErrorCodes.invalidLiqPrice];
       }
       if (!position.isLong && position.markPrice.gt(nextLiquidationPrice)) {
-        return t`Invalid liq. price`;
+        return [t`Invalid liq. price`, ErrorTypes.tooltip, ErrorCodes.invalidLiqPrice];
       }
     }
 
     if (nextLeverageExcludingPnl && nextLeverageExcludingPnl.lt(1.1 * BASIS_POINTS_DIVISOR)) {
-      return t`Min leverage: 1.1x`;
+      return [t`Min leverage: 1.1x`];
     }
 
     if (nextLeverage && nextLeverage.gt(MAX_ALLOWED_LEVERAGE)) {
-      return t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`;
+      return [t`Max leverage: ${(MAX_ALLOWED_LEVERAGE / BASIS_POINTS_DIVISOR).toFixed(1)}x`];
     }
+    return [false];
   };
 
   const isPrimaryEnabled = () => {
-    const error = getError();
+    const [error] = getError();
     if (error) {
       return false;
     }
@@ -236,7 +238,7 @@ export default function PositionEditor(props) {
   };
 
   const getPrimaryText = () => {
-    const error = getError();
+    const [error] = getError();
     if (error) {
       return error;
     }
@@ -449,6 +451,33 @@ export default function PositionEditor(props) {
     [DEPOSIT]: t`Deposit`,
     [WITHDRAW]: t`Withdraw`,
   };
+  const ERROR_TOOLTIP_MSG = {
+    [ErrorCodes.invalidLiqPrice]: t`Liquidation price would cross mark price.`,
+  };
+
+  function renderPrimaryButton() {
+    const [errorMessage, errorType, errorCode] = getError();
+    const primaryTextMessage = getPrimaryText();
+    if (errorType === ErrorTypes.tooltip && errorMessage === primaryTextMessage) {
+      return (
+        <Tooltip
+          handle={
+            <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+              {primaryTextMessage}
+            </button>
+          }
+          className="Tooltip-flex"
+          position="center-top"
+          renderContent={() => ERROR_TOOLTIP_MSG[errorCode]}
+        />
+      );
+    }
+    return (
+      <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
+        {primaryTextMessage}
+      </button>
+    );
+  }
 
   return (
     <div className="PositionEditor">
@@ -617,15 +646,7 @@ export default function PositionEditor(props) {
                   </div>
                 </div>
 
-                <div className="Exchange-swap-button-container">
-                  <button
-                    className="App-cta Exchange-swap-button"
-                    onClick={onClickPrimary}
-                    disabled={!isPrimaryEnabled()}
-                  >
-                    {getPrimaryText()}
-                  </button>
-                </div>
+                <div className="Exchange-swap-button-container">{renderPrimaryButton()}</div>
               </div>
             )}
           </div>

@@ -1369,6 +1369,10 @@ msgstr ""
 msgid "GLP buy disabled, pending {0} upgrade"
 msgstr ""
 
+#: src/components/Exchange/SwapBox.js
+msgid "GLP doesn't accept more {0}."
+msgstr ""
+
 #: src/components/TokenCard/TokenCard.js
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 msgstr "GLP는 유동성 공급 토큰입니다. 플랫폼에서 생성되는 수수료의 70%를 축적하세요."
@@ -1746,6 +1750,10 @@ msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidation fee"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Liquidation price would cross mark price."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
