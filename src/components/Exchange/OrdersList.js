@@ -24,6 +24,14 @@ import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 
+function getOrderTitle(order, indexTokenSymbol) {
+  const orderTypeText = order.type === INCREASE ? t`Increase` : t`Decrease`;
+  const longShortText = order.isLong ? t`Long` : t`Short`;
+  const sizeDeltaText = formatAmount(order.sizeDelta, USD_DECIMALS, 2, true);
+
+  return `${orderTypeText} ${indexTokenSymbol} ${longShortText} by $${sizeDeltaText}`;
+}
+
 export default function OrdersList(props) {
   const {
     account,
@@ -229,11 +237,21 @@ export default function OrdersList(props) {
 
       const error = getOrderError(account, order, positionsMap);
       const orderId = `${order.type}-${order.index}`;
+      const orderTitle = getOrderTitle(order, indexTokenSymbol);
+
       const orderText = (
         <>
-          {order.type === INCREASE ? t`Increase` : t`Decrease`} {indexTokenSymbol} {order.isLong ? t`Long` : t`Short`}
-          &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
-          {error && <div className="Exchange-list-item-error">{error}</div>}
+          {error ? (
+            <Tooltip
+              className="order-error"
+              handle={orderTitle}
+              position="right-bottom"
+              handleClassName="plain"
+              renderContent={() => <span className="negative">{error}</span>}
+            />
+          ) : (
+            orderTitle
+          )}
         </>
       );
 
@@ -397,13 +415,22 @@ export default function OrdersList(props) {
       const collateralUSD = getUsd(order.purchaseTokenAmount, order.purchaseToken, true, infoTokens);
 
       const error = getOrderError(account, order, positionsMap);
+      const orderTitle = getOrderTitle(order, indexTokenSymbol);
 
       return (
         <div key={`${order.isLong}-${order.type}-${order.index}`} className="App-card">
           <div className="App-card-title-small">
-            {order.type === INCREASE ? t`Increase` : t`Decrease`} {indexTokenSymbol} {order.isLong ? t`Long` : t`Short`}
-            &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
-            {error && <div className="Exchange-list-item-error">{error}</div>}
+            {error ? (
+              <Tooltip
+                className="order-error"
+                handle={orderTitle}
+                position="left-bottom"
+                handleClassName="plain"
+                renderContent={() => <span className="negative">{error}</span>}
+              />
+            ) : (
+              orderTitle
+            )}
           </div>
           <div className="App-card-divider"></div>
           <div className="App-card-content">
