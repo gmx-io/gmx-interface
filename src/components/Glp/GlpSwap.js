@@ -1174,6 +1174,7 @@ export default function GlpSwap(props) {
                               ? "$0.00"
                               : `$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`
                           }
+                          className="nowrap"
                           position="right-bottom"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
@@ -1188,6 +1189,7 @@ export default function GlpSwap(props) {
                               ? "$0.00"
                               : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
                           }
+                          className="nowrap"
                           position="right-bottom"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}

@@ -275,6 +275,10 @@ export function getRpcUrl(chainId: number): string | undefined {
   return sample(RPC_PROVIDERS[chainId]);
 }
 
+export function getFallbackRpcUrl(chainId: number): string | undefined {
+  return sample(FALLBACK_PROVIDERS[chainId]);
+}
+
 export function getAlchemyHttpUrl() {
   if (ALCHEMY_WHITELISTED_DOMAINS.includes(window.location.host)) {
     return "https://arb-mainnet.g.alchemy.com/v2/ha7CFsr1bx5ZItuR6VZBbhKozcKDY4LZ";
