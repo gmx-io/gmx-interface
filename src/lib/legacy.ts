@@ -55,7 +55,7 @@ export const LIQUIDATION_FEE = expandDecimals(5, USD_DECIMALS);
 
 export const TRADES_PAGE_SIZE = 100;
 
-export const GLP_COOLDOWN_DURATION = 15 * 60;
+export const GLP_COOLDOWN_DURATION = 0;
 export const THRESHOLD_REDEMPTION_VALUE = expandDecimals(993, 27); // 0.993
 export const FUNDING_RATE_PRECISION = 1000000;
 

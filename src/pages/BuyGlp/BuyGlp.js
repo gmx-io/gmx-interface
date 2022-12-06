@@ -41,8 +41,6 @@ export default function BuyGlp(props) {
             </Trans>
             <br />
             <Trans>
-              Note that there is a minimum holding time of 15 minutes after a purchase.
-              <br />
               View <Link to="/earn">staking</Link> page.
             </Trans>
           </div>
