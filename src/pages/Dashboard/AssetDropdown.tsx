@@ -5,6 +5,7 @@ import coingeckoIcon from "img/ic_coingecko_16.svg";
 import arbitrumIcon from "img/ic_arbitrum_16.svg";
 import avalancheIcon from "img/ic_avalanche_16.svg";
 import metamaskIcon from "img/ic_metamask_16.svg";
+import nansenPortfolioIcon from "img/nansen_portfolio.svg";
 import { useWeb3React } from "@web3-react/core";
 
 import { t, Trans } from "@lingui/macro";
@@ -12,7 +13,6 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ICONLINKS, PLATFORM_TOKENS } from "config/tokens";
 import { addTokenToMetamask } from "lib/wallets";
 import { useChainId } from "lib/chains";
-import { ARBITRUM } from "config/chains";
 import { Token } from "domain/tokens";
 
 type Props = {
@@ -40,7 +40,7 @@ function AssetDropdown({ assetSymbol, assetInfo }: Props) {
           <>
             {reserves && assetSymbol === "GLP" && (
               <ExternalLink href={reserves} className="asset-item">
-                <img src={chainId === ARBITRUM ? arbitrumIcon : avalancheIcon} alt="Proof of Reserves" />
+                <img className="asset-item-icon" src={nansenPortfolioIcon} alt="Proof of Reserves" />
                 <p>
                   <Trans>Proof of Reserves</Trans>
                 </p>

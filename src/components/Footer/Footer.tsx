@@ -1,39 +1,15 @@
 import React from "react";
 import cx from "classnames";
-import { t } from "@lingui/macro";
 import "./Footer.css";
 import logoImg from "img/ic_gmx_footer.svg";
-import twitterIcon from "img/ic_twitter.svg";
-import discordIcon from "img/ic_discord.svg";
-import telegramIcon from "img/ic_telegram.svg";
-import githubIcon from "img/ic_github.svg";
-import mediumIcon from "img/ic_medium.svg";
 import { NavLink } from "react-router-dom";
 import { isHomeSite, getAppBaseUrl, shouldShowRedirectModal } from "lib/legacy";
+import { FOOTER_LINKS, SOCIAL_LINKS } from "./constants";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-const footerLinks = {
-  home: [
-    { text: t`Terms and Conditions`, link: "/terms-and-conditions" },
-    { text: t`Referral Terms`, link: "/referral-terms" },
-    { text: t`Media Kit`, link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
-    // { text: "Jobs", link: "/jobs", isAppLink: true },
-  ],
-  app: [
-    { text: t`Media Kit`, link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
-    // { text: "Jobs", link: "/jobs" },
-  ],
-};
+type Props = { showRedirectModal?: (to: string) => void; redirectPopupTimestamp?: () => void };
 
-const socialLinks = [
-  { link: "https://twitter.com/GMX_IO", name: "Twitter", icon: twitterIcon },
-  { link: "https://medium.com/@gmx.io", name: "Medium", icon: mediumIcon },
-  { link: "https://github.com/gmx-io", name: "Github", icon: githubIcon },
-  { link: "https://t.me/GMX_IO", name: "Telegram", icon: telegramIcon },
-  { link: "https://discord.gg/cxjZYR4gQK", name: "Discord", icon: discordIcon },
-];
-
-export default function Footer({ showRedirectModal, redirectPopupTimestamp }) {
+export default function Footer({ showRedirectModal, redirectPopupTimestamp }: Props) {
   const isHome = isHomeSite();
 
   return (
@@ -43,7 +19,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }) {
           <img src={logoImg} alt="MetaMask" />
         </div>
         <div className="Footer-social-link-block">
-          {socialLinks.map((platform) => {
+          {SOCIAL_LINKS.map((platform) => {
             return (
               <ExternalLink key={platform.name} className="App-social-link" href={platform.link}>
                 <img src={platform.icon} alt={platform.name} />
@@ -52,7 +28,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }) {
           })}
         </div>
         <div className="Footer-links">
-          {footerLinks[isHome ? "home" : "app"].map(({ external, text, link, isAppLink }) => {
+          {FOOTER_LINKS[isHome ? "home" : "app"].map(({ external, text, link, isAppLink }) => {
             if (external) {
               return (
                 <ExternalLink key={text} href={link} className="Footer-link">
@@ -63,7 +39,11 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }) {
             if (isAppLink) {
               if (shouldShowRedirectModal(redirectPopupTimestamp)) {
                 return (
-                  <div key={text} className="Footer-link a" onClick={() => showRedirectModal(link)}>
+                  <div
+                    key={text}
+                    className="Footer-link a"
+                    onClick={() => showRedirectModal && showRedirectModal(link)}
+                  >
                     {text}
                   </div>
                 );

@@ -24,6 +24,14 @@ import { TRIGGER_PREFIX_ABOVE, TRIGGER_PREFIX_BELOW } from "config/ui";
 import { getTokenInfo, getUsd } from "domain/tokens/utils";
 import { formatAmount } from "lib/numbers";
 
+function getOrderTitle(order, indexTokenSymbol) {
+  const orderTypeText = order.type === INCREASE ? t`Increase` : t`Decrease`;
+  const longShortText = order.isLong ? t`Long` : t`Short`;
+  const sizeDeltaText = formatAmount(order.sizeDelta, USD_DECIMALS, 2, true);
+
+  return `${orderTypeText} ${indexTokenSymbol} ${longShortText} by $${sizeDeltaText}`;
+}
+
 export default function OrdersList(props) {
   const {
     account,
@@ -62,7 +70,7 @@ export default function OrdersList(props) {
     const isAllOrdersSelected = cancelOrderIdList?.length > 0 && cancelOrderIdList?.length === orders.length;
     return (
       <tr className="Exchange-list-header">
-        {orders.length > 0 && (
+        {!hideActions && orders.length > 0 && (
           <th>
             <div className="checkbox-inline ">
               <Checkbox
@@ -102,7 +110,7 @@ export default function OrdersList(props) {
         </th>
       </tr>
     );
-  }, [cancelOrderIdList, orders, setCancelOrderIdList]);
+  }, [cancelOrderIdList, orders, setCancelOrderIdList, hideActions]);
 
   const renderEmptyRow = useCallback(() => {
     if (orders && orders.length) {
@@ -158,22 +166,24 @@ export default function OrdersList(props) {
 
         return (
           <tr className="Exchange-list-item" key={orderId}>
-            <td>
-              <div className="checkbox-inline ">
-                <Checkbox
-                  isChecked={cancelOrderIdList?.includes(orderId)}
-                  setIsChecked={() => {
-                    setCancelOrderIdList((prevState) => {
-                      if (prevState.includes(orderId)) {
-                        return prevState.filter((i) => i !== orderId);
-                      } else {
-                        return prevState.concat(orderId);
-                      }
-                    });
-                  }}
-                />
-              </div>
-            </td>
+            {!hideActions && (
+              <td>
+                <div className="checkbox-inline ">
+                  <Checkbox
+                    isChecked={cancelOrderIdList?.includes(orderId)}
+                    setIsChecked={() => {
+                      setCancelOrderIdList((prevState) => {
+                        if (prevState.includes(orderId)) {
+                          return prevState.filter((i) => i !== orderId);
+                        } else {
+                          return prevState.concat(orderId);
+                        }
+                      });
+                    }}
+                  />
+                </div>
+              </td>
+            )}
             <td className="Exchange-list-item-type">
               <Trans>Limit</Trans>
             </td>
@@ -195,19 +205,23 @@ export default function OrdersList(props) {
               {toTokenInfo.symbol}
             </td>
             <td>
-              <Tooltip
-                handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}
-                renderContent={() => t`
+              {!hideActions ? (
+                <Tooltip
+                  handle={getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)}
+                  renderContent={() => t`
                   You will receive at least ${formatAmount(
                     order.minOut,
                     toTokenInfo.decimals,
                     toTokenInfo.isStable || toTokenInfo.isUsdg ? 2 : 4,
                     true
                   )} ${
-                  toTokenInfo.symbol
-                } if this order is executed. The execution price may vary depending on swap fees at the time the order is executed.
+                    toTokenInfo.symbol
+                  } if this order is executed. The execution price may vary depending on swap fees at the time the order is executed.
                 `}
-              />
+                />
+              ) : (
+                getExchangeRateDisplay(order.triggerRatio, fromTokenInfo, toTokenInfo)
+              )}
             </td>
             <td>{getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo, true)}</td>
             {!hideActions && renderActions(order)}
@@ -229,32 +243,44 @@ export default function OrdersList(props) {
 
       const error = getOrderError(account, order, positionsMap);
       const orderId = `${order.type}-${order.index}`;
+      const orderTitle = getOrderTitle(order, indexTokenSymbol);
+
       const orderText = (
         <>
-          {order.type === INCREASE ? t`Increase` : t`Decrease`} {indexTokenSymbol} {order.isLong ? t`Long` : t`Short`}
-          &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
-          {error && <div className="Exchange-list-item-error">{error}</div>}
+          {error ? (
+            <Tooltip
+              className="order-error"
+              handle={orderTitle}
+              position="right-bottom"
+              handleClassName="plain"
+              renderContent={() => <span className="negative">{error}</span>}
+            />
+          ) : (
+            orderTitle
+          )}
         </>
       );
 
       return (
         <tr className="Exchange-list-item" key={`${order.isLong}-${order.type}-${order.index}`}>
-          <td className="Exchange-list-item-type">
-            <div>
-              <Checkbox
-                isChecked={cancelOrderIdList?.includes(orderId)}
-                setIsChecked={() => {
-                  setCancelOrderIdList((prevState) => {
-                    if (prevState.includes(orderId)) {
-                      return prevState.filter((i) => i !== orderId);
-                    } else {
-                      return prevState.concat(orderId);
-                    }
-                  });
-                }}
-              />
-            </div>
-          </td>
+          {!hideActions && (
+            <td className="Exchange-list-item-type">
+              <div>
+                <Checkbox
+                  isChecked={cancelOrderIdList?.includes(orderId)}
+                  setIsChecked={() => {
+                    setCancelOrderIdList((prevState) => {
+                      if (prevState.includes(orderId)) {
+                        return prevState.filter((i) => i !== orderId);
+                      } else {
+                        return prevState.concat(orderId);
+                      }
+                    });
+                  }}
+                />
+              </div>
+            </td>
+          )}
           <td className="Exchange-list-item-type">{order.type === INCREASE ? t`Limit` : t`Trigger`}</td>
           <td>
             {order.type === DECREASE ? (
@@ -397,13 +423,22 @@ export default function OrdersList(props) {
       const collateralUSD = getUsd(order.purchaseTokenAmount, order.purchaseToken, true, infoTokens);
 
       const error = getOrderError(account, order, positionsMap);
+      const orderTitle = getOrderTitle(order, indexTokenSymbol);
 
       return (
         <div key={`${order.isLong}-${order.type}-${order.index}`} className="App-card">
           <div className="App-card-title-small">
-            {order.type === INCREASE ? t`Increase` : t`Decrease`} {indexTokenSymbol} {order.isLong ? t`Long` : t`Short`}
-            &nbsp;by ${formatAmount(order.sizeDelta, USD_DECIMALS, 2, true)}
-            {error && <div className="Exchange-list-item-error">{error}</div>}
+            {error ? (
+              <Tooltip
+                className="order-error"
+                handle={orderTitle}
+                position="left-bottom"
+                handleClassName="plain"
+                renderContent={() => <span className="negative">{error}</span>}
+              />
+            ) : (
+              orderTitle
+            )}
           </div>
           <div className="App-card-divider"></div>
           <div className="App-card-content">

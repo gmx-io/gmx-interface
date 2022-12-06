@@ -54,6 +54,8 @@ input {
   --dark-blue: #17182c;
   --dark-blue-bg: #16182e;
   --dark-blue-accent: #a0a3c4;
+  --primary-btn-hover: #4f60fc;
+  --primary-btn-active: #5f6ffd;
   --dark-blue-hover: #808aff14;
   --dark-blue-border: #ffffff29;
   --dark-blue-active: #818cef33;
@@ -224,7 +226,7 @@ a.plain {
 }
 
 .default-btn:hover {
-  background: #4f60fc;
+  background: var(--primary-btn-hover);
 }
 
 /* .default-btn:focus {
@@ -236,7 +238,7 @@ a.plain {
 } */
 
 .default-btn:active {
-  background: #5f6ffd;
+  background: var(--primary-btn-active);
   border: none;
   padding-left: 1.6rem;
   padding-right: 1.6rem;
@@ -244,7 +246,7 @@ a.plain {
   overflow: hidden;
 }
 
-.default-btn:active::after {
+/* .default-btn:active::after {
   opacity: 0.239;
   content: " ";
   width: 5.2rem;
@@ -256,7 +258,7 @@ a.plain {
   border-radius: 50%;
   transform: scale(0);
   animation: ripple 600ms linear;
-}
+} */
 
 .default-btn:disabled {
   background: #2d2e3f 0% 0% no-repeat padding-box;
@@ -418,4 +420,7 @@ button.btn-link:hover .logout-icon {
 }
 .default-cursor.App-cta {
   cursor: default;
+}
+.nowrap {
+  white-space: nowrap;
 }

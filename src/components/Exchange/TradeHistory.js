@@ -330,9 +330,9 @@ export default function TradeHistory(props) {
         if (isLiquidation && liquidationData) {
           return (
             <>
-              {renderLiquidationTooltip(liquidationData, t`Partial Liquidation`)} {indexToken.symbol} {longOrShortText},
-              -{formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)} USD, {indexToken.symbol}&nbsp; Price: $
-              {formatAmount(params.price, USD_DECIMALS, 2, true)} USD
+              {renderLiquidationTooltip(liquidationData, t`Partial Liquidation`)}&nbsp;
+              {indexToken.symbol} {longOrShortText}, -{formatAmount(params.sizeDelta, USD_DECIMALS, 2, true)} USD,{" "}
+              {indexToken.symbol}&nbsp; Price: ${formatAmount(params.price, USD_DECIMALS, 2, true)} USD
             </>
           );
         }
@@ -353,7 +353,7 @@ export default function TradeHistory(props) {
         if (liquidationData) {
           return (
             <Trans>
-              {renderLiquidationTooltip(liquidationData, t`Liquidated`)} {indexToken.symbol} {longOrShortText}, -
+              {renderLiquidationTooltip(liquidationData, t`Liquidated`)}&nbsp; {indexToken.symbol} {longOrShortText}, -
               {formatAmount(params.size, USD_DECIMALS, 2, true)} USD,&nbsp;
               {indexToken.symbol} Price: ${formatAmount(params.markPrice, USD_DECIMALS, 2, true)} USD
             </Trans>

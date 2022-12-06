@@ -63,6 +63,7 @@ export default function PositionEditor(props) {
     minExecutionFee,
     minExecutionFeeUSD,
     minExecutionFeeErrorMessage,
+    isContractAccount,
   } = props;
   const nativeTokenAddress = getContract(chainId, "NATIVE_TOKEN");
   const position = positionsMap && positionKey ? positionsMap[positionKey] : undefined;
@@ -382,7 +383,8 @@ export default function PositionEditor(props) {
 
     const withdrawAmount = fromAmount.add(fundingFee || bigNumberify(0));
 
-    const withdrawETH = collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress;
+    const withdrawETH =
+      !isContractAccount && (collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress);
 
     const params = [
       [tokenAddress0], // _path
