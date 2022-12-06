@@ -18,7 +18,7 @@ export default function BuyGMXGLP() {
             </div>
             <div className="section-title-content">
               <div className="Page-title">
-                <Trans>Buy GMX or GLP</Trans>
+                <Trans>Buy GLP</Trans>
               </div>
             </div>
           </div>
