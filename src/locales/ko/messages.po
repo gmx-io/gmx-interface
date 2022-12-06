@@ -3562,6 +3562,10 @@ msgstr "베스팅 상황"
 msgid "View"
 msgstr "보기"
 
+#: src/pages/BuyGlp/BuyGlp.js
+msgid "View <0>staking</0> page."
+msgstr ""
+
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
 msgstr "Explorer에서 보기"

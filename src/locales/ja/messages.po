@@ -3562,6 +3562,10 @@ msgstr "べスティング状況"
 msgid "View"
 msgstr "見る"
 
+#: src/pages/BuyGlp/BuyGlp.js
+msgid "View <0>staking</0> page."
+msgstr ""
+
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
 msgstr "Explorerで見る"

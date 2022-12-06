@@ -3562,6 +3562,10 @@ msgstr "Estado de Adquisición"
 msgid "View"
 msgstr "Ver"
 
+#: src/pages/BuyGlp/BuyGlp.js
+msgid "View <0>staking</0> page."
+msgstr ""
+
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
 msgstr "Ver en el Explorador"
