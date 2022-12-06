@@ -85,10 +85,6 @@ msgstr "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 
-#: src/lib/wallets/index.tsx
-#~ msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
-#~ msgstr "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
-
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
