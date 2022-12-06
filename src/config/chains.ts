@@ -61,7 +61,7 @@ const constants = {
     wrappedTokenSymbol: "TBNB",
     defaultCollateralSymbol: "BUSD",
     defaultFlagOrdersEnabled: true,
-    positionReaderPropsLength: 8,
+    positionReaderPropsLength: 9,
     v2: false,
     SWAP_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),
     INCREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0003"),

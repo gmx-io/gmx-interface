@@ -212,80 +212,80 @@ export function getPositions(
       position.hasLowCollateral =
         position.collateralAfterFee.lt(0) || position.size.div(position.collateralAfterFee.abs()).gt(50);
 
-      if (position.averagePrice && position.markPrice) {
-        const priceDelta = position.averagePrice.gt(position.markPrice)
-          ? position.averagePrice.sub(position.markPrice)
-          : position.markPrice.sub(position.averagePrice);
-        position.pendingDelta = position.size.mul(priceDelta).div(position.averagePrice);
+      // if (position.averagePrice && position.markPrice) {
+      //   const priceDelta = position.averagePrice.gt(position.markPrice)
+      //     ? position.averagePrice.sub(position.markPrice)
+      //     : position.markPrice.sub(position.averagePrice);
+      //   position.pendingDelta = position.size.mul(priceDelta).div(position.averagePrice);
 
-        position.delta = position.pendingDelta;
+      //   position.delta = position.pendingDelta;
 
-        if (position.isLong) {
-          position.hasProfit = position.markPrice.gte(position.averagePrice);
-        } else {
-          position.hasProfit = position.markPrice.lte(position.averagePrice);
-        }
-      }
+      //   if (position.isLong) {
+      //     position.hasProfit = position.markPrice.gte(position.averagePrice);
+      //   } else {
+      //     position.hasProfit = position.markPrice.lte(position.averagePrice);
+      //   }
+      // }
 
-      position.deltaPercentage = position.pendingDelta.mul(BASIS_POINTS_DIVISOR).div(position.collateral);
+      // position.deltaPercentage = position.pendingDelta.mul(BASIS_POINTS_DIVISOR).div(position.collateral);
 
-      const { deltaStr, deltaPercentageStr } = getDeltaStr({
-        delta: position.pendingDelta,
-        deltaPercentage: position.deltaPercentage,
-        hasProfit: position.hasProfit,
-      });
+      // const { deltaStr, deltaPercentageStr } = getDeltaStr({
+      //   delta: position.pendingDelta,
+      //   deltaPercentage: position.deltaPercentage,
+      //   hasProfit: position.hasProfit,
+      // });
 
-      position.deltaStr = deltaStr;
-      position.deltaPercentageStr = deltaPercentageStr;
-      position.deltaBeforeFeesStr = deltaStr;
+      // position.deltaStr = deltaStr;
+      // position.deltaPercentageStr = deltaPercentageStr;
+      // position.deltaBeforeFeesStr = deltaStr;
 
-      let hasProfitAfterFees;
-      let pendingDeltaAfterFees;
+      // let hasProfitAfterFees;
+      // let pendingDeltaAfterFees;
 
-      if (position.hasProfit) {
-        if (position.pendingDelta.gt(position.totalFees)) {
-          hasProfitAfterFees = true;
-          pendingDeltaAfterFees = position.pendingDelta.sub(position.totalFees);
-        } else {
-          hasProfitAfterFees = false;
-          pendingDeltaAfterFees = position.totalFees.sub(position.pendingDelta);
-        }
-      } else {
-        hasProfitAfterFees = false;
-        pendingDeltaAfterFees = position.pendingDelta.add(position.totalFees);
-      }
+      // if (position.hasProfit) {
+      //   if (position.pendingDelta.gt(position.totalFees)) {
+      //     hasProfitAfterFees = true;
+      //     pendingDeltaAfterFees = position.pendingDelta.sub(position.totalFees);
+      //   } else {
+      //     hasProfitAfterFees = false;
+      //     pendingDeltaAfterFees = position.totalFees.sub(position.pendingDelta);
+      //   }
+      // } else {
+      //   hasProfitAfterFees = false;
+      //   pendingDeltaAfterFees = position.pendingDelta.add(position.totalFees);
+      // }
 
-      position.hasProfitAfterFees = hasProfitAfterFees;
-      position.pendingDeltaAfterFees = pendingDeltaAfterFees;
-      position.deltaPercentageAfterFees = position.pendingDeltaAfterFees
-        .mul(BASIS_POINTS_DIVISOR)
-        .div(position.collateral);
+      // position.hasProfitAfterFees = hasProfitAfterFees;
+      // position.pendingDeltaAfterFees = pendingDeltaAfterFees;
+      // position.deltaPercentageAfterFees = position.pendingDeltaAfterFees
+      //   .mul(BASIS_POINTS_DIVISOR)
+      //   .div(position.collateral);
 
-      const { deltaStr: deltaAfterFeesStr, deltaPercentageStr: deltaAfterFeesPercentageStr } = getDeltaStr({
-        delta: position.pendingDeltaAfterFees,
-        deltaPercentage: position.deltaPercentageAfterFees,
-        hasProfit: hasProfitAfterFees,
-      });
+      // const { deltaStr: deltaAfterFeesStr, deltaPercentageStr: deltaAfterFeesPercentageStr } = getDeltaStr({
+      //   delta: position.pendingDeltaAfterFees,
+      //   deltaPercentage: position.deltaPercentageAfterFees,
+      //   hasProfit: hasProfitAfterFees,
+      // });
 
-      position.deltaAfterFeesStr = deltaAfterFeesStr;
-      position.deltaAfterFeesPercentageStr = deltaAfterFeesPercentageStr;
+      // position.deltaAfterFeesStr = deltaAfterFeesStr;
+      // position.deltaAfterFeesPercentageStr = deltaAfterFeesPercentageStr;
 
-      if (showPnlAfterFees) {
-        position.deltaStr = position.deltaAfterFeesStr;
-        position.deltaPercentageStr = position.deltaAfterFeesPercentageStr;
-      }
+      // if (showPnlAfterFees) {
+      //   position.deltaStr = position.deltaAfterFeesStr;
+      //   position.deltaPercentageStr = position.deltaAfterFeesPercentageStr;
+      // }
 
-      let netValue = position.hasProfit
-        ? position.collateral.add(position.pendingDelta)
-        : position.collateral.sub(position.pendingDelta);
+      // let netValue = position.hasProfit
+      //   ? position.collateral.add(position.pendingDelta)
+      //   : position.collateral.sub(position.pendingDelta);
 
-      netValue = netValue.sub(position.fundingFee);
+      // netValue = netValue.sub(position.fundingFee);
 
-      if (showPnlAfterFees) {
-        netValue = netValue.sub(position.closingFee);
-      }
+      // if (showPnlAfterFees) {
+      //   netValue = netValue.sub(position.closingFee);
+      // }
 
-      position.netValue = netValue;
+      // position.netValue = netValue;
     }
 
     position.leverage = getLeverage({

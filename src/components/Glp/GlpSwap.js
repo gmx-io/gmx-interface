@@ -221,20 +221,39 @@ export default function GlpSwap(props) {
   const redemptionTime = lastPurchaseTime ? lastPurchaseTime.add(GLP_COOLDOWN_DURATION) : undefined;
   const inCooldownWindow = redemptionTime && parseInt(Date.now() / 1000) < redemptionTime;
 
-  const glpSupply = balancesAndSupplies ? balancesAndSupplies[1] : bigNumberify(0);
+  let glpSupply = balancesAndSupplies ? balancesAndSupplies[1] : bigNumberify(0);
   const usdgSupply = balancesAndSupplies ? balancesAndSupplies[3] : bigNumberify(0);
+  const gmxAddress = getContract(chainId, "GMX");
+  const glpAddress = getContract(chainId, "GLP");
+
+  const tokensForSupplyQuery = [gmxAddress, glpAddress, usdgAddress];
+  const { data: totalSupplies } = useSWR(
+    [`Dashboard:totalSupplies:${active}`, chainId, readerAddress, "getTokenBalancesWithSupplies", AddressZero],
+    {
+      fetcher: contractFetcher(library, ReaderV2, [tokensForSupplyQuery]),
+    }
+  );
+
   let aum;
   if (aums && aums.length > 0) {
-    aum = isBuying ? aums[0] : aums[1];
+    aum = aums[0].add(aums[1]).div(2);
   }
-  const glpPrice =
-    aum && aum.gt(0) && glpSupply.gt(0)
-      ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(glpSupply)
-      : expandDecimals(1, USD_DECIMALS);
+
+  let glpPrice = 1;
+  let _glpSupply;
+
+  if (aum && totalSupplies && totalSupplies[3]) {
+    _glpSupply = totalSupplies[3];
+    glpPrice =
+      aum && aum.gt(0) && _glpSupply.gt(0)
+        ? aum.mul(expandDecimals(1, GLP_DECIMALS)).div(_glpSupply)
+        : expandDecimals(1, USD_DECIMALS);
+  }
   let glpBalanceUsd;
   if (glpBalance) {
     glpBalanceUsd = glpBalance.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS));
   }
+
   const glpSupplyUsd = glpSupply.mul(glpPrice).div(expandDecimals(1, GLP_DECIMALS));
 
   let reserveAmountUsd;
@@ -563,7 +582,7 @@ export default function GlpSwap(props) {
   const buyGlp = () => {
     setIsSubmitting(true);
 
-    const minGlp = glpAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR * 2);
+    const minGlp = glpAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR * 1.5);
 
     const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
     const method = swapTokenAddress === AddressZero ? "mintAndStakeGlpETH" : "mintAndStakeGlp";
