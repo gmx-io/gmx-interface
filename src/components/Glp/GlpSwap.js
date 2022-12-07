@@ -610,7 +610,7 @@ export default function GlpSwap(props) {
   const sellGlp = () => {
     setIsSubmitting(true);
 
-    const minOut = swapAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR);
+    const minOut = swapAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR * 1.5);
 
     const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
     const method = swapTokenAddress === AddressZero ? "unstakeAndRedeemGlpETH" : "unstakeAndRedeemGlp";
@@ -758,7 +758,7 @@ export default function GlpSwap(props) {
               <div className="label">
                 <Trans>Price</Trans>
               </div>
-              <div className="value">${formatAmount(glpPrice, USD_DECIMALS, 3, true)}</div>
+              <div className="value">${formatAmount(glpPrice, USD_DECIMALS, 10, true)}</div>
             </div>
             <div className="App-card-row">
               <div className="label">
