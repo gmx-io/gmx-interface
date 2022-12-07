@@ -42,20 +42,20 @@ msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}
 msgstr "<0/>수익 가격: {0} ${1}. 해당 규칙은 다음의 {2}동안, {3}까지 적용됩니다."
 
 #: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0> to start using GMX"
-msgstr "GMX 이용을 위해 <0>Coinbase Wallet을 설치하세요</0>"
+msgid "<0>Install Coinbase Wallet</0> to start using GMX."
+msgstr ""
 
 #: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser"
-msgstr "내장 브라우저에서 GMX 이용을 위해 <0>Coinbase Wallet을 설치하세요</0>"
+msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser."
+msgstr ""
 
 #: src/App/App.js
-msgid "<0>Install MetaMask</0> to start using GMX"
-msgstr "GMX 이용을 위해 <0>MetaMask를 설치하세요</0>"
+msgid "<0>Install MetaMask</0> to start using GMX."
+msgstr ""
 
 #: src/App/App.js
-msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser"
-msgstr "내장 브라우저에서 GMX 이용을 위해 <0>MetaMask를 설치하세요</0>"
+msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser."
+msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
 msgid "<0>Insufficient liquidity to execute the order</0><1>The mark price which is an aggregate of exchange prices did not reach the specified price</1><2>The specified price was reached but not long enough for it to be executed</2><3>No keeper picked up the order for execution</3>"
@@ -76,6 +76,10 @@ msgstr "<0>풀의 최대허용량이 {0}에 도달했습니다. 다른 토큰을
 #: src/pages/Stake/StakeV2.js
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>모든 토큰이 인출되고 취소되며 베스팅이 중지됩니다.<1/><2/>GMX로 변환된 esGMX 토큰은 GMX 토큰으로 유지됩니다.<3/><4/>인출하지 않고 GMX 토큰을 수령하기 위해서는 총 보상 섹션 아래의 \"수령하기\" 버튼을 사용해주세요."
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the GLP pool.</1>"
+msgstr ""
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/wallets/index.tsx
@@ -230,6 +234,10 @@ msgstr "고품질의 여러 가격 피드를 통해 청산 발생 시기를 결�
 msgid "Announcement"
 msgstr "공지"
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "App"
+msgstr ""
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval failed"
 msgstr "승인 실패"
@@ -298,8 +306,8 @@ msgid "Assets Under Management"
 msgstr "총 운용자산"
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})"
-msgstr "자산운용규모: 스테이킹된 GMX + GLP 풀 ({chainName})"
+msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Available"
@@ -961,7 +969,6 @@ msgstr "탈중앙화<0/>퍼페추얼 거래소"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -1522,7 +1529,6 @@ msgstr "잘못된 네트워크입니다"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 #: src/components/Exchange/TradeHistory.js
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -1768,7 +1774,6 @@ msgstr "로딩중..."
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -2058,13 +2063,13 @@ msgstr "순이익"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral - Borrow Fee + PnL"
-msgstr "순이익: 최초 담보 - 차용 수수료 + PnL"
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
+msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral - Fees + PnL"
-msgstr "순이익: 최초 담보 - 수수료 + PnL"
+msgid "Net Value: Initial Collateral + PnL - Fees"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
@@ -2757,7 +2762,6 @@ msgstr "포지션 공유"
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
@@ -3280,10 +3284,6 @@ msgstr "전체 액티브: {openTotal}, 실행 완료: {executedTotal}, 취소 �
 #: src/pages/Dashboard/DashboardV1.js
 msgid "Total fees earned since {0}: {1} USD<0/>Fee assets: {feeText}"
 msgstr "{0}이후로 얻은 총 수수료: {1} USD<0/>수수료 자산: {feeText}"
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Total value of tokens in GLP pool ({chainName})"
-msgstr "GLP 풀 ({chainName})의 토큰 총액"
 
 #: src/components/StatsTooltip/StatsTooltip.tsx
 msgid "Total:"
@@ -3975,10 +3975,6 @@ msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for ve
 msgstr "베스팅을 위해 예치된 {1} esGMX에서 {0} 토큰이 GMX로 변환되었습니다."
 
 #: src/components/Exchange/TradeHistory.js
-msgid "{0} {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
-msgstr "{0} {1} {longOrShortText}, -{2} USD, {3} 가격: ${4} USD"
-
-#: src/components/Exchange/TradeHistory.js
 msgid ""
 "{0}:\n"
 "{1},\n"
@@ -3993,6 +3989,10 @@ msgid ""
 "{0}: Swap {amountInDisplay}\n"
 "{1} for {minOutDisplay} {2},\n"
 "Price: {3}"
+msgstr ""
+
+#: src/components/Exchange/TradeHistory.js
+msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
