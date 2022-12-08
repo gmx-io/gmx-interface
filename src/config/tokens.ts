@@ -434,7 +434,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
   ],
-  [AVALANCHE_FUJI_TESTNET]: [
+  [AVALANCHE_FUJI]: [
     {
       name: "GMX",
       symbol: "GMX",

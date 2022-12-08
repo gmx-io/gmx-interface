@@ -203,11 +203,7 @@ export default function PositionEditor(props) {
     }
 
     if (!isDeposit && fromAmount) {
-      if (fromAmount.gte(position.collateral)) {
-        return t`Min residual collateral: 10 USD`;
-      }
-
-      if (position.collateral.sub(fromAmount).lt(MIN_ORDER_USD)) {
+      if (position.collateralAfterFee.sub(fromAmount).lt(MIN_ORDER_USD)) {
         return t`Min residual collateral: 10 USD`;
       }
     }
@@ -381,10 +377,10 @@ export default function PositionEditor(props) {
     const priceBasisPoints = position.isLong ? 9000 : 11000;
     const priceLimit = position.indexToken.maxPrice.mul(priceBasisPoints).div(10000);
 
+    const withdrawAmount = fromAmount.add(fundingFee || bigNumberify(0));
+
     const withdrawETH =
       !isContractAccount && (collateralTokenAddress === AddressZero || collateralTokenAddress === nativeTokenAddress);
-
-    const withdrawAmount = fromAmount.add(fundingFee || bigNumberify(0));
 
     const params = [
       [tokenAddress0], // _path

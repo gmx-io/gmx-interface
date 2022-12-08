@@ -1,11 +1,11 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI_TESTNET } from "./chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI } from "./chains";
 
 const ORACLE_KEEPER_URLS = {
   [ARBITRUM]: "https://oracle-keeper-testing-arbitrum-8raup.ondigitalocean.app",
 
   [AVALANCHE]: "https://oracle-keeper-testing-arbitrum-8raup.ondigitalocean.app",
 
-  [AVALANCHE_FUJI_TESTNET]: "https://oracle-keeper-testing-arbitrum-8raup.ondigitalocean.app",
+  [AVALANCHE_FUJI]: "https://oracle-keeper-testing-arbitrum-8raup.ondigitalocean.app",
 
   default: "https://oracle-keeper-testing-arbitrum-8raup.ondigitalocean.app",
 };

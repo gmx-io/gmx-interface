@@ -1,8 +1,8 @@
 import { MarketConfig } from "domain/synthetics/markets/types";
-import { AVALANCHE_FUJI_TESTNET, SUPPORTED_CHAIN_IDS } from "./chains";
+import { AVALANCHE_FUJI, SUPPORTED_CHAIN_IDS } from "./chains";
 
 const MARKETS: { [chainId: number]: MarketConfig[] } = {
-  [AVALANCHE_FUJI_TESTNET]: [
+  [AVALANCHE_FUJI]: [
     {
       marketTokenAddress: "0xFaD1967a5216271b8c60F399D6dF391be99E53f4",
       perp: "USD",

@@ -2072,7 +2072,6 @@ msgid "Min required collateral"
 msgstr "Min required collateral"
 
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
 msgid "Min residual collateral: 10 USD"
 msgstr "Min residual collateral: 10 USD"
 
