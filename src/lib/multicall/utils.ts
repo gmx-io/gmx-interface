@@ -65,25 +65,33 @@ function getMulticallLib(provider: ethers.providers.JsonRpcProvider) {
 }
 
 export function formatMulticallRequest(requestConfig: MulticallRequestConfig<any>): ContractCallContext[] {
-  const result: ContractCallContext[] = Object.keys(requestConfig).map((contractField) => {
-    const request = requestConfig[contractField];
+  const result = Object.keys(requestConfig).reduce((contracts, contractField) => {
+    const contractConfig = requestConfig[contractField];
 
-    const calls: CallContext[] = Object.keys(request.calls).map((callField) => {
-      const callConfig = request.calls[callField];
+    // ignore empty contract configs
+    if (!contractConfig || Object.keys(contractConfig.calls).length === 0) return contracts;
 
-      return {
-        reference: callField,
-        methodName: callConfig.methodName,
-        methodParameters: callConfig.params,
-      };
+    contracts.push({
+      reference: contractField,
+      ...contractConfig,
+      calls: Object.keys(contractConfig.calls).reduce((calls, callField) => {
+        const callConfig = contractConfig.calls[callField];
+
+        // ignore empty calls
+        if (!callConfig) return calls;
+
+        calls.push({
+          reference: callField,
+          methodName: callConfig.methodName,
+          methodParameters: callConfig.params,
+        });
+
+        return calls;
+      }, [] as CallContext[]),
     });
 
-    return {
-      reference: contractField,
-      ...request,
-      calls,
-    };
-  });
+    return contracts;
+  }, [] as ContractCallContext[]);
 
   return result;
 }

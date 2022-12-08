@@ -10,11 +10,11 @@ export type ContractCallConfig = {
   params: any[];
 };
 
-export type ContractCallsConfig<T extends { calls: ContractCallConfig }> = {
+export type ContractCallsConfig<T extends { calls: any }> = {
   contractAddress: string;
   abi: any;
   calls: {
-    [callKey in keyof T["calls"]]: ContractCallConfig;
+    [callKey in keyof T["calls"]]: ContractCallConfig | SkipKey;
   };
 };
 

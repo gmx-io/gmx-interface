@@ -1,7 +1,8 @@
+import { getToken, getWrappedToken } from "config/tokens";
 import { InfoTokens } from "domain/tokens";
 import { BigNumber, ethers } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
-import { expandDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import { expandDecimals, formatAmount, formatAmountFree } from "lib/numbers";
 import {
   TokenAllowanceData,
   TokenBalancesData,
@@ -158,5 +159,20 @@ export function formatTokenAmountWithUsd(
   return `${formatTokenAmount(tokenAmount, tokenDecimals)} ${tokenSymbol} (${formatUsdAmount(usdAmount)})`;
 }
 
-// TODO
-export const MOCK_GM_PRICE = parseValue("100", USD_DECIMALS)!;
+export function tryWrapToken(chainId: number, address: string) {
+  if (address === ethers.constants.AddressZero) {
+    const token = getWrappedToken(chainId);
+
+    return token.address;
+  }
+
+  return address;
+}
+
+export function tryUnwrapToken(chainId: number, address: string) {
+  const token = getToken(chainId, address);
+
+  if (token.isWrapped) return ethers.constants.AddressZero;
+
+  return address;
+}

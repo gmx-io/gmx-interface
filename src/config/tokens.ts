@@ -329,16 +329,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
   ],
   [AVALANCHE_FUJI]: [
     {
-      name: "Solana",
-      symbol: "SOL",
-      decimals: 18,
-      address: "0x36e6dc3cf44fdb8c62c5a11b457a28041f4c6eef",
-      isNative: true,
-      isShortable: true,
-      isSynthetic: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
-    },
-    {
       name: "Avalanche",
       symbol: "AVAX",
       decimals: 18,
@@ -461,6 +451,21 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
       address: "todo",
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+    },
+  ],
+};
+
+export const SYNTHETIC_TOKENS = {
+  [AVALANCHE_FUJI]: [
+    {
+      name: "Solana",
+      symbol: "SOL",
+      decimals: 18,
+      address: "0x36e6dc3cf44fdb8c62c5a11b457a28041f4c6eef",
+      isNative: true,
+      isShortable: true,
+      isSynthetic: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
     },
   ],
 };
