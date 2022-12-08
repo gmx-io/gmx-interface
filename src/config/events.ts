@@ -264,16 +264,31 @@ export const appEventsData: EventData[] = [
   //     },
   //   ],
   // },
+  // {
+  //   id: "position-router-updates",
+  //   title: "Position Router Updates",
+  //   isActive: true,
+  //   validTill: "19 Oct 2022, 20:00",
+  //   bodyText: "Position routers have been updated, existing users may have to re-enable leverage.",
+  //   buttons: [
+  //     {
+  //       text: "Read More",
+  //       link: "https://medium.com/@gmx.io/gmx-deployment-updates-a6a470df445f",
+  //       newTab: true,
+  //     },
+  //   ],
+  // },
   {
-    id: "position-router-updates",
-    title: "Position Router Updates",
+    id: "glp-manager-updates",
+    title: "GLP Manager Updates",
     isActive: true,
-    validTill: "19 Oct 2022, 20:00",
-    bodyText: "Position routers have been updated, existing users may have to re-enable leverage.",
+    validTill: "18 Dec 2022, 12:00",
+    bodyText:
+      "The GLP Manager address has been updated based on the linked post, existing users will need to approve the new GLP Manager to buy GLP tokens.",
     buttons: [
       {
         text: "Read More",
-        link: "https://medium.com/@gmx.io/gmx-deployment-updates-a6a470df445f",
+        link: "https://medium.com/@gmx.io/gmx-deployment-updates-nov-2022-16572314874d",
         newTab: true,
       },
     ],

@@ -85,10 +85,6 @@ msgstr "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 
-#: src/lib/wallets/index.tsx
-#~ msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
-#~ msgstr "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
-
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
@@ -2202,8 +2198,8 @@ msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur
 msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 
 #: src/pages/BuyGlp/BuyGlp.js
-msgid "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
-msgstr "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
+#~ msgid "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
+#~ msgstr "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -3700,6 +3696,10 @@ msgstr "Vesting Status"
 #: src/pages/Exchange/Exchange.js
 msgid "View"
 msgstr "View"
+
+#: src/pages/BuyGlp/BuyGlp.js
+msgid "View <0>staking</0> page."
+msgstr "View <0>staking</0> page."
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
