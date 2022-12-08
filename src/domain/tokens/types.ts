@@ -14,6 +14,7 @@ export type Token = {
   isWrapped?: boolean;
   isShortable?: boolean;
   isStable?: boolean;
+  isSynthetic?: boolean;
   isTempHidden?: boolean;
 };
 

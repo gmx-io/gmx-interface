@@ -12,7 +12,7 @@ const MARKETS: { [chainId: number]: MarketConfig[] } = {
       perp: "USD",
     },
     {
-      marketTokenAddress: "0x193Eb518225bc2823C06286AC4A14fb298789C1f",
+      marketTokenAddress: "0x030BbB36a91d530efFB46e15093d956b7c5D205e",
       perp: "USD",
     },
   ],

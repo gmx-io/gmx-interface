@@ -19,7 +19,7 @@ export function getMarketName(chainId: number, data: MarketsData & TokenConfigsD
   const market = getMarket(data, marketAddress);
   const marketConfig = getMarketConfig(chainId, marketAddress);
 
-  if (!market || !marketConfig) return undefined;
+  if (!market) return undefined;
 
   const indexToken = getTokenConfig(data, market.indexTokenAddress);
   const longToken = getTokenConfig(data, market.longTokenAddress);
@@ -27,7 +27,7 @@ export function getMarketName(chainId: number, data: MarketsData & TokenConfigsD
 
   if (!indexToken || !longToken || !shortToken) return undefined;
 
-  return `GM: ${indexToken.symbol}/${marketConfig.perp} : [${longToken.symbol}/${shortToken.symbol}]`;
+  return `GM: ${indexToken.symbol}/${marketConfig?.perp || "USD"} : [${longToken.symbol}/${shortToken.symbol}]`;
 }
 
 export function getMarketPoolAmount(data: MarketPoolsData, marketAddress?: string, tokenAddress?: string) {

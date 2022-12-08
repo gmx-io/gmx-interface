@@ -329,12 +329,13 @@ export const TOKENS: { [chainId: number]: Token[] } = {
   ],
   [AVALANCHE_FUJI_TESTNET]: [
     {
-      name: "Avalanche",
+      name: "Solana",
       symbol: "SOL",
       decimals: 18,
-      address: "0x36E6dc3CF44FDb8C62c5a11B457A28041f4C6eEF",
+      address: "0x36e6dc3cf44fdb8c62c5a11b457a28041f4c6eef",
       isNative: true,
       isShortable: true,
+      isSynthetic: true,
       imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
     },
     {
@@ -358,7 +359,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "Ethereum (WETH.e)",
       symbol: "ETH",
-      address: "0x8226EC2c1926c9162b6F815153d10018A7ccdf07",
+      address: "0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
       decimals: 18,
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
@@ -366,7 +367,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "USD Coin",
       symbol: "USDC",
-      address: "0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+      address: "0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
       decimals: 6,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
@@ -720,7 +721,7 @@ export function getTokenBySymbol(chainId: number, symbol: string) {
 }
 
 export function getWhitelistedTokens(chainId: number) {
-  return TOKENS[chainId].filter((token) => token.symbol !== "USDG");
+  return TOKENS[chainId].filter((token) => token.symbol !== "USDG" && !token.isSynthetic);
 }
 
 export function getVisibleTokens(chainId: number) {

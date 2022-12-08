@@ -17,7 +17,6 @@ export type MarketsData = {
   markets: {
     [marketKey: string]: SyntheticsMarket;
   };
-  marketKeys: string[];
 };
 
 export type MarketTokenPricesData = {
