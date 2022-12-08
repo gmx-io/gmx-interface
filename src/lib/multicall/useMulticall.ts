@@ -1,11 +1,7 @@
 import { useWeb3React } from "@web3-react/core";
-import { useEffect } from "react";
 import useSWR from "swr";
-import { MulticallBatcher } from "./batcher";
 import { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
 import { executeMulticall, formatMulticallRequest, formatMulticallResult } from "./utils";
-
-const batcher = new MulticallBatcher(50);
 
 export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResult = MulticallResult<TConfig>>(
   chainId: number,
@@ -39,9 +35,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
       const requestContext = formatMulticallRequest(request);
 
       try {
-        const multicallResponse = params.aggregate
-          ? await batcher.registerRequest(chainId, requestContext, fullKey)
-          : await executeMulticall(chainId, library, requestContext, name);
+        const multicallResponse = await executeMulticall(chainId, library, requestContext, name);
 
         const formattedResponse = formatMulticallResult(multicallResponse.results);
 
@@ -59,10 +53,6 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
       }
     },
   });
-
-  useEffect(() => {
-    batcher.setLibrary(library);
-  }, [library]);
 
   return swrResult;
 }

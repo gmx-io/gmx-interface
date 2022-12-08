@@ -15,7 +15,6 @@ export function useMarketPools(chainId: number): MarketPoolsData {
 
   const { data: marketPools } = useMulticall(chainId, "useMarketPools", {
     key: marketKeys.length > 0 && [marketKeys.join("-")],
-    aggregate: true,
     request: () => ({
       reader: {
         contractAddress: getContract(chainId, "SyntheticsReader"),

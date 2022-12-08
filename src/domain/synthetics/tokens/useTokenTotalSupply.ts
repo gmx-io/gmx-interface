@@ -8,7 +8,6 @@ import { useMemo } from "react";
 export function useTokenTotalSupply(chainId: number, p: { tokenAddresses: string[] }): TokenTotalSupplyData {
   const { data } = useMulticall(chainId, "useTokenTotalSupply", {
     key: p.tokenAddresses.length > 0 && [p.tokenAddresses.join("-")],
-    aggregate: true,
     request: () =>
       p.tokenAddresses
         .filter((address) => !isAddressZero(address))

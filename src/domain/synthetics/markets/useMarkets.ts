@@ -47,7 +47,6 @@ export function useMarkets(chainId: number): MarketsData {
   const { data: marketsMap } = useMulticall(chainId, "useMarkets-markets", {
     key: Boolean(marketKeys?.length) && marketKeys,
     refreshInterval: 15000,
-    aggregate: true,
     request: () => ({
       marketStore: {
         contractAddress: getContract(chainId, "MarketStore"),

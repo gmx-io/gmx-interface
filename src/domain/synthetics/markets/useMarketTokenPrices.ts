@@ -58,7 +58,6 @@ export function useMarketTokenPrices(
 
   const { data: marketTokenPrices } = useMulticall(chainId, "useMarketTokenPrices", {
     key: callKeys.length > 0 ? [p.maximize, callKeys] : null,
-    aggregate: true,
     request: {
       reader: {
         contractAddress: getContract(chainId, "SyntheticsReader"),
