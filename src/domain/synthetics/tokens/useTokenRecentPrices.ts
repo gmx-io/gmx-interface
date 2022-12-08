@@ -1,11 +1,11 @@
 import { getTokenBySymbol } from "config/tokens";
-import { jsonFetcher } from "lib/http";
+import { jsonFetcher } from "lib/fetcher";
 import { expandDecimals } from "lib/numbers";
-import { getOracleKeeperEndpoint } from "lib/oracleKeeper";
 import { TokenPricesData, TokenPricesMap } from "./types";
 import useSWR from "swr";
 import { useMemo } from "react";
 import { BigNumber } from "ethers";
+import { getOracleKeeperUrl } from "config/oracleKeeper";
 
 type BackendResponse = {
   minPrice: string;
@@ -16,7 +16,7 @@ type BackendResponse = {
 }[];
 
 export function useTokenRecentPrices(chainId: number): TokenPricesData {
-  const url = getOracleKeeperEndpoint(chainId, "/prices/tickers");
+  const url = getOracleKeeperUrl(chainId, "/prices/tickers");
 
   const { data } = useSWR<BackendResponse>([url], { fetcher: jsonFetcher });
 

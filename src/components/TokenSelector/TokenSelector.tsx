@@ -15,8 +15,6 @@ import { t } from "@lingui/macro";
 import { InfoTokens, Token, TokenInfo } from "domain/tokens";
 import { BigNumber } from "ethers";
 
-// TODO: Separate TokenSelector for Synthetics / GMX tokens
-
 type TokenState = {
   disabled?: boolean;
   message?: string;

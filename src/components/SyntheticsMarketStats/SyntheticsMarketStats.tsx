@@ -9,8 +9,6 @@ import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData
 import gmIcon from "img/gm_icon.svg";
 import { useChainId } from "lib/chains";
 import { GM_DECIMALS, importImage } from "lib/legacy";
-import { bigNumberify } from "lib/numbers";
-import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { useMemo } from "react";
 import { CardRow } from "components/CardRow/CardRow";
 import { useTokenBalances } from "domain/synthetics/tokens/useTokenBalances";
@@ -56,6 +54,7 @@ export function SyntheticsMarketStats(p: Props) {
     marketBalance && marketPrice ? convertToUsdByPrice(marketBalance, GM_DECIMALS, marketPrice) : undefined;
 
   const marketTotalSupply = getTokenTotalSupply(data, market?.marketTokenAddress);
+
   const marketTotalSupplyUsd =
     marketTotalSupply && marketPrice ? convertToUsdByPrice(marketTotalSupply, GM_DECIMALS, marketPrice) : undefined;
 
@@ -73,7 +72,7 @@ export function SyntheticsMarketStats(p: Props) {
 
   return (
     <div className="App-card SyntheticsMarketStats-card">
-      <div className="App-card-title">
+      <div className="SyntheticsMarketStats-title">
         <div className="App-card-title-mark">
           <div className="App-card-title-mark-icon">
             <img src={gmIcon} alt="glp40Icon" />
@@ -84,25 +83,29 @@ export function SyntheticsMarketStats(p: Props) {
             />
           </div>
           <div className="App-card-title-mark-info">
-            <div className="App-card-title-mark-title">GM</div>
+            <div className="App-card-title-mark-title">{marketName}</div>
             <div className="App-card-title-mark-subtitle">GMX Market tokens</div>
           </div>
-          <div>
+          {/* TODO */}
+          {/* <div>
             <AssetDropdown assetSymbol="GM" />
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="App-card-divider" />
       <div className="App-card-content">
-        <CardRow label={t`Perp`} value={marketName} />
+        {/* <CardRow label={t`Market`} value={marketName} /> */}
         <CardRow label={t`Price`} value={formatUsdAmount(marketPrice)} />
         <CardRow
           label={t`Wallet`}
           value={marketBalance ? formatTokenAmountWithUsd(marketBalance, marketBalanceUsd, "GM", GM_DECIMALS) : "..."}
         />
 
-        <CardRow label={t`Market worth`} value={formatUsdAmount(bigNumberify(0))} />
-        <CardRow label={t`APR`} value={"14.00%"} />
+        {/* TODO */}
+        {/* <CardRow label={t`Market worth`} value={formatUsdAmount(bigNumberify(0))} /> */}
+
+        {/* TODO */}
+        {/* <CardRow label={t`APR`} value={"14.00%"} /> */}
 
         <CardRow
           label={t`Total Supply`}

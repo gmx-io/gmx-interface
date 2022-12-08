@@ -3,30 +3,34 @@ import { getContract } from "config/contracts";
 import { mapValues } from "lodash";
 import { useMulticall } from "lib/multicall";
 
-export type DataStoreValues<TKeys extends string> = {
+export type Method = "getUint" | "getData";
+
+export type DataStoreKeysParams<TKeys extends string> = {
+  [key in TKeys]: string;
+};
+
+export type DataStoreResult<TKeys extends string> = {
   [key in TKeys]?: any;
 };
 
-export type Method = "getUint" | "getData";
-
 export function useDataStore<TKeys extends string>(
   chainId: number,
-  p: { requestKeys: { [key in TKeys]: string }; method: Method }
-): DataStoreValues<TKeys> | undefined {
+  p: { keys: DataStoreKeysParams<TKeys>; method: Method }
+): DataStoreResult<TKeys> | undefined {
   const { data } = useMulticall(chainId, "useDataStore", {
-    key: Object.keys(p.requestKeys).length > 0 && [JSON.stringify(p.requestKeys)],
+    key: Object.keys(p.keys).length > 0 ? [JSON.stringify(p.keys)] : null,
     request: () => ({
       dataStore: {
         contractAddress: getContract(chainId, "DataStore"),
         abi: DataStore.abi,
-        calls: mapValues(p.requestKeys, (hash) => ({
+        calls: mapValues(p.keys, (hash) => ({
           methodName: p.method,
           params: [hash],
         })),
       },
     }),
     parseResponse: (res) =>
-      mapValues(res.dataStore, (keyResult) => keyResult.returnValues[0]) as DataStoreValues<TKeys>,
+      mapValues(res.dataStore, (keyResult) => keyResult.returnValues[0]) as DataStoreResult<TKeys>,
   });
 
   return data;

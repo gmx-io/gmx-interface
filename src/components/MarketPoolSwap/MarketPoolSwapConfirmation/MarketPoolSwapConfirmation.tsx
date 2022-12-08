@@ -18,7 +18,7 @@ import {
 } from "domain/synthetics/tokens/utils";
 import { BigNumber } from "ethers";
 import { GM_DECIMALS } from "lib/legacy";
-import { OperationType, operationTypesTexts } from "../constants";
+import { Operation, operationTexts } from "../constants";
 
 import { useWeb3React } from "@web3-react/core";
 import { getContract } from "config/contracts";
@@ -41,7 +41,7 @@ type Props = {
   marketTokenAddress: string;
   gmSwapAmount: BigNumber;
   tokensData: TokensData;
-  operationType: OperationType;
+  operationType: Operation;
   onSubmit: () => void;
 };
 
@@ -76,7 +76,7 @@ export function MarketPoolSwapConfirmation(p: Props) {
 
   const marketsData = useMarkets(chainId);
 
-  const isDeposit = p.operationType === OperationType.deposit;
+  const isDeposit = p.operationType === Operation.deposit;
 
   const firstTokenText = getTokenText(p.tokensData, p.firstSwapTokenAddress, p.firstSwapTokenAmount);
   const secondTokenText = getTokenText(p.tokensData, p.secondSwapTokenAddress, p.secondSwapTokenAmount);
@@ -98,7 +98,7 @@ export function MarketPoolSwapConfirmation(p: Props) {
   const submitButtonState = getSubmitButtonState();
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
-    const operationText = p.operationType === OperationType.deposit ? t`Buy` : `Sell`;
+    const operationText = p.operationType === Operation.deposit ? t`Buy` : `Sell`;
     const text = t`Confirm ${operationText} ${formatTokenAmount(p.gmSwapAmount, GM_DECIMALS)} GM`;
 
     if (needFirstApprove || needSecondApprove || needMarketTokenApprove) {
@@ -157,11 +157,11 @@ export function MarketPoolSwapConfirmation(p: Props) {
       <Modal
         isVisible={true}
         setIsVisible={p.onClose}
-        label={t`Confirm ${operationTypesTexts[p.operationType]}`}
+        label={t`Confirm ${operationTexts[p.operationType]}`}
         allowContentTouchMove
       >
         <div className={cx("Confirmation-box-main MarketPoolSwapConfirmation-main")}>
-          {p.operationType === OperationType.deposit && (
+          {p.operationType === Operation.deposit && (
             <>
               <div>
                 <Trans>Pay</Trans>&nbsp;{firstTokenText}
@@ -177,7 +177,7 @@ export function MarketPoolSwapConfirmation(p: Props) {
               </div>
             </>
           )}
-          {p.operationType === OperationType.withdraw && (
+          {p.operationType === Operation.withdraw && (
             <>
               <div>
                 <Trans>Pay</Trans>&nbsp;{gmTokenText}

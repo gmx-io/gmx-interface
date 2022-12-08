@@ -17,8 +17,9 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
   const swrFullKey = Array.isArray(params.key) ? [chainId, name, ...params.key] : null;
 
-  // SWR resets options if pass undefined explicitly
   const swrOpts: any = {};
+
+  // SWR resets global options if pass undefined explicitly
   if (params.refreshInterval) {
     swrOpts.refreshInterval = params.refreshInterval;
   }

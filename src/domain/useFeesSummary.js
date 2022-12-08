@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getServerUrl } from "config/backend";
-import { arrayURLFetcher } from "lib/http";
+import { arrayURLFetcher } from "lib/fetcher";
 const ACTIVE_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 export default function useFeesSummary() {

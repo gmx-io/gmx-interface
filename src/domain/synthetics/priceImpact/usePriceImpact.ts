@@ -13,7 +13,7 @@ export function usePriceImpactData(chainId: number, p: { marketAddresses: string
     dataStoreReq[`${address}_exponentImpactFactor`] = swapImpactExponentFactorKey(address);
   });
 
-  const dataStoreResult = useDataStore(chainId, { requestKeys: dataStoreReq, method: "getUint" });
+  const dataStoreResult = useDataStore(chainId, { keys: dataStoreReq, method: "getUint" });
 
   const result: PriceImpactConfigsData = useMemo(() => {
     if (!dataStoreResult)
