@@ -90,7 +90,6 @@ msgid "A snapshot of the USD value of your {0} collateral is taken when the posi
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-#: src/components/SyntheticsMarketStats/SyntheticsMarketStats.tsx
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1918,8 +1917,8 @@ msgid "Market Cap"
 msgstr "시가총액"
 
 #: src/components/SyntheticsMarketStats/SyntheticsMarketStats.tsx
-msgid "Market worth"
-msgstr ""
+#~ msgid "Market worth"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Max Capacity"
@@ -2379,8 +2378,8 @@ msgid "Pending approve {0}"
 msgstr ""
 
 #: src/components/SyntheticsMarketStats/SyntheticsMarketStats.tsx
-msgid "Perp"
-msgstr ""
+#~ msgid "Perp"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform and GLP index tokens."
