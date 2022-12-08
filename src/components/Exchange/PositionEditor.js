@@ -203,11 +203,7 @@ export default function PositionEditor(props) {
     }
 
     if (!isDeposit && fromAmount) {
-      if (fromAmount.gte(position.collateral)) {
-        return t`Min residual collateral: 10 USD`;
-      }
-
-      if (position.collateral.sub(fromAmount).lt(MIN_ORDER_USD)) {
+      if (position.collateralAfterFee.sub(fromAmount).lt(MIN_ORDER_USD)) {
         return t`Min residual collateral: 10 USD`;
       }
     }
