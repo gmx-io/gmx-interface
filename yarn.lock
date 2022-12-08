@@ -8775,7 +8775,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereum-multicall@npm:^2.15.0":
+"ethereum-multicall@npm:2.15.0":
   version: 2.15.0
   resolution: "ethereum-multicall@npm:2.15.0"
   dependencies:
@@ -9633,7 +9633,7 @@ __metadata:
     env-cmd: ^10.1.0
     eslint: 7.32.0
     eth-testing: 1.9.1
-    ethereum-multicall: ^2.15.0
+    ethereum-multicall: 2.15.0
     ethers: 5.6.8
     framer-motion: 4.1.17
     graphql: 15.8.0
@@ -9659,7 +9659,7 @@ __metadata:
     react-toastify: 6.0.9
     react-use: 17.3.1
     recharts: 2.1.8
-    sass: ^1.55.0
+    sass: 1.55.0
     swr: 0.4.2
     typescript: 4.7.4
     web-vitals: 1.1.2
@@ -16673,7 +16673,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:^1.55.0":
+"sass@npm:1.55.0":
   version: 1.55.0
   resolution: "sass@npm:1.55.0"
   dependencies:
