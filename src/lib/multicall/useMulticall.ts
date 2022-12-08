@@ -8,7 +8,6 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
   name: string,
   params: {
     key: CacheKey | SkipKey;
-    aggregate?: boolean;
     refreshInterval?: number;
     request: TConfig | ((chainId: number, key: CacheKey) => TConfig);
     parseResponse?: (result: MulticallResult<TConfig>, chainId: number, key: CacheKey) => TResult;
