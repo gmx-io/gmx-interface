@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI_TESTNET, MAINNET, TESTNET } from "./chains";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, MAINNET, TESTNET } from "./chains";
 
 const { AddressZero } = ethers.constants;
 
@@ -194,7 +194,7 @@ const CONTRACTS = {
     ReferralReader: "0x505Ce16D3017be7D76a7C2631C0590E71A975083",
   },
 
-  [AVALANCHE_FUJI_TESTNET]: {
+  [AVALANCHE_FUJI]: {
     Vault: AddressZero,
     Router: AddressZero,
     VaultReader: AddressZero,

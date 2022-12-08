@@ -9,7 +9,7 @@ export const MAINNET = 56;
 export const TESTNET = 97;
 export const ETH_MAINNET = 1;
 export const AVALANCHE = 43114;
-export const AVALANCHE_FUJI_TESTNET = 43113;
+export const AVALANCHE_FUJI = 43113;
 export const ARBITRUM = 42161;
 export const ARBITRUM_TESTNET = 421611;
 
@@ -20,7 +20,7 @@ export const CHAIN_ID = DEFAULT_CHAIN_ID;
 export const SUPPORTED_CHAIN_IDS = [ARBITRUM, AVALANCHE];
 
 if (isDevelopment()) {
-  SUPPORTED_CHAIN_IDS.push(ARBITRUM_TESTNET, AVALANCHE_FUJI_TESTNET);
+  SUPPORTED_CHAIN_IDS.push(ARBITRUM_TESTNET, AVALANCHE_FUJI);
 }
 
 export const IS_NETWORK_DISABLED = {
@@ -34,7 +34,7 @@ export const CHAIN_NAMES_MAP = {
   [ARBITRUM_TESTNET]: "ArbRinkeby",
   [ARBITRUM]: "Arbitrum",
   [AVALANCHE]: "Avalanche",
-  [AVALANCHE_FUJI_TESTNET]: "Avalanche Fuji",
+  [AVALANCHE_FUJI]: "Avalanche Fuji",
 };
 
 export const GAS_PRICE_ADJUSTMENT_MAP = {
@@ -109,7 +109,7 @@ const constants = {
     DECREASE_ORDER_EXECUTION_GAS_FEE: parseEther("0.0100001"),
   },
 
-  [AVALANCHE_FUJI_TESTNET]: {
+  [AVALANCHE_FUJI]: {
     nativeTokenSymbol: "AVAX",
     wrappedTokenSymbol: "WAVAX",
     defaultCollateralSymbol: "USDC",
@@ -147,7 +147,7 @@ export const RPC_PROVIDERS = {
   [ARBITRUM]: [getDefaultArbitrumRpcUrl()],
   [ARBITRUM_TESTNET]: ["https://rinkeby.arbitrum.io/rpc"],
   [AVALANCHE]: ["https://api.avax.network/ext/bc/C/rpc"],
-  [AVALANCHE_FUJI_TESTNET]: ["https://api.avax-test.network/ext/bc/C/rpc"],
+  [AVALANCHE_FUJI]: ["https://api.avax-test.network/ext/bc/C/rpc"],
 };
 
 export const FALLBACK_PROVIDERS = {
@@ -211,7 +211,7 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
     rpcUrls: RPC_PROVIDERS[AVALANCHE],
     blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
   },
-  [AVALANCHE_FUJI_TESTNET]: {
+  [AVALANCHE_FUJI]: {
     chainId: "0x" + AVALANCHE.toString(16),
     chainName: "Avalanche",
     nativeCurrency: {
@@ -219,8 +219,8 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
       symbol: "AVAX",
       decimals: 18,
     },
-    rpcUrls: RPC_PROVIDERS[AVALANCHE_FUJI_TESTNET],
-    blockExplorerUrls: [getExplorerUrl(AVALANCHE_FUJI_TESTNET)],
+    rpcUrls: RPC_PROVIDERS[AVALANCHE_FUJI],
+    blockExplorerUrls: [getExplorerUrl(AVALANCHE_FUJI)],
   },
 };
 
@@ -240,7 +240,7 @@ export const CHAIN_ICONS = {
     24: "ic_arbitrum_24.svg",
     96: "ic_arbitrum_96.svg",
   },
-  [AVALANCHE_FUJI_TESTNET]: {
+  [AVALANCHE_FUJI]: {
     16: "ic_avalanche_testnet_16.svg",
     24: "ic_avalanche_testnet_24.svg",
     96: "ic_avalanche_testnet_96.svg",
@@ -304,7 +304,7 @@ export function getExplorerUrl(chainId) {
     return "https://arbiscan.io/";
   } else if (chainId === AVALANCHE) {
     return "https://snowtrace.io/";
-  } else if (chainId === AVALANCHE_FUJI_TESTNET) {
+  } else if (chainId === AVALANCHE_FUJI) {
     return "https://testnet.snowtrace.io/";
   }
   return "https://etherscan.io/";
