@@ -8,62 +8,28 @@ import { getFallbackProvider } from "lib/rpc";
 import { sleep } from "lib/sleep";
 import { MulticallRequestConfig, MulticallResult } from "./types";
 
-const MAX_TIMEOUT = 2000;
-
-let totalRequestTime = 0;
-let callsNumber = 0;
-let avgTime = 0;
-
-class Profiler {
-  _start = 0;
-
-  start() {
-    this._start = Date.now();
-  }
-
-  end() {
-    return Date.now() - this._start;
-  }
-}
+export const MAX_TIMEOUT = 2000;
 
 export async function executeMulticall(
   chainId: number,
   library: Web3Provider | undefined,
-  request: ContractCallContext[],
-  key?: string
+  request: ContractCallContext[]
 ) {
-  // Try to use rpc provider of connected wallet
+  // Try to use rpc provider of the connected wallet
   let provider = library ? library.getSigner().provider : undefined;
 
-  // TODO: cover with tests?
-  // If wallet network doesn't match the chainId of the request, create new rpc provider
+  // If the wallet is not connected or the network does not match the chainId of the request, create a new rpc provider
   if (!provider || provider.network?.chainId !== chainId) {
     const rpcUrl = getRpcUrl(chainId);
 
-    // TODO: memoize providers by chainId?
     provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl, { chainId, name: CHAIN_NAMES_MAP[chainId] });
   }
 
   const multicall = getMulticallLib(provider as ethers.providers.JsonRpcProvider);
 
-  const profiler = new Profiler();
-  profiler.start();
-
   // prettier-ignore
   return Promise.race([
-    multicall.call(request).then((res) => {
-      const end = profiler.end();
-
-      callsNumber += 1;
-      totalRequestTime += end;
-      avgTime += end/callsNumber
-
-
-      // eslint-disable-next-line no-console
-      console.log('MULTICALL', key, `req: ${end}ms;`, `avg: ${Math.round(avgTime)}ms;`, `total: ${totalRequestTime}ms;`, `calls: ${request.length};` ,`requests: ${callsNumber}`);
-
-      return res;
-    }),
+    multicall.call(request),
     sleep(MAX_TIMEOUT).then(() => Promise.reject("rpc timeout"))
   ]).catch((e) => {
       // eslint-disable-next-line no-console

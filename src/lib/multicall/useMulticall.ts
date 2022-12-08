@@ -34,7 +34,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
       const requestContext = formatMulticallRequest(request);
 
       try {
-        const multicallResponse = await executeMulticall(chainId, library, requestContext, name);
+        const multicallResponse = await executeMulticall(chainId, library, requestContext);
 
         const formattedResponse = formatMulticallResult(multicallResponse.results);
 
