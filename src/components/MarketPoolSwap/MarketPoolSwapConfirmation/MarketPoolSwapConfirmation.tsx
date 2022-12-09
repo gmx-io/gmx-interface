@@ -24,12 +24,14 @@ import { getContract } from "config/contracts";
 import { getToken } from "config/tokens";
 import { createMarketDepositTxn } from "domain/synthetics/markets/createMarketDepositTxn";
 import { useMarkets } from "domain/synthetics/markets/useMarkets";
-import { getMarket } from "domain/synthetics/markets/utils";
+import { getMarket, getMarketName } from "domain/synthetics/markets/utils";
 import { PriceImpactData } from "domain/synthetics/priceImpact/types";
 import { useTokenAllowance } from "domain/synthetics/tokens/useTokenAllowance";
 import { useChainId } from "lib/chains";
 import "./MarketPoolSwapConfirmation.scss";
 import { expandDecimals } from "lib/numbers";
+import { useEffect, useMemo, useState } from "react";
+import { useTokenConfigs } from "domain/synthetics/tokens/useTokenConfigs";
 
 type Props = {
   onClose: () => void;
@@ -76,6 +78,26 @@ export function MarketPoolSwapConfirmation(p: Props) {
 
   const marketsData = useMarkets(chainId);
 
+  const tokenConfigsData = useTokenConfigs(chainId);
+
+  const [tokensToApprove, setTokensToApprove] = useState<string[]>();
+
+  const swapAmountByToken = useMemo(
+    () => ({
+      [p.firstSwapTokenAddress]: p.firstSwapTokenAmount,
+      [p.secondSwapTokenAddress || "nope"]: p.secondSwapTokenAmount,
+      [p.marketTokenAddress]: p.gmSwapAmount,
+    }),
+    [
+      p.firstSwapTokenAddress,
+      p.firstSwapTokenAmount,
+      p.gmSwapAmount,
+      p.marketTokenAddress,
+      p.secondSwapTokenAddress,
+      p.secondSwapTokenAmount,
+    ]
+  );
+
   const isDeposit = p.operationType === Operation.deposit;
 
   const firstTokenText = getTokenText(p.tokensData, p.firstSwapTokenAddress, p.firstSwapTokenAmount);
@@ -87,15 +109,9 @@ export function MarketPoolSwapConfirmation(p: Props) {
   const gmTokenText = formatTokenAmountWithUsd(p.gmSwapAmount, gmUsdAmount, "GM", GM_DECIMALS);
 
   const market = getMarket(marketsData, p.marketTokenAddress);
-  const firstToken = p.firstSwapTokenAddress ? getToken(chainId, p.firstSwapTokenAddress) : undefined;
-  const secondToken = p.secondSwapTokenAddress ? getToken(chainId, p.secondSwapTokenAddress) : undefined;
+  const marketName = getMarketName(chainId, { ...marketsData, ...tokenConfigsData }, p.marketTokenAddress);
 
-  const needFirstApprove =
-    isDeposit && needTokenApprove(tokenAllowanceData, p.firstSwapTokenAddress, p.firstSwapTokenAmount);
-  const needSecondApprove =
-    isDeposit && needTokenApprove(tokenAllowanceData, p.secondSwapTokenAddress, p.secondSwapTokenAmount);
-  const needMarketTokenApprove =
-    !isDeposit && needTokenApprove(tokenAllowanceData, p.marketTokenAddress, p.gmSwapAmount);
+  const isAllowanceLoaded = Object.keys(tokenAllowanceData).length > 0;
 
   const submitButtonState = getSubmitButtonState();
 
@@ -103,7 +119,14 @@ export function MarketPoolSwapConfirmation(p: Props) {
     const operationText = p.operationType === Operation.deposit ? t`Buy` : `Sell`;
     const text = t`Confirm ${operationText} ${formatTokenAmount(p.gmSwapAmount, GM_DECIMALS)} GM`;
 
-    if (needFirstApprove || needSecondApprove || needMarketTokenApprove) {
+    if (!isAllowanceLoaded) {
+      return {
+        text: t`Loading...`,
+        disabled: true,
+      };
+    }
+
+    if (tokensToApprove?.some((address) => needTokenApprove(tokenAllowanceData, address))) {
       return {
         text: t`Need tokens approval`,
         disabled: true,
@@ -154,6 +177,33 @@ export function MarketPoolSwapConfirmation(p: Props) {
     );
   }
 
+  useEffect(
+    function updateTokensToApproveEff() {
+      if (Object.keys(tokenAllowanceData.tokenAllowance).length > 0 && !tokensToApprove) {
+        const payTokens = isDeposit
+          ? ([p.firstSwapTokenAddress, p.secondSwapTokenAddress].filter(Boolean) as string[])
+          : [p.marketTokenAddress];
+
+        const toApproveAddresses = payTokens.filter(
+          (address) =>
+            swapAmountByToken[address]?.gt(0) &&
+            needTokenApprove(tokenAllowanceData, address, swapAmountByToken[address])
+        );
+
+        setTokensToApprove(toApproveAddresses);
+      }
+    },
+    [
+      isDeposit,
+      p.firstSwapTokenAddress,
+      p.marketTokenAddress,
+      p.secondSwapTokenAddress,
+      swapAmountByToken,
+      tokenAllowanceData,
+      tokensToApprove,
+    ]
+  );
+
   return (
     <div className="Confirmation-box">
       <Modal
@@ -202,41 +252,27 @@ export function MarketPoolSwapConfirmation(p: Props) {
           value={p.priceImpact?.priceImpact.gt(0) ? formatPriceImpact(p.priceImpact) : "..."}
         />
 
-        <div className="App-card-divider" />
+        {tokensToApprove && tokensToApprove.length > 0 && (
+          <>
+            <div className="App-card-divider" />
 
-        <div className="MarketPoolSwapConfirmation-approve-tokens">
-          {needFirstApprove && firstToken && (
-            <div className="MarketPoolSwapConfirmation-approve-token">
-              <ApproveTokenButton
-                tokenAddress={p.firstSwapTokenAddress}
-                tokenSymbol={firstToken?.symbol}
-                spenderAddress={routerAddress}
-              />
+            <div className="MarketPoolSwapConfirmation-approve-tokens">
+              {tokensToApprove.map((address) => (
+                <div className="MarketPoolSwapConfirmation-approve-token">
+                  <ApproveTokenButton
+                    key={address}
+                    tokenAddress={address}
+                    tokenSymbol={address === p.marketTokenAddress ? marketName! : getToken(chainId, address).symbol}
+                    spenderAddress={routerAddress}
+                    isApproved={!needTokenApprove(tokenAllowanceData, address, swapAmountByToken[address])}
+                  />
+                </div>
+              ))}
             </div>
-          )}
 
-          {needSecondApprove && secondToken && (
-            <div className="MarketPoolSwapConfirmation-approve-token">
-              <ApproveTokenButton
-                tokenAddress={p.secondSwapTokenAddress!}
-                tokenSymbol={secondToken?.symbol}
-                spenderAddress={routerAddress}
-              />
-            </div>
-          )}
-
-          {needMarketTokenApprove && p.marketTokenAddress && (
-            <div className="MarketPoolSwapConfirmation-approve-token">
-              <ApproveTokenButton
-                tokenAddress={p.marketTokenAddress}
-                tokenSymbol={"GM"}
-                spenderAddress={routerAddress}
-              />
-            </div>
-          )}
-        </div>
-
-        <div className="App-card-divider" />
+            <div className="App-card-divider" />
+          </>
+        )}
 
         <div className="Confirmation-box-row">
           <SubmitButton onClick={submitButtonState.onClick} disabled={submitButtonState.disabled}>

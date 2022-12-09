@@ -10,15 +10,16 @@ type Props = {
   spenderAddress: string;
   tokenAddress: string;
   tokenSymbol: string;
+  isApproved?: boolean;
 };
 
 export function ApproveTokenButton(p: Props) {
   const { library, chainId } = useWeb3React();
   const [isApproving, setIsApproving] = useState(false);
-  const [isApproved, setIsApproved] = useState(false);
+  const [isApproveSubmitted, setIsApproveSubmitted] = useState(false);
 
   function onApprove() {
-    if (!chainId) return;
+    if (!chainId || isApproveSubmitted || p.isApproved) return;
 
     const wrappedToken = getWrappedToken(chainId);
     const tokenAddress = isAddressZero(p.tokenAddress) ? wrappedToken.address : p.tokenAddress;
@@ -32,13 +33,15 @@ export function ApproveTokenButton(p: Props) {
       setPendingTxns: () => null,
       infoTokens: {},
       chainId,
-      onApproveSubmitted: () => setIsApproved(true),
+      onApproveSubmitted: () => setIsApproveSubmitted(true),
     });
   }
 
   return (
-    <Checkbox isChecked={isApproved} setIsChecked={onApprove}>
-      {isApproving ? t`Pending approve ${p.tokenSymbol}` : t`Approve token ${p.tokenSymbol}`}
+    <Checkbox isChecked={p.isApproved} setIsChecked={onApprove}>
+      {isApproving || (isApproveSubmitted && !p.isApproved)
+        ? t`Pending approve ${p.tokenSymbol}`
+        : t`Approve ${p.tokenSymbol}`}
     </Checkbox>
   );
 }

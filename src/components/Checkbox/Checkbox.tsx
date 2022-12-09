@@ -6,7 +6,7 @@ import "./Checkbox.css";
 import { ImCheckboxUnchecked, ImCheckboxChecked } from "react-icons/im";
 
 type Props = {
-  isChecked: boolean;
+  isChecked?: boolean;
   setIsChecked: (checked: boolean) => void;
   disabled?: boolean;
   className?: string;

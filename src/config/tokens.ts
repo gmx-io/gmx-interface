@@ -715,11 +715,11 @@ export function isValidToken(chainId: number, address: string) {
   return address in TOKENS_MAP[chainId];
 }
 
-export function getToken(chainId: number, address: string, params: { allowSynthetic?: boolean } = {}) {
+export function getToken(chainId: number, address: string) {
   if (!TOKENS_MAP[chainId]) {
     throw new Error(`Incorrect chainId ${chainId}`);
   }
-  if (!TOKENS_MAP[chainId][address] && !params.allowSynthetic) {
+  if (!TOKENS_MAP[chainId][address]) {
     throw new Error(`Incorrect address "${address}" for chainId ${chainId}`);
   }
 
