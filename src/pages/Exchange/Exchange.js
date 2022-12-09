@@ -19,6 +19,7 @@ import {
   getDeltaStr,
   useAccountOrders,
   getPageTitle,
+  CHART_PERIODS,
 } from "lib/legacy";
 import { getConstant, getExplorerUrl } from "config/chains";
 import { approvePlugin, useMinExecutionFee, cancelMultipleOrders } from "domain/legacy";
@@ -51,6 +52,7 @@ import { bigNumberify, formatAmount } from "lib/numbers";
 import { getToken, getTokenBySymbol, getTokens, getWhitelistedTokens } from "config/tokens";
 import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Radio from "components/Radio/Radio";
 const { AddressZero } = ethers.constants;
 
 const PENDING_POSITION_VALID_DURATION = 600 * 1000;
@@ -151,7 +153,7 @@ export function getPositions(
   updatedPositions
 ) {
   const propsLength = getConstant(chainId, "positionReaderPropsLength");
-  const positions = [];
+  let positions = [];
   const positionsMap = {};
   if (!positionData) {
     return { positions, positionsMap };
@@ -306,6 +308,7 @@ export function getPositions(
       positions.push(position);
     }
   }
+  positions = [...new Map(positions.map((item) => [item["contractKey"], item])).values()];
 
   return { positions, positionsMap };
 }
@@ -829,6 +832,7 @@ export const Exchange = forwardRef((props, ref) => {
           <div className="align-right Exchange-should-show-position-lines">
             {renderCancelOrderButton()}
             <Checkbox
+              inactiveColor={"rgba(255,255,255, 0.7)"}
               isChecked={savedShouldShowPositionLines}
               setIsChecked={setSavedShouldShowPositionLines}
               className={cx("muted chart-positions", { active: savedShouldShowPositionLines })}

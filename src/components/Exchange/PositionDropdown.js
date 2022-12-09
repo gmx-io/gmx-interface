@@ -11,7 +11,7 @@ function PositionDropdown({ handleEditCollateral, handleShare, handleMarketSelec
     <Menu>
       <Menu.Button as="div">
         <button className="PositionDropdown-dots-icon">
-          <HiDotsVertical fontSize={20} fontWeight={700} />
+          <HiDotsVertical fontSize={20} fontWeight={700} color={"#717171"} />
         </button>
       </Menu.Button>
       <div className="PositionDropdown-extra-options">

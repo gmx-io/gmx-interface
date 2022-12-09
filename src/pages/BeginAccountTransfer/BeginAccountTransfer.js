@@ -49,7 +49,7 @@ export default function BeginAccountTransfer(props) {
     parsedReceiver = receiver;
   }
 
-  const gmxAddress = getContract(chainId, "GMX");
+  const gmxAddress = getContract(chainId, "OPEN");
   const gmxVesterAddress = getContract(chainId, "GmxVester");
   const glpVesterAddress = getContract(chainId, "GlpVester");
 
@@ -125,10 +125,10 @@ export default function BeginAccountTransfer(props) {
       return t`Wallet is not connected`;
     }
     if (hasVestedGmx) {
-      return t`Vested GMX not withdrawn`;
+      return t`Vested OPEN not withdrawn`;
     }
     if (hasVestedGlp) {
-      return t`Vested GLP not withdrawn`;
+      return t`Vested OLP not withdrawn`;
     }
     if (!receiver || receiver.length === 0) {
       return t`Enter Receiver Address`;
@@ -171,7 +171,7 @@ export default function BeginAccountTransfer(props) {
       return error;
     }
     if (needApproval) {
-      return t`Approve GMX`;
+      return t`Approve OPEN`;
     }
     if (isApproving) {
       return t`Approving...`;
@@ -236,9 +236,9 @@ export default function BeginAccountTransfer(props) {
           <Trans>
             Please only use this for full account transfers.
             <br />
-            This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.
+            This will transfer all your OPEN, esGMX, OLP and Multiplier Points to your new account.
             <br />
-            Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.
+            Transfers are only supported if the receiving account has not staked OPEN or OLP tokens before.
             <br />
             Transfers are one-way, you will not be able to transfer staked tokens back to the sending account.
           </Trans>
@@ -268,16 +268,16 @@ export default function BeginAccountTransfer(props) {
           </div>
           <div className="BeginAccountTransfer-validations">
             <ValidationRow isValid={!hasVestedGmx}>
-              <Trans>Sender has withdrawn all tokens from GMX Vesting Vault</Trans>
+              <Trans>Sender has withdrawn all tokens from OPEN Vesting Vault</Trans>
             </ValidationRow>
             <ValidationRow isValid={!hasVestedGlp}>
-              <Trans>Sender has withdrawn all tokens from GLP Vesting Vault</Trans>
+              <Trans>Sender has withdrawn all tokens from OLP Vesting Vault</Trans>
             </ValidationRow>
             <ValidationRow isValid={!hasStakedGmx}>
-              <Trans>Receiver has not staked GMX tokens before</Trans>
+              <Trans>Receiver has not staked OPEN tokens before</Trans>
             </ValidationRow>
             <ValidationRow isValid={!hasStakedGlp}>
-              <Trans>Receiver has not staked GLP tokens before</Trans>
+              <Trans>Receiver has not staked OLP tokens before</Trans>
             </ValidationRow>
           </div>
           <div className="input-row">

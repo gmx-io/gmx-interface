@@ -84,6 +84,19 @@ a.btn {
 .btn-primary:active {
   background: var(--dark-blue-active);
 }
+.connect-wallet {
+  background-color: #DFE5E5;
+  border-radius: 18px;
+  color: #472F50;
+  min-height: 3.6rem;
+}
+.connect-wallet span {
+  font-weight: 700 !important;
+}
+.connect-wallet:hover {
+  background-color: #DFE5E5;
+}
+
 
 @media (max-width: 450px) {
   .connect-wallet {

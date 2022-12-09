@@ -6,7 +6,7 @@ import "./Checkbox.css";
 import { ImCheckboxUnchecked, ImCheckboxChecked } from "react-icons/im";
 
 export default function Checkbox(props) {
-  const { isChecked, setIsChecked, disabled, className } = props;
+  const { isChecked, setIsChecked, disabled, className, inactiveColor, activeColor } = props;
 
   return (
     <div
@@ -14,8 +14,8 @@ export default function Checkbox(props) {
       onClick={() => setIsChecked(!isChecked)}
     >
       <span className="Checkbox-icon-wrapper">
-        {isChecked && <ImCheckboxChecked className="App-icon Checkbox-icon active" />}
-        {!isChecked && <ImCheckboxUnchecked className="App-icon Checkbox-icon inactive" />}
+        {isChecked && <ImCheckboxChecked color={activeColor} className="App-icon Checkbox-icon active" />}
+        {!isChecked && <ImCheckboxUnchecked color={inactiveColor} className="App-icon Checkbox-icon inactive" />}
       </span>
       <span className="Checkbox-label">{props.children}</span>
     </div>

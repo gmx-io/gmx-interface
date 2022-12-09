@@ -42,19 +42,19 @@ msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}
 msgstr ""
 
 #: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0> to start using GMX"
+msgid "<0>Install Coinbase Wallet</0> to start using OPEN"
 msgstr ""
 
 #: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser"
+msgid "<0>Install Coinbase Wallet</0>, and use OPEN with its built-in browser"
 msgstr ""
 
 #: src/App/App.js
-msgid "<0>Install MetaMask</0> to start using GMX"
+msgid "<0>Install MetaMask</0> to start using OPEN"
 msgstr ""
 
 #: src/App/App.js
-msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser"
+msgid "<0>Install MetaMask</0>, and use OPEN with its built-in browser"
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
@@ -70,12 +70,12 @@ msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
 msgstr ""
 
 #: src/components/Glp/SwapErrorModal.tsx
-msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy GLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
+msgid "<0>The pool's capacity has been reached for {0}. Please use another token to buy OLP.</0><1>Check the \"Save on Fees\" section for tokens with the lowest fees.</1>"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
-msgstr "<0>모든 토큰이 인출되고 취소되며 베스팅이 중지됩니다.<1/><2/>GMX로 변환된 esGMX 토큰은 GMX 토큰으로 유지됩니다.<3/><4/>인출하지 않고 GMX 토큰을 수령하기 위해서는 총 보상 섹션 아래의 \"수령하기\" 버튼을 사용해주세요."
+msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to OPEN will remain as OPEN tokens.<3/><4/>To claim OPEN tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
+msgstr "<0>모든 토큰이 인출되고 취소되며 베스팅이 중지됩니다.<1/><2/>GMX로 변환된 esGMX 토큰은 OPEN 토큰으로 유지됩니다.<3/><4/>인출하지 않고 OPEN 토큰을 수령하기 위해서는 총 보상 섹션 아래의 \"수령하기\" 버튼을 사용해주세요."
 
 #: src/lib/wallets/index.js
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
@@ -248,8 +248,8 @@ msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/Stake/StakeV2.js
-msgid "Approve GMX"
-msgstr "GMX 승인"
+msgid "Approve OPEN"
+msgstr "OPEN 승인"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
@@ -264,8 +264,8 @@ msgid "Approve {stakingTokenSymbol}"
 msgstr "{stakingTokenSymbol} 승인"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Approving GMX..."
-msgstr "GMX 승인중..."
+msgid "Approving OPEN..."
+msgstr "OPEN 승인중..."
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
@@ -294,7 +294,7 @@ msgid "Arbitrum Icon"
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
-msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
+msgid "As there is not enough liquidity in OLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV1.js
@@ -302,8 +302,8 @@ msgid "Assets Under Management"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})"
-msgstr "자산운용규모: 스테이킹된 GMX + GLP 풀 ({chainName})"
+msgid "Assets Under Management: OPEN staked (All chains) + OLP pool ({chainName})"
+msgstr "자산운용규모: 스테이킹된 OPEN + OLP 풀 ({chainName})"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Available"
@@ -318,12 +318,12 @@ msgstr "사용가능 유동성"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-msgid "Available amount to deposit into GLP."
+msgid "Available amount to deposit into OLP."
 msgstr "GLP에 예치할 수 있는 양"
 
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
+msgid "Available amount to withdraw from OLP. Funds not utilized by current open positions."
 msgstr ""
 
 #: src/pages/Home/Home.js
@@ -349,7 +349,7 @@ msgid "Avalanche Icon"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Avax is needed on Avalanche to purchase GMX."
+msgid "Avax is needed on Avalanche to purchase OPEN."
 msgstr "Avalanche에서 GMX를 구입하기 위해서는 Avax가 필요합니다."
 
 #: src/components/Exchange/SwapBox.js
@@ -417,8 +417,8 @@ msgid "Buy"
 msgstr "구매"
 
 #: src/pages/BuyGlp/BuyGlp.js
-msgid "Buy / Sell GLP"
-msgstr "GLP 구매 / 판매"
+msgid "Buy / Sell OLP"
+msgstr "OLP 구매 / 판매"
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "Buy / Transfer AVAX"
@@ -440,26 +440,26 @@ msgstr "ETH 구매 "
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV2.js
-msgid "Buy GLP"
-msgstr "GLP 구매"
+msgid "Buy OLP"
+msgstr "OLP 구매"
 
 #: src/pages/BuyGlp/BuyGlp.js
-msgid "Buy GLP Icon"
+msgid "Buy OLP Icon"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/Stake/StakeV2.js
-msgid "Buy GMX"
-msgstr "GMX 구매"
+msgid "Buy OPEN"
+msgstr "OPEN 구매"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Buy GMX Bonds"
-msgstr "GMX 채권 구매"
+msgid "Buy OPEN Bonds"
+msgstr "OPEN 채권 구매"
 
 #: src/pages/Buy/Buy.js
-msgid "Buy GMX or GLP"
-msgstr "GMX 혹은 GLP 구매"
+msgid "Buy OPEN or OLP"
+msgstr "OPEN 혹은 OLP 구매"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Buy failed."
@@ -551,8 +551,8 @@ msgstr "수령하기"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "Claim GMX Rewards"
-msgstr "GMX 보상 수령하기"
+msgid "Claim OPEN Rewards"
+msgstr "OPEN 보상 수령하기"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Claim Rewards"
@@ -780,8 +780,8 @@ msgid "Continue"
 msgstr "계속하기"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Convert esGMX tokens to GMX tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
-msgstr "esGMX 토큰을 GMX 토큰으로 변환합니다.<0/>볼트를 사용하기 전 <1>베스팅 세부정보</1>를 읽어주세요."
+msgid "Convert esGMX tokens to OPEN tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
+msgstr "esGMX 토큰을 OPEN 토큰으로 변환합니다.<0/>볼트를 사용하기 전 <1>베스팅 세부정보</1>를 읽어주세요."
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -902,7 +902,7 @@ msgid "Dashboard"
 msgstr "대시보드"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Dashboard for GMX referral stats"
+msgid "Dashboard for OPEN referral stats"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1043,7 +1043,7 @@ msgid "Download"
 msgstr "다운로드"
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "ETH is needed on Arbitrum to purchase GMX."
+msgid "ETH is needed on Arbitrum to purchase OPEN."
 msgstr "Arbitrum에서 GMX를 구매하기 위해서는 ETH가 필요합니다."
 
 #: src/components/Header/AppHeaderLinks.tsx
@@ -1219,11 +1219,11 @@ msgstr "진입 가격"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "Escrowed GMX"
+msgid "Escrowed OPEN"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-msgid "Escrowed GMX APR"
+msgid "Escrowed OPEN APR"
 msgstr "esGMX APR"
 
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -1278,15 +1278,15 @@ msgid "Fees are high to swap from {0} to {1}. <0/>{2} is needed for collateral."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Fees generated by GMX"
+msgid "Fees generated by OPEN"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-msgid "Fees may vary depending on which asset you sell GLP for. <0/>Enter the amount of GLP you want to redeem in the order form, then check here to compare fees."
+msgid "Fees may vary depending on which asset you sell OLP for. <0/>Enter the amount of OLP you want to redeem in the order form, then check here to compare fees."
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-msgid "Fees may vary depending on which asset you use to buy GLP. <0/>Enter the amount of GLP you want to purchase in the order form, then check here to compare fees."
+msgid "Fees may vary depending on which asset you use to buy OLP. <0/>Enter the amount of OLP you want to purchase in the order form, then check here to compare fees."
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
@@ -1334,115 +1334,115 @@ msgid "GBC NFTs APR tracker and rewards"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "GLP Index Composition"
-msgstr "GLP 인덱스 구성"
+msgid "OLP Index Composition"
+msgstr "OLP 인덱스 구성"
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "GLP Pool"
+msgid "OLP Pool"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "GLP Vault"
+msgid "OLP Vault"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-msgid "GLP buy disabled, pending {0} upgrade"
+msgid "OLP buy disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
+msgid "OLP is the liquidity provider token. Accrues 70% of the platform's generated fees."
 msgstr "GLP는 유동성 공급 토큰입니다. 플랫폼에서 생성되는 수수료의 70%를 축적하세요."
 
 #: src/components/Glp/GlpSwap.js
-msgid "GLP sell disabled, pending {0} upgrade"
+msgid "OLP sell disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Announcements and Updates"
+msgid "OPEN Announcements and Updates"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Blueberry NFTs"
+msgid "OPEN Blueberry NFTs"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Governance Page"
+msgid "OPEN Governance Page"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Pages"
-msgstr "GMX 페이지"
+msgid "OPEN Pages"
+msgstr "OPEN 페이지"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Perpetuals Data"
+msgid "OPEN Perpetuals Data"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Proposals Voting page"
+msgid "OPEN Proposals Voting page"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Stats Page"
+msgid "OPEN Stats Page"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "GMX Vault"
+msgid "OPEN Vault"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX Weekly Updates"
+msgid "OPEN Weekly Updates"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
-msgstr "GMX 채권은 Olympus Pro에서 약간의 베스팅 기간과 함께 할인된 가격으로 구매할 수 있습니다."
+msgid "OPEN bonds can be bought on Olympus Pro with a discount and a small vesting period:"
+msgstr "OPEN 채권은 Olympus Pro에서 약간의 베스팅 기간과 함께 할인된 가격으로 구매할 수 있습니다."
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX community discussion"
+msgid "OPEN community discussion"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX dashboards and analytics."
-msgstr "GMX 대시보드 및 통계"
+msgid "OPEN dashboards and analytics."
+msgstr "OPEN 대시보드 및 통계"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX ecosystem pages."
-msgstr "GMX 이코시스템 페이지"
+msgid "OPEN ecosystem pages."
+msgstr "OPEN 이코시스템 페이지"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX explorer for stats and traders"
+msgid "OPEN explorer for stats and traders"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX fundamentals"
+msgid "OPEN fundamentals"
 msgstr ""
 
 #: src/pages/Home/Home.js
-msgid "GMX is currently live on Arbitrum and Avalanche."
+msgid "OPEN is currently live on Arbitrum and Avalanche."
 msgstr "GMX는 현재 Arbitrum과 Avalanche에서 이용할 수 있습니다."
 
 #: src/pages/Jobs/Jobs.js
-msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
+msgid "OPEN is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
-msgid "GMX is the utility and governance token. Accrues 30% of the platform's generated fees."
+msgid "OPEN is the utility and governance token. Accrues 30% of the platform's generated fees."
 msgstr "GMX는 유틸리티 및 거버넌스 토큰입니다. 플랫폼에서 생성되는 수수료의 30%를 축적하세요."
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX staking calculator"
+msgid "OPEN staking calculator"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "GMX staking rewards updates and insights"
+msgid "OPEN staking rewards updates and insights"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "GMX transfers not yet enabled"
-msgstr "GMX 전송이 아직 불가능합니다."
+msgid "OPEN transfers not yet enabled"
+msgstr "OPEN 전송이 아직 불가능합니다."
 
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
@@ -1453,8 +1453,8 @@ msgid "Generating shareable image..."
 msgstr ""
 
 #: src/pages/Referrals/Referrals.js
-msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
-msgstr "GMX 추천 프로그램을 통해 수수료 할인 및 리베이트를 받으세요.<0/>자세한 내용은 <1>추천 프로그램 세부 정보를 참조하세요."
+msgid "Get fee discounts and earn rebates through the OPEN referral program.<0/>For more information, please read the <1>referral program details</1>."
+msgstr "OPEN 추천 프로그램을 통해 수수료 할인 및 리베이트를 받으세요.<0/>자세한 내용은 <1>추천 프로그램 세부 정보를 참조하세요."
 
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
@@ -1541,8 +1541,8 @@ msgid "Insufficient Available Liquidity to swap to {0}:"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-msgid "Insufficient GLP balance"
-msgstr "GLP 잔고 부족"
+msgid "Insufficient OLP balance"
+msgstr "OLP 잔고 부족"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -1610,7 +1610,7 @@ msgid "Invalid token indexToken: \"{0}\" collateralToken: \"{1}\""
 msgstr ""
 
 #: src/pages/Jobs/Jobs.js
-msgid "Job openings at GMX."
+msgid "Job openings at OPEN."
 msgstr ""
 
 #: src/pages/Jobs/Jobs.js
@@ -1638,7 +1638,7 @@ msgid "Leaderboard"
 msgstr "리더보드"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Leaderboard for GMX traders"
+msgid "Leaderboard for OPEN traders"
 msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
@@ -1888,11 +1888,11 @@ msgid "Max leverage: 30x"
 msgstr "최대 레버리지: 30x"
 
 #: src/components/Glp/GlpSwap.js
-msgid "Max pool capacity reached for {0}. Please mint GLP using another token"
+msgid "Max pool capacity reached for {0}. Please mint OLP using another token"
 msgstr "{0}의 최대 풀 수용량에 도달했습니다"
 
 #: src/components/Glp/GlpSwap.js
-msgid "Max pool capacity reached for {0}<0/><1/>Please mint GLP using another token"
+msgid "Max pool capacity reached for {0}<0/><1/>Please mint OLP using another token"
 msgstr ""
 
 #: src/App/App.js
@@ -2099,7 +2099,7 @@ msgid "No open positions"
 msgstr "열려있는 포지션이 없습니다"
 
 #: src/pages/Jobs/Jobs.js
-msgid "No open positions at GMX currently"
+msgid "No open positions at OPEN currently"
 msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
@@ -2302,15 +2302,15 @@ msgid "Pay: {0} USD"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "Platform and GLP index tokens."
-msgstr "플랫폼과 GLP 지수 토큰."
+msgid "Platform and OLP index tokens."
+msgstr "플랫폼과 OLP 지수 토큰."
 
 #: src/components/Referrals/JoinReferralCode.js
 msgid "Please input a referral code to benefit from fee discounts."
 msgstr "수수료 할인의 혜택을 받으려면 추천 코드를 입력해주세요."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Please only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
+msgid "Please only use this for full account transfers.<0/>This will transfer all your OPEN, esGMX, OLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked OPEN or OLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr ""
 
 #: src/components/Migration/Migration.js
@@ -2450,11 +2450,11 @@ msgid "Profit price: {0} ${1}. This rule applies for the next {2}, until {3}."
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Projects developed by the GMX community."
-msgstr "GMX 커뮤니티가 개발한 프로젝트"
+msgid "Projects developed by the OPEN community."
+msgstr "OPEN 커뮤니티가 개발한 프로젝트"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Projects integrated with GMX."
+msgid "Projects integrated with OPEN."
 msgstr "GMX와 통합된 프로젝트"
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -2463,13 +2463,13 @@ msgid "Protocol analytics"
 msgstr ""
 
 #: src/pages/BuyGlp/BuyGlp.js
-msgid "Purchase <0>GLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
+msgid "Purchase <0>OLP tokens</0> to earn {nativeTokenSymbol} fees from swaps and leverages trading."
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "Purchase GMX"
-msgstr "GMX 구입"
+msgid "Purchase OPEN"
+msgstr "OPEN 구입"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Purchase Insurance"
@@ -2514,12 +2514,12 @@ msgid "Receiver Address"
 msgstr "수령할 주소"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Receiver has not staked GLP tokens before"
-msgstr "수취인은 지금까지 GLP 토큰을 스테이킹한 적이 없습니다."
+msgid "Receiver has not staked OLP tokens before"
+msgstr "수취인은 지금까지 OLP 토큰을 스테이킹한 적이 없습니다."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Receiver has not staked GMX tokens before"
-msgstr "수취인은 지금까지 GMX 토큰을 스테이킹한 적이 없습니다."
+msgid "Receiver has not staked OPEN tokens before"
+msgstr "수취인은 지금까지 OPEN 토큰을 스테이킹한 적이 없습니다."
 
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
@@ -2624,7 +2624,7 @@ msgid "Reserved for Vesting"
 msgstr "베스팅을 위해 리저브됨"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Returns calculator for GMX and GLP"
+msgid "Returns calculator for OPEN and OLP"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -2698,8 +2698,8 @@ msgstr "자신에게 전송하는 것은 지원되지 않습니다"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV2.js
-msgid "Sell GLP"
-msgstr "GLP 판매"
+msgid "Sell OLP"
+msgstr "OLP 판매"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Sell failed."
@@ -2719,11 +2719,11 @@ msgid "Selling..."
 msgstr "판매중..."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Sender has withdrawn all tokens from GLP Vesting Vault"
+msgid "Sender has withdrawn all tokens from OLP Vesting Vault"
 msgstr "GLP의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Sender has withdrawn all tokens from GMX Vesting Vault"
+msgid "Sender has withdrawn all tokens from OPEN Vesting Vault"
 msgstr "GMX의 베스팅 볼트에서 모든 토큰을 인출했습니다."
 
 #: src/App/App.js
@@ -2825,16 +2825,16 @@ msgid "Stake"
 msgstr "스테이킹"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Stake <0>GMX</0> and <1>GLP</1> to earn rewards."
-msgstr "<0>GMX</0>과 <1>GLP</1>를 스테이킹하여 보상을 획득하세요."
+msgid "Stake <0>OPEN</0> and <1>OLP</1> to earn rewards."
+msgstr "<0>OPEN</0>과 <1>OLP</1>를 스테이킹하여 보상을 획득하세요."
 
 #: src/pages/Stake/StakeV2.js
-msgid "Stake GMX"
+msgid "Stake OPEN"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "Stake GMX Rewards"
-msgstr "GMX 보상 스테이킹"
+msgid "Stake OPEN Rewards"
+msgstr "OPEN 보상 스테이킹"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Stake Multiplier Points"
@@ -3040,11 +3040,11 @@ msgid "Telegram Groups"
 msgstr "텔레그램 그룹"
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Telegram bot for GMX position updates"
+msgid "Telegram bot for OPEN position updates"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Telegram bot for Open Interest on GMX"
+msgid "Telegram bot for Open Interest on OPEN"
 msgstr ""
 
 #: src/components/Footer/Footer.js
@@ -3052,7 +3052,7 @@ msgid "Terms and Conditions"
 msgstr "약관"
 
 #: src/pages/Stake/StakeV1.js
-msgid "The <0>GMX migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
+msgid "The <0>OPEN migration</0> is in progress, please migrate your GMT, xGMT, GMT-USDG and xGMT-USDG tokens.<1/>USDG tokens will continue to function as before and do not need to be migrated."
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -3108,7 +3108,7 @@ msgid "The spread is > 1%, please ensure the trade details are acceptable before
 msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
-msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
+msgid "The website is a community deployed and maintained instance of the open source <0>OPEN front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -3173,11 +3173,11 @@ msgid "To complete the transfer, you must switch your connected account to {rece
 msgstr "전송을 완료하려면 {receiver} 계정에 다시 연결해야 합니다."
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "To purchase GMX on <0>Arbitrum</0>, please change your network."
+msgid "To purchase OPEN on <0>Arbitrum</0>, please change your network."
 msgstr "<0>Arbitrum</0>에서 GMX를 구입하려면 네트워크를 변경해주세요."
 
 #: src/pages/BuyGMX/BuyGMX.js
-msgid "To purchase GMX on <0>Avalanche</0>, please change your network."
+msgid "To purchase OPEN on <0>Avalanche</0>, please change your network."
 msgstr "<0>Avalanche</0>에서 GMX를 구입하려면 네트워크를 변경해주세요."
 
 #: src/components/Glp/GlpSwap.js
@@ -3282,8 +3282,8 @@ msgid "Total fees earned since {0}: {1} USD<0/>Fee assets: {feeText}"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "Total value of tokens in GLP pool ({chainName})"
-msgstr "GLP 풀 ({chainName})의 토큰 총액"
+msgid "Total value of tokens in OLP pool ({chainName})"
+msgstr "OLP 풀 ({chainName})의 토큰 총액"
 
 #: src/components/StatsTooltip/StatsTooltip.tsx
 msgid "Total:"
@@ -3299,7 +3299,7 @@ msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 30x levera
 msgstr "지갑에서 직접 최대 30배의 레버리지로 BTC, ETH, AVAX 및 기타 주요 암호화폐 거래"
 
 #: src/components/Exchange/ExchangeBanner.js
-msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
+msgid "Trade on OPEN and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
 msgstr ""
 
 #: src/pages/Referrals/Referrals.js
@@ -3448,8 +3448,8 @@ msgid "Unstake"
 msgstr "언스테이킹"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Unstake GMX"
-msgstr "GMX 언스테이킹"
+msgid "Unstake OPEN"
+msgstr "OPEN 언스테이킹"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Unstake completed!"
@@ -3540,27 +3540,27 @@ msgid "Vest"
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Vest with GLP on Arbitrum"
+msgid "Vest with OLP on Arbitrum"
 msgstr "Arbitrum에서 GLP로 베스팅하기"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Vest with GLP on Avalanche"
+msgid "Vest with OLP on Avalanche"
 msgstr "Avalanche에서 GMX로 베스팅하기"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Vest with GMX on Arbitrum"
+msgid "Vest with OPEN on Arbitrum"
 msgstr "Arbitrum에서 GMX로 베스팅하기"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Vest with GMX on Avalanche"
+msgid "Vest with OPEN on Avalanche"
 msgstr "Avalanche에서 GMX로 베스팅하기"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Vested GLP not withdrawn"
+msgid "Vested OLP not withdrawn"
 msgstr "베스트팅된 GLP에서 인출되지 않은 양"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Vested GMX not withdrawn"
+msgid "Vested OPEN not withdrawn"
 msgstr "베스트팅된 GMX에서 인출되지 않은 양"
 
 #: src/pages/Stake/StakeV2.js
@@ -3677,12 +3677,12 @@ msgid "Withdraw failed."
 msgstr "인출 실패."
 
 #: src/pages/Stake/StakeV2.js
-msgid "Withdraw from GLP Vault"
-msgstr "GLP 볼트에서 인출"
+msgid "Withdraw from OLP Vault"
+msgstr "OLP 볼트에서 인출"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Withdraw from GMX Vault"
-msgstr "GMX 볼트에서 인출"
+msgid "Withdraw from OPEN Vault"
+msgstr "OPEN 볼트에서 인출"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw submitted."
@@ -3721,7 +3721,7 @@ msgid "Yield Vaults"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
-msgid "Yield simulator for GMX"
+msgid "Yield simulator for OPEN"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -3733,7 +3733,7 @@ msgid "You are earning {nativeTokenSymbol} rewards with {0} tokens.<0/>Tokens: {
 msgstr "귀하는 {nativeTokenSymbol} 보상을 {0} 토큰으로 얻고 있습니다.<0/> 토큰: {amountStr}"
 
 #: src/components/ModalViews/RedirectModal.js
-msgid "You are leaving GMX.io and will be redirected to a third party, independent website."
+msgid "You are leaving OPEN.io and will be redirected to a third party, independent website."
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.js
@@ -3907,24 +3907,24 @@ msgid "{0} Capacity Reached"
 msgstr ""
 
 #: src/components/Glp/GlpSwap.js
-msgid "{0} GLP (${1})"
-msgstr "{0} GLP (${1})"
+msgid "{0} OLP (${1})"
+msgstr "{0} OLP (${1})"
 
 #: src/components/Glp/GlpSwap.js
-msgid "{0} GLP bought with {1} {2}!"
+msgid "{0} OLP bought with {1} {2}!"
 msgstr "{1} {2}로 GLP를 구매하였습니다!"
 
 #: src/components/Glp/GlpSwap.js
-msgid "{0} GLP have been reserved for vesting."
+msgid "{0} OLP have been reserved for vesting."
 msgstr "{0} GLP가 베스팅을 위해 리저브되었습니다."
 
 #: src/components/Glp/GlpSwap.js
-msgid "{0} GLP sold for {1} {2}!"
+msgid "{0} OLP sold for {1} {2}!"
 msgstr "{0} GLP를 {1} {2}로 판매하였습니다!"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "{0} GMX tokens can be claimed, use the options under the Total Rewards section to claim them."
+msgid "{0} OPEN tokens can be claimed, use the options under the Total Rewards section to claim them."
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
@@ -3947,7 +3947,7 @@ msgid "{0} is above its target weight.<0/><1/>Get lower fees to <2>swap</2> toke
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1},  and to <3>swap</3> {2} for other tokens."
+msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy OLP</2> with {1},  and to <3>swap</3> {2} for other tokens."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -3979,7 +3979,7 @@ msgstr "{0}이(가) 주문 폼에서 선택되었습니다."
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for vesting."
+msgid "{0} tokens have been converted to OPEN from the {1} esGMX deposited for vesting."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js

@@ -121,10 +121,10 @@ function Referrals({ connectWallet, setPendingTxns, pendingTxns }) {
             </div>
             <div className="Page-description">
               <Trans>
-                Get fee discounts and earn rebates through the GMX referral program.
+                Get fee discounts and earn rebates through the OPEN referral program.
                 <br />
                 For more information, please read the{" "}
-                <ExternalLink href="https://gmxio.gitbook.io/gmx/referrals">referral program details</ExternalLink>.
+                <ExternalLink href="https://wiki.openworld.vision/referrals">referral program details</ExternalLink>.
               </Trans>
             </div>
           </div>

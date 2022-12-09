@@ -15,21 +15,21 @@ const footerLinks = {
   home: [
     { text: t`Terms and Conditions`, link: "/terms-and-conditions" },
     { text: t`Referral Terms`, link: "/referral-terms" },
-    { text: t`Media Kit`, link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
+    { text: t`Media Kit`, link: "https://wiki.openworld.vision/media-kit", external: true },
     // { text: "Jobs", link: "/jobs", isAppLink: true },
   ],
   app: [
-    { text: t`Media Kit`, link: "https://gmxio.gitbook.io/gmx/media-kit", external: true },
+    { text: t`Media Kit`, link: "https://wiki.openworld.vision/media-kit", external: true },
     // { text: "Jobs", link: "/jobs" },
   ],
 };
 
 const socialLinks = [
-  { link: "https://twitter.com/GMX_IO", name: "Twitter", icon: twitterIcon },
-  { link: "https://medium.com/@gmx.io", name: "Medium", icon: mediumIcon },
-  { link: "https://github.com/gmx-io", name: "Github", icon: githubIcon },
-  { link: "https://t.me/GMX_IO", name: "Telegram", icon: telegramIcon },
-  { link: "https://discord.gg/cxjZYR4gQK", name: "Discord", icon: discordIcon },
+  { link: "https://twitter.com/OpenWorldVision", name: "Twitter", icon: twitterIcon },
+  { link: "https://openworldvision.medium.com/", name: "Medium", icon: mediumIcon },
+  { link: "https://github.com/OpenWorldVision", name: "Github", icon: githubIcon },
+  { link: "https://t.me/CryptoWarVietnamesegames", name: "Telegram", icon: telegramIcon },
+  { link: "https://discord.gg/zS2khZ4F7K", name: "Discord", icon: discordIcon },
 ];
 
 export default function Footer({ showRedirectModal, redirectPopupTimestamp }) {
@@ -38,9 +38,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp }) {
   return (
     <div className="Footer">
       <div className={cx("Footer-wrapper", { home: isHome })}>
-        <div className="Footer-logo">
-          <img src={logoImg} alt="MetaMask" />
-        </div>
+        <div className="Footer-logo">{/* <img src={logoImg} alt="MetaMask" /> */}</div>
         <div className="Footer-social-link-block">
           {socialLinks.map((platform) => {
             return (

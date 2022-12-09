@@ -1,19 +1,20 @@
 import { ReactNode } from "react";
 import cx from "classnames";
 import "./Button.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faWallet } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
-  imgSrc: string;
   children: ReactNode;
   onClick: () => void;
   className?: string;
 };
 
-export default function ConnectWalletButton({ imgSrc, children, onClick, className }: Props) {
+export default function ConnectWalletButton({ children, onClick, className }: Props) {
   let classNames = cx("btn btn-primary btn-sm connect-wallet", className);
   return (
     <button className={classNames} onClick={onClick}>
-      {imgSrc && <img className="btn-image" src={imgSrc} alt="Connect Wallet" />}
+      <FontAwesomeIcon icon={faWallet} />
       <span className="btn-label">{children}</span>
     </button>
   );

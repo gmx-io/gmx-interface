@@ -127,6 +127,8 @@
 
 .token-symbol-text {
   line-height: 1;
+  color: #472F50;
+  font-weight: 500;
 }
 
 .mobile-token-card > img {

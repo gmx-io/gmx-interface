@@ -12,9 +12,11 @@ import cx from "classnames";
 import { Trans } from "@lingui/macro";
 import NetworkDropdown from "../NetworkDropdown/NetworkDropdown";
 import LanguagePopupHome from "../NetworkDropdown/LanguagePopupHome";
-import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, getChainName } from "config/chains";
+import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, getChainName, TESTNET } from "config/chains";
 import { switchNetwork } from "lib/wallets";
 import { useChainId } from "lib/chains";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMoneyBillTransfer } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
   openSettings: () => void;
@@ -39,26 +41,12 @@ export function AppHeaderUser({
 
   const networkOptions = [
     {
-      label: getChainName(ARBITRUM),
-      value: ARBITRUM,
-      icon: "ic_arbitrum_24.svg",
+      label: getChainName(TESTNET),
+      value: TESTNET,
+      icon: "ic_bsc.svg",
       color: "#264f79",
-    },
-    {
-      label: getChainName(AVALANCHE),
-      value: AVALANCHE,
-      icon: "ic_avalanche_24.svg",
-      color: "#E841424D",
     },
   ];
-  if (isDevelopment()) {
-    networkOptions.push({
-      label: getChainName(ARBITRUM_TESTNET),
-      value: ARBITRUM_TESTNET,
-      icon: "ic_arbitrum_24.svg",
-      color: "#264f79",
-    });
-  }
 
   useEffect(() => {
     if (active) {
@@ -88,13 +76,14 @@ export function AppHeaderUser({
             redirectPopupTimestamp={redirectPopupTimestamp}
             showRedirectModal={showRedirectModal}
           >
+            <FontAwesomeIcon icon={faMoneyBillTransfer} style={{ marginRight: 8 }} />
             <Trans>Trade</Trans>
           </HeaderLink>
         </div>
 
         {showConnectionOptions ? (
           <>
-            <ConnectWalletButton onClick={() => setWalletModalVisible(true)} imgSrc={connectWalletImg}>
+            <ConnectWalletButton onClick={() => setWalletModalVisible(true)}>
               {small ? <Trans>Connect</Trans> : <Trans>Connect Wallet</Trans>}
             </ConnectWalletButton>
             <NetworkDropdown
@@ -123,6 +112,7 @@ export function AppHeaderUser({
           redirectPopupTimestamp={redirectPopupTimestamp}
           showRedirectModal={showRedirectModal}
         >
+          <FontAwesomeIcon icon={faMoneyBillTransfer} style={{ marginRight: 8 }} />
           <Trans>Trade</Trans>
         </HeaderLink>
       </div>

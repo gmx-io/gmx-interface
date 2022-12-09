@@ -52,7 +52,7 @@ export default function NoLiquidityErrorModal({
       <br />
       <div>
         <Trans>
-          As there is not enough liquidity in GLP to swap {fromToken.symbol} to {swapTokenSymbol}, you can use the
+          As there is not enough liquidity in OLP to swap {fromToken.symbol} to {swapTokenSymbol}, you can use the
           option below to do so:
         </Trans>
       </div>

@@ -11,10 +11,10 @@ export default function ExchangeBanner(props) {
     <div className="ExchangeBanner">
       <p className="ExchangeBanner-text">
         <Trans>
-          Trade on GMX and win <span className="ExchangeBanner-price">$250.000</span> in prizes! Live until November
+          Trade on OPEN and win <span className="ExchangeBanner-price">$250.000</span> in prizes! Live until November
           30th,{" "}
           <ExternalLink
-            href="https://medium.com/@gmx.io/gmx-trading-competition-win-250-000-usd-in-prizes-1346504b96f6"
+            href="https://openworldvision.medium.com//gmx-trading-competition-win-250-000-usd-in-prizes-1346504b96f6"
             className="ExchangeBanner-link"
           >
             click here

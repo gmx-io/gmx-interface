@@ -169,8 +169,8 @@ export default function DashboardV2() {
   const vaultAddress = getContract(chainId, "Vault");
   const glpManagerAddress = getContract(chainId, "GlpManager");
 
-  const gmxAddress = getContract(chainId, "GMX");
-  const glpAddress = getContract(chainId, "GLP");
+  const gmxAddress = getContract(chainId, "OPEN");
+  const glpAddress = getContract(chainId, "OLP");
   const usdgAddress = getContract(chainId, "USDG");
 
   const tokensForSupplyQuery = [gmxAddress, glpAddress, usdgAddress];
@@ -370,7 +370,7 @@ export default function DashboardV2() {
                     <br />
                     Get lower fees to{" "}
                     <Link to="/buy_glp" target="_blank" rel="noopener noreferrer">
-                      buy GLP
+                      buy OLP
                     </Link>{" "}
                     with {tokenInfo.symbol},&nbsp; and to{" "}
                     <Link to="/trade" target="_blank" rel="noopener noreferrer">
@@ -396,7 +396,7 @@ export default function DashboardV2() {
               )}
               <br />
               <div>
-                <ExternalLink href="https://gmxio.gitbook.io/gmx/glp">
+                <ExternalLink href="https://wiki.openworld.vision/glp">
                   <Trans>More Info</Trans>
                 </ExternalLink>
               </div>
@@ -439,7 +439,7 @@ export default function DashboardV2() {
     },
   ];
 
-  const totalStatsStartDate = chainId === AVALANCHE ? t`06 Jan 2022` : t`01 Sep 2021`;
+  const totalStatsStartDate = t`09 Dec 2022`;
 
   let stableGlp = 0;
   let totalGlp = 0;
@@ -501,7 +501,7 @@ export default function DashboardV2() {
     if (active && payload && payload.length) {
       return (
         <div className="stats-label">
-          <div className="stats-label-color" style={{ backgroundColor: payload[0].color }}></div>
+          <div className="stats-label-color" style={{ backgroundColor: payload[0].color || "#472F50" }}></div>
           {payload[0].value}% {payload[0].name}
         </div>
       );
@@ -549,20 +549,20 @@ export default function DashboardV2() {
                       handle={`$${formatAmount(tvl, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
                       renderContent={() => (
-                        <span>{t`Assets Under Management: GMX staked (All chains) + GLP pool (${chainName})`}</span>
+                        <span>{t`Assets Under Management: OPEN staked (All chains) + OLP pool (${chainName})`}</span>
                       )}
                     />
                   </div>
                 </div>
                 <div className="App-card-row">
                   <div className="label">
-                    <Trans>GLP Pool</Trans>
+                    <Trans>OLP Pool</Trans>
                   </div>
                   <div>
                     <TooltipComponent
                       handle={`$${formatAmount(aum, USD_DECIMALS, 0, true)}`}
                       position="right-bottom"
-                      renderContent={() => <span>{t`Total value of tokens in GLP pool (${chainName})`}</span>}
+                      renderContent={() => <span>{t`Total value of tokens in OLP pool (${chainName})`}</span>}
                     />
                   </div>
                 </div>
@@ -722,7 +722,7 @@ export default function DashboardV2() {
               {chainId === ARBITRUM && <img src={arbitrum24Icon} alt="arbitrum24Icon" />}
             </div>
             <div className="Page-description">
-              <Trans>Platform and GLP index tokens.</Trans>
+              <Trans>Platform and OLP index tokens.</Trans>
             </div>
           </div>
           <div className="DashboardV2-token-cards">
@@ -732,14 +732,14 @@ export default function DashboardV2() {
                   <div className="App-card-title">
                     <div className="App-card-title-mark">
                       <div className="App-card-title-mark-icon">
-                        <img src={gmx40Icon} alt="GMX Token Icon" />
+                        <img src={gmx40Icon} alt="OPEN Token Icon" />
                       </div>
                       <div className="App-card-title-mark-info">
-                        <div className="App-card-title-mark-title">GMX</div>
-                        <div className="App-card-title-mark-subtitle">GMX</div>
+                        <div className="App-card-title-mark-title">OPEN</div>
+                        <div className="App-card-title-mark-subtitle">OPEN</div>
                       </div>
                       <div>
-                        <AssetDropdown assetSymbol="GMX" />
+                        <AssetDropdown assetSymbol="OPEN" />
                       </div>
                     </div>
                   </div>
@@ -778,7 +778,7 @@ export default function DashboardV2() {
                       <div className="label">
                         <Trans>Supply</Trans>
                       </div>
-                      <div>{formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true)} GMX</div>
+                      <div>{formatAmount(totalGmxSupply, GMX_DECIMALS, 0, true)} OPEN</div>
                     </div>
                     <div className="App-card-row">
                       <div className="label">
@@ -844,7 +844,7 @@ export default function DashboardV2() {
                           />
                         ))}
                       </Pie>
-                      <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
+                      <text x={"50%"} y={"50%"} fill="#472F50" textAnchor="middle" dominantBaseline="middle">
                         <Trans>Distribution</Trans>
                       </text>
                       <Tooltip content={<CustomTooltip />} />
@@ -857,7 +857,7 @@ export default function DashboardV2() {
                   <div className="App-card-title">
                     <div className="App-card-title-mark">
                       <div className="App-card-title-mark-icon">
-                        <img src={glp40Icon} alt="glp40Icon" />
+                        <img src={gmx40Icon} alt="glp40Icon" />
                         {chainId === ARBITRUM ? (
                           <img src={arbitrum16Icon} alt={t`Arbitrum Icon`} className="selected-network-symbol" />
                         ) : (
@@ -865,11 +865,11 @@ export default function DashboardV2() {
                         )}
                       </div>
                       <div className="App-card-title-mark-info">
-                        <div className="App-card-title-mark-title">GLP</div>
-                        <div className="App-card-title-mark-subtitle">GLP</div>
+                        <div className="App-card-title-mark-title">OLP</div>
+                        <div className="App-card-title-mark-subtitle">OLP</div>
                       </div>
                       <div>
-                        <AssetDropdown assetSymbol="GLP" />
+                        <AssetDropdown assetSymbol="OLP" />
                       </div>
                     </div>
                   </div>
@@ -885,7 +885,7 @@ export default function DashboardV2() {
                       <div className="label">
                         <Trans>Supply</Trans>
                       </div>
-                      <div>{formatAmount(glpSupply, GLP_DECIMALS, 0, true)} GLP</div>
+                      <div>{formatAmount(glpSupply, GLP_DECIMALS, 0, true)} OLP</div>
                     </div>
                     <div className="App-card-row">
                       <div className="label">
@@ -941,8 +941,8 @@ export default function DashboardV2() {
                           />
                         ))}
                       </Pie>
-                      <text x={"50%"} y={"50%"} fill="white" textAnchor="middle" dominantBaseline="middle">
-                        GLP Pool
+                      <text x={"50%"} y={"50%"} fill="#472F50" textAnchor="middle" dominantBaseline="middle">
+                        OLP Pool
                       </text>
                       <Tooltip content={<CustomTooltip />} />
                     </PieChart>
@@ -952,7 +952,7 @@ export default function DashboardV2() {
             </div>
             <div className="token-table-wrapper App-card">
               <div className="App-card-title">
-                <Trans>GLP Index Composition</Trans>{" "}
+                <Trans>OLP Index Composition</Trans>{" "}
                 {chainId === AVALANCHE && <img src={avalanche16Icon} alt={t`Avalanche Icon`} />}
                 {chainId === ARBITRUM && <img src={arbitrum16Icon} alt={t`Arbitrum Icon`} />}
               </div>

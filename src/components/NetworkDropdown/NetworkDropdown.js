@@ -13,6 +13,16 @@ import checkedIcon from "img/ic_checked.svg";
 import { importImage } from "lib/legacy";
 import { defaultLocale, dynamicActivate, isTestLanguage, locales } from "lib/i18n";
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faDotCircle,
+  faGripHorizontal,
+  faGripLinesVertical,
+  faGripVertical,
+  faList12,
+  faListDots,
+  faPersonDotsFromLine,
+} from "@fortawesome/free-solid-svg-icons";
 
 const LANGUAGE_MODAL_KEY = "LANGUAGE";
 const NETWORK_MODAL_KEY = "NETWORK";
@@ -93,7 +103,7 @@ function NavIcons({ selectorLabel }) {
       </button>
       <div className="network-dropdown-seperator" />
       <button className={cx("btn-primary small transparent")}>
-        <HiDotsVertical color="white" size={20} />
+        <FontAwesomeIcon icon={faGripHorizontal} />
       </button>
     </>
   );

@@ -25,7 +25,7 @@
 }
 
 .TokenSelector-box:hover {
-  color: #7885ff;
+  color: #55395f;
 }
 
 .Token-info {
@@ -108,16 +108,17 @@
 .TokenSelector-token-row input {
   padding: 0.8rem;
   width: 100%;
+  color: rgba(71, 47, 80, 0.5);
 }
 
 .TokenSelector-token-row .Token-text {
   font-size: 1.6rem;
-  color: #ffffff;
+  color: #472F50;
   font-weight: 500;
   letter-spacing: 0px;
 }
 .TokenSelector-token-row:hover {
-  background: var(--dark-blue-hover);
+  background: rgba(71, 47, 80, 0.1);
 }
 
 .TokenSelector.right .Modal {
@@ -125,7 +126,7 @@
   justify-content: flex-end;
 }
 .text-accent {
-  color: var(--dark-blue-accent);
+  color: #717171;
   font-size: 1.2rem;
   line-height: 1.5;
   letter-spacing: 0;

@@ -81,7 +81,7 @@ export default function SwapErrorModal({
   return (
     <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={label} className="Error-modal">
       <Trans>
-        <p>The pool's capacity has been reached for {swapToken.symbol}. Please use another token to buy GLP.</p>
+        <p>The pool's capacity has been reached for {swapToken.symbol}. Please use another token to buy OLP.</p>
         <p>Check the "Save on Fees" section for tokens with the lowest fees.</p>
       </Trans>
       <p>

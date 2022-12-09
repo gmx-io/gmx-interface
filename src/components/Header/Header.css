@@ -63,12 +63,11 @@
 
 .App-header-drawer .App-header-link-container .a,
 .App-header-drawer .App-header-link-container a {
-  font-size: 1.4rem;
-  line-height: 1.8rem;
+  font-size: 0.75rem;
+  line-height: 0.9375rem;
   font-weight: normal;
   letter-spacing: 0.1px;
   color: #a0a3c4;
-  padding: 1.5rem 1.6rem;
   text-decoration: none;
   display: block;
 }
@@ -169,12 +168,12 @@
   color: #a0a3c4;
   font-size: 1.5rem;
   line-height: 1.8rem;
-  font-weight: normal;
+  font-weight: 700;
 }
 
 .App-header-container-left .a.active,
 .App-header-container-left a.active {
-  color: white;
+  color: white ;
 }
 
 .App-header-container-right {

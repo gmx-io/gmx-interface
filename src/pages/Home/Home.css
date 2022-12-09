@@ -90,7 +90,7 @@
 }
 
 .Home-cta-section {
-  background: #101124;
+  background: #f9f9f9;
 }
 
 .Home-cta-container {
@@ -229,9 +229,8 @@
   padding: 2.325rem;
   border-radius: 1.3rem;
   max-width: 59.2rem;
-  background: #16182e;
-  box-shadow: 0px 0.5rem 1.3rem #00000085;
-  border: 1px solid #2a2b3d;
+  background: #DFE5E5;
+  border: 1px solid #472F50;
   border-radius: 4px;
 }
 
@@ -242,7 +241,8 @@
   font-size: 2.325rem;
   line-height: 3.1rem;
   letter-spacing: 0px;
-  color: #ffffff;
+  color: #472F50;
+  font-weight: 700;
   height: 3.1rem;
 }
 
@@ -254,7 +254,7 @@
   font-size: 1.8rem;
   line-height: 2.3rem;
   letter-spacing: 0px;
-  color: #fff;
+  color: #472F50;
   margin-top: 2.325rem;
 }
 
@@ -270,6 +270,13 @@
   margin-top: 1.9375rem;
   display: flex;
   justify-content: space-between;
+}
+.Home-token-card-option-action > .buy a
+.Home-token-card-option-action > .buy .a {
+  background: #472F50;
+  border-radius: 18px;
+  font-weight: 700;
+  
 }
 
 .Home-token-card-option-action > .buy a:first-child,
@@ -336,7 +343,7 @@
 }
 
 .Home-video-section {
-  background: #101124;
+  background: #f9f9f9;
   padding: 8rem 0;
 }
 
@@ -352,7 +359,7 @@
 }
 
 .Home-faqs-section {
-  background: #101124;
+  background: #f9f9f9;
   padding: 8rem 0;
 }
 

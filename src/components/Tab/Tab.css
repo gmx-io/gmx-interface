@@ -4,8 +4,8 @@
   font-size: 1.4rem;
   border-radius: 3px;
   overflow: hidden;
-  color: rgba(255, 255, 255, 0.7);
-  background: linear-gradient(90deg, rgba(30, 34, 61, 0.9) 0%, rgba(38, 43, 71, 0.9) 100%);
+  color: rgba(255, 255, 255);
+  background: rgba(71, 47, 80, 0.5);
   box-shadow: inset 0px 0px 30px 5px rgba(255, 255, 255, 0.01);
 }
 
@@ -20,18 +20,21 @@
   padding-left: 1.5rem;
   padding-right: 1.5rem;
   cursor: pointer;
+  color: rgba(255, 255, 255);
+  opacity: 1;
   /* font-size: 1.5rem; */
 }
 
 .Tab.block .Tab-option:hover {
   color: rgba(255, 255, 255, 1);
-  background: linear-gradient(90deg, rgba(35, 57, 172, 1) 0%, rgba(43, 59, 147, 1) 100%);
+  background: #472F50;
+  opacity: 0.5;
 }
 
 .Tab.block .Tab-option.active {
   opacity: 1;
   pointer-events: none;
-  background: linear-gradient(90deg, rgba(45, 66, 252, 1) 0%, rgba(46, 61, 205, 1) 100%);
+  background: #472F50;
   color: rgba(255, 255, 255, 1);
 }
 

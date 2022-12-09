@@ -155,9 +155,9 @@
 .App-box-highlight,
 .App-box-solid {
   position: relative;
-  border: 1px solid #1e2136;
-  border-radius: 0.4rem;
-  background: #16182e;
+  // border: 1px solid #1e2136;
+  // border-radius: 0.4rem;
+  background: #DFE5E5;
   font-size: 1.5rem;
 }
 
@@ -291,7 +291,7 @@
   line-height: 2.1rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: #ffffff;
+  color: #472F50;
 }
 
 .App-card-info-subtitle {
@@ -299,7 +299,7 @@
   line-height: 1.5rem;
   font-weight: normal;
   letter-spacing: 0px;
-  color: #a9a9b0;
+  color: #717171;
 }
 
 .App-card-title-iconlist {
@@ -320,11 +320,11 @@
 .Wallet-btn {
   display: block;
   box-shadow: inset 0px 0px 1rem 0.5rem rgba(27, 30, 46, 0.2);
-  background: var(--dark-blue);
+  background: #472F50;
   height: 5.1rem;
   width: 26.35rem;
   border: 1px solid var(--dark-blue-border);
-  border-radius: 0.3rem;
+  border-radius: 52px;
   position: relative;
   color: white;
   font-size: 2rem;
@@ -335,11 +335,7 @@
   padding-top: 1.05rem;
 }
 .Wallet-btn:hover {
-  background: var(--dark-blue-hover);
-  border-color: var(--dark-blue-border);
-}
-.Wallet-btn:active {
-  background: var(--dark-blue-active);
+  background: #55395f;
 }
 
 .Wallet-btn:not(:last-child) {
@@ -375,7 +371,7 @@ button.App-connect-wallet {
   padding: 0.9rem 2.4rem;
   height: 3.6rem;
   color: #17182c;
-  background: #03cfcd 0% 0% no-repeat padding-box;
+  background: red;
   border-radius: 0.4rem;
 }
 
@@ -384,7 +380,7 @@ button.App-connect-wallet:hover {
 }
 
 .App-header-trade-link {
-  margin-right: 2.4rem;
+  margin-right: 1.25rem;
 }
 
 .App-header-user-address {
@@ -488,11 +484,12 @@ button.App-connect-wallet:hover {
   font-weight: 500;
   margin-bottom: 0.8rem;
   font-weight: bold;
+  color: #472F50;
 }
 
 .Page-description {
   /* opacity: 0.7; */
-  color: #b7b7bd;
+  color: #717171;
   line-height: 2.15rem;
   font-size: 1.5rem;
 }
@@ -532,17 +529,18 @@ button.App-connect-wallet:hover {
 
 .App-card {
   padding: 1.5rem 1.5rem 1.86rem;
-  border: 1px solid #1e2136;
+  border: 1px solid #472F50;
   border-radius: 0.4rem;
   font-size: 1.5rem;
+  background-color: #DFE5E5;
 }
 
 .App-card-title {
   font-size: 1.6rem;
   line-height: 2.1rem;
-  font-weight: normal;
+  font-weight: 500;
   letter-spacing: 0px;
-  color: #ffffff;
+  color: #472F50;
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
@@ -564,6 +562,7 @@ button.App-connect-wallet:hover {
   grid-template-columns: 1fr auto;
   grid-column-gap: 1.5rem;
   padding: unset;
+  color: #717171;
 }
 
 .App-card-row.inner {
@@ -574,6 +573,9 @@ button.App-connect-wallet:hover {
   margin-left: 0.31rem;
   position: relative;
   top: 2px;
+}
+.App-card-row .label {
+ color:#717171;
 }
 
 .App-card-row > div:last-child {
@@ -614,6 +616,9 @@ button.App-connect-wallet:hover {
   vertical-align: middle;
   display: inline-block;
   cursor: pointer;
+  font-weight: 700;
+
+color: #F1F2F2;
 }
 
 .App-header .a.active,
@@ -625,23 +630,23 @@ button.App-connect-wallet:hover {
 
 .App-header .a:hover,
 .App-header a:hover {
-  opacity: 1;
-  color: #eee;
+  background-color: #eee;
+  color: #472F50;
 }
 
 .App-header-container-left .a,
 .App-header-container-left a {
   padding: 1.8rem 1.7rem;
   display: block;
-  color: #a0a3c4;
+  color: #472F5099;
   font-size: 1.5rem;
   line-height: 1.8rem;
-  font-weight: normal;
+  font-weight: 700;
 }
 
 .App-header-container-left .a.active,
 .App-header-container-left a.active {
-  color: white;
+  color: #472F50 ;
 }
 
 .Toastify {
@@ -679,6 +684,10 @@ button.App-connect-wallet:hover {
 .App-icon {
   vertical-align: middle;
   margin-bottom: 0.465rem;
+}
+
+.Exchange-settings-row .Checkbox .Checkbox-icon-wrapper .App-icon.Checkbox-icon.inactive{
+ color: #717171;
 }
 
 .App-background-side-1 {
@@ -785,17 +794,26 @@ button.App-connect-wallet:hover {
 
 a.App-cta,
 button.App-cta {
-  color: white;
-  text-decoration: none;
-  background: linear-gradient(90deg, rgba(71, 47, 80, 1) 0%, rgb(69, 44, 79) 100%);
-  /* box-shadow: 0 0 0.4rem 0.6rem rgba(45,66,252,0.15); */
+  background: #472F50;
+  font-size: 1.4rem;
+  line-height: 2rem;
+  font-weight: 700;
+  letter-spacing: 0px;
+  color: #ffffff;
+  box-sizing: border-box;
+  position: relative;
+  min-height: 3.6rem;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 52px;
 }
 
-a.App-cta:hover,
-button.App-cta:hover:enabled {
-  background: linear-gradient(90deg, rgb(63, 42, 71) 0%, rgb(55, 36, 63) 100%);
-  box-shadow: 0 0 0.4rem 0.6rem rgba(63, 42, 71, 0.2);
-}
+// a.App-cta:hover,
+// button.App-cta:hover:enabled {
+//   background: linear-gradient(90deg, rgb(63, 42, 71) 0%, rgb(55, 36, 63) 100%);
+//   box-shadow: 0 0 0.4rem 0.6rem rgba(63, 42, 71, 0.2);
+// }
 
 .App-cta.small {
   padding: 0.9rem 1.1rem;
@@ -805,8 +823,8 @@ a.App-cta.transparent,
 button.App-cta.transparent {
   box-shadow: none;
   background: none;
-  color: rgba(255, 255, 255, 0.7);
   opacity: 1;
+  border-radius: 18px;
 }
 
 a.App-cta.transparent:hover,
@@ -828,7 +846,7 @@ button.App-button-option {
   border-radius: 4px;
   font-size: 1.4rem;
   line-height: 2rem;
-  font-weight: normal;
+  font-weight: 700;
   letter-spacing: 0px;
   color: white;
   padding-left: 16px;
@@ -840,7 +858,8 @@ button.App-button-option {
   display: inline-flex !important;
   align-items: center;
   border: none;
-  background: rgba(43, 55, 94, 1);
+  background: #472F50;
+  border-radius: 18px;
 }
 
 a.App-button-option:hover,
@@ -895,10 +914,11 @@ button.App-button-option:disabled {
 }
 
 .App-slippage-tolerance-input {
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #717171;
   margin-top: 0.8rem;
   margin-bottom: 0.8rem;
   width: 100%;
+  color: #717171;
 }
 
 .App-slippage-tolerance-input-percent {
@@ -1076,7 +1096,7 @@ button.App-button {
 }
 
 .positive {
-  color: #0ecc83;
+  color: #01A789;
 }
 
 .positive-background {
@@ -1084,7 +1104,7 @@ button.App-button {
 }
 
 .negative {
-  color: #fa3c58;
+  color: #E8636B;
 }
 
 .negative-background {
@@ -1101,28 +1121,45 @@ button.App-button {
 }
 
 .App-slider .rc-slider-rail {
-  background: linear-gradient(90deg, rgba(30, 34, 61, 1) 0%, rgba(40, 45, 74, 1) 100%);
+  background: rgba(71, 47, 80, 0.5);
 }
 
 .App-slider .rc-slider-track {
-  background: linear-gradient(90deg, rgba(46, 61, 205, 1) 0%, rgba(45, 66, 252, 1) 100%);
+  background: #472F50;
 }
 
 .App-slider .rc-slider-dot {
-  border: none;
-  border-radius: 1px;
-  width: 2px;
-  margin-left: -1px;
-  background: rgba(40, 45, 74, 1);
+  box-sizing: border-box;
+
+  width: 10px;
+  height: 10px;
+
+  background: #DFE5E5;
+  border: 2px solid #938A9B;
+  border-radius: 3px;
+  transform: rotate(45deg);
 }
 
 .App-slider .rc-slider-dot-active {
-  background: #3d51ff;
+  box-sizing: border-box;
+
+  width: 10px;
+  height: 10px;
+
+  background: #472F50;
+  border: 2px solid #DFE5E5;
+  border-radius: 3px;
+  transform: rotate(45deg);
 }
 
 .App-slider .rc-slider-handle {
-  background: #303652;
-  border: solid 2px rgba(45, 66, 252, 1);
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  background: #472F50;
+  border: 2px solid #DFE5E5;
+  border-radius: 3px;
+  transform: rotate(45deg) translateX(-50%) translateY(40%) !important;
 }
 
 .App-slider .rc-slider-handle:active {
@@ -1131,8 +1168,7 @@ button.App-button {
 
 .App-slider .rc-slider-mark-text,
 .App-slider .rc-slider-mark-text-active {
-  color: white;
-  opacity: 0.5;
+  color: #717171;
 }
 
 .App-slider .rc-slider-mark-text:hover,

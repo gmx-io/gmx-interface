@@ -596,7 +596,7 @@ export default function PositionEditor(props) {
                                 This is the network cost required to execute the {depositOrWithdrawalText}.
                                 <br />
                                 <br />
-                                <ExternalLink href="https://gmxio.gitbook.io/gmx/trading#execution-fee">
+                                <ExternalLink href="https://wiki.openworld.vision/trading#execution-fee">
                                   More Info
                                 </ExternalLink>
                               </Trans>

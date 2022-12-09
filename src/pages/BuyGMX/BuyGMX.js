@@ -45,10 +45,10 @@ export default function BuyGMX() {
                 <Trans>Buy / Transfer ETH</Trans>
               </div>
               <div className="Page-description">
-                <Trans>ETH is needed on Arbitrum to purchase GMX.</Trans>
+                <Trans>ETH is needed on Arbitrum to purchase OPEN.</Trans>
                 <br />
                 <Trans>
-                  To purchase GMX on <span onClick={() => onNetworkSelect(AVALANCHE)}>Avalanche</span>, please change
+                  To purchase OPEN on <span onClick={() => onNetworkSelect(AVALANCHE)}>Avalanche</span>, please change
                   your network.
                 </Trans>
               </div>
@@ -121,11 +121,11 @@ export default function BuyGMX() {
                 <Trans>Buy / Transfer AVAX</Trans>
               </div>
               <div className="Page-description">
-                <Trans>Avax is needed on Avalanche to purchase GMX.</Trans>
+                <Trans>Avax is needed on Avalanche to purchase OPEN.</Trans>
                 <br />
                 <Trans>
-                  To purchase GMX on <span onClick={() => onNetworkSelect(ARBITRUM)}>Arbitrum</span>, please change your
-                  network.
+                  To purchase OPEN on <span onClick={() => onNetworkSelect(ARBITRUM)}>Arbitrum</span>, please change
+                  your network.
                 </Trans>
               </div>
             </div>
@@ -192,7 +192,7 @@ export default function BuyGMX() {
             <div className="buy-card">
               <div className="section-title-content">
                 <div className="card-title">
-                  <Trans>Buy GMX</Trans>
+                  <Trans>Buy OPEN</Trans>
                 </div>
               </div>
               <div className="App-card no-height">
@@ -210,7 +210,7 @@ export default function BuyGMX() {
                       imgSrc={gmxAvax}
                       href="https://traderjoexyz.com/trade?outputCurrency=0x62edc0692BD897D2295872a9FFCac5425011c661#/"
                     >
-                      <Trans>Purchase GMX</Trans>
+                      <Trans>Purchase OPEN</Trans>
                     </Button>
                   </div>
                 </div>
@@ -224,7 +224,7 @@ export default function BuyGMX() {
             <div className="buy-card">
               <div className="section-title-content">
                 <div className="card-title">
-                  <Trans>Buy GMX</Trans>
+                  <Trans>Buy OPEN</Trans>
                 </div>
               </div>
               <div className="App-card no-height">
@@ -242,7 +242,7 @@ export default function BuyGMX() {
                       imgSrc={gmxArbitrum}
                       href="https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a"
                     >
-                      <Trans>Purchase GMX</Trans>
+                      <Trans>Purchase OPEN</Trans>
                     </Button>
                   </div>
                 </div>
@@ -251,16 +251,16 @@ export default function BuyGMX() {
             <div className="buy-card">
               <div className="section-title-content">
                 <div className="card-title">
-                  <Trans>Buy GMX Bonds</Trans>
+                  <Trans>Buy OPEN Bonds</Trans>
                 </div>
               </div>
               <div className="App-card no-height">
                 <div className="App-card-content no-title">
                   <div className="BuyGMXGLP-description">
-                    <Trans>GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:</Trans>
+                    <Trans>OPEN bonds can be bought on Olympus Pro with a discount and a small vesting period:</Trans>
                   </div>
                   <div className="buy-gmx">
-                    <Button size="xl" imgSrc={ohmArbitrum} href="https://pro.olympusdao.finance/#/partners/GMX">
+                    <Button size="xl" imgSrc={ohmArbitrum} href="https://pro.olympusdao.finance/#/partners/OPEN">
                       <Trans>Olympus Pro</Trans>
                     </Button>
                   </div>

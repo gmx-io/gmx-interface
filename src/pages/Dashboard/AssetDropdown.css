@@ -2,9 +2,9 @@
   position: absolute;
   border: 1px solid #32344c;
   border-radius: 0.4rem;
-  background: var(--dark-blue);
   outline: none;
   z-index: 100;
+  background: #472F50;
 }
 
 .center-both {

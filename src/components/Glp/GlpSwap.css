@@ -59,7 +59,7 @@
 }
 
 .GlpSwap-stats-card .App-card-row .label {
-  color: #a9a9b0;
+  color: #717171;
   opacity: 1;
 }
 
@@ -72,6 +72,7 @@
 
 .GlpSwap-box .Exchange-swap-option-tabs {
   margin: 1.5rem 0;
+  border-radius: 18px;
 }
 
 .App-card-title-mark-icon {
@@ -96,7 +97,8 @@
   font-size: 1.6rem;
   line-height: 2.1rem;
   letter-spacing: 0px;
-  color: #ffffff;
+  color: #472F50;
+  font-weight: 500;
 }
 
 .App-card-title-mark .App-card-title-mark-subtitle {
@@ -107,9 +109,9 @@
 }
 
 .GlpSwap-token-list {
-  border: 1px solid #1e2136;
+  border: 1px solid #472F50;
   border-radius: 4px;
-  background: #16182e;
+  background: #DFE5E5;
   padding: 1.5rem;
   padding-top: 0;
   text-align: left;
@@ -169,6 +171,7 @@
 .token-table td,
 .token-table th {
   padding: 1.1625rem;
+  color:#717171 !important;
 }
 
 .token-table td:nth-child(2),
@@ -248,7 +251,7 @@
   top: -2.2rem;
   border-radius: 3.1rem;
   user-select: none;
-  background: linear-gradient(90deg, rgba(45,66,252,1) 0%, rgba(46,61,205,1) 100%);
+  background: #472F50;
   cursor: pointer;
   opacity: 0.85;
 }

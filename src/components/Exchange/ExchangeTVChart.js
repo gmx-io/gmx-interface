@@ -61,10 +61,10 @@ const getSeriesOptions = () => ({
   bottomColor: "rgba(42, 64, 103, 0.0)",
   lineWidth: 2,
   priceLineColor: "#3a3e5e",
-  downColor: "#fa3c58",
-  wickDownColor: "#fa3c58",
-  upColor: "#0ecc83",
-  wickUpColor: "#0ecc83",
+  downColor: "#E8636B",
+  wickDownColor: "#E8636B",
+  upColor: "#01A789",
+  wickUpColor: "#01A789",
   borderVisible: false,
 });
 
@@ -72,8 +72,8 @@ const getChartOptions = (width, height) => ({
   width,
   height,
   layout: {
-    backgroundColor: "rgba(255, 255, 255, 0)",
-    textColor: "#ccc",
+    backgroundColor: "#DFE5E5",
+    textColor: "#7F8080",
     fontFamily: "Relative",
   },
   localization: {
@@ -84,13 +84,11 @@ const getChartOptions = (width, height) => ({
   },
   grid: {
     vertLines: {
-      visible: true,
-      color: "rgba(35, 38, 59, 1)",
-      style: 2,
+      visible: false,
     },
     horzLines: {
       visible: true,
-      color: "rgba(35, 38, 59, 1)",
+      color: "#f9f9f9",
       style: 2,
     },
   },
@@ -411,7 +409,7 @@ export default function ExchangeTVChart(props) {
   };
 
   return (
-    <div className="ExchangeChart tv" ref={ref}>
+    <div className="ExchangeChart tv " ref={ref}>
       <div className="ExchangeChart-top App-box App-box-border">
         <div className="ExchangeChart-top-inner">
           <div>

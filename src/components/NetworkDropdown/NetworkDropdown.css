@@ -2,11 +2,12 @@
   position: relative;
   margin-left: 2.4rem;
   border: 1px solid var(--dark-blue-border);
-  border-radius: var(--border-radius-sm);
   height: 3.6rem;
   display: inline-flex;
   align-items: center;
-  color: white;
+  color: #472F50;
+  background: #DFE5E5;
+  border-radius: 18px;
 }
 
 .App-header-language {
@@ -19,6 +20,7 @@
 .network-dropdown-items {
   min-width: 17rem;
   padding-bottom: 0.8rem;
+  background-color: #472F50;
 }
 .network-dropdown-items:last-child {
   padding-bottom: 0;
@@ -70,6 +72,12 @@
   align-items: center;
   padding: 0.8rem;
   justify-content: space-between;
+  background: #472F50;
+  border-radius: 18px;
+}
+.network-dropdown-menu-item:hover {
+  background: #472F5090 !important;
+  border-radius: 18px;
 }
 .last-dropdown-menu {
   margin-bottom: 0.8rem;
@@ -81,7 +89,7 @@
 }
 .network-option {
   cursor: pointer;
-  background: var(--dark-blue);
+  background: #DFE5E5;
   border: 1px solid var(--dark-blue-border);
   border-radius: 0.4rem;
   padding: 0.8rem 1.5rem;
@@ -149,6 +157,7 @@
 
 .network-dropdown-item-label {
   margin-left: 0.8rem;
+  color: #ffffff;
 }
 
 .network-dropdown-list {
@@ -187,6 +196,16 @@
   }
   .App-header-language {
     margin-left: 0;
+  }
+  .network-dropdown-items {
+    background: #DFE5E5;
+  }
+  .network-option {
+    background: #472F50;
+    border-radius: 32px;
+  }
+  .network-dropdown-label {
+    color: #472F50;
   }
 }
 @media (max-width: 450px) {
