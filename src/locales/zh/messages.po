@@ -259,9 +259,10 @@ msgid "Approve GMX"
 msgstr "核准GMX"
 
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
-msgid "Approve token {0}"
-msgstr ""
+#~ msgid "Approve token {0}"
+#~ msgstr ""
 
+#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
@@ -1804,6 +1805,7 @@ msgid "Liquidity data not loaded"
 msgstr "未加载流动资金数据"
 
 #: src/components/Exchange/PositionsList.js
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Loading..."
 msgstr "加载中..."
 
