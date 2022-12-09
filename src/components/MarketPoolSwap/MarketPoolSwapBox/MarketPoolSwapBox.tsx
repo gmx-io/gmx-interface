@@ -169,7 +169,9 @@ export function MarketPoolSwapBox(p: Props) {
       if (modeTab === Mode.pair && !secondTokenState.tokenAddress) {
         const secondToken = availableTokens.filter((token) => token.address !== firstTokenState.tokenAddress)[0];
 
-        secondTokenState.setTokenAddress(secondToken.address);
+        if (secondToken) {
+          secondTokenState.setTokenAddress(secondToken.address);
+        }
       } else if (modeTab === Mode.single && secondTokenState.tokenAddress) {
         secondTokenState.setInputValue(undefined);
         secondTokenState.setTokenAddress(undefined);
@@ -240,40 +242,38 @@ export function MarketPoolSwapBox(p: Props) {
       />
 
       <div className={cx("MarketPoolSwapBox-form-layout", { reverse: operationTab === Operation.withdraw })}>
-        {firstTokenState.tokenAddress && firstTokenState.token && (
-          <BuyInputSection
-            topLeftLabel={operationTab === Operation.deposit ? t`Pay` : t`Receive`}
-            topRightLabel={t`Balance:`}
-            tokenBalance={formatTokenAmount(firstTokenState.balance, firstTokenState.token?.decimals)}
-            inputValue={firstTokenState.inputValue}
-            onInputValueChange={(e) => {
-              setFocusedInput(FocusInputId.swapFirst);
-              firstTokenState.setInputValue(e.target.value);
-            }}
-            showMaxButton={operationTab === Operation.deposit && shouldShowMaxButton(firstTokenState)}
-            onClickMax={() => {
-              setFocusedInput(FocusInputId.swapFirst);
-              firstTokenState.setValueByTokenAmount(firstTokenState.balance);
-            }}
-            balance={formatUsdAmount(firstTokenState.usdAmount)}
-          >
-            {modeTab === Mode.single ? (
-              <TokenSelector
-                label={t`Pay`}
-                chainId={chainId}
-                tokenAddress={firstTokenState.tokenAddress}
-                onSelectToken={(token) => firstTokenState.setTokenAddress(token.address)}
-                tokens={availableTokens}
-                infoTokens={tokenSelectorOptionsMap}
-                className="GlpSwap-from-token"
-                showSymbolImage={true}
-                showTokenImgInDropdown={true}
-              />
-            ) : (
-              <div className="selected-token">{firstTokenState.token?.symbol}</div>
-            )}
-          </BuyInputSection>
-        )}
+        <BuyInputSection
+          topLeftLabel={operationTab === Operation.deposit ? t`Pay` : t`Receive`}
+          topRightLabel={t`Balance:`}
+          tokenBalance={formatTokenAmount(firstTokenState.balance, firstTokenState.token?.decimals)}
+          inputValue={firstTokenState.inputValue}
+          onInputValueChange={(e) => {
+            setFocusedInput(FocusInputId.swapFirst);
+            firstTokenState.setInputValue(e.target.value);
+          }}
+          showMaxButton={operationTab === Operation.deposit && shouldShowMaxButton(firstTokenState)}
+          onClickMax={() => {
+            setFocusedInput(FocusInputId.swapFirst);
+            firstTokenState.setValueByTokenAmount(firstTokenState.balance);
+          }}
+          balance={formatUsdAmount(firstTokenState.usdAmount)}
+        >
+          {firstTokenState.tokenAddress && modeTab === Mode.single ? (
+            <TokenSelector
+              label={t`Pay`}
+              chainId={chainId}
+              tokenAddress={firstTokenState.tokenAddress}
+              onSelectToken={(token) => firstTokenState.setTokenAddress(token.address)}
+              tokens={availableTokens}
+              infoTokens={tokenSelectorOptionsMap}
+              className="GlpSwap-from-token"
+              showSymbolImage={true}
+              showTokenImgInDropdown={true}
+            />
+          ) : (
+            <div className="selected-token">{firstTokenState.token?.symbol}</div>
+          )}
+        </BuyInputSection>
 
         {secondTokenState.token && (
           <BuyInputSection

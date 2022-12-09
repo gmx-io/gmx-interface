@@ -20,6 +20,8 @@ import {
   getTokenBalance,
   getTokenTotalSupply,
 } from "domain/synthetics/tokens/utils";
+import { PLACEHOLDER_MARKET_NAME } from "config/synthetics";
+
 import "./SyntheticsMarketStats.scss";
 
 type Props = {
@@ -83,7 +85,7 @@ export function SyntheticsMarketStats(p: Props) {
             />
           </div>
           <div className="App-card-title-mark-info">
-            <div className="App-card-title-mark-title">{marketName}</div>
+            <div className="App-card-title-mark-title">{marketName || PLACEHOLDER_MARKET_NAME}</div>
             <div className="App-card-title-mark-subtitle">GMX Market tokens</div>
           </div>
           {/* TODO */}
@@ -95,7 +97,7 @@ export function SyntheticsMarketStats(p: Props) {
       <div className="App-card-divider" />
       <div className="App-card-content">
         {/* <CardRow label={t`Market`} value={marketName} /> */}
-        <CardRow label={t`Price`} value={formatUsdAmount(marketPrice)} />
+        <CardRow label={t`Price`} value={marketPrice ? formatUsdAmount(marketPrice) : "..."} />
         <CardRow
           label={t`Wallet`}
           value={marketBalance ? formatTokenAmountWithUsd(marketBalance, marketBalanceUsd, "GM", GM_DECIMALS) : "..."}

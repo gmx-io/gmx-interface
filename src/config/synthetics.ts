@@ -1,6 +1,8 @@
 import { MarketConfig } from "domain/synthetics/markets/types";
 import { AVALANCHE_FUJI, SUPPORTED_CHAIN_IDS } from "./chains";
 
+export const PLACEHOLDER_MARKET_NAME = "GM: ---/--- : [---/---]";
+
 const MARKETS: { [chainId: number]: MarketConfig[] } = {
   [AVALANCHE_FUJI]: [
     {

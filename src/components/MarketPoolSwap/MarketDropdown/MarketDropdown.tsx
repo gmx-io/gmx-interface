@@ -4,8 +4,10 @@ import { SyntheticsMarket } from "domain/synthetics/markets/types";
 import { useChainId } from "lib/chains";
 import { useMarkets } from "domain/synthetics/markets/useMarkets";
 import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
-import "./MarketDropdown.scss";
 import { getMarketName, getMarkets } from "domain/synthetics/markets/utils";
+import { PLACEHOLDER_MARKET_NAME } from "config/synthetics";
+
+import "./MarketDropdown.scss";
 
 export type MarketOption = {
   symbol: string;
@@ -27,16 +29,16 @@ export function MarketDropdown(p: Props) {
 
   const markets = getMarkets(data);
 
-  if (!p.selectedMarketKey) {
-    return null;
-  }
-
   return (
     <div className="MarketDropdown-root">
       <Menu>
         <Menu.Button as="div">
           <button className="MarketDropdown-current">
-            <span className="MarketDropdown-current-label">{getMarketName(chainId, data, p.selectedMarketKey)}</span>
+            <span className="MarketDropdown-current-label">
+              {p.selectedMarketKey && markets.length > 0
+                ? getMarketName(chainId, data, p.selectedMarketKey)
+                : PLACEHOLDER_MARKET_NAME}
+            </span>
             <FaChevronDown className="MarketDropdown-current-arrow" />
           </button>
         </Menu.Button>
