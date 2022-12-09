@@ -14,10 +14,9 @@ import {
   getTokenAllowance,
   getTokenConfig,
   getUsdFromTokenAmount,
-  MOCK_GM_PRICE,
 } from "domain/synthetics/tokens/utils";
 import { BigNumber } from "ethers";
-import { GM_DECIMALS } from "lib/legacy";
+import { GM_DECIMALS, USD_DECIMALS } from "lib/legacy";
 import { Operation, operationTexts } from "../constants";
 
 import { useWeb3React } from "@web3-react/core";
@@ -30,6 +29,7 @@ import { PriceImpactData } from "domain/synthetics/priceImpact/types";
 import { useTokenAllowance } from "domain/synthetics/tokens/useTokenAllowance";
 import { useChainId } from "lib/chains";
 import "./MarketPoolSwapConfirmation.scss";
+import { expandDecimals } from "lib/numbers";
 
 type Props = {
   onClose: () => void;
@@ -80,6 +80,8 @@ export function MarketPoolSwapConfirmation(p: Props) {
 
   const firstTokenText = getTokenText(p.tokensData, p.firstSwapTokenAddress, p.firstSwapTokenAmount);
   const secondTokenText = getTokenText(p.tokensData, p.secondSwapTokenAddress, p.secondSwapTokenAmount);
+
+  const MOCK_GM_PRICE = expandDecimals(100, USD_DECIMALS);
 
   const gmUsdAmount = convertToUsdByPrice(p.gmSwapAmount, GM_DECIMALS, MOCK_GM_PRICE);
   const gmTokenText = formatTokenAmountWithUsd(p.gmSwapAmount, gmUsdAmount, "GM", GM_DECIMALS);
