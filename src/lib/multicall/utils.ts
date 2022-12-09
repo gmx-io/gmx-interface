@@ -13,10 +13,13 @@ export const MAX_TIMEOUT = 2000;
 export async function executeMulticall(
   chainId: number,
   library: Web3Provider | undefined,
-  request: ContractCallContext[]
+  request: MulticallRequestConfig<any>
 ) {
   // Try to use rpc provider of the connected wallet
   let provider = library ? library.getSigner().provider : undefined;
+
+  // Wait for initialization to chech the network
+  await provider?.ready;
 
   // If the wallet is not connected or the network does not match the chainId of the request, create a new rpc provider
   if (!provider || provider.network?.chainId !== chainId) {
@@ -27,33 +30,35 @@ export async function executeMulticall(
 
   const multicall = getMulticallLib(provider as ethers.providers.JsonRpcProvider);
 
-  // prettier-ignore
-  return Promise.race([
-    multicall.call(request),
-    sleep(MAX_TIMEOUT).then(() => Promise.reject("rpc timeout"))
+  const formattedReq = formatMulticallRequest(request);
+
+  const requestPromise = Promise.race([
+    multicall.call(formattedReq),
+    sleep(MAX_TIMEOUT).then(() => Promise.reject("rpc timeout")),
   ]).catch((e) => {
-      // eslint-disable-next-line no-console
-      console.error("multicall error:", e, request);
+    // eslint-disable-next-line no-console
+    console.error("multicall error:", e, request);
 
-      const fallbackProvider = getFallbackProvider(chainId);
+    const fallbackProvider = getFallbackProvider(chainId);
 
-      if (!fallbackProvider) {
-        throw e;
-      }
-
-      // eslint-disable-next-line no-console
-      console.log("using multicall fallback");
-
-      const multicall = getMulticallLib(fallbackProvider);
-
-      return multicall.call(request).catch((e) => {
-        // eslint-disable-next-line no-console
-        console.error("multicall fallback error", e);
-
-        throw e;
-      });
+    if (!fallbackProvider) {
+      throw e;
     }
-  );
+
+    // eslint-disable-next-line no-console
+    console.log("using multicall fallback");
+
+    const multicall = getMulticallLib(fallbackProvider);
+
+    return multicall.call(formattedReq).catch((e) => {
+      // eslint-disable-next-line no-console
+      console.error("multicall fallback error", e);
+
+      throw e;
+    });
+  });
+
+  return requestPromise.then((res) => formatMulticallResult(res.results));
 }
 
 function getMulticallLib(provider: ethers.providers.JsonRpcProvider) {
@@ -64,7 +69,7 @@ function getMulticallLib(provider: ethers.providers.JsonRpcProvider) {
   });
 }
 
-export function formatMulticallRequest(requestConfig: MulticallRequestConfig<any>): ContractCallContext[] {
+function formatMulticallRequest(requestConfig: MulticallRequestConfig<any>): ContractCallContext[] {
   const result = Object.keys(requestConfig).reduce((contracts, contractField) => {
     const contractConfig = requestConfig[contractField];
 
@@ -96,7 +101,7 @@ export function formatMulticallRequest(requestConfig: MulticallRequestConfig<any
   return result;
 }
 
-export function formatMulticallResult(response: ContractCallResults["results"]): MulticallResult<any> {
+function formatMulticallResult(response: ContractCallResults["results"]): MulticallResult<any> {
   const result = Object.keys(response).reduce((acc, contractReference) => {
     const contractResponse = response[contractReference].callsReturnContext;
 
@@ -116,7 +121,7 @@ export function formatMulticallResult(response: ContractCallResults["results"]):
   return result;
 }
 
-export function formatReturnValue(val: any) {
+function formatReturnValue(val: any) {
   // etherium-multicall doesn't parse BigNumbers automatically
   if (val?.type === "BigNumber") {
     return bigNumberify(val);

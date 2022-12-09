@@ -1,8 +1,18 @@
 import { useWeb3React } from "@web3-react/core";
 import useSWR from "swr";
 import { CacheKey, MulticallRequestConfig, MulticallResult, SkipKey } from "./types";
-import { executeMulticall, formatMulticallRequest, formatMulticallResult } from "./utils";
+import { executeMulticall } from "./utils";
 
+/**
+ * A hook to fetch data from contracts via multicall.
+ * Preferably wrapped in custom hooks, such as useMarkets, usePositions, etc.
+ *
+ * @param chainId - on which network the request should be executed
+ * @param name - an unique name for the request, used as a part of swr cache key
+ * @param params.key - the cache key as an array, if a falsy value is passed, the request will be skipped
+ * @param params.request - contract calls config or callback which returns it
+ * @param params.parseResponse - optional callback to pre-process and format the response
+ */
 export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResult = MulticallResult<TConfig>>(
   chainId: number,
   name: string,
@@ -26,23 +36,19 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 
   const swrResult = useSWR<TResult | undefined>(swrFullKey, {
     ...swrOpts,
-    fetcher: async (...fullKey: CacheKey) => {
+    fetcher: async () => {
       // prettier-ignore
       const request = typeof params.request === "function" 
         ? params.request(chainId, params.key as CacheKey) 
         : params.request;
 
-      const requestContext = formatMulticallRequest(request);
-
       try {
-        const multicallResponse = await executeMulticall(chainId, library, requestContext);
-
-        const formattedResponse = formatMulticallResult(multicallResponse.results);
+        const response = await executeMulticall(chainId, library, request);
 
         // prettier-ignore
         const result = typeof params.parseResponse === "function" 
-            ? params.parseResponse(formattedResponse, chainId, params.key as CacheKey) 
-            : formattedResponse;
+            ? params.parseResponse(response, chainId, params.key as CacheKey) 
+            : response;
 
         return result as TResult;
       } catch (e) {

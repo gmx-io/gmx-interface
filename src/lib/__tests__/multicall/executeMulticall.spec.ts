@@ -2,32 +2,89 @@ import "@testing-library/jest-dom";
 import Token from "abis/Token.json";
 import * as MulticallLib from "ethereum-multicall";
 import * as rpcLib from "lib/rpc";
-import { getTokenBySymbol } from "config/tokens";
 import { ARBITRUM, AVALANCHE, FALLBACK_PROVIDERS } from "config/chains";
 import { executeMulticall, MAX_TIMEOUT } from "lib/multicall/utils";
 import { generateTestingUtils } from "eth-testing";
 import { sleep } from "lib/sleep";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 import { useWeb3React } from "@web3-react/core";
 import { getInjectedHandler } from "lib/wallets";
 import { useEffect } from "react";
 import { act } from "@testing-library/react";
-import { testHook } from "lib/testUtils";
 import { JsonRpcProvider } from "@ethersproject/providers";
+import { testHook } from "lib/testUtils";
+import { MulticallRequestConfig, MulticallResult } from "lib/multicall";
 
 const chainId = ARBITRUM;
 
 const MulticallSpy = jest.spyOn(MulticallLib, "Multicall");
 
-const testRequest = [
-  {
-    reference: "usdc",
-    contractAddress: getTokenBySymbol(chainId, "USDC").address,
+const testRequest: MulticallRequestConfig<any> = {
+  testContract: {
+    contractAddress: ethers.constants.AddressZero,
     abi: Token.abi,
-    calls: [{ reference: "name", methodName: "name", methodParameters: [] }],
+    calls: { name: { methodName: "name", params: [] } },
   },
-];
+  testContract2: {
+    contractAddress: ethers.constants.AddressZero,
+    abi: Token.abi,
+    calls: {
+      name: { methodName: "name", params: [] },
+      balance: { methodName: "balanceOf", params: [ethers.constants.AddressZero] },
+    },
+  },
+};
+
+const testResult: MulticallResult<any> = {
+  testContract: {
+    name: {
+      returnValues: ["test"],
+      success: true,
+    },
+  },
+  testContract2: {
+    name: {
+      returnValues: ["test"],
+      success: true,
+    },
+    balance: {
+      returnValues: [BigNumber.from(0)],
+      success: true,
+    },
+  },
+};
+
+// Returned from lib
+const testMulticallResponse = {
+  results: {
+    testContract: {
+      originalContractCallContext: {} as any,
+      callsReturnContext: [
+        {
+          reference: "name",
+          returnValues: ["test"],
+          success: true,
+        },
+      ],
+    },
+    testContract2: {
+      originalContractCallContext: {} as any,
+      callsReturnContext: [
+        {
+          reference: "name",
+          returnValues: ["test"],
+          success: true,
+        },
+        {
+          reference: "balance",
+          returnValues: [{ type: "BigNumber", hex: "0x00" }],
+          success: true,
+        },
+      ],
+    },
+  },
+};
 
 async function isFallbackProvider(provider: JsonRpcProvider) {
   await provider.ready;
@@ -56,9 +113,14 @@ describe("executeMulticall", () => {
   });
 
   it("should initialize Multicall with active wallet", async () => {
+    let usedProvider;
+    let libraryProvider;
     // @ts-ignore
-    MulticallSpy.mockImplementation(() => ({
-      call: () => Promise.resolve("test"),
+    MulticallSpy.mockImplementation(({ ethersProvider }) => ({
+      call: () => {
+        usedProvider = ethersProvider;
+        return Promise.resolve(testMulticallResponse);
+      },
     }));
 
     ethTesting.mockConnectedWallet([ethers.Wallet.createRandom().address], { chainId: ARBITRUM });
@@ -76,6 +138,8 @@ describe("executeMulticall", () => {
 
       useEffect(() => {
         if (library) {
+          libraryProvider = library.getSigner().provider;
+
           executeMulticall(chainId, library, testRequest).then((res) => {
             result = res;
           });
@@ -86,7 +150,8 @@ describe("executeMulticall", () => {
     await act(() => sleep(10));
 
     expect(MulticallSpy).toBeCalled();
-    expect(result).toEqual("test");
+    expect(usedProvider).toEqual(libraryProvider);
+    expect(result).toMatchObject(testResult);
   });
 
   it("should use requested chainId if chainId in the wallet is different", async () => {
@@ -103,7 +168,7 @@ describe("executeMulticall", () => {
 
         usedChainId = ethersProvider.network.chainId;
 
-        return "test";
+        return testMulticallResponse;
       },
     }));
 
@@ -130,19 +195,19 @@ describe("executeMulticall", () => {
     await act(() => sleep(10));
 
     expect(MulticallSpy).toBeCalled();
-    expect(result).toEqual("test");
+    expect(result).toMatchObject(testResult);
     expect(usedChainId).toEqual(requestChainId);
   });
 
   it("should initialize with inactive wallet", async () => {
     MulticallSpy.mockReturnValue({
-      call: () => Promise.resolve("test"),
+      call: () => Promise.resolve(testMulticallResponse),
     } as any);
 
     const result = await executeMulticall(chainId, undefined, testRequest);
 
-    expect(MulticallSpy).toBeCalledTimes(1);
-    expect(result).toEqual("test");
+    expect(MulticallSpy).toBeCalled();
+    expect(result).toMatchObject(testResult);
   });
 
   it("should use fallback on timeout", async () => {
@@ -150,7 +215,7 @@ describe("executeMulticall", () => {
     MulticallSpy.mockImplementation(({ ethersProvider }) => ({
       call: async () => {
         if (await isFallbackProvider(ethersProvider)) {
-          return "test";
+          return testMulticallResponse;
         } else {
           await sleep(MAX_TIMEOUT + 1);
 
@@ -161,7 +226,7 @@ describe("executeMulticall", () => {
 
     const result = await executeMulticall(chainId, undefined, testRequest);
     expect(MulticallSpy).toBeCalledTimes(2);
-    expect(result).toEqual("test");
+    expect(result).toMatchObject(testResult);
   });
 
   it("should use fallback on error", async () => {
@@ -169,7 +234,7 @@ describe("executeMulticall", () => {
     MulticallSpy.mockImplementation(({ ethersProvider }) => ({
       call: async () => {
         if (await isFallbackProvider(ethersProvider)) {
-          return "test";
+          return testMulticallResponse;
         } else {
           return Promise.reject("test error");
         }
@@ -179,7 +244,7 @@ describe("executeMulticall", () => {
     const result = await executeMulticall(chainId, undefined, testRequest);
 
     expect(MulticallSpy).toBeCalledTimes(2);
-    expect(result).toEqual("test");
+    expect(result).toMatchObject(testResult);
   });
 
   it("should throw an error if fallback provider doesn't specified", async () => {
@@ -189,7 +254,7 @@ describe("executeMulticall", () => {
     MulticallSpy.mockImplementation(({ ethersProvider }) => ({
       call: async () => {
         if (await isFallbackProvider(ethersProvider)) {
-          return "test";
+          return testMulticallResponse;
         } else {
           return Promise.reject("test error");
         }
