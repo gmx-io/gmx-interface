@@ -1310,6 +1310,8 @@ msgid "Execution Fee"
 msgstr "执行费"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Execution fee"
 msgstr ""
 
@@ -1335,6 +1337,7 @@ msgid "Fees"
 msgstr "费用"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Fees and price impact"
 msgstr ""
 
@@ -1536,6 +1539,10 @@ msgstr "高滑点，继续交易"
 #: src/components/Exchange/SwapBox.js
 msgid "High USDG Slippage, Long Anyway"
 msgstr "高 USDG 滑点，继续做多"
+
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+msgid "I am aware of the high price impact"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "I am aware of the trigger orders"
@@ -2111,6 +2118,10 @@ msgid "NFT Wallet"
 msgstr ""
 
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+msgid "Need to accept price impact"
+msgstr ""
+
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Need tokens approval"
 msgstr ""
 
@@ -2511,13 +2522,14 @@ msgstr "价格低于标价"
 msgid "Price conditions are met"
 msgstr ""
 
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Price impact"
 msgstr ""
 
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-msgid "Price impact description"
-msgstr ""
+#~ msgid "Price impact description"
+#~ msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Price is above Mark Price"

@@ -38,7 +38,7 @@ export function ApproveTokenButton(p: Props) {
   }
 
   return (
-    <Checkbox isChecked={p.isApproved} setIsChecked={onApprove}>
+    <Checkbox asRow isChecked={p.isApproved} setIsChecked={onApprove}>
       {isApproving || (isApproveSubmitted && !p.isApproved)
         ? t`Pending approve ${p.tokenSymbol}`
         : t`Approve ${p.tokenSymbol}`}

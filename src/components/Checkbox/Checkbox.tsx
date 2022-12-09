@@ -11,14 +11,15 @@ type Props = {
   disabled?: boolean;
   className?: string;
   children?: ReactNode;
+  asRow?: boolean;
 };
 
 export default function Checkbox(props: Props) {
-  const { isChecked, setIsChecked, disabled, className } = props;
+  const { isChecked, setIsChecked, disabled, className, asRow } = props;
 
   return (
     <div
-      className={cx("Checkbox", { disabled, selected: isChecked }, className)}
+      className={cx("Checkbox", { disabled, selected: isChecked, fullRow: asRow }, className)}
       onClick={() => setIsChecked(!isChecked)}
     >
       <span className="Checkbox-icon-wrapper">

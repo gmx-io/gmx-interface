@@ -8,26 +8,28 @@ import { useChainId } from "lib/chains";
 import { GM_DECIMALS } from "lib/legacy";
 import { useEffect, useMemo, useState } from "react";
 
-import { MarketDropdown } from "../MarketDropdown/MarketDropdown";
 import { FocusInputId, Mode, modeTexts, Operation, operationTexts } from "../constants";
+import { MarketDropdown } from "../MarketDropdown/MarketDropdown";
 import { shouldShowMaxButton, useGmTokenState, useSwapTokenState } from "../utils";
 
-import { getMarket, getTokenPoolType } from "domain/synthetics/markets/utils";
-import { BigNumber } from "ethers";
-import { IoMdSwap } from "react-icons/io";
+import { InfoRow } from "components/InfoRow/InfoRow";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import TokenSelector from "components/TokenSelector/TokenSelector";
+import Tooltip from "components/Tooltip/Tooltip";
+import { useMarketPools } from "domain/synthetics/markets/useMarketPools";
+import { useMarkets } from "domain/synthetics/markets/useMarkets";
+import { getMarket, getTokenPoolType } from "domain/synthetics/markets/utils";
 import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
 import { adaptToInfoTokens, formatTokenAmount, formatUsdAmount } from "domain/synthetics/tokens/utils";
-import { useMarkets } from "domain/synthetics/markets/useMarkets";
-import { usePriceImpactData } from "domain/synthetics/priceImpact/usePriceImpact";
-import { useMarketPools } from "domain/synthetics/markets/useMarketPools";
-import { formatPriceImpact, getPriceImpact } from "domain/synthetics/priceImpact/utils";
-import { InfoRow } from "components/InfoRow/InfoRow";
-import Tooltip from "components/Tooltip/Tooltip";
+import { BigNumber } from "ethers";
+import { IoMdSwap } from "react-icons/io";
 
-import "./MarketPoolSwapBox.scss";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { usePriceImpactData } from "domain/synthetics/fees/usePriceImpact";
+import { formatFee, getPriceImpact } from "domain/synthetics/fees/utils";
+import { expandDecimals } from "lib/numbers";
 import { MarketPoolSwapConfirmation } from "../MarketPoolSwapConfirmation/MarketPoolSwapConfirmation";
+import "./MarketPoolSwapBox.scss";
 
 type Props = {
   selectedMarketAddress?: string;
@@ -77,6 +79,11 @@ export function MarketPoolSwapBox(p: Props) {
   const shortDelta = getDeltaByPoolType(MarketPoolType.Short);
 
   const priceImpact = getPriceImpact(data, selectedMarket?.marketTokenAddress, longDelta, shortDelta);
+
+  // TODO
+  const executionFee = expandDecimals(1, 28);
+
+  const fees = executionFee.add(priceImpact?.priceImpact.lt(0) ? priceImpact?.priceImpact.abs() : BigNumber.from(0));
 
   const tokenSelectorOptionsMap = useMemo(() => adaptToInfoTokens(tokensData), [tokensData]);
 
@@ -173,7 +180,7 @@ export function MarketPoolSwapBox(p: Props) {
           secondTokenState.setTokenAddress(secondToken.address);
         }
       } else if (modeTab === Mode.single && secondTokenState.tokenAddress) {
-        secondTokenState.setInputValue(undefined);
+        secondTokenState.setInputValue("");
         secondTokenState.setTokenAddress(undefined);
       }
     },
@@ -327,11 +334,16 @@ export function MarketPoolSwapBox(p: Props) {
           label={<Trans>Fees and price impact</Trans>}
           value={
             <Tooltip
-              handle={priceImpact ? formatPriceImpact(priceImpact) : "..."}
+              handle={formatFee(fees)}
               position="right-bottom"
               renderContent={() => (
                 <div className="text-white">
-                  <Trans>Price impact description</Trans>
+                  <StatsTooltipRow
+                    label={t`Price impact`}
+                    value={formatFee(priceImpact?.priceImpact, priceImpact?.priceImpactBasisPoints)}
+                    showDollar={false}
+                  />
+                  <StatsTooltipRow label={t`Execution fee`} value={formatFee(executionFee)} showDollar={false} />
                 </div>
               )}
             />
@@ -360,6 +372,8 @@ export function MarketPoolSwapBox(p: Props) {
           onClose={() => setIsConfirming(false)}
           tokensData={tokensData}
           priceImpact={priceImpact}
+          fees={fees}
+          executionFee={executionFee}
           operationType={operationTab}
           onSubmit={() => null}
         />

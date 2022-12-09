@@ -22,7 +22,7 @@ type SwapTokenState = {
   token?: Token;
   inputValue?: string;
   tokenAddress?: string;
-  setInputValue: (val?: string) => void;
+  setInputValue: (val: string) => void;
   setValueByTokenAmount: (val?: BigNumber) => void;
   setValueByUsdAmount: (usdAmount?: BigNumber) => void;
   setTokenAddress: (val?: string) => void;
@@ -34,7 +34,7 @@ type SwapTokenState = {
 
 // TODO: move to domain?
 export function useSwapTokenState(tokensData: TokensData, initial: { tokenAddress?: string } = {}): SwapTokenState {
-  const [inputValue, setInputValue] = useState<string | undefined>();
+  const [inputValue, setInputValue] = useState<string>("");
   const [tokenAddress, setTokenAddress] = useState<string | undefined>(initial.tokenAddress);
 
   const formattedInputValue = inputValue;

@@ -122,15 +122,12 @@ export function calculateImpactForCrossoverRebalance(p: {
   return positiveImpact > negativeImpactUsd ? deltaDiffUsd : BigNumber.from(0).sub(deltaDiffUsd);
 }
 
-export function formatPriceImpact(p: PriceImpactData) {
-  if (!p.priceImpactBasisPoints.gt(0)) {
+export function formatFee(feeUsd?: BigNumber, feeBp?: BigNumber) {
+  if (!feeUsd?.abs().gt(0)) {
     return "...";
   }
 
-  const formattedUsd = formatUsdAmount(p.priceImpact);
-  const formattedBp = formatAmount(p.priceImpactBasisPoints, 2, 2);
-
-  return `${formattedBp}% (${formattedUsd})`;
+  return feeBp ? `${formatAmount(feeBp, 2, 2)}% (${formatUsdAmount(feeUsd)})` : formatUsdAmount(feeUsd);
 }
 
 // TODO: bigNumbers

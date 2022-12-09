@@ -1310,6 +1310,8 @@ msgid "Execution Fee"
 msgstr "Execution Fee"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Execution fee"
 msgstr "Execution fee"
 
@@ -1335,6 +1337,7 @@ msgid "Fees"
 msgstr "Fees"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Fees and price impact"
 msgstr "Fees and price impact"
 
@@ -1536,6 +1539,10 @@ msgstr "High Slippage, Swap Anyway"
 #: src/components/Exchange/SwapBox.js
 msgid "High USDG Slippage, Long Anyway"
 msgstr "High USDG Slippage, Long Anyway"
+
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+msgid "I am aware of the high price impact"
+msgstr "I am aware of the high price impact"
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "I am aware of the trigger orders"
@@ -2114,6 +2121,10 @@ msgid "NFT Wallet"
 msgstr "NFT Wallet"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+msgid "Need to accept price impact"
+msgstr "Need to accept price impact"
+
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Need tokens approval"
 msgstr "Need tokens approval"
 
@@ -2518,13 +2529,14 @@ msgstr "Price below Mark Price"
 msgid "Price conditions are met"
 msgstr "Price conditions are met"
 
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Price impact"
 msgstr "Price impact"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-msgid "Price impact description"
-msgstr "Price impact description"
+#~ msgid "Price impact description"
+#~ msgstr "Price impact description"
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Price is above Mark Price"

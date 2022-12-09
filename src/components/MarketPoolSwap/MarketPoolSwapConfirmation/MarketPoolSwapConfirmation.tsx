@@ -1,9 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { InfoRow } from "components/InfoRow/InfoRow";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
-import { formatPriceImpact } from "domain/synthetics/priceImpact/utils";
 import { TokenAllowanceData, TokensData } from "domain/synthetics/tokens/types";
 
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
@@ -25,13 +23,19 @@ import { getToken } from "config/tokens";
 import { createMarketDepositTxn } from "domain/synthetics/markets/createMarketDepositTxn";
 import { useMarkets } from "domain/synthetics/markets/useMarkets";
 import { getMarket, getMarketName } from "domain/synthetics/markets/utils";
-import { PriceImpactData } from "domain/synthetics/priceImpact/types";
+import { PriceImpactData } from "domain/synthetics/fees/types";
 import { useTokenAllowance } from "domain/synthetics/tokens/useTokenAllowance";
 import { useChainId } from "lib/chains";
 import "./MarketPoolSwapConfirmation.scss";
 import { expandDecimals } from "lib/numbers";
 import { useEffect, useMemo, useState } from "react";
 import { useTokenConfigs } from "domain/synthetics/tokens/useTokenConfigs";
+import Tooltip from "components/Tooltip/Tooltip";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { formatFee } from "domain/synthetics/fees/utils";
+import { InfoRow } from "components/InfoRow/InfoRow";
+import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
+import Checkbox from "components/Checkbox/Checkbox";
 
 type Props = {
   onClose: () => void;
@@ -44,6 +48,8 @@ type Props = {
   gmSwapAmount: BigNumber;
   tokensData: TokensData;
   operationType: Operation;
+  fees: BigNumber;
+  executionFee: BigNumber;
   onSubmit: () => void;
 };
 
@@ -81,6 +87,9 @@ export function MarketPoolSwapConfirmation(p: Props) {
   const tokenConfigsData = useTokenConfigs(chainId);
 
   const [tokensToApprove, setTokensToApprove] = useState<string[]>();
+  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
+
+  const isHighPriceImpact = p.priceImpact?.priceImpactBasisPoints.gte(HIGH_PRICE_IMPACT_BP);
 
   const swapAmountByToken = useMemo(
     () => ({
@@ -129,6 +138,13 @@ export function MarketPoolSwapConfirmation(p: Props) {
     if (tokensToApprove?.some((address) => needTokenApprove(tokenAllowanceData, address))) {
       return {
         text: t`Need tokens approval`,
+        disabled: true,
+      };
+    }
+
+    if (isHighPriceImpact && !isHighPriceImpactAccepted) {
+      return {
+        text: t`Need to accept price impact`,
         disabled: true,
       };
     }
@@ -248,8 +264,23 @@ export function MarketPoolSwapConfirmation(p: Props) {
         </div>
 
         <InfoRow
-          label={t`Price impact`}
-          value={p.priceImpact?.priceImpact.gt(0) ? formatPriceImpact(p.priceImpact) : "..."}
+          label={<Trans>Fees and price impact</Trans>}
+          value={
+            <Tooltip
+              handle={formatFee(p.fees)}
+              position="right-bottom"
+              renderContent={() => (
+                <div className="text-white">
+                  <StatsTooltipRow
+                    label={t`Price impact`}
+                    value={formatFee(p.priceImpact?.priceImpact, p.priceImpact?.priceImpactBasisPoints)}
+                    showDollar={false}
+                  />
+                  <StatsTooltipRow label={t`Execution fee`} value={formatFee(p.executionFee)} showDollar={false} />
+                </div>
+              )}
+            />
+          }
         />
 
         {tokensToApprove && tokensToApprove.length > 0 && (
@@ -272,6 +303,16 @@ export function MarketPoolSwapConfirmation(p: Props) {
 
             <div className="App-card-divider" />
           </>
+        )}
+
+        {isHighPriceImpact && (
+          <div className="MarketPoolSwapBox-warnings">
+            <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
+              <span className="muted font-sm">
+                <Trans>I am aware of the high price impact</Trans>
+              </span>
+            </Checkbox>
+          </div>
         )}
 
         <div className="Confirmation-box-row">

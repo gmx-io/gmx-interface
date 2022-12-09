@@ -3,6 +3,8 @@ import { AVALANCHE_FUJI, SUPPORTED_CHAIN_IDS } from "./chains";
 
 export const PLACEHOLDER_MARKET_NAME = "GM: ---/--- : [---/---]";
 
+export const HIGH_PRICE_IMPACT_BP = 800;
+
 const MARKETS: { [chainId: number]: MarketConfig[] } = {
   [AVALANCHE_FUJI]: [
     {

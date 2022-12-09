@@ -1310,6 +1310,8 @@ msgid "Execution Fee"
 msgstr "실행 수수료"
 
 #: src/components/Exchange/PositionSeller.js
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Execution fee"
 msgstr ""
 
@@ -1335,6 +1337,7 @@ msgid "Fees"
 msgstr "수수료"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Fees and price impact"
 msgstr ""
 
@@ -1536,6 +1539,10 @@ msgstr "높은 슬리피지 상관 없이 스왑"
 #: src/components/Exchange/SwapBox.js
 msgid "High USDG Slippage, Long Anyway"
 msgstr "높은 USDG 슬리피지 상관 없이 롱 포지션 체결"
+
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+msgid "I am aware of the high price impact"
+msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "I am aware of the trigger orders"
@@ -2111,6 +2118,10 @@ msgid "NFT Wallet"
 msgstr ""
 
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+msgid "Need to accept price impact"
+msgstr ""
+
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Need tokens approval"
 msgstr ""
 
@@ -2511,13 +2522,14 @@ msgstr "시장 평균가 미만 가격"
 msgid "Price conditions are met"
 msgstr ""
 
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Price impact"
 msgstr ""
 
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-msgid "Price impact description"
-msgstr ""
+#~ msgid "Price impact description"
+#~ msgstr ""
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Price is above Mark Price"
