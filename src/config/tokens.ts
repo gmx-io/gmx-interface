@@ -461,7 +461,7 @@ export const SYNTHETIC_TOKENS = {
       name: "Solana",
       symbol: "SOL",
       decimals: 18,
-      address: "0x36e6dc3cf44fdb8c62c5a11b457a28041f4c6eef",
+      address: "0x36E6dc3CF44FDb8C62c5a11B457A28041f4C6eEF",
       isNative: true,
       isShortable: true,
       isSynthetic: true,
@@ -653,6 +653,7 @@ export const GLP_POOL_COLORS = {
 
 export const TOKENS_MAP: { [chainId: number]: { [address: string]: Token } } = {};
 export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Token } } = {};
+export const SYNTHETIC_TOKENS_MAP: { [chainId: number]: { [symbol: string]: Token } } = {};
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
@@ -660,11 +661,18 @@ const CHAIN_IDS = [MAINNET, TESTNET, ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVAL
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];
+
   TOKENS_MAP[chainId] = {};
   TOKENS_BY_SYMBOL_MAP[chainId] = {};
+
   let tokens = TOKENS[chainId];
+
   if (ADDITIONAL_TOKENS[chainId]) {
     tokens = tokens.concat(ADDITIONAL_TOKENS[chainId]);
+  }
+
+  if (SYNTHETIC_TOKENS[chainId]) {
+    tokens = tokens.concat(SYNTHETIC_TOKENS[chainId]);
   }
 
   for (let i = 0; i < tokens.length; i++) {
@@ -707,13 +715,14 @@ export function isValidToken(chainId: number, address: string) {
   return address in TOKENS_MAP[chainId];
 }
 
-export function getToken(chainId: number, address: string) {
+export function getToken(chainId: number, address: string, params: { allowSynthetic?: boolean } = {}) {
   if (!TOKENS_MAP[chainId]) {
     throw new Error(`Incorrect chainId ${chainId}`);
   }
-  if (!TOKENS_MAP[chainId][address]) {
+  if (!TOKENS_MAP[chainId][address] && !params.allowSynthetic) {
     throw new Error(`Incorrect address "${address}" for chainId ${chainId}`);
   }
+
   return TOKENS_MAP[chainId][address];
 }
 

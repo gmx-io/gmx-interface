@@ -43,13 +43,17 @@ export function useMarkets(chainId: number): MarketsData {
       const marketsMap: { [address: string]: SyntheticsMarket } = {};
 
       for (let market of res.marketStore.markets.returnValues) {
-        marketsMap[market[0]] = {
-          marketTokenAddress: market[0],
-          indexTokenAddress: toUnwrappedNativeToken(chainId, market[1]),
-          longTokenAddress: toUnwrappedNativeToken(chainId, market[2]),
-          shortTokenAddress: toUnwrappedNativeToken(chainId, market[3]),
-          data: market[4],
-        };
+        try {
+          marketsMap[market[0]] = {
+            marketTokenAddress: market[0],
+            indexTokenAddress: toUnwrappedNativeToken(chainId, market[1]),
+            longTokenAddress: toUnwrappedNativeToken(chainId, market[2]),
+            shortTokenAddress: toUnwrappedNativeToken(chainId, market[3]),
+            data: market[4],
+          };
+        } catch (e) {
+          // ignore parsing errors on unknown tokens
+        }
       }
 
       return marketsMap;
@@ -65,13 +69,9 @@ export function useMarkets(chainId: number): MarketsData {
 }
 
 export function toUnwrappedNativeToken(chainId: number, address: string) {
-  try {
-    const token = getToken(chainId, address);
+  const token = getToken(chainId, address);
 
-    if (token.isWrapped) return ethers.constants.AddressZero;
+  if (token.isWrapped) return ethers.constants.AddressZero;
 
-    return address;
-  } catch (e) {
-    return ethers.constants.AddressZero;
-  }
+  return address;
 }

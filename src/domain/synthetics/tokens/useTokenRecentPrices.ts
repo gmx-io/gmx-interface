@@ -4,7 +4,6 @@ import { expandDecimals } from "lib/numbers";
 import { TokenPricesData, TokenPricesMap } from "./types";
 import useSWR from "swr";
 import { useMemo } from "react";
-import { BigNumber } from "ethers";
 import { getOracleKeeperUrl } from "config/oracleKeeper";
 
 type BackendResponse = {
@@ -12,13 +11,14 @@ type BackendResponse = {
   maxPrice: string;
   oracleDecimals: 6;
   tokenSymbol: string;
+  tokenAddress: string;
   updatedAt: number;
 }[];
 
 export function useTokenRecentPrices(chainId: number): TokenPricesData {
   const url = getOracleKeeperUrl(chainId, "/prices/tickers");
 
-  const { data } = useSWR<BackendResponse>([url], { fetcher: jsonFetcher });
+  const { data } = useSWR<BackendResponse>(url, { fetcher: jsonFetcher });
 
   return useMemo(() => {
     return {
@@ -29,13 +29,13 @@ export function useTokenRecentPrices(chainId: number): TokenPricesData {
 
 function formatResponse(chainId: number, response: BackendResponse = []) {
   const result = response.reduce((acc, priceItem) => {
-    let tokenConfig: any = {};
+    let tokenConfig: any;
 
     try {
       tokenConfig = getTokenBySymbol(chainId, priceItem.tokenSymbol);
-    } catch (e) {}
+    } catch (e) {
+      // ignore unknown token errors
 
-    if (!tokenConfig) {
       return acc;
     }
 
@@ -51,12 +51,5 @@ function formatResponse(chainId: number, response: BackendResponse = []) {
 }
 
 function parseOraclePrice(price: string, tokenDecimals: number, oracleDecimals: number) {
-  try {
-    return expandDecimals(price, tokenDecimals + oracleDecimals);
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error(price);
-
-    return BigNumber.from(0);
-  }
+  return expandDecimals(price, tokenDecimals + oracleDecimals);
 }
