@@ -89,7 +89,8 @@ export function MarketPoolSwapConfirmation(p: Props) {
   const [tokensToApprove, setTokensToApprove] = useState<string[]>();
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
-  const isHighPriceImpact = p.priceImpact?.priceImpactBasisPoints.gte(HIGH_PRICE_IMPACT_BP);
+  const isHighPriceImpact =
+    p.priceImpact?.priceImpact.lt(0) && p.priceImpact?.priceImpactBasisPoints.gte(HIGH_PRICE_IMPACT_BP);
 
   const swapAmountByToken = useMemo(
     () => ({
