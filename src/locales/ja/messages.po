@@ -1027,6 +1027,7 @@ msgid "Deposit"
 msgstr "入金"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Deposit created"
 msgstr ""
 
@@ -1034,6 +1035,7 @@ msgstr ""
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr ""
 
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Deposit failed"
 msgstr ""
@@ -1046,6 +1048,7 @@ msgstr "入金できませんでした!"
 msgid "Deposit failed."
 msgstr "入金できませんでした。"
 
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Deposit submitted"
 msgstr ""

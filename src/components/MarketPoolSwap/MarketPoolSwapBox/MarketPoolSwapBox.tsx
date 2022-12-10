@@ -78,7 +78,12 @@ export function MarketPoolSwapBox(p: Props) {
   const longDelta = getDeltaByPoolType(MarketPoolType.Long);
   const shortDelta = getDeltaByPoolType(MarketPoolType.Short);
 
-  const priceImpact = getPriceImpact(data, selectedMarket?.marketTokenAddress, longDelta, shortDelta);
+  const priceImpact = getPriceImpact(
+    data,
+    selectedMarket?.marketTokenAddress,
+    longDelta.usdDelta,
+    shortDelta.usdAmount
+  );
 
   // TODO
   const executionFee = expandDecimals(1, 28);
@@ -90,17 +95,30 @@ export function MarketPoolSwapBox(p: Props) {
   const submitButtonState = getSubmitButtonState();
 
   function getDeltaByPoolType(poolType: MarketPoolType) {
-    if (!selectedMarket) return BigNumber.from(0);
+    if (!selectedMarket)
+      return {
+        tokenAmount: BigNumber.from(0),
+        usdAmount: BigNumber.from(0),
+        usdDelta: BigNumber.from(0),
+      };
 
     const poolTokenState = [firstTokenState, secondTokenState].find(
       (tokenState) => tokenState.tokenAddress && getTokenPoolType(selectedMarket, tokenState.tokenAddress) === poolType
     );
 
-    if (!poolTokenState) return BigNumber.from(0);
+    if (!poolTokenState)
+      return {
+        tokenAmount: BigNumber.from(0),
+        usdAmount: BigNumber.from(0),
+        usdDelta: BigNumber.from(0),
+      };
 
-    return operationTab === Operation.deposit
-      ? poolTokenState.usdAmount
-      : BigNumber.from(0).sub(poolTokenState.usdAmount);
+    return {
+      tokenAmount: poolTokenState.tokenAmount,
+      usdAmount: poolTokenState.usdAmount,
+      usdDelta:
+        operationTab === Operation.deposit ? poolTokenState.usdAmount : BigNumber.from(0).sub(poolTokenState.usdAmount),
+    };
   }
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
@@ -367,6 +385,9 @@ export function MarketPoolSwapBox(p: Props) {
           firstSwapTokenAmount={firstTokenState.tokenAmount}
           secondSwapTokenAddress={secondTokenState.tokenAddress}
           secondSwapTokenAmount={secondTokenState.tokenAmount}
+          longTokenAmount={longDelta.tokenAmount}
+          shortTokenAmount={shortDelta.tokenAmount}
+          marketTokenAmount={gmTokenState.tokenAmount}
           marketTokenAddress={p.selectedMarketAddress!}
           gmSwapAmount={gmTokenState.tokenAmount}
           onClose={() => setIsConfirming(false)}

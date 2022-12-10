@@ -1,19 +1,19 @@
 import Reader from "abis/SyntheticsReader.json";
-import { useMulticall } from "lib/multicall";
-import { useMarkets } from "./useMarkets";
-import { getMarkets } from "./utils";
-import { useTokenConfigs } from "../tokens/useTokenConfigs";
-import { useTokenRecentPrices } from "../tokens/useTokenRecentPrices";
 import { getContract } from "config/contracts";
+import { getToken, getWrappedToken } from "config/tokens";
+import { BigNumber, ethers } from "ethers";
+import { USD_DECIMALS } from "lib/legacy";
+import { useMulticall } from "lib/multicall";
 import { ContractCallConfig } from "lib/multicall/types";
-import { getTokenPriceData } from "../tokens/utils";
+import { expandDecimals } from "lib/numbers";
 import { useMemo } from "react";
 import { TokenPriceData } from "../tokens/types";
-import { BigNumber, ethers } from "ethers";
+import { useTokenConfigs } from "../tokens/useTokenConfigs";
+import { useTokenRecentPrices } from "../tokens/useTokenRecentPrices";
+import { getTokenPriceData } from "../tokens/utils";
 import { MarketTokenPricesData } from "./types";
-import { getWrappedToken } from "config/tokens";
-import { expandDecimals } from "lib/numbers";
-import { USD_DECIMALS } from "lib/legacy";
+import { useMarkets } from "./useMarkets";
+import { getMarkets } from "./utils";
 
 export function useMarketTokenPrices(
   chainId: number,
@@ -29,9 +29,21 @@ export function useMarketTokenPrices(
     const markets = getMarkets(marketsData);
 
     return markets.reduce((acc, market) => {
-      const longPrice = formatPriceData(getTokenPriceData(tokensData, market.longTokenAddress));
-      const shortPrice = formatPriceData(getTokenPriceData(tokensData, market.shortTokenAddress));
-      const indexPrice = formatPriceData(getTokenPriceData(tokensData, market.indexTokenAddress));
+      const longPrice = formatPriceData(
+        chainId,
+        market.longTokenAddress,
+        getTokenPriceData(tokensData, market.longTokenAddress)
+      );
+      const shortPrice = formatPriceData(
+        chainId,
+        market.shortTokenAddress,
+        getTokenPriceData(tokensData, market.shortTokenAddress)
+      );
+      const indexPrice = formatPriceData(
+        chainId,
+        market.indexTokenAddress,
+        getTokenPriceData(tokensData, market.indexTokenAddress)
+      );
 
       if (!longPrice || !shortPrice || !indexPrice) {
         return acc;
@@ -88,12 +100,14 @@ export function useMarketTokenPrices(
   }, [marketTokenPrices]);
 }
 
-function formatPriceData(price?: TokenPriceData) {
+function formatPriceData(chainId: number, address: string, price?: TokenPriceData) {
   if (!price) return undefined;
 
+  const token = getToken(chainId, address);
+
   return {
-    min: price.minPrice,
-    max: price.maxPrice,
+    min: price.minPrice.div(expandDecimals(1, token.decimals)),
+    max: price.maxPrice.div(expandDecimals(1, token.decimals)),
   };
 }
 

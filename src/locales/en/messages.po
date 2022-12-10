@@ -1027,6 +1027,7 @@ msgid "Deposit"
 msgstr "Deposit"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Deposit created"
 msgstr "Deposit created"
 
@@ -1034,6 +1035,7 @@ msgstr "Deposit created"
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr "Deposit disabled, pending {0} upgrade"
 
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Deposit failed"
 msgstr "Deposit failed"
@@ -1046,6 +1048,7 @@ msgstr "Deposit failed!"
 msgid "Deposit failed."
 msgstr "Deposit failed."
 
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Deposit submitted"
 msgstr "Deposit submitted"

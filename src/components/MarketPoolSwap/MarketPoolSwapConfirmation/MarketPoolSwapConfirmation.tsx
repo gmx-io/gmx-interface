@@ -6,23 +6,25 @@ import { TokenAllowanceData, TokensData } from "domain/synthetics/tokens/types";
 
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import {
+  convertFromUsdByPrice,
   convertToUsdByPrice,
   formatTokenAmount,
   formatTokenAmountWithUsd,
   getTokenAllowance,
   getTokenConfig,
+  getTokenPrice,
   getUsdFromTokenAmount,
 } from "domain/synthetics/tokens/utils";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { GM_DECIMALS, USD_DECIMALS } from "lib/legacy";
 import { Operation, operationTexts } from "../constants";
 
 import { useWeb3React } from "@web3-react/core";
 import { getContract } from "config/contracts";
 import { getToken } from "config/tokens";
-import { createMarketDepositTxn } from "domain/synthetics/markets/createMarketDepositTxn";
+import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { useMarkets } from "domain/synthetics/markets/useMarkets";
-import { getMarket, getMarketName } from "domain/synthetics/markets/utils";
+import { getMarket, getMarketName, getMarketTokenPrice } from "domain/synthetics/markets/utils";
 import { PriceImpactData } from "domain/synthetics/fees/types";
 import { useTokenAllowance } from "domain/synthetics/tokens/useTokenAllowance";
 import { useChainId } from "lib/chains";
@@ -36,15 +38,21 @@ import { formatFee } from "domain/synthetics/fees/utils";
 import { InfoRow } from "components/InfoRow/InfoRow";
 import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
 import Checkbox from "components/Checkbox/Checkbox";
+import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
+import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
+import { useMarketTokenPrices } from "domain/synthetics/markets/useMarketTokenPrices";
 
 type Props = {
   onClose: () => void;
+  marketTokenAddress: string;
+  longTokenAmount?: BigNumber;
+  shortTokenAmount?: BigNumber;
+  marketTokenAmount?: BigNumber;
   priceImpact?: PriceImpactData;
   firstSwapTokenAddress: string;
   firstSwapTokenAmount: BigNumber;
   secondSwapTokenAddress?: string;
   secondSwapTokenAmount?: BigNumber;
-  marketTokenAddress: string;
   gmSwapAmount: BigNumber;
   tokensData: TokensData;
   operationType: Operation;
@@ -84,7 +92,10 @@ export function MarketPoolSwapConfirmation(p: Props) {
 
   const marketsData = useMarkets(chainId);
 
+  const marketTokensPrices = useMarketTokenPrices(chainId, { maximize: true });
+
   const tokenConfigsData = useTokenConfigs(chainId);
+  const tokensData = useWhitelistedTokensData(chainId);
 
   const [tokensToApprove, setTokensToApprove] = useState<string[]>();
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
@@ -136,7 +147,7 @@ export function MarketPoolSwapConfirmation(p: Props) {
       };
     }
 
-    if (tokensToApprove?.some((address) => needTokenApprove(tokenAllowanceData, address))) {
+    if (tokensToApprove?.some((address) => needTokenApprove(tokenAllowanceData, address, swapAmountByToken[address]))) {
       return {
         text: t`Need tokens approval`,
         disabled: true,
@@ -152,39 +163,70 @@ export function MarketPoolSwapConfirmation(p: Props) {
 
     return {
       text,
-      onClick: onCreateDeposit,
+      onClick: () => {
+        if (isDeposit) {
+          onCreateDeposit();
+        } else {
+          onCreateWithdrawal();
+        }
+      },
     };
   }
 
   function onCreateDeposit() {
     if (!account) return;
 
-    let longTokenAmount;
-    let shortTokenAmount;
+    const nativeTokenPrice = getTokenPrice(tokensData, ethers.constants.AddressZero);
 
-    if (p.firstSwapTokenAddress === market?.longTokenAddress) {
-      longTokenAmount = p.firstSwapTokenAmount;
-    } else if (p.firstSwapTokenAddress === market?.shortTokenAddress) {
-      shortTokenAmount = p.firstSwapTokenAmount;
-    }
+    const executionFee = convertFromUsdByPrice(p.executionFee, 18, nativeTokenPrice!);
 
-    if (p.secondSwapTokenAddress === market?.longTokenAddress) {
-      longTokenAmount = p.firstSwapTokenAmount;
-    } else if (p.secondSwapTokenAddress === market?.shortTokenAddress) {
-      shortTokenAmount = p.firstSwapTokenAmount;
-    }
-
-    createMarketDepositTxn(
+    createDepositTxn(
       chainId,
       library,
       {
         account,
         longTokenAddress: market?.longTokenAddress!,
         shortTokenAddress: market?.shortTokenAddress!,
-        longTokenAmount,
-        shortTokenAmount,
+        longTokenAmount: p.longTokenAmount,
+        shortTokenAmount: p.shortTokenAmount,
         marketTokenAddress: p.marketTokenAddress,
-        minMarketTokens: p.gmSwapAmount,
+        minMarketTokens: p.marketTokenAmount!,
+        executionFee: executionFee!,
+      },
+      {
+        successMsg: t`Deposit created`,
+        failMsg: t`Deposit failed`,
+        sentMsg: t`Deposit submitted`,
+      }
+    );
+  }
+
+  function onCreateWithdrawal() {
+    if (!account) return;
+
+    const nativeTokenPrice = getTokenPrice(tokensData, ethers.constants.AddressZero);
+
+    const longTokenPrice = getTokenPrice(tokensData, market?.longTokenAddress);
+    const shortTokenPrice = getTokenPrice(tokensData, market?.shortTokenAddress);
+    const marketTokenPrice = getMarketTokenPrice(marketTokensPrices, p.marketTokenAddress);
+
+    const executionFee = convertFromUsdByPrice(p.executionFee, 18, nativeTokenPrice!);
+
+    const marketLongAmount = p.longTokenAmount?.mul(longTokenPrice!).div(marketTokenPrice!);
+    const marketShortAmount = p.shortTokenAmount?.mul(shortTokenPrice!).div(marketTokenPrice!);
+
+    createWithdrawalTxn(
+      chainId,
+      library,
+      {
+        account,
+        longTokenAddress: market?.longTokenAddress!,
+        marketLongAmount,
+        marketShortAmount,
+        minLongTokenAmount: p.longTokenAmount,
+        minShortTokenAmount: p.shortTokenAmount,
+        marketTokenAddress: p.marketTokenAddress,
+        executionFee: executionFee!,
       },
       {
         successMsg: t`Deposit created`,
