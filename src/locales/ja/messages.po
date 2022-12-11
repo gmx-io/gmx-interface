@@ -1028,8 +1028,8 @@ msgstr "入金"
 
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
-msgid "Deposit created"
-msgstr ""
+#~ msgid "Deposit created"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
@@ -1037,8 +1037,8 @@ msgstr ""
 
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
-msgid "Deposit failed"
-msgstr ""
+#~ msgid "Deposit failed"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit failed!"
@@ -1048,10 +1048,14 @@ msgstr "入金できませんでした!"
 msgid "Deposit failed."
 msgstr "入金できませんでした。"
 
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
-msgid "Deposit submitted"
+#: src/domain/synthetics/markets/createDepositTxn.ts
+msgid "Deposit order sent"
 msgstr ""
+
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#~ msgid "Deposit submitted"
+#~ msgstr ""
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit submitted!"
@@ -1081,6 +1085,10 @@ msgstr "入金完了!"
 #: src/pages/Stake/StakeV2.js
 msgid "Depositing..."
 msgstr "入金中"
+
+#: src/domain/synthetics/markets/createDepositTxn.ts
+msgid "Despoit order failed"
+msgstr ""
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Diff"
@@ -3039,6 +3047,14 @@ msgstr ""
 msgid "Submit"
 msgstr "提出"
 
+#: src/domain/synthetics/markets/createDepositTxn.ts
+msgid "Success deposit order"
+msgstr ""
+
+#: src/domain/synthetics/markets/createWithdrawalTxn.ts
+msgid "Success withdrawal order"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -3549,7 +3565,7 @@ msgstr "ツイート"
 msgid "Two tokens create our ecosystem"
 msgstr "2つのトークンが私たちのエコシステムを作っています"
 
-#: src/App/App.js
+#: src/lib/contracts/transactionsContext.tsx
 msgid "Txn failed. <0>View</0>"
 msgstr ""
 
@@ -3699,7 +3715,7 @@ msgstr "べスティングされたGMXで引き出されていないもの"
 msgid "Vesting Status"
 msgstr "べスティング状況"
 
-#: src/App/App.js
+#: src/lib/contracts/transactionsContext.tsx
 #: src/pages/Exchange/Exchange.js
 #: src/pages/Exchange/Exchange.js
 msgid "View"
@@ -3836,6 +3852,14 @@ msgstr ""
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal failed."
 msgstr "出金できませんでした。"
+
+#: src/domain/synthetics/markets/createWithdrawalTxn.ts
+msgid "Withdrawal order failed"
+msgstr ""
+
+#: src/domain/synthetics/markets/createWithdrawalTxn.ts
+msgid "Withdrawal order sent"
+msgstr ""
 
 #: src/components/Exchange/PositionEditor.js
 msgid "Withdrawal submitted."

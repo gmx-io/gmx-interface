@@ -30,13 +30,11 @@ export function useMarketTokensData(chainId: number): MarketTokensData {
       const shortToken = getTokenData(tokensData, market.shortTokenAddress);
       const indexToken = getTokenData(tokensData, market.indexTokenAddress);
 
-      const longPrice = formatPrices(longToken);
-      const shortPrice = formatPrices(shortToken);
-      const indexPrice = formatPrices(indexToken);
+      const longPrices = formatPrices(longToken);
+      const shortPrices = formatPrices(shortToken);
+      const indexPrices = formatPrices(indexToken);
 
-      const includePrices = Boolean(longPrice && shortPrice && indexPrice);
-
-      if (includePrices) {
+      if (longPrices && shortPrices && indexPrices) {
         const marketProps = {
           marketToken: market.marketTokenAddress,
           longToken: getCorrectTokenAddress(chainId, market.longTokenAddress, "wrapped"),
@@ -51,11 +49,11 @@ export function useMarketTokensData(chainId: number): MarketTokensData {
           calls: {
             minPrice: {
               methodName: "getMarketTokenPrice",
-              params: [dataStoreAddress, marketProps, longPrice, shortPrice, indexPrice, false],
+              params: [dataStoreAddress, marketProps, longPrices, shortPrices, indexPrices, false],
             },
             maxPrice: {
               methodName: "getMarketTokenPrice",
-              params: [dataStoreAddress, marketProps, longPrice, shortPrice, indexPrice, true],
+              params: [dataStoreAddress, marketProps, longPrices, shortPrices, indexPrices, true],
             },
           },
         };

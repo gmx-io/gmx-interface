@@ -400,7 +400,7 @@ export function MarketPoolSwapBox(p: Props) {
           fees={fees}
           executionFee={executionFee}
           operationType={operationTab}
-          onSubmit={() => null}
+          onSubmitted={() => setIsConfirming(false)}
         />
       )}
     </div>

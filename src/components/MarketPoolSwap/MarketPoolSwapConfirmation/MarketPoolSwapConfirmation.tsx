@@ -39,6 +39,7 @@ import {
   useMarketTokensData,
 } from "domain/synthetics/markets";
 import "./MarketPoolSwapConfirmation.scss";
+import { useTransactions } from "lib/contracts";
 
 type Props = {
   onClose: () => void;
@@ -56,7 +57,7 @@ type Props = {
   operationType: Operation;
   fees: BigNumber;
   executionFee: BigNumber;
-  onSubmit: () => void;
+  onSubmitted: () => void;
 };
 
 function getTokenText(tokensData: TokensData, tokenAddress?: string, swapAmount?: BigNumber) {
@@ -81,6 +82,7 @@ function needTokenApprove(tokenAllowanceData: TokenAllowancesData, tokenAddress?
 export function MarketPoolSwapConfirmation(p: Props) {
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
+  const { executeTxn } = useTransactions();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
 
   const tokenAllowanceData = useTokenAllowance(chainId, {
@@ -172,10 +174,8 @@ export function MarketPoolSwapConfirmation(p: Props) {
 
     const executionFee = convertFromUsdByPrice(p.executionFee, 18, nativeToken.prices!.maxPrice);
 
-    createDepositTxn(
-      chainId,
-      library,
-      {
+    executeTxn(
+      createDepositTxn(chainId, library, {
         account,
         longTokenAddress: market?.longTokenAddress!,
         shortTokenAddress: market?.shortTokenAddress!,
@@ -184,13 +184,8 @@ export function MarketPoolSwapConfirmation(p: Props) {
         marketTokenAddress: p.marketTokenAddress,
         minMarketTokens: p.marketTokenAmount!,
         executionFee: executionFee!,
-      },
-      {
-        successMsg: t`Deposit created`,
-        failMsg: t`Deposit failed`,
-        sentMsg: t`Deposit submitted`,
-      }
-    );
+      })
+    ).then(p.onSubmitted);
   }
 
   function onCreateWithdrawal() {
@@ -207,10 +202,8 @@ export function MarketPoolSwapConfirmation(p: Props) {
     const marketLongAmount = p.longTokenAmount?.mul(longTokenPrice!).div(marketTokenPrice!);
     const marketShortAmount = p.shortTokenAmount?.mul(shortTokenPrice!).div(marketTokenPrice!);
 
-    createWithdrawalTxn(
-      chainId,
-      library,
-      {
+    executeTxn(
+      createWithdrawalTxn(chainId, library, {
         account,
         longTokenAddress: market?.longTokenAddress!,
         marketLongAmount,
@@ -219,13 +212,8 @@ export function MarketPoolSwapConfirmation(p: Props) {
         minShortTokenAmount: p.shortTokenAmount,
         marketTokenAddress: p.marketTokenAddress,
         executionFee: executionFee!,
-      },
-      {
-        successMsg: t`Deposit created`,
-        failMsg: t`Deposit failed`,
-        sentMsg: t`Deposit submitted`,
-      }
-    );
+      })
+    ).then(p.onSubmitted);
   }
 
   useEffect(

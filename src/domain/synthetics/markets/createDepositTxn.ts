@@ -1,6 +1,8 @@
 import { Web3Provider } from "@ethersproject/providers";
+import { t } from "@lingui/macro";
 import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
+import { TransactionParams } from "lib/contracts/transactionsContext";
 import { isAddressZero } from "lib/legacy";
 import { ExchangeRouter__factory } from "typechain-types";
 
@@ -15,7 +17,7 @@ type Params = {
   executionFee: BigNumber;
 };
 
-export async function createDepositTxn(chainId: number, library: Web3Provider, p: Params, opts: any) {
+export function createDepositTxn(chainId: number, library: Web3Provider, p: Params): TransactionParams {
   const contract = ExchangeRouter__factory.connect(getContract(chainId, "ExchangeRouter"), library.getSigner());
   const depositStoreAdress = getContract(chainId, "DepositStore");
 
@@ -51,10 +53,16 @@ export async function createDepositTxn(chainId: number, library: Web3Provider, p
     ]),
   ].filter(Boolean) as string[];
 
-  const tx = await contract.multicall(multicall, {
-    value: wntAmount,
-    gasLimit: 10 ** 6,
-  });
-
-  return tx;
+  return {
+    contract,
+    method: "multicall",
+    params: [multicall],
+    opts: {
+      value: wntAmount,
+      gasLimit: 10 ** 6,
+      sentMsg: t`Deposit order sent`,
+      successMsg: t`Success deposit order`,
+      failMsg: t`Despoit order failed`,
+    },
+  };
 }
