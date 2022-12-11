@@ -10,6 +10,8 @@ type Props = {
   inputValue?: number | string;
   onInputValueChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   onClickMax?: () => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
   showMaxButton?: boolean;
   staticInput?: boolean;
   balance: string;
@@ -25,6 +27,8 @@ export default function BuyInputSection(props: Props) {
     inputValue,
     onInputValueChange,
     onClickMax,
+    onFocus,
+    onBlur,
     showMaxButton,
     staticInput,
     balance,
@@ -43,7 +47,7 @@ export default function BuyInputSection(props: Props) {
           <span className="Exchange-swap-balance">{tokenBalance}</span>
         </div>
       </div>
-      <div className="Exchange-swap-section-bottom">
+      <label className="Exchange-swap-section-bottom">
         <div className="Exchange-swap-input-container">
           {!staticInput && (
             <input
@@ -53,17 +57,25 @@ export default function BuyInputSection(props: Props) {
               className="Exchange-swap-input"
               value={inputValue}
               onChange={onInputValueChange}
+              onFocus={onFocus}
+              onBlur={onBlur}
             />
           )}
           {staticInput && <div className="InputSection-static-input">{inputValue}</div>}
           {showMaxButton && (
-            <div className="Exchange-swap-max" onClick={onClickMax}>
+            <div
+              className="Exchange-swap-max"
+              onClick={() => {
+                if (onFocus) onFocus();
+                if (onClickMax) onClickMax();
+              }}
+            >
               <Trans>MAX</Trans>
             </div>
           )}
         </div>
         <div className="PositionEditor-token-symbol">{children}</div>
-      </div>
+      </label>
     </div>
   );
 }

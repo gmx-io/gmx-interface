@@ -7,7 +7,7 @@ import { MarketPoolType, Market } from "domain/synthetics/markets/types";
 import { useChainId } from "lib/chains";
 import { useEffect, useMemo, useState } from "react";
 
-import { FocusInputId, Mode, modeTexts, Operation, operationTexts, PoolDelta } from "../constants";
+import { Mode, modeTexts, Operation, operationTexts, PoolDelta } from "../constants";
 import { MarketDropdown } from "../MarketDropdown/MarketDropdown";
 
 import { InfoRow } from "components/InfoRow/InfoRow";
@@ -49,7 +49,6 @@ export function MarketPoolSwapBox(p: Props) {
 
   const [operationTab, setOperationTab] = useState(Operation.deposit);
   const [modeTab, setModeTab] = useState(Mode.single);
-  const [focusedInput, setFocusedInput] = useState<FocusInputId | undefined>();
   const [isConfirming, setIsConfirming] = useState(false);
 
   const tokensData = useWhitelistedTokensData(chainId);
@@ -217,7 +216,6 @@ export function MarketPoolSwapBox(p: Props) {
           secondTokenState.setTokenAddress(secondToken.address);
         }
       } else if (modeTab === Mode.single && secondTokenState.tokenAddress) {
-        secondTokenState.setInputValue("");
         secondTokenState.setTokenAddress(undefined);
       }
     },
@@ -226,17 +224,7 @@ export function MarketPoolSwapBox(p: Props) {
 
   useEffect(
     function syncInputValuesEff() {
-      if (!focusedInput) return;
-
-      if ([FocusInputId.swapFirst, FocusInputId.swapSecond].includes(focusedInput)) {
-        const swapSumUsd = firstTokenState.usdAmount.add(secondTokenState.usdAmount);
-
-        marketTokenState.setValueByUsdAmount(swapSumUsd);
-
-        return;
-      }
-
-      if (focusedInput === FocusInputId.market) {
+      if (marketTokenState.isFocused) {
         if (modeTab === Mode.single && firstTokenState.tokenAddress) {
           firstTokenState.setValueByUsdAmount(marketTokenState.usdAmount);
 
@@ -257,9 +245,15 @@ export function MarketPoolSwapBox(p: Props) {
 
           return;
         }
+      } else {
+        const swapSumUsd = firstTokenState.usdAmount.add(secondTokenState.usdAmount);
+
+        marketTokenState.setValueByUsdAmount(swapSumUsd);
+
+        return;
       }
     },
-    [focusedInput, firstTokenState, secondTokenState, marketTokenState, modeTab]
+    [firstTokenState, secondTokenState, marketTokenState, modeTab]
   );
 
   return (
@@ -292,14 +286,14 @@ export function MarketPoolSwapBox(p: Props) {
           tokenBalance={formatTokenAmount(firstTokenState.balance, firstTokenState.token?.decimals)}
           inputValue={firstTokenState.inputValue}
           onInputValueChange={(e) => {
-            setFocusedInput(FocusInputId.swapFirst);
             firstTokenState.setInputValue(e.target.value);
           }}
           showMaxButton={operationTab === Operation.deposit && shouldShowMaxButton(firstTokenState)}
           onClickMax={() => {
-            setFocusedInput(FocusInputId.swapFirst);
             firstTokenState.setValueByTokenAmount(firstTokenState.balance);
           }}
+          onFocus={firstTokenState.onFocus}
+          onBlur={firstTokenState.onBlur}
           balance={formatUsdAmount(firstTokenState.usdAmount)}
         >
           {firstTokenState.tokenAddress && modeTab === Mode.single ? (
@@ -326,14 +320,14 @@ export function MarketPoolSwapBox(p: Props) {
             tokenBalance={formatTokenAmount(secondTokenState.balance, secondTokenState.token?.decimals)}
             inputValue={secondTokenState.inputValue}
             onInputValueChange={(e) => {
-              setFocusedInput(FocusInputId.swapSecond);
               secondTokenState.setInputValue(e.target.value);
             }}
             showMaxButton={operationTab === Operation.deposit && shouldShowMaxButton(secondTokenState)}
             onClickMax={() => {
-              setFocusedInput(FocusInputId.swapSecond);
               secondTokenState.setValueByTokenAmount(secondTokenState.balance);
             }}
+            onFocus={secondTokenState.onFocus}
+            onBlur={secondTokenState.onBlur}
             balance={formatUsdAmount(secondTokenState.usdAmount)}
           >
             <div className="selected-token">{secondTokenState.token.symbol}</div>
@@ -352,14 +346,14 @@ export function MarketPoolSwapBox(p: Props) {
           tokenBalance={formatTokenAmount(marketTokenState.balance, marketTokenState.token?.decimals)}
           inputValue={marketTokenState.inputValue}
           onInputValueChange={(e) => {
-            setFocusedInput(FocusInputId.market);
             marketTokenState.setInputValue(e.target.value);
           }}
           showMaxButton={operationTab === Operation.withdraw && shouldShowMaxButton(marketTokenState)}
           onClickMax={() => {
-            setFocusedInput(FocusInputId.market);
             marketTokenState.setValueByTokenAmount(marketTokenState.balance);
           }}
+          onFocus={marketTokenState.onFocus}
+          onBlur={marketTokenState.onBlur}
           balance={formatUsdAmount(marketTokenState.usdAmount)}
         >
           <div className="selected-token">GM</div>

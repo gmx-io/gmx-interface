@@ -12,12 +12,6 @@ export enum Mode {
   pair = "pair",
 }
 
-export enum FocusInputId {
-  swapFirst = "swapFirst",
-  swapSecond = "swapSecod",
-  market = "market",
-}
-
 export const operationTexts = {
   [Operation.deposit]: t`Deposit`,
   [Operation.withdraw]: t`Withdraw`,
