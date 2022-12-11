@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
-import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
+import { expandDecimals, formatAmount } from "lib/numbers";
 import { formatUsdAmount } from "domain/synthetics/tokens";
 import { PriceImpact, PriceImpactConfigsData } from "./types";
 
@@ -128,19 +128,16 @@ export function calculateImpactForCrossoverRebalance(p: {
   return positiveImpact > negativeImpactUsd ? deltaDiffUsd : BigNumber.from(0).sub(deltaDiffUsd);
 }
 
-// TODO: bigNumbers
-function applyImpactFactor(diff: BigNumber, factor: BigNumber, exponent: BigNumber) {
-  const _exponent = exponent.div(expandDecimals(1, 30)).toNumber();
-  const _factor = factor.div(expandDecimals(1, 22)).toNumber() / 10 ** 8;
-  const _diff = diff.div(expandDecimals(1, 22)).toNumber() / 10 ** 8;
+// TODO: correct formula
+function applyImpactFactor(diff: BigNumber, factor?: BigNumber, exponent?: BigNumber) {
+  if (!factor || !exponent) return BigNumber.from(0);
 
-  const numberValue = (Math.pow(_diff, _exponent) * _factor) / 2;
+  const r = diff
+    .div(expandDecimals(1, 30))
+    .pow(2)
+    .mul(expandDecimals(1, 30))
+    .mul(expandDecimals(1, 22))
+    .div(expandDecimals(1, 30));
 
-  let result = parseInt(String(numberValue * 10 ** 8));
-
-  return bigNumberify(result)?.mul(expandDecimals(1, 22));
-}
-
-export function decimalToFloat(value, decimals = 0) {
-  return expandDecimals(value, 30 - decimals);
+  return r;
 }

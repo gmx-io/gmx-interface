@@ -22,6 +22,7 @@ import {
   formatTokenAmount,
   formatUsdAmount,
   getTokenData,
+  getUsdFromTokenAmount,
 } from "domain/synthetics/tokens/utils";
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
@@ -57,12 +58,12 @@ export function MarketPoolSwapBox(p: Props) {
   const marketPoolsData = useMarketsPoolsData(chainId);
   const priceImpactConfigsData = usePriceImpactConfigs(chainId);
 
-  const selectedMarket = getMarket(marketsData, p.selectedMarketAddress);
+  const market = getMarket(marketsData, p.selectedMarketAddress);
 
   const availableTokens = useMemo(() => {
-    if (!selectedMarket) return [];
+    if (!market) return [];
 
-    const availableAddresses = [selectedMarket.longTokenAddress, selectedMarket.shortTokenAddress];
+    const availableAddresses = [market.longTokenAddress, market.shortTokenAddress];
 
     if (availableAddresses.includes(NATIVE_TOKEN_ADDRESS)) {
       const wrappedToken = getWrappedToken(chainId);
@@ -70,7 +71,7 @@ export function MarketPoolSwapBox(p: Props) {
     }
 
     return availableAddresses.map((address) => getToken(chainId, address));
-  }, [chainId, selectedMarket]);
+  }, [chainId, market]);
 
   const firstTokenState = useSwapTokenState(tokensData);
   const secondTokenState = useSwapTokenState(tokensData);
@@ -80,13 +81,21 @@ export function MarketPoolSwapBox(p: Props) {
   const longDelta = getDeltaByPoolType(MarketPoolType.Long);
   const shortDelta = getDeltaByPoolType(MarketPoolType.Short);
 
-  const marketPools = getMarketPoolData(marketPoolsData, selectedMarket?.marketTokenAddress);
+  const marketPools = getMarketPoolData(marketPoolsData, market?.marketTokenAddress);
+
+  const currentLongUsd = getUsdFromTokenAmount(tokensData, market?.longTokenAddress, marketPools?.longPoolAmount, true);
+  const currentShortUsd = getUsdFromTokenAmount(
+    tokensData,
+    market?.shortTokenAddress,
+    marketPools?.shortPoolAmount,
+    true
+  );
 
   const priceImpact = getPriceImpact(
     priceImpactConfigsData,
-    selectedMarket?.marketTokenAddress,
-    marketPools?.longPoolAmount,
-    marketPools?.shortPoolAmount,
+    market?.marketTokenAddress,
+    currentLongUsd,
+    currentShortUsd,
     longDelta?.usdDelta,
     shortDelta?.usdDelta
   );
@@ -105,15 +114,10 @@ export function MarketPoolSwapBox(p: Props) {
   const submitButtonState = getSubmitButtonState();
 
   function getDeltaByPoolType(poolType: MarketPoolType): PoolDelta | undefined {
-    if (!selectedMarket) return undefined;
+    if (!market) return undefined;
 
     const poolTokenState = [firstTokenState, secondTokenState].find((tokenState) => {
-      const tokenPool = getTokenPoolType(
-        marketsData,
-        tokensData,
-        selectedMarket.marketTokenAddress,
-        tokenState.tokenAddress
-      );
+      const tokenPool = getTokenPoolType(marketsData, tokensData, market.marketTokenAddress, tokenState.tokenAddress);
 
       return tokenPool === poolType;
     });

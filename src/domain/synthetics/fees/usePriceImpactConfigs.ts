@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { swapImpactExponentFactorKey, swapImpactFactorKey, useDataStoreKeys } from "domain/synthetics/dataStore";
 import { PriceImpactConfigsData } from "./types";
-import { decimalToFloat } from "./utils";
 import { useMarketsData } from "../markets";
 
 export function usePriceImpactConfigs(chainId: number): PriceImpactConfigsData {
@@ -23,14 +22,14 @@ export function usePriceImpactConfigs(chainId: number): PriceImpactConfigsData {
     if (!dataStoreResult) return {};
 
     const priceImpactConfigs = marketAddresses.reduce((acc, address) => {
-      const factorPositive = dataStoreResult[`${address}-impactFactor_positive`];
-      const factorNegative = dataStoreResult[`${address}-impactFactor_negative`];
+      const factorPositive = dataStoreResult[`${address}-impactFactor-positive`];
+      const factorNegative = dataStoreResult[`${address}-impactFactor-negative`];
       const exponentFactor = dataStoreResult[`${address}-exponentImpactFactor`];
 
       acc[address] = {
-        factorPositive: factorPositive?.gt(0) ? factorPositive : decimalToFloat(2, 8),
-        factorNegative: factorNegative?.gt(0) ? factorNegative : decimalToFloat(2, 8),
-        exponentFactor: exponentFactor?.gt(0) ? exponentFactor : decimalToFloat(2, 0),
+        factorPositive,
+        factorNegative,
+        exponentFactor,
       };
 
       return acc;
