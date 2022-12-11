@@ -73,12 +73,27 @@ export function convertToUsdByPrice(tokenAmount: BigNumber, tokenDecimals: numbe
   return tokenAmount.mul(price).div(expandDecimals(1, tokenDecimals));
 }
 
-export function formatTokenAmount(amount?: BigNumber, tokenDecimals?: number, showAllSignificant?: boolean) {
-  if (!tokenDecimals || !amount) return formatAmount(BigNumber.from(0), 4, 4);
+export function formatTokenAmount(
+  amount?: BigNumber,
+  tokenDecimals?: number,
+  symbol?: string,
+  showAllSignificant?: boolean
+) {
+  let formattedAmount;
 
-  if (showAllSignificant) return formatAmountFree(amount, tokenDecimals, tokenDecimals);
+  if (tokenDecimals && amount) {
+    if (showAllSignificant) {
+      formattedAmount = formatAmountFree(amount, tokenDecimals, tokenDecimals);
+    } else {
+      formattedAmount = formatAmount(amount, tokenDecimals, 4);
+    }
+  }
 
-  return formatAmount(amount, tokenDecimals, 4);
+  if (!formattedAmount) {
+    formattedAmount = formatAmount(BigNumber.from(0), 4, 4);
+  }
+
+  return `${formattedAmount}${symbol ? ` ${symbol}` : ""}`;
 }
 
 export function formatUsdAmount(amount?: BigNumber) {

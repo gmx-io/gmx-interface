@@ -8,8 +8,8 @@ import { ExchangeRouter__factory } from "typechain-types";
 
 type Params = {
   account: string;
-  longTokenAddress: string;
-  shortTokenAddress: string;
+  longTokenAddress?: string;
+  shortTokenAddress?: string;
   marketTokenAddress: string;
   longTokenAmount?: BigNumber;
   shortTokenAmount?: BigNumber;
@@ -28,13 +28,18 @@ export function createDepositTxn(chainId: number, library: Web3Provider, p: Para
   const wntAmount = p.executionFee.add(wntDeposit);
 
   const sendLongTokenCall =
-    !isNativeDeposit && p.longTokenAmount?.gt(0)
+    !isNativeDeposit && p.longTokenAmount?.gt(0) && p.longTokenAddress
       ? contract.interface.encodeFunctionData("sendTokens", [p.longTokenAddress, depositStoreAdress, p.longTokenAmount])
       : undefined;
 
-  const sendShortTokenCall = p.shortTokenAmount?.gt(0)
-    ? contract.interface.encodeFunctionData("sendTokens", [p.shortTokenAddress, depositStoreAdress, p.shortTokenAmount])
-    : undefined;
+  const sendShortTokenCall =
+    p.shortTokenAmount?.gt(0) && p.shortTokenAddress
+      ? contract.interface.encodeFunctionData("sendTokens", [
+          p.shortTokenAddress,
+          depositStoreAdress,
+          p.shortTokenAmount,
+        ])
+      : undefined;
 
   const multicall = [
     contract.interface.encodeFunctionData("sendWnt", [depositStoreAdress, wntAmount]),

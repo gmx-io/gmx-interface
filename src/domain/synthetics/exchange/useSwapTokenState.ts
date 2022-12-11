@@ -33,7 +33,7 @@ export function useSwapTokenState(tokensData: TokensData, initial: { tokenAddres
   function setValueByTokenAmount(amount?: BigNumber) {
     if (!token) return;
 
-    const value = formatTokenAmount(amount, token.decimals, true);
+    const value = formatTokenAmount(amount, token.decimals, undefined, true);
 
     // safe update the state
     if (value !== inputValue) {

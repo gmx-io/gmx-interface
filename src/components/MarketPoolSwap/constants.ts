@@ -1,3 +1,5 @@
+import { MarketPoolType } from "domain/synthetics/markets";
+import { BigNumber } from "ethers";
 import { t } from "@lingui/macro";
 
 export enum Operation {
@@ -24,4 +26,12 @@ export const operationTexts = {
 export const modeTexts = {
   [Mode.single]: t`Single`,
   [Mode.pair]: t`Pair`,
+};
+
+export type PoolDelta = {
+  tokenAddress: string;
+  tokenAmount: BigNumber;
+  usdAmount: BigNumber;
+  usdDelta: BigNumber;
+  poolType: MarketPoolType;
 };

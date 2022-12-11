@@ -1,3 +1,4 @@
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { TokensData } from "../tokens/types";
 import { getTokenData } from "../tokens/utils";
 import { MarketPoolType, MarketsData, MarketsPoolsData, MarketTokensData } from "./types";
@@ -54,12 +55,21 @@ export function getTokenPoolAmount(
   return undefined;
 }
 
-export function getTokenPoolType(marketsData: MarketsData, marketAddress?: string, tokenAddress?: string) {
+export function getTokenPoolType(
+  marketsData: MarketsData,
+  tokensData: TokensData,
+  marketAddress?: string,
+  tokenAddress?: string
+) {
   const market = getMarket(marketsData, marketAddress);
+  const token = getTokenData(tokensData, tokenAddress);
 
   if (!market) return undefined;
 
-  if (market.longTokenAddress === tokenAddress) {
+  if (
+    market.longTokenAddress === tokenAddress ||
+    (market.longTokenAddress === NATIVE_TOKEN_ADDRESS && token?.isWrapped)
+  ) {
     return MarketPoolType.Long;
   }
 

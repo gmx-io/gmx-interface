@@ -2,12 +2,12 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Tab from "components/Tab/Tab";
-import { getToken } from "config/tokens";
+import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { MarketPoolType, Market } from "domain/synthetics/markets/types";
 import { useChainId } from "lib/chains";
 import { useEffect, useMemo, useState } from "react";
 
-import { FocusInputId, Mode, modeTexts, Operation, operationTexts } from "../constants";
+import { FocusInputId, Mode, modeTexts, Operation, operationTexts, PoolDelta } from "../constants";
 import { MarketDropdown } from "../MarketDropdown/MarketDropdown";
 
 import { InfoRow } from "components/InfoRow/InfoRow";
@@ -16,7 +16,13 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { getMarket, getMarketPoolData, getTokenPoolType } from "domain/synthetics/markets/utils";
 import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
-import { adaptToInfoTokens, formatTokenAmount, formatUsdAmount } from "domain/synthetics/tokens/utils";
+import {
+  adaptToInfoTokens,
+  convertFromUsdByPrice,
+  formatTokenAmount,
+  formatUsdAmount,
+  getTokenData,
+} from "domain/synthetics/tokens/utils";
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
 
@@ -25,10 +31,11 @@ import { usePriceImpactConfigs } from "domain/synthetics/fees/usePriceImpactConf
 import { formatFee, getPriceImpact } from "domain/synthetics/fees/utils";
 import { expandDecimals } from "lib/numbers";
 import { MarketPoolSwapConfirmation } from "../MarketPoolSwapConfirmation/MarketPoolSwapConfirmation";
-import "./MarketPoolSwapBox.scss";
 import { useMarketsData, useMarketsPoolsData, useMarketTokensData } from "domain/synthetics/markets";
 import { useSwapTokenState } from "domain/synthetics/exchange/useSwapTokenState";
 import { shouldShowMaxButton } from "domain/synthetics/exchange";
+
+import "./MarketPoolSwapBox.scss";
 
 type Props = {
   selectedMarketAddress?: string;
@@ -56,15 +63,20 @@ export function MarketPoolSwapBox(p: Props) {
   const availableTokens = useMemo(() => {
     if (!selectedMarket) return [];
 
-    return [selectedMarket.longTokenAddress, selectedMarket.shortTokenAddress].map((address) =>
-      getToken(chainId, address)
-    );
+    const availableAddresses = [selectedMarket.longTokenAddress, selectedMarket.shortTokenAddress];
+
+    if (availableAddresses.includes(NATIVE_TOKEN_ADDRESS)) {
+      const wrappedToken = getWrappedToken(chainId);
+      availableAddresses.push(wrappedToken.address);
+    }
+
+    return availableAddresses.map((address) => getToken(chainId, address));
   }, [chainId, selectedMarket]);
 
   const firstTokenState = useSwapTokenState(tokensData);
   const secondTokenState = useSwapTokenState(tokensData);
 
-  const gmTokenState = useSwapTokenState(marketTokensData);
+  const marketTokenState = useSwapTokenState(marketTokensData);
 
   const longDelta = getDeltaByPoolType(MarketPoolType.Long);
   const shortDelta = getDeltaByPoolType(MarketPoolType.Short);
@@ -76,50 +88,53 @@ export function MarketPoolSwapBox(p: Props) {
     selectedMarket?.marketTokenAddress,
     marketPools?.longPoolAmount,
     marketPools?.shortPoolAmount,
-    longDelta.usdDelta,
-    shortDelta.usdAmount
+    longDelta?.usdDelta,
+    shortDelta?.usdDelta
   );
 
   // TODO
-  const executionFee = expandDecimals(1, 28);
+  const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
+  const executionFeeUsd = expandDecimals(1, 28);
+  const executionFee = nativeToken?.prices
+    ? convertFromUsdByPrice(executionFeeUsd, nativeToken.decimals, nativeToken.prices.maxPrice)
+    : undefined;
 
-  const fees = executionFee.add(priceImpact?.impact.lt(0) ? priceImpact?.impact.abs() : BigNumber.from(0));
+  const fees = executionFeeUsd.add(priceImpact?.impact.lt(0) ? priceImpact?.impact.abs() : BigNumber.from(0));
 
   const tokenSelectorOptionsMap = useMemo(() => adaptToInfoTokens(tokensData), [tokensData]);
 
   const submitButtonState = getSubmitButtonState();
 
-  function getDeltaByPoolType(poolType: MarketPoolType) {
-    if (!selectedMarket)
-      return {
-        tokenAmount: BigNumber.from(0),
-        usdAmount: BigNumber.from(0),
-        usdDelta: BigNumber.from(0),
-      };
+  function getDeltaByPoolType(poolType: MarketPoolType): PoolDelta | undefined {
+    if (!selectedMarket) return undefined;
 
-    const poolTokenState = [firstTokenState, secondTokenState].find(
-      (tokenState) =>
-        tokenState.tokenAddress &&
-        getTokenPoolType(marketsData, selectedMarket.marketTokenAddress, tokenState.tokenAddress) === poolType
-    );
+    const poolTokenState = [firstTokenState, secondTokenState].find((tokenState) => {
+      const tokenPool = getTokenPoolType(
+        marketsData,
+        tokensData,
+        selectedMarket.marketTokenAddress,
+        tokenState.tokenAddress
+      );
 
-    if (!poolTokenState)
-      return {
-        tokenAmount: BigNumber.from(0),
-        usdAmount: BigNumber.from(0),
-        usdDelta: BigNumber.from(0),
-      };
+      return tokenPool === poolType;
+    });
+
+    if (!poolTokenState?.tokenAddress) return undefined;
 
     return {
+      tokenAddress: poolTokenState.tokenAddress,
+      poolType,
       tokenAmount: poolTokenState.tokenAmount,
       usdAmount: poolTokenState.usdAmount,
-      usdDelta:
-        operationTab === Operation.deposit ? poolTokenState.usdAmount : BigNumber.from(0).sub(poolTokenState.usdAmount),
+      // prettier-ignore
+      usdDelta: operationTab === Operation.deposit 
+        ? poolTokenState.usdAmount 
+        : BigNumber.from(0).sub(poolTokenState.usdAmount),
     };
   }
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
-    if (!gmTokenState.usdAmount.gt(0)) {
+    if (!marketTokenState.usdAmount.gt(0)) {
       return {
         text: t`Enter an amount`,
         disabled: true,
@@ -144,9 +159,9 @@ export function MarketPoolSwapBox(p: Props) {
         onClick: onSubmit,
       };
     } else {
-      if (!gmTokenState.balance || gmTokenState.tokenAmount.gt(gmTokenState.balance)) {
+      if (!marketTokenState.balance || marketTokenState.tokenAmount.gt(marketTokenState.balance)) {
         return {
-          text: t`Insufficient ${gmTokenState.token?.symbol} balance`,
+          text: t`Insufficient ${marketTokenState.token?.symbol} balance`,
           disabled: true,
         };
       }
@@ -167,10 +182,10 @@ export function MarketPoolSwapBox(p: Props) {
   }
 
   useEffect(() => {
-    if (p.selectedMarketAddress !== gmTokenState.tokenAddress) {
-      gmTokenState.setTokenAddress(p.selectedMarketAddress);
+    if (p.selectedMarketAddress !== marketTokenState.tokenAddress) {
+      marketTokenState.setTokenAddress(p.selectedMarketAddress);
     }
-  }, [p.selectedMarketAddress, marketsData, gmTokenState]);
+  }, [p.selectedMarketAddress, marketsData, marketTokenState]);
 
   useEffect(() => {
     if (!availableTokens.length) return;
@@ -216,14 +231,14 @@ export function MarketPoolSwapBox(p: Props) {
       if ([FocusInputId.swapFirst, FocusInputId.swapSecond].includes(focusedInput)) {
         const swapSumUsd = firstTokenState.usdAmount.add(secondTokenState.usdAmount);
 
-        gmTokenState.setValueByUsdAmount(swapSumUsd);
+        marketTokenState.setValueByUsdAmount(swapSumUsd);
 
         return;
       }
 
       if (focusedInput === FocusInputId.market) {
         if (modeTab === Mode.single && firstTokenState.tokenAddress) {
-          firstTokenState.setValueByUsdAmount(gmTokenState.usdAmount);
+          firstTokenState.setValueByUsdAmount(marketTokenState.usdAmount);
 
           return;
         }
@@ -232,10 +247,10 @@ export function MarketPoolSwapBox(p: Props) {
           const previousSum = firstTokenState.usdAmount.add(secondTokenState.usdAmount);
 
           const firstTokenUsd = firstTokenState.usdAmount
-            .mul(gmTokenState.usdAmount)
+            .mul(marketTokenState.usdAmount)
             .div(previousSum.gt(0) ? previousSum : 1);
 
-          const secondTokenUsd = gmTokenState.usdAmount.sub(firstTokenUsd);
+          const secondTokenUsd = marketTokenState.usdAmount.sub(firstTokenUsd);
 
           firstTokenState.setValueByUsdAmount(firstTokenUsd);
           secondTokenState.setValueByUsdAmount(secondTokenUsd);
@@ -244,7 +259,7 @@ export function MarketPoolSwapBox(p: Props) {
         }
       }
     },
-    [focusedInput, firstTokenState, secondTokenState, gmTokenState, modeTab]
+    [focusedInput, firstTokenState, secondTokenState, marketTokenState, modeTab]
   );
 
   return (
@@ -334,18 +349,18 @@ export function MarketPoolSwapBox(p: Props) {
         <BuyInputSection
           topLeftLabel={operationTab === Operation.withdraw ? t`Pay` : t`Receive`}
           topRightLabel={t`Balance:`}
-          tokenBalance={formatTokenAmount(gmTokenState.balance, gmTokenState.token?.decimals)}
-          inputValue={gmTokenState.inputValue}
+          tokenBalance={formatTokenAmount(marketTokenState.balance, marketTokenState.token?.decimals)}
+          inputValue={marketTokenState.inputValue}
           onInputValueChange={(e) => {
             setFocusedInput(FocusInputId.market);
-            gmTokenState.setInputValue(e.target.value);
+            marketTokenState.setInputValue(e.target.value);
           }}
-          showMaxButton={operationTab === Operation.withdraw && shouldShowMaxButton(gmTokenState)}
+          showMaxButton={operationTab === Operation.withdraw && shouldShowMaxButton(marketTokenState)}
           onClickMax={() => {
             setFocusedInput(FocusInputId.market);
-            gmTokenState.setValueByTokenAmount(gmTokenState.balance);
+            marketTokenState.setValueByTokenAmount(marketTokenState.balance);
           }}
-          balance={formatUsdAmount(gmTokenState.usdAmount)}
+          balance={formatUsdAmount(marketTokenState.usdAmount)}
         >
           <div className="selected-token">GM</div>
         </BuyInputSection>
@@ -365,7 +380,11 @@ export function MarketPoolSwapBox(p: Props) {
                     value={formatFee(priceImpact?.impact, priceImpact?.basisPoints)}
                     showDollar={false}
                   />
-                  <StatsTooltipRow label={t`Execution fee`} value={formatFee(executionFee)} showDollar={false} />
+                  <StatsTooltipRow
+                    label={t`Execution fee`}
+                    value={formatTokenAmount(executionFee, nativeToken?.decimals, nativeToken?.symbol)}
+                    showDollar={false}
+                  />
                 </div>
               )}
             />
@@ -385,15 +404,10 @@ export function MarketPoolSwapBox(p: Props) {
 
       {isConfirming && (
         <MarketPoolSwapConfirmation
-          firstSwapTokenAddress={firstTokenState.tokenAddress!}
-          firstSwapTokenAmount={firstTokenState.tokenAmount}
-          secondSwapTokenAddress={secondTokenState.tokenAddress}
-          secondSwapTokenAmount={secondTokenState.tokenAmount}
-          longTokenAmount={longDelta.tokenAmount}
-          shortTokenAmount={shortDelta.tokenAmount}
-          marketTokenAmount={gmTokenState.tokenAmount}
+          longDelta={longDelta}
+          shortDelta={shortDelta}
+          marketTokenAmount={marketTokenState.tokenAmount}
           marketTokenAddress={p.selectedMarketAddress!}
-          gmSwapAmount={gmTokenState.tokenAmount}
           onClose={() => setIsConfirming(false)}
           tokensData={tokensData}
           priceImpact={priceImpact}
