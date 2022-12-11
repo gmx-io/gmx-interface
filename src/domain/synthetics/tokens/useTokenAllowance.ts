@@ -5,12 +5,12 @@ import { BigNumber } from "ethers";
 import { isAddressZero } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { useMemo } from "react";
-import { TokenAllowanceData } from "./types";
+import { TokenAllowancesData } from "./types";
 
 export function useTokenAllowance(
   chainId: number,
   p: { spenderAddress?: string; tokenAddresses: string[] }
-): TokenAllowanceData {
+): TokenAllowancesData {
   const { account } = useWeb3React();
 
   const wrappedToken = getWrappedToken(chainId);
@@ -50,8 +50,6 @@ export function useTokenAllowance(
   });
 
   return useMemo(() => {
-    return {
-      tokenAllowance: tokenAllowance || {},
-    };
+    return tokenAllowance || {};
   }, [tokenAllowance]);
 }

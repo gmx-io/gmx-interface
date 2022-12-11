@@ -3,6 +3,8 @@ import { getContract } from "./contracts";
 import { ARBITRUM, ARBITRUM_TESTNET, AVALANCHE, AVALANCHE_FUJI, MAINNET, TESTNET } from "./chains";
 import { Token } from "domain/tokens";
 
+export const NATIVE_TOKEN_ADDRESS = ethers.constants.AddressZero;
+
 export const TOKENS: { [chainId: number]: Token[] } = {
   [MAINNET]: [
     {
@@ -732,6 +734,24 @@ export function getTokenBySymbol(chainId: number, symbol: string) {
     throw new Error(`Incorrect symbol "${symbol}" for chainId ${chainId}`);
   }
   return token;
+}
+
+export function getCorrectTokenAddress(chainId: number, address: string, convertTo?: "wrapped" | "native") {
+  const wrappedToken = getWrappedToken(chainId);
+
+  if (convertTo === "wrapped" && address === NATIVE_TOKEN_ADDRESS) {
+    return wrappedToken.address;
+  }
+
+  if (convertTo === "native" && address === wrappedToken.address) {
+    return NATIVE_TOKEN_ADDRESS;
+  }
+
+  return address;
+}
+
+export function isNativeTokenAddress(address: string) {
+  return address === NATIVE_TOKEN_ADDRESS;
 }
 
 export function getWhitelistedTokens(chainId: number) {

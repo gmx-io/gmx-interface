@@ -42,7 +42,6 @@ export const DUST_BNB = "2000000000000000";
 export const DUST_USD = expandDecimals(1, USD_DECIMALS);
 export const PRECISION = expandDecimals(1, 30);
 export const GLP_DECIMALS = 18;
-export const GM_DECIMALS = 18;
 export const GMX_DECIMALS = 18;
 export const DEFAULT_MAX_USDG_AMOUNT = expandDecimals(200 * 1000 * 1000, 18);
 

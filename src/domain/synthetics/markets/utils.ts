@@ -1,52 +1,64 @@
-import { getMarketConfig } from "config/synthetics";
-import { TokenConfigsData } from "../tokens/types";
-import { getTokenConfig } from "../tokens/utils";
-import { MarketPoolsData, MarketPoolType, MarketsData, MarketTokenPricesData, SyntheticsMarket } from "./types";
+import { TokensData } from "../tokens/types";
+import { getTokenData } from "../tokens/utils";
+import { MarketPoolType, MarketsData, MarketsPoolsData, MarketTokensData } from "./types";
 
-export function getMarket(data: MarketsData, marketAddress?: string) {
+export function getMarket(marketsData: MarketsData, marketAddress?: string) {
   if (!marketAddress) return undefined;
 
-  return data.markets[marketAddress];
+  return marketsData[marketAddress];
 }
 
-export function getMarkets(data: MarketsData) {
-  return Object.keys(data.markets)
-    .map((address) => getMarket(data, address))
-    .filter(Boolean) as SyntheticsMarket[];
+export function getMarkets(marketsData: MarketsData) {
+  return Object.keys(marketsData).map((address) => getMarket(marketsData, address)!);
 }
 
-export function getMarketName(chainId: number, data: MarketsData & TokenConfigsData, marketAddress?: string) {
-  const market = getMarket(data, marketAddress);
-  const marketConfig = getMarketConfig(chainId, marketAddress);
+export function getMarketName(marketsData: MarketsData, tokensData: TokensData, marketAddress?: string) {
+  const market = getMarket(marketsData, marketAddress);
 
   if (!market) return undefined;
 
-  const indexToken = getTokenConfig(data, market.indexTokenAddress);
-  const longToken = getTokenConfig(data, market.longTokenAddress);
-  const shortToken = getTokenConfig(data, market.shortTokenAddress);
+  const indexToken = getTokenData(tokensData, market.indexTokenAddress);
+  const longToken = getTokenData(tokensData, market.longTokenAddress);
+  const shortToken = getTokenData(tokensData, market.shortTokenAddress);
 
   if (!indexToken || !longToken || !shortToken) return undefined;
 
-  return `GM: ${indexToken.symbol}/${marketConfig?.perp || "USD"} : [${longToken.symbol}/${shortToken.symbol}]`;
+  return `GM: ${indexToken.symbol}/${market.perp} : [${longToken.symbol}/${shortToken.symbol}]`;
 }
 
-export function getMarketPoolAmount(data: MarketPoolsData, marketAddress?: string, tokenAddress?: string) {
-  if (!marketAddress || !tokenAddress) return undefined;
+export function getMarketPoolData(poolsData: MarketsPoolsData, marketAddress?: string) {
+  if (!marketAddress) return undefined;
 
-  return data.marketPools[marketAddress]?.[tokenAddress];
+  return poolsData[marketAddress];
 }
 
-export function getMarketTokenPrice(data: MarketTokenPricesData, marketTokenAddress?: string) {
-  if (!marketTokenAddress) return undefined;
+export function getTokenPoolAmount(
+  marketsData: MarketsData,
+  poolsData: MarketsPoolsData,
+  marketAddress: string,
+  tokenAddress: string
+) {
+  const pools = getMarketPoolData(poolsData, marketAddress);
+  const market = getMarket(marketsData, marketAddress);
 
-  return data.marketTokenPrices[marketTokenAddress];
+  if (!market || !pools) return undefined;
+
+  if (tokenAddress === market.longTokenAddress) {
+    return pools.longPoolAmount;
+  }
+
+  if (tokenAddress === market.shortTokenAddress) {
+    return pools.shortPoolAmount;
+  }
+
+  return undefined;
 }
 
-export function getMarketKey(market: SyntheticsMarket) {
-  return ``;
-}
+export function getTokenPoolType(marketsData: MarketsData, marketAddress?: string, tokenAddress?: string) {
+  const market = getMarket(marketsData, marketAddress);
 
-export function getTokenPoolType(market: SyntheticsMarket, tokenAddress: string) {
+  if (!market) return undefined;
+
   if (market.longTokenAddress === tokenAddress) {
     return MarketPoolType.Long;
   }
@@ -56,4 +68,10 @@ export function getTokenPoolType(market: SyntheticsMarket, tokenAddress: string)
   }
 
   return undefined;
+}
+
+export function getMarketTokenData(marketTokensData: MarketTokensData, marketAddress?: string) {
+  if (!marketAddress) return undefined;
+
+  return marketTokensData[marketAddress];
 }

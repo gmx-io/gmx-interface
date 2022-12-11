@@ -1,131 +1,66 @@
-import { getToken, getWrappedToken } from "config/tokens";
 import { InfoTokens } from "domain/tokens";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 import { USD_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatAmount, formatAmountFree } from "lib/numbers";
-import {
-  TokenAllowanceData,
-  TokenBalancesData,
-  TokenConfigsData,
-  TokenPricesData,
-  TokensData,
-  TokenTotalSupplyData,
-} from "./types";
+import { TokenAllowancesData, TokensData } from "./types";
 
-export function getTokenPriceData(data: TokenPricesData & TokenConfigsData, tokenAddress?: string) {
-  if (!tokenAddress) return undefined;
+export function getTokenData(tokensData: TokensData, address?: string) {
+  if (!address) return undefined;
 
-  const token = getTokenConfig(data, tokenAddress);
-
-  if (token?.isStable) {
-    return {
-      minPrice: expandDecimals(1, USD_DECIMALS),
-      maxPrice: expandDecimals(1, USD_DECIMALS),
-    };
-  }
-
-  if (token?.isWrapped) {
-    return data.tokenPrices[ethers.constants.AddressZero];
-  }
-
-  return data.tokenPrices[tokenAddress];
+  return tokensData[address];
 }
 
-export function getTokenPrice(data: TokenPricesData & TokenConfigsData, tokenAddress?: string, useMaxPrice?: boolean) {
-  const priceData = getTokenPriceData(data, tokenAddress);
-
-  if (!priceData) return undefined;
-
-  return useMaxPrice ? priceData.maxPrice : priceData.minPrice;
+export function getTokensDataArr(tokensData: TokensData) {
+  return Object.keys(tokensData.configs).map((address) => getTokenData(tokensData, address)!);
 }
 
-export function getTokenConfig(data: TokenConfigsData, tokenAddress?: string) {
-  if (!tokenAddress) return undefined;
+export function getUsdFromTokenAmount(tokensData: TokensData, address?: string, amount?: BigNumber, max?: boolean) {
+  const tokenData = getTokenData(tokensData, address);
 
-  return data.tokenConfigs[tokenAddress];
-}
+  const prices = tokenData?.prices;
 
-export function getUsdFromTokenAmount(
-  data: TokenPricesData & TokenConfigsData,
-  tokenAddress?: string,
-  amount?: BigNumber,
-  useMaxPrice?: boolean
-) {
-  const tokenConfig = getTokenConfig(data, tokenAddress);
-  const price = getTokenPrice(data, tokenAddress, useMaxPrice);
-
-  if (!tokenConfig || !price || !amount) {
+  if (!tokenData || !prices || !amount) {
     return undefined;
   }
 
-  return convertToUsdByPrice(amount, tokenConfig.decimals, price);
+  return convertToUsdByPrice(amount, tokenData.decimals, max ? prices.maxPrice : prices.minPrice);
 }
 
-export function getTokenAmountFromUsd(
-  data: TokenConfigsData & TokenPricesData,
-  tokenAddress?: string,
-  usdAmount?: BigNumber,
-  useMaxPrice?: boolean
-) {
-  const tokenConfig = getTokenConfig(data, tokenAddress);
-  const price = getTokenPrice(data, tokenAddress, useMaxPrice);
+export function getTokenAmountFromUsd(tokensData: TokensData, address?: string, usdAmount?: BigNumber, max?: boolean) {
+  const tokenData = getTokenData(tokensData, address);
 
-  if (!tokenConfig || !price || !usdAmount) {
+  const prices = tokenData?.prices;
+
+  if (!tokenData || !prices || !usdAmount) {
     return undefined;
   }
 
-  return convertFromUsdByPrice(usdAmount, tokenConfig.decimals, price);
+  return convertFromUsdByPrice(usdAmount, tokenData.decimals, max ? prices.maxPrice : prices.minPrice);
 }
 
-export function getTokenBalance(data: TokenBalancesData, tokenAddress?: string) {
-  if (!tokenAddress) return undefined;
+export function getTokenAllowance(allowanceData: TokenAllowancesData, address?: string) {
+  if (!address) return undefined;
 
-  return data.tokenBalances[tokenAddress];
+  return allowanceData[address];
 }
 
-export function getTokenTotalSupply(data: TokenTotalSupplyData, tokenAddress?: string) {
-  if (!tokenAddress) return undefined;
-
-  return data.totalSupply[tokenAddress];
-}
-
-export function getTokenAllowance(data: TokenAllowanceData, tokenAddress?: string) {
-  if (!tokenAddress) return undefined;
-
-  return data.tokenAllowance[tokenAddress];
-}
-
-export function adaptToInfoTokens(data: TokenConfigsData & TokenPricesData & TokenBalancesData): InfoTokens {
-  const infoTokens = Object.keys(data.tokenConfigs).reduce((acc, address) => {
-    const tokenConfigData = getTokenConfig(data, address);
-
-    if (!tokenConfigData) return acc;
-
-    const balance = getTokenBalance(data, address) || BigNumber.from(0);
-    const priceData = getTokenPriceData(data, address) || ({} as TokenPricesData);
+/**
+ * Used to adapt Synthetics tokens to InfoTokens where it's possible
+ */
+export function adaptToInfoTokens(tokensData: TokensData): InfoTokens {
+  const infoTokens = Object.keys(tokensData).reduce((acc, address) => {
+    const { prices, ...tokenData } = getTokenData(tokensData, address)!;
 
     acc[address] = {
-      ...tokenConfigData,
-      ...priceData,
-      balance,
+      ...tokenData,
+      minPrice: prices?.minPrice,
+      maxPrice: prices?.maxPrice,
     };
 
     return acc;
   }, {} as InfoTokens);
 
   return infoTokens;
-}
-
-export function getTokenData(data: TokensData, tokenAddress?: string) {
-  const config = getTokenConfig(data, tokenAddress);
-  const balance = getTokenBalance(data, tokenAddress);
-  const priceData = getTokenPriceData(data, tokenAddress);
-
-  return {
-    ...config,
-    ...priceData,
-    balance,
-  };
 }
 
 export function convertFromUsdByPrice(usdAmount: BigNumber, tokenDecimals: number, price: BigNumber) {
@@ -157,22 +92,4 @@ export function formatTokenAmountWithUsd(
   tokenDecimals?: number
 ) {
   return `${formatTokenAmount(tokenAmount, tokenDecimals)} ${tokenSymbol} (${formatUsdAmount(usdAmount)})`;
-}
-
-export function tryWrapToken(chainId: number, address: string) {
-  if (address === ethers.constants.AddressZero) {
-    const token = getWrappedToken(chainId);
-
-    return token.address;
-  }
-
-  return address;
-}
-
-export function tryUnwrapToken(chainId: number, address: string) {
-  const token = getToken(chainId, address);
-
-  if (token.isWrapped) return ethers.constants.AddressZero;
-
-  return address;
 }

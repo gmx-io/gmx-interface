@@ -1,46 +1,44 @@
+import { useEffect, useMemo, useState } from "react";
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
+import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
-import { TokenAllowanceData, TokensData } from "domain/synthetics/tokens/types";
-
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import { TokenAllowancesData, TokensData } from "domain/synthetics/tokens/types";
 import {
   convertFromUsdByPrice,
-  convertToUsdByPrice,
   formatTokenAmount,
   formatTokenAmountWithUsd,
   getTokenAllowance,
-  getTokenConfig,
-  getTokenPrice,
+  getTokenData,
   getUsdFromTokenAmount,
 } from "domain/synthetics/tokens/utils";
-import { BigNumber, ethers } from "ethers";
-import { GM_DECIMALS, USD_DECIMALS } from "lib/legacy";
+import { BigNumber } from "ethers";
+import { useWeb3React } from "@web3-react/core";
+import Checkbox from "components/Checkbox/Checkbox";
+import { InfoRow } from "components/InfoRow/InfoRow";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import Tooltip from "components/Tooltip/Tooltip";
+import { getContract } from "config/contracts";
+import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
+import { getToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { PriceImpact } from "domain/synthetics/fees/types";
+import { formatFee } from "domain/synthetics/fees/utils";
+import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
+import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
+import { useTokenAllowance } from "domain/synthetics/tokens/useTokenAllowance";
+import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
+import { useChainId } from "lib/chains";
 import { Operation, operationTexts } from "../constants";
 
-import { useWeb3React } from "@web3-react/core";
-import { getContract } from "config/contracts";
-import { getToken } from "config/tokens";
-import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
-import { useMarkets } from "domain/synthetics/markets/useMarkets";
-import { getMarket, getMarketName, getMarketTokenPrice } from "domain/synthetics/markets/utils";
-import { PriceImpactData } from "domain/synthetics/fees/types";
-import { useTokenAllowance } from "domain/synthetics/tokens/useTokenAllowance";
-import { useChainId } from "lib/chains";
+import {
+  getMarket,
+  getMarketName,
+  getMarketTokenData,
+  useMarketsData,
+  useMarketTokensData,
+} from "domain/synthetics/markets";
 import "./MarketPoolSwapConfirmation.scss";
-import { expandDecimals } from "lib/numbers";
-import { useEffect, useMemo, useState } from "react";
-import { useTokenConfigs } from "domain/synthetics/tokens/useTokenConfigs";
-import Tooltip from "components/Tooltip/Tooltip";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { formatFee } from "domain/synthetics/fees/utils";
-import { InfoRow } from "components/InfoRow/InfoRow";
-import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
-import Checkbox from "components/Checkbox/Checkbox";
-import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
-import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
-import { useMarketTokenPrices } from "domain/synthetics/markets/useMarketTokenPrices";
 
 type Props = {
   onClose: () => void;
@@ -48,7 +46,7 @@ type Props = {
   longTokenAmount?: BigNumber;
   shortTokenAmount?: BigNumber;
   marketTokenAmount?: BigNumber;
-  priceImpact?: PriceImpactData;
+  priceImpact?: PriceImpact;
   firstSwapTokenAddress: string;
   firstSwapTokenAmount: BigNumber;
   secondSwapTokenAddress?: string;
@@ -65,14 +63,14 @@ function getTokenText(tokensData: TokensData, tokenAddress?: string, swapAmount?
   if (!tokenAddress || !swapAmount) return undefined;
 
   const usdAmount = getUsdFromTokenAmount(tokensData, tokenAddress, swapAmount);
-  const token = getTokenConfig(tokensData, tokenAddress);
+  const token = getTokenData(tokensData, tokenAddress);
 
   if (!usdAmount || !token) return undefined;
 
   return formatTokenAmountWithUsd(swapAmount, usdAmount, token.symbol, token.decimals);
 }
 
-function needTokenApprove(tokenAllowanceData: TokenAllowanceData, tokenAddress?: string, tokenAmount?: BigNumber) {
+function needTokenApprove(tokenAllowanceData: TokenAllowancesData, tokenAddress?: string, tokenAmount?: BigNumber) {
   if (!tokenAddress || !tokenAmount) return false;
 
   const allowance = getTokenAllowance(tokenAllowanceData, tokenAddress);
@@ -90,18 +88,14 @@ export function MarketPoolSwapConfirmation(p: Props) {
     tokenAddresses: [p.firstSwapTokenAddress, p.marketTokenAddress, p.secondSwapTokenAddress!].filter(Boolean),
   });
 
-  const marketsData = useMarkets(chainId);
-
-  const marketTokensPrices = useMarketTokenPrices(chainId, { maximize: true });
-
-  const tokenConfigsData = useTokenConfigs(chainId);
+  const marketsData = useMarketsData(chainId);
+  const marketTokensData = useMarketTokensData(chainId);
   const tokensData = useWhitelistedTokensData(chainId);
 
   const [tokensToApprove, setTokensToApprove] = useState<string[]>();
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
-  const isHighPriceImpact =
-    p.priceImpact?.priceImpact.lt(0) && p.priceImpact?.priceImpactBasisPoints.gte(HIGH_PRICE_IMPACT_BP);
+  const isHighPriceImpact = p.priceImpact?.impact.lt(0) && p.priceImpact?.basisPoints.gte(HIGH_PRICE_IMPACT_BP);
 
   const swapAmountByToken = useMemo(
     () => ({
@@ -121,26 +115,21 @@ export function MarketPoolSwapConfirmation(p: Props) {
 
   const isDeposit = p.operationType === Operation.deposit;
 
-  const firstTokenText = getTokenText(p.tokensData, p.firstSwapTokenAddress, p.firstSwapTokenAmount);
-  const secondTokenText = getTokenText(p.tokensData, p.secondSwapTokenAddress, p.secondSwapTokenAmount);
+  const firstTokenText = getTokenText(tokensData, p.firstSwapTokenAddress, p.firstSwapTokenAmount);
+  const secondTokenText = getTokenText(tokensData, p.secondSwapTokenAddress, p.secondSwapTokenAmount);
 
-  const MOCK_GM_PRICE = expandDecimals(100, USD_DECIMALS);
-
-  const gmUsdAmount = convertToUsdByPrice(p.gmSwapAmount, GM_DECIMALS, MOCK_GM_PRICE);
-  const gmTokenText = formatTokenAmountWithUsd(p.gmSwapAmount, gmUsdAmount, "GM", GM_DECIMALS);
+  const gmTokenText = getTokenText(marketTokensData, p.marketTokenAddress, p.marketTokenAmount);
+  const marketToken = getMarketTokenData(marketTokensData, p.marketTokenAddress);
 
   const market = getMarket(marketsData, p.marketTokenAddress);
-  const marketName = getMarketName(chainId, { ...marketsData, ...tokenConfigsData }, p.marketTokenAddress);
+  const marketName = getMarketName(marketsData, tokensData, p.marketTokenAddress);
 
   const isAllowanceLoaded = Object.keys(tokenAllowanceData).length > 0;
 
   const submitButtonState = getSubmitButtonState();
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
-    const operationText = p.operationType === Operation.deposit ? t`Buy` : `Sell`;
-    const text = t`Confirm ${operationText} ${formatTokenAmount(p.gmSwapAmount, GM_DECIMALS)} GM`;
-
-    if (!isAllowanceLoaded) {
+    if (!isAllowanceLoaded || !marketToken) {
       return {
         text: t`Loading...`,
         disabled: true,
@@ -161,6 +150,9 @@ export function MarketPoolSwapConfirmation(p: Props) {
       };
     }
 
+    const operationText = p.operationType === Operation.deposit ? t`Buy` : `Sell`;
+    const text = t`Confirm ${operationText} ${formatTokenAmount(p.gmSwapAmount, marketToken.decimals)} GM`;
+
     return {
       text,
       onClick: () => {
@@ -176,9 +168,9 @@ export function MarketPoolSwapConfirmation(p: Props) {
   function onCreateDeposit() {
     if (!account) return;
 
-    const nativeTokenPrice = getTokenPrice(tokensData, ethers.constants.AddressZero);
+    const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS)!;
 
-    const executionFee = convertFromUsdByPrice(p.executionFee, 18, nativeTokenPrice!);
+    const executionFee = convertFromUsdByPrice(p.executionFee, 18, nativeToken.prices!.maxPrice);
 
     createDepositTxn(
       chainId,
@@ -202,15 +194,15 @@ export function MarketPoolSwapConfirmation(p: Props) {
   }
 
   function onCreateWithdrawal() {
-    if (!account) return;
+    if (!account || !market) return;
 
-    const nativeTokenPrice = getTokenPrice(tokensData, ethers.constants.AddressZero);
+    const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS)!;
 
-    const longTokenPrice = getTokenPrice(tokensData, market?.longTokenAddress);
-    const shortTokenPrice = getTokenPrice(tokensData, market?.shortTokenAddress);
-    const marketTokenPrice = getMarketTokenPrice(marketTokensPrices, p.marketTokenAddress);
+    const executionFee = convertFromUsdByPrice(p.executionFee, 18, nativeToken.prices!.maxPrice);
 
-    const executionFee = convertFromUsdByPrice(p.executionFee, 18, nativeTokenPrice!);
+    const longTokenPrice = getTokenData(tokensData, market.longTokenAddress)!.prices!.maxPrice;
+    const shortTokenPrice = getTokenData(tokensData, market.shortTokenAddress)!.prices!.maxPrice;
+    const marketTokenPrice = getMarketTokenData(marketTokensData, p.marketTokenAddress)!.prices?.maxPrice;
 
     const marketLongAmount = p.longTokenAmount?.mul(longTokenPrice!).div(marketTokenPrice!);
     const marketShortAmount = p.shortTokenAmount?.mul(shortTokenPrice!).div(marketTokenPrice!);
@@ -238,7 +230,7 @@ export function MarketPoolSwapConfirmation(p: Props) {
 
   useEffect(
     function updateTokensToApproveEff() {
-      if (Object.keys(tokenAllowanceData.tokenAllowance).length > 0 && !tokensToApprove) {
+      if (Object.keys(tokenAllowanceData).length > 0 && !tokensToApprove) {
         const payTokens = isDeposit
           ? ([p.firstSwapTokenAddress, p.secondSwapTokenAddress].filter(Boolean) as string[])
           : [p.marketTokenAddress];
@@ -316,7 +308,7 @@ export function MarketPoolSwapConfirmation(p: Props) {
                 <div className="text-white">
                   <StatsTooltipRow
                     label={t`Price impact`}
-                    value={formatFee(p.priceImpact?.priceImpact, p.priceImpact?.priceImpactBasisPoints)}
+                    value={formatFee(p.priceImpact?.impact, p.priceImpact?.impact)}
                     showDollar={false}
                   />
                   <StatsTooltipRow label={t`Execution fee`} value={formatFee(p.executionFee)} showDollar={false} />

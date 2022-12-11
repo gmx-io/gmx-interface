@@ -58,7 +58,9 @@ export async function executeMulticall(
     });
   });
 
-  return requestPromise.then((res) => formatMulticallResult(res.results));
+  return requestPromise.then((res) => {
+    return formatMulticallResult(res.results);
+  });
 }
 
 function getMulticallLib(provider: ethers.providers.JsonRpcProvider) {

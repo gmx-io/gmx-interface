@@ -13,7 +13,7 @@ export type DataStoreResult<TKeys extends string> = {
   [key in TKeys]?: any;
 };
 
-export function useDataStore<TKeys extends string>(
+export function useDataStoreKeys<TKeys extends string>(
   chainId: number,
   p: { keys: DataStoreKeysParams<TKeys>; method: Method }
 ): DataStoreResult<TKeys> | undefined {

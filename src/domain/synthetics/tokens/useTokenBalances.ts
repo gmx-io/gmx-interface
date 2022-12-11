@@ -53,8 +53,6 @@ export function useTokenBalances(chainId: number, p: { tokenAddresses: string[] 
   });
 
   return useMemo(() => {
-    return {
-      tokenBalances: tokenBalances || {},
-    };
+    return tokenBalances || {};
   }, [tokenBalances]);
 }

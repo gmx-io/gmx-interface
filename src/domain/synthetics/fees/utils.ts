@@ -1,51 +1,57 @@
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
-import { MarketPoolsData, MarketsData } from "../markets/types";
-import { getMarket, getMarketPoolAmount } from "../markets/utils";
-import { formatUsdAmount } from "../tokens/utils";
-import { PriceImpactConfigsData, PriceImpactData } from "./types";
+import { formatUsdAmount } from "domain/synthetics/tokens";
+import { PriceImpact, PriceImpactConfigsData } from "./types";
+
+export function formatFee(feeUsd?: BigNumber, feeBp?: BigNumber) {
+  if (!feeUsd?.abs().gt(0)) {
+    return "...";
+  }
+
+  return feeBp ? `${formatAmount(feeBp, 2, 2)}% (${formatUsdAmount(feeUsd)})` : formatUsdAmount(feeUsd);
+}
 
 export function getPriceImpactConfig(data: PriceImpactConfigsData, marketAddress?: string) {
   if (!marketAddress) return undefined;
 
-  return data.priceImpactConfigs[marketAddress];
+  return data[marketAddress];
 }
 
 /**
  * @see https://github.com/gmx-io/gmx-synthetics/blob/updates/contracts/pricing/SwapPricingUtils.sol
+ *
  * TODO: unit tests?
  */
 export function getPriceImpact(
-  data: PriceImpactConfigsData & MarketPoolsData & MarketsData,
+  priceImpactConfigsData: PriceImpactConfigsData,
   marketAddress?: string,
+  currentLong?: BigNumber,
+  currentShort?: BigNumber,
   longDelta: BigNumber = BigNumber.from(0),
   shortDelta: BigNumber = BigNumber.from(0)
-): PriceImpactData | undefined {
-  const market = getMarket(data, marketAddress);
-  const longPool = getMarketPoolAmount(data, market?.marketTokenAddress, market?.longTokenAddress);
-  const shortPool = getMarketPoolAmount(data, market?.marketTokenAddress, market?.shortTokenAddress);
-  const priceImpactConf = getPriceImpactConfig(data, market?.marketTokenAddress);
+): PriceImpact | undefined {
+  const priceImpactConf = getPriceImpactConfig(priceImpactConfigsData, marketAddress);
 
-  if (!market || !shortPool || !longPool || !priceImpactConf || (longDelta.eq(0) && shortDelta.eq(0))) return undefined;
+  if (!priceImpactConf || !currentLong || !currentShort || (longDelta.eq(0) && shortDelta.eq(0))) return undefined;
 
-  const nextLongPool = longPool.add(longDelta);
-  const nextShortPool = shortPool.add(shortDelta);
+  const nextLong = currentLong.add(longDelta);
+  const nextShort = currentShort.add(shortDelta);
 
-  const currentDiff = longPool.sub(shortPool).abs();
-  const nextDiff = nextLongPool.sub(nextShortPool).abs();
+  const currentDiff = currentLong.sub(currentShort).abs();
+  const nextDiff = nextLong.sub(nextShort).abs();
 
-  const isSameSideRebalance = longPool.lt(shortPool) === nextLongPool.lt(nextShortPool);
+  const isSameSideRebalance = currentLong.lt(currentShort) === nextLong.lt(nextShort);
 
   const { factorPositive, factorNegative, exponentFactor } = priceImpactConf;
 
-  let priceImpact: BigNumber | undefined;
+  let impact: BigNumber | undefined;
 
   if (isSameSideRebalance) {
     const hasPositiveImpact = nextDiff.lt(currentDiff);
     const factor = hasPositiveImpact ? factorPositive : factorNegative;
 
-    priceImpact = calculateImpactForSameSideRebalance({
+    impact = calculateImpactForSameSideRebalance({
       currentDiff,
       nextDiff,
       hasPositiveImpact,
@@ -53,7 +59,7 @@ export function getPriceImpact(
       exponentFactor,
     });
   } else {
-    priceImpact = calculateImpactForCrossoverRebalance({
+    impact = calculateImpactForCrossoverRebalance({
       currentDiff,
       nextDiff,
       factorPositive,
@@ -62,17 +68,17 @@ export function getPriceImpact(
     });
   }
 
-  if (!priceImpact) return undefined;
+  if (!impact) return undefined;
 
   const totalTradeSize = longDelta.abs().add(shortDelta.abs());
 
-  const priceImpactBasisPoints = totalTradeSize.gt(0)
-    ? priceImpact.mul(BASIS_POINTS_DIVISOR).div(totalTradeSize).abs()
+  const basisPoints = totalTradeSize.gt(0)
+    ? impact.mul(BASIS_POINTS_DIVISOR).div(totalTradeSize).abs()
     : BigNumber.from(0);
 
   return {
-    priceImpact,
-    priceImpactBasisPoints,
+    impact,
+    basisPoints,
   };
 }
 
@@ -120,14 +126,6 @@ export function calculateImpactForCrossoverRebalance(p: {
   const deltaDiffUsd = positiveImpact.sub(negativeImpactUsd).abs();
 
   return positiveImpact > negativeImpactUsd ? deltaDiffUsd : BigNumber.from(0).sub(deltaDiffUsd);
-}
-
-export function formatFee(feeUsd?: BigNumber, feeBp?: BigNumber) {
-  if (!feeUsd?.abs().gt(0)) {
-    return "...";
-  }
-
-  return feeBp ? `${formatAmount(feeBp, 2, 2)}% (${formatUsdAmount(feeUsd)})` : formatUsdAmount(feeUsd);
 }
 
 // TODO: bigNumbers

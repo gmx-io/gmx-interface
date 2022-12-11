@@ -3,37 +3,36 @@ import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Tab from "components/Tab/Tab";
 import { getToken } from "config/tokens";
-import { MarketPoolType, SyntheticsMarket } from "domain/synthetics/markets/types";
+import { MarketPoolType, Market } from "domain/synthetics/markets/types";
 import { useChainId } from "lib/chains";
-import { GM_DECIMALS } from "lib/legacy";
 import { useEffect, useMemo, useState } from "react";
 
 import { FocusInputId, Mode, modeTexts, Operation, operationTexts } from "../constants";
 import { MarketDropdown } from "../MarketDropdown/MarketDropdown";
-import { shouldShowMaxButton, useGmTokenState, useSwapTokenState } from "../utils";
 
 import { InfoRow } from "components/InfoRow/InfoRow";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
-import { useMarketPools } from "domain/synthetics/markets/useMarketPools";
-import { useMarkets } from "domain/synthetics/markets/useMarkets";
-import { getMarket, getTokenPoolType } from "domain/synthetics/markets/utils";
+import { getMarket, getMarketPoolData, getTokenPoolType } from "domain/synthetics/markets/utils";
 import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
 import { adaptToInfoTokens, formatTokenAmount, formatUsdAmount } from "domain/synthetics/tokens/utils";
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
 
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
-import { usePriceImpactData } from "domain/synthetics/fees/usePriceImpact";
+import { usePriceImpactConfigs } from "domain/synthetics/fees/usePriceImpactConfigs";
 import { formatFee, getPriceImpact } from "domain/synthetics/fees/utils";
 import { expandDecimals } from "lib/numbers";
 import { MarketPoolSwapConfirmation } from "../MarketPoolSwapConfirmation/MarketPoolSwapConfirmation";
 import "./MarketPoolSwapBox.scss";
+import { useMarketsData, useMarketsPoolsData, useMarketTokensData } from "domain/synthetics/markets";
+import { useSwapTokenState } from "domain/synthetics/exchange/useSwapTokenState";
+import { shouldShowMaxButton } from "domain/synthetics/exchange";
 
 type Props = {
   selectedMarketAddress?: string;
-  markets: SyntheticsMarket[];
+  markets: Market[];
   onSelectMarket: (marketAddress: string) => void;
   onConnectWallet: () => void;
 };
@@ -47,18 +46,10 @@ export function MarketPoolSwapBox(p: Props) {
   const [isConfirming, setIsConfirming] = useState(false);
 
   const tokensData = useWhitelistedTokensData(chainId);
-  const marketsData = useMarkets(chainId);
-  const marketPoolsData = useMarketPools(chainId);
-  const priceImpactConfigsData = usePriceImpactData(chainId, {
-    marketAddresses: p.markets.map((market) => market.marketTokenAddress),
-  });
-
-  const data = {
-    ...tokensData,
-    ...marketsData,
-    ...marketPoolsData,
-    ...priceImpactConfigsData,
-  };
+  const marketsData = useMarketsData(chainId);
+  const marketTokensData = useMarketTokensData(chainId);
+  const marketPoolsData = useMarketsPoolsData(chainId);
+  const priceImpactConfigsData = usePriceImpactConfigs(chainId);
 
   const selectedMarket = getMarket(marketsData, p.selectedMarketAddress);
 
@@ -73,14 +64,18 @@ export function MarketPoolSwapBox(p: Props) {
   const firstTokenState = useSwapTokenState(tokensData);
   const secondTokenState = useSwapTokenState(tokensData);
 
-  const gmTokenState = useGmTokenState(chainId, { marketAddress: p.selectedMarketAddress });
+  const gmTokenState = useSwapTokenState(marketTokensData);
 
   const longDelta = getDeltaByPoolType(MarketPoolType.Long);
   const shortDelta = getDeltaByPoolType(MarketPoolType.Short);
 
+  const marketPools = getMarketPoolData(marketPoolsData, selectedMarket?.marketTokenAddress);
+
   const priceImpact = getPriceImpact(
-    data,
+    priceImpactConfigsData,
     selectedMarket?.marketTokenAddress,
+    marketPools?.longPoolAmount,
+    marketPools?.shortPoolAmount,
     longDelta.usdDelta,
     shortDelta.usdAmount
   );
@@ -88,7 +83,7 @@ export function MarketPoolSwapBox(p: Props) {
   // TODO
   const executionFee = expandDecimals(1, 28);
 
-  const fees = executionFee.add(priceImpact?.priceImpact.lt(0) ? priceImpact?.priceImpact.abs() : BigNumber.from(0));
+  const fees = executionFee.add(priceImpact?.impact.lt(0) ? priceImpact?.impact.abs() : BigNumber.from(0));
 
   const tokenSelectorOptionsMap = useMemo(() => adaptToInfoTokens(tokensData), [tokensData]);
 
@@ -103,7 +98,9 @@ export function MarketPoolSwapBox(p: Props) {
       };
 
     const poolTokenState = [firstTokenState, secondTokenState].find(
-      (tokenState) => tokenState.tokenAddress && getTokenPoolType(selectedMarket, tokenState.tokenAddress) === poolType
+      (tokenState) =>
+        tokenState.tokenAddress &&
+        getTokenPoolType(marketsData, selectedMarket.marketTokenAddress, tokenState.tokenAddress) === poolType
     );
 
     if (!poolTokenState)
@@ -130,13 +127,14 @@ export function MarketPoolSwapBox(p: Props) {
     }
 
     if (operationTab === Operation.deposit) {
-      const insuficcientBalanceToken = [firstTokenState, secondTokenState].find((tokenState) =>
-        tokenState.tokenAmount.gt(tokenState.balance)
+      const insuficcientBalanceToken = [firstTokenState, secondTokenState].find(
+        (tokenState) =>
+          tokenState.tokenAddress && (!tokenState.balance || tokenState.tokenAmount.gt(tokenState.balance))
       );
 
-      if (insuficcientBalanceToken) {
+      if (insuficcientBalanceToken?.token) {
         return {
-          text: t`Insufficient ${insuficcientBalanceToken.token!.symbol} balance`,
+          text: t`Insufficient ${insuficcientBalanceToken.token.symbol} balance`,
           disabled: true,
         };
       }
@@ -146,7 +144,7 @@ export function MarketPoolSwapBox(p: Props) {
         onClick: onSubmit,
       };
     } else {
-      if (gmTokenState.tokenAmount.gt(gmTokenState.balance)) {
+      if (!gmTokenState.balance || gmTokenState.tokenAmount.gt(gmTokenState.balance)) {
         return {
           text: t`Insufficient ${gmTokenState.token?.symbol} balance`,
           disabled: true,
@@ -167,6 +165,12 @@ export function MarketPoolSwapBox(p: Props) {
   function onSubmit() {
     setIsConfirming(true);
   }
+
+  useEffect(() => {
+    if (p.selectedMarketAddress !== gmTokenState.tokenAddress) {
+      gmTokenState.setTokenAddress(p.selectedMarketAddress);
+    }
+  }, [p.selectedMarketAddress, marketsData, gmTokenState]);
 
   useEffect(() => {
     if (!availableTokens.length) return;
@@ -330,7 +334,7 @@ export function MarketPoolSwapBox(p: Props) {
         <BuyInputSection
           topLeftLabel={operationTab === Operation.withdraw ? t`Pay` : t`Receive`}
           topRightLabel={t`Balance:`}
-          tokenBalance={formatTokenAmount(gmTokenState.balance, GM_DECIMALS)}
+          tokenBalance={formatTokenAmount(gmTokenState.balance, gmTokenState.token?.decimals)}
           inputValue={gmTokenState.inputValue}
           onInputValueChange={(e) => {
             setFocusedInput(FocusInputId.market);
@@ -358,7 +362,7 @@ export function MarketPoolSwapBox(p: Props) {
                 <div className="text-white">
                   <StatsTooltipRow
                     label={t`Price impact`}
-                    value={formatFee(priceImpact?.priceImpact, priceImpact?.priceImpactBasisPoints)}
+                    value={formatFee(priceImpact?.impact, priceImpact?.basisPoints)}
                     showDollar={false}
                   />
                   <StatsTooltipRow label={t`Execution fee`} value={formatFee(executionFee)} showDollar={false} />

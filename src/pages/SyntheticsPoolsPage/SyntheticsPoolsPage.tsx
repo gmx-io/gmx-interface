@@ -7,8 +7,8 @@ import { useChainId } from "lib/chains";
 import { getPageTitle } from "lib/legacy";
 import { useEffect, useState } from "react";
 import "./SyntheticsPoolsPage.scss";
-import { useMarkets } from "domain/synthetics/markets/useMarkets";
 import { getMarkets } from "domain/synthetics/markets/utils";
+import { useMarketsData } from "domain/synthetics/markets";
 
 type Props = {
   connectWallet: () => void;
@@ -17,7 +17,7 @@ type Props = {
 export function SyntheticsPoolsPage(p: Props) {
   const { chainId } = useChainId();
 
-  const marketsData = useMarkets(chainId);
+  const marketsData = useMarketsData(chainId);
   const markets = getMarkets(marketsData);
 
   // TODO: localStorage?

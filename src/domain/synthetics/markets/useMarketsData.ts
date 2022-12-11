@@ -2,12 +2,11 @@ import { getContract } from "config/contracts";
 import MarketStore from "abis/MarketStore.json";
 import SyntheticsReader from "abis/SyntheticsReader.json";
 import { useMulticall } from "lib/multicall";
+import { getCorrectTokenAddress } from "config/tokens";
 import { useMemo } from "react";
-import { ethers } from "ethers";
-import { MarketsData, SyntheticsMarket } from "./types";
-import { getToken } from "config/tokens";
+import { Market, MarketsData } from "./types";
 
-export function useMarkets(chainId: number): MarketsData {
+export function useMarketsData(chainId: number): MarketsData {
   const { data: marketsCount } = useMulticall(chainId, "useMarkets-count", {
     key: [],
     request: {
@@ -28,7 +27,7 @@ export function useMarkets(chainId: number): MarketsData {
   const { data: marketsMap } = useMulticall(chainId, "useMarkets-markets", {
     key: Boolean(marketsCount) && [marketsCount],
     request: () => ({
-      marketStore: {
+      reader: {
         contractAddress: getContract(chainId, "SyntheticsReader"),
         abi: SyntheticsReader.abi,
         calls: {
@@ -40,16 +39,18 @@ export function useMarkets(chainId: number): MarketsData {
       },
     }),
     parseResponse: (res) => {
-      const marketsMap: { [address: string]: SyntheticsMarket } = {};
+      const marketsMap: { [address: string]: Market } = {};
 
-      for (let market of res.marketStore.markets.returnValues) {
+      for (let market of res.reader.markets.returnValues) {
         try {
           marketsMap[market[0]] = {
             marketTokenAddress: market[0],
-            indexTokenAddress: toUnwrappedNativeToken(chainId, market[1]),
-            longTokenAddress: toUnwrappedNativeToken(chainId, market[2]),
-            shortTokenAddress: toUnwrappedNativeToken(chainId, market[3]),
+            indexTokenAddress: getCorrectTokenAddress(chainId, market[1], "native"),
+            longTokenAddress: getCorrectTokenAddress(chainId, market[2], "native"),
+            shortTokenAddress: market[3],
             data: market[4],
+            // TODO: store in configs?
+            perp: "USD",
           };
         } catch (e) {
           // ignore parsing errors on unknown tokens
@@ -60,18 +61,7 @@ export function useMarkets(chainId: number): MarketsData {
     },
   });
 
-  return useMemo(
-    () => ({
-      markets: marketsMap || {},
-    }),
-    [marketsMap]
-  );
-}
-
-export function toUnwrappedNativeToken(chainId: number, address: string) {
-  const token = getToken(chainId, address);
-
-  if (token.isWrapped) return ethers.constants.AddressZero;
-
-  return address;
+  return useMemo(() => {
+    return marketsMap || {};
+  }, [marketsMap]);
 }

@@ -1,10 +1,14 @@
 import { getTokenBySymbol } from "config/tokens";
 import { jsonFetcher } from "lib/fetcher";
 import { expandDecimals } from "lib/numbers";
-import { TokenPricesData, TokenPricesMap } from "./types";
+import { TokenPrices } from "./types";
 import useSWR from "swr";
 import { useMemo } from "react";
 import { getOracleKeeperUrl } from "config/oracleKeeper";
+
+export type TokenPricesData = {
+  [address: string]: TokenPrices;
+};
 
 type BackendResponse = {
   minPrice: string;
@@ -21,9 +25,7 @@ export function useTokenRecentPrices(chainId: number): TokenPricesData {
   const { data } = useSWR<BackendResponse>(url, { fetcher: jsonFetcher });
 
   return useMemo(() => {
-    return {
-      tokenPrices: formatResponse(chainId, data),
-    };
+    return formatResponse(chainId, data);
   }, [data, chainId]);
 }
 
@@ -45,7 +47,7 @@ function formatResponse(chainId: number, response: BackendResponse = []) {
     };
 
     return acc;
-  }, {} as TokenPricesMap);
+  }, {} as any);
 
   return result;
 }

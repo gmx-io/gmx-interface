@@ -1,28 +1,30 @@
 import { t } from "@lingui/macro";
 import { getChainIcon } from "config/chains";
 import { getToken } from "config/tokens";
-import { useMarketPools } from "domain/synthetics/markets/useMarketPools";
-import { useMarkets } from "domain/synthetics/markets/useMarkets";
-import { useMarketTokenPrices } from "domain/synthetics/markets/useMarketTokenPrices";
-import { getMarket, getMarketName, getMarketPoolAmount, getMarketTokenPrice } from "domain/synthetics/markets/utils";
-import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
 import gmIcon from "img/gm_icon.svg";
 import { useChainId } from "lib/chains";
-import { GM_DECIMALS, importImage } from "lib/legacy";
+import { importImage } from "lib/legacy";
 import { useMemo } from "react";
 import { CardRow } from "components/CardRow/CardRow";
-import { useTokenBalances } from "domain/synthetics/tokens/useTokenBalances";
-import { useTokenTotalSupply } from "domain/synthetics/tokens/useTokenTotalSupply";
+import { PLACEHOLDER_MARKET_NAME } from "config/synthetics";
+
+import "./SyntheticsMarketStats.scss";
+import {
+  getMarket,
+  getMarketName,
+  getMarketPoolData,
+  getMarketTokenData,
+  useMarketsData,
+  useMarketsPoolsData,
+  useMarketTokensData,
+} from "domain/synthetics/markets";
 import {
   convertToUsdByPrice,
   formatTokenAmountWithUsd,
   formatUsdAmount,
-  getTokenBalance,
-  getTokenTotalSupply,
-} from "domain/synthetics/tokens/utils";
-import { PLACEHOLDER_MARKET_NAME } from "config/synthetics";
-
-import "./SyntheticsMarketStats.scss";
+  getUsdFromTokenAmount,
+  useWhitelistedTokensData,
+} from "domain/synthetics/tokens";
 
 type Props = {
   marketKey?: string;
@@ -31,34 +33,27 @@ type Props = {
 export function SyntheticsMarketStats(p: Props) {
   const { chainId } = useChainId();
 
-  const marketsData = useMarkets(chainId);
-  const poolsData = useMarketPools(chainId);
-  const marketPricesData = useMarketTokenPrices(chainId);
+  const marketsData = useMarketsData(chainId);
+  const poolsData = useMarketsPoolsData(chainId);
   const tokensData = useWhitelistedTokensData(chainId);
-  const marketTokenBalancesData = useTokenBalances(chainId, { tokenAddresses: p.marketKey ? [p.marketKey] : [] });
-  const marketTotalSupplyData = useTokenTotalSupply(chainId, { tokenAddresses: p.marketKey ? [p.marketKey] : [] });
+  const marketTokensData = useMarketTokensData(chainId);
 
-  const data = {
-    ...marketsData,
-    ...tokensData,
-    ...marketPricesData,
-    ...poolsData,
-    ...marketTokenBalancesData,
-    ...marketTotalSupplyData,
-  };
+  const market = getMarket(marketsData, p.marketKey);
+  const marketName = getMarketName(marketsData, tokensData, market?.marketTokenAddress);
 
-  const market = getMarket(data, p.marketKey);
-  const marketName = getMarketName(chainId, data, market?.marketTokenAddress);
-  const marketPrice = getMarketTokenPrice(data, market?.marketTokenAddress);
+  const marketToken = getMarketTokenData(marketTokensData, p.marketKey);
+  const marketPrice = marketToken?.prices?.maxPrice;
 
-  const marketBalance = getTokenBalance(data, market?.marketTokenAddress);
+  const marketBalance = marketToken?.balance;
   const marketBalanceUsd =
-    marketBalance && marketPrice ? convertToUsdByPrice(marketBalance, GM_DECIMALS, marketPrice) : undefined;
+    marketBalance && marketPrice ? convertToUsdByPrice(marketBalance, marketToken.decimals, marketPrice) : undefined;
 
-  const marketTotalSupply = getTokenTotalSupply(data, market?.marketTokenAddress);
+  const marketTotalSupply = marketToken?.totalSupply;
 
   const marketTotalSupplyUsd =
-    marketTotalSupply && marketPrice ? convertToUsdByPrice(marketTotalSupply, GM_DECIMALS, marketPrice) : undefined;
+    marketTotalSupply && marketPrice
+      ? convertToUsdByPrice(marketTotalSupply, marketToken.decimals, marketPrice)
+      : undefined;
 
   const { longCollateral, shortCollateral } = useMemo(() => {
     if (!market) return { longCollateral: undefined, shortCollateral: undefined };
@@ -69,8 +64,12 @@ export function SyntheticsMarketStats(p: Props) {
     };
   }, [chainId, market]);
 
-  const longPoolAmount = getMarketPoolAmount(data, market?.marketTokenAddress, market?.longTokenAddress);
-  const shortPoolAmount = getMarketPoolAmount(data, market?.marketTokenAddress, market?.shortTokenAddress);
+  const pools = getMarketPoolData(poolsData, market?.marketTokenAddress);
+
+  const longPoolAmount = pools?.longPoolAmount;
+  const longPoolAmountUsd = getUsdFromTokenAmount(tokensData, market?.longTokenAddress, longPoolAmount);
+  const shortPoolAmount = pools?.shortPoolAmount;
+  const shortPoolAmountUsd = getUsdFromTokenAmount(tokensData, market?.shortTokenAddress, shortPoolAmount);
 
   return (
     <div className="App-card SyntheticsMarketStats-card">
@@ -100,7 +99,11 @@ export function SyntheticsMarketStats(p: Props) {
         <CardRow label={t`Price`} value={marketPrice ? formatUsdAmount(marketPrice) : "..."} />
         <CardRow
           label={t`Wallet`}
-          value={marketBalance ? formatTokenAmountWithUsd(marketBalance, marketBalanceUsd, "GM", GM_DECIMALS) : "..."}
+          value={
+            marketBalance && marketBalanceUsd
+              ? formatTokenAmountWithUsd(marketBalance, marketBalanceUsd, marketToken.symbol, marketToken.decimals)
+              : "..."
+          }
         />
 
         {/* TODO */}
@@ -112,8 +115,13 @@ export function SyntheticsMarketStats(p: Props) {
         <CardRow
           label={t`Total Supply`}
           value={
-            marketTotalSupply
-              ? formatTokenAmountWithUsd(marketTotalSupply, marketTotalSupplyUsd, "GM", GM_DECIMALS)
+            marketTotalSupply && marketTotalSupplyUsd
+              ? formatTokenAmountWithUsd(
+                  marketTotalSupply,
+                  marketTotalSupplyUsd,
+                  marketToken.symbol,
+                  marketToken.decimals
+                )
               : "..."
           }
         />
@@ -123,7 +131,12 @@ export function SyntheticsMarketStats(p: Props) {
         <CardRow label={t`Long Collateral`} value={longCollateral?.symbol || "..."} />
         <CardRow
           label={t`Pool amount`}
-          value={longCollateral && longPoolAmount ? formatUsdAmount(longPoolAmount) : "..."}
+          value={formatTokenAmountWithUsd(
+            longPoolAmount,
+            longPoolAmountUsd,
+            longCollateral?.symbol,
+            longCollateral?.decimals
+          )}
         />
 
         <div className="App-card-divider" />
@@ -131,7 +144,12 @@ export function SyntheticsMarketStats(p: Props) {
         <CardRow label={t`Short Collateral`} value={shortCollateral?.symbol || "..."} />
         <CardRow
           label={t`Pool amount`}
-          value={shortCollateral && shortPoolAmount ? formatUsdAmount(shortPoolAmount) : "..."}
+          value={formatTokenAmountWithUsd(
+            shortPoolAmount,
+            shortPoolAmountUsd,
+            shortCollateral?.symbol,
+            shortCollateral?.decimals
+          )}
         />
       </div>
     </div>

@@ -1,18 +1,16 @@
 import { BigNumber } from "ethers";
 
 export type PriceImpactConfig = {
-  factorPositive: any;
-  factorNegative: any;
-  exponentFactor: any;
+  factorPositive: BigNumber;
+  factorNegative: BigNumber;
+  exponentFactor: BigNumber;
 };
 
 export type PriceImpactConfigsData = {
-  priceImpactConfigs: {
-    [marketAddress: string]: PriceImpactConfig;
-  };
+  [marketAddress: string]: PriceImpactConfig;
 };
 
-export type PriceImpactData = {
-  priceImpact: BigNumber;
-  priceImpactBasisPoints: BigNumber;
+export type PriceImpact = {
+  impact: BigNumber;
+  basisPoints: BigNumber;
 };
