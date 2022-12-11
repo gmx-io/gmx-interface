@@ -69,7 +69,7 @@ import { I18nProvider } from "@lingui/react";
 import { Trans, t } from "@lingui/macro";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { Header } from "components/Header/Header";
-import { ARBITRUM, AVALANCHE, getAlchemyWsUrl } from "config/chains";
+import { ARBITRUM, AVALANCHE, getAlchemyWsUrl, getExplorerUrl } from "config/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { helperToast } from "lib/helperToast";
 import {
@@ -99,7 +99,6 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SyntheticsPoolsPage } from "pages/SyntheticsPoolsPage/SyntheticsPoolsPage";
 import { isDevelopment } from "config/env";
-import { TransactionsProvider } from "lib/contracts";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -140,7 +139,7 @@ function getWsProvider(active, chainId) {
 function FullApp() {
   const isHome = isHomeSite();
   const exchangeRef = useRef();
-  const { connector, deactivate, activate, active } = useWeb3React();
+  const { connector, library, deactivate, activate, active } = useWeb3React();
   const { chainId } = useChainId();
   const location = useLocation();
   const history = useHistory();
@@ -341,6 +340,52 @@ function FullApp() {
     setSelectedToPage(to);
   };
 
+  useEffect(() => {
+    const checkPendingTxns = async () => {
+      const updatedPendingTxns = [];
+      for (let i = 0; i < pendingTxns.length; i++) {
+        const pendingTxn = pendingTxns[i];
+        const receipt = await library.getTransactionReceipt(pendingTxn.hash);
+        if (receipt) {
+          if (receipt.status === 0) {
+            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
+            helperToast.error(
+              <div>
+                <Trans>
+                  Txn failed. <ExternalLink href={txUrl}>View</ExternalLink>
+                </Trans>
+                <br />
+              </div>
+            );
+          }
+          if (receipt.status === 1 && pendingTxn.message) {
+            const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
+            helperToast.success(
+              <div>
+                {pendingTxn.message}{" "}
+                <ExternalLink href={txUrl}>
+                  <Trans>View</Trans>
+                </ExternalLink>
+                <br />
+              </div>
+            );
+          }
+          continue;
+        }
+        updatedPendingTxns.push(pendingTxn);
+      }
+
+      if (updatedPendingTxns.length !== pendingTxns.length) {
+        setPendingTxns(updatedPendingTxns);
+      }
+    };
+
+    const interval = setInterval(() => {
+      checkPendingTxns();
+    }, 2 * 1000);
+    return () => clearInterval(interval);
+  }, [library, pendingTxns, chainId]);
+
   const vaultAddress = getContract(chainId, "Vault");
   const positionRouterAddress = getContract(chainId, "PositionRouter");
 
@@ -448,9 +493,11 @@ function FullApp() {
                   connectWallet={connectWallet}
                 />
               </Route>
-              <Route exact path="/pools">
-                <SyntheticsPoolsPage connectWallet={connectWallet} />
-              </Route>
+              {isDevelopment() && (
+                <Route exact path="/pools">
+                  <SyntheticsPoolsPage connectWallet={connectWallet} />
+                </Route>
+              )}
               <Route exact path="/buy_glp">
                 <BuyGlp
                   savedSlippageAmount={savedSlippageAmount}
@@ -606,15 +653,13 @@ function App() {
   return (
     <SWRConfig value={{ refreshInterval: 5000 }}>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <TransactionsProvider>
-          <SEO>
-            <Router>
-              <I18nProvider i18n={i18n}>
-                <FullApp />
-              </I18nProvider>
-            </Router>
-          </SEO>
-        </TransactionsProvider>
+        <SEO>
+          <Router>
+            <I18nProvider i18n={i18n}>
+              <FullApp />
+            </I18nProvider>
+          </Router>
+        </SEO>
       </Web3ReactProvider>
     </SWRConfig>
   );

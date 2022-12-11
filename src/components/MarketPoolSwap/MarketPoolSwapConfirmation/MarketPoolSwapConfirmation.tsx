@@ -38,7 +38,6 @@ import {
   useMarketsData,
   useMarketTokensData,
 } from "domain/synthetics/markets";
-import { useTransactions } from "lib/contracts";
 import "./MarketPoolSwapConfirmation.scss";
 
 type Props = {
@@ -69,7 +68,6 @@ function getTokenText(tokensData: TokensData, tokenAddress?: string, swapAmount?
 export function MarketPoolSwapConfirmation(p: Props) {
   const { library, account } = useWeb3React();
   const { chainId } = useChainId();
-  const { executeTxn } = useTransactions();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
 
   const tokenAddresses = [p.longDelta?.tokenAddress, p.shortDelta?.tokenAddress, p.marketTokenAddress].filter(
@@ -170,18 +168,16 @@ export function MarketPoolSwapConfirmation(p: Props) {
   function onCreateDeposit() {
     if (!account || !p.executionFee) return;
 
-    executeTxn(
-      createDepositTxn(chainId, library, {
-        account,
-        longTokenAddress: p.longDelta?.tokenAddress,
-        shortTokenAddress: p.shortDelta?.tokenAddress,
-        longTokenAmount: p.longDelta?.tokenAmount,
-        shortTokenAmount: p.shortDelta?.tokenAmount,
-        marketTokenAddress: p.marketTokenAddress,
-        minMarketTokens: p.marketTokenAmount!,
-        executionFee: p.executionFee,
-      })
-    ).then(p.onSubmitted);
+    createDepositTxn(chainId, library, {
+      account,
+      longTokenAddress: p.longDelta?.tokenAddress,
+      shortTokenAddress: p.shortDelta?.tokenAddress,
+      longTokenAmount: p.longDelta?.tokenAmount,
+      shortTokenAmount: p.shortDelta?.tokenAmount,
+      marketTokenAddress: p.marketTokenAddress,
+      minMarketTokens: p.marketTokenAmount!,
+      executionFee: p.executionFee,
+    }).then(p.onSubmitted);
   }
 
   function onCreateWithdrawal() {
@@ -195,18 +191,16 @@ export function MarketPoolSwapConfirmation(p: Props) {
       ? getTokenAmountFromUsd(marketTokensData, p.marketTokenAddress, p.shortDelta.usdAmount)
       : undefined;
 
-    executeTxn(
-      createWithdrawalTxn(chainId, library, {
-        account,
-        longTokenAddress: market?.longTokenAddress!,
-        marketLongAmount,
-        marketShortAmount,
-        minLongTokenAmount: p.longDelta?.tokenAmount,
-        minShortTokenAmount: p.shortDelta?.tokenAmount,
-        marketTokenAddress: p.marketTokenAddress,
-        executionFee: p.executionFee,
-      })
-    ).then(p.onSubmitted);
+    createWithdrawalTxn(chainId, library, {
+      account,
+      longTokenAddress: market?.longTokenAddress!,
+      marketLongAmount,
+      marketShortAmount,
+      minLongTokenAmount: p.longDelta?.tokenAmount,
+      minShortTokenAmount: p.shortDelta?.tokenAmount,
+      marketTokenAddress: p.marketTokenAddress,
+      executionFee: p.executionFee,
+    }).then(p.onSubmitted);
   }
 
   useEffect(
