@@ -101,7 +101,7 @@ export function SyntheticsMarketStats(p: Props) {
           label={t`Wallet`}
           value={
             marketBalance && marketBalanceUsd
-              ? formatTokenAmountWithUsd(marketBalance, marketBalanceUsd, marketToken.symbol, marketToken.decimals)
+              ? formatTokenAmountWithUsd(marketBalance, marketBalanceUsd, "GM", marketToken.decimals)
               : "..."
           }
         />
@@ -116,12 +116,7 @@ export function SyntheticsMarketStats(p: Props) {
           label={t`Total Supply`}
           value={
             marketTotalSupply && marketTotalSupplyUsd
-              ? formatTokenAmountWithUsd(
-                  marketTotalSupply,
-                  marketTotalSupplyUsd,
-                  marketToken.symbol,
-                  marketToken.decimals
-                )
+              ? formatTokenAmountWithUsd(marketTotalSupply, marketTotalSupplyUsd, "GM", marketToken.decimals)
               : "..."
           }
         />

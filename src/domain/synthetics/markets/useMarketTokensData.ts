@@ -8,7 +8,7 @@ import { useMemo } from "react";
 import { getTokenData, TokenData, useWhitelistedTokensData } from "domain/synthetics/tokens";
 import { MarketTokensData } from "./types";
 import { useMarketsData } from "./useMarketsData";
-import { getMarket } from "./utils";
+import { getMarket, getMarketName } from "./utils";
 import { expandDecimals } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
 
@@ -78,7 +78,8 @@ export function useMarketTokensData(chainId: number): MarketTokensData {
 
       return requests;
     }, {});
-  }, [account, chainId, dataStoreAddress, marketAddresses, marketsData, tokensData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, chainId, dataStoreAddress, marketAddresses.join("-"), marketsData, tokensData]);
 
   const reqKeys = Object.keys(requests).join("-");
 
@@ -91,15 +92,17 @@ export function useMarketTokensData(chainId: number): MarketTokensData {
         const tokenData = res[`${marketAddress}-tokenData`];
         const tokenConfig = getTokenBySymbol(chainId, "GM");
 
+        const minPrice = pricesData?.minPrice.returnValues[0];
+        const maxPrice = pricesData?.maxPrice.returnValues[0];
+
         marketTokensMap[marketAddress] = {
           ...tokenConfig,
           address: marketAddress,
-          prices: pricesData
-            ? {
-                minPrice: pricesData.minPrice.returnValues[0] || expandDecimals(1, USD_DECIMALS),
-                maxPrice: pricesData.maxPrice.returnValues[0] || expandDecimals(1, USD_DECIMALS),
-              }
-            : undefined,
+          symbol: getMarketName(marketsData, tokensData, marketAddress) || "GM",
+          prices: {
+            minPrice: minPrice?.gt(0) ? minPrice : expandDecimals(1, USD_DECIMALS),
+            maxPrice: maxPrice?.gt(0) ? maxPrice : expandDecimals(1, USD_DECIMALS),
+          },
           totalSupply: tokenData?.totalSupply.returnValues[0],
           balance: tokenData?.balance?.returnValues[0],
         };
