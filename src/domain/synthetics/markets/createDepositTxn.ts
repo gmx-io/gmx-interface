@@ -4,7 +4,7 @@ import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
 import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
-import { ExchangeRouter__factory } from "typechain-types";
+import ExchangeRouter from "abis/ExchangeRouter.json";
 
 type Params = {
   account: string;
@@ -18,7 +18,7 @@ type Params = {
 };
 
 export function createDepositTxn(chainId: number, library: Web3Provider, p: Params) {
-  const contract = ExchangeRouter__factory.connect(getContract(chainId, "ExchangeRouter"), library.getSigner());
+  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, library.getSigner());
   const depositStoreAdress = getContract(chainId, "DepositStore");
 
   const isNativeDeposit = Boolean(isAddressZero(p.longTokenAddress) && p.longTokenAmount?.gt(0));

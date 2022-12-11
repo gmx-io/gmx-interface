@@ -500,6 +500,10 @@ msgstr "Buy on Arbitrum"
 msgid "Buy on Avalanche"
 msgstr "Buy on Avalanche"
 
+#: src/components/TokenCard/TokenCard.js
+msgid "Buy on Avalanche FUJI"
+msgstr "Buy on Avalanche FUJI"
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer AVAX to Avalanche"
 msgstr "Buy or Transfer AVAX to Avalanche"
@@ -1440,6 +1444,10 @@ msgstr "GLP is the liquidity provider token. Accrues 70% of the platform's gener
 #: src/components/Glp/GlpSwap.js
 msgid "GLP sell disabled, pending {0} upgrade"
 msgstr "GLP sell disabled, pending {0} upgrade"
+
+#: src/components/TokenCard/TokenCard.js
+msgid "GM is the GMX Market Token"
+msgstr "GM is the GMX Market Token"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX Announcements and Updates"
@@ -3572,7 +3580,7 @@ msgstr "Tweet"
 msgid "Two tokens create our ecosystem"
 msgstr "Two tokens create our ecosystem"
 
-#: src/lib/contracts/transactionsContext.tsx
+#: src/App/App.js
 msgid "Txn failed. <0>View</0>"
 msgstr "Txn failed. <0>View</0>"
 
@@ -3722,7 +3730,7 @@ msgstr "Vested GMX not withdrawn"
 msgid "Vesting Status"
 msgstr "Vesting Status"
 
-#: src/lib/contracts/transactionsContext.tsx
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/Exchange/Exchange.js
 msgid "View"

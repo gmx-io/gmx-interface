@@ -500,6 +500,10 @@ msgstr "Arbitrum에서 구매"
 msgid "Buy on Avalanche"
 msgstr "Avalanche에서 구매"
 
+#: src/components/TokenCard/TokenCard.js
+msgid "Buy on Avalanche FUJI"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or Transfer AVAX to Avalanche"
 msgstr ""
@@ -1439,6 +1443,10 @@ msgstr "GLP는 유동성 공급 토큰입니다. 플랫폼에서 생성되는 �
 
 #: src/components/Glp/GlpSwap.js
 msgid "GLP sell disabled, pending {0} upgrade"
+msgstr ""
+
+#: src/components/TokenCard/TokenCard.js
+msgid "GM is the GMX Market Token"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -3565,7 +3573,7 @@ msgstr "Tweet"
 msgid "Two tokens create our ecosystem"
 msgstr "두개의 토큰이 생태계를 형성하고 있습니다"
 
-#: src/lib/contracts/transactionsContext.tsx
+#: src/App/App.js
 msgid "Txn failed. <0>View</0>"
 msgstr ""
 
@@ -3715,7 +3723,7 @@ msgstr "베스트팅된 GMX에서 인출되지 않은 양"
 msgid "Vesting Status"
 msgstr "베스팅 상황"
 
-#: src/lib/contracts/transactionsContext.tsx
+#: src/App/App.js
 #: src/pages/Exchange/Exchange.js
 #: src/pages/Exchange/Exchange.js
 msgid "View"

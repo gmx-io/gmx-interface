@@ -2,9 +2,9 @@ import { Web3Provider } from "@ethersproject/providers";
 import { t } from "@lingui/macro";
 import { getContract } from "config/contracts";
 import { BigNumber, ethers } from "ethers";
+import ExchangeRouter from "abis/ExchangeRouter.json";
 import { callContract } from "lib/contracts";
 import { isAddressZero } from "lib/legacy";
-import { ExchangeRouter__factory } from "typechain-types";
 
 type Params = {
   account: string;
@@ -18,7 +18,7 @@ type Params = {
 };
 
 export function createWithdrawalTxn(chainId: number, library: Web3Provider, p: Params) {
-  const contract = ExchangeRouter__factory.connect(getContract(chainId, "ExchangeRouter"), library.getSigner());
+  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), ExchangeRouter.abi, library.getSigner());
   const withdrawalStoreAddress = getContract(chainId, "WithdrawalStore");
 
   const isNativeWithdrawal = Boolean(isAddressZero(p.longTokenAddress) && p.marketLongAmount?.gt(0));
