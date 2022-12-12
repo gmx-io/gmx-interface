@@ -41,20 +41,22 @@ export default function ChartTokenSelector(props) {
       </Menu.Button>
       <div className="chart-token-menu">
         <Menu.Items as="div" className="menu-items chart-token-menu-items">
-          {options.map((option, index) => (
-            <Menu.Item key={index}>
-              <div
-                className="menu-item"
-                onClick={() => {
-                  onSelect(option);
-                }}
-              >
-                <span style={{ marginLeft: 5 }} className="token-label">
-                  {option.symbol} / USD
-                </span>
-              </div>
-            </Menu.Item>
-          ))}
+          {options
+            .filter((item) => item.symbol !== "ETH")
+            .map((option, index) => (
+              <Menu.Item key={index}>
+                <div
+                  className="menu-item"
+                  onClick={() => {
+                    onSelect(option);
+                  }}
+                >
+                  <span style={{ marginLeft: 5 }} className="token-label">
+                    {option.symbol} / USD
+                  </span>
+                </div>
+              </Menu.Item>
+            ))}
         </Menu.Items>
       </div>
     </Menu>

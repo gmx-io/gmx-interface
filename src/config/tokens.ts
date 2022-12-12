@@ -86,13 +86,13 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
     },
-    // {
-    //   name: "Ethereum",
-    //   symbol: "ETH",
-    //   decimals: 18,
-    //   address: "0x612777Eea37a44F7a95E3B101C39e1E2695fa6C2",
-    //   imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-    // },
+    {
+      name: "Ethereum",
+      symbol: "ETH",
+      decimals: 18,
+      address: "0x612777Eea37a44F7a95E3B101C39e1E2695fa6C2",
+      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+    },
     {
       name: "Binance Coin",
       symbol: "BNB",
