@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { BigNumber } from "ethers";
 import { formatKeyAmount } from "lib/numbers";
@@ -17,13 +17,13 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Prop
   return (
     <>
       <StatsTooltipRow
-        label="Escrowed GMX APR"
+        label={t`Escrowed GMX APR`}
         showDollar={false}
         value={`${formatKeyAmount(processedData, "gmxAprForEsGmx", 2, 2, true)}%`}
       />
       {(!processedData.gmxBoostAprForNativeToken || processedData.gmxBoostAprForNativeToken.eq(0)) && (
         <StatsTooltipRow
-          label={`${nativeTokenSymbol} APR`}
+          label={t`${nativeTokenSymbol} APR`}
           showDollar={false}
           value={`${formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%`}
         />
@@ -33,18 +33,18 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol }: Prop
           <br />
 
           <StatsTooltipRow
-            label={`${nativeTokenSymbol} Base APR`}
+            label={t`${nativeTokenSymbol} Base APR`}
             showDollar={false}
             value={`${formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true)}%`}
           />
           <StatsTooltipRow
-            label={`${nativeTokenSymbol} Boosted APR`}
+            label={t`${nativeTokenSymbol} Boosted APR`}
             showDollar={false}
             value={`${formatKeyAmount(processedData, "gmxBoostAprForNativeToken", 2, 2, true)}%`}
           />
           <div className="Tooltip-divider" />
           <StatsTooltipRow
-            label={`${nativeTokenSymbol} Total APR`}
+            label={t`${nativeTokenSymbol} Total APR`}
             showDollar={false}
             value={`${formatKeyAmount(processedData, "gmxAprForNativeTokenWithBoost", 2, 2, true)}%`}
           />
