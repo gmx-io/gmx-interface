@@ -151,7 +151,7 @@ export default function APRLabel({ chainId, label }) {
     nativeTokenPrice,
     stakedGmxSupply,
     gmxPrice,
-    gmxSupply
+    gmxSupply?.supply
   );
 
   return <>{`${formatKeyAmount(processedData, label, 2, 2, true)}%`}</>;

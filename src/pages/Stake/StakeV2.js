@@ -1117,7 +1117,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     nativeTokenPrice,
     stakedGmxSupply,
     gmxPrice,
-    gmxSupply
+    gmxSupply?.supply
   );
 
   let hasMultiplierPoints = false;

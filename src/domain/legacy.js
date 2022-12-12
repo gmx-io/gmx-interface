@@ -484,7 +484,7 @@ export function useTotalGmxSupply() {
   });
 
   return {
-    total: gmxSupply ? bigNumberify(gmxSupply) : undefined,
+    total: gmxSupply?.supply ? bigNumberify(gmxSupply?.supply) : undefined,
     mutate: updateGmxSupply,
   };
 }

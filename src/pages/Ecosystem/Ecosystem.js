@@ -34,7 +34,7 @@ export default function Ecosystem() {
     },
     {
       title: "OPEN Stats",
-      link: "https://stats.gmx.io/",
+      link: "http://api.openworld.vision:8080/",
       linkLabel: "stats.gmx.io",
       about: t`OPEN Stats Page`,
       chainIds: [ARBITRUM, AVALANCHE],

@@ -302,7 +302,7 @@ msgid "Assets Under Management"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "Assets Under Management: OPEN staked (All chains) + OLP pool ({chainName})"
+msgid "Assets Under Management: OPEN staked (All chains) + OLP pool (${chainName})"
 msgstr "管理资产。 GMX质押（所有链）+GLP池（{链名}）"
 
 #: src/components/Glp/GlpSwap.js
