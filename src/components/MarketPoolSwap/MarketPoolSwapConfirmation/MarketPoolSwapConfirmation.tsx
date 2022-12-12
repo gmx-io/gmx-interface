@@ -101,8 +101,6 @@ export function MarketPoolSwapConfirmation(p: Props) {
 
   const isAllowanceLoaded = Object.keys(tokenAllowanceData).length > 0;
 
-  const submitButtonState = getSubmitButtonState();
-
   const payTokens: { [address: string]: BigNumber } = useMemo(() => {
     if (isDeposit) {
       return [p.longDelta, p.shortDelta].filter(Boolean).reduce((acc, delta) => {
@@ -136,7 +134,7 @@ export function MarketPoolSwapConfirmation(p: Props) {
       };
     }
 
-    if (tokensToApprove?.some((address) => needTokenApprove(address))) {
+    if (needTokenApprove && tokensToApprove?.some((address) => needTokenApprove(address))) {
       return {
         text: t`Need tokens approval`,
         disabled: true,
@@ -225,6 +223,8 @@ export function MarketPoolSwapConfirmation(p: Props) {
       tokensToApprove,
     ]
   );
+
+  const submitButtonState = getSubmitButtonState();
 
   return (
     <div className="Confirmation-box">
