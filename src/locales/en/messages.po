@@ -178,6 +178,10 @@ msgstr "Additional reserve required"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 
+#: src/components/AddressDropdown/AddressDropdown.tsx
+msgid "Address copied to your clipboard"
+msgstr "Address copied to your clipboard"
+
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
 msgstr "Affiliates"

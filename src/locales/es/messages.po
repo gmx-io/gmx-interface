@@ -178,6 +178,10 @@ msgstr "Reserva adicional requerida"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "Además, las órdenes de activación son órdenes de mercado y no se garantiza que se ejecuten al precio de activación."
 
+#: src/components/AddressDropdown/AddressDropdown.tsx
+msgid "Address copied to your clipboard"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
 msgstr "Afiliados"

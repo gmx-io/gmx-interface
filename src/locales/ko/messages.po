@@ -178,6 +178,10 @@ msgstr "추가의 리저브양이 필요합니다"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "추가로, 트리거 주문은 시장가 주문이며 트리거 가격으로 결제되지 않을 수도 있습니다."
 
+#: src/components/AddressDropdown/AddressDropdown.tsx
+msgid "Address copied to your clipboard"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
 msgstr "제휴"

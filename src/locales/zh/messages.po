@@ -178,6 +178,10 @@ msgstr "额外保留需求"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "此外，触发订单為市场订单，不保证以触发价格结算"
 
+#: src/components/AddressDropdown/AddressDropdown.tsx
+msgid "Address copied to your clipboard"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
 msgstr "结盟企业"

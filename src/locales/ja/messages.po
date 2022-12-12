@@ -178,6 +178,10 @@ msgstr "必要な追加リザーブ額"
 msgid "Additionally, trigger orders are market orders and are not guaranteed to settle at the trigger price."
 msgstr "それに加え、トリガー注文はマーケット注文であり、トリガー価格での決済は保証されていません。"
 
+#: src/components/AddressDropdown/AddressDropdown.tsx
+msgid "Address copied to your clipboard"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.js
 msgid "Affiliates"
 msgstr "アフィリエイト"
