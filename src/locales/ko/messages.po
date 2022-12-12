@@ -307,7 +307,7 @@ msgstr "총 운용자산"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
-msgstr ""
+msgstr "자산운용규모: 스테이킹된 GMX + GLP 풀 ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
 msgid "Available"
@@ -2469,7 +2469,7 @@ msgstr "GMX와 통합된 프로젝트"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of Reserves"
-msgstr ""
+msgstr "예비구두 증명"
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Protocol"
@@ -3472,6 +3472,10 @@ msgstr "언스테이킹 제출 완료!"
 msgid "Unstake submitted! <0>View status.</0>"
 msgstr "언스테이킹 제출완료! <0>상태 보기.</0>"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Unstaking will burn <0>{0} Multiplier Points</0>. {1}"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
 msgid "Unstaking..."
@@ -3889,7 +3893,7 @@ msgstr "인출"
 
 #: src/pages/Exchange/Exchange.js
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
-msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
+msgstr "{0, plural, one {주문 취소} other {# 주문 취소}}"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
@@ -3941,7 +3945,7 @@ msgstr "{0}은 목표 가중치를 초과 했습니다.<0/><1/>토큰을 {1}로 
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-msgstr ""
+msgstr "{0}은 목표 가중치를 미달합니다.<0/><1/>{1}로 <2>GLP 구매</2>를 하거나 {2}에서 다른 토큰으로 <3>스왑</3>하는 수수료가 감소합니다."
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
@@ -4021,7 +4025,7 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
-msgstr ""
+msgstr "{longOrShortText} {0} 마켓 선택됨"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"

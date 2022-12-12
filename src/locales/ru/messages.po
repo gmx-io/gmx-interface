@@ -63,7 +63,7 @@ msgstr "<0>Недостаточная ликвидность для выполн
 
 #: src/components/Exchange/PositionSeller.js
 msgid "<0>More Info</0> about fees."
-msgstr "<0>More Info</0> о комиссии."
+msgstr "<0>Больше информации</0> о комиссии."
 
 #: src/pages/PageNotFound/PageNotFound.js
 msgid "<0>Return to </0><1>Homepage</1> <2>or </2> <3>Trade</3>"
@@ -307,7 +307,7 @@ msgstr "Активы под управлением"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
-msgstr ""
+msgstr "Активы под управлением: Ставка GMX (все цепи) + GLP пул ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
 msgid "Available"
@@ -2469,7 +2469,7 @@ msgstr "Проекты, интегрированные с GMX."
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of Reserves"
-msgstr ""
+msgstr "Доказательство резервов"
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Protocol"
@@ -3472,6 +3472,10 @@ msgstr "Снятие стакинга подтверждено!"
 msgid "Unstake submitted! <0>View status.</0>"
 msgstr "Снятие стакинга подтверждено! <0>Посмотреть статус.</0>"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Unstaking will burn <0>{0} Multiplier Points</0>. {1}"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
 msgid "Unstaking..."
@@ -3889,7 +3893,7 @@ msgstr "вывод"
 
 #: src/pages/Exchange/Exchange.js
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
-msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
+msgstr "{0, plural, one {Отменить заказ} other {Отменить # заказов}}"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
@@ -3941,7 +3945,7 @@ msgstr "{0} превышает целевой вес.<0/><1/>Получите м
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-msgstr ""
+msgstr "{0} liegt unter der Zielgewichtung.<0/><1/>Erhalte niedrigere Gebühren, um <2>GLP</2> mit {1} zu kaufen und <3>zu tauschen</3> {2} für andere Token."
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
@@ -4021,7 +4025,7 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
-msgstr ""
+msgstr "{longOrShortText} {0} рынок выбран"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"

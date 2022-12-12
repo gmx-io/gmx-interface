@@ -307,7 +307,7 @@ msgstr "管理中资产"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
-msgstr ""
+msgstr "管理中资产。 GMX质押（所有链）+GLP池（{链名}）."
 
 #: src/components/Glp/GlpSwap.js
 msgid "Available"
@@ -2469,7 +2469,7 @@ msgstr "与GMX整合的项目"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of Reserves"
-msgstr ""
+msgstr "储备证明"
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Protocol"
@@ -3472,6 +3472,10 @@ msgstr "解除质押送出!"
 msgid "Unstake submitted! <0>View status.</0>"
 msgstr "解除质押送出!<0>查看状况</0>"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Unstaking will burn <0>{0} Multiplier Points</0>. {1}"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
 msgid "Unstaking..."
@@ -3889,7 +3893,7 @@ msgstr "领取"
 
 #: src/pages/Exchange/Exchange.js
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
-msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
+msgstr "{0, plural, one {取消订单} other {取消#个订单}}"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "{0} Approved!"
@@ -3941,7 +3945,7 @@ msgstr "{0}高于其目标重量。<0/><1/>获取较低的费用，以<2>交换<
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-msgstr ""
+msgstr "{0}低于其目标重量。<0/><1/>获取较低的费用，以<2>用{1}购买GLP</2>，并<3>用{2}交换</3>其他代币"
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
@@ -4024,7 +4028,7 @@ msgstr "{existingTriggerOrderLength, plural, one {You have an active trigger ord
 
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
-msgstr ""
+msgstr "{longOrShortText} {0} 市场选定"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"

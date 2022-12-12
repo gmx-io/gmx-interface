@@ -307,7 +307,7 @@ msgstr "管理下の資産総額"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
-msgstr ""
+msgstr "管理資産: 全チェーンでステークされているGMX + GLPプール ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
 msgid "Available"
@@ -2469,7 +2469,7 @@ msgstr "GMXと統合されているプロジェクト"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of Reserves"
-msgstr ""
+msgstr "貯蓄証明"
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Protocol"
@@ -3472,6 +3472,10 @@ msgstr "アンステーク申し込み完了!"
 msgid "Unstake submitted! <0>View status.</0>"
 msgstr "アンステーク申し込み完了! <0>状況を確認する。</0>"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Unstaking will burn <0>{0} Multiplier Points</0>. {1}"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
 msgid "Unstaking..."
@@ -3941,7 +3945,7 @@ msgstr "{0}はターゲットウェイトを超過しています。<0/><1/>ト�
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> with {1}, and to <3>swap</3> {2} for other tokens."
-msgstr ""
+msgstr "{0}はターゲットウェイトより低くなっています。<0/><1/>手数料を低くするには、{1}で<2>GLPを購入</2>し、{2}を別のトークンに<3>スワップ</3>\"してください。"
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
@@ -4021,7 +4025,7 @@ msgstr "{existingTriggerOrderLength, plural, one {このポジションをオー
 
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
-msgstr ""
+msgstr "{longOrShortText} {0} 選択されたマーケット"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"

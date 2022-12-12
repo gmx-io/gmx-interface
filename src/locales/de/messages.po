@@ -307,7 +307,7 @@ msgstr "Verwaltetes Vermögen"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
-msgstr ""
+msgstr "Verwaltetes Vermögen: GMX-Staked (Alle Chains) + GLP-Pool ({chainName})."
 
 #: src/components/Glp/GlpSwap.js
 msgid "Available"
@@ -2469,7 +2469,7 @@ msgstr "Mit GMX integrierte Projekte."
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Proof of Reserves"
-msgstr ""
+msgstr "Reserve-Nachweis"
 
 #: src/components/Header/HomeHeaderLinks.tsx
 msgid "Protocol"
@@ -3472,6 +3472,10 @@ msgstr "Unstaken übermittelt!"
 msgid "Unstake submitted! <0>View status.</0>"
 msgstr "Unstaken übermittelt! <0>Status anzeigen.</0>"
 
+#: src/pages/Stake/StakeV2.js
+msgid "Unstaking will burn <0>{0} Multiplier Points</0>. {1}"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
 msgid "Unstaking..."
@@ -4021,7 +4025,7 @@ msgstr "{existingTriggerOrderLength, plural, one {Du hast eine aktiven Trigger-O
 
 #: src/components/Exchange/PositionsList.js
 msgid "{longOrShortText} {0} market selected"
-msgstr ""
+msgstr "{longOrShortText} {0} Markt ausgewählt"
 
 #: src/components/Glp/GlpSwap.js
 msgid "{nativeTokenSymbol} ({wrappedTokenSymbol}) APR"

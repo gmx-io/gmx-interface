@@ -3469,6 +3469,10 @@ msgstr ""
 msgid "Unstake submitted! <0>View status.</0>"
 msgstr ""
 
+#: src/pages/Stake/StakeV2.js
+msgid "Unstaking will burn <0>{0} Multiplier Points</0>. {1}"
+msgstr ""
+
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV2.js
 msgid "Unstaking..."

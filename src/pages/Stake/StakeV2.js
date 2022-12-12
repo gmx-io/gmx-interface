@@ -311,14 +311,16 @@ function UnstakeModal(props) {
         )}
         {burnAmount && burnAmount.gt(0) && rewardReductionBasisPoints && rewardReductionBasisPoints.gt(0) && (
           <div className="Modal-note">
-            Unstaking will burn&nbsp;
-            <ExternalLink href="https://gmxio.gitbook.io/gmx/rewards">
-              {formatAmount(burnAmount, 18, 4, true)} Multiplier Points
-            </ExternalLink>
-            .&nbsp;
-            {shouldShowReductionAmount && (
-              <span>Boost Percentage: -{formatAmount(rewardReductionBasisPoints, 2, 2)}%.</span>
-            )}
+            <Trans>
+              Unstaking will burn&nbsp;
+              <ExternalLink href="https://gmxio.gitbook.io/gmx/rewards">
+                {formatAmount(burnAmount, 18, 4, true)} Multiplier Points
+              </ExternalLink>
+              .&nbsp;
+              {shouldShowReductionAmount && (
+                <span>Boost Percentage: -{formatAmount(rewardReductionBasisPoints, 2, 2)}%.</span>
+              )}
+            </Trans>
           </div>
         )}
         <div className="Exchange-swap-button-container">
