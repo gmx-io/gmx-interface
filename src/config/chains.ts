@@ -212,7 +212,7 @@ export const NETWORK_METADATA: { [chainId: number]: NetworkMetadata } = {
     blockExplorerUrls: [getExplorerUrl(AVALANCHE)],
   },
   [AVALANCHE_FUJI]: {
-    chainId: "0x" + AVALANCHE.toString(16),
+    chainId: "0x" + AVALANCHE_FUJI.toString(16),
     chainName: "Avalanche",
     nativeCurrency: {
       name: "AVAX",
