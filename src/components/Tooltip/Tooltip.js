@@ -54,9 +54,9 @@ export default function Tooltip(props) {
   }, [setVisible, intervalCloseRef]);
 
   const className = cx("Tooltip", props.className);
-
+  // Using pointer events instead of mouse events https://github.com/facebook/react/issues/18753
   return (
-    <span className={className} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} onClick={onMouseClick}>
+    <span className={className} onPointerEnter={onMouseEnter} onPointerLeave={onMouseLeave} onClick={onMouseClick}>
       <span
         className={cx({ "Tooltip-handle": !props.disableHandleStyle }, [props.handleClassName], { active: visible })}
       >
