@@ -2291,11 +2291,6 @@ export default function SwapBox(props) {
                         <br />
                         The slippage amount can be configured under Settings, found by clicking on your address at the
                         top right of the page after connecting your wallet.
-                        <br />
-                        <br />
-                        <ExternalLink href="https://wiki.openworld.vision/trading#opening-a-position">
-                          More Info
-                        </ExternalLink>
                       </Trans>
                     </div>
                   );
@@ -2320,11 +2315,6 @@ export default function SwapBox(props) {
                         <br />
                         <br />
                         This exit price will change with the price of the asset.
-                        <br />
-                        <br />
-                        <ExternalLink href="https://wiki.openworld.vision/trading#opening-a-position">
-                          More Info
-                        </ExternalLink>
                       </Trans>
                     </div>
                   );
@@ -2359,10 +2349,6 @@ export default function SwapBox(props) {
                           {isShort && t`You can change the "Collateral In" token above to find lower fees`}
                         </div>
                       )}
-                      <br />
-                      <ExternalLink href="https://wiki.openworld.vision/trading#opening-a-position">
-                        <Trans>More Info</Trans>
-                      </ExternalLink>
                     </div>
                   );
                 }}

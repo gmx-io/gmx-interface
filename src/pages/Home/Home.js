@@ -39,7 +39,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
   // }, {
   //   id: 3,
   //   question: "What is the OLP Token? ",
-  //   answer: "The OLP token represents the liquidity users provide to the OPEN platform for Swaps and Margin Trading.<br><br>To provide liquidity to OLP you <a href='https://gmx.io/buy_glp' target='_blank'>trade</a> your crypto asset BTC, ETH, LINK, UNI, USDC, USDT, MIM, or FRAX to the liquidity pool, in exchange, you gain exposure to a diversified index of tokens while earning 50% of the platform trading fees and esGMX."
+  //   answer: "The OLP token represents the liquidity users provide to the OPEN platform for Swaps and Margin Trading.<br><br>To provide liquidity to OLP you <a href='https://gmx.io/buy_olp' target='_blank'>trade</a> your crypto asset BTC, ETH, LINK, UNI, USDC, USDT, MIM, or FRAX to the liquidity pool, in exchange, you gain exposure to a diversified index of tokens while earning 50% of the platform trading fees and esOPEN."
   // }, {
   //   id: 4,
   //   question: "What can I trade on OPEN? ",

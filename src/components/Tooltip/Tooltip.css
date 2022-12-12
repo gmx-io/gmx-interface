@@ -11,8 +11,17 @@
   letter-spacing: 0.4px;
   min-width: 25rem;
   text-align: left;
-  background: linear-gradient(90deg, #0b0b0f 0%, rgba(10, 13, 28, 1) 100%);
+  background: #472F50;
   z-index: 1000;
+  color: #ffffff;
+}
+.Tooltip-popup a{
+  color: #ffffff;
+  opacity: 0.7;
+}
+.Tooltip-popup a:hover{
+  color: #ffffff;
+  opacity: 1;
 }
 
 .Tooltip.nowrap .Tooltip-popup {

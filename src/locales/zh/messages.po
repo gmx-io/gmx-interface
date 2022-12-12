@@ -74,8 +74,8 @@ msgid "<0>The pool's capacity has been reached for {0}. Please use another token
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to OPEN will remain as OPEN tokens.<3/><4/>To claim OPEN tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
-msgstr "这将撤回和取消保留所有代币并暂停授权。<1/><2/>esGMX 代币已转换为 OPEN 将保留为 OPEN 代币。<3/><4/>要在不撤回的情况下领取 OPEN 代币，点选 “总奖励”下的“领取”按钮。<5/><6/></0>"
+msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esOPEN tokens that have been converted to OPEN will remain as OPEN tokens.<3/><4/>To claim OPEN tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
+msgstr "这将撤回和取消保留所有代币并暂停授权。<1/><2/>esOPEN 代币已转换为 OPEN 将保留为 OPEN 代币。<3/><4/>要在不撤回的情况下领取 OPEN 代币，点选 “总奖励”下的“领取”按钮。<5/><6/></0>"
 
 #: src/lib/wallets/index.js
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
@@ -178,11 +178,11 @@ msgid "Affiliates"
 msgstr "结盟企业"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
+msgid "After claiming you will be able to vest a maximum of {0} esOPEN at a ratio of {1} {stakingToken} to 1 esOPEN."
 msgstr "申领后，您将能够以{1}比{1}的比例获得最多{0}esGMX的。{stakingToken}比1esGMX。\""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
+msgid "After claiming, the esOPEN tokens will be airdropped to your account on the selected network within 7 days."
 msgstr "申领后，esGMX代币将在7天内空投到您所选网络的账户中"
 
 #: src/pages/BuyGMX/BuyGMX.js
@@ -564,12 +564,12 @@ msgid "Claim completed!"
 msgstr "领取完成"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Claim esGMX"
+msgid "Claim esOPEN"
 msgstr "领取esGMX"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "Claim esGMX Rewards"
+msgid "Claim esOPEN Rewards"
 msgstr "领取esGMX奖励"
 
 #: src/pages/Stake/StakeV1.js
@@ -780,7 +780,7 @@ msgid "Continue"
 msgstr "继续"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Convert esGMX tokens to OPEN tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
+msgid "Convert esOPEN tokens to OPEN tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
 msgstr "将esGMX代币转换为GMX代币。<0/>使用金库前请阅读<1>投资细节</1>"
 
 #: src/pages/Stake/StakeV2.js
@@ -2081,7 +2081,7 @@ msgid "No PnLs found"
 msgstr "未发现PnLs"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "No esGMX to claim"
+msgid "No esOPEN to claim"
 msgstr "没有esGMX可供索取"
 
 #: src/components/Exchange/OrdersList.js
@@ -2310,7 +2310,7 @@ msgid "Please input a referral code to benefit from fee discounts."
 msgstr "请输入推荐代码，以获得折扣"
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Please only use this for full account transfers.<0/>This will transfer all your OPEN, esGMX, OLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked OPEN or OLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
+msgid "Please only use this for full account transfers.<0/>This will transfer all your OPEN, esOPEN, OLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked OPEN or OLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr ""
 
 #: src/components/Migration/Migration.js
@@ -2841,11 +2841,11 @@ msgid "Stake Multiplier Points"
 msgstr "质押倍数点"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Stake esGMX"
+msgid "Stake esOPEN"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "Stake esGMX Rewards"
+msgid "Stake esOPEN Rewards"
 msgstr "质押esGMX奖励"
 
 #: src/pages/Stake/StakeV1.js
@@ -3064,19 +3064,19 @@ msgid "The Gambit protocol is in beta, please read the <0>staking details</0>be
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
-msgstr "esGMX（IOU）代币的地址是{esGmxIouAddress}"
+msgid "The address of the esOPEN (IOU) token is {esGmxIouAddress}."
+msgstr "esOPEN（IOU）代币的地址是{esGmxIouAddress}"
 
 #: src/components/Exchange/SwapBox.js
 msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
-msgstr "esGMX（IOU）代币是可以转让的，如果你愿意，你可以把代币加入你的钱包，并把它发送到另一个地址"
+msgid "The esOPEN (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
+msgstr "esOPEN（IOU）代币是可以转让的，如果你愿意，你可以把代币加入你的钱包，并把它发送到另一个地址"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The esGMX tokens can be staked or vested at any time."
+msgid "The esOPEN tokens can be staked or vested at any time."
 msgstr "esGMX代币可以在任何时候被质押或授权"
 
 #: src/lib/contracts/callContract.tsx
@@ -3456,7 +3456,7 @@ msgid "Unstake completed!"
 msgstr "解除质押完成"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Unstake esGMX"
+msgid "Unstake esOPEN"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -3758,7 +3758,7 @@ msgid "You can check your claim history <0>here</0>."
 msgstr "你可以在这里查看你的提领历史<0></0>"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
+msgid "You can currently vest a maximum of {0} esOPEN tokens at a ratio of {1} {stakingToken} to 1 esOPEN."
 msgstr "目前，您最多可以授权{0}个esGMX代币，比例为{1}个esGMX。 {stakingToken}对1esGMX"
 
 #: src/pages/BuyGMX/BuyGMX.js
@@ -3795,11 +3795,11 @@ msgid "You have not deposited any tokens for vesting."
 msgstr "你尚未存入任何可用于授权的代币"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "You have {0} esGMX (IOU) tokens."
+msgid "You have {0} esOPEN (IOU) tokens."
 msgstr "你有{0}个esGMX (IOU) 代币"
 
 #: src/pages/Stake/StakeV2.js
-msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
+msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esOPEN."
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
@@ -3823,7 +3823,7 @@ msgid "You will receive at least {0} {1} if this order is executed. The executio
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
+msgid "Your esOPEN (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
 msgstr "你的esGMX（IOU）余额在提领后将减少您的领回金额，这是可预期的"
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -3979,7 +3979,7 @@ msgstr "{0}在指令表中选择"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "{0} tokens have been converted to OPEN from the {1} esGMX deposited for vesting."
+msgid "{0} tokens have been converted to OPEN from the {1} esOPEN deposited for vesting."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js

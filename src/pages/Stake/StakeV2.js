@@ -448,7 +448,7 @@ function VesterDepositModal(props) {
                   onChange={(e) => setValue(e.target.value)}
                 />
               </div>
-              <div className="PositionEditor-token-symbol">esGMX</div>
+              <div className="PositionEditor-token-symbol">esOPEN</div>
             </div>
           </div>
           <div className="VesterDepositModal-info-rows">
@@ -456,7 +456,7 @@ function VesterDepositModal(props) {
               <div className="Exchange-info-label">
                 <Trans>Wallet</Trans>
               </div>
-              <div className="align-right">{formatAmount(balance, 18, 2, true)} esGMX</div>
+              <div className="align-right">{formatAmount(balance, 18, 2, true)} esOPEN</div>
             </div>
             <div className="Exchange-info-row">
               <div className="Exchange-info-label">
@@ -480,12 +480,12 @@ function VesterDepositModal(props) {
                         <StatsTooltipRow
                           showDollar={false}
                           label={t`Deposited`}
-                          value={`${formatAmount(vestedAmount, 18, 2, true)} esGMX`}
+                          value={`${formatAmount(vestedAmount, 18, 2, true)} esOPEN`}
                         />
                         <StatsTooltipRow
                           showDollar={false}
                           label={t`Max Capacity`}
-                          value={`${formatAmount(maxVestableAmount, 18, 2, true)} esGMX`}
+                          value={`${formatAmount(maxVestableAmount, 18, 2, true)} esOPEN`}
                         />
                       </div>
                     );
@@ -526,7 +526,7 @@ function VesterDepositModal(props) {
                             <br />
                             <Trans>
                               You need a total of at least {formatAmount(nextReserveAmount, 18, 2, true)}{" "}
-                              {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esGMX.
+                              {stakeTokenLabel} to vest {formatAmount(amount, 18, 2, true)} esOPEN.
                             </Trans>
                           </>
                         )}
@@ -578,7 +578,7 @@ function VesterWithdrawModal(props) {
             This will withdraw and unreserve all tokens as well as pause vesting.
             <br />
             <br />
-            esGMX tokens that have been converted to OPEN will remain as OPEN tokens.
+            esOPEN tokens that have been converted to OPEN will remain as OPEN tokens.
             <br />
             <br />
             To claim OPEN tokens without withdrawing, use the "Claim" button under the Total Rewards section.
@@ -758,12 +758,12 @@ function CompoundModal(props) {
           </div>
           <div>
             <Checkbox isChecked={shouldClaimEsGmx} setIsChecked={setShouldClaimEsGmx} disabled={shouldStakeEsGmx}>
-              <Trans>Claim esGMX Rewards</Trans>
+              <Trans>Claim esOPEN Rewards</Trans>
             </Checkbox>
           </div>
           <div>
             <Checkbox isChecked={shouldStakeEsGmx} setIsChecked={toggleShouldStakeEsGmx}>
-              <Trans>Stake esGMX Rewards</Trans>
+              <Trans>Stake esOPEN Rewards</Trans>
             </Checkbox>
           </div>
           <div>
@@ -879,7 +879,7 @@ function ClaimModal(props) {
           </div>
           <div>
             <Checkbox isChecked={shouldClaimEsGmx} setIsChecked={setShouldClaimEsGmx}>
-              <Trans>Claim esGMX Rewards</Trans>
+              <Trans>Claim esOPEN Rewards</Trans>
             </Checkbox>
           </div>
           <div>
@@ -911,7 +911,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
   const chainName = getChainName(chainId);
 
-  const hasInsurance = true;
+  const hasInsurance = false;
 
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
   const [stakeModalTitle, setStakeModalTitle] = useState("");
@@ -1184,10 +1184,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
   const showStakeEsGmxModal = () => {
     setIsStakeModalVisible(true);
-    setStakeModalTitle(t`Stake esGMX`);
+    setStakeModalTitle(t`Stake esOPEN`);
     setStakeModalMaxAmount(processedData.esGmxBalance);
     setStakeValue("");
-    setStakingTokenSymbol("esGMX");
+    setStakingTokenSymbol("esOPEN");
     setStakingTokenAddress(esGmxAddress);
     setStakingFarmAddress(AddressZero);
     setStakeMethodName("stakeEsGmx");
@@ -1201,7 +1201,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
     setIsVesterDepositModalVisible(true);
     setVesterDepositTitle(t`OPEN Vault`);
-    setVesterDepositStakeTokenLabel("staked OPEN + esGMX + Multiplier Points");
+    setVesterDepositStakeTokenLabel("staked OPEN + esOPEN + Multiplier Points");
     setVesterDepositMaxAmount(remainingVestableAmount);
     setVesterDepositBalance(processedData.esGmxBalance);
     setVesterDepositEscrowedBalance(vestingData.gmxVester.escrowedBalance);
@@ -1283,7 +1283,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
   const showUnstakeEsGmxModal = () => {
     setIsUnstakeModalVisible(true);
-    setUnstakeModalTitle(t`Unstake esGMX`);
+    setUnstakeModalTitle(t`Unstake esOPEN`);
     let maxAmount = processedData.esGmxInStakedGmx;
     if (
       processedData.esGmxInStakedGmx &&
@@ -1297,7 +1297,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     setUnstakeModalMaxAmount(maxAmount);
     setUnstakeModalReservedAmount(vestingData.gmxVesterPairAmount);
     setUnstakeValue("");
-    setUnstakingTokenSymbol("esGMX");
+    setUnstakingTokenSymbol("esOPEN");
     setUnstakeMethodName("unstakeEsGmx");
   };
 
@@ -1333,7 +1333,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
     }
     let esGmxAmountStr;
     if (processedData.esGmxInStakedGmx && processedData.esGmxInStakedGmx.gt(0)) {
-      esGmxAmountStr = formatAmount(processedData.esGmxInStakedGmx, 18, 2, true) + " esGMX";
+      esGmxAmountStr = formatAmount(processedData.esGmxInStakedGmx, 18, 2, true) + " esOPEN";
     }
     let mpAmountStr;
     if (processedData.bonusGmxInFeeGmx && processedData.bnGmxInFeeGmx.gt(0)) {
@@ -1459,11 +1459,11 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
           <div className="Page-description">
             <Trans>
               Stake{" "}
-              <a href="https://wiki.openworld.vision/tokenomics" target="_blank" rel="noopener noreferrer">
+              {/* <a href="https://wiki.openworld.vision/tokenomics" target="_blank" rel="noopener noreferrer">
                 OPEN
               </a>{" "}
-              and{" "}
-              <a href="https://wiki.openworld.vision/glp" target="_blank" rel="noopener noreferrer">
+              and{" "} */}
+              <a href="https://wiki.openworld.vision/tokenomics" target="_blank" rel="noopener noreferrer">
                 OLP
               </a>{" "}
               to earn rewards.
@@ -1474,7 +1474,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
       </div>
       <div className="StakeV2-content">
         <div className="StakeV2-cards">
-          <div className="App-card StakeV2-gmx-card">
+          {/* <div className="App-card StakeV2-gmx-card">
             <div className="App-card-title">OPEN</div>
             <div className="App-card-divider"></div>
             <div className="App-card-content">
@@ -1709,7 +1709,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider" />
               <div className="App-card-options">
-                <Link className="App-button-option App-card-option" to="/buy_gmx">
+                <Link className="App-button-option App-card-option" to="/buy_open">
                   <Trans>Buy OPEN</Trans>
                 </Link>
                 {active && (
@@ -1823,7 +1823,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="App-card">
             <div className="App-card-title">OLP ({chainName})</div>
             <div className="App-card-divider"></div>
@@ -1949,10 +1949,10 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
               <div className="App-card-divider"></div>
               <div className="App-card-options">
-                <Link className="App-button-option App-card-option" to="/buy_glp">
+                <Link className="App-button-option App-card-option" to="/buy_olp">
                   <Trans>Buy OLP</Trans>
                 </Link>
-                <Link className="App-button-option App-card-option" to="/buy_glp#redeem">
+                <Link className="App-button-option App-card-option" to="/buy_olp#redeem">
                   <Trans>Sell OLP</Trans>
                 </Link>
                 {hasInsurance && (
@@ -1968,7 +1968,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
               </div>
             </div>
           </div>
-          <div className="App-card">
+          {/* <div className="App-card">
             <div className="App-card-title">
               <Trans>Escrowed OPEN</Trans>
             </div>
@@ -1985,7 +1985,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   <Trans>Wallet</Trans>
                 </div>
                 <div>
-                  {formatKeyAmount(processedData, "esGmxBalance", 18, 2, true)} esGMX ($
+                  {formatKeyAmount(processedData, "esGmxBalance", 18, 2, true)} esOPEN ($
                   {formatKeyAmount(processedData, "esGmxBalanceUsd", USD_DECIMALS, 2, true)})
                 </div>
               </div>
@@ -1994,7 +1994,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   <Trans>Staked</Trans>
                 </div>
                 <div>
-                  {formatKeyAmount(processedData, "esGmxInStakedGmx", 18, 2, true)} esGMX ($
+                  {formatKeyAmount(processedData, "esGmxInStakedGmx", 18, 2, true)} esOPEN ($
                   {formatKeyAmount(processedData, "esGmxInStakedGmxUsd", USD_DECIMALS, 2, true)})
                 </div>
               </div>
@@ -2045,7 +2045,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   <Trans>Total Staked</Trans>
                 </div>
                 <div>
-                  {formatKeyAmount(processedData, "stakedEsGmxSupply", 18, 0, true)} esGMX ($
+                  {formatKeyAmount(processedData, "stakedEsGmxSupply", 18, 0, true)} esOPEN ($
                   {formatKeyAmount(processedData, "stakedEsGmxSupplyUsd", USD_DECIMALS, 0, true)})
                 </div>
               </div>
@@ -2054,7 +2054,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                   <Trans>Total Supply</Trans>
                 </div>
                 <div>
-                  {formatAmount(esGmxSupply, 18, 0, true)} esGMX (${formatAmount(esGmxSupplyUsd, USD_DECIMALS, 0, true)}
+                  {formatAmount(esGmxSupply, 18, 0, true)} esOPEN (${formatAmount(esGmxSupplyUsd, USD_DECIMALS, 0, true)}
                   )
                 </div>
               </div>
@@ -2077,21 +2077,21 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                 )}
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
-      <div>
+      {/* <div>
         <div className="Tab-title-section">
           <div className="Page-title">
             <Trans>Vest</Trans>
           </div>
           <div className="Page-description">
             <Trans>
-              Convert esGMX tokens to OPEN tokens.
+              Convert esOPEN tokens to OPEN tokens.
               <br />
               Please read the{" "}
-              <a href="https://wiki.openworld.vision/rewards#vesting" target="_blank" rel="noopener noreferrer">
+              <a href="https://wiki.openworld.vision/tokenomics" target="_blank" rel="noopener noreferrer">
                 vesting details
               </a>{" "}
               before using the vaults.
@@ -2125,7 +2125,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
 
                             <StatsTooltipRow
                               showDollar={false}
-                              label="esGMX"
+                              label="esOPEN"
                               value={formatAmount(processedData.esGmxInStakedGmx, 18, 2, true)}
                             />
                             <StatsTooltipRow
@@ -2168,7 +2168,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                             <Trans>
                               {formatKeyAmount(vestingData, "gmxVesterClaimSum", 18, 4, true)} tokens have been
                               converted to OPEN from the{" "}
-                              {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esGMX deposited for
+                              {formatKeyAmount(vestingData, "gmxVesterVestedAmount", 18, 4, true)} esOPEN deposited for
                               vesting.
                             </Trans>
                           </div>
@@ -2255,7 +2255,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
                             <Trans>
                               {formatKeyAmount(vestingData, "glpVesterClaimSum", 18, 4, true)} tokens have been
                               converted to OPEN from the{" "}
-                              {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)} esGMX deposited for
+                              {formatKeyAmount(vestingData, "glpVesterVestedAmount", 18, 4, true)} esOPEN deposited for
                               vesting.
                             </Trans>
                           </div>
@@ -2303,7 +2303,7 @@ export default function StakeV2({ setPendingTxns, connectWallet }) {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
       <Footer />
     </div>
   );

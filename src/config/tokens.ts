@@ -86,13 +86,13 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isShortable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/26115/thumb/btcb.png?1655921693",
     },
-    {
-      name: "Ethereum",
-      symbol: "ETH",
-      decimals: 18,
-      address: "0x612777Eea37a44F7a95E3B101C39e1E2695fa6C2",
-      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-    },
+    // {
+    //   name: "Ethereum",
+    //   symbol: "ETH",
+    //   decimals: 18,
+    //   address: "0x612777Eea37a44F7a95E3B101C39e1E2695fa6C2",
+    //   imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+    // },
     {
       name: "Binance Coin",
       symbol: "BNB",
@@ -343,7 +343,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Escrowed OPEN",
-      symbol: "esGMX",
+      symbol: "esOPEN",
       address: getContract(ARBITRUM, "ES_GMX"),
       decimals: 18,
     },
@@ -365,7 +365,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
     },
     {
       name: "Escrowed OPEN",
-      symbol: "esGMX",
+      symbol: "esOPEN",
       address: getContract(AVALANCHE, "ES_GMX"),
       decimals: 18,
     },
@@ -380,21 +380,37 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
 };
 
 export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } } = {
+  [TESTNET]: {
+    OPEN: {
+      name: "OPEN",
+      symbol: "OPEN",
+      decimals: 18,
+      address: "0x27a339d9b59b21390d7209b78a839868e319301b",
+      imageUrl: "https://assets.coingecko.com/coins/images/19416/small/open-world-icon-logo-favicon.png?1648527433",
+    },
+    OLP: {
+      name: "OPEN LP",
+      symbol: "OLP",
+      decimals: 18,
+      address: "0x8530E5595C07F4075d00a25515E416487a07D6d3", // address of fsGLP token because user only holds fsGLP
+      imageUrl: "https://assets.coingecko.com/coins/images/19416/small/open-world-icon-logo-favicon.png?1648527433",
+    },
+  },
   [ARBITRUM]: {
     // arbitrum
     OPEN: {
       name: "OPEN",
       symbol: "OPEN",
       decimals: 18,
-      address: getContract(ARBITRUM, "OPEN"),
-      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+      address: "0x27a339d9b59b21390d7209b78a839868e319301b",
+      imageUrl: "https://assets.coingecko.com/coins/images/19416/small/open-world-icon-logo-favicon.png?1648527433",
     },
     OLP: {
       name: "OPEN LP",
       symbol: "OLP",
       decimals: 18,
-      address: getContract(ARBITRUM, "StakedGlpTracker"), // address of fsGLP token because user only holds fsGLP
-      imageUrl: "https://github.com/OpenWorldVision/gmx-assets/blob/main/OPEN-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+      address: "0x8530E5595C07F4075d00a25515E416487a07D6d3", // address of fsGLP token because user only holds fsGLP
+      imageUrl: "https://assets.coingecko.com/coins/images/19416/small/open-world-icon-logo-favicon.png?1648527433",
     },
   },
   [AVALANCHE]: {
@@ -419,11 +435,11 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
 export const ICONLINKS = {
   [TESTNET]: {
     OPEN: {
-      coingecko: "https://www.coingecko.com/en/coins/gmx",
-      arbitrum: "https://arbiscan.io/address/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a",
+      coingecko: "https://www.coingecko.com/en/coins/openworld",
+      arbitrum: "https://bscscan.com/address/0x27a339d9b59b21390d7209b78a839868e319301b",
     },
     OLP: {
-      arbitrum: "https://testnet.arbiscan.io/token/0xb4f81Fa74e06b5f762A104e47276BA9b2929cb27",
+      arbitrum: "https://testnet.bscscan.com/address/0x8530E5595C07F4075d00a25515E416487a07D6d3",
     },
   },
   [ARBITRUM_TESTNET]: {

@@ -2,7 +2,7 @@ import { Menu } from "@headlessui/react";
 import { FiChevronDown } from "react-icons/fi";
 import "./AssetDropdown.css";
 import coingeckoIcon from "img/ic_coingecko_16.svg";
-import arbitrumIcon from "img/ic_arbitrum_16.svg";
+import bnbIcon from "img/ic_binance_logo.svg";
 import avalancheIcon from "img/ic_avalanche_16.svg";
 import metamaskIcon from "img/ic_metamask_16.svg";
 import { useWeb3React } from "@web3-react/core";
@@ -45,7 +45,7 @@ function AssetDropdown({ assetSymbol, assetInfo }) {
           <>
             {arbitrum && (
               <ExternalLink href={arbitrum} className="asset-item">
-                <img src={arbitrumIcon} alt="Open in explorer" />
+                <img src={bnbIcon} alt="Open in explorer" style={{ width: 16 }} />
                 <p>
                   <Trans>Open in Explorer</Trans>
                 </p>

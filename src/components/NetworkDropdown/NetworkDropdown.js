@@ -8,6 +8,7 @@ import "./NetworkDropdown.css";
 import language24Icon from "img/ic_language24.svg";
 import settingsIcon from "img/ic_settings_16.svg";
 import arbitrumIcon from "img/ic_arbitrum_24.svg";
+import bnbIcon from "img/ic_binance_logo.svg";
 import avaxIcon from "img/ic_avalanche_24.svg";
 import checkedIcon from "img/ic_checked.svg";
 import { importImage } from "lib/legacy";
@@ -95,11 +96,7 @@ function NavIcons({ selectorLabel }) {
   return (
     <>
       <button className={cx("btn-primary small transparent")}>
-        <img
-          className="network-dropdown-icon"
-          src={selectorLabel === "Arbitrum" ? arbitrumIcon : avaxIcon}
-          alt={selectorLabel}
-        />
+        <img className="network-dropdown-icon" src={bnbIcon} alt={selectorLabel} />
       </button>
       <div className="network-dropdown-seperator" />
       <button className={cx("btn-primary small transparent")}>

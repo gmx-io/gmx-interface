@@ -71,12 +71,12 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
 
           <div className="Home-token-card-option-action">
             <div className="buy">
-              <BuyLink to="/buy_glp" className="default-btn" network={TESTNET}>
+              <BuyLink to="/buy_olp" className="default-btn" network={TESTNET}>
                 <Trans>Buy on BSC</Trans>
               </BuyLink>
             </div>
             <a
-              href="https://wiki.openworld.vision/glp"
+              href="https://wiki.openworld.vision/tokenomics"
               target="_blank"
               rel="noreferrer"
               className="default-btn read-more"

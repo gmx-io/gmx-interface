@@ -6,6 +6,7 @@
 
 .Tooltip-row > span.label {
   margin-right: 0.5rem;
+  color: white;
 }
 .Tooltip-row > .Tooltip-row-value {
   color: white;

@@ -719,7 +719,7 @@ export default function GlpSwap(props) {
       {/* <div className="Page-title-section">
         <div className="Page-title">{isBuying ? "Buy OLP" : "Sell OLP"}</div>
         {isBuying && <div className="Page-description">
-          Purchase <a href="https://wiki.openworld.vision/glp" target="_blank" rel="noopener noreferrer">OLP tokens</a> to earn {nativeTokenSymbol} fees from swaps and leverage trading.<br/>
+          Purchase <a href="https://wiki.openworld.vision/tokenomics" target="_blank" rel="noopener noreferrer">OLP tokens</a> to earn {nativeTokenSymbol} fees from swaps and leverage trading.<br/>
           Note that there is a minimum holding time of 15 minutes after a purchase.<br/>
           <div>View <Link to="/earn">staking</Link> page.</div>
         </div>}

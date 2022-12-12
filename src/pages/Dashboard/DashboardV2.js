@@ -32,6 +32,7 @@ import Footer from "components/Footer/Footer";
 import "./DashboardV2.css";
 
 import gmx40Icon from "img/ic_gmx_40.svg";
+import bnbIcon from "img/ic_binance_logo.svg";
 import glp40Icon from "img/ic_glp_40.svg";
 import avalanche16Icon from "img/ic_avalanche_16.svg";
 import arbitrum16Icon from "img/ic_arbitrum_16.svg";
@@ -369,7 +370,7 @@ export default function DashboardV2() {
                     <br />
                     <br />
                     Get lower fees to{" "}
-                    <Link to="/buy_glp" target="_blank" rel="noopener noreferrer">
+                    <Link to="/buy_olp" target="_blank" rel="noopener noreferrer">
                       buy OLP
                     </Link>{" "}
                     with {tokenInfo.symbol},&nbsp; and to{" "}
@@ -394,12 +395,6 @@ export default function DashboardV2() {
                   </Trans>
                 </div>
               )}
-              <br />
-              <div>
-                <ExternalLink href="https://wiki.openworld.vision/glp">
-                  <Trans>More Info</Trans>
-                </ExternalLink>
-              </div>
             </>
           );
         }}
@@ -858,11 +853,12 @@ export default function DashboardV2() {
                     <div className="App-card-title-mark">
                       <div className="App-card-title-mark-icon">
                         <img src={gmx40Icon} alt="glp40Icon" />
-                        {chainId === ARBITRUM ? (
-                          <img src={arbitrum16Icon} alt={t`Arbitrum Icon`} className="selected-network-symbol" />
-                        ) : (
-                          <img src={avalanche16Icon} alt={t`Avalanche Icon`} className="selected-network-symbol" />
-                        )}
+                        <img
+                          src={bnbIcon}
+                          alt={t`Avalanche Icon`}
+                          className="selected-network-symbol"
+                          style={{ backgroundColor: "#DFE5E5", padding: 2, width: 18 }}
+                        />
                       </div>
                       <div className="App-card-title-mark-info">
                         <div className="App-card-title-mark-title">OLP</div>

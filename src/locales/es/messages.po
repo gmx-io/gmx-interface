@@ -74,8 +74,8 @@ msgid "<0>The pool's capacity has been reached for {0}. Please use another token
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to OPEN will remain as OPEN tokens.<3/><4/>To claim OPEN tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
-msgstr "<0>Esto retirará y desreservará todos los tokens y pausará la adquisición.<1/><2/>Los tokens de esGMX que han sido convertidos a OPEN permanecerán como tokens de OPEN.<3/><4/>Para reclamar tokens de OPEN sin retirarlos, utilice el botón \"Reclamar\" bajo la sección de Recompensas Totales.<5/><6/></0>"
+msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esOPEN tokens that have been converted to OPEN will remain as OPEN tokens.<3/><4/>To claim OPEN tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
+msgstr "<0>Esto retirará y desreservará todos los tokens y pausará la adquisición.<1/><2/>Los tokens de esOPEN que han sido convertidos a OPEN permanecerán como tokens de OPEN.<3/><4/>Para reclamar tokens de OPEN sin retirarlos, utilice el botón \"Reclamar\" bajo la sección de Recompensas Totales.<5/><6/></0>"
 
 #: src/lib/wallets/index.js
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
@@ -178,12 +178,12 @@ msgid "Affiliates"
 msgstr "Afiliados"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
-msgstr "Tras reclamar podrás adquirir un máximo de {0} esGMX en una relación de {1} {stakingToken} por 1 esGMX"
+msgid "After claiming you will be able to vest a maximum of {0} esOPEN at a ratio of {1} {stakingToken} to 1 esOPEN."
+msgstr "Tras reclamar podrás adquirir un máximo de {0} esOPEN en una relación de {1} {stakingToken} por 1 esOPEN"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
-msgstr "Tras reclamar, los tokens esGMX serán enviados a su cuenta en la red seleccionada dentro de 7 días."
+msgid "After claiming, the esOPEN tokens will be airdropped to your account on the selected network within 7 days."
+msgstr "Tras reclamar, los tokens esOPEN serán enviados a su cuenta en la red seleccionada dentro de 7 días."
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
@@ -564,13 +564,13 @@ msgid "Claim completed!"
 msgstr "¡Reclamación completada!"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Claim esGMX"
-msgstr "Reclamar esGMX"
+msgid "Claim esOPEN"
+msgstr "Reclamar esOPEN"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "Claim esGMX Rewards"
-msgstr "Reclamar Recompensas esGMX"
+msgid "Claim esOPEN Rewards"
+msgstr "Reclamar Recompensas esOPEN"
 
 #: src/pages/Stake/StakeV1.js
 msgid "Claim failed"
@@ -780,8 +780,8 @@ msgid "Continue"
 msgstr "Continuar"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Convert esGMX tokens to OPEN tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
-msgstr "Convertir los tokens esGMX en tokens OPEN.<0/>Por favor, lea los <1>detalles de adquisición</1> antes de utilizar las cajas."
+msgid "Convert esOPEN tokens to OPEN tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
+msgstr "Convertir los tokens esOPEN en tokens OPEN.<0/>Por favor, lea los <1>detalles de adquisición</1> antes de utilizar las cajas."
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -2081,8 +2081,8 @@ msgid "No PnLs found"
 msgstr "No se han encontrado GyPs"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "No esGMX to claim"
-msgstr "No hay esGMX para reclamar"
+msgid "No esOPEN to claim"
+msgstr "No hay esOPEN para reclamar"
 
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
@@ -2310,7 +2310,7 @@ msgid "Please input a referral code to benefit from fee discounts."
 msgstr "Por favor, introduzca un código de referido para beneficiarse de los descuentos en las comisiones."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Please only use this for full account transfers.<0/>This will transfer all your OPEN, esGMX, OLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked OPEN or OLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
+msgid "Please only use this for full account transfers.<0/>This will transfer all your OPEN, esOPEN, OLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked OPEN or OLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr ""
 
 #: src/components/Migration/Migration.js
@@ -2841,12 +2841,12 @@ msgid "Stake Multiplier Points"
 msgstr "Stakea Puntos Multiplicadores"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Stake esGMX"
+msgid "Stake esOPEN"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "Stake esGMX Rewards"
-msgstr "Stakea Recompensas esGMX"
+msgid "Stake esOPEN Rewards"
+msgstr "Stakea Recompensas esOPEN"
 
 #: src/pages/Stake/StakeV1.js
 msgid "Stake failed"
@@ -3064,20 +3064,20 @@ msgid "The Gambit protocol is in beta, please read the <0>staking details</0>be
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
-msgstr "La dirección del token esGMX (IOU) es {esGmxIouAddress}."
+msgid "The address of the esOPEN (IOU) token is {esGmxIouAddress}."
+msgstr "La dirección del token esOPEN (IOU) es {esGmxIouAddress}."
 
 #: src/components/Exchange/SwapBox.js
 msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool) * 0.01% per hour."
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
-msgstr "El token esGMX (IOU) es transferible. Puedes agregar el token a tu cartera y enviarlo a otra dirección para reclamarlo si lo deseas."
+msgid "The esOPEN (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
+msgstr "El token esOPEN (IOU) es transferible. Puedes agregar el token a tu cartera y enviarlo a otra dirección para reclamarlo si lo deseas."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The esGMX tokens can be staked or vested at any time."
-msgstr "Los tokens esGMX pueden ser stakeados o adquiridos en cualquier momento."
+msgid "The esOPEN tokens can be staked or vested at any time."
+msgstr "Los tokens esOPEN pueden ser stakeados o adquiridos en cualquier momento."
 
 #: src/lib/contracts/callContract.tsx
 msgid "The mark price has changed, consider increasing your Allowed Slippage by clicking on the \"...\" icon next to your address."
@@ -3456,7 +3456,7 @@ msgid "Unstake completed!"
 msgstr "¡Destakeo completado!"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Unstake esGMX"
+msgid "Unstake esOPEN"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -3758,8 +3758,8 @@ msgid "You can check your claim history <0>here</0>."
 msgstr "Puede consultar su historial de reclamaciones <0>aquí</0>."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
-msgstr "Actualmente puede adquirir un máximo de {0} tokens esGMX a razón de {1} {stakingToken} por 1 esGMX\"."
+msgid "You can currently vest a maximum of {0} esOPEN tokens at a ratio of {1} {stakingToken} to 1 esOPEN."
+msgstr "Actualmente puede adquirir un máximo de {0} tokens esOPEN a razón de {1} {stakingToken} por 1 esOPEN\"."
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "You can transfer AVAX to Avalanche using any of the below options."
@@ -3795,11 +3795,11 @@ msgid "You have not deposited any tokens for vesting."
 msgstr "No has depositado ningún token para su adquisición."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "You have {0} esGMX (IOU) tokens."
-msgstr "Tienes {0} tokens esGMX (IOU)."
+msgid "You have {0} esOPEN (IOU) tokens."
+msgstr "Tienes {0} tokens esOPEN (IOU)."
 
 #: src/pages/Stake/StakeV2.js
-msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
+msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esOPEN."
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
@@ -3823,8 +3823,8 @@ msgid "You will receive at least {0} {1} if this order is executed. The executio
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
-msgstr "El saldo de su esGMX (IOU) disminuirá en la cantidad de su reclamación después de reclamar, este es el comportamiento esperado."
+msgid "Your esOPEN (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
+msgstr "El saldo de su esOPEN (IOU) disminuirá en la cantidad de su reclamación después de reclamar, este es el comportamiento esperado."
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Your position's collateral after deducting fees."
@@ -3979,7 +3979,7 @@ msgstr "{0} seleccionado en el formulario de órden"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "{0} tokens have been converted to OPEN from the {1} esGMX deposited for vesting."
+msgid "{0} tokens have been converted to OPEN from the {1} esOPEN deposited for vesting."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js

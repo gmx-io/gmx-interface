@@ -417,7 +417,13 @@ button.App-connect-wallet:hover {
 .Page-content {
   padding: 4.65rem;
   padding-top: 1.5rem;
+  color: #717171;
 }
+.Page-content input{
+  color: #717171;
+  border: 1px solid #717171;
+}
+
 
 .section-title-block {
   display: flex;

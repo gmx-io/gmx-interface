@@ -74,8 +74,8 @@ msgid "<0>The pool's capacity has been reached for {0}. Please use another token
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to OPEN will remain as OPEN tokens.<3/><4/>To claim OPEN tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
-msgstr "<0>모든 토큰이 인출되고 취소되며 베스팅이 중지됩니다.<1/><2/>GMX로 변환된 esGMX 토큰은 OPEN 토큰으로 유지됩니다.<3/><4/>인출하지 않고 OPEN 토큰을 수령하기 위해서는 총 보상 섹션 아래의 \"수령하기\" 버튼을 사용해주세요."
+msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esOPEN tokens that have been converted to OPEN will remain as OPEN tokens.<3/><4/>To claim OPEN tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
+msgstr "<0>모든 토큰이 인출되고 취소되며 베스팅이 중지됩니다.<1/><2/>GMX로 변환된 esOPEN 토큰은 OPEN 토큰으로 유지됩니다.<3/><4/>인출하지 않고 OPEN 토큰을 수령하기 위해서는 총 보상 섹션 아래의 \"수령하기\" 버튼을 사용해주세요."
 
 #: src/lib/wallets/index.js
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
@@ -178,12 +178,12 @@ msgid "Affiliates"
 msgstr "제휴"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "After claiming you will be able to vest a maximum of {0} esGMX at a ratio of {1} {stakingToken} to 1 esGMX."
-msgstr "수령 후 {1} {stake} 대 1 esGMX 비율로 최대 {0}개의 esGMX를 베스팅 할 수 있습니다."
+msgid "After claiming you will be able to vest a maximum of {0} esOPEN at a ratio of {1} {stakingToken} to 1 esOPEN."
+msgstr "수령 후 {1} {stake} 대 1 esOPEN 비율로 최대 {0}개의 esGMX를 베스팅 할 수 있습니다."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "After claiming, the esGMX tokens will be airdropped to your account on the selected network within 7 days."
-msgstr "수령 후, esGMX 토큰은 7일 이내에 선택한 네트워크의 계정으로 에어드랍됩니다."
+msgid "After claiming, the esOPEN tokens will be airdropped to your account on the selected network within 7 days."
+msgstr "수령 후, esOPEN 토큰은 7일 이내에 선택한 네트워크의 계정으로 에어드랍됩니다."
 
 #: src/pages/BuyGMX/BuyGMX.js
 #: src/pages/BuyGMX/BuyGMX.js
@@ -564,13 +564,13 @@ msgid "Claim completed!"
 msgstr "수령 완료!"
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Claim esGMX"
-msgstr "esGMX 수령하기"
+msgid "Claim esOPEN"
+msgstr "esOPEN 수령하기"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "Claim esGMX Rewards"
-msgstr "esGMX 보상 수령하기"
+msgid "Claim esOPEN Rewards"
+msgstr "esOPEN 보상 수령하기"
 
 #: src/pages/Stake/StakeV1.js
 msgid "Claim failed"
@@ -780,8 +780,8 @@ msgid "Continue"
 msgstr "계속하기"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Convert esGMX tokens to OPEN tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
-msgstr "esGMX 토큰을 OPEN 토큰으로 변환합니다.<0/>볼트를 사용하기 전 <1>베스팅 세부정보</1>를 읽어주세요."
+msgid "Convert esOPEN tokens to OPEN tokens.<0/>Please read the <1>vesting details</1> before using the vaults."
+msgstr "esOPEN 토큰을 OPEN 토큰으로 변환합니다.<0/>볼트를 사용하기 전 <1>베스팅 세부정보</1>를 읽어주세요."
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1224,7 +1224,7 @@ msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Escrowed OPEN APR"
-msgstr "esGMX APR"
+msgstr "esOPEN APR"
 
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Execute"
@@ -2081,7 +2081,7 @@ msgid "No PnLs found"
 msgstr "손익을 찾지 못했습니다."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "No esGMX to claim"
+msgid "No esOPEN to claim"
 msgstr "수령할 수 있는 esGMX가 없습니다"
 
 #: src/components/Exchange/OrdersList.js
@@ -2310,7 +2310,7 @@ msgid "Please input a referral code to benefit from fee discounts."
 msgstr "수수료 할인의 혜택을 받으려면 추천 코드를 입력해주세요."
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
-msgid "Please only use this for full account transfers.<0/>This will transfer all your OPEN, esGMX, OLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked OPEN or OLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
+msgid "Please only use this for full account transfers.<0/>This will transfer all your OPEN, esOPEN, OLP and Multiplier Points to your new account.<1/>Transfers are only supported if the receiving account has not staked OPEN or OLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr ""
 
 #: src/components/Migration/Migration.js
@@ -2841,12 +2841,12 @@ msgid "Stake Multiplier Points"
 msgstr "멀티플라이어 포인트 스테이킹"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Stake esGMX"
+msgid "Stake esOPEN"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
-msgid "Stake esGMX Rewards"
-msgstr "esGMX 보상 스테이킹"
+msgid "Stake esOPEN Rewards"
+msgstr "esOPEN 보상 스테이킹"
 
 #: src/pages/Stake/StakeV1.js
 msgid "Stake failed"
@@ -3064,7 +3064,7 @@ msgid "The Gambit protocol is in beta, please read the <0>staking details</0>be
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The address of the esGMX (IOU) token is {esGmxIouAddress}."
+msgid "The address of the esOPEN (IOU) token is {esGmxIouAddress}."
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -3072,11 +3072,11 @@ msgid "The borrow fee is calculated as (assets borrowed) / (total assets in pool
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The esGMX (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
-msgstr "\"esGMX (IOU) 토큰의 주소는 {esGmxIouAddress} 입니다."
+msgid "The esOPEN (IOU) token is transferrable. You can add the token to your wallet and send it to another address to claim if you'd like."
+msgstr "\"esOPEN (IOU) 토큰의 주소는 {esGmxIouAddress} 입니다."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "The esGMX tokens can be staked or vested at any time."
+msgid "The esOPEN tokens can be staked or vested at any time."
 msgstr "esGMX는 언제든지 스테이킹하거나 베스팅 할 수 있습니다."
 
 #: src/lib/contracts/callContract.tsx
@@ -3456,7 +3456,7 @@ msgid "Unstake completed!"
 msgstr "언스테이킹 완료!"
 
 #: src/pages/Stake/StakeV2.js
-msgid "Unstake esGMX"
+msgid "Unstake esOPEN"
 msgstr ""
 
 #: src/pages/Stake/StakeV1.js
@@ -3758,8 +3758,8 @@ msgid "You can check your claim history <0>here</0>."
 msgstr "<0>여기</0>에서 수령한 내역을 확인할 수 있습니다."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "You can currently vest a maximum of {0} esGMX tokens at a ratio of {1} {stakingToken} to 1 esGMX."
-msgstr "{1} {stakingToken} 대 1 esGMX 비율로 최대 {0} esGMX 토큰을 현재 베스팅 할 수 있습니다."
+msgid "You can currently vest a maximum of {0} esOPEN tokens at a ratio of {1} {stakingToken} to 1 esOPEN."
+msgstr "{1} {stakingToken} 대 1 esOPEN 비율로 최대 {0} esOPEN 토큰을 현재 베스팅 할 수 있습니다."
 
 #: src/pages/BuyGMX/BuyGMX.js
 msgid "You can transfer AVAX to Avalanche using any of the below options."
@@ -3795,11 +3795,11 @@ msgid "You have not deposited any tokens for vesting."
 msgstr "베스트팅을 위한 토큰이 예치되지 않았습니다."
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "You have {0} esGMX (IOU) tokens."
+msgid "You have {0} esOPEN (IOU) tokens."
 msgstr "귀하는 {0} esGMx (IOU) 토큰을 보유하고 있습니다."
 
 #: src/pages/Stake/StakeV2.js
-msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esGMX."
+msgid "You need a total of at least {0} {stakeTokenLabel} to vest {1} esOPEN."
 msgstr ""
 
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
@@ -3823,8 +3823,8 @@ msgid "You will receive at least {0} {1} if this order is executed. The executio
 msgstr ""
 
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
-msgid "Your esGMX (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
-msgstr "귀하의 esGMX(IOU) 잔액은 수령 후 수령액만큼 감소하는데 이는 상정된 행동입니다."
+msgid "Your esOPEN (IOU) balance will decrease by your claim amount after claiming, this is expected behaviour."
+msgstr "귀하의 esOPEN(IOU) 잔액은 수령 후 수령액만큼 감소하는데 이는 상정된 행동입니다."
 
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Your position's collateral after deducting fees."
@@ -3979,7 +3979,7 @@ msgstr "{0}이(가) 주문 폼에서 선택되었습니다."
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
-msgid "{0} tokens have been converted to OPEN from the {1} esGMX deposited for vesting."
+msgid "{0} tokens have been converted to OPEN from the {1} esOPEN deposited for vesting."
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js

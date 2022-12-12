@@ -36,8 +36,9 @@ export default function BuyGlp(props) {
           </div>
           <div className="Page-description">
             <Trans>
-              Purchase <ExternalLink href="https://wiki.openworld.vision/glp">OLP tokens</ExternalLink> to earn{" "}
-              {nativeTokenSymbol} fees from swaps and leverages trading.
+              Purchase{" "}
+              <ExternalLink href="https://wiki.openworld.vision/buy-token-open-and-olp">OLP tokens</ExternalLink> to
+              earn {nativeTokenSymbol} fees from swaps and leverages trading.
             </Trans>
             <br />
             <Trans>

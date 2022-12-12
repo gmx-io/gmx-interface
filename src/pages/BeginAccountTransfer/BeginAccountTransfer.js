@@ -236,7 +236,7 @@ export default function BeginAccountTransfer(props) {
           <Trans>
             Please only use this for full account transfers.
             <br />
-            This will transfer all your OPEN, esGMX, OLP and Multiplier Points to your new account.
+            This will transfer all your OPEN, esOPEN, OLP and Multiplier Points to your new account.
             <br />
             Transfers are only supported if the receiving account has not staked OPEN or OLP tokens before.
             <br />
