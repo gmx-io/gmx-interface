@@ -99,6 +99,7 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { SyntheticsPoolsPage } from "pages/SyntheticsPoolsPage/SyntheticsPoolsPage";
 import { isDevelopment } from "config/env";
+import { SyntheticsTradePage } from "pages/SyntheticsTradePage/SyntheticsTradePage";
 
 if ("ethereum" in window) {
   window.ethereum.autoRefreshOnNetworkChange = false;
@@ -496,6 +497,11 @@ function FullApp() {
               {isDevelopment() && (
                 <Route exact path="/pools">
                   <SyntheticsPoolsPage connectWallet={connectWallet} />
+                </Route>
+              )}
+              {isDevelopment() && (
+                <Route exact path="/synthetics">
+                  <SyntheticsTradePage connectWallet={connectWallet} />
                 </Route>
               )}
               <Route exact path="/buy_glp">

@@ -1,0 +1,30 @@
+.SyntheticsTrade-right {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.SyntheticsTrade {
+  max-width: 155rem;
+  margin: auto;
+  justify-content: space-between;
+}
+
+.SyntheticsTrade-content {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-gap: 1.5rem;
+  padding: 3.1rem;
+  padding-top: 0rem;
+  margin-top: -1.5rem;
+}
+
+@media (max-width: 700px) {
+  .SyntheticsTrade {
+    padding: 1.5rem;
+    padding-top: 1.5rem;
+  }
+
+  .SyntheticsTrade {
+    padding-top: 1.5rem !important;
+  }
+}
