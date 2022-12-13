@@ -81,7 +81,7 @@ export default function useDatafeed() {
           getLiveBar({ chainId, ticker, resolution, isStable }).then((bar) => {
             onRealtimeCallback(bar);
           });
-        }, 1000);
+        }, 500);
       },
       unsubscribeBars: () => {
         clearInterval(intervalRef.current);
