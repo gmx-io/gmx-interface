@@ -66,11 +66,9 @@ export async function getLiveBar({ ticker, resolution, chainId, isStable }) {
   }
   const currentPrice = await getCurrentPrice(chainId, ticker);
   const averagePriceValue = parseFloat(formatAmount(currentPrice, USD_DECIMALS, 4));
-  let finalBar = lastBar;
   if (lastBar.time && currentCandleTime === lastBar.time) {
-    finalBar = {
+    return {
       ...lastBar,
-      time: lastBar.time,
       close: averagePriceValue,
       high: Math.max(lastBar.high, averagePriceValue),
       low: Math.min(lastBar.low, averagePriceValue),
@@ -79,14 +77,13 @@ export async function getLiveBar({ ticker, resolution, chainId, isStable }) {
   } else {
     const newBar = {
       time: currentCandleTime,
-      open: finalBar.close,
+      open: averagePriceValue,
       close: averagePriceValue,
       high: averagePriceValue,
       low: averagePriceValue,
       ticker,
     };
     lastBar = newBar;
-    finalBar = newBar;
+    return newBar;
   }
-  return finalBar.ticker === lastTicker && finalBar;
 }

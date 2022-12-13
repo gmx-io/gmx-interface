@@ -9,19 +9,14 @@
 .indicator-btn {
   cursor: pointer;
 }
-.resolution-btn:hover {
-  padding: 0.3rem 0.5rem !important;
-  opacity: 0.7 !important;
+.resolution-btn:hover,
+.indicator-btn:hover {
   color: #fff !important;
-  background: linear-gradient(90deg, #2339ac, #2b3b93);
 }
 
 .active-resolution-btn {
-  padding: 0.3rem 0.5rem !important;
-  opacity: 1;
-  pointer-events: none;
-  background: linear-gradient(90deg, #2d42fc, #2e3dcd);
   color: #fff !important;
+  font-weight: 800;
 }
 
 html.theme-dark .chart-page {
