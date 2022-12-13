@@ -28,7 +28,7 @@ export async function executeMulticall(
     provider = new ethers.providers.StaticJsonRpcProvider(rpcUrl, { chainId, name: CHAIN_NAMES_MAP[chainId] });
   }
 
-  const multicall = getMulticallLib(provider as ethers.providers.JsonRpcProvider);
+  const multicall = getMulticallLib(provider);
 
   const formattedReq = formatMulticallRequest(request);
 
@@ -36,9 +36,6 @@ export async function executeMulticall(
     multicall.call(formattedReq),
     sleep(MAX_TIMEOUT).then(() => Promise.reject("rpc timeout")),
   ]).catch((e) => {
-    // eslint-disable-next-line no-console
-    console.error("multicall error:", e, request);
-
     const fallbackProvider = getFallbackProvider(chainId);
 
     if (!fallbackProvider) {
@@ -46,22 +43,24 @@ export async function executeMulticall(
     }
 
     // eslint-disable-next-line no-console
-    console.log("using multicall fallback");
+    console.log(`using multicall fallback for chain ${chainId}`);
 
     const multicall = getMulticallLib(fallbackProvider);
 
-    return multicall.call(formattedReq).catch((e) => {
+    return multicall.call(formattedReq);
+  });
+
+  return requestPromise
+    .then((res) => formatMulticallResult(res.results))
+    .catch((e) => {
       // eslint-disable-next-line no-console
-      console.error("multicall fallback error", e);
+      console.error("multicall error", e);
 
       throw e;
     });
-  });
-
-  return requestPromise.then((res) => formatMulticallResult(res.results));
 }
 
-function getMulticallLib(provider: ethers.providers.JsonRpcProvider) {
+function getMulticallLib(provider: ethers.providers.Provider) {
   return new Multicall({
     // @ts-ignore inconsistent provider types
     ethersProvider: provider,
