@@ -56,22 +56,16 @@ export function fillGaps(prices, periodSeconds) {
   return newPrices;
 }
 
-export async function getChartPricesFromStats(chainId, symbol, period, to = null, from = null) {
+export async function getChartPricesFromStats(chainId, symbol, period) {
   if (["WBTC", "WETH", "WAVAX"].includes(symbol)) {
     symbol = symbol.substr(1);
   } else if (symbol === "BTC.b") {
     symbol = "BTC";
   }
 
-  let url;
-
-  if (from && to) {
-    url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&to=${to}&preferableSource=fast`;
-  } else {
-    const timeDiff = CHART_PERIODS[period] * 3000;
-    const from = Math.floor(Date.now() / 1000 - timeDiff);
-    url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`;
-  }
+  const timeDiff = CHART_PERIODS[period] * 3000;
+  const from = Math.floor(Date.now() / 1000 - timeDiff);
+  const url = `${GMX_STATS_API_URL}/candles/${symbol}?preferableChainId=${chainId}&period=${period}&from=${from}&preferableSource=fast`;
 
   const TIMEOUT = 5000;
   const res: Response = await new Promise(async (resolve, reject) => {

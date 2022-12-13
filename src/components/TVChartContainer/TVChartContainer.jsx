@@ -2,7 +2,7 @@ import { getLiquidationPrice, USD_DECIMALS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { getKeyByValue, supportedResolutions } from "./datafeed";
+import { getKeyByValue, supportedResolutions } from "./api";
 import useDatafeed from "./useDatafeed";
 const DEFAULT_PERIOD = "4h";
 

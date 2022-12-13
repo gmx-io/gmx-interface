@@ -3,13 +3,16 @@ import { getTokenBySymbol, getWrappedToken } from "config/tokens";
 import { getChainlinkChartPricesFromGraph, getChartPricesFromStats, getStablePriceData } from "domain/prices";
 import { CHART_PERIODS, USD_DECIMALS } from "lib/legacy";
 import { formatAmount } from "lib/numbers";
-import { supportedResolutions } from "./datafeed";
 
 function formatBar(bar) {
   return {
     ...bar,
     time: bar.time * 1000,
   };
+}
+export const supportedResolutions = { 5: "5m", 15: "15m", 60: "1h", 240: "4h", "1D": "1d" };
+export function getKeyByValue(object, value) {
+  return Object.keys(object).find((key) => object[key] === value);
 }
 
 let lastTicker;
