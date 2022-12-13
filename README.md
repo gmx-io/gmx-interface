@@ -53,6 +53,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 - `pages/` - Page components
 
 - `lib/` - Infrastructure code independent of business logic (widely used in the project base modules and functions for interaction with data sources, common utils, etc.)
+
   - `contracts`
     - `callContract.ts` - e.g. base function for requesting contracts
   - `chains`
@@ -63,9 +64,10 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
   - `legacy.js` - Unstrcutured legacy code (moved from Helpers.js)
 
 - `domain/` - Project specific domain logic separated by entities and features, may contain
-  data fetching, formatting, types and constants 
+  data fetching, formatting, types and constants
 
   - `orders/` - Example entity folder
+
     - `types.ts` - Entity related types
     - `utils.ts` - Functions for calculations and formatting, can be split into several files
     - `contracts.ts` - Contracts calls
@@ -164,15 +166,15 @@ import {getSwapLimits} from 'domain/exchange/swap-utils'
 
 function useSwapState(props, {selectedTokenAddress, infoTokens, amount}) {
   const infoTokens = useInfoTokens(props.chainId, ...);
-  
+
   const tokenAmount = getTokenAmount(infoTokens, selectedTokenAddress, ...)
   const swapLimits = getSwapLimits(infoTokens, amount)
-  
+
   const swapFee = ...
   const fees = ...
-  
+
   ...some calculations
-  
+
   return {...}
 }
 ```
@@ -219,7 +221,6 @@ function Button(props) {...}
 
 - The language code should be a valid [BCP-47](https://unicode-org.github.io/cldr-staging/charts/latest/supplemental/language_plural_rules.html) code like `es` for `Spanish`.
 - The formatting used in `.po` files for each language is know as ICU MessageFormat. To understand it please refer to this [GUIDE](https://lingui.js.org/ref/message-format.html)
-
 
 ### SCSS
 
