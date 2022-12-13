@@ -147,7 +147,8 @@ describe("executeMulticall", () => {
       }, [library]);
     });
 
-    await act(() => sleep(10));
+    // wait extra time to make sure the rpc library is ready
+    await act(() => sleep(50));
 
     expect(MulticallSpy).toBeCalled();
     expect(usedProvider).toEqual(libraryProvider);
