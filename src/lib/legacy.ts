@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { getContract } from "config/contracts";
 import useSWR from "swr";
 
@@ -100,6 +100,7 @@ export function getLiquidationPriceFromDelta({ liquidationAmount, size, collater
   if (liquidationAmount.gt(collateral)) {
     const liquidationDelta = liquidationAmount.sub(collateral);
     const priceDelta = liquidationDelta.mul(averagePrice).div(size);
+
     return isLong ? averagePrice.add(priceDelta) : averagePrice.sub(priceDelta);
   }
 
@@ -742,6 +743,20 @@ export function getLeverage({
   return nextSize.mul(BASIS_POINTS_DIVISOR).div(remainingCollateral);
 }
 
+export function getFundingFee(data: {
+  size: BigNumber;
+  entryFundingRate?: BigNumber;
+  cumulativeFundingRate?: BigNumber;
+}) {
+  let { entryFundingRate, cumulativeFundingRate, size } = data;
+
+  if (entryFundingRate && cumulativeFundingRate) {
+    return size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
+  }
+
+  return;
+}
+
 export function getLiquidationPrice(data) {
   let {
     isLong,
@@ -775,6 +790,9 @@ export function getLiquidationPrice(data) {
       nextSize = size.sub(sizeDelta);
     }
 
+    const marginFee = getMarginFee(sizeDelta);
+    remainingCollateral = remainingCollateral.sub(marginFee);
+
     if (includeDelta && !hasProfit) {
       const adjustedDelta = sizeDelta.mul(delta).div(size);
       remainingCollateral = remainingCollateral.sub(adjustedDelta);
@@ -793,6 +811,7 @@ export function getLiquidationPrice(data) {
   }
 
   let positionFee = getMarginFee(size).add(LIQUIDATION_FEE);
+
   if (entryFundingRate && cumulativeFundingRate) {
     const fundingFee = size.mul(cumulativeFundingRate.sub(entryFundingRate)).div(FUNDING_RATE_PRECISION);
     positionFee = positionFee.add(fundingFee);
@@ -817,6 +836,7 @@ export function getLiquidationPrice(data) {
   if (!liquidationPriceForFees) {
     return liquidationPriceForMaxLeverage;
   }
+
   if (!liquidationPriceForMaxLeverage) {
     return liquidationPriceForFees;
   }
