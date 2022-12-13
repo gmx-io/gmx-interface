@@ -25,7 +25,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 ) {
   const { library } = useWeb3React();
 
-  const swrFullKey = Array.isArray(params.key) ? [chainId, name, ...params.key] : null;
+  const swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
 
   const swrOpts: any = {};
 
