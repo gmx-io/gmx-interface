@@ -32,6 +32,9 @@
   background: var(--dark-blue-hover);
   cursor: pointer;
 }
+.network-dropdown:active {
+  background: var(--dark-blue-active);
+}
 
 .network-dropdown > button {
   height: 3.6rem;

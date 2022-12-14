@@ -95,6 +95,7 @@ export default function PositionsList(props) {
     minExecutionFeeErrorMessage,
     usdgSupply,
     totalTokenWeights,
+    hideActions,
   } = props;
 
   const [positionToEditKey, setPositionToEditKey] = useState(undefined);
@@ -122,6 +123,7 @@ export default function PositionsList(props) {
   };
 
   const onPositionClick = (position) => {
+    if (hideActions) return;
     helperToast.success(
       t`${select(position.isLong, { true: "Long", false: "Short" })} ${position.indexToken.symbol} market selected`
     );
@@ -314,9 +316,11 @@ export default function PositionsList(props) {
                             );
                           }}
                         />
-                        <span className="edit-icon" onClick={() => editPosition(position)}>
-                          <AiOutlineEdit fontSize={16} />
-                        </span>
+                        {!hideActions && (
+                          <span className="edit-icon" onClick={() => editPosition(position)}>
+                            <AiOutlineEdit fontSize={16} />
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div className="App-card-row">
@@ -348,8 +352,8 @@ export default function PositionsList(props) {
                             return (
                               <>
                                 {showPnlAfterFees
-                                  ? t`Net Value: Initial Collateral - Fees + PnL`
-                                  : t`Net Value: Initial Collateral - Borrow Fee + PnL`}
+                                  ? t`Net Value: Initial Collateral + PnL - Fees`
+                                  : t`Net Value: Initial Collateral + PnL - Borrow Fee`}
                                 <br />
                                 <br />
                                 <StatsTooltipRow
@@ -371,7 +375,7 @@ export default function PositionsList(props) {
                                 />
                                 <StatsTooltipRow
                                   label={t`PnL After Fees`}
-                                  value={`${position.deltaAfterFeesStr} (${position.deltaAfterFeesPercentageStr})`}
+                                  value={[position.deltaAfterFeesStr, `(${position.deltaAfterFeesPercentageStr})`]}
                                   showDollar={false}
                                 />
                               </>
@@ -437,33 +441,37 @@ export default function PositionsList(props) {
                       <div>${formatAmount(liquidationPrice, USD_DECIMALS, 2, true)}</div>
                     </div>
                   </div>
-                  <div className="App-card-divider"></div>
-                  <div className="App-card-options">
-                    <button
-                      className="App-button-option App-card-option"
-                      disabled={position.size.eq(0)}
-                      onClick={() => sellPosition(position)}
-                    >
-                      <Trans>Close</Trans>
-                    </button>
-                    <button
-                      className="App-button-option App-card-option"
-                      disabled={position.size.eq(0)}
-                      onClick={() => editPosition(position)}
-                    >
-                      <Trans>Edit Collateral</Trans>
-                    </button>
-                    <button
-                      className="Exchange-list-action App-button-option App-card-option"
-                      onClick={() => {
-                        setPositionToShare(position);
-                        setIsPositionShareModalOpen(true);
-                      }}
-                      disabled={position.size.eq(0)}
-                    >
-                      <Trans>Share</Trans>
-                    </button>
-                  </div>
+                  {!hideActions && (
+                    <>
+                      <div className="App-card-divider"></div>
+                      <div className="App-card-options">
+                        <button
+                          className="App-button-option App-card-option"
+                          disabled={position.size.eq(0)}
+                          onClick={() => sellPosition(position)}
+                        >
+                          <Trans>Close</Trans>
+                        </button>
+                        <button
+                          className="App-button-option App-card-option"
+                          disabled={position.size.eq(0)}
+                          onClick={() => editPosition(position)}
+                        >
+                          <Trans>Edit Collateral</Trans>
+                        </button>
+                        <button
+                          className="Exchange-list-action App-button-option App-card-option"
+                          onClick={() => {
+                            setPositionToShare(position);
+                            setIsPositionShareModalOpen(true);
+                          }}
+                          disabled={position.size.eq(0)}
+                        >
+                          <Trans>Share</Trans>
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               );
             })}
@@ -494,8 +502,12 @@ export default function PositionsList(props) {
             <th>
               <Trans>Liq. Price</Trans>
             </th>
-            <th></th>
-            <th></th>
+            {!hideActions && (
+              <>
+                <th></th>
+                <th></th>
+              </>
+            )}
           </tr>
           {positions.length === 0 && positionsDataIsLoading && (
             <tr>
@@ -557,8 +569,8 @@ export default function PositionsList(props) {
                           return (
                             <>
                               {showPnlAfterFees
-                                ? t`Net Value: Initial Collateral - Fees + PnL`
-                                : t`Net Value: Initial Collateral - Borrow Fee + PnL`}
+                                ? t`Net Value: Initial Collateral + PnL - Fees`
+                                : t`Net Value: Initial Collateral + PnL - Borrow Fee`}
                               <br />
                               <br />
                               <StatsTooltipRow
@@ -578,7 +590,7 @@ export default function PositionsList(props) {
                               />
                               <StatsTooltipRow
                                 label={t`PnL After Fees`}
-                                value={`${position.deltaAfterFeesStr} (${position.deltaAfterFeesPercentageStr})`}
+                                value={[position.deltaAfterFeesStr, `(${position.deltaAfterFeesPercentageStr})`]}
                                 showDollar={false}
                               />
                             </>
@@ -620,16 +632,12 @@ export default function PositionsList(props) {
                                 return (
                                   <div
                                     key={`${order.isLong}-${order.type}-${order.index}`}
-                                    className="Position-list-order"
+                                    className="Position-list-order active-order-tooltip"
                                   >
                                     {order.triggerAboveThreshold ? ">" : "<"}{" "}
                                     {formatAmount(order.triggerPrice, 30, 2, true)}:
                                     {order.type === INCREASE ? " +" : " -"}${formatAmount(order.sizeDelta, 30, 2, true)}
-                                    {order.error && (
-                                      <>
-                                        , <span className="negative">{order.error}</span>
-                                      </>
-                                    )}
+                                    {order.error && <div className="negative active-oredr-error">{order.error}</div>}
                                   </div>
                                 );
                               })}
@@ -674,39 +682,49 @@ export default function PositionsList(props) {
                               label={t`Borrow Fee / Day`}
                               value={`-$${borrowFeeUSD}`}
                             />
-                            <br />
-                            <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
+                            {!hideActions && (
+                              <>
+                                <br />
+                                <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
+                              </>
+                            )}
                           </>
                         );
                       }}
                     />
-                    <span className="edit-icon" onClick={() => editPosition(position)}>
-                      <AiOutlineEdit fontSize={16} />
-                    </span>
+                    {!hideActions && (
+                      <span className="edit-icon" onClick={() => editPosition(position)}>
+                        <AiOutlineEdit fontSize={16} />
+                      </span>
+                    )}
                   </div>
                 </td>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
-                  <Tooltip
-                    handle={`$${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}`}
-                    position="left-bottom"
-                    handleClassName="plain clickable"
-                    renderContent={() => {
-                      return (
-                        <div>
-                          <Trans>
-                            Click on a row to select the position's market, then use the swap box to increase your
-                            position size if needed.
-                          </Trans>
-                          <br />
-                          <br />
-                          <Trans>
-                            Use the "Close" button to reduce your position size, or to set stop-loss / take-profit
-                            orders.
-                          </Trans>
-                        </div>
-                      );
-                    }}
-                  />
+                  {!hideActions ? (
+                    <Tooltip
+                      handle={`$${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}`}
+                      position="left-bottom"
+                      handleClassName="plain clickable"
+                      renderContent={() => {
+                        return (
+                          <div>
+                            <Trans>
+                              Click on a row to select the position's market, then use the swap box to increase your
+                              position size if needed.
+                            </Trans>
+                            <br />
+                            <br />
+                            <Trans>
+                              Use the "Close" button to reduce your position size, or to set stop-loss / take-profit
+                              orders.
+                            </Trans>
+                          </div>
+                        );
+                      }}
+                    />
+                  ) : (
+                    <> ${formatAmount(position.markPrice, USD_DECIMALS, 2, true)}</>
+                  )}
                 </td>
                 <td className="clickable" onClick={() => onPositionClick(position)}>
                   ${formatAmount(position.averagePrice, USD_DECIMALS, 2, true)}
@@ -724,20 +742,22 @@ export default function PositionsList(props) {
                     <Trans>Close</Trans>
                   </button>
                 </td>
-                <td>
-                  <PositionDropdown
-                    handleEditCollateral={() => {
-                      editPosition(position);
-                    }}
-                    handleShare={() => {
-                      setPositionToShare(position);
-                      setIsPositionShareModalOpen(true);
-                    }}
-                    handleMarketSelect={() => {
-                      onPositionClick(position);
-                    }}
-                  />
-                </td>
+                {!hideActions && (
+                  <td>
+                    <PositionDropdown
+                      handleEditCollateral={() => {
+                        editPosition(position);
+                      }}
+                      handleShare={() => {
+                        setPositionToShare(position);
+                        setIsPositionShareModalOpen(true);
+                      }}
+                      handleMarketSelect={() => {
+                        onPositionClick(position);
+                      }}
+                    />
+                  </td>
+                )}
               </tr>
             );
           })}
