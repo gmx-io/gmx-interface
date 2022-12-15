@@ -368,7 +368,6 @@ msgstr "余额"
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
-#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "Balance:"
 msgstr "余额"
 
@@ -1273,6 +1272,7 @@ msgstr "輸入價錢"
 #: src/components/Glp/GlpSwap.js
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 #: src/components/Migration/Migration.js
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 #: src/pages/Stake/StakeV1.js
 #: src/pages/Stake/StakeV1.js
@@ -1766,6 +1766,14 @@ msgstr "杠杆"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Leverage disabled, pending {0} upgrade"
+msgstr ""
+
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+msgid "Leverage slider"
+msgstr ""
+
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+msgid "Leverage:"
 msgstr ""
 
 #: src/components/Exchange/OrdersList.js
@@ -2402,7 +2410,6 @@ msgstr "合作伙伴与整合"
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
-#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "Pay"
 msgstr "支付"
 
@@ -2654,9 +2661,13 @@ msgstr "该账户作为合作公司赚取的回扣"
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
-#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "Receive"
 msgstr "收取"
+
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+msgid "Receive:"
+msgstr ""
 
 #: src/pages/BeginAccountTransfer/BeginAccountTransfer.js
 #: src/pages/NftWallet/NftWallet.js
