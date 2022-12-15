@@ -19,7 +19,7 @@ export function useTokensData(chainId: number, p: { tokenAddresses: string[] }):
 
   return useMemo(
     () =>
-      Object.keys(tokenConfigs).reduce((tokensData, tokenAddress) => {
+      p.tokenAddresses.reduce((tokensData, tokenAddress) => {
         const token = tokenConfigs[tokenAddress];
 
         let prices: TokenPrices | undefined = pricesData[token.address];
@@ -43,6 +43,6 @@ export function useTokensData(chainId: number, p: { tokenAddresses: string[] }):
         };
         return tokensData;
       }, {}),
-    [balancesData, pricesData, tokenConfigs]
+    [balancesData, p.tokenAddresses, pricesData, tokenConfigs]
   );
 }

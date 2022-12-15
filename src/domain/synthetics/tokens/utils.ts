@@ -11,7 +11,7 @@ export function getTokenData(tokensData: TokensData, address?: string) {
 }
 
 export function getTokensDataArr(tokensData: TokensData) {
-  return Object.keys(tokensData.configs).map((address) => getTokenData(tokensData, address)!);
+  return Object.keys(tokensData).map((address) => getTokenData(tokensData, address)!);
 }
 
 export function getUsdFromTokenAmount(tokensData: TokensData, address?: string, amount?: BigNumber, max?: boolean) {

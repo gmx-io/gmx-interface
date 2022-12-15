@@ -655,7 +655,6 @@ export const GLP_POOL_COLORS = {
 
 export const TOKENS_MAP: { [chainId: number]: { [address: string]: Token } } = {};
 export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Token } } = {};
-export const SYNTHETIC_TOKENS_MAP: { [chainId: number]: { [symbol: string]: Token } } = {};
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
@@ -704,6 +703,21 @@ export function getNativeToken(chainId: number) {
 
 export function getTokens(chainId: number) {
   return TOKENS[chainId];
+}
+
+export function getSyntheticsTradeTokens(chainId: number): Token[] {
+  const tokens = TOKENS[chainId] || [];
+  const syntheticsTokens = SYNTHETIC_TOKENS[chainId] || [];
+
+  return tokens
+    .concat(syntheticsTokens)
+    .filter(
+      (token) =>
+        !token.isUsdg &&
+        !token.isTempHidden &&
+        !PLATFORM_TOKENS[chainId]?.[token.symbol] &&
+        !ADDITIONAL_TOKENS[chainId]?.some((additional) => additional.address === token.address)
+    );
 }
 
 export function getTokensMap(chainId: number) {

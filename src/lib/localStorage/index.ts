@@ -36,8 +36,10 @@ export function useLocalStorageByChainId<T>(
   return [value, setValue];
 }
 
+type LocalStorageKey = string | number | boolean | null | undefined;
+
 export function useLocalStorageSerializeKey<T>(
-  key: string,
+  key: LocalStorageKey | LocalStorageKey[],
   value: T,
   opts?: {
     raw: boolean;

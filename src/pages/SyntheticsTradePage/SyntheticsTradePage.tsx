@@ -1,9 +1,13 @@
 import Footer from "components/Footer/Footer";
-import { SyntheticsSwapBox } from "components/SyntheticsSwap/SyntheticsSwapBox";
+import { SyntheticsSwapBox } from "components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox";
 
 import "./SyntheticsTradePage.scss";
 
-export function SyntheticsTradePage() {
+type Props = {
+  onConnectWallet: () => void;
+};
+
+export function SyntheticsTradePage(p: Props) {
   return (
     <div className="SyntheticsTrade page-layout">
       {/* {showBanner && <ExchangeBanner hideBanner={hideBanner} />} */}
@@ -23,8 +27,8 @@ export function SyntheticsTradePage() {
           {/* <div className="Exchange-lists large">{getListSection()}</div> */}
         </div>
         <div className="SyntheticsTrade-right">
-          <div style={{ marginRight: "300px", marginTop: "30%" }}>
-            <SyntheticsSwapBox />
+          <div style={{ marginRight: "100px", marginTop: "5%" }}>
+            <SyntheticsSwapBox onConnectWallet={p.onConnectWallet} />
           </div>
 
           {/* <div className="Exchange-wallet-tokens">
