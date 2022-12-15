@@ -1816,7 +1816,7 @@ export default function SwapBox(props) {
   }
 
   const ERROR_TOOLTIP_MSG = {
-    [ErrorCodes.poolExceeded]: t`GLP doesn't accept more ${fromTokenInfo.symbol}.`,
+    [ErrorCodes.poolExceeded]: t`GLP doesn't accept this amount of TOKEN.`,
   };
 
   const SWAP_LABELS = {

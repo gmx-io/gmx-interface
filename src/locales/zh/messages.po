@@ -81,10 +81,6 @@ msgstr "这将撤回和取消保留所有代币并暂停授权。<1/><2/>esGMX �
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
 msgstr ""
 
-#: src/lib/wallets/index.tsx
-#~ msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2><3>Add {2}</3>"
-#~ msgstr ""
-
 #: src/components/Exchange/SwapBox.js
 msgid "A snapshot of the USD value of your {0} collateral is taken when the position is opened."
 msgstr ""
@@ -1370,7 +1366,7 @@ msgid "GLP buy disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
-msgid "GLP doesn't accept more {0}."
+msgid "GLP doesn't accept this amount of TOKEN."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js
