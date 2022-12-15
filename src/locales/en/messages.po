@@ -295,11 +295,6 @@ msgstr "Approving..."
 msgid "Arbitrum APR:"
 msgstr "Arbitrum APR:"
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Arbitrum Icon"
-msgstr "Arbitrum Icon"
-
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
@@ -345,11 +340,6 @@ msgstr "Available:"
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
 msgstr "Avalanche APR:"
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Avalanche Icon"
-msgstr "Avalanche Icon"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Balance"
@@ -424,10 +414,6 @@ msgstr "Buy ETH directly to Arbitrum or transfer it there."
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GLP"
 msgstr "Buy GLP"
-
-#: src/pages/BuyGlp/BuyGlp.js
-msgid "Buy GLP Icon"
-msgstr "Buy GLP Icon"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GMX"
@@ -1422,8 +1408,8 @@ msgid "GMX Weekly Updates"
 msgstr "GMX Weekly Updates"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
-msgstr "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
+msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
+msgstr "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX community discussion"
@@ -2138,10 +2124,6 @@ msgstr "No trades yet"
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
-
-#: src/pages/BuyGlp/BuyGlp.js
-#~ msgid "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
-#~ msgstr "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."

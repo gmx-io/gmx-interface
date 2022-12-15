@@ -295,11 +295,6 @@ msgstr ""
 msgid "Arbitrum APR:"
 msgstr ""
 
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Arbitrum Icon"
-msgstr ""
-
 #: src/components/Exchange/NoLiquidityErrorModal.tsx
 msgid "As there is not enough liquidity in GLP to swap {0} to {swapTokenSymbol}, you can use the option below to do so:"
 msgstr ""
@@ -344,11 +339,6 @@ msgstr ""
 #: src/components/TokenCard/TokenCard.js
 #: src/components/TokenCard/TokenCard.js
 msgid "Avalanche APR:"
-msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Avalanche Icon"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -423,10 +413,6 @@ msgstr ""
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Stake/StakeV2.js
 msgid "Buy GLP"
-msgstr ""
-
-#: src/pages/BuyGlp/BuyGlp.js
-msgid "Buy GLP Icon"
 msgstr ""
 
 #: src/pages/Stake/StakeV2.js
@@ -1422,7 +1408,7 @@ msgid "GMX Weekly Updates"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
+msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js

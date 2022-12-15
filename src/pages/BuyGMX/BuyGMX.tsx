@@ -13,11 +13,11 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import Banxa from "img/ic_banxa.svg";
 import Uniswap from "img/ic_uni_arbitrum.svg";
-import Traderjoe from "img/ic_traderjoe.png";
+import Traderjoe from "img/ic_traderjoe_avax.png";
 import Bungee from "img/ic_bungee.png";
 import O3 from "img/ic_o3.png";
 import Binance from "img/ic_binance.svg";
-import ohmArbitrum from "img/ic_olympus_arbitrum.svg";
+import bondProtocolIcon from "img/ic_bondprotocol_arbitrum.svg";
 import { CENTRALISED_EXCHANGES, DECENTRALISED_AGGRIGATORS, EXTERNAL_LINKS, TRANSFER_EXCHANGES } from "./constants";
 
 export default function BuyGMX() {
@@ -206,7 +206,7 @@ function DecentralisedExchanges({ chainId, externalLinks }) {
               <Trans>GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:</Trans>
             </div>
             <div className="buttons-group col-1">
-              <Button imgSrc={ohmArbitrum} href="https://app.bondprotocol.finance/#/issuers/GMX">
+              <Button imgSrc={bondProtocolIcon} href="https://app.bondprotocol.finance/#/issuers/GMX">
                 Bond Protocol
               </Button>
             </div>
