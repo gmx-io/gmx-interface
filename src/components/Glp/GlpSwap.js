@@ -141,7 +141,8 @@ export default function GlpSwap(props) {
   const feeGlpTrackerAddress = getContract(chainId, "FeeGlpTracker");
   const usdgAddress = getContract(chainId, "USDG");
   const glpManagerAddress = getContract(chainId, "GlpManager");
-  const rewardRouterAddress = getContract(chainId, "RewardRouter");
+  const glpRewardRouterAddress = getContract(chainId, "GlpRewardRouter");
+
   const tokensForBalanceAndSupplyQuery = [stakedGlpTrackerAddress, usdgAddress];
 
   const tokenAddresses = tokens.map((token) => token.address);
@@ -564,7 +565,7 @@ export default function GlpSwap(props) {
 
     const minGlp = glpAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR);
 
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, library.getSigner());
     const method = swapTokenAddress === AddressZero ? "mintAndStakeGlpETH" : "mintAndStakeGlp";
     const params = swapTokenAddress === AddressZero ? [0, minGlp] : [swapTokenAddress, swapAmount, 0, minGlp];
     const value = swapTokenAddress === AddressZero ? swapAmount : 0;
@@ -592,7 +593,7 @@ export default function GlpSwap(props) {
 
     const minOut = swapAmount.mul(BASIS_POINTS_DIVISOR - savedSlippageAmount).div(BASIS_POINTS_DIVISOR);
 
-    const contract = new ethers.Contract(rewardRouterAddress, RewardRouter.abi, library.getSigner());
+    const contract = new ethers.Contract(glpRewardRouterAddress, RewardRouter.abi, library.getSigner());
     const method = swapTokenAddress === AddressZero ? "unstakeAndRedeemGlpETH" : "unstakeAndRedeemGlp";
     const params =
       swapTokenAddress === AddressZero ? [glpAmount, minOut, account] : [swapTokenAddress, glpAmount, minOut, account];
@@ -695,22 +696,6 @@ export default function GlpSwap(props) {
         infoTokens={infoTokens}
         swapUsdMin={swapUsdMin}
       />
-      {/* <div className="Page-title-section">
-        <div className="Page-title">{isBuying ? "Buy GLP" : "Sell GLP"}</div>
-        {isBuying && <div className="Page-description">
-          Purchase <a href="https://gmxio.gitbook.io/gmx/glp" target="_blank" rel="noopener noreferrer">GLP tokens</a> to earn {nativeTokenSymbol} fees from swaps and leverage trading.<br/>
-          Note that there is a minimum holding time of 15 minutes after a purchase.<br/>
-          <div>View <Link to="/earn">staking</Link> page.</div>
-        </div>}
-        {!isBuying && <div className="Page-description">
-          Redeem your GLP tokens for any supported asset.
-          {inCooldownWindow && <div>
-            GLP tokens can only be redeemed 15 minutes after your most recent purchase.<br/>
-            Your last purchase was at {formatDateTime(lastPurchaseTime)}, you can redeem GLP tokens after {formatDateTime(redemptionTime)}.<br/>
-          </div>}
-          <div>View <Link to="/earn">staking</Link> page.</div>
-        </div>}
-      </div> */}
       <div className="GlpSwap-content">
         <div className="App-card GlpSwap-stats-card">
           <div className="App-card-title">
@@ -1178,6 +1163,7 @@ export default function GlpSwap(props) {
                               ? "$0.00"
                               : `$${formatAmount(amountLeftToDeposit, USD_DECIMALS, 2, true)}`
                           }
+                          className="nowrap"
                           position="right-bottom"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}
@@ -1192,6 +1178,7 @@ export default function GlpSwap(props) {
                               ? "$0.00"
                               : `$${formatAmount(availableAmountUsd, USD_DECIMALS, 2, true)}`
                           }
+                          className="nowrap"
                           position="right-bottom"
                           tooltipIconPosition="right"
                           renderContent={() => getTooltipContent(managedUsd, tokenInfo, token)}

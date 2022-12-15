@@ -42,19 +42,19 @@ msgid "<0/>Profit price: {0} ${1}. This rule applies for the next {2}, until {3}
 msgstr ""
 
 #: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0> to start using GMX"
+msgid "<0>Install Coinbase Wallet</0> to start using GMX."
 msgstr ""
 
 #: src/App/App.js
-msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser"
+msgid "<0>Install Coinbase Wallet</0>, and use GMX with its built-in browser."
 msgstr ""
 
 #: src/App/App.js
-msgid "<0>Install MetaMask</0> to start using GMX"
+msgid "<0>Install MetaMask</0> to start using GMX."
 msgstr ""
 
 #: src/App/App.js
-msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser"
+msgid "<0>Install MetaMask</0>, and use GMX with its built-in browser."
 msgstr ""
 
 #: src/components/Exchange/OrdersToa.js
@@ -76,6 +76,10 @@ msgstr ""
 #: src/pages/Stake/StakeV2.js
 msgid "<0>This will withdraw and unreserve all tokens as well as pause vesting.<1/><2/>esGMX tokens that have been converted to GMX will remain as GMX tokens.<3/><4/>To claim GMX tokens without withdrawing, use the \"Claim\" button under the Total Rewards section.<5/><6/></0>"
 msgstr "<0>これによりすべてのトークンは引き出され、リザーブから解除され、べスティングは停止されます。<1/><2/>GMXへ転換されたesGMXトークンはGMXトークンとなります。<3/><4/>引き出しをせずにGMXトークンを請求するには全報酬セクションの下部にある\"請求\"ボタンを使用してください。<5/><6/></0>"
+
+#: src/pages/Dashboard/DashboardV2.js
+msgid "<0>Total value of tokens in GLP pool ({chainName}).</0><1>Other websites may show a higher value as they add positions' collaterals to the GLP pool.</1>"
+msgstr ""
 
 #: src/lib/wallets/index.tsx
 msgid "<0>Your wallet is not connected to {0}.</0><1/><2>Switch to {1}</2>"
@@ -217,6 +221,10 @@ msgstr "額"
 msgid "Amount of traders you referred."
 msgstr "あなたがリファーしたトレーダー数"
 
+#: src/components/Exchange/PositionEditor.js
+msgid "Amount should be greater than zero"
+msgstr ""
+
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
 msgid "Amount to claim"
 msgstr "請求額"
@@ -228,6 +236,10 @@ msgstr "清算が発生した時点で高品質の複数の価格フィードの
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Announcement"
 msgstr "告知"
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "App"
+msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval failed"
@@ -297,8 +309,8 @@ msgid "Assets Under Management"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.js
-msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})"
-msgstr "管理資産: 全チェーンでステークされているGMX + GLPプール ({chainName})"
+msgid "Assets Under Management: GMX staked (All chains) + GLP pool ({chainName})."
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "Available"
@@ -371,6 +383,7 @@ msgid "Boost your rewards with Multiplier Points. <0>More info</0>."
 msgstr "マルチプライヤーポイントで報酬をブーストする。<0>より詳しい情報</0>"
 
 #: src/components/Exchange/ConfirmationBox.js
+#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -960,7 +973,6 @@ msgstr "分散型<0/>パーペチュアル取引所"
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 msgid "Decrease"
 msgstr ""
@@ -1195,7 +1207,6 @@ msgid "Enter a price"
 msgstr "価格を入力"
 
 #: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -1415,7 +1426,7 @@ msgid "GMX Weekly Updates"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
+msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1522,7 +1533,6 @@ msgstr "誤ったネットワーク"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/TradeHistory.js
 msgid "Increase"
@@ -1769,7 +1779,6 @@ msgstr "ロード中"
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
@@ -2006,14 +2015,16 @@ msgstr ""
 msgid "Min leverage: 1.1x"
 msgstr "最小レバレッジ: 1.1倍"
 
-#: src/components/Exchange/PositionEditor.js
-#: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 msgid "Min order: 10 USD"
 msgstr "最小オーダー金額: 10 USD"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Min required collateral"
+msgstr ""
+
+#: src/components/Exchange/PositionEditor.js
+msgid "Min residual collateral: 10 USD"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -2060,12 +2071,12 @@ msgstr "ネット金額"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral - Borrow Fee + PnL"
+msgid "Net Value: Initial Collateral + PnL - Borrow Fee"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Net Value: Initial Collateral - Fees + PnL"
+msgid "Net Value: Initial Collateral + PnL - Fees"
 msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
@@ -2132,10 +2143,6 @@ msgstr ""
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "注文は必ず執行される保証がないことに留意ください。<0/><1/>これは例えば以下のような状況で起こりえます:"
-
-#: src/pages/BuyGlp/BuyGlp.js
-msgid "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
-msgstr ""
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -2759,7 +2766,6 @@ msgstr "ポジションをシェア"
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/ExchangeTVChart.js
 #: src/components/Exchange/OrdersList.js
-#: src/components/Exchange/OrdersList.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
@@ -3091,6 +3097,10 @@ msgstr ""
 msgid "The order will only execute if the price conditions are met and there is sufficient liquidity"
 msgstr ""
 
+#: src/components/Exchange/PositionEditor.js
+msgid "The pending borrow fee will be charged on this transaction."
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "The position will be opened at {0} USD with a max slippage of {1}%.<0/><1/>The slippage amount can be configured under Settings, found by clicking on your address at the top right of the page after connecting your wallet.<2/><3/><4>More Info</4>"
 msgstr ""
@@ -3280,10 +3290,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV1.js
 msgid "Total fees earned since {0}: {1} USD<0/>Fee assets: {feeText}"
 msgstr ""
-
-#: src/pages/Dashboard/DashboardV2.js
-msgid "Total value of tokens in GLP pool ({chainName})"
-msgstr "GLPプール ({chainName})のトークンの総額"
 
 #: src/components/StatsTooltip/StatsTooltip.tsx
 msgid "Total:"
@@ -3573,6 +3579,10 @@ msgstr "べスティング状況"
 #: src/pages/Exchange/Exchange.js
 msgid "View"
 msgstr "見る"
+
+#: src/pages/BuyGlp/BuyGlp.js
+msgid "View <0>staking</0> page."
+msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdown.tsx
 msgid "View in Explorer"
@@ -3991,10 +4001,6 @@ msgid "{0} tokens have been converted to GMX from the {1} esGMX deposited for ve
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "{0} {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.js
 msgid ""
 "{0}:\n"
 "Swap {amountInDisplay} {1} for {minOutDisplay} {2},\n"
@@ -4006,6 +4012,10 @@ msgid ""
 "{0}:\n"
 "{1},\n"
 "Price: {priceDisplay}"
+msgstr ""
+
+#: src/components/Exchange/TradeHistory.js
+msgid "{0}  {1} {longOrShortText}, -{2} USD, {3} Price: ${4} USD"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js

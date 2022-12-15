@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FALLBACK_PROVIDERS, getRpcUrl } from "config/chains";
+import { FALLBACK_PROVIDERS, getFallbackRpcUrl, getRpcUrl } from "config/chains";
 import { ethers } from "ethers";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 
@@ -24,7 +24,7 @@ export function getFallbackProvider(chainId: number) {
     return;
   }
 
-  const provider = getRpcUrl(chainId);
+  const provider = getFallbackRpcUrl(chainId);
 
   return new ethers.providers.StaticJsonRpcProvider(
     provider,

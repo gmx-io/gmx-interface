@@ -88,6 +88,7 @@
   .Footer-links > a {
     padding-right: 0;
     margin-bottom: 0.5rem;
+    display: block;
   }
   .Footer-social-link-block {
     margin-bottom: 1.4rem;
