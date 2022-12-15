@@ -1,6 +1,6 @@
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
-import { expandDecimals, formatAmount } from "lib/numbers";
+import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
 import { formatUsdAmount } from "domain/synthetics/tokens";
 import { PriceImpact, PriceImpactConfigsData } from "./types";
 
@@ -21,7 +21,6 @@ export function getPriceImpactConfig(data: PriceImpactConfigsData, marketAddress
 /**
  * @see https://github.com/gmx-io/gmx-synthetics/blob/updates/contracts/pricing/SwapPricingUtils.sol
  *
- * TODO: unit tests?
  */
 export function getPriceImpact(
   priceImpactConfigsData: PriceImpactConfigsData,
@@ -128,16 +127,18 @@ export function calculateImpactForCrossoverRebalance(p: {
   return positiveImpact > negativeImpactUsd ? deltaDiffUsd : BigNumber.from(0).sub(deltaDiffUsd);
 }
 
-// TODO: correct formula
-function applyImpactFactor(diff: BigNumber, factor?: BigNumber, exponent?: BigNumber) {
-  if (!factor || !exponent) return BigNumber.from(0);
+// TODO: big numbers + unit tests
+export function applyImpactFactor(diff: BigNumber, factor?: BigNumber, exponent?: BigNumber) {
+  if (!factor || !exponent) return undefined;
 
-  const r = diff
-    .div(expandDecimals(1, 30))
-    .pow(2)
-    .mul(expandDecimals(1, 30))
-    .mul(expandDecimals(1, 22))
-    .div(expandDecimals(1, 30));
+  // Convert diff and exponent to float js numbers
+  const _diff = Number(diff) / 10 ** 30;
+  const _exponent = Number(exponent) / 10 ** 30;
 
-  return r;
+  // Pow and convert back to BigNumber with 30 decimals
+  let result = bigNumberify(BigInt(Math.round(_diff ** _exponent * 10 ** 30)));
+
+  result = result?.mul(factor).div(expandDecimals(1, 30)).div(2);
+
+  return result;
 }
