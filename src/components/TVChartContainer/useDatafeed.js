@@ -29,6 +29,7 @@ export function getOnResetCache() {
 export default function useDatafeed() {
   const { chainId } = useChainId();
   const intervalRef = useRef();
+  const activeTicker = useRef();
   return useMemo(() => {
     return {
       onReady: (callback) => {
@@ -68,6 +69,9 @@ export default function useDatafeed() {
           return onErrorCallback("[getBars] Invalid resolution");
         }
         const { ticker, chainId, isStable } = symbolInfo;
+        if (activeTicker.current !== ticker) {
+          activeTicker.current = ticker;
+        }
         const bars = await getHistoryBars({ chainId, ticker, resolution, isStable, firstDataRequest, to, from });
         const filteredBars = bars.filter((bar) => bar.time >= from * 1000 && bar.time < toWithOffset * 1000);
         filteredBars.length > 0 ? onHistoryCallback(filteredBars) : onErrorCallback("Something went wrong!");
@@ -77,9 +81,12 @@ export default function useDatafeed() {
         const { chainId, ticker, isStable } = symbolInfo;
         clearInterval(intervalRef.current);
         onResetCache = onResetCacheNeededCallback;
+
         intervalRef.current = setInterval(function () {
           getLiveBar({ chainId, ticker, resolution, isStable }).then((bar) => {
-            onRealtimeCallback(bar);
+            if (ticker === activeTicker.current) {
+              onRealtimeCallback(bar);
+            }
           });
         }, 500);
       },
@@ -87,5 +94,5 @@ export default function useDatafeed() {
         clearInterval(intervalRef.current);
       },
     };
-  }, [chainId]);
+  }, [chainId, activeTicker]);
 }

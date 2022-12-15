@@ -49,7 +49,7 @@ async function getCurrentPrice(chainId, symbol) {
 
 async function getLastHistoryBar(ticker, resolution, chainId) {
   const _prices = await getTokenChartPrice(chainId, ticker, resolution);
-  return formatBar(_prices[_prices.length - 1]);
+  return formatBar({ ..._prices[_prices.length - 1], ticker });
 }
 
 export async function getHistoryBars({ ticker, resolution, firstDataRequest, chainId, isStable, to, from }) {
@@ -69,7 +69,7 @@ export async function getLiveBar({ ticker, resolution, chainId, isStable }) {
   }
   const currentPrice = await getCurrentPrice(chainId, ticker);
   const averagePriceValue = parseFloat(formatAmount(currentPrice, USD_DECIMALS, 4));
-  if (lastBar.time && currentCandleTime === lastBar.time) {
+  if (lastBar.time && currentCandleTime === lastBar.time && ticker === lastBar.ticker) {
     return {
       ...lastBar,
       close: averagePriceValue,
