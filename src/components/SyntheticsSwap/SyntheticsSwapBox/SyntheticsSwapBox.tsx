@@ -11,12 +11,11 @@ import {
   formatTokenAmount,
   formatUsdAmount,
   getTokenData,
-  getTokensDataArr,
   TokenData,
   useTokensData,
 } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
 
 import "./SyntheticsSwapBox.scss";
@@ -31,6 +30,8 @@ import {
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { getMarkets, useMarketsData } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
+import { parseValue } from "lib/numbers";
+import { USD_DECIMALS } from "lib/legacy";
 
 enum Operation {
   Long = "Long",
@@ -92,6 +93,12 @@ export function SyntheticsSwapBox(p: Props) {
   const isMarket = modeTab === Mode.Market;
   const isLimit = modeTab === Mode.Limit;
   const isTrigger = modeTab === Mode.Trigger;
+
+  const [triggerPriceValue, setTriggerPriceValue] = useState<string>("");
+
+  const triggerPrice = parseValue(triggerPriceValue, USD_DECIMALS);
+
+  const isTriggerPriceEnabled = isLimit;
 
   const marketsData = useMarketsData(chainId);
 
@@ -275,6 +282,22 @@ export function SyntheticsSwapBox(p: Props) {
               showTokenImgInDropdown={true}
             />
           )}
+        </BuyInputSection>
+
+        <BuyInputSection
+          topLeftLabel={t`Price`}
+          topRightLabel={t`Mark:`}
+          tokenBalance={formatTokenAmount(toTokenState.balance, toTokenState.token?.decimals)}
+          inputValue={toTokenState.inputValue}
+          onInputValueChange={(e) => {
+            toTokenState.setInputValue(e.target.value);
+          }}
+          showMaxButton={false}
+          onFocus={toTokenState.onFocus}
+          onBlur={toTokenState.onBlur}
+          balance={formatUsdAmount(toTokenState.usdAmount)}
+        >
+          USD
         </BuyInputSection>
       </div>
 
