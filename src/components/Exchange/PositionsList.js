@@ -370,7 +370,7 @@ export default function PositionsList(props) {
                                   value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
                                 />
                                 <StatsTooltipRow
-                                  label={t`Open + Close fee`}
+                                  label={t`Open + Close Fees`}
                                   value={formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
                                 />
                                 <br />
@@ -585,7 +585,7 @@ export default function PositionsList(props) {
                                 value={`-$${formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}`}
                               />
                               <StatsTooltipRow
-                                label={t`Open + Close fee`}
+                                label={t`Open + Close Fees`}
                                 showDollar={false}
                                 value={`-$${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}`}
                               />

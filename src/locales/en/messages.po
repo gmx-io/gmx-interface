@@ -390,6 +390,7 @@ msgstr "Boost your rewards with Multiplier Points. <0>More info</0>."
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/TradeHistory.js
 msgid "Borrow Fee"
 msgstr "Borrow Fee"
 
@@ -397,10 +398,6 @@ msgstr "Borrow Fee"
 #: src/components/Exchange/PositionsList.js
 msgid "Borrow Fee / Day"
 msgstr "Borrow Fee / Day"
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Borrow fee"
-msgstr "Borrow fee"
 
 #: src/components/Header/AppHeaderLinks.tsx
 msgid "Buy"
@@ -1751,8 +1748,8 @@ msgstr ""
 "{2} Price: {3} USD"
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Liquidation fee"
-msgstr "Liquidation fee"
+msgid "Liquidation Fee"
+msgstr "Liquidation Fee"
 
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
@@ -2073,8 +2070,8 @@ msgstr "Net Value: Initial Collateral + PnL - Fees"
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
-msgid "Network fee"
-msgstr "Network fee"
+msgid "Network Fee"
+msgstr "Network Fee"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -2142,8 +2139,8 @@ msgstr "Only letters, numbers and underscores are allowed."
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Open + Close fee"
-msgstr "Open + Close fee"
+msgid "Open + Close Fees"
+msgstr "Open + Close Fees"
 
 #: src/pages/Home/Home.js
 msgid "Open Interest"

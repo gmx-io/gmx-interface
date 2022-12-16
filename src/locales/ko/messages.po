@@ -390,16 +390,13 @@ msgstr "멀티플라이어 포인트를 사용해서 보상을 증가시키세�
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Exchange/TradeHistory.js
 msgid "Borrow Fee"
 msgstr "차용 수수료"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 msgid "Borrow Fee / Day"
-msgstr ""
-
-#: src/components/Exchange/TradeHistory.js
-msgid "Borrow fee"
 msgstr ""
 
 #: src/components/Header/AppHeaderLinks.tsx
@@ -1748,7 +1745,7 @@ msgid ""
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
-msgid "Liquidation fee"
+msgid "Liquidation Fee"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -2070,7 +2067,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
-msgid "Network fee"
+msgid "Network Fee"
 msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
@@ -2139,7 +2136,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
-msgid "Open + Close fee"
+msgid "Open + Close Fees"
 msgstr ""
 
 #: src/pages/Home/Home.js
