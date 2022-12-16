@@ -229,17 +229,9 @@ msgstr "Amount should be greater than zero"
 msgid "Amount to claim"
 msgstr "Amount to claim"
 
-#: src/pages/Home/Home.js
-msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
-msgstr "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Announcement"
 msgstr "Announcement"
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "App"
-msgstr "App"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval failed"
@@ -332,10 +324,6 @@ msgstr "Available amount to deposit into GLP."
 #: src/components/Glp/GlpSwap.js
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr "Available amount to withdraw from GLP. Funds not utilized by current open positions."
-
-#: src/pages/Home/Home.js
-msgid "Available on your preferred network"
-msgstr "Available on your preferred network"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Available:"
@@ -966,10 +954,6 @@ msgstr "Decentralized Options Strategies"
 msgid "Decentralized Trading Protocol"
 msgstr "Decentralized Trading Protocol"
 
-#: src/pages/Home/Home.js
-msgid "Decentralized<0/>Perpetual Exchange"
-msgstr "Decentralized<0/>Perpetual Exchange"
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
@@ -1060,10 +1044,6 @@ msgstr "Display PnL after fees"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Distribution"
 msgstr "Distribution"
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "Docs"
-msgstr "Docs"
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Don't show this message again for 30 days."
@@ -1224,10 +1204,6 @@ msgstr "Enter a price"
 #: src/pages/Stake/StakeV2.js
 msgid "Enter an amount"
 msgstr "Enter an amount"
-
-#: src/pages/Home/Home.js
-msgid "Enter and exit positions with minimal spread and zero price impact. Get the optimal price without incurring additional costs."
-msgstr "Enter and exit positions with minimal spread and zero price impact. Get the optimal price without incurring additional costs."
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
@@ -1422,8 +1398,8 @@ msgid "GMX Weekly Updates"
 msgstr "GMX Weekly Updates"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
-msgstr "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
+msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
+msgstr "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX community discussion"
@@ -1444,10 +1420,6 @@ msgstr "GMX explorer for stats and traders"
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX fundamentals"
 msgstr "GMX fundamentals"
-
-#: src/pages/Home/Home.js
-msgid "GMX is currently live on Arbitrum and Avalanche."
-msgstr "GMX is currently live on Arbitrum and Avalanche."
 
 #: src/pages/Jobs/Jobs.js
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
@@ -1470,6 +1442,10 @@ msgstr "GMX staking rewards updates and insights"
 msgid "GMX transfers not yet enabled"
 msgstr "GMX transfers not yet enabled"
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "GOVERNANCE"
+msgstr "GOVERNANCE"
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "Generate Referral Code"
@@ -1481,10 +1457,6 @@ msgstr "Generating shareable image..."
 #: src/pages/Referrals/Referrals.js
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "Governance"
-msgstr "Governance"
 
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
@@ -1834,6 +1806,10 @@ msgstr "MAX"
 msgid "MEV Optimizer"
 msgstr "MEV Optimizer"
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "MORE"
+msgstr "MORE"
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark"
 msgstr "Mark"
@@ -1860,6 +1836,7 @@ msgstr "Mark: {0}"
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Market"
 msgstr "Market"
 
@@ -2139,10 +2116,6 @@ msgstr "No trades yet"
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 
-#: src/pages/BuyGlp/BuyGlp.js
-#~ msgid "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
-#~ msgstr "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
-
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
 msgstr "Only letters, numbers and underscores are allowed."
@@ -2151,10 +2124,6 @@ msgstr "Only letters, numbers and underscores are allowed."
 #: src/components/Exchange/PositionsList.js
 msgid "Open + Close fee"
 msgstr "Open + Close fee"
-
-#: src/pages/Home/Home.js
-msgid "Open Interest"
-msgstr "Open Interest"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
@@ -2168,10 +2137,6 @@ msgstr "Open in Coingecko"
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Explorer"
 msgstr "Open in Explorer"
-
-#: src/pages/Home/Home.js
-msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
-msgstr "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "Open positions: {0}<0/>Under risk: {1}"
@@ -2269,6 +2234,10 @@ msgstr "Overview"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "POOL"
 msgstr "POOL"
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "PRESALE"
+msgstr "PRESALE"
 
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -2473,10 +2442,6 @@ msgstr "Projects integrated with GMX."
 msgid "Proof of Reserves"
 msgstr "Proof of Reserves"
 
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "Protocol"
-msgstr "Protocol"
-
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Protocol analytics"
@@ -2539,10 +2504,6 @@ msgstr "Receiver has not staked GMX tokens before"
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
 msgstr "Redemption time not yet reached"
-
-#: src/pages/Home/Home.js
-msgid "Reduce Liquidation Risks"
-msgstr "Reduce Liquidation Risks"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
@@ -2667,10 +2628,6 @@ msgstr "Same as current active code"
 #: src/App/App.js
 msgid "Save"
 msgstr "Save"
-
-#: src/pages/Home/Home.js
-msgid "Save on Costs"
-msgstr "Save on Costs"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Save on Fees"
@@ -2799,10 +2756,6 @@ msgstr "Short {0}"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Shorting..."
 msgstr "Shorting..."
-
-#: src/pages/Home/Home.js
-msgid "Simple Swaps"
-msgstr "Simple Swaps"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -3264,13 +3217,8 @@ msgstr "Total Traders Referred"
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
-#: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Total Trading Volume"
-
-#: src/pages/Home/Home.js
-msgid "Total Users"
-msgstr "Total Users"
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3298,10 +3246,6 @@ msgstr "Total:"
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Trade"
 msgstr "Trade"
-
-#: src/pages/Home/Home.js
-msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
-msgstr "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
 
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
@@ -3419,10 +3363,6 @@ msgstr "Try increasing the \"Allowed Slippage\", under the Settings menu on the 
 msgid "Tweet"
 msgstr "Tweet"
 
-#: src/pages/Home/Home.js
-msgid "Two tokens create our ecosystem"
-msgstr "Two tokens create our ecosystem"
-
 #: src/App/App.js
 msgid "Txn failed. <0>View</0>"
 msgstr "Txn failed. <0>View</0>"
@@ -3532,6 +3472,10 @@ msgstr "Useful Links"
 msgid "Utilization"
 msgstr "Utilization"
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "VOTING"
+msgstr "VOTING"
+
 #: src/pages/Stake/StakeV2.js
 msgid "Vault Capacity"
 msgstr "Vault Capacity"
@@ -3603,10 +3547,6 @@ msgstr "Volume traded by this account with an active referral code."
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Volume traded by your referred traders."
 msgstr "Volume traded by your referred traders."
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "Voting"
-msgstr "Voting"
 
 #: src/components/Glp/GlpSwap.js
 msgid "WALLET"

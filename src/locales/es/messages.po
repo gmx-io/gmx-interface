@@ -229,17 +229,9 @@ msgstr ""
 msgid "Amount to claim"
 msgstr "Cantidad a reclamar"
 
-#: src/pages/Home/Home.js
-msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
-msgstr "Un conjunto de fuentes de precios de alta calidad determinan cuando se producen las liquidaciones. Esto mantiene las posiciones a salvo de altibajos temporales."
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Announcement"
 msgstr "Anuncio"
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "App"
-msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval failed"
@@ -332,10 +324,6 @@ msgstr "Cantidad disponible para depositar en GLP."
 #: src/components/Glp/GlpSwap.js
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr ""
-
-#: src/pages/Home/Home.js
-msgid "Available on your preferred network"
-msgstr "Disponible en su red preferida"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Available:"
@@ -966,10 +954,6 @@ msgstr ""
 msgid "Decentralized Trading Protocol"
 msgstr ""
 
-#: src/pages/Home/Home.js
-msgid "Decentralized<0/>Perpetual Exchange"
-msgstr "Exchange<0/>Perpetuo Decentralizado"
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
@@ -1060,10 +1044,6 @@ msgstr "Mostrar GyP después de comisiones"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Distribution"
 msgstr "Distribución"
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "Docs"
-msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Don't show this message again for 30 days."
@@ -1224,10 +1204,6 @@ msgstr "Introduce un precio"
 #: src/pages/Stake/StakeV2.js
 msgid "Enter an amount"
 msgstr "Introduzca una cantidad"
-
-#: src/pages/Home/Home.js
-msgid "Enter and exit positions with minimal spread and zero price impact. Get the optimal price without incurring additional costs."
-msgstr "Entre y salga de posiciones con un deslizamiento mínimo y sin impacto de precio. Obtenga el precio óptimo sin incurrir en costes adicionales."
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
@@ -1422,7 +1398,7 @@ msgid "GMX Weekly Updates"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
+msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1445,10 +1421,6 @@ msgstr ""
 msgid "GMX fundamentals"
 msgstr ""
 
-#: src/pages/Home/Home.js
-msgid "GMX is currently live on Arbitrum and Avalanche."
-msgstr "GMX esta actualmente en vivo en Arbitrum y Avalanche."
-
 #: src/pages/Jobs/Jobs.js
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr ""
@@ -1470,6 +1442,10 @@ msgstr ""
 msgid "GMX transfers not yet enabled"
 msgstr "Las transferencias GMX aún no están habilitadas"
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "GOVERNANCE"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "Generar Código de Referido"
@@ -1481,10 +1457,6 @@ msgstr ""
 #: src/pages/Referrals/Referrals.js
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr "Obtenga descuentos en las comisiones y gane reembolsos a través del programa de referidos de GMX.<0/>Para más información, por favor lea los <1>detalles del programa de referidos</1>."
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "Governance"
-msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
@@ -1831,6 +1803,10 @@ msgstr "MÁX"
 msgid "MEV Optimizer"
 msgstr ""
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "MORE"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark"
 msgstr ""
@@ -1857,6 +1833,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Market"
 msgstr ""
 
@@ -2145,10 +2122,6 @@ msgstr ""
 msgid "Open + Close fee"
 msgstr ""
 
-#: src/pages/Home/Home.js
-msgid "Open Interest"
-msgstr "Interés Abierto"
-
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
 msgstr "Abre una posición"
@@ -2161,10 +2134,6 @@ msgstr "Abrir en Coingecko"
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Explorer"
 msgstr "Abrir en el Explorador"
-
-#: src/pages/Home/Home.js
-msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
-msgstr "Abre posiciones a través de una simple interfaz de intercambio. Intercambie desde cualquier activo soportado a la posición de su elección."
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "Open positions: {0}<0/>Under risk: {1}"
@@ -2262,6 +2231,10 @@ msgstr "Resumen"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "POOL"
 msgstr "RESERVA"
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "PRESALE"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -2466,10 +2439,6 @@ msgstr "Proyectos integrados con GMX."
 msgid "Proof of Reserves"
 msgstr ""
 
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "Protocol"
-msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Protocol analytics"
@@ -2532,10 +2501,6 @@ msgstr "El receptor no ha stakeado tokens GMX antes."
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
 msgstr "Tiempo de redención aún no alcanzado"
-
-#: src/pages/Home/Home.js
-msgid "Reduce Liquidation Risks"
-msgstr "Reducir Riesgos de Liquidación"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
@@ -2660,10 +2625,6 @@ msgstr "Igual que el código activo actual"
 #: src/App/App.js
 msgid "Save"
 msgstr "Guardar"
-
-#: src/pages/Home/Home.js
-msgid "Save on Costs"
-msgstr "Ahorrar en Costes"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Save on Fees"
@@ -2792,10 +2753,6 @@ msgstr "Corto {0}"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Shorting..."
 msgstr ""
-
-#: src/pages/Home/Home.js
-msgid "Simple Swaps"
-msgstr "Intercambios Simples"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -3257,13 +3214,8 @@ msgstr "Total de Traders Referidos"
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
-#: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "Volumen Total de Operaciones"
-
-#: src/pages/Home/Home.js
-msgid "Total Users"
-msgstr "Usuarios Totales"
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3291,10 +3243,6 @@ msgstr ""
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Trade"
 msgstr "Comercio"
-
-#: src/pages/Home/Home.js
-msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
-msgstr ""
 
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
@@ -3412,10 +3360,6 @@ msgstr ""
 msgid "Tweet"
 msgstr "Tweet"
 
-#: src/pages/Home/Home.js
-msgid "Two tokens create our ecosystem"
-msgstr "Dos tokens crean nuestro ecosistema"
-
 #: src/App/App.js
 msgid "Txn failed. <0>View</0>"
 msgstr ""
@@ -3525,6 +3469,10 @@ msgstr "Enlaces útiles"
 msgid "Utilization"
 msgstr ""
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "VOTING"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Vault Capacity"
 msgstr "Capacidad del Baúl"
@@ -3596,10 +3544,6 @@ msgstr "Volumen negociado por esta cuenta con un código de referido activo."
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Volume traded by your referred traders."
 msgstr "Volumen negociado por sus traders referidos."
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "Voting"
-msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "WALLET"

@@ -229,17 +229,9 @@ msgstr ""
 msgid "Amount to claim"
 msgstr "수령할 양"
 
-#: src/pages/Home/Home.js
-msgid "An aggregate of high-quality price feeds determine when liquidations occur. This keeps positions safe from temporary wicks."
-msgstr "고품질의 여러 가격 피드를 통해 청산 발생 시기를 결정합니다. 이것은 일시적인 가격 변화로부터 포지션을 안전하게 유지합니다."
-
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Announcement"
 msgstr "공지"
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "App"
-msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval failed"
@@ -332,10 +324,6 @@ msgstr "GLP에 예치할 수 있는 양"
 #: src/components/Glp/GlpSwap.js
 msgid "Available amount to withdraw from GLP. Funds not utilized by current open positions."
 msgstr ""
-
-#: src/pages/Home/Home.js
-msgid "Available on your preferred network"
-msgstr "선택한 네트워크에서 이용가능"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Available:"
@@ -966,10 +954,6 @@ msgstr ""
 msgid "Decentralized Trading Protocol"
 msgstr ""
 
-#: src/pages/Home/Home.js
-msgid "Decentralized<0/>Perpetual Exchange"
-msgstr "탈중화<0/>퍼페추얼 거래소"
-
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/OrdersList.js
@@ -1060,10 +1044,6 @@ msgstr "수수료포함 손익 표시"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Distribution"
 msgstr "배분"
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "Docs"
-msgstr ""
 
 #: src/components/ModalViews/RedirectModal.js
 msgid "Don't show this message again for 30 days."
@@ -1224,10 +1204,6 @@ msgstr "가격 입력"
 #: src/pages/Stake/StakeV2.js
 msgid "Enter an amount"
 msgstr "수량 입력"
-
-#: src/pages/Home/Home.js
-msgid "Enter and exit positions with minimal spread and zero price impact. Get the optimal price without incurring additional costs."
-msgstr "최소한의 스프레드 및 가격 영향 없이 포지션을 열고 닫을 수 있습니다. 추가 비용 없이 최적의 가격에서 시작하세요."
 
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/OrderEditor.js
@@ -1422,7 +1398,7 @@ msgid "GMX Weekly Updates"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
+msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -1445,10 +1421,6 @@ msgstr ""
 msgid "GMX fundamentals"
 msgstr ""
 
-#: src/pages/Home/Home.js
-msgid "GMX is currently live on Arbitrum and Avalanche."
-msgstr "GMX는 현재 Arbitrum과 Avalanche에서 이용할 수 있습니다."
-
 #: src/pages/Jobs/Jobs.js
 msgid "GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the project, please email <0>jobs@gmx.io</0>."
 msgstr ""
@@ -1470,6 +1442,10 @@ msgstr ""
 msgid "GMX transfers not yet enabled"
 msgstr "GMX 전송이 아직 불가능합니다."
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "GOVERNANCE"
+msgstr ""
+
 #: src/components/Referrals/AddAffiliateCode.js
 msgid "Generate Referral Code"
 msgstr "추천 코드 생성"
@@ -1481,10 +1457,6 @@ msgstr ""
 #: src/pages/Referrals/Referrals.js
 msgid "Get fee discounts and earn rebates through the GMX referral program.<0/>For more information, please read the <1>referral program details</1>."
 msgstr "GMX 추천 프로그램을 통해 수수료 할인 및 리베이트를 받으세요.<0/>자세한 내용은 <1>추천 프로그램 세부 정보를 참조하세요."
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "Governance"
-msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "High Slippage, Swap Anyway"
@@ -1831,6 +1803,10 @@ msgstr "최대"
 msgid "MEV Optimizer"
 msgstr ""
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "MORE"
+msgstr ""
+
 #: src/pages/OrdersOverview/OrdersOverview.js
 msgid "Mark"
 msgstr ""
@@ -1857,6 +1833,7 @@ msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/Header/HomeHeaderLinks.tsx
 msgid "Market"
 msgstr ""
 
@@ -2145,10 +2122,6 @@ msgstr ""
 msgid "Open + Close fee"
 msgstr ""
 
-#: src/pages/Home/Home.js
-msgid "Open Interest"
-msgstr "미결제 약정"
-
 #: src/components/Exchange/SwapBox.js
 msgid "Open a position"
 msgstr "포지션 열기"
@@ -2161,10 +2134,6 @@ msgstr "Coingecko에서 보기"
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Open in Explorer"
 msgstr "Explorer에서 보기"
-
-#: src/pages/Home/Home.js
-msgid "Open positions through a simple swap interface. Conveniently swap from any supported asset into the position of your choice."
-msgstr "간단한 스왑 인터페이스를 통해 포지션을 열어보세요. 지원되는 자산내에서 원하는 포지션으로 편리하게 스왑할 수 있습니다."
 
 #: src/pages/PositionsOverview/PositionsOverview.js
 msgid "Open positions: {0}<0/>Under risk: {1}"
@@ -2262,6 +2231,10 @@ msgstr "개요"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "POOL"
 msgstr "풀"
+
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "PRESALE"
+msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -2466,10 +2439,6 @@ msgstr "GMX와 통합된 프로젝트"
 msgid "Proof of Reserves"
 msgstr ""
 
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "Protocol"
-msgstr ""
-
 #: src/pages/Ecosystem/Ecosystem.js
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Protocol analytics"
@@ -2532,10 +2501,6 @@ msgstr "수취인은 지금까지 GMX 토큰을 스테이킹한 적이 없습니
 #: src/components/Glp/GlpSwap.js
 msgid "Redemption time not yet reached"
 msgstr "아직 판매할 수 있는 시간이 아닙니다"
-
-#: src/pages/Home/Home.js
-msgid "Reduce Liquidation Risks"
-msgstr "청산 위험 감소하기"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Reducing the position at the current price will forfeit a <0>pending profit</0> of {deltaStr}. <1/>"
@@ -2660,10 +2625,6 @@ msgstr "현재 유효한 코드와 같음"
 #: src/App/App.js
 msgid "Save"
 msgstr "저장"
-
-#: src/pages/Home/Home.js
-msgid "Save on Costs"
-msgstr "비용 절감"
 
 #: src/components/Glp/GlpSwap.js
 msgid "Save on Fees"
@@ -2792,10 +2753,6 @@ msgstr "{0} 숏"
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Shorting..."
 msgstr ""
-
-#: src/pages/Home/Home.js
-msgid "Simple Swaps"
-msgstr "간단한 스왑"
 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionSeller.js
@@ -3257,13 +3214,8 @@ msgstr "추천한 총 트레이더"
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/components/Referrals/TradersStats.js
-#: src/pages/Home/Home.js
 msgid "Total Trading Volume"
 msgstr "총 트레이딩 거래량"
-
-#: src/pages/Home/Home.js
-msgid "Total Users"
-msgstr "총 유저"
 
 #: src/components/Referrals/AffiliatesStats.js
 #: src/pages/Dashboard/DashboardV2.js
@@ -3291,10 +3243,6 @@ msgstr ""
 #: src/components/Header/AppHeaderUser.tsx
 msgid "Trade"
 msgstr "트레이드"
-
-#: src/pages/Home/Home.js
-msgid "Trade BTC, ETH, AVAX and other top cryptocurrencies with up to 50x leverage directly from your wallet"
-msgstr ""
 
 #: src/components/Exchange/ExchangeBanner.js
 msgid "Trade on GMX and win <0>$250.000</0> in prizes! Live until November 30th, <1>click here</1> to learn more."
@@ -3412,10 +3360,6 @@ msgstr ""
 msgid "Tweet"
 msgstr "Tweet"
 
-#: src/pages/Home/Home.js
-msgid "Two tokens create our ecosystem"
-msgstr "두개의 토큰이 생태계를 형성하고 있습니다"
-
 #: src/App/App.js
 msgid "Txn failed. <0>View</0>"
 msgstr ""
@@ -3525,6 +3469,10 @@ msgstr "유용한 링크"
 msgid "Utilization"
 msgstr ""
 
+#: src/components/Header/HomeHeaderLinks.tsx
+msgid "VOTING"
+msgstr ""
+
 #: src/pages/Stake/StakeV2.js
 msgid "Vault Capacity"
 msgstr "볼트 수용량"
@@ -3596,10 +3544,6 @@ msgstr "유효한 추천 코드를 사용하여 이 계정으로 트레이드된
 #: src/components/Referrals/AffiliatesStats.js
 msgid "Volume traded by your referred traders."
 msgstr "귀하가 추천한 트레이더들의 거래량"
-
-#: src/components/Header/HomeHeaderLinks.tsx
-msgid "Voting"
-msgstr ""
 
 #: src/components/Glp/GlpSwap.js
 msgid "WALLET"
