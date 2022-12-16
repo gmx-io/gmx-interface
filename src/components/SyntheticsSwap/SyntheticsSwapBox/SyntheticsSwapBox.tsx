@@ -5,9 +5,15 @@ import Tab from "components/Tab/Tab";
 import cx from "classnames";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { getSyntheticsTradeTokens, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { shouldShowMaxButton, useSwapTokenState } from "domain/synthetics/exchange";
+import {
+  getPositionMarketsPath,
+  getSwapPath,
+  shouldShowMaxButton,
+  useSwapTokenState,
+} from "domain/synthetics/exchange";
 import {
   adaptToInfoTokens,
+  convertFromUsdByPrice,
   formatTokenAmount,
   formatUsdAmount,
   getTokenData,
@@ -17,8 +23,6 @@ import {
 import { useChainId } from "lib/chains";
 import { useEffect, useMemo, useState } from "react";
 import { IoMdSwap } from "react-icons/io";
-
-import "./SyntheticsSwapBox.scss";
 import Checkbox from "components/Checkbox/Checkbox";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
@@ -28,10 +32,16 @@ import {
   SYNTHETICS_SWAP_OPERATION_KEY,
 } from "config/localStorage";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
-import { getMarkets, useMarketsData } from "domain/synthetics/markets";
+import { getMarkets, useMarketsData, useMarketsPoolsData } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
-import { parseValue } from "lib/numbers";
+import { expandDecimals, parseValue } from "lib/numbers";
 import { USD_DECIMALS } from "lib/legacy";
+import { createOrderTxn, OrderType } from "domain/synthetics/exchange/createOrderTxn";
+import { useWeb3React } from "@web3-react/core";
+import { BigNumber } from "ethers";
+import { useUserReferralCode } from "domain/referrals";
+
+import "./SyntheticsSwapBox.scss";
 
 enum Operation {
   Long = "Long",
@@ -58,9 +68,9 @@ const modeTexts = {
 };
 
 const avaialbleModes = {
-  [Operation.Long]: [Mode.Market, Mode.Limit, Mode.Trigger],
-  [Operation.Short]: [Mode.Market, Mode.Limit, Mode.Trigger],
-  [Operation.Swap]: [Mode.Market],
+  [Operation.Long]: [Mode.Market, Mode.Limit],
+  [Operation.Short]: [Mode.Market, Mode.Limit],
+  [Operation.Swap]: [Mode.Market, Mode.Limit],
 };
 
 type Props = {
@@ -69,6 +79,7 @@ type Props = {
 
 export function SyntheticsSwapBox(p: Props) {
   const { chainId } = useChainId();
+  const { library, account } = useWeb3React();
 
   const [operationTab, setOperationTab] = useLocalStorageSerializeKey(
     [chainId, SYNTHETICS_SWAP_OPERATION_KEY],
@@ -101,6 +112,9 @@ export function SyntheticsSwapBox(p: Props) {
   const isTriggerPriceEnabled = isLimit;
 
   const marketsData = useMarketsData(chainId);
+  const poolsData = useMarketsPoolsData(chainId);
+
+  const referralCodeData = useUserReferralCode(library, chainId, account);
 
   const tradeTokensAddresses = useMemo(() => {
     const markets = getMarkets(marketsData);
@@ -129,7 +143,7 @@ export function SyntheticsSwapBox(p: Props) {
 
     for (const market of markets) {
       longCollaterals[market.longTokenAddress] = getTokenData(tokensData, market.longTokenAddress);
-      shortCollaterals[market.shortTokenAddress] = getTokenData(tokensData, market.longTokenAddress);
+      shortCollaterals[market.shortTokenAddress] = getTokenData(tokensData, market.shortTokenAddress);
       indexTokens[market.indexTokenAddress] = getTokenData(tokensData, market.indexTokenAddress);
     }
 
@@ -154,7 +168,31 @@ export function SyntheticsSwapBox(p: Props) {
 
   const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
 
-  const submitButtonState: { text: string; disabled?: boolean; onClick?: () => void } = useMemo(() => {
+  const executionFeeUsd = expandDecimals(1, 28);
+  const executionFee = nativeToken?.prices
+    ? convertFromUsdByPrice(executionFeeUsd, nativeToken.decimals, nativeToken.prices.maxPrice)
+    : undefined;
+
+  const submitButtonState = getSubmitButtonState();
+
+  function onSwitchTokens() {
+    const fromToken = fromTokenState.tokenAddress;
+    const toToken = toTokenState.tokenAddress;
+
+    fromTokenState.setTokenAddress(toToken);
+    toTokenState.setTokenAddress(fromToken);
+  }
+
+  function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
+    if (isSwap) {
+      if (fromTokenState.tokenAddress === toTokenState.tokenAddress) {
+        return {
+          text: t`Select different tokens`,
+          disabled: true,
+        };
+      }
+    }
+
     if (!fromTokenState.usdAmount.gt(0)) {
       return {
         text: t`Enter an amount`,
@@ -164,17 +202,87 @@ export function SyntheticsSwapBox(p: Props) {
 
     return {
       text: `${operationTexts[operationTab!]} ${toTokenState.token?.symbol}`,
-      onClick: () => null,
+      onClick: onSubmit,
     };
-  }, [fromTokenState.usdAmount, operationTab, toTokenState.token?.symbol]);
-
-  function onSwitchTokens() {
-    const fromToken = fromTokenState.tokenAddress;
-    const toToken = toTokenState.tokenAddress;
-
-    fromTokenState.setTokenAddress(toToken);
-    toTokenState.setTokenAddress(fromToken);
   }
+
+  function onSubmit() {
+    const price = toTokenState.price;
+
+    if (!account || !fromTokenState.tokenAddress || !toTokenState.tokenAddress || !price) return;
+
+    if (isLong || isShort) {
+      const swapPath = getPositionMarketsPath(
+        marketsData,
+        poolsData,
+        fromTokenState.tokenAddress,
+        toTokenState.tokenAddress,
+        toTokenState.usdAmount
+      );
+
+      if (!swapPath) return;
+
+      createOrderTxn(chainId, library, {
+        account,
+        marketAddress: swapPath[0],
+        initialCollateralAddress: fromTokenState.tokenAddress,
+        initialCollateralAmount: fromTokenState.tokenAmount,
+        swapPath: swapPath,
+        sizeDeltaUsd: toTokenState.usdAmount,
+        triggerPrice: BigNumber.from(0),
+        acceptablePrice: price,
+        executionFee: executionFee!,
+        isLong: isLong,
+        orderType: OrderType.MarketIncrease,
+        minOutputAmount: BigNumber.from(0),
+        referralCode: referralCodeData?.userReferralCodeString,
+      });
+    }
+
+    if (isSwap) {
+      const swapPath = getSwapPath(
+        marketsData,
+        poolsData,
+        fromTokenState.tokenAddress,
+        toTokenState.tokenAddress,
+        toTokenState.usdAmount
+      );
+
+      if (!swapPath) return;
+
+      createOrderTxn(chainId, library, {
+        account,
+        marketAddress: swapPath[0],
+        initialCollateralAddress: fromTokenState.tokenAddress!,
+        initialCollateralAmount: fromTokenState.tokenAmount,
+        swapPath: swapPath,
+        receiveTokenAddress: toTokenState.tokenAddress,
+        sizeDeltaUsd: toTokenState.usdAmount,
+        triggerPrice: BigNumber.from(0),
+        acceptablePrice: price,
+        executionFee: executionFee!,
+        isLong: false,
+        orderType: OrderType.MarketSwap,
+        minOutputAmount: BigNumber.from(0),
+        referralCode: referralCodeData?.userReferralCodeString,
+      });
+    }
+  }
+
+  useEffect(
+    function syncInputValuesEff() {
+      if (fromTokenState.isFocused && fromTokenState.tokenAddress) {
+        toTokenState.setValueByUsdAmount(fromTokenState.usdAmount);
+
+        return;
+      }
+
+      if (toTokenState.isFocused && toTokenState.tokenAddress) {
+        fromTokenState.setValueByUsdAmount(toTokenState.usdAmount);
+      }
+    },
+    [fromTokenState, toTokenState]
+  );
 
   useEffect(
     function initToken() {
@@ -284,7 +392,7 @@ export function SyntheticsSwapBox(p: Props) {
           )}
         </BuyInputSection>
 
-        <BuyInputSection
+        {/* <BuyInputSection
           topLeftLabel={t`Price`}
           topRightLabel={t`Mark:`}
           tokenBalance={formatTokenAmount(toTokenState.balance, toTokenState.token?.decimals)}
@@ -298,7 +406,7 @@ export function SyntheticsSwapBox(p: Props) {
           balance={formatUsdAmount(toTokenState.usdAmount)}
         >
           USD
-        </BuyInputSection>
+        </BuyInputSection> */}
       </div>
 
       {/* <div className="SyntheticsSwapBox-info-section">
