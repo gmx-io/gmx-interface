@@ -143,7 +143,7 @@ export function SyntheticsSwapBox(p: Props) {
   const fromTokenState = useSwapTokenState(tokensData);
   const toTokenState = useSwapTokenState(tokensData);
 
-  const { longCollaterals, shortCollaterals, indexTokens, availableFromTokens, availableToTokens } = useMemo(() => {
+  const { availableFromTokens, availableToTokens } = useMemo(() => {
     const longCollaterals: { [key: string]: TokenData | undefined } = {};
     const shortCollaterals: { [key: string]: TokenData | undefined } = {};
     const indexTokens: { [key: string]: TokenData | undefined } = {};
