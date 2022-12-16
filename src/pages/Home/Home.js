@@ -12,13 +12,8 @@ import wbtcLogo from './HomepageAssets/wbtc_icon.png'
 import usdcLogo from './HomepageAssets/usd-coin.png'
 import usdtLogo from './HomepageAssets/tether-logo.png'
 import daiLogo from './HomepageAssets/dai-logo.png'
-import alpLogo from './HomepageAssets/alp-logo.svg'
-import asrLogo from './HomepageAssets/asr-logo.svg'
-import twitterLogo from './HomepageAssets/twitter-logo.webp'
-import mediumLogo from './HomepageAssets/medium-logo.svg'
-import gitLogo from './HomepageAssets/github-logo.png'
-import tgLogo from './HomepageAssets/telegram-logo.png'
-import discLogo from './HomepageAssets/discord.png'
+import alpLogo from './HomepageAssets/ALP.svg'
+import asrLogo from './HomepageAssets/ASR.svg'
 
 import arbitrumIcon from "img/ic_arbitrum_96.svg";
 import avaIcon from "img/ic_avalanche_96.svg";
@@ -253,8 +248,8 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
           <img src={arbitrumIcon} />
           <div className="start-trading">
             <p className="arbitrum-text">ARBITRUM</p>
-            <GradientButton fontWeight="900" fontSize="26px" padding="2px">
-              Start Trading
+            <GradientButton fontWeight="900" fontSize="26px" padding="2px 15px">
+              Launch app
             </GradientButton>
           </div>
         </div>
@@ -268,7 +263,9 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
           </div>
        </div>
        <div className="token-item">
-          <img src={wbtcLogo} width={60}/>
+          <div className="wbtc-bg">
+            <img src={wbtcLogo} width={60}/>
+          </div>
           <div className="token-info">
             <p className="token-symbol">WBTC</p>
             <h1 className="token-name">Wrapped Bitcoin</h1>
@@ -311,7 +308,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
                     Accrues 30% of the platform's generated net fees.
                   </li>
                   <li>
-                    ASR stakers will earn rewards in the form of
+                    ASR stakers will earn rewards in the form of <br/>
                     esASR (Escrowed ASR). 
                   </li>
                   <li>
@@ -333,7 +330,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
                 </div>              
               </div>
               <div className="buy-asr">
-                <GradientButton fontSize="26px" fontWeight="bold" padding="0.5rem 6rem">
+                <GradientButton fontSize="26px" fontWeight="bold" padding="0.5rem 8rem">
                   Buy ASR
                 </GradientButton>  
                 <span  className="learn-more">Learn more {">"}</span>
@@ -360,7 +357,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
                     platform.
                   </li>            
                   <li>
-                    ALP holders will earn rewards in the form of
+                    ALP holders will earn rewards in the form of <br/>
                     esASR (Escrowed ASR).
                   </li>      
                 </ul>
@@ -378,13 +375,13 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
                 </div>              
               </div>
               <div className="buy-alp">
-                <GradientButton fontSize="26px" fontWeight="bold" padding="0.5rem 6rem">
+                <GradientButton fontSize="26px" fontWeight="bold" padding="0.5rem 8rem">
                     Buy ALP
                 </GradientButton>  
                 <span  className="learn-more">Learn more {">"}</span>
               </div>             
             </div>
-            <p className="alp-footer-text">ASR's price is entirely speculative.</p>
+            <p className="alp-footer-text">ALP's price depends on the prices of tokens that are indexed..</p>
           </div>
         </div>
         <div>
@@ -393,35 +390,7 @@ export default function Home({ showRedirectModal, redirectPopupTimestamp }) {
             <img className="ecosystem-screen" src={ecosystemScreen}/>
           </div>
         </div>
-        <footer>
-          <div className="footer-wrapper"> 
-            <div className="asuras-logo-wrapper">
-              <img className="asuras-footer-logo" src={asurasLogo}/>
-            </div>
-            <div className="social-networks">
-              <div className="social-network">
-                <img src={twitterLogo} width={60}/>
-              </div>
-              <div className="social-network">
-                <img src={mediumLogo} width={60}/>
-              </div>
-              <div className="social-network">
-                <img src={gitLogo} width={60}/>
-              </div>
-              <div className="social-network">
-                <img src={tgLogo} width={70}/>
-              </div>
-              <div className="social-network">
-                <img src={discLogo} width={50}/>
-              </div>
-            </div>
-            <div className="footer-links">
-              <p className="footer-link">Terms and Conditions</p>
-              <p className="footer-link">Referral Terms</p>
-              <p className="footer-link">Media Kit</p>
-            </div>
-          </div>
-        </footer>
+       <Footer />
       </div>
     </div>
   );

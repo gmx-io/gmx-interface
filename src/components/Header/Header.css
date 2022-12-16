@@ -27,7 +27,7 @@
   flex-direction: row;
   list-style-type: none;
   font-size: 26px;
-  padding-left: 220px;
+  padding-left: 10rem;
 }
 
 .navbar-wrapper{
@@ -37,7 +37,7 @@
 }
 
 .navbar-item {
-  padding-right: 7%;
+  padding-right: 4%;
   text-align: center;
   font-family: 'Montserrat';
 

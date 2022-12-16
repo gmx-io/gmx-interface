@@ -238,17 +238,18 @@ margin-left: 9rem;
 .asr-card {
   background: #05101dff;
   justify-content: center;
-  width: 30%;
+  width: 35%;
   border-radius: 10px;
   margin-bottom: 2rem;
   margin-right: 7rem;
+  margin-left: 7rem;
 }
 
 .asr-logo {
   display: flex;
   justify-content: center;
-  margin-top: 5rem;
-  margin-bottom: 5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .asr-token-data {
@@ -265,21 +266,28 @@ margin-left: 9rem;
 .asr-content-wrapper{
   display: flex;
   justify-content: space-around;
-  width: 90%;
+  margin-left: -5rem;
   
 }
 .alp-content-wrapper{
   display: flex;
   justify-content: space-around;
-  width: 90%;
+  margin-left: -5rem;
 }
 
 .buy-asr{
   display: flex;
   flex-direction: column;
   text-align: center;
-  margin-top: 4rem;
+  margin-top: 5rem;
 }
+
+.buy-alp {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  margin-top: 5rem;
+ }
 
 .asr-footer-text{
   text-align: center;
@@ -288,6 +296,7 @@ margin-left: 9rem;
 
 .alp-footer-text{ 
   text-align: center;
+  margin-top: 3.2rem;
 }
 
 .ecosystem-screen-wrapper {
@@ -312,8 +321,8 @@ margin-left: 9rem;
   
  .asuras-footer-logo {
   position: absolute;
-  bottom: -5rem;
-  width: 30%;
+  bottom: 0.1rem;
+  width: 20%;
  }
 
  .social-networks {
@@ -331,21 +340,9 @@ margin-left: 9rem;
   background: #05101dff;
 }
 
- .footer-links {
-  display: flex;
-  justify-content: center;
- }
- 
  .footer-link {
   margin-left: 2rem;
   margin-right: 2rem;
- }
-
- .buy-alp {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  margin-top: 3.5rem;
  }
 
  .text-green {
@@ -353,6 +350,26 @@ margin-left: 9rem;
   font-size: 32px;
   font-weight: 900;
   margin: 0;
+  text-shadow: 1.5px 0 #02c365;
+
  }
 
  
+ .wbtc-bg{
+  background-color: white;
+
+  border-radius: 60%;
+  display: flex;
+  justify-items: center;
+  justify-content: center;
+  border: 2px solid #010610ff;
+ }
+
+ li {
+  margin-top: 0.6rem;
+ }
+
+ ul li {
+  padding-left: 2.5rem;
+  padding-bottom:0rem;
+}

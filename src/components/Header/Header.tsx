@@ -16,10 +16,11 @@ export function Header() {
         </div>
         <div className="navbar-wrapper">
           <ul className="navbar-items">
-            <li className="navbar-item">MARKETS</li>
-            <li className="navbar-item">GOVERNANCE</li>
-            <li className="navbar-item">VOTING</li>
             <li className="navbar-item">PRESALE</li>
+            <li className="navbar-item">DASHBOARD</li>
+            <li className="navbar-item">EARN</li>
+            <li className="navbar-item">BUY</li>
+            <li className="navbar-item">MARKET</li>
             <li className="navbar-item">MORE</li>
           </ul>
         </div>
