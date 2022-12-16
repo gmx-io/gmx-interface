@@ -3,17 +3,15 @@ import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Tab from "components/Tab/Tab";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { MarketPoolType, Market } from "domain/synthetics/markets/types";
+import { Market, MarketPoolType } from "domain/synthetics/markets/types";
 import { useChainId } from "lib/chains";
 import { useEffect, useMemo, useState } from "react";
 
 import { Mode, modeTexts, Operation, operationTexts, PoolDelta } from "../constants";
 import { MarketDropdown } from "../MarketDropdown/MarketDropdown";
 
-import { InfoRow } from "components/InfoRow/InfoRow";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import Tooltip from "components/Tooltip/Tooltip";
 import { getMarket, getMarketPoolData, getTokenPoolType } from "domain/synthetics/markets/utils";
 import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
 import {
@@ -27,15 +25,17 @@ import {
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
 
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+import { shouldShowMaxButton } from "domain/synthetics/exchange";
+import { useSwapTokenState } from "domain/synthetics/exchange/useSwapTokenState";
 import { usePriceImpactConfigs } from "domain/synthetics/fees/usePriceImpactConfigs";
-import { formatFee, getPriceImpact } from "domain/synthetics/fees/utils";
+import { getPriceImpact } from "domain/synthetics/fees/utils";
+import { useMarketsData, useMarketsPoolsData, useMarketTokensData } from "domain/synthetics/markets";
 import { expandDecimals } from "lib/numbers";
 import { MarketPoolSwapConfirmation } from "../MarketPoolSwapConfirmation/MarketPoolSwapConfirmation";
-import { useMarketsData, useMarketsPoolsData, useMarketTokensData } from "domain/synthetics/markets";
-import { useSwapTokenState } from "domain/synthetics/exchange/useSwapTokenState";
-import { shouldShowMaxButton } from "domain/synthetics/exchange";
 
+import Checkbox from "components/Checkbox/Checkbox";
+import { SyntheticsFees } from "components/SyntheticsFees/SyntheticsFees";
+import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
 import "./MarketPoolSwapBox.scss";
 
 type Props = {
@@ -51,6 +51,7 @@ export function MarketPoolSwapBox(p: Props) {
   const [operationTab, setOperationTab] = useState(Operation.deposit);
   const [modeTab, setModeTab] = useState(Mode.single);
   const [isConfirming, setIsConfirming] = useState(false);
+  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
   const tokensData = useWhitelistedTokensData(chainId);
   const marketsData = useMarketsData(chainId);
@@ -100,14 +101,19 @@ export function MarketPoolSwapBox(p: Props) {
     shortDelta?.usdDelta
   );
 
-  // TODO
+  const isHighPriceImpact = priceImpact?.impact.lt(0) && priceImpact?.basisPoints.gte(HIGH_PRICE_IMPACT_BP);
+
   const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
+
+  // TODO: calculate execution fee
   const executionFeeUsd = expandDecimals(1, 28);
   const executionFee = nativeToken?.prices
     ? convertFromUsdByPrice(executionFeeUsd, nativeToken.decimals, nativeToken.prices.maxPrice)
     : undefined;
 
-  const fees = executionFeeUsd.add(priceImpact?.impact.lt(0) ? priceImpact?.impact.abs() : BigNumber.from(0));
+  const feesUsd = BigNumber.from(0)
+    .sub(executionFeeUsd)
+    .add(priceImpact?.impact || BigNumber.from(0));
 
   const tokenSelectorOptionsMap = useMemo(() => adaptToInfoTokens(tokensData), [tokensData]);
 
@@ -140,6 +146,13 @@ export function MarketPoolSwapBox(p: Props) {
     if (!marketTokenState.usdAmount.gt(0)) {
       return {
         text: t`Enter an amount`,
+        disabled: true,
+      };
+    }
+
+    if (isHighPriceImpact && !isHighPriceImpactAccepted) {
+      return {
+        text: t`Need to accept price impact`,
         disabled: true,
       };
     }
@@ -365,30 +378,23 @@ export function MarketPoolSwapBox(p: Props) {
       </div>
 
       <div className="MarketPoolSwapBox-info-section">
-        <InfoRow
-          label={<Trans>Fees and price impact</Trans>}
-          value={
-            <Tooltip
-              handle={formatFee(fees)}
-              position="right-bottom"
-              renderContent={() => (
-                <div className="text-white">
-                  <StatsTooltipRow
-                    label={t`Price impact`}
-                    value={formatFee(priceImpact?.impact, priceImpact?.basisPoints)}
-                    showDollar={false}
-                  />
-                  <StatsTooltipRow
-                    label={t`Execution fee`}
-                    value={formatTokenAmount(executionFee, nativeToken?.decimals, nativeToken?.symbol)}
-                    showDollar={false}
-                  />
-                </div>
-              )}
-            />
-          }
+        <SyntheticsFees
+          priceImpact={priceImpact}
+          nativeToken={nativeToken}
+          totalFeeUsd={feesUsd}
+          executionFee={executionFee}
         />
       </div>
+
+      {isHighPriceImpact && (
+        <div className="MarketPoolSwapBox-warnings">
+          <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
+            <span className="muted font-sm">
+              <Trans>I am aware of the high price impact</Trans>
+            </span>
+          </Checkbox>
+        </div>
+      )}
       <div className="Exchange-swap-button-container">
         <SubmitButton
           authRequired
@@ -409,8 +415,9 @@ export function MarketPoolSwapBox(p: Props) {
           onClose={() => setIsConfirming(false)}
           tokensData={tokensData}
           priceImpact={priceImpact}
-          fees={fees}
+          feesUsd={feesUsd}
           executionFee={executionFee}
+          executionFeeUsd={executionFeeUsd}
           operationType={operationTab}
           onSubmitted={() => setIsConfirming(false)}
         />

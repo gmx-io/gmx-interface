@@ -2,17 +2,11 @@ import { t, Trans } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import Checkbox from "components/Checkbox/Checkbox";
-import { InfoRow } from "components/InfoRow/InfoRow";
 import Modal from "components/Modal/Modal";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
-import Tooltip from "components/Tooltip/Tooltip";
 import { getContract } from "config/contracts";
-import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
 import { getToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { PriceImpact } from "domain/synthetics/fees/types";
-import { formatFee } from "domain/synthetics/fees/utils";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
 import { TokensData } from "domain/synthetics/tokens/types";
@@ -31,6 +25,7 @@ import { useChainId } from "lib/chains";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Operation, operationTexts, PoolDelta } from "../constants";
 
+import { SyntheticsFees } from "components/SyntheticsFees/SyntheticsFees";
 import {
   getMarket,
   getMarketName,
@@ -49,8 +44,9 @@ type Props = {
   priceImpact?: PriceImpact;
   tokensData: TokensData;
   operationType: Operation;
-  fees: BigNumber;
+  feesUsd: BigNumber;
   executionFee?: BigNumber;
+  executionFeeUsd?: BigNumber;
   onSubmitted: () => void;
 };
 
@@ -82,10 +78,8 @@ export function MarketPoolSwapConfirmation(p: Props) {
     tokenAddresses,
   });
 
-  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
   const [tokensToApprove, setTokensToApprove] = useState<string[]>();
 
-  const isHighPriceImpact = p.priceImpact?.impact.lt(0) && p.priceImpact?.basisPoints.gte(HIGH_PRICE_IMPACT_BP);
   const isDeposit = p.operationType === Operation.deposit;
 
   const firstTokenText = getTokenText(tokensData, p.longDelta?.tokenAddress, p.longDelta?.tokenAmount);
@@ -137,13 +131,6 @@ export function MarketPoolSwapConfirmation(p: Props) {
     if (needTokenApprove && tokensToApprove?.some((address) => needTokenApprove(address))) {
       return {
         text: t`Need tokens approval`,
-        disabled: true,
-      };
-    }
-
-    if (isHighPriceImpact && !isHighPriceImpactAccepted) {
-      return {
-        text: t`Need to accept price impact`,
         disabled: true,
       };
     }
@@ -269,28 +256,12 @@ export function MarketPoolSwapConfirmation(p: Props) {
           )}
         </div>
 
-        <InfoRow
-          label={<Trans>Fees and price impact</Trans>}
-          value={
-            <Tooltip
-              handle={formatFee(p.fees)}
-              position="right-bottom"
-              renderContent={() => (
-                <div className="text-white">
-                  <StatsTooltipRow
-                    label={t`Price impact`}
-                    value={formatFee(p.priceImpact?.impact, p.priceImpact?.impact)}
-                    showDollar={false}
-                  />
-                  <StatsTooltipRow
-                    label={t`Execution fee`}
-                    value={formatTokenAmount(p.executionFee, nativeToken.decimals, nativeToken.symbol)}
-                    showDollar={false}
-                  />
-                </div>
-              )}
-            />
-          }
+        <SyntheticsFees
+          priceImpact={p.priceImpact}
+          nativeToken={nativeToken}
+          totalFeeUsd={p.feesUsd}
+          executionFee={p.executionFee}
+          executionFeeUsd={p.executionFeeUsd}
         />
 
         {tokensToApprove && tokensToApprove.length > 0 && (
@@ -314,17 +285,6 @@ export function MarketPoolSwapConfirmation(p: Props) {
             <div className="App-card-divider" />
           </>
         )}
-
-        {isHighPriceImpact && (
-          <div className="MarketPoolSwapBox-warnings">
-            <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-              <span className="muted font-sm">
-                <Trans>I am aware of the high price impact</Trans>
-              </span>
-            </Checkbox>
-          </div>
-        )}
-
         <div className="Confirmation-box-row">
           <SubmitButton onClick={submitButtonState.onClick} disabled={submitButtonState.disabled}>
             {submitButtonState.text}

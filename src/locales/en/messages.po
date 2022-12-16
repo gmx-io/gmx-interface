@@ -1325,8 +1325,7 @@ msgid "Execution Fee"
 msgstr "Execution Fee"
 
 #: src/components/Exchange/PositionSeller.js
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/SyntheticsFees/SyntheticsFees.tsx
 msgid "Execution fee"
 msgstr "Execution fee"
 
@@ -1351,8 +1350,7 @@ msgstr "FEES"
 msgid "Fees"
 msgstr "Fees"
 
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/SyntheticsFees/SyntheticsFees.tsx
 msgid "Fees and price impact"
 msgstr "Fees and price impact"
 
@@ -1563,7 +1561,7 @@ msgstr "High Slippage, Swap Anyway"
 msgid "High USDG Slippage, Long Anyway"
 msgstr "High USDG Slippage, Long Anyway"
 
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 msgid "I am aware of the high price impact"
 msgstr "I am aware of the high price impact"
 
@@ -2143,7 +2141,7 @@ msgstr "NFT ID"
 msgid "NFT Wallet"
 msgstr "NFT Wallet"
 
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 msgid "Need to accept price impact"
 msgstr "Need to accept price impact"
 
@@ -2552,8 +2550,7 @@ msgstr "Price below Mark Price"
 msgid "Price conditions are met"
 msgstr "Price conditions are met"
 
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/SyntheticsFees/SyntheticsFees.tsx
 msgid "Price impact"
 msgstr "Price impact"
 

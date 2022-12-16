@@ -1325,8 +1325,7 @@ msgid "Execution Fee"
 msgstr "執行手数料"
 
 #: src/components/Exchange/PositionSeller.js
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/SyntheticsFees/SyntheticsFees.tsx
 msgid "Execution fee"
 msgstr ""
 
@@ -1351,8 +1350,7 @@ msgstr "手数料"
 msgid "Fees"
 msgstr "手数料"
 
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/SyntheticsFees/SyntheticsFees.tsx
 msgid "Fees and price impact"
 msgstr ""
 
@@ -1563,7 +1561,7 @@ msgstr "大きなスリッページ。ともかく交換する"
 msgid "High USDG Slippage, Long Anyway"
 msgstr "大きなUSDGスリッページ。ともかくロングする"
 
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 msgid "I am aware of the high price impact"
 msgstr ""
 
@@ -2140,7 +2138,7 @@ msgstr ""
 msgid "NFT Wallet"
 msgstr ""
 
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 msgid "Need to accept price impact"
 msgstr ""
 
@@ -2545,8 +2543,7 @@ msgstr "マーク価格を下回る価格"
 msgid "Price conditions are met"
 msgstr ""
 
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/SyntheticsFees/SyntheticsFees.tsx
 msgid "Price impact"
 msgstr ""
 
