@@ -467,7 +467,7 @@ export const SYNTHETIC_TOKENS = {
       isNative: true,
       isShortable: true,
       isSynthetic: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
+      imageUrl: "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
     },
   ],
 };
@@ -629,11 +629,11 @@ export const EXPLORER_LINKS = {
     },
     ETH: {
       coingecko: "https://www.coingecko.com/en/coins/weth",
-      avalanche: "https://testnet.snowtrace.io/address/0x8226EC2c1926c9162b6F815153d10018A7ccdf07",
+      avalanche: "https://testnet.snowtrace.io/address/0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
     },
     USDC: {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
-      avalanche: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+      avalanche: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     },
   },
 };
@@ -655,7 +655,6 @@ export const GLP_POOL_COLORS = {
 
 export const TOKENS_MAP: { [chainId: number]: { [address: string]: Token } } = {};
 export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Token } } = {};
-export const SYNTHETIC_TOKENS_MAP: { [chainId: number]: { [symbol: string]: Token } } = {};
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
