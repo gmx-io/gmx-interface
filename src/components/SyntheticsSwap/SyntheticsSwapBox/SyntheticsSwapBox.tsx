@@ -31,6 +31,9 @@ import {
   SYNTHETICS_SWAP_MODE_KEY,
   SYNTHETICS_SWAP_OPERATION_KEY,
 } from "config/localStorage";
+import longImg from "img/long.svg";
+import shortImg from "img/short.svg";
+import swapImg from "img/swap.svg";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { getMarkets, useMarketsData, useMarketsPoolsData } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
@@ -59,6 +62,12 @@ const operationTexts = {
   [Operation.Long]: t`Long`,
   [Operation.Short]: t`Short`,
   [Operation.Swap]: t`Swap`,
+};
+
+const operationIcons = {
+  [Operation.Long]: longImg,
+  [Operation.Short]: shortImg,
+  [Operation.Swap]: swapImg,
 };
 
 const modeTexts = {
@@ -309,11 +318,12 @@ export function SyntheticsSwapBox(p: Props) {
   return (
     <div className={`App-box SyntheticsSwapBox`}>
       <Tab
+        icons={operationIcons}
         options={Object.values(Operation)}
         optionLabels={operationTexts}
         option={operationTab}
         onChange={setOperationTab}
-        className="Exchange-swap-option-tabs"
+        className="SyntheticsSwapBox-option-tabs"
       />
 
       <Tab

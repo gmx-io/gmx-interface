@@ -1783,9 +1783,21 @@ msgstr ""
 msgid "Limit"
 msgstr ""
 
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Limit Decrease"
+msgstr ""
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Limit Increase"
+msgstr ""
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Limit Price"
+msgstr ""
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Limit Swap"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -1831,6 +1843,10 @@ msgid ""
 "Liquidated {0} {longOrShortText},\n"
 "-{1} USD,\n"
 "{2} Price: {3} USD"
+msgstr ""
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Liquidation"
 msgstr ""
 
 #: src/components/Exchange/TradeHistory.js
@@ -1957,6 +1973,18 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Market Cap"
 msgstr "時価総額"
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Market Decrease"
+msgstr ""
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Market Increase"
+msgstr ""
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Market Swap"
+msgstr ""
 
 #: src/components/SyntheticsMarketStats/SyntheticsMarketStats.tsx
 #~ msgid "Market worth"
@@ -2843,6 +2871,7 @@ msgstr "オプション選択"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "Select different tokens"
 msgstr "別のトークンを選択"
 
@@ -3069,6 +3098,10 @@ msgstr "ステーク中"
 msgid "Stats"
 msgstr "統計"
 
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Stop Loss Decrease"
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Structured Products"
 msgstr ""
@@ -3083,6 +3116,10 @@ msgstr ""
 
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Success withdrawal order"
+msgstr ""
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Success {0} order"
 msgstr ""
 
 #: src/pages/Dashboard/DashboardV1.js
@@ -4157,6 +4194,14 @@ msgstr ""
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
+msgstr ""
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "{0} order failed"
+msgstr ""
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "{0} order sent"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js

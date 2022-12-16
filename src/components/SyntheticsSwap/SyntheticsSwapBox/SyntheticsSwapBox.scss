@@ -4,8 +4,19 @@
   padding-top: 0;
 }
 
-.SyntheticsSwapBox .Exchange-swap-option-tabs {
+.SyntheticsSwapBox-option-tabs {
   margin: 1.5rem 0;
+}
+
+.SyntheticsSwapBox-option-tabs.Tab.block .Tab-option {
+  padding: 1.05rem;
+}
+
+.SyntheticsSwapBox-option-tabs.Tab.block .Tab-option-icon {
+  margin-top: -0.155rem;
+  transform: scale(0.75);
+  vertical-align: middle;
+  margin-right: 0.8rem;
 }
 
 .SyntheticsSwapBox-asset-options-tabs {

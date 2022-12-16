@@ -13,6 +13,17 @@ export function SyntheticsTradePage(p: Props) {
       {/* {showBanner && <ExchangeBanner hideBanner={hideBanner} />} */}
       <div className="SyntheticsTrade-content">
         <div className="SyntheticsTrade-left">
+          <div
+            style={{
+              height: "49.6rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "#16182e",
+            }}
+          >
+            The chart
+          </div>
           {/* <ExchangeTVChart
             fromTokenAddress={fromTokenAddress}
             toTokenAddress={toTokenAddress}
@@ -27,15 +38,9 @@ export function SyntheticsTradePage(p: Props) {
           {/* <div className="Exchange-lists large">{getListSection()}</div> */}
         </div>
         <div className="SyntheticsTrade-right">
-          <div style={{ marginRight: "100px", marginTop: "5%" }}>
+          <div className="SyntheticsTrade-swap-box">
             <SyntheticsSwapBox onConnectWallet={p.onConnectWallet} />
           </div>
-
-          {/* <div className="Exchange-wallet-tokens">
-            <div className="Exchange-wallet-tokens-content">
-              <ExchangeWalletTokens tokens={tokens} infoTokens={infoTokens} onSelectToken={onSelectWalletToken} />
-            </div>
-          </div> */}
         </div>
         {/* <div className="Exchange-lists small">{getListSection()}</div> */}
       </div>

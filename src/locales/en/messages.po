@@ -1783,10 +1783,22 @@ msgstr "Leverage:"
 msgid "Limit"
 msgstr "Limit"
 
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Limit Decrease"
+msgstr "Limit Decrease"
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Limit Increase"
+msgstr "Limit Increase"
+
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 msgid "Limit Price"
 msgstr "Limit Price"
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Limit Swap"
+msgstr "Limit Swap"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Limit order creation failed."
@@ -1835,6 +1847,10 @@ msgstr ""
 "Liquidated {0} {longOrShortText},\n"
 "-{1} USD,\n"
 "{2} Price: {3} USD"
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Liquidation"
+msgstr "Liquidation"
 
 #: src/components/Exchange/TradeHistory.js
 msgid "Liquidation fee"
@@ -1960,6 +1976,18 @@ msgstr "Market"
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Market Cap"
 msgstr "Market Cap"
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Market Decrease"
+msgstr "Market Decrease"
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Market Increase"
+msgstr "Market Increase"
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Market Swap"
+msgstr "Market Swap"
 
 #: src/components/SyntheticsMarketStats/SyntheticsMarketStats.tsx
 #~ msgid "Market worth"
@@ -2850,6 +2878,7 @@ msgstr "Select an option"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "Select different tokens"
 msgstr "Select different tokens"
 
@@ -3076,6 +3105,10 @@ msgstr "Staking..."
 msgid "Stats"
 msgstr "Stats"
 
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Stop Loss Decrease"
+msgstr "Stop Loss Decrease"
+
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "Structured Products"
 msgstr "Structured Products"
@@ -3091,6 +3124,10 @@ msgstr "Success deposit order"
 #: src/domain/synthetics/markets/createWithdrawalTxn.ts
 msgid "Success withdrawal order"
 msgstr "Success withdrawal order"
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "Success {0} order"
+msgstr "Success {0} order"
 
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -4165,6 +4202,14 @@ msgstr "{0} is below its target weight.<0/><1/>Get lower fees to <2>buy GLP</2> 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} is required for collateral."
 msgstr "{0} is required for collateral."
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "{0} order failed"
+msgstr "{0} order failed"
+
+#: src/domain/synthetics/exchange/createOrderTxn.ts
+msgid "{0} order sent"
+msgstr "{0} order sent"
 
 #: src/components/Exchange/SwapBox.js
 msgid "{0} pool exceeded"

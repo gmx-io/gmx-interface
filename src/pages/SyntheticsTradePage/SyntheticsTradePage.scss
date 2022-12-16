@@ -1,12 +1,12 @@
-.SyntheticsTrade-right {
-  display: grid;
-  grid-template-rows: auto 1fr;
-}
-
 .SyntheticsTrade {
   max-width: 155rem;
   margin: auto;
   justify-content: space-between;
+}
+
+.SyntheticsTrade-right {
+  display: grid;
+  grid-template-rows: auto 1fr;
 }
 
 .SyntheticsTrade-content {
@@ -16,6 +16,28 @@
   padding: 3.1rem;
   padding-top: 0rem;
   margin-top: -1.5rem;
+}
+
+.SyntheticsTrade-swap-box {
+  width: 41.85rem;
+  display: grid;
+  position: relative;
+}
+
+@media (max-width: 1500px) {
+  .SyntheticsTrade-swap-box {
+    width: 38.75rem;
+  }
+}
+
+@media (max-width: 1100px) {
+  .SyntheticsTrade-content {
+    grid-template-columns: 1fr;
+  }
+
+  .SyntheticsTrade-swap-box {
+    width: auto;
+  }
 }
 
 @media (max-width: 700px) {
