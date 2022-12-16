@@ -1377,7 +1377,7 @@ msgid "GLP buy disabled, pending {0} upgrade"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
-msgid "GLP doesn't accept this amount of TOKEN."
+msgid "GLP doesn't accept this amount of {0}."
 msgstr ""
 
 #: src/components/TokenCard/TokenCard.js

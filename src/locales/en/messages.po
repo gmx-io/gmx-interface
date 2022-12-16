@@ -1377,8 +1377,8 @@ msgid "GLP buy disabled, pending {0} upgrade"
 msgstr "GLP buy disabled, pending {0} upgrade"
 
 #: src/components/Exchange/SwapBox.js
-msgid "GLP doesn't accept this amount of TOKEN."
-msgstr "GLP doesn't accept this amount of TOKEN."
+msgid "GLP doesn't accept this amount of {0}."
+msgstr "GLP doesn't accept this amount of {0}."
 
 #: src/components/TokenCard/TokenCard.js
 msgid "GLP is the liquidity provider token. Accrues 70% of the platform's generated fees."

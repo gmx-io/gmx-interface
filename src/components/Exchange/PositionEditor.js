@@ -473,6 +473,7 @@ export default function PositionEditor(props) {
     if (errorType === ErrorTypes.tooltip && errorMessage === primaryTextMessage) {
       return (
         <Tooltip
+          onDisabled
           handle={
             <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {primaryTextMessage}

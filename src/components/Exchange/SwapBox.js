@@ -1816,7 +1816,7 @@ export default function SwapBox(props) {
   }
 
   const ERROR_TOOLTIP_MSG = {
-    [ErrorCodes.poolExceeded]: t`GLP doesn't accept this amount of TOKEN.`,
+    [ErrorCodes.poolExceeded]: t`GLP doesn't accept this amount of ${fromTokenInfo.symbol}.`,
   };
 
   const SWAP_LABELS = {
@@ -1831,13 +1831,14 @@ export default function SwapBox(props) {
     if (errorType === ErrorTypes.tooltip && errorMessage === primaryTextMessage) {
       return (
         <Tooltip
+          onDisabled
           handle={
             <button className="App-cta Exchange-swap-button" onClick={onClickPrimary} disabled={!isPrimaryEnabled()}>
               {primaryTextMessage}
             </button>
           }
-          className="Tooltip-flex"
           position="center-bottom"
+          className="Tooltip-flex"
           renderContent={() => ERROR_TOOLTIP_MSG[errorCode]}
         />
       );

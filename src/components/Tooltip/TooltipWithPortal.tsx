@@ -1,36 +1,58 @@
-import { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import cx from "classnames";
 
 import "./Tooltip.css";
 import { IS_TOUCH } from "config/ui";
 import Portal from "../Common/Portal";
+import Wrapper from "./Wrapper";
 
 const OPEN_DELAY = 0;
 const CLOSE_DELAY = 100;
 
-export default function TooltipWithPortal(props) {
+type Props = {
+  handle: React.ReactNode;
+  renderContent: () => React.ReactNode;
+  position?: string;
+  trigger?: string;
+  className?: string;
+  disableHandleStyle?: boolean;
+  handleClassName?: string;
+  onDisabled?: boolean;
+  fitHandleWidth?: boolean;
+  closeOnDoubleClick?: boolean;
+};
+
+type Coords = {
+  height?: number;
+  width?: number;
+  left?: number;
+  top?: number;
+};
+
+export default function TooltipWithPortal(props: Props) {
   const [visible, setVisible] = useState(false);
-  const [coords, setCoords] = useState({});
-  const [tooltipWidth, setTooltipWidth] = useState();
-  const intervalCloseRef = useRef(null);
-  const intervalOpenRef = useRef(null);
+  const [coords, setCoords] = useState<Coords>({});
+  const [tooltipWidth, setTooltipWidth] = useState<string>();
+  const intervalCloseRef = useRef<null | number>(null);
+  const intervalOpenRef = useRef<null | number>(null);
 
   const position = props.position ?? "left-bottom";
   const trigger = props.trigger ?? "hover";
-  const handlerRef = useRef();
+  const handlerRef = useRef<null | HTMLInputElement>(null);
 
   const updateTooltipCoords = useCallback(() => {
-    const rect = handlerRef.current.getBoundingClientRect();
+    const rect = handlerRef?.current?.getBoundingClientRect();
 
-    setCoords({
-      height: rect.height,
-      width: rect.width,
-      left: rect.x,
-      top: rect.y + window.scrollY,
-    });
-
-    if (props.fitHandleWidth) {
-      setTooltipWidth(`${rect.width}px`);
+    if (rect) {
+      setCoords({
+        height: rect.height,
+        width: rect.width,
+        left: rect.x,
+        top: rect.y + window.scrollY,
+      });
+      if (props.fitHandleWidth) {
+        setTooltipWidth(`${rect.width}px`);
+      }
     }
   }, [handlerRef, props.fitHandleWidth]);
 
@@ -42,7 +64,7 @@ export default function TooltipWithPortal(props) {
       intervalCloseRef.current = null;
     }
     if (!intervalOpenRef.current) {
-      intervalOpenRef.current = setTimeout(() => {
+      intervalOpenRef.current = window.setTimeout(() => {
         setVisible(true);
         intervalOpenRef.current = null;
       }, OPEN_DELAY);
@@ -70,7 +92,7 @@ export default function TooltipWithPortal(props) {
   }, [setVisible, intervalCloseRef, trigger, updateTooltipCoords, props.closeOnDoubleClick]);
 
   const onMouseLeave = useCallback(() => {
-    intervalCloseRef.current = setTimeout(() => {
+    intervalCloseRef.current = window.setTimeout(() => {
       setVisible(false);
       intervalCloseRef.current = null;
     }, CLOSE_DELAY);
@@ -89,7 +111,7 @@ export default function TooltipWithPortal(props) {
         className={cx({ "Tooltip-handle": !props.disableHandleStyle }, [props.handleClassName], { active: visible })}
         ref={handlerRef}
       >
-        {props.handle}
+        <Wrapper onDisabled={props.onDisabled}>{props.handle}</Wrapper>
       </span>
       {visible && coords.left && (
         <Portal>
