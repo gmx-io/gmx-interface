@@ -16,10 +16,8 @@ import { getMarket, getMarketPoolData, getTokenPoolType } from "domain/synthetic
 import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
 import {
   adaptToInfoTokens,
-  convertFromUsdByPrice,
   formatTokenAmount,
   formatUsdAmount,
-  getTokenData,
   getUsdFromTokenAmount,
 } from "domain/synthetics/tokens/utils";
 import { BigNumber } from "ethers";
@@ -28,14 +26,14 @@ import { IoMdSwap } from "react-icons/io";
 import { shouldShowMaxButton } from "domain/synthetics/exchange";
 import { useSwapTokenState } from "domain/synthetics/exchange/useSwapTokenState";
 import { usePriceImpactConfigs } from "domain/synthetics/fees/usePriceImpactConfigs";
-import { getPriceImpact } from "domain/synthetics/fees/utils";
+import { getExecutionFee, getPriceImpact } from "domain/synthetics/fees/utils";
 import { useMarketsData, useMarketsPoolsData, useMarketTokensData } from "domain/synthetics/markets";
-import { expandDecimals } from "lib/numbers";
 import { MarketPoolSwapConfirmation } from "../MarketPoolSwapConfirmation/MarketPoolSwapConfirmation";
 
 import Checkbox from "components/Checkbox/Checkbox";
-import { SyntheticsFees } from "components/SyntheticsFees/SyntheticsFees";
+import { MarketPoolFees } from "components/MarketPoolFees/MarketPoolFees";
 import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
+
 import "./MarketPoolSwapBox.scss";
 
 type Props = {
@@ -103,16 +101,11 @@ export function MarketPoolSwapBox(p: Props) {
 
   const isHighPriceImpact = priceImpact?.impact.lt(0) && priceImpact?.basisPoints.gte(HIGH_PRICE_IMPACT_BP);
 
-  const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
-
   // TODO: calculate execution fee
-  const executionFeeUsd = expandDecimals(1, 28);
-  const executionFee = nativeToken?.prices
-    ? convertFromUsdByPrice(executionFeeUsd, nativeToken.decimals, nativeToken.prices.maxPrice)
-    : undefined;
+  const executionFee = getExecutionFee(tokensData);
 
   const feesUsd = BigNumber.from(0)
-    .sub(executionFeeUsd)
+    .sub(executionFee?.feeUsd || BigNumber.from(0))
     .add(priceImpact?.impact || BigNumber.from(0));
 
   const tokenSelectorOptionsMap = useMemo(() => adaptToInfoTokens(tokensData), [tokensData]);
@@ -378,11 +371,12 @@ export function MarketPoolSwapBox(p: Props) {
       </div>
 
       <div className="MarketPoolSwapBox-info-section">
-        <SyntheticsFees
+        <MarketPoolFees
           priceImpact={priceImpact}
-          nativeToken={nativeToken}
+          executionFeeToken={executionFee?.feeToken}
+          executionFeeUsd={executionFee?.feeUsd}
+          executionFee={executionFee?.feeTokenAmount}
           totalFeeUsd={feesUsd}
-          executionFee={executionFee}
         />
       </div>
 
@@ -395,6 +389,7 @@ export function MarketPoolSwapBox(p: Props) {
           </Checkbox>
         </div>
       )}
+
       <div className="Exchange-swap-button-container">
         <SubmitButton
           authRequired
@@ -412,14 +407,15 @@ export function MarketPoolSwapBox(p: Props) {
           shortDelta={shortDelta}
           marketTokenAmount={marketTokenState.tokenAmount}
           marketTokenAddress={p.selectedMarketAddress!}
-          onClose={() => setIsConfirming(false)}
           tokensData={tokensData}
           priceImpact={priceImpact}
           feesUsd={feesUsd}
-          executionFee={executionFee}
-          executionFeeUsd={executionFeeUsd}
+          executionFee={executionFee?.feeTokenAmount}
+          executionFeeUsd={executionFee?.feeUsd}
+          executionFeeToken={executionFee?.feeToken}
           operationType={operationTab}
           onSubmitted={() => setIsConfirming(false)}
+          onClose={() => setIsConfirming(false)}
         />
       )}
     </div>

@@ -12,12 +12,12 @@ type Props = {
   priceImpact?: PriceImpact;
   executionFee?: BigNumber;
   executionFeeUsd?: BigNumber;
+  executionFeeToken?: Token;
   totalFeeUsd?: BigNumber;
-  nativeToken?: Token;
 };
 
-export function SyntheticsFees(p: Props) {
-  const { priceImpact, executionFee, executionFeeUsd, nativeToken, totalFeeUsd } = p;
+export function MarketPoolFees(p: Props) {
+  const { priceImpact, executionFee, executionFeeUsd, totalFeeUsd, executionFeeToken } = p;
 
   return (
     <InfoRow
@@ -38,8 +38,8 @@ export function SyntheticsFees(p: Props) {
                 value={formatTokenAmountWithUsd(
                   executionFee,
                   executionFeeUsd,
-                  nativeToken?.symbol,
-                  nativeToken?.decimals
+                  executionFeeToken?.symbol,
+                  executionFeeToken?.decimals
                 )}
                 showDollar={false}
               />

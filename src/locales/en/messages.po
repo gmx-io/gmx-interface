@@ -1325,7 +1325,7 @@ msgid "Execution Fee"
 msgstr "Execution Fee"
 
 #: src/components/Exchange/PositionSeller.js
-#: src/components/SyntheticsFees/SyntheticsFees.tsx
+#: src/components/MarketPoolFees/MarketPoolFees.tsx
 msgid "Execution fee"
 msgstr "Execution fee"
 
@@ -1350,7 +1350,7 @@ msgstr "FEES"
 msgid "Fees"
 msgstr "Fees"
 
-#: src/components/SyntheticsFees/SyntheticsFees.tsx
+#: src/components/MarketPoolFees/MarketPoolFees.tsx
 msgid "Fees and price impact"
 msgstr "Fees and price impact"
 
@@ -2550,7 +2550,7 @@ msgstr "Price below Mark Price"
 msgid "Price conditions are met"
 msgstr "Price conditions are met"
 
-#: src/components/SyntheticsFees/SyntheticsFees.tsx
+#: src/components/MarketPoolFees/MarketPoolFees.tsx
 msgid "Price impact"
 msgstr "Price impact"
 

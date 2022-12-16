@@ -1,8 +1,9 @@
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
 import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
-import { formatUsdAmount } from "domain/synthetics/tokens";
+import { convertFromUsdByPrice, formatUsdAmount, getTokenData, TokensData } from "domain/synthetics/tokens";
 import { PriceImpact, PriceImpactConfigsData } from "./types";
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 
 export function formatFee(feeUsd?: BigNumber, feeBp?: BigNumber) {
   if (!feeUsd?.abs().gt(0)) {
@@ -16,6 +17,21 @@ export function getPriceImpactConfig(data: PriceImpactConfigsData, marketAddress
   if (!marketAddress) return undefined;
 
   return data[marketAddress];
+}
+
+export function getExecutionFee(tokensData: TokensData) {
+  const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
+
+  if (!nativeToken?.prices) return undefined;
+
+  const feeUsd = expandDecimals(1, 28);
+  const feeTokenAmount = convertFromUsdByPrice(feeUsd, nativeToken.decimals, nativeToken.prices.maxPrice);
+
+  return {
+    feeUsd: feeUsd,
+    feeTokenAmount,
+    feeToken: nativeToken,
+  };
 }
 
 /**
@@ -43,6 +59,8 @@ export function getPriceImpact(
   const isSameSideRebalance = currentLong.lt(currentShort) === nextLong.lt(nextShort);
 
   const { factorPositive, factorNegative, exponentFactor } = priceImpactConf;
+
+  if (!factorPositive || !factorNegative || !exponentFactor) return undefined;
 
   let impact: BigNumber | undefined;
 
@@ -124,13 +142,11 @@ export function calculateImpactForCrossoverRebalance(p: {
 
   const deltaDiffUsd = positiveImpact.sub(negativeImpactUsd).abs();
 
-  return positiveImpact > negativeImpactUsd ? deltaDiffUsd : BigNumber.from(0).sub(deltaDiffUsd);
+  return positiveImpact.gt(negativeImpactUsd) ? deltaDiffUsd : BigNumber.from(0).sub(deltaDiffUsd);
 }
 
 // TODO: big numbers + unit tests
-export function applyImpactFactor(diff: BigNumber, factor?: BigNumber, exponent?: BigNumber) {
-  if (!factor || !exponent) return undefined;
-
+export function applyImpactFactor(diff: BigNumber, factor: BigNumber, exponent: BigNumber) {
   // Convert diff and exponent to float js numbers
   const _diff = Number(diff) / 10 ** 30;
   const _exponent = Number(exponent) / 10 ** 30;

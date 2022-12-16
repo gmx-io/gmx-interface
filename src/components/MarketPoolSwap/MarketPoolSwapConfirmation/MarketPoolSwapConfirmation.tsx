@@ -5,7 +5,7 @@ import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenBu
 import Modal from "components/Modal/Modal";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import { getContract } from "config/contracts";
-import { getToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { getToken } from "config/tokens";
 import { PriceImpact } from "domain/synthetics/fees/types";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
@@ -20,12 +20,13 @@ import {
   getTokenData,
   getUsdFromTokenAmount,
 } from "domain/synthetics/tokens/utils";
+import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Operation, operationTexts, PoolDelta } from "../constants";
 
-import { SyntheticsFees } from "components/SyntheticsFees/SyntheticsFees";
+import { MarketPoolFees } from "components/MarketPoolFees/MarketPoolFees";
 import {
   getMarket,
   getMarketName,
@@ -47,6 +48,7 @@ type Props = {
   feesUsd: BigNumber;
   executionFee?: BigNumber;
   executionFeeUsd?: BigNumber;
+  executionFeeToken?: Token;
   onSubmitted: () => void;
 };
 
@@ -90,8 +92,6 @@ export function MarketPoolSwapConfirmation(p: Props) {
   const marketName = getMarketName(marketsData, tokensData, p.marketTokenAddress);
 
   const marketToken = getMarketTokenData(marketTokensData, p.marketTokenAddress);
-
-  const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS)!;
 
   const isAllowanceLoaded = Object.keys(tokenAllowanceData).length > 0;
 
@@ -256,9 +256,9 @@ export function MarketPoolSwapConfirmation(p: Props) {
           )}
         </div>
 
-        <SyntheticsFees
+        <MarketPoolFees
           priceImpact={p.priceImpact}
-          nativeToken={nativeToken}
+          executionFeeToken={p.executionFeeToken}
           totalFeeUsd={p.feesUsd}
           executionFee={p.executionFee}
           executionFeeUsd={p.executionFeeUsd}
