@@ -373,6 +373,7 @@ export default function PositionsList(props) {
                                   label={t`Open + Close fee`}
                                   value={formatAmount(position.positionFee, USD_DECIMALS, 2, true)}
                                 />
+                                <br />
                                 <StatsTooltipRow
                                   label={t`PnL After Fees`}
                                   value={[position.deltaAfterFeesStr, `(${position.deltaAfterFeesPercentageStr})`]}
@@ -588,6 +589,7 @@ export default function PositionsList(props) {
                                 showDollar={false}
                                 value={`-$${formatAmount(position.positionFee, USD_DECIMALS, 2, true)}`}
                               />
+                              <br />
                               <StatsTooltipRow
                                 label={t`PnL After Fees`}
                                 value={[position.deltaAfterFeesStr, `(${position.deltaAfterFeesPercentageStr})`]}

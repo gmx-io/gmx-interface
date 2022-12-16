@@ -384,6 +384,7 @@ msgstr ""
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -397,7 +398,6 @@ msgstr ""
 msgid "Borrow Fee / Day"
 msgstr ""
 
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/TradeHistory.js
 msgid "Borrow fee"
 msgstr ""
@@ -672,7 +672,7 @@ msgid "Close: {convertedAmountFormatted} {0}"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Closing fee"
+msgid "Closing Fee"
 msgstr ""
 
 #: src/components/Exchange/PositionSeller.js
@@ -1267,11 +1267,8 @@ msgstr ""
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
-msgid "Execution Fee"
-msgstr ""
-
 #: src/components/Exchange/PositionSeller.js
-msgid "Execution fee"
+msgid "Execution Fee"
 msgstr ""
 
 #: src/components/Exchange/SwapBox.js
@@ -1422,7 +1419,7 @@ msgid "GMX Weekly Updates"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
+msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
 msgstr ""
 
 #: src/pages/Ecosystem/Ecosystem.js
@@ -2927,6 +2924,10 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Swap Fee"
+msgstr ""
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
 msgstr ""
@@ -2947,10 +2948,6 @@ msgstr ""
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 msgid "Swap failed."
-msgstr ""
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Swap fee"
 msgstr ""
 
 #: src/components/Glp/SwapErrorModal.tsx

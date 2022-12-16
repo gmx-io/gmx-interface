@@ -384,6 +384,7 @@ msgstr "Boost your rewards with Multiplier Points. <0>More info</0>."
 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -397,7 +398,6 @@ msgstr "Borrow Fee"
 msgid "Borrow Fee / Day"
 msgstr "Borrow Fee / Day"
 
-#: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/TradeHistory.js
 msgid "Borrow fee"
 msgstr "Borrow fee"
@@ -672,8 +672,8 @@ msgid "Close: {convertedAmountFormatted} {0}"
 msgstr "Close: {convertedAmountFormatted} {0}"
 
 #: src/components/Exchange/PositionSeller.js
-msgid "Closing fee"
-msgstr "Closing fee"
+msgid "Closing Fee"
+msgstr "Closing Fee"
 
 #: src/components/Exchange/PositionSeller.js
 msgid "Closing..."
@@ -1267,12 +1267,9 @@ msgstr "Execute Order: {0, select, Increase {Increase} Decrease {Decrease}} {1} 
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionEditor.js
+#: src/components/Exchange/PositionSeller.js
 msgid "Execution Fee"
 msgstr "Execution Fee"
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Execution fee"
-msgstr "Execution fee"
 
 #: src/components/Exchange/SwapBox.js
 msgid "Exit Price"
@@ -1422,8 +1419,8 @@ msgid "GMX Weekly Updates"
 msgstr "GMX Weekly Updates"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
-msgstr "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
+msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
+msgstr "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX community discussion"
@@ -2138,10 +2135,6 @@ msgstr "No trades yet"
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
-
-#: src/pages/BuyGlp/BuyGlp.js
-#~ msgid "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
-#~ msgstr "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -2934,6 +2927,10 @@ msgstr "Supply"
 msgid "Swap"
 msgstr "Swap"
 
+#: src/components/Exchange/PositionSeller.js
+msgid "Swap Fee"
+msgstr "Swap Fee"
+
 #: src/components/Exchange/SwapBox.js
 msgid "Swap Order created!"
 msgstr "Swap Order created!"
@@ -2955,10 +2952,6 @@ msgstr "Swap active: {0}, executed: {1}, cancelled: {2}"
 #: src/components/Exchange/SwapBox.js
 msgid "Swap failed."
 msgstr "Swap failed."
-
-#: src/components/Exchange/PositionSeller.js
-msgid "Swap fee"
-msgstr "Swap fee"
 
 #: src/components/Glp/SwapErrorModal.tsx
 msgid "Swap on 1inch"
