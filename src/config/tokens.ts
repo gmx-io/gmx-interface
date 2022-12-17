@@ -392,7 +392,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GMX Market tokens",
       symbol: "GM",
-      address: "todo",
+      address: "<market-token-address>",
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
@@ -421,7 +421,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GMX Market tokens",
       symbol: "GM",
-      address: "todo",
+      address: "<market-token-address>",
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
@@ -450,7 +450,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GMX Market tokens",
       symbol: "GM",
-      address: "todo",
+      address: "<market-token-address>",
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
@@ -492,7 +492,7 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
     GM: {
       name: "GMX Market tokens",
       symbol: "GM",
-      address: "todo",
+      address: "<market-token-address>",
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
@@ -516,7 +516,7 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
     GM: {
       name: "GMX Market tokens",
       symbol: "GM",
-      address: "todo",
+      address: "<market-token-address>",
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
@@ -754,7 +754,17 @@ export function isNativeTokenAddress(address: string) {
 }
 
 export function getWhitelistedTokens(chainId: number) {
-  return TOKENS[chainId].filter((token) => token.symbol !== "USDG" && !token.isSynthetic);
+  return TOKENS[chainId].filter((token) => token.symbol !== "USDG");
+}
+
+export function getAvailableTradeTokens(chainId: number, p: { includeSynthetic?: boolean } = {}) {
+  const tokens = getWhitelistedTokens(chainId).filter((token) => !token.isTempHidden);
+
+  if (p.includeSynthetic && SYNTHETIC_TOKENS[chainId]) {
+    return tokens.concat(SYNTHETIC_TOKENS[chainId]);
+  }
+
+  return tokens;
 }
 
 export function getVisibleTokens(chainId: number) {

@@ -13,7 +13,6 @@ import { MarketDropdown } from "../MarketDropdown/MarketDropdown";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { getMarket, getMarketPoolData, getTokenPoolType } from "domain/synthetics/markets/utils";
-import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
 import {
   adaptToInfoTokens,
   formatTokenAmount,
@@ -23,8 +22,7 @@ import {
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
 
-import { shouldShowMaxButton } from "domain/synthetics/exchange";
-import { useSwapTokenState } from "domain/synthetics/exchange/useSwapTokenState";
+import { useSwapTokenState } from "domain/synthetics/exchange";
 import { usePriceImpactConfigs } from "domain/synthetics/fees/usePriceImpactConfigs";
 import { getExecutionFee, getPriceImpact } from "domain/synthetics/fees/utils";
 import { useMarketsData, useMarketsPoolsData, useMarketTokensData } from "domain/synthetics/markets";
@@ -35,6 +33,7 @@ import { MarketPoolFees } from "components/MarketPoolFees/MarketPoolFees";
 import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
 
 import "./MarketPoolSwapBox.scss";
+import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
 
 type Props = {
   selectedMarketAddress?: string;
@@ -42,6 +41,12 @@ type Props = {
   onSelectMarket: (marketAddress: string) => void;
   onConnectWallet: () => void;
 };
+
+enum FocusedInput {
+  firstToken = "firstToken",
+  secondToken = "secondToken",
+  marketToken = "marketToken",
+}
 
 export function MarketPoolSwapBox(p: Props) {
   const { chainId } = useChainId();
@@ -51,7 +56,7 @@ export function MarketPoolSwapBox(p: Props) {
   const [isConfirming, setIsConfirming] = useState(false);
   const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
 
-  const tokensData = useWhitelistedTokensData(chainId);
+  const tokensData = useAvailableTradeTokensData(chainId);
   const marketsData = useMarketsData(chainId);
   const marketTokensData = useMarketTokensData(chainId);
   const marketPoolsData = useMarketsPoolsData(chainId);
@@ -77,6 +82,8 @@ export function MarketPoolSwapBox(p: Props) {
 
   const marketTokenState = useSwapTokenState(marketTokensData);
 
+  const [focusedInput, setFocusedInput] = useState<FocusedInput>();
+
   const longDelta = getDeltaByPoolType(MarketPoolType.Long);
   const shortDelta = getDeltaByPoolType(MarketPoolType.Short);
 
@@ -101,7 +108,6 @@ export function MarketPoolSwapBox(p: Props) {
 
   const isHighPriceImpact = priceImpact?.impact.lt(0) && priceImpact?.basisPoints.gte(HIGH_PRICE_IMPACT_BP);
 
-  // TODO: calculate execution fee
   const executionFee = getExecutionFee(tokensData);
 
   const feesUsd = BigNumber.from(0)
@@ -190,35 +196,36 @@ export function MarketPoolSwapBox(p: Props) {
     setIsConfirming(true);
   }
 
-  useEffect(() => {
-    if (p.selectedMarketAddress !== marketTokenState.tokenAddress) {
-      marketTokenState.setTokenAddress(p.selectedMarketAddress);
-    }
-  }, [p.selectedMarketAddress, marketsData, marketTokenState]);
-
-  useEffect(() => {
-    if (!availableTokens.length) return;
-
-    if (
-      !firstTokenState.tokenAddress ||
-      !availableTokens.find((token) => token.address === firstTokenState.tokenAddress)
-    ) {
-      firstTokenState.setTokenAddress(availableTokens[0].address);
-    }
-
-    if (
-      secondTokenState.tokenAddress &&
-      !availableTokens.find((token) => token.address === secondTokenState.tokenAddress)
-    ) {
-      const secondToken = availableTokens.find((token) => token.address !== firstTokenState.tokenAddress);
-      if (secondToken) {
-        secondTokenState.setTokenAddress(secondToken.address);
+  useEffect(
+    function updateInputsByMarket() {
+      if (p.selectedMarketAddress !== marketTokenState.tokenAddress) {
+        marketTokenState.setTokenAddress(p.selectedMarketAddress);
       }
-    }
-  }, [availableTokens, firstTokenState, secondTokenState]);
+
+      if (!availableTokens.length) return;
+
+      if (
+        !firstTokenState.tokenAddress ||
+        !availableTokens.find((token) => token.address === firstTokenState.tokenAddress)
+      ) {
+        firstTokenState.setTokenAddress(availableTokens[0].address);
+      }
+
+      if (
+        secondTokenState.tokenAddress &&
+        !availableTokens.find((token) => token.address === secondTokenState.tokenAddress)
+      ) {
+        const secondToken = availableTokens.find((token) => token.address !== firstTokenState.tokenAddress);
+        if (secondToken) {
+          secondTokenState.setTokenAddress(secondToken.address);
+        }
+      }
+    },
+    [availableTokens, firstTokenState, marketTokenState, p.selectedMarketAddress, secondTokenState]
+  );
 
   useEffect(
-    function updateInputsByModeEff() {
+    function updateInputsByMode() {
       if (modeTab === Mode.pair && !secondTokenState.tokenAddress) {
         const secondToken = availableTokens.filter((token) => token.address !== firstTokenState.tokenAddress)[0];
 
@@ -233,8 +240,18 @@ export function MarketPoolSwapBox(p: Props) {
   );
 
   useEffect(
-    function syncInputValuesEff() {
-      if (marketTokenState.isFocused) {
+    function syncInputValues() {
+      if (!focusedInput) return;
+
+      if ([FocusedInput.firstToken, FocusedInput.secondToken].includes(focusedInput)) {
+        const swapSumUsd = firstTokenState.usdAmount.add(secondTokenState.usdAmount);
+
+        marketTokenState.setValueByUsdAmount(swapSumUsd);
+
+        return;
+      }
+
+      if (focusedInput === FocusedInput.marketToken) {
         if (modeTab === Mode.single && firstTokenState.tokenAddress) {
           firstTokenState.setValueByUsdAmount(marketTokenState.usdAmount);
 
@@ -255,15 +272,9 @@ export function MarketPoolSwapBox(p: Props) {
 
           return;
         }
-      } else {
-        const swapSumUsd = firstTokenState.usdAmount.add(secondTokenState.usdAmount);
-
-        marketTokenState.setValueByUsdAmount(swapSumUsd);
-
-        return;
       }
     },
-    [firstTokenState, secondTokenState, marketTokenState, modeTab]
+    [firstTokenState, secondTokenState, marketTokenState, modeTab, focusedInput]
   );
 
   return (
@@ -296,14 +307,14 @@ export function MarketPoolSwapBox(p: Props) {
           tokenBalance={formatTokenAmount(firstTokenState.balance, firstTokenState.token?.decimals)}
           inputValue={firstTokenState.inputValue}
           onInputValueChange={(e) => {
+            setFocusedInput(FocusedInput.firstToken);
             firstTokenState.setInputValue(e.target.value);
           }}
-          showMaxButton={operationTab === Operation.deposit && shouldShowMaxButton(firstTokenState)}
+          showMaxButton={operationTab === Operation.deposit && firstTokenState.shouldShowMaxButton}
           onClickMax={() => {
+            setFocusedInput(FocusedInput.firstToken);
             firstTokenState.setValueByTokenAmount(firstTokenState.balance);
           }}
-          onFocus={firstTokenState.onFocus}
-          onBlur={firstTokenState.onBlur}
           balance={formatUsdAmount(firstTokenState.usdAmount)}
         >
           {firstTokenState.tokenAddress && modeTab === Mode.single ? (
@@ -330,14 +341,14 @@ export function MarketPoolSwapBox(p: Props) {
             tokenBalance={formatTokenAmount(secondTokenState.balance, secondTokenState.token?.decimals)}
             inputValue={secondTokenState.inputValue}
             onInputValueChange={(e) => {
+              setFocusedInput(FocusedInput.secondToken);
               secondTokenState.setInputValue(e.target.value);
             }}
-            showMaxButton={operationTab === Operation.deposit && shouldShowMaxButton(secondTokenState)}
+            showMaxButton={operationTab === Operation.deposit && secondTokenState.shouldShowMaxButton}
             onClickMax={() => {
+              setFocusedInput(FocusedInput.secondToken);
               secondTokenState.setValueByTokenAmount(secondTokenState.balance);
             }}
-            onFocus={secondTokenState.onFocus}
-            onBlur={secondTokenState.onBlur}
             balance={formatUsdAmount(secondTokenState.usdAmount)}
           >
             <div className="selected-token">{secondTokenState.token.symbol}</div>
@@ -356,14 +367,14 @@ export function MarketPoolSwapBox(p: Props) {
           tokenBalance={formatTokenAmount(marketTokenState.balance, marketTokenState.token?.decimals)}
           inputValue={marketTokenState.inputValue}
           onInputValueChange={(e) => {
+            setFocusedInput(FocusedInput.marketToken);
             marketTokenState.setInputValue(e.target.value);
           }}
-          showMaxButton={operationTab === Operation.withdraw && shouldShowMaxButton(marketTokenState)}
+          showMaxButton={operationTab === Operation.withdraw && marketTokenState.shouldShowMaxButton}
           onClickMax={() => {
+            setFocusedInput(FocusedInput.marketToken);
             marketTokenState.setValueByTokenAmount(marketTokenState.balance);
           }}
-          onFocus={marketTokenState.onFocus}
-          onBlur={marketTokenState.onBlur}
           balance={formatUsdAmount(marketTokenState.usdAmount)}
         >
           <div className="selected-token">GM</div>

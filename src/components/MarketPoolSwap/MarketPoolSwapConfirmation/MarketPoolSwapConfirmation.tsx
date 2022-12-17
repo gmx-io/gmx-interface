@@ -11,7 +11,6 @@ import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
 import { TokensData } from "domain/synthetics/tokens/types";
 import { useTokenAllowance } from "domain/synthetics/tokens/useTokenAllowance";
-import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
 import {
   formatTokenAmount,
   formatTokenAmountWithUsd,
@@ -35,6 +34,7 @@ import {
   useMarketTokensData,
 } from "domain/synthetics/markets";
 import "./MarketPoolSwapConfirmation.scss";
+import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
 
 type Props = {
   onClose: () => void;
@@ -74,7 +74,8 @@ export function MarketPoolSwapConfirmation(p: Props) {
 
   const marketsData = useMarketsData(chainId);
   const marketTokensData = useMarketTokensData(chainId);
-  const tokensData = useWhitelistedTokensData(chainId);
+  const tokensData = useAvailableTradeTokensData(chainId);
+
   const tokenAllowanceData = useTokenAllowance(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses,
