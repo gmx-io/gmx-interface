@@ -14,7 +14,7 @@ export type TokenPricesData = {
 type BackendResponse = {
   minPrice: string;
   maxPrice: string;
-  oracleDecimals: 6;
+  oracleDecimals: number;
   tokenSymbol: string;
   tokenAddress: string;
   updatedAt: number;
