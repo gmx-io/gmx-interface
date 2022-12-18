@@ -1,8 +1,8 @@
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getContract } from "config/contracts";
 
-const ARBITRUM_GMX = getContract(ARBITRUM, "GMX");
-const AVALANCHE_GMX = getContract(AVALANCHE, "GMX");
+const ARBITRUM_GMX = getContract(ARBITRUM, "GMX").toLowerCase();
+const AVALANCHE_GMX = getContract(AVALANCHE, "GMX").toLowerCase();
 
 type Exchange = {
   name: string;
