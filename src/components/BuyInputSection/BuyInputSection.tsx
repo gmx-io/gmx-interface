@@ -5,7 +5,9 @@ import "./BuyInputSection.css";
 
 type Props = {
   topLeftLabel: string;
+  topLeftValue?: string;
   topRightLabel: string;
+  topRightValue?: string;
   onClickTopRightLabel?: () => void;
   inputValue?: number | string;
   onInputValueChange?: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -14,15 +16,15 @@ type Props = {
   onBlur?: () => void;
   showMaxButton?: boolean;
   staticInput?: boolean;
-  balance: string;
-  tokenBalance: string;
   children?: ReactNode;
 };
 
 export default function BuyInputSection(props: Props) {
   const {
     topLeftLabel,
+    topLeftValue,
     topRightLabel,
+    topRightValue,
     onClickTopRightLabel,
     inputValue,
     onInputValueChange,
@@ -31,8 +33,6 @@ export default function BuyInputSection(props: Props) {
     onBlur,
     showMaxButton,
     staticInput,
-    balance,
-    tokenBalance,
     children,
   } = props;
 
@@ -40,11 +40,11 @@ export default function BuyInputSection(props: Props) {
     <div className="Exchange-swap-section buy-input">
       <div className="Exchange-swap-section-top">
         <div className="muted">
-          {topLeftLabel}: {balance}
+          {topLeftLabel} {topLeftValue}
         </div>
         <div className={cx("align-right", { clickable: onClickTopRightLabel })} onClick={onClickTopRightLabel}>
           <span className="Exchange-swap-label muted">{topRightLabel}</span>&nbsp;
-          <span className="Exchange-swap-balance">{tokenBalance}</span>
+          <span className="Exchange-swap-balance">{topRightValue}</span>
         </div>
       </div>
       <label className="Exchange-swap-section-bottom">
@@ -63,13 +63,7 @@ export default function BuyInputSection(props: Props) {
           )}
           {staticInput && <div className="InputSection-static-input">{inputValue}</div>}
           {showMaxButton && (
-            <div
-              className="Exchange-swap-max"
-              onClick={() => {
-                if (onFocus) onFocus();
-                if (onClickMax) onClickMax();
-              }}
-            >
+            <div className="Exchange-swap-max" onClick={onClickMax}>
               <Trans>MAX</Trans>
             </div>
           )}

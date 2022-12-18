@@ -278,9 +278,10 @@ export function MarketPoolSwapBox(p: Props) {
 
       <div className={cx("MarketPoolSwapBox-form-layout", { reverse: operationTab === Operation.withdraw })}>
         <BuyInputSection
-          topLeftLabel={operationTab === Operation.deposit ? t`Pay` : t`Receive`}
+          topLeftLabel={operationTab === Operation.deposit ? t`Pay:` : t`Receive:`}
+          topLeftValue={formatUsdAmount(firstTokenState.usdAmount)}
           topRightLabel={t`Balance:`}
-          tokenBalance={formatTokenAmount(firstTokenState.balance, firstTokenState.token?.decimals)}
+          topRightValue={formatTokenAmount(firstTokenState.balance, firstTokenState.token?.decimals)}
           inputValue={firstTokenState.inputValue}
           onInputValueChange={(e) => {
             setFocusedInput(FocusedInput.firstToken);
@@ -291,7 +292,6 @@ export function MarketPoolSwapBox(p: Props) {
             setFocusedInput(FocusedInput.firstToken);
             firstTokenState.setValueByTokenAmount(firstTokenState.balance);
           }}
-          balance={formatUsdAmount(firstTokenState.usdAmount)}
         >
           {firstTokenState.tokenAddress && modeTab === Mode.single ? (
             <TokenSelector
@@ -312,9 +312,10 @@ export function MarketPoolSwapBox(p: Props) {
 
         {secondTokenState.token && (
           <BuyInputSection
-            topLeftLabel={operationTab === Operation.deposit ? t`Pay` : t`Receive`}
+            topLeftLabel={operationTab === Operation.deposit ? t`Pay:` : t`Receive:`}
+            topLeftValue={formatUsdAmount(secondTokenState.usdAmount)}
             topRightLabel={t`Balance:`}
-            tokenBalance={formatTokenAmount(secondTokenState.balance, secondTokenState.token?.decimals)}
+            topRightValue={formatTokenAmount(secondTokenState.balance, secondTokenState.token?.decimals)}
             inputValue={secondTokenState.inputValue}
             onInputValueChange={(e) => {
               setFocusedInput(FocusedInput.secondToken);
@@ -325,7 +326,6 @@ export function MarketPoolSwapBox(p: Props) {
               setFocusedInput(FocusedInput.secondToken);
               secondTokenState.setValueByTokenAmount(secondTokenState.balance);
             }}
-            balance={formatUsdAmount(secondTokenState.usdAmount)}
           >
             <div className="selected-token">{secondTokenState.token.symbol}</div>
           </BuyInputSection>
@@ -338,9 +338,10 @@ export function MarketPoolSwapBox(p: Props) {
         </div>
 
         <BuyInputSection
-          topLeftLabel={operationTab === Operation.withdraw ? t`Pay` : t`Receive`}
+          topLeftLabel={operationTab === Operation.withdraw ? t`Pay:` : t`Receive:`}
+          topLeftValue={formatUsdAmount(marketTokenState.usdAmount)}
           topRightLabel={t`Balance:`}
-          tokenBalance={formatTokenAmount(marketTokenState.balance, marketTokenState.token?.decimals)}
+          topRightValue={formatTokenAmount(marketTokenState.balance, marketTokenState.token?.decimals)}
           inputValue={marketTokenState.inputValue}
           onInputValueChange={(e) => {
             setFocusedInput(FocusedInput.marketToken);
@@ -351,7 +352,6 @@ export function MarketPoolSwapBox(p: Props) {
             setFocusedInput(FocusedInput.marketToken);
             marketTokenState.setValueByTokenAmount(marketTokenState.balance);
           }}
-          balance={formatUsdAmount(marketTokenState.usdAmount)}
         >
           <div className="selected-token">GM</div>
         </BuyInputSection>
