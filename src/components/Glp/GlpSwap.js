@@ -640,8 +640,8 @@ export default function GlpSwap(props) {
     }
   };
 
-  let payLabel = t`Pay`;
-  let receiveLabel = t`Receive`;
+  let payLabel = t`Pay:`;
+  let receiveLabel = t`Receive:`;
   let payBalance = "$0.00";
   let receiveBalance = "$0.00";
   if (isBuying) {
