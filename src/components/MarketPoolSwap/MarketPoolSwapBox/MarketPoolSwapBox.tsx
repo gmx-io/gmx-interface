@@ -17,8 +17,9 @@ import {
   adaptToInfoTokens,
   formatTokenAmount,
   formatUsdAmount,
+  getTokenData,
   getUsdFromTokenAmount,
-} from "domain/synthetics/tokens/utils";
+} from "domain/synthetics/tokens";
 import { BigNumber } from "ethers";
 import { IoMdSwap } from "react-icons/io";
 
@@ -31,9 +32,9 @@ import { MarketPoolSwapConfirmation } from "../MarketPoolSwapConfirmation/Market
 import Checkbox from "components/Checkbox/Checkbox";
 import { MarketPoolFees } from "components/MarketPoolFees/MarketPoolFees";
 import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
+import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
 
 import "./MarketPoolSwapBox.scss";
-import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
 
 type Props = {
   selectedMarketAddress?: string;
@@ -142,6 +143,13 @@ export function MarketPoolSwapBox(p: Props) {
   }
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
+    if (!market) {
+      return {
+        text: t`Select a market`,
+        disabled: true,
+      };
+    }
+
     if (!marketTokenState.usdAmount.gt(0)) {
       return {
         text: t`Enter an amount`,
@@ -174,9 +182,29 @@ export function MarketPoolSwapBox(p: Props) {
         onClick: onSubmit,
       };
     } else {
-      if (!marketTokenState.balance || marketTokenState.tokenAmount.gt(marketTokenState.balance)) {
+      if (marketTokenState.tokenAmount.gt(marketTokenState.balance || BigNumber.from(0))) {
         return {
           text: t`Insufficient ${marketTokenState.token?.symbol} balance`,
+          disabled: true,
+        };
+      }
+
+      const pools = getMarketPoolData(marketPoolsData, market.marketTokenAddress);
+
+      if (shortDelta && shortDelta.tokenAmount.gt(pools?.shortPoolAmount || BigNumber.from(0))) {
+        const shortToken = getTokenData(tokensData, shortDelta.tokenAddress);
+
+        return {
+          text: t`Insufficient ${shortToken?.symbol} liquidity`,
+          disabled: true,
+        };
+      }
+
+      if (longDelta && longDelta.tokenAmount.gt(pools?.longPoolAmount || BigNumber.from(0))) {
+        const longToken = getTokenData(tokensData, longDelta.tokenAddress);
+
+        return {
+          text: t`Insufficient ${longToken?.symbol} liquidity`,
           disabled: true,
         };
       }
