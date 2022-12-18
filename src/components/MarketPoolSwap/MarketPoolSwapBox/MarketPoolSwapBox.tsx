@@ -72,10 +72,10 @@ export function MarketPoolSwapBox(p: Props) {
     return availableAddresses.map((address) => getToken(chainId, address));
   }, [chainId, market]);
 
-  const firstTokenState = useSwapTokenState(tokensData);
-  const secondTokenState = useSwapTokenState(tokensData);
+  const firstTokenState = useSwapTokenState(tokensData, { useMaxPrice: operationTab === Operation.withdraw });
+  const secondTokenState = useSwapTokenState(tokensData, { useMaxPrice: operationTab === Operation.withdraw });
 
-  const marketTokenState = useSwapTokenState(marketTokensData);
+  const marketTokenState = useSwapTokenState(marketTokensData, { useMaxPrice: operationTab === Operation.deposit });
 
   const [focusedInput, setFocusedInput] = useState<FocusedInput>();
 

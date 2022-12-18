@@ -1,17 +1,16 @@
 import { useMemo, useState } from "react";
 import {
-  formatTokenAmount,
-  getTokenAmountFromUsd,
+  convertFromUsdByPrice,
   getTokenData,
   getUsdFromTokenAmount,
+  TokenData,
   TokensData,
 } from "domain/synthetics/tokens";
-import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { parseValue } from "lib/numbers";
+import { formatAmountFree, parseValue } from "lib/numbers";
 
 export type SwapTokenState = {
-  token?: Token;
+  token?: TokenData;
   inputValue?: string;
   tokenAddress?: string;
   tokenAmount: BigNumber;
@@ -27,29 +26,33 @@ export type SwapTokenState = {
 
 export function useSwapTokenState(
   tokensData: TokensData,
-  params: { initialTokenAddress?: string } = {}
+  params: {
+    initialTokenAddress?: string;
+    useMaxPrice?: boolean;
+  } = {}
 ): SwapTokenState {
   const [inputValue, setInputValue] = useState<string>("");
   const [tokenAddress, setTokenAddress] = useState<string | undefined>(params.initialTokenAddress);
 
   const token = getTokenData(tokensData, tokenAddress);
+  const price = params.useMaxPrice ? token?.prices?.maxPrice : token?.prices?.minPrice;
 
   const state = useMemo(() => {
     function setValueByTokenAmount(amount?: BigNumber) {
       if (!token) return;
 
-      const value = formatTokenAmount(amount, token.decimals, undefined, true);
-
-      const formatted = value !== "0" ? value : "";
+      const nextValue = amount?.gt(0) ? formatAmountFree(amount, token.decimals) : "";
 
       // safe update the state
-      if (formatted !== inputValue) {
-        setInputValue(formatted);
+      if (nextValue !== inputValue) {
+        setInputValue(nextValue);
       }
     }
 
     function setValueByUsdAmount(usdAmount?: BigNumber) {
-      const nextTokenAmount = getTokenAmountFromUsd(tokensData, tokenAddress, usdAmount)!;
+      if (!token || !price) return;
+
+      const nextTokenAmount = convertFromUsdByPrice(usdAmount || BigNumber.from(0), token.decimals, price);
 
       setValueByTokenAmount(nextTokenAmount);
     }
@@ -70,10 +73,10 @@ export function useSwapTokenState(
       };
     }
 
+    const balance = token.balance;
     const tokenAmount = parseValue(inputValue || "0", token.decimals) || BigNumber.from(0);
     const usdAmount = getUsdFromTokenAmount(tokensData, tokenAddress, tokenAmount) || BigNumber.from(0);
-    const balance = token.balance;
-    const price = token.prices?.maxPrice;
+
     const shouldShowMaxButton = balance?.gt(0) && !tokenAmount.eq(balance);
 
     return {
@@ -90,7 +93,7 @@ export function useSwapTokenState(
       setValueByUsdAmount,
       setTokenAddress,
     };
-  }, [inputValue, token, tokenAddress, tokensData]);
+  }, [inputValue, price, token, tokenAddress, tokensData]);
 
   return state;
 }

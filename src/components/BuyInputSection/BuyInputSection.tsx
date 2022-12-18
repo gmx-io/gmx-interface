@@ -6,7 +6,7 @@ import "./BuyInputSection.css";
 type Props = {
   topLeftLabel: string;
   topLeftValue?: string;
-  topRightLabel: string;
+  topRightLabel?: string;
   topRightValue?: string;
   onClickTopRightLabel?: () => void;
   inputValue?: number | string;

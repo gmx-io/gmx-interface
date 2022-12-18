@@ -1,43 +1,44 @@
 import { t, Trans } from "@lingui/macro";
+import { useWeb3React } from "@web3-react/core";
+import cx from "classnames";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import Checkbox from "components/Checkbox/Checkbox";
+import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import Tab from "components/Tab/Tab";
-import cx from "classnames";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import { getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { getPositionMarketsPath, getSwapPath, useSwapTokenState } from "domain/synthetics/exchange";
-import {
-  adaptToInfoTokens,
-  convertFromUsdByPrice,
-  formatTokenAmount,
-  formatUsdAmount,
-  getTokenData,
-  TokenData,
-  useAvailableTradeTokensData,
-} from "domain/synthetics/tokens";
-import { useChainId } from "lib/chains";
-import { useEffect, useMemo, useState } from "react";
-import { IoMdSwap } from "react-icons/io";
-import Checkbox from "components/Checkbox/Checkbox";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   LEVERAGE_ENABLED_KEY,
   LEVERAGE_OPTION_KEY,
   SYNTHETICS_SWAP_MODE_KEY,
   SYNTHETICS_SWAP_OPERATION_KEY,
 } from "config/localStorage";
+import { getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { useUserReferralCode } from "domain/referrals";
+import { getPositionMarketsPath, getSwapPath, useSwapTokenState } from "domain/synthetics/exchange";
+import { createOrderTxn, OrderType } from "domain/synthetics/exchange/createOrderTxn";
+import { getMarkets, useMarketsData, useMarketsPoolsData } from "domain/synthetics/markets";
+import {
+  adaptToInfoTokens,
+  convertFromUsdByPrice,
+  convertToUsdByPrice,
+  formatTokenAmount,
+  formatUsdAmount,
+  getTokenData,
+  TokenData,
+  useAvailableTradeTokensData,
+} from "domain/synthetics/tokens";
+import { Token } from "domain/tokens";
+import { BigNumber } from "ethers";
 import longImg from "img/long.svg";
 import shortImg from "img/short.svg";
 import swapImg from "img/swap.svg";
-import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
-import { getMarkets, useMarketsData, useMarketsPoolsData } from "domain/synthetics/markets";
-import { Token } from "domain/tokens";
-import { expandDecimals, parseValue } from "lib/numbers";
-import { USD_DECIMALS } from "lib/legacy";
-import { createOrderTxn, OrderType } from "domain/synthetics/exchange/createOrderTxn";
-import { useWeb3React } from "@web3-react/core";
-import { BigNumber } from "ethers";
-import { useUserReferralCode } from "domain/referrals";
+import { useChainId } from "lib/chains";
+import { BASIS_POINTS_DIVISOR, PRECISION, USD_DECIMALS } from "lib/legacy";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { bigNumberify, expandDecimals, formatAmount, parseValue } from "lib/numbers";
+import { useEffect, useMemo, useState } from "react";
+import { IoMdSwap } from "react-icons/io";
 
 import "./SyntheticsSwapBox.scss";
 
@@ -86,49 +87,103 @@ type Props = {
   onConnectWallet: () => void;
 };
 
+const TRIGGER_RATIO_PRECISION = PRECISION;
+const LEVERAGE_PRECISION = BigNumber.from(BASIS_POINTS_DIVISOR);
+
+export function getNextTokenAmount(p: {
+  fromTokenAmount: BigNumber;
+  fromTokenPrice: BigNumber;
+  fromToken: Token;
+  toToken: Token;
+  toTokenPrice: BigNumber;
+  triggerPrice?: BigNumber;
+  shouldInvertTriggerPrice?: boolean;
+  swapTriggerRatio?: BigNumber;
+  shouldInvertRatio?: boolean;
+  leverageMultiplier?: BigNumber;
+  shouldInvertLeverage?: boolean;
+}) {
+  const fromUsdAmount = convertToUsdByPrice(p.fromTokenAmount, p.fromToken.decimals, p.fromTokenPrice);
+
+  let toAmount: BigNumber | undefined = convertFromUsdByPrice(fromUsdAmount, p.toToken.decimals, p.toTokenPrice);
+
+  if (!toAmount || !fromUsdAmount) return undefined;
+
+  if (p.swapTriggerRatio?.gt(0)) {
+    const ratio = p.shouldInvertRatio
+      ? p.swapTriggerRatio
+      : TRIGGER_RATIO_PRECISION.mul(TRIGGER_RATIO_PRECISION).div(p.swapTriggerRatio);
+
+    toAmount = p.fromTokenAmount.mul(ratio).div(TRIGGER_RATIO_PRECISION);
+  } else if (p.triggerPrice?.gt(0)) {
+    if (p.shouldInvertTriggerPrice) {
+      const toAmountUsd = convertToUsdByPrice(p.fromTokenAmount, p.fromToken.decimals, p.triggerPrice);
+
+      toAmount = convertFromUsdByPrice(toAmountUsd, p.toToken.decimals, p.toTokenPrice);
+    } else {
+      toAmount = convertFromUsdByPrice(fromUsdAmount, p.toToken.decimals, p.triggerPrice);
+    }
+  }
+
+  if (p.leverageMultiplier) {
+    const leverage = p.shouldInvertLeverage
+      ? LEVERAGE_PRECISION.mul(LEVERAGE_PRECISION).div(p.leverageMultiplier)
+      : p.leverageMultiplier;
+
+    toAmount = toAmount?.mul(leverage).div(LEVERAGE_PRECISION);
+  }
+
+  return toAmount;
+}
+
 export function SyntheticsSwapBox(p: Props) {
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
-  const [focusedInput, setFocusedInput] = useState<FocusedInput>();
 
+  const marketsData = useMarketsData(chainId);
+  const poolsData = useMarketsPoolsData(chainId);
+  const referralCodeData = useUserReferralCode(library, chainId, account);
+  const tokensData = useAvailableTradeTokensData(chainId);
+
+  const [focusedInput, setFocusedInput] = useState<FocusedInput>();
   const [operationTab, setOperationTab] = useLocalStorageSerializeKey(
     [chainId, SYNTHETICS_SWAP_OPERATION_KEY],
     Operation.Long
   );
-
   const [modeTab, setModeTab] = useLocalStorageSerializeKey([chainId, SYNTHETICS_SWAP_MODE_KEY], Mode.Market);
+
+  const isLong = operationTab === Operation.Long;
+  const isShort = operationTab === Operation.Short;
+  const isSwap = operationTab === Operation.Swap;
+  const isLimit = modeTab === Mode.Limit;
+  const isTriggerPriceAllowed = !isSwap && isLimit;
+  const isSwapTriggerRatioAllowed = isSwap && isLimit;
+  const isLeverageAllowed = isLong || isShort;
+
+  const fromTokenState = useSwapTokenState(tokensData);
+  const toTokenState = useSwapTokenState(tokensData, { useMaxPrice: true });
 
   const [leverageOption, setLeverageOption] = useLocalStorageSerializeKey<number | undefined>(
     [chainId, LEVERAGE_OPTION_KEY],
     2
   );
-
   const [isLeverageEnabled, setIsLeverageEnabled] = useLocalStorageSerializeKey([chainId, LEVERAGE_ENABLED_KEY], true);
-
-  const isLeverageAllowed = [Operation.Long, Operation.Short].includes(operationTab!);
-
-  const isLong = operationTab === Operation.Long;
-  const isShort = operationTab === Operation.Short;
-  const isSwap = operationTab === Operation.Swap;
-
-  const isMarket = modeTab === Mode.Market;
-  const isLimit = modeTab === Mode.Limit;
-  const isTrigger = modeTab === Mode.Trigger;
+  const leverageMultiplier =
+    isLeverageAllowed && isLeverageEnabled && leverageOption
+      ? bigNumberify(parseInt(String(Number(leverageOption) * BASIS_POINTS_DIVISOR)))
+      : undefined;
 
   const [triggerPriceValue, setTriggerPriceValue] = useState<string>("");
+  const triggerPrice = isTriggerPriceAllowed ? parseValue(triggerPriceValue, USD_DECIMALS) : undefined;
 
-  const triggerPrice = parseValue(triggerPriceValue, USD_DECIMALS);
+  const toTokenPrice = triggerPrice?.gt(0) ? triggerPrice : toTokenState.price;
+  const toTokenUsdAmount =
+    toTokenState.token && toTokenPrice
+      ? convertToUsdByPrice(toTokenState.tokenAmount, toTokenState.token?.decimals, toTokenPrice)
+      : BigNumber.from(0);
 
-  const isTriggerPriceEnabled = isLimit;
-
-  const marketsData = useMarketsData(chainId);
-  const poolsData = useMarketsPoolsData(chainId);
-
-  const referralCodeData = useUserReferralCode(library, chainId, account);
-
-  const tokensData = useAvailableTradeTokensData(chainId);
-  const fromTokenState = useSwapTokenState(tokensData);
-  const toTokenState = useSwapTokenState(tokensData);
+  const [swapTriggerRatioValue, setSwapTriggerRatioValue] = useState<string | undefined>();
+  const swapRatio = getSwapTrigerRatio();
 
   const { availableFromTokens, availableToTokens } = useMemo(() => {
     const longCollateralsMap: { [key: string]: TokenData | undefined } = {};
@@ -177,12 +232,27 @@ export function SyntheticsSwapBox(p: Props) {
 
   const submitButtonState = getSubmitButtonState();
 
-  function onSwitchTokens() {
-    const fromToken = fromTokenState.tokenAddress;
-    const toToken = toTokenState.tokenAddress;
+  function getSwapTrigerRatio() {
+    if (!isSwapTriggerRatioAllowed || !fromTokenState.price || !toTokenState.price) return undefined;
 
-    fromTokenState.setTokenAddress(toToken);
-    toTokenState.setTokenAddress(fromToken);
+    const isFromGreater = fromTokenState.price.gt(toTokenState.price);
+
+    const ratio = parseValue(swapTriggerRatioValue || "0", USD_DECIMALS);
+
+    let markRatio = isFromGreater
+      ? fromTokenState.price.mul(PRECISION).div(toTokenState.price)
+      : toTokenState.price.mul(PRECISION).div(fromTokenState.price);
+
+    const text = isFromGreater
+      ? `${toTokenState.token?.symbol} per ${fromTokenState.token?.symbol}`
+      : `${fromTokenState.token?.symbol} per ${toTokenState.token?.symbol}`;
+
+    return {
+      ratio,
+      isFromGreater,
+      markRatio,
+      swapRatioText: text,
+    };
   }
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
@@ -206,6 +276,19 @@ export function SyntheticsSwapBox(p: Props) {
       text: `${operationTexts[operationTab!]} ${toTokenState.token?.symbol}`,
       onClick: onSubmit,
     };
+  }
+
+  function onSwitchTokens() {
+    const fromToken = fromTokenState.tokenAddress;
+    const toToken = toTokenState.tokenAddress;
+
+    fromTokenState.setTokenAddress(toToken);
+    fromTokenState.setInputValue(toTokenState.inputValue || "");
+
+    toTokenState.setTokenAddress(fromToken);
+    toTokenState.setInputValue(fromTokenState.inputValue || "");
+
+    setFocusedInput((old) => (old === FocusedInput.From ? FocusedInput.To : FocusedInput.From));
   }
 
   function onSubmit() {
@@ -272,18 +355,57 @@ export function SyntheticsSwapBox(p: Props) {
   }
 
   useEffect(
+    // TODO: fees
     function syncInputValuesEff() {
-      if (focusedInput === FocusedInput.From) {
-        toTokenState.setValueByUsdAmount(fromTokenState.usdAmount);
+      if (!fromTokenState.token || !toTokenState.token || !toTokenState.price || !fromTokenState.price) return;
 
+      if (focusedInput === FocusedInput.From) {
+        const toAmount = getNextTokenAmount({
+          fromTokenAmount: fromTokenState.tokenAmount,
+          fromTokenPrice: fromTokenState.price,
+          fromToken: fromTokenState.token,
+          toTokenPrice: toTokenState.price,
+          toToken: toTokenState.token,
+          triggerPrice,
+          shouldInvertTriggerPrice: false,
+          swapTriggerRatio: swapRatio?.ratio,
+          shouldInvertRatio: swapRatio && !swapRatio.isFromGreater,
+          leverageMultiplier,
+          shouldInvertLeverage: false,
+        });
+
+        toTokenState.setValueByTokenAmount(toAmount);
         return;
       }
 
       if (focusedInput === FocusedInput.To) {
-        fromTokenState.setValueByUsdAmount(toTokenState.usdAmount);
+        const fromAmount = getNextTokenAmount({
+          fromTokenAmount: toTokenState.tokenAmount,
+          fromTokenPrice: toTokenState.price,
+          fromToken: toTokenState.token,
+          toTokenPrice: fromTokenState.price,
+          toToken: fromTokenState.token,
+          triggerPrice,
+          shouldInvertTriggerPrice: true,
+          swapTriggerRatio: swapRatio?.ratio,
+          shouldInvertRatio: swapRatio?.isFromGreater,
+          leverageMultiplier,
+          shouldInvertLeverage: true,
+        });
+
+        fromTokenState.setValueByTokenAmount(fromAmount);
       }
     },
-    [focusedInput, fromTokenState, toTokenState]
+    [
+      focusedInput,
+      fromTokenState,
+      leverageMultiplier,
+      swapRatio,
+      swapRatio?.isFromGreater,
+      swapRatio?.ratio,
+      toTokenState,
+      triggerPrice,
+    ]
   );
 
   useEffect(
@@ -330,9 +452,10 @@ export function SyntheticsSwapBox(p: Props) {
 
       <div className={cx("SyntheticsSwapBox-form-layout")}>
         <BuyInputSection
-          topLeftLabel={t`Pay`}
+          topLeftLabel={t`Pay:`}
+          topLeftValue={formatUsdAmount(fromTokenState.usdAmount)}
           topRightLabel={t`Balance:`}
-          tokenBalance={formatTokenAmount(fromTokenState.balance, fromTokenState.token?.decimals)}
+          topRightValue={formatTokenAmount(fromTokenState.balance, fromTokenState.token?.decimals)}
           inputValue={fromTokenState.inputValue}
           onInputValueChange={(e) => {
             setFocusedInput(FocusedInput.From);
@@ -343,7 +466,6 @@ export function SyntheticsSwapBox(p: Props) {
             setFocusedInput(FocusedInput.From);
             fromTokenState.setValueByTokenAmount(fromTokenState.balance);
           }}
-          balance={formatUsdAmount(fromTokenState.usdAmount)}
         >
           {fromTokenState.tokenAddress && (
             <TokenSelector
@@ -367,16 +489,20 @@ export function SyntheticsSwapBox(p: Props) {
         </div>
 
         <BuyInputSection
-          topLeftLabel={operationTab === Operation.Swap ? t`Receive:` : operationTexts[operationTab!]}
+          topLeftLabel={operationTab === Operation.Swap ? t`Receive:` : `${operationTexts[operationTab!]}:`}
+          topLeftValue={formatUsdAmount(toTokenUsdAmount)}
           topRightLabel={operationTab === Operation.Swap ? t`Balance:` : t`Leverage:`}
-          tokenBalance={formatTokenAmount(toTokenState.balance, toTokenState.token?.decimals)}
+          topRightValue={
+            operationTab === Operation.Swap
+              ? formatTokenAmount(toTokenState.balance, toTokenState.token?.decimals)
+              : `${leverageOption?.toFixed(2)}x`
+          }
           inputValue={toTokenState.inputValue}
           onInputValueChange={(e) => {
             setFocusedInput(FocusedInput.To);
             toTokenState.setInputValue(e.target.value);
           }}
           showMaxButton={false}
-          balance={formatUsdAmount(toTokenState.usdAmount)}
         >
           {toTokenState.tokenAddress && (
             <TokenSelector
@@ -394,21 +520,38 @@ export function SyntheticsSwapBox(p: Props) {
           )}
         </BuyInputSection>
 
-        {/* <BuyInputSection
-          topLeftLabel={t`Price`}
-          topRightLabel={t`Mark:`}
-          tokenBalance={formatTokenAmount(toTokenState.balance, toTokenState.token?.decimals)}
-          inputValue={toTokenState.inputValue}
-          onInputValueChange={(e) => {
-            toTokenState.setInputValue(e.target.value);
-          }}
-          showMaxButton={false}
-          onFocus={toTokenState.onFocus}
-          onBlur={toTokenState.onBlur}
-          balance={formatUsdAmount(toTokenState.usdAmount)}
-        >
-          USD
-        </BuyInputSection> */}
+        {isTriggerPriceAllowed && (
+          <BuyInputSection
+            topLeftLabel={t`Price`}
+            topRightLabel={t`Mark:`}
+            topRightValue={formatUsdAmount(toTokenState.price)}
+            onClickTopRightLabel={() => {
+              setTriggerPriceValue(formatAmount(toTokenState.price, USD_DECIMALS, 2));
+            }}
+            inputValue={triggerPriceValue}
+            onInputValueChange={(e) => {
+              setTriggerPriceValue(e.target.value);
+            }}
+          >
+            USD
+          </BuyInputSection>
+        )}
+
+        {swapRatio && (
+          <BuyInputSection
+            topLeftLabel={t`Price`}
+            topRightValue={formatAmount(swapRatio.markRatio, USD_DECIMALS, 4)}
+            onClickTopRightLabel={() => {
+              setSwapTriggerRatioValue(formatAmount(swapRatio.markRatio, USD_DECIMALS, 4));
+            }}
+            inputValue={swapTriggerRatioValue}
+            onInputValueChange={(e) => {
+              setSwapTriggerRatioValue(e.target.value);
+            }}
+          >
+            {swapRatio.swapRatioText}
+          </BuyInputSection>
+        )}
       </div>
 
       {/* <div className="SyntheticsSwapBox-info-section">

@@ -1945,6 +1945,10 @@ msgstr "Mark Price"
 msgid "Mark Price:"
 msgstr "Mark Price:"
 
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+msgid "Mark:"
+msgstr "Mark:"
+
 #: src/components/Exchange/OrderEditor.js
 #: src/components/Exchange/PositionSeller.js
 #: src/components/Exchange/SwapBox.js
@@ -2415,7 +2419,6 @@ msgstr "Partnerships and Integrations"
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
-#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "Pay"
 msgstr "Pay"
 
@@ -2427,6 +2430,7 @@ msgstr "Pay Amount"
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "Pay:"
 msgstr "Pay:"
 
@@ -2523,6 +2527,8 @@ msgstr "Prev"
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/SyntheticsMarketStats/SyntheticsMarketStats.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
 #: src/pages/Dashboard/DashboardV1.js
@@ -2663,6 +2669,8 @@ msgstr "Receive"
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
+#: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "Receive:"
 msgstr "Receive:"
 
