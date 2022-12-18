@@ -44,6 +44,14 @@ export function getTokenAllowance(allowanceData: TokenAllowancesData, address?: 
   return allowanceData[address];
 }
 
+export function needTokenApprove(tokenAllowanceData: TokenAllowancesData, tokenAddress: string, amount?: BigNumber) {
+  const allowance = getTokenAllowance(tokenAllowanceData, tokenAddress);
+
+  if (!allowance || !amount) return false;
+
+  return amount.gt(allowance);
+}
+
 /**
  * Used to adapt Synthetics tokens to InfoTokens where it's possible
  */

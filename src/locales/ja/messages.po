@@ -198,6 +198,10 @@ msgstr ""
 msgid "Allow up to 1% slippage"
 msgstr ""
 
+#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
+msgid "Allow {0} to spent"
+msgstr ""
+
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -262,7 +266,6 @@ msgstr "GMXを承認する"
 #~ msgid "Approve token {0}"
 #~ msgstr ""
 
-#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
@@ -2143,8 +2146,8 @@ msgid "Need to accept price impact"
 msgstr ""
 
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
-msgid "Need tokens approval"
-msgstr ""
+#~ msgid "Need tokens approval"
+#~ msgstr ""
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -2408,8 +2411,8 @@ msgid "Pay: {0} USD"
 msgstr ""
 
 #: src/components/ApproveTokenButton/ApproveTokenButton.tsx
-msgid "Pending approve {0}"
-msgstr ""
+#~ msgid "Pending approve {0}"
+#~ msgstr ""
 
 #: src/components/SyntheticsMarketStats/SyntheticsMarketStats.tsx
 #~ msgid "Perp"
@@ -4066,6 +4069,10 @@ msgstr ""
 
 #: src/pages/Exchange/Exchange.js
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
+msgstr ""
+
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
 msgstr ""
 
 #: src/components/Exchange/PositionsList.js
