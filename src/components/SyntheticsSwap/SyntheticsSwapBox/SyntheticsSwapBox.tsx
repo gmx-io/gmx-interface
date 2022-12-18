@@ -4,13 +4,8 @@ import { SubmitButton } from "components/SubmitButton/SubmitButton";
 import Tab from "components/Tab/Tab";
 import cx from "classnames";
 import TokenSelector from "components/TokenSelector/TokenSelector";
-import { getSyntheticsTradeTokens, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import {
-  getPositionMarketsPath,
-  getSwapPath,
-  shouldShowMaxButton,
-  useSwapTokenState,
-} from "domain/synthetics/exchange";
+import { getWrappedToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { getPositionMarketsPath, getSwapPath, useSwapTokenState } from "domain/synthetics/exchange";
 import {
   adaptToInfoTokens,
   convertFromUsdByPrice,
@@ -18,7 +13,7 @@ import {
   formatUsdAmount,
   getTokenData,
   TokenData,
-  useTokensData,
+  useAvailableTradeTokensData,
 } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { useEffect, useMemo, useState } from "react";
@@ -82,6 +77,11 @@ const avaialbleModes = {
   [Operation.Swap]: [Mode.Market, Mode.Limit],
 };
 
+enum FocusedInput {
+  From = "From",
+  To = "To",
+}
+
 type Props = {
   onConnectWallet: () => void;
 };
@@ -89,6 +89,7 @@ type Props = {
 export function SyntheticsSwapBox(p: Props) {
   const { chainId } = useChainId();
   const { library, account } = useWeb3React();
+  const [focusedInput, setFocusedInput] = useState<FocusedInput>();
 
   const [operationTab, setOperationTab] = useLocalStorageSerializeKey(
     [chainId, SYNTHETICS_SWAP_OPERATION_KEY],
@@ -125,53 +126,45 @@ export function SyntheticsSwapBox(p: Props) {
 
   const referralCodeData = useUserReferralCode(library, chainId, account);
 
-  const tradeTokensAddresses = useMemo(() => {
-    const markets = getMarkets(marketsData);
-
-    const tradeTokens = getSyntheticsTradeTokens(chainId).filter((token) => {
-      return markets.some((market) =>
-        [market.longTokenAddress, market.shortTokenAddress, market.indexTokenAddress].includes(token.address)
-      );
-    });
-
-    return tradeTokens.map((token) => token.address);
-  }, [chainId, marketsData]);
-
-  // todo whitelisted synthetics tokens
-  const tokensData = useTokensData(chainId, { tokenAddresses: tradeTokensAddresses });
-
+  const tokensData = useAvailableTradeTokensData(chainId);
   const fromTokenState = useSwapTokenState(tokensData);
   const toTokenState = useSwapTokenState(tokensData);
 
   const { availableFromTokens, availableToTokens } = useMemo(() => {
-    const longCollaterals: { [key: string]: TokenData | undefined } = {};
-    const shortCollaterals: { [key: string]: TokenData | undefined } = {};
-    const indexTokens: { [key: string]: TokenData | undefined } = {};
+    const longCollateralsMap: { [key: string]: TokenData | undefined } = {};
+    const shortCollateralsMap: { [key: string]: TokenData | undefined } = {};
+    const indexTokensMap: { [key: string]: TokenData | undefined } = {};
 
     const markets = getMarkets(marketsData);
+    const wrappedToken = getWrappedToken(chainId);
 
     for (const market of markets) {
-      longCollaterals[market.longTokenAddress] = getTokenData(tokensData, market.longTokenAddress);
-      shortCollaterals[market.shortTokenAddress] = getTokenData(tokensData, market.shortTokenAddress);
-      indexTokens[market.indexTokenAddress] = getTokenData(tokensData, market.indexTokenAddress);
+      longCollateralsMap[market.longTokenAddress] = getTokenData(tokensData, market.longTokenAddress);
+      shortCollateralsMap[market.shortTokenAddress] = getTokenData(tokensData, market.shortTokenAddress);
+      indexTokensMap[market.indexTokenAddress] = getTokenData(tokensData, market.indexTokenAddress);
     }
 
-    const availableFromTokens: Token[] = Object.values(longCollaterals)
-      .concat(Object.values(shortCollaterals))
+    if (NATIVE_TOKEN_ADDRESS in longCollateralsMap && wrappedToken) {
+      longCollateralsMap[wrappedToken.address] = getTokenData(tokensData, wrappedToken.address);
+    }
+
+    if (NATIVE_TOKEN_ADDRESS in shortCollateralsMap && wrappedToken) {
+      shortCollateralsMap[wrappedToken.address] = getTokenData(tokensData, wrappedToken.address);
+    }
+
+    const availableFromTokens: Token[] = Object.values(longCollateralsMap)
+      .concat(Object.values(shortCollateralsMap))
       .filter(Boolean) as Token[];
 
     const availableToTokens: Token[] = isSwap
       ? [...availableFromTokens]
-      : (Object.values(indexTokens).filter(Boolean) as Token[]);
+      : (Object.values(indexTokensMap).filter(Boolean) as Token[]);
 
     return {
-      longCollaterals,
-      shortCollaterals,
-      indexTokens,
       availableFromTokens,
       availableToTokens,
     };
-  }, [isSwap, marketsData, tokensData]);
+  }, [chainId, isSwap, marketsData, tokensData]);
 
   const infoTokens = useMemo(() => adaptToInfoTokens(tokensData), [tokensData]);
 
@@ -280,17 +273,17 @@ export function SyntheticsSwapBox(p: Props) {
 
   useEffect(
     function syncInputValuesEff() {
-      if (fromTokenState.isFocused && fromTokenState.tokenAddress) {
+      if (focusedInput === FocusedInput.From) {
         toTokenState.setValueByUsdAmount(fromTokenState.usdAmount);
 
         return;
       }
 
-      if (toTokenState.isFocused && toTokenState.tokenAddress) {
+      if (focusedInput === FocusedInput.To) {
         fromTokenState.setValueByUsdAmount(toTokenState.usdAmount);
       }
     },
-    [fromTokenState, toTokenState]
+    [focusedInput, fromTokenState, toTokenState]
   );
 
   useEffect(
@@ -342,14 +335,14 @@ export function SyntheticsSwapBox(p: Props) {
           tokenBalance={formatTokenAmount(fromTokenState.balance, fromTokenState.token?.decimals)}
           inputValue={fromTokenState.inputValue}
           onInputValueChange={(e) => {
+            setFocusedInput(FocusedInput.From);
             fromTokenState.setInputValue(e.target.value);
           }}
-          showMaxButton={shouldShowMaxButton(fromTokenState)}
+          showMaxButton={fromTokenState.shouldShowMaxButton}
           onClickMax={() => {
+            setFocusedInput(FocusedInput.From);
             fromTokenState.setValueByTokenAmount(fromTokenState.balance);
           }}
-          onFocus={fromTokenState.onFocus}
-          onBlur={fromTokenState.onBlur}
           balance={formatUsdAmount(fromTokenState.usdAmount)}
         >
           {fromTokenState.tokenAddress && (
@@ -379,11 +372,10 @@ export function SyntheticsSwapBox(p: Props) {
           tokenBalance={formatTokenAmount(toTokenState.balance, toTokenState.token?.decimals)}
           inputValue={toTokenState.inputValue}
           onInputValueChange={(e) => {
+            setFocusedInput(FocusedInput.To);
             toTokenState.setInputValue(e.target.value);
           }}
           showMaxButton={false}
-          onFocus={toTokenState.onFocus}
-          onBlur={toTokenState.onBlur}
           balance={formatUsdAmount(toTokenState.usdAmount)}
         >
           {toTokenState.tokenAddress && (

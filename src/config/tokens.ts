@@ -705,21 +705,6 @@ export function getTokens(chainId: number) {
   return TOKENS[chainId];
 }
 
-export function getSyntheticsTradeTokens(chainId: number): Token[] {
-  const tokens = TOKENS[chainId] || [];
-  const syntheticsTokens = SYNTHETIC_TOKENS[chainId] || [];
-
-  return tokens
-    .concat(syntheticsTokens)
-    .filter(
-      (token) =>
-        !token.isUsdg &&
-        !token.isTempHidden &&
-        !PLATFORM_TOKENS[chainId]?.[token.symbol] &&
-        !ADDITIONAL_TOKENS[chainId]?.some((additional) => additional.address === token.address)
-    );
-}
-
 export function getTokensMap(chainId: number) {
   return TOKENS_MAP[chainId];
 }
