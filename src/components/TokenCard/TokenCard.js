@@ -137,9 +137,6 @@ export default function TokenCard({ showRedirectModal, redirectPopupTimestamp })
                   <Trans>Buy on Avalanche FUJI</Trans>
                 </BuyLink>
               </div>
-              {/* <ExternalLink href="https://gmxio.gitbook.io/gmx/tokenomics" className="default-btn read-more">
-               <Trans>Read more</Trans>
-             </ExternalLink> */}
             </div>
           </div>
         </div>

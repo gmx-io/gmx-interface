@@ -5,7 +5,7 @@ import { getContract } from "config/contracts";
 import { getCorrectTokenAddress, getTokenBySymbol } from "config/tokens";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { useMemo } from "react";
-import { getTokenData, TokenData, useWhitelistedTokensData } from "domain/synthetics/tokens";
+import { getTokenData, TokenData, useAvailableTradeTokensData } from "domain/synthetics/tokens";
 import { MarketTokensData } from "./types";
 import { useMarketsData } from "./useMarketsData";
 import { getMarket, getMarketName } from "./utils";
@@ -17,7 +17,7 @@ export function useMarketTokensData(chainId: number): MarketTokensData {
 
   const dataStoreAddress = getContract(chainId, "DataStore");
 
-  const tokensData = useWhitelistedTokensData(chainId);
+  const tokensData = useAvailableTradeTokensData(chainId);
   const marketsData = useMarketsData(chainId);
 
   const marketAddresses = Object.keys(marketsData);

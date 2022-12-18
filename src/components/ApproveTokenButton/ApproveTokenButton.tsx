@@ -1,10 +1,12 @@
-import { t } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
-import Checkbox from "components/Checkbox/Checkbox";
 import { getWrappedToken } from "config/tokens";
 import { approveTokens } from "domain/tokens";
 import { isAddressZero } from "lib/legacy";
 import { useState } from "react";
+import { ImCheckboxUnchecked, ImSpinner2 } from "react-icons/im";
+
+import "./ApproveTokenButton.scss";
 
 type Props = {
   spenderAddress: string;
@@ -37,11 +39,19 @@ export function ApproveTokenButton(p: Props) {
     });
   }
 
+  const isLoading = isApproving || (isApproveSubmitted && !p.isApproved);
+
   return (
-    <Checkbox asRow isChecked={p.isApproved} setIsChecked={onApprove}>
-      {isApproving || (isApproveSubmitted && !p.isApproved)
-        ? t`Pending approve ${p.tokenSymbol}`
-        : t`Approve ${p.tokenSymbol}`}
-    </Checkbox>
+    <div className="ApproveTokenButton" onClick={onApprove}>
+      <Trans>Allow {p.tokenSymbol} to spent</Trans>
+
+      <div className="ApproveTokenButton-checkbox">
+        {isLoading ? (
+          <ImSpinner2 className="spin ApproveTokenButton-spin" />
+        ) : (
+          <ImCheckboxUnchecked className="App-icon Checkbox-icon inactive" />
+        )}
+      </div>
+    </div>
   );
 }

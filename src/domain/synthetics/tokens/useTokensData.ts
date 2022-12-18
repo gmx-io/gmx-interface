@@ -1,13 +1,11 @@
-import { getTokensMap, getWhitelistedTokens, NATIVE_TOKEN_ADDRESS } from "config/tokens";
-import { USD_DECIMALS } from "lib/legacy";
-import { expandDecimals } from "lib/numbers";
+import { getAvailableTradeTokens, getTokensMap } from "config/tokens";
 import { useMemo } from "react";
-import { TokenPrices, TokensData } from "./types";
+import { TokensData } from "./types";
 import { useTokenBalances } from "./useTokenBalances";
 import { useTokenRecentPrices } from "./useTokenRecentPrices";
 
-export function useWhitelistedTokensData(chainId: number) {
-  const tokenAddresses = getWhitelistedTokens(chainId).map((token) => token.address);
+export function useAvailableTradeTokensData(chainId: number) {
+  const tokenAddresses = getAvailableTradeTokens(chainId, { includeSynthetic: true }).map((token) => token.address);
 
   return useTokensData(chainId, { tokenAddresses });
 }
@@ -22,23 +20,9 @@ export function useTokensData(chainId: number, p: { tokenAddresses: string[] }):
       p.tokenAddresses.reduce((tokensData, tokenAddress) => {
         const token = tokenConfigs[tokenAddress];
 
-        let prices: TokenPrices | undefined = pricesData[token.address];
-
-        if (!prices) {
-          if (token.isStable) {
-            prices = {
-              minPrice: expandDecimals(1, USD_DECIMALS),
-              maxPrice: expandDecimals(1, USD_DECIMALS),
-            };
-          }
-          if (token.isWrapped) {
-            prices = pricesData[NATIVE_TOKEN_ADDRESS];
-          }
-        }
-
         tokensData[token.address] = {
           ...token,
-          prices: prices ? { ...prices } : undefined,
+          prices: pricesData[token.address],
           balance: balancesData[token.address],
         };
         return tokensData;

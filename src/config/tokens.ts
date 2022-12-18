@@ -392,7 +392,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GMX Market tokens",
       symbol: "GM",
-      address: "todo",
+      address: "<market-token-address>",
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
@@ -421,7 +421,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GMX Market tokens",
       symbol: "GM",
-      address: "todo",
+      address: "<market-token-address>",
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
@@ -450,7 +450,7 @@ export const ADDITIONAL_TOKENS: { [chainId: number]: Token[] } = {
     {
       name: "GMX Market tokens",
       symbol: "GM",
-      address: "todo",
+      address: "<market-token-address>",
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
@@ -467,7 +467,7 @@ export const SYNTHETIC_TOKENS = {
       isNative: true,
       isShortable: true,
       isSynthetic: true,
-      imageUrl: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
+      imageUrl: "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
     },
   ],
 };
@@ -492,7 +492,7 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
     GM: {
       name: "GMX Market tokens",
       symbol: "GM",
-      address: "todo",
+      address: "<market-token-address>",
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
@@ -516,7 +516,7 @@ export const PLATFORM_TOKENS: { [chainId: number]: { [symbol: string]: Token } }
     GM: {
       name: "GMX Market tokens",
       symbol: "GM",
-      address: "todo",
+      address: "<market-token-address>",
       decimals: 18,
       imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
     },
@@ -629,11 +629,11 @@ export const EXPLORER_LINKS = {
     },
     ETH: {
       coingecko: "https://www.coingecko.com/en/coins/weth",
-      avalanche: "https://testnet.snowtrace.io/address/0x8226EC2c1926c9162b6F815153d10018A7ccdf07",
+      avalanche: "https://testnet.snowtrace.io/address/0x82F0b3695Ed2324e55bbD9A9554cB4192EC3a514",
     },
     USDC: {
       coingecko: "https://www.coingecko.com/en/coins/usd-coin",
-      avalanche: "https://testnet.snowtrace.io/address/0xC492c8d82DC576Ad870707bb40EDb63E2026111E",
+      avalanche: "https://testnet.snowtrace.io/address/0x3eBDeaA0DB3FfDe96E7a0DBBAFEC961FC50F725F",
     },
   },
 };
@@ -769,7 +769,17 @@ export function isNativeTokenAddress(address: string) {
 }
 
 export function getWhitelistedTokens(chainId: number) {
-  return TOKENS[chainId].filter((token) => token.symbol !== "USDG" && !token.isSynthetic);
+  return TOKENS[chainId].filter((token) => token.symbol !== "USDG");
+}
+
+export function getAvailableTradeTokens(chainId: number, p: { includeSynthetic?: boolean } = {}) {
+  const tokens = getWhitelistedTokens(chainId).filter((token) => !token.isTempHidden);
+
+  if (p.includeSynthetic && SYNTHETIC_TOKENS[chainId]) {
+    return tokens.concat(SYNTHETIC_TOKENS[chainId]);
+  }
+
+  return tokens;
 }
 
 export function getVisibleTokens(chainId: number) {

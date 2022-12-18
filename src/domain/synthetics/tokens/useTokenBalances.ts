@@ -2,8 +2,8 @@ import { useWeb3React } from "@web3-react/core";
 import Multicall from "abis/Multicall.json";
 import Token from "abis/Token.json";
 import { getContract } from "config/contracts";
+import { getToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
 import { BigNumber } from "ethers";
-import { isAddressZero } from "lib/legacy";
 import { useMulticall } from "lib/multicall";
 import { useMemo } from "react";
 import { TokenBalancesData } from "./types";
@@ -15,7 +15,11 @@ export function useTokenBalances(chainId: number, p: { tokenAddresses: string[] 
     key: account && p.tokenAddresses.length > 0 ? [account, p.tokenAddresses.join("-")] : null,
     request: () =>
       p.tokenAddresses.reduce((acc, address) => {
-        if (isAddressZero(address)) {
+        const token = getToken(chainId, address);
+        // Skip synthetic tokens
+        if (token.isSynthetic) return acc;
+
+        if (address === NATIVE_TOKEN_ADDRESS) {
           acc[address] = {
             contractAddress: getContract(chainId, "Multicall"),
             abi: Multicall.abi,

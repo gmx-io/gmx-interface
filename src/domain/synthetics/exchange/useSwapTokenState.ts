@@ -13,18 +13,16 @@ import { parseValue } from "lib/numbers";
 export type SwapTokenState = {
   token?: Token;
   inputValue?: string;
-  isFocused?: boolean;
   tokenAddress?: string;
-  onFocus: () => void;
-  onBlur: () => void;
-  setInputValue: (val: string) => void;
-  setValueByTokenAmount: (val?: BigNumber) => void;
-  setValueByUsdAmount: (usdAmount?: BigNumber) => void;
-  setTokenAddress: (val?: string) => void;
   tokenAmount: BigNumber;
   usdAmount: BigNumber;
   balance?: BigNumber;
   price?: BigNumber;
+  shouldShowMaxButton?: boolean;
+  setInputValue: (val: string) => void;
+  setValueByTokenAmount: (val?: BigNumber) => void;
+  setValueByUsdAmount: (usdAmount?: BigNumber) => void;
+  setTokenAddress: (val?: string) => void;
 };
 
 export function useSwapTokenState(
@@ -33,7 +31,6 @@ export function useSwapTokenState(
 ): SwapTokenState {
   const [inputValue, setInputValue] = useState<string>("");
   const [tokenAddress, setTokenAddress] = useState<string | undefined>(params.initialTokenAddress);
-  const [isFocused, setIsFocused] = useState(false);
 
   const token = getTokenData(tokensData, tokenAddress);
 
@@ -57,28 +54,19 @@ export function useSwapTokenState(
       setValueByTokenAmount(nextTokenAmount);
     }
 
-    function onFocus() {
-      setIsFocused(true);
-    }
-
-    function onBlur() {
-      setIsFocused(false);
-    }
-
     if (!token) {
       return {
         token: undefined,
         inputValue,
-        isFocused,
-        onFocus,
-        onBlur,
+        tokenAmount: BigNumber.from(0),
+        usdAmount: BigNumber.from(0),
+        balance: undefined,
+        price: undefined,
+        shouldShowMaxButton: false,
         setInputValue,
         setTokenAddress,
         setValueByTokenAmount,
         setValueByUsdAmount,
-        tokenAmount: BigNumber.from(0),
-        usdAmount: BigNumber.from(0),
-        balance: undefined,
       };
     }
 
@@ -86,24 +74,23 @@ export function useSwapTokenState(
     const usdAmount = getUsdFromTokenAmount(tokensData, tokenAddress, tokenAmount) || BigNumber.from(0);
     const balance = token.balance;
     const price = token.prices?.maxPrice;
+    const shouldShowMaxButton = balance?.gt(0) && !tokenAmount.eq(balance);
 
     return {
       token,
       inputValue,
-      isFocused,
-      onFocus,
-      onBlur,
-      setInputValue,
-      setValueByTokenAmount,
-      setValueByUsdAmount,
-      setTokenAddress,
       tokenAddress,
       tokenAmount,
       usdAmount,
       balance,
       price,
+      shouldShowMaxButton,
+      setInputValue,
+      setValueByTokenAmount,
+      setValueByUsdAmount,
+      setTokenAddress,
     };
-  }, [inputValue, isFocused, token, tokenAddress, tokensData]);
+  }, [inputValue, token, tokenAddress, tokensData]);
 
   return state;
 }

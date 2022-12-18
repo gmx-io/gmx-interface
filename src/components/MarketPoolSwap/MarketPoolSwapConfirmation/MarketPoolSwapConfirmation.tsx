@@ -1,68 +1,64 @@
-import { t, Trans } from "@lingui/macro";
+import { plural, t, Trans } from "@lingui/macro";
 import { useWeb3React } from "@web3-react/core";
 import cx from "classnames";
 import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
-import Checkbox from "components/Checkbox/Checkbox";
-import { InfoRow } from "components/InfoRow/InfoRow";
 import Modal from "components/Modal/Modal";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { SubmitButton } from "components/SubmitButton/SubmitButton";
-import Tooltip from "components/Tooltip/Tooltip";
 import { getContract } from "config/contracts";
-import { HIGH_PRICE_IMPACT_BP } from "config/synthetics";
-import { getToken, NATIVE_TOKEN_ADDRESS } from "config/tokens";
+import { getToken } from "config/tokens";
 import { PriceImpact } from "domain/synthetics/fees/types";
-import { formatFee } from "domain/synthetics/fees/utils";
 import { createDepositTxn } from "domain/synthetics/markets/createDepositTxn";
 import { createWithdrawalTxn } from "domain/synthetics/markets/createWithdrawalTxn";
 import { TokensData } from "domain/synthetics/tokens/types";
 import { useTokenAllowance } from "domain/synthetics/tokens/useTokenAllowance";
-import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
 import {
+  convertToUsdByPrice,
   formatTokenAmount,
   formatTokenAmountWithUsd,
-  getTokenAllowance,
   getTokenAmountFromUsd,
   getTokenData,
-  getUsdFromTokenAmount,
+  needTokenApprove,
 } from "domain/synthetics/tokens/utils";
+import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
 import { useChainId } from "lib/chains";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Operation, operationTexts, PoolDelta } from "../constants";
+import { useMemo } from "react";
+import { getSubmitError, Operation, operationTexts, PoolDelta } from "../utils";
 
+import { MarketPoolFees } from "components/MarketPoolFees/MarketPoolFees";
 import {
   getMarket,
-  getMarketName,
   getMarketTokenData,
   useMarketsData,
+  useMarketsPoolsData,
   useMarketTokensData,
 } from "domain/synthetics/markets";
+import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
+
 import "./MarketPoolSwapConfirmation.scss";
 
 type Props = {
   onClose: () => void;
   marketTokenAddress: string;
-  marketTokenAmount?: BigNumber;
+  marketTokenAmount: BigNumber;
   longDelta?: PoolDelta;
   shortDelta?: PoolDelta;
   priceImpact?: PriceImpact;
   tokensData: TokensData;
   operationType: Operation;
-  fees: BigNumber;
+  feesUsd: BigNumber;
   executionFee?: BigNumber;
+  executionFeeUsd?: BigNumber;
+  executionFeeToken?: Token;
   onSubmitted: () => void;
 };
 
-function getTokenText(tokensData: TokensData, tokenAddress?: string, swapAmount?: BigNumber) {
-  if (!tokenAddress || !swapAmount) return undefined;
+function getTokenText(token?: Token, tokenAmount?: BigNumber, price?: BigNumber) {
+  if (!token || !price || !tokenAmount) return undefined;
 
-  const usdAmount = getUsdFromTokenAmount(tokensData, tokenAddress, swapAmount);
-  const token = getTokenData(tokensData, tokenAddress);
+  const usdAmount = convertToUsdByPrice(tokenAmount, token.decimals, price);
 
-  if (!usdAmount || !token) return undefined;
-
-  return formatTokenAmountWithUsd(swapAmount, usdAmount, token.symbol, token.decimals);
+  return formatTokenAmountWithUsd(tokenAmount, usdAmount, token.symbol, token.decimals);
 }
 
 export function MarketPoolSwapConfirmation(p: Props) {
@@ -76,57 +72,63 @@ export function MarketPoolSwapConfirmation(p: Props) {
 
   const marketsData = useMarketsData(chainId);
   const marketTokensData = useMarketTokensData(chainId);
-  const tokensData = useWhitelistedTokensData(chainId);
+  const poolsData = useMarketsPoolsData(chainId);
+  const tokensData = useAvailableTradeTokensData(chainId);
+
   const tokenAllowanceData = useTokenAllowance(chainId, {
     spenderAddress: routerAddress,
     tokenAddresses,
   });
 
-  const [isHighPriceImpactAccepted, setIsHighPriceImpactAccepted] = useState(false);
-  const [tokensToApprove, setTokensToApprove] = useState<string[]>();
-
-  const isHighPriceImpact = p.priceImpact?.impact.lt(0) && p.priceImpact?.basisPoints.gte(HIGH_PRICE_IMPACT_BP);
   const isDeposit = p.operationType === Operation.deposit;
 
-  const firstTokenText = getTokenText(tokensData, p.longDelta?.tokenAddress, p.longDelta?.tokenAmount);
-  const secondTokenText = getTokenText(tokensData, p.shortDelta?.tokenAddress, p.shortDelta?.tokenAmount);
-  const marketTokenText = getTokenText(marketTokensData, p.marketTokenAddress, p.marketTokenAmount);
+  const marketToken = getMarketTokenData(marketTokensData, p.marketTokenAddress);
+  const longToken = getTokenData(tokensData, p.longDelta?.tokenAddress);
+  const shortToken = getTokenData(tokensData, p.shortDelta?.tokenAddress);
+
+  const longTokenText = getTokenText(longToken, p.longDelta?.tokenAmount, longToken?.prices?.maxPrice);
+  const shortTokenText = getTokenText(shortToken, p.shortDelta?.tokenAmount, shortToken?.prices?.maxPrice);
+  const marketTokenText = getTokenText(marketToken, p.marketTokenAmount, marketToken?.prices?.maxPrice);
 
   const market = getMarket(marketsData, p.marketTokenAddress);
-  const marketName = getMarketName(marketsData, tokensData, p.marketTokenAddress);
-
-  const marketToken = getMarketTokenData(marketTokensData, p.marketTokenAddress);
-
-  const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS)!;
 
   const isAllowanceLoaded = Object.keys(tokenAllowanceData).length > 0;
 
-  const payTokens: { [address: string]: BigNumber } = useMemo(() => {
+  const tokensToApprove = useMemo(() => {
     if (isDeposit) {
-      return [p.longDelta, p.shortDelta].filter(Boolean).reduce((acc, delta) => {
-        acc[delta!.tokenAddress] = delta?.tokenAmount;
-        return acc;
-      }, {});
+      return [p.longDelta, p.shortDelta]
+        .filter(
+          (delta) => delta?.tokenAddress && needTokenApprove(tokenAllowanceData, delta.tokenAddress, delta.tokenAmount)
+        )
+        .map((delta) => delta!.tokenAddress);
+    } else {
+      if (needTokenApprove(tokenAllowanceData, p.marketTokenAddress, p.marketTokenAmount)) {
+        return [p.marketTokenAddress];
+      }
+
+      return [];
     }
-
-    return {
-      [p.marketTokenAddress]: p.marketTokenAmount,
-    };
-  }, [isDeposit, p.longDelta, p.marketTokenAddress, p.marketTokenAmount, p.shortDelta]);
-
-  const needTokenApprove = useCallback(
-    (tokenAddress: string) => {
-      const allowance = getTokenAllowance(tokenAllowanceData, tokenAddress);
-      const amount = payTokens[tokenAddress];
-
-      if (!allowance || !tokenAddress || !amount) return false;
-
-      return amount.gt(allowance);
-    },
-    [payTokens, tokenAllowanceData]
-  );
+  }, [isDeposit, p.longDelta, p.marketTokenAddress, p.marketTokenAmount, p.shortDelta, tokenAllowanceData]);
 
   function getSubmitButtonState(): { text: string; disabled?: boolean; onClick?: () => void } {
+    const error = getSubmitError({
+      operation: p.operationType,
+      tokensData,
+      marketTokensData,
+      poolsData,
+      market,
+      marketTokenAmount: p.marketTokenAmount,
+      longDelta: p.longDelta,
+      shortDelta: p.shortDelta,
+    });
+
+    if (error) {
+      return {
+        text: error,
+        disabled: true,
+      };
+    }
+
     if (!isAllowanceLoaded || !marketToken) {
       return {
         text: t`Loading...`,
@@ -134,16 +136,18 @@ export function MarketPoolSwapConfirmation(p: Props) {
       };
     }
 
-    if (needTokenApprove && tokensToApprove?.some((address) => needTokenApprove(address))) {
-      return {
-        text: t`Need tokens approval`,
-        disabled: true,
-      };
-    }
+    if (tokensToApprove.length > 0) {
+      const symbols = tokensToApprove.map((address) => {
+        return address === p.marketTokenAddress ? "GM" : getTokenData(tokensData, address)!.symbol;
+      });
 
-    if (isHighPriceImpact && !isHighPriceImpactAccepted) {
+      const symbolsText = symbols.join(", ");
+
       return {
-        text: t`Need to accept price impact`,
+        text: plural(symbols.length, {
+          one: `Pending ${symbolsText} approval`,
+          other: `Pending ${symbolsText} approvals`,
+        }),
         disabled: true,
       };
     }
@@ -201,29 +205,6 @@ export function MarketPoolSwapConfirmation(p: Props) {
     }).then(p.onSubmitted);
   }
 
-  useEffect(
-    function updateTokensToApproveEff() {
-      if (Object.keys(tokenAllowanceData).length > 0 && !tokensToApprove) {
-        const payTokens = isDeposit
-          ? ([p.longDelta?.tokenAddress, p.shortDelta?.tokenAddress].filter(Boolean) as string[])
-          : [p.marketTokenAddress];
-
-        const toApproveAddresses = payTokens.filter((address) => needTokenApprove(address));
-
-        setTokensToApprove(toApproveAddresses);
-      }
-    },
-    [
-      isDeposit,
-      needTokenApprove,
-      p.longDelta?.tokenAddress,
-      p.marketTokenAddress,
-      p.shortDelta?.tokenAddress,
-      tokenAllowanceData,
-      tokensToApprove,
-    ]
-  );
-
   const submitButtonState = getSubmitButtonState();
 
   return (
@@ -237,14 +218,11 @@ export function MarketPoolSwapConfirmation(p: Props) {
         <div className={cx("Confirmation-box-main MarketPoolSwapConfirmation-main")}>
           {p.operationType === Operation.deposit && (
             <>
-              <div>
-                <Trans>Pay</Trans>&nbsp;{firstTokenText}
-              </div>
-              {secondTokenText && (
-                <div>
-                  <Trans>Pay</Trans>&nbsp;{secondTokenText}
+              {[longTokenText, shortTokenText].filter(Boolean).map((text) => (
+                <div key={text}>
+                  <Trans>Pay</Trans>&nbsp;{text}
                 </div>
-              )}
+              ))}
               <div className="Confirmation-box-main-icon"></div>
               <div>
                 <Trans>Receive</Trans>&nbsp;{marketTokenText}
@@ -257,40 +235,21 @@ export function MarketPoolSwapConfirmation(p: Props) {
                 <Trans>Pay</Trans>&nbsp;{marketTokenText}
               </div>
               <div className="Confirmation-box-main-icon"></div>
-              <div>
-                <Trans>Receive</Trans>&nbsp;{firstTokenText}
-              </div>
-              {secondTokenText && (
-                <div>
-                  <Trans>Receive</Trans>&nbsp;{secondTokenText}
+              {[longTokenText, shortTokenText].filter(Boolean).map((text) => (
+                <div key={text}>
+                  <Trans>Receive</Trans>&nbsp;{text}
                 </div>
-              )}
+              ))}
             </>
           )}
         </div>
 
-        <InfoRow
-          label={<Trans>Fees and price impact</Trans>}
-          value={
-            <Tooltip
-              handle={formatFee(p.fees)}
-              position="right-bottom"
-              renderContent={() => (
-                <div className="text-white">
-                  <StatsTooltipRow
-                    label={t`Price impact`}
-                    value={formatFee(p.priceImpact?.impact, p.priceImpact?.impact)}
-                    showDollar={false}
-                  />
-                  <StatsTooltipRow
-                    label={t`Execution fee`}
-                    value={formatTokenAmount(p.executionFee, nativeToken.decimals, nativeToken.symbol)}
-                    showDollar={false}
-                  />
-                </div>
-              )}
-            />
-          }
+        <MarketPoolFees
+          priceImpact={p.priceImpact}
+          executionFeeToken={p.executionFeeToken}
+          totalFeeUsd={p.feesUsd}
+          executionFee={p.executionFee}
+          executionFeeUsd={p.executionFeeUsd}
         />
 
         {tokensToApprove && tokensToApprove.length > 0 && (
@@ -303,9 +262,8 @@ export function MarketPoolSwapConfirmation(p: Props) {
                   <ApproveTokenButton
                     key={address}
                     tokenAddress={address}
-                    tokenSymbol={address === p.marketTokenAddress ? marketName! : getToken(chainId, address).symbol}
+                    tokenSymbol={address === p.marketTokenAddress ? "GM" : getToken(chainId, address).symbol}
                     spenderAddress={routerAddress}
-                    isApproved={!needTokenApprove(address)}
                   />
                 </div>
               ))}
@@ -314,17 +272,6 @@ export function MarketPoolSwapConfirmation(p: Props) {
             <div className="App-card-divider" />
           </>
         )}
-
-        {isHighPriceImpact && (
-          <div className="MarketPoolSwapBox-warnings">
-            <Checkbox asRow isChecked={isHighPriceImpactAccepted} setIsChecked={setIsHighPriceImpactAccepted}>
-              <span className="muted font-sm">
-                <Trans>I am aware of the high price impact</Trans>
-              </span>
-            </Checkbox>
-          </div>
-        )}
-
         <div className="Confirmation-box-row">
           <SubmitButton onClick={submitButtonState.onClick} disabled={submitButtonState.disabled}>
             {submitButtonState.text}

@@ -1,6 +1,5 @@
-import { Token } from "domain/tokens";
 import { BigNumber } from "ethers";
-import { TokenPrices } from "domain/synthetics/tokens";
+import { TokenData } from "domain/synthetics/tokens";
 
 export enum MarketPoolType {
   Long = "Long",
@@ -20,10 +19,8 @@ export type MarketsData = {
   [marketTokenAddress: string]: Market;
 };
 
-export type MarketTokenData = Token & {
+export type MarketTokenData = TokenData & {
   totalSupply?: BigNumber;
-  prices?: TokenPrices;
-  balance?: BigNumber;
 };
 
 export type MarketTokensData = {

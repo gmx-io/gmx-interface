@@ -23,7 +23,7 @@ import {
   formatTokenAmountWithUsd,
   formatUsdAmount,
   getUsdFromTokenAmount,
-  useWhitelistedTokensData,
+  useAvailableTradeTokensData,
 } from "domain/synthetics/tokens";
 
 type Props = {
@@ -35,7 +35,7 @@ export function SyntheticsMarketStats(p: Props) {
 
   const marketsData = useMarketsData(chainId);
   const poolsData = useMarketsPoolsData(chainId);
-  const tokensData = useWhitelistedTokensData(chainId);
+  const tokensData = useAvailableTradeTokensData(chainId);
   const marketTokensData = useMarketTokensData(chainId);
 
   const market = getMarket(marketsData, p.marketKey);

@@ -198,6 +198,10 @@ msgstr "Agree"
 msgid "Allow up to 1% slippage"
 msgstr "Allow up to 1% slippage"
 
+#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
+msgid "Allow {0} to spent"
+msgstr "Allow {0} to spent"
+
 #: src/App/App.js
 #: src/components/Exchange/ConfirmationBox.js
 #: src/components/Exchange/PositionSeller.js
@@ -258,11 +262,6 @@ msgstr "Approval was cancelled"
 msgid "Approve GMX"
 msgstr "Approve GMX"
 
-#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
-#~ msgid "Approve token {0}"
-#~ msgstr "Approve token {0}"
-
-#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
@@ -1024,7 +1023,7 @@ msgstr "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/MarketPoolSwap/constants.ts
+#: src/components/MarketPoolSwap/utils.ts
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
@@ -1032,19 +1031,9 @@ msgstr "Decreased {tokenSymbol} {longOrShortText}, -{0} USD."
 msgid "Deposit"
 msgstr "Deposit"
 
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
-#~ msgid "Deposit created"
-#~ msgstr "Deposit created"
-
 #: src/components/Exchange/PositionEditor.js
 msgid "Deposit disabled, pending {0} upgrade"
 msgstr "Deposit disabled, pending {0} upgrade"
-
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
-#~ msgid "Deposit failed"
-#~ msgstr "Deposit failed"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit failed!"
@@ -1057,11 +1046,6 @@ msgstr "Deposit failed."
 #: src/domain/synthetics/markets/createDepositTxn.ts
 msgid "Deposit order sent"
 msgstr "Deposit order sent"
-
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
-#~ msgid "Deposit submitted"
-#~ msgstr "Deposit submitted"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Deposit submitted!"
@@ -1270,7 +1254,7 @@ msgstr "Enter a price"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/MarketPoolSwap/utils.ts
 #: src/components/Migration/Migration.js
 #: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 #: src/pages/ClaimEsGmx/ClaimEsGmx.js
@@ -1328,8 +1312,7 @@ msgid "Execution Fee"
 msgstr "Execution Fee"
 
 #: src/components/Exchange/PositionSeller.js
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/MarketPoolFees/MarketPoolFees.tsx
 msgid "Execution fee"
 msgstr "Execution fee"
 
@@ -1354,8 +1337,7 @@ msgstr "FEES"
 msgid "Fees"
 msgstr "Fees"
 
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/MarketPoolFees/MarketPoolFees.tsx
 msgid "Fees and price impact"
 msgstr "Fees and price impact"
 
@@ -1490,8 +1472,8 @@ msgid "GMX Weekly Updates"
 msgstr "GMX Weekly Updates"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
-msgid "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
-msgstr "GMX bonds can be bought on Olympus Pro with a discount and a small vesting period:"
+msgid "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
+msgstr "GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:"
 
 #: src/pages/Ecosystem/Ecosystem.js
 msgid "GMX community discussion"
@@ -1562,7 +1544,7 @@ msgstr "High Slippage, Swap Anyway"
 msgid "High USDG Slippage, Long Anyway"
 msgstr "High USDG Slippage, Long Anyway"
 
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 msgid "I am aware of the high price impact"
 msgstr "I am aware of the high price impact"
 
@@ -1667,10 +1649,15 @@ msgstr "Insufficient staked tokens"
 #: src/components/Exchange/SwapBox.js
 #: src/components/Exchange/SwapBox.js
 #: src/components/Glp/GlpSwap.js
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
+#: src/components/MarketPoolSwap/utils.ts
+#: src/components/MarketPoolSwap/utils.ts
 msgid "Insufficient {0} balance"
 msgstr "Insufficient {0} balance"
+
+#: src/components/MarketPoolSwap/utils.ts
+#: src/components/MarketPoolSwap/utils.ts
+msgid "Insufficient {0} liquidity"
+msgstr "Insufficient {0} liquidity"
 
 #: src/pages/NftWallet/NftWallet.js
 msgid "Invalid NFT Address"
@@ -1863,6 +1850,7 @@ msgstr "Liquidity data not loaded"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/MarketPoolSwap/utils.ts
 msgid "Loading..."
 msgstr "Loading..."
 
@@ -1988,10 +1976,6 @@ msgstr "Market Increase"
 #: src/domain/synthetics/exchange/createOrderTxn.ts
 msgid "Market Swap"
 msgstr "Market Swap"
-
-#: src/components/SyntheticsMarketStats/SyntheticsMarketStats.tsx
-#~ msgid "Market worth"
-#~ msgstr "Market worth"
 
 #: src/pages/Stake/StakeV2.js
 msgid "Max Capacity"
@@ -2181,13 +2165,9 @@ msgstr "NFT ID"
 msgid "NFT Wallet"
 msgstr "NFT Wallet"
 
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/MarketPoolSwap/utils.ts
 msgid "Need to accept price impact"
 msgstr "Need to accept price impact"
-
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
-msgid "Need tokens approval"
-msgstr "Need tokens approval"
 
 #: src/components/Exchange/PositionsList.js
 #: src/components/Exchange/PositionsList.js
@@ -2268,10 +2248,6 @@ msgstr "No trades yet"
 #: src/components/Exchange/OrdersToa.js
 msgid "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
 msgstr "Note that orders are not guaranteed to be executed.<0/><1/>This can occur in a few situations including but not exclusive to:"
-
-#: src/pages/BuyGlp/BuyGlp.js
-#~ msgid "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
-#~ msgstr "Note that there is a minimum holding time of 15 minutes after a purchase.<0/>View <1>staking</1> page."
 
 #: src/components/Referrals/referralsHelper.js
 msgid "Only letters, numbers and underscores are allowed."
@@ -2414,7 +2390,7 @@ msgstr "Page not found"
 msgid "Page outdated, please refresh"
 msgstr "Page outdated, please refresh"
 
-#: src/components/MarketPoolSwap/constants.ts
+#: src/components/MarketPoolSwap/utils.ts
 msgid "Pair"
 msgstr "Pair"
 
@@ -2442,7 +2418,6 @@ msgstr "Partnerships and Integrations"
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 #: src/components/SyntheticsSwap/SyntheticsSwapBox/SyntheticsSwapBox.tsx
 msgid "Pay"
@@ -2455,14 +2430,6 @@ msgstr "Pay Amount"
 #: src/components/Exchange/SwapBox.js
 msgid "Pay: {0} USD"
 msgstr "Pay: {0} USD"
-
-#: src/components/ApproveTokenButton/ApproveTokenButton.tsx
-msgid "Pending approve {0}"
-msgstr "Pending approve {0}"
-
-#: src/components/SyntheticsMarketStats/SyntheticsMarketStats.tsx
-#~ msgid "Perp"
-#~ msgstr "Perp"
 
 #: src/pages/Dashboard/DashboardV2.js
 msgid "Platform and GLP index tokens."
@@ -2592,14 +2559,9 @@ msgstr "Price below Mark Price"
 msgid "Price conditions are met"
 msgstr "Price conditions are met"
 
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+#: src/components/MarketPoolFees/MarketPoolFees.tsx
 msgid "Price impact"
 msgstr "Price impact"
-
-#: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#~ msgid "Price impact description"
-#~ msgstr "Price impact description"
 
 #: src/components/Exchange/OrderEditor.js
 msgid "Price is above Mark Price"
@@ -2693,7 +2655,6 @@ msgstr "Rebates earned by this account as an affiliate."
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapBox/MarketPoolSwapBox.tsx
-#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 #: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
 msgid "Receive"
@@ -2995,7 +2956,7 @@ msgstr "Shorting..."
 msgid "Simple Swaps"
 msgstr "Simple Swaps"
 
-#: src/components/MarketPoolSwap/constants.ts
+#: src/components/MarketPoolSwap/utils.ts
 msgid "Single"
 msgstr "Single"
 
@@ -3895,7 +3856,7 @@ msgstr "When closing the position, you can select which token you would like to 
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
 #: src/components/Exchange/PositionEditor.js
-#: src/components/MarketPoolSwap/constants.ts
+#: src/components/MarketPoolSwap/utils.ts
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js
 msgid "Withdraw"
@@ -4135,6 +4096,10 @@ msgstr "withdrawal"
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {Cancel order} other {Cancel # orders}}"
 
+#: src/components/MarketPoolSwap/MarketPoolSwapConfirmation/MarketPoolSwapConfirmation.tsx
+msgid "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
+msgstr "{0, plural, one {Pending {symbolsText} approval} other {Pending {symbolsText} approvals}}"
+
 #: src/components/Exchange/PositionsList.js
 msgid "{0, select, true {Long} false {Short}} {1} market selected"
 msgstr "{0, select, true {Long} false {Short}} {1} market selected"
@@ -4166,10 +4131,6 @@ msgstr "{0} GLP have been reserved for vesting."
 #: src/components/Glp/GlpSwap.js
 msgid "{0} GLP sold for {1} {2}!"
 msgstr "{0} GLP sold for {1} {2}!"
-
-#: src/components/SyntheticsMarketStats/SyntheticsMarketStats.tsx
-#~ msgid "{0} GM (${1})"
-#~ msgstr "{0} GM (${1})"
 
 #: src/pages/Stake/StakeV2.js
 #: src/pages/Stake/StakeV2.js

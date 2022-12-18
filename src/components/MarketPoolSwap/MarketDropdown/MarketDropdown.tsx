@@ -2,12 +2,12 @@ import { Menu } from "@headlessui/react";
 import { FaChevronDown } from "react-icons/fa";
 import { Market } from "domain/synthetics/markets/types";
 import { useChainId } from "lib/chains";
-import { useWhitelistedTokensData } from "domain/synthetics/tokens/useTokensData";
 import { getMarketName, getMarkets } from "domain/synthetics/markets/utils";
 import { PLACEHOLDER_MARKET_NAME } from "config/synthetics";
 import { useMarketsData } from "domain/synthetics/markets";
 
 import "./MarketDropdown.scss";
+import { useAvailableTradeTokensData } from "domain/synthetics/tokens";
 
 export type MarketOption = {
   symbol: string;
@@ -23,7 +23,7 @@ export function MarketDropdown(p: Props) {
   const { chainId } = useChainId();
 
   const marketsData = useMarketsData(chainId);
-  const tokensData = useWhitelistedTokensData(chainId);
+  const tokensData = useAvailableTradeTokensData(chainId);
 
   const markets = getMarkets(marketsData);
 

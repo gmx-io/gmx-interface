@@ -1,15 +1,19 @@
 import { BigNumber } from "ethers";
 import { BASIS_POINTS_DIVISOR } from "lib/legacy";
-import { expandDecimals, formatAmount } from "lib/numbers";
-import { formatUsdAmount } from "domain/synthetics/tokens";
+import { bigNumberify, expandDecimals, formatAmount } from "lib/numbers";
+import { convertFromUsdByPrice, formatUsdAmount, getTokenData, TokensData } from "domain/synthetics/tokens";
 import { PriceImpact, PriceImpactConfigsData } from "./types";
+import { NATIVE_TOKEN_ADDRESS } from "config/tokens";
 
 export function formatFee(feeUsd?: BigNumber, feeBp?: BigNumber) {
   if (!feeUsd?.abs().gt(0)) {
     return "...";
   }
+  const isNegative = feeUsd.lt(0);
 
-  return feeBp ? `${formatAmount(feeBp, 2, 2)}% (${formatUsdAmount(feeUsd)})` : formatUsdAmount(feeUsd);
+  return feeBp
+    ? `${isNegative ? "-" : ""}${formatAmount(feeBp, 2, 2)}% (${formatUsdAmount(feeUsd)})`
+    : formatUsdAmount(feeUsd);
 }
 
 export function getPriceImpactConfig(data: PriceImpactConfigsData, marketAddress?: string) {
@@ -18,10 +22,24 @@ export function getPriceImpactConfig(data: PriceImpactConfigsData, marketAddress
   return data[marketAddress];
 }
 
+export function getExecutionFee(tokensData: TokensData) {
+  const nativeToken = getTokenData(tokensData, NATIVE_TOKEN_ADDRESS);
+
+  if (!nativeToken?.prices) return undefined;
+
+  const feeUsd = expandDecimals(1, 28);
+  const feeTokenAmount = convertFromUsdByPrice(feeUsd, nativeToken.decimals, nativeToken.prices.maxPrice);
+
+  return {
+    feeUsd: feeUsd,
+    feeTokenAmount,
+    feeToken: nativeToken,
+  };
+}
+
 /**
  * @see https://github.com/gmx-io/gmx-synthetics/blob/updates/contracts/pricing/SwapPricingUtils.sol
  *
- * TODO: unit tests?
  */
 export function getPriceImpact(
   priceImpactConfigsData: PriceImpactConfigsData,
@@ -44,6 +62,8 @@ export function getPriceImpact(
   const isSameSideRebalance = currentLong.lt(currentShort) === nextLong.lt(nextShort);
 
   const { factorPositive, factorNegative, exponentFactor } = priceImpactConf;
+
+  if (!factorPositive || !factorNegative || !exponentFactor) return undefined;
 
   let impact: BigNumber | undefined;
 
@@ -125,19 +145,19 @@ export function calculateImpactForCrossoverRebalance(p: {
 
   const deltaDiffUsd = positiveImpact.sub(negativeImpactUsd).abs();
 
-  return positiveImpact > negativeImpactUsd ? deltaDiffUsd : BigNumber.from(0).sub(deltaDiffUsd);
+  return positiveImpact.gt(negativeImpactUsd) ? deltaDiffUsd : BigNumber.from(0).sub(deltaDiffUsd);
 }
 
-// TODO: correct formula
-function applyImpactFactor(diff: BigNumber, factor?: BigNumber, exponent?: BigNumber) {
-  if (!factor || !exponent) return BigNumber.from(0);
+// TODO: big numbers + unit tests
+export function applyImpactFactor(diff: BigNumber, factor: BigNumber, exponent: BigNumber) {
+  // Convert diff and exponent to float js numbers
+  const _diff = Number(diff) / 10 ** 30;
+  const _exponent = Number(exponent) / 10 ** 30;
 
-  const r = diff
-    .div(expandDecimals(1, 30))
-    .pow(2)
-    .mul(expandDecimals(1, 30))
-    .mul(expandDecimals(1, 22))
-    .div(expandDecimals(1, 30));
+  // Pow and convert back to BigNumber with 30 decimals
+  let result = bigNumberify(BigInt(Math.round(_diff ** _exponent * 10 ** 30)));
 
-  return r;
+  result = result?.mul(factor).div(expandDecimals(1, 30)).div(2);
+
+  return result;
 }

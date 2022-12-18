@@ -5,6 +5,7 @@ import Reader from "abis/SyntheticsReader.json";
 import { useMulticall } from "lib/multicall";
 import { useMarketsData } from "./useMarketsData";
 import { MarketsPoolsData } from "./types";
+import { getCorrectTokenAddress } from "config/tokens";
 
 export function useMarketsPoolsData(chainId: number): MarketsPoolsData {
   const dataStoreAddress = getContract(chainId, "DataStore");
@@ -23,7 +24,11 @@ export function useMarketsPoolsData(chainId: number): MarketsPoolsData {
 
           calls[`${marketAddress}-long`] = {
             methodName: "getPoolAmount",
-            params: [dataStoreAddress, market.marketTokenAddress, market.longTokenAddress],
+            params: [
+              dataStoreAddress,
+              market.marketTokenAddress,
+              getCorrectTokenAddress(chainId, market.longTokenAddress, "wrapped"),
+            ],
           };
 
           calls[`${marketAddress}-short`] = {

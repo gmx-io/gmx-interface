@@ -147,7 +147,8 @@ describe("executeMulticall", () => {
       }, [library]);
     });
 
-    await act(() => sleep(10));
+    // wait extra time to make sure the library is ready
+    await act(() => sleep(100));
 
     expect(MulticallSpy).toBeCalled();
     expect(usedProvider).toEqual(libraryProvider);

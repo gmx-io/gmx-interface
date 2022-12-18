@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { swapImpactExponentFactorKey, swapImpactFactorKey, useDataStoreKeys } from "domain/synthetics/dataStore";
 import { PriceImpactConfigsData } from "./types";
 import { useMarketsData } from "../markets";
+import { expandDecimals } from "lib/numbers";
 
 export function usePriceImpactConfigs(chainId: number): PriceImpactConfigsData {
   const marketsData = useMarketsData(chainId);
@@ -27,9 +28,10 @@ export function usePriceImpactConfigs(chainId: number): PriceImpactConfigsData {
       const exponentFactor = dataStoreResult[`${address}-exponentImpactFactor`];
 
       acc[address] = {
-        factorPositive,
-        factorNegative,
-        exponentFactor,
+        // TODO: remove it after contracts will send correct values
+        factorPositive: factorPositive?.gte(expandDecimals(1, 20)) ? factorPositive : expandDecimals(1, 22),
+        factorNegative: factorNegative?.gte(expandDecimals(1, 20)) ? factorNegative : expandDecimals(1, 22),
+        exponentFactor: exponentFactor?.gte(expandDecimals(1, 30)) ? exponentFactor : expandDecimals(2, 30),
       };
 
       return acc;

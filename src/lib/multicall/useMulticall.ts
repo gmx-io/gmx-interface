@@ -25,7 +25,7 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
 ) {
   const { library } = useWeb3React();
 
-  const swrFullKey = Array.isArray(params.key) ? [chainId, name, ...params.key] : null;
+  const swrFullKey = Array.isArray(params.key) && chainId && name ? [chainId, name, ...params.key] : null;
 
   const swrOpts: any = {};
 
@@ -42,21 +42,14 @@ export function useMulticall<TConfig extends MulticallRequestConfig<any>, TResul
         ? params.request(chainId, params.key as CacheKey) 
         : params.request;
 
-      try {
-        const response = await executeMulticall(chainId, library, request);
+      const response = await executeMulticall(chainId, library, request);
 
-        // prettier-ignore
-        const result = typeof params.parseResponse === "function" 
+      // prettier-ignore
+      const result = typeof params.parseResponse === "function" 
             ? params.parseResponse(response, chainId, params.key as CacheKey) 
             : response;
 
-        return result as TResult;
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error("useMulticall error", e);
-
-        throw e;
-      }
+      return result as TResult;
     },
   });
 

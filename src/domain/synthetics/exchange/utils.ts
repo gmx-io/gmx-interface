@@ -2,10 +2,6 @@ import { BigNumber } from "ethers";
 import { intersection } from "lodash";
 import { getMarkets, getTokenPoolAmount, Market, MarketsData, MarketsPoolsData } from "../markets";
 
-export function shouldShowMaxButton(tokenState: { balance?: BigNumber; tokenAmount: BigNumber }) {
-  return tokenState.balance?.gt(0) && !tokenState.tokenAmount.eq(tokenState.balance);
-}
-
 export function filterMarketsByLiquidity(
   marketsData: MarketsData,
   poolsData: MarketsPoolsData,
