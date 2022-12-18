@@ -246,7 +246,7 @@ export default function PositionsList(props) {
                   .mul(position.size)
                   .mul(24)
                   .div(FUNDING_RATE_PRECISION);
-                borrowFeeUSD = formatAmount(borrowFeeRate, USD_DECIMALS, 2);
+                borrowFeeUSD = formatAmount(borrowFeeRate, USD_DECIMALS, 2, true);
               }
 
               return (
@@ -308,7 +308,11 @@ export default function PositionsList(props) {
                                   label={t`Borrow Fee`}
                                   value={formatAmount(position.fundingFee, USD_DECIMALS, 2, true)}
                                 />
-                                <StatsTooltipRow label={t`Borrow Fee / Day`} value={borrowFeeUSD} />
+                                <StatsTooltipRow
+                                  showDollar={false}
+                                  label={t`Borrow Fee / Day`}
+                                  value={`-$${borrowFeeUSD}`}
+                                />
                                 <span>
                                   <Trans>Use the Edit Collateral icon to deposit or withdraw collateral.</Trans>
                                 </span>
@@ -539,7 +543,7 @@ export default function PositionsList(props) {
                 .mul(position.size)
                 .mul(24)
                 .div(FUNDING_RATE_PRECISION);
-              borrowFeeUSD = formatAmount(borrowFeeRate, USD_DECIMALS, 2);
+              borrowFeeUSD = formatAmount(borrowFeeRate, USD_DECIMALS, 2, true);
             }
 
             return (
